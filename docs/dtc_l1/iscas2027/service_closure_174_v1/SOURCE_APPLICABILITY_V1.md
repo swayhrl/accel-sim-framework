@@ -1,0 +1,20 @@
+# Source applicability and claim limits
+
+| Evidence | Applicable source/input scope | Does not establish |
+|---|---|---|
+| Frozen historical twelve | Original ordered629 SM70 trace members and their recorded Core/binary/config identities; original strict results retained | New finite-service numbers, native input shapes inferred from filenames, or current Tensor-Core/DNN implementations |
+| R1 V2 | Core6fba0136, binaryfe2d2737, whole-line IO/OO on qualified LD/ST multiplier1;4 directed CTest targets and full NN checks | A new ISA, native returned-value correctness, arbitrary higher LD/ST multiplier throughput, or broad OFF matrix revalidation |
+| OFF checks | Exact full NN cycles/instructions for BASE, IO andOO against the canonical frozen runtime | Full12-model numerical equivalence for ON; old IO/OO finite performance reuse |
+| R2 registered rows | Same frozen12 inputs; exact canonical B16-N/TC80-N reuse; new finite IO256/OO128, oneTRAD96 design, four IO128 and fourWAIT128 controls | GM12 before complete valid coverage, an ordering-only comparison from unequal primary PIB depths, equal silicon area or native DTC speedup |
+| RTX4080 baseline-only pilot | Complete original4-workload traces under frozen4080 memory config, canonical mode0, old trace opcode timing | Ada-native instruction execution/timing, cold native state, qualified DTC modern capacity or AWMA/C16 platform acceptance |
+| Native109 diagnostics |12 fixed native conditions; actual binaries/launch resources/cache/DRAM profiles and seven-process timing samples at890fb0be | Hidden PIB/MSHR dimensions, known physical cache-set mapping, isolated return-skew service or hardware DTC benefit |
+| Native109 SpMV | Pinned Parboil1138_bus, FP32/int32,36 CTAs; native numerical predicate and timing/profile accepted | Large DRAM/steady full-GPU stress; simulator admission of its actual SM89 cubin |
+| Native109 LayerNorm | Installed PyTorch2.5.1+cu124 operator, FP321024×1024 and one native-only8192×1024 sensitivity; actual SM86 cubin onSM89 GPU | Semantically complete SASS capture after the tracer skippedCALL.REL.NOINC; simulator or pooledGM14 membership |
+
+The trace-body CPU audit checks all629 members,171982 CTAs and1368212 warps. All12 instruction sums match canonical expected totals. A [Hotspot shared-address format issue](HOTSPOT_SHARED_FORMAT_REVIEW_V1.md) places its comparison promotion and three unlaunched rows on HOLD; original strict numeric/model evidence remains preserved. Geometry is not a steady-state timing proof, and old input dimensions remain unknown where native/source receipts are absent. NN means nearest neighbor. Gaussian/LUD's604 members are mostly successive kernels, not604 independent applications. No old input is silently resized or replaced after an outcome.
+
+Native sharing conditions change footprint and coalescing as well as consumers. Their profiles cannot isolate DTC waiter fanout cost. Native event timing of very short operators includes enqueue/event effects and quantization; profiler durations remain separate observations. Producer109's30 packaging/native consistency checks are not174 simulator strict checks. Its warmup kernels are retained, but asynchronous copies, allocator/memset/driver activity and exact initial cache state are not comprehensively captured.
+
+The fixed128KiB modern decision is honored. Possible byte arithmetic does not establish implemented common storage/ports; the modern DTC gate remains HOLD. SpMV's opcode-root overlap with Ampere does not authorize a silent89-to86 mapping. LayerNorm remains NOT_ADMITTED. All native findings and failed capture/admission/launcher attempts remain available under their original identities. The original12 payload is independently present on174 despite109's availability gap.
+
+No equal-area or old4.7% area transfer, GM14, extra family search, closed SG3/logical80 experiment, texture/Tag bypass extension, wholesale toolchain migration or new3070 matrix is part of this delivery. Conditional3070 work requires primary closure and a fresh budget review; no3070 row is scheduled.
