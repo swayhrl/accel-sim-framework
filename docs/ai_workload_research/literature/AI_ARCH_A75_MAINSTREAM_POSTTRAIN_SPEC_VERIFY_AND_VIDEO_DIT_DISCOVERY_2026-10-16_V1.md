@@ -84,5 +84,5 @@
 - SpecDecode-Bench `SpecDecode-Bench/vllm@f967d11c99867e893361b612ef575ed8605e5d4f`；没有本机跑作者profiling。
 - Libra `NetX-lab/Libra@506a54edf3854fbf25537a758707df83a623e1c2`，README blob`8eb6ee9692082e36079be7af8c145cbe18fc657b`。
 - Wan2.2 `Wan-Video/Wan2.2@1ea34ff48f87168174e12956e200b1d908b1c5ff`；TeaCache `ali-vilab/TeaCache@7c10efc4702c6b619f47805f7abe4a7a08085aa0`。
-- 引用结果严格维持作者实验与控制端算术之分。NeMo 235B结果为作者模拟；RolloutPipe train pool为8×4090而rollout 2×A100；SpecDecode H100结果为served requests非RL；TeaCache原对象Open-Sora-Plan非Wan；STA原对象Hunyuan不是Wan2.2；不将软件能力当实际111平台验收。
+- 引用结果严格维持作者实验与控制端算术之分。NeMo 235B结果为作者模拟；RolloutPipe train pool为8×4090而rollout 2×A100；SpecDecode H100结果为served requests非RL；TeaCache原对象Open-Sora-Plan非Wan；STA原对象Hunyuan不是Wan2.2；不将软件能力当实际本地平台验收。
 **A75终态：证据已支持转向R/D两个有别于旧LLM serving/SM100资源问题的source-only候选，当前没有新硬件机制或GPU授权。**
