@@ -47,6 +47,8 @@ def instruction(text, version=0, lineinfo=0):
     opcode = t[pos]; pos += 1
     nsrc = int(t[pos]); pos += 1 + nsrc
     mem = int(t[pos]); pos += 1
+    if not mem and mask and opcode.split(".")[0] in ("LDG", "LDGSTS", "STG", "ATOM", "ATOMG", "RED"):
+        raise ValueError("executed global memory operation without addresses")
     if not mem or not mask:
         return opcode, 0, []
     width = 4

@@ -73,6 +73,10 @@ class OracleTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             ro.instruction("0 0 0 0 0 5 0 LDG 0 4 1 1000 4")
 
+    def test_executed_store_without_addresses_rejected(self):
+        with self.assertRaises(ValueError):
+            ro.instruction("0 0 0 0 0 1 0 STG 0 0")
+
     def test_sparse_explicit_and_delta(self):
         self.assertEqual(ro.instruction("0 0 0 0 0 5 0 LDG 0 4 0 1000 2000")[2], [0x1000, 0x2000])
         self.assertEqual(ro.instruction("0 0 0 0 0 7 0 LDG 0 4 2 1000 32 -16")[2], [0x1000,0x1020,0x1010])
