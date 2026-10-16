@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## Lane A OO BICG terminal —2026-10-16 12:28 UTC
+
+The same Goal174 remains active: **30 terminal/invariant PASS,11 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two numeric PASS rows retain Hotspot scientific-promotion HOLD. Each of41 started labels has one attempt; no simulation, Goal, branch, input or identity was restarted or replaced. [Current full states, exact comparisons, residence and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T122809Z).
+
+Finite OO BICG completed naturally: **47533116 cycles,145666048 active-thread instructions,2/2 ordered kernels**,3:27:51 elapsed and2412544KiB peakRSS. Independent full strict re-collection matches the immutable watcher receipt. Exact Core6fba0136/binaryfe2d2737/config/runner/resource/input identities, single epoch/full scope, credit/reference/physical/PIB drains, service retirement/collection balances, all64-SM samples and residence decomposition pass. [Full OO strict receipt, comparator/input proof and current process/resource receipt](../iscas2027/service_closure_174_v1/review_pack/bicg_oo_checkpoint_v1).
+
+OO BICG is slower than enhanced traditional25353488 cycles; this substantial regression is preserved. The two full rows have exactly the same ordered input records, trace-list hash and instruction scope, with their distinct source/binary/resource identities retained. This is primaryOO128 versus enhancedTRAD96/PIB256, not a matched-depth/equal-area/native-hardware result. The traditional row's original natural-exit receipt-recovery provenance remains preserved. BICG primaryIO256 and matchedIO128 remain live, so no complete BICG trio or matched128 metrics are emitted. No service parameter, cap or input is retuned after the regression.
+
+Seven complete primary trios and the separate Btree/2D matched128 pairs remain available. The11 remaining rows are BICG IO256/IO128/WAIT128; GESUMMV IO/OO/TRAD96; GEMM andATAX finiteIO/OO; and2DConvolution WAIT128. All eligible independent rows already launched once; free slots add no condition. At12:28:48 UTC, all11 remaining simulator PIDs retained start ticks and increased CPU ticks. Own RSS was28.2GiB, MemAvailable256.0GiB and writable capacity40.9GiB. Both original supervisors and strict watcher remain live.
+
+Modern DTC's128KiB capacity/port HOLD, Hotspot's three forbidden labels/external Lane B ownership, four modern baseline-only rows and15 accepted native109 cases remain unchanged; SpMV/LayerNorm remain NOT_ADMITTED. No incomplete GM12, replacement GM11, pooled GM14 or native-DTC claim is computed. [27-item closure ledger](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv). Exact fetched remote HEAD/tree/cleanliness proof is `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`. This is an active-work checkpoint; final Goal completion remains unproven while registered rows are live.
+
 ## Lane A long traditional terminals —2026-10-16 12:23 UTC
 
 The same Goal174 remains active: **29 terminal/invariant PASS,12 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two numeric PASS rows retain Hotspot scientific-promotion HOLD. No simulation, Goal, branch, input or identity was restarted or replaced. [Current full states, exact comparisons, residence and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T122311Z).
