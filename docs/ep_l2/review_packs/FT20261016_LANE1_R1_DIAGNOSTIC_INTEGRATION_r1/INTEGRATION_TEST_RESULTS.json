@@ -1,0 +1,497 @@
+{
+  "kind": "PRODUCER_INTEGRATION_NOT_INDEPENDENT_QUALIFICATION",
+  "build_manifest": {
+    "lease_id": "5740587fe2b8453fbdc5b7a0a20bcc2b",
+    "owner": "lane1",
+    "jobs": 2,
+    "build": "/workspace/build/ep-l2-ft20261016-lane1-r1",
+    "framework_source_commit": "fb64d9520f20a562cc0db78b838d13f4599b49ce",
+    "core_source_commit": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
+    "commands": [
+      [
+        "cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-ft20261016-lane1-r1",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+      ],
+      [
+        "cmake",
+        "--build",
+        "/workspace/build/ep-l2-ft20261016-lane1-r1",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_ft_directed",
+        "ep_l2_ft_partition",
+        "ep_l2_ideal_wb",
+        "ep_l2_ideal_meta",
+        "ep_l2_ideal_meta_integrated",
+        "ep_l2_ideal_read_hit",
+        "-j2"
+      ]
+    ],
+    "started_at": "2026-10-16T10:33:06.266453+00:00",
+    "status": "PASS",
+    "prior_configure_failure": "BUILD_FAILED_R1.json",
+    "third_party_dependency": "THIRD_PARTY_DEPENDENCY.json",
+    "binary_sha256": "2d2fb08217723bf920a486dcdce3412ca03c4a14028c9d67b401fd9b8a6d4664",
+    "build_stamp": "const char *g_accelsim_version=\"accelsim-commit-fb64d952_modified_0.0_26-10-16-18-33-06\";",
+    "finished_at": "2026-10-16T10:35:43.815754+00:00"
+  },
+  "lease_id": "4559973f8ca24258bc0065636513b674",
+  "tests": [
+    {
+      "test": "ft_directed",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "11568a328162fafddc3c98cb745306ca303fb54615bcb203139218eb7a8c1ad5",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_directed.log",
+      "log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_1_8",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_8.log",
+      "log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_1_16",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_16.log",
+      "log_sha256": "5a0ab0edec0ccd0006db0645874515bc1d5496aa4337b9f9326ab369251327ef",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_2_8",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_2_8.log",
+      "log_sha256": "eb248e9b36885a5f9bfa3e9dc5e1f353be4625a13d177bd1dc5f54de84de1a16",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_2_16",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_2_16.log",
+      "log_sha256": "5e4dab86eae1f3598d4d682ae510cb3eafb02e7819efcdd0bb3a29c454653637",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ideal_wb",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_wb",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "6379c4068523bd16b065bb18cb3b242208c80a8491df9ab40708a58cf5190df8",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_wb.log",
+      "log_sha256": "9574fd0488cd5786a63816c7ea77f4a733038111001ba0952de0eb6d2b46b1ef",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ideal_meta",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_meta"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "c5b0e8e12d13fb6a548fd0b7cedae9145d3ba97d0033bd8638f471a2f4cd6847",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_meta.log",
+      "log_sha256": "bfc45fd7aa493ff5b0f542ef31e5c7986fb5f923ec75a5a31921ebaa9dd63844",
+      "config_sha256": {}
+    },
+    {
+      "test": "ideal_meta_integrated",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "719567bcb43e8c72298683e5f1049747fc895e7d11f86752f042766266f0fac6",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_meta_integrated.log",
+      "log_sha256": "b9935e7b5618cbd4025d36e8075cb2eb90c16a108cbde57808675d8a0e1e9c12",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_meta_integrated.config": "dd4e3921ba5c1f68ae5f0524a8df35d2792b95248000eb17f34c431ab821b7fd"
+      }
+    },
+    {
+      "test": "ideal_read_hit",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_read_hit.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "f28bbbe9e8ecb4e4e2920bad8c2a479b96a9442e2982bdf8f769abbe27de1139",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit.log",
+      "log_sha256": "ee6d8980209c937e2c1868653dc7e553276ec62252431151954a959f2f92e518",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_read_hit.config": "56fc83ed419062ad479d2805f33f7dc4d7ef2023f0ed917ef626a3171b108e39"
+      }
+    },
+    {
+      "test": "ideal_read_hit_b16",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit_b16.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "f28bbbe9e8ecb4e4e2920bad8c2a479b96a9442e2982bdf8f769abbe27de1139",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit_b16.log",
+      "log_sha256": "ee6d8980209c937e2c1868653dc7e553276ec62252431151954a959f2f92e518",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit_b16.config": "17049d11111a54feabda8a87f6f61cd299065e80e184cbfb36a1aaa3d813c25b"
+      }
+    }
+  ],
+  "all_ideal_off_equivalence": [
+    {
+      "test": "ft_directed",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-directed-r1.log",
+      "r0_log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_directed.log",
+      "r1_log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "native_ft_b0_record_count": 4,
+      "native_records_equal": true,
+      "comparison": "FULL_STDOUT_STDERR_BYTE_EQUALITY",
+      "exact": true
+    },
+    {
+      "test": "ft_partition_1_8",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-partition-1-8-r1.log",
+      "r0_log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_8.log",
+      "r1_log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "native_ft_b0_record_count": 0,
+      "native_records_equal": true,
+      "comparison": "FULL_STDOUT_STDERR_BYTE_EQUALITY",
+      "exact": true
+    },
+    {
+      "test": "ft_partition_1_16",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-partition-1-16-r1.log",
+      "r0_log_sha256": "5a0ab0edec0ccd0006db0645874515bc1d5496aa4337b9f9326ab369251327ef",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_16.log",
+      "r1_log_sha256": "5a0ab0edec0ccd0006db0645874515bc1d5496aa4337b9f9326ab369251327ef",
+      "native_ft_b0_record_count": 0,
+      "native_records_equal": true,
+      "comparison": "FULL_STDOUT_STDERR_BYTE_EQUALITY",
+      "exact": true
+    },
+    {
+      "test": "ft_partition_2_8",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-partition-2-8-r1.log",
+      "r0_log_sha256": "eb248e9b36885a5f9bfa3e9dc5e1f353be4625a13d177bd1dc5f54de84de1a16",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_2_8.log",
+      "r1_log_sha256": "eb248e9b36885a5f9bfa3e9dc5e1f353be4625a13d177bd1dc5f54de84de1a16",
+      "native_ft_b0_record_count": 0,
+      "native_records_equal": true,
+      "comparison": "FULL_STDOUT_STDERR_BYTE_EQUALITY",
+      "exact": true
+    },
+    {
+      "test": "ft_partition_2_16",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-partition-2-16-r1.log",
+      "r0_log_sha256": "5e4dab86eae1f3598d4d682ae510cb3eafb02e7819efcdd0bb3a29c454653637",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_2_16.log",
+      "r1_log_sha256": "5e4dab86eae1f3598d4d682ae510cb3eafb02e7819efcdd0bb3a29c454653637",
+      "native_ft_b0_record_count": 0,
+      "native_records_equal": true,
+      "comparison": "FULL_STDOUT_STDERR_BYTE_EQUALITY",
+      "exact": true
+    }
+  ],
+  "mode_legality": [
+    {
+      "test": "wb_without_finite",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/accel-sim.out",
+        "-config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/b0_banked_d512_850.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/m0a_off.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/b16_banked.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/r1/off.config",
+        "-config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/wb_without_finite.config",
+        "-trace",
+        "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+      ],
+      "exit_code": -6,
+      "guard_message": "I_WB requires static finite-WBUF source",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/wb_without_finite.log",
+      "log_sha256": "9f66719b2aff40a99bc7fff3e1204e5267a2d23f3090ad1c2f1fbff790b82d7b",
+      "ordered_config_sha256": [
+        "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+        "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+        "f6f78c3995d5cf21b1d39c24069fd744800f735e4b5f8a56f7bc59fe35b8c93e",
+        "9eea75785e789cc1e5b9ced7adcaadf9e74c4165039a6fe333f9f7edcb925e47"
+      ],
+      "trace_list_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "trace_scope": "CLI_GUARD_PRE_WORKLOAD_INITIALIZATION_NO_KERNEL_EXECUTION"
+    },
+    {
+      "test": "wb_on_unified",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/accel-sim.out",
+        "-config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/b0_banked_d512_850.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/m0a_off.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/b16_banked.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/r1/off.config",
+        "-config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/wb_on_unified.config",
+        "-trace",
+        "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+      ],
+      "exit_code": -6,
+      "guard_message": "I_WB requires static finite-WBUF source",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/wb_on_unified.log",
+      "log_sha256": "903bc15bb4456e7888ca696aa7c79c4834b7e03cdd61c52a02de471b12e6bc26",
+      "ordered_config_sha256": [
+        "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+        "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+        "f6f78c3995d5cf21b1d39c24069fd744800f735e4b5f8a56f7bc59fe35b8c93e",
+        "17f49569e6cbcbf6822c54b806d7dc98c0faec9059b21cc63e029a9279c55f2d"
+      ],
+      "trace_list_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "trace_scope": "CLI_GUARD_PRE_WORKLOAD_INITIALIZATION_NO_KERNEL_EXECUTION"
+    },
+    {
+      "test": "read_plus_meta",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/accel-sim.out",
+        "-config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/b0_banked_d512_850.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/m0a_off.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/b16_banked.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/r1/off.config",
+        "-config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/read_plus_meta.config",
+        "-trace",
+        "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+      ],
+      "exit_code": -6,
+      "guard_message": "EP-L2 ideal mode requires target metadata/banked model",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/read_plus_meta.log",
+      "log_sha256": "bf92429cf2053ec047f93136c9dd79f05e6617cfe7814b023a6f142c3adc7a5d",
+      "ordered_config_sha256": [
+        "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+        "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+        "f6f78c3995d5cf21b1d39c24069fd744800f735e4b5f8a56f7bc59fe35b8c93e",
+        "f6f1e07a59f54e2d88d219bc9630319244dbdb6607cab10ebefeb4f432671786"
+      ],
+      "trace_list_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "trace_scope": "CLI_GUARD_PRE_WORKLOAD_INITIALIZATION_NO_KERNEL_EXECUTION"
+    },
+    {
+      "test": "read_plus_wb",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/accel-sim.out",
+        "-config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/b0_banked_d512_850.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/m0a_off.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/b16_banked.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/r1/off.config",
+        "-config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/read_plus_wb.config",
+        "-trace",
+        "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+      ],
+      "exit_code": -6,
+      "guard_message": "I_WB requires static finite-WBUF source",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/read_plus_wb.log",
+      "log_sha256": "696853eb6902707b20a6d0f84ad2c1aa566936bde2789ecd46332868a6a0819e",
+      "ordered_config_sha256": [
+        "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+        "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+        "f6f78c3995d5cf21b1d39c24069fd744800f735e4b5f8a56f7bc59fe35b8c93e",
+        "2f95016d150c6ecc7037df9b48e35564184a1a3e47ac969e3fe74b6b93d70e08"
+      ],
+      "trace_list_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "trace_scope": "CLI_GUARD_PRE_WORKLOAD_INITIALIZATION_NO_KERNEL_EXECUTION"
+    },
+    {
+      "test": "read_on_unified",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/accel-sim.out",
+        "-config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/b0_banked_d512_850.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/m0a_off.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/b16_banked.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/r1/off.config",
+        "-config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/read_on_unified.config",
+        "-trace",
+        "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+      ],
+      "exit_code": -6,
+      "guard_message": "I_WB requires static finite-WBUF source",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/read_on_unified.log",
+      "log_sha256": "6413980bd957b258e5218395cfba7c83e4fca212831a2d78a37150aeca2600c5",
+      "ordered_config_sha256": [
+        "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+        "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+        "f6f78c3995d5cf21b1d39c24069fd744800f735e4b5f8a56f7bc59fe35b8c93e",
+        "86843173717dc6ef6ca0dcaa9870293a3c3fea3ccb31baa0f3f935b8106b3195"
+      ],
+      "trace_list_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "trace_scope": "CLI_GUARD_PRE_WORKLOAD_INITIALIZATION_NO_KERNEL_EXECUTION"
+    },
+    {
+      "test": "meta_without_descriptors",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/accel-sim.out",
+        "-config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/b0_banked_d512_850.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/m0a_off.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/b16_banked.config",
+        "-config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft20261016/r1/off.config",
+        "-config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/meta_without_descriptors-r2.config",
+        "-trace",
+        "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+      ],
+      "exit_code": -6,
+      "guard_message": "EP-L2 ideal mode requires target metadata/banked model",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/meta_without_descriptors-r2.log",
+      "log_sha256": "e493761f44654e8431111abc04b55dd6cdaefeb22a9c9d98fb6bacf5b60c9708",
+      "ordered_config_sha256": [
+        "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+        "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+        "f6f78c3995d5cf21b1d39c24069fd744800f735e4b5f8a56f7bc59fe35b8c93e",
+        "a541527d541e1d9fe39453c41e829d58c0ace17bccf58770161e4e46a8042b35"
+      ],
+      "trace_list_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "trace_scope": "CLI_GUARD_PRE_WORKLOAD_INITIALIZATION_NO_KERNEL_EXECUTION",
+      "retry_lease_id": "76559be49bbc4f4fb0238034ddd3eb01"
+    }
+  ],
+  "resume_lease_id": "9cff978d520949c8b69645e23aafe5eb",
+  "preserved_harness_diagnostic": "INTEGRATION_TEST_RESULTS_FAILED_R1.json",
+  "preserved_harness_diagnostics": [
+    "INTEGRATION_TEST_RESULTS_FAILED_R1.json",
+    "INTEGRATION_TEST_RESULTS_FAILED_R2.json"
+  ],
+  "status": "PASS"
+}

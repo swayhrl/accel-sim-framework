@@ -1,47 +1,21 @@
 # Lane 1 status
 
-Status: B16_UWB_PRODUCER_READY_FOR_INDEPENDENT_VALIDATION.
-Node: huangrulin-174. Branch in both repositories: hrl/ep-l2-ft20261016-lane1-v1.
-Framework worktree: /workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-v1.
-Core worktree: /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-v1.
-Frozen producing Framework: 37dec04d223ae65167c5584e56887c74f6540d27.
-Frozen producing Core: 126394be46b15f55b9756d43eb9ca9a9baae1c84.
-Binary: 0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698.
-Coordination 6c136e2a remains task authority only.
+Status: R0_INDEPENDENTLY_QUALIFIED_R1_PRODUCER_INTEGRATION_READY. Continuation authority aec01450d3c527524ee09ee59242f582fafe5354; scientific authority6c136e2a remains unchanged. Execution branch in both repositories hrl/ep-l2-ft20261016-lane1-v1.
 
-## Completed
+## R0 primary handoff
 
-Public interface V1, finite B8/B16 WB staging and true producer admission,
-explicit static copy/send and absorbed-write/response bank costs, U_WB in-place
-role ownership and same-bank-class dynamic landing, bounded control and physical
-budgets, version-reference tests, real requester-token sink/source audit,
-terminal hardware/role/WB closure and strict parser. Default feature bits remain
-OFF. All raw diagnostics and historical source/trace/worktrees are preserved.
+R0 publication02982b65e87f170103b44c6dbd562a8ffb03841e, producing Framework37dec04d223ae65167c5584e56887c74f6540d27, Core126394be46b15f55b9756d43eb9ca9a9baae1c84, binary0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698. BASELINE_CONTRACT_V1.json remains unchanged. The binary was rehashed and made read/execute-only; no rebuild or overwrite. Review pack FT20261016_LANE1_R0_HANDOFF_r3 was pushed/read back at2556909e55bb43c1d819f8c0417f5fc8b93630d9. Lane 5 publication 221c7f65 independently qualified B16/U_WB16 and launched the first sad pair. Its exact qualification envelope and evidence hash were consumed; live registry PIDs were checked. Independent acceptance belongs to Lane 5 and covers only those two R0 vectors. No R1/TVD/RO dependency. Existing three application OFF pairs are reused, not rerun.
 
-Six actual registry-owned full-application old/new qualification runs completed:
-vectorAdd_4M/cfd_097k/sad cycles/instructions and seven CSV families are exact;
-the three fresh old controls also match retained history. Twelve production
-direct/real-partition groups, four illegal mode rejects, four legacy executables
-and eight parser tests pass. B16/U_WB application performance is NOT_RUN here.
+## Separate R1 diagnostic candidate
 
-## Immediate consumer action
+Isolated worktrees /workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1 and /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1; separate build /workspace/build/ep-l2-ft20261016-lane1-r1; results /workspace/results/ep_l2_ft20261016/lane1/r1. Producing Frameworkfb64d9520f20a562cc0db78b838d13f4599b49ce / Corebe651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de. Exact Lane 4 patch integrated; own four excluded CMake test targets added. Immutable binary and ordered config hashes are in R1_DIAGNOSTIC_CONTRACT_V1.json; R1_MATCHED_BASELINE_TEMPLATE.json is unqualified and not a runnable application spec.
 
-Lane 5 independently qualifies the exact frozen release and starts its assigned
-five-point B16/U_WB16 comparisons, without waiting for RO/TVD. Independent PASS
-is not self-declared by this producer. No Lane 1 qualification runs remain active.
+Ten production test executions pass; five whole OFF fixture logs exactly match frozen R0; six intended illegal ideal combinations reject. First configure/harness diagnostics retained. No application simulation launched by Lane 1 this continuation, and no R1 application equality, performance or independent qualification claimed. Build used central two-CPU lease; tests one-CPU leases, all released. Other tasks, Lane 2/3 active leases and Lane 5 running R0 pair remain untouched.
 
-## Following integration stage
+## Subsequent integration
 
-Lane 2 Core 56abbacc directory module has independent module-only validation.
-Lane 3 shared-store adapter ddedbf0f follows its independently tested earlier
-oracle/transaction module; actual runtime Tag/memport/epoch dispatch and final
-independent production gates remain open. They are separate feature stages and
-must not delay this released first pair or be labeled FULL runtime ready.
+Lane 2/3 own minimal production adapters against exact R0; latest bounded publications are Lane 2 f38632c2 (candidate c9666ae6, tests in progress) and Lane 3 bfa193e7. Final Lane 1 R2/R3 integration and Lane 5 feature qualification await qualified minimal producer-adapter receipts. INTEGRATION_QUEUE_R2_R3.md records expected conflicts and source/metric/oracle boundaries. No polling daemon or background task is promised.
 
-Review: docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_RELEASE_r2/.
-Entry files: B16_UWB_READY.md, BASELINE_CONTRACT_V1.json,
-OLD_STATIC_EQUIVALENCE.csv, DIRECTED_TEST_RESULTS.json, RECEIPT.json.
+Review: docs/ep_l2/review_packs/FT20261016_LANE1_R1_DIAGNOSTIC_INTEGRATION_r1/. R0 packs are retained.
 
-## Review-r2 continuation
-
-Consumed aec01450d3c527524ee09ee59242f582fafe5354 REVIEW.md and CONTINUE.md in full. R0 source/binary/config identities remain frozen; binary content rehashed and made read/execute-only. Published FT20261016_LANE1_R0_HANDOFF_r3 for immediate Lane 5 independent qualification and first paired runs. No active owned process/run/lease, no duplicate run launch, no all-OFF application rerun. R1 diagnostic integration proceeds separately; Lane 2/3 own their R0 production adapter patches before final Lane 1 integration.
+R0 original source/config worktrees are preserved by detaching at their existing heads without changing source files. The same Lane 1 execution refs advance by fast-forward only in the isolated R1 worktrees; frozen R0 binaries/results are independent of those refs.

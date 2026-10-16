@@ -1,0 +1,8 @@
+{
+  "status": "HARNESS_COMPARISON_PRECONDITION_FIXED",
+  "detail": "All ten production executions passed. Partition fixture stdout contains no EPL2 native stream, so requiring a nonempty selected stream failed despite full old/new log hashes being identical. Resume compares full stdout/stderr bytes for all five OFF cases, independently rehashes passed inputs/outputs and runs only six outstanding CLI guards. No passed execution or R0 application is repeated.",
+  "production_source_changed": false,
+  "prior_evidence": "INTEGRATION_TEST_RESULTS_FAILED_R1.json",
+  "second_precondition_fix": "Zero both descriptor pool and paired per-line cap to exercise intended ideal-metadata-without-descriptors guard. A mixed zero/nonzero pair instead correctly trips the earlier MSHR constructor invariant. Preserve that rejection and rerun only this one case with the legal ordinary pair disabled.",
+  "source_changed": false
+}

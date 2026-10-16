@@ -1,0 +1,229 @@
+{
+  "kind": "PRODUCER_INTEGRATION_NOT_INDEPENDENT_QUALIFICATION",
+  "build_manifest": {
+    "lease_id": "5740587fe2b8453fbdc5b7a0a20bcc2b",
+    "owner": "lane1",
+    "jobs": 2,
+    "build": "/workspace/build/ep-l2-ft20261016-lane1-r1",
+    "framework_source_commit": "fb64d9520f20a562cc0db78b838d13f4599b49ce",
+    "core_source_commit": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
+    "commands": [
+      [
+        "cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-ft20261016-lane1-r1",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+      ],
+      [
+        "cmake",
+        "--build",
+        "/workspace/build/ep-l2-ft20261016-lane1-r1",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_ft_directed",
+        "ep_l2_ft_partition",
+        "ep_l2_ideal_wb",
+        "ep_l2_ideal_meta",
+        "ep_l2_ideal_meta_integrated",
+        "ep_l2_ideal_read_hit",
+        "-j2"
+      ]
+    ],
+    "started_at": "2026-10-16T10:33:06.266453+00:00",
+    "status": "PASS",
+    "prior_configure_failure": "BUILD_FAILED_R1.json",
+    "third_party_dependency": "THIRD_PARTY_DEPENDENCY.json",
+    "binary_sha256": "2d2fb08217723bf920a486dcdce3412ca03c4a14028c9d67b401fd9b8a6d4664",
+    "build_stamp": "const char *g_accelsim_version=\"accelsim-commit-fb64d952_modified_0.0_26-10-16-18-33-06\";",
+    "finished_at": "2026-10-16T10:35:43.815754+00:00"
+  },
+  "lease_id": "4559973f8ca24258bc0065636513b674",
+  "tests": [
+    {
+      "test": "ft_directed",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "11568a328162fafddc3c98cb745306ca303fb54615bcb203139218eb7a8c1ad5",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_directed.log",
+      "log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_1_8",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_8.log",
+      "log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_1_16",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_16.log",
+      "log_sha256": "5a0ab0edec0ccd0006db0645874515bc1d5496aa4337b9f9326ab369251327ef",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_2_8",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_2_8.log",
+      "log_sha256": "eb248e9b36885a5f9bfa3e9dc5e1f353be4625a13d177bd1dc5f54de84de1a16",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ft_partition_2_16",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "1e034402b5994428d90083fb7279614ad2bc95a7f8bdd78cc39fabb41e0b0a64",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_2_16.log",
+      "log_sha256": "5e4dab86eae1f3598d4d682ae510cb3eafb02e7819efcdd0bb3a29c454653637",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ideal_wb",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_wb",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "6379c4068523bd16b065bb18cb3b242208c80a8491df9ab40708a58cf5190df8",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_wb.log",
+      "log_sha256": "9574fd0488cd5786a63816c7ea77f4a733038111001ba0952de0eb6d2b46b1ef",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
+    },
+    {
+      "test": "ideal_meta",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_meta"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "c5b0e8e12d13fb6a548fd0b7cedae9145d3ba97d0033bd8638f471a2f4cd6847",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_meta.log",
+      "log_sha256": "bfc45fd7aa493ff5b0f542ef31e5c7986fb5f923ec75a5a31921ebaa9dd63844",
+      "config_sha256": {}
+    },
+    {
+      "test": "ideal_meta_integrated",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "719567bcb43e8c72298683e5f1049747fc895e7d11f86752f042766266f0fac6",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_meta_integrated.log",
+      "log_sha256": "b9935e7b5618cbd4025d36e8075cb2eb90c16a108cbde57808675d8a0e1e9c12",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_meta_integrated.config": "dd4e3921ba5c1f68ae5f0524a8df35d2792b95248000eb17f34c431ab821b7fd"
+      }
+    },
+    {
+      "test": "ideal_read_hit",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_read_hit.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "f28bbbe9e8ecb4e4e2920bad8c2a479b96a9442e2982bdf8f769abbe27de1139",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit.log",
+      "log_sha256": "ee6d8980209c937e2c1868653dc7e553276ec62252431151954a959f2f92e518",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/tests/ep_l2/ideal_read_hit.config": "56fc83ed419062ad479d2805f33f7dc4d7ef2023f0ed917ef626a3171b108e39"
+      }
+    },
+    {
+      "test": "ideal_read_hit_b16",
+      "command": [
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/binaries/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit_b16.config"
+      ],
+      "exit_code": 0,
+      "binary_sha256": "f28bbbe9e8ecb4e4e2920bad8c2a479b96a9442e2982bdf8f769abbe27de1139",
+      "log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit_b16.log",
+      "log_sha256": "ee6d8980209c937e2c1868653dc7e553276ec62252431151954a959f2f92e518",
+      "config_sha256": {
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ideal_read_hit_b16.config": "17049d11111a54feabda8a87f6f61cd299065e80e184cbfb36a1aaa3d813c25b"
+      }
+    }
+  ],
+  "all_ideal_off_equivalence": [
+    {
+      "test": "ft_directed",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-directed-r1.log",
+      "r0_log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_directed.log",
+      "r1_log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "native_ft_b0_record_count": 4,
+      "exact": true
+    },
+    {
+      "test": "ft_partition_1_8",
+      "r0_log": "/workspace/results/ep_l2_ft20261016/lane1/immutable-partition-1-8-r1.log",
+      "r0_log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "r1_log": "/workspace/results/ep_l2_ft20261016/lane1/r1/integration-tests-r1/ft_partition_1_8.log",
+      "r1_log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "native_ft_b0_record_count": 0,
+      "exact": true
+    }
+  ],
+  "mode_legality": []
+}
