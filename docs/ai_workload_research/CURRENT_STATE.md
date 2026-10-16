@@ -1,71 +1,56 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16，A69后用户明确调整研究优先级：尽量关注主流通用模型、大模型。** 维护者：ChatGPT／AI-ARCH Discovery。本次为主线方向调整，不是新的原生实验或一轮已完成的全面文献Discovery。文档发布不产生GPU、Codex、数据下载、清理或节点作业授权。
+**最新快照：2026-10-16 / Round A70：主流通用大模型四线并行Discovery任务包已发布、四个独立分支已准备。** 用户已明确同意主流大模型优先，并要求发挥多个Codex并行发现的作用。当前状态是`READY_FOR_USER_DISPATCH`，不是已收到四个Codex运行回执；不得把文档或分支创建写成已启动节点进程。
 
-**最新用户事实：用户答复目前没有ScanNet使用批准或可用场景数据，并建议优先主流通用模型／大模型。** Q-S不再是下一执行候选；不继续ScanNet申请、镜像搜索、数据准备或WarpConvNet原生环境建设。A69是有价值的已完成源码研究，转为低优先级储备；这不是已测性能负结果，也不构成数据集本身的违法或普遍不适用判断。
+## 1. 当前共同目标与执行范围
 
-历史状态：[A69调整前导航](https://github.com/swayhrl/accel-sim-framework/blob/b6e3a8323c295bc0cac74da1ba3aa0830e0772a3/docs/ai_workload_research/CURRENT_STATE.md)；[A68及以前详细导航](https://github.com/swayhrl/accel-sim-framework/blob/177dc378cd949ec9bfc45a244a6cb33251fadfd3/docs/ai_workload_research/CURRENT_STATE.md)。不删除或重写原始Goal、运行报告、raw、独立审查或执行branch。
+以主流通用LLM、MoE、通用视觉语言模型及其真实推理路径为对象，寻找成熟软件之后仍值得研究的GPU计算、存储、执行与资源协同问题。模型代表性与科学问题优先，再映射现有设备/资产；不因小众任务容易复现就继续投入，也不因旧局部负结果而否定整个LLM领域。
 
-## 1. 主线目标与新的选题入口
+**A70首轮仅轻量CPU/source/原文/既有文本证据研究：四线可同时开始、互不等待，无GPU、模型加载、CUDA/JIT、训练、模拟器、环境安装、权重/数据集下载或清理。** 全部资源、方法、分支及停止条件见[完整A70 Goal包](goals/AI_ARCH_A70_MAINSTREAM_PARALLEL_DISCOVERY_GOAL_PACK_2026-10-16_V1.md)。
 
-**以主流通用大模型及其真实推理、训练／后训练工作负载为对象，寻找成熟软件优化之后仍值得通过体系结构改善的计算、存储、执行组织和资源协同问题。** Cache、TLB、CPU–GPU协同均可以研究，但不是预定必须产出的机制。
+科学基线：`10f3a51ee39884bcec3d3180e81cc405872cccb1`。
+**四线共同固定启动HEAD：`8f24af162ba37b4fa37f7a18d89b0fdb62697942`。** 该HEAD包含完整共享合同与四条独立任务。后续协调导航更新不改变已派发Goal身份。
 
-先回答“这一现象为什么对主流大模型重要”，再回答“能否在当前平台低成本验证”。不能因源码清楚、资产已下载、某处有大buffer或小众任务尚未排除问题，就优先投入；也不能因为部分LLM实验失败，逐步退到与主线距离很远的任务。
+## 2. 四窗口分工
 
-主流不等于必须Dense，也不等于必须最大参数规模。优先能覆盖真实常用执行路径的开源模型和官方配置；可用同家族较小真实版本或真实层组开展发现，但必须说明保留了哪些结构、尺度限制以及后续跨模型验证。不能用任意缩小的专家数／维度或随机工作集假称完整大模型。RTX4080是低成本验证平台，不是研究问题定义；多GPU或更大资源只能在必要性明确后另行授权，不能现在下载巨型模型。
+| 本轮窗口 | 默认宿主 | 独立branch | 主责科学问题 | 状态 |
+|---|---|---|---|---|
+| M-A70 | 109 | `hrl/aiarch-a70m-llm-serving-discovery-109-v1` | 常规完整注意力LLM的上下文/并发/Prefill与Decode混合执行，区分排队策略与GPU资源竞争 | READY_FOR_USER_DISPATCH |
+| N-A70 | 174-new | `hrl/aiarch-a70n-hybrid-state-discovery-174new-v1` | 主流混合注意力/递归状态的state形状、更新、复用、分配与执行代价 | READY_FOR_USER_DISPATCH |
+| O-A70 | 109 | `hrl/aiarch-a70o-moe-execution-discovery-109-v1` | 主流MoE的自然每专家工作量、分派/排列、分组计算与合并 | READY_FOR_USER_DISPATCH |
+| P-A70 | 174-new | `hrl/aiarch-a70p-vlm-pipeline-discovery-174new-v1` | 通用多模态模型视觉编码—语言Prefill—Decode交接及资源组织 | READY_FOR_USER_DISPATCH |
 
-## 2. 下一轮Discovery的调研排序（不是已确认瓶颈）
+这些是A70逻辑窗口名，不接管其他项目同字母Lane。节点可用性以派发时CPU轻量预检为准；109/174-new各两个研究工具worker上限，不干扰原AWMA/C16/ISCAS。没有164访问任务。
 
-| 优先级 | 主流对象与具体问题入口 | 强软件反证与旧问题去重 |
-|---|---|---|
-| 首先 | 通用LLM的真实推理：上下文长度、请求并发、Prefill/Decode混合阶段如何改变计算、KV或递归状态读写、执行粒度和资源竞争；普通注意力与实际混合注意力结构都可作为候选 | 先核相关论文具体实验组及vLLM/SGLang的分块Prefill、批处理、前缀复用、注意力后端等已实现能力。不是“给旧B1 FFN实验再换个Qwen名称”；旧Stage A未闭合不是新实验自动授权 |
-| 其次 | 主流MoE大模型：自然请求与token预算变化下，每专家有效工作量、分派／重排／合并、分组GEMM和数据组织能否形成强软件后的残余 | 保留C16 E3 N/U近似与合成H非同语义上界的事实，不重做合成热点；已有分方向／阶段专用后端和融合路径必须算入基线；不把多卡通信库当成单卡实际路径 |
-| 第三 | 通用视觉语言／多模态大模型：真实多图、不同分辨率或视频输入下，视觉编码、文本Prefill和解码的阶段交接、状态及资源分配 | 不退化为小众点云分割；不同token数／输入质量不是纯硬件单变量。先审真实模型输入链与成熟多模态处理、缓存及批处理实现 |
+M与N的区别：M围绕请求/批次混合，N围绕模型内多类型状态；O只深入expert侧，P只深入视觉输入与语言交接。不让四线分别搭完整vLLM环境，不重复所有历史核验。每Lane只写自己的`discovery/A70_<M|N|O|P>_.../`前缀、branch/worktree/tmp，不并发修改CURRENT_STATE、共同manifest或图谱。
 
-训练与后训练仍在总范围，但首次重新聚焦以推理发现为优先；不得为扩覆盖而先搭完整RL／预训练系统。训练题必须明确来自主流模型、所需数值／质量合同、真实状态以及可低成本区分解释的实验。
+## 3. 输出、资源与结果回收
 
-**本次外部原始来源核验仅作为排序依据，不是性能发现：**
+每Lane交`REPORT.md`、`EVIDENCE.tsv`、`CANDIDATES.json`、`RECEIPT.json`。允许0—2个候选、最多1个推荐主候选，不强制阳性。对每项给出主流模型价值、具体原文实验组、现有强软件、旧证据是否覆盖、新变量、最小基准/诊断/独立验证和停止条件；全部native实验只提案，不执行。
 
-- [Qwen3.5-4B官方模型卡](https://huggingface.co/Qwen/Qwen3.5-4B)列出实际混合Gated DeltaNet／Gated Attention结构。模型名称只示例说明候选结构，未冻结未来下载版本或本机执行配置；不使用模型卡宣传倍数作为109性能证据。
-- [vLLM优化说明](https://docs.vllm.ai/en/latest/configuration/optimization/)已说明分块Prefill与Decode混合调度及token预算权衡，因此“混合调度”本身不能作为新机制。
-- [SGLang专家并行文档](https://docs.sglang.io/docs/advanced_features/expert_parallelism)区分MoE dispatch、排列、计算、combine及不同阶段后端；此处只是现有软件能力，不证明109可用或最优。
-- [Qwen3-VL官方模型卡](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct)作为通用多模态模型候选来源；未采集任何图片／视频或模型权重。
+每Lane最多1个CPU计算worker、任务工具RSS≤2GiB、新盘≤256MiB、公开论文/源码/配置下载≤128MiB；GPU、权重/数据集、安装均0。每节点两个Lane合计工具worker≤2、RSS≤4GiB、新盘≤512MiB；不把未测的Codex会话服务开销计作已控系统总量。单线程Git/BLAS，独立sparse worktree，不全盘hash、复制模型/trace或安装研究框架。研究收口上限90分钟，不要求占满；普通工程问题本Goal有界solve-and-continue，资源或科学范围变化STOP并保留已得结果。
 
-以上为2026-10-16读取的在线模型卡／文档；实际研究前还需固定模型revision、软件commit、真实输入与允许范围。没有完成全领域论文普查，不宣称任何列出的题目已经排除A34—A69所有近邻或获准native。
+各自完成即push/fetch-back/clean后STOP，不轮询等待其他Lane，也不自动启动后续任务。**ChatGPT收到哪条回执就先独立审查哪条**，跨线去重和抽核最强反证，最终最多收敛2—3个总体问题，也可以0个。不同窗口引用同一论文不等于独立验证。
 
-## 3. 下一份研究交付应当是什么
+有值得native验证的问题时，另行准备并批准有界GPU Goal；其他轻量研究可以继续。**同一109 GPU的性能实验仍须既有共享锁独占**，Codex数量增加不允许并发污染性能测量。无执行回执前不登记RUNNING；无独立审查前不登记科学accepted。
 
-先形成不超过2—3个具体问题的对照表，每题写清：主流模型与实际任务；论文中的具体实验组及平台；已有优化；项目内同题历史及适用范围；尚未回答的变量；一个最小基准、诊断对照、独立验证对象；可能使问题停止的反证。
+## 4. 强软件来源与证据规则
 
-至少区分三种情况：旧实验已明确否定相同假说；旧结果仅覆盖某个层／低batch／短上下文；原来因数值、输入或观测资格而STOP。不能把三者统称为“LLM没有空间”，也不能因此自动重启任何旧Goal。
+A70包给出vLLM优化/混合KV/前缀缓存、SGLang expert-parallel、Qwen3.5及Qwen3-VL官方模型卡作为起始入口；这不代表已经完成新论文普查或确认硬件瓶颈。各Lane须把最终论据绑定到论文版本和具体实验组、源码commit、模型revision。移动文档可能落后源码，旧WIP/TODO不是当前能力缺失的证明。
 
-先挑问题，再映射模型资产。正常依赖、包装、日志或runner问题在获批的单Goal预算内解决，不为了工程完整性拆成多轮；新科学输入、数值标准、资源或机制范围变化才独立审查。前置发现不要求提前证明完整硬件收益上界，但必须有实际代表性与足够强的软件对照。
+优先2—4项直接近邻精读而非凑数量；作者真实GPU结果、模型估计、source能力与本轮推导分别标记。发现阶段不强求完整机制上界，也不因缺native样本就自动否定候选，但未来输入/数值/资源资格必须明列。局部family、自然覆盖率与完整wall分层评价，不拿逻辑字节、tile填充率或峰值显存直接换算性能收益。
 
-## 4. 历史证据与冻结边界
+## 5. 历史结论与冻结边界
 
-### A61／A65／A67 GNN线
+- **Q-S/ScanNet A69**：用户确认没有现有使用批准及场景资产，并要求聚焦主流通用模型；退出当前队列，不继续许可申请、镜像搜索或WarpConvNet环境建设。源码报告保留为低优先级方法储备，不是native性能负结果。
+- **A61**：原生`37120f98186b83a946f4812755523f5d73245491`，eager FULL/ON资格通过、编译更新复合断言失败，STOP保持。
+- **A65**：原生`3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79`，同batch A/B通过、C的1/665619更新元素超原门；微小梯度差经Adam放大，未证Torch bug；退出PID历史缺口保持。
+- **A67**：原生`c425819d1f41e0cbd3053315cd5590697e808a3c`，`SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE / STOP`；两seed的FULL/ON/OFF 12-step wall分别0.310875/1.788362/1.125985秒、0.435467/1.771150/1.100231秒。A68独立审查已接受该IGB-small/4080/eager范围软件反证，不恢复缓存调参、编译器或大图实验。
+- **C16既有LLM结论**：E1驻留、Split-K软件吸收、FFN双流/融合、MoE E3和Stage A等从[跨项目证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)按题回查。不能换名字重跑已否定的相同问题，也不能将原数值/观测未闭合误记性能负结果。
+- A62/A63稀疏权重训练、A26GR1/3DGS、A50G/CAGRA、A59数据门等原结论不变；AWMA、C16、ISCAS独立权限不继承、不合并实验HEAD、不改其任务。
 
-| 阶段 | 原生authority | 已接受结论与范围 |
-|---|---|---|
-| A61 | `37120f98186b83a946f4812755523f5d73245491` | 官方IGB-small、eager FULL/ON资格通过；编译更新复合断言失败，旧差异未捕获；原STOP保留 |
-| A65 | `3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79` | 新冻结batch A/B通过，C的1/665619更新元素超原门；微小梯度差经Adam放大，未证Torch bug；退出PID历史缺口保留 |
-| A67 | `c425819d1f41e0cbd3053315cd5590697e808a3c`，tree `5ae9be2bf51ba959b9588a8111ae28bf6f03af84` | `SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE / STOP`；两个seed的12次eager完整训练步均FULL快于OFF快于ON；固定小图缓存供数路线停止追加实验 |
+## 6. 固定历史导航
 
-A67六窗口：seed20261015 FULL/ON/OFF为0.310875/1.788362/1.125985秒；seed20261016为0.435467/1.771150/1.100231秒。A68六wall SHA独立6/6 PASS，原报告与[独立审查](reviews/AI_ARCH_A68_A67_IGB_SMALL_EAGER_FULL_RESIDENCY_INDEPENDENT_REVIEW_2026-10-16_V1.md)冻结。新主线不普遍否定GNN，也不重新激活该场景。
+[聚焦主流模型后的基线状态](https://github.com/swayhrl/accel-sim-framework/blob/10f3a51ee39884bcec3d3180e81cc405872cccb1/docs/ai_workload_research/CURRENT_STATE.md)；[A69源码阶段状态](https://github.com/swayhrl/accel-sim-framework/blob/b6e3a8323c295bc0cac74da1ba3aa0830e0772a3/docs/ai_workload_research/CURRENT_STATE.md)；[A68及以前详细状态](https://github.com/swayhrl/accel-sim-framework/blob/177dc378cd949ec9bfc45a244a6cb33251fadfd3/docs/ai_workload_research/CURRENT_STATE.md)。原始报告、raw、Goal和独立审查仍在原commit，不随本导航压缩而重写。
 
-### Q-S／A69
-
-[A69完整源码报告](literature/AI_ARCH_A69_QS_SCANNET_MINKUNET34_SOURCE_ADMISSION_2026-10-16_V1.md)保留，报告commit `ddb127907f37c97c94e9db7aa764d1cf3cb3dfa6`。已明确的ScanNet/MinkUNet34四卷积层组、Spira前向范围、WarpConvNet映射寿命知识可作方法参考；**用户没有数据权限／资产，且主动要求聚焦主流模型，因此退出当前候选队列**。不为其新增申请、下载、源代码扩审或节点任务；不是native负结果。
-
-### C16／AWMA与其它支线
-
-[跨项目证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)与[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)作为旧结论入口。C16 E1权重驻留、Split-K局部性、FFN双流／融合、MoE E3和Stage A既有结论不因主线调整而撤销。A62/A63稀疏权重训练保留条件储备，不因词名有“大模型”就自动提升优先级；A26GR1/3DGS、A50G/CAGRA、A59数据门等原科学终态与保护资产不变。非LLM研究并非永久排除，只在有明确通用价值和优于主线候选的证据时重新评估。
-
-## 5. Lane与执行权限
-
-- **109 Lane M**：用户最后回报A67 COMPLETE/STOP；无新GPU、模型下载、清理或编译任务。不重启A61/A65/A67，不部署Q-S。
-- **174-new Lane N、164**：本次无资产扫描、数据传输或其它新作业；原独立项目不受影响。
-- **ChatGPT Discovery**：后续研究按第2—3节重新排序，先主流LLM真实推理的论文／实现／已有结果对照；本次方向调整不等于完成新性能Discovery。
-- **C16、AWMA、ISCAS**：各自科学authority和执行权限不继承、不合并实验HEAD，不动独立执行。
-
-**当前无新109／174／164执行任务。下一研究入口是主流通用大模型的具体问题筛选，不是ScanNet许可或点云环境准备。**
+**当前已准备4条可并行的CPU/source发现任务；尚未收到A70各窗口执行回执。没有新增GPU/模拟器/数据资产作业。**
