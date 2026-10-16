@@ -1,0 +1,39 @@
+{
+  "schema": "STORAGE_OPS_R10_OLD174_R1R_R2_STAGER_PREP",
+  "checked_at_utc": "2026-10-16T20:21:17Z",
+  "status": "ALL_FROZEN_BATCH_PLANS_PASS_DATA_STAGE_BLOCKED_BY_TARGET_POLYBENCH_RESTORE_PHASE",
+  "source_script": "stage_cold_project_r10.py",
+  "source_script_sha256": "afb20679d5a811c0b00810a50c94de6b6fb4278de47641a30d554e1d0592e13a",
+  "plan_only_results": [
+    {
+      "project": "R1R",
+      "batch_count": 10,
+      "passed": 10,
+      "first_batch": "R1R_B001",
+      "first_batch_files": 782,
+      "first_batch_logical_bytes": 476177788
+    },
+    {
+      "project": "R2",
+      "batch_count": 12,
+      "passed": 12,
+      "first_batch": "R2_B001",
+      "first_batch_files": 1388,
+      "first_batch_logical_bytes": 420743131
+    }
+  ],
+  "frozen_manifest_and_metadata_sha256_matched": true,
+  "synthetic_source_bridge_guard_test": "test_stage_cold_project_r10.py: 1 PASS; stable source/bridge SHA and metadata checks, mutated bridge rejected",
+  "synthetic_source_bridge_guard_test_sha256": "e6622be89173ea1a5288d0ed336a1c9b471ed42357656f0cc5230e2fcf761312",
+  "negative_preflight_test": "R1R_B001 --check-ready refused before source data hash/stage because TARGET_POLYBENCH_RESTORE_PHASE_CLOSED_R10_V1.json is absent",
+  "target_receiver_capability_sha256": "88adf1e04414a6c664ed616caf404bafb1af0bef311e951b3312843ecb13161e",
+  "source_scope_sha256": "f405aab1b5d374490a6f70e72b29c2ea8d6c3156874e90be1e2079868220e79a",
+  "first_real_batch_ready": false,
+  "data_staged_bytes": 0,
+  "source_action": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "source_released_bytes": 0,
+  "old174_root_available_bytes": 23223042048,
+  "share_available_bytes": 47625281536,
+  "open_gate": "Target must publish and GitHub-pin actual PolyBench restore phase closeout, then explicitly ACK a project-specific sole bridge receiver window. Old174 must independently verify both actual schemas and adjust stager gates if they differ before a fresh per-batch content/preflight check. No second rsync stream."
+}
