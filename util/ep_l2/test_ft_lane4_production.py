@@ -17,6 +17,8 @@ def main():
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--include-b16',action='store_true')
     p.add_argument('--include-partition',action='store_true')
+    p.add_argument('--include-host-prefill',action='store_true',
+                   help='R1.1 reference and real-partition host-prefill regressions; requires new exact libraries')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads(a.build_manifest.read_text())
     subprocess.run(['git','-C',str(a.core),'diff','--exit-code',manifest['core_source_commit'],
@@ -35,6 +37,9 @@ def main():
            'test_wad':['wad.config']}
     if a.include_b16:
         cases.update(test_ideal_wb=['ft_wbuf.config'],test_ft_wbuf=['ft_wbuf.config'])
+    if a.include_host_prefill:
+        cases.update(test_ideal_host_prefill_reference=[],
+                     test_ideal_host_prefill_partition=['ideal_host_prefill_b16.config'])
     rows=[]
     try:
         for name,configs in cases.items():
