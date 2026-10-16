@@ -2,20 +2,20 @@
 
 **日期：2026-10-16；执行者：ChatGPT／AI-ARCH Discovery。** 本轮使用GitHub固定Git报告/源码、DuetServe ICML2026作者PDF与PMLR正式页面、纯控制端整数计算。没有启动GPU、Node109/174/164作业、模型下载、编译或模拟器。
 
-**最终裁决：M-A70的 \`NO_SURVIVOR_IN_SEARCH_SCOPE / STOP\` 接受，适用后缀 \`SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE\`。A70的M/N/O/P四线均已完成，同样是限定源码/论文搜索下0主＋0备；不是主流LLM、GDN、MoE和多模态四个领域的性能负结果或已证明没有硬件机会。**
+**最终裁决：M-A70的 `NO_SURVIVOR_IN_SEARCH_SCOPE / STOP` 接受，适用后缀 `SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE`。A70的M/N/O/P四线均已完成，同样是限定源码/论文搜索下0主＋0备；不是主流LLM、GDN、MoE和多模态四个领域的性能负结果或已证明没有硬件机会。**
 
 ## 0. 四线完整执行与审查identity
 
-共同Goal \`8f24af162ba37b4fa37f7a18d89b0fdb62697942\`，科研基线 \`10f3a51ee39884bcec3d3180e81cc405872cccb1\`。
+共同Goal `8f24af162ba37b4fa37f7a18d89b0fdb62697942`，科研基线 `10f3a51ee39884bcec3d3180e81cc405872cccb1`。
 
 | Lane | Final commit | Git tree | 原报告/独立审查 | 证据 |
 |---|---|---|---|---|
-| M / 109｜Dense LLM混合服务 | \`f2d6324da298be26f39cda427f3e7db1a7e7031d\` | \`5cbb8f8eaa4fb00efcd51bc963bf68c6b3263d52\` | [M原报告](https://github.com/swayhrl/accel-sim-framework/blob/f2d6324da298be26f39cda427f3e7db1a7e7031d/docs/ai_workload_research/discovery/A70_M_LLM_SERVING/REPORT.md) | 21 |
-| N / 174-new｜混合递归状态 | \`5076223db5db0256fd0ccacec50b5347a0cab8c5\` | \`592e12903c8fa029fb5108a967f8a00bb9cb9458\` | [N原报告](https://github.com/swayhrl/accel-sim-framework/blob/5076223db5db0256fd0ccacec50b5347a0cab8c5/docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/REPORT.md) | 21 |
-| O / 109｜MoE专家执行 | \`94ca01df352cf4cf707cd35e5f9f63d4eff014c6\` | \`b5b3d7f8f925c50aa845cebec2cb3057fe91b261\` | [O原报告](https://github.com/swayhrl/accel-sim-framework/blob/94ca01df352cf4cf707cd35e5f9f63d4eff014c6/docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/REPORT.md) | 24 |
-| P / 174-new｜VLM视觉—语言交接 | \`f2399777a30f4fdafa26858b3cd418e497538db2\` | \`811616c50e4594e1884d4ee4e4c622a72fb953d1\` | [P原报告](https://github.com/swayhrl/accel-sim-framework/blob/f2399777a30f4fdafa26858b3cd418e497538db2/docs/ai_workload_research/discovery/A70_P_VLM_PIPELINE/REPORT.md) | 17 |
+| M / 109｜Dense LLM混合服务 | `f2d6324da298be26f39cda427f3e7db1a7e7031d` | `5cbb8f8eaa4fb00efcd51bc963bf68c6b3263d52` | [M原报告](https://github.com/swayhrl/accel-sim-framework/blob/f2d6324da298be26f39cda427f3e7db1a7e7031d/docs/ai_workload_research/discovery/A70_M_LLM_SERVING/REPORT.md) | 21 |
+| N / 174-new｜混合递归状态 | `5076223db5db0256fd0ccacec50b5347a0cab8c5` | `592e12903c8fa029fb5108a967f8a00bb9cb9458` | [N原报告](https://github.com/swayhrl/accel-sim-framework/blob/5076223db5db0256fd0ccacec50b5347a0cab8c5/docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/REPORT.md) | 21 |
+| O / 109｜MoE专家执行 | `94ca01df352cf4cf707cd35e5f9f63d4eff014c6` | `b5b3d7f8f925c50aa845cebec2cb3057fe91b261` | [O原报告](https://github.com/swayhrl/accel-sim-framework/blob/94ca01df352cf4cf707cd35e5f9f63d4eff014c6/docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/REPORT.md) | 24 |
+| P / 174-new｜VLM视觉—语言交接 | `f2399777a30f4fdafa26858b3cd418e497538db2` | `811616c50e4594e1884d4ee4e4c622a72fb953d1` | [P原报告](https://github.com/swayhrl/accel-sim-framework/blob/f2399777a30f4fdafa26858b3cd418e497538db2/docs/ai_workload_research/discovery/A70_P_VLM_PIPELINE/REPORT.md) | 17 |
 
-对于M，独立核固定Goal→final ahead1、只新增自身目录REPORT/EVIDENCE/CANDIDATES/RECEIPT四文件；final→执行分支HEAD identical；Git-data commit parent为固定Goal且tree与用户回报一致；四个远端blob回读，CANDIDATES.json=\`[]\`。M EVIDENCE.tsv 21条、11列、行结构完整、ID唯一。此前[A71 N/O/P独立审查](https://github.com/swayhrl/accel-sim-framework/blob/0c891b59e28177bfbff1ce6a6744a26fa6d30ad2/docs/ai_workload_research/reviews/AI_ARCH_A71_A70_N_O_P_PARALLEL_DISCOVERY_INDEPENDENT_REVIEW_2026-10-16_V1.md)分别对三条的Git树/报告/62条证据、关键源码和CPU推导完成范围内独审。**合计83条TSV记录**，但包含目标合同、源代码、旧项目条目与论文，多数并非83个独立实验组。
+对于M，独立核固定Goal→final ahead1、只新增自身目录REPORT/EVIDENCE/CANDIDATES/RECEIPT四文件；final→执行分支HEAD identical；Git-data commit parent为固定Goal且tree与用户回报一致；四个远端blob回读，CANDIDATES.json=`[]`。M EVIDENCE.tsv 21条、11列、行结构完整、ID唯一。此前[A71 N/O/P独立审查](https://github.com/swayhrl/accel-sim-framework/blob/0c891b59e28177bfbff1ce6a6744a26fa6d30ad2/docs/ai_workload_research/reviews/AI_ARCH_A71_A70_N_O_P_PARALLEL_DISCOVERY_INDEPENDENT_REVIEW_2026-10-16_V1.md)分别对三条的Git树/报告/62条证据、关键源码和CPU推导完成范围内独审。**合计83条TSV记录**，但包含目标合同、源代码、旧项目条目与论文，多数并非83个独立实验组。
 
 **验证层级限定：** M四blob的独立Git身份和报告内容已读；执行者报告远端四文件SHA和worktree clean。本审查未另行在109计算全部原始下载文件的本地SHA，也未进入109核实际进程峰值；执行者资源/线程记录以其RECEIPT为准。所有四条都不是新的GPU native负例。
 
@@ -26,7 +26,7 @@
 **与旧C16不重复，但新近邻已经直接覆盖：**
 - Sarathi-Serve原有chunked prefill＋混合batch；DistServe原有跨GPU阶段拆分；NanoFlow原有算子级/异步组织；Nexus用long-KV参与动态SM分配；DuetServe同时含attention-aware latency model、on-demand SM隔离与lookahead调度。仅凭把Prefill/Decode分流、依据KV长度调SM、新增异步双流，都不能称为全新机制。
 - M的实际新变量是自然请求的阶段组合、上下文长短、排队/服务及GPU时间分解。C16 MP02仅B1 compiled Graph ON/OFF合法子结果、MP03 B4未准入；C16 FFN兄弟投影双流减速不等于Prefill/Decode并发已被否定。**所以M没晋升不是因为C16已经测负，而是直接近邻＋缺强路径后特定残余证据。**
-- 当前vLLM固定\`fa75d3456d60a5ffe923818c4b495295675b38e1\`的\`vllm/v1/cudagraph_dispatcher.py\`实有\`dispatch(num_tokens,uniform_decode,...)\`，可返回NONE/FULL/PIECEWISE；\`vllm/v1/attention/backends/flash_attn.py\`区分FA3/FA4的\`AttentionCGSupport.ALWAYS\`与其它路径的\`UNIFORM_BATCH\`。**源码能力条件存在，并不意味着109或任何设备的每个混合batch真实命中FULL图，更不等于运行时免费。**
+- 当前vLLM固定`fa75d3456d60a5ffe923818c4b495295675b38e1`的`vllm/v1/cudagraph_dispatcher.py`实有`dispatch(num_tokens,uniform_decode,...)`，可返回NONE/FULL/PIECEWISE；`vllm/v1/attention/backends/flash_attn.py`区分FA3/FA4的`AttentionCGSupport.ALWAYS`与其它路径的`UNIFORM_BATCH`。**源码能力条件存在，并不意味着109或任何设备的每个混合batch真实命中FULL图，更不等于运行时免费。**
 
 ### DuetServe原始论文复核
 
@@ -41,10 +41,10 @@
 
 ### 两项独立整数复核
 
-1. BF16 KV每token \`2*36*8*128*2=147456 B = 144 KiB\`；两条32K上下文KV内容\`9 GiB\`；BF16参数量\`8190735360*2B=15.256433 GiB\`；总内容\`24.256433 GiB\`，不计Graph、runtime、workspace、allocator等。16GiB RTX4080不能直接复现该**具体BF16双32K**完整模型服务内容，缺预算不是“LLM服务研究无价值”。
+1. BF16 KV每token `2*36*8*128*2=147456 B = 144 KiB`；两条32K上下文KV内容`9 GiB`；BF16参数量`8190735360*2B=15.256433 GiB`；总内容`24.256433 GiB`，不计Graph、runtime、workspace、allocator等。16GiB RTX4080不能直接复现该**具体BF16双32K**完整模型服务内容，缺预算不是“LLM服务研究无价值”。
 2. 无历史前缀的标准因果注意力，8个独立1024-token请求的总(Q,K)对数=4198400；1个8192-token请求=33558528，约7.99317×；因此相同token预算不等于相同attention必需算术量。**这是静态工作量差，不是测得GPU DRAM、stall或可节省的时间**。已有DuetServe attention-aware思路同样讨论它，不能把这个算式立为新机制。
 
-M启动阶段首次fetch的Git pack/index配置2线程、实际活动并发未观测，后在合同阅读后改为单worker、单线程。此为收据明示的\`INITIAL_GIT_THREAD_OBSERVABILITY_GAP\`，不是科学数据门错误、GPU并发污染或发现证据失效；不可无依据将所有30分钟过程升级成严格单线程证明，也没必要让M重启工程收尾。
+M启动阶段首次fetch的Git pack/index配置2线程、实际活动并发未观测，后在合同阅读后改为单worker、单线程。此为收据明示的`INITIAL_GIT_THREAD_OBSERVABILITY_GAP`，不是科学数据门错误、GPU并发污染或发现证据失效；不可无依据将所有30分钟过程升级成严格单线程证明，也没必要让M重启工程收尾。
 
 ## 2. 四线横向综合：为什么四个0以及风险
 
@@ -80,6 +80,6 @@ C. **低成本原生反证资格（measurement-first，仅CPU静态准备）**�
 - A70 M/N/O/P四条均正常STOP，0主0备；N/O/P原始独审在Round A71，M与综合在本文。
 - 不为验证DuetServe“已做过”的结论再申请H100/H200；如果未来有真正不同的自然变量及公平基线，再单独审批不必被硬件品牌绑架的探针。
 - A61/A65/A67 GNN原STOP、A69 ScanNet低优先级、C16/AWMA/ISCAS独立权限与164数据资产均不触碰。
-- 本次协调只追加科学审查并更新导航，不merge四个执行HEAD，不将\`NO_SURVIVOR_IN_SEARCH_SCOPE\`重标为\`HARDWARE_NEGATIVE\`。
+- 本次协调只追加科学审查并更新导航，不merge四个执行HEAD，不将`NO_SURVIVOR_IN_SEARCH_SCOPE`重标为`HARDWARE_NEGATIVE`。
 
 **Round A72终态：四线限定Source Discovery收口；当前无运行中A70 Codex。下一轮应改变发现方法与实验变量，而非重复原软件优化列表。**
