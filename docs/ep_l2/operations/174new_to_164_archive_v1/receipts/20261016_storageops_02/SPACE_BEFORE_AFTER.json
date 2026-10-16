@@ -1,0 +1,60 @@
+{
+  "status": "SPACE_NOT_RECOVERED",
+  "source_ssh_alias": "hrl",
+  "hostname": "huangrulin-174",
+  "mount_namespace": "mnt:[4026534768]",
+  "path": "/workspace",
+  "source_device": 156,
+  "source_inode": 32926662,
+  "before": {
+    "time": "2026-10-16T12:42:56.399003+00:00",
+    "free_bytes": 43968884736,
+    "command": {
+      "argv": [
+        "df",
+        "-B1",
+        "-P",
+        "/workspace",
+        "/tmp"
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3543279521792 43968884736      99% /\noverlay        3779302981632 3543279521792 43968884736      99% /\n",
+      "stderr": ""
+    }
+  },
+  "after": {
+    "time": "2026-10-16T12:44:30.254873+00:00",
+    "free_bytes": 43968081920,
+    "command": {
+      "checked_at_utc": "2026-10-16T12:44:30.254873+00:00",
+      "argv": [
+        "df",
+        "-B1",
+        "-P",
+        "/workspace",
+        "/tmp"
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3543280324608 43968081920      99% /\noverlay        3779302981632 3543280324608 43968081920      99% /\n",
+      "stderr": "",
+      "source_bytes_released_by_ops": 0
+    }
+  },
+  "observed_net_change_bytes": -802816,
+  "lane5_independent_snapshot": {
+    "commit": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af",
+    "time": "2026-10-16T12:40:06.552941+00:00",
+    "free_bytes": 43965808640
+  },
+  "lane5_after_cleanup_remeasurement": null,
+  "floor_bytes": 51539607552,
+  "current_deficit_to_floor_bytes": 7571525632,
+  "target": {
+    "route": "174-new SSHFS",
+    "free_bytes": 54161565392896,
+    "observed_at": "2026-10-16T12:40:43.660025+00:00"
+  },
+  "source_objects_deleted": 0,
+  "ops_attributable_lane5_released_bytes": 0,
+  "interpretation": "Net filesystem changes are external activity; Ops copied/deleted nothing. No floor or headroom recovery claim."
+}

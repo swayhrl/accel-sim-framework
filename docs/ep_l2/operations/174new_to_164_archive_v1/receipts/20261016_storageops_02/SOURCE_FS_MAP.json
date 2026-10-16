@@ -1,0 +1,143 @@
+{
+  "anchors": {
+    "original_goal_sha": "543a88d63f899ccfa4f6c569245496d6deb8fdf2",
+    "amendment_sha": "0ca1fe76a30b70240b8d56f299f2685cf3282445",
+    "previous_ops_revision_sha": "44dc0094068de01cfe1a52677f340533c95340c4",
+    "lane5_mapping_sha": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af"
+  },
+  "status": "SOURCE_ROUTE_VERIFIED_IN_LANE5_NAMESPACE",
+  "lane5_receipt_path": "docs/ep_l2/review_packs/FT20261016_LANE5_STORAGE_MAPPING_r1/",
+  "lane5_receipt": {
+    "schema_version": "EPL2_LANE5_STORAGE_MAPPING_READONLY_V1",
+    "lane": 5,
+    "purpose": "Source filesystem mapping for 174-new Storage-Ops",
+    "started_at_utc": "2026-10-16T12:40:06.552941+00:00",
+    "finished_at_utc": "2026-10-16T12:40:06.583527+00:00",
+    "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
+    "framework_parent_commit": "f838680d4c7ba1365fc544efe6865fa4234b832b",
+    "execution_workdir": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1",
+    "shell_exit_status": 0,
+    "commands": "COMMANDS.sh",
+    "commands_sha256": "7f76125102543d883d1c8eb7472b5bf7c7d1f7710269308d6f71fd09420e6274",
+    "raw_output": "RAW_OUTPUT.txt",
+    "raw_output_sha256": "902985884c3080741f46e18b2f3afc940d4f134b95be4ccd8fb6148163f0e749",
+    "capture": "Unedited combined stdout/stderr; requested stderr redirections and || true retained. Lines follow COMMANDS.sh order.",
+    "scope": "Read-only filesystem inspection. Only requested evidence files and Git publication written. No cleanup/build/simulation/Goal restart.",
+    "resource_policy": "48GiB workspace disk floor and all other resource gates unchanged. R0.1 repair and independent qualification remain primary task."
+  },
+  "lane5_raw_sha256": "902985884c3080741f46e18b2f3afc940d4f134b95be4ccd8fb6148163f0e749",
+  "lane5_raw_output": "huangrulin-174\nmnt:[4026534768]\nFilesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3543282597888 43965808640      99% /\nTARGET SOURCE  FSTYPE  MAJ:MIN FSROOT\n/      overlay overlay   0:156 /\n156 32926662 /workspace\nFilesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3543282597888 43965808640      99% /\n/dev/md127     7143083376640 6735287230464 47728230400     100% /root/share\nTARGET      SOURCE     FSTYPE OPTIONS\n/root/share /dev/md127 ext4   rw,relatime,stripe=384\n",
+  "lane5_command_sha256": "7f76125102543d883d1c8eb7472b5bf7c7d1f7710269308d6f71fd09420e6274",
+  "lane5_command_output": "hostname\nreadlink /proc/self/ns/mnt\ndf -B1 -P /workspace\nfindmnt -T /workspace -o TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT\nstat -c '%d %i %n' /workspace\ndf -B1 -P /tmp /root/share 2>/dev/null || true\nfindmnt -T /root/share 2>/dev/null || true\n",
+  "lane5_receipt_checksums": "ALL_FOUR_MATCH",
+  "direct_source_route": {
+    "checked_at_utc": "2026-10-16T12:42:10.295359+00:00",
+    "route": "existing configured hrl alias; exact paths supplied by Lane5 receipt; read-only identity probe",
+    "commands": [
+      {
+        "argv": [
+          "hostname"
+        ],
+        "exit_code": 0,
+        "stdout": "huangrulin-174\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "id"
+        ],
+        "exit_code": 0,
+        "stdout": "uid=0(root) gid=0(root) groups=0(root)\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "readlink",
+          "/proc/self/ns/mnt"
+        ],
+        "exit_code": 0,
+        "stdout": "mnt:[4026534768]\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "stat",
+          "-c",
+          "%d %i %u %g %a %n",
+          "/workspace"
+        ],
+        "exit_code": 0,
+        "stdout": "156 32926662 0 0 755 /workspace\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "df",
+          "-B1",
+          "-P",
+          "/workspace"
+        ],
+        "exit_code": 0,
+        "stdout": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3543300239360 43948167168      99% /\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "findmnt",
+          "-T",
+          "/workspace",
+          "-o",
+          "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT"
+        ],
+        "exit_code": 0,
+        "stdout": "TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT\n/      overlay overlay   0:156 /\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "findmnt",
+          "-T",
+          "/root/share/mnt164",
+          "-o",
+          "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT"
+        ],
+        "exit_code": 0,
+        "stdout": "TARGET      SOURCE     FSTYPE MAJ:MIN FSROOT\n/root/share /dev/md127 ext4     9:127 /\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "proven_identity": [
+    "hostname",
+    "mount_namespace",
+    "device",
+    "inode"
+  ],
+  "effective_source": {
+    "ssh_alias": "hrl",
+    "hostname": "huangrulin-174",
+    "mount_namespace": "mnt:[4026534768]",
+    "path": "/workspace",
+    "stat_dev": 156,
+    "inode": 32926662,
+    "findmnt_device": "0:156",
+    "mount_source": "overlay"
+  },
+  "tmp_same_lane5_filesystem": true,
+  "tmp_mapping": {
+    "argv": [
+      "findmnt",
+      "-T",
+      "/tmp",
+      "-o",
+      "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT"
+    ],
+    "exit_code": 0,
+    "stdout": "TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT\n/      overlay overlay   0:156 /\n",
+    "stderr": ""
+  },
+  "new174_local_workspace_mapping": "NOT_INVENTED: /workspace absent in 174-new namespace",
+  "cross_namespace_access": "Existing trusted user SSH alias; no nsenter, permissions, symlinks or container configuration changes",
+  "lane5_environment_mnt164_is_sshfs": false,
+  "lane5_environment_mnt164_note": "findmnt resolves /root/share/mnt164 to /root/share ext4; never use that source-container path as 164 destination"
+}

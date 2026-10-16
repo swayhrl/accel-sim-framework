@@ -1,0 +1,166 @@
+{
+  "anchors": {
+    "original_goal_sha": "543a88d63f899ccfa4f6c569245496d6deb8fdf2",
+    "amendment_sha": "0ca1fe76a30b70240b8d56f299f2685cf3282445",
+    "previous_ops_revision_sha": "44dc0094068de01cfe1a52677f340533c95340c4",
+    "lane5_mapping_sha": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af"
+  },
+  "status": "ARCHIVE_ROOT_APPROVAL_PENDING",
+  "verification_level": "SSHFS_MOUNT_READ_VERIFIED",
+  "user_supplied_file_read_evidence": "V2 amendment records another window reading catalog and raw record; accepted without reopening C16 content",
+  "current_mount_and_top_level_checks": {
+    "checked_at_utc": "2026-10-16T12:40:43.660025+00:00",
+    "commands": [
+      {
+        "argv": [
+          "hostname"
+        ],
+        "exit_code": 0,
+        "stdout": "huangrulin-sshfs-174\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "readlink",
+          "/proc/self/ns/mnt"
+        ],
+        "exit_code": 0,
+        "stdout": "mnt:[4026535153]\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "findmnt",
+          "-T",
+          "/root/share/mnt164",
+          "-o",
+          "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT,OPTIONS"
+        ],
+        "exit_code": 0,
+        "stdout": "TARGET             SOURCE                                FSTYPE     MAJ:MIN FSROOT OPTIONS\n/root/share/mnt164 admin-wcx@10.208.130.164:/home/shared fuse.sshfs   0:39  /      rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "df",
+          "-B1",
+          "-P",
+          "/root/share/mnt164",
+          "/root/share/mnt164/huangrulin"
+        ],
+        "exit_code": 0,
+        "stdout": "Filesystem                                   1-blocks            Used      Available Capacity Mounted on\nadmin-wcx@10.208.130.164:/home/shared 168306982981632 105696361385984 54161565392896      67% /root/share/mnt164\nadmin-wcx@10.208.130.164:/home/shared 168306982981632 105696361385984 54161565392896      67% /root/share/mnt164\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "stat",
+          "-c",
+          "%d %i %u %g %a %F %n",
+          "/workspace",
+          "/root/workspace",
+          "/root/share/container-workspaces/hrl-174-new/workspace",
+          "/root/share/mnt164",
+          "/root/share/mnt164/huangrulin"
+        ],
+        "exit_code": 1,
+        "stdout": "1048578 22437976 0 0 755 directory /root/workspace\n2431 125829123 0 0 777 directory /root/share/container-workspaces/hrl-174-new/workspace\n39 1 0 0 777 directory /root/share/mnt164\n39 75621403 1011 1011 777 directory /root/share/mnt164/huangrulin\n",
+        "stderr": "stat: cannot statx '/workspace': No such file or directory\n"
+      },
+      {
+        "argv": [
+          "find",
+          "/root/share/mnt164/huangrulin",
+          "-mindepth",
+          "1",
+          "-maxdepth",
+          "1",
+          "-printf",
+          "%f\t%y\t%u:%g\t%m\n"
+        ],
+        "exit_code": 0,
+        "stdout": "awma_vm_map_semantics_cross_target_v3\td\t1011:1011\t777\nawma_literature_guided_mechanism_exploration_v1\td\t1011:1011\t777\nawma_r101_transient_l2_arch_174_v1\td\t1011:1011\t777\nawma\td\t1011:1011\t777\ndtc_native_behavior_workload_coverage_109_v1\td\t1011:1011\t777\nshared-inputs\td\t1011:1011\t777\nc16_ai_workload\td\t1011:1011\t777\nawma_c1_delivery_bandwidth_diagnostic_v1\td\t1011:1011\t777\nawma_q05_translation_timeline_closure_v1\td\t1011:1011\t777\nawma_q05_context_effect_decomposition_v1\td\t1011:1011\t777\nawma_repaired_hitpath_validity_v1\td\t1011:1011\t777\nawma_q05_lookup_model_validity_v1\td\t1011:1011\t777\nawma_runtime_activation_forensics_hitpath_v4\td\t1011:1011\t777\nawma_q05_global_access_determinism_v1\td\t1011:1011\t777\nawma_c1_fanout_aware_within_model_holdout_v1\td\t1011:1011\t777\nawma_c1_nonblocking_opportunistic_sharing_v1\td\t1011:1011\t777\nawma_q05_contextual_lookup_path_decomposition_v1\td\t1011:1011\t777\nawma_prel1_coalescer_minimal_independent_holdout_validation_v1\td\t1011:1011\t777\ngpu-l2-cache-verilog\td\t1011:1011\t777\nawma_intrawarp_translation_baseline_residual_v1\td\t1011:1011\t777\nawma_q05_full_kernel_translation_analysis_v1\td\t1011:1011\t777\narchives\td\t1011:1011\t777\nawma_passive_translation_result_reuse_opportunity_v1\td\t1011:1011\t777\nawma_repaired_hitpath_runtime_v3\td\t1011:1011\t777\nawma_ai_gpu_resource_bottleneck_characterization_v1\td\t1011:1011\t777\nawma_c1_nonblocking_cross_context_holdout_v1\td\t1011:1011\t777\nawma_c1_t2_owner_wait_retry_attribution_v1\td\t1011:1011\t777\nawma_post_coalescing_research_hypotheses_v1\td\t1011:1011\t777\nawma_vm_per_access_coverage_repair_v1\td\t1011:1011\t777\ndatasets\td\t1011:1011\t777\nawma_minimal_requalified_cross_target_hitpath_v2\td\t1011:1011\t777\nmodels\td\t1011:1011\t777\nawma_translation_hitpath_semantic_attribution_v1\td\t1011:1011\t777\nawma_r101r3_bounded_service_handoff_174_v1\td\t1011:1011\t777\nawma_q05_contextual_warm_prefix_replay_v1\td\t1011:1011\t777\nawma_passive_last_translation_result_forwarding_v2\td\t1011:1011\t777\nawma_c1_nonblocking_sharing_causal_ablation_v1\td\t1011:1011\t777\nawma_e1_authority_moe_109_v1\td\t1011:1011\t777\nawma_post_classic_baseline_residual_discovery_v1\td\t1011:1011\t777\nawma_r101r2_context2_memory_service_174_v1\td\t1011:1011\t777\nawma_ai_translation_native_residual_174new_v1\td\t1011:1011\t777\narchived_runtimes_174new\td\t1011:1011\t777\ntraces\td\t1011:1011\t777\nawma_c1_fanout_aware_sharing_exploration_v1\td\t1011:1011\t777\nawma_q05_lookup_stream_identity_v1\td\t1011:1011\t777\nawma_passive_last_translation_result_forwarding_v2r1\td\t1011:1011\t777\nawma_exact_f0_segment_state_v3r1\td\t1011:1011\t777\nawma_repaired_vm_requalification_20h_v1\td\t1011:1011\t777\nresults\td\t1011:1011\t777\nawma_repaired_hitpath_validity_174new_v3\td\t1011:1011\t777\nawma_prel1_coalescing_v1\td\t1011:1011\t777\nhost174_storage_recovery\td\t1011:1011\t777\nawma_c1_opportunity_portability_pair_a_v1\td\t1011:1011\t777\nawma_q05_warm_replay_feasibility_v1\td\t1011:1011\t777\nawma_tlb_ptw_characterization_174new_v1\td\t1011:1011\t777\nawma_r101r4_local_service_path_localization_174_v1\td\t1011:1011\t777\nawma_prel1_coalescer_paper_qualification_v1\td\t1011:1011\t777\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "sh",
+          "-c",
+          "if command -v getfacl >/dev/null 2>&1; then getfacl -p /root/share/mnt164/huangrulin; else printf \"GETFACL_UNAVAILABLE\n\"; fi"
+        ],
+        "exit_code": 0,
+        "stdout": "GETFACL_UNAVAILABLE\n",
+        "stderr": ""
+      }
+    ],
+    "writes": 0
+  },
+  "existing_archive_directory_metadata": [
+    {
+      "argv": [
+        "stat",
+        "-c",
+        "%d %i %u %g %a %F %n",
+        "/root/share/mnt164/huangrulin/archives",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery",
+        "/root/share/mnt164/huangrulin/archived_runtimes_174new"
+      ],
+      "exit_code": 0,
+      "stdout": "39 76046497 1011 1011 777 directory /root/share/mnt164/huangrulin/archives\n39 76046481 1011 1011 777 directory /root/share/mnt164/huangrulin/host174_storage_recovery\n39 76046492 1011 1011 777 directory /root/share/mnt164/huangrulin/archived_runtimes_174new\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "find",
+        "/root/share/mnt164/huangrulin/archives",
+        "-mindepth",
+        "1",
+        "-maxdepth",
+        "1",
+        "-printf",
+        "%f\t%y\n"
+      ],
+      "exit_code": 0,
+      "stdout": "awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1__migrated_2026-09-27\td\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "find",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery",
+        "-mindepth",
+        "1",
+        "-maxdepth",
+        "1",
+        "-printf",
+        "%f\t%y\n"
+      ],
+      "exit_code": 0,
+      "stdout": "git_packs_20260928\td\n",
+      "stderr": ""
+    }
+  ],
+  "confirmed_export": "admin-wcx@10.208.130.164:/home/shared",
+  "verified_access_route": "hrl-174-new:/root/share/mnt164",
+  "free_available_bytes": 54161565392896,
+  "uid_gid_observed": "1011:1011",
+  "displayed_mode": "0777 (FUSE presentation; insufficient to prove server authorization)",
+  "acl": "GETFACL_UNAVAILABLE",
+  "proposed_archive_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02",
+  "proposed_server_export_relative": "huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02",
+  "user_authorized_archive_root": null,
+  "archive_root_created": false,
+  "write_probe": {
+    "status": "NOT_RUN_PENDING_EXACT_ROOT_AUTHORIZATION",
+    "bytes_written": 0,
+    "sha256": null,
+    "flush": null,
+    "reopen_readback": null,
+    "deletion": null,
+    "residual_files": 0
+  },
+  "sshfs_archive_write_verified": false,
+  "server_side_native_verified": false,
+  "direct_164_ssh_attempts_this_revision": 0,
+  "c16_or_model_content_accessed": false
+}
