@@ -2,7 +2,7 @@
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
   "task_id": "FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1",
-  "status": "ENGINEERING_PILOT_REQUESTED_WAITING_LANE5_INDEPENDENT_AUTHORIZATION",
+  "status": "R8_BOUNDED_WAIT_ACTIVE_REQUEST_DELIVERED_NO_PILOT_AUTHORIZATION",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "review_coordination_commit": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
   "host": "huangrulin-174",
@@ -146,84 +146,45 @@
       "lane5_real_adapter_tests": "PENDING_LANE5_IMPLEMENTATION_AND_PUBLICATION; fake adapter denials are not independent registry validation",
       "total_case_executions_across_four_code_versions": 65,
       "actual_dry_run_status": "DRY_RUN_NO_LEASE_NO_COMPILER"
+    },
+    "outcome_publisher": {
+      "final_cases": 5,
+      "status": "PASS",
+      "scope": "terminal evidence classification and preservation of existing formal scientific fields; no actual GitHub writes in unit tests",
+      "source_commit": "4bf87acd0f43c6078c67e7b21daca6486a0590b5",
+      "test_log_sha256": "c48517da7ea8df2f25f021cb26de7eb67f3875ac44562840b4b6345c28e99c49"
     }
   },
   "resource_observation": {
-    "recorded_at": "2026-10-16T17:15:28.919131+00:00",
-    "scope": "r8 default dry-run, no central claim/CMake",
-    "resources": {
-      "utc": "2026-10-16T17:15:28.919131+00:00",
-      "monotonic": 8922900.262032008,
-      "filesystems": {
-        "workspace": {
-          "path": "/workspace",
-          "realpath": "/workspace",
-          "device": 156,
-          "fsid": 1349835467748716946,
-          "block_bytes": 4096,
-          "available_bytes": 29198258176,
-          "free_including_reserved_bytes": 221252833280,
-          "total_bytes": 3779302981632,
-          "pilot_allocated_bytes": 32034816
-        },
-        "results": {
-          "path": "/root/share",
-          "realpath": "/root/share",
-          "device": 2431,
-          "fsid": 2757854780513707398,
-          "block_bytes": 4096,
-          "available_bytes": 47632801792,
-          "free_including_reserved_bytes": 407700717568,
-          "total_bytes": 7143083376640,
-          "pilot_allocated_bytes": 0
-        }
+    "scope": "last real singleton GateWaiter observation; not a launch permission",
+    "recorded_at": "2026-10-16T17:17:29.301862+00:00",
+    "state": {
+      "policy": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "default_run_memory_bytes": 8589934592,
+        "default_run_output_limit_bytes": 2147483648,
+        "max_build_jobs": 4,
+        "max_cpu_units": 8,
+        "max_reserved_memory_bytes": 34359738368,
+        "max_result_bytes": 8589934592,
+        "max_simulators": 2,
+        "min_available_memory_bytes": 68719476736,
+        "min_disk_free_bytes": 51539607552,
+        "scan_exclusive": true
       },
-      "external_processes": [
-        {
-          "pid": 495652,
-          "ppid": 495651,
-          "pgrp": 495651,
-          "state": "R",
-          "start_ticks": 889453176,
-          "cpu_ticks": 2830261,
-          "rss_bytes": 3103784960,
-          "io": {
-            "rchar": 316402630,
-            "wchar": 278475,
-            "syscr": 77268,
-            "syscw": 260,
-            "read_bytes": 8192,
-            "write_bytes": 1159168,
-            "cancelled_write_bytes": 0
-          },
-          "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-          "command": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out -trace /workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gesummv/NO_ARGS/traces/kernelslist.g -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787/config-0.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787/config-1.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787/config-2.config "
-        },
-        {
-          "pid": 495657,
-          "ppid": 495654,
-          "pgrp": 495654,
-          "state": "R",
-          "start_ticks": 889453176,
-          "cpu_ticks": 2830533,
-          "rss_bytes": 3107979264,
-          "io": {
-            "rchar": 316402630,
-            "wchar": 296271,
-            "syscr": 77268,
-            "syscw": 283,
-            "read_bytes": 8192,
-            "write_bytes": 1273856,
-            "cancelled_write_bytes": 0
-          },
-          "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-          "command": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out -trace /workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gesummv/NO_ARGS/traces/kernelslist.g -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b/config-0.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b/config-1.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b/config-2.config "
-        }
-      ],
-      "available_memory_bytes": 189845172224,
-      "owned_processes": [],
-      "owned_rss_bytes": 0,
-      "owned_cpu_ticks": 0
+      "active_builds": {},
+      "active_runs": {},
+      "workspace": {
+        "path": "/workspace",
+        "realpath": "/workspace",
+        "device": 156,
+        "fsid": 1349835467748716946,
+        "block_bytes": 4096,
+        "available_bytes": 28948107264,
+        "free_including_reserved_bytes": 221002682368,
+        "total_bytes": 3779302981632
+      },
+      "available_memory_bytes": 188931522560
     }
   },
   "active_runs": [],
@@ -262,11 +223,12 @@
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/R0_1_SOURCE_CANDIDATE.json",
     "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1",
-    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/LOW_SPACE_PILOT_REQUEST.json"
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/LOW_SPACE_PILOT_REQUEST.json",
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R8_BOUNDED_WAIT_r1"
   ],
-  "recorded_at": "2026-10-16T17:15:28.657178+00:00",
-  "background_worker_running": false,
-  "next_action": "Publish request and single bounded GateWaiter; await independently approved pilot adapter/authorization. Formal50GiB path wins first; otherwise one authorized ENGINEERING_ONLY campaign, no automatic retries or scientific promotion.",
+  "recorded_at": "2026-10-16T17:23:02.410807+00:00",
+  "background_worker_running": true,
+  "next_action": "Existing single600s/48h GateWaiter checks formal50GiB priority or exact Lane5 authorization and central adapter; one allowed build campaign only. Existing pidfd publisher archives terminal outcome and normal-pushes/readbacks if branch/request still match; never promotes engineering science.",
   "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
   "engineering_pilot": {
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
@@ -275,7 +237,7 @@
     "driver_source_commit": "65500bb9db7ce5bac7cac0f24af01a2dd84f09ed",
     "driver_sha256": "d2cdb1703c004f17c9dad124a2eeca795c25b93856b0e22573612067e58494fe",
     "classification": "ENGINEERING_ONLY",
-    "status": "NOT_EXECUTED_WAITING_LANE5",
+    "status": "NOT_EXECUTED_WAITING_LANE5_AUTHORIZATION",
     "authorization": null,
     "central_pilot_adapter": "NOT_PRESENT_AT_INITIAL_DISCOVERY; owned exclusively by Lane5",
     "actual_lease": null,
@@ -294,15 +256,115 @@
     "formal_runtime_ready": false,
     "formal_application_permission": false,
     "proposed_envelope_only": true,
-    "actual_admission_calls": 0
+    "actual_admission_calls": 0,
+    "request_publication": "248c93acc611679afe42590760481f451773003d",
+    "central_inbox": "/workspace/ep_l2_ft20261016_shared/pilot_requests/EP_L2_R0_1_ENGINEERING_20261017_L1_P01/REQUEST_POINTER.json"
   },
   "gate_waiter": {
-    "status": "PREPARED_NOT_YET_STARTED",
-    "source_commit": "65500bb9db7ce5bac7cac0f24af01a2dd84f09ed",
-    "source_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
-    "single_lock": "/workspace/ep_l2_ft20261016_shared/LANE1_GATEWAITER.lock",
-    "max_wait_seconds": 172800,
+    "status": "WAITING_RESOURCE_OR_LANE5_AUTHORIZATION",
+    "pid": {
+      "pid": 1137150,
+      "ppid": 1137140,
+      "pgrp": 1137140,
+      "state": "R",
+      "start_ticks": 892302037,
+      "cpu_ticks": 4,
+      "rss_bytes": 16777216,
+      "io": {
+        "rchar": 1616290,
+        "wchar": 122,
+        "syscr": 244,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      }
+    },
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "started_at": "2026-10-16T17:17:29.094542+00:00",
+    "request_path": "/workspace/ep_l2_ft20261016_shared/pilot_requests/EP_L2_R0_1_ENGINEERING_20261017_L1_P01/LOW_SPACE_PILOT_REQUEST.json",
+    "request_sha256": "3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb",
+    "deadline_unix": 1792343849.0946963,
     "cadence_seconds": 600,
-    "waiting_lease": null
+    "waiting_lease": null,
+    "automatic_execution_enabled": true,
+    "source": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/gate_waiter.py",
+    "source_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
+    "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
+    "invocations": 0,
+    "last_observed_at": "2026-10-16T17:17:29.301862+00:00",
+    "last_state": {
+      "policy": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "default_run_memory_bytes": 8589934592,
+        "default_run_output_limit_bytes": 2147483648,
+        "max_build_jobs": 4,
+        "max_cpu_units": 8,
+        "max_reserved_memory_bytes": 34359738368,
+        "max_result_bytes": 8589934592,
+        "max_simulators": 2,
+        "min_available_memory_bytes": 68719476736,
+        "min_disk_free_bytes": 51539607552,
+        "scan_exclusive": true
+      },
+      "active_builds": {},
+      "active_runs": {},
+      "workspace": {
+        "path": "/workspace",
+        "realpath": "/workspace",
+        "device": 156,
+        "fsid": 1349835467748716946,
+        "block_bytes": 4096,
+        "available_bytes": 28948107264,
+        "free_including_reserved_bytes": 221002682368,
+        "total_bytes": 3779302981632
+      },
+      "available_memory_bytes": 188931522560
+    },
+    "output": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/gate_waiter_r1"
+  },
+  "outcome_publisher": {
+    "status": "WAITING_EXISTING_PIDFD_NO_DISK_OR_GIT_POLL",
+    "pid": {
+      "pid": 1141719,
+      "ppid": 1141702,
+      "pgrp": 1141702,
+      "state": "R",
+      "start_ticks": 892328275,
+      "cpu_ticks": 5,
+      "rss_bytes": 16777216,
+      "io": {
+        "rchar": 1733984,
+        "wchar": 122,
+        "syscr": 260,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      }
+    },
+    "watched_pid": {
+      "pid": 1137150,
+      "ppid": 1137140,
+      "pgrp": 1137140,
+      "state": "R",
+      "start_ticks": 892302037,
+      "cpu_ticks": 4,
+      "rss_bytes": 16777216,
+      "io": {
+        "rchar": 1616290,
+        "wchar": 122,
+        "syscr": 244,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      }
+    },
+    "request_sha256": "3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb",
+    "source": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/publish_pilot_outcome.py",
+    "source_sha256": "d7bd4e69e1fc6533b91f91ab1fbba96529f438bdde557ff42fc863b30daeb691",
+    "deadline_unix": 1792343969.0946963,
+    "started_at": "2026-10-16T17:21:51.478177+00:00"
   }
 }
