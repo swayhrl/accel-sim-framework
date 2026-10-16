@@ -121,6 +121,14 @@ flowchart TD
 - **对象**：扩散、3DGS、推荐/HSTU、图学习、SSM、科学ML、视觉/多模态。关注活跃集合、参数/梯度更新、格式准备、稀疏访问与数值寿命。
 - **当前**：AWMA Round09/Round21包含已查阅的论文及代码能力，但大部分**未在本机执行**。必须选择具体应用、质量目标、导数阶/训练语义与公开输入，不能以随机合成张量代替真实应用结论。`E-A15/E-L04/E-L06`。
 
+### P15　当图和特征能够完整驻留GPU时，缓存层次还剩什么真实收益？
+- **真实范围**：AI-ARCH A67官方IGB-small（1M节点、1024维FP32真特征、13.07M含自环有向CSC边），109 RTX4080/SM89、3层mean GraphSAGE、eager、B1024、10/10/10 fanout、两个冻结seed；每arm/seed仅12次未插桩完整自然train-step更新。
+- **已接受原生证据**：FULL GPU驻留实测在12GiB任务显存内，两seed完整wall为0.310875/0.435467秒；PINNED_CACHE_ON为1.788362/1.771150秒；PINNED_CACHE_OFF为1.125985/1.100231秒。缓存ON比OFF慢58.83%/60.98%；但开关同时改变graph与feature GPU cache，不是某一级缓存的独立贡献。
+- **软件反证**：FULL与ON/OFF共享同一PyG数学模型及GraphBolt体系，但FULL同时改变图与特征所在位置/执行路径；不能把全部wall差归因PCIe，更没有真实物理带宽、等待及Cache微架构收益。FULL上下卡及public pin准备另有计时；FULL的优势在这12步固定窗口即使算入额外context上传仍成立，**不是完整应用端到端或跨规模上界**。
+- **状态**：`[原生软件反证成立：限IGB-small/4080/eager]`；`[硬件headroom未成立]`。A61/A65 torch.compile数值未合格，A67未运行编译路径；两seed窗口偏短、FULL离散较大，尚未评估epoch收敛。**本小图不再为cache机制追加109任务**。更大图、容量溢出、多用户GPU争用属于不同科学对象，不能将本负结果普遍外推。
+- **权威**：[A67原始报告](https://github.com/swayhrl/accel-sim-framework/blob/c425819d1f41e0cbd3053315cd5590697e808a3c/docs/ai_workload_research/runs/AI_ARCH_A67_IGB_SMALL_EAGER_SCOPE_BOUNDED_WALL_109_V1/FINAL_REPORT.md)；[A68独立审查](https://github.com/swayhrl/accel-sim-framework/blob/808deb1bae0e7acc4bac2f2b45e56f02f9b680a6/docs/ai_workload_research/reviews/AI_ARCH_A68_A67_IGB_SMALL_EAGER_FULL_RESIDENCY_INDEPENDENT_REVIEW_2026-10-16_V1.md)。
+- **下个轻量发现方向**：Q-S真实点云稀疏卷积的构图/映射、fwd/dgrad/wgrad三方向、布局转换及自然消费寿命；仅source和强软件反证，不自动开GPU。
+
 ## 3. 关键跨问题联系（以后阅读论文时主动检查）
 
 | 关联 | 我们应追问的共同约束 | 不能做的推断 |
