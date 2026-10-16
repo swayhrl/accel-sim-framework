@@ -1,0 +1,72 @@
+{
+  "status": "SOURCE_POLICIES_VERIFIED_NOT_CAPTURE_BINDINGS",
+  "policies": [
+    {
+      "id": "P01",
+      "revision": "0e2fddcdef37fc59ad786553892b75567a5f2cdb",
+      "source_sha256": "8dcb5ad444a6cb6a3cfb1271308e27b8395ee16afae0135703b3ac3820b09d4a",
+      "header_version": "absent/default0",
+      "printed_mask": "P=E&predicate",
+      "address_mask": "E",
+      "enabled_compression_modes": [
+        0,
+        1
+      ],
+      "mode0_on_failed_stride": true,
+      "btree_family": "COMPATIBLE_NOT_CAPTURE_BOUND",
+      "conv_version3": "HEADER_FAMILY_MISMATCH",
+      "lud_family": "COMPATIBLE_NOT_CAPTURE_BOUND"
+    },
+    {
+      "id": "P02",
+      "revision": "475a282dd5baabfc481b3be44963e92fc3df34cc",
+      "source_sha256": "d9a7995178e95db6ebf467625036c805ad784d43ece233f6277c6ab217db318f",
+      "header_version": "3",
+      "printed_mask": "P=E&predicate",
+      "address_mask": "E",
+      "enabled_compression_modes": [
+        1,
+        2
+      ],
+      "mode0_only_when_compression_disabled_globally": true,
+      "btree_family": "REJECTED_HEADER_AND_MIXED_MODE0_MODE1",
+      "conv_version3": "COMPATIBLE_NOT_CAPTURE_BOUND",
+      "lud_family": "REJECTED_HEADER_AND_MIXED_MODE0_MODE1"
+    },
+    {
+      "id": "P03",
+      "revision": "756ed33d503704b4faf97bb3a051792f0450d14c",
+      "source_sha256": "4f5aa97ac05c6d01ad9885c0bb51848483b9f1fad4153324dad49ae47a7fb639",
+      "header_version": "3",
+      "printed_mask": "P=E&predicate",
+      "address_mask": "P",
+      "enabled_compression_modes": [
+        1,
+        2
+      ],
+      "mode0_only_when_compression_disabled_globally": true,
+      "btree_family": "REJECTED_FULL32_VS_SINGLE_P_LIST_LENGTH",
+      "conv_version3": "COMPATIBLE_NOT_CAPTURE_BOUND",
+      "lud_family": "HEADER_FAMILY_MISMATCH"
+    },
+    {
+      "id": "P04",
+      "revision": "9cdd82aae3f95eaba78a9b01cfb5880f8f4f93ee",
+      "source_git_blob": "d8028fee05e288aa1d76ec6833d647a5b908691c",
+      "source_sha256": "61955513bd801178565851fceebef89a489e118df40c4861c34b7366716b7e31",
+      "header_version": "3",
+      "printed_mask": "P=E&predicate",
+      "address_mask": "E",
+      "enabled_compression_modes": [
+        1,
+        2
+      ],
+      "mode0_only_when_compression_disabled_globally": true,
+      "btree_family": "REJECTED_HEADER_AND_MIXED_MODE0_MODE1",
+      "conv_version3": "COMPATIBLE_NOT_CAPTURE_BOUND",
+      "lud_family": "REJECTED_HEADER_AND_MIXED_MODE0_MODE1",
+      "archived_working_tree_matches_git_commit": true
+    }
+  ],
+  "note": "Modes refer to the inspected source with its one process-wide TOOL_COMPRESS setting. No assertion excludes arbitrary custom producer modifications."
+}
