@@ -1,5 +1,30 @@
 # Latest Codex Report
 
+## Lane A second matched128 checkpoint —2026-10-16 12:11 UTC
+
+The same Goal174 remains active: **27 terminal/invariant PASS,14 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two numeric PASS rows retain Hotspot scientific-promotion HOLD. No simulator, Goal, branch, input or identity was restarted or replaced. [Current full row states, comparisons, residence and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T121058Z).
+
+The registered2DConvolution IO128 control completed naturally: **694704 cycles,620347492 active-thread instructions**,1:10:16 elapsed,569344KiB peakRSS. Independent full strict re-collection matches its immutable watcher receipt. Its source/binary/config/runner/resource/input/response identities, full scope, balances/drains, service retirement/collection and all64-SM residence decomposition checks pass. The primaryIO256 result626642 cycles remains separate and is never relabelled as this control.
+
+The explicit matched-depth collector now qualifies **two fixed pairs: Btree and2DConvolution**. BICG remains live andHotspot is forbidden. For2D, IO128 andOO128 share Core6fba0136/binaryfe2d2737, full ordered input, ROI,4716288 retired cacheable warp instructions,21984780 collected32B sectors,640 physical lines,128 logical mappings and actual active depth128. The recorded mode2/3 and inactive IO-only option differences remain visible; all other effective options match. The original24 CPU validator guards and unchanged collector identities remain preserved without rerunning simulations or tests. [Both pair gates, audits, metrics,2D strict receipts and source/guard identity](../iscas2027/service_closure_174_v1/review_pack/matched128_v2).
+
+| 2D matched128 metric | IO128 | OO128 |
+|---|---:|---:|
+| Complete workload cycles | 694704 | 592346 |
+| Fully-ready-to-complete, core cycles/cacheable warp instruction | 388.731712 | 8.289956 |
+| Ready-to-collect, same unit | 387.042727 | 6.115135 |
+| Collection, same unit | 1.661458 | 1.847792 |
+| Post-collection WB wait, same unit | 0.027527 | 0.327029 |
+| Map-loss-to-free, core cycles/release event | 1077.840803 | 735.456553 |
+| Mean PIB entries/SM, all-SM cycle denominator | 126.194881 | 126.205080 |
+| Mean physical lines/SM, same denominator | 218.531091 | 188.860210 |
+
+Mean PIB occupancy is slightly higher forOO here; no occupancy reduction is claimed. Map-loss release counts differ3843941/3290844 and remain explicit, with each mean using its own release-event denominator. Collection/WB waits are retained separately. These are complete fixed-input model observations at matched active depth; they do not establish equal total metadata/area, a universal mechanism gain or native DTC speedup. [Resource/denominator method](../iscas2027/service_closure_174_v1/RESOURCE_AND_RESIDENCE_METHOD_V1.md).
+
+Seven complete primary workload trios remain available, including both finite-arm Gaussian/LUD regressions; all raw comparisons are in the checkpoint. The14 remaining rows are four BICG arms, three each ofGESUMMV/GEMM/ATAX, andWAIT128 2DConvolution. All eligible rows have already started once, so free slots add no experiment.
+
+At12:11:45 UTC, all14 simulator PIDs retained start ticks and increased CPU ticks. Own RSS was36.6GiB, MemAvailable253.4GiB and writable capacity41.9GiB. Both original supervisors and strict watcher remain live. Modern DTC's128KiB capacity/port HOLD, Hotspot's three forbidden labels/external Lane B ownership, four modern baseline-only rows and15 native109 cases remain unchanged; SpMV/LayerNorm remain NOT_ADMITTED. No incomplete GM12, replacement GM11 or pooled GM14 is computed. [27-item closure ledger](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv). This is a staged active-work checkpoint; publication proof is `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json` and final Goal completion remains unproven.
+
 ## Lane A Gaussian trio checkpoint —2026-10-16 12:04 UTC
 
 The same Goal174 remains active: **26 terminal/invariant PASS,15 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two of the26 numeric PASS rows retain Hotspot scientific-promotion HOLD. Each of41 started labels has one attempt; no simulation, Goal, branch, input or identity was restarted or replaced. [Current full state, comparisons, residence, pressure and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T120421Z).
