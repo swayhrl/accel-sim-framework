@@ -1,3 +1,29 @@
+# Current174 GESUMMV OO terminal —2026-10-16T19:34Z
+
+**Original GESUMMV OO naturally completed; strict and27 supplementary checks PASS.**
+Attemptf9d4089e-bcfa-4bc8-b342-bb90954e2787 exits0 with142770419cycles,
+190918656active-thread instructions, one complete orderedkernel/16CTAs/128warps,
+10:09:55wall and3031040KiB peakRSS. The immediate unchanged strict receipt
+equals independent re-collection. Current member/list SHA, frozen Core6fba0136/
+binaryfe2d2737/config/runtime/ROI, actual OO128/pool640/logical128/cap32768,
+64SM/clocks/network2/shared96KiB, fullbody load/store retirement, all11 service
+metrics and credit/ref/physical/PIB/lower/ordinary completion checks pass.
+EnhancedTRAD9699700244cycles remains faster: C+/OO0.698325638, OO/C+1.431996686.
+The regression is retained without tuning or rerun. IO is still running; no
+complete GESUMMV trio, matched-depth causal claim or aggregate is produced.
+Whole64SM descriptive residence/occupancy includes idle/tails and uses cacheable
+warp retirement units. The2048 retained clean physical lines are legal resident
+data with active refs/inflight/PIB/lower0 and exact allocation/reclaim balance;
+no forced purge. See review_pack/checkpoint_20261016T1933Z and
+GESUMMV_OO_COMPLETE_SCOPE_AND_SERVICE_AUDIT.json for exact scope and metrics.
+Original44 now40PASS/1GESUMMV IO running/3oldHotspot admissionHOLD; ten primary
+trios and originalBICG matched128 remain complete. Separate HotspotV2five and
+conditionalBtreesix closures remain intact. Only original IO PID495657 with
+start_ticks889453176 remains; existing sole authority/strict locks/HOLDs persist.
+2D STOP/LUD no launch, source-format pending, modern/native/PPA/no-GM boundaries
+remain. Main Goal ACTIVE, no new attempt or model/input change. Historical
+checkpoints and all failure evidence follow intact.
+
 # Current174 conditional Btree six-arm closure —2026-10-16T16:31Z
 
 **Authorized Btree extension6/6 natural terminal, strict/resource PASS.**
