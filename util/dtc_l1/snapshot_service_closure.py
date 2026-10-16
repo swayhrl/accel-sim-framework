@@ -5,6 +5,7 @@ import csv
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -83,6 +84,24 @@ def main():
             collected_32b_sectors=v('collected_sectors'),
             scope='WHOLE_WORKLOAD_ALL64_SM_DENOMINATOR_NOT_MATCHED_DEPTH_CAUSAL_CLAIM'))
     if residence:table(out/'RESIDENCE_AND_OCCUPANCY.tsv',residence)
+    pressure=[]
+    for r in states:
+        if r['status']!='PASS_CHECKED_SCOPE' or r['service_metrics']=='UNAVAILABLE':continue
+        text=(Path(r['raw_dir'])/'simulator.stdout').read_text()
+        counters=dict(re.findall(r'^\s*(DTC_L1_\w+)\s*=\s*(\d+)\s*$',text,re.M))
+        caps=re.findall(r'^-gpgpu_dtc_l1_lower_outstanding_cap\s+(\d+)\s',text,re.M)
+        mode='oo' if r['arm']=='OO' else 'io'
+        pressure.append(dict(workload=r['workload'],arm=r['arm'],attempt_uuid=r['attempt_uuid'],
+            core=r['core'],binary_sha256=r['binary_sha256'],stdout_sha256=r['stdout_sha256'],
+            dtc_lower_cap_global=caps[-1] if caps else 'UNAVAILABLE_NOT_ZERO',
+            reported_cap_full_events=counters.get('DTC_L1_lower_cap_full_events','UNAVAILABLE_NOT_ZERO'),
+            reported_mode_candidate_queue_full_stalls=counters.get('DTC_L1_'+mode+'_lower_create_queue_full_stalls','UNAVAILABLE_NOT_ZERO'),
+            credit_acquired=counters.get('DTC_L1_lower_credit_acquired','UNAVAILABLE_NOT_ZERO'),
+            credit_released=counters.get('DTC_L1_lower_credit_released','UNAVAILABLE_NOT_ZERO'),
+            terminal_lower_outstanding=counters.get('DTC_L1_lower_outstanding','UNAVAILABLE_NOT_ZERO'),
+            scientific_promotion=r['scientific_promotion'],
+            scope='DTC_FINITE_TERMINAL_ONLY_NO_PEAK_OR_OTHER_BOTTLENECK_INFERENCE'))
+    if pressure:table(out/'LOWER_RESOURCE_PRESSURE.tsv',pressure)
     baselines=list(csv.DictReader((evidence/'review_pack/r2/CANONICAL_BASELINE_REUSE.tsv').open(),delimiter='\t'))
     pairs=[]
     for r in states:
