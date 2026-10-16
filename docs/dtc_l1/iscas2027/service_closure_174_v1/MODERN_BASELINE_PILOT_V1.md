@@ -1,0 +1,11 @@
+# Contemporary baseline-only pilot V1
+
+Predeclared cohort: BICG, Btree, 2DConvolution, Hotspot1, complete frozen ordered trace lists and instruction scopes. No shortened replacement, winner selection, native speedup claim, or cohort average is permitted.
+
+Use the unmodified RTX4080 config bytes from Framework `8d1f14a32f5538660d74da86ccb03a2c504c5735`, copied to `config/RTX4080_FROZEN_BASELINE.config`. A separate scope overlay explicitly selects LEGACY mode 0. The canonical source is `6582b9d171330d88b17e8d5294c97704229e3823`, existing binary SHA256 `4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9`. This source has no AWMA translation code and mode 0 does not execute PAPER_BASE PIB=8 or MSHR=32 overrides. The conventional L1 starts with MSHR=384/merge48 and the frozen sector tuple. The asset's adaptive sizing and write ratio25 remain part of this diagnostic identity.
+
+This is an **old-SASS modern-memory-parameter model counterfactual**. Preserve the frozen FAST64 trace-execution config (`19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e`) including Volta-era trace opcode timings. These are not Ada native instruction timing measurements or a qualified modern native binary. The split is deliberate and explicit: isolate memory-parameter relevance using identical old instruction streams, then consume a separate immutable 109 native receipt if supplied. Do not silently substitute native qualification or make RTX4080 performance predictions from this diagnostic.
+
+Before acceptance, verify the executed mode, effective MSHR, per-kernel L1 sizes/allocation policy, kernel completion, complete instructions, L1-exposed load paths, and L2/DRAM activity. The generic attempt validator establishes only terminal identity/instruction checks; it is not full scientific acceptance. Retain all nonzero exits. A parser/config/provenance repair may resume on a new immutable UUID; an instruction-domain or scientific-identity change needs review.
+
+Run at most four small workers; do not replay closed SG3 or old whole matrices. Raw immutable attempts stay outside Git under `/workspace/dtc-service-closure-174-v1/modern-baseline-attempts`. Compatible baselines may be shared by later comparisons after row equivalence is established. DTC-versus-modern comparisons remain gated on R1.
