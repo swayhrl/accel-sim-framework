@@ -1,60 +1,8 @@
 {
-  "active_runs": [
-    {
-      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-      "cpu_units": 1,
-      "created_at": "2026-10-16T10:08:47.674216+00:00",
-      "host": "huangrulin-174",
-      "identity": {
-        "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea",
-        "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
-        "epoch_range": {
-          "campaign_class": "HISTORICAL_DIAGNOSTIC",
-          "scope": "full_application"
-        },
-        "feature_vector": {
-          "adaptive_policy": false,
-          "bank_count": 4,
-          "finite_wbuf": false,
-          "ops_per_bank_cycle": 1,
-          "payload_capacity_per_slice": 1152,
-          "ro": false,
-          "tvd": false,
-          "unified_wb": false,
-          "wbuf_entries": 0
-        },
-        "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
-        "ideal_vector": {
-          "meta": false,
-          "read_hit": false,
-          "wb": false
-        },
-        "runtime_config_sha256": "893d79b5bcd38cef7e20afe564f8bc1a9b358654356f567b7123f8bc6c77d994",
-        "termination_contract": {
-          "hardware_resource_drain": "64-slice B0 and ideal response/arrival closure",
-          "normal_exit": true,
-          "numeric_application_validation": "NOT_AVAILABLE_FROM_SASS_DATALESS_TRACE"
-        },
-        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
-        "workload": "vectorAdd_4M"
-      },
-      "lease_id": "5ec16e083bef4250a51f2b38eca0bce6",
-      "memory_bytes": 8589934592,
-      "owner": "lane4",
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 594101,
-        "start_ticks": 889729961
-      },
-      "result_directory": "/workspace/results/ep_l2_ft20261016/lane4/historical_diagnostic/cffafb7d99ef03b43df2157f4376b89211a02f31f877c056396358c99818b91e",
-      "run_key": "cffafb7d99ef03b43df2157f4376b89211a02f31f877c056396358c99818b91e",
-      "scan": false,
-      "status": "RUNNING",
-      "updated_at": "2026-10-16T10:08:48.271583+00:00"
-    }
-  ],
+  "active_runs": [],
   "artifacts": [
-    "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2"
+    "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2",
+    "docs/ep_l2/review_packs/FT20261016_LANE4_OFF_EQUIVALENCE_r1"
   ],
   "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea",
   "blockers": [
@@ -93,16 +41,23 @@
   },
   "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
-  "framework_tooling_commit": "61553bd07ab548616d3bcbc9e140e40e985d90ec",
+  "framework_tooling_commit": "744c467274d0a74a53b265af1fd1bf9f3a7d7b71",
   "historical_executed_run_keys": [
     "9cf0ed6bef9bd5f9ba7dc08b539ab5905fe9e10a0dcc4dbd2fb844f5ba612eb3",
-    "c62c76eb4c5edca51e484bf2974f422e7eb313de1393647fb8f3ed5d9b64251b"
+    "c62c76eb4c5edca51e484bf2974f422e7eb313de1393647fb8f3ed5d9b64251b",
+    "cffafb7d99ef03b43df2157f4376b89211a02f31f877c056396358c99818b91e"
   ],
   "host": "huangrulin-174",
   "ideal_vector": null,
   "lane_id": 4,
+  "runtime_source_hygiene": {
+    "configure_note": "The build stamp modified_2.0 records only pre-existing Lane4 STATUS/RECEIPT documentation edits at configure; runtime sources match the producing Framework commit.",
+    "core_clean_and_pinned": true,
+    "framework_runtime_diff_to_publication": "EMPTY",
+    "framework_runtime_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e"
+  },
   "schema_version": 1,
-  "status": "IN_PROGRESS_LATEST_ALL_OFF_TRACE_EQUIVALENCE",
+  "status": "READY_FOR_REVIEW_DEPENDENCY_PENDING_SHARED_B16_RELEASE",
   "task_id": "FT20261016_LANE4_V1",
   "tested_ideal_vectors": {
     "B16_BANKED": {
@@ -132,12 +87,14 @@
     }
   },
   "trace_identity": null,
-  "updated_at": "2026-10-16T10:09:18.265104+00:00",
+  "updated_at": "2026-10-16T10:14:46.572664+00:00",
   "validation": {
     "cpp_invocations_pass": 12,
     "illegal_cli_rejections_pass": 6,
+    "latest_binary_off_equivalence": "PASS_VECTOR_73873_CYCLES_56000000_INSTRUCTIONS_7_CSV_BYTE_IDENTICAL",
     "new_formal_B16_runs": 0,
-    "new_historical_full_application_runs": 2,
+    "new_historical_full_application_runs": 3,
+    "new_latest_binary_all_off_controls": 1,
     "parser_adapter_tests_pass": 16
   }
 }
