@@ -34,6 +34,7 @@ def main():
     a.add_argument('--results',type=Path,required=True);a.add_argument('--audit',type=Path,required=True)
     a.add_argument('--pack',required=True)
     a.add_argument('--core',type=Path,required=True)
+    a.add_argument('--parser-log',type=Path,required=True)
     args=a.parse_args();out=ROOT/'docs/ep_l2/review_packs'/args.pack
     out.mkdir(parents=True,exist_ok=False)
     producer=git('rev-parse','HEAD')
@@ -163,10 +164,12 @@ issue/DRAM/L1 settings. They are different evidence categories.
     for sub in ['tests_b16_r1','mode_legality_r1']:
         for p in sorted((args.results/sub).glob('*.log')):
             log_rows.append({'path':str(p),'sha256':sha(p),'bytes':p.stat().st_size})
-    for name in ['build_r1.log','build_b16_r1.log','parser_adapter_tests_r1.log']:
+    for name in ['build_r1.log','build_b16_r1.log']:
         p=args.results/name;log_rows.append({'path':str(p),'sha256':sha(p),'bytes':p.stat().st_size})
+    log_rows.append({'path':str(args.parser_log),'sha256':sha(args.parser_log),'bytes':args.parser_log.stat().st_size})
     csvwrite(out/'VALIDATION_LOG_INDEX.csv',['path','sha256','bytes'],log_rows)
-    shutil.copyfile(args.results/'parser_adapter_tests_r1.log',out/'PARSER_ADAPTER_TESTS.log')
+    assert 'Ran 13 tests' in args.parser_log.read_text() and args.parser_log.read_text().rstrip().endswith('OK')
+    shutil.copyfile(args.parser_log,out/'PARSER_ADAPTER_TESTS.log')
     (out/'VALIDATION_SUMMARY.md').write_text('''# Executed validation
 
 - Historical candidate Release build: PASS. VectorAdd all-OFF: 73873 cycles,

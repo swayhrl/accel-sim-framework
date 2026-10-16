@@ -79,6 +79,8 @@ def parse_terminal(raw, vector, require_ft=False):
         check(set(ideals) == set(range(64)),'missing exact ideal terminal schema')
         for row in ideals.values():
             check(int(row['ideal_meta'])==vector['meta'] and int(row['ideal_read_hit'])==vector['read_hit'], 'ideal vector mismatch')
+            check(int(row.get('ideal_wb','0'))==vector['wb'],'unexpected WB ideal bit')
+            if require_ft:check('ideal_wb' in row,'FT binary did not emit the complete ideal vector')
             if vector['wb']:
                 check(row.get('ideal_wb')=='1' and int(row['wb_data_full'])==0,
                       'I_WB capacity refusal survived or mode not emitted')
@@ -88,6 +90,7 @@ def parse_terminal(raw, vector, require_ft=False):
             check(int(row['reference_responses_live'])==0 and int(row['reference_arrivals_live'])==0,
                   'reference lifetime not drained')
         if vector['read_hit']: check(sum(int(r['reads_served']) for r in ideals.values())>0,'read diagnostic never served')
+    else:check(not ideals,'all-OFF result emitted an unexpected ideal stream')
     if require_ft:
         check(set(ft)==set(range(64)), 'missing real finite-WBUF terminal stream')
         for row in ft.values():

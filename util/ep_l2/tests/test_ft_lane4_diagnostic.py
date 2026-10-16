@@ -49,6 +49,10 @@ class Closure(unittest.TestCase):
         with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('*** exit detected ***','INCOMPLETE'))
     def test_wrong_model(self):
         with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('|wbuf=16|','|wbuf=8|',1))
+        # A metadata-only row must not quietly include WB relief, even if all
+        # capacity-full counters are zero and the terminal resources close.
+        text=terminal_fixture().replace('ideal_meta=0','ideal_meta=1')
+        with self.assertRaises(ValueError):self.parse(text,{'wb':False,'meta':True,'read_hit':False})
     def test_unknown_measurements_not_zero(self):
         self.assertIsNone(self.parse(terminal_fixture())['limiter_counts']['dram_successful_read_bytes'])
 
