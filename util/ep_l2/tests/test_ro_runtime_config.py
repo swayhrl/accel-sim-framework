@@ -29,6 +29,9 @@ class ConfigBinding(unittest.TestCase):
     def test_empty_certificate_and_separate_bits(self):
         x=self.call(1,0);self.assertEqual(x['features'],dict(ro_tag_detach=True,ro_line_mshr_bypass=False))
         self.assertEqual(x['oracle_input_coverage']['unique_lines'],0)
+        self.assertEqual(x['scientific_acceptance'],'PENDING_LANE5_CURRENT_ACCEPTED')
+        self.assertEqual(x['required_repair_gates'],['physical_bank_clock','memcpy_payload_identity'])
+        self.assertIn('newer withdrawal overrides',x['launch_gate'])
         self.assertIn('-gpgpu_ep_l2_ro_manifest_sha256 ',(self.root/'out'/'ro.config').read_text())
         with self.assertRaises(FileExistsError):self.call(1,0)
     def test_corrupt_ranges(self):
