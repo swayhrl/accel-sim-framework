@@ -1,0 +1,24 @@
+{
+  "schema": "STORAGE_OPS_V7_RESTORE_METADATA_PROJECTION_NOTICE",
+  "time": "2026-10-16T16:13:26.476623+00:00",
+  "project": "R1",
+  "state": "NATIVE_RESTORE_METADATA_APPLICATION_REQUIRED",
+  "observed_archive_visible_uid": 1011,
+  "observed_archive_visible_gid": 1011,
+  "observed_archive_visible_mode_decimal": 511,
+  "observed_archive_visible_mode_octal": "0777",
+  "source_uid": 0,
+  "source_gid": 0,
+  "source_sample_modes_octal": [
+    "0644",
+    "0755"
+  ],
+  "scope": "Three R1_B001 archive metadata samples: filelist, executable vvp, parse log; not a full mode scan or restore test",
+  "full_source_file_metadata_sha256": "9226c1f5e457a8ab716afd08dc126201f94a827afde1e4312b4a1f8bf936d22f",
+  "full_source_directory_metadata_sha256": "88b1e989d79a95762a77228593c6e19501cf5ae903d3d5a496ee7d6f4c5dec4b",
+  "required_source_restore_behavior": "After verified reverse-bridge import into an absent owner-approved old174 sibling staging directory, explicitly apply the independently pinned original file UID/GID/modes and directory metadata, then independently stat and hash. Do not trust rsync -a from SSHFS for original mode/owner. Do not change originals or existing archive/other project permissions.",
+  "target_content_restore_claim": "CONTENT_ONLY_NATIVE_METADATA_PENDING",
+  "scientific_source_action": "SOURCE_KEEP",
+  "release_authorized": false,
+  "new_data_transfer_started": false
+}

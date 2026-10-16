@@ -15,3 +15,5 @@
 2026-10-16T15:56:27Z: R1_B002 receipt published/fetched at 1ff521d336d2b0ab2148174970da6548e730d072; exact 416-file bridge cleanup completed. R1 source releases zero. Read-only coverage joins all 18565 numeric metadata rows and confirms 1685 destination files, 16880 missing. Reverse-bridge restore proposal is metadata only, awaiting source agreement and whole-project archive.
 
 2026-10-16T16:09:15.298215+00:00: R1_B004 closed after exact destination GitHub receipt and independent source KEEP ACK; 485 matching bridge copies removed, no source release.
+
+2026-10-16T16:13:09.914973+00:00: R1_B005 closed after exact destination GitHub receipt and independent source KEEP ACK; 702 matching bridge copies removed, no source release.
