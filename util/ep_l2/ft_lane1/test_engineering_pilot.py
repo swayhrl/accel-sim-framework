@@ -1,6 +1,7 @@
 """Meaningful runner safety tests. No real registry claims or C++ builds."""
 import contextlib
 import copy
+import importlib.util
 import io
 import json
 import os
@@ -33,11 +34,14 @@ def fixtures():
         'proposed_envelope': envelope, 'filesystems': {
             'workspace': {'device': 1, 'fsid': 11}, 'results': {'device': 2, 'fsid': 22}},
         'max_single_file_bytes': G//4, 'max_logical_log_bytes': 128*1024**2}
-    auth = {k: copy.deepcopy(request[k]) for k in ['pilot_id', 'host', 'boot_id', 'identity']}
-    auth.update(status='AUTHORIZED_ENGINEERING_ONLY', request_sha256='fixture-sha',
-        not_before_unix=time.time()-60, expires_at_unix=time.time()+600,
-        cpu_units=2, memory_bytes=8*G, max_wall_seconds=3600,
-        monitor_interval_seconds=0.05, formal_runtime_ready=False, filesystems=copy.deepcopy(envelope))
+    request.update(execution_identity=copy.deepcopy(request['identity']), execution_locations={},
+                   output_roots=[], max_duration_seconds=3600, memory_bytes=8*G)
+    auth = {k: copy.deepcopy(request[k]) for k in ['pilot_id', 'host', 'boot_id', 'execution_identity', 'execution_locations', 'output_roots']}
+    auth.update(schema_version='EPL2_ENGINEERING_PILOT_AUTHORIZATION_V1',status='APPROVED_ENGINEERING_ONLY',
+        issuer='lane5',authority_commit='56a0517d3a5941a0a870b50e8c915a8a36b9ee5d',request={'sha256':'fixture-sha'},
+        issued_at_unix=time.time()-60, expires_at_unix=time.time()+600,
+        cpu_units=2, memory_bytes=8*G, max_duration_seconds=3600,
+        monitor_interval_seconds=2, term_grace_seconds=3, scientific_use='FORBIDDEN_ENGINEERING_EVIDENCE_ONLY', filesystems=copy.deepcopy(envelope))
     sample = {'utc': pilot.utc(), 'filesystems': {
         'workspace': {'device': 1, 'fsid': 11, 'available_bytes': 28*G, 'pilot_allocated_bytes': 0},
         'results': {'device': 2, 'fsid': 22, 'available_bytes': 44*G, 'pilot_allocated_bytes': 0}},
@@ -54,14 +58,14 @@ class AuthorizationTests(unittest.TestCase):
         self.assertLess(sample['filesystems']['workspace']['available_bytes'], 48*G)
 
     def test_expired_or_not_yet_valid(self):
-        for name, value in [('expires_at_unix', time.time()-1), ('not_before_unix', time.time()+600)]:
+        for name, value in [('expires_at_unix', time.time()-1), ('issued_at_unix', time.time()+600)]:
             request, auth, sample = fixtures(); auth[name] = value
             with self.subTest(name=name), self.assertRaises(pilot.Stop):
                 pilot.validate_authorization(request, auth, 'fixture-sha')
 
     def test_wrong_host_boot_source_driver_or_request_refused(self):
-        for name in ['host', 'boot_id', 'identity', 'request_sha256']:
-            request, auth, sample = fixtures(); auth[name] = 'incorrect'
+        for name in ['host', 'boot_id', 'execution_identity', 'request']:
+            request, auth, sample = fixtures(); auth[name] = {'sha256':'wrong'} if name=='request' else 'incorrect'
             with self.subTest(name=name), self.assertRaises(pilot.Stop):
                 pilot.validate_authorization(request, auth, 'fixture-sha')
 
@@ -69,10 +73,10 @@ class AuthorizationTests(unittest.TestCase):
         request, auth, sample = fixtures(); auth['publication_path'] = 'fixture.json'
         with patch.object(pilot.subprocess, 'run'), patch.object(pilot, 'git', return_value=b'other bytes'):
             with self.assertRaisesRegex(pilot.Stop, 'FORGED_AUTHORIZATION'):
-                pilot.load_adapter(request, auth, 'a'*40, 'b'*64)
+                pilot.load_adapter(request, auth, 'a'*40, 'b'*64, b'fixture-request')
 
     def test_cpu_memory_and_scientific_promotion_refused(self):
-        for key, value in [('cpu_units', 3), ('memory_bytes', 16*G), ('formal_runtime_ready', True)]:
+        for key, value in [('cpu_units', 3), ('memory_bytes', 16*G), ('scientific_use', 'FORMAL_READY')]:
             request, auth, sample = fixtures(); auth[key] = value
             with self.subTest(key=key), self.assertRaises(pilot.Stop):
                 pilot.validate_authorization(request, auth, 'fixture-sha')

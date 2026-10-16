@@ -191,16 +191,18 @@ def audit_sources(request):
 
 def validate_authorization(request, authorization, request_sha, now=None):
     now = time.time() if now is None else now
-    require(authorization['status'] == 'AUTHORIZED_ENGINEERING_ONLY', 'NOT_AUTHORIZED')
-    for key in ('pilot_id', 'host', 'boot_id', 'identity'):
+    require(authorization['schema_version'] == 'EPL2_ENGINEERING_PILOT_AUTHORIZATION_V1' and
+            authorization['status'] == 'APPROVED_ENGINEERING_ONLY' and authorization['issuer'] == 'lane5', 'NOT_AUTHORIZED')
+    require(authorization['authority_commit'] == '56a0517d3a5941a0a870b50e8c915a8a36b9ee5d', 'WRONG_AUTHORITY')
+    for key in ('pilot_id', 'host', 'boot_id', 'execution_identity', 'execution_locations', 'output_roots'):
         require(authorization[key] == request[key], 'AUTHORIZATION_BINDING_' + key)
-    require(authorization['request_sha256'] == request_sha, 'REQUEST_DIGEST_MISMATCH')
+    require(authorization['request']['sha256'] == request_sha, 'REQUEST_DIGEST_MISMATCH')
     require(request['host'] == socket.gethostname() and request['boot_id'] == boot_id(), 'HOST_BOOT_MISMATCH')
-    require(authorization['not_before_unix'] <= now < authorization['expires_at_unix'], 'AUTHORIZATION_TTL')
+    require(authorization['issued_at_unix'] <= now < authorization['expires_at_unix'], 'AUTHORIZATION_TTL')
     require(authorization['cpu_units'] == 2 and authorization['memory_bytes'] == 8 * GIB, 'RESOURCE_QUOTA_CHANGED')
-    require(0 < authorization['max_wall_seconds'] <= request['max_wall_seconds'], 'TIME_CAP_CHANGED')
-    require(0 < authorization['monitor_interval_seconds'] <= 1, 'MONITOR_INTERVAL')
-    require(authorization['formal_runtime_ready'] is False, 'SCIENTIFIC_PROMOTION_PROHIBITED')
+    require(0 < authorization['max_duration_seconds'] <= request['max_duration_seconds'], 'TIME_CAP_CHANGED')
+    require(0 < authorization['monitor_interval_seconds'] <= 2, 'MONITOR_INTERVAL')
+    require(authorization['scientific_use'] == 'FORBIDDEN_ENGINEERING_EVIDENCE_ONLY', 'SCIENTIFIC_PROMOTION_PROHIBITED')
     require(set(authorization['filesystems']) == set(request['proposed_envelope']), 'FILESYSTEM_SET_CHANGED')
     for name, caps in authorization['filesystems'].items():
         required = ('entry_free_bytes', 'hard_stop_free_bytes', 'max_pilot_allocated_growth_bytes',
@@ -220,27 +222,72 @@ def validate_authorization(request, authorization, request_sha, now=None):
             require(caps[key] >= proposed[key], 'REQUESTED_RESERVE_REDUCED_' + key)
 
 
-def load_adapter(request, authorization, publication, authorization_file_sha256):
+class Lane5PilotAdapter:
+    """Thin caller bridge to the published Lane5 API; never register or amend."""
+    def __init__(self, api, module, request_bytes, authorization):
+        self.api = api; self.module = module; self.request_bytes = request_bytes
+        self.request = json.loads(request_bytes); self.authorization = authorization
+
+    def claim(self, request, authorization, observed):
+        require(request == self.request and authorization == self.authorization, 'ADAPTER_INPUT_CHANGED')
+        measured = self.module.measure_execution_identity(request['execution_locations'])
+        key = self.api.claim(authorization, self.request_bytes, measured)
+        return {'lease_id': key, 'owner': 'lane1', 'pilot_id': request['pilot_id']}
+
+    def record_process(self, key, pilot_id, identity, child=None):
+        require(pilot_id == self.request['pilot_id'] and child is not None, 'DIRECT_CHILD_REQUIRED')
+        self.api.attach_process(key, self.authorization, child)
+
+    def heartbeat(self, key, pilot_id, observed):
+        require(pilot_id == self.request['pilot_id'], 'PILOT_ID_CHANGED')
+        check = self.api.monitor(key, self.authorization)
+        require(not check['stop'], 'LANE5_STOP_LATCHED: ' + '; '.join(check['reasons']))
+
+    def finish(self, key, pilot_id, report):
+        require(pilot_id == self.request['pilot_id'], 'PILOT_ID_CHANGED')
+        terminal = report['status']
+        require(terminal == 'COMPLETE_ENGINEERING_ONLY' or terminal.startswith('PILOT_STOPPED_'), 'INVALID_TERMINAL')
+        directory = Path(self.request['audit_control_root']); no_symlink_path(directory)
+        path = directory / 'PRE_RELEASE_ENGINEERING_RECEIPT.json'
+        report['pre_release_receipt_path'] = str(path)
+        raw = (json.dumps(report, indent=2, allow_nan=False) + '\n').encode()
+        receipt_sha = hashlib.sha256(raw).hexdigest()
+        try:
+            directory.mkdir(parents=True, exist_ok=True)
+            with path.open('xb') as stream:
+                stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+        except OSError as error:
+            report['pre_release_journal_error'] = repr(error)
+            print(raw.decode(), file=sys.stderr, flush=True)
+        # Release is attempted even when the result filesystem/journal failed.
+        self.api.release(key, self.authorization, terminal, receipt_sha)
+        report['central_lease_receipt_sha256'] = receipt_sha
+
+
+def load_adapter(request, authorization, publication, authorization_file_sha256, request_bytes):
     # The independent Lane5 branch and central client binding must both agree.
     require(publication and len(publication) == 40, 'MISSING_LANE5_PUBLICATION')
     subprocess.run(['git', 'merge-base', '--is-ancestor', publication, LANE5_REF],
                    cwd=REPOSITORY, check=True, timeout=15)
-    published = git('show', publication + ':' + authorization['publication_path'])
+    auth_path = 'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/LOW_SPACE_PILOT_AUTHORIZATION.json'
+    published = git('show', publication + ':' + auth_path)
     require(hashlib.sha256(published).hexdigest() == authorization_file_sha256, 'FORGED_AUTHORIZATION')
     client = json.loads((SHARED / 'CLIENT_CONTRACT.json').read_text())
-    adapter = client.get('engineering_pilot')
-    require(adapter is not None, 'LANE5_PILOT_ADAPTER_NOT_PUBLISHED')
-    require(adapter['api_version'] == 'ENGINEERING_PILOT_V1', 'ADAPTER_API_MISMATCH')
-    require(adapter == authorization['registry_adapter'], 'ADAPTER_BINDING_CHANGED')
-    require(digest(adapter['module_path']) == adapter['module_sha256'], 'ADAPTER_CONTENT_CHANGED')
-    data = git('show', adapter['source_commit'] + ':' + adapter['repository_path'])
-    require(hashlib.sha256(data).hexdigest() == adapter['module_sha256'], 'ADAPTER_SOURCE_MISMATCH')
-    subprocess.run(['git', 'merge-base', '--is-ancestor', adapter['source_commit'], LANE5_REF],
+    module_path = client.get('engineering_pilot_module')
+    require(module_path is not None, 'LANE5_PILOT_ADAPTER_NOT_PUBLISHED')
+    require(digest(module_path) == client['engineering_pilot_module_sha256'], 'ADAPTER_CONTENT_CHANGED')
+    data = git('show', client['engineering_pilot_source_commit'] + ':util/ep_l2/ft_lane5/engineering_pilot.py')
+    require(hashlib.sha256(data).hexdigest() == client['engineering_pilot_module_sha256'], 'ADAPTER_SOURCE_MISMATCH')
+    subprocess.run(['git', 'merge-base', '--is-ancestor', client['engineering_pilot_source_commit'], LANE5_REF],
                    cwd=REPOSITORY, check=True, timeout=15)
-    sys.path.insert(0, str(Path(adapter['module_path']).parent))
-    spec = importlib.util.spec_from_file_location('lane5_engineering_adapter', adapter['module_path'])
+    for path_key, hash_key in [('registry_client', 'registry_client_sha256'),
+                               ('runner', 'runner_sha256'), ('acceptance_module', 'acceptance_module_sha256')]:
+        require(digest(client[path_key]) == client[hash_key], 'LANE5_DEPENDENCY_CHANGED_' + path_key)
+    sys.path.insert(0, str(Path(module_path).parent))
+    spec = importlib.util.spec_from_file_location('lane5_engineering_adapter', module_path)
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-    return module.PilotRegistry(SHARED)
+    module.validate(authorization, request_bytes)
+    return Lane5PilotAdapter(module.PilotRegistry(SHARED), module, request_bytes, authorization)
 
 
 def observation(request, group=None):
@@ -330,7 +377,9 @@ def monitored_command(command, name, request, authorization, adapter, lease,
     try:
         cpus = sorted(os.sched_getaffinity(0))[:2]
         require(len(cpus) == 2, 'INSUFFICIENT_CPU_AFFINITY')
+        adapter.heartbeat(lease['lease_id'], request['pilot_id'], observation(request))
         with log.open('x') as stream:
+            last_sample[0] = time.monotonic()
             record['launch_command'] = child_launcher(command, cpus, request['max_single_file_bytes'])
             process = subprocess.Popen(record['launch_command'], cwd=out, env=environment,
                 stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
@@ -339,7 +388,7 @@ def monitored_command(command, name, request, authorization, adapter, lease,
             process._pilot_known_members = {process.pid: process._pilot_start_ticks}
             record['process']['boot_id'] = boot_id(); record['cpu_affinity'] = cpus
             thread = threading.Thread(target=watchdog, daemon=True); thread.start()
-            adapter.record_process(lease['lease_id'], request['pilot_id'], record['process'])
+            adapter.record_process(lease['lease_id'], request['pilot_id'], record['process'], child=process)
             with (out / 'RESOURCE_SAMPLES.jsonl').open('a') as samples:
                 while True:
                     current = observation(request, process.pid)
@@ -347,7 +396,7 @@ def monitored_command(command, name, request, authorization, adapter, lease,
                     require(not stalled.is_set(), 'MONITOR_STALLED')
                     require(not STOP_REQUESTED.is_set(), 'OWNER_REQUESTED_STOP')
                     require(time.time() < authorization['expires_at_unix'], 'AUTHORIZATION_EXPIRED')
-                    require(time.monotonic() - campaign_start < authorization['max_wall_seconds'], 'CAMPAIGN_TIMEOUT')
+                    require(time.monotonic() - campaign_start < authorization['max_duration_seconds'], 'CAMPAIGN_TIMEOUT')
                     check_resources(request, authorization, baseline, current)
                     require(sum(p.stat().st_size for p in out.glob('*.log')) <= request['max_logical_log_bytes'], 'LOG_BYTES_CAP')
                     # Lane5 rechecks the central permanent-lock authority/lease.
@@ -358,7 +407,7 @@ def monitored_command(command, name, request, authorization, adapter, lease,
                     last_sample[0] = time.monotonic()
                     if process.poll() is not None:
                         break
-                    time.sleep(authorization['monitor_interval_seconds'])
+                    time.sleep(min(0.2, authorization['monitor_interval_seconds'] / 4))
             require(not processes(group=process.pid), 'OWN_DESCENDANT_STILL_RUNNING')
             require(process.returncode == 0, 'COMMAND_FAILED_' + name)
         return record
@@ -495,7 +544,7 @@ def main():
     require(args.authorization is not None, 'LANE5_AUTHORIZATION_REQUIRED')
     authorization = json.loads(args.authorization.read_text())
     validate_authorization(request, authorization, request_sha)
-    adapter = load_adapter(request, authorization, args.authorization_publication, digest(args.authorization))
+    adapter = load_adapter(request, authorization, args.authorization_publication, digest(args.authorization), raw_request)
     with (SHARED / 'LANE1_BUILD_EXECUTION.lock').open('a+') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         require(digest(args.request) == request_sha, 'REQUEST_CHANGED_DURING_PREFLIGHT')

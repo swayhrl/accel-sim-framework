@@ -1,85 +1,91 @@
-# Lane1 / Lane5 r8 handshake, proposed adapter API v1
+# Lane1 / Lane5 review_r8 handshake r2 — published Lane5 API
 
-This is a request-side interface, not a Lane5 authorization or a disk policy
-change. Frozen Framework3ab150b3 / Corec9481845 / pybind11f90c430c are checked
-out into **new exact engineering source worktrees**: Core CMake writes an ignored
-`setup` file in its source directory. The frozen official source roots are not
-writable pilot inputs. The original driver and Registry remain untouched.
+The r1 caller-side proposal is preserved in commit65500bb9 and its review pack.
+This revision consumes actual Lane5 Framework300c1010161b270ae73414b8146d238c961f0cd0,
+API source205782b9745a7189b9bf858486648930b08b8a81 and registry compatibility
+source02440185c5cc349f1569f5d11e682902939b0ee3. Lane5 owns these modules.
+Its39 new pilot and10 affected registry tests are evidence of tools, not a live
+authorization. Lane5's first NO_SAFE_PILOT_ENVELOPE used old Lane1 ref85534de2
+before the present request existed. New request revisions must be independently
+reviewed; the refusal is never treated as approval or silently rewritten.
 
-Lane1 publishes `lane1/LOW_SPACE_PILOT_REQUEST.json`, exact raw-file sha256 and
-driver code commit. Lane5 independently samples actual resources and publishes
-`lane5/LOW_SPACE_PILOT_AUTHORIZATION.json` on its own branch. A denial uses
-`status=NO_SAFE_PILOT_ENVELOPE`; it does not authorize compilation. An approval
-uses `status=AUTHORIZED_ENGINEERING_ONLY` and binds:
+## Exact shared request fields
 
-- `pilot_id`, `request_sha256`, `host`, `boot_id`, exact complete `identity` from
-  the request, `publication_path` (the authorization's own repository path),
-  `not_before_unix`, `expires_at_unix`, `max_wall_seconds` (<=3600),
-  `monitor_interval_seconds` (<=1), `cpu_units=2`, `memory_bytes=8589934592`,
-  `formal_runtime_ready=false`.
-- `filesystems.workspace` and `filesystems.results`: positive integer
-  `entry_free_bytes` (minimum launch threshold), `hard_stop_free_bytes`,
-  `max_pilot_allocated_growth_bytes`, `external_write_reserve_bytes`,
-  `monitor_and_kill_overshoot_bytes`, `minimum_untouched_emergency_bytes`.
-  Entry >= the sum of the latter four budgets; hard stop >= emergency+overshoot.
-  Actual measured free belongs separately in the independent resource gate.
-  Max own growth cannot exceed the request cap; stop margin, external reserve,
-  kill overshoot allowance and untouched emergency cannot be reduced.
-- `registry_adapter`: the exact `CLIENT_CONTRACT.json.engineering_pilot`
-  dictionary, containing `api_version=ENGINEERING_PILOT_V1`, `module_path`,
-  `module_sha256`, `source_commit`, `repository_path`. The module must be a
-  committed Lane5 file; both authorization and module commit must be ancestors
-  of the freshly fetched Lane5 branch. Lane1 checks their actual Git bytes.
+Lane1 publishes raw LOW_SPACE_PILOT_REQUEST.json and its immutable SHA256.
+Alongside source/audit/cap/command evidence it supplies Lane5's required fields:
 
-The **Lane5-owned** module exports `PilotRegistry(shared_root)`:
+- pilot_id, host, boot_id, cpu_units=2, memory_bytes=8589934592,
+  max_duration_seconds<=3600.
+- execution_identity: exact core_source_commit, framework_source_commit,
+  vendor_commit, driver_sha256, build_entry_sha256 and repair_commands_sha256.
+  The last hash is SHA256 of ast.get_source_segment of the unique top-level
+  repair_commands function, UTF-8 with no appended newline.
+- execution_locations: absolute core_repo, framework_repo, vendor_repo,
+  driver_path, build_entry_path and repair_commands_path. Actual clean producing
+  identities and bytes are measured, not merely accepted from caller strings.
+- output_roots: fresh disjoint build, result and small control-journal roots,
+  with path/resolved_path/filesystem. TMPDIR is nested in build, not double-counted.
+  Existing exact engineering source worktrees are separate input roots. Core
+  CMake's ignored setup write is declared and counted by Lane1's local growth
+  monitor; any difference from backend output-root accounting is conservatively
+  charged to whole-filesystem contraction, never treated as zero external IO.
 
-```python
-claim(request, authorization, observed_resources) -> {
-    "lease_id": str, "owner": "lane1", "pilot_id": str, ...
-}
-record_process(lease_id, pilot_id, process_identity) -> None
-heartbeat(lease_id, pilot_id, observed_resources) -> None
-finish(lease_id, pilot_id, engineering_receipt) -> None
+Original Corec9481845 / Framework3ab150b3 / vendorf90c430c are unchanged.
+New exact engineering source worktrees protect frozen production roots from
+CMake's source/setup output. No old getter patch is reapplied. The frozen
+repair_commands supplies all21 executions and the same five CMake targets,
+Release/assertion flags and-j2. No applications or scientific promotion.
+
+## Only Lane5 authorizes and registers
+
+Use the owner's ENGINEERING_PILOT_API.md as authoritative API documentation.
+An authorization must be schema EPL2_ENGINEERING_PILOT_AUTHORIZATION_V1,
+status APPROVED_ENGINEERING_ONLY, issuer lane5, r8 authority56a0517d, exact
+request publication/hash/token, actual source/driver/vendor/locations/output
+roots, host/boot/mount/protected inventory, TTL and all positive justified
+per-filesystem budgets. scientific_use is FORBIDDEN_ENGINEERING_EVIDENCE_ONLY.
+Requested emergency/external/kill reserves cannot be reduced by the caller.
+Lane5 independently accepts reliable numbers or emits NO_SAFE_PILOT_ENVELOPE.
+
+Lane1 verifies the fetched Lane5 authorization Git bytes and central
+CLIENT_CONTRACT's engineering_pilot_module/source/hash plus dependencies before
+import. It uses a thin bridge to actual PilotRegistry:
+
+```
+claim(auth, exact_request_bytes, measure_execution_identity(locations)) -> key
+monitor(key, auth) -> stop/reasons/independent live observation
+attach_process(key, auth, actual_owned_Popen_child)
+release(key, auth, terminal, exact_pre_release_receipt_sha256)
 ```
 
-Lane5 alone registers authorization/token with the central permanent
-`REGISTRY.lock`. `claim` atomically checks its registered request/auth hashes,
-single-use pilot id (including across restart), exact host/boot/source/driver,
-TTL, resources and policy; refuses all other active runs/builds for this sole
-pilot, preserving CPU/memory/scan protections. It records an ordinary active
-`resource_leases` row with explicit ENGINEERING_PILOT metadata, leaving all
-formal callers/floors unchanged. `heartbeat` verifies sole ownership, boot,
-TTL, caps and current global constraints; `record_process` binds the real owned
-PID/start ticks/boot. `finish` releases even on failed/stopped builds and leaves
-the pilot token permanently consumed. Exceptions mean stop, never fall back to
-direct CMake or unregistered execution. No Lane1 live authorization registration.
+Only Lane5 calls register on the real authority. Lane1 has no register/fallback
+or direct central JSON mutation path. The pre-release journal is immutable in
+its own new control root; the final receipt binds that hash after release. Token
+replay remains rejected across process restart, STOP stays latched, and original
+formal admission is preserved. Monitoring runs more frequently than the2s API
+ceiling and keeps an independent2s stalled-watchdog for its own child group.
 
-The adapter must honor the request's permanent cancellation marker. Lane1's
-single GateWaiter and pilot runner share `LANE1_BUILD_EXECUTION.lock`. If formal
-50GiB admission is reached first, the waiter writes the marker and invokes only
-the frozen official entry after two samples >=60s apart. During an active pilot
-it waits without starting a second build or reserving a lease.
+## Bounded waiting and result publication
 
-Runner default is dry-run. Actual launch requires `--execute-once`,
-`--pilot-id`, `--authorization` and `--authorization-publication`, plus independent
-Git proof and the central adapter. It uses the frozen driver's `repair_commands`
-for21 executions, exactly its five targets and Release/assertion CMake flags.
-Its child launcher limits affinity to2 CPUs, nice10, zero core dumps, and256MiB
-maximum single file. Disk/own blocks/RAM/process/IO/TTL are sampled every<=1s,
-with a2s stalled-monitor watchdog and own-group TERM→KILL only. A net external
-space contraction is a stop trigger, not a claim to measure gross external IO.
+Only one Lane1 disk GateWaiter runs, at600s cadence and within its original48h
+deadline. API alignment can replace an idle own control process, preserving its
+old records and original deadline; it cannot restart the science Goal, run a
+second waiter or consume/reuse a pilot token. Formal50GiB admission wins first
+with two>=60s-spaced observations and the original formal driver. All paths
+share the central lease and execution mutex. A separate kernel pidfd completion
+publisher does not poll disk/Git/registry and cannot start/retry any build.
 
-The request proposes explicit conservative **caps**, not measured compiler
-peaks. Lane5 must independently accept reliable numeric bounds or deny. The
-initial runner makes one configure/build/test pass and never auto-clean/retry.
-Any ordinary repair must keep original identities/results, use a new frozen
-engineering revision and independent Lane5 audit within the same campaign
-limits; it cannot silently obtain a second claim or broaden science. A future
-continuation interface must be reviewed before use. No engineering output may
-set formal runtime_ready, issue a scientific certificate or launch applications.
+Runner default is dry-run; execution requires exact current authorization,
+registered one-use token and explicit --execute-once. All engineering outcomes
+remain ENGINEERING_ONLY. Ordinary repairs need a new isolated frozen source
+revision and independent amendment within the original campaign bounds; this
+first owner API forbids implicit rebinding or a second claim. No auto-clean or
+infinite retry. Formal producer events still require normal release audit and
+Lane5 independent11gate before performance evidence.
 
-Before live registration, Lane5 tests its real adapter: valid under-floor pilot,
-forged/expired permits, replay after restart, CPU/memory/active-lease/scan/host/
-boot/source failures, unchanged formal floors, failed-owner release. Lane1's
-tests cover runner refusal/monitor/owned-child isolation; fake adapters do not
-constitute a test of Lane5's not-yet-published central implementation.
+Seventeen caller safety tests plus three integrations against the actual
+published owner implementation use PRIVATE temporary ledgers only. Real central
+register/claim and CMake/compilation executions remain0 before Lane5 approval.
+The private tests verify real one-use/replay, latched STOP/release/journal hash
+and actual direct-child attachment. The owner's unchanged39 tests are retained,
+not replayed or represented as scientific qualification.
