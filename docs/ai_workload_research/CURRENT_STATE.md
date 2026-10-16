@@ -1,5 +1,21 @@
 # AI-ARCH｜当前科研协调状态
 
+**最新协调快照：2026-10-16 / Round A68；A67原生eager六窗口完成、独立科学审查已接受：`SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE / STOP`。** 本文件只是研究导航，不是109实时运行监控；下方A66/A64/A60/A61/A65“待启动”描述是对应历史时点，不能取代本次已接受终态。
+
+## 最新科学证据：A67与A68
+
+- **原生业务authority**：109 Lane M A67分支`hrl/aiarch-a67-igb-small-eager-scope-wall-109-v1`，final commit `c425819d1f41e0cbd3053315cd5590697e808a3c`，tree`5ae9be2bf51ba959b9588a8111ae28bf6f03af84`；从起点`266314db14686b75d643c446824ebf8d59ba3a51` ahead1、final→remote HEAD identical，89个新增Git路径。独立A68对**六个原始wall文件SHA256逐字节重算6/6**与manifest一致，其余完整blob/SHA发布由109原报告负责。
+- **六组实际完整自然训练步eager wall（每格12个B1024更新）**：seed20261015的FULL/ON/OFF为`0.310875/1.788362/1.125985s`；seed20261016为`0.435467/1.771150/1.100231s`。FULL两seed均更快；ON与OFF比值1.5883/1.6098（ON慢58.83%/60.98%）。每arm/seed的初始参数及正式seed-node顺序SHA相同，真实GraphBolt异步邻域不是逐边相同。FULL显存容量和真实连续更新已通过，原图与4.096GB真实FP32特征完全驻GPU。
+- **科学范围**：仅固定IGB-small、RTX4080 SM89、PyG 3层mean GraphSAGE/FP32/Adam与`EAGER_ONLY`软件、两seed短窗口。cache ON同时开graph/feature GPU缓存，功能生效但feature累计miss约95.44%，graph约87.82%，不能独立归因缓存模块/PCIe流量。FULL改变图/feature所在设备及整个供数路径，不是PCIe单变量硬件实验；准备/pin/warmup时间分别记录。A61/A65 compiled数值失败保留；原生收敛及长窗口、GPU物理DRAM/PCIe、硬件headroom**未测或未成立**。
+- **计时与监督收据**：G0/G1/G2 PASS，1 OFF资格＋12 warmup＋72正式共85真实Adam更新；GPU持锁20.544467s、RSS峰采样约9.350GiB、NVML显存峰10416MiB、新盘保守约53.73MiB、raw/log实占约11.28MiB、下载/安装0。原始41条NVML/PID快照独立复读：33条OWN_LIVE_PID、8条空，终态PID退出、无第三方记录、锁已释放；旧A65退出PID缺口**只在新A67本次闭合**，不回写旧STOP。
+- **独立接受文献**：[A67真实Final](https://github.com/swayhrl/accel-sim-framework/blob/c425819d1f41e0cbd3053315cd5590697e808a3c/docs/ai_workload_research/runs/AI_ARCH_A67_IGB_SMALL_EAGER_SCOPE_BOUNDED_WALL_109_V1/FINAL_REPORT.md)；[Round A68独立审查](reviews/AI_ARCH_A68_A67_IGB_SMALL_EAGER_FULL_RESIDENCY_INDEPENDENT_REVIEW_2026-10-16_V1.md)；统一问题图谱[P15](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)新增本范围的软件反证。
+- **决策**：IGB-small/eager/4080这条GPU cache硬件供数假说**本范围内停研**，不因ON/OFF反常再后视调缓存容量、启动NCU、换大图、补编译器数值修复或模拟器机制。真实更大图不能驻留时是另一科学对象，需要新合法模型/数据/应用、软件反证与授权。
+- **下个Discovery（非GPU执行Goal）**：优先Q-S真实点云稀疏卷积的source-only科学输入/自然层组/坐标与特征、map构建到多消费者的布局和生命期审计（Spira/WarpConvNet及软件近邻）。A62/A63稀疏权重训练仍源/文献储备；没有新109/174/164任务。AWMA、C16、ISCAS原权限冻结。
+
+---
+
+# AI-ARCH｜当前科研协调状态
+
 **最新协调快照：2026-10-16 / A66；A65真实数值结果独立审查完成，A67 eager-scope bounded wall仅准备、未派发。** 本文件是科研导航而非节点实时进程监控。此节优先于下方A64/A60的历史待办表述；原A61、A65完整raw与实际科学STOP保持原样。
 
 ## A65最终事实与独立A66裁决
