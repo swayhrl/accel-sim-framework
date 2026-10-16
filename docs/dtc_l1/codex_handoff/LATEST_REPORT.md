@@ -1,3 +1,22 @@
+# Current174 checkpoint —2026-10-16T15:30Z
+
+**ATAX primary trio numerically complete.** IO256
+`ea3ad460-da0b-4877-8537-e374ed7a946c` naturally exited0 with
+83,797,212cycles,145,666,048 active-thread instructions and2ordered kernels;
+unchanged strict recollection equals the watcher receipt. Both input members,
+list/body scope and active resource/service balances independently pass.
+TRAD96:30,981,690; OO128:50,796,515; IO256:83,797,212cycles. Both DTC
+regressions remain, with no retuning or rerun. Primary unequal waiting depths
+do not isolate ordering or establish equal area/native DTC speedup.
+See review_pack/checkpoint_20261016T1529Z and ATAX_PRIMARY_TRIO.tsv.
+Original44 now **36 numericPASS /5 live /3 oldHotspotHOLD**; ten original
+primary trios are numerically complete. BICG IO128/WAIT128 andGESUMMV
+IO/OO/TRAD96 continue with original process identities, sole launch authority
+and strict watcher. No eligible unstarted row remains. Separate HotspotV2five
+strict/resourcePASS, Btree/2D/LUD scientific pending and modern/native/area
+boundaries remain intact. No GM12 or substituted/omitted-input aggregate.
+Main Goal ACTIVE, not complete; historical checkpoints follow unchanged.
+
 # Current174 checkpoint — 2026-10-16T14:52Z
 
 **BICG primary trio numerically complete.** Newly terminal IO256
