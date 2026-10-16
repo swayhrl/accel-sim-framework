@@ -19,6 +19,10 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = Path('/workspace/results/ep_l2_ft20261016/lane4')
 MODES = {'OFF': (False, False), 'I_META': (True, False), 'I_READ_HIT': (False, True)}
+B16_MODES = {'I_WB':{'wb':True,'meta':False,'read_hit':False},
+             'I_META':{'wb':False,'meta':True,'read_hit':False},
+             'I_READ_HIT':{'wb':False,'meta':False,'read_hit':True},
+             'I_WB_META':{'wb':True,'meta':True,'read_hit':False}}
 STATS = ['line_mshr_full_block','descriptor_pool_full_block','per_address_cap_block',
          'missq_full_block','l2_to_dram_full_block','wad_full_events',
          'bank_true_conflict_ops','dram_scheduler_full_block','dram_successful_read_bytes',
@@ -46,20 +50,22 @@ def load_tools():
     return contract, registry, tools
 
 
-def parse_terminal(raw, vector):
+def parse_terminal(raw, vector, require_ft=False):
     normal = False; cycles = instructions = None
-    b0, invariants, ideals = {}, {}, {}
+    b0, invariants, ideals, ft = {}, {}, {}, {}
     for line in Path(raw).open(errors='replace'):
         normal |= 'GPGPU-Sim: *** exit detected ***' in line
         m = re.fullmatch(r'gpu_tot_sim_(cycle|insn)\s*=\s*(\d+)\s*',line)
         if m:
             if m[1] == 'cycle': cycles = int(m[2])
             else: instructions = int(m[2])
-        if not line.startswith(('EPL2B0V1|','EPL2IDEALV1|')): continue
+        if not line.startswith(('EPL2B0V1|','EPL2IDEALV1|','EPL2FTV1|SUMMARY|')): continue
         record = dict(x.split('=',1) for x in line.strip().split('|') if '=' in x)
         if 'slice' not in record: continue
         slice_id = int(record['slice'])
-        if line.startswith('EPL2B0V1|INVARIANT|') and record.get('kernel_uid') == str(2**64-1):
+        if line.startswith('EPL2FTV1|SUMMARY|'):
+            ft[slice_id]=record
+        elif line.startswith('EPL2B0V1|INVARIANT|') and record.get('kernel_uid') == str(2**64-1):
             invariants[slice_id] = record
         elif record.get('scope') == 'application':
             (ideals if line.startswith('EPL2IDEALV1|') else b0)[slice_id] = record
@@ -69,23 +75,83 @@ def parse_terminal(raw, vector):
         for field in ['line_mshr_used','descriptor_used','wad_live','resident_pending','bypass_live','bank_pending','payload_double_owner']:
             check(int(row[field]) == 0, 'nonempty terminal resource: '+field)
         check(row['terminal_clean']=='1' and row['resident_tag_payload_consistent']=='1','invalid terminal ownership')
-    if vector['meta'] or vector['read_hit']:
+    if any(vector.values()):
         check(set(ideals) == set(range(64)),'missing exact ideal terminal schema')
         for row in ideals.values():
             check(int(row['ideal_meta'])==vector['meta'] and int(row['ideal_read_hit'])==vector['read_hit'], 'ideal vector mismatch')
+            if vector['wb']:
+                check(row.get('ideal_wb')=='1' and int(row['wb_data_full'])==0,
+                      'I_WB capacity refusal survived or mode not emitted')
             if vector['meta']:
                 check(all(int(row[k])==0 for k in ['line_mshr_full','descriptor_full','per_address_full']),
                       'I_META capacity refusal survived')
             check(int(row['reference_responses_live'])==0 and int(row['reference_arrivals_live'])==0,
                   'reference lifetime not drained')
         if vector['read_hit']: check(sum(int(r['reads_served']) for r in ideals.values())>0,'read diagnostic never served')
+    if require_ft:
+        check(set(ft)==set(range(64)), 'missing real finite-WBUF terminal stream')
+        for row in ft.values():
+            check(row['mode']=='1' and row['wbuf']=='16', 'not the static primary WBUF16 model')
+            check(all(int(row[k])==0 for k in ['wb_live','wb_slots','reserved','read_refs']), 'FT lifecycle not drained')
+            check(row['ownership_consistent']=='1','FT ownership invalid')
+            check(int(row['copy_lines'])==int(row['staging_reads'])==int(row['wb_lower_accept']), 'WB copy/read/accept did not close')
+            if vector['wb']:check(row['wbuf_full']=='0','WB data capacity still refused')
+            else:check(row['physical_slots']=='1168','non-I_WB changed the physical budget')
     return {'cycles':cycles,'instructions':instructions,'normal_exit':True,
             'terminal_64_slice_closure':'PASS',
             'nonbinding_meta':'PASS' if vector['meta'] else 'NOT_APPLICABLE',
+            'nonbinding_wb_data':'PASS' if vector['wb'] else 'NOT_APPLICABLE',
             'reference_kind':'BYTE_VERSION_SYMBOLS_WITH_OPTIONAL_KNOWN_VALUES' if vector['read_hit'] else 'ORDINARY_PATH',
             'limiter_counts':{k:sum(int(row[ALIASES.get(k,k)]) for row in b0.values())
                               if all(ALIASES.get(k,k) in row for row in b0.values()) else None for k in STATS},
+            'ft_counts':{k:sum(int(row[k]) for row in ft.values()) for k in ['accepted','wb_lower_accept','wbuf_full','copy_lines','copy_bytes','staging_reads','version_checks','descriptor_responses']} if ft else {},
             'ideal_counts':{k:sum(int(row[k]) for row in ideals.values()) for k in ['reads_served','dependency_wait_attempts','bank_wait_attempts','response_wait_attempts','symbolic_bytes','known_bytes']} if ideals else {}}
+
+
+def validate_config_whole_file(spec):
+    assets={r['name'] for r in spec['auxiliary_assets']}
+    for item in spec['configs']:
+        tokens=shlex.split(Path(item['path']).read_text(),comments=True)
+        check('-config' not in tokens,'nested configuration must be expanded')
+        for token in tokens:
+            if token.endswith(('.xml','.icnt','.config')):
+                check(token in assets,'unaccounted configuration dependency: '+token)
+
+
+def inspect_baseline(spec,tools):
+    # Narrow parser adapter for the real multiline quoted QV100 timing field.
+    # Preserve every independent-release, content-hash and lifecycle gate in
+    # Lane 5 inspect(); neither inputs nor its release authority are replaced.
+    original=tools.validate_config_closure
+    tools.validate_config_closure=validate_config_whole_file
+    try:return tools.inspect(spec)
+    finally:tools.validate_config_closure=original
+
+
+def validate_b16_variant(spec, tools, api):
+    """Consume the real Lane 5 baseline spec/release, never invent a baseline."""
+    base=spec['baseline_spec'];inspect_baseline(base,tools)
+    identity=spec['identity'];parent=base['identity']
+    check(spec['mode'] in B16_MODES and identity['ideal_vector']==B16_MODES[spec['mode']], 'unadmitted ideal vector')
+    check(identity['workload'] in {'convolutionSeparable','FWT_7_21','vectorAdd_4M','sad'},'not a first-wave workload')
+    check(spec['mode']!='I_WB_META' or identity['workload'] in {'convolutionSeparable','FWT_7_21'},'combination not scheduled for this workload')
+    for field in ['core_source_commit','framework_source_commit','binary_sha256','trace_content_sha256','workload','epoch_range','feature_vector','termination_contract']:
+        check(identity[field]==parent[field],'unrelated baseline/diagnostic identity change: '+field)
+    check(parent['feature_vector']['wbuf_entries']==16 and parent['feature_vector']['finite_wbuf'] and
+          not any(parent['feature_vector'][k] for k in ['unified_wb','tvd','ro','adaptive_policy']), 'primary static B16 required')
+    check(spec['binary']==base['binary'] and spec['auxiliary_assets']==base['auxiliary_assets'] and
+          spec['environment']==base.get('environment',{}) and spec['trace_files']==base['trace_files'], 'baseline physical inputs changed')
+    check(spec['configs'][:-1]==base['configs'],'ideal must append one vector overlay to the exact baseline inputs')
+    tokens=shlex.split(Path(spec['configs'][-1]['path']).read_text(),comments=True)
+    expected={'-gpgpu_ep_l2_ideal_wb':str(int(identity['ideal_vector']['wb'])),
+              '-gpgpu_ep_l2_ideal_meta':str(int(identity['ideal_vector']['meta'])),
+              '-gpgpu_ep_l2_ideal_read_hit':str(int(identity['ideal_vector']['read_hit']))}
+    check(len(tokens)==6 and dict(zip(tokens[::2],tokens[1::2]))==expected,'overlay changes more than ideal bits')
+    check(spec['baseline_run_key']==api.run_key(parent),'baseline key binding changed')
+    check(all(not v for v in parent['ideal_vector'].values()),'baseline contains an ideal relaxation')
+    binary=Path(spec['binary']).read_bytes()
+    check(all(flag.encode() in binary for flag in expected),'qualified common binary lacks Lane 4 registrations; request integration first')
+    return True
 
 
 def prepare(args, client, api, tools):
@@ -153,14 +219,17 @@ def prepare(args, client, api, tools):
 
 
 def execute(spec,audit,client,api,tools):
-    check(spec['campaign_class']=='HISTORICAL_DIAGNOSTIC' and
-          spec['identity']['feature_vector']['finite_wbuf'] is False,
-          'historical adapter cannot fill a B16 cell')
+    formal=spec['campaign_class']=='B16_IDEAL_DIAGNOSTIC'
+    if formal:validate_b16_variant(spec,tools,api)
+    else:
+        check(spec['campaign_class']=='HISTORICAL_DIAGNOSTIC' and
+              spec['identity']['feature_vector']['finite_wbuf'] is False,
+              'unknown campaign cannot fill a B16 cell')
     check(tools.digest(spec['binary'])==spec['identity']['binary_sha256'],'prepared binary changed')
     check(tools.asset_manifest(spec['configs'],ordered=True)==audit['configs'],'prepared configs changed')
     check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'prepared traces changed')
     check((tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])==audit['assets'],'prepared auxiliary inputs changed')
-    key=api.run_key(spec['identity']);directory=RESULTS/'historical_diagnostic'/key
+    key=api.run_key(spec['identity']);directory=RESULTS/('b16_diagnostic' if formal else 'historical_diagnostic')/key
     registry=api.Registry(client['canonical_root'])
     try:
         fresh,row=registry.claim(spec['identity'],'lane4',directory)
@@ -169,7 +238,7 @@ def execute(spec,audit,client,api,tools):
                 'run_key':key,'identity':spec['identity'],'reserved':False}
     if not fresh: return {'status':'DUPLICATE_NOT_LAUNCHED','existing':row}
     process=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();result={
-        'identity':spec['identity'],'run_key':key,'campaign_class':'HISTORICAL_DIAGNOSTIC','mode':spec['mode'],
+        'identity':spec['identity'],'run_key':key,'campaign_class':spec['campaign_class'],'mode':spec['mode'],
         'runner_execution_commit':head(ROOT),'parser_source_sha256':tools.digest(__file__)}
     try:
         directory.mkdir(parents=True,exist_ok=False)
@@ -202,12 +271,13 @@ def execute(spec,audit,client,api,tools):
         result.update(exit_code=process.returncode,peak_rss_bytes=peak)
         if status not in {'TIMEOUT','RESOURCE_LIMIT'}:
             check(process.returncode==0,'nonzero process exit')
-            result['summary']=parse_terminal(directory/'raw.log',spec['identity']['ideal_vector'])
+            result['summary']=parse_terminal(directory/'raw.log',spec['identity']['ideal_vector'],require_ft=formal)
             check(tools.digest(spec['binary'])==spec['identity']['binary_sha256'],'original binary changed')
             check(tools.asset_manifest(spec['configs'],ordered=True)==audit['configs'],'config changed')
             check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'trace content changed')
             check((tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])==audit['assets'],'auxiliary content changed')
-            status='COMPLETE_VALID';detail='HISTORICAL_DIAGNOSTIC_ONLY; never a B16 result'
+            if formal:validate_b16_variant(spec,tools,api)
+            status='COMPLETE_VALID';detail='B16_IDEAL_DIAGNOSTIC; not implementation speedup or strict mathematical bound' if formal else 'HISTORICAL_DIAGNOSTIC_ONLY; never a B16 result'
     except BaseException as error:
         if process is not None:tools.terminate_owned(process)
         status='FAILED';detail=f'{type(error).__name__}: {error}'
