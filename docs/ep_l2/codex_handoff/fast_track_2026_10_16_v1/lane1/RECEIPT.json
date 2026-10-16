@@ -3,7 +3,7 @@
   "lane_id": 1,
   "task_id": "FT20261016_LANE1",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "PRODUCTION_DIRECTED_PASS_OLD_OFF_QUALIFICATION_IN_PROGRESS",
+  "status": "B16_UWB_PRODUCER_READY_FOR_INDEPENDENT_VALIDATION",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "framework_source_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
@@ -15,7 +15,38 @@
     "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
     "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
   },
-  "trace_identity": null,
+  "trace_identity": [
+    {
+      "workload": "sad",
+      "run_key": "16550bb9d5fc5490d0302f9854430efadc85c31e513723cf0eab20586a9d3b84",
+      "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01"
+    },
+    {
+      "workload": "vectorAdd_4M",
+      "run_key": "61a666655f9ef908ef5dbacedb1457acffb26f223940fa4798ded4f7249b66ec",
+      "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940"
+    },
+    {
+      "workload": "cfd_097k",
+      "run_key": "6204b8aeb9a802300c17f0391fc13e4fc6ba56a4528c2a674e5d261a61071e39",
+      "trace_content_sha256": "6d5eb92fbe5391b3811dc08fcaaacb891ec8a69639512b99f68d224b6a921e66"
+    },
+    {
+      "workload": "vectorAdd_4M",
+      "run_key": "96913a8f95f26061d5f52030aab46e73fd0fb5584402a1b97441947c586cd629",
+      "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940"
+    },
+    {
+      "workload": "sad",
+      "run_key": "a11ddbd13923f29930fc3db1572c8f1038adb562338fc94119aae55a156f57fc",
+      "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01"
+    },
+    {
+      "workload": "cfd_097k",
+      "run_key": "c28261d68c849c8f10bbbd3e187ba5ed26cae91691b6239cfcda0028de243d94",
+      "trace_content_sha256": "6d5eb92fbe5391b3811dc08fcaaacb891ec8a69639512b99f68d224b6a921e66"
+    }
+  ],
   "feature_vector": {
     "finite_wbuf": true,
     "unified_wb": false,
@@ -35,7 +66,20 @@
   "dependency_receipts": [
     {
       "lane_id": 5,
-      "framework_tooling_source": "de8fe21d9598660e40da8486e48f2d46acee4582"
+      "tooling_source": "de8fe21d9598660e40da8486e48f2d46acee4582",
+      "module_validation_publication": "c603a5634b6b3f54aec10bdb1fc804e0a648b567"
+    },
+    {
+      "lane_id": 2,
+      "framework_publication": "24158d2344d086d2ff3d6ba31d1099682aac8e9d",
+      "core_module": "56abbacc1192d68995e78561899719649f838079",
+      "status": "INDEPENDENT_MODULE_ONLY_PRODUCTION_ADAPTER_PENDING"
+    },
+    {
+      "lane_id": 3,
+      "framework_publication": "bfa193e76873ebf39ce5262483f4828f833dbc3d",
+      "core_adapter": "ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5",
+      "status": "R3_SHARED_STORE_ADAPTER_NOT_YET_INDEPENDENTLY_QUALIFIED"
     }
   ],
   "artifacts": [
@@ -45,7 +89,8 @@
     "STORAGE_AND_PORT_LEDGER.md",
     "SOURCE_MAP.md",
     "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_CANDIDATE_r1/",
-    "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_PRODUCTION_r1/"
+    "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_PRODUCTION_r1/",
+    "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_RELEASE_r2/"
   ],
   "validation": {
     "production_directed": "8_GROUPS_PASS",
@@ -54,33 +99,11 @@
     "old_directed": "4_EXECUTABLES_PASS",
     "terminal_parser": "8_TESTS_PASS",
     "fresh_old_reference_controls": "3_COMPLETE_VALID_ALL_7_CSV_FAMILIES_MATCH_RETAINED_HISTORY",
-    "new_old_off_controls": "IN_PROGRESS",
-    "independent_qualification": "NOT_CLAIMED"
+    "new_old_off_controls": "PASS_3_OF_3_ALL_7_FAMILIES_BYTE_IDENTICAL",
+    "independent_qualification": "PENDING_LANE5",
+    "immutable_binary_directed": "12_SCENARIO_GROUPS_PASS_WITH_EXACT_EXECUTABLE_HASH"
   },
-  "active_runs": [
-    {
-      "run_key": "96913a8f95f26061d5f52030aab46e73fd0fb5584402a1b97441947c586cd629",
-      "status": "RUNNING",
-      "workload": "vectorAdd_4M",
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 553290,
-        "start_ticks": 889609484
-      },
-      "result_directory": "/workspace/results/ep_l2_ft20261016/96913a8f95f26061d5f52030aab46e73fd0fb5584402a1b97441947c586cd629"
-    },
-    {
-      "run_key": "c28261d68c849c8f10bbbd3e187ba5ed26cae91691b6239cfcda0028de243d94",
-      "status": "RUNNING",
-      "workload": "cfd_097k",
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 553291,
-        "start_ticks": 889609488
-      },
-      "result_directory": "/workspace/results/ep_l2_ft20261016/c28261d68c849c8f10bbbd3e187ba5ed26cae91691b6239cfcda0028de243d94"
-    }
-  ],
+  "active_runs": [],
   "blockers": [],
   "feature_vectors": {
     "B16_BANKED": {
@@ -127,5 +150,6 @@
       "bank_count": 4,
       "ops_per_bank_cycle": 1
     }
-  }
+  },
+  "analysis_source_commit": "dea8a5af1346799d1aea01e4a691e1e7f372c454"
 }

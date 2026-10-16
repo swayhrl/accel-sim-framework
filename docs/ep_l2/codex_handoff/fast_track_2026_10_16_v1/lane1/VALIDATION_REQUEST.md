@@ -3,8 +3,8 @@
 Consume Core 126394be46b15f55b9756d43eb9ca9a9baae1c84 and Framework runtime
 37dec04d223ae65167c5584e56887c74f6540d27. Binary/config hashes and local immutable
 snapshots are in BASELINE_CONTRACT_V1.json. Interface ABI remains V1.
-Production tests/source are delivered now; old-OFF gate still in progress, so
-formal run qualification must wait for its final evidence update. Do not rerun
+Production tests/source and all three exact old-OFF comparisons are delivered.
+Proceed with independent release qualification and the first B16/U_WB pair. Do not rerun
 claimed old qualification keys; read the canonical registry's existing owner.
 
 Please independently review version/reference limits, finite staging and bank

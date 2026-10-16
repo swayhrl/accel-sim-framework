@@ -1,35 +1,43 @@
 # Lane 1 status
 
-Status: PRODUCTION_DIRECTED_PASS / OLD_OFF_QUALIFICATION_IN_PROGRESS.
-Node: huangrulin-174. Both branches: hrl/ep-l2-ft20261016-lane1-v1.
+Status: B16_UWB_PRODUCER_READY_FOR_INDEPENDENT_VALIDATION.
+Node: huangrulin-174. Branch in both repositories: hrl/ep-l2-ft20261016-lane1-v1.
 Framework worktree: /workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-v1.
 Core worktree: /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-v1.
-Frozen runtime Framework: 37dec04d223ae65167c5584e56887c74f6540d27.
-Frozen runtime Core: 126394be46b15f55b9756d43eb9ca9a9baae1c84.
-Coordination 6c136e2a is not runtime authority.
+Frozen producing Framework: 37dec04d223ae65167c5584e56887c74f6540d27.
+Frozen producing Core: 126394be46b15f55b9756d43eb9ca9a9baae1c84.
+Binary: 0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698.
+Coordination 6c136e2a remains task authority only.
 
-Completed: executable shared identity/pool/sector/pin/transaction interface;
-real B8/B16 finite staging, actual copy/write/send bank service and same-bank
-reservation; U_WB in-place WB ownership and dynamic bank-class-preserving landing;
-separate true lower-accept and set_done lifetime; bounded WAD/control/issue state;
-version-reference tests; actual requester-token producer/sink audit and hardware
-terminal adapter. Full release builds PASS. Eight direct production groups,
-four real partition modes and four invalid-mode rejects PASS. Four historical
-Core executables and eight strict parser tests PASS. All diagnostic failures
-remain retained and excluded from scientific results.
+## Completed
 
-Three fresh old-source controls have completed and all seven scientific CSV
-families match retained history. Frozen new all-OFF vectorAdd/cfd qualification
-runs are active under the central Lane 5 registry; actual active keys/PIDs are
-in RECEIPT.json. sad is next after a slot frees. No formal B16/U_WB result is
-claimed; normalized independent qualification remains Lane 5 owned.
+Public interface V1, finite B8/B16 WB staging and true producer admission,
+explicit static copy/send and absorbed-write/response bank costs, U_WB in-place
+role ownership and same-bank-class dynamic landing, bounded control and physical
+budgets, version-reference tests, real requester-token sink/source audit,
+terminal hardware/role/WB closure and strict parser. Default feature bits remain
+OFF. All raw diagnostics and historical source/trace/worktrees are preserved.
 
-Next executable action: finish the three new all-OFF comparisons, publish
-OLD_STATIC_EQUIVALENCE.csv and B16_UWB_READY with the exact binary/config
-contract, then let Lane 5 independently qualify and run its five-point matrix.
-Do not wait for TVD/RO. Lane 2/3 production integration remains dependent on
-version-bound minimal patches and independent producer-driven validation.
+Six actual registry-owned full-application old/new qualification runs completed:
+vectorAdd_4M/cfd_097k/sad cycles/instructions and seven CSV families are exact;
+the three fresh old controls also match retained history. Twelve production
+direct/real-partition groups, four illegal mode rejects, four legacy executables
+and eight parser tests pass. B16/U_WB application performance is NOT_RUN here.
 
-Review pack: docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_PRODUCTION_r1/.
-See VALIDATION_REQUEST.md, BASELINE_CONTRACT_V1.json and the storage/port ledger.
-No unrelated task/worktree was stopped, rebuilt or modified.
+## Immediate consumer action
+
+Lane 5 independently qualifies the exact frozen release and starts its assigned
+five-point B16/U_WB16 comparisons, without waiting for RO/TVD. Independent PASS
+is not self-declared by this producer. No Lane 1 qualification runs remain active.
+
+## Following integration stage
+
+Lane 2 Core 56abbacc directory module has independent module-only validation.
+Lane 3 shared-store adapter ddedbf0f follows its independently tested earlier
+oracle/transaction module; actual runtime Tag/memport/epoch dispatch and final
+independent production gates remain open. They are separate feature stages and
+must not delay this released first pair or be labeled FULL runtime ready.
+
+Review: docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_RELEASE_r2/.
+Entry files: B16_UWB_READY.md, BASELINE_CONTRACT_V1.json,
+OLD_STATIC_EQUIVALENCE.csv, DIRECTED_TEST_RESULTS.json, RECEIPT.json.

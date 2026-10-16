@@ -1,0 +1,316 @@
+diff --git a/gpu-simulator/CMakeLists.txt b/gpu-simulator/CMakeLists.txt
+index 45d8f242..c3da4ab9 100644
+--- a/gpu-simulator/CMakeLists.txt
++++ b/gpu-simulator/CMakeLists.txt
+@@ -39,0 +40 @@ execute_process(
++    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+@@ -46,0 +48 @@ execute_process(
++    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+@@ -53,0 +56 @@ execute_process(
++    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+diff --git a/tests/ep_l2/ft20261016/b16_banked.config b/tests/ep_l2/ft20261016/b16_banked.config
+new file mode 100644
+index 00000000..fb25615d
+--- /dev/null
++++ b/tests/ep_l2/ft20261016/b16_banked.config
+@@ -0,0 +1,3 @@
++# FT20261016 b16_banked; appended after the unchanged D512 Banked overlay.
++-gpgpu_ep_l2_ft_mode 1
++-gpgpu_ep_l2_wbuf_entries 16
+diff --git a/tests/ep_l2/ft20261016/b8_banked.config b/tests/ep_l2/ft20261016/b8_banked.config
+new file mode 100644
+index 00000000..2d7d8cea
+--- /dev/null
++++ b/tests/ep_l2/ft20261016/b8_banked.config
+@@ -0,0 +1,3 @@
++# FT20261016 b8_banked; appended after the unchanged D512 Banked overlay.
++-gpgpu_ep_l2_ft_mode 1
++-gpgpu_ep_l2_wbuf_entries 8
+diff --git a/tests/ep_l2/ft20261016/old_static.config b/tests/ep_l2/ft20261016/old_static.config
+new file mode 100644
+index 00000000..e27ad424
+--- /dev/null
++++ b/tests/ep_l2/ft20261016/old_static.config
+@@ -0,0 +1,3 @@
++# FT20261016 old_static; appended after the unchanged D512 Banked overlay.
++-gpgpu_ep_l2_ft_mode 0
++-gpgpu_ep_l2_wbuf_entries 0
+diff --git a/tests/ep_l2/ft20261016/u_wb16.config b/tests/ep_l2/ft20261016/u_wb16.config
+new file mode 100644
+index 00000000..de3b2bce
+--- /dev/null
++++ b/tests/ep_l2/ft20261016/u_wb16.config
+@@ -0,0 +1,3 @@
++# FT20261016 u_wb16; appended after the unchanged D512 Banked overlay.
++-gpgpu_ep_l2_ft_mode 2
++-gpgpu_ep_l2_wbuf_entries 16
+diff --git a/tests/ep_l2/ft20261016/u_wb8.config b/tests/ep_l2/ft20261016/u_wb8.config
+new file mode 100644
+index 00000000..8df2be5f
+--- /dev/null
++++ b/tests/ep_l2/ft20261016/u_wb8.config
+@@ -0,0 +1,3 @@
++# FT20261016 u_wb8; appended after the unchanged D512 Banked overlay.
++-gpgpu_ep_l2_ft_mode 2
++-gpgpu_ep_l2_wbuf_entries 8
+diff --git a/util/ep_l2/ft_lane1/parse_ft_terminal.py b/util/ep_l2/ft_lane1/parse_ft_terminal.py
+new file mode 100644
+index 00000000..175198b3
+--- /dev/null
++++ b/util/ep_l2/ft_lane1/parse_ft_terminal.py
+@@ -0,0 +1,73 @@
++#!/usr/bin/env python3
++"""Fail-closed FT terminal adapter; independent data qualification is an input."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import re
++
++
++def digest(path):
++    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
++
++
++def parse(raw, spec):
++    final={};native={}
++    for line in raw.open(errors='replace'):
++        match=re.fullmatch(r'gpu_tot_sim_(cycle|insn)\s*=\s*(\d+)\s*',line)
++        if match:native[match[1]]=int(match[2])
++        if not line.startswith(('EPL2FTV1|SUMMARY|','EPL2FTV1|TERMINAL|','EPL2B0V1|INVARIANT|')):continue
++        parts=line.strip().split('|');values=dict(v.split('=',1) for v in parts[2:])
++        kind=parts[1]
++        if kind=='INVARIANT' and values['kernel_uid']!='18446744073709551615':continue
++        final[kind,int(values['slice'])]={k:int(v) for k,v in values.items()}
++    expected={(kind,s) for kind in ('SUMMARY','TERMINAL','INVARIANT') for s in range(64)}
++    if set(final)!=expected:raise ValueError('missing exact 64-slice FT/B0 terminal snapshot')
++    feature=spec['identity']['feature_vector'];cap=feature['payload_capacity_per_slice']
++    summaries=[final['SUMMARY',s] for s in range(64)];terminals=[final['TERMINAL',s] for s in range(64)]
++    invariants=[final['INVARIANT',s] for s in range(64)]
++    for s,t,i in zip(summaries,terminals,invariants):
++        if s['physical_slots']!=cap or s['wbuf']!=feature['wbuf_entries'] or s['mode']!=(2 if feature['unified_wb'] else 1):
++            raise ValueError('source-emitted mode/budget does not match run identity')
++        if s['role_free']+s['role_resident']+s['role_bypass']+s['wb_slots']!=cap:
++            raise ValueError('per-slice payload conservation failed')
++        if not(s['ownership_consistent']==t['requester_exact_once']==t['hardware_drained']==1):
++            raise ValueError('source-emitted ownership/request-token/drain gate failed')
++        if s['reserved'] or s['read_refs'] or s['wb_live'] or s['wb_slots']:
++            raise ValueError('live FT transient state at terminal')
++        if s['wb_created']!=s['wb_lower_accept'] or s['wb_created']!=s['wb_completed']:
++            raise ValueError('source-emitted WB lifecycle failed')
++    def total(rows,key):return sum(r[key] for r in rows)
++    qualification=False
++    release_path=spec.get('qualified_release')
++    if release_path:
++        release=json.loads(Path(release_path).read_text())
++        gate=release['gates']['sector_reference_data']
++        qualification=(release['qualified_by']=='lane5' and release['status']=='INDEPENDENTLY_QUALIFIED'
++            and release['evidence_kind']=='PRODUCTION_DRIVEN' and gate['status']=='PASS'
++            and gate['production_driven'] is True and digest(gate['evidence_path'])==gate['evidence_sha256'])
++    return {'cycles':native['cycle'],'instructions':native['insn'],'slices':64,
++        'unique_requesters':total(terminals,'unique_requesters'),'responses':total(terminals,'responses'),
++        'live_descriptors':total(invariants,'descriptor_used'),'live_line_mshrs':total(invariants,'line_mshr_used'),
++        'live_wad':total(invariants,'wad_live'),'pending_lower_reads':total(terminals,'pending_lower_reads'),
++        'pending_returns':total(terminals,'pending_returns'),'pending_responses':total(terminals,'pending_responses'),
++        'wb_created':total(summaries,'wb_created'),'wb_lower_accepted':total(summaries,'wb_lower_accept'),
++        'wb_completed':total(summaries,'wb_completed'),'payload_capacity':cap*64,
++        'payload_free':total(summaries,'role_free'),'payload_roles':{'RESIDENT_OR_FILL':total(summaries,'role_resident'),
++            'BYPASS':total(summaries,'role_bypass'),'WB_STAGED':total(summaries,'wb_slots')},
++        'transient_payloads':total(summaries,'wb_slots')+total(invariants,'resident_pending')+total(invariants,'bypass_live'),
++        'hardware_drained':all(t['hardware_drained']==1 for t in terminals),
++        'workload_termination':spec['identity']['termination_contract'],'requester_exact_once_audit':True,
++        'data_correctness_qualification':qualification,'raw_log_sha256':digest(raw),
++        'source_map':{'native':'terminal gpu_tot_sim_cycle/insn; not slice-summed','requesters':'FT TERMINAL actual admission/response token insert/erase',
++            'drain':'FT TERMINAL actual memory_sub_partition::l2_char_no_resource_leak',
++            'WB':'FT SUMMARY real packet-created/lower-push/set_done counts','roles':'FT SUMMARY sole payload-store ownership',
++            'data_qualification':'separate Lane 5 qualified_release artifact; never inferred from aggregate counters'}}
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--raw',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
++    args=p.parse_args();spec=json.loads(Path('input_spec.json').read_text());value=parse(args.raw,spec)
++    args.out.write_text(json.dumps(value,indent=2)+'\n')
++
++if __name__=='__main__':main()
+diff --git a/util/ep_l2/ft_lane1/run_qualification.py b/util/ep_l2/ft_lane1/run_qualification.py
+new file mode 100644
+index 00000000..a9f0f077
+--- /dev/null
++++ b/util/ep_l2/ft_lane1/run_qualification.py
+@@ -0,0 +1,127 @@
++#!/usr/bin/env python3
++"""Old-static qualification only; B16/U_WB formal assignments belong to Lane 5."""
++import argparse
++import csv
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import shutil
++import subprocess
++import sys
++import time
++
++ROOT = Path(__file__).resolve().parents[3]
++SHARED = Path('/workspace/ep_l2_ft20261016_shared')
++ROSTER = {
++    'vectorAdd_4M': 'decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000',
++    'cfd_097k': 'decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K',
++    'sad': 'decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin',
++}
++ARTIFACTS = ['target_'+name+'.csv' for name in ('summary','slice','kernel','bank','l1','dram','window')]
++
++
++def sha(path):
++    h=hashlib.sha256()
++    with Path(path).open('rb') as f:
++        for chunk in iter(lambda:f.read(4*1024**2),b''):h.update(chunk)
++    return h.hexdigest()
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--binary',type=Path,required=True)
++    p.add_argument('--core',type=Path,required=True)
++    p.add_argument('--core-source',required=True)
++    p.add_argument('--framework-source',required=True)
++    p.add_argument('--trace-root',type=Path,default=Path('/workspace/worktrees/accel-sim-decoupled-l2/hw_run'))
++    p.add_argument('--workload',choices=ROSTER,required=True)
++    p.add_argument('--timeout',type=int,default=900)
++    args=p.parse_args()
++    client=json.loads((SHARED/'CLIENT_CONTRACT.json').read_text())
++    assert sha(client['registry_client'])==client['registry_client_sha256']
++    sys.path.insert(0,str(Path(client['registry_client']).parent))
++    from registry import Registry, process_identity, write_json
++    from run import asset_manifest,content_hash,process_tree_rss,local_resources,terminate_owned
++    binary=args.binary.resolve(strict=True)
++    configs=[args.core/'configs/tested-cfgs/SM7_QV100/gpgpusim.config',
++             ROOT/'gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config',
++             ROOT/'tests/ep_l2/b0_banked_d512_850.config', ROOT/'tests/ep_l2/m0a_off.config']
++    cfgassets=[{'name':f'config-{i}.config','path':str(f)} for i,f in enumerate(configs)]
++    auxiliary=[]
++    for config in configs:
++        for line in config.read_text().splitlines():
++            line=line.split('#',1)[0].strip()
++            if re.search(r'\.(xml|icnt|config)(?:\s|$)',line):
++                raise ValueError('qualification requires explicit auxiliary asset resolution: '+line)
++    trace=(args.trace_root/ROSTER[args.workload]/'traces/kernelslist.g').resolve(strict=True)
++    files=[{'name':'kernelslist.g','path':str(trace)}]
++    names=set()
++    for line in trace.read_text().splitlines():
++        line=line.strip()
++        if not line or line.startswith(('#','MemcpyHtoD,','MemcpyDtoH,','MemcpyDtoD,')):continue
++        if not re.fullmatch(r'kernel-[^/\s]+\.traceg(?:\.gz)?',line):raise ValueError('unsupported trace command '+line)
++        if line not in names:files.append({'name':line,'path':str((trace.parent/line).resolve(strict=True))});names.add(line)
++    cfgmanifest=asset_manifest(cfgassets,ordered=True);tracemanifest=asset_manifest(files)
++    environment={'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}
++    identity={'core_source_commit':args.core_source,'framework_source_commit':args.framework_source,
++        'binary_sha256':sha(binary),'runtime_config_sha256':content_hash({'ordered_configs':cfgmanifest,'auxiliary_assets':auxiliary,'environment':environment}),
++        'trace_content_sha256':content_hash(tracemanifest),'workload':args.workload,
++        'epoch_range':{'scope':'full_application','epochs':'all'},
++        'feature_vector':{'finite_wbuf':False,'unified_wb':False,'tvd':False,'ro':False,'adaptive_policy':False,
++            'wbuf_entries':0,'payload_capacity_per_slice':1152,'bank_count':4,'ops_per_bank_cycle':1},
++        'ideal_vector':{'wb':False,'meta':False,'read_hit':False},
++        'termination_contract':{'hardware_drained':True,'normal_exit':True,'qualification':'OLD_STATIC_EQUIVALENCE_V1','timeout_seconds':args.timeout}}
++    from registry import run_key
++    key=run_key(identity);out=Path('/workspace/results/ep_l2_ft20261016')/key
++    registry=Registry();fresh,lease=registry.claim(identity,'lane1',out)
++    if not fresh:
++        print(json.dumps({'status':'DUPLICATE_NOT_LAUNCHED','existing':lease},indent=2));return
++    out.mkdir(exist_ok=False)
++    write_json(out/'input_identity.json',identity)
++    write_json(out/'input_assets.json',{'configs':cfgmanifest,'trace':tracemanifest,'trace_paths':files,'registry_client_source':client['source_commit']})
++    snapshot=out/'accel-sim.out';shutil.copyfile(binary,snapshot);snapshot.chmod(0o755)
++    assert sha(snapshot)==identity['binary_sha256']
++    command=[str(snapshot)]
++    for i,source in enumerate(configs):
++        f=out/f'config-{i}.config';shutil.copyfile(source,f);command.extend(['-config',str(f)])
++    command.extend(['-trace',str(trace)])
++    proc=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();peak=0
++    try:
++        env=os.environ.copy();env.update(environment)
++        with (out/'raw.log').open('xb') as f:
++            proc=subprocess.Popen(command,cwd=out,stdout=f,stderr=subprocess.STDOUT,env=env,start_new_session=True)
++            registry.update(key,lease['lease_id'],'RUNNING',process=process_identity(proc.pid))
++            while proc.poll() is None:
++                peak=max(peak,process_tree_rss(proc.pid));resources=local_resources()
++                if time.monotonic()-started>args.timeout:status='TIMEOUT';detail='qualification deadline';terminate_owned(proc);break
++                if peak>lease['memory_bytes'] or (out/'raw.log').stat().st_size>2*1024**3 or resources['disk_free_bytes']<48*1024**3:
++                    status='RESOURCE_LIMIT';detail='own qualification resource limit';terminate_owned(proc);break
++                time.sleep(1)
++        if proc.returncode:raise RuntimeError(f'process exit {proc.returncode}')
++        log=(out/'raw.log').read_text(errors='replace')
++        if 'GPGPU-Sim: *** exit detected ***' not in log:raise RuntimeError('no normal simulator exit')
++        result=subprocess.run([sys.executable,str(ROOT/'util/ep_l2/parse_epl2_b0.py'),str(out/'raw.log'),'--out',str(out),
++            '--framework-commit',args.framework_source,'--core-commit',args.core_source,'--source-log',str(out/'raw.log')],capture_output=True,text=True)
++        (out/'parser.stdout').write_text(result.stdout);(out/'parser.stderr').write_text(result.stderr)
++        if result.returncode:raise RuntimeError('B0 terminal parser failed: '+result.stderr)
++        summary=next(csv.DictReader((out/'target_summary.csv').open()))
++        assert summary['invariants_terminal_clean']=='1' and summary['invariants_payload_consistent']=='1'
++        assert all((out/name).is_file() for name in ARTIFACTS)
++        assert asset_manifest(cfgassets,ordered=True)==cfgmanifest and asset_manifest(files)==tracemanifest
++        status='COMPLETE_VALID';detail='qualification old-static terminal/parser/invariants PASS; not a B16 result'
++    except (Exception,KeyboardInterrupt) as error:
++        if proc is not None:terminate_owned(proc)
++        if status not in {'TIMEOUT','RESOURCE_LIMIT'}:status='FAILED'
++        detail=f'{type(error).__name__}: {error}'
++    finally:
++        record={'status':status,'detail':detail,'identity':identity,'command':command,'wall_seconds':time.monotonic()-started,
++            'peak_process_tree_rss_bytes':peak,'exit_code':proc.returncode if proc else None,'raw_log_sha256':sha(out/'raw.log') if (out/'raw.log').exists() else None,
++            'artifact_sha256':{name:sha(out/name) for name in ARTIFACTS if (out/name).exists()}}
++        write_json(out/'run_status.json',record)
++        registry.update(key,lease['lease_id'],status,exit_code=record['exit_code'],detail=detail,raw_log_sha256=record['raw_log_sha256'])
++        print(json.dumps({'status':status,'directory':str(out),'detail':detail}),flush=True)
++    if status!='COMPLETE_VALID':raise SystemExit(1)
++
++if __name__=='__main__':main()
+diff --git a/util/ep_l2/ft_lane1/test_terminal.py b/util/ep_l2/ft_lane1/test_terminal.py
+new file mode 100644
+index 00000000..357d5750
+--- /dev/null
++++ b/util/ep_l2/ft_lane1/test_terminal.py
+@@ -0,0 +1,43 @@
++import copy
++import importlib.util
++from pathlib import Path
++import tempfile
++import unittest
++spec=importlib.util.spec_from_file_location('ft_terminal',Path(__file__).with_name('parse_ft_terminal.py'))
++module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
++
++class TerminalContract(unittest.TestCase):
++    def setUp(self):
++        self.tmp=tempfile.TemporaryDirectory();self.raw=Path(self.tmp.name)/'raw.log'
++        self.spec={'identity':{'feature_vector':{'payload_capacity_per_slice':1168,'wbuf_entries':16,'unified_wb':True},'termination_contract':{'hardware_drained':True}}}
++        self.rows=[]
++        for sid in range(64):
++            self.rows.extend([
++                f'EPL2FTV1|SUMMARY|slice={sid}|physical_slots=1168|wbuf=16|mode=2|role_free=1167|role_resident=1|role_bypass=0|wb_slots=0|ownership_consistent=1|reserved=0|read_refs=0|wb_live=0|wb_created=3|wb_lower_accept=3|wb_completed=3',
++                f'EPL2FTV1|TERMINAL|slice={sid}|unique_requesters=9|responses=9|requester_live=0|requester_exact_once=1|hardware_drained=1|pending_lower_reads=0|pending_returns=0|pending_responses=0',
++                f'EPL2B0V1|INVARIANT|slice={sid}|kernel_uid=18446744073709551615|descriptor_used=0|line_mshr_used=0|wad_live=0|resident_pending=0|bypass_live=0'])
++        self.rows.extend(['gpu_tot_sim_cycle = 100','gpu_tot_sim_insn = 200'])
++    def tearDown(self):self.tmp.cleanup()
++    def parse(self):
++        self.raw.write_text('\n'.join(self.rows)+'\n');return module.parse(self.raw,self.spec)
++    def reject(self,before,after):
++        self.rows[0]=self.rows[0].replace(before,after)
++        with self.assertRaises(ValueError):self.parse()
++    def test_source_scope_and_no_invented_data_pass(self):
++        value=self.parse();self.assertEqual(value['cycles'],100)
++        self.assertEqual(value['payload_capacity'],1168*64)
++        self.assertEqual(value['unique_requesters'],9*64)
++        self.assertFalse(value['data_correctness_qualification'])
++    def test_missing_slice(self):
++        self.rows=self.rows[3:]
++        with self.assertRaises(ValueError):self.parse()
++    def test_mode_mismatch(self):self.reject('mode=2','mode=1')
++    def test_budget_mismatch(self):self.reject('physical_slots=1168','physical_slots=1160')
++    def test_wb_milestone(self):self.reject('wb_completed=3','wb_completed=2')
++    def test_live_refs(self):self.reject('read_refs=0','read_refs=1')
++    def test_conservation(self):self.reject('role_free=1167','role_free=1168')
++    def test_exact_once_gate(self):
++        self.rows[1]=self.rows[1].replace('requester_exact_once=1','requester_exact_once=0')
++        with self.assertRaises(ValueError):self.parse()
++
++if __name__=='__main__':unittest.main()

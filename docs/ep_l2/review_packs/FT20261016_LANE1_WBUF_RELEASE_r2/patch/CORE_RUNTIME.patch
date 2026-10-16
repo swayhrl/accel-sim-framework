@@ -1,0 +1,761 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+new file mode 100644
+index 00000000..3c01ee5c
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -0,0 +1,325 @@
++// FT20261016 production integration. Included once by gpu-cache.cc.
++// The all-OFF path remains in the historical implementation.
++void l2_cache::descriptor_admitted(mem_fetch *mf, unsigned index) {
++  if (!ft_enabled()) return;
++  const ep_l2::PayloadHandle h = tag_payload_handle(index);
++  assert(m_ep_l2_payload.handle_owner_matches(h, m_config.block_addr(mf->get_addr())));
++  mf->set_ep_l2_payload_identity(h.payload_id, h.generation);
++  assert(m_ft_read_refs.insert(std::make_pair(mf, h)).second);
++  m_ep_l2_payload.pin(h);
++}
++
++void l2_cache::lower_read_enqueued(mem_fetch *mf, unsigned index) {
++  if (!ft_enabled()) return;
++  const ep_l2::PayloadHandle h = tag_payload_handle(index);
++  assert(m_ft_read_refs.count(mf));
++  m_ep_l2_payload.note_resident_lower_read(h.payload_id,
++      m_config.block_addr(mf->get_addr()), h.generation, mf->get_access_sector_mask());
++}
++
++mem_fetch *l2_cache::peek_next_access() const {
++  mem_fetch *mf = baseline_cache::peek_next_access();
++  if (ft_enabled()) {
++    std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
++    assert(it != m_ft_read_refs.end());
++    mf->set_ft_wb_data(m_ep_l2_payload.inspect(it->second).versions);
++  }
++  return mf;
++}
++
++bool l2_cache::ft_response_ready(unsigned long long cycle) {
++  if (!ft_enabled()) return true;
++  mem_fetch *mf = baseline_cache::peek_next_access();
++  std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
++  assert(it != m_ft_read_refs.end());
++  return m_ep_l2_payload.request(it->second, false, cycle,
++      (unsigned long long)-1, ep_l2_payload_store::RESIDENT_HIT_READ) == ep_l2_payload_store::GRANTED;
++}
++
++void l2_cache::cycle() {
++  baseline_cache::cycle();
++  if (ft_enabled()) {
++    ++m_ft_stats.observed_cycles;
++    m_ft_stats.staging_occupancy_sum += m_ep_l2_payload.wb_used();
++  }
++}
++
++void l2_cache::commit_next_access() {
++  if (!ft_enabled()) { baseline_cache::commit_next_access(); return; }
++  // A synthetic write-allocate response may already have been deleted by the
++  // frontend. Use its pointer only as an identity key, never dereference it.
++  mem_fetch *mf = baseline_cache::peek_next_access();
++  std::map<mem_fetch *,ep_l2::PayloadHandle>::iterator it = m_ft_read_refs.find(mf);
++  assert(it != m_ft_read_refs.end());
++  const ep_l2::PayloadHandle h = it->second;
++  baseline_cache::commit_next_access();
++  m_ep_l2_payload.unpin(h);
++  m_ft_read_refs.erase(it);
++  ++m_ft_stats.descriptor_responses;
++}
++
++void l2_cache::ft_rollback() {
++  ft_replacement &p = m_ft_pending;
++  assert(p.request && !p.bound);
++  if (p.wad) {
++    assert(m_ep_l2_wad_entries_live.erase(p.victim_address) == 1);
++    assert(m_ep_l2_wad_birth_cycle.erase(p.victim_address) == 1);
++  }
++  if (p.staging.valid() && p.staging != p.victim && m_ep_l2_payload.handle_live(p.staging)) {
++    m_ep_l2_payload.cancel_request(p.staging, true);
++    m_ep_l2_payload.release(p.staging);
++  }
++  if (p.landing_reserved && m_ep_l2_payload.handle_live(p.landing))
++    m_ep_l2_payload.release(p.landing);
++  if (p.victim.valid()) m_ep_l2_payload.restore(p.victim.payload_id, p.saved);
++  set_tag_payload_handle(p.tag_index, p.victim);
++  ++m_ft_stats.rollback;
++  p = ft_replacement();
++}
++
++enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
++    unsigned time, std::list<cache_event> &events) {
++  m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
++  const new_addr_type owner = m_config.block_addr(addr);
++  unsigned index = (unsigned)-1;
++  cache_request_status probe = m_tag_array->probe(owner, index, mf, mf->is_write(), true);
++  if (probe == RESERVATION_FAIL) return RESERVATION_FAIL;
++  if (m_ft_pending.request && m_ft_pending.request != mf) return RESERVATION_FAIL;
++  if (ep_l2_wad_contains(owner)) { ++m_ep_l2_wad_same_address_wait_count; return RESERVATION_FAIL; }
++
++  if (probe == MISS && !m_ft_pending.request) {
++    // Retire completed invalidated tag identities (e.g. a kernel flush), never
++    // a pinned response or a live pending sector. No address-wide RO cleanup.
++    for (unsigned t = 0; t < m_config.get_num_lines(); ++t) {
++      const ep_l2::PayloadHandle h = tag_payload_handle(t);
++      if (!m_ep_l2_payload.handle_live(h)) continue;
++      const ep_l2_payload_store::slot &s = m_ep_l2_payload.inspect(h);
++      if (s.allocation_role == ep_l2_payload_store::RESIDENT &&
++          m_tag_array->get_block(t)->is_invalid_line() && !s.pins && s.pending_sector_mask.none()) {
++        m_ep_l2_payload.release(h); set_tag_payload_handle(t, ep_l2::PayloadHandle());
++      }
++    }
++    const ep_l2::PayloadHandle victim = tag_payload_handle(index);
++    const bool live = m_ep_l2_payload.handle_live(victim);
++    const bool dirty = m_tag_array->block_is_modified(index);
++    if (live && (m_ep_l2_payload.inspect(victim).pins ||
++                 m_ep_l2_payload.inspect(victim).pending_sector_mask.any())) {
++      ++m_ft_stats.pin_block; return RESERVATION_FAIL;
++    }
++    assert(!dirty || live);
++    // Compute the actual target policy's issue needs before acquiring anything.
++    const bool read = !mf->get_is_write();
++    const new_addr_type key = m_config.mshr_addr(addr);
++    unsigned slots = dirty ? 1 : 0;
++    if (read) {
++      if (m_mshrs.full(key)) return RESERVATION_FAIL;
++      if (m_mshrs.needs_lower_read(key, mf->get_access_sector_mask())) ++slots;
++    } else if (m_config.m_write_alloc_policy == WRITE_ALLOCATE) {
++      if (m_mshrs.full(key)) return RESERVATION_FAIL;
++      slots += 2;
++    } else if (m_config.m_write_alloc_policy == FETCH_ON_WRITE &&
++               mf->get_access_byte_mask().count() != m_config.get_atom_sz()) {
++      if (m_mshrs.full(key)) return RESERVATION_FAIL;
++      ++slots;
++    }
++    if (!miss_queue_has_slots(slots)) { ++m_ft_stats.issue_block; return RESERVATION_FAIL; }
++    if (dirty && m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries) {
++      ++m_ep_l2_wad_full_block_count; return RESERVATION_FAIL;
++    }
++    ep_l2::PayloadHandle staging, landing;
++    if (dirty && m_config.m_ep_l2_ft_mode == 1) {
++      staging = m_ep_l2_payload.preview_free(ep_l2_payload_store::WB);
++      if (!staging.valid()) { ++m_ft_stats.wbuf_full; return RESERVATION_FAIL; }
++    }
++    if (m_config.m_ep_l2_ft_mode == 2 && (dirty || !live)) {
++      landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);
++      if (!landing.valid()) { ++m_ft_stats.pool_full; return RESERVATION_FAIL; }
++      if (dirty) staging = victim;
++    }
++    // The only producer is the serialized frontend head. While this token is
++    // live no other frontend request can steal its prechecked issue slots;
++    // fills and lower drains cannot add entries to m_miss_queue.
++    ft_replacement &p = m_ft_pending;
++    p.request = mf; p.tag_index = index; p.dirty = dirty; p.victim = live ? victim : ep_l2::PayloadHandle();
++    p.born = time;
++    p.landing_id = landing.valid() ? landing.payload_id :
++        (m_config.m_ep_l2_ft_mode == 2 && live ? victim.payload_id : index);
++    if (live) p.saved = m_ep_l2_payload.inspect(victim);
++    if (dirty) {
++      p.victim_address = m_tag_array->get_block(index)->m_block_addr;
++      assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);
++      assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(p.victim_address, time)).second);
++      p.wad = true;
++      if (m_config.m_ep_l2_ft_mode == 1)
++        p.staging = m_ep_l2_payload.reserve(staging.payload_id,
++            ep_l2_payload_store::WB, p.victim_address, ep_l2_payload_store::WB_RESERVED);
++      else p.staging = staging;
++    }
++    if (landing.valid()) {
++      p.landing = m_ep_l2_payload.reserve(landing.payload_id,
++          ep_l2_payload_store::RESIDENT, owner, ep_l2_payload_store::RESIDENT_FILL_PENDING);
++      p.landing_reserved = true;
++    }
++  }
++
++  bool replacement = m_ft_pending.request == mf;
++  if (replacement) {
++    ft_replacement &p = m_ft_pending;
++    assert(p.tag_index == index && probe == MISS);
++    if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {
++      // A shared, explicitly costed 128B copy-pipeline latch bridges same-bank
++      // read and write cycles. Both compared organizations include this latch.
++      if (p.phase == 0) {
++        m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.victim,
++            false, time, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT);
++        if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
++          ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++        }
++        p.born = time; // actual source readout starts data-staging lifetime
++        p.copy_versions = m_ep_l2_payload.inspect(p.victim).versions;
++        p.phase = 1;
++        return RESERVATION_FAIL;
++      }
++      if (p.phase == 1) {
++        m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.staging,
++            true, time, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE);
++        if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
++          ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++        }
++        m_ep_l2_payload.inspect_mutable(p.staging).versions = p.copy_versions;
++        m_ep_l2_payload.transfer(p.staging, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
++        ++m_ft_stats.copy_lines; p.phase = 2;
++      }
++    }
++    // Locally absorbed writes consume an actual payload RAM write. Request
++    // the stable prospective ID before changing victim/tag ownership, so a
++    // same-bank denial cannot expose a partially installed new generation.
++    if (mf->get_is_write()) {
++      m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(
++          ep_l2_payload_store::RESIDENT, p.landing_id, true, time,
++          (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE);
++      if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
++        ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++      }
++    }
++    if (p.dirty && m_config.m_ep_l2_ft_mode == 2) {
++      p.born = time; // in-place WB role starts at actual producer commit
++      m_ep_l2_payload.transfer(p.victim, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
++      if (p.victim.payload_id < 1024) ++m_ft_stats.borrow_resident;
++      else if (p.victim.payload_id < 1152) ++m_ft_stats.borrow_bypass;
++    }
++    if (!p.landing_reserved) {
++      const unsigned id = p.landing_id;
++      if (m_ep_l2_payload.handle_live(p.victim)) m_ep_l2_payload.release(p.victim);
++      p.landing = m_ep_l2_payload.reserve(id, ep_l2_payload_store::RESIDENT,
++          owner, ep_l2_payload_store::RESIDENT_FILL_PENDING);
++      p.landing_reserved = true;
++    }
++    set_tag_payload_handle(index, p.landing);
++  } else {
++    const ep_l2::PayloadHandle h = tag_payload_handle(index);
++    assert(m_ep_l2_payload.handle_owner_matches(h, owner));
++    if ((mf->get_is_write() || mf->isatomic()) && m_ep_l2_payload.inspect(h).pins) {
++      ++m_ft_stats.pin_block; return RESERVATION_FAIL;
++    }
++    if (probe == HIT || mf->get_is_write()) {
++      m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(h,
++          mf->get_is_write() || mf->isatomic(), time, (unsigned long long)-1,
++          mf->get_is_write() || mf->isatomic() ? ep_l2_payload_store::RESIDENT_WRITE : ep_l2_payload_store::RESIDENT_HIT_READ);
++      if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
++        ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++      }
++    }
++  }
++  const ep_l2::PayloadHandle handle = tag_payload_handle(index);
++  mf->set_ep_l2_payload_identity(handle.payload_id, handle.generation);
++  const cache_request_status result = data_cache::access(addr, mf, time, events);
++  if (result == RESERVATION_FAIL) {
++    if (replacement) ft_rollback();
++    return result;
++  }
++  if (replacement && m_ft_pending.dirty) assert(m_ft_pending.bound);
++  ep_l2_payload_store::slot &slot = m_ep_l2_payload.inspect_mutable(handle);
++  if (mf->get_is_write() || (mf->isatomic() && probe == HIT)) {
++    for (unsigned s = 0; s < 4; ++s)
++      if (mf->get_access_sector_mask().test(s)) slot.versions[s] = (unsigned long long)mf->get_request_uid() + 1;
++    if (mf->get_access_byte_mask().count() == m_config.get_atom_sz() || probe == HIT)
++      slot.ready_sector_mask |= mf->get_access_sector_mask();
++  }
++  if (m_tag_array->block_is_modified(index)) slot.status = ep_l2_payload_store::RESIDENT_DIRTY;
++  else if (slot.pending_sector_mask.none()) slot.status = ep_l2_payload_store::RESIDENT_VALID;
++  if (!mf->get_is_write()) mf->set_ft_wb_data(slot.versions);
++  if (replacement) m_ft_pending = ft_replacement();
++  ++m_ft_stats.accepted;
++  m_tag_array->l2_char_tracking_refresh_line(index);
++  assert(m_ep_l2_payload.ownership_consistent());
++  return result;
++}
++
++void l2_cache::send_write_request(mem_fetch *mf, cache_event event, unsigned time,
++    std::list<cache_event> &events) {
++  if (ft_enabled() && mf->get_access_type() == L2_WRBK_ACC) {
++    ft_replacement &p = m_ft_pending;
++    assert(p.request && p.dirty && p.wad && !p.bound);
++    assert(m_config.block_addr(mf->get_addr()) == p.victim_address);
++    ft_wb_record r; r.handle = p.staging; r.born = p.born;
++    r.expected = m_ep_l2_payload.inspect(p.staging).versions;
++    assert(m_ft_wb.size() < m_config.m_ep_l2_wad_entries);
++    assert(m_ft_wb.insert(std::make_pair(mf, r)).second);
++    mf->set_ep_l2_payload_identity(p.staging.payload_id, p.staging.generation);
++    p.bound = true; ++m_ft_stats.wb_created;
++    m_ft_stats.staged_max = std::max(m_ft_stats.staged_max, (unsigned long long)m_ft_wb.size());
++  }
++  data_cache::send_write_request(mf, event, time, events);
++}
++
++bool l2_cache::lower_ready(mem_fetch *mf, unsigned long long cycle) {
++  if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return true;
++  std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);
++  assert(it != m_ft_wb.end());
++  const ep_l2_payload_store::request_result result = m_ep_l2_payload.request(
++      it->second.handle, false, cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT);
++  if (result != ep_l2_payload_store::GRANTED) { ++m_ft_stats.bank_block; return false; }
++  assert(m_ep_l2_payload.inspect(it->second.handle).versions == it->second.expected);
++  m_ft_last_wb_versions = it->second.expected;
++  mf->set_ft_wb_data(it->second.expected);
++  ++m_ft_stats.staging_reads; ++m_ft_stats.data_checks;
++  return true;
++}
++
++void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
++  if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return;
++  std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);
++  assert(it != m_ft_wb.end());
++  assert(mf->has_ft_wb_data() && mf->get_ft_wb_data() == it->second.expected);
++  // The physical lower FIFO now carries this packet's dirty sector bytes;
++  // all subsequent queues must retain data until actual set_done. No original
++  // payload pointer is needed with TVD disabled. These FIFO bytes are ledgered.
++  m_ep_l2_payload.release(it->second.handle);
++  m_ft_stats.staging_lifetime += cycle >= it->second.born ? cycle - it->second.born : 0;
++  ++m_ft_stats.lower_accept;
++  m_ft_wb.erase(it);
++}
++
++void l2_cache::ft_print(FILE *fp, unsigned slice) const {
++  if (!ft_enabled()) return;
++  fprintf(fp, "EPL2FTV1|SUMMARY|slice=%u|mode=%u|wbuf=%u|physical_slots=%u|"
++      "accepted=%llu|wb_created=%llu|wb_completed=%llu|wb_lower_accept=%llu|wbuf_full=%llu|pool_full=%llu|pin_block=%llu|"
++      "bank_block=%llu|issue_block=%llu|copy_lines=%llu|copy_bytes=%llu|staging_reads=%llu|"
++      "staged_max=%llu|staging_lifetime=%llu|borrow_resident=%llu|borrow_bypass=%llu|"
++      "rollback=%llu|version_checks=%llu|wb_live=%u|wb_slots=%u|reserved=%u|read_refs=%u|"
++      "role_free=%u|role_resident=%u|role_bypass=%u|ownership_consistent=%u|"
++      "observed_cycles=%llu|wb_occupancy_sum=%llu|descriptor_responses=%llu\n",
++      slice, m_config.m_ep_l2_ft_mode, m_config.m_ep_l2_wbuf_entries,
++      m_ep_l2_payload.physical_slots(), m_ft_stats.accepted, m_ft_stats.wb_created,
++      m_ep_l2_wad_lifetime_count, m_ft_stats.lower_accept,
++      m_ft_stats.wbuf_full, m_ft_stats.pool_full, m_ft_stats.pin_block,
++      m_ft_stats.bank_block, m_ft_stats.issue_block, m_ft_stats.copy_lines,
++      m_ft_stats.copy_lines * 128, m_ft_stats.staging_reads, m_ft_stats.staged_max,
++      m_ft_stats.staging_lifetime, m_ft_stats.borrow_resident, m_ft_stats.borrow_bypass,
++      m_ft_stats.rollback, m_ft_stats.data_checks, (unsigned)m_ft_wb.size(),
++      m_ep_l2_payload.wb_used(), m_ft_pending.request ? 1 : 0, (unsigned)m_ft_read_refs.size(),
++      m_ep_l2_payload.free_slots(), m_ep_l2_payload.resident_used(), m_ep_l2_payload.bypass_used(),
++      m_ep_l2_payload.ownership_consistent() ? 1 : 0, m_ft_stats.observed_cycles,
++      m_ft_stats.staging_occupancy_sum, m_ft_stats.descriptor_responses);
++}
+diff --git a/src/gpgpu-sim/ep-l2-ft-interface.h b/src/gpgpu-sim/ep-l2-ft-interface.h
+new file mode 100644
+index 00000000..34ca184c
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ft-interface.h
+@@ -0,0 +1,35 @@
++#ifndef EP_L2_FT_INTERFACE_H
++#define EP_L2_FT_INTERFACE_H
++
++// Shared identity ABI for FT20261016 lanes. A handle is never an address key.
++// Unsigned software storage is not a physical metadata width estimate.
++namespace ep_l2 {
++struct PayloadHandle {
++  unsigned payload_id;
++  unsigned generation;
++  PayloadHandle(unsigned id = (unsigned)-1, unsigned gen = 0)
++      : payload_id(id), generation(gen) {}
++  bool valid() const { return payload_id != (unsigned)-1; }
++  bool operator==(const PayloadHandle &other) const {
++    return payload_id == other.payload_id && generation == other.generation;
++  }
++  bool operator!=(const PayloadHandle &other) const { return !(*this == other); }
++};
++enum PayloadRole {
++  FREE, RESIDENT, NORMAL_FILL, WB_STAGED, BYPASS, RO_ATTACHED, RO_DETACHED,
++  TVD_CLEAN, TVD_DIRTY_PENDING, TVD_DIRTY_INFLIGHT
++};
++enum Refusal { NONE, POOL_FULL, ROLE_QUOTA, BANK_CLASS_FULL, PINNED,
++               WAD_FULL, LOWER_FULL, BANK_BUSY, STALE_HANDLE };
++// Preview is immutable and carries no implicit reservation or data ownership.
++struct Reservation {
++  PayloadHandle landing;
++  PayloadHandle victim;
++  PayloadHandle staging;
++  unsigned tag_index;
++  Refusal refusal;
++  bool valid;
++  Reservation() : tag_index((unsigned)-1), refusal(NONE), valid(false) {}
++};
++}  // namespace ep_l2
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 4687f89d..0f1efcff 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -1528 +1528,2 @@ void baseline_cache::cycle() {
+-    if (!m_memport->full(mf->size(), mf->get_is_write())) {
++    if (!m_memport->full(mf->size(), mf->get_is_write()) &&
++        lower_ready(mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+@@ -1530,0 +1532 @@ void baseline_cache::cycle() {
++      lower_accepted(mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+@@ -1713,0 +1716 @@ void baseline_cache::send_read_request(new_addr_type addr,
++    descriptor_admitted(mf, cache_index);
+@@ -1720,0 +1724 @@ void baseline_cache::send_read_request(new_addr_type addr,
++      lower_read_enqueued(mf, cache_index);
+@@ -1734,0 +1739 @@ void baseline_cache::send_read_request(new_addr_type addr,
++    descriptor_admitted(mf, cache_index);
+@@ -1738,0 +1744 @@ void baseline_cache::send_read_request(new_addr_type addr,
++    lower_read_enqueued(mf, cache_index);
+@@ -2418,0 +2425 @@ enum cache_request_status l2_cache::access(new_addr_type addr, mem_fetch *mf,
++  if (ft_enabled()) return ft_access(addr, mf, time, events);
+@@ -2578,0 +2586 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
++  unsigned ft_cache_index = (unsigned)-1;
+@@ -2582 +2590 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
+-    assert(id < ep_l2_payload_store::k_resident_slots);
++    assert(id < m_ep_l2_payload.physical_slots());
+@@ -2584,0 +2593 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
++    if (ft_enabled()) ft_cache_index = e->second.m_cache_index;
+@@ -2590,0 +2600,6 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
++    if (ft_enabled() && mf->has_ft_wb_data()) {
++      ep_l2_payload_store::slot &slot = m_ep_l2_payload.inspect_mutable(handle);
++      for (unsigned sector = 0; sector < 4; ++sector)
++        if (mf->get_access_sector_mask().test(sector) && !slot.versions[sector])
++          slot.versions[sector] = mf->get_ft_wb_data()[sector];
++    }
+@@ -2596,0 +2612,2 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
++  if (ft_enabled() && m_tag_array->block_is_modified(ft_cache_index))
++    m_ep_l2_payload.mark_resident_dirty(tag_payload_handle(ft_cache_index).payload_id);
+@@ -2630 +2647,2 @@ void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,
+-        m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries) {
++        m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries &&
++        !(ft_enabled() && m_ft_pending.request == mf && m_ft_pending.wad)) {
+@@ -2835,0 +2854,2 @@ void tex_cache::display_state(FILE *fp) const {
++
++#include "ep-l2-ft-cache.inc"
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 1826be57..c204dc99 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -40,0 +41 @@
++#include "ep-l2-ft-interface.h"
+@@ -42,0 +44,2 @@
++#include <array>
++#include <limits>
+@@ -579,0 +583,2 @@ class cache_config {
++    m_ep_l2_ft_mode = 0;
++    m_ep_l2_wbuf_entries = 0;
+@@ -935,0 +941,2 @@ class cache_config {
++  unsigned m_ep_l2_ft_mode;
++  unsigned m_ep_l2_wbuf_entries;
+@@ -1511,0 +1519,4 @@ class baseline_cache : public cache_t {
++  virtual bool lower_ready(mem_fetch *, unsigned long long) { return true; }
++  virtual void lower_accepted(mem_fetch *, unsigned long long) {}
++  virtual void descriptor_admitted(mem_fetch *, unsigned) {}
++  virtual void lower_read_enqueued(mem_fetch *, unsigned) {}
+@@ -1895 +1906 @@ class data_cache : public baseline_cache {
+-  void send_write_request(mem_fetch *mf, cache_event request, unsigned time,
++  virtual void send_write_request(mem_fetch *mf, cache_event request, unsigned time,
+@@ -2076 +2087 @@ class ep_l2_payload_store {
+-  enum role { RESIDENT, BYPASS };
++  enum role { RESIDENT, BYPASS, WB };
+@@ -2097 +2108 @@ class ep_l2_payload_store {
+-    BYPASS_READY
++    BYPASS_READY, WB_RESERVED, WB_STAGED
+@@ -2101,7 +2112 @@ class ep_l2_payload_store {
+-  struct payload_handle {
+-    unsigned payload_id;
+-    unsigned generation;
+-    payload_handle(unsigned id = (unsigned)-1, unsigned gen = 0)
+-        : payload_id(id), generation(gen) {}
+-    bool valid() const { return payload_id != (unsigned)-1; }
+-  };
++  typedef ep_l2::PayloadHandle payload_handle;
+@@ -2115 +2120,5 @@ class ep_l2_payload_store {
+-    slot() : allocation_role(RESIDENT), status(FREE), owner(0), generation(0) {
++    unsigned pins;
++    mem_access_sector_mask_t ready_sector_mask;
++    std::array<unsigned long long, 4> versions;
++    slot() : allocation_role(RESIDENT), status(FREE), owner(0), generation(0), pins(0) {
++      ready_sector_mask.reset(); versions.fill(0);
+@@ -2120,2 +2129,2 @@ class ep_l2_payload_store {
+-  ep_l2_payload_store(unsigned mode = 0)
+-      : m_mode(mode), m_cycle((unsigned long long)-1),
++  ep_l2_payload_store(unsigned mode = 0, unsigned ft_mode = 0, unsigned wbuf = 0)
++      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_cycle((unsigned long long)-1),
+@@ -2130 +2139 @@ class ep_l2_payload_store {
+-    m_slots.resize(k_physical_slots);
++    m_slots.resize(k_physical_slots + wbuf);
+@@ -2145 +2154 @@ class ep_l2_payload_store {
+-  const slot &resident(unsigned id) const { assert(id < k_resident_slots); return m_slots[id]; }
++  const slot &resident(unsigned id) const { assert(id < m_slots.size()); return m_slots[id]; }
+@@ -2148 +2157 @@ class ep_l2_payload_store {
+-    assert(id < k_resident_slots && m_slots[id].occupied());
++    assert(id < m_slots.size() && m_slots[id].occupied());
+@@ -2157 +2166 @@ class ep_l2_payload_store {
+-    return handle.valid() && handle.payload_id < k_physical_slots &&
++    return handle.valid() && handle.payload_id < m_slots.size() &&
+@@ -2176 +2185 @@ class ep_l2_payload_store {
+-    return id < k_resident_slots && m_slots[id].occupied() &&
++    return id < m_slots.size() && m_slots[id].occupied() &&
+@@ -2187 +2196 @@ class ep_l2_payload_store {
+-    assert(id < k_resident_slots); return m_slots[id].pending_sector_mask;
++    assert(id < m_slots.size()); return m_slots[id].pending_sector_mask;
+@@ -2229,0 +2239 @@ class ep_l2_payload_store {
++    if (m_ft_mode) m_slots[id].ready_sector_mask |= sectors;
+@@ -2245 +2255 @@ class ep_l2_payload_store {
+-    assert(id < k_resident_slots && m_slots[id].occupied());
++    assert(id < m_slots.size() && m_slots[id].occupied());
+@@ -2269,0 +2280,54 @@ class ep_l2_payload_store {
++  // FT public allocation primitives. Preview does not acquire a resource.
++  unsigned physical_slots() const { return m_slots.size(); }
++  unsigned wb_used() const { return used(WB); }
++  unsigned pending_sector_count() const { unsigned n=0;
++    for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
++  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB); }
++  const slot &inspect(const payload_handle &h) const { assert(handle_live(h)); return m_slots[h.payload_id]; }
++  slot &inspect_mutable(const payload_handle &h) { assert(handle_live(h)); return m_slots[h.payload_id]; }
++  payload_handle preview_free(role r, unsigned bank = (unsigned)-1) const {
++    for (unsigned id = 0; id < m_slots.size(); ++id) {
++      if (m_slots[id].occupied() || (bank != (unsigned)-1 && id % 4 != bank)) continue;
++      if (m_ft_mode == 1 && ((r == WB && id < k_physical_slots) ||
++          (r == RESIDENT && id >= k_resident_slots) ||
++          (r == BYPASS && (id < k_resident_slots || id >= k_physical_slots)))) continue;
++      return payload_handle(id, m_slots[id].generation + 1);
++    }
++    return payload_handle();
++  }
++  payload_handle reserve(unsigned id, role r, new_addr_type owner, state st) {
++    assert(m_ft_mode && id < m_slots.size() && !m_slots[id].occupied());
++    slot &s = m_slots[id];
++    assert(s.generation != std::numeric_limits<unsigned>::max());
++    ++s.generation; s.allocation_role = r; s.status = st; s.owner = owner;
++    s.pending_sector_mask.reset(); s.ready_sector_mask.reset(); s.pins = 0; s.versions.fill(0);
++    return payload_handle(id, s.generation);
++  }
++  void release(const payload_handle &h) {
++    slot &s = inspect_mutable(h); assert(!s.pins && s.pending_sector_mask.none());
++    assert(s.generation != std::numeric_limits<unsigned>::max());
++    s.status = FREE; s.owner = 0; s.ready_sector_mask.reset(); ++s.generation;
++  }
++  void transfer(const payload_handle &h, role r, state st) {
++    slot &s = inspect_mutable(h); assert(s.pending_sector_mask.none());
++    s.allocation_role = r; s.status = st;
++  }
++  void pin(const payload_handle &h) { ++inspect_mutable(h).pins; }
++  void unpin(const payload_handle &h) { slot &s = inspect_mutable(h); assert(s.pins); --s.pins; }
++  void mark_sector_ready(const payload_handle &h, const mem_access_sector_mask_t &mask) {
++    slot &s = inspect_mutable(h); assert((mask & ~s.pending_sector_mask).none());
++    s.pending_sector_mask &= ~mask; s.ready_sector_mask |= mask;
++  }
++  void restore(unsigned id, const slot &saved) { assert(id < m_slots.size()); m_slots[id] = saved; }
++  void cancel_request(const payload_handle &h, bool write) {
++    const slot &s = inspect(h); const role r = s.allocation_role;
++    unsigned id = r == BYPASS ? h.payload_id - k_resident_slots : h.payload_id;
++    unsigned b = h.payload_id % 4;
++    for (unsigned which = 0; which < 2; ++which) {
++      std::vector<pending_op> &q = which ? m_granted[b] : m_pending[b];
++      for (unsigned i = 0; i < q.size();) {
++        if (q[i].r == r && q[i].id == id && q[i].write == write) q.erase(q.begin() + i);
++        else ++i;
++      }
++    }
++  }
+@@ -2327,2 +2391,2 @@ class ep_l2_payload_store {
+-    const unsigned global_id = r == RESIDENT ? id : k_resident_slots + id;
+-    assert(global_id < k_physical_slots);
++    const unsigned global_id = r == BYPASS ? k_resident_slots + id : id;
++    assert(global_id < m_slots.size());
+@@ -2395,2 +2459,2 @@ class ep_l2_payload_store {
+-    const unsigned local_id = r == RESIDENT ? handle.payload_id :
+-                                               handle.payload_id - k_resident_slots;
++    const unsigned local_id = r == BYPASS ? handle.payload_id - k_resident_slots :
++                                               handle.payload_id;
+@@ -2405,2 +2469,2 @@ class ep_l2_payload_store {
+-    const unsigned global_id = r == RESIDENT ? id : k_resident_slots + id;
+-    assert(global_id < k_physical_slots);
++    const unsigned global_id = r == BYPASS ? k_resident_slots + id : id;
++    assert(global_id < m_slots.size());
+@@ -2414 +2478 @@ class ep_l2_payload_store {
+-    const unsigned global_id = r == RESIDENT ? id : k_resident_slots + id;
++    const unsigned global_id = r == BYPASS ? k_resident_slots + id : id;
+@@ -2427 +2491,3 @@ class ep_l2_payload_store {
+-    unsigned n = 0; for (unsigned b = 0; b < 4; ++b) n += m_pending[b].size(); return n;
++    unsigned n = 0; for (unsigned b = 0; b < 4; ++b) {
++      n += m_pending[b].size(); if (m_ft_mode) n += m_granted[b].size();
++    } return n;
+@@ -2435 +2501 @@ class ep_l2_payload_store {
+-        if (i >= k_resident_slots ||
++        if ((!m_ft_mode && i >= k_resident_slots) ||
+@@ -2438,0 +2505,2 @@ class ep_l2_payload_store {
++      } else if (s.allocation_role == WB) {
++        if (!m_ft_mode || (s.status != WB_RESERVED && s.status != WB_STAGED)) return false;
+@@ -2493 +2561 @@ class ep_l2_payload_store {
+-  unsigned m_mode; unsigned long long m_cycle;
++  unsigned m_mode, m_ft_mode, m_wbuf; unsigned long long m_cycle;
+@@ -2523 +2591,2 @@ class l2_cache : public data_cache {
+-        m_ep_l2_payload(config.m_ep_l2_payload_mode),
++        m_ep_l2_payload(config.m_ep_l2_payload_mode, config.m_ep_l2_ft_mode,
++                         config.m_ep_l2_wbuf_entries),
+@@ -2526,0 +2596 @@ class l2_cache : public data_cache {
++    m_ft_last_wb_versions.fill(0);
+@@ -2550 +2620 @@ class l2_cache : public data_cache {
+-    return handle.payload_id < ep_l2_payload_store::k_resident_slots &&
++    return handle.payload_id < m_ep_l2_payload.physical_slots() &&
+@@ -2607 +2677 @@ class l2_cache : public data_cache {
+-      if (handle.payload_id != i ||
++      if ((!m_config.m_ep_l2_ft_mode && handle.payload_id != i) ||
+@@ -2609 +2679 @@ class l2_cache : public data_cache {
+-          m_ep_l2_payload.resident(i).allocation_role !=
++          m_ep_l2_payload.resident(handle.payload_id).allocation_role !=
+@@ -2615,0 +2686,17 @@ class l2_cache : public data_cache {
++  bool ft_enabled() const { return m_config.m_ep_l2_ft_mode != 0; }
++  void commit_next_access();
++  mem_fetch *peek_next_access() const;
++  bool ft_response_ready(unsigned long long cycle);
++  void cycle();
++  void ft_print(FILE *fp, unsigned slice) const;
++  unsigned ft_wb_staged() const { return m_ft_wb.size(); }
++  unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
++  bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
++  bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
++      m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used()); }
++  bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
++  void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
++  void descriptor_admitted(mem_fetch *mf, unsigned cache_index) override;
++  void lower_read_enqueued(mem_fetch *mf, unsigned cache_index) override;
++  // Production version tokens are symbolic labels, not reconstructed trace data.
++  const std::array<unsigned long long,4> &ft_last_wb_versions() const { return m_ft_last_wb_versions; }
+@@ -2659,0 +2747,38 @@ class l2_cache : public data_cache {
++  enum cache_request_status ft_access(new_addr_type addr, mem_fetch *mf,
++      unsigned time, std::list<cache_event> &events);
++  void send_write_request(mem_fetch *mf, cache_event request, unsigned time,
++      std::list<cache_event> &events) override;
++  void ft_rollback();
++  struct ft_replacement {
++    mem_fetch *request;
++    unsigned tag_index, phase, landing_id;
++    new_addr_type victim_address;
++    ep_l2_payload_store::payload_handle victim, staging, landing;
++    ep_l2_payload_store::slot saved;
++    std::array<unsigned long long,4> copy_versions;
++    unsigned long long born;
++    bool dirty, wad, landing_reserved, bound;
++    ft_replacement() : request(NULL), tag_index(0), phase(0), landing_id((unsigned)-1), victim_address(0),
++        born(0), dirty(false), wad(false), landing_reserved(false), bound(false) { copy_versions.fill(0); }
++  };
++  struct ft_wb_record {
++    ep_l2_payload_store::payload_handle handle;
++    unsigned long long born;
++    std::array<unsigned long long,4> expected;
++    ft_wb_record() : born(0) { expected.fill(0); }
++  };
++  struct ft_counters {
++    unsigned long long accepted, wb_created, lower_accept, wbuf_full, pool_full, pin_block,
++        bank_block, issue_block, copy_lines, staging_reads, staged_max,
++        staging_lifetime, borrow_bypass, borrow_resident, rollback, data_checks,
++        observed_cycles, staging_occupancy_sum, descriptor_responses;
++    ft_counters() : accepted(0), wb_created(0), lower_accept(0), wbuf_full(0), pool_full(0),
++        pin_block(0), bank_block(0), issue_block(0), copy_lines(0), staging_reads(0),
++        staged_max(0), staging_lifetime(0), borrow_bypass(0), borrow_resident(0),
++        rollback(0), data_checks(0), observed_cycles(0), staging_occupancy_sum(0), descriptor_responses(0) {}
++  };
++  ft_replacement m_ft_pending;
++  ft_counters m_ft_stats;
++  std::map<mem_fetch *,ft_wb_record> m_ft_wb;
++  std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
++  std::array<unsigned long long,4> m_ft_last_wb_versions;
+@@ -2660,0 +2786,8 @@ class l2_cache : public data_cache {
++    if (m_config.m_ep_l2_ft_mode > 2 ||
++        (!m_config.m_ep_l2_ft_mode && m_config.m_ep_l2_wbuf_entries) ||
++        (m_config.m_ep_l2_ft_mode &&
++         ((m_config.m_ep_l2_wbuf_entries != 8 && m_config.m_ep_l2_wbuf_entries != 16) ||
++          m_config.m_ep_l2_payload_mode != 2 || !ep_l2_wad_enabled() ||
++          m_config.m_alloc_policy != ON_MISS))) {
++      fprintf(stderr, "EP-L2 FT invalid mode/WBUF/banked/WAD/allocation contract\n"); abort();
++    }
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 98ed6d47..47393934 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -271,0 +272,6 @@ void memory_config::reg_options(class OptionParser *opp) {
++  option_parser_register(opp, "-gpgpu_ep_l2_ft_mode", OPT_UINT32,
++                         &m_L2_config.m_ep_l2_ft_mode,
++                         "FT mode: 0 old static, 1 finite WBUF, 2 unified WB", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_wbuf_entries", OPT_UINT32,
++                         &m_L2_config.m_ep_l2_wbuf_entries,
++                         "Additional WB payload budget: 0 off, 8 sensitivity, 16 primary", "0");
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index ad928d47..f36e4284 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1077 +1077,2 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+-    if (m_L2cache->access_ready() && !m_L2_icnt_queue->full()) {
++    if (m_L2cache->access_ready() && !m_L2_icnt_queue->full() &&
++        m_L2cache->ft_response_ready(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+@@ -1087,0 +1089 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++        ft_record_response(mf);
+@@ -1097,0 +1100 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++          ft_record_response(original_wr_mf);
+@@ -1142,0 +1146 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++      ft_record_response(mf);
+@@ -1380,0 +1385 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++        if (status != RESERVATION_FAIL) ft_record_admission(mf);
+@@ -1454,0 +1460 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++              ft_record_response(mf);
+@@ -1475,0 +1482 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++              ft_record_response(mf);
+@@ -2221,0 +2229,11 @@ void memory_sub_partition::print_ep_l2_b0_snapshot(FILE *fp,
++  if (uid == (unsigned long long)-1 && m_L2cache->ft_enabled()) {
++    m_L2cache->ft_print(fp, m_id);
++    fprintf(fp, "EPL2FTV1|TERMINAL|slice=%u|unique_requesters=%llu|responses=%llu|"
++        "absorbed_writebacks=%llu|requester_live=%u|requester_exact_once=%u|"
++        "hardware_drained=%u|pending_lower_reads=%u|pending_returns=%u|pending_responses=%u\n",
++        m_id, m_ft_unique_requesters, m_ft_response_count, m_ft_absorbed_count,
++        (unsigned)m_ft_live_requesters.size(),
++        m_ft_live_requesters.empty() && m_ft_unique_requesters == m_ft_response_count ? 1 : 0,
++        l2_char_no_resource_leak() ? 1 : 0, m_L2cache->ft_pending_lower_reads(),
++        m_dram_L2_queue->get_length(), m_L2_icnt_queue->get_length());
++  }
+@@ -2253 +2271,3 @@ bool memory_sub_partition::l2_char_no_resource_leak() const {
+-         m_L2cache->ep_l2_tag_payload_consistent();
++         m_L2cache->ep_l2_tag_payload_consistent() && m_L2cache->ft_drained() &&
++         (!m_L2cache->ft_enabled() || (m_ft_live_requesters.empty() &&
++          m_ft_unique_requesters == m_ft_response_count));
+@@ -2451 +2471,2 @@ void memory_sub_partition::set_done(mem_fetch *mf) {
+-  if (mf->get_access_type() == L2_WRBK_ACC)
++  if (mf->get_access_type() == L2_WRBK_ACC) {
++    assert(!m_L2cache->ft_enabled() || mf->has_ft_wb_data());
+@@ -2453,0 +2475 @@ void memory_sub_partition::set_done(mem_fetch *mf) {
++  }
+@@ -2496,0 +2519,16 @@ void memory_sub_partition::visualizer_print(gzFile visualizer_file) {
++
++// Request tokens are allocated only at the real frontend commit and consumed
++// only at actual response queue enqueue. An absent/duplicate token asserts.
++// Globally fresh mem_fetch UIDs and single frontend pop establish non-reuse;
++// retain only live audit tokens, not an unbounded history of all requests.
++void memory_sub_partition::ft_record_admission(const mem_fetch *mf) {
++  if (m_config->m_L2_config.disabled() || !m_L2cache->ft_enabled()) return;
++  if (mf->get_access_type() == L1_WRBK_ACC) { ++m_ft_absorbed_count; return; }
++  assert(m_ft_live_requesters.insert(mf->get_request_uid()).second);
++  ++m_ft_unique_requesters;
++}
++void memory_sub_partition::ft_record_response(const mem_fetch *mf) {
++  if (m_config->m_L2_config.disabled() || !m_L2cache->ft_enabled()) return;
++  assert(m_ft_live_requesters.erase(mf->get_request_uid()) == 1);
++  ++m_ft_response_count;
++}
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 75a9026b..9363329d 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -336,0 +337,2 @@ class memory_sub_partition {
++  unsigned ft_wb_staged_for_test() const { return m_L2cache->ft_wb_staged(); }
++  bool ft_drained_for_test() const { return m_L2cache->ft_drained(); }
+@@ -419,0 +422,5 @@ class memory_sub_partition {
++  void ft_record_admission(const mem_fetch *mf);
++  void ft_record_response(const mem_fetch *mf);
++  std::set<unsigned> m_ft_live_requesters;
++  unsigned long long m_ft_unique_requesters = 0, m_ft_response_count = 0, m_ft_absorbed_count = 0;
++
+diff --git a/src/gpgpu-sim/mem_fetch.cc b/src/gpgpu-sim/mem_fetch.cc
+index b8baaee5..14db8b0e 100644
+--- a/src/gpgpu-sim/mem_fetch.cc
++++ b/src/gpgpu-sim/mem_fetch.cc
+@@ -72,0 +73 @@ mem_fetch::mem_fetch(const mem_access_t &access, const warp_inst_t *inst,
++  m_ft_wb_data_valid = false; m_ft_wb_data.fill(0);
+diff --git a/src/gpgpu-sim/mem_fetch.h b/src/gpgpu-sim/mem_fetch.h
+index 1b06ce9f..cd7813b0 100644
+--- a/src/gpgpu-sim/mem_fetch.h
++++ b/src/gpgpu-sim/mem_fetch.h
+@@ -30,0 +31 @@
++#include <array>
+@@ -132,0 +134,4 @@ class mem_fetch {
++  void set_ft_wb_data(const std::array<unsigned long long,4> &v) { m_ft_wb_data = v; m_ft_wb_data_valid = true; }
++  bool has_ft_wb_data() const { return m_ft_wb_data_valid; }
++  const std::array<unsigned long long,4> &get_ft_wb_data() const { assert(m_ft_wb_data_valid); return m_ft_wb_data; }
++
+@@ -147,0 +153,2 @@ class mem_fetch {
++  std::array<unsigned long long,4> m_ft_wb_data;
++  bool m_ft_wb_data_valid;
