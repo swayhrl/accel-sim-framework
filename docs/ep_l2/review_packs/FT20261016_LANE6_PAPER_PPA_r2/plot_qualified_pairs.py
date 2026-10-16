@@ -29,7 +29,8 @@ def main():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams.update({"font.size": 7.5, "svg.fonttype": "none", "svg.hashsalt": "EP_L2_LANE6_R2_PAIRS"})
+    plt.rcParams.update({"font.size": 7.5, "svg.fonttype": "none", "svg.hashsalt": "EP_L2_LANE6_R2_PAIRS",
+                         "axes.spines.top": False, "axes.spines.right": False})
     fig, ax = plt.subplots(figsize=(3.35, 2.55))
     lookup = {r["workload"]: r for r in results["pairs"]}
     for i, w in enumerate(WORKLOADS):
@@ -37,9 +38,12 @@ def main():
             ax.bar(i, lookup[w]["speedup"], width=.6, color="#336b8e")
             ax.text(i, lookup[w]["speedup"] + .02, f'{lookup[w]["speedup"]:.6f}×', ha="center", fontsize=6.5)
         else:
-            ax.text(i, .04, "pending/\nfailed", rotation=90, ha="center", va="bottom", fontsize=6.5)
+            states = {r["status"] for r in results["unavailable"] if r["workload"] == w}
+            label = "pending" if states <= {"NOT_RECEIVED", "RUNNING", "INCOMPLETE"} else "/".join(sorted(states))
+            ax.text(i, .04, label, rotation=90, ha="center", va="bottom", fontsize=6.5)
     ax.axhline(1, color="black", linewidth=.6)
     ax.set_xticks(range(5), ["conv.", "FWT7", "cfd", "vectorAdd", "sad"], rotation=25)
+    ax.set_xlim(-.65, 4.65)
     ax.set_ylim(0, max([1.1] + [r["speedup"] * 1.15 for r in results["pairs"]]))
     ax.set_ylabel("B16 cycles / U_WB16 cycles")
     ax.set_title(f"R0 WB implementation: {len(lookup)}/5 pairs", fontsize=8)
