@@ -1,7 +1,12 @@
 # Lane 2 -> Lane 1 / Lane 5
 
-Consumed immutable V1 publication Framework `cb7d92e4edde97e81520cfdd00762dfe81ee9b20`, public Core `4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617`. Clean module pack is `docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/`.
+Exact consumed interface: Framework cb7d92e4edde97e81520cfdd00762dfe81ee9b20 / Core 4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617. Current candidate Core: `56abbacc1192d68995e78561899719649f838079`.
 
-Please consume the module patch at its exact manifest SHA; it uses PayloadHandle ABI and no independent allocator. The candidate directory must replace/extend the existing shared WAD address authority, not add a second directory. Required executable bindings are allocator role-transfer/reservation/pin/unpin, victim-selected callback before overwrite, Tag/directory atomic promotion, and lower-accept/set_done callbacks with accounted data ownership. Current V1 identity publication describes these hooks but does not yet implement them.
+1. Start with public identity ABI 4fb91f0a. Apply CORE_MODULE.patch from FT20261016_LANE2_DIRTY_MODULE_r1 (supersedes clean module patch); it adds only directory/test/runner. Do not cherry-pick both versions as independent additions.
+2. Instantiate the directory as the shared WAD/TVD authority, replacing/extending the existing WAD address set. No second address CAM/allocator. Both features default OFF.
+3. Executable dependencies: real reserve/rollback/role-transfer/pin, actual victim-selection callback, true one-cycle tag-miss lookup/response path, atomic same-handle promotion, lower-accept with accounted independent data, set_done and epoch drain. V1 currently describes these but publishes only identity ABI.
+4. A full directory can promote clean A while displacing dirty resident B using preview_dirty_promotion/commit_dirty_promotion to reuse A's address slot atomically; no 129th slot. Prepare actual lower/control resources before this metadata commit.
+5. Dirty forwarding must precede generic WAD-read denial; missing sector reads and all writes/atomics to mandatory WB wait correctly. Never replace this with unconditional wait-until-WB behavior.
+6. After wiring exact source, run every NOT_RUN gate in PRODUCTION_GATES.csv with actual memory_sub_partition producers and a data/version reference. Lane 5 must not launch TVD performance rows from this module-only receipt.
 
-Lane 2 continues dirty transition/reference verification without waiting for formal runtime or quota. No full TVD or L2-cache production readiness is claimed by clean module publication. Lane 5 should register formal runtime only after exact-source producer wiring is tested.
+No formal simulations launched. Test-only data backing is not an additional production data array or performance proof.

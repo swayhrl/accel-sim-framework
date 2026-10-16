@@ -1,0 +1,6 @@
+Checked against a separate temporary Git index, not another lane worktree:
+GIT_INDEX_FILE=<lane2 result root>/patch_validation.index git read-tree 4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617
+GIT_INDEX_FILE=<same> git apply --cached --check CORE_MODULE.patch
+Result: exit 0 (PASS), no working tree modified.
+Core git diff --check: exit 0
+Core git status --short: empty
