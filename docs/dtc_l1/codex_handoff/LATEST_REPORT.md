@@ -1,3 +1,18 @@
+# Current174 checkpoint — 2026-10-16T13:25Z
+
+**Hotspot SOURCE_PROFILE_RECONSTRUCTION_V2: independent admission PASS;
+all five same-input arms terminal/strict/resource-balance PASS.**
+B16-N152914, TC80-N107774, TRAD9682873, IO25685718, OO12884456cycles;
+each377291004 active-thread instructions. TRAD96 is faster than both DTC
+arms; retain this result. This is disclosed derived-input simulation only,
+not original ELF/native equivalence. New and old input speedups never mix.
+See service_closure_174_v1/review_pack/hotspot_derived_complete_v1 and its
+admission/preregistration companion. Original44 unchanged:33numericPASS,
+8live,3oldHotspotHOLD. Btree/2D/LUD retain terminalPASS with scientific
+FORMAT_APPLICABILITY_REVIEW_PENDING. Modern4080DTC HOLD; SpMV/LN not admitted;
+no GM12. Remaining8original simulators, sole authority and strict watcher
+continue unchanged. Historical checkpoints and failures follow below intact.
+
 # Latest Codex Report
 
 ## Lane A complete startup identity coverage —2026-10-16 12:53 UTC
@@ -2785,3 +2800,7 @@ Full two-file CPU audit completed in119.49s: 13169524 warp records,377291004 act
 ## 2026-10-16T13:14Z: derived five-arm submission and rolling GEMM completion
 
 Five same-derived-input attempts started once via existing174 CRITICAL_LAUNCH.lock, with existing coordinator520970 lock verified and original authority token restored. No second persistent launcher. New attempt wrappers immediately strict-validate their own natural terminals. All five startup configurations echo declared modes/cap32768/64SM; no new terminal yet. Immutable preregistration7aacc4282 was pushed and fetch-back clean before this checkpoint. Original44 rows now32PASS9live3originalHotspotHOLD; both finite GEMM arms naturally finished and strictPASS, completing its primary trio. New derived5running means14 own simulators total. MemAvailable259593812KiB, writable disk40526598144B at13:13:53UTC; no forced utilization. Btree/2D/LUD format pending is exposed in original-row, matched, residence and modern baseline exports while numeric terminal status remains intact. See checkpoint_20261016T1314Z and hotspot_derived_started_v1. No GM12/new-old input crossing/native claim.
+
+## 2026-10-16T13:25Z: five new-input strict PASS and original WAIT128 2D terminal
+
+Derived input bundle dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169 has all five preregistered rows naturally terminal and immediate immutable strictPASS. Additional credits/lower/resource balances also PASS5/5. No runtime/input rerun. Full same-input ratios and primary unequal-depth descriptive residence are in hotspot_derived_complete_v1; TRAD96 is faster than IO and OO. The source-profile scope remains conditional, without native/original-ELF equivalence. An additional-validator cap field mismatch was repaired using startup echo, preserving its first failure/source/partial receipt and all original strict receipts. Original WAIT128 2DConvolution1e70ad0d-7e94-498e-9cf6-785f7363b063 completed naturally:1986426cycles620347492instructions,strictPASS,scientificFORMAT_APPLICABILITY_REVIEW_PENDING. Latest original checkpoint_20261016T1325Z:33numericPASS8live3oldHotspotHOLD; all other boundaries unchanged, no GM12. Main Goal remains ACTIVE; original process and scheduler/strict handles preserved.
