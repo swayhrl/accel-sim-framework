@@ -1,0 +1,1567 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 704bb5de..f2e2d456 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -3,6 +3,7 @@
+ void l2_cache::force_tag_access(new_addr_type addr, unsigned time,
+                                 mem_access_sector_mask_t mask) {
+   if (!ft_enabled()) { baseline_cache::force_tag_access(addr, time, mask); return; }
++  if(m_ro)m_ro->prefill_begin();
+   // Trace host memcpy prefill runs outside active hardware work. Never retire
+   // a lower transaction, response reference or WB merely to warm a Tag.
+   assert(ft_drained() && m_ep_l2_wad_entries_live.empty());
+@@ -43,6 +44,7 @@ void l2_cache::force_tag_access(new_addr_type addr, unsigned time,
+     if (mask.test(sector)) slot.versions[sector] = 0;
+   slot.status = m_tag_array->block_is_modified(index) ?
+       ep_l2_payload_store::RESIDENT_DIRTY : ep_l2_payload_store::RESIDENT_VALID;
++  if(m_ro)m_ro->prefill_complete(index,handle,owner,mask);
+   assert(m_ep_l2_payload.ownership_consistent());
+ }
+ 
+@@ -64,6 +66,7 @@ void l2_cache::lower_read_enqueued(mem_fetch *mf, unsigned index) {
+ }
+ 
+ mem_fetch *l2_cache::peek_next_access() const {
++  if(m_ro && m_ro->selected)return m_ro->reply.request;
+   mem_fetch *mf = baseline_cache::peek_next_access();
+   if (ft_enabled()) {
+     std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
+@@ -74,6 +77,7 @@ mem_fetch *l2_cache::peek_next_access() const {
+ }
+ 
+ bool l2_cache::ft_response_ready(unsigned long long cycle) {
++  if(m_ro && m_ro->has_response() && (m_ro->prefer_ro || !baseline_cache::access_ready()))return m_ro->prepare(cycle);
+   if (!ft_enabled()) return true;
+   mem_fetch *mf = baseline_cache::peek_next_access();
+   std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
+@@ -91,6 +95,7 @@ void l2_cache::cycle() {
+ }
+ 
+ void l2_cache::commit_next_access() {
++  if(m_ro && m_ro->selected){m_ro->commit(m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle);return;}
+   if (!ft_enabled()) { baseline_cache::commit_next_access(); return; }
+   // A synthetic write-allocate response may already have been deleted by the
+   // frontend. Use its pointer only as an identity key, never dereference it.
+@@ -101,6 +106,7 @@ void l2_cache::commit_next_access() {
+   baseline_cache::commit_next_access();
+   m_ep_l2_payload.unpin(h);
+   m_ft_read_refs.erase(it);
++  if(m_ro)m_ro->prefer_ro=true;
+   ++m_ft_stats.descriptor_responses;
+ }
+ 
+@@ -130,9 +136,22 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   const unsigned long long physical_cycle = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   const new_addr_type owner = m_config.block_addr(addr);
++  if(m_ro) {
++    cache_request_status merged;
++    if(m_ro->merge_existing(mf,time,events,merged)){
++      if(merged!=RESERVATION_FAIL){++m_ft_stats.accepted;
++        m_stats.inc_stats(mf->get_access_type(),MSHR_HIT,mf->get_streamID());
++        m_stats.inc_stats_pw(mf->get_access_type(),MSHR_HIT,mf->get_streamID());
++      }
++      return merged;
++    }
++  }
++  const bool ro_new=m_ro && m_ro->new_request(mf);
+   unsigned index = (unsigned)-1;
+   cache_request_status probe = m_tag_array->probe(owner, index, mf, mf->is_write(), true);
++  if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);}
+   if (probe == RESERVATION_FAIL) return RESERVATION_FAIL;
++  if(ro_new && (!m_ro->capacity(mf,false) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return RESERVATION_FAIL;
+   if (m_ft_pending.request && m_ft_pending.request != mf) return RESERVATION_FAIL;
+   if (ep_l2_wad_contains(owner)) { ++m_ep_l2_wad_same_address_wait_count; return RESERVATION_FAIL; }
+ 
+@@ -160,7 +179,9 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     const bool read = !mf->get_is_write();
+     const new_addr_type key = m_config.mshr_addr(addr);
+     unsigned slots = dirty ? 1 : 0;
+-    if (read) {
++    if(ro_new) {
++      slots+=mf->get_access_sector_mask().count();
++    } else if (read) {
+       if (m_mshrs.full(key)) return RESERVATION_FAIL;
+       if (m_mshrs.needs_lower_read(key, mf->get_access_sector_mask())) ++slots;
+     } else if (m_config.m_write_alloc_policy == WRITE_ALLOCATE) {
+@@ -282,7 +303,8 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   }
+   const ep_l2::PayloadHandle handle = tag_payload_handle(index);
+   mf->set_ep_l2_payload_identity(handle.payload_id, handle.generation);
+-  const cache_request_status result = data_cache::access(addr, mf, time, events);
++  const cache_request_status result = ro_new ? m_ro->accept_new(mf,index,probe,time,events) :
++      data_cache::access(addr, mf, time, events);
+   if (result == RESERVATION_FAIL) {
+     if (replacement) ft_rollback();
+     return result;
+@@ -296,7 +318,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+       slot.ready_sector_mask |= mf->get_access_sector_mask();
+   }
+   if (m_tag_array->block_is_modified(index)) slot.status = ep_l2_payload_store::RESIDENT_DIRTY;
+-  else if (slot.pending_sector_mask.none()) slot.status = ep_l2_payload_store::RESIDENT_VALID;
++  else if (slot.pending_sector_mask.none() && slot.allocation_role!=ep_l2_payload_store::RO) slot.status = ep_l2_payload_store::RESIDENT_VALID;
+   if (!mf->get_is_write()) mf->set_ft_wb_data(slot.versions);
+   if (replacement) m_ft_pending = ft_replacement();
+   ++m_ft_stats.accepted;
+@@ -337,6 +359,10 @@ bool l2_cache::lower_ready(mem_fetch *mf, unsigned long long cycle) {
+ }
+ 
+ void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
++  if(mf->ro_lower_packet()) {
++    if(!m_ro)throw std::logic_error("RO lower acceptance without runtime");
++    m_ro->tx->lower_accepted(ep_l2::PayloadHandle(mf->get_ep_l2_payload_id(),mf->get_ep_l2_payload_generation()),mf->get_access_sector_mask().to_ulong());return;
++  }
+   if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return;
+   std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);
+   assert(it != m_ft_wb.end());
+diff --git a/src/gpgpu-sim/ep-l2-ro-oracle.h b/src/gpgpu-sim/ep-l2-ro-oracle.h
+new file mode 100644
+index 00000000..6e8e107d
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ro-oracle.h
+@@ -0,0 +1,59 @@
++#ifndef EP_L2_RO_ORACLE_H
++#define EP_L2_RO_ORACLE_H
++#include <algorithm>
++#include <cstdint>
++#include <istream>
++#include <stdexcept>
++#include <string>
++#include <utility>
++#include <vector>
++
++namespace ep_l2_ro {
++// Experimental, shared read-only input. The launch preflight verifies the
++// complete manifest/artifact/trace hashes before handing these bytes to Core.
++// This parser validates the range grammar, not cryptographic hashes itself.
++class oracle_certificate {
++ public:
++  oracle_certificate(std::istream &verified_ranges,
++                     const std::string &verified_manifest_sha256,
++                     const std::string &scope)
++      : m_manifest(verified_manifest_sha256) {
++    if (scope != "TRACE_MODEL_CLOSED_WORLD" || m_manifest.size() != 64 ||
++        m_manifest.find_first_not_of("0123456789abcdef") != std::string::npos)
++      throw std::invalid_argument("unverified oracle scope/identity");
++    std::string line;
++    if (!std::getline(verified_ranges,line))
++      throw std::invalid_argument("empty oracle input");
++    if (!line.empty() && line.back()=='\r') line.pop_back();
++    if (line != "first_line,last_line_inclusive")
++      throw std::invalid_argument("unsupported oracle range grammar");
++    while (std::getline(verified_ranges,line)) {
++      if (!line.empty() && line.back()=='\r') line.pop_back();
++      if (line.size()!=33 || line[16]!=',' ||
++          line.substr(0,16).find_first_not_of("0123456789abcdef")!=std::string::npos ||
++          line.substr(17).find_first_not_of("0123456789abcdef")!=std::string::npos)
++        throw std::invalid_argument("corrupt oracle range");
++      uint64_t first=std::stoull(line.substr(0,16),NULL,16);
++      uint64_t last=std::stoull(line.substr(17),NULL,16);
++      if (first%128 || last%128 || first>last ||
++          (!m_ranges.empty() && first<=m_ranges.back().second))
++        throw std::invalid_argument("unaligned/overlapping oracle range");
++      m_ranges.push_back(std::make_pair(first,last));
++    }
++    if (!verified_ranges.eof()) throw std::invalid_argument("incomplete oracle read");
++  }
++  bool contains(uint64_t line) const {
++    if (line%128) return false;
++    auto it=std::upper_bound(m_ranges.begin(),m_ranges.end(),
++                            std::make_pair(line,~uint64_t(0)));
++    if (it==m_ranges.begin()) return false;
++    --it;return line<=it->second;
++  }
++  const std::string &manifest_sha256() const { return m_manifest; }
++  unsigned range_count() const { return m_ranges.size(); }
++ private:
++  std::string m_manifest;
++  std::vector<std::pair<uint64_t,uint64_t> > m_ranges;
++};
++} // namespace ep_l2_ro
++#endif
+diff --git a/src/gpgpu-sim/ep-l2-ro-runtime.inc b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+new file mode 100644
+index 00000000..f79c8014
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -0,0 +1,289 @@
++// Included once by gpu-cache.cc. No separate payload/descriptor allocator.
++#include "ep-l2-ro-store-port.h"
++#include "ep-l2-ro-sha256.h"
++#include <fstream>
++#include <memory>
++#include <boost/property_tree/ptree.hpp>
++#include <boost/property_tree/json_parser.hpp>
++class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
++ public:
++  typedef ep_l2_ro::identity handle;
++  l2_cache &c;
++  std::unique_ptr<ep_l2_ro::oracle_certificate> cert;
++  ep_l2_ro::store_port port;
++  std::unique_ptr<ep_l2_ro::transactions> tx;
++  std::vector<uint64_t> generations;
++  bool open, ever_open, selected, command_bound, prefer_ro;
++  std::string command_sha;
++  ep_l2_ro::response reply;
++  uint64_t response_cycle;
++  unsigned cursor;
++  uint64_t accepted_global_reads, accepted_candidates, accepted_ro;
++  ep_l2_ro_runtime(l2_cache &cache) : c(cache), port(c.m_ep_l2_payload,*this),
++    generations(c.m_config.get_num_lines(),1),open(false),ever_open(false),selected(false),command_bound(false),prefer_ro(true),
++    response_cycle(0),cursor(0),accepted_global_reads(0),accepted_candidates(0),accepted_ro(0) {
++    const auto &cfg=c.m_config;
++    if(cfg.get_line_sz()!=128 || cfg.get_atom_sz()!=32 || cfg.m_alloc_policy!=ON_MISS ||
++       cfg.m_mshr_entries!=128 || cfg.m_ep_l2_descriptor_per_line_cap!=32)
++      throw std::invalid_argument("RO requires reviewed sector128/32 LineMSHR128 D512/address32 geometry");
++    if(!cfg.m_ro_ranges || !cfg.m_ro_ranges_sha256 || !cfg.m_ro_manifest_sha256 || !cfg.m_ro_scope)
++      throw std::invalid_argument("RO input binding absent");
++    std::ifstream f(cfg.m_ro_ranges,std::ios::binary);
++    if(!f)throw std::invalid_argument("RO ranges cannot be opened");
++    std::string bytes((std::istreambuf_iterator<char>(f)),{});
++    if(ep_l2_ro::sha256(bytes)!=cfg.m_ro_ranges_sha256)
++      throw std::invalid_argument("RO range SHA256 mismatch");
++    if(!cfg.m_ro_manifest)throw std::invalid_argument("RO manifest missing");
++    std::ifstream mf(cfg.m_ro_manifest,std::ios::binary);
++    if(!mf)throw std::invalid_argument("RO manifest cannot be opened");
++    std::string manifest((std::istreambuf_iterator<char>(mf)),{});
++    if(ep_l2_ro::sha256(manifest)!=cfg.m_ro_manifest_sha256)throw std::invalid_argument("RO manifest SHA256 mismatch");
++    boost::property_tree::ptree doc;std::istringstream json(manifest);
++    boost::property_tree::read_json(json,doc);
++    if(doc.get<std::string>("schema")!="EP_L2_RO_ORACLE_V1" ||
++       doc.get<std::string>("epoch")!="whole_commandlist" ||
++       doc.get<std::string>("scope")!="TRACE_MODEL_CLOSED_WORLD" ||
++       doc.get<std::string>("address_domain")!="CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS" ||
++       !doc.get_child("unresolved_opcodes").empty())throw std::invalid_argument("RO unsupported/incomplete epoch certificate");
++    if(doc.get_child("artifacts").get<std::string>(boost::property_tree::ptree::path_type("certified_ranges.csv",'/'))!=cfg.m_ro_ranges_sha256)
++      throw std::invalid_argument("RO ranges not bound to manifest");
++    command_sha=doc.get<std::string>("commandlist_sha256");
++    if(command_sha.size()!=64 || command_sha.find_first_not_of("0123456789abcdef")!=std::string::npos)
++      throw std::invalid_argument("invalid RO command identity");
++    std::istringstream ranges(bytes);
++    cert.reset(new ep_l2_ro::oracle_certificate(ranges,cfg.m_ro_manifest_sha256,cfg.m_ro_scope));
++    tx.reset(new ep_l2_ro::transactions(c.m_mshrs,port,c.m_ep_l2_payload.physical_slots(),*cert,
++      ep_l2_ro::switches(cfg.m_ro_tag_detach,cfg.m_ro_line_mshr_bypass)));
++  }
++  uint64_t physical_cycle() const {
++    return c.m_gpu->gpu_sim_cycle+c.m_gpu->gpu_tot_sim_cycle;
++  }
++  void prefill_begin() const {
++    // The certified full application can start only once. A drained kernel
++    // boundary is not permission to mutate its whole-commandlist certificate.
++    if(ever_open || open || selected || !tx->drained())
++      throw std::logic_error("RO host prefill is initialization-only before epoch activation");
++  }
++  void prefill_complete(unsigned index,handle h,new_addr_type owner,
++                        mem_access_sector_mask_t mask) {
++    prefill_begin();unsigned actual=~0U;
++    const auto result=c.m_tag_array->probe(owner,actual,mask,true,true);
++    if(result!=HIT || actual!=index || index>=generations.size() ||
++       c.tag_payload_handle(index)!=h || !c.m_ep_l2_payload.handle_owner_matches(h,owner) ||
++       h.payload_id%4!=index%4)
++      throw std::logic_error("RO host prefill Tag/payload/bank identity mismatch");
++    const auto &slot=c.m_ep_l2_payload.inspect(h);
++    if(slot.allocation_role!=ep_l2_payload_store::RESIDENT || slot.pins ||
++       slot.pending_sector_mask.any() || (mask&~slot.ready_sector_mask).any())
++      throw std::logic_error("RO host prefill disturbed an active or incomplete owner");
++    if(generations[index]==~uint64_t(0))throw std::logic_error("RO Tag generation wrap");
++    ++generations[index];
++  }
++  bool demand(const mem_fetch *m) const {
++    return m->get_access_type()==GLOBAL_ACC_R && !m->get_is_write() && !m->isatomic() && !m->ro_lower_packet();
++  }
++  bool candidate(const mem_fetch *m) const { return demand(m)&&cert->contains(c.m_config.block_addr(m->get_addr())); }
++  void check_access(mem_fetch *m) const {
++    if(!open)throw std::logic_error("RO access outside full-commandlist epoch");
++    if(m->get_is_write()||m->isatomic())tx->assert_no_epoch_write(1,c.m_config.block_addr(m->get_addr()));
++  }
++  void record_accepted(mem_fetch *m) {
++    if(demand(m))++accepted_global_reads;
++    if(candidate(m))++accepted_candidates;
++  }
++  bool matches(ep_l2_ro::tag_binding t,handle h,new_addr_type line) const override {
++    return t.index<generations.size() && t.generation==generations[t.index] &&
++      c.tag_payload_handle(t.index)==h &&
++      !c.m_tag_array->get_block(t.index)->is_invalid_line() &&
++      c.m_tag_array->get_block(t.index)->m_block_addr==line;
++  }
++  void ready(ep_l2_ro::tag_binding t,handle h,new_addr_type line,unsigned mask,bool) override {
++    if(!matches(t,h,line))throw std::logic_error("RO late fill into reused Tag");
++    for(unsigned n=0;n<4;++n)if(mask>>n&1)
++      c.m_tag_array->get_block(t.index)->set_status(VALID,mem_access_sector_mask_t(1<<n));
++    c.m_tag_array->l2_char_tracking_refresh_line(t.index);
++  }
++  void detach(ep_l2_ro::tag_binding t,handle h) override {
++    if(!matches(t,h,c.m_ep_l2_payload.inspect(h).owner))throw std::logic_error("RO detach stale Tag");
++    for(unsigned n=0;n<4;++n)c.m_tag_array->get_block(t.index)->set_status(INVALID,mem_access_sector_mask_t(1<<n));
++    c.set_tag_payload_handle(t.index,handle());++generations[t.index];
++    c.m_tag_array->l2_char_tracking_refresh_line(t.index);
++  }
++  void read(handle h,unsigned,const std::array<unsigned long long,4>&v) override {
++    // Values stay in common RAM until same-cycle enqueue; no response buffer.
++    (void)h;(void)v;
++  }
++  bool target(mem_fetch *m,handle &h) const {
++    unsigned i=~0U;
++    auto p=c.m_tag_array->probe(c.m_config.block_addr(m->get_addr()),i,m,false,true);
++    if(p!=MISS && p!=RESERVATION_FAIL) {
++      h=c.tag_payload_handle(i);
++      if(tx->live(h))return true;
++    }
++    // This is the existing native Line-MSHR index, never a completion CAM.
++    return !c.m_config.m_ro_line_mshr_bypass &&
++      c.m_mshrs.lookup_ro_line(c.m_config.block_addr(m->get_addr()),h);
++  }
++  bool new_request(mem_fetch *m) const {
++    if(!candidate(m))return false;
++    handle h;if(target(m,h))return true;
++    unsigned i=~0U;auto p=c.m_tag_array->probe(c.m_config.block_addr(m->get_addr()),i,m,false,true);
++    if(p!=MISS && p!=RESERVATION_FAIL) {
++      const handle resident=c.tag_payload_handle(i);
++      if(c.m_tag_array->block_is_modified(i) || (c.m_ep_l2_payload.handle_live(resident) &&
++          (c.m_ep_l2_payload.inspect(resident).pending_sector_mask.any() || c.m_ep_l2_payload.inspect(resident).pins)))return false;
++    }
++    return p!=HIT;
++  }
++  unsigned needed(mem_fetch *m,handle h) const {
++    const unsigned mask=m->get_access_sector_mask().to_ulong();
++    return mask&~tx->scheduled(h);
++  }
++  bool capacity(mem_fetch *m,bool existing) const {
++    const auto line=c.m_config.block_addr(m->get_addr());
++    return c.m_mshrs.descriptor_count_used()<512 && c.m_mshrs.targets_on_line(line)<32 &&
++      (existing || c.m_config.m_ro_line_mshr_bypass ||
++       (!c.m_mshrs.probe(line) && c.m_mshrs.num_entries_used()<128));
++  }
++  bool detachable(new_addr_type addr,unsigned &index) const {
++    if(!c.m_config.m_ro_tag_detach)return false;
++    const unsigned base=c.m_config.set_index(addr)*c.m_config.get_assoc();
++    for(unsigned i=base;i<base+c.m_config.get_assoc();++i) {
++      handle h=c.tag_payload_handle(i);
++      if(tx->live(h) && tx->can_detach(h)){index=i;return true;}
++    }
++    return false;
++  }
++  void relieve(new_addr_type addr) {
++    unsigned i=~0U;if(detachable(addr,i))tx->detach(c.tag_payload_handle(i));
++  }
++  bool preview(mem_fetch *m,l2_access_plan &p) const {
++    if(!new_request(m))return false;
++    p.exact=true;p.is_read=true;
++    handle h;bool existing=target(m,h);
++    unsigned i=~0U;
++    p.probe_status=c.m_tag_array->probe(c.m_config.block_addr(m->get_addr()),i,m,false,true);
++    if(existing) {
++      p.probe_status=HIT_RESERVED;
++    } else if(p.probe_status==RESERVATION_FAIL && detachable(m->get_addr(),i))p.probe_status=MISS;
++    p.cache_index=i;
++    if(p.probe_status==RESERVATION_FAIL){p.ep_l2_tag_set_all_reserved=true;return true;}
++    const unsigned mask=m->get_access_sector_mask().to_ulong();
++    unsigned missing=existing?needed(m,h):mask;
++    if(!existing && p.probe_status!=MISS) {
++      auto resident=c.tag_payload_handle(i);
++      if(c.m_ep_l2_payload.handle_live(resident))missing&=~c.m_ep_l2_payload.inspect(resident).ready_sector_mask.to_ulong();
++    }
++    if(!existing && p.probe_status==MISS) {
++      p.victim_dirty=c.m_tag_array->block_is_modified(i);
++      if(p.victim_dirty){p.new_missq_entries++;p.will_send_writeback=true;p.victim_modified_bytes=c.m_tag_array->block_modified_size(i);}
++    }
++    p.will_send_lower_read=missing!=0;
++    p.new_missq_entries+=__builtin_popcount(missing);
++    p.needs_new_mshr=!existing;p.needs_mshr_merge=existing;
++    p.mshr_hit=existing;p.mshr_entry_available=p.mshr_merge_available=capacity(m,existing);
++    if(c.ep_l2_wad_contains(c.m_config.block_addr(m->get_addr()))) {p.probe_status=RESERVATION_FAIL;p.ep_l2_wad_same_address_hazard=true;}
++    return true;
++  }
++  void issue(mem_fetch *m,handle h,unsigned mask,unsigned /*tag_time*/,std::list<cache_event>&events) {
++    const uint64_t cycle=physical_cycle();
++    for(unsigned n=0;n<4;++n)if(mask>>n&1) {
++      mem_access_byte_mask_t bytes;for(unsigned b=n*32;b<n*32+32;++b)bytes.set(b);
++      auto packet=c.m_memfetch_creator->alloc(c.m_config.block_addr(m->get_addr())+32*n,GLOBAL_ACC_R,
++        m->get_access_warp_mask(),bytes,mem_access_sector_mask_t(1<<n),32,false,cycle,-1,-1,-1,NULL,m->get_streamID());
++      packet->set_chip(m->get_tlx_addr().chip);packet->set_partition(m->get_sub_partition_id());
++      packet->set_ft_wb_data(c.m_ep_l2_payload.inspect(h).versions);
++      packet->set_ro_lower_packet();packet->set_ep_l2_payload_identity(h.payload_id,h.generation);
++      packet->set_status(c.m_miss_queue_status,cycle);c.m_miss_queue.push_back(packet);
++      events.push_back(cache_event(READ_REQUEST_SENT));
++    }
++  }
++  bool merge_existing(mem_fetch *m,unsigned time,std::list<cache_event>&events,cache_request_status &r) {
++    handle h;if(!candidate(m)||!target(m,h))return false;
++    unsigned mask=m->get_access_sector_mask().to_ulong(),missing=needed(m,h);
++    r=RESERVATION_FAIL;
++    if(!capacity(m,true)||!c.miss_queue_has_slots(__builtin_popcount(missing)))return true;
++    if(tx->merge(h,m,mask,1,true,ep_l2_ro::GLOBAL_DEMAND_READ)!=ep_l2_ro::ACCEPTED)return true;
++    if(tx->attached(h)) {
++      unsigned i=~0U;bool wb=false;evicted_block_info ev;
++      c.m_tag_array->access(c.m_config.block_addr(m->get_addr()),time,i,wb,ev,m);assert(!wb);
++    }
++    m->set_ep_l2_payload_identity(h.payload_id,h.generation);
++    issue(m,h,missing,time,events);++accepted_ro;r=MISS;return true;
++  }
++  cache_request_status accept_new(mem_fetch *m,unsigned index,cache_request_status probe,unsigned time,std::list<cache_event>&events) {
++    const handle h=c.tag_payload_handle(index);
++    bool wb=false;evicted_block_info ev;unsigned actual=index;
++    c.m_tag_array->access(c.m_config.block_addr(m->get_addr()),time,actual,wb,ev,m);assert(actual==index);
++    ++generations[index];
++    unsigned mask=m->get_access_sector_mask().to_ulong();
++    unsigned ready=c.m_ep_l2_payload.inspect(h).ready_sector_mask.to_ulong();
++    auto admitted=tx->admit(1,c.m_config.block_addr(m->get_addr()),h,
++      ep_l2_ro::tag_binding(index,generations[index]),m,mask,true,ep_l2_ro::GLOBAL_DEMAND_READ,ready);
++    if(admitted!=ep_l2_ro::ACCEPTED)throw std::logic_error("RO preview/admit disagreement");
++    issue(m,h,mask&~ready,time,events);++accepted_ro;
++    if(wb) {
++      auto packet=c.m_memfetch_creator->alloc(ev.m_block_addr,c.m_wrbk_type,m->get_access_warp_mask(),
++        ev.m_byte_mask,ev.m_sector_mask,ev.m_modified_size,true,physical_cycle(),-1,-1,-1,NULL,m->get_streamID());
++      packet->set_chip(m->get_tlx_addr().chip);packet->set_partition(m->get_sub_partition_id());
++      c.send_write_request(packet,WRITE_BACK_REQUEST_SENT,physical_cycle(),events);
++    }
++    c.m_stats.inc_stats(m->get_access_type(),probe,m->get_streamID());
++    c.m_stats.inc_stats_pw(m->get_access_type(),probe,m->get_streamID());
++    return MISS;
++  }
++  bool has_response() const {handle h;return tx->ready_response(h,cursor);}
++  bool prepare(uint64_t cycle) {
++    if(cycle!=physical_cycle())throw std::logic_error("RO response bank cycle must be physical GPU time");
++    if(selected && response_cycle==cycle)return true;
++    if(selected){tx->commit_response(reply.transaction,false,response_cycle);selected=false;}
++    handle h;if(!tx->ready_response(h,cursor))return false;
++    if(!tx->prepare_response(h,cycle,reply))return false;
++    selected=true;response_cycle=cycle;
++    reply.request->set_ft_wb_data(c.m_ep_l2_payload.inspect(h).versions);return true;
++  }
++  void commit(uint64_t cycle) {
++    if(!selected)throw std::logic_error("RO response commit without grant");
++    tx->commit_response(reply.transaction,true,cycle);cursor=(reply.transaction.payload_id+1)%c.m_ep_l2_payload.physical_slots();selected=false;prefer_ro=false;
++  }
++};
++void l2_cache::ro_init() {
++  m_ro=NULL;
++  if(m_config.m_ro_tag_detach||m_config.m_ro_line_mshr_bypass)m_ro=new ep_l2_ro_runtime(*this);
++}
++l2_cache::~l2_cache(){delete m_ro;}
++void l2_cache::ro_begin_epoch(){if(m_ro){
++  if(!m_ro->command_bound||m_ro->ever_open||!ft_drained()||m_mshrs.descriptor_count_used()||!m_miss_queue.empty()||ep_l2_wad_occupancy())
++    throw std::logic_error("RO epoch activation requires complete prior drain");
++  m_ro->tx->begin_epoch(1,m_ro->cert->manifest_sha256());m_ro->open=m_ro->ever_open=true;
++}}
++void l2_cache::ro_end_epoch(){if(m_ro){
++  if(!m_ro->open||!ft_drained()||m_mshrs.descriptor_count_used()||!m_miss_queue.empty()||!m_ro->tx->end_epoch())
++    throw std::logic_error("RO whole-commandlist end is not drained");
++  m_ro->open=false;
++}}
++bool l2_cache::ro_drained() const {return !m_ro||m_ro->tx->drained();}
++bool l2_cache::access_ready() const {return (m_ro&&m_ro->has_response())||baseline_cache::access_ready();}
++bool l2_cache::ro_return(mem_fetch *m,unsigned long long cycle) {
++  if(!m_ro||!m->ro_lower_packet())throw std::logic_error("RO return without runtime");
++  if(!m->has_ft_wb_data())throw std::logic_error("RO return lacks reference versions");
++  if(cycle!=m_ro->physical_cycle())throw std::logic_error("RO return bank cycle must be physical GPU time");
++  return m_ro->port.accept_return(*m_ro->tx,ep_l2::PayloadHandle(m->get_ep_l2_payload_id(),m->get_ep_l2_payload_generation()),
++    m->get_access_sector_mask().to_ulong(),cycle,m->get_ft_wb_data());
++}
++void l2_cache::ro_print(FILE *f,unsigned slice) const {if(m_ro){
++  const auto &s=m_ro->tx->stats;
++  fprintf(f,"EPL2ROV1|SUMMARY|slice=%u|detach=%u|bypass=%u|accepted_global_reads=%llu|accepted_oracle_candidates=%llu|accepted_ro=%llu|transactions=%llu|merges=%llu|detached=%llu|lower_sectors=%llu|concurrent_duplicate_sectors=%llu|responses=%llu|ro_bank_fill_ops=%llu|ro_bank_response_ops=%llu|live=%u|manifest=%s|scope=TRACE_MODEL_CLOSED_WORLD\n",
++    slice,m_config.m_ro_tag_detach,m_config.m_ro_line_mshr_bypass,
++    (unsigned long long)m_ro->accepted_global_reads,(unsigned long long)m_ro->accepted_candidates,(unsigned long long)m_ro->accepted_ro,
++    (unsigned long long)s.admits,(unsigned long long)s.merges,(unsigned long long)s.detached,(unsigned long long)s.lower_sectors,
++    (unsigned long long)s.duplicate_sectors,(unsigned long long)s.responses,
++    m_ep_l2_payload.bank_ro_fill_write(),m_ep_l2_payload.bank_ro_response_read(),m_ro->tx->live_transactions(),m_ro->cert->manifest_sha256().c_str());
++}}
++
++void l2_cache::ro_bind_commandlist(const char *path){if(m_ro){
++  std::ifstream f(path,std::ios::binary);if(!f)throw std::invalid_argument("RO commandlist missing");
++  std::string bytes((std::istreambuf_iterator<char>(f)),{});
++  if(ep_l2_ro::sha256(bytes)!=m_ro->command_sha)throw std::invalid_argument("RO commandlist identity mismatch");
++  m_ro->command_bound=true;
++}}
+diff --git a/src/gpgpu-sim/ep-l2-ro-sha256.h b/src/gpgpu-sim/ep-l2-ro-sha256.h
+new file mode 100644
+index 00000000..4b25718c
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ro-sha256.h
+@@ -0,0 +1,39 @@
++#ifndef EP_L2_RO_SHA256_H
++#define EP_L2_RO_SHA256_H
++#include <cstdint>
++#include <iomanip>
++#include <sstream>
++#include <string>
++#include <vector>
++namespace ep_l2_ro {
++// FIPS 180-4 SHA-256, used only while loading the experimental certificate.
++inline std::string sha256(const std::string &input) {
++  static const uint32_t k[64]={
++    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
++    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
++    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
++    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
++    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
++    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
++    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
++    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2};
++  uint32_t h[8]={0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19};
++  std::vector<unsigned char> b(input.begin(),input.end()); uint64_t bits=uint64_t(b.size())*8;
++  b.push_back(128);while(b.size()%64!=56)b.push_back(0);
++  for(int n=7;n>=0;--n)b.push_back(bits>>(n*8));
++  auto r=[](uint32_t x,unsigned n){return (x>>n)|(x<<(32-n));};
++  for(size_t off=0;off<b.size();off+=64) {
++    uint32_t w[64];for(unsigned n=0;n<16;++n)w[n]=(uint32_t(b[off+4*n])<<24)|(uint32_t(b[off+4*n+1])<<16)|(uint32_t(b[off+4*n+2])<<8)|b[off+4*n+3];
++    for(unsigned n=16;n<64;++n)w[n]=w[n-16]+(r(w[n-15],7)^r(w[n-15],18)^(w[n-15]>>3))+w[n-7]+(r(w[n-2],17)^r(w[n-2],19)^(w[n-2]>>10));
++    uint32_t a=h[0],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],v=h[7],bb=h[1];
++    for(unsigned n=0;n<64;++n) {
++      uint32_t t=v+(r(e,6)^r(e,11)^r(e,25))+((e&f)^(~e&g))+k[n]+w[n];
++      uint32_t u=(r(a,2)^r(a,13)^r(a,22))+((a&bb)^(a&c)^(bb&c));
++      v=g;g=f;f=e;e=d+t;d=c;c=bb;bb=a;a=t+u;
++    }
++    h[0]+=a;h[1]+=bb;h[2]+=c;h[3]+=d;h[4]+=e;h[5]+=f;h[6]+=g;h[7]+=v;
++  }
++  std::ostringstream s;s<<std::hex<<std::setfill('0');for(auto x:h)s<<std::setw(8)<<x;return s.str();
++}
++}
++#endif
+diff --git a/src/gpgpu-sim/ep-l2-ro-store-port.h b/src/gpgpu-sim/ep-l2-ro-store-port.h
+new file mode 100644
+index 00000000..81b5fd1e
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ro-store-port.h
+@@ -0,0 +1,97 @@
++#ifndef EP_L2_RO_STORE_PORT_H
++#define EP_L2_RO_STORE_PORT_H
++#include "ep-l2-ro-transactions.h"
++
++namespace ep_l2_ro {
++// Actual Tag callback is supplied by the production l2_cache runtime.
++class tag_port {
++ public:
++  virtual ~tag_port() {}
++  virtual bool matches(tag_binding,identity,new_addr_type) const = 0;
++  virtual void ready(tag_binding,identity,new_addr_type,unsigned,bool) = 0;
++  virtual void detach(tag_binding,identity) = 0;
++  virtual void read(identity,unsigned,const std::array<unsigned long long,4>&) = 0;
++};
++
++// Executable binding against Lane-1 R0. Owns NO data array/allocator.
++class store_port : public payload_port {
++ public:
++  store_port(ep_l2_payload_store &store,tag_port &tags)
++      : m_store(store), m_tags(tags), m_return(NULL), m_return_mask(0) {
++    if (!store.banked() || store.ft_mode()!=2 ||
++        (store.physical_slots()!=1168 && store.physical_slots()!=1160))
++      throw std::invalid_argument("RO requires unified banked C16/C8 store");
++  }
++  bool live(identity h,new_addr_type line) const {
++    return m_store.handle_owner_matches(h,line);
++  }
++  bool pin(identity h) {
++    if(!m_store.handle_live(h))return false;
++    const auto &s=m_store.inspect(h);
++    if(s.allocation_role==ep_l2_payload_store::RESIDENT && s.pending_sector_mask.none() && !s.pins && s.status!=ep_l2_payload_store::RESIDENT_DIRTY)
++      m_store.transfer(h,ep_l2_payload_store::RO,ep_l2_payload_store::RO_FILL_ATTACHED);
++    else if(s.allocation_role!=ep_l2_payload_store::RO)return false;
++    m_store.pin(h);return true;
++  }
++  void unpin(identity h) { m_store.unpin(h); }
++  void lower_accepted(identity h,unsigned mask) {
++    auto &s=m_store.inspect_mutable(h);
++    if ((s.pending_sector_mask.to_ulong()|s.ready_sector_mask.to_ulong())&mask)
++      throw std::logic_error("RO lower sector already outstanding/ready");
++    if(s.allocation_role==ep_l2_payload_store::RESIDENT)
++      m_store.transfer(h,ep_l2_payload_store::RO,ep_l2_payload_store::RO_FILL_ATTACHED);
++    s.pending_sector_mask|=mem_access_sector_mask_t(mask);
++  }
++  // Borrow the actual return packet's version tokens for one callback only.
++  // A denied bank write leaves the packet at its existing lower return queue.
++  bool accept_return(transactions &tx,identity h,unsigned mask,uint64_t cycle,
++                     const std::array<unsigned long long,4> &packet_versions) {
++    if(m_return)throw std::logic_error("nested RO return callback");
++    m_return=&packet_versions;m_return_handle=h;m_return_mask=mask;
++    try {bool accepted=tx.fill(h,mask,cycle);m_return=NULL;return accepted;}
++    catch(...){m_return=NULL;throw;}
++  }
++  bool fill_write(identity h,unsigned mask,uint64_t cycle) {
++    if(!m_return || !(h==m_return_handle) || mask!=m_return_mask)
++      throw std::logic_error("RO fill requires bound return packet");
++    const auto &before=m_store.inspect(h);
++    if((mask&~before.pending_sector_mask.to_ulong())!=0)
++      throw std::logic_error("RO return sector has no landing obligation");
++    if(m_store.request(h,true,cycle,~0ULL,ep_l2_payload_store::RO_FILL_WRITE)!=ep_l2_payload_store::GRANTED)
++      return false;
++    auto &s=m_store.inspect_mutable(h);
++    for(unsigned n=0;n<4;++n)if(mask>>n&1)s.versions[n]=(*m_return)[n];
++    m_store.mark_sector_ready(h,mem_access_sector_mask_t(mask));return true;
++  }
++  bool response_read(identity h,unsigned mask,uint64_t cycle) {
++    const auto &s=m_store.inspect(h);
++    if((mask&~s.ready_sector_mask.to_ulong())!=0)
++      throw std::logic_error("RO response requires all requested sectors");
++    if(m_store.request(h,false,cycle,~0ULL,ep_l2_payload_store::RO_RESPONSE_READ)!=ep_l2_payload_store::GRANTED)
++      return false;
++    m_tags.read(h,mask,s.versions);return true;
++  }
++  bool tag_matches(tag_binding t,identity h,new_addr_type line) const {
++    return m_tags.matches(t,h,line);
++  }
++  void tag_ready(tag_binding t,identity h,new_addr_type line,unsigned mask,bool complete) {
++    if(complete)m_store.transfer(h,ep_l2_payload_store::RESIDENT,
++                                ep_l2_payload_store::RESIDENT_VALID);
++    m_tags.ready(t,h,line,mask,complete);
++  }
++  void tag_detach(tag_binding t,identity h) {
++    auto &s=m_store.inspect_mutable(h);
++    if(s.allocation_role!=ep_l2_payload_store::RO || !s.pins)
++      throw std::logic_error("RO detach requires owned/pinned pending landing");
++    m_tags.detach(t,h);s.status=ep_l2_payload_store::RO_FILL_DETACHED;
++  }
++  void release(identity h) { m_store.release(h); }
++ private:
++  ep_l2_payload_store &m_store;
++  tag_port &m_tags;
++  const std::array<unsigned long long,4> *m_return;
++  identity m_return_handle;
++  unsigned m_return_mask;
++};
++} // namespace ep_l2_ro
++#endif
+diff --git a/src/gpgpu-sim/ep-l2-ro-transactions.h b/src/gpgpu-sim/ep-l2-ro-transactions.h
+new file mode 100644
+index 00000000..d1d5cb2c
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ro-transactions.h
+@@ -0,0 +1,331 @@
++#ifndef EP_L2_RO_TRANSACTIONS_H
++#define EP_L2_RO_TRANSACTIONS_H
++
++#include <stdint.h>
++#include <algorithm>
++#include <array>
++#include <stdexcept>
++#include <string>
++#include <vector>
++#include "gpu-cache.h"
++#include "ep-l2-ro-oracle.h"
++
++// Lane 3 independent production candidate. There is deliberately no allocator
++// here: the caller atomically reserves a landing through Lane 1's interface.
++// Every requester uses the existing mshr_table's descriptor free-list.
++namespace ep_l2_ro {
++
++typedef ep_l2::PayloadHandle identity;
++
++struct tag_binding {
++  unsigned index;
++  uint64_t generation;
++  tag_binding(unsigned i = ~0U, uint64_t g = 0) : index(i), generation(g) {}
++};
++
++// Adapter obligations: all bank operations arbitrate with normal fills/hits,
++// WB and TVD; callbacks cannot allocate free data or change the physical budget.
++class payload_port {
++ public:
++  virtual ~payload_port() {}
++  virtual bool live(identity h, new_addr_type line) const = 0;
++  virtual bool pin(identity h) = 0;
++  virtual void unpin(identity h) = 0;
++  virtual bool fill_write(identity h, unsigned sectors, uint64_t cycle) = 0;
++  virtual void lower_accepted(identity, unsigned) {}
++  virtual bool response_read(identity h, unsigned sectors, uint64_t cycle) = 0;
++  virtual bool tag_matches(tag_binding tag, identity h,
++                           new_addr_type line) const = 0;
++  virtual void tag_ready(tag_binding tag, identity h,
++                          new_addr_type line, unsigned ready_sectors,
++                          bool all_required_ready) = 0;
++  virtual void tag_detach(tag_binding tag, identity h) = 0;
++  virtual void release(identity h) = 0;
++};
++
++enum request_kind { GLOBAL_DEMAND_READ, SYNTHETIC_WRITE_ALLOCATE_READ,
++                    STORE, ATOMIC, WRITEBACK, UNKNOWN_REQUEST };
++enum admission { ACCEPTED, NORMAL_PATH, DESCRIPTOR_OR_ADDRESS_FULL,
++                 TRANSACTION_SLOT_BUSY, TAG_BINDING_INVALID, LINE_MSHR_FULL };
++
++struct switches {
++  bool tag_detach, line_mshr_bypass;
++  switches(bool d = false, bool b = false) : tag_detach(d), line_mshr_bypass(b) {}
++};
++
++struct response {
++  mem_fetch *request;
++  unsigned sectors;
++  identity transaction;
++};
++
++class transactions {
++ public:
++  struct counters {
++    uint64_t admits, merges, detached, lower_sectors, duplicate_sectors;
++    uint64_t responses, rejected_oracle, response_backpressure;
++    counters() : admits(0), merges(0), detached(0), lower_sectors(0),
++      duplicate_sectors(0), responses(0), rejected_oracle(0),
++      response_backpressure(0) {}
++  } stats;
++
++  transactions(mshr_table &shared, payload_port &port, unsigned payload_budget,
++                const oracle_certificate &certificate,
++                switches features = switches())
++      : m_shared(shared), m_port(port), m_slots(payload_budget),
++        m_features(features), m_oracle(certificate), m_epoch(0), m_epoch_open(false) {
++    if (shared.descriptor_pool_capacity() != 512 ||
++        (payload_budget != 1168 && payload_budget != 1160))
++      throw std::invalid_argument("RO requires shared D512 and C16/C8 payload budget");
++  }
++
++  // The binding layer must have verified every input and oracle artifact hash.
++  // This is a closed-world experimental oracle, not an inferred hardware bit.
++  void begin_epoch(uint64_t epoch, const std::string &verified_manifest_sha256) {
++    if (m_epoch_open || !drained() ||
++        verified_manifest_sha256 != m_oracle.manifest_sha256())
++      throw std::logic_error("epoch start requires verified manifest and drain");
++    m_epoch = epoch; m_epoch_open = true;
++  }
++  bool end_epoch() {
++    if (!drained()) return false;
++    m_epoch_open = false;
++    return true;
++  }
++  bool drained() const {
++    for (unsigned i = 0; i < m_slots.size(); ++i)
++      if (m_slots[i].live) return false;
++    return true;
++  }
++  unsigned live_transactions() const {
++    unsigned n = 0;
++    for (unsigned i = 0; i < m_slots.size(); ++i) n += m_slots[i].live;
++    return n;
++  }
++
++  admission admit(uint64_t epoch, new_addr_type line, identity h,
++                  tag_binding tag, mem_fetch *mf, unsigned mask,
++                  bool certified_line, request_kind kind,
++                  unsigned initial_ready_sectors = 0) {
++    check_mask(mask);
++    if (initial_ready_sectors & ~15U)
++      throw std::invalid_argument("invalid resident ready sectors");
++    if (!m_epoch_open || epoch != m_epoch || !certified_line ||
++        !m_oracle.contains(line) || kind != GLOBAL_DEMAND_READ) {
++      ++stats.rejected_oracle;
++      return NORMAL_PATH;
++    }
++    if (!m_features.line_mshr_bypass && !m_features.tag_detach) return NORMAL_PATH;
++    if (line % 128 || h.payload_id >= m_slots.size() || !m_port.live(h, line) ||
++        !m_port.tag_matches(tag, h, line)) return TAG_BINDING_INVALID;
++    entry &e = m_slots[h.payload_id];
++    if (e.live) return TRANSACTION_SLOT_BUSY;
++    if (!m_features.line_mshr_bypass && !m_shared.reserve_ro_line(line))
++      return LINE_MSHR_FULL;
++    mshr_table::ro_descriptor_handle d;
++    if (!m_shared.reserve_ro_descriptor(line, mf, sector_mask(mask), d)) {
++      if (!m_features.line_mshr_bypass) m_shared.release_ro_line(line);
++      return DESCRIPTOR_OR_ADDRESS_FULL;
++    }
++    if (!m_port.pin(h)) {
++      m_shared.release_ro_descriptor(d);
++      if (!m_features.line_mshr_bypass) m_shared.release_ro_line(line);
++      return TRANSACTION_SLOT_BUSY;
++    }
++    e = entry(); e.live = e.attached = true; e.h = h; e.tag = tag;
++    e.line = line; e.epoch = epoch; e.required = mask;
++    e.ready = initial_ready_sectors;
++    e.waiters.push_back(waiter(d, mf, mask));
++    if(!m_features.line_mshr_bypass)m_shared.bind_ro_line(line,h);
++    ++stats.admits;
++    return ACCEPTED;
++  }
++
++  // Tag lookup supplies the attached match. Only detach-with-MSHR mode may
++  // discover a detached transaction by the conventional line index.
++  bool merge_target(new_addr_type line, identity &result) const {
++    return !m_features.line_mshr_bypass && m_shared.lookup_ro_line(line,result);
++  }
++  bool live(identity h) const {
++    return h.payload_id<m_slots.size() && m_slots[h.payload_id].live && m_slots[h.payload_id].h==h;
++  }
++  unsigned scheduled(identity h) const { const entry &e=get(h);return e.required|e.ready; }
++  bool attached(identity h) const { return get(h).attached; }
++  bool ready_response(identity &h, unsigned start=0) const {
++    for(unsigned n=0;n<m_slots.size();++n) {
++      const entry &e=m_slots[(n+start)%m_slots.size()];
++      if(!e.live)continue;
++      for(const auto &w:e.waiters)if(!(w.sectors&~e.ready)){h=e.h;return true;}
++    }
++    return false;
++  }
++
++  admission merge(identity h, mem_fetch *mf, unsigned mask,
++                  uint64_t epoch, bool certified_line, request_kind kind) {
++    check_mask(mask);
++    entry &e = get(h);
++    if (epoch != e.epoch || !certified_line || !m_oracle.contains(e.line) ||
++        kind != GLOBAL_DEMAND_READ) {
++      ++stats.rejected_oracle;
++      return NORMAL_PATH;
++    }
++    if ((e.attached && !m_port.tag_matches(e.tag, h, e.line)) ||
++        (!e.attached && m_features.line_mshr_bypass))
++      return NORMAL_PATH;
++    mshr_table::ro_descriptor_handle d;
++    if (!m_shared.reserve_ro_descriptor(e.line, mf, sector_mask(mask), d))
++      return DESCRIPTOR_OR_ADDRESS_FULL;
++    e.waiters.push_back(waiter(d, mf, mask));
++    e.required |= mask; e.reuse_seen = true;
++    ++stats.merges;
++    return ACCEPTED;
++  }
++
++  bool can_detach(identity h) const {
++    const entry &e=get(h);
++    return m_features.tag_detach && e.attached && !e.reuse_seen && (e.required&~e.ready);
++  }
++  bool detach(identity h) {
++    entry &e = get(h);
++    // Conservative waiter-aware protection persists after a merged waiter
++    // retires. No future reuse oracle is consumed by this policy.
++    if (!m_features.tag_detach || !e.attached || e.reuse_seen ||
++        !(e.required & ~e.ready)) return false;
++    if (!m_port.tag_matches(e.tag, h, e.line))
++      throw std::logic_error("tag reuse without detach handshake");
++    m_port.tag_detach(e.tag, h); e.attached = false;
++    ++stats.detached;
++    return true;
++  }
++
++  unsigned lower_needed(identity h) const {
++    const entry &e = get(h);
++    return e.required & ~(e.issued | e.ready);
++  }
++  // Called only after real lower-queue acceptance; no resource is freed here.
++  void lower_accepted(identity h, unsigned mask) {
++    check_mask(mask);
++    entry &e = get(h);
++    if ((mask & ~e.required) || (mask & (e.issued | e.ready)))
++      throw std::logic_error("unrequested or repeated sector issue");
++    unsigned duplicates = 0;
++    for (unsigned i = 0; i < m_slots.size(); ++i)
++      if (m_slots[i].live && !(m_slots[i].h == h) &&
++          m_slots[i].line == e.line) duplicates |= m_slots[i].issued & mask;
++    stats.duplicate_sectors += bits(duplicates);
++    stats.lower_sectors += bits(mask);
++    m_port.lower_accepted(h, mask);
++    e.issued |= mask;
++    if (!m_features.line_mshr_bypass)
++      m_shared.ro_line_issue(e.line, sector_mask(mask));
++  }
++  bool fill(identity h, unsigned mask, uint64_t cycle) {
++    check_mask(mask);
++    entry &e = get(h);
++    if ((mask & ~e.issued) || (mask & e.ready))
++      throw std::logic_error("unexpected or repeated fill");
++    if (e.attached && !m_port.tag_matches(e.tag, h, e.line))
++      throw std::logic_error("stale attached fill tag generation");
++    if (!m_port.fill_write(h, mask, cycle)) return false;
++    e.ready |= mask;
++    if (!m_features.line_mshr_bypass)
++      m_shared.ro_line_ready(e.line, sector_mask(mask));
++    if (e.attached) {
++      m_port.tag_ready(e.tag, h, e.line, e.ready,
++                       (e.required & ~e.ready) == 0);
++    }
++    retire_if_done(e);
++    return true;
++  }
++  // A read grant is cycle-local: a rejected enqueue must reread on retry.
++  // No hidden per-transaction response data buffer is provided.
++  bool prepare_response(identity h, uint64_t cycle, response &out) {
++    entry &e = get(h);
++    if (e.prepared && e.prepared_cycle != cycle) e.prepared = false;
++    if (!e.prepared) {
++      for (unsigned i = 0; i < e.waiters.size(); ++i) {
++        if ((e.waiters[i].sectors & ~e.ready) == 0) {
++          if (!m_port.response_read(h, e.waiters[i].sectors, cycle)) return false;
++          e.prepared = true; e.prepared_index = i; e.prepared_cycle = cycle;
++          break;
++        }
++      }
++    }
++    if (!e.prepared) return false;
++    waiter &w = e.waiters[e.prepared_index];
++    out.request = w.mf; out.sectors = w.sectors; out.transaction = h;
++    return true;
++  }
++  void commit_response(identity h, bool fifo_accepted, uint64_t cycle) {
++    entry &e = get(h);
++    if (!e.prepared) throw std::logic_error("response commit without read");
++    if (fifo_accepted && e.prepared_cycle != cycle)
++      throw std::logic_error("response enqueue outside granted read cycle");
++    if (!fifo_accepted) {
++      ++stats.response_backpressure; e.prepared = false; return;
++    }
++    m_shared.release_ro_descriptor(e.waiters[e.prepared_index].descriptor);
++    e.waiters.erase(e.waiters.begin() + e.prepared_index);
++    e.prepared = false; ++stats.responses;
++    retire_if_done(e);
++  }
++  unsigned pending(identity h) const {
++    const entry &e = get(h); return e.issued & ~e.ready;
++  }
++  void assert_no_epoch_write(uint64_t epoch, new_addr_type line) const {
++    if (epoch == m_epoch && m_epoch_open && m_oracle.contains(line))
++      throw std::logic_error("oracle violation: writer to certified epoch line");
++  }
++
++ private:
++  struct waiter {
++    mshr_table::ro_descriptor_handle descriptor;
++    mem_fetch *mf;
++    unsigned sectors;
++    waiter(mshr_table::ro_descriptor_handle d, mem_fetch *m, unsigned s)
++      : descriptor(d), mf(m), sectors(s) {}
++  };
++  struct entry {
++    bool live, attached, reuse_seen, prepared;
++    unsigned required, issued, ready, prepared_index;
++    identity h; tag_binding tag; new_addr_type line; uint64_t epoch, prepared_cycle;
++    std::vector<waiter> waiters;
++    entry() : live(false), attached(false), reuse_seen(false), prepared(false),
++      required(0), issued(0), ready(0), prepared_index(0), line(0), epoch(0), prepared_cycle(0) {}
++  };
++  static void check_mask(unsigned mask) {
++    if (!mask || (mask & ~15U)) throw std::invalid_argument("invalid sector mask");
++  }
++  static unsigned bits(unsigned mask) {
++    return (mask & 1) + ((mask >> 1) & 1) + ((mask >> 2) & 1) + ((mask >> 3) & 1);
++  }
++  static mem_access_sector_mask_t sector_mask(unsigned mask) {
++    return mem_access_sector_mask_t(mask);
++  }
++  entry &get(identity h) {
++    if (h.payload_id >= m_slots.size() || !m_slots[h.payload_id].live ||
++        !(m_slots[h.payload_id].h == h) || !m_port.live(h, m_slots[h.payload_id].line))
++      throw std::logic_error("stale payload transaction generation");
++    return m_slots[h.payload_id];
++  }
++  const entry &get(identity h) const {
++    return const_cast<transactions *>(this)->get(h);
++  }
++  void retire_if_done(entry &e) {
++    if (!e.waiters.empty() || e.prepared || (e.required & ~e.ready) ||
++        (e.issued & ~e.ready)) return;
++    m_port.unpin(e.h);
++    if (!e.attached) m_port.release(e.h);
++    if (!m_features.line_mshr_bypass) m_shared.release_ro_line(e.line);
++    e.live = false;
++  }
++  mshr_table &m_shared;
++  payload_port &m_port;
++  std::vector<entry> m_slots;  // fixed bound: one completion per physical slot
++  switches m_features;
++  const oracle_certificate &m_oracle;
++  uint64_t m_epoch;
++  bool m_epoch_open;
++};
++}  // namespace ep_l2_ro
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 0f1efcff..1306c279 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -36,6 +36,7 @@
+ #include <assert.h>
+ #include "gpu-sim.h"
+ #include "hashing.h"
++#include "ep-l2-ro-runtime.inc"
+ 
+ namespace {
+ struct l2_char_tag_state {
+@@ -669,6 +670,9 @@ bool mshr_table::full(new_addr_type block_addr) const {
+ mshr_table::ep_l2_block_reason mshr_table::full_reason(
+     new_addr_type block_addr) const {
+   table::const_iterator i = m_data.find(block_addr);
++  if (m_descriptor_pool_size &&
++      targets_on_line(block_addr) >= m_descriptor_per_line_cap)
++    return EP_L2_BLOCK_PER_ADDRESS_CAP;
+   if (i != m_data.end()) {
+     const unsigned per_line_limit =
+         m_descriptor_pool_size ? m_descriptor_per_line_cap : m_max_merged;
+@@ -683,6 +687,102 @@ mshr_table::ep_l2_block_reason mshr_table::full_reason(
+   return EP_L2_BLOCK_NONE;
+ }
+ 
++unsigned mshr_table::ro_targets_on_line(new_addr_type line) const {
++  if (!m_ro_descriptor_count) return 0;
++  unsigned count = 0;
++  for (unsigned i = 0; i < m_descriptor_pool.size(); ++i)
++    if (m_descriptor_pool[i].m_ro_external &&
++        m_descriptor_pool[i].m_ro_line == line) ++count;
++  return count;
++}
++
++unsigned mshr_table::targets_on_line(new_addr_type line) const {
++  table::const_iterator entry = m_data.find(line);
++  return ro_targets_on_line(line) +
++         (entry == m_data.end() ? 0 : entry->second.m_list.size());
++}
++
++bool mshr_table::reserve_ro_descriptor(
++    new_addr_type line, mem_fetch *mf, const mem_access_sector_mask_t &sectors,
++    ro_descriptor_handle &result) {
++  result = ro_descriptor_handle();
++  if (!m_descriptor_pool_size || !mf || sectors.none() ||
++      targets_on_line(line) >= m_descriptor_per_line_cap ||
++      m_free_descriptor_ids.empty()) return false;
++  for (unsigned n = 0; n < m_descriptor_pool.size(); ++n)
++    if (m_descriptor_pool[n].m_mf == mf) return false;
++  const unsigned id = m_free_descriptor_ids.back();
++  ep_l2_descriptor &d = m_descriptor_pool[id];
++  assert(!d.m_mf && !d.m_ro_external);
++  // Never permit a generation wrap to turn a stale descriptor into a live one.
++  assert(d.m_ro_generation != ~0ULL);
++  ++d.m_ro_generation;
++  d.m_mf = mf; d.m_sectors = sectors; d.m_ro_external = true;
++  d.m_ro_line = line; d.m_response_queued = false;
++  m_free_descriptor_ids.pop_back();
++  ++m_ro_descriptor_count;
++  result = ro_descriptor_handle(id, d.m_ro_generation);
++  return true;
++}
++
++bool mshr_table::ro_descriptor_live(const ro_descriptor_handle &h) const {
++  return h.valid() && h.id < m_descriptor_pool.size() &&
++         m_descriptor_pool[h.id].m_ro_external &&
++         m_descriptor_pool[h.id].m_ro_generation == h.generation;
++}
++
++void mshr_table::release_ro_descriptor(const ro_descriptor_handle &h) {
++  assert(ro_descriptor_live(h));
++  ep_l2_descriptor &d = m_descriptor_pool[h.id];
++  const unsigned long long generation = d.m_ro_generation;
++  d = ep_l2_descriptor();
++  d.m_ro_generation = generation;
++  --m_ro_descriptor_count;
++  m_free_descriptor_ids.push_back(h.id);
++}
++
++bool mshr_table::reserve_ro_line(new_addr_type line) {
++  if (m_data.find(line) != m_data.end() || m_data.size() >= m_num_entries)
++    return false;
++  m_data[line].m_ro_line_owner = true;
++  return true;
++}
++
++void mshr_table::bind_ro_line(new_addr_type line, ep_l2::PayloadHandle h) {
++  assert(m_data.at(line).m_ro_line_owner); m_data.at(line).m_ro_handle=h;
++}
++bool mshr_table::lookup_ro_line(new_addr_type line, ep_l2::PayloadHandle &h) const {
++  auto it=m_data.find(line);
++  if(it==m_data.end() || !it->second.m_ro_line_owner)return false;
++  h=it->second.m_ro_handle;return true;
++}
++
++void mshr_table::release_ro_line(new_addr_type line) {
++  table::iterator e = m_data.find(line);
++  assert(e != m_data.end() && e->second.m_ro_line_owner);
++  assert(e->second.m_pending_sectors.none() && ro_targets_on_line(line) == 0);
++  e->second.m_ro_line_owner = false;
++  if (e->second.m_list.empty()) m_data.erase(e);
++}
++
++void mshr_table::ro_line_issue(new_addr_type line,
++                              const mem_access_sector_mask_t &mask) {
++  table::iterator e = m_data.find(line);
++  assert(e != m_data.end() && e->second.m_ro_line_owner);
++  assert((mask & e->second.m_issued_sectors).none());
++  e->second.m_issued_sectors |= mask;
++  e->second.m_pending_sectors |= mask;
++}
++
++void mshr_table::ro_line_ready(new_addr_type line,
++                              const mem_access_sector_mask_t &mask) {
++  table::iterator e = m_data.find(line);
++  assert(e != m_data.end() && e->second.m_ro_line_owner);
++  assert((mask & ~e->second.m_pending_sectors).none());
++  e->second.m_pending_sectors &= ~mask;
++  e->second.m_ready_sectors |= mask;
++}
++
+ bool mshr_table::needs_lower_read(
+     new_addr_type block_addr, const mem_access_sector_mask_t &sectors) const {
+   if (!m_descriptor_pool_size) return !probe(block_addr);
+@@ -876,10 +976,13 @@ void mshr_table::commit_next_access() {
+     assert(mf != entry->second.m_list.end());
+     entry->second.m_descriptor_ids.erase(id);
+     entry->second.m_list.erase(mf);
++    const unsigned long long ro_generation = descriptor.m_ro_generation;
+     descriptor = ep_l2_descriptor();
++    descriptor.m_ro_generation = ro_generation;
+     m_free_descriptor_ids.push_back(ready.m_descriptor_id);
+     m_current_descriptor_response.pop_front();
+-    if (entry->second.m_list.empty()) m_data.erase(entry);
++    if (entry->second.m_list.empty() && !entry->second.m_ro_line_owner)
++      m_data.erase(entry);
+     return;
+   }
+ 
+@@ -2422,7 +2525,12 @@ enum cache_request_status l1_cache::access(new_addr_type addr, mem_fetch *mf,
+ enum cache_request_status l2_cache::access(new_addr_type addr, mem_fetch *mf,
+                                            unsigned time,
+                                            std::list<cache_event> &events) {
+-  if (ft_enabled()) return ft_access(addr, mf, time, events);
++  if (m_ro) m_ro->check_access(mf);
++  if (ft_enabled()) {
++    const auto r=ft_access(addr, mf, time, events);
++    if(m_ro && r!=RESERVATION_FAIL)m_ro->record_accepted(mf);
++    return r;
++  }
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   unsigned payload_index = (unsigned)-1;
+   bool payload_reserved = false;
+@@ -2616,6 +2724,7 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
+ void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,
+                               l2_access_plan &plan) const {
+   plan = l2_access_plan();
++  if (m_ro && m_ro->preview(mf,plan)) return;
+   if (!exact_l2_admission()) return;
+ 
+   plan.exact = true;
+@@ -2635,6 +2744,9 @@ void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,
+   plan.probe_status =
+       m_tag_array->probe(block_addr, cache_index, mf, mf->is_write(), true);
+   plan.cache_index = cache_index;
++  if (plan.probe_status == RESERVATION_FAIL && m_ro && m_ro->detachable(addr,cache_index)) {
++    plan.probe_status=MISS;plan.cache_index=cache_index;
++  }
+   if (plan.probe_status == RESERVATION_FAIL) {
+     plan.ep_l2_tag_set_all_reserved = true;
+     return;
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index f94d5cfd..48b3e3dd 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -582,6 +582,8 @@ class cache_config {
+     m_ep_l2_payload_mode = 0;
+     m_ep_l2_ft_mode = 0;
+     m_ep_l2_wbuf_entries = 0;
++    m_ro_tag_detach = m_ro_line_mshr_bypass = false;
++    m_ro_ranges = m_ro_ranges_sha256 = m_ro_manifest_sha256 = m_ro_scope = m_ro_manifest = NULL;
+     m_ep_l2_payload_policy = 0;
+     m_ep_l2_feature_unified_payload = false;
+     m_ep_l2_feature_ro_pending_state = false;
+@@ -820,6 +822,7 @@ class cache_config {
+             m_line_sz * m_nset * m_assoc, m_nset, m_assoc, m_line_sz);
+   }
+ 
++  bool ro_requested() const {return m_ro_tag_detach||m_ro_line_mshr_bypass;}
+   virtual unsigned set_index(new_addr_type addr) const;
+ 
+   virtual unsigned get_max_cache_multiplier() const {
+@@ -940,6 +943,8 @@ class cache_config {
+   unsigned m_ep_l2_payload_mode;
+   unsigned m_ep_l2_ft_mode;
+   unsigned m_ep_l2_wbuf_entries;
++  bool m_ro_tag_detach, m_ro_line_mshr_bypass;
++  char *m_ro_ranges, *m_ro_ranges_sha256, *m_ro_manifest_sha256, *m_ro_scope, *m_ro_manifest;
+   // M1 is infrastructure: functional mechanism bits default OFF.
+   // Policy 0 is the only currently supported static policy.
+   unsigned m_ep_l2_payload_policy;
+@@ -964,6 +969,7 @@ class cache_config {
+   friend class l2_cache;
+   friend class memory_sub_partition;
+   friend class memory_config;
++  friend class ep_l2_ro_runtime;
+ };
+ 
+ class l1d_cache_config : public cache_config {
+@@ -1123,7 +1129,8 @@ class mshr_table {
+       : m_num_entries(num_entries),
+         m_max_merged(max_merged),
+         m_descriptor_pool_size(descriptor_pool_size),
+-        m_descriptor_per_line_cap(descriptor_per_line_cap)
++        m_descriptor_per_line_cap(descriptor_per_line_cap),
++        m_ro_descriptor_count(0)
+ #if (tr1_hash_map_ismap == 0)
+         ,
+         m_data(2 * num_entries)
+@@ -1187,6 +1194,28 @@ class mshr_table {
+                : m_descriptor_pool_size - m_free_descriptor_ids.size();
+   }
+   unsigned descriptor_pool_capacity() const { return m_descriptor_pool_size; }
++  // Lane 3's completion objects borrow the SAME fixed descriptor free-list.
++  // No second requester pool, line-MSHR entry, or address-indexed RO entry.
++  struct ro_descriptor_handle {
++    unsigned id;
++    unsigned long long generation;
++    ro_descriptor_handle(unsigned i = (unsigned)-1,
++                         unsigned long long g = 0) : id(i), generation(g) {}
++    bool valid() const { return id != (unsigned)-1; }
++  };
++  bool reserve_ro_descriptor(new_addr_type line, mem_fetch *mf,
++                             const mem_access_sector_mask_t &sectors,
++                             ro_descriptor_handle &result);
++  bool ro_descriptor_live(const ro_descriptor_handle &handle) const;
++  void release_ro_descriptor(const ro_descriptor_handle &handle);
++  unsigned ro_targets_on_line(new_addr_type line) const;
++  unsigned targets_on_line(new_addr_type line) const;
++  bool reserve_ro_line(new_addr_type line);
++  void bind_ro_line(new_addr_type line, ep_l2::PayloadHandle h);
++  bool lookup_ro_line(new_addr_type line, ep_l2::PayloadHandle &h) const;
++  void release_ro_line(new_addr_type line);
++  void ro_line_issue(new_addr_type line, const mem_access_sector_mask_t &mask);
++  void ro_line_ready(new_addr_type line, const mem_access_sector_mask_t &mask);
+   void sector_masks(new_addr_type block_addr, mem_access_sector_mask_t &pending,
+                     mem_access_sector_mask_t &issued,
+                     mem_access_sector_mask_t &ready) const;
+@@ -1220,12 +1249,18 @@ class mshr_table {
+   const unsigned m_max_merged;
+   const unsigned m_descriptor_pool_size;
+   const unsigned m_descriptor_per_line_cap;
++  unsigned m_ro_descriptor_count;
+ 
+   struct ep_l2_descriptor {
+     mem_fetch *m_mf;
+     mem_access_sector_mask_t m_sectors;
+     bool m_response_queued;
+-    ep_l2_descriptor() : m_mf(NULL), m_response_queued(false) {
++    bool m_ro_external;
++    new_addr_type m_ro_line;
++    unsigned long long m_ro_generation;
++    ep_l2_descriptor() : m_mf(NULL), m_response_queued(false),
++                        m_ro_external(false), m_ro_line(0),
++                        m_ro_generation(0) {
+       m_sectors.reset();
+     }
+   };
+@@ -1234,10 +1269,12 @@ class mshr_table {
+     std::list<mem_fetch *> m_list;
+     std::list<unsigned> m_descriptor_ids;
+     bool m_has_atomic;
++    bool m_ro_line_owner;
++    ep_l2::PayloadHandle m_ro_handle;
+     mem_access_sector_mask_t m_pending_sectors;
+     mem_access_sector_mask_t m_issued_sectors;
+     mem_access_sector_mask_t m_ready_sectors;
+-    mshr_entry() : m_has_atomic(false) {
++    mshr_entry() : m_has_atomic(false), m_ro_line_owner(false) {
+       m_pending_sectors.reset();
+       m_issued_sectors.reset();
+       m_ready_sectors.reset();
+@@ -2084,7 +2121,7 @@ class ep_l2_payload_store {
+   static const unsigned k_physical_slots = 1152;
+   static const unsigned k_resident_slots = 1024;
+   static const unsigned k_bypass_slots = 128;
+-  enum role { RESIDENT, BYPASS, WB };
++  enum role { RESIDENT, BYPASS, WB, RO };
+   // A boolean cannot distinguish an ordinary target-payload retry from a
+   // physical same-bank denial.  C6c needs that distinction both for correct
+   // same-cycle admission and for meaningful B0-Banked telemetry.
+@@ -2097,7 +2134,9 @@ class ep_l2_payload_store {
+     FILL_WRITE,
+     WB_READOUT,
+     BYPASS_FILL,
+-    BYPASS_READ
++    BYPASS_READ,
++    RO_FILL_WRITE,
++    RO_RESPONSE_READ
+   };
+   enum state {
+     FREE,
+@@ -2105,7 +2144,7 @@ class ep_l2_payload_store {
+     RESIDENT_VALID,
+     RESIDENT_DIRTY,
+     BYPASS_FILL_PENDING,
+-    BYPASS_READY, WB_RESERVED, WB_STAGED
++    BYPASS_READY, WB_RESERVED, WB_STAGED, RO_FILL_ATTACHED, RO_FILL_DETACHED
+   };
+   // This is the sole physical-payload identity.  mem_fetch already carries
+   // the same pair across the lower request/response path.
+@@ -2135,6 +2174,7 @@ class ep_l2_payload_store {
+         m_bank_wait_cycles(0), m_bank_resident_hit_read(0),
+         m_bank_resident_write(0), m_bank_fill_write(0),
+         m_bank_wb_readout(0), m_bank_bypass_fill(0), m_bank_bypass_read(0),
++        m_bank_ro_fill_write(0), m_bank_ro_response_read(0),
+         m_next_sequence(0) {
+     m_slots.resize(k_physical_slots + wbuf);
+     for (unsigned bank = 0; bank < 4; ++bank) {
+@@ -2279,13 +2319,16 @@ class ep_l2_payload_store {
+   }
+   // FT public allocation primitives. Preview does not acquire a resource.
+   unsigned physical_slots() const { return m_slots.size(); }
++  unsigned ft_mode() const { return m_ft_mode; }
++  unsigned ro_used() const { return used(RO); }
+   unsigned wb_used() const { return used(WB); }
+   unsigned pending_sector_count() const { unsigned n=0;
+     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+-  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB); }
++  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB) - used(RO); }
+   const slot &inspect(const payload_handle &h) const { assert(handle_live(h)); return m_slots[h.payload_id]; }
+   slot &inspect_mutable(const payload_handle &h) { assert(handle_live(h)); return m_slots[h.payload_id]; }
+   payload_handle preview_free(role r, unsigned bank = (unsigned)-1) const {
++    if (r == RO && m_ft_mode != 2) return payload_handle();
+     for (unsigned id = 0; id < m_slots.size(); ++id) {
+       if (m_slots[id].occupied() || (bank != (unsigned)-1 && id % 4 != bank)) continue;
+       if (m_ft_mode == 1 && ((r == WB && id < k_physical_slots) ||
+@@ -2297,6 +2340,7 @@ class ep_l2_payload_store {
+   }
+   payload_handle reserve(unsigned id, role r, new_addr_type owner, state st) {
+     assert(m_ft_mode && id < m_slots.size() && !m_slots[id].occupied());
++    assert(r != RO || m_ft_mode == 2);
+     slot &s = m_slots[id];
+     assert(s.generation != std::numeric_limits<unsigned>::max());
+     ++s.generation; s.allocation_role = r; s.status = st; s.owner = owner;
+@@ -2353,6 +2397,8 @@ class ep_l2_payload_store {
+   unsigned long long bank_wb_readout() const { return m_bank_wb_readout; }
+   unsigned long long bank_bypass_fill() const { return m_bank_bypass_fill; }
+   unsigned long long bank_bypass_read() const { return m_bank_bypass_read; }
++  unsigned long long bank_ro_fill_write() const { return m_bank_ro_fill_write; }
++  unsigned long long bank_ro_response_read() const { return m_bank_ro_response_read; }
+   // `sequence` is explicit for deterministic directed arbitration. Production
+   // callers use their arrival order; a denied operation keeps that sequence
+   // through its retry token in the per-bank pending list.
+@@ -2506,6 +2552,10 @@ class ep_l2_payload_store {
+         if (!owners.insert(s.owner).second) return false;
+       } else if (s.allocation_role == WB) {
+         if (!m_ft_mode || (s.status != WB_RESERVED && s.status != WB_STAGED)) return false;
++      } else if (s.allocation_role == RO) {
++        // Equal-address detached transactions are legal independent owners.
++        if (m_ft_mode != 2 || (s.status != RO_FILL_ATTACHED &&
++                              s.status != RO_FILL_DETACHED)) return false;
+       } else {
+         if (i < k_resident_slots ||
+             (s.status != BYPASS_FILL_PENDING && s.status != BYPASS_READY)) return false;
+@@ -2549,6 +2599,8 @@ class ep_l2_payload_store {
+       case WB_READOUT: ++m_bank_wb_readout; break;
+       case BYPASS_FILL: ++m_bank_bypass_fill; break;
+       case BYPASS_READ: ++m_bank_bypass_read; break;
++      case RO_FILL_WRITE: ++m_bank_ro_fill_write; break;
++      case RO_RESPONSE_READ: ++m_bank_ro_response_read; break;
+     }
+   }
+   struct pending_op {
+@@ -2570,7 +2622,7 @@ class ep_l2_payload_store {
+       m_bank_true_conflict_events_by_bank[4], m_bank_wait_cycles_by_bank[4];
+   unsigned long long m_bank_resident_hit_read, m_bank_resident_write,
+       m_bank_fill_write, m_bank_wb_readout, m_bank_bypass_fill,
+-      m_bank_bypass_read;
++      m_bank_bypass_read, m_bank_ro_fill_write, m_bank_ro_response_read;
+   unsigned long long m_next_sequence;
+   std::bitset<4> m_bank_granted; std::vector<slot> m_slots;
+   std::vector<pending_op> m_pending[4], m_granted[4];
+@@ -2578,7 +2630,9 @@ class ep_l2_payload_store {
+ 
+ /// Models second level shared cache with global write-back
+ /// and write-allocate policies
++class ep_l2_ro_runtime;
+ class l2_cache : public data_cache {
++  friend class ep_l2_ro_runtime;
+  public:
+   l2_cache(const char *name, cache_config &config, int core_id, int type_id,
+            mem_fetch_interface *memport, mem_fetch_allocator *mfcreator,
+@@ -2596,9 +2650,18 @@ class l2_cache : public data_cache {
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
+     m_ft_last_wb_versions.fill(0);
++    ro_init();
+   }
+ 
+-  virtual ~l2_cache() {}
++  virtual ~l2_cache();
++  bool ro_enabled() const { return m_ro != NULL; }
++  void ro_bind_commandlist(const char *);
++  void ro_begin_epoch();
++  void ro_end_epoch();
++  bool ro_drained() const;
++  bool ro_return(mem_fetch *, unsigned long long);
++  void ro_print(FILE *, unsigned) const;
++  bool access_ready() const;
+ 
+   virtual enum cache_request_status access(new_addr_type addr, mem_fetch *mf,
+                                            unsigned time,
+@@ -2698,8 +2761,8 @@ class l2_cache : public data_cache {
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
+-  bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
+-      m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used()); }
++  bool ft_drained() const { return ro_drained() && (!ft_enabled() || (!m_ft_pending.request &&
++      m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used())); }
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+   void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
+   void descriptor_admitted(mem_fetch *mf, unsigned cache_index) override;
+@@ -2835,6 +2898,8 @@ class l2_cache : public data_cache {
+   unsigned long long m_ep_l2_wad_lifetime_count;
+   unsigned long long m_ep_l2_wad_lifetime_max;
+   std::map<unsigned long long, unsigned long long> m_ep_l2_wad_lifetime_hist;
++  ep_l2_ro_runtime *m_ro;
++  void ro_init();
+   ep_l2_payload_store m_ep_l2_payload;
+   ep_l2_payload_store::request_result m_ep_l2_last_payload_request_result;
+   std::vector<ep_l2_payload_store::payload_handle> m_ep_l2_tag_payload;
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 47393934..a85b0450 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -31,6 +31,7 @@
+ // POSSIBILITY OF SUCH DAMAGE.
+ 
+ #include "gpu-sim.h"
++#include <stdexcept>
+ 
+ #include <math.h>
+ #include <signal.h>
+@@ -275,6 +276,20 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp, "-gpgpu_ep_l2_wbuf_entries", OPT_UINT32,
+                          &m_L2_config.m_ep_l2_wbuf_entries,
+                          "Additional WB payload budget: 0 off, 8 sensitivity, 16 primary", "0");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_tag_detach",OPT_BOOL,
++      &m_L2_config.m_ro_tag_detach,"RO pending Tag detach (closed-world oracle)","0");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_line_mshr_bypass",OPT_BOOL,
++      &m_L2_config.m_ro_line_mshr_bypass,"RO independent completion without native Line-MSHR","0");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_ranges",OPT_CSTR,
++      &m_L2_config.m_ro_ranges,"Verified whole-commandlist oracle ranges","");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_ranges_sha256",OPT_CSTR,
++      &m_L2_config.m_ro_ranges_sha256,"Verified range bytes SHA256","");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_manifest_sha256",OPT_CSTR,
++      &m_L2_config.m_ro_manifest_sha256,"Preflight verified full-epoch manifest SHA256","");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_manifest",OPT_CSTR,
++      &m_L2_config.m_ro_manifest,"Verified full epoch manifest file","");
++  option_parser_register(opp,"-gpgpu_ep_l2_ro_scope",OPT_CSTR,
++      &m_L2_config.m_ro_scope,"Explicit TRACE_MODEL_CLOSED_WORLD acknowledgement","");
+   option_parser_register(opp, "-gpgpu_ep_l2_payload_policy", OPT_UINT32,
+                          &m_L2_config.m_ep_l2_payload_policy,
+                          "EP-L2 payload policy: 0=static (only M1-supported policy)", "0");
+@@ -869,6 +884,7 @@ void increment_x_then_y_then_z(dim3 &i, const dim3 &bound) {
+ }
+ 
+ void gpgpu_sim::launch(kernel_info_t *kinfo) {
++  ep_l2_ro_begin_epoch();
+   unsigned kernelID = kinfo->get_uid();
+   unsigned long long streamID = kinfo->get_streamID();
+ 
+@@ -2321,6 +2337,7 @@ void shader_core_ctx::dump_warp_state(FILE *fout) const {
+ }
+ 
+ void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {
++  if(m_ro_epoch_started)throw std::logic_error("host write inside certified whole-commandlist epoch");
+   if (m_memory_config->m_perf_sim_memcpy) {
+     // if(!m_config.trace_driven_mode)    //in trace-driven mode, CUDA runtime
+     // can start nre data structure at any position 	assert (dst_start_addr %
+@@ -2498,3 +2515,27 @@ void sst_gpgpu_sim::SST_cycle() {
+   gpgpu_ctx->device_runtime->launch_one_device_kernel();
+ #endif
+ }
++
++void gpgpu_sim::ep_l2_ro_begin_epoch() {
++  if(m_ro_epoch_started || !m_memory_config->m_L2_config.ro_requested())return;
++  if(active())throw std::logic_error("RO epoch requires drained initialization");
++  for(unsigned i=0;i<m_memory_config->m_n_mem;++i)
++    for(unsigned j=0;j<m_memory_config->m_n_sub_partition_per_memory_channel;++j)
++      m_memory_partition_unit[i]->get_sub_partition(j)->ro_begin_epoch();
++  m_ro_epoch_started=true;
++}
++void gpgpu_sim::ep_l2_ro_end_epoch() {
++  if(!m_ro_epoch_started)return;
++  if(active())throw std::logic_error("RO epoch end requires full hardware drain");
++  for(unsigned i=0;i<m_memory_config->m_n_mem;++i)
++    for(unsigned j=0;j<m_memory_config->m_n_sub_partition_per_memory_channel;++j)
++      m_memory_partition_unit[i]->get_sub_partition(j)->ro_end_epoch();
++}
++
++void gpgpu_sim::ep_l2_ro_bind_commandlist(const char *path) {
++  if(!m_memory_config->m_L2_config.ro_requested())return;
++  if(m_ro_epoch_started)throw std::logic_error("commandlist binding after epoch activation");
++  for(unsigned i=0;i<m_memory_config->m_n_mem;++i)
++    for(unsigned j=0;j<m_memory_config->m_n_sub_partition_per_memory_channel;++j)
++      m_memory_partition_unit[i]->get_sub_partition(j)->ro_bind_commandlist(path);
++}
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 573260a7..6f097f69 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -644,6 +644,9 @@ class gpgpu_sim : public gpgpu_t {
+   void dump_pipeline(int mask, int s, int m) const;
+ 
+   void perf_memcpy_to_gpu(size_t dst_start_addr, size_t count);
++  void ep_l2_ro_bind_commandlist(const char *);
++  void ep_l2_ro_begin_epoch();
++  void ep_l2_ro_end_epoch();
+ 
+   // The next three functions added to be used by the functional simulation
+   // function
+@@ -707,6 +710,7 @@ class gpgpu_sim : public gpgpu_t {
+  protected:
+   ///// data /////
+   class simt_core_cluster **m_cluster;
++  bool m_ro_epoch_started=false;
+   class memory_partition_unit **m_memory_partition_unit;
+   class memory_sub_partition **m_memory_sub_partition;
+ 
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index f36e4284..39c74cc6 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1114,7 +1114,11 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+     --m_l2_char_returnq_hold_remaining;
+   } else if (!m_dram_L2_queue->empty()) {
+     mem_fetch *mf = m_dram_L2_queue->top();
+-    if (!m_config->m_L2_config.disabled() && m_L2cache->waiting_for_fill(mf)) {
++    if(mf->ro_lower_packet()) {
++      if(m_L2cache->ro_return(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle)) {
++        m_dram_L2_queue->pop();delete mf;
++      }
++    } else if (!m_config->m_L2_config.disabled() && m_L2cache->waiting_for_fill(mf)) {
+       // Target payload modes replace the legacy FillPort with the resident
+       // payload RAM write port. The returned transaction's landing identity
+       // selects the physical target slot; no hard-coded slot may be used.
+@@ -2228,6 +2232,7 @@ void memory_sub_partition::print_ep_l2_b0_snapshot(FILE *fp,
+           uid == (unsigned long long)-1 ? 1 : 0);
+   if (uid == (unsigned long long)-1 && m_L2cache->ft_enabled()) {
+     m_L2cache->ft_print(fp, m_id);
++    m_L2cache->ro_print(fp,m_id);
+     fprintf(fp, "EPL2FTV1|TERMINAL|slice=%u|unique_requesters=%llu|responses=%llu|"
+         "absorbed_writebacks=%llu|requester_live=%u|requester_exact_once=%u|"
+         "hardware_drained=%u|pending_lower_reads=%u|pending_returns=%u|pending_responses=%u\n",
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index f85243d5..966ba6ce 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -336,6 +336,10 @@ class memory_sub_partition {
+   void l2_char_hold_returnq(unsigned cycles);
+   unsigned ft_wb_staged_for_test() const { return m_L2cache->ft_wb_staged(); }
+   bool ft_drained_for_test() const { return m_L2cache->ft_drained(); }
++  void ro_bind_commandlist(const char *p){m_L2cache->ro_bind_commandlist(p);}
++  void ro_begin_epoch(){m_L2cache->ro_begin_epoch();}
++  void ro_end_epoch(){m_L2cache->ro_end_epoch();}
++  l2_cache *ro_cache_for_test(){return m_L2cache;}
+ 
+   void visualizer_print(gzFile visualizer_file);
+   void print_cache_stat(unsigned &accesses, unsigned &misses) const;
+diff --git a/src/gpgpu-sim/mem_fetch.cc b/src/gpgpu-sim/mem_fetch.cc
+index 14db8b0e..1f00c148 100644
+--- a/src/gpgpu-sim/mem_fetch.cc
++++ b/src/gpgpu-sim/mem_fetch.cc
+@@ -70,6 +70,7 @@ mem_fetch::mem_fetch(const mem_access_t &access, const warp_inst_t *inst,
+   m_status_change = cycle;
+   m_mem_config = config;
+   icnt_flit_size = config->icnt_flit_size;
++  m_ro_lower=false;
+   m_ft_wb_data_valid = false; m_ft_wb_data.fill(0);
+   m_ep_l2_payload_id = (unsigned)-1;
+   m_ep_l2_payload_generation = 0;
+diff --git a/src/gpgpu-sim/mem_fetch.h b/src/gpgpu-sim/mem_fetch.h
+index cd7813b0..7fdd2781 100644
+--- a/src/gpgpu-sim/mem_fetch.h
++++ b/src/gpgpu-sim/mem_fetch.h
+@@ -131,6 +131,8 @@ class mem_fetch {
+   mem_fetch *get_original_mf() { return original_mf; }
+   mem_fetch *get_original_wr_mf() { return original_wr_mf; }
+ 
++  bool ro_lower_packet() const { return m_ro_lower; }
++  void set_ro_lower_packet() { m_ro_lower=true; }
+   void set_ft_wb_data(const std::array<unsigned long long,4> &v) { m_ft_wb_data = v; m_ft_wb_data_valid = true; }
+   bool has_ft_wb_data() const { return m_ft_wb_data_valid; }
+   const std::array<unsigned long long,4> &get_ft_wb_data() const { assert(m_ft_wb_data_valid); return m_ft_wb_data; }
+@@ -151,6 +153,7 @@ class mem_fetch {
+ 
+  private:
+   std::array<unsigned long long,4> m_ft_wb_data;
++  bool m_ro_lower;
+   bool m_ft_wb_data_valid;
+   // request source information
+   unsigned m_request_uid;

@@ -1,16 +1,24 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "lane_id": 3,
   "task_id": "EP_L2_FT20261016_LANE3_V1",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "PRODUCER_RO_RUNTIME_READY_FOR_INDEPENDENT_QUALIFICATION",
+  "continuation_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
   "node": "huangrulin-174",
   "framework_branch": "hrl/ep-l2-ft20261016-lane3-v1",
-  "framework_source_commit": "c3f8f11ed4a5bf722307154a66193fbbce1715d8",
   "core_branch": "hrl/ep-l2-ft20261016-lane3-v1",
-  "core_source_commit": "ac3028b00aa37c08b2210b1c9a1fe8444060c0f9",
-  "binary_sha256": "273a8219e33026a5a7c218b793b0026f4781c7744ba8c6218847445df3140e10",
+  "framework_source_commit": "90b4e464892a344d4bb2c8652963f02db18bfdb6",
+  "core_source_commit": "b90e5e861a934503f35c56688e7007da6bb3dcc0",
+  "status": "SOURCE_PRE_ADAPTED_UNCOMPILED_RESOURCE_HOLD",
+  "runtime_ready": false,
+  "independent_qualification": false,
+  "official_R0_1_parent": null,
+  "repair_candidate_parent": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
+  "lane1_latest_publication": "3840f9585b710a5abea8201c14fa05cdea930aa7",
+  "lane5_acceptance_publication": "b134f76d8f4cd759c0852b68edf922ecbd445ea9",
+  "binary_sha256": null,
   "config_sha256": null,
+  "config_identity": "No new C++ binary or application runtime config/run; exact staged fixture source is committed, not executed",
   "trace_identity": {
     "scope": "whole_commandlist",
     "development_inputs": [
@@ -91,50 +99,48 @@
       }
     ],
     "reused_without_rescan": true,
-    "use_in_r4": "frozen oracle evidence only; no real workload execution"
+    "use_in_r4": "frozen oracle evidence only; no real workload execution",
+    "use_in_r5": "Frozen oracle evidence only; no real application execution or hash rescan"
   },
-  "feature_vector": {
-    "ro_tag_detach": false,
-    "ro_line_mshr_bypass": false
-  },
-  "validation": {
-    "build": "PASS",
-    "runtime_cache_groups": 10,
-    "actual_partition_modes": 4,
-    "negative_certificate_identity_checks": 5,
-    "python_config_tests": 5,
-    "r0_off_groups": 8,
-    "module_reference_groups": 7,
-    "module_certificate": "PASS",
-    "module_shared_store": "PASS"
-  },
-  "active_runs": [],
-  "formal_performance_runs": 0,
-  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
-  "config_identity": "No formal application config/run; directed full ordered config/argv and SHA identities in directed/SUMMARY.json",
-  "review_pack": "docs/ep_l2/review_packs/FT20261016_LANE3_PRODUCTION_RUNTIME_r4",
-  "runtime_ready": true,
-  "independent_qualification": false,
-  "build_and_test_identity": "docs/ep_l2/review_packs/FT20261016_LANE3_PRODUCTION_RUNTIME_r4/BUILD_AND_TEST_IDENTITY.json",
   "oracle_inputs_frozen": true,
   "oracle_trace_hash_rescan": false,
+  "historical_r4": {
+    "framework_publication": "0db7ce4bcc91db96860e5e18f0c88178f25dc562",
+    "core_source": "ac3028b00aa37c08b2210b1c9a1fe8444060c0f9",
+    "binary_sha256": "273a8219e33026a5a7c218b793b0026f4781c7744ba8c6218847445df3140e10",
+    "review_pack": "docs/ep_l2/review_packs/FT20261016_LANE3_PRODUCTION_RUNTIME_r4",
+    "qualification": "LOCAL_DIRECTED_SCOPE_ONLY_NOT_REPAIRED_APPLICATION_QUALIFICATION"
+  },
+  "review_pack": "docs/ep_l2/review_packs/FT20261016_LANE3_REPAIR_ADAPTATION_r5",
+  "validation": {
+    "static_source_checks": 16,
+    "static_status": "PASS_NOT_COMPILE_OR_RUNTIME_PASS",
+    "patch_checks": 4,
+    "python_config_binding_tests": 5,
+    "cpp_compile": "NOT_RUN_RESOURCE_HOLD",
+    "new_cpp_tests": "NOT_RUN",
+    "independent_qualification": false
+  },
+  "staged_cpp_tests": {
+    "cache_groups": 11,
+    "original_partition_four_modes": 4,
+    "warm_offset4096_C8_C16_four_modes": 8,
+    "execution_status": "NOT_RUN"
+  },
+  "scientific_acceptance": "NO_CURRENT_ACCEPTED_RO_APPLICATION_VERSION",
+  "affected_R0_R1": "SCIENTIFIC_ACCEPTANCE_SUSPENDED_ALL_OLD_RAW_RETAINED",
+  "resource_hold": {
+    "disk_floor_bytes": 51539607552,
+    "source": "RESOURCE_AUDIT.json",
+    "new_build_requested": false,
+    "own_data_deleted": false
+  },
+  "active_runs": [],
   "active_build_leases": [],
-  "resources_released": [
-    "b6fdfcb634ce4df6b03f43819b2d4705"
-  ],
-  "remaining_final_integration": [
-    "Lane 1 final integration on a new release identity",
-    "Lane 5 independent qualification of exact new source/binary and combinations",
-    "Lane 5 quota-controlled full-application validation and any formal RO performance runs"
-  ],
-  "directed_fixture_identity": {
-    "fixture": "SYNTHETIC_SECTOR_VERSION_REFERENCE_NOT_SASS_NUMERICAL_OUTPUT",
-    "fixture_config_sha256": "74c4095bfef25216d9bc4ff61b37b210cffdd07df41468064f322a1d2daa409d",
-    "fixture_command_sha256": "a32475205237bd1ba7fdf316f36e7b17f603c2e73969f1453a2fb8997a617330",
-    "manifest_sha256": "10e23420ef42d903577aebd6202449ac4f72fa93cd2abcc7b307d7f878ce4859",
-    "ranges_sha256": "fda32ec7cb5de6e44f1aebf075b0fe651633e7e6e30407c8774c56c1196b9182",
-    "base_config_sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
-    "overlay_config_sha256": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372",
-    "summary_sha256": "daad5aa893d0b01a81c075a30dca4d28500748fd63ef91af512aff55f1a67d77"
-  }
+  "formal_performance_runs": 0,
+  "remaining": [
+    "Consume exact Lane1 official R0.1 SHA and recheck/apply delta against that parent",
+    "After shared admission and growth headroom, compile/test adapter under Lane1/Lane5 priority",
+    "Lane1 final RO integration and Lane5 new independent qualification before formal RO applications"
+  ]
 }

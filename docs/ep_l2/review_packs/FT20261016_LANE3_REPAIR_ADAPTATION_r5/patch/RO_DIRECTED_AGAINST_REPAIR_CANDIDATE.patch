@@ -1,0 +1,808 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fcf27d00..b397a0e8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -182,3 +182,13 @@ target_include_directories(ep_l2_ft_partition PRIVATE ${CUDAToolkit_INCLUDE_DIRS
+ target_link_libraries(ep_l2_ft_partition PRIVATE -Wl,--start-group
+     entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
+     ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++add_executable(ep_l2_ro_runtime EXCLUDE_FROM_ALL tests/ep_l2/test_ro_runtime.cc)
++target_include_directories(ep_l2_ro_runtime PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_ro_runtime PRIVATE -Wl,--start-group
++    entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++    ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++add_executable(ep_l2_ro_partition EXCLUDE_FROM_ALL tests/ep_l2/test_ro_partition.cc)
++target_include_directories(ep_l2_ro_partition PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_ro_partition PRIVATE -Wl,--start-group
++    entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++    ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/tests/ep_l2/run_ro_runtime.py b/tests/ep_l2/run_ro_runtime.py
+new file mode 100644
+index 00000000..d171c19f
+--- /dev/null
++++ b/tests/ep_l2/run_ro_runtime.py
+@@ -0,0 +1,70 @@
++#!/usr/bin/env python3
++"""Frozen-source, bounded production-path RO qualification fixtures (no workload simulation)."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import resource
++import subprocess
++
++
++def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--build',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
++    p.add_argument('--source',required=True);a=p.parse_args();root=Path(__file__).resolve().parents[2]
++    subprocess.run(['git','-C',str(root),'diff','--exit-code',a.source,'--','src','tests','CMakeLists.txt'],check=True,stdout=subprocess.DEVNULL)
++    a.output.mkdir(parents=True,exist_ok=False);o=a.output.resolve();resource.setrlimit(resource.RLIMIT_CORE,(0,0))
++    command=b'kernel-fixture.traceg\n';(o/'kernelslist.g').write_bytes(command)
++    ranges=b'first_line,last_line_inclusive\n0000000000000000,000000000003ff80\n';(o/'ranges.csv').write_bytes(ranges)
++    m=dict(schema='EP_L2_RO_ORACLE_V1',status='SYNTHETIC_DIRECTED_FIXTURE',epoch='whole_commandlist',
++        scope='TRACE_MODEL_CLOSED_WORLD',address_domain='CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS',
++        unresolved_opcodes={},commandlist_sha256=sha(o/'kernelslist.g'),artifacts={'certified_ranges.csv':sha(o/'ranges.csv')})
++    (o/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
++    config=f'-gpgpu_ep_l2_ro_ranges {o}/ranges.csv\n-gpgpu_ep_l2_ro_ranges_sha256 {sha(o/"ranges.csv")}\n-gpgpu_ep_l2_ro_manifest {o}/manifest.json\n-gpgpu_ep_l2_ro_manifest_sha256 {sha(o/"manifest.json")}\n-gpgpu_ep_l2_ro_scope TRACE_MODEL_CLOSED_WORLD\n'
++    (o/'binding.config').write_text(config)
++    base=root/'configs/tested-cfgs/SM7_QV100/gpgpusim.config';overlay=root/'tests/ep_l2/ft_wbuf.config'
++    runtime=a.build.resolve()/'ep_l2_ro_runtime';part=a.build.resolve()/'ep_l2_ro_partition'
++    commands=[('runtime',[str(runtime),str(base),str(overlay),str(o/'binding.config'),str(o/'kernelslist.g')],None)]
++    for d in [0,1]:
++        for b in [0,1]:commands.append((f'partition_{d}{b}',[str(part),str(base),str(overlay),str(o/'binding.config'),str(o/'kernelslist.g'),str(d),str(b)],None))
++    # Repair qualification: real warmup establishes nonzero native Tag offset;
++    # independently count bank grants by physical GPU cycle for both budgets.
++    for entries in [8,16]:
++        for d in [0,1]:
++            for b in [0,1]:
++                commands.append((f'partition_warm_C{entries}_{d}{b}',
++                    [str(part),str(base),str(overlay),str(o/'binding.config'),str(o/'kernelslist.g'),
++                     str(d),str(b),'4096',str(entries)],None))
++    commands.append(('r0_off_regression',[str(a.build.resolve()/'ep_l2_ft_directed'),str(base),str(overlay)],None))
++    cases=[('range_hash',config.replace(sha(o/'ranges.csv'),'0'*64),'RO range SHA256 mismatch'),
++           ('manifest_hash',config.replace(sha(o/'manifest.json'),'0'*64),'RO manifest SHA256 mismatch'),
++           ('scope',config.replace('TRACE_MODEL_CLOSED_WORLD','KERNEL_ONLY'),'unverified oracle scope/identity')]
++    wrong=dict(m,epoch='one_kernel');(o/'wrong_epoch.json').write_text(json.dumps(wrong)+'\n')
++    cases.append(('epoch',config.replace(str(o/'manifest.json'),str(o/'wrong_epoch.json')).replace(sha(o/'manifest.json'),sha(o/'wrong_epoch.json')),'unsupported/incomplete epoch certificate'))
++    for name,text,reason in cases:
++        path=o/(name+'.config');path.write_text(text)
++        commands.append(('reject_'+name,[str(runtime),str(base),str(overlay),str(path),str(o/'kernelslist.g')],reason))
++    (o/'wrong_command.g').write_text('kernel-wrong.traceg\n')
++    commands.append(('reject_command',[str(runtime),str(base),str(overlay),str(o/'binding.config'),str(o/'wrong_command.g')],'RO commandlist identity mismatch'))
++    rows=[]
++    for name,cmd,reason in commands:
++        log=o/(name+'.log')
++        with log.open('w') as f:r=subprocess.run(cmd,cwd=root,stdout=f,stderr=subprocess.STDOUT,timeout=120)
++        text=log.read_text();ok=(r.returncode!=0 and reason in text) if reason else r.returncode==0 and 'PASS' in text
++        row=dict(name=name,status='PASS' if ok else 'FAIL',exit_code=r.returncode,expected_rejection=reason,
++            command=cmd,binary_sha256=sha(Path(cmd[0])),log_sha256=sha(log))
++        rows.append(row);print(name,row['status'],flush=True)
++        if not ok:raise RuntimeError(text[-4000:])
++    summary=dict(schema='EP_L2_RO_PRODUCTION_DIRECTED_R5',core_source_commit=a.source,
++        status='PRODUCER_DIRECTED_PASS_NOT_LANE5_INDEPENDENT_QUALIFICATION',
++        fixture='SYNTHETIC_SECTOR_VERSION_REFERENCE_NOT_SASS_NUMERICAL_OUTPUT',
++        base_config_sha256=sha(base),overlay_config_sha256=sha(overlay),
++        fixture_config_sha256=sha(o/'binding.config'),fixture_command_sha256=sha(o/'kernelslist.g'),
++        manifest_sha256=sha(o/'manifest.json'),ranges_sha256=sha(o/'ranges.csv'),tests=rows)
++    (o/'SUMMARY.json').write_text(json.dumps(summary,indent=2)+'\n')
++
++
++if __name__=='__main__':main()
+diff --git a/tests/ep_l2/run_ro_transactions.sh b/tests/ep_l2/run_ro_transactions.sh
+new file mode 100644
+index 00000000..a5605f5b
+--- /dev/null
++++ b/tests/ep_l2/run_ro_transactions.sh
+@@ -0,0 +1,19 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
++out=${RO_BUILD_ROOT:?Set isolated RO_BUILD_ROOT}/test_ro_transactions
++mkdir -p "$(dirname "$out")"
++cuda_root=${CUDA_INSTALL_PATH:-/usr/local/cuda-11.8}
++${CXX:-g++} -std=c++11 -O2 -Wall -Wextra -ffunction-sections -fdata-sections \
++  -I"$cuda_root/include" -I"$root/src" -I"$root" \
++  "$root/tests/ep_l2/test_ro_transactions.cc" \
++  "$root/src/gpgpu-sim/gpu-cache.cc" -Wl,--gc-sections -o "$out"
++"$out"
++${CXX:-g++} -std=c++11 -O2 -Wall -Wextra \
++  "$root/tests/ep_l2/test_ro_oracle_certificate.cc" -o "${out}_oracle"
++"${out}_oracle"
++${CXX:-g++} -std=c++11 -O2 -ffunction-sections -fdata-sections \
++  -I"$cuda_root/include" -I"$root/src" -I"$root" \
++  "$root/tests/ep_l2/test_ro_store_port.cc" \
++  "$root/src/gpgpu-sim/gpu-cache.cc" -Wl,--gc-sections -o "${out}_store"
++"${out}_store"
+diff --git a/tests/ep_l2/test_ro_oracle_certificate.cc b/tests/ep_l2/test_ro_oracle_certificate.cc
+new file mode 100644
+index 00000000..52a2a0a5
+--- /dev/null
++++ b/tests/ep_l2/test_ro_oracle_certificate.cc
+@@ -0,0 +1,32 @@
++#include <assert.h>
++#include <fstream>
++#include <sstream>
++#include <stdio.h>
++#include "../../src/gpgpu-sim/ep-l2-ro-oracle.h"
++using ep_l2_ro::oracle_certificate;
++static std::string hash() { return std::string(64,'a'); }
++int main(int argc,char **argv) {
++  std::istringstream in("first_line,last_line_inclusive\n0000000000001000,0000000000001080\n0000000000002000,0000000000002000\n");
++  oracle_certificate c(in,hash(),"TRACE_MODEL_CLOSED_WORLD");
++  assert(c.contains(0x1000) && c.contains(0x1080) && c.contains(0x2000));
++  assert(!c.contains(0x0f80) && !c.contains(0x1100) && !c.contains(0x1001));
++  for(const char *s:{"wrong header\n",
++      "first_line,last_line_inclusive\n0000000000001001,0000000000001080\n",
++      "first_line,last_line_inclusive\n0000000000002000,0000000000001000\n",
++      "first_line,last_line_inclusive\n0000000000001000,0000000000001080\n0000000000001080,0000000000002000\n",
++      "first_line,last_line_inclusive\n0000000000001000,gggggggggggggggg\n"}) {
++    bool rejected=false;std::istringstream bad(s);
++    try {oracle_certificate b(bad,hash(),"TRACE_MODEL_CLOSED_WORLD");}
++    catch(const std::invalid_argument&){rejected=true;}
++    assert(rejected);
++  }
++  std::istringstream empty("first_line,last_line_inclusive\n");
++  oracle_certificate e(empty,hash(),"TRACE_MODEL_CLOSED_WORLD");
++  assert(!e.contains(0x1000));
++  if(argc==3) {
++    std::ifstream actual(argv[1]);
++    oracle_certificate a(actual,argv[2],"TRACE_MODEL_CLOSED_WORLD");
++    printf("Verified-input C++ range grammar accepted: %u ranges\n",a.range_count());
++  }
++  puts("EP-L2 Lane 3 runtime oracle range/eligibility tests: PASS");
++}
+diff --git a/tests/ep_l2/test_ro_partition.cc b/tests/ep_l2/test_ro_partition.cc
+new file mode 100644
+index 00000000..deb53856
+--- /dev/null
++++ b/tests/ep_l2/test_ro_partition.cc
+@@ -0,0 +1,50 @@
++// Actual memory_sub_partition frontend -> real memport/DRAM -> ReturnQ -> ICNT.
++#include <cassert>
++#include <cstdio>
++#include <set>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/gpgpu-sim/mem_latency_stat.h"
++#include "../../src/option_parser.h"
++int main(int argc,char**argv){
++  assert(argc==7 || argc==9);gpgpu_context ctx;gpgpu_sim_config cfg(&ctx);option_parser_t p=option_parser_create();
++  ctx.ptx_reg_options(p);ctx.func_sim->ptx_opcocde_latency_options(p);icnt_reg_options(p);cfg.reg_options(p);
++  option_parser_cfgfile(p,argv[1]);option_parser_cfgfile(p,argv[2]);option_parser_cfgfile(p,argv[3]);
++  const char *a[]={"ro-partition","-gpgpu_ep_l2_ft_mode","2","-gpgpu_ep_l2_wbuf_entries",argc==9?argv[8]:"16",
++    "-gpgpu_ep_l2_ro_tag_detach",argv[5],"-gpgpu_ep_l2_ro_line_mshr_bypass",argv[6],
++    "-gpgpu_dram_partition_queues","512:16:64:1",
++    "-gpgpu_cache:dl2","S:1:128:1,L:B:m:L:L,A:128:32,256:0,32"};
++  option_parser_cmdline(p,13,a);cfg.init();option_parser_destroy(p);
++  exec_gpgpu_sim gpu(cfg,&ctx);auto mc=gpu.getMemoryConfig();memory_stats_t stats(cfg.num_shader(),gpu.getShaderCoreConfig(),mc,&gpu);
++  memory_partition_unit part(0,mc,&stats,&gpu);auto sp=part.get_sub_partition(0);partition_mf_allocator alloc(mc);
++  sp->ro_bind_commandlist(argv[4]);
++  const unsigned offset=argc==9?std::stoul(argv[7]):0;
++  for(unsigned i=0;i<offset;++i)sp->force_l2_tag_update((i%2)*32,0,mem_access_sector_mask_t(1<<(i%2)));
++  sp->ro_begin_epoch();
++  active_mask_t act;act.set(0);std::set<unsigned> expected,seen;
++  for(unsigned i=0;i<4;++i){unsigned addr=offset ? (i==0?0:i==1?96:(i%2)*128) : (i%2)*128;
++    unsigned sector=(addr>>5)&3;
++    mem_access_byte_mask_t bytes;for(unsigned n=sector*32;n<sector*32+32;++n)bytes.set(n);
++    auto m=alloc.alloc(addr,GLOBAL_ACC_R,act,bytes,mem_access_sector_mask_t(1<<sector),32,false,0,0,0,0,NULL,0);
++    expected.insert(m->get_request_uid());sp->push(m,0);
++  }
++  bool backpressure=false;unsigned peak=0,max_grants=0,violations=0;
++  for(unsigned cycle=0;cycle<200000;++cycle){
++    unsigned long long before[4];for(unsigned b=0;b<4;++b)before[b]=sp->ft_bank_grants_for_test(b);
++    part.cache_cycle(gpu.gpu_sim_cycle);part.simple_dram_model_cycle();
++    for(unsigned b=0;b<4;++b){unsigned delta=sp->ft_bank_grants_for_test(b)-before[b];max_grants=std::max(max_grants,delta);if(delta>1)++violations;}
++    ++gpu.gpu_sim_cycle;
++    peak=std::max(peak,sp->ep_l2_descriptor_count_used());
++    // One-entry ICNT queue stays full for 2000 cycles after real traffic.
++    if(cycle>2000){while(auto r=sp->pop()) {assert(expected.count(r->get_request_uid()));assert(seen.insert(r->get_request_uid()).second);assert(r->has_ft_wb_data());delete r;}}
++    else if(sp->ep_l2_descriptor_count_used() && sp->top()!=NULL)backpressure=true;
++    if(cycle>2000&&!part.busy())break;
++  }
++  assert(violations==0);
++  assert(seen==expected);assert(peak>0);assert(backpressure);assert(!part.busy());assert(sp->l2_char_no_resource_leak());
++  sp->ro_end_epoch();sp->ro_cache_for_test()->ro_print(stdout,0);
++  printf("RO_PHYSICAL_CLOCK|offset=%u|violations=%u|max_grants_per_physical_bank_cycle=%u\n",offset,violations,max_grants);
++  printf("RO actual partition detach=%s bypass=%s exact-once=%zu peak_descriptors=%u backpressure=%u PASS\n",argv[5],argv[6],seen.size(),peak,backpressure);
++}
+diff --git a/tests/ep_l2/test_ro_runtime.cc b/tests/ep_l2/test_ro_runtime.cc
+new file mode 100644
+index 00000000..6e8be5b6
+--- /dev/null
++++ b/tests/ep_l2/test_ro_runtime.cc
+@@ -0,0 +1,188 @@
++// Production l2_cache + real allocator/mshr/Tag/lower/response hooks.
++#include <cassert>
++#include <cstdio>
++#include <deque>
++#include <map>
++#include <set>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/gpgpu-sim/ep-l2-ro-sha256.h"
++#include "../../src/option_parser.h"
++struct lower : mem_fetch_interface {
++  bool blocked=true;std::deque<mem_fetch*> packets;
++  bool full(unsigned,bool)const override{return blocked;}
++  void push(mem_fetch*m)override{packets.push_back(m);}
++};
++struct rig {
++  gpgpu_context ctx;gpgpu_sim_config cfg;exec_gpgpu_sim *gpu;
++  partition_mf_allocator *alloc;l2_cache *cache;lower port;
++  unsigned time=1;std::set<unsigned> replies;bool validate_reference=true;
++  rig(const char *base,const char *overlay,const char *binding,unsigned d,unsigned b,unsigned sets=1,bool activate=true):cfg(&ctx) {
++    option_parser_t p=option_parser_create();ctx.ptx_reg_options(p);ctx.func_sim->ptx_opcocde_latency_options(p);icnt_reg_options(p);cfg.reg_options(p);
++    option_parser_cfgfile(p,base);option_parser_cfgfile(p,overlay);option_parser_cfgfile(p,binding);
++    std::string ds=std::to_string(d),bs=std::to_string(b),geometry="S:"+std::to_string(sets)+":128:1,L:B:m:L:L,A:128:32,1024:0,32";
++    const char *a[]={"ro-test","-gpgpu_ep_l2_ft_mode","2","-gpgpu_ep_l2_wbuf_entries","16","-gpgpu_ep_l2_ro_tag_detach",ds.c_str(),"-gpgpu_ep_l2_ro_line_mshr_bypass",bs.c_str(),"-gpgpu_cache:dl2",geometry.c_str()};
++    option_parser_cmdline(p,11,a);cfg.init();option_parser_destroy(p);
++    gpu=new exec_gpgpu_sim(cfg,&ctx);auto mc=gpu->getMemoryConfig();alloc=new partition_mf_allocator(mc);
++    cache=new l2_cache("RO_RUNTIME",const_cast<memory_config*>(mc)->m_L2_config,0,0,&port,alloc,IN_PARTITION_L2_MISS_QUEUE,gpu,L2_GPU_CACHE);
++    if(activate){cache->ro_bind_commandlist(command.c_str());cache->ro_begin_epoch();}
++  }
++  static std::string command;
++  ~rig(){delete cache;delete alloc;delete gpu;}
++  mem_fetch*make(new_addr_type a,mem_access_type type=GLOBAL_ACC_R,bool wr=false){
++    active_mask_t active;active.set(0);mem_access_byte_mask_t bytes;unsigned n=(a>>5)&3;
++    for(unsigned b=32*n;b<32*n+32;++b)bytes.set(b);
++    return alloc->alloc(a,type,active,bytes,mem_access_sector_mask_t(1<<n),32,wr,time,0,0,0,NULL,0);
++  }
++  void tick(){gpu->gpu_sim_cycle=time++;cache->cycle();}
++  cache_request_status admit(mem_fetch*m) {
++    gpu->gpu_sim_cycle=time;
++    l2_access_plan plan;cache->preview_access(m->get_addr(),m,plan);
++    std::list<cache_event> ev;auto r=cache->access(m->get_addr(),m,time,ev);tick();return r;
++  }
++  ep_l2::PayloadHandle tag(unsigned i=0){return cache->ep_l2_tag_payload_handle_for_test(i);}
++  void issue(){port.blocked=false;for(unsigned n=0;n<2048&&!cache->miss_queue_empty();++n)tick();assert(cache->miss_queue_empty());}
++  bool fill(mem_fetch*m){
++    gpu->gpu_sim_cycle=time;
++    bool done;
++    if(m->ro_lower_packet()) {
++      std::array<unsigned long long,4> v;for(unsigned n=0;n<4;++n)v[n]=0x1000+(m->get_addr()/128)*4+n;
++      m->set_ft_wb_data(v);done=cache->ro_return(m,time);
++    }
++    else {done=cache->ep_l2_payload_fill_request(m,time)==ep_l2_payload_store::GRANTED;if(done)cache->fill(m,time);}
++    tick();if(done&&m->ro_lower_packet())delete m;return done;
++  }
++  void consume(unsigned expected){
++    for(unsigned n=0;n<10000&&replies.size()<expected;++n){
++      gpu->gpu_sim_cycle=time;
++      if(cache->access_ready()&&cache->ft_response_ready(time)){
++        auto m=cache->peek_next_access();assert(replies.insert(m->get_request_uid()).second);
++        if(validate_reference && cache->ro_enabled() && m->get_access_type()==GLOBAL_ACC_R && m->get_addr()<0x40000) {
++          assert(m->has_ft_wb_data());for(unsigned n=0;n<4;++n)if(m->get_access_sector_mask().test(n))
++            assert(m->get_ft_wb_data()[n]==0x1000+(m->get_addr()/128)*4+n);
++        }
++        // global cycle must be the read-grant/enqueue cycle.
++        gpu->gpu_sim_cycle=time;cache->commit_next_access();delete m;
++      }
++      tick();
++    }
++    assert(replies.size()==expected);
++  }
++  void finish(){assert(cache->ft_drained());assert(!cache->ep_l2_descriptor_count_used());cache->ro_end_epoch();cache->ro_print(stdout,0);}
++};
++std::string rig::command;
++static void modes(const char *base,const char *overlay,const char *binding,unsigned d,unsigned b){
++  rig f(base,overlay,binding,d,b);auto a=f.make(0);assert(f.admit(a)!=RESERVATION_FAIL);auto h=f.tag();
++  if(d||b){
++    bool rejected=false;try{f.cache->ro_end_epoch();}catch(const std::logic_error&){rejected=true;}assert(rejected);
++  }
++  auto other=f.make(128);
++  unsigned expect=1;
++  if(d){
++    assert(f.admit(other)!=RESERVATION_FAIL);auto a2=f.make(0);assert(f.admit(a2)!=RESERVATION_FAIL);expect=3;
++    assert(b ? f.tag()!=h : f.cache->mshr_entries_used()==2);
++    assert(f.cache->ep_l2_descriptor_count_used()==3);
++  }else{assert(f.admit(other)==RESERVATION_FAIL);delete other;}
++  if(b)assert(f.cache->mshr_entries_used()==0);
++  f.issue();
++  // Reverse lower-return order: old A may arrive after new A/reused Tag.
++  while(!f.port.packets.empty()) {auto p=f.port.packets.back();f.port.packets.pop_back();while(!f.fill(p)){} }
++  assert(f.cache->ep_l2_descriptor_count_used()==expect);
++  // Model ICNT full: leave all responses uncommitted for several cycles.
++  for(unsigned n=0;n<5;++n)f.tick();
++  assert(f.cache->ep_l2_descriptor_count_used()==expect);
++  f.consume(expect);f.finish();printf("RO production four-mode detach=%u bypass=%u PASS\n",d,b);
++}
++static void sectors(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,1,1);auto a=f.make(0),b=f.make(96);assert(f.admit(a)!=RESERVATION_FAIL);auto h=f.tag();
++  assert(f.admit(b)!=RESERVATION_FAIL);assert(f.tag()==h);auto victim=f.make(128);assert(f.admit(victim)==RESERVATION_FAIL);delete victim; // observed reuse protects Tag
++  f.issue();assert(f.port.packets.size()==2);
++  auto last=f.port.packets.back();f.port.packets.pop_back();
++  auto &store=f.cache->ep_l2_payload_for_test();
++  assert(store.request(h,false,f.time,~0ULL,ep_l2_payload_store::WB_READOUT)==ep_l2_payload_store::GRANTED);
++  assert(!f.fill(last)); // same-bank return remains at its original queue/owner
++  while(!f.fill(last)){}
++  f.consume(1);assert(f.cache->ep_l2_descriptor_count_used()==1);
++  auto first=f.port.packets.front();f.port.packets.pop_front();while(!f.fill(first)){}
++  f.consume(2);f.finish();puts("RO actual attached merge, out-of-order sectors, waiter protection PASS");
++}
++static void capacity(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,0,1,1024);
++  for(unsigned i=0;i<384;++i)assert(f.admit(f.make(i*128))!=RESERVATION_FAIL);
++  for(unsigned i=384;i<512;++i)assert(f.admit(f.make(0x400000+i*128))!=RESERVATION_FAIL);
++  assert(f.cache->ep_l2_descriptor_count_used()==512);assert(f.cache->mshr_entries_used()==128);
++  auto refused=f.make(512*128);assert(f.admit(refused)==RESERVATION_FAIL);delete refused;
++  f.issue();while(!f.port.packets.empty()){auto p=f.port.packets.front();f.port.packets.pop_front();while(!f.fill(p)){} }
++  f.consume(512);f.finish();puts("RO actual mixed native128/RO384 shared D512 capacity and drain PASS");
++}
++static void classifier(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,1,1);
++  auto synthetic=f.make(0,L2_WR_ALLOC_R);assert(f.admit(synthetic)!=RESERVATION_FAIL);
++  assert(f.cache->mshr_entries_used()==1); // synthetic !is_write read never RO
++  f.issue();auto p=f.port.packets.front();f.port.packets.pop_front();assert(!p->ro_lower_packet());while(!f.fill(p)){}
++  // Consume directly; this fixture has no parent write for a synthetic request.
++  f.consume(1);
++  auto writer=f.make(0,GLOBAL_ACC_W,true);bool rejected=false;
++  try{f.admit(writer);}catch(const std::logic_error&){rejected=true;}assert(rejected);delete writer;
++  f.finish();puts("RO original GLOBAL_ACC_R predicate and certified writer rejection PASS");
++}
++static void dirty_victim(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,1,1);auto w=f.make(0x400000,GLOBAL_ACC_W,true);
++  assert(f.admit(w)!=RESERVATION_FAIL);auto token=(unsigned long long)w->get_request_uid()+1;delete w;
++  auto a=f.make(0);assert(f.admit(a)!=RESERVATION_FAIL);assert(f.cache->ep_l2_wad_occupancy()==1);
++  f.issue();while(!f.port.packets.empty()){
++    auto p=f.port.packets.front();f.port.packets.pop_front();
++    if(p->get_access_type()==L2_WRBK_ACC){assert(p->get_ft_wb_data()[0]==token);f.cache->ep_l2_wad_complete(p->get_addr(),f.time);delete p;}
++    else while(!f.fill(p)){}
++  }
++  f.consume(1);f.finish();puts("RO production dirty-victim WB/WAD/version retention PASS");
++}
++static void native_pin_guard(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,1,1);f.validate_reference=false;
++  auto native=f.make(0,TEXTURE_ACC_R);assert(f.admit(native)!=RESERVATION_FAIL);auto h=f.tag();
++  f.issue();auto p=f.port.packets.front();f.port.packets.pop_front();assert(!p->ro_lower_packet());while(!f.fill(p)){}
++  assert(f.cache->ep_l2_payload_for_test().inspect(h).pins==1);
++  auto reader=f.make(32);assert(f.admit(reader)!=RESERVATION_FAIL);f.issue();
++  p=f.port.packets.front();f.port.packets.pop_front();assert(!p->ro_lower_packet());while(!f.fill(p)){}
++  assert(f.cache->ep_l2_payload_for_test().inspect(h).allocation_role==ep_l2_payload_store::RESIDENT);
++  f.consume(2);f.finish();puts("RO refuses takeover of foreign native-response pins PASS");
++}
++static void epoch_binding(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,1,1,1,false);
++  bool rejected=false;try{f.cache->ro_begin_epoch();}catch(const std::logic_error&){rejected=true;}assert(rejected);
++  f.cache->ro_bind_commandlist(rig::command.c_str());f.cache->ro_begin_epoch();
++  rejected=false;try{f.cache->ro_begin_epoch();}catch(const std::logic_error&){rejected=true;}assert(rejected);
++  f.cache->ro_end_epoch();auto a=f.make(0);rejected=false;
++  try{f.admit(a);}catch(const std::logic_error&){rejected=true;}assert(rejected);delete a;
++  puts("RO command binding, single full epoch and post-end access rejection PASS");
++}
++static void warmup_scope(const char *base,const char *overlay,const char *binding){
++  rig f(base,overlay,binding,1,1,1,false);f.validate_reference=false;
++  f.cache->force_tag_access(0,4096,mem_access_sector_mask_t(1));auto h=f.tag();
++  f.cache->force_tag_access(32,4097,mem_access_sector_mask_t(2));
++  f.cache->force_tag_access(0,4098,mem_access_sector_mask_t(1));
++  assert(f.tag()==h);const auto &slot=f.cache->ep_l2_payload_for_test().inspect(h);
++  assert(slot.ready_sector_mask.to_ulong()==3 && !slot.pins && slot.pending_sector_mask.none());
++  assert(slot.versions[0]==0 && slot.versions[1]==0);
++  assert(f.cache->ep_l2_payload_for_test().bank_grants()==0); // untimed initialization
++  f.cache->ro_bind_commandlist(rig::command.c_str());f.cache->ro_begin_epoch();
++  auto a=f.make(0);assert(f.admit(a)==HIT);assert(a->get_ft_wb_data()[0]==0);delete a;
++  bool rejected=false;try{f.cache->force_tag_access(0,8192,mem_access_sector_mask_t(1));}
++  catch(const std::logic_error&){rejected=true;}assert(rejected);
++  f.cache->ro_end_epoch();rejected=false;
++  try{f.cache->force_tag_access(0,8193,mem_access_sector_mask_t(1));}
++  catch(const std::logic_error&){rejected=true;}assert(rejected);
++  assert(f.tag()==h);puts("RO warmed handle/sector reuse and initialization-only scope PASS");
++}
++int main(int argc,char **argv){
++  assert(argc==5);rig::command=argv[4];
++  assert(ep_l2_ro::sha256("")=="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
++  assert(ep_l2_ro::sha256("abc")=="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
++  for(unsigned d=0;d<2;++d)for(unsigned b=0;b<2;++b)modes(argv[1],argv[2],argv[3],d,b);
++  sectors(argv[1],argv[2],argv[3]);capacity(argv[1],argv[2],argv[3]);classifier(argv[1],argv[2],argv[3]);
++  dirty_victim(argv[1],argv[2],argv[3]);native_pin_guard(argv[1],argv[2],argv[3]);epoch_binding(argv[1],argv[2],argv[3]);
++  warmup_scope(argv[1],argv[2],argv[3]);
++  puts("RO production runtime directed PASS");
++}
+diff --git a/tests/ep_l2/test_ro_store_port.cc b/tests/ep_l2/test_ro_store_port.cc
+new file mode 100644
+index 00000000..87a2ac5e
+--- /dev/null
++++ b/tests/ep_l2/test_ro_store_port.cc
+@@ -0,0 +1,87 @@
++#include <assert.h>
++#include <map>
++#include <sstream>
++#include <stdio.h>
++#include "../../src/gpgpu-sim/ep-l2-ro-store-port.h"
++using namespace ep_l2_ro;
++static mem_fetch *req(unsigned n) {return reinterpret_cast<mem_fetch*>(uintptr_t(n+1));}
++static std::string hash(){return std::string(64,'b');}
++static unsigned long long memory(new_addr_type line,unsigned sector){return line*37+sector*11+17;}
++static std::array<unsigned long long,4> data(new_addr_type line) {
++  std::array<unsigned long long,4> d;
++  for(unsigned i=0;i<4;++i)d[i]=memory(line,i);return d;
++}
++class tag_reference : public tag_port {
++ public:
++  struct tag {identity h;uint64_t generation;new_addr_type line;unsigned ready;};
++  std::map<unsigned,tag> tags;
++  std::map<unsigned,new_addr_type> payload_lines;
++  uint64_t generation=0;
++  unsigned reads=0,updates=0;
++  tag_binding attach(unsigned index,identity h,new_addr_type line) {
++    tags[index]=tag{h,++generation,line,0};payload_lines[h.payload_id]=line;
++    return tag_binding(index,generation);
++  }
++  bool matches(tag_binding b,identity h,new_addr_type line) const {
++    auto i=tags.find(b.index);
++    return i!=tags.end()&&i->second.h==h&&i->second.generation==b.generation&&i->second.line==line;
++  }
++  void ready(tag_binding b,identity h,new_addr_type line,unsigned mask,bool) {
++    assert(matches(b,h,line));tags[b.index].ready=mask;++updates;
++  }
++  void detach(tag_binding b,identity h) {assert(tags[b.index].h==h);assert(tags[b.index].generation==b.generation);tags.erase(b.index);}
++  void read(identity h,unsigned mask,const std::array<unsigned long long,4>&versions) {
++    for(unsigned s=0;s<4;++s)if(mask>>s&1)assert(versions[s]==memory(payload_lines.at(h.payload_id),s));
++    ++reads;
++  }
++};
++static identity reserve(ep_l2_payload_store &p,new_addr_type line,unsigned bank) {
++  auto h=p.preview_free(ep_l2_payload_store::RO,bank);assert(h.valid());
++  return p.reserve(h.payload_id,ep_l2_payload_store::RO,line,ep_l2_payload_store::RO_FILL_ATTACHED);
++}
++static void accounting(ep_l2_payload_store &p) {
++  assert(p.free_slots()+p.resident_used()+p.bypass_used()+p.wb_used()+p.ro_used()==p.physical_slots());
++  assert(p.ownership_consistent());
++}
++int main(){
++  std::istringstream ranges("first_line,last_line_inclusive\n0000000000001000,0000000000200000\n");
++  oracle_certificate cert(ranges,hash(),"TRACE_MODEL_CLOSED_WORLD");
++  ep_l2_payload_store store(2,2,16);tag_reference tags;store_port port(store,tags);
++  mshr_table shared(128,32,512,32);transactions t(shared,port,1168,cert,switches(true,true));
++  t.begin_epoch(1,hash());
++  auto a=reserve(store,0x1000,0);auto at=tags.attach(0,a,0x1000);
++  assert(t.admit(1,0x1000,a,at,req(0),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  t.lower_accepted(a,1);assert(t.detach(a));
++  auto b=reserve(store,0x1000,0);auto bt=tags.attach(0,b,0x1000);
++  assert(a!=b && store.handle_live(a));
++  assert(t.admit(1,0x1000,b,bt,req(1),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  t.lower_accepted(b,1);assert(store.inspect(a).pins==1&&store.inspect(b).pins==1);
++  auto wbfree=store.preview_free(ep_l2_payload_store::WB,0);
++  auto wb=store.reserve(wbfree.payload_id,ep_l2_payload_store::WB,0x2000,ep_l2_payload_store::WB_STAGED);
++  assert(store.request(wb,false,1,1,ep_l2_payload_store::WB_READOUT)==ep_l2_payload_store::GRANTED);
++  auto returned=data(0x1000);
++  assert(!port.accept_return(t,a,1,1,returned)); // competes with actual WB bank grant
++  assert(store.inspect(a).pending_sector_mask.to_ulong()==1);
++  assert(port.accept_return(t,a,1,2,returned));unsigned updates=tags.updates;
++  assert(!port.accept_return(t,b,1,2,returned));
++  assert(port.accept_return(t,b,1,3,returned));
++  assert(tags.updates==updates+1&&tags.tags[0].h==b);
++  assert(store.inspect(a).allocation_role==ep_l2_payload_store::RO);
++  assert(store.inspect(b).allocation_role==ep_l2_payload_store::RESIDENT);accounting(store);
++  response r;assert(t.prepare_response(a,4,r));t.commit_response(a,false,4);
++  assert(store.handle_live(a)&&store.inspect(a).pins==1);
++  assert(t.prepare_response(a,5,r));t.commit_response(a,true,5);
++  assert(!store.handle_live(a));
++  assert(t.prepare_response(b,6,r));t.commit_response(b,true,6);
++  assert(store.handle_live(b)&&store.inspect(b).pins==0&&store.ro_used()==0);
++  store.release(wb);assert(t.end_epoch());accounting(store);
++  assert(shared.descriptor_count_used()==0&&store.pending_operations()==0);
++  assert(t.stats.duplicate_sectors==1&&tags.reads==3);
++  assert(store.bank_ro_fill_write()==2&&store.bank_ro_response_read()==3);
++  ep_l2_payload_store static_store(2,1,16);
++  assert(!static_store.preview_free(ep_l2_payload_store::RO).valid());
++  bool rejected=false;try{store_port invalid(static_store,tags);}catch(const std::invalid_argument&){rejected=true;}assert(rejected);
++  ep_l2_payload_store sensitivity(2,2,8);store_port s8(sensitivity,tags);
++  assert(sensitivity.physical_slots()==1160);accounting(sensitivity);
++  puts("EP-L2 Lane 3 actual shared-store/pin/bank/version integration: PASS");
++}
+diff --git a/tests/ep_l2/test_ro_transactions.cc b/tests/ep_l2/test_ro_transactions.cc
+new file mode 100644
+index 00000000..2c1beef9
+--- /dev/null
++++ b/tests/ep_l2/test_ro_transactions.cc
+@@ -0,0 +1,302 @@
++#include <assert.h>
++#include <stdio.h>
++#include <map>
++#include <set>
++#include <sstream>
++#include "../../src/gpgpu-sim/ep-l2-ro-transactions.h"
++
++using namespace ep_l2_ro;
++
++static mem_fetch *request(unsigned id) {
++  return reinterpret_cast<mem_fetch *>(static_cast<uintptr_t>(id + 1));
++}
++
++// Small byte/version reference adapter for the independent production module.
++// Not the final Lane-1 allocator or a performance simulator.
++class reference_port : public payload_port {
++ public:
++  struct landing {
++    identity h;
++    new_addr_type line;
++    bool allocated;
++    unsigned pins;
++    std::array<unsigned char,128> data;
++    landing() : line(0), allocated(false), pins(0) { data.fill(0); }
++  };
++  struct tag { identity h; new_addr_type line; uint64_t gen; unsigned ready;
++    tag() : line(0), gen(0), ready(0) {} };
++  std::vector<landing> slots;
++  std::map<unsigned,tag> tags;
++  std::array<uint64_t,4> used_cycle;
++  std::array<unsigned char,128> observed;
++  unsigned reads, fills, releases, tag_updates;
++  reference_port() : slots(1168), reads(0), fills(0), releases(0), tag_updates(0) {
++    used_cycle.fill(~0ULL); observed.fill(0);
++  }
++  static unsigned char memory(new_addr_type line, unsigned byte) {
++    return static_cast<unsigned char>((line / 128 * 37 + byte * 13 + 7) % 251);
++  }
++  identity reserve(unsigned id, new_addr_type line, unsigned ti) {
++    assert(!slots[id].allocated);
++    landing &p=slots[id]; ++p.h.generation; p.h.payload_id=id;
++    p.line=line; p.allocated=true; p.data.fill(0);
++    tag &t=tags[ti]; ++t.gen; t.h=p.h; t.line=line; t.ready=0;
++    return p.h;
++  }
++  tag_binding binding(unsigned i) { return tag_binding(i,tags[i].gen); }
++  bool live(identity h,new_addr_type line) const {
++    return h.payload_id<slots.size() && slots[h.payload_id].allocated &&
++      slots[h.payload_id].h==h && slots[h.payload_id].line==line;
++  }
++  bool bank(identity h,uint64_t cycle) {
++    if(used_cycle[h.payload_id%4]==cycle) return false;
++    used_cycle[h.payload_id%4]=cycle; return true;
++  }
++  bool pin(identity h) { ++slots[h.payload_id].pins; return true; }
++  void unpin(identity h) {
++    assert(slots[h.payload_id].pins); --slots[h.payload_id].pins;
++  }
++  bool fill_write(identity h,unsigned mask,uint64_t cycle) {
++    assert(live(h,slots[h.payload_id].line));
++    if(!bank(h,cycle)) return false;
++    ++fills;
++    for(unsigned s=0;s<4;++s) if(mask>>s&1)
++      for(unsigned b=s*32;b<(s+1)*32;++b)
++        slots[h.payload_id].data[b]=memory(slots[h.payload_id].line,b);
++    return true;
++  }
++  bool response_read(identity h,unsigned mask,uint64_t cycle) {
++    if(!bank(h,cycle)) return false;
++    ++reads;
++    for(unsigned s=0;s<4;++s) if(mask>>s&1)
++      for(unsigned b=s*32;b<(s+1)*32;++b) {
++        observed[b]=slots[h.payload_id].data[b];
++        assert(observed[b]==memory(slots[h.payload_id].line,b));
++      }
++    return true;
++  }
++  bool tag_matches(tag_binding b,identity h,new_addr_type line) const {
++    std::map<unsigned,tag>::const_iterator t=tags.find(b.index);
++    return t!=tags.end() && t->second.gen==b.generation &&
++      t->second.h==h && t->second.line==line;
++  }
++  void tag_ready(tag_binding b,identity h,new_addr_type line,unsigned ready,bool) {
++    assert(tag_matches(b,h,line)); tags[b.index].ready=ready; ++tag_updates;
++  }
++  void tag_detach(tag_binding b,identity h) {
++    assert(tags[b.index].h==h && tags[b.index].gen==b.generation);
++    tags.erase(b.index);
++  }
++  void release(identity h) {
++    assert(slots[h.payload_id].allocated && slots[h.payload_id].h==h && !slots[h.payload_id].pins);
++    slots[h.payload_id].allocated=false; ++releases;
++  }
++};
++
++static std::string hash() { return std::string(64,'a'); }
++static const oracle_certificate &certificate() {
++  static std::istringstream ranges("first_line,last_line_inclusive\n0000000000001000,0000000000200000\n");
++  static oracle_certificate c(ranges,hash(),"TRACE_MODEL_CLOSED_WORLD");
++  return c;
++}
++
++static void out_of_order_backpressure_and_waiter_protection() {
++  mshr_table shared(128,32,512,32); reference_port p;
++  transactions t(shared,p,1168,certificate(),switches(true,true)); t.begin_epoch(1,hash());
++  identity h=p.reserve(0,0x1000,0);
++  assert(t.admit(1,0x1000,h,p.binding(0),request(1),3,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(t.merge(h,request(2),4,1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(!t.detach(h)); // second requester protects even if one retires
++  assert(t.lower_needed(h)==7); t.lower_accepted(h,7);
++  assert(t.fill(h,4,1)); assert(t.pending(h)==3);
++  response r;
++  assert(!t.prepare_response(h,1,r)); // shared bank write/read arbitration
++  assert(t.prepare_response(h,2,r)); assert(r.request==request(2));
++  t.commit_response(h,false,2);
++  unsigned reads=p.reads;
++  assert(t.prepare_response(h,3,r)); assert(p.reads==reads+1);
++  assert(t.prepare_response(h,3,r)); assert(p.reads==reads+1);
++  assert(shared.descriptor_count_used()==2);
++  t.commit_response(h,true,3); assert(shared.descriptor_count_used()==1);
++  assert(!t.detach(h));
++  assert(t.fill(h,2,4)); assert(!t.prepare_response(h,5,r));
++  assert(t.fill(h,1,6)); assert(t.prepare_response(h,7,r));
++  assert(r.request==request(1)); t.commit_response(h,true,7);
++  assert(shared.descriptor_count_used()==0 && t.drained());
++  assert(p.tags[0].ready==7 && p.releases==0); // clean resident stays alive
++  assert(t.end_epoch());
++}
++
++static void same_line_detached_instances_and_generation() {
++  mshr_table shared(128,32,512,32); reference_port p;
++  transactions t(shared,p,1168,certificate(),switches(true,true));t.begin_epoch(2,hash());
++  identity a=p.reserve(0,0x2000,0);
++  assert(t.admit(2,0x2000,a,p.binding(0),request(10),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  t.lower_accepted(a,1); assert(t.detach(a));
++  identity b=p.reserve(4,0x2000,0);
++  assert(t.admit(2,0x2000,b,p.binding(0),request(11),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  t.lower_accepted(b,1); assert(t.stats.duplicate_sectors==1);
++  assert(shared.num_entries_used()==0 && shared.descriptor_count_used()==2);
++  assert(!t.end_epoch());
++  assert(t.fill(b,1,1)); unsigned updates=p.tag_updates;
++  assert(!t.fill(a,1,1)); assert(t.fill(a,1,2));
++  assert(p.tag_updates==updates && p.tags[0].h==b); // old fill cannot modify B
++  response r;
++  assert(t.prepare_response(a,3,r));t.commit_response(a,false,3);
++  assert(p.slots[a.payload_id].allocated);
++  assert(t.prepare_response(a,4,r));t.commit_response(a,true,4);
++  assert(!p.slots[a.payload_id].allocated && p.slots[b.payload_id].allocated);
++  assert(t.prepare_response(b,5,r));t.commit_response(b,true,5);
++  assert(t.end_epoch() && shared.descriptor_count_used()==0);
++  identity fresh=p.reserve(0,0x3000,1);
++  assert(fresh.generation!=a.generation);
++  t.begin_epoch(3,hash());
++  assert(t.admit(3,0x3000,fresh,p.binding(1),request(12),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  bool rejected=false;try{t.fill(a,1,5);}catch(const std::logic_error&){rejected=true;}
++  assert(rejected);t.lower_accepted(fresh,1);assert(t.detach(fresh));
++  assert(t.fill(fresh,1,6));assert(t.prepare_response(fresh,7,r));t.commit_response(fresh,true,7);
++  assert(t.end_epoch());
++}
++
++static void descriptor_pool_is_shared_and_address_bounded() {
++  mshr_table shared(128,32,512,32); reference_port p;
++  for(unsigned n=0;n<511;++n)
++    shared.add_for_test(0x100000+(n/32)*128,request(100+n),mem_access_sector_mask_t(1));
++  transactions t(shared,p,1168,certificate(),switches(true,true));t.begin_epoch(4,hash());
++  identity a=p.reserve(0,0x4000,0);
++  assert(t.admit(4,0x4000,a,p.binding(0),request(800),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  identity b=p.reserve(1,0x5000,1);
++  assert(t.admit(4,0x5000,b,p.binding(1),request(801),1,true,GLOBAL_DEMAND_READ)==DESCRIPTOR_OR_ADDRESS_FULL);
++  assert(shared.descriptor_count_used()==512 && shared.num_entries_used()==16);
++  t.lower_accepted(a,1);assert(t.detach(a));assert(t.fill(a,1,1));response r;
++  assert(t.prepare_response(a,2,r));t.commit_response(a,true,2);
++  assert(shared.descriptor_count_used()==511);
++  assert(t.admit(4,0x5000,b,p.binding(1),request(801),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++
++  mshr_table per_line(128,32,512,32);reference_port p2;
++  transactions t2(per_line,p2,1168,certificate(),switches(true,true));t2.begin_epoch(5,hash());
++  identity h=p2.reserve(0,0x6000,0);
++  assert(t2.admit(5,0x6000,h,p2.binding(0),request(900),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  for(unsigned n=0;n<31;++n)assert(t2.merge(h,request(901+n),1,5,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(t2.merge(h,request(999),1,5,true,GLOBAL_DEMAND_READ)==DESCRIPTOR_OR_ADDRESS_FULL);
++  assert(per_line.full_reason(0x6000)==mshr_table::EP_L2_BLOCK_PER_ADDRESS_CAP);
++  assert(per_line.descriptor_count_used()==32);
++}
++
++static void rejected_inputs_and_illegal_protocol() {
++  mshr_table shared(128,32,512,32);reference_port p;
++  transactions off(shared,p,1168,certificate());off.begin_epoch(1,hash());
++  identity h=p.reserve(0,0x7000,0);
++  assert(off.admit(1,0x7000,h,p.binding(0),request(0),1,true,GLOBAL_DEMAND_READ)==NORMAL_PATH);
++  assert(shared.descriptor_count_used()==0);
++  transactions t(shared,p,1168,certificate(),switches(false,true));t.begin_epoch(6,hash());
++  for(unsigned kind=SYNTHETIC_WRITE_ALLOCATE_READ;kind<=UNKNOWN_REQUEST;++kind)
++    assert(t.admit(6,0x7000,h,p.binding(0),request(0),1,true,request_kind(kind))==NORMAL_PATH);
++  assert(t.admit(6,0x7000,h,p.binding(0),request(0),1,false,GLOBAL_DEMAND_READ)==NORMAL_PATH);
++  assert(t.admit(7,0x7000,h,p.binding(0),request(0),1,true,GLOBAL_DEMAND_READ)==NORMAL_PATH);
++  assert(t.admit(6,0x300000,h,p.binding(0),request(0),1,true,GLOBAL_DEMAND_READ)==NORMAL_PATH);
++  assert(t.admit(6,0x7000,h,p.binding(0),request(0),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(t.merge(h,request(77),1,6,true,SYNTHETIC_WRITE_ALLOCATE_READ)==NORMAL_PATH);
++  assert(!t.detach(h));
++  bool violation=false;try{t.assert_no_epoch_write(6,0x7000);}catch(const std::logic_error&){violation=true;}assert(violation);
++  violation=false;try{t.fill(h,1,1);}catch(const std::logic_error&){violation=true;}assert(violation);
++  t.lower_accepted(h,1);
++  violation=false;try{t.lower_accepted(h,1);}catch(const std::logic_error&){violation=true;}assert(violation);
++  assert(t.fill(h,1,2));
++  violation=false;try{t.fill(h,1,3);}catch(const std::logic_error&){violation=true;}assert(violation);
++  response r;assert(t.prepare_response(h,4,r));t.commit_response(h,true,4);
++  assert(t.end_epoch());
++
++  mshr_table::ro_descriptor_handle d,stale;
++  assert(shared.reserve_ro_descriptor(0x8000,request(1),mem_access_sector_mask_t(1),d));
++  stale=d;shared.release_ro_descriptor(d);
++  assert(shared.reserve_ro_descriptor(0x8000,request(1),mem_access_sector_mask_t(1),d));
++  assert(d.id==stale.id && d.generation!=stale.generation);
++  assert(!shared.ro_descriptor_live(stale));shared.release_ro_descriptor(d);
++}
++
++static void detach_only_uses_the_actual_line_mshr_limit() {
++  mshr_table shared(128,32,512,32);reference_port p;
++  for(unsigned n=0;n<127;++n)
++    shared.add_for_test(0x100000+n*128,request(n),mem_access_sector_mask_t(1));
++  transactions t(shared,p,1168,certificate(),switches(true,false));t.begin_epoch(8,hash());
++  identity a=p.reserve(0,0x8000,0);
++  assert(t.admit(8,0x8000,a,p.binding(0),request(200),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(shared.num_entries_used()==128);
++  t.lower_accepted(a,1);assert(t.detach(a));
++  identity lookup;assert(t.merge_target(0x8000,lookup) && lookup==a);
++  assert(t.merge(a,request(201),2,8,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(t.lower_needed(a)==2);t.lower_accepted(a,2);
++  identity b=p.reserve(1,0x9000,1);
++  assert(t.admit(8,0x9000,b,p.binding(1),request(202),1,true,GLOBAL_DEMAND_READ)==LINE_MSHR_FULL);
++  assert(t.fill(a,2,1));assert(t.fill(a,1,2));response r;
++  assert(t.prepare_response(a,3,r));t.commit_response(a,true,3);
++  assert(t.prepare_response(a,4,r));t.commit_response(a,true,4);
++  assert(t.drained() && shared.num_entries_used()==127);
++  assert(t.stats.duplicate_sectors==0 && p.releases==1);
++  assert(t.end_epoch());
++
++  // With bypass enabled the SAME full native line-MSHR does not block RO;
++  // requester descriptors and physical landing capacity remain bounded.
++  shared.add_for_test(0x200000,request(300),mem_access_sector_mask_t(1));
++  transactions bypass(shared,p,1168,certificate(),switches(false,true));bypass.begin_epoch(9,hash());
++  assert(bypass.admit(9,0x9000,b,p.binding(1),request(301),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  assert(shared.num_entries_used()==128 && shared.descriptor_count_used()==129);
++  bypass.lower_accepted(b,1);assert(bypass.fill(b,1,5));
++  assert(bypass.prepare_response(b,6,r));bypass.commit_response(b,true,6);
++  assert(bypass.end_epoch() && shared.descriptor_count_used()==128);
++}
++
++static void partial_resident_and_cycle_grant_validation() {
++  mshr_table shared(128,32,512,32);reference_port p;
++  transactions t(shared,p,1168,certificate(),switches(true,true));t.begin_epoch(10,hash());
++  identity h=p.reserve(0,0xa000,0);
++  assert(t.admit(10,0xa000,h,p.binding(0),request(1000),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++  t.lower_accepted(h,1);assert(t.fill(h,1,1));response r;
++  assert(t.prepare_response(h,2,r));
++  bool rejected=false;try{t.commit_response(h,true,3);}catch(const std::logic_error&){rejected=true;}
++  assert(rejected && shared.descriptor_count_used()==1);
++  assert(t.prepare_response(h,3,r));t.commit_response(h,true,3);
++  assert(t.drained() && p.tags[0].ready==1);
++  assert(t.admit(10,0xa000,h,p.binding(0),request(1001),2,true,GLOBAL_DEMAND_READ,1)==ACCEPTED);
++  assert(t.lower_needed(h)==2);
++  assert(t.merge(h,request(1001),2,10,true,GLOBAL_DEMAND_READ)==DESCRIPTOR_OR_ADDRESS_FULL);
++  t.lower_accepted(h,2);assert(t.fill(h,2,4));
++  assert(p.tags[0].ready==3); // sector miss must preserve already valid sector
++  assert(t.prepare_response(h,5,r));t.commit_response(h,true,5);
++  assert(t.end_epoch() && p.slots[h.payload_id].pins==0);
++}
++
++static void detached_address_cap_and_exactly_once_permuted_fills() {
++  mshr_table shared(128,32,512,32);reference_port p;
++  transactions t(shared,p,1168,certificate(),switches(true,true));t.begin_epoch(11,hash());
++  std::vector<identity> handles;
++  for(unsigned n=0;n<32;++n) {
++    identity h=p.reserve(n,0xc000,0);handles.push_back(h);
++    assert(t.admit(11,0xc000,h,p.binding(0),request(1100+n),1,true,GLOBAL_DEMAND_READ)==ACCEPTED);
++    t.lower_accepted(h,1);assert(t.detach(h));
++  }
++  identity refused=p.reserve(32,0xc000,0);
++  assert(t.admit(11,0xc000,refused,p.binding(0),request(1200),1,true,GLOBAL_DEMAND_READ)==DESCRIPTOR_OR_ADDRESS_FULL);
++  assert(shared.descriptor_count_used()==32 && shared.num_entries_used()==0);
++  assert(t.stats.duplicate_sectors==31 && t.stats.lower_sectors==32);
++  for(unsigned n=0;n<32;++n)assert(t.fill(handles[31-n],1,n+1));
++  std::set<mem_fetch*> seen;
++  for(unsigned n=0;n<32;++n) {
++    response r;assert(t.prepare_response(handles[n],33+n,r));
++    assert(r.request==request(1100+n));assert(seen.insert(r.request).second);
++    t.commit_response(handles[n],true,33+n);
++  }
++  assert(t.end_epoch() && shared.descriptor_count_used()==0 && p.releases==32);
++}
++
++int main() {
++  out_of_order_backpressure_and_waiter_protection();
++  same_line_detached_instances_and_generation();
++  descriptor_pool_is_shared_and_address_bounded();
++  rejected_inputs_and_illegal_protocol();
++  detach_only_uses_the_actual_line_mshr_limit();
++  partial_resident_and_cycle_grant_validation();
++  detached_address_cap_and_exactly_once_permuted_fills();
++  puts("EP-L2 Lane 3 RO production-module/reference tests: PASS (7 scenario groups)");
++}

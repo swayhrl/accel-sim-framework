@@ -1,0 +1,7 @@
+# r5 incremental field/capacity ledger for Lane 1 / Lane 6
+
+No new persistent production field is added by the RO r5 delta. Physical-cycle helpers use the existing GPU counters and existing arbiter cycle; initialization gating reuses open/ever_open and existing completion drain state; the warmup handshake reuses and advances the existing Tag-generation vector. Packet creation/enqueue reuses existing timestamp fields. New grant counters in directed tests are fixture-only variables, not hardware metadata.
+
+The candidate warmup change allocates/reuses a resident handle in the same physical allocator; it adds no data store or port. Primary/sensitivity remain 1168/1160×128B per slice, four single-op banks, common 128B copy latch, shared D512/native128/address32. RO completion table remains T_RO=1168/1160 indexed rows, with active transactions additionally bounded by D512; T_RO=128 is not this implementation. Refer to frozen r4 METADATA_COST.md for all retained fields, descriptor-credit comparison logic, scheduler state and oracle input costs.
+
+No net SRAM area, RTL timing, energy, speedup or qualified application capacity gain is established. Host prefill is untimed initialization, not a free physical GPU bank operation during an active certified epoch. Closed-world whole-commandlist oracle assumptions and dataless symbolic-sector verification are unchanged. FWT's empty certificate stays negative coverage, without re-certification.

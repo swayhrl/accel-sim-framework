@@ -1,0 +1,66 @@
+{
+  "schema": "EP_L2_LANE3_REPAIR_ADAPTATION_R5",
+  "status": "SOURCE_PRE_ADAPTED_UNCOMPILED_RESOURCE_HOLD",
+  "review_authority": "a41bfb55934303a4d4a342762f74a16d137d0316",
+  "core_source_commit": "b90e5e861a934503f35c56688e7007da6bb3dcc0",
+  "framework_source_commit": "90b4e464892a344d4bb2c8652963f02db18bfdb6",
+  "prior_core_source": "ac3028b00aa37c08b2210b1c9a1fe8444060c0f9",
+  "prior_framework_publication": "0db7ce4bcc91db96860e5e18f0c88178f25dc562",
+  "repair_candidate_parent": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
+  "clock_delta": "1565f1f04978f12e51a29fcbf9dab9a3c61b5c4e",
+  "warmup_delta": "5d974c3bf116ad21da74d3a27eace028c1f2e197",
+  "official_R0_1_parent": null,
+  "official_parent_status": "NOT_PUBLISHED_AT_BOUNDED_READBACK",
+  "lane1_publication": "3840f9585b710a5abea8201c14fa05cdea930aa7",
+  "lane5_acceptance_publication": "b134f76d8f4cd759c0852b68edf922ecbd445ea9",
+  "lane5_acceptance_sha256": "5325aad502b09943d2b2e673a3af757a9de33549491d13eea80db43a9480fba0",
+  "scientific_acceptance": "NO_CURRENT_ACCEPTED_RO_APPLICATION_VERSION",
+  "affected_R0_R1": "SCIENTIFIC_ACCEPTANCE_SUSPENDED_ALL_OLD_RAW_RETAINED",
+  "source_merge": {
+    "commit": "8ca2f33ba76b445c35e6f782aaacbf5cae8cfdd4",
+    "text_conflicts": 0,
+    "scope": "candidate repair merge only; not official R0.1 rebase or qualification"
+  },
+  "validation": {
+    "static_source_checks": 16,
+    "static_status": "PASS_NOT_COMPILE_OR_RUNTIME_PASS",
+    "patch_checks": 4,
+    "python_config_binding_tests": 5,
+    "cpp_compile": "NOT_RUN_RESOURCE_HOLD",
+    "new_cpp_tests": "NOT_RUN",
+    "independent_qualification": false
+  },
+  "new_binary_sha256": null,
+  "new_application_config_sha256": null,
+  "new_application_trace_identity": null,
+  "new_application_run_keys": [],
+  "staged_cpp_test_matrix": {
+    "cache_groups": 11,
+    "original_partition_four_modes": 4,
+    "warm_offset4096_C8_C16_four_modes": 8,
+    "execution_status": "NOT_RUN"
+  },
+  "oracle_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "oracle_epoch": "whole_commandlist",
+  "oracle_input_pack": "docs/ep_l2/review_packs/FT20261016_LANE3_ORACLE_TRANSACTION_r2",
+  "oracle_inputs_recertified": false,
+  "oracle_trace_hash_rescan": false,
+  "resource_hold": {
+    "disk_floor_bytes": 51539607552,
+    "source": "RESOURCE_AUDIT.json",
+    "new_build_requested": false,
+    "own_data_deleted": false
+  },
+  "active_runs": [],
+  "active_build_leases": [],
+  "required_new_gates": [
+    "physical_bank_clock",
+    "memcpy_payload_identity",
+    "RO detach/bypass separately on exact repaired integrated release"
+  ],
+  "remaining": [
+    "Consume exact Lane1 official R0.1 SHA and recheck/apply delta against that parent",
+    "After shared admission and growth headroom, compile/test adapter under Lane1/Lane5 priority",
+    "Lane1 final RO integration and Lane5 new independent qualification before formal RO applications"
+  ]
+}
