@@ -1,0 +1,12 @@
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2326:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2326 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2326:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2326 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/test_ft_wbuf.cc: In destructor ‘fixture::~fixture()’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/test_ft_wbuf.cc:49:30: warning: deleting object of polymorphic class type ‘partition_mf_allocator’ which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
+   49 |   ~fixture() { delete cache; delete allocator; delete gpu; }
+      |                              ^~~~~~~~~~~~~~~~
+[100%] Linking CXX executable ep_l2_ft_directed
+[100%] Built target ep_l2_ft_directed

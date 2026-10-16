@@ -1,0 +1,80 @@
+{
+  "schema": "EP_L2_RO_READY_V4",
+  "status": "PRODUCER_RO_RUNTIME_READY_FOR_INDEPENDENT_QUALIFICATION",
+  "runtime_ready": true,
+  "production_hooks_ready": true,
+  "core_source_commit": "ac3028b00aa37c08b2210b1c9a1fe8444060c0f9",
+  "framework_source_commit": "c3f8f11ed4a5bf722307154a66193fbbce1715d8",
+  "lane1_r0_core_parent": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+  "lane1_r0_framework_parent": "37dec04d223ae65167c5584e56887c74f6540d27",
+  "prior_module_source": "ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5",
+  "coordination_review": "aec01450d3c527524ee09ee59242f582fafe5354",
+  "oracle_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "epoch": "whole_commandlist",
+  "runtime_feature_vector": {
+    "ro_tag_detach": false,
+    "ro_line_mshr_bypass": false
+  },
+  "qualified_producer_directed_modes": [
+    {
+      "ro_tag_detach": false,
+      "ro_line_mshr_bypass": false
+    },
+    {
+      "ro_tag_detach": false,
+      "ro_line_mshr_bypass": true
+    },
+    {
+      "ro_tag_detach": true,
+      "ro_line_mshr_bypass": false
+    },
+    {
+      "ro_tag_detach": true,
+      "ro_line_mshr_bypass": true
+    }
+  ],
+  "production_binary": {
+    "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework/accel-sim.out",
+    "sha256": "273a8219e33026a5a7c218b793b0026f4781c7744ba8c6218847445df3140e10",
+    "bytes": 78377216
+  },
+  "banking": {
+    "count": 4,
+    "ops_per_bank_cycle": 1
+  },
+  "physical_payload_slots": {
+    "primary": 1168,
+    "sensitivity": 1160
+  },
+  "copy_latch_bytes_per_slice": 128,
+  "descriptor_pool": {
+    "capacity": 512,
+    "shared_with_native": true,
+    "per_address_cap": 32
+  },
+  "native_line_mshr_capacity": 128,
+  "completion_rows": {
+    "primary": 1168,
+    "sensitivity": 1160
+  },
+  "configuration": "Release",
+  "input_pack": "docs/ep_l2/review_packs/FT20261016_LANE3_ORACLE_TRANSACTION_r2",
+  "input_recertification": false,
+  "input_hash_rescan": false,
+  "full_application_runtime_qualification": "NOT_RUN",
+  "independent_qualification": false,
+  "formal_performance_runs": 0,
+  "remaining": [
+    "Lane 1 final integration on a new release identity",
+    "Lane 5 independent qualification of exact new source/binary and combinations",
+    "Lane 5 quota-controlled full-application validation and any formal RO performance runs"
+  ],
+  "r0_priority": "Do not replace, rebuild or block Lane 5 R0 B16/U_WB16; existing R0 records retain their identities",
+  "feature_schema_mapping": {
+    "legacy_ro_false": {
+      "ro_tag_detach": false,
+      "ro_line_mshr_bypass": false
+    },
+    "legacy_ro_true": "not sufficient to qualify either new feature bit; preserve source-scoped historical record"
+  }
+}

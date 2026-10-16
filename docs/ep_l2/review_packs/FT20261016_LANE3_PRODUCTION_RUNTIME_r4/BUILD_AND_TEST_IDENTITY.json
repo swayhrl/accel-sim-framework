@@ -1,0 +1,104 @@
+{
+  "schema": "EP_L2_RO_BUILD_AND_TEST_IDENTITY_R4",
+  "core_source_commit": "ac3028b00aa37c08b2210b1c9a1fe8444060c0f9",
+  "framework_source_commit": "c3f8f11ed4a5bf722307154a66193fbbce1715d8",
+  "build_directory": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework",
+  "cuda": "/usr/local/cuda-11.8",
+  "cxx_version": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "build_type": "Release",
+  "build_jobs": 2,
+  "configure_command": [
+    "cmake",
+    "-S",
+    "gpu-simulator",
+    "-B",
+    "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework"
+  ],
+  "build_command": [
+    "cmake",
+    "--build",
+    "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework",
+    "--target",
+    "accel-sim.out",
+    "ep_l2_ro_runtime",
+    "ep_l2_ro_partition",
+    "ep_l2_ft_directed",
+    "-j2"
+  ],
+  "build_environment": {
+    "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1",
+    "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+    "ACCELSIM_CONFIG": "release"
+  },
+  "external_pybind11_tree_sha256": "e726e6c5c1cb74d3e3eade03b65b0ad38bc2195bda1f5c0edb3692e9faeac768",
+  "external_pybind11_note": "read-only copy of existing /workspace/repos/accel-sim-framework/gpu-simulator/extern/pybind11; not part of simulator source or science input",
+  "binaries": [
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework/accel-sim.out",
+      "sha256": "273a8219e33026a5a7c218b793b0026f4781c7744ba8c6218847445df3140e10",
+      "bytes": 78377216
+    },
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework/gpgpu-sim/ep_l2_ro_runtime",
+      "sha256": "70279a38fe5e3ce4430eb77aba9a729cc33997ec49368e7dfe2cc9647654fc0a",
+      "bytes": 75225416
+    },
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework/gpgpu-sim/ep_l2_ro_partition",
+      "sha256": "4fd73d76958e1ea2c09f56f7cb33d2af39fa3463945b8e48a658b24b4a14e47e",
+      "bytes": 74689096
+    },
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/framework/gpgpu-sim/ep_l2_ft_directed",
+      "sha256": "085667b53b256fdc85ecd72b6819342853a38eba7ade9508c80bb60f657e8256",
+      "bytes": 75232712
+    },
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/modules/test_ro_transactions",
+      "sha256": "fe0171a8a644f795a7278d275fa6645c406eadacbae2d6a42a8c5e493a325964",
+      "bytes": 92720
+    },
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/modules/test_ro_transactions_oracle",
+      "sha256": "f923090a58a56426a46d3cf4e525793d5f11e21ac42a575422482ef4b55aeb43",
+      "bytes": 28016
+    },
+    {
+      "path": "/workspace/builds/ep_l2_ft20261016_lane3_v1/ac3028b0_c3f8f11e/modules/test_ro_transactions_store",
+      "sha256": "9aa3e0c5ca1190739cb00bf1f632dd355e3530df521cfe3e3de58694f5bb07d6",
+      "bytes": 81408
+    }
+  ],
+  "raw_logs": [
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane3/runtime_r4_acceptance_build.log",
+      "sha256": "eb9c9d480370fb65efc5e328812c2808bde560cf06082d7e7dc82d23a7bc7205",
+      "bytes": 235807
+    },
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane3/runtime_r4_acceptance_configure.log",
+      "sha256": "34dcce0806e337408b17ee53db1a6d85d92760a1c179de6b48537b3c455a2ab0",
+      "bytes": 2658
+    },
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane3/runtime_r4_acceptance_modules.log",
+      "sha256": "bdb087e85b282bed2c562e7cf67f589d33d16ba5d71c17c67aefcea040e85e24",
+      "bytes": 39119
+    },
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane3/runtime_r4_python_config_tests.log",
+      "sha256": "14397d39060633fcd608d7177a1e2b05310bcbfe26440c9a131dea6fc8c4eb5e",
+      "bytes": 606
+    }
+  ],
+  "build_gate": "PASS",
+  "runtime_cache_groups": 10,
+  "real_partition_mode_runs": 4,
+  "negative_identity_scope_checks": 5,
+  "python_config_binding_tests": 5,
+  "r0_off_directed_groups": 8,
+  "ro_module_reference_groups": 7,
+  "independent_qualification": false,
+  "formal_application_runs": 0,
+  "excluded": "all bootstrap/development directories and failures; no bootstrap binary is an acceptance binary"
+}

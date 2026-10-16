@@ -3,13 +3,13 @@
   "lane_id": 3,
   "task_id": "EP_L2_FT20261016_LANE3_V1",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "READY_FOR_LANE1_INTEGRATION_FULL_RUNTIME_PENDING",
+  "status": "PRODUCER_RO_RUNTIME_READY_FOR_INDEPENDENT_QUALIFICATION",
   "node": "huangrulin-174",
   "framework_branch": "hrl/ep-l2-ft20261016-lane3-v1",
-  "framework_source_commit": "28a594c78bc7568ca038f63ef8122ff7337b7d2c",
+  "framework_source_commit": "c3f8f11ed4a5bf722307154a66193fbbce1715d8",
   "core_branch": "hrl/ep-l2-ft20261016-lane3-v1",
-  "core_source_commit": "ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5",
-  "binary_sha256": null,
+  "core_source_commit": "ac3028b00aa37c08b2210b1c9a1fe8444060c0f9",
+  "binary_sha256": "273a8219e33026a5a7c218b793b0026f4781c7744ba8c6218847445df3140e10",
   "config_sha256": null,
   "trace_identity": {
     "scope": "whole_commandlist",
@@ -89,61 +89,52 @@
           "certified_ranges.csv": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560"
         }
       }
-    ]
+    ],
+    "reused_without_rescan": true,
+    "use_in_r4": "frozen oracle evidence only; no real workload execution"
   },
   "feature_vector": {
     "ro_tag_detach": false,
     "ro_line_mshr_bypass": false
   },
-  "ideal_vector": {},
-  "dependency_receipts": [
-    {
-      "lane": 1,
-      "framework_contract_commit": "528dd5664cdbf1851e090e049401b10a264de499",
-      "core_candidate_commit": "10d7f4fea1f9699b4e091091f7e23e072c19d453",
-      "runtime_ready": false,
-      "executable_shared_store_consumed": true
-    },
-    {
-      "lane": 5,
-      "framework_contract_commit": "12c2eeac8f9e55351fa58c3807cce5234231ad0c",
-      "client_source": "de8fe21d9598660e40da8486e48f2d46acee4582"
-    }
-  ],
-  "artifacts": [
-    "docs/ep_l2/review_packs/FT20261016_LANE3_SHARED_STORE_r3",
-    "docs/ep_l2/review_packs/FT20261016_LANE3_ORACLE_TRANSACTION_r2"
-  ],
   "validation": {
-    "prior_oracle_python_tests": 19,
-    "prior_full_epoch_inputs": 5,
-    "ro_lifecycle_reference_groups": 7,
-    "runtime_certificate_boundaries": "PASS",
-    "actual_shared_store_pin_bank_version": "PASS",
-    "full_release_build": "PASS",
-    "public_wbuf_production_regression_groups": 8,
-    "public_wbuf_production_regression": "PASS",
-    "patch_apply_check": "PASS"
+    "build": "PASS",
+    "runtime_cache_groups": 10,
+    "actual_partition_modes": 4,
+    "negative_certificate_identity_checks": 5,
+    "python_config_tests": 5,
+    "r0_off_groups": 8,
+    "module_reference_groups": 7,
+    "module_certificate": "PASS",
+    "module_shared_store": "PASS"
   },
   "active_runs": [],
-  "blockers": [
-    "actual tag_array-generation/visibility adapter",
-    "cache/memport RO dispatch and oracle epoch/invalidation loading",
-    "separate default-OFF simulator runtime switch registration",
-    "Lane-5 independent full-runtime qualification and formal run allocation"
-  ],
-  "offline_preprocessing": {
-    "campaign": "/workspace/results/ep_l2_ft20261016/lane3/oracle/development_r3",
-    "status": "COMPLETE_5OF5",
-    "active": false,
-    "leases_released": true
-  },
   "formal_performance_runs": 0,
-  "tested_ro_modes": [
-    "OFF",
-    "DETACH_ONLY_NATIVE_MSHR",
-    "BYPASS_ONLY_ATTACHED",
-    "DETACH_AND_BYPASS"
+  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
+  "config_identity": "No formal application config/run; directed full ordered config/argv and SHA identities in directed/SUMMARY.json",
+  "review_pack": "docs/ep_l2/review_packs/FT20261016_LANE3_PRODUCTION_RUNTIME_r4",
+  "runtime_ready": true,
+  "independent_qualification": false,
+  "build_and_test_identity": "docs/ep_l2/review_packs/FT20261016_LANE3_PRODUCTION_RUNTIME_r4/BUILD_AND_TEST_IDENTITY.json",
+  "oracle_inputs_frozen": true,
+  "oracle_trace_hash_rescan": false,
+  "active_build_leases": [],
+  "resources_released": [
+    "b6fdfcb634ce4df6b03f43819b2d4705"
   ],
-  "full_runtime_ready": false
+  "remaining_final_integration": [
+    "Lane 1 final integration on a new release identity",
+    "Lane 5 independent qualification of exact new source/binary and combinations",
+    "Lane 5 quota-controlled full-application validation and any formal RO performance runs"
+  ],
+  "directed_fixture_identity": {
+    "fixture": "SYNTHETIC_SECTOR_VERSION_REFERENCE_NOT_SASS_NUMERICAL_OUTPUT",
+    "fixture_config_sha256": "74c4095bfef25216d9bc4ff61b37b210cffdd07df41468064f322a1d2daa409d",
+    "fixture_command_sha256": "a32475205237bd1ba7fdf316f36e7b17f603c2e73969f1453a2fb8997a617330",
+    "manifest_sha256": "10e23420ef42d903577aebd6202449ac4f72fa93cd2abcc7b307d7f878ce4859",
+    "ranges_sha256": "fda32ec7cb5de6e44f1aebf075b0fe651633e7e6e30407c8774c56c1196b9182",
+    "base_config_sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+    "overlay_config_sha256": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372",
+    "summary_sha256": "daad5aa893d0b01a81c075a30dca4d28500748fd63ef91af512aff55f1a67d77"
+  }
 }

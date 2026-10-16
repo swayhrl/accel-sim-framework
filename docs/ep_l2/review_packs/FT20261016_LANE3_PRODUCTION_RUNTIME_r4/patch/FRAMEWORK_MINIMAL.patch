@@ -1,0 +1,181 @@
+diff --git a/gpu-simulator/accel-sim.cc b/gpu-simulator/accel-sim.cc
+index 071ba64d..8a134449 100644
+--- a/gpu-simulator/accel-sim.cc
++++ b/gpu-simulator/accel-sim.cc
+@@ -15,6 +15,7 @@ accel_sim_framework::accel_sim_framework(std::string config_file,
+       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
+   m_gpgpu_sim->init();
+ 
++  m_gpgpu_sim->ep_l2_ro_bind_commandlist(tconfig.get_traces_filename());
+   tracer = trace_parser(tconfig.get_traces_filename());
+ 
+   tconfig.parse_config();
+@@ -30,6 +31,7 @@ accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
+       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
+   m_gpgpu_sim->init();
+ 
++  m_gpgpu_sim->ep_l2_ro_bind_commandlist(tconfig.get_traces_filename());
+   tracer = trace_parser(tconfig.get_traces_filename());
+ 
+   tconfig.parse_config();
+@@ -97,8 +99,10 @@ void accel_sim_framework::simulation_loop() {
+   // cleanup() reports a completed kernel as soon as its CTA work retires.
+   // Emit one final snapshot after the backend drain so closeout checks see
+   // the actual terminal resource and credit state.
+-  if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit())
++  if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit()) {
++    m_gpgpu_sim->ep_l2_ro_end_epoch();
+     m_gpgpu_sim->print_stats(~0ULL);
++  }
+ }
+ 
+ void accel_sim_framework::parse_commandlist() {
+@@ -108,6 +112,8 @@ void accel_sim_framework::parse_commandlist() {
+   while (kernels_info.size() < window_size && commandlist_index < commandlist.size()) {
+     trace_kernel_info_t *kernel_info = NULL;
+     if (commandlist[commandlist_index].m_type == command_type::cpu_gpu_mem_copy) {
++      if(ro_kernel_command_seen && m_gpgpu_sim->getMemoryConfig()->m_L2_config.ro_requested())
++        throw std::logic_error("host write inside whole-commandlist oracle epoch");
+       size_t addre, Bcount;
+       tracer.parse_memcpy_info(commandlist[commandlist_index].command_string, addre, Bcount);
+       std::cout << "launching memcpy command : "
+@@ -115,6 +121,7 @@ void accel_sim_framework::parse_commandlist() {
+       m_gpgpu_sim->perf_memcpy_to_gpu(addre, Bcount);
+       commandlist_index++;
+     } else if (commandlist[commandlist_index].m_type == command_type::kernel_launch) {
++      ro_kernel_command_seen=true;
+       // Read trace header info for window_size number of kernels
+       kernel_trace_t *kernel_trace_info =
+           tracer.parse_kernel_info(commandlist[commandlist_index].command_string);
+diff --git a/gpu-simulator/accel-sim.h b/gpu-simulator/accel-sim.h
+index 3e425dba..4a11f610 100644
+--- a/gpu-simulator/accel-sim.h
++++ b/gpu-simulator/accel-sim.h
+@@ -43,6 +43,7 @@ class accel_sim_framework {
+     kernels_info.reserve(window_size);
+   }
+   void simulation_loop();
++  bool ro_kernel_command_seen=false;
+   void parse_commandlist();
+   void cleanup(unsigned finished_kernel);
+   unsigned simulate();
+diff --git a/util/ep_l2/prepare_ro_runtime.py b/util/ep_l2/prepare_ro_runtime.py
+new file mode 100644
+index 00000000..5a1fee24
+--- /dev/null
++++ b/util/ep_l2/prepare_ro_runtime.py
+@@ -0,0 +1,60 @@
++#!/usr/bin/env python3
++"""Bind frozen RO inputs to Core runtime flags; never runs or qualifies a simulator.
++
++Full trace identity must additionally be checked by the Lane 5 runner at launch.
++This tool consumes the existing preflight receipt, preserving its whole-commandlist
++scope and coverage. It never re-parses/re-certifies the five frozen trace inputs.
++"""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++
++
++def digest(p):
++    return hashlib.sha256(p.read_bytes()).hexdigest()
++
++
++def prepare(binding, manifest, ranges, output, detach, bypass):
++    b=json.loads(binding.read_text());m=json.loads(manifest.read_text())
++    if b['schema_version']!='EP_L2_RO_INPUT_BINDING_V1' or b['status']!='ORACLE_INPUT_VERIFIED_NOT_RUNTIME_QUALIFICATION':
++        raise ValueError('not a verified input receipt')
++    for key,value in [('epoch','whole_commandlist'),('scope','TRACE_MODEL_CLOSED_WORLD'),('address_domain','CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS')]:
++        if b[key]!=value or m[key]!=value:raise ValueError('unsupported oracle scope: '+key)
++    if m['unresolved_opcodes'] or m['schema']!='EP_L2_RO_ORACLE_V1':raise ValueError('uncertain certificate')
++    if digest(manifest)!=b['oracle_manifest_sha256']:raise ValueError('manifest identity mismatch')
++    if digest(ranges)!=b['certified_ranges_sha256'] or digest(ranges)!=m['artifacts']['certified_ranges.csv']:
++        raise ValueError('range identity mismatch')
++    for p in [manifest,ranges]:
++        if any(c.isspace() for c in str(p.resolve())):raise ValueError('option parser path contains whitespace')
++    output.mkdir(parents=True,exist_ok=False)
++    config={
++        'gpgpu_ep_l2_ro_tag_detach':int(detach),
++        'gpgpu_ep_l2_ro_line_mshr_bypass':int(bypass),
++        'gpgpu_ep_l2_ro_ranges':str(ranges.resolve()),
++        'gpgpu_ep_l2_ro_ranges_sha256':digest(ranges),
++        'gpgpu_ep_l2_ro_manifest':str(manifest.resolve()),
++        'gpgpu_ep_l2_ro_manifest_sha256':digest(manifest),
++        'gpgpu_ep_l2_ro_scope':'TRACE_MODEL_CLOSED_WORLD'}
++    (output/'ro.config').write_text(''.join(f'-{k} {v}\n' for k,v in config.items()))
++    receipt=dict(schema='EP_L2_RO_RUNTIME_CONFIG_V1',status='PREPARED_NOT_RUNTIME_QUALIFIED',
++        input_binding_sha256=digest(binding),oracle_manifest_sha256=digest(manifest),
++        certified_ranges_sha256=digest(ranges),runtime_ro_config_sha256=digest(output/'ro.config'),
++        trace_content_sha256=b['trace_content_sha256'],commandlist_sha256=m['commandlist_sha256'],
++        oracle_input_coverage=dict(unique_lines=b['eligible_unique_lines'],read_lane_references=b['eligible_read_lane_references']),
++        epoch=b['epoch'],scope=b['scope'],features=dict(ro_tag_detach=bool(detach),ro_line_mshr_bypass=bool(bypass)),
++        launch_gate='Lane5 verifies exact full trace content, source/binary/ordered complete config and independent qualification',
++        runtime_counters='accepted_global_reads, accepted_oracle_candidates, accepted_ro; requests at L2, distinct from input lane references')
++    (output/'RUNTIME_CONFIG_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
++    return receipt
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--binding',type=Path,required=True);p.add_argument('--manifest',type=Path,required=True)
++    p.add_argument('--ranges',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
++    p.add_argument('--detach',type=int,choices=[0,1],required=True);p.add_argument('--bypass',type=int,choices=[0,1],required=True)
++    a=p.parse_args();print(json.dumps(prepare(a.binding,a.manifest,a.ranges,a.output,a.detach,a.bypass)))
++
++
++if __name__=='__main__':main()
+diff --git a/util/ep_l2/tests/test_ro_runtime_config.py b/util/ep_l2/tests/test_ro_runtime_config.py
+new file mode 100644
+index 00000000..fb98baa3
+--- /dev/null
++++ b/util/ep_l2/tests/test_ro_runtime_config.py
+@@ -0,0 +1,48 @@
++import hashlib
++import importlib.util
++import json
++from pathlib import Path
++import tempfile
++import unittest
++
++spec=importlib.util.spec_from_file_location('prepare_ro_runtime',Path(__file__).parents[1]/'prepare_ro_runtime.py')
++module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
++
++
++class ConfigBinding(unittest.TestCase):
++    def setUp(self):
++        self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)
++        self.r=self.root/'ranges.csv';self.r.write_text('first_line,last_line_inclusive\n')
++        self.m=self.root/'manifest.json'
++        self.manifest=dict(schema='EP_L2_RO_ORACLE_V1',epoch='whole_commandlist',scope='TRACE_MODEL_CLOSED_WORLD',
++            address_domain='CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS',unresolved_opcodes={},
++            artifacts={'certified_ranges.csv':module.digest(self.r)},commandlist_sha256='a'*64)
++        self.b=self.root/'binding.json';self.save()
++    def tearDown(self):self.tmp.cleanup()
++    def save(self):
++        self.m.write_text(json.dumps(self.manifest))
++        self.b.write_text(json.dumps(dict(schema_version='EP_L2_RO_INPUT_BINDING_V1',status='ORACLE_INPUT_VERIFIED_NOT_RUNTIME_QUALIFICATION',
++            epoch=self.manifest['epoch'],scope=self.manifest['scope'],address_domain=self.manifest['address_domain'],
++            oracle_manifest_sha256=module.digest(self.m),certified_ranges_sha256=module.digest(self.r),
++            trace_content_sha256='b'*64,eligible_unique_lines=0,eligible_read_lane_references=0)))
++    def call(self,d,b):return module.prepare(self.b,self.m,self.r,self.root/'out',d,b)
++    def test_empty_certificate_and_separate_bits(self):
++        x=self.call(1,0);self.assertEqual(x['features'],dict(ro_tag_detach=True,ro_line_mshr_bypass=False))
++        self.assertEqual(x['oracle_input_coverage']['unique_lines'],0)
++        self.assertIn('-gpgpu_ep_l2_ro_manifest_sha256 ',(self.root/'out'/'ro.config').read_text())
++        with self.assertRaises(FileExistsError):self.call(1,0)
++    def test_corrupt_ranges(self):
++        self.r.write_text('changed')
++        with self.assertRaisesRegex(ValueError,'range identity'):self.call(1,1)
++    def test_manifest_identity(self):
++        self.m.write_text(self.m.read_text()+' ')
++        with self.assertRaisesRegex(ValueError,'manifest identity'):self.call(1,1)
++    def test_reject_kernel_scope(self):
++        self.manifest['epoch']='one_kernel';self.save()
++        with self.assertRaisesRegex(ValueError,'scope'):self.call(1,1)
++    def test_reject_unresolved_agents(self):
++        self.manifest['unresolved_opcodes']={'LD':1};self.save()
++        with self.assertRaisesRegex(ValueError,'uncertain'):self.call(1,1)
++
++
++if __name__=='__main__':unittest.main()
