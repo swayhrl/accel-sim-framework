@@ -25,7 +25,9 @@ claimed. Qualification pack: FT20261016_LANE5_R0_QUALIFICATION_r1.
 
 Five full original development workloads: sad, vectorAdd_4M, cfd_097k,
 convolutionSeparable, FWT_7_21, each B16/U_WB16 on identical frozen R0 binary.
-Actual first sad pair is RUNNING with process identity in RECEIPT/registry.
+sad pair COMPLETE_VALID and frozen: 110593 / 110573 cycles, 1.000180876x.
+Peak staging 1 in both arms, no C16 pressure; no capacity-benefit claim.
+vectorAdd_4M pair RUNNING with process identity in RECEIPT/registry.
 At most two simulations; 8 CPU / 32GiB global reservation, scan exclusive,
 48GiB disk and 64GiB available-memory floors unchanged. External project tasks
 are untouched. No identical finite-WBUF task existed at startup.
@@ -42,5 +44,8 @@ explicit complete cohort. Failures/retardations remain visible.
 R1 diagnostic baseline must match R1 source/binary; R0 may only be a cross-binary
 OFF check. R2/R3 require new production qualification and explicit RO detach/
 bypass schema. Old module PASS is not their qualification. Strong static
-redivision/copy attribution follows a measured local effect; no such result yet.
+redivision/copy attribution follows a measured local effect. sad has only a tiny
+copy/bank effect without C16 pressure; it is not a capacity demonstration.
+Read-only V1-to-V2 RO projections preserve all ten R0 run keys; new explicit RO
+vectors require their own qualification. Tooling/schema tests: 47 PASS.
 The old runtime_ready=false blocker is superseded by this R0 qualification.

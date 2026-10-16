@@ -16,6 +16,7 @@ import time
 
 from registry import Registry, canonical, run_key, write_json, process_identity, local_resources
 from validate import validate_summary, require
+from feature_schema import ro_bits
 
 GATES = {'old_all_off_equivalence', 'finite_wbuf', 'requester_exact_once',
          'sector_reference_data', 'stale_fill', 'resource_closure',
@@ -85,10 +86,10 @@ def validate_config_closure(spec):
 def inspect(spec):
     identity = spec['identity']
     key = run_key(identity)
-    require(set(identity['feature_vector']) == FEATURES, 'feature vector must include every V1 feature')
     require(set(identity['ideal_vector']) == IDEALS, 'ideal vector must include every V1 ideal mode')
     feature = identity['feature_vector']
-    for flag in ('finite_wbuf', 'unified_wb', 'tvd', 'ro', 'adaptive_policy'):
+    detach, bypass = ro_bits(feature)
+    for flag in ('finite_wbuf', 'unified_wb', 'tvd', 'adaptive_policy'):
         require(type(feature[flag]) is bool, 'feature flag must be boolean')
     for field in ('wbuf_entries', 'payload_capacity_per_slice', 'bank_count', 'ops_per_bank_cycle'):
         require(type(feature[field]) is int, 'resource capacity/service field must be an integer')
@@ -97,7 +98,7 @@ def inspect(spec):
     require(feature['payload_capacity_per_slice'] == 1152 + feature['wbuf_entries'], 'unmatched data budget')
     require(feature['bank_count'] == 4 and feature['ops_per_bank_cycle'] == 1, 'bank service mismatch')
     require(not feature['adaptive_policy'], 'adaptive policy is not a qualified V1 mode')
-    require(feature['unified_wb'] or not (feature['tvd'] or feature['ro']), 'TVD/RO require integrated unified substrate')
+    require(feature['unified_wb'] or not (feature['tvd'] or detach or bypass), 'TVD/RO require integrated unified substrate')
     require(not any(identity['ideal_vector'].values()), 'ideal runs use Lane 4 diagnostic runner and separate tables')
     require(identity['epoch_range'].get('scope') == 'full_application', 'diagnostic fragments cannot enter implementation results')
     require(digest(spec['binary']) == identity['binary_sha256'], 'binary content mismatch')

@@ -3,6 +3,8 @@ import unittest
 from feature_schema import legacy_view, ro_bits, V2
 from registry import run_key
 from test_lane5 import identity
+import test_lane5 as runner_tests
+from run import inspect
 
 
 class FeatureSchemaTests(unittest.TestCase):
@@ -48,6 +50,28 @@ class FeatureSchemaTests(unittest.TestCase):
         vector.update(ro_tag_detach=1, ro_line_mshr_bypass=False)
         with self.assertRaises(ValueError):
             ro_bits(vector)
+
+
+class NewVectorQualificationTests(unittest.TestCase):
+    def setUp(self):
+        self.fixture = runner_tests.RunnerInputTests()
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.tearDown)
+
+    def test_v2_vector_needs_its_own_qualification(self):
+        vector = self.fixture.spec['identity']['feature_vector']
+        del vector['ro']
+        vector.update(ro_tag_detach=False, ro_line_mshr_bypass=False)
+        with self.assertRaisesRegex(ValueError, 'not independently qualified'):
+            inspect(self.fixture.spec)
+
+    def test_v2_explicit_qualified_off_projection_can_be_inspected(self):
+        vector = self.fixture.spec['identity']['feature_vector']
+        del vector['ro']
+        vector.update(ro_tag_detach=False, ro_line_mshr_bypass=False)
+        self.fixture.release['qualified_feature_vectors'] = [vector]
+        self.fixture.write_release()
+        self.assertEqual(inspect(self.fixture.spec)['run_key'], run_key(self.fixture.spec['identity']))
 
 
 if __name__ == '__main__':
