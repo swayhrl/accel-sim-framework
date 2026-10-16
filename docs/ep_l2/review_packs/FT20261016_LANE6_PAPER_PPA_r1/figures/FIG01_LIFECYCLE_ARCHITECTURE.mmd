@@ -1,0 +1,18 @@
+flowchart LR
+  subgraph S["Static B16 — 1168 slots / slice"]
+    ST["Resident tags: 1024"] --> SR["Resident data: 1024"]
+    SR -->|"Bank read + Bank write: copy"| SW["Finite WBUF: 16"]
+    SB["Bypass data: 128"]
+    SW -->|"read + actual data handoff"| SL["Lower data carrier: separately costed"]
+    SA["WAD: ordering until set_done"]
+  end
+  subgraph U["Unified U_WB16 — same 1168 slots, 4 × 292 Banks"]
+    UT["Resident tags: 1024 + handles"] --> UP["One payload owner per slot"]
+    UP -->|"in-place ownership transition"| UW["WB_STAGED: retained until lower accepts data"]
+    UW -->|"Bank read + actual data handoff"| UL["Lower data carrier: separately costed"]
+    UW -.->|"optional TVD: additional retention"| TV["TVD: sector-valid read / promote / WB wait"]
+    RO["Optional full-epoch oracle RO"] -.-> RC["Finite completion + descriptors + landing"]
+    RC -.-> UP
+    UA["WAD: ordering until set_done"]
+  end
+  C["Design-contract diagram; functional integration/results pending"]
