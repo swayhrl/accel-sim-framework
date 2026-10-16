@@ -91,7 +91,8 @@ def prepare(args, client, api, tools):
     trace = dict(history.ROSTER)[args.workload]
     core = Path(args.core).resolve()
     build_manifest = json.loads(Path(args.build_manifest).read_text())
-    check(build_manifest['core_source_commit'] == head(core), 'Core differs from built source')
+    subprocess.run(['git','-C',str(core),'diff','--exit-code',
+                    build_manifest['core_source_commit'],'HEAD','--','src','libcuda','libopencl'],check=True)
     check(build_manifest['binary_sha256'] == tools.digest(args.binary), 'binary/build manifest mismatch')
     # Evidence/runner commits may follow the producing commit; simulator source
     # must still be identical. Keep runner and compiled source identities separate.
