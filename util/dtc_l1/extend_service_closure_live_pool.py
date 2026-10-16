@@ -35,7 +35,7 @@ def main():
     plan = list(csv.DictReader(Path(a.plan).open(), delimiter='\t'))
     by_label = {r['label']: r for r in plan}
     chosen = [by_label[label] for label in a.labels]
-    assert all(r['workload'] != 'Hotspot1' and r['phase'] == 'COHORT' for r in chosen)
+    assert all(r['workload'] != 'Hotspot1' and r['phase'] in {'COHORT', 'CONTROL'} for r in chosen)
     for r in chosen:
         assert sha(Path(r['spec_path'])) == r['spec_sha256']
     peak = {}
@@ -58,7 +58,12 @@ def main():
         assert all(r['status'] == 'PASS_CHECKED_SCOPE' for r in terminals), 'Strict terminal failure: preserve admission hold.'
         qualified = {by_label[r['label']]['arm'] for r in terminals
                      if by_label[r['label']]['phase'] == 'PILOT' and by_label[r['label']]['workload'] != 'Hotspot1'}
-        assert all(r['arm'] in qualified for r in chosen)
+        for row in chosen:
+            if row['phase'] == 'CONTROL':
+                assert row['arm'] in {'IO128', 'WAIT128'}
+                assert {'IO', 'OO'}.issubset(qualified)
+            else:
+                assert row['arm'] in qualified
         held = set(json.loads((root/'ROW_ADMISSION_HOLDS.json').read_text())['held_labels'])
         assert not held.intersection(a.labels)
         live = [s['spec']['label'] for p, s in current if not (p.parent/'RUN_TERMINAL.json').exists()]
