@@ -149,9 +149,19 @@ def prepare(args, client, api, tools):
 
 
 def execute(spec,audit,client,api,tools):
+    check(spec['campaign_class']=='HISTORICAL_DIAGNOSTIC' and
+          spec['identity']['feature_vector']['finite_wbuf'] is False,
+          'historical adapter cannot fill a B16 cell')
+    check(tools.digest(spec['binary'])==spec['identity']['binary_sha256'],'prepared binary changed')
+    check(tools.asset_manifest(spec['configs'],ordered=True)==audit['configs'],'prepared configs changed')
+    check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'prepared traces changed')
     key=api.run_key(spec['identity']);directory=RESULTS/'historical_diagnostic'/key
     registry=api.Registry(client['canonical_root'])
-    fresh,row=registry.claim(spec['identity'],'lane4',directory)
+    try:
+        fresh,row=registry.claim(spec['identity'],'lane4',directory)
+    except ValueError as error:
+        return {'status':'NOT_RUN_QUOTA_OR_ADMISSION','detail':str(error),
+                'run_key':key,'identity':spec['identity'],'reserved':False}
     if not fresh: return {'status':'DUPLICATE_NOT_LAUNCHED','existing':row}
     process=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();result={'identity':spec['identity'],'run_key':key,'campaign_class':'HISTORICAL_DIAGNOSTIC','mode':spec['mode']}
     try:
@@ -201,13 +211,19 @@ def execute(spec,audit,client,api,tools):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--core',required=True);p.add_argument('--binary',required=True)
-    p.add_argument('--build-manifest',required=True)
-    p.add_argument('--workload',choices=['convolutionSeparable','FWT_7_21','vectorAdd_4M','sad'],required=True)
-    p.add_argument('--mode',choices=MODES,required=True);p.add_argument('--timeout',type=int,default=1800)
+    p.add_argument('--core');p.add_argument('--binary')
+    p.add_argument('--build-manifest')
+    p.add_argument('--workload',choices=['convolutionSeparable','FWT_7_21','vectorAdd_4M','sad'])
+    p.add_argument('--mode',choices=MODES);p.add_argument('--timeout',type=int,default=1800)
     p.add_argument('--prepare-only',action='store_true')
-    a=p.parse_args();client,api,tools=load_tools();spec,audit=prepare(a,client,api,tools)
-    if a.prepare_only:print(json.dumps({'run_key':api.run_key(spec['identity']),'spec':spec},indent=2));return
+    p.add_argument('--execute-prepared',type=Path)
+    a=p.parse_args();client,api,tools=load_tools()
+    if a.execute_prepared:
+        frozen=json.loads(a.execute_prepared.read_text());spec,audit=frozen['spec'],frozen['audit']
+    else:
+        check(all([a.core,a.binary,a.build_manifest,a.workload,a.mode]),'prepare needs core/binary/build-manifest/workload/mode')
+        spec,audit=prepare(a,client,api,tools)
+    if a.prepare_only:print(json.dumps({'run_key':api.run_key(spec['identity']),'spec':spec,'audit':audit},indent=2));return
     result=execute(spec,audit,client,api,tools);print(json.dumps(result,indent=2))
     if result['status'] not in {'COMPLETE_VALID','DUPLICATE_NOT_LAUNCHED'}:raise SystemExit(1)
 
