@@ -1,0 +1,108 @@
+[
+  {
+    "id": "H73-Q1",
+    "question": "强attention算法/流水重新调优后，在固定硅面积/功耗预算中把部分矩阵资源让给exp或SMEM/TMEM服务，完整通用模型Prefill是否净受益？",
+    "status": "SOURCE_QUESTION_READY_FOR_CROSS_REVIEW",
+    "recommendation": "PRIMARY_QUESTION_ONLY_NOT_NATIVE_ADMISSION",
+    "mainstream_relevance": "Qwen3-8B纯文本完整Prefill的attention、投影与FFN均保留；独立Qwen3.5-4B含GDN可反向验证机会成本。",
+    "model_identity": {
+      "primary": "Qwen/Qwen3-8B@b968826d9c46dd6066d109eabc6255188de91218",
+      "shape": "36 layers,Q32,KV8,head_dim128,BF16,causal full attention",
+      "holdout": "Qwen/Qwen3.5-4B@851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a;text only;full model incl GDN",
+      "assets": "NOT_DOWNLOADED;weights/tokenizer/numeric eligibility pending"
+    },
+    "natural_task": "合法自然文档问答Prefill；具体corpus/revision/license/token IDs/quality gate尚未冻结，未来CPU资格门补齐；不依赖W-A73、不创建合成生产流量。",
+    "new_variable": "资源预算边际价格×每硬件点合法kernel重调×完整Prefill机会成本；不是新softmax流水、服务队列或仅换模型/芯片名字。",
+    "scope": {
+      "phase": "完整Prefill input-ready→last-prefill-logits-ready；request TTFT另报",
+      "architecture": "SM100 B200；不把SM89结果视为TMEM/tcgen05验证",
+      "precision": "BF16 weights/activations;保留同批准数学/数值合同；无额外降精度、删mask或删FFN",
+      "not_claimed": "未证明收益、硬件瓶颈、新机制或PPA可行性"
+    },
+    "strong_baseline": {
+      "source_commit": "e9d8944c855489e03c66262d07ba4c81d9d8dd31",
+      "files": [
+        "flash_attn/cute/flash_fwd_sm100.py",
+        "flash_attn/cute/softmax.py"
+      ],
+      "implementation": "FA4及兼容cuDNN中探索集选出的最强合法完整路径；保留既有exp emulation/rescale/TMA/TMEM/2CTA/GQA/causal支持，逐资源点重新调优",
+      "pending": "实际build/ABI/dispatch/cuDNN版本、质量及Profiler授权未建立"
+    },
+    "supporting_ids": [
+      "G01",
+      "G02",
+      "G03",
+      "G04",
+      "G06",
+      "S01",
+      "D01"
+    ],
+    "counterevidence": [
+      "G06已直接处理不对称扩展，新的cuDNN已吸收部分技术；不能用cuDNN9.13排序代替当前最强路径。",
+      "G03给定机器约束下已有最优pipeline/warp策略；重做同一策略属软件重复。",
+      "S01按SM103/shape/causal等选择native exp或emulation；软件已经适应资源变化。",
+      "attention kernel收益可能被占比小、TC让渡造成的FFN/投影/GDN退化或准备成本抵消。"
+    ],
+    "opposite_predictions": [
+      {
+        "name": "HARDWARE_RESIDUAL_HYPOTHESIS",
+        "prediction": "最佳软件后exp/片上服务仍暴露；匹配资源且计入TC损失后，完整Prefill出现可重复正净响应。",
+        "falsify": "强软件重调后不暴露、其他层退化抵消或关键路径不随目标服务变化。"
+      },
+      {
+        "name": "SOFTWARE_OR_OPPORTUNITY_COST_HYPOTHESIS",
+        "prediction": "已有补偿使资源不再暴露；更换软件即可解决，或TC让渡使全Prefill不变/变慢。",
+        "falsify": "合法强软件均保留目标服务敏感性，且同预算可行点在独立对象上保持可解释净改善。"
+      }
+    ],
+    "old_evidence_delta": "A70 M排除了泛化P/D动态SM，N排除了状态管理/写回无软件，O排除了专家排序/融合改名，P排除了视觉缓存/Graph/分离能力；均非本资源配比native负例。C16 FFN/旧模拟器结论不外推SM100。",
+    "cpu_probe": {
+      "execution": "EXECUTED_PURE_RATIONAL_ARITHMETIC_NOT_SIMULATION",
+      "tile": [
+        128,
+        128,
+        128
+      ],
+      "service_lower_bounds": [
+        "MMA1024",
+        "EXP1024",
+        "SMEM768"
+      ],
+      "result": "单独2xTC或2xEXP不改变三项max；同时改变下界比4/3，不是speedup预测。",
+      "opportunity_cost": "T=f/s+(1-f)r；说明例s=6/5,r=21/20,break_even_f=3/13；实际f/s/r UNKNOWN。"
+    },
+    "baseline_probe": "未来另获批后固定真实请求、完整模型/权重/输出目标、强backend，探索/holdout各4请求；自然长度4K/8K附近，B1主最多B2；正式计未插桩完整Prefill和request wall。",
+    "diagnostic_probe": "同一次真实运行保存的Q/K/V仅用于同语义kernel成本分解；保持强软件数值门，分开准备/attention/其余层；资源单元计数若需Profiler须另批。时钟变化/换kernel不是SFU硬件独立因果。",
+    "numeric_quality_gate": "模型/权重/输入/掩码/position及reference重复性、attention/logit误差与任务质量门在任何GPU前预冻结；本轮未设或放宽容差，不要求bitwise等同但禁止结果出来后改门。",
+    "simulation_counterfactual_gate": "先native及目标ISA/TMEM/TMA/同步校准；模型误差须小于拟声称变化并复现排序/拐点。仅有旧Accel-Sim模型不合格。固定容量/HBM/频率/工作量，独立TC/exp/FMA/片上服务理想扫描，再按真实面积/功耗联合约束找可行点；每点重新调软件。",
+    "independent_validation": "Qwen3.5-4B完整文本路径、不同自然文档与未选参请求；d256 backend支持独立核验。预测可能因full-attention占比下降而转负，负例必须保留。",
+    "ppa_gate": "真实单元/服务端口、布线、容量、时钟及同步成本；不能把所有资源免费翻倍或峰值线性面积当可实现机制。",
+    "required_resources": {
+      "authorization": "PROPOSAL_NOT_AUTHORIZED",
+      "future_native": "单B200排他≤20min;CPU≤2;hostRAM≤32GiB;VRAM预算≤40GiB需实测资格;disk≤24GiB;weights/input≤20GiB另批",
+      "why_not4080": "SM100机制资格而非品牌/容量替代；SM89不含等价TMEM/tcgen05",
+      "simulator_ppa": "待native/模型通过后另立预算，本轮不启动"
+    },
+    "stop_if": [
+      "合法自然输入、模型/ABI或数值/质量门失败",
+      "最强兼容软件重调已消除差异，归软件机会或零",
+      "attention局部收益被完整Prefill损失/准备抵消，或差在预冻结噪声内",
+      "不能独立归因目标资源，保持UNKNOWN，不凭未发表wall立硬件题",
+      "SM100模型/ISA或时序校准失败，MODEL_MISMATCH",
+      "可行PPA点不优于基线或独立对象失败",
+      "任何资源/科学范围超出未来获批合同"
+    ],
+    "unknowns": [
+      "真实corpus/token与质量合同",
+      "4080/B200现有资产与ABI未访问",
+      "全Prefill中attention关键路径份额",
+      "强kernel后真实目标资源暴露",
+      "设备标识在G06正文B200/AppA1B100冲突",
+      "面积/功耗边际成本",
+      "simulator目标ISA支持与误差"
+    ],
+    "native_executed": false,
+    "simulator_executed": false,
+    "automatic_followup": false
+  }
+]
