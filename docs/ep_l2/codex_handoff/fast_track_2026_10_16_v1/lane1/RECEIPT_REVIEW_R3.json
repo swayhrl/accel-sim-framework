@@ -1,37 +1,65 @@
 {
-  "schema_version": "EP_L2_LANE1_REVIEW_R3_RECEIPT_V1",
-  "status": "OLD_R0_R1_APPLICATION_ACCEPTANCE_SUSPENDED_R0_1_SOURCE_INTEGRATION_RESOURCE_HOLD",
-  "review_authority": "a41bfb55934303a4d4a342762f74a16d137d0316",
-  "lane5_authoritative_publication": "b134f76d8f4cd759c0852b68edf922ecbd445ea9",
-  "application_acceptance_sha256": "5325aad502b09943d2b2e673a3af757a9de33549491d13eea80db43a9480fba0",
-  "supersedes_current_acceptance_statement_in": "eb5a42d89e49e19f8cca5a0ebcd9c55d740f42c6",
-  "frozen_versions": {
-    "R0": {
-      "core": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
-      "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698"
-    },
-    "R1": {
-      "core": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
-      "binary_sha256": "2d2fb08217723bf920a486dcdce3412ca03c4a14028c9d67b401fd9b8a6d4664"
-    }
+  "schema_version": "EP_L2_FT_RECEIPT_V1",
+  "lane_id": 1,
+  "task_id": "FT20261016_LANE1_REVIEW_R3",
+  "status": "SOURCE_CANDIDATE_NOT_COMPILED_RESOURCE_HOLD",
+  "review_coordination_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
+  "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
+  "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
+  "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
+  "framework_source_commit": null,
+  "core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "core_publication_commit": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+  "binary_sha256": null,
+  "runtime_ready": false,
+  "independent_qualification": false,
+  "config_sha256": {
+    "B16_BANKED": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+    "U_WB16": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+    "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
+    "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
   },
-  "old_six_formal_runs": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK_ALL_RAW_RETAINED",
-  "planned_official_release": "R0.1",
-  "build_owner": "lane1",
-  "independent_validation_owner": "lane5",
-  "candidate_clock": "1565f1f04978f12e51a29fcbf9dab9a3c61b5c4e",
-  "candidate_clock_warmup": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
-  "warmup_compile_status": "NOT_COMPILED",
-  "build_growth_reserve_bytes": 2147483648,
-  "workspace_floor_bytes": 51539607552,
-  "active_lane1_runs": [],
-  "active_lane1_builds": [],
-  "resource_state": "HOLD_UNTIL_SHARED_ADMISSION_AND_GROWTH_HEADROOM",
-  "result_root": "/workspace/results/ep_l2_ft20261016/lane1/review_r3",
-  "required_new_gates": [
-    "physical_bank_clock",
-    "memcpy_payload_identity"
+  "trace_identity": "NO_NEW_APPLICATION_RUN; original trace files untouched; future per-run complete content binding required",
+  "current_application_scientific_acceptance": "OLD_R0_R1_SUSPENDED_NO_NEW_ACCEPTANCE",
+  "supersession_source": "b134f76d8f4cd759c0852b68edf922ecbd445ea9 APPLICATION_ACCEPTANCE.json and a41bfb55 review_r3",
+  "prior_receipt_git": "eb5a42d89e49e19f8cca5a0ebcd9c55d740f42c6",
+  "prior_receipt_archive": "docs/ep_l2/review_packs/FT20261016_LANE1_R0_1_SOURCE_CANDIDATE_r1/PRIOR_LANE1_RECEIPT_eb5a42d8.json",
+  "source_review": {
+    "patch_apply_reverse_exact_source": "PASS",
+    "native_tag_array_implementation_byte_identical_to_R0": "PASS",
+    "non_FT_memcpy_loop_byte_identical_to_R0": "PASS",
+    "old_memcpy_loop_sha256": "62142f4ba9d098adf4e10d0e829d6d61ab33596785e6b8b4984d5167b90c4c3d",
+    "physical_clock_source": "l2_cache::ft_physical_cycle = gpu_sim_cycle + gpu_tot_sim_cycle",
+    "bank_request_time": "physical_cycle, native Tag still receives time with original memcpy ordering offset",
+    "warmup_refusal_scope": "Hardware must drain; selected owner must be clean, one valid sector; dirty same-line/victim overwrite and active/pinned/pending/WAD/response state refuse before mutation.",
+    "additional_warmup_bugfix": "FT memcpy no longer truncates 64-bit addresses and includes both nonaligned endpoint sectors. Old non-FT loop unchanged.",
+    "production_tests": "NOT_COMPILED_NOT_RUN",
+    "runtime_qualification": "NOT_GRANTED"
+  },
+  "cache_cleanup_summary": {
+    "scope": "OWN_INACTIVE_REBUILDABLE_CMAKE_OBJECTS_AND_STATIC_ARCHIVE_CACHES_ONLY",
+    "before": {
+      "available_memory_bytes": 160830984192,
+      "disk_free_bytes": 44674125824
+    },
+    "after": {
+      "available_memory_bytes": 161933623296,
+      "disk_free_bytes": 45765943296
+    },
+    "observed_workspace_free_delta_bytes": 1091817472,
+    "removed_files": 308
+  },
+  "active_runs": [],
+  "active_builds": [],
+  "validation": {
+    "physical_bank_clock": "NOT_RUN_NEW_CANDIDATE",
+    "memcpy_payload_identity": "NOT_COMPILED_NOT_RUN",
+    "application": "NOT_RUN_SCIENTIFIC_HOLD"
+  },
+  "artifacts": [
+    "docs/ep_l2/review_packs/FT20261016_LANE1_R0_1_SOURCE_CANDIDATE_r1",
+    "R0_1_SOURCE_CANDIDATE.json",
+    "RECEIPT_REVIEW_R3.json"
   ],
-  "scientific_acceptance": "NO_REPAIRED_VERSION_ACCEPTED_YET",
-  "recorded_at": "2026-10-16T11:58:35.398552+00:00"
+  "recorded_at": "2026-10-16T12:11:43.778540+00:00"
 }

@@ -1,0 +1,12 @@
+{
+  "patch_apply_reverse_exact_source": "PASS",
+  "native_tag_array_implementation_byte_identical_to_R0": "PASS",
+  "non_FT_memcpy_loop_byte_identical_to_R0": "PASS",
+  "old_memcpy_loop_sha256": "62142f4ba9d098adf4e10d0e829d6d61ab33596785e6b8b4984d5167b90c4c3d",
+  "physical_clock_source": "l2_cache::ft_physical_cycle = gpu_sim_cycle + gpu_tot_sim_cycle",
+  "bank_request_time": "physical_cycle, native Tag still receives time with original memcpy ordering offset",
+  "warmup_refusal_scope": "Hardware must drain; selected owner must be clean, one valid sector; dirty same-line/victim overwrite and active/pinned/pending/WAD/response state refuse before mutation.",
+  "additional_warmup_bugfix": "FT memcpy no longer truncates 64-bit addresses and includes both nonaligned endpoint sectors. Old non-FT loop unchanged.",
+  "production_tests": "NOT_COMPILED_NOT_RUN",
+  "runtime_qualification": "NOT_GRANTED"
+}
