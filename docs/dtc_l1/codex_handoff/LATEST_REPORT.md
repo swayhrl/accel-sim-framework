@@ -1,3 +1,21 @@
+# Current174 conditional Btree first terminal —2026-10-16T16:16Z
+
+**New Btree TRAD96/C+ strictPASS, five sibling arms still running.**
+08909351-bcee-44b5-abaa-6eb01f3cb108 naturally exited0:188570cycles,
+444467849 active-thread instructions, two complete orderedkernels,9:58.75wall,
+618496KiB peakRSS. Immediate frozen strict receipt matches independent
+recollection: bundle/member/list/config/runtime/ROI, per-kernel instructions,
+96KiB/PIB256/MSHR512/cap32768, PIB andlower credit balances/drain pass.
+Conventional finite metrics remainUNAVAILABLE. No new-input performance ratio,
+matched128 metric or cross-input ordering claim is emitted before all6PASS.
+See review_pack/btree_derived_checkpoint_20261016T1616Z.
+Original44 remain38PASS/3live/3oldHotspotHOLD. BICGIO128/GESUMMVIO/OO and
+five newBtree arms continue:8actualsimulators. Current authority/locks/HOLDs,
+scientific pending/2D STOP/LUD no launch and modern/native/area/no-GM boundaries
+remain. Original GESUMMV TRAD96 checkpoint uses correctedV2 file manifest;
+its original self-reference packaging failure is preserved with all numeric/
+strict results unchanged. Main Goal ACTIVE; historical checkpoints follow.
+
 # Current174 GESUMMV TRAD96 terminal —2026-10-16T16:13Z
 
 Review manifest correction: checkpoint_20261016T1612Z uses
