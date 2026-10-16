@@ -16,6 +16,7 @@ def main():
     p.add_argument('--build-manifest',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--include-b16',action='store_true')
+    p.add_argument('--include-partition',action='store_true')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads(a.build_manifest.read_text())
     subprocess.run(['git','-C',str(a.core),'diff','--exit-code',manifest['core_source_commit'],
@@ -67,12 +68,24 @@ def main():
                 result=subprocess.run(args,cwd=a.out,stdout=log,stderr=subprocess.STDOUT,timeout=180)
             rows.append({'test':'test_ideal_read_hit_b16','run_command':args,'returncode':result.returncode})
             print('test_ideal_read_hit_b16',result.returncode,flush=True)
+        if a.include_partition and all(r.get('returncode')==0 for r in rows):
+            source=a.core/'tests/ep_l2/test_ft_partition.cc';exe=a.out/'test_ft_partition'
+            command=['g++','-std=c++17','-O2','-I/usr/local/cuda-11.8/include','-I'+str(a.core/'src'),'-I'+str(a.core),str(source),'-Wl,--start-group',*[str(a.build/x) for x in libs],'-Wl,--end-group','-lz','-lpthread','-ldl','-lssl','-lcrypto','-lGL','-o',str(exe)]
+            with (a.out/'test_ft_partition_compile.log').open('w') as log:
+                subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,check=True)
+            for mode,c in [(1,8),(1,16),(2,8),(2,16)]:
+                args=[str(exe),str(a.core/'configs/tested-cfgs/SM7_QV100/gpgpusim.config'),str(a.core/'tests/ep_l2/ft_wbuf.config'),str(mode),str(c)]
+                name=f'test_ft_partition_m{mode}_c{c}'
+                with (a.out/(name+'.log')).open('w') as log:
+                    result=subprocess.run(args,cwd=a.out,stdout=log,stderr=subprocess.STDOUT,timeout=180)
+                rows.append({'test':name,'compile_command':command,'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'run_command':args,'returncode':result.returncode})
+                print(name,result.returncode,flush=True)
     finally:
         reg.release_build(lease,'lane4')
         output={'core_test_commit':subprocess.check_output(['git','-C',str(a.core),'rev-parse','HEAD'],text=True).strip(),
                 'compiled_production_manifest':manifest,'lane5_client':client,'tests':rows}
         (a.out/'TEST_MANIFEST.json').write_text(json.dumps(output,indent=2)+'\n')
-    if len(rows)!=len(cases)+int(a.include_b16) or any(r.get('returncode')!=0 for r in rows):raise SystemExit(1)
+    if len(rows)!=len(cases)+int(a.include_b16)+4*int(a.include_partition) or any(r.get('returncode')!=0 for r in rows):raise SystemExit(1)
 
 
 if __name__=='__main__':main()

@@ -52,23 +52,26 @@ def load_tools():
 
 def parse_terminal(raw, vector, require_ft=False):
     normal = False; cycles = instructions = None
-    b0, invariants, ideals, ft = {}, {}, {}, {}
-    for line in Path(raw).open(errors='replace'):
-        normal |= 'GPGPU-Sim: *** exit detected ***' in line
-        m = re.fullmatch(r'gpu_tot_sim_(cycle|insn)\s*=\s*(\d+)\s*',line)
-        if m:
-            if m[1] == 'cycle': cycles = int(m[2])
-            else: instructions = int(m[2])
-        if not line.startswith(('EPL2B0V1|','EPL2IDEALV1|','EPL2FTV1|SUMMARY|')): continue
-        record = dict(x.split('=',1) for x in line.strip().split('|') if '=' in x)
-        if 'slice' not in record: continue
-        slice_id = int(record['slice'])
-        if line.startswith('EPL2FTV1|SUMMARY|'):
-            ft[slice_id]=record
-        elif line.startswith('EPL2B0V1|INVARIANT|') and record.get('kernel_uid') == str(2**64-1):
-            invariants[slice_id] = record
-        elif record.get('scope') == 'application':
-            (ideals if line.startswith('EPL2IDEALV1|') else b0)[slice_id] = record
+    b0, invariants, ideals, ft, ft_terminal = {}, {}, {}, {}, {}
+    with Path(raw).open(errors='replace') as stream:
+        for line in stream:
+            normal |= 'GPGPU-Sim: *** exit detected ***' in line
+            m = re.fullmatch(r'gpu_tot_sim_(cycle|insn)\s*=\s*(\d+)\s*',line)
+            if m:
+                if m[1] == 'cycle': cycles = int(m[2])
+                else: instructions = int(m[2])
+            if not line.startswith(('EPL2B0V1|','EPL2IDEALV1|','EPL2FTV1|')): continue
+            record = dict(x.split('=',1) for x in line.strip().split('|') if '=' in x)
+            if 'slice' not in record: continue
+            slice_id = int(record['slice'])
+            if line.startswith('EPL2FTV1|SUMMARY|'):
+                ft[slice_id]=record
+            elif line.startswith('EPL2FTV1|TERMINAL|'):
+                ft_terminal[slice_id]=record
+            elif line.startswith('EPL2B0V1|INVARIANT|') and record.get('kernel_uid') == str(2**64-1):
+                invariants[slice_id] = record
+            elif record.get('scope') == 'application':
+                (ideals if line.startswith('EPL2IDEALV1|') else b0)[slice_id] = record
     check(normal and cycles is not None and instructions is not None,'no native normal terminal')
     check(set(b0) == set(invariants) == set(range(64)),'incomplete 64-slice terminal')
     for row in invariants.values():
@@ -92,7 +95,11 @@ def parse_terminal(raw, vector, require_ft=False):
         if vector['read_hit']: check(sum(int(r['reads_served']) for r in ideals.values())>0,'read diagnostic never served')
     else:check(not ideals,'all-OFF result emitted an unexpected ideal stream')
     if require_ft:
-        check(set(ft)==set(range(64)), 'missing real finite-WBUF terminal stream')
+        check(set(ft)==set(ft_terminal)==set(range(64)), 'missing real finite-WBUF summary/requester terminal stream')
+        for row in ft_terminal.values():
+            check(row['requester_exact_once']=='1' and row['hardware_drained']=='1', 'invalid actual requester/response closure')
+            check(int(row['unique_requesters'])==int(row['responses']), 'requester/response count mismatch')
+            check(all(int(row[k])==0 for k in ['requester_live','pending_lower_reads','pending_returns','pending_responses']), 'live finite-WBUF terminal queue')
         for row in ft.values():
             check(row['mode']=='1' and row['wbuf']=='16', 'not the static primary WBUF16 model')
             check(all(int(row[k])==0 for k in ['wb_live','wb_slots','reserved','read_refs']), 'FT lifecycle not drained')

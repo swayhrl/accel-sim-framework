@@ -35,18 +35,21 @@ def main():
     a.add_argument('--pack',required=True)
     a.add_argument('--core',type=Path,required=True)
     a.add_argument('--parser-log',type=Path,required=True)
+    a.add_argument('--candidate-revision',default='r1')
     args=a.parse_args();out=ROOT/'docs/ep_l2/review_packs'/args.pack
     out.mkdir(parents=True,exist_ok=False)
     producer=git('rev-parse','HEAD')
-    build=json.loads((args.results/'BUILD_MANIFEST_b16_r1.json').read_text())
-    tests=json.loads((args.results/'tests_b16_r1/TEST_MANIFEST.json').read_text())
-    assert len(tests['tests'])==8 and all(r['returncode']==0 for r in tests['tests'])
-    legality=json.loads((args.results/'mode_legality_r1/RESULTS.json').read_text())
+    assert not git('status','--porcelain','--untracked-files=no','--','util/ep_l2'), 'Freeze tooling first'
+    rev=args.candidate_revision
+    build=json.loads((args.results/f'BUILD_MANIFEST_b16_{rev}.json').read_text())
+    tests=json.loads((args.results/f'tests_b16_{rev}/TEST_MANIFEST.json').read_text())
+    assert len(tests['tests'])>=8 and all(r['returncode']==0 for r in tests['tests'])
+    legality=json.loads((args.results/f'mode_legality_{rev}/RESULTS.json').read_text())
     assert len(legality['cases'])==6 and all(r['status']=='PASS_EXPECTED_REJECTION' for r in legality['cases'])
     for name in ['REUSE_AUDIT.csv','HISTORY_SEARCH.json']:shutil.copyfile(args.audit/name,out/name)
-    for source,name in [(args.results/'BUILD_MANIFEST_b16_r1.json','BUILD_MANIFEST.json'),
-                        (args.results/'tests_b16_r1/TEST_MANIFEST.json','PRODUCTION_TEST_MANIFEST.json'),
-                        (args.results/'mode_legality_r1/RESULTS.json','MODE_LEGALITY_RESULTS.json'),
+    for source,name in [(args.results/f'BUILD_MANIFEST_b16_{rev}.json','BUILD_MANIFEST.json'),
+                        (args.results/f'tests_b16_{rev}/TEST_MANIFEST.json','PRODUCTION_TEST_MANIFEST.json'),
+                        (args.results/f'mode_legality_{rev}/RESULTS.json','MODE_LEGALITY_RESULTS.json'),
                         (args.results/'DUPLICATE_CHECK_r1.json','DUPLICATE_CHECK.json')]:
         shutil.copyfile(source,out/name)
     dependencies=[]
@@ -59,7 +62,20 @@ def main():
                              'receipt_sha256':sha(out/f'LANE{lane}_RECEIPT_SNAPSHOT.json')})
     baseline=git('show',dependencies[0]['publication_commit']+':docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BASELINE_CONTRACT_V1.json')
     write(out/'LANE1_BASELINE_SNAPSHOT.json',json.loads(baseline))
-    assert not json.loads(baseline)['runtime_ready'], 'Dependency advanced: consume qualified source instead of freezing a stale pending report'
+    baseline_contract=json.loads(baseline)
+    assert not baseline_contract.get('independent_qualification'), 'Dependency advanced: consume qualified source instead of freezing a stale pending report'
+    assert build['lane1_parent_commit']==baseline_contract['core_source_commit'], 'Update diagnostic integration to the current producer first'
+    parent=build['lane1_parent_commit']
+    cpp_count=len(tests['tests'])
+    import re
+    match=re.search(r'Ran (\d+) tests',args.parser_log.read_text())
+    assert match and args.parser_log.read_text().rstrip().endswith('OK')
+    parser_count=int(match[1])
+    normal_check=args.results/'LANE1_NORMAL_BINARY_CHECK_r1.json'
+    check=json.loads(normal_check.read_text())
+    assert check['binary_sha256']==baseline_contract['binary_sha256']
+    assert not any(check['diagnostic_registrations'].values())
+    shutil.copyfile(normal_check,out/'LANE1_NORMAL_BINARY_CHECK.json')
     vectors={'B16_BANKED':{'wb':False,'meta':False,'read_hit':False},
              'I_WB':{'wb':True,'meta':False,'read_hit':False},
              'I_META':{'wb':False,'meta':True,'read_hit':False},
@@ -81,12 +97,15 @@ def main():
                     'retained':['normal ROP hit delay','bank arbitration','NoC/real response FIFO','older producer/WAD/MSHR dependencies','ordinary writes and atomics']},
         'I_BANK':'NOT_SELECTED: conditional follow-up only after the first diagnostics identify unexplained real bank contention',
         'formal_run_gate':'Lane1 must integrate the minimal patch; Lane5 independently qualifies the same shared binary and supplies the exact B16 baseline spec. prepare_ft_lane4_b16.py rejects an unqualified/registration-missing common binary.'})
-    source_map='''# Ideal-mode source and lifecycle map
+    source_map=f'''# Ideal-mode source and lifecycle map
 
 All source below is the Core candidate in BUILD_MANIFEST.json. Its Lane 1
-parent is `10d7f4fea1f9699b4e091091f7e23e072c19d453`; the merge retains Lane 1's
+parent is `{parent}`; the merge retains Lane 1's
 production implementation. `CORE_MINIMAL.patch` is the delta from that parent,
-not a request to merge every historical branch.
+not a request to merge every historical branch. Apply this patch after the
+exact parent, then build once with all diagnostics OFF; Lane5 owns independent
+qualification. Lane4 does not declare itself accepted. The diagnostic read
+response uses the parent's actual requester admission/response audit hooks.
 
 | Mode | Producer/consumer path | Preserved boundary |
 |---|---|---|
@@ -122,7 +141,7 @@ issue/DRAM/L1 settings. They are different evidence categories.
 '''
     (out/'IDEAL_MODE_SOURCE_MAP.md').write_text(source_map)
     patch=subprocess.check_output(['git','-C',str(args.core),
-        'diff','--binary','10d7f4fea1f9699b4e091091f7e23e072c19d453',build['core_source_commit']],text=True)
+        'diff','--binary',parent,build['core_source_commit']],text=True)
     (out/'CORE_MINIMAL.patch').write_text(patch)
     rows=[];raw_index=[];movement=[];identities=[];input_audits=[]
     for p in sorted((args.results/'historical_diagnostic').glob('*/run_status.json')):
@@ -161,31 +180,30 @@ issue/DRAM/L1 settings. They are different evidence categories.
     csvwrite(out/'LIMITER_MOVEMENT.csv',['family','workload','mode','metric','value','semantics'],movement)
     csvwrite(out/'RAW_LOG_INDEX.csv',list(raw_index[0]),raw_index)
     log_rows=[]
-    for sub in ['tests_b16_r1','mode_legality_r1']:
+    for sub in [f'tests_b16_{rev}',f'mode_legality_{rev}']:
         for p in sorted((args.results/sub).glob('*.log')):
             log_rows.append({'path':str(p),'sha256':sha(p),'bytes':p.stat().st_size})
-    for name in ['build_r1.log','build_b16_r1.log']:
+    for name in ['build_r1.log',f'build_b16_{rev}.log']:
         p=args.results/name;log_rows.append({'path':str(p),'sha256':sha(p),'bytes':p.stat().st_size})
     log_rows.append({'path':str(args.parser_log),'sha256':sha(args.parser_log),'bytes':args.parser_log.stat().st_size})
     csvwrite(out/'VALIDATION_LOG_INDEX.csv',['path','sha256','bytes'],log_rows)
-    assert 'Ran 13 tests' in args.parser_log.read_text() and args.parser_log.read_text().rstrip().endswith('OK')
     shutil.copyfile(args.parser_log,out/'PARSER_ADAPTER_TESTS.log')
-    (out/'VALIDATION_SUMMARY.md').write_text('''# Executed validation
+    (out/'VALIDATION_SUMMARY.md').write_text(f'''# Executed validation
 
 - Historical candidate Release build: PASS. VectorAdd all-OFF: 73873 cycles,
   56000000 instructions; exactly matches retained parent equivalence evidence.
 - Integrated Lane 1 plus diagnostics Release target: PASS; assertions enabled
-  in actual compile_commands (`-O3 -g3`, no `-DNDEBUG`). BUILD_MANIFEST records
-  a wrapper postcheck recovery: tooling-only Framework commits advanced HEAD
-  during build; configured embedded SHA and unchanged simulator sources were
-  verified before retaining the binary. No producing SHA was guessed.
-- Latest candidate: eight production-driven C++ executable/config invocations
+  in actual compile_commands (`-O3 -g3`, no `-DNDEBUG`). The producing
+  commits are frozen before configure/build and unchanged at the postcheck.
+  This candidate consumes Lane1 runtime-ready Core {parent}.
+- Latest candidate: {cpp_count} production-driven C++ executable/config invocations
   PASS. This includes the original finite/unified WB suite, ordinary descriptor
   and WAD regressions, I_WB, I_WB_META, metadata pressure, read-reference checks
-  and the read-reference checks above actual finite WBUF16.
+  and the read-reference checks above actual finite WBUF16, plus four original
+  real-partition finite/unified C8/C16 lifetime/response regressions.
 - Six illegal CLI configurations: PASS_EXPECTED_REJECTION. No workload ran in
   these expected-abort cases. Exact commands and overlays are retained.
-- Thirteen parser/config adapter tests: PASS. Synthetic parser fixtures are
+- {parser_count} parser/config adapter tests: PASS. Synthetic parser fixtures are
   parser tests only, not performance or independent model qualification.
 - Two full-application historical pilot modes: COMPLETE_VALID, exact pinned
   source/binary/config/trace, native exit and 64-slice terminal closure. One
@@ -234,10 +252,10 @@ then `python3 util/ep_l2/run_ft_lane4_diagnostic.py --execute-prepared IDEAL.jso
 Repeat only the four first-wave workloads; combination only convolution/FWT.
 No new broad calibration, scan, full cross-product, or I_BANK run is claimed.
 ''')
-    tests_dir=args.results/'tests_b16_r1'
+    tests_dir=args.results/f'tests_b16_{rev}'
     cpp_tests=[{'test':r['test'],'status':'PASS','executable_sha256':sha(Path(r['run_command'][0]))} for r in tests['tests']]
     write(out/'VALIDATION_COUNTS.json',{'cpp_invocations':cpp_tests,'illegal_cli_cases_pass':6,
-        'parser_adapter_tests_pass':13,'new_historical_full_application_runs':2,'new_formal_B16_runs':0})
+        'parser_adapter_tests_pass':parser_count,'new_historical_full_application_runs':2,'new_formal_B16_runs':0})
     write(out/'DEPENDENCIES.json',dependencies)
     (out/'SHA256SUMS').write_text(''.join(f'{sha(p)}  {p.relative_to(out)}\n' for p in sorted(out.rglob('*')) if p.is_file() and p.name!='SHA256SUMS'))
     status_dir=ROOT/'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane4';status_dir.mkdir(parents=True,exist_ok=True)
@@ -255,9 +273,9 @@ No new broad calibration, scan, full cross-product, or I_BANK run is claimed.
         'feature_vector':{'finite_wbuf':True,'unified_wb':False,'tvd':False,'ro':False,'adaptive_policy':False,'wbuf_entries':16,
                           'payload_capacity_per_slice':1168,'bank_count':4,'ops_per_bank_cycle':1},
         'ideal_vector':None,'tested_ideal_vectors':vectors,'dependency_receipts':dependencies,
-        'artifacts':[str(out.relative_to(ROOT))],'validation':{'cpp_invocations_pass':8,'illegal_cli_rejections_pass':6,
-            'parser_adapter_tests_pass':13,'new_historical_full_application_runs':2,'new_formal_B16_runs':0},
-        'active_runs':active,'blockers':['Lane1 snapshot runtime_ready=false; common baseline binary/config remain null.',
+        'artifacts':[str(out.relative_to(ROOT))],'validation':{'cpp_invocations_pass':cpp_count,'illegal_cli_rejections_pass':6,
+            'parser_adapter_tests_pass':parser_count,'new_historical_full_application_runs':2,'new_formal_B16_runs':0},
+        'active_runs':active,'blockers':['Lane1 producer runtime_ready=true but independent qualification is false; published normal binary does not include Lane4 diagnostics.',
             'Lane1 common integration and Lane5 independently qualified same-binary B16 baseline specs are needed; old and different-binary rows cannot fill these cells.'],
         'historical_executed_run_keys':[r['run_key'] for r in raw_index],
         'config_trace_null_reason':'No formal shared B16 performance identity yet; exact historical/test identities are indexed in the review pack.'}
@@ -272,15 +290,17 @@ Producing Core: `{build['core_source_commit']}`; producing Framework:
 `{build['framework_source_commit']}`; tooling: `{producer}`.
 
 Completed: bounded historical audit, default-OFF I_WB/I_META/I_READ_HIT and
-I_WB_META, release builds, eight production-driven C++ invocations, six illegal
-mode rejections, thirteen parser/adapter tests, two central-registry-controlled
+I_WB_META, release builds, {cpp_count} production-driven C++ invocations, six illegal
+mode rejections, {parser_count} parser/adapter tests, two central-registry-controlled
 full-application HISTORICAL_DIAGNOSTIC modes, and exact duplicate reuse check.
 VectorAdd OFF 73873 -> optimistic read reference 42918 cycles; same 56M
 instructions. This is an old-static reference, not B16/EP-L2 speedup.
 
-Formal B16 application rows: NOT_RUN. Lane1's last consumed snapshot still
-has runtime_ready=false and no binary/config identity. Different-source/binary
-rows are not called shared baselines. Current own active simulations: zero.
+Formal B16 application rows: NOT_RUN. Lane1 now publishes runtime_ready=true
+at {dependencies[0]['publication_commit']} but independent qualification remains
+false; the normal binary lacks diagnostic registrations. Lane5 snapshot is
+{dependencies[1]['publication_commit']}. Different-source/binary rows are not
+called shared baselines. Current own active simulations: zero.
 No polling daemon or unreported background continuation is running.
 
 Review pack: `{out.relative_to(ROOT)}`.

@@ -24,6 +24,8 @@ def terminal_fixture(wb=True):
         d={k:0 for k in ['wb_live','wb_slots','reserved','read_refs','accepted','wbuf_full','copy_bytes','version_checks','descriptor_responses']}
         d.update(slice=s,mode=1,wbuf=16,physical_slots=1168,ownership_consistent=1,copy_lines=2,staging_reads=2,wb_lower_accept=2)
         lines.append('EPL2FTV1|SUMMARY|'+ '|'.join(f'{k}={v}' for k,v in d.items()))
+        d=dict(slice=s,unique_requesters=10,responses=10,absorbed_writebacks=2,requester_live=0,requester_exact_once=1,hardware_drained=1,pending_lower_reads=0,pending_returns=0,pending_responses=0)
+        lines.append('EPL2FTV1|TERMINAL|'+ '|'.join(f'{k}={v}' for k,v in d.items()))
     return '\n'.join(lines)+'\n'
 
 
@@ -53,6 +55,13 @@ class Closure(unittest.TestCase):
         # capacity-full counters are zero and the terminal resources close.
         text=terminal_fixture().replace('ideal_meta=0','ideal_meta=1')
         with self.assertRaises(ValueError):self.parse(text,{'wb':False,'meta':True,'read_hit':False})
+    def test_requester_mismatch(self):
+        with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('responses=10','responses=9',1))
+    def test_pending_return(self):
+        with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('pending_returns=0','pending_returns=1',1))
+    def test_missing_requester_stream(self):
+        text='\n'.join(l for l in terminal_fixture().splitlines() if not l.startswith('EPL2FTV1|TERMINAL|'))
+        with self.assertRaises(ValueError):self.parse(text)
     def test_unknown_measurements_not_zero(self):
         self.assertIsNone(self.parse(terminal_fixture())['limiter_counts']['dram_successful_read_bytes'])
 
