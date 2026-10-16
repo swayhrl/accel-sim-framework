@@ -1,41 +1,53 @@
-# Lane 6 — review_r2 delivery
+# Lane 6 — review_r3 delivery
 
-Status: `READY_FOR_REVIEW` — same task and execution branch; old r1 preserved.
-Review authority: `aec01450d3c527524ee09ee59242f582fafe5354`.
-Original scientific contract: `6c136e2a56a008695f8c8b815723bf8f1a760db9`.
-Framework branch: `hrl/ep-l2-ft20261016-lane6-v1`.
-Offline tool producer: `219fe14be00374f206e549794704c36ff66ba143` (not simulator runtime).
-Host: huangrulin-174. Worktree: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1`.
-Lane 6 Core/build/binary/active runs/leases: none. Initial Goal was not restarted.
+Status: `READY_FOR_REVIEW_SCIENTIFIC_SUSPENSION_ENFORCED`.
+Same Lane/task/Framework branch `hrl/ep-l2-ft20261016-lane6-v1`; no initial Goal restart.
+Review authority: `a41bfb55934303a4d4a342762f74a16d137d0316`.
+Original scientific contract: `6c136e2a56a008695f8c8b815723bf8f1a760db9` unchanged.
+Offline source/tool producer: `8f68082c517dedd944c6073bff8ec84cd30e4404`; no Lane6 Core/build/runtime.
+Host: huangrulin-174. Existing worktree: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1`.
 
-Delivered r2: concise Chinese WB-first manuscript, claim-evidence map, three-column
-PPA ledger, three compact PDF/SVG figures and incremental native result intake.
-Common 128B/slice latch is outside the 1168/1160 RAM slots; actual RO module
-completion capacity is N slots, not the old illustrative T_RO=128. Area/power/Fmax
-remain unknown without matched RTL/process; no C++ sizeof estimate is used.
+**This status supersedes the scientific acceptance statements in Lane6 r2 at
+6a3c00cb17aaff2a2c23c5990e7ef90f294aa8df.** r2 §5.1 independent-application
+qualification, §6 sad results and formal_sad/WB_PAIRS are
+SUSPENDED / RETRACTED_AS_SCIENTIFIC_RESULT. The old near-tie and no-capacity-benefit
+interpretations are withdrawn. Original paper, figures, CSV, raw, binary and run
+COMPLETE_VALID execution terminals are preserved. r1 all33 files and r2 all37
+files are byte-identical. Current accepted pairs=0, accepted application runs=0,
+whole-group mean=null, formal performance figures=[].
 
-Consumed Lane 1 R0 release 02982b65e87f170103b44c6dbd562a8ffb03841e, later
-Lane 5 independent qualification and b47b721d1be26210ffaea178fbbf3f5c839c2b9c
-formal sad pair. Exact R0 Core126394be/FW37dec04d/binary0b504f55/config/trace
-identities are in RECEIPT and FORMAL_WB_PAIR_INPUTS. Qualification is restricted
-to B16/U_WB16 and symbolic sector-version/request identity, not numeric SASS.
+Delivered new r3 Chinese manuscript, claim/evidence map, explicit retraction
+appendix/index, PPA ledger and strict current-acceptance consumer. PPA retains
+146/145KiB data + both sides128B/slice latch; RO configured N cost and unknown
+physical PPA remain explicit. Two unchanged historical figures only: full13-row
+locality evidence and separate old static1.721259x optimistic-read diagnostic.
+No old FT application result is used for formal effect/capacity conclusions.
 
-sad: 110593 vs 110573 GPU cycles (1.0001808759823827x), effectively tied.
-Peak staging is 1 on both sides; no capacity-pressure relief is demonstrated.
-Copy3975->0 and Bank logical operations485175->477225; DRAM bytes unchanged.
-The other four declared workload pairs are pending in the consumed publication;
-whole-group geomean stays null. No local in-flight result is promoted to evidence.
+Current Lane5 authority: `b134f76d8f4cd759c0852b68edf922ecbd445ea9`. Online fixed-ref
+freshness, exact acceptance/matrix/receipt digests and full51-file supersession
+closure are verified. CURRENT_ACCEPTED exact source/Framework/binary/config/trace,
+canonical run-key, raw, mode/workload/native totals plus consistent matrix entry
+are required. Missing/stale/suspended/NOT_RUN/mismatch denies formal plotting;
+old immutable qualification or normal terminal cannot override revocation.
+New identities need both physical_bank_clock and memcpy_payload_identity gates.
+No old R0 adapter defaults are inherited. Source and denial identities are in
+SOURCE_EVIDENCE_MANIFEST and audit/ACCEPTANCE_AUDIT; raw scope is original Git
+receipt and HASH INDEX, not a new old-model/raw correctness validation.
 
-Historical evidence remains separate: all13 Streaming rows revalidated; old
-static vectorAdd optimistic-read 1.721259x is a diagnostic reference, not R0
-speedup, strict upper bound or suite mean. All18 new matched-R1 cells remain missing.
-TVD/RO production and R1 ideal are not prerequisites for Lane 5 R0 experiments.
+Validation:30 synthetic tool tests PASS, six real old run records denied,
+three real native pairs denied, actual old sad plot entry refuses before output;
+four repeated audit JSONs byte-identical. Synthetic positive repaired adapter is
+a tool fixture, not an actual R0.1 release qualification. Seven historical/cost
+assets reused by exact Git hashes. All scientific inputs and shared registry unchanged.
 
-Validation:12 intake tests pass;15 generated files reproduce byte-identically;
-26 pinned source blobs;3 final figures visually checked;all33 old r1 files unchanged.
-No mechanism/config/trace/original science CSV/binary/registry was modified; no
-simulator experiment, rebuild, reservation, stop or reset was performed by Lane 6.
+Bounded Lane1 follow-up: `3840f9585b710a5abea8201c14fa05cdea930aa7`
+RECEIPT_REVIEW_R3 says official R0.1 source integration/resource hold; warmup not
+compiled, no accepted repaired release. Older RECEIPT.json remains historical.
+No inferred future/background compile or resource recovery. Startup locked registry:
+15 historical COMPLETE_VALID, zero active runs/leases; no duplicate Lane6 worker.
+Workspace free45661315072 bytes < unchanged48GiB floor. Lane6 performs no cleanup,
+build, simulator launch, reservation, stop or reset and does not consume repair quota.
 
-Review pack: `docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r2/`.
-Current deliverable has no blocker. Further evidence: remaining four WB pairs,
-matched-R1 diagnostics, separately qualified TVD/RO and physical PPA.
+Review pack: `docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r3/`.
+Lane6 r3 delivery has no blocker. Formal results await exact official R0.1 and
+independent current acceptance; R1.1/TVD/RO/PPA evidence remains separate pending work.
