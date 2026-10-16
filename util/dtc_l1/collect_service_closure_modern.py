@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import re
 from collect_service_closure_attempts import collect
+from service_closure_scientific_disposition import FORMAT_PENDING, disposition
 
 
 def main():
@@ -27,6 +28,8 @@ def main():
                    max_rss_kb=r['max_rss_kb'],elapsed_wall=r['elapsed_wall'],
                    claim_scope='OLD_SASS_MEMORY_PARAMETER_COUNTERFACTUAL_NOT_ADA_NATIVE_OR_DTC_SPEEDUP')
         row['scientific_promotion'] = ('HOLD_SHARED_TRACE_INTERPRETATION' if spec['workload'] in a.promotion_hold_workload else 'WITHIN_DECLARED_BASELINE_ONLY_SCOPE')
+        if spec['workload'] in FORMAT_PENDING:
+            row['scientific_promotion'] = disposition(spec['workload'])
         if r['status'] != 'RUNNING':
             text = (run/'simulator.stdout').read_text(errors='replace')
             m = dict(re.findall(r'^\s*(\w+)\s*=\s*(\d+)\s*$',text,re.M))

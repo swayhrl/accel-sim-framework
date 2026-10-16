@@ -1,0 +1,41 @@
+{
+  "build_framework": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+  "framework_sources": {
+    "gpu-simulator/trace-parser/trace_parser.cc": "f63db893d39bfcd4cbf679ea1158fd9a0594211181333e13b2fdbb478d60ddb7",
+    "gpu-simulator/trace-parser/trace_parser.h": "b09cc947cf590777fe5c9a4e5522edb66767078aa5983bca835a31944c6a4206",
+    "gpu-simulator/trace-driven/trace_driven.cc": "e82e9156bd28d61a044e1f677dc9e0e162290043404730ac9a81dae5ab402689",
+    "gpu-simulator/ISA_Def/volta_opcode.h": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4"
+  },
+  "core_sources": {
+    "6582b9d171330d88b17e8d5294c97704229e3823": {
+      "src/abstract_hardware_model.cc": "88f4af1a14cb64e87d20f220ec6533980afa42d52393e925c9710dcb169913b5",
+      "src/abstract_hardware_model.h": "e4cab8e64aad9a331fc49e987fd4e9a7be4f067b814dd866aa5b461b300ce87c",
+      "src/gpgpu-sim/shader.cc": "b14c5e8a838488e7266390248323f4481abc6e2b8f9345a8db0875e379841b49",
+      "src/gpgpu-sim/dtc-l1-common.h": "c2e87421ee1d1abc27c1afcf541de2f0e8a6de017e5284ea808715dc543298fd",
+      "src/gpgpu-sim/gpu-sim.cc": "f07b242db9a4736aae0686ad4613ca2f036c874ba2ecbb761454704239d5febb"
+    },
+    "6fba0136f8465b59fe5858a950fa39efb265f654": {
+      "src/abstract_hardware_model.cc": "88f4af1a14cb64e87d20f220ec6533980afa42d52393e925c9710dcb169913b5",
+      "src/abstract_hardware_model.h": "e4cab8e64aad9a331fc49e987fd4e9a7be4f067b814dd866aa5b461b300ce87c",
+      "src/gpgpu-sim/shader.cc": "5964c1bdaf37b23d6bf57f499e687ef717a0570eaebc1dd241345c6340c84cb1",
+      "src/gpgpu-sim/dtc-l1-common.h": "b63a0afdc85ca6301559afd013907387af8874d4ebdf3670a8d085640651e9d4",
+      "src/gpgpu-sim/gpu-sim.cc": "537d8a68effb56c02c28bbfea68fd6a92fa9644a70606c9d8dcabf10807a4b15"
+    }
+  },
+  "core_delta_files": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/dtc-l1-common.h",
+    "src/gpgpu-sim/gpu-sim.cc",
+    "src/gpgpu-sim/shader.cc",
+    "src/gpgpu-sim/shader.h",
+    "tests/dtc_l1_finite_service_test.cc"
+  ],
+  "all_observed_opcode_roots_present_in_actual_sm70_map": true,
+  "actual_binary_versions": {
+    "conventional": "const char *g_gpgpusim_build_string=\"gpgpu-sim_git-commit-6582b9d1_modified_0.0.\";\n",
+    "finite": "const char *g_gpgpusim_build_string=\"gpgpu-sim_git-commit-6fba0136_modified_0.0.\";\n"
+  },
+  "source_review": "Parser mode0 consumes printed active lanes; candidate lists are exactly active count on changed records. Width4 and LDS/STS/LDG dispatch unchanged. Excess LDG words formerly parsed into unused imm; actual consumer uses imm only for BAR/DEPBAR, whose bytes are invariant. Existing SM70 CALL/RET supported; no skipped-call transformation. Shared paths/geometry and coalescing use common frozen implementation; changed Core implements opt-in DTC service only. Four or fewer global128B references fit the already qualified <=32-reference admission contract.",
+  "source_profile_scope": "Model-conditioned shared reconstruction, no historical ELF/native/data-value equivalence. Ordinary stores and output address/order invariant.",
+  "raw_consumer_binary_sha256": "e097178b828685158d40aa40459d5595732a23d19aa9caed4afc650ed4147ed1"
+}
