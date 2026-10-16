@@ -77,3 +77,20 @@ steal its issue slots; fill and lower-drain paths do not add issue requests.
 
 LEGACY_SEPARATE_C is not implemented/qualified in this candidate; no WBUF RAM
 port count is silently attributed to a user-confirmed hardware fact.
+
+## Explicit service and audit completion
+
+All absorbed writes (including sector misses) now pay the shared payload bank
+write. Every ready descriptor response pays a bank read before actual response
+enqueue. These costs and pending-read writer serialization apply equally to
+static/unified new modes; OLD_D512_STATIC retains its historical timing path.
+This is part of the explicit new physical service model, not hidden EP-L2 gain.
+Staging age starts at actual static source readout or U_WB role/packet commit;
+WB occupancy includes reserved data slots, reported separately from live packets.
+
+Version labels/expected arrays and live requester token sets are verification
+sidecars, not an extra physical data store or an unbounded WB issue allowance.
+Real control capacity remains the unchanged WAD/issue/descriptor resources.
+Live audit IDs are inserted at frontend acceptance and consumed only at actual
+L2-to-ICNT enqueue; absorbed L1 writebacks are explicitly outside response demand.
+No aggregate counter substitutes for this producer/sink identity audit.

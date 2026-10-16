@@ -25,3 +25,11 @@ stage receipt, never inferred from the documentation branch tip.
 The current qualified target policy remains WRITE_BACK + LAZY_FETCH_ON_READ;
 production tests include global reads/writes and incoming L1 writebacks. Broader
 allocation-policy coverage must be tested explicitly before claiming it.
+
+Terminal identity audit is in memory_sub_partition::ft_record_admission and
+ft_record_response, adjacent to real frontend acceptance and response pushes.
+EPL2FTV1 TERMINAL includes live token, actual queue and hardware-drain evidence.
+WB created/lower-accepted/completed are distinct actual producer events.
+Framework parse_ft_terminal.py fails closed on missing slices, mode, budgets,
+roles or milestones. Its data-qualification flag comes only from a separately
+hash-bound Lane 5 release; the producer never invents an independent PASS.

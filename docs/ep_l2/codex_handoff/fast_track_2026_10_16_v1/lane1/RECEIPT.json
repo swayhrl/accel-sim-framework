@@ -3,21 +3,35 @@
   "lane_id": 1,
   "task_id": "FT20261016_LANE1",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "IN_PROGRESS_FUNCTIONAL_REGRESSION",
+  "status": "PRODUCTION_DIRECTED_PASS_OLD_OFF_QUALIFICATION_IN_PROGRESS",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
-  "framework_source_commit": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
+  "framework_source_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
-  "core_source_commit": "10d7f4fea1f9699b4e091091f7e23e072c19d453",
-  "binary_sha256": null,
-  "config_sha256": null,
+  "core_source_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+  "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
+  "config_sha256": {
+    "B16_BANKED": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+    "U_WB16": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+    "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
+    "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
+  },
   "trace_identity": null,
   "feature_vector": {
-    "ft_mode": 0,
-    "wbuf_entries": 0,
+    "finite_wbuf": true,
+    "unified_wb": false,
+    "tvd": false,
     "ro": false,
-    "tvd": false
+    "adaptive_policy": false,
+    "wbuf_entries": 16,
+    "payload_capacity_per_slice": 1168,
+    "bank_count": 4,
+    "ops_per_bank_cycle": 1
   },
-  "ideal_vector": {},
+  "ideal_vector": {
+    "wb": false,
+    "meta": false,
+    "read_hit": false
+  },
   "dependency_receipts": [
     {
       "lane_id": 5,
@@ -30,15 +44,88 @@
     "docs/ep_l2/review_packs/FT20261016_LANE1_INTERFACE_r1/",
     "STORAGE_AND_PORT_LEDGER.md",
     "SOURCE_MAP.md",
-    "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_CANDIDATE_r1/"
+    "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_CANDIDATE_r1/",
+    "docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_PRODUCTION_r1/"
   ],
   "validation": {
-    "build": "PASS_FUNCTIONAL_CANDIDATE",
-    "initial_production_scenarios": "6_GROUPS_PASS_AT_c4896d7d",
-    "expanded_production_suite": "IN_PROGRESS",
-    "old_static_equivalence": "NOT_RUN",
-    "git_diff_check": "PASS"
+    "production_directed": "8_GROUPS_PASS",
+    "real_partition": "4_MODES_PASS",
+    "mode_legality": "4_ILLEGAL_COMBINATIONS_REJECTED",
+    "old_directed": "4_EXECUTABLES_PASS",
+    "terminal_parser": "8_TESTS_PASS",
+    "fresh_old_reference_controls": "3_COMPLETE_VALID_ALL_7_CSV_FAMILIES_MATCH_RETAINED_HISTORY",
+    "new_old_off_controls": "IN_PROGRESS",
+    "independent_qualification": "NOT_CLAIMED"
   },
-  "active_runs": [],
-  "blockers": []
+  "active_runs": [
+    {
+      "run_key": "96913a8f95f26061d5f52030aab46e73fd0fb5584402a1b97441947c586cd629",
+      "status": "RUNNING",
+      "workload": "vectorAdd_4M",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 553290,
+        "start_ticks": 889609484
+      },
+      "result_directory": "/workspace/results/ep_l2_ft20261016/96913a8f95f26061d5f52030aab46e73fd0fb5584402a1b97441947c586cd629"
+    },
+    {
+      "run_key": "c28261d68c849c8f10bbbd3e187ba5ed26cae91691b6239cfcda0028de243d94",
+      "status": "RUNNING",
+      "workload": "cfd_097k",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 553291,
+        "start_ticks": 889609488
+      },
+      "result_directory": "/workspace/results/ep_l2_ft20261016/c28261d68c849c8f10bbbd3e187ba5ed26cae91691b6239cfcda0028de243d94"
+    }
+  ],
+  "blockers": [],
+  "feature_vectors": {
+    "B16_BANKED": {
+      "finite_wbuf": true,
+      "unified_wb": false,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 16,
+      "payload_capacity_per_slice": 1168,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    },
+    "U_WB16": {
+      "finite_wbuf": true,
+      "unified_wb": true,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 16,
+      "payload_capacity_per_slice": 1168,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    },
+    "B8_BANKED": {
+      "finite_wbuf": true,
+      "unified_wb": false,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 8,
+      "payload_capacity_per_slice": 1160,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    },
+    "U_WB8": {
+      "finite_wbuf": true,
+      "unified_wb": true,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 8,
+      "payload_capacity_per_slice": 1160,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    }
+  }
 }
