@@ -64,3 +64,10 @@ Lane5 qualifies R1 normal behavior and each requested ideal mode, and supplies
 same-R1-binary B16 baseline specs. Then use prepare_ft_lane4_b16.py and the
 central registry to roll admitted cells and publish each completed cell.
 No TVD/RO/Full EP-L2 dependency and no need to hold the R0 main experiment.
+
+Final dependency readback: Lane1 advanced to
+`2556909e55bb43c1d819f8c0417f5fc8b93630d9` with its R0_HANDOFF_r3.
+The exact R0 Core/Framework/binary remain unchanged; no common R1 release
+is published there. RECEIPT.json records this newer consumed receipt and
+retains the earlier snapshot used when R1_HANDOFF_r1 was generated.
+Lane5 is still c603a563 at this bounded readback. No simulation is launched.
