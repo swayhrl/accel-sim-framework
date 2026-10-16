@@ -1,40 +1,30 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16 / Round A75。** A74-C完成并以`PARKED_FOR_PPA_OR_SIM_MODEL / STOP`保留、未启动109 Codex/GPU；新一轮主流生成AI Discovery已由ChatGPT完成原始研究，识别两个**不同于A70/A74已有问题**的CPU/source候选：真实Qwen3 GRPO后训练各阶段和Wan2.2跨去噪step的视频DiT。两条独立Codex目标及分支已经准备，尚未由用户分别派发；不因科研笔记发布而自动启动节点任务。
+**最新快照：2026-10-16 / Round A76：A75 R/D双线Discovery全部完成并独立审查，均`SOFTWARE_NEARBY_NO_SURVIVOR / STOP`。** 两线没有本机native或GPU模拟结果；合计0个推荐/备选，不表示RL后训练、视频DiT体系结构headroom被测负。A76最新科研建议：停止重复宽泛source-only“寻找新API”，下一次投入应考虑**真实主流AI负载的GPU资源饱和和反事实characterization**，首先制定科学输入/模拟器资格方案，而非自动启动GPU。
 
-固定历史导航：[A74-C完成快照](https://github.com/swayhrl/accel-sim-framework/blob/05c1722066bda6a079d92fdfca34bdd28249a72f/docs/ai_workload_research/CURRENT_STATE.md)。原A70四线0候选、A73 W source-incomplete/H source-only、A74 SFU固定面积假说Parked与所有独立项目STOP均未变。
+**历史快照**：[A75准备期CURRENT_STATE](https://github.com/swayhrl/accel-sim-framework/blob/cba17023e7a86454936e881515384e785c4b9d53/docs/ai_workload_research/CURRENT_STATE.md)、[A74-C已完成](https://github.com/swayhrl/accel-sim-framework/blob/05c1722066bda6a079d92fdfca34bdd28249a72f/docs/ai_workload_research/CURRENT_STATE.md)；所有旧Goal/运行raw/原报告/原STOP保持不变，不合并两条执行分支HEAD。
 
-## 1. A75已完成的ChatGPT文献／源码发现
+## 1. R-A75和D-A75固定科研权威
 
-**[A75完整研究笔记](literature/AI_ARCH_A75_MAINSTREAM_POSTTRAIN_SPEC_VERIFY_AND_VIDEO_DIT_DISCOVERY_2026-10-16_V1.md)**，首次研究提交`fe65befc648bc938856b9a06dd1175a4a836a638`；其后只修正文中“本地平台”文字错误，具体report以本协调branch最新文件为准。
-
-| 方向 | 已有真实作者证据／成熟实现 | 当前科学选择 |
+| Lane | 固定Git final/tree及原始报告 | 科学边界 |
 |---|---|---|
-| **R：主流Qwen3 RL后训练** | NeMo RL Qwen3-8B GRPO实测训练步：无spec/有EAGLE3的Generation RL-Zero100.0→56.6s，总步151.2→107.5s；RL-Think133.6→87.0s，总步185.3→137.4s；32×GB200原生范围。RolloutPipe Qwen3-1.7B/8×4090训练+2×A100 rollout合法complete-group流水已减少作者训练端等待；Libra/HetRL/AReaL已有其它重叠/弹性路径。 | `SOURCE_QUESTION_FOR_STAGE_CENSUS`：核心是成熟优化后是否仍有GPU本质资源限制，不是“先重叠Rollout与训练”新机制。235B/GB200跨规模加速来自作者模拟，非完整原生。 |
-| **V：Speculative Decode验证** | SpecDecode-Bench vLLM H100执行分解报告验证为42–95%区间；**当前2026-10-14 vLLM已经发布不用confidence head的在线自适应验证**，固定代码包含OnlineAcceptanceEstimator。 | `SOFTWARE_NEARBY_DIRECT / PARKED`：通用“裁剪不易接受token、动态分配验证长度”有强软件近邻，不新开一个重复Codex或GPU实验。 |
-| **D：主流Wan2.2视频扩散Transformer** | 官方Wan2.2 TI2V-5B完整文/图生成视频；单卡官方720P入口需≥24GiB显存。A14B高/低噪声专家随step切换，非token top-k MoE。TeaCache/CVPR2025、Sliding Tile Attention/ICML2025、Cache-DiT及官方offload是直接软件反证。 | `SOURCE_QUESTION_FOR_NATURAL_STEP_LIFETIME`：核完整自然去噪／视频质量／阶段数据流与已有软件，尚无本机input/numeric/GPU结果。 |
+| **R-A75／109** | [R原报告](https://github.com/swayhrl/accel-sim-framework/blob/8e53641295068cdef653362d0f8d7f441c636b11/docs/ai_workload_research/discovery/A75_R_RL_POSTTRAIN/REPORT.md)，commit`8e53641295068cdef653362d0f8d7f441c636b11`、tree`8861ec3174330260b8faaa205e80efca80183f69` | `SOFTWARE_NEARBY_NO_SURVIVOR`。NeMo Qwen3-8B的完整同步RL step有作者32GB200 native阶段时间；有EAGLE-3后Generation仍Think/Zero分别63.3%/52.7%，但是合法GRPO complete-group、RolloutPipe CGP/FGD、NeMo同步TQ/推测、Libra弹性等已有软件近邻。尚未证明活动GPU上的不同硬件需求，reward没有独立作者计时行，235B收益是作者模拟，不能外推。 |
+| **D-A75／174-new** | [D原报告](https://github.com/swayhrl/accel-sim-framework/blob/6421e6768ff3df2ec20cddd87b3aa28b932c113a/docs/ai_workload_research/discovery/A75_D_WAN_VIDEO_DIT/REPORT.md)，commit`6421e6768ff3df2ec20cddd87b3aa28b932c113a`、tree`f10bb08891193d01b5ad98534f4514610df48eb3` | `SOFTWARE_NEARBY_NO_SURVIVOR`。Wan2.2 TI2V-5B官方121帧/720P、50步、双CFG、30层；A14B按噪声阈值单次切高/低专家，不等于token级MoE。TeaCache、BWCache、STA等近似质量-速度方法及Cache-DiT双expert/CFG缓存是直接近邻；没有同视频、同质量、同求解器和强后端后的独立硬件归因。 |
 
-**本轮不能声称两个硬件问题已确认。** 真实作者任务不是本机合格的数据；不能从接受长度、去噪跳步、视频tile局部、逻辑buffer或作者不同GPU加速倍数制造可实现硬件收益。R与D是需要严审的不同工作量，不是两张立即执行的GPU实验单。
+A75共同Goal起点`1eb14b0395bc898c3707ba850c36f17a9ec07b4e`。GitHub独立审查：每条从Goal→final各ahead1，仅新增本Lane四份文件；final→各自远端branch HEAD`identical`；Git-data commit parent/tree与用户回执相同。R证据27条14列，D证据18条17列、ID各自唯一、TSV字段数全部正确，二者`QUESTION_CARDS.json=[]`。
 
-固定原始源：NeMo-RL`540d2568c9cd184e01964c7de0a42026334f0a38`，vLLM`9a16d43ef0413b0a2a222e7f5baa4498c291ae5b`，Wan2.2`1ea34ff48f87168174e12956e200b1d908b1c5ff`；对应作者论文/实验组和软件限制均载于A75研究笔记。没有下载权重、接受数据许可或访问164。
+**[Round A76完整独立审查](reviews/AI_ARCH_A76_A75_R_D_INDEPENDENT_REVIEW_AND_DISCOVERY_METHOD_PIVOT_2026-10-16_V1.md)**；首次commit`53005a9d3562b57873cfac65f32f98cca3c17539`。控制端重新复核NeMo训练步4组守恒、Wan2.2固定配置/生成/Cache-DiT固定源码和5B 27,280token的纯几何算术；这不是本地GPU性能、视频峰值或最终质量试验。原执行者fetch-back blob/SHA/clean按原RECEIPT存留，本审查只核Git/source identity，不自称完成原Lane的节点动作。
 
-## 2. 两条待分别派发的Codex SOURCE任务
+## 2. 当前科学排序和方法调整
 
-**[完整A75 R/D并行Goal包](goals/AI_ARCH_A75_RL_AND_VIDEO_DIT_PARALLEL_DISCOVERY_GOAL_PACK_2026-10-16_V1.md)**，统一固定启动HEAD`1eb14b0395bc898c3707ba850c36f17a9ec07b4e`；两branch从该SHA创建并经过远端回读。
+1. **A70主流LLM混合服务、GDN、MoE、VLM四线**：限定源码已知直接近邻，无native性能负证据；[A72独立综合](reviews/AI_ARCH_A72_A70_M_AND_FOUR_LANE_DISCOVERY_SYNTHESIS_2026-10-16_V1.md)冻结。
+2. **A73 W**：provider cache计数无法恢复真实model-facing prompt，`SOURCE_INCOMPLETE`；**A73 H/A74-C**：TC↔SFU fixed area/power假说因SM100模型/同工艺PPA不足`PARKED`，不能申请B200的“同面积”机制证据。[A74-C结果](https://github.com/swayhrl/accel-sim-framework/blob/d2530b3bb8a2743b716ec58e6a3113d18b66c71f/docs/ai_workload_research/discovery/A74_C_ISO_RESOURCE_ADMISSION/REPORT.md)冻结。
+3. **A75 R/D**：本次真实主流后训练与视频生成路径科学源审成功、硬件候选为0；现有直接近邻不等于全部应用都没有片上限制。
+4. **建议A77研究方法变换（`PROPOSAL_ONLY`）**：一次有界CPU静态characterization设计，先核现有accepted真实AI模型/输入和原生平台及Accel-Sim资格，不下载模型或操作164；之后如科学合同闭合，可用最小实际自然GPU workload在强软件下探查资源饱和、计算/访存/issue、片上容量/服务以及独立验证，再有界进行资源反事实。两条互补准备Lane可分别核workload authority与simulator/原生标定，**不是再派四个并行论文搜索**。任何GPU/模拟器/新硬件必须单独获批，旧C16/AWMA既有任务与authority不自动转移。
+5. **不重开A75 R/D原生作业或权重/视频下载**：R作者32GB200强对象无法用10916GB等价复现，D官方5B 720P单卡配置≥24GB；没有具备强软件与合法质量门的原生新问题则不为完成任务租卡。
 
-| Lane/宿主 | 独立执行分支 | 研究交付／状态 |
-|---|---|---|
-| **R-A75／109** | `hrl/aiarch-a75r-rl-posttraining-discovery-109-v1` | 真实GRPO step五阶段、weights及K-group正确性、强NeMo/RolloutPipe/Libra等后若有独立硬件资源限制。只提交自己的REPORT/STAGE_EXPERIMENT_GROUPS/QUESTION_CARDS/RECEIPT，状态`READY_FOR_USER_DISPATCH`。 |
-| **D-A75／174-new** | `hrl/aiarch-a75d-wan22-video-dit-discovery-174new-v1` | 官方Wan2.2自然step/latent/高低噪声切换、完整生成质量与STA/TeaCache/BWCache/CacheDit强对照；四份独立文本证据/问题卡，状态`READY_FOR_USER_DISPATCH`。 |
+## 3. 当前执行状态与跨项目冻结
 
-每线工具CPU worker≤1、RSS≤2GiB、新增盘≤128MiB、公开文本/PDF≤64MiB、90分钟收口；**GPU/CUDA/JIT、模型import/加载、权重/真实数据或视频下载、依赖安装、Profiler、模拟器执行、清理及164访问全禁止**。独立分支/worktree/output，不能修改协调CURRENT_STATE或其它Lane、C16/AWMA/ISCAS。允许0主0备，若软件已经充分解释或输入/质量不闭合则如实STOP。完成一次push/fetch-back精确Git/tree/blob，向用户回执STOP，不自动做原生GPU资格。
+用户报告R、D两个Codex窗口均STOP，任务CPU/source-only。109/174-new/164没有本轮新增GPU或模拟器授权，不得自动重启；未核实时进程，本文只记用户回执。旧GNN A61/A65/A67、Q-S/ScanNet A69、3DGS A26、C16、AWMA、ISCAS的科学STOP、repo分支、数据及资源边界保持不变。共享GPU锁沿用原协议但本轮无GPU作业。
 
-两个分支是Git准备，不是已实际发给109/174 Codex的任务。**本窗口没有node109/174运行回执**。收到任一报告即由ChatGPT独立审查该Lane；不等待另外一条，也不通过合并两分支产生新的执行authority。
-
-## 3. 原冻结边界
-
-- A70 M/N/O/P `SOURCE_SCOPE_NO_SURVIVOR`但非native否决；A73 W`SOURCE_INCOMPLETE`、H`SOURCE_HYPOTHESIS`；A74-C固定SM100 SFU/TC面积互换因模拟器/PPA缺口`PARKED`，不申请B200、开启SM100工程或新机制。
-- GNN A61/A65/A67、Q-S/ScanNet A69、3DGS/A26、C16、AWMA、ISCAS及所有已有STOP不改变。109 GPU共享锁继续独占，但A75不使用GPU。164无新资产任务。
-- 同一个模型名不使不同模型precision/权重、训练step版本、专家路由与真实输入自动等价；paper原生、paper模拟器、源码能力、CPU公式和本机原生必须分开。
-
-**当前AI-ARCH：A75研究笔记已完成，R/D各有一条未启动Codex Goal；新GPU授权为0。**
+**A76终态：R/D各合法STOP、独立审查完成；尚未创建A77 Goal或派发新Codex，真实资源characterization为下一方法建议。**
