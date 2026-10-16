@@ -1,0 +1,61 @@
+{
+  "core_source_commit": "57801b429166b47079444081aaaafbfe5050e0d5",
+  "formal_runs": 0,
+  "framework_publication_commit": "6622ed3a1f173e340af096aa00a14ea13275c5a9",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/framework_snapshot/util/ep_l2/tests",
+        "-p",
+        "test_ro_oracle.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/oracle_python/test.log",
+      "log_sha256": "48c4c2b6b27ab35c4e279fec5891905d8b010a8b218737919885eccd2c9d9540",
+      "status": "PASS",
+      "test": "oracle_python",
+      "wall_seconds": 1.419
+    },
+    {
+      "command": [
+        "bash",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/core_snapshot/tests/ep_l2/run_ro_transactions.sh"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/ro_transactions/test.log",
+      "log_sha256": "e87f740bde338f0f3d200c8e74a6842c172589b10afcb0c739a0e218f5a78539",
+      "status": "PASS",
+      "test": "ro_transactions",
+      "wall_seconds": 4.578
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++11",
+        "-O2",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I/usr/local/cuda-11.8/include",
+        "-I/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/core_snapshot/src",
+        "-I/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/core_snapshot",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/core_snapshot/tests/ep_l2/test_descriptor_mshr.cc",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/core_snapshot/src/gpgpu-sim/gpu-cache.cc",
+        "-Wl,--gc-sections",
+        "-o",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/native_descriptor/test_descriptor_mshr"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane3_independent_r1/native_descriptor/test.log",
+      "log_sha256": "68787f817c94b1e735638b8bbdda95cb8a14a70fdb9b07f3099224c43951082b",
+      "status": "PASS",
+      "test": "modified_source_native_descriptor"
+    }
+  ],
+  "scope": "ORACLE_AND_TRANSACTION_MODULE_NOT_L2_CACHE_PRODUCER"
+}

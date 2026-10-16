@@ -4,7 +4,9 @@
     "docs/ep_l2/review_packs/FT20261016_LANE5_TOOLING_r1",
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/HOST_BUDGET.md",
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RUN_ASSIGNMENTS.json",
-    "util/ep_l2/ft_lane5/README.md"
+    "util/ep_l2/ft_lane5/README.md",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_TVD_MODULE_INDEPENDENT_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_RO_MODULE_INDEPENDENT_r1"
   ],
   "binary_sha256": null,
   "blockers": [
@@ -24,39 +26,45 @@
       "status": "IN_PROGRESS"
     },
     {
-      "lane_id": 2,
-      "publication_commit": "7697ed6b81d39d5eee8c005dd695553d783537b5",
-      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane2/RECEIPT.json",
-      "receipt_sha256": "abe5f2d2cba8e281a437722d401ac2ffa22b28de68ae233f9a09e9a4ef47070f",
-      "status": "IN_PROGRESS_CLEAN_MODULE_PUBLISHED_DIRTY_CONTINUES"
-    },
-    {
-      "lane_id": 3,
-      "publication_commit": "487dd03d79ed0621b3db7e208f616015b3d9ab9c",
-      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane3/RECEIPT.json",
-      "receipt_sha256": "79a184ea756f1f1cacff88fba28ee3302b6fff5de2a0d277c1e79cd5cb674f13",
-      "status": "IN_PROGRESS"
-    },
-    {
       "lane_id": 4,
       "publication_commit": "1657e77020321e0095acb2e7922056b27d8edf50",
       "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane4/RECEIPT.json",
       "receipt_sha256": "12025d049953350bbd5860f35d2e8479698432fd01497141cc1730c0480645e3",
       "status": "IN_PROGRESS"
+    },
+    {
+      "lane_id": 2,
+      "publication_commit": "24158d2344d086d2ff3d6ba31d1099682aac8e9d",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane2/RECEIPT.json",
+      "receipt_sha256": "5e21e9493011e0d715cfd1d7bc314ccfbd3286d49530e8da721c1b6f17a63666",
+      "status": "MODULE_REVIEW_READY_DEPENDENCY_PENDING_FOR_PRODUCTION_INTEGRATION"
+    },
+    {
+      "lane_id": 3,
+      "publication_commit": "6622ed3a1f173e340af096aa00a14ea13275c5a9",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane3/RECEIPT.json",
+      "receipt_sha256": "967e5085843069fde40c7d1c09609f545410384dee5d382f8ed44052d6da4227",
+      "status": "IN_PROGRESS_INDEPENDENT_MODULE_REVIEW_READY"
     }
   ],
   "feature_vector": null,
   "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
   "framework_implementation_parent": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
-  "framework_source_commit": "de8fe21d9598660e40da8486e48f2d46acee4582",
+  "framework_source_commit": "08b8cb7235d409c1c375efef114d5345ef8fd3cb",
   "historical_core_test_source_commit": "1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e",
   "host": "huangrulin-174",
   "ideal_vector": null,
   "lane_id": 5,
+  "module_core_test_source_commit": "56abbacc1192d68995e78561899719649f838079",
+  "module_core_test_sources": {
+    "lane2": "56abbacc1192d68995e78561899719649f838079",
+    "lane3": "57801b429166b47079444081aaaafbfe5050e0d5"
+  },
   "schema_version": "EP_L2_FT_RECEIPT_V1",
-  "status": "TOOLING_TESTED_DEPENDENCY_PENDING",
-  "task_id": "FT20261016_LANE5_TOOLING_r1",
+  "status": "INDEPENDENT_TVD_RO_MODULES_VALIDATED_PRODUCTION_DEPENDENCY_PENDING",
+  "task_id": "FT20261016_LANE5_INDEPENDENT_CHECKPOINT",
   "trace_identity": null,
+  "updated_at": "2026-10-16T09:32:38.453439+00:00",
   "validation": {
     "B16_U_WB16_qualification": "DEPENDENCY_PENDING",
     "historical_core_directed_scripts": {
@@ -68,6 +76,20 @@
     "historical_trace_lists": {
       "matched": 13,
       "missing_kernel_files": 0
+    },
+    "lane2_independent_module": {
+      "consumer_reference_sector_reads_per_execution": 3,
+      "formal_runs": 0,
+      "normal_and_asan_ubsan_executions": 4,
+      "production_cache_path": "NOT_VALIDATED",
+      "status": "PASS"
+    },
+    "lane3_independent_module": {
+      "formal_runs": 0,
+      "native_descriptor_regression": "PASS",
+      "oracle_python_tests": 16,
+      "production_cache_path": "NOT_VALIDATED",
+      "ro_module_scenario_groups": 5
     },
     "new_formal_runs": 0,
     "python_tests": {

@@ -1,0 +1,76 @@
+{
+  "core_source_commit": "56abbacc1192d68995e78561899719649f838079",
+  "directory_header_sha256": "5d66aa01fe6f5c89ae5b112e5258e41705129cc43aa59371127d945c0624a73f",
+  "formal_runs": 0,
+  "lane5_test_source_commit": "08b8cb7235d409c1c375efef114d5345ef8fd3cb",
+  "production_integration": "NOT_VALIDATED",
+  "results": [
+    {
+      "exit_code": 0,
+      "kind": "DIRECTORY_MODULE_ONLY_NOT_L2_CACHE_PRODUCER",
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/normal/producer_fixture.log",
+      "log_sha256": "645a154645a86371085360e3216ff9c68755cea2f206da04e058547e4b4fd274",
+      "mode": "normal",
+      "status": "PASS",
+      "test": "lane2_published_fixture",
+      "wall_seconds": 1.369
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-I/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/core_snapshot/src",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_tvd_consumer.cc",
+        "-o",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/normal/lane5_consumer"
+      ],
+      "exit_code": 0,
+      "kind": "DIRECTORY_MODULE_ONLY_NOT_L2_CACHE_PRODUCER",
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/normal/lane5_consumer.log",
+      "log_sha256": "4c10eeae5a0baac2952a824803e225565b87a2c3967dcc7d2285a245e5bd7223",
+      "mode": "normal",
+      "status": "PASS",
+      "test": "lane5_independent_byte_version_consumer"
+    },
+    {
+      "exit_code": 0,
+      "kind": "DIRECTORY_MODULE_ONLY_NOT_L2_CACHE_PRODUCER",
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/asan_ubsan/producer_fixture.log",
+      "log_sha256": "645a154645a86371085360e3216ff9c68755cea2f206da04e058547e4b4fd274",
+      "mode": "asan_ubsan",
+      "status": "PASS",
+      "test": "lane2_published_fixture",
+      "wall_seconds": 3.936
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O1",
+        "-g",
+        "-I/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/core_snapshot/src",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_tvd_consumer.cc",
+        "-o",
+        "/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/asan_ubsan/lane5_consumer",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer"
+      ],
+      "exit_code": 0,
+      "kind": "DIRECTORY_MODULE_ONLY_NOT_L2_CACHE_PRODUCER",
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_lane2_independent_r1/asan_ubsan/lane5_consumer.log",
+      "log_sha256": "4c10eeae5a0baac2952a824803e225565b87a2c3967dcc7d2285a245e5bd7223",
+      "mode": "asan_ubsan",
+      "status": "PASS",
+      "test": "lane5_independent_byte_version_consumer"
+    }
+  ],
+  "test_source_sha256": "a8953b77d5f6a1d9e73ca947ade6c018a92e5651a774e3f16536c5e53b81509f"
+}
