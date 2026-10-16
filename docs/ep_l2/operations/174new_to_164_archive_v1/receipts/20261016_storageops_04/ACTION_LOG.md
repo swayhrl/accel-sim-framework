@@ -9,3 +9,8 @@
 - S01/S02 staging, destination copy, DEST_VERIFIED and source release: NOT_RUN. Existing source Ops owns those source objects.
 - Previous 36 pack archives are retained, not recopied. Source deletions and attributable source bytes released remain 0.
 - Only explicit receipt paths are staged; git diff --check, commit/push/fetch and exact SHA readback follow publication.
+
+- Consumed exact source nonce acknowledgment at a279d7d2ac23db0c59c39031736e6618e2787fe6; all nonce identity/hash fields MATCH. Target removed only its own probe/READY marker and checked absence, exit 0. Source old174 absence confirmation remains pending.
+- Verified source 102-file inventory SHA256 against source-published d34a952f7dfa5fcd0a2a965fc82623a6ff5fb9666f007b7626269e295a8505d7; S01/S02 file counts/byte sums match.
+- Removed exact task-owned OWNER.json and now-empty old stage directory after checking no data residues; retained all 36 archived pack copies, no recopy or source deletion.
+- Normalized the exact legacy PRECHECK.md line endings and refreshed hashes to match Git LF normalization.
