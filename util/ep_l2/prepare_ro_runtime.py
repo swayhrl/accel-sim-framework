@@ -43,7 +43,9 @@ def prepare(binding, manifest, ranges, output, detach, bypass):
         trace_content_sha256=b['trace_content_sha256'],commandlist_sha256=m['commandlist_sha256'],
         oracle_input_coverage=dict(unique_lines=b['eligible_unique_lines'],read_lane_references=b['eligible_read_lane_references']),
         epoch=b['epoch'],scope=b['scope'],features=dict(ro_tag_detach=bool(detach),ro_line_mshr_bypass=bool(bypass)),
-        launch_gate='Lane5 verifies exact full trace content, source/binary/ordered complete config and independent qualification',
+        launch_gate='Lane5 verifies exact full trace content, source/binary/ordered complete config plus latest CURRENT_ACCEPTED scientific qualification; newer withdrawal overrides old immutable qualification and COMPLETE_VALID',
+        required_repair_gates=['physical_bank_clock','memcpy_payload_identity'],
+        scientific_acceptance='PENDING_LANE5_CURRENT_ACCEPTED',
         runtime_counters='accepted_global_reads, accepted_oracle_candidates, accepted_ro; requests at L2, distinct from input lane references')
     (output/'RUNTIME_CONFIG_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
     return receipt
