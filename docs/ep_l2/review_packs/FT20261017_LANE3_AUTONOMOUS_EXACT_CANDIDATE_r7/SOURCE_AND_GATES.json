@@ -1,0 +1,73 @@
+{
+  "status": "EXACT_C948_STATIC_ADAPTATION_COMPLETE_OFFICIAL_RELEASE_PENDING",
+  "continuation_commit": "99e7515f81b0038ac49d274b73f774e8ea801e46",
+  "framework_source_commit": "f5c407616dd481eb12630666b10387b2652cc525",
+  "core_source_commit": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+  "repair_candidate_parent": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+  "lane1_latest_publication": "85534de235345292a153d9983cfd0d24d8033bb2",
+  "lane5_acceptance_publication": "300c1010161b270ae73414b8146d238c961f0cd0",
+  "binary_sha256": null,
+  "config_sha256": null,
+  "validation": {
+    "source_checks": 30,
+    "source_gate": "STATIC_PASS_NOT_COMPILE_OR_RUNTIME_PASS",
+    "audit_tool_tests": 10,
+    "patch_apply_checks": 5,
+    "exact_core_tree_reconstructions": 2,
+    "driver_blob_reconstructions": 2,
+    "cpp_compile": "NOT_RUN",
+    "cpp_execution": "NOT_RUN",
+    "independent_qualification": false
+  },
+  "staged_cpp_tests": {
+    "prepared_executable_invocations": 19,
+    "cache_groups": 11,
+    "partition_offset0_C16_modes": 4,
+    "partition_offset4096_C8_C16_modes": 8,
+    "native_regression_invocations": 1,
+    "certificate_rejection_invocations": 5,
+    "status": "NOT_RUN"
+  },
+  "waiting_subtask": {
+    "status": "RESOURCE_WAIT_EXPIRED",
+    "scope": "Bounded in-turn dependency waiting only; original project and pending production stage not complete",
+    "elapsed_seconds": 626.407389,
+    "scheduled_observations": 2,
+    "supplemental_late_lane5_metadata": "300c1010161b270ae73414b8146d238c961f0cd0",
+    "background_worker": false,
+    "goal_api_result": null,
+    "goal_restarted": false,
+    "limitation": "No active persistent Goal/resume service; no new Goal or daemon created",
+    "next_trigger": "Official Lane1 exact final source/binary event or coordinator continuation, then own admission and independent RO qualification"
+  },
+  "gate_waiter": {
+    "owner": "lane1_only",
+    "own_exists": false,
+    "own_pid": null,
+    "own_lock": null,
+    "own_deadline": null
+  },
+  "production_admission": {
+    "policy_unchanged": true,
+    "formal_build_owner": "lane1",
+    "independent_qualification_owner": "lane5",
+    "not_a_gate_for_lightweight_source_work": true,
+    "entry_invoked": false,
+    "build_admission_attempts": 0,
+    "activity_record": "ACTIVITY_AND_RESOURCE_CLOSE.json"
+  },
+  "late_lane5_dependency": {
+    "publication": "300c1010161b270ae73414b8146d238c961f0cd0",
+    "receipt_sha256": "c5a6ca173b428de4c4269ddf6fed8d8609cb5da18d43410a7376bfc00a3c60d2",
+    "status": "ENGINEERING_PILOT_TOOLS_READY_NO_SAFE_PILOT_ENVELOPE_FORMAL_QUALIFICATION_PENDING",
+    "engineering_pilot_decision": "NO_SAFE_PILOT_ENVELOPE",
+    "engineering_authorization_for_lane3": false,
+    "binary_sha256": null,
+    "current_accepted_runs": 0
+  },
+  "remaining": [
+    "Official Lane1 final source and actual producer release; first B16/U_WB16 pairs keep priority",
+    "If final official source differs, rebind minimal RO patch before any compilation",
+    "Legally admitted new-source production directed testing then Lane5 independent RO qualification before formal RO applications"
+  ]
+}

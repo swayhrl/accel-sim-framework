@@ -1,0 +1,192 @@
+{
+  "schema": "LANE3_R7_PREPARED_PRODUCTION_MATRIX",
+  "source": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+  "runner_sha256": "c52d4d6b4caaf16be5de770cd616536e9776a48e590871a422146bc8f3679cdf",
+  "producer_execution_count": 0,
+  "prepared_invocations": 19,
+  "cases": [
+    {
+      "name": "runtime",
+      "cache_groups": 11,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_00",
+      "detach": 0,
+      "bypass": 0,
+      "entries": 16,
+      "offset": 0,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_01",
+      "detach": 0,
+      "bypass": 1,
+      "entries": 16,
+      "offset": 0,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_10",
+      "detach": 1,
+      "bypass": 0,
+      "entries": 16,
+      "offset": 0,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_11",
+      "detach": 1,
+      "bypass": 1,
+      "entries": 16,
+      "offset": 0,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C8_00",
+      "detach": 0,
+      "bypass": 0,
+      "entries": 8,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C8_01",
+      "detach": 0,
+      "bypass": 1,
+      "entries": 8,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C8_10",
+      "detach": 1,
+      "bypass": 0,
+      "entries": 8,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C8_11",
+      "detach": 1,
+      "bypass": 1,
+      "entries": 8,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C16_00",
+      "detach": 0,
+      "bypass": 0,
+      "entries": 16,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C16_01",
+      "detach": 0,
+      "bypass": 1,
+      "entries": 16,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C16_10",
+      "detach": 1,
+      "bypass": 0,
+      "entries": 16,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "partition_warm_C16_11",
+      "detach": 1,
+      "bypass": 1,
+      "entries": 16,
+      "offset": 4096,
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "r0_off_regression",
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "reject_range_hash",
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "reject_manifest_hash",
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "reject_scope",
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "reject_epoch",
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    },
+    {
+      "name": "reject_command",
+      "status": "NOT_RUN",
+      "binary_sha256": null,
+      "timeout_seconds": 120
+    }
+  ],
+  "execution_template": [
+    "python3",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/run_ro_runtime.py",
+    "--source",
+    "5ae8b06d58b61189140f571ab37b5f6d51228632",
+    "--build",
+    "<NEW_ADMITTED_BUILD>/framework/gpgpu-sim",
+    "--output",
+    "<NEW_IMMUTABLE_RESULT_DIRECTORY>"
+  ],
+  "enablement": "NOT_EXECUTABLE_UNTIL_OFFICIAL_PARENT_REBIND_AND_LEGAL_LANE3_BUILD; official Lane1/Lane5 mainline has priority",
+  "requires": [
+    "exact final official Lane1 source and producing Framework/binary readback",
+    "Rebind minimal RO patch if final source differs; source-safe integration by Lane1",
+    "Current formal build entry, f_bavail+growth, RAM, quotas, exclusive lease, other-project protection",
+    "New RO production binary/source/config identities; execute this bounded producer matrix once",
+    "Lane5 independent physical_bank_clock, memcpy_payload_identity and separate RO four-mode qualification before any formal RO application"
+  ],
+  "oracle_scope": "whole_commandlist / TRACE_MODEL_CLOSED_WORLD",
+  "new_application_or_oracle_scope": false
+}

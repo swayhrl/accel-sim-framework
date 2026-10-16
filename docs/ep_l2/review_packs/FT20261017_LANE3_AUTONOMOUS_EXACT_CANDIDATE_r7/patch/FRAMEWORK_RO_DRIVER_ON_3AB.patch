@@ -1,0 +1,61 @@
+diff --git a/gpu-simulator/accel-sim.cc b/gpu-simulator/accel-sim.cc
+index 071ba64d6..8a134449f 100644
+--- a/gpu-simulator/accel-sim.cc
++++ b/gpu-simulator/accel-sim.cc
+@@ -15,6 +15,7 @@ accel_sim_framework::accel_sim_framework(std::string config_file,
+       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
+   m_gpgpu_sim->init();
+ 
++  m_gpgpu_sim->ep_l2_ro_bind_commandlist(tconfig.get_traces_filename());
+   tracer = trace_parser(tconfig.get_traces_filename());
+ 
+   tconfig.parse_config();
+@@ -30,6 +31,7 @@ accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
+       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
+   m_gpgpu_sim->init();
+ 
++  m_gpgpu_sim->ep_l2_ro_bind_commandlist(tconfig.get_traces_filename());
+   tracer = trace_parser(tconfig.get_traces_filename());
+ 
+   tconfig.parse_config();
+@@ -97,8 +99,10 @@ void accel_sim_framework::simulation_loop() {
+   // cleanup() reports a completed kernel as soon as its CTA work retires.
+   // Emit one final snapshot after the backend drain so closeout checks see
+   // the actual terminal resource and credit state.
+-  if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit())
++  if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit()) {
++    m_gpgpu_sim->ep_l2_ro_end_epoch();
+     m_gpgpu_sim->print_stats(~0ULL);
++  }
+ }
+ 
+ void accel_sim_framework::parse_commandlist() {
+@@ -108,6 +112,8 @@ void accel_sim_framework::parse_commandlist() {
+   while (kernels_info.size() < window_size && commandlist_index < commandlist.size()) {
+     trace_kernel_info_t *kernel_info = NULL;
+     if (commandlist[commandlist_index].m_type == command_type::cpu_gpu_mem_copy) {
++      if(ro_kernel_command_seen && m_gpgpu_sim->getMemoryConfig()->m_L2_config.ro_requested())
++        throw std::logic_error("host write inside whole-commandlist oracle epoch");
+       size_t addre, Bcount;
+       tracer.parse_memcpy_info(commandlist[commandlist_index].command_string, addre, Bcount);
+       std::cout << "launching memcpy command : "
+@@ -115,6 +121,7 @@ void accel_sim_framework::parse_commandlist() {
+       m_gpgpu_sim->perf_memcpy_to_gpu(addre, Bcount);
+       commandlist_index++;
+     } else if (commandlist[commandlist_index].m_type == command_type::kernel_launch) {
++      ro_kernel_command_seen=true;
+       // Read trace header info for window_size number of kernels
+       kernel_trace_t *kernel_trace_info =
+           tracer.parse_kernel_info(commandlist[commandlist_index].command_string);
+diff --git a/gpu-simulator/accel-sim.h b/gpu-simulator/accel-sim.h
+index 3e425dbae..4a11f610b 100644
+--- a/gpu-simulator/accel-sim.h
++++ b/gpu-simulator/accel-sim.h
+@@ -43,6 +43,7 @@ class accel_sim_framework {
+     kernels_info.reserve(window_size);
+   }
+   void simulation_loop();
++  bool ro_kernel_command_seen=false;
+   void parse_commandlist();
+   void cleanup(unsigned finished_kernel);
+   unsigned simulate();
