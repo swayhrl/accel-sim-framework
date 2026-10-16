@@ -409,6 +409,12 @@ class RunnerInputTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_trace_closure(self.spec)
 
+    def test_missing_physical_bank_clock_gate_rejected(self):
+        del self.release['gates']['physical_bank_clock']
+        self.write_release()
+        with self.assertRaisesRegex(ValueError, 'missing independent qualification gate'):
+            inspect(self.spec)
+
     def test_unknown_trace_commands_rejected(self):
         (self.root / 'kernelslist.g').write_text('unknown-future-command input.bin\n')
         with self.assertRaises(ValueError):
