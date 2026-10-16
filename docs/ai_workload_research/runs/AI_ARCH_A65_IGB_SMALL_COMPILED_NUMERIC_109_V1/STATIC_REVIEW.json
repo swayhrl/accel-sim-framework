@@ -1,0 +1,20 @@
+{
+  "compiled_entry": "torch.compile(train_step,dynamic=True); original model objects",
+  "old_joint_predicate": "n==n2 AND torch.allclose(p,z,atol=1e-6,rtol=1e-4)",
+  "separate_old_name_gate_result": "UNKNOWN_NOT_CAPTURED",
+  "old_initial_parameter_SHA": "UNKNOWN_NOT_CAPTURED",
+  "old_compiled_gradient_and_update_deltas": "UNKNOWN_NOT_CAPTURED",
+  "risks": [
+    "zip does not separately assert length/order/names/shape/dtype",
+    "initial weights and empty optimizer states not independently hashed",
+    "cache correctness replays precede compiled reuse of original mb",
+    "exact original mb feature lifetime and before/after hashes not captured"
+  ],
+  "old_common_and_supervisor": "hardcoded A61 output; neither executed nor imported",
+  "old_sitecustomize": "hardcoded A61 write allowance; must not reuse as A65 guard",
+  "sitecustomize_SHA256": "2d19c99d73d3d32acb6f416a8123277054e9a2f39101aeac56eebcb3c708d165",
+  "future_runner_requirement": "new output/cache namespace and read-only packages; exact same math, seed, gates, versions",
+  "comparator_GPU_runner_and_full_asset_rehash": "NOT_RUN: resource admission already failed",
+  "A61_STOP_preserved": true,
+  "compiler_bug": "NOT_ESTABLISHED"
+}
