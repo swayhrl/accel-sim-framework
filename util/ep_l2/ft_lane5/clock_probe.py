@@ -62,13 +62,15 @@ def main():
         configs = [core/'configs/tested-cfgs/SM7_QV100/gpgpusim.config',core/'tests/ep_l2/ft_wbuf.config']
         report['configs'] = [{'path':str(p),'sha256':digest(p)} for p in configs]
         for mode in (1,2):
-            for offset in (0,4096):
+            for offset, warm in [(0,False), (4096,False), (4096,True)]:
                 command = [str(out/'clock-probe.out'), *map(str,configs),str(mode),'16',str(offset)]
-                log = out/f'mode{mode}_offset{offset}.log'
+                if warm:
+                    command.append('--warm-hit')
+                log = out/(f'mode{mode}_offset{offset}' + ('_warm' if warm else '') + '.log')
                 with log.open('x') as stream:
                     result = subprocess.run(command,cwd=out,stdout=stream,stderr=subprocess.STDOUT,timeout=120,
                         env=dict(os.environ,OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1'))
-                report['tests'].append({'mode':mode,'offset':offset,'command':command,'exit_code':result.returncode,
+                report['tests'].append({'mode':mode,'offset':offset,'warm_hit':warm,'command':command,'exit_code':result.returncode,
                     'log':str(log),'log_sha256':digest(log),
                     'audit_lines':[s for s in log.read_text().splitlines() if s.startswith(('CLOCK_','FT real'))]})
                 print(mode,offset,result.returncode,report['tests'][-1]['audit_lines'],flush=True)
