@@ -1,0 +1,25 @@
+{
+  "schema": "STORAGE_OPS_R10_OLD174_NEXT_SOLE_WINDOW_REQUEST",
+  "status": "COORDINATION_ONLY_NO_DATA_PAYLOAD",
+  "source_commit": "ba350541ad20e92f305b89bd77e98af9b49d6c67",
+  "source_branch": "hrl/ops-174-source-audit-exec-v1",
+  "requested_after": "TARGET_POLYBENCH_RESTORE_PHASE_CLOSED_R10_V1 GitHub-pinned and independently verified on old174",
+  "current_root_available_bytes_at_last_snapshot": 23222497280,
+  "source_released_bytes_this_window": 0,
+  "priority_suggestion": [
+    {
+      "phase": "R1_197_EXACT_REVERSE_DRILL",
+      "reason": "10 preplanned <=512MiB reverse batches can complete exact no-overwrite recovery proof for the 4,464,783,360-B allocated source-release candidate; original files still KEEP until separate user approval",
+      "source_reverse_plan_sha256": "32563312cb2adfff5965c89cc23aa50cc8ac95994eec4de903f3fee714c18c2c",
+      "source_recovery_prep_commit": "7c38a1cefe0680b833f06361ff59e9032ce48695"
+    },
+    {
+      "phase": "R1R_OR_R2_COLD_COPY",
+      "reason": "If target cannot yet support R1 197 reverse, R1R and R2 22 frozen COPY_ONLY batches are source-plan-checked; neither original may be released without exact approval",
+      "source_stager_prep_receipt_sha256": "52fe9904e04e04a2d3922be6b28e1329642b6e76f2a38f6aa995749881b7fa2b"
+    }
+  ],
+  "target_action_requested": "Publish a GitHub-pinned sole-bridge next-window decision and exact receiver ACK schema. Old174 will not stage R1R/R2 until fresh project-specific ACK and PolyBench phase-closeout are independently verified. No concurrent rsync.",
+  "source_action": "SOURCE_KEEP",
+  "source_release_authorized": false
+}
