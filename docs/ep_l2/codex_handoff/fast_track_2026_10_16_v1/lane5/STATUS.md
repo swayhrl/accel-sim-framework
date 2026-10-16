@@ -27,7 +27,12 @@ Five full original development workloads: sad, vectorAdd_4M, cfd_097k,
 convolutionSeparable, FWT_7_21, each B16/U_WB16 on identical frozen R0 binary.
 sad pair COMPLETE_VALID and frozen: 110593 / 110573 cycles, 1.000180876x.
 Peak staging 1 in both arms, no C16 pressure; no capacity-benefit claim.
-vectorAdd_4M pair RUNNING with process identity in RECEIPT/registry.
+vectorAdd_4M COMPLETE_VALID: 73236 / 73434 cycles, speedup 0.997303701x
+(regression 0.27036%). U staged peak38 vs B16 peak16; B16 WBUF-full489576
+vs U0, but U lower-queue-full attempts1812059 vs B1272655. Attempts are
+not elapsed stall cycles. Actual capacity pressure relieved without end-to-end
+gain; copy/bank service also changes. Strong controls selected at this point.
+cfd_097k pair RUNNING with process identity in RECEIPT/registry.
 At most two simulations; 8 CPU / 32GiB global reservation, scan exclusive,
 48GiB disk and 64GiB available-memory floors unchanged. External project tasks
 are untouched. No identical finite-WBUF task existed at startup.
