@@ -33,3 +33,7 @@
 2026-10-16T16:40:34.795048+00:00: R1_B012 closed after exact destination GitHub receipt and independent source KEEP ACK; 2000 matching bridge copies removed, no source release.
 
 2026-10-16T16:43:38.440353+00:00: R1_B013 closed after exact destination GitHub receipt and independent source KEEP ACK; 2000 matching bridge copies removed, no source release.
+
+2026-10-16T16:57:45.222742+00:00: R1_B014 closed after exact destination GitHub receipt and independent source KEEP ACK; 1777 matching bridge copies removed, no source release.
+
+16:55:12Z: R1 all-file independent target content restore passed (18565 files / 4737658722 B, 14 bounded groups). 16:57:45Z: B014 bridge closed after source ACK and 1087 SSHFS inode changes were content-revalidated. R1 native sample window accepted; original source release remains zero.

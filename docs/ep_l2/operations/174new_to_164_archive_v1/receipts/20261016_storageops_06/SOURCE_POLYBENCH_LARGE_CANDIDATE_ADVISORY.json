@@ -1,0 +1,36 @@
+{
+  "schema": "STORAGE_OPS_V7_OLD174_LARGE_CANDIDATE_ADVISORY",
+  "status": "AUDIT_ONLY_NOT_READY",
+  "source_host": "huangrulin-174",
+  "source_namespace": "mnt:[4026534768]",
+  "project": "Decoupled-L2",
+  "source_archive_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/polybench.tgz",
+  "source_archive_logical_bytes": 17943970556,
+  "source_archive_allocated_bytes": 17944014848,
+  "source_archive_sha256": "9feffb121c304412ea7b8289e9ae0c7cabff5aef2098ff025fb65af2f43653ca",
+  "source_archive_inode": 33890200,
+  "source_archive_mtime_epoch_seconds": 1786486434,
+  "proposed_164_path_not_verified": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/Decoupled-L2/old174/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/polybench.tgz",
+  "stage_hashes_manifest_repo_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261016_storageops_02/POLYBENCH_STAGE_HASHES.tsv",
+  "stage_hashes_manifest_sha256": "bca6dfc2b43f4715ce0c6e55d4faa8ae11f3f4c7be7b96279e5671489004f274",
+  "stage_regular_file_count": 13,
+  "stage_logical_bytes": 66331215249,
+  "stage_allocated_bytes": 66331324416,
+  "stage_paths": [
+    "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/polybench.correlation.closeout.stage",
+    "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/polybench.covariance.closeout.stage"
+  ],
+  "archive_to_stage_content_equivalence": "NOT_VERIFIED; logical sizes match historical archive plan, but complete byte comparison did not finish",
+  "active_reference": "polybench.tgz is used by existing Decoupled-L2 archive-batch scripts; stage paths had no direct PID/cwd/FD match in a bounded point-in-time scan but future dynamic use is not excluded",
+  "source_action": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "transfer_action": "DO_NOT_START_SECOND_STREAM",
+  "target_action_requested": "CAPABILITY_PLANNING_ONLY: assess <=512 MiB chunked reception and native 164 SHA256 readback plus two-namespace restoration for the 17.94 GB compressed archive; do not interpret this advisory as READY or release authorization",
+  "source_next_gates": [
+    "complete stage-to-archive byte comparison or independently archive exact stage files",
+    "fresh owner/registry and active/future consumer check",
+    "target receiver capability and agreed exact path map",
+    "164 copy, complete SHA256 validation and restoration drill",
+    "separate user approval of exact source release manifest"
+  ]
+}

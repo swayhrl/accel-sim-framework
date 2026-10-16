@@ -1,0 +1,30 @@
+{
+  "schema": "STORAGE_OPS_V7_OLD174_POLYBENCH_ARCHIVE_TRANSFER_REQUEST",
+  "status": "PLANNING_ONLY_NOT_READY",
+  "source_host": "huangrulin-174",
+  "source_namespace": "mnt:[4026534768]",
+  "project": "Decoupled-L2",
+  "source_archive_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/polybench.tgz",
+  "source_archive_logical_bytes": 17943970556,
+  "source_archive_sha256": "9feffb121c304412ea7b8289e9ae0c7cabff5aef2098ff025fb65af2f43653ca",
+  "stage_archive_equivalence_receipt": "POLYBENCH_STAGE_ARCHIVE_EQUIVALENCE.json",
+  "stage_archive_equivalence_status": "PASS_LOCAL_ONLY",
+  "stage_roots_allocated_bytes_potentially_recoverable_after_full_gates": 66331324416,
+  "proposed_164_archive_path_not_verified": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/Decoupled-L2/old174/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/polybench.tgz",
+  "requested_chunk_payload_max_bytes": 524288000,
+  "expected_chunk_count": 35,
+  "expected_last_chunk_bytes": 118178556,
+  "earliest_transfer_start": "AFTER_R1_B014_DEST_VERIFIED_SOURCE_KEEP_AND_BRIDGE_CLEANED",
+  "protocol": "One <=512 MiB active shared-bridge batch at a time, source direct archive-range read to bridge at <=30 MiB/s with source/bridge SHA256, target SSHFS 164 copy/readback SHA256, source KEEP ACK, then target exact bridge cleanup. Share free must remain >=40 GiB.",
+  "restore_validation_proposal": "Target re-reads exact 164 archive or chunks and sends bounded chunks back through the shared bridge; old174 independently validates every chunk against the still-kept source archive ranges and the complete SHA256 stream without writing a 17.94 GB root-disk restore copy. Separately verify extraction of the eleven protected stage members and recorded completion markers.",
+  "target_action_requested": "Confirm receiver capability and exact path map, or report a concrete engineering gap. Do not treat this planning request as READY. Do not start a second transfer stream while R1_B014 is active.",
+  "scientific_source_action": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "source_released_bytes": 0,
+  "open_release_gates": [
+    "Independent full SHA256-verified 164 archive",
+    "Cross-namespace restore drill",
+    "Fresh active/future consumer and registry audit",
+    "Exact user approval for any particular source paths"
+  ]
+}
