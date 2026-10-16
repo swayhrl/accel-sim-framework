@@ -20,3 +20,7 @@ Independent branch `hrl/iscas2027-dtc-sm89-admission-109-v1`, worktree `/home/hu
 - Four negative record/allowlist fixtures and20 CPU dispatcher-control-flow cases pass. Original unsupported89 returns0 with no execution; failure-only candidate returns1 with explicit rejection. Known-version CPU sentinel behavior remains unchanged. These are literal dispatcher fragments, not a simulator run or full-build qualification.
 
 SpMV remains the original small1138_bus input,36-CTA underfill and warm DRAM read0; a repaired frontend would not turn it into a large pressure workload. No performance result or native DTC speedup was generated. Formal support changes and a future full canary remain A/mainline review responsibilities.
+
+## Validation and handoff
+
+VALIDATION.json passes28 consistency checks; CPU_ARCHIVE_RECEIPT.json verifies all45 raw/source/build files in a separate local109 CPU archive. RAW_LOG_INDEX.md/JSON give exact paths and SHA values. Run `bash util/dtc_l1/sm89_admission_feasibility_v1/run_cpu.sh` in this isolated worktree to reproduce the CPU checks against the original readonly producer files. No full simulator build or canary is part of that script. First independent source/CPU publication is `f0133ebc`; final branch closeout adds archive/validation receipts. A may consume this pack immediately without waiting for the primary44-row campaign.

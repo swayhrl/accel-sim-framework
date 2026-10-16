@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+import csv,hashlib,json,pathlib,subprocess
+repo=pathlib.Path(__file__).resolve().parents[3];root=pathlib.Path('/data/c16/dtc_sm89_admission_feasibility_109_v1');pack=repo/'docs/dtc_l1/review_packs/DTC_SM89_ADMISSION_FEASIBILITY_V1';checks=[]
+def check(name,x):assert x,name;checks.append(name)
+def git(*a,cwd=repo):return subprocess.check_output(['git',*a],cwd=cwd,text=True).strip()
+def sha(p):return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+r=json.loads((pack/'CPU_TEST_RECEIPTS.json').read_text());cov=list(csv.DictReader((pack/'OPCODE_COVERAGE.tsv').open(),delimiter='\t'));w=json.loads((pack/'PAIR_DEPENDENCY_WITNESSES.json').read_text())
+check('CPU_only_no_GPU_native_simulator_or_header_change',all(r[k] is False for k in ['gpu_lock_requested','native_restarted','simulator_run','header_modified']))
+check('four_original_kernels_36_CTAs_353256_instructions',len(r['kernels'])==4 and sum(x['active_thread_instructions'] for x in r['kernels'])==353256 and all(x['CTAs']==36 and x['header_binary']==89 for x in r['kernels']))
+check('complete_opcode_spelling_counts_11708',len(cov)==23 and sum(int(x['warp_records_all4']) for x in cov)==11708 and len({x['root'] for x in cov})==16)
+check('full_modifier_difference_not_only_roots',[x['opcode'] for x in cov if x['existing_C16_exact_spelling']=='False']==['FFMA.FTZ'])
+check('64_missing_pair_edges_all4_members',w['witness_count']==64 and all(v==16 for v in w['counts_by_kernel'].values()) and len(w['counts_by_kernel'])==4)
+check('all_cpu_result_admission_remains_hold',all(x['semantic_admission']=='HOLD' for x in r['kernels']) and all(x['support']=='CLASSIFIER_FACT_ONLY_NOT_SM89_ADMISSION' for x in cov))
+p=(pack/'candidate_fail_closed.patch').read_text();added='\n'.join(x for x in p.splitlines() if x.startswith('+') and not x.startswith('+++'))
+check('candidate_only_nonzero_rejection_not89_alias','EXIT_FAILURE' in added and '89' not in added and 'Ampere' not in added)
+cp=subprocess.run(['git','apply','--check',str(pack/'candidate_fail_closed.patch')],cwd=repo,capture_output=True,text=True);check('candidate_applies_to_frozen_context_without_mutation',cp.returncode==0)
+for x in json.loads((pack/'FROZEN_CPU_SOURCE_IDENTITIES.json').read_text())['source_files']:
+ check('frozen_source_unchanged_'+x['path'],sha(repo/x['path'])==x['sha256'])
+for x in json.loads((pack/'CPU_BINARY_IDENTITIES.json').read_text()):check('binary_hash_'+x['path'],sha(x['path'])==x['sha256'])
+linked=(root/'raw/PARSER_LINKED_LIBRARIES.txt').read_text();check('parser_binary_links_no_CUDA_runtime_driver','libcuda' not in linked and 'libcudart' not in linked)
+check('four_negative_fixtures_rejected',len(r['negative_fixtures_rejected'])==4)
+dis=json.loads((pack/'DISPATCH_FAIL_CLOSED_TESTS.json').read_text());check('20_dispatch_control_flow_cases',len(dis)==20)
+check('unsupported_original_zero_is_never_accepted',all('CPU_DISPATCH_SENTINEL_ONLY' not in x['stdout'] for x in dis if x['binary_version'] in [89,999]))
+check('patched89_explicit_failure',next(x for x in dis if x['binary_version']==89 and x['probe']=='dispatch_fail_closed')['returncode']==1)
+check('publication_paths_are_independent',all(p.startswith(('docs/dtc_l1/review_packs/DTC_SM89_ADMISSION_FEASIBILITY_V1/','util/dtc_l1/sm89_admission_feasibility_v1/')) for p in git('diff','--name-only','7112a2242c81bc6aed82a1077b3e68abd6771ea3').splitlines()))
+check('main_C16_HEAD_untouched',git('rev-parse','HEAD',cwd='/home/huangrulin/workspace/accel-sim-framework')=='bd988aeb570708e5a41bab45433e9e49eac53c9a')
+check('completed_native_producer_HEAD_untouched',git('rev-parse','HEAD',cwd='/home/huangrulin/workspace/worktrees/accel-sim-dtc-native-coverage-109-v1')=='890fb0be7e681a60419c49ca0a7aa85731d8c164')
+result=dict(status='PASS_FEASIBILITY_EVIDENCE_VALIDATION_NOT_SIMULATOR_ADMISSION',checks=len(checks),results=checks);(pack/'VALIDATION.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

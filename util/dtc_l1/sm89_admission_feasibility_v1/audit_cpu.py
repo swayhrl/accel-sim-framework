@@ -40,7 +40,7 @@ for order,path in enumerate(members):
   if s.startswith('-') and '=' in s:k,v=s[1:].split('=',1);header[k.strip()]=v.strip()
   elif s.startswith('thread block ='):tb=s.split('=')[1].strip();blocks.add(tb)
   elif s.startswith('warp ='):
-   if declared is not None:assert seen==declared
+   if declared is not None:assert seen==declared and parsed[-1]['op']=='EXIT'
    warp=int(s.split('=')[1]);assert (tb,warp) not in warps;warps.add((tb,warp));seen=0;declared=None;pending={}
   elif s.startswith('insts ='):declared=int(s.split('=')[1])
   elif re.match(r'^[0-9a-f]+ [0-9a-f]{8} ',s):
@@ -51,7 +51,7 @@ for order,path in enumerate(members):
     high=17 if r['pc']==0x360 else 3
     if high in pending and 'R'+str(high) in r['src']:
      load=pending[high];witnesses.append(dict(kernel=order,tb=tb,warp=warp,load_pc=hex(load['pc']),consumer_pc=hex(r['pc']),missing_high_register='R'+str(high),captured_destinations=load['dest'],consumer_sources=r['src'],static_load=static[load['pc']],static_consumer=static[r['pc']],load_trace=load['line'],consumer_trace=r['line'],observation='frozen decoder forwards only captured destinations; no expansion for LDC.64'))
- assert seen==declared and header['binary version']=='89' and header['accelsim tracer version']=='5' and len(blocks)==len(warps)==36
+ assert seen==declared and parsed[-1]['op']=='EXIT' and header['binary version']=='89' and header['accelsim tracer version']=='5' and len(blocks)==len(warps)==36
  inp='\n'.join(x['line'] for x in parsed)+'\n';cp=subprocess.run([str(root/'build/parser_probe')],input=inp,text=True,capture_output=True,check=True);outputs=cp.stdout.splitlines();assert len(outputs)==len(parsed)
  for r,line in zip(parsed,outputs):
   pc,mask,op,ds,ss,width,addr,imm,converted_ds,converted_ss=line.split('\t');assert (int(pc),int(mask),op,int(width),int(imm))==(r['pc'],r['mask'],r['op'],r['width'],r['imm']), (r['line'],line)
@@ -63,7 +63,7 @@ for order,path in enumerate(members):
  receipt['kernels'].append(dict(order=order,path=str(path),sha256=sha(path),header_binary=89,tracer=5,CTAs=36,warps=36,records=len(parsed),active_thread_instructions=active,real_frozen_parser='PASS_PC_MASK_OPCODE_REGS_WIDTH_ACTIVE_ADDRESSES_IMMEDIATE',semantic_admission='HOLD'))
  allrecords.extend(parsed)
 assert len(allrecords)==11708 and sum(x['active_thread_instructions'] for x in receipt['kernels'])==353256
-checklist=['FOUR_IMMUTABLE_PRODUCER_AND_CONSUMER_HASHES_MATCH','HEADER89_AND_TRACER5_PRESERVED','ALL_CTAS_WARPS_DECLARED_RECORD_COUNTS','11708_RECORDS_353256_ACTIVE_THREAD_INSTRUCTIONS','REAL_FROZEN_PARSER_FIELDS_MATCH_INDEPENDENT_DECOMPRESSOR','NO_NATIVE_NO_GPU_LOCK_NO_SIMULATOR']
+checklist=['FOUR_IMMUTABLE_PRODUCER_AND_CONSUMER_HASHES_MATCH','HEADER89_AND_TRACER5_PRESERVED','ALL_CTAS_WARPS_DECLARED_RECORD_COUNTS','11708_RECORDS_353256_ACTIVE_THREAD_INSTRUCTIONS','REAL_FROZEN_PARSER_FIELDS_MATCH_INDEPENDENT_DECOMPRESSOR','NO_NATIVE_NO_GPU_LOCK_NO_SIMULATOR','ALL_WARPS_TERMINAL_EXIT']
 assert witnesses
 # Existing classifier facts; no new Ada category is invented.
 rows=[]
