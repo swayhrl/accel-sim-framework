@@ -1,0 +1,24 @@
+{
+  "status": "CORRECTED_TOOL_ASSUMPTION_NOT_INPUT_OR_RUNTIME_CHANGE",
+  "failure": {
+    "path": "/workspace/dtc-btree-format-stability-cpu-174-v1/reference_FAIL_STOP.json",
+    "bytes": 117,
+    "sha256": "886f5f6cfa764b8f1ff7746c5efbb4279cf86dfef186edb0a371dc47fa093273"
+  },
+  "original_tool_sha256": "b1f3967f946b0fc982dbf045597e1612bc2f9865746a0aceddbf3f4564e7856d",
+  "trigger": {
+    "member": "kernel-1.traceg",
+    "line": 24,
+    "original_record": "0 0 0 0 0050 ffffffff 1 R30 LDG.E.64.SYS 1 R14 8 1 0x00007f8eed500000 0",
+    "cause": "Tool incorrectly extended risk-PC width4 constraint to all unchanged memory records"
+  },
+  "repair": "Require trace width==opcode-derived production width in Core legal set1,2,4,8,16; alignment uses actual width. Risk whitelist still width4. Input unchanged.",
+  "source_evidence": [
+    "trace_parser.cc::get_datawidth_from_opcode",
+    "trace_driven.cc:369-408",
+    "finite Core abstract_hardware_model.cc:500-542"
+  ],
+  "scientific_domain_changed": false,
+  "candidate_regenerated": false,
+  "failed_attempt_retained": true
+}

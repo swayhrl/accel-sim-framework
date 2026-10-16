@@ -1,3 +1,22 @@
+# Current174 Btree conditional-input admission —2026-10-16T16:03Z
+
+**Independent Btree E-list admission PASS; six arms preregistered, not yet run.**
+User806f6c8c accepts CPU producerfb13326a conditionally. A rehashed/copied the
+one immutable bundle6e59d31e, independently audited both full members and all
+6000 fixed transformations (5792 address changes), and separately compiled/
+ran the actual unchanged production parser. Complete15609327 warp records,
+444467849 active-thread instructions and per-kernel instruction/address SHA
+match. No capture/native/source-app fidelity is claimed.
+Six new same-input B16-N/TC80-N/TRAD96/IO256/OO128/IO128 are fixed withcap32768
+before new performance; matched128 config contract passes. No new simulator
+has started at this preregistration checkpoint. The existing authority and
+original launch lock will receive a bounded auxiliary submission after this
+pack is pushed/fetched. Original44 remain37PASS/4live/3oldHotspotHOLD. All
+original processes, controls/strict watcher/HOLDs continue; Btree/2D/LUD
+scientific pending remains. 2D STOP andLUD no launch. No mixed-input ratio/GM.
+See service_closure_174_v1/review_pack/btree_derived_admission_v1 and
+BTREE_DERIVED_AUTHORIZATION_AND_ADMISSION_V1.md. Historical checkpoints follow.
+
 # Current174 checkpoint —2026-10-16T15:43Z
 
 **BICG WAIT128 complete, strict/control audit PASS.**
