@@ -47,3 +47,5 @@ A65 的同 batch 数值问题全部未执行；旧 A61 STOP 保持原样。本�
 输入归属：Contains information from Illinois Graph Benchmark (IGB), Khatua et al., KDD 2023，按原 A61 固定来源及 ODC Attribution License 1.0 的已接受本地数值使用范围只读引用；不重新分发原始数据或宣称全面内容权利保证。
 
 本分支独立归档 CPU 源审查、实际 STOP、原始资源输出、锁零占用收据和 SHA256SUMS。只 push 本分支；发布后 fetch-back 核 exact commit/tree/每个新增 blob 与 SHA、worktree clean。最终发布 SHA 与 readback 收据保存在 A65 私有输出并随最终回执提供，避免提交自引用。完成后 STOP，等待独立审查，不自动启动后续任务。
+
+发布工程收据补充：首次 Git push 输出 `Delta compression using up to 24 threads`，实际同时活跃压缩 workers 未测；不能将 CPU 审计的四核限制外推为整个发布阶段的合规证明。此后已将本窗口子进程 affinity 固定为 `0,2,4,6`，并逐命令设置 Git pack/index threads=4；未改全局设置。详见 `PUBLISH_CPU_OBSERVATION.json`。这不改变先前磁盘 STOP 或未执行 GPU 的事实。
