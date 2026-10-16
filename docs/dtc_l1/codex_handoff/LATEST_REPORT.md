@@ -1,16 +1,16 @@
 # Latest Codex Report
 
-## Lane A continuation checkpoint —2026-10-16 11:05 UTC
+## Lane A continuation checkpoint —2026-10-16 11:11 UTC
 
-The same Goal174 remains active. Current44-row plan: **13 terminal/invariant PASS** (including two Hotspot rows with scientific promotion HOLD), **16 live**, **3 admission holds**, **12 registered/unlaunched**. No incomplete GM12, replacement GM11 or pooled GM14 is computed. All old results/failures and original identities remain preserved. [Exact row states, raw-derived comparisons, residence and hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T110530Z).
+The same Goal174 remains active. Current44-row plan: **15 terminal/invariant PASS** (including two Hotspot rows with scientific promotion HOLD), **16 live**, **3 admission holds**, **10 registered/unlaunched**. No incomplete GM12, replacement GM11 or pooled GM14 is computed. All old results/failures and original identities remain preserved. [Exact row states, raw-derived comparisons, residence and hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T111101Z).
 
-MRI-Q's three registered primary arms now have complete4-kernel/1411757056-instruction strict PASS. These small cycle differences are retained; no parameter fitting or positive-case selection follows.
+The following complete primary trios have full ordered kernel/instruction/identity strict PASS at this checkpoint. Every incomplete workload remains in the status table below; no aggregate is computed. Finite IO/OO retain Core6fba0136, enhanced traditional Core6582b9d1. Small differences and regressions remain as observed.
 
-| MRI-Q primary arm | Complete workload cycles | Core |
-|---|---:|---|
-| Finite IO256 |361574|6fba0136|
-| Finite OO128 |361439|6fba0136|
-| Enhanced traditional96KiB/P256/M512 |362244|6582b9d1|
+| Complete primary workload | IO256 cycles | OO128 cycles | TRAD96 cycles |
+|---|---:|---:|---:|
+| 2DConvolution | 626642 | 592346 | 1559265 |
+| Btree | 247940 | 173210 | 186621 |
+| MRI-Q | 361574 | 361439 | 362244 |
 
 These primary IO/OO arms have different PIB depths. They are not the matched-depth causal result, native DTC speedup or an equal-area comparison. Exact B16/TC80 rows are reused under the original identities. [Resource and residence method](../iscas2027/service_closure_174_v1/RESOURCE_AND_RESIDENCE_METHOD_V1.md).
 
@@ -22,16 +22,16 @@ Current workload/arm state (REGISTERED means no attempt has started; absent cont
 | BICG | LIVE | LIVE | PASS | LIVE | LIVE |
 | GESUMMV | LIVE | LIVE | LIVE | — | — |
 | GEMM | LIVE | LIVE | LIVE | — | — |
-| 2DConvolution | PASS | PASS | LIVE | LIVE | REGISTERED |
+| 2DConvolution | PASS | PASS | PASS | LIVE | LIVE |
 | Btree | PASS | PASS | PASS | PASS | PASS |
-| DWT2D | LIVE | REGISTERED | REGISTERED | — | — |
+| DWT2D | PASS | LIVE | REGISTERED | — | — |
 | Gaussian | REGISTERED | REGISTERED | REGISTERED | — | — |
 | Hotspot1 | PASS / promotion HOLD | PASS / promotion HOLD | HOLD | HOLD | HOLD |
 | LUD | REGISTERED | REGISTERED | REGISTERED | — | — |
 | NN | REGISTERED | REGISTERED | REGISTERED | — | — |
 | MRI-Q | PASS | PASS | PASS | — | — |
 
-The strict watcher checks each natural terminal. Latest completed controls: Btree IO128 (444467849 instructions/247940 cycles) andBtree WAIT128 (same instructions/238270 cycles), both full strict PASS. Their free slots admitted only registered2D IO128 andDWT2D IO, respectively, after all current terminal reviews and unchanged pilot/resource gates. [2D control refill](../iscas2027/service_closure_174_v1/review_pack/live_pool_extension_v8), [DWT cohort refill](../iscas2027/service_closure_174_v1/review_pack/live_pool_extension_v9). No full-cohort barrier, restart or repeat simulation was added.
+The strict watcher checks each natural terminal. Latest accepted rows: DWT2D IO,148684429 instructions/241794 cycles, all11 finite-service metrics and final ownership/drains/residence checks PASS; TRAD96 2D,620347492 instructions/1559265 cycles, full conventional kernel/config/MSHR/PIB/exit/identity checks PASS. Their free slots admitted only registeredDWT2D OO and2D WAIT128 after all current strict reviews and unchanged same-arm/dual-pilot gates. [Admission/source/resource receipt](../iscas2027/service_closure_174_v1/review_pack/live_pool_extension_v10). All non-Hotspot diagnostic controls are now either terminal or live; other independent cohort rows continue without a batch barrier.
 
 The first **explicit matched-active-depth128** pair is now strictly joined: Btree IO128/OO128, common Core/binary/ordered input/ROI/other effective options, actual128 startup echoes,640 physical lines and complete scopes. The literal mode and inactive IO-only setting differences are exposed. Both arms retire1817551 cacheable warp instructions and collect4139841 sectors. All original raw counts/means remain unchanged; the denominator unit is now explicit, separate from the444467849 active-thread instructions. Twenty-four CPU validator guards reject mismatched depth/binary/input/finite OFF/capacity. Hotspot stays HOLD; BICG/2D pairs remain pending. [Pair gates, metrics, audits, guards and unit-equivalence proof](../iscas2027/service_closure_174_v1/review_pack/matched128_v1).
 
@@ -45,13 +45,13 @@ The first **explicit matched-active-depth128** pair is now strictly joined: Btre
 
 These are fixed-input model mechanism observations, not equal metadata/area or native GPU claims. Raw separate ready-to-collect/collection/writeback waits and integrals accompany the pair; mainIO256 results are never relabelled as matched128.
 
-The original Goal, branch and existing processes were not reset, restarted or stopped. Scoped coordinator520970 remains the sole persistent active launcher; original coordinator433763 stays live with launches disabled. Each bounded one-shot refill temporarily owns admission through a hashed token and restores the exact original token before exiting. The existing coordinator counts all live attempts and refills below its own cap8; measured characterization permits Lane A's total cap16. [Protocol and immutable source history](../iscas2027/service_closure_174_v1/LIVE_POOL_EXTENSION_V1.md). Current own RSS is39780352KiB (37.9GiB), MemAvailable286088532KiB (272.8GiB), writable capacity51904569344bytes (48.3GiB). Other project processes/locks remain untouched.
+The original Goal, branch and existing processes were not reset, restarted or stopped. Scoped coordinator520970 remains the sole persistent active launcher; original coordinator433763 stays live with launches disabled. Each bounded one-shot refill temporarily owns admission through a hashed token and restores the exact original token before exiting. The existing coordinator counts all live attempts and refills below its own cap8; measured characterization permits Lane A's total cap16. [Protocol and immutable source history](../iscas2027/service_closure_174_v1/LIVE_POOL_EXTENSION_V1.md). Current own RSS is39424000KiB (37.6GiB), MemAvailable267307600KiB (254.9GiB), writable capacity51218673664bytes (47.7GiB). Other project processes/locks remain untouched.
 
 Hotspot remains an unresolved historical-input provenance issue. The user has no verifiable encoder/per-lane receipt; independent Lane B owns further provenance/candidate repair. Lane A neither repeats that investigation nor waits for it, never infers addresses, and leaves its same three unexecuted labels forbidden. Existing Hotspot numeric results remain original-model evidence with scientific promotion HOLD. [User decision and boundary](../iscas2027/service_closure_174_v1/HOTSPOT_SHARED_FORMAT_REVIEW_V1.md).
 
 Modern DTC remains HOLD at the128KiB total data/shared capacity and physical-port organization boundary. All4 modern baseline-only rows are preserved, with Hotspot promotion held. Native109's15 accepted cases at890fb0be remain reused; SpMV SM89 andLayerNorm SM86/skippedCALL traces remain NOT_ADMITTED in the frozen consumer. No new ISA alias, protocol, input, family or claim is introduced. Finite Core6fba0136/binaryfe2d2737, canonical Core6582b9d1/binary4fcac62c, legacy2D exception,4/4 Core tests and exact small OFF equivalence are unchanged. [Source applicability](../iscas2027/service_closure_174_v1/SOURCE_APPLICABILITY_V1.md).
 
-Previous pushed checkpointdcd8f2c5 is retained; the matched-pair collector and explicit unchanged warp unit are committed asd59828cc/273eb4bf. This matched/control/cohort checkpoint is staged separately. Each publication is fetch-back checked for exact remote HEAD/tree; durable proof is `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json` with per-commit proofs retained. Worktree cleanliness and final closure remain explicit; this is not final Goal completion.
+Previous pushed checkpointb4bf512b and its matched-pair proof are retained. This new2D/DWT/control checkpoint is staged separately. Each publication is fetch-back checked for exact remote HEAD/tree; durable proof is `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json` with per-commit proofs retained. Worktree cleanliness and final closure remain explicit; this is not final Goal completion.
 
 ## Current Goal174 checkpoint —2026-10-16 09:43 UTC
 
