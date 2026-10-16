@@ -1,6 +1,6 @@
 # V7 target: R1 complete archive and independent full-content restore
 
-Current PolyBench window: PB_CHUNK_001 RANGE_DEST_VERIFIED; cumulative 1048576000 verified component bytes (2/35), whole archive not yet verified. Scope and precise V2 plan were rechecked under r10; all originals SOURCE_KEEP. Current batch Git/independent ACK closeout is pending.
+Current PolyBench window: PB_CHUNK_002 RANGE_DEST_VERIFIED; 1572864000 component bytes (3/35), whole archive not yet verified. Prior ranges closed after independent GitHub ACKs. All originals SOURCE_KEEP.
 
 R1: all 14 batches, 18565/18565 files, 4737658722 logical bytes are DEST_VERIFIED. Complete path/hash/size/identity membership matches frozen full source manifest 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5. Final data receipt was pushed/fetched at 43c717a20ae85b75d27bb1b8cb77d54120c52a4a. Every source batch has an independently GitHub-pinned SOURCE_KEEP ACK. All bridge data batches are closed; all original R1 files stay intact and R1 source release is zero.
 
@@ -21,3 +21,5 @@ Minimal receiver/restore tools pass 18 guard checks, including ownership of part
 Reverse sample R1_NATIVE_RESTORE_B001 has completed independent native restore verification and exact bridge cleanup. R1 original source release remains zero.
 
 R10 bounded continuation was consumed at 2026-10-16T17:44:00Z and expires 2026-10-17T03:44:00Z. It uses the existing Goal/receiver, has no daemon, and does not expand source release permissions. Exact R1 release-evidence scope is only the frozen 197 .vvp manifest af1bf73951ab44258591afd625043c855e3a76bca67fb378abe8b226ee271c84; whole build remains protected. Historical index evidence will be reconciled in a separate versioned record.
+
+R10 R1 reconciliation is in R1_RESTORE_INDEX_RECONCILIATION_R10_V1.json; the historical PROJECT_INDEX_RECEIPT.json remains unchanged. Its batch-sample field 16523251 B excludes the separately verified R1 full-project restore 4737658722 B. Nonoverlapping target content restore is 4754181973 B; native B001 sample overlaps R1 and is not added twice. R1_197_TARGET_EVIDENCE_R10_V1.json binds only the exact 197 .vvp / manifest af1bf73951ab44258591afd625043c855e3a76bca67fb378abe8b226ee271c84 to all frozen path/hash/batch/full-restore/UID/mode evidence. No source eligibility or release authorization is issued.
