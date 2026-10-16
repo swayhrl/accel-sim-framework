@@ -1,3 +1,24 @@
+# Current174 Btree six-arm start —2026-10-16T16:06Z
+
+**Six conditional Btree E-list arms started once; startup identity PASS.**
+Independent admission/preregistration f5bc8d2c5 was pushed and fetch-back verified
+before any new input performance. Six distinctUUID/specs bind the same new
+bundle6e59d31e, full two kernels/444467849 instructions andcap32768. All actual
+startup mode/geometry/PIB/MSHR/clocks/64SM echoes match the frozen proposal.
+No terminal strict result or ratio is claimed at this checkpoint.
+Existing sole authority520970/original launch lock handled bounded auxiliary
+submission; original token was restored exactly, including failure-safe cleanup.
+Original4 simulators retain start ticks and advanceCPU; all3 original dispatch/
+strict lock owners remain. There is no second persistent dispatcher/watcher.
+Original44 remain37PASS/4live/3oldHotspotHOLD, plus6separate new Btree running
+and5already accepted separate HotspotV2results. Total10actualsimulators use
+about14.3GiBRSS; cgroup headroom about120GiB and writable disk29.7GiB at snapshot.
+See review_pack/btree_derived_started_v1 and admission companion. Immediate
+per-attempt strict validation follows each natural terminal; ratios and matched
+metrics wait for all6PASS. Original Btree/2D/LUD scientific pending remains;
+2D STOP, LUD no launch, modern/native/area boundaries and no aggregate intact.
+Main Goal ACTIVE; historical checkpoints follow unchanged.
+
 # Current174 Btree conditional-input admission —2026-10-16T16:03Z
 
 **Independent Btree E-list admission PASS; six arms preregistered, not yet run.**
