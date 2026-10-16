@@ -15,6 +15,7 @@ def main():
     p.add_argument('--build',type=Path,required=True)
     p.add_argument('--build-manifest',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--include-b16',action='store_true')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     manifest=json.loads(a.build_manifest.read_text())
     subprocess.run(['git','-C',str(a.core),'diff','--exit-code',manifest['core_source_commit'],
@@ -31,6 +32,8 @@ def main():
            'test_ideal_meta':[],
            'test_descriptor_mshr_integrated':['integrated.config','integrated_exhaustion.config','integrated_stats_off.config','integrated_banked.config'],
            'test_wad':['wad.config']}
+    if a.include_b16:
+        cases.update(test_ideal_wb=['ft_wbuf.config'],test_ft_wbuf=['ft_wbuf.config'])
     rows=[]
     try:
         for name,configs in cases.items():
@@ -53,12 +56,23 @@ def main():
             row['returncode']=result.returncode;rows.append(row)
             print(name,result.returncode,flush=True)
             if result.returncode:break
+        if a.include_b16 and len(rows)==len(cases) and all(r.get('returncode')==0 for r in rows):
+            # The same read-service producer test also runs above real finite
+            # WBUF16: its stores use the new allocation/copy/pin implementation.
+            source_config=a.core/'tests/ep_l2/ideal_read_hit.config'
+            overlay=a.out/'ideal_read_hit_b16.config'
+            overlay.write_text(source_config.read_text()+'\n-gpgpu_ep_l2_ft_mode 1\n-gpgpu_ep_l2_wbuf_entries 16\n')
+            args=[str(a.out/'test_ideal_read_hit'),str(a.core/'configs/tested-cfgs/SM7_QV100/gpgpusim.config'),str(overlay)]
+            with (a.out/'test_ideal_read_hit_b16.log').open('w') as log:
+                result=subprocess.run(args,cwd=a.out,stdout=log,stderr=subprocess.STDOUT,timeout=180)
+            rows.append({'test':'test_ideal_read_hit_b16','run_command':args,'returncode':result.returncode})
+            print('test_ideal_read_hit_b16',result.returncode,flush=True)
     finally:
         reg.release_build(lease,'lane4')
         output={'core_test_commit':subprocess.check_output(['git','-C',str(a.core),'rev-parse','HEAD'],text=True).strip(),
                 'compiled_production_manifest':manifest,'lane5_client':client,'tests':rows}
         (a.out/'TEST_MANIFEST.json').write_text(json.dumps(output,indent=2)+'\n')
-    if len(rows)!=len(cases) or any(r.get('returncode')!=0 for r in rows):raise SystemExit(1)
+    if len(rows)!=len(cases)+int(a.include_b16) or any(r.get('returncode')!=0 for r in rows):raise SystemExit(1)
 
 
 if __name__=='__main__':main()
