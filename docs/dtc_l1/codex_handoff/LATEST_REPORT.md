@@ -1,3 +1,16 @@
+# Current174 checkpoint —2026-10-16T14:04Z
+
+Original OO ATAX a58df5fb-f532-467d-8bb6-f9e99d866a27 completed naturally:
+**50796515cycles,145666048instructions,2ordered kernels,strictPASS**.
+Same-input TRAD96 is30981690cycles; OO regresses, preserved without retuning.
+Both member/list identities and per-kernel full-body instruction scopes were
+rechecked at terminal. See review_pack/checkpoint_20261016T1404Z.
+Original44 now **34numericPASS/7live/3oldHotspotHOLD**, plus the separate
+HotspotV2five strict/resourcePASS. IO ATAX remains live; no full ATAX trio yet.
+Scientific applicability, modern/native HOLDs and no-GM boundary remain intact.
+Existing7simulators, sole launch authority and strict watcher continue.
+Previous checkpoints below retain their original time and evidence.
+
 # Current174 checkpoint — 2026-10-16T13:25Z
 
 **Hotspot SOURCE_PROFILE_RECONSTRUCTION_V2: independent admission PASS;
