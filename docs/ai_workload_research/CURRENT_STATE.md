@@ -1,17 +1,24 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16 / A64，A61真实IGB-small G1数字资格STOP并完成独立审查。** 本页为研究导航，不是109实时监控。以下最新状态优先于下方2026-10-15“A61待批准”历史记录；用户早已批准并向109 Lane M派发A61，A61实际执行已经STOP，不能再转用历史待批文字。
+**最新协调快照：2026-10-16 / A66；A65真实数值结果独立审查完成，A67 eager-scope bounded wall仅准备、未派发。** 本文件是科研导航而非节点实时进程监控。此节优先于下方A64/A60的历史待办表述；原A61、A65完整raw与实际科学STOP保持原样。
 
-## 最新终态：A61真实运行与A64独立审查
+## A65最终事实与独立A66裁决
 
-- A61执行branch：hrl/aiarch-a61-igb-small-gnn-native-109-v1；终态commit：37120f98186b83a946f4812755523f5d73245491；tree：d13b446ca4824cb3ad7ffae25b5ce91c023b75a1；比原Goal HEAD 9be1d85b0ce105026e7fc4206a0380a98ffb4d1e ahead1，final→branch HEAD identical。
-- **科学终态 DATA_OR_NUMERIC_NO_GO / STOP**，精确原因 COMPILED_UPDATE_QUALIFICATION_JOINT_PREDICATE_FAILED。G0官方IGB真实输入/权利/环境PASS；G1 FULL_RESIDENT_GPU单batch实际模型/Adam/容量PASS（Torch reserved约8.10GiB）；PINNED_CACHE_ON eager采样/cache/fallback/数值PASS。编译训练步返回后参数名字相等与updated tensor allclose短路复合assert第一次在layers.0.lin_r.weight失败，第二名字/实际差值/梯度未记录，根因UNKNOWN，**不能宣称compiler bug**。
-- PINNED_CACHE_OFF、六个正式seed/arm性能点、完整训练wall和供数诊断均**NOT_RUN**；G1一共3次更新、0正式更新。因此没有任何硬件供数瓶颈、全驻留是否足够快或缓存硬件收益结论。GPU锁累计64.680326秒，结束已释放；旧资产/其它独立项目未改。
-- [A61原始报告](https://github.com/swayhrl/accel-sim-framework/blob/37120f98186b83a946f4812755523f5d73245491/docs/ai_workload_research/runs/AI_ARCH_A61_IGB_SMALL_GNN_NATIVE_109_V1/FINAL_REPORT.md)；[A64独立科学审查](reviews/AI_ARCH_A64_A61_GNN_NUMERIC_STOP_INDEPENDENT_REVIEW_2026-10-16_V1.md)。
-- **唯一有条件下一步**：为新自然B1024单batch、同一冻结输入/初态做eagerA/eagerB/compiledC三路更新差分，单独记录名称/梯度/参数误差及负例，原数值门不放宽；≤180秒109共享锁、下载0、新盘≤128MiB、总3次optimizer更新＋必要工程中断retry1次。此为**新Goal建议，不是已启动GPU任务**；用户派发前不得执行。原A61历史STOP不改写。
-- A62/A63在[原协调文献目录](literature/)完成新的稀疏训练科学候选整理，仍为SOURCE/LITERATURE，未晋升GPU；Q-S点云保持原候补，A59/A50G负结果与C16/AWMA权限均冻结。
+- A65分支：`hrl/aiarch-a65-igb-small-compiled-numeric-109-v1`，终态commit `3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79`，tree `7a37e87cc063d03ee2a7b4a2212cad2a6da098eb`。Goal HEAD `afe42345c4b0c45b3e09f3cb32ce4e3e0de09989`→final ahead 3，final→远端branch HEAD identical；113个新增Git路径。原A65初次CPU磁盘STOP历史保留。
+- 相同新自然B1024 frozen input和bitwise相同参数/独立Adam初态；eagerA/eagerB原更新门PASS，但非逐bit一致；compiledC仅`layers.0.lin_r.weight[59,378]`更新超门（9张量合计665619元素中1个）。梯度分别约3.156174e-9与3.167884e-9，差1.171e-11；实测更新差2.031447e-6，阈值1.276344e-6，符合首步Adam近eps1e-8放大解释。原数值门严格FAIL：`COMPILED_PATH_NUMERIC_NONALIGNMENT`，**不等于已证Torch编译器bug、训练精度失败或硬件问题**。A61旧FAIL不重写，正式训练/完整wall依旧0样本。
+- A65持锁32.530213秒、RAM采样9.570GiB、GPU采样6982MiB，用户批准首批清理按硬链接去重实际回收189.426GiB；文件系统空闲在清理结束快照约265.14GiB；164逐文件Hash9172项、本地9142项在A65原执行收据中闭合，原归档/A61/A26GR1保护不变。新盘保守终态边界103428096B约98.64MiB。**不能把df202.55GiB净变化全部算成删除贡献。**
+- GPU终态监督出现`EXTERNAL_GPU_TASK_STOP`，返回码0/数值观察已完成/最终NVML空，但触发时PID未保存；CPU复现的自身退出误报只是可能性，**完整独占资格仍UNRESOLVED**。不为证明旧问题重跑GPU，新性能Goal CPU预检阶段须修正真实PID/归属收据，不能屏蔽外部PID。
+- [A65原始终态](https://github.com/swayhrl/accel-sim-framework/blob/3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79/docs/ai_workload_research/runs/AI_ARCH_A65_IGB_SMALL_COMPILED_NUMERIC_109_V1/FINAL_REPORT.md)；[A66独立科学审查](reviews/AI_ARCH_A66_A65_SAME_BATCH_NUMERIC_AND_STORAGE_INDEPENDENT_REVIEW_2026-10-16_V1.md)。
+
+## 下一项有条件科研Goal：A67（尚未交给109）
+
+- A67派发准备分支：`hrl/aiarch-a67-igb-small-eager-scope-wall-109-v1`，发布HEAD `266314db14686b75d643c446824ebf8d59ba3a51`，Goal [A67 IGB-small eager-scope full wall](https://github.com/swayhrl/accel-sim-framework/blob/266314db14686b75d643c446824ebf8d59ba3a51/docs/ai_workload_research/goals/AI_ARCH_A67_IGB_SMALL_EAGER_SCOPE_BOUNDED_WALL_109_V1.md)。
+- 本提案**主动采用数值已通过的eager-scope**，不是把A61/A65 compiled失败改PASS；正式比较FULL_RESIDENT_GPU、PINNED_CACHE_ON、PINNED_CACHE_OFF诊断×2冻结seeds×每格12自然正式完整训练步（72正式updates），每格2warmup（12），另OFF一次数值canary（最多1），严格总≤85updates、GPU锁≤900秒，原109共享锁、RSS≤16GiB、VRAM≤12GiB、新盘≤256MiB、下载与安装0。样本不足以证明小幅全应用收益或所有强软件已被排除。
+- 先CPU-only修正监督器真实PID日志，确认原科学数据/模型/环境/图路径只读与身份；正常工程问题同Goal有界solve-and-continue，科学数据/软件/数值合同或资源变化STOP。用户必须**明确向109 Codex发送新启动指令**才授权执行；当前没有新GPU任务或其它项目恢复权。不得为compiled epsilon再额外重试。
+- A62/A63稀疏训练和Q-S点云仍为独立候补。A59 CAGRA/OGB等历史STOP、AWMA/C16/ISCAS独立权限均冻结。
 
 ---
+
 
 # AI-ARCH｜当前科研协调状态
 
