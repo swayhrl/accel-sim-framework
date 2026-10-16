@@ -1,15 +1,19 @@
-# Lane 1 review_r5 — 静态准备完成，正式构建继续HOLD
+# Lane 1 review_r5 — 独立静态缺陷已修复，R0.1仍未编译
 
-状态 `STATIC_READINESS_DELIVERED_R0_1_UNCOMPILED_RESOURCE_HOLD`。节点 `huangrulin-174`；按顺序完整消费r4/r5，最新权威77a9fbe937ea23465cf0d0076d2df1909f52d055，原6c136e2a科学合同不变，未重启Goal。继续两个仓库原执行分支 `hrl/ep-l2-ft20261016-lane1-v1`。
+状态 `INDEPENDENT_STATIC_BLOCKER_FIXED_R0_1_UNCOMPILED_RESOURCE_HOLD`。节点huangrulin-174；同Lane1继续原两个执行分支 `hrl/ep-l2-ft20261016-lane1-v1`，未重启Goal。已依次完整消费r4/r5，最新协调77a9fbe937ea23465cf0d0076d2df1909f52d055；原6c136e2a科学合同、资源/配置/旧结果撤回边界不变。
 
-生产源/build worktree仍 `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1`；已从旧34b32a01正常推进到冻结 Framework **53a1503d6de972ebb90e685ec0d5b5fc6dd09e3d**（只有构建工具/其测试变化，没有模拟器或配置差分）。发布worktree仍 `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1`。Core worktree仍 `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1`，候选 **62dc1d179b5516e68b21b695c7a9c5d0667e9671** 不变，tree等于Core执行分支发布c93d900e1f968a3b69990dc29b78d50fc18f35ac。没有用协调提交作runtime。旧34b源、旧review packs、旧R0/R1冻结资产全部保留。
+最新未编译Core候选 **c948184504d82b80e23eb3f4ff6cdfd328ba9355**，直接父62dc1d179b5516e68b21b695c7a9c5d0667e9671；Core执行分支发布 **57e1c363aede1a7790bdf94136d832d35ee7b34b**，tree与候选完全相同，保留原R1发布祖先但不混入其机制。最新Framework冻结build输入 **3ab150b3e99ff3ed759b8cdc5154cfb5744042a7**。准确新source覆盖此前53a/62计划身份；旧候选、旧review pack保持可回读，未覆盖旧runtime数据。
 
-已完成一次source/build入口/两修复测试与release身份审核；工具加固准确Core/vendor pin、固定原source/build路径、48GiB+2GiB/64GiB有效floor、lease后二次检查、失败日志hash/退出码、21条定向命令与输入/test exe身份、assertion flags及源最终clean检查。**13项轻量工具测试在最终版本PASS**（中间版本另13项，因vendor pin变化重验）；测试注入假的registry/resource状态，未实际申请lease或调用CMake。两修复C++和所有21个生产定向均**NOT_COMPILED_NOT_RUN**，binary=null，独立资格=false，正式接受pair=0。
+生产source/build worktree仍 `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1`；Core仍 `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1`；发布仍 `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1`；正式build仍 `/workspace/build/ep-l2-ft20261016-lane1-r0-1`，不存在。没有变更生产路径/机器、降低48GiB+2GiB/64GiB/配额，也未访问164。
 
-已交付 `BUILD_ADMISSION_ALTERNATIVES.md`：历史两build清理前静态分配约0.710/1.007GiB，真实编译/链接/同盘并发峰值未知，不能据此降低保护。独立`/root/share`约44.06GiB仍不足floor；results实际在该盘，`/root/data`未证明新增独立容量。备选只供审查，没有降低门槛、换路径/机器、访问164或接管Ops删除。已消费Lane5远端2fb8a6d1144f6fce038f51e60192f9fa8b0207af现行generation2撤回权威；Lane5对本r5评估的独立签署仍待其本lane发布。
+已交付首个r5 build入口/两修复测试/21条生产定向与发布检查审核；修复工具准确source/vendor pin、失败日志身份、floor/lease竞态等。13项最终工具检查PASS；随后只对新Core pin重验1项受影响入口测试PASS，均使用假registry/resource及小Python子进程，没有实际准入、lease或CMake。所有C++修复/回归仍NOT_COMPILED_NOT_RUN；binary=null，独立资格=false，当前正式pair=0。
 
-收尾只读观测UTC2026-10-16T14:23:13.552076+00:00：workspace空闲38,312,300,544B（35.68GiB），距50GiB还缺15,374,790,656B；可用RAM159,818,186,752B。中央EP-L2活跃run/build lease均0，实际7个DTC-L1 simulator仅观察，未停止/调度/修改配额或数据；R0.1 build目录仍不存在。本revision实际准入尝试0、编译0、应用0、清理0，没有后台worker。当前空间快照不构成未来准入许可。
+首个pack推送回读时发现Lane5刚发布e8f701995a27154ffcc54cc38245dde8cd7f9bdf：20项静态审核保留19PASS/1FAIL，确定原62候选l2cache.h observer重复定义。已逐字接入其最小删除patch，结果header hash匹配；另修旧directed fixture的time比GPU clock领先一周期问题，所有直接fill/response/access与cache周期同步。新Core只改这两个文件，无生产机制/预算/config变化。Lane5原审核不是新候选资格；11门槛及五pair准备仍需重绑定准确新source/binary。later-quiescent clean prefill scope维持原62候选，不能继承早期initial-only候选PASS。
 
-新pack `docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_BUILD_READINESS_r1/` 内含完整planned identity、21条清单、测试静态审核、发布检查单、实测资源/挂载/进程/registry和工具测试证据；RECEIPT_REVIEW_R5.json保存本revision回执，先前回执另存PRIOR_RECEIPT_c2a536bd.json。
+BUILD_ADMISSION_ALTERNATIVES.md r2完成Lane1/Lane5独立证据对账，精确解释历史du与文件块之和的目录块差额。历史静态分配不能证明新编译/链接/并发峰值，当前其它文件系统亦未合格；全部替代方案只供审查、没有采纳。两个已有Storage-Ops窗口继续负责空间恢复；研究Lane未删除/传输Ops或DTC-L1资产。
 
-下一步仅在现有Ops真实释放、Lane5独立复测、live资源和中央配额无冲突后，由Lane1通过**原build_r0_1.py入口**唯一构建一次R0.1，发布新binary与精确source/config/test身份，交Lane5独立physical_bank_clock、memcpy_payload_identity及受影响原门槛。旧六条R0应用仍科学SUSPENDED，不能填正式性能表或均值；R1/TVD/RO/ideal不得阻塞首批B16/U_WB16。资源不足时不反复准入、不启动编译，继续由已有Storage-Ops负责恢复。
+最近有界收尾观测UTC14:23:13：workspace38,312,300,544B（35.68GiB）、距50GiB缺15,374,790,656B；RAM159,818,186,752B，中央EP-L2活跃run/build lease0/0，7个DTC simulator只读观察。此为快照，不是未来准入许可；本revision编译/应用/实际准入尝试/源清理0，没有后台worker。
+
+新follow-up pack `docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1/` 包含最小新Core差分、完整R0→当前候选patch、准确更新计划身份、原Lane5审核及空间对账。首份 `FT20261016_LANE1_REVIEW_R5_BUILD_READINESS_r1` 保持冻结；先前回执存新pack，当前RECEIPT/RECEIPT_REVIEW_R5同步。
+
+下一步：现有Ops真正释放且Lane5独立复测后，重新检查live资源、真实进程/registry与配额，由Lane1通过原build_r0_1.py唯一正式构建R0.1、运行21条producer定向、冻结新binary，再交Lane5独立11门槛。首批五B16/U_WB16新pair不等TVD/RO/ideal。旧六条R0应用科学SUSPENDED及旧R1撤回仍有效，不得计算正式速度/均值或复用旧key。

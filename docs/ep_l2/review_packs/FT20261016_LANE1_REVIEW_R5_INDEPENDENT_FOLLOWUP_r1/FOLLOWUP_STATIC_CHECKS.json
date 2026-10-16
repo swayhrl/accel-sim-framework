@@ -1,0 +1,38 @@
+{
+  "recorded_at": "2026-10-16T14:28:56.676729+00:00",
+  "lane5_publication_consumed": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf",
+  "old_candidate": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "new_candidate": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+  "new_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
+  "new_tree": "4122ac762547363881a91f3c986186e9649b5d9c",
+  "core_changed_files": [
+    "src/gpgpu-sim/l2cache.h",
+    "tests/ep_l2/test_ft_wbuf.cc"
+  ],
+  "duplicate_definitions_before": 2,
+  "duplicate_definitions_after": 1,
+  "header_equals_lane5_expected_patch_result": true,
+  "original_lane5_patch_sha256": "b3f3337fb7caebda8b592817e56c100e46c4e91b0d5677b43e6fd349bacb9349",
+  "reverse_patch_check": "PASS",
+  "unchanged_independent_source_audit_inputs": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "src/gpgpu-sim/gpu-cache.h",
+    "src/gpgpu-sim/gpu-sim.cc",
+    "src/gpgpu-sim/l2cache.cc",
+    "tests/ep_l2/R0_1_REPAIR_SCOPE.md",
+    "tests/ep_l2/test_ft_host_prefill.cc",
+    "tests/ep_l2/test_ft_memcpy_clock.cc"
+  ],
+  "fixture_clock_invariant": "After construction and cycle return gpu_sim_cycle==time; cache cycle, direct access/fill/response all use that same clock. No leading time is passed to bank then rolled backwards by access. Test-only delta, not a production clock/model change.",
+  "updated_pin_guard_test": "PASS_ONE_AFFECTED_FAKE_ADMISSION_CASE; no actual lease/compiler",
+  "prior13_tool_checks": "RETAINED; unchanged implementation; not replayed",
+  "runtime_tests": "NOT_COMPILED_NOT_RUN",
+  "binary_sha256": null,
+  "independent_qualification": false,
+  "allocated_directory_blocks_for_lane5_du_reconciliation": {
+    "ep-l2-ft20261016-lane1-v1": 241664,
+    "ep-l2-ft20261016-lane1-r1": 294912
+  },
+  "runtime_qualification_of_new_source_by_lane5": "PENDING; their old19PASS/1FAIL static audit remains retained, not retroactively rewritten"
+}

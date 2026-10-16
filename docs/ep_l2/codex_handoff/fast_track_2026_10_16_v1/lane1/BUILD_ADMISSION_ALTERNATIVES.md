@@ -1,4 +1,4 @@
-# Lane 1：构建空间准入替代评估 r1
+# Lane 1：构建空间准入替代评估 r2（对账补充）
 
 权威：原科学合同 `6c136e2a56a008695f8c8b815723bf8f1a760db9`，本次依次消费 review_r4、review_r5，最新协调 `77a9fbe937ea23465cf0d0076d2df1909f52d055`。本报告仅是待审备选，没有采纳任何门槛、构建路径或机器变更。48GiB+2GiB 正式构建准入、64GiB 可用 RAM、共享配额及 Lane5 独立资格保持生效。源码适配、静态验证和本文没有等待该门槛。
 
@@ -46,6 +46,16 @@ Lane5 初始 HOST_BUDGET 将48GiB定义为保守运营保护值，初始空闲63
 
 ## 当前可交付与恢复条件
 
-已在原 Lane1 分支冻结仅工具加固的 Framework `53a1503d6de972ebb90e685ec0d5b5fc6dd09e3d`，相同生产入口/构建路径，Core仍为未编译 `62dc1d179b5516e68b21b695c7a9c5d0667e9671`。13项轻量工具测试PASS；生产C++门槛全部NOT_RUN，binary=null。完整21条producer定向清单、四模式不变配置身份及发布前检查见同pack；Lane5独立资格与新正式pair仍为0。
+已在原 Lane1 分支冻结仅工具加固的 Framework `3ab150b3e99ff3ed759b8cdc5154cfb5744042a7`，相同生产入口/构建路径，Core更新为未编译 `c948184504d82b80e23eb3f4ff6cdfd328ba9355`（接入Lane5重复定义修复及test fixture时钟同步）。原13项轻量工具检查保留，准确新pin的受影响入口回归1项PASS；生产C++门槛全部NOT_RUN，binary=null。完整21条producer定向清单、四模式不变配置身份及发布前检查见同pack；Lane5独立资格与新正式pair仍为0。
 
 等待现有 Ops 真正释放空间后，Lane5在自己容器独立复测，Lane1重新核对真实任务与中央配额，只通过同一 `build_r0_1.py` 入口正式构建一次。没有后台轮询、编译器或研究资产清理任务。任何降低floor、迁移生产路径/机器或使用164的备选，先将测量证据和明确变更范围交用户审阅。本报告没有请求或推定该变更已获批准。
+
+## Lane5 review_r5 独立证据对账
+
+发布首份报告后，远端回读发现Lane5新增 `e8f701995a27154ffcc54cc38245dde8cd7f9bdf`。已完整消费其源码/门槛审核、空间备选及最小修复。其独立观测UTC14:18:15、workspace38,342,262,784B、RAM160,056,037,376B，与本lane不同时点的空间不足结论一致；变化不是已释放容量，也不能归因给某个项目或用作写入率上界。两lane均认定：48GiB是冻结运营保护而非物理需求；未知编译峰值/其它项目增长/停止超调未测，当前不能认证替代数值门槛。备选仍全部未采纳。
+
+Lane5 `du` 分配值R0/R1为762,703,872/1,081,839,616B，本lane普通文件块之和为762,462,208/1,081,544,704B。差额241,664/294,912B与这两个自己build目录的目录块实测完全一致；不同统计口径已解释，不构成新回收或峰值。结果文件系统与workspace分离，未来测量与备选需同时监测build/TMPDIR/result各真实文件系统，保留其它项目空间及停止超调。
+
+Lane5指出原62候选有重复inline observer的确定编译阻塞；本lane已原样接入其最小修复，并将旧directed fixture的time与物理GPU时钟同步。新Core候选c9481845、发布57e1c363（tree相同），Framework3ab150b3 pin新候选；无容量、端口、oracle、trace、实验语义修改。独立审核的旧19PASS/1FAIL记录原样保留，不能将此工程修复改称Lane5对新source的runtime PASS。新source仍需Lane5重绑定11门槛与正式准备身份；原21生产定向均未执行，binary=null。
+
+本补充将两份独立空间分析的证据和限制并列对账，不替Lane5签署本lane新补丁或资源替代方案。旧首份report及review pack保留在Framework5a9edbf6。follow-up证据为 `docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1/`。
