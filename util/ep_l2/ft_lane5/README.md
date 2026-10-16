@@ -1,9 +1,13 @@
 # EP-L2 FT Lane 5 tools — V1
 
-Production source parent is Framework `54fbc7869f4e40b6b48dc936b527fee85dd46406`,
-Core `1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e`. This tooling release does not
-qualify B16/U_WB, TVD or RO. A passing Python harness test is not a passing Core
-production-path test. No new performance result is supplied by the harness.
+Current review authority is `aec01450d3c527524ee09ee59242f582fafe5354`.
+Lane5 has independently qualified frozen R0 B16/U_WB16 and frozen R1 B16 plus
+the four declared diagnostic modes. Exact producing source/binary identities,
+version-specific certificates, current queue and results are in
+`docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/`.
+R0's rolling five full-application pairs take priority over R1 diagnostics.
+A passing Python harness test is not production qualification; TVD/RO require
+their own integrated source/binary and production gates.
 
 ## Shared allocation for all lanes
 
@@ -83,6 +87,10 @@ SPEC fields: `identity`, `owner`, `binary`, ordered `configs` list and
 
 Feature vector fields: finite_wbuf, unified_wb, tvd, ro, adaptive_policy,
 wbuf_entries, payload_capacity_per_slice, bank_count, ops_per_bank_cycle.
+The original R0 V1 vector/key is immutable. New explicit RO vectors replace
+`ro` with boolean `ro_tag_detach` and `ro_line_mshr_bypass`; both are mandatory.
+`feature_schema.legacy_view()` displays old ro=false as both bits OFF without
+issuing a new key or qualification. Ambiguous legacy ro=true is rejected.
 Ideal vector fields: wb, meta, read_hit, all false for implementation tables.
 `epoch_range` must explicitly identify full_application/all. Diagnostic fragments
 and ideal modes go to separate Lane 4 tables, never implementation averages.
@@ -95,7 +103,9 @@ requires PASS, production_driven=true and an existing content-hashed evidence
 artifact. TVD/RO combinations need additional version-specific production tests
 before appearing in qualified_feature_vectors. This normalized adapter is a
 consumer format, not a unilateral change to Lane 1's public interface contract.
-No such production qualification envelope is published in the tooling stage.
+The original tooling stage did not qualify production. Current certificates are
+`R0_INDEPENDENTLY_QUALIFIED.json` and `R1_INDEPENDENTLY_QUALIFIED.json`; never
+substitute one for the other's source/binary or invent an enabled feature gate.
 
 `validate.SUMMARY_FIELDS` defines hardware terminal metrics. Cycles/instructions
 must also match the native terminal counters. A normal software exit is necessary
