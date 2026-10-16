@@ -1,6 +1,6 @@
 # R10 target: PolyBench archive and source-preserving recovery evidence
 
-Current PolyBench window: PB_CHUNK_032 RANGE_DEST_VERIFIED; 17301504000 verified component bytes (33/35), whole archive not yet verified. All scientific originals SOURCE_KEEP.
+Current PolyBench window: PB_CHUNK_033 RANGE_DEST_VERIFIED; 17825792000 verified component bytes (34/35), whole archive not yet verified. All scientific originals SOURCE_KEEP.
 
 R1: all 14 batches, 18565/18565 files, 4737658722 logical bytes are DEST_VERIFIED. Complete path/hash/size/identity membership matches frozen full source manifest 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5. Final data receipt was pushed/fetched at 43c717a20ae85b75d27bb1b8cb77d54120c52a4a. Every source batch has an independently GitHub-pinned SOURCE_KEEP ACK. All bridge data batches are closed; all original R1 files stay intact and R1 source release is zero.
 
@@ -14,7 +14,7 @@ S01/S02 alone have independent source release evidence: 821854208 allocated byte
 
 Candidates R1/R1R/R2 retain COPY_OK_ONLY/SOURCE_KEEP. Exact maps and regular-file allocation upper bounds are in CANDIDATE_RECLAIM_ESTIMATES.json; no df gain is inferred from them. R1R/R2 have source indexes, mode/directory metadata and plans on 164, but no project data. Source has additionally proposed a PolyBench archive copy with a potentially much larger cold stage scope. The exact V2 35-range plan is active under R10, with source scope and per-range hashes independently pinned; it does not authorize source release. Active DTC-L1/EP-L2/C16, M5 traces, signoff evidence, unknown-owner assets and all Git metadata remain protected.
 
-B002 protocol exception: bridge cleanup at 15:56:27Z preceded source KEEP Git publication at 15:56:33Z by six seconds. Source files remained intact. The exception and exact source notice are retained; B003 onward require the exact source Git commit/hash and matching live bridge ACK before cleanup. B014 cleanup first stopped on changed SSHFS inode projection; 1087 changed archive identities were independently SHA256-revalidated before exact bridge removal at 16:57:45Z. Native bridge identity checks were retained.
+Historical R1_B002 protocol exception: bridge cleanup at 15:56:27Z preceded source KEEP Git publication at 15:56:33Z by six seconds. Source files remained intact. The exception and exact source notice are retained; R1_B003 onward require the exact source Git commit/hash and matching live bridge ACK before cleanup. R1_B014 cleanup first stopped on changed SSHFS inode projection; 1087 changed archive identities were independently SHA256-revalidated before exact bridge removal at 16:57:45Z. Native bridge identity checks were retained.
 
 Minimal receiver/restore tools pass 18 guard checks, including ownership of partial-copy resume, completed-batch idempotence, frozen membership, metadata substitution rejection and bounded restore grouping. No second data worker was started and the existing Goal continues under V7 5e1df072495cdc9ee3bb84ac593d84387924c037.
 
