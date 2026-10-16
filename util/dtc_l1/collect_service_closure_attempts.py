@@ -40,6 +40,15 @@ def collect(run):
                   stderr_hash=sha(run / 'simulator.stderr') == end['stderr_sha256'],
                   full_instructions=row['instructions'] == str(spec['expected_instructions']),
                   no_crash=not any(s in stderr for s in ['Assertion', '=== CRASH:', 'Segmentation fault']))
+    checks['spec_identity'] = hashlib.sha256(json.dumps(spec,sort_keys=True).encode()).hexdigest() == start['identity']
+    checks['runner_identity'] = sha(run/'immutable_runner.py') == start['runner_sha256']
+    checks['runtime_identity'] = sha(run.parent/'binaries'/spec['runtime_sha256']/'accel-sim.out') == spec['runtime_sha256']
+    checks['config_snapshots'] = all(sha(run/f'config-{i}.config') == c['sha256'] for i,c in enumerate(spec['configs']))
+    checks['resource_identity'] = sha(run/'resource.time') == end['resource_sha256']
+    checks['single_epoch'] = (text.count('GPGPU-Sim uArch: performance model initialization complete.') == 1 and
+                              text.count('GPGPU-Sim: *** exit detected ***') == 1)
+    checks['complete_kernels'] = len(re.findall(r'^kernel_name\s*=',text,re.M)) == len(spec['members'])
+    checks['no_limits_or_deadlock'] = not any(s in text for s in ['break due to reaching the maximum', 'DEADLOCK detected'])
     finite = spec.get('finite_service', any('FINITE_SERVICE_ON' in c['path'] for c in spec['configs']))
     if finite and checks['natural_exit']:
         service = {k: int(v) for k, v in metrics.items() if k.startswith('DTC_SERVICE_V1_')}
@@ -56,9 +65,25 @@ def collect(run):
         checks['lower_balance'] = (n(mode+'_lower_created') == n(mode+'_lower_issued') == n(mode+'_lower_responses') > 0)
         checks['pib_drained'] = n(mode+'_pib_occupancy') == 0
         checks['lower_drained'] = n('lower_outstanding') == 0
+        checks['inflight_drained'] = n(mode+'_inflight_current') == 0
+        checks['credit_balance'] = n('lower_credit_acquired') == n('lower_credit_released') == n(mode+'_lower_created')
         checks['dependency_balance'] = n(mode+'_completion_dependency_count') == n(mode+'_completion_dependency_closed') > 0
+        observed = sum(n('m4_'+s+'_admits') for s in ['store','atomic','bypass_load','proxy_fence'])
+        checks['ordinary_completion_balance'] = observed == n('m4_source_completions') == n('m4_observation_retires')
+        if checks.get('service_complete'):
+            def option(name):
+                values=re.findall(r'^-'+name+r'\s+(\d+)\s',text,re.M)
+                return int(values[-1]) if values else -1
+            cores=option('gpgpu_n_clusters')*option('gpgpu_n_cores_per_cluster')
+            checks['samples_cover_all_cores'] = service[prefix+'samples'] == cores*int(row['cycles']) and cores>0
+            checks['service_retire_balance'] = service[prefix+'retired']+observed == n(mode+'_retire_count')
         if mode == 'oo':
             checks['refs_drained'] = n('oo_active_refs') == 0
+            checks['physical_balance'] = n('oo_new_misses')-n('oo_immediate_reclaims')-n('oo_final_ref_reclaims') == n('oo_physical_allocated')
+        else:
+            checks['physical_balance'] = n('io_physical_allocations')-n('io_physical_releases') == n('io_physical_allocated_current')
+            checks['partial_drained'] = n('io_partial_entries_current') == n('io_partial_lines_held_current') == 0
+            checks['response_identity'] = n('io_inflight_identity_mismatch') == 0
         checks['flag_echo'] = bool(re.search(r'^-gpgpu_dtc_l1_finite_service\s+1\s', text, re.M))
         checks['mode_echo'] = ('DTC_L1_mode = PAPER_' + mode.upper()) in text
     if checks['natural_exit'] and 'expected_dl1' in spec:

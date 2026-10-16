@@ -1,5 +1,38 @@
 # Latest Codex Report
 
+## DTC_SERVICE_AND_MODERN_BASELINE_CLOSURE_174_V1 — active review checkpoint
+
+2026-10-16, snapshot09:17 UTC. This branch's current report is this section; the earlier FAST64 report remains unchanged below as historical evidence. **Goal is active, not complete.** No branch/Goal reset, duplicate campaign or unrelated-task termination occurred. Actual fetched handoff advanced fromb0fdcc5760107d1efbab38599510dc96f3b4a133 toe13266ba207d8b8e47b56d62dfdb8bd04c8e2c5b; the latter decision was read completely and merged into the progressed execution branch.
+
+Both execution branches: `hrl/iscas2027-dtc-service-closure-174-v1`, in separate Framework/Core worktrees. Evidence entry: [service_closure_174_v1](../iscas2027/service_closure_174_v1). Immutable raw execution root: `/workspace/dtc-service-closure-174-v1`; raw logs/traces/binaries/builds are not committed.
+
+| Gate/scope | Current evidence |
+|---|---|
+| R0 | Complete:629 ordered members,9162136500 bytes;36 legacy evidence/raw stdout identities and12 TC80 receipts validated. No input size inferred from filenames. |
+| R1 V2 | Qualified Core6fba0136;4/4 CTest; BASE/IO/OO OFF exact NN equivalence; IO/OO ON complete NN with all11 service counters and ownership/drain checks. |
+| R2 current44 registered rows |3 PASS: Btree IO, OO andTRAD96;6 running;35 registered/unlaunched at snapshot.24 exact B16-N/TC80-N baseline rows reused without reexecution. No GM12. |
+| RTX4080 baseline-only | All4 complete pilot workloads accepted, full ordered lists/instructions; effective L1 is128KiB for BICG/Btree/2D and96KiB for Hotspot. Old-SASS memory-parameter counterfactual only. |
+| RTX4080 DTC | HOLD: user selected128KiB total; CPU per-kernel capacity/service audit published. No modern DTC performance attempts launched. |
+| Native109 | Accepted15 native cases reused at890fb0be; independently copied/archive-hashed285 payloads on174. No native rerun. |
+| SpMV simulation | NOT_ADMITTED: original SM89/tracer5 trace format passes independent audit, but the frozen Framework has no89 dispatcher. Unmodified canary preserved and rejected despite process exit0. |
+| LayerNorm simulation | NOT_ADMITTED: actual SM86 cubin plus skippedCALL.REL.NOINC. Native results retained; no recapture/reconstruction. |
+
+**Source/identity:** current finite Core `6fba0136f8465b59fe5858a950fa39efb265f654`, tree `530309ff2e2746de20d96686be6f6269b0ddaa4f`, binary SHA256 `fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b`; built using unmodified Framework `18a68dcccd795f1b6cda75504e9450d00c9cee02`. Conventional canonical source `6582b9d171330d88b17e8d5294c97704229e3823`, binary `4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9`, stays distinct. Legacy actual2D source6587238c/binary29a3dd9f is not an alias for6582b9d1/binary4fcac62c. All original identities remain in R0 ledgers.
+
+**Service:** [finite service contract](../iscas2027/service_closure_174_v1/FINITE_SERVICE_CONTRACT_V1.md), [current R1 receipt](../iscas2027/service_closure_174_v1/R1_V2_RECEIPT.md), [R2 preregistration](../iscas2027/service_closure_174_v1/R2_PREREGISTRATION_V1.md). Parameters were fixed before outcomes. Default OFF remains qualified. Core78947aa2's accidental adjacent-lookup serialization was corrected without parameter retuning. Four obsolete finite pilot UUIDs were stopped only within this task; invalidation receipts and original raw failures remain. Their timing is not reused as V2 output.
+
+**Strict/current rows:** [checkpoint tables and hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T0918Z). Checks include source/config/runner/runtime identities, one initialization/exit epoch, complete kernels/instructions, natural exit, balances/drains, finite residence decomposition, all-core occupancy samples and physical accounting. `COMPLETED_ROW_PAIRS.tsv` includes original baseline and enhanced-TRAD96 comparisons, exact UUIDs/identities, and no aggregate. Btree cycles are247940 IO,173210 OO,186621 enhanced traditional; the unfavorable IO-versus-enhanced result is retained. These are whole-workload simulation rows, not native DTC speedup or equal area.
+
+**Capacity review:** [fixed128KiB issue and service layout](../iscas2027/service_closure_174_v1/MODERN_CAPACITY_CONTRACT_REVIEW.md). Six pilot kernels and all629 frozen members have source/header capacity calculations. The pilot's byte partitions could be80+48+0 or80+16+32KiB; no extra16KiB data is counted for logical Tags. Current code instead constructs independent arrays/services. A real carve-out needs physical-range/banking/port accounting and a legal treatment of the100KiB shared option, where only28KiB L1 remains. No array deletion, opcode rerouting, shared-domain truncation or extra80KiB is implemented. Only modern DTC is held at this scientific boundary.
+
+**109 admission:** [consumer review](../iscas2027/service_closure_174_v1/PRODUCER109_CONSUMER_REVIEW_V1.md), archive SHAaf5c6ec76179f881f689f486829c025055764bd9e564e598c0dc18560865f984. SpMV full prefix has four36-CTA kernels/353256 active-thread instructions. Canarycda30d8f-b490-4ee3-95a5-41530e463875 reports unsupported binary89; no timing number is accepted. Root-name overlap with the Ampere map does not establish an ISA alias or Ada timing. Missing old12 assets on109 do not invalidate174's frozen payload. No GM14.
+
+**Resumption:** coordinator433763 keeps the existing single `DISPATCH.lock` and44-row V2 plan SHA281b2d22ace3bbf105711473516f075fc11c495a1d6c214d9f4a3e42414892e1. Six workers, at most two known-heavy rows, row-local qualification, no automatic retry. A separate read-only strict terminal watcher can hold new launches on failure. The old traditional wrappers became absent while their independent timed processes continued; originaltime(1) evidence permits receipt recovery without rerunning. Btree's recovered receipt records the observed exit0 and recovery timestamp explicitly; BICG's timed process is left live and a receipt-only watcher waits for its actual exit. Original failures/partial archive audit remain in the attempt index. Other project locks/processes remain untouched.
+
+**Remaining:** continue already-authorized registered rows, preserve slow/regressing ATAX/GESUMMV and all other cohort members, collect matched-depth/waiting controls without batch barriers, and publish complete validated scope. Modern storage/port organization and SpMV ISA89 support need scientific review before changing those contracts. RTX3070 remains conditional and unscheduled. No wholesale upgrades, new families, texture/Tag-bypass expansion or closed SG3/logical80 replay. Delivery checkpoints are pushed and fetch-back checked; a checkpoint is not final Goal closure.
+
+## Historical FAST64 report (preserved)
+
 ## FAST64 COMPLETE: ready for review (2026-09-11 UTC)
 
 All FAST64.0–.7 HARD gates are closed.  The final immutable package is

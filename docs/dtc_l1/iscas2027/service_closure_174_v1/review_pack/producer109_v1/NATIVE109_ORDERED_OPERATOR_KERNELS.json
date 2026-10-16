@@ -1,0 +1,71 @@
+[
+  {
+    "block": [
+      32,
+      1,
+      1
+    ],
+    "cache_config": 1,
+    "case": "SpMV",
+    "dynamic_shared": 0,
+    "grid": [
+      36,
+      1,
+      1
+    ],
+    "kernel": "spmv_jds(float *, const float *, const int *, const int *, const float *, const int *, int)",
+    "kernel_order": 0,
+    "local_bytes_per_thread": 0,
+    "nsys_kernel_ns": 2624,
+    "registers": 33,
+    "scope": "COMPLETE_OPERATOR_AFTER_3_WARMUPS",
+    "shared_limit_config": 0,
+    "static_shared": 0
+  },
+  {
+    "block": [
+      32,
+      4,
+      1
+    ],
+    "cache_config": 1,
+    "case": "LayerNorm_1024",
+    "dynamic_shared": 24,
+    "grid": [
+      1024,
+      1,
+      1
+    ],
+    "kernel": "void at::native::<unnamed>::vectorized_layer_norm_kernel<float, float>(int, T2, const T1 *, const T1 *, const T1 *, T2 *, T2 *, T1 *)",
+    "kernel_order": 0,
+    "local_bytes_per_thread": 0,
+    "nsys_kernel_ns": 7392,
+    "registers": 43,
+    "scope": "COMPLETE_OPERATOR_AFTER_3_WARMUPS",
+    "shared_limit_config": 0,
+    "static_shared": 0
+  },
+  {
+    "block": [
+      32,
+      4,
+      1
+    ],
+    "cache_config": 1,
+    "case": "LayerNorm_8192",
+    "dynamic_shared": 24,
+    "grid": [
+      8192,
+      1,
+      1
+    ],
+    "kernel": "void at::native::<unnamed>::vectorized_layer_norm_kernel<float, float>(int, T2, const T1 *, const T1 *, const T1 *, T2 *, T2 *, T1 *)",
+    "kernel_order": 0,
+    "local_bytes_per_thread": 0,
+    "nsys_kernel_ns": 100160,
+    "registers": 43,
+    "scope": "COMPLETE_OPERATOR_AFTER_3_WARMUPS",
+    "shared_limit_config": 0,
+    "static_shared": 0
+  }
+]
