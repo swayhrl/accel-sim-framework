@@ -46,7 +46,7 @@
 ## Lane 6：同步精简论文并提前准备结果接收
 
 1. 保留r1和所有源证据，产生新revision中文投稿结构；主线优先真实WB池等预算比较，TVD/RO是待验证扩展。删除正文中的大段项目管理、Lane、用户确认、hash/status与NOT_RUN说明，移到补充证据文档。绝不提前写新机制加速。
-2. PPA更新Lane1 STOR­AGE_AND_PORT_LEDGER：1168/1160数据项、双方共同的128B/slice copy latch、真实bank服务、WB metadata。按绑定当前实际代码字段、参数化假设、未知RTL/工艺三列呈现；RO T_RO=128不是实现真实容量。
+2. PPA更新Lane1 STORAGE_AND_PORT_LEDGER：1168/1160数据项、双方共同的128B/slice copy latch、真实bank服务、WB metadata。按绑定当前实际代码字段、参数化假设、未知RTL/工艺三列呈现；RO T_RO=128不是实现真实容量。
 3. 将Lane4旧静态vectorAdd乐观读参考（1.721259x）在独立diagnostic图/讨论中正确标注；不写成EP-L2新结果、严格天花板或全负载平均。
 4. 历史Streaming 13行checkpoint的准确source/hash可复用，RO closed-world、TVD +1cycle、SASS不含数值仍需如实表达；修复TVD served-bytes≠lower/DRAM saved。
 5. 随Lane5正式pair、Lane4正式ideal分别接入完全绑定的CSV，保持失败/未完成行；生成目标版式的简洁图，验证可读性而非仅验证可重复生成。
