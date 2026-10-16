@@ -105,6 +105,9 @@ def main():
                     scientific_promotion=r['scientific_promotion'],
                     scope='ONE_COMPLETE_FROZEN_WORKLOAD_NOT_GM12_OR_NATIVE_DTC_SPEEDUP'))
     if pairs:table(out/'COMPLETED_ROW_PAIRS.tsv',pairs)
+    subprocess.run([sys.executable, str(Path(__file__).with_name('collect_service_closure_matched.py')),
+                    '--plan', str(evidence/'review_pack/r2/REGISTERED_ROWS_V2.tsv'),
+                    '--root', str(root/'r2-attempts'), '--output-dir', str(out)], check=True)
     for file in [root/'producer109-890fb0be/CONSUMER_ARCHIVE_VERIFICATION_V2.json',
                  root/'producer109-890fb0be/AUDIT_A1_FAILURE_PRESERVED.json',
                  root/'r2-attempts/DISPATCH_STATUS.json']:
