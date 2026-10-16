@@ -46,6 +46,8 @@ def main():
     assert len(tests['tests'])>=8 and all(r['returncode']==0 for r in tests['tests'])
     legality=json.loads((args.results/f'mode_legality_{rev}/RESULTS.json').read_text())
     assert len(legality['cases'])==6 and all(r['status']=='PASS_EXPECTED_REJECTION' for r in legality['cases'])
+    attempt_note=args.results/f'mode_legality_{rev}/ATTEMPT_NOTE.json'
+    if attempt_note.exists():shutil.copyfile(attempt_note,out/'MODE_LEGALITY_HARNESS_NOTE.json')
     for name in ['REUSE_AUDIT.csv','HISTORY_SEARCH.json']:shutil.copyfile(args.audit/name,out/name)
     for source,name in [(args.results/f'BUILD_MANIFEST_b16_{rev}.json','BUILD_MANIFEST.json'),
                         (args.results/f'tests_b16_{rev}/TEST_MANIFEST.json','PRODUCTION_TEST_MANIFEST.json'),
@@ -214,6 +216,9 @@ issue/DRAM/L1 settings. They are different evidence categories.
 Raw logs stay at their indexed result roots. Reparse artifacts are separate;
 the earlier retained raw/run_status evidence is not overwritten. Early config
 lexing and quota refusals did not start a workload and are not performance rows.
+The retained illegal-mode harness note explains an initial overly strict log
+postcheck (required a literal Assertion word); the exact abort reason and all
+six cases were then rechecked. This was not a failed application simulation.
 ''')
     (out/'README.md').write_text('''# Lane 4 executed audit and ideal-mode candidate
 
