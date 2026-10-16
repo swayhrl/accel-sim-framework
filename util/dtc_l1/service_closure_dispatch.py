@@ -17,11 +17,15 @@ def main():
     ap.add_argument('--plan', required=True)
     ap.add_argument('--root', required=True)
     ap.add_argument('--workers', type=int, default=6)
+    ap.add_argument('--continuation-hold-sha')
     args = ap.parse_args()
-    assert 1 <= args.workers <= 6
+    assert 1 <= args.workers <= 8
     root = Path(args.root).resolve()
     root.mkdir(parents=True, exist_ok=True)
-    lock = (root / 'DISPATCH.lock').open('a')
+    scoped = args.continuation_hold_sha is not None
+    if scoped:
+        assert sha(root/'HOLD_LAUNCHES') == args.continuation_hold_sha
+    lock = (root / ('SCOPED_DISPATCH.lock' if scoped else 'DISPATCH.lock')).open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     with Path(args.plan).open() as f:
         plan = list(csv.DictReader(f, delimiter='\t'))
@@ -62,6 +66,8 @@ def main():
         failed = {label for label, r in attempts.items() if r['status']=='FAIL_PRESERVED'} | set(launcher_failures)
         qualified = {r['arm'] for r in plan if r['phase']=='PILOT' and r['label'] in passed}
         heavy_active = sum(r['heavy']=='True' and (r['label'] in active or attempts.get(r['label'],{}).get('status')=='RUNNING') for r in plan)
+        admission_file = root/'ROW_ADMISSION_HOLDS.json'
+        held_labels = set(json.loads(admission_file.read_text())['held_labels']) if admission_file.exists() else set()
         external = 0
         for p in Path('/proc').glob('[0-9]*/cmdline'):
             try:
@@ -73,12 +79,13 @@ def main():
                 pass
         resumed_running = sum(r.get('status')=='RUNNING' for label,r in attempts.items() if label not in active)
         available = min(args.workers-len(active)-resumed_running, 8-external-len(active)-resumed_running)
-        if not failed and not (root/'HOLD_LAUNCHES').exists():
+        launch_allowed = (sha(root/'HOLD_LAUNCHES') == args.continuation_hold_sha if scoped else not (root/'HOLD_LAUNCHES').exists())
+        if not failed and launch_allowed:
             for row in sorted(plan, key=lambda r:(int(r['priority']),r['label'])):
                 label = row['label']
                 if available <= 0:
                     break
-                if label in attempts or label in active:
+                if label in attempts or label in active or label in held_labels:
                     continue
                 if row['phase']=='COHORT' and row['arm'] not in qualified:
                     continue
@@ -95,7 +102,7 @@ def main():
                     continue
                 assert sha(Path(row['spec_path'])) == row['spec_sha256']
                 stream = (logs/(label+'.log')).open('x')
-                proc = subprocess.Popen(['python3', str(runner), '--spec',row['spec_path'],'--root',str(root)],stdout=stream,stderr=subprocess.STDOUT)
+                proc = subprocess.Popen(['python3', str(runner), '--spec',row['spec_path'],'--root',str(root)],stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
                 active[label]=(proc,stream)
                 available-=1
                 heavy_active+=int(heavy)
@@ -104,14 +111,19 @@ def main():
                        passed=len(passed), failed=sorted(failed), active=sorted(active),
                        resumed_running=resumed_running, external_simulators=external,
                        qualified_pilot_arms=sorted(qualified), planned=len(plan),
+                       held_labels=sorted(held_labels),active_launcher='SCOPED_CONTINUATION' if scoped else 'ORIGINAL',
                        modern_dtc='NOT_IN_THIS_PLAN_CAPACITY_REVIEW_PENDING')
-        temp = root/'DISPATCH_STATUS.tmp'
+        status_name = 'SCOPED_DISPATCH_STATUS' if scoped else 'DISPATCH_STATUS'
+        temp = root/(status_name+'.tmp')
         temp.write_text(json.dumps(summary,indent=2)+'\n')
-        temp.replace(root/'DISPATCH_STATUS.json')
+        temp.replace(root/(status_name+'.json'))
         if summary != previous_summary:
             print(json.dumps(summary),flush=True)
             previous_summary=summary
         if len(passed)==len(plan):
+            return
+        if scoped and not active and not resumed_running and len(passed | held_labels)==len(plan):
+            print('UNHELD_ROWS_COMPLETE_SCIENTIFIC_ADMISSION_HOLDS_REMAIN',flush=True)
             return
         if not active and not resumed_running:
             if failed:

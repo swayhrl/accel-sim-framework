@@ -12,6 +12,8 @@ Run at most four small workers; do not replay closed SG3 or old whole matrices. 
 
 All four baseline-only rows completed and passed independent terminal, complete-instruction/kernel, source/config, mode0, adaptive-size and actual cache/DRAM-path checks. Exact UUIDs, hashes and metrics: `review_pack/checkpoint_20261016T0918Z/MODERN_BASELINE_ONLY.tsv`.
 
+Subsequent complete body auditing discovered the [Hotspot shared-address interpretation boundary](HOTSPOT_SHARED_FORMAT_REVIEW_V1.md). Its original consumer-model number remains preserved, while semantic comparison promotion is HOLD. New checkpoint tables explicitly carry that annotation. The terminal/invariant PASS does not resolve the historical encoder contract.
+
 | Workload | Complete instructions | Cycles | Effective L1 KiB per kernel | L2 misses | DRAM read commands |
 |---|---:|---:|---|---:|---:|
 | BICG |145666048|2091175|128,128|41984|41472|

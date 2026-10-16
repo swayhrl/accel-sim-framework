@@ -39,6 +39,11 @@ def main():
     spec = json.loads(Path(a.spec).read_text())
     root = Path(a.root).resolve()
     root.mkdir(parents=True, exist_ok=True)
+    admission_holds = root / 'ROW_ADMISSION_HOLDS.json'
+    if admission_holds.exists():
+        holds = json.loads(admission_holds.read_text())
+        if spec['label'] in holds['held_labels']:
+            raise SystemExit('ROW_ADMISSION_HOLD: ' + spec['label'] + '; ' + holds['reason'])
     identity = hashlib.sha256(json.dumps(spec, sort_keys=True).encode()).hexdigest()
     locks = root / 'locks'
     locks.mkdir(exist_ok=True)

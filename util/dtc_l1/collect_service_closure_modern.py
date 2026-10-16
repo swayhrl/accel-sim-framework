@@ -12,6 +12,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--root', required=True)
     ap.add_argument('--output', required=True)
+    ap.add_argument('--promotion-hold-workload', action='append', default=[])
     a = ap.parse_args()
     rows = []
     for start in sorted(Path(a.root).glob('B0*/RUN_START.json')):
@@ -25,6 +26,7 @@ def main():
                    dram_read_commands='',dram_write_commands='', qualification='',
                    max_rss_kb=r['max_rss_kb'],elapsed_wall=r['elapsed_wall'],
                    claim_scope='OLD_SASS_MEMORY_PARAMETER_COUNTERFACTUAL_NOT_ADA_NATIVE_OR_DTC_SPEEDUP')
+        row['scientific_promotion'] = ('HOLD_SHARED_TRACE_INTERPRETATION' if spec['workload'] in a.promotion_hold_workload else 'WITHIN_DECLARED_BASELINE_ONLY_SCOPE')
         if r['status'] != 'RUNNING':
             text = (run/'simulator.stdout').read_text(errors='replace')
             m = dict(re.findall(r'^\s*(\w+)\s*=\s*(\d+)\s*$',text,re.M))
