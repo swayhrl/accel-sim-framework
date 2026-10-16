@@ -3,13 +3,13 @@
   "lane_id": 2,
   "task_id": "FT20261016_LANE2_TVD",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "MODULE_REVIEW_READY_DEPENDENCY_PENDING_FOR_PRODUCTION_INTEGRATION",
+  "status": "IN_PROGRESS_REVIEW_R2_PRODUCTION_WIRING",
   "host": "huangrulin-174",
   "framework_branch": "hrl/ep-l2-ft20261016-lane2-v1",
   "framework_source_commit": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
   "core_branch": "hrl/ep-l2-ft20261016-lane2-v1",
-  "core_source_commit": "56abbacc1192d68995e78561899719649f838079",
-  "binary_sha256": "11b1a074ee78a96e51b5d7755308cac89ea5b27197f85a301b4b5222c26bafd1",
+  "core_source_commit": "c9666ae6ef21bae41f394b9e51aa4be370a40858",
+  "binary_sha256": null,
   "config_sha256": null,
   "trace_identity": null,
   "feature_vector": {
@@ -26,14 +26,10 @@
   "dependency_receipts": [
     {
       "lane": 1,
-      "framework_commit": "cb7d92e4edde97e81520cfdd00762dfe81ee9b20",
-      "core_commit": "4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617",
-      "scope": "identity ABI; lifecycle hooks described, not executable"
-    },
-    {
-      "lane": 5,
-      "framework_commit": "cc97ee2ad9feb4ff57482cb7d826a53a3a4d07a0",
-      "scope": "host budget; lightweight tests only"
+      "framework_release_commit": "02982b65e87f170103b44c6dbd562a8ffb03841e",
+      "framework_runtime_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
+      "core_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+      "scope": "exact R0 executable sole allocator and WB production interface"
     }
   ],
   "artifacts": [
@@ -49,20 +45,14 @@
     "formal_workloads": 0,
     "normal_binary_sha256": "11b1a074ee78a96e51b5d7755308cac89ea5b27197f85a301b4b5222c26bafd1",
     "sanitizer_binary_sha256": "5cd42cd34a984d92acd6c0bfd1ec4c1e1b8ef8a4a01b874233a4ce073531eda0",
-    "packaging_revision": "r2; CSV LF fix only, prior r1 preserved"
+    "packaging_revision": "r2; CSV LF fix only, prior r1 preserved",
+    "production_r2": "IN_PROGRESS_NOT_YET_PASS"
   },
   "active_runs": [],
-  "blockers": [
-    {
-      "kind": "DEPENDENCY_PENDING",
-      "lane": 1,
-      "framework_commit_checked": "cb7d92e4edde97e81520cfdd00762dfe81ee9b20",
-      "public_core_commit": "4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617",
-      "item": "Executable public allocator/role/pin and real WAD/victim/packet/response hooks; identity ABI alone is insufficient",
-      "independent_work": "clean and dirty modules/tests delivered; no false production readiness"
-    }
-  ],
+  "blockers": [],
   "framework_source_usage": "engineering parent only; all executable fixture code is in Core",
-  "binary_kind": "standalone_directed_module_fixture_NOT_accel_sim",
-  "current_review_pack": "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r2/"
+  "binary_kind": "PRODUCTION_DIRECTED_FIXTURE_BUILD_PENDING",
+  "current_review_pack": "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r2/",
+  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
+  "active_build_lease": "a8c1e21e823f43ab90776075aa01424d"
 }
