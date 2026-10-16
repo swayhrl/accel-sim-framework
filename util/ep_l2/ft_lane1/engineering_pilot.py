@@ -275,6 +275,10 @@ def load_adapter(request, authorization, publication, authorization_file_sha256,
     client = json.loads((SHARED / 'CLIENT_CONTRACT.json').read_text())
     module_path = client.get('engineering_pilot_module')
     require(module_path is not None, 'LANE5_PILOT_ADAPTER_NOT_PUBLISHED')
+    expected = request['lane5_api_dependency']
+    require(client['engineering_pilot_source_commit'] == expected['module_source_commit'] and
+            client['engineering_pilot_module_sha256'] == expected['module_sha256'] and
+            client['registry_client_sha256'] == expected['registry_client_sha256'], 'LANE5_API_REVISION_REQUIRES_REQUEST_REBIND')
     require(digest(module_path) == client['engineering_pilot_module_sha256'], 'ADAPTER_CONTENT_CHANGED')
     data = git('show', client['engineering_pilot_source_commit'] + ':util/ep_l2/ft_lane5/engineering_pilot.py')
     require(hashlib.sha256(data).hexdigest() == client['engineering_pilot_module_sha256'], 'ADAPTER_SOURCE_MISMATCH')
