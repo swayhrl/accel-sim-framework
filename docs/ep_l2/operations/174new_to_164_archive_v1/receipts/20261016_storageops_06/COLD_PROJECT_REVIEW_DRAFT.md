@@ -4,7 +4,7 @@ Source authority is the separate old174 Storage-Ops owner. Source audit and full
 
 | Priority | Exact old174 source | Archive suffix below authorized root | Directory-inclusive allocation upper bound | Current target evidence |
 | --- | --- | --- | ---: | --- |
-| R1 | /workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | 4785803264 B | 14788/18565 files verified, 4423211649 B |
+| R1 | /workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | 4785803264 B | 16788/18565 files verified, 4591053882 B |
 | R1R | /workspace/repos/gpu-l2-cache-verilog-v3r1r-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r1r-clean/build | 3594420224 B | Source manifests and batch plan only |
 | R2 | /workspace/repos/gpu-l2-cache-verilog-v3r2-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r2-clean/build | 3459518464 B | Source manifests and batch plan only |
 

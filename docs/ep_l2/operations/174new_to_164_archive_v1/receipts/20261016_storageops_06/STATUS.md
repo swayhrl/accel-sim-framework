@@ -1,6 +1,7 @@
 # V7 target: S01/S02 closed; R1 rolling copy-only archive
 
-Current transfer state: R1_B012 DEST_VERIFIED; 12/14 R1 batches, 14788/18565 files, 4423211649 B archived. Source release zero; current batch publication/independent KEEP/bridge closeout pending.
+Current transfer state: R1_B013 DEST_VERIFIED; 13/14 R1 batches, 16788/18565 files, 4591053882 B archived. Source release zero; current batch publication/independent KEEP/bridge closeout pending.
+
 
 
 
@@ -17,9 +18,9 @@ S01/S02 are SOURCE_RELEASED_BRIDGE_CLEANED. Independent old174 receipts confirm 
 
 At 2026-10-16T15:45:41Z, R1_B001 passed all 1269 source/bridge/closed-and-reopened SSHFS SHA256 triples and exact stable bridge identities: 483509895 B archived. READY SHA256: 1896bd9fd4986d9eda142962c1cc194dfd518ab91e724847cb3b7c2aafe2140c. The batch was independently joined by path/hash/size/device/inode/nlink to the frozen complete R1 manifest 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5. It retains the source's existing V6 copy-only schema; no source READY was rewritten or source permission expanded. A single 30MiB/s rsync completed; no second data worker was launched. Target verification remains SSHFS_READBACK_VERIFIED, not a native 164 server checksum. R1 source release: zero; all originals SOURCE_KEEP.
 
-Primary archived total is now 17659951726 B, including the legacy 36 pack backups (12415140272 B) whose former staging route was NONCOMPLIANT. Those existing backups are retained; no pack source was deleted and no more pack batches are started.
+Primary archived total is now 17827793959 B, including the legacy 36 pack backups (12415140272 B) whose former staging route was NONCOMPLIANT. Those existing backups are retained; no pack source was deleted and no more pack batches are started.
 
-The ranked whole-build candidates are R1 (4785803264 B), R1R (3594420224 B), R2 (3459518464 B), directory-inclusive source allocation upper bounds totaling 11839741952 B. All 47552 source file hashes are published. Source revision 63c243e additionally pins actual file UID/GID/mode sidecars; R1 metadata, directory metadata and batch plan have been copied and read back under the authorized archive root. Source corrected the earlier cross-namespace restore template before use. Current R1 coverage is 14788/18565 files; R1R/R2 have no destination data. No complete project recovery or source release is claimed.
+The ranked whole-build candidates are R1 (4785803264 B), R1R (3594420224 B), R2 (3459518464 B), directory-inclusive source allocation upper bounds totaling 11839741952 B. All 47552 source file hashes are published. Source revision 63c243e additionally pins actual file UID/GID/mode sidecars; R1 metadata, directory metadata and batch plan have been copied and read back under the authorized archive root. Source corrected the earlier cross-namespace restore template before use. Current R1 coverage is 16788/18565 files; R1R/R2 have no destination data. No complete project recovery or source release is claimed.
 
 All three projects remain COPY_OK_ONLY/SOURCE_KEEP. Full migration, adequate independent restore through the two namespaces, fresh source owner/consumer/dependency checks, and an exact user-approved release manifest are still required. The candidate review draft is explicitly not yet READY_FOR_USER_APPROVAL. Active DTC-L1/EP-L2/C16, M5 traces, signoff evidence, unknown-owner assets and all Git metadata remain protected.
 
