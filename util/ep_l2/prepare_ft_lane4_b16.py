@@ -17,11 +17,12 @@ def main():
     p.add_argument('--mode',choices=B16_MODES,required=True)
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args();client,api,tools=load_tools()
-    baseline=json.loads(a.baseline_spec.read_text());inspect_baseline(baseline,tools)
+    baseline=json.loads(a.baseline_spec.read_text());baseline_audit=inspect_baseline(baseline,tools)
     spec=copy.deepcopy(baseline)
     spec.update(owner='lane4',mode=a.mode,campaign_class='B16_IDEAL_DIAGNOSTIC',
                 baseline_spec=baseline,baseline_run_key=api.run_key(baseline['identity']),
-                lane5_dependency=client)
+                lane5_dependency=client,
+                baseline_qualified_release_sha256=baseline_audit['qualified_release_sha256'])
     overlay=ROOT/'tests/ep_l2/ft_lane4/b16'/(a.mode.lower()+'.config')
     spec['configs'].append({'name':'lane4-ideal-vector.config','path':str(overlay)})
     spec['identity']['ideal_vector']=B16_MODES[a.mode]

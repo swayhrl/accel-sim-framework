@@ -140,8 +140,13 @@ def inspect_baseline(spec,tools):
 
 def validate_b16_variant(spec, tools, api):
     """Consume the real Lane 5 baseline spec/release, never invent a baseline."""
-    base=spec['baseline_spec'];inspect_baseline(base,tools)
+    base=spec['baseline_spec'];baseline_audit=inspect_baseline(base,tools)
+    check(base.get('owner')=='lane5' and spec.get('owner')=='lane4', 'baseline/diagnostic owner mismatch')
+    check(spec.get('campaign_class')=='B16_IDEAL_DIAGNOSTIC', 'not an R1 diagnostic campaign')
+    check(spec.get('baseline_qualified_release_sha256')==baseline_audit['qualified_release_sha256'], 'frozen R1 qualification changed')
     identity=spec['identity'];parent=base['identity']
+    check(set(identity['ideal_vector'])=={'wb','meta','read_hit'} and
+          all(type(v) is bool for v in identity['ideal_vector'].values()), 'ideal vector requires exact boolean fields')
     check(spec['mode'] in B16_MODES and identity['ideal_vector']==B16_MODES[spec['mode']], 'unadmitted ideal vector')
     check(identity['workload'] in {'convolutionSeparable','FWT_7_21','vectorAdd_4M','sad'},'not a first-wave workload')
     check(spec['mode']!='I_WB_META' or identity['workload'] in {'convolutionSeparable','FWT_7_21'},'combination not scheduled for this workload')
@@ -157,11 +162,25 @@ def validate_b16_variant(spec, tools, api):
               '-gpgpu_ep_l2_ideal_meta':str(int(identity['ideal_vector']['meta'])),
               '-gpgpu_ep_l2_ideal_read_hit':str(int(identity['ideal_vector']['read_hit']))}
     check(len(tokens)==6 and dict(zip(tokens[::2],tokens[1::2]))==expected,'overlay changes more than ideal bits')
+    configs=tools.asset_manifest(spec['configs'],ordered=True)
+    assets=tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else []
+    check(identity['runtime_config_sha256']==tools.content_hash(
+        {'ordered_configs':configs,'auxiliary_assets':assets,'environment':spec.get('environment',{})}),
+        'derived diagnostic runtime config identity mismatch')
     check(spec['baseline_run_key']==api.run_key(parent),'baseline key binding changed')
     check(all(not v for v in parent['ideal_vector'].values()),'baseline contains an ideal relaxation')
     binary=Path(spec['binary']).read_bytes()
     check(all(flag.encode() in binary for flag in expected),'qualified common binary lacks Lane 4 registrations; request integration first')
-    return True
+    release=json.loads(Path(base['qualified_release']).read_text())
+    check(tools.digest(base['qualified_release'])==baseline_audit['qualified_release_sha256'], 'R1 qualification changed during inspection')
+    gate=release.get('ideal_gates',{}).get(spec['mode'],{})
+    check(gate.get('status')=='PASS' and gate.get('production_driven') is True and
+          gate.get('ideal_vector')==identity['ideal_vector'], 'requested ideal mode not independently qualified by Lane5')
+    check(tools.digest(gate['evidence_path'])==gate['evidence_sha256'], 'ideal qualification evidence changed')
+    return {'baseline_run_key':spec['baseline_run_key'],
+            'baseline_identity':parent,
+            'qualified_release_sha256':baseline_audit['qualified_release_sha256'],
+            'ideal_gate':gate}
 
 
 def prepare(args, client, api, tools):
@@ -230,8 +249,8 @@ def prepare(args, client, api, tools):
 
 def execute(spec,audit,client,api,tools):
     formal=spec['campaign_class']=='B16_IDEAL_DIAGNOSTIC'
-    if formal:validate_b16_variant(spec,tools,api)
-    else:
+    qualification=validate_b16_variant(spec,tools,api) if formal else None
+    if not formal:
         check(spec['campaign_class']=='HISTORICAL_DIAGNOSTIC' and
               spec['identity']['feature_vector']['finite_wbuf'] is False,
               'unknown campaign cannot fill a B16 cell')
@@ -250,6 +269,7 @@ def execute(spec,audit,client,api,tools):
     process=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();result={
         'identity':spec['identity'],'run_key':key,'campaign_class':spec['campaign_class'],'mode':spec['mode'],
         'runner_execution_commit':head(ROOT),'parser_source_sha256':tools.digest(__file__)}
+    if formal:result['matched_baseline']=qualification
     try:
         directory.mkdir(parents=True,exist_ok=False)
         api.write_json(directory/'input_spec.json',spec);api.write_json(directory/'input_audit.json',audit)
