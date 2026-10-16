@@ -1,0 +1,72 @@
+{
+  "core_source_commit": "cbdf145314dbe5dcd9006a5de4e94f7b19fbbb71",
+  "base_candidate": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "base_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+  "kind": "incremental exact-base source audit; NOT compilation/runtime/independent qualification",
+  "previous_13_checks": "not rerun; retained in immutable preadapt r1",
+  "new_source_checks": [
+    {
+      "boundary": "exact_Lane1_candidate_tree",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": {
+        "candidate": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+        "publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+        "tree": "23f407cfadc7728b50f6f91177319ada4029cd2b"
+      }
+    },
+    {
+      "boundary": "canonical_physical_clock",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "Lane1 helper preserved verbatim; TVD helper delegates to it"
+    },
+    {
+      "boundary": "enclosing_try_wrapper_retained",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "exact Lane1 closure/offset-on-success and abort wrapper retained"
+    },
+    {
+      "boundary": "full_address_GPU_memcpy_retained",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "full-width address and nonaligned endpoint code unchanged from62dc1d"
+    },
+    {
+      "boundary": "shared_WAD_and_lease_guard",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "mandatory TVD/WAD queried through sole shared authority, no unused old-set guard"
+    },
+    {
+      "boundary": "refusal_before_commit",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "all false returns, masks/dirty/pin/pending/generation/landing checks precede first metadata mutation"
+    },
+    {
+      "boundary": "exact_optional_alias_guard",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "exact address/ticket and actual role/owner/pin/generation checked before reclaim; physical lifetime clock"
+    },
+    {
+      "boundary": "Tag_commit_same_reserved_index",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "native Tag time and actual chosen-index assertion retained"
+    },
+    {
+      "boundary": "upstream_duplicate_definition_removed",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": {
+        "upstream_definition_lines": [
+          415,
+          423
+        ],
+        "candidate_count": 1,
+        "compiler_invoked": false
+      }
+    },
+    {
+      "boundary": "new_try_gate_prepared",
+      "result": "SOURCE_CHECK_ONLY_PASS",
+      "evidence": "one new uncompiled actual-producer gate; high address/held-response/dirty refusal/exact alias after WB"
+    }
+  ],
+  "compiler_invoked": false,
+  "runtime_tests_executed": 0
+}

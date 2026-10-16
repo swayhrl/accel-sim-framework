@@ -1,0 +1,9 @@
+# Deferred runtime validation, no duplicate build
+
+Current low-resource static deliverable is complete. Do not call the old13 static checks a new runtime gate, and do not run an old binary as this source. Review the base duplicate getter fix separately now. Lane1 owns the sole official R0.1 build; Lane5 owns its independent qualification and main five pairs. Do not create another worker or substitute a TVD binary for R0.1.
+
+When Lane1 publishes the actual stable/frozen repaired source, regenerate the minimal TVD patch and exact-base audit for that SHA, preserving this revision. Source-only62/c93 is not a qualified runtime. After shared safe admission permits the separately identified R2 producer build, freeze new source/binary/config/stimulus before execution, use a new result/build directory, and execute new selector `--candidate62-gates`, prior prepared `--repair-gates` and affected regressions from PREPARED_GATES.csv. Run negative selectors separately with core dumps disabled, require SIGABRT plus the current Lane1 wrapper marker. No selector has run this revision.
+
+Official build policy remains48GiB floor plus Lane1 approximate2GiB growth reserve; formal simulations retain48GiB/available64GiB RAM, max2 long runs/8CPU/32GiB and other-project protection. This policy did not block source adaptation/static checks/preparation. Lane1/Lane5 resource alternatives are separately reviewed, not automatically adopted here. No Storage-Ops or DTC owner actions are delegated to Lane2.
+
+Formal R2 applications require Lane5 independent new-source physical clock/host identity/TVD qualification and current scientific acceptance bound to exact Core/Framework/binary/config/trace/epoch/run-key. Prior R0/R1 six runs remain suspended regardless of COMPLETE_VALID. Prior directed lower request2→1 is not a formal application/DRAM result.

@@ -1,0 +1,5 @@
+# Source finding in exact Lane1 candidate
+
+At Core `62dc1d179b5516e68b21b695c7a9c5d0667e9671`, src/gpgpu-sim/l2cache.h defines the same inline member `ft_bank_grants_for_test(unsigned bank) const` twice in memory_sub_partition (lines416 and425). Both bodies return the same existing counter. Identical duplicate in-class definitions are a C++ redefinition problem. This was found by source inspection; no compiler was run and no compile failure is claimed as observed.
+
+BASE_HEADER_DUPLICATE_FIX.patch removes only the second three-line definition and is independently applicable to the exact candidate (also same tree `c93d900e1f968a3b69990dc29b78d50fc18f35ac`). It carries no TVD code, data-budget change or runtime claim and can be reviewed for the official R0.1 source before its sole build. CORE_TVD_ON_62.patch already includes this removal, so choose the full patch or this standalone common fix; do not stack them. If Lane1 independently fixes the candidate, regenerate the TVD diff against that new exact SHA.

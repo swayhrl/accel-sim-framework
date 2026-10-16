@@ -1,0 +1,37 @@
+{
+  "kind": "git applicability/blob checks only; no compiler or runtime",
+  "core_source_commit": "cbdf145314dbe5dcd9006a5de4e94f7b19fbbb71",
+  "candidate_tree": "23f407cfadc7728b50f6f91177319ada4029cd2b",
+  "publication_tree": "23f407cfadc7728b50f6f91177319ada4029cd2b",
+  "full_TVD_patch": [
+    {
+      "base": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+      "status": "APPLY_AND_TEN_RESULTING_BLOBS_PASS",
+      "private_index": "/workspace/results/ep_l2_ft20261016/lane2/review_r5_exact62/candidate62.index"
+    },
+    {
+      "base": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+      "status": "APPLY_AND_TEN_RESULTING_BLOBS_PASS",
+      "private_index": "/workspace/results/ep_l2_ft20261016/lane2/review_r5_exact62/publication_c93.index"
+    }
+  ],
+  "included_paths": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+    "src/gpgpu-sim/ep-l2-tvd-directory.h",
+    "src/gpgpu-sim/gpu-cache.cc",
+    "src/gpgpu-sim/gpu-cache.h",
+    "src/gpgpu-sim/gpu-sim.cc",
+    "src/gpgpu-sim/l2cache.cc",
+    "src/gpgpu-sim/l2cache.h",
+    "tests/ep_l2/test_tvd_production.cc"
+  ],
+  "header_only_fix": "PASS on exact62; removes second duplicate method only, no TVD dependency",
+  "patches_must_not_be_stacked": true,
+  "excluded_old_module_fixture_paths": [
+    "tests/ep_l2/test_tvd_directory.cc",
+    "tests/ep_l2/run_tvd_directory.sh"
+  ],
+  "official_frozen_release_parent": null
+}

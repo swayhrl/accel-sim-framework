@@ -1,0 +1,97 @@
+{
+  "schema_version": "EP_L2_LANE2_EXACT62_STATIC_V1",
+  "lane_id": 2,
+  "status": "EXACT62_STATIC_ADAPTATION_DELIVERED_RUNTIME_PENDING",
+  "continuation_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
+  "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
+  "consumed_in_order": [
+    "docs/ep_l2/chatgpt_handoff/fast_track_2026_10_16_review_r4/PARALLEL_CONTINUE.md",
+    "docs/ep_l2/chatgpt_handoff/fast_track_2026_10_16_review_r5/CONTINUE.md"
+  ],
+  "framework_branch": "hrl/ep-l2-ft20261016-lane2-v1",
+  "framework_source_commit": null,
+  "framework_engineering_parent_commit": "057633f38fd4440f386283cbd7e1d2b11e4769ef",
+  "framework_source_usage": "docs only; standalone producer executable code/config is entirely Core",
+  "core_branch": "hrl/ep-l2-ft20261016-lane2-v1",
+  "core_source_commit": "cbdf145314dbe5dcd9006a5de4e94f7b19fbbb71",
+  "previous_lane2_source": "5c6c1d28da1b4e5d06afa999cf88e8995e53bd27",
+  "exact_static_target": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "target_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+  "target_tree": "23f407cfadc7728b50f6f91177319ada4029cd2b",
+  "target_kind": "Lane1 uncompiled R0.1 source candidate, not frozen official runtime",
+  "official_runtime_parent": null,
+  "binary_sha256": null,
+  "binary_path": null,
+  "compiled": false,
+  "config_sha256": "d17c38fea0e2834560182bfda4dabf01f6ec7f5ae7648810bbc195fce955023b",
+  "stimulus_sha256": "8030f3a01c7c2ac6f8962f706a48caae22e787d212030fcb092e37485726d1a2",
+  "trace_identity": null,
+  "run_keys": [],
+  "feature_vector": {
+    "ft_mode": 2,
+    "wbuf_entries": 16,
+    "tvd_clean": true,
+    "tvd_dirty": true,
+    "ro": false
+  },
+  "ideal_vector": {
+    "wb": false,
+    "meta": false,
+    "read_hit": false
+  },
+  "validation": {
+    "new_incremental_source_checks": 10,
+    "exact_patch_apply_and_blob_checks": "PASS on62 and c93",
+    "standalone_base_duplicate_fix": "APPLY_CHECK_PASS",
+    "actual_conflict_files": 3,
+    "actual_conflict_hunks": 6,
+    "new_producer_gate_prepared": 1,
+    "total_prepared_positive_cases": 9,
+    "total_prepared_negative_cases": 4,
+    "new_runtime_cases_executed": 0,
+    "prior13_source_checks_rerun": false,
+    "independent_qualification": false,
+    "formal_workloads": 0
+  },
+  "dependency_receipts": [
+    {
+      "lane": 1,
+      "framework_publication": "c2a536bdc08687260acc10e30e2fb80a6f791c9e",
+      "source_candidate_manifest_sha256": "a6693ef42c99232db40d4cee7d7244aee6c82f9c911e9cce53bf0a5e9c86e13c",
+      "core_source": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+      "core_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+      "runtime_ready": false
+    },
+    {
+      "lane": 5,
+      "framework_publication": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af",
+      "application_acceptance_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
+      "generation": 2,
+      "accepted_application_pairs": 0
+    }
+  ],
+  "scientific_acceptance": {
+    "old_R0_R1_applications": "SUSPENDED; original execution terminals/raw intact",
+    "new_source": "NOT_COMPILED_NOT_QUALIFIED",
+    "directed_lower_2_to_1": "historical local lower-request evidence, not DRAM or application acceleration"
+  },
+  "active_runs": [],
+  "active_build_lease": null,
+  "low_resource_work_complete": true,
+  "blocked_scopes": [
+    "production build/runtime validation awaits stable official parent and shared safe admission",
+    "formal TVD applications await Lane1 integration and Lane5 independent qualification"
+  ],
+  "policy_scope": {
+    "source_and_static_work_blocked_by_48GiB": false,
+    "official_production_floor_unchanged": true,
+    "new_build_attempts": 0,
+    "storage_ops_or_DTC_mutations": false
+  },
+  "scope_limits": [
+    "only source/applicability checks this continuation",
+    "prepared positive/negative producer gates are uncompiled",
+    "no full-byte numerical atomic claim",
+    "exact static candidate cannot be treated as a frozen/qualified official R0.1 runtime"
+  ]
+}

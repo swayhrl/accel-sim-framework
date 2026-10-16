@@ -1,0 +1,44 @@
+{
+  "actual_three_way_conflicts": [
+    {
+      "path": "CMakeLists.txt",
+      "actual_conflict_hunks": 1,
+      "resolution": "retain both Lane1 repair targets and the excluded TVD target"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "actual_conflict_hunks": 4,
+      "resolution": "adopt Lane1 try-prefill API/guards/generation/physical clock; retain shared WAD+TVD alias preview/commit with no false return after mutation"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.h",
+      "actual_conflict_hunks": 1,
+      "resolution": "replace old Lane2 inline host guard with Lane1 actual wrapper; remove duplicate getter definition; retain TVD test accessor"
+    }
+  ],
+  "total_conflict_hunks": 6,
+  "semantic_adaptations": [
+    "canonical ft_physical_cycle shared by TVD",
+    "host refusal before any exact-alias/Tag/allocator mutation",
+    "shared WAD occupancy, pin and generation checks",
+    "full-width test address and offset-on-success checks"
+  ],
+  "unchanged_critical_paths": [
+    "actual dirty WB_INFLIGHT read-forward before generic WAD denial",
+    "real bank/ICNT response lease, lower_accept/set_done and epoch cleanup"
+  ],
+  "raw_conflict_snapshots": [
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane2/review_r5_exact62/CMakeLists.txt.conflicted",
+      "sha256": "8385cfea73b7ae38195b31ae3b32df029c0b6713a18cf92693d31e0ef061d785"
+    },
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane2/review_r5_exact62/ep-l2-ft-cache.inc.conflicted",
+      "sha256": "153ffb090e21e5e1ec62c62c7982a956b9116c8400d06c8e47c670bb3bb9de53"
+    },
+    {
+      "path": "/workspace/results/ep_l2_ft20261016/lane2/review_r5_exact62/l2cache.h.conflicted",
+      "sha256": "468d70c11cfb8e455b5449ef91b10815e7e4b7c80d95b7c08f8be28a9cdc053a"
+    }
+  ]
+}

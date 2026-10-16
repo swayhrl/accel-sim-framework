@@ -1,0 +1,17 @@
+case,state,selector,scope
+candidate62_try_prefill_TVD_refusal_atomicity_full_address_exact_alias,NOT_COMPILED_NOT_RUN,--candidate62-gates,new held-response/dirty refusal preserves alias+payload+offset; post-WB success preserves unrelated TVD; actual physical bank audit
+warm_repeat_partial_sector_TVD_promotion_WB_flush_C16,NOT_COMPILED_NOT_RUN,--repair-gates,"4096 repeated native host warmups plus two sector/repeat additions, masks0/1, real warm read, same-handle promotion with dirty victim WB/flush"
+warm_repeat_partial_sector_TVD_promotion_WB_flush_C8,NOT_COMPILED_NOT_RUN,--repair-gates,same targeted case with WBUF8; no sensitivity performance qualification
+host_clean_victim_TVD_alias_reinit_epoch_identity,NOT_COMPILED_NOT_RUN,--repair-gates,"clean resident replacement by host, host overwrites optional detached line, rewarm after invalidation"
+warm_partial_sector_TVD_missing_real_lower_fallback,NOT_COMPILED_NOT_RUN,--repair-gates,uninitialized sector must miss TVD and issue one actual lower read
+warm_primary64x16_actual_chosen_tag_and_bank_identity,NOT_COMPILED_NOT_RUN,--repair-gates,"17 same-set host warms, real chosen Tag and bank class, repeated other-sector warm read"
+offset4096_dirty_forward_write_wait_physical_bank,NOT_COMPILED_NOT_RUN,--repair-gates,real WB_INFLIGHT forward before WAD rejection; write waits set_done and promotes same handle
+offset4096_dirty_forward_atomic_wait_physical_bank,NOT_COMPILED_NOT_RUN,--repair-gates,same actual atomic request/version ordering; no numerical ALU claim
+offset4096_WAD128_lower_accept_set_done_flush_physical_bank,NOT_COMPILED_NOT_RUN,--repair-gates,"actual lower hold/full WAD, release hold, set_done/full drain and flush"
+--reject_warm_dirty_victim,NOT_COMPILED_NOT_RUN,--reject_warm_dirty_victim,expect SIGABRT and Lane1 wrapper marker: EP-L2 host prefill rejected: hardware must be drained and selected owner clean
+--reject_warm_dirty_owner,NOT_COMPILED_NOT_RUN,--reject_warm_dirty_owner,expect SIGABRT and Lane1 wrapper marker: EP-L2 host prefill rejected: hardware must be drained and selected owner clean
+--reject_warm_active_request,NOT_COMPILED_NOT_RUN,--reject_warm_active_request,expect SIGABRT and Lane1 wrapper marker: EP-L2 host prefill rejected: hardware must be drained and selected owner clean
+--reject_warm_mandatory_wb,NOT_COMPILED_NOT_RUN,--reject_warm_mandatory_wb,expect SIGABRT and Lane1 wrapper marker: EP-L2 host prefill rejected: hardware must be drained and selected owner clean
+prior13_static_checks,ARCHIVED_NOT_RERUN,NONE,old832 candidate-only scope; not counted as new tests
+prior12_plus3_producer_gates,ARCHIVED_NOT_RERUN,NONE,"Corec197 source-only historical scope, no repaired/runtime qualification"
+application_qualification,NOT_QUALIFIED,NONE,official frozen R0.1/R2 binary and Lane5 independent current acceptance required
