@@ -1,3 +1,21 @@
+# Current174 conditional Btree second terminal —2026-10-16T16:18Z
+
+**New BtreeOO128 strictPASS; new namespace2PASS/4running.**
+46e667ba-7e97-4f44-a030-85bee0051cfc naturally exited0:175133cycles,
+444467849 active-thread instructions,2full orderedkernels,12:23.71wall,
+622592KiB peakRSS. Frozen immediate strict receipt equals independent
+recollection: input/config/runtime/ROI, full per-kernel scope and finite
+credit/dependency/ref/physical/PIB/lower/ordinary completion checks pass.
+All11 service metrics and64SM cycle denominator pass;1817551 cacheable warp
+retirements and4139841 collected32B sectors. C+188570cycles was alreadyPASS.
+B16-N/TC80-N/IO256/IO128 continue. No paired ratio, matched128 metric or
+cross-input role-ranking is emitted before all6PASS.
+See review_pack/btree_derived_checkpoint_20261016T1618Z. Original44 remain
+38PASS/3live/3oldHotspotHOLD; original3 plus newBtree4 give7actualsimulators.
+Existing launch authority/locks/HOLDs, original scientific pending,2D STOP/LUD
+no launch, modern/native/area/no-GM boundaries remain. Main Goal ACTIVE.
+Historical checkpoints follow intact.
+
 # Current174 conditional Btree first terminal —2026-10-16T16:16Z
 
 **New Btree TRAD96/C+ strictPASS, five sibling arms still running.**
