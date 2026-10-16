@@ -1,0 +1,147 @@
+{
+  "binary": null,
+  "cases": [
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 1,
+      "offset": 0,
+      "scenario": "evicted",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 1,
+      "offset": 4096,
+      "scenario": "evicted",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 1,
+      "offset": 4096,
+      "scenario": "--warm-hit",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 1,
+      "offset": 4096,
+      "scenario": "--warm-multi-sector",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 1,
+      "offset": 4096,
+      "scenario": "--warm-hit",
+      "status": "NOT_RUN",
+      "wbuf_entries": 8
+    },
+    {
+      "expected_signal": "SIGABRT",
+      "mode": 1,
+      "offset": 4096,
+      "required_message": "EP-L2 FT host prefill supports only untimed initial initialization; post-kernel reuse rejected",
+      "scenario": "--reject-post-kernel",
+      "scope": "Reject unsupported post-GPU host prefill; dirty scenario exercises preceding real write/WB pressure, not the standalone dirty-tag branch",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_signal": "SIGABRT",
+      "mode": 1,
+      "offset": 4096,
+      "required_message": "EP-L2 FT host prefill supports only untimed initial initialization; post-kernel reuse rejected",
+      "scenario": "--reject-dirty-victim",
+      "scope": "Reject unsupported post-GPU host prefill; dirty scenario exercises preceding real write/WB pressure, not the standalone dirty-tag branch",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 2,
+      "offset": 0,
+      "scenario": "evicted",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 2,
+      "offset": 4096,
+      "scenario": "evicted",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 2,
+      "offset": 4096,
+      "scenario": "--warm-hit",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 2,
+      "offset": 4096,
+      "scenario": "--warm-multi-sector",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_bank_grants_max": 1,
+      "expected_exit": 0,
+      "mode": 2,
+      "offset": 4096,
+      "scenario": "--warm-hit",
+      "status": "NOT_RUN",
+      "wbuf_entries": 8
+    },
+    {
+      "expected_signal": "SIGABRT",
+      "mode": 2,
+      "offset": 4096,
+      "required_message": "EP-L2 FT host prefill supports only untimed initial initialization; post-kernel reuse rejected",
+      "scenario": "--reject-post-kernel",
+      "scope": "Reject unsupported post-GPU host prefill; dirty scenario exercises preceding real write/WB pressure, not the standalone dirty-tag branch",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    },
+    {
+      "expected_signal": "SIGABRT",
+      "mode": 2,
+      "offset": 4096,
+      "required_message": "EP-L2 FT host prefill supports only untimed initial initialization; post-kernel reuse rejected",
+      "scenario": "--reject-dirty-victim",
+      "scope": "Reject unsupported post-GPU host prefill; dirty scenario exercises preceding real write/WB pressure, not the standalone dirty-tag branch",
+      "status": "NOT_RUN",
+      "wbuf_entries": 16
+    }
+  ],
+  "command_contract": [
+    "ep_l2_ft_memcpy_clock",
+    "<frozen gpgpusim.config>",
+    "<frozen trace.config>",
+    "<mode>",
+    "<wbuf_entries>",
+    "<offset>",
+    "[scenario unless evicted]"
+  ],
+  "core": "a9457986625ad44c27229afc3f61dbabbada3e53",
+  "count": 14,
+  "status": "NOT_COMPILED_NOT_RUN"
+}

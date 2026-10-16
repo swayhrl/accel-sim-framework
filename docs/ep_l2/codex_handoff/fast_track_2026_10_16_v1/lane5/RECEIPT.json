@@ -17,19 +17,18 @@
     "docs/ep_l2/review_packs/FT20261016_LANE5_R0_CFD_097K_PAIR_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_MEMCPY_CLOCK_CORRECTION_r1",
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
-    "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r2"
+    "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r2",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_RESOURCE_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r3"
   ],
   "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
   "blockers": [
     {
-      "reason": "Confirmed physical bank clock violation, repair candidate independently tested",
-      "required_artifact": "Lane1 immutable official repaired R0.1/R1.1 source + producing Framework + binary SHA + configs; old binaries retained",
-      "scope": "formal R0/R1 application/diagnostic qualification"
-    },
-    {
-      "reason": "Actual workspace below unchanged48GiB floor; three admissions refused; own-only compaction did not restore admission",
-      "required_change": "Resource state recovers within existing policy; no budget change requested",
-      "scope": "warmup candidate compile/six-case producer validation"
+      "reason": "Actual workspace below unchanged48GiB floor; no sufficient own workspace scratch or safe alternate FS; build growth headroom additionally required",
+      "required_artifact": "Lane1 sole official R0.1 release with exact Core/producing Framework/binary/config; shared safe admission",
+      "resource_audit": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_RESOURCE_r1/RESOURCE_RECOVERY.json",
+      "scope": "official R0.1 build and independent runtime qualification"
     }
   ],
   "config_sha256": null,
@@ -65,6 +64,14 @@
       "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane3/RECEIPT.json",
       "receipt_sha256": "1ef5b52f66113c475f8de6fce6e6633065054375928c5c465d6300aec1d3d67d",
       "status": "READY_FOR_LANE1_INTEGRATION_FULL_RUNTIME_PENDING"
+    },
+    {
+      "lane_id": 1,
+      "publication_commit": "3840f9585b710a5abea8201c14fa05cdea930aa7",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT_REVIEW_R3.json",
+      "receipt_sha256": "bb9958263c0b6cca2d8b792f23e9ae8f5572efec29dded9118f4e723ecf9615b",
+      "status": "OLD_R0_R1_APPLICATION_ACCEPTANCE_SUSPENDED_R0_1_SOURCE_INTEGRATION_RESOURCE_HOLD",
+      "supersedes_old_qualification_claim": true
     }
   ],
   "feature_vector": null,
@@ -77,11 +84,12 @@
     "completed_pairs": 3,
     "intended_pairs": 5,
     "path": "/workspace/results/ep_l2_ft20261016/lane5_r0_formal_r1/CAMPAIGN.json",
-    "representative_for_strong_controls": "vectorAdd_4M",
+    "representative_for_strong_controls": null,
+    "representative_selection": "DEFER_UNTIL_CURRENT_ACCEPTED_REPAIRED_MECHANISM_EFFECT",
     "running_workloads": [],
     "scientifically_accepted_pairs": 0,
     "source_is_frozen_R0": true,
-    "status": "STOPPED_BEFORE_CONVOLUTION_ON_CONFIRMED_CLOCK_QUALIFICATION_DEFECT"
+    "status": "SUSPENDED_OLD_RESULTS_RETAINED_NEW_R0_1_IDENTITY_REQUIRED"
   },
   "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
   "framework_implementation_parent": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
@@ -95,7 +103,7 @@
     "lane2": "56abbacc1192d68995e78561899719649f838079",
     "lane3": "57801b429166b47079444081aaaafbfe5050e0d5"
   },
-  "own_core_branch_head": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
+  "own_core_branch_head": "a9457986625ad44c27229afc3f61dbabbada3e53",
   "qualified_feature_vectors": [
     {
       "adaptive_policy": false,
@@ -120,13 +128,38 @@
       "wbuf_entries": 16
     }
   ],
-  "review_coordination_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
-  "runner_source_commit": "8a82f2d831fc5189a4a7b024e5cddda6e96bda46",
+  "resource_recovery": {
+    "at": "2026-10-16T11:58:14.767074+00:00",
+    "mutated_or_deleted_files": [],
+    "physical_bytes_released_by_this_audit": 0,
+    "resources_after": {
+      "available_memory_bytes": 161606361088,
+      "disk_free_bytes": 45436239872
+    },
+    "resources_before": {
+      "available_memory_bytes": 161609551872,
+      "disk_free_bytes": 45436243968
+    },
+    "status": "RESOURCE_HOLD_NO_SUFFICIENT_OWN_WORKSPACE_SCRATCH",
+    "workspace_deficit_bytes": 6103367680
+  },
+  "review_coordination_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
+  "runner_source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
-  "status": "APPLICATION_QUALIFICATION_SUSPENDED_CLOCK_REPAIR_AND_WARMUP_CANDIDATE_READY_RESOURCE_HOLD",
-  "task_id": "FT20261016_LANE5_R0_FORMAL_r1",
+  "scientific_acceptance": {
+    "actual_retained_run_rejections": 12,
+    "consumer_api": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/SCIENTIFIC_ACCEPTANCE_API.md",
+    "current_accepted_runs": 0,
+    "current_launch_authorizations": 0,
+    "generation": 2,
+    "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
+    "revision": "FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
+    "sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a"
+  },
+  "status": "REVIEW_R3_SUPERSESSION_ENFORCED_REPAIR_CANDIDATE_NOT_COMPILED_RESOURCE_HOLD",
+  "task_id": "FT20261016_LANE5_REVIEW_R3_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-16T11:14:59.252718+00:00",
+  "updated_at": "2026-10-16T12:12:25.191433+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
@@ -191,9 +224,10 @@
       "ro_module_scenario_groups": 5
     },
     "new_formal_runs": 6,
+    "new_formal_runs_this_r3": 0,
     "python_tests": {
-      "count": 48,
-      "kind": "HARNESS_ONLY",
+      "count": 62,
+      "kind": "HARNESS_AND_CONSUMER_ONLY_NOT_CORE_QUALIFICATION",
       "status": "PASS"
     },
     "required_future_gates": [
@@ -202,26 +236,19 @@
     ],
     "scientifically_accepted_R0_application_runs": 0,
     "warmup_identity_candidate": {
-      "R1_patch_parent": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
-      "admission_refusals": 3,
+      "R0_parent": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+      "R1_parent": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
       "binary_sha256": null,
-      "candidate_behavior": "Bind/reuse bank-compatible RESIDENT handle in sole allocator at untimed host prefill; declared sectors use existing version-zero symbols; native Tag prefill and default-OFF delegate preserved; reject live transient loss.",
-      "core_source_commit": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
+      "build_owner": "lane1",
+      "clock_only_tested_source": "1565f1f04978f12e51a29fcbf9dab9a3c61b5c4e",
+      "core_source_commit": "a9457986625ad44c27229afc3f61dbabbada3e53",
       "executed_cases": 0,
-      "framework_driver_source_commit": "bc894dfae05c9c8d24bed57d839acb604f8a2f76",
-      "new_test": "Actual warm GLOBAL_ACC_R checks version0 before later writes/WBs, response/drain; both modes with zero offset, nonzero evicted warm line, direct warm hit.",
-      "next": "Actual disk floor must permit compilation and six-case validation; Lane1 then official repaired source/binary freeze, Lane5 new-identity app qualification. No TVD/RO dependency.",
-      "original_counterexample": "Real immediate warm hit after force_l2_tag_update aborted R0 handle_owner_matches; exact logs in earlier clock-correction pack r1/r2.",
-      "planned_cases": 6,
-      "resources_measured_at_receipt": {
-        "available_memory_bytes": 167513841664,
-        "disk_free_bytes": 50802106368
-      },
-      "runtime_warmup_delta_commit": "5d974c3bf116ad21da74d3a27eace028c1f2e197",
-      "safety_floor_changed": false,
-      "scope_limit": "Warmup delta uncompiled. Tested clock-only Core1565f1f0 remains distinct; latest candidate is not a qualified application release.",
-      "status": "CANDIDATE_NOT_COMPILED_NOT_QUALIFIED_RESOURCE_FLOOR",
-      "workspace_floor_bytes": 51539607552
+      "independent_validation_owner": "lane5",
+      "planned_cases": 14,
+      "r3_compile_attempts": 0,
+      "runtime_guard_commit": "929ee3b397e7cc15789059d35f6155489fbada53",
+      "scope": "Initial untimed host prefill only; reject post-GPU epochs, dirty victim, reservations and live pending ownership before mutation; assert native chosen Tag index and resident payload handle after prefill. Repeated multi-sector version-zero warm reads planned, not executed. No science budget/config/trace/oracle changes.",
+      "status": "NOT_COMPILED_NOT_QUALIFIED_RESOURCE_HOLD"
     }
   }
 }

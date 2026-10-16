@@ -67,3 +67,7 @@ Formal performance launches require Lane 1's qualified baseline/source/binary/
 config contract and independent all-OFF/finite-WBUF validation. Historical
 1152-payload/shadow results cannot fill B16/U_WB16 cells. Quota is not model
 qualification. Lane 2/3 versions enter the matrix only after independent checks.
+
+## review_r3 resource audit
+
+Authority a41bfb55934303a4d4a342762f74a16d137d0316. RESOURCE_HOLD; audit45,436,243,968 workspace free bytes, deficit6,103,367,680 bytes before any build growth. Results resolve to a different /root/share filesystem with47,704,883,200 free bytes, also below48GiB. No own inactive workspace build/tmp candidates; probe objects on results FS cannot repair workspace. Physical bytes released0, no files deleted/moved. Full measured before/after/device/path/hash evidence in FT20261016_LANE5_REVIEW_R3_RESOURCE_r1. No floor change or admission retry. Lane1 is sole official builder; reserve measured compile growth above floor before starting. Scientific current authority V2 is an additional mandatory gate, separately from resource claim and original immutable terminal/certificate.

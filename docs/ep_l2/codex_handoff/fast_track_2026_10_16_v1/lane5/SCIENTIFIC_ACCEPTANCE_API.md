@@ -1,0 +1,11 @@
+# Current scientific acceptance API (review_r3)
+
+Authoritative module: util/ep_l2/ft_lane5/acceptance.py at Framework51f4abff787d94d93cc300ac15945768af7a161f. This module uses the runner's canonical registry identity, not a new run-key format.
+
+For Lane6/off-host intake, import this module from the pinned source and call `state = acceptance.fetch_current_authority(framework_repo)` at intake/render time. It fetches only Lane5's execution branch from swayhrl/accel-sim-framework and binds the fetched publication SHA, manifest bytes and complete supersession evidence. Fetch failure must stop intake; no cached certificate fallback. Record `state['binding']` in the intake receipt. For the on-host runner, `load_current_authority()` uses the permanent shared CLIENT_CONTRACT.json current path/generation/revision/hash pointer. Git snapshots are not cross-host locks.
+
+Call `acceptance.require_current_result(identity, raw_log_sha256, cycles, instructions, state)` for each result before plotting or averaging. The identity is the exact immutable input_audit identity, with all ten original canonical fields; no aliases or altered Framework/config fields may rehabilitate withdrawn Core/binary. Requires exact CURRENT_ACCEPTED row, COMPLETE_VALID original terminal, exact raw hash and metrics, and no overriding withdrawal. Missing authority, stale pointer, changed proof, mismatched identity/raw/metrics, SUSPENDED, NOT_RUN or known withdrawn release reject. Preserve older accepted charts/review packs but publish their withdrawal separately.
+
+Launch qualification is separate: authorize_launch additionally requires an exact qualified release/vector/certificate hash listed CURRENT_QUALIFIED_FOR_LAUNCH. It never pre-accepts future results. A new binary/source/config/trace identity still requires independent eleven-gate qualification and result publication. Generation2 grants no launch or result acceptance. Existing immutable certificates and six COMPLETE_VALID terminals are retained historical records only.
+
+Tests: 62 harness tests PASS (14 supersession tests). Actual six retained runs each reject both runner inspection with historical qualified certificate and result intake, twelve actual rejection checks. These are tool/consumer tests, not C++ or application qualification. Proof in FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1.
