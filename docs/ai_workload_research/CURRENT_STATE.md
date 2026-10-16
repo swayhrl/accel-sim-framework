@@ -1,5 +1,20 @@
 # AI-ARCH｜当前科研协调状态
 
+**最新快照：2026-10-16 / A64，A61真实IGB-small G1数字资格STOP并完成独立审查。** 本页为研究导航，不是109实时监控。以下最新状态优先于下方2026-10-15“A61待批准”历史记录；用户早已批准并向109 Lane M派发A61，A61实际执行已经STOP，不能再转用历史待批文字。
+
+## 最新终态：A61真实运行与A64独立审查
+
+- A61执行branch：hrl/aiarch-a61-igb-small-gnn-native-109-v1；终态commit：37120f98186b83a946f4812755523f5d73245491；tree：d13b446ca4824cb3ad7ffae25b5ce91c023b75a1；比原Goal HEAD 9be1d85b0ce105026e7fc4206a0380a98ffb4d1e ahead1，final→branch HEAD identical。
+- **科学终态 DATA_OR_NUMERIC_NO_GO / STOP**，精确原因 COMPILED_UPDATE_QUALIFICATION_JOINT_PREDICATE_FAILED。G0官方IGB真实输入/权利/环境PASS；G1 FULL_RESIDENT_GPU单batch实际模型/Adam/容量PASS（Torch reserved约8.10GiB）；PINNED_CACHE_ON eager采样/cache/fallback/数值PASS。编译训练步返回后参数名字相等与updated tensor allclose短路复合assert第一次在layers.0.lin_r.weight失败，第二名字/实际差值/梯度未记录，根因UNKNOWN，**不能宣称compiler bug**。
+- PINNED_CACHE_OFF、六个正式seed/arm性能点、完整训练wall和供数诊断均**NOT_RUN**；G1一共3次更新、0正式更新。因此没有任何硬件供数瓶颈、全驻留是否足够快或缓存硬件收益结论。GPU锁累计64.680326秒，结束已释放；旧资产/其它独立项目未改。
+- [A61原始报告](https://github.com/swayhrl/accel-sim-framework/blob/37120f98186b83a946f4812755523f5d73245491/docs/ai_workload_research/runs/AI_ARCH_A61_IGB_SMALL_GNN_NATIVE_109_V1/FINAL_REPORT.md)；[A64独立科学审查](reviews/AI_ARCH_A64_A61_GNN_NUMERIC_STOP_INDEPENDENT_REVIEW_2026-10-16_V1.md)。
+- **唯一有条件下一步**：为新自然B1024单batch、同一冻结输入/初态做eagerA/eagerB/compiledC三路更新差分，单独记录名称/梯度/参数误差及负例，原数值门不放宽；≤180秒109共享锁、下载0、新盘≤128MiB、总3次optimizer更新＋必要工程中断retry1次。此为**新Goal建议，不是已启动GPU任务**；用户派发前不得执行。原A61历史STOP不改写。
+- A62/A63在[原协调文献目录](literature/)完成新的稀疏训练科学候选整理，仍为SOURCE/LITERATURE，未晋升GPU；Q-S点云保持原候补，A59/A50G负结果与C16/AWMA权限均冻结。
+
+---
+
+# AI-ARCH｜当前科研协调状态
+
 **快照：2026-10-15，A60双报告审查与IGB/GIDS强软件反证完成，A61待科学输入批准。维护者：ChatGPT／AI-ARCH Discovery。**
 
 本页是研究导航，不是节点实时监控。A47/A47R1/A47R2/A50G/A59均已STOP；A58仅SOURCE审结束。IGB-small A61新输入合同只准备待批，本窗口没有109 CUDA/GPU或下载执行。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
