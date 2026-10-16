@@ -34,7 +34,7 @@ def scan_refs(repo):
     for line in git(repo, "for-each-ref", "--format=%(refname) %(objectname)",
                     "refs/heads", "refs/remotes").splitlines():
         ref, sha = line.split()
-        if "/hrl/ep-l2-" not in ref or "ft20261016" in ref:
+        if not any(prefix in ref for prefix in ('/hrl/ep-l2-', '/hrl/l2-latebind-')) or "ft20261016" in ref:
             continue
         refs.append({"ref": ref, "commit": sha})
         tips.setdefault(sha, []).append(ref)
@@ -43,6 +43,7 @@ def scan_refs(repo):
         # Restrict grep to research text/code. Figures and raw logs are excluded.
         files = [f for f in git(repo, "ls-tree", "-r", "--name-only", sha).splitlines()
                  if (f.startswith(("docs/ep_l2/", "util/ep_l2/", "tests/ep_l2/",
+                                   "docs/l2_latebind/", "tests/l2_latebind/",
                                    "src/gpgpu-sim/")) and Path(f).suffix in ALLOWED)]
         matches = []
         for start in range(0, len(files), 150):
@@ -101,6 +102,14 @@ def main():
                     for sub in ("docs/ep_l2", "tests/ep_l2"):
                         if (p / sub).is_dir(): roots.append(p / sub)
     data["local_results"] = scan_local(roots)
+    # Supplementary earlier L2 oracles are known lineage, not unrelated GPU
+    # projects. Their contracts differ from the new B16 diagnostic contracts.
+    legacy_roots = []
+    for repo in ('accel-sim-latebind-oracle-v1','accel-sim-latebind-mvp-v1'):
+        for sub in ('docs/l2_latebind','results'):
+            p = a.workspace/'worktrees'/repo/sub
+            if p.is_dir(): legacy_roots.append(p)
+    data['legacy_local'] = scan_local(legacy_roots)
     (a.out / "HISTORY_SEARCH.json").write_text(json.dumps(data, indent=2) + "\n")
     # These are evidence classes, not fabricated performance rows. Exact source
     # identities and individual inputs are retained in the indexed artifacts.
@@ -110,6 +119,8 @@ def main():
         ("WBUF_SHADOW_C4_C8_C16", "HISTORICAL_ONLY", "observational projections only", "no physical finite WBUF timing change; not I_WB", "docs/ep_l2/review_packs/MOTIVATION_FIGURES_r1/wbuf_sensitivity.csv"),
         ("H_SCHED_H_L2D_H_BW", "PLAN_ONLY", "specified downstream headroom axes", "plan is not a run", "docs/ep_l2/project_spec/PERFORMANCE_HEADROOM_PLAN.md"),
         ("OLD_L2_IDEAL_SWITCH", "HISTORICAL_ONLY", "registered legacy l2_ideal knob", "registration is not proof of a qualified runtime service or completed result", "src/gpgpu-sim/gpu-sim.cc"),
+        ("LATEBIND_ORACLE1_INFINITE_MSHR", "HISTORICAL_ONLY", "entry/merge capacity in pre-EP-L2 model", "no calibrated D512 shared-descriptor or new finite-WBUF/B16 contract", "docs/l2_latebind/phase12_contract.md"),
+        ("LATEBIND_ORACLE4_IDEAL_WRITEBACK", "HISTORICAL_ONLY", "WB queue AND data-port backpressure suppressed", "changes WB port/data-traffic semantics; disqualified as I_WB which must retain them", "docs/l2_latebind/phase12_contract.md"),
     ]
     fields = ["asset", "classification", "relaxed_resources", "retained_or_missing_constraints",
               "evidence_path", "new_B16_comparable", "binary_sha256", "config_sha256",
