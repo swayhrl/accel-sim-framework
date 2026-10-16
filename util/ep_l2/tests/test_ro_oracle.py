@@ -85,6 +85,15 @@ class OracleTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.run_build([kernel(["0 0 0 0 0 1 0 LDG 0 4 99 1000"])])
 
+    def test_duplicate_threadblock_not_complete_epoch(self):
+        x = kernel([ins("LDG", 0x1000)])
+        stream = x.replace("(1,1,1)", "(2,1,1)") + x[x.index("#BEGIN_TB"):]
+        with self.assertRaises(ValueError): self.run_build([stream])
+
+    def test_instruction_identity_is_checked(self):
+        with self.assertRaises(ValueError):
+            self.run_build([kernel([ins("LDG", 0x1000).replace("0 0 0 0", "0 0 0 1", 1)])])
+
     def test_verify_binds_every_trace_and_artifact(self):
         temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
         root = Path(temp.name)

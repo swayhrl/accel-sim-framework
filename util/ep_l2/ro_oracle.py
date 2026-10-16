@@ -98,11 +98,14 @@ def memory_kind(opcode):
 def stream_kernel(path):
     version = lineinfo = 0
     grid = None
+    grid_dims = None
     block = None
     blocks = ends = insts = 0
     expected = seen = None
     in_block = False
     warps = 0
+    next_warp = 0
+    tb_identified = False
     with open_trace(path) as f:
         for lineno, raw in enumerate(f, 1):
             s = raw.strip()
@@ -114,6 +117,7 @@ def stream_kernel(path):
                 lineinfo = int(s.split("=")[1])
             elif s.startswith("-grid dim"):
                 a = list(map(int, re.findall(r"\d+", s)))
+                grid_dims = a
                 grid = a[0] * a[1] * a[2]
             elif s.startswith("-block dim"):
                 a = list(map(int, re.findall(r"\d+", s)))
@@ -121,24 +125,41 @@ def stream_kernel(path):
             elif s == "#BEGIN_TB":
                 if in_block:
                     raise ValueError("nested threadblock")
-                in_block = True; blocks += 1; warps = 0
+                in_block = True; blocks += 1; warps = 0; next_warp = 0
+                tb_identified = False
             elif s == "#END_TB":
                 if not in_block or (expected is not None and seen != expected):
                     raise ValueError("incomplete warp")
-                if block is None or warps != block:
+                if block is None or warps != block or next_warp != warps or not tb_identified:
                     raise ValueError("missing warp")
                 ends += 1; in_block = False; expected = seen = None
             elif s.startswith("insts ="):
                 if expected is not None and seen != expected:
                     raise ValueError("truncated warp")
                 expected = int(s.split("=")[1]); seen = 0; warps += 1
-            elif s.startswith(("#", "-", "thread block", "warp =")):
+            elif s.startswith("thread block ="):
+                coords = list(map(int, re.findall(r"\d+", s)))
+                if not in_block or tb_identified or len(coords) != 3 or grid_dims is None:
+                    raise ValueError("missing/duplicate threadblock identity")
+                ordinal = coords[0] + grid_dims[0] * (coords[1] + grid_dims[1] * coords[2])
+                if ordinal != blocks - 1 or any(c >= n for c,n in zip(coords, grid_dims)):
+                    raise ValueError("threadblocks missing, duplicated or not canonical trace order")
+                tb_identified = True
+            elif s.startswith("warp ="):
+                if int(s.split("=")[1]) != next_warp:
+                    raise ValueError("missing or duplicate warp identity")
+                next_warp += 1
+            elif s.startswith(("#", "-")):
                 continue
             else:
                 if not in_block or expected is None:
                     raise ValueError("instruction outside declared warp")
                 try:
                     event = instruction(s, version, lineinfo)
+                    if version < 3 and list(map(int, s.split()[:3])) != coords:
+                        raise ValueError("instruction threadblock identity mismatch")
+                    if version < 3 and int(s.split()[3]) != next_warp - 1:
+                        raise ValueError("instruction warp identity mismatch")
                 except (ValueError, IndexError) as e:
                     raise ValueError(f"{path}:{lineno}: {e}") from e
                 seen += 1; insts += 1
@@ -232,10 +253,26 @@ def build(commandlist, output, scope, framework_source):
         for key in sorted(k for k in stats if k.endswith("_lines")):
             reason = key[:-6]
             w.writerow([reason, stats[key], stats[reason + "_read_lane_references"]])
+    with (output / "exclusion.csv").open("w", newline="") as f:
+        w = csv.writer(f); w.writerow(["reason", "lines", "read_lane_references"])
+        for key in sorted(k for k in stats if k.endswith("_lines") and not k.startswith("CERTIFIED_RO")):
+            reason = key[:-6]
+            w.writerow([reason, stats[key], stats[reason + "_read_lane_references"]])
     with (output / "certified_lines.txt").open("w") as f:
         if not unknown:
             for (address,) in db.execute("SELECT address FROM lines WHERE reads>0 AND writes=0 AND atomics=0 ORDER BY address"):
                 f.write(address + "\n")
+    with (output / "certified_ranges.csv").open("w", newline="") as f:
+        w = csv.writer(f); w.writerow(["first_line", "last_line_inclusive"])
+        start = end = None
+        if not unknown:
+            for (address,) in db.execute("SELECT address FROM lines WHERE reads>0 AND writes=0 AND atomics=0 ORDER BY address"):
+                current = int(address,16)
+                if end is not None and current != end + 128:
+                    w.writerow([f"{start:016x}", f"{end:016x}"]); start = None
+                if start is None: start = current
+                end = current
+        if start is not None: w.writerow([f"{start:016x}", f"{end:016x}"])
     db.close()
     manifest = dict(schema=SCHEMA, status="CERTIFIED_WITH_MODEL_SCOPE" if not unknown else "NO_CERTIFIED_LINES_UNRESOLVED_EPOCH",
                     framework_source_commit=framework_source, epoch="whole_commandlist",
@@ -244,7 +281,7 @@ def build(commandlist, output, scope, framework_source):
                     kernel_count=len(kernels), commandlist=str(commandlist), commandlist_sha256=command_hash,
                     kernels=inputs, unresolved_opcodes=dict(unknown), counts=dict(stats),
                     oracle_cost="offline SQLite O(unique lines), 16 MiB SQLite page cache; runtime oracle idealized input, not free hardware",
-                    artifacts={n:sha256(output/n) for n in ["oracle.sqlite3", "coverage.csv", "certified_lines.txt"]})
+                    artifacts={n:sha256(output/n) for n in ["oracle.sqlite3", "coverage.csv", "exclusion.csv", "certified_lines.txt", "certified_ranges.csv"]})
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
 
