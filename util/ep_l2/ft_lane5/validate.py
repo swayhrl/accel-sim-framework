@@ -82,6 +82,7 @@ def validate_events(program, events):
         elif kind == 'response':
             key = (*scope, event['request_id'])
             require(key in admitted and key not in responded, 'unadmitted or duplicate response')
+            require(key in descriptors.values(), 'response has no live requester descriptor')
             reference = expected[key]
             require(event['kind'] == reference['kind'], 'wrong response kind')
             if reference['kind'] == 'read':
