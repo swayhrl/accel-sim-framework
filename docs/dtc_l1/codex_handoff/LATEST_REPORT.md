@@ -1,3 +1,20 @@
+# Current174 checkpoint — 2026-10-16T14:52Z
+
+**BICG primary trio numerically complete.** Newly terminal IO256
+`aec8c80b-1d77-4301-8314-fb98c5d95058` naturally exited0 with
+93,312,525 cycles,145,666,048 instructions and2ordered kernels; unchanged
+strict collector plus member/list/body/active-resource audit PASS.
+TRAD96:25,353,488; OO128:47,533,116; IO256:93,312,525 cycles.
+Both DTC regressions are retained, without retuning or rerunning. These
+primary arms do not isolate ordering: IO128 and WAIT128 BICG remain live.
+See review_pack/checkpoint_20261016T1451Z and BICG_PRIMARY_TRIO.tsv.
+Original44 now **35 numericPASS /6 live /3 oldHotspotHOLD**; nine original
+primary trios are numerically complete. Separate HotspotV2five strict/resource
+PASS and all legacy-format/modern/native/area claim boundaries stay intact.
+No GM12 or substituted-input aggregate. The six original simulators, sole
+launch authority and strict watcher continue. Historical checkpoints below
+retain their own timestamps and scope.
+
 # Current174 checkpoint —2026-10-16T14:04Z
 
 Original OO ATAX a58df5fb-f532-467d-8bb6-f9e99d866a27 completed naturally:
