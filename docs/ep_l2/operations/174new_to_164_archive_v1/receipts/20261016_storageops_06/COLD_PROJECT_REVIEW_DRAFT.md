@@ -14,14 +14,15 @@ Default read-only R1 coverage/restore planning on 174-new:
 
 ```sh
 A=/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02
-python3 "$A/infrastructure/tools/v7_5b6c45bd4721/cold_project_restore.py" \
+python3 "$A/infrastructure/tools/v7_94d69d45d9ce/cold_project_restore.py" \
   --map "$A/infrastructure/project_manifests/SOURCE_MAP_63c243e.json" --project R1 \
   --source-manifest "$A/infrastructure/project_manifests/R1_8556dd125ac2.jsonl.zst" \
   --expected-manifest-sha256 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5 \
   --file-metadata "$A/infrastructure/project_manifests/R1_FILE_METADATA.jsonl.zst" \
   --expected-file-metadata-sha256 9226c1f5e457a8ab716afd08dc126201f94a827afde1e4312b4a1f8bf936d22f \
   --receipt "$A/receipts/R1_B001_DEST_VERIFIED.json" \
-  --receipt "$A/receipts/R1_B002_DEST_VERIFIED.json"
+  --receipt "$A/receipts/R1_B002_DEST_VERIFIED.json" \
+  --receipt "$A/receipts/R1_B003_DEST_VERIFIED.json"
 ```
 
 The command reports incomplete coverage. The tool refuses restore execution until complete coverage and writes only a fresh independent target-side test directory. Numeric file metadata is retained in a separate SHA256-pinned sidecar; the current restore planner joins every row to the frozen file hash/identity and reports complete recorded metadata, but does not apply ownership/mode or claim native metadata restoration. A tested reverse bridge handoff and old174 source-owner import into an absent sibling `build.restore.from164`, full hash and permission checks, and approved promotion are still required before publishing a source restore execution command. The withdrawn direct SSHFS-to-old174 /workspace command must not be used.

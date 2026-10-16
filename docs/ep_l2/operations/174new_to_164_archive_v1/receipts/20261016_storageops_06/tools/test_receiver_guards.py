@@ -184,6 +184,14 @@ class ResumeChecks(unittest.TestCase):
         self.assertTrue(out['idempotent_existing_archive_verified'])
 
 class RecoveryMetadataChecks(unittest.TestCase):
+    def test_restore_groups_preserve_order_scope_and_both_byte_and_file_limits(self):
+        from cold_project_restore import restore_groups
+        rows=[dict(relative_path=str(i),size_bytes=3,source_allocated_bytes=4) for i in range(7)]
+        groups=list(restore_groups(rows,limit=9,max_files=2))
+        self.assertEqual([f for g in groups for f in g],rows)
+        self.assertTrue(all(len(g)<=2 and sum(max(f['size_bytes'],f['source_allocated_bytes']) for f in g)<=9 for g in groups))
+        with self.assertRaises(ValueError):list(restore_groups([dict(size_bytes=10,source_allocated_bytes=10)],limit=9))
+
     def test_sidecar_requires_exact_complete_identity_and_hash(self):
         from cold_project_restore import join_file_metadata
         row=dict(relative_path='a',sha256='a'*64,size_bytes=4,device=156,inode=3,nlink=1)

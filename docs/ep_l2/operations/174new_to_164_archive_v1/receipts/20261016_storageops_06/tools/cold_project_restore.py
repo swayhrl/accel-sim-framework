@@ -52,6 +52,19 @@ def join_file_metadata(rows, metadata):
         joined.append(dict(row, uid=m['source_uid'], gid=m['source_gid'], mode=m['source_mode']))
     return joined
 
+def restore_groups(files, limit=512 * 1024**2, max_files=2000):
+    group, size = [], 0
+    for f in files:
+        cost = max(f['size_bytes'], f['source_allocated_bytes'])
+        require(0 <= cost <= limit, 'restore input exceeds bounded batch')
+        if group and (size + cost > limit or len(group) >= max_files):
+            yield group
+            group, size = [], 0
+        group.append(f)
+        size += cost
+    if group:
+        yield group
+
 def plan(mapping, project_id, rows, receipts):
     require(re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.-]{0,63}', project_id) is not None, 'unsafe project id')
     require(mapping['destination_archive_root'] == str(ARCHIVE), 'project map archive root mismatch')
@@ -88,6 +101,7 @@ def plan(mapping, project_id, rows, receipts):
             require(dest.resolve() == dest and dest.lstat().st_size == row['size_bytes'], 'archive changed')
         output.append(dict(relative_path=str(rel), source_original_path=row['source_path'],
             archive_path=str(dest), size_bytes=row['size_bytes'], sha256=row['sha256'],
+            source_allocated_bytes=row['allocated_bytes'],
             source_owner=row.get('owner'), source_mode=row.get('mode'), source_uid=row.get('uid'),
             source_gid=row.get('gid')))
     return project, output, missing
@@ -136,20 +150,27 @@ def main():
                 args.project + '_' + args.expected_manifest_sha256[:12])
             if args.execute_restore:
                 require(not os.path.lexists(restore), 'refuse to overwrite an existing restore target')
-            for f in files:
-                digest, snap = sha(Path(f['archive_path']))
-                require(digest == f['sha256'] and snap['size'] == f['size_bytes'], 'archived file mismatch')
-                result['fresh_archive_rehash_bytes'] += f['size_bytes']
+            result['restore_batches_completed'] = 0
+            for group in restore_groups(files):
+                check_resources()
+                for f in group:
+                    digest, snap = sha(Path(f['archive_path']))
+                    require(digest == f['sha256'] and snap['size'] == f['size_bytes'], 'archived file mismatch')
+                    result['fresh_archive_rehash_bytes'] += f['size_bytes']
                 if args.execute_restore:
-                    dest = restore / relative(f['relative_path'])
-                    mkdirs(ARCHIVE, dest.parent)
+                    mkdirs(ARCHIVE, restore)
+                    names = b''.join(f['relative_path'].encode() + b'\0' for f in group)
                     run = subprocess.run(['nice','-n','19','ionice','-c','3','rsync','-aH',
-                        '--no-owner','--no-group','--fsync','--bwlimit=30m','--',f['archive_path'],str(dest)],
-                        capture_output=True, timeout=180)
-                    require(run.returncode == 0, 'restore copy failed')
-                    got, restored = sha(dest)
-                    require(got == f['sha256'], 'restored file mismatch')
-                    result['verified_restore_bytes'] += restored['size']
+                        '--no-owner','--no-group','--fsync','--bwlimit=30m','--from0','--files-from=-',
+                        '--',project['archive_realpath_on_174new']+'/',str(restore)+'/'],
+                        input=names,capture_output=True,timeout=1800)
+                    require(run.returncode == 0, 'restore copy failed; keep partial drill, no overwrite')
+                    for f in group:
+                        dest = restore / relative(f['relative_path'])
+                        got, restored = sha(dest)
+                        require(got == f['sha256'] and restored['size'] == f['size_bytes'], 'restored file mismatch')
+                        result['verified_restore_bytes'] += restored['size']
+                    result['restore_batches_completed'] += 1
             if args.execute_restore:
                 result.update(state='FULL_CONTENT_RESTORE_VERIFIED_METADATA_AND_NATIVE_SOURCE_STILL_PENDING',
                     target_independent_restore_path=str(restore), native_server_metadata_verified=False)
