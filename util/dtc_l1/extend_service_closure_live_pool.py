@@ -26,6 +26,7 @@ def main():
     ap.add_argument('--historical-ledger', required=True)
     ap.add_argument('--expected-hold-sha', required=True)
     ap.add_argument('--output-dir', required=True)
+    ap.add_argument('--own-cap', type=int, choices=(16, 24), default=16)
     ap.add_argument('--labels', nargs='+', required=True)
     a = ap.parse_args()
     root, out = Path(a.root).resolve(), Path(a.output_dir).resolve()
@@ -71,11 +72,11 @@ def main():
 
     starts, terminals, qualified, live = inspect()
     assert not set(a.labels).intersection(s['spec']['label'] for p, s in starts)
-    assert len(live) + len(chosen) <= 16
+    assert len(live) + len(chosen) <= a.own_cap
     mem = dict(s.split(':', 1) for s in Path('/proc/meminfo').read_text().splitlines())
     available = int(mem['MemAvailable'].split()[0])*1024
     assert available >= sum(reservations.values()) + 8*1024**3
-    assert shutil.disk_usage(root).free >= 16*512*1024**2
+    assert shutil.disk_usage(root).free >= a.own_cap*512*1024**2
     out.mkdir(parents=True, exist_ok=False)
     (out/'ORIGINAL_HOLD_LAUNCHES').write_bytes(original)
     receipt = dict(utc=datetime.now(timezone.utc).isoformat(), source_sha256=sha(Path(__file__)),
@@ -84,7 +85,7 @@ def main():
         existing_live=live, qualified_non_hotspot_pilot_arms=sorted(qualified),
         terminal_reviews=terminals, observed_historical_peak_kib=peak,
         incremental_reservations_bytes=reservations, mem_available_bytes=available,
-        disk_available_bytes=shutil.disk_usage(root).free, own_simulator_cap=16,
+        disk_available_bytes=shutil.disk_usage(root).free, own_simulator_cap=a.own_cap,
         reason='Measured memory characterization permits bounded expansion; exact preregistered critical rows, no scientific identity or service change.',
         original_coordinator_pid=status['coordinator_pid'], original_hold_sha256=a.expected_hold_sha)
     save(out/'PREREGISTERED_ADMISSION.json', receipt)
@@ -102,7 +103,7 @@ def main():
     for row in chosen:
         starts, _, _, live = inspect()
         assert row['label'] not in {s['spec']['label'] for p, s in starts}
-        assert len(live) < 16 and sha(hold) == temporary_sha
+        assert len(live) < a.own_cap and sha(hold) == temporary_sha
         assert sha(Path(row['spec_path'])) == row['spec_sha256']
         stream = (root/'launcher_logs'/(row['label']+'.log')).open('x')
         proc = subprocess.Popen(['python3', str(runner), '--spec', row['spec_path'], '--root', str(root)],
@@ -117,7 +118,7 @@ def main():
         launched.append(dict(label=row['label'], runner_pid=proc.pid))
         print(json.dumps(launched[-1]), flush=True)
     _, _, _, live = inspect()
-    assert len(live) <= 16 and sha(hold) == temporary_sha
+    assert len(live) <= a.own_cap and sha(hold) == temporary_sha
     save(out/'STARTED.json', dict(utc=datetime.now(timezone.utc).isoformat(), launched=launched, live=live,
          strict_review='ALL_CURRENT_TERMINALS_RECHECKED', original_processes='PRESERVED'))
     replacement.write_bytes(original)
