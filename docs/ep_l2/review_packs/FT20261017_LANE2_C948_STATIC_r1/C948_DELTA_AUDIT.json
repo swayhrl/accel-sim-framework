@@ -1,0 +1,61 @@
+{
+  "kind": "new upstream delta audit, not a replay of prior10/13 static tests",
+  "base": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+  "public": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
+  "base_tree": "4122ac762547363881a91f3c986186e9649b5d9c",
+  "public_tree": "4122ac762547363881a91f3c986186e9649b5d9c",
+  "new_delta_checks": [
+    {
+      "boundary": "header alignment",
+      "result": "PASS_SOURCE_ONLY",
+      "evidence": "source header equals exact c948 except sole existing TVD test accessor; no getter-delete diff"
+    },
+    {
+      "boundary": "directed fixture physical clock",
+      "result": "PASS_SOURCE_ONLY",
+      "evidence": "test_ft_wbuf.cc bytes equal exact c948, including initial GPU time and synchronized cycle increment"
+    },
+    {
+      "boundary": "TVD/WAD/dirty/host compatibility",
+      "result": "UNCHANGED_SOURCE_EVIDENCE_CARRIED",
+      "paths": [
+        "CMakeLists.txt",
+        "src/gpgpu-sim/ep-l2-ft-cache.inc",
+        "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+        "src/gpgpu-sim/ep-l2-tvd-directory.h",
+        "src/gpgpu-sim/gpu-cache.cc",
+        "src/gpgpu-sim/gpu-cache.h",
+        "src/gpgpu-sim/gpu-sim.cc",
+        "src/gpgpu-sim/l2cache.cc",
+        "tests/ep_l2/test_tvd_production.cc"
+      ],
+      "evidence": "all listed blobs unchanged from cbdf; prior source/lifecycle audit retained only with its scope, not runtime PASS"
+    }
+  ],
+  "patch_checks": [
+    {
+      "base": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+      "result": "APPLY_AND_TEN_BLOBS_PASS_SOURCE_ONLY"
+    },
+    {
+      "base": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
+      "result": "APPLY_AND_TEN_BLOBS_PASS_SOURCE_ONLY"
+    }
+  ],
+  "included_paths": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+    "src/gpgpu-sim/ep-l2-tvd-directory.h",
+    "src/gpgpu-sim/gpu-cache.cc",
+    "src/gpgpu-sim/gpu-cache.h",
+    "src/gpgpu-sim/gpu-sim.cc",
+    "src/gpgpu-sim/l2cache.cc",
+    "src/gpgpu-sim/l2cache.h",
+    "tests/ep_l2/test_tvd_production.cc"
+  ],
+  "old_getter_patch_applied": false,
+  "new_textual_conflicts": 0,
+  "compiler_invoked": false,
+  "new_cpp_tests_executed": 0
+}

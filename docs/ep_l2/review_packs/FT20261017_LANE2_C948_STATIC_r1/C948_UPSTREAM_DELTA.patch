@@ -1,0 +1,23 @@
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index abf39e2b..793b4b92 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -415,4 +414,0 @@ class memory_sub_partition {
+-  unsigned long long ft_bank_grants_for_test(unsigned bank) const {
+-    return m_L2cache->ep_l2_payload_bank_grants(bank);
+-  }
+-
+diff --git a/tests/ep_l2/test_ft_wbuf.cc b/tests/ep_l2/test_ft_wbuf.cc
+index 395b37d4..aa9f2c3a 100644
+--- a/tests/ep_l2/test_ft_wbuf.cc
++++ b/tests/ep_l2/test_ft_wbuf.cc
+@@ -43,0 +44 @@ struct fixture {
++    gpu->gpu_sim_cycle = time;
+@@ -58 +59,6 @@ struct fixture {
+-  void cycle() { gpu->gpu_sim_cycle=time++; cache->cycle(); }
++  void cycle() {
++    // Every direct fill/response/access and cache lower callback must use the
++    // same physical cycle; native fixture time must never run one cycle ahead.
++    assert(gpu->gpu_sim_cycle == time && gpu->gpu_tot_sim_cycle == 0);
++    cache->cycle(); gpu->gpu_sim_cycle = ++time;
++  }
