@@ -35,6 +35,7 @@ def main():
     for i, w in enumerate(WORKLOADS):
         if w in lookup:
             ax.bar(i, lookup[w]["speedup"], width=.6, color="#336b8e")
+            ax.text(i, lookup[w]["speedup"] + .02, f'{lookup[w]["speedup"]:.6f}×', ha="center", fontsize=6.5)
         else:
             ax.text(i, .04, "pending/\nfailed", rotation=90, ha="center", va="bottom", fontsize=6.5)
     ax.axhline(1, color="black", linewidth=.6)

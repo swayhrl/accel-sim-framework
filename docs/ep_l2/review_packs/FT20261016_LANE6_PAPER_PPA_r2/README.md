@@ -14,6 +14,11 @@ completion 容量按 payload_budget 映射，不再以128项算例冒充真实�
 两图各有 PDF/SVG；紧凑 3.35-inch 单栏尺寸是当前工作版式，不声称已核实特定
 会议页数/模板。完整数据、显示子集、hash 与正确性范围见 figure/source manifest。
 
+阶段末新增并核验首个正式 sad pair：110593/110573 cycles，1.000180876×，
+基本持平；两侧peak1，无capacity压力。第三张图 `formal_sad/WB_PAIRS` 只显示
+实际1/5 pair，其余缺失显式保留、五点均值null；正文包含实际copy/Bank/DRAM
+对照与有限结论，未把小的周期变化写成容量收益。
+
 使用 `/usr/bin/python3`（Matplotlib/Pillow）执行：
 
 ```bash

@@ -65,7 +65,8 @@ TVD served_sector_bytes 保留该语义；lower/DRAM saved 必须来自匹配 OF
 
 ## 当前接收状态
 
-本 revision 尚未接收 Lane-5 正式应用 pair；没有生成新的 WB speedup 主图。
+本 revision 已通过原生入口接收 b47b721d 发布的 sad 正式应用 pair，生成
+`formal_sad/WB_PAIRS` 与完整 figure/runtime manifest；其余四点保持缺失，均值null。
 Lane-5 可先独立验证 R0 并立即运行主 pair，不受本文 adapter、TVD、RO 或 ideal
 集成所阻。`RESULT_COVERAGE.json` 保存当前准确消费范围；后来的完整 pair
 通过新 publication 产生新 pack，不覆盖本版。

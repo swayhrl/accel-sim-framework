@@ -14,7 +14,10 @@ review_r1 的 CONTINUE 未执行；本轮延续同一 Lane-6 分支，r1 pack �
   Lane-5 发布 `221c7f65cd881ca5da2d20dd0f63a50e35bbc009` 的独立资格证书，
   B16/U_WB16 已为 `INDEPENDENTLY_QUALIFIED`，证书准确绑定同一 R0 source/binary。
   模型内 scope 为 symbolic32B sector版本与实际 requester/lifecycle，非数值 SASS。
-  主应用 pair 已由 Lane 5 启动，不等待其他功能；该快照尚无完成的应用 pair。
+  主应用 pair 已由 Lane 5 启动，不等待其他功能。阶段末进一步消费发布
+  `b47b721d1be26210ffaea178fbbf3f5c839c2b9c` 的 sad 完整 pair；其声明的资格
+  publication 为 `2fc7cdcf18afb98c5e8434b87c4ef36316644098`，资格字节与此前
+  221c7f65读取版本一致。native adapter 使用实际声明的2fc7cdcf，不混写runtime。
 - Lane-4 发布 `96fbcb612773900fd75268ffe4e00ed9f13d3d42` 的新候选：Core
   `b8b3d55b392fcff793d0aec684bddb73ba3065a9` / Framework
   `438df99dd5138ec42acd7ae9d05e76b9b01e2e5e` / binary `63f26de2…`。
@@ -36,7 +39,7 @@ review_r1 的 CONTINUE 未执行；本轮延续同一 Lane-6 分支，r1 pack �
 |---|---|---|---|
 | 有限 staging、原位 U_WB 与 Bank 服务 | R0 `ep-l2-ft-cache.inc`、`gpu-cache.h`，producer 12 组生产定向与 all-OFF 七 CSV；Lane-5同源独立证书 | 生产 release 已交付、B16/U_WB16独立资格通过 | 完成的应用 pair |
 | 数据预算含共同 latch | Lane-1 STORAGE_AND_PORT_LEDGER | 1168/1160 项＋B/U 共同128B/slice；copy 三次 vs 原位 send | 匹配 RTL/工艺差分 PPA |
-| 动态借用改善性能 | borrow来源/拒绝、WB-data-full、bank/copy/lower 指标 | 尚不预设正收益；定向 peak126 不是应用 peak | 真实主实验、静态重分区与 copy 归因 |
+| 动态借用改善性能 | borrow来源/拒绝、WB-data-full、bank/copy/lower 指标 | sad实际峰值1、无capacity-above-C16，周期基本持平；定向 peak126不是应用 peak | 其余主实验、静态重分区与 copy 归因 |
 | sector locality 差异 | 13 行 checkpoint、runtime `db1c9018` / Core `ca3e7bc0` | 工作负载动机；line 与 sector 时间重用不同 | 不是 TVD hit、borrowing 或加速 |
 | 历史乐观读参考 | Lane-4 CEILING_RESULTS 两行＋实际 run manifests | 单点 OLD_D512_STATIC 1.721259×，读 DRAM32MB→0 | 非新 B16、非严格上界、非全负载均值 |
 | TVD serve/promotion/forward | Lane-2目录/适配模块；R0 尚未包含该功能 | 扩展设计及模块范围 | actual l2_cache hook、matched avoided reads/bytes |
@@ -67,3 +70,14 @@ REGISTRY.lock 下观察到9条 COMPLETE_VALID；提交启动记录时再次读�
 
 `RESULT_COVERAGE.json` 独立保留实施、理想诊断、失败/未完成的覆盖；完整五点
 之前不算全组 geomean。正文不嵌入 Lane、SHA、任务状态或项目管理过程。
+
+## 第一条正式结果的原生接收
+
+原生 `RESULTS.csv/PAIR_RECEIPT.json/RESOURCE_MOVEMENT.csv` 来自 b47b721d 的
+`FT20261016_LANE5_R0_SAD_PAIR_r1`。逐 run-key、原 source/binary/config/trace、
+独立资格 bytes、raw 与冻结 config/executable 已核对；未改变原 CSV。
+结果为110593/110573、157583646 instructions、1.0001808759823827×。
+全组均值null；其余4个负载在本消费快照未形成完整pair，R1 ideal仍缺18格。
+WB创建/接收/完成各3975，两侧peak1；static copy3975行而Unified0，Bank逻辑
+操作少7950次；DRAM读63456B/写508800B完全一致。只能支持局部copy/Bank减少，
+不把3975次resident→WB角色转交当作capacity-pressure relief。

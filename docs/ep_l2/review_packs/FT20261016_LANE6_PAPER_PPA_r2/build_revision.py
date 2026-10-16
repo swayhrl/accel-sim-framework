@@ -22,6 +22,8 @@ L4 = "96fbcb612773900fd75268ffe4e00ed9f13d3d42"
 L5 = "221c7f65cd881ca5da2d20dd0f63a50e35bbc009"
 LATEST1 = "2556909e55bb43c1d819f8c0417f5fc8b93630d9"
 LATEST4 = "be21c95d9c846c9af0904d24c78c10c3243dc64b"
+PAIRPUB = "b47b721d1be26210ffaea178fbbf3f5c839c2b9c"
+PAIRQUAL = "2fc7cdcf18afb98c5e8434b87c4ef36316644098"
 R0 = "126394be46b15f55b9756d43eb9ca9a9baae1c84"
 RO = "ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5"
 STREAM = "a38ce9c517ad49f88f5eaea74c73d4e5b23eb1c2"
@@ -78,15 +80,38 @@ def main():
         take("R0:" + f, a.core_repo, R0, "src/gpgpu-sim/" + f, "R0_PRODUCTION_SOURCE")
     take("RO_completion", a.core_repo, RO, "src/gpgpu-sim/ep-l2-ro-transactions.h", "MODULE_ONLY_NOT_R0")
     assert contract["runtime_ready"] is True and contract["independent_qualification"] is False
-    qualified = json.loads(take("R0_independent_qualification", a.framework_repo, L5, ROOT + "lane5/R0_INDEPENDENTLY_QUALIFIED.json", "INDEPENDENT_QUALIFICATION"))
+    qualified_bytes = take("R0_independent_qualification", a.framework_repo, L5, ROOT + "lane5/R0_INDEPENDENTLY_QUALIFIED.json", "INDEPENDENT_QUALIFICATION")
+    qualified = json.loads(qualified_bytes)
     checks = take("R0_independent_checks", a.framework_repo, L5, "docs/ep_l2/review_packs/FT20261016_LANE5_R0_QUALIFICATION_r1/INDEPENDENT_CHECKS.json", "INDEPENDENT_QUALIFICATION")
     assert qualified["status"] == "INDEPENDENTLY_QUALIFIED"
     for key in ("core_source_commit", "framework_source_commit", "binary_sha256"):
         assert qualified[key] == contract[key]
     assert all(g["status"] == "PASS" and g["production_driven"] is True and g["evidence_sha256"] == sha(checks) for g in qualified["gates"].values())
+    assert take("pair_qualification_publication", a.framework_repo, PAIRQUAL, ROOT + "lane5/R0_INDEPENDENTLY_QUALIFIED.json", "PAIR_RUNTIME_QUALIFICATION") == qualified_bytes
+    take("lane5_pair_receipt", a.framework_repo, PAIRPUB, ROOT + "lane5/RECEIPT.json", "PAIR_PUBLICATION")
+    pair_root = "docs/ep_l2/review_packs/FT20261016_LANE5_R0_SAD_PAIR_r1/"
+    pair_raw = {}
+    for f in ("RESULTS.csv", "PAIR_RECEIPT.json", "COMPARISON.json", "RESOURCE_MOVEMENT.csv", "SOURCE_MANIFEST.json"):
+        pair_raw[f] = take("sad_pair:" + f, a.framework_repo, PAIRPUB, pair_root + f, "FUNCTIONAL_IMPLEMENTATION")
+    from native_pair_intake import read_native_packet
+    from result_intake import summarize
+    adapter_path = Path(__file__).with_name("NATIVE_SAD_ADAPTER.json")
+    adapter = json.loads(adapter_path.read_text())
+    formal_packet = read_native_packet(a.framework_repo, adapter)
+    formal_result = summarize(formal_packet)
+    assert len(formal_result["pairs"]) == 1 and formal_result["pairs"][0]["workload"] == "sad"
+    assert formal_result["whole_group_geomean"] is None
+    formal_resources = list(csv.DictReader(io.StringIO(pair_raw["RESOURCE_MOVEMENT.csv"].decode())))
+    assert len(formal_resources) == 2 and all(r["staged_max_across_slice_peaks"] == "1" and r["capacity_above_C16_observed"] == "False" for r in formal_resources)
+    dump(out / "FORMAL_WB_PAIR_INPUTS.json", {"summary": formal_result, "runtime_packet": formal_packet,
+         "resource_movement": formal_resources, "qualification_declared_by_producer": PAIRQUAL,
+         "paper_intake_adapter_sha256": file_sha(adapter_path)})
+    subprocess.run(["/usr/bin/python3", str(Path(__file__).with_name("plot_qualified_pairs.py")), str(adapter_path),
+                    "--framework-repo", str(a.framework_repo), "--output-dir", str(out / "formal_sad")], check=True, capture_output=True)
     dump(out / "DEPENDENCY_SNAPSHOT.json", {"R0_producer_publication": L1, "lane1_continuation": LATEST1,
          "lane4_original_diagnostic": L4, "lane4_continuation": LATEST4, "lane5_publication": L5,
-         "R0_independent_qualification": qualified, "new_formal_completed_pairs_consumed": 0,
+         "R0_independent_qualification": qualified, "lane5_pair_publication": PAIRPUB,
+         "qualification_declared_by_pair_producer": PAIRQUAL, "new_formal_completed_pairs_consumed": 1,
          "R1_formal_diagnostic_completed_rows_consumed": 0})
 
     # Verify the 13-row local historical checkpoint against unchanged producer
@@ -221,11 +246,12 @@ def main():
     ax.legend(frameon=False, fontsize=6.7, loc="lower left", bbox_to_anchor=(0, 1.01), borderaxespad=0)
     ax.set_title("Historical locality (8 of 13 verified)", fontsize=8, pad=30)
     save(fig, "FIG03_VERIFIED_SECTOR_LOCALITY")
-    dump(out / "RESULT_COVERAGE.json", {"R0_formal_completed_pairs_consumed": 0, "R1_B16_ideal_completed_rows_consumed": 0,
+    dump(out / "RESULT_COVERAGE.json", {"R0_formal_completed_pairs_consumed": 1, "R1_B16_ideal_completed_rows_consumed": 0,
          "historical_diagnostic_completed_rows": 2, "historical_streaming_completed_rows": 13,
          "upstream_missing_diagnostic_rows": [r for r in diag_rows if r["status"] != "COMPLETE_VALID"],
          "R0_release_status": "INDEPENDENTLY_QUALIFIED_B16_U_WB16_ONLY",
-         "implementation_workloads": [{"workload": w, "state": "AWAITING_COMPLETED_LANE5_PAIR", "speedup": None} for w in selected[:5]],
+         "implementation_workloads": [{"workload": w, "state": "COMPLETE_VALID" if w == "sad" else "AWAITING_COMPLETED_LANE5_PAIR",
+                                       "speedup": formal_result["pairs"][0]["speedup"] if w == "sad" else None} for w in selected[:5]],
          "whole_group_geomean": None, "does_not_assert_current_remote_process_state": True})
     producer = subprocess.check_output(["git", "-C", str(a.framework_repo), "rev-parse", "HEAD"], text=True).strip()
     generator_rel = str(Path(__file__).resolve().relative_to(a.framework_repo.resolve()))
@@ -235,10 +261,11 @@ def main():
     dump(out / "FIGURE_INPUT_MANIFEST.json", {"generator_source_commit": producer, "sources": sources,
          "historical_diagnostic": diag_verified, "streaming13": {"evidence_kind": "HISTORICAL_LOCALITY_OBSERVATION", "rows": plot_rows, "selected_predeclared_order": selected},
          "figures": {"FIG02_HISTORICAL_OPTIMISTIC_READ": {"kind": "HISTORICAL_DIAGNOSTIC", "not_B16_or_EP_L2_speedup": True, "strict_upper_bound": False},
-                     "FIG03_VERIFIED_SECTOR_LOCALITY": {"kind": "HISTORICAL_LOCALITY_OBSERVATION", "TVD_hits_or_borrowing_inferred": False}},
-         "implementation_results": [], "new_B16_ideal_results": []})
+                     "FIG03_VERIFIED_SECTOR_LOCALITY": {"kind": "HISTORICAL_LOCALITY_OBSERVATION", "TVD_hits_or_borrowing_inferred": False},
+                     "formal_sad/WB_PAIRS": {"kind": "FUNCTIONAL_IMPLEMENTATION", "complete_pairs": 1, "whole_group_geomean": None}},
+         "implementation_results": formal_result["pairs"], "new_B16_ideal_results": []})
     print(json.dumps({"historical_streaming_rows_verified": 13, "diagnostic_rows_verified": 2, "missing_diagnostic_rows_retained": len(diag_rows) - 2,
-                      "sources": len(sources), "figures": 2, "ppa_scenarios": len(ppa), "R0_formal_pairs": 0}))
+                      "sources": len(sources), "figures": 3, "ppa_scenarios": len(ppa), "R0_formal_pairs": 1}))
 
 
 if __name__ == "__main__":

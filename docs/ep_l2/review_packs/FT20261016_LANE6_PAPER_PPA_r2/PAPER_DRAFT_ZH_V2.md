@@ -72,7 +72,31 @@ SASS trace 不携带完整数值 payload，故应用执行不能证明全字节�
 
 I_WB 保留实际 copy/Bank 和 WAD 约束；I_META 保留排序、fill 与真实响应；I_READ_HIT 单独报告。有限扩大后仍有容量阻塞时只称 sensitivity。诊断、shadow 和 oracle 辅助实现分别标注，不混入预算内实现的主图。
 
-## 6. 硬件成本
+## 6. 首个配对结果
+
+首个完整 sad 配对在静态与共享模式分别耗时 110,593 和 110,573 cycles，
+指令数均为 157,583,646，周期比为 1.000181×，仅减少 20 cycles（0.0181%）。
+这是一项基本持平的结果，而非容量收益的证明。其余四个预定负载尚未形成
+本稿接收的完整 pair，因此不计算五点平均。
+
+| 指标 | B16_BANKED | U_WB16 |
+|---|---:|---:|
+| WB 创建／下层接收／完成 | 3975／3975／3975 | 3975／3975／3975 |
+| staging 最大峰值（各 slice 峰值的最大值） | 1 | 1 |
+| WB-data-full／pool-full | 0／0 | 0／0 |
+| copy line 数／copy bytes | 3975／508800 | 0／0 |
+| lower-send staging reads | 3975 | 3975 |
+| Bank logical operations | 485175 | 477225 |
+| Bank wait（源定义的累计 slice 事件域） | 3145 | 2178 |
+| 实际 DRAM read／write bytes | 63456／508800 | 63456／508800 |
+
+两侧 staging 峰值均未接近 16 项上限；共享模式虽发生 resident owner 向 WB 的
+原位转交，但该事件不等于需要超过静态配额的借用。减少的 7,950 次 Bank 操作
+恰好对应 3,975 次拷贝各少一次 source read 和 destination write；下层读写字节
+保持一致。当前证据支持搬运和 Bank 服务减少，却没有显示这个负载的容量压力
+被解除或显著端到端加速。后续负载仍需相同输入与强静态对照来区分容量和拷贝因素。[4]
+
+## 7. 硬件成本
 
 主配置原始数据 RAM 为 1168×128B=146KiB/slice、全芯片 9.125MiB；C8 为 145KiB/slice、9.0625MiB/chip。共同 copy latch 再计 128B/slice、8KiB/chip；其空闲不表示可被共享分配。静态与共享数据 bit 数相等，不推出相同面积、能量或频率。
 
@@ -80,10 +104,10 @@ I_WB 保留实际 copy/Bank 和 WAD 约束；I_META 保留排序、fill 与真�
 
 当前 generation 实现拒绝 wrap，但未确定硬件最小位宽。TVD 的额外一拍是架构时序模型，尚非 STA 结论。工艺、SRAM 宏和匹配模块 RTL 缺失时，只报告参数化 bits 与事件成本，不输出由 C++ 容器大小换算的面积、功耗或最高频率。
 
-## 7. 讨论
+## 8. 讨论
 
 共享写回的价值必须由真实消费者、局部服务效果和配对应用结果共同解释。TVD 服务可能降低下层流量，RO detach 也可能增加重复读取；这些方向都不预设为正收益。本文的最终论点可以收敛到写回搬运、容量共享或经验证的扩展组合，并保留系统下游限制和负结果。
 
 ## 证据引用
 
-[1] 已核验的 13 行历史 Streaming checkpoint；[2] 有限 WBUF / Unified WB 生产实现与存储端口账；[3] 旧静态单点乐观读参考。精确来源、manifest、正确性范围、当前资格和应用结果覆盖见补充材料 `EVIDENCE_SUPPLEMENT.md`、`SOURCE_EVIDENCE_MANIFEST.json`、`RESULT_COVERAGE.json`。
+[1] 已核验的 13 行历史 Streaming checkpoint；[2] 有限 WBUF / Unified WB 生产实现与存储端口账；[3] 旧静态单点乐观读参考；[4] 首个 sad 完整配对及资源统计。精确来源、manifest、正确性范围、当前资格和应用结果覆盖见补充材料 `EVIDENCE_SUPPLEMENT.md`、`SOURCE_EVIDENCE_MANIFEST.json`、`RESULT_COVERAGE.json`。
