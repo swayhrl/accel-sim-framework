@@ -1,3 +1,22 @@
+# Current174 checkpoint —2026-10-16T15:43Z
+
+**BICG WAIT128 complete, strict/control audit PASS.**
+`88ed4a02-4ead-47f5-8e92-cc57fe67c0cf` naturally exited0 with84049733cycles,
+145666048 active-thread instructions and2ordered kernels. Unchanged strict
+recollection equals watcher receipt; member/list/body scope,PIB/lower drains
+and conventional resource echoes pass. Same-input canonicalB16-N79721847cycles:
+WAIT128 is5.43% slower despite PIB-full events falling8804793→0. Retain both
+observations without rerun/tuning. Normal16KiBL1 and32MSHRs match; literal
+inactive preference differences and nonbinding8192/32768 global-cap difference
+are source/runtime-audited and disclosed, not hidden as literal equality.
+See review_pack/checkpoint_20261016T1541Z and BICG_WAIT128_VS_B16.tsv.
+Original44 now **37numericPASS /4live /3oldHotspotHOLD**. BICGIO128 remains
+live; its matched-depth pair is pending. GESUMMVIO/OO/TRAD96 also continue.
+Ten original primary trios remain numerically complete; no aggregate is made.
+Existing launch authority, strict watcher and process identities are preserved.
+SeparateHotspotV2fivePASS and legacy-format/modern/native/area boundaries stay
+unchanged. Main Goal ACTIVE, not complete; historical checkpoints follow intact.
+
 # Current174 checkpoint —2026-10-16T15:30Z
 
 **ATAX primary trio numerically complete.** IO256
