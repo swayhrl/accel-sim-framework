@@ -1,0 +1,21 @@
+{
+  "status": "SOURCE_OBSERVATION_NOT_RUNTIME_MEASUREMENT",
+  "core": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "path": "src/gpgpu-sim/shader.cc",
+  "findings": [
+    {
+      "function": "ldst_unit::L1_latency_queue_cycle",
+      "line": 3714,
+      "body_sha256": "a34f68f90f4e6a5dc57e5db941f635760e72a12560beab838beb6ccc969780d8",
+      "observation": "loops four bank heads calling m_L1D->access without data_port_free guard"
+    },
+    {
+      "function": "ldst_unit::cycle",
+      "line": 4945,
+      "body_sha256": "fa6e0862e02033ccca5c5716fc79123f023752f2db7c3ac7d24ff11bca143384",
+      "observation": "conventional response calls m_L1D->fill without its fill_port_free guard; loop bound uses m_next_global.size, not conventional fill count"
+    }
+  ],
+  "interpretation": "bandwidth_management counters and32B configuration alone do not establish conventional enforced per-core-cycle grant bounds; source finding qualifies reused audit port wording",
+  "action": "candidate A needs explicit opt-in conventional data/fill grants and matched new baseline validation; no source modified"
+}

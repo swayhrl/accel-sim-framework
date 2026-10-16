@@ -1,0 +1,44 @@
+{
+  "status": "PASS_CPU_ONLY_MODERN_DTC_HOLD",
+  "scope": "layout arithmetic/address/port provisioning; source observations; structural existing-frontend counterexample",
+  "simulation_launches": 0,
+  "trace_payload_reads": 0,
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "docs/dtc_l1/review_packs/DTC_MODERN_LAYOUT_PROPOSAL_V1/check_layout.py"
+      ],
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "stdout_sha256": "87c43adcf7e21a04125889b0ad45c0d62868fbf5445889f5f0f0a960d4514eda"
+    },
+    {
+      "argv": [
+        "g++",
+        "-std=c++17",
+        "-O0",
+        "-Wall",
+        "-Wextra",
+        "-I",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim",
+        "docs/dtc_l1/review_packs/DTC_MODERN_LAYOUT_PROPOSAL_V1/shrink_pool_oracle.cc",
+        "-o",
+        "/workspace/builds/dtc-modern-layout-174-v1/shrink_pool_oracle"
+      ],
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/workspace/builds/dtc-modern-layout-174-v1/shrink_pool_oracle"
+      ],
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "stdout_sha256": "84d30a875d18781f254d8a5c55b15a5044f0b35fa7eb2cefd799b77dd6376c8b"
+    }
+  ],
+  "all_requested_documents_present": true
+}
