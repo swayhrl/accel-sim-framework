@@ -26,8 +26,9 @@ were consumed by exact publication/certificate hash and were not rerun here.
   blocks. Costs include common copy latch, real Bank operations and bounded WB
   metadata. Actual N-sized RO module completion is separate from illustrative
   widths/live-object bounds and from R0 with RO OFF.
-- Two compact PDF/SVG figures rendered and inspected for actual readability;
-  the locality legend was moved out of bars before final rendering.
+- Three compact PDF/SVG figures rendered and inspected for actual readability;
+  the locality legend was moved out of bars, and the actual 1/5-pair plot keeps
+  pending labels and the six-decimal measured ratio within the plot bounds.
 - Actual native sad pair at b47b721d consumed after the qualification snapshot:
   CSV/PAIR_RECEIPT/spec, actual raw/config/executable, canonical identities,
   exact qualification bytes and native terminal scope verified. Formal figure

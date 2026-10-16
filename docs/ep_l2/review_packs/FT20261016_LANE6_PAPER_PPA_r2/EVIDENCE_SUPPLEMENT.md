@@ -37,7 +37,7 @@ review_r1 的 CONTINUE 未执行；本轮延续同一 Lane-6 分支，r1 pack �
 
 | Claim | 实现/观测来源 | 当前可说的内容 | 未取得的证据 |
 |---|---|---|---|
-| 有限 staging、原位 U_WB 与 Bank 服务 | R0 `ep-l2-ft-cache.inc`、`gpu-cache.h`，producer 12 组生产定向与 all-OFF 七 CSV；Lane-5同源独立证书 | 生产 release 已交付、B16/U_WB16独立资格通过 | 完成的应用 pair |
+| 有限 staging、原位 U_WB 与 Bank 服务 | R0 `ep-l2-ft-cache.inc`、`gpu-cache.h`，producer 12 组生产定向与 all-OFF 七 CSV；Lane-5同源独立证书 | 生产 release 已交付、B16/U_WB16独立资格通过 | 其余四个应用 pair |
 | 数据预算含共同 latch | Lane-1 STORAGE_AND_PORT_LEDGER | 1168/1160 项＋B/U 共同128B/slice；copy 三次 vs 原位 send | 匹配 RTL/工艺差分 PPA |
 | 动态借用改善性能 | borrow来源/拒绝、WB-data-full、bank/copy/lower 指标 | sad实际峰值1、无capacity-above-C16，周期基本持平；定向 peak126不是应用 peak | 其余主实验、静态重分区与 copy 归因 |
 | sector locality 差异 | 13 行 checkpoint、runtime `db1c9018` / Core `ca3e7bc0` | 工作负载动机；line 与 sector 时间重用不同 | 不是 TVD hit、borrowing 或加速 |

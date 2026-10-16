@@ -87,13 +87,14 @@ I_WB 保留实际 copy/Bank 和 WAD 约束；I_META 保留排序、fill 与真�
 | copy line 数／copy bytes | 3975／508800 | 0／0 |
 | lower-send staging reads | 3975 | 3975 |
 | Bank logical operations | 485175 | 477225 |
-| Bank wait（源定义的累计 slice 事件域） | 3145 | 2178 |
+| Bank wait（跨 slice 的逐操作等待周期和） | 3145 | 2178 |
 | 实际 DRAM read／write bytes | 63456／508800 | 63456／508800 |
 
 两侧 staging 峰值均未接近 16 项上限；共享模式虽发生 resident owner 向 WB 的
 原位转交，但该事件不等于需要超过静态配额的借用。减少的 7,950 次 Bank 操作
 恰好对应 3,975 次拷贝各少一次 source read 和 destination write；下层读写字节
-保持一致。当前证据支持搬运和 Bank 服务减少，却没有显示这个负载的容量压力
+保持一致。Bank wait 按每个冲突操作从首次冲突到获准的周期差累加，
+并非 GPU elapsed cycles。当前证据支持搬运和 Bank 服务减少，却没有显示这个负载的容量压力
 被解除或显著端到端加速。后续负载仍需相同输入与强静态对照来区分容量和拷贝因素。[4]
 
 ## 7. 硬件成本
