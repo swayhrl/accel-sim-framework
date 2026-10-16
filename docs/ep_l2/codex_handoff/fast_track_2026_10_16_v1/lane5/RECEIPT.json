@@ -1,32 +1,79 @@
 {
-  "schema_version": "EPL2_FT_LANE_RECEIPT_V1",
-  "lane_id": 5,
-  "task_id": "FT20261016_LANE5_HOST_BUDGET_r1",
+  "active_runs": [],
+  "artifacts": [
+    "docs/ep_l2/review_packs/FT20261016_LANE5_TOOLING_r1",
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/HOST_BUDGET.md",
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RUN_ASSIGNMENTS.json",
+    "util/ep_l2/ft_lane5/README.md"
+  ],
+  "binary_sha256": null,
+  "blockers": [
+    "Lane 1 runtime_ready=false; qualified binary/config and production-driven boundary evidence absent"
+  ],
+  "config_sha256": null,
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "IN_PROGRESS_DEPENDENCY_PENDING",
-  "host": "huangrulin-174",
-  "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
-  "framework_source_commit": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
   "core_branch": null,
   "core_source_commit": null,
-  "binary_sha256": null,
-  "config_sha256": null,
-  "trace_identity": null,
+  "created_at": "2026-10-16T09:23:47.503012+00:00",
+  "dependency_receipts": [
+    {
+      "lane_id": 1,
+      "publication_commit": "cb7d92e4edde97e81520cfdd00762dfe81ee9b20",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
+      "receipt_sha256": "35437940420bcabdbfa71bd4cbcb6b11f221684f46c1f3933c767de0c8e1f5cb",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "lane_id": 2,
+      "publication_commit": "7697ed6b81d39d5eee8c005dd695553d783537b5",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane2/RECEIPT.json",
+      "receipt_sha256": "abe5f2d2cba8e281a437722d401ac2ffa22b28de68ae233f9a09e9a4ef47070f",
+      "status": "IN_PROGRESS_CLEAN_MODULE_PUBLISHED_DIRTY_CONTINUES"
+    },
+    {
+      "lane_id": 3,
+      "publication_commit": "487dd03d79ed0621b3db7e208f616015b3d9ab9c",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane3/RECEIPT.json",
+      "receipt_sha256": "79a184ea756f1f1cacff88fba28ee3302b6fff5de2a0d277c1e79cd5cb674f13",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "lane_id": 4,
+      "publication_commit": "1657e77020321e0095acb2e7922056b27d8edf50",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane4/RECEIPT.json",
+      "receipt_sha256": "12025d049953350bbd5860f35d2e8479698432fd01497141cc1730c0480645e3",
+      "status": "IN_PROGRESS"
+    }
+  ],
   "feature_vector": null,
+  "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
+  "framework_implementation_parent": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
+  "framework_source_commit": "de8fe21d9598660e40da8486e48f2d46acee4582",
+  "historical_core_test_source_commit": "1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e",
+  "host": "huangrulin-174",
   "ideal_vector": null,
-  "dependency_receipts": [],
-  "artifacts": [
-    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/HOST_BUDGET.md",
-    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RUN_REGISTRY_SNAPSHOT.json"
-  ],
+  "lane_id": 5,
+  "schema_version": "EP_L2_FT_RECEIPT_V1",
+  "status": "TOOLING_TESTED_DEPENDENCY_PENDING",
+  "task_id": "FT20261016_LANE5_TOOLING_r1",
+  "trace_identity": null,
   "validation": {
-    "contract_read": "PASS",
-    "node_resource_discovery": "PASS",
-    "long_simulations_launched": 0
-  },
-  "active_runs": [],
-  "blockers": [
-    "Qualified Lane 1 interface/baseline/source/binary/config receipt not yet published"
-  ],
-  "created_at": "2026-10-16T09:12:13.284084+00:00"
+    "B16_U_WB16_qualification": "DEPENDENCY_PENDING",
+    "historical_core_directed_scripts": {
+      "cpp_executables": 4,
+      "kind": "HISTORICAL_NOT_B16",
+      "scripts": 3,
+      "status": "PASS"
+    },
+    "historical_trace_lists": {
+      "matched": 13,
+      "missing_kernel_files": 0
+    },
+    "new_formal_runs": 0,
+    "python_tests": {
+      "count": 39,
+      "kind": "HARNESS_ONLY",
+      "status": "PASS"
+    }
+  }
 }

@@ -21,7 +21,7 @@ Authority node: `huangrulin-174`. Shared canonical directory:
 cgroup memory limit 256 GiB, initial current usage about 43 GiB. Host available
 memory about 286 GiB. Host swap is full (2 GiB); cgroup swap about 114 MiB and
 historical cgroup oom_kill=17 (cumulative history, not a current failure).
-Workspace free space about 65 GB / 60 GiB, load average about 185. Other
+Workspace initial free space 63.74 GiB, load average about 185. Other
 projects have active simulator runs; none were stopped, restarted, reprioritized,
 or rebuilt. These resources are shared, not EP-L2-owned.
 
@@ -54,8 +54,12 @@ result directory and attempt state under the lock BEFORE starting a process.
 A duplicate key returns the existing owner/state, including failures; it never
 implicitly relaunches. Stale owners are not automatically reclaimed. Lane 5 must
 check original process identity and preserve evidence before an explicit retry.
-No Git snapshot authorizes a launch. Until the registry client is published,
-other lanes may prepare code and light tests but must not launch long batches.
+No Git snapshot authorizes a launch. The registry client and runner are now
+published under util/ep_l2/ft_lane5/; producing commit
+`de8fe21d9598660e40da8486e48f2d46acee4582`. The shared CLIENT_CONTRACT.json
+binds its path/hash. All lanes must obtain a shared claim before a long run.
+Diagnostic runners may use Registry directly and keep their separate evidence
+gates; the implementation runner additionally requires independent qualification.
 
 ## Dependency gate
 
