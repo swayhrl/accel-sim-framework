@@ -41,6 +41,15 @@ class ExactCandidateAudit(unittest.TestCase):
         self.assertNotEqual(fill,changed)
         files['ep-l2-ro-transactions.h']=files['ep-l2-ro-transactions.h'].replace(fill,changed)
         self.assertFalse(self.check(files)['detached_fill_has_no_tag_install'])
+    def test_duplicate_bank_observer_rejected(self):
+        files=dict(self.source)
+        observer=audit.function(files['l2cache.h'],'unsigned long long ft_bank_grants_for_test(unsigned bank) const')
+        x=self.change('l2cache.h',observer,observer+'\n  '+observer)
+        self.assertFalse(self.check(x)['single_common_bank_observer'])
+    def test_old_fixture_clock_rejected(self):
+        x=self.change('test_ft_wbuf.cc','cache->cycle(); gpu->gpu_sim_cycle = ++time;',
+                      'gpu->gpu_sim_cycle=time++; cache->cycle();')
+        self.assertFalse(self.check(x)['exact_common_directed_fixture'])
     def test_descriptor_capacity_change_rejected(self):
         x=self.change('ep-l2-ro-transactions.h','shared.descriptor_pool_capacity() != 512','shared.descriptor_pool_capacity() != 1024')
         self.assertFalse(self.check(x)['shared_D512_descriptor_admission'])

@@ -7,10 +7,11 @@ from pathlib import Path
 import re
 import subprocess
 
-PARENT='62dc1d179b5516e68b21b695c7a9c5d0667e9671'
-PUBLICATION='c93d900e1f968a3b69990dc29b78d50fc18f35ac'
+PARENT='c948184504d82b80e23eb3f4ff6cdfd328ba9355'
+PUBLICATION='57e1c363aede1a7790bdf94136d832d35ee7b34b'
 FILES=['ep-l2-ft-cache.inc','ep-l2-ro-runtime.inc','ep-l2-ro-store-port.h',
-       'ep-l2-ro-transactions.h','gpu-cache.h','l2cache.cc','gpu-sim.cc']
+       'ep-l2-ro-transactions.h','gpu-cache.h','l2cache.cc','gpu-sim.cc',
+       'l2cache.h']
 
 
 def section(text,start,end):return text.split(start,1)[1].split(end,1)[0]
@@ -78,6 +79,8 @@ def source_checks(files,parent):
         'shared_D512_descriptor_admission':'shared.descriptor_pool_capacity() != 512' in tx and 'm_shared.reserve_ro_descriptor(' in tx,
         'response_commit_requires_granted_cycle':'fifo_accepted && e.prepared_cycle != cycle' in tx and 'm_shared.release_ro_descriptor(e.waiters[e.prepared_index].descriptor)' in tx,
     }
+    checks['single_common_bank_observer']=files['l2cache.h'].count('unsigned long long ft_bank_grants_for_test(unsigned bank) const')==1
+    checks['exact_common_directed_fixture']=files['test_ft_wbuf.cc']==parent['test_ft_wbuf.cc']
     return checks
 
 
@@ -85,6 +88,8 @@ def load(core):
     files={name:(core/'src/gpgpu-sim'/name).read_text() for name in FILES}
     parent={name:subprocess.check_output(['git','-C',str(core),'show',PARENT+':src/gpgpu-sim/'+name],text=True)
             for name in ['ep-l2-ft-cache.inc','l2cache.cc','gpu-sim.cc']}
+    files['test_ft_wbuf.cc']=(core/'tests/ep_l2/test_ft_wbuf.cc').read_text()
+    parent['test_ft_wbuf.cc']=subprocess.check_output(['git','-C',str(core),'show',PARENT+':tests/ep_l2/test_ft_wbuf.cc'],text=True)
     return files,parent
 
 
@@ -92,7 +97,7 @@ def audit(core):
     files,parent=load(core);checks=source_checks(files,parent)
     trees=[subprocess.check_output(['git','-C',str(core),'rev-parse',x+'^{tree}'],text=True).strip() for x in [PARENT,PUBLICATION]]
     checks['candidate_and_published_tree_equal']=trees[0]==trees[1]
-    return dict(schema='LANE3_RO_EXACT_CANDIDATE_STATIC_AUDIT_R6',core_source_commit=subprocess.check_output(['git','-C',str(core),'rev-parse','HEAD'],text=True).strip(),
+    return dict(schema='LANE3_RO_EXACT_CANDIDATE_STATIC_AUDIT_R7',core_source_commit=subprocess.check_output(['git','-C',str(core),'rev-parse','HEAD'],text=True).strip(),
         exact_candidate_parent=PARENT,parent_publication=PUBLICATION,parent_tree=trees[0],
         status='STATIC_PASS_NOT_COMPILE_OR_RUNTIME_PASS' if all(checks.values()) else 'STATIC_FAIL',checks=checks,
         file_sha256={k:hashlib.sha256(v.encode()).hexdigest() for k,v in files.items()},
