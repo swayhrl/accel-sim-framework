@@ -22,28 +22,28 @@
     "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_RESOURCE_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r3",
     "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_POST_REQUEST_REVIEW_R9_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": null,
   "blockers": [
     {
-      "evidence": "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1/INDEPENDENT_RESOURCE_GATE.json",
+      "decision": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
       "reason": [
-        "No LOW_SPACE_PILOT_REQUEST published in exact latest Lane1 ref: pilot_id, new wrapper/driver pin, exact engineering roots, command/time/output caps cannot be bound",
-        "Four short samples show continuing Share consumption and protected C16/DTC writers, but no enforceable/measured whole-campaign external burst bound. Per-process observed writes do not explain all filesystem free-space decreases; no attribution or future bound is inferred",
-        "Historical final build sizes do not bound new compiler/linker/transient growth, and toy child TERM/KILL tests do not establish actual compiler/filesystem monitor and stop overshoot",
-        "Thus positive justified growth+external+overshoot+untouched-emergency terms cannot be closed for every actual write filesystem. Unknown terms remain null, never zero"
+        "Final actual workspace f_bavail is below this exact request26GiB entry; do not lower its proposed entry to force admission.",
+        "Workspace8GiB external reserve is not a demonstrated one-hour bound; current ten-second net contractions exceed its campaign-average equivalent by severalfold. No other project write quota or quiet window may be invented.",
+        "Share has40GiB untouched floor and exactly43GiB proposed component sum, with no extra arithmetic margin in proposed entry. Current short quiet sample does not bound previously observed bursts or upcoming permitted Ops copy/restore activity.",
+        "1s sampling,2s watchdog,3s TERM and256MiB per-file limit are control settings, not measured aggregate compiler/external/kernel-writeback or kill-overshoot bounds. They do not justify2GiB/512MiB overshoot by themselves.",
+        "No existing Storage-Ops owner ACK establishing an actual low-I/O window and its per-filesystem limits was found; no DTC/C16 process may be paused for the pilot."
       ],
-      "scope": "One-time ENGINEERING_PILOT only",
-      "status": "NO_SAFE_PILOT_ENVELOPE"
+      "request_identity": "RESOLVED",
+      "resource_evidence": "docs/ep_l2/review_packs/FT20261017_LANE5_POST_REQUEST_REVIEW_R9_r1/INDEPENDENT_RESOURCE_GATE.json",
+      "scope": "Exact requested one-time engineering pilot"
     },
     {
-      "binary_sha256": null,
-      "framework_input_candidate": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
-      "reason": "No official producing binary; engineering exception cannot promote a binary or lower formal resource gates",
-      "scope": "Formal producer / independent scientific qualification / formal five pairs",
-      "source_candidate": "c948184504d82b80e23eb3f4ff6cdfd328ba9355"
+      "reason": "No official binary; unchanged formal resource admission and all independent/current acceptance requirements. Engineering evidence cannot be promoted automatically.",
+      "scope": "Formal producer/11 science gates/five pairs"
     }
   ],
   "config_sha256": null,
@@ -102,6 +102,36 @@
     }
   ],
   "engineering_pilot_review": {
+    "actual_waiter_state": {
+      "actual_start_ticks": 892416307,
+      "expected_start_ticks": 892416307,
+      "invocations": 0,
+      "lane5_started_or_signalled_control": false,
+      "locks": {
+        "LANE1_GATEWAITER.lock": "HELD",
+        "LANE1_OUTCOME_PUBLISHER.lock": "HELD"
+      },
+      "owner_replaced_prior_idle_control": true,
+      "pid": 1156558,
+      "status": "WAITING_RESOURCE_OR_LANE5_AUTHORIZATION"
+    },
+    "decision": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
+    "driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
+    "driver_source_commit": "1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd",
+    "final_workspace_entry_deficit_bytes": 18579456,
+    "identity_and_api_status": "RESOLVED_CURRENT_PUBLISHED_R2",
+    "new_tests": 0,
+    "old_missing_request_reason_resolved": true,
+    "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
+    "r2_supplement": "docs/ep_l2/review_packs/FT20261017_LANE5_POST_REQUEST_REVIEW_R9_r1/LANE1_R2_SUPPLEMENT.json",
+    "real_authorizations": 0,
+    "real_pilot_leases": 0,
+    "request_publication": "50d3a648704235ff03be6b5b7e4f8f33a904500d",
+    "request_revision": 2,
+    "request_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
+    "resource_gate": "docs/ep_l2/review_packs/FT20261017_LANE5_POST_REQUEST_REVIEW_R9_r1/INDEPENDENT_RESOURCE_GATE.json"
+  },
+  "engineering_pilot_review_previous_r8": {
     "affected_registry_tests": 10,
     "authority": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
     "decision": "NO_SAFE_PILOT_ENVELOPE",
@@ -168,8 +198,8 @@
   "ideal_vector": null,
   "lane_id": 5,
   "latest_resource_observation": {
-    "available_memory_bytes": 190170071040,
-    "disk_free_bytes": 29525843968
+    "available_memory_bytes": 199137427456,
+    "disk_free_bytes": 27898707968
   },
   "low_resource_review_r5": {
     "actual_new_cpp_tests": 0,
@@ -228,7 +258,7 @@
     "status": "RESOURCE_HOLD_NO_SUFFICIENT_OWN_WORKSPACE_SCRATCH",
     "workspace_deficit_bytes": 6103367680
   },
-  "review_coordination_commit": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
+  "review_coordination_commit": "9d877e5e7246c491a83246e8f987e64d97b69c41",
   "runner_source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "scientific_acceptance": {
@@ -244,10 +274,10 @@
   "static_candidate_core": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
   "static_candidate_core_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
   "static_candidate_framework": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
-  "status": "ENGINEERING_PILOT_TOOLS_READY_NO_SAFE_PILOT_ENVELOPE_FORMAL_QUALIFICATION_PENDING",
-  "task_id": "FT20261017_LANE5_REVIEW_R8_r1",
+  "status": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST_FORMAL_QUALIFICATION_PENDING",
+  "task_id": "FT20261017_LANE5_POST_REQUEST_R9_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-16T17:12:02.750231+00:00",
+  "updated_at": "2026-10-16T17:37:32.209944+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
@@ -339,6 +369,15 @@
       "original_registry_regressions": 10,
       "status": "PASS_TOOLING_ONLY",
       "tool_tests": 39
+    },
+    "review_r9": {
+      "actual_newer_driver_matches_old_request": false,
+      "compiler_or_simulation": 0,
+      "four_new_resource_samples": 4,
+      "input_hashes_checked": 15,
+      "kind": "NEW_POST_REQUEST_RESOURCE_AND_IDENTITY_AUDIT",
+      "new_tests": 0,
+      "request_source_binding": "PASS_PUBLICATION_AND_ISOLATED_INPUTS"
     },
     "scientifically_accepted_R0_application_runs": 0,
     "warmup_identity_candidate": {

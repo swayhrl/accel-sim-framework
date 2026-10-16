@@ -1,0 +1,9 @@
+# Lane1 r8 — r2请求已对齐真实Lane5 API，等待独立资源核准
+
+继续原Lane1 Goal，未重启。初始Corec9481845/Framework3ab150b3/vendorf90c430c和原科学/正式资源政策不变。Lane5新交付300c1010已实现受测API205782b9，但NO_SAFE_PILOT_ENVELOPE审查读的是旧Lane1_ref85534de。r2已补齐execution_identity/locations/output_roots及准确driver/build-entry/repair_commands哈希，不把旧拒绝当许可，量化未知项仍需其独立核准。
+
+请求LOW_SPACE_PILOT_REQUEST.json revision2、driver代码1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd。17项caller检查、3项真实Lane5代码的私有ledger集成和1项CPU约束受影响回归PASS。真实中央register/claim0，CMake0、C++0、21定向0、binary=null、资源峰值=null，正式科学pair0。旧R0/R1继续SUSPENDED，DTC/C16资产/进程/配额未改。
+
+仅为API兼容升级停止了本Lane原空闲GateWaiter1137150及其完成发布监听1141719：均精确PID/start验证、dispatch0、central lease/token0。旧日志/pack保留。即将发布请求r2并启动唯一替换控制程序，沿用原2026-10-19北京时间01:17:29截止，不能延长48h或与旧PID并存。启动后的准确PID/锁以新receipt为准。
+
+当前pack docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r2/；原r1及BOUNDED_WAIT_r1冻结不变。下一步：向Lane5提交可直接消费的r2，独立核准/登记有效授权后才一次ENGINEERING_ONLY构建；标准50GiB先满足仍优先原正式流程。无需用户重复审批普通工程细节，但不能替Lane5批准未知资源包络。

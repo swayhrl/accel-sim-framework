@@ -1,0 +1,473 @@
+{
+  "schema_version": "EP_L2_LOW_SPACE_PILOT_REQUEST_V1",
+  "status": "REQUESTED_INDEPENDENT_LANE5_REVIEW_REQUIRED",
+  "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
+  "created_at": "2026-10-16T17:33:12.559751+00:00",
+  "review_authority_commit": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
+  "host": "huangrulin-174",
+  "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+  "identity": {
+    "core_source_commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "framework_source_commit": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+    "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "driver_source_commit": "1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd",
+    "pilot_driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
+    "gate_waiter_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
+    "official_driver_sha256": "9b9943c65d41b5776075d8488414b0c2f55b3dcab8a22801eab966397578a82c"
+  },
+  "source_paths": {
+    "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source",
+    "framework": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source",
+    "vendor": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/gpu-simulator/extern/pybind11"
+  },
+  "source_isolation_reason": "Core CMake writes ignored setup into source; exact independent engineering worktrees protect frozen production roots",
+  "build_root": "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+  "output_root": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/pilot01",
+  "logical_output_root": "/workspace/results/ep_l2_ft20261016/lane1/review_r8/pilot01",
+  "temporary_root": "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/tmp",
+  "filesystems": {
+    "workspace": {
+      "path": "/workspace",
+      "realpath": "/workspace",
+      "device": 156,
+      "fsid": 1349835467748716946,
+      "owned_roots": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source",
+        "/workspace/ep_l2_ft20261016_shared/lane1/EP_L2_R0_1_ENGINEERING_20261017_L1_P01_audit_r2"
+      ]
+    },
+    "results": {
+      "path": "/root/share",
+      "realpath": "/root/share",
+      "device": 2431,
+      "fsid": 2757854780513707398,
+      "owned_roots": [
+        "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/pilot01"
+      ]
+    }
+  },
+  "proposed_envelope": {
+    "workspace": {
+      "entry_free_bytes": 27917287424,
+      "hard_stop_free_bytes": 12884901888,
+      "max_pilot_allocated_growth_bytes": 4294967296,
+      "external_write_reserve_bytes": 8589934592,
+      "monitor_and_kill_overshoot_bytes": 2147483648,
+      "minimum_untouched_emergency_bytes": 10737418240
+    },
+    "results": {
+      "entry_free_bytes": 46170898432,
+      "hard_stop_free_bytes": 43486543872,
+      "max_pilot_allocated_growth_bytes": 536870912,
+      "external_write_reserve_bytes": 2147483648,
+      "monitor_and_kill_overshoot_bytes": 536870912,
+      "minimum_untouched_emergency_bytes": 42949672960
+    }
+  },
+  "proposal_basis": {
+    "classification": "CONSERVATIVE_EXPLICIT_OPERATIONAL_CAPS_FOR_LANE5_REVIEW_NOT_MEASURED_PEAKS",
+    "workspace_own_growth": "4GiB cap; historical0.71/1.01GiB steady allocations inform target scale only; monitored stop rather than a guarantee of peak",
+    "results_own_growth": "512MiB cap;128MiB logical logs, resource samples and small receipts; binary remains in unique engineering build root",
+    "external_reserve": "8GiB workspace and2GiB results are proposed bounded campaign consumption limits, NOT proven future gross-write upper bounds",
+    "overshoot": "2GiB workspace/512MiB results proposed limits;256MiB child single-file cap,1s sample,2s stalled watchdog,3s TERM grace; Lane5 must independently justify actual external burst/stop overshoot or deny",
+    "emergency": "10GiB workspace and40GiB Share untouched proposals; no other-project quota change",
+    "unknowns": [
+      "actual compiler/link transient high water",
+      "future external gross writes/bursts",
+      "allocator/FS reclaim and worst stop overshoot"
+    ],
+    "independent_gate_required": "Lane5 must approve numeric reliable envelope per filesystem or publish NO_SAFE_PILOT_ENVELOPE; no assumed safety from this request"
+  },
+  "max_wall_seconds": 3600,
+  "max_single_file_bytes": 268435456,
+  "max_logical_log_bytes": 134217728,
+  "cpu_units": 2,
+  "memory_reservation_bytes": 8589934592,
+  "available_memory_floor_bytes": 68719476736,
+  "monitor_interval_seconds": 1,
+  "watchdog_stall_seconds": 2,
+  "terminate_grace_seconds": 3,
+  "maximum_automatic_configure_build_passes": 1,
+  "automatic_retry_or_clean": false,
+  "remediation_policy": "ordinary repairs require new isolated frozen engineering revision and independent Lane5 audit within same campaign bounds; no implicit second token claim",
+  "cmake_targets": [
+    "accel-sim.out",
+    "ep_l2_ft_memcpy_clock",
+    "ep_l2_ft_host_prefill",
+    "ep_l2_ft_directed",
+    "ep_l2_ft_partition"
+  ],
+  "configure_command": [
+    "cmake",
+    "-S",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/gpu-simulator",
+    "-B",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+    "-G",
+    "Unix Makefiles",
+    "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+  ],
+  "build_command": [
+    "cmake",
+    "--build",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+    "--target",
+    "accel-sim.out",
+    "ep_l2_ft_memcpy_clock",
+    "ep_l2_ft_host_prefill",
+    "ep_l2_ft_directed",
+    "ep_l2_ft_partition",
+    "-j2"
+  ],
+  "planned_directed_commands": [
+    {
+      "name": "host_prefill_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ]
+    },
+    {
+      "name": "physical_clock_1_8_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ]
+    },
+    {
+      "name": "physical_clock_1_8_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ]
+    },
+    {
+      "name": "warm_clock_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ]
+    },
+    {
+      "name": "partition_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ]
+    },
+    {
+      "name": "host_prefill_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ]
+    },
+    {
+      "name": "physical_clock_1_16_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ]
+    },
+    {
+      "name": "physical_clock_1_16_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ]
+    },
+    {
+      "name": "warm_clock_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ]
+    },
+    {
+      "name": "partition_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ]
+    },
+    {
+      "name": "host_prefill_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ]
+    },
+    {
+      "name": "physical_clock_2_8_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ]
+    },
+    {
+      "name": "physical_clock_2_8_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ]
+    },
+    {
+      "name": "warm_clock_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ]
+    },
+    {
+      "name": "partition_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ]
+    },
+    {
+      "name": "host_prefill_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ]
+    },
+    {
+      "name": "physical_clock_2_16_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ]
+    },
+    {
+      "name": "physical_clock_2_16_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ]
+    },
+    {
+      "name": "warm_clock_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ]
+    },
+    {
+      "name": "partition_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ]
+    },
+    {
+      "name": "ft_directed",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config"
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/test_ft_memcpy_clock.cc": "a9b6f454ff6d7a6ff6e428ba17ee301c05fbb3274cbd982f7952d36e8ea9cf39",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/test_ft_host_prefill.cc": "48b655c1ec8101f7eec4a4427cdeef696382e2ae457a770d3380c5210f8c264d",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/test_ft_partition.cc": "a24ff2bdd92be6d133c352e2d115c613a096be1c0620cbb3ca845b1a7d4cd9b7",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/test_ft_wbuf.cc": "96a88305b9ebde6d6aa7ceba68eef587f39f4eda2479cea9c35515e8e18d6a92",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/src/gpgpu-sim/l2cache.h": "df7f27f2c1fb1af5d6166d4dfdf5ab6cbe5a722c13b0cd7357e06a1a898fe977",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source/src/gpgpu-sim/ep-l2-ft-cache.inc": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/b0_banked_d512_850.config": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/m0a_off.config": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft20261016/r0_1/b16_banked.config": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft20261016/r0_1/u_wb16.config": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft20261016/r0_1/b8_banked.config": "3242e1c1bf48e372aa0ecb6929079f1a2975ed2824305a68426d663320a950ff",
+    "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/tests/ep_l2/ft20261016/r0_1/u_wb8.config": "5d6a7ed6ca627f74920dac301f76d90a8d34959c00e5478fd0c9ac9fee16cced"
+  },
+  "unchanged_formal_config_sha256": {
+    "B16_BANKED": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+    "U_WB16": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+    "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
+    "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
+  },
+  "compile_environment": {
+    "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source",
+    "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+    "ACCELSIM_CONFIG": "release",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "TMPDIR": "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01/tmp",
+    "CCACHE_DISABLE": "1",
+    "CUDA_CACHE_DISABLE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "GIT_OPTIONAL_LOCKS": "0"
+  },
+  "engineering_classification": "ENGINEERING_ONLY",
+  "runtime_ready": false,
+  "independent_qualification": false,
+  "formal_application_permission": false,
+  "pilot_driver_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/engineering_pilot.py",
+  "gate_waiter_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/gate_waiter.py",
+  "cancellation_marker_path": "/workspace/ep_l2_ft20261016_shared/lane1/EP_L2_R0_1_ENGINEERING_20261017_L1_P01.cancelled.json",
+  "official_framework_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1",
+  "official_core_path": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1",
+  "official_driver_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/util/ep_l2/ft_lane1/build_r0_1.py",
+  "formal_build_root": "/workspace/build/ep-l2-ft20261016-lane1-r0-1",
+  "formal_priority": "If live50GiB condition arrives first, two samples>=60s apart, cancel pilot permanently and invoke original guarded official entry once; active pilot prevents formal invocation",
+  "waiter_singleton_lock": "/workspace/ep_l2_ft20261016_shared/LANE1_GATEWAITER.lock",
+  "build_execution_mutex": "/workspace/ep_l2_ft20261016_shared/LANE1_BUILD_EXECUTION.lock",
+  "registry_adapter_protocol": "Actual Lane5 ENGINEERING_PILOT_API.md source205782b9745a7189b9bf858486648930b08b8a81; claim(auth,raw_request,measured_identity), monitor, attach_process(Popen), release; Lane1 never registers on central authority",
+  "request_resource_samples_sha256": "d86397ccd2d9aad34285e12301fa16b18419fa625df01deb99837d1f9565f7d4",
+  "read_only_source_operations": "git status/rev-parse with GIT_OPTIONAL_LOCKS=0; source heads and tracked inputs remain frozen; only isolated generated setup permitted",
+  "protected_projects": [
+    "DTC-L1",
+    "C16",
+    "all other projects; no signals, deletion, quota or source changes"
+  ],
+  "trace_identity": null,
+  "long_application_runs": 0,
+  "source_preparation_allocated_bytes": {
+    "framework_including_vendor": 17727488,
+    "core": 14307328
+  },
+  "request_revision": 2,
+  "supersedes_request_publication": "248c93acc611679afe42590760481f451773003d",
+  "supersedes_request_sha256": "3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb",
+  "memory_bytes": 8589934592,
+  "max_duration_seconds": 3600,
+  "execution_identity": {
+    "core_source_commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "framework_source_commit": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+    "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
+    "build_entry_sha256": "9b9943c65d41b5776075d8488414b0c2f55b3dcab8a22801eab966397578a82c",
+    "repair_commands_sha256": "2842dced8a4b0a12cc41e47e5570afa8cfea00bc4e04ed2ef78f1413a8e8ec61"
+  },
+  "execution_locations": {
+    "core_repo": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source",
+    "framework_repo": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source",
+    "vendor_repo": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/gpu-simulator/extern/pybind11",
+    "driver_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/engineering_pilot.py",
+    "build_entry_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/util/ep_l2/ft_lane1/build_r0_1.py",
+    "repair_commands_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/util/ep_l2/ft_lane1/build_r0_1.py"
+  },
+  "audit_control_root": "/workspace/ep_l2_ft20261016_shared/lane1/EP_L2_R0_1_ENGINEERING_20261017_L1_P01_audit_r2",
+  "output_roots": [
+    {
+      "path": "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+      "resolved_path": "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+      "filesystem": "workspace"
+    },
+    {
+      "path": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/pilot01",
+      "resolved_path": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/pilot01",
+      "filesystem": "results"
+    },
+    {
+      "path": "/workspace/ep_l2_ft20261016_shared/lane1/EP_L2_R0_1_ENGINEERING_20261017_L1_P01_audit_r2",
+      "resolved_path": "/workspace/ep_l2_ft20261016_shared/lane1/EP_L2_R0_1_ENGINEERING_20261017_L1_P01_audit_r2",
+      "filesystem": "workspace"
+    }
+  ],
+  "lane5_api_dependency": {
+    "publication": "300c1010161b270ae73414b8146d238c961f0cd0",
+    "module_source_commit": "205782b9745a7189b9bf858486648930b08b8a81",
+    "module_sha256": "e236bdbf522fdaef022ed49f28a1f0c9c52ddb9147a239185f042c74a561f238",
+    "registry_source_commit": "02440185c5cc349f1569f5d11e682902939b0ee3",
+    "registry_client_sha256": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
+    "independent_tool_tests": "39 pilot +10 affected registry, retained not rerun; not authorization"
+  },
+  "previous_lane5_decision": {
+    "status": "NO_SAFE_PILOT_ENVELOPE",
+    "publication": "300c1010161b270ae73414b8146d238c961f0cd0",
+    "lane1_ref_read_then": "85534de235345292a153d9983cfd0d24d8033bb2",
+    "resolution": "Exact raw request/driver/locations/roots now supplied and compatible. All numeric unknowns still require independent Lane5 re-review; refusal never becomes approval."
+  },
+  "monitor_plan": "Sample locally at<=1s target (0.2s pacing), independent Lane5 monitor at<=2s approved ceiling,2s stalled watchdog; includes controller and child affinity in same two CPUs. Protected-process/source/mount/TTL/STOP latch remain owner API authoritative.",
+  "source_generated_setup_accounting": "Isolated Core/setup is explicitly declared; local own-growth monitor includes source input roots. Backend output-root accounting charges any source/journal-control metadata outside its fresh roots conservatively to total-FS contraction/external reserve, never ignores it.",
+  "pre_release_receipt_policy": "Exact immutable journal in new audit_control_root before central release; final report binds journal hash. Release attempted even after failed/stopped command; no token replay.",
+  "lane5_followup": "Please independently review this r2 request, rather than the absent-request85534de snapshot. Approve only quantitatively reliable per-filesystem numbers; otherwise retain NO_SAFE_PILOT_ENVELOPE. No user generic approval is needed again.",
+  "waiter_original_deadline_unix": 1792343849.0946963,
+  "waiter_deadline_must_not_be_extended": true
+}

@@ -1,0 +1,112 @@
+{
+  "active_ep_l2_leases": [],
+  "active_ep_l2_runs": [],
+  "after8GiB_reservation_bytes": 185240739840,
+  "at": "2026-10-16T17:33:38.710417+00:00",
+  "authority": "9d877e5e7246c491a83246e8f987e64d97b69c41",
+  "authorization": null,
+  "compile_or_simulation_started": false,
+  "current_available_memory_bytes": 193830674432,
+  "decision": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
+  "filesystems": [
+    {
+      "device": 156,
+      "external_reserve_coverage_at_observed_peak_seconds_illustrative_only": 1014.6310938254467,
+      "external_reserve_per_campaign_second_Bps": 2386092.942222222,
+      "first_available_observed_bytes": 28527489024,
+      "fsid_requested": 1349835467748716946,
+      "future_external_burst_bound_proven": false,
+      "hard_stop_emergency_margin_bytes": 0,
+      "last_available_observed_bytes": 28279255040,
+      "name": "workspace",
+      "observed_net_available_decrease_bytes": 248233984,
+      "observed_peak_interval_net_decrease_Bps": 8466066.774687057,
+      "path": "/workspace",
+      "proposal": {
+        "entry_free_bytes": 27917287424,
+        "external_write_reserve_bytes": 8589934592,
+        "hard_stop_free_bytes": 12884901888,
+        "max_pilot_allocated_growth_bytes": 4294967296,
+        "minimum_untouched_emergency_bytes": 10737418240,
+        "monitor_and_kill_overshoot_bytes": 2147483648
+      },
+      "proposal_arithmetic_closed": true,
+      "proposal_entry_extra_margin_bytes": 2147483648,
+      "proposed_sum_bytes": 25769803776,
+      "retained_emergency_is_not_pilot_allocation": true,
+      "snapshot_entry_condition": true,
+      "snapshot_margin_to_requested_entry_bytes": 361967616,
+      "stop_overshoot_bound_proven": false
+    },
+    {
+      "device": 2431,
+      "external_reserve_coverage_at_observed_peak_seconds_illustrative_only": 2626879.2670898438,
+      "external_reserve_per_campaign_second_Bps": 596523.2355555556,
+      "first_available_observed_bytes": 47631343616,
+      "fsid_requested": 2757854780513707398,
+      "future_external_burst_bound_proven": false,
+      "hard_stop_emergency_margin_bytes": 0,
+      "last_available_observed_bytes": 47631331328,
+      "name": "results",
+      "observed_net_available_decrease_bytes": 12288,
+      "observed_peak_interval_net_decrease_Bps": 817.5037486131076,
+      "path": "/root/share",
+      "proposal": {
+        "entry_free_bytes": 46170898432,
+        "external_write_reserve_bytes": 2147483648,
+        "hard_stop_free_bytes": 43486543872,
+        "max_pilot_allocated_growth_bytes": 536870912,
+        "minimum_untouched_emergency_bytes": 42949672960,
+        "monitor_and_kill_overshoot_bytes": 536870912
+      },
+      "proposal_arithmetic_closed": true,
+      "proposal_entry_extra_margin_bytes": 0,
+      "proposed_sum_bytes": 46170898432,
+      "retained_emergency_is_not_pilot_allocation": true,
+      "snapshot_entry_condition": true,
+      "snapshot_margin_to_requested_entry_bytes": 1460432896,
+      "stop_overshoot_bound_proven": false
+    }
+  ],
+  "final_current_check": "FINAL_CURRENT_RESOURCE_CHECK.json",
+  "final_entry_conditions": {
+    "results": true,
+    "workspace": false
+  },
+  "formal_policy_changed": false,
+  "identity_and_api_status": "RESOLVED_EXACT_R2_REQUEST_AND_CURRENT_CALLER_API",
+  "identity_status": "RESOLVED_PASS",
+  "latest_request_revision": 2,
+  "memory_floor_bytes": 68719476736,
+  "observation_elapsed_seconds": 30.06033699400723,
+  "original_requested_publication": "248c93acc611679afe42590760481f451773003d",
+  "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
+  "pilot_lease_created": false,
+  "r2_followup": "LANE1_R2_SUPPLEMENT.json",
+  "registry_exception_registered": false,
+  "remaining_resource_reasons": [
+    "Final actual workspace f_bavail is below this exact request26GiB entry; do not lower its proposed entry to force admission.",
+    "Workspace8GiB external reserve is not a demonstrated one-hour bound; current ten-second net contractions exceed its campaign-average equivalent by severalfold. No other project write quota or quiet window may be invented.",
+    "Share has40GiB untouched floor and exactly43GiB proposed component sum, with no extra arithmetic margin in proposed entry. Current short quiet sample does not bound previously observed bursts or upcoming permitted Ops copy/restore activity.",
+    "1s sampling,2s watchdog,3s TERM and256MiB per-file limit are control settings, not measured aggregate compiler/external/kernel-writeback or kill-overshoot bounds. They do not justify2GiB/512MiB overshoot by themselves.",
+    "No existing Storage-Ops owner ACK establishing an actual low-I/O window and its per-filesystem limits was found; no DTC/C16 process may be paused for the pilot."
+  ],
+  "request_publication": "50d3a648704235ff03be6b5b7e4f8f33a904500d",
+  "request_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
+  "resolved_old_problems": [
+    "Exact request publication/raw SHA and unique pilot_id",
+    "Exact published r2 runner source/current local bytes and canonical Lane5 API bridge/pins",
+    "Isolated clean Core/Framework/vendor and15 small input hashes",
+    "Fresh build/result roots, TMPDIR domain, five targets and21 directed commands",
+    "2CPU/8GiB/3600s/no scientific promotion stated explicitly"
+  ],
+  "samples": 4,
+  "schema_version": "EPL2_POST_REQUEST_INDEPENDENT_RESOURCE_REVIEW_V1",
+  "scope": "Fresh post-request measurements. Prior r8 refusal preserved and not inherited. Short rates are observations/sensitivity calculations, not one-hour forecasts or attribution to specific projects. Concurrent published r2 retains identical numerical envelope and source/matrix inputs; bounded supplemental identity comparison recorded without rerunning old suites.",
+  "token_issued": false,
+  "unknown_terms_not_zero": [
+    "Future external write/burst maxima on both filesystems",
+    "Defensible aggregate monitor and TERM/KILL/kernel-writeback overshoot",
+    "Sufficient per-project emergency reserve assurance throughout the bounded campaign"
+  ]
+}
