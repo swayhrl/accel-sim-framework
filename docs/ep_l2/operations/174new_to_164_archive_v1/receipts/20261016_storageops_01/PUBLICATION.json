@@ -1,0 +1,134 @@
+{
+  "status": "AUDIT_COMMIT_PUSHED_AND_REMOTE_READBACK_VERIFIED",
+  "verified_at_utc": "2026-10-16T12:20:43.891763+00:00",
+  "audit_commit_sha": "1853dcc1a57fe3d2eebd9043cec7b33acb351baa",
+  "remote_fetch_sha": "1853dcc1a57fe3d2eebd9043cec7b33acb351baa",
+  "remote_ls_remote_sha": "1853dcc1a57fe3d2eebd9043cec7b33acb351baa",
+  "branch": "hrl/ops-174new-164-archive-exec-v1",
+  "execution_checkout": "D:/repo/storage-ops-174new-164-exec-v1",
+  "frozen_goal_sha": "543a88d63f899ccfa4f6c569245496d6deb8fdf2",
+  "goal_file_unchanged": true,
+  "changed_paths_only_receipt": true,
+  "changed_file_count": 15,
+  "commands": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit_code": 0
+    },
+    {
+      "command": "git add -- <exact receipt directory>; git add -f -- <two exact CSV paths>",
+      "exit_code": 0,
+      "note": "Repository *.csv ignore required exact-path forced staging; ignore rules unchanged."
+    },
+    {
+      "command": "git commit -m docs(ops): record blocked 174-new storage and 164 archive precheck",
+      "exit_code": 0
+    },
+    {
+      "command": "git push --set-upstream origin HEAD:refs/heads/hrl/ops-174new-164-archive-exec-v1",
+      "exit_code": 1,
+      "note": "Direct HTTPS connection reset; no successful branch publication from this attempt."
+    },
+    {
+      "command": "git -c http.version=HTTP/1.1 push --set-upstream origin HEAD:refs/heads/hrl/ops-174new-164-archive-exec-v1",
+      "exit_code": 1,
+      "note": "Direct HTTPS connect timeout."
+    },
+    {
+      "command": "git -c http.proxy=http://127.0.0.1:7890 -c http.version=HTTP/1.1 push --set-upstream origin HEAD:refs/heads/hrl/ops-174new-164-archive-exec-v1",
+      "exit_code": 0,
+      "note": "Reused existing local proxy; no persistent Git or proxy configuration changed."
+    },
+    {
+      "command": "git -c http.proxy=http://127.0.0.1:7890 -c http.version=HTTP/1.1 -c gc.auto=0 fetch --no-tags origin refs/heads/hrl/ops-174new-164-archive-exec-v1",
+      "exit_code": 0
+    },
+    {
+      "command": "git -c http.proxy=http://127.0.0.1:7890 -c http.version=HTTP/1.1 ls-remote origin refs/heads/hrl/ops-174new-164-archive-exec-v1",
+      "exit_code": 0
+    },
+    {
+      "command": "git show <fetched SHA>:<each receipt path>; compare receipt SHA256SUMS",
+      "exit_code": 0
+    }
+  ],
+  "receipt_hash_readback": [
+    {
+      "file": "ACTION_LOG.md",
+      "sha256": "b2294b7f7e4e30ad63bc1f94b903cb3ed3df1dcf6bddef6f904f9944786bd9a2",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "APPROVAL_REQUIRED.md",
+      "sha256": "120e0a92107a900a4e0a859f80eec7800ee3428cc546878593f31fb0c453506b",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "AUDIT_EVIDENCE.json",
+      "sha256": "5aa08a4824c8ce800182e549da80d155a8368948c3f04d7624d33465276db047",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "audit_readonly.py",
+      "sha256": "6d33a1faeaaf03ae74e0c111262e9eb4ce0433350aadcd10d33646cb36e487ea",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "build_receipt.py",
+      "sha256": "ff2566d4683095d2c69127cbf4ca022cde11ed22daa62c76e082d520e623e176",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "CANDIDATES.csv",
+      "sha256": "b81fc4b07584625d27af4ddeea5d235b3c7d3cbb2978122926f94981dcdfe180",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "GIT_TEMP_PACK_AUDIT.json",
+      "sha256": "6413398dc0e02e4504da940b91f28919d08da242cad9b17e7965420031653860",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "PRECHECK.md",
+      "sha256": "3c53d012fce6b5b4137e12374b5f82388a84b4058b28a31c891f435270bcd6f9",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "REMOTE_164_AUDIT.json",
+      "sha256": "1f13493b714f8a5ec5cbdc2166a825b257c7e4492d80dbbaeba1f342ecacd286",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "SHA256_VERIFICATION.json",
+      "sha256": "0b8c3b8070aa13bea593f58de86710555be46640b747555773118b0cd3fc843a",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "SOURCE_FS_MAP.json",
+      "sha256": "b87670fabd3bd33f4408bc4394b04adefbf77e7ff865a3a88b86a3e4f00191a1",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "SPACE_BEFORE_AFTER.json",
+      "sha256": "313c0fc22bbe90f2f15f580cd61b36ad26cabadcbcec5965881c232562bf5731",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "STATUS.md",
+      "sha256": "6ef434b6e55ff8b9e9b100483437366d116d12bba7902c66cbd8aa1871f2a857",
+      "git_blob_readback": "MATCH"
+    },
+    {
+      "file": "TRANSFER_MANIFEST.csv",
+      "sha256": "697bc54c06ab77588aa066a883b4010df96f78a8063da34933fb8f3a33e9c9fe",
+      "git_blob_readback": "MATCH"
+    }
+  ],
+  "data_archive_hash_verification": "NOT_RUN",
+  "source_bytes_released": 0,
+  "note": "This publication record documents the already verified audit commit. Its containing follow-up commit is reported and verified separately at delivery; no self-referential SHA claim."
+}
