@@ -428,6 +428,13 @@ class RunnerInputTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             inspect(self.spec)
 
+    def test_native_multiline_quoted_config(self):
+        (self.root / 'config').write_text('-mode 1\n-dram_timing "nbk=16:\n  CL=12:WL=2"\n')
+        self.spec['identity']['runtime_config_sha256'] = content_hash({
+            'ordered_configs': asset_manifest(self.spec['configs'], ordered=True),
+            'auxiliary_assets': [], 'environment': {}})
+        self.assertEqual(inspect(self.spec)['run_key'], run_key(self.spec['identity']))
+
     def test_fragment_and_ideal_excluded_from_formal_results(self):
         spec = deepcopy(self.spec)
         spec['identity']['epoch_range']['scope'] = 'diagnostic_fragment'

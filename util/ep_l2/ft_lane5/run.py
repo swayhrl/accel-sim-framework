@@ -73,14 +73,13 @@ def validate_trace_closure(spec):
 def validate_config_closure(spec):
     assets = {item['name'] for item in spec['auxiliary_assets']}
     for config in spec['configs']:
-        for line in Path(config['path']).read_text().splitlines():
-            tokens = shlex.split(line, comments=True)
-            if not tokens:
-                continue
-            require(tokens[0] != '-config', 'nested config must be flattened into ordered frozen inputs')
-            for token in tokens[1:]:
-                if token.endswith(('.xml', '.icnt', '.config')):
-                    require(token in assets, 'unaccounted configuration file dependency: ' + token)
+        # GPGPU-Sim accepts a quoted DRAM timing value spanning several lines.
+        # Lex the complete file so its unchanged native syntax remains valid.
+        tokens = shlex.split(Path(config['path']).read_text(), comments=True)
+        require('-config' not in tokens, 'nested config must be flattened into ordered frozen inputs')
+        for token in tokens:
+            if token.endswith(('.xml', '.icnt', '.config')):
+                require(token in assets, 'unaccounted configuration file dependency: ' + token)
 
 
 def inspect(spec):
