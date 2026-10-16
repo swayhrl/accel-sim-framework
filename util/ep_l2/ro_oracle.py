@@ -194,6 +194,8 @@ def build(commandlist, output, scope, framework_source):
             continue
         if s.startswith("kernel"):
             kernels.append(commandlist.parent / s)
+        elif s.startswith("MemcpyHtoD,") and kernels:
+            raise ValueError("host write inside full-commandlist RO epoch")
         elif not s.startswith(("MemcpyHtoD,", "MemcpyDtoH,")):
             raise ValueError("unrecognized command; unseen agents cannot be excluded")
     if not kernels:

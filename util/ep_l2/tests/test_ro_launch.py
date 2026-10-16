@@ -29,8 +29,8 @@ class LaunchTest(unittest.TestCase):
         self.assertEqual(r['eligible_unique_lines'],1)
 
     def test_host_writer_between_kernels_rejected(self):
-        p,repo=self.certificate('kernel-1.traceg\nMemcpyHtoD,0x1000,128\nkernel-1.traceg\n')
-        with self.assertRaises(ValueError):verify_ro_launch.verify(p/'oracle',repo)
+        with self.assertRaises(ValueError):
+            self.certificate('kernel-1.traceg\nMemcpyHtoD,0x1000,128\nkernel-1.traceg\n')
 
     def test_changed_trace_rejected(self):
         p,repo=self.certificate('kernel-1.traceg\n')
