@@ -1,43 +1,34 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16 / Round A74。A73的W/H已完成并独立审查；W合法STOP，H仅保留一个有条件的来源级硬件资源取舍问题，暂未获原生/模拟器资格。** 新A74-C单窗口CPU/source准入Goal已发布且远端独立分支准备完毕，状态`READY_FOR_USER_DISPATCH`，尚未收到启动回执。A70四线此前全部0候选的科学边界仍保留。
+**最新快照：2026-10-16 / Round A74-C已完成并STOP。** 继A73的W/H结果与A74独立审查之后，原A74-C“SM100非矩阵资源与TensorCore固定预算取舍”CPU/source-only资格任务已由**ChatGPT本窗口通过GitHub与公开网页直接完成**。本对话无SSH/109 Codex启动入口，因此**没有启动node109的Codex进程，也没有109设备资源或GPU性能测量**。该任务实际科研结果为`PARKED_FOR_PPA_OR_SIM_MODEL / STOP`，不是被批准的B200探针。
 
-旧导航固定保存：[A73派发状态@a838c13](https://github.com/swayhrl/accel-sim-framework/blob/a838c13af9d0dc94d1aa1714aeb449fd23c51e7f/docs/ai_workload_research/CURRENT_STATE.md)、[A72四线收口@adf6ab9](https://github.com/swayhrl/accel-sim-framework/blob/adf6ab9467887f74b0b509c105977128663707a5/docs/ai_workload_research/CURRENT_STATE.md)。历史执行分支、原始报告和终态不修改。
+历史导航：[A74-C准备期@54d2e153](https://github.com/swayhrl/accel-sim-framework/blob/54d2e153ca927c5dd990714cd772ae3593543fb4/docs/ai_workload_research/CURRENT_STATE.md)；[A74 W/H独立科学审查](reviews/AI_ARCH_A74_A73_W_H_INDEPENDENT_SCIENTIFIC_REVIEW_2026-10-16_V1.md)。旧执行分支、报告、数据、Stop/冻结范围不修改。
 
-## 1. A73原始结果及Round A74审查
+## 1. A74-C科研结果：SOURCE_ONLY，不是SM100实测
 
-| Lane | final commit/tree | 科学原状态 | 独立审查后的位置 |
-|---|---|---|---|
-| **W / 109：真实聊天与Agent自然工作量** | `e7f2438aec9ee5c3ab677027c48a08dcd40c75b0` / `ba20263794bd7b9b94f0050b4e985347578ae7ad` | `SOURCE_INCOMPLETE / STOP`，23条证据，两个真实场景资格卡，1个WQ01 PARKED，0个晋升 | 接受合法STOP。TraceLab仅提供去标识化cache/会话/工具计数，shape replay用合成prompt，**不是原目标Qwen同token内容**；官方SWE-chat需另获访问与隐藏模板核验。不得基于provider缓存计数生成硬件性能结论。 |
-| **H / 174-new：GPU资源反事实** | `06b17a72f683316a4088292a4b424c9d97c7437c` / `0e53a3747c069f82322eea003f045c1b54ac1804` | `SOURCE_QUESTION_READY_FOR_CROSS_REVIEW / STOP`，初筛12、深审6，唯一H73-Q1 | **HYPOTHESIS_RETAINED / NATIVE_NOT_ADMITTED。** 固定area/power预算下TC资源与exp/SFU/片上服务交换，并逐硬件点重调FA4/cuDNN，完整Qwen3-8B Prefill净效益未知；不是已证硬件瓶颈。 |
+**原A74-C固定Goal：** [CPU-only审查合同](goals/AI_ARCH_A74_C_ISO_PPA_RESOURCE_ADMISSION_CPU_SOURCE_109_V1.md)，预备Goal HEAD `f5ac43b4eb6adc29d040bdf65993cbd7de063db5`。独立交付分支`hrl/aiarch-a74c-iso-resource-admission-109-v1`，最终commit `d2530b3bb8a2743b716ec58e6a3113d18b66c71f`，tree `7effe7d22591998bfbef4a6f627d02be8bf09d1b`。Goal→final ahead4，只有新目录四个文件；final→该分支HEAD identical，四blob独立回读正确。通过GitHub contents API逐文件原子提交，不宣称本地git push或worktree clean。
 
-GitHub连接器独立复核两条final的parent为共同A73固定Goal `9afcdf6faa5b8351b56c9cbbefd3530c19c89537`，各ahead1且只增自身4交付，final→相应执行HEAD identical、tree与回执一致。W23条15列、H14条20列证据记录结构正确、ID各自唯一。本轮没有实时SSH复跑或逐项重算全部执行者私有下载SHA。
+**交付入口：**
+- [完整REPORT.md](https://github.com/swayhrl/accel-sim-framework/blob/d2530b3bb8a2743b716ec58e6a3113d18b66c71f/docs/ai_workload_research/discovery/A74_C_ISO_RESOURCE_ADMISSION/REPORT.md)
+- [18条原始来源与资格证据](https://github.com/swayhrl/accel-sim-framework/blob/d2530b3bb8a2743b716ec58e6a3113d18b66c71f/docs/ai_workload_research/discovery/A74_C_ISO_RESOURCE_ADMISSION/PRIOR_AND_FEASIBILITY.tsv)
+- [机读DECISION.json](https://github.com/swayhrl/accel-sim-framework/blob/d2530b3bb8a2743b716ec58e6a3113d18b66c71f/docs/ai_workload_research/discovery/A74_C_ISO_RESOURCE_ADMISSION/DECISION.json)
+- [诚实资源/验证RECEIPT.json](https://github.com/swayhrl/accel-sim-framework/blob/d2530b3bb8a2743b716ec58e6a3113d18b66c71f/docs/ai_workload_research/discovery/A74_C_ISO_RESOURCE_ADMISSION/RECEIPT.json)
 
-**核心独审：[Round A74 W/H科研裁决](reviews/AI_ARCH_A74_A73_W_H_INDEPENDENT_SCIENTIFIC_REVIEW_2026-10-16_V1.md)**，审查初次发布commit `db29506ac0adfce419989977b587729ce99f3a13`。该报告补入两项直接近邻：
+| 资格 | 独立裁决 | 科学边界 |
+|---|---|---|
+| G0软硬件近邻 | `DIRECT_PRIOR_EXISTS / FORMAL_DETAIL_PARTIAL` | FA4确实MLSys2026正式版，arXiv v1有BF16 B200软件指数模拟和SM100式roofline；NVIDIA Blackwell Ultra/GB300已实际约2倍指数SFU、特定FP8 GQA约1.35倍FPROP；RISC-V VEXP等也为硬件近邻。**“更多SFU加速softmax”不是原创机制**。FA4正式PDF完整图表因抓取限制未核，不能假称其附录版本冲突已消除。 |
+| G1主流模型与强软件 | `BACKEND_RUNTIME_UNQUALIFIED / WHOLE_PREFILL_WALL_UNKNOWN` | Qwen3-8B固定BF16模型配置与完整数学分母可算；强FA4/cuDNN要逐资源点重新调优。真实合法自然输入、GPU后端、数值和完整Prefill wall未获资格。4K/8K/16K理想因果QK/PV矩阵MAC占比约8.00/14.82/25.81%，**非真实Attention wall份额**。 |
+| G2同面积/同功耗反事实 | `SIM_AND_PPA_NOT_QUALIFIED` | 已检查Git固定Accel-Sim源的tested-cfgs仅到SM86，ISA映射没有可认定的SM100 tcgen05/TMEM异步模型；GPGPU-Sim性能核由外部checkout加载，未审109/174本机扩展。AccelWattch文档是GV100功耗校准，**没有可信的TC↔SFU同工艺边际面积/功耗函数**。不能把B200与GB300跨代当iso-PPA。 |
+| G3未来机会 | `PARKED_FOR_PPA_OR_SIM_MODEL` | SM100原生FA4 profiling仅是机会门，不允许替代真实物理资源交换。只有被独立校准的SM100模型＋单位成本＋完整模型强基线和合法输入闭合后再重审GPU/模拟器/PPA预算。 |
 
-- **FA4已正式发表于MLSys 2026**（H已读的arXiv v1并非唯一公开版本），官方论文/最新源码差异要另审，不得用过时cuDNN9.13断言最强。
-- **NVIDIA Blackwell Ultra/GB300已实际提高exp SFU吞吐约2倍**，并在特定FP8注意力前向给出性能结果。此为真实硬件先例而非固定iso-area比较；“更多SFU使Softmax更快”不是新机制。保留的问题仅是明确固定面积/功耗、真实完整模型机会成本和软件重新调优的资源Pareto点。
+**H73-Q1保留为限定科研假说但暂时搁置**，不是负硬件测量，也不是当前要求申请B200的任务。A73-W的TraceLab缓存统计不能恢复原生Qwen prompt，WQ01仍为`SOURCE_INCOMPLETE / PARKED`。没有新增GPU、Simulator或Codex运行指令。
 
-审查另独立复算Qwen3-8B理想因果QK/PV与完整投影+FFN矩阵MAC份额，4K/8K/16K时分别约8.0%/14.8%/25.8%，**不是时间份额**。真实Attention wall占比、exp暴露成本、资源替代PPA和强软件合法dispatch尚UNKNOWN；B200物理单元数不能靠软件修改，租用B200只可测原生机会门，不能直接证明iso-area资源交易。H原tile 4/3仅无面积约束的理论下界，不是性能收益。
+## 2. 其余冻结证据与当前Lane分工
 
-## 2. 下一轮仅准备一条有针对性的CPU资格任务
+A70 M/N/O/P四线此前均`SOURCE_SCOPE_NO_SURVIVOR`而非native负结果，固定综合见[A72](reviews/AI_ARCH_A72_A70_M_AND_FOUR_LANE_DISCOVERY_SYNTHESIS_2026-10-16_V1.md)。A73 W原结果`e7f2438aec9ee5c3ab677027c48a08dcd40c75b0`、H原结果`06b17a72f683316a4088292a4b424c9d97c7437c`，经[A74](reviews/AI_ARCH_A74_A73_W_H_INDEPENDENT_SCIENTIFIC_REVIEW_2026-10-16_V1.md)接受范围。A61/A65/A67 GNN STOP、A69 ScanNet/Q-S储备、A62/A63稀疏训练储备、C16/AWMA/ISCAS所有已有科学authority和资源边界原样冻结，不恢复任何旧Goal。
 
-**A74-C Goal：[SM100硬件近邻与固定预算资源取舍准入审计](goals/AI_ARCH_A74_C_ISO_PPA_RESOURCE_ADMISSION_CPU_SOURCE_109_V1.md)。**
+- **109/174-new/164**：本轮没有实际新模型、GPU、模拟器、权重/数据下载、外部配置更改、许可接受或资产清理；不对其它项目抢占CPU/GPU/共享锁。109 Codex在本对话没有运行回执。
+- **ChatGPT**：本轮A74-C源码审查已完成。后续如继续大模型Discovery，需要转换科学入口或真正取得符合模型/质量合同的输入与资源模型，不为保持并行而重复同一“SFU更多就是新机制”的研究。
+- **下个行动**：没有自动下一步作业；是否进一步投资SM100/PPA由用户基于新增模型/成本权威再审，不能用缺实测直接推定硬件加速。
 
-| 字段 | 固定值 |
-|---|---|
-| 宿主建议 | node109独立新Codex窗口 |
-| 执行branch | `hrl/aiarch-a74c-iso-resource-admission-109-v1` |
-| **唯一固定启动HEAD** | `f5ac43b4eb6adc29d040bdf65993cbd7de063db5` |
-| 科学目标 | 只核FA4正式版/最新合法source、B200↔B300硬件近邻、Qwen完整Prefill资源分母、可用面积/功耗与SM100模拟器语义；给出是否有**可实现、可证伪**的固定预算资源反事实。不得重复H的宽泛12篇筛选。 |
-| 资源 | CPU/source-only、1个CPU工具worker、RSS≤2GiB、公开资料≤64MiB、新盘≤128MiB、60分钟收口；GPU/CUDA/模型权重/数据/安装/模拟器运行及清理全部0。 |
-| 输出 | REPORT.md、PRIOR_AND_FEASIBILITY.tsv、DECISION.json、RECEIPT.json；可能正常结论是PARKED、DUPLICATE_NO_GO，不强求GO。 |
-| 实际状态 | **READY_FOR_USER_DISPATCH，未启动。** 文档与分支创建不构成执行授权。 |
-
-该任务之后，若硬件建模/PPA方法无法独立校准，不因论文动机强就启动B200或旧Accel-Sim；若确有必要的具体资源变量，再独立设计低成本原生机会门，并另批GPU/数据/Profiler/模型资产。W因缺同语义输入仍PARKED，不为保持双Lane并行虚增同质工作。
-
-## 3. 冻结边界与协调方式
-
-A70 M/N/O/P全部`NO_SURVIVOR_IN_SEARCH_SCOPE`但仅SOURCE_ONLY，原综述与Git审查见[A72](reviews/AI_ARCH_A72_A70_M_AND_FOUR_LANE_DISCOVERY_SYNTHESIS_2026-10-16_V1.md)。A61/A65/A67 GNN、A69 ScanNet/Q-S、C16、AWMA、ISCAS所有科学和资源合同原样保持。109共享GPU锁继续遵守，本轮无GPU操作。164没有访问任务；H/W本次STOP后不自动重启。协调分支只归档研究，不合并执行HEAD。
-
-**本项目当前没有正在执行的新GPU/Codex作业回执；只有A74-C等待用户派发。**
+**当前A74-C终态：PARKED_FOR_PPA_OR_SIM_MODEL / STOP；发布协调记录不产生109执行授权。**
