@@ -1,0 +1,10 @@
+# Source anchors
+
+- Actual fetched handoff/default remote heads: `b0fdcc5760107d1efbab38599510dc96f3b4a133` / `565381ef5d43286895cefb3c71912c9d896516e9` at preflight. No branch reset. Original main C16 worktree HEAD `bd988aeb570708e5a41bab45433e9e49eac53c9a`.
+- Execution preregistration `c24ffbb9`; native producer `57aa1b80`; working capture producer `147b8a0c`. Later edits parameterize fresh reproduction roots and prevent overwriting a sealed campaign. Measured diagnostic.cu/layernorm.py are byte-identical to native producer source.
+- Fixed manifest SHA-256 `e9b9ccfcbb05f74016d5fcc2eedb63306e42b2a13b340b2dd36ce5ead5f63269`; R0 summary binds all12 entries. Legacy Framework `18a68dcccd795f1b6cda75504e9450d00c9cee02`, Core `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`, separate2D exception `6582b9d171330d88b17e8d5294c97704229e3823` remain historical, not this native binary identity.
+- Parboil immutable source `4e0fc54866546efa44fe93af57c9cef62f6c8eb9`; all selected source/input/reference and transformed host SHA values in SPMV_SOURCE_INPUT_IDENTITY.json. Original jds_kernels.cu is byte-identical; no slow kernel rewrite.
+- Installed PyTorch2.5.1+cu124 Python/CUDA/CPU library identities, exact SpMV and diagnostic executable hashes and materialized LayerNorm input hashes: BINARY_FRAMEWORK_INPUT_IDENTITY.json. Inputs/operators pinned before outcomes. No weights/downloaded model.
+- Existing tracer source `7f38c063fa853525680effd8454d4899c7895ff5`; NVBit1.7.5, Accel-Sim tracer5; tracer binary SHA `14891b344554ff221423f51e970e1d0c92ab78c9375d9f993dafbfd8420af3db`; postprocessor SHA `c7691bb9e3d37fe1da491f9f182cfbbe8c657687ecc1fb4992a7fd8dc86270a2`. Unmodified external worktree. Actual cubin versions recorded in trace headers rather than inferred from GPU name.
+- CUDA compiler/disassembler12.8, driver580.178.04, Nsight Compute2025.1.1. Exact profiles/commands/options/GPU identity and timings in archive `raw/`. No clocks/power/toolchain authority changes.
+- RTX4080 AWMA platform asset `8d1f14a32f5538660d74da86ccb03a2c504c5735` is a reference only: no DTC qualification or simulator run here.

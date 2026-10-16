@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Recompute summaries from independent timing samples and profiler receipts."""
+import os
 import collections,csv,hashlib,json,pathlib,re,sqlite3,statistics
 repo=pathlib.Path(__file__).resolve().parents[3];pack=repo/'docs/dtc_l1/review_packs/DTC_NATIVE_COVERAGE_109_V1';raw=pathlib.Path('/data/c16/dtc_native_coverage_109_v1/raw')
 assert (raw/'NATIVE_CAMPAIGN_COMPLETE').exists()

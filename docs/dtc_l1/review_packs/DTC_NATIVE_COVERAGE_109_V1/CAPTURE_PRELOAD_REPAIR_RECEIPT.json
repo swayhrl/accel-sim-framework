@@ -1,0 +1,47 @@
+{
+  "tool": "/home/huangrulin/workspace/worktrees/accel-sim-awma-simcompat-v1/util/tracer_nvbit/tracer_tool/tracer_tool.so",
+  "tool_sha256": "14891b344554ff221423f51e970e1d0c92ab78c9375d9f993dafbfd8420af3db",
+  "postprocessor_sha256": "c7691bb9e3d37fe1da491f9f182cfbbe8c657687ecc1fb4992a7fd8dc86270a2",
+  "tracer_source_commit": "7f38c063fa853525680effd8454d4899c7895ff5",
+  "producer_source_commit": "2ef43bac7031a7ed0ef1e6242ad43800e71a1bb4",
+  "capture_policy": "ACTIVE_FROM_START=1; all initialization/warmup/ROI kernels, no opcode/root-function filter, no prefix slicing",
+  "kernel_roi": "last of four complete operator instances; first three are warmups",
+  "attempts": [
+    {
+      "loading": "LD_PRELOAD_ONLY_BOUNDED_REPAIR",
+      "case": "SpMV",
+      "start_utc": "2026-10-16T08:39:31.222006+00:00",
+      "command": [
+        "/data/c16/dtc_native_coverage_109_v1/bin/spmv",
+        "-i",
+        "/data/c16/dtc_native_coverage_109_v1/assets/parboil/datasets/spmv/small/input/1138_bus.mtx,/data/c16/dtc_native_coverage_109_v1/assets/parboil/datasets/spmv/small/input/vector.bin",
+        "-o",
+        "/data/c16/dtc_native_coverage_109_v1/traces_preload_repair/SpMV/actual.out"
+      ],
+      "output": "/data/c16/dtc_native_coverage_109_v1/traces_preload_repair/SpMV",
+      "returncode": 127,
+      "elapsed_s": 1.0004753768444061,
+      "end_utc": "2026-10-16T08:39:32.222797+00:00",
+      "status": "CAPTURE_GAP_RETAINED"
+    },
+    {
+      "loading": "LD_PRELOAD_ONLY_BOUNDED_REPAIR",
+      "case": "LayerNorm_1024",
+      "start_utc": "2026-10-16T08:39:32.223031+00:00",
+      "command": [
+        "/data/c16/env/c16-py310/bin/python",
+        "/home/huangrulin/workspace/worktrees/accel-sim-dtc-native-coverage-109-v1/util/dtc_l1/native_coverage_109_v1/layernorm.py",
+        "capture",
+        "--rows",
+        "1024"
+      ],
+      "output": "/data/c16/dtc_native_coverage_109_v1/traces_preload_repair/LayerNorm_1024",
+      "returncode": 127,
+      "elapsed_s": 1.0002055591903627,
+      "end_utc": "2026-10-16T08:39:33.224012+00:00",
+      "status": "CAPTURE_GAP_RETAINED"
+    }
+  ],
+  "lock_start_utc": "2026-10-16T08:39:31.221789+00:00",
+  "lock_end_utc": "2026-10-16T08:39:33.224060+00:00"
+}

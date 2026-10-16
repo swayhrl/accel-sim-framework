@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Capture full small producers, including warmups and initialization kernels."""
+import os
 import argparse,datetime,fcntl,hashlib,json,os,pathlib,signal,subprocess,time
 args=argparse.ArgumentParser();args.add_argument('--ld-preload-repair',action='store_true');args.add_argument('--driver-preload',action='store_true');args.add_argument('--explicit-disassembler',action='store_true');args=args.parse_args()
 repo=pathlib.Path(__file__).resolve().parents[3];src=pathlib.Path(__file__).parent
-root=pathlib.Path('/data/c16/dtc_native_coverage_109_v1');raw=root/'raw';py='/data/c16/env/c16-py310/bin/python'
+root=pathlib.Path(os.environ.get('DTC_NATIVE_ROOT','/data/c16/dtc_native_coverage_109_v1'));raw=root/'raw';py='/data/c16/env/c16-py310/bin/python'
 tr=pathlib.Path('/home/huangrulin/workspace/worktrees/accel-sim-awma-simcompat-v1/util/tracer_nvbit/tracer_tool');tool=tr/'tracer_tool.so';post=tr/'traces-processing/post-traces-processing'
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()

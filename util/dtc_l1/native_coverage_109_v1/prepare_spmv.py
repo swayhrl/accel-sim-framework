@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Host measurement/API compatibility edits only; original CUDA kernel unchanged."""
-from pathlib import Path
+from pathlib import os
+import Path
 import hashlib, json, shutil, subprocess
-root=Path('/data/c16/dtc_native_coverage_109_v1');src=root/'assets/parboil';dst=root/'assets/spmv_build'
+root=Path(os.environ.get('DTC_NATIVE_ROOT','/data/c16/dtc_native_coverage_109_v1'));src=root/'assets/parboil';dst=root/'assets/spmv_build'
 assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=src,text=True).strip()=='4e0fc54866546efa44fe93af57c9cef62f6c8eb9'
 shutil.copytree(src/'benchmarks/spmv/src/cuda',dst,dirs_exist_ok=True)
 p=dst/'spmv_jds.h';s=p.read_text();assert s.count('texture<float,1> tex_x_float;')==1;p.write_text(s.replace('texture<float,1> tex_x_float;','// Unused legacy texture declaration removed for CUDA12 compatibility.'))

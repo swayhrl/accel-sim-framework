@@ -1,6 +1,6 @@
 # DTC native behavior and workload coverage ? node109 V1
 
-R0 CPU inventory published first; R1 native pilot completed independently of174. R2 bounded trace capture follows. Entry point for independent node174 consumption. This work does not run any simulator or change a platform authority.
+R0 CPU inventory published first; R1 native pilot completed independently of174. R2 bounded capture and format audits completed; scientific admission gaps are explicit. Entry point for independent node174 consumption. This work does not run any simulator or change a platform authority.
 
 ## Source and isolation
 
@@ -29,3 +29,13 @@ Native observations describe baseline behavior only, with no hardware DTC speedu
 ## Native receipt
 
 [NATIVE_FINDINGS.md](NATIVE_FINDINGS.md), TIMING_SUMMARY.tsv, TIMING_SAMPLES.json, PROFILE_METRICS.tsv, ORDERED_OPERATOR_KERNELS.json and binary/input/SASS/lock receipts contain the first independent native delivery. All failures/coverage limits remain explicit.
+
+## Trace receipt
+
+[TRACE_DELIVERY_AND_GAPS.md](TRACE_DELIVERY_AND_GAPS.md) is mandatory before consuming TRACE_AUDIT.json or captured payloads. SpMV is produced/pending consumer admission. LayerNorm native remains valid, but its trace is not admitted: actual SM86 cubin and skipped CALL.REL.NOINC. Initialization/predecessor kernels are retained; exact initial cache state is not asserted.
+
+## Durable payload and validation
+
+DURABLE_STORE_RECEIPT.json points to the164 archive (85,512,354 bytes), SHA256 `af5c6ec76179f881f689f486829c025055764bd9e564e598c0dc18560865f984`. RAW_PAYLOAD_INDEX.json lists all285 files; independent destination read verified every SHA. Source snapshots, native executable inputs, exact raw samples/metrics/options/GPU provenance and full success/failure trace attempts are inside. Large artifacts stay outside Git.
+
+R0_ADDED_FAMILY_PATHS.tsv complements the fixed-cohort table with actual two-family dtype/input/kernel/cache-path coverage. SOURCE_ANCHORS.md, VALIDATION_SUMMARY.md/VALIDATION.json and OPEN_ISSUES.md are required context. Final artifact scripts support a fresh DTC_NATIVE_ROOT and refuse overwriting sealed native samples. Immutable measured source snapshots are retained in the archive.

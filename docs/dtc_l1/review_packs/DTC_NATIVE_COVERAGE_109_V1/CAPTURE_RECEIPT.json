@@ -1,0 +1,83 @@
+{
+  "tool": "/home/huangrulin/workspace/worktrees/accel-sim-awma-simcompat-v1/util/tracer_nvbit/tracer_tool/tracer_tool.so",
+  "tool_sha256": "14891b344554ff221423f51e970e1d0c92ab78c9375d9f993dafbfd8420af3db",
+  "postprocessor_sha256": "c7691bb9e3d37fe1da491f9f182cfbbe8c657687ecc1fb4992a7fd8dc86270a2",
+  "tracer_source_commit": "7f38c063fa853525680effd8454d4899c7895ff5",
+  "producer_source_commit": "8fedac2e5703d620d77922e0f6b2be9fe22a8576",
+  "capture_policy": "ACTIVE_FROM_START=1; all initialization/warmup/ROI kernels, no opcode/root-function filter, no prefix slicing",
+  "kernel_roi": "last of four complete operator instances; first three are warmups",
+  "attempts": [
+    {
+      "case": "SpMV",
+      "start_utc": "2026-10-16T08:38:43.932519+00:00",
+      "command": [
+        "/data/c16/dtc_native_coverage_109_v1/bin/spmv",
+        "-i",
+        "/data/c16/dtc_native_coverage_109_v1/assets/parboil/datasets/spmv/small/input/1138_bus.mtx,/data/c16/dtc_native_coverage_109_v1/assets/parboil/datasets/spmv/small/input/vector.bin",
+        "-o",
+        "/data/c16/dtc_native_coverage_109_v1/traces/SpMV/actual.out"
+      ],
+      "output": "/data/c16/dtc_native_coverage_109_v1/traces/SpMV",
+      "returncode": 0,
+      "elapsed_s": 1.000521037261933,
+      "end_utc": "2026-10-16T08:38:44.933415+00:00",
+      "postprocess_returncode": 1,
+      "traceg_members": 0,
+      "status": "POSTPROCESS_GAP_RETAINED",
+      "files": [
+        {
+          "path": "traces/SpMV/actual.out",
+          "bytes": 4556,
+          "sha256": "080c8b00cd518f00bb2c399b7b24be61a5c59125c50578620200b64dbeac3da1"
+        },
+        {
+          "path": "traces/SpMV/capture.log",
+          "bytes": 769,
+          "sha256": "2f030142c5977df20723d4c41a795fc468ada652428a98250105a716718b8daa"
+        },
+        {
+          "path": "traces/SpMV/correctness.log",
+          "bytes": 212,
+          "sha256": "a5e2e82abfc72db3d791aa5a13e0707543ef1e35578225b129bd4ec85f7ae596"
+        },
+        {
+          "path": "traces/SpMV/postprocess.log",
+          "bytes": 18,
+          "sha256": "32d4185a70b99a952841e71557494db83a3e8b1b18e2c6bac2e801c671e3acf7"
+        }
+      ]
+    },
+    {
+      "case": "LayerNorm_1024",
+      "start_utc": "2026-10-16T08:38:44.962914+00:00",
+      "command": [
+        "/data/c16/env/c16-py310/bin/python",
+        "/home/huangrulin/workspace/worktrees/accel-sim-dtc-native-coverage-109-v1/util/dtc_l1/native_coverage_109_v1/layernorm.py",
+        "capture",
+        "--rows",
+        "1024"
+      ],
+      "output": "/data/c16/dtc_native_coverage_109_v1/traces/LayerNorm_1024",
+      "returncode": 0,
+      "elapsed_s": 2.0005765920504928,
+      "end_utc": "2026-10-16T08:38:46.963822+00:00",
+      "postprocess_returncode": 1,
+      "traceg_members": 0,
+      "status": "POSTPROCESS_GAP_RETAINED",
+      "files": [
+        {
+          "path": "traces/LayerNorm_1024/capture.log",
+          "bytes": 495,
+          "sha256": "1fddd3c5c30675c819078debf1a28ef76607692c1872eaa68461d35390fdf70f"
+        },
+        {
+          "path": "traces/LayerNorm_1024/postprocess.log",
+          "bytes": 18,
+          "sha256": "32d4185a70b99a952841e71557494db83a3e8b1b18e2c6bac2e801c671e3acf7"
+        }
+      ]
+    }
+  ],
+  "lock_start_utc": "2026-10-16T08:38:43.932300+00:00",
+  "lock_end_utc": "2026-10-16T08:38:46.965767+00:00"
+}

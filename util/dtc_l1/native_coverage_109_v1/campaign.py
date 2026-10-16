@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Exclusive, bounded native producer; no simulation, no task preemption."""
+import os
 import datetime,fcntl,json,os,pathlib,random,subprocess,sys,time
 repo=pathlib.Path(__file__).resolve().parents[3];src=pathlib.Path(__file__).parent
-root=pathlib.Path('/data/c16/dtc_native_coverage_109_v1');raw=root/'raw'
+root=pathlib.Path(os.environ.get('DTC_NATIVE_ROOT','/data/c16/dtc_native_coverage_109_v1'));raw=root/'raw'
 py='/data/c16/env/c16-py310/bin/python';ncu='/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu'
 reg=json.loads((repo/'docs/dtc_l1/review_packs/DTC_NATIVE_COVERAGE_109_V1/PREREGISTRATION.json').read_text())
+assert not (raw/'COMMANDS.jsonl').exists(), 'Refusing to overwrite prior campaign; use fresh DTC_NATIVE_ROOT'
 env=os.environ.copy();env.update(OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
 def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()
 def run(tag,cmd,extra=None,timeout=180):
