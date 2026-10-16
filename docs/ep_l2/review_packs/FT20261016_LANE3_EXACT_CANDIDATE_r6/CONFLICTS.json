@@ -1,0 +1,31 @@
+{
+  "schema": "LANE3_EXACT_CANDIDATE_CONFLICT_AUDIT_R6",
+  "merge_commit": "cff8aadc70e35ebcd6200e6da0e9121f12930be7",
+  "merge_parents": [
+    "b90e5e861a934503f35c56688e7007da6bb3dcc0",
+    "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+  ],
+  "conflicted_files": [
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "resolution": "Keep exact Lane1 ft_physical_cycle/guarded try-prefill; move RO nonmutating epoch guard to direct try entry; retain wrapper guard and post-success generation handshake."
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "resolution": "Retain Lane1 try-prefill/physical-clock declarations alongside existing RO declarations."
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.h",
+      "resolution": "Keep Lane1 out-of-line partition prefill/try gate; remove old inline wrapper and duplicate identical bank-counter getter."
+    },
+    {
+      "path": "CMakeLists.txt",
+      "resolution": "Keep Lane1 two EXCLUDE_FROM_ALL repair targets and both existing RO EXCLUDE_FROM_ALL targets."
+    }
+  ],
+  "automatic_preservation": [
+    "gpu-sim.cc full-width/partial memcpy and RO whole-epoch write guard",
+    "l2cache.cc real hardware closure/try-prefill offset-on-success gate"
+  ],
+  "compile_or_runtime_claim": false
+}

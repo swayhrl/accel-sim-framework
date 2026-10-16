@@ -1,0 +1,570 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b397a0e8..ed5aead6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -192,3 +192,11 @@ target_include_directories(ep_l2_ro_partition PRIVATE ${CUDAToolkit_INCLUDE_DIRS
+ target_link_libraries(ep_l2_ro_partition PRIVATE -Wl,--start-group
+     entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
+     ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++foreach(repair_test ft_memcpy_clock ft_host_prefill)
++  add_executable(ep_l2_${repair_test} EXCLUDE_FROM_ALL tests/ep_l2/test_${repair_test}.cc)
++  target_include_directories(ep_l2_${repair_test} PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++  target_link_libraries(ep_l2_${repair_test} PRIVATE -Wl,--start-group
++      entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++      ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++endforeach()
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index f2e2d456..72caf897 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -1,41 +1,74 @@
+ // FT20261016 production integration. Included once by gpu-cache.cc.
+ // The all-OFF path remains in the historical implementation.
++unsigned long long l2_cache::ft_physical_cycle() const {
++  return m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
++}
++
+ void l2_cache::force_tag_access(new_addr_type addr, unsigned time,
+                                 mem_access_sector_mask_t mask) {
+   if (!ft_enabled()) { baseline_cache::force_tag_access(addr, time, mask); return; }
+   if(m_ro)m_ro->prefill_begin();
+-  // Trace host memcpy prefill runs outside active hardware work. Never retire
+-  // a lower transaction, response reference or WB merely to warm a Tag.
+-  assert(ft_drained() && m_ep_l2_wad_entries_live.empty());
++  if (!ft_try_force_tag_access(addr, time, mask)) {
++    fprintf(stderr, "EP-L2 host prefill requires quiescent clean ownership; no pending/dirty victim may be discarded\n");
++    abort();
++  }
++}
++
++bool l2_cache::ft_try_force_tag_access(new_addr_type addr, unsigned time,
++                                      mem_access_sector_mask_t mask) {
++  if(m_ro && !m_ro->prefill_allowed())return false;
++  // This is untimed host initialization, not a source of GPU bank grants or
++  // free WB service. Fail BEFORE changing Tag, generation, owner or offset.
++  if (!ft_enabled() || m_config.m_cache_type != SECTOR || mask.count() != 1 ||
++      !ft_drained() || !m_ep_l2_wad_entries_live.empty() ||
++      mshr_entries_used() || !miss_queue_empty() ||
++      m_ep_l2_payload.pending_sector_count() || m_ep_l2_payload.pending_operations())
++    return false;
+   const new_addr_type owner = m_config.block_addr(addr);
+   unsigned index = (unsigned)-1;
+   const cache_request_status status = m_tag_array->probe(owner, index, mask, true, true);
+-  assert(status != RESERVATION_FAIL && index < m_config.get_num_lines());
++  if (status == RESERVATION_FAIL || status == HIT_RESERVED ||
++      index >= m_config.get_num_lines() || m_tag_array->block_is_modified(index))
++    return false;
+   ep_l2::PayloadHandle handle = tag_payload_handle(index);
++  const bool live = m_ep_l2_payload.handle_live(handle);
++  if (live) {
++    const ep_l2_payload_store::slot &old = m_ep_l2_payload.inspect(handle);
++    if (old.allocation_role != ep_l2_payload_store::RESIDENT || old.pins ||
++        old.pending_sector_mask.any() || old.status == ep_l2_payload_store::RESIDENT_DIRTY ||
++        handle.payload_id % 4 != index % 4)
++      return false;
++  }
+   if (status == MISS) {
+     unsigned landing = index;
+-    if (m_ep_l2_payload.handle_live(handle)) {
+-      const ep_l2_payload_store::slot &old = m_ep_l2_payload.inspect(handle);
+-      assert(old.allocation_role == ep_l2_payload_store::RESIDENT &&
+-             !old.pins && old.pending_sector_mask.none());
++    if (live) {
++      // release and reserve each advance the generation; check both before
++      // mutating either visibility. Epoch exhaustion is a refusal, not reuse.
++      if (handle.generation >= std::numeric_limits<unsigned>::max() - 1)
++        return false;
+       landing = handle.payload_id;
+       m_ep_l2_payload.release(handle);
+     } else if (m_config.m_ep_l2_ft_mode == 2) {
+       const ep_l2::PayloadHandle free = m_ep_l2_payload.preview_free(
+           ep_l2_payload_store::RESIDENT, index % 4);
+-      assert(free.valid());
++      if (!free.valid()) return false;
+       landing = free.payload_id;
++    } else {
++      const ep_l2_payload_store::slot &free = m_ep_l2_payload.resident(landing);
++      if (free.occupied() || free.generation == std::numeric_limits<unsigned>::max())
++        return false;
+     }
+     assert(landing % 4 == index % 4);
+     handle = m_ep_l2_payload.reserve(landing, ep_l2_payload_store::RESIDENT,
+         owner, ep_l2_payload_store::RESIDENT_VALID);
+     set_tag_payload_handle(index, handle);
+   } else {
+-    assert(m_ep_l2_payload.handle_owner_matches(handle, owner));
+-    const ep_l2_payload_store::slot &old = m_ep_l2_payload.inspect(handle);
+-    assert(!old.pins && old.pending_sector_mask.none());
++    if (!m_ep_l2_payload.handle_owner_matches(handle, owner)) return false;
+   }
+   baseline_cache::force_tag_access(addr, time, mask);
++  unsigned actual_index = (unsigned)-1;
++  assert(m_tag_array->probe(owner, actual_index, mask, true, true) == HIT &&
++         actual_index == index && "host prefill must commit the pre-reserved Tag index");
+   ep_l2_payload_store::slot &slot = m_ep_l2_payload.inspect_mutable(handle);
+   slot.ready_sector_mask |= mask;
+   // Dataless host initialization has the same explicit version-zero symbol as
+@@ -46,6 +79,7 @@ void l2_cache::force_tag_access(new_addr_type addr, unsigned time,
+       ep_l2_payload_store::RESIDENT_DIRTY : ep_l2_payload_store::RESIDENT_VALID;
+   if(m_ro)m_ro->prefill_complete(index,handle,owner,mask);
+   assert(m_ep_l2_payload.ownership_consistent());
++  return true;
+ }
+ 
+ void l2_cache::descriptor_admitted(mem_fetch *mf, unsigned index) {
+@@ -133,7 +167,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     unsigned time, std::list<cache_event> &events) {
+   // memcpy offset orders native Tag timestamps; it is not elapsed hardware
+   // time and must never reset the payload bank arbiter or WB/WAD lifetimes.
+-  const unsigned long long physical_cycle = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
++  const unsigned long long physical_cycle = ft_physical_cycle();
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   const new_addr_type owner = m_config.block_addr(addr);
+   if(m_ro) {
+diff --git a/src/gpgpu-sim/ep-l2-ro-runtime.inc b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+index f79c8014..877e1b5f 100644
+--- a/src/gpgpu-sim/ep-l2-ro-runtime.inc
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -56,12 +56,15 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+       ep_l2_ro::switches(cfg.m_ro_tag_detach,cfg.m_ro_line_mshr_bypass)));
+   }
+   uint64_t physical_cycle() const {
+-    return c.m_gpu->gpu_sim_cycle+c.m_gpu->gpu_tot_sim_cycle;
++    return c.ft_physical_cycle();
++  }
++  bool prefill_allowed() const {
++    return !ever_open && !open && !selected && tx->drained();
+   }
+   void prefill_begin() const {
+     // The certified full application can start only once. A drained kernel
+     // boundary is not permission to mutate its whole-commandlist certificate.
+-    if(ever_open || open || selected || !tx->drained())
++    if(!prefill_allowed())
+       throw std::logic_error("RO host prefill is initialization-only before epoch activation");
+   }
+   void prefill_complete(unsigned index,handle h,new_addr_type owner,
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 48b3e3dd..f6690d6a 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -2758,6 +2758,9 @@ class l2_cache : public data_cache {
+   // The non-FT route retains the historical Tag-only initialization.
+   void force_tag_access(new_addr_type addr, unsigned time,
+                         mem_access_sector_mask_t mask);
++  bool ft_try_force_tag_access(new_addr_type addr, unsigned time,
++                               mem_access_sector_mask_t mask);
++  unsigned long long ft_physical_cycle() const;
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index a85b0450..f40d3d98 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -34,6 +34,7 @@
+ #include <stdexcept>
+ 
+ #include <math.h>
++#include <limits>
+ #include <signal.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -2339,6 +2340,28 @@ void shader_core_ctx::dump_warp_state(FILE *fout) const {
+ void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {
+   if(m_ro_epoch_started)throw std::logic_error("host write inside certified whole-commandlist epoch");
+   if (m_memory_config->m_perf_sim_memcpy) {
++    if (m_memory_config->m_L2_config.m_ep_l2_ft_mode) {
++      // FT host prefill must name the same complete address as its resident
++      // owner. The legacy unsigned temporary truncated 64-bit trace pointers.
++      // Touch each intersected 32B sector once, including unaligned endpoints;
++      // this remains untimed initialization, with no GPU bank operation.
++      if (!count) return;
++      assert(dst_start_addr <= std::numeric_limits<size_t>::max() - (count - 1));
++      const new_addr_type last = (dst_start_addr + count - 1) & ~new_addr_type(31);
++      for (new_addr_type wr_addr = dst_start_addr & ~new_addr_type(31);;
++           wr_addr += 32) {
++        addrdec_t raw_addr;
++        mem_access_sector_mask_t mask;
++        mask.set((wr_addr % 128) / 32);
++        m_memory_config->m_address_mapping.addrdec_tlx(wr_addr, &raw_addr);
++        const unsigned partition_id = raw_addr.sub_partition /
++            m_memory_config->m_n_sub_partition_per_memory_channel;
++        m_memory_partition_unit[partition_id]->handle_memcpy_to_gpu(
++            wr_addr, raw_addr.sub_partition, mask);
++        if (wr_addr == last) break;
++      }
++      return;
++    }
+     // if(!m_config.trace_driven_mode)    //in trace-driven mode, CUDA runtime
+     // can start nre data structure at any position 	assert (dst_start_addr %
+     // 32
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 39c74cc6..b28eacb9 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -408,6 +408,30 @@ void memory_partition_unit::c7e_record_dram_success(bool read, bool write,
+   }
+ }
+ 
++bool memory_sub_partition::ft_try_force_l2_tag_update(
++    new_addr_type addr, unsigned time, mem_access_sector_mask_t mask) {
++  // Check the actual frontend/response/lower tracker too: an empty cache MSHR
++  // alone does not mean the enclosing hardware or a response has drained.
++  if (!m_L2cache->ft_enabled() || !l2_char_no_resource_leak()) return false;
++  if (!m_L2cache->ft_try_force_tag_access(addr, m_memcpy_cycle_offset + time, mask))
++    return false;
++  ++m_memcpy_cycle_offset;
++  return true;
++}
++
++void memory_sub_partition::force_l2_tag_update(
++    new_addr_type addr, unsigned time, mem_access_sector_mask_t mask) {
++  if (!m_config->m_L2_config.disabled() && m_L2cache->ft_enabled()) {
++    if (!ft_try_force_l2_tag_update(addr, time, mask)) {
++      fprintf(stderr, "EP-L2 host prefill rejected: hardware must be drained and selected owner clean\n");
++      abort();
++    }
++    return;
++  }
++  m_L2cache->force_tag_access(addr, m_memcpy_cycle_offset + time, mask);
++  ++m_memcpy_cycle_offset;
++}
++
+ void memory_partition_unit::handle_memcpy_to_gpu(
+     size_t addr, unsigned global_subpart_id, mem_access_sector_mask_t mask) {
+   unsigned p = global_sub_partition_id_to_local_id(global_subpart_id);
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 966ba6ce..813e8160 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -416,15 +416,16 @@ class memory_sub_partition {
+     return m_ep_l2_last_preview_block_reason;
+   }
+ 
+-  unsigned long long ft_bank_grants_for_test(unsigned bank) const {
+-    return m_L2cache->ep_l2_payload_bank_grants(bank);
+-  }
+ 
+   void force_l2_tag_update(new_addr_type addr, unsigned time,
+-                           mem_access_sector_mask_t mask) {
+-    m_L2cache->force_tag_access(addr, m_memcpy_cycle_offset + time, mask);
+-    m_memcpy_cycle_offset += 1;
++                           mem_access_sector_mask_t mask);
++  bool ft_try_force_l2_tag_update(new_addr_type addr, unsigned time,
++                                  mem_access_sector_mask_t mask);
++  unsigned long long ft_bank_grants_for_test(unsigned bank) const {
++    return m_L2cache->ep_l2_payload_bank_grants(bank);
+   }
++  unsigned ft_memcpy_offset_for_test() const { return m_memcpy_cycle_offset; }
++  l2_cache *ft_cache_for_test() { return m_L2cache; }
+ 
+  private:
+   void ft_record_admission(const mem_fetch *mf);
+diff --git a/tests/ep_l2/R0_1_REPAIR_SCOPE.md b/tests/ep_l2/R0_1_REPAIR_SCOPE.md
+new file mode 100644
+index 00000000..c47dcaad
+--- /dev/null
++++ b/tests/ep_l2/R0_1_REPAIR_SCOPE.md
+@@ -0,0 +1,48 @@
++# R0.1 repair source and qualification scope
++
++This is a source candidate until the exact build and production tests pass.
++Parent: Core126394be46b15f55b9756d43eb9ca9a9baae1c84. Consumed clock/warmup
++candidate: Lane5 Core832d986b03dc3c940eb99a1ae6845dd07297f4ed, clock-only
++validated delta1565f1f04978f12e51a29fcbf9dab9a3c61b5c4e.
++
++FT access uses ft_physical_cycle() for payload-bank operations and WB/WAD
++births; native Tag time retains memcpy offset. The arbiter refuses backwards
++FT physical clocks. Existing fill/response/lower callers supply physical GPU
++time; RO/TVD integrations must use the same source, never native Tag time.
++
++Host prefill is untimed initialization of a quiescent, clean selected owner.
++Its production partition gate requires actual request/response/lower hardware
++closure, not merely empty MSHRs. Before mutation it rejects dirty victim or
++dirty same-line overwrite, pending/WAD/pinned owners, invalid masks and missing
++landing. It never sends a free WB or discards dirty state. Unsupported host
++interleaving fails explicitly rather than broadening the oracle/input scope.
++Normal timed GPU dirty eviction remains the WB path and must pass tests.
++
++Preview and native Tag fill use the same unchanged victim selection; allocator
++mutation does not change Tag selection state. Post-fill asserts that the actual
++Tag index equals the reserved index. Partial/repeated prefill keeps the same
++handle and existing ready sectors; only initialized sectors become version-zero
++symbols. These are dataless reference labels, not numerical payload contents.
++
++The FT GPU memcpy caller also preserves full-width addresses and visits every
++intersected 32B sector, including nonaligned endpoints. The previous unsigned
++temporary truncated high trace pointers; this is part of binding host Tag and
++Payload to the actual same address. The old non-FT loop/delegate is unchanged.
++No physical bank op is generated by host initialization. Data budget, banks,
++ports, finite WBUF, WAD, descriptor and lower resources are unchanged.
++
++New tests:
++
++- test_ft_memcpy_clock: real partitions, offset0/4096, B/U and C8/C16, warm hit,
++  actual per-bank grant deltas, WB staging/WAD distinction and full drain.
++- test_ft_host_prefill: actual GPU memcpy and native partition paths, high
++  addresses, nonaligned/zero/partial/repeated sectors, generation/index reuse,
++  later quiescent epoch, clean eviction/miss/fill, dirty refusal with no state
++  mutation and actual abort, ordinary versioned WB/set_done, frontend pending
++  and a held ICNT response. Every timed cycle audits grants<=1 per bank.
++
++No application acceptance follows compilation or local tests. Lane5 must
++independently qualify physical_bank_clock and memcpy_payload_identity plus the
++applicable previous gates on exact new source/binary/config identities. Prior
++R0/R1 application certificates and execution terminals have been superseded
++scientifically; historical files must remain intact.
+diff --git a/tests/ep_l2/test_ft_host_prefill.cc b/tests/ep_l2/test_ft_host_prefill.cc
+new file mode 100644
+index 00000000..08637aac
+--- /dev/null
++++ b/tests/ep_l2/test_ft_host_prefill.cc
+@@ -0,0 +1,198 @@
++// Drive actual GPU memcpy -> partition -> Tag/payload and normal WB/response.
++#include <cassert>
++#include <csignal>
++#include <cstdio>
++#include <set>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/option_parser.h"
++
++struct test_gpu : exec_gpgpu_sim {
++  test_gpu(const gpgpu_sim_config &c, gpgpu_context *ctx) : exec_gpgpu_sim(c, ctx) {}
++  memory_partition_unit *partition() { return m_memory_partition_unit[0]; }
++};
++
++struct host_fixture {
++  gpgpu_context ctx;
++  gpgpu_sim_config cfg;
++  test_gpu *gpu;
++  memory_partition_unit *part;
++  memory_sub_partition *sp;
++  partition_mf_allocator *alloc;
++  unsigned bank_violations = 0, maximum_grants = 0;
++  std::set<unsigned long long> observed_wb;
++  std::array<unsigned long long,4> expected_wb{{0,0,0,0}};
++  bool verify_wb = false;
++  host_fixture(const char *base, const char *overlay, const char *mode, const char *c)
++      : cfg(&ctx) {
++    auto op = option_parser_create();
++    ctx.ptx_reg_options(op); ctx.func_sim->ptx_opcocde_latency_options(op);
++    icnt_reg_options(op); cfg.reg_options(op);
++    option_parser_cfgfile(op, base); option_parser_cfgfile(op, overlay);
++    const char *args[] = {"prefill-test", "-gpgpu_ep_l2_ft_mode", mode,
++      "-gpgpu_ep_l2_wbuf_entries", c, "-gpgpu_perf_sim_memcpy", "1",
++      "-gpgpu_l2_char_dram_issue_hold_after_issues", "0",
++      "-gpgpu_l2_char_dram_issue_hold_cycles", "200"};
++    option_parser_cmdline(op, 11, args); cfg.init(); option_parser_destroy(op);
++    gpu = new test_gpu(cfg, &ctx); part = gpu->partition(); sp = part->get_sub_partition(0);
++    alloc = new partition_mf_allocator(gpu->getMemoryConfig());
++  }
++  ~host_fixture() { delete alloc; delete gpu; }
++  l2_cache *cache() { return sp->ft_cache_for_test(); }
++  mem_fetch *make(new_addr_type address, bool write = false) {
++    active_mask_t active; active.set(0);
++    mem_access_byte_mask_t bytes;
++    unsigned s = (address / 32) % 4;
++    for (unsigned b = s * 32; b < (s + 1) * 32; ++b) bytes.set(b);
++    mem_access_sector_mask_t sectors; sectors.set(s);
++    return alloc->alloc(address, write ? GLOBAL_ACC_W : GLOBAL_ACC_R, active,
++        bytes, sectors, 32, write, gpu->gpu_sim_cycle + gpu->gpu_tot_sim_cycle,
++        0,0,0,nullptr,0);
++  }
++  l2_access_plan plan(new_addr_type address) {
++    auto mf = make(address); l2_access_plan p;
++    cache()->preview_access(address, mf, p); delete mf; return p;
++  }
++  ep_l2::PayloadHandle handle(new_addr_type address) {
++    auto p = plan(address); assert(p.probe_status == HIT);
++    return cache()->ep_l2_tag_payload_handle_for_test(p.cache_index);
++  }
++  unsigned long long grants() {
++    unsigned long long n = 0;
++    for (unsigned b=0;b<4;++b) n += sp->ft_bank_grants_for_test(b);
++    return n;
++  }
++  void warm(new_addr_type address, size_t count) {
++    auto before = grants(); gpu->perf_memcpy_to_gpu(address, count);
++    assert(grants() == before); // host prefill consumes no timed GPU bank grant
++  }
++  bool try_warm(new_addr_type address, unsigned sector) {
++    mem_access_sector_mask_t mask; mask.set(sector);
++    return sp->ft_try_force_l2_tag_update(address,
++        gpu->gpu_sim_cycle + gpu->gpu_tot_sim_cycle, mask);
++  }
++  void step() {
++    unsigned long long before[4];
++    for(unsigned b=0;b<4;++b) before[b] = sp->ft_bank_grants_for_test(b);
++    part->cache_cycle(gpu->gpu_sim_cycle);
++    if (!sp->L2_dram_queue_empty()) {
++      auto mf = sp->L2_dram_queue_top();
++      if (mf->get_access_type() == L2_WRBK_ACC && verify_wb) {
++        assert(mf->has_ft_wb_data() && mf->get_ft_wb_data() == expected_wb);
++        observed_wb.insert(mf->get_request_uid());
++      }
++    }
++    part->simple_dram_model_cycle();
++    for (unsigned b=0;b<4;++b) {
++      auto delta = sp->ft_bank_grants_for_test(b) - before[b];
++      maximum_grants = std::max(maximum_grants, unsigned(delta));
++      if (delta > 1) ++bank_violations;
++    }
++    ++gpu->gpu_sim_cycle;
++  }
++  void until_reply() {
++    for(unsigned n=0;n<100000 && !sp->ep_l2_l2icnt_occupancy();++n) step();
++    assert(sp->ep_l2_l2icnt_occupancy());
++  }
++  void consume(mem_fetch *expected, bool version_zero = false) {
++    until_reply(); assert(sp->top() == expected);
++    if (version_zero) {
++      assert(expected->has_ft_wb_data());
++      assert(expected->get_ft_wb_data()[(expected->get_addr()/32)%4] == 0);
++    }
++    assert(sp->pop() == expected); delete expected;
++  }
++  void issue(mem_fetch *mf) {
++    sp->push(mf, gpu->gpu_sim_cycle + gpu->gpu_tot_sim_cycle);
++  }
++  void drain() {
++    for(unsigned n=0;n<100000 && part->busy();++n) {
++      step(); assert(!sp->ep_l2_l2icnt_occupancy());
++    }
++    assert(!part->busy() && sp->l2_char_no_resource_leak());
++    assert(!bank_violations && maximum_grants <= 1);
++  }
++};
++
++static void full_address_sectors(const char *b,const char *o,const char *m,const char *c) {
++  host_fixture f(b,o,m,c); const new_addr_type a = 0x100004000ULL;
++  assert(f.sp->ft_memcpy_offset_for_test() == 0);
++  f.warm(a,0); assert(f.sp->ft_memcpy_offset_for_test() == 0);
++  f.warm(a+31,2); assert(f.sp->ft_memcpy_offset_for_test() == 2);
++  auto h = f.handle(a); assert(h == f.handle(a+32));
++  assert(f.plan(a & 0xffffffffULL).probe_status == MISS); // no 32-bit alias
++  auto &pool = f.cache()->ep_l2_payload_for_test();
++  assert(pool.inspect(h).owner == a && pool.inspect(h).ready_sector_mask.to_ulong() == 3);
++  f.warm(a+32,32); assert(h == f.handle(a));
++  f.gpu->gpu_tot_sim_cycle += 1000000; // a quiescent later epoch, same ownership
++  f.warm(a+96,32); assert(h == f.handle(a));
++  assert(pool.inspect(h).ready_sector_mask.to_ulong() == 11);
++  unsigned before = f.sp->ft_memcpy_offset_for_test();
++  mem_access_sector_mask_t empty, multi; multi.set(0); multi.set(1);
++  assert(!f.sp->ft_try_force_l2_tag_update(a,0,empty));
++  assert(!f.sp->ft_try_force_l2_tag_update(a,0,multi));
++  assert(f.sp->ft_memcpy_offset_for_test() == before && f.handle(a) == h);
++  for (unsigned s : {0u,1u,3u}) { auto r=f.make(a+s*32);f.issue(r);f.consume(r,true); }
++  assert(f.sp->ep_l2_lower_read_issue_count() == 0); f.drain();
++  puts("PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS");
++}
++
++static void clean_eviction(const char *b,const char *o,const char *m,const char *c) {
++  host_fixture f(b,o,m,c); f.warm(0x1000,32); f.warm(0x1040,32);
++  auto old = f.handle(0x1000); f.warm(0x2000,32);auto next=f.handle(0x2000);
++  assert(old != next && !f.cache()->ep_l2_payload_for_test().handle_live(old));
++  assert(f.cache()->ep_l2_payload_for_test().inspect(next).ready_sector_mask.to_ulong()==1);
++  auto r=f.make(0x1000);f.issue(r);f.consume(r,true);f.drain();
++  auto live=f.handle(0x1000);f.warm(0x1020,32);assert(f.handle(0x1000)==live);
++  assert(f.sp->ep_l2_lower_read_issue_count()==1);
++  puts("PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS");
++}
++
++static void dirty_victim_and_wb(const char *b,const char *o,const char *m,const char *c) {
++  host_fixture f(b,o,m,c);f.warm(0x1000,32);f.warm(0x1040,32);
++  auto w=f.make(0x1000,true);unsigned long long version=w->get_request_uid()+1;
++  f.issue(w);f.consume(w);f.drain();auto h=f.handle(0x1000);
++  auto before=f.cache()->ep_l2_payload_for_test().inspect(h);
++  unsigned offset=f.sp->ft_memcpy_offset_for_test();auto grants=f.grants();
++  assert(!f.try_warm(0x2000,0) && !f.try_warm(0x1000,0));
++  assert(f.handle(0x1000)==h && f.sp->ft_memcpy_offset_for_test()==offset && f.grants()==grants);
++  assert(f.cache()->ep_l2_payload_for_test().inspect(h).versions==before.versions);
++  // The actual void production entry rejects too, rather than silently
++  // discarding dirty data. Child copy permits checking the parent's invariants.
++  pid_t child=fork();assert(child>=0);
++  if (!child) {mem_access_sector_mask_t s;s.set(0);f.sp->force_l2_tag_update(0x2000,0,s);_exit(3);}
++  int status=0;assert(waitpid(child,&status,0)==child && WIFSIGNALED(status) && WTERMSIG(status)==SIGABRT);
++  f.verify_wb=true;f.expected_wb={{version,0,0,0}};
++  auto r=f.make(0x2000);f.issue(r);
++  for(unsigned n=0;n<100 && !f.sp->ep_l2_wad_occupancy();++n)f.step();
++  assert(f.sp->ep_l2_wad_occupancy());offset=f.sp->ft_memcpy_offset_for_test();
++  assert(!f.try_warm(0x3000,0) && f.sp->ft_memcpy_offset_for_test()==offset);
++  f.consume(r,true);f.drain();assert(f.observed_wb.size()==1 && !f.sp->ep_l2_wad_occupancy());
++  f.warm(0x3000,32);r=f.make(0x3000);f.issue(r);f.consume(r,true);f.drain();
++  puts("PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS");
++}
++
++static void response_guard(const char *b,const char *o,const char *m,const char *c) {
++  host_fixture f(b,o,m,c);f.warm(0x1000,32);
++  auto r=f.make(0x2000);f.issue(r);unsigned offset=f.sp->ft_memcpy_offset_for_test();
++  assert(!f.try_warm(0x3000,0) && f.sp->ft_memcpy_offset_for_test()==offset);
++  f.until_reply();for(unsigned n=0;n<20;++n)f.step();
++  assert(!f.try_warm(0x3000,0) && f.sp->ft_memcpy_offset_for_test()==offset);
++  f.consume(r,true);f.drain();assert(f.try_warm(0x3000,0));f.drain();
++  puts("PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS");
++}
++
++int main(int argc,char **argv) {
++  assert(argc==5);setvbuf(stdout,nullptr,_IOLBF,0);
++  rlimit no_core{0,0};assert(setrlimit(RLIMIT_CORE,&no_core)==0);
++  full_address_sectors(argv[1],argv[2],argv[3],argv[4]);
++  clean_eviction(argv[1],argv[2],argv[3],argv[4]);
++  dirty_victim_and_wb(argv[1],argv[2],argv[3],argv[4]);
++  response_guard(argv[1],argv[2],argv[3],argv[4]);
++  puts("FT_HOST_PREFILL_PRODUCTION_SUITE PASS");
++}
+diff --git a/tests/ep_l2/test_ro_partition.cc b/tests/ep_l2/test_ro_partition.cc
+index deb53856..361c4727 100644
+--- a/tests/ep_l2/test_ro_partition.cc
++++ b/tests/ep_l2/test_ro_partition.cc
+@@ -23,6 +23,12 @@ int main(int argc,char**argv){
+   const unsigned offset=argc==9?std::stoul(argv[7]):0;
+   for(unsigned i=0;i<offset;++i)sp->force_l2_tag_update((i%2)*32,0,mem_access_sector_mask_t(1<<(i%2)));
+   sp->ro_begin_epoch();
++  const bool ro_on=std::stoul(argv[5])||std::stoul(argv[6]);
++  const auto activated_offset=sp->ft_memcpy_offset_for_test();
++  if(ro_on) {
++    assert(!sp->ft_try_force_l2_tag_update(0,0,mem_access_sector_mask_t(1)));
++    assert(sp->ft_memcpy_offset_for_test()==activated_offset);
++  }
+   active_mask_t act;act.set(0);std::set<unsigned> expected,seen;
+   for(unsigned i=0;i<4;++i){unsigned addr=offset ? (i==0?0:i==1?96:(i%2)*128) : (i%2)*128;
+     unsigned sector=(addr>>5)&3;
+@@ -44,7 +50,12 @@ int main(int argc,char**argv){
+   }
+   assert(violations==0);
+   assert(seen==expected);assert(peak>0);assert(backpressure);assert(!part.busy());assert(sp->l2_char_no_resource_leak());
+-  sp->ro_end_epoch();sp->ro_cache_for_test()->ro_print(stdout,0);
++  sp->ro_end_epoch();
++  if(ro_on) {
++    assert(!sp->ft_try_force_l2_tag_update(0,gpu.gpu_sim_cycle,mem_access_sector_mask_t(1)));
++    assert(sp->ft_memcpy_offset_for_test()==activated_offset);
++  }
++  sp->ro_cache_for_test()->ro_print(stdout,0);
+   printf("RO_PHYSICAL_CLOCK|offset=%u|violations=%u|max_grants_per_physical_bank_cycle=%u\n",offset,violations,max_grants);
+   printf("RO actual partition detach=%s bypass=%s exact-once=%zu peak_descriptors=%u backpressure=%u PASS\n",argv[5],argv[6],seen.size(),peak,backpressure);
+ }
+diff --git a/tests/ep_l2/test_ro_runtime.cc b/tests/ep_l2/test_ro_runtime.cc
+index 6e8be5b6..cb8d255c 100644
+--- a/tests/ep_l2/test_ro_runtime.cc
++++ b/tests/ep_l2/test_ro_runtime.cc
+@@ -169,9 +169,12 @@ static void warmup_scope(const char *base,const char *overlay,const char *bindin
+   assert(f.cache->ep_l2_payload_for_test().bank_grants()==0); // untimed initialization
+   f.cache->ro_bind_commandlist(rig::command.c_str());f.cache->ro_begin_epoch();
+   auto a=f.make(0);assert(f.admit(a)==HIT);assert(a->get_ft_wb_data()[0]==0);delete a;
++  const auto before_reject_grants=f.cache->ep_l2_payload_for_test().bank_grants();
++  assert(!f.cache->ft_try_force_tag_access(0,8191,mem_access_sector_mask_t(1)));
++  assert(f.tag()==h && f.cache->ep_l2_payload_for_test().bank_grants()==before_reject_grants);
+   bool rejected=false;try{f.cache->force_tag_access(0,8192,mem_access_sector_mask_t(1));}
+   catch(const std::logic_error&){rejected=true;}assert(rejected);
+-  f.cache->ro_end_epoch();rejected=false;
++  f.cache->ro_end_epoch();assert(!f.cache->ft_try_force_tag_access(0,8193,mem_access_sector_mask_t(1)));rejected=false;
+   try{f.cache->force_tag_access(0,8193,mem_access_sector_mask_t(1));}
+   catch(const std::logic_error&){rejected=true;}assert(rejected);
+   assert(f.tag()==h);puts("RO warmed handle/sector reuse and initialization-only scope PASS");
