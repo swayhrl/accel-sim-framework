@@ -1,6 +1,6 @@
 # R1 service qualification receipt
 
-Gate: **PASS for the fixed application pilot**, not full-cohort performance acceptance.
+Historical gate: **SUPERSEDED for finite-service timing by R1_V2_RECEIPT.md**. Preserve this receipt and its attempts; no timing row on Core78947aa2 is final comparative evidence.
 
 Core `78947aa2e4e8197e14d97d5989109865c6669216`; build Framework `18a68dcccd795f1b6cda75504e9450d00c9cee02`; binary SHA256 `c278e82679365c73efb6a377ccd198dc7045727c7fca28069b6bfe3e739a3621`. The options, transfer widths and delays implement the preregistered V1 contract. The option defaults OFF. Whole-line IO/OO opt-in scope is explicit; MODERN_OO_SECTOR is not expanded.
 

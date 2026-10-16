@@ -2,6 +2,8 @@
 
 Status: **modern DTC rows gated on resource-contract review**. The authorized old-platform paired rows and modern baseline-only diagnosis can continue independently. No new modern DTC row is launched under an implicit budget change.
 
+User decision received2026-10-16: **keep the total128KiB budget; review the new allocation/support-domain contract first; do not launch modern DTC rows yet**. The additional80KiB/208KiB interpretation is not authorized. Prepare the fixed-budget proposal without implementing a changed legal-capacity definition.
+
 Concrete implemented conflict: `ldst_unit::init` always constructs the conventional `m_L1D` from the platform config and also constructs a separate640×128B DTC physical pool in PAPER_IO/PAPER_OO. The former is still used by the existing store/atomic side paths. Adaptive per-kernel code in `shader_core_config::max_cta` changes conventional L1 associativity; it does not subtract the DTC physical pool from unified capacity or resize that pool.
 
 Consequently, simply selecting mode2/3 on the frozen4080 config gives the no-shared pilot kernels a conventional128KiB array **plus** dedicated80KiB DTC data:208KiB before metadata. Hotspot's observed conventional96KiB plus32KiB shared similarly becomes96+32+80=208KiB. The mode0 baseline uses the frozen128KiB unified budget. Extra searchable Tag/PIB/Ref/waiter state is additional. Neither the native4080 nor an equal-budget comparison is represented by silently activating mode2/3.
