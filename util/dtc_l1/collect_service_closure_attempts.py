@@ -31,7 +31,7 @@ def collect(run):
     end = json.loads(terminal.read_text())
     text = (run / 'simulator.stdout').read_text(errors='replace')
     stderr = (run / 'simulator.stderr').read_text(errors='replace')
-    metrics = dict(re.findall(r'^(\w+)\s*=\s*(\d+)\s*$', text, re.M))
+    metrics = dict(re.findall(r'^\s*(\w+)\s*=\s*(\d+)\s*$', text, re.M))
     row.update(terminal_sha256=sha(terminal), stdout_sha256=end['stdout_sha256'],
                stderr_sha256=end['stderr_sha256'], cycles=metrics.get('gpu_tot_sim_cycle', ''),
                instructions=metrics.get('gpu_tot_sim_insn', ''))
@@ -40,7 +40,7 @@ def collect(run):
                   stderr_hash=sha(run / 'simulator.stderr') == end['stderr_sha256'],
                   full_instructions=row['instructions'] == str(spec['expected_instructions']),
                   no_crash=not any(s in stderr for s in ['Assertion', '=== CRASH:', 'Segmentation fault']))
-    finite = any('FINITE_SERVICE_ON' in c['path'] for c in spec['configs'])
+    finite = spec.get('finite_service', any('FINITE_SERVICE_ON' in c['path'] for c in spec['configs']))
     if finite and checks['natural_exit']:
         service = {k: int(v) for k, v in metrics.items() if k.startswith('DTC_SERVICE_V1_')}
         row['service_metrics'] = json.dumps(service, sort_keys=True)
@@ -50,7 +50,7 @@ def collect(run):
             checks['residence_decomposition'] = (service[prefix+'fully_ready_to_complete_sum'] ==
                 sum(service[prefix+s] for s in ['ready_to_collect_sum','collection_cycles','wb_wait']))
             checks['service_activity'] = service[prefix+'retired'] > 0 and service[prefix+'samples'] > 0
-        mode = 'io' if '_IO_' in spec['label'] else 'oo'
+        mode = spec.get('dtc_mode', 'io' if '_IO_' in spec['label'] else 'oo').lower()
         def n(name):
             return int(metrics.get('DTC_L1_'+name, '-1'))
         checks['lower_balance'] = (n(mode+'_lower_created') == n(mode+'_lower_issued') == n(mode+'_lower_responses') > 0)
@@ -59,6 +59,13 @@ def collect(run):
         checks['dependency_balance'] = n(mode+'_completion_dependency_count') == n(mode+'_completion_dependency_closed') > 0
         if mode == 'oo':
             checks['refs_drained'] = n('oo_active_refs') == 0
+        checks['flag_echo'] = bool(re.search(r'^-gpgpu_dtc_l1_finite_service\s+1\s', text, re.M))
+        checks['mode_echo'] = ('DTC_L1_mode = PAPER_' + mode.upper()) in text
+    if checks['natural_exit'] and 'expected_dl1' in spec:
+        checks['dl1_echo'] = bool(re.search(r'^-gpgpu_cache:dl1\s+' + re.escape(spec['expected_dl1']) + r'\s', text, re.M))
+        checks['mshr_effective'] = metrics.get('DTC_L1_baseline_mshr_entries') == str(spec['expected_mshr'])
+        checks['pib_echo'] = bool(re.search(r'^-gpgpu_dtc_l1_pib_entries\s+' + str(spec['expected_pib']) + r'\s', text, re.M))
+        checks['pib_drained'] = metrics.get('DTC_L1_pib_occupancy') == '0'
     row['scientific_checks'] = json.dumps(checks, sort_keys=True)
     row['status'] = 'PASS_CHECKED_SCOPE' if all(checks.values()) else 'FAIL_PRESERVED'
     resource = (run / 'resource.time').read_text(errors='replace')
