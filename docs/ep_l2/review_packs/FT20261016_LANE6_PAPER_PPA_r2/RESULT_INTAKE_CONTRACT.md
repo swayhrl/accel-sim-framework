@@ -3,6 +3,16 @@
 本 Lane 只消费结果，不更改 Lane-5 runner、资格门槛或共享 registry。
 本契约是论文侧 adapter，不要求为了适配图形重跑已合格 R0。
 
+优先入口是已经阅读的 Lane-5 `campaign_r0.publish_pair` 原生格式。adapter 传入
+`qualification_publication` 与 `native_pairs=[{publication_commit,
+pair_repository_path}]`，必要时提供 `result_root`。`native_pair_intake.py`
+直接从准确 Git publication 读取原 `RESULTS.csv` 和 `PAIR_RECEIPT.json`，核对
+publication 的 Lane-5 receipt 包含该 pair、原生 run-key、R0 mode 合同、独立
+证书、ordered config/aux/environment 与 trace-content hash recipe，以及保留
+raw 和冻结 config。之后确定性生成本地展示 packet，并保留全部原 row/result/spec。
+**不要求 Lane 5 新增 normalized packet 字段或改变已冻结结果**。
+下面的已绑定 normalized packet 是可选输入方式，不是主实验的先决条件。
+
 ## 独立资格、manifest 与 partial pair
 
 `plot_qualified_pairs.py ADAPTER.json --framework-repo REPO --output-dir NEW_REV`

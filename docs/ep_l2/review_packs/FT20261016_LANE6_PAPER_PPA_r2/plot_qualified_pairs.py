@@ -14,10 +14,14 @@ def main():
     p.add_argument("--output-dir", type=Path, required=True)
     a = p.parse_args()
     spec = json.loads(a.adapter.read_text())
-    packet_path = Path(spec["packet_file"])
-    if not packet_path.is_absolute(): packet_path = a.adapter.resolve().parent / packet_path
-    packet = read_published_packet(a.framework_repo, spec["publication_commit"], spec["receipt_path"],
-                                  spec["receipt_sha256"], spec["bundle_path"], spec["bundle_sha256"], packet_path)
+    if "native_pairs" in spec:
+        from native_pair_intake import read_native_packet
+        packet = read_native_packet(a.framework_repo, spec)
+    else:
+        packet_path = Path(spec["packet_file"])
+        if not packet_path.is_absolute(): packet_path = a.adapter.resolve().parent / packet_path
+        packet = read_published_packet(a.framework_repo, spec["publication_commit"], spec["receipt_path"],
+                                      spec["receipt_sha256"], spec["bundle_path"], spec["bundle_sha256"], packet_path)
     results = summarize(packet)
     if a.output_dir.exists(): raise ValueError("Use a new immutable result revision directory")
     a.output_dir.mkdir(parents=True)

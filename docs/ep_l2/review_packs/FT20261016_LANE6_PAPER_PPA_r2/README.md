@@ -33,6 +33,9 @@ producer commit 与准确原输入在 manifest 中。13行 checkpoint 原 CSV �
 `RESULT_INTAKE_CONTRACT.md`、`result_intake.py` 与 `plot_qualified_pairs.py`
 支持完整 pair 滚动发布、全五点前不求均值、保留失败/未完成，区分实际
 finite_wbuf 参数与优化位，并允许如实标记 SASS 数值不可观测。
+`native_pair_intake.py` 优先直接映射 Lane-5 已发布的原生 CSV/PAIR_RECEIPT，
+不强制其创建新 normalized packet；资格、run-key、source/binary/config/trace、
+本地冻结 raw/config/executable 的校验均在接收侧执行。
 测试均为轻量 synthetic intake；不是新模拟器资格或性能结果。
 
 本包不触碰 R0/R1 binary、trace、机制代码、实验输入、共享配额或旧科学 CSV。

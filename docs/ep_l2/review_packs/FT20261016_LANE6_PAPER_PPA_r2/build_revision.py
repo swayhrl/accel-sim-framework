@@ -219,7 +219,7 @@ def main():
     ax.set_xlim(0, 103)
     ax.set_xlabel("Eligible demand references (%)")
     ax.legend(frameon=False, fontsize=6.7, loc="lower left", bbox_to_anchor=(0, 1.01), borderaxespad=0)
-    ax.set_title("Historical locality; full checkpoint: 13 rows", fontsize=8, pad=30)
+    ax.set_title("Historical locality (8 of 13 verified)", fontsize=8, pad=30)
     save(fig, "FIG03_VERIFIED_SECTOR_LOCALITY")
     dump(out / "RESULT_COVERAGE.json", {"R0_formal_completed_pairs_consumed": 0, "R1_B16_ideal_completed_rows_consumed": 0,
          "historical_diagnostic_completed_rows": 2, "historical_streaming_completed_rows": 13,
