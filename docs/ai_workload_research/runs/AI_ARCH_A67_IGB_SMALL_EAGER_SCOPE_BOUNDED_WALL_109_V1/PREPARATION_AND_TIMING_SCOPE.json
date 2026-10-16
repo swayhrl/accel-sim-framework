@@ -1,0 +1,56 @@
+{
+  "common_pin_once": {
+    "seconds": 0.9574192548170686,
+    "FP32_feature_bytes": 4096000000,
+    "CSC_bytes": 112564024,
+    "excluded_from_formal_wall": true
+  },
+  "per_window": [
+    {
+      "arm": "FULL_RESIDENT_GPU",
+      "seed": 20261015,
+      "ctx_preparation_seconds": 0.21829855721443892,
+      "warmup_seconds_including_audits": 0.33440092392265797,
+      "formal_wall_seconds": 0.31087525002658367
+    },
+    {
+      "arm": "PINNED_CACHE_ON",
+      "seed": 20261015,
+      "ctx_preparation_seconds": 0.0009568030945956707,
+      "warmup_seconds_including_audits": 0.5311481640674174,
+      "formal_wall_seconds": 1.7883618893101811
+    },
+    {
+      "arm": "PINNED_CACHE_OFF",
+      "seed": 20261015,
+      "ctx_preparation_seconds": 9.179487824440002e-05,
+      "warmup_seconds_including_audits": 0.4681136659346521,
+      "formal_wall_seconds": 1.1259849900379777
+    },
+    {
+      "arm": "PINNED_CACHE_ON",
+      "seed": 20261016,
+      "ctx_preparation_seconds": 0.0004192180931568146,
+      "warmup_seconds_including_audits": 0.49995871633291245,
+      "formal_wall_seconds": 1.7711500162258744
+    },
+    {
+      "arm": "PINNED_CACHE_OFF",
+      "seed": 20261016,
+      "ctx_preparation_seconds": 8.288398385047913e-05,
+      "warmup_seconds_including_audits": 0.4761467897333205,
+      "formal_wall_seconds": 1.1002305950969458
+    },
+    {
+      "arm": "FULL_RESIDENT_GPU",
+      "seed": 20261016,
+      "ctx_preparation_seconds": 0.21841904753819108,
+      "warmup_seconds_including_audits": 0.33636428182944655,
+      "formal_wall_seconds": 0.43546656519174576
+    }
+  ],
+  "cold_init_evidence": "GPU_child_launch,device_and_software,events and PID/proc/NVML timestamps; no cold/startup number used as throughput denominator",
+  "boundary_ack": "outside formal timer, not free system E2E work",
+  "formal_scope": "steady-state 12 natural complete training updates, starts before formal iterator; no perstep synchronization/loss scalar readback",
+  "not_measured": "single-step latency distribution, physical PCIe/DRAM bytes or synchronized supply waits"
+}

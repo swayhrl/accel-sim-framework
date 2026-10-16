@@ -1,0 +1,50 @@
+{
+  "scope": "EAGER_ONLY_NO_COMPILE",
+  "seeds": [
+    20261015,
+    20261016
+  ],
+  "schedule": [
+    [
+      "FULL_RESIDENT_GPU",
+      20261015
+    ],
+    [
+      "PINNED_CACHE_ON",
+      20261015
+    ],
+    [
+      "PINNED_CACHE_OFF",
+      20261015
+    ],
+    [
+      "PINNED_CACHE_ON",
+      20261016
+    ],
+    [
+      "PINNED_CACHE_OFF",
+      20261016
+    ],
+    [
+      "FULL_RESIDENT_GPU",
+      20261016
+    ]
+  ],
+  "warmup_batches_each": 2,
+  "formal_batches_each": 12,
+  "formal_updates": 72,
+  "OFF_canary_updates": 1,
+  "total_update_cap": 85,
+  "training_retries": 0,
+  "node_order": "old fixed order first2 batches warmup, next12 formal",
+  "mathematics": "exact original GraphSAGE/train_step/DataContext/numeric_oracle AST",
+  "FP32": true,
+  "TF32": false,
+  "allocator_fraction": 0.7,
+  "sampling": "natural same node orders; async neighborhoods not bitwise paired",
+  "timing": "before formal iterator creation through last optimizer completion and one final CUDA synchronization; no perstep sync/item/profiling",
+  "formal_metadata": "Python shape/count metadata and retained tiny seed-ID tensors only; hashes/readbacks after wall",
+  "preparation_cost": "pin/full graph+feature upload and warmup reported separately, excluded from steady-state window",
+  "resource_guard": "parent NVML/proc observations only; capture every PID decision including exit boundaries",
+  "no_inference_of_hardware_opportunity_or_final_accuracy": true
+}

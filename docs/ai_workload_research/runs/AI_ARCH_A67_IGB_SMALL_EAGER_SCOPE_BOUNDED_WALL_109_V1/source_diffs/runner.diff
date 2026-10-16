@@ -1,0 +1,212 @@
+--- /home/huangrulin/workspace/worktrees/accel-sim-aiarch-a67-igb-small-eager-scope-wall-109-v1/tools/aiarch_a61/native.py	2026-10-16 11:55:30.130474742 +0800
++++ /home/huangrulin/workspace/worktrees/accel-sim-aiarch-a67-igb-small-eager-scope-wall-109-v1/tools/aiarch_a67/native.py	2026-10-16 12:10:44.745178766 +0800
+@@ -1,78 +1,133 @@
+-"""A61 actual qualification then bounded natural training; no profiler/new mechanism."""
+-import os,sys,time,json,gc,traceback,pathlib
+-assert os.environ.get('A61_GPU_LOCK_HELD')=='1'
+-from native_utils import *
+-EAGER_ONLY='--eager-only' in sys.argv
+-stage('IMPORT_AND_IDENTITY');assert '4080' in torch.cuda.get_device_name(0);assert torch.cuda.get_device_capability(0)==(8,9)
+-save('device_and_software.json',{'torch':torch.__version__,'torch_cuda':torch.version.cuda,'DGL':dgl.__version__,'PyG':importlib.metadata.version('torch-geometric'),'device':torch.cuda.get_device_name(0),'capability':list(torch.cuda.get_device_capability()),'driver_API':'RECORDED_PARENT_NVML','TF32':False,'FP32':True,'allocator_fraction':.70,'backend':'PYG_SAGE','preregistration_sha256':sha(R/'preregistration.json')})
+-orders=create_splits_and_orders();stage('PIN_AUTHOR_FEATURE_GRAPH');t=time.monotonic();pinned=(torch.from_numpy(IP).pin_memory(),torch.from_numpy(IX).pin_memory(),torch.from_numpy(FEAT).pin_memory());sync();save('pinned_preparation.json',{'seconds':time.monotonic()-t,'feature_bytes':pinned[2].numel()*pinned[2].element_size(),'all_pinned':all(x.is_pinned() for x in pinned),'source_feature_SHA256':sha(R/'data/small/processed/paper/node_feat.npy')});assert all(x.is_pinned() for x in pinned)
+-canaries=[];full=True;compiled=None;compile_status={'status':'STRONG_COMPILED_PATH_UNQUALIFIED','reason':'bounded cold-compile recovery; all arms eager'} if EAGER_ONLY else {'status':'NOT_ATTEMPTED'}
+-for arm in ['FULL_RESIDENT_GPU','PINNED_CACHE_ON','PINNED_CACHE_OFF']:
+- deadline();ctx=mb=model=opt=None
+- if EAGER_ONLY and (R/('G1_'+arm+'.json')).exists():
+-  record=json.loads((R/('G1_'+arm+'.json')).read_text());canaries.append(record);full=full and record['status']=='PASS' if arm=='FULL_RESIDENT_GPU' else full;event('REUSE_PASSED_G1_AFTER_COMPILE_RECOVERY',arm=arm);continue
+- stage('G1_CANARY',arm=arm)
+- try:
+-  torch.cuda.empty_cache();torch.cuda.reset_peak_memory_stats();ctx=DataContext(arm,pinned);model,opt=model_optimizer(20261015);gb.seed(20261015);loader=ctx.loader(orders[20261015][:B]);it=iter(loader);mb=next(it);sync();sample=validate_mb(mb,'G1_'+arm);numeric=numeric_oracle(mb,model,opt,'G1_'+arm)
+-  # Complete the finite one-batch pipeline; do not leave prefetch work behind.
+-  try:next(it);raise AssertionError('G1_FINITE_LOADER_OVERFLOW')
+-  except StopIteration:pass
+-  record={'arm':arm,'status':'PASS','sample':sample,'numeric':numeric,'cache_stats':ctx.stats(),'max_Torch_allocated_bytes':torch.cuda.max_memory_allocated(),'max_Torch_reserved_bytes':torch.cuda.max_memory_reserved()}
+-  if arm=='FULL_RESIDENT_GPU':
+-   assert ctx.gpu_features.is_cuda and ctx.gpu_features.shape==(N,D) and ctx.graph.indices.is_cuda and ctx.graph.csc_indptr.is_cuda;record['full_graph_and_FP32_features_device_resident']=True;record['bulk_feature_GPU_bytes']=ctx.gpu_features.numel()*4
+-  if arm=='PINNED_CACHE_ON':
+-   assert ctx.cache is not None and ctx.cache.cache_size_in_bytes>0 and ctx.graph._gpu_graph_cache is not None,'STRONG_GRAPH_AND_FEATURE_CACHE_NOT_CREATED';q=mb.input_nodes[:128];a=ctx.cache.read(q);sync();first_rate=float(ctx.cache.miss_rate);b=ctx.cache.read(q);sync();second_rate=float(ctx.cache.miss_rate);expected=torch.from_numpy(np.array(FEAT[q.cpu().numpy()],copy=True));assert torch.equal(a.cpu(),expected) and torch.equal(b.cpu(),expected),'CACHE_HIT_OR_FALLBACK_VALUES_FAILED';record['functional_feature_hit_miss_replay']={'natural_request_IDs':128,'first_miss_rate_cumulative':first_rate,'second_miss_rate_cumulative':second_rate,'values_exact':True,'scope':'correctness-only repeat of actualnaturalIDs, excluded from training/cache timing; formal caches reinitialized'}
+-   replay_loader=ctx.loader(orders[20261015][:B]);gb.seed(20261015);replay_it=iter(replay_loader);replay_mb=next(replay_it);sync();record['graph_hit_replay_sample']=validate_mb(replay_mb,'G1_PINNED_CACHE_ON_GRAPH_REPLAY');record['graph_stats_after_replay']=ctx.stats();record['graph_hit_observed']=record['graph_stats_after_replay'].get('graph_cache_total_queries',0)>record['graph_stats_after_replay'].get('graph_cache_total_misses',0)
+-   try:next(replay_it);raise AssertionError('REPLAY_FINITE_LOADER_OVERFLOW')
+-   except StopIteration:pass
+-   del replay_it,replay_mb,replay_loader;gc.collect()
+-   save('G1_'+arm+'.json',record)
+-   # Same actual minibatch and same initialization: compiled update must match eager.
+-   if not EAGER_ONLY:
+-    model2,opt2=model_optimizer(20261015);stage('COMPILE_CANARY',arm=arm);ct=time.monotonic();reserve_updates(1,'compile_probe','G1_COMPILE_RESERVATION')
+-    try:
+-     torch._dynamo.config.cache_size_limit=32;compiled=torch.compile(train_step,dynamic=True);loss2=compiled(mb,opt2,model2);sync();assert torch.isfinite(loss2) and abs(float(loss2)-numeric['full_batch_loss'])<=1e-5+1e-4*abs(numeric['full_batch_loss']),'COMPILED_LOSS_NUMERIC_GATE'
+-     for (n,p),(n2,z) in zip(model.named_parameters(),model2.named_parameters()):assert n==n2 and torch.allclose(p.detach(),z.detach(),atol=1e-6,rtol=1e-4),'COMPILED_UPDATE_NUMERIC_GATE '+n
+-     compile_status={'status':'PASS_COMPILED_TRAIN_STEP_NUMERIC','cold_seconds':time.monotonic()-ct,'scope':'official train_step forward/crossentropy/backward/Adam; dynamic=True; actualgraph-break counts recorded'}
+-    except Exception as e:
+-     if isinstance(e,AssertionError) or any(s in str(e).lower() for s in ['illegal memory','device-side assert','out of memory']):raise
+-     compile_status={'status':'STRONG_COMPILED_PATH_UNQUALIFIED','cold_seconds':time.monotonic()-ct,'error':repr(e),'traceback':traceback.format_exc(),'policy':'all formal paths eager scope; no hardware-headroom claim'};compiled=None;event('COMPILE_ENGINEERING_FALLBACK_EAGER',error=repr(e));torch._dynamo.reset()
+-    finally:del model2,opt2
+-   else:compile_status={'status':'STRONG_COMPILED_PATH_UNQUALIFIED','reason':'bounded parent cold-compile timeout recovery; all arms eager'}
+-   save('compile_qualification.json',compile_status)
+-  save('G1_'+arm+'.json',record);canaries.append(record);save('G1_canaries.json',{'status':'IN_PROGRESS','arms':canaries,'full_resident_qualified':full})
+- except torch.cuda.OutOfMemoryError as e:
+-  if arm!='FULL_RESIDENT_GPU':raise
+-  full=False;failed={'arm':arm,'status':'FULL_RESIDENT_NOT_QUALIFIED_CAPACITY','error':repr(e),'allocator_fraction':.70,'no_precision_or_graph_change':True};save('G1_'+arm+'.json',failed);canaries.append(failed);save('G1_canaries.json',{'status':'IN_PROGRESS','arms':canaries,'full_resident_qualified':False});event('FULL_RESIDENT_CAPACITY_NOT_QUALIFIED',error=repr(e))
+- finally:
+-  ctx=mb=model=opt=loader=it=None;gc.collect();sync();torch.cuda.empty_cache()
+-assert any(x['arm']=='PINNED_CACHE_ON' and x['status']=='PASS' for x in canaries) and any(x['arm']=='PINNED_CACHE_OFF' and x['status']=='PASS' for x in canaries)
+-save('G1_canaries.json',{'status':'PASS','arms':canaries,'full_resident_qualified':full,'compile':compile_status});nformal=32 if full else 56;arms=['FULL_RESIDENT_GPU','PINNED_CACHE_ON','PINNED_CACHE_OFF'] if full else ['PINNED_CACHE_ON','PINNED_CACHE_OFF'];save('formal_admission.json',{'status':'FROZEN_BEFORE_TIMING','arms':arms,'formal_batches_each':nformal,'full_resident_qualified':full,'feature_cache_bytes':128*1024**2,'graph_cache_edges':1000000,'compile':compile_status,'timing_boundary':PRE['formal_wall'],'preregistration_sha256':sha(R/'preregistration.json')})
+-# No source/data hashing or this task's download work overlaps formal measurement.
+-step=compiled if compiled is not None else train_step;results=[]
+-for seed in SEEDS:
+- schedule=arms if seed==20261015 or not full else ['PINNED_CACHE_ON','FULL_RESIDENT_GPU','PINNED_CACHE_OFF']
+- for arm in schedule:
+-  deadline();label=f'{seed}_{arm}';stage('FORMAL_ARM_PREPARATION',seed=seed,arm=arm);ctx=DataContext(arm,pinned);model,opt=model_optimizer(seed);initial=state_hash(model);gb.seed(seed);warm_ids=orders[seed][:4*B];formal_ids=orders[seed][4*B:(4+nformal)*B];warm_loader=ctx.loader(warm_ids);reserve_updates(4,label,'NATURAL_WARMUP');t=time.monotonic()
+-  for mb in warm_loader:loss=step(mb,opt,model)
+-  sync();warm_seconds=time.monotonic()-t;del mb,warm_loader;gc.collect();sync();preformal=state_hash(model);model_state={n:p.detach().cpu().clone() for n,p in model.state_dict().items()};opt_state=opt.state_dict()
+-  # CPU copy of tiny optimizer state for a later controlled two-batch diagnostic.
+-  import copy
+-  opt_cpu=copy.deepcopy(opt_state)
+-  for v in opt_cpu['state'].values():
+-   for k,x in v.items():
+-    if isinstance(x,torch.Tensor):v[k]=x.detach().cpu().clone()
+-  loader=ctx.loader(formal_ids);sync();torch.cuda.reset_peak_memory_stats();reserve_updates(nformal,label,'FORMAL');stage('FORMAL_UNINSTRUMENTED',seed=seed,arm=arm,batches=nformal);dynamo_before=dict(torch._dynamo.utils.counters.get('stats',{}));losses=[];count=0;start=time.perf_counter()
++"""A67 eager-only: one OFF canary, 6 windows of 2 warmup + 12 natural updates."""
++import os
++assert os.environ.get('A67_GPU_LOCK_HELD')=='1'
++import gc,json,time,traceback,importlib.metadata
++import numpy as np
++from paths import OLD,R,W,save,event
++from math_copy import (torch,dgl,gb,GraphSAGE,DataContext,train_step,validate_mb,
++                       numeric_oracle,model_optimizer,state_hash,reserve_updates,
++                       FEAT,LABEL,IP,IX,B,N,D,sync,deadline,digest_array)
++PROGRESS={'stage':'NOT_STARTED','issued_updates':0,'confirmed_updates':0,'formal_issued':0}
++
++def stage(name,**kw):
++ deadline();PROGRESS.update(stage=name,**kw)
++ save('current_phase.json',{'phase':name,'monotonic':time.monotonic(),**kw});event(name,**kw)
++
++def boundary_snapshot():
++ phase=json.loads((R/'current_phase.json').read_text())
++ until=time.monotonic()+10
++ while True:
++  deadline()
++  p=R/'supervisor_boundary_ack.json'
++  if p.exists() and json.loads(p.read_text()).get('phase_monotonic')==phase['monotonic']:return
++  assert time.monotonic()<until,'SUPERVISOR_BOUNDARY_EVIDENCE_MISSING'
++  time.sleep(.02)
++
++def parameters(model):return {n:p.detach().cpu().numpy().copy() for n,p in model.named_parameters()}
++
++def finite(model,opt,steps):
++ assert all(p.dtype==torch.float32 and torch.isfinite(p).all() and p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters()),'NONFINITE_OR_MISSING_MODEL_GRAD'
++ assert all(int(opt.state[p]['step'].item())==steps for p in model.parameters()),'ADAM_STEP_COUNTER'
++ return {'status':'PASS','all_parameter_and_gradient_finite':True,'actual_Adam_step_each_parameter':steps}
++
++def residency(ctx,arm):
++ if arm=='FULL_RESIDENT_GPU':
++  assert ctx.gpu_features.is_cuda and tuple(ctx.gpu_features.shape)==(N,D) and ctx.gpu_features.dtype==torch.float32
++  assert ctx.graph.indices.is_cuda and ctx.graph.csc_indptr.is_cuda
++  assert ctx.graph.indices.numel()==13070502
++  return {'full_resident':True,'FP32_feature_GPU_bytes':ctx.gpu_features.numel()*4,'CSC_edges_on_GPU':ctx.graph.indices.numel()}
++ if arm=='PINNED_CACHE_ON':
++  assert ctx.cache is not None and ctx.cache.cache_size_in_bytes==128*1024**2 and ctx.graph._gpu_graph_cache is not None
++ else:assert ctx.cache is None and ctx.graph._gpu_graph_cache is None
++ assert ctx.graph.indices.is_pinned() and ctx.graph.csc_indptr.is_pinned()
++ return {'full_resident':False,'feature_cache_enabled':ctx.cache is not None,'graph_cache_enabled':ctx.graph._gpu_graph_cache is not None}
++
++def cleanup():
++ gc.collect();sync();torch.cuda.empty_cache()
++
++def main():
++ stage('IMPORT_DEVICE_AND_FROZEN_SOFTWARE')
++ save('child_identity_start.json',{'PID':os.getpid(),'PGID':os.getpgrp(),'SID':os.getsid(0),'epoch':time.time()})
++ versions={n:importlib.metadata.version(n) for n in ['torch','dgl','torch-geometric','numpy','triton']}
++ assert versions=={'torch':'2.2.0+cu121','dgl':'2.4.0+cu121','torch-geometric':'2.6.1','numpy':'1.26.4','triton':'2.2.0'}
++ assert '4080' in torch.cuda.get_device_name(0) and torch.cuda.get_device_capability(0)==(8,9)
++ torch.set_num_threads(4);torch.set_num_interop_threads(1);torch.set_float32_matmul_precision('highest')
++ torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.cuda.set_per_process_memory_fraction(.70,0)
++ assert torch.get_default_dtype()==torch.float32
++ save('device_and_software.json',{'versions':versions,'Torch_CUDA':torch.version.cuda,'device':torch.cuda.get_device_name(0),'capability':list(torch.cuda.get_device_capability(0)),'scope':'EAGER_ONLY','FP32':True,'TF32':False,'allocator_fraction':.70,'CPU_affinity':sorted(os.sched_getaffinity(0)),'Torch_threads':4,'DataLoader_workers':0,'A61_A65_STOP_preserved':True})
++ orders={s:np.load(OLD/f'order_{s}.npy',mmap_mode='r') for s in [20261015,20261016]}
++ stage('PIN_ONCE_ORIGINAL_AUTHOR_TABLE_AND_CSC');t=time.monotonic()
++ pinned=(torch.from_numpy(IP).pin_memory(),torch.from_numpy(IX).pin_memory(),torch.from_numpy(FEAT).pin_memory());sync()
++ assert all(p.is_pinned() for p in pinned)
++ save('pinned_preparation.json',{'seconds':time.monotonic()-t,'FP32_feature_bytes':pinned[2].numel()*4,'CSC_bytes':sum(p.numel()*p.element_size() for p in pinned[:2]),'excluded_from_formal_wall':True})
++ # Sole new qualification update. The exact original FP64 small-oracle routine is reused.
++ stage('G1_OFF_CANARY');ctx=DataContext('PINNED_CACHE_OFF',pinned);model,opt=model_optimizer(20261015)
++ np.savez_compressed(R/'raw/G1_OFF_initial.npz',**parameters(model))
++ loader=ctx.loader(orders[20261015][:B]);iterator=iter(loader);mb=next(iterator);sync()
++ sample=validate_mb(mb,'A67_G1_OFF');save('G1_OFF_sample.json',sample)
++ PROGRESS['issued_updates']+=1
++ numeric=numeric_oracle(mb,model,opt,'A67_G1_OFF');PROGRESS['confirmed_updates']+=1
++ np.savez_compressed(R/'raw/G1_OFF_updated.npz',**parameters(model))
++ np.savez_compressed(R/'raw/G1_OFF_gradient.npz',**{n:p.grad.detach().cpu().numpy().copy() for n,p in model.named_parameters()})
++ numeric['state_finite']=finite(model,opt,1);numeric['residency']=residency(ctx,'PINNED_CACHE_OFF')
++ try:next(iterator);raise AssertionError('OFF_CANARY_EXTRA_BATCH')
++ except StopIteration:pass
++ save('G1_OFF_numeric.json',numeric)
++ del mb,iterator,loader,ctx,model,opt;cleanup()
++ schedule=json.loads((R/'preregistration.json').read_text())['schedule'];results=[];initial_by_seed={}
++ for position,(arm,seed) in enumerate(schedule):
++  label=f'{seed}_{arm}';stage('PREPARE_WINDOW',arm=arm,seed=seed,position=position)
++  torch.cuda.reset_peak_memory_stats();t=time.monotonic();ctx=DataContext(arm,pinned);sync();prep_seconds=time.monotonic()-t
++  model,opt=model_optimizer(seed);initial=state_hash(model)
++  if seed in initial_by_seed:assert initial==initial_by_seed[seed],'INITIAL_MODEL_CHANGED_BETWEEN_ARMS'
++  else:initial_by_seed[seed]=initial
++  assert all(p.dtype==torch.float32 for p in model.parameters())
++  warm_ids=np.asarray(orders[seed][:2*B]);formal_ids=np.asarray(orders[seed][2*B:14*B]);assert len(formal_ids)==12*B
++  gb.seed(seed);loader=ctx.loader(warm_ids);warm=[];reserve_updates(2,label,'WARMUP')
++  stage('WARMUP',arm=arm,seed=seed,position=position);t=time.monotonic()
++  for i,mb in enumerate(loader):
++   PROGRESS['issued_updates']+=1;loss=train_step(mb,opt,model);sync();PROGRESS['confirmed_updates']+=1
++   assert torch.isfinite(loss),'WARMUP_NONFINITE_LOSS'
++   assert np.array_equal(mb.seeds.cpu().numpy(),warm_ids[i*B:(i+1)*B])
++   audit=validate_mb(mb,f'A67_WARM_{label}_{i}');assert i<2
++   warm.append({'batch':i,'loss':float(loss),'sample':audit,'cache':ctx.stats(),'residency':residency(ctx,arm),'finite':finite(model,opt,i+1)})
++  sync();warm_seconds=time.monotonic()-t;assert len(warm)==2
++  save('warmup_'+label+'.json',{'status':'PASS','rows':warm,'preparation_seconds':prep_seconds,'warmup_seconds_including_qualification_audits':warm_seconds,'initial_model_sha256':initial,'Torch_peak_allocated_bytes':torch.cuda.max_memory_allocated(),'Torch_peak_reserved_bytes':torch.cuda.max_memory_reserved()})
++  if arm=='FULL_RESIDENT_GPU':save('G1_FULL_residency_'+str(seed)+'.json',{'status':'PASS_ACTUAL_WARMUP_CAPACITY','residency':residency(ctx,arm),'warmup_updates_in_main_budget':2,'Torch_peak_reserved_bytes':torch.cuda.max_memory_reserved()})
++  if arm=='PINNED_CACHE_ON':save('G1_ON_'+str(seed)+'.json',{'status':'PASS_NEW_INPUT_FINITE_CACHE_AND_ACCEPTED_HISTORICAL_ORACLE','warmup_qualification_rows':warm,'historical_oracle':'A61 accepted, no new extra qualification updates'})
++  del mb,loader;gc.collect();sync()
++  before_cache=ctx.stats();preformal=state_hash(model);loader=ctx.loader(formal_ids);sync();torch.cuda.reset_peak_memory_stats()
++  reserve_updates(12,label,'FORMAL');stage('FORMAL_UNINSTRUMENTED',arm=arm,seed=seed,position=position)
++  boundary_snapshot()
++  # Do not put synchronization, scalar readback, logging, hashing or numerical audits here.
++  losses=[];meta=[];seed_tensors=[];count=0;t0=time.perf_counter()
+   iterator=iter(loader)
+   for mb in iterator:
+-   losses.append(step(mb,opt,model));count+=1
+-  sync();wall=time.perf_counter()-start
+-  # First preserve the complete wall receipt, before postprocessing or diagnostics.
+-  row={'seed':seed,'arm':arm,'completed_optimizer_updates':count,'formal_batches_expected':nformal,'B':B,'uninst_full_train_wall_seconds':wall,'mean_complete_batch_wall_seconds':wall/count,'training_seed_nodes_per_second':count*B/wall,'warmup_batches':4,'warmup_seconds':warm_seconds,'same_initial_model_sha256':initial,'preformal_model_sha256':preformal,'formal_seed_ID_sha256':digest_array(formal_ids),'compile_status':compile_status['status'],'formal_sync_policy':'no perstep sync or loss.item; one finalsync beforetimerstop','formal_iterator_prologue_included':True,'Torch_peak_allocated_bytes':torch.cuda.max_memory_allocated(),'Torch_peak_reserved_bytes':torch.cuda.max_memory_reserved(),'status':'WALL_PRESERVED'};save('wall_'+label+'.json',row);stage('FORMAL_WINDOW_FINISHED',seed=seed,arm=arm)
+-  assert count==nformal;values=torch.stack(losses).detach().cpu().numpy();assert np.isfinite(values).all(),'FORMAL_NONFINITE_LOSS';assert all(torch.isfinite(p).all() and p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters()),'FORMAL_NONFINITE_MODEL_GRADIENT';assert np.array_equal(mb.seeds.cpu().numpy(),formal_ids[-B:]);row.update(status='PASS',losses=values.tolist(),loss_mean=float(values.mean()),post_model_sha256=state_hash(model),cache_stats=ctx.stats(),dynamo_stats_before=dynamo_before,dynamo_stats_after=dict(torch._dynamo.utils.counters.get('stats',{})),CONVERGENCE_NOT_EVALUATED=True);save('wall_'+label+'.json',row);results.append(row);save('native_results.json',{'status':'IN_PROGRESS','arms':results});del losses,values,iterator,loader,mb,ctx,model,opt;gc.collect();sync();torch.cuda.empty_cache()
+-  # Separate diagnostic replay, same approved first2formal batches and preformal weights.
+-  stage('DIAGNOSTIC_CONTROLLED',seed=seed,arm=arm);ctx=DataContext(arm,pinned);model,opt=model_optimizer(seed);model.load_state_dict(model_state);opt.load_state_dict(opt_cpu);gb.seed(seed);diag_loader=ctx.loader(formal_ids[:2*B]);reserve_updates(2,label,'DIAGNOSTIC');diag=[];iterator=iter(diag_loader)
+-  for i in range(2):
+-   sync();t0=time.perf_counter();mb=next(iterator);host_next=time.perf_counter()-t0;sync();ready=time.perf_counter();loss=step(mb,opt,model);sync();end=time.perf_counter();assert torch.isfinite(loss);diag.append({'batch':i,'host_iterator_next_seconds':host_next,'controlled_data_ready_sync_wall_seconds':ready-t0,'controlled_train_completion_wall_seconds':end-ready,'loss':float(loss),'input_nodes':int(mb.input_nodes.numel()),'sampled_edges_each_layer':[int(s.sampled_csc.indices.numel()) for s in mb.sampled_subgraphs],'logical_feature_request_bytes':int(mb.node_features['feat'].numel()*4),'logical_request_not_DRAM_or_PCIe_bytes':True})
+-  save('diagnostic_'+label+'.json',{'status':'PASS','seed':seed,'arm':arm,'rows':diag,'cache_stats':ctx.stats(),'overlap_disturbed_by_sync':True,'stage_times_cannot_be_added_to_formal_wall':True,'sample_prefix':'same first2approved formal node batches; sampler RNG reset, distribution control not bitwise causality','preformal_weights_reloaded':True});del iterator,diag_loader,mb,ctx,model,opt,model_state,opt_state,opt_cpu;gc.collect();sync();torch.cuda.empty_cache()
+-save('native_results.json',{'status':'PASS_ALL_BOUNDED_ARMS','arms':results,'full_resident_qualified':full,'compile':compile_status,'no_hardware_mechanism':True,'CONVERGENCE_NOT_EVALUATED':True});stage('NATIVE_COMPLETE_STOP');print('A61_NATIVE_COMPLETE',len(results),flush=True)
++   PROGRESS['issued_updates']+=1;PROGRESS['formal_issued']+=1
++   loss=train_step(mb,opt,model);losses.append(loss);count+=1
++   seed_tensors.append(mb.seeds)
++   meta.append({'batch':count-1,'input_nodes':int(mb.input_nodes.numel()),'feature_rows':int(mb.node_features['feat'].shape[0]),'logical_feature_request_bytes':int(mb.node_features['feat'].numel()*4),'sampled_edges_each_layer':[int(s.sampled_csc.indices.numel()) for s in mb.sampled_subgraphs]})
++  sync();wall=time.perf_counter()-t0
++  PROGRESS['confirmed_updates']+=count
++  row={'status':'WALL_PRESERVED_PENDING_POSTCHECKS','seed':seed,'arm':arm,'position':position,'completed_updates':count,'expected_updates':12,'full_train_step_wall_seconds':wall,'mean_complete_batch_wall_seconds':wall/count if count else None,'natural_seed_nodes_per_second':count*B/wall,'wall_boundary':'before iterator creation through final GPU synchronization, includes iterator exhaustion','no_perstep_sync_loss_item_profiler':True,'initial_model_sha256':initial,'preformal_model_sha256':preformal,'formal_node_order_expected_sha256':digest_array(formal_ids),'preparation_seconds':prep_seconds,'warmup_seconds_including_qualification_audits':warm_seconds,'preparation_excluded_not_free':True,'cache_before':before_cache,'Torch_peak_allocated_bytes':torch.cuda.max_memory_allocated(),'Torch_peak_reserved_bytes':torch.cuda.max_memory_reserved()}
++  save('wall_'+label+'.json',row);stage('FORMAL_WALL_SAVED',arm=arm,seed=seed,position=position)
++  boundary_snapshot()
++  assert count==12,'FORMAL_COUNT'
++  values=torch.stack(losses).detach().cpu().numpy();actual_ids=torch.cat(seed_tensors).cpu().numpy()
++  assert np.array_equal(actual_ids,formal_ids),'ACTUAL_FORMAL_NODE_ORDER'
++  assert np.isfinite(values).all(),'FORMAL_NONFINITE_LOSSES'
++  state=finite(model,opt,14);last_sample=validate_mb(mb,'A67_FINAL_'+label)
++  assert np.array_equal(mb.labels.cpu().numpy(),LABEL[actual_ids[-B:]].astype(np.int64))
++  row.update(status='PASS',losses=values.tolist(),sample_counts=meta,formal_node_order_actual_sha256=digest_array(actual_ids),post_model_sha256=state_hash(model),finite=state,last_sample_audit=last_sample,cache_after=ctx.stats(),residency=residency(ctx,arm),CONVERGENCE_NOT_EVALUATED=True,NEIGHBORHOODS_NOT_BITWISE_PAIRED=True)
++  save('wall_'+label+'.json',row);results.append(row);save('native_results.json',{'status':'IN_PROGRESS','windows':results,'formal_updates':sum(x['completed_updates'] for x in results),'scope':'EAGER_ONLY'})
++  del mb,iterator,loader,ctx,model,opt,loss,losses,seed_tensors,values,actual_ids,warm,meta;cleanup()
++ assert len(results)==6 and sum(x['completed_updates'] for x in results)==72
++ assert PROGRESS['issued_updates']==85 and PROGRESS['confirmed_updates']==85
++ save('native_results.json',{'status':'PASS_ALL_6_EAGER_WINDOWS','windows':results,'formal_updates':72,'warmup_updates':12,'qualification_updates':1,'total_updates':85,'scope':'EAGER_ONLY','no_compiled_path_qualification':True,'CONVERGENCE_NOT_EVALUATED':True})
++ save('child_identity_end.json',{'PID':os.getpid(),'PGID':os.getpgrp(),'SID':os.getsid(0),'epoch':time.time(),'status':'85_UPDATES_COMPLETE'})
++ stage('COMPLETE_ALL_OBSERVATIONS_STOP')
++
++if __name__=='__main__':
++ try:main()
++ except BaseException as e:
++  save('native_failure.json',{'error':repr(e),'traceback':traceback.format_exc(),'progress':PROGRESS,'no_extra_training_retry':True});raise
