@@ -4,7 +4,7 @@ Source authority is the separate old174 Storage-Ops owner. Source audit and full
 
 | Priority | Exact old174 source | Archive suffix below authorized root | Directory-inclusive allocation upper bound | Current target evidence |
 | --- | --- | --- | ---: | --- |
-| R1 | /workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | 4785803264 B | 12788/18565 files verified, 4247230942 B |
+| R1 | /workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build | 4785803264 B | 14788/18565 files verified, 4423211649 B |
 | R1R | /workspace/repos/gpu-l2-cache-verilog-v3r1r-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r1r-clean/build | 3594420224 B | Source manifests and batch plan only |
 | R2 | /workspace/repos/gpu-l2-cache-verilog-v3r2-clean/build | EP-L2/old174/workspace/repos/gpu-l2-cache-verilog-v3r2-clean/build | 3459518464 B | Source manifests and batch plan only |
 
@@ -28,3 +28,5 @@ python3 "$A/infrastructure/tools/v7_94d69d45d9ce/cold_project_restore.py" \
 The command reports incomplete coverage. The tool refuses restore execution until complete coverage and writes only a fresh independent target-side test directory. Numeric file metadata is retained in a separate SHA256-pinned sidecar; the current restore planner joins every row to the frozen file hash/identity and reports complete recorded metadata, but does not apply ownership/mode or claim native metadata restoration. A tested reverse bridge handoff and old174 source-owner import into an absent sibling `build.restore.from164`, full hash and permission checks, and approved promotion are still required before publishing a source restore execution command. The withdrawn direct SSHFS-to-old174 /workspace command must not be used.
 
 Approval package pending: complete batch receipts, full scope mapping and compressed manifest SHA256s, adequate restoration evidence, current source consumer/owner clearance, exact per-file release list, and allocation versus actual-df measurement plan. No project currently qualifies as READY_FOR_USER_APPROVAL or RELEASE_AUTHORIZED.
+
+Expected regular-file release upper bounds if directory stubs are retained: R1 4778221568 B; R1R 3589914624 B; R2 3451936768 B; total 11820072960 B. The larger directory-inclusive table figures include directory blocks. Neither sum is a guaranteed df recovery measurement. Exact machine-readable mappings and estimates: CANDIDATE_RECLAIM_ESTIMATES.json.
