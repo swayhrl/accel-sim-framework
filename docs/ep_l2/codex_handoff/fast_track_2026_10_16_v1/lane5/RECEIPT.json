@@ -6,16 +6,15 @@
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RUN_ASSIGNMENTS.json",
     "util/ep_l2/ft_lane5/README.md",
     "docs/ep_l2/review_packs/FT20261016_LANE5_TVD_MODULE_INDEPENDENT_r1",
-    "docs/ep_l2/review_packs/FT20261016_LANE5_RO_MODULE_INDEPENDENT_r1"
+    "docs/ep_l2/review_packs/FT20261016_LANE5_RO_MODULE_INDEPENDENT_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_R0_QUALIFICATION_r1"
   ],
-  "binary_sha256": null,
-  "blockers": [
-    "Lane 1 runtime_ready=false; qualified binary/config and production-driven boundary evidence absent"
-  ],
+  "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
+  "blockers": [],
   "config_sha256": null,
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "core_branch": null,
-  "core_source_commit": null,
+  "core_branch": "hrl/ep-l2-ft20261016-lane1-v1 (consumed R0; no Core edits)",
+  "core_source_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
   "created_at": "2026-10-16T09:23:47.503012+00:00",
   "dependency_receipts": [
     {
@@ -50,7 +49,7 @@
   "feature_vector": null,
   "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
   "framework_implementation_parent": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
-  "framework_source_commit": "08b8cb7235d409c1c375efef114d5345ef8fd3cb",
+  "framework_source_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
   "historical_core_test_source_commit": "1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e",
   "host": "huangrulin-174",
   "ideal_vector": null,
@@ -60,13 +59,49 @@
     "lane2": "56abbacc1192d68995e78561899719649f838079",
     "lane3": "57801b429166b47079444081aaaafbfe5050e0d5"
   },
+  "qualified_feature_vectors": [
+    {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 1168,
+      "ro": false,
+      "tvd": false,
+      "unified_wb": false,
+      "wbuf_entries": 16
+    },
+    {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 1168,
+      "ro": false,
+      "tvd": false,
+      "unified_wb": true,
+      "wbuf_entries": 16
+    }
+  ],
+  "review_coordination_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
+  "runner_source_commit": "8a82f2d831fc5189a4a7b024e5cddda6e96bda46",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
-  "status": "INDEPENDENT_TVD_RO_MODULES_VALIDATED_PRODUCTION_DEPENDENCY_PENDING",
-  "task_id": "FT20261016_LANE5_INDEPENDENT_CHECKPOINT",
+  "status": "R0_INDEPENDENTLY_QUALIFIED_READY_TO_RUN",
+  "task_id": "FT20261016_LANE5_R0_QUALIFICATION_r1",
   "trace_identity": null,
   "updated_at": "2026-10-16T09:32:38.453439+00:00",
   "validation": {
     "B16_U_WB16_qualification": "DEPENDENCY_PENDING",
+    "R0": {
+      "exact_csv_comparisons": 21,
+      "invalid_combinations_rejected": 4,
+      "numeric_SASS_output": "UNAVAILABLE_NOT_CLAIMED",
+      "old_off_reused_pairs": 3,
+      "production_groups": 12,
+      "sector_version_reference": "PASS",
+      "status": "INDEPENDENTLY_QUALIFIED",
+      "terminal_parser_tests": 8
+    },
     "historical_core_directed_scripts": {
       "cpp_executables": 4,
       "kind": "HISTORICAL_NOT_B16",

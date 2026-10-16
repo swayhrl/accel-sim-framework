@@ -104,3 +104,22 @@ independently execute. No source-ready version was bypassed. Registry has no
 new simulator run; Lane 5 build leases are released. Other lanes' leases remain
 untouched. Next dependent action is exact-release qualification and first shared
 B16/U_WB16 pair, then stage-qualified TVD/RO rolling additions.
+
+## review_r2 continuation — R0 qualification supersedes prior pending status
+
+Current status: **R0_INDEPENDENTLY_QUALIFIED_READY_TO_RUN**.
+Consumed review_r2 aec01450d3c527524ee09ee59242f582fafe5354, not review_r1.
+R0 producer publication 02982b65e87f170103b44c6dbd562a8ffb03841e,
+Core 126394be46b15f55b9756d43eb9ca9a9baae1c84, Framework
+37dec04d223ae65167c5584e56887c74f6540d27, binary
+0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698.
+Independently executed 12 production groups and four illegal modes, eight
+terminal parser tests; audited three retained old/new OFF pairs and 21 CSV
+comparisons with full content identities and native/terminal checks. No old
+application rerun. Data scope is sector-version and lifecycle, not numerical
+SASS output. All 40 tooling tests pass. Only B16_BANKED/U_WB16 qualified.
+No duplicate finite-WBUF task existed in registry at startup. Host/external
+project resources rechecked; quota unchanged. Next: launch five rolling R0 pairs,
+independent of R1/R2/R3, from /workspace/results/ep_l2_ft20261016/lane5_r0_formal_r1/.
+Pack: docs/ep_l2/review_packs/FT20261016_LANE5_R0_QUALIFICATION_r1/.
+Earlier runtime_ready=false entries above are historical and superseded.
