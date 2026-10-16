@@ -1,6 +1,6 @@
 # V7 target: R1 complete archive and independent full-content restore
 
-Current PolyBench window: PB_CHUNK_006 RANGE_DEST_VERIFIED; 3670016000 verified component bytes (7/35), whole archive not yet verified. Source originals remain SOURCE_KEEP.
+Current PolyBench window: PB_CHUNK_007 RANGE_DEST_VERIFIED; 4194304000 verified component bytes (8/35), whole archive not yet verified. All scientific originals SOURCE_KEEP.
 
 R1: all 14 batches, 18565/18565 files, 4737658722 logical bytes are DEST_VERIFIED. Complete path/hash/size/identity membership matches frozen full source manifest 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5. Final data receipt was pushed/fetched at 43c717a20ae85b75d27bb1b8cb77d54120c52a4a. Every source batch has an independently GitHub-pinned SOURCE_KEEP ACK. All bridge data batches are closed; all original R1 files stay intact and R1 source release is zero.
 
