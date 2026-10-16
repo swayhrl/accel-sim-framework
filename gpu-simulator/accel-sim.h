@@ -43,6 +43,7 @@ class accel_sim_framework {
     kernels_info.reserve(window_size);
   }
   void simulation_loop();
+  bool ro_kernel_command_seen=false;
   void parse_commandlist();
   void cleanup(unsigned finished_kernel);
   unsigned simulate();
