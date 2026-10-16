@@ -1,0 +1,16 @@
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1/tests/ep_l2/test_tvd_directory.cc:8:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1/tests/ep_l2/../../src/gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1/tests/ep_l2/../../src/gpgpu-sim/gpu-cache.h:1758:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1758 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1/tests/ep_l2/../../src/gpgpu-sim/gpu-cache.h:1671:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1671 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1/tests/ep_l2/../../src/gpgpu-sim/gpu-cache.h:1474:3: warning:   when initialized here [-Wreorder]
+ 1474 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+PASS clean_read_bank_icnt_data_version
+PASS sector_exact_write_atomic_same_handle_promotion
+PASS shared_128_capacity_failed_prepare_stale_epoch
+PASS module_reference_versions_by_canonical_payload_handle
+CLEAN_DIRECTORY_SUBSET_PASS; L2_CACHE_INTEGRATION_NOT_RUN; FULL_TVD_NOT_ASSERTED
