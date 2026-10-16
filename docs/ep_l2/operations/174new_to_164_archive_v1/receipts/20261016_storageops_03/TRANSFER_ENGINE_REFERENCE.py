@@ -290,7 +290,105 @@ def transfer(limit=None):
         completed.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
         print(batch+': VERIFIED '+str(item['size'])+' bytes; SOURCE KEPT; stage cleaned',flush=True)
 
+def final_audit():
+    plan=json.loads((META/'v3_transfer_plan.json').read_text())
+    paths=[x['path'] for x in plan['source_files']]
+    expected={x['path']:{k:x[k] for k in ['dev','inode','size','mtime_ns']} for x in plan['source_files']}
+    done=[json.loads((META/(f'batch{n:03d}_verified.json')).read_text()) for n in range(1,len(paths)+1)]
+    source=remote('hrl',f'''
+        import os,json,subprocess,datetime,base64,errno
+        from pathlib import Path
+        expected={expected!r};rows=[];refs={{p:[] for p in expected}}
+        assert os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]'
+        assert (os.stat('/workspace').st_dev,os.stat('/workspace').st_ino)==(156,32926662)
+        for proc in Path('/proc').iterdir():
+            if not proc.name.isdigit():continue
+            try:
+                comm=(proc/'comm').read_text().strip();links=[]
+                for kind in ['cwd','exe']:
+                    try:links.append(os.readlink(proc/kind))
+                    except OSError:pass
+                try:
+                    for fd in (proc/'fd').iterdir():
+                        try:links.append(os.readlink(fd))
+                        except OSError:pass
+                except OSError:pass
+                try:maps=(proc/'maps').read_text(errors='replace')
+                except OSError:maps=''
+                for p in expected:
+                    if p in links or p in maps:refs[p].append({{'pid':int(proc.name),'comm':comm}})
+            except OSError:pass
+        for p,wanted in expected.items():
+            s=os.lstat(p);actual={{'dev':s.st_dev,'inode':s.st_ino,'size':s.st_size,'mtime_ns':s.st_mtime_ns}}
+            assert actual==wanted,p+' changed'
+            assert not refs[p],p+' newly referenced'
+            acl=None
+            try:acl=base64.b64encode(os.getxattr(p,'system.posix_acl_access',follow_symlinks=False)).decode()
+            except OSError as e:
+                assert e.errno in [errno.ENODATA,errno.ENOTSUP,errno.EOPNOTSUPP],str(e)
+            rows.append({{'path':p,'identity':actual,'uid':s.st_uid,'gid':s.st_gid,'mode':s.st_mode&0o7777,'nlink':s.st_nlink,'allocated_bytes':s.st_blocks*512,'posix_acl_access_base64':acl,'open_fd_or_mmap_refs':refs[p]}})
+        env=dict(os.environ,GIT_OPTIONAL_LOCKS='0',GIT_NO_LAZY_FETCH='1')
+        args=['timeout','-k','3s','30s','nice','-n','19','ionice','-c','3','git','--git-dir=/workspace/.git','fsck','--connectivity-only','--no-dangling']
+        chk=subprocess.run(args,capture_output=True,text=True,timeout=35,env=env)
+        v=os.statvfs('/workspace')
+        print(json.dumps({{'time':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_files':rows,'all_identities_stable':True,'all_fd_mmap_reference_checks_empty':True,'git_connectivity_check':{{'argv':args,'exit_code':chk.returncode,'stdout':chk.stdout[:16000],'stderr':chk.stderr[:16000]}},'workspace_free_bytes':v.f_bavail*v.f_frsize,'source_bytes_released':0}}))
+    ''','v3_final_source_audit',timeout=60)
+    records=[{'source':x['source_metadata']['path'],'relative':x['archive_verification']['destination_relative_path'],
+              'size':x['source_metadata']['size'],'sha256':x['source_hash']['sha256'],'batch':x['batch']} for x in done]
+    remote('hrl-174-new',f'''
+        import os,json,hashlib,datetime,stat
+        root={ROOT!r};records={records!r};source_metadata={source!r}
+        assert json.load(open(root+'/AUTHORIZATION_AND_PROBE.json'))['level']=='SSHFS_ARCHIVE_WRITE_VERIFIED'
+        for x in records:
+            p=root+'/'+x['relative'];s=os.lstat(p)
+            assert stat.S_ISREG(s.st_mode) and s.st_size==x['size']
+            receipt=json.load(open(root+'/receipts/'+x['batch']+'.json'))
+            assert receipt['source_sha256']==receipt['stage_sha256']==receipt['sshfs_reopened_sha256']==x['sha256']
+            assert receipt['size']==x['size']
+        pd=root+'/old174/workspace/.git/objects/pack'
+        expected={{os.path.basename(x['relative']) for x in records}}
+        assert set(os.listdir(pd))==expected,'Archive file count/list mismatch'
+        sidecar=root+'/SOURCE_METADATA_AND_MANIFEST.json'
+        assert not os.path.lexists(sidecar)
+        with open(sidecar,'x') as f:json.dump({{'source_metadata':source_metadata,'manifest':records,'metadata_restore_note':'Source UID/GID/mode/ACL retained in this sidecar; FUSE native metadata is not independently verified.'}},f,indent=2);f.flush();os.fsync(f.fileno())
+        # Check whether complete shorter partial packs are byte prefixes of a longer backup.
+        # This is bounded to already archived candidates, not history or original trace trees.
+        os.nice(19)
+        groups={{}}
+        for x in records:
+            with open(root+'/'+x['relative'],'rb') as f:header=f.read(64)
+            groups.setdefault(hashlib.sha256(header).hexdigest(),[]).append(x)
+        prefix_results=[];read_bytes=0
+        multi=sorted([(family,members) for family,members in groups.items() if len(members)>1],key=lambda pair:len(pair[1]),reverse=True)
+        for family,members in multi[:3]:
+            if len(members)<2:continue
+            longest=max(members,key=lambda x:x['size'])
+            targets=sorted(members,key=lambda x:x['size'])
+            h=hashlib.sha256();position=0
+            with open(root+'/'+longest['relative'],'rb') as f:
+                for x in targets:
+                    while position<x['size']:
+                        b=f.read(min(8*1024*1024,x['size']-position));assert b
+                        h.update(b);position+=len(b);read_bytes+=len(b)
+                    digest=h.hexdigest()
+                    prefix_results.append({{'short_source':x['source'],'short_size':x['size'],'longest_archive_relative':longest['relative'],'longest_size':longest['size'],'expected_short_sha256':x['sha256'],'prefix_sha256':digest,'full_shorter_file_matches_prefix':digest==x['sha256'],'family_header64_sha256':family}})
+        with open(root+'/PREFIX_REDUNDANCY_ANALYSIS.json','x') as f:json.dump({{'results':prefix_results,'scope':'Only these copied partial packs; no deletion authorization'}},f,indent=2);f.flush();os.fsync(f.fileno())
+        print(json.dumps({{'time':datetime.datetime.now(datetime.timezone.utc).isoformat(),'archive_files':len(records),'archive_bytes':sum(x['size'] for x in records),'all_remote_batch_receipts_match':True,'source_metadata_sidecar':sidecar,'native_server_verified':False,'header64_families':len(groups),'prefix_family_budget':3,'multi_member_families_not_analyzed':max(0,len(multi)-3),'prefix_results':prefix_results,'additional_archived_data_read_bytes':read_bytes}}))
+    ''','v3_final_archive_audit',timeout=150)
+    remote('hrl-174-new',f'''
+        import os,json,stat
+        stage={STAGE!r}
+        assert os.path.realpath(stage)==stage and os.stat(stage).st_dev==2431
+        assert os.listdir(stage)==['OWNER.json'],'Unexpected staging residual; do not recursively delete'
+        p=stage+'/OWNER.json';assert not os.path.islink(p)
+        assert json.load(open(p))['approved_archive_root']=={ROOT!r}
+        os.unlink(p);os.rmdir(stage)
+        assert not os.path.lexists(stage)
+        print(json.dumps({{'stage_directory_removed':True,'stage_residual_bytes':0,'stage_probe_residuals':0,'source_originals_deleted':False}}))
+    ''','v3_final_stage_cleanup',timeout=20)
+
 if __name__=='__main__':
     if sys.argv[1]=='probes':probes()
     elif sys.argv[1]=='prepare':prepare()
     elif sys.argv[1]=='transfer':transfer(int(sys.argv[2]) if len(sys.argv)>2 else None)
+    elif sys.argv[1]=='final-audit':final_audit()
