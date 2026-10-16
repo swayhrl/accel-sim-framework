@@ -16,7 +16,7 @@
 
 ## 2. 科学资格：能说什么，不能说什么
 
-上述证据足以接受一个**定义明确、有旧producer源码支持、全记录确定性变换、当前parser合法读取的条件派生输入**。历史producer版本 `0e2fddcdef37fc59ad786553892b75567c6b29e0d8e064b43a10863b12a872156` 不在此处作为SHA依据；**以CPU审阅包中精确的revision `0e2fddcdef37fc59ad786553892b75567a5f2cdb` 和源码SHA `8dcb5ad444a6cb6a3cfb1271308e27b8395ee16afae0135703b3ac3820b09d4a` 为准**。该producer只证明family compatibility，仍无实际capture/build、ELF/SASS和native output绑定。
+上述证据足以接受一个**定义明确、有旧producer源码支持、全记录确定性变换、当前parser合法读取的条件派生输入**。历史producer的精确revision为 `0e2fddcdef37fc59ad786553892b75567a5f2cdb`，源码SHA256为 `8dcb5ad444a6cb6a3cfb1271308e27b8395ee16afae0135703b3ac3820b09d4a`。该producer只证明family compatibility，仍无实际capture/build、ELF/SASS和native output绑定。
  
 原Btree `PASS_CHECKED_SCOPE`及`FORMAT_APPLICABILITY_REVIEW_PENDING`保持不变；旧解码结果与新E-list条件结果均不可升级为original native capture equivalence。对旧/新输入只能分别形成**同输入内部**的性能比值；跨输入只审查同设计角色的相对排序与有限稳健性，不能交叉分母。特别是旧canonical B16-N/TC80-N曾采用cap8192，而新六臂为cap32768；两组B16/C80的跨输入cycles变化有cap混杂。重点用原来和新轮都为cap32768的C+、IO256、OO128（以及核实同样条件的IO128）审查地址解释敏感性。不得把“排序相同”写成原capture恢复，也不能把“排序不同”用调cap挽回。
 
