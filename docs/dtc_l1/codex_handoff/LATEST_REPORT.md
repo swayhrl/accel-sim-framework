@@ -2773,3 +2773,7 @@ The prior execution-driven M5.0B cap-256 workload campaigns, their former
 natural-terminal wait, and their five terminated recovery jobs are preserved
 only as source/provenance and mechanism-validation evidence. They are not
 formal performance inputs and impose no active transition condition.
+
+## 2026-10-16: derived input authorization and scientific overlay
+
+Registry remote HEAD equals authorized 5248a5ed482156450a3baa2799f26ebae02e1d93. Both decision documents and producer qualification pack read in full. Independent fixed Hotspot V2 CPU audit and actual frozen-parser harness are in progress; no derived simulator launched yet. Preregistered scope decision is five same-input arms: B16-N, IO256, OO128, TRAD96, TC80-N, before new performance observation. Btree/2DConvolution/LUD now FORMAT_APPLICABILITY_REVIEW_PENDING in new exports, retaining original terminal PASS. Original plan/holds unchanged. Snapshot review_pack/scientific_disposition_20261016_v1 retains 30 numeric PASS, 11 running and 3 original-input admission HOLD; no GM12.

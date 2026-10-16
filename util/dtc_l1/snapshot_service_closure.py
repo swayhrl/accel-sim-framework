@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 from collect_service_closure_attempts import collect, sha
+from service_closure_scientific_disposition import disposition
 
 
 def table(path,rows):
@@ -56,7 +57,7 @@ def main():
         r=reviewed.get(p['label'],{})
         states.append(dict(label=p['label'],workload=p['workload'],arm=p['arm'],phase=p['phase'],
             spec_sha256=p['spec_sha256'],status=r.get('status','ADMISSION_HOLD' if p['label'] in held else 'REGISTERED_NOT_LAUNCHED'),
-            scientific_promotion='HOLD_SHARED_TRACE_INTERPRETATION' if p['workload']=='Hotspot1' and admission_file.exists() else 'TERMINAL_SCOPE_ONLY_UNTIL_COMPARISON_COMPLETE',
+            scientific_promotion=disposition(p['workload']),
             attempt_uuid=r.get('attempt_uuid',''),cycles=r.get('cycles',''),instructions=r.get('instructions',''),
             core=r.get('core',''),binary_sha256=r.get('binary_sha256',''),
             stdout_sha256=r.get('stdout_sha256',''),terminal_sha256=r.get('terminal_sha256',''),

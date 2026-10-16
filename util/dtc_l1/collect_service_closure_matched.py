@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shlex
 from collect_service_closure_attempts import collect, sha
+from service_closure_scientific_disposition import disposition
 
 PLAN_SHA = '281b2d22ace3bbf105711473516f075fc11c495a1d6c214d9f4a3e42414892e1'
 
@@ -133,10 +134,12 @@ def main():
                             mean_pib_entries_per_sm=v('pib_integral')/v('samples'),
                             mean_physical_lines_per_sm=v('physical_integral')/v('samples'),
                             raw_service_metrics=json.dumps(s, sort_keys=True),
+                            scientific_promotion=disposition(control['workload']),
                             scope='COMPLETE_MATCHED_ACTIVE_DEPTH_NOT_EQUAL_AREA_OR_NATIVE_DTC'))
             if status != 'PASS_MATCHED128_SCOPE':
                 status = 'PAIR_VALIDATION_HOLD'
         gates.append(dict(workload=control['workload'], status=status,
+            scientific_promotion=disposition(control['workload']),
             io_label=control['label'], oo_label=peer['label'],
             io_spec_sha256=control['spec_sha256'], oo_spec_sha256=peer['spec_sha256'],
             io_attempt_uuid=rows[0]['attempt_uuid'] if rows[0] else '',
