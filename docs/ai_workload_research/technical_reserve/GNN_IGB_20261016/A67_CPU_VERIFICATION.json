@@ -1,0 +1,410 @@
+{
+  "reviewed_commit": "c425819d1f41e0cbd3053315cd5590697e808a3c",
+  "reviewed_tree": "5ae9be2bf51ba959b9588a8111ae28bf6f03af84",
+  "checks": {
+    "publication": {
+      "git_blob_files": 90,
+      "manifest_entries": 88,
+      "all_blob_and_manifest_SHA_pass": true
+    },
+    "executed_source_identity": "PASS_PRE_GPU_HASH_ARCHIVED_SOURCE_AND_FINAL_TOOL",
+    "A61_scientific_AST": [
+      "GraphSAGE",
+      "train_step",
+      "DataContext",
+      "validate_mb",
+      "numeric_oracle",
+      "model_optimizer",
+      "state_hash"
+    ],
+    "six_windows": "PASS_72_FORMAL_12_WARMUP_1_CANARY_85_TOTAL_SCHEDULE_AND_ORIGINAL_ORDER_HASH",
+    "NVML_raw": {
+      "snapshots": 41,
+      "classifications": {
+        "OWN_LIVE_PID": 33
+      },
+      "final_empty": true,
+      "boundary_checks": [
+        {
+          "seed": 20261015,
+          "arm": "FULL_RESIDENT_GPU",
+          "boundary_elapsed_upper_seconds": 0.33801003312692046,
+          "reported_wall_seconds": 0.31087525002658367
+        },
+        {
+          "seed": 20261015,
+          "arm": "PINNED_CACHE_ON",
+          "boundary_elapsed_upper_seconds": 1.8168772282078862,
+          "reported_wall_seconds": 1.7883618893101811
+        },
+        {
+          "seed": 20261015,
+          "arm": "PINNED_CACHE_OFF",
+          "boundary_elapsed_upper_seconds": 1.1389223667792976,
+          "reported_wall_seconds": 1.1259849900379777
+        },
+        {
+          "seed": 20261016,
+          "arm": "PINNED_CACHE_ON",
+          "boundary_elapsed_upper_seconds": 1.7875223918817937,
+          "reported_wall_seconds": 1.7711500162258744
+        },
+        {
+          "seed": 20261016,
+          "arm": "PINNED_CACHE_OFF",
+          "boundary_elapsed_upper_seconds": 1.1173601779155433,
+          "reported_wall_seconds": 1.1002305950969458
+        },
+        {
+          "seed": 20261016,
+          "arm": "FULL_RESIDENT_GPU",
+          "boundary_elapsed_upper_seconds": 0.4482693737372756,
+          "reported_wall_seconds": 0.43546656519174576
+        }
+      ],
+      "sampling_interpretation": "No observed foreign PID; finite sampling cannot exclude an arbitrarily brief between-snapshot external task."
+    },
+    "pure_CPU_supervision_tests": {
+      "identity_cases": 10,
+      "parser_cases": 7,
+      "all_pass": true
+    },
+    "independent_first_Adam_replay": {
+      "elements": 665619,
+      "parameter_tensors": 9,
+      "all_original_update_tolerances_pass": true,
+      "per_parameter": [
+        {
+          "parameter": "layers.0.lin_l.weight",
+          "shape": [
+            256,
+            1024
+          ],
+          "elements": 262144,
+          "FP64_analytic_Adam_max_abs_error": 2.503531396080838e-09,
+          "max_error_over_original_tolerance": 0.0008755729381260888,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.0.lin_l.bias",
+          "shape": [
+            256
+          ],
+          "elements": 256,
+          "FP64_analytic_Adam_max_abs_error": 1.9670314613251527e-09,
+          "max_error_over_original_tolerance": 0.0005381296302290602,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.0.lin_r.weight",
+          "shape": [
+            256,
+            1024
+          ],
+          "elements": 262144,
+          "FP64_analytic_Adam_max_abs_error": 2.5145399928927503e-09,
+          "max_error_over_original_tolerance": 0.0007885308372671648,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.1.lin_l.weight",
+          "shape": [
+            256,
+            256
+          ],
+          "elements": 65536,
+          "FP64_analytic_Adam_max_abs_error": 4.0801381301358575e-09,
+          "max_error_over_original_tolerance": 0.0007816984799356488,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.1.lin_l.bias",
+          "shape": [
+            256
+          ],
+          "elements": 256,
+          "FP64_analytic_Adam_max_abs_error": 2.8761823339662484e-09,
+          "max_error_over_original_tolerance": 0.0005401159923668733,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.1.lin_r.weight",
+          "shape": [
+            256,
+            256
+          ],
+          "elements": 65536,
+          "FP64_analytic_Adam_max_abs_error": 4.098796246854164e-09,
+          "max_error_over_original_tolerance": 0.0008917925643509657,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.2.lin_l.weight",
+          "shape": [
+            19,
+            256
+          ],
+          "elements": 4864,
+          "FP64_analytic_Adam_max_abs_error": 3.862825975753381e-09,
+          "max_error_over_original_tolerance": 0.0005704027570965929,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.2.lin_l.bias",
+          "shape": [
+            19
+          ],
+          "elements": 19,
+          "FP64_analytic_Adam_max_abs_error": 2.2731429932809633e-09,
+          "max_error_over_original_tolerance": 0.0004215281640323677,
+          "violations": 0
+        },
+        {
+          "parameter": "layers.2.lin_r.weight",
+          "shape": [
+            19,
+            256
+          ],
+          "elements": 4864,
+          "FP64_analytic_Adam_max_abs_error": 3.861341482669367e-09,
+          "max_error_over_original_tolerance": 0.0006575176656739822,
+          "violations": 0
+        }
+      ],
+      "method": "stdlib NPY/NPZ parser and FP64 first-Adam formula applied to saved FP32 gradients; no NumPy/Torch import or new update execution"
+    },
+    "forward_gradient_oracle": "Recorded PASS and frozen identical A61 source audited; forward/gradient not independently numerically regenerated because sampled-subgraph arrays and oracle outputs are not fully archived.",
+    "resource_receipts": "PASS_WITH_SAMPLED_PEAK_SCOPE"
+  },
+  "windows": [
+    {
+      "seed": 20261015,
+      "arm": "FULL_RESIDENT_GPU",
+      "wall_seconds": 0.31087525002658367,
+      "batch_mean_ms": 25.90627083554864,
+      "throughput": 39527.10934353643,
+      "ctx_preparation_seconds": 0.21829855721443892,
+      "warmup_with_audits_seconds": 0.33440092392265797,
+      "illustrative_pin_plus_ctx_plus_warmup_plus_wall_seconds": 1.8209939859807491,
+      "formal_input_nodes_total": 4188792,
+      "sampled_edges_totals": [
+        7117949,
+        919172,
+        98845
+      ],
+      "cache_before": {
+        "arm": "FULL_RESIDENT_GPU",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      },
+      "cache_after": {
+        "arm": "FULL_RESIDENT_GPU",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      }
+    },
+    {
+      "seed": 20261015,
+      "arm": "PINNED_CACHE_ON",
+      "wall_seconds": 1.7883618893101811,
+      "batch_mean_ms": 149.0301574425151,
+      "throughput": 6871.092519612912,
+      "ctx_preparation_seconds": 0.0009568030945956707,
+      "warmup_with_audits_seconds": 0.5311481640674174,
+      "illustrative_pin_plus_ctx_plus_warmup_plus_wall_seconds": 3.2778861112892628,
+      "formal_input_nodes_total": 4191518,
+      "sampled_edges_totals": [
+        7126581,
+        920128,
+        98845
+      ],
+      "cache_before": {
+        "arm": "PINNED_CACHE_ON",
+        "feature_cache_capacity_bytes": 134217728,
+        "graph_cache_capacity_edges_requested": 1000000,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "feature_cache_miss_rate": 1.0,
+        "graph_cache_total_queries": 143966,
+        "graph_cache_total_misses": 123956,
+        "graph_cache_miss_rate": 0.861008849311643
+      },
+      "cache_after": {
+        "arm": "PINNED_CACHE_ON",
+        "feature_cache_capacity_bytes": 134217728,
+        "graph_cache_capacity_edges_requested": 1000000,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "feature_cache_miss_rate": 0.954632688884033,
+        "graph_cache_total_queries": 1018995,
+        "graph_cache_total_misses": 894847,
+        "graph_cache_miss_rate": 0.8781662324152719
+      }
+    },
+    {
+      "seed": 20261015,
+      "arm": "PINNED_CACHE_OFF",
+      "wall_seconds": 1.1259849900379777,
+      "batch_mean_ms": 93.83208250316481,
+      "throughput": 10913.111727702111,
+      "ctx_preparation_seconds": 9.179487824440002e-05,
+      "warmup_with_audits_seconds": 0.4681136659346521,
+      "illustrative_pin_plus_ctx_plus_warmup_plus_wall_seconds": 2.5516097056679428,
+      "formal_input_nodes_total": 4194090,
+      "sampled_edges_totals": [
+        7128822,
+        920217,
+        98845
+      ],
+      "cache_before": {
+        "arm": "PINNED_CACHE_OFF",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      },
+      "cache_after": {
+        "arm": "PINNED_CACHE_OFF",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      }
+    },
+    {
+      "seed": 20261016,
+      "arm": "PINNED_CACHE_ON",
+      "wall_seconds": 1.7711500162258744,
+      "batch_mean_ms": 147.59583468548954,
+      "throughput": 6937.865165246913,
+      "ctx_preparation_seconds": 0.0004192180931568146,
+      "warmup_with_audits_seconds": 0.49995871633291245,
+      "illustrative_pin_plus_ctx_plus_warmup_plus_wall_seconds": 3.2289472054690123,
+      "formal_input_nodes_total": 4191328,
+      "sampled_edges_totals": [
+        7130634,
+        919673,
+        98790
+      ],
+      "cache_before": {
+        "arm": "PINNED_CACHE_ON",
+        "feature_cache_capacity_bytes": 134217728,
+        "graph_cache_capacity_edges_requested": 1000000,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "feature_cache_miss_rate": 1.0,
+        "graph_cache_total_queries": 146225,
+        "graph_cache_total_misses": 125894,
+        "graph_cache_miss_rate": 0.8609608480082065
+      },
+      "cache_after": {
+        "arm": "PINNED_CACHE_ON",
+        "feature_cache_capacity_bytes": 134217728,
+        "graph_cache_capacity_edges_requested": 1000000,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "feature_cache_miss_rate": 0.9543119301692511,
+        "graph_cache_total_queries": 1021264,
+        "graph_cache_total_misses": 896845,
+        "graph_cache_miss_rate": 0.8781715599492393
+      }
+    },
+    {
+      "seed": 20261016,
+      "arm": "PINNED_CACHE_OFF",
+      "wall_seconds": 1.1002305950969458,
+      "batch_mean_ms": 91.68588292474548,
+      "throughput": 11168.5678027498,
+      "ctx_preparation_seconds": 8.288398385047913e-05,
+      "warmup_with_audits_seconds": 0.4761467897333205,
+      "illustrative_pin_plus_ctx_plus_warmup_plus_wall_seconds": 2.5338795236311853,
+      "formal_input_nodes_total": 4192061,
+      "sampled_edges_totals": [
+        7132997,
+        919502,
+        98790
+      ],
+      "cache_before": {
+        "arm": "PINNED_CACHE_OFF",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      },
+      "cache_after": {
+        "arm": "PINNED_CACHE_OFF",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      }
+    },
+    {
+      "seed": 20261016,
+      "arm": "FULL_RESIDENT_GPU",
+      "wall_seconds": 0.43546656519174576,
+      "batch_mean_ms": 36.28888043264548,
+      "throughput": 28218.010249740564,
+      "ctx_preparation_seconds": 0.21841904753819108,
+      "warmup_with_audits_seconds": 0.33636428182944655,
+      "illustrative_pin_plus_ctx_plus_warmup_plus_wall_seconds": 1.947669149376452,
+      "formal_input_nodes_total": 4193419,
+      "sampled_edges_totals": [
+        7133978,
+        919657,
+        98790
+      ],
+      "cache_before": {
+        "arm": "FULL_RESIDENT_GPU",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      },
+      "cache_after": {
+        "arm": "FULL_RESIDENT_GPU",
+        "feature_cache_capacity_bytes": 0,
+        "graph_cache_capacity_edges_requested": 0,
+        "DRAM_and_PCIe_bytes": "UNKNOWN_NOT_MEASURED",
+        "graph_cache": "NONE"
+      }
+    }
+  ],
+  "limitations": [
+    "Two seed/windows per arm, not 24 independent latency repetitions; FULL cross-seed/order CV about 23.6%.",
+    "Frozen seed order is matched; async neighborhoods are not bitwise paired.",
+    "The per-window wall includes common Python shape/count bookkeeping; it is not zero-overhead timing.",
+    "Upload, pin, initialization, warmups and boundary handshakes are outside formal wall, so no cold-start E2E speedup claim.",
+    "No measured physical PCIe/DRAM bytes, critical-path decomposition, final accuracy or compiled qualification.",
+    "Input/runtime full-file SHA and old-assets immutability rely on original pre/post receipts; this review does not reread all GB of original input/runtime payload."
+  ],
+  "ratios": [
+    {
+      "seed": 20261015,
+      "ON_over_FULL": 5.752667313197993,
+      "OFF_over_FULL": 3.621983383822585,
+      "ON_over_OFF": 1.5882644130539099
+    },
+    {
+      "seed": 20261016,
+      "ON_over_FULL": 4.067246851537264,
+      "OFF_over_FULL": 2.5265558438740054,
+      "ON_over_OFF": 1.6097989131722075
+    }
+  ],
+  "decision": "ACCEPT_SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE_NO_NEW_HARDWARE_EVIDENCE",
+  "resources": {
+    "CPU_affinity": [
+      0,
+      2
+    ],
+    "CPU_time_seconds": 0.35489499999999996,
+    "RSS_peak_KiB": 35880,
+    "AS_limit_bytes": 536870912,
+    "GPU_calls": 0,
+    "GPU_lock_actions": 0,
+    "training_updates": 0,
+    "dependency_download_install_bytes": 0,
+    "elapsed_seconds": 0.44689348386600614
+  }
+}

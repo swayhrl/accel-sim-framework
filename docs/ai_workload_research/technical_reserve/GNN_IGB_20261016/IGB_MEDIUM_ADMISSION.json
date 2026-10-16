@@ -1,0 +1,128 @@
+{
+  "status": "CONDITIONAL_CPU_SOURCE_RESOURCE_ADMISSION_ONLY",
+  "source_revision": "fc36357f2c1d861870b4c13a58f73da2b93d1e73",
+  "official_MD5_expected": "4640df4ceee46851fd18c0a44ddcc622",
+  "archive_content_length_bytes": 38468382482,
+  "archive_GiB": 35.82647301442921,
+  "archive_MD5_SHA256_verified": false,
+  "tar_members_scanned": false,
+  "physical_data_present": false,
+  "capacity": {
+    "N": 10000000,
+    "D": 1024,
+    "raw_E_published": 120077694,
+    "raw_E_source": "PVLDB2024 GIDS Table3; must verify actual author tar",
+    "FP32_feature_bytes": 40960000000,
+    "FP32_feature_GiB": 38.14697265625,
+    "raw_edge_int64x2_bytes": 1921243104,
+    "derived_CSC_edges_upper_after_author_selfloop_rule": 130077694,
+    "derived_CSC_int64_bytes_upper": 1120621560,
+    "edge_membership_keys_bytes_upper": 1040621552,
+    "double_feature_copy_bytes": 81920000000,
+    "double_feature_copy_GiB": 76.2939453125,
+    "batch_unique_input_node_upper": 1362944,
+    "batch_FP32_input_feature_bytes_upper": 5582618624,
+    "two_inflight_feature_buffers_bytes_upper": 11165237248,
+    "bound_reason": "Conservative GraphBolt blocks include destination roots at each layer; independent resampling of repeated roots requires B*(1+fanout)^3, not the naive one-sample tree B*(1+f+f^2+f^3)."
+  },
+  "rights": "PREQUALIFIED_LOCAL_NUMERIC_RESEARCH_SCOPE_BY_AUTHOR_ODC_NOTICE; actual tar additional-terms/content gate remains pending",
+  "software": {
+    "metadata_versions": {
+      "torch": [
+        "2.2.0+cu121"
+      ],
+      "dgl": [
+        "2.4.0+cu121"
+      ],
+      "torch-geometric": [
+        "2.6.1"
+      ],
+      "numpy": [
+        "1.26.4"
+      ],
+      "triton": [
+        "2.2.0"
+      ]
+    },
+    "feature_inplace_registration_source": "def pin_memory_(self):\n        \"\"\"In-place operation to copy the feature to pinned memory. Returns the\n        same object modified in-place.\"\"\"\n        # torch.Tensor.pin_memory() is not an inplace operation. To make it\n        # truly in-place, we need to use cudaHostRegister. Then, we need to use\n        # cudaHostUnregister to unpin the tensor in the destructor.\n        # https://github.com/pytorch/pytorch/issues/32167#issuecomment-753551842\n        x = self._tensor\n        if not x.is_pinned() and x.device.type == \"cpu\":\n            assert (\n                x.is_contiguous()\n            ), \"Tensor pinning is only supported for contiguous tensors.\"\n            cudart = torch.cuda.cudart()\n            assert (\n                cudart.cudaHostRegister(\n                    x.data_ptr(), x.numel() * x.element_size(), 0\n                )\n                == 0\n            )\n\n            self._is_inplace_pinned.add(x)\n            self._inplace_unpinner = cudart.cudaHostUnregister\n\n        return self",
+    "graph_inplace_registration_source": "def pin_memory_(self):\n        \"\"\"Copy `FusedCSCSamplingGraph` to the pinned memory in-place. Returns\n        the same object modified in-place.\"\"\"\n        if is_wsl():\n            gb_warning(\n                \"In place pinning is not supported on WSL. \"\n                \"Returning the out of place pinned `FusedCSCSamplingGraph`.\"\n            )\n            return self.to(\"pinned\")\n        # torch.Tensor.pin_memory() is not an inplace operation. To make it\n        # truly in-place, we need to use cudaHostRegister. Then, we need to use\n        # cudaHostUnregister to unpin the tensor in the destructor.\n        # https://github.com/pytorch/pytorch/issues/32167#issuecomment-753551842\n        cudart = torch.cuda.cudart()\n        if not hasattr(self, \"_is_inplace_pinned\"):\n            self._is_inplace_pinned = set()\n\n        def _pin(x):\n            if hasattr(x, \"pin_memory_\"):\n                x.pin_memory_()\n            elif (\n                isinstance(x, torch.Tensor)\n                and not x.is_pinned()\n                and x.device.type == \"cpu\"\n            ):\n                assert (\n                    x.is_contiguous()\n                ), \"Tensor pinning is only supported for contiguous tensors.\"\n                assert (\n                    cudart.cudaHostRegister(\n                        x.data_ptr(), x.numel() * x.element_size(), 0\n                    )\n                    == 0\n                )\n\n                self._is_inplace_pinned.add(x)\n                self._inplace_unpinner = cudart.cudaHostUnregister\n\n            return x\n\n        return self._apply_to_members(_pin)",
+    "UVA_and_CPU_gather_async_source_present": true,
+    "medium_runtime_cuda_numeric_qualification": "NOT_RUN_NO_GPU_AUTHORIZATION",
+    "minimum_scientific_scope": "EAGER_ONLY_SAME_MEAN_GRAPHSAGE_FP32_ADAM_NOT_ALL_BACKENDS",
+    "A65_compiled_failure_retained": true,
+    "GIDS_BaM_109_execution": "NOT_ADMITTED_BY_FIXED_AUTHOR_PREREQUISITES: BaM asks Tesla/datacenter GPU and PCIe P2P, BIOS/IOMMU settings and custom NVMe module; no system changes on node109.",
+    "GIDS_BaM_literature": "Must acknowledge existing caching/window-buffer/CPU-buffer work; no claim to have benchmarked or outperformed GIDS."
+  },
+  "preferred_future_paths": [
+    {
+      "name": "GPU_GRAPH_CPU_PINNED_FEATURE_CACHE_UVA",
+      "graph": "entire derived CSC on GPU, about1.04GiB upper",
+      "features": "entire real FP32 table once in host RAM, in-place registered; fixed1GiB GPU feature cache, async UVA"
+    },
+    {
+      "name": "GPU_GRAPH_CPU_GATHER_FEATURE_CACHE",
+      "graph": "same complete GPU CSC",
+      "features": "same table bytes in host RAM, fixed1GiB cache, supported async CPU-gather to H2D fallback; new canary required"
+    },
+    {
+      "name": "GPU_GRAPH_PINNED_FEATURE_CACHE_OFF_DIAGNOSTIC",
+      "graph": "same complete GPU CSC",
+      "features": "same in-place pinned table and async UVA, feature cache OFF; diagnostic opponent only"
+    }
+  ],
+  "future_budget_PROPOSED_NOT_AUTHORIZED": {
+    "download_bytes": 42949672960,
+    "new_disk_bytes": 103079215104,
+    "full_tar_extracted_member_bytes_limit": 51539607552,
+    "other_new_disk_allowance_bytes": 12884901888,
+    "preserve_free_disk_bytes": 68719476736,
+    "host_task_RSS_bytes": 60129542144,
+    "host_available_before_runtime_min_bytes": 60129542144,
+    "host_available_during_runtime_min_bytes": 6442450944,
+    "CPU_effective_workers": 4,
+    "VRAM_bytes": 12884901888,
+    "GPU_shared_lock_seconds": 900,
+    "formal_updates_max": 72,
+    "total_updates_max": 93,
+    "update_accounting": "3 path canary +12 warmup+72 formal +at most6 separately recorded diagnostic updates; no extra training retries",
+    "download_wall_seconds": 14400,
+    "CPU_prepare_seconds": 7200,
+    "dependency_installs_bytes": 0
+  },
+  "known_resource_limits": [
+    "1GiB feature cache is a fixed bounded candidate, not a proven globally optimal setting.",
+    "Worst-case two-inflight feature buffers alone are10.40GiB. With complete graph/cache/model/activations,12GiB VRAM feasibility is unproven: future bounded real canary must STOP on budget failure rather than shrink B/fanout/FP32.",
+    "Compressed Content-Length does not bound expanded tar payload.48GiB extraction ceiling is a proposed safety cap, not a measured archive size.",
+    "Do not retain two entire copies of the FP32 table; use documented in-place registration and verify pointer/size/readonly values under the future GPU lock.",
+    "Release CPU graph-conversion temporaries before feature pin/residency admission.",
+    "If host available <56GiB before runtime or <6GiB during runtime, DEFER/STOP rather than induce swapping or storage fallback."
+  ],
+  "scientific_claim": "Candidate crosses GPU capacity but should remain within host DRAM if admitted; test DRAM-to-GPU supply, not GPU-initiated storage or new hardware gains.",
+  "not_executed": [
+    "Data payload GET/range download",
+    "tar scan/extract",
+    "conversion or training",
+    "Torch import",
+    "CUDA initialization",
+    "GPU query or lock",
+    "BaM or GIDS installation/system changes"
+  ],
+  "budget_checks": {
+    "compressed_fits_40GiB_download": true,
+    "compressed_plus_expansion_cap_plus_others_fits_disk_cap": true,
+    "GiB_left_in_download_for_retries": 4.173526985570788,
+    "GiB_storage_sum": 95.82647301442921
+  },
+  "single_host_feature_table_plan": {
+    "allocation": "One contiguous writable anonymous host tensor of original FP32 values; fill via bounded streaming readinto/copy chunks from read-only author NPY.",
+    "registration": "Use existing official TorchBasedFeature.pin_memory_ only in future authorized CUDA lock; verify same data_ptr before/after, tensor byte size, registration return, data identity and sampled value readback.",
+    "avoid": "Do not whole-table .pin_memory() clone; do not assume read-only file mmap can be cudaHostRegister(flags=0) registered. Do not add custom CUDA flags or driver changes.",
+    "status": "SOURCE_ONLY_NOT_RUNTIME_QUALIFIED"
+  },
+  "host_memory_residency_validation_plan": {
+    "before": "Require MemAvailable >=56GiB; conversion temporaries released; feature table completely populated in one host allocation before formal windows.",
+    "during": "Task RSS <=56GiB and host MemAvailable >=6GiB; major faults, process read_bytes, VmSwap and global swap counters bracket each formal window.",
+    "classification": "Any evidence of swapping/ongoing file-backed feature reads blocks a DRAM-to-GPU interpretation; no automatic fallback to SSD experiment."
+  },
+  "next_stage": "ONE_NEW_CONTINUOUS_BOUNDED_GOAL_PROPOSAL_ONLY: input+safe tar+conversion+new runtime+numeric/memory canary+conditional formal windows+separate diagnostic+archive/STOP, no per-engineering-fix Goals."
+}

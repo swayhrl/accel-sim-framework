@@ -8,6 +8,8 @@
 
 ## 从这里开始
 
+- [技术储备](technical_reserve/README.md)：GNN已测结论与未执行候选；当前按用户决定暂存。
+
 - [统一问题图谱 V1](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)：按负载/约束组织问题、已知现象、未知前提和潜在架构研究方向。
 - [C16 × AWMA跨项目证据索引 V1](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)：每条证据的实验范围、实际结论、测量层级和固定来源。
 - [当前项目状态](CURRENT_STATE.md)：最新可核对的科研入口与待审结果，供两个ChatGPT协调窗口使用。
