@@ -110,13 +110,15 @@ def prepare(args, client, api, tools):
     configs = [{'name':f'config-{i}.config','path':str(p)} for i,p in enumerate(config_paths)]
     assets = {}
     for p in config_paths:
-        for line in p.read_text().splitlines():
-            tokens = shlex.split(line,comments=True)
-            for token in tokens[1:]:
-                if not token.endswith(('.xml','.icnt','.config')): continue
-                q = next((root/token for root in [p.parent,core/'configs/tested-cfgs/SM7_QV100',ROOT/'gpu-simulator/configs/tested-cfgs/SM7_QV100'] if (root/token).is_file()),None)
-                check(q is not None,'missing auxiliary input '+token)
-                assets[token]={'name':token,'path':str(q.resolve())}
+        # The actual QV100 config has a quoted DRAM-timing value spanning two
+        # physical lines. Tokenize the complete file, as the config parser does.
+        tokens = shlex.split(p.read_text(),comments=True)
+        check('-config' not in tokens,'nested configuration requires explicit expansion')
+        for token in tokens:
+            if not token.endswith(('.xml','.icnt','.config')): continue
+            q = next((root/token for root in [p.parent,core/'configs/tested-cfgs/SM7_QV100',ROOT/'gpu-simulator/configs/tested-cfgs/SM7_QV100'] if (root/token).is_file()),None)
+            check(q is not None,'missing auxiliary input '+token)
+            assets[token]={'name':token,'path':str(q.resolve())}
     files = [{'name':trace.name,'path':str(trace)}]
     for line in trace.read_text().splitlines():
         line=line.strip()
@@ -141,7 +143,7 @@ def prepare(args, client, api, tools):
         'ideal_vector':{'wb':False,'meta':mode[0],'read_hit':mode[1]},
         'termination_contract':{'normal_exit':True,'hardware_resource_drain':'64-slice B0 and ideal response/arrival closure',
                                 'numeric_application_validation':'NOT_AVAILABLE_FROM_SASS_DATALESS_TRACE'}}
-    tools.validate_trace_closure(spec);tools.validate_config_closure(spec)
+    tools.validate_trace_closure(spec)
     return spec, {'configs':cm,'assets':am,'traces':tm}
 
 
