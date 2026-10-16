@@ -37,6 +37,7 @@ execute_process(
     COMMAND sed -re "s/commit (.*)/\\1/"
     OUTPUT_VARIABLE GIT_COMMIT
     OUTPUT_STRIP_TRAILING_WHITESPACE
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 execute_process(
     COMMAND git diff --numstat
@@ -44,6 +45,7 @@ execute_process(
     COMMAND sed -re "s/^\\s+([0-9]+).*/\\1./"
     OUTPUT_VARIABLE GIT_FILES_CHANGED_A
     OUTPUT_STRIP_TRAILING_WHITESPACE
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 execute_process(
     COMMAND git diff --numstat --cached
@@ -51,6 +53,7 @@ execute_process(
     COMMAND sed -re "s/^\\s+([0-9]+).*/\\1/"
     OUTPUT_VARIABLE GIT_FILES_CHANGED
     OUTPUT_STRIP_TRAILING_WHITESPACE
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 execute_process(
     COMMAND date +"%y-%m-%d-%H-%M-%S"
