@@ -32,7 +32,7 @@ The literal allowed differences are recorded, not hidden: mode2 versus3, and IO 
 
 The first complete pair is Btree,444467849 total active-thread instructions,1817551 retired cacheable warp instructions and4139841 collected32B sectors in each arm. IO128/OO128 cycles are247940/173210. Their ready-to-complete means are167.6345/10.2981 core cycles per cacheable warp instruction; map-loss-to-free means316.3103/0.9616 cycles per release event. Occupancy remains the all64-SM cycle average, not an active-only average. The export also retains separate ready-to-collect, collection and writeback waits, raw sums/integrals and exact UUIDs. This is one fixed-model mechanism observation; the remaining fixed pilots and full cohort retain their existing identities and gates.
 
-The second complete pair is2DConvolution,620347492 active-thread instructions,4716288 retired cacheable warp instructions and21984780 collected32B sectors in each arm. IO128/OO128 cycles are694704/592346. Fully admitted ready-to-complete means are388.7317/8.2900 core cycles per cacheable warp instruction; the separate collection and writeback means remain explicit. Mean PIB occupancy is126.194881/126.205080 entries per SM, so OO does not reduce that metric here. Physical occupancy is218.531091/188.860210 lines per SM. Map-loss-to-free events differ3843941/3290844; their means1077.840803/735.456553 use each arm's own event denominator. Exact gates, raw sums/integrals, identities and both full strict receipts are retained in [matched128_v2](review_pack/matched128_v2). BICG remains pending; Hotspot remains held. Neither the active-depth match nor these two workload observations establishes equal total metadata/area or a general native-hardware conclusion.
+The second complete pair is2DConvolution,620347492 active-thread instructions,4716288 retired cacheable warp instructions and21984780 collected32B sectors in each arm. IO128/OO128 cycles are694704/592346. Fully admitted ready-to-complete means are388.7317/8.2900 core cycles per cacheable warp instruction; the separate collection and writeback means remain explicit. Mean PIB occupancy is126.194881/126.205080 entries per SM, so OO does not reduce that metric here. Physical occupancy is218.531091/188.860210 lines per SM. Map-loss-to-free events differ3843941/3290844; their means1077.840803/735.456553 use each arm's own event denominator. Exact gates, raw sums/integrals, identities and both full strict receipts are retained in [matched128_v2](review_pack/matched128_v2). BICG subsequently completed its full matched128 gate and residence checks: IO12893312525/OO12847533116cycles,2097152 cacheable warp retirements and19922944 collected32B sectors each; see checkpoint_20261016T1620Z and final checkpoint_20261016T2133Z. Hotspot remains held. Neither the active-depth match nor these two workload observations establishes equal total metadata/area or a general native-hardware conclusion.
 
 Twenty-four CPU validation guard checks cover all four registered contracts and reject primaryIO256 as matched128, changed binary, changed input scope, finite OFF and changed physical capacity. They are validator tests, not extra simulated/native diagnostic conditions. Their receipt and the collector SHA are retained in the dedicated matched128 review pack. No simulation was repeated for these checks.
 
@@ -54,3 +54,15 @@ Unequal active depth does not isolate ordering. No new matched128/WAIT128 arm
 was registered. All ratios use only these five new-input receipts; no old
 baseline or original Hotspot result is relabelled. Reconstruction scope does
 not certify original ELF/native execution or resolve the original input HOLD.
+
+
+Final original execution closure,2026-10-16T21:33Z:41 started rows strictPASS,
+three original Hotspot rows remain unstarted admissionHOLD. Eleven primary
+trios are numerically complete, retaining all regressions, especially GESUMMV
+C+99700244/OO142770419/IO193506220cycles. Full-body3145856 cacheable warp
+retirements and38797824 collected32B sectors match in both finite arms. Their
+IO256/OO128 descriptive metrics do not become a matched-depth claim. Original
+Btree/2D/LUD format pending and original Hotspot HOLD remain. The six separate
+conditional Btree E-list arms also close strict/resource/matched128 within
+that one new bundle; original denominators and capture/native/area equivalence
+are not imported. No cohort aggregate is produced. See final_closure_v1.

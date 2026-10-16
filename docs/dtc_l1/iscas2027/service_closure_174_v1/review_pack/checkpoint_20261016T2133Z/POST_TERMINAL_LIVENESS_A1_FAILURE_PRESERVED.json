@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-16T21:36:15.445509+00:00",
+  "status": "FAIL_PRESERVED_POST_TERMINAL_CPU_AUDIT_A1",
+  "failed_assumption": "All three historical coordinator/watcher PIDs must remain live and own FLOCK after last natural simulator terminal.",
+  "assertion": "assert all(x[\"FLOCK_live\"] for x in owners.values())",
+  "exception": "AssertionError at inline resource-audit line21",
+  "actual": {
+    "SCOPED_DISPATCH.lock": {
+      "original_pid": 520970,
+      "process_exists": false,
+      "original_lock_file_inode": 42358403,
+      "original_pid_owns_FLOCK": false
+    },
+    "DISPATCH.lock": {
+      "original_pid": 433763,
+      "process_exists": true,
+      "original_lock_file_inode": 42343458,
+      "original_pid_owns_FLOCK": true
+    },
+    "STRICT_REVIEW.lock": {
+      "original_pid": 469026,
+      "process_exists": true,
+      "original_lock_file_inode": 42358270,
+      "original_pid_owns_FLOCK": true
+    }
+  },
+  "classification": "AUDIT_LIFECYCLE_ASSUMPTION_ONLY_NOT_DTC_SIMULATOR_OR_SCIENTIFIC_FAILURE",
+  "prior_full_IO_strict_and31_scope_checks": "ALREADY_PASS_UNCHANGED",
+  "fix": "V2 recognizes existing scoped dispatcher clean return when pass union held covers plan; no restart or identity change."
+}

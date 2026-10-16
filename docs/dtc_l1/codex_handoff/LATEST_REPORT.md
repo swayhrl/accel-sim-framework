@@ -1,3 +1,17 @@
+# Final174 authorized evidence closure —2026-10-16T21:50Z
+
+**All authorized simulation rows are naturally terminal: original41 numeric strict PASS/0running/3oldHotspotHOLD; separate HotspotV2five and conditionalBtreesix strict/resourcePASS.** All12original workloads remain, with11 legal complete primary trios. Exact24canonical baselines and15native109 cases are reused; four modern baseline-only attempts remain counterfactual-only. No new runs are needed to fill the held matrix.
+
+Last GESUMMV IO UUID9f44321c-5360-4651-bb94-e283f21f369b naturally exits0 at21:32:48.499799UTC:193506220cycles/190918656instructions/full1kernel16CTAs/128warps,12:10:08wall/3035136KiB peakRSS. Unchanged strict30 and supplemental31 checks PASS. C+99700244/OO142770419/IO193506220cycles: bothDTC regressions retained. Primary256/128depth remains descriptive. Exact11service metrics, all64SM sampling and legal retained2048clean lines/509134 postTag-eviction reallocations are audited without forcing counters to zero.
+
+Final current-byte/source/identity audit PASS: all629original payloads(9,162,136,500bytes), all41current strong strict receipts and ordered full-kernel instruction scopes,24canonical strict/stdout identities,36historical receipt/raw identities,11separate derived arms/current input identities and109all285payloads/15nativecases. Existing4CTest/3OFF/2ON and24matched guard checks remain pinned and verified, not rerun. FiniteCore6fba0136/binaryfe2d2737 and conventionalCore6582b9d1/binary4fcac62c remain distinct; originallegacy/2Dexceptions preserved.
+
+ModernDTC remains HOLD under128KiB total physical L1/shared budget; no extra80KiB or silently narrowed shared/side-path domain. OriginalHotspot promotionHOLD/3forbidden launches; originalBtree/2D/LUD format pending;2DSTOP and no newLUD. Separate derived qualifications do not establish original capture/native equivalence. SpMV/LayerNorm trace NOT_ADMITTED; native receipts retained. No GM12/GM11, pooled denominator, nativeDTC, equal-area or transferred old4.7%PPA claim. Optional3070notselected,zero runs.
+
+Own simulators/RSS0. Existing scoped coordinator520970 naturally exits0 once41passed+3held exhaust original44; original launch-disabled coordinator433763/strict watcher469026 and all lock files/HOLDs remain untouched. No restart/stop/new persistent scheduler or observer. Failed experiments, superseded timing, old manifest failure and two final audit-assumption failures are preserved with corrected receipts.
+
+Review: `docs/dtc_l1/iscas2027/service_closure_174_v1/review_pack/final_closure_v1/README.md` plus `checkpoint_20261016T2133Z`; complete29-requirement dispositions, contract coverage, original12table, open scientific review items and hashes supplied. Final Goal completion requires final non-force push/fetch-back exact HEAD/tree and clean worktree, recorded externally at `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`; committed evidence does not invent its own final commit hash. Earlier ACTIVE/running reports below remain historical.
+
 # Current174 GESUMMV OO terminal —2026-10-16T19:34Z
 
 **Original GESUMMV OO naturally completed; strict and27 supplementary checks PASS.**

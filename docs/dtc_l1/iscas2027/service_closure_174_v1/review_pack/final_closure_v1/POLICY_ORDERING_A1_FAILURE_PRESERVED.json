@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-16T21:42:51.909063+00:00",
+  "status": "FAIL_PRESERVED_POLICY_AUDIT_A1",
+  "failed_assumption": "Final finite-service V2 full-NN terminal must precede every conventional or finite R2 launch.",
+  "actual": {
+    "conventional_TRAD96_BICG_launch_utc": "2026-10-16T08:50:33.304850+00:00",
+    "last_R1_V2_full_NN_terminal_utc": "2026-10-16T08:55:14.462385+00:00",
+    "first_finite_V2_pilot_launch_utc": "2026-10-16T08:59:32.892863+00:00"
+  },
+  "exception": "AssertionError at inline policy audit line15",
+  "classification": "AUDIT_SCOPE_ASSUMPTION_NOT_MODEL_CORRECTNESS_OR_EXECUTION_IDENTITY_FAILURE",
+  "correction": "Require R0 before all R2 and final R1 V2 before finite V2 R2. Unchanged conventional pilots remain valid and were explicitly preserved while correcting/requalifying the finite model, as R1_V2_RECEIPT.md records.",
+  "model_input_configs_and_registered_attempts_changed": false
+}
