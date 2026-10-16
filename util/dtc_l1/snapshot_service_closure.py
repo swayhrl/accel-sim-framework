@@ -33,6 +33,8 @@ def main():
     for name in ['r1-attempts','r2-attempts','modern-baseline-attempts','spmv-admission-attempts']:
         for p in sorted((root/name).glob('*/RUN_START.json')):
             row=collect(p.parent)
+            workload=json.loads(p.read_text())['spec']['workload']
+            row['scientific_promotion']=disposition(workload)
             row['current_registered_r2']=row['label'] in labels
             row['performance_disposition']=('CURRENT_REGISTERED_R2' if row['label'] in labels else
                 'MODERN_BASELINE_ONLY' if row['label'].startswith('B0_') else
@@ -71,6 +73,7 @@ def main():
         assert v('samples')==64*int(r['cycles'])
         assert v('fully_ready_to_complete_sum')==v('ready_to_collect_sum')+v('collection_cycles')+v('wb_wait')
         residence.append(dict(workload=r['workload'],arm=r['arm'],attempt_uuid=r['attempt_uuid'],
+            scientific_promotion=r['scientific_promotion'],
             core=r['core'],binary_sha256=r['binary_sha256'],cycles=r['cycles'],
             cached_retired_instructions=v('retired'),retirement_unit='CACHEABLE_WARP_INSTRUCTION',
             all_sm_core_cycle_samples=v('samples'),
@@ -139,6 +142,7 @@ def main():
     summary=dict(snapshot_utc=datetime.now(timezone.utc).isoformat(),
         plan_sha256=sha(evidence/'review_pack/r2/REGISTERED_ROWS_V2.tsv'),
         registered_rows=len(states),
+        scientific_dispositions={w:disposition(w) for w in ['Hotspot1','Btree','2DConvolution','LUD']},
         r2_states={s:sum(r['status']==s for r in states) for s in sorted({r['status'] for r in states})},
         native_cases_reused=15,native_reruns=0,
         modern_dtc='HOLD_CAPACITY_AND_PORT_ORGANIZATION_REVIEW',

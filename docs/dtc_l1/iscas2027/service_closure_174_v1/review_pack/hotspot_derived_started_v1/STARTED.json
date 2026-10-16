@@ -1,0 +1,501 @@
+{
+  "utc": "2026-10-16T13:12:51.473661+00:00",
+  "launched": [
+    {
+      "label": "HS_SOURCE_PROFILE_V2_B16_N",
+      "runner_pid": 824497
+    },
+    {
+      "label": "HS_SOURCE_PROFILE_V2_IO256",
+      "runner_pid": 824503
+    },
+    {
+      "label": "HS_SOURCE_PROFILE_V2_OO128",
+      "runner_pid": 824511
+    },
+    {
+      "label": "HS_SOURCE_PROFILE_V2_TRAD96",
+      "runner_pid": 824537
+    },
+    {
+      "label": "HS_SOURCE_PROFILE_V2_TC80_N",
+      "runner_pid": 824550
+    }
+  ],
+  "starts": [
+    {
+      "attempt_uuid": "7356bb8c-3a57-4ab9-8a00-4e0c7bf66aba",
+      "identity": "5703860c896ac60bf8ea81e76125fb57a776793761288db9feaa330f9f5b78f3",
+      "launch_utc": "2026-10-16T13:12:50.401846+00:00",
+      "spec": {
+        "label": "HS_SOURCE_PROFILE_V2_TRAD96",
+        "workload": "Hotspot_SOURCE_PROFILE_V2",
+        "arm": "TRAD96",
+        "phase": "DERIVED_QUALIFIED_PRIMARY",
+        "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY",
+        "core": "6582b9d171330d88b17e8d5294c97704229e3823",
+        "build_framework": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+        "orchestrator_framework": "83f539f360fa27fc5a01b2aa43b5efd020a8068c",
+        "runtime": "/tmp/dtc-sg1-canonical-core6582b9d1-r2/accel-sim.out",
+        "runtime_sha256": "4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9",
+        "finite_service": false,
+        "dtc_mode": "base",
+        "expected_mode": 1,
+        "input_bundle_sha256": "dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169",
+        "input_interpretation": "HOTSPOT_SOURCE_PROFILE_RECONSTRUCTION_V2",
+        "admission_receipt": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/ADMISSION.json",
+        "admission_receipt_sha256": "c780bd0dad7fc0708afa6ea32efa55e722255439ef5d75ce25ebfcc641871670",
+        "trace_list": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "trace_list_sha256": "a731bfc2cbb90b51888e92f3fb188ff4fceb123612a7b1ceb1817bc752e89461",
+        "expected_instructions": 377291004,
+        "expected_kernel_names": [
+          "_Z14calculate_tempiPfS_S_iiiiffffff"
+        ],
+        "members": [
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernel-1.traceg",
+            "sha256": "21cd403581a94451e1f9e7a79950d7effd25319daccc101187233e4a0c985985",
+            "bytes": 1093377608
+          }
+        ],
+        "configs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/configs/dtc_l1/fast64/FAST64_BASE.config",
+            "sha256": "1a016e3cac65376330a92dd3fcf037d5fdcab5e7d295920be568e04600dd1cde"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/docs/dtc_l1/iscas2027/service_closure_174_v1/config/TRAD96_P256_M512.config",
+            "sha256": "a55ae6c9987abf4caaf34c10a291e4f9fe5acc15f7ec35e0c241c6934fd0bd4f"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/COMMON_LOWER_CAP.config",
+            "sha256": "84ad4954b5a0eabc3fe5d39bd627ad838b0763c526af38e5c476394ab0d58f9b"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          }
+        ],
+        "expected_dl1": "N:32:128:24,L:T:m:L:L,A:512:8,16:0,32",
+        "expected_mshr": 512,
+        "expected_pib": 256
+      },
+      "runner_sha256": "849a191159a2e1a049496945d659dcfc19114c5f6b718f85fd2748cb279c8d3a",
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TRAD96_7356bb8c-3a57-4ab9-8a00-4e0c7bf66aba/resource.time",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+        "-trace",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TRAD96_7356bb8c-3a57-4ab9-8a00-4e0c7bf66aba/config-0.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TRAD96_7356bb8c-3a57-4ab9-8a00-4e0c7bf66aba/config-1.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TRAD96_7356bb8c-3a57-4ab9-8a00-4e0c7bf66aba/config-2.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TRAD96_7356bb8c-3a57-4ab9-8a00-4e0c7bf66aba/config-3.config"
+      ],
+      "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY"
+    },
+    {
+      "attempt_uuid": "8664dece-6a34-4bb2-8e99-55a12bd50286",
+      "identity": "cc1a86533c7ab5b88b7e17d662e739b2ad26b8ed85a274548fb4321215a12a16",
+      "launch_utc": "2026-10-16T13:12:47.380761+00:00",
+      "spec": {
+        "label": "HS_SOURCE_PROFILE_V2_IO256",
+        "workload": "Hotspot_SOURCE_PROFILE_V2",
+        "arm": "IO256",
+        "phase": "DERIVED_QUALIFIED_PRIMARY",
+        "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY",
+        "core": "6fba0136f8465b59fe5858a950fa39efb265f654",
+        "build_framework": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+        "orchestrator_framework": "83f539f360fa27fc5a01b2aa43b5efd020a8068c",
+        "runtime": "/workspace/dtc-service-closure-174-v1/build-r1-a1/accel-sim.out",
+        "runtime_sha256": "fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b",
+        "finite_service": true,
+        "dtc_mode": "io",
+        "expected_mode": 2,
+        "input_bundle_sha256": "dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169",
+        "input_interpretation": "HOTSPOT_SOURCE_PROFILE_RECONSTRUCTION_V2",
+        "admission_receipt": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/ADMISSION.json",
+        "admission_receipt_sha256": "c780bd0dad7fc0708afa6ea32efa55e722255439ef5d75ce25ebfcc641871670",
+        "trace_list": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "trace_list_sha256": "a731bfc2cbb90b51888e92f3fb188ff4fceb123612a7b1ceb1817bc752e89461",
+        "expected_instructions": 377291004,
+        "expected_kernel_names": [
+          "_Z14calculate_tempiPfS_S_iiiiffffff"
+        ],
+        "members": [
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernel-1.traceg",
+            "sha256": "21cd403581a94451e1f9e7a79950d7effd25319daccc101187233e4a0c985985",
+            "bytes": 1093377608
+          }
+        ],
+        "configs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/configs/dtc_l1/fast64/FAST64_IO.config",
+            "sha256": "d4a2d9d0088946b950370b922a8d8e34422bbca9bac26f109b3977fe02a7f621"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/docs/dtc_l1/iscas2027/service_closure_174_v1/config/FINITE_PRIMARY_COMMON.config",
+            "sha256": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/COMMON_LOWER_CAP.config",
+            "sha256": "84ad4954b5a0eabc3fe5d39bd627ad838b0763c526af38e5c476394ab0d58f9b"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          }
+        ],
+        "expected_active_pib": 256
+      },
+      "runner_sha256": "849a191159a2e1a049496945d659dcfc19114c5f6b718f85fd2748cb279c8d3a",
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_IO256_8664dece-6a34-4bb2-8e99-55a12bd50286/resource.time",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "-trace",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_IO256_8664dece-6a34-4bb2-8e99-55a12bd50286/config-0.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_IO256_8664dece-6a34-4bb2-8e99-55a12bd50286/config-1.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_IO256_8664dece-6a34-4bb2-8e99-55a12bd50286/config-2.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_IO256_8664dece-6a34-4bb2-8e99-55a12bd50286/config-3.config"
+      ],
+      "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY"
+    },
+    {
+      "attempt_uuid": "dc969ab2-dd92-4c67-bcdd-cb1d9e7241fd",
+      "identity": "7c6efb39ad5fe8786bc8433d3ae15c81669a728b62034750598b9c6cad10e93e",
+      "launch_utc": "2026-10-16T13:12:51.410803+00:00",
+      "spec": {
+        "label": "HS_SOURCE_PROFILE_V2_TC80_N",
+        "workload": "Hotspot_SOURCE_PROFILE_V2",
+        "arm": "TC80-N",
+        "phase": "DERIVED_QUALIFIED_PRIMARY",
+        "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY",
+        "core": "6582b9d171330d88b17e8d5294c97704229e3823",
+        "build_framework": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+        "orchestrator_framework": "83f539f360fa27fc5a01b2aa43b5efd020a8068c",
+        "runtime": "/tmp/dtc-sg1-canonical-core6582b9d1-r2/accel-sim.out",
+        "runtime_sha256": "4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9",
+        "finite_service": false,
+        "dtc_mode": "base",
+        "expected_mode": 1,
+        "input_bundle_sha256": "dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169",
+        "input_interpretation": "HOTSPOT_SOURCE_PROFILE_RECONSTRUCTION_V2",
+        "admission_receipt": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/ADMISSION.json",
+        "admission_receipt_sha256": "c780bd0dad7fc0708afa6ea32efa55e722255439ef5d75ce25ebfcc641871670",
+        "trace_list": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "trace_list_sha256": "a731bfc2cbb90b51888e92f3fb188ff4fceb123612a7b1ceb1817bc752e89461",
+        "expected_instructions": 377291004,
+        "expected_kernel_names": [
+          "_Z14calculate_tempiPfS_S_iiiiffffff"
+        ],
+        "members": [
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernel-1.traceg",
+            "sha256": "21cd403581a94451e1f9e7a79950d7effd25319daccc101187233e4a0c985985",
+            "bytes": 1093377608
+          }
+        ],
+        "configs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/configs/dtc_l1/fast64/FAST64_BASE.config",
+            "sha256": "1a016e3cac65376330a92dd3fcf037d5fdcab5e7d295920be568e04600dd1cde"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/SG1_TC80_N_OVERLAY.config",
+            "sha256": "423832831f7d45757fcca350886dcf7a26cdd0158604a3b7c883638d006bbabd"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/COMMON_LOWER_CAP.config",
+            "sha256": "84ad4954b5a0eabc3fe5d39bd627ad838b0763c526af38e5c476394ab0d58f9b"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          }
+        ],
+        "expected_dl1": "N:32:128:20,L:T:m:L:L,A:512:8,16:0,32",
+        "expected_mshr": 32,
+        "expected_pib": 8
+      },
+      "runner_sha256": "849a191159a2e1a049496945d659dcfc19114c5f6b718f85fd2748cb279c8d3a",
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TC80_N_dc969ab2-dd92-4c67-bcdd-cb1d9e7241fd/resource.time",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+        "-trace",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TC80_N_dc969ab2-dd92-4c67-bcdd-cb1d9e7241fd/config-0.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TC80_N_dc969ab2-dd92-4c67-bcdd-cb1d9e7241fd/config-1.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TC80_N_dc969ab2-dd92-4c67-bcdd-cb1d9e7241fd/config-2.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_TC80_N_dc969ab2-dd92-4c67-bcdd-cb1d9e7241fd/config-3.config"
+      ],
+      "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY"
+    },
+    {
+      "attempt_uuid": "3fecca39-21a4-4b3d-96e2-874031674ced",
+      "identity": "f131e98e4ee351ec0eb3f3e09c0470cef1a3c8c2379c1386ee068049e1f1b522",
+      "launch_utc": "2026-10-16T13:12:46.395574+00:00",
+      "spec": {
+        "label": "HS_SOURCE_PROFILE_V2_B16_N",
+        "workload": "Hotspot_SOURCE_PROFILE_V2",
+        "arm": "B16-N",
+        "phase": "DERIVED_QUALIFIED_PRIMARY",
+        "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY",
+        "core": "6582b9d171330d88b17e8d5294c97704229e3823",
+        "build_framework": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+        "orchestrator_framework": "83f539f360fa27fc5a01b2aa43b5efd020a8068c",
+        "runtime": "/tmp/dtc-sg1-canonical-core6582b9d1-r2/accel-sim.out",
+        "runtime_sha256": "4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9",
+        "finite_service": false,
+        "dtc_mode": "base",
+        "expected_mode": 1,
+        "input_bundle_sha256": "dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169",
+        "input_interpretation": "HOTSPOT_SOURCE_PROFILE_RECONSTRUCTION_V2",
+        "admission_receipt": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/ADMISSION.json",
+        "admission_receipt_sha256": "c780bd0dad7fc0708afa6ea32efa55e722255439ef5d75ce25ebfcc641871670",
+        "trace_list": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "trace_list_sha256": "a731bfc2cbb90b51888e92f3fb188ff4fceb123612a7b1ceb1817bc752e89461",
+        "expected_instructions": 377291004,
+        "expected_kernel_names": [
+          "_Z14calculate_tempiPfS_S_iiiiffffff"
+        ],
+        "members": [
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernel-1.traceg",
+            "sha256": "21cd403581a94451e1f9e7a79950d7effd25319daccc101187233e4a0c985985",
+            "bytes": 1093377608
+          }
+        ],
+        "configs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/configs/dtc_l1/fast64/FAST64_BASE.config",
+            "sha256": "1a016e3cac65376330a92dd3fcf037d5fdcab5e7d295920be568e04600dd1cde"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/SG1_B16_N_OVERLAY.config",
+            "sha256": "658a13634cfc4a05e03437ed9b9a3922f9a91c2fce5d16c7b37784cfb38ccda8"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/COMMON_LOWER_CAP.config",
+            "sha256": "84ad4954b5a0eabc3fe5d39bd627ad838b0763c526af38e5c476394ab0d58f9b"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          }
+        ],
+        "expected_dl1": "N:32:128:4,L:T:m:L:L,A:512:8,16:0,32",
+        "expected_mshr": 32,
+        "expected_pib": 8
+      },
+      "runner_sha256": "849a191159a2e1a049496945d659dcfc19114c5f6b718f85fd2748cb279c8d3a",
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_B16_N_3fecca39-21a4-4b3d-96e2-874031674ced/resource.time",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+        "-trace",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_B16_N_3fecca39-21a4-4b3d-96e2-874031674ced/config-0.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_B16_N_3fecca39-21a4-4b3d-96e2-874031674ced/config-1.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_B16_N_3fecca39-21a4-4b3d-96e2-874031674ced/config-2.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_B16_N_3fecca39-21a4-4b3d-96e2-874031674ced/config-3.config"
+      ],
+      "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY"
+    },
+    {
+      "attempt_uuid": "25b53f13-1142-435a-a2c9-7f7cee91bc34",
+      "identity": "0fff984653514584f5bac6c9d0c4fef3f2dc0883481dc188befe4c8e4aef9e7e",
+      "launch_utc": "2026-10-16T13:12:48.467790+00:00",
+      "spec": {
+        "label": "HS_SOURCE_PROFILE_V2_OO128",
+        "workload": "Hotspot_SOURCE_PROFILE_V2",
+        "arm": "OO128",
+        "phase": "DERIVED_QUALIFIED_PRIMARY",
+        "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY",
+        "core": "6fba0136f8465b59fe5858a950fa39efb265f654",
+        "build_framework": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+        "orchestrator_framework": "83f539f360fa27fc5a01b2aa43b5efd020a8068c",
+        "runtime": "/workspace/dtc-service-closure-174-v1/build-r1-a1/accel-sim.out",
+        "runtime_sha256": "fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b",
+        "finite_service": true,
+        "dtc_mode": "oo",
+        "expected_mode": 3,
+        "input_bundle_sha256": "dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169",
+        "input_interpretation": "HOTSPOT_SOURCE_PROFILE_RECONSTRUCTION_V2",
+        "admission_receipt": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/ADMISSION.json",
+        "admission_receipt_sha256": "c780bd0dad7fc0708afa6ea32efa55e722255439ef5d75ce25ebfcc641871670",
+        "trace_list": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "trace_list_sha256": "a731bfc2cbb90b51888e92f3fb188ff4fceb123612a7b1ceb1817bc752e89461",
+        "expected_instructions": 377291004,
+        "expected_kernel_names": [
+          "_Z14calculate_tempiPfS_S_iiiiffffff"
+        ],
+        "members": [
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernel-1.traceg",
+            "sha256": "21cd403581a94451e1f9e7a79950d7effd25319daccc101187233e4a0c985985",
+            "bytes": 1093377608
+          }
+        ],
+        "configs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/configs/dtc_l1/fast64/FAST64_OO.config",
+            "sha256": "546c68f96d47f4650703ccfbc925bd789f923501d5607a77e79ca4845f234caa"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-service-closure-174-v1/docs/dtc_l1/iscas2027/service_closure_174_v1/config/FINITE_PRIMARY_COMMON.config",
+            "sha256": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+          },
+          {
+            "path": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/config/COMMON_LOWER_CAP.config",
+            "sha256": "84ad4954b5a0eabc3fe5d39bd627ad838b0763c526af38e5c476394ab0d58f9b"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          }
+        ],
+        "expected_active_pib": 128
+      },
+      "runner_sha256": "849a191159a2e1a049496945d659dcfc19114c5f6b718f85fd2748cb279c8d3a",
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "-o",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_OO128_25b53f13-1142-435a-a2c9-7f7cee91bc34/resource.time",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "-trace",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-admission-v1/immutable-inputs/dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169/kernelslist.g",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_OO128_25b53f13-1142-435a-a2c9-7f7cee91bc34/config-0.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_OO128_25b53f13-1142-435a-a2c9-7f7cee91bc34/config-1.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_OO128_25b53f13-1142-435a-a2c9-7f7cee91bc34/config-2.config",
+        "-config",
+        "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/HS_SOURCE_PROFILE_V2_OO128_25b53f13-1142-435a-a2c9-7f7cee91bc34/config-3.config"
+      ],
+      "classification": "SOURCE_PROFILE_DERIVED_INPUT_SIMULATION_NOT_HISTORICAL_NATIVE_FIDELITY"
+    }
+  ],
+  "live_after": [
+    {
+      "pid": 433784,
+      "start_ticks": "889314424",
+      "cpu_ticks": 1516385,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 495652,
+      "start_ticks": "889453176",
+      "cpu_ticks": 1377844,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 495657,
+      "start_ticks": "889453176",
+      "cpu_ticks": 1377954,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 605909,
+      "start_ticks": "889791652",
+      "cpu_ticks": 1040177,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 606201,
+      "start_ticks": "889792750",
+      "cpu_ticks": 1039146,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out"
+    },
+    {
+      "pid": 606209,
+      "start_ticks": "889792919",
+      "cpu_ticks": 1039041,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 606218,
+      "start_ticks": "889793012",
+      "cpu_ticks": 1038801,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 624461,
+      "start_ticks": "889875018",
+      "cpu_ticks": 957001,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 638023,
+      "start_ticks": "889913954",
+      "cpu_ticks": 918188,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out"
+    },
+    {
+      "pid": 684341,
+      "start_ticks": "890096637",
+      "cpu_ticks": 735791,
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out"
+    },
+    {
+      "pid": 824502,
+      "start_ticks": "890833774",
+      "cpu_ticks": 506,
+      "exe": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out"
+    },
+    {
+      "pid": 824510,
+      "start_ticks": "890833872",
+      "cpu_ticks": 407,
+      "exe": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 824518,
+      "start_ticks": "890833981",
+      "cpu_ticks": 299,
+      "exe": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out"
+    },
+    {
+      "pid": 824549,
+      "start_ticks": "890834175",
+      "cpu_ticks": 106,
+      "exe": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out"
+    },
+    {
+      "pid": 824557,
+      "start_ticks": "890834275",
+      "cpu_ticks": 6,
+      "exe": "/workspace/dtc-service-closure-174-v1/hotspot-derived-paired-v2/attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out"
+    }
+  ],
+  "signals_or_restarts": false
+}
