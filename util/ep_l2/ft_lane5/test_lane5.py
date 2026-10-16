@@ -246,6 +246,12 @@ class EvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(InvalidEvidence, 'data/version'):
             validate_events(reference_fixture(), rows)
 
+    def test_response_without_descriptor_rejected(self):
+        rows = event_fixture()
+        rows.remove(next(r for r in rows if r['event'] == 'descriptor_alloc'))
+        with self.assertRaisesRegex(InvalidEvidence, 'live requester descriptor'):
+            validate_events(reference_fixture(), rows)
+
     def test_duplicate_response_not_hidden_by_equal_total(self):
         rows = event_fixture()
         next(r for r in rows if r['event'] == 'response' and r['request_id'] == 'C')['request_id'] = 'A'

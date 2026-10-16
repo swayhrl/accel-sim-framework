@@ -178,12 +178,14 @@ def run(spec, registry):
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
     lease = allocation['lease_id']
     process = None
+    created_directory = False
     status, detail = 'INCOMPLETE', 'runner interrupted before terminal validation'
     result = {'run_key': key, 'identity': spec['identity'], 'allocation': allocation,
               'audit': audit, 'status': status}
     started = time.monotonic()
     try:
         directory.mkdir(parents=True, exist_ok=False)
+        created_directory = True
         write_json(directory / 'input_spec.json', spec)
         write_json(directory / 'input_audit.json', audit)
         binary = directory / 'accel-sim.out'
@@ -269,7 +271,7 @@ def run(spec, registry):
         status, detail = 'FAILED', f'{type(error).__name__}: {error}'
     finally:
         result.update(status=status, detail=detail, wall_seconds=time.monotonic() - started)
-        if directory.is_dir():
+        if created_directory:
             if (directory / 'raw.log').exists():
                 result['raw_log_sha256'] = digest(directory / 'raw.log')
             write_json(directory / 'run_status.json', result)
