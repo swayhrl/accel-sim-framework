@@ -1,11 +1,21 @@
 # Source applicability and claim limits
 
+Current scientific decision: [authorization5248a5ed](DERIVED_INPUT_AUTHORIZATION_V1.md)
+adds `FORMAT_APPLICABILITY_REVIEW_PENDING` to all original-input Btree,
+2DConvolution and LUD evidence, including reused baselines and numerically
+valid matched/control rows. It preserves every terminal PASS and natural
+execution. The independent Lane B owns their bounded source review; no
+unconditional native/cache-semantic interpretation follows meanwhile.
+Original Hotspot promotion and three original unexecuted labels remain HOLD.
+The tables and historical audits below must be read with these dispositions.
+
 | Evidence | Applicable source/input scope | Does not establish |
 |---|---|---|
 | Frozen historical twelve | Original ordered629 SM70 trace members and their recorded Core/binary/config identities; original strict results retained | New finite-service numbers, native input shapes inferred from filenames, or current Tensor-Core/DNN implementations |
 | R1 V2 | Core6fba0136, binaryfe2d2737, whole-line IO/OO on qualified LD/ST multiplier1;4 directed CTest targets and full NN checks | A new ISA, native returned-value correctness, arbitrary higher LD/ST multiplier throughput, or broad OFF matrix revalidation |
 | OFF checks | Exact full NN cycles/instructions for BASE, IO andOO against the canonical frozen runtime | Full12-model numerical equivalence for ON; old IO/OO finite performance reuse |
 | R2 registered rows | Same frozen12 inputs; exact canonical B16-N/TC80-N reuse; new finite IO256/OO128, oneTRAD96 design, four IO128 and fourWAIT128 controls | GM12 before complete valid coverage, an ordering-only comparison from unequal primary PIB depths, equal silicon area or native DTC speedup |
+| Hotspot source-profile V2 | New immutable bundle `dd0da35f5a3e3a2467a1cd23a53ce3966cd7eb6ee31035733e26f48dc532c169`; independent full-byte/address/source/actual-parser admission and five same-input strict/resource-balance PASS | Original ELF/tracer/JIT/data/native-output equivalence, replacement of the original Hotspot lineage, old-input speedup denominators, matched128 ordering isolation or a modern-platform result |
 | RTX4080 baseline-only pilot | Complete original4-workload traces under frozen4080 memory config, canonical mode0, old trace opcode timing | Ada-native instruction execution/timing, cold native state, qualified DTC modern capacity or AWMA/C16 platform acceptance |
 | Native109 diagnostics |12 fixed native conditions; actual binaries/launch resources/cache/DRAM profiles and seven-process timing samples at890fb0be | Hidden PIB/MSHR dimensions, known physical cache-set mapping, isolated return-skew service or hardware DTC benefit |
 | Native109 SpMV | Pinned Parboil1138_bus, FP32/int32,36 CTAs; native numerical predicate and timing/profile accepted | Large DRAM/steady full-GPU stress; simulator admission of its actual SM89 cubin |
@@ -18,3 +28,17 @@ Native sharing conditions change footprint and coalescing as well as consumers. 
 The fixed128KiB modern decision is honored. Possible byte arithmetic does not establish implemented common storage/ports; the modern DTC gate remains HOLD. SpMV's opcode-root overlap with Ampere does not authorize a silent89-to86 mapping. LayerNorm remains NOT_ADMITTED. All native findings and failed capture/admission/launcher attempts remain available under their original identities. The original12 payload is independently present on174 despite109's availability gap.
 
 No equal-area or old4.7% area transfer, GM14, extra family search, closed SG3/logical80 experiment, texture/Tag bypass extension, wholesale toolchain migration or new3070 matrix is part of this delivery. Conditional3070 work requires primary closure and a fresh budget review; no3070 row is scheduled.
+
+
+The [V2 admission](review_pack/hotspot_derived_admission_v1) is limited to the
+disclosed reconstructed-source model. All13,169,524 warp records and377,291,004
+active-thread instructions were checked independently, with exactly122,760
+changed records/2,944,024 changed lane addresses at six PCs. The actual frozen
+parser's complete address stream matches the independent decoder. Most shared
+address changes remain model-conditioned; source agreement does not recover
+the original capture executable. [Five preregistered new-input arms](review_pack/hotspot_derived_complete_v1)
+all pass strict and resource checks. Their TRAD96 result is faster than both
+DTC designs and is retained. Those new conventional arms explicitly use the
+same32768 global lower cap as the finite174 contract; historical8192-cap
+conventional receipts are preserved and not relabelled or used as new-input
+denominators. No V2 IO128/WAIT128 or modern row was added to fill the old matrix.

@@ -1,5 +1,14 @@
 # Resource vector and residence accounting
 
+**Scientific disposition update,2026-10-16:** under
+[authorization5248a5ed](DERIVED_INPUT_AUTHORIZATION_V1.md), the original Btree,
+2DConvolution and LUD results retain terminal/invariant PASS but are
+`FORMAT_APPLICABILITY_REVIEW_PENDING`. This applies to the Btree/2D matched128
+numbers described below as well as primary, control and reused-baseline rows.
+Their mechanical pair validation does not close scientific applicability.
+Original Hotspot remains HOLD; the new V2 results use a separate admitted
+source-profile lineage and never replace its original identities.
+
 This materializes the method registered in R2 before comparative outcomes. [RESOURCE_VECTOR.tsv](review_pack/resource_vector_v1/RESOURCE_VECTOR.tsv) derives seven arms from registered config inheritance and original canonical baseline startup echoes. [RESOURCE_SOURCE_HASHES.tsv](review_pack/resource_vector_v1/RESOURCE_SOURCE_HASHES.tsv) binds those sources. No parameter, input, workload membership or performance-selection criterion changes.
 
 All counts are per SM except the explicitly global lower-credit cap. Enabled data capacities are16KiB B16-N/WAIT128,80KiB TC80-N,96KiB enhancedTRAD96, and80KiB DTC plus its existing16KiB ordinary side path. DTC's16KiB logical search coverage adds128 mappings, not another16KiB of data. The ordinary side path is sector-based in the DTC configuration; structural traditional controls are whole-line128B. Extra Tag/PIB/Ref/waiter/transaction state and independent data services remain charged separately. The historical platform's configured96KiB shared capacity stays present in each arm; it is not silently counted as additional DTC data or removed to create a favorable comparison.
@@ -32,3 +41,16 @@ Twenty-four CPU validation guard checks cover all four registered contracts and 
 The initial CPU-only [interconnect identity audit](review_pack/interconnect_identity_v1/ROW_INTERCONNECT_IDENTITIES.tsv) verifies all44 registered inherited configurations selectnetwork_mode2 (LOCAL_XBAR), with33 actual startup observations at that checkpoint. Core6582b9d1/6fba0136 `icnt_wrapper_init` constructs that path from inline options; only mode1 opens the external interconnect filename. Thus the inactive default`mesh` option is not a missing auxiliary input for these rows. Source header/implementation hashes, config/spec/start/runner bindings and unstarted-versus-observed status are retained. This performs no interconnect sweep, parser change, configuration change or new simulation.
 
 The [v2 startup coverage audit](review_pack/interconnect_identity_v2) extends observations to all41 already-started rows, including the eight subsequently admitted Gaussian/LUD/NN rows. All41 startup mode/explicit inline options match their immutable effective configurations; the earlier33 config/spec/start/runner identities and both pinned Core source hashes are unchanged. The three forbidden Hotspot labels remain unstarted and configuration-only. Exact option lines and bounded prefix observation hashes are retained; these are not whole-log final hashes or terminal acceptance. No new row, input, configuration, execution path or scientific promotion follows from this CPU identity audit.
+
+
+The separately [admitted source-profile HotspotV2 input](review_pack/hotspot_derived_admission_v1)
+has five new-input arms with common32768 lower cap, input and platform, and
+separate conventional/finite Core/binary identities. Their complete [terminal
+and resource balance receipts](review_pack/hotspot_derived_complete_v1) pass.
+Its PRIMARY_RESIDENCE_AND_OCCUPANCY.tsv exposes IO256/OO128 descriptive metrics:
+both retire 117,304 cacheable warp instructions and collect 695,640 32B sectors,
+with the existing64×cycle denominator and exact residence decomposition.
+Unequal active depth does not isolate ordering. No new matched128/WAIT128 arm
+was registered. All ratios use only these five new-input receipts; no old
+baseline or original Hotspot result is relabelled. Reconstruction scope does
+not certify original ELF/native execution or resolve the original input HOLD.
