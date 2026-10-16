@@ -1,9 +1,9 @@
 # 174-new→164 Storage-Ops执行入口
 
-此操作是用户单独授权的跨项目归档/空间恢复，不属于EP-L2 Lane 1–6，不替代Lane 5资源和独立资格管理。
+此操作是用户单独授权的跨项目归档/空间恢复，不属于EP-L2 Lane 1–6，不替代Lane5的科学资格管理。
 
-请先读最新[AMENDMENT_OVERLAY_MAPPING_V3.md](AMENDMENT_OVERLAY_MAPPING_V3.md)，再按需读[V2 SSHFS修订](AMENDMENT_SSHFS_V2.md)和原[GOAL.md](GOAL.md)。174-new窗口**继续**（不重启），旧174源侧使用独立Ops窗口进行定向盘点。`/root/share/mnt164` 已证实是真实164 SSHFS共享挂载且可读；尚未确认目标可写和归档根授权；Lane5已发布`/workspace`文件系统映射：新旧overlay共享底层容量的证据较强，但目录不互通，必须由Lane5重新测得真实释放量。
+**最新授权与续行：**先读[AMENDMENT_SHARED_BRIDGE_V4.md](AMENDMENT_SHARED_BRIDGE_V4.md)，再按需读[V3 Overlay映射](AMENDMENT_OVERLAY_MAPPING_V3.md)、[V2 SSHFS](AMENDMENT_SSHFS_V2.md)及原[GOAL.md](GOAL.md)。
 
-优先核实现有SSHFS挂载的目标写权限及用户专属归档根，无须反复尝试新SSH登录；若已有挂载不满足要求，再报告SSH认证需求。源端可达且所有安全门通过后才小批量复制并双端校验。删除仅限不活跃、非唯一、可重建、远端验证的明确临时文件。`/workspace/.git/tmp_pack_*`需另行用户明确批准后才删；不删除历史raw/trace/唯一binary/review pack。保留48GiB workspace磁盘和64GiB可用内存门槛。六Lane由原窗口继续，不动其worktree/registry/任务。
+用户已明确授权唯一164 SSHFS归档根：`/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02`，允许专属目录创建与几字节写入/关闭/读回/hash/清理探针；父目录原有`git_packs_20260928`不动。新旧174的`/root/share`可按共享路径设计，但仍需两窗口几字节交叉可见性探针，不等于`/workspace`路径互通。
 
-Ops执行证据写独立分支`hrl/ops-174new-164-archive-exec-v1`，此任务文件和发布提交只读。
+174-new目标侧继续原`hrl/ops-174new-164-archive-exec-v1`，旧174源侧另用独立Ops分支`hrl/ops-174-source-audit-exec-v1`。桥接只用专用目录，单批建议不超过512MiB，保留Shared至少40GiB空闲；源/桥/164逐文件hash并保留原始科研资料。高风险Git`tmp_pack_*`必须另经用户逐项批准才删，不重启或修改六个Lane。48GiB workspace门槛和额外构建余量不变。
