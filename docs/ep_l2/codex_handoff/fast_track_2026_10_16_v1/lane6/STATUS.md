@@ -1,53 +1,53 @@
-# Lane 6 — review_r3 delivery
+# Lane6 — review_r4+r5 / paper-PPA revision4
 
-Status: `READY_FOR_REVIEW_SCIENTIFIC_SUSPENSION_ENFORCED`.
-Same Lane/task/Framework branch `hrl/ep-l2-ft20261016-lane6-v1`; no initial Goal restart.
-Review authority: `a41bfb55934303a4d4a342762f74a16d137d0316`.
-Original scientific contract: `6c136e2a56a008695f8c8b815723bf8f1a760db9` unchanged.
-Offline source/tool producer: `8f68082c517dedd944c6073bff8ec84cd30e4404`; no Lane6 Core/build/runtime.
-Host: huangrulin-174. Existing worktree: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1`.
+Status: `LOW_RESOURCE_PAPER_COST_AND_V2_INTAKE_DELIVERED`.
+Authority: `77a9fbe937ea23465cf0d0076d2df1909f52d055`. Read r4 PARALLEL_CONTINUE then r5 CONTINUE;
+r5 is latest supplement/conflict authority. Original6c136e2a scientific contract,
+old R0/R1 suspension, quotas and original Goal unchanged. Same execution branch
+`hrl/ep-l2-ft20261016-lane6-v1`, existing worktree `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1`.
+Offline tools/manuscript producer: `f8bf02cfa8a0ded6e85470760be6023337b61fc3`; no Lane6 runtime/Core/binary.
 
-**This status supersedes the scientific acceptance statements in Lane6 r2 at
-6a3c00cb17aaff2a2c23c5990e7ef90f294aa8df.** r2 §5.1 independent-application
-qualification, §6 sad results and formal_sad/WB_PAIRS are
-SUSPENDED / RETRACTED_AS_SCIENTIFIC_RESULT. The old near-tie and no-capacity-benefit
-interpretations are withdrawn. Original paper, figures, CSV, raw, binary and run
-COMPLETE_VALID execution terminals are preserved. r1 all33 files and r2 all37
-files are byte-identical. Current accepted pairs=0, accepted application runs=0,
-whole-group mean=null, formal performance figures=[].
+Completed actual four-page Chinese manuscript + searchable PDF (113787 bytes),
+new lifecycle/copy/capacity/throughput causal argument, conditional controls and
+result/figure slots. All four rendered pages inspected; cost/minus glyph detail
+checked. Provisional Letter double-column working layout, NOT official ISCAS
+submission-template or bibliography validation. No large new figure campaign.
 
-Delivered new r3 Chinese manuscript, claim/evidence map, explicit retraction
-appendix/index, PPA ledger and strict current-acceptance consumer. PPA retains
-146/145KiB data + both sides128B/slice latch; RO configured N cost and unknown
-physical PPA remain explicit. Two unchanged historical figures only: full13-row
-locality evidence and separate old static1.721259x optimistic-read diagnostic.
-No old FT application result is used for formal effect/capacity conclusions.
+PPA:9 exact source-field anchors and6 explicit bit-width scenarios, real handle,
+slot/WB/reservation, comparator/selection logic and critical paths. Bound static
+candidateCore62dc1d179b5516e68b21b695c7a9c5d0667e9671, tree-equivalent publication
+c93d900e1f968a3b69990dc29b78d50fc18f35ac. Candidate uncompiled, binary=null;
+source existence is not production PASS. Common128B/slice latch remains outside
+1168/1160 slots. No inferred area/power/STA or free hardware from C++ containers.
+Static1024/112/32, equal-copy and downstream/ideal variants are CONDITIONAL
+DESIGNS, not runnable config authorizations or new experiments.
 
-Current Lane5 authority: `b134f76d8f4cd759c0852b68edf922ecbd445ea9`. Online fixed-ref
-freshness, exact acceptance/matrix/receipt digests and full51-file supersession
-closure are verified. CURRENT_ACCEPTED exact source/Framework/binary/config/trace,
-canonical run-key, raw, mode/workload/native totals plus consistent matrix entry
-are required. Missing/stale/suspended/NOT_RUN/mismatch denies formal plotting;
-old immutable qualification or normal terminal cannot override revocation.
-New identities need both physical_bank_clock and memcpy_payload_identity gates.
-No old R0 adapter defaults are inherited. Source and denial identities are in
-SOURCE_EVIDENCE_MANIFEST and audit/ACCEPTANCE_AUDIT; raw scope is original Git
-receipt and HASH INDEX, not a new old-model/raw correctness validation.
+V2 adaptation closes Lane5's review finding: exact upstream acceptance.py +
+canonical registry functions, live fetch/current generation/full identity/proof
+and dynamic withdrawn_releases, bridged to unchanged r3 native CSV/PAIR and
+11-gate validator. Never instantiate Registry or mutate its shared data. Newly
+withheld releases beyond the old hardcoded list veto old accepted packets.
+12 new bridge tests PASS, including synthetic positive/slowdown/all-five cases.
+Do not relabel these as production R0.1 qualification or rerun prior62/30 tests.
 
-Validation:30 synthetic tool tests PASS, six real old run records denied,
-three real native pairs denied, actual old sad plot entry refuses before output;
-four repeated audit JSONs byte-identical. Synthetic positive repaired adapter is
-a tool fixture, not an actual R0.1 release qualification. Seven historical/cost
-assets reused by exact Git hashes. All scientific inputs and shared registry unchanged.
+Latest consumed live application authority: `e8f701995a27154ffcc54cc38245dde8cd7f9bdf`;
+generation2 manifest hash `eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a`,
+byte-identical to prior V2 (same semantic generation despite publication advance).
+All6 old complete runs rejected, and old native sad intake rejects before summary.
+Current accepted formal pair0, mean=null, formal performance figures=[].
+Lane5 ten non-executable prepared rows are bound with new source/binary/key=null.
+No old source/config/key is promoted. Old r1/r2/r3 all110 files byte-identical,
+including old figures and r3 retraction. Historical locality/optimistic read stay
+scoped separately and are not rerun.
 
-Bounded Lane1 follow-up: `3840f9585b710a5abea8201c14fa05cdea930aa7`
-RECEIPT_REVIEW_R3 says official R0.1 source integration/resource hold; warmup not
-compiled, no accepted repaired release. Older RECEIPT.json remains historical.
-No inferred future/background compile or resource recovery. Startup locked registry:
-15 historical COMPLETE_VALID, zero active runs/leases; no duplicate Lane6 worker.
-Workspace free45661315072 bytes < unchanged48GiB floor. Lane6 performs no cleanup,
-build, simulator launch, reservation, stop or reset and does not consume repair quota.
+Before work, current STATUS/RECEIPT/branch and locked registry/processes checked.
+No active EP-L2 run/lease;7 other DTC service simulators observed and untouched.
+Workspace free at locked snapshot38317342720bytes, below48GiB;
+this did not block delivered light source/doc/tool work. No production admission,
+CXX build, simulator, reservation, storage move/delete, Ops takeover, host/path or
+threshold change. Temp document dependencies are isolated from other projects.
 
-Review pack: `docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r3/`.
-Lane6 r3 delivery has no blocker. Formal results await exact official R0.1 and
-independent current acceptance; R1.1/TVD/RO/PPA evidence remains separate pending work.
+Pack: `docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r4/`.
+This phase is complete, no local delivery blocker. Formal performance still needs
+Lane1 official repaired freeze, Lane5 independent/current qualification and new
+accepted pairs. R1.1/TVD/RO remain separately identified; no poller/background task.
