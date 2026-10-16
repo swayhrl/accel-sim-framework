@@ -1,6 +1,6 @@
 # DERIVED_INPUT_QUALIFICATION_CANDIDATE
 
-**Hotspot local candidate qualification: PASS under the explicitly disclosed reconstructed source model. Candidate only; historical capture equivalence unproven; no admission or simulation authorization; all Hotspot HOLDs retained.** The narrow eleven-input review found additional address-applicability risks. Submission scope is pending the user's new-risk review; this package makes that decision concrete and reviewable.
+**Hotspot local candidate qualification: PASS under the explicitly disclosed reconstructed source model. Candidate only; historical capture equivalence unproven; no admission or simulation authorization; all Hotspot HOLDs retained.** The narrow eleven-input review found additional address-applicability risks. The user selected independent submission of this Hotspot candidate while Btree/LUD/2DConvolution receive separate bounded scientific-risk reviews. The [qualification report](QUALIFICATION_REPORT.md) is ready for ChatGPT final review; formal input admission remains undecided.
 
 The user accepted continued research on V2 as an independent new derived-input candidate, without requiring recovery of the original ELF. The user did not accept historical executable equivalence or authorize a run. This package follows that definition and preserves every original input/result identity. It remains on branch `hrl/iscas2027-dtc-hotspot-format-174-v1` in the existing independent original174 worktree; V2 parent commit is d9f896a570da1218b0c93c2c68b930835eeac2fe. No Lane C capacity implementation or Lane D SM89 work is included.
 
@@ -39,7 +39,7 @@ One format-only pass inspects the other628 members /35144966 memory records. It 
 
 Three cases remain open for applicability review: **Btree** (6000 active extra lists, 5792 different addresses under historical full32 association), **LUD** (57536 potentially ambiguous nonzero anchors), **2DConvolution** (40940 nonzero anchors; version3 predates the mask fix and does not establish producer identity). DWT2D's18686 extra lists all have P=0 and no consumed active addresses. The other seven workloads show no active-address risk for the specific historical mechanisms examined. This is not blanket native-address qualification of all11.
 
-No new interpretation for these three inputs has been selected. The user was given concrete evidence and the choice to continue the independent Hotspot submission with separate risk registration, or pause submission to define a further bounded investigation. **No answer is presumed.** Original results, admission states and running jobs are preserved; no workloads are silently excluded from an aggregate.
+No new interpretation for these three inputs has been selected. The user explicitly chose continued independent Hotspot qualification/submission and separate risk registration, with a bounded CPU-only PC/opcode/address/behavior review of these three workloads. Their deeper reconstruction need not be completed before Hotspot delivery. This scope decision does not choose new addresses or declare existing results wrong/unaffected. Original results, admission states and running jobs are preserved; no workloads are silently excluded from an aggregate.
 
 ## Handoff boundary
 

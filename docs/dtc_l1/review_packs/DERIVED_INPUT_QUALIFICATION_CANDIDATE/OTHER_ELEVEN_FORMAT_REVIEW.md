@@ -32,6 +32,6 @@ FORMAT_WITNESSES.tsv retains at most two records per indicator per member; it is
 
 ## Review boundary
 
-The user was notified of Btree/LUD and subsequently of 2DConvolution, with the concrete alternatives above. No formula, new input definition, result relabeling, HOLD, acceptance or scheduler change is selected for these inputs. The review question is whether to finish the independent Hotspot candidate submission while registering these as separate unresolved risks, or pause submission and define another bounded semantic investigation. An unanswered scope question is not approval.
+The user was notified of Btree/LUD and subsequently of 2DConvolution, with the concrete alternatives above. No formula, new input definition, result relabeling, HOLD, acceptance or scheduler change is selected for these inputs. The user explicitly selected continued independent Hotspot submission with the three risks separately registered, and authorized bounded CPU-only detail on their PCs/opcodes/counts/address alternatives and simulated behavior. No deep reconstruction or new scientific input interpretation for those programs has been authorized. Their review does not block Hotspot delivery.
 
 Until reviewed, this pack must not be cited as "all eleven other inputs are qualified/unaffected," nor as proof of native GM12 fidelity. Existing original-path runs and result identities are preserved; Lane A owns their scientific-admission review. Do not use this finding to silently exclude workloads or rename an incomplete aggregate GM12.
