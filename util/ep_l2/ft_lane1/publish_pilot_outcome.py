@@ -31,7 +31,8 @@ def classify(request, state, raw):
     result = {'waiter_status': state['status'], 'classification': 'ENGINEERING_ONLY',
               'engineering_binary_sha256': None, 'runtime_ready': False,
               'independent_qualification': False, 'actual_directed_attempts': 0,
-              'actual_directed_passes': 0, 'formal_promotion': False}
+              'actual_directed_passes': 0, 'formal_promotion': False,
+              'compiler_capable_phase_started': False}
     if state['status'] == 'PILOT_RUNNER_FINISHED_NO_AUTOMATIC_RETRY':
         if raw is None:
             result['status'] = 'ENGINEERING_NOT_STARTED_OR_NO_RECEIPT_REVIEW_REQUIRED'
@@ -46,7 +47,9 @@ def classify(request, state, raw):
         result.update(status=raw['status'], engineering_binary_sha256=raw['engineering_binary_sha256'],
             actual_directed_attempts=len(executed), actual_directed_passes=sum(r.get('exit_code') == 0 for r in executed),
             wall_seconds=raw.get('wall_seconds'), sampled_high_water=raw.get('sampled_high_water'),
-            lease_released_token_consumed=raw.get('lease_released_token_consumed', False))
+            lease_released_token_consumed=raw.get('lease_released_token_consumed', False),
+            compiler_capable_phase_started=any(r['name'] in {'configure', 'build'} and r.get('process')
+                                               for r in raw['commands']))
         if raw['status'] == 'COMPLETE_ENGINEERING_ONLY':
             pilot.require(len(executed) == 21 and all(r.get('exit_code') == 0 for r in executed), 'MISSING_PRODUCER_EXECUTIONS')
     elif state['status'] == 'FORMAL_DRIVER_FINISHED_NO_AUTOMATIC_RETRY':
@@ -80,8 +83,12 @@ def merge_receipt(current, request, state, result, pack):
             executed_directed_tests=result['actual_directed_attempts'],
             passed_directed_tests=result['actual_directed_passes'],
             resource_high_water=result.get('sampled_high_water'),
-            compiler_started=bool(state.get('invocations')),
+            compiler_started=bool(result['compiler_capable_phase_started']),
             formal_runtime_ready=False, formal_application_permission=False)
+        receipt['actual_compiler_started_this_revision'] = bool(result['compiler_capable_phase_started'])
+        receipt.setdefault('validation', {})['engineering_pilot_producer_tests'] = {
+            'executed': result['actual_directed_attempts'], 'passed': result['actual_directed_passes'],
+            'classification': 'ENGINEERING_EVIDENCE_ONLY_NOT_FORMAL_QUALIFICATION'}
     receipt['next_action'] = ('Engineering evidence only: review any ordinary failure and bounded remediation; '
         'official release/independent11gate/formal resource admission remain separate. '
         'If the formal driver won, audit/freeze its official binary before announcing a release.')

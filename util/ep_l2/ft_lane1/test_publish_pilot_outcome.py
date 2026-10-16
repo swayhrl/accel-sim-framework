@@ -42,6 +42,7 @@ class OutcomeTests(unittest.TestCase):
     def test_no_receipt_is_not_a_success_or_binary(self):
         request, state, raw = self.fixture(); out = publication.classify(request, state, None)
         self.assertIn('NOT_STARTED', out['status']); self.assertIsNone(out['engineering_binary_sha256'])
+        self.assertFalse(out['compiler_capable_phase_started'])
 
     def test_timeout_and_formal_event_do_not_claim_engineering_passes(self):
         request, state, raw = self.fixture()
