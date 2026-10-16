@@ -1,0 +1,163 @@
+{
+  "R0_parent": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+  "binary_sha256": null,
+  "candidate": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "checks": [
+    {
+      "name": "candidate_publication_exact_tree",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "native_gpu_cache_cc_byte_unchanged",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy_non_FT_memcpy_tail_byte_unchanged",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "physical_clock_helper",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "FT_access_physical_clock",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "FT_access_no_bank_request_native_time",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "physical_births",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "monotonic_bank_clock_assertion",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "fill_physical_native_tag_offset_separate",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_gate_no_bank_request",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_quiescent_cache",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_partition_hardware_closure",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_refuses_dirty_reserved_pinned",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_selected_index_postcondition",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_partial_sector_identity",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "prefill_full_width_partial_endpoints",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "producer_host_test_actual_entry_and_WB",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "producer_host_test_real_reply_and_sector",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "producer_host_test_later_epoch_scope_explicit",
+      "scope": "STATIC_SOURCE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "name": "unique_bank_observation_method",
+      "scope": "DEFINITE_CXX_REDEFINITION_CHECK_NO_COMPILER",
+      "status": "FAIL"
+    }
+  ],
+  "core_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+  "duplicate_observer": {
+    "candidate_worktree_modified": false,
+    "definitions_after_patch": 1,
+    "definitions_before": 2,
+    "patch_apply_check_exit": 0,
+    "patch_apply_check_parent": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+    "patched_file_sha256": "df7f27f2c1fb1af5d6166d4dfdf5ab6cbe5a722c13b0cd7357e06a1a898fe977",
+    "source_lines": [
+      415,
+      423
+    ]
+  },
+  "kind": "INDEPENDENT_STATIC_AUDIT_NOT_RUNTIME_QUALIFICATION",
+  "next": "Lane1 removes duplicate observer in official source and publishes a new exact candidate; rebind audit/gate plan. Same official build entry and all current resource gates remain mandatory.",
+  "runtime_tests_executed": 0,
+  "scope_change_from_lane5_a945": "Lane1 supports later quiescent clean host prefill rather than rejecting all post-GPU epochs; full address and partial endpoints added. New test addresses that path. No independent runtime PASS inherited.",
+  "source_files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "56f088d4d429a50e4c4423023307c664d441270ba2407647013ade198407fe2a"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "8d0aaedbb1fc2300bf339a605b9d8f803c924ffaa9501a82a0fe7c2e2b5b1749"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "b4bb7cc34936263d12a6ff3839ffff0b8c876b9b774f571770db3fa080b56461"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "sha256": "6ff98d8f4de81c2702ed415f49daccded067113a5adb251313cdc4667d241a2e"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.h",
+      "sha256": "d648a4fad970a923343b49c084354500950a91b17256ba0eaa912b518290f0a2"
+    },
+    {
+      "path": "tests/ep_l2/R0_1_REPAIR_SCOPE.md",
+      "sha256": "784eab3d833d4cfb614aeb16e4b5738e8a76e396b88e70d3e9cfe3c7f92bc9f2"
+    },
+    {
+      "path": "tests/ep_l2/test_ft_host_prefill.cc",
+      "sha256": "48b655c1ec8101f7eec4a4427cdeef696382e2ae457a770d3380c5210f8c264d"
+    },
+    {
+      "path": "tests/ep_l2/test_ft_memcpy_clock.cc",
+      "sha256": "a9b6f454ff6d7a6ff6e428ba17ee301c05fbb3274cbd982f7952d36e8ea9cf39"
+    }
+  ],
+  "status": "COMPILE_BLOCKER_FOUND_MINIMAL_PATCH_PREPARED"
+}

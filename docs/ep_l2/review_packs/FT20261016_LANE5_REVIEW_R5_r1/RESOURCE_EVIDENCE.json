@@ -1,0 +1,401 @@
+{
+  "active_ep_l2_leases": [],
+  "active_ep_l2_runs": [],
+  "after": {
+    "available_memory_bytes": 160056037376,
+    "disk_free_bytes": 38342262784
+  },
+  "at": "2026-10-16T14:18:15.466191+00:00",
+  "before": {
+    "available_memory_bytes": 160062189568,
+    "disk_free_bytes": 38342262784
+  },
+  "bounded_readonly_commands": [
+    {
+      "command": [
+        "hostname"
+      ],
+      "exit_status": 0,
+      "raw_output": "huangrulin-174\n"
+    },
+    {
+      "command": [
+        "readlink",
+        "/proc/self/ns/mnt"
+      ],
+      "exit_status": 0,
+      "raw_output": "mnt:[4026534768]\n"
+    },
+    {
+      "command": [
+        "df",
+        "-B1",
+        "-P",
+        "/workspace",
+        "/tmp",
+        "/root/share",
+        "/dev/shm"
+      ],
+      "exit_status": 0,
+      "raw_output": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3548906143744 38342262784      99% /\noverlay        3779302981632 3548906143744 38342262784      99% /\n/dev/md127     7143083376640 6735709470720 47305990144     100% /root/share\nshm                 67108864             0    67108864       0% /dev/shm\n"
+    },
+    {
+      "command": [
+        "findmnt",
+        "-T",
+        "/workspace",
+        "-o",
+        "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT"
+      ],
+      "exit_status": 0,
+      "raw_output": "TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT\n/      overlay overlay   0:156 /\n"
+    },
+    {
+      "command": [
+        "findmnt",
+        "-T",
+        "/root/share",
+        "-o",
+        "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT"
+      ],
+      "exit_status": 0,
+      "raw_output": "TARGET      SOURCE     FSTYPE MAJ:MIN FSROOT\n/root/share /dev/md127 ext4     9:127 /\n"
+    },
+    {
+      "command": [
+        "du",
+        "-sx",
+        "--block-size=1",
+        "/workspace/build/ep-l2-ft20261016-lane1-v1"
+      ],
+      "exit_status": 0,
+      "raw_output": "229629952\t/workspace/build/ep-l2-ft20261016-lane1-v1\n"
+    },
+    {
+      "command": [
+        "du",
+        "-sx",
+        "--block-size=1",
+        "/workspace/build/ep-l2-ft20261016-lane1-r1"
+      ],
+      "exit_status": 0,
+      "raw_output": "522747904\t/workspace/build/ep-l2-ft20261016-lane1-r1\n"
+    }
+  ],
+  "build_floor_plus_growth_deficit_bytes": 15344828416,
+  "compiler_transient_peak_bytes": null,
+  "filesystem_mapping": [
+    {
+      "device": 156,
+      "free_bytes": 38342262784,
+      "inode": 32926662,
+      "path": "/workspace",
+      "realpath": "/workspace"
+    },
+    {
+      "device": 156,
+      "free_bytes": 38342262784,
+      "inode": 42459282,
+      "path": "/workspace/build",
+      "realpath": "/workspace/build"
+    },
+    {
+      "device": 2431,
+      "free_bytes": 47305990144,
+      "inode": 45023261,
+      "path": "/workspace/results",
+      "realpath": "/root/share/workspace_migrated_20260905/results"
+    },
+    {
+      "device": 2431,
+      "free_bytes": 47305990144,
+      "inode": 2,
+      "path": "/root/share",
+      "realpath": "/root/share"
+    },
+    {
+      "device": 156,
+      "free_bytes": 38342262784,
+      "inode": 16021933,
+      "path": "/tmp",
+      "realpath": "/tmp"
+    },
+    {
+      "device": 197,
+      "free_bytes": 67108864,
+      "inode": 1,
+      "path": "/dev/shm",
+      "realpath": "/dev/shm"
+    }
+  ],
+  "framework_audit_source": "85ff6e9f63b568f6ec616f2f8aa03eddc9b787f2",
+  "historical_six_run_storage_observations": [
+    {
+      "files": [
+        {
+          "allocated_bytes": 3715072,
+          "bytes": 3711676,
+          "path": "/workspace/results/ep_l2_ft20261016/d1775df8c1ae6747ceb7d96699e3450ae6bb96523faf047f1e39eb7bfa95d307/raw.log"
+        },
+        {
+          "allocated_bytes": 75776000,
+          "bytes": 75771168,
+          "path": "/workspace/results/ep_l2_ft20261016/d1775df8c1ae6747ceb7d96699e3450ae6bb96523faf047f1e39eb7bfa95d307/accel-sim.out"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 2797,
+          "path": "/workspace/results/ep_l2_ft20261016/d1775df8c1ae6747ceb7d96699e3450ae6bb96523faf047f1e39eb7bfa95d307/input_audit.json"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 1360,
+          "path": "/workspace/results/ep_l2_ft20261016/d1775df8c1ae6747ceb7d96699e3450ae6bb96523faf047f1e39eb7bfa95d307/terminal_summary.json"
+        },
+        {
+          "allocated_bytes": 8192,
+          "bytes": 7817,
+          "path": "/workspace/results/ep_l2_ft20261016/d1775df8c1ae6747ceb7d96699e3450ae6bb96523faf047f1e39eb7bfa95d307/run_status.json"
+        }
+      ],
+      "original_terminal": "COMPLETE_VALID",
+      "peak_process_tree_rss_bytes": 947912704,
+      "run_key": "d1775df8c1ae6747ceb7d96699e3450ae6bb96523faf047f1e39eb7bfa95d307",
+      "scientific_status": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
+      "wall_seconds": 311.6474151145667
+    },
+    {
+      "files": [
+        {
+          "allocated_bytes": 3710976,
+          "bytes": 3709255,
+          "path": "/workspace/results/ep_l2_ft20261016/30bb54d0a2ed23a6969112dc7fedda6f151aee4a49c52b9daf7cb50f84858b5b/raw.log"
+        },
+        {
+          "allocated_bytes": 75776000,
+          "bytes": 75771168,
+          "path": "/workspace/results/ep_l2_ft20261016/30bb54d0a2ed23a6969112dc7fedda6f151aee4a49c52b9daf7cb50f84858b5b/accel-sim.out"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 2797,
+          "path": "/workspace/results/ep_l2_ft20261016/30bb54d0a2ed23a6969112dc7fedda6f151aee4a49c52b9daf7cb50f84858b5b/input_audit.json"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 1360,
+          "path": "/workspace/results/ep_l2_ft20261016/30bb54d0a2ed23a6969112dc7fedda6f151aee4a49c52b9daf7cb50f84858b5b/terminal_summary.json"
+        },
+        {
+          "allocated_bytes": 8192,
+          "bytes": 7815,
+          "path": "/workspace/results/ep_l2_ft20261016/30bb54d0a2ed23a6969112dc7fedda6f151aee4a49c52b9daf7cb50f84858b5b/run_status.json"
+        }
+      ],
+      "original_terminal": "COMPLETE_VALID",
+      "peak_process_tree_rss_bytes": 939524096,
+      "run_key": "30bb54d0a2ed23a6969112dc7fedda6f151aee4a49c52b9daf7cb50f84858b5b",
+      "scientific_status": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
+      "wall_seconds": 305.3405779786408
+    },
+    {
+      "files": [
+        {
+          "allocated_bytes": 2281472,
+          "bytes": 2281087,
+          "path": "/workspace/results/ep_l2_ft20261016/27602642b813a9ef25f44df22e2185be83a66db213833d786f61d2971f134edf/raw.log"
+        },
+        {
+          "allocated_bytes": 75776000,
+          "bytes": 75771168,
+          "path": "/workspace/results/ep_l2_ft20261016/27602642b813a9ef25f44df22e2185be83a66db213833d786f61d2971f134edf/accel-sim.out"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 2490,
+          "path": "/workspace/results/ep_l2_ft20261016/27602642b813a9ef25f44df22e2185be83a66db213833d786f61d2971f134edf/input_audit.json"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 1366,
+          "path": "/workspace/results/ep_l2_ft20261016/27602642b813a9ef25f44df22e2185be83a66db213833d786f61d2971f134edf/terminal_summary.json"
+        },
+        {
+          "allocated_bytes": 8192,
+          "bytes": 7514,
+          "path": "/workspace/results/ep_l2_ft20261016/27602642b813a9ef25f44df22e2185be83a66db213833d786f61d2971f134edf/run_status.json"
+        }
+      ],
+      "original_terminal": "COMPLETE_VALID",
+      "peak_process_tree_rss_bytes": 541065216,
+      "run_key": "27602642b813a9ef25f44df22e2185be83a66db213833d786f61d2971f134edf",
+      "scientific_status": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
+      "wall_seconds": 602.9110783282667
+    },
+    {
+      "files": [
+        {
+          "allocated_bytes": 2281472,
+          "bytes": 2279401,
+          "path": "/workspace/results/ep_l2_ft20261016/af871a170ea6346a303a72e171edb0359ec2a3b168ddc1c5df75fe00ea673837/raw.log"
+        },
+        {
+          "allocated_bytes": 75776000,
+          "bytes": 75771168,
+          "path": "/workspace/results/ep_l2_ft20261016/af871a170ea6346a303a72e171edb0359ec2a3b168ddc1c5df75fe00ea673837/accel-sim.out"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 2490,
+          "path": "/workspace/results/ep_l2_ft20261016/af871a170ea6346a303a72e171edb0359ec2a3b168ddc1c5df75fe00ea673837/input_audit.json"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 1366,
+          "path": "/workspace/results/ep_l2_ft20261016/af871a170ea6346a303a72e171edb0359ec2a3b168ddc1c5df75fe00ea673837/terminal_summary.json"
+        },
+        {
+          "allocated_bytes": 8192,
+          "bytes": 7511,
+          "path": "/workspace/results/ep_l2_ft20261016/af871a170ea6346a303a72e171edb0359ec2a3b168ddc1c5df75fe00ea673837/run_status.json"
+        }
+      ],
+      "original_terminal": "COMPLETE_VALID",
+      "peak_process_tree_rss_bytes": 545259520,
+      "run_key": "af871a170ea6346a303a72e171edb0359ec2a3b168ddc1c5df75fe00ea673837",
+      "scientific_status": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
+      "wall_seconds": 635.765373442322
+    },
+    {
+      "files": [
+        {
+          "allocated_bytes": 5128192,
+          "bytes": 5122848,
+          "path": "/workspace/results/ep_l2_ft20261016/f0ebb4bc70845826db3ad0a1d8377ecdca1f7add4c79763d5396118a90c8b40d/raw.log"
+        },
+        {
+          "allocated_bytes": 75776000,
+          "bytes": 75771168,
+          "path": "/workspace/results/ep_l2_ft20261016/f0ebb4bc70845826db3ad0a1d8377ecdca1f7add4c79763d5396118a90c8b40d/accel-sim.out"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 3103,
+          "path": "/workspace/results/ep_l2_ft20261016/f0ebb4bc70845826db3ad0a1d8377ecdca1f7add4c79763d5396118a90c8b40d/input_audit.json"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 1364,
+          "path": "/workspace/results/ep_l2_ft20261016/f0ebb4bc70845826db3ad0a1d8377ecdca1f7add4c79763d5396118a90c8b40d/terminal_summary.json"
+        },
+        {
+          "allocated_bytes": 8192,
+          "bytes": 8159,
+          "path": "/workspace/results/ep_l2_ft20261016/f0ebb4bc70845826db3ad0a1d8377ecdca1f7add4c79763d5396118a90c8b40d/run_status.json"
+        }
+      ],
+      "original_terminal": "COMPLETE_VALID",
+      "peak_process_tree_rss_bytes": 1015021568,
+      "run_key": "f0ebb4bc70845826db3ad0a1d8377ecdca1f7add4c79763d5396118a90c8b40d",
+      "scientific_status": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
+      "wall_seconds": 366.41908535175025
+    },
+    {
+      "files": [
+        {
+          "allocated_bytes": 5128192,
+          "bytes": 5121578,
+          "path": "/workspace/results/ep_l2_ft20261016/e9cb89a8171c7c717e56f8b49af8c3d6e2412328c684b31b9ac68dce493e29f5/raw.log"
+        },
+        {
+          "allocated_bytes": 75776000,
+          "bytes": 75771168,
+          "path": "/workspace/results/ep_l2_ft20261016/e9cb89a8171c7c717e56f8b49af8c3d6e2412328c684b31b9ac68dce493e29f5/accel-sim.out"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 3103,
+          "path": "/workspace/results/ep_l2_ft20261016/e9cb89a8171c7c717e56f8b49af8c3d6e2412328c684b31b9ac68dce493e29f5/input_audit.json"
+        },
+        {
+          "allocated_bytes": 4096,
+          "bytes": 1364,
+          "path": "/workspace/results/ep_l2_ft20261016/e9cb89a8171c7c717e56f8b49af8c3d6e2412328c684b31b9ac68dce493e29f5/terminal_summary.json"
+        },
+        {
+          "allocated_bytes": 8192,
+          "bytes": 8157,
+          "path": "/workspace/results/ep_l2_ft20261016/e9cb89a8171c7c717e56f8b49af8c3d6e2412328c684b31b9ac68dce493e29f5/run_status.json"
+        }
+      ],
+      "original_terminal": "COMPLETE_VALID",
+      "peak_process_tree_rss_bytes": 1023410176,
+      "run_key": "e9cb89a8171c7c717e56f8b49af8c3d6e2412328c684b31b9ac68dce493e29f5",
+      "scientific_status": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
+      "wall_seconds": 350.51096021197736
+    }
+  ],
+  "other_project_future_growth_bound_bytes": null,
+  "other_project_observations": [
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_PILOT_IO_BICG_aec8c80b-1d77-4301-8314-fb98c5d95058",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+      "pid": 433784
+    },
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+      "pid": 495652
+    },
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+      "pid": 495657
+    },
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_COHORT_TRAD96_GESUMMV_8d9b7f69-1a31-4706-92af-976e02bb5448",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+      "pid": 606201
+    },
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_ATAX_ea3ad460-da0b-4877-8537-e374ed7a946c",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+      "pid": 606209
+    },
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_CONTROL_IO128_BICG_87c9040b-1ce7-4166-b68e-38da9bceb1d6",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+      "pid": 624461
+    },
+    {
+      "action": "OBSERVED_ONLY_NO_SIGNAL_OR_REPRIORITIZATION",
+      "cwd": "/workspace/dtc-service-closure-174-v1/r2-attempts/R2_CONTROL_WAIT128_BICG_88ed4a02-4ead-47f5-8e92-cc57fe67c0cf",
+      "exe": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+      "pid": 638023
+    }
+  ],
+  "paths_deleted_or_moved": [],
+  "physical_bytes_released": 0,
+  "policy": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "default_run_memory_bytes": 8589934592,
+    "default_run_output_limit_bytes": 2147483648,
+    "max_build_jobs": 4,
+    "max_cpu_units": 8,
+    "max_reserved_memory_bytes": 34359738368,
+    "max_result_bytes": 8589934592,
+    "max_simulators": 2,
+    "min_available_memory_bytes": 68719476736,
+    "min_disk_free_bytes": 51539607552,
+    "scan_exclusive": true
+  },
+  "policy_changed": false,
+  "scope": "No cleanup, transport, build, simulation or claim. du limited to three existing Lane1 build roots; no DTC data walk. Frozen run files stat-only; small known configs/list content only.",
+  "workspace_floor_deficit_bytes": 13197344768
+}

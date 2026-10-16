@@ -20,21 +20,30 @@
     "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r2",
     "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_RESOURCE_r1",
-    "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r3"
+    "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r3",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1"
   ],
-  "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
+  "audit_framework_source": "85ff6e9f63b568f6ec616f2f8aa03eddc9b787f2",
+  "binary_sha256": null,
   "blockers": [
     {
-      "reason": "Actual workspace below unchanged48GiB floor; no sufficient own workspace scratch or safe alternate FS; build growth headroom additionally required",
-      "required_artifact": "Lane1 sole official R0.1 release with exact Core/producing Framework/binary/config; shared safe admission",
-      "resource_audit": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_RESOURCE_r1/RESOURCE_RECOVERY.json",
-      "scope": "official R0.1 build and independent runtime qualification"
+      "artifact": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1/REMOVE_DUPLICATE_BANK_OBSERVER.patch",
+      "reason": "Exact uncompiled62dc1d candidate has duplicate inline method. Minimal patch supplied and git apply --check PASS; integrate into new source SHA before build.",
+      "scope": "Official Lane1 R0.1 compilation"
+    },
+    {
+      "alternatives": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1/BUILD_ADMISSION_ALTERNATIVES.md",
+      "build_floor_plus_growth_deficit_bytes": 15344828416,
+      "reason": "Workspace snapshot below current48GiB floor plus build2GiB reserve; unknown transient peak and external growth do not justify lowering floor",
+      "scope": "Official build / independent runtime gates / formal simulation only",
+      "workspace_floor_deficit_bytes": 13197344768,
+      "workspace_free_bytes": 38342262784
     }
   ],
   "config_sha256": null,
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "core_branch": "hrl/ep-l2-ft20261016-lane5-v1 (test and minimal repair candidate only)",
-  "core_source_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+  "core_source_commit": null,
   "created_at": "2026-10-16T09:23:47.503012+00:00",
   "dependency_receipts": [
     {
@@ -74,6 +83,18 @@
       "supersedes_old_qualification_claim": true
     }
   ],
+  "dependency_receipts_current_review_r5": [
+    {
+      "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
+      "publication": "c2a536bdc08687260acc10e30e2fb80a6f791c9e",
+      "sha256": "d914bcb5bb42ba2f782712ea61779ed4d291dad9be25c5fc0e4ffc8dab72e4d7"
+    },
+    {
+      "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane6/STATUS.md",
+      "publication": "70675cc3b2cd63e29fc7ab2b0b54dc924011f5e4",
+      "sha256": "cc118d37f268c423d7f8cd8606701f35bf8bb57d25034de61b2ab9dbea781efe"
+    }
+  ],
   "feature_vector": null,
   "formal_campaign": {
     "completed_pair_packs": [
@@ -93,14 +114,63 @@
   },
   "framework_branch": "hrl/ep-l2-ft20261016-lane5-v1",
   "framework_implementation_parent": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
-  "framework_source_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
+  "framework_source_commit": null,
   "historical_core_test_source_commit": "1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e",
+  "historical_withdrawn_R0_identity": {
+    "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
+    "core_source_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+    "framework_source_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
+    "qualified_feature_vectors": [
+      {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 1168,
+        "ro": false,
+        "tvd": false,
+        "unified_wb": false,
+        "wbuf_entries": 16
+      },
+      {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 1168,
+        "ro": false,
+        "tvd": false,
+        "unified_wb": true,
+        "wbuf_entries": 16
+      }
+    ]
+  },
   "host": "huangrulin-174",
   "ideal_vector": null,
   "lane_id": 5,
   "latest_resource_observation": {
-    "available_memory_bytes": 162526593024,
-    "disk_free_bytes": 44932882432
+    "available_memory_bytes": 160056037376,
+    "disk_free_bytes": 38342262784
+  },
+  "low_resource_review_r5": {
+    "actual_new_cpp_tests": 0,
+    "artifact": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1",
+    "lane6_intake_followup": "Current R0/R1 veto holds. Dynamic V2 withdrawn_releases/full identity/proof adaptation required before future R0.1 acceptance.",
+    "new_run_keys": 0,
+    "pack_receipt_sha256": "76f8e720e4b4f2284f88bf0e9e9057eec7710f021bc71e0449b2286b5c0f088e",
+    "planned_cpp_executions": 21,
+    "prepared_formal_pairs": 5,
+    "prepared_rows": 10,
+    "production_floor_not_applied_to_source_preparation": true,
+    "proposed_admission_alternatives": "EVIDENCE_ONLY_NOT_ADOPTED",
+    "source_findings": "Duplicate inline bank observer removed by minimal exact-parent patch; Lane1 integrates and freezes new official source",
+    "source_static_checks": {
+      "FAIL": 1,
+      "PASS": 19,
+      "finding": "Duplicate bank observation method in candidate header",
+      "fix_patch_apply_check": "PASS_ON_EXACT_PARENT_NO_MUTATION",
+      "total": 20
+    }
   },
   "module_core_test_source_commit": "56abbacc1192d68995e78561899719649f838079",
   "module_core_test_sources": {
@@ -108,37 +178,15 @@
     "lane3": "57801b429166b47079444081aaaafbfe5050e0d5"
   },
   "own_core_branch_head": "a9457986625ad44c27229afc3f61dbabbada3e53",
-  "publication_readback": {
+  "pending_publication_readback": "Push and read back this new revision; final exact SHA returned by git remote validation, never self-referential producing runtime identity",
+  "publication_readback_previous_r3": {
     "core_verified_publication": "a9457986625ad44c27229afc3f61dbabbada3e53",
     "framework_verified_publication": "bc310efa2ebf4b921fba337e32edf0aa63e7c728",
     "fresh_github_consumer_rejections": 6,
     "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/REVIEW_R3_REMOTE_READBACK.json",
     "sha256": "6cbcf09dc6ec669dde9d68b358a7adb2fdf1e72462c78da3347b15a647bbe244"
   },
-  "qualified_feature_vectors": [
-    {
-      "adaptive_policy": false,
-      "bank_count": 4,
-      "finite_wbuf": true,
-      "ops_per_bank_cycle": 1,
-      "payload_capacity_per_slice": 1168,
-      "ro": false,
-      "tvd": false,
-      "unified_wb": false,
-      "wbuf_entries": 16
-    },
-    {
-      "adaptive_policy": false,
-      "bank_count": 4,
-      "finite_wbuf": true,
-      "ops_per_bank_cycle": 1,
-      "payload_capacity_per_slice": 1168,
-      "ro": false,
-      "tvd": false,
-      "unified_wb": true,
-      "wbuf_entries": 16
-    }
-  ],
+  "qualified_feature_vectors": [],
   "resource_recovery": {
     "at": "2026-10-16T11:58:14.767074+00:00",
     "mutated_or_deleted_files": [],
@@ -154,7 +202,7 @@
     "status": "RESOURCE_HOLD_NO_SUFFICIENT_OWN_WORKSPACE_SCRATCH",
     "workspace_deficit_bytes": 6103367680
   },
-  "review_coordination_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
+  "review_coordination_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
   "runner_source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "scientific_acceptance": {
@@ -167,10 +215,12 @@
     "revision": "FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
     "sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a"
   },
-  "status": "REVIEW_R3_SUPERSESSION_ENFORCED_REPAIR_CANDIDATE_NOT_COMPILED_RESOURCE_HOLD",
-  "task_id": "FT20261016_LANE5_REVIEW_R3_r1",
+  "static_candidate_core": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "static_candidate_core_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+  "status": "LOW_RESOURCE_SOURCE_AND_EXPERIMENT_PREPARATION_COMPLETE_OFFICIAL_BUILD_AND_QUALIFICATION_HOLD",
+  "task_id": "FT20261016_LANE5_REVIEW_R5_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-16T12:13:30.302793+00:00",
+  "updated_at": "2026-10-16T14:21:24.968929+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
@@ -245,6 +295,15 @@
       "physical_bank_clock",
       "memcpy_payload_identity"
     ],
+    "review_r5": {
+      "new_cpp_tests": 0,
+      "new_formal_runs": 0,
+      "old_62_tests": "NOT_RERUN_UNCHANGED",
+      "patch_check": "PASS_EXACT_PARENT_NO_MUTATION",
+      "planned_production_executions": 21,
+      "scientifically_current_accepted_pairs": 0,
+      "source_only": "19PASS/1FAIL_COMPILE_BLOCKER"
+    },
     "scientifically_accepted_R0_application_runs": 0,
     "warmup_identity_candidate": {
       "R0_parent": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
