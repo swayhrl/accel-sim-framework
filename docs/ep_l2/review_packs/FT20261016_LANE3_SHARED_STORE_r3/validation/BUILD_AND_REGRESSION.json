@@ -1,0 +1,52 @@
+{
+  "source": "ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5",
+  "lane1_candidate": "10d7f4fea1f9699b4e091091f7e23e072c19d453",
+  "lease_id": "782d0ecb46b74081a25443c3d986765f",
+  "commands": [
+    {
+      "command": [
+        "cmake",
+        "-S",
+        ".",
+        "-B",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5/core",
+        "-DCMAKE_BUILD_TYPE=Release"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane3/validation/shared_store_configure.log"
+    },
+    {
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5/core",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane3/validation/shared_store_build.log"
+    },
+    {
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5/core",
+        "--target",
+        "ep_l2_ft_directed",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane3/validation/shared_store_fixture_build.log"
+    },
+    {
+      "command": [
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5/core/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/results/ep_l2_ft20261016/lane3/validation/shared_store_fixture_run.log"
+    }
+  ],
+  "scope": "SHARED_STORE_ADAPTER_AND_PUBLIC_WBUF_REGRESSION_NOT_RO_FULL_RUNTIME",
+  "lease_released": true
+}
