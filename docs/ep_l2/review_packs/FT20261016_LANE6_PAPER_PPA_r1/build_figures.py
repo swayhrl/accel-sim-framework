@@ -65,7 +65,7 @@ def write_json(path, data):
 
 def write_csv(path, rows):
     with path.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -113,6 +113,8 @@ def save(fig, out, name, caption, metadata):
         # No creation time in PDF/SVG metadata: repeated runs have stable content.
         meta = {"Date": None} if suffix == "svg" else {"CreationDate": None, "ModDate": None}
         fig.savefig(target, metadata=meta, bbox_inches="tight")
+        if suffix == "svg":
+            target.write_text("\n".join(line.rstrip() for line in target.read_text().splitlines()) + "\n")
     plt.close(fig)
     metadata[name] = {"caption": caption, "outputs": ["figures/" + name + ".svg", "figures/" + name + ".pdf"]}
 
