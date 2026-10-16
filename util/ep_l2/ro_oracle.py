@@ -10,6 +10,7 @@ import lzma
 from pathlib import Path
 import re
 import sqlite3
+import subprocess
 
 
 SCHEMA = "EP_L2_RO_ORACLE_V1"
@@ -248,13 +249,47 @@ def build(commandlist, output, scope, framework_source):
     return manifest
 
 
+def verify(output):
+    output = Path(output)
+    m = json.loads((output / "manifest.json").read_text())
+    if m["schema"] != SCHEMA or m["scope"] != SCOPE or m["epoch"] != "whole_commandlist":
+        raise ValueError("unsupported oracle contract")
+    if sha256(m["commandlist"]) != m["commandlist_sha256"]:
+        raise ValueError("changed commandlist")
+    kernels = [str((Path(m["commandlist"]).parent/s.strip()).resolve())
+               for s in Path(m["commandlist"]).read_text().splitlines()
+               if s.strip().startswith("kernel")]
+    if kernels != [str(Path(k["path"]).resolve()) for k in m["kernels"]]:
+        raise ValueError("partial or reordered oracle epoch")
+    for k in m["kernels"]:
+        if sha256(k["path"]) != k["sha256"]:
+            raise ValueError("changed trace input")
+    for name, digest in m["artifacts"].items():
+        if Path(name).name != name or sha256(output/name) != digest:
+            raise ValueError("changed oracle artifact")
+    return m
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--commandlist", required=True)
-    p.add_argument("--output", required=True)
-    p.add_argument("--model-scope", choices=[SCOPE], required=True)
-    p.add_argument("--framework-source", required=True)
+    p.add_argument("--verify", type=Path)
+    p.add_argument("--commandlist")
+    p.add_argument("--output")
+    p.add_argument("--model-scope", choices=[SCOPE])
+    p.add_argument("--framework-source")
     args = p.parse_args()
+    if args.verify:
+        m = verify(args.verify)
+        print(json.dumps({"status":"INPUT_AND_ARTIFACT_HASHES_VERIFIED", "manifest_sha256":sha256(args.verify/"manifest.json")}))
+        return
+    if not all([args.commandlist, args.output, args.model_scope, args.framework_source]):
+        p.error("build requires commandlist, output, model-scope and framework-source")
+    # Bind the exact script bytes to an existing producer commit before work.
+    root = Path(__file__).resolve().parents[2]
+    frozen = subprocess.check_output(["git", "-C", str(root), "show",
+                                     args.framework_source + ":util/ep_l2/ro_oracle.py"])
+    if frozen != Path(__file__).read_bytes():
+        raise ValueError("oracle script is not frozen at declared source commit")
     m = build(args.commandlist, args.output, args.model_scope, args.framework_source)
     print(json.dumps({"status":m["status"], "kernels":m["kernel_count"], "counts":m["counts"]}))
 

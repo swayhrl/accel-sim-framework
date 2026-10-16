@@ -85,6 +85,16 @@ class OracleTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.run_build([kernel(["0 0 0 0 0 1 0 LDG 0 4 99 1000"])])
 
+    def test_verify_binds_every_trace_and_artifact(self):
+        temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        (root/"kernel-1.traceg").write_text(kernel([ins("LDG", 0x1000)]))
+        (root/"kernelslist.g").write_text("kernel-1.traceg\n")
+        ro.build(root/"kernelslist.g", root/"out", ro.SCOPE, "fixture")
+        self.assertEqual(ro.verify(root/"out")["kernel_count"], 1)
+        (root/"out/certified_lines.txt").write_text("0000000000002000\n")
+        with self.assertRaises(ValueError): ro.verify(root/"out")
+
 
 if __name__ == "__main__":
     unittest.main()
