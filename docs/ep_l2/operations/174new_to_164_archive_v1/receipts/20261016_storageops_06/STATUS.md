@@ -1,6 +1,6 @@
 # V7 target: R1 complete archive and independent full-content restore
 
-Current PolyBench window: PB_CHUNK_020 RANGE_DEST_VERIFIED; 11010048000 verified component bytes (21/35), whole archive not yet verified. All scientific originals SOURCE_KEEP.
+Current PolyBench window: PB_CHUNK_021 RANGE_DEST_VERIFIED; 11534336000 verified component bytes (22/35), whole archive not yet verified. All scientific originals SOURCE_KEEP.
 
 R1: all 14 batches, 18565/18565 files, 4737658722 logical bytes are DEST_VERIFIED. Complete path/hash/size/identity membership matches frozen full source manifest 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5. Final data receipt was pushed/fetched at 43c717a20ae85b75d27bb1b8cb77d54120c52a4a. Every source batch has an independently GitHub-pinned SOURCE_KEEP ACK. All bridge data batches are closed; all original R1 files stay intact and R1 source release is zero.
 
@@ -10,7 +10,7 @@ Old174 accepted the exact B001 reverse restore window: 1269 files / 483509895 B 
 
 Primary archive total is 17974398799 B: R1 4737658722, S01/S02 821599805, and 36 legacy pack backups 12415140272. The legacy staging route was NONCOMPLIANT and is preserved as such in receipts; no historical pack copy or nonce was repeated, and all original Git packs/objects remain SOURCE_KEEP. Independent restore copies are excluded from primary archived bytes.
 
-S01/S02 alone have independent source release evidence: 821854208 allocated bytes released and 812617728 B summed df action-window gains. This sum is not current free space. Source commits are 5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd and e9f9d05acdd9cb960dd3823a97155597be8929ba. Latest target-side observation of the real old174 filesystem at 18:41:08Z was 25271463936 B available; it is not independent Lane5 admission. The unchanged 48GiB floor plus about 2GiB allowance is not met. A Lane5 handoff is recorded; no direct Lane5 endpoint or acknowledgment is claimed, and no Lane registry, worktree, build, process or experiment was changed.
+S01/S02 alone have independent source release evidence: 821854208 allocated bytes released and 812617728 B summed df action-window gains. This sum is not current free space. Source commits are 5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd and e9f9d05acdd9cb960dd3823a97155597be8929ba. Latest target-side observation of the real old174 filesystem at 19:09:09Z was 25040367616 B available; it is not independent Lane5 admission. The unchanged 48GiB floor plus about 2GiB allowance is not met. A Lane5 handoff is recorded; no direct Lane5 endpoint or acknowledgment is claimed, and no Lane registry, worktree, build, process or experiment was changed.
 
 Candidates R1/R1R/R2 retain COPY_OK_ONLY/SOURCE_KEEP. Exact maps and regular-file allocation upper bounds are in CANDIDATE_RECLAIM_ESTIMATES.json; no df gain is inferred from them. R1R/R2 have source indexes, mode/directory metadata and plans on 164, but no project data. Source has additionally proposed a PolyBench archive copy with a potentially much larger cold stage scope. The exact V2 35-range plan is active under R10, with source scope and per-range hashes independently pinned; it does not authorize source release. Active DTC-L1/EP-L2/C16, M5 traces, signoff evidence, unknown-owner assets and all Git metadata remain protected.
 
