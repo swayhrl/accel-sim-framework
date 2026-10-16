@@ -47,6 +47,17 @@ class Closure(unittest.TestCase):
         with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('staging_reads=2','staging_reads=1',1))
     def test_reference_leak(self):
         with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('reference_arrivals_live=0','reference_arrivals_live=1',1))
+    def test_each_metadata_limit_must_be_nonbinding(self):
+        text=terminal_fixture().replace('ideal_meta=0','ideal_meta=1')
+        vector={'wb':True,'meta':True,'read_hit':False}
+        self.assertEqual(self.parse(text,vector)['nonbinding_meta'],'PASS')
+        for field in ['line_mshr_full','descriptor_full','per_address_full']:
+            with self.subTest(field=field),self.assertRaisesRegex(ValueError,'capacity refusal'):
+                self.parse(text.replace(field+'=0',field+'=1',1),vector)
+    def test_read_hit_must_actually_serve(self):
+        text=terminal_fixture(wb=False).replace('ideal_read_hit=0','ideal_read_hit=1')
+        with self.assertRaisesRegex(ValueError,'never served'):
+            self.parse(text,{'wb':False,'meta':False,'read_hit':True})
     def test_missing_normal_exit(self):
         with self.assertRaises(ValueError):self.parse(terminal_fixture().replace('*** exit detected ***','INCOMPLETE'))
     def test_wrong_model(self):

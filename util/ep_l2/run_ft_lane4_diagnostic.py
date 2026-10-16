@@ -171,10 +171,14 @@ def validate_b16_variant(spec, tools, api):
     check(gate.get('status')=='PASS' and gate.get('production_driven') is True and
           gate.get('ideal_vector')==identity['ideal_vector'], 'requested ideal mode not independently qualified by Lane5')
     check(tools.digest(gate['evidence_path'])==gate['evidence_sha256'], 'ideal qualification evidence changed')
+    # OFF authorization does not authorize the derived ideal vector. Consult
+    # the current central authority again; never reuse a prepared snapshot.
+    launch=tools.authorize_launch(identity,baseline_audit['qualified_release_sha256'],
+                                  tools.load_current_authority())
     return {'baseline_run_key':spec['baseline_run_key'],
             'baseline_identity':parent,
             'qualified_release_sha256':baseline_audit['qualified_release_sha256'],
-            'ideal_gate':gate}
+            'ideal_gate':gate,'scientific_launch_authorization':launch}
 
 
 def prepare(args, client, api, tools):
@@ -247,7 +251,7 @@ def execute(spec,audit,client,api,tools):
     if formal:
         science.check_not_withdrawn(spec['identity'],{'records':{'APPLICATION_ACCEPTANCE.json':{'rows':[]}}})
         authority=science.load_authority(ROOT,client,spec['baseline_spec']['qualified_release'])
-        scientific_authority=science.check_release_current(spec['baseline_spec'],authority,tools.digest)
+        scientific_authority=science.check_release_current(spec,authority,tools.digest)
     qualification=validate_b16_variant(spec,tools,api) if formal else None
     if not formal:
         check(spec['campaign_class']=='HISTORICAL_DIAGNOSTIC' and
@@ -308,11 +312,11 @@ def execute(spec,audit,client,api,tools):
             check(tools.asset_manifest(spec['configs'],ordered=True)==audit['configs'],'config changed')
             check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'trace content changed')
             check((tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])==audit['assets'],'auxiliary content changed')
-            if formal:validate_b16_variant(spec,tools,api)
             if formal:
                 try:
+                    validate_b16_variant(spec,tools,api)
                     latest=science.load_authority(ROOT,client,spec['baseline_spec']['qualified_release'])
-                    result['scientific_authority_at_exit']=science.check_release_current(spec['baseline_spec'],latest,tools.digest)
+                    result['scientific_authority_at_exit']=science.check_release_current(spec,latest,tools.digest)
                 except (ValueError,subprocess.SubprocessError,OSError) as error:
                     result['scientific_acceptance']='SUSPENDED_OR_UNVERIFIED_AT_EXIT'
                     result['scientific_acceptance_detail']=str(error)

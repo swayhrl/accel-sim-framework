@@ -8,8 +8,9 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import ft_lane4_lane5_tools as lane5_tools
 
-REVIEW='a41bfb55934303a4d4a342762f74a16d137d0316'
+REVIEW='77a9fbe937ea23465cf0d0076d2df1909f52d055'
 PREFIX='docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/'
 REF='origin/hrl/ep-l2-ft20261016-lane5-v1'
 # Fixed source/binary identities cannot acquire a source repair retroactively.
@@ -36,9 +37,10 @@ def sha(data):return hashlib.sha256(data).hexdigest()
 def load_authority(root, client, qualified_release=None):
     """One bounded read-only fetch per prepare/launch/final check; no polling."""
     root=Path(root)
-    subprocess.run(['git','-C',str(root),'fetch','origin','hrl/ep-l2-ft20261016-lane5-v1'],
-                   check=True,capture_output=True,timeout=45)
-    commit=subprocess.check_output(['git','-C',str(root),'rev-parse',REF],text=True).strip()
+    _,_,tools=lane5_tools.load(root,Path('/workspace/results/ep_l2_ft20261016/lane4'))
+    canonical=tools.scientific_acceptance
+    state=canonical.fetch_current_authority(root)
+    commit=state['binding']['publication_commit']
     def blob(rel):
         return subprocess.check_output(['git','-C',str(root),'show',commit+':'+rel])
     records={};hashes={}
@@ -56,13 +58,18 @@ def load_authority(root, client, qualified_release=None):
         release_relative=str(path.relative_to(lane5_root));release_bytes=blob(release_relative)
         check(sha(path.read_bytes())==sha(release_bytes),'local qualification differs from latest Lane5 publication')
     return dict(publication_commit=commit,records=records,sha256=hashes,
-                qualified_release_relative=release_relative,qualified_release_bytes=release_bytes)
+                qualified_release_relative=release_relative,qualified_release_bytes=release_bytes,
+                canonical_module=canonical,canonical_state=state)
 
 
 def check_not_withdrawn(identity,authority):
     check(identity['core_source_commit'] not in WITHDRAWN_CORES and
           identity['binary_sha256'] not in WITHDRAWN_BINARIES,
           'review_r3: old R0/R1/candidate application qualification is withdrawn')
+    if 'canonical_state' in authority:
+        module=authority['canonical_module']
+        module.reject_withdrawn(identity,module.current_manifest(authority['canonical_state']))
+        return
     for row in authority['records']['APPLICATION_ACCEPTANCE.json'].get('rows',[]):
         state=row.get('scientific_acceptance','')
         if state.startswith(('SUSPENDED','RETRACTED','WITHDRAWN')) and (
@@ -86,9 +93,11 @@ def check_release_current(spec,authority,digest):
         check(gate.get('status')=='PASS' and gate.get('production_driven') is True,
               'missing production repair gate: '+name)
         check(digest(gate['evidence_path'])==gate['evidence_sha256'],'repair evidence changed: '+name)
+    launch=authority['canonical_module'].authorize_launch(identity,sha(raw),authority['canonical_state'])
     return dict(publication_commit=authority['publication_commit'],authority_sha256=authority['sha256'],
                 qualified_release_sha256=sha(raw),published_qualified_release=authority['qualified_release_relative'],
-                current_release_eligibility='PASS_NOT_A_RUN_ACCEPTANCE',review_commit=REVIEW)
+                current_release_eligibility='PASS_NOT_A_RUN_ACCEPTANCE',review_commit=REVIEW,
+                scientific_launch_authorization=launch,authority_binding=authority['canonical_state']['binding'])
 
 
 def check_result_current(result,authority,run_key):
@@ -96,13 +105,8 @@ def check_result_current(result,authority,run_key):
     identity=result['identity'];check(result['run_key']==run_key(identity),'run-key/identity mismatch')
     check_not_withdrawn(identity,authority)
     check(result.get('status')=='COMPLETE_VALID','execution was not complete')
-    rows=[r for r in authority['records']['APPLICATION_ACCEPTANCE.json'].get('rows',[])
-          if r.get('run_key')==result['run_key']]
-    check(len(rows)==1,'missing/ambiguous latest run acceptance')
-    row=rows[0];check(row.get('scientific_acceptance')=='CURRENT_ACCEPTED','run scientific acceptance is suspended/not current')
-    for name in IDENTITY_FIELDS:check(row.get(name)==identity[name],'acceptance identity mismatch: '+name)
     raw=result.get('raw_log_sha256')
     check(isinstance(raw,str) and len(raw)==64 and all(c in '0123456789abcdef' for c in raw), 'missing valid raw log hash')
-    check(row.get('raw_log_sha256')==raw,'acceptance raw hash mismatch')
-    return dict(status='CURRENT_ACCEPTED',publication_commit=authority['publication_commit'],
-                application_acceptance_sha256=authority['sha256']['APPLICATION_ACCEPTANCE.json'])
+    summary=result['summary']
+    return authority['canonical_module'].require_current_result(identity,raw,summary['cycles'],
+                summary['instructions'],authority['canonical_state'])

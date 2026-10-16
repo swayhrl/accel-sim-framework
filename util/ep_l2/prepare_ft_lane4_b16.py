@@ -38,6 +38,7 @@ def main():
     spec['identity']['runtime_config_sha256']=tools.content_hash(
         {'ordered_configs':configs,'auxiliary_assets':assets,'environment':spec.get('environment',{})})
     validate_b16_variant(spec,tools,api)
+    spec['scientific_authority_at_prepare']=science.check_release_current(spec,authority,tools.digest)
     a.out.parent.mkdir(parents=True,exist_ok=True)
     with a.out.open('x') as f:
         json.dump({'run_key':api.run_key(spec['identity']),'spec':spec,

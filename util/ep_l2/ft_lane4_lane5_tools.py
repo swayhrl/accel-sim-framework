@@ -20,33 +20,39 @@ def load(root,results):
     registry=importlib.import_module('registry')
     if Path(registry.__file__).resolve()!=registry_path:raise ValueError('wrong registry module')
     if not client.get('runner_sha256'):
-        return client,registry,importlib.import_module('run')
+        raise ValueError('missing published Lane5 runner identity')
     commit=client['runner_source_commit']
     if len(commit)!=40 or any(c not in '0123456789abcdef' for c in commit):
         raise ValueError('invalid published Lane5 runner commit')
     folder=Path(results)/'tool_cache'/commit;folder.mkdir(parents=True,exist_ok=True)
     manifests=[]
-    for name in ['validate.py','feature_schema.py','run.py']:
-        raw=subprocess.check_output(['git','-C',str(root),'show',commit+':util/ep_l2/ft_lane5/'+name])
+    for name in ['validate.py','feature_schema.py','acceptance.py','run.py']:
+        source=client.get('acceptance_source_commit',commit) if name=='acceptance.py' else commit
+        if len(source)!=40 or any(c not in '0123456789abcdef' for c in source):
+            raise ValueError('invalid published Lane5 support commit')
+        raw=subprocess.check_output(['git','-C',str(root),'show',source+':util/ep_l2/ft_lane5/'+name])
         path=folder/name;expected=hashlib.sha256(raw).hexdigest()
+        if name=='acceptance.py' and expected!=client.get('acceptance_module_sha256'):
+            raise ValueError('Lane5 acceptance/source contract mismatch')
         if path.exists():
             if digest(path)!=expected:raise ValueError('frozen Lane5 tool cache changed')
         else:
             with path.open('xb') as stream:stream.write(raw)
-        manifests.append(dict(path=str(path),sha256=expected,git_source=commit+':util/ep_l2/ft_lane5/'+name))
+        manifests.append(dict(path=str(path),sha256=expected,git_source=source+':util/ep_l2/ft_lane5/'+name))
     if digest(folder/'run.py')!=client['runner_sha256']:
         raise ValueError('Lane5 runner/source contract mismatch')
     # run imports immutable functions from these exact modules. Temporary
     # aliases avoid mixing in another lane's uncommitted working-tree edits.
-    missing=object();previous={k:sys.modules.get(k,missing) for k in ['validate','feature_schema']}
+    missing=object();previous={k:sys.modules.get(k,missing) for k in ['validate','feature_schema','acceptance']}
     try:
-        for name in ['validate','feature_schema','run']:
+        for name in ['validate','feature_schema','acceptance','run']:
             module_name='lane5_'+name+'_'+commit
             spec=importlib.util.spec_from_file_location(module_name,folder/(name+'.py'))
             module=importlib.util.module_from_spec(spec);sys.modules[module_name]=module
             spec.loader.exec_module(module)
             if name!='run':sys.modules[name]=module
             else:runner=module
+        runner.scientific_acceptance=sys.modules['acceptance']
     finally:
         for name,value in previous.items():
             if value is missing:sys.modules.pop(name,None)

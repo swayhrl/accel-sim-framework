@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import run_ft_lane4_diagnostic as subject
@@ -56,6 +57,23 @@ class R1Binding(unittest.TestCase):
         self.spec['configs'].append(dict(name='lane4-ideal-vector.config',path=str(overlay)))
         self.spec['identity']['ideal_vector']=copy.deepcopy(subject.B16_MODES['I_WB'])
         self.spec['identity']['runtime_config_sha256']=self.config_hash(self.spec)
+        self.authorized_ideals=[dict(wb=False,meta=False,read_hit=False),subject.B16_MODES['I_WB']]
+        self.authority_patch=patch.object(self.tools,'load_current_authority',self.synthetic_authority)
+        self.authority_patch.start();self.addCleanup(self.authority_patch.stop)
+
+    def synthetic_authority(self):
+        # Only the authority loader is substituted, in this test process.
+        # Actual V2 binding and launch authorization still run on fixture bytes.
+        module=self.tools.scientific_acceptance
+        raw=json.dumps(dict(schema_version=module.SCHEMA,authority=dict(lane_id=5,framework_branch=module.BRANCH),
+            generation=1,revision='SYNTHETIC_NOT_QUALIFICATION',rows=[],withdrawn_releases=[],
+            supersession_evidence=[dict(path='docs/ep_l2/review_packs/TEST/proof',sha256=module.sha(b'test'))],
+            launch_authorizations=[dict(**{k:self.release[k] for k in module.RELEASE_FIELDS},
+                feature_vector=self.release['qualified_feature_vectors'][0],ideal_vector=v,
+                qualified_release_sha256=self.tools.digest(self.release_path),status='CURRENT_QUALIFIED_FOR_LAUNCH')
+                for v in self.authorized_ideals])).encode()
+        return module.bind_manifest(raw,dict(kind='LOCAL_CURRENT_POINTER',manifest_sha256=module.sha(raw),
+            generation=1,revision='SYNTHETIC_NOT_QUALIFICATION'),lambda name:b'test')
 
     def write_release(self):self.release_path.write_text(json.dumps(self.release))
     def config_hash(self,spec):
@@ -67,6 +85,26 @@ class R1Binding(unittest.TestCase):
     def test_valid_same_binary_with_only_requested_mode_qualified(self):
         result=self.validate();self.assertEqual(result['baseline_run_key'],self.api.run_key(self.base['identity']))
         self.assertEqual(list(self.release['ideal_gates']),['I_WB'])
+    def test_off_authorization_does_not_authorize_ideal(self):
+        self.authorized_ideals=[dict(wb=False,meta=False,read_hit=False)]
+        with self.assertRaisesRegex(ValueError,'not currently authorized'):self.validate()
+    def test_ideal_authorization_does_not_authorize_off_baseline(self):
+        self.authorized_ideals=[subject.B16_MODES['I_WB']]
+        with self.assertRaisesRegex(ValueError,'not currently authorized'):self.validate()
+    def test_authority_revoked_after_prepare(self):
+        self.validate();self.authorized_ideals=[]
+        with self.assertRaisesRegex(ValueError,'not currently authorized'):self.validate()
+    def test_unrelated_acceptance_module_cannot_contaminate_pinned_runner(self):
+        sentinel=object()
+        with patch.dict(sys.modules,{'acceptance':sentinel}):
+            client,api,tools=subject.load_tools()
+            self.assertIs(sys.modules['acceptance'],sentinel)
+            self.assertIs(tools.authorize_launch,tools.scientific_acceptance.authorize_launch)
+            inputs=client['consumed_runner_inputs']
+            row=next(r for r in inputs if r['path'].endswith('/acceptance.py'))
+            self.assertEqual(row['sha256'],client['acceptance_module_sha256'])
+            self.assertTrue(row['git_source'].startswith(client['acceptance_source_commit']+':'))
+            self.assertIs(api,self.api)
     def test_normal_r0_baseline_has_no_ideal_gate_requirement(self):
         self.binary.write_text('SYNTHETIC_R0_WITHOUT_DIAGNOSTICS')
         digest=self.tools.digest(self.binary)
