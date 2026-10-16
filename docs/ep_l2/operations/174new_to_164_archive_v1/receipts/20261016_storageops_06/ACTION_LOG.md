@@ -11,3 +11,5 @@
 - Read pinned source priority, complete source map and cold audit at a9a0f021a0b98d54dc3f47710dc5a3344ea018c7 in its separate evidence cache. Imported compact metadata only; no source path scan/copy/delete. No cold project is release-authorized.
 
 2026-10-16T15:45:41Z: R1_B001 1269 files / 483509895 B DEST_VERIFIED; closed/reopened SSHFS hash triples match. Source manifest membership independently checked. All original cold files SOURCE_KEEP. Guard invocation initially omitted required fixture arguments; corrected metadata-only invocation before receive, all 16 passed. No data retry or parallel stream. Source numeric metadata retained without claiming native recovery.
+
+2026-10-16T15:56:27Z: R1_B002 receipt published/fetched at 1ff521d336d2b0ab2148174970da6548e730d072; exact 416-file bridge cleanup completed. R1 source releases zero. Read-only coverage joins all 18565 numeric metadata rows and confirms 1685 destination files, 16880 missing. Reverse-bridge restore proposal is metadata only, awaiting source agreement and whole-project archive.
