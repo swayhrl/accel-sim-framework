@@ -1,0 +1,13 @@
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 15d19499..1ac5443f 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1148,7 +1148,7 @@ bool memory_sub_partition::ep_l2_ideal_serve_read(
+     else ++m_ideal_symbolic_bytes;
+   }
+   assert(m_ideal_responses.emplace(mf, std::move(snapshot)).second);
+-  m_L2cache->ep_l2_ideal_touch_resident(mf, cycle);
++  m_L2cache->ep_l2_ideal_touch_resident(mf, cycle + m_memcpy_cycle_offset);
+   mf->set_reply();
+   mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE, cycle);
+   // Same frontend acceptance and real response audit as ordinary hits.

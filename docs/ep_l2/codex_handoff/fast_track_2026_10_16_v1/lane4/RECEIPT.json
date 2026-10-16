@@ -1,59 +1,54 @@
 {
   "schema_version": 1,
   "lane_id": 4,
-  "task_id": "FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1",
-  "status": "LOW_RESOURCE_STATIC_AND_RUNNER_COMPLETE_FORMAL_R1_1_DEPENDENCY_PENDING",
+  "task_id": "FT20261017_LANE4_REFERENCE_SYNC_r1",
+  "status": "SOURCE_REFERENCE_SYNC_IMPLEMENTED_CPP_QUALIFICATION_DEPENDENCY_PENDING",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "continuation_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
-  "previous_continuation_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
+  "continuation_commit": "99e7515f81b0038ac49d274b73f774e8ea801e46",
+  "previous_continuation_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
+  "host": "huangrulin-174",
   "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane4-v1",
-  "host": "huangrulin-174",
   "framework_worktree": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1",
   "core_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1",
   "framework_source_commit": null,
-  "core_source_commit": null,
+  "core_source_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+  "framework_tooling_commit": "705cd7b30d825cd1d9887e48427475a126d9bc83",
+  "core_source_identity_scope": "EXACT_UNCOMPILED_LANE4_CANDIDATE_NOT_OFFICIAL_R1_1",
+  "core_remote_readback_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+  "core_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
   "binary_sha256": null,
   "config_sha256": null,
   "trace_identity": null,
-  "runtime_null_reason": "No new compiled R1.1 runtime or input qualification; static candidate tree is not a runtime commit.",
-  "tooling_source_commit": "b8c6cee15351b7a2dce1ccc4e4278f4a8a2bcb71",
-  "static_source_adaptation": {
-    "status": "STATIC_REPLAY_VERIFIED_UNCOMPILED_NOT_QUALIFIED",
-    "base_core_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
-    "base_tree": "23f407cfadc7728b50f6f91177319ada4029cd2b",
-    "tree_equivalent_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
-    "result_tree": "a8a8aeafa5487f52062d16be1524da3c7489da1e",
-    "tag_patch_parent_tree": "44dbd0c50d1589a255cc48070f8025bf6cb8cf9c",
-    "original_ideal_patch_sha256": "99671c2758adb92b924a38cf0962f2a08362a05175abb9b666ecde5672a35704",
-    "combined_patch_sha256": "4eeea4862254635f7c4fc4804ff134ac772e6daaa2fc78075d3541a75c95297d",
-    "preserved_producer_files_sha256": {
+  "runtime_null_reason": "No official/compiled R1.1 identity, per-run config/trace or acceptance is fabricated from the static source candidate.",
+  "exact_static_parent": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+  "source_adaptation": {
+    "status": "STATIC_CANDIDATE_NOT_COMPILED_NOT_QUALIFIED",
+    "base_core_commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "tree_equivalent_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
+    "result_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
+    "reference_patch_parent_tree": "5e03cbadd8ab598717bab7d56bc230560b61b8b5",
+    "original_conflicts": [
+      "tests/ep_l2/test_ft_wbuf.cc"
+    ],
+    "remaining_conflicts": 0,
+    "obsolete_getter_patch_applied": false,
+    "fixture_resolution": "Extract exact c948 clock implementation; add ideal options only; keep all test bodies exact.",
+    "preserved_producer_sha256": {
       "src/gpgpu-sim/ep-l2-ft-cache.inc": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839",
       "tests/ep_l2/test_ft_memcpy_clock.cc": "a9b6f454ff6d7a6ff6e428ba17ee301c05fbb3274cbd982f7952d36e8ea9cf39",
       "tests/ep_l2/test_ft_host_prefill.cc": "48b655c1ec8101f7eec4a4427cdeef696382e2ae457a770d3380c5210f8c264d",
       "tests/ep_l2/R0_1_REPAIR_SCOPE.md": "784eab3d833d4cfb614aeb16e4b5738e8a76e396b88e70d3e9cfe3c7f92bc9f2"
     },
-    "unmerged_entries": 0,
-    "exact_combined_patch_roundtrip": true,
-    "builds": 0,
+    "combined_patch_sha256": "6c56d036baf566c201e854692cd6a5be5fd52118527e01f28c6b4d7fc502d74b",
+    "combined_patch_roundtrip": true,
+    "compiler_invocations": 0,
+    "production_tests_run": 0,
     "simulations": 0,
-    "source_edits": [
-      "frozen Lane4 ideal implementation",
-      "remove one duplicate test accessor",
-      "ideal Tag touch uses memcpy offset; bank/reply remain physical"
-    ],
-    "runtime_source_commit": null,
     "binary_sha256": null,
     "runtime_config_sha256": null,
     "trace_content_sha256": null
   },
-  "preserved_core_branch_head": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
-  "historical_affected_runtime": {
-    "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
-    "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
-    "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea"
-  },
-  "historical_runtime_qualification": "WITHDRAWN_NOT_CURRENT_PERFORMANCE",
   "feature_vector": {
     "adaptive_policy": false,
     "bank_count": 4,
@@ -93,104 +88,125 @@
       "wb": true
     }
   },
-  "planned_ideal_vectors_scope": "Scheduled only; no current repaired runtime test/qualification",
+  "historical_affected_runtime": {
+    "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
+    "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
+    "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea"
+  },
+  "historical_runtime_qualification": "WITHDRAWN_NOT_CURRENT_PERFORMANCE",
   "dependency_receipts": [
     {
       "lane_id": 1,
-      "publication_commit": "c2a536bdc08687260acc10e30e2fb80a6f791c9e",
+      "publication_commit": "85534de235345292a153d9983cfd0d24d8033bb2",
       "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
-      "receipt_sha256": "d914bcb5bb42ba2f782712ea61779ed4d291dad9be25c5fc0e4ffc8dab72e4d7"
+      "receipt_sha256": "ae74913c47f726ffb8b9621778a6adcffcb8ca82f2a4981dc67ca7f9fbfd0b4d"
     },
     {
       "lane_id": 5,
-      "publication_commit": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af",
+      "publication_commit": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf",
       "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RECEIPT.json",
-      "receipt_sha256": "78d0fc3bf4fc22f9736e7d5712c40fbf9eb4d8e843debc039e520ffb40c7bdf3"
+      "receipt_sha256": "cba3dbbe447b97082cda956df47a81c51869fa114609e34053346fdd2d7cc499"
     }
   ],
-  "scientific_authority": {
-    "publication_commit": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af",
-    "binding": {
-      "kind": "FETCHED_GITHUB_BRANCH",
-      "publication_commit": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af",
-      "manifest_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
-      "generation": 2,
-      "revision": "FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
-      "canonical_sha256": "953e1526054f7e81e04012ceaaaa7a251cb388d7eadda3fac6198dc61fb1f5f7"
+  "dependency_continuation": {
+    "observed_at": "2026-10-16T17:09:02.288243+00:00",
+    "latest_remote_heads": {
+      "1": "85534de235345292a153d9983cfd0d24d8033bb2",
+      "5": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf"
     },
-    "withdrawn_complete_rows_rejected": 6,
-    "launch_authorizations": 0,
-    "current_accepted_rows": 0,
-    "note": "Read-only new consumer smoke; old immutable execution terminals not edited; no lease, build or sim."
+    "initial_remote_heads": {
+      "1": "85534de235345292a153d9983cfd0d24d8033bb2",
+      "5": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf"
+    },
+    "changed": false,
+    "source_candidate_only": true,
+    "official_R1_1_binary": null,
+    "wait_mode": "EXISTING_COORDINATOR_EVENT_CONTINUATION",
+    "lane4_disk_waiter": null,
+    "lane4_release_waiter": null,
+    "pid": null,
+    "lock": null,
+    "deadline": null,
+    "polling_loop_created": false,
+    "next_trigger": "Official separate R1.1 source+binary and current Lane5 repair/ideal qualification and same-binary B16; current registry contract must bind. Rebind source before any guarded test or run.",
+    "note": "Bounded fetch at phase boundaries; no resource loop, autonomous build or repeated unchanged tests."
+  },
+  "validation": {
+    "observed_at": "2026-10-16T17:07:00.818243+00:00",
+    "core_source_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+    "core_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
+    "source_patch_roundtrip": true,
+    "regression_templates_equal_core": true,
+    "python_syntax_files": 2,
+    "previous_66_runner_tests": "NOT_RERUN_UNCHANGED_SOURCE",
+    "new_cpp_test_sources": 2,
+    "new_cpp_tests_executed": 0,
+    "compiler_invocations": 0,
+    "production_builds": 0,
+    "simulations": 0,
+    "registry_client_binding": {
+      "expected": "8b4e820b9fccd7921f582807c2ee803b59dd57e640dacc92b20be640cbb10091",
+      "actual": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
+      "match": false
+    },
+    "current_authority_native_api_status": "NOT_RECHECKED_FAIL_CLOSED_DURING_REGISTRY_CONTRACT_TRANSITION",
+    "note": "Source-only validation; no resource claim or registry replacement. Dynamic launch check will require a coherent Lane5 client contract.",
+    "production_driver_help": "PASS_NO_ADMISSION",
+    "framework_tooling_commit": "705cd7b30d825cd1d9887e48427475a126d9bc83",
+    "final_registry_client_binding": {
+      "expected": "8b4e820b9fccd7921f582807c2ee803b59dd57e640dacc92b20be640cbb10091",
+      "actual": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
+      "match": false
+    }
+  },
+  "qualification_plan": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/QUALIFICATION_PREPARATION.json",
+  "active_runs": [],
+  "own_running_simulators": 0,
+  "waiters": {
+    "lane4_disk_gate_waiter_created": false,
+    "lane4_dependency_daemon_created": false,
+    "pid": null,
+    "lock": null,
+    "deadline": null,
+    "mode": "Coordinator event continuation, with bounded dependency fetches at phase boundaries; no untracked resident process."
   },
   "artifacts": [
     "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2",
     "docs/ep_l2/review_packs/FT20261016_LANE4_OFF_EQUIVALENCE_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE4_R1_HANDOFF_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1",
-    "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1"
+    "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1"
   ],
-  "validation": {
-    "total_tests": 66,
-    "counts": {
-      "test_ft_lane4_r1_binding.py": 24,
-      "test_ft_lane4_scientific_acceptance.py": 24,
-      "test_ft_lane4_diagnostic.py": 18
-    },
-    "builds": 0,
-    "simulations": 0,
-    "scope": "Pure synthetic fixtures and real hashed authority consumer smoke; no repaired runtime qualification.",
-    "source_sha256": {
-      "util/ep_l2/verify_ft_lane4_off_equivalence.py": "b6877146ebc791587a58ac4e0114a124c9164ade6f3c4a295fa3df31dac58d61",
-      "util/ep_l2/run_ft_lane4_diagnostic.py": "2e2213712d46412237f29483ebf500ad5c21c4b30911126f5ffbc4d44db4446b",
-      "util/ep_l2/package_ft_lane4.py": "555cf7871214bb539ca658d0cf0e74558dd5e1b966962ec319a183d4fa75e23f",
-      "util/ep_l2/package_ft_lane4_review_r3.py": "7f132d37daf33293b43c999a05f0553dc97b29da51642d16fcd03917a13a39f9",
-      "util/ep_l2/prepare_ft_lane4_grid.py": "e063d847418f56fb2934c892f55d2eee20a69138d4fd4efc379cbd6c3412fbd9",
-      "util/ep_l2/test_ft_lane4_production.py": "c2a7af0df1aeb61cc9c76dbf923b6e27b4fdbd31ea0c99f2fffc754baa39101d",
-      "util/ep_l2/make_ft_lane4_r1_handoff.py": "eed6d8ac299db86898d9361256da212526f78cc0854325d615117800143010ff",
-      "util/ep_l2/audit_ft_lane4_repair_source.py": "998eb7a990f93b88ba668966a2e8d313096ef763947530811cd85c47a3f2e6aa",
-      "util/ep_l2/ft_lane4_scientific_acceptance.py": "d39688b6926b856385171023a8109a49e20e2d853502a2a7e1da2ff1b8ea6c6e",
-      "util/ep_l2/prepare_ft_lane4_r0_1_static.py": "b267e5b94016f5829510d81e79671346b5047590f5bf1501bb61b497df526013",
-      "util/ep_l2/ft_lane4_lane5_tools.py": "d34eb716544923675bc8abdbdcafb08e0ed1eacdb0e3b792b74bd3a562b9994d",
-      "util/ep_l2/prepare_ft_lane4_b16.py": "d249c682033d09d03cb3fb9a0d811f8aac9657654456657f71386e013a06447b",
-      "util/ep_l2/audit_ft_lane4_history.py": "acf5746439a4b0c3024b47a8b8625ba2d7b59553d82e746230e1cde56bfb451f",
-      "util/ep_l2/tests/test_ft_lane4_scientific_acceptance.py": "cad2c939dc936ec26f99da5b8264eba43795df109156495ac019cfd64aeba54b",
-      "util/ep_l2/tests/test_ft_lane4_r1_binding.py": "57a3b8a6a5c710d0ce7c87c1a73e33a8b3f4d79ee1231d9dd2fc25bf1c2db2e3",
-      "util/ep_l2/tests/test_ft_lane4_diagnostic.py": "1499b0a37c08ccafcb82a75094ef0a178f272ac27109c95d2bbd395459f675c2"
-    },
-    "producing_tool_commit": "b8c6cee15351b7a2dce1ccc4e4278f4a8a2bcb71"
-  },
-  "active_runs": [],
-  "own_running_simulators": 0,
-  "live_check": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1/LIVE_CHECK.json",
-  "preparation_grid": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1/R1_1_PREPARATION.json",
   "not_run_cells": 18,
-  "preservation": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1/PRESERVATION.json",
+  "preparation_grid": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/R1_1_PREPARATION.json",
+  "live_check": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/LIVE_CHECK.json",
+  "preservation": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/PRESERVATION.json",
   "priority_contract": {
-    "R0_1_does_not_wait_for_Lane4": true,
-    "formal_disk_floor_bytes_unchanged": 51539607552,
-    "low_resource_work_completed_without_production_admission": true,
-    "Lane4_builds": 0,
-    "Lane4_simulations": 0,
-    "other_project_process_data_quota_changes": 0
+    "R0_1_and_first_Lane5_pairs_first": true,
+    "disk_floor_bytes_unchanged": 51539607552,
+    "Lane1_build_growth_bytes_unchanged": 2147483648,
+    "production_builds": 0,
+    "compiler_invocations": 0,
+    "application_simulations": 0,
+    "resource_leases_claimed": 0,
+    "other_project_changes": 0,
+    "Storage_Ops_deletions_or_migrations": 0
   },
   "blockers": [
     {
-      "scope": "formal R1.1 18-cell runtime only",
-      "reason": "No official R1.1 binary, current Lane5 repair+ideal qualifications/launch authorizations or same-binary B16 baseline.",
-      "required_owner": "Lane1 producer then Lane5 independent qualification/baseline"
+      "scope": "production C++ validation",
+      "reason": "No official separate R1.1 libraries/binary or live guarded test admission. Two new regression sources are NOT_COMPILED_NOT_RUN."
     },
     {
-      "scope": "I_READ_HIT production qualification",
-      "reason": "Exact62dc later clean/quiescent host prefill has no matching ideal-reference synchronization hook. No oracle scope changed.",
-      "details": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1/REVIEW_FINDINGS.md"
+      "scope": "formal18 cells",
+      "reason": "Need same-R1.1-binary B16 plus current independent repair/ideal qualifications and OFF/ideal launch authorization."
     },
     {
-      "scope": "formal admission only, not source/static/Python work",
-      "reason": "Current disk below unchanged production floor; no admission attempted.",
-      "observed_disk_free_bytes": 38337310720
+      "scope": "current central client binding",
+      "reason": "Observed Lane5 registry working-file SHA differs from current shared CLIENT_CONTRACT; existing loader rejects before claim. Await publisher coherent contract, no bypass."
     }
   ],
-  "next_action": "Lane1 can consume standalone duplicate-accessor patch without ideals. After official R0.1 priority, integrate/qualify separate R1.1 including Tag time and host-reference scope; only then derive and deduplicate new cells.",
-  "updated_at": "2026-10-16T14:23:17.552199+00:00"
+  "next_action": "After exact official source/runtime publication, rebind the candidate patch to the actual parent; run two host-prefill cases and affected ideal regressions under original shared admission, then obtain Lane5 qualification before rolling18 cells. Do not create another disk waiter.",
+  "updated_at": "2026-10-16T17:09:39.401743+00:00"
 }

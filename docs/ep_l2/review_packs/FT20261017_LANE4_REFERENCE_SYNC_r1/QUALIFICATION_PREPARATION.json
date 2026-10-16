@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_PREPARED_NOT_RUN",
+  "core_source_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+  "official_r1_1_runtime": null,
+  "official_r1_1_framework": null,
+  "binary_sha256": null,
+  "new_cases": [
+    {
+      "name": "test_ideal_host_prefill_reference",
+      "kind": "header reference regression",
+      "status": "NOT_COMPILED_NOT_RUN"
+    },
+    {
+      "name": "test_ideal_host_prefill_partition",
+      "kind": "real partition/GPU write/WB/host-prefill/response regression",
+      "status": "NOT_COMPILED_NOT_RUN",
+      "overlay": "tests/ep_l2/ideal_host_prefill_b16.config",
+      "overlay_sha256": "6d61e9b1ad9a26f68bdf563d0c2a531e0e5484f365a0ee37407357204f29662c"
+    }
+  ],
+  "future_entry": "util/ep_l2/test_ft_lane4_production.py --include-b16 --include-partition --include-host-prefill (requires exact new --core/--build/--build-manifest/--out)",
+  "admission": "No Lane4 compile now. Lane1 official R0.1 and Lane5 first pairs have priority; separate R1.1 integration, shared live admission and current repair/ideal qualification are required.",
+  "cpp_scope": "Neither these cases nor the two producer repair cases executed by this Lane.",
+  "previous_66_tests": "Previous evidence retained; unchanged Python runtime/acceptance modules not retested."
+}

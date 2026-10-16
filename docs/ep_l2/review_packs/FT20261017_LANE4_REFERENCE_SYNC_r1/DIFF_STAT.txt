@@ -1,0 +1,20 @@
+ src/gpgpu-sim/ep-l2-ideal-reference.h            |  73 +++++++++++++
+ src/gpgpu-sim/gpu-cache.cc                       |  21 +++-
+ src/gpgpu-sim/gpu-cache.h                        |  92 +++++++++++++++--
+ src/gpgpu-sim/gpu-sim.cc                         |   9 ++
+ src/gpgpu-sim/l2cache.cc                         | 126 ++++++++++++++++++++++-
+ src/gpgpu-sim/l2cache.h                          |  28 +++++
+ tests/ep_l2/ft_test_fixture.h                    | 100 ++++++++++++++++++
+ tests/ep_l2/ideal_host_prefill_b16.config        |  17 +++
+ tests/ep_l2/ideal_meta_integrated.config         |  15 +++
+ tests/ep_l2/ideal_read_hit.config                |  12 +++
+ tests/ep_l2/ideal_test_fixture.h                 |  65 ++++++++++++
+ tests/ep_l2/run_ideal_meta.sh                    |  10 ++
+ tests/ep_l2/test_ft_wbuf.cc                      |  94 +----------------
+ tests/ep_l2/test_ideal_host_prefill_partition.cc |  64 ++++++++++++
+ tests/ep_l2/test_ideal_host_prefill_reference.cc |  44 ++++++++
+ tests/ep_l2/test_ideal_meta.cc                   |  59 +++++++++++
+ tests/ep_l2/test_ideal_meta_integrated.cc        |  41 ++++++++
+ tests/ep_l2/test_ideal_read_hit.cc               |  73 +++++++++++++
+ tests/ep_l2/test_ideal_wb.cc                     | 108 +++++++++++++++++++
+ 19 files changed, 944 insertions(+), 107 deletions(-)

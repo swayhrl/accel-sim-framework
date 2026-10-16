@@ -1,63 +1,74 @@
-# Lane 4 review_r5 — static adaptation and runner delivered
+# Lane 4 review_r7 — source fix delivered, runtime qualification pending
 
-Status: LOW_RESOURCE_STATIC_AND_RUNNER_COMPLETE_FORMAL_R1_1_DEPENDENCY_PENDING.
-Consumed r4 then r5 at `77a9fbe937ea23465cf0d0076d2df1909f52d055`;
-original science `6c136e2a56a008695f8c8b815723bf8f1a760db9` unchanged.
-Continued original branch/Goal; no new worker or experiment.
+Status: SOURCE_REFERENCE_SYNC_IMPLEMENTED_CPP_QUALIFICATION_DEPENDENCY_PENDING.
+Read full r7 at99e7515f81b0038ac49d274b73f774e8ea801e46; original
+6c136e2a scientific contract unchanged. Continued both original execution
+branches `hrl/ep-l2-ft20261016-lane4-v1`, without restarting a Goal.
 
-Host: huangrulin-174. Both execution branches:
-`hrl/ep-l2-ft20261016-lane4-v1`.
+Node: huangrulin-174.
 Framework WT: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1`.
 Core WT: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1`.
-Tooling source: `b8c6cee15351b7a2dce1ccc4e4278f4a8a2bcb71`.
-Core branch remains `b8b3d55b392fcff793d0aec684bddb73ba3065a9` (clean, remote verified),
-an affected historical candidate. Its old producing Framework/binary are retained
-in RECEIPT.historical_affected_runtime, never a new R1.1 identity.
-New repaired runtime source/binary/config/trace: absent (null).
+Frozen tooling: `705cd7b30d825cd1d9887e48427475a126d9bc83`.
+New Core source: `8ff56eb0804a027f1e253e629dd2915b02bc03b5`; pushed and fetched exact same SHA.
+Core candidate tree: `1949be28284e3d9d1674ee21211eb5885e75a128`.
+This is UNCOMPILED/NOT_QUALIFIED source, not official R1.1. No new binary,
+application config/trace identity or run key. Old b8b3/438df runtime/binary are
+preserved in the previous receipt, not attributed to this new source.
 
-Completed this revision:
+## Actual work completed
 
-- Exact Lane1 `62dc1d179b5516e68b21b695c7a9c5d0667e9671` private-index
-  replay, zero conflicts; delivered patch round-trips to static tree
-  `a8a8aeafa5487f52062d16be1524da3c7489da1e`. Tree-equivalent producer publication c93d900e
-  verified. No source worktree or Lane1 branch was changed.
-- Standalone duplicate inline accessor removal for Lane1; separately reviewable
-  ideal Tag-time fix retaining physical bank/reply clocks. Neither compiled.
-  Producer FT include and its two repair tests/scope preserved byte-for-byte.
-- Pinned Lane5 V2 acceptance source alongside runner/support files, retaining
-  original registry client/lock. Both OFF and requested ideal current launch
-  authorization required; proof/revision/canonical bytes and exact result
-  identity/raw/metrics bound. Later qualification withdrawal remains separate
-  from a normally closed execution terminal.
-- 66 Python tests PASS:24 same-binary/authorization,24 V2 acceptance,18 terminal/
-  config tests. Synthetic fixtures only, no runtime qualification. New consumer
-  reads current Lane5 V2 evidence:6 old completed rows rejected;0 current accepted
-  application rows and0 launch authorizations.
-- Actual overlay/expected-mode audit yields18 NOT_RUN cells with null runtime
-  identities/keys/metrics. No I_BANK or expanded matrix. OFF owned by Lane5.
-- 83 files in four frozen packs and9 indexed raw/terminal rows verified unchanged.
-  Old R0/R1 formal evidence remains withdrawn; historical STATIC1.721x stays
-  historical, not a current ceiling. No historical application rerun.
+- Precisely adapted to Lane1 c948184504d82b80e23eb3f4ff6cdfd328ba9355,
+  publication57e1c363 tree-equivalent. Did not reapply the obsolete getter fix.
+- Found one real old-patch conflict in test_ft_wbuf.cc. Extracted the exact
+  repaired c948 physical-clock fixture, added ideal options, retained test
+  bodies verbatim. Source audit records the conflict/resolution and exact
+  unchanged producer FT include, two repair tests and host-scope bytes.
+- Implemented the minimal I_READ_HIT host-reference hook after successful
+  clean/drained native prefill. Selected sector bytes become unknown version0;
+  other bytes/lines, response copies and monotonic producer clock are retained.
+  Refusals precede reference/offset mutation. Later quiescent prefill remains
+  allowed; no initial-only scope narrowing or numeric data invention.
+- Tag touch uses native memcpy-offset time; bank/reply time stays physical.
+- Added header and real-partition regression sources. Partition sequence covers
+  GPU producer, dirty refusal, actual WB/clean eviction, later prefill, repeated
+  prefill, held response and untouched sector. Expected old failure is described,
+  not reported as an observed red/green result. Both C++ tests remain NOT_RUN.
+- Frozen patch replay/round-trip and exact Core tree verified;2 changed Python
+  tools syntax-checked; production driver help exposes --include-host-prefill
+  without admission. Original18 overlays/modes checked, all18 NOT_RUN with
+  null runtime keys/metrics. No I_BANK or matrix expansion.
+- No unchanged66-test suite repeated. Five frozen packs/112 indexed files
+  checksum-verified unchanged; no old raw/trace/binary rewrite or rerun.
 
-Remaining source qualification item:62dc permits later clean/quiescent host
-prefill while the ideal reference lacks a matching version synchronization hook.
-See REVIEW_FINDINGS.md; no oracle narrowing/reset or scientific scope change was
-made. This only affects later R1.1 ideal qualification, not R0.1 B16/U_WB16.
+## Real dependencies and resource boundary
 
-Actual check at 2026-10-16T14:21:26.792073+00:00: zero active EP-L2 registry runs/leases and
-zero own simulators. Seven live simulators were identified as DTC-L1 from /proc
-executable/cwd metadata only; no process/data/quota changes. Disk free
-38337310720 bytes.48GiB remains formal production admission policy,
-not a prerequisite to the source/static/Python work completed here. No build,
-compiler, admission, simulator, cleanup or background continuation was launched.
+Latest fetched Lane1 `85534de235345292a153d9983cfd0d24d8033bb2`
+still binds uncompiled c948/Framework3ab150 and binary=null. Lane5
+`e8f701995a27154ffcc54cc38245dde8cd7f9bdf` still provides no new
+current-accepted application pair. A separate official R1.1 and current
+repair+ideal qualification with same-binary B16 are absent. Candidate-source
+completion never grants formal performance acceptance; old R0/R1 remain
+withdrawn and1.721x remains historical.
 
-Verified dependency publications:Lane1 `c2a536bdc08687260acc10e30e2fb80a6f791c9e`;
-Lane5 `2fb8a6d1144f6fce038f51e60192f9fa8b0207af`. Exact receipt hashes
-and V2 current evidence bindings are in the pack. Lane1 R0.1/Lane5 main
-B16/U_WB16 retain priority. The standalone accessor fix is ready for Lane1
-review; separate official R1.1, repair+ideal qualification and same-binary B16
-baseline remain prerequisites to deriving/executing the18 cells under shared
-registry/live admission. No repeated polling or speculative run was started.
+The current shared registry file hash differs from CLIENT_CONTRACT's expected
+hash (exact bytes in VALIDATION). Existing fail-closed loader refused before
+any claim. The registry publisher's coherent update is required; no central
+file was edited and no authority/cache fallback was introduced.
 
-Review pack: `docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1`.
-Previous STATUS/RECEIPT are archived there; prior review packs remain frozen.
+Metadata-only live check at 2026-10-16T17:07:32.586929+00:00: EP-L2 active
+runs/leases0/0, own simulators0;2 observed live simulators
+belong to DTC-L1. C16/other project data and processes were not modified.
+Workspace f_bavail=29621444608B.
+48GiB+2GiB formal build and original simulation/CPU/RAM policies are unchanged.
+No compiler, production build, simulator, resource lease, migration or deletion
+was invoked. Lane1 alone owns the disk GateWaiter; Lane4 created none.
+
+Dependency fetches were bounded phase checks; no low-space admission retries,
+repeated unchanged tests or hidden background worker. Waiter PID/lock/deadline
+are null. Await the existing coordinator's exact release event, then rebind
+source and use guarded finite C++ tests; do not call the static candidate an
+accepted R1.1. Lane1 R0.1 and Lane5 first formal pairs retain priority.
+
+Review pack: `docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1`.
+RECEIPT lists exact source/tool/overlay/dependency hashes and actual test scope;
+previous STATUS/RECEIPT and all previous review packs remain available.

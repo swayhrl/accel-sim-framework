@@ -1,0 +1,183 @@
+diff --git a/src/gpgpu-sim/ep-l2-ideal-reference.h b/src/gpgpu-sim/ep-l2-ideal-reference.h
+index 51e00747..41da8ec3 100644
+--- a/src/gpgpu-sim/ep-l2-ideal-reference.h
++++ b/src/gpgpu-sim/ep-l2-ideal-reference.h
+@@ -41,6 +41,17 @@ class ReferenceMemory {
+       else known_.erase(line + b);
+     }
+   }
++  // Successful host prefill replaces selected sectors with fresh unknown
++  // version-zero symbols, matching the FT Payload contract. Never reset
++  // the producer clock or modify unselected bytes/older response copies.
++  void host_prefill(uint64_t line, const Mask &mask) {
++    assert((line & 127) == 0);
++    auto it = versions_.find(line);
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      if (it != versions_.end()) it->second[b] = 0;
++      known_.erase(line + b);
++    }
++  }
+   std::vector<Byte> read(uint64_t line, const Mask &mask) const {
+     assert((line & 127) == 0);
+     std::vector<Byte> out;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 1ac5443f..8df84905 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -415,6 +415,13 @@ bool memory_sub_partition::ft_try_force_l2_tag_update(
+   if (!m_L2cache->ft_enabled() || !l2_char_no_resource_leak()) return false;
+   if (!m_L2cache->ft_try_force_tag_access(addr, m_memcpy_cycle_offset + time, mask))
+     return false;
++  // Only an accepted, drained, clean host prefill may replace reference
++  // symbols. A refusal leaves both the reference and offset unchanged.
++  if (m_config->m_L2_config.m_ep_l2_ideal_read_hit) {
++    ep_l2_ideal::ReferenceMemory::Mask bytes{};
++    for (unsigned b = 0; b < 128; ++b) bytes[b] = mask.test(b / 32);
++    m_ideal_reference.host_prefill(addr & ~uint64_t(127), bytes);
++  }
+   ++m_memcpy_cycle_offset;
+   return true;
+ }
+diff --git a/tests/ep_l2/ideal_host_prefill_b16.config b/tests/ep_l2/ideal_host_prefill_b16.config
+new file mode 100644
+index 00000000..fd0ce7d4
+--- /dev/null
++++ b/tests/ep_l2/ideal_host_prefill_b16.config
+@@ -0,0 +1,17 @@
++# Production-directed test only. No application metrics or qualification yet.
++-gpgpu_n_mem 1
++-gpgpu_n_sub_partition_per_mchannel 1
++-gpgpu_memory_partition_indexing 0
++-gpgpu_simple_dram_model 1
++-gpgpu_l2_rop_latency 5
++-gpgpu_dram_partition_queues 512:128:64:1
++-gpgpu_cache:dl2 S:1:128:1,L:B:m:L:L,A:128:1,256:0,32
++-gpgpu_ep_l2_descriptor_pool_size 512
++-gpgpu_ep_l2_descriptor_per_line_cap 32
++-gpgpu_ep_l2_wad_entries 128
++-gpgpu_ep_l2_payload_mode 2
++-gpgpu_ep_l2_ft_mode 1
++-gpgpu_ep_l2_wbuf_entries 16
++-gpgpu_ep_l2_ideal_wb 0
++-gpgpu_ep_l2_ideal_meta 0
++-gpgpu_ep_l2_ideal_read_hit 1
+diff --git a/tests/ep_l2/test_ideal_host_prefill_partition.cc b/tests/ep_l2/test_ideal_host_prefill_partition.cc
+new file mode 100644
+index 00000000..6df7470f
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_host_prefill_partition.cc
+@@ -0,0 +1,64 @@
++// Production regression source; NOT_RUN until exact R1.1 libraries/admission.
++#include "ideal_test_fixture.h"
++
++static mem_access_sector_mask_t sector(unsigned s) {
++  mem_access_sector_mask_t m; m.set(s); return m;
++}
++
++static bool warm(Fixture &f, uint64_t address, unsigned s) {
++  unsigned long long grants[4];
++  for (unsigned b=0;b<4;++b) grants[b]=f.sp->ft_bank_grants_for_test(b);
++  const unsigned offset=f.sp->ft_memcpy_offset_for_test();
++  bool accepted=f.sp->ft_try_force_l2_tag_update(address,
++      f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle,sector(s));
++  for (unsigned b=0;b<4;++b) assert(grants[b]==f.sp->ft_bank_grants_for_test(b));
++  assert(f.sp->ft_memcpy_offset_for_test()==offset+unsigned(accepted));
++  return accepted;
++}
++
++static void unknown(const std::vector<ep_l2_ideal::Byte> &value) {
++  assert(value.size()==32);
++  for (auto b:value) assert(b.version==0 && !b.value_known);
++}
++
++static std::vector<ep_l2_ideal::Byte> read(Fixture &f,uint64_t address) {
++  auto r=f.make(address);f.push(r);auto value=f.read_response(r);f.drain();return value;
++}
++
++int main(int argc,char **argv) {
++  assert(argc==3);Fixture f(argv[1],argv[2]);
++  const uint64_t a=0x100004000ULL, conflict=a+0x1000;
++  f.sp->ep_l2_ideal_seed(a+64,std::vector<uint8_t>(32,17));
++  assert(warm(f,a,0));assert(warm(f,a+32,1));
++  unknown(read(f,a));unknown(read(f,a+32));
++  auto w=f.make(a,true);ep_l2_ideal::ReferenceMemory::Data data{};data.fill(91);
++  f.sp->ep_l2_ideal_known_write(w,data);f.push(w);
++  f.until_reply();assert(f.sp->top()==w);assert(f.sp->pop()==w);delete w;f.drain();
++  auto produced=read(f,a);
++  for (auto b:produced) assert(b.version>0 && b.value_known && b.value==91);
++  // Dirty refusal is before reference mutation; old GPU producer remains visible.
++  assert(!warm(f,a,0));assert(read(f,a)==produced);
++  // An ordinary allocation read bypasses only the ideal read-service entry.
++  // It really evicts dirty A, performs WB/set_done and fills a clean victim.
++  active_mask_t active;active.set(0);mem_access_byte_mask_t bytes;
++  for (unsigned b=0;b<32;++b) bytes.set(b);
++  auto native=f.alloc->alloc(conflict,L1_WR_ALLOC_R,active,bytes,sector(0),32,false,
++      f.gpu->gpu_sim_cycle,0,0,0,nullptr,0);
++  f.push(native);f.until_reply();assert(f.sp->top()==native);
++  assert(f.sp->pop()==native);delete native;f.drain();
++  assert(f.sp->ft_cache_for_test()->ft_copy_lines()==1);
++  assert(f.sp->ft_cache_for_test()->ft_lower_accepts()==1);
++  // Later clean/quiescent prefill is allowed, even after a completed producer.
++  assert(warm(f,a+32,1));assert(read(f,a)==produced);
++  assert(warm(f,a,0));unknown(read(f,a));unknown(read(f,a+32));
++  assert(warm(f,a,0));unknown(read(f,a));
++  // A held real response blocks prefill and preserves its snapshot.
++  auto held=f.make(a);f.push(held);f.until_reply();
++  const auto snapshot=f.sp->ep_l2_ideal_response(held);
++  assert(!warm(f,a,0));assert(snapshot==f.sp->ep_l2_ideal_response(held));
++  assert(f.sp->pop()==held);delete held;f.drain();assert(warm(f,a,0));
++  // Unselected byte/sector state is not globally reset by host initialization.
++  auto untouched=read(f,a+64);
++  for (auto b:untouched) assert(b.version==0 && b.value_known && b.value==17);
++  f.drain();std::puts("IDEAL_HOST_PREFILL_REAL_GPU_WRITE_WB_REINIT_REFUSAL_RESPONSE PASS");
++}
+diff --git a/tests/ep_l2/test_ideal_host_prefill_reference.cc b/tests/ep_l2/test_ideal_host_prefill_reference.cc
+new file mode 100644
+index 00000000..7ec7c85d
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_host_prefill_reference.cc
+@@ -0,0 +1,44 @@
++// Header-only regression source; execution requires approved build admission.
++#include <cassert>
++#include <cstdio>
++#include "../../src/gpgpu-sim/ep-l2-ideal-reference.h"
++
++int main() {
++  using ep_l2_ideal::ReferenceMemory;
++  ReferenceMemory memory;
++  const uint64_t line = 0x100004000ULL;
++  ReferenceMemory::Mask all{}, selected{}, other{};
++  all.fill(true);
++  for (unsigned b = 32; b < 64; ++b) selected[b] = true;
++  for (unsigned b = 0; b < 32; ++b) other[b] = true;
++  ReferenceMemory::Data data{}; data.fill(91);
++  memory.seed(line, std::vector<uint8_t>(128, 17));
++  memory.write(line, all, &data);
++  auto before = memory.read(line, all);
++  assert(before[0].version > 0);
++  memory.host_prefill(line, selected);
++  auto after = memory.read(line, all);
++  for (unsigned b = 0; b < 128; ++b) {
++    if (selected[b]) {
++      // Replacement host bytes are unknown symbols, never fabricated zero data.
++      assert(after[b].version == 0 && !after[b].value_known);
++    } else assert(after[b] == before[b]);
++  }
++  // Snapshots already handed to responses remain immutable value copies.
++  assert(before[32].version > 0 && before[32].value_known && before[32].value == 91);
++  memory.host_prefill(line, selected);
++  assert(memory.read(line, all) == after);
++  memory.write(line, other);
++  auto next = memory.read(line, all);
++  assert(next[0].version > before[0].version && !next[0].value_known);
++  assert(next[32].version == 0 && !next[32].value_known);
++  // No truncation or reference aliasing of addresses above 4GiB.
++  memory.seed(line & 0xffffffffULL, std::vector<uint8_t>(128, 7));
++  memory.host_prefill(line, other);
++  for (auto b : memory.read(line & 0xffffffffULL, all))
++    assert(b.value_known && b.value == 7);
++  ReferenceMemory fresh;
++  fresh.host_prefill(line, selected);
++  for (auto b : fresh.read(line, selected)) assert(b.version == 0 && !b.value_known);
++  std::puts("IDEAL_HOST_PREFILL_REFERENCE_SECTOR_SNAPSHOT_MONOTONIC_ADDRESS PASS");
++}
