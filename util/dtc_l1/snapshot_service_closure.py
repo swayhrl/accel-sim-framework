@@ -70,7 +70,8 @@ def main():
         assert v('fully_ready_to_complete_sum')==v('ready_to_collect_sum')+v('collection_cycles')+v('wb_wait')
         residence.append(dict(workload=r['workload'],arm=r['arm'],attempt_uuid=r['attempt_uuid'],
             core=r['core'],binary_sha256=r['binary_sha256'],cycles=r['cycles'],
-            cached_retired_instructions=v('retired'),all_sm_core_cycle_samples=v('samples'),
+            cached_retired_instructions=v('retired'),retirement_unit='CACHEABLE_WARP_INSTRUCTION',
+            all_sm_core_cycle_samples=v('samples'),
             mean_pib_entries_per_sm=v('pib_integral')/v('samples'),
             mean_physical_lines_per_sm=v('physical_integral')/v('samples'),
             mean_fully_ready_to_complete_core_cycles=v('fully_ready_to_complete_sum')/v('retired'),
