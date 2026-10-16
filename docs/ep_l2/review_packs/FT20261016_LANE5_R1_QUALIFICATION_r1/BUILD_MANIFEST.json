@@ -1,0 +1,39 @@
+{
+  "lease_id": "5740587fe2b8453fbdc5b7a0a20bcc2b",
+  "owner": "lane1",
+  "jobs": 2,
+  "build": "/workspace/build/ep-l2-ft20261016-lane1-r1",
+  "framework_source_commit": "fb64d9520f20a562cc0db78b838d13f4599b49ce",
+  "core_source_commit": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
+  "commands": [
+    [
+      "cmake",
+      "-S",
+      "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/gpu-simulator",
+      "-B",
+      "/workspace/build/ep-l2-ft20261016-lane1-r1",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+    ],
+    [
+      "cmake",
+      "--build",
+      "/workspace/build/ep-l2-ft20261016-lane1-r1",
+      "--target",
+      "accel-sim.out",
+      "ep_l2_ft_directed",
+      "ep_l2_ft_partition",
+      "ep_l2_ideal_wb",
+      "ep_l2_ideal_meta",
+      "ep_l2_ideal_meta_integrated",
+      "ep_l2_ideal_read_hit",
+      "-j2"
+    ]
+  ],
+  "started_at": "2026-10-16T10:33:06.266453+00:00",
+  "status": "PASS",
+  "prior_configure_failure": "BUILD_FAILED_R1.json",
+  "third_party_dependency": "THIRD_PARTY_DEPENDENCY.json",
+  "binary_sha256": "2d2fb08217723bf920a486dcdce3412ca03c4a14028c9d67b401fd9b8a6d4664",
+  "build_stamp": "const char *g_accelsim_version=\"accelsim-commit-fb64d952_modified_0.0_26-10-16-18-33-06\";",
+  "finished_at": "2026-10-16T10:35:43.815754+00:00"
+}

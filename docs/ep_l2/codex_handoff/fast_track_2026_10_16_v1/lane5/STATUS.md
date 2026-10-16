@@ -41,6 +41,11 @@ explicit complete cohort. Failures/retardations remain visible.
 
 ## Later versions
 
+R1 independent incremental qualification PASS: 10 production executions, six
+CLI rejections, five byte-equal R0/R1 OFF fixture logs. Exact Core be651ccf /
+Framework fb64d952 / binary 2d2fb082. Four complete R1 baseline specs prepared
+and four Lane4 ideal adapters preflight PASS. No R1 application launched; slots
+remain assigned to R0. R1_LANE4_HANDOFF.json binds release/specs/ownership.
 R1 diagnostic baseline must match R1 source/binary; R0 may only be a cross-binary
 OFF check. R2/R3 require new production qualification and explicit RO detach/
 bypass schema. Old module PASS is not their qualification. Strong static

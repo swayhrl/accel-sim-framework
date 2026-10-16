@@ -1,0 +1,47 @@
+{
+  "I_META": "200 lines / 1640 requesters / 800 actual sector lower reads, per-address >32, real response/drain.",
+  "I_READ_HIT": "Real latency, finite response FIFO, RAW/WAR, known-byte and cold/young-write symbolic versions, common bank conflict. Optimistic reference, not strict bound.",
+  "I_WB": "C8/C16 extra WB storage above C; actual copy/read/lower packet sector versions; WAD128 still binds; no partial mutation; drain.",
+  "I_WB_META": "Simultaneous 50 WB / 160 lines / 680 requesters with version checks and exact retirement.",
+  "TVD_RO": "NOT_QUALIFIED",
+  "independent_tests": {
+    "executions": 10,
+    "mode_rejections": 6,
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261016_LANE5_R1_QUALIFICATION_r1/INDEPENDENT_R1_TESTS.json",
+    "r0_r1_off_fixture_byte_equal": 5,
+    "sha256": "7b202f6d4eb047d4293f0a6da7a4da73cb41f4614142878f8e72d70b582dcfc4"
+  },
+  "kind": "INDEPENDENT_PRODUCTION_DRIVEN",
+  "normal_off_scope": "B16 only; exact producer config with explicit default-OFF flags; five production fixture output equalities. Application equivalence pending R1 baselines, no performance equality assumed.",
+  "numeric_SASS_output": "UNAVAILABLE_NOT_CLAIMED",
+  "reuse_r0_qualification": {
+    "old_off_application_pairs_reused": 3,
+    "old_off_reruns": 0,
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/R0_INDEPENDENTLY_QUALIFIED.json",
+    "sha256": "3000b14e715ace9de1b8b2f62a185c7dd44d0aa2a7366ea561e5e565dc491d61"
+  },
+  "source_binding": {
+    "binary_sha256": "2d2fb08217723bf920a486dcdce3412ca03c4a14028c9d67b401fd9b8a6d4664",
+    "core": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
+    "framework": "fb64d9520f20a562cc0db78b838d13f4599b49ce",
+    "runtime_patch_sha256": "b1c0224e18f98e871aaa3ee59acb8b0e65aa83e400bb348be9fd8e0bc9374475",
+    "unchanged_primary_files": [
+      {
+        "file": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+        "r0_r1_byte_equal": true,
+        "sha256": "091c007bdfa34384404c151d8c5d834f3c5c73d781ebb443d2936abf90b2716d"
+      },
+      {
+        "file": "src/gpgpu-sim/mem_fetch.h",
+        "r0_r1_byte_equal": true,
+        "sha256": "4c7c8d2e1c0377c2259c832f4175dca9d290f6ef768acd2a1f3fc0e175fbd10e"
+      },
+      {
+        "file": "src/gpgpu-sim/mem_fetch.cc",
+        "r0_r1_byte_equal": true,
+        "sha256": "e6ab83ca4e14f6433ba4836bda9388b7a2f18724bee9ac266bcfdff8bb37f851"
+      }
+    ]
+  },
+  "status": "PASS"
+}

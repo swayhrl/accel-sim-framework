@@ -1,0 +1,630 @@
+diff --git a/src/gpgpu-sim/ep-l2-ideal-reference.h b/src/gpgpu-sim/ep-l2-ideal-reference.h
+new file mode 100644
+index 00000000..51e00747
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ideal-reference.h
+@@ -0,0 +1,62 @@
++// Lane 4 diagnostic reference memory. Not physical cache/payload allocation.
++#ifndef EP_L2_IDEAL_REFERENCE_H
++#define EP_L2_IDEAL_REFERENCE_H
++#include <array>
++#include <cassert>
++#include <cstdint>
++#include <limits>
++#include <map>
++#include <vector>
++
++namespace ep_l2_ideal {
++struct Byte {
++  uint64_t address;
++  uint64_t version;
++  bool value_known;
++  uint8_t value;
++  bool operator==(const Byte &b) const {
++    return address == b.address && version == b.version &&
++           value_known == b.value_known && (!value_known || value == b.value);
++  }
++};
++// SASS traces have no data bytes/initial memory image. Their explicit
++// functional reference is (byte address,last committed producer version).
++// Cold data is a typed symbol, never an uninitialized cache-line value.
++// Production-path tests seed bytes and known writes through this same store.
++class ReferenceMemory {
++ public:
++  typedef std::array<bool, 128> Mask;
++  typedef std::array<uint8_t, 128> Data;
++  void seed(uint64_t address, const std::vector<uint8_t> &bytes) {
++    for (size_t i = 0; i < bytes.size(); ++i) known_[address + i] = bytes[i];
++  }
++  void write(uint64_t line, const Mask &mask, const Data *data = nullptr) {
++    assert((line & 127) == 0 && next_version_ != std::numeric_limits<uint64_t>::max());
++    const uint64_t version = ++next_version_;
++    auto it = versions_.find(line);
++    if (it == versions_.end()) it = versions_.emplace(line, Versions{}).first;
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      it->second[b] = version;
++      if (data) known_[line + b] = (*data)[b];
++      else known_.erase(line + b);
++    }
++  }
++  std::vector<Byte> read(uint64_t line, const Mask &mask) const {
++    assert((line & 127) == 0);
++    std::vector<Byte> out;
++    const auto v = versions_.find(line);
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      const auto k = known_.find(line + b);
++      out.push_back(Byte{line + b, v == versions_.end() ? 0 : v->second[b],
++                         k != known_.end(), k == known_.end() ? uint8_t(0) : k->second});
++    }
++    return out;
++  }
++ private:
++  typedef std::array<uint64_t, 128> Versions;
++  uint64_t next_version_ = 0;
++  std::map<uint64_t, Versions> versions_;
++  std::map<uint64_t, uint8_t> known_;
++};
++}  // namespace ep_l2_ideal
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 0f1efcff..b02b39a2 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -34,6 +34,7 @@
+ #include "l2_admission_rules.h"
+ #include <algorithm>
+ #include <assert.h>
++#include <climits>
+ #include "gpu-sim.h"
+ #include "hashing.h"
+ 
+@@ -668,6 +669,9 @@ bool mshr_table::full(new_addr_type block_addr) const {
+ 
+ mshr_table::ep_l2_block_reason mshr_table::full_reason(
+     new_addr_type block_addr) const {
++  // This removes only allocation-capacity refusal. Existing sector merging,
++  // RAW/WAR/atomic handling and response retirement remain the ordinary path.
++  if (m_ideal_meta) return EP_L2_BLOCK_NONE;
+   table::const_iterator i = m_data.find(block_addr);
+   if (i != m_data.end()) {
+     const unsigned per_line_limit =
+@@ -683,6 +687,17 @@ mshr_table::ep_l2_block_reason mshr_table::full_reason(
+   return EP_L2_BLOCK_NONE;
+ }
+ 
++void mshr_table::ensure_descriptor_available() {
++  if (!m_free_descriptor_ids.empty()) return;
++  assert(m_ideal_meta && m_descriptor_pool_size);
++  // Allocate on demand; never rely on a guessed huge constant. IDs are kept in
++  // unsigned containers throughout the producer/consumer chain.
++  assert(m_descriptor_pool.size() < static_cast<size_t>(UINT_MAX));
++  const unsigned id = static_cast<unsigned>(m_descriptor_pool.size());
++  m_descriptor_pool.push_back(ep_l2_descriptor());
++  m_free_descriptor_ids.push_back(id);
++}
++
+ bool mshr_table::needs_lower_read(
+     new_addr_type block_addr, const mem_access_sector_mask_t &sectors) const {
+   if (!m_descriptor_pool_size) return !probe(block_addr);
+@@ -696,6 +711,7 @@ void mshr_table::add(new_addr_type block_addr, mem_fetch *mf) {
+   mshr_entry &entry = m_data[block_addr];
+   entry.m_list.push_back(mf);
+   if (m_descriptor_pool_size) {
++    ensure_descriptor_available();
+     assert(!m_free_descriptor_ids.empty());
+     unsigned id = m_free_descriptor_ids.back();
+     m_free_descriptor_ids.pop_back();
+@@ -707,8 +723,8 @@ void mshr_table::add(new_addr_type block_addr, mem_fetch *mf) {
+     entry.m_pending_sectors |= descriptor.m_sectors;
+     entry.m_issued_sectors |= descriptor.m_sectors;
+   }
+-  assert(m_data.size() <= m_num_entries);
+-  assert(entry.m_list.size() <=
++  assert(m_ideal_meta || m_data.size() <= m_num_entries);
++  assert(m_ideal_meta || entry.m_list.size() <=
+          (m_descriptor_pool_size ? m_descriptor_per_line_cap : m_max_merged));
+   // indicate that this MSHR entry contains an atomic operation
+   if (mf->isatomic()) {
+@@ -722,6 +738,7 @@ void mshr_table::add_for_test(new_addr_type block_addr, mem_fetch *mf,
+   assert(full_reason(block_addr) == EP_L2_BLOCK_NONE);
+   mshr_entry &entry = m_data[block_addr];
+   entry.m_list.push_back(mf);
++  ensure_descriptor_available();
+   unsigned id = m_free_descriptor_ids.back();
+   m_free_descriptor_ids.pop_back();
+   ep_l2_descriptor &descriptor = m_descriptor_pool[id];
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index c204dc99..8cb294e7 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -591,6 +591,9 @@ class cache_config {
+     // M0a is deliberately opt-in.  It is a telemetry sidecar and is never
+     // consulted by the admission controller.
+     m_ep_l2_m0a_stats = false;
++    m_ep_l2_ideal_meta = false;
++    m_ep_l2_ideal_read_hit = false;
++    m_ep_l2_ideal_wb = false;
+   }
+   void init(char *config, FuncCache status) {
+     cache_status = status;
+@@ -933,6 +936,10 @@ class cache_config {
+   // EP-L2 B0 long-lived response descriptors. These deliberately do not
+   // reuse m_miss_queue, which remains the short lower-issue queue.
+   unsigned m_ep_l2_descriptor_pool_size;
++  // Lane 4 diagnostic only: dynamically backed metadata, never a budgeted mode.
++  bool m_ep_l2_ideal_meta;
++  bool m_ep_l2_ideal_read_hit;
++  bool m_ep_l2_ideal_wb;
+   unsigned m_ep_l2_descriptor_per_line_cap;
+   // EP-L2 write-address descriptors. Zero preserves the conventional path.
+   unsigned m_ep_l2_wad_entries;
+@@ -1119,11 +1126,13 @@ class mshr_table {
+ 
+   mshr_table(unsigned num_entries, unsigned max_merged,
+              unsigned descriptor_pool_size = 0,
+-             unsigned descriptor_per_line_cap = 0)
++             unsigned descriptor_per_line_cap = 0,
++             bool ideal_meta = false)
+       : m_num_entries(num_entries),
+         m_max_merged(max_merged),
+         m_descriptor_pool_size(descriptor_pool_size),
+-        m_descriptor_per_line_cap(descriptor_per_line_cap)
++        m_descriptor_per_line_cap(descriptor_per_line_cap),
++        m_ideal_meta(ideal_meta)
+ #if (tr1_hash_map_ismap == 0)
+         ,
+         m_data(2 * num_entries)
+@@ -1184,9 +1193,9 @@ class mshr_table {
+   unsigned descriptor_count_used() const {
+     return m_descriptor_pool_size == 0
+                ? num_targets_used()
+-               : m_descriptor_pool_size - m_free_descriptor_ids.size();
++               : m_descriptor_pool.size() - m_free_descriptor_ids.size();
+   }
+-  unsigned descriptor_pool_capacity() const { return m_descriptor_pool_size; }
++  unsigned descriptor_pool_capacity() const { return m_descriptor_pool.size(); }
+   void sector_masks(new_addr_type block_addr, mem_access_sector_mask_t &pending,
+                     mem_access_sector_mask_t &issued,
+                     mem_access_sector_mask_t &ready) const;
+@@ -1220,6 +1229,8 @@ class mshr_table {
+   const unsigned m_max_merged;
+   const unsigned m_descriptor_pool_size;
+   const unsigned m_descriptor_per_line_cap;
++  const bool m_ideal_meta;
++  void ensure_descriptor_available();
+ 
+   struct ep_l2_descriptor {
+     mem_fetch *m_mf;
+@@ -1485,7 +1496,8 @@ class baseline_cache : public cache_t {
+         m_tag_array(new tag_array(config, core_id, type_id)),
+         m_mshrs(config.m_mshr_entries, config.m_mshr_max_merge,
+                 config.m_ep_l2_descriptor_pool_size,
+-                config.m_ep_l2_descriptor_per_line_cap),
++                config.m_ep_l2_descriptor_per_line_cap,
++                config.m_ep_l2_ideal_meta),
+         m_bandwidth_management(config),
+         m_level(level),
+         m_gpu(gpu) {
+@@ -2084,7 +2096,7 @@ class ep_l2_payload_store {
+   static const unsigned k_physical_slots = 1152;
+   static const unsigned k_resident_slots = 1024;
+   static const unsigned k_bypass_slots = 128;
+-  enum role { RESIDENT, BYPASS, WB };
++  enum role { RESIDENT, BYPASS, WB, IDEAL_REFERENCE };
+   // A boolean cannot distinguish an ordinary target-payload retry from a
+   // physical same-bank denial.  C6c needs that distinction both for correct
+   // same-cycle admission and for meaningful B0-Banked telemetry.
+@@ -2126,8 +2138,10 @@ class ep_l2_payload_store {
+     }
+     bool occupied() const { return status != FREE; }
+   };
+-  ep_l2_payload_store(unsigned mode = 0, unsigned ft_mode = 0, unsigned wbuf = 0)
+-      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_cycle((unsigned long long)-1),
++  ep_l2_payload_store(unsigned mode = 0, unsigned ft_mode = 0, unsigned wbuf = 0,
++                      bool ideal_wb = false)
++      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_ideal_wb(ideal_wb),
++        m_cycle((unsigned long long)-1),
+         m_resident_reads(0), m_resident_writes(0), m_bypass_reads(0),
+         m_bypass_writes(0), m_bank_logical_ops(0), m_bank_attempts(0),
+         m_bank_grants(0), m_bank_retry_attempts(0),
+@@ -2279,6 +2293,9 @@ class ep_l2_payload_store {
+   }
+   // FT public allocation primitives. Preview does not acquire a resource.
+   unsigned physical_slots() const { return m_slots.size(); }
++  unsigned diagnostic_wb_extra_slots() const {
++    return m_slots.size() - (k_physical_slots + m_wbuf);
++  }
+   unsigned wb_used() const { return used(WB); }
+   unsigned pending_sector_count() const { unsigned n=0;
+     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+@@ -2293,9 +2310,19 @@ class ep_l2_payload_store {
+           (r == BYPASS && (id < k_resident_slots || id >= k_physical_slots)))) continue;
+       return payload_handle(id, m_slots[id].generation + 1);
+     }
++    // A prospective ID is not an allocation. Only reserve() below grows the
++    // diagnostic backing after WAD/issue/ordering checks have succeeded.
++    if (m_ideal_wb && r == WB) {
++      assert(m_ft_mode == 1 && m_slots.size() < std::numeric_limits<unsigned>::max());
++      return payload_handle(static_cast<unsigned>(m_slots.size()), 1);
++    }
+     return payload_handle();
+   }
+   payload_handle reserve(unsigned id, role r, new_addr_type owner, state st) {
++    if (id == m_slots.size() && m_ideal_wb && r == WB) {
++      assert(m_ft_mode == 1 && id < std::numeric_limits<unsigned>::max());
++      m_slots.push_back(slot());
++    }
+     assert(m_ft_mode && id < m_slots.size() && !m_slots[id].occupied());
+     slot &s = m_slots[id];
+     assert(s.generation != std::numeric_limits<unsigned>::max());
+@@ -2558,7 +2585,9 @@ class ep_l2_payload_store {
+     role r; unsigned id; bool write; unsigned long long sequence;
+     bool true_conflict; unsigned long long first_conflict_cycle;
+   };
+-  unsigned m_mode, m_ft_mode, m_wbuf; unsigned long long m_cycle;
++  unsigned m_mode, m_ft_mode, m_wbuf;
++  bool m_ideal_wb;
++  unsigned long long m_cycle;
+   unsigned m_resident_reads, m_resident_writes, m_bypass_reads, m_bypass_writes;
+   unsigned long long m_bank_logical_ops, m_bank_attempts, m_bank_grants,
+       m_bank_retry_attempts, m_bank_true_conflict_ops,
+@@ -2589,7 +2618,7 @@ class l2_cache : public data_cache {
+         m_ep_l2_wad_lifetime_sum(0), m_ep_l2_wad_lifetime_count(0),
+         m_ep_l2_wad_lifetime_max(0),
+         m_ep_l2_payload(config.m_ep_l2_payload_mode, config.m_ep_l2_ft_mode,
+-                         config.m_ep_l2_wbuf_entries),
++                         config.m_ep_l2_wbuf_entries, config.m_ep_l2_ideal_wb),
+         m_ep_l2_last_payload_request_result(ep_l2_payload_store::GRANTED),
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
+@@ -2690,6 +2719,11 @@ class l2_cache : public data_cache {
+   void cycle();
+   void ft_print(FILE *fp, unsigned slice) const;
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
++  unsigned long long ideal_wb_data_full() const { return m_ft_stats.wbuf_full; }
++  unsigned ideal_wb_extra_slots() const { return m_ep_l2_payload.diagnostic_wb_extra_slots(); }
++  unsigned long long ft_copy_lines() const { return m_ft_stats.copy_lines; }
++  unsigned long long ft_staging_reads() const { return m_ft_stats.staging_reads; }
++  unsigned long long ft_lower_accepts() const { return m_ft_stats.lower_accept; }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
+   bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
+@@ -2737,6 +2771,32 @@ class l2_cache : public data_cache {
+   bool ep_l2_wad_contains(new_addr_type block_addr) const {
+     return m_ep_l2_wad_entries_live.count(block_addr) != 0;
+   }
++  bool ep_l2_ideal_read_dependency(new_addr_type addr) const {
++    return ep_l2_wad_contains(m_config.block_addr(addr)) ||
++           m_mshrs.probe(m_config.mshr_addr(addr));
++  }
++  ep_l2_payload_store::request_result ep_l2_ideal_read_bank(
++      mem_fetch *mf, unsigned long long cycle) {
++    unsigned index = (unsigned)-1;
++    const cache_request_status status = m_tag_array->probe(
++        m_config.block_addr(mf->get_addr()), index, mf, false, true);
++    // Real residents keep their actual bank. Cold reads use the selected
++    // replacement landing's bank without allocating it. All-reserved has no
++    // selected way; define a stable diagnostic bank in that special case.
++    if (status == RESERVATION_FAIL)
++      index = (mf->get_addr() / m_config.get_line_sz()) % 4;
++    return m_ep_l2_payload.request(ep_l2_payload_store::IDEAL_REFERENCE, index,
++                                  false, cycle);
++  }
++  void ep_l2_ideal_touch_resident(mem_fetch *mf, unsigned long long cycle) {
++    unsigned index = (unsigned)-1;
++    const new_addr_type line = m_config.block_addr(mf->get_addr());
++    if (m_tag_array->probe(line, index, mf, false, true) == HIT) {
++      // Preserve normal hit replacement age; a cold reference does not
++      // fabricate a resident tag or evict a real dirty producer.
++      m_tag_array->access(line, cycle, index, mf);
++    }
++  }
+ 
+   // Inspect only: no LRU update, tag/sector allocation, MSHR change, queue
+   // insertion, cache event, or normal cache statistic is permitted here.
+@@ -2783,6 +2843,18 @@ class l2_cache : public data_cache {
+   std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
+   std::array<unsigned long long,4> m_ft_last_wb_versions;
+   void validate_ep_l2_mode_config() const {
++    if ((m_config.m_ep_l2_ideal_wb && m_config.m_ep_l2_ft_mode != 1) ||
++        (m_config.m_ep_l2_ideal_read_hit &&
++         (m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ft_mode == 2))) {
++      fprintf(stderr, "I_WB requires static finite-WBUF source; I_READ_HIT is a standalone reference mode\n");
++      abort();
++    }
++    if ((m_config.m_ep_l2_ideal_meta && !m_config.ep_l2_descriptor_mode()) ||
++        (m_config.m_ep_l2_ideal_read_hit &&
++         (m_config.m_ep_l2_payload_mode != 2 || m_config.m_ep_l2_ideal_meta))) {
++      fprintf(stderr, "EP-L2 ideal mode requires target metadata/banked model; I_READ_HIT+I_META is not an admitted combination\n");
++      abort();
++    }
+     if (m_config.m_ep_l2_ft_mode > 2 ||
+         (!m_config.m_ep_l2_ft_mode && m_config.m_ep_l2_wbuf_entries) ||
+         (m_config.m_ep_l2_ft_mode &&
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 47393934..6548e4f0 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -247,6 +247,15 @@ void memory_config::reg_options(class OptionParser *opp) {
+ 
+   option_parser_register(opp, "-l2_ideal", OPT_BOOL, &l2_ideal,
+                          "Use a ideal L2 cache that always hit", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ideal_meta", OPT_BOOL,
++                         &m_L2_config.m_ep_l2_ideal_meta,
++                         "Lane4 diagnostic: non-binding dynamic Line-MSHR/descriptor/per-address capacity; ordering retained", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ideal_read_hit", OPT_BOOL,
++                         &m_L2_config.m_ep_l2_ideal_read_hit,
++                         "Lane4 optimistic demand-read reference service; preserves ROP hit delay, bank, ordering, NoC/response queue", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ideal_wb", OPT_BOOL,
++                         &m_L2_config.m_ep_l2_ideal_wb,
++                         "Lane4 diagnostic extra WB data backing only; preserves finite WAD, copy/read banks, lower queues and DRAM", "0");
+   option_parser_register(
+       opp, "-gpgpu_cache:dl2", OPT_CSTR, &m_L2_config.m_config_string,
+       "unified banked L2 data cache config "
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index f36e4284..9f563e16 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1067,6 +1067,78 @@ void memory_sub_partition::l2_char_sample(unsigned long long cycle) {
+   m_l2_char_collector->sample_cycle(cycle, s);
+ }
+ 
++namespace {
++ep_l2_ideal::ReferenceMemory::Mask ideal_mask(const mem_fetch *mf) {
++  ep_l2_ideal::ReferenceMemory::Mask mask{};
++  const mem_access_byte_mask_t bytes = mf->get_access_byte_mask();
++  const mem_access_sector_mask_t sectors = mf->get_access_sector_mask();
++  bool any = false;
++  for (unsigned b = 0; b < 128; ++b) {
++    mask[b] = sectors.test(b / 32) && (bytes.none() || bytes.test(b));
++    any |= mask[b];
++  }
++  assert(any && "reference service requires a valid byte/sector mask");
++  return mask;
++}
++}
++
++void memory_sub_partition::ep_l2_ideal_commit_producer(mem_fetch *mf) {
++  if (!m_config->m_L2_config.m_ep_l2_ideal_read_hit) return;
++  const auto data = m_ideal_known_writes.find(mf);
++  m_ideal_reference.write(mf->get_addr() & ~uint64_t(127), ideal_mask(mf),
++      data == m_ideal_known_writes.end() ? nullptr : &data->second);
++  if (data != m_ideal_known_writes.end()) m_ideal_known_writes.erase(data);
++}
++
++bool memory_sub_partition::ep_l2_ideal_serve_read(
++    mem_fetch *mf, unsigned long long cycle) {
++  if (!m_config->m_L2_config.m_ep_l2_ideal_read_hit || mf->get_is_write() ||
++      mf->isatomic() || mf->get_access_type() == L2_WR_ALLOC_R ||
++      mf->get_access_type() == L1_WR_ALLOC_R)
++    return false;
++  // Preserve producer completion, including an atomic waiting in the actual
++  // response FIFO. Arrival identity avoids a WAR deadlock with younger writes
++  // that have not yet reached the frontend head.
++  bool dependency = m_L2cache->ep_l2_ideal_read_dependency(mf->get_addr());
++  const uint64_t line = mf->get_addr() & ~uint64_t(127);
++  const auto arrival = m_ideal_arrivals.find(mf);
++  assert(arrival != m_ideal_arrivals.end());
++  for (auto other : m_request_tracker) {
++    if (other == mf || (!other->get_is_write() && !other->isatomic()) ||
++        (other->get_addr() & ~uint64_t(127)) != line) continue;
++    const auto older = m_ideal_arrivals.find(other);
++    if (older != m_ideal_arrivals.end() && older->second < arrival->second)
++      dependency = true;
++  }
++  if (dependency) { ++m_ideal_dependency_wait; return true; }
++  if (m_L2_icnt_queue->full()) { ++m_ideal_response_wait; return true; }
++  if (m_L2cache->ep_l2_ideal_read_bank(mf, cycle) != ep_l2_payload_store::GRANTED) {
++    ++m_ideal_bank_wait; return true;
++  }
++  // The frontend head has already traversed the same ROP hit-delay path as a
++  // normal L2 hit. This is the real L2->ICNT response queue, never a synchronous
++  // callback/drop. Cold reads snapshot the explicit reference, not cache RAM.
++  auto snapshot = m_ideal_reference.read(line, ideal_mask(mf));
++  for (const auto &b : snapshot) {
++    if (b.value_known) ++m_ideal_known_bytes;
++    else ++m_ideal_symbolic_bytes;
++  }
++  assert(m_ideal_responses.emplace(mf, std::move(snapshot)).second);
++  m_L2cache->ep_l2_ideal_touch_resident(mf, cycle);
++  mf->set_reply();
++  mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE, cycle);
++  // Same frontend acceptance and real response audit as ordinary hits.
++  ft_record_admission(mf);
++  ft_record_response(mf);
++  m_L2_icnt_queue->push(mf);
++  m_icnt_L2_queue->pop();
++  ep_l2_m0a_record_response_enqueue();
++  m_l2_block_state.erase(mf);
++  if (m_l2_char_collector) m_l2_char_collector->clear_frontend_request(mf);
++  ++m_ideal_reads;
++  return true;
++}
++
+ void memory_sub_partition::cache_cycle(unsigned cycle) {
+   // L2 fill responses
+   if (!m_config->m_L2_config.disabled()) {
+@@ -1101,6 +1173,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+           m_L2_icnt_queue->push(original_wr_mf);
+         }
+         m_request_tracker.erase(mf);
++        m_ideal_arrivals.erase(mf);
+         delete mf;
+       }
+       m_L2cache->commit_next_access();
+@@ -1172,6 +1245,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+         ((m_config->m_L2_texure_only && mf->istexture()) ||
+          (!m_config->m_L2_texure_only))) {
+       // L2 is enabled and access is for L2
++      if (!ep_l2_ideal_serve_read(
++              mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+       l2_access_plan plan;
+       m_L2cache->preview_access(mf->get_addr(), mf, plan);
+       if (plan.exact)
+@@ -1442,6 +1517,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+         }
+         bool write_sent = was_write_sent(events);
+         bool read_sent = was_read_sent(events);
++        if (status != RESERVATION_FAIL && mf->get_is_write() && !mf->isatomic())
++          ep_l2_ideal_commit_producer(mf);
+         MEM_SUBPART_DPRINTF("Probing L2 cache Address=%llx, status=%u\n",
+                             mf->get_addr(), status);
+ 
+@@ -1451,6 +1528,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+             assert(!read_sent);
+             if (mf->get_access_type() == L1_WRBK_ACC) {
+               m_request_tracker.erase(mf);
++        m_ideal_arrivals.erase(mf);
+               delete mf;
+             } else {
+               mf->set_reply();
+@@ -1473,6 +1551,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+               !was_writeallocate_sent(events)) {
+             if (mf->get_access_type() == L1_WRBK_ACC) {
+               m_request_tracker.erase(mf);
++        m_ideal_arrivals.erase(mf);
+               delete mf;
+             } else if (m_config->m_L2_config.get_write_policy() == WRITE_BACK) {
+               mf->set_reply();
+@@ -1491,6 +1570,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+           // L2 cache lock-up: will try again next cycle.
+         }
+       }
++      }
+     } else {
+       // L2 is disabled or non-texture access to texture-only L2
+       mf->set_status(IN_PARTITION_L2_TO_DRAM_QUEUE,
+@@ -2079,6 +2159,27 @@ void memory_sub_partition::end_ep_l2_b0_kernel(FILE *fp,
+ 
+ void memory_sub_partition::print_ep_l2_b0_snapshot(FILE *fp,
+                                                     unsigned long long uid) const {
++  if ((m_config->m_L2_config.m_ep_l2_ideal_wb ||
++       m_config->m_L2_config.m_ep_l2_ideal_meta ||
++       m_config->m_L2_config.m_ep_l2_ideal_read_hit) && uid == (unsigned long long)-1) {
++    fprintf(fp, "EPL2IDEALV1|scope=application|slice=%u|ideal_meta=%u|ideal_read_hit=%u|ideal_wb=%u|"
++                "wb_data_full=%llu|diagnostic_wb_extra_slots=%u|"
++                "reference=BYTE_VERSION_SYMBOLS_WITH_OPTIONAL_KNOWN_VALUES|"
++                "reads_served=%llu|dependency_wait_attempts=%llu|bank_wait_attempts=%llu|"
++                "response_wait_attempts=%llu|known_bytes=%llu|symbolic_bytes=%llu|"
++                "line_mshr_full=%llu|descriptor_full=%llu|per_address_full=%llu|"
++                "reference_responses_live=%zu|reference_arrivals_live=%zu\n",
++            m_id, m_config->m_L2_config.m_ep_l2_ideal_meta,
++            m_config->m_L2_config.m_ep_l2_ideal_read_hit,
++            m_config->m_L2_config.m_ep_l2_ideal_wb,
++            m_L2cache->ideal_wb_data_full(), m_L2cache->ideal_wb_extra_slots(), m_ideal_reads,
++            m_ideal_dependency_wait, m_ideal_bank_wait, m_ideal_response_wait,
++            m_ideal_known_bytes, m_ideal_symbolic_bytes,
++            m_ep_l2_b0_accum.line_mshr_full_block,
++            m_ep_l2_b0_accum.descriptor_pool_full_block,
++            m_ep_l2_b0_accum.per_address_cap_block,
++            m_ideal_responses.size(), m_ideal_arrivals.size());
++  }
+   if (m_config->m_L2_config.ep_l2_m0a_stats_enabled()) {
+     ep_l2_m0a_accum m0 = m_ep_l2_m0a_accum;
+     unsigned long long start_cycle = 0;
+@@ -2265,7 +2366,9 @@ bool memory_sub_partition::l2_char_no_resource_leak() const {
+   return m_request_tracker.empty() && m_icnt_L2_queue->empty() &&
+          m_L2_dram_queue->empty() && m_dram_L2_queue->empty() &&
+          m_L2_icnt_queue->empty() && m_rop.empty() &&
+-         m_l2_block_state.empty() && m_L2cache->l2_char_no_pending_resources() &&
++         m_l2_block_state.empty() && m_ideal_responses.empty() &&
++         m_ideal_known_writes.empty() && m_ideal_arrivals.empty() &&
++         m_L2cache->l2_char_no_pending_resources() &&
+          m_L2cache->ep_l2_resident_pending() == 0 &&
+          m_L2cache->ep_l2_payload_pending_operations() == 0 &&
+          m_L2cache->ep_l2_tag_payload_consistent() && m_L2cache->ft_drained() &&
+@@ -2427,6 +2530,8 @@ void memory_sub_partition::push(mem_fetch *m_req, unsigned long long cycle) {
+     for (unsigned i = 0; i < reqs.size(); ++i) {
+       mem_fetch *req = reqs[i];
+       m_request_tracker.insert(req);
++      if (m_config->m_L2_config.m_ep_l2_ideal_read_hit)
++        assert(m_ideal_arrivals.emplace(req, m_ideal_next_arrival++).second);
+       if (req->istexture()) {
+         m_icnt_L2_queue->push(req);
+         req->set_status(IN_PARTITION_ICNT_TO_L2_QUEUE,
+@@ -2446,7 +2551,15 @@ void memory_sub_partition::push(mem_fetch *m_req, unsigned long long cycle) {
+ mem_fetch *memory_sub_partition::pop() {
+   mem_fetch *mf = m_L2_icnt_queue->pop();
+   m_request_tracker.erase(mf);
+-  if (mf && mf->isatomic()) mf->do_atomic();
++  m_ideal_arrivals.erase(mf);
++  if (mf && mf->isatomic()) {
++    mf->do_atomic();
++    ep_l2_ideal_commit_producer(mf);
++  }
++  if (mf) {
++    m_ideal_responses.erase(mf);
++    m_ideal_arrivals.erase(mf);
++  }
+   if (mf && (mf->get_access_type() == L2_WRBK_ACC ||
+              mf->get_access_type() == L1_WRBK_ACC)) {
+     delete mf;
+@@ -2461,6 +2574,7 @@ mem_fetch *memory_sub_partition::top() {
+              mf->get_access_type() == L1_WRBK_ACC)) {
+     m_L2_icnt_queue->pop();
+     m_request_tracker.erase(mf);
++  m_ideal_arrivals.erase(mf);
+     delete mf;
+     mf = NULL;
+   }
+@@ -2474,6 +2588,7 @@ void memory_sub_partition::set_done(mem_fetch *mf) {
+         mf->get_addr(), m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+   }
+   m_request_tracker.erase(mf);
++  m_ideal_arrivals.erase(mf);
+ }
+ 
+ void memory_sub_partition::accumulate_L2cache_stats(
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 9363329d..1a5c612c 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -31,6 +31,7 @@
+ 
+ #ifndef MC_PARTITION_INCLUDED
+ #define MC_PARTITION_INCLUDED
++#include "ep-l2-ideal-reference.h"
+ 
+ #include "../abstract_hardware_model.h"
+ #include "dram.h"
+@@ -355,6 +356,20 @@ class memory_sub_partition {
+   void end_ep_l2_b0_kernel(FILE *fp, unsigned long long uid);
+   bool l2_char_no_resource_leak() const;
+ 
++  // Reference bytes/versions are diagnostic state, outside the physical budget.
++  void ep_l2_ideal_seed(uint64_t address, const std::vector<uint8_t> &data) {
++    m_ideal_reference.seed(address, data);
++  }
++  void ep_l2_ideal_known_write(mem_fetch *mf,
++                              const ep_l2_ideal::ReferenceMemory::Data &data) {
++    m_ideal_known_writes[mf] = data;
++  }
++  const std::vector<ep_l2_ideal::Byte> &ep_l2_ideal_response(mem_fetch *mf) const {
++    return m_ideal_responses.at(mf);
++  }
++  unsigned long long ep_l2_ideal_reads_served() const { return m_ideal_reads; }
++  unsigned long long ep_l2_ideal_dependency_waits() const { return m_ideal_dependency_wait; }
++
+   // EP-L2 C3b observation hooks.  They expose production state for directed
+   // regressions and instrumentation only; none participate in admission.
+   unsigned ep_l2_descriptor_count_used() const {
+@@ -425,6 +440,19 @@ class memory_sub_partition {
+   unsigned long long m_ft_unique_requesters = 0, m_ft_response_count = 0, m_ft_absorbed_count = 0;
+ 
+   // data
++  bool ep_l2_ideal_serve_read(mem_fetch *mf, unsigned long long cycle);
++  void ep_l2_ideal_commit_producer(mem_fetch *mf);
++  ep_l2_ideal::ReferenceMemory m_ideal_reference;
++  std::map<mem_fetch *, std::vector<ep_l2_ideal::Byte>> m_ideal_responses;
++  std::map<mem_fetch *, ep_l2_ideal::ReferenceMemory::Data> m_ideal_known_writes;
++  std::map<mem_fetch *, unsigned long long> m_ideal_arrivals;
++  unsigned long long m_ideal_next_arrival = 0;
++  unsigned long long m_ideal_reads = 0;
++  unsigned long long m_ideal_response_wait = 0;
++  unsigned long long m_ideal_bank_wait = 0;
++  unsigned long long m_ideal_dependency_wait = 0;
++  unsigned long long m_ideal_symbolic_bytes = 0;
++  unsigned long long m_ideal_known_bytes = 0;
+   unsigned m_id;  //< the global sub partition ID
+   const memory_config *m_config;
+   class l2_cache *m_L2cache;

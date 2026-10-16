@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+from datetime import datetime, timezone
 
 from registry import Registry, write_json
 
@@ -102,8 +103,13 @@ def main():
     receipt['active_runs'] = [r for r in registry['runs'].values()
         if r['owner'] == 'lane5' and r['status'] in ('RESERVED', 'RUNNING')]
     receipt['formal_campaign']['completed_pairs'] = len(packs)
+    receipt['formal_campaign']['running_workloads'] = sorted({r['identity']['workload']
+        for r in receipt['active_runs']})
+    receipt['formal_campaign'].pop('running_workload', None)
     receipt['formal_campaign']['completed_pair_packs'] = packs
     receipt['validation']['R0_formal_valid_runs'] = len(packs) * 2
+    receipt['validation']['new_formal_runs'] = len(packs) * 2
+    receipt['updated_at'] = datetime.now(timezone.utc).isoformat()
     receipt['status'] = 'R0_FIVE_PAIRS_COMPLETE_VALID' if len(packs) == 5 else 'R0_ROLLING_PAIRS_IN_PROGRESS'
     receipt['artifacts'] = list(dict.fromkeys(receipt['artifacts'] + packs))
     write_json(base / 'RECEIPT.json', receipt)
