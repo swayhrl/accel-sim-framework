@@ -46,6 +46,8 @@ def validate(data, scope, proof):
             data['source_archive_identity_rechecked_before_after_stage'] is True,
             'original archive stability evidence missing')
     identity = data['source_archive_identity']
+    require(all(type(identity[k]) is int and identity[k]>=0 for k in
+                ['device','inode','nlink','size_bytes','mtime_ns','ctime_ns']), 'source identity must contain actual integers')
     require(identity['device'] == 156 and identity['nlink'] == 1 and identity['size_bytes'] == SPEC['size']
             and identity['inode'] > 0, 'source namespace/identity mismatch')
     count = (SPEC['size'] + SPEC['payload'] - 1) // SPEC['payload']

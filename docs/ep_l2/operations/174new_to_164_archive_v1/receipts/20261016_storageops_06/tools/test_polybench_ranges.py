@@ -60,6 +60,8 @@ class RangeTests(unittest.TestCase):
             with self.assertRaises(ValueError):r.validate(bad,self.scope,self.proof)
         bad_scope=dict(self.scope,no_active_readers_or_writers=False)
         with self.assertRaises(ValueError):r.validate(data,bad_scope,self.proof)
+        identity=dict(self.scope['source_archive_identity'],mtime_ns='UNKNOWN')
+        with self.assertRaises(ValueError):r.validate(dict(data,source_archive_identity=identity),dict(self.scope,source_archive_identity=identity),self.proof)
 
     def test_unowned_existing_archive_is_never_overwritten(self):
         data,digest=self.staged(0);final=self.archive/r.SPEC['final'];final.parent.mkdir(parents=True);final.write_bytes(b'KEEP')
