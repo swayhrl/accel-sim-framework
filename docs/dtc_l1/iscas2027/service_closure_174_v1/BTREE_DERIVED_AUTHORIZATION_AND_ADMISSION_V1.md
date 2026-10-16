@@ -1,3 +1,19 @@
+# Conditional Btree extension completed within six-arm authorization
+
+All six same-input/cap32768 arms naturally terminal, strict/resource PASS:
+B16-N430680,TC80-N351430,C+188570,IO256250523,OO128175133,IO128250523cycles;
+each444467849 active-thread instructions/full two kernels. IO is slower thanC+;
+retain0.752705 C+/IO ratio. C+/OO1.076725 and matched128 IO/OO1.430473 are
+limited to this one conditional decoded input, not equal area/native/capture.
+Exactly six distinct attempts, no retry/tuning/extra arm. Same-cap C+/IO/OO/
+IO128 role ordering agrees across original and conditional interpretations;
+original source pending remains and oldB16/TC80 cap8192 are not new denominators.
+
+[Complete strict receipts, full scoped metrics, cost vector and limited ordering
+audit](review_pack/btree_derived_complete_v1/README.md). Original Goal stays
+active for two originalGESUMMV jobs; no2D/LUD/new modern task is authorized.
+The independent admission/preregistration record below remains intact.
+
 # Btree conditional E-list input: authorized Lane A admission
 
 User authorization806f6c8cf515c471fe6ef4bac47df5ab5ea78c73 accepts CPU producer

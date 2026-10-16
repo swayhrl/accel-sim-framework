@@ -1,3 +1,27 @@
+# Current174 conditional Btree six-arm closure —2026-10-16T16:31Z
+
+**Authorized Btree extension6/6 natural terminal, strict/resource PASS.**
+One bundle6e59d31e, complete orderedfindRangeK/findK,444467849 active-thread
+instructions each; fixed before any performance, samecap32768 throughout.
+B16-N430680;TC80-N351430;C+188570;IO256250523;OO128175133;IO128250523cycles.
+New-input-only B16/design ratios1.719124IO/2.459160OO; C+/design0.752705IO/
+1.076725OO. IO's regression againstC+ is retained. Matched128 IO/OO1.430473,
+with equal1817551 retired cacheable warp instructions/4139841 sectors and all
+11 service/64SM sampling/decomposition/credit/ref/physical/PIB/lower/ordinary
+completion checks PASS. Conventional finite metrics remainUNAVAILABLE.
+No old denominator is reused. Same-cap C+/IO/OO/IO128 configs/Core/binary/ROI
+match across original/new inputs, and both have OO<C+<IO128=IO256 in cycles.
+This is limited conditional input sensitivity, not recovered capture/native
+fidelity or equal area. OldB16/TC80cap8192 confounds their cross-input effect;
+originalBtree FORMAT_APPLICABILITY_REVIEW_PENDING stays.6legal IO duplicate-
+after-eviction allocations and both zero identity mismatches are retained;
+84kzero-mask memory records are excluded from active retirement denominators.
+See review_pack/btree_derived_complete_v1. The six-arm extension now stops;
+no tuning/alternative input/extra arm,2D STOP/LUD no launch and modern/native/
+PPA/no-GM boundaries unchanged. Original44 remain39PASS/2GESUMMV live/3old
+HotspotHOLD. Both original PIDs/start ticks, sole authority/watch locks/HOLDs
+continue; main Goal ACTIVE. Historical checkpoints/failures follow intact.
+
 # Current174 BICG matched128 closure —2026-10-16T16:22Z
 
 **Original BICG IO128/OO128 complete matched-depth gate PASS.**

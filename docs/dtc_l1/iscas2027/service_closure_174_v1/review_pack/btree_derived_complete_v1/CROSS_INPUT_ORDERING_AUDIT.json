@@ -1,0 +1,47 @@
+{
+  "status": "PASS_LIMITED_CONDITIONAL_ROLE_ORDERING_AUDIT",
+  "comparisons": [
+    {
+      "arm": "TRAD96",
+      "all_effective_options_identical": true,
+      "same_core_binary_and_ROI": true,
+      "old_spec_sha256": "491516b802c6bcdfe26422bd04087827885d36c4c75fa3ec4f77b0809017a68a",
+      "new_spec_sha256": "6812c7835f7c7ff5e57ff53db54902d4d81b33be42144a3d299de6dc7c853b29",
+      "old_input_scientific_status": "FORMAT_APPLICABILITY_REVIEW_PENDING",
+      "new_input_scientific_status": "CONDITIONAL_E_LIST_ONLY_NOT_CAPTURE_OR_NATIVE_EQUIVALENCE"
+    },
+    {
+      "arm": "IO256",
+      "all_effective_options_identical": true,
+      "same_core_binary_and_ROI": true,
+      "old_spec_sha256": "278539aabc2427980d11f7fdd82f0a41e4eecd56ac788f8f393bc82de5993746",
+      "new_spec_sha256": "9100400f40eef8e074f2146d7c822ade93c5706b3b15bbb1260008a4d70ce78f",
+      "old_input_scientific_status": "FORMAT_APPLICABILITY_REVIEW_PENDING",
+      "new_input_scientific_status": "CONDITIONAL_E_LIST_ONLY_NOT_CAPTURE_OR_NATIVE_EQUIVALENCE"
+    },
+    {
+      "arm": "OO128",
+      "all_effective_options_identical": true,
+      "same_core_binary_and_ROI": true,
+      "old_spec_sha256": "95d5a7f2a9a9f4b5a35339e0fc8d09570ef1a5d618c9ae018edba87299cd8a79",
+      "new_spec_sha256": "ee7b4ac7980756a7cc9f3324e037b6904d87fbe2f92b98c926f8116ab907b44a",
+      "old_input_scientific_status": "FORMAT_APPLICABILITY_REVIEW_PENDING",
+      "new_input_scientific_status": "CONDITIONAL_E_LIST_ONLY_NOT_CAPTURE_OR_NATIVE_EQUIVALENCE"
+    },
+    {
+      "arm": "IO128",
+      "all_effective_options_identical": true,
+      "same_core_binary_and_ROI": true,
+      "old_spec_sha256": "9a5b9a5dbb52f47b482cd237f014db51d461b3d0bad565ea3e6d654d7567be67",
+      "new_spec_sha256": "69912bc813b2621431127eaaa8a43578e0ca28a40fe522c6543daded79a4bd5f",
+      "old_input_scientific_status": "FORMAT_APPLICABILITY_REVIEW_PENDING",
+      "new_input_scientific_status": "CONDITIONAL_E_LIST_ONLY_NOT_CAPTURE_OR_NATIVE_EQUIVALENCE"
+    }
+  ],
+  "ordering": {
+    "ORIGINAL_FROZEN_DECODE": "OO128 < TRAD96/C+ < IO128 = IO256 (cycles)",
+    "CONDITIONAL_E_LIST_V1": "OO128 < TRAD96/C+ < IO128 = IO256 (cycles)"
+  },
+  "B16_TC80_excluded_from_cross_input_effects": "Old cap8192 versus new32768; no pure address-interpretation effect inferred. All performance ratios stay within the new namespace.",
+  "claim_boundary": "Ranking is stable across these two defined decoded-input interpretations for four matched cap32768 roles only. No recovery of actual capture, original ELF/native or equal area; original source pending unchanged."
+}
