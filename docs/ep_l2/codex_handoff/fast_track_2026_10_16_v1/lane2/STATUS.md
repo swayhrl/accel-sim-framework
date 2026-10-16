@@ -17,3 +17,7 @@ Status: **IN_PROGRESS — independent TVD module and producer-linked directed ve
 - Next: freeze clean module and tests, validate and publish clean subset, continue dirty forwarding/retention, consume exact Lane 1 receipt at stage transition.
 - Formal experiments: NOT_RUN; Lane 5 quota/registry required. No active runs.
 - Review pack: not produced yet. No clean or full TVD readiness claim.
+
+## Clean module checkpoint
+
+Public ABI consumed: Framework `cb7d92e4edde97e81520cfdd00762dfe81ee9b20`, Core `4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617` (cherry-pick with provenance). Clean module source `5267347de7d3244dd68a067fc2120a9cf0c55efb`; four scenario groups pass normal and ASan+UBSan. Pack: `docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/`. Standalone directory + historical production bank arbiter only; real l2_cache producer integration remains pending. Now continuing dirty retention/forwarding and version tests. Lane 5 HOST_BUDGET consumed at `cc97ee2ad9feb4ff57482cb7d826a53a3a4d07a0`; new results root follows it.
