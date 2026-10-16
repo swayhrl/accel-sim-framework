@@ -1,0 +1,34 @@
+{
+  "entry": "torch.compile(train_step,dynamic=True)",
+  "counters": {
+    "frames": {
+      "total": 10,
+      "ok": 10
+    },
+    "inline_call": {
+      "'inline in skipfiles: Optimizer.zero_grad | inner /data/c16/aiarch_a65_igb_small_compiled_numeric_109_v1/resume_20261016/runtime/lib/python3.10/site-packages/torch/_compile.py, skipped according skipfiles.SKIP_DIRS'": 1,
+      "'skip function graph_break in file /data/c16/aiarch_a65_igb_small_compiled_numeric_109_v1/resume_20261016/runtime/lib/python3.10/site-packages/torch/_dynamo/decorators.py'', skipped according skipfiles.SKIP_DIRS'": 1
+    },
+    "unimplemented": {},
+    "graph_break": {
+      "'inline in skipfiles: Optimizer.zero_grad | inner /data/c16/aiarch_a65_igb_small_compiled_numeric_109_v1/resume_20261016/runtime/lib/python3.10/site-packages/torch/_compile.py, skipped according skipfiles.SKIP_DIRS'": 1,
+      "Tensor.backward": 1,
+      "'skip function graph_break in file /data/c16/aiarch_a65_igb_small_compiled_numeric_109_v1/resume_20261016/runtime/lib/python3.10/site-packages/torch/_dynamo/decorators.py'', skipped according skipfiles.SKIP_DIRS'": 1
+    },
+    "stats": {
+      "calls_captured": 146,
+      "unique_graphs": 3
+    },
+    "inductor": {
+      "split_cat_norm": 3,
+      "pattern_matcher_count": 18,
+      "pattern_matcher_nodes": 19
+    },
+    "aot_autograd": {
+      "total": 3,
+      "ok": 3
+    }
+  },
+  "cache_namespace": "/data/c16/aiarch_a65_igb_small_compiled_numeric_109_v1/resume_20261016/cache",
+  "qualification_only_not_performance": true
+}

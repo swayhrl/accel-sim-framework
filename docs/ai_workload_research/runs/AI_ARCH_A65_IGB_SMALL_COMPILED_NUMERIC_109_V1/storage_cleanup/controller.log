@@ -1,0 +1,18 @@
+DELETED /home/huangrulin/.cache/pip/http
+DELETED /home/huangrulin/.cache/pip/http-v2
+Traceback (most recent call last):
+  File "/data/c16/storage_cleanup_20261016_lane_m_first_batch_v1/cleanup.py", line 109, in <module>
+    a=pool.submit(local_hash);b=pool.submit(remote_hash);assert a.result() and b.result()
+                                                                               ^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/c16/storage_cleanup_20261016_lane_m_first_batch_v1/cleanup.py", line 98, in remote_hash
+    assert p.returncode==0,'REMOTE_VERIFY_FAILED; see log';v=json.loads(p.stdout);assert v['status']=='PASS_FULL_CURRENT_164_PAYLOAD_SHA256';save('remote_payload_hashes.json',v);return True
+           ^^^^^^^^^^^^^^^
+AssertionError: REMOTE_VERIFY_FAILED; see log

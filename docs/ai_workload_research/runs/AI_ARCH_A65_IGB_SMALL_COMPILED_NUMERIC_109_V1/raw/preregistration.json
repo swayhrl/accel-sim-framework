@@ -1,0 +1,31 @@
+{
+  "input": "one new natural official ItemSampler B1024, seed20261015, original train split",
+  "sampling": "PINNED_CACHE_ON; exact A61 DataContext API/maths; clone one returned minibatch",
+  "models": "3 independent GraphSAGE+Adam, unique seed20261015 CPU state loaded bitwise",
+  "entry": "original train_step; compiledC=torch.compile(train_step,dynamic=True)",
+  "updates": "A/B/C once each; total3; no formaltraining or numerical-failure retry",
+  "loss_gate": {
+    "atol": 1e-05,
+    "rtol": 0.0001,
+    "relative_denominator": "eagerA loss"
+  },
+  "updated_parameter_gate": {
+    "atol": 1e-06,
+    "rtol": 0.0001,
+    "direction": "torch.allclose(eagerA, candidate), candidate relative denominator",
+    "decision_authority": "actual Torch2.2 allclose(A,B) and isclose mask; CPU float64 statistics descriptive only"
+  },
+  "gradient_comparison": "fullbatch paired descriptive statistics; legacy1e-5/1e-3 numbers diagnostic only because original gate used 16seed FP64 oracle",
+  "FP32": true,
+  "TF32": false,
+  "highest_matmul_precision": true,
+  "allocator_fraction": 0.7,
+  "cache_size_limit": 32,
+  "diagnostic_policy": "allthree prescribed qualification observations only; input/initialstate/nonfinite/resource violations stop immediately; pair stats classify triplet without an early perparameter assert",
+  "compiled_cache": "fresh A65 private namespace; no old cache writes",
+  "qualification_metadata_not_performance": true,
+  "new_disk_hard_limit_bytes": 134217728,
+  "estimated_new_cache_bound_bytes": 33554432,
+  "estimated_compressed_raw_bound_bytes": 25165824,
+  "cleanup_must_finish_before_GPU": true
+}

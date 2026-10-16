@@ -1,0 +1,40 @@
+{
+  "observed_flag": "EXTERNAL_GPU_TASK_STOP",
+  "child_returncode": 0,
+  "last_samples": [
+    {
+      "monotonic": 2743881.852666904,
+      "phase": "NUMERIC_OBSERVATIONS_COMPLETE_STOP",
+      "tree_RSS_bytes": 10275987456,
+      "GPU_MiB": 6858,
+      "new_disk_conservative_bytes": 81338368,
+      "free_bytes": 284632092672
+    },
+    {
+      "monotonic": 2743882.081612417,
+      "phase": "NUMERIC_OBSERVATIONS_COMPLETE_STOP",
+      "tree_RSS_bytes": 8011354112,
+      "GPU_MiB": 6858,
+      "new_disk_conservative_bytes": 81338368,
+      "free_bytes": 284632092672
+    },
+    {
+      "monotonic": 2743882.34518584,
+      "phase": "NUMERIC_OBSERVATIONS_COMPLETE_STOP",
+      "tree_RSS_bytes": 36876288,
+      "GPU_MiB": 6858,
+      "new_disk_conservative_bytes": 81338368,
+      "free_bytes": 284632092672
+    }
+  ],
+  "NVML_after_owned_exit": [],
+  "actual_PID_list_at_flag": "NOT_CAPTURED_BY_EXECUTED_SUPERVISOR",
+  "conclusion": "terminal foreign-task flag is preserved and unresolved; must not claim full exclusivity PASS",
+  "hypothesis": "apps snapshot may contain own child just before exit while subsequent group snapshot is empty",
+  "CPU_directed_predicate_reproduction": "PASS: false-positive possible for own-child exit; proposed explicit-child exclusion retains foreign-PID detection",
+  "reproduction_is_actual_GPU_evidence": false,
+  "GPU_operations_or_retries": 0,
+  "executed_GPU_source_modified": false,
+  "next_required_wrapper_change": "record NVML PID snapshot and group PID snapshot atomically enough for audit; always retain known owned-child identity across exit",
+  "no_extra_GPU_run_because_numeric_gate_already_failed": true
+}
