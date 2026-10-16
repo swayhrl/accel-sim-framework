@@ -1,0 +1,77 @@
+{
+  "source_sha256": "0f679be008be285d26ebd7d71eba47b164914dd52873c26ee63beecda2f68cc0",
+  "source_historical_revision": "40e0052cebd3f98006190ed09e78f4981ef1a41b",
+  "source_git_path": "src/cuda/rodinia/3.1/cuda/hotspot/hotspot.cu",
+  "toolchain_sources": [
+    "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/"
+  ],
+  "source_identity_note": "Source bytes agree with historical git and retained M5 copy and artifact source; this does not claim exact capture executable hash.",
+  "commands": [
+    [
+      "cuda9.1.85/bin/nvcc",
+      "-arch=compute_70",
+      "--ptx",
+      "-U__GNUC__",
+      "-D__GNUC__=6",
+      "-U__GNUC_MINOR__",
+      "-D__GNUC_MINOR__=4",
+      "-I<isolated-overlay>",
+      "hotspot.cu",
+      "-o",
+      "hotspot91.ptx"
+    ],
+    [
+      "cuda10.1.243/bin/ptxas",
+      "-arch=sm_70",
+      "hotspot91.ptx",
+      "-o",
+      "hotspot91-ptxas101.cubin"
+    ],
+    [
+      "cuda11.8/bin/cuobjdump",
+      "--dump-sass",
+      "hotspot91-ptxas101.cubin"
+    ]
+  ],
+  "compatibility_note": "Only isolated local host-preprocessor macros and an include-overlay copy of glibc bits/floatn.h disabling unsupported Float128 were used. Kernel source was not changed. These are a reconstruction recipe, not the historic host toolchain identity.",
+  "header_original_sha256": "c13c6ab4b497636b1c810b93ffd176f2ef1b24bade870aff154350da251c0b47",
+  "header_overlay_sha256": "1d6677308575c14322e584db6fdc185761c8ee55459fccc301ab5833614516ed",
+  "header_overlay_diff": "-# define __HAVE_FLOAT128 1\n+# define __HAVE_FLOAT128 0\n",
+  "ptx_sha256": "4385e57110a663cfaee0ba84c6a98d404d3dcf640672fdc78ae3e0762284a1b3",
+  "cubin_sha256": "93e01dea5f148cf95558c87147bedd85f3aec2699ccdb72437508dd40ad682a0",
+  "sass_sha256": "079d8b4d07c53f4c7bae0a9a9f484ceb2ff8eb3ad7487e1128eb68373472ec06",
+  "resource_usage": {
+    "registers": 32,
+    "shared_bytes": 3072,
+    "stack_bytes": 0,
+    "local_bytes": 0
+  },
+  "candidates": [
+    {
+      "candidate": "m5-sm70",
+      "sass_sha256": "00da602bf80ae803d64aa0126d8175f8b3ec1051328d82337011e6c67f70e548"
+    },
+    {
+      "candidate": "artifact-sm70",
+      "sass_sha256": "c8418bfbfc67f41b7ec33c583abfe1b9fc01b6720050707538e5a889522782a3"
+    },
+    {
+      "candidate": "hotspot91",
+      "sass_sha256": "30712661159a7838217efb1f49e4211c35ef4b7bbc39829809b47affde17674c"
+    },
+    {
+      "candidate": "hotspot91-ptxas100",
+      "sass_sha256": "fcb287cf8aab751a88fa6f94785ec67f1cc19c64fd1c12da37e679673b431c98"
+    },
+    {
+      "candidate": "hotspot91-ptxas101",
+      "sass_sha256": "079d8b4d07c53f4c7bae0a9a9f484ceb2ff8eb3ad7487e1128eb68373472ec06"
+    },
+    {
+      "candidate": "hotspot91-ptxas118",
+      "sass_sha256": "e9496f1f29b10b54a3c1dff1b285e67f331388ec677dd5e003c942769f4909e2"
+    }
+  ],
+  "main_runtime_or_cache_environment_changed": false,
+  "simulator_or_gpu_execution": false
+}

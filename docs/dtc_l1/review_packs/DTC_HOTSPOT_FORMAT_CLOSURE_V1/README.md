@@ -1,6 +1,8 @@
 # Hotspot historical format provenance — original174, V1
 
-Status: **HISTORICAL_DUAL_MASK_MECHANISM_ESTABLISHED; EXACT_CAPTURE_AND_ALL_LANE_ADDRESSES_NOT_CLOSED; REVIEW_REQUIRED**.
+Status: **SOURCE_PROFILE_CANDIDATE_VALIDATED; EXACT_CAPTURE_BINDING_REVIEW_PENDING; HOLD_UNCHANGED**.
+
+**V2 continuation:** a CUDA9.1 frontend/CUDA10.1 assembler reconstruction now matches the entire fixed member's185 observed PC/opcode-root/GPR signatures and over20 million explicit raw lane addresses. A concrete isolated normalizer candidate narrows the changes to122760 records at six PCs. See [the V2 evidence and candidate](source_profile_v2/README.md). This is a source-model qualification, not a receipt proving the original capture binary's identity; admission still requires the semantic/input review described in NEXT_DECISION. The original V1 conservative inventory below remains preserved.
 
 The historical implementation explains the sparse-mask records, but does not authorize a unique repair of this fixed input. No address repair was selected. Main parser, trace, Core, runtime binaries, admission holds and launch authority were left intact. This helper used one CPU scanner/check process, an isolated small C++ oracle build, and no GPU or simulator.
 
@@ -43,7 +45,7 @@ For the frozen32-bank/4-byte-word/one-part/unlimited-broadcast geometry, the max
 
 The eleven other fixed workloads have zero sparse mode1 records in the existing audit. That fact does **not** prove they are immune to the newly identified mode0/hidden-anchor mechanism. This helper neither changes their acceptance nor starts a broader scan. Because no runtime or input is changed, their present executions remain byte-for-byte on their original paths. A future global legacy-format repair needs a separately scoped token/mask applicability audit, rather than an unsupported equivalence claim or blanket rerun.
 
-[CANDIDATE_REPAIR.md](CANDIDATE_REPAIR.md) specifies a gated offline transformation after provenance closure; no speculative normalizer or main-parser patch was installed. [NEXT_DECISION.md](NEXT_DECISION.md) provides the concrete source-recovery, new-input and scope-change choices. A must review source and contract changes, then register new immutable future attempts if authorized. No corrected Hotspot number may be divided by an old-parser baseline, and no Hotspot-omitting aggregate may retain the GM12 label.
+[CANDIDATE_REPAIR.md](CANDIDATE_REPAIR.md) records the initial gated transformation contract; [V2](source_profile_v2/README.md) implements a default-report-only offline prototype against a validated reconstructed source profile. No main-parser patch was installed or interpretation admitted. [NEXT_DECISION.md](NEXT_DECISION.md) provides the source-recovery, reviewed reconstruction/new-input and scope-change choices. A must review source and contract changes, then register new immutable future attempts if authorized. No corrected Hotspot number may be divided by an old-parser baseline, and no Hotspot-omitting aggregate may retain the GM12 label.
 
 ## Reproduction
 

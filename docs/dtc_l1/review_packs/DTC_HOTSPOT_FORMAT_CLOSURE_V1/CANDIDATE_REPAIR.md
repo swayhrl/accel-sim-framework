@@ -1,5 +1,7 @@
 # Candidate repair contract — gated, not implemented in the consumer
 
+V2 now provides an isolated offline prototype and full-member source-profile crosschecks in [source_profile_v2](source_profile_v2/README.md). Its use is still conditional on review of capture applicability. This initial contract and its ambiguity counterexamples remain valid; no main consumer or input was replaced.
+
 The recovered historical algorithm uses **execution-lane distance**. For an accepted mode1 record, `A[lane] = base + (lane - first(E))*stride` modulo2^64, for lanes in the printed predicate intersection `P`. Its encoder required contiguous `E` with at least two lanes. `first(E)` need not equal `first(P)`. Advancing once per printed active lane is contradicted by the source when P has internal holes and stride is nonzero. A decoder that only skips predicate holes still does not fix a missing base anchor.
 
 For `P=fffcfffc/base128/stride4`, active lanes2/15/18/31 illustrate the difference:
