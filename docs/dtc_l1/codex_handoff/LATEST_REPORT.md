@@ -1,5 +1,15 @@
 # Latest Codex Report
 
+## Lane A LUD terminal checkpoint —2026-10-16 11:53 UTC
+
+The same Goal174 remains active: **22 terminal/invariant PASS,19 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two of the22 numeric PASS rows remain Hotspot scientific-promotion HOLD. All41 started labels still have one attempt each; no simulation or Goal was restarted and no new condition was added. [Current full row state, exact comparisons, metrics and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T115304Z).
+
+Enhanced traditional LUD completed naturally with **94/94 ordered kernels,184963840 active-thread instructions,1072561 cycles**, exit0,8:58.41 elapsed and700416KiB peak RSS. Independent strict re-collection matches the watcher's immutable receipt, including exact Core6582b9d1/binary4fcac62c, configs, effective96KiB geometry,MSHR512/PIB256, full scope and drained state. Its finite-service counters are unavailable because this is the conventional arm; they are never filled with zero or inferred from another arm. LUD finite IO/OO remain live; no complete LUD trio or aggregate is claimed. [Strict terminal and resource proof](../iscas2027/service_closure_174_v1/review_pack/lud_trad96_checkpoint_v1).
+
+All19 remaining simulator PIDs retained start ticks and increased CPU ticks. At11:53:23 UTC, own RSS was39.6GiB, MemAvailable258.9GiB and writable capacity43.5GiB. Both original supervisors and strict watcher remain live. Every legal independent row is already launched; the freed slot receives no extra experiment. Long GESUMMV/GEMM/ATAX/BICG and the other registered rows continue to natural terminal.
+
+Modern DTC remains HOLD under the128KiB capacity/port contract. Hotspot's three forbidden labels remain unstarted; original evidence and promotion HOLD persist, with external Lane B owning provenance. Four modern baseline-only results and15 accepted native109 cases remain preserved; SpMV/LayerNorm remain NOT_ADMITTED. No incomplete GM12, substitute GM11, pooled GM14 or native-DTC claim is computed. [Full27-item closure ledger](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv). Current publication is a checkpoint, not final Goal closure; exact fetched remote HEAD/tree proof remains `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`.
+
 ## Lane A parallel checkpoint —2026-10-16 11:45 UTC
 
 The same Goal174 remains active. Following the user's request for concurrent independent execution, all eight remaining eligible registered rows were admitted once under an explicit own-cap24 and unchanged scientific gates: Gaussian OO/TRAD96, LUD IO/OO/TRAD96 and NN IO/OO/TRAD96. There is no eligible unstarted row. The original15 still-live simulator PIDs, both supervisors and strict watcher remain present; Gaussian IO finished naturally. No Goal, branch or simulator was reset or restarted.
