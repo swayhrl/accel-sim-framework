@@ -23,6 +23,9 @@ STATS = ['line_mshr_full_block','descriptor_pool_full_block','per_address_cap_bl
          'missq_full_block','l2_to_dram_full_block','wad_full_events',
          'bank_true_conflict_ops','dram_scheduler_full_block','dram_successful_read_bytes',
          'dram_successful_write_bytes']
+ALIASES = {k:'c7d_'+k for k in STATS if k != 'bank_true_conflict_ops'}
+ALIASES.update(dram_successful_read_bytes='c7e_dram_successful_read_bytes',
+               dram_successful_write_bytes='c7e_dram_successful_write_bytes')
 
 
 def check(condition, detail):
@@ -80,7 +83,8 @@ def parse_terminal(raw, vector):
             'terminal_64_slice_closure':'PASS',
             'nonbinding_meta':'PASS' if vector['meta'] else 'NOT_APPLICABLE',
             'reference_kind':'BYTE_VERSION_SYMBOLS_WITH_OPTIONAL_KNOWN_VALUES' if vector['read_hit'] else 'ORDINARY_PATH',
-            'limiter_counts':{k:sum(int(row[k]) for row in b0.values()) if all(k in row for row in b0.values()) else None for k in STATS},
+            'limiter_counts':{k:sum(int(row[ALIASES.get(k,k)]) for row in b0.values())
+                              if all(ALIASES.get(k,k) in row for row in b0.values()) else None for k in STATS},
             'ideal_counts':{k:sum(int(row[k]) for row in ideals.values()) for k in ['reads_served','dependency_wait_attempts','bank_wait_attempts','response_wait_attempts','symbolic_bytes','known_bytes']} if ideals else {}}
 
 
@@ -155,6 +159,7 @@ def execute(spec,audit,client,api,tools):
     check(tools.digest(spec['binary'])==spec['identity']['binary_sha256'],'prepared binary changed')
     check(tools.asset_manifest(spec['configs'],ordered=True)==audit['configs'],'prepared configs changed')
     check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'prepared traces changed')
+    check((tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])==audit['assets'],'prepared auxiliary inputs changed')
     key=api.run_key(spec['identity']);directory=RESULTS/'historical_diagnostic'/key
     registry=api.Registry(client['canonical_root'])
     try:
@@ -163,7 +168,9 @@ def execute(spec,audit,client,api,tools):
         return {'status':'NOT_RUN_QUOTA_OR_ADMISSION','detail':str(error),
                 'run_key':key,'identity':spec['identity'],'reserved':False}
     if not fresh: return {'status':'DUPLICATE_NOT_LAUNCHED','existing':row}
-    process=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();result={'identity':spec['identity'],'run_key':key,'campaign_class':'HISTORICAL_DIAGNOSTIC','mode':spec['mode']}
+    process=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();result={
+        'identity':spec['identity'],'run_key':key,'campaign_class':'HISTORICAL_DIAGNOSTIC','mode':spec['mode'],
+        'runner_execution_commit':head(ROOT),'parser_source_sha256':tools.digest(__file__)}
     try:
         directory.mkdir(parents=True,exist_ok=False)
         api.write_json(directory/'input_spec.json',spec);api.write_json(directory/'input_audit.json',audit)
@@ -172,7 +179,10 @@ def execute(spec,audit,client,api,tools):
         command=[str(binary)]
         for item in spec['configs']:
             target=directory/item['name'];shutil.copyfile(item['path'],target);command+=['-config',str(target)]
-        for item in spec['auxiliary_assets']: shutil.copyfile(item['path'],directory/item['name'])
+            check(tools.digest(target)==next(r['sha256'] for r in audit['configs'] if r['name']==item['name']),'config snapshot mismatch')
+        for item in spec['auxiliary_assets']:
+            target=directory/item['name'];shutil.copyfile(item['path'],target)
+            check(tools.digest(target)==next(r['sha256'] for r in audit['assets'] if r['name']==item['name']),'auxiliary snapshot mismatch')
         trace=next(r['path'] for r in spec['trace_files'] if r['name']==spec['entry_trace_name'])
         command+=['-trace',trace];api.write_json(directory/'COMMAND.json',command)
         env=os.environ.copy();env.update(spec['environment'])
@@ -196,6 +206,7 @@ def execute(spec,audit,client,api,tools):
             check(tools.digest(spec['binary'])==spec['identity']['binary_sha256'],'original binary changed')
             check(tools.asset_manifest(spec['configs'],ordered=True)==audit['configs'],'config changed')
             check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'trace content changed')
+            check((tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])==audit['assets'],'auxiliary content changed')
             status='COMPLETE_VALID';detail='HISTORICAL_DIAGNOSTIC_ONLY; never a B16 result'
     except BaseException as error:
         if process is not None:tools.terminate_owned(process)
