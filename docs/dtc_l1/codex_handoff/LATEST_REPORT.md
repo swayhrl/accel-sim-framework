@@ -1,5 +1,31 @@
 # Latest Codex Report
 
+## Lane A Gaussian trio checkpoint —2026-10-16 12:04 UTC
+
+The same Goal174 remains active: **26 terminal/invariant PASS,15 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two of the26 numeric PASS rows retain Hotspot scientific-promotion HOLD. Each of41 started labels has one attempt; no simulation, Goal, branch, input or identity was restarted or replaced. [Current full state, comparisons, residence, pressure and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T120421Z).
+
+Gaussian OO completed naturally and independent full strict re-collection matches the immutable watcher receipt. The three Gaussian arms share exactly the same510 ordered member records, trace-list bytes/hash and283685120 active-thread instructions, with an explicit common-input proof. CyclesIO/OO/TRAD96 are3799499/3798174/3379152; both finite-arm regressions versus enhanced traditional are retained. OO elapsed21:35.64 and peakRSS618496KiB. All source/binary/config/runner/resource/response identities, full epochs/kernels/instructions, credit/reference/physical/PIB drains, finite retirement/collection balances, residence decomposition and64-SM denominator checks pass. [Full Gaussian trio, common-input proof and unchanged-process/resource receipt](../iscas2027/service_closure_174_v1/review_pack/gaussian_primary_trio_v1).
+
+Seven complete primary workload trios are now available; incomplete workloads remain in the full table and no aggregate is computed. The629 trace members are not independent programs or a runtime-completion denominator.
+
+| Workload | IO256 cycles | OO128 cycles | TRAD96 cycles |
+|---|---:|---:|---:|
+| 2DConvolution | 626642 | 592346 | 1559265 |
+| Btree | 247940 | 173210 | 186621 |
+| DWT2D | 241794 | 237887 | 247588 |
+| MRI-Q | 361574 | 361439 | 362244 |
+| NN | 6132 | 6132 | 6087 |
+| LUD | 1091956 | 1086574 | 1072561 |
+| Gaussian | 3799499 | 3798174 | 3379152 |
+
+Primary IO256/OO128 have different active depths; these are fixed-input simulation performance/resource observations, not the matched128 causal comparison, equal-area results or native GPU speedup. The separate audited Btree matched128 pair remains valid; BICG/2D fixed controls remain live and Hotspot controls forbidden. Unfavorable, small and neutral outcomes are retained without retuning.
+
+The15 remaining rows are IO/OO/IO128/WAIT128 BICG; IO/OO/TRAD96 GESUMMV, GEMM andATAX; andIO128/WAIT128 2DConvolution. All preserve full registered scopes. Every eligible independent row has already launched once; no extra condition fills freed slots. All15 simulator PIDs retained their original start ticks and increased CPU ticks. Both original supervisors and strict watcher remain live.
+
+At12:04:40 UTC, own RSS was37.1GiB, MemAvailable256.3GiB and writable capacity42.6GiB. The17 strict finite rows report zero32768-cap-full events, including preserved Hotspot numeric rows whose promotion remains HOLD; no peak or absence of other bottlenecks is inferred and no cap is retuned.
+
+Modern DTC remains HOLD under the128KiB capacity/port contract. Hotspot's three forbidden labels remain unstarted, with external Lane B owning provenance. Four modern baseline-only results and15 native109 cases remain preserved; SpMV/LayerNorm remain NOT_ADMITTED. No incomplete GM12, replacement GM11, pooled GM14 or native-DTC claim is computed. [27-item closure ledger](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv). Publication proof remains `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`, with exact fetched remote HEAD/tree and cleanliness checked after each stage. Goal completion remains unproven while authorized rows are live.
+
 ## Lane A LUD trio checkpoint —2026-10-16 11:57 UTC
 
 The same Goal174 remains active: **25 terminal/invariant PASS,16 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two of the25 numeric PASS rows retain Hotspot scientific-promotion HOLD. Each of41 started labels has one attempt; no simulator, Goal, branch, input or identity was restarted or replaced. [Current immutable row states, raw-derived comparisons, residence, pressure and hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T115709Z).
