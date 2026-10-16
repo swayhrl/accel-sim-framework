@@ -41,3 +41,7 @@ must not delay this released first pair or be labeled FULL runtime ready.
 Review: docs/ep_l2/review_packs/FT20261016_LANE1_WBUF_RELEASE_r2/.
 Entry files: B16_UWB_READY.md, BASELINE_CONTRACT_V1.json,
 OLD_STATIC_EQUIVALENCE.csv, DIRECTED_TEST_RESULTS.json, RECEIPT.json.
+
+## Review-r2 continuation
+
+Consumed aec01450d3c527524ee09ee59242f582fafe5354 REVIEW.md and CONTINUE.md in full. R0 source/binary/config identities remain frozen; binary content rehashed and made read/execute-only. Published FT20261016_LANE1_R0_HANDOFF_r3 for immediate Lane 5 independent qualification and first paired runs. No active owned process/run/lease, no duplicate run launch, no all-OFF application rerun. R1 diagnostic integration proceeds separately; Lane 2/3 own their R0 production adapter patches before final Lane 1 integration.
