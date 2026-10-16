@@ -14,7 +14,9 @@ def main():
     build = Path('/workspace/build/ep-l2-ft20261016-lane1-v1/gpgpu-sim')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
-    out = parser.parse_args().out
+    parser.add_argument('--fixed-cache', action='store_true')
+    args = parser.parse_args()
+    out = args.out
     out.mkdir(exist_ok=False)
     reg = Registry()
     lease = reg.build_lease('lane5', cpu=1, memory=4 * 1024**3)
@@ -32,6 +34,16 @@ def main():
         report['compile_command'] = command
         with (out/'compile.log').open('x') as log:
             subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=120)
+        if args.fixed_cache:
+            options = []
+            for line in (build/'src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make').read_text().splitlines():
+                if line.startswith(('CXX_DEFINES =', 'CXX_INCLUDES =', 'CXX_FLAGS =')):
+                    options += shlex.split(line.split('=',1)[1].replace(original,str(core)))
+            command = ['/usr/bin/c++', *options, '-c', str(core/'src/gpgpu-sim/gpu-cache.cc'),
+                       '-o', str(out/'fixed-cache.o')]
+            report['fixed_cache_compile_command'] = command
+            with (out/'fixed-cache-compile.log').open('x') as log:
+                subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=120)
         link = shlex.split((build/'CMakeFiles/ep_l2_ft_partition.dir/link.txt').read_text())
         archives = []
         for i, arg in enumerate(link):
@@ -42,6 +54,8 @@ def main():
                 archives.append({'path':str(path),'sha256':digest(path)})
         report['link_command'] = link
         report['retained_R0_archives'] = archives
+        if args.fixed_cache:
+            link.insert(link.index('-Wl,--start-group'), str(out/'fixed-cache.o'))
         with (out/'link.log').open('x') as log:
             subprocess.run(link,cwd=build,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=120)
         report['probe_binary_sha256'] = digest(out/'clock-probe.out')
