@@ -34,7 +34,7 @@ R不再泛泛调研vLLM speculative acceptance（A75已经确认2026-10-14 AV直
 1. [NeMo RL固定源码](https://github.com/NVIDIA-NeMo/RL/tree/540d2568c9cd184e01964c7de0a42026334f0a38)中的speculative Eagle3 guide、GRPO actor、policy logprob、weight refresh、同步/异步路径，确认能否共用/互斥，不要把存在的可配置功能拼成无条件同一运行实例；rollout K、accuracy、token count/quality和训练数据窗口应同一科学状态。
 2. RolloutPipe、Libra、HetRL、AReaL等选择其中最直接的**2—4个论文×实验组**，核是否已有固定rollout/training GPU资源池比例、权重同步和on-policy group pipelining。不能将同步系统的空闲训练GPU叫作SM/L2硬件瓶颈。
 3. 找一个明确的**阶段服务量/计算状态变量**，诸如真实输出长度长尾、不同step的generation占比/训练微批、权重版本推进、policy lag；必须说清新的模型/训练语义与三组相反解释（纯排队、强软件分配、实质设备级资源需求）如何区分。
-4. 给最多**1个**推荐问题，另最多1个备选；若全部属于软件调度则0。最小实验包括合法数据、冻结模型/梯度/采样、强软件具体可兼容版本、baseline、真实阶段诊断、holdout、否定条件；资源需要32GB/多GPU时说明为何必需，不能伪称10916GB可做32GB200 Qwen完整训练。A75的255B模拟预测不是原生GPU性能；不要新跑NeMo。
+4. 给最多**1个**推荐问题，另最多1个备选；若全部属于软件调度则0。最小实验包括合法数据、冻结模型/梯度/采样、强软件具体可兼容版本、baseline、真实阶段诊断、holdout、否定条件；资源需要32GB/多GPU时说明为何必需，不能伪称10916GB可做32GB200 Qwen完整训练。A75的235B模拟预测不是原生GPU性能；不要新跑NeMo。
 5. 突出**是否确有芯片内架构约束**而非RLOutput等待；决定是否该停在软件研究。如果只是一种新pipeline名称没有完整step/GPU因果证据，报告`SOFTWARE_NEARBY`并STOP。
 
 交付四份：`REPORT.md`、`STAGE_EXPERIMENT_GROUPS.tsv`、`QUESTION_CARDS.json`、`RECEIPT.json`。0—2卡，要求主要分母清楚、作者claim与我们推断分开；不能将作者最终质量曲线说成逐step证明bitwise同轨迹。
