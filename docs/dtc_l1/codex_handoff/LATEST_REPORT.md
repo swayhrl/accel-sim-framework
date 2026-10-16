@@ -1,3 +1,26 @@
+# Current174 BICG matched128 closure —2026-10-16T16:22Z
+
+**Original BICG IO128/OO128 complete matched-depth gate PASS.**
+NewIO12887c9040b naturally exited0:93312525cycles,145666048instructions,
+2ordered kernels. Full strict/member/list/body/actualPIB128/source/config
+checks pass. OO12847533116cycles shares the same complete input, active128,
+pool640 and fixed finiteCore/binary/platform. Both retire2097152 cacheable
+warp instructions/collect19922944 32B sectors; complete64SM integrals and all
+11 service/decomposition/drain checks pass. Fully-ready-to-complete means
+3560.700145/3.926686core cycles per cacheable warp instruction; exact ready/
+collection/WB/map-loss/PIB/physical data are in MATCHED128_METRICS.tsv.
+IO128/IO256 are separate actual depth128/256 attempts with identical cycles/
+11 service metrics; observed peak23 is below both capacities. No row reuse or
+rerun. Equal active depth is not equal area/metadata/native; enhancedTRAD96
+25353488cycles remains faster than both DTC arms, preserving both regressions.
+See review_pack/checkpoint_20261016T1620Z and BICG_IO128_COMPLETE_SCOPE_AND_MATCHED_AUDIT.json.
+Original44 now39PASS/2GESUMMV running/3oldHotspotHOLD. Ten primary trios and
+three matched128 numeric pairs exist; Btree/2D scientific pending remains.
+New conditionalBtree5strictPASS/1B16running is separately sealed in
+review_pack/btree_derived_checkpoint_20261016T1622Z; no ratio before all6PASS.
+Existing sole authority/locks/HOLDs and2D STOP/LUD no launch, modern/native/
+area/no-GM boundaries stay intact. Main Goal ACTIVE; historical checkpoints follow.
+
 # Current174 conditional Btree second terminal —2026-10-16T16:18Z
 
 **New BtreeOO128 strictPASS; new namespace2PASS/4running.**
