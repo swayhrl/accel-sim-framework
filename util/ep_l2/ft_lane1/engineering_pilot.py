@@ -215,6 +215,9 @@ def validate_authorization(request, authorization, request_sha, now=None):
         proposed = request['proposed_envelope'][name]
         require(caps['max_pilot_allocated_growth_bytes'] <= proposed['max_pilot_allocated_growth_bytes'], 'GROWTH_CAP_EXPANDED')
         require(caps['hard_stop_free_bytes'] >= proposed['hard_stop_free_bytes'], 'STOP_MARGIN_REDUCED')
+        for key in ('external_write_reserve_bytes', 'monitor_and_kill_overshoot_bytes',
+                    'minimum_untouched_emergency_bytes'):
+            require(caps[key] >= proposed[key], 'REQUESTED_RESERVE_REDUCED_' + key)
 
 
 def load_adapter(request, authorization, publication, authorization_file_sha256):
@@ -335,8 +338,8 @@ def monitored_command(command, name, request, authorization, adapter, lease,
             process._pilot_start_ticks = record['process']['start_ticks']
             process._pilot_known_members = {process.pid: process._pilot_start_ticks}
             record['process']['boot_id'] = boot_id(); record['cpu_affinity'] = cpus
-            adapter.record_process(lease['lease_id'], request['pilot_id'], record['process'])
             thread = threading.Thread(target=watchdog, daemon=True); thread.start()
+            adapter.record_process(lease['lease_id'], request['pilot_id'], record['process'])
             with (out / 'RESOURCE_SAMPLES.jsonl').open('a') as samples:
                 while True:
                     current = observation(request, process.pid)

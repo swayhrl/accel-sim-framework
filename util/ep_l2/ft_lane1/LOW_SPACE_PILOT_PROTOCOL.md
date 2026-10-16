@@ -23,7 +23,8 @@ uses `status=AUTHORIZED_ENGINEERING_ONLY` and binds:
   `monitor_and_kill_overshoot_bytes`, `minimum_untouched_emergency_bytes`.
   Entry >= the sum of the latter four budgets; hard stop >= emergency+overshoot.
   Actual measured free belongs separately in the independent resource gate.
-  Max own growth cannot exceed the request cap; stop margin cannot be reduced.
+  Max own growth cannot exceed the request cap; stop margin, external reserve,
+  kill overshoot allowance and untouched emergency cannot be reduced.
 - `registry_adapter`: the exact `CLIENT_CONTRACT.json.engineering_pilot`
   dictionary, containing `api_version=ENGINEERING_PILOT_V1`, `module_path`,
   `module_sha256`, `source_commit`, `repository_path`. The module must be a

@@ -90,6 +90,14 @@ class AuthorizationTests(unittest.TestCase):
         shared = json.loads((pilot.SHARED/'RUN_REGISTRY.json').read_text())
         self.assertEqual(48*G, shared['hosts'][shared['authority_host']]['min_disk_free_bytes'])
 
+    def test_other_project_and_emergency_reserves_cannot_be_reduced(self):
+        for key in ['external_write_reserve_bytes', 'monitor_and_kill_overshoot_bytes',
+                    'minimum_untouched_emergency_bytes']:
+            request, auth, sample = fixtures()
+            auth['filesystems']['workspace'][key] -= 1
+            with self.subTest(key=key), self.assertRaisesRegex(pilot.Stop, 'REQUESTED_RESERVE_REDUCED'):
+                pilot.validate_authorization(request, auth, 'fixture-sha')
+
     def test_resource_breaches_stop(self):
         for change in ['disk', 'growth', 'external', 'mount', 'ram', 'rss', 'results']:
             request, auth, baseline = fixtures(); sample = copy.deepcopy(baseline)
