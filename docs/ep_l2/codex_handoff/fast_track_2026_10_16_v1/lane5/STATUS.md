@@ -54,3 +54,8 @@ copy/bank effect without C16 pressure; it is not a capacity demonstration.
 Read-only V1-to-V2 RO projections preserve all ten R0 run keys; new explicit RO
 vectors require their own qualification. Tooling/schema tests: 47 PASS.
 The old runtime_ready=false blocker is superseded by this R0 qualification.
+
+Incremental clean TVD checkpoint independently replayed at Core 8ae60ff1:
+four actual producer groups PASS; exact producer stdout, actual lower reads
+2/64B -> 1/32B in the scripted fixture. Dirty/final R2 remains unqualified;
+no formal TVD application launched. New pack preserves the narrow scope.
