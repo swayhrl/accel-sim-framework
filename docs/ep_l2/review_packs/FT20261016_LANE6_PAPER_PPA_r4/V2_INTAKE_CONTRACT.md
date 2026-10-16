@@ -1,0 +1,23 @@
+# 原生V2接收桥接
+
+r3是冻结历史消费者，r4是当前入口；不覆盖r3或其撤回文档。
+
+upstream_lane5/acceptance.py和registry.py是SOURCE_MANIFEST准确publication原字节。
+仅导入canonical/run-key及acceptance API，不实例化Registry，不取得资源/改共享记录。
+使用Lane5公开的fetch_current_authority；worker外层45秒边界、fetch时关闭自动gc，
+不能建立当前权威则停止。每次发布前再查固定执行ref是否仍等于绑定commit。
+
+桥接类继承r3的类型接口，覆写check_run/assert_fresh/provenance，因而r3的原生
+CSV/PAIR／独立十一门槛／实际raw-config-binary检查完整保留，但不再调用r3旧式
+顶层CURRENT_ACCEPTED与matrix推断。完整十字段identity、原run-key、generation、
+revision、manifest hash、proof和动态withdrawn_releases由Lane5原生API决定。
+CURRENT_ACCEPTED是其真实row词汇；协调文本的CURRENT_SCIENTIFIC_ACCEPTED表达
+科学门槛，不能擅自改写Lane5 schema。Launch资格不预接受尚未产生的结果。
+
+consume只接受完整当前合格pair；无pair不输出，五个预定负载前不求均值。新adapter
+必须显式声明真正官方producer与qualification路径，没有旧R0默认路径。未知新schema
+仍fail closed、随后针对准确正式release补映射，不能提前宣称未来binary已经接入。
+
+新增测试只覆盖桥接差分与原生V2语义，未重跑原Lane5 62项/r3 30项。正路径使用
+synthetic新身份。实际六条旧run和旧sad原生链只读拒绝验证不是新模拟器/数值资格。
+原run的COMPLETE_VALID保持历史终态；没有删除、改名或重打标来躲过接收校验。

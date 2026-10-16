@@ -1,0 +1,102 @@
+{
+  "anchors": [
+    {
+      "anchor": "struct slot {",
+      "anchor_line": 2113,
+      "component": "slot",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "parameterized_bits": "2+3+(A-7)+G+4+4+K",
+      "scope_or_exclusion": "per physical slot; role/state independent-encoding scenario",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "struct PayloadHandle {",
+      "anchor_line": 7,
+      "component": "PayloadHandle",
+      "file": "src/gpgpu-sim/ep-l2-ft-interface.h",
+      "parameterized_bits": "P+G",
+      "scope_or_exclusion": "ID11; hardware G unspecified; software unsigned not hardware width",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "std::vector<ep_l2_payload_store::payload_handle> m_ep_l2_tag_payload;",
+      "anchor_line": 2843,
+      "component": "Tag_handle",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "parameterized_bits": "1024(P+G)",
+      "scope_or_exclusion": "common if B16 and U both pointerized; not entire incremental delta",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "struct ft_wb_record {",
+      "anchor_line": 2773,
+      "component": "WB_handle",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "parameterized_bits": "128(P+G)",
+      "scope_or_exclusion": "packet binding, valid/state separately required",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "struct ft_replacement {",
+      "anchor_line": 2761,
+      "component": "front_reservation",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "parameterized_bits": "3(P+G)+P+10+2+4",
+      "scope_or_exclusion": "exclude owner address, packet ID and saved rollback slot; copy latch counted separately",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "request_result request(",
+      "anchor_line": 2359,
+      "component": "bank_arbiter",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "parameterized_bits": "4Q_b(P+G+op+E+valid)",
+      "scope_or_exclusion": "bounded physical Q_b not established by software vector",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "unsigned long long l2_cache::ft_physical_cycle() const",
+      "anchor_line": 3,
+      "component": "physical_clock",
+      "file": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "parameterized_bits": "4 busy bits plus explicitly bounded arbitration state",
+      "scope_or_exclusion": "m_cycle and monotonic assert are simulator bookkeeping, not a required 64-bit hardware clock register",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "bool l2_cache::ft_try_force_tag_access(",
+      "anchor_line": 16,
+      "component": "warm_prefill",
+      "file": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "parameterized_bits": "existing unique allocator owner and generation fields",
+      "scope_or_exclusion": "source-only guard/binding; no additional free payload RAM",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    },
+    {
+      "anchor": "std::array<unsigned long long,4> copy_versions",
+      "anchor_line": 2767,
+      "component": "copy_reference_sidecar",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "parameterized_bits": "software-only versions; separate mandated common latch=1024 data bits/slice",
+      "scope_or_exclusion": "Do not synthesize reference versions as payload; physical copy latch comes from storage/port contract",
+      "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+    }
+  ],
+  "files": [
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "8d0aaedbb1fc2300bf339a605b9d8f803c924ffaa9501a82a0fe7c2e2b5b1749"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-interface.h",
+      "sha256": "d3ab21560a41360f01425178ea81209674d68cb3705fe61132608cffe191e239"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839"
+    }
+  ],
+  "runtime_qualification": false,
+  "source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "status": "PASS_STATIC_ONLY"
+}
