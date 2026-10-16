@@ -1,70 +1,63 @@
-# Lane 4 — review_r3 continuation
+# Lane 4 review_r5 — static adaptation and runner delivered
 
-Status: R1_1_SOURCE_AUDIT_READY_APPLICATION_SCIENTIFIC_HOLD.
-Authority: `a41bfb55934303a4d4a342762f74a16d137d0316`; original scientific
-contract `6c136e2a56a008695f8c8b815723bf8f1a760db9` unchanged.
-Node huangrulin-174; execution branch in both repos `hrl/ep-l2-ft20261016-lane4-v1`.
-Framework WT `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1`.
-Core WT `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1`.
-Frozen affected candidate Core `b8b3d55b392fcff793d0aec684bddb73ba3065a9`, producing runtime
-Framework `438df99dd5138ec42acd7ae9d05e76b9b01e2e5e`, binary `63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea`.
-New source-audit/runner tooling `194871cb694057b499ee75724cc7b428b9d0c319`.
-There is no new compiled/repaired runtime identity in this delivery.
+Status: LOW_RESOURCE_STATIC_AND_RUNNER_COMPLETE_FORMAL_R1_1_DEPENDENCY_PENDING.
+Consumed r4 then r5 at `77a9fbe937ea23465cf0d0076d2df1909f52d055`;
+original science `6c136e2a56a008695f8c8b815723bf8f1a760db9` unchanged.
+Continued original branch/Goal; no new worker or experiment.
 
-## Supersession and preservation
+Host: huangrulin-174. Both execution branches:
+`hrl/ep-l2-ft20261016-lane4-v1`.
+Framework WT: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1`.
+Core WT: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1`.
+Tooling source: `b8c6cee15351b7a2dce1ccc4e4278f4a8a2bcb71`.
+Core branch remains `b8b3d55b392fcff793d0aec684bddb73ba3065a9` (clean, remote verified),
+an affected historical candidate. Its old producing Framework/binary are retained
+in RECEIPT.historical_affected_runtime, never a new R1.1 identity.
+New repaired runtime source/binary/config/trace: absent (null).
 
-Earlier review_r2 wording that frozen R0 could proceed immediately is obsolete.
-All old R0/R1 FT application qualification is withdrawn by Lane5 and review_r3.
-Old PASS certificates, normal COMPLETE_VALID terminals, logs/CSV/binaries and
-prior review packs remain; they do not prove current scientific acceptance.
-The old-static vectorAdd 73873->42918 (1.721259x) remains historical only, not a
-new repaired ceiling. It is not automatically invalidated by this FT defect.
-Three own old application runs were not rerun and their raw hashes still match.
-No suspended R0 number is used as formal speedup, average or negative conclusion.
+Completed this revision:
 
-## Actually completed this continuation
+- Exact Lane1 `62dc1d179b5516e68b21b695c7a9c5d0667e9671` private-index
+  replay, zero conflicts; delivered patch round-trips to static tree
+  `a8a8aeafa5487f52062d16be1524da3c7489da1e`. Tree-equivalent producer publication c93d900e
+  verified. No source worktree or Lane1 branch was changed.
+- Standalone duplicate inline accessor removal for Lane1; separately reviewable
+  ideal Tag-time fix retaining physical bank/reply clocks. Neither compiled.
+  Producer FT include and its two repair tests/scope preserved byte-for-byte.
+- Pinned Lane5 V2 acceptance source alongside runner/support files, retaining
+  original registry client/lock. Both OFF and requested ideal current launch
+  authorization required; proof/revision/canonical bytes and exact result
+  identity/raw/metrics bound. Later qualification withdrawal remains separate
+  from a normally closed execution terminal.
+- 66 Python tests PASS:24 same-binary/authorization,24 V2 acceptance,18 terminal/
+  config tests. Synthetic fixtures only, no runtime qualification. New consumer
+  reads current Lane5 V2 evidence:6 old completed rows rejected;0 current accepted
+  application rows and0 launch authorizations.
+- Actual overlay/expected-mode audit yields18 NOT_RUN cells with null runtime
+  identities/keys/metrics. No I_BANK or expanded matrix. OFF owned by Lane5.
+- 83 files in four frozen packs and9 indexed raw/terminal rows verified unchanged.
+  Old R0/R1 formal evidence remains withdrawn; historical STATIC1.721x stays
+  historical, not a current ceiling. No historical application rerun.
 
-- 21 scientific-withdrawal tests and 20 binding regressions: PASS. Synthetic
-  fixtures establish runner behavior, not repaired production correctness.
-- Four actual stale R1 prepared specs rejected by the CLI before registry
-  claim/Popen; six actual old R0 complete rows rejected by scientific intake.
-  Registry keys and old execution terminals are unchanged.
-- Lane5's combined clock/warmup candidate applied in private indices to exact
-  old R1 be651ccf and Lane4 b8b3d55b without conflict; resulting runtime trees
-  match. This is static apply only; warmup is not reported runtime PASS.
-- Added a one-call uncompiled ideal Tag timestamp candidate: preserve native
-  memcpy-offset Tag time while leaving bank/response time physical. Dirty
-  warmup victims, repeat/partial-sector reference consistency, actual Tag index
-  and later WB/drain remain explicit official producer validation items.
-- Latest published Lane5 authority/qualification has veto over historical PASS.
-  New runs need both repair gates and requested ideal gates; missing/current-
-  mismatched acceptance fails closed. V1/V2 RO-off identities stay exact.
-  Exact contract-bound Lane5 runner/support bytes are frozen from Git while
-  retaining the original central registry client/lock; working-tree runner
-  edits are not silently imported. No Lane5 source was modified.
+Remaining source qualification item:62dc permits later clean/quiescent host
+prefill while the ideal reference lacks a matching version synchronization hook.
+See REVIEW_FINDINGS.md; no oracle narrowing/reset or scientific scope change was
+made. This only affects later R1.1 ideal qualification, not R0.1 B16/U_WB16.
 
-## Resources, actual dependencies and next action
+Actual check at 2026-10-16T14:21:26.792073+00:00: zero active EP-L2 registry runs/leases and
+zero own simulators. Seven live simulators were identified as DTC-L1 from /proc
+executable/cwd metadata only; no process/data/quota changes. Disk free
+38337310720 bytes.48GiB remains formal production admission policy,
+not a prerequisite to the source/static/Python work completed here. No build,
+compiler, admission, simulator, cleanup or background continuation was launched.
 
-Measured free disk: 45295710208 bytes; unchanged
-floor: 51539607552 bytes. No build, simulator, quota admission,
-cleanup, threshold reduction or background continuation was launched.
-Own active runs: zero at 2026-10-16T12:07:45.904634+00:00.
-Lane1 consumed publication `3840f9585b710a5abea8201c14fa05cdea930aa7`
-uses its newer RECEIPT_REVIEW_R3.json to supersede older producer qualification.
-Lane5 consumed publication `b134f76d8f4cd759c0852b68edf922ecbd445ea9`
-is the authoritative suspension/repair candidate source. Exact snapshots and
-hashes are in DEPENDENCIES.json and the authority files.
+Verified dependency publications:Lane1 `c2a536bdc08687260acc10e30e2fb80a6f791c9e`;
+Lane5 `2fb8a6d1144f6fce038f51e60192f9fa8b0207af`. Exact receipt hashes
+and V2 current evidence bindings are in the pack. Lane1 R0.1/Lane5 main
+B16/U_WB16 retain priority. The standalone accessor fix is ready for Lane1
+review; separate official R1.1, repair+ideal qualification and same-binary B16
+baseline remain prerequisites to deriving/executing the18 cells under shared
+registry/live admission. No repeated polling or speculative run was started.
 
-Lane1 owns official R0.1 repair first; Lane5 owns space recovery and independent
-repair qualification. Lane4 does not block them or duplicate the full build.
-Official R1.1 release/binary/qualification/matched specs remain pending.
-The new R1.1 table contains 18 NOT_RUN cells with blank metrics/identities;
-old 18-cell tables remain frozen. No I_BANK or broader matrix was added.
-Once Lane1 publishes a separate R1.1 and Lane5 qualifies clock, warmup and the
-requested ideals with same-R1.1 B16 specs, use the central registry to roll the
-four workloads and convolution/FWT combinations, publishing completed cells.
-
-New review pack: `docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1`.
-SOURCE_REPAIR_AUDIT and REVIEW_FINDINGS distinguish tested clock-only producer
-evidence from uncompiled combined/static candidates and the uncompiled Tag
-patch. No repaired runtime or application PASS is self-declared here.
+Review pack: `docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1`.
+Previous STATUS/RECEIPT are archived there; prior review packs remain frozen.
