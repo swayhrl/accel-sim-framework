@@ -15,6 +15,8 @@ import shutil
 import subprocess
 import sys
 import time
+import ft_lane4_scientific_acceptance as science
+import ft_lane4_lane5_tools as lane5_tools
 
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = Path('/workspace/results/ep_l2_ft20261016/lane4')
@@ -41,13 +43,7 @@ def head(p):
 
 
 def load_tools():
-    contract = json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text())
-    sys.path.insert(0,str(Path(contract['registry_client']).parent))
-    registry = importlib.import_module('registry')
-    tools = importlib.import_module('run')
-    check(tools.digest(contract['registry_client']) == contract['registry_client_sha256'],
-          'published Lane 5 client changed')
-    return contract, registry, tools
+    return lane5_tools.load(ROOT,RESULTS)
 
 
 def parse_terminal(raw, vector, require_ft=False):
@@ -129,13 +125,9 @@ def validate_config_whole_file(spec):
 
 
 def inspect_baseline(spec,tools):
-    # Narrow parser adapter for the real multiline quoted QV100 timing field.
-    # Preserve every independent-release, content-hash and lifecycle gate in
-    # Lane 5 inspect(); neither inputs nor its release authority are replaced.
-    original=tools.validate_config_closure
-    tools.validate_config_closure=validate_config_whole_file
-    try:return tools.inspect(spec)
-    finally:tools.validate_config_closure=original
+    # Current Lane5 runner includes the whole-file lexer repair. Preserve its
+    # complete validation implementation rather than replacing any callback.
+    return tools.inspect(spec)
 
 
 def validate_b16_variant(spec, tools, api):
@@ -152,8 +144,10 @@ def validate_b16_variant(spec, tools, api):
     check(spec['mode']!='I_WB_META' or identity['workload'] in {'convolutionSeparable','FWT_7_21'},'combination not scheduled for this workload')
     for field in ['core_source_commit','framework_source_commit','binary_sha256','trace_content_sha256','workload','epoch_range','feature_vector','termination_contract']:
         check(identity[field]==parent[field],'unrelated baseline/diagnostic identity change: '+field)
+    detach,bypass=tools.ro_bits(parent['feature_vector'])
     check(parent['feature_vector']['wbuf_entries']==16 and parent['feature_vector']['finite_wbuf'] and
-          not any(parent['feature_vector'][k] for k in ['unified_wb','tvd','ro','adaptive_policy']), 'primary static B16 required')
+          not any(parent['feature_vector'][k] for k in ['unified_wb','tvd','adaptive_policy']) and
+          not detach and not bypass, 'primary static B16 required')
     check(spec['binary']==base['binary'] and spec['auxiliary_assets']==base['auxiliary_assets'] and
           spec['environment']==base.get('environment',{}) and spec['trace_files']==base['trace_files'], 'baseline physical inputs changed')
     check(spec['configs'][:-1]==base['configs'],'ideal must append one vector overlay to the exact baseline inputs')
@@ -249,6 +243,11 @@ def prepare(args, client, api, tools):
 
 def execute(spec,audit,client,api,tools):
     formal=spec['campaign_class']=='B16_IDEAL_DIAGNOSTIC'
+    scientific_authority=None
+    if formal:
+        science.check_not_withdrawn(spec['identity'],{'records':{'APPLICATION_ACCEPTANCE.json':{'rows':[]}}})
+        authority=science.load_authority(ROOT,client,spec['baseline_spec']['qualified_release'])
+        scientific_authority=science.check_release_current(spec['baseline_spec'],authority,tools.digest)
     qualification=validate_b16_variant(spec,tools,api) if formal else None
     if not formal:
         check(spec['campaign_class']=='HISTORICAL_DIAGNOSTIC' and
@@ -269,7 +268,10 @@ def execute(spec,audit,client,api,tools):
     process=None;status='INCOMPLETE';detail='not launched';started=time.monotonic();result={
         'identity':spec['identity'],'run_key':key,'campaign_class':spec['campaign_class'],'mode':spec['mode'],
         'runner_execution_commit':head(ROOT),'parser_source_sha256':tools.digest(__file__)}
-    if formal:result['matched_baseline']=qualification
+    if formal:
+        result['matched_baseline']=qualification
+        result['scientific_authority_at_launch']=scientific_authority
+        result['scientific_acceptance']='PENDING_LANE5_CURRENT_ACCEPTANCE'
     try:
         directory.mkdir(parents=True,exist_ok=False)
         api.write_json(directory/'input_spec.json',spec);api.write_json(directory/'input_audit.json',audit)
@@ -307,6 +309,13 @@ def execute(spec,audit,client,api,tools):
             check(tools.asset_manifest(spec['trace_files'])==audit['traces'],'trace content changed')
             check((tools.asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])==audit['assets'],'auxiliary content changed')
             if formal:validate_b16_variant(spec,tools,api)
+            if formal:
+                try:
+                    latest=science.load_authority(ROOT,client,spec['baseline_spec']['qualified_release'])
+                    result['scientific_authority_at_exit']=science.check_release_current(spec['baseline_spec'],latest,tools.digest)
+                except (ValueError,subprocess.SubprocessError,OSError) as error:
+                    result['scientific_acceptance']='SUSPENDED_OR_UNVERIFIED_AT_EXIT'
+                    result['scientific_acceptance_detail']=str(error)
             status='COMPLETE_VALID';detail='B16_IDEAL_DIAGNOSTIC; not implementation speedup or strict mathematical bound' if formal else 'HISTORICAL_DIAGNOSTIC_ONLY; never a B16 result'
     except BaseException as error:
         if process is not None:tools.terminate_owned(process)
@@ -328,10 +337,13 @@ def main():
     p.add_argument('--mode',choices=MODES);p.add_argument('--timeout',type=int,default=1800)
     p.add_argument('--prepare-only',action='store_true')
     p.add_argument('--execute-prepared',type=Path)
-    a=p.parse_args();client,api,tools=load_tools()
+    a=p.parse_args()
     if a.execute_prepared:
         frozen=json.loads(a.execute_prepared.read_text());spec,audit=frozen['spec'],frozen['audit']
-    else:
+        if spec.get('campaign_class')=='B16_IDEAL_DIAGNOSTIC':
+            science.check_not_withdrawn(spec['identity'],{'records':{'APPLICATION_ACCEPTANCE.json':{'rows':[]}}})
+    client,api,tools=load_tools()
+    if not a.execute_prepared:
         check(all([a.core,a.binary,a.build_manifest,a.workload,a.mode]),'prepare needs core/binary/build-manifest/workload/mode')
         spec,audit=prepare(a,client,api,tools)
     if a.prepare_only:print(json.dumps({'run_key':api.run_key(spec['identity']),'spec':spec,'audit':audit},indent=2));return

@@ -7,6 +7,7 @@ is retained. This tool does not manufacture or qualify a common release.
 import argparse
 import copy
 import json
+import ft_lane4_scientific_acceptance as science
 from pathlib import Path
 from run_ft_lane4_diagnostic import B16_MODES, ROOT, load_tools, validate_b16_variant, inspect_baseline
 
@@ -17,11 +18,16 @@ def main():
     p.add_argument('--mode',choices=B16_MODES,required=True)
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args();client,api,tools=load_tools()
-    baseline=json.loads(a.baseline_spec.read_text());baseline_audit=inspect_baseline(baseline,tools)
+    baseline=json.loads(a.baseline_spec.read_text())
+    science.check_not_withdrawn(baseline['identity'],{'records':{'APPLICATION_ACCEPTANCE.json':{'rows':[]}}})
+    authority=science.load_authority(ROOT,client,baseline['qualified_release'])
+    science_binding=science.check_release_current(baseline,authority,tools.digest)
+    baseline_audit=inspect_baseline(baseline,tools)
     spec=copy.deepcopy(baseline)
     spec.update(owner='lane4',mode=a.mode,campaign_class='B16_IDEAL_DIAGNOSTIC',
                 baseline_spec=baseline,baseline_run_key=api.run_key(baseline['identity']),
                 lane5_dependency=client,
+                scientific_authority_at_prepare=science_binding,
                 baseline_qualified_release_sha256=baseline_audit['qualified_release_sha256'])
     overlay=ROOT/'tests/ep_l2/ft_lane4/b16'/(a.mode.lower()+'.config')
     spec['configs'].append({'name':'lane4-ideal-vector.config','path':str(overlay)})

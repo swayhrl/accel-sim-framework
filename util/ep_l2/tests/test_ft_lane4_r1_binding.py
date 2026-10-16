@@ -75,6 +75,13 @@ class R1Binding(unittest.TestCase):
         self.write_release()
         result=subject.inspect_baseline(self.base,self.tools)
         self.assertEqual(result['run_key'],self.api.run_key(self.base['identity']))
+    def test_explicit_ro_off_vector_preserves_exact_identity(self):
+        for spec in [self.spec,self.spec['baseline_spec']]:
+            v=spec['identity']['feature_vector'];v.pop('ro');v.update(ro_tag_detach=False,ro_line_mshr_bypass=False)
+        self.release['qualified_feature_vectors']=[self.spec['identity']['feature_vector']]
+        self.refresh_release_binding();self.spec['baseline_run_key']=self.api.run_key(self.spec['baseline_spec']['identity'])
+        self.validate()
+        self.assertNotIn('ro',self.spec['identity']['feature_vector'])
     def test_core_mismatch(self):
         self.spec['identity']['core_source_commit']='3'*40
         with self.assertRaisesRegex(ValueError,'identity change'):self.validate()
