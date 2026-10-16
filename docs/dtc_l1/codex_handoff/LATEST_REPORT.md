@@ -1,5 +1,38 @@
 # Latest Codex Report
 
+## Lane A parallel checkpoint —2026-10-16 11:45 UTC
+
+The same Goal174 remains active. Following the user's request for concurrent independent execution, all eight remaining eligible registered rows were admitted once under an explicit own-cap24 and unchanged scientific gates: Gaussian OO/TRAD96, LUD IO/OO/TRAD96 and NN IO/OO/TRAD96. There is no eligible unstarted row. The original15 still-live simulator PIDs, both supervisors and strict watcher remain present; Gaussian IO finished naturally. No Goal, branch or simulator was reset or restarted.
+
+Current44-row plan: **21 terminal/invariant PASS**, **20 live**, **3 admission HOLD**, **0 eligible unstarted**, **0 current-plan strict failures or duplicate rows**. The21 include two preserved Hotspot numeric rows whose scientific promotion remains HOLD; the other19 strict rows are within the admitted scope. [Immutable strict/raw-derived checkpoint](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T114426Z). No incomplete GM12, replacement GM11 or pooled GM14 is computed.
+
+New complete registered results: Gaussian IO retains all510 ordered members,283685120 active-thread instructions and3799499 cycles. Full NN cohort IO/OO/TRAD96 all match1284872 active-thread instructions, with6132/6132/6087 cycles respectively; the small finite-versus-enhanced regression is retained. These full preregistered cohort rows are distinct from prior small application qualification checks. Primary IO256 andOO128 have different depths; their comparison does not establish equal-depth, equal-area or native GPU speedup.
+
+Current workload/arm state:
+
+| Workload | IO256 | OO128 | TRAD96 | IO128 | WAIT128 |
+|---|---|---|---|---|---|
+| ATAX | LIVE | LIVE | LIVE | — | — |
+| BICG | LIVE | LIVE | PASS | LIVE | LIVE |
+| GESUMMV | LIVE | LIVE | LIVE | — | — |
+| GEMM | LIVE | LIVE | LIVE | — | — |
+| 2DConvolution | PASS | PASS | PASS | LIVE | LIVE |
+| Btree | PASS | PASS | PASS | PASS | PASS |
+| DWT2D | PASS | PASS | PASS | — | — |
+| Gaussian | PASS | LIVE | LIVE | — | — |
+| Hotspot1 | PASS / promotion HOLD | PASS / promotion HOLD | HOLD | HOLD | HOLD |
+| LUD | LIVE | LIVE | LIVE | — | — |
+| NN | PASS | PASS | PASS | — | — |
+| MRI-Q | PASS | PASS | PASS | — | — |
+
+The cap24 change affects host scheduling only. Actual20 live rows consumeRSS40.3GiB; MemAvailable is259.9GiB and writable capacity43.8GiB at11:44:57 UTC. All20 processes retained their start ticks and increased CPU ticks across the observation interval. Each incoming row passed the historical-memory reservation, free-disk, same-arm non-Hotspot pilot, strict-terminal, identity and uniqueness checks. [Resource, unchanged-process and zero-duplicate proof; full NN strict receipts](../iscas2027/service_closure_174_v1/review_pack/parallel_admission_v1).
+
+The v13 one-shot helper admitted six rows, then raised a false preflight assertion after fast NN IO completed during its terminal inspection. The actual simulation passed full strict validation. Original failure text, partial admission, source identity, recovery review and authority restoration are retained. The repaired helper rechecks durable starts after runner exit; v14 admitted only the two genuinely unstarted NN labels and restored the exact original authority token. No attempt was rerun. [V13 preserved race evidence](../iscas2027/service_closure_174_v1/review_pack/live_pool_extension_v13), [v14 bounded admission](../iscas2027/service_closure_174_v1/review_pack/live_pool_extension_v14), [protocol](../iscas2027/service_closure_174_v1/LIVE_POOL_EXTENSION_V1.md).
+
+The existing strict watcher continues terminal validation while long GESUMMV/GEMM/ATAX/BICG and other registered rows run. All legal independent rows are already launched, so no additional experiment is scheduled to maintain occupancy. Modern DTC remains HOLD under the128KiB capacity/port contract; four4080 baseline-only results remain preserved. Hotspot's three forbidden labels remain unstarted, with provenance owned by external Lane B. Native109's15 accepted cases remain reused; SpMV andLayerNorm remain NOT_ADMITTED. Existing failures, traces, parser, inputs, source identities and claim boundaries remain preserved. [Requirements and unresolved boundaries](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv).
+
+Helper commits9b91abc7/c529a28c and this review checkpoint are published in stages. Publication proof is `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`, retaining per-commit exact remote HEAD/tree and cleanliness checks. This is an active-work checkpoint, not final Goal closure.
+
 ## Lane A continuation checkpoint —2026-10-16 11:22 UTC
 
 The same Goal174 remains active. Current44-row plan: **17 terminal/invariant PASS** (including two Hotspot rows with scientific promotion HOLD), **16 live**, **3 admission holds**, **8 registered/unlaunched**. No incomplete GM12, replacement GM11 or pooled GM14 is computed. All old results/failures and original identities remain preserved. [Exact row states, raw-derived comparisons, residence and hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T112233Z).
