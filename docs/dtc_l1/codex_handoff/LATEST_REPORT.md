@@ -1,5 +1,10 @@
 # Current174 GESUMMV TRAD96 terminal —2026-10-16T16:13Z
 
+Review manifest correction: checkpoint_20261016T1612Z uses
+FINAL_FILES_SHA256_V2.json; original self-reference packaging failure is
+preserved. All other hashes, terminal/strict/numerical results stay unchanged;
+no model rerun.
+
 **GESUMMV TRAD96 complete, strict/input/resource audit PASS.**
 8d9b7f69-1a31-4706-92af-976e02bb5448 naturally exited0:99700244cycles,
 190918656 active-thread instructions,1full ordered kernel,5:52:58 wall and
