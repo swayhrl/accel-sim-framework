@@ -1,5 +1,6 @@
 """Link a new observation-only test against retained R0 archives, never rebuild R0."""
 import os
+import argparse
 from pathlib import Path
 import shlex
 import subprocess
@@ -11,7 +12,9 @@ def main():
     core = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane5-v1')
     original = '/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-v1'
     build = Path('/workspace/build/ep-l2-ft20261016-lane1-v1/gpgpu-sim')
-    out = Path('/workspace/results/ep_l2_ft20261016/lane5_memcpy_clock_probe_r1')
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--out', required=True, type=Path)
+    out = parser.parse_args().out
     out.mkdir(exist_ok=False)
     reg = Registry()
     lease = reg.build_lease('lane5', cpu=1, memory=4 * 1024**3)
