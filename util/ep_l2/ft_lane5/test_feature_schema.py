@@ -57,6 +57,7 @@ class NewVectorQualificationTests(unittest.TestCase):
         self.fixture = runner_tests.RunnerInputTests()
         self.fixture.setUp()
         self.addCleanup(self.fixture.tearDown)
+        self.addCleanup(self.fixture.doCleanups)
 
     def test_v2_vector_needs_its_own_qualification(self):
         vector = self.fixture.spec['identity']['feature_vector']

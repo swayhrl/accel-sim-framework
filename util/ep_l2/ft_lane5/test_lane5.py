@@ -6,6 +6,8 @@ from pathlib import Path
 import socket
 import tempfile
 import unittest
+from unittest.mock import patch
+from acceptance import bind_manifest, SCHEMA, BRANCH, sha
 
 from registry import Registry, run_key, process_identity
 from validate import InvalidEvidence, validate_events, validate_summary, reference_requests
@@ -22,6 +24,21 @@ def identity():
                 'payload_capacity_per_slice': 1168, 'bank_count': 4, 'ops_per_bank_cycle': 1},
             'ideal_vector': {'wb': False, 'meta': False, 'read_hit': False},
             'termination_contract': {'kind': 'full_application_hardware_drained', 'residents_may_remain': True}}
+
+
+def acceptance_fixture(row, qualification_sha256='a' * 64):
+    """Synthetic authority for validator tests only; never a model qualification."""
+    evidence = b'{"synthetic_validator_fixture_only":true}'
+    manifest = {'schema_version': SCHEMA, 'authority': {'lane_id': 5, 'framework_branch': BRANCH},
+        'generation': 1, 'revision': 'TEST_FIXTURE_ONLY', 'test_fixture_only': True,
+        'supersession_evidence': [{'path': 'docs/ep_l2/review_packs/fixture/evidence.json', 'sha256': sha(evidence)}],
+        'rows': [], 'withdrawn_releases': [], 'launch_authorizations': [{
+            **{k: row[k] for k in ('core_source_commit', 'framework_source_commit', 'binary_sha256')},
+            'feature_vector': row['feature_vector'], 'ideal_vector': row['ideal_vector'],
+            'qualified_release_sha256': qualification_sha256, 'status': 'CURRENT_QUALIFIED_FOR_LAUNCH'}]}
+    raw = json.dumps(manifest).encode()
+    return bind_manifest(raw, {'kind': 'LOCAL_CURRENT_POINTER', 'manifest_sha256': sha(raw),
+        'generation': 1, 'revision': 'TEST_FIXTURE_ONLY'}, lambda name: evidence)
 
 
 def claim_worker(root, queue):
@@ -371,6 +388,10 @@ class RunnerInputTests(unittest.TestCase):
                             'evidence_path': str(self.root / 'evidence.json'),
                             'evidence_sha256': digest(self.root / 'evidence.json')} for g in GATES}}
         self.write_release()
+        self.authority_patch = patch('run.load_current_authority', side_effect=lambda:
+            acceptance_fixture(self.spec['identity'], digest(self.root / 'release.json')))
+        self.authority_patch.start()
+        self.addCleanup(self.authority_patch.stop)
 
     def tearDown(self):
         self.tmp.cleanup()

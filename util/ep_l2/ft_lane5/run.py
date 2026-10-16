@@ -17,6 +17,7 @@ import time
 from registry import Registry, canonical, run_key, write_json, process_identity, local_resources
 from validate import validate_summary, require
 from feature_schema import ro_bits
+from acceptance import load_current_authority, current_manifest, reject_withdrawn, authorize_launch
 
 GATES = {'old_all_off_equivalence', 'finite_wbuf', 'requester_exact_once',
          'sector_reference_data', 'stale_fill', 'resource_closure',
@@ -87,6 +88,8 @@ def validate_config_closure(spec):
 def inspect(spec):
     identity = spec['identity']
     key = run_key(identity)
+    authority = load_current_authority()
+    reject_withdrawn(identity, current_manifest(authority))
     require(set(identity['ideal_vector']) == IDEALS, 'ideal vector must include every V1 ideal mode')
     feature = identity['feature_vector']
     detach, bypass = ro_bits(feature)
@@ -135,9 +138,11 @@ def inspect(spec):
     require(type(spec.get('environment', {})) is dict and
             all(isinstance(k, str) and isinstance(v, str) for k, v in spec.get('environment', {}).items()),
             'explicit string environment required')
+    launch_authorization = authorize_launch(identity, digest(spec['qualified_release']), authority)
     return {'run_key': key, 'configs': configs, 'auxiliary_assets': assets,
             'traces': traces, 'qualification_evidence': evidence,
-            'qualified_release_sha256': digest(spec['qualified_release'])}
+            'qualified_release_sha256': digest(spec['qualified_release']),
+            'scientific_launch_authorization': launch_authorization}
 
 
 def tree_bytes(root):
