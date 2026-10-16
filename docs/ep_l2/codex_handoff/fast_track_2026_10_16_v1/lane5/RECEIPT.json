@@ -16,7 +16,8 @@
     "docs/ep_l2/review_packs/FT20261016_LANE5_R0_VECTORADD_4M_PAIR_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_R0_CFD_097K_PAIR_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_MEMCPY_CLOCK_CORRECTION_r1",
-    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json"
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
+    "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r2"
   ],
   "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
   "blockers": [
@@ -24,6 +25,11 @@
       "reason": "Confirmed physical bank clock violation, repair candidate independently tested",
       "required_artifact": "Lane1 immutable official repaired R0.1/R1.1 source + producing Framework + binary SHA + configs; old binaries retained",
       "scope": "formal R0/R1 application/diagnostic qualification"
+    },
+    {
+      "reason": "Actual workspace below unchanged48GiB floor; three admissions refused; own-only compaction did not restore admission",
+      "required_change": "Resource state recovers within existing policy; no budget change requested",
+      "scope": "warmup candidate compile/six-case producer validation"
     }
   ],
   "config_sha256": null,
@@ -89,6 +95,7 @@
     "lane2": "56abbacc1192d68995e78561899719649f838079",
     "lane3": "57801b429166b47079444081aaaafbfe5050e0d5"
   },
+  "own_core_branch_head": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
   "qualified_feature_vectors": [
     {
       "adaptive_policy": false,
@@ -116,10 +123,10 @@
   "review_coordination_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
   "runner_source_commit": "8a82f2d831fc5189a4a7b024e5cddda6e96bda46",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
-  "status": "APPLICATION_QUALIFICATION_SUSPENDED_CLOCK_REPAIR_READY",
+  "status": "APPLICATION_QUALIFICATION_SUSPENDED_CLOCK_REPAIR_AND_WARMUP_CANDIDATE_READY_RESOURCE_HOLD",
   "task_id": "FT20261016_LANE5_R0_FORMAL_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-16T11:04:10.921564+00:00",
+  "updated_at": "2026-10-16T11:13:56.702307+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
@@ -188,6 +195,32 @@
       "kind": "HARNESS_ONLY",
       "status": "PASS"
     },
-    "scientifically_accepted_R0_application_runs": 0
+    "required_future_gates": [
+      "physical_bank_clock",
+      "memcpy_payload_identity"
+    ],
+    "scientifically_accepted_R0_application_runs": 0,
+    "warmup_identity_candidate": {
+      "R1_patch_parent": "be651ccfe7bd47c0bbd8c30fe6439ae3b60cf8de",
+      "admission_refusals": 3,
+      "binary_sha256": null,
+      "candidate_behavior": "Bind/reuse bank-compatible RESIDENT handle in sole allocator at untimed host prefill; declared sectors use existing version-zero symbols; native Tag prefill and default-OFF delegate preserved; reject live transient loss.",
+      "core_source_commit": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
+      "executed_cases": 0,
+      "framework_driver_source_commit": "bc894dfae05c9c8d24bed57d839acb604f8a2f76",
+      "new_test": "Actual warm GLOBAL_ACC_R checks version0 before later writes/WBs, response/drain; both modes with zero offset, nonzero evicted warm line, direct warm hit.",
+      "next": "Actual disk floor must permit compilation and six-case validation; Lane1 then official repaired source/binary freeze, Lane5 new-identity app qualification. No TVD/RO dependency.",
+      "original_counterexample": "Real immediate warm hit after force_l2_tag_update aborted R0 handle_owner_matches; exact logs in earlier clock-correction pack r1/r2.",
+      "planned_cases": 6,
+      "resources_measured_at_receipt": {
+        "available_memory_bytes": 167513841664,
+        "disk_free_bytes": 50802106368
+      },
+      "runtime_warmup_delta_commit": "5d974c3bf116ad21da74d3a27eace028c1f2e197",
+      "safety_floor_changed": false,
+      "scope_limit": "Warmup delta uncompiled. Tested clock-only Core1565f1f0 remains distinct; latest candidate is not a qualified application release.",
+      "status": "CANDIDATE_NOT_COMPILED_NOT_QUALIFIED_RESOURCE_FLOOR",
+      "workspace_floor_bytes": 51539607552
+    }
   }
 }
