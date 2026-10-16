@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## Lane A long traditional terminals —2026-10-16 12:23 UTC
+
+The same Goal174 remains active: **29 terminal/invariant PASS,12 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two numeric PASS rows retain Hotspot scientific-promotion HOLD. No simulation, Goal, branch, input or identity was restarted or replaced. [Current full states, exact comparisons, residence and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T122311Z).
+
+Enhanced traditional ATAX andGEMM completed naturally. Independent full strict re-collection matches both immutable watcher receipts, including exact Core6582b9d1/binary4fcac62c, ordered input/kernel/instruction scopes, config/runner/resource identities,96KiB geometry,MSHR512/PIB256, single epochs, exit0 and drained state. Their conventional arms have no finite-service metrics; unavailable is retained. [Both strict receipts, complete distinct input identities and remaining-process/resource proof](../iscas2027/service_closure_174_v1/review_pack/long_trad96_checkpoint_v1).
+
+| Enhanced traditional workload | Ordered kernels | Active-thread instructions | Cycles | Elapsed | PeakRSS KiB |
+|---|---:|---:|---:|---|---:|
+| ATAX |2|145666048|30981690|2:02:09|2355200|
+| GEMM |1|739246080|1511333|1:55:53|4968448|
+
+ATAX/GEMM finiteIO/OO remain live, so neither new result forms a complete primary trio yet. Ten of twelve registered enhanced-traditional rows now have full terminal strict PASS; GESUMMV remains live andHotspot is forbidden. Seven primary trios and the separate Btree/2D matched128 pairs remain complete. BICG's matched pair remains pending. All regressions, source distinctions and fixed comparison roles remain retained; no incomplete GM12, replacement GM11 or pooled GM14 is computed.
+
+The12 remaining rows are four BICG arms, three GESUMMV arms, finiteIO/OO GEMM andATAX, andWAIT128 2DConvolution. Every eligible row already launched once; free slots add no condition. At12:23:11 UTC, all12 simulator PIDs retained start ticks and increased CPU ticks. Own RSS was30.5GiB, MemAvailable267.6GiB and writable capacity41.4GiB. Both original supervisors and strict watcher remain live.
+
+A read-only resource sampler observed GEMM's PID disappear between the first ATAX snapshot and its process read. Its originalFileNotFound error is preserved; subsequent terminal collection proves natural full GEMM completion, not a simulator failure. The refreshed receipt covers both terminals and all12 continuing processes. No retry or restart occurred. [Sampling race receipt](../iscas2027/service_closure_174_v1/review_pack/atax_trad96_checkpoint_v1).
+
+Modern DTC's128KiB capacity/port HOLD, Hotspot's three forbidden labels/external Lane B ownership, four modern baseline-only rows and15 accepted native109 cases remain unchanged. SpMV/LayerNorm remain NOT_ADMITTED; source/identity/service contracts and claim boundaries remain fixed. [27-item closure ledger](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv). Publication proof is `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`, with exact fetched HEAD/tree/cleanliness verified per stage. This is an active-work checkpoint; final Goal completion remains unproven while authorized rows are live.
+
 ## Lane A second matched128 checkpoint —2026-10-16 12:11 UTC
 
 The same Goal174 remains active: **27 terminal/invariant PASS,14 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two numeric PASS rows retain Hotspot scientific-promotion HOLD. No simulator, Goal, branch, input or identity was restarted or replaced. [Current full row states, comparisons, residence and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T121058Z).
