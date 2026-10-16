@@ -30,5 +30,5 @@ No active runs; no formal experiments; no runtime clean/dirty/full TVD readiness
 ## Evidence
 
 - `docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/`
-- `docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r1/`
+- `docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r2/`
 - `INTEGRATION_REQUEST.md`

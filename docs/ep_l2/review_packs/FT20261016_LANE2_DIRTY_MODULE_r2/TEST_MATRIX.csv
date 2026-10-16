@@ -1,0 +1,8 @@
+scenario,subset,normal,asan_ubsan,scope
+clean_read_bank_icnt_data_version,clean,PASS,PASS,real directory + historical bank; response hold simulated by outstanding lease
+sector_exact_write_atomic_same_handle_promotion,clean,PASS,PASS,sector masks and handle transfer
+shared_128_capacity_failed_prepare_stale_epoch,clean,PASS,PASS,128 slots; const preview; rejected pending fill; rollback/no commit
+module_reference_versions_by_canonical_payload_handle,clean,PASS,PASS,test-only versions keyed by production PayloadHandle
+dirty_lower_accept_independent_data_forward_wait_reference_versions,dirty,PASS,PASS,"lower data independence, forwarding while memory stale, writes wait, reader survives set_done"
+dirty_128_wad_full_priority_pins_stale_rollback_epoch,dirty,PASS,PASS,mandatory full; reclaim priority; stale prepare; complete drain
+promotion_dirty_resident_full_directory_atomic_slot_reuse,dirty,PASS,PASS,promotion uses same address slot; no temporary 129th; WAD-only clean subset
