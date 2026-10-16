@@ -1,0 +1,9 @@
+# Lane5 review_r8 independent pilot resource review
+
+Decision **NO_SAFE_PILOT_ENVELOPE**. This is a refusal, not an authorization, token, compiler command or lease. Current Lane1 published ref has no LOW_SPACE_PILOT_REQUEST; actual pilot ID/wrapper/roots/time/output cannot yet bind. Four bounded resource samples show active DTC/C16 and ongoing Share writes. Required growth/external/overshoot/emergency terms cannot be independently closed; unknown terms are null, never zero. See INDEPENDENT_RESOURCE_GATE.json and RESOURCE_OBSERVATION.json. No user confirmation is being re-requested; this is the explicit quantitative fail-closed condition in authorized r8.
+
+One-use ENGINEERING_PILOT API and39 synthetic tests plus10 affected original registry regressions pass. Source205782b9745a7189b9bf858486648930b08b8a81 is pushed/read back; API under util/ep_l2/ft_lane5/ENGINEERING_PILOT_API.md. No real authorization registered and no pilot lease. Ordinary48GiB predicate and build_lease body bytes remain unchanged; central exclusion guards preserve normal consumers.
+
+R7 exact static rebind: Corec948184504d82b80e23eb3f4ff6cdfd328ba9355 / Framework3ab150b3e99ff3ed759b8cdc5154cfb5744042a7 / vendorf90c430c3a1ce8f08c09942a5a1c3a797bb2295b match actual clean local inputs. Prior duplicate getter and fixture clock are fixed; do not reapply old patch.21 planned production executions/11 gates and five full B16/U_WB16 pairs retain no binary/certificate/new key. An engineering binary cannot be automatically promoted to formal producer evidence. Scientific V2 and all withdrawn old runs remain unchanged.
+
+No compiler, simulator, transfer, quota change, other-project process control or frozen asset cleanup. Only one finite30-second observation, no Lane5 disk waiter. All archived review packs remain intact. STATUS/RECEIPT describe the main task as still active with this pilot-safety subtask refused pending exact request and defensible bounds.

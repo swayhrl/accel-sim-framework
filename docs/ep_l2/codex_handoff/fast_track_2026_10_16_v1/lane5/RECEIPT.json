@@ -21,23 +21,29 @@
     "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R3_RESOURCE_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE5_WARMUP_IDENTITY_CANDIDATE_r3",
-    "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1"
+    "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1"
   ],
-  "audit_framework_source": "85ff6e9f63b568f6ec616f2f8aa03eddc9b787f2",
+  "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": null,
   "blockers": [
     {
-      "artifact": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1/REMOVE_DUPLICATE_BANK_OBSERVER.patch",
-      "reason": "Exact uncompiled62dc1d candidate has duplicate inline method. Minimal patch supplied and git apply --check PASS; integrate into new source SHA before build.",
-      "scope": "Official Lane1 R0.1 compilation"
+      "evidence": "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1/INDEPENDENT_RESOURCE_GATE.json",
+      "reason": [
+        "No LOW_SPACE_PILOT_REQUEST published in exact latest Lane1 ref: pilot_id, new wrapper/driver pin, exact engineering roots, command/time/output caps cannot be bound",
+        "Four short samples show continuing Share consumption and protected C16/DTC writers, but no enforceable/measured whole-campaign external burst bound. Per-process observed writes do not explain all filesystem free-space decreases; no attribution or future bound is inferred",
+        "Historical final build sizes do not bound new compiler/linker/transient growth, and toy child TERM/KILL tests do not establish actual compiler/filesystem monitor and stop overshoot",
+        "Thus positive justified growth+external+overshoot+untouched-emergency terms cannot be closed for every actual write filesystem. Unknown terms remain null, never zero"
+      ],
+      "scope": "One-time ENGINEERING_PILOT only",
+      "status": "NO_SAFE_PILOT_ENVELOPE"
     },
     {
-      "alternatives": "docs/ep_l2/review_packs/FT20261016_LANE5_REVIEW_R5_r1/BUILD_ADMISSION_ALTERNATIVES.md",
-      "build_floor_plus_growth_deficit_bytes": 15344828416,
-      "reason": "Workspace snapshot below current48GiB floor plus build2GiB reserve; unknown transient peak and external growth do not justify lowering floor",
-      "scope": "Official build / independent runtime gates / formal simulation only",
-      "workspace_floor_deficit_bytes": 13197344768,
-      "workspace_free_bytes": 38342262784
+      "binary_sha256": null,
+      "framework_input_candidate": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+      "reason": "No official producing binary; engineering exception cannot promote a binary or lower formal resource gates",
+      "scope": "Formal producer / independent scientific qualification / formal five pairs",
+      "source_candidate": "c948184504d82b80e23eb3f4ff6cdfd328ba9355"
     }
   ],
   "config_sha256": null,
@@ -95,6 +101,19 @@
       "sha256": "cc118d37f268c423d7f8cd8606701f35bf8bb57d25034de61b2ab9dbea781efe"
     }
   ],
+  "engineering_pilot_review": {
+    "affected_registry_tests": 10,
+    "authority": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
+    "decision": "NO_SAFE_PILOT_ENVELOPE",
+    "final_resource_check": "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1/FINAL_RESOURCE_AND_REGISTRY_CHECK.json",
+    "new_tool_tests": 39,
+    "pilot_id": null,
+    "real_authorizations": 0,
+    "real_pilot_leases": 0,
+    "request_publication_observed": "85534de235345292a153d9983cfd0d24d8033bb2",
+    "resource_gate": "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1/INDEPENDENT_RESOURCE_GATE.json",
+    "tool_source_commit": "205782b9745a7189b9bf858486648930b08b8a81"
+  },
   "feature_vector": null,
   "formal_campaign": {
     "completed_pair_packs": [
@@ -149,8 +168,8 @@
   "ideal_vector": null,
   "lane_id": 5,
   "latest_resource_observation": {
-    "available_memory_bytes": 160056037376,
-    "disk_free_bytes": 38342262784
+    "available_memory_bytes": 190170071040,
+    "disk_free_bytes": 29525843968
   },
   "low_resource_review_r5": {
     "actual_new_cpp_tests": 0,
@@ -185,7 +204,7 @@
     "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/REVIEW_R3_REMOTE_READBACK.json",
     "sha256": "6cbcf09dc6ec669dde9d68b358a7adb2fdf1e72462c78da3347b15a647bbe244"
   },
-  "publication_readback_review_r5": {
+  "publication_readback_previous_r5": {
     "all_remote_bytes": "MATCH",
     "pack_sha256s": "PASS",
     "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/REVIEW_R5_REMOTE_READBACK.json",
@@ -209,7 +228,7 @@
     "status": "RESOURCE_HOLD_NO_SUFFICIENT_OWN_WORKSPACE_SCRATCH",
     "workspace_deficit_bytes": 6103367680
   },
-  "review_coordination_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
+  "review_coordination_commit": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
   "runner_source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "scientific_acceptance": {
@@ -222,12 +241,13 @@
     "revision": "FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
     "sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a"
   },
-  "static_candidate_core": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
-  "static_candidate_core_publication": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
-  "status": "LOW_RESOURCE_SOURCE_AND_EXPERIMENT_PREPARATION_COMPLETE_OFFICIAL_BUILD_AND_QUALIFICATION_HOLD",
-  "task_id": "FT20261016_LANE5_REVIEW_R5_r1",
+  "static_candidate_core": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+  "static_candidate_core_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
+  "static_candidate_framework": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+  "status": "ENGINEERING_PILOT_TOOLS_READY_NO_SAFE_PILOT_ENVELOPE_FORMAL_QUALIFICATION_PENDING",
+  "task_id": "FT20261017_LANE5_REVIEW_R8_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-16T14:21:24.968929+00:00",
+  "updated_at": "2026-10-16T17:12:02.750231+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
@@ -310,6 +330,15 @@
       "planned_production_executions": 21,
       "scientifically_current_accepted_pairs": 0,
       "source_only": "19PASS/1FAIL_COMPILE_BLOCKER"
+    },
+    "review_r8": {
+      "actual_cpp_tests": 0,
+      "engineering_builds": 0,
+      "formal_runs": 0,
+      "old62_suite_repeated": false,
+      "original_registry_regressions": 10,
+      "status": "PASS_TOOLING_ONLY",
+      "tool_tests": 39
     },
     "scientifically_accepted_R0_application_runs": 0,
     "warmup_identity_candidate": {
