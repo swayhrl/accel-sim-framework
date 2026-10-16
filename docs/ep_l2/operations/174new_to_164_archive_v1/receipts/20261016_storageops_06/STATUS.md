@@ -26,4 +26,4 @@ R10 R1 reconciliation is in R1_RESTORE_INDEX_RECONCILIATION_R10_V1.json; the his
 
 PROJECT_INDEX_R10_V2.json is the versioned receipt/manifest join: 35918369355 primary archived bytes, 4754181973 target materialized restore bytes, and a separate 66331215249 streaming recovery bytes. Uncompressed stage coverage is not added to compressed primary archive bytes; native B001 overlaps R1 and is not double-counted. Historical PROJECT_INDEX_RECEIPT.json / its NAS snapshot remain unchanged. R1R/R2 are still metadata-only with zero archived project data.
 
-Current cold copy window: R1R_B007 DEST_VERIFIED; 5642 files / 3140115536 primary bytes received for R1R. Scientific source originals remain KEEP; next source ACK/bridge closeout required.
+Current cold copy window: R1R_B008 DEST_VERIFIED; 7642 files / 3315758982 primary bytes received for R1R. Scientific source originals remain KEEP; next source ACK/bridge closeout required.
