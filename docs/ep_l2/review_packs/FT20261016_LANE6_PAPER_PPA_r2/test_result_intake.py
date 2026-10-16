@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 """Synthetic paper-intake tests, not scientific measurements."""
 import copy
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
 import unittest
 from result_intake import canonical_sha, ro_bits, summarize, REQUIRED_GATES, WORKLOADS
 
@@ -85,6 +91,39 @@ class Checks(unittest.TestCase):
         p["runs"].append(copy.deepcopy(p["runs"][0]))
         p["runs"][-1]["status"] = "FAILED"
         with self.assertRaises(ValueError): summarize(p)
+
+    def test_published_partial_pair_plot_and_tamper_rejection(self):
+        with tempfile.TemporaryDirectory(prefix="lane6-r2-synthetic-") as tmp:
+            root = Path(tmp)
+            repo = root / "synthetic-authority"
+            repo.mkdir()
+            def git(*args):
+                return subprocess.check_output(["git", "-C", str(repo), *args], stderr=subprocess.STDOUT).decode().strip()
+            def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+            git("init", "-q")
+            packet = root / "synthetic_pair_packet.json"
+            packet.write_text(json.dumps(fixture(), sort_keys=True))
+            (repo / "bundle.json").write_text(json.dumps({"normalized_pair_packet_sha256": digest(packet)}))
+            (repo / "receipt.json").write_text(json.dumps({"lane_id": 5, "artifacts": ["bundle.json"]}))
+            git("add", "bundle.json", "receipt.json")
+            git("-c", "user.name=Lane6 Test", "-c", "user.email=synthetic@example.invalid", "commit", "-qm", "synthetic test authority only")
+            adapter = root / "adapter.json"
+            adapter.write_text(json.dumps({"publication_commit": git("rev-parse", "HEAD"), "receipt_path": "receipt.json",
+                "receipt_sha256": digest(repo / "receipt.json"), "bundle_path": "bundle.json",
+                "bundle_sha256": digest(repo / "bundle.json"), "packet_file": str(packet)}))
+            cmd = [sys.executable, str(Path(__file__).with_name("plot_qualified_pairs.py")), str(adapter),
+                   "--framework-repo", str(repo), "--output-dir", str(root / "test_plot")]
+            r = subprocess.run(cmd, capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            result = json.loads((root / "test_plot/FIGURE_INPUT_MANIFEST.json").read_text())
+            self.assertEqual(len(result["pairs"]), 1)
+            self.assertEqual(result["pairs"][0]["speedup"], .8)
+            self.assertIsNone(result["whole_group_geomean"])
+            packet.write_text(packet.read_text() + " ")
+            r = subprocess.run(cmd[:-1] + [str(root / "tampered")], capture_output=True, text=True)
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("Unbound normalized pair payload", r.stderr)
+            self.assertFalse((root / "tampered").exists())
 
 
 if __name__ == "__main__":

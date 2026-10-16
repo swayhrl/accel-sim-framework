@@ -19,7 +19,9 @@ REVIEW = "aec01450d3c527524ee09ee59242f582fafe5354"
 ORIGINAL = "6c136e2a56a008695f8c8b815723bf8f1a760db9"
 L1 = "02982b65e87f170103b44c6dbd562a8ffb03841e"
 L4 = "96fbcb612773900fd75268ffe4e00ed9f13d3d42"
-L5 = "c603a5634b6b3f54aec10bdb1fc804e0a648b567"
+L5 = "221c7f65cd881ca5da2d20dd0f63a50e35bbc009"
+LATEST1 = "2556909e55bb43c1d819f8c0417f5fc8b93630d9"
+LATEST4 = "be21c95d9c846c9af0904d24c78c10c3243dc64b"
 R0 = "126394be46b15f55b9756d43eb9ca9a9baae1c84"
 RO = "ddedbf0fabd46c6e35358c9a0e78b77f52cab2c5"
 STREAM = "a38ce9c517ad49f88f5eaea74c73d4e5b23eb1c2"
@@ -68,12 +70,24 @@ def main():
         take("review:" + f, a.framework_repo, REVIEW, "docs/ep_l2/chatgpt_handoff/fast_track_2026_10_16_review_r2/" + f, "REVIEW_AUTHORITY")
     for lane, revision in ((1, L1), (4, L4), (5, L5)):
         take(f"lane{lane}_receipt", a.framework_repo, revision, ROOT + f"lane{lane}/RECEIPT.json", "DEPENDENCY_RECEIPT")
+    for lane, revision in ((1, LATEST1), (4, LATEST4)):
+        take(f"lane{lane}_continuation_receipt", a.framework_repo, revision, ROOT + f"lane{lane}/RECEIPT.json", "CONTINUATION_DEPENDENCY_RECEIPT")
     contract = json.loads(take("R0_contract", a.framework_repo, L1, ROOT + "lane1/BASELINE_CONTRACT_V1.json", "R0_PRODUCER_RELEASE"))
     take("R0_port_ledger", a.framework_repo, L1, ROOT + "lane1/STORAGE_AND_PORT_LEDGER.md", "R0_PRODUCER_MODEL")
     for f in ("gpu-cache.h", "ep-l2-ft-cache.inc", "ep-l2-ft-interface.h"):
         take("R0:" + f, a.core_repo, R0, "src/gpgpu-sim/" + f, "R0_PRODUCTION_SOURCE")
     take("RO_completion", a.core_repo, RO, "src/gpgpu-sim/ep-l2-ro-transactions.h", "MODULE_ONLY_NOT_R0")
     assert contract["runtime_ready"] is True and contract["independent_qualification"] is False
+    qualified = json.loads(take("R0_independent_qualification", a.framework_repo, L5, ROOT + "lane5/R0_INDEPENDENTLY_QUALIFIED.json", "INDEPENDENT_QUALIFICATION"))
+    checks = take("R0_independent_checks", a.framework_repo, L5, "docs/ep_l2/review_packs/FT20261016_LANE5_R0_QUALIFICATION_r1/INDEPENDENT_CHECKS.json", "INDEPENDENT_QUALIFICATION")
+    assert qualified["status"] == "INDEPENDENTLY_QUALIFIED"
+    for key in ("core_source_commit", "framework_source_commit", "binary_sha256"):
+        assert qualified[key] == contract[key]
+    assert all(g["status"] == "PASS" and g["production_driven"] is True and g["evidence_sha256"] == sha(checks) for g in qualified["gates"].values())
+    dump(out / "DEPENDENCY_SNAPSHOT.json", {"R0_producer_publication": L1, "lane1_continuation": LATEST1,
+         "lane4_original_diagnostic": L4, "lane4_continuation": LATEST4, "lane5_publication": L5,
+         "R0_independent_qualification": qualified, "new_formal_completed_pairs_consumed": 0,
+         "R1_formal_diagnostic_completed_rows_consumed": 0})
 
     # Verify the 13-row local historical checkpoint against unchanged producer
     # per-run artifacts and the exact committed aggregation implementation.
@@ -204,13 +218,14 @@ def main():
     ax.invert_yaxis()
     ax.set_xlim(0, 103)
     ax.set_xlabel("Eligible demand references (%)")
-    ax.legend(frameon=False, fontsize=6.7, loc="lower right")
-    ax.set_title("Historical locality; full checkpoint: 13 rows", fontsize=8)
+    ax.legend(frameon=False, fontsize=6.7, loc="lower left", bbox_to_anchor=(0, 1.01), borderaxespad=0)
+    ax.set_title("Historical locality; full checkpoint: 13 rows", fontsize=8, pad=30)
     save(fig, "FIG03_VERIFIED_SECTOR_LOCALITY")
     dump(out / "RESULT_COVERAGE.json", {"R0_formal_completed_pairs_consumed": 0, "R1_B16_ideal_completed_rows_consumed": 0,
          "historical_diagnostic_completed_rows": 2, "historical_streaming_completed_rows": 13,
          "upstream_missing_diagnostic_rows": [r for r in diag_rows if r["status"] != "COMPLETE_VALID"],
-         "implementation_workloads": [{"workload": w, "state": "AWAITING_LANE5_QUALIFIED_PAIR", "speedup": None} for w in selected[:5]],
+         "R0_release_status": "INDEPENDENTLY_QUALIFIED_B16_U_WB16_ONLY",
+         "implementation_workloads": [{"workload": w, "state": "AWAITING_COMPLETED_LANE5_PAIR", "speedup": None} for w in selected[:5]],
          "whole_group_geomean": None, "does_not_assert_current_remote_process_state": True})
     producer = subprocess.check_output(["git", "-C", str(a.framework_repo), "rev-parse", "HEAD"], text=True).strip()
     generator_rel = str(Path(__file__).resolve().relative_to(a.framework_repo.resolve()))

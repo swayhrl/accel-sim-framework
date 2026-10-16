@@ -58,6 +58,8 @@ TVD 在 Tag miss 后增加一拍目录查询，并与其他角色竞争 Bank。�
 
 SASS trace 不携带完整数值 payload，故应用执行不能证明全字节或数值 atomic 输出。验证范围明确为模型内的独立 sector version reference、实际 requester 恰好一次响应、句柄/返回身份、WB 创建—接收—完成关系，以及终态退尽；有真实字节的定向测试单独报告。周期和指令数相同本身不构成数据正确性证明。
 
+静态 B16 与共享 U_WB16 生产版本已通过这一限定范围的独立资格，包括有限暂存、实际 Bank 服务、旧全关行为、sector reference、requester identity 与资源退尽。该资格只覆盖上述写回模式，不自动覆盖 TVD 或 detached RO。
+
 每条结果绑定源码、binary、ordered config/aux、trace 内容、epoch 和显式 feature/ideal 向量。只有独立资格通过的完整 pair 用于机制 speedup。已完成 pair 可增量报告，完整预定集合到齐前不计算全组均值；失败与未完成项保留状态，不填零或按性能删样本。
 
 ### 5.2 归因指标与强对照
