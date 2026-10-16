@@ -1,39 +1,33 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16 / Round A78；A77两个CPU-only资格Lane均已STOP并完成独立科研审查。** S77=`MODEL_AUTHORITY_NO_GO`、0个准入资源轴、0个合法Pilot点；W77=`NATIVE_ONLY_ELIGIBILITY`、2个历史有效原生请求锚点、0个资源扫描ready的基准。**综合：`A77_PAIRING_NOT_ESTABLISHED / SOURCE_REVIEW_ACCEPTED / STOP`，目前不启动资源6点扫描，也不是GPU硬件性能的负结果。**
+**最新快照：2026-10-16 / Round A79新Native-only现象发现Goal已冻结并发布，109新执行分支READY_FOR_USER_DISPATCH，尚未收到实际GPU启动回执。** 用户本轮已明确同意以高效率开展小型受控原生测量。**这次许可限于A79唯一自然工作量敏感度合同；不自动许可模拟器、Profiler、C16/AWMA旧任务恢复或硬件机制。** Git文档创建不等于已在109启动Codex进程。
 
-[Round A77准备期导航](https://github.com/swayhrl/accel-sim-framework/blob/48921695a53b5d5db84f5ef43914d343385aad19/docs/ai_workload_research/CURRENT_STATE.md)保留。此前A70/A73/A74/A75的科学STOP、C16/AWMA/ISCAS/GNN/Q-S/3DGS所有原raw、执行分支、资源权限不改。
+前序冻结： [A78完整科研裁决](https://github.com/swayhrl/accel-sim-framework/blob/50a7269df1ede4616c3539219e4eaa1f7a44e2b5/docs/ai_workload_research/reviews/AI_ARCH_A78_A77_W_S_RESOURCE_PAIRING_INDEPENDENT_REVIEW_2026-10-16_V1.md)、[A78 CURRENT_STATE](https://github.com/swayhrl/accel-sim-framework/blob/50a7269df1ede4616c3539219e4eaa1f7a44e2b5/docs/ai_workload_research/CURRENT_STATE.md)。A77的W/S双CPU审查均STOP：W77=`NATIVE_ONLY_ELIGIBILITY`，两历史真实Qwen2.5-3B原生请求锚点，0资源扫描ready；S77=`MODEL_AUTHORITY_NO_GO`，0合法模拟资源轴/0pilot。两者Native↔Sim`PAIRING_NOT_ESTABLISHED`；新A79不修这个问题。
 
-## 1. 本次独立交叉审查权威
+## 1. A79唯一连续执行合同（新授权范围）
 
-**[Round A78完整独立审查](reviews/AI_ARCH_A78_A77_W_S_RESOURCE_PAIRING_INDEPENDENT_REVIEW_2026-10-16_V1.md)**，首次发布commit`fc9af7ba7935d3c57424e8806b0f6601570f7a4a`。
+**[A79完整Goal｜Qwen2.5-3B BF16自然文本长度×生成阶段Native-only](goals/AI_ARCH_A79_QWEN25_3B_NATIVE_ONLY_NATURAL_LENGTH_PHASE_SENSITIVITY_109_V1.md)**，Goal固定发布HEAD：`7094d4b2d29980c2d2d8d97a9abb6fddb3283c9f`。
 
-| 执行Lane | 精确原始authority | 科学终态、可保留范围 |
-|---|---|---|
-| **W77／109** | [REPORT](https://github.com/swayhrl/accel-sim-framework/blob/4fa849b16ff7828959486ccafe404c86a9115918/docs/ai_workload_research/discovery/A77_W_NATIVE_WORKLOAD_AUTHORITY/REPORT.md)，commit`4fa849b16ff7828959486ccafe404c86a9115918`，tree`e24eb81a96c4475ee1ef43824b71e35e35fbc4c3` | `NATIVE_ONLY_ELIGIBILITY`。历史`Qwen2.5-3B-Instruct` BF16 TP1及WikiText103冻结自然文本512-token prompt；MP01 B1 512+1：ON/OFF 40.236/39.907ms，3 formal；MP02 B1 512+32 compiled：ON/OFF 354.598/361.457ms，5 formal。两卡均只提供合法CUDA-event请求wall，**不是资源轴ready**，未重启旧Stage A。 |
-| **S77／174-new** | [REPORT](https://github.com/swayhrl/accel-sim-framework/blob/c837d5d85a78c70cb1a0deb28cb8279940510785/docs/ai_workload_research/discovery/A77_S_SIM_RESOURCE_AUTHORITY/REPORT.md)，commit`c837d5d85a78c70cb1a0deb28cb8279940510785`，tree`423c73f8f0545ccc78fba73e46d6980ce9025df5` | `MODEL_AUTHORITY_NO_GO`。AWMA Ada翻译模拟资格原样保留；实际GPGPU-Sim performance core完整身份/ISA/数学/并发校准未闭合。A HMMA specialized initiation和B L2数据/填充服务均`UNVERIFIED`且未准入，条件6点中的`baseline`也未执行。 |
+| 字段 | 固定值 |
+|---|---|
+| 建议节点／GPU | 109 RTX4080 SM89，固定历史UUID`GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59` |
+| 新独立分支 | `hrl/aiarch-a79-qwen25-3b-native-workload-sensitivity-109-v1` |
+| 科学问题 | **同一个Qwen2.5-3B-Instruct BF16、同强compiled Graph Mode A**下自然输入长度和生成阶段变化的**完整CUDA-event请求wall**；不声称硬件资源因果或纯ITL |
+| 模型与源 | `Qwen/Qwen2.5-3B-Instruct@aa8e72537993ba99e69dfaafa59ed015b17504d1`、历史vLLM 0.30.0、WikiText-103 A00/A01冻结源；512原token hash必须完全一致，2048须CPU新冻连续原文字节前缀，sealed B输入不碰 |
+| G1历史anchor | **A00 L512/O32** B1，Mode A，engine maxlen544，2warmups/5formal；历史354.598205566ms仅作漂移诊断，old C16不重启 |
+| G2统一容量控制 | 另一fresh引擎`max_model_len=max_num_batched_tokens=2080`；A00和A01各4个先冻点，`L∈{512,2048}×output∈{1,32}`，每点2warmups/5formal，不因结果增删配置 |
+| 科学准入与停止 | 模型/旧vLLM/code/Graph identity、公开WikiText许可事实、本机资产只读、输入/数值/新编译cache隔离、实际独占PID/显存、合法长度点。输入变更、旧缓存污染、数值错误或GPU共享资源冲突STOP。 |
+| 硬预算 | GPU非阻塞共享锁持有总墙钟≤**720s**、全Goal≤**45min**、GPU任务NVML≤**15400MiB**、CPU树RSS≤**16GiB**、新增disk≤**3GiB**、2次引擎初始化、权重或真实数据下载/安装0；Profiler、模拟器和额外GPU exploratory run 0。 |
+| 交付 | `util/ai_workload_research/a79_qwen25_3b_native/`新增隔离工具、`docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/`的raw/数字/环境/numeric/GPU receipt与FINAL_REPORT。只能新增本A79文件，Git发布并远端回读后STOP。 |
+| 当前实际状态 | `READY_FOR_USER_DISPATCH`，文档与Git branch已创建，**未通过本窗口在109启动Codex或模型**。 |
 
-共同固定Goal`9902ead45ed61d54bd5eb0e2a998e2ccc4ba3285`；两Lane均仅新增各自四文件，Git commit相对共同Goal ahead1，远端execution HEAD identical，原始commit parent/tree与用户回报一致。独立读原始REPORT/JSON/TSV/RECEIPT并复核关键Git源码和原始C16/AWMA计时。W证据29条12列、S轴2条18列，ID各自唯一，无字段数异常。本审查只读GitHub与控制端算术，没有登入109/174/164，没有重算执行者私有数据/二进制全部SHA，也没有运行GPU/模拟器。
+**额外科学口径：** G1历史`max_model_len=544`与G2统一`2080`引擎配置不同，不能直接替换时间基线；G2内部C01/C02...才适合长度/生成量相互比较。A01是独立文本控制非封存holdout，不能把2048新token序列冒充历史512输出参考。没有长文本另一后端独立数值oracle时，重复token一致只能标局部可重复性，不能写“数学正确性全面PASS”。即使有差别也仅是`NATIVE_WORKLOAD_SENSITIVITY`，不是TC/L2/DRAM或“扩展规律”已证。
 
-## 2. 不能绕过的四个配对缺口
+## 2. 执行与其他项目冻结
 
-1. **模型不是同一个：** W77 Native为`Qwen2.5-3B-Instruct@aa8e7253...`；S77历史T1 SASS trace标为`Qwen2.5-0.5B-Instruct`一个Prefill GEMM occurrence。模型、编译后端、输入、kernel边界和时间分母没有同一身份。不允许把0.5B单kernel cycles换算成3B完整请求ms。
-2. **编译归因不成立：** C16 Stage A MP02完整compiled ON/OFF有合法B1请求计时，但Python模块hooks 0/4608，96个不同runtime kernel名仅1个可唯一静态归family，B4 Mode B formal=0；四DQ仍`QUESTION_INCOMPLETE`。MP01 Graph-OFF family时间权重不能移植到MP02 compiled Graph-ON请求。
-3. **AWMA翻译基准与通用资源验证不同：** [已接受限制](https://github.com/swayhrl/accel-sim-framework/blob/29ce051f982f3854bd4392a94e4195c59340123b/docs/vm_tlb/review_packs/AWMA_RTX4080_V1_BASELINE_PROMOTION_V1/KNOWN_LIMITATIONS.md)仅`QUALIFIED_FOR_AWMA_MEMORY_TRANSLATION_STUDIES`；[cross-calibration](https://github.com/swayhrl/accel-sim-framework/blob/29ce051f982f3854bd4392a94e4195c59340123b/docs/vm_tlb/review_packs/AWMA_NATIVE_SIMULATOR_CROSS_CALIBRATION_V1/CROSS_CALIBRATION_ANALYSIS.md) M1→M2 Native −4.584%而sim +86.5202%，不能当TC/L2/DRAM fidelity。
-4. **资源旋钮未闭合：** S77提出的HMMA specialized initiation改动未核实际frozen binary/final core，L2 data/fill width一并计费。独立审阅的**公开scaffold** `dzwduan/gpgpu-sim_distribution@dc56ca74fa51d333cacb6a8aac91bce804301ae1` 的`gpu-cache.cc`使用整数fill`atom_size/data_port_width`，32B atom下32→64B可能产生0 fill cycles。该事实不能无证据归咎AWMA实际二进制，却足以拒绝以scaffold参数进行合法2×资源实验。
+- 109的本Goal子进程必须在自身GPU campaign锁`/data/c16/locks/c16_gpu_campaign.lock`非阻塞成功后初始化CUDA；完整NVML自身PID及terminal清理，任何外部GPU占用fail-closed。锁冲突不得轮询、等待或打断其它任务。
+- 工程修补、缓存隔离、CPU tokenizer、报告等全部在一个连续Goal预算内解决；普通工程问题无需另开ChatGPT小轮，科学contract越界才STOP。新缓存必须独立，禁止清空C16旧AOT cache或修改旧C16 runner。只读历史权重资产与输入，旧承认scientific STOP依旧不变。
+- 当前没有AWMA、ISCAS、C16、A61/A65/A67 GNN、A69 Q-S、A70—A77旧Lane的额外执行权；S77外部performance core未闭合以及T1 0.5B单kernel trace绝不能与3B完整请求拼接。
+- 109实际启动/完成时机以**用户或Codex执行回执**为准；本ChatGPT仅发布Goal及协调审查，不声称自己直接控制109机器。收到A79最终commit/tree/raw即可独立交叉复算，无需提前开第二条重复GPU任务。
 
-**科学决议：** `PAIRING_NOT_ESTABLISHED`，不新建第3轮的相同source-only模拟器调参审查、不为获得曲线修旧AWMA或放宽C16 Stage A身份；上述6点矩阵全部BLOCKED_NOT_EXECUTED。所有资源敏感度和本机GPU可优化空间依旧`UNKNOWN`。
-
-## 3. 接下来唯一值得单独审预算的任务——Native-only先发现现象（未授权）
-
-**研究提案**：若准备继续推进，放弃本条0.5B SASS↔3B Native合并，使用W77的3B-BF16强compiled Mode A及冻结WikiText自然文本，设计新的、**不继承C16执行合同**的小型Native-only workload-sensitivity诊断。首先关数据输入许可、A00/A01冻结SHA、当前GPU资产与runtime数值资格；新鲜B1 512+32完整请求在explore/independent文本能否复现合法wall，再按真正原文连续前缀审预选的较长输入和1-vs-32输出。不得伪造原B4强模式或自然在线会话；不能把改变自然请求长度当改变物理GPU资源容量。
-
-结果最多支持`NATIVE_WORKLOAD_SENSITIVITY`与将来需哪个资源控制变量的方向选择，不是纯TC/L2带宽瓶颈因果。若需要NCU/NSYS应单独批准，插桩与未插桩完整wall分开；不能硬把generic compiled kernel名字当Attention/FFN family。停止条件、输入许可、109资源与共享GPU锁、进程树、权重资产、下载和wall上限都必须在新独立Goal冻结，不把本导航当GPU授权。
-
-**下一步不建议再派4个Codex同时重复阅读同一AWMA/C16资产；先由协调者决定是否值得一个很小的、有独立holdout和实际GPU计时价值的native-only Goal。未取得新用户批准则继续STOP。**
-
-## 4. 项目冻结和资源
-
-A70四条source-only 0候选、A73 W输入PARKED/H仅来源假说、A74-C SM100固定PPA PARKED、A75 R/D source 0候选、A61/A65/A67 GNN、A69 ScanNet、C16 Stage A与AWMA现行所有authority保持不变。109共享`/data/c16/locks/c16_gpu_campaign.lock`仍在实际GPU任务中排他，A78未访问该锁或164权重仓库。
-
-**当前实际状态：S77/W77都STOP；A78独立审查完成；资源轴0、合法6点0、历史Native锚点2、GPU/模拟器新执行0。**
+**当前A79：已批准/发布一条新GPU科学合同，待用户把固定HEAD指令派给109 Codex；本窗口没有真实GPU占用或运行回执。**
