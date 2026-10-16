@@ -8,3 +8,6 @@
 - One sequential sample restore copied/hashed 8234735 B at an independent archive-root path. No source files or bridge data were deleted by this receiver.
 - S01_DEST_VERIFIED.json was atomically written both in archive receipts and compliant bridge. Source confirmed release remains 0 until a separate independently published source receipt is consumed.
 - S02 receive and further project copies: NOT_RUN. No nonce, old pack backup, source scanner or source deletion process was started.
+
+- Consumed source release receipt pinned at 5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd and SHA256 3175d4227a4e08da2c18790798755e04ce292c4e58c9ed4a8012c8059e8649d5. Verified exact 52-file set/inode/hash/size against target evidence. Source allocated release 418152448 B and real df gain 417992704 B remain distinct.
+- Under the sole receiver lock, rehashed/identity-checked and unlinked only 52 exact verified S01 bridge copies, then removed only their empty known parents; published S01_BRIDGE_CLEANED. No source-side cleanup was run here.

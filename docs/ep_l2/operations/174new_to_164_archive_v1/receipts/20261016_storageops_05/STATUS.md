@@ -1,4 +1,4 @@
-# V6 target: S01 DEST_VERIFIED, waiting independent source action
+# V6 target: S01 source release confirmed and bridge cleared; S02 next
 
 The existing V5 handshake and sole target window continue. No Goal, nonce, source copier or historical pack backup was restarted. V6 837ca9e1a6cf520f14a381416ef65f9b05cc3f83 was read in full.
 
@@ -11,3 +11,5 @@ Source release is exclusively the old174 source Ops responsibility. No source re
 Minimal receiver in tools/archive_receiver.py defaults to read-only planning, requires explicit --receive plus exact READY SHA, checks roots/path traversal/symlinks/frozen membership/stability/512MiB/Share>=40GiB, uses a single kernel target lock and one sequential rsync, rejects existing archive files, and has no source deletion operation. General cold project acceptance requires explicit owner COLD_COPY_OK and SOURCE_KEEP retention; project names do not confer permissions. Multi-project index and recovery workflow are being completed alongside the current migration.
 
 All 36 legacy pack archives are retained without recopy; their old route remains recorded as noncompliant with V4, and original packs remain SOURCE_KEEP. No six-lane or DTC-L1 task/runner/registry was modified. Neither archive bytes nor sampled restore bytes count as recovered source space. All existing admission gates remain unchanged.
+
+S01 closeout: independently pinned source commit 5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd confirms 52 exact .vvp releases, 418152448 allocated bytes and real old174 /workspace df gain 417992704 B (38039896064 -> 38457888768 B). Target has removed only the 52 verified bridge duplicates and published S01_BRIDGE_CLEANED. No original source deletion was executed by target. S02 may now be staged by the existing source owner. These numbers supersede the earlier zero-release snapshot above; 50GiB build admission is still unproven/unmet by the recorded source df.

@@ -98,6 +98,8 @@ def validate(data, inventory=None):
     require(data.get('source_identity_nlink_and_hash_rechecked_before_and_after_stage') is True,
             'source stability qualification missing')
     require(data.get('stage_reopened_per_file_sha256_verified') is True, 'stage qualification missing')
+    require(re.fullmatch('[0-9a-f]{40}', data.get('source_receipt_commit', '')) is not None,
+            'pinned source receipt commit missing')
     if batch in ['S01', 'S02']:
         require(data.get('source_inventory_sha256') == FROZEN_INVENTORY_SHA, 'wrong frozen inventory')
         require(data.get('probe_absence_independently_confirmed') is True, 'source probe absence missing')
@@ -107,7 +109,9 @@ def validate(data, inventory=None):
     else:
         require(data.get('owner_authorization') == 'COLD_COPY_OK' and data.get('owner'), 'owner scope missing')
         require(data.get('retention') == 'SOURCE_KEEP', 'general cold archives default SOURCE_KEEP')
-        for key in ['source_namespace', 'source_mount', 'producer', 'run_key', 'rehydration_recipe']:
+        require(data.get('source_status') == 'STAGED_READY', 'cold batch not STAGED_READY')
+        for key in ['source_mount_namespace', 'source_mount', 'source_commit', 'source_config',
+                    'producer', 'run_key', 'rehydration_recipe']:
             require(data.get(key), 'missing multi-project provenance: ' + key)
     files = data.get('files', [])
     require(files and len(files) == data.get('file_count'), 'file count mismatch')
@@ -121,12 +125,20 @@ def validate(data, inventory=None):
         require(not any(x in ['.git', '.ssh'] or x.startswith('tmp_pack_') for x in Path(f['source_path']).parts), 'excluded source class')
         paths.add(f['source_path'])
         rel = relative(f['relative_path'])
+        require(Path(f['source_path']) == Path(data['source_root']) / rel,
+                'source root/relative mapping mismatch')
         require(f['bridge_path'] == str(BRIDGE / batch / 'files' / rel), 'noncanonical bridge mapping')
         dest = relative(f['destination_relative_path'])
         require(dest.parts[0] == project, 'destination project isolation mismatch')
         require(str(dest) not in destinations, 'duplicate destination')
         destinations.add(str(dest))
         require(f['source_nlink'] == 1 and f['source_allocated_bytes'] >= 0, 'source link/allocation qualification')
+        if batch not in ['S01', 'S02']:
+            require(f['source_allocated_bytes'] >= f['size_bytes'], 'sparse input needs an explicit restore-capable adapter')
+            for key in ['source_mtime_ns', 'source_ctime_ns', 'source_uid', 'source_gid',
+                        'source_mode', 'readers_and_inflight_references']:
+                require(key in f, 'missing cold-source metadata: ' + key)
+            require(f['readers_and_inflight_references'] == [], 'active/unknown source reader scope')
         if inventory:
             r = known.get((batch, f['source_path']))
             require(r is not None, 'source not in frozen inventory')
