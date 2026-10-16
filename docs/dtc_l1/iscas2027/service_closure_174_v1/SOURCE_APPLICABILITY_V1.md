@@ -42,3 +42,6 @@ DTC designs and is retained. Those new conventional arms explicitly use the
 same32768 global lower cap as the finite174 contract; historical8192-cap
 conventional receipts are preserved and not relabelled or used as new-input
 denominators. No V2 IO128/WAIT128 or modern row was added to fill the old matrix.
+
+
+[Registry V8 and final Lane B source review](REGISTRY_V8_CONSUMER_NOTE.md) were consumed at immutable d9a4bfe0/d46cce26. The bounded producer investigation is complete and stopped with all three source-binding verdicts UNRESOLVED_FORMAT_APPLICABILITY; A scientific dispositions remain FORMAT_APPLICABILITY_REVIEW_PENDING. This is not a request to repeat provenance work or authorization for new interpretations or simulations.
