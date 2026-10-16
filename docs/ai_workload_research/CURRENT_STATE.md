@@ -28,12 +28,12 @@
 
 **研究提案**：若准备继续推进，放弃本条0.5B SASS↔3B Native合并，使用W77的3B-BF16强compiled Mode A及冻结WikiText自然文本，设计新的、**不继承C16执行合同**的小型Native-only workload-sensitivity诊断。首先关数据输入许可、A00/A01冻结SHA、当前GPU资产与runtime数值资格；新鲜B1 512+32完整请求在explore/independent文本能否复现合法wall，再按真正原文连续前缀审预选的较长输入和1-vs-32输出。不得伪造原B4强模式或自然在线会话；不能把改变自然请求长度当改变物理GPU资源容量。
 
-结果最多支持`NATIVE_WORKLOAD_SENSITIVITY`与将来需哪个资源控制变量的方向选择，不是纯TC/L2带宽瓶颈因果。若需要NCU/NSYS应单独批准，插桩与未插桩完整wall分开；不能硬把generic compiled kernel名字当Attention/FFN family。停止条件、输入许可、108/109资源与共享GPU锁、进程树、权重资产、下载和wall上限都必须在新独立Goal冻结，不把本导航当GPU授权。
+结果最多支持`NATIVE_WORKLOAD_SENSITIVITY`与将来需哪个资源控制变量的方向选择，不是纯TC/L2带宽瓶颈因果。若需要NCU/NSYS应单独批准，插桩与未插桩完整wall分开；不能硬把generic compiled kernel名字当Attention/FFN family。停止条件、输入许可、109资源与共享GPU锁、进程树、权重资产、下载和wall上限都必须在新独立Goal冻结，不把本导航当GPU授权。
 
 **下一步不建议再派4个Codex同时重复阅读同一AWMA/C16资产；先由协调者决定是否值得一个很小的、有独立holdout和实际GPU计时价值的native-only Goal。未取得新用户批准则继续STOP。**
 
 ## 4. 项目冻结和资源
 
-A70四条source-only 0候选、A73 W输入PARKED/H仅来源假说、A74-C SM100固定PPA P​ARKED、A75 R/D source 0候选、A61/A65/A67 GNN、A69 ScanNet、C16 Stage A与AWMA现行所有authority保持不变。109共享`/data/c16/locks/c16_gpu_campaign.lock`仍在实际GPU任务中排他，A78未访问该锁或164权重仓库。
+A70四条source-only 0候选、A73 W输入PARKED/H仅来源假说、A74-C SM100固定PPA PARKED、A75 R/D source 0候选、A61/A65/A67 GNN、A69 ScanNet、C16 Stage A与AWMA现行所有authority保持不变。109共享`/data/c16/locks/c16_gpu_campaign.lock`仍在实际GPU任务中排他，A78未访问该锁或164权重仓库。
 
 **当前实际状态：S77/W77都STOP；A78独立审查完成；资源轴0、合法6点0、历史Native锚点2、GPU/模拟器新执行0。**
