@@ -1,23 +1,30 @@
 # Lane 1 status
 
-Status: IN_PROGRESS — public identity/interface published; functional code in progress.
-Node: huangrulin-174. Framework worktree: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-v1`.
-Core worktree: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-v1`. Both branches: `hrl/ep-l2-ft20261016-lane1-v1`.
-Framework parent: `54fbc7869f4e40b6b48dc936b527fee85dd46406`.
-Core interface source: `4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617` (parent `1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e`).
-Coordination: `6c136e2a56a008695f8c8b815723bf8f1a760db9` (not runtime).
+Status: IN_PROGRESS — finite-WBUF/U_WB production candidate under regression.
+Node: huangrulin-174.
+Framework: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-v1`; Core: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-v1`.
+Both branches: `hrl/ep-l2-ft20261016-lane1-v1`.
+Core candidate source: `10d7f4fea1f9699b4e091091f7e23e072c19d453`.
+Parents: Framework 54fbc786 / Core 1fc248aa.
+Coordination: 6c136e2a56a008695f8c8b815723bf8f1a760db9 (not runtime).
 
-Completed: checked node, local worktrees, active processes and remote lane refs;
-no duplicate Lane 1 task/ref found. Read frozen contracts and required historical
-architecture/charter/sequence/headroom/calibration materials. Created isolated
-worktrees from the common integration parents. Published shared handle ABI and
-V1 integration contract. Existing unrelated running experiments remain untouched.
+Completed: interface V1 remotely published and fetched back (Framework cb7d92e4,
+Core 4fb91f0a). Isolated release build PASS. Real finite staging admission and
+static copy service, U_WB in-place ownership and bank-preserving landings,
+bounded WAD/lower control, production lower-accept release, response pins and
+terminal FT telemetry implemented. Initial six scenario groups passed at Core
+c4896d7d; expanded same-bank/pool and independent reference suite is in progress.
+All failed build/test diagnostics are retained, including a fixture packet-drain
+boundary fix. No failed result is treated as a performance point.
 
-Next: build isolated parent/identity candidate; production finite-WBUF and
-unified-WB implementation; directed data/version validation; old-static gate.
-Lane 5 quota/registry not yet published at initial remote inspection. No long
-simulation or formal run-key has been launched. Runtime binary/config fields
-remain null until frozen and verified. TVD/RO integration depends on validated
-Lane 2/3 patches; does not block B16/U_WB implementation.
+Next: finish expanded production regression, old all-OFF three-workload
+qualification with exact seven-family counters, then publish frozen B16/U_WB
+baseline/binary/config to Lane 5. No formal B16/U_WB run has been claimed.
+Lane 5 registry/client consumed: source de8fe21d, central shared directory
+`/workspace/ep_l2_ft20261016_shared`. Builds use its lease; future simulations
+use its full-content run identity. Existing unrelated experiments untouched.
+Lane 2 module received at 56abbacc; requires public-production adaptation and
+independent gates. Lane 3 is still implementing its oracle/module.
 
-Review pack: `docs/ep_l2/review_packs/FT20261016_LANE1_INTERFACE_r1/`.
+Review packs: FT20261016_LANE1_INTERFACE_r1 (immutable) and
+FT20261016_LANE1_WBUF_CANDIDATE_r1 (candidate evidence, not runtime-ready).

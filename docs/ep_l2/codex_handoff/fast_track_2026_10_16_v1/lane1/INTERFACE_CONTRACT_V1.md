@@ -92,3 +92,22 @@ WB drain must never depend on new resident allocation. Pool/WAD/lower full,
 same-bank copy, pending sector and response backpressure require production
 path reference-data tests. Updates to this contract will carry a new revision
 and explicit source SHA; consumers must bind the version they actually used.
+
+## Executable bindings — candidate revision 2026-10-16
+
+Shared identity ABI remains V1. The Lane 1 implementation now provides:
+`preview_free(role, bank)`, `reserve(id, role, owner, state)`, `release(handle)`,
+`transfer(handle, role, state)`, `pin/unpin(handle)`,
+`mark_sector_ready(handle, mask)`, `inspect(handle)` and `handle_live(handle)`.
+The selected allocator is still the sole ep_l2_payload_store, never a second pool.
+`ft_access` owns the serialized replacement reservation and commit;
+`ft_rollback` unwinds it. `descriptor_admitted/lower_read_enqueued` bind actual
+MSHR producers; `lower_ready/lower_accepted` bind actual memport handoff.
+`ft_response_ready` charges the shared bank service before response enqueue;
+`commit_next_access` releases read pins after the queue accepted the response.
+WB completion remains ep_l2_wad_complete called by real set_done.
+
+These executable bindings are candidates under production regression, not a
+qualified performance release. The stage receipt supplies the exact source.
+TVD/RO role extensions must be integrated by Lane 1 against this same store;
+no consumer should duplicate WAD ownership or an independent payload allocator.
