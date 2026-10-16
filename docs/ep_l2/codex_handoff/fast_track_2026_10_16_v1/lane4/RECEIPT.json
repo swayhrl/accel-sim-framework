@@ -1,25 +1,28 @@
 {
+  "R1_matched_baseline_specs": null,
+  "R1_release_identity": null,
   "active_runs": [],
   "artifacts": [
     "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2",
-    "docs/ep_l2/review_packs/FT20261016_LANE4_OFF_EQUIVALENCE_r1"
+    "docs/ep_l2/review_packs/FT20261016_LANE4_OFF_EQUIVALENCE_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE4_R1_HANDOFF_r1"
   ],
   "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea",
   "blockers": [
-    "Lane1 producer runtime_ready=true but independent qualification is false; published normal binary does not include Lane4 diagnostics.",
-    "Lane1 common integration and Lane5 independently qualified same-binary B16 baseline specs are needed; old and different-binary rows cannot fill these cells."
+    "R1 only: awaiting Lane1 independently versioned common diagnostic release, Lane5 normal/per-requested-mode qualification, and same-R1-binary B16 baseline specs."
   ],
   "config_sha256": null,
-  "config_trace_null_reason": "No formal shared B16 performance identity yet; exact historical/test identities are indexed in the review pack.",
+  "config_trace_null_reason": "No qualified common R1 performance identity exists. Candidate binary/tests and historical inputs remain bound in prior packs; R0 normal release is independent and does not require ideals.",
+  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "core_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
   "dependency_receipts": [
     {
       "lane_id": 1,
-      "publication_commit": "02982b65e87f170103b44c6dbd562a8ffb03841e",
+      "publication_commit": "2556909e55bb43c1d819f8c0417f5fc8b93630d9",
       "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
-      "receipt_sha256": "d18e779e5a990390845179871d38bd7f53ed48468a04a514400b70dd74e6e541"
+      "receipt_sha256": "7c7b60ff911984feba1c10aec8852535eec428a402a2452f5355dc4a5c823964"
     },
     {
       "lane_id": 5,
@@ -41,7 +44,7 @@
   },
   "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
-  "framework_tooling_commit": "744c467274d0a74a53b265af1fd1bf9f3a7d7b71",
+  "framework_tooling_commit": "83db0e3c9a6498a26d8c24538a07f85e220d0f9d",
   "historical_executed_run_keys": [
     "9cf0ed6bef9bd5f9ba7dc08b539ab5905fe9e10a0dcc4dbd2fb844f5ba612eb3",
     "c62c76eb4c5edca51e484bf2974f422e7eb313de1393647fb8f3ed5d9b64251b",
@@ -50,6 +53,13 @@
   "host": "huangrulin-174",
   "ideal_vector": null,
   "lane_id": 4,
+  "priority_contract": {
+    "R0_is_not_exact_R1_matched_baseline": true,
+    "R0_main_experiment_owner": "lane5",
+    "R0_qualification_and_B16_U_WB16_may_proceed_now": true,
+    "R0_release_frozen": true,
+    "R0_requires_ideal_patch": false
+  },
   "runtime_source_hygiene": {
     "configure_note": "The build stamp modified_2.0 records only pre-existing Lane4 STATUS/RECEIPT documentation edits at configure; runtime sources match the producing Framework commit.",
     "core_clean_and_pinned": true,
@@ -57,7 +67,7 @@
     "framework_runtime_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e"
   },
   "schema_version": 1,
-  "status": "READY_FOR_REVIEW_DEPENDENCY_PENDING_SHARED_B16_RELEASE",
+  "status": "R1_HANDOFF_READY_DEPENDENCY_PENDING_COMMON_R1_RELEASE",
   "task_id": "FT20261016_LANE4_V1",
   "tested_ideal_vectors": {
     "B16_BANKED": {
@@ -87,14 +97,19 @@
     }
   },
   "trace_identity": null,
-  "updated_at": "2026-10-16T10:14:46.572664+00:00",
+  "updated_at": "2026-10-16T10:35:28.573536+00:00",
   "validation": {
+    "R0_binary_identity_unchanged": "PASS_HASH_INODE_SIZE_MTIME",
+    "R0_to_R1_private_index_patch_replay": "PASS_COMPLETE_TREE_EQUAL",
     "cpp_invocations_pass": 12,
     "illegal_cli_rejections_pass": 6,
     "latest_binary_off_equivalence": "PASS_VECTOR_73873_CYCLES_56000000_INSTRUCTIONS_7_CSV_BYTE_IDENTICAL",
+    "new_R1_binding_tests_pass": 19,
     "new_formal_B16_runs": 0,
     "new_historical_full_application_runs": 3,
     "new_latest_binary_all_off_controls": 1,
-    "parser_adapter_tests_pass": 16
+    "new_simulations_this_continuation": 0,
+    "parser_adapter_tests_pass": 16,
+    "reexecuted_legacy_application_runs_this_continuation": 0
   }
 }
