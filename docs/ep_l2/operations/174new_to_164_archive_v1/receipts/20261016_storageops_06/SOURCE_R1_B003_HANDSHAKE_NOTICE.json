@@ -1,0 +1,17 @@
+{
+  "schema": "STORAGE_OPS_V7_SOURCE_HANDSHAKE_NOTICE",
+  "current_batch": "R1_B003",
+  "source_action": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "current_ready_sha256": "b95a3f20eca64a474a4ddf573fc974e4617dfdfd5d1fd35d8fadede597b4119f",
+  "previous_batch": "R1_B002",
+  "previous_dest_verified_sha256": "bf88a23fcdca9b2665b5ace45f79c9957f1adbb615b10bf606cd1e00df92e343",
+  "previous_target_closeout_at_utc": "2026-10-16T15:56:27.068034Z",
+  "previous_source_keep_git_commit_at_utc": "2026-10-16T15:56:33Z",
+  "previous_source_keep_bridge_publication": "AFTER_TARGET_CLOSEOUT",
+  "previous_bridge_bytes_removed": 477585343,
+  "previous_source_bytes_released": 0,
+  "ordering_exception": "Target closed B002 bridge six seconds before source KEEP was committed and before the source bridge ACK; 164 receipt SHA was later independently GitHub-read back and source KEEP was published, so no source data was released or lost. Do not repeat this ordering.",
+  "required_next_order": "For B003: target publishes DEST_VERIFIED and GitHub receipt; old174 independently rechecks and publishes exact R1_B003_SOURCE_KEEP.json to GitHub and shared bridge; only then target removes B003/files and publishes BRIDGE_CLEANED. Never infer source release or cleanup permission from default retention alone.",
+  "additional_data_batch_staged_by_this_notice": false
+}
