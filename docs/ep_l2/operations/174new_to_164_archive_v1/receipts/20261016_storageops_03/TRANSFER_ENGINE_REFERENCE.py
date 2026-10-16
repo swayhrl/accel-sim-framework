@@ -164,6 +164,9 @@ def transfer(limit=None):
     plan=json.loads((META/'v3_transfer_plan.json').read_text())
     selected=plan['source_files'][:limit] if limit else plan['source_files']
     for number,item in enumerate(selected,1):
+        if (META/'STOP_NEW_GIT_PACK_BATCHES_V5.json').exists():
+            print('V5: new Git pack batches disabled; all source files KEEP',flush=True)
+            return
         batch=f'batch{number:03d}'
         completed=META/(batch+'_verified.json')
         if completed.exists():

@@ -1,0 +1,9 @@
+# Independent source-side handshake
+
+Target nonce is ready at `/root/share/host174_storage_recovery_bridge/20261016_storageops_02/probe_b8a12d08e13eaca9.bin`. The target-side receipt provides SHA256 `1187c2af8eebc05b94a363c1f1d5fabf5d1775e6bb5eaf31264b031614ca08d3`, device `2431`, inode `103546883`, size 8. Read the exact path in the source Ops environment, confirm expected realpath and `/root/share` ext4, close it, and publish your independent hash/inode PASS or mismatch on your own source branch. This is read-only; do not delete the target-owned probe.
+
+Target will consume your exact published SHA, verify matching nonce/path/inode/hash, delete only its own nonce/READY marker and publish cleanup. Both sides must confirm absence before S01/S02 staging. Use only `/root/share/host174_storage_recovery_bridge/20261016_storageops_02`; do not use container-workspaces or other project paths.
+
+After PASS, source Ops owns source file selection/revalidation/hashing and bridge staging. Publish an atomic READY manifest containing batch ID, exact source file paths, bridge paths, file sizes, source SHA256, bridge SHA256 and original metadata. Each batch <=512 MiB and one active batch only; Share must start and remain >=40 GiB. Target adapts to your exact published manifest format and publishes DEST_VERIFIED only after copying to the already-authorized SSHFS root and hashing every reopened destination file. Source Ops then decides SOURCE_KEEP/SOURCE_RELEASED under original safety gates; target does not race your source-side executor. All Git packs stay SOURCE_KEEP.
+
+S01 and S02 source proposal evidence is at gpu-l2-cache-verilog `84eec175760f735848746835b2bb90936e1767e0`; directory-level *.vvp summaries are not yet exact file-level READY manifests. No copy or cleanup is claimed from those proposals alone.

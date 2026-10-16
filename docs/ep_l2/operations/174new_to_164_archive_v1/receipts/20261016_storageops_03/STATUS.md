@@ -1,16 +1,9 @@
-# Storage-Ops revision 03: COPY_IN_PROGRESS_SOURCE_KEPT
+# Legacy pack backups retained — superseded by V5
 
-Snapshot: 2026-10-16T13:21:49.083432+00:00. Continues V2 on the original execution branch; revisions 01 and 02 remain intact. The user explicitly authorized the exact archive root `/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02` and the dedicated shared staging route.
+V5 authority: `011b827c6b686ff4cff0387cafc23977376698de`. Active continuation: `../20261016_storageops_04/STATUS.md`.
 
-- Target probe: write, fsync, close/reopen SHA256 and deletion PASS; no probe residuals.
-- Shared `/root/share` probe: both directions match content and inode; probe deleted and absence confirmed from old174.
-- Source is the exact Lane5 namespace via trusted alias `hrl`; SSHFS is used only through `hrl-174-new`.
-- Completed **26/36** batches, **9015787832 bytes (8.397 GiB)**. Source, stage and reopened SSHFS archive SHA256 match for every completed file, and source identities remain stable.
-- One sequential transfer at a time, rsync 30 MiB/s, each batch <=512 MiB. Only each task-owned, verified stage copy is removed after archival; source files remain KEEP.
-- **Actual Lane5 bytes released: 0.** Latest source available bytes 40520888320 (37.738 GiB); 48 GiB floor remains unchanged. Stage cleanup occurs on another filesystem and is not counted as recovery.
-- Full Git fsck timed out after 90 seconds. Copied partial packs are investigated with index-pack only on the stage duplicate; early EOF does not prove no unique recoverable data. No source pack deletion is authorized or executed.
-- Scientific originals/traces/logs/review packs/unique binaries and all six lane worktrees/registries remain untouched. No other process was stopped.
+All 36 pack copies (12415140272 B, 11.563 GiB) finished their sequential source/stage/SSHFS hashes and source identity checks. Their archived bytes are retained without recopying. Every original pack remains **SOURCE_KEEP**; no deletion is requested or allowed by this status. **Actual Lane5 bytes released: 0**.
 
-Verification is **SSHFS_READBACK_VERIFIED**, not SERVER_SIDE_NATIVE_VERIFIED. Source UID/GID/mode/mtime/inode are preserved in metadata; FUSE displays synthetic/remote ownership and permissions, so native server permissions are not claimed preserved.
+The old container-workspaces staging route is **not V4 compliant**. Prior hash matches do not retrospectively authorize that route or source release. The non-cooperative automatic queue advanced during the V5 switch; its last batch completed normally. No transfer is running now, and a local V5 stop gate prevents new pack scheduling. No rsync was force-killed and no transmission was restarted.
 
-Next: continue the already admitted bounded backup batches and publish the completed list before any deletion approval request.
+Follow only revision 04 for bridge handshake and S01/S02 priority. Git pack backup and object-recovery work are deferred. Full Git fsck timed out and partial-copy index checks reported early EOF; source-object recoverability is unknown.

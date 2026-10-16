@@ -11,3 +11,5 @@ Source fsck --full --no-dangling is timeout-limited and low priority; its exit 1
 Only one rsync leg runs at a time, nice 19 / ionice idle / 30 MiB/s, using -aH --no-owner --no-group --partial --fsync. Dry-runs precede both actual legs. No --delete, --remove-source-files, inplace overwrite of source, wildcard deletion, or source-tree write occurs. Exact task-owned stage paths are unlinked only after all completed-batch hashes match and source remains stable. No raw historical dataset is hashed globally.
 
 Six-lane CPU/memory/simulation limits and 48 GiB floor remain in force. Temporary build-directory sizing is bounded to specific historical candidate names; unique/reproducible/inactive safety has not been established for those directories, so no source cleanup is attempted there.
+
+V5 correction: the historical container-workspaces bridge route is explicitly noncompliant. Its use is stopped, prior source files remain SOURCE_KEEP, and revision 04 owns all new actions. No retrospective compliance or space-recovery claim is made.
