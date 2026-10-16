@@ -134,6 +134,7 @@ def main():
         pilot.write_json(pointer, dict(status, output=str(args.output)))
         try:
             while not STOP and time.time() < status['deadline_unix']:
+                pilot.require(pilot.digest(args.request) == status['request_sha256'], 'REQUEST_CHANGED_WHILE_WAITING')
                 pilot.audit_sources(request)
                 state = central_snapshot()
                 status['last_observed_at'] = pilot.utc(); status['last_state'] = state

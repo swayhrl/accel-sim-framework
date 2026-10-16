@@ -477,7 +477,8 @@ def main():
     p.add_argument('--authorization', type=Path)
     p.add_argument('--authorization-publication')
     p.add_argument('--execute-once', action='store_true')
-    args = p.parse_args(); request = json.loads(args.request.read_text())
+    args = p.parse_args(); raw_request = args.request.read_bytes()
+    request = json.loads(raw_request); request_sha = hashlib.sha256(raw_request).hexdigest()
     require(args.pilot_id == request['pilot_id'], 'PILOT_ID_MISMATCH')
     module = audit_sources(request)
     require(request['host'] == socket.gethostname() and request['boot_id'] == boot_id(), 'HOST_BOOT_MISMATCH')
@@ -490,11 +491,12 @@ def main():
         return
     require(args.authorization is not None, 'LANE5_AUTHORIZATION_REQUIRED')
     authorization = json.loads(args.authorization.read_text())
-    validate_authorization(request, authorization, digest(args.request))
+    validate_authorization(request, authorization, request_sha)
     adapter = load_adapter(request, authorization, args.authorization_publication, digest(args.authorization))
     with (SHARED / 'LANE1_BUILD_EXECUTION.lock').open('a+') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        report = execute(request, digest(args.request), authorization, adapter, module)
+        require(digest(args.request) == request_sha, 'REQUEST_CHANGED_DURING_PREFLIGHT')
+        report = execute(request, request_sha, authorization, adapter, module)
     print(json.dumps({k: report[k] for k in ('status', 'engineering_binary_sha256', 'runtime_ready')}, indent=2))
     require(report['status'] == 'COMPLETE_ENGINEERING_ONLY', 'ENGINEERING_CAMPAIGN_DID_NOT_COMPLETE')
 
