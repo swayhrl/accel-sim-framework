@@ -37,3 +37,5 @@
 2026-10-16T16:57:45.222742+00:00: R1_B014 closed after exact destination GitHub receipt and independent source KEEP ACK; 1777 matching bridge copies removed, no source release.
 
 16:55:12Z: R1 all-file independent target content restore passed (18565 files / 4737658722 B, 14 bounded groups). 16:57:45Z: B014 bridge closed after source ACK and 1087 SSHFS inode changes were content-revalidated. R1 native sample window accepted; original source release remains zero.
+
+17:12:32Z: independent native R1 B001 restore receipt pinned at source 8ffbfdd178f123dbde0f43d4febb5154a231d326, all 1269 file content/UID/GID/mode/mtime and 123 directory metadata checks passed. Exact reverse bridge copies removed; zero original R1/source releases. PolyBench planning request acknowledged with exact target path; range adapter not ready and no PolyBench transfer started.
