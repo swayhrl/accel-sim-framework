@@ -1,0 +1,27 @@
+# Native-only findings (before trace capture)
+
+Status: VERIFIED_RUN, source commit `57aa1b80`; exactly12 diagnostic conditions and the two preregistered program families. All15 cases completed qualification, seven independent timing processes ?10 samples, one complete-ROI NCU profile and source-specific correctness checks. `TIMING_SAMPLES.json` contains the original samples; `TIMING_SUMMARY.tsv` reports batch-median median/IQR/MAD/range. NCU kernel durations and nsys kernel intervals are separately recorded profiler observations, not replacements for unprofiled timing.
+
+Timing is a CUDA-event interval around one kernel/operator enqueue. For these very short kernels, host enqueue gaps/event overhead and quantization can enter the interval. Zero observed batch IQR is not zero uncertainty. In particular unprofiled event medians of4.096us for SpMV and12.288us for LayerNorm primary should not be confused with profiled nsys kernel intervals2.624us and7.392us. No material hardware benefit is inferred below noise or from these differences.
+
+## Bounded diagnostics
+
+Same grid304 ?block128, 1024 scalar uint32 loads/thread =39,845,888 logical loads in every condition. `.ca` inline-PTX scalar loads survive as `LDG.E.STRONG.SM`; no vectorization or LDGSTS path. Chain controls have a load-result-to-next-address dependence; independent templates have separate requested addresses. Actual register counts are16/16/22 for ILP1/4/8; profiled active occupancy and waves accompany all rows. This fixed grid has only0.33 maximum-residency waves: it does not saturate all potential resident slots. No hidden miss-state count is inferred.
+
+Independent1/4/8 batch medians289.824/211.968/209.920us, with IQR0.672/0.128/0.160us. These establish baseline schedule sensitivity for this binary, not a DTC benefit. Each produces4,980,736 L1 load sectors and about128MiB DRAM reads in the fixed profile. The nominal128MiB allocation is corroborated by traffic, rather than used alone to assert a regime.
+
+Strides1/32/257 are actual address arithmetic, not known hardware cache sets. Shared consumers1/4/32 preserve logical work but change unique addresses, coalescing and effective cache footprint; their timing differences cannot isolate fanout metadata cost. Return skew is not independently controlled in this native pilot, and no simulator response schedule is relabeled hardware behavior. Hit and dependent-chain controls retained without using scoreboard data as an entry-count oracle. Some named conditions deliberately share one binary specialization; they are controls, not extra independent workloads.
+
+## Two added families
+
+SpMV: original pinned Parboil `src/cuda` JDS prefetch kernel; `1138_bus` symmetric Matrix Market real input, FP32 vector/data and int32 indices. Source parser/converter reports dimension1138, padded JDS entries4448. The exact input/reference/kernel SHA and host compatibility edits are in the pack. All1138 outputs pass the pinned source comparison predicate (max abs error0.000732421875; source absolute tolerance0.86024091796875 or relative0.002). Deliberately corrupted-output fixture is rejected. This inherited tolerance is stated, not presented as a stronger numerical guarantee.
+
+Full operator is one `spmv_jds` kernel; grid36 ?block32,33 registers/thread,0 shared/local bytes. Only36 CTAs on76SMs,0.02 capacity waves: not a steady full-GPU stress workload. Warm profile has0 DRAM read bytes and2,496 L2 read sectors; small-resident/underfilled is the retained applicability finding, not an excuse to resize or select a winner.
+
+LayerNorm: actual installed PyTorch2.5.1+cu124 `F.layer_norm`, FP32 width1024, affine weight1/bias0, eps1e-5. Both primary1024 rows and contrast8192 rows pass every element against FP64 CPU population-variance reference, fixed rtol2e-5/atol2e-6. Primary maximum absolute error6.993575683011954e-7. Seeded input bytes are materialized and SHA-closed. Native library and Python binary hashes are recorded.
+
+nsys independently confirms the complete operator is one `vectorized_layer_norm_kernel<float,float>` for each shape, including its internal reductions; no companion kernel was removed. Block(32,4,1),43 registers/thread,24 dynamic shared bytes; grids1024/8192 and1.35/10.78 capacity waves. Static SASS includes `LDG.E`, vector `LDG.E.128.CONSTANT`, shared loads/stores and vector stores; no LDGSTS. Dynamic opcode coverage remains a trace check. Primary warm profile:0 DRAM read bytes,171,820 L2 read sectors, aggregate L1 sector hit rate78.95%. Contrast:31,584,000 DRAM read bytes,1,784,336 L2 read sectors, aggregate L1 sector hit rate75.36%. Aggregate hit rate includes collected L1 traffic classes; it is not a load-only conditional probability. Both results are retained separately, with no pooled GM14.
+
+## Scope for174
+
+`ORDERED_OPERATOR_KERNELS.json` gives complete ROI names/resources. Exact requested metrics and fixed application-replay/cache-none/clock-none policy are recorded. Native runs use three same-operator predecessors, no explicit cache flush, no clock or power changes. Source/binary/input identity is fixed; SASS trace compatibility and target-model opcode semantics still require explicit qualification. Any captured prefix/initialization omission will be labeled, and a cold simulation is not a paired replay of warm native state. These data do not qualify AWMA/C16 platforms for DTC or establish hardware DTC speedup/area.

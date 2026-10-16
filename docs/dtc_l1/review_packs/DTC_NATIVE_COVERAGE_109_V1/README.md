@@ -1,6 +1,6 @@
 # DTC native behavior and workload coverage ? node109 V1
 
-R0 CPU inventory published first; R1/R2 execution follows on this branch. Entry point for independent node174 consumption. This work does not run any simulator or change a platform authority.
+R0 CPU inventory published first; R1 native pilot completed independently of174. R2 bounded trace capture follows. Entry point for independent node174 consumption. This work does not run any simulator or change a platform authority.
 
 ## Source and isolation
 
@@ -25,3 +25,7 @@ R1: exactly12 named conditions, four families ?3. Seven independent process timi
 R2: only SpMV and native LayerNorm. Existing local/inspected remote Parboil source/input unavailable; bounded recovery uses the already documented `palmer-dabbelt/parboil@4e0fc54866546efa44fe93af57c9cef62f6c8eb9`, not a replacement family. Input is fixed to the repository's primary small SpMV dataset if materialized and verified; source inspection will record exact identity before timing. LayerNorm fixed to installed `torch.nn.functional.layer_norm`, FP32, normalized width1024, affine weight=1/bias=0, seed109; primary(1024,1024), single contrast(8192,1024), epsilon1e-5. Entire operator kernel set retained; no artificial rewrite or full model. Admission is based on numerical/trace/feasibility checks, never DTC speedup.
 
 Native observations describe baseline behavior only, with no hardware DTC speedup/cost claims. No pooled GM14. Failures/neutral/low-exposure results remain. Original FAST64/TC80/SG0/SG3/logical80 and AWMA/C16 authorities are not reopened.
+
+## Native receipt
+
+[NATIVE_FINDINGS.md](NATIVE_FINDINGS.md), TIMING_SUMMARY.tsv, TIMING_SAMPLES.json, PROFILE_METRICS.tsv, ORDERED_OPERATOR_KERNELS.json and binary/input/SASS/lock receipts contain the first independent native delivery. All failures/coverage limits remain explicit.
