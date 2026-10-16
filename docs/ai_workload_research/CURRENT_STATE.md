@@ -1,40 +1,71 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16 / Round A69，Q-S真实点云自然训练层组的源码资格审查完成。** 维护者：ChatGPT／AI-ARCH Discovery。本页为科研导航，不是节点实时监控；文档发布不产生GPU、Codex或节点作业授权。
+**最新快照：2026-10-16，A69后用户明确调整研究优先级：尽量关注主流通用模型、大模型。** 维护者：ChatGPT／AI-ARCH Discovery。本次为主线方向调整，不是新的原生实验或一轮已完成的全面文献Discovery。文档发布不产生GPU、Codex、数据下载、清理或节点作业授权。
 
-**历史导航完整保留在[CURRENT_STATE@A68](https://github.com/swayhrl/accel-sim-framework/blob/177dc378cd949ec9bfc45a244a6cb33251fadfd3/docs/ai_workload_research/CURRENT_STATE.md)。** 本次将不断叠加的旧待办快照改为固定历史指针；没有删除或重写任何原始Goal、运行报告、raw、独立审查或实验branch。旧导航中的“待启动”仅代表当时状态，不能覆盖以下已接受终态。
+**最新用户事实：用户答复目前没有ScanNet使用批准或可用场景数据，并建议优先主流通用模型／大模型。** Q-S不再是下一执行候选；不继续ScanNet申请、镜像搜索、数据准备或WarpConvNet原生环境建设。A69是有价值的已完成源码研究，转为低优先级储备；这不是已测性能负结果，也不构成数据集本身的违法或普遍不适用判断。
 
-## 1. 当前研究对象：Q-S源码候选已具体化，尚无原生准入
+历史状态：[A69调整前导航](https://github.com/swayhrl/accel-sim-framework/blob/b6e3a8323c295bc0cac74da1ba3aa0830e0772a3/docs/ai_workload_research/CURRENT_STATE.md)；[A68及以前详细导航](https://github.com/swayhrl/accel-sim-framework/blob/177dc378cd949ec9bfc45a244a6cb33251fadfd3/docs/ai_workload_research/CURRENT_STATE.md)。不删除或重写原始Goal、运行报告、raw、独立审查或执行branch。
 
-完整交付：[A69 Q-S ScanNet/MinkUNet34源码资格、强软件与映射寿命](literature/AI_ARCH_A69_QS_SCANNET_MINKUNET34_SOURCE_ADMISSION_2026-10-16_V1.md)。报告首次发布commit：`ddb127907f37c97c94e9db7aa764d1cf3cb3dfa6`。
+## 1. 主线目标与新的选题入口
 
-- **选定自然对象**：ScanNet/OpenScene真实coords、RGB、labels，经WarpConvNet PointToVoxel、MinkUNet34，研究`inner_module.block1`的两个BasicBlock、四个32→32、3×3×3、stride1卷积。相邻conv2→block2作为空间支撑变化对照。实际场景、活跃体素数、时间权重、activation/gradient实体均尚未取得，不称已通过原生数值或性能门。
-- **真实梯度生成路径已从源码核清**：场景输入→实际增强→体素均值池化→完整模型→unpool回原点→真实标签交叉熵→反向。可明确以冻结初态的早期训练作为未来发现范围，不强制先做全模型收敛；但不得将独立卷积的随机feature/随机上游gradient称为真实训练状态。已训练checkpoint及任务质量主张需要相应额外证据。
-- **强软件边界**：Spira当前公开E2E脚本用场景坐标、随机FP16特征、eval/no_grad前向；可以反证映射/前向数据流，不能直接作为MinkUNet34完整训练基线。WarpConvNet已经跨层传递map cache、为autograd保存映射、缓存正反向布局并分别优化dgrad/wgrad；TorchSparse也有跨层/转置map复用。不得将已有映射缓存或反向构图重命名为新机制。
-- **本轮精确问题**：这些已有复用生效之后，多种执行布局的准备、同时存活及最后消费是否仍造成重要时间或容量代价？四个module引用不等于四份映射，层前向完成也不等于映射生命周期结束。代码中的对象大小不是L2压力或性能headroom。
-- **执行前缺口**：本轮未查得项目ScanNet许可批准/合规共享记录及一个可信场景实体；这不等于认定用户没有许可。尚未验证109 SM89后端ABI、实际样本资源和数值。loader可能自动下载，禁止因实例化Dataset而意外抓取整包或接受条款。下一步先确认现有数据权限与场景，再一次设计新的有界原生资格/筛查合同；当前没有新GPU Goal。
-- 固定源码：WarpConvNet `f9474304bbfe94bf7ffe0f8dbbcc468c1ff0ceb1`；Spira `aee69c61f3e001f72828a6d5a70f6a1200166f65`；TorchSparse `385f5ce8718fcae93540511b7f5832f4e71fd835`。各已读文件blob与具体边界见A69报告。在线说明与训练源码默认值有差异，以将来明确冻结的实际配置为准，不拼接默认参数。
+**以主流通用大模型及其真实推理、训练／后训练工作负载为对象，寻找成熟软件优化之后仍值得通过体系结构改善的计算、存储、执行组织和资源协同问题。** Cache、TLB、CPU–GPU协同均可以研究，但不是预定必须产出的机制。
 
-## 2. 已冻结GNN证据：A61／A65／A67
+先回答“这一现象为什么对主流大模型重要”，再回答“能否在当前平台低成本验证”。不能因源码清楚、资产已下载、某处有大buffer或小众任务尚未排除问题，就优先投入；也不能因为部分LLM实验失败，逐步退到与主线距离很远的任务。
+
+主流不等于必须Dense，也不等于必须最大参数规模。优先能覆盖真实常用执行路径的开源模型和官方配置；可用同家族较小真实版本或真实层组开展发现，但必须说明保留了哪些结构、尺度限制以及后续跨模型验证。不能用任意缩小的专家数／维度或随机工作集假称完整大模型。RTX4080是低成本验证平台，不是研究问题定义；多GPU或更大资源只能在必要性明确后另行授权，不能现在下载巨型模型。
+
+## 2. 下一轮Discovery的调研排序（不是已确认瓶颈）
+
+| 优先级 | 主流对象与具体问题入口 | 强软件反证与旧问题去重 |
+|---|---|---|
+| 首先 | 通用LLM的真实推理：上下文长度、请求并发、Prefill/Decode混合阶段如何改变计算、KV或递归状态读写、执行粒度和资源竞争；普通注意力与实际混合注意力结构都可作为候选 | 先核相关论文具体实验组及vLLM/SGLang的分块Prefill、批处理、前缀复用、注意力后端等已实现能力。不是“给旧B1 FFN实验再换个Qwen名称”；旧Stage A未闭合不是新实验自动授权 |
+| 其次 | 主流MoE大模型：自然请求与token预算变化下，每专家有效工作量、分派／重排／合并、分组GEMM和数据组织能否形成强软件后的残余 | 保留C16 E3 N/U近似与合成H非同语义上界的事实，不重做合成热点；已有分方向／阶段专用后端和融合路径必须算入基线；不把多卡通信库当成单卡实际路径 |
+| 第三 | 通用视觉语言／多模态大模型：真实多图、不同分辨率或视频输入下，视觉编码、文本Prefill和解码的阶段交接、状态及资源分配 | 不退化为小众点云分割；不同token数／输入质量不是纯硬件单变量。先审真实模型输入链与成熟多模态处理、缓存及批处理实现 |
+
+训练与后训练仍在总范围，但首次重新聚焦以推理发现为优先；不得为扩覆盖而先搭完整RL／预训练系统。训练题必须明确来自主流模型、所需数值／质量合同、真实状态以及可低成本区分解释的实验。
+
+**本次外部原始来源核验仅作为排序依据，不是性能发现：**
+
+- [Qwen3.5-4B官方模型卡](https://huggingface.co/Qwen/Qwen3.5-4B)列出实际混合Gated DeltaNet／Gated Attention结构。模型名称只示例说明候选结构，未冻结未来下载版本或本机执行配置；不使用模型卡宣传倍数作为109性能证据。
+- [vLLM优化说明](https://docs.vllm.ai/en/latest/configuration/optimization/)已说明分块Prefill与Decode混合调度及token预算权衡，因此“混合调度”本身不能作为新机制。
+- [SGLang专家并行文档](https://docs.sglang.io/docs/advanced_features/expert_parallelism)区分MoE dispatch、排列、计算、combine及不同阶段后端；此处只是现有软件能力，不证明109可用或最优。
+- [Qwen3-VL官方模型卡](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct)作为通用多模态模型候选来源；未采集任何图片／视频或模型权重。
+
+以上为2026-10-16读取的在线模型卡／文档；实际研究前还需固定模型revision、软件commit、真实输入与允许范围。没有完成全领域论文普查，不宣称任何列出的题目已经排除A34—A69所有近邻或获准native。
+
+## 3. 下一份研究交付应当是什么
+
+先形成不超过2—3个具体问题的对照表，每题写清：主流模型与实际任务；论文中的具体实验组及平台；已有优化；项目内同题历史及适用范围；尚未回答的变量；一个最小基准、诊断对照、独立验证对象；可能使问题停止的反证。
+
+至少区分三种情况：旧实验已明确否定相同假说；旧结果仅覆盖某个层／低batch／短上下文；原来因数值、输入或观测资格而STOP。不能把三者统称为“LLM没有空间”，也不能因此自动重启任何旧Goal。
+
+先挑问题，再映射模型资产。正常依赖、包装、日志或runner问题在获批的单Goal预算内解决，不为了工程完整性拆成多轮；新科学输入、数值标准、资源或机制范围变化才独立审查。前置发现不要求提前证明完整硬件收益上界，但必须有实际代表性与足够强的软件对照。
+
+## 4. 历史证据与冻结边界
+
+### A61／A65／A67 GNN线
 
 | 阶段 | 原生authority | 已接受结论与范围 |
 |---|---|---|
 | A61 | `37120f98186b83a946f4812755523f5d73245491` | 官方IGB-small、eager FULL/ON资格通过；编译更新复合断言失败，旧差异未捕获；原STOP保留 |
-| A65 | `3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79` | 新冻结batch三路中A/B通过，C的1/665619更新元素超原门；微小梯度差经Adam放大，未证Torch bug；退出PID收据缺口仍保留 |
-| A67 | `c425819d1f41e0cbd3053315cd5590697e808a3c`，tree `5ae9be2bf51ba959b9588a8111ae28bf6f03af84` | `SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE / STOP`；两个seed的12次eager完整训练步均FULL快于OFF快于ON；本小图缓存硬件供数路线停止追加实验 |
+| A65 | `3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79` | 新冻结batch A/B通过，C的1/665619更新元素超原门；微小梯度差经Adam放大，未证Torch bug；退出PID历史缺口保留 |
+| A67 | `c425819d1f41e0cbd3053315cd5590697e808a3c`，tree `5ae9be2bf51ba959b9588a8111ae28bf6f03af84` | `SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE / STOP`；两个seed的12次eager完整训练步均FULL快于OFF快于ON；固定小图缓存供数路线停止追加实验 |
 
-A67六窗口：seed20261015 FULL/ON/OFF为0.310875/1.788362/1.125985秒；seed20261016为0.435467/1.771150/1.100231秒。1资格＋12warmup＋72formal=85次更新，原图与4.096GB真实FP32特征可全驻GPU。两seed短窗、独立合法采样非逐边配对，准备成本另账；不证明所有GNN皆可驻留、具体PCIe瓶颈、编译强路径资格或最终收敛。
+A67六窗口：seed20261015 FULL/ON/OFF为0.310875/1.788362/1.125985秒；seed20261016为0.435467/1.771150/1.100231秒。A68六wall SHA独立6/6 PASS，原报告与[独立审查](reviews/AI_ARCH_A68_A67_IGB_SMALL_EAGER_FULL_RESIDENCY_INDEPENDENT_REVIEW_2026-10-16_V1.md)冻结。新主线不普遍否定GNN，也不重新激活该场景。
 
-A68独立重算六wall SHA256为6/6 PASS；本次41条PID快照中33条OWN_LIVE_PID、8条空，无第三方记录，终态已退出释放锁。A67新监督闭合不回写A65历史缺口。[A68完整科学审查](reviews/AI_ARCH_A68_A67_IGB_SMALL_EAGER_FULL_RESIDENCY_INDEPENDENT_REVIEW_2026-10-16_V1.md)、[A66审查](reviews/AI_ARCH_A66_A65_SAME_BATCH_NUMERIC_AND_STORAGE_INDEPENDENT_REVIEW_2026-10-16_V1.md)、[A64审查](reviews/AI_ARCH_A64_A61_GNN_NUMERIC_STOP_INDEPENDENT_REVIEW_2026-10-16_V1.md)与[图谱P15](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)保留。
+### Q-S／A69
 
-## 3. Lane、权限与后续动作
+[A69完整源码报告](literature/AI_ARCH_A69_QS_SCANNET_MINKUNET34_SOURCE_ADMISSION_2026-10-16_V1.md)保留，报告commit `ddb127907f37c97c94e9db7aa764d1cf3cb3dfa6`。已明确的ScanNet/MinkUNet34四卷积层组、Spira前向范围、WarpConvNet映射寿命知识可作方法参考；**用户没有数据权限／资产，且主动要求聚焦主流模型，因此退出当前候选队列**。不为其新增申请、下载、源代码扩审或节点任务；不是native负结果。
 
-- **109 Lane M**：用户最后回报A67 COMPLETE/STOP；本窗口未获新GPU任务、数据下载、清理或编译授权，不重新启动A61/A65/A67。
-- **174-new Lane N、164**：本轮无新任务、资产扫描或数据传输；既有独立项目工作不受影响。
-- **ChatGPT Discovery**：A69源码阶段完成；等待真实场景与使用权限信息以判断是否形成新原生合同，不为同一已读范围重复开多轮源码资格。
-- **A62/A63稀疏权重训练**：继续文献/source条件储备，无新GPU准入。A26GR1/3DGS、A50G/CAGRA、A59数据门等历史原始结论和保护资产见固定A68导航，不重新解释或自动恢复。
-- **C16、AWMA、ISCAS**：各自科学authority和资源授权不继承；不合并实验HEAD，不动当前独立执行。
+### C16／AWMA与其它支线
 
-统一遵循[协调协议](COORDINATION_PROTOCOL.md)：真实科学问题→强软件反证→必要时有界原生发现→独立审查；允许普通工程同Goal有界solve-and-continue。源码能力、作者实验、我们的推导与本机native分开。局部kernel-family、自然覆盖率与端到端价值分层判断，既不凭buffer数量立硬件机制，也不以单一端到端百分比淘汰所有候选。
+[跨项目证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)与[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)作为旧结论入口。C16 E1权重驻留、Split-K局部性、FFN双流／融合、MoE E3和Stage A既有结论不因主线调整而撤销。A62/A63稀疏权重训练保留条件储备，不因词名有“大模型”就自动提升优先级；A26GR1/3DGS、A50G/CAGRA、A59数据门等原科学终态与保护资产不变。非LLM研究并非永久排除，只在有明确通用价值和优于主线候选的证据时重新评估。
 
-**当前无新109／174／164执行任务；A69是已完成的源码研究交付，不是实验启动通知。**
+## 5. Lane与执行权限
+
+- **109 Lane M**：用户最后回报A67 COMPLETE/STOP；无新GPU、模型下载、清理或编译任务。不重启A61/A65/A67，不部署Q-S。
+- **174-new Lane N、164**：本次无资产扫描、数据传输或其它新作业；原独立项目不受影响。
+- **ChatGPT Discovery**：后续研究按第2—3节重新排序，先主流LLM真实推理的论文／实现／已有结果对照；本次方向调整不等于完成新性能Discovery。
+- **C16、AWMA、ISCAS**：各自科学authority和执行权限不继承、不合并实验HEAD，不动独立执行。
+
+**当前无新109／174／164执行任务。下一研究入口是主流通用大模型的具体问题筛选，不是ScanNet许可或点云环境准备。**
