@@ -1,0 +1,11 @@
+# Lane1 review_r5 build readiness r1
+
+Latest authority77a9fbe937ea23465cf0d0076d2df1909f52d055; r4 read before r5. Same Lane1, same execution branches, no Goal restart. Static/readiness work delivered despite resource hold; no official build/admission retry or simulator was started.
+
+Pinned planned Framework source53a1503d6de972ebb90e685ec0d5b5fc6dd09e3d; Core62dc1d179b5516e68b21b695c7a9c5d0667e9671 unchanged (published c93d900e tree-equivalent). New Framework changes only build driver and its small regressions. SOURCE_AND_TEST_REVIEW.md and RELEASE_CHECKLIST.md distinguish static review,13 final tool tests PASS,21 planned production processes NOT_RUN, and absent official binary/qualification. PLANNED_RELEASE_IDENTITY.json binds all four complete ordered unchanged config fingerprints, test source hashes and intended commands. No application trace run identity yet.
+
+BUILD_ADMISSION_ALTERNATIVES.md is a measured Lane1 contribution cross-referenced to Lane5's published2fb8a6d receipt. Independent Lane5 review of this r5 analysis remains pending. No alternative is adopted. Historical static allocation is not a measured build peak. RESOURCE/PROCESS/REGISTRY/HISTORICAL observations are bounded read-only evidence, not launch permission. CLOSEOUT_OBSERVATION.json reports35.68GiB workspace free, below unchanged48GiB+2GiB build admission, no active EP-L2 lease/run. All seven observed DTC-L1 simulators were left untouched.
+
+BUILD_DRIVER_HARDENING.patch is a zero-context minimal tool delta fromc2a536bd to53a1503d (apply with `git apply --unidiff-zero`). Two tool-test executions were justified by the intervening vendor-pin change:13 interim then13 final. Neither executed CMake/compilers/simulators or touched the live registry. Small Python fixture child process termination tests affect only their own children. Prior source/runtime/80-row/oracle/old application suites were not repeated.
+
+PRIOR_RECEIPT_c2a536bd.json preserves the preceding receipt. Old review packs, R0/R1 executables, logs, CSV/config/trace inputs remain unchanged. Old six completed applications remain SUSPENDED; accepted R0.1 pairs0. A producer test pass cannot grant Lane5 scientific acceptance. Exact old producing identities remain historical, not this candidate's binary.

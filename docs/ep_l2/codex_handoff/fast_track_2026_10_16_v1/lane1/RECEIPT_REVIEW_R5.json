@@ -1,0 +1,200 @@
+{
+  "schema_version": "EP_L2_FT_RECEIPT_V1",
+  "lane_id": 1,
+  "task_id": "FT20261016_LANE1_REVIEW_R5_BUILD_READINESS_r1",
+  "status": "STATIC_READINESS_DELIVERED_R0_1_UNCOMPILED_RESOURCE_HOLD",
+  "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
+  "review_coordination_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
+  "host": "huangrulin-174",
+  "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
+  "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
+  "framework_source_commit": "53a1503d6de972ebb90e685ec0d5b5fc6dd09e3d",
+  "framework_source_identity_scope": "UNCOMPILED_PINNED_BUILD_INPUT; driver/tests-only change from34b32a01; not a producing runtime",
+  "previous_framework_source_commit": "34b32a017c0b3942515720aea5dd47c60a5aa038",
+  "core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "core_publication_commit": "c93d900e1f968a3b69990dc29b78d50fc18f35ac",
+  "core_tree": "23f407cfadc7728b50f6f91177319ada4029cd2b",
+  "framework_worktree": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1",
+  "framework_publication_worktree": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1",
+  "core_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1",
+  "binary_sha256": null,
+  "runtime_ready": false,
+  "independent_qualification": false,
+  "config_sha256": {
+    "B16_BANKED": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+    "U_WB16": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+    "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
+    "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
+  },
+  "trace_identity": null,
+  "trace_identity_scope": "NO_NEW_APPLICATION; future Lane5 run must freeze complete list/content, ordered configs/aux and environment; old traces unchanged",
+  "current_application_scientific_acceptance": "OLD_R0_R1_SUSPENDED_NO_NEW_ACCEPTANCE",
+  "accepted_formal_pairs": 0,
+  "feature_vectors": {
+    "B16_BANKED": {
+      "finite_wbuf": true,
+      "unified_wb": false,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 16,
+      "payload_capacity_per_slice": 1168,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    },
+    "U_WB16": {
+      "finite_wbuf": true,
+      "unified_wb": true,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 16,
+      "payload_capacity_per_slice": 1168,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    },
+    "B8_BANKED": {
+      "finite_wbuf": true,
+      "unified_wb": false,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 8,
+      "payload_capacity_per_slice": 1160,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    },
+    "U_WB8": {
+      "finite_wbuf": true,
+      "unified_wb": true,
+      "tvd": false,
+      "ro": false,
+      "adaptive_policy": false,
+      "wbuf_entries": 8,
+      "payload_capacity_per_slice": 1160,
+      "bank_count": 4,
+      "ops_per_bank_cycle": 1
+    }
+  },
+  "ideal_vector": {
+    "wb": false,
+    "meta": false,
+    "read_hit": false
+  },
+  "dependency_receipts": [
+    {
+      "lane_id": 5,
+      "publication_commit": "2fb8a6d1144f6fce038f51e60192f9fa8b0207af",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RECEIPT.json",
+      "binding": "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_BUILD_READINESS_r1/LANE5_DEPENDENCY_READBACK.json",
+      "scientific_acceptance_generation": 2,
+      "independent_review_of_this_r5_pack": "PENDING"
+    }
+  ],
+  "prior_receipt_archive": "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_BUILD_READINESS_r1/PRIOR_RECEIPT_c2a536bd.json",
+  "validation": {
+    "python_build_guard": {
+      "status": "PASS",
+      "count": 13,
+      "log_sha256": "f7d7abb4fc6dff1059b0991d801e06f44331455750828bf5839881b08b31d543",
+      "scope": "injected fake registry/resource boundary plus small owned Python children; no live registry writes or actual admission",
+      "runs": 2,
+      "total_test_executions": 26,
+      "explanation": "13 unique tests on interim version, then13 on final version after vendor pin was added; final log is authoritative. No repeat of frozen production/old oracle/calibration suites."
+    },
+    "cpp_source_review": "STATIC_ONLY_TWO_NEW_REPAIR_TESTS_AND_OLD_PRODUCTION_MATRIX_REVIEWED",
+    "producer_tests": {
+      "planned": 21,
+      "executed": 0,
+      "status": "NOT_COMPILED_NOT_RUN"
+    },
+    "physical_bank_clock": "PENDING_LANE5_ON_NEW_BINARY",
+    "memcpy_payload_identity": "PENDING_LANE5_ON_NEW_BINARY",
+    "formal_applications_this_revision": 0,
+    "old_calibration_oracle_or_frozen_production_replays": 0
+  },
+  "resource_observation": {
+    "recorded_at": "2026-10-16T14:23:13.552076+00:00",
+    "scope": "closeout read-only observation, not an admission attempt",
+    "workspace_free_bytes": 38312300544,
+    "workspace_floor_bytes": 51539607552,
+    "build_growth_bytes": 2147483648,
+    "deficit_to_build_with_growth_bytes": 15374790656,
+    "available_memory_bytes": 159818186752,
+    "active_runs": {},
+    "active_build_leases": {},
+    "registry_sha256": "4569a4cf273d0653ad7fcd3072252ed322d420b2ebc53260a6e098873ab5dd4c",
+    "processes_observed": [
+      {
+        "pid": 433784,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "is_ep_l2_ft": false
+      },
+      {
+        "pid": 495652,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "is_ep_l2_ft": false
+      },
+      {
+        "pid": 495657,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "is_ep_l2_ft": false
+      },
+      {
+        "pid": 606201,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+        "is_ep_l2_ft": false
+      },
+      {
+        "pid": 606209,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "is_ep_l2_ft": false
+      },
+      {
+        "pid": 624461,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+        "is_ep_l2_ft": false
+      },
+      {
+        "pid": 638023,
+        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
+        "is_ep_l2_ft": false
+      }
+    ],
+    "official_build_path_exists": false,
+    "compiler_started_this_revision": false,
+    "build_admission_attempts_this_revision": 0,
+    "status": "RESOURCE_HOLD_NO_COMPILER_OR_APPLICATION_LAUNCHED"
+  },
+  "active_runs": [],
+  "active_builds": [],
+  "actual_build_admission_attempts_this_revision": 0,
+  "actual_compiler_started_this_revision": false,
+  "build_entry": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/util/ep_l2/ft_lane1/build_r0_1.py",
+  "build_entry_sha256": "4f7c6d33d5e37a6100154262845f221fe7d3f9c1b1c0d7929510a2414cc14eed",
+  "build_path": "/workspace/build/ep-l2-ft20261016-lane1-r0-1",
+  "admission_alternatives": {
+    "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BUILD_ADMISSION_ALTERNATIVES.md",
+    "status": "EVIDENCE_BASED_OPTIONS_FOR_REVIEW_NOT_ADOPTED",
+    "floor_or_path_or_host_changed": false,
+    "source_deletions_this_revision": 0,
+    "other_project_processes_signalled": 0
+  },
+  "blockers": [
+    {
+      "scope": "official R0.1 build and independent production qualification",
+      "reason": "Live workspace below unchanged48GiB+2GiB build admission; static/source/report work completed",
+      "deficit_at_closeout_bytes": 15374790656,
+      "required": "actual Storage-Ops release, Lane5 independent live measurement, registry quota/no conflict, then sole Lane1 guarded build; never substitute archive stage bytes"
+    }
+  ],
+  "artifacts": [
+    "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_BUILD_READINESS_r1",
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BUILD_ADMISSION_ALTERNATIVES.md",
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/R0_1_BUILD_COORDINATION.json",
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/R0_1_SOURCE_CANDIDATE.json"
+  ],
+  "recorded_at": "2026-10-16T14:24:26.985336+00:00",
+  "background_worker_running": false,
+  "next_action": "After real resource unlock and independent Lane5 resource readback, execute the single pinned existing build entry once; freeze new binary and hand Lane5 exact new source/config/trace identity. TVD/RO/ideal do not block first B16/U_WB16 pairs."
+}

@@ -1,0 +1,33 @@
+{
+  "recorded_at": "2026-10-16T14:21:24.669520+00:00",
+  "scope": "ONE_TIME_STATIC_INPUT_TEST_RELEASE_REVIEW; no CMake/compiler/production gate executed",
+  "core_candidate_unchanged": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "core_tree_matches_publication": true,
+  "framework_source": "53a1503d6de972ebb90e685ec0d5b5fc6dd09e3d",
+  "runtime_changes_since_previous_framework": [],
+  "four_mode_config_fingerprints": "ALL_BYTE_IDENTICAL_TO_FROZEN_CONFIG_INPUTS",
+  "new_cpp_tests": "NOT_COMPILED_NOT_RUN",
+  "python_guard_tests": {
+    "status": "PASS",
+    "count": 13,
+    "log_sha256": "f7d7abb4fc6dff1059b0991d801e06f44331455750828bf5839881b08b31d543",
+    "scope": "injected fake registry/resource boundary plus small owned Python children; no live registry writes or actual admission",
+    "runs": 2,
+    "total_test_executions": 26,
+    "explanation": "13 unique tests on interim version, then13 on final version after vendor pin was added; final log is authoritative. No repeat of frozen production/old oracle/calibration suites."
+  },
+  "actual_build_lease_acquired_this_revision": false,
+  "actual_build_entry_invocations_this_revision": 0,
+  "compiler_invocations": 0,
+  "simulator_invocations": 0,
+  "guard_fixes": [
+    "exact Core and pybind11 pins; unchanged approved source/build paths",
+    "effective frozen disk/memory minima, memory reservation, post-lease duplicate recheck",
+    "canonical 21-command matrix, input/config and test executable hashes",
+    "retain error/exit/log hash on own child failure, floor stop and timeout",
+    "record CMake configure as compiler-capable; assert build flags retain C++ assertions",
+    "post-build exact source/input/dependency cleanliness checks"
+  ],
+  "independent_gate_status": "PENDING_LANE5_ON_NEW_FROZEN_BINARY",
+  "source_semantic_note": "Candidate permits clean quiescent later-epoch prefill; dirty or active ownership rejects. Lane5 earlier a945 candidate was initial-only. Official62 is prescribed by r4/r5; do not silently substitute either source. Independent validation must explicitly check exact official candidate scope."
+}

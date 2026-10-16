@@ -1,0 +1,368 @@
+diff --git a/util/ep_l2/ft_lane1/build_r0_1.py b/util/ep_l2/ft_lane1/build_r0_1.py
+index 4223da90a..003939857 100644
+--- a/util/ep_l2/ft_lane1/build_r0_1.py
++++ b/util/ep_l2/ft_lane1/build_r0_1.py
+@@ -15,0 +16,8 @@ import time
++CORE_CANDIDATE = '62dc1d179b5516e68b21b695c7a9c5d0667e9671'
++PYBIND11_COMMIT = 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
++FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1')
++BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261016-lane1-r0-1')
++DISK_FLOOR = 48 * 1024**3
++MEMORY_FLOOR = 64 * 1024**3
++BUILD_GROWTH = 2 * 1024**3
++
+@@ -24,0 +33,78 @@ def head(path):
++def admission_hold(policy, resources, active_builds):
++    # A shared policy edit cannot silently lower this release's frozen floors.
++    disk_floor = max(DISK_FLOOR, policy['min_disk_free_bytes'])
++    memory_floor = max(MEMORY_FLOOR, policy['min_available_memory_bytes'])
++    if resources['disk_free_bytes'] < disk_floor + BUILD_GROWTH:
++        return 'RESOURCE_HOLD_WORKSPACE_DISK_AND_BUILD_GROWTH'
++    if resources['available_memory_bytes'] - 8 * 1024**3 < memory_floor:
++        return 'RESOURCE_HOLD_AVAILABLE_MEMORY_WITH_RESERVATION'
++    if active_builds:
++        return 'RESOURCE_HOLD_EXISTING_BUILD_NO_DUPLICATE_COMPILE'
++    return None
++
++
++def repair_commands(build, core):
++    base = str(core / 'configs/tested-cfgs/SM7_QV100/gpgpusim.config')
++    overlay = str(core / 'tests/ep_l2/ft_wbuf.config')
++    commands = []
++    for mode in (1, 2):
++        for c in (8, 16):
++            prefix = [base, overlay, str(mode), str(c)]
++            commands.append((f'host_prefill_{mode}_{c}',
++                [str(build / 'gpgpu-sim/ep_l2_ft_host_prefill'), *prefix]))
++            for offset in (0, 4096):
++                commands.append((f'physical_clock_{mode}_{c}_{offset}',
++                    [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, str(offset)]))
++            commands.append((f'warm_clock_{mode}_{c}',
++                [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, '4096', 'warm_hit']))
++            commands.append((f'partition_{mode}_{c}',
++                [str(build / 'gpgpu-sim/ep_l2_ft_partition'), *prefix]))
++    commands.append(('ft_directed',
++        [str(build / 'gpgpu-sim/ep_l2_ft_directed'), base, overlay]))
++    return commands
++
++
++def run_owned(command, name, out, environment, report, save, resources_now,
++              process_identity, timeout=900):
++    record = {'command': command, 'log': str(out / (name + '.log'))}
++    report.setdefault('commands', []).append(record)
++    save()
++    process = None
++    start = time.monotonic()
++    try:
++        with Path(record['log']).open('x') as stream:
++            process = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT,
++                cwd=out, env=environment, start_new_session=True)
++            record['process'] = process_identity(process.pid)
++            while process.poll() is None:
++                resources = resources_now()
++                if resources['disk_free_bytes'] < report['disk_floor_bytes'] or \
++                   resources['available_memory_bytes'] < report['memory_floor_bytes']:
++                    record['resource_stop'] = resources
++                    raise RuntimeError('unchanged resource floor crossed; stop only owned process')
++                if time.monotonic() - start > timeout:
++                    raise RuntimeError('owned build/test timeout')
++                time.sleep(0.2)
++        if process.returncode:
++            raise RuntimeError(f'{name} exited {process.returncode}')
++        return record
++    except BaseException as error:
++        record['error'] = repr(error)
++        raise
++    finally:
++        if process is not None:
++            if process.poll() is None:
++                os.killpg(process.pid, signal.SIGTERM)
++                try:
++                    process.wait(timeout=3)
++                except subprocess.TimeoutExpired:
++                    os.killpg(process.pid, signal.SIGKILL)
++                    process.wait()
++            record['exit_code'] = process.returncode
++        # Include failure/timeout/floor-stop logs as well as successful logs.
++        if Path(record['log']).exists():
++            record['log_sha256'] = digest(record['log'])
++        record['wall_seconds'] = time.monotonic() - start
++        save()
++
++
+@@ -30 +116 @@ def main():
+-        default=Path('/workspace/build/ep-l2-ft20261016-lane1-r0-1'))
++        default=BUILD_ROOT)
+@@ -32,0 +119,3 @@ def main():
++    args.core = args.core.resolve()
++    args.out = args.out.resolve()
++    args.build = args.build.resolve()
+@@ -44,2 +133,4 @@ def main():
+-        'binary_sha256': None, 'tests': [], 'jobs': 2,
+-        'build_growth_reserve_bytes': 2 * 1024**3, 'compiler_started': False}
++        'binary_sha256': None, 'tests': [], 'jobs': 2, 'runtime_ready': False,
++        'build_growth_reserve_bytes': BUILD_GROWTH, 'compiler_started': False,
++        'compiler_started_definition': 'entered CMake configure (may invoke compiler detection) or build',
++        'trace_identity': None, 'application_runs': 0}
+@@ -52,30 +143,4 @@ def main():
+-        record = {'command': command, 'log': str(args.out / (name + '.log'))}
+-        report.setdefault('commands', []).append(record)
+-        save()
+-        with Path(record['log']).open('x') as stream:
+-            process = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT,
+-                cwd=args.out, env=environment, start_new_session=True)
+-            record['process'] = process_identity(process.pid)
+-            start = time.monotonic()
+-            try:
+-                while process.poll() is None:
+-                    resources = local_resources()
+-                    if resources['disk_free_bytes'] < report['disk_floor_bytes'] or \
+-                       resources['available_memory_bytes'] < report['memory_floor_bytes']:
+-                        record['resource_stop'] = resources
+-                        raise RuntimeError('unchanged resource floor crossed; stop only owned process')
+-                    if time.monotonic() - start > timeout:
+-                        raise RuntimeError('owned build/test timeout')
+-                    time.sleep(0.2)
+-            finally:
+-                if process.poll() is None:
+-                    os.killpg(process.pid, signal.SIGTERM)
+-                    try:
+-                        process.wait(timeout=3)
+-                    except subprocess.TimeoutExpired:
+-                        os.killpg(process.pid, signal.SIGKILL)
+-                        process.wait()
+-            record.update(exit_code=process.returncode, log_sha256=digest(record['log']))
+-            save()
+-            assert process.returncode == 0, (name, process.returncode)
+-        return record
++        if name not in ('configure', 'build'):
++            report.setdefault('test_executables', {})[command[0]] = digest(command[0])
++        return run_owned(command, name, args.out, environment, report, save,
++                         local_resources, process_identity, timeout)
+@@ -83,0 +149,4 @@ def main():
++        if report['core_source_commit'] != CORE_CANDIDATE:
++            raise ValueError('R0.1 requires the exact published Core candidate')
++        if fw != FRAMEWORK_ROOT.resolve() or args.build != BUILD_ROOT.resolve():
++            raise ValueError('production source/build paths are frozen; alternative needs review')
+@@ -86,0 +156,15 @@ def main():
++        vendor = (fw / 'gpu-simulator/extern/pybind11').resolve()
++        report['pybind11'] = {'path': str(vendor), 'commit': head(vendor)}
++        if report['pybind11']['commit'] != PYBIND11_COMMIT:
++            raise ValueError('pybind11 must match the frozen R0 dependency')
++        assert not subprocess.check_output(['git', 'status', '--porcelain',
++            '--untracked-files=no'], cwd=vendor), 'dirty pybind11 dependency'
++        inputs = [(args.core, p) for p in (
++            'configs/tested-cfgs/SM7_QV100/gpgpusim.config', 'tests/ep_l2/ft_wbuf.config',
++            'tests/ep_l2/test_ft_host_prefill.cc', 'tests/ep_l2/test_ft_memcpy_clock.cc',
++            'tests/ep_l2/test_ft_partition.cc', 'tests/ep_l2/test_ft_wbuf.cc')]
++        inputs += [(fw, f'tests/ep_l2/ft20261016/r0_1/{p}.config')
++                   for p in ('b16_banked', 'u_wb16', 'b8_banked', 'u_wb8')]
++        report['input_sha256'] = {str(root / p): digest(root / p) for root, p in inputs}
++        report['driver_sha256'] = digest(__file__)
++        report['planned_tests'] = repair_commands(args.build, args.core)
+@@ -89,2 +173,2 @@ def main():
+-            report.update(disk_floor_bytes=policy['min_disk_free_bytes'],
+-                          memory_floor_bytes=policy['min_available_memory_bytes'])
++            report.update(disk_floor_bytes=max(DISK_FLOOR, policy['min_disk_free_bytes']),
++                          memory_floor_bytes=max(MEMORY_FLOOR, policy['min_available_memory_bytes']))
+@@ -95,5 +179,3 @@ def main():
+-            if resources['disk_free_bytes'] < report['disk_floor_bytes'] + report['build_growth_reserve_bytes']:
+-                report['status'] = 'RESOURCE_HOLD_WORKSPACE_DISK_AND_BUILD_GROWTH'
+-                return
+-            if active_builds:
+-                report['status'] = 'RESOURCE_HOLD_EXISTING_BUILD_NO_DUPLICATE_COMPILE'
++            hold = admission_hold(policy, resources, active_builds)
++            if hold:
++                report['status'] = hold
+@@ -107 +189,8 @@ def main():
+-        assert local_resources()['disk_free_bytes'] >= report['disk_floor_bytes'] + report['build_growth_reserve_bytes']
++        with registry.locked() as state:
++            # Close the gap between preflight and the central lease acquisition.
++            others = {k:r for k,r in state['resource_leases'].items()
++                      if k != lease and r['status'] in ACTIVE}
++            hold = admission_hold(state['hosts'][state['authority_host']], local_resources(), others)
++            if hold:
++                report['status'] = hold
++                return
+@@ -112,0 +202 @@ def main():
++        report['compiler_started'] = True
+@@ -114 +204 @@ def main():
+-             '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'], 'configure')
++             '-G', 'Unix Makefiles', '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'], 'configure')
+@@ -122,0 +213,3 @@ def main():
++        flags = sorted(args.build.rglob('flags.make'))
++        assert flags and all('-DNDEBUG' not in p.read_text() for p in flags), 'assertions must be enabled'
++        report['assertion_flags_sha256'] = {str(p): digest(p) for p in flags}
+@@ -124,16 +217,2 @@ def main():
+-        base = str(args.core / 'configs/tested-cfgs/SM7_QV100/gpgpusim.config')
+-        overlay = str(args.core / 'tests/ep_l2/ft_wbuf.config')
+-        for mode in (1,2):
+-            for c in (8,16):
+-                command = [str(args.build / 'gpgpu-sim/ep_l2_ft_host_prefill'), base, overlay, str(mode), str(c)]
+-                report['tests'].append(run(command, f'host_prefill_{mode}_{c}', 180))
+-                for offset in (0,4096):
+-                    command = [str(args.build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), base, overlay,
+-                               str(mode), str(c), str(offset)]
+-                    report['tests'].append(run(command, f'physical_clock_{mode}_{c}_{offset}', 180))
+-                command = [str(args.build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), base, overlay,
+-                           str(mode), str(c), '4096', 'warm_hit']
+-                report['tests'].append(run(command, f'warm_clock_{mode}_{c}', 180))
+-                command = [str(args.build / 'gpgpu-sim/ep_l2_ft_partition'), base, overlay, str(mode), str(c)]
+-                report['tests'].append(run(command, f'partition_{mode}_{c}', 180))
+-        report['tests'].append(run([str(args.build / 'gpgpu-sim/ep_l2_ft_directed'), base, overlay], 'ft_directed', 180))
++        for name, command in report['planned_tests']:
++            report['tests'].append(run(command, name, 180))
+@@ -140,0 +220,7 @@ def main():
++        assert all(digest(path) == sha for path, sha in report['input_sha256'].items())
++        for tree in (fw, args.core):
++            assert not subprocess.check_output(['git', 'status', '--porcelain',
++                '--untracked-files=no'], cwd=tree), 'source changed during build'
++        assert head(vendor) == PYBIND11_COMMIT
++        assert not subprocess.check_output(['git', 'status', '--porcelain',
++            '--untracked-files=no'], cwd=vendor), 'dependency changed during build'
+diff --git a/util/ep_l2/ft_lane1/test_build_r0_1.py b/util/ep_l2/ft_lane1/test_build_r0_1.py
+new file mode 100644
+index 000000000..fb9b7066f
+--- /dev/null
++++ b/util/ep_l2/ft_lane1/test_build_r0_1.py
+@@ -0,0 +1,140 @@
++"""Small admission/receipt regressions; never invoke CMake or the simulator."""
++import contextlib
++import importlib.util
++import json
++import os
++from pathlib import Path
++import sys
++import tempfile
++import types
++import unittest
++from unittest.mock import patch
++
++spec = importlib.util.spec_from_file_location('lane1_builder', Path(__file__).with_name('build_r0_1.py'))
++builder = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(builder)
++GIB = 1024**3
++POLICY = {'min_disk_free_bytes': 48 * GIB, 'min_available_memory_bytes': 64 * GIB}
++ENOUGH = {'disk_free_bytes': 50 * GIB, 'available_memory_bytes': 72 * GIB}
++
++
++class AdmissionTests(unittest.TestCase):
++    def test_exact_admission_boundary(self):
++        self.assertIsNone(builder.admission_hold(POLICY, ENOUGH, {}))
++
++    def test_growth_is_additional_to_floor(self):
++        self.assertIn('DISK', builder.admission_hold(POLICY,
++            dict(ENOUGH, disk_free_bytes=50 * GIB - 1), {}))
++
++    def test_lowered_shared_policy_cannot_lower_frozen_floor(self):
++        self.assertIn('DISK', builder.admission_hold(dict(POLICY, min_disk_free_bytes=1),
++            dict(ENOUGH, disk_free_bytes=49 * GIB), {}))
++
++    def test_stricter_policy_is_respected(self):
++        self.assertIn('DISK', builder.admission_hold(dict(POLICY, min_disk_free_bytes=51 * GIB), ENOUGH, {}))
++
++    def test_memory_reservation_preserves_floor(self):
++        self.assertIn('MEMORY', builder.admission_hold(POLICY,
++            dict(ENOUGH, available_memory_bytes=72 * GIB - 1), {}))
++
++    def test_existing_build_refuses_duplicate(self):
++        self.assertIn('DUPLICATE', builder.admission_hold(POLICY, ENOUGH, {'other': {}}))
++
++    def test_exact_matrix(self):
++        rows = builder.repair_commands(Path('/build'), Path('/core'))
++        self.assertEqual(21, len(rows))
++        self.assertEqual(21, len({name for name, _ in rows}))
++        for mode in (1, 2):
++            for capacity in (8, 16):
++                names = {f'host_prefill_{mode}_{capacity}', f'partition_{mode}_{capacity}',
++                    f'physical_clock_{mode}_{capacity}_0', f'physical_clock_{mode}_{capacity}_4096',
++                    f'warm_clock_{mode}_{capacity}'}
++                self.assertTrue(names <= {name for name, _ in rows})
++        self.assertEqual('ft_directed', rows[-1][0])
++
++    def test_full_entry_hold_never_invokes_compiler_or_lease(self):
++        # Inject a fake registry/resource view. The live registry is never locked
++        # or mutated; the main() path must return before any subprocess launch.
++        class FakeRegistry:
++            def __init__(self, root):
++                pass
++
++            @contextlib.contextmanager
++            def locked(self):
++                yield {'authority_host': 'fixture', 'hosts': {'fixture': POLICY}, 'resource_leases': {}}
++
++            def build_lease(self, *args, **kwargs):
++                raise AssertionError('resource hold must not claim a lease')
++
++        registry = types.ModuleType('registry')
++        registry.Registry = FakeRegistry
++        registry.ACTIVE = {'RESERVED', 'RUNNING'}
++        registry.local_resources = lambda: dict(ENOUGH, disk_free_bytes=48 * GIB)
++        registry.process_identity = lambda pid: {'pid': pid}
++        fw = Path(builder.__file__).resolve().parents[3]
++        core = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1')
++        def fake_head(path):
++            if path == core:
++                return builder.CORE_CANDIDATE
++            return 'fixture-fw' if path == fw else builder.PYBIND11_COMMIT
++        with tempfile.TemporaryDirectory() as temp:
++            out = Path(temp) / 'hold'
++            with patch.dict(sys.modules, registry=registry), \
++                 patch.object(builder, 'FRAMEWORK_ROOT', fw), \
++                 patch.object(builder, 'head', side_effect=fake_head), \
++                 patch.object(builder.subprocess, 'check_output', return_value=b''), \
++                 patch.object(builder.subprocess, 'Popen', side_effect=AssertionError('compiler must not start')), \
++                 patch.object(sys, 'argv', ['builder', '--core', str(core), '--out', str(out), '--execute']):
++                builder.main()
++            receipt = json.loads((out / 'BUILD_AND_TEST_RECEIPT.json').read_text())
++            self.assertIn('RESOURCE_HOLD', receipt['status'])
++            self.assertFalse(receipt['compiler_started'])
++            self.assertIsNone(receipt['binary_sha256'])
++            self.assertEqual([], receipt['tests'])
++
++
++class ReceiptTests(unittest.TestCase):
++    def run_child(self, body, resources=ENOUGH, timeout=5, error=False, expected_code=None):
++        with tempfile.TemporaryDirectory() as temp:
++            out = Path(temp)
++            report = {'disk_floor_bytes': 48 * GIB, 'memory_floor_bytes': 64 * GIB}
++            def save():
++                (out / 'receipt.json').write_text(json.dumps(report))
++            arguments = ([sys.executable, '-u', '-c', body], 'child', out, dict(os.environ),
++                report, save, lambda: resources, lambda pid: {'pid': pid}, timeout)
++            if error:
++                with self.assertRaises(RuntimeError):
++                    builder.run_owned(*arguments)
++            else:
++                builder.run_owned(*arguments)
++            record = json.loads((out / 'receipt.json').read_text())['commands'][0]
++            self.assertEqual(builder.digest(out / 'child.log'), record['log_sha256'])
++            self.assertIn('exit_code', record)
++            if expected_code is not None:
++                self.assertEqual(expected_code, record['exit_code'])
++            if error:
++                self.assertIn('error', record)
++            return record
++
++    def test_success_retains_hash(self):
++        self.run_child("print('fixture success')", expected_code=0)
++
++    def test_nonzero_exit_retains_hash(self):
++        self.run_child("print('fixture failure'); raise SystemExit(23)", error=True, expected_code=23)
++
++    def test_timeout_retains_hash_and_stops_only_owned_child(self):
++        self.run_child('import time; time.sleep(5)', timeout=0.01, error=True)
++
++    def test_disk_stop_retains_hash(self):
++        record = self.run_child('import time; time.sleep(5)',
++            resources=dict(ENOUGH, disk_free_bytes=48 * GIB - 1), error=True)
++        self.assertIn('resource_stop', record)
++
++    def test_memory_stop_retains_hash(self):
++        record = self.run_child('import time; time.sleep(5)',
++            resources=dict(ENOUGH, available_memory_bytes=64 * GIB - 1), error=True)
++        self.assertIn('resource_stop', record)
++
++
++if __name__ == '__main__':
++    unittest.main()
