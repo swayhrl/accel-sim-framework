@@ -1,0 +1,12 @@
+{
+  "kind": "ANALYTIC_ONLY_NOT_OBSERVED_GPU_VALUES",
+  "formula": "first Adam step at weight_decay0: update=lr*g/(abs(g)+eps)",
+  "lr": 0.003,
+  "eps": 1e-08,
+  "example_gradient_difference": 1e-10,
+  "example_update_difference": 2.970297029702971e-05,
+  "comparison": "this small example gradient perturbation is below the preregistered gradient atol1e-5 while its update difference can exceed update atol1e-6",
+  "implication": "the update gate can be sensitive near zero gradient; no claim that this explains the failed parameter; actual pair values were not captured",
+  "no_tolerance_changed": true,
+  "no_device_execution": true
+}

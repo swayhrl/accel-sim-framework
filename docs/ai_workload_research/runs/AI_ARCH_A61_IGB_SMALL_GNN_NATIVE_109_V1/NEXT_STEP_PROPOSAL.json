@@ -1,0 +1,29 @@
+{
+  "status": "PROPOSAL_ONLY_NOT_STARTED",
+  "single_question": "For exactlysame frozennaturalminibatch, initializedparameters and optimizerstate, does requestedcompilation violate the original FP32 numericcontract, or was the failure attributable to comparison/inputidentity or the eager nondeterminism floor?",
+  "minimum_bounded_plan": [
+    "Keep original IGBarc/input/graph/split/classes/model/coreversions/precision/tolerances unchanged, oldA61 assetsread-only, newindependentoutput.",
+    "Sample one originalnaturalB1024 batch once; preserve actualinputIDs,all3sampledCSC metadata,labels and inputidentity; freeze/clone its fetchedFP32featuretensor before comparison, with nocache replay inbetween.",
+    "Load exactlysame CPU-savedinitialstate into eagerA,eagerB,compiledC; independently log bothparameter names/dtypes/shapes, before/after weights, gradients and fullmaxabs/relative errors. Eager/eager is a negativecontrol, not extra performance exploration.",
+    "Atmost3realoptimizerupdates plus one allowedreservedretry, noformaltrainingwindow/timingmatrix. Preserve allfailuretensors/metadata (compactsampledCSC and parameterarrays, not fullfeaturetable).",
+    "Retain originalgates; if updatepredicate fails again,STOP. Any revisednumericalgate requires independent scientificreview and explicit approval, never posthoc relaxation."
+  ],
+  "proposed_resource_cap_not_runtime_guarantee": {
+    "original_shared_GPU_lock_seconds": 180,
+    "download_install_bytes": 0,
+    "new_disk_MiB": 128,
+    "CPU_workers": 4,
+    "RAM_GiB": 12,
+    "VRAM_GiB": 12,
+    "max_optimizer_updates": 4
+  },
+  "basis": "current onebatch wholeGPUqualification+compilation held64.68s, sampledRAM9.47GiB/VRAM8.39GiB; margins proposed, not measured minimum",
+  "STOP": [
+    "busylock/externalGPUwork",
+    "identity/coreversion/model/precisionchange",
+    "original numericgatesfail",
+    "resource/deadline",
+    "no additionalGPU taskautomatically"
+  ],
+  "hardware_research": "NOT_RECOMMENDED_FROM_THIS_RUN; no completeformalwall or exposedsupply evidence"
+}

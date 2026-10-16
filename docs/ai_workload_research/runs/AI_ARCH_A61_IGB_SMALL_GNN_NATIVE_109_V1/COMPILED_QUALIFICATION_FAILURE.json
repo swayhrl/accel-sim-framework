@@ -1,0 +1,16 @@
+{
+  "normative_state": "DATA_OR_NUMERIC_NO_GO",
+  "precise_cause": "COMPILED_UPDATE_QUALIFICATION_JOINT_PREDICATE_FAILED",
+  "first_reported_reference_parameter": "layers.0.lin_r.weight",
+  "predicate": "n==n2 AND torch.allclose(eager_updated_parameter, requested_compiled_updated_parameter,atol=1e-6,rtol=1e-4)",
+  "compiled_function_returned": true,
+  "finite_loss_and_loss_allclose_gate": "PRECEDING_ASSERT_DID_NOT_FAIL; exact loss2 not separately saved",
+  "second_parameter_name": "NOT_CAPTURED",
+  "maximum_abs_rel_update_error": "NOT_CAPTURED",
+  "compiled_gradients_and_input_initial_state_pair_snapshot": "NOT_CAPTURED",
+  "compiler_defect_or_precision_bug": "NOT_ESTABLISHED",
+  "comparator_or_input_lifetime_issue": "NOT_EXCLUDED",
+  "action": "scientific qualification failed closed; no tolerance relaxation, eager fallback, GPU retry or formaltiming after the failure",
+  "cold_GPU_canary_executed_optimizer_updates": 3,
+  "formal_updates": 0
+}

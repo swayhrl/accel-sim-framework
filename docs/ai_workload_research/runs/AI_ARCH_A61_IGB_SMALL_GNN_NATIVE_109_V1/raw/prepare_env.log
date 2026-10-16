@@ -1,0 +1,31 @@
+READONLY_DISTRIBUTION_PASS nvidia-nvjitlink-cu12 12.9.86 6
+READONLY_DISTRIBUTION_PASS torch 2.2.0+cu121 10314
+READONLY_DISTRIBUTION_PASS nvidia-nccl-cu12 2.19.3 11
+READONLY_DISTRIBUTION_PASS triton 2.2.0 53
+READONLY_DISTRIBUTION_PASS nvidia-cuda-runtime-cu12 12.1.105 100
+READONLY_DISTRIBUTION_PASS nvidia-cuda-nvrtc-cu12 12.1.105 11
+READONLY_DISTRIBUTION_PASS nvidia-cudnn-cu12 8.9.2.26 33
+READONLY_DISTRIBUTION_PASS nvidia-cusparse-cu12 12.1.0.106 11
+READONLY_DISTRIBUTION_PASS nvidia-cuda-cupti-cu12 12.1.105 44
+READONLY_DISTRIBUTION_PASS nvidia-curand-cu12 10.3.2.106 26
+READONLY_DISTRIBUTION_PASS nvidia-cufft-cu12 11.0.2.54 14
+READONLY_DISTRIBUTION_PASS nvidia-cusolver-cu12 11.4.5.107 16
+READONLY_DISTRIBUTION_PASS nvidia-nvtx-cu12 12.1.105 30
+READONLY_DISTRIBUTION_PASS nvidia-cublas-cu12 12.1.3.1 17
+Looking in links: <A26_READONLY_CACHE>/wheels, /data/c16/wheelhouse/c16-g-cp310-cu124, <A61_OUTPUT>/downloads
+Processing <A61_OUTPUT>/downloads/dgl-2.4.0+cu121-cp310-cp310-manylinux1_x86_64.whl
+Processing <A61_OUTPUT>/downloads/torch_geometric-2.6.1-py3-none-any.whl
+Processing <A26_READONLY_CACHE>/wheels/numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Processing <A26_READONLY_CACHE>/wheels/scipy-1.14.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Processing <A61_OUTPUT>/downloads/sympy-1.12-py3-none-any.whl
+Requirement already satisfied: torch<=2.4.0 in <A61_OUTPUT>/venv/lib/python3.10/site-packages (from dgl==2.4.0+cu121) (2.2.0+cu121)
+Processing /data/c16/wheelhouse/c16-g-cp310-cu124/pandas-2.3.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+Processing /data/c16/wheelhouse/c16-g-cp310-cu124/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+ERROR: Could not find a version that satisfies the requirement pydantic>=2.0 (from dgl) (from versions: none)
+ERROR: No matching distribution found for pydantic>=2.0
+Traceback (most recent call last):
+  File "<A61_WORKTREE>/tools/aiarch_a61/prepare_env.py", line 32, in <module>
+    subprocess.run(cmd+['--dry-run','--report',str(R/'environment_dry_run.json')],env=env,check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['<A61_OUTPUT>/venv/bin/python', '-m', 'pip', 'install', '--no-index', '--find-links', '<A26_READONLY_CACHE>/wheels', '--find-links', '/data/c16/wheelhouse/c16-g-cp310-cu124', '--find-links', '<A61_OUTPUT>/downloads', '-c', '<A61_OUTPUT>/environment_constraints.txt', 'dgl==2.4.0+cu121', 'torch-geometric==2.6.1', 'numpy==1.26.4', 'scipy==1.14.1', 'sympy==1.12', '--dry-run', '--report', '<A61_OUTPUT>/environment_dry_run.json']' returned non-zero exit status 1.

@@ -1,0 +1,574 @@
+AUTHOR_SOURCES_PASS [{"path": "ODC-By-1.0", "fixed_commit": "fc36357f2c1d861870b4c13a58f73da2b93d1e73", "blob": "dab29a14b77b9cd9b523e4aeaaf6fdb2aaa3624b", "sha256": "8af89f921a4f3ad4f9603aaf2b7b10bc42bd4e22da3c020084dee92265451dd0", "bytes": 20080, "URL": "https://api.github.com/repos/IllinoisGraphBenchmark/IGB-Datasets/contents/ODC-By-1.0?ref=fc36357f2c1d861870b4c13a58f73da2b93d1e73"}, {"path": "LICENSE", "fixed_commit": "fc36357f2c1d861870b4c13a58f73da2b93d1e73", "blob": "931d368d8f65923bb22d8d059da3d45ab3afac1c", "sha256": "c666c599f390dd511f6f8a7897b73833612e3d10f841ac36af148f8f045e6c3e", "bytes": 1188, "URL": "https://api.github.com/repos/IllinoisGraphBenchmark/IGB-Datasets/contents/LICENSE?ref=fc36357f2c1d861870b4c13a58f73da2b93d1e73"}, {"path": "README.md", "fixed_commit": "fc36357f2c1d861870b4c13a58f73da2b93d1e73", "blob": "80d7362817748407e0e26141012f552d2924b08e", "sha256": "2c83b6794f08ca8163ed6d00436c89158840d9d90e5b7659f610eaebd1a0cb9b", "bytes": 11188, "URL": "https://api.github.com/repos/IllinoisGraphBenchmark/IGB-Datasets/contents/README.md?ref=fc36357f2c1d861870b4c13a58f73da2b93d1e73"}, {"path": "igb/download.py", "fixed_commit": "fc36357f2c1d861870b4c13a58f73da2b93d1e73", "blob": "478bf8d1f24ebefa4aed43cca44ced7dd4e39210", "sha256": "5a4f146325fbb60ad7d73c01024acae50d48533d64b77a6d35ac2e9e4b33ee4f", "bytes": 4533, "URL": "https://api.github.com/repos/IllinoisGraphBenchmark/IGB-Datasets/contents/igb/download.py?ref=fc36357f2c1d861870b4c13a58f73da2b93d1e73"}, {"path": "igb/dataloader.py", "fixed_commit": "fc36357f2c1d861870b4c13a58f73da2b93d1e73", "blob": "b4b6e342df4511ef99a488336b57502fff754fe4", "sha256": "341819f8888ed91ab629dea5ce20015eb962b78ac6e6f9c9d5095a826aa939e6", "bytes": 21331, "URL": "https://api.github.com/repos/IllinoisGraphBenchmark/IGB-Datasets/contents/igb/dataloader.py?ref=fc36357f2c1d861870b4c13a58f73da2b93d1e73"}]
+CACHED_SITE <A26_READONLY_CACHE>/venv/lib/python3.10/site-packages True
+REUSABLE [('torch', True), ('torchgen', True), ('functorch', True), ('triton', True), ('nvidia', True)]
+CACHED_METADATA [('METADATA', 1719), ('METADATA', 61041), ('METADATA', 25900), ('METADATA', 1834), ('METADATA', 1356), ('METADATA', 1507), ('METADATA', 1507), ('METADATA', 1570), ('METADATA', 1550), ('METADATA', 1553), ('METADATA', 60767), ('METADATA', 1507), ('METADATA', 1503), ('METADATA', 1626), ('METADATA', 1660), ('METADATA', 1505)]
+WHEEL_UNPACKED_LOWER 1544762422
+SOURCE_LICENSE MIT License
+
+Copyright (c) 2022 IMPACT Research Group and IllinoisGraphBenchmark
+
+This license is applicable for all software codebases provided in the repository.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+SOURCE_DOWNLOADER import argparse, tarfile, hashlib, os, requests
+from colorama import Fore, Back, Style
+from tqdm import tqdm
+import urllib.request as ur
+import os
+
+GBFACTOR = float(1 << 30)
+
+def decide_download(url):
+    d = ur.urlopen(url)
+    size = int(d.info()["Content-Length"])/GBFACTOR
+    ### confirm if larger than 1GB
+    if size > 1:
+        return input("This will download %.2fGB. Will you proceed? (y/N) " % (size)).lower() == "y"
+    else:
+        return True
+    
+
+dataset_urls = {
+    'homogeneous' : {
+        'tiny' : 'https://igb-public-awsopen.s3.amazonaws.com/igb-homogeneous/igb_homogeneous_tiny.tar.gz',
+        'small' : 'https://igb-public-awsopen.s3.amazonaws.com/igb-homogeneous/igb_homogeneous_small.tar.gz',
+        'medium' : 'https://igb-public-awsopen.s3.amazonaws.com/igb-homogeneous/igb_homogeneous_medium.tar.gz'
+    },
+    'heterogeneous' : {
+        'tiny' : 'https://igb-public-awsopen.s3.amazonaws.com/igb-heterogeneous/igb_heterogeneous_tiny.tar.gz',
+        'small' : 'https://igb-public-awsopen.s3.amazonaws.com/igb-heterogeneous/igb_heterogeneous_small.tar.gz',
+        'medium' : 'https://igb-public-awsopen.s3.amazonaws.com/igb-heterogeneous/igb_heterogeneous_medium.tar.gz'
+    }  
+}
+
+
+md5checksums = {
+    'homogeneous' : {
+        'tiny' : '34856534da55419b316d620e2d5b21be',
+        'small' : '6781c699723529902ace0a95cafe6fe4',
+        'medium' : '4640df4ceee46851fd18c0a44ddcc622'
+    },
+    'heterogeneous' : {
+        'tiny' : '83fbc1091497ff92cf20afe82fae0ade',
+        'small' : '2f42077be60a074aec24f7c60089e1bd',
+        'medium' : '7f0df4296eca36553ff3a6a63abbd347'
+    }  
+}
+
+
+def check_md5sum(dataset_type, dataset_size, filename):
+    original_md5 = md5checksums[dataset_type][dataset_size]
+
+    with open(filename, 'rb') as file_to_check:
+        data = file_to_check.read()    
+        md5_returned = hashlib.md5(data).hexdigest()
+
+    if original_md5 == md5_returned:
+        print(" md5sum verified.")
+        return
+    else:
+        os.remove(filename)
+        raise Exception(" md5sum verification failed!.")
+        
+
+def download_dataset(path, dataset_type, dataset_size, confirm_download=False):
+    output_directory = path
+    url = dataset_urls[dataset_type][dataset_size]
+    filename = path + "/igb_" + dataset_type + "_" + dataset_size + ".tar.gz"
+    # check if the dataset is already downloaded
+    if os.path.exists(filename):
+        print("Dataset already downloaded.")
+    elif confirm_download or os.environ.get('SKIP_USER_PROMPT', '').lower() in [ "yes", "1", "true" ] or decide_download(url):
+        data = ur.urlopen(url)
+        size = int(data.info()["Content-Length"])
+        chunk_size = 1024*1024
+        num_iter = int(size/chunk_size) + 2
+        downloaded_size = 0
+        with open(filename, 'wb') as f:
+            pbar = tqdm(range(num_iter))
+            for i in pbar:
+                chunk = data.read(chunk_size)
+                downloaded_size += len(chunk)
+                pbar.set_description("Downloaded {:.2f} GB".format(float(downloaded_size)/GBFACTOR))
+                f.write(chunk) 
+        print("Downloaded" + Fore.GREEN + " igb_" + dataset_type + "_" + dataset_size + Style.RESET_ALL, end=" ->")
+    check_md5sum(dataset_type, dataset_size, filename)
+    destination = output_directory
+    file = tarfile.open(filename)
+    file.extractall(output_directory)
+    file.close()
+    size = 0
+    for path, dirs, files in os.walk(output_directory+"/"+dataset_size):
+        for f in files:
+            fp = os.path.join(path, f)
+            size += os.path.getsize(fp)
+    print("Final dataset size {:.2f} GB.".format(size/GBFACTOR))
+    os.remove(filename)
+    
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path', type=str, default='/root/heterogeneous_dataset_gen/testing_downloads', 
+        help='path containing the datasets')
+    parser.add_argument('--dataset_type', type=str, default='homogeneous',
+        choices=['homogeneous', 'heterogeneous'], 
+        help='dataset type')
+    parser.add_argument('--dataset_size', type=str, default='tiny',
+        choices=['tiny', 'small', 'medium'], 
+        help='size of the datasets')
+    parser.add_argument(
+        "--confirm-download",
+        action="store_true",
+        default=False,
+        help="To skip the user prompt for confirming the download, which is useful for Docker detached mode.")
+    args = parser.parse_args()    
+    download_dataset(args.path, args.dataset_type, args.dataset_size, args.confirm_download)
+    
+
+SOURCE_DATALOADER import argparse
+import numpy as np
+import torch
+import os.path as osp
+
+import dgl
+from dgl.data import DGLDataset
+import warnings
+warnings.filterwarnings("ignore")
+
+class IGB260M(object):
+    def __init__(self, root: str, size: str, in_memory: int, \
+        classes: int, synthetic: int):
+        self.dir = root
+        self.size = size
+        self.synthetic = synthetic
+        self.in_memory = in_memory
+        self.num_classes = classes
+
+    def num_nodes(self):
+        if self.size == 'experimental':
+            return 100000
+        elif self.size == 'small':
+            return 1000000
+        elif self.size == 'medium':
+            return 10000000
+        elif self.size == 'large':
+            return 100000000
+        elif self.size == 'full':
+            return 269346174
+
+    @property
+    def paper_feat(self) -> np.ndarray:
+        num_nodes = self.num_nodes()
+        # TODO: temp for bafs. large and full special case
+        if self.size == 'large' or self.size == 'full':
+            path = osp.join(self.dir, self.size, 'processed', 'paper', 'node_feat.npy')
+            emb = np.memmap(path, dtype='float32', mode='r',  shape=(num_nodes,1024))
+        else:
+            path = osp.join(self.dir, self.size, 'processed', 'paper', 'node_feat.npy')
+            if self.synthetic:
+                emb = np.random.rand(num_nodes, 1024).astype('f')
+            else:
+                if self.in_memory:
+                    emb = np.load(path)
+                else:
+                    emb = np.load(path, mmap_mode='r')
+
+        return emb
+
+    @property
+    def paper_label(self) -> np.ndarray:
+
+        if self.size == 'large' or self.size == 'full':
+            num_nodes = self.num_nodes()
+            if self.num_classes == 19:
+                path = osp.join(self.dir, self.size, 'processed', 'paper', 'node_label_19.npy')
+                node_labels = np.memmap(path, dtype='float32', mode='r',  shape=(num_nodes))
+                # Actual number 227130858
+            else:
+                path = osp.join(self.dir, self.size, 'processed', 'paper', 'node_label_2K.npy')
+                node_labels = np.memmap(path, dtype='float32', mode='r',  shape=(num_nodes))
+                # Actual number 157675969
+
+        else:
+            if self.num_classes == 19:
+                path = osp.join(self.dir, self.size, 'processed', 'paper', 'node_label_19.npy')
+            else:
+                path = osp.join(self.dir, self.size, 'processed', 'paper', 'node_label_2K.npy')
+            if self.in_memory:
+                node_labels = np.load(path)
+            else:
+                node_labels = np.load(path, mmap_mode='r')
+        return node_labels
+
+    @property
+    def paper_edge(self) -> np.ndarray:
+        path = osp.join(self.dir, self.size, 'processed', 'paper__cites__paper', 'edge_index.npy')
+        # if self.size == 'full':
+        #     path = '/mnt/nvme15/IGB260M_part_2/full/processed/paper__cites__paper/edge_index.npy'
+        if self.in_memory:
+            return np.load(path)
+        else:
+            return np.load(path, mmap_mode='r')
+
+
+class IGB260MDGLDataset(DGLDataset):
+    def __init__(self, args):
+        self.dir = args.path
+        self.args = args
+        super().__init__(name='IGB260MDGLDataset')
+
+    def process(self):
+        dataset = IGB260M(root=self.dir, size=self.args.dataset_size, in_memory=self.args.in_memory, \
+            classes=self.args.num_classes, synthetic=self.args.synthetic)
+
+        node_features = torch.from_numpy(dataset.paper_feat)
+        node_edges = torch.from_numpy(dataset.paper_edge)
+        node_labels = torch.from_numpy(dataset.paper_label).to(torch.long)
+
+        self.graph = dgl.graph((node_edges[:, 0],node_edges[:, 1]), num_nodes=node_features.shape[0])
+        self.graph.ndata['feat'] = node_features
+        self.graph.ndata['label'] = node_labels
+
+        self.graph = dgl.remove_self_loop(self.graph)
+        self.graph = dgl.add_self_loop(self.graph)
+
+        if self.args.dataset_size == 'full':
+            #TODO: Put this is a meta.pt file
+            if self.args.num_classes == 19:
+                n_labeled_idx = 227130858
+            else:
+                n_labeled_idx = 157675969
+
+            n_nodes = node_features.shape[0]
+            n_train = int(n_labeled_idx * 0.6)
+            n_val   = int(n_labeled_idx * 0.2)
+            
+            train_mask = torch.zeros(n_nodes, dtype=torch.bool)
+            val_mask = torch.zeros(n_nodes, dtype=torch.bool)
+            test_mask = torch.zeros(n_nodes, dtype=torch.bool)
+            
+            train_mask[:n_train] = True
+            val_mask[n_train:n_train + n_val] = True
+            test_mask[n_train + n_val:n_labeled_idx] = True
+            
+            self.graph.ndata['train_mask'] = train_mask
+            self.graph.ndata['val_mask'] = val_mask
+            self.graph.ndata['test_mask'] = test_mask
+        else:
+            n_nodes = node_features.shape[0]
+            n_train = int(n_nodes * 0.6)
+            n_val   = int(n_nodes * 0.2)
+            
+            train_mask = torch.zeros(n_nodes, dtype=torch.bool)
+            val_mask = torch.zeros(n_nodes, dtype=torch.bool)
+            test_mask = torch.zeros(n_nodes, dtype=torch.bool)
+
+            perm = torch.randperm(n_nodes)
+
+            train_mask[perm[:n_train]] = True
+            val_mask[perm[n_train:n_train + n_val]] = True
+            test_mask[perm[n_train + n_val:]] = True
+            
+            self.graph.ndata['train_mask'] = train_mask
+            self.graph.ndata['val_mask'] = val_mask
+            self.graph.ndata['test_mask'] = test_mask
+        
+    def __getitem__(self, i):
+        return self.graph
+
+    def __len__(self):
+        return len(self.graphs)
+
+
+class IGBHeteroDGLDataset(DGLDataset):
+    def __init__(self, args):
+        self.dir = args.path
+        self.args = args
+        super().__init__(name='IGB260M')
+
+    def process(self):
+
+        if self.args.in_memory:
+            paper_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed',
+            'paper__cites__paper', 'edge_index.npy')))
+            author_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__written_by__author', 'edge_index.npy')))
+            affiliation_author_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'author__affiliated_to__institute', 'edge_index.npy')))
+            paper_fos_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__topic__fos', 'edge_index.npy')))
+
+        else:
+            paper_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed',
+            'paper__cites__paper', 'edge_index.npy'), mmap_mode='r'))
+            author_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__written_by__author', 'edge_index.npy'), mmap_mode='r'))
+            affiliation_author_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'author__affiliated_to__institute', 'edge_index.npy'), mmap_mode='r'))
+            paper_fos_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__topic__fos', 'edge_index.npy'), mmap_mode='r'))
+
+
+        if self.args.all_in_edges:
+            graph_data = {
+                ('paper', 'cites', 'paper'): (paper_paper_edges[:, 0], paper_paper_edges[:, 1]),
+                ('author', 'written_by', 'paper'): (author_paper_edges[:, 1], author_paper_edges[:, 0]),
+                ('institute', 'affiliated_to', 'author'): (affiliation_author_edges[:, 1], affiliation_author_edges[:, 0]),
+                ('fos', 'topic', 'paper'): (paper_fos_edges[:, 1], paper_fos_edges[:, 0])
+            }
+        else:
+            graph_data = {
+                ('paper', 'cites', 'paper'): (paper_paper_edges[:, 0], paper_paper_edges[:, 1]),
+                ('paper', 'written_by', 'author'): (author_paper_edges[:, 0], author_paper_edges[:, 1]),
+                ('author', 'affiliated_to', 'institute'): (affiliation_author_edges[:, 0], affiliation_author_edges[:, 1]),
+                ('paper', 'topic', 'fos'): (paper_fos_edges[:, 0], paper_fos_edges[:, 1])
+            }
+        self.graph = dgl.heterograph(graph_data)     
+        self.graph.predict = 'paper'
+
+        if self.args.in_memory:
+            paper_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper', 'node_feat.npy')))
+            if self.args.num_classes == 19:
+                paper_node_labels = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper', 'node_label_19.npy'))).to(torch.long)  
+            else:
+                torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper', 'node_label_2K.npy'))).to(torch.long)
+        else:
+            paper_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper', 'node_feat.npy'), mmap_mode='r'))
+            if self.args.num_classes == 19:
+                paper_node_labels = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper', 'node_label_19.npy'), mmap_mode='r')).to(torch.long)  
+            else:
+                paper_node_labels = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper', 'node_label_2K.npy'), mmap_mode='r')).to(torch.long)                
+
+        self.graph.nodes['paper'].data['feat'] = paper_node_features
+        self.graph.num_paper_nodes = paper_node_features.shape[0]
+        self.graph.nodes['paper'].data['label'] = paper_node_labels
+        if self.args.in_memory:
+            author_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'author', 'node_feat.npy')))
+        else:
+            author_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'author', 'node_feat.npy'), mmap_mode='r'))
+        self.graph.nodes['author'].data['feat'] = author_node_features
+        self.graph.num_author_nodes = author_node_features.shape[0]
+
+        if self.args.in_memory:
+            institute_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'institute', 'node_feat.npy')))       
+        else:
+            institute_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'institute', 'node_feat.npy'), mmap_mode='r'))
+        self.graph.nodes['institute'].data['feat'] = institute_node_features
+        self.graph.num_institute_nodes = institute_node_features.shape[0]
+
+        if self.args.in_memory:
+            fos_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'fos', 'node_feat.npy')))       
+        else:
+            fos_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'fos', 'node_feat.npy'), mmap_mode='r'))
+        self.graph.nodes['fos'].data['feat'] = fos_node_features
+        self.graph.num_fos_nodes = fos_node_features.shape[0]
+        
+        self.graph = dgl.remove_self_loop(self.graph, etype='cites')
+        self.graph = dgl.add_self_loop(self.graph, etype='cites')
+        
+        n_nodes = paper_node_features.shape[0]
+
+        n_train = int(n_nodes * 0.6)
+        n_val = int(n_nodes * 0.2)
+
+        train_mask = torch.zeros(n_nodes, dtype=torch.bool)
+        val_mask = torch.zeros(n_nodes, dtype=torch.bool)
+        test_mask = torch.zeros(n_nodes, dtype=torch.bool)
+        
+        perm = torch.randperm(n_nodes)
+
+        train_mask[perm[:n_train]] = True
+        val_mask[perm[n_train:n_train + n_val]] = True
+        test_mask[perm[n_train + n_val:]] = True
+
+        
+        self.graph.nodes['paper'].data['train_mask'] = train_mask
+        self.graph.nodes['paper'].data['val_mask'] = val_mask
+        self.graph.nodes['paper'].data['test_mask'] = test_mask
+        
+
+    def __getitem__(self, i):
+        return self.graph
+
+    def __len__(self):
+        return 1
+
+
+
+class IGBHeteroDGLDatasetMassive(DGLDataset):
+    def __init__(self, args):
+        self.dir = args.path
+        self.args = args
+        super().__init__(name='IGB260M')
+
+    def process(self):
+        if self.args.in_memory:
+            paper_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__cites__paper', 'edge_index.npy')))
+            author_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__written_by__author', 'edge_index.npy')))
+            affiliation_author_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'author__affiliated_to__institute', 'edge_index.npy')))
+            paper_fos_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__topic__fos', 'edge_index.npy')))
+        else:
+            paper_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__cites__paper', 'edge_index.npy'), mmap_mode='r'))
+            author_paper_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__written_by__author', 'edge_index.npy'), mmap_mode='r'))
+            affiliation_author_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'author__affiliated_to__institute', 'edge_index.npy'), mmap_mode='r'))
+            paper_fos_edges = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+            'paper__topic__fos', 'edge_index.npy'), mmap_mode='r'))
+
+        if self.args.dataset_size == "full":
+            num_paper_nodes = 269346174
+            paper_node_features = torch.from_numpy(np.memmap(osp.join(self.dir, "full", 'processed', 
+            'paper', 'node_feat.npy'), dtype='float32', mode='r',  shape=(num_paper_nodes,1024)))
+            if self.args.num_classes == 19:
+                paper_node_labels = torch.from_numpy(np.memmap(osp.join(self.dir, "full", 'processed', 
+                'paper', 'node_label_19.npy'), dtype='float32', mode='r',  shape=(num_paper_nodes))).to(torch.long)
+            elif self.args.num_classes == 2983:
+                paper_node_labels = torch.from_numpy(np.memmap(osp.join(self.dir, "full", 'processed', 
+                'paper', 'node_label_2K.npy'), dtype='float32', mode='r',  shape=(num_paper_nodes))).to(torch.long)
+            num_author_nodes = 277220883
+            author_node_features = torch.from_numpy(np.memmap(osp.join(self.dir, "full", 'processed', 
+            'author', 'node_feat.npy'), dtype='float32', mode='r',  shape=(num_author_nodes,1024)))
+
+          
+        elif self.args.dataset_size == "large":
+            num_paper_nodes = 100000000
+            paper_node_features = torch.from_numpy(np.memmap(osp.join(self.dir, "large", 'processed', 
+            'paper', 'node_feat.npy'), dtype='float32', mode='r',  shape=(num_paper_nodes,1024)))
+            if self.args.num_classes == 19:
+                paper_node_labels = torch.from_numpy(np.memmap(osp.join(self.dir, "large", 'processed', 
+                'paper', 'node_label_19.npy'), dtype='float32', mode='r',  shape=(num_paper_nodes))).to(torch.long)
+            elif self.args.num_classes == 2983:
+                paper_node_labels = torch.from_numpy(np.memmap(osp.join(self.dir, "large", 'processed', 
+                'paper', 'node_label_2K.npy'), dtype='float32', mode='r',  shape=(num_paper_nodes))).to(torch.long)
+            num_author_nodes = 116959896
+            author_node_features = torch.from_numpy(np.memmap(osp.join(self.dir, "large", 'processed', 
+            'author', 'node_feat.npy'), dtype='float32', mode='r',  shape=(num_author_nodes,1024)))
+
+        institute_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+        'institute', 'node_feat.npy'), mmap_mode='r'))
+        fos_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+        'fos', 'node_feat.npy'), mmap_mode='r'))
+        journal_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+        'journal', 'node_feat.npy'), mmap_mode='r'))
+        conference_node_features = torch.from_numpy(np.load(osp.join(self.dir, self.args.dataset_size, 'processed', 
+        'conference', 'node_feat.npy'), mmap_mode='r'))
+
+        num_nodes_dict = {'paper': num_paper_nodes, 'author': num_author_nodes, 'institute': len(institute_node_features), 'fos': len(fos_node_features), 'journal': len(journal_node_features), 'conference': len(conference_node_features)  }
+        graph_data = {
+            ('paper', 'cites', 'paper'): (paper_paper_edges[:, 0], paper_paper_edges[:, 1]),
+            ('paper', 'written_by', 'author'): (author_paper_edges[:, 0], author_paper_edges[:, 1]),
+            ('author', 'affiliated_to', 'institute'): (affiliation_author_edges[:, 0], affiliation_author_edges[:, 1]),
+            ('paper', 'topic', 'fos'): (paper_fos_edges[:, 0], paper_fos_edges[:, 1]),
+            ('paper', 'rev_cites', 'paper'): (paper_paper_edges[:, 1], paper_paper_edges[:, 0]),
+            ('author', 'rev_written_by', 'paper'): (author_paper_edges[:, 1], author_paper_edges[:, 0]),
+            ('institute', 'rev_affiliated_to', 'author'): (affiliation_author_edges[:, 1], affiliation_author_edges[:, 0]),
+            ('fos', 'rev_topic', 'paper'): (paper_fos_edges[:, 1], paper_fos_edges[:, 0]),
+            ('paper', 'published', 'journal'): (paper_published_journal[:, 0], paper_published_journal[:, 1]),
+            ('paper', 'venue', 'conference'): (paper__venue__conference[:, 0], paper__venue__conference[:, 1]),
+            ('journal', 'rev_published', 'paper'): (paper_published_journal[:, 1], paper_published_journal[:, 0]),
+            ('conference', 'rev_venue', 'paper'): (paper__venue__conference[:, 1], paper__venue__conference[:, 0])
+        }
+        
+        self.graph = dgl.heterograph(graph_data, num_nodes_dict)  
+        self.graph.predict = 'paper'
+        self.graph = dgl.remove_self_loop(self.graph, etype='cites')
+        self.graph = dgl.add_self_loop(self.graph, etype='cites')
+        self.graph.nodes['paper'].data['feat'] = paper_node_features
+        self.graph.num_paper_nodes = paper_node_features.shape[0]
+        self.graph.nodes['paper'].data['label'] = paper_node_labels
+        self.graph.nodes['author'].data['feat'] = author_node_features
+        self.graph.num_author_nodes = author_node_features.shape[0]
+
+        self.graph.nodes['institute'].data['feat'] = institute_node_features
+        self.graph.num_institute_nodes = institute_node_features.shape[0]
+
+        self.graph.nodes['fos'].data['feat'] = fos_node_features
+        self.graph.num_fos_nodes = fos_node_features.shape[0]
+        
+        n_nodes = paper_node_features.shape[0]
+
+        n_train = int(n_nodes * 0.6)
+        n_val = int(n_nodes * 0.2)
+        
+        train_mask = torch.zeros(n_nodes, dtype=torch.bool)
+        val_mask = torch.zeros(n_nodes, dtype=torch.bool)
+        test_mask = torch.zeros(n_nodes, dtype=torch.bool)
+        
+        perm = torch.randperm(n_nodes)
+
+        train_mask[perm[:n_train]] = True
+        val_mask[perm[n_train:n_train + n_val]] = True
+        test_mask[perm[n_train + n_val:]] = True
+        
+        self.graph.nodes['paper'].data['train_mask'] = train_mask
+        self.graph.nodes['paper'].data['val_mask'] = val_mask
+        self.graph.nodes['paper'].data['test_mask'] = test_mask
+        
+    def __getitem__(self, i):
+        return self.graph
+
+    def __len__(self):
+        return 1
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path', type=str, default='/mnt/gnndataset', 
+        help='path containing the datasets')
+    parser.add_argument('--dataset_size', type=str, default='tiny',
+        choices=['tiny', 'small', 'medium', 'large', 'full'], 
+        help='size of the datasets')
+    parser.add_argument('--num_classes', type=int, default=19, 
+        choices=[19, 2983], help='number of classes')
+    parser.add_argument('--in_memory', type=int, default=1, 
+        choices=[0, 1], help='0:read only mmap_mode=r, 1:load into memory')
+    parser.add_argument('--synthetic', type=int, default=1,
+        choices=[0, 1], help='0:nlp-node embeddings, 1:random')
+    parser.add_argument('--all_in_edges', type=bool, default=True, 
+        help="Set to false to use default relation. Set this option to True to use all the relation types in the dataset since DGL samplers require directed in edges.")
+    args = parser.parse_args()
+
+    dataset = IGBHeteroDGLDataset(args)
+    g = dataset[0]
+    print(g)
+    homo_g = dgl.to_homogeneous(g)
+    print()
+    print(homo_g)
+    print()
+

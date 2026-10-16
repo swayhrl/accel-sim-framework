@@ -1,0 +1,83 @@
+{
+  "dataset": "official IGB homogeneous small",
+  "source_commit": "fc36357f2c1d861870b4c13a58f73da2b93d1e73",
+  "synthetic": 0,
+  "classes": 19,
+  "feature_dim": 1024,
+  "model": "official advanced GraphBolt+PyG GraphSAGE class,3mean layers,hidden256,ReLU after nonfinal layers, no dropout",
+  "implementation": "PYG_SAGE",
+  "PyG": "2.6.1",
+  "DGL": "2.4.0+cu121",
+  "Torch": "2.2.0+cu121",
+  "training_precision": "FP32, highest matmul precision, TF32 disabled",
+  "fanouts": [
+    10,
+    10,
+    10
+  ],
+  "batch_size": 1024,
+  "sampling_replace": false,
+  "deduplicate_input_nodes": true,
+  "optimizer": {
+    "name": "Adam",
+    "lr": 0.003,
+    "weight_decay": 0,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "source": "selected official advanced PyG example lr.003; default torch Adam remaininghyperparameters"
+  },
+  "loss": "cross_entropy",
+  "split_seed": 20261015,
+  "split": "author torch.randperm(1000000),60%train/20%valid/20%test; original self-loop semantics; no test use",
+  "seeds": [
+    20261015,
+    20261016
+  ],
+  "node_order": "freeze prefix of official GraphBolt ItemSampler shuffle=True seed=s on author train mask; then replay identical batches across arms without reshuffling",
+  "arms_if_FULL_qualified": [
+    "FULL_RESIDENT_GPU",
+    "PINNED_CACHE_ON",
+    "PINNED_CACHE_OFF"
+  ],
+  "formal_batches_if_FULL_qualified": 32,
+  "arms_if_FULL_capacity_not_qualified": [
+    "PINNED_CACHE_ON",
+    "PINNED_CACHE_OFF"
+  ],
+  "formal_batches_if_FULL_not_qualified": 56,
+  "two_arm_56_reason": "stricter bound ensures all canary/warmup/diagnostic optimizer updates also <=256, below permitted64formal perarmseed; chosen before observations",
+  "warmup_batches_each_arm_seed": 4,
+  "diagnostic_batches_each_arm_seed": 2,
+  "G1_canary_optimizer_updates_max": 4,
+  "all_optimizer_updates_absolute_cap": 256,
+  "feature_cache_bytes": 134217728,
+  "graph_cache_edges": 1000000,
+  "graph_cache_threshold": 1,
+  "cache_capacity_rule": "same one setting, only initial memory qualification may reduce before any timing",
+  "numeric_oracle": "CPU FP64 algebraic mean aggregation and PyG SAGE linear/root rule on the dependency closure of first16seeds from actual natural mini-batch; CPU reference does not change FP32 training",
+  "forward_loss_atol": 1e-05,
+  "forward_loss_rtol": 0.0001,
+  "parameter_gradient_atol": 1e-05,
+  "parameter_gradient_rtol": 0.001,
+  "Adam_first_update_atol": 1e-06,
+  "Adam_first_update_rtol": 0.0001,
+  "label_feature_gate": "IDs legal,19labels; GPU feature values match immutable actual FP32 rows; sampled edges belong to canonical directed multiset; fanout<=min(10,degree)",
+  "compile_policy": "attempt official train_step torch.compile dynamic=True before formal; record cold compilation; deterministic packaging unsupported may bounded fallback all arms to eager with STRONG_COMPILED_PATH_UNQUALIFIED; no hardware headroom claim then",
+  "compile_soft_budget_seconds": 180,
+  "resident_allocator_fraction": 0.7,
+  "formal_wall": "timer before iter(formal_loader),32/56updates without loss.item or per-step sync, one finalcuda sync; warmup uses a separate finite loader so formal iterator prologue is included",
+  "diagnostic_wall": "separate replay2approved formal batches, synchronize data-ready and train completion; disturbed overlap, cannot add to formal wall",
+  "process_CPU_affinity": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "torch_CPU_threads": 4,
+  "DataLoader_num_workers": 0,
+  "CONVERGENCE_NOT_EVALUATED": true,
+  "no_hardware_mechanism": true
+}
