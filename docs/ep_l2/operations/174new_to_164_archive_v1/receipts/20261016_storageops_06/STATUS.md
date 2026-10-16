@@ -1,6 +1,6 @@
 # V7 target: R1 complete archive and independent full-content restore
 
-Current PolyBench window: PB_CHUNK_000 RANGE_DEST_VERIFIED, 524288000 component bytes received under exact V2 source plan; whole archive not verified. Source scope is independently pinned at d41920195146a2beddfd720e65361728e451e5ea. Original tar and both closeout stages stay SOURCE_KEEP. Await target Git publication and independent source KEEP ACK before exact bridge cleanup.
+Current PolyBench window: PB_CHUNK_001 RANGE_DEST_VERIFIED; cumulative 1048576000 verified component bytes (2/35), whole archive not yet verified. Scope and precise V2 plan were rechecked under r10; all originals SOURCE_KEEP. Current batch Git/independent ACK closeout is pending.
 
 R1: all 14 batches, 18565/18565 files, 4737658722 logical bytes are DEST_VERIFIED. Complete path/hash/size/identity membership matches frozen full source manifest 8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5. Final data receipt was pushed/fetched at 43c717a20ae85b75d27bb1b8cb77d54120c52a4a. Every source batch has an independently GitHub-pinned SOURCE_KEEP ACK. All bridge data batches are closed; all original R1 files stay intact and R1 source release is zero.
 
@@ -19,3 +19,5 @@ B002 protocol exception: bridge cleanup at 15:56:27Z preceded source KEEP Git pu
 Minimal receiver/restore tools pass 18 guard checks, including ownership of partial-copy resume, completed-batch idempotence, frozen membership, metadata substitution rejection and bounded restore grouping. No second data worker was started and the existing Goal continues under V7 5e1df072495cdc9ee3bb84ac593d84387924c037.
 
 Reverse sample R1_NATIVE_RESTORE_B001 has completed independent native restore verification and exact bridge cleanup. R1 original source release remains zero.
+
+R10 bounded continuation was consumed at 2026-10-16T17:44:00Z and expires 2026-10-17T03:44:00Z. It uses the existing Goal/receiver, has no daemon, and does not expand source release permissions. Exact R1 release-evidence scope is only the frozen 197 .vvp manifest af1bf73951ab44258591afd625043c855e3a76bca67fb378abe8b226ee271c84; whole build remains protected. Historical index evidence will be reconciled in a separate versioned record.
