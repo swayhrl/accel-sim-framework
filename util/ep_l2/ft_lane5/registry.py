@@ -126,6 +126,8 @@ class Registry:
         leases = [r for r in data.get('resource_leases', {}).values()
                   if r['host'] == host and r['status'] in ACTIVE]
         all_live = live + leases
+        if any(r.get('kind') == 'ENGINEERING_PILOT' for r in leases):
+            raise ValueError('exclusive engineering pilot active; ordinary heavy admission blocked')
         if kind == 'simulation':
             if len(live) >= policy['max_simulators']:
                 raise ValueError('shared simulator quota full')
@@ -198,6 +200,8 @@ class Registry:
     def release_build(self, key, owner):
         with self.locked() as data:
             row = data['resource_leases'][key]
+            if row.get('kind') == 'ENGINEERING_PILOT':
+                raise ValueError('engineering pilot requires its audited release path')
             if row['owner'] != owner or row['status'] != 'RESERVED':
                 raise ValueError('build lease ownership/state mismatch')
             row.update(status='RELEASED', updated_at=now())
