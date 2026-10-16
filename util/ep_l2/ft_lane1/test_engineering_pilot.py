@@ -160,12 +160,15 @@ class ExecutionTests(unittest.TestCase):
                 adapter = Mock(); adapter.claim.return_value = {'lease_id': 'fixture-lease', 'pilot_id': 'fixture', 'owner': 'lane1'}
                 module = types.SimpleNamespace(repair_commands=lambda *args: [])
                 observations = [sample, sample, sample, OSError('monitor failed') if final_monitor_failure else sample]
+                original_affinity = os.sched_getaffinity(0)
                 with patch.object(pilot, 'observation', side_effect=observations), \
                      patch.object(pilot, 'audit_sources'), \
                      patch.object(pilot, 'monitored_command', side_effect=pilot.Stop('fixture failure')):
                     result = pilot.execute(request, 'fixture-sha', auth, adapter, module)
                 self.assertTrue(result['lease_released_token_consumed'])
                 self.assertTrue(result['status'].startswith('PILOT_STOPPED_'))
+                self.assertEqual(2, len(result['runner_cpu_affinity']))
+                self.assertEqual(original_affinity, os.sched_getaffinity(0))
                 adapter.finish.assert_called_once()
 
     def test_formal_priority_cancels_before_claim(self):

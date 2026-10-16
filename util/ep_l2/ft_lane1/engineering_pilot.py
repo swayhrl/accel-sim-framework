@@ -440,6 +440,8 @@ def update_peaks(report, current, baseline):
 
 
 def execute(request, request_sha, authorization, adapter, module):
+    original_affinity = os.sched_getaffinity(0)
+    require(len(original_affinity) >= 2, 'INSUFFICIENT_CPU_AFFINITY')
     baseline = observation(request)
     check_resources(request, authorization, baseline, baseline, entry=True)
     require(baseline['filesystems']['workspace']['available_bytes'] < 50 * GIB,
@@ -457,6 +459,9 @@ def execute(request, request_sha, authorization, adapter, module):
         'accepted_scientific_pairs': 0, 'pilot_source_paths': request['source_paths']}
     start = time.monotonic()
     try:
+        # Include the monitor/controller in the same two-CPU physical envelope.
+        os.sched_setaffinity(0, sorted(original_affinity)[:2])
+        report['runner_cpu_affinity'] = sorted(os.sched_getaffinity(0))
         require(lease['owner'] == 'lane1' and lease['pilot_id'] == request['pilot_id'], 'BAD_LEASE_IDENTITY')
         require(not Path(request['cancellation_marker_path']).exists(), 'PILOT_ALREADY_CANCELLED')
         after_lease = observation(request)
@@ -512,6 +517,7 @@ def execute(request, request_sha, authorization, adapter, module):
         except BaseException as error:
             report['lease_release_error'] = repr(error)
             report['status'] = 'PILOT_STOPPED_LEASE_RELEASE_REQUIRES_LANE5'
+        os.sched_setaffinity(0, original_affinity)
         try:
             if out.is_dir():
                 write_json(out / 'ENGINEERING_BUILD_RECEIPT.json', report)
