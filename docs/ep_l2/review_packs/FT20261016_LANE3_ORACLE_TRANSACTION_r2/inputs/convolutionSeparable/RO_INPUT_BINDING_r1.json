@@ -1,0 +1,25 @@
+{
+  "schema_version": "EP_L2_RO_INPUT_BINDING_V1",
+  "status": "ORACLE_INPUT_VERIFIED_NOT_RUNTIME_QUALIFICATION",
+  "oracle_manifest_sha256": "dbca1bb6de1a6fbaa1478f019154cbf3c9f6a06f7b7325a6acc12f4f64da776e",
+  "oracle_producer_commit": "d2ba33bd92c68f176294c9b5d5a22d3d7b7f8489",
+  "oracle_script_sha256": "39fbb90051d50801b582836a216dae627312d71153f04d56928bc7afae9cab18",
+  "trace_content_sha256": "b82c6b64f15dbf0d3ac5cc996a544011f7e057cc3b4ba7707a43a1fa6a470c10",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "epoch_activation": "after_initialization_and_prior_writeback_drain",
+  "initialization_bytes": 37748804,
+  "certified_ranges": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane3/oracle/development_r3/convolutionSeparable/certified_ranges.csv",
+  "certified_ranges_sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e",
+  "eligible_unique_lines": 294912,
+  "eligible_read_lane_references": 11698176,
+  "verifier_source_commit": "28a594c78bc7568ca038f63ef8122ff7337b7d2c"
+}

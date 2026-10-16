@@ -1,0 +1,47 @@
+{
+  "source": "5dd246028e3a3d997c1ad48aa85d8d77e98982ac",
+  "lease_id": "9c1925800f5f49ba99bc30df15e89263",
+  "commands": [
+    {
+      "command": [
+        "g++",
+        "-std=c++17",
+        "-O2",
+        "-I/usr/local/cuda-11.8/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/src",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/test_descriptor_mshr_integrated.cc",
+        "-Wl,--start-group",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/core/libcuda/libcuda.a",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/core/libentrypoint.a",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/core/src/accelwattch/libaccelwattch.a",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/core/src/cuda-sim/libptxsim.a",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/core/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/core/src/intersim2/libintersim.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-lpthread",
+        "-ldl",
+        "-lssl",
+        "-lcrypto",
+        "-lGL",
+        "-o",
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/test_descriptor_mshr_integrated"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/workspace/builds/ep_l2_ft20261016_lane3_v1/5dd246028e3a3d997c1ad48aa85d8d77e98982ac/test_descriptor_mshr_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/integrated.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/integrated_exhaustion.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/integrated_stats_off.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/integrated_banked.config"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "OLD_STATIC_NATIVE_PATH_REGRESSION_NOT_RO_RUNTIME",
+  "lease_released": true
+}
