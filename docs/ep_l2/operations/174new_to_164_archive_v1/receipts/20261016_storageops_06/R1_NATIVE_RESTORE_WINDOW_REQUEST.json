@@ -1,0 +1,29 @@
+{
+  "schema": "STORAGE_OPS_V7_NATIVE_RESTORE_WINDOW_REQUEST",
+  "created_at_utc": "2026-10-16T16:34:09.851544+00:00",
+  "state": "REQUEST_METADATA_ONLY_NO_DATA_TRANSFER",
+  "project": "R1",
+  "requested_window": "AFTER_R1_B014_DEST_VERIFIED_AND_FULL_TARGET_CONTENT_RESTORE",
+  "source_keep_required": true,
+  "source_release_authorized": false,
+  "proposed_sample_from_batch": "R1_B001",
+  "proposed_files": 1269,
+  "proposed_logical_bytes": 483509895,
+  "source_manifest_sha256": "8556dd125ac2147ccd035419a905093a20d56be989890f70a3193813ab3791e5",
+  "proposed_native_staging": "/workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build.restore.from164",
+  "source_response_requested": "Publish V7_R1_NATIVE_RESTORE_ACCEPTED.json with exact approved absent native staging path, adequate sample scope/manifest, source-side no-overwrite import checks, and agreement to pause new forward staging for this one reverse window; or publish concrete reason/alternative scope. Do not wait for target to assume source ownership.",
+  "target_actions_after_acceptance": [
+    "finish all forward R1 batches and target full content drill",
+    "close B014 bridge only after GitHub-pinned SOURCE_KEEP ACK",
+    "verify no other staged files or active rsync",
+    "stage agreed <=512MiB reverse sample from authenticated 164 using sole 30MiB/s stream",
+    "publish all reverse stage hashes and original modes/owner via trusted sidecars",
+    "await independent source native restore size/path/SHA256/UID/GID/mode receipt before exact bridge cleanup"
+  ],
+  "single_stream": true,
+  "no_probe_nonce_created": true,
+  "share_floor_bytes": 42949672960,
+  "target_will_not_stage_before_source_acceptance": true,
+  "source_import_owner": "existing old174 Storage-Ops window",
+  "original_scientific_sources": "SOURCE_KEEP"
+}
