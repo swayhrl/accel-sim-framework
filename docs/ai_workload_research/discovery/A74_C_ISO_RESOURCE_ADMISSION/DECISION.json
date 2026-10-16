@@ -1,0 +1,102 @@
+{
+  "round": "A74-C",
+  "date": "2026-10-16",
+  "executor": "ChatGPT / AI-ARCH Discovery via Github and web; no remote node109 Codex session was started",
+  "fixed_start_head": "f5ac43b4eb6adc29d040bdf65993cbd7de063db5",
+  "branch": "hrl/aiarch-a74c-iso-resource-admission-109-v1",
+  "terminal_status": "PARKED_FOR_PPA_OR_SIM_MODEL",
+  "stop": true,
+  "remaining_question": "At fixed area and power budget, after software retuning at each resource point, is there a realizable TC-to-MUFU/SFU resource mix that improves whole Qwen3-8B BF16 prefill without inducing larger projection/FFN regressions?",
+  "source_hypothesis_retained": true,
+  "native_admitted": false,
+  "model_simulator_admitted": false,
+  "hardware_headroom_proven": false,
+  "area_power_pareto_proven": false,
+  "gates": {
+    "G0_prior_and_version": {
+      "status": "PASS_WITH_FORMAL_DETAIL_GAP",
+      "nearest_hardware_prior": "DIRECT_PRIOR_EXISTS",
+      "formal_FA4_proceedings_confirmed": true,
+      "FA4_v1_full_pdf_reviewed": false,
+      "FA4_v1_html_and_pdf_page_5_reviewed": true,
+      "formal_FA4_full_pdf_figures_qualified": false,
+      "prior_coverage": [
+        "GB300 doubles MUFU.EX2 throughput vs GB200",
+        "FA4 compensates exponentials using FMA emulation and conditional rescaling",
+        "VEXP and other specialized softmax hardware also exist"
+      ],
+      "unresolved": [
+        "Formal FA4 full PDF table/device reconciliation vs v1",
+        "same-area same-power direct hardware precedent not exhaustively searched"
+      ]
+    },
+    "G1_software_and_whole_model": {
+      "status": "SOURCE_ONLY_RUNTIME_AND_WALL_PENDING",
+      "model_config": "Qwen/Qwen3-8B@b968826d9c46dd6066d109eabc6255188de91218",
+      "precision": "BF16 model metadata only",
+      "strong_baselines": [
+        "best compatible FA4 (e9d8944c855489e03c66262d07ba4c81d9d8dd31)",
+        "best compatible cuDNN forward"
+      ],
+      "runtime_and_numerical_status": "BACKEND_RUNTIME_UNQUALIFIED",
+      "natural_input": "QASPER CC-BY-4.0 metadata only; INPUT_AUTHORITY_PENDING",
+      "whole_prefill_timing": "NOT_MEASURED",
+      "calculated_attention_fraction_macs_not_time": {
+        "4096": 0.0800179683990547,
+        "8192": 0.14816355317648336,
+        "16384": 0.25807620217675503
+      },
+      "sensitive_to_model_length": true
+    },
+    "G2_iso_ppa_and_simulator": {
+      "status": "NOT_ESTABLISHED",
+      "tested_config_most_recent_in_fixed_dir": "SM86_RTX3070",
+      "sm100_tested_config": false,
+      "isa_defs_sm100": false,
+      "external_gpgpu_sim_checkout_inspected": false,
+      "sm100_tcgen05_tmem_tma_mufu_timing_model": "MODEL_CAPABILITY_UNVERIFIED",
+      "calibrated_sm100_power_area_exchange_model": "UNAVAILABLE_IN_INSPECTED_SOURCES",
+      "existing_accelwattch_calibration": "GV100 Volta",
+      "real_b200_unit_counts_software_configurable": false,
+      "blackwell_to_ultra_cross_generation_iso_area": false,
+      "conclusion": "SIM_AND_PPA_NOT_QUALIFIED"
+    },
+    "G3_future_eligibility": {
+      "status": "SCIENTIFIC_PROPOSAL_ONLY",
+      "first_gate": "establish legitimate full-model strong-backend/QASPER or comparable natural inputs and measure actual whole-prefill attention fraction if independently authorized",
+      "second_gate": "qualify a target SM100 dependency-aware performance/ISA model and credible same-process area/power marginal costs; no B200 rental as substitute",
+      "third_gate": "test a valid iso-area/PPA constrained hardware frontier with retuned kernels and independent model holdout",
+      "all_require_new_user_permission": true
+    }
+  },
+  "reason_to_park": [
+    "More exp hardware and software emulation are already direct published/production mechanisms",
+    "Neither B200 nor GB300 can be software-configured to trade fixed TC/SFU area or power",
+    "In-tree Accel-Sim lacks demonstrated SM100 ISA/configuration and externally fetched performance core remains unverified",
+    "SM100-specific comparable unit area/power costs, model timing, and whole-prefill f are absent",
+    "Natural Qwen tokenized inputs, quality, build, dispatch and numerical gate are pending"
+  ],
+  "stop_if": [
+    "hardware-prior exhausts remaining exact iso-area question",
+    "strong compatible kernels hide target exp service time or nonattention opportunity cost dominates",
+    "no legitimate SM100/tcgen05/TMEM/async simulator and PPA coefficients can be established",
+    "quality/model/input/scaling semantics fail",
+    "only feasible retuning yields same or worse Pareto",
+    "new model, asset or resource authorization cannot be obtained"
+  ],
+  "forbidden_now": [
+    "rent B200 or GB300",
+    "run 109 GPU/CUDA/JIT/Profiler or simulator",
+    "download weights or dataset",
+    "alter A73-H/A73-W raw, original STOP or other projects",
+    "claim old Ampere Accel-Sim predicts SM100 SFU exchange",
+    "claim NVIDIA GB300 cross-generation results are iso-area or whole Qwen BF16",
+    "trigger a new GPU Goal automatically"
+  ],
+  "project_consistency": {
+    "A73_W": "SOURCE_INCOMPLETE / PARKED",
+    "A73_H": "SOURCE_QUESTION_READY_FOR_CROSS_REVIEW source hypothesis only",
+    "A70_four_lanes": "SOURCE_SCOPE_NO_SURVIVOR not native negative",
+    "C16_AWMA_GNN": "untouched"
+  }
+}
