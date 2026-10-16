@@ -58,6 +58,7 @@ def classify(request, state, raw):
         result.update(classification='FORMAL_PRODUCER_BUILD_EVENT_REQUIRES_RELEASE_AUDIT',
                       status='FORMAL_BUILD_RECORDED_RELEASE_FREEZE_PENDING', pilot_cancelled=True,
                       producer_status=raw.get('status') if raw else None,
+                      compiler_capable_phase_started=bool(raw.get('compiler_started')) if raw else False,
                       producer_binary_sha256=raw.get('binary_sha256') if raw else None,
                       producing_framework=raw.get('framework_source_commit') if raw else None,
                       producing_core=raw.get('core_source_commit') if raw else None)
@@ -73,6 +74,7 @@ def merge_receipt(current, request, state, result, pack):
     receipt['recorded_at'] = pilot.utc()
     receipt['status'] = result['status']
     receipt['background_worker_running'] = False
+    receipt['actual_compiler_started_this_revision'] = bool(result['compiler_capable_phase_started'])
     receipt['gate_waiter'] = dict(state, actual_process_finished=True)
     receipt['engineering_pilot_outcome'] = dict(result, evidence_pack=pack,
                                                pilot_id=request['pilot_id'])
@@ -85,7 +87,6 @@ def merge_receipt(current, request, state, result, pack):
             resource_high_water=result.get('sampled_high_water'),
             compiler_started=bool(result['compiler_capable_phase_started']),
             formal_runtime_ready=False, formal_application_permission=False)
-        receipt['actual_compiler_started_this_revision'] = bool(result['compiler_capable_phase_started'])
         receipt.setdefault('validation', {})['engineering_pilot_producer_tests'] = {
             'executed': result['actual_directed_attempts'], 'passed': result['actual_directed_passes'],
             'classification': 'ENGINEERING_EVIDENCE_ONLY_NOT_FORMAL_QUALIFICATION'}

@@ -49,8 +49,9 @@ class OutcomeTests(unittest.TestCase):
         state['status'] = 'RESOURCE_WAIT_EXPIRED'
         self.assertEqual(0, publication.classify(request, state, None)['actual_directed_passes'])
         state['status'] = 'FORMAL_DRIVER_FINISHED_NO_AUTOMATIC_RETRY'
-        out = publication.classify(request, state, {'binary_sha256': 'formal', 'status': 'producer-pass'})
+        out = publication.classify(request, state, {'binary_sha256': 'formal', 'status': 'producer-pass', 'compiler_started': True})
         self.assertTrue(out['pilot_cancelled']); self.assertFalse(out['runtime_ready'])
+        self.assertTrue(out['compiler_capable_phase_started'])
 
 
 if __name__ == '__main__':
