@@ -1,0 +1,1 @@
+Bounded CONTINUE start checkpoint. No simulator execution or repeated tool suite. Prior receipt/status and dependency bytes preserved. LIVE_START_EVIDENCE separates actual processes, locks, ledger, f_bavail and frozen sources; CONTINUE_GOAL separates Goal state/deadline from worker deadline. Original science and all old packs unchanged.
