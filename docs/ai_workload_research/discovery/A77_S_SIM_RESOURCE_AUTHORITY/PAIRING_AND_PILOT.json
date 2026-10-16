@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "lane": "S77",
+  "status": "MODEL_AUTHORITY_NO_GO",
+  "pairing_status": "PAIRING_NOT_ESTABLISHED",
+  "goal_head": "9902ead45ed61d54bd5eb0e2a998e2ccc4ba3285",
+  "awma_authority": "29ce051f982f3854bd4392a94e4195c59340123b",
+  "c16_authority": "ccd6928bfb420d1e4c554ec0e377bb8fbe377501",
+  "external_execution_core_status": "EXTERNAL_SOURCE_NOT_INSPECTED",
+  "public_scaffold": {
+    "repository": "dzwduan/gpgpu-sim_distribution",
+    "commit": "dc56ca74fa51d333cacb6a8aac91bce804301ae1",
+    "execution_authority": false
+  },
+  "fidelity": {
+    "TC": "UNVERIFIED",
+    "L2": "UNVERIFIED",
+    "DRAM": "UNVERIFIED"
+  },
+  "candidate_axes": [
+    "A",
+    "B"
+  ],
+  "admitted_axes": [],
+  "admitted_points": [],
+  "pilot_point_count": 0,
+  "single_family": {
+    "id": "T1_PREFILL_GEMM_PRIMARY_OCC0",
+    "scope": "KERNEL_FAMILY_DIAGNOSTIC_ONLY",
+    "producer": "8f49ba3b9228b5f8a9163e961225ffd415107734",
+    "trace_file": "kernel-45-ctx_0x60d38cb72530.traceg.xz",
+    "trace_sha256_published": "e36178f9a92033cd91f3c1ff4b165321b7958157c7deed2a9aaa4696e7c73e8c",
+    "payload_inspected": false,
+    "trace_ISA": "SM89 admission in published source;header NOT_INSPECTED",
+    "model_path_label": "Qwen2.5-0.5B-Instruct s2-text prefill",
+    "checkpoint_tokenizer_input_numeric_backend_identity": "UNKNOWN",
+    "matched_stageA_native_kernel_wall": "NOT_ESTABLISHED",
+    "whole_request_coverage": "UNOBSERVABLE_FROM_THIS_TRACE",
+    "strong_controls": [
+      "GROUP_M16 W4 scoped negative;different numeric family",
+      "FFN two-stream scoped negative;not T1 calibration"
+    ]
+  },
+  "conditional_template": [
+    {
+      "id": "R0",
+      "A_service_multiplier": 1,
+      "B_service_multiplier": 1,
+      "enabled": false,
+      "status": "BLOCKED_NOT_EXECUTED"
+    },
+    {
+      "id": "Ahalf",
+      "A_service_multiplier": 0.5,
+      "B_service_multiplier": 1,
+      "enabled": false,
+      "status": "BLOCKED_NOT_EXECUTED"
+    },
+    {
+      "id": "Adouble",
+      "A_service_multiplier": 2,
+      "B_service_multiplier": 1,
+      "enabled": false,
+      "status": "BLOCKED_NOT_EXECUTED"
+    },
+    {
+      "id": "Bhalf",
+      "A_service_multiplier": 1,
+      "B_service_multiplier": 0.5,
+      "enabled": false,
+      "status": "BLOCKED_NOT_EXECUTED"
+    },
+    {
+      "id": "Bdouble",
+      "A_service_multiplier": 1,
+      "B_service_multiplier": 2,
+      "enabled": false,
+      "status": "BLOCKED_NOT_EXECUTED"
+    },
+    {
+      "id": "ABdouble",
+      "A_service_multiplier": 2,
+      "B_service_multiplier": 2,
+      "enabled": false,
+      "status": "BLOCKED_NOT_EXECUTED"
+    }
+  ],
+  "template_requirements": [
+    "same single real input and strong backend numerical contract",
+    "complete pinned performance core and binary provenance",
+    "actual implemented independent controls including legal Bx2",
+    "matched native/sim baseline order and window",
+    "native pressure direction heldout agrees;no fitting concurrency residual",
+    "new explicit user execution authorization and bounded resources"
+  ],
+  "trace_reuse": {
+    "conditional_same_ISA_program_input_addresses_masks_launch": true,
+    "unconditional": false,
+    "new_trace_required_for": [
+      "math kernel/backend/compiler change",
+      "shape/dtype/algorithm change",
+      "ISA change",
+      "dynamic scheduling feedback changes recorded program"
+    ]
+  },
+  "stop_conditions": [
+    "direction or denominator mismatch",
+    "input/numeric/terminal gap",
+    "core source or binary provenance incomplete",
+    "coupled/rounded resource controls",
+    "resource conflict or budget exceeded",
+    "science contract changes"
+  ],
+  "future_proposal_only": {
+    "static_closure_cpu_workers": 1,
+    "static_closure_RSS_GiB": 2,
+    "static_closure_minutes_max": 30,
+    "new_disk_MiB_max": 128,
+    "native_execution_authorized": false,
+    "simulator_execution_authorized": false,
+    "current_native_GPU_seconds": 0,
+    "current_simulator_seconds": 0,
+    "future_native_sim_budget": "UNSET_REQUIRES_NEW_EXPLICIT_GOAL",
+    "action_if_missing_material": "STOP;coordinator may independently consider native-only;S77 does not dispatch"
+  },
+  "not_hardware_no_headroom_proof": true,
+  "automatic_next_task": false
+}
