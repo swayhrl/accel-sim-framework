@@ -1,0 +1,143 @@
+{
+  "schema_version": "EP_L2_LANE2_FINITE_RUNTIME_ACTIVATION_V1",
+  "kind": "PREPARATION_ONLY_NOT_A_LAUNCH_AUTHORIZATION",
+  "core_candidate": "ab413abc2030bfc9aaeea0579b34dfa998671adb",
+  "expected_official_parent": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+  "expected_official_framework": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+  "official_binary_sha256": null,
+  "own_producer_binary_sha256": null,
+  "activation_conditions": [
+    "Official Lane1 source/Framework/binary/producer21 evidence is published and verified locally; candidate-only receipt is insufficient",
+    "If official source changes, regenerate exact TVD diff/source identity and check it before runtime",
+    "No conflicting Lane1 build; main Lane5 R0.1 qualification/five-pair work keeps priority",
+    "Current Lane5 shared admission with unchanged disk/memory/CPU/reservation policy, protected other projects and unique owned build lease",
+    "Freeze own exact source, ordered config, stimulus and new build/result paths before compiler start; no old binary/build overwrite"
+  ],
+  "build_preparation": {
+    "target": "ep_l2_tvd_production",
+    "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-repair-r3",
+    "proposed_new_build_directory": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-repair-r3/build/ft_lane2_r7",
+    "configuration": "Release with assertions enabled",
+    "cuda_toolkit_root": "/usr/local/cuda-11.8",
+    "jobs": 2,
+    "build_command_executed": false,
+    "growth_budget": "must be approved by actual shared admission; prior553MiB build is not a peak-space proof"
+  },
+  "finite_process_plan": [
+    {
+      "selector": "--candidate62-gates",
+      "positive_scenario_groups": 1,
+      "reason": "new try-prefill rejection atomicity, high-address exact alias, unrelated-TVD preservation"
+    },
+    {
+      "selector": "--repair-gates",
+      "positive_scenario_groups": 8,
+      "reason": "actual host warm repeat/sectors, C8/C16, primary geometry, dirty forward/write/atomic wait, lower/WAD/flush and physical-clock deltas"
+    },
+    {
+      "selector": null,
+      "positive_scenario_groups": 12,
+      "reason": "affected existing actual-TVD producer regressions under the new clock/host source; not old module tests"
+    },
+    {
+      "selector": "--reject_warm_dirty_victim",
+      "expected": "SIGABRT plus current Lane1 host-refusal marker"
+    },
+    {
+      "selector": "--reject_warm_dirty_owner",
+      "expected": "SIGABRT plus current Lane1 host-refusal marker"
+    },
+    {
+      "selector": "--reject_warm_active_request",
+      "expected": "SIGABRT plus current Lane1 host-refusal marker"
+    },
+    {
+      "selector": "--reject_warm_mandatory_wb",
+      "expected": "SIGABRT plus current Lane1 host-refusal marker"
+    },
+    {
+      "selector": "--reject_static_tvd",
+      "expected": "SIGABRT plus unsupported-TVD-mode marker"
+    },
+    {
+      "selector": "--reject_old_tvd",
+      "expected": "SIGABRT plus unsupported-TVD-mode marker"
+    },
+    {
+      "selector": "--reject_live_epoch",
+      "expected": "SIGABRT plus live-WB epoch-ready assertion"
+    }
+  ],
+  "planned_CPP_processes": 10,
+  "planned_positive_groups": 21,
+  "planned_expected_rejection_groups": 7,
+  "executed_CPP_processes": 0,
+  "oracle_or_trace_reproduction": false,
+  "formal_workloads": 0,
+  "acceptance_scope": {
+    "producer": "Actual memory_sub_partition/Tag/sole allocator/bank/ICNT/lower/WB/epoch, symbolic sector versions and requester closure only",
+    "full_byte_numeric_or_atomic_ALU": "NOT_AVAILABLE_NOT_CLAIMED",
+    "independent_qualification": "Lane5 must revalidate exact integrated R2 binary and granular feature vector",
+    "formal_TVD_application": "Requires Lane1 official R2 integration, Lane5 independent TVD qualification, current acceptance, fresh identities and allocation",
+    "matched_traffic": "Same own source/binary/stimulus OFF/ON lower-request counts only; served bytes are not DRAM-saved bytes"
+  },
+  "stop_conditions": [
+    "source/binary/config/producer evidence mismatch or suspended identity",
+    "resource/admission/other-project protection no longer holds",
+    "failed runtime gate: retain diagnostics, fix ordinary engineering issue, freeze new source/build identity before any affected rerun",
+    "protocol/budget/oracle change needed: stop only affected work for scientific review"
+  ],
+  "case_count_semantics": "21 intended positive scenarios = default12 + repair8 + candidate1. Three shared helpers in --repair-gates also emit inner historical PASS markers; never count raw PASS lines as distinct cases.",
+  "positive_marker_expectations": [
+    {
+      "selector": null,
+      "intended_groups": 12,
+      "raw_PASS_markers_expected": 12
+    },
+    {
+      "selector": "--repair-gates",
+      "intended_groups": 8,
+      "raw_PASS_markers_expected": 11
+    },
+    {
+      "selector": "--candidate62-gates",
+      "intended_groups": 1,
+      "raw_PASS_markers_expected": 1
+    }
+  ],
+  "feature_scope_prepared": [
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 16,
+      "clean": false,
+      "dirty": false,
+      "scope": "matched OFF control only; runtime NOT_RUN"
+    },
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 16,
+      "clean": true,
+      "dirty": false,
+      "scope": "clean producer regressions; runtime NOT_RUN"
+    },
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 16,
+      "clean": true,
+      "dirty": true,
+      "scope": "combined clean/dirty producer gates; runtime NOT_RUN"
+    },
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 8,
+      "clean": true,
+      "dirty": true,
+      "scope": "one targeted warm/sector/promotion case; not full C8 qualification; runtime NOT_RUN"
+    }
+  ],
+  "explicitly_unqualified_vectors": [
+    "dirty-only clean=0/dirty=1 is not covered by the prepared matrix",
+    "RO/ideal combinations and full application/multi-slice interactions are not granted qualification by these fixtures"
+  ],
+  "fixture_guard_followup": "Read responses must carry explicit sector-version data; absent data may not default to version0. New source remains uncompiled/unrun."
+}

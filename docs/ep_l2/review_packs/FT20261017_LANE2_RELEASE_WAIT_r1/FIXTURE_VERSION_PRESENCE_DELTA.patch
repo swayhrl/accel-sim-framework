@@ -1,0 +1,9 @@
+diff --git a/tests/ep_l2/test_tvd_production.cc b/tests/ep_l2/test_tvd_production.cc
+index d91b5801..d3eab13d 100644
+--- a/tests/ep_l2/test_tvd_production.cc
++++ b/tests/ep_l2/test_tvd_production.cc
+@@ -104,0 +105,4 @@ struct scenario {
++      // Zero is an explicit sector-version label. A missing read payload must
++      // not silently become zero and make warmed/clean read assertions pass.
++      assert((mf->get_is_write() || mf->has_ft_wb_data()) &&
++             "FT/TVD read response requires explicit sector-version backing");

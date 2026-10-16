@@ -1,0 +1,7 @@
+# Final dependency update and engineering evidence isolation
+
+The second scheduled read saw Lane1 publication248c93acc611679afe42590760481f451773003d and Lane5 publication300c1010161b270ae73414b8146d238c961f0cd0. Their newer status reports discuss a conditional engineering pilot request/resource review; Lane5 reports NO_SAFE_PILOT_ENVELOPE and Lane1 still has no ready official binary. Exact baseline pins remain c948/3ab and old application acceptance remains suspended. These are read-only dependency observations, not Lane2 authorization for a pilot or formal application. Lane2 neither approved nor activated any engineering exception.
+
+After the finite wait completed, future listener implementation87885c05 adds an explicit engineering-only veto: matching source/hash plus readiness text cannot turn an ENGINEERING marker or engineering_only flag into an official-release event. Two new incremental guard tests pass, with an initial module-search-path failure preserved separately. The original13 guards were not rerun. Completed wait evidence still identifies the exact earlier implementation8cbb/e4d; no claim is made that the new implementation executed that historical wait or that it started a new listener.
+
+All source/binary/qualification/resource boundaries for Lane2 remain under its consumed review_r7. No engineering binary is accepted as a formal R0.1/R2 release, no C++ or formal simulation ran, no owner/Storage-Ops/other-project process or quota changed.

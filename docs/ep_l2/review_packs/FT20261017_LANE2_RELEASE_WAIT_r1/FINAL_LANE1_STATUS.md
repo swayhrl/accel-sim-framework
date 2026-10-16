@@ -1,0 +1,13 @@
+# Lane1 review_r8 — 一次性工程pilot请求已准备，等待Lane5独立授权
+
+节点huangrulin-174，同原Lane1 Goal/执行分支hrl/ep-l2-ft20261016-lane1-v1；没有重启任务。已依次完整读取r7、r8，最新协调56a0517d3a5941a0a870b50e8c915a8a36b9ee5d。用户已条件性允许一次低空间ENGINEERING_ONLY campaign；正式48GiB+2GiB/64GiB/配额、原科学合同和旧R0/R1撤回保持。
+
+初始精确输入Corec948184504d82b80e23eb3f4ff6cdfd328ba9355、Framework3ab150b3e99ff3ed759b8cdc5154cfb5744042a7、vendorf90c430c。新建独立工程source工作树（详LOW_SPACE_PILOT_REQUEST.json），原因是Core CMake在源码目录生成setup；冻结生产源码根未写入。工程build/out均为新路径，原正式build目录未使用。17项最终runner测试PASS，真实dry-run确认21条定向和无lease/编译。Lane5真实admission实现与其独立测试仍待交付，fake adapter测试不算真实registry资格。
+
+独立driver/单一GateWaiter代码已冻结65500bb9db7ce5bac7cac0f24af01a2dd84f09ed。runner默认dry-run，只有准确Lane5 Git授权、中央CLIENT_CONTRACT绑定的独立adapter、一用token、独占lease、host/boot/source/vendor与两盘预算都合法才可执行；不得私改原Registry或直接CMake。CPU最多2、reservation8GiB、campaign3600s、监测1s、停摆watchdog2s，只终止本pilot进程组；提议保留空间只能由Lane5核准或拒绝，不能当已批准阈值。
+
+本次pilot_id EP_L2_R0_1_ENGINEERING_20261017_L1_P01，请求raw SHA256 3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb。文件LOW_SPACE_PILOT_REQUEST.json包含原五targets/21命令、实际写入FS、预算/未知项与无科学升级约束。最近dry-run UTC2026-10-16T17:15:28.919131+00:00：workspace 29198258176B，Share 47632801792B；一分钟5点采样不是预留量/峰值证明。实际中央claim0、CMake0、C++0、定向0，工程binary=null，正式pair0。
+
+GateWaiter准备完成但本STATUS时尚未启动；下一revision记录真实PID/锁/48h截止。只允许本Lane一个600s低频等待者，不占等待lease；50GiB标准条件先满足则取消pilot、两次间隔>=60s后调用原正式入口一次；pilot进行中不另开正式build。无多路轮询、不清理Ops/Git/历史证据、不影响DTC-L1或C16。
+
+当前pack docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1/ 保留请求、环境/写盘审核、资源样本、真实dry-run、17项工具测试与未执行工程receipt。此前所有packs和旧R0/R1原始日志/CSV/binary/config/trace保留。下一步：推送并回读请求，交Lane5独立资源核准和中央adapter；仅合法授权后自动一次工程构建/必要21定向，输出仍ENGINEERING_ONLY，不能变成官方性能binary或科学资格。
