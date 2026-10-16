@@ -1,0 +1,96 @@
+[
+  {
+    "workload": "btree",
+    "representative_member": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-1.traceg",
+    "prior_member_sha256": "80c00c479a79c4a0c470de34c0b5b4421eb8e737e6cbb3a4046304b1f555395e",
+    "header": [
+      "-kernel name = findRangeK",
+      "-kernel id = 1",
+      "-grid dim = (6000,1,1)",
+      "-block dim = (256,1,1)",
+      "-shmem = 0",
+      "-nregs = 38",
+      "-binary version = 70",
+      "-cuda stream id = 0"
+    ],
+    "metadata": [
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/run.sh",
+        "sha256": "8dc255fac78d56fbce6568389d847b0e203cd0d3f4b3138c9493d22128945151",
+        "bytes": 914,
+        "text": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/b+tree-rodinia-3.1 file ./data/mil.txt command ./data/command.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/*.trace "
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist.g",
+        "sha256": "26315d4ae044e91094d54134ec94e25d70fd4eda8c0fe01767bc2a9437d73467",
+        "bytes": 580,
+        "text": "MemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,48000\nMemcpyHtoD,0x00007f8eed50bc00,48000\nMemcpyHtoD,0x00007f8eed517800,48000\nMemcpyHtoD,0x00007f8eed523400,48000\nMemcpyHtoD,0x00007f8eed52f000,24000\nMemcpyHtoD,0x00007f8eed534e00,24000\nMemcpyHtoD,0x00007f8eed53ac00,24000\nMemcpyHtoD,0x00007f8eed540a00,24000\nkernel-1.traceg\nMemcpyHtoD,0x00007f8eed800000,4000000\nMemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,80000\nMemcpyHtoD,0x00007f8eed513a00,80000\nMemcpyHtoD,0x00007f8eed527400,40000\nMemcpyHtoD,0x00007f8eed531200,40000\nkernel-2.traceg\n"
+      }
+    ],
+    "note": "Only retained launcher/header/list; no immutable producer ELF/library/JIT identity established by these fields"
+  },
+  {
+    "workload": "lud",
+    "representative_member": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lud-rodinia-3.1/_i___data_512_dat/traces/kernel-1.traceg",
+    "prior_member_sha256": "e732e0ec12ef22b54623dcfa9c3e6853fd44d8eb9b3c0a686a442a252a48a852",
+    "header": [
+      "-kernel name = _Z12lud_diagonalPfii",
+      "-kernel id = 1",
+      "-grid dim = (1,1,1)",
+      "-block dim = (16,1,1)",
+      "-shmem = 1024",
+      "-nregs = 48",
+      "-binary version = 70",
+      "-cuda stream id = 0"
+    ],
+    "metadata": [
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lud-rodinia-3.1/_i___data_512_dat/run.sh",
+        "sha256": "4c9a2a57667127c9958317dbb1df75294f07283aaa20a9316e339dfea33185fe",
+        "bytes": 818,
+        "text": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/lud-rodinia-3.1 -i ./data/512.dat ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/lud-rodinia-3.1/_i___data_512_dat/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/lud-rodinia-3.1/_i___data_512_dat/traces/*.trace "
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lud-rodinia-3.1/_i___data_512_dat/traces/kernelslist.g",
+        "sha256": "6bf8f1fd5951793b1b2c563ee13203591e3d53d5985d4d1d6e3b5cf8f64a39e0",
+        "bytes": 1627,
+        "text": "MemcpyHtoD,0x00007fd9eb500000,1048576\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\nkernel-17.traceg\nkernel-18.traceg\nkernel-19.traceg\nkernel-20.traceg\nkernel-21.traceg\nkernel-22.traceg\nkernel-23.traceg\nkernel-24.traceg\nkernel-25.traceg\nkernel-26.traceg\nkernel-27.traceg\nkernel-28.traceg\nkernel-29.traceg\nkernel-30.traceg\nkernel-31.traceg\nkernel-32.traceg\nkernel-33.traceg\nkernel-34.traceg\nkernel-35.traceg\nkernel-36.traceg\nkernel-37.traceg\nkernel-38.traceg\nkernel-39.traceg\nkernel-40.traceg\nkernel-41.traceg\nkernel-42.traceg\nkernel-43.traceg\nkernel-44.traceg\nkernel-45.traceg\nkernel-46.traceg\nkernel-47.traceg\nkernel-48.traceg\nkernel-49.traceg\nkernel-50.traceg\nkernel-51.traceg\nkernel-52.traceg\nkernel-53.traceg\nkernel-54.traceg\nkernel-55.traceg\nkernel-56.traceg\nkernel-57.traceg\nkernel-58.traceg\nkernel-59.traceg\nkernel-60.traceg\nkernel-61.traceg\nkernel-62.traceg\nkernel-63.traceg\nkernel-64.traceg\nkernel-65.traceg\nkernel-66.traceg\nkernel-67.traceg\nkernel-68.traceg\nkernel-69.traceg\nkernel-70.traceg\nkernel-71.traceg\nkernel-72.traceg\nkernel-73.traceg\nkernel-74.traceg\nkernel-75.traceg\nkernel-76.traceg\nkernel-77.traceg\nkernel-78.traceg\nkernel-79.traceg\nkernel-80.traceg\nkernel-81.traceg\nkernel-82.traceg\nkernel-83.traceg\nkernel-84.traceg\nkernel-85.traceg\nkernel-86.traceg\nkernel-87.traceg\nkernel-88.traceg\nkernel-89.traceg\nkernel-90.traceg\nkernel-91.traceg\nkernel-92.traceg\nkernel-93.traceg\nkernel-94.traceg\n"
+      }
+    ],
+    "note": "Only retained launcher/header/list; no immutable producer ELF/library/JIT identity established by these fields"
+  },
+  {
+    "workload": "2DConvolution",
+    "representative_member": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-2DConvolution/NO_ARGS/traces/kernel-1.traceg",
+    "prior_member_sha256": "c330dcb2f491a9376011c8e4b3741ead2481dd0b5e1cb775879d21895939e871",
+    "header": [
+      "-kernel name = _Z20Convolution2D_kernelPfS_",
+      "-kernel id = 1",
+      "-grid dim = (128,512,1)",
+      "-block dim = (32,8,1)",
+      "-shmem = 0",
+      "-nregs = 24",
+      "-binary version = 70",
+      "-cuda stream id = 0",
+      "-shmem base_addr = 0x00007fdc48000000",
+      "-local mem base_addr = 0x00007fdc4a000000",
+      "-nvbit version = 1.4",
+      "-accelsim tracer version = 3"
+    ],
+    "metadata": [
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-2DConvolution/NO_ARGS/run.sh",
+        "sha256": "4415a4d49a217830dcfd7ec469dfff5ac93b6d51312e5df12b1cf7442469814d",
+        "bytes": 858,
+        "text": "\nexport CUDA_VERSION=\"11.0\"; export CUDA_VISIBLE_DEVICES=\"6\" ; LD_PRELOAD=/scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/util/tracer_nvbit/tracer_tool/tracer_tool.so /home/tgrogers-raid/a/tgrogers/github/accel-sim/accel-sim-framework/gpu-app-collection/src/..//bin/11.0/release/polybench-2DConvolution  ; /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-2DConvolution/NO_ARGS/traces/kernelslist ; rm -f /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-2DConvolution/NO_ARGS/traces/*.trace ; rm -f /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-2DConvolution/NO_ARGS/traces/kernelslist "
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-2DConvolution/NO_ARGS/traces/kernelslist.g",
+        "sha256": "23bcc08b04d82fc527ffc1365d3199f4d1f3057bf6a2705d1110c5c226227d64",
+        "bytes": 55,
+        "text": "MemcpyHtoD,0x00007fdc00000000,67108864\nkernel-1.traceg\n"
+      }
+    ],
+    "note": "Only retained launcher/header/list; no immutable producer ELF/library/JIT identity established by these fields"
+  }
+]
