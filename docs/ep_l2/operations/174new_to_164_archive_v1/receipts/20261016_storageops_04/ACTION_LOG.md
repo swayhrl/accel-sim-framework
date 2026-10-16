@@ -14,3 +14,6 @@
 - Verified source 102-file inventory SHA256 against source-published d34a952f7dfa5fcd0a2a965fc82623a6ff5fb9666f007b7626269e295a8505d7; S01/S02 file counts/byte sums match.
 - Removed exact task-owned OWNER.json and now-empty old stage directory after checking no data residues; retained all 36 archived pack copies, no recopy or source deletion.
 - Normalized the exact legacy PRECHECK.md line endings and refreshed hashes to match Git LF normalization.
+
+- Atomically published TARGET_RECEIVER_READY.json in the compliant bridge; closed/reopened metadata SHA f8bd18b7bd715e77871fe701ce5866333cdbcf01447559aa365494ec6da05f22. Source manifest format remains adaptable; no artificial format gate is imposed.
+- Exact-path old174 namespace read-only absence check confirms the target-owned nonce and READY marker are gone; exit 0. This is a target observation and is not labeled an independent source Ops READY or source release.
