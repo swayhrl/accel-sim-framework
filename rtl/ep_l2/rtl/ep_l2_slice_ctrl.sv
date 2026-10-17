@@ -70,13 +70,6 @@ module ep_l2_slice_ctrl #(
     localparam [1:0] L_NONE=0, L_COPY=1, L_WB=2;
     localparam [GEN_W-1:0] GMAX={GEN_W{1'b1}};
     localparam integer WB_BEGIN=N_PAYLOAD-STATIC_WB;
-    wire [N_PAYLOAD*3-1:0] role_bits;
-    wire [N_PAYLOAD*GEN_W-1:0] generation_bits;
-    wire [N_PAYLOAD*TAG_W-1:0] owner_tag_bits;
-    wire [N_PAYLOAD*6-1:0] pins_bits;
-    wire [N_PAYLOAD*4-1:0] sectors_ready_bits;
-    wire [N_PAYLOAD*4-1:0] sectors_pending_bits;
-    wire [N_PAYLOAD*4-1:0] dirty_bits;
     wire [N_TAG*PID_W-1:0] tag_map_bits;
     reg [N_TAG-1:0] tag_live;
     reg [N_WAD-1:0] wad_live, wad_sent;
@@ -104,9 +97,40 @@ module ep_l2_slice_ctrl #(
     reg [3:0] p_ready, p_pending;
     reg p_install_dirty;
     reg [15:0] pending_sector_count;
+    wire [N_PAYLOAD*3-1:0] role_bits;
+    wire [N_PAYLOAD*GEN_W-1:0] generation_bits;
+    wire [N_PAYLOAD*TAG_W-1:0] owner_tag_bits;
+    wire [N_PAYLOAD*6-1:0] pins_bits;
+    wire [N_PAYLOAD*4-1:0] sectors_ready_bits;
+    wire [N_PAYLOAD*4-1:0] sectors_pending_bits;
+    wire [N_PAYLOAD*4-1:0] dirty_bits;
+    wire [3-1:0] role_old_pid;
+    wire [3-1:0] role_fill_pid;
+    wire [3-1:0] role_pin_pid;
+    wire [3-1:0] role_head_pid;
+    wire [GEN_W-1:0] generation_old_pid;
+    wire [GEN_W-1:0] generation_p_landing;
+    wire [GEN_W-1:0] generation_fill_pid;
+    wire [GEN_W-1:0] generation_pin_pid;
+    wire [GEN_W-1:0] generation_free_staging;
+    wire [GEN_W-1:0] generation_p_old;
+    wire [GEN_W-1:0] generation_head_pid;
+    wire [GEN_W-1:0] generation_active_pid;
+    wire [TAG_W-1:0] owner_tag_fill_pid;
+    wire [6-1:0] pins_old_pid;
+    wire [6-1:0] pins_pin_pid;
+    wire [4-1:0] sectors_ready_old_pid;
+    wire [4-1:0] sectors_pending_old_pid;
+    wire [4-1:0] sectors_pending_fill_pid;
+    wire [4-1:0] dirty_old_pid;
     wire old_live = req_tag < N_TAG && tag_live[req_tag];
-    wire [PID_W-1:0] old_pid = old_live ? tag_map_bits[(req_tag)*PID_W +:PID_W] : req_tag;
-    wire evict_dirty = req_op==0 && old_live && |dirty_bits[(old_pid)*4 +:4];
+    wire [PID_W-1:0] old_pid;
+    generate if(MODE==1)begin
+        assign old_pid=old_live ? tag_map_bits[req_tag*PID_W +:PID_W] : req_tag;
+    end else begin
+        assign old_pid=req_tag; // static resident handle invariant, see R2 proof
+    end endgenerate
+    wire evict_dirty = req_op==0 && old_live && |dirty_old_pid;
     function automatic [3:0] byte_sectors(input [127:0] be);
         integer s; begin
             for (s=0;s<4;s=s+1) byte_sectors[s]=|be[s*32 +:32];
@@ -115,42 +139,50 @@ module ep_l2_slice_ctrl #(
     function automatic [2:0] pop4(input [3:0] v);
         begin pop4={2'b0,v[0]}+v[1]+v[2]+v[3]; end
     endfunction
-    reg hazard, have_wad, have_landing, have_staging, free_bank_exists;
-    reg [WAD_W-1:0] free_wad;
-    reg [PID_W-1:0] free_landing, free_staging;
-    integer a;
-    // These are real combinational CAM/priority encoders, included in mapped
-    // cost and timing. They are not free C++ searches or inferred SRAM ports.
-    always @* begin
-        hazard=0; have_wad=0; free_wad=0;
-        for (integer i=0;i<N_WAD;i=i+1) begin
-            if (wad_live[i] && wad_addr[i]==req_addr) hazard=1;
-            if (!have_wad && !wad_live[i] && wad_generation[i]!=GMAX) begin
-                free_wad=i; have_wad=1;
-            end
+    wire hazard, have_wad, have_landing, have_staging, free_bank_exists;
+    wire [WAD_W-1:0] free_wad;
+    wire [PID_W-1:0] free_landing, free_staging;
+    wire [N_WAD-1:0] wad_hazards, wad_eligible;
+    generate for(genvar w=0;w<N_WAD;w=w+1)begin: wad_search
+        assign wad_hazards[w]=wad_live[w] && wad_addr[w]==req_addr;
+        assign wad_eligible[w]=!wad_live[w] && wad_generation[w]!=GMAX;
+    end endgenerate
+    assign hazard=|wad_hazards;
+    ep_l2_first_one #(.N(N_WAD),.W(WAD_W)) wad_encoder(wad_eligible,have_wad,free_wad);
+    wire [3:0] bank_found, bank_free;
+    wire [4*ROW_W-1:0] bank_first;
+    generate for(genvar b=0;b<4;b=b+1)begin: allocation_bank
+        wire [N_PAYLOAD/4-1:0] eligible,free_slots;
+        for(genvar row=0;row<N_PAYLOAD/4;row=row+1)begin: candidate
+            localparam integer ID=4*row+b;
+            assign free_slots[row]=role_bits[ID*3 +:3]==FREE;
+            assign eligible[row]=free_slots[row] && generation_bits[ID*GEN_W +:GEN_W]<GMAX-1;
         end
-        have_landing=0; have_staging=0; free_landing=0; free_staging=0; free_bank_exists=0;
-        for (integer j=0;j<N_PAYLOAD;j=j+1) begin
-            if (role_bits[(j)*3 +:3]==FREE && (j%4)==(req_tag%4)) free_bank_exists=1;
-            if (role_bits[(j)*3 +:3]==FREE && generation_bits[(j)*GEN_W +:GEN_W] < GMAX-1) begin
-                if (MODE==1 && !have_landing && (j%4)==(req_tag%4)) begin
-                    have_landing=1; free_landing=j;
-                end
-                if (MODE!=1 && !have_staging && j>=WB_BEGIN) begin
-                    have_staging=1; free_staging=j;
-                end
-            end
-        end
-    end
-    wire old_unpinned = !old_live || (pins_bits[(old_pid)*6 +:6]==0 && sectors_pending_bits[(old_pid)*4 +:4]==0);
-    wire reuse_ok = !old_live ? generation_bits[(old_pid)*GEN_W +:GEN_W]<GMAX-1 : generation_bits[(old_pid)*GEN_W +:GEN_W]<GMAX-2;
+        assign bank_free[b]=|free_slots;
+        ep_l2_first_one #(.N(N_PAYLOAD/4),.W(ROW_W)) encoder(eligible,bank_found[b],bank_first[b*ROW_W +:ROW_W]);
+    end endgenerate
+    assign have_landing=MODE==1 && bank_found[req_tag[1:0]];
+    assign free_bank_exists=bank_free[req_tag[1:0]];
+    assign free_landing=have_landing ? {bank_first[req_tag[1:0]*ROW_W +:ROW_W],req_tag[1:0]} : {PID_W{1'b0}};
+    wire [STATIC_WB-1:0] staging_eligible;
+    wire [$clog2(STATIC_WB)-1:0] staging_index;
+    wire staging_found;
+    generate for(genvar w=0;w<STATIC_WB;w=w+1)begin: staging_search
+        localparam integer ID=WB_BEGIN+w;
+        assign staging_eligible[w]=role_bits[ID*3 +:3]==FREE && generation_bits[ID*GEN_W +:GEN_W]<GMAX-1;
+    end endgenerate
+    ep_l2_first_one #(.N(STATIC_WB)) staging_encoder(staging_eligible,staging_found,staging_index);
+    assign have_staging=MODE!=1 && staging_found;
+    assign free_staging=have_staging ? PID_W'(WB_BEGIN)+staging_index : {PID_W{1'b0}};
+    wire old_unpinned = !old_live || (pins_old_pid==0 && sectors_pending_old_pid==0);
+    wire reuse_ok = !old_live ? generation_old_pid<GMAX-1 : generation_old_pid<GMAX-2;
     wire install_ok = old_unpinned && (!evict_dirty || (have_wad && (MODE==1 || have_staging))) &&
         (MODE==1 && (evict_dirty || !old_live) ? have_landing : reuse_ok);
-    wire read_ok = old_live && role_bits[(old_pid)*3 +:3]==RESIDENT &&
-        pins_bits[(old_pid)*6 +:6]<32 && reference_count<512 && req_ready_sectors!=0 &&
-        (req_ready_sectors & ~sectors_ready_bits[(old_pid)*4 +:4])==0;
+    wire read_ok = old_live && role_old_pid==RESIDENT &&
+        pins_old_pid<32 && reference_count<512 && req_ready_sectors!=0 &&
+        (req_ready_sectors & ~sectors_ready_old_pid)==0;
     wire write_ok = old_live && old_unpinned;
-    wire invalidate_ok = old_live && old_unpinned && dirty_bits[(old_pid)*4 +:4]==0 && generation_bits[(old_pid)*GEN_W +:GEN_W]!=GMAX;
+    wire invalidate_ok = old_live && old_unpinned && dirty_old_pid==0 && generation_old_pid!=GMAX;
     assign generation_blocked = state==IDLE && req_valid &&
         (req_op==0 && !install_ok && old_unpinned &&
          ((MODE!=1 && !reuse_ok) || (MODE==1 && !have_landing && free_bank_exists)));
@@ -158,11 +190,11 @@ module ep_l2_slice_ctrl #(
         req_tag<N_TAG && (req_op==0 ? install_ok : req_op==1 ? read_ok : req_op==2 ? write_ok : invalidate_ok);
     wire req_fire=req_valid && req_ready;
     wire abort_fire=native_abort && state!=IDLE && state!=RESPONSE && p_op!=1;
-    wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation_bits[(p_landing)*GEN_W +:GEN_W] :
-        generation_bits[(p_landing)*GEN_W +:GEN_W]+(p_old_live ? 2 : 1);
-    wire fill_identity=fill_pid<N_PAYLOAD && role_bits[(fill_pid)*3 +:3]==RESIDENT &&
-        generation_bits[(fill_pid)*GEN_W +:GEN_W]==fill_gen && owner_tag_bits[(fill_pid)*TAG_W +:TAG_W]==fill_tag &&
-        fill_sectors!=0 && (fill_sectors & ~sectors_pending_bits[(fill_pid)*4 +:4])==0;
+    wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation_p_landing :
+        generation_p_landing+(p_old_live ? 2 : 1);
+    wire fill_identity=fill_pid<N_PAYLOAD && role_fill_pid==RESIDENT &&
+        generation_fill_pid==fill_gen && owner_tag_fill_pid==fill_tag &&
+        fill_sectors!=0 && (fill_sectors & ~sectors_pending_fill_pid)==0;
     wire [WAD_W-1:0] head_wad=wb_fifo[wb_head];
     wire [PID_W-1:0] head_pid=wad_payload[head_wad];
     reg fe_request, fe_write;
@@ -221,13 +253,13 @@ module ep_l2_slice_ctrl #(
     assign native_commit=state==COMMIT && native_ready && !abort_fire &&
         (p_op==3 || p_be==0 || ge);
     assign native_tag=p_tag; assign native_pid=p_landing;
-    assign native_gen=p_op==0 ? landing_generation : generation_bits[(p_landing)*GEN_W +:GEN_W];
+    assign native_gen=p_op==0 ? landing_generation : generation_p_landing;
     assign rsp_valid=state==RESPONSE; assign rsp_retry=p_retry;
     assign rsp_id=p_id; assign rsp_pid=p_landing; assign rsp_gen=p_result_gen;
     wire rsp_fire=rsp_valid && rsp_ready;
     wire internal_pin_add=req_fire && req_op==1;
     wire internal_pin_sub=rsp_fire && p_op==1;
-    assign pin_ready=rst_n && pin_pid<N_PAYLOAD && role_bits[(pin_pid)*3 +:3]==RESIDENT && generation_bits[(pin_pid)*GEN_W +:GEN_W]==pin_gen &&
+    assign pin_ready=rst_n && pin_pid<N_PAYLOAD && role_pin_pid==RESIDENT && generation_pin_pid==pin_gen &&
         !internal_pin_add && !internal_pin_sub &&
         // On the admission edge state is still IDLE. A destructive request
         // acquiring this victim wins over a new external descriptor pin.
@@ -235,7 +267,7 @@ module ep_l2_slice_ctrl #(
         // existing pin decrement, and unrelated payloads remain independent.
         !(req_fire && req_op!=1 && old_live && pin_pid==old_pid) &&
         !(state!=IDLE && state!=RESPONSE && p_old_live && pin_pid==p_old) &&
-        (pin_increment ? pins_bits[(pin_pid)*6 +:6]<32 && reference_count<512 : pins_bits[(pin_pid)*6 +:6]!=0);
+        (pin_increment ? pins_pin_pid<32 && reference_count<512 : pins_pin_pid!=0);
     wire pin_fire=pin_valid && pin_ready;
     assign wb_valid=wb_state==W_SEND;
     assign wb_be=wad_bytes[active_wad]; assign wb_addr=wad_addr[active_wad];
@@ -283,7 +315,7 @@ module ep_l2_slice_ctrl #(
                 p_ready<=req_ready_sectors; p_pending<=req_pending_sectors;
                 p_install_dirty<=req_install_dirty; p_new_reserved<=0;
                 p_landing<=old_pid;
-                p_result_gen<=old_live ? generation_bits[(old_pid)*GEN_W +:GEN_W] : 0;
+                p_result_gen<=old_live ? generation_old_pid : 0;
                 if (req_op==1) begin state<=HIT_READ; end
                 else begin
                     state<=COMMIT;
@@ -297,10 +329,10 @@ module ep_l2_slice_ctrl #(
                             wad_addr[free_wad]<=req_victim_addr; wad_bytes[free_wad]<=req_victim_be;
                             if (MODE==1) begin
                                 p_staging<=old_pid; wad_payload[free_wad]<=old_pid;
-                                wad_payload_gen[free_wad]<=generation_bits[(old_pid)*GEN_W +:GEN_W];
+                                wad_payload_gen[free_wad]<=generation_old_pid;
                             end else begin
                                 p_staging<=free_staging; wad_payload[free_wad]<=free_staging;
-                                wad_payload_gen[free_wad]<=generation_bits[(free_staging)*GEN_W +:GEN_W]+1;
+                                wad_payload_gen[free_wad]<=generation_free_staging+1;
                                 state<=COPY_READ;
                             end
                         end
@@ -310,7 +342,7 @@ module ep_l2_slice_ctrl #(
             if (ge && state==HIT_READ) state<=READ_RETURN;
             if (state==READ_RETURN) begin
                 rsp_data<=ram_rdata[p_old[1:0]*1024 +:1024]; state<=RESPONSE;
-                p_result_gen<=generation_bits[(p_old)*GEN_W +:GEN_W];
+                p_result_gen<=generation_p_old;
             end
             if (MODE!=1 && ge && state==COPY_READ) begin state<=COPY_RETURN; latch_owner<=L_COPY; end
             if (MODE!=1 && state==COPY_RETURN) begin
@@ -349,6 +381,28 @@ module ep_l2_slice_ctrl #(
         end
     end
 
+
+    // R2 explicit local metadata read ports; same information/cycles as R1.
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_old_pid(role_bits,old_pid,role_old_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_fill_pid(role_bits,fill_pid,role_fill_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_pin_pid(role_bits,pin_pid,role_pin_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_head_pid(role_bits,head_pid,role_head_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_old_pid(generation_bits,old_pid,generation_old_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_p_landing(generation_bits,p_landing,generation_p_landing);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_fill_pid(generation_bits,fill_pid,generation_fill_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_pin_pid(generation_bits,pin_pid,generation_pin_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_free_staging(generation_bits,free_staging,generation_free_staging);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_p_old(generation_bits,p_old,generation_p_old);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_head_pid(generation_bits,head_pid,generation_head_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_active_pid(generation_bits,active_pid,generation_active_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(TAG_W),.IW(PID_W)) select_owner_tag_fill_pid(owner_tag_bits,fill_pid,owner_tag_fill_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(6),.IW(PID_W)) select_pins_old_pid(pins_bits,old_pid,pins_old_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(6),.IW(PID_W)) select_pins_pin_pid(pins_bits,pin_pid,pins_pin_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(4),.IW(PID_W)) select_sectors_ready_old_pid(sectors_ready_bits,old_pid,sectors_ready_old_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(4),.IW(PID_W)) select_sectors_pending_old_pid(sectors_pending_bits,old_pid,sectors_pending_old_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(4),.IW(PID_W)) select_sectors_pending_fill_pid(sectors_pending_bits,fill_pid,sectors_pending_fill_pid);
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(4),.IW(PID_W)) select_dirty_old_pid(dirty_bits,old_pid,dirty_old_pid);
+
     // Direct vector slices keep every combinational dependency explicit.
     // Constant slot classes at elaboration; data SRAM is still full1168.
     // WB-only static bypass slots have no active owner in this finite path.
@@ -363,7 +417,9 @@ module ep_l2_slice_ctrl #(
             assign sectors_pending_bits[m*4 +:4]=0;
             assign dirty_bits[m*4 +:4]=0;
         end else begin: active
-            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG)) word_state(
+            wire [TAG_W-1:0] word_owner;
+            assign owner_tag_bits[m*TAG_W +:TAG_W]=(MODE!=1 && m<N_TAG)?TAG_W'(m):word_owner;
+            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(MODE==1)) word_state(
                 .clk(clk),.rst_n(rst_n),
                 .reserve_resident(req_fire && req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m),
                 .reserve_wb(req_fire && req_op==0 && evict_dirty && MODE!=1 && free_staging==m),
@@ -374,21 +430,25 @@ module ep_l2_slice_ctrl #(
                 .fill_update(fill_fire && fill_pid==m),.fill_sectors(fill_sectors),
                 .become_wb(native_commit && p_op==0 && p_dirty && p_staging==m),
                 .install(native_commit && p_op==0 && p_landing==m),.already_reserved(p_new_reserved),
-                .install_generation(landing_generation),.install_ready(p_ready),.install_pending(p_pending),
+                .install_old_live(p_old_live),.install_ready(p_ready),.install_pending(p_pending),
                 .install_dirty(p_install_dirty ? byte_sectors(p_be) : 4'b0),
                 .hit_write(native_commit && p_op==2 && p_landing==m),.write_ready(p_ready),.write_dirty(byte_sectors(p_be)),
                 .invalidate(native_commit && p_op==3 && p_landing==m),
                 .rollback_release(abort_fire && ((p_new_reserved && p_landing==m) || (p_dirty && MODE!=1 && p_staging==m))),
                 .lower_release(lower_accept && active_pid==m),
                 .role(role_bits[m*3 +:3]),.generation(generation_bits[m*GEN_W +:GEN_W]),
-                .owner_tag(owner_tag_bits[m*TAG_W +:TAG_W]),.pins(pins_bits[m*6 +:6]),
+                .owner_tag(word_owner),.pins(pins_bits[m*6 +:6]),
                 .sectors_ready(sectors_ready_bits[m*4 +:4]),.sectors_pending(sectors_pending_bits[m*4 +:4]),.dirty(dirty_bits[m*4 +:4]));
         end
     end endgenerate
     genvar t;
     generate for(t=0;t<N_TAG;t=t+1)begin: mapping
+        if(MODE!=1)begin: fixed_mapping
+            assign tag_map_bits[t*PID_W +:PID_W]=PID_W'(t);
+        end else begin: dynamic_mapping
         ep_l2_tag_map_word #(.PID_W(PID_W)) word_state(.clk(clk),.rst_n(rst_n),
             .write(native_commit && p_op==0 && p_tag==t),.data(p_landing),.payload(tag_map_bits[t*PID_W +:PID_W]));
+        end
     end endgenerate
 `ifndef SYNTHESIS
     initial begin
@@ -400,8 +460,8 @@ module ep_l2_slice_ctrl #(
         if ((gf && ge && fill_pid[1:0]==fe_pid[1:0]) ||
             (gf && gw && fill_pid[1:0]==head_pid[1:0]) ||
             (ge && gw && fe_pid[1:0]==head_pid[1:0])) $fatal(1,"P1 bank oversubscription");
-        if (gw && (role_bits[(head_pid)*3 +:3]!=WB || generation_bits[(head_pid)*GEN_W +:GEN_W]!=wad_payload_gen[head_wad])) $fatal(1,"stale WB handle");
-        if (lower_accept && generation_bits[(active_pid)*GEN_W +:GEN_W]==GMAX) $fatal(1,"generation wrap");
+        if (gw && (role_head_pid!=WB || generation_head_pid!=wad_payload_gen[head_wad])) $fatal(1,"stale WB handle");
+        if (lower_accept && generation_active_pid==GMAX) $fatal(1,"generation wrap");
     end
 `endif
 endmodule
