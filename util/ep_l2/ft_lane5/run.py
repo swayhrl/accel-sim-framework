@@ -114,6 +114,29 @@ def validate_atomic_input_scope(spec, release, traces):
     return {'sha256': proof['sha256'], 'scope': 'FULL_NATIVE_NONATOMIC_ONLY'}
 
 
+
+def validate_native_legacy_semantic_proof(spec, release, traces, binding=None):
+    if not release.get('input_adapter_revision'):
+        return
+    if binding is None:
+        client = json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text())
+        binding = client.get('native_legacy_semantic_proof')
+    proof = spec.get('native_legacy_semantic_proof')
+    require(isinstance(binding, dict) and isinstance(proof, dict), 'r17 native legacy semantic proof required')
+    require(proof['sha256'] == binding['report_sha256'] == digest(proof['path']), 'r17 semantic proof bytes changed')
+    report = json.loads(Path(proof['path']).read_text())
+    require(report['status'] == 'PASS_FULL_NATIVE_BYTE_AND_ZERO_MASK_SEMANTIC_PROOF' and
+            report['tool_sha256'] == binding['tool_sha256'] and
+            report['tooling_source_commit'] == binding['source_commit'], 'r17 proof incomplete or different source')
+    for name in ('core_source_commit', 'framework_source_commit', 'binary_sha256'):
+        require(report['source_identity'][name] == spec['identity'][name], 'r17 semantic source/binary mismatch')
+    matches = [r for r in report['workloads'] if r['workload'] == spec['identity']['workload']]
+    require(len(matches) == 1 and matches[0]['status'] == 'FULL_ORIGINAL_BYTES_AND_NATIVE_ZERO_MASK_SEMANTICS_PROVEN', 'r17 workload scope unsupported')
+    bodies = [{k: f[k] for k in ('name', 'sha256', 'bytes')} for f in matches[0]['files']]
+    require(sorted(bodies, key=lambda r:r['name']) ==
+            [r for r in traces if r['name'] != spec['entry_trace_name']], 'r17 complete body-byte closure differs')
+
+
 def inspect(spec):
     identity = spec['identity']
     key = run_key(identity)
@@ -162,6 +185,7 @@ def inspect(spec):
         require(digest(gate['evidence_path']) == gate['evidence_sha256'], 'qualification artifact changed')
         evidence.append({'gate': name, 'sha256': gate['evidence_sha256']})
     atomic_scope = validate_atomic_input_scope(spec, release, traces)
+    validate_native_legacy_semantic_proof(spec, release, traces)
     parser = spec['parser']
     require(digest(parser['path']) == parser['sha256'], 'parser source content mismatch')
     require(type(spec['timeout_seconds']) is int and spec['timeout_seconds'] > 0, 'explicit positive timeout required')
