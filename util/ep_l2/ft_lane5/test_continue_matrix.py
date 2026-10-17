@@ -84,12 +84,14 @@ class Safety(unittest.TestCase):
             try:
                 with patch.object(cm, 'OUT', root), patch.object(cm, 'read_registry', return_value=registry), \
                      patch.object(cm, 'load_current_authority', return_value={'binding': {'test_fixture': True}}), \
-                     patch.object(cm, 'current_manifest', return_value={'rows': [{'run_key': k, 'scientific_acceptance': 'CURRENT_ACCEPTED'} for k in accepted]}), \
+                     patch.object(cm, 'deliver_checkpoint') as checkpoint, \
+                     patch.object(cm, 'current_manifest', return_value={'rows': [{'run_key': k, 'scientific_acceptance': 'CURRENT_ACCEPTED', 'workload':SPEC['identity']['workload'],'binary_sha256':SPEC['identity']['binary_sha256'],'regime':'H0','profile':'S64'} for k in accepted]}), \
                      patch.object(cm.subprocess, 'check_output', return_value='test-fixture-source'), \
                      patch.object(cm.subprocess, 'Popen') as spawn, \
                      patch.object(cm.time, 'time', return_value=CAMPAIGN['deadline_unix'] + (1 if expired else -10)):
                     self.assertEqual(cm.main(path), 0)
                     spawn.assert_not_called()
+                    checkpoint.assert_called_once()
                 result = json.loads((root / 'TEST_FIXTURE_PROGRESS.json').read_text())
                 self.assertEqual(result['status'], expected)
             finally:

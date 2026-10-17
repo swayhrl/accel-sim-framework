@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import socket
 import signal
+import shutil
 import subprocess
 import sys
 import time
@@ -65,6 +66,55 @@ def command(args, log):
 
 def python(tool, *args):
     return [sys.executable, '-B', str(TOOLS / tool), *map(str, args)]
+
+
+def deliver_checkpoint(queue, tag, phase, publish_remote=True):
+    """Publish actual progress and derived evidence; never start/accept a simulation."""
+    from package_r0 import freeze_checksums
+    previous=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+    pack=PACKS/('FT20261017_LANE5_'+tag+'_CHECKPOINT_r1')
+    checkpoint=OUT/(tag+'_ACTUAL_CHECKPOINT.json')
+    command(python('parallel_checkpoint.py','--out',checkpoint),OUT/(tag+'_actual_checkpoint.log'))
+    command(python('paper_closure_checkpoint.py','--pack',pack),OUT/(tag+'_evidence_index.log'))
+    for source,name in [(checkpoint,'EXECUTION_CHECKPOINT.json'),
+                        (OUT/(queue['revision']+'_START.json'),'CONTROLLER_START.json'),
+                        (OUT/(queue['revision']+'_PROGRESS.json'),'CONTROLLER_PROGRESS.json')]:
+        shutil.copyfile(source,pack/name)
+    write_json(pack/'EXECUTOR_PHASE.json',{'phase':phase,'queue_revision':queue['revision'],
+        't0_unix':queue['t0_unix'],'deadline_unix':queue['deadline_unix'],'maximum_starts':queue['maximum_starts'],
+        'no_new_acceptance_or_launch_by_this_checkpoint':True,
+        'scope':'Status/evidence publication only. Read current V2 and actual PID/registry before resuming; terminal phase does not imply another background worker exists.'})
+    main=json.loads((H/'RECEIPT.json').read_text());main['last_execution_phase']={'phase':phase,'queue_revision':queue['revision'],'checkpoint_pack':str(pack),'at_unix':time.time()};write_json(H/'RECEIPT.json',main)
+    with (H/'STATUS.md').open('a') as f:f.write('\nActual campaign phase: '+phase+'. Evidence/process/registry snapshot: '+str(pack.relative_to(REPO))+'. Original budgets and deadlines unchanged.\n')
+    shutil.copyfile(H/'STATUS.md',pack/'STATUS.md');shutil.copyfile(H/'RECEIPT.json',pack/'MAIN_RECEIPT.json');freeze_checksums(pack)
+    if not publish_remote:
+        return pack
+    allowed={str(p.relative_to(REPO)) for p in HANDOFF_FILES}
+    changed=subprocess.check_output(['git','diff','--name-only'],cwd=REPO,text=True).splitlines()
+    if any(p not in allowed for p in changed) or subprocess.check_output(['git','diff','--cached','--name-only'],cwd=REPO,text=True).strip():
+        raise ValueError('Unrelated edits/index block metadata commit')
+    subprocess.run(['git','add',*map(str,HANDOFF_FILES)],cwd=REPO,check=True)
+    subprocess.run(['git','add','-f',str(pack)],cwd=REPO,check=True)
+    subprocess.run(['git','diff','--cached','--check','--','*.json','*.md','*SHA256SUMS'],cwd=REPO,check=True)
+    command(['git','-c','gc.auto=0','commit','-m','Lane5 execution checkpoint '+phase],OUT/(tag+'_commit.log'))
+    env=os.environ.copy();env['GIT_SSH_COMMAND']='ssh -p 443 -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=yes'
+    with (OUT/(tag+'_push.log')).open('xb') as f:
+        subprocess.run(['git','-c','gc.auto=0','-c','pack.threads=1','push','git@ssh.github.com:swayhrl/accel-sim-framework.git','HEAD:refs/heads/hrl/ep-l2-ft20261016-lane5-v1'],cwd=REPO,env=env,stdout=f,stderr=subprocess.STDOUT,check=True)
+    branch='hrl/ep-l2-ft20261016-lane5-v1';ref='refs/remotes/origin/'+branch
+    command(['git','-c','gc.auto=0','-c','url.https://github.com/.insteadOf=git@github.com:','-c','credential.helper=!gh auth git-credential','fetch','--no-tags','origin','refs/heads/'+branch+':'+ref],OUT/(tag+'_fetch.log'))
+    def git(*args):return subprocess.check_output(['git',*args],cwd=REPO)
+    head=git('rev-parse','HEAD').decode().strip()
+    if head!=git('rev-parse',ref).decode().strip():raise ValueError('Remote checkpoint SHA differs')
+    for name in git('diff','--name-only',previous,head).decode().splitlines():
+        if (REPO/name).read_bytes()!=git('show',head+':'+name):raise ValueError('Remote checkpoint bytes differ')
+    for line in (pack/'SHA256SUMS').read_text().splitlines():
+        sha,name=line.split('  ',1)
+        if digest(pack/name)!=sha:raise ValueError('Checkpoint checksum differs')
+    event={'status':'REMOTE_VERIFIED_EXECUTION_AND_ACCEPTED_EVIDENCE_CHECKPOINT','phase':phase,'metadata_publication_commit':head,'pack':str(pack),'scientific_acceptance_changed':False}
+    for lane in ['LANE3','LANE6']:write_json(Path('/workspace/ep_l2_ft20261016_shared/coordination_requests')/('LANE5_TO_'+lane+'_'+tag+'.json'),event)
+    write_json(OUT/(tag+'_REMOTE_VERIFIED.json'),event)
+    print(json.dumps({'event':'EXECUTION_CHECKPOINT_REMOTE_VERIFIED',**event}),flush=True)
+    return pack
 
 
 def publish(unit, specs, tag, deadline, controller):
@@ -155,6 +205,7 @@ def main(queue_path):
     fingerprint = None
     status = 'RUNNING'
     error = None
+    delivered_groups=set()
     try:
         while True:
             if digest(queue_path) != queue_sha:
@@ -168,6 +219,11 @@ def main(queue_path):
             state = load_current_authority()
             manifest = current_manifest(state)
             accepted = {r['run_key'] for r in manifest['rows'] if r['scientific_acceptance'] == 'CURRENT_ACCEPTED'}
+            for workload in ['convolutionSeparable','FWT_7_21']:
+                profiles={r.get('profile') for r in manifest['rows'] if r['run_key'] in accepted and r['workload']==workload and r.get('regime')=='H0' and r['binary_sha256']=='fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7'}
+                if workload not in delivered_groups and {'B16_OFF','S64','U_CAP16','U_OFF'}<=profiles:
+                    deliver_checkpoint(queue,queue['revision']+'_FOURWAY_'+workload.upper(),'FOURWAY_CURRENT_ACCEPTED_'+workload)
+                    delivered_groups.add(workload)
             for key, (child, log) in list(children.items()):
                 if child.poll() is not None:
                     log.close()
@@ -260,4 +316,9 @@ def main(queue_path):
                             'active_runs': [v for v in final['runs'].values() if v['status'] in ACTIVE],
                             'resume': 'Audit exact queue and progress, real PID/lease/current V2. Preserve all attempts. No implicit retry or reset.'})
         print(json.dumps({'event': 'FOREGROUND_CAMPAIGN_STOPPED', 'status': status, 'error': error}), flush=True)
+        try:
+            deliver_checkpoint(queue,queue['revision']+'_FINAL',status)
+        except Exception as delivery_error:
+            write_json(OUT/(queue['revision']+'_FINAL_DELIVERY_ERROR.json'),{'status':status,'error':error,'delivery_error':repr(delivery_error),'progress_path':str(receipt),'existing_runners_untouched':True})
+            print(json.dumps({'event':'FINAL_CHECKPOINT_REQUIRES_DELIVERY_RECOVERY','error':repr(delivery_error)}),flush=True)
     return 0 if error is None else 1

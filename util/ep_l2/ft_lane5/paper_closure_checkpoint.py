@@ -6,7 +6,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from acceptance import current_manifest, load_current_authority
+from acceptance import current_manifest, load_current_authority, require_current_result
 from package_r0 import freeze_checksums
 from registry import PARALLEL, Registry, write_json
 
@@ -26,6 +26,8 @@ def main():
     manifest = current_manifest(state)
     registry = Registry().snapshot()
     rows = [r for r in manifest['rows'] if r['scientific_acceptance'] == 'CURRENT_ACCEPTED']
+    for row in rows:
+        require_current_result(row['identity'],row['raw_log_sha256'],row['observed_cycles'],row['instructions'],state)
     a.pack.mkdir(parents=True)
     (a.pack / 'INCREMENTAL_CONTRACT.md').write_bytes(subprocess.check_output(
         ['git', 'show', AUTHORITY + ':' + CONTRACT], cwd=REPO))
