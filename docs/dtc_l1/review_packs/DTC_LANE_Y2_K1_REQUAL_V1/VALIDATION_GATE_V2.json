@@ -1,25 +1,83 @@
 {
+  "aa2_execution_authorized": false,
+  "actual_ldst_objects_executed": true,
+  "actual_runtime_library_binding_verified": true,
+  "additional_actual_abi_runs": 16,
+  "additional_k0_triplets": 4,
+  "additional_production_rejection_tests": 1,
+  "all_eight_contracts_pass": false,
   "architectural_value_correctness": "UNPROVEN",
-  "as_of": "2026-10-18T00:39:16.947415+08:00",
-  "checks": 62,
+  "as_of": "2026-10-17T17:03:11.779815+00:00",
+  "atomic_invalidation_timing_assumption": "Atomic sweep at source request, zero additional simulated cycles; no hardware latency/bandwidth/PPA proof.",
+  "checks": 79,
+  "contract_verdicts": [
+    {
+      "gap": "Active cluster with partial SM completion and kernel-done absence only source-body fixture/static diff, not a populated shader execution.",
+      "id": "K1-01",
+      "passed": "Actual omitted/OFF/ON; MEMBAR pending/clear/one SM; config same/different with flush0 and two clusters; actual repeated empty-cluster ticks; fixture active/partial cluster selection.",
+      "status": "PARTIAL"
+    },
+    {
+      "gap": "Bounded OO read model only; no architectural value claim.",
+      "id": "K1-02",
+      "passed": "Actual pending/live multi-consumer old identity, post-E same-address new physical, safe final Ref; direct production API Ref0 reclaim and generation reuse.",
+      "status": "PASS"
+    },
+    {
+      "gap": "Multi-line coalescer-to-dispatch integration not run with real shader; API/body model scope.",
+      "id": "K1-03",
+      "passed": "Exact production grant/commit and partial admission bodies plus OO API: accepted references retained, unaccepted lookup current directory, no partial ready retire, exact two closures.",
+      "status": "PASS"
+    },
+    {
+      "gap": "No NoC/DRAM scheduler; stale and slot reuse negative tests use exact production bodies/API rather than full LDST object.",
+      "id": "K1-04",
+      "passed": "Actual mem_fetch out-of-order four sectors and duplicate rejection; API/body fixture stale generation, wrong address/write, finite cursor/late waiter and PIB slot reuse.",
+      "status": "PASS"
+    },
+    {
+      "gap": "Synthetic instructions/clock; architectural register values not tested.",
+      "id": "K1-05",
+      "passed": "Actual operand collector WB bank refusal, real pending writes/scoreboard/ledger closure and Ref held until last retirement; API generation reuse; collection interleave fixture.",
+      "status": "PASS"
+    },
+    {
+      "gap": "IO orphan lifetime unimplemented. Excluded from OO qualification; cannot claim IO/OO joint PASS.",
+      "id": "K1-06",
+      "passed": "OO-only mode guard explicitly rejects IO K1 with IO_K1_UNIMPLEMENTED_STOP.",
+      "status": "FAIL"
+    },
+    {
+      "gap": "No actual STORE/ATOMIC/BYPASS/PROXY instruction/ACK sequence through complete LDST object or payload side effects; source completion inputs controlled by fixture.",
+      "id": "K1-07",
+      "passed": "Exact production sidecar admit/source-complete/retire, proxy filter, E/no-E controls; unchanged-source comparisons.",
+      "status": "PARTIAL"
+    },
+    {
+      "gap": "Same-cycle permutations and active multi-SM condition partly body fixtures; atomic zero-added-cycle sweep is model assumption.",
+      "id": "K1-08",
+      "passed": "Actual E10 vs ordinary commit23 with real cache miss owner; 2SM config scope and idle repeats; exact-body same-cycle ERW/REW/RWE and same/multi-bank quotas.",
+      "status": "PASS"
+    }
+  ],
   "cross_sm_coherence": "UNPROVEN",
   "execution_authority": "Lane AA only; this runner creates no execution authority",
   "fixture_limits": [
-    "clock and scoreboard inputs",
-    "packet accessor/ownership fixture, no real mem_fetch constructor/NoC",
-    "WB grant fixture; real production failure branch executed, operand collector arbitration not simulated",
-    "register scoreboard completion shim uses production completion_accounting",
-    "ordinary L1D protected custom-Tag constructor; GPU perf-counter registration not exercised",
-    "cache configuration aftermath omitted from source-selected block",
-    "no complete shader_core/ldst ABI object or full gpgpu_sim cycle executed",
-    "full lower-create/ICNT issue integration not executed; unchanged method bodies independently hash-checked"
+    "For original 26 body fixtures, prior clock/scoreboard/packet/WB/completion seams remain; see EXTRACTED_BODY_BINDING.json.",
+    "Supplement uses complete real production GPU/core/LDST/cache/mem_fetch/scoreboard/collector objects and matching headers/library; synthetic already-coalesced instructions and absolute CPU clock.",
+    "Supplement captures real lower requests at mem_fetch_interface and supplies synthetic real replies; no actual NoC/DRAM execution for those packets.",
+    "Actual STORE/ATOMIC/BYPASS/PROXY instruction/ACK sequences not run in ABI supplement; K1-07 PARTIAL.",
+    "Active/partially completed cluster source selection and multi-line grant/partial/late waiter edge cases partly production-body/API fixtures; see per-contract gaps."
   ],
+  "framework_producer_commit": "49fb5d1b62b6f2387abc2d568bc8ae7543dc0df4",
   "frozen_core": "6fba0136f8465b59fe5858a950fa39efb265f654",
   "full_input_pairing": "NOT_RUN_CPU_ONLY; Lane AA owns complete identical-input K0/K1 dispatch",
   "full_simulations_dispatched": 0,
   "goal": "DTC_LANE_Y2_INDEPENDENT_K1_REQUAL_174",
   "io": "IO_K1_UNIMPLEMENTED_STOP",
   "k0_cpu_default_off_equivalent": true,
+  "k0_full_workload_equivalence": "UNPROVEN_NOT_RUN; recommend Lane AA2 strict full identical-input new-Core K0 pairing; do not substitute old frozen results.",
+  "k0_scope": "Actual OO LDST cacheable synthetic loads finite0/1, one/three consumers, ordinary API miss, source calls and gated interval: omitted=OFF=frozen exact ticks/physical/traffic/stats; previous header and source-body comparisons retained.",
   "lane_v_commit": "26abd496417d9392245052e54fbd9ba27c6ffd96",
   "modern": "HOLD",
   "negative_control": {
@@ -34,10 +92,11 @@
     "old_tag_queryable_after": false,
     "old_tag_queryable_before": true
   },
+  "prior_cpu_checks": 62,
   "production_k1_executed": true,
   "production_source_modified": false,
-  "qualification_scope": "OO logical mapping/lifetime and explicit zero-added-cycle source-request model; not full GPU/NoC integration or PPA",
-  "reason": "Real published K1 OO APIs and exact production source statements passed CPU structural/timing contracts within disclosed fixture scope",
+  "qualification_scope": "Bounded OO read lookup/lifetime and explicit zero-added-cycle source-request model; full GPU workload and architectural payload semantics unproven.",
+  "reason": "OO lookup/lifetime model passed direct APIs, exact production bodies and 16 matching-header real ABI LDST CPU runs; partial contracts and excluded IO explicitly retained.",
   "schema": 2,
   "status": "PASS_K1_OO_MODEL_SCOPE",
   "target_core": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",

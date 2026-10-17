@@ -1,22 +1,26 @@
-# K0 CPU 默认OFF等价
+# K0 default-OFF equivalence audit
 
-Y2绑定行为Core `c0a5e2c31e407c57e3a4af3ce529c921e8059a05`，冻结Core `6fba0136f8465b59fe5858a950fa39efb265f654`。V1 `b673d046b38f61159b5db67a477d58d1afa4662f`仍是正确的历史FAIL_CLOSED，未覆盖、未重跑原Goal。本包不把旧STOP Core当K1。
+**PASS_CPU_BOUNDED_OO_LDST**；完整输入等价性仍NOT_RUN/UNPROVEN。固定新Core `c0a5e2c31e407c57e3a4af3ce529c921e8059a05` 与冻结 `6fba0136f8465b59fe5858a950fa39efb265f654`，两套detached source、独立CMake Release/assertions-enabled库、匹配头文件重编探针。固定X Framework `49fb5d1b62b6f2387abc2d568bc8ae7543dc0df4`已fetch-back。
 
-生产注册名为`-gpgpu_dtc_l1_invalidate_on_source_event`，`OPT_BOOL`，默认`0`。`options_cpu_probe.cc`链接Y2独立构建的新`libcudart.so`，调用真实`gpgpu_sim_config::reg_options()`和生产parser/print。使用限定的`LD_LIBRARY_PATH`，并实际检查`ldd`绑定；不以系统CUDA同名库代替。
+真实生产config/parser的默认值为0，显式0和1有效；原6项parser/echo比较保留。本次每次运行实际`option_parser_print`输出有效全配置至外部日志，收据绑定SHA。基底config拷贝冻结RTX4080文件，测试中缩为2cluster×1SM，每SM64线程、2warp；所有override在`abi_ldst_probe.cc defaults[]`及逐命令flags中可核。cacheable load是合成、预coalesced的一lane warp，实际进入生产`ldst_unit::issue`，没有SASS decode/functional load值证明。
 
-|生产解析输入|mode / 新flag / finite_service|结果|
-|---|---|---|
-|省略全部选项|0 / 0 / 0|退出0|
-|OO + finite=1，省略新flag|3 / 0 / 1|退出0|
-|OO + finite=1，新flag=0|3 / 0 / 1|退出0|
-|OO + finite=1，新flag=1|3 / 1 / 1|退出0|
-|OO + finite=0，新flag=1|3 / 1 / 0|退出0|
-|未知选项负例|生产Unknown Option拒绝|退出1|
+四组严格三方比较：finite0/1 × 单/三load，各比较新flag omitted、新显式0、冻结无此flag。每组完全相同的内容包括40个LDST时间点、physical/generation/Ref/ready/Tag快照、实际packet cycle/address/size、全部103项公共`paper_frontend_stats`字段及43周期终态；ordinary API miss也发出真实下行请求并归还credit。实际装载库由各进程内`dladdr`核实，不以链接命令或`ldd`替代运行身份。
 
-`k0_default`、`k0_explicit_off`在CPU夹具中通过**真实生产新flag注册/解析**设置OFF，运行逐字提取的新source idle条件、cluster/SM传递及LDST分支。四个CPU SM上下文均有可查询retained Tag；ordinary请求发生后OO映射不变，source observer请求数0。`k0_frozen`执行从冻结Git对象提取的原LDST ordinary invalidate函数体，只有方法名改为`frozen_invalidate`以共存。三者观察状态严格相等。
+|finite1 三load例|新omitted|新0|冻结|
+|---|---:|---:|---:|
+|terminal cycle|43|43|43|
+|DTC lower packets/bytes|1 / 128|1 / 128|1 / 128|
+|ordinary lower packets/bytes|1 / 128|1 / 128|1 / 128|
+|retired / refs / retained physical|3 / 0 / 1|3 / 0 / 1|3 / 0 / 1|
+|finite samples / PIB integral / physical integral|43 / 52 / 41|43 / 52 / 41|43 / 52 / 41|
+|WB refused cycles / map-loss count|3 / 0|3 / 0|3 / 0|
 
-另有同一份Y2独立回归脚本，分别编译到新/冻结common header，14个命名用例各跑一次，共28次，逐项比较状态和退出码。覆盖IO/OO、pending/victim、finite late merge、slot/generation重用、sector扩展的旧行为；MODERN的这些K0回归不提升其K1资格。期望写在`inputs/k0_regression.json`，结果在`EXPECTED_VS_OBSERVED.json`。使用V1测试文本作为Y2新输入的明确副本；未执行V1 runner，未改V1产物。
+新ON对照确实不同：该序列DTC lower为2/256、最后allocated=0，map-loss sum/count=13/2。K1没有伪装成默认OFF，差异来自失效后同址再miss和旧生命周期保留。
 
-K0源码差异已披露：新增flag/observer及K1-only ordinary派生观察接口；source参数标签贯穿原调用链；finite occupancy observation改用独立采样edge。OFF保持原ordinary invalidate/cycle分支；`gpu-cache.cc/.h`与冻结blob完全相同。本CPU证据没有把两个二进制SHA差异视为行为差异，也没有声称完整输入、所有配置或完整LDST对象集成的时间等价。
+新增occupancy edge与service edge分离；失效只采样占用，不推进metadata服务或额度。独立矩形面积oracle覆盖31..34的clock-gated区间及32的事件；map-loss按每个physical+generation的可见性丢失到释放独立累计。K0逐cycle及finite全11项严格一致，未发现插桩改变已测finite服务、周期或流量。原14个header probe的28个新/冻结比较仍为辅助证据。
 
-判定：**PASS_K0_CPU_SCOPE**，不是完整Gaussian/GEMM配对收据。完整输入尚未运行。若后续Core变更或AA审查发现OFF不再同义，须在同一新Core上用完整相同输入重跑K0/K1严格配对，固定build/binary、有效配置、输入内容/顺序和parser身份，不能用旧结果替代。本Lane没有完整模拟派发权。
+差分审核：OFF仍构造原`l1_cache`，直接调用原ordinary invalidate/cycle；公共OO memory/lower issue/response/ready/WB/sidecar算法的7个函数体与冻结相同。新配置bool、ABI布局、source enum传递以及occupancy helper是明确差异，因此二进制和客户端必须按新头文件重编；新库不能冒充冻结库。
+
+该结果不涵盖实际STORE/ATOMIC/BYPASS/ACK路径、SASS/frontend、完整NoC/DRAM、多SM活跃shader及完整Gaussian/GEMM。建议AA2在其既有authority下对完整同一输入跑新Core K0，形成严格配对，不能依赖旧冻结结果替代；本Lane未派发、未授权新执行。
+
+详见`inputs/abi_sequence.json`、`supplement_r1/ABI_OBSERVATIONS.json`、`ABI_RECEIPTS.json`和`BUILD_IDENTITY.json`。原Y2只含API/源体的收据仍保留，当前完整对象资格由补充收据独立支撑。

@@ -1,0 +1,84 @@
+{
+  "base_config": "abi_base.config",
+  "base_config_sha256": "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8",
+  "config_overrides": "abi_ldst_probe.cc defaults[] then per-run flags; option_parser_print captures actual effective options",
+  "dimensions": {
+    "finite": [
+      0,
+      1
+    ],
+    "frozen_flag": [
+      "omitted"
+    ],
+    "loads": [
+      1,
+      3
+    ],
+    "new_flag": [
+      "omitted",
+      "0",
+      "1"
+    ]
+  },
+  "negative_fault": "Y2_DUPLICATE=1 changes second child sector1 to sector3; production identity/address rejection required",
+  "schema": 1,
+  "sequence": [
+    {
+      "cycle": 1,
+      "event": "actual issue cacheable load warp0 reg1 x"
+    },
+    {
+      "cycle": 5,
+      "event": "multi only: load warp1 reg1 x -> pending hit"
+    },
+    {
+      "cycle": 8,
+      "event": "actual ordinary L1D API read miss y, accepted owner/MSHR/credit"
+    },
+    {
+      "cycle": 9,
+      "event": "MEMBAR pendingWrites negative control: no source E; x still queryable"
+    },
+    {
+      "cycle": 10,
+      "event": "two explicit production idle-source requests to core0; request clears x, ordinary pending; no service edge advanced"
+    },
+    {
+      "cycle": 11,
+      "event": "multi only: load warp0 reg2 x; ON new physical, OFF merges"
+    },
+    {
+      "cycle": "12..15",
+      "event": "first real lower response children order3,1,0,2"
+    },
+    {
+      "cycle": "15..20",
+      "event": "actual operand collector same-bank write blocker, Ref retained on refusal"
+    },
+    {
+      "cycle": 23,
+      "event": "ordinary root fill and MSHR consumer drain; ordinary invalidate commits at23"
+    },
+    {
+      "cycle": "24..27",
+      "event": "ON multi second physical real children order3,1,0,2"
+    },
+    {
+      "cycle": "31..34",
+      "event": "LDST service gated; snapshots continue"
+    },
+    {
+      "cycle": 32,
+      "event": "flush flag temporarily0: same cache config, different config broadcasts both SMs, repeated same config no E; restore flush1"
+    },
+    {
+      "cycle": 36,
+      "event": "actual MEMBAR clears once at pendingWrites0, repeated call no extra event"
+    },
+    {
+      "cycle": "41..43",
+      "event": "bounded real empty gpgpu_sim::cycle ticks; both idle clusters receive repeated source events, no kernel/trace/runtime-thread"
+    }
+  ],
+  "values": "No architectural payload or load-value oracle; UNPROVEN"
+}
