@@ -82,8 +82,8 @@ def main():
     review_path=a.pair_pack/'SCIENTIFIC_REVIEW.json';review=json.loads(review_path.read_text())
     currentness=recheck_review_currentness(review,a.pair_pack,state)
     require_publication_boundary(Registry())
-    rows=review['scientific_acceptance_rows_proposed'];single=review.get('diagnostic_kind')=='LOCAL_IDEAL_SINGLE'
-    require((single and review['experiment_id']=='EPL2_PARALLEL_POTENTIAL_20261017_V1' and len(rows)==1 and rows[0]['scientific_scope']=='LOCAL_IDEAL_NATIVE_V1') or (not single and len(rows)==2 and {r['mode'] for r in rows}=={'B16_BANKED','U_WB16'}),'Incomplete or incorrectly scoped result')
+    rows=review['scientific_acceptance_rows_proposed'];single=review.get('diagnostic_kind') in ('LOCAL_IDEAL_SINGLE','SCOPED_SINGLE')
+    require((single and review['experiment_id']=='EPL2_PARALLEL_POTENTIAL_20261017_V1' and len(rows)==1 and rows[0]['scientific_scope'] in ('LOCAL_IDEAL_NATIVE_V1','UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1')) or (not single and len(rows)==2 and {r['mode'] for r in rows}=={'B16_BANKED','U_WB16'}),'Incomplete or incorrectly scoped result')
     require(all(r['scientific_acceptance']=='CURRENT_ACCEPTED' and r['original_terminal_status']=='COMPLETE_VALID' for r in rows),'Nonvalid accepted proposal')
     require(not ({r['run_key'] for r in rows}&{r['run_key'] for r in ledger['rows']}),'Existing result cannot be overwritten')
     proof={'path':str(review_path.relative_to(REPO)),'sha256':digest(review_path)}
@@ -103,7 +103,7 @@ def main():
     a.acceptance_pack.mkdir(parents=True);shutil.copyfile(path,a.acceptance_pack/'SCIENTIFIC_ACCEPTANCE_V2.json')
     (a.acceptance_pack/'CURRENTNESS_RECHECK.json').write_text(json.dumps(currentness,indent=2,sort_keys=True)+'\n')
     delivery={'schema_version':'EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_PAIR_V1','status':'CURRENT_ACCEPTED_PENDING_REMOTE_POINTER_INSTALL','workload':review['workload'],'pair_pack':str(a.pair_pack.relative_to(REPO)),'acceptance_pack':str(a.acceptance_pack.relative_to(REPO)),'ledger_generation':ledger['generation'],'ledger_sha256':digest(path),'current_accepted_pairs':pairs,'all5_required_before_geomean':True,'rows':rows,'comparison':json.loads((a.pair_pack/'COMPARISON.json').read_text()),'source_manifest_sha256':digest(a.pair_pack/'SOURCE_MANIFEST.json')}
-    if single:delivery.update(schema_version='EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_LOCAL_ENDPOINT_V1',diagnostic_kind='LOCAL_IDEAL_SINGLE',profile=review['profile'],cell_id=review['cell_id'])
+    if single:delivery.update(schema_version='EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_LOCAL_ENDPOINT_V1',diagnostic_kind=review['diagnostic_kind'],scientific_scope=rows[0]['scientific_scope'],profile=review['profile'],cell_id=review['cell_id'])
     if review.get('experiment_id'):
         delivery.update(experiment_id=review['experiment_id'],regime=review['regime'],H0_accepted_pairs=pairs,r19_accepted_pairs=diagnostic_pairs,all5_required_before_geomean=False,diagnostic_only=True)
     (a.acceptance_pack/'LANE6_HANDOFF.json').write_text(json.dumps(delivery,indent=2,sort_keys=True)+'\n');(a.acceptance_pack/'REVIEW.md').write_text('# '+review['workload']+' current scientific acceptance\n\nBoth exact new terminals passed independent reparse, full input/source/binary/qualification/current-authority review. Next V2 adds both accepted rows, preserving every historical row. Remote readback and central pointer install precede delivery. No result selection or numeric SASS claim. '+('Diagnostic means require the two complete predeclared workloads under the same condition; never mix H0 five-workload mean.' if review.get('experiment_id') else 'No group geomean until all five.')+'\n');freeze_checksums(a.acceptance_pack)

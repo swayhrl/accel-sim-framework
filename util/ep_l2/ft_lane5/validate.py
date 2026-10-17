@@ -203,6 +203,11 @@ SUMMARY_FIELDS = {
 
 
 def validate_summary(summary, identity):
+    if summary.get('diagnostic_scope')=='ALL_DATA_REFERENCE_V1':
+        from unified_scope import features
+        from parse_all_data_terminal import validate_reference_summary
+        features(identity,'I_MEM_ALL_DATA')
+        return validate_reference_summary(summary,identity)
     require(SUMMARY_FIELDS <= set(summary), 'missing explicit terminal metrics: ' + str(SUMMARY_FIELDS - set(summary)))
     for key in SUMMARY_FIELDS - {'payload_roles', 'hardware_drained', 'workload_termination'}:
         require(integer(summary[key]), 'invalid numeric metric: ' + key)
@@ -220,7 +225,7 @@ def validate_summary(summary, identity):
     slices = summary.get('slices')
     require(slices == 64, 'performance summary must cover all 64 slices')
     capacity = identity['feature_vector']['payload_capacity_per_slice']
-    if summary.get('diagnostic_scope') == 'LOCAL_IDEAL_NATIVE_V1':
+    if summary.get('diagnostic_scope') in ('LOCAL_IDEAL_NATIVE_V1','UNIFIED_NATIVE_V1'):
         nominal = identity['feature_vector'].get('nominal_payload_capacity_per_slice')
         extra = summary.get('diagnostic_payload_extra_slots')
         require(nominal == 1168 and integer(extra), 'explicit local nominal/extra capacity required')

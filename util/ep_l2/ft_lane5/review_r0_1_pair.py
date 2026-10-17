@@ -44,7 +44,10 @@ def review(spec,registry,native_proof=None):
     raw=directory/'raw.log';require(digest(raw)==result['raw_log_sha256'],'Raw log changed')
     if spec.get('experiment_id') in ('EPL2_DOWNSTREAM_HEADROOM_R19','EPL2_PARALLEL_POTENTIAL_20261017_V1'):
         from headroom_config import validate_runtime_dump
-        if spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
+        if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1'):
+            from unified_scope import runtime_dump
+            actual=runtime_dump(raw,spec)
+        elif spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
             from local_ideal_scope import runtime_dump
             actual=runtime_dump(raw,spec)
         else:actual=validate_runtime_dump(raw,spec)
@@ -58,7 +61,7 @@ def review(spec,registry,native_proof=None):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--workload',choices=ORDER,required=True)
     ap.add_argument('--spec-b',type=Path,required=True);ap.add_argument('--spec-u',type=Path,required=True)
-    ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--pack',type=Path,required=True);ap.add_argument('--deadline-unix',type=float,required=True);ap.add_argument('--native-legacy-proof',type=Path);ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0','WAD256_Q4'));a=ap.parse_args()
+    ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--pack',type=Path,required=True);ap.add_argument('--deadline-unix',type=float,required=True);ap.add_argument('--native-legacy-proof',type=Path);ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0','WAD256_Q4','P2'));a=ap.parse_args()
     require(time.time()<a.deadline_unix,'Bounded CONTINUE deadline');require(not a.pack.exists(),'Frozen pack already exists')
     state=load_current_authority();ledger=current_manifest(state);accepted={r['workload'] for r in ledger['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED'}
     if a.regime is None:
@@ -74,6 +77,10 @@ def main():
     for name in ('core_source_commit','framework_source_commit','binary_sha256','trace_content_sha256','epoch_range','ideal_vector','termination_contract'):
         require(base['identity'][name]==unified['identity'][name],'Mismatched pair '+name)
     bf=dict(base['identity']['feature_vector']);uf=dict(unified['identity']['feature_vector'])
+    if a.regime=='P2':
+        from unified_scope import features
+        features(base['identity'],'P2_B16');features(unified['identity'],'P2_U_WB16')
+        require(bf.pop('static_wb_capacity')==16 and uf.pop('static_wb_capacity') is None,'P2 static/unified ownership declaration changed')
     require(bf.pop('unified_wb') is False and uf.pop('unified_wb') is True and bf==uf,'Different mechanism/budget dimensions')
     registry=Registry();lease=registry.build_lease('lane5',cpu=1,memory=2*1024**3)
     try:

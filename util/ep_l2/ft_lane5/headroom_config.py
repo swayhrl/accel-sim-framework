@@ -60,6 +60,9 @@ def validate(spec,release,configs,assets):
         return None
     require(digest(binding['path'])==binding['sha256'],'Condition qualification changed')
     m=json.loads(Path(binding['path']).read_text())
+    if m.get('qualification_kind')=='UNIFIED_NATIVE_V1':
+        from unified_scope import validate as validate_unified
+        return validate_unified(spec,release,configs,assets,m)
     if m.get('qualification_kind')=='LOCAL_IDEAL_NATIVE_V1':
         from local_ideal_scope import validate as validate_local
         return validate_local(spec,release,configs,assets,m)

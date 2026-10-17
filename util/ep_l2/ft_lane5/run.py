@@ -157,9 +157,14 @@ def inspect(spec):
     key = run_key(identity)
     authority = load_current_authority()
     reject_withdrawn(identity, current_manifest(authority))
-    require(set(identity['ideal_vector']) == IDEALS, 'ideal vector must include every V1 ideal mode')
+    unified_scope = spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1')
+    require(set(identity['ideal_vector']) == (IDEALS | {'mem_all_data'} if unified_scope else IDEALS), 'ideal vector must include every scoped ideal mode')
     feature = identity['feature_vector']
-    if spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
+    if unified_scope:
+        from unified_scope import features as unified_features
+        require(digest(spec['scope_tool']['path'])==spec['scope_tool']['sha256'],'Unified scope tool changed')
+        unified_features(identity,spec['producer_profile'])
+    elif spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
         from local_ideal_scope import features as local_features
         require(digest(spec['scope_tool']['path'])==spec['scope_tool']['sha256'],'Local scope tool changed')
         local_features(identity,spec['profile'])
@@ -371,7 +376,10 @@ def run(spec, registry):
             require(normal and cycles is not None and instructions is not None, 'missing native terminal execution evidence')
             if experiment is not None:
                 from headroom_config import validate_runtime_dump
-                if spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
+                if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1'):
+                    from unified_scope import runtime_dump
+                    result['downstream_effective_config']=runtime_dump(directory/'raw.log',spec)
+                elif spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
                     from local_ideal_scope import runtime_dump
                     result['downstream_effective_config']=runtime_dump(directory/'raw.log',spec)
                 else:
