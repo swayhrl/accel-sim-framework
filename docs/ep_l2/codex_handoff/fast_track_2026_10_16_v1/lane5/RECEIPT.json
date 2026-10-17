@@ -43,7 +43,9 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_VECTORADD_4M_PAIR_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_VECTORADD_4M_ACCEPTANCE_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_CFD_097K_PAIR_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_CFD_097K_ACCEPTANCE_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_CFD_097K_ACCEPTANCE_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R17_NATIVE_BYTE_SEMANTIC_PROOF_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R17_FIRST3_PRESSURE_INTERPRETATION_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
@@ -612,7 +614,7 @@
     },
     "new_independent_production_tests": 0,
     "new_simulations": 0,
-    "next_action": "Remote readback/pointer install and immediate Lane6 handoff; continue frozen remaining order",
+    "next_action": "Await original Convolution terminals; require explicit r17 supplement in terminal review, publish pair4 then FWT with new proof admission; all5 beforegeomean",
     "off_mode_qualification": {
       "V2_launch_authorizations": 0,
       "accepted_pairs": 0,
@@ -666,6 +668,33 @@
         "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/extern/pybind11"
       },
       "status": "OFFICIAL_PRODUCER31_PASS_INDEPENDENT31_PASS_NOT_ELEVEN_GATE_CERTIFIED"
+    },
+    "r17_native_semantic_scope": {
+      "FWT_extended_zero_mask_rows": 0,
+      "actual_source_bound_CPP_semantics": "Per-instruction local stringstream; list_all consumes active addresses, inactive addresses0; residual first scalar may be attempted as imm, which trace-driven uses only for OP_DEPBAR; all observed extended opcodes ordinary LD/ST. Original zero-mask instruction rows still advance native trace_pc and decode; generate_mem_accesses returns before memory requests. No rows/bytes removed.",
+      "all_records_retained_and_full_raw_hashes_match": true,
+      "at_utc": "2026-10-17T05:05:05.190412+00:00",
+      "convolution_extended_zero_mask_rows": 3840,
+      "current_accepted_pairs": 3,
+      "input_proof_lease": "e30b21a54fb94b3bb624df32f722a974",
+      "input_proof_lease_terminal": "RELEASED",
+      "native_CPP_unit_invocations_for_this_supplement": 0,
+      "new_cpp_builds_or_simulators_for_this_supplement": 0,
+      "new_small_python_guard_cases": 8,
+      "original11_runtime_gate_and_main_binary": "UNCHANGED_PASS",
+      "production_status": "Convolution original 4cdb controllers still running; no frozen input/cert/raw modified. Its terminal review requires this external supplement. FWT future admission binds same proof under new ff19 consumer source.",
+      "proof_binding": {
+        "report_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_R17_NATIVE_BYTE_SEMANTIC_PROOF_r1/NATIVE_LEGACY_BYTE_SEMANTIC_PROOF_R17_r1.json",
+        "report_relative_path": "docs/ep_l2/review_packs/FT20261017_LANE5_R17_NATIVE_BYTE_SEMANTIC_PROOF_r1/NATIVE_LEGACY_BYTE_SEMANTIC_PROOF_R17_r1.json",
+        "report_sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2",
+        "review_coordination_commit": "3e3920a42a865c90af37330ffe95b6bbb9d61537",
+        "source_commit": "75652c50b98f1484bb5101ec81b13748b60bf8e2",
+        "tool_sha256": "a051f671dfc8707803b970ec8f04332d5968768a4fae80712f60b09ffaca4aa3"
+      },
+      "python_optimization_for_current_validation": 0,
+      "review_coordination_commit": "3e3920a42a865c90af37330ffe95b6bbb9d61537",
+      "source_derived_independent_field_proof": true,
+      "status": "R17_COMPLETE_ORIGINAL_BYTE_AND_NATIVE_SOURCE_SEMANTIC_SCOPE_PASS"
     },
     "result_filesystem_guard": {
       "accepted_pairs": 0,
@@ -1279,7 +1308,7 @@
     "status": "RESOURCE_HOLD_NO_SUFFICIENT_OWN_WORKSPACE_SCRATCH",
     "workspace_deficit_bytes": 6103367680
   },
-  "review_coordination_commit": "92de53a63616f9fcc53f2058ad975c3c8f90b13c",
+  "review_coordination_commit": "3e3920a42a865c90af37330ffe95b6bbb9d61537",
   "runner_sha256": "821be8e716e0f3eb5bb1c4b59bffd1610419e5ae98626d66cc20fcd5c258bde6",
   "runner_source_commit": "d7722c05c80ea9efbf43631ffb182875f1d7fc3a",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
@@ -1299,7 +1328,7 @@
   "status": "R0_1_A1_B1_3_CURRENT_ACCEPTED_PAIRS",
   "task_id": "FT20261017_LANE5_CONTINUE_R13_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-17T04:29:36.229468+00:00",
+  "updated_at": "2026-10-17T05:05:05.190412+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {

@@ -1,0 +1,189 @@
+gpu-simulator/trace-parser/trace_parser.cc @ 9bd17f9db3e8cbbc3fdad7283d1e292918546fd5 sha256=9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28
+135: bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
+136:                                      unsigned enable_lineinfo) {
+137:   std::stringstream ss;
+138:   ss.str(trace);
+139: 
+140:   std::string temp;
+141: 
+142:   // Start Parsing
+143: 
+144:   if (trace_version < 3) {
+145:     // for older trace version, read the tb ids and ignore
+146:     unsigned threadblock_x = 0, threadblock_y = 0, threadblock_z = 0,
+147:              warpid_tb = 0;
+148: 
+149:     ss >> std::dec >> threadblock_x >> threadblock_y >> threadblock_z >>
+150:         warpid_tb;
+151:   }
+152:   if (enable_lineinfo) {
+153:     ss >> std::dec >> line_num;
+154:   }
+155: 
+156:   ss >> std::hex >> m_pc;
+157:   ss >> std::hex >> mask;
+158: 
+159:   std::bitset<WARP_SIZE> mask_bits(mask);
+160: 
+161:   ss >> std::dec >> reg_dsts_num;
+162:   assert(reg_dsts_num <= MAX_DST);
+163:   for (unsigned i = 0; i < reg_dsts_num; ++i) {
+164:     ss >> temp;
+165:     sscanf(temp.c_str(), "R%d", &reg_dest[i]);
+166:   }
+167: 
+168:   ss >> opcode;
+169: 
+170:   ss >> reg_srcs_num;
+171:   assert(reg_srcs_num <= MAX_SRC);
+172:   for (unsigned i = 0; i < reg_srcs_num; ++i) {
+173:     ss >> temp;
+174:     sscanf(temp.c_str(), "R%d", &reg_src[i]);
+175:   }
+176: 
+177:   // parse mem info
+178:   unsigned address_mode = 0;
+179:   unsigned mem_width = 0;
+180: 
+181:   ss >> mem_width;
+182: 
+183:   if (mem_width > 0)  // then it is a memory inst
+184:   {
+185:     memadd_info = new inst_memadd_info_t();
+186: 
+187:     // read the memory width from the opcode, as nvbit can report it incorrectly
+188:     std::vector<std::string> opcode_tokens = get_opcode_tokens();
+189:     memadd_info->width = get_datawidth_from_opcode(opcode_tokens);
+190: 
+191:     ss >> std::dec >> address_mode;
+192:     if (address_mode == address_format::list_all) {
+193:       // read addresses one by one from the file
+194:       for (int s = 0; s < WARP_SIZE; s++) {
+195:         if (mask_bits.test(s))
+196:           ss >> std::hex >> memadd_info->addrs[s];
+197:         else
+198:           memadd_info->addrs[s] = 0;
+199:       }
+200:     } else if (address_mode == address_format::base_stride) {
+201:       // read addresses as base address and stride
+202:       unsigned long long base_address = 0;
+203:       int stride = 0;
+204:       ss >> std::hex >> base_address;
+205:       ss >> std::dec >> stride;
+206:       memadd_info->base_stride_decompress(base_address, stride, mask_bits);
+207:     } else if (address_mode == address_format::base_delta) {
+208:       unsigned long long base_address = 0;
+209:       std::vector<long long> deltas;
+210:       // read addresses as base address and deltas
+211:       ss >> std::hex >> base_address;
+212:       for (int s = 0; s < WARP_SIZE; s++) {
+213:         if (mask_bits.test(s)) {
+214:           long long delta = 0;
+215:           ss >> std::dec >> delta;
+216:           deltas.push_back(delta);
+217:         }
+218:       }
+219:       memadd_info->base_delta_decompress(base_address, deltas, mask_bits);
+220:     }
+221:   }
+222: 
+223:   ss >> imm;
+224: 
+225:   // Finish Parsing
+226: 
+227:   return true;
+228: }
+229: 
+230: trace_parser::trace_parser(const char *kernellist_filepath) {
+231:   kernellist_filename = kernellist_filepath;
+400:       } else if (string1 == "#END_TB") {
+401:         assert(start_of_tb_stream_found);
+402:         break;  // end of TB stream
+403:       } else if (string1 == "thread" && string2 == "block") {
+404:         assert(start_of_tb_stream_found);
+405:         sscanf(line.c_str(), "thread block = %d,%d,%d", &block_id_x,
+406:                &block_id_y, &block_id_z);
+407:         std::cout << line << std::endl;
+408:       } else if (string1 == "warp") {
+409:         // the start of new warp stream
+410:         assert(start_of_tb_stream_found);
+411:         sscanf(line.c_str(), "warp = %d", &warp_id);
+412:       } else if (string1 == "insts") {
+413:         assert(start_of_tb_stream_found);
+414:         sscanf(line.c_str(), "insts = %d", &insts_num);
+415:         threadblock_traces[warp_id]->resize(
+416:             insts_num);  // allocate all the space at once
+417:         inst_count = 0;
+418:       } else {
+419:         assert(start_of_tb_stream_found);
+420:         threadblock_traces[warp_id]
+421:             ->at(inst_count)
+422:             .parse_from_string(line, trace_version, enable_lineinfo);
+423:         inst_count++;
+424:       }
+425:     }
+426:   }
+gpu-simulator/trace-driven/trace_driven.cc @ 9bd17f9db3e8cbbc3fdad7283d1e292918546fd5 sha256=7614c6b5196b030daa9e9db08d712bd0e9f6c303e5bca1181f8b5a8d35699327
+60: const trace_warp_inst_t *trace_shd_warp_t::get_next_trace_inst() {
+61:   if (trace_pc < warp_traces.size()) {
+62:     trace_warp_inst_t *new_inst =
+63:         new trace_warp_inst_t(get_shader()->get_config());
+64:     new_inst->parse_from_trace_struct(
+65:         warp_traces[trace_pc], m_kernel_info->OpcodeMap,
+66:         m_kernel_info->m_tconfig, m_kernel_info->m_kernel_trace_info);
+67:     trace_pc++;
+68:     return new_inst;
+69:   } else
+70:     return NULL;
+71: }
+72: 
+158:     const class trace_config *tconfig,
+159:     const class kernel_trace_t *kernel_trace_info) {
+160:   // fill the inst_t and warp_inst_t params
+161: 
+162:   // fill active mask
+163:   active_mask_t active_mask = trace.mask;
+164:   set_active(active_mask);
+165: 
+166:   // fill and initialize common params
+167:   m_decoded = true;
+168:   pc = (address_type)trace.m_pc;
+169: 
+170:   isize =
+245: 
+246:   // fill addresses
+247:   if (trace.memadd_info != NULL) {
+248:     data_size = trace.memadd_info->width;
+249:     for (unsigned i = 0; i < warp_size(); ++i)
+250:       set_addr(i, trace.memadd_info->addrs[i]);
+251:   }
+252: 
+253:   // handle special cases and fill memory space
+383:     // last group is able to proceed even with DEPBAR present; if the immediate
+384:     // value is 0, then all of the groups need to finish before proceed.
+385:     case OP_DEPBAR:
+386:       m_is_depbar = true;
+387:       m_depbar_group_no = trace.imm;
+388:       break;
+389:     case OP_HADD2:
+390:     case OP_HADD2_32I:
+391:     case OP_HFMA2:
+src/abstract_hardware_model.cc @ 7b8e6ac70b8fe0f1bd37efca11acb5284938825d sha256=2e615f14980efd7a960a0a41075989a3d000a7cd08f584f5e868f8181cc0ff38
+284: }
+285: 
+286: void warp_inst_t::generate_mem_accesses() {
+287:   if (empty() || op == MEMORY_BARRIER_OP || m_mem_accesses_created) return;
+288:   if (!((op == LOAD_OP) || (op == TENSOR_CORE_LOAD_OP) || (op == STORE_OP) ||
+289:         (op == TENSOR_CORE_STORE_OP)))
+290:     return;
+291:   if (m_warp_active_mask.count() == 0) return;  // predicated off
+292: 
+293:   const size_t starting_queue_size = m_accessq.size();
+294: 
+295:   assert(is_load() || is_store());
+296: 
+297:   // if((space.get_type() != tex_space) && (space.get_type() != const_space))
+298:   assert(m_per_scalar_thread_valid);  // need address information per thread
+299: 
+300:   bool is_write = is_store();
+301: 
