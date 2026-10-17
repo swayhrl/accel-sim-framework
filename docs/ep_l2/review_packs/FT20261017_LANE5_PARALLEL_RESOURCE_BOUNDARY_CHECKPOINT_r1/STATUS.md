@@ -1,0 +1,9 @@
+# Lane5 — rolling results at output-budget boundary
+
+Snapshot 2026-10-17T13:08:25.322722+00:00: 0 active central sims; no extra watcher. R19 starts18/24, accepted16, complete but unpaired/unaccepted1, resource-stopped1; original deadline2026-10-17 17:09:16UTC unchanged. New campaign attempts7/72, accepted application rows3, failed attempts3, remaining starts65; frozen deadline2026-10-18T11:30:14.500719+00:00. No T0/count reset.
+
+Current V2 generation27 retains H0 ten accepted rows and all six old withdrawals. D2 both workloads accepted; group mean0.9979655384203753. ROP40 Convolution B290203/U291161 is accepted (negative). Local source37dc vectorAdd OFF73696/56000000 is accepted after parser-only revalidation; no simulator rerun. H0 five-workload mean1.0016002037656606 remains separate. Each accepted pair/endpoint has the existing Lane6 event; paper-side intake is not claimed.
+
+Aggregate result bytes8610735622 exceed or approach unchanged ceiling8589934592. New full applications: BLOCKED_OUTPUT_BUDGET_BOUNDARY. L25 Convolution U and ICNT2 Convolution B/U stopped under the existing guard; old directories remain. Proposed12GiB adjustment is awaiting explicit approval, not applied. Workspace48GiB/Share40GiB/availableRAM64GiB and4sim/8CPU/32GiB protections remain. No compiler/migration/deletion.
+
+WAD256 and ICNT2 are independently qualified/currently authorized for original source2309. Source37dc local ordinary profiles are qualified; future specs use frozen parser dependency wrapper. Unifiedfb source has49 independently executed affected positives plus11 native constructors and5 expected rejections, but no complete eleven-gate qualification/native OFF canary and no application authority. Pending source assignment is documented before ON outcomes; old2309 anchors are available evidence, never automatically counted as new-source matched anchors.
