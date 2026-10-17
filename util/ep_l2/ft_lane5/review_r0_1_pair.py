@@ -96,6 +96,10 @@ def main():
         write_json(a.pack/'SCIENTIFIC_REVIEW.json',review_receipt);write_json(a.pack/'SOURCE_MANIFEST.json',{'runs':manifest})
         comparison=json.loads((a.pack/'COMPARISON.json').read_text())
         if a.regime:
+            from headroom_metrics import analyze
+            for mode,(_,directory) in zip(('B16_BANKED','U_WB16'),reviewed):
+                pressure=analyze(directory);write_json(a.pack/(mode+'_PRESSURE.json'),pressure)
+                csv_write(a.pack/(mode+'_DRAM_WINDOWS.csv'),pressure['DRAM_windows'])
             h0=[]
             for mode,spec in zip(('B16_BANKED','U_WB16'),specs):
                 matches=[r for r in ledger['rows'] if r['workload']==a.workload and r['mode']==mode and r['runtime_config_sha256']==H0[mode] and r['binary_sha256']==spec['identity']['binary_sha256'] and r['trace_content_sha256']==spec['identity']['trace_content_sha256'] and r['scientific_acceptance']=='CURRENT_ACCEPTED']
