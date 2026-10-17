@@ -1,30 +1,125 @@
 {
-  "source_action_receipts": [
-    {
-      "batch": "S01",
-      "source_commit": "5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd",
-      "source_namespace": "mnt:[4026534768]",
-      "allocated_released_bytes": 418152448,
-      "df_before": 38039896064,
-      "df_after": 38457888768,
-      "df_gain": 417992704
+  "schema": "STORAGE_OPS_R13_AB_ACTUAL_SPACE_BEFORE_AFTER",
+  "source_namespace": "mnt:[4026534768]",
+  "workspace_device": 156,
+  "workspace_inode": 32926662,
+  "phase_A": {
+    "before": {
+      "df_B1_P_workspace": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3567106666496 20141740032     100% /",
+      "f_bavail_bytes": 20141740032
     },
-    {
-      "batch": "S02",
-      "source_commit": "e9f9d05acdd9cb960dd3823a97155597be8929ba",
-      "source_namespace": "mnt:[4026534768]",
-      "allocated_released_bytes": 403701760,
-      "df_before": 35843158016,
-      "df_after": 36237783040,
-      "df_gain": 394625024
-    }
-  ],
-  "source_confirmed_allocated_release_total": 821854208,
-  "observed_source_df_action_window_gains_total": 812617728,
-  "target_executed_source_deletions": 0,
-  "floor_bytes": 51539607552,
-  "target_bytes": 53687091200,
-  "build_admission": "NOT_PROVEN_MET",
-  "lane5_independent_remeasurement": null,
-  "cold_project_expected_net_df_recovery": "UNKNOWN_UNTIL_APPROVED_RELEASE_AND_MEASUREMENT"
+    "after": {
+      "df_B1_P_workspace": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3533834821632 53413584896      99% /",
+      "f_bavail_bytes": 53413584896
+    },
+    "net_gain_bytes": 33271844864,
+    "source_commit": "b1183c3937f2484ec11d213dd926cb68c67af6be",
+    "receipt_sha256": "35764d855552dc43ad1663194c260271748ab685fbc0df1749aeced27a5ed597"
+  },
+  "phase_B": {
+    "before": {
+      "df_B1_P_workspace": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3533837709312 53410697216      99% /",
+      "f_bavail_bytes": 53410697216
+    },
+    "after": {
+      "df_B1_P_workspace": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3500779728896 86468677632      98% /",
+      "f_bavail_bytes": 86468677632
+    },
+    "net_gain_bytes": 33057980416,
+    "source_commit": "e59ff8b4486ef7f74e3585665d6fbaf0bc465481",
+    "receipt_sha256": "9b70f796514f15954160065dd1b4ecd2e2dc0f09677ca0f60635e9c01674cd05"
+  },
+  "released_files": 13,
+  "removed_empty_directories": 14,
+  "released_file_allocated_bytes": 66331267072,
+  "per_phase_immediate_df_gains_sum_bytes": 66329825280,
+  "end_to_end_df_available_gain_bytes": 66326937600,
+  "inter_phase_available_change_bytes": -2887680,
+  "accounting": "Immediate action-window df gain sum and end-to-end gain differ because other authorized projects continued writing between phases. Neither is archive byte count or Share cleanup.",
+  "live_observation": {
+    "time_utc": "2026-10-17T02:44:58.655981+00:00",
+    "namespace": "mnt:[4026534768]",
+    "workspace_device": 156,
+    "workspace_inode": 32926662,
+    "workspace_available_bytes": 86466617344,
+    "correlation_absent": true,
+    "covariance_absent": true,
+    "original_tgz_retained": true,
+    "default_polybench_stage_retained": false,
+    "source_retest_requests": {
+      "OPS_R13_AB_SPACE_RETEST_REQUEST.json": {
+        "schema_version": "OPS_R13_POLYBENCH_AB_SPACE_RETEST_REQUEST_V1",
+        "status": "REQUEST_INDEPENDENT_LANE1_LANE5_REMEASUREMENT_NO_ADMISSION_GRANTED_BY_OPS",
+        "published_at_utc": "2026-10-17T02:40:58Z",
+        "requester": "old174 Storage-Ops source owner",
+        "coordination_contract_commit": "31251186feccffec192cc1fef8fc7d8164d12d9f",
+        "released_roots": [
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/polybench.correlation.closeout.stage",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/polybench.covariance.closeout.stage"
+        ],
+        "phase_A_receipt_commit": "b1183c3937f2484ec11d213dd926cb68c67af6be",
+        "phase_A_receipt_sha256": "35764d855552dc43ad1663194c260271748ab685fbc0df1749aeced27a5ed597",
+        "phase_B_receipt_commit": "e59ff8b4486ef7f74e3585665d6fbaf0bc465481",
+        "phase_B_receipt_sha256": "9b70f796514f15954160065dd1b4ecd2e2dc0f09677ca0f60635e9c01674cd05",
+        "phase_A_and_B_github_raw_readback_verified": true,
+        "released_files_total": 13,
+        "removed_empty_directories_total": 14,
+        "phase_A_measured_root_df_net_gain_bytes": 33271844864,
+        "phase_B_measured_root_df_net_gain_bytes": 33057980416,
+        "summed_immediate_root_df_net_gain_bytes": 66329825280,
+        "old174_root_available_at_notice_bytes": 86467698688,
+        "formal_50gib_numeric_threshold_bytes": 53687091200,
+        "recovery_pointer_native_164": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/POLYBENCH_RECOVERY_POINTER_R13.md",
+        "request_to_lane1_and_lane5": "Independently remeasure real old174 /workspace capacity, current writer/lease/build state and all scientific/resource gates in your own namespace. The numeric 50GiB floor is passed at this source snapshot, but Storage-Ops does not grant build or pilot admission. If legally qualified, promptly resume the Lane1 R0.1 build under Lane1/Lane5 ownership and publish the decision.",
+        "other_sources": "SOURCE_KEEP",
+        "no_lane_process_or_branch_modified_by_ops": true
+      },
+      "OPS_R13_A_SPACE_RETEST_REQUEST.json": {
+        "schema_version": "OPS_R13_POLYBENCH_A_SPACE_RETEST_REQUEST_V1",
+        "status": "REQUEST_INDEPENDENT_LANE1_LANE5_REMEASUREMENT_NO_ADMISSION_GRANTED",
+        "published_at_utc": "2026-10-17T02:37:33Z",
+        "requester": "old174 Storage-Ops source owner",
+        "coordination_contract_commit": "31251186feccffec192cc1fef8fc7d8164d12d9f",
+        "exact_released_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/polybench.correlation.closeout.stage",
+        "source_release_receipt_commit": "b1183c3937f2484ec11d213dd926cb68c67af6be",
+        "source_release_receipt_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261016_storageops_02/POLYBENCH_R13_A_SOURCE_RELEASE_RECEIPT.json",
+        "source_release_receipt_sha256": "35764d855552dc43ad1663194c260271748ab685fbc0df1749aeced27a5ed597",
+        "source_release_receipt_github_raw_readback_verified": true,
+        "released_files": 7,
+        "removed_empty_directories": 7,
+        "old174_df_available_before_bytes": 20141740032,
+        "old174_df_available_after_bytes": 53413584896,
+        "old174_measured_net_gain_bytes": 33271844864,
+        "old174_df_available_at_notice_bytes": 53411606528,
+        "formal_50gib_threshold_bytes": 53687091200,
+        "old174_snapshot_shortfall_to_50gib_bytes": 275484672,
+        "request_to_lane1_and_lane5": "Independently remeasure real /workspace capacity, current writer/lease/build state and scientific/resource gates in your own namespace. Do not treat this Storage-Ops snapshot as formal build or pilot authorization; publish your own decision promptly. If still below safe stable threshold with no legal build running, Storage-Ops will fresh-check and release the separately authorized covariance closeout directory.",
+        "other_sources": "SOURCE_KEEP",
+        "no_lane_process_or_branch_modified_by_ops": true
+      }
+    },
+    "active_resource_leases": {},
+    "lane5_independent_admission_not_established_by_this_target_read": true,
+    "default_polybench_stage_observation": "Protected out-of-scope process-declared path is absent at this observation; no baseline existence is established by target. Exact 13-file/14-directory r13 release manifests contain no default-stage object. Do not infer an out-of-scope deletion or claim the default directory currently exists."
+  },
+  "lane5_independent_retest": {
+    "repository": "swayhrl/accel-sim-framework",
+    "branch": "hrl/ep-l2-ft20261016-lane5-v1",
+    "commit": "46ca5f60690a5b59156b7955c356db821a874ec2",
+    "receipt_path": "docs/ep_l2/review_packs/FT20261017_LANE5_R13_FORMAL_RESOURCE_RETEST_r1/RECEIPT.json",
+    "sha256": "453d8f270f2db95d5adbc6b677e497545d885f7b2ec63e80998ced9cfbee1fa5",
+    "github_git_readback_matched_shared_receipt": true,
+    "resource_precheck_only_not_scientific_qualification": true,
+    "root_available_bytes": 86466215936,
+    "build_entry_headroom_bytes": 32779124736
+  },
+  "formal_build_admission": "Lane1 owns fresh confirmations/source/mutex/lease; existing driver invoked once and failed compiler access check; not a scientific acceptance",
+  "workspace_floor_bytes": 51539607552,
+  "floor_plus_2gib_bytes": 53687091200,
+  "historical_s01_s02": {
+    "path": "docs/ep_l2/operations/174new_to_164_archive_v1/receipts/20261016_storageops_06/SPACE_BEFORE_AFTER_PRE_R13.json",
+    "sha256": "6d0002cc8d1b1ac581d550d4e765b80f9d6cbb4795bcdc6a913ed69bed179b0b"
+  },
+  "independent_lane5_state": "STANDARD_FORMAL_RESOURCE_PRECHECK_PASS",
+  "formal_build_resource_precheck_pass": true
 }

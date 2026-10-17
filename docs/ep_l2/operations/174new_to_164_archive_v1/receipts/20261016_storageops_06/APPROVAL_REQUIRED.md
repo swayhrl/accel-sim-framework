@@ -1,0 +1,7 @@
+# Current approval boundaries
+
+The user explicitly approved only the two r13 PolyBench closeout trees, under frozen contract 31251186feccffec192cc1fef8fc7d8164d12d9f. Source independently passed the gates and released exactly the 13 files/14 empty directories. No repeat general approval is required or requested.
+
+All original polybench.tgz, default-stage scope, other trace/raw/log/review packs, unique products, active projects, Git objects/tmp packs, M5 originals/tmp candidates and R1/R1R/R2 original builds remain protected. Exact197 .vvp evidence is a proposal with only its first new native sample completed; no broader source release grant is inferred. Git copies retain their historical route deviation and are not recopied or deleted. Any future Git removal still requires explicit exact-list user approval; this task does not request it because actual workspace capacity has already been recovered by r13.
+
+There is no pending user permission required for the completed target recovery pointer or phased source r13 actions. Independent Lane5 resource remeasurement passed. Lane1 invoked its formal driver once and must now fix its compiler error with fresh gates; scientific admission remains owned by the lanes. Ops cannot grant or start it and does not change their worktrees/locks/processes. The original ten-hour task endpoint remains 2026-10-17T03:44:00Z; no new long-running service was started.

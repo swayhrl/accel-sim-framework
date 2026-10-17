@@ -1,4 +1,4 @@
-# Storage-Ops target revision 06 — SPACE_RECOVERED, independent Lane5 retest pending
+# Storage-Ops target revision 06 — SPACE_RECOVERED, independent Lane5 resource precheck PASS
 
 Updated UTC: 2026-10-17T02:44:58.585890+00:00. Existing Goal and unique receiver retained. R10 T0 2026-10-16T17:44:00Z; deadline 2026-10-17T03:44:00Z. No new Goal, daemon, nonce, repeated 35-chunk PolyBench transfer or second stream.
 
@@ -11,7 +11,7 @@ User r13 authorization 31251186feccffec192cc1fef8fc7d8164d12d9f was executed onl
 - Two immediate action-window gains sum to 66329825280 B (~61.77GiB). End-to-end A-before to B-after gain is 66326937600 B; the difference is 2887680 B of inter-phase net consumption. Removed file allocation 66331267072 B is a separate measure.
 - Real Lane5 /workspace is old174 namespace mnt:[4026534768], device 156 / inode 32926662. Target live corroboration sees both exact roots absent and original polybench.tgz retained. The process-declared default polybench.stage path is absent at this observation; target has no prior existence baseline and does not claim it currently exists or infer an out-of-scope deletion. It is not in either release manifest and remains protected. Source measured free after B is ~80.53GiB, above the unchanged 48GiB floor plus 2GiB growth reserve. This is real root-space recovery, not Share cleanup or archive bytes.
 
-Source has requested independent Lane1/Lane5 remeasurement. Independent Lane5 post-B decision and legal build admission are not yet proven here. Target does not authorize or start Lane jobs. New large transfers remain deferred to protect their build opportunity. Registry, locks, worktrees and scientific results are untouched.
+Lane5 independently remeasured at 02:47:20Z: root available 86466215936 B, headroom 32779124736 B above 50GiB entry, available memory 188115226624 B and Share available 47447019520 B; standard formal resource precheck PASS. Exact Git 46ca5f60690a5b59156b7955c356db821a874ec2 receipt was fetched and matches shared bytes. This is a resource precheck, not a lease or scientific qualification. Existing Lane1 GateWaiter invoked its formal driver once under lane ownership; exit 1, FAILED_RETAIN_DIAGNOSTICS_NO_RUNTIME_RELEASE. Source handoff reports protected cache_config::m_ep_l2_ft_mode access at gpu-sim.cc:2326:38 / gpu-cache.h:941. Lane1 owns code/build repair with fresh gates. Ops starts no replacement waiter/build and edits no Lane worktree; all new bulk transfers remain deferred. Registry policies and scientific acceptance are unchanged.
 
 ## Find and restore preserved PolyBench data
 
@@ -27,4 +27,4 @@ Primary archived bytes remain 42894267335. Nonoverlapping NAS materialized resto
 
 Historical S01/S02 released 102 approved scratch files, 821854208 allocated B and 812617728 B summed immediate df gains before R10. Those are historical gains, not current free space. Legacy 36 Git-pack backups / 12415140272 B retain their NONCOMPLIANT historical staging-route flag; no copy was repeated and all Git originals remain KEEP. M5, original polybench.tgz/default stage, raw traces outside exact r13 scope, logs/review packs/unique products and active EP-L2/DTC-L1/C16 inputs/results remain KEEP. PROJECT_INDEX_R13_V8 preserves previous indices and distinguishes archive, restoration, allocation and actual df gains.
 
-Next: consume independent Lane5 post-B resource decision and Lane1 legal build state, preserve single-flow deferment, and publish truthful final closeout. No scientific acceptance gate is waived and no model/branch/config/trace/oracle is changed.
+Storage objective is proven by authorized source A/B release, actual old174 capacity and independent Lane5 floor-plus-margin retest. Final publication/readback closes this target task. Lane1 compiler repair and subsequent Lane5 producer/11-gate scientific admission remain owned by those lanes. No scientific acceptance gate is waived and no model/branch/config/trace/oracle is changed. PROJECT_INDEX_R13_V9 preserves prior indices and adds independent resource/driver outcome evidence.
