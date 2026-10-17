@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import shlex
 import subprocess
-import sys
+import ft_lane4_lane5_tools
 
 
 def main():
@@ -19,14 +19,14 @@ def main():
     p.add_argument('--include-partition',action='store_true')
     p.add_argument('--include-host-prefill',action='store_true',
                    help='R1.1 reference and real-partition host-prefill regressions; requires new exact libraries')
-    a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
+    a=p.parse_args()
+    # Directed qualification must use the same verified central client as
+    # application preparation. Never import an unchecked working-tree registry.
+    client,api,_=ft_lane4_lane5_tools.load(Path(__file__).resolve().parents[2],
+        Path('/workspace/results/ep_l2_ft20261016/lane4'))
     manifest=json.loads(a.build_manifest.read_text())
     subprocess.run(['git','-C',str(a.core),'diff','--exit-code',manifest['core_source_commit'],
                     'HEAD','--','src','libcuda','libopencl'],check=True)
-    client=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text())
-    sys.path.insert(0,str(Path(client['registry_client']).parent))
-    from registry import Registry
-    reg=Registry(client['canonical_root']);lease=reg.build_lease('lane4',cpu=1,memory=2*1024**3)
     libs=[]
     for x in shlex.split((a.build/'CMakeFiles/accel-sim.out.dir/link.txt').read_text()):
         if x.endswith('.a') and x not in libs and not x.startswith(('trace-driven/','trace-parser/')):libs.append(x)
@@ -40,6 +40,10 @@ def main():
     if a.include_host_prefill:
         cases.update(test_ideal_host_prefill_reference=[],
                      test_ideal_host_prefill_partition=['ideal_host_prefill_b16.config'])
+    # Validate local metadata before holding a lease. A missing link manifest
+    # must not leak a shared build reservation outside the try/finally block.
+    a.out.mkdir(parents=True,exist_ok=False)
+    reg=api.Registry(client['canonical_root']);lease=reg.build_lease('lane4',cpu=1,memory=2*1024**3)
     rows=[]
     try:
         for name,configs in cases.items():
