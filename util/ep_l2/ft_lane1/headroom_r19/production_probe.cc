@@ -90,7 +90,15 @@ struct fixture {
     unsigned uid=mf->get_request_uid();if(write)value[sec]=(unsigned long long)uid+1;
     assert(live.insert({uid,mf}).second);assert(expected.insert({uid,value}).second);assert(!sp(sub)->full());sp(sub)->push(mf,gpu.gpu_sim_cycle);return uid;
   }
-  void drain(){auto start=gpu.gpu_sim_cycle;while(part.busy()){assert(gpu.gpu_sim_cycle-start<100000);step();}}
+  void drain(){
+    auto start=gpu.gpu_sim_cycle;
+    for(;;){
+      bool pending=part.busy();
+      for(unsigned i=0;i<2;++i){auto c=sp(i)->ft_cache_for_test();pending|=!c->ft_drained()||!c->miss_queue_empty()||c->mshr_entries_used();}
+      if(!pending)break;
+      assert(gpu.gpu_sim_cycle-start<100000);step();
+    }
+  }
 };
 
 int main(int argc,char **argv){
