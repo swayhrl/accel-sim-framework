@@ -94,7 +94,7 @@ struct fixture {
     auto start=gpu.gpu_sim_cycle;
     for(;;){
       bool pending=part.busy();
-      for(unsigned i=0;i<2;++i){auto c=sp(i)->ft_cache_for_test();pending|=!c->ft_drained()||!c->miss_queue_empty()||c->mshr_entries_used();}
+      for(unsigned i=0;i<2;++i){auto c=sp(i)->ft_cache_for_test();pending|=!sp(i)->l2_char_no_resource_leak()||!c->ft_drained()||!c->miss_queue_empty()||c->mshr_entries_used();}
       if(!pending)break;
       assert(gpu.gpu_sim_cycle-start<100000);step();
     }
