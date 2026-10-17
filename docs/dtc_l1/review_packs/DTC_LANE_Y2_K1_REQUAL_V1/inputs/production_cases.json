@@ -1,0 +1,625 @@
+{
+  "schema": 1,
+  "scope": "Exact source bodies plus real OO/ordinary APIs; explicit environmental fixtures; no full GPU simulation",
+  "cases": [
+    {
+      "id": "source_negative",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "after": {
+          "events": 0,
+          "changed": 0,
+          "allocated": 1,
+          "refs": 0,
+          "pib": 0,
+          "queryable": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K0"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "k0_default",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "after": {
+          "events": 0,
+          "changed": 0,
+          "allocated": 1,
+          "refs": 0,
+          "pib": 0,
+          "queryable": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K0"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "k0_explicit_off",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "after": {
+          "events": 0,
+          "changed": 0,
+          "allocated": 1,
+          "refs": 0,
+          "pib": 0,
+          "queryable": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K0"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "source_idle",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "blocked_cluster": {
+          "events": 0,
+          "changed": 0,
+          "queryable": 1
+        },
+        "selected_cluster": {
+          "events": 1,
+          "changed": 1,
+          "queryable": 0,
+          "allocated": 0
+        },
+        "repeat": {
+          "events": 2,
+          "changed": 1,
+          "noops": 1,
+          "allocated": 0,
+          "map_loss_count": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K1-02",
+        "K1-08"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "source_membar",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "scoreboard_block": {
+          "events": 0,
+          "changed": 0
+        },
+        "membar_selected": {
+          "events": 1,
+          "changed": 1,
+          "allocated": 0
+        },
+        "other_sm": {
+          "events": 0,
+          "allocated": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K1-08"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "source_config",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "same_config": {
+          "events": 0
+        },
+        "changed_config": {
+          "events": 1,
+          "changed": 1,
+          "allocated": 0
+        },
+        "other_cluster": {
+          "events": 1,
+          "changed": 1,
+          "allocated": 0
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K1-08"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "ordinary_deferred",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "request": {
+          "events": 1,
+          "changed": 1,
+          "ordinary_pending": 1,
+          "ordinary_commits": 0,
+          "old_allocated": 1,
+          "old_ref": 1,
+          "queryable": 0
+        },
+        "repeat_pending": {
+          "events": 2,
+          "changed": 1,
+          "noops": 1,
+          "ordinary_pending": 1,
+          "ordinary_commits": 0
+        },
+        "ordinary_commit": {
+          "ordinary_pending": 0,
+          "ordinary_commits": 1,
+          "request_cycle": 3,
+          "commit_cycle": 5,
+          "old_ref": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K1-02",
+        "K1-08"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "wb_backpressure",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "collection_event": {
+          "credits": 0,
+          "inflight": 0,
+          "closed": 0,
+          "ref": 1,
+          "refs": 1,
+          "allocated": 1,
+          "changed": 1
+        },
+        "wb_denied": {
+          "wb_blocked": 2,
+          "closed": 0,
+          "ref": 1,
+          "refs": 1,
+          "allocated": 1
+        },
+        "wb_granted": {
+          "closed": 1,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "allocated": 0,
+          "old_allocated": 0,
+          "map_loss_count": 1,
+          "map_loss_sum": 3
+        }
+      },
+      "contract": [
+        "K1-04",
+        "K1-05",
+        "K1-08"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "old_new_returns",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "new_return_complete": {
+          "acquired": 2,
+          "released": 1,
+          "credits": 1,
+          "inflight": 1,
+          "old_ready": 0,
+          "new_ready": 0,
+          "refs": 2
+        },
+        "old_inflight_erased": {
+          "credits": 0,
+          "released": 2,
+          "inflight": 0,
+          "old_ready": 0,
+          "refs": 2
+        },
+        "drained": {
+          "closed": 2,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "inflight": 0,
+          "credits": 0,
+          "allocated": 1,
+          "old_allocated": 0,
+          "next_allocated": 1
+        }
+      },
+      "contract": [
+        "K1-02",
+        "K1-04",
+        "K1-05"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "late_waiter",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "partial_metadata": {
+          "inflight": 0,
+          "credits": 0,
+          "refs": 7,
+          "pib": 7,
+          "ldst_pib": 7,
+          "wakeups": 4,
+          "ref": 7,
+          "ready1": 0
+        },
+        "metadata_done": {
+          "wakeups": 7,
+          "ready7": 1,
+          "refs": 7
+        },
+        "last_ref": {
+          "old_allocated": 0,
+          "allocated": 0,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "closed": 7,
+          "map_loss_count": 1
+        }
+      },
+      "contract": [
+        "K1-04",
+        "K1-05"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "partial_grant",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "grant_commit": {
+          "old_ref": 1,
+          "new_ref": 1,
+          "generation_preserved": 1,
+          "refs": 2,
+          "changed": 1
+        },
+        "partial_kept": {
+          "old_ref": 1,
+          "allocated": 2,
+          "refs": 2,
+          "pib": 1,
+          "changed": 1
+        },
+        "partial_admission_block": {
+          "ready_frontend": 1,
+          "selected": 0,
+          "closed": 0,
+          "refs": 1,
+          "pib": 1,
+          "ldst_pib": 1
+        },
+        "partial_final": {
+          "old_allocated": 0,
+          "closed": 2,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "allocated": 1
+        }
+      },
+      "contract": [
+        "K1-03"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "slot_reuse",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "reused": {
+          "slot_advanced": 1,
+          "new_ready": 0,
+          "new_ref": 1,
+          "allocated": 1,
+          "refs": 1,
+          "pib": 1
+        }
+      },
+      "contract": [
+        "K1-04"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "same_multi_bank",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "banks_hidden": {
+          "events": 1,
+          "changed": 4,
+          "allocated": 4,
+          "refs": 4,
+          "tag_requests": 4,
+          "tag_conflicts": 2
+        }
+      },
+      "contract": [
+        "K1-08"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "sidecars",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "sidecar_admitted": {
+          "events": 0,
+          "allocated": 1,
+          "refs": 0,
+          "pib": 4,
+          "ldst_pib": 4,
+          "queryable": 1
+        },
+        "sidecar_event": {
+          "events": 1,
+          "changed": 1,
+          "allocated": 0,
+          "refs": 0,
+          "pib": 4
+        },
+        "sidecar_retired": {
+          "pib": 0,
+          "ldst_pib": 0,
+          "refs": 0,
+          "allocated": 0,
+          "source_completed": 4,
+          "sidecar_retires": 4,
+          "closed": 0
+        }
+      },
+      "contract": [
+        "K1-07"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "no_implicit_sidecar_event",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "no_implicit_event": {
+          "events": 0,
+          "changed": 0,
+          "queryable": 1,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "allocated": 1
+        }
+      },
+      "contract": [
+        "K1-07"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "duplicate_sector",
+      "expected_exit_code": -6,
+      "expected_phases": {},
+      "contract": [
+        "K1-04"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": "OO response identity/address mismatch"
+    },
+    {
+      "id": "wrong_address",
+      "expected_exit_code": -6,
+      "expected_phases": {},
+      "contract": [
+        "K1-04"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": "OO response identity/address mismatch"
+    },
+    {
+      "id": "write_reply",
+      "expected_exit_code": -6,
+      "expected_phases": {},
+      "contract": [
+        "K1-04"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": "OO response identity/address mismatch"
+    },
+    {
+      "id": "stale_generation",
+      "expected_exit_code": -6,
+      "expected_phases": {},
+      "contract": [
+        "K1-04"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": "OO fill must match the original physical generation"
+    },
+    {
+      "id": "scope_io",
+      "expected_exit_code": -6,
+      "expected_phases": {},
+      "contract": [
+        "K1-06"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": "IO_K1_UNIMPLEMENTED_STOP"
+    },
+    {
+      "id": "scope_modern",
+      "expected_exit_code": -6,
+      "expected_phases": {},
+      "contract": [
+        "SCOPE"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": "OO_K1_ONLY_MODERN_AND_BASE_OUT_OF_SCOPE_STOP"
+    },
+    {
+      "id": "k0_frozen",
+      "expected_exit_code": 0,
+      "expected_phases": {
+        "after": {
+          "events": 0,
+          "changed": 0,
+          "allocated": 1,
+          "refs": 0,
+          "pib": 0,
+          "queryable": 1
+        }
+      },
+      "contract": [
+        "K1-01",
+        "K0"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null
+    },
+    {
+      "id": "same_cycle_ERW",
+      "expected_exit_code": 0,
+      "contract": [
+        "K1-08",
+        "K1-05"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null,
+      "expected_phases": {
+        "ordered": {
+          "closed": 1,
+          "allocated": 0,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "inflight": 0,
+          "credits": 0,
+          "events": 1,
+          "changed": 1,
+          "old_allocated": 0,
+          "event_retained": 1,
+          "event_reclaimed": 0
+        }
+      }
+    },
+    {
+      "id": "same_cycle_REW",
+      "expected_exit_code": 0,
+      "contract": [
+        "K1-08",
+        "K1-05"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null,
+      "expected_phases": {
+        "ordered": {
+          "closed": 1,
+          "allocated": 0,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "inflight": 0,
+          "credits": 0,
+          "events": 1,
+          "changed": 1,
+          "old_allocated": 0,
+          "event_retained": 1,
+          "event_reclaimed": 0
+        }
+      }
+    },
+    {
+      "id": "same_cycle_RWE",
+      "expected_exit_code": 0,
+      "contract": [
+        "K1-08",
+        "K1-05"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null,
+      "expected_phases": {
+        "ordered": {
+          "closed": 1,
+          "allocated": 0,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0,
+          "inflight": 0,
+          "credits": 0,
+          "events": 1,
+          "changed": 1,
+          "old_allocated": 0,
+          "event_retained": 0,
+          "event_reclaimed": 1
+        }
+      }
+    },
+    {
+      "id": "proxy_same_warp",
+      "expected_exit_code": 0,
+      "contract": [
+        "K1-07",
+        "K1-05"
+      ],
+      "negative": "wrong expected observation must return comparator exit 1",
+      "expected_assertion": null,
+      "expected_phases": {
+        "proxy_blocks": {
+          "old_ref": 1,
+          "younger_ready": 1,
+          "closed": 0,
+          "refs": 1,
+          "pib": 2,
+          "ldst_pib": 2
+        },
+        "proxy_retired": {
+          "old_ref": 1,
+          "closed": 0,
+          "refs": 1,
+          "pib": 1,
+          "ldst_pib": 1
+        },
+        "younger_retired": {
+          "old_allocated": 0,
+          "closed": 1,
+          "allocated": 0,
+          "refs": 0,
+          "pib": 0,
+          "ldst_pib": 0
+        }
+      }
+    }
+  ]
+}
