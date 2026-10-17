@@ -184,6 +184,8 @@ def inspect(spec):
                 'unpassed/nonproduction qualification: ' + name)
         require(digest(gate['evidence_path']) == gate['evidence_sha256'], 'qualification artifact changed')
         evidence.append({'gate': name, 'sha256': gate['evidence_sha256']})
+    from headroom_config import validate as validate_headroom_config
+    condition = validate_headroom_config(spec, release, configs, assets)
     atomic_scope = validate_atomic_input_scope(spec, release, traces)
     validate_native_legacy_semantic_proof(spec, release, traces)
     parser = spec['parser']
@@ -193,10 +195,13 @@ def inspect(spec):
             all(isinstance(k, str) and isinstance(v, str) for k, v in spec.get('environment', {}).items()),
             'explicit string environment required')
     launch_authorization = authorize_launch(identity, digest(spec['qualified_release']), authority)
-    return {'run_key': key, 'configs': configs, 'auxiliary_assets': assets,
+    audit = {'run_key': key, 'configs': configs, 'auxiliary_assets': assets,
             'traces': traces, 'qualification_evidence': evidence,
             'qualified_release_sha256': digest(spec['qualified_release']),
             'scientific_launch_authorization': launch_authorization, 'atomic_input_scope': atomic_scope}
+    if condition is not None:
+        audit['downstream_config_qualification'] = condition
+    return audit
 
 
 def tree_bytes(root):
@@ -237,7 +242,12 @@ def run(spec, registry):
     directory = RESULT_ROOT / key
     require(result_disk_free_bytes() >= RESULT_DISK_FLOOR,
             'result filesystem changed during input audit; no claim')
-    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory)
+    experiment = None
+    if spec.get('experiment_id') == 'EPL2_DOWNSTREAM_HEADROOM_R19':
+        deadline = 1792220956 + 36000  # This explicitly authorized r19 CONTINUE T0 +10h.
+        require(time.time() + spec['timeout_seconds'] < deadline, 'Insufficient bounded window for original timeout')
+        experiment = {'experiment_id':spec['experiment_id'],'regime':spec['regime'],'deadline_unix':deadline}
+    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, **({'experiment':experiment} if experiment else {}))
     if not fresh:
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
     lease = allocation['lease_id']
@@ -288,7 +298,8 @@ def run(spec, registry):
             while process.poll() is None:
                 peak_rss = max(peak_rss, process_tree_rss(process.pid))
                 live = local_resources()
-                if time.monotonic() - started > spec['timeout_seconds']:
+                if (time.monotonic() - started > spec['timeout_seconds'] or
+                    experiment is not None and time.time() >= experiment['deadline_unix']):
                     status, detail = 'TIMEOUT', 'explicit runtime deadline'
                     terminate_owned(process)
                     break

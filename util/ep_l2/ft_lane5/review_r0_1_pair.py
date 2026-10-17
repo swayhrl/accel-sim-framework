@@ -50,13 +50,18 @@ def review(spec,registry,native_proof=None):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--workload',choices=ORDER,required=True)
     ap.add_argument('--spec-b',type=Path,required=True);ap.add_argument('--spec-u',type=Path,required=True)
-    ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--pack',type=Path,required=True);ap.add_argument('--deadline-unix',type=float,required=True);ap.add_argument('--native-legacy-proof',type=Path);a=ap.parse_args()
+    ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--pack',type=Path,required=True);ap.add_argument('--deadline-unix',type=float,required=True);ap.add_argument('--native-legacy-proof',type=Path);ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25'));a=ap.parse_args()
     require(time.time()<a.deadline_unix,'Bounded CONTINUE deadline');require(not a.pack.exists(),'Frozen pack already exists')
     state=load_current_authority();ledger=current_manifest(state);accepted={r['workload'] for r in ledger['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED'}
-    require(a.workload==next(w for w in ORDER if w not in accepted),'Original frozen pair order changed')
+    if a.regime is None:
+        require(a.workload==next(w for w in ORDER if w not in accepted),'Original frozen pair order changed')
     specs=[json.loads(p.read_text()) for p in (a.spec_b,a.spec_u)]
     require(all(s['identity']['workload']==a.workload for s in specs),'Different workload')
     base,unified=specs
+    if a.regime:
+        from headroom_config import EXPERIMENT,H0
+        require(all(s.get('experiment_id')==EXPERIMENT and s.get('regime')==a.regime for s in specs),'Diagnostic grouping mismatch')
+        require(not any(run_key(s['identity']) in {r['run_key'] for r in ledger['rows']} for s in specs),'Previously reviewed diagnostic key')
     for name in ('core_source_commit','framework_source_commit','binary_sha256','trace_content_sha256','epoch_range','ideal_vector','termination_contract'):
         require(base['identity'][name]==unified['identity'][name],'Mismatched pair '+name)
     bf=dict(base['identity']['feature_vector']);uf=dict(unified['identity']['feature_vector'])
@@ -65,7 +70,7 @@ def main():
     try:
         snap=registry.snapshot();reviewed=[review(s,snap,a.native_legacy_proof) for s in specs];results=[r for r,d in reviewed]
         require(results[0]['summary']['instructions']==results[1]['summary']['instructions'],'Different application instruction counts')
-        a.stage.mkdir(parents=True,exist_ok=True);source=publish_pair(a.workload,results,specs,a.stage)
+        (a.stage/(a.regime or 'H0')).mkdir(parents=True,exist_ok=True);source=publish_pair(a.workload,results,specs,a.stage/(a.regime or 'H0'))
         require(json.loads((source/'PAIR_RECEIPT.json').read_text())['status']=='COMPLETE_VALID','Pair packaging invalid')
         a.pack.mkdir(parents=True)
         for p in source.iterdir():
@@ -78,14 +83,27 @@ def main():
             raw_index.append({'workload':a.workload,'mode':mode,'run_key':result['run_key'],'raw_log':str(directory/'raw.log'),'sha256':result['raw_log_sha256'],'bytes':(directory/'raw.log').stat().st_size,'status':'COMPLETE_VALID'})
             identity=spec['identity'];rows.append({'run_key':result['run_key'],'identity':identity,**{k:identity[k] for k in ('core_source_commit','framework_source_commit','binary_sha256','runtime_config_sha256','trace_content_sha256','workload')},'mode':mode,'scientific_acceptance':'CURRENT_ACCEPTED','original_terminal_status':'COMPLETE_VALID','raw_log_sha256':result['raw_log_sha256'],'observed_cycles':result['summary']['cycles'],'instructions':result['summary']['instructions']})
             manifest.append({'mode':mode,'identity':identity,'run_key':result['run_key'],'qualification_sha256':result['audit']['qualified_release_sha256'],'atomic_input_scope':spec['atomic_input_scope'],'input_audit':result['audit'],'hardware_terminal':result['summary'],'registry_terminal':snap['runs'][result['run_key']]})
+        if a.regime:
+            for row in rows: row.update(experiment_id=EXPERIMENT,regime=a.regime)
         csv_write(a.pack/'RAW_LOG_INDEX.csv',raw_index)
         review_receipt={'status':'INDEPENDENT_TERMINAL_AND_CURRENT_AUTHORITY_REVIEW_PASS','workload':a.workload,'scientific_acceptance_rows_proposed':rows,'checked_current_authority':state['binding'],'review_resource_lease':lease,'review_resource_lease_terminal':'RELEASED_IN_FINALLY','no_simulator_or_compiler_started':True,'next_step':'Publish these exact rows in next V2 generation and remote-read back before announcing current acceptance','scope':'Symbolic32B sector version/request/hardware lifecycle; full native non-atomic inputs only; no numeric SASS output; no geomean until5; C1 legacy headroom excluded'}
+        if a.regime:
+            review_receipt.update(experiment_id=EXPERIMENT,regime=a.regime,scope='Full native nonatomic symbolic32B sector/request/WB lifecycle; r19 same-condition diagnostic, H0 immutable; no numeric SASS or C1 causal claim')
         if a.native_legacy_proof:
             review_receipt['supplemental_native_legacy_semantic_proof']={'path':str(a.native_legacy_proof),'sha256':digest(a.native_legacy_proof)}
         elif specs[0].get('native_legacy_semantic_proof'):
             review_receipt['supplemental_native_legacy_semantic_proof']=specs[0]['native_legacy_semantic_proof']
         write_json(a.pack/'SCIENTIFIC_REVIEW.json',review_receipt);write_json(a.pack/'SOURCE_MANIFEST.json',{'runs':manifest})
         comparison=json.loads((a.pack/'COMPARISON.json').read_text())
+        if a.regime:
+            h0=[]
+            for mode,spec in zip(('B16_BANKED','U_WB16'),specs):
+                matches=[r for r in ledger['rows'] if r['workload']==a.workload and r['mode']==mode and r['runtime_config_sha256']==H0[mode] and r['binary_sha256']==spec['identity']['binary_sha256'] and r['trace_content_sha256']==spec['identity']['trace_content_sha256'] and r['scientific_acceptance']=='CURRENT_ACCEPTED']
+                require(len(matches)==1 and matches[0]['instructions']==results[0]['summary']['instructions'],'Exact accepted H0/instruction reference missing')
+                h0.append(matches[0])
+            cb,cu=(r['observed_cycles'] for r in h0);hb,hu=(r['summary']['cycles'] for r in results)
+            comparison.update(experiment_id=EXPERIMENT,regime=a.regime,C_B_H0=cb,C_U_H0=cu,C_B_h=hb,C_U_h=hu,S_H0=cb/cu,S_h=hb/hu,J_h=(hb/hu)/(cb/cu),delta_B_h_minus_H0=hb-cb,delta_U_h_minus_H0=hu-cu,H0_run_keys=[r['run_key'] for r in h0],diagnostic_only=True)
+            write_json(a.pack/'COMPARISON.json',comparison)
         (a.pack/'README.md').write_text('# Repaired official R0.1 '+a.workload+' paired full application\n\nIndependent hardware-terminal/current-authority/input review PASS. Current scientific acceptance requires the matching new V2 rows. Exact immutable artifacts and raw index retained.\n\nB16 cycles '+str(results[0]['summary']['cycles'])+'; U_WB16 cycles '+str(results[1]['summary']['cycles'])+'; B16/U_WB16 '+str(comparison['speedup_B16_over_U_WB16'])+'x. One pair only; no group geomean. Negative controls/ties/regressions retained.\n\nSame repaired producing Core/Framework/vendor/binary and full input content; only frozen B/U mode changes. Ordinary symbolic sector oracle, not numerical SASS output. No TVD/RO/Ideal. Legacy C1 resident-headroom is not used for causal claims. Borrowing/copy/bank event counts alone do not prove a capacity advantage.\n')
         freeze_checksums(a.pack)
         print(json.dumps({'status':review_receipt['status'],'pack':str(a.pack),'cycles':[r['summary']['cycles'] for r in results],'speedup':comparison['speedup_B16_over_U_WB16']}))

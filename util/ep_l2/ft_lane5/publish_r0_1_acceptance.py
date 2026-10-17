@@ -15,8 +15,45 @@ REPO=Path(__file__).resolve().parents[3]
 HANDOFF=REPO/'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5'
 
 
+
+def stage_qualification(release_path,review_path,pack):
+    """Add positive downstream envelopes to existing V2; preserve all result rows."""
+    from headroom_config import EXPERIMENT,validate as validate_condition
+    require(not pack.exists(),'Qualification acceptance pack exists')
+    state=load_current_authority();ledger=current_manifest(state)
+    require(not any(r['status'] in ACTIVE for r in Registry().snapshot()['runs'].values()),'Qualification publication needs no-active-simulator boundary')
+    release=json.loads(release_path.read_text());review=json.loads(review_path.read_text())
+    require(release['status']=='INDEPENDENTLY_QUALIFIED' and release['qualified_by']=='lane5','Missing independent envelope')
+    binding=release['downstream_config_qualification']
+    require(Path(binding['path']).resolve()==review_path.resolve() and digest(review_path)==binding['sha256'],'Condition qualification bytes differ')
+    require(review['status']=='INDEPENDENT_CONFIG_PASS' and review['experiment_id']==EXPERIMENT,'Condition checks not independently closed')
+    for ev in review['evidence']:require(digest(ev['path'])==ev['sha256'],'Qualification evidence changed')
+    require(review.get('lane1_publication_verified') is True and review.get('independent_affected_production_pass') is True,'Missing Lane1 remote or independent affected production check')
+    require(review['evidence'],'No actual affected evidence')
+    # Each mode must pass the identical positive whitelist used at run admission.
+    from run import asset_manifest
+    for spec_path in review['spec_paths']:
+        spec=json.loads(Path(spec_path).read_text());require(Path(spec['qualified_release']).resolve()==release_path.resolve(),'Different spec envelope')
+        validate_condition(spec,release,asset_manifest(spec['configs'],ordered=True),asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])
+    original_rows=json.dumps(ledger['rows'],sort_keys=True);original_auth=list(ledger['launch_authorizations'])
+    require(not any(r['qualified_release_sha256']==digest(release_path) for r in original_auth),'Envelope already authorized')
+    for feature in release['qualified_feature_vectors']:
+        ledger['launch_authorizations'].append({**{k:release[k] for k in ('core_source_commit','framework_source_commit','binary_sha256')},'feature_vector':feature,'ideal_vector':{'meta':False,'read_hit':False,'wb':False},'qualified_release_sha256':digest(release_path),'status':'CURRENT_QUALIFIED_FOR_LAUNCH','application_scope':'FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF','experiment_id':EXPERIMENT,'regime':review['regime']})
+    proof={'path':str(review_path.relative_to(REPO)),'sha256':digest(review_path)}
+    ledger['supersession_evidence'].append(proof);ledger['supersedes']={'manifest_sha256':state['binding']['manifest_sha256'],'publication_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()}
+    ledger['generation']+=1;ledger['revision']='FT20261017_LANE5_R19_'+review['regime']+'_CONFIG_QUALIFIED_r1';ledger['updated_at']=datetime.now(timezone.utc).isoformat()
+    require(json.dumps(ledger['rows'],sort_keys=True)==original_rows and ledger['launch_authorizations'][:len(original_auth)]==original_auth,'Prior rows/auth changed')
+    path=REPO/MANIFEST;path.write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n');pack.mkdir(parents=True)
+    shutil.copyfile(path,pack/'SCIENTIFIC_ACCEPTANCE_V2.json')
+    (pack/'RECEIPT.json').write_text(json.dumps({'status':'CONDITION_QUALIFIED_PENDING_REMOTE_POINTER_INSTALL','experiment_id':EXPERIMENT,'regime':review['regime'],'new_applications':0,'all_old_rows_and_authorizations_preserved':True,'generation':ledger['generation'],'manifest_sha256':digest(path),'qualified_release_sha256':digest(release_path)},indent=2,sort_keys=True)+'\n');freeze_checksums(pack)
+    print(json.dumps({'status':'STAGED_CONDITION_QUALIFICATION_REQUIRES_REMOTE_READBACK','generation':ledger['generation'],'regime':review['regime']}))
+
+
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--pair-pack',required=True,type=Path);ap.add_argument('--acceptance-pack',required=True,type=Path);ap.add_argument('--extra-release',type=Path);ap.add_argument('--extra-review',type=Path);a=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--pair-pack',type=Path);ap.add_argument('--acceptance-pack',required=True,type=Path);ap.add_argument('--extra-release',type=Path);ap.add_argument('--extra-review',type=Path);ap.add_argument('--qualification-only',action='store_true');a=ap.parse_args()
+    if a.qualification_only:
+        require(a.extra_release is not None and a.extra_review is not None and a.pair_pack is None,'Qualification-only requires exact release/review, no pair');stage_qualification(a.extra_release,a.extra_review,a.acceptance_pack);return
+    require(a.pair_pack is not None,'Pair pack required')
     require(not a.acceptance_pack.exists(),'Frozen acceptance revision exists')
     for line in (a.pair_pack/'SHA256SUMS').read_text().splitlines():
         sha,name=line.split('  ',1);require(digest(a.pair_pack/name)==sha,'Pair pack changed')
@@ -31,17 +68,25 @@ def main():
     ledger['rows'] += [{**r,'independent_review':proof} for r in rows]
     require(json.dumps(ledger['rows'][:old_count],sort_keys=True)==old_rows,'Historical acceptance rows changed')
     ledger['supersedes']={'manifest_sha256':state['binding']['manifest_sha256'],'publication_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()}
-    ledger['generation']+=1;ledger['revision']='FT20261017_LANE5_A1_B1_'+review['workload'].upper()+'_ACCEPTED_r1';ledger['updated_at']=datetime.now(timezone.utc).isoformat();ledger['supersession_evidence'].append(proof)
+    ledger['generation']+=1;ledger['revision']='FT20261017_LANE5_'+(('R19_'+review['regime']+'_') if review.get('experiment_id') else 'A1_B1_')+review['workload'].upper()+'_ACCEPTED_r1';ledger['updated_at']=datetime.now(timezone.utc).isoformat();ledger['supersession_evidence'].append(proof)
     if a.extra_release:
         require(a.extra_review is not None,'Missing extra adapter review');release=json.loads(a.extra_release.read_text());require(release['status']=='INDEPENDENTLY_QUALIFIED','Extra release unqualified')
         for feature in release['qualified_feature_vectors']:
             ledger['launch_authorizations'].append({**{k:release[k] for k in ('core_source_commit','framework_source_commit','binary_sha256')},'feature_vector':feature,'ideal_vector':{'meta':False,'read_hit':False,'wb':False},'qualified_release_sha256':digest(a.extra_release),'status':'CURRENT_QUALIFIED_FOR_LAUNCH','application_scope':'FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF'})
         ledger['supersession_evidence'].append({'path':str(a.extra_review.relative_to(REPO)),'sha256':digest(a.extra_review)})
-    accepted=[r for r in ledger['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED'];pairs=len(accepted)//2
-    ledger['status']=f'{pairs}_CURRENT_ACCEPTED_REPAIRED_RELEASE_PAIRS';path=REPO/MANIFEST;path.write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
+    accepted=[r for r in ledger['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED'];pairs=sum(not r.get('experiment_id') for r in accepted)//2
+    diagnostic_pairs=sum(r.get('experiment_id')=='EPL2_DOWNSTREAM_HEADROOM_R19' for r in accepted)//2
+    ledger['status']=f'{pairs}_CURRENT_ACCEPTED_H0_PAIRS_{diagnostic_pairs}_R19_DIAGNOSTIC_PAIRS';path=REPO/MANIFEST;path.write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
     a.acceptance_pack.mkdir(parents=True);shutil.copyfile(path,a.acceptance_pack/'SCIENTIFIC_ACCEPTANCE_V2.json')
     delivery={'schema_version':'EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_PAIR_V1','status':'CURRENT_ACCEPTED_PENDING_REMOTE_POINTER_INSTALL','workload':review['workload'],'pair_pack':str(a.pair_pack.relative_to(REPO)),'acceptance_pack':str(a.acceptance_pack.relative_to(REPO)),'ledger_generation':ledger['generation'],'ledger_sha256':digest(path),'current_accepted_pairs':pairs,'all5_required_before_geomean':True,'rows':rows,'comparison':json.loads((a.pair_pack/'COMPARISON.json').read_text()),'source_manifest_sha256':digest(a.pair_pack/'SOURCE_MANIFEST.json')}
+    if review.get('experiment_id'):
+        delivery.update(experiment_id=review['experiment_id'],regime=review['regime'],H0_accepted_pairs=pairs,r19_accepted_pairs=diagnostic_pairs,all5_required_before_geomean=False,diagnostic_only=True)
     (a.acceptance_pack/'LANE6_HANDOFF.json').write_text(json.dumps(delivery,indent=2,sort_keys=True)+'\n');(a.acceptance_pack/'REVIEW.md').write_text('# '+review['workload']+' current scientific acceptance\n\nBoth exact new terminals passed independent reparse, full input/source/binary/qualification/current-authority review. Next V2 adds both accepted rows, preserving every historical row. Remote readback and central pointer install precede delivery. No result selection, no numeric SASS claim, no group geomean until all five.\n');freeze_checksums(a.acceptance_pack)
+    if review.get('experiment_id'):
+        receipt_path=HANDOFF/'R19_CONTINUE_RECEIPT.json';receipt=json.loads(receipt_path.read_text());receipt.update(status='ACTIVE_ROLLING_R19_CURRENT_ACCEPTED',latest_pair_delivery=delivery,r19_accepted_pairs=diagnostic_pairs,current_V2_generation=ledger['generation'],next_action='Push remote readback, current pointer install, immediate Lane6 delivery; next r19 pair');receipt_path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
+        main_path=HANDOFF/'RECEIPT.json';main=json.loads(main_path.read_text());main.update(status=receipt['status'],r19_continue=receipt);main_path.write_text(json.dumps(main,indent=2,sort_keys=True)+'\n')
+        (HANDOFF/'STATUS.md').write_text('# Lane5 — r19 rolling diagnostics\n\nH0 five accepted pairs and geomean1.0016002037656606 retained. '+str(diagnostic_pairs)+' r19 diagnostic pairs accepted in staged V2 generation'+str(ledger['generation'])+'; latest '+review['regime']+'/'+review['workload']+'. Remote readback and shared pointer install required before announcing delivery. Existing full-input/64slice/current V2 and original resource protections remain. T0 07:09:16UTC, deadline17:09:16UTC. No compiler, migration, extra waiter. Exact identity/results in '+str(a.pair_pack.relative_to(REPO))+'.\n')
+        print(json.dumps({'status':'STAGED_NEXT_V2_REQUIRES_REMOTE_READBACK_AND_POINTER','generation':ledger['generation'],'H0_pairs':pairs,'r19_pairs':diagnostic_pairs,'manifest_sha256':digest(path)}));return
     receipt_path=HANDOFF/'RECEIPT.json';receipt=json.loads(receipt_path.read_text());receipt.update(status=f'R0_1_A1_B1_{pairs}_CURRENT_ACCEPTED_PAIRS',updated_at=ledger['updated_at'],active_runs=[])
     receipt['artifacts']=list(dict.fromkeys(receipt['artifacts']+[str(a.pair_pack.relative_to(REPO)),str(a.acceptance_pack.relative_to(REPO))]));receipt['validation']['scientifically_accepted_R0_application_runs']=len(accepted);receipt['validation']['scientifically_accepted_R0_application_pairs']=pairs
     receipt['formal_R0_1_campaign']={'status':'ROLLING_CURRENT_ACCEPTED' if pairs<5 else 'ALL5_CURRENT_ACCEPTED','accepted_pairs':pairs,'accepted_rows':accepted,'remaining_workloads':[w for w in ('sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21') if w not in {r['workload'] for r in accepted}],'geomean_computed':False};receipt['bounded_continue']['latest_pair_delivery']=delivery;receipt['bounded_continue']['next_action']='Remote readback/pointer install and immediate Lane6 handoff; continue frozen remaining order';receipt_path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')

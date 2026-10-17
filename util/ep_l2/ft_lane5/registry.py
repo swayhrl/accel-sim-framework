@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import socket
 import tempfile
+import time
 import uuid
 
 DEFAULT_ROOT = Path('/workspace/ep_l2_ft20261016_shared')
@@ -144,7 +145,7 @@ class Registry:
         if kind == 'build' and cpu > policy['max_build_jobs']:
             raise ValueError('build jobs exceed shared policy')
 
-    def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None):
+    def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None):
         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
             raise ValueError('explicit lane owner required')
         if type(cpu) is not int or cpu < 1:
@@ -154,6 +155,15 @@ class Registry:
         with self.locked() as data:
             if key in data['runs']:
                 return False, data['runs'][key]
+            if experiment is not None:
+                if (set(experiment) != {'experiment_id','regime','deadline_unix'} or
+                    experiment['experiment_id'] != 'EPL2_DOWNSTREAM_HEADROOM_R19' or
+                    experiment['regime'] not in {'Q4','D4','D2','D8','L25'} or owner != 'lane5'):
+                    raise ValueError('unknown experiment allocation')
+                if time.time() >= experiment['deadline_unix']:
+                    raise ValueError('bounded experiment deadline')
+                if sum(r.get('experiment_id') == experiment['experiment_id'] for r in data['runs'].values()) >= 24:
+                    raise ValueError('r19 full-application cap24 includes failed/reserved runs')
             policy = data['hosts'][host]
             if policy['boot_id'] != Path('/proc/sys/kernel/random/boot_id').read_text().strip():
                 raise ValueError('host reboot: Lane 5 must reconcile preserved reservations')
@@ -167,6 +177,7 @@ class Registry:
                    'status': 'RESERVED', 'created_at': now(), 'cpu_units': cpu,
                    'memory_bytes': memory, 'scan': identity['workload'] == 'scan',
                    'result_directory': str(result_directory), 'process': None}
+            if experiment is not None: row.update(experiment)
             data['runs'][key] = row
             return True, row
 

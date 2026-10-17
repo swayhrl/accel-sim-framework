@@ -1,0 +1,5 @@
+# r19 existing pipeline extension
+
+Positive per-condition ordered config/asset/environment hash whitelist, unchanged five-layer H0 prefix, exact r19 overlay effective-field allowlist and evidence binding. Existing runner/current V2/central registry/parser/64-slice terminal validation reused. Registry optional r19 annotation enforces cap24 including failed/reserved attempts and deadline; runner preserves timeout3600 and rejects insufficient remaining window. H0 unchanged. New condition-qualified envelopes are staged in existing V2 before applications, then remote-readback installed. Existing pair review/publisher/readback now distinguish experiment/regime and report S(h), J(h), exact H0/new cycles, never cross-condition speedup.
+
+33 actual Python tool tests PASS, no C++ or simulator execution. This pack is not Lane1 production evidence or an independent configuration certificate. Official affected D4/Q4 production checks are a launch dependency. Old partition/clock fixtures hardcode512:2:64:64 and directly call simple_dram_model_cycle, so their old PASS is not reclassified as new-condition coverage.
