@@ -166,6 +166,30 @@ module ep_l2_slice_tb;
             repeat(6)tick();if(req_ready || !generation_blocked)$fatal(1,"generation wrap not refused");
             req_valid=0;$display("CASE generation exhaustion, no wrap PASS mode%0d G%0d",MODE,GEN_W);$finish;
         end
+`ifdef EP_L2_UNIFIED_LAST_PHYSICAL_ONLY
+        if(MODE!=1 || GEN_W!=32 || N_TAG!=1024 || N_PAYLOAD!=1168)
+            $fatal(1,"physical-boundary fixture requires full-size Unified");
+        // Fill every native Tag. Then occupy all36 spare lines in bank3.
+        // Other banks retain108 free lines, but compatible landing is full.
+        for(integer tag=0;tag<N_TAG;tag=tag+1)
+            install(tag,64'h100000+128*tag,pattern(tag),{128{1'b1}},15,0,tag==N_TAG-1);
+        for(integer extra=0;extra<36;extra=extra+1)
+            install(N_TAG-1,64'h200000+128*extra,pattern(1100+extra),{128{1'b1}},15,0,1);
+        if(handle_pid[N_TAG-1]!=N_PAYLOAD-1 || wb_count!=36 || wad_count!=36)
+            $fatal(1,"last Unified physicalID/bank occupancy not reached pid%0d",handle_pid[N_TAG-1]);
+        read_check(N_TAG-1);
+        prepare(0,N_TAG-1,64'h300000,pattern(1200),{128{1'b1}},15,0,1);
+        repeat(8)tick();if(req_ready || wb_count!=36 || wad_count!=36)
+            $fatal(1,"bank-compatible full condition lost despite other-bank free space");
+        prev=replies+aborted;expect_writeback(N_TAG-1);force_wb_block=0;admit();wait_replies(prev);
+        reference[N_TAG-1]=pattern(1200);address[N_TAG-1]=64'h300000;
+        dirty_bytes[N_TAG-1]={128{1'b1}};handle_pid[N_TAG-1]=last_rsp_pid;handle_gen[N_TAG-1]=last_rsp_gen;
+        wait_lower();close_wads();read_check(N_TAG-1);
+        if(!module_drained || reference_count!=0 || accepted!=replies+aborted || received_wbs!=37 || copy_reads!=0 || copy_writes!=0)
+            $fatal(1,"Unified physical-boundary byte/reference/exact-once drain failed");
+        $display("UNIFIED_LAST_PHYSICAL_BOUNDARY physicalID1167 row291 bank3 localWB36 other-bank-free108 same-request-credit-resume byte-WB37 PASS cycles%0d",cycles);
+        $finish;
+`endif
         // 1. Whole physical line / boundary addresses at full dimensions.
         install(N_TAG-1,64'h1000,pattern(1),{128{1'b1}},15,0,0);read_check(N_TAG-1);
         // Last static resident ID1023, and full SRAM last row exercised below
