@@ -7,8 +7,8 @@ REPO=Path(__file__).resolve().parents[4]
 CORE=Path('/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-s64-r1')
 FW=Path('/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1')
 BUILD=Path('/workspace/build/ep-l2-potential20261017-lane1-structure-r1')
-OUT=Path('/workspace/ep_l2_parallel_lane1/structural_build_r1')
-EXPECTED='f9d08d8f219e5088dceef06616819190d1139a8a'
+OUT=Path('/workspace/ep_l2_parallel_lane1/structural_build_r2')
+EXPECTED='22832e0cf4bd62b24b3b520b13caaa2429606f53'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def head(p):return subprocess.check_output(['git','rev-parse','HEAD'],cwd=p,text=True).strip()
 def main():
@@ -45,7 +45,7 @@ def main():
   env=dict(os.environ,GPGPUSIM_ROOT=str(CORE),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',ACCELSIM_CONFIG='release',PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
   def run(cmd,name):return guard.run_owned(cmd,name,OUT,env,r,save,resources,process_identity,1200)
   r['status']='CONFIGURING';r['compiler_started']=True;save();run(['cmake','-S',str(FW/'gpu-simulator'),'-B',str(BUILD),'-G','Unix Makefiles','-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'],'configure')
-  targets=['accel-sim.out','ep_l2_ft_memcpy_clock','ep_l2_ft_host_prefill','ep_l2_ft_directed','ep_l2_ft_partition','ep_l2_ft_a1','ep_l2_common_delta_r16','ep_l2_ideal_wb','ep_l2_ideal_meta','ep_l2_ideal_meta_integrated','ep_l2_ideal_read_hit','ep_l2_ideal_host_prefill_reference','ep_l2_ideal_host_prefill_partition','ep_l2_potential_s64','ep_l2_potential_a1','ep_l2_potential_ucap']
+  targets=['accel-sim.out','ep_l2_ft_memcpy_clock','ep_l2_ft_host_prefill','ep_l2_ft_directed','ep_l2_ft_partition','ep_l2_ft_a1','ep_l2_common_delta_r16','ep_l2_ideal_wb','ep_l2_ideal_meta','ep_l2_ideal_meta_integrated','ep_l2_ideal_read_hit','ep_l2_ideal_host_prefill_reference','ep_l2_ideal_host_prefill_partition','ep_l2_potential_s64','ep_l2_potential_a1','ep_l2_potential_ucap','ep_l2_potential_ucap_retry']
   r['targets']=targets;r['status']='BUILDING';save();run(['cmake','--build',str(BUILD),'--target',*targets,'-j2'],'build')
   assert head(CORE)==EXPECTED and head(FW)==r['framework_source_commit']
   for p in [CORE,FW]:assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=p)
