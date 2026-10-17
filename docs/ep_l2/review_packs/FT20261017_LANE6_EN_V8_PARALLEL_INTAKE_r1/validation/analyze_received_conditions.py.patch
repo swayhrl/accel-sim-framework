@@ -1,0 +1,38 @@
+--- frozen_r19/analyze_received_conditions.py
++++ en8_receiver/analyze_received_conditions.py
+@@ -49,7 +49,7 @@
+  packet=json.loads((R/item['intake_directory']/'SAD_NATIVE_INTAKE.json').read_text())
+  for run in packet['packet']['runs']:
+   context.check_run(run);anchors[(run['workload'],run['mode'])]=run
+-  if run['workload'] in ('convolutionSeparable','FWT_7_21'):
++  if run['workload'] in ('sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21'):
+    directory=Path(run['original_result']['allocation']['result_directory']);require(engine.sha((directory/'raw.log').read_bytes())==run['raw_log_sha256'],'H0 raw hash changed');verify_effective_dump((directory/'raw.log').read_text(),'H0')
+    records.append({'workload':run['workload'],'mode':run['mode'],'regime':'H0','run_key':run['run_key'],'runtime_config_sha256':run['identity']['runtime_config_sha256'],'cycles':run['summary']['cycles']})
+    resources.append(resource_row(run,R/item['intake_directory']/'SAD_NATIVE_INTAKE.json','H0'))
+@@ -60,12 +60,13 @@
+  nr=json.loads(packetpath.with_name('R19_NATIVE_RECEIPT.json').read_text())
+  require(nr['status']=='PASS_COMPLETE_R19_NATIVE_CONDITION_INTAKE' and nr['native_packet_sha256']==entry['native_packet_sha256'],'Missing complete r19 native/envelope/semantic closure')
+  require(nr['experiment_id']==entry['experiment_id'] and nr['regime']==entry['regime'],'Native receipt condition differs')
++ if 'input_scope_binding_sha256' in nr:require(engine.sha(packetpath.with_name('INPUT_SCOPE_BINDING.json').read_bytes())==nr['input_scope_binding_sha256'],'Scope binding changed')
+  for name,expected in nr['native_sidecar_sha256'].items():require(engine.sha(packetpath.with_name(name).read_bytes())==expected,'Native counter/identity sidecar changed')
+- require(entry['regime'] in ('Q4','D4'),'Unsupported/unselected additional r19 condition')
++ require(entry['regime'] in ('Q4','D4','D2','L25'),'Unsupported/unselected additional r19 condition')
+  runs={r['mode']:r for r in packet['packet']['runs']};require(set(runs)=={'B16_BANKED','U_WB16'},'Incomplete matched modes')
+  require(set(nr['run_keys'])=={r['run_key'] for r in runs.values()},'Native receipt run-key mismatch')
+  workload=runs['B16_BANKED']['workload'];key=(workload,entry['regime']);require(key not in seen,'Duplicate condition pair');seen.add(key)
+- require(workload in ('convolutionSeparable','FWT_7_21'),'Not in initial diagnostic workload set')
++ require(workload in ('sad','vectorAdd_4M','convolutionSeparable','FWT_7_21'),'Not in initial diagnostic workload set')
+  for mode,run in runs.items():
+   require(run['workload']==workload,'Mixed workload pair');context.check_run(run);root=Path(run['original_result']['allocation']['result_directory']);require(engine.sha((root/'raw.log').read_bytes())==run['raw_log_sha256'],'Diagnostic raw changed')
+   require(engine.sha((root/'accel-sim.out').read_bytes())==run['identity']['binary_sha256'],'Binary changed')
+@@ -77,8 +78,8 @@
+ known={r['run_key'] for r in anchors.values()};unconsumed=[{'run_key':r['run_key'],'identity':r['identity'],'workload':r['workload'],'mode':r['mode'],'status':'CURRENT_ACCEPTED_NOT_NATIVE_INGESTED'} for r in state['manifest']['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED' and r['run_key'] not in known and r['run_key'] not in {x['run_key'] for x in records}]
+ context.assert_fresh()
+ group={}
+-for regime in ('D4','Q4'):
+- selected=[p for p in interactions if p['regime']==regime];complete={p['workload'] for p in selected}=={'convolutionSeparable','FWT_7_21'} and len(selected)==2
++for regime in ('D4','Q4','D2','L25'):
++ selected=[p for p in interactions if p['regime']==regime and p['workload'] in ('convolutionSeparable','FWT_7_21')];complete={p['workload'] for p in selected}=={'convolutionSeparable','FWT_7_21'} and len(selected)==2
+  group[regime]={'predeclared_workloads':['convolutionSeparable','FWT_7_21'],'received_pairs':len(selected),'geomean_S':math.exp(math.fsum(math.log(p['S_h']) for p in selected)/2) if complete else None,'geomean_J':math.exp(math.fsum(math.log(p['J_h_over_H0']) for p in selected)/2) if complete else None}
+ with (P/'CONDITION_CYCLES.csv').open('w') as f:w=csv.DictWriter(f,fieldnames=list(records[0]),lineterminator='\n');w.writeheader();w.writerows(records)
+ with (P/'CONDITION_RESOURCES.csv').open('w') as f:w=csv.DictWriter(f,fieldnames=list(resources[0]),lineterminator='\n');w.writeheader();w.writerows(resources)

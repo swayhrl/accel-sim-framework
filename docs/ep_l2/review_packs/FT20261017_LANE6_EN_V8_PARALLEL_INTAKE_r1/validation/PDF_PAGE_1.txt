@@ -1,0 +1,56 @@
+                EP-L2: Decoupling Tag Residency from
+                Dirty-Data Lifetime in GPU L2 Caches
+                                               Author information to be completed
+                                        English working draft EN-v8 — not for submission
+
+
+   Abstract—Eviction ends tag residency before a dirty line’s                    II. Lifetime-Aware L2 Payload Storage
+obligations end: data must survive until downstream acceptance,
+and address ordering may persist until writeback completion. A         A. Fixed Physical Resources, Different Data Lifetimes
+fixed-partition L2 bridges these lifetimes by copying unchanged           The primary reference, B16 (B16_BANKED), partitions 1168
+bytes into a writeback buffer. EP-L2 instead transfers ownership:      line-sized slots into 1024 resident, 128 bypass-return, and 16
+the victim retains its original banked slot, the incoming resident
+obtains a distinct legal landing, and local data and ordering          WBUF slots. U-WB16 (U_WB16) permits resident and WB
+state retire separately. At equal tag count, payload capacity, and     allocations across this physical pool. Each slot is 128 B with
+modeled bank service, five complete non-atomic workload pairs          four 32-B sectors. Both modes provision four banks of 292
+eliminate all resident-to-writeback copies but yield only a 1.001600   slots, at most one modeled line-sized operation per bank per
+geometric-mean speed ratio, including one slowdown. Under              physical GPU cycle, and a common 128-B copy latch outside
+matched queue/service controls for Convolution/FWT, both designs
+show no WB-data admission or L2-to-DRAM queue refusals;                the pool. Both also retain 128 writeback address-directory
+WAD/scheduler pressure can persist and relative performance does       (WAD) entries and the same request-metadata limits. Sixteen
+not uniformly improve. These results distinguish reduced internal      is the static data quota, not the U-WB control limit.
+work from application progress; competitive static allocation and         Figure 1 shows the declared service model. WB-only pooling
+physical implementation cost remain unresolved.                        can borrow reference bypass-return slots, but concurrent dy-
+   Index Terms—GPU, L2 cache, writeback, tag–data decoupling,
+resource sharing                                                       namic bypass use is unvalidated. Idle bypass capacity therefore
+                                                                       makes a WB-heavy static control important.
+                        I. Introduction                                   A resident tag names a payload through a slot identi-
+   Eviction does not end every obligation of a cache line at           fier and generation. Each slot has one authoritative owner;
+once. Its tag can become reusable before its dirty bytes leave         ready/pending sector masks and pins track its consumers. The
+local storage; even then, same-address ordering may persist            initial design preserves the resident bank class:
+until writeback completes. Coupling storage locations to these                     bank( 𝑝) = 𝑝 mod 4 = tag_index mod4.              (1)
+roles turns a change of ownership into data movement.
+   In our fixed-partition GPU L2 reference, replacing a dirty          A globally free slot is therefore not necessarily a legal landing
+line requires a resident-bank read and writeback-buffer (WBUF)         for a given tag. The 1024 tags bound resident visibility; a
+write before the later send read. These operations move                temporarily reserved incoming landing is not an additional
+unchanged bytes. A full WBUF can also reject replacement               visible resident line.
+despite free storage elsewhere. Such refusals expose a resource
+mismatch, but do not directly measure application delay.               B. Eviction as an Ownership Transfer
+   Our insight is to treat eviction as an ownership transfer.             For dirty victim 𝐴 in slot 𝑝, B16 reads the resident and writes
+The victim keeps its original payload slot while the incom-            WBUF before the send read. U-WB16 changes 𝑝’s owner to
+ing resident receives another bank-compatible landing. The             WB_STAGED and reserves distinct 𝑞 ≠ 𝑝 for incoming 𝐵. The
+difficulty is maintaining one transaction across bank refusals         landing must match the tag’s bank class. Two copy operations
+and intervening fills: victim identity, landing, and tag commit        disappear; send read and lower data carriage remain.
+must agree. After commit, a real lower data carrier must                  The serialized frontend first checks issue-queue/MSHR needs,
+take responsibility for the bytes before local storage is freed;       victim pins and pending sectors, WAD capacity, and legal
+writeback ordering retires later.                                      staging/landing availability. Its pending transaction records
+   EP-L2 realizes this protocol without adding payload capacity        requester, victim tag index, old payload handle, and acquired
+or modeled bank ports. Earlier work retains dirty candidates           resources. A later probe by the same request uses this held
+in LLCs, exposes address-only candidates, or separates dirty           victim, even if another way’s fill changes the raw LRU candidate.
+metadata [1]–[3]. Our narrower question is ownership of the            A different frontend request is refused while this transaction is
+original physical payload after its resident tag is reused.            pending. Bank denial retains its identity and reservations for
+   Five matched workloads eliminate copies and three avoid             retry.
+the reference WBUF-data limit, yet average speed-ratio gain               In B16, a common latch bridges the victim read and staging
+is only 0.160%, including a CFD regression. Stronger static            write. In U-WB16, the reserved incoming landing remains
+partitions and physical cost remain necessary comparisons.             separate from the old dirty slot. Any incoming write obtains
+

@@ -1,0 +1,10 @@
+component,source_commit,file,anchor_line,anchor,parameterized_bits,scope_or_exclusion
+slot,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/gpu-cache.h,2113,struct slot {,2+3+(A-7)+G+4+4+K,per physical slot; role/state independent-encoding scenario
+PayloadHandle,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/ep-l2-ft-interface.h,7,struct PayloadHandle {,P+G,ID11; hardware G unspecified; software unsigned not hardware width
+Tag_handle,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/gpu-cache.h,2843,std::vector<ep_l2_payload_store::payload_handle> m_ep_l2_tag_payload;,1024(P+G),common if B16 and U both pointerized; not entire incremental delta
+WB_handle,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/gpu-cache.h,2773,struct ft_wb_record {,128(P+G),"packet binding, valid/state separately required"
+front_reservation,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/gpu-cache.h,2761,struct ft_replacement {,3(P+G)+P+10+2+4,"exclude owner address, packet ID and saved rollback slot; copy latch counted separately"
+bank_arbiter,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/gpu-cache.h,2359,request_result request(,4Q_b(P+G+op+E+valid),bounded physical Q_b not established by software vector
+physical_clock,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/ep-l2-ft-cache.inc,3,unsigned long long l2_cache::ft_physical_cycle() const,4 busy bits plus explicitly bounded arbitration state,"m_cycle and monotonic assert are simulator bookkeeping, not a required 64-bit hardware clock register"
+warm_prefill,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/ep-l2-ft-cache.inc,16,bool l2_cache::ft_try_force_tag_access(,existing unique allocator owner and generation fields,source-only guard/binding; no additional free payload RAM
+copy_reference_sidecar,62dc1d179b5516e68b21b695c7a9c5d0667e9671,src/gpgpu-sim/gpu-cache.h,2767,"std::array<unsigned long long,4> copy_versions",software-only versions; separate mandated common latch=1024 data bits/slice,Do not synthesize reference versions as payload; physical copy latch comes from storage/port contract

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Derived view input AFTER independent scope-specific intake, not an acceptance authority",
+  "type": "object",
+  "required": [
+    "experiment_id",
+    "cohort",
+    "profile",
+    "condition",
+    "workload",
+    "identity",
+    "source_bound_qualification",
+    "independent_intake_receipt",
+    "current_target_binding",
+    "raw_sha256",
+    "cycles",
+    "instructions",
+    "scope",
+    "removed_waits",
+    "preserved_service_and_dependencies",
+    "resource_diff",
+    "terminal",
+    "mechanism_counters_and_denominators",
+    "baseline_cell_ids"
+  ],
+  "properties": {
+    "experiment_id": {},
+    "cohort": {},
+    "profile": {},
+    "condition": {},
+    "workload": {},
+    "identity": {
+      "type": "object",
+      "required": [
+        "core_source_commit",
+        "framework_source_commit",
+        "binary_sha256",
+        "runtime_config_sha256",
+        "trace_content_sha256"
+      ]
+    },
+    "source_bound_qualification": {},
+    "independent_intake_receipt": {
+      "type": "object",
+      "required": [
+        "publication_commit",
+        "path",
+        "sha256",
+        "scope",
+        "status"
+      ]
+    },
+    "current_target_binding": {},
+    "raw_sha256": {},
+    "cycles": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "instructions": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scope": {
+      "enum": [
+        "NATIVE_PHYSICAL",
+        "REFERENCE_ALL_DATA",
+        "REFERENCE_PARTIAL_DECLARED"
+      ]
+    },
+    "removed_waits": {},
+    "preserved_service_and_dependencies": {},
+    "resource_diff": {},
+    "terminal": {},
+    "mechanism_counters_and_denominators": {},
+    "baseline_cell_ids": {}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "scope": {
+            "const": "NATIVE_PHYSICAL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "terminal": {
+            "required": [
+              "source_bound_64_slices",
+              "request_response_exact_once",
+              "WB_WAD_sector_drain"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "terminal": {
+            "required": [
+              "original_request_identity",
+              "producer_order",
+              "store_exact_once",
+              "read_snapshot",
+              "architectural_consume",
+              "all_state_drained"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

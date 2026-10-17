@@ -1,0 +1,9 @@
+# Scope and observer corrections from EN-v7
+
+The former abstract's generic local-buffer-refusal claim is replaced by the actual categories and scope: Convolution/FWT under Q4/D4 have zero observed WB-data admission and L2-to-DRAM-full attempts in both modes. This does not cover all local/downstream resources: Q4 WAD/scheduler events remain, including FWT WAD-full164338/197990 and scheduler-full353645/370644. Counts are repeated attempts, not unique blocked requests or elapsed cycles.
+
+Staging starts at B16's actual resident copy readout versus U's in-place producer commit; both end at actual lower-FIFO acceptance. STAGING_SAME_MODE_COMPARISONS preserves only same-mode across-condition ratios, with cross-mode ratios null. WAD ends later at set_done. Sampled WB-role occupancy is after lower drain, while staged_max is an event peak of WB records; neither is a continuous physical occupancy integral and summing per-slice peaks does not produce a simultaneous global peak. D4 SAD U has a zero post-drain sample while its nonzero WB work and one-cycle mean staging remain real.
+
+S and J always compare matched complete native input/release and same-condition B/U. PAIRED_EFFECTS.csv additionally records both modes' separate absolute changes and speed ratios relative to their own H0; C_B(H0)/C_U(h) is never labeled mechanism speedup. GPU cycles are native application cumulative values, not sums over64 slices and not renormalized by DRAM clocks. Logical bank work, successful modeled grants, wait sums, WBUF-data and WAD events are separate fields.
+
+Fixed group identities are H0 five, D4 primary Conv/FWT, Q4 primary Conv/FWT, and D4 extension Vector/SAD. The extension is previously seen diagnostic input, not an unseen holdout. All4 D4 points remain visible, including negative Convolution; primary means do not change when extensions are added.

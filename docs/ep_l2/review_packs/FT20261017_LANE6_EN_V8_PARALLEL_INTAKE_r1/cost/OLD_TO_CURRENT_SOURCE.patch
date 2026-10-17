@@ -1,0 +1,216 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 06b01560..071ddd4d 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -111,8 +111,19 @@ bool l2_cache::ft_response_ready(unsigned long long cycle) {
+   mem_fetch *mf = baseline_cache::peek_next_access();
+   std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
+   assert(it != m_ft_read_refs.end());
+-  return m_ep_l2_payload.request(it->second, false, cycle,
++  const bool granted = m_ep_l2_payload.request(it->second, false, cycle,
+       (unsigned long long)-1, ep_l2_payload_store::RESIDENT_HIT_READ) == ep_l2_payload_store::GRANTED;
++  if (granted && mf->isatomic()) {
++    // Symbolic write-completion label only, matching the existing atomic-HIT
++    // convention. Do not execute the PTX atomic callback here: it belongs to
++    // the response consumer (memory_sub_partition::pop / shader). Pins retain
++    // this exact generation until the response is enqueued and committed.
++    auto &slot = m_ep_l2_payload.inspect_mutable(it->second);
++    for (unsigned s = 0; s < 4; ++s)
++      if (mf->get_access_sector_mask().test(s))
++        slot.versions[s] = (unsigned long long)mf->get_request_uid() + 1;
++  }
++  return granted;
+ }
+ 
+ void l2_cache::cycle() {
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 0f1efcff..9726f938 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -219,6 +219,7 @@ tag_array::tag_array(cache_config &config, int core_id, int type_id)
+ }
+ 
+ void tag_array::init(int core_id, int type_id) {
++  m_ft_request = NULL; m_ft_index = NULL; m_ft_identity_redirects = 0; m_ft_last_raw_candidate = (unsigned)-1;
+   m_access = 0;
+   m_miss = 0;
+   m_pending_hit = 0;
+@@ -433,6 +434,18 @@ enum cache_request_status tag_array::probe(new_addr_type addr, unsigned &idx,
+     abort();  // if an unreserved block exists, it is either invalid or
+               // replaceable
+ 
++  // A multi-cycle FT copy/bank retry already owns a particular victim.
++  // Completing another way's fill may change the LRU candidate above, but
++  // cannot change this transaction's Tag or its WAD/payload generation.
++  // This same probe is used by preview, data_cache::access and native access.
++  if (mf && m_ft_request && *m_ft_request == mf) {
++    const unsigned held = *m_ft_index;
++    assert(held < m_config.get_num_lines() &&
++           held / m_config.m_assoc == set_index &&
++           !m_lines[held]->is_reserved_line());
++    if (idx != held) { ++m_ft_identity_redirects; m_ft_last_raw_candidate = idx; }
++    idx = held;
++  }
+   return MISS;
+ }
+ 
+@@ -821,6 +834,22 @@ void mshr_table::descriptor_chain_snapshot(
+   }
+ }
+ 
++void mshr_table::atomic_fill_masks(new_addr_type block_addr,
++    const mem_access_sector_mask_t &returned, mem_access_sector_mask_t &sectors,
++    mem_access_byte_mask_t &bytes) const {
++  sectors.reset(); bytes.reset();
++  const auto entry = m_data.find(block_addr);
++  assert(entry != m_data.end());
++  for (const auto mf : entry->second.m_list) {
++    if (!mf->isatomic()) continue;
++    const auto overlap = mf->get_access_sector_mask() & returned;
++    sectors |= overlap;
++    for (unsigned b = 0; b < MAX_MEMORY_ACCESS_SIZE; ++b)
++      if (overlap.test(b / SECTOR_SIZE) && mf->get_access_byte_mask().test(b))
++        bytes.set(b);
++  }
++}
++
+ /// Accept a new cache fill response: mark entry ready for processing
+ void mshr_table::mark_ready(new_addr_type block_addr, bool &has_atomic,
+                             const mem_access_sector_mask_t &sectors) {
+@@ -834,6 +863,11 @@ void mshr_table::mark_ready(new_addr_type block_addr, bool &has_atomic,
+     return;
+   }
+ 
++  mem_access_sector_mask_t atomic_sectors;
++  mem_access_byte_mask_t atomic_bytes;
++  atomic_fill_masks(block_addr, sectors, atomic_sectors, atomic_bytes);
++  has_atomic = atomic_sectors.any();
++
+   mshr_entry &entry = a->second;
+   entry.m_ready_sectors |= sectors;
+   entry.m_pending_sectors &= ~sectors;
+@@ -1604,10 +1638,18 @@ void baseline_cache::fill(mem_fetch *mf, unsigned time) {
+     if (!block->is_modified_line()) {
+       m_tag_array->inc_dirty();
+     }
+-    block->set_status(MODIFIED,
+-                      mf->get_access_sector_mask());  // mark line as dirty for
+-                                                      // atomic operation
+-    block->set_byte_mask(mf);
++    if (m_mshrs.descriptor_pool_capacity()) {
++      mem_access_sector_mask_t atomic_sectors;
++      mem_access_byte_mask_t atomic_bytes;
++      m_mshrs.atomic_fill_masks(e->second.m_block_addr,
++          mf->get_access_sector_mask(), atomic_sectors, atomic_bytes);
++      block->set_status(MODIFIED, atomic_sectors);
++      block->set_byte_mask(atomic_bytes);
++    } else {
++      // Preserve the historical non-sector-descriptor behavior.
++      block->set_status(MODIFIED, mf->get_access_sector_mask());
++      block->set_byte_mask(mf);
++    }
+   }
+   m_tag_array->l2_char_tracking_refresh_line(e->second.m_cache_index);
+   m_extra_mf_fields.erase(mf);
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 717658bc..62aeee77 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -854,6 +854,7 @@ class cache_config {
+   }
+   bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }
+   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }
++  unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }
+   enum mshr_config_t get_mshr_type() const { return m_mshr_type; }
+   void set_assoc(unsigned n) {
+     // set new assoc. L1 cache dynamically resized in Volta
+@@ -1024,6 +1025,15 @@ class tag_array {
+                                    unsigned &idx, bool &wb,
+                                    evicted_block_info &evicted, mem_fetch *mf);
+ 
++  // Alias the existing serialized FT transaction, not a second reservation.
++  // All preview/native probes see its victim; fills use their own request.
++  void bind_ft_replacement(mem_fetch *const *request, const unsigned *index) {
++    assert(!m_ft_request && request && index);
++    m_ft_request = request; m_ft_index = index;
++  }
++  unsigned long long ft_identity_redirects() const { return m_ft_identity_redirects; }
++  unsigned ft_last_raw_candidate() const { return m_ft_last_raw_candidate; }
++
+   void fill(new_addr_type addr, unsigned time, mem_fetch *mf, bool is_write);
+   void fill(unsigned idx, unsigned time, mem_fetch *mf);
+   void fill(new_addr_type addr, unsigned time, mem_access_sector_mask_t mask,
+@@ -1083,6 +1093,11 @@ class tag_array {
+   cache_config &m_config;
+ 
+   cache_block_t **m_lines; /* nbanks x nset x assoc lines in total */
++  mem_fetch *const *m_ft_request;
++  const unsigned *m_ft_index;
++  mutable unsigned long long m_ft_identity_redirects;
++  mutable unsigned m_ft_last_raw_candidate;
++
+ 
+   unsigned m_access;
+   unsigned m_miss;
+@@ -1156,6 +1171,12 @@ class mshr_table {
+   /// Accept a new cache fill response: mark entry ready for processing
+   void mark_ready(new_addr_type block_addr, bool &has_atomic,
+                   const mem_access_sector_mask_t &sectors);
++  // D512 uses one line key for independent sector returns. Only live atomic
++  // requesters intersecting THIS fill may contribute dirty sectors/bytes.
++  void atomic_fill_masks(new_addr_type block_addr,
++                        const mem_access_sector_mask_t &returned,
++                        mem_access_sector_mask_t &sectors,
++                        mem_access_byte_mask_t &bytes) const;
+   void mark_ready(new_addr_type block_addr, bool &has_atomic) {
+     mem_access_sector_mask_t all_sectors;
+     all_sectors.set();
+@@ -2596,6 +2617,7 @@ class l2_cache : public data_cache {
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
+     m_ft_last_wb_versions.fill(0);
++    if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);
+   }
+ 
+   virtual ~l2_cache() {}
+@@ -2701,6 +2723,25 @@ class l2_cache : public data_cache {
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
++  // Read-only production transaction observations for cross-cycle regressions.
++  unsigned ft_pending_index_for_test() const { assert(m_ft_pending.request); return m_ft_pending.tag_index; }
++  unsigned long long ft_identity_redirects_for_test() const { return m_tag_array->ft_identity_redirects(); }
++  unsigned ft_last_redirect_from_for_test() const { return m_tag_array->ft_last_raw_candidate(); }
++  new_addr_type ft_native_tag_owner_for_test(unsigned index) const {
++    return m_tag_array->get_block(index)->m_block_addr;
++  }
++  unsigned ft_pending_phase_for_test() const { assert(m_ft_pending.request); return m_ft_pending.phase; }
++  cache_request_status ft_raw_probe_for_test(mem_fetch *mf, unsigned &index) const {
++    return m_tag_array->probe(m_config.block_addr(mf->get_addr()), index,
++        mf->get_access_sector_mask(), mf->is_write(), true);
++  }
++  unsigned ft_reserved_ways_for_test(new_addr_type addr) const {
++    unsigned n = 0, first = m_config.set_index(addr) * m_config.get_assoc();
++    for (unsigned i = first; i < first + m_config.get_assoc(); ++i)
++      n += m_tag_array->get_block(i)->is_reserved_line();
++    return n;
++  }
++
+   bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
+       m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used()); }
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index abf39e2b..793b4b92 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -412,10 +412,6 @@ class memory_sub_partition {
+     return m_ep_l2_last_preview_block_reason;
+   }
+ 
+-  unsigned long long ft_bank_grants_for_test(unsigned bank) const {
+-    return m_L2cache->ep_l2_payload_bank_grants(bank);
+-  }
+-
+   void force_l2_tag_update(new_addr_type addr, unsigned time,
+                            mem_access_sector_mask_t mask);
+   bool ft_try_force_l2_tag_update(new_addr_type addr, unsigned time,

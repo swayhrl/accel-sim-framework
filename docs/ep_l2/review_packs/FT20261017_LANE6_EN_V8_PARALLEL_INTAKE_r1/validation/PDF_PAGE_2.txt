@@ -1,0 +1,74 @@
+              (a) Logical organization of one L2 slice                                      (b) Copy removal and separate release events
+                                                                                   B16: source read + destination write + send read
+                  L1 / interconnect requests and responses
+
+
+     Resident tags: 1024                                                             Resident 𝐴              Latch              WBUF 𝐴               Lower
+                                Descriptors: 512           WAD: 128
+         handles: ID
+                               Line-MSHRs: 128           address ordering
+        + generation
+                                                                                   U-WB16: keep 𝐴 at 𝑝; assign new resident 𝐵 to 𝑞
+            Ownership / reservation / bank-compatible allocation
+               Four-bank arbitration (not extra bank ports)                                 Payload 𝑝: resident            send read
+                                                                                              → WB staged                                 Lower data carrier
+                                        handle, sector, grant
+
+             Payload pool: 1168 × 128 B; 4 banks × 292 slots                       After a successful replacement ( 𝑝 ≠ 𝑞):
+              Resident and WB owners; shared physical slots
+                                                                                   𝑡𝑟 : reuse old tag; preserve staged payload 𝑝
+                                        fill / WB data
+                                                                                   𝑡𝑎 : lower accepts data; WB-only slot 𝑝 can be freed
+            Accounted lower data carriers / L2-to-DRAM queue
+                                                                                   𝑡𝑑 : complete WB and release WAD ordering entry
+
+Fig. 1. From relocation to ownership transfer. (a) Resident tags, requester descriptors, and writeback address ordering are separately tracked around a fixed
+banked payload pool. (b) B16 copies an evicted dirty line to its WBUF; U-WB retains the bytes at 𝑝 while allocating a different landing 𝑞 for the incoming
+resident. Local storage is released after lower data acceptance, whereas address ordering persists to writeback completion. Both modes have equal data capacity,
+bank service, and a common copy latch. TVD/RO and concurrent dynamic bypass are outside the reported WB-only evaluation.
+
+
+
+its bank grant before ownership is changed. The controller                                                    TABLE I
+provisionally installs the landing, then invokes underlying tag                        Declared matched configuration. L2 capacities are per slice.
+access; refusal rolls back uncommitted reservations and restores
+                                                                                 Resource                             Setting
+the saved victim/tag identity. Consumed bank operations remain
+                                                                                 Compute / clock domains              80 SMs; core/ICNT/L2: 1132 MHz;
+charged. Successful underlying access binds the dirty writeback                                                       DRAM: 850 MHz
+and clears the pending transaction. Directed tests exercise                      L1 (fixed)                           64 KiB/SM; 4 banks; 20-cycle setting
+intervening fills and cross-cycle victim identity.                               L2 tags / data                       1024 tags; 1168 slots, 146 KiB
+                                                                                 Line / sectors / banks               128 B / 4 × 32 B / 4 × 292 slots
+C. Progress and Independent Retirement                                           Service / common latch               1 op/bank/physical cycle / 128 B
+                                                                                 Descriptors / Line-MSHRs             512 / 128; 32 requesters/address
+   At successful replacement 𝑡𝑟 , the old tag becomes reusable                   WAD / lower queue                    128 / 128 entries
+while 𝑝 remains protected (Fig. 1). After a granted send read                    Chip / memory channels               64 slices / 32 channels
+and actual lower-FIFO push at 𝑡 𝑎 , the packet carries the dirty                 L2 ROP delay                         160-cycle model setting
+                                                                                 DRAM scheduler / return              128 / 192 entries per channel
+data and local 𝑝 is released. WAD address ordering remains
+until writeback completion 𝑡 𝑑 . A late event follows its own
+handle/transaction identity, not the reused tag.
+                                                                                 establish equal hit latency, timing, area, or energy; no RTL
+   Requester descriptors and pins survive until response accep-
+                                                                                 synthesis, STA, or power measurement is available. TVD
+tance or internal consumption. Generation identity and per-
+                                                                                 and oracle-based RO are disabled, and neither has qualified
+sector readiness prevent a ready sector from implying a ready
+                                                                                 application results here; Ideal diagnostics are also outside this
+line. Eventual lower service and stable bank retry identity are
+                                                                                 evaluation.
+necessary for local progress; whole-GPU deadlock freedom is
+not established.                                                                                  III. Experimental Methodology
+D. Implementation Cost and Extension Boundary                    A. Matched Resources and Complete Inputs
+   The pool holds 146 KiB/slice, or 9.125 MiB across 64            We use the Accel-Sim SASS flow and GPGPU-Sim
+slices; common 128-B latches add 8 KiB/chip. An 11-bit performance-model lineage [4], [5]. Their published validation
+index identifies a slot. Tags need 1024(11 + 𝐺) handle bits does not validate this modified L2. B16 and U-WB16 execute
+for generation width 𝐺, and up to 128 WB handles need with the same independently qualified binary, complete trace
+128(11 + 𝐺) bits plus control state. These gross representations input, non-mode settings, timing scope, and termination rules.
+are not incremental area: the reference already has common Table I records the modeled configuration, including the
+fields.                                                          modified L2; it is not a reconstruction of undocumented
+   Required control includes bank-compatible allocation, han- commercial-cache internals.
+dle/owner checks, pins, and rollback. Concrete SRAM ports,         The fixed development set is convolutionSeparable,
+generation bounds, pipelines, and lower data carriers require FWT_7_21, cfd_097k, vectorAdd_4M, and SAD. Artifacts bind
+implementation. Equal modeled capacity/service does not each complete commandlist, input size, and trace body. SAD
+

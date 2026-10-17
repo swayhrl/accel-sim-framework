@@ -1,0 +1,106 @@
+--- frozen_EN_v7.tex
++++ incremental_EN_v8.tex
+@@ -12,14 +12,14 @@
+ \newcommand{\base}{B16}
+ \newcommand{\unif}{U-WB16}
+ \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+-\hypersetup{pdftitle={EP-L2: Decoupling Tag Residency from Dirty-Data Lifetime in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v7: ownership transfer, five H0 pairs and independently audited downstream sensitivity}}
++\hypersetup{pdftitle={EP-L2: Decoupling Tag Residency from Dirty-Data Lifetime in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v8: ownership transfer, five H0 pairs and independently audited downstream sensitivity}}
+ \hyphenation{write-back micro-ar-chi-tec-ture in-di-rec-tion}
+ \begin{document}
+ \title{EP-L2: Decoupling Tag Residency from\\Dirty-Data Lifetime in GPU L2 Caches}
+-\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v7 --- not for submission}}
++\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v8 --- not for submission}}
+ \maketitle
+ \begin{abstract}
+-Eviction ends tag residency before a dirty line's obligations end: data must survive until downstream acceptance, and address ordering may persist until writeback completion. A fixed-partition L2 bridges these lifetimes by copying unchanged bytes into a writeback buffer. EP-L2 instead transfers ownership: the victim retains its original banked slot, the incoming resident obtains a distinct legal landing, and local data and ordering state retire separately. At equal tag count, payload capacity, and modeled bank service, five complete non-atomic workload pairs eliminate all resident-to-writeback copies but yield only a 1.001600 geometric-mean speed ratio, including one slowdown. Under matched downstream controls, neither design records local-buffer refusals, yet U-WB's relative performance does not uniformly improve. These results distinguish reduced internal work from application progress; competitive static allocation and physical implementation cost remain unresolved.
++Eviction ends tag residency before a dirty line's obligations end: data must survive until downstream acceptance, and address ordering may persist until writeback completion. A fixed-partition L2 bridges these lifetimes by copying unchanged bytes into a writeback buffer. EP-L2 instead transfers ownership: the victim retains its original banked slot, the incoming resident obtains a distinct legal landing, and local data and ordering state retire separately. At equal tag count, payload capacity, and modeled bank service, five complete non-atomic workload pairs eliminate all resident-to-writeback copies but yield only a 1.001600 geometric-mean speed ratio, including one slowdown. Under matched queue/service controls for Convolution/FWT, both designs show no WB-data admission or L2-to-DRAM queue refusals; WAD/scheduler pressure can persist and relative performance does not uniformly improve. These results distinguish reduced internal work from application progress; competitive static allocation and physical implementation cost remain unresolved.
+ \end{abstract}
+ 
+ \begin{IEEEkeywords}
+@@ -35,7 +35,7 @@
+ 
+ EP-L2 realizes this protocol without adding payload capacity or modeled bank ports. Earlier work retains dirty candidates in LLCs, exposes address-only candidates, or separates dirty metadata~\cite{vwq,lastwrite,dbi}. Our narrower question is ownership of the original physical payload after its resident tag is reused.
+ 
+-The evaluation separates internal work from execution. Five matched workloads eliminate copies and three avoid the reference's WBUF-data limit, yet average speed-ratio gain is only 0.160\%, with a CFD regression. Matched downstream controls examine when these local savings matter; stronger static partitions and physical cost remain necessary comparisons.
++Five matched workloads eliminate copies and three avoid the reference WBUF-data limit, yet average speed-ratio gain is only 0.160\%, including a CFD regression. Stronger static partitions and physical cost remain necessary comparisons.
+ 
+ \section{Lifetime-Aware L2 Payload Storage}
+ \subsection{Fixed Physical Resources, Different Data Lifetimes}
+@@ -112,15 +112,15 @@
+ 
+ \begin{figure*}[t]
+ \centering
+-\includegraphics[width=\textwidth]{figures/fig2_results.pdf}
+-\caption{Five H0 workload pairs; sensitivity results are reported separately. (a) Cycle reduction $100(C_B-C_U)/C_B$, on an expanded scale with zero denoting B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies; U-WB16 is zero in every pair. Vector, Conv., and FWT denote vectorAdd\_4M, convolutionSeparable, and FWT\_7\_21. No error bars or significance claim.}
++\includegraphics[width=\textwidth]{figures/fig2_all_conditions.pdf}
++\caption{Matched native results. (a) GPU cycles, per-workload zero-based axes; solid B16, hatched U-WB, n/a unmeasured. (b) $S=C_B/C_U$ and (c) $J=S/S(H0)$ use expanded axes; 1 denotes no advantage/change. H0 includes all five workloads; Q4/D4 primary groups contain Convolution/FWT, with D4 SAD/Vector displayed as extensions. (d) Original H0 completed copies; U-WB is zero. No error bars or statistical-significance claim.}
+ \label{fig:mainresults}
+ \end{figure*}
+ 
+ \subsection{Implementation Cost and Extension Boundary}
+ The pool holds 146 KiB/slice, or 9.125 MiB across 64 slices; common 128-B latches add 8 KiB/chip. An 11-bit index identifies a slot. Tags need $1024(11+G)$ handle bits for generation width $G$, and up to 128 WB handles need $128(11+G)$ bits plus control state. These gross representations are not incremental area: the reference already has common fields.
+ 
+-Added control includes bank-compatible allocation, handle/owner checks, pins, and rollback. Concrete SRAM ports, generation bounds, pipelines, and lower data carriers require implementation. Equal modeled capacity/service does not establish equal hit latency, timing, area, or energy; no RTL synthesis, STA, or power measurement is available. TVD and oracle-based RO are disabled, and neither has qualified application results here; Ideal diagnostics are also outside this evaluation.
++Required control includes bank-compatible allocation, handle/owner checks, pins, and rollback. Concrete SRAM ports, generation bounds, pipelines, and lower data carriers require implementation. Equal modeled capacity/service does not establish equal hit latency, timing, area, or energy; no RTL synthesis, STA, or power measurement is available. TVD and oracle-based RO are disabled, and neither has qualified application results here; Ideal diagnostics are also outside this evaluation.
+ 
+ \section{Experimental Methodology}
+ \subsection{Matched Resources and Complete Inputs}
+@@ -154,9 +154,9 @@
+ 
+ \section{From Saved Internal Work to Application Effects}
+ \subsection{Copy Removal Is Not a Speedup Model}
+-All five predeclared H0 workload pairs have complete trace-driven simulation results and pass the stated transaction-lifecycle checks. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup.
+-
+-Figure~\ref{fig:mainresults}(b) shows removal of every measured resident-to-WB copy. A committed non-rolled-back B16 writeback uses two copy operations and one send read; U-WB16 retains the send read. This local operation saving is not a speedup model. Actual WB counts also change: CFD completes 31,123/31,063 WBs and FWT 178,569/178,585 for B16/U-WB16. Consequently, the run-level logical-operation difference need not equal twice either mode's WB count.
++Figure~\ref{fig:mainresults}(a,b) includes all five predeclared H0 pairs with matched instructions and complete termination. Their geometric mean $C_B/C_U$ is 1.001600, a 0.160\% speed-ratio gain. CFD regresses and SAD is nearly tied. These deterministic observations establish neither statistical significance nor general GPU speedup.
++
++Figure~\ref{fig:mainresults}(d) shows removal of every measured resident-to-WB copy. A committed non-rolled-back B16 writeback uses two copy operations and one send read; U-WB16 retains the send read. This local operation saving is not a speedup model. WB counts also change; run-level operation differences need not equal twice either mode's completed WBs.
+ 
+ \begin{figure*}[t]
+ \centering
+@@ -168,9 +168,9 @@
+ \subsection{Local Staging Relief and Its Downstream Cost}
+ Vector, Convolution, and FWT record 440,161, 845,097, and 890,294 B16 WB-data-full events; U-WB16 records zero. Figure~\ref{fig:causal}(b) shows less modeled bank work and lower aggregate conflict waits. Successful grants are actual model-service observations, not estimates obtained by multiplying copies. At drained termination, their equality to logical operations implies neither elapsed-time nor RTL timing/energy savings.
+ 
+-For the same three workloads, L2-to-DRAM full-block attempts rise from 1.104M to 1.764M, 0.218M to 1.132M, and 0.013M to 0.968M. This is consistent with pressure moving downstream after local staging relief. It does not independently identify the limiting queue or DRAM service. Denials may repeat for one frontend head and overlap other blockers. From final cumulative observations of all 32 channels, the modeled issued-byte/atom-cycle fractions are 64.5/64.8\% for Convolution and 14.1/14.1\% for FWT. Even frequent queue denials therefore do not prove global DRAM-bandwidth saturation. Kernel-boundary cumulative snapshots are not summed.
+-
+-CFD is a useful counterexample: despite removing copies and lowering bank waits from 102,546 to 91,029, U-WB16 takes 169 more cycles. WAD-hazard events increase from 9,841 to 13,400, WB counts differ, and successful DRAM writes change from 3,983,744 to 3,976,064~B. These correlated changes motivate ordering/service diagnosis; they do not identify a unique cause. SAD has no observed WB-data-full pressure and differs by only 24 cycles. Neither case is discarded.
++For the same three workloads, L2-to-DRAM full-block attempts rise from 1.104M to 1.764M, 0.218M to 1.132M, and 0.013M to 0.968M. This is consistent with pressure moving downstream after local staging relief. It does not independently identify the limiting queue or DRAM service. Denials may repeat for one frontend head and overlap other blockers. The 32-channel issued-byte/atom-cycle fractions are 64.5/64.8\% for Convolution and 14.1/14.1\% for FWT. Queue denials do not prove global bandwidth saturation; cumulative snapshots are not summed.
++
++CFD is a useful counterexample: despite removing copies and lowering bank waits from 102,546 to 91,029, U-WB16 takes 169 more cycles. WAD-hazard events increase from 9841 to 13400 and WB/DRAM-write counts differ, motivating ordering/service diagnosis without proving a unique cause. SAD has no observed WB-data-full pressure and differs by only 24 cycles. Neither case is discarded.
+ 
+ 
+ 
+@@ -194,26 +194,11 @@
+ 
+ For condition $h$, define $S_w(h)=C_{B,w}(h)/C_{U,w}(h)$ and $J_w(h)=S_w(h)/S_w(\mathrm{H0})$. All four cycles are retained; speeding both modes does not itself improve U-WB's relative effect. Diagnostic means never enter the five-workload H0 mean.
+ 
+-\begin{table}[t]
+-\caption{Paired cycles under matched service conditions. $S=C_B/C_U$; $J=S/S(\mathrm{H0})$. Q4 observations here cover Convolution only.}
+-\label{tab:downstreamresults}\centering\footnotesize
+-\begin{tabular}{@{}lrrrr@{}}
+-\toprule
+-Workload, $h$ & $C_B$ & $C_U$ & $S$ & $J$ \\
+-\midrule
+-Conv., H0 & 292,932 & 291,525 & 1.004826 & 1.000000 \\
+-Conv., D4 & 267,521 & 268,544 & 0.996191 & 0.991406 \\
+-Conv., Q4 & 290,333 & 293,709 & 0.988506 & 0.983758 \\
+-FWT, H0 & 493,189 & 491,662 & 1.003106 & 1.000000 \\
+-FWT, D4 & 452,758 & 451,254 & 1.003333 & 1.000226 \\
+-\bottomrule
+-\end{tabular}
+-\end{table}
+-
+-D4 accelerates both modes relative to H0 (Table~\ref{tab:downstreamresults}), but Convolution reverses U-WB's advantage: it takes 1023 more cycles than B16. FWT saves 1504 cycles, close to its H0 saving of 1527. The two-workload D4 geometric mean is 0.999755$\times$, with interaction 0.995806$\times$; this diagnostic result does not replace the five-workload H0 mean. More downstream headroom does not uniformly amplify the mechanism's benefit.
+-
+-D4 records no WB-data-full, L2-to-DRAM-full, or scheduler-full attempts in either mode, yet modeled bank-wait sums rise relative to H0. Observed zeros do not establish globally nonbinding service. Q4 Convolution also removes WBUF/lower-queue-full attempts, but U-WB is 3376 cycles slower; WAD-full attempts are 55,645/54,516 for B16/U-WB. Local data can leave well before ordering obligations retire. These repeated event counts identify candidate constraints, not unique stalls or a proven critical path. Staging durations start at B16's copy readout versus U-WB's producer commit, so only same-mode, across-condition comparisons share endpoints. Further attribution requires matched service and ordering evidence.
+-
++Figure~\ref{fig:mainresults}(a--c) separates absolute time from the B/U contrast. D4 speeds both primary workloads in both modes, yet Convolution takes 1023 more cycles in U-WB; FWT saves 1504. The original two-workload D4 mean remains 0.999755$\times$, with interaction 0.995806$\times$. Q4 FWT completes in 491788/491236 cycles, giving the complete Q4 pair-group mean 0.994795$\times$. These diagnostic means never replace H0.
++
++D4 Vector drops to 45055/45052 cycles: both modes become much faster than H0, but U-WB saves only 3 cycles. SAD is 110550/110528, a 22-cycle difference. These additions are previously seen inputs, not unseen holdouts, and form a separate extension group.
++
++Both Q4/D4 primary modes record zero WB-data-full and L2-to-DRAM-full attempts. Q4 still has WAD/scheduler pressure: FWT WAD-full counts are 164338/197990, while Convolution is 3376 cycles slower in U-WB. Such repeated events are neither unique requests nor a proven critical path. Staging intervals start at B16 copy readout versus U-WB commit and end at lower acceptance; only same-mode comparisons across conditions share endpoints. Post-drain WB-role samples and WB-record peaks are distinct: a zero sample does not mean no transient WB data. WAD survives until completion.
+ 
+ An equal-total strong static repartition remains unevaluated. Thus, current results combine copy removal and pooling; they do not isolate dynamic elasticity from a better fixed WB quota. Static allocation, service regime, and implementation cost bound the present performance claim.
+ 

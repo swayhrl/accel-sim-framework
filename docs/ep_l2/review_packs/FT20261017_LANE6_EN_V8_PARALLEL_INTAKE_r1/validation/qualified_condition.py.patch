@@ -1,0 +1,11 @@
+--- frozen_r19/qualified_condition.py
++++ en8_receiver/qualified_condition.py
+@@ -14,7 +14,7 @@
+ 
+ def qualified_headroom_mode(repo,adapter,q,producer,row,spec,result,published):
+  require(adapter.get('experiment_id')=='EPL2_DOWNSTREAM_HEADROOM_R19','Exact experiment required')
+- regime=adapter.get('regime');require(regime in ('Q4','D4'),'Only initial qualified r19 conditions accepted by this revision')
++ regime=adapter.get('regime');require(regime in ('Q4','D4','D2','L25'),'Only initial qualified r19 conditions accepted by this revision')
+  require(spec.get('experiment_id')==adapter['experiment_id'] and spec.get('regime')==regime,'Spec/adapter condition mismatch')
+  for key in ('experiment_id','regime'):
+   if key in row:require(row[key]==adapter[key],'CSV condition mismatch')

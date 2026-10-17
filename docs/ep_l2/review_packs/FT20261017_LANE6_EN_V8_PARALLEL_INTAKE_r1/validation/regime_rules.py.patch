@@ -1,0 +1,31 @@
+--- frozen_r19/regime_rules.py
++++ en8_receiver/regime_rules.py
+@@ -7,7 +7,9 @@
+ H0=dict(zip(OPTIONS,['64:128:64:64','128','192','1132.0:1132.0:1132.0:850.0','100','0']))
+ Q4={**H0,OPTIONS[0]:'64:512:256:64',OPTIONS[1]:'512',OPTIONS[2]:'768'}
+ D4={**Q4,OPTIONS[3]:'1132.0:1132.0:1132.0:3400.0'}
+-REGIMES={'H0':H0,'Q4':Q4,'D4':D4}
++D2={**Q4,OPTIONS[3]:'1132.0:1132.0:1132.0:1700.0'}
++L25={**D4,OPTIONS[4]:'25'}
++REGIMES={'H0':H0,'Q4':Q4,'D4':D4,'D2':D2,'L25':L25}
+ ALLOWED_OVERLAY_OPTIONS=set(OPTIONS[:4])
+ 
+ def require(ok,reason):
+@@ -36,7 +38,7 @@
+ 
+ def verify_appended_contract(base_run,new_run,regime,root):
+  """Additional guard AFTER full native intake; never overrides its certificate."""
+- require(regime in ('Q4','D4'),'Only initial two r19 regimes are supported here')
++ require(regime in ('Q4','D4','D2','L25'),'Only initial two r19 regimes are supported here')
+  b,n=base_run['identity'],new_run['identity']
+  for key in b:
+   if key!='runtime_config_sha256':require(n[key]==b[key],'Regime changed non-config identity: '+key)
+@@ -48,7 +50,7 @@
+  prefix=len(ba['configs']);require(na['configs'][:prefix]==ba['configs'] and len(na['configs'])>prefix,'r19 requires exact original five-layer config prefix and appended overlays')
+  for index in range(prefix,len(na['configs'])):
+   values=options((Path(root)/f'config-{index}.config').read_text())
+-  require(bool(values) and values.keys()<=ALLOWED_OVERLAY_OPTIONS,'Unapproved r19 overlay option')
++  require(bool(values) and values.keys()<=(ALLOWED_OVERLAY_OPTIONS|({OPTIONS[4]} if regime=='L25' else set())),'Unapproved r19 overlay option')
+  raw=(Path(root)/'raw.log').read_text()
+  effective=verify_effective_dump(raw,regime)
+  require(n['runtime_config_sha256']!=b['runtime_config_sha256'],'Diagnostic reuses H0 config hash')

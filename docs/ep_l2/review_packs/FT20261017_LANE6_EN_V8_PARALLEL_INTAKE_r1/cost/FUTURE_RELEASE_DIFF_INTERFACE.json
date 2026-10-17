@@ -1,0 +1,56 @@
+[
+  {
+    "profile": "S64",
+    "status": "CONTRACT_INTERFACE_NOT_MEASURED",
+    "release_identity": null,
+    "data_slots": 1168,
+    "role_quotas": {
+      "resident": 1024,
+      "bypass": 80,
+      "WB": 64
+    },
+    "physical_data_bytes_delta_vs_B16": 0,
+    "required_check": "Actual boundaries resident0..1023,bypass1024..1103,WB1104..1167; all getters/guards/stats consistent. Old constructor1152+64 would1216 slots, not S64.",
+    "control_or_timing_delta": null
+  },
+  {
+    "profile": "U_CAP16",
+    "status": "CONTRACT_INTERFACE_NOT_MEASURED",
+    "release_identity": null,
+    "local_WB_data_responsibility_limit": 16,
+    "required_check": "reserved+live includes pending and bank-retry; release at lower accept; WAD remains until completion. U/Ucap isolates extra local WB concurrency; Ucap/B still includes placement/bank differences.",
+    "counter_bits_lower_bound_if_explicit_counter": "ceil(log2(16+1))=5, not a measured implementation",
+    "actual_metadata_delta_bits": null
+  },
+  {
+    "profile": "P2",
+    "status": "CONTRACT_INTERFACE_NOT_MEASURED",
+    "release_identity": null,
+    "data_slots": 1168,
+    "banks": 4,
+    "modeled_ops_per_bank_physical_cycle": 2,
+    "required_check": "Both modes, exact real service/arbitration and ports/pipeline cost; cannot relabel old1-op proof",
+    "actual_port_area_or_timing": null
+  },
+  {
+    "profile": "Q4",
+    "status": "CURRENT_QUALIFIED_CONFIG_GROSS_CAPACITY_DIFF",
+    "queue_depth_deltas": {
+      "L2_to_DRAM_per_slice": 384,
+      "DRAM_to_L2_per_slice": 192,
+      "scheduler_per_channel": 384,
+      "return_per_channel": 576
+    },
+    "data_bytes_delta": "64*(384*D_req+192*D_return)+32*(384*D_sched+576*D_returnq), only after mapping distinct physical storage/carrier implementation",
+    "derived_credits": "319->1279; not a fifth independent data buffer",
+    "physical_area_or_energy": null
+  },
+  {
+    "profile": "D4_D2_L25",
+    "status": "D4_APP_ACCEPTED_D2_L25_RESULTS_PENDING",
+    "data_RAM_delta_vs_Q4": 0,
+    "frequency_or_interface": "D4 DRAM3400; D2 intended1700; L25 producer DRAM3400/interface25; same buffers",
+    "source_cost_delta": "Model parameter change, not free physical MHz or synthesized clock feasibility",
+    "physical_STA_or_power": null
+  }
+]

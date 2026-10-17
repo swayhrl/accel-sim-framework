@@ -1,0 +1,68 @@
+GPU cycles (thousands)                      (a) Absolute cycles: solid B16, hatched U-WB; absent conditions marked n/a
+                                     SAD                       Vector                        CFD                        Conv.                              FWT
+                                                                                                            300
+                         100                                                  75
+                                                    60                                                                                    400
+                                                                              50                            200
+                                                    40
+                          50                                                                                                              200
+                                                                              25                            100
+                                                    20
+                                      n/a                       n/a                           n/a   n/a
+                           0                         0                         0                              0                                0
+                               H0     Q4     D4           H0    Q4      D4              H0    Q4    D4             H0       Q4     D4                H0     Q4     D4
+
+
+
+                               (b) Same-condition S = CB/CU                   (c) Interaction J = S/S(H0)                        (d) H0 copies (thousands)
+              1.005                                              1.005                                             600                                    546.9
+                                                                                                                                    U-WB: all 0
+              1.000                                              1.000                                                              B16
+                                                                                                                   400
+              0.995                                              0.995
+
+                                                                                                                   200                                            178.6
+                                                                                                                                     100.6
+              0.985                  H0      Q4      D4          0.985             Q4        D4                                                    31.1
+                                                                                                                             4.0
+                                                                                                                        0
+                               SAD    Vec.    CFD    Conv.   FWT             SAD    Vec.     CFD    Conv.    FWT             SAD        Vec.       CFD    Conv. FWT
+
+
+Fig. 2. Matched native results. (a) GPU cycles, per-workload zero-based axes; solid B16, hatched U-WB, n/a unmeasured. (b) 𝑆 = 𝐶𝐵 /𝐶𝑈 and (c) 𝐽 = 𝑆/𝑆 (𝐻0)
+use expanded axes; 1 denotes no advantage/change. H0 includes all five workloads; Q4/D4 primary groups contain Convolution/FWT, with D4 SAD/Vector
+displayed as extensions. (d) Original H0 completed copies; U-WB is zero. No error bars or statistical-significance claim.
+
+
+
+is the predeclared negative control. All five pairs, including                               B. Local Staging Relief and Its Downstream Cost
+slowdowns, enter the geometric mean. This development set                                       Vector, Convolution, and FWT record 440,161, 845,097,
+does not establish holdout or general GPU coverage.                                          and 890,294 B16 WB-data-full events; U-WB16 records zero.
+B. Validation Boundary                                                                       Figure 3(b) shows less modeled bank work and lower aggregate
+   Independent tests cover pending-victim identity, physical-                                conflict waits. Successful grants are actual model-service
+cycle bank grants, host prefill, symbolic 32-B sector versions,                              observations, not estimates obtained by multiplying copies.
+response backpressure, and separate WB acceptance/completion.                                At drained termination, their equality to logical operations
+Every run closes all 64 slices’ outstanding requests and re-                                 implies neither elapsed-time nor RTL timing/energy savings.
+source trackers. Complete opcode auditing restricts application                                 For the same three workloads, L2-to-DRAM full-block
+qualification to non-atomic inputs. SASS lacks full numerical                                attempts rise from 1.104M to 1.764M, 0.218M to 1.132M, and
+payloads, so these checks establish transaction/lifecycle consis-                            0.013M to 0.968M. This is consistent with pressure moving
+tency rather than numerical output correctness. Reproducibility                              downstream after local staging relief. It does not independently
+artifacts bind source, executable, ordered configurations, full                              identify the limiting queue or DRAM service. Denials may
+commandlists/trace bodies and raw logs; all reported pairs                                   repeat for one frontend head and overlap other blockers. The
+undergo independent input, log, and terminal validation.                                     32-channel issued-byte/atom-cycle fractions are 64.5/64.8% for
+                                                                                             Convolution and 14.1/14.1% for FWT. Queue denials do not
+ IV. From Saved Internal Work to Application Effects                                         prove global bandwidth saturation; cumulative snapshots are
+A. Copy Removal Is Not a Speedup Model                                                       not summed.
+  Figure 2(a,b) includes all five predeclared H0 pairs with                                     CFD is a useful counterexample: despite removing copies
+matched instructions and complete termination. Their geo-                                    and lowering bank waits from 102,546 to 91,029, U-WB16
+metric mean 𝐶 𝐵 /𝐶𝑈 is 1.001600, a 0.160% speed-ratio gain.                                  takes 169 more cycles. WAD-hazard events increase from
+CFD regresses and SAD is nearly tied. These deterministic                                    9841 to 13400 and WB/DRAM-write counts differ, motivating
+observations establish neither statistical significance nor general                          ordering/service diagnosis without proving a unique cause.
+GPU speedup.                                                                                 SAD has no observed WB-data-full pressure and differs by
+  Figure 2(d) shows removal of every measured resident-to-                                   only 24 cycles. Neither case is discarded.
+WB copy. A committed non-rolled-back B16 writeback uses
+two copy operations and one send read; U-WB16 retains the                                    C. Separating Buffer Headroom from Service Speed
+send read. This local operation saving is not a speedup model.                                 Q4 expands downstream queues, scheduler/return storage
+WB counts also change; run-level operation differences need                                  and credits; D4 retains Q4 buffering and raises the DRAM
+not equal twice either mode’s completed WBs.                                                 domain (Table II). Both compare B16/U-WB under identical
+
