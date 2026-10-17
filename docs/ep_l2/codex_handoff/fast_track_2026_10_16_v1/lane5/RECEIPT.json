@@ -26,7 +26,8 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_POST_REQUEST_REVIEW_R9_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_CONTINUE_R13_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_CONTINUE_R13_EVENT001_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_R13_FORMAL_RESOURCE_RETEST_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R13_FORMAL_RESOURCE_RETEST_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R13_RESULT_FS_GUARD_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": null,
@@ -114,6 +115,28 @@
       "lane1_publication": "7ea8cdc85f5be1a6ce31df2f216c8d16d2546c9d",
       "producer_actual_directed_count": 0,
       "status": "NOT_AVAILABLE"
+    },
+    "result_filesystem_guard": {
+      "accepted_pairs": 0,
+      "at_utc": "2026-10-17T02:49:18.557854+00:00",
+      "central_client_binding": "Update only after push/full remote readback; pin producing source above, not doc publication",
+      "change": "Enforce existing Share40GiB result-filesystem floor before expensive input hashing, recheck before canonical claim, monitor during owned child. Do not consume a run-key or lease on pre-admission failure. Existing workspace48GiB,64GiB memory and all quotas unchanged.",
+      "cpp_builds_or_simulations": 0,
+      "current_goal": "ACTIVE_AWAIT_OFFICIAL_PRODUCER",
+      "deadline_utc": "2026-10-17T12:19:03Z",
+      "new_tests": {
+        "count": 2,
+        "log_sha256": "46ede5c1dad7cde95d1cc015f864e83ccbb80d783ead5db7833416d809e5fac5",
+        "scope": "Low Share and concurrent Share decline during hash both refuse before registry.claim/update",
+        "status": "PASS"
+      },
+      "old_suites_repeated": false,
+      "runner_sha256": "821be8e716e0f3eb5bb1c4b59bffd1610419e5ae98626d66cc20fcd5c258bde6",
+      "runner_source_commit": "d7722c05c80ea9efbf43631ffb182875f1d7fc3a",
+      "schema_version": "EPL2_LANE5_RESULT_FS_GUARD_RECEIPT_V1",
+      "scientific_qualification": false,
+      "source_scope": "Consumer run.py only; producer sources/config/trace/oracle/gates/identity/key unchanged",
+      "status": "PASS_ENGINEERING_GUARDS_ONLY"
     },
     "schema_version": "EPL2_LANE5_CONTINUE_CHECKPOINT_V1",
     "storage_ops": {
@@ -346,7 +369,8 @@
     "workspace_deficit_bytes": 6103367680
   },
   "review_coordination_commit": "31251186feccffec192cc1fef8fc7d8164d12d9f",
-  "runner_source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
+  "runner_sha256": "821be8e716e0f3eb5bb1c4b59bffd1610419e5ae98626d66cc20fcd5c258bde6",
+  "runner_source_commit": "d7722c05c80ea9efbf43631ffb182875f1d7fc3a",
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "scientific_acceptance": {
     "actual_retained_run_rejections": 12,
@@ -364,7 +388,7 @@
   "status": "BOUNDED_CONTINUE_ACTIVE_STANDARD_RESOURCE_PRECHECK_PASS_AWAIT_OFFICIAL_PRODUCER",
   "task_id": "FT20261017_LANE5_CONTINUE_R13_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-17T02:47:20.401621+00:00",
+  "updated_at": "2026-10-17T02:49:18.557854+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {

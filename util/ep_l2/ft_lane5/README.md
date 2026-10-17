@@ -150,3 +150,15 @@ Run self-tests with:
 Coverage includes eight-process same-key race, cross-lane reuse, scan and quota,
 content identity, malicious/missing evidence, data/version errors, stale fills,
 early frees, incorrect WB boundaries and terminal resource leaks.
+
+## Bounded r13 continuation and result filesystem
+
+Current continuation authority is31251186feccffec192cc1fef8fc7d8164d12d9f.
+The existing canonical CLIENT pins the exact consumer runner source/hash.
+The runner enforces the existing40GiB Share protection on the actual result
+filesystem before hashing/claim and during owned simulation, in addition to
+unchanged workspace48GiB, memory and quota gates. Input keys and scientific
+qualification are unchanged. continue_r13.py performs one bounded read-only
+observation with>=600s cadence; it is not a new background waiter.
+qualify_r0_1.py requires an exact published formal producer and does not
+automatically issue an eleven-gate certificate after21 directed replays.
