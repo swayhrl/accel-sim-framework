@@ -1,0 +1,75 @@
+{
+  "utc": "2026-10-17T13:18:18.646655+00:00",
+  "status": "PASS_DETACHED_PASSIVE_MONITOR_TWO_HEARTBEATS",
+  "goal": "DTC_T1C_HOLDOUT_174_V1",
+  "host": "huangrulin-174",
+  "active": {
+    "utc": "2026-10-17T13:17:30.572076+00:00",
+    "process": {
+      "pid": 2238870,
+      "state": "R",
+      "parent_pid": 1,
+      "process_group": 2238870,
+      "session": 2238870,
+      "start_ticks": 899502188
+    },
+    "role": "PASSIVE_STATUS_ONLY_NO_EXECUTION_AUTHORITY",
+    "watches_authority": {
+      "pid": 2132794,
+      "start_ticks": 898867525,
+      "utc": "2026-10-17T11:31:45.447057+00:00",
+      "max_new_attempts": 2,
+      "max_parallel": 1,
+      "old_locks": "READ_ONLY_NEVER_ACQUIRED",
+      "foreground": true
+    },
+    "interval_seconds": 30,
+    "max_seconds": 43200
+  },
+  "heartbeat": {
+    "utc": "2026-10-17T13:18:00.602955+00:00",
+    "sequence": 2,
+    "monitor": {
+      "pid": 2238870,
+      "state": "R",
+      "parent_pid": 1,
+      "process_group": 2238870,
+      "session": 2238870,
+      "start_ticks": 899502188
+    },
+    "authority_alive": true,
+    "execution_status": {
+      "utc": "2026-10-17T13:17:50.850190+00:00",
+      "authority_pid": 2132794,
+      "launched": [
+        "DTC_T1C_HOLDOUT_V1_DWT2D",
+        "DTC_T1C_HOLDOUT_V1_BICG"
+      ],
+      "active": [
+        "DTC_T1C_HOLDOUT_V1_BICG"
+      ],
+      "terminal": {
+        "DTC_T1C_HOLDOUT_V1_DWT2D": "PASS_STRICT_HOLDOUT_SCOPE"
+      },
+      "halted": "SCIENTIFIC_AUTHORITY_CONFLICT_STOP_FURTHER_LAUNCH",
+      "not_launched": []
+    },
+    "resource_sample_age_seconds": 9.754648447036743,
+    "terminal_receipt_present": false,
+    "launches_or_signals_by_monitor": 0
+  },
+  "monitor_parent_pid": 1,
+  "monitor_stdio": {
+    "0": "/dev/null",
+    "1": "/workspace/dtc-t1c-holdout-174-v1/PASSIVE_STATUS.log",
+    "2": "/workspace/dtc-t1c-holdout-174-v1/PASSIVE_STATUS.log"
+  },
+  "script_sha256": "283378eb6daebbcd15aaac567bf04217df45cee94e4777f0ccf430855c6f794b",
+  "actual_starts": 2,
+  "pending_not_started": [],
+  "frozen_preregistered_files_unchanged": 63,
+  "scientific_execution_unchanged": true,
+  "no_retries_no_new_execution_authority": true,
+  "execution_authority_label_foreground_is_historical": true,
+  "note": "Existing coordinator and simulator retain original PID/start_ticks, timeout and serial gate. Passive monitor logs status only. Sticky conservative foreign-project hold is preserved and remains subject to final audit. Goal is active; this receipt does not pause or accept final results."
+}
