@@ -23,3 +23,10 @@ No matching SIM-performance cost pairing. If remaining worst paths require
 pipelining, only a separate Lane1 proposal is authorized; no pipeline silently
 introduced here. SRAM macro/Tag/MSHR/interconnect costs and physical closure
 remain separate outstanding work. No whole-slice PPA claim.
+
+The last variant f54d3c054 also uses actual reset buffer trees, group Tag-map
+data and exact parallel-prefix generation arithmetic. These are combinational
+implementation changes, with full library area/delay charged and no extra FF,
+clock phase or II. The source reset is still synchronous and all leaf resets
+are logically equal to rst_n. No reset timing exception is present. All listed
+SIM/RTL frontend/copy/return/arbitration/native-approval gaps remain unchanged.

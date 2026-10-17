@@ -96,3 +96,40 @@ Redundant static state accounting:11*1024 Tag-map FF +10*1024 owner FF plus
 up to2*1024 role bits and one shared captured-resident-handle high bit. Real
 mapped FF counts, rather than this bound, determine charged area. GEN32 remains
 on every used slot and WAD; data146KiB is unchanged.
+
+## Last bounded variant: true reset distribution and exact generation prefix
+
+Canonical hardware f54d3c054a6a03c85b40a1c5018751958c78a129 keeps all resource,
+role and cycle invariants above. It additionally masks Unified Tag-map data by
+its16-Tag target group. When mapping[t].write is true, p_tag==t, so that group's
+mask is1 and the captured11-bit p_landing is unchanged. All symbolic1024 word
+tags,11-bit landing values and event combinations pass actual word induction.
+Static modes still have no dynamic map words.
+
+The global metadata/Tag-map reset is distributed through real noninverting
+2xINV repeaters at root/mid/four-word-leaf levels. The actual source network
+has2 root groups, up to19 mid groups and292 leaves. Static inactive bypass
+branches are pruned. Actual expected counts are279/292/313 buffers in B16/S64/U,
+each with TWO mapped INV cells, zero new FF. The cost flow keeps these real
+cells/hierarchy instead of aliasing their outputs to one high-fanout wire.
+All binary reset values are proved equal at ALL292 outputs in every mode.
+Six combinational inverter delays are timed normally; there is no added reset
+cycle, false/multicycle exception, or steady-state pipeline change. DC may
+optimize/rebuffer the same source function under its real library/constraints.
+
+The GEN32 increment is an exact parallel-prefix add1/2. For step2, prefix input
+bit0 is forced1 and carry bit0 is0; for step1, original bit0 and carry bit0=1.
+For b>=1, carry[b] is the AND of prefix-input bits[0:b-1]. Generation XOR carry
+therefore gives the same modular add1/2 for every32-bit input. The existing
+saturation guards and update precedence are unchanged. Actual R1/R2 word
+induction was rerun for the final vector expression and all three word classes.
+This does not claim unbounded32-bit ABA safety. GEN3 tests remain exhaustion
+checks only; every cost run remains GEN32/full1024/1168/128/4x292/P1.
+
+A bit-per-generate-scope spelling caused excessive Icarus elaboration. Its
+source, actual partial mapping/STA and stopped compile are retained as an
+engineering attempt. Vector shifts/ANDs express exactly the same prefix graph
+without those scope costs. No incomplete variant is labelled full functional
+PASS. Existing exhaustive first-free/read-mux and reset proofs are reused only
+after exact module/source-network identity checks; changed word logic is proved
+and real final RTL functional tests are compiled/executed again.

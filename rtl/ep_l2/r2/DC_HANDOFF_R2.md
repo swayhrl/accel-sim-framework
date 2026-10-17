@@ -30,3 +30,9 @@ dirty-byte mask storage, NoC/lower queues are reused/external and unknown.
 For reproducible open comparison, mapping target remains883ps and bothSTA
 periods use the same mapped netlist. DC's six separate optimizations are DC
 results and must not be substituted into the open-flow before/after table.
+
+Final source includes ep_l2_control_buffer/ep_l2_control_inverter in the existing
+metadata file; the filelist is unchanged. Open flow preserves real inverter
+pairs to distribute fanout; DC can optimize/rebuffer the same function under
+the actual target DB and set_max_fanout. Verify both global reset and data nets,
+with reset still timed. Parallel-prefix generation is GEN32 and adds no state.

@@ -41,3 +41,11 @@ reset proof and induction from equal zero state both pass with event controls
 unconstrained, including overlaps. This checks local generation/control
 precedence; static guarded owner reduction and global allocator are outside
 that word proof. See word-proof-v1 and word-induction-v1 raw scripts/logs.
+
+Final variant additionally executes source word induction after the vector
+prefix rewrite and all-target/all-landing Tag-map mask induction. The actual
+reset network has a separate all292-output/all-mode Boolean proof. Reset and
+selector proofs are reused through exact unchanged module bodies/network, not
+by claiming that a changed file hash was tested. Real final RTL byte/full-size
+production fixtures still determine their own completion status. No post-map,
+whole-controller formal, atomic/RO/TVD or GPU numeric qualification is implied.
