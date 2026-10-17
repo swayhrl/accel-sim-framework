@@ -12,7 +12,7 @@ def load(p):return list(csv.DictReader(p.open()))
 def main():
  p=argparse.ArgumentParser();p.add_argument('derived',type=Path);p.add_argument('out',type=Path);a=p.parse_args();a.out.mkdir(exist_ok=False);pairs=load(a.derived/'finite_pairs.csv');pressure=load(a.derived/'pressure_and_banks.csv');ideals=load(a.derived/'local_ideal_endpoints.csv')
  def save(fig,name,caption):
-  fig.savefig(a.out/(name+'.pdf'),bbox_inches='tight');fig.savefig(a.out/(name+'.svg'),bbox_inches='tight');fig.savefig(a.out/(name+'.png'),dpi=180,bbox_inches='tight');(a.out/(name+'_CAPTION.txt')).write_text(caption+'\n');plt.close(fig)
+  fig.savefig(a.out/(name+'.pdf'),bbox_inches='tight');fig.savefig(a.out/(name+'.svg'),bbox_inches='tight');svg=a.out/(name+'.svg');svg.write_text('\n'.join(line.rstrip() for line in svg.read_text().splitlines())+'\n');fig.savefig(a.out/(name+'.png'),dpi=180,bbox_inches='tight');(a.out/(name+'_CAPTION.txt')).write_text(caption+'\n');plt.close(fig)
  conditions=['H0','Q4','WAD256_Q4','D2','D4','L25','ROP40_H0','ICNT2_H0']
  fig,axs=plt.subplots(2,2,figsize=(10.8,5.7),gridspec_kw={'height_ratios':[2.2,1]},layout='constrained')
  for col,work in enumerate(['convolutionSeparable','FWT_7_21']):
