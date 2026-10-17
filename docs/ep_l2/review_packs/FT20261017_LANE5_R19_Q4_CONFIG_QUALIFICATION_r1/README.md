@@ -1,0 +1,3 @@
+# Q4 independently admitted configuration
+
+Same official runtime source/mainbinary/five H0 config layers, exact published Q4 buffer overlay. Independent2 actual native affected replays PASS with full producer/fixture/archive/config/raw identity review; original11 evidence reused only in unchanged scope. DetailedDRAM850MHz/core1132MHz, fixed100GPUcycle, sharedcredit1279. Extra downstream buffer/credit cost same forB/U, not free capacity or isolatedFIFO attribution. Native smoke onepartition/twosubpartitions, not64slice application/saturation proof. No compile/new apps in this pack; application execution remains after both D4 pairs and separate current V2 qualification admission. No H0 changes or C1 headroom/TVD/RO/Ideal claims.
