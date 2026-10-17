@@ -27,6 +27,12 @@ FEATURES = {'finite_wbuf', 'unified_wb', 'tvd', 'ro', 'adaptive_policy',
             'wbuf_entries', 'payload_capacity_per_slice', 'bank_count', 'ops_per_bank_cycle'}
 IDEALS = {'wb', 'meta', 'read_hit'}
 RESULT_ROOT = Path('/workspace/results/ep_l2_ft20261016')
+RESULT_DISK_FLOOR = 40 * 1024**3  # Preserve the existing Share protection.
+
+
+def result_disk_free_bytes():
+    stat = os.statvfs(RESULT_ROOT)
+    return stat.f_bavail * stat.f_frsize
 
 
 def digest(path):
@@ -176,9 +182,13 @@ def terminate_owned(process):
 
 
 def run(spec, registry):
+    require(result_disk_free_bytes() >= RESULT_DISK_FLOOR,
+            'result filesystem below existing Share40GiB protection; no claim')
     audit = inspect(spec)
     key = audit['run_key']
     directory = RESULT_ROOT / key
+    require(result_disk_free_bytes() >= RESULT_DISK_FLOOR,
+            'result filesystem changed during input audit; no claim')
     fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory)
     if not fresh:
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
@@ -237,6 +247,7 @@ def run(spec, registry):
                 if (peak_rss > allocation['memory_bytes'] or
                     (directory / 'raw.log').stat().st_size > policy['default_run_output_limit_bytes'] or
                     tree_bytes(RESULT_ROOT) > policy['max_result_bytes'] or
+                    result_disk_free_bytes() < RESULT_DISK_FLOOR or
                     live['disk_free_bytes'] < policy['min_disk_free_bytes'] or
                     live['available_memory_bytes'] < policy['min_available_memory_bytes']):
                     status, detail = 'RESOURCE_LIMIT', 'own run exceeded shared resource safety policy'
