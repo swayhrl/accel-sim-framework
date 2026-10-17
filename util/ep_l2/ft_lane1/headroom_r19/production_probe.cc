@@ -147,7 +147,10 @@ int main(int argc,char **argv){
   for(unsigned i=16;i<20;++i){
     auto before=cache->ep_l2_wad_lifetime_count();versions zero={{0,0,0,0}};
     auto uid=f.send(addresses[i],true,zero);zero[0]=(unsigned long long)uid+1;stored[addresses[i]]=zero;f.wait(uid);f.drain();
-    assert(cache->ep_l2_wad_lifetime_count()==before+1 && cache->ft_last_wb_versions()==stored.at(addresses[i-16]));
+    const auto &got=cache->ft_last_wb_versions();const auto &want=stored.at(addresses[i-16]);
+    printf("R19_WB_CHECK|i=%u|before=%llu|after=%llu|want=%llu,%llu,%llu,%llu|got=%llu,%llu,%llu,%llu|staged=%u|wad=%u\n",i,before,cache->ep_l2_wad_lifetime_count(),want[0],want[1],want[2],want[3],got[0],got[1],got[2],got[3],cache->ft_wb_staged(),cache->ep_l2_wad_occupancy());
+    cache->ft_print(stdout,0);
+    assert(cache->ep_l2_wad_lifetime_count()==before+1 && got==want);
   }
   // Independent cold symbols from untouched lower memory, two real sectors;
   // and a resident read hit to a real UID-labelled store.
