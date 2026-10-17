@@ -1,7 +1,3 @@
-# Lane5 — R19 complete; repaired native cumulative readers and rolling new points
+# Lane5 — rolling R19 and parallel results
 
-All20selected R19rows currentaccepted inV229,21starts/one preservedcapacity-stop attempt; originalT0/deadline/cap retained. L25two-workload mean1.002336003710048; H0five mean1.0016002037656606 unchanged. Unifiedfb ordinary+legacy11gate scopes currentqualified throughV231 afterfreshnativeOFF73873/56000000/sevenCSV,49assertions,11constructors,13expectedrejections.
-
-Source37vectorI_WB73843/56000000 andI_META73696/56000000 independentlyreviewed afterparser-onlyrevalidation. Originalnativeexit0/raw andFAILEDvalidationrevisions retained;0newstarts forrepair. Fixselects exactfinalcumulative-clock64slice frame, rejectsconflictingduplicates/missingfinalslices andretainsallWB/request/sector/payload/drain gates. I_WBcharged894extra payloadslots; OFF73696. I_WBpoint stagedV232 pendingpush/readback; I_METAreviewready fornextgeneration.
-
-ICNT2ConvolutionB/U nowcomplete, independentpairreviewongoing/ready. WAD256ConvolutionB/U running undercurrentqualifiedsource2309; localreaderrepairdidnotblockthispair. Newcorrectedparser/specs forunifiedfinite/ALLready forfirstfullscope launches afterpublication andrealresourceadmission. Currentconcurrencyisbounded by48GiB workspaceafterfullremaininggrowth, so3ratherthanforcing4. Sharedtotal12GiB,Share40GiB/RAM64GiB,8CPU/32GiB andallcampaignbudgets/deadlines remain. No compile, cleanup, migration or watcher.
+H0 five pairs/mean1.0016002037656606 remain unchanged. R19 acceptedpairs10; newcampaign acceptedrows5. Staged V2generation33 awaits exact remote readback/currentpointer install. Latest EPL2_PARALLEL_POTENTIAL_20261017_V1/H0/I_META. Every immutable source/config/binary/input/closure record is in docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_H0_VECTORADD_4M_I_META_POINT_r1. Concurrent compatible runs continue under the one registry and4sim/8CPU/32GiB; all original floors preserved.
