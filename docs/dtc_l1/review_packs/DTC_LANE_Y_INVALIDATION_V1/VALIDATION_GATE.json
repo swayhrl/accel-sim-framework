@@ -1,0 +1,39 @@
+{
+  "as_of": "2026-10-18T00:06:01.131608+08:00",
+  "blockers": [
+    "Lane X published STOP without K0/K1 interface",
+    "Lane V K1-01 through K1-08 production acceptance not executed",
+    "Old consumers and in-flight value/order safety not established"
+  ],
+  "core_commit": "f8b34dd7a738caddf4f23dd417e34c0b63c206d9",
+  "core_release": "DOCUMENTATION_ONLY_SCIENTIFIC_STOP",
+  "frozen_core_commit": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "full_simulation_dispatch_owner": "Lane AA",
+  "full_simulations_dispatched": 0,
+  "goal": "DTC_LANE_Y_INDEPENDENT_INVALIDATION_VALIDATION_174_V1",
+  "independent_production_probes": 28,
+  "k0": {
+    "cpu_common_regression_paired": true,
+    "existing_code_blob_identical": true,
+    "new_switch_exists": false,
+    "new_switch_off_runtime_proven": false,
+    "recommendation": "Lane AA must rerun K0 on full identical inputs as strict pair if a later implementation cannot establish frozen-equivalent OFF semantics; old results cannot substitute",
+    "whole_input_equivalence_proven": false
+  },
+  "k1": {
+    "inflight_return_value_safety_proven": false,
+    "old_consumer_value_safety_proven": false,
+    "source_event_contract_bound": true,
+    "state_safety_proven": false
+  },
+  "lane_aa_authorized": false,
+  "lane_v_binding_status": "REVIEWED_CONTRACT_FOR_REVIEW_NOT_IMPLEMENTATION_PASS",
+  "lane_v_contract_commit": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+  "production_code_modified": false,
+  "reference_cases": 73,
+  "runner_expected_exit_code": 3,
+  "schema": 1,
+  "status": "FAIL_CLOSED",
+  "unexpected_test_failures": 0,
+  "upstream_regressions": 4
+}

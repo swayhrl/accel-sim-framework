@@ -1,0 +1,2472 @@
+{
+  "schema": 1,
+  "authority": "Lane Y independent abstract lifetime subset of Lane V contract 26abd496417d9392245052e54fbd9ba27c6ffd96; IO shadow-owner model is not a production mechanism; source predicates and timing not simulated",
+  "address_unit": "128B logical line index",
+  "cases": [
+    {
+      "id": "K0_DISABLED",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {
+        "enabled": false
+      },
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "expect": {
+            "result": "suppressed",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "b",
+          "line": 0,
+          "expect": {
+            "result": "pending_hit",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "MAPPED_REF_ZERO",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "MULTI_CONSUMER",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 0,
+          "expect": {
+            "result": "pending_hit",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [
+          2
+        ],
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "FOUR_SECTOR_INTERLEAVE_0",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "not_ready",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "FOUR_SECTOR_INTERLEAVE_1",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "not_ready",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "FOUR_SECTOR_INTERLEAVE_2",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "not_ready",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "FOUR_SECTOR_INTERLEAVE_3",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "not_ready",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "FOUR_SECTOR_INTERLEAVE_4",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "DUPLICATE_SECTOR_REJECT",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "expect": {
+            "result": "duplicate_sector",
+            "exit_code": 2
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 0
+      },
+      "expected_exit_code": 2,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "DISTINCT_OUT_OF_ORDER_ACCEPT",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "UNREQUESTED_SECTOR_REJECT",
+      "modes": [
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "mask": 1,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "expect": {
+            "result": "unrequested_sector",
+            "exit_code": 2
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 0
+      },
+      "expected_exit_code": 2,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "OUT_OF_RANGE_SECTOR_REJECT",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 4,
+          "expect": {
+            "result": "unrequested_sector",
+            "exit_code": 2
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "frees": 0
+      },
+      "expected_exit_code": 2,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "OLD_GENERATION_REJECT",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {
+        "lines": 1
+      },
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "expect": {
+            "result": "stale_generation",
+            "exit_code": 2
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 1
+      },
+      "expected_exit_code": 2,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "PIB_SLOT_REUSE",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {
+        "slots": 1
+      },
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 1,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "expect": {
+            "result": "duplicate_sector",
+            "exit_code": 2
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 2,
+        "tags": [
+          0,
+          1
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 0
+      },
+      "expected_exit_code": 2,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "PENDING_HIT_LATE_MERGE",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 0,
+          "expect": {
+            "result": "pending_hit",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 2,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "FINAL_RELEASE_REALLOCATION",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {
+        "lines": 1
+      },
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 1,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          1
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "REPEATED_INVALIDATION",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "expect": {
+            "result": "absent",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "expect": {
+            "result": "absent",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "SOURCE_FALSE",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "qualified": false,
+          "expect": {
+            "result": "suppressed",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "b",
+          "line": 0,
+          "expect": {
+            "result": "pending_hit",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_qualified_predicate_only"
+    },
+    {
+      "id": "NO_MAPPING",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "invalidate",
+          "expect": {
+            "result": "absent",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "expect": {
+            "result": "absent",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "SAME_BANK_DIFFERENT_BANK",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "tag",
+          "cycle": 10,
+          "line": 0,
+          "expect": {
+            "result": "tag_granted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "tag",
+          "cycle": 10,
+          "line": 4,
+          "expect": {
+            "result": "bank_busy",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "tag",
+          "cycle": 10,
+          "line": 1,
+          "expect": {
+            "result": "tag_granted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "tag",
+          "cycle": 10,
+          "line": 2,
+          "expect": {
+            "result": "tag_granted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "tag",
+          "cycle": 10,
+          "line": 3,
+          "expect": {
+            "result": "tag_granted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "tag",
+          "cycle": 11,
+          "line": 4,
+          "expect": {
+            "result": "tag_granted",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "lookup_arbitration_only_invalidation_bank_timing_unbound"
+    },
+    {
+      "id": "TAG_MAPS_MULTIPLE_BANKS",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "b",
+          "line": 1,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 1,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 0,
+        "tags": [],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 2
+      },
+      "expected_exit_code": 0,
+      "scope": "logical_mapping_updates_only_not_production_bank_rmw"
+    },
+    {
+      "id": "NO_EARLY_REUSE",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {
+        "lines": 1
+      },
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "line": 1,
+          "expect": {
+            "result": "no_free_line",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 1,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          1
+        ],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [],
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    },
+    {
+      "id": "SHADOW_STALE_OLD_CONSUMER",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "write",
+          "value": 9,
+          "expect": {
+            "result": "shadow_written",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "shadow_read",
+          "handle": "a",
+          "expect": {
+            "result": "potential_stale",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [
+          1
+        ],
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "potential_stale_metadata_only_not_SASS_architectural_load"
+    },
+    {
+      "id": "SHADOW_DELAYED_OLD_RETURN",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "write",
+          "value": 9,
+          "expect": {
+            "result": "shadow_written",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 7,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "shadow_read",
+          "handle": "a",
+          "expect": {
+            "result": "potential_stale",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [],
+        "refs": 1,
+        "occupancy": 1,
+        "ready": [
+          1
+        ],
+        "frees": 0
+      },
+      "expected_exit_code": 0,
+      "scope": "potential_stale_metadata_only_not_SASS_architectural_load"
+    },
+    {
+      "id": "NEW_CONSUMER_AFTER_INVALIDATION",
+      "modes": [
+        "IO",
+        "OO",
+        "SECTOR_OO"
+      ],
+      "config": {},
+      "events": [
+        {
+          "op": "admit",
+          "uid": 1,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 1,
+          "handle": "a",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "invalidate",
+          "line": 0,
+          "expect": {
+            "result": "invalidated",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "admit",
+          "uid": 2,
+          "expect": {
+            "result": "admitted",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "access",
+          "uid": 2,
+          "handle": "b",
+          "line": 0,
+          "expect": {
+            "result": "new_miss",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "a",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 0,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 1,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 2,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "fill",
+          "handle": "b",
+          "sector": 3,
+          "value": 0,
+          "expect": {
+            "result": "filled",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 1,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        },
+        {
+          "op": "retire",
+          "uid": 2,
+          "expect": {
+            "result": "retired",
+            "exit_code": 0
+          }
+        }
+      ],
+      "expected": {
+        "allocated": 1,
+        "tags": [
+          0
+        ],
+        "refs": 0,
+        "occupancy": 0,
+        "frees": 1
+      },
+      "expected_exit_code": 0,
+      "scope": "abstract_lifetime"
+    }
+  ]
+}

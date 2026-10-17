@@ -1,0 +1,97 @@
+{
+  "blobs": {
+    "src/gpgpu-sim/dtc-l1-common.h": {
+      "frozen_blob": "ab9831ad1946e287f96eac368cd3d342ff9038f2",
+      "identical": true,
+      "published_blob": "ab9831ad1946e287f96eac368cd3d342ff9038f2",
+      "sha256": "b63a0afdc85ca6301559afd013907387af8874d4ebdf3670a8d085640651e9d4"
+    },
+    "src/gpgpu-sim/gpu-cache.cc": {
+      "frozen_blob": "3408e9756d3a1c497eacc98dea54921eefdacae1",
+      "identical": true,
+      "published_blob": "3408e9756d3a1c497eacc98dea54921eefdacae1",
+      "sha256": "ea90f6b72af49fff343458b767521046b7b1b02ee9e78884cc9e6d796ea7e734"
+    },
+    "src/gpgpu-sim/gpu-cache.h": {
+      "frozen_blob": "b1414f635e746cf42e15637f219c8b3f2d7ff6c4",
+      "identical": true,
+      "published_blob": "b1414f635e746cf42e15637f219c8b3f2d7ff6c4",
+      "sha256": "9551bdbcfb0d1e0cf8938481778c0d6a1fb0201fd6b755d76f1541a98664b9ff"
+    },
+    "src/gpgpu-sim/gpu-sim.cc": {
+      "frozen_blob": "d39e5d3e4905ac9ef7b1429a65a5ea521b57a5f3",
+      "identical": true,
+      "published_blob": "d39e5d3e4905ac9ef7b1429a65a5ea521b57a5f3",
+      "sha256": "537d8a68effb56c02c28bbfea68fd6a92fa9644a70606c9d8dcabf10807a4b15"
+    },
+    "src/gpgpu-sim/shader.cc": {
+      "frozen_blob": "f74ff38310608a93b8a186c598c145164d839c3c",
+      "identical": true,
+      "published_blob": "f74ff38310608a93b8a186c598c145164d839c3c",
+      "sha256": "5964c1bdaf37b23d6bf57f499e687ef717a0570eaebc1dd241345c6340c84cb1"
+    },
+    "src/gpgpu-sim/shader.h": {
+      "frozen_blob": "a051024a7adfb8b4a97afc46390d63a60d83ef6f",
+      "identical": true,
+      "published_blob": "a051024a7adfb8b4a97afc46390d63a60d83ef6f",
+      "sha256": "7b615df952b0300fedd2047bd6f0135d0526fb11811cde7a649cef2431d22cc8"
+    },
+    "src/option_parser.cc": {
+      "frozen_blob": "c32c952d0df2298c5e66b72147ba8b8877cd83cc",
+      "identical": true,
+      "published_blob": "c32c952d0df2298c5e66b72147ba8b8877cd83cc",
+      "sha256": "51f1990f7e5d7da51e453a3e56870d7df96b0fddd99843d8c82de2f16bb1e39b"
+    }
+  },
+  "changed_paths": [
+    "docs/dtc_l1/LANE_X_OPTIN_INVALIDATION_V1_SCIENTIFIC_STOP.md"
+  ],
+  "core": "f8b34dd7a738caddf4f23dd417e34c0b63c206d9",
+  "executable_changed_paths": [],
+  "findings": [
+    {
+      "excerpt": "    issue_block2core();\n    decrement_kernel_latency();\n\n    // Depending on configuration, invalidate the caches once all of threads are\n    // completed.\n    int all_threads_complete = 1;\n    if (m_config.gpgpu_flush_l1_cache) {\n      for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {\n        if (m_cluster[i]->get_not_completed() == 0)\n          m_cluster[i]->cache_invalidate();\n        else\n          all_threads_complete = 0;\n      }",
+      "first_line": 2515,
+      "id": "CLUSTER_TICK",
+      "last_line": 2527,
+      "path": "src/gpgpu-sim/gpu-sim.cc"
+    },
+    {
+      "excerpt": "void gpgpu_sim::change_cache_config(FuncCache cache_config) {\n  if (cache_config != m_shader_config->m_L1D_config.get_cache_status()) {\n    printf(\"FLUSH L1 Cache at configuration change between kernels\\n\");\n    for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {\n      m_cluster[i]->cache_invalidate();\n    }\n  }",
+      "first_line": 1749,
+      "id": "CACHE_PREFERENCE",
+      "last_line": 1755,
+      "path": "src/gpgpu-sim/gpu-sim.cc"
+    },
+    {
+      "excerpt": "\nbool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {\n  if (!m_warp[warp_id]->get_membar()) return false;\n  if (!m_scoreboard->pendingWrites(warp_id)) {\n    m_warp[warp_id]->clear_membar();\n    if (m_gpu->get_config().flush_l1()) {\n      // Mahmoud fixed this on Nov 2019\n      // Invalidate L1 cache\n      // Based on Nvidia Doc, at MEM barrier, we have to\n      //(1) wait for all pending writes till they are acked\n      //(2) invalidate L1 cache to ensure coherence and avoid reading stall data\n      cache_invalidate();\n      // TO DO: you need to stall the SM for 5k cycles.\n    }\n    return false;\n  }\n  return true;",
+      "first_line": 6874,
+      "id": "MEMBAR",
+      "last_line": 6890,
+      "path": "src/gpgpu-sim/shader.cc"
+    },
+    {
+      "excerpt": "void ldst_unit::invalidate() {\n  // Flush L1D cache\n  m_L1D->invalidate();\n}",
+      "first_line": 4012,
+      "id": "DTC_NOT_INVALIDATED",
+      "last_line": 4015,
+      "path": "src/gpgpu-sim/shader.cc"
+    },
+    {
+      "excerpt": "void baseline_cache::invalidate() {\n  // The pre-existing kernel-end flush can be requested after an SM has no\n  // runnable threads but before its conventional L1 misses have drained.\n  // Invalidating such a tag lets a later MSHR merge reserve a second tag while\n  // the original fill owner still points at the first cache index.  The final\n  // fill then retires the owner/MSHR but leaves that second tag RESERVED.\n  // Preserve the request and perform the same invalidation once the accepted\n  // miss lifecycle has drained; no request, response, or DTC accounting path\n  // is changed.\n  m_invalidate_pending = true;\n  retire_pending_invalidate();\n}\n\nvoid baseline_cache::retire_pending_invalidate() {\n  if (m_invalidate_pending && !conventional_miss_lifecycle_active()) {\n    m_tag_array->invalidate();\n    m_invalidate_pending = false;\n  }\n}",
+      "first_line": 1268,
+      "id": "DEFERRED_CONVENTIONAL_TAG",
+      "last_line": 1286,
+      "path": "src/gpgpu-sim/gpu-cache.cc"
+    },
+    {
+      "excerpt": "  bool m_invalidate_pending = false;\n\n  bool conventional_miss_lifecycle_active() const {\n    return !m_miss_queue.empty() || !m_extra_mf_fields.empty() ||\n           !m_mshrs.empty();\n  }\n  void retire_pending_invalidate();",
+      "first_line": 1472,
+      "id": "CONVENTIONAL_DRAIN_SCOPE",
+      "last_line": 1478,
+      "path": "src/gpgpu-sim/gpu-cache.h"
+    }
+  ],
+  "frozen": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "independent_static_audit": true
+}

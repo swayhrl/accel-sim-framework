@@ -1,0 +1,123 @@
+{
+  "scope": "Published common-header CPU regression only. Replacement tests do not prove source-triggered K1 invalidation.",
+  "cases": [
+    {
+      "id": "io_sidecar_mapping_preserved",
+      "exit_code": 0,
+      "expected": {
+        "mapping_unchanged": true,
+        "new_misses": 1,
+        "valid_hits": 1,
+        "occupancy": 0
+      }
+    },
+    {
+      "id": "oo_sidecar_mapping_preserved",
+      "exit_code": 0,
+      "expected": {
+        "mapping_unchanged": true,
+        "new_misses": 1,
+        "valid_hits": 1,
+        "occupancy": 0
+      }
+    },
+    {
+      "id": "io_pending_and_replacement",
+      "exit_code": 0,
+      "expected": {
+        "occupancy": 0,
+        "allocated": 1,
+        "releases": 1,
+        "pending_hits": 1
+      }
+    },
+    {
+      "id": "oo_last_ref_and_reuse",
+      "exit_code": 0,
+      "expected": {
+        "occupancy": 0,
+        "active_refs": 0,
+        "allocated": 1,
+        "final_ref_reclaims": 2,
+        "stale_identity_matches": false,
+        "slot_generation_advanced": true
+      }
+    },
+    {
+      "id": "oo_slot_reuse",
+      "exit_code": 0,
+      "expected": {
+        "occupancy": 0,
+        "active_refs": 0,
+        "allocated": 1,
+        "final_ref_reclaims": 2,
+        "stale_identity_matches": false,
+        "slot_generation_advanced": true
+      }
+    },
+    {
+      "id": "oo_late_merge_finite",
+      "exit_code": 0,
+      "expected": {
+        "occupancy": 0,
+        "active_refs": 0,
+        "wakeups": 7,
+        "pending_hits": 6
+      }
+    },
+    {
+      "id": "sector_interleave",
+      "exit_code": 0,
+      "expected": {
+        "occupancy": 0,
+        "active_refs": 0,
+        "sector_responses": 6,
+        "wakeups": 10,
+        "final_ref_reclaims": 2
+      }
+    },
+    {
+      "id": "tag_banks",
+      "exit_code": 0,
+      "expected": {
+        "grants_per_mode": 5,
+        "conflicts_per_mode": 1
+      }
+    },
+    {
+      "id": "response_sector_guard",
+      "exit_code": 0,
+      "expected": {
+        "received": 15,
+        "duplicate_rejected": true,
+        "unrequested_rejected": true,
+        "out_of_range_rejected": true
+      }
+    },
+    {
+      "id": "oo_stale_fill_reject",
+      "exit_code": -6,
+      "expected_assert": "OO fill must match the original physical generation"
+    },
+    {
+      "id": "oo_duplicate_fill_reject",
+      "exit_code": -6,
+      "expected_assert": "pending.physical.id != identity.id"
+    },
+    {
+      "id": "sector_duplicate_reject",
+      "exit_code": -6,
+      "expected_assert": "sector response must be unique and pending"
+    },
+    {
+      "id": "sector_unrequested_reject",
+      "exit_code": -6,
+      "expected_assert": "sector response must be unique and pending"
+    },
+    {
+      "id": "sector_old_generation_reject",
+      "exit_code": -6,
+      "expected_assert": "sector fill must match original physical generation"
+    }
+  ]
+}

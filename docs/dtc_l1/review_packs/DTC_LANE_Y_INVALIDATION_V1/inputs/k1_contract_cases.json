@@ -1,0 +1,130 @@
+{
+  "lane_v_commit": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+  "cases": [
+    {
+      "id": "K1-01",
+      "name": "source_scope",
+      "input": "flush flag 0/1; cluster not_completed [0,1]; repeated idle; cache status same/different; MEMBAR pendingWrites 0/1",
+      "expected": "Only original source-selected SMs receive E; request phase differs from ordinary commit; kernel-done alone produces no E",
+      "negative": "Adding a global kernel-end broadcast or ignoring an original guard must fail",
+      "reference_cases": [
+        "SOURCE_FALSE",
+        "REPEATED_INVALIDATION"
+      ],
+      "missing": "Production source dispatch, concurrent clusters and original predicate integration",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-02",
+      "name": "retained_live_pending",
+      "input": "visible ready ref0; ready refs2; pending old plus same-address post-E new",
+      "expected": "Hide lookup; preserve old identity/refs/readiness; ref0 with no owner frees once; old/new return routes disjoint",
+      "negative": "Eager free, generation increment on E, or old lookup hit must fail",
+      "reference_cases": [
+        "MAPPED_REF_ZERO",
+        "MULTI_CONSUMER",
+        "NEW_CONSUMER_AFTER_INVALIDATION"
+      ],
+      "missing": "No released production E hook",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-03",
+      "name": "partial_and_grant",
+      "input": "two-line instruction; second allocation blocked; lookup grant before E, access commit after E",
+      "expected": "Already accepted identities preserved; unaccepted references use post-E directory; ownership closes once",
+      "negative": "Rollback accepted refs or cache a pre-E lookup result at grant must fail",
+      "reference_cases": [
+        "NO_EARLY_REUSE",
+        "TAG_MAPS_MULTIPLE_BANKS"
+      ],
+      "missing": "Actual partial instruction bookkeeping and finite grant/commit integration",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-04",
+      "name": "returns_waiters_slots",
+      "input": "four unique sectors [3,1,0,2], duplicate3, unrequested sector, old generation; finite update 4 of 6 waiters then late seventh; PIB slot reuse",
+      "expected": "Unique out-of-order accepted; duplicates/unrequested/stale rejected; metadata completes before ready; reused slot not woken",
+      "negative": "Duplicate acceptance or cross-generation wakeup must abort/fail",
+      "reference_cases": [
+        "DISTINCT_OUT_OF_ORDER_ACCEPT",
+        "DUPLICATE_SECTOR_REJECT",
+        "OLD_GENERATION_REJECT",
+        "PIB_SLOT_REUSE",
+        "PENDING_HIT_LATE_MERGE"
+      ],
+      "missing": "K1 interleaving with actual LDST inflight erase and metadata queue",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-05",
+      "name": "collection_writeback",
+      "input": "E during collection; operand collector refuses writeback for multiple cycles; last reference retires later",
+      "expected": "No early Ref decrement or free; one final reclaim; generation advances only on reallocation",
+      "negative": "Reclaim at ready/select/failed WB must fail",
+      "reference_cases": [
+        "FINAL_RELEASE_REALLOCATION",
+        "NO_EARLY_REUSE"
+      ],
+      "missing": "Collection and operand collector backpressure integrated K1 test",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-06",
+      "name": "io_orphans",
+      "input": "IO retained no PIB, live/partial refs, existing release_on_retire victims, consecutive E, no future load",
+      "expected": "Ownerless hidden retained rows eventually free safely; no synthetic owner/head attachment; FIFO and depth preserved",
+      "negative": "Attach all old rows to head/next load or add fictitious Ref must fail",
+      "reference_cases": [
+        "MAPPED_REF_ZERO",
+        "MULTI_CONSUMER",
+        "REPEATED_INVALIDATION"
+      ],
+      "missing": "IO_K1_UNIMPLEMENTED_STOP; abstract IO shadow model does not implement a production orphan mechanism",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-07",
+      "name": "sidecars",
+      "input": "STORE/ATOMIC/BYPASS/PROXY_FENCE sidecar with/without source E; separate dispatch exit, ACK, sidecar retire",
+      "expected": "No unrequested invalidation; architectural effects once; external dependency completion does not imply fresh load values",
+      "negative": "Treat store dispatch completion/PROXY_FENCE as coherence proof must fail",
+      "reference_cases": [
+        "SHADOW_STALE_OLD_CONSUMER",
+        "SHADOW_DELAYED_OLD_RETURN"
+      ],
+      "missing": "Real side-effect payload/ACK/ISA oracle and source-triggered K1 integration",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    },
+    {
+      "id": "K1-08",
+      "name": "phase_and_banks",
+      "input": "E+lookup/refill/retire same core cycle; same/different Tag bank; multiple SMs; ordinary miss pending",
+      "expected": "Replayable linearization at LDST request; deterministic updates; preserve ordinary pending drain and finite service quotas",
+      "negative": "Conflate request and ordinary Tag commit; lose same-cycle update; invent zero-cost bank sweep must fail",
+      "reference_cases": [
+        "SAME_BANK_DIFFERENT_BANK",
+        "TAG_MAPS_MULTIPLE_BANKS"
+      ],
+      "missing": "K1 Tag RMW arbitration/bandwidth/phase implementation",
+      "status": "NOT_RUN_PRODUCTION_K1",
+      "expected_exit_code": 0,
+      "observed_exit_code": null
+    }
+  ]
+}
