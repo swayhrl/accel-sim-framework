@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import resource
+import signal
 import shutil
 import subprocess
 import sys
@@ -42,6 +43,9 @@ def native_metrics(path):
 
 
 def main():
+    def interrupted(signum, frame):
+        raise KeyboardInterrupt('owned qualification control interrupted')
+    signal.signal(signal.SIGTERM, interrupted)
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--producer-report',required=True,type=Path);ap.add_argument('--producer-publication',required=True)
     ap.add_argument('--published-report-path',required=True);ap.add_argument('--independent-directed',required=True,type=Path)

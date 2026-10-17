@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import resource
+import signal
 import subprocess
 import time
 
@@ -12,10 +13,10 @@ from registry import Registry, local_resources, process_identity, write_json
 from run import GATES, digest, process_tree_rss, terminate_owned
 
 REPO = Path(__file__).resolve().parents[3]
-PLAN = REPO / 'docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1/INDEPENDENT_GATE_PLAN_r7.json'
-BUILD = Path('/workspace/build/ep-l2-ft20261016-lane1-r0-1')
-CORE = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1')
-FRAMEWORK = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1')
+PLAN = REPO / 'docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_OFFICIAL_INTAKE_r1/INDEPENDENT_GATE_PLAN.json'
+BUILD = Path('/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
+CORE = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
+FRAMEWORK = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
 PREFILL = ('PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS',
            'PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS',
            'PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS',
@@ -107,6 +108,9 @@ def audit_producer(path, publication, published_path):
 
 
 def main():
+    def interrupted(signum, frame):
+        raise KeyboardInterrupt('owned independent test interrupted')
+    signal.signal(signal.SIGTERM, interrupted)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--producer-report', required=True, type=Path)
     parser.add_argument('--producer-publication', required=True)

@@ -1,0 +1,641 @@
+{
+  "A1_addendum": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/continue_r13/A1_AFFECTED_GATE_ADDENDUM_R15.json",
+  "A1_status": "PENDING_REAL_PRODUCTION_REGRESSION_NO_CERTIFICATE",
+  "all_required_gates": {
+    "bank_service": {
+      "changed": "Original local bank PASS omitted memcpy offset counterexample",
+      "evidence_plan": "New physical_bank_clock is mandatory; original directed same-bank/pool-full and fill/response/lower contention regressions, max1 physicalbankop",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "finite_wbuf": {
+      "changed": "Physical bank timing can change staging lifetime/backpressure",
+      "evidence_plan": "4 partition regressions + original directed suite, C8/C16 B/U peak and unified borrow/WAD limits",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "memcpy_payload_identity": {
+      "changed": "New clean/quiescent host prefill binding/full-width memcpy/partial-sector endpoints",
+      "evidence_plan": "4 actual GPU memcpy->partition suites: high64-bit pointer/no32-bit alias, zero/nonaligned/repeated/multisector prefill, later quiescent clean epoch, exact live handle/index/generation, clean eviction lower miss/fill, dirty no-mutation/refusal+abort, real WB/set_done, frontend and held response closure",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "mode_legality": {
+      "changed": "No source change to legality/capacity/config definitions",
+      "evidence_plan": "Exact source-diff audit for unchanged option legality + four original illegal combinations if touched by producing source; no TVD/RO/ideal included",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "old_all_off_equivalence": {
+      "changed": "Non-FT override delegate and unchanged legacy memcpy tail; native gpu-cache.cc byte-identical",
+      "evidence_plan": "Bind independent source diff and small affected original-OFF comparison on official exact producer; old80 calibration rows/oldoracle not rerun. Do not inherit old FT application acceptance",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "physical_bank_clock": {
+      "changed": "FT banks/access, WB/WAD birth moved to physical GPU cycle; Tag offset remains native",
+      "evidence_plan": "12 real clock cases plus4 host-prefill suites; nonzero offset4096, B/U, C8/C16, per-bank physical-cycle delta<=1; parse counter and require complete response/drain",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "requester_exact_once": {
+      "changed": "Host warm hit/fill/response path acquires resident ownership",
+      "evidence_plan": "Real pointer/UID response assertions in host/clock suites and directed merge/response-pin test; native final requester counter closure",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "resource_closure": {
+      "changed": "New cache plus partition quiescence predicate",
+      "evidence_plan": "Host pending frontend/ICNT reply refusals, lower/WAD drains, every partition terminal no leak, input identities frozen",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "sector_reference_data": {
+      "changed": "Initialized sector symbols and partial ready masks/full addresses",
+      "evidence_plan": "Host version0 per initialized sector; directed independent nonzero store/WB/lower/fill reference, other sectors retained; SASS numerical bytes unavailable",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "stale_fill": {
+      "changed": "Host may release/re-reserve clean handles/generations",
+      "evidence_plan": "Host clean victim generation invalidation + directed pending-fill/pin/merge refusal and native id/generation source audit; do not claim detached RO behavior",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    },
+    "wb_lifecycle": {
+      "changed": "Physical bank readout and lifetime clocks; dirty host writes must refuse",
+      "evidence_plan": "Host real WB symbolic versions, dirty refusal unchanged owner/version/offset/grants, partition lower_accept staging release distinct from WAD set_done, directed WB reference",
+      "production_driven_pass": false,
+      "status": "NOT_QUALIFIED_AWAIT_EXACT_OFFICIAL_RELEASE"
+    }
+  },
+  "binary_sha256": "e42432c7328e0ed17c1fbec6e823af5dc373e4abbc60ce335612da6953c77a4b",
+  "engineering_pilot_not_a_formal_release": true,
+  "executed_count": 0,
+  "intake": "Require exact official source/Framework/binary/config and test-target hashes from Lane1. Compare final source against this candidate and minimal patch; rebind changed gate plan, never assume tree equals uncompiled candidate. Independent outputs in a new revision. No duplicate full compile. Test assertions must remain enabled; published build flags currently omit NDEBUG but exact produced flags must be checked.",
+  "kind": "PREPARATION_ONLY_NO_INDEPENDENT_CERTIFICATE",
+  "not_inherited": "Lane1 local producer PASS, clock-only1565f1f0 PASS, old R0/R1 certificates and prior symbolic directed PASS do not qualify this source",
+  "official_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+  "planned_execution_count": 21,
+  "planned_production_executions": [
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "case": "host_prefill_1_8",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "memcpy_payload_identity",
+        "physical_bank_clock",
+        "requester_exact_once",
+        "resource_closure",
+        "wb_lifecycle",
+        "sector_reference_data"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_markers": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ],
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_host_prefill"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ],
+      "case": "physical_clock_1_8_0",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 0,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ],
+      "case": "physical_clock_1_8_4096",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "case": "warm_clock_1_8",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "memcpy_payload_identity",
+        "sector_reference_data",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "case": "partition_1_8",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "finite_wbuf",
+        "wb_lifecycle",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_partition"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "case": "host_prefill_1_16",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "memcpy_payload_identity",
+        "physical_bank_clock",
+        "requester_exact_once",
+        "resource_closure",
+        "wb_lifecycle",
+        "sector_reference_data"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_markers": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ],
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_host_prefill"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ],
+      "case": "physical_clock_1_16_0",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 0,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "case": "physical_clock_1_16_4096",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "case": "warm_clock_1_16",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "memcpy_payload_identity",
+        "sector_reference_data",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "case": "partition_1_16",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "finite_wbuf",
+        "wb_lifecycle",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_partition"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "case": "host_prefill_2_8",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "memcpy_payload_identity",
+        "physical_bank_clock",
+        "requester_exact_once",
+        "resource_closure",
+        "wb_lifecycle",
+        "sector_reference_data"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_markers": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ],
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_host_prefill"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ],
+      "case": "physical_clock_2_8_0",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 0,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ],
+      "case": "physical_clock_2_8_4096",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "case": "warm_clock_2_8",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "memcpy_payload_identity",
+        "sector_reference_data",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "case": "partition_2_8",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "finite_wbuf",
+        "wb_lifecycle",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_partition"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "case": "host_prefill_2_16",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "memcpy_payload_identity",
+        "physical_bank_clock",
+        "requester_exact_once",
+        "resource_closure",
+        "wb_lifecycle",
+        "sector_reference_data"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_markers": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ],
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_host_prefill"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ],
+      "case": "physical_clock_2_16_0",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 0,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "case": "physical_clock_2_16_4096",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "finite_wbuf",
+        "wb_lifecycle",
+        "bank_service",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "case": "warm_clock_2_16",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "physical_bank_clock",
+        "memcpy_payload_identity",
+        "sector_reference_data",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "required_clock": {
+        "max_grants_per_physical_bank_cycle_lte": 1,
+        "offset": 4096,
+        "violations": 0
+      },
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_memcpy_clock"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "case": "partition_2_16",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "finite_wbuf",
+        "wb_lifecycle",
+        "requester_exact_once",
+        "resource_closure"
+      ],
+      "independent_output_root_revision_required": true,
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_partition"
+    },
+    {
+      "argv": [
+        "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "tests/ep_l2/ft_wbuf.config"
+      ],
+      "case": "ft_directed",
+      "execution_owner": "lane5_after_Lane1_official_release",
+      "expected_exit_status": 0,
+      "gates": [
+        "finite_wbuf",
+        "sector_reference_data",
+        "stale_fill",
+        "requester_exact_once",
+        "wb_lifecycle",
+        "resource_closure",
+        "bank_service"
+      ],
+      "independent_output_root_revision_required": true,
+      "status": "NOT_RUN",
+      "target": "ep_l2_ft_directed"
+    }
+  ],
+  "producing_framework": "861a06b91e309832161eab0836b512853c833ffb",
+  "review_authority": "8985f602a425d3049b77f68c6e90911dde2c4920",
+  "source_audit_producer": "205782b9745a7189b9bf858486648930b08b8a81",
+  "source_rebind": "RELEASE_INTAKE.json",
+  "static_target_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+  "static_target_framework": "861a06b91e309832161eab0836b512853c833ffb",
+  "static_target_has_compile_blocker": false,
+  "test_executable_hashes": {
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_directed": "f38b2682735ebf7e13c674f27fd5e8d9f2d1b0786300b9a969279baa68ee89c4",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_host_prefill": "55a0916a0b945de0d12f1569028be0330595cdc2c01a8a44e07dc20b0cea23da",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock": "4336efcbf4d2e85aa8410d90a87b466b7de81fef1fc85c8ad46a455c0b897d56",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_partition": "0354a5c31d3a468453928479ec90fd0e62d3518eceb34223ffc11b1d4a4f5ed1"
+  },
+  "unchanged_prior_eleven_gate_scope": true
+}
