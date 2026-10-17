@@ -50,7 +50,7 @@ def collect(regimes):
             group.append(pair);pairs.append(pair)
         require(len(group)==2,'No partial diagnostic mean')
         groups[regime]={'predeclared_workloads':list(WORKLOADS),'pairs':2,'diagnostic_geomean_S_h':math.exp(sum(math.log(r['S_h']) for r in group)/2),'diagnostic_geomean_J_h':math.exp(sum(math.log(r['J_h']) for r in group)/2),'H0_five_workload_mean_unchanged':1.0016002037656606}
-    return {'status':'COMPLETE_CURRENT_ACCEPTED_DIAGNOSTIC_GROUPS_ONLY','experiment_id':EXPERIMENT,'checked_current_authority':state['binding'],'current_publication':pub,'groups':groups,'paired_rows':pairs,'pressure_rows':pressure,'limits':['Same-condition S and interaction J only; no cross-condition EP-L2 speedup.','H0 all5 and old withdrawals retained; no new group replaces original0.16%.','Raw event/density/issue-opportunity/DRAM-tick measures separate; no additive GPU stalls or C1 headroom attribution.','Diagnostic means cover only the two predeclared workloads, no statistical significance or hardware-frequency claim.']}
+    return {'status':'COMPLETE_CURRENT_ACCEPTED_DIAGNOSTIC_GROUPS_ONLY','experiment_id':EXPERIMENT,'checked_current_authority':state['binding'],'current_publication':pub,'groups':groups,'paired_rows':pairs,'pressure_rows':list({(p['regime'],p['workload'],p['mode'],p['run_key']):p for p in pressure}.values()),'limits':['Same-condition S and interaction J only; no cross-condition EP-L2 speedup.','H0 all5 and old withdrawals retained; no new group replaces original0.16%.','Raw event/density/issue-opportunity/DRAM-tick measures separate; no additive GPU stalls or C1 headroom attribution.','Diagnostic means cover only the two predeclared workloads, no statistical significance or hardware-frequency claim.']}
 
 
 def main():
