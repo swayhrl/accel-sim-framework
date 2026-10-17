@@ -1,11 +1,11 @@
-# Lane1 r11 — bounded CONTINUE active, checkpoint 08
+# Lane1 r8 automatic outcome
 
-As of 2026-10-17T01:57:39.442885+00:00, Goal ACTIVE within UTC2026-10-16T17:56:33 to2026-10-17T03:56:33 (Beijing11:56:33). This timestamped Goal state is distinct from background PID liveness. Coordination6917bc6a r8–r11 applies; original science and formal48GiB+2GiB/64GiB policies unchanged.
+Status: FORMAL_BUILD_RECORDED_RELEASE_FREEZE_PENDING
 
-Sole recovered GateWaiter1628339/start895418594 remains alive; its original absolute deadline Beijing2026-10-19T01:17 is preserved (no extension), cadence600s, waiting lease=null, invocations0, heartbeat 2026-10-17T01:56:54.756971+00:00. Publisher1628511/start895419452 remains in existing pidfd wait. Prior1585205 exited on GitHub transport failure and its terminal receipt45fdc2dc was published. Both prior PIDs were absent and locks/central lease free before replacement. Source248191e3 now keeps600s waiting without authority after unavailable fetch; malformed fresh authorization/source/central errors still stop. r3request1b6ab366 binds only the waiter hash/control provenance; production source, pilot driver, numeric budgets and21 commands unchanged. Three focused transport guards PASS; no duplicate numeric review requested. Central active runs/leases0/0; engineering authorization records0.
+The unique waiter has finished; no automatic retry is running. Core/Framework/source identities remain in RECEIPT.json.
 
-Actual workspace f_bavail 21313216512B; Share 47028281344B. Lane5 latest827a6377 refuses r2f992a651 resource proposal (r3control1b6ab366 preserves all numeric terms): NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST. Request/API/source identity resolved; external burst, aggregate kill overshoot, Share margin and acknowledged low-I/O window remain unproved. No identical request or repeated static/tool tests.
+Pilot evidence is ENGINEERING_ONLY. Formal scientific runtime/binary/qualification/accepted-pair fields retain their preceding values; no engineering promotion occurred.
 
-Source Opsa6a580d8389b6356eac519f0c261b60daa9aa186, target665e7dab298092c2130cc56a8438a46e07bfac50: PolyBench35/35 components verified, whole archive verified=True; R1/PolyBench originals remain SOURCE_KEEP, no new source release. Archive/DEST_VERIFIED/bridge cleanup bytes are not root-source reclamation. No other-project process/data/quota changed.
+Actual directed attempts: 0; passes: 0. Exact timings/resource samples/binary identity/stop reason: docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T104859.
 
-Production inputs Corec9481845/Framework3ab150b3 and original driver retained. CMake0,21 actual producer directed tests NOT_RUN, formal/engineering binary=null and build peak=null. Old R0/R1 SUSPENDED, accepted formal pairs0, Lane5 independent11-gate qualification pending. Reuse existing waiter: prioritize original formal build after two>=60s confirmations/lease/source checks, or a later independently published and registered safe ENGINEERING_ONLY authorization. Continue bounded waiting; do not call this Goal COMPLETE for ordinary disk insufficiency. Start review pack FT20261017_LANE1_R11_CONTINUE_START_r1 and checkpoint docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/continue_r11/CHECKPOINT_08.json preserve evidence.
+Engineering evidence only: review any ordinary failure and bounded remediation; official release/independent11gate/formal resource admission remain separate. If the formal driver won, audit/freeze its official binary before announcing a release.
