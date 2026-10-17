@@ -42,7 +42,7 @@ def review(spec,registry,native_proof=None):
     for item in audit['configs']+audit['auxiliary_assets']:
         require(digest(directory/item['name'])==item['sha256'],'Frozen config/asset changed')
     raw=directory/'raw.log';require(digest(raw)==result['raw_log_sha256'],'Raw log changed')
-    if spec.get('experiment_id')=='EPL2_DOWNSTREAM_HEADROOM_R19':
+    if spec.get('experiment_id') in ('EPL2_DOWNSTREAM_HEADROOM_R19','EPL2_PARALLEL_POTENTIAL_20261017_V1'):
         from headroom_config import validate_runtime_dump
         require(validate_runtime_dump(raw,spec)==result['downstream_effective_config'],'Actual initialized config/clock evidence differs')
     parser=runpy.run_path(spec['parser']['path']);summary=parser['parse'](raw,spec)
@@ -54,7 +54,7 @@ def review(spec,registry,native_proof=None):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--workload',choices=ORDER,required=True)
     ap.add_argument('--spec-b',type=Path,required=True);ap.add_argument('--spec-u',type=Path,required=True)
-    ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--pack',type=Path,required=True);ap.add_argument('--deadline-unix',type=float,required=True);ap.add_argument('--native-legacy-proof',type=Path);ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25'));a=ap.parse_args()
+    ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--pack',type=Path,required=True);ap.add_argument('--deadline-unix',type=float,required=True);ap.add_argument('--native-legacy-proof',type=Path);ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0'));a=ap.parse_args()
     require(time.time()<a.deadline_unix,'Bounded CONTINUE deadline');require(not a.pack.exists(),'Frozen pack already exists')
     state=load_current_authority();ledger=current_manifest(state);accepted={r['workload'] for r in ledger['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED'}
     if a.regime is None:
@@ -63,7 +63,8 @@ def main():
     require(all(s['identity']['workload']==a.workload for s in specs),'Different workload')
     base,unified=specs
     if a.regime:
-        from headroom_config import EXPERIMENT,H0
+        from headroom_config import EXPERIMENT as R19,H0
+        EXPERIMENT=R19 if a.regime in ('D4','Q4','D2','D8','L25') else 'EPL2_PARALLEL_POTENTIAL_20261017_V1'
         require(all(s.get('experiment_id')==EXPERIMENT and s.get('regime')==a.regime for s in specs),'Diagnostic grouping mismatch')
         require(not any(run_key(s['identity']) in {r['run_key'] for r in ledger['rows']} for s in specs),'Previously reviewed diagnostic key')
     for name in ('core_source_commit','framework_source_commit','binary_sha256','trace_content_sha256','epoch_range','ideal_vector','termination_contract'):

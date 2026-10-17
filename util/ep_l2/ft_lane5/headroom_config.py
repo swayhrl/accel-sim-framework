@@ -17,6 +17,17 @@ OVERRIDES = {'Q4':Q4, 'D4':{**Q4,'-gpgpu_clock_domains':'1132.0:1132.0:1132.0:34
              'D2':{**Q4,'-gpgpu_clock_domains':'1132.0:1132.0:1132.0:1700.0'},
              'D8':{**Q4,'-gpgpu_clock_domains':'1132.0:1132.0:1132.0:6800.0'},
              'L25':{**Q4,'-gpgpu_clock_domains':'1132.0:1132.0:1132.0:3400.0','-dram_latency':'25'}}
+PARALLEL_EXPERIMENT = 'EPL2_PARALLEL_POTENTIAL_20261017_V1'
+PARALLEL_COORDINATION = 'a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900'
+FINITE_OVERRIDES = {'ROP40_H0':{'-gpgpu_l2_rop_latency':'40'},
+                    'ICNT2_H0':{'-gpgpu_clock_domains':'1132.0:2264.0:1132.0:850.0'}}
+
+
+def condition_overrides(experiment, regime):
+    allowed = OVERRIDES if experiment == EXPERIMENT else FINITE_OVERRIDES if experiment == PARALLEL_EXPERIMENT else {}
+    require(regime in allowed, 'Unknown/mismatched independently qualified condition')
+    return allowed[regime]
+
 # LOWER_CEILING deliberately absent: separate path qualification required.
 
 
@@ -48,9 +59,10 @@ def validate(spec,release,configs,assets):
         return None
     require(digest(binding['path'])==binding['sha256'],'Condition qualification changed')
     m=json.loads(Path(binding['path']).read_text())
-    require(m['status']=='INDEPENDENT_CONFIG_PASS' and m['coordination_commit']==COORDINATION,'Unqualified r19 condition')
-    require(spec.get('experiment_id')==m['experiment_id']==EXPERIMENT,'Wrong experiment grouping')
-    regime=spec.get('regime');require(regime==m['regime'] and regime in OVERRIDES,'Unknown/mismatched condition')
+    require(m['status']=='INDEPENDENT_CONFIG_PASS' and m['coordination_commit']==(COORDINATION if m['experiment_id']==EXPERIMENT else PARALLEL_COORDINATION),'Unqualified condition')
+    require(spec.get('experiment_id')==m['experiment_id'] and m['experiment_id'] in (EXPERIMENT,PARALLEL_EXPERIMENT),'Wrong experiment grouping')
+    regime=spec.get('regime');require(regime==m['regime'],'Unknown/mismatched condition')
+    overrides=condition_overrides(m['experiment_id'],regime)
     for name in ('core_source_commit','framework_source_commit','binary_sha256'):
         require(m['identity'][name]==spec['identity'][name],'Condition source/binary mismatch')
     require(spec['identity']['binary_sha256']==BINARY,'New runtime requires new independent science')
@@ -62,28 +74,31 @@ def validate(spec,release,configs,assets):
     require(hashlib.sha256(canonical(base)).hexdigest()==H0[spec['mode']],'Frozen H0 base altered')
     baseopts=options([r['path'] for r in spec['configs'][:5]])
     extra=options([r['path'] for r in spec['configs'][5:]])
-    require(extra==OVERRIDES[regime],'Overlay changes forbidden/missing field')
+    require(extra==overrides,'Overlay changes forbidden/missing field')
     effective=options([r['path'] for r in spec['configs']])
-    require(effective=={**baseopts,**OVERRIDES[regime]}==row['effective_options'],'Effective config not the exact qualified overlay')
+    require(effective=={**baseopts,**overrides}==row['effective_options'],'Effective config not the exact qualified overlay')
     require(effective.get('-dram_latency','100')==('25' if regime=='L25' else '100'),'Fixed interface latency changed')
     require(effective.get('-gpgpu_simple_dram_model','0')=='0','Unqualified simple DRAM path')
     for evidence in m['evidence']:
         require(digest(evidence['path'])==evidence['sha256'],'Affected production/independent evidence changed')
     require(m['evidence'],'Missing affected production evidence')
-    return {'experiment_id':EXPERIMENT,'regime':regime,'condition_qualification_sha256':binding['sha256'],
+    return {'experiment_id':m['experiment_id'],'regime':regime,'condition_qualification_sha256':binding['sha256'],
             'runtime_config_sha256':row['runtime_config_sha256'],'effective_options_sha256':hashlib.sha256(canonical(effective)).hexdigest()}
 
 
 def validate_runtime_dump(raw_path,spec):
     """Verify actual official executable's parsed options and initialized clocks."""
     import re
-    require(spec.get('experiment_id')==EXPERIMENT,'Not an r19 runtime dump')
-    expected={**OVERRIDES[spec['regime']],'-dram_latency':'25' if spec['regime']=='L25' else '100',
+    require(spec.get('experiment_id') in (EXPERIMENT,PARALLEL_EXPERIMENT),'Unknown runtime dump')
+    expected={**condition_overrides(spec['experiment_id'],spec['regime']),'-dram_latency':'25' if spec['regime']=='L25' else '100',
         '-gpgpu_simple_dram_model':'0','-gpgpu_ep_l2_wad_entries':'128',
         '-gpgpu_ep_l2_descriptor_pool_size':'512','-gpgpu_ep_l2_descriptor_per_line_cap':'32',
         '-gpgpu_ep_l2_wbuf_entries':'16','-gpgpu_ep_l2_payload_mode':'2',
         '-gpgpu_ep_l2_ft_mode':'2' if spec['identity']['feature_vector']['unified_wb'] else '1'}
     if spec['regime']=='Q4':expected['-gpgpu_clock_domains']='1132.0:1132.0:1132.0:850.0'
+    if spec['experiment_id']==PARALLEL_EXPERIMENT:
+        expected.setdefault('-gpgpu_clock_domains','1132.0:1132.0:1132.0:850.0')
+        expected.setdefault('-gpgpu_l2_rop_latency','160')
     actual={};clocks=[]
     with Path(raw_path).open() as stream:
         for line in stream:

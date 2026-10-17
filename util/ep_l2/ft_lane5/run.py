@@ -349,7 +349,7 @@ def run(spec, registry):
                         if match[1] == 'cycle': cycles = int(match[2])
                         else: instructions = int(match[2])
             require(normal and cycles is not None and instructions is not None, 'missing native terminal execution evidence')
-            if experiment is not None and experiment['experiment_id'] == 'EPL2_DOWNSTREAM_HEADROOM_R19':
+            if experiment is not None:
                 from headroom_config import validate_runtime_dump
                 result['downstream_effective_config'] = validate_runtime_dump(directory / 'raw.log', spec)
             # Parser adapter must produce terminal_summary.json with explicit, source-mapped fields.

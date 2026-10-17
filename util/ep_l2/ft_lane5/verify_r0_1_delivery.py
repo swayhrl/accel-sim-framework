@@ -18,14 +18,15 @@ def git(*args):return subprocess.check_output(['git',*args],cwd=REPO)
 
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since-publication',required=True);ap.add_argument('--workload');ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25'));ap.add_argument('--qualification-pack',type=Path);ap.add_argument('--qualification-only',action='store_true');a=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since-publication',required=True);ap.add_argument('--workload');ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0'));ap.add_argument('--qualification-pack',type=Path);ap.add_argument('--qualification-only',action='store_true');a=ap.parse_args()
     ref='refs/remotes/origin/'+BRANCH
     subprocess.run(['git','-c','gc.auto=0','-c','url.https://github.com/.insteadOf=git@github.com:','-c','credential.helper=!gh auth git-credential','fetch','--no-tags','origin','refs/heads/'+BRANCH+':'+ref],cwd=REPO,check=True)
     head=git('rev-parse','HEAD').decode().strip();require(head==git('rev-parse',ref).decode().strip(),'Remote own branch SHA differs')
     files=git('diff','--name-only',a.since_publication,head).decode().splitlines()
     for name in files:require((REPO/name).read_bytes()==git('show',head+':'+name),'Remote object/file differs '+name)
     require(a.workload or (a.qualification_only and a.qualification_pack is not None),'Workload or qualification-only pack required')
-    prefix=('FT20261017_LANE5_R19_'+a.regime+'_' if a.regime else 'FT20261017_LANE5_R0_1_A1_B1_')+(a.workload or '').upper()
+    is_parallel=a.regime in ('ROP40_H0','ICNT2_H0')
+    prefix=(('FT20261017_LANE5_PARALLEL_' if is_parallel else 'FT20261017_LANE5_R19_')+a.regime+'_' if a.regime else 'FT20261017_LANE5_R0_1_A1_B1_')+(a.workload or '').upper()
     packs=[REPO/'docs/ep_l2/review_packs'/(prefix+suffix) for suffix in ('_PAIR_r1','_ACCEPTANCE_r1')] if not a.qualification_only else []
     for pack in packs+([a.qualification_pack] if a.qualification_pack else []):
         for line in (pack/'SHA256SUMS').read_text().splitlines():
@@ -42,10 +43,10 @@ def main():
     with (SHARED/'REGISTRY.lock').open('a+') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);p=SHARED/'CLIENT_CONTRACT.json';client=json.loads(p.read_text());client['scientific_acceptance']={'path':str(path),'sha256':sha,'generation':manifest['generation'],'revision':manifest['revision'],'publication_commit':head};write_json(p,client)
         if a.qualification_only:
-            p=SHARED/'LANE5_CONTINUE_R19.json';m=json.loads(p.read_text());m.update(status='ACTIVE_'+a.regime+'_CONDITION_QUALIFIED_READY',verified_publication=head,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
+            p=SHARED/('LANE5_CONTINUE_PARALLEL.json' if is_parallel else 'LANE5_CONTINUE_R19.json');m=json.loads(p.read_text()) if p.exists() else {};m.update(status='ACTIVE_'+a.regime+'_CONDITION_QUALIFIED_READY',verified_publication=head,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
         elif a.regime:
-            p=SHARED/'LANE5_CONTINUE_R19.json';m=json.loads(p.read_text());m.update(status='ACTIVE_ROLLING_R19_CURRENT_ACCEPTED',verified_publication=head,actual_worker=None,latest_pair_delivery=handoff,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
-            write_json(SHARED/'coordination_requests'/('LANE5_TO_LANE6_R19_'+a.regime+'_'+a.workload.upper()+'.json'),{'status':'CURRENT_ACCEPTED','experiment_id':'EPL2_DOWNSTREAM_HEADROOM_R19','regime':a.regime,'publication_commit':head,'generation':manifest['generation'],'current_manifest_sha256':sha,'handoff':handoff})
+            p=SHARED/('LANE5_CONTINUE_PARALLEL.json' if is_parallel else 'LANE5_CONTINUE_R19.json');m=json.loads(p.read_text()) if p.exists() else {};m.update(status='ACTIVE_ROLLING_R19_CURRENT_ACCEPTED',verified_publication=head,actual_worker=None,latest_pair_delivery=handoff,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
+            write_json(SHARED/'coordination_requests'/(('LANE5_TO_LANE6_PARALLEL_' if is_parallel else 'LANE5_TO_LANE6_R19_')+a.regime+'_'+a.workload.upper()+'.json'),{'status':'CURRENT_ACCEPTED','experiment_id':'EPL2_PARALLEL_POTENTIAL_20261017_V1' if is_parallel else 'EPL2_DOWNSTREAM_HEADROOM_R19','regime':a.regime,'publication_commit':head,'generation':manifest['generation'],'current_manifest_sha256':sha,'handoff':handoff})
         else:
             p=SHARED/'LANE5_CONTINUE_R13.json';m=json.loads(p.read_text());m.update(status=f'ACTIVE_{pairs}_CURRENT_ACCEPTED_PAIRS',verified_publication=head,actual_worker=None,current_accepted_pairs=pairs,latest_pair_delivery=handoff,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
             write_json(SHARED/'coordination_requests'/('LANE5_TO_LANE6_CURRENT_ACCEPTED_R0_1_'+a.workload.upper()+'.json'),{'status':'CURRENT_ACCEPTED','publication_commit':head,'generation':manifest['generation'],'current_manifest_sha256':sha,'handoff':handoff})
