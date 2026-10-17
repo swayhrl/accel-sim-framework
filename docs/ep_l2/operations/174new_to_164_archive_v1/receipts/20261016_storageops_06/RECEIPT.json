@@ -1,6 +1,6 @@
 {
   "schema": "STORAGE_OPS_V7_TARGET_REV06",
-  "time": "2026-10-17T01:57:18.046260+00:00",
+  "time": "2026-10-17T02:00:49.148940+00:00",
   "amendment_sha": "5e1df072495cdc9ee3bb84ac593d84387924c037",
   "S01": "SOURCE_RELEASED_BRIDGE_CLEANED",
   "S02": "SOURCE_RELEASED_BRIDGE_CLEANED",
@@ -47,7 +47,7 @@
   "r1_batches_verified": 14,
   "r1_b002_bridge": "BRIDGE_CLEANED",
   "r1_b002_target_publication_commit": "1ff521d336d2b0ab2148174970da6548e730d072",
-  "next_gate": "LANE1_OWNER_AUTHENTIC_LIVE_WAITING_STATE_THEN_SOURCE_RECHECK_SAME_READY; NO_CURRENT_ALTERNATIVE_RELEASE_SCOPE",
+  "next_gate": "SOURCE_INDEPENDENT_RECHECK_SAME_READY_AFTER_OWNER_LIVE_GATE_RECOVERY",
   "source_release_approval": "NOT_GRANTED",
   "latest_receiver_guard_checks": 18,
   "latest_target_data_receipt_commit": "18297948ac349a8d415692f4601cda4f4c5e5691",
@@ -204,5 +204,24 @@
     "target_may_stage_second_payload_under_this_decision": false,
     "source_action": "SOURCE_KEEP",
     "source_original_released_bytes": 0
-  }
+  },
+  "latest_lane1_live_identity_observation": {
+    "observed_at_utc": "2026-10-17T02:00:49.213770+00:00",
+    "status": "WAITING_RESOURCE_OR_LANE5_AUTHORIZATION",
+    "pid": 1628339,
+    "actual_process_state": "S",
+    "actual_start_ticks": 895418594,
+    "recorded_start_ticks": 895418594,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "actual_script_argv": "util/ep_l2/ft_lane1/gate_waiter.py",
+    "actual_cwd": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1",
+    "resolved_script": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/gate_waiter.py",
+    "actual_command_matches_registered_source": true,
+    "live_identity_verified": true,
+    "gate_last_observed_at": "2026-10-17T01:56:54.756971+00:00",
+    "active_lane1_leases": {},
+    "invocations": 0,
+    "target_modified_lane1": false
+  },
+  "native_197_first_trial_source_gate_status": "OWNER_LIVE_WAITING_VERIFIED_TARGET_REQUESTS_SOURCE_INDEPENDENT_RECHECK"
 }
