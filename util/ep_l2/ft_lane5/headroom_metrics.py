@@ -1,9 +1,9 @@
 """Source-defined r19 pressure/residency extraction; missing observations stay missing."""
 from pathlib import Path
+import json
 from campaign_r0 import ft_metrics
 from validate import require
 
-SOURCE_CORE='7b8e6ac70b8fe0f1bd37efca11acb5284938825d'
 SUM_FIELDS=('samples','c7d_l2_to_dram_full_block','c7d_dram_issue_eligible',
     'c7d_dram_scheduler_full_block','c7d_dram_credit_block','c7d_dram_returnq_block',
     'c7d_dram_to_l2_full_block','c7e_dram_issue_attempt','c7e_dram_successful_read_issues',
@@ -44,16 +44,20 @@ def parse_rows(lines):
         'scheduler_full_per_sampled_DRAM_channel_tick':sum(int(r['scheduler_full_cycles']) for r in windows)/ticks,
         'returnq_full_per_sampled_DRAM_channel_tick':sum(int(r['returnq_full_cycles']) for r in windows)/ticks,
         'window_successful_packets_per_sampled_DRAM_channel_tick':sum(int(r['successful_read_issues'])+int(r['successful_write_issues']) for r in windows)/ticks}
-    return {'source_core':SOURCE_CORE,'aggregate':agg,'DRAM_windows':windows,'L2_windows':l2windows,
+    return {'source_core':None,'aggregate':agg,'DRAM_windows':windows,'L2_windows':l2windows,
         'limitations':['L2-full denominator is sampled L2 slice-cycles, not an unrecorded eligible-read opportunity count.',
         'DRAM-issue opportunity and channel-tick window denominators are distinct; no equal-tick assumption across clock regimes.',
         'DRAM windows cover emitted5000-GPU-cycle intervals only; partial terminal tail is not invented.',
         'WAD average is mean of source-truncated per-slice lifetime averages, not global weighted mean or p95.',
         'FT staging_lifetime is a separate source metric; U slot release differs from WAD lifetime.',
+        'FT staged_max counts WB records including lower-accepted WAD, not physical WB-data live/reserved slots; capacity_above_C16_observed alone does not prove data-capacity binding. Use wbuf_full and the exact STRUCT/WB_QUOTA observations.',
         'No legacy C1 resident headroom, no additive total GPU stall or numerical SASS claim.']}
 
 
 def analyze(directory):
     with (directory/'raw.log').open() as stream:r=parse_rows(stream)
+    identity=json.loads((directory/'input_spec.json').read_text())['identity']
+    r['source_core']=identity['core_source_commit']
+    r['source_identity']=identity
     r['FT_staging']=ft_metrics(directory)
     return r
