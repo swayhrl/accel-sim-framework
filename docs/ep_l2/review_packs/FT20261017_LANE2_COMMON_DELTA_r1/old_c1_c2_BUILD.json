@@ -1,0 +1,115 @@
+{
+  "variant": "old_c1_c2",
+  "core_source": "1f64e06e027d6367cdea806672809b8428dd8530",
+  "commands": [
+    [
+      "/usr/bin/c++",
+      "-std=gnu++17",
+      "-O0",
+      "-g0",
+      "-fPIC",
+      "-DCUDART_VERSION=11080",
+      "-DDEBUG=0",
+      "-DTRACING_ON=1",
+      "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/libcuda",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src/gpgpu-sim",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src/accelwattch",
+      "-c",
+      "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/tests/ep_l2/test_common_delta_r16.cc",
+      "-o",
+      "/workspace/build/ep-l2-ft20261017-lane2-common-r16/old_c1_c2/0.o"
+    ],
+    [
+      "/usr/bin/c++",
+      "-std=gnu++17",
+      "-O0",
+      "-g0",
+      "-fPIC",
+      "-DCUDART_VERSION=11080",
+      "-DDEBUG=0",
+      "-DTRACING_ON=1",
+      "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/libcuda",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src/gpgpu-sim",
+      "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src/accelwattch",
+      "-DGPGPUSIM_POWER_MODEL",
+      "-c",
+      "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane2-common-r16/src/gpgpu-sim/gpu-cache.cc",
+      "-o",
+      "/workspace/build/ep-l2-ft20261017-lane2-common-r16/old_c1_c2/1.o"
+    ],
+    [
+      "/usr/bin/c++",
+      "/workspace/build/ep-l2-ft20261017-lane2-common-r16/old_c1_c2/0.o",
+      "/workspace/build/ep-l2-ft20261017-lane2-common-r16/old_c1_c2/1.o",
+      "-o",
+      "/workspace/build/ep-l2-ft20261017-lane2-common-r16/old_c1_c2/common_delta.out",
+      "-Wl,--start-group",
+      "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/libentrypoint.a",
+      "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/libcuda/libcuda.a",
+      "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/cuda-sim/libptxsim.a",
+      "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/intersim2/libintersim.a",
+      "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+      "-Wl,--end-group",
+      "-lz",
+      "-ldl",
+      "-lpthread",
+      "-lGLX",
+      "-lOpenGL",
+      "-lm"
+    ]
+  ],
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "assertions_enabled": true,
+  "lease": {
+    "lease_id": "7ac918a37628491a86b883da4c3c54cf",
+    "owner": "lane2",
+    "cpu": 1,
+    "memory_bytes": 4294967296,
+    "resources": {
+      "available_memory_bytes": 183656316928,
+      "disk_free_bytes": 82810224640
+    },
+    "registry_sha256": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
+    "scope": "C1/C2 one fixture TU, changed gpu-cache/l2cache TUs only; reuse pinned official unchanged archives; max aggregate own output budget512MiB"
+  },
+  "source_files": {
+    "tests/ep_l2/test_common_delta_r16.cc": "26d67b1a1e9b6585204d3e927a036b584b8e43bf1f34b48501961471d275dee3",
+    "src/gpgpu-sim/gpu-cache.cc": "a72afcba62693b0acdcd85d42e650063e41e3e7122f6b52ba630dc8b468f9c55"
+  },
+  "archives": {
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/libentrypoint.a": "f3b4c6abbb8862e4e6fa990880eb71eee176a3646c5b166a59cc3fdddf679d45",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/libcuda/libcuda.a": "aec912a52d5b99c9cf8637c6cf974c90700ed0592ba6354cd4a0c6927cfe74d8",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/cuda-sim/libptxsim.a": "786a5bacd8c8ed90c0f68c6418657b480a0b9b6269086e929461a9697586b7ea",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a": "b6bdf1193d550ce603e82ffb737dcbc5a7828df24889081f0e4701e3a5820032",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/intersim2/libintersim.a": "4de6ed7e9b8e94623b8a4abe9634f365b2adcc9ab0089e1451c84ad1c366c32c",
+    "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/src/accelwattch/libaccelwattch.a": "682bf655cc8bfd76f2ebba1df4e71db4d461e1e5a9cbb464a0c14356ae59cf23"
+  },
+  "steps": [
+    {
+      "label": "compile0",
+      "exit_code": 0,
+      "seconds": 2.322477340698242
+    },
+    {
+      "label": "compile1",
+      "exit_code": 0,
+      "seconds": 2.523068428039551
+    },
+    {
+      "label": "link",
+      "exit_code": 0,
+      "seconds": 1.5697391033172607
+    }
+  ],
+  "binary": "/workspace/build/ep-l2-ft20261017-lane2-common-r16/old_c1_c2/common_delta.out",
+  "binary_sha256": "2bcb98c24836aeab1db012a62dc5d1cc39679275dc2ca2b3d37558e8df0c88b6",
+  "lease_attribution_correction": {
+    "reason": "driver initially reused B1 lease metadata; actual C1/C2 central lease was already admitted before all compilation",
+    "initial_lease_id": "bc33e109a0f54d4c9e9ffc5b930737e4"
+  }
+}

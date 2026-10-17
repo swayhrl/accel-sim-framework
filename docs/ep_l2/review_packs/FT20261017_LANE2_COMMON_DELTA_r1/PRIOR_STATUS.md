@@ -1,0 +1,7 @@
+# Lane2 r16 — B1 early handoff, C1/C2 active
+
+Read r16 §2 fully; latest official common088146 is now producer21/21, not independently qualified. Separate Lane2 common branch source00edf6b9295fc3e4558654dec7ab6281dcb69d95, semantic patch3037ce12a9ea8a75a39f5fa18f32c047febcebba. Real production l2_cache/MSHR/Tag old-red6/new-green6 with identical final fixture; atomic mask/dirty bytes, both fill orders, multiple native atomics, prior dirty sector, actual WB and FT symbolic completion label covered. Cache never executes atomic ALU callback; controlled consumer invokes the real callback. No numerical ALU/shader/application qualification.
+
+Early immutable pack `docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_B1_r1`, especially COMMON_DELTA_REVIEW_FOR_LANE1.md, contains minimal three-file source patch, test patch, logs, compiler/archive/binary/source identities. Central build leasebc33e109a0f54d4c9e9ffc5b930737e4 (1CPU/4GiB) was legally claimed and RELEASED. Only fixture and changed gpu-cache TU were compiled/relinked, no full build. Old/new artifacts retained. C1 statistics and C2 bypass backpressure continue within this short Goal; Lane1 can consume B1 without waiting.
+
+Original TVD branch/sourcebe5dcbe1 and r14 cost/eligibility fixes remain intact. Its three regression groups remain NOT_COMPILED_NOT_RUN. No TVD rebase/application/RO merge, waiter or formal performance run is started. Final common delta/remaining scope will follow on this same Framework branch.

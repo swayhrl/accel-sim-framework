@@ -1,14 +1,14 @@
 {
   "schema_version": "EP_L2_LANE_RECEIPT_V1",
   "lane_id": 2,
-  "task_id": "FT20261017_LANE2_R14_BOUNDED_INTEGRATION_REVIEW",
-  "status": "R16_ACTIVE_B1_REAL_6_RED_6_GREEN_C1_C2_PENDING",
+  "task_id": "FT20261017_LANE2_COMMON_DELTA_R16",
+  "status": "COMMON_DELTA_DIRECTED_DELIVERED_TVD_R2_REBASE_NOT_RUN",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "continuation_commit": "92de53a63616f9fcc53f2058ad975c3c8f90b13c",
   "framework_branch": "hrl/ep-l2-ft20261016-lane2-v1",
   "framework_source_commit": null,
   "framework_usage": "documentation/source preparation only; Framework publication is containing Git commit",
-  "framework_previous_publication": "dc21af497c319672c30752ed2192a2a8cc937bab",
+  "framework_previous_publication": "292d927493739c9b2421e16bcea0509cae4e9c14",
   "target_framework_build_input": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
   "core_branch": "hrl/ep-l2-ft20261016-lane2-v1",
   "core_source_commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
@@ -65,7 +65,8 @@
     "old_getter_or_listener_tests_repeated": false,
     "Python_test_suites": 0,
     "formal_workloads": 0,
-    "independent_qualification": false
+    "independent_qualification": false,
+    "scope": "TVD_R14_NOT_COMPILED_NOT_RUN; common evidence is in common_validation"
   },
   "reviewed_interfaces": {
     "RO_core": "5ae8b06d58b61189140f571ab37b5f6d51228632",
@@ -99,11 +100,10 @@
   "disk_gate_waiter_created": false,
   "release_event_listener": {
     "status": "NOT_STARTED_THIS_GOAL",
-    "process_active": false,
-    "historical_listener": "see prior frozen RELEASE_WAIT_r1"
+    "process_active": false
   },
-  "scientific_acceptance": "old R0/R1 SUSPENDED; no new qualified TVD binary or accepted performance data",
-  "current_review_pack": "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1",
+  "scientific_acceptance": "old R0/R1 SUSPENDED; this is directed common engineering evidence only; no new accepted performance",
+  "current_review_pack": "docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_DELTA_r1",
   "artifacts": [
     "docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/",
     "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r1/",
@@ -114,40 +114,83 @@
     "docs/ep_l2/review_packs/FT20261016_LANE2_EXACT62_STATIC_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE2_C948_STATIC_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE2_RELEASE_WAIT_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_B1_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_DELTA_r1"
   ],
   "worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-repair-r3",
   "host": "huangrulin-174",
   "blocked_scopes": [
-    "official R0.1 parent/binary/producer proof not published",
-    "shared safe admission and Lane1/Lane5 priority before own build",
-    "all current C++ regression source uncompiled/unrun",
-    "R2 unified role/owner/epoch/descriptor/Tag/prefill and bank-lifetime integrations unresolved",
-    "joint Ideal routing requires explicit feature contract; no silent service-priority choice",
-    "Lane5 independent TVD qualification required before formal application"
+    "TVD rebase/production remains unrun pending exact integrated parent and shared safe admission",
+    "formal applications remain Lane5-only after independent scientific qualification"
   ],
   "bounded_review_deliverable_complete": true,
   "main_runtime_objective_complete": false,
-  "next_trigger": "User event-driven CONTINUE after official parent and shared admission; no resident waiter or automatic polling",
+  "next_trigger": "Lane1 exact integrated A1/common release and future user event-driven TVD CONTINUE; no worker remains",
   "remaining_gate_details": "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1/LANE2_TVD_INTEGRATION_READINESS_AND_UNTESTED_GATES.md",
   "common_delta": {
-    "baseline_production_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
-    "current_core": "00edf6b9295fc3e4558654dec7ab6281dcb69d95",
-    "semantic_patch_commit": "3037ce12a9ea8a75a39f5fa18f32c047febcebba",
-    "fixture_sha256": "3c5fac9a38c2aa64c33d890f7fdd3f8aa69c232ccaaa8be6618895310484387b",
-    "old_binary_sha256": "f2809e5fcb1d637d6cb7827a7169335c92dd9dbadc427113c5c2468a9cf35af5",
-    "new_binary_sha256": "53ba10492eb6a53633e47e4f0007c8c967aff2cd3537fe3c581a51569881312e",
-    "old_production_override_TUs": [],
-    "new_production_override_TUs": [
-      "src/gpgpu-sim/gpu-cache.cc"
+    "core_source_commit": "099aeb5ac002ddc03ab8dc295caa1333d9aa50e1",
+    "core_tree": "6a4dfae9dd72b675da6801220afbf6e8474ff366",
+    "common_branch": "hrl/ep-l2-ft20261017-lane2-common-delta-r16-v1",
+    "common_parent": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+    "framework_official_input": "861a06b91e309832161eab0836b512853c833ffb",
+    "original_official_binary_sha256": "e42432c7328e0ed17c1fbec6e823af5dc373e4abbc60ce335612da6953c77a4b",
+    "original_binary_replaced": false,
+    "new_official_release": false,
+    "semantic_B1": "3037ce12a9ea8a75a39f5fa18f32c047febcebba",
+    "semantic_C1_C2": "d8e323cf6f8a0beab7d777600129f8d32c62b0d4",
+    "M0_formatter_and_fixture_refinement": "a4447cc681ce21396c1f92fdfe41b4e615869c57",
+    "production_files": {
+      "src/gpgpu-sim/gpu-cache.h": "17dccc9bcdf8a5d3ec1351567351ac5aba83c26510021393f5ad2807cbb93611",
+      "src/gpgpu-sim/gpu-cache.cc": "a72afcba62693b0acdcd85d42e650063e41e3e7122f6b52ba630dc8b468f9c55",
+      "src/gpgpu-sim/ep-l2-ft-cache.inc": "708409fb0a3fca79ca8b5505c477691f68267f630dc693819d2bf8dabbe2e340",
+      "src/gpgpu-sim/l2cache.cc": "26451c73d3ea1c34fad06e882cf8e11f7a088db62661f5028f951ac46670655f"
+    },
+    "fixture": "tests/ep_l2/test_common_delta_r16.cc",
+    "fixture_sha256": "18ed3396000edfde2d9c7812d5c6beb3d2543f6163641cc5387841271c163763",
+    "trace_identity": null,
+    "formal_application_runs": 0,
+    "full_accel_sim_builds": 0,
+    "final_directed_binary": "/workspace/build/ep-l2-ft20261017-lane2-common-r16/new_c1_c2_wb_compact/common_delta.out",
+    "final_directed_binary_sha256": "b56de6ac16cbda916e069976dd9a8ebc0aa5b0c58225f8d0257a096b8c8d39a1",
+    "config_order": [
+      {
+        "path": "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+      },
+      {
+        "path": "tests/ep_l2/ft_wbuf.config",
+        "sha256": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+      }
     ],
-    "old_header_note": "Only a method declaration was added; no class layout/inline implementation change in B1.",
-    "old_red": 6,
-    "new_green": 6,
-    "formal_applications": 0,
-    "TVD_tests": 0,
-    "TVD_source": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536"
+    "constructor_override_identity": "exact committed fixture bytes + per-case selectors; no trace or app inputs",
+    "TVD_source_preserved": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "TVD_branch_clean": true,
+    "TVD_rebase": "NOT_RUN",
+    "TVD_r14_three_groups": "NOT_COMPILED_NOT_RUN"
   },
   "common_branch": "hrl/ep-l2-ft20261017-lane2-common-delta-r16-v1",
-  "current_common_review_pack": "docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_B1_r1"
+  "current_common_review_pack": "docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_DELTA_r1",
+  "common_source_commit": "099aeb5ac002ddc03ab8dc295caa1333d9aa50e1",
+  "common_validation": {
+    "matrix": "docs/ep_l2/review_packs/FT20261017_LANE2_COMMON_DELTA_r1/VALIDATION_MATRIX.json",
+    "unique_cases": 12,
+    "old_red": 11,
+    "new_green": 12,
+    "same_final_binary_all_cases": false,
+    "final_source_actual_tests": [
+      "b1-wb-evidence"
+    ],
+    "scope": "actual production functions, scoped component revisions; not independent science",
+    "compiled": true,
+    "full_accel_sim_builds": 0,
+    "formal_applications": 0
+  },
+  "compiled_scope": "top-level compiled=false belongs to preserved TVD; common changed TUs compiled=true per nested identities",
+  "common_remaining": [
+    "Lane1 review/merge with its A1 correction and clean affected build",
+    "12 finite integrated gates plus Lane1 existing obligations",
+    "Lane5 independent atomic/feature scope qualification"
+  ],
+  "validation_scope": "PRESERVED_TVD_R14_ONLY_NOT_COMMON_DELTA"
 }

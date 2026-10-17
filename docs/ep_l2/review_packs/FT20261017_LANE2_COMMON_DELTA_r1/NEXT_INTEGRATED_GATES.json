@@ -1,0 +1,35 @@
+{
+  "kind": "PREPARATION_ONLY_LANE1_FINAL_A1_COMMON_BINARY",
+  "selectors": [
+    "b1-read-first",
+    "b1-atomic-first",
+    "b1-multi",
+    "b1-b16",
+    "b1-dirty",
+    "b1-version-only",
+    "b1-wb-evidence",
+    "c1-transient",
+    "c2-texture",
+    "c2-hit",
+    "c1-m0-output",
+    "c2-disabled"
+  ],
+  "processes": 12,
+  "status": "NOT_RUN_ON_LANE1_INTEGRATED_RELEASE",
+  "conditions": [
+    "exact Lane1 A1/common source + fresh affected build",
+    "central current admission, unchanged budgets",
+    "freeze source/config/binary/compiler identity"
+  ],
+  "additional_existing_obligations": "Lane1 A1 16-way B/U8/16 and producer suite; Lane5 independent atomic scope/11gate; no applications authorized by this file",
+  "not_covered": [
+    "numeric PTX atomic/CAS/reduction ALU",
+    "real shader/partition pop callback execution",
+    "concurrent FT same-sector atomics",
+    "multi-lane/warp/multi-slice",
+    "multi-sector lower packets",
+    "B8/U8 atomic runtime",
+    "RO/TVD/Ideal",
+    "whole traces/application performance"
+  ]
+}

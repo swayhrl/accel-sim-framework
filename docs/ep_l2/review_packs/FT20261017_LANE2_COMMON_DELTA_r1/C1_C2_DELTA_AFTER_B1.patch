@@ -1,0 +1,86 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 071ddd4d..580d60dd 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -6,0 +7,22 @@ unsigned long long l2_cache::ft_physical_cycle() const {
++l2_cache::resident_observation l2_cache::resident_observer_snapshot() const {
++  resident_observation s{};
++  s.role_occupied = m_ep_l2_payload.resident_used();
++  s.physical_capacity = m_ep_l2_payload.physical_slots();
++  s.physical_free = m_ep_l2_payload.free_slots();
++  s.physical_occupied = s.physical_capacity - s.physical_free;
++  for (unsigned i = 0; i < m_config.get_num_lines(); ++i) {
++    const auto h = tag_payload_handle(i);
++    if (!m_tag_array->get_block(i)->is_invalid_line() &&
++        m_ep_l2_payload.handle_live(h) &&
++        m_ep_l2_payload.inspect(h).allocation_role == ep_l2_payload_store::RESIDENT)
++      ++s.tag_visible;
++  }
++  if (m_ft_pending.landing_reserved &&
++      m_ep_l2_payload.handle_live(m_ft_pending.landing) &&
++      tag_payload_handle(m_ft_pending.tag_index) != m_ft_pending.landing)
++    s.pending_landing = 1;
++  assert(s.role_occupied >= s.tag_visible + s.pending_landing);
++  s.other_unbound = s.role_occupied - s.tag_visible - s.pending_landing;
++  return s;
++}
++
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 4f881212..95d95af3 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -2159 +2159,7 @@ class ep_l2_payload_store {
+-  unsigned resident_free() const { return k_resident_slots - resident_used(); }
++  // Legacy nominal RESIDENT-role headroom, not free Tags or unified slots.
++  static unsigned nominal_resident_headroom(unsigned occupied, unsigned capacity) {
++    return occupied < capacity ? capacity - occupied : 0;
++  }
++  unsigned resident_free() const {
++    return nominal_resident_headroom(resident_used(), k_resident_slots);
++  }
+@@ -2708,0 +2715,5 @@ class l2_cache : public data_cache {
++  struct resident_observation {
++    unsigned tag_visible, pending_landing, role_occupied, other_unbound;
++    unsigned physical_capacity, physical_occupied, physical_free;
++  };
++  resident_observation resident_observer_snapshot() const;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 6e6fcbdb..11c01890 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1518 +1518,3 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+-    } else {
++    } else if (!m_L2_dram_queue->full()) {
++      // Only the actual bypass branch needs this lower FIFO credit. Hits,
++      // merges and locally absorbed writes keep their existing admission.
+@@ -1521,0 +1524,2 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++      // Its real return invokes ft_record_response even when it bypassed L2.
++      ft_record_admission(mf);
+@@ -1875 +1879,2 @@ void memory_sub_partition::ep_l2_m0a_accum::sample_resident(
+-  resident_free_sum += capacity - occupied;
++  const unsigned free = ep_l2_payload_store::nominal_resident_headroom(occupied, capacity);
++  resident_free_sum += free;
+@@ -1877 +1882 @@ void memory_sub_partition::ep_l2_m0a_accum::sample_resident(
+-  if (capacity - occupied < resident_free_min) resident_free_min = capacity - occupied;
++  if (free < resident_free_min) resident_free_min = free;
+@@ -1944 +1949,4 @@ void memory_sub_partition::ep_l2_m0a_print(
+-          "m0_useful_frontend_admit=%llu|m0_useful_response_enqueue=%llu\n",
++          "m0_useful_frontend_admit=%llu|m0_useful_response_enqueue=%llu|"
++          "resident_legacy_occupied_scope=PAYLOAD_ROLE|"
++          "resident_legacy_free_scope=SATURATED_NOMINAL_ROLE_HEADROOM|"
++          "resident_legacy_over_nominal=%s\n",
+@@ -1954 +1962,13 @@ void memory_sub_partition::ep_l2_m0a_print(
+-          stats.useful_response_enqueue);
++          stats.useful_response_enqueue, !strcmp(scope, "window") ? "UNAVAILABLE" :
++              (stats.resident_occupied_max > 1024 ? "1" : "0"));
++  if (!m_config->m_L2_config.disabled() && m_L2cache->ft_enabled()) {
++    const auto s = m_L2cache->resident_observer_snapshot();
++    // Instantaneous at print time, never the preceding window's average.
++    fprintf(fp, "EPL2RESIDENTOBSV1|scope=instant_at_m0_print|slice=%u|"
++        "tag_capacity=%u|tag_visible=%u|pending_landing=%u|"
++        "resident_role_occupied=%u|resident_other_unbound=%u|"
++        "physical_capacity=%u|physical_occupied=%u|physical_free=%u\n",
++        m_id, m_config->m_L2_config.get_num_lines(), s.tag_visible, s.pending_landing,
++        s.role_occupied, s.other_unbound, s.physical_capacity,
++        s.physical_occupied, s.physical_free);
++  }
