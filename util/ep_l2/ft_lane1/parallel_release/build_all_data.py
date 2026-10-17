@@ -7,7 +7,7 @@ REPO=Path(__file__).resolve().parents[4]
 CORE=Path('/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-all-data-r1')
 FW=Path('/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1')
 BUILD=Path('/workspace/build/ep-l2-potential20261017-lane1-all-data-r1')
-OUT=Path('/workspace/ep_l2_parallel_lane1/all_data_build_r1')
+OUT=Path('/workspace/ep_l2_parallel_lane1/all_data_build_r2')
 EXPECTED='9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def head(p):return subprocess.check_output(['git','rev-parse','HEAD'],cwd=p,text=True).strip()
