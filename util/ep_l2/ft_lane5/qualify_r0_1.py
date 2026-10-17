@@ -13,10 +13,10 @@ from registry import Registry, local_resources, process_identity, write_json
 from run import GATES, digest, process_tree_rss, terminate_owned
 
 REPO = Path(__file__).resolve().parents[3]
-PLAN = REPO / 'docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_OFFICIAL_INTAKE_r1/INDEPENDENT_GATE_PLAN.json'
-BUILD = Path('/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
-CORE = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
-FRAMEWORK = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
+PLAN = REPO / 'docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_OFFICIAL_INTAKE_r1/INDEPENDENT_GATE_PLAN.json'
+BUILD = Path('/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1')
+CORE = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1')
+FRAMEWORK = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1')
 PREFILL = ('PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS',
            'PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS',
            'PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS',
@@ -40,7 +40,22 @@ def git(root, *args):
 
 def check_directed_log(case, text):
     name = case['case']
-    if name.startswith('host_prefill_'):
+    if name.startswith('a1_'):
+        mode, cap = map(int, case['argv'][2:4])
+        require(f'A1 armed mode={mode} C={cap} native16way=1 reserved=15 pending=2' in text, 'A1 real geometry/pending schedule missing')
+        match = re.search(r'A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=(\d+)', text)
+        require(match and int(match[1]) > 0, 'A1 fixture failed to exercise changed raw replacement')
+        require(f'A1 production 16way cross-cycle fill/exact-once/versions/lower-accept/set_done/bank/drain mode={mode} C={cap} PASS' in text, 'A1 transaction/lifecycle/reference closure missing')
+    elif name.startswith('b1-'):
+        marker = ('PASS B1 real native multiatomic late ordinary sector' if name == 'b1-multi' else
+                  'PASS B1 atomic miss completion version and later WB' if name == 'b1-version-only' else
+                  'PASS B1 real MSHR/Tag mixed sector fill/response/WB')
+        require(marker in text, 'B1 real mask/version/callback/WB assertion suite missing')
+        if name != 'b1-multi':
+            require('WB|sector_mask=' in text, 'B1 actual WB packet missing')
+            version = re.search(r'(?:VERSION\|atomic_uid=\d+\||VERSION_ONLY\|)got=(\d+)\|expected=(\d+)', text)
+            require(version and version[1] == version[2], 'B1 symbolic atomic completion version mismatch')
+    elif name.startswith('host_prefill_'):
         require(all(marker in text for marker in PREFILL), 'Missing host prefill lifecycle/reference marker')
     elif name == 'ft_directed':
         require(all(marker in text for marker in DIRECTED), 'Missing directed reference/request/lifecycle marker')
@@ -92,7 +107,7 @@ def audit_producer(path, publication, published_path):
     commands = [[str(BUILD / ('gpgpu-sim/' + case['target'])),
                  *[str(CORE / arg) if arg.endswith('.config') else arg for arg in case['argv']]]
                 for case in plan['planned_production_executions']]
-    require(len(p['tests']) == 21 and [r['command'] for r in p['tests']] == commands, 'Actual21 producer command matrix incomplete or different')
+    require(len(p['tests']) == 31 and [r['command'] for r in p['tests']] == commands, 'Actual31 producer command matrix incomplete or different')
     for case, row in zip(plan['planned_production_executions'], p['tests']):
         require(row['exit_code'] == 0 and digest(row['log']) == row['log_sha256'] and row.get('process'), 'Missing real producer execution/log')
         require(digest(row['command'][0]) == p['test_executables'][row['command'][0]], 'Test executable not pinned')
@@ -102,7 +117,7 @@ def audit_producer(path, publication, published_path):
         require(len(rows) == 1 and rows[0]['exit_code'] == 0 and digest(rows[0]['log']) == rows[0]['log_sha256'], 'Missing exact compiler log')
         expected = (['cmake', '-S', str(FRAMEWORK / 'gpu-simulator'), '-B', str(BUILD), '-G', 'Unix Makefiles', '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8']
                     if name == 'configure' else ['cmake', '--build', str(BUILD), '--target', 'accel-sim.out',
-                    'ep_l2_ft_memcpy_clock', 'ep_l2_ft_host_prefill', 'ep_l2_ft_directed', 'ep_l2_ft_partition', '-j2'])
+                    'ep_l2_ft_memcpy_clock', 'ep_l2_ft_host_prefill', 'ep_l2_ft_directed', 'ep_l2_ft_partition', 'ep_l2_ft_a1', 'ep_l2_common_delta_r16', '-j2'])
         require(rows[0]['command'] == expected, 'Compiler entry/output differs from frozen official invocation')
     return p, plan, commands
 
@@ -157,7 +172,7 @@ def main():
             row['producer_stdout_equal'] = row['log_sha256'] == producer['tests'][len(report['tests']) - 1]['log_sha256']
             print(case['case'], 'PASS', flush=True);process = None
         audit_producer(args.producer_report, args.producer_publication, args.published_report_path)
-        report['status'] = 'INDEPENDENT21_PASS_REVIEW_ELEVEN_GATES_BEFORE_ANY_APPLICATION'
+        report['status'] = 'INDEPENDENT31_PASS_REVIEW_ELEVEN_GATES_BEFORE_ANY_APPLICATION'
         report['unresolved_before_certificate'] = ['Affected OFF production equivalence and mode-legality qualification per unchanged r7 plan',
                                                  'Independent sector/request/lifecycle evidence review, exact V2 launch authorization and complete input hashing']
     except BaseException as error:
