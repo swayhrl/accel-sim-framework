@@ -1,3 +1,7 @@
+# Latest SAD terminal checkpoint
+
+SAD83004 controller terminal0; oldPIDs2076092/2076099/2076100 historical, neverrestart. Both COMPLETE_VALID +independent fullreviewPASS B110550/U110528. Gen17 staged pendingpush/readback/currentpointer; new12started/12independentvalid, noactivesim. Next deliverSAD and separate robustnesssummary. SelectedD2/L25 remain trueproducerdependency; noL5compile or bypass.
+
 # Latest actual SAD worker
 
 As of 2026-10-17T10:28:04.774844+00:00: D4SAD actual controller2076092/start898473041/boot59e1e1a4-84b6-431f-ac2d-03e340207019, session83004; logW/D4_ROBUSTNESS_sad_CONTROLLER.log. ExactRUNNING keys 697edba15b66ca6bcf84f988d154c7d3146567c5f44c2ccb63a064fb537a19f7, 8dea37d7a12154bea54131a8ad5632bcaacab586e0665bd6e72f64e9e17062f9. Native PIDstart/boot in docs/ep_l2/review_packs/FT20261017_LANE5_R19_VECTOR_DELIVERED_SAD_STARTED_r1/RECEIPT.json; alwaysverifylive registry/processbeforeaction, neverduplicate. Vector8983 terminal0 and CURRENT_ACCEPTED gen16/c40e0f1b506e171f6133aa7f6bd57507e0f303a9, B45055/U45052, full34filesremoteverified+pointer. New12started/10accepted/2running. Next --regimeD4 --workloadsad ownreview with H/r19_specs_admitted_robustness_r1/D4, stageW/reviewed_pairs and newFT20261017_LANE5_R19_D4_SAD_PAIR_r1/ACCEPTANCE_r1, publish/readback/currentpointer/L6. Then robustness separate summary and await exactL1D2/L25 handoffs (fresh605c remains, sharedhandsoffabsent). Twofrozenpeer condition-mapping checks q1vectorPASS, noLane6intakeclaim. Same deadline/caps/resources, noL5compile.
