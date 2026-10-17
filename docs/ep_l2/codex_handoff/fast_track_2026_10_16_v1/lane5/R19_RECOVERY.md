@@ -1,3 +1,7 @@
+# Latest actual terminal checkpoint
+
+D4FWT controller session78105 exited0; its old PIDs below are now historical. Both exact run keys COMPLETE_VALID; independent review PASS B452758/U451254, instructions791609344 each. Staged V2gen11 is not current until push/readback+central pointer installation. No active EP-L2 simulator. Next verify/publish FWT, Q4 qualification-only authorization, then Q4Conv/FWT prepared campaigns. Never restart D4.
+
 # Latest verified recovery checkpoint
 
 As of 2026-10-17T08:09:35.722224+00:00: D4Conv CURRENT_ACCEPTED with actualremote84b4fb78766757edbca50e079fb977b4aa190a29,V2gen10. Previous Convcontroller97402 exited normally; its oldPIDs below are historical. New D4FWT unifiedexecsession78105, controller [{"pid": 1974803, "start_ticks": 897646973, "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"}], simulatorPIDs1974809/1974810 keys6bd6ab1b7f5232d6ca46f7082a74297f32794f6a16f6fbd0570e10b012606a25 and078df93f2cfc3849b0e53a080cc3ad5bbf9cbfcdd383bb00a59ae5ae4f30c466. BothRUNNING, alwayschecklive registry/PIDstart/boot before resume, neverduplicate. Log /workspace/results/ep_l2_ft20261016/lane5_r19_campaign_r1/D4_FWT_7_21_CONTROLLER.log. Newapps4started/2accepted. Next review/publish --workload FWT_7_21 --regime D4 with samepipeline andadmittedspecs; thenauthorizeQ4atno-activeboundary andtwoQ4pairs. Deadline/cap unchanged.
