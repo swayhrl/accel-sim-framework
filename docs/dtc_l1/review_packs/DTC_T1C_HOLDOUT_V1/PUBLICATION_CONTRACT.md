@@ -2,7 +2,9 @@
 
 科学内容提交2071c6e58的全部120个小型审查文件已push并fetch-back，逐文件与远端blob核验，HEAD/tree一致、worktree clean，见CONTENT_PUBLICATION_FETCH_BACK.json。
 
-随后仅补充该回执、完成清单、本文和入口README，重建FILES_SHA256.tsv，再次commit、push、fetch-back。最终完整HEAD/tree/文件SHA/clean核验的回执写入独立raw root：
+随后补充该回执、完成清单、本文和独立入口REVIEW_INDEX.md，重建FILES_SHA256.tsv，再次commit、push、fetch-back。README的收尾导航文字曾在中间元数据提交中误覆盖冻结说明；最终已恢复预注册原字节，说明与证据见PUBLICATION_METADATA_CORRECTION.json。全部63份冻结文件在最终状态逐字节重核；实际执行期间没有修改冻结文件。
+
+最终完整HEAD/tree/文件SHA/clean核验的回执写入独立raw root：
 
 - /workspace/dtc-t1c-holdout-174-v1/FINAL_FETCH_BACK.json
 - /workspace/dtc-t1c-holdout-174-v1/FINAL_COMPLETION_AUDIT.json
