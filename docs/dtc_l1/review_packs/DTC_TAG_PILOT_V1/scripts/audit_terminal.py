@@ -118,7 +118,7 @@ def main():
             terminal_utc=end['terminal_utc'],terminal_sha256=sha(run/'RUN_TERMINAL.json')))
         for file in sorted(run.rglob('*')):
             if file.is_file():raw.append(dict(attempt_uuid=uid,path=str(file),bytes=file.stat().st_size,
-                sha256=sha(file),symlink_target=os.readlink(file) if file.is_symlink() else ''))
+                sha256=sha(file),symlink_target=os.readlink(file) if file.is_symlink() else 'NOT_A_SYMLINK'))
     assert len(unique_members)==511
     for path,member in unique_members.items():
         assert Path(path).stat().st_size==member['bytes'] and sha(path)==member['sha256']
