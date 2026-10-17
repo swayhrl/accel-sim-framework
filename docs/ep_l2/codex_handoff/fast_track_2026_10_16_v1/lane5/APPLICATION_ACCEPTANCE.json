@@ -5,7 +5,7 @@
     "review_commit": "92de53a63616f9fcc53f2058ad975c3c8f90b13c"
   },
   "evidence_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1",
-  "generation": 3,
+  "generation": 4,
   "launch_authorizations": [
     {
       "application_scope": "FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF",
@@ -56,7 +56,7 @@
       "status": "CURRENT_QUALIFIED_FOR_LAUNCH"
     }
   ],
-  "revision": "FT20261017_LANE5_A1_B1_QUALIFIED_LAUNCH_r1",
+  "revision": "FT20261017_LANE5_A1_B1_FIRST_SAD_ACCEPTED_r1",
   "rows": [
     {
       "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
@@ -547,13 +547,119 @@
       "scientific_acceptance": "NOT_RUN_SCIENTIFIC_HOLD",
       "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
       "workload": "FWT_7_21"
+    },
+    {
+      "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+      "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+      "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+      "identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+        "workload": "sad"
+      },
+      "independent_review": {
+        "path": "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_SAD_PAIR_r1/SCIENTIFIC_REVIEW.json",
+        "sha256": "3d2707715512d358393e4577a65d5c7cfea7b38d139eeaaa1b2dea2ab476b1d5"
+      },
+      "instructions": 157583646,
+      "mode": "B16_BANKED",
+      "observed_cycles": 110773,
+      "original_terminal_status": "COMPLETE_VALID",
+      "raw_log_sha256": "8d6201579b9f95a742238a397bd9ce0360cdd52a10c933f4d22b88305608904f",
+      "run_key": "734ba20d8648a25fb5930c4b8f2c207f658eca924a2d4c52ed0f24d19edbd533",
+      "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+      "scientific_acceptance": "CURRENT_ACCEPTED",
+      "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+      "workload": "sad"
+    },
+    {
+      "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+      "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+      "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+      "identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": true,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+        "workload": "sad"
+      },
+      "independent_review": {
+        "path": "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_SAD_PAIR_r1/SCIENTIFIC_REVIEW.json",
+        "sha256": "3d2707715512d358393e4577a65d5c7cfea7b38d139eeaaa1b2dea2ab476b1d5"
+      },
+      "instructions": 157583646,
+      "mode": "U_WB16",
+      "observed_cycles": 110749,
+      "original_terminal_status": "COMPLETE_VALID",
+      "raw_log_sha256": "692a95ad2fffef5955915d9bc1709da1db018901eba41e4a7850e6f87d98ce64",
+      "run_key": "5031d2cfb8a7b2a607a44e148cc20703643e4345e67f35307d5709f46de5b9a9",
+      "runtime_config_sha256": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+      "scientific_acceptance": "CURRENT_ACCEPTED",
+      "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+      "workload": "sad"
     }
   ],
   "schema_version": "EPL2_SCIENTIFIC_ACCEPTANCE_V2",
-  "status": "CORRECTED_RELEASE_QUALIFIED_FOR_SCOPED_LAUNCH_NO_CURRENT_ACCEPTED_PAIRS",
+  "status": "ONE_CURRENT_ACCEPTED_REPAIRED_RELEASE_PAIR",
   "supersedes": {
-    "manifest_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
-    "publication_commit": "3e60119a545e1cb16fbf15b203fa29b3b8afd005"
+    "manifest_sha256": "4ddcff3035384f1c6d25b1682b8adfe6868ed5a246b72e724dfdd32987390c86",
+    "publication_commit": "7b9091c8f610c92796c121bd951f2c0db25c6676"
   },
   "supersession_evidence": [
     {
@@ -567,9 +673,13 @@
     {
       "path": "docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/ELEVEN_GATE_REVIEW.json",
       "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+    },
+    {
+      "path": "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_SAD_PAIR_r1/SCIENTIFIC_REVIEW.json",
+      "sha256": "3d2707715512d358393e4577a65d5c7cfea7b38d139eeaaa1b2dea2ab476b1d5"
     }
   ],
-  "updated_at": "2026-10-17T04:03:17.910422+00:00",
+  "updated_at": "2026-10-17T04:11:53.929762+00:00",
   "withdrawn_releases": [
     {
       "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
