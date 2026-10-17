@@ -92,7 +92,8 @@ def main():
    for k,v in zip(['wb','meta','read_hit'],ideals):assert effective['-gpgpu_ep_l2_ideal_'+k]==str(v)
    assert effective['-gpgpu_ep_l2_ft_mode']==('2' if mode=='U_WB16' else '1')
    write(out/(profile+'_EFFECTIVE.json'),effective)
-   feature=dict(old['feature_vector']);feature.update(ideal_wb=bool(ideals[0]),ideal_meta=bool(ideals[1]),ideal_read_hit=bool(ideals[2]))
+   feature=dict(old['feature_vector']);feature.update(ideal_wb=bool(ideals[0]),ideal_meta=bool(ideals[1]),ideal_read_hit=bool(ideals[2]),nominal_payload_capacity_per_slice=1168,diagnostic_extra_payload_backing=bool(ideals[0]),wb_data_capacity_non_binding=bool(ideals[0]))
+   if ideals[0]:feature['payload_capacity_per_slice']=None # explicit unbounded diagnostic backing, never finite1168 qualification
    profiles[profile]={'mode':mode,'configs':assets,'ordered_config_manifest':ordered,'environment':old['environment'],'runtime_config_sha256':chash({'ordered_configs':ordered,'auxiliary_assets':[],'environment':old['environment']}),'feature_vector':feature,'ideal_vector':{'wb':bool(ideals[0]),'meta':bool(ideals[1]),'read_hit':bool(ideals[2])},'native_options':effective,'effective_log':rec,'scope':'FINITE_NATIVE' if profile.endswith('OFF') else 'LOCAL_IDEAL_NATIVE_LIFECYCLE','removed':'NONE' if profile.endswith('OFF') else {'I_WB':'WB data-slot refusal only, dynamic extra backing explicitly diagnostic','I_META':'Line-MSHR/descriptor/per-address capacities only','I_WB_META':'Both WB data and metadata capacities','I_READ_HIT':'Eligible demand lower read service including cold symbolic reference; not ALL_DATA'}[profile]}
   # Equal finite system anchors; every local ideal changes only its declared
   # switches. Runtime counters/clock/queues and instruction semantics retained.
