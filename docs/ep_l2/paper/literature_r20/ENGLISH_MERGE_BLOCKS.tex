@@ -1,0 +1,60 @@
+% Independent replacement fragments. Select sections per MERGE_GUIDE; not a standalone paper.
+
+% Replace the prior-work transition in the Introduction, not the experimental results.
+Prior designs already keep dirty data in the LLC while exposing writeback
+candidates or dirty-state information separately~\cite{vwq,lastwrite,dbi}.
+The question here is narrower: can a resident tag be reassigned while its
+victim retains the same physical data slot until lower-level acceptance?
+EP-L2 implements this ownership transition within a fixed payload and bank
+budget. Its value must be established by separating copy removal, access to
+otherwise unavailable staging capacity, and the service required to drain
+that capacity.
+
+% Replace the old Related Work section; do not append a second section.
+% This is a literature module, not a new empirical claim or run authorization.
+\section{Related Work}
+\textbf{Writeback organization and scheduling.}
+The Virtual Write Queue uses an LLC region to expose additional dirty-line
+candidates to memory scheduling while retaining a physical write queue~\cite{vwq}.
+Decoupled last-write prediction tracks predicted writebacks with address-only
+entries while their data remain in the LLC~\cite{lastwrite}.
+The Dirty-Block Index moves dirty-state tracking out of tag entries and groups
+it by DRAM row~\cite{dbi}.
+Thus, keeping dirty data in a cache or separating their metadata is not itself
+new. EP-L2 studies a different transition: reusing a resident tag while the
+old dirty payload remains in its original, independently owned slot, with
+local data ownership and writeback ordering released at different events.
+
+\textbf{Flexible data and transient-state storage.}
+V-Way decouples tag and data placement for flexible associativity~\cite{vway};
+Tag-Split Cache separates request and data-storage granularity~\cite{tsc}.
+Unified GPU local memory reallocates storage among registers, cache, and
+scratchpad~\cite{unified}.
+In-cache MSHR organizations have a long history~\cite{farkas}; MiCache shares
+FPGA storage between cache-line data and MSHR subentries~\cite{micache}.
+These precedents motivate distinguishing the resource being shared, rather
+than treating storage unification as the contribution. EP-L2 keeps the
+resident-tag budget fixed and studies resident/WB payload ownership, not
+extra lookup capacity or a shared data/request-metadata record.
+
+\textbf{Miss handling and service constraints.}
+DL-MSHR dynamically groups miss-tracking slots for primary and secondary
+misses; its slots can also store write-miss data~\cite{dlmshr}.
+Our primary comparison holds miss-tracking budgets fixed. Consequently,
+reduced copy work and flexible staging must be evaluated separately from
+additional request-tracking capacity and downstream service.
+
+% Place near the downstream-headroom experiment rationale.
+Request-buffer capacity affects scheduling visibility and implementation
+complexity, not only queue depth~\cite{sms}. Moreover, reservation-failure
+reductions need not be proportional to application speedup~\cite{dlmshr}.
+We therefore distinguish buffering, service rate, and latency interventions,
+compare B16 and U-WB under each identical condition, and report actual work
+and elapsed cycles separately. These literature observations motivate the
+controls; they do not establish the cause of our measured performance.
+
+% OPTIONAL: retain only when victim retention / L1 request policies are discussed.
+Victim caching retains displaced lines for subsequent reuse~\cite{victim},
+whereas MRPB reorders and selectively bypasses requests before GPU L1
+access~\cite{mrpb}. Neither is the primary WB-only comparison evaluated here;
+any combination requires its own implementation and evaluation.
