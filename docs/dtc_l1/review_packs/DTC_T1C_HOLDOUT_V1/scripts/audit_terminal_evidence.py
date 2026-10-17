@@ -36,12 +36,24 @@ def main():
     own_inode=(ROOT/'AUTHORITY.lock').stat().st_ino
     assert not any(line.split()[5].split(':')[-1]==str(own_inode) for line in lines)
     controls=json.loads((PACK/'ACCEPTED_CONTROLS.json').read_text());control_files=[]
+    original_ordered=json.loads((PACK/'ORDERED_KERNELS.json').read_text())
     for key,control in controls.items():
         run=Path(control['run_dir']);spec=control['spec']
         for filename,digest in [('simulator.stdout',control['stdout_sha256']),('RUN_START.json',control['start_sha256']),('RUN_TERMINAL.json',control['terminal_sha256'])]:
             assert sha(run/filename)==digest
             control_files.append(dict(control=key,path=str(run/filename),sha256=digest))
         assert json.loads((run/'RUN_START.json').read_text())['spec']==spec
+        text=(run/'simulator.stdout').read_text();proofs=original_ordered[spec['workload']]
+        marks=list(re.finditer(r'^kernel_name\s*=\s*(\S+)\s*$',text,re.M))
+        assert [m.group(1) for m in marks]==[p['kernel'] for p in proofs]
+        instructions=ctas=0
+        for i,(mark,proof) in enumerate(zip(marks,proofs)):
+            block=text[mark.start():marks[i+1].start() if i+1<len(marks) else len(text)]
+            values={k:int(v) for k,v in re.findall(r'^\s*(\w+)\s*=\s*(\d+)\s*$',block,re.M)}
+            instructions+=proof['active_instructions'];ctas+=proof['complete_ctas']
+            assert values['gpu_sim_insn']==proof['active_instructions']
+            assert values['gpu_tot_sim_insn']==instructions and values['gpu_tot_issued_cta']==ctas
+        assert values['gpu_tot_sim_cycle']==control['cycles'] and instructions==control['instructions']
         assert sha(spec['runtime'])==spec['runtime_sha256']
         for config in spec['configs']:assert sha(config['path'])==config['sha256']
     plan=list(csv.DictReader((PACK/'PRE_REGISTRATION.tsv').open(),delimiter='\t'))
