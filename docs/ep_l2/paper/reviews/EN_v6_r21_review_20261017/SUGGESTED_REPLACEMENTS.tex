@@ -1,0 +1,31 @@
+% Suggested replacement fragments for the frozen EN-v6-r21 manuscript.
+% REVIEW ONLY. Not a complete manuscript; no claimed typesetting verification.
+% Base: 606d54610c2800ff4d8cf9178b23bc35cb2eff3d.
+% No D4/Q4 performance values or new implementation algorithm are introduced.
+
+% ABSTRACT: replace the current abstract; preserve the actual H0 findings.
+\begin{abstract}
+A fixed-partition L2 may relocate a dirty victim into a writeback buffer before reusing its resident slot. Elastic Payload L2 (EP-L2) replaces this relocation with an ownership transfer: the victim retains its physical slot, the incoming resident receives a distinct bank-compatible slot, and writeback ordering remains tracked independently. We compare this WB-only organization with a fixed-partition reference under equal resident-tag, payload-capacity, and modeled bank-service budgets. Across five non-atomic trace-driven workloads, EP-L2 removes all measured resident-to-writeback copies but achieves a geometric-mean speedup of 1.0016, including one slowdown. Three workloads eliminate writeback-data-full admission denials while exhibiting more downstream queue-admission denials. The results demonstrate copy removal without isolating an application-performance benefit from dynamic sharing. Validation covers symbolic sector versions and transaction lifecycles rather than numerical SASS outputs; physical implementation costs remain to be measured.
+\end{abstract}
+
+% INTRODUCTION: replace the final roadmap paragraph, after the established
+% prior-work contrast. This is an evaluation framing, not a new experiment.
+We evaluate three distinct effects: elimination of resident-to-writeback copying, relief of fixed writeback-data quotas, and changes in application execution time. The five-workload reference configuration shows that these effects need not scale together: all measured copies are removed, while the geometric-mean speedup is 1.0016. Downstream-service sensitivity tests address whether the relative benefit changes with the surrounding memory system. Equal-total-capacity static controls are additionally needed to isolate dynamic sharing from the particular reference partition.
+
+% METHODS: suggested compact replacement for internal Lane/V2/receipt prose.
+% Preserve the input/configuration table and the actual artifact references.
+All comparisons use the same independently checked simulator binary, complete original commandlists, and identical non-mode settings. Complete trace-body checks restrict these experiments to non-atomic inputs. Directed tests exercise symbolic 32-B sector versions, cross-cycle replacement, requester and ownership identity, response backpressure, and separate downstream acceptance and writeback completion. All transaction and resource trackers must drain at termination. These checks do not establish full numerical application correctness. Exact inputs, ordered configurations, binary identities, raw logs, and validation procedures are recorded in the accompanying reproducibility package.
+% Editorial dependency: insert a verified, reader-accessible artifact reference here.
+
+% RELATED WORK: replace only the ambiguous SM-local storage sentence.
+Gebhart et al. unify SM-local register, cache, and scratchpad storage~\cite{unified}.
+
+% DOWNSTREAM METHODOLOGY: replace the internal sentence beginning
+% ``R19 authorizes ...''. No outcome of D4/Q4 is asserted here.
+The downstream-sensitivity design compares convolutionSeparable and FWT\_7\_21 under the reference condition H0 and two matched interventions, Q4 and D4. Q4 increases downstream buffering and the resulting credit capacity; D4 retains these buffers and accelerates the DRAM clock domain. Each intervention is applied identically to B16 and U-WB16. For condition $h$, we report $S(h)=C_B(h)/C_U(h)$ and $J(h)=S(h)/S(\mathrm{H0})$, together with all four cycle counts. These comparisons detect changes in the relative mechanism effect; they do not make the additional downstream resources free or isolate copy removal from pooling.
+
+% DO NOT invent a replacement algorithm here. Lane1/source owner must provide
+% the exact selected implementation for II-B, rather than the paper saying
+% ``preserve the original transaction or fully roll it back'' indefinitely.
+% DO NOT replace Fig.4 with fabricated values. Move accepted-pair progress to
+% STATUS, retain space for the actual qualified sensitivity result.
