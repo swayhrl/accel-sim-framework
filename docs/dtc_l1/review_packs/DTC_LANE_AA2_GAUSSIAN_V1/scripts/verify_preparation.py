@@ -91,7 +91,7 @@ def main():
     for file in PACK.rglob('*.json'):json.loads(file.read_text())
     if (PACK/'FILES_SHA256.tsv').exists():
         fs=rows('FILES_SHA256.tsv')
-        assert {r['path'] for r in fs}=={str(f.relative_to(PACK)) for f in PACK.rglob('*') if f.is_file() and f.name!='FILES_SHA256.tsv'}
+        assert {r['path'] for r in fs}=={str(f.relative_to(PACK)) for f in PACK.rglob('*') if f.is_file() and f!=PACK/'FILES_SHA256.tsv'}
         for r in fs:assert sha(PACK/r['path'])==r['sha256']
     print(json.dumps(dict(status='PASS_CPU_PREPARATION_INTEGRITY_ONLY',reserved_UUIDs=4,
           Gaussian_members=510,active_thread_instructions=283685120,original_AA_files_unchanged=len(oldfiles),

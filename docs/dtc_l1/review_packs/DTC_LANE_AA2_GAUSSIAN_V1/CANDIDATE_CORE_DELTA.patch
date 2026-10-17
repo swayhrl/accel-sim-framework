@@ -2,23 +2,14 @@ diff --git a/src/gpgpu-sim/dtc-l1-common.h b/src/gpgpu-sim/dtc-l1-common.h
 index ab9831ad..6af1b6b1 100644
 --- a/src/gpgpu-sim/dtc-l1-common.h
 +++ b/src/gpgpu-sim/dtc-l1-common.h
-@@ -160,6 +160,12 @@ struct io_access_result {
-   physical_identity physical;
- };
- 
+@@ -162,0 +163,6 @@ struct io_access_result {
 +struct lookup_invalidation_result {
 +  uint64_t changed = 0;
 +  uint64_t retained = 0;
 +  uint64_t reclaimed = 0;
 +};
 +
- // Deterministic whole-line IO-DTC model used by M2 directed tests and by the
- // later LD/ST integration.  It deliberately owns no conventional MSHR state.
- class io_frontend {
-@@ -564,6 +570,42 @@ class oo_frontend {
-     return find_tag(line) == nullptr;
-   }
- 
+@@ -566,0 +573,36 @@ class oo_frontend {
 +  // Lane X K1: atomic, zero additional simulated-cycle directory sweep at
 +  // the existing LD/ST source REQUEST. Does not advance service or touch any
 +  // consumer/return identity. Only a fully finished, Ref-free line can free.
@@ -55,29 +46,15 @@ index ab9831ad..6af1b6b1 100644
 +    return result;
 +  }
 +
-   io_access_result access(uint64_t cycle, uint64_t uid, uint64_t address) {
-     begin_cycle(cycle);
-     entry *owner = find_entry(uid);
-@@ -938,14 +980,17 @@ class oo_frontend {
-     }
-     return -1;
-   }
+@@ -941 +983 @@ class oo_frontend {
 -  void release(physical_identity identity) {
 +  void release(physical_identity identity, uint64_t release_cycle = UINT64_MAX) {
-     physical_line &physical = m_phys[identity.id];
-     assert(physical.allocated && physical.generation == identity.generation &&
-            !physical.tag_valid && !physical.ref_count);
-     if (m_cfg.finite_service) {
-       const auto lost = m_service_map_loss.find(identity.id);
-       assert(lost != m_service_map_loss.end());
+@@ -948 +990,4 @@ class oo_frontend {
 -      m_service_map_loss_sum += m_service_cycle - lost->second;
 +      const uint64_t now = release_cycle == UINT64_MAX
 +                               ? m_service_cycle : release_cycle;
 +      assert(now >= lost->second);
 +      m_service_map_loss_sum += now - lost->second;
-       ++m_service_map_loss_count;
-       m_service_map_loss.erase(lost);
-     }
 diff --git a/src/gpgpu-sim/dtc-l1-invalidation.h b/src/gpgpu-sim/dtc-l1-invalidation.h
 new file mode 100644
 index 00000000..0555e813
@@ -238,63 +215,30 @@ diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
 index d39e5d3e..c9f46a06 100644
 --- a/src/gpgpu-sim/gpu-sim.cc
 +++ b/src/gpgpu-sim/gpu-sim.cc
-@@ -405,6 +405,8 @@ void shader_core_config::reg_options(class OptionParser *opp) {
-   option_parser_register(opp, "-gpgpu_dtc_l1_pib_entries", OPT_UINT32,
-                          &dtc_l1_pib_entries,
-                          "DTC-L1 pending-instruction entries", "8");
+@@ -407,0 +408,2 @@ void shader_core_config::reg_options(class OptionParser *opp) {
 +  dtc_l1::register_source_invalidation_option(
 +      opp, &dtc_l1_invalidate_on_source_event);
-   option_parser_register(opp, "-gpgpu_dtc_l1_finite_service", OPT_BOOL,
-                          &dtc_l1_finite_service,
-                          "Opt-in preregistered whole-line DTC finite service V1", "0");
-@@ -1750,7 +1752,8 @@ void gpgpu_sim::change_cache_config(FuncCache cache_config) {
-   if (cache_config != m_shader_config->m_L1D_config.get_cache_status()) {
-     printf("FLUSH L1 Cache at configuration change between kernels\n");
-     for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
+@@ -1753 +1755,2 @@ void gpgpu_sim::change_cache_config(FuncCache cache_config) {
 -      m_cluster[i]->cache_invalidate();
 +      m_cluster[i]->cache_invalidate(
 +          dtc_l1::invalidation_source::CACHE_CONFIG_CHANGE);
-     }
-   }
- 
-@@ -2521,7 +2524,8 @@ void gpgpu_sim::cycle() {
-     if (m_config.gpgpu_flush_l1_cache) {
-       for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
-         if (m_cluster[i]->get_not_completed() == 0)
+@@ -2524 +2527,2 @@ void gpgpu_sim::cycle() {
 -          m_cluster[i]->cache_invalidate();
 +          m_cluster[i]->cache_invalidate(
 +              dtc_l1::invalidation_source::IDLE_CLUSTER);
-         else
-           all_threads_complete = 0;
-       }
 diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
 index f74ff383..27af3be0 100644
 --- a/src/gpgpu-sim/shader.cc
 +++ b/src/gpgpu-sim/shader.cc
-@@ -2106,8 +2106,8 @@ void ldst_unit::get_dtc_l1_stats(
-   if (dtc_l1_finite_service_active()) {
-     dtc_l1::paper_frontend_stats service;
-     const uint64_t now = m_core->get_gpu()->global_cycle();
+@@ -2109,2 +2109,2 @@ void ldst_unit::get_dtc_l1_stats(
 -    const uint64_t tail = now - (m_dtc_service_sample_cycle == UINT64_MAX
 -                                    ? 0 : m_dtc_service_sample_cycle);
 +    const uint64_t tail = now - (m_dtc_service_occupancy_sample_cycle == UINT64_MAX
 +                                    ? 0 : m_dtc_service_occupancy_sample_cycle);
-     const uint64_t pib = dtc_l1_paper_io_active()
-                              ? m_dtc_l1_io_pib.size() : m_dtc_l1_oo_pib.size();
-     const uint64_t physical = dtc_l1_paper_io_active()
-@@ -3663,6 +3663,8 @@ void ldst_unit::dtc_l1_io_identity_event(const char *event,
- }
- 
- void ldst_unit::print_dtc_l1_stats(FILE *fp) const {
+@@ -3665,0 +3666,2 @@ void ldst_unit::print_dtc_l1_stats(FILE *fp) const {
 +  if (m_config->dtc_l1_invalidate_on_source_event)
 +    m_dtc_invalidation.print(fp);
-   if (dtc_l1_finite_service_active()) {
-     fprintf(fp, "DTC_SERVICE_V1 sm=%u samples=%llu pib_integral=%llu "
-                 "physical_integral=%llu collected_sectors=%llu "
-@@ -4009,8 +4011,17 @@ void ldst_unit::flush() {
-   m_L1D->flush();
- }
- 
+@@ -4012,2 +4014,11 @@ void ldst_unit::flush() {
 -void ldst_unit::invalidate() {
 -  // Flush L1D cache
 +void ldst_unit::invalidate(dtc_l1::invalidation_source source) {
@@ -308,13 +252,7 @@ index f74ff383..27af3be0 100644
 +    return;
 +  }
 +  // Original K0 ordinary request, including its existing deferred commit.
-   m_L1D->invalidate();
- }
- 
-@@ -4300,12 +4311,26 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
-   assert(config->smem_latency > 1);
-   init(icnt, mf_allocator, core, operand_collector, scoreboard, config,
-        mem_config, stats, sid, tpc);
+@@ -4302,0 +4314,7 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
 +  dtc_l1::check_source_invalidation_mode(
 +      m_config->dtc_l1_invalidate_on_source_event, m_config->dtc_l1_mode);
 +  if (m_config->dtc_l1_invalidate_on_source_event &&
@@ -322,9 +260,7 @@ index f74ff383..27af3be0 100644
 +    fprintf(stderr, "OO_K1_REQUIRES_ORDINARY_L1D_STOP\n");
 +    abort();
 +  }
-   if (!m_config->m_L1D_config.disabled()) {
-     char L1D_name[STRSIZE];
-     snprintf(L1D_name, STRSIZE, "L1D_%03d", m_sid);
+@@ -4306 +4324,7 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
 -    m_L1D = new l1_cache(L1D_name, m_config->m_L1D_config, m_sid,
 +    if (m_config->dtc_l1_invalidate_on_source_event) {
 +      m_L1D = new dtc_l1::invalidation_observed_cache<l1_cache>(
@@ -333,36 +269,17 @@ index f74ff383..27af3be0 100644
 +          IN_L1D_MISS_QUEUE, core->get_gpu(), L1_GPU_CACHE);
 +    } else {
 +      m_L1D = new l1_cache(L1D_name, m_config->m_L1D_config, m_sid,
-                          get_shader_normal_cache_id(), m_icnt, m_mf_allocator,
-                          IN_L1D_MISS_QUEUE, core->get_gpu(), L1_GPU_CACHE);
+@@ -4308,0 +4333 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
 +    }
- 
-     l1_latency_queue.resize(m_config->m_L1D_config.l1_banks);
-     assert(m_config->m_L1D_config.l1_latency > 0);
-@@ -4358,6 +4383,8 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
-     m_dtc_l1_sector_frontend =
-         std::make_unique<dtc_l1::sector_oo_frontend>(dtc_config);
-   }
+@@ -4360,0 +4386,2 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
 +  if (m_config->dtc_l1_invalidate_on_source_event)
 +    m_dtc_invalidation.configure(m_sid, m_config->dtc_l1_debug_event_limit);
-   m_dtc_l1_debug_events_left = m_config->dtc_l1_debug_event_limit;
-   m_dtc_l1_io_identity_events_left = m_config->dtc_l1_debug_event_limit;
-   m_name = "MEM ";
-@@ -4372,6 +4399,10 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
-     : pipelined_simd_unit(NULL, config, 3, core, 0),
-       m_L1D(new_l1d_cache),
-       m_next_wb(config) {
+@@ -4374,0 +4402,4 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
 +  if (config->dtc_l1_invalidate_on_source_event) {
 +    fprintf(stderr, "OO_K1_EXTERNAL_CACHE_CONSTRUCTOR_UNSUPPORTED_STOP\n");
 +    abort();
 +  }
-   init(icnt, mf_allocator, core, operand_collector, scoreboard, config,
-        mem_config, stats, sid, tpc);
- }
-@@ -4942,23 +4973,35 @@ inst->space.get_type() != shared_space) { unsigned warp_id = inst->warp_id();
-    pipelined_simd_unit::issue(reg_set);
- }
- */
+@@ -4944,0 +4976,20 @@ inst->space.get_type() != shared_space) { unsigned warp_id = inst->warp_id();
 +// Observation only: source invalidation can free Ref0 retained lines between
 +// service edges. Integrate up to that event BEFORE changing occupancy without
 +// advancing metadata/return service or replenishing any absolute-cycle quota.
@@ -383,31 +300,21 @@ index f74ff383..27af3be0 100644
 +  }
 +}
 +
- void ldst_unit::cycle() {
-   if (dtc_l1_finite_service_active()) {
-     const uint64_t cycle = m_core->get_gpu()->global_cycle();
-     if (m_dtc_service_sample_cycle != cycle) {
+@@ -4949,4 +4999,0 @@ void ldst_unit::cycle() {
 -      // Integrate [last edge,current edge), including clock-gated intervals.
 -      // State cannot mutate without an LD/ST event; issue occurs after cycle().
 -      const uint64_t delta = cycle - (m_dtc_service_sample_cycle == UINT64_MAX
 -                                          ? 0 : m_dtc_service_sample_cycle);
-       m_dtc_service_sample_cycle = cycle;
+@@ -4954 +5001 @@ void ldst_unit::cycle() {
 -      m_dtc_service_samples += delta;
 +      dtc_l1_sample_service_occupancy(cycle);
-       if (dtc_l1_paper_io_active()) {
+@@ -4956,2 +5002,0 @@ void ldst_unit::cycle() {
 -        m_dtc_service_pib_integral += delta * m_dtc_l1_io_pib.size();
 -        m_dtc_service_physical_integral += delta * m_dtc_l1_io_frontend->allocated_lines();
-         m_dtc_l1_io_frontend->advance_service(cycle);
-       } else {
+@@ -4960,2 +5004,0 @@ void ldst_unit::cycle() {
 -        m_dtc_service_pib_integral += delta * m_dtc_l1_oo_pib.size();
 -        m_dtc_service_physical_integral += delta * m_dtc_l1_oo_frontend->allocated_lines();
-         m_dtc_l1_oo_frontend->advance_service(cycle);
-       }
-       auto observe_ready = [cycle](auto &entry) {
-@@ -5124,7 +5167,13 @@ void ldst_unit::cycle() {
-   m_L1T->cycle();
-   m_L1C->cycle();
-   if (m_L1D) {
+@@ -5127 +5170,7 @@ void ldst_unit::cycle() {
 -    m_L1D->cycle();
 +    if (m_config->dtc_l1_invalidate_on_source_event) {
 +      auto &ordinary =
@@ -416,112 +323,43 @@ index f74ff383..27af3be0 100644
 +    } else {
 +      m_L1D->cycle();
 +    }
-     if (m_config->m_L1D_config.l1_latency > 0) L1_latency_queue_cycle();
-   }
-   dtc_l1_io_issue_lower_requests();
-@@ -6550,7 +6599,9 @@ void shader_core_ctx::cycle() {
- 
- void shader_core_ctx::cache_flush() { m_ldst_unit->flush(); }
- 
+@@ -6553 +6602,3 @@ void shader_core_ctx::cache_flush() { m_ldst_unit->flush(); }
 -void shader_core_ctx::cache_invalidate() { m_ldst_unit->invalidate(); }
 +void shader_core_ctx::cache_invalidate(dtc_l1::invalidation_source source) {
 +  m_ldst_unit->invalidate(source);
 +}
- 
- // modifiers
- std::list<opndcoll_rfu_t::op_t> opndcoll_rfu_t::arbiter_t::allocate_reads() {
-@@ -6882,7 +6933,7 @@ bool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {
-       // Based on Nvidia Doc, at MEM barrier, we have to
-       //(1) wait for all pending writes till they are acked
-       //(2) invalidate L1 cache to ensure coherence and avoid reading stall data
+@@ -6885 +6936 @@ bool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {
 -      cache_invalidate();
 +      cache_invalidate(dtc_l1::invalidation_source::MEMBAR);
-       // TO DO: you need to stall the SM for 5k cycles.
-     }
-     return false;
-@@ -7550,9 +7601,9 @@ void simt_core_cluster::cache_flush() {
-     m_core[i]->cache_flush();
- }
- 
+@@ -7553 +7604 @@ void simt_core_cluster::cache_flush() {
 -void simt_core_cluster::cache_invalidate() {
 +void simt_core_cluster::cache_invalidate(dtc_l1::invalidation_source source) {
-   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; i++)
+@@ -7555 +7606 @@ void simt_core_cluster::cache_invalidate() {
 -    m_core[i]->cache_invalidate();
 +    m_core[i]->cache_invalidate(source);
- }
- 
- bool simt_core_cluster::icnt_injection_buffer_full(unsigned size, bool write) {
 diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
 index a051024a..cc0cc800 100644
 --- a/src/gpgpu-sim/shader.h
 +++ b/src/gpgpu-sim/shader.h
-@@ -58,6 +58,7 @@
- #include "addrdec.h"
- #include "delayqueue.h"
- #include "dtc-l1-common.h"
+@@ -60,0 +61 @@
 +#include "dtc-l1-invalidation.h"
- #include "dram.h"
- #include "gpu-cache.h"
- #include "mem_fetch.h"
-@@ -1781,7 +1782,8 @@ class ldst_unit : public pipelined_simd_unit {
- 
-   void fill(mem_fetch *mf);
-   void flush();
+@@ -1784 +1785,2 @@ class ldst_unit : public pipelined_simd_unit {
 -  void invalidate();
 +  void invalidate(dtc_l1::invalidation_source source =
 +                      dtc_l1::invalidation_source::UNSPECIFIED);
-   void writeback();
- 
-   // accessors
-@@ -2120,6 +2122,7 @@ class ldst_unit : public pipelined_simd_unit {
-   bool dtc_l1_service_collect(dtc_l1::service_entry &service,
-                             const std::vector<dtc_l1::line_reference> &references);
-   void dtc_l1_service_retired(const dtc_l1::service_entry &service);
+@@ -2122,0 +2125 @@ class ldst_unit : public pipelined_simd_unit {
 +  void dtc_l1_sample_service_occupancy(uint64_t cycle);
-   void print_dtc_l1_stats(FILE *fp) const;
-   gpgpu_sim *m_gpu;
- 
-@@ -2133,6 +2136,7 @@ class ldst_unit : public pipelined_simd_unit {
-   tex_cache *m_L1T;        // texture cache
-   read_only_cache *m_L1C;  // constant cache
-   l1_cache *m_L1D;         // data cache
+@@ -2135,0 +2139 @@ class ldst_unit : public pipelined_simd_unit {
 +  dtc_l1::source_invalidation_observer m_dtc_invalidation;
-   std::unordered_map<
-       unsigned /*warp_id*/,
-       std::unordered_map<unsigned /*regnum*/, unsigned /*count*/>>
-@@ -2148,6 +2152,7 @@ class ldst_unit : public pipelined_simd_unit {
-   dtc_l1::service_quota m_dtc_service_retire;
-   dtc_l1::service_quota m_dtc_service_collect{4};
-   uint64_t m_dtc_service_sample_cycle = UINT64_MAX;
+@@ -2150,0 +2155 @@ class ldst_unit : public pipelined_simd_unit {
 +  uint64_t m_dtc_service_occupancy_sample_cycle = UINT64_MAX;
-   uint64_t m_dtc_service_samples = 0;
-   uint64_t m_dtc_service_pib_integral = 0;
-   uint64_t m_dtc_service_physical_integral = 0;
-@@ -2496,6 +2501,7 @@ class shader_core_config : public core_config {
-   // reuse the conventional L1 bank/MSHR controls so LEGACY remains untouched.
-   unsigned dtc_l1_mode;
-   bool dtc_l1_finite_service;
+@@ -2498,0 +2504 @@ class shader_core_config : public core_config {
 +  bool dtc_l1_invalidate_on_source_event;
-   unsigned dtc_l1_pib_entries;
-   unsigned dtc_l1_mshr_entries;
-   unsigned dtc_l1_debug_event_limit;
-@@ -2977,7 +2983,8 @@ class shader_core_ctx : public core_t {
-   void issue_block2core(class kernel_info_t &kernel);
- 
-   void cache_flush();
+@@ -2980 +2986,2 @@ class shader_core_ctx : public core_t {
 -  void cache_invalidate();
 +  void cache_invalidate(dtc_l1::invalidation_source source =
 +                            dtc_l1::invalidation_source::UNSPECIFIED);
-   void accept_fetch_response(mem_fetch *mf);
-   void accept_ldst_unit_response(class mem_fetch *mf);
-   void broadcast_barrier_reduction(unsigned cta_id, unsigned bar_id,
-@@ -3556,7 +3563,8 @@ class simt_core_cluster {
-   void reinit();
-   unsigned issue_block2core();
-   void cache_flush();
+@@ -3559 +3566,2 @@ class simt_core_cluster {
 -  void cache_invalidate();
 +  void cache_invalidate(dtc_l1::invalidation_source source =
 +                            dtc_l1::invalidation_source::UNSPECIFIED);
-   bool icnt_injection_buffer_full(unsigned size, bool write);
-   void icnt_inject_request_packet(class mem_fetch *mf);
-   void update_icnt_stats(class mem_fetch *mf);

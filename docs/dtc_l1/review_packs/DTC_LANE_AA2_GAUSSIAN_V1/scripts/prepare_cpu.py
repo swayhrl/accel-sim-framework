@@ -73,7 +73,7 @@ def main():
         sourcefiles.append(dict(path=rel,blob=git(CORE_REPO,'rev-parse',CANDIDATE_CORE+':'+rel),
                                 sha256=hashlib.sha256(data).hexdigest(),bytes=len(data)))
     table(PACK/'CANDIDATE_SOURCE_SHA256.tsv',sourcefiles)
-    diff=subprocess.check_output(['git','-C',str(CORE_REPO),'diff',BASE_CORE,CANDIDATE_CORE,'--','src'])
+    diff=subprocess.check_output(['git','-C',str(CORE_REPO),'diff','--binary','--unified=0',BASE_CORE,CANDIDATE_CORE,'--','src'])
     (PACK/'CANDIDATE_CORE_DELTA.patch').write_bytes(diff)
     write(PACK/'CANDIDATE_CORE_IDENTITY.json',dict(utc=now(),core=CANDIDATE_CORE,base=BASE_CORE,
           remote_fetch_back_match=True,src_tree=git(CORE_REPO,'rev-parse',CANDIDATE_CORE+':src'),
