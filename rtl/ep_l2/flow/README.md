@@ -12,11 +12,11 @@ Traditional Tag/LRU/dirty-byte/MSHR/noC/DRAM control is external and not free.
 
 DC: set RTL_REPO, TARGET_LIBS (Tcl list of actual .db files), LINK_LIBS (Tcl
 list, including real macro libraries if applicable), DC_OUT, MODE=0/1/2,
-IO_DRIVE_CELL and OUTPUT_LOAD_LIB_UNITS; optionally CLOCK_PERIOD_NS. Run:
+IO_DRIVE_CELL, OUTPUT_LOAD_LIB_UNITS and PVT_LABEL; optionally CLOCK_PERIOD_NS. Run:
 
     dc_shell -f rtl/ep_l2/flow/run_dc.tcl
 
-DC is UNRUN here. Private technology libraries must stay local. The provided
+DC is UNRUN here. Canonical constraints use ns; check the emitted units.rpt against the actual target library before accepting results. A non-ns library needs a unit conversion of every common time value, not a changed physical constraint. Private technology libraries must stay local. The provided
 DC target is the same controller cut. To integrate SRAM in an SoC, replace the
 blackbox memory wrapper with a pin-compatible actual macro adapter, constrain
 its real Liberty and budget all external traditional logic. Do not interpret

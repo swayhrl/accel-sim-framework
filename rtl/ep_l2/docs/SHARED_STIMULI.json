@@ -1,0 +1,21 @@
+{
+  "schema":"EP_L2_RTL_BYTE_LIFECYCLE_STIMULI_V1",
+  "scope":"non-atomic single-slice controller/native-Tag boundary; independent byte oracle; no claim of simulator numeric byte equivalence",
+  "oracle":"pattern(seed)[byte]=(seed*37+byte*13)&255; explicit masked merge; immutable WB snapshot",
+  "cases":[
+    {"name":"full_line_and_landing","TB":"CASE1","dimensions":"1024 Tags,1168 payloads,4x292,128B","checks":["Tag1023","bank class","all128 bytes"]},
+    {"name":"same_sector_32_64","TB":"CASE2","base_seed":1,"writes":[{"seed":2,"byte_range":[4,7],"little_endian_value":"0xa5988b7e"},{"seed":3,"byte_range":[16,23],"little_endian_value":"0x9a8d807366594c3f"}],"checks":["same32B sector","uncovered bytes unchanged"]},
+    {"name":"delayed_fill","TB":"CASE3","initial_seed":4,"initial_byte_range":[0,3],"fill_seed":5,"protect_range":[0,3],"checks":["known dirty bytes survive","other bytes filled","ready/pending sectors"]},
+    {"name":"real_bank_competition","TB":"CASE3b","checks":["samebank fill/read only one grant","differentbanks parallel","correct snapshots"]},
+    {"name":"pins_and_backpressure","TB":"CASE4","checks":["response stable","pin survives stall","external descriptor pin blocks replacement","exact decrements"]},
+    {"name":"native_approval_abort","TB":"CASE5","checks":["captured victim ignores changed raw Tag input","reservation rollback","old bytes unchanged","one retry response"]},
+    {"name":"copy_or_inplace","TB":"CASE6","checks":["B/S actual1024-bit source/latch/staging path","U no staticcopy grants","WB bytes/mask correct"]},
+    {"name":"loweraccept_before_done","TB":"CASE7","checks":["slot freed at acceptance","WAD still waits","same old line rejected until done"]},
+    {"name":"incarnation_reuse","TB":"CASE8 and CASE9","checks":["new live pending fill cannot consume old generation","fresh fill still succeeds","old WAD ticket cannot erase reused live entry"]},
+    {"name":"actual_finite_capacity","TB":"CASE9","checks":["B local16","S local64","U observed20","next staticWB refusal no partialstate","same refused request resumes after credit without reissue","last staticWB physicalID1167","WAD128 remains full after all local lower accepts;129th waits then same request resumes on done; WB FIFO wrap"]},
+    {"name":"random_ready_valid","TB":"CASE10","seed":"0x31d2c0de","iterations":24,"checks":["byte oracle","request exactonce","WB FIFO exactonce","reference/WAD/WB/pending drain"]},
+    {"name":"finite_generation","TB":"GEN_W3","checks":["clean reuse1to3to5","next reuse refused","no modulo wrap"],"cost_width":"32bits; small-width test is not full-size PPA"}
+  ],
+  "sim_observable_crosscheck":"only sector/mask,handle lifecycle,copy existence,capacity,WB/WAD ordering can be compared with existing symbolic simulator evidence; numeric byte oracle belongs to actual RTL here",
+  "atomic_RO_TVD_GPU_deadlock":"NOT_QUALIFIED"
+}

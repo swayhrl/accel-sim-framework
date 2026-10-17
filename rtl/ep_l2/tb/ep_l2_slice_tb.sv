@@ -238,13 +238,30 @@ module ep_l2_slice_tb;
         if(wb_count!=cap || wad_count!=cap)$fatal(1,"local WB capacity wrong %0d expected%0d",wb_count,cap);
         if(MODE!=1)begin
             prepare(0,0,64'h90000,pattern(90),{128{1'b1}},15,0,1);
-            repeat(10)tick();if(req_ready || wad_count!=cap || wb_count!=cap)$fatal(1,"full quota partially committed");req_valid=0;
+            repeat(10)tick();if(req_ready || wad_count!=cap || wb_count!=cap)$fatal(1,"full quota partially committed");
         end
         @(negedge clk);done_valid=1;done_ticket=received_ticket[0];done_gen=received_gen[0];#1;
         if(!done_ready || !done_dropped)$fatal(1,"old WAD generation aliased reused live entry");
         tick();done_valid=0;if(wad_count!=cap)$fatal(1,"stale done freed reused WAD");
-        force_wb_block=0;wait_lower();close_wads();read_check(0);
-        $display("CASE9 full-dimension actual WB peak%0d refusal/recovery/versions PASS",cap);
+        if(MODE!=1)begin
+            // The very same refused requester remains asserted until credit
+            // returns. No cancellation/reissue can hide a duplicate reserve.
+            prev=replies+aborted;expect_writeback(0);force_wb_block=0;admit();wait_replies(prev);
+            reference[0]=pattern(90);dirty_bytes[0]={128{1'b1}};address[0]=64'h90000;
+            handle_pid[0]=last_rsp_pid;handle_gen[0]=last_rsp_gen;
+        end else force_wb_block=0;
+        wait_lower();close_wads();read_check(0);
+        $display("CASE9 full-dimension actual WB peak%0d refusal/SAME-request-credit-recovery/versions PASS",cap);
+        // WAD can remain full even with every local WB payload already freed.
+        for(integer w=0;w<N_WAD;w=w+1)install(0,64'h100000+128*w,pattern(200+w),{128{1'b1}},15,0,1);
+        wait_lower();if(wad_count!=N_WAD || wb_count!=0)$fatal(1,"WAD128 lower-sent pressure not reached");
+        prepare(0,0,64'h900000,pattern(512),{128{1'b1}},15,0,1);
+        repeat(10)tick();if(req_ready || wad_count!=N_WAD)$fatal(1,"WAD129 partial admission");
+        prev=replies+aborted;expect_writeback(0);complete_one();admit();wait_replies(prev);
+        reference[0]=pattern(512);dirty_bytes[0]={128{1'b1}};address[0]=64'h900000;
+        handle_pid[0]=last_rsp_pid;handle_gen[0]=last_rsp_gen;
+        wait_lower();close_wads();read_check(0);
+        $display("CASE9b WAD128 full after lower accept,129th same-request resume/FIFO-wrap/exact drain PASS");
         // 10. Small reproducible random ready/valid delays and byte masks.
         random_backpressure=1;
         for(integer n=0;n<24;n=n+1)begin

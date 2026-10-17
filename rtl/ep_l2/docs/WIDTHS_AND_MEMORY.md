@@ -34,3 +34,22 @@ explicit blackbox under SYNTHESIS. Controller top excludes that blackbox at
 well-defined port cuts; real4-bank macro binding remains future work. Exact
 metadata cell cost can motivate a later real metadata-memory implementation,
 but its ports/latency must then be accounted and SIM_RTL_TIMING_GAP updated.
+
+Owner encoding is a hardware binding, not an unexplained PA truncation:
+resident role stores Tag index (10bits), while the traditional native Tag
+retains the full64-bit line key. It may change only on native_commit. A
+reserved landing is not visible through Tag-map until commit. An old WB
+incarnation's full line key moves to WAD before Tag rebind; its independent
+payload generation and WAD ticket protect late events after reuse. Under this
+boundary contract, (Tag index,payload ID,generation) selects a unique resident
+owner without duplicating the entire PA in every payload sidecar. Full native
+Tag storage/lookup is excluded UNKNOWN cost; it is not silently free. If a
+future Tag interface can invalidate/rebind behind the controller, this proof
+no longer applies and the interface/owner state must be revised.
+
+Static bypass roles remain reserved FREE in this WB-only path (matching no
+active RO/TVD/bypass-allocation mechanism); the physical SRAM capacity is still
+present in all146KiB. Elaborated static bypass metadata constants are real
+mode pruning, not deletion of data storage. Unified needs metadata for every
+slot it can dynamically borrow. Do not use this cost as an implemented
+independent bypass-cache/RO/TVD subsystem.
