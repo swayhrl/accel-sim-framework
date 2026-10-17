@@ -1,0 +1,86 @@
+--- frozen_EN_v6_H0.tex
++++ EN_v6_r19.tex
+@@ -18,14 +18,14 @@
+ \footnotesize MEASUREMENTS PENDING\par\medskip
+ \parbox{.91\linewidth}{\centering\footnotesize #4}
+ \end{minipage}}}
+-\hypersetup{pdftitle={EP-L2: Elastic Payload Storage for In-Place Writeback in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v6: independently received five-pair WB-only results and scoped causal limits}}
++\hypersetup{pdftitle={EP-L2: Elastic Payload Storage for In-Place Writeback in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v6 r19: frozen H0 results and separate downstream-service interaction}}
+ \hyphenation{write-back micro-ar-chi-tec-ture in-di-rec-tion}
+ \begin{document}
+ \title{EP-L2: Elastic Payload Storage for\\In-Place Writeback in GPU L2 Caches}
+-\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v6 --- not for submission}}
++\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v6 (r19) --- not for submission}}
+ \maketitle
+ \begin{abstract}
+-A fixed-partition L2 may copy a dirty victim into a writeback buffer even though its data do not change. Elastic Payload L2 (EP-L2) retains the victim in place, separates tag visibility from payload ownership and writeback ordering, and allocates resident/writeback roles across a shared pool. We evaluate this WB-only mechanism against a fixed-partition reference with equal payload capacity and modeled bank service. Independent intake of five complete native nonatomic workload pairs confirms removal of all resident-to-writeback copies. However, the geometric-mean execution-speed ratio is only 1.001600, with one slowdown; end-to-end performance is nearly unchanged. Three pressured workloads eliminate WB-data-full events while increasing downstream queue-admission denials. These observations motivate a controlled downstream-headroom study rather than establish its cause. The evidence covers symbolic sector versions and resource lifecycle, not numerical SASS outputs. Independent elasticity benefits, general workload speedup, and physical PPA advantages remain unestablished.
++A fixed-partition L2 may copy a dirty victim into a writeback buffer even though its data do not change. Elastic Payload L2 (EP-L2) retains the victim in place, separates tag visibility from payload ownership and writeback ordering, and allocates resident/writeback roles across a shared pool. We evaluate this WB-only mechanism against a fixed-partition reference with equal payload capacity and modeled bank service. Independent intake of five complete H0 native nonatomic workload pairs confirms removal of all resident-to-writeback copies. However, the geometric-mean execution-speed ratio is only 1.001600, with one slowdown; end-to-end performance is nearly unchanged. Three pressured workloads eliminate WB-data-full events while increasing downstream queue-admission denials. These observations motivate a controlled downstream-headroom study rather than establish its cause. The evidence covers symbolic sector versions and resource lifecycle, not numerical SASS outputs. Independent elasticity benefits, general workload speedup, and physical PPA advantages remain unestablished.
+ \end{abstract}
+ \begin{IEEEkeywords}
+ GPU, L2 cache, writeback, tag--data decoupling, resource sharing
+@@ -116,7 +116,7 @@
+ \begin{figure*}[t]
+ \centering
+ \includegraphics[width=\textwidth]{figures/fig2_results.pdf}
+-\caption{Five independently received, currently accepted native pairs. (a) Cycle reduction $100(C_B-C_U)/C_B$, on an expanded scale with zero denoting B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies; U-WB16 is zero in every pair. Vector, Conv., and FWT denote vectorAdd\_4M, convolutionSeparable, and FWT\_7\_21. No error bars or significance claim.}
++\caption{Five independently received H0 native pairs, unchanged by diagnostic conditions. (a) Cycle reduction $100(C_B-C_U)/C_B$, on an expanded scale with zero denoting B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies; U-WB16 is zero in every pair. Vector, Conv., and FWT denote vectorAdd\_4M, convolutionSeparable, and FWT\_7\_21. No error bars or significance claim.}
+ \label{fig:mainresults}
+ \end{figure*}
+ 
+@@ -164,14 +164,14 @@
+ 
+ \section{Results and Causal Analysis}
+ \subsection{Performance and Internal Movement}
+-All five predeclared pairs pass independent paper intake against current Lane5 V2 generation~8. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup. Exact paired cycles and source/configuration/input/raw identities accompany the artifact tables.
++All five predeclared H0 pairs pass independent paper intake against current Lane5 V2 generation~8. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup. Exact paired cycles and source/configuration/input/raw identities accompany the artifact tables.
+ 
+ Figure~\ref{fig:mainresults}(b) shows removal of every measured resident-to-WB copy. A committed non-rolled-back B16 writeback uses two copy operations and one send read; U-WB16 retains the send read. This local operation saving is not a speedup model. Actual WB counts also change: CFD completes 31,123/31,063 WBs and FWT 178,569/178,585 for B16/U-WB16. Consequently, the run-level logical-operation difference need not equal twice either mode's WB count. Artifact tables preserve actual WB/send-read and DRAM-byte totals.
+ 
+ \begin{figure*}[t]
+ \centering
+ \includegraphics[width=\textwidth]{figures/fig3_pressure.pdf}
+-\caption{Application-cumulative pressure and service observations. (a) WB-data-full refusal attempts; CFD's small B16 count is labeled explicitly. (b) Separate relative reductions in logical work/successful modeled bank grants and in summed per-operation conflict waits. Logical operations and grants coincide at drain in these runs, but are independently checked counters. (c) Frontend attempts denied when the L2-to-DRAM queue is full. M denotes $10^6$. Attempt counts and operation-wait sums are not elapsed GPU cycles or unique transactions; reductions and increases do not establish causality.}
++\caption{H0 application-cumulative pressure and service observations. (a) WB-data-full refusal attempts; CFD's small B16 count is labeled explicitly. (b) Separate relative reductions in logical work/successful modeled bank grants and in summed per-operation conflict waits. Logical operations and grants coincide at drain in these runs, but are independently checked counters. (c) Frontend attempts denied when the L2-to-DRAM queue is full. M denotes $10^6$. Attempt counts and operation-wait sums are not elapsed GPU cycles or unique transactions; reductions and increases do not establish causality.}
+ \label{fig:causal}
+ \end{figure*}
+ 
+@@ -183,16 +183,32 @@
+ CFD is a useful counterexample: despite removing copies and lowering bank waits from 102,546 to 91,029, U-WB16 takes 169 more cycles. WAD-hazard events increase from 9,841 to 13,400, WB counts differ, and successful DRAM writes change from 3,983,744 to 3,976,064~B. These correlated changes motivate ordering/service diagnosis; they do not identify a unique cause. SAD has no observed WB-data-full pressure and differs by only 24 cycles. Neither case is discarded.
+ 
+ \begin{figure}[t]
+-\centering
+-\resultpanel{\columnwidth}{26mm}{Equal-capacity static control}{Not executed or qualified. Same 1168 slots, different fixed role quotas; WBUF8 is not a substitute.}
+-\caption{Remaining control gap. A qualified fixed-total static comparison is needed to isolate elasticity from the selected split. No results are plotted.}
++\centering\footnotesize
++\begin{tabular}{@{}lrr@{}}
++\toprule
++Condition & Target DRAM MHz & Accepted B/U pairs \\
++\midrule
++H0 (reused) & 850 & $2/2$ \\
++Q4 & 850 & $0/2$ \\
++D4 & 3400 & $0/2$ \\
++\bottomrule
++\end{tabular}
++\caption{Authorized r19 targets for Convolution/FWT. Q4/D4 lack published qualified native pairs at this snapshot. Counts are accepted pairs, not performance. H0 five-workload results remain unchanged.}
+ \label{fig:controls}
+ \end{figure}
+ 
+-\subsection{Causal Limits and Next Test}
+-B16 versus U-WB16 combines copy removal and cross-role allocation. The counters demonstrate neither an independent capacity-performance benefit nor the best static partition. The proposed 1024/112/32 resident/bypass/WB control preserves 1168 slots, but requires new quota support and independent qualification; merely selecting WBUF32 in the frozen interface changes the budget. WBUF8 instead uses 1160 slots and is not this control.
+-
+-The immediate proposed diagnostic is a matched B16/U-WB16 $\times$ original/larger L2-to-DRAM-queue comparison for Convolution and FWT, with CFD retained as an ordering counterexample. It needs separate configuration/resource approval and qualification before execution. Increased headroom changes buffering, not DRAM bandwidth; the speed-ratio interaction must be considered alongside queue occupancy, scheduler service, WAD pressure, and actual bytes. Ideal WB/metadata/read-hit matrices are also unqualified for this production binary. The present WB-only application-speedup case is weak; further experiments should test this ambiguity rather than seek more favorable inputs.
++\subsection{Downstream Service Sensitivity and Interaction}
++R19 authorizes Convolution/FWT under H0, Q4, and D4, with D4 pairs first. For each condition $h$, define
++\begin{equation}
++ S(h)=C_B(h)/C_U(h),\qquad J(h)=S(h)/S(\mathrm{H0}).
++\end{equation}
++Retain all four cycles and absolute changes. $C_B(\mathrm{H0})/C_U(h)$ confounds mechanism and downstream changes. Diagnostic results never enter the H0 mean.
++
++Q4 expands downstream queues/scheduler/return storage and derived credit $319\to1279$. D4 changes DRAM $850\to3400$\,MHz; core/ICNT/L2 stay1132\,MHz. Integer DRAM timings have shorter physical duration; the fixed100-GPU-cycle interface latency remains. This grouped buffering/credit and DRAM-domain sensitivity is neither pure bandwidth nor a free hardware improvement.
++
++Figure~\ref{fig:controls} records the gap. New pairs need exact regime/config identity and current V2/native closure. Interpret $J$ with copy work, residence, bank service, valid opportunity ratios and queue maxima. Faster service may shorten B16 WB residence; $S$ need not increase monotonically. Counts alone cannot establish nonbinding service. Adaptive points need a prior evidence checkpoint; simple-memory diagnostics require separate qualification/statistics.
++
++An equal1168-slot static control remains unqualified; current B16/U combines copy removal and pooling. WBUF8 has1160 slots. TVD/RO/Ideal and physical PPA remain separate gaps.
+ 
+ \section{Related Work and Scope}
+ V-Way decouples placement~\cite{vway}; Tag-Split Cache changes storage granularity while retaining coarse requests~\cite{tsc}. \epl{} fixes resident tags and sectors. Gebhart \emph{et al.} repartition SM-local storage at kernel boundaries using a write-through cache~\cite{unified}.

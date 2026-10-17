@@ -1,0 +1,35 @@
+--- frozen_native_v2a.py
++++ native_r19.py
+@@ -21,6 +21,8 @@
+ def require_scope_compatibility(certificate):
+     require(certificate.get("data_correctness_scope") in ALLOWED_SYMBOLIC_SCOPES, "Unknown symbolic data scope")
+     require(certificate.get("application_input_scope") == "FULL_NATIVE_NONATOMIC_ONLY", "Only complete native nonatomic application scope is supported")
++
++from qualified_condition import qualified_headroom_mode
+ 
+ def file_hash(path):
+     h = hashlib.sha256()
+@@ -88,7 +90,7 @@
+                                   "mode": row["mode"], "status": row["status"], "raw_log_sha256": row["raw_log_sha256"],
+                                   "summary": result["summary"]})
+             require(RELEASE_GATES <= q.get("gates", {}).keys(), "Missing repaired production gates")
+-            mode = producer["modes"][row["mode"]]
++            mode = qualified_headroom_mode(repo, adapter, q, producer, row, spec, result, published)
+             require(ident["runtime_config_sha256"] == mode["runtime_config_sha256"], "Not the release exact ordered config")
+             require(ident["feature_vector"] == mode["feature_vector"] and ident["ideal_vector"] == mode["ideal_vector"], "release mode vector mismatch")
+             require(ident["feature_vector"] in q["qualified_feature_vectors"], "Unqualified feature vector")
+@@ -120,7 +122,7 @@
+             require_scope_compatibility(q)
+             # The only excluded config record is the exact hash-checked mode
+             # overlay, so the common fingerprint is derived, not guessed.
+-            common = canonical_sha({"configs_before_mode_overlay": audit["configs"][:-1],
++            common = canonical_sha({"configs_before_mode_overlay": (audit["configs"][:4] + audit["configs"][5:]) if q.get("downstream_config_qualification") else audit["configs"][:-1],
+                                     "auxiliary_assets": audit["auxiliary_assets"], "environment": spec.get("environment", {})})
+             runs.append({"workload": row["workload"], "mode": row["mode"], "status": row["status"],
+                          "run_key": row["run_key"], "identity": ident, "summary": summary,
+@@ -131,4 +133,4 @@
+                          "original_result": result, "original_spec": spec})
+     acceptance.assert_fresh()
+     return {"scientific_acceptance": acceptance.provenance(), "evidence_kind": "FUNCTIONAL_IMPLEMENTATION", "qualification": q, "runs": runs,
+-            "source_bindings": bindings, "mapping_source": "native_pair_intake.py"}
++            "source_bindings": bindings, "mapping_source": "native_pair_intake_r19.py"}
