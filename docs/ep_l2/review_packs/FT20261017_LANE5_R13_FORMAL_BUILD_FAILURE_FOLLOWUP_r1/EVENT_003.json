@@ -1,0 +1,518 @@
+{
+  "additional_background_worker": false,
+  "authorization_or_lease_claim": false,
+  "checked_at_unix": 1792205755.3651836,
+  "checked_at_utc": "2026-10-17T02:55:55.365299+00:00",
+  "deadline_utc": "2026-10-17T12:19:03Z",
+  "errors": [],
+  "lane1": {
+    "commit": "cebcbfa4b0832049324b543b23bef480da76863c",
+    "evidence_directory": "/workspace/results/ep_l2_ft20261016/lane5_continue_r13_r1/lane1_cebcbfa4b0832049324b543b23bef480da76863c",
+    "files": {
+      "RECEIPT.json": "af72d98ec696bf15e35972fdf87a54815297e636c7e858a7107677579cf5b8e1",
+      "STATUS.md": "ce67a8b2f143c37576fb2b4b9e0c19fa92c6d01933bc2a05468391cf9a170d72"
+    }
+  },
+  "live": {
+    "active_resource_leases": {},
+    "active_runs": {},
+    "current_scientific_authority": {
+      "generation": 2,
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
+      "revision": "FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
+      "sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a"
+    },
+    "filesystems": {
+      "/root/share": {
+        "available_bytes": 47446540288,
+        "device": 2431,
+        "fsid": 2757854780513707398
+      },
+      "/workspace": {
+        "available_bytes": 86354751488,
+        "device": 156,
+        "fsid": 1349835467748716946
+      }
+    },
+    "host": "huangrulin-174",
+    "host_policy": {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "default_run_memory_bytes": 8589934592,
+      "default_run_output_limit_bytes": 2147483648,
+      "max_build_jobs": 4,
+      "max_cpu_units": 8,
+      "max_reserved_memory_bytes": 34359738368,
+      "max_result_bytes": 8589934592,
+      "max_simulators": 2,
+      "min_available_memory_bytes": 68719476736,
+      "min_disk_free_bytes": 51539607552,
+      "scan_exclusive": true
+    },
+    "mount_namespace": "mnt:[4026534768]",
+    "raw_formal_producer": {
+      "path": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r3/gate_waiter_r4/formal_build_attempt_r1/BUILD_AND_TEST_RECEIPT.json",
+      "report": {
+        "active_builds": {},
+        "application_runs": 0,
+        "binary_sha256": null,
+        "build": "/workspace/build/ep-l2-ft20261016-lane1-r0-1",
+        "build_growth_reserve_bytes": 2147483648,
+        "commands": [
+          {
+            "command": [
+              "cmake",
+              "-S",
+              "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/gpu-simulator",
+              "-B",
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1",
+              "-G",
+              "Unix Makefiles",
+              "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+            ],
+            "exit_code": 0,
+            "log": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r3/gate_waiter_r4/formal_build_attempt_r1/configure.log",
+            "log_sha256": "16214c8bb760d68e0e32102d8d641f36dadd2773584686d0addcd8c7d41032fd",
+            "process": {
+              "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+              "pid": 1693616,
+              "start_ticks": 895726252
+            },
+            "wall_seconds": 2.2125787436962128
+          },
+          {
+            "command": [
+              "cmake",
+              "--build",
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1",
+              "--target",
+              "accel-sim.out",
+              "ep_l2_ft_memcpy_clock",
+              "ep_l2_ft_host_prefill",
+              "ep_l2_ft_directed",
+              "ep_l2_ft_partition",
+              "-j2"
+            ],
+            "error": "RuntimeError('build exited 2')",
+            "exit_code": 2,
+            "log": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r3/gate_waiter_r4/formal_build_attempt_r1/build.log",
+            "log_sha256": "6ee9a5967c1a1143037190e0e2b267cc505d69c5c5be41e8e2faff3989f4d4c7",
+            "process": {
+              "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+              "pid": 1693826,
+              "start_ticks": 895726476
+            },
+            "wall_seconds": 42.76723775267601
+          }
+        ],
+        "compiler_started": true,
+        "compiler_started_definition": "entered CMake configure (may invoke compiler detection) or build",
+        "core_source_commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+        "core_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1",
+        "disk_floor_bytes": 51539607552,
+        "driver_sha256": "9b9943c65d41b5776075d8488414b0c2f55b3dcab8a22801eab966397578a82c",
+        "error": "RuntimeError('build exited 2')",
+        "framework_source_commit": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+        "framework_worktree": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1",
+        "independent_qualification": false,
+        "input_sha256": {
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft20261016/r0_1/b16_banked.config": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft20261016/r0_1/b8_banked.config": "3242e1c1bf48e372aa0ecb6929079f1a2975ed2824305a68426d663320a950ff",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft20261016/r0_1/u_wb16.config": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft20261016/r0_1/u_wb8.config": "5d6a7ed6ca627f74920dac301f76d90a8d34959c00e5478fd0c9ac9fee16cced",
+          "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+          "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372",
+          "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/test_ft_host_prefill.cc": "48b655c1ec8101f7eec4a4427cdeef696382e2ae457a770d3380c5210f8c264d",
+          "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/test_ft_memcpy_clock.cc": "a9b6f454ff6d7a6ff6e428ba17ee301c05fbb3274cbd982f7952d36e8ea9cf39",
+          "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/test_ft_partition.cc": "a24ff2bdd92be6d133c352e2d115c613a096be1c0620cbb3ca845b1a7d4cd9b7",
+          "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/test_ft_wbuf.cc": "96a88305b9ebde6d6aa7ceba68eef587f39f4eda2479cea9c35515e8e18d6a92"
+        },
+        "jobs": 2,
+        "lease_id": "fc7912137901485cb85051c61124a984",
+        "memory_floor_bytes": 68719476736,
+        "owner": "lane1",
+        "planned_tests": [
+          [
+            "host_prefill_1_8",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_host_prefill",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "8"
+            ]
+          ],
+          [
+            "physical_clock_1_8_0",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "8",
+              "0"
+            ]
+          ],
+          [
+            "physical_clock_1_8_4096",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "8",
+              "4096"
+            ]
+          ],
+          [
+            "warm_clock_1_8",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "8",
+              "4096",
+              "warm_hit"
+            ]
+          ],
+          [
+            "partition_1_8",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_partition",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "8"
+            ]
+          ],
+          [
+            "host_prefill_1_16",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_host_prefill",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "16"
+            ]
+          ],
+          [
+            "physical_clock_1_16_0",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "16",
+              "0"
+            ]
+          ],
+          [
+            "physical_clock_1_16_4096",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "16",
+              "4096"
+            ]
+          ],
+          [
+            "warm_clock_1_16",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "16",
+              "4096",
+              "warm_hit"
+            ]
+          ],
+          [
+            "partition_1_16",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_partition",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "1",
+              "16"
+            ]
+          ],
+          [
+            "host_prefill_2_8",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_host_prefill",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "8"
+            ]
+          ],
+          [
+            "physical_clock_2_8_0",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "8",
+              "0"
+            ]
+          ],
+          [
+            "physical_clock_2_8_4096",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "8",
+              "4096"
+            ]
+          ],
+          [
+            "warm_clock_2_8",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "8",
+              "4096",
+              "warm_hit"
+            ]
+          ],
+          [
+            "partition_2_8",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_partition",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "8"
+            ]
+          ],
+          [
+            "host_prefill_2_16",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_host_prefill",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "16"
+            ]
+          ],
+          [
+            "physical_clock_2_16_0",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "16",
+              "0"
+            ]
+          ],
+          [
+            "physical_clock_2_16_4096",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "16",
+              "4096"
+            ]
+          ],
+          [
+            "warm_clock_2_16",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "16",
+              "4096",
+              "warm_hit"
+            ]
+          ],
+          [
+            "partition_2_16",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_partition",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config",
+              "2",
+              "16"
+            ]
+          ],
+          [
+            "ft_directed",
+            [
+              "/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/ep_l2_ft_directed",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+              "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/tests/ep_l2/ft_wbuf.config"
+            ]
+          ]
+        ],
+        "pybind11": {
+          "commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-streaming-reuse/gpu-simulator/extern/pybind11"
+        },
+        "release": "R0.1",
+        "resources_after": {
+          "available_memory_bytes": 187927613440,
+          "disk_free_bytes": 86355685376
+        },
+        "resources_before": {
+          "available_memory_bytes": 188126445568,
+          "disk_free_bytes": 86465925120
+        },
+        "runtime_ready": false,
+        "status": "FAILED_RETAIN_DIAGNOSTICS_NO_RUNTIME_RELEASE",
+        "tests": [],
+        "trace_identity": null
+      },
+      "sha256": "09cd5255f04e72573585efc656c71af328acb0e53f9074f095846993804970d5"
+    },
+    "resources": {
+      "available_memory_bytes": 187978280960,
+      "disk_free_bytes": 86354751488
+    },
+    "waiter": {
+      "automatic_execution_enabled": true,
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "cadence_seconds": 600,
+      "child": {
+        "cpu_ticks": 0,
+        "io": {
+          "cancelled_write_bytes": 0,
+          "rchar": 1948,
+          "read_bytes": 0,
+          "syscr": 6,
+          "syscw": 0,
+          "wchar": 0,
+          "write_bytes": 0
+        },
+        "pgrp": 1693606,
+        "pid": 1693606,
+        "ppid": 1628339,
+        "rss_bytes": 0,
+        "start_ticks": 895726239,
+        "state": "R"
+      },
+      "command": [
+        "python3",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r0-1/util/ep_l2/ft_lane1/build_r0_1.py",
+        "--core",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1",
+        "--out",
+        "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r3/gate_waiter_r4/formal_build_attempt_r1",
+        "--execute"
+      ],
+      "deadline_unix": 1792343848.6680334,
+      "exit_code": 1,
+      "finished_at": "2026-10-17T02:48:56.247656+00:00",
+      "invocations": 1,
+      "lane5_dependency": {
+        "observed_at": "2026-10-17T02:37:10.742394+00:00",
+        "publication": "ebd57580bdae2b9690d3f3e9e8dafa056c510e74",
+        "status": "FRESH_FETCH_COMPLETED"
+      },
+      "last_observed_at": "2026-10-17T02:47:10.869941+00:00",
+      "last_state": {
+        "active_builds": {},
+        "active_runs": {},
+        "available_memory_bytes": 188098195456,
+        "policy": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "default_run_memory_bytes": 8589934592,
+          "default_run_output_limit_bytes": 2147483648,
+          "max_build_jobs": 4,
+          "max_cpu_units": 8,
+          "max_reserved_memory_bytes": 34359738368,
+          "max_result_bytes": 8589934592,
+          "max_simulators": 2,
+          "min_available_memory_bytes": 68719476736,
+          "min_disk_free_bytes": 51539607552,
+          "scan_exclusive": true
+        },
+        "workspace": {
+          "available_bytes": 86466232320,
+          "block_bytes": 4096,
+          "device": 156,
+          "free_including_reserved_bytes": 278520807424,
+          "fsid": 1349835467748716946,
+          "path": "/workspace",
+          "realpath": "/workspace",
+          "total_bytes": 3779302981632
+        }
+      },
+      "output": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r3/gate_waiter_r4",
+      "pid": {
+        "cpu_ticks": 5,
+        "io": {
+          "cancelled_write_bytes": 0,
+          "rchar": 1655026,
+          "read_bytes": 0,
+          "syscr": 246,
+          "syscw": 3,
+          "wchar": 122,
+          "write_bytes": 0
+        },
+        "pgrp": 1628320,
+        "pid": 1628339,
+        "ppid": 1628320,
+        "rss_bytes": 16777216,
+        "start_ticks": 895418594,
+        "state": "R"
+      },
+      "pilot_cancelled": true,
+      "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
+      "request_path": "/workspace/ep_l2_ft20261016_shared/pilot_requests/EP_L2_R0_1_ENGINEERING_20261017_L1_P01/r3/LOW_SPACE_PILOT_REQUEST.json",
+      "request_sha256": "1b6ab366fea69c54706e0d4ad9a389ba83fc696e8c3570a2ad3606ac6e236b1a",
+      "source": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/gate_waiter.py",
+      "source_sha256": "75b511456763dd35bb5125fed364f3a090306b02e081dcd6cd991ba9a1d624ed",
+      "started_at": "2026-10-17T01:56:54.667878+00:00",
+      "status": "FORMAL_DRIVER_FINISHED_NO_AUTOMATIC_RETRY",
+      "waiting_lease": null
+    },
+    "waiter_actual_identity": null,
+    "waiter_identity_matches": false
+  },
+  "official_release_candidate": {
+    "binary_sha256": null,
+    "runtime_ready": false,
+    "source": "Published receipt candidate only; independently audit formal provenance,21 real tests and11 gates before launch",
+    "status": "FORMAL_BUILD_RECORDED_RELEASE_FREEZE_PENDING"
+  },
+  "source_ops": {
+    "commit": "7aa1dec737a11524022531985ff3f71913e1ed9c",
+    "evidence_directory": "/workspace/results/ep_l2_ft20261016/lane5_continue_r13_r1/source_ops_7aa1dec737a11524022531985ff3f71913e1ed9c",
+    "files": {
+      "POLYBENCH_R13_A_SOURCE_RELEASE_PUBLICATION.json": "83aa56baefd3ce4b40b97e5f6080cf269c6561d0a86385bad1e135762754dbb5",
+      "POLYBENCH_R13_A_SOURCE_RELEASE_RECEIPT.json": "35764d855552dc43ad1663194c260271748ab685fbc0df1749aeced27a5ed597",
+      "POLYBENCH_R13_B_FRESH_GATE_PASS.json": "404acdc0c5408324b8ebaaec782930fdebf4747be2a9200974abbc63431a9da3",
+      "POLYBENCH_R13_B_SOURCE_RELEASE_PUBLICATION.json": "cbea4a86fd00fdfcaa90e5008c744cfeadc3ff37e17d00b52165e18c9e45a732",
+      "POLYBENCH_R13_B_SOURCE_RELEASE_RECEIPT.json": "9b70f796514f15954160065dd1b4ecd2e2dc0f09677ca0f60635e9c01674cd05",
+      "POLYBENCH_R13_LANE_HANDOFF.json": "3ab90015b1137e2bea4950b161925fc7c20263a9a75990c415fce8494f13864f",
+      "POLYBENCH_R13_PRE_RELEASE_PASS.json": "d81c767a1df661c61c6b950c1eb7270f99f19fe74f19861892c039439e280077",
+      "POLYBENCH_R13_SOURCE_PRIORITY_NOTICE.json": "2499664a730ce3b917a56a1f0a7f0d1ce03117b9c6d002d5920524e812523f89",
+      "POLYBENCH_R13_SOURCE_PRIORITY_NOTICE_PUBLICATION.json": "1a19bd51a61308948aa140977afa435c52051612c8d7887c3eeb5450694d8b98",
+      "POLYBENCH_R13_SOURCE_RELEASE_CLOSEOUT.json": "ed9c10746add67d8568611301e94f3a2558b63d09f6c92c731586f3cdf3ad1ec",
+      "STATUS.md": "ce91ff8fdba1ba1cdcd4f9963031288fd16c45d3ef4e9f2834e0f483fcd6bf0a"
+    },
+    "interpretation": "Archive/copy bytes never count as root df reclaim; inspect exact per-stage release receipt and independently measured live space",
+    "literal_SOURCE_RELEASE_RECEIPT_present": false
+  },
+  "status": "OBSERVED_DEPENDENCIES_PENDING",
+  "target_ops": {
+    "commit": "54f9a591e031b1df6e4c7db12bb4ce4d1c8fdd48",
+    "evidence_directory": "/workspace/results/ep_l2_ft20261016/lane5_continue_r13_r1/target_ops_54f9a591e031b1df6e4c7db12bb4ce4d1c8fdd48",
+    "files": {
+      "RECEIPT.json": "c46b4aa504272155b4e34c620e2d30e1216e42a8d7d5f68897035795c9f7cdd6",
+      "STATUS.md": "024745a8cbe3a5a1cf77e56232f0232132b1f5aa50df4fdc4ffddb22175c939c"
+    }
+  }
+}

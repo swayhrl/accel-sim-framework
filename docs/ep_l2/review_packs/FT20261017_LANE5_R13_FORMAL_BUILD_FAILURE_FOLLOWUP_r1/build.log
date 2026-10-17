@@ -1,0 +1,477 @@
+[  1%] [BISON][cuobjdump_parser] Building parser with bison 3.8.2
+[  2%] Building CXX object trace-parser/CMakeFiles/trace-parser.dir/trace_parser.cc.o
+[  3%] [FLEX][cuobjdump_lexer] Building scanner with flex 2.6.4
+[  3%] Building CXX object gpgpu-sim/libcuda/CMakeFiles/cuda.dir/cuda_runtime_api.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:128:
+/usr/local/cuda-11.8/targets/x86_64-linux/include/host_defines.h:54:2: warning: #warning "host_defines.h is an internal header file and must not be used directly.  This file will be removed in a future CUDA release.  Please use cuda_runtime_api.h or cuda_runtime.h instead." [-Wcpp]
+   54 | #warning "host_defines.h is an internal header file and must not be used directly.  This file will be removed in a future CUDA release.  Please use cuda_runtime_api.h or cuda_runtime.h instead."
+      |  ^~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:138:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:138:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In function ‘void** cudaRegisterFatBiaryInternal_impl(void*, gpgpu_context*, std::string&, int, std::function<void(gpgpu_context*)>)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:642:13: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const size_type’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  642 |     if (pos == std::string::npos) {
+      |         ~~~~^~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In function ‘cudaError_t cudaLaunchInternal(const char*, gpgpu_context*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:1034:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1034 |     for (int i = 0; i < gpu->resume_CTA; i++) grid->increment_cta_id();
+      |                     ~~^~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:1048:24: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 1048 |       (grid->get_uid() > gpu->checkpoint_kernel)) {
+      |        ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In function ‘size_t getMaxThreadsPerBlock(cudaFuncAttributes*, gpgpu_context*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:1697:60: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1697 |   if (attr->numRegs && (prop.regsPerBlock / attr->numRegs) < max)
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In member function ‘void cuda_runtime_api::extract_ptx_files_using_cuobjdump_internal(CUctx_st*, std::string&)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:3314:14: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const size_type’ {aka ‘const long unsigned int’} [-Wsign-compare]
+ 3314 |     if (pos1 == std::string::npos && pos2 == std::string::npos) {
+      |         ~~~~~^~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:3314:43: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const size_type’ {aka ‘const long unsigned int’} [-Wsign-compare]
+ 3314 |     if (pos1 == std::string::npos && pos2 == std::string::npos) {
+      |                                      ~~~~~^~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In member function ‘std::__cxx11::list<cuobjdumpSection*> cuda_runtime_api::pruneSectionList(CUctx_st*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:3585:22: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 3585 |       if (capability < min_ptx_capability_found ||
+      |           ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In function ‘void __cudaRegisterFunctionSST(unsigned int, uint64_t, char*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:3932:32: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+ 3932 |   cudaRegisterFunctionInternal((void **)fatCubinHandle, (const char *)hostFun,
+      |                                ^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:3933:57: warning: passing NULL to non-pointer argument 5 of ‘void cudaRegisterFunctionInternal(void**, const char*, char*, const char*, int, uint3*, uint3*, dim3*, dim3*, gpgpu_context*)’ [-Wconversion-null]
+ 3933 |                                (char *)deviceFun, NULL, NULL, NULL, NULL, NULL,
+      |                                                         ^~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:810:39: note:   declared here
+  810 |                                   int thread_limit, uint3 *tid, uint3 *bid,
+      |                                   ~~~~^~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In function ‘cudaError_t cudaSetDeviceFlagsSST(int)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:4110:72: warning: format ‘%p’ expects argument of type ‘void*’, but argument 3 has type ‘int’ [-Wformat=]
+ 4110 |       "GPGPU-Sim PTX: Execution warning: ignoring call to \"%s ( flag=%p)\"\n",
+      |                                                                       ~^
+      |                                                                        |
+      |                                                                        void*
+      |                                                                       %d
+ 4111 |       __my_func__, flags);
+      |                    ~~~~~                                                
+      |                    |
+      |                    int
+[  4%] Linking CXX static library libtrace-parser.a
+[  4%] Built target trace-parser
+[  5%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/abstract_hardware_model.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/abstract_hardware_model.cc:37:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/abstract_hardware_model.cc:37:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc: In member function ‘void cuda_runtime_api::extract_ptx_files_using_cuobjdump_internal(CUctx_st*, std::string&)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:3274:30: warning: ‘%s’ directive output may be truncated writing up to 1023 bytes into a region of size 922 [-Wformat-truncation=]
+ 3274 |            "awk '{$1=$1}1' > %s",
+      |                              ^~
+ 3275 |            app_binary.c_str(), ptx_list_file_name);
+      |                                ~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/stdio.h:894,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/libcuda/cuda_runtime_api.cc:107:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:71:35: note: ‘__builtin___snprintf_chk’ output 79 or more bytes (assuming 1102) into a destination of size 1000
+   71 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   72 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   73 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+[  6%] Building CXX object gpgpu-sim/libcuda/CMakeFiles/cuda.dir/cuobjdump_parser.c.o
+[  6%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/debug.cc.o
+[  6%] Building CXX object gpgpu-sim/libcuda/CMakeFiles/cuda.dir/cuobjdump_lexer.c.o
+/workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim/libcuda/cuobjdump_lexer.c:2565:16: warning: ‘int yy_top_state(yyscan_t)’ defined but not used [-Wunused-function]
+ 2565 |     static int yy_top_state  (yyscan_t yyscanner)
+      |                ^~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/debug.cc:30:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/debug.cc:30:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[  7%] Linking CXX static library libcuda.a
+[  7%] Built target cuda
+[  8%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/Ucache.cc.o
+[  9%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/gpgpusim_entrypoint.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpusim_entrypoint.cc:32:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpusim_entrypoint.cc:32:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[  9%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/option_parser.cc.o
+[  9%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/XML_Parse.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc: In member function ‘void ParseXML::initialize()’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc:4826:46: warning: array subscript 20 is above array bounds of ‘int [20]’ [-Warray-bounds]
+ 4826 |     sys.NoC[i].xbar0.ports_of_input_buffer[20] = 1;
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc:40:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.h:506:7: note: while referencing ‘xbar0_systemNoC::ports_of_input_buffer’
+  506 |   int ports_of_input_buffer[20];
+      |       ^~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc:4718:32: warning: array subscript 20 is above array bounds of ‘int [20]’ [-Warray-bounds]
+ 4718 |     sys.L2Directory[i].ports[20] = 1;
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc:40:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.h:402:7: note: while referencing ‘system_L2Directory::ports’
+  402 |   int ports[20];
+      |       ^~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc:4705:32: warning: array subscript 20 is above array bounds of ‘int [20]’ [-Warray-bounds]
+ 4705 |     sys.L1Directory[i].ports[20] = 1;
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.cc:40:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/XML_Parse.h:382:7: note: while referencing ‘system_L1Directory::ports’
+  382 |   int ports[20];
+      |       ^~~~~
+[ 10%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/statwrapper.cc.o
+[ 10%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/stream_manager.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/stream_manager.cc:30:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/stream_manager.cc:30:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[ 11%] Building CXX object gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/trace.cc.o
+[ 11%] Built target gpgpusim_entrypoint
+[ 12%] [BISON][ptx_parser] Building parser with bison 3.8.2
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/ptx.y: warning: 1 nonterminal useless in grammar [-Wother]
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/ptx.y: warning: 2 rules useless in grammar [-Wother]
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/ptx.y:581.1-7: warning: nonterminal useless in grammar: vp_spec [-Wother]
+  581 | vp_spec: WMMA_DIRECTIVE LAYOUT CONFIGURATION{recognizer->add_space_sp...
+      | ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/ptx.y: warning: 57 reduce/reduce conflicts [-Wconflicts-rr]
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/ptx.y: note: rerun with option '-Wcounterexamples' to generate conflict counterexamples
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/cuda-sim/ptx.y:281.11-112: warning: rule useless in parser due to conflicts [-Wother]
+  281 | 	| WEAK_DIRECTIVE FUNC_DIRECTIVE { $$ = 0; recognizer->g_func_...
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 12%] Generating ptx_parser_decode.def
+[ 12%] Built target gen_ptx_parser_decode
+[ 12%] Generating build string file to /workspace/build/ep-l2-ft20261016-lane1-r0-1/gpgpu-sim
+[ 12%] Built target gen_build_string
+[ 13%] Generating instructions.h
+[ 13%] Built target gen_instructions_h
+[ 13%] Building CXX object gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/addrdec.cc.o
+[ 15%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/arbiter.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/addrdec.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/addrdec.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[ 15%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/area.cc.o
+[ 16%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/array.cc.o
+[ 17%] Building CXX object gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/dram.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram_sched.h:36,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram.cc:34:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram_sched.h:36,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram.cc:34:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[ 18%] Building CXX object gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/dram_sched.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram_sched.h:36,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram_sched.cc:29:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram_sched.h:36,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/dram_sched.cc:29:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[ 18%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/bank.cc.o
+[ 19%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/basic_circuit.cc.o
+[ 19%] Building CXX object gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/gpu-cache.cc.o
+[ 20%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/basic_components.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[ 20%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/cacti_interface.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.cc: In member function ‘void cache_stats::print_stats(FILE*, long long unsigned int, const char*) const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.cc:1242:19: warning: comparison of integer expressions of different signedness: ‘long long unsigned int’ and ‘int’ [-Wsign-compare]
+ 1242 |     if ((streamID != -1) && (streamid != streamID)) continue;
+      |          ~~~~~~~~~^~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.cc: In member function ‘void cache_stats::print_fail_stats(FILE*, long long unsigned int, const char*) const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.cc:1277:19: warning: comparison of integer expressions of different signedness: ‘long long unsigned int’ and ‘int’ [-Wsign-compare]
+ 1277 |     if ((streamID != -1) && (streamid != streamID)) continue;
+      |          ~~~~~~~~~^~~~~
+[ 21%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/component.cc.o
+[ 21%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/core.cc.o
+[ 22%] Building CXX object gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/gpu-misc.cc.o
+[ 22%] Building CXX object gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/gpu-sim.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1768:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1768 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1681:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1681 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:1480:3: warning:   when initialized here [-Wreorder]
+ 1480 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:2284:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2284 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+[ 23%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/crossbar.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/crossbar.cc: In member function ‘void Crossbar::compute_power()’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/crossbar.cc:146:14: warning: empty parentheses were disambiguated as a function declaration [-Wvexing-parse]
+  146 |   Wire wreset();
+      |              ^~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/crossbar.cc:146:14: note: remove parentheses to default-initialize a variable
+  146 |   Wire wreset();
+      |              ^~
+      |              --
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/crossbar.cc:146:14: note: or replace parentheses with braces to value-initialize a variable
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.cc: In member function ‘void gpgpu_sim::perf_memcpy_to_gpu(size_t, size_t)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.cc:2326:38: error: ‘unsigned int cache_config::m_ep_l2_ft_mode’ is protected within this context
+ 2326 |     if (m_memory_config->m_L2_config.m_ep_l2_ft_mode) {
+      |                                      ^~~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.h:44,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-sim.cc:33:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/gpgpu-sim/gpu-cache.h:941:12: note: declared protected here
+  941 |   unsigned m_ep_l2_ft_mode;
+      |            ^~~~~~~~~~~~~~~
+[ 23%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/decoder.cc.o
+gmake[3]: *** [gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/build.make:149: gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/gpu-sim.cc.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:883: gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/all] Error 2
+gmake[2]: *** Waiting for unfinished jobs....
+[ 24%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/htree2.cc.o
+[ 25%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/interconnect.cc.o
+[ 25%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/io.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/interconnect.cc: In constructor ‘interconnect::interconnect(std::string, Device_ty, double, double, int, double, const InputParameter*, int, bool, double, bool, Core_type, Wire_type, double, double, TechnologyParameter::DeviceType*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/interconnect.cc:157:14: warning: empty parentheses were disambiguated as a function declaration [-Wvexing-parse]
+  157 |   Wire wreset();
+      |              ^~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/interconnect.cc:157:14: note: remove parentheses to default-initialize a variable
+  157 |   Wire wreset();
+      |              ^~
+      |              --
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/interconnect.cc:157:14: note: or replace parentheses with braces to value-initialize a variable
+[ 26%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/iocontrollers.cc.o
+[ 26%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/logic.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/iocontrollers.cc: In constructor ‘PCIeController::PCIeController(ParseXML*, InputParameter*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/iocontrollers.cc:321:19: warning: ‘SerDer_gates’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  321 |       (ctrl_gates + (pciep.withPHY ? SerDer_gates : 0)) *
+      |       ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 27%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/main.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/main.cc: In function ‘int main(int, char**)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/main.cc:79:12: warning: ‘fb’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   79 |   p1->parse(fb);
+      |   ~~~~~~~~~^~~~
+[ 27%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/mat.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/logic.cc: In member function ‘void FunctionalUnit::computeEnergy(bool)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/logic.cc:858:39: warning: ‘FU_duty_cycle’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  858 |     power.readOp.dynamic *= sckRation * FU_duty_cycle;
+      |                             ~~~~~~~~~~^~~~~~~~~~~~~~~
+[ 29%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/memoryctrl.cc.o
+[ 30%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/noc.cc.o
+[ 30%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/nuca.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/nuca.cc: In member function ‘void Nuca::sim_nuca()’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/nuca.cc:379:44: warning: array subscript 7 is above array bounds of ‘int [7][8]’ [-Warray-bounds]
+  379 |             cont_stats[l2_c][core_in][ro][7][num_cyc/2-1];
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/nuca.cc:43:5: note: while referencing ‘cont_stats’
+   43 | int cont_stats[2 /*l2 or l3*/][5/* cores */][ROUTER_TYPES][7 /*banks*/][8 /* cycle time */];
+      |     ^~~~~~~~~~
+[ 31%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/parameter.cc.o
+[ 31%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/processor.cc.o
+[ 32%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/router.cc.o
+[ 32%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/sharedcache.cc.o
+[ 33%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/subarray.cc.o
+[ 34%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/technology.cc.o
+[ 34%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/uca.cc.o
+[ 35%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/cacti/wire.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/technology.cc: In function ‘void init_tech_params(double, bool)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/technology.cc:2895:50: warning: ‘SENSE_AMP_P’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 2895 |     g_tp.sense_dy_power            += curr_alpha *SENSE_AMP_P;
+      |                                       ~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/cacti/technology.cc:2894:50: warning: ‘SENSE_AMP_D’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 2894 |     g_tp.sense_delay               += curr_alpha *SENSE_AMP_D;
+      |                                       ~~~~~~~~~~~^~~~~~~~~~~~
+[ 35%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/xmlParser.cc.o
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.cc: In static member function ‘static void XMLNode::exactMemory(XMLNode::XMLNodeData*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.cc:1515:35: warning: ‘void* realloc(void*, size_t)’ moving an object of non-trivially copyable type ‘struct XMLNode’; use ‘new’ and ‘delete’ instead [-Wclass-memaccess]
+ 1515 |     d->pChild = (XMLNode *)realloc(d->pChild, d->nChild * sizeof(XMLNode));
+      |                            ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.cc:86:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.h:273:28: note: ‘struct XMLNode’ declared here
+  273 | typedef struct XMLDLLENTRY XMLNode {
+      |                            ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.cc: In static member function ‘static int XMLNode::detachFromParent(XMLNode::XMLNodeData*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.cc:2380:12: warning: ‘void* memmove(void*, const void*, size_t)’ writing to an object of type ‘struct XMLNode’ with no trivial copy-assignment; use copy-assignment or copy-initialization instead [-Wclass-memaccess]
+ 2380 |     memmove(pa + i, pa + i + 1, (d->pParent->nChild - i) * sizeof(XMLNode));
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.cc:86:
+/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane1-r0-1/src/accelwattch/xmlParser.h:273:28: note: ‘struct XMLNode’ declared here
+  273 | typedef struct XMLDLLENTRY XMLNode {
+      |                            ^~~~~~~
+[ 36%] Building CXX object gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/gpgpu_sim_wrapper.cc.o
+[ 36%] Linking CXX static library libaccelwattch.a
+[ 36%] Built target accelwattch
+gmake[1]: *** [CMakeFiles/Makefile2:369: CMakeFiles/accel-sim.out.dir/rule] Error 2
+gmake: *** [Makefile:169: accel-sim.out] Error 2
