@@ -12,12 +12,6 @@
 \newcommand{\base}{B16}
 \newcommand{\unif}{U-WB16}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-% Real, fixed-height layout reservations. They intentionally contain no fake data.
-\newcommand{\resultpanel}[4]{\fbox{\begin{minipage}[c][#2][c]{\dimexpr#1-2\fboxsep-2\fboxrule\relax}\centering
-\small\textbf{#3}\par\medskip
-\footnotesize MEASUREMENTS PENDING\par\medskip
-\parbox{.91\linewidth}{\centering\footnotesize #4}
-\end{minipage}}}
 \hypersetup{pdftitle={EP-L2: Elastic Payload Storage for In-Place Writeback in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v6 r21: verified writeback literature; frozen H0 results; separate r19 sensitivity}}
 \hyphenation{write-back micro-ar-chi-tec-ture in-di-rec-tion}
 \begin{document}
@@ -90,7 +84,7 @@ box/.style={draw,align=center,inner sep=2pt,minimum height=8mm},arr/.style={->,l
 \node[anchor=west] at (0,-10) {$t_d$: complete WB and release WAD ordering entry};
 \end{tikzpicture}
 \end{minipage}
-\caption{Declared WB-only design, not a physical floorplan or a measured cycle schedule. Dashed links denote control dependencies; solid links denote data movement. B16 uses fixed 1024/128/16 role quotas over the same banks; U-WB16 allows resident/WB allocation across those slots. Concurrent dynamic bypass service is not established. Both retain a 128-B copy latch outside the pool. Optional TVD/RO consumers are not drawn as extra data arrays.}
+\caption{From relocation to ownership transfer. (a) Resident tags, requester descriptors, and writeback address ordering are separately tracked around a fixed banked payload pool. (b) B16 copies an evicted dirty line to its WBUF; U-WB retains the bytes at $p$ while allocating a different landing $q$ for the incoming resident. Local storage is released after lower data acceptance, whereas address ordering persists to writeback completion. Both modes have equal data capacity, bank service, and a common copy latch. TVD/RO and concurrent dynamic bypass are outside the reported WB-only evaluation.}
 \label{fig:organization}
 \end{figure*}
 
@@ -203,7 +197,7 @@ DRAM clock (MHz) & 850 & 850 & 3400 \\
 The original H0 cohort is retained regardless of later sensitivity results. A separate equal-capacity static repartition is still needed to show that dynamic pooling is preferable to a better fixed WB quota.
 
 \section{Relation to Prior Storage Decoupling}
-The Virtual Write Queue exposes LLC dirty-line candidates to DRAM scheduling while retaining a physical write queue~\cite{vwq}. Decoupled last-write prediction keeps candidate addresses in a last-write buffer and data in the LLC; evicted dirty blocks use a separate write buffer~\cite{lastwrite}. The Dirty-Block Index (DBI) separates dirty bits from tags and groups them by DRAM row~\cite{dbi}. Neither cache retention nor independent dirty metadata originates here. Our focus is tag reuse with the victim's original slot still owned, a distinct incoming landing, and separate payload/order retirement. DBI dirty status is not the WAD's in-flight same-address ordering state.
+The Virtual Write Queue exposes LLC dirty-line candidates to DRAM scheduling while retaining a physical write queue~\cite{vwq}. Decoupled last-write prediction keeps candidate addresses in a last-write buffer and data in the LLC; evicted dirty blocks use a separate write buffer~\cite{lastwrite}. The Dirty-Block Index (DBI) separates dirty bits from tags and groups them by DRAM row~\cite{dbi}. Their contributions concern candidate visibility, early cleaning, or dirty-state indexing; EP-L2 instead concerns the original payload slot's owner after the resident tag is reused, together with a distinct incoming landing and separate payload/order retirement. DBI dirty status is not the WAD's in-flight same-address ordering state.
 
 V-Way decouples tag/data placement~\cite{vway}; Tag-Split Cache separates request and storage granularity~\cite{tsc}. Gebhart et al. unify SM-local register, cache, and scratchpad storage~\cite{unified}. In-cache MSHRs~\cite{farkas}, MiCache's shared FPGA data/MSHR storage~\cite{micache}, and DL-MSHR's linked slots, including write-miss data~\cite{dlmshr}, motivate distinguishing what is shared. Our comparison fixes resident-tag and miss-tracking budgets; it evaluates dirty-payload ownership rather than extra lookup or request-tracking capacity.
 
