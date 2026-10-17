@@ -71,7 +71,11 @@ def main():
   for line in (BUILD/'gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make').read_text().splitlines():
    if line.startswith('CXX_'):k,v=line.split(' = ',1);fmap[k]=v
   fixedsrc=Path(__file__).with_name('test_ideal_meta_real.cc');fixedexe=out/'test_ideal_meta_real'
-  run(['/usr/bin/c++',*shlex.split(fmap['CXX_DEFINES']),*shlex.split(fmap['CXX_INCLUDES']),'-I'+str(CORE/'tests/ep_l2'),'-O0','-g0','-fPIC','-std=gnu++17',str(fixedsrc),'-o',str(fixedexe),'-Wl,--start-group',*map(str,libs),'-Wl,--end-group','-lz','-ldl','-lGL','-lpthread','-lm'],'compile_real_request_unit')
+  prior_unit=json.loads(a.reuse_prefix_receipt.read_text()) if a.reuse_prefix_receipt else {}
+  if prior_unit.get('repaired_unit_fixture',{}).get('source_sha256')==sha(fixedsrc):
+   fixedexe=Path(dict(prior_unit['planned_tests'])['ideal_meta'][0]);assert sha(fixedexe)==prior_unit['repaired_unit_fixture']['executable_sha256']
+  else:
+   run(['/usr/bin/c++',*shlex.split(fmap['CXX_DEFINES']),*shlex.split(fmap['CXX_INCLUDES']),'-I'+str(CORE/'tests/ep_l2'),'-O0','-g0','-fPIC','-std=gnu++17',str(fixedsrc),'-o',str(fixedexe),'-Wl,--start-group',*map(str,libs),'-Wl,--end-group','-lz','-ldl','-lGL','-lpthread','-lm'],'compile_real_request_unit')
   r['repaired_unit_fixture']={'source_sha256':sha(fixedsrc),'source_commit':head(REPO),'executable_sha256':sha(fixedexe),'runtime_changes':False,'old_failed_test_retained':'/workspace/ep_l2_parallel_lane1/local_ideals_release_r2/ideal_meta.log'}
   tests=[(name,[str(fixedexe),base,str(testdir/'ideal_meta_integrated.config')]) if name=='ideal_meta' else (name,cmd) for name,cmd in tests]
   cached={}

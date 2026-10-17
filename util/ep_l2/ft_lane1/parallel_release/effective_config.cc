@@ -19,6 +19,9 @@ int main(int argc,char **argv) {
  auto mc=gpu.getMemoryConfig();memory_stats_t stats(cfg.num_shader(),gpu.getShaderCoreConfig(),mc,&gpu);
  // Real constructor enforces supported combinations, not string-only parsing.
  memory_partition_unit part(0,mc,&stats,&gpu);
- printf("PARALLEL_EFFECTIVE_PASS|mem_channels=%u|slices=%u|tag_lines=%u|ft=%u|wbuf=%u|wad=%u|ideal_wb=%u|ideal_meta=%u|ideal_read=%u|detailed_dram=%u|dram_latency=%u\n",
- mc->m_n_mem,mc->m_n_mem_sub_partition,mc->m_L2_config.get_num_lines(),mc->m_L2_config.ep_l2_ft_mode(),mc->m_L2_config.m_ep_l2_wbuf_entries,mc->m_L2_config.m_ep_l2_wad_entries,mc->m_L2_config.m_ep_l2_ideal_wb,mc->m_L2_config.m_ep_l2_ideal_meta,mc->m_L2_config.m_ep_l2_ideal_read_hit,!mc->simple_dram_model,mc->dram_latency);
+ printf("PARALLEL_EFFECTIVE_PASS|mem_channels=%u|slices=%u|tag_lines=%u|ft=%u|detailed_dram=%u|dram_latency=%u\n",
+ mc->m_n_mem,mc->m_n_mem_sub_partition,mc->m_L2_config.get_num_lines(),mc->m_L2_config.ep_l2_ft_mode(),!mc->simple_dram_model,mc->dram_latency);
+ // Registered ideal values are in the native parser dump above; the real
+ // constructor has enforced their guards. Do not expose private cache fields.
+ part.get_sub_partition(0)->print_ep_l2_b0_snapshot(stdout,(unsigned long long)-1);
 }
