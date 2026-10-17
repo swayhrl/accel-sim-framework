@@ -1,0 +1,84 @@
+{
+  "regime": "L25",
+  "queue_order": [
+    "ICNT_to_L2",
+    "L2_to_DRAM",
+    "DRAM_to_L2",
+    "L2_to_ICNT"
+  ],
+  "H0": {
+    "per_slice_fifos": [
+      64,
+      128,
+      64,
+      64
+    ],
+    "scheduler_per_channel": 128,
+    "dram_return_per_channel": 192,
+    "private_credit_per_subpartition": 1,
+    "shared_credit_per_channel": 319,
+    "wb_progress_credit_per_channel": 1
+  },
+  "increment_per_channel": {
+    "L2_to_DRAM_slots_two_subpartitions": 768,
+    "DRAM_to_L2_slots_two_subpartitions": 384,
+    "scheduler_slots": 384,
+    "dram_return_slots": 576,
+    "total_counted_packet_control_slots": 2112,
+    "shared_credits": 960
+  },
+  "increment_32_channels": {
+    "packet_control_slots": 67584,
+    "shared_credits": 30720
+  },
+  "byte_cost": "NOT_INFERRED_FROM_PACKET_COUNTS; packet/control storage widths/lifetimes differ. Extra buffers/credit are same in both modes and not free EP-L2 capacity.",
+  "unchanged": {
+    "Tag_per_slice": 1024,
+    "Payload_slots_per_slice": 1168,
+    "banks": 4,
+    "ops_per_bank_physical_cycle": 1,
+    "WAD": 128,
+    "descriptors": 512,
+    "copy_latch_bytes": 128,
+    "core_icnt_l2_mhz": [
+      1132,
+      1132,
+      1132
+    ],
+    "DRAM_integer_timing_bus_burst_banks_mapping": "IDENTICAL_NATIVE_OPTIONS_OTHER_THAN_WHITELIST"
+  },
+  "clock_semantics": "Native detailed DRAM3400MHz with fixed25 physical GPU cycles; L25 vs D4 changes only fixed DRAM interface latency. No queue/clock/bank/Payload budget hidden.",
+  "source_anchors": {
+    "core_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "src/gpgpu-sim/l2cache.cc": [
+      469,
+      641,
+      725,
+      822,
+      958,
+      973
+    ],
+    "src/gpgpu-sim/gpu-sim.cc": [
+      246,
+      318,
+      369,
+      1209,
+      2030,
+      2107
+    ]
+  },
+  "Q4_D4_D2_L25": {
+    "per_slice_fifos": [
+      64,
+      512,
+      256,
+      64
+    ],
+    "scheduler_per_channel": 512,
+    "dram_return_per_channel": 768,
+    "private_credit_per_subpartition": 1,
+    "shared_credit_per_channel": 1279,
+    "wb_progress_credit_per_channel": 1
+  },
+  "condition_fixed_dram_latency_gpu_cycles": 25
+}

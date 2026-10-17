@@ -1,0 +1,70 @@
+[
+  {
+    "mode": "B16_BANKED",
+    "runtime_config_sha256": "94571cb08a9dd153b2d7e6d431f02a42a264075cdbbe1716943a34b957602c6e",
+    "native_effective_parameters": 260,
+    "effective_delta": {
+      "-gpgpu_clock_domains": {
+        "H0": "1132.0:1132.0:1132.0:850.0",
+        "condition": "1132.0:1132.0:1132.0:3400.0"
+      },
+      "-gpgpu_dram_return_queue_size": {
+        "H0": "192",
+        "condition": "768"
+      },
+      "-gpgpu_dram_partition_queues": {
+        "H0": "64:128:64:64",
+        "condition": "64:512:256:64"
+      },
+      "-gpgpu_frfcfs_dram_sched_queue_size": {
+        "H0": "128",
+        "condition": "512"
+      },
+      "-dram_latency": {
+        "H0": "100",
+        "condition": "25"
+      }
+    },
+    "actual_native_markers": [
+      "R19_EFFECTIVE|regime=L25|mode=1|nmem=32|slices=64|queues=64:512:256:64|scheduler=512|dram_return=768|shared_credit_derived=1279|private_per_subpart=1|wb_progress_credit=1|dram_latency_gpu_cycles=25|detailed_dram=1|expected_dram_hz=3400000000|atom=32|burst=2|busW=16|dram_banks=16",
+      "R19_CLOCK|core_ticks=10000|l2_ticks=10000|dram_ticks=30033|icnt_ticks=10000|native_next_clock_domain=1",
+      "R19_DELAY_CAPTURE|gpu_cycle=16162|ready_gpu_cycle=16187|fixed_latency_gpu_cycles=25",
+      "R19_PRODUCTION_PASS|regime=L25|mode=1|exact_once=40|wb_lower_accept_and_set_done=5|two_dirty_sector_versions=1|cold_sectors=2|subpartitions_exercised=2|credit_drained=1|bank_max_ops_per_physical_cycle=1|fixed_delay_gpu_cycles=25|fixed_delay_verified=1|runtime_archives_unchanged=1"
+    ],
+    "pass": true
+  },
+  {
+    "mode": "U_WB16",
+    "runtime_config_sha256": "38125a18a148df90e7f28e49875bd08ad3a9ef4c923749149eed6a85c1068da0",
+    "native_effective_parameters": 260,
+    "effective_delta": {
+      "-gpgpu_clock_domains": {
+        "H0": "1132.0:1132.0:1132.0:850.0",
+        "condition": "1132.0:1132.0:1132.0:3400.0"
+      },
+      "-gpgpu_dram_return_queue_size": {
+        "H0": "192",
+        "condition": "768"
+      },
+      "-gpgpu_dram_partition_queues": {
+        "H0": "64:128:64:64",
+        "condition": "64:512:256:64"
+      },
+      "-gpgpu_frfcfs_dram_sched_queue_size": {
+        "H0": "128",
+        "condition": "512"
+      },
+      "-dram_latency": {
+        "H0": "100",
+        "condition": "25"
+      }
+    },
+    "actual_native_markers": [
+      "R19_EFFECTIVE|regime=L25|mode=2|nmem=32|slices=64|queues=64:512:256:64|scheduler=512|dram_return=768|shared_credit_derived=1279|private_per_subpart=1|wb_progress_credit=1|dram_latency_gpu_cycles=25|detailed_dram=1|expected_dram_hz=3400000000|atom=32|burst=2|busW=16|dram_banks=16",
+      "R19_CLOCK|core_ticks=10000|l2_ticks=10000|dram_ticks=30033|icnt_ticks=10000|native_next_clock_domain=1",
+      "R19_DELAY_CAPTURE|gpu_cycle=16156|ready_gpu_cycle=16181|fixed_latency_gpu_cycles=25",
+      "R19_PRODUCTION_PASS|regime=L25|mode=2|exact_once=40|wb_lower_accept_and_set_done=5|two_dirty_sector_versions=1|cold_sectors=2|subpartitions_exercised=2|credit_drained=1|bank_max_ops_per_physical_cycle=1|fixed_delay_gpu_cycles=25|fixed_delay_verified=1|runtime_archives_unchanged=1"
+    ],
+    "pass": true
+  }
+]
