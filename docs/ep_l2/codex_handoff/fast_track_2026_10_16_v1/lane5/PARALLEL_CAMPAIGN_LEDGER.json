@@ -1,17 +1,8 @@
 {
-  "accepted_new": 20,
-  "active_resource_leases": [
-    {
-      "cpu_units": 1,
-      "created_at": "2026-10-17T18:45:50.379488+00:00",
-      "host": "huangrulin-174",
-      "memory_bytes": 2147483648,
-      "owner": "lane2",
-      "status": "RESERVED"
-    }
-  ],
+  "accepted_new": 21,
+  "active_resource_leases": [],
   "active_runs": [],
-  "aggregate_output_bytes": 11490736549,
+  "aggregate_output_bytes": 11642132489,
   "available_historical_anchor_cells": 7,
   "campaign_registration": {
     "authority_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
@@ -4893,7 +4884,7 @@
       "workload_alias": "convolutionSeparable"
     },
     {
-      "actual_status": "CURRENT_QUALIFIED_AWAITING_RESOURCE_ADMISSION",
+      "actual_status": "CURRENT_ACCEPTED",
       "anchor_limit": "Available only for identical source/binary/config/input scope. Not a new-source matched OFF and not marked reused without a concrete matching comparison.",
       "architecture": "U_WB16",
       "available_historical_anchors": [
@@ -5011,14 +5002,139 @@
       "input_authority": "EXISTING_FULL_TRACE_MANIFEST_EXACT_CONTENT_IDENTITY",
       "maximum_new_starts_if_not_reused": "1",
       "mode": "U_OFF",
-      "new_starts": 0,
+      "new_starts": 1,
       "note": "U_OFF means U_WB16 at H0; anchor reuse requires exact identity",
       "planned_state": "PLANNED_AWAITING_QUALIFICATION",
       "producer_owner": "lane1",
       "qualification_scope": "FINITE_STRUCTURE_PHYSICAL_PATH",
       "reuse_limit": "Only exact frozen2309 source/config/input scope; future different-binary ideal/structure comparisons require additional same-binary OFF anchors counted under72.",
       "reuse_source": null,
-      "runs": [],
+      "runs": [
+        {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "cell_id": "S004",
+          "client_binding": {
+            "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+            "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+            "immutable_scientific_pointer": true
+          },
+          "cpu_units": 1,
+          "created_at": "2026-10-17T19:33:16.934751+00:00",
+          "deadline_unix": 1792323014.5007188,
+          "detail": "qualified binary, exact inputs, legal hardware terminal and closure",
+          "exit_code": 0,
+          "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+          "host": "huangrulin-174",
+          "identity": {
+            "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+            "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+            "epoch_range": {
+              "epochs": "all",
+              "scope": "full_application"
+            },
+            "feature_vector": {
+              "adaptive_policy": false,
+              "bank_count": 4,
+              "bypass_capacity": 128,
+              "diagnostic_extra_payload_backing": false,
+              "finite_wbuf": true,
+              "ideal_meta": false,
+              "ideal_read_hit": false,
+              "ideal_wb": false,
+              "nominal_payload_capacity_per_slice": 1168,
+              "nominal_static_wb_anchor": 16,
+              "ops_per_bank_cycle": 1,
+              "payload_capacity_per_slice": 1168,
+              "ro": false,
+              "static_s64": false,
+              "static_wb_capacity": null,
+              "tvd": false,
+              "unified_wb": true,
+              "wb_data_capacity_non_binding": false,
+              "wb_local_cap": 0,
+              "wbuf_entries": 16
+            },
+            "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+            "ideal_vector": {
+              "mem_all_data": false,
+              "meta": false,
+              "read_hit": false,
+              "wb": false
+            },
+            "runtime_config_sha256": "169447c3069c9ea8c4d3fc5aad25766c4b6c3dc4df734a83af1bb3ef442c99f2",
+            "termination_contract": {
+              "hardware_drained": true,
+              "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+              "normal_exit": true,
+              "timeout_seconds": 3600
+            },
+            "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+            "workload": "FWT_7_21"
+          },
+          "lease_id": "51c92a46f9a944d9bffbf6786952138b",
+          "memory_bytes": 8589934592,
+          "output_budget": {
+            "accounted_after_admission_bytes": 11759223443,
+            "actual_bytes": 11490787987,
+            "concurrent_unwritten_growth_bytes": 0,
+            "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+            "predicted_growth_bytes": 268435456,
+            "resources": {
+              "available_memory_bytes": 171544973312,
+              "disk_free_bytes": 53932339200,
+              "share_disk_free_bytes": 44496850944
+            },
+            "roots": {
+              "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+                "bytes": 7470274173,
+                "st_dev": 2431
+              },
+              "/workspace/ep_l2_potential20261017_lane5_results": {
+                "bytes": 4020513814,
+                "st_dev": 156
+              }
+            },
+            "same_binary_full_input_samples": [
+              {
+                "bytes": 102530546,
+                "receipt_sha256": "7552e874dab34b92161cc273bf14c978d3d39e9ef5231770d0c6bc371892a7ce",
+                "run_key": "01711661cea4c4f0e712d7644d20124c7353a843f76d77231290815afd21f513"
+              },
+              {
+                "bytes": 100065957,
+                "receipt_sha256": "cbf2faac77ea220c69e1a1e79d436d59eba4dc54bf39cfc761e0aa59cdd39040",
+                "run_key": "2606e29b4dcd729400f1cbd56b4ecc4ea7d81c4a5c981e205f64550ae9d1391b"
+              },
+              {
+                "bytes": 102527849,
+                "receipt_sha256": "48df9310329364a4d98f310bfa3048c79f04614a3fcb3166da63741a8c6726c6",
+                "run_key": "e45b66e5ac20bedec5dea09ebe73f88d76e6b32f60dd7f2ec08d677107d8cbb1"
+              },
+              {
+                "bytes": 102552038,
+                "receipt_sha256": "49e4bac6aa73db397cefc55f801ecfbffc3cdf6b2f227e97dcc48ee4c6e4012f",
+                "run_key": "e7690a6b3cbb2152404d08e7b5c5d5160114b7294776944950e13e16b0d532e5"
+              }
+            ],
+            "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+            "workspace_st_dev": 156
+          },
+          "owner": "lane5",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 3213686,
+            "start_ticks": 901756857
+          },
+          "profile": "U_OFF",
+          "raw_log_sha256": "c6dc6bd9313aa9cf282ddddce6e11e9ef4662ce6427493562376c6797e761050",
+          "regime": "H0",
+          "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/869dd6aecc7802a901840210e6cf7fc0086e26ca8c8a95036710abf97d72b739",
+          "run_key": "869dd6aecc7802a901840210e6cf7fc0086e26ca8c8a95036710abf97d72b739",
+          "scan": false,
+          "status": "COMPLETE_VALID",
+          "updated_at": "2026-10-17T20:13:36.171365+00:00"
+        }
+      ],
       "runtime_release_owner": "lane1_if_new_binary_else_reuse_frozen_release",
       "selected_source": {
         "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
@@ -7699,7 +7815,7 @@
       "workload_alias": "FWT_7_21"
     }
   ],
-  "current_V2_generation": 46,
+  "current_V2_generation": 47,
   "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
   "extra_cells": [
     {
@@ -8085,15 +8201,15 @@
   "failed": 4,
   "max_result_bytes": 17179869184,
   "new_application_admission": "REQUIRES_NORMAL_FULL_PREFLIGHT",
-  "new_starts": 27,
+  "new_starts": 28,
   "output_tree_bytes": {
     "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": 7470274173,
-    "/workspace/ep_l2_potential20261017_lane5_results": 4020462376
+    "/workspace/ep_l2_potential20261017_lane5_results": 4171858316
   },
-  "remaining_start_budget": 45,
+  "remaining_start_budget": 44,
   "reused": 0,
   "running": 0,
   "schema": "EPL2_PARALLEL_CELL_LEDGER_V1",
-  "updated_at": "2026-10-17T19:33:14.765844+00:00",
+  "updated_at": "2026-10-17T20:13:54.510379+00:00",
   "validation_only_revisions": 3
 }
