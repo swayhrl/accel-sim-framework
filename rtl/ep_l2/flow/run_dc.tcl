@@ -27,7 +27,11 @@ while {[gets $f line]>=0} { if {$line ne "" && ![string match "#*" $line]} { lap
 close $f
 analyze -format sverilog -define SYNTHESIS $sources
 elaborate ep_l2_slice_ctrl -parameters "MODE=$mode,STATIC_WB=$wb,N_TAG=1024,N_PAYLOAD=1168,N_WAD=128,GEN_W=32"
-current_design ep_l2_slice_ctrl
+# Parameterized elaboration may give the top a parameter-suffixed design name.
+# Retain the actual current top selected by elaborate; never assume the base name.
+set elaborated_top [current_design]
+if {$elaborated_top eq ""} { error "elaborate did not select a current top" }
+puts "DC_ELABORATED_TOP=$elaborated_top"
 link
 # Actual operating-condition name from the selected real DB, not a label.
 set_operating_conditions $::env(OPERATING_CONDITIONS)

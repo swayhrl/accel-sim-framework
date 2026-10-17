@@ -39,3 +39,7 @@ with reset still timed. Parallel-prefix generation is GEN32 and adds no state.
 
 Actual DC execution also writes hashes of every selected target/link DB to
 library_sha256.txt; no private DB or invented hash is part of this handoff.
+
+The entry retains the actual current top selected by parameterized elaborate;
+it does not force an unparameterized design name that may not exist. This
+ordinary script correction is unexecuted here, like the rest of the DC handoff.
