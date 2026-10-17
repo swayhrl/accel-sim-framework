@@ -49,16 +49,12 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_CONVOLUTIONSEPARABLE_PAIR_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_FWT_7_21_PAIR_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_FWT_7_21_ACCEPTANCE_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_FWT_7_21_ACCEPTANCE_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_PRIMARY_COHORT_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
-  "blockers": [
-    {
-      "reason": "Actual independent21 +4 mode +one OFF equivalence complete; A1 real production closure and r16 B1 atomic/input eligibility remain. Lane1 r16 Goal now ACTIVE; do not repeat existing runs/hash until corrected source milestone.",
-      "scope": "Original11 scientific acceptance"
-    }
-  ],
+  "blockers": [],
   "bounded_continue": {
     "A1_addendum": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/continue_r13/A1_AFFECTED_GATE_ADDENDUM_R15.json",
     "T0_utc": "2026-10-17T02:19:03Z",
@@ -140,6 +136,34 @@
         "device": 156,
         "fsid": 1349835467748716946
       }
+    },
+    "final_delivery": {
+      "C1_causal_claim": false,
+      "cohort_checksums_sha256": "bf5ba638db49d90a00497c440a4a58dd4d16857850f0520b0a64c864e04503ab",
+      "cohort_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_PRIMARY_COHORT_r1",
+      "cohort_summary_sha256": "38c42ee2e8ba74621be4c6a142b39452c7c61769145df04bae536bf1c9364c29",
+      "current_authority_generation": 8,
+      "current_authority_sha256": "73262a2c1f05ef72821110d73ced82e6cf908966660ffcfc26befa2d52c50043",
+      "data_publication": "6c4a827d45547e6717a3090b20330aac7a716e56",
+      "geometric_mean_speedup_B16_over_U_WB16": 1.0016002037656606,
+      "numeric_SASS_claim": false,
+      "pairs": 5,
+      "runs": 10,
+      "source": {
+        "all11_qualification_publication": "7b9091c8f610c92796c121bd951f2c0db25c6676",
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "current_V2_generation": 8,
+        "current_V2_sha256": "73262a2c1f05ef72821110d73ced82e6cf908966660ffcfc26befa2d52c50043",
+        "last_verified_pair_publication": "6c4a827d45547e6717a3090b20330aac7a716e56",
+        "official_producer_publication": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+        "official_producer_receipt_sha256": "527c97db91e4a57a5981763fbc736fb7c51e8e8b5834e09dc8447a582ae108b8",
+        "producing_core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "producing_framework": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "r17_native_semantic_publication": "9c3b167e9d488e2347bd352253c2ea4e4e0f0dbc",
+        "r17_native_semantic_report_sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2",
+        "vendor": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "status": "ALL5_CURRENT_ACCEPTED_COHORT_READY_FOR_LANE6"
     },
     "first_accepted_pair": {
       "acceptance_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_SAD_ACCEPTANCE_r1",
@@ -618,7 +642,7 @@
     },
     "new_independent_production_tests": 0,
     "new_simulations": 0,
-    "next_action": "Remote readback/pointer install and immediate Lane6 handoff; continue frozen remaining order",
+    "next_action": "Push/read back final cohort and close this completed bounded CONTINUE; no new production run required",
     "off_mode_qualification": {
       "V2_launch_authorizations": 0,
       "accepted_pairs": 0,
@@ -1372,9 +1396,11 @@
         "workload": "FWT_7_21"
       }
     ],
-    "geomean_computed": false,
+    "cohort_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_A1_B1_PRIMARY_COHORT_r1",
+    "geomean_computed": true,
+    "geometric_mean_speedup_B16_over_U_WB16": 1.0016002037656606,
     "remaining_workloads": [],
-    "status": "ALL5_CURRENT_ACCEPTED"
+    "status": "ALL5_CURRENT_ACCEPTED_COHORT_COMPLETE"
   },
   "formal_campaign": {
     "completed_pair_packs": [
@@ -1538,10 +1564,10 @@
   "static_candidate_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
   "static_candidate_core_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
   "static_candidate_framework": "861a06b91e309832161eab0836b512853c833ffb",
-  "status": "R0_1_A1_B1_5_CURRENT_ACCEPTED_PAIRS",
+  "status": "R0_1_A1_B1_ALL5_CURRENT_ACCEPTED_COHORT_COMPLETE",
   "task_id": "FT20261017_LANE5_CONTINUE_R13_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-17T05:55:23.351589+00:00",
+  "updated_at": "2026-10-17T05:59:13.119796+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {

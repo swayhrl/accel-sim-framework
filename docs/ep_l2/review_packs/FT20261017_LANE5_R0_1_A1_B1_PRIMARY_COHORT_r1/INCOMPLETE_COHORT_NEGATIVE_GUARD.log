@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/cohort_r0_1.py", line 51, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/cohort_r0_1.py", line 45, in main
+    state=load_current_authority();rows,sources,runs=collect(state) # No output before full5/current acceptance.
+                                                     ^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/cohort_r0_1.py", line 18, in collect
+    require(len(accepted)==10 and {r['workload'] for r in accepted}==set(ORDER),'Incomplete current five-pair cohort; geomean forbidden')
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py", line 17, in require
+    raise InvalidEvidence(message)
+validate.InvalidEvidence: Incomplete current five-pair cohort; geomean forbidden
