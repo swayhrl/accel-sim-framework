@@ -26,7 +26,22 @@ module ep_l2_metadata_word #(
     wire install_step_two=SUPPORT_RES && install && !already_reserved &&
         install_old_live && !invalidate &&
         (STATIC_RESIDENT || (!rollback_release && !lower_release));
-    wire [GEN_W-1:0] next_generation=generation+(install_step_two ? 2 : 1);
+    // Parallel-prefix increment by1/2; exact modular arithmetic, no new state.
+    localparam integer PREFIX_L=$clog2(GEN_W);
+    wire [GEN_W-1:0] prefix[0:PREFIX_L];
+    assign prefix[0]={generation[GEN_W-1:1],generation[0]|install_step_two};
+    generate for(genvar level=0;level<PREFIX_L;level=level+1)begin: increment_prefix
+      for(genvar bitno=0;bitno<GEN_W;bitno=bitno+1)begin: bit_prefix
+        if(bitno>=(1<<level))assign prefix[level+1][bitno]=prefix[level][bitno]&prefix[level][bitno-(1<<level)];
+        else assign prefix[level+1][bitno]=prefix[level][bitno];
+      end
+    end endgenerate
+    wire [GEN_W-1:0] carry,next_generation;
+    assign carry[0]=!install_step_two;
+    generate for(genvar bitno=1;bitno<GEN_W;bitno=bitno+1)begin: increment_carry
+      assign carry[bitno]=prefix[PREFIX_L][bitno-1];
+    end endgenerate
+    assign next_generation=generation^carry;
     assign owner_tag=DYNAMIC_OWNER ? dynamic_owner : {TAG_W{1'b0}};
     always @(posedge clk) begin
         if(!rst_n)begin
@@ -109,4 +124,16 @@ module ep_l2_index_mux #(parameter integer N=1168,W=32,IW=$clog2(N),BLOCK=16,
    assign reduction[k]=reduction[2*k]|reduction[2*k+1];
  end endgenerate
  assign data=reduction[1];
+endmodule
+
+// Portable real combinational repeaters. Keep hierarchy/cells so the open
+// mapper charges the reset distribution instead of aliasing it to one net.
+// DC may globally optimize/rebuffer the same function under the same SDC.
+(* keep_hierarchy=1 *) module ep_l2_control_inverter(input wire i,output wire o);
+ assign o=~i;
+endmodule
+(* keep_hierarchy=1 *) module ep_l2_control_buffer(input wire i,output wire o);
+ wire n;
+ (* keep=1,keep_hierarchy=1 *) ep_l2_control_inverter invert_a(i,n);
+ (* keep=1,keep_hierarchy=1 *) ep_l2_control_inverter invert_b(n,o);
 endmodule

@@ -429,6 +429,28 @@ module ep_l2_slice_ctrl #(
         assign group_reserved[g]=p_new_reserved && group_landing[g];
         assign group_pin_increment[g]=pin_increment && group_pin[g];
     end endgenerate
+    // Three real buffer levels, fanout<=16 between levels, four words/leaf.
+    // All active metadata and Unified Tag-map resets use this network.
+    // No flop, reset-cycle extension or timing exception is introduced.
+    localparam integer RESET_LEAF=(N_PAYLOAD+3)/4;
+    localparam integer RESET_MID=(RESET_LEAF+15)/16;
+    localparam integer RESET_ROOT=(RESET_MID+15)/16;
+    wire [RESET_ROOT-1:0] reset_root;
+    wire [RESET_MID-1:0] reset_mid;
+    wire [RESET_LEAF-1:0] reset_leaf;
+    generate for(genvar g=0;g<RESET_ROOT;g=g+1)begin: reset_distribution_root
+      (* keep=1,keep_hierarchy=1 *) ep_l2_control_buffer repeater(rst_n,reset_root[g]);
+    end
+    for(genvar g=0;g<RESET_MID;g=g+1)begin: reset_distribution_mid
+      if(MODE==1 || g*64<N_TAG || (g+1)*64>WB_BEGIN)begin: active
+        (* keep=1,keep_hierarchy=1 *) ep_l2_control_buffer repeater(reset_root[g/16],reset_mid[g]);
+      end else assign reset_mid[g]=rst_n;
+    end
+    for(genvar g=0;g<RESET_LEAF;g=g+1)begin: reset_distribution_leaf
+      if(MODE==1 || g*4<N_TAG || (g+1)*4>WB_BEGIN)begin: active
+        (* keep=1,keep_hierarchy=1 *) ep_l2_control_buffer repeater(reset_mid[g/16],reset_leaf[g]);
+      end else assign reset_leaf[g]=rst_n;
+    end endgenerate
     genvar m;
     generate for(m=0;m<N_PAYLOAD;m=m+1)begin: metadata
         if(MODE!=1 && m>=N_TAG && m<WB_BEGIN)begin: unused_static_bypass
@@ -443,7 +465,7 @@ module ep_l2_slice_ctrl #(
             wire [TAG_W-1:0] word_owner;
             assign owner_tag_bits[m*TAG_W +:TAG_W]=(MODE!=1 && m<N_TAG)?TAG_W'(m):word_owner;
             ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(MODE==1),.STATIC_RESIDENT(MODE!=1 && m<N_TAG)) word_state(
-                .clk(clk),.rst_n(rst_n),
+                .clk(clk),.rst_n(reset_leaf[m/4]),
                 .reserve_resident(req_fire && req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m),
                 .reserve_wb(req_fire && req_op==0 && evict_dirty && MODE!=1 && free_staging==m),
                 .new_owner(group_new_owner[(m/META_GROUP)*TAG_W +:TAG_W]),
@@ -464,13 +486,18 @@ module ep_l2_slice_ctrl #(
                 .sectors_ready(sectors_ready_bits[m*4 +:4]),.sectors_pending(sectors_pending_bits[m*4 +:4]),.dirty(dirty_bits[m*4 +:4]));
         end
     end endgenerate
+    localparam integer TAG_MAP_GROUPS=(N_TAG+META_GROUP-1)/META_GROUP;
+    wire [TAG_MAP_GROUPS*PID_W-1:0] group_tag_map_data;
+    generate for(genvar g=0;g<TAG_MAP_GROUPS;g=g+1)begin: tag_map_distribution
+      assign group_tag_map_data[g*PID_W +:PID_W]=p_landing & {PID_W{p_tag/META_GROUP==g}};
+    end endgenerate
     genvar t;
     generate for(t=0;t<N_TAG;t=t+1)begin: mapping
         if(MODE!=1)begin: fixed_mapping
             assign tag_map_bits[t*PID_W +:PID_W]=PID_W'(t);
         end else begin: dynamic_mapping
-        ep_l2_tag_map_word #(.PID_W(PID_W)) word_state(.clk(clk),.rst_n(rst_n),
-            .write(native_commit && p_op==0 && p_tag==t),.data(p_landing),.payload(tag_map_bits[t*PID_W +:PID_W]));
+        ep_l2_tag_map_word #(.PID_W(PID_W)) word_state(.clk(clk),.rst_n(reset_leaf[t/4]),
+            .write(native_commit && p_op==0 && p_tag==t),.data(group_tag_map_data[(t/META_GROUP)*PID_W +:PID_W]),.payload(tag_map_bits[t*PID_W +:PID_W]));
         end
     end endgenerate
 `ifndef SYNTHESIS
