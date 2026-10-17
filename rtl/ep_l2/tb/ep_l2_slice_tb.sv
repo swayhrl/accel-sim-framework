@@ -27,8 +27,15 @@ module ep_l2_slice_tb;
     wire module_drained,generation_blocked;wire [WW:0] wad_count,wb_count;
     wire [9:0] reference_count;wire [3:0] ram_enable,ram_write;
     wire [4*RW-1:0] ram_row;wire [511:0] ram_be;wire [4095:0] ram_wdata,ram_rdata;
+`ifdef EP_L2_FULL_TOP
+    ep_l2_slice #(.MODE(MODE),.GEN_W(GEN_W),.N_TAG(N_TAG),.N_PAYLOAD(N_PAYLOAD),.N_WAD(N_WAD),.STATIC_WB(STATIC_WB)) integrated(.*);
+    assign ram_enable=integrated.ram_enable;
+`define CTRL integrated.controller
+`else
     ep_l2_slice_ctrl #(.MODE(MODE),.GEN_W(GEN_W),.N_TAG(N_TAG),.N_PAYLOAD(N_PAYLOAD),.N_WAD(N_WAD),.STATIC_WB(STATIC_WB)) dut(.*);
     ep_l2_payload_banks #(.N_PAYLOAD(N_PAYLOAD)) banks(.*);
+`define CTRL dut
+`endif
     // Independent byte merge and immutable WB snapshots. Never consult the
     // RTL SRAM array, selector, versions or mapping to construct expected data.
     reg [1023:0] reference [0:N_TAG-1];
@@ -59,11 +66,11 @@ module ep_l2_slice_tb;
         cycles=cycles+1;
         if (cycles>30000) $fatal(1,"bounded fixture watchdog");
         for (integer b=0;b<4;b=b+1) if(ram_enable[b])bank_ops=bank_ops+1;
-        if(dut.ge && dut.state==3)copy_reads=copy_reads+1;
-        if(dut.ge && dut.state==5)copy_writes=copy_writes+1;
-        if((dut.requests[0] && dut.requests[1] && dut.request_banks[1:0]==dut.request_banks[3:2]) ||
-           (dut.requests[1] && dut.requests[2] && dut.request_banks[3:2]==dut.request_banks[5:4]))conflicts=conflicts+1;
-        if((dut.gf && dut.ge) || (dut.gf && dut.gw) || (dut.ge && dut.gw))parallel_banks=parallel_banks+1;
+        if(`CTRL.ge && `CTRL.state==3)copy_reads=copy_reads+1;
+        if(`CTRL.ge && `CTRL.state==5)copy_writes=copy_writes+1;
+        if((`CTRL.requests[0] && `CTRL.requests[1] && `CTRL.request_banks[1:0]==`CTRL.request_banks[3:2]) ||
+           (`CTRL.requests[1] && `CTRL.requests[2] && `CTRL.request_banks[3:2]==`CTRL.request_banks[5:4]))conflicts=conflicts+1;
+        if((`CTRL.gf && `CTRL.ge) || (`CTRL.gf && `CTRL.gw) || (`CTRL.ge && `CTRL.gw))parallel_banks=parallel_banks+1;
         if(req_valid && req_ready)accepted=accepted+1;
         if(rsp_valid && rsp_ready) begin
             if(rsp_id<=last_rsp_uid) $fatal(1,"duplicate/reordered frontend completion");
@@ -87,7 +94,7 @@ module ep_l2_slice_tb;
     task tick;begin @(posedge clk);#1;end endtask
     task wait_replies(input integer previous);integer n;begin
         n=0;while(replies+aborted==previous && n<3000)begin tick();n=n+1;end
-        if(n==3000)$fatal(1,"frontend progress timeout state%0d",dut.state);
+        if(n==3000)$fatal(1,"frontend progress timeout state%0d",`CTRL.state);
     end endtask
     task prepare(input integer op,input integer tag,input [63:0] addr,input [1023:0] data,input [127:0] be,input [3:0] readysec,input [3:0] pendingsec,input integer isdirty);
         begin
@@ -224,7 +231,7 @@ module ep_l2_slice_tb;
         @(negedge clk);fill_valid=1;fill_pid=old_handle;fill_gen=old_gen;fill_tag=2;fill_sectors=15;
         fill_data=0;fill_be={128{1'b1}};fill_protect_be=0;#1;
         if(!fill_ready || !fill_dropped)$fatal(1,"stale fill not rejected");tick();fill_valid=0;
-        if(dut.sectors_pending_bits[handle_pid[2]*4 +:4]!=15)$fatal(1,"late old generation consumed new fill state");
+        if(`CTRL.sectors_pending_bits[handle_pid[2]*4 +:4]!=15)$fatal(1,"late old generation consumed new fill state");
         @(negedge clk);fill_valid=1;fill_pid=handle_pid[2];fill_gen=handle_gen[2];fill_data=pattern(8);#1;
         if(fill_dropped)$fatal(1,"fresh generation was corrupted by old fill");
         while(!fill_ready)@(negedge clk);tick();fill_valid=0;read_check(2);

@@ -12,13 +12,26 @@ Traditional Tag/LRU/dirty-byte/MSHR/noC/DRAM control is external and not free.
 
 DC: set RTL_REPO, TARGET_LIBS (Tcl list of actual .db files), LINK_LIBS (Tcl
 list, including real macro libraries if applicable), DC_OUT, MODE=0/1/2,
-IO_DRIVE_CELL, OUTPUT_LOAD_LIB_UNITS and PVT_LABEL; optionally CLOCK_PERIOD_NS. Run:
+IO_DRIVE_CELL, OUTPUT_LOAD_LIB_UNITS, PVT_LABEL and LIB_TIME_UNIT_NS; optionally CLOCK_PERIOD_NS. Run:
 
     dc_shell -f rtl/ep_l2/flow/run_dc.tcl
 
-DC is UNRUN here. Canonical constraints use ns; check the emitted units.rpt against the actual target library before accepting results. A non-ns library needs a unit conversion of every common time value, not a changed physical constraint. Private technology libraries must stay local. The provided
+DC is UNRUN here. Canonical physical constraints use ns; LIB_TIME_UNIT_NS declares the ns represented by one actual library time unit (1.0 for ns,0.001 for ps). The SAME SDC converts every time value. Check units.rpt and set OUTPUT_LOAD_LIB_UNITS to the actual5fF equivalent in that library; do not silently change physical constraints across modes. Private technology libraries must stay local. The provided
 DC target is the same controller cut. To integrate SRAM in an SoC, replace the
 blackbox memory wrapper with a pin-compatible actual macro adapter, constrain
 its real Liberty and budget all external traditional logic. Do not interpret
 the controller report as full-slice SRAM area or full-hit timing. Power and
 placement/routing are not part of this first delivery.
+
+`--mapping standard` is the default ABC effort. `--mapping fast` selects the
+Yosys ABC fast technology-mapping script when a bounded standard attempt
+does not finish. This is still real Liberty mapping and independent STA,
+but lower optimization effort can change area/timing. All compared modes
+must use the identical effort, library and physical constraints. Incomplete
+standard attempts do not constitute cost results. Exact synth.ys, tool
+versions and effort are retained with every successful mapping.
+
+`full_slice_filelist.f` adds the synthesizable `ep_l2_slice` integration top
+with four explicit SRAM blackboxes. The controller cost filelist excludes
+these macros at its documented timing cut. `run_functional.py --full-top`
+qualifies this integration using the same byte-reference transaction tests.

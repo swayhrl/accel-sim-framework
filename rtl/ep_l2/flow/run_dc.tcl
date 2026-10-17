@@ -1,9 +1,9 @@
 # DC UNRUN by Lane2. Same RTL/parameters/controller timing cut as open flow.
 # Required real library values; never upload target DBs/Liberty to GitHub.
-foreach key {RTL_REPO TARGET_LIBS LINK_LIBS DC_OUT MODE IO_DRIVE_CELL OUTPUT_LOAD_LIB_UNITS PVT_LABEL} {
+foreach key {RTL_REPO TARGET_LIBS LINK_LIBS DC_OUT MODE IO_DRIVE_CELL OUTPUT_LOAD_LIB_UNITS PVT_LABEL LIB_TIME_UNIT_NS} {
     if {![info exists ::env($key)] || $::env($key) eq ""} { error "Missing required environment $key" }
 }
-puts "DC PVT_LABEL=$::env(PVT_LABEL); library timing units must be ns for canonical SDC; verify report_units"
+puts "DC PVT_LABEL=$::env(PVT_LABEL); physical time converted by declared LIB_TIME_UNIT_NS=$::env(LIB_TIME_UNIT_NS); verify report_units"
 set mode $::env(MODE)
 if {[lsearch -exact {0 1 2} $mode] < 0} { error "MODE must be 0=B16,1=Unified,2=S64" }
 set wb [expr {$mode==2 ? 64 : 16}]

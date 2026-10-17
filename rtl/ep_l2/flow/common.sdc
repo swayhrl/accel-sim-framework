@@ -4,9 +4,14 @@
 if {![info exists ::env(CLOCK_PERIOD_NS)]} { set ::env(CLOCK_PERIOD_NS) 0.883392226 }
 if {![info exists ::env(IO_DRIVE_CELL)]} { error "IO_DRIVE_CELL must name an actual cell in selected library" }
 if {![info exists ::env(OUTPUT_LOAD_LIB_UNITS)]} { error "OUTPUT_LOAD_LIB_UNITS is required in the actual library units" }
-create_clock -name slice_clk -period $::env(CLOCK_PERIOD_NS) [get_ports clk]
-set_clock_uncertainty 0.05 [get_clocks slice_clk]
-set_clock_transition 0.05 [get_clocks slice_clk]
+# Number of ns represented by one selected library time unit. Open Nangate
+# runs use1.0; DC must declare the actual value (e.g.1ps ->0.001).
+if {![info exists ::env(LIB_TIME_UNIT_NS)]} { set ::env(LIB_TIME_UNIT_NS) 1.0 }
+if {$::env(LIB_TIME_UNIT_NS)<=0} { error "LIB_TIME_UNIT_NS must be positive" }
+set unit_scale $::env(LIB_TIME_UNIT_NS)
+create_clock -name slice_clk -period [expr {$::env(CLOCK_PERIOD_NS)/$unit_scale}] [get_ports clk]
+set_clock_uncertainty [expr {0.05/$unit_scale}] [get_clocks slice_clk]
+set_clock_transition [expr {0.05/$unit_scale}] [get_clocks slice_clk]
 set data_names [list]
 if {[namespace exists sta]} {
     foreach port [all_inputs] {
@@ -20,12 +25,12 @@ if {[namespace exists sta]} {
     }
 }
 set data_inputs [get_ports $data_names]
-set_input_delay 0.10 -clock slice_clk $data_inputs
+set_input_delay [expr {0.10/$unit_scale}] -clock slice_clk $data_inputs
 set_driving_cell -lib_cell $::env(IO_DRIVE_CELL) $data_inputs
-set_input_transition 0.05 $data_inputs
-set_output_delay 0.10 -clock slice_clk [all_outputs]
+set_input_transition [expr {0.05/$unit_scale}] $data_inputs
+set_output_delay [expr {0.10/$unit_scale}] -clock slice_clk [all_outputs]
 set_load $::env(OUTPUT_LOAD_LIB_UNITS) [all_outputs]
 set_max_fanout 16 [current_design]
-set_max_transition 0.20 [current_design]
+set_max_transition [expr {0.20/$unit_scale}] [current_design]
 # ram_rdata is an external timing-cut input; ram_* outputs are timing-cut
 # endpoints. These are interface budgets, NOT a macro characterization.
