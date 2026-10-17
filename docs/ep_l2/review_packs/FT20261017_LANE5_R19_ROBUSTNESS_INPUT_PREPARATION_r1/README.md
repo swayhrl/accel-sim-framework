@@ -1,0 +1,3 @@
+# Robustness input preparation during Q4 FWT
+
+Eight candidate D4/Q4 specs preserve complete SAD/vectorAdd inputs and exact official ordered overlays, with new config/run identities. They point to deliberately absent future scope envelopes and are not launchable. Four frozen H0 input bindings were checked against current accepted rows and q1, without rehashing/re-auditing the old trace bodies. Eight condition-config/input-scope bindings PASS; all8 attempts to attach the legacy q2 auditor are refused. These are packaging guards, not new production qualification or application evidence. First8 full results still precede the choice of ONE robustness condition; unchosen drafts remain unused. No simulator/compiler/lease/watcher was started here.
