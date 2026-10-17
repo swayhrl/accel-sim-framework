@@ -6,6 +6,9 @@ def main():
     target=ROOT/'EXTERNAL_RESOURCE_IDENTITIES.json'
     previous=json.loads(target.read_text()) if target.exists() else {}
     identities=previous.get('identities',{})
+    for entry in identities.values():
+        if entry['binary_sha256']=='37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5':
+            entry['status']='INDEPENDENT_EP_L2_DTC_ABSENT_BINARY_37DC'
     authority=json.loads((ROOT/'AUTHORITY_ACTIVE.json').read_text())
     prefixes=('/workspace/results/ep_l2_ft20261016/',
               '/workspace/ep_l2_potential20261017_lane5_results/')
@@ -39,7 +42,7 @@ def main():
                 identities[key]=dict(first_observed_utc=snapshot['utc'],pid=item['pid'],
                     start_ticks=item['start_ticks'],binary=str(binary),binary_sha256=digest,
                     configs=[dict(path=str(p),sha256=sha(p)) for p in configs],
-                    status='INDEPENDENT_EP_L2_NATIVE_OFF_NO_DTC_MARKERS' if known_native else 'INDEPENDENT_EP_L2_NO_DTC_CONFIG')
+                    status='INDEPENDENT_EP_L2_DTC_ABSENT_BINARY_37DC' if known_native else 'INDEPENDENT_EP_L2_NO_DTC_CONFIG')
             except (OSError,AssertionError) as exc:
                 unknown.append(dict(sample_utc=snapshot['utc'],process=item,error=str(exc)))
     record=dict(utc=now(),status='PASS_ALL_SAMPLED_FOREIGN_PROCESSES_IDENTIFIED' if not unknown else 'UNRESOLVED_FOREIGN_IDENTITY_REQUIRES_REVIEW',
