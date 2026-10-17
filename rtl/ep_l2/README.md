@@ -30,3 +30,7 @@ usesGEN32; GEN3 is only the bounded exhaustion test. See
 `run_functional.py --full-top` requires a central lease in this shared host.
 
 All previous simulator candidates and test qualifications remain unchanged.
+
+Current R2 candidate: see [R2](r2/README.md), the structural hardwire proof,
+coverage boundaries and DC entrance. R1 remains immutable at09de19579 and its
+original worktree/artifact paths. No current-SIM performance pairing is claimed.

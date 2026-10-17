@@ -1,5 +1,11 @@
 # Widths, state and excluded memories
 
+This is the frozen R1 accounting narrative. Current R2 changes are documented
+in ../r2/STRUCTURAL_PROOF.md: static Tag-map and owner are hardwired, static
+resident role[2:1] is constant0, and actual mapped fields remain charged. The
+R1 prototype paragraph below is historical, not a description of R2 registers.
+
+
 Full cost always Tags1024, payload1168, WAD128, banks4×292, line1024bits,
 sector256bits. Payload146KiB =1,196,032bits, equally partitioned SRAM capacity
 for all modes. No technology macro area/delay is assumed to be zero.
