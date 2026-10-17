@@ -49,6 +49,14 @@ class Safety(unittest.TestCase):
             with self.assertRaises(ValueError):
                 cm.validate_budget(bad, CAMPAIGN)
 
+    def test_legacy_default_memory_exactly_matches_registry(self):
+        policy={'default_run_memory_bytes':8*2**30}
+        self.assertEqual(cm.memory_reservation({},policy),8*2**30)
+        self.assertEqual(cm.memory_reservation({'memory_reservation_bytes':None},policy),8*2**30)
+        self.assertEqual(cm.memory_reservation({'memory_reservation_bytes':4*2**30},policy),4*2**30)
+        with self.assertRaises(ValueError):
+            cm.memory_reservation({'memory_reservation_bytes':0},policy)
+
     def test_p2_cannot_borrow_source_scope_or_withdrawn_baseline(self):
         spec = json.loads((cm.H / 'parallel_unified_specs_execution_r2/S007_convolutionSeparable_B16_BANKED.json').read_text())
         good = {'identity': spec['identity'], 'profile': 'B16_OFF', 'regime': 'H0', 'scientific_acceptance': 'CURRENT_ACCEPTED'}

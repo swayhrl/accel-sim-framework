@@ -34,6 +34,15 @@ def validate_budget(queue, campaign):
         raise ValueError('Queue cannot alter frozen campaign budget/deadline')
 
 
+def memory_reservation(spec, policy):
+    memory=spec.get('memory_reservation_bytes')
+    if memory is None:
+        memory=policy['default_run_memory_bytes']
+    if type(memory) is not int or memory<=0:
+        raise ValueError('Invalid explicit memory reservation')
+    return memory
+
+
 def disposition(spec, registry, accepted):
     """Existing keys are observed, never reset, retried, or launched again."""
     key = run_key(spec['identity'])
@@ -218,7 +227,7 @@ def main(queue_path):
                             raise ValueError('Prepared execution spec changed')
                         authorize_launch(spec['identity'], digest(spec['qualified_release']), state)
                         try:
-                            registry.admission(snapshot, socket.gethostname(), 1, spec['memory_reservation_bytes'], False, 'simulation', local_resources())
+                            registry.admission(snapshot, socket.gethostname(), 1, memory_reservation(spec,snapshot['hosts'][socket.gethostname()]), False, 'simulation', local_resources())
                             admit_result_output(snapshot, socket.gethostname(), spec['identity'], OUT / key)
                         except ValueError as exc:
                             denied.add(key)
@@ -246,6 +255,8 @@ def main(queue_path):
         write_json(receipt, {'status': status, 'error': error, 'at_unix': time.time(),
                             'runner': process_identity(os.getpid()), 'queue': str(queue_path), 'queue_sha256': queue_sha,
                             'deadline_unix': campaign['deadline_unix'],
+                            'starts':sum(attempt_count(v) for v in final['runs'].values() if v.get('experiment_id')==PARALLEL),
+                            'maximum_starts':campaign['maximum_starts'],
                             'active_runs': [v for v in final['runs'].values() if v['status'] in ACTIVE],
                             'resume': 'Audit exact queue and progress, real PID/lease/current V2. Preserve all attempts. No implicit retry or reset.'})
         print(json.dumps({'event': 'FOREGROUND_CAMPAIGN_STOPPED', 'status': status, 'error': error}), flush=True)
