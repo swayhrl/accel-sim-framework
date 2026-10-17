@@ -1,0 +1,142 @@
+{
+  "schema": "EPL2_LANE4_R1_1_INTEGRATION_QUALIFICATION_V1",
+  "scientific_contract_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
+  "review_commit": "d962f847cbf7ba6d525bbb23964fee392bd8a69f",
+  "scope": "Future qualification specification, not execution authorization or acceptance.",
+  "reviewed_candidate_core_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+  "actual_official_R1_1_core_commit": null,
+  "actual_producing_framework_commit": null,
+  "binary_sha256": null,
+  "application_runtime_config_sha256": null,
+  "trace_content_sha256": null,
+  "run_key": null,
+  "integration_owner": "lane1",
+  "independent_qualification_owner": "lane5",
+  "diagnostic_owner": "lane4",
+  "cases": [
+    {
+      "name": "test_ideal_host_prefill_reference",
+      "kind": "reference API unit",
+      "source_path": "tests/ep_l2/test_ideal_host_prefill_reference.cc",
+      "source_sha256": "bd85a5d0344195ffc3cea2ebb65c4dad7df700010bcba3705c9bbffa8c47642b",
+      "compile_status": "NOT_COMPILED",
+      "execution_status": "NOT_RUN",
+      "compiler_invocations": 0,
+      "executions": 0,
+      "observed_red_green": false,
+      "required_success_marker": "IDEAL_HOST_PREFILL_REFERENCE_SECTOR_SNAPSHOT_MONOTONIC_ADDRESS PASS",
+      "required_observations": [
+        "selected sector has version0 and value_known=false",
+        "unselected producer versions/known bytes preserved",
+        "old response copy immutable",
+        "next GPU producer version increases",
+        "repeated/cold prefill and high-address isolation"
+      ]
+    },
+    {
+      "name": "test_ideal_host_prefill_partition",
+      "kind": "real partition/GPU/response/lower path",
+      "source_path": "tests/ep_l2/test_ideal_host_prefill_partition.cc",
+      "source_sha256": "513313c30910780a0c35e2d8bf9665df405c3c869937c932f20775bca644b306",
+      "compile_status": "NOT_COMPILED",
+      "execution_status": "NOT_RUN",
+      "compiler_invocations": 0,
+      "executions": 0,
+      "observed_red_green": false,
+      "required_success_marker": "IDEAL_HOST_PREFILL_REAL_GPU_WRITE_WB_REINIT_REFUSAL_RESPONSE PASS",
+      "required_observations": [
+        "actual GPU store completion creates known producer",
+        "dirty refusal preserves reference and offset",
+        "native conflicting allocation performs one WB copy and lower acceptance",
+        "later accepted selected-sector host prefill resets reference0",
+        "unselected sector retains producer",
+        "held real response rejects prefill and snapshot unchanged",
+        "no timed bank grant caused by host prefill",
+        "full ordinary WB/lower/requester/response drain"
+      ]
+    }
+  ],
+  "directed_partition_overlay": {
+    "path": "tests/ep_l2/ideal_host_prefill_b16.config",
+    "sha256": "6d61e9b1ad9a26f68bdf563d0c2a531e0e5484f365a0ee37407357204f29662c",
+    "scope": "Directed fixture, not full-application config identity"
+  },
+  "qualification_entry": {
+    "path": "util/ep_l2/test_ft_lane4_production.py",
+    "source_commit": "6ecb02ab496f5df2db40401fe9da18cfb68235d6",
+    "args_template": [
+      "--core",
+      "<isolated actual official R1.1-compatible Core>",
+      "--build",
+      "<exact R1.1 CMake library directory>",
+      "--build-manifest",
+      "<frozen exact producing identities>",
+      "--out",
+      "<new immutable result revision>",
+      "--include-host-prefill"
+    ],
+    "note": "Adds the two new cases to affected existing regressions; this template was not executed."
+  },
+  "before_cpp_execution": [
+    "Official R0.1/first Lane5 pairs retain priority; official separate R1.1 source/library identity exists.",
+    "Review adaptation against actual official source; freeze a new revision for any changed preimages.",
+    "Current CLIENT_CONTRACT file/declared Git source hashes agree; never replace central authority or relax hash guards.",
+    "Original shared build lease and live production resource admission; r14 grants no compile or engineering-pilot exception.",
+    "Record source, compiler args/assertions enabled, each library/link input and executable/config hash; preserve full output and exit code."
+  ],
+  "independent_gates": [
+    "physical_bank_clock",
+    "memcpy_payload_identity",
+    "affected ordinary OFF/WB/metadata/response/lifecycle gates",
+    "per-requested-mode ideal_gates with production_driven=true and exact vector/evidence hash",
+    "native Tag timestamp offset0/nonzero while physical bank grants remain <=1 per bank per physical cycle"
+  ],
+  "before_any_18_cell": [
+    "Official same-R1.1 binary for Lane5 B16 OFF baseline and Lane4 ideals; no historical binary substitution.",
+    "Exact source/binary/trace/workload/epoch/feature/termination identity matches baseline; only hashed ideal overlay appended.",
+    "Native V2 current authority verifies supersession proofs; current release qualification bytes and both OFF + ideal launch authorization.",
+    "Lane5 central registry deduplication and original CPU/RAM/disk/scan policy; original matrix only.",
+    "I_WB capacity counters zero; I_META three capacity refusal counters zero; real bank/response and 64-slice drain checks remain.",
+    "Accepted comparisons require exact CURRENT_ACCEPTED identity/raw/cycles/instructions from latest V2; COMPLETE_VALID alone does not grant acceptance."
+  ],
+  "matrix": {
+    "total_cells": 18,
+    "all_status": "NOT_RUN",
+    "lane5_OFF_cells": 4,
+    "lane4_ideal_cells": 14,
+    "new_matrix_runs": 0,
+    "workloads": [
+      "convolutionSeparable",
+      "FWT_7_21",
+      "vectorAdd_4M",
+      "sad"
+    ],
+    "singles": [
+      "I_WB",
+      "I_META",
+      "I_READ_HIT"
+    ],
+    "combo": {
+      "mode": "I_WB_META",
+      "workloads": [
+        "convolutionSeparable",
+        "FWT_7_21"
+      ]
+    }
+  },
+  "semantic_invariants": [
+    "later clean/quiescent prefill stays legal",
+    "selected bytes become unknown version0 symbols, not literal zero data",
+    "unselected producer state/response copies and monotonic next_version_ preserved",
+    "refusal precedes reference/offset mutation",
+    "physical service time differs from native Tag time with memcpy offset"
+  ],
+  "disallowed": [
+    "initial-only scope narrowing",
+    "old1.721x as current result",
+    "R0/R1 old certificates as current qualification",
+    "unqualified 18-cell launch",
+    "hash bypass",
+    "second waiter"
+  ]
+}

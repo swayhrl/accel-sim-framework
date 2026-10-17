@@ -1,0 +1,40 @@
+diff --git a/src/gpgpu-sim/ep-l2-ideal-reference.h b/src/gpgpu-sim/ep-l2-ideal-reference.h
+index 51e00747113f3ada9b7aae9975cbcac45be14c55..41da8ec3dfc7a27f2e1c55ff0a4f37d5d03513e6 100644
+--- a/src/gpgpu-sim/ep-l2-ideal-reference.h
++++ b/src/gpgpu-sim/ep-l2-ideal-reference.h
+@@ -41,6 +41,17 @@ class ReferenceMemory {
+       else known_.erase(line + b);
+     }
+   }
++  // Successful host prefill replaces selected sectors with fresh unknown
++  // version-zero symbols, matching the FT Payload contract. Never reset
++  // the producer clock or modify unselected bytes/older response copies.
++  void host_prefill(uint64_t line, const Mask &mask) {
++    assert((line & 127) == 0);
++    auto it = versions_.find(line);
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      if (it != versions_.end()) it->second[b] = 0;
++      known_.erase(line + b);
++    }
++  }
+   std::vector<Byte> read(uint64_t line, const Mask &mask) const {
+     assert((line & 127) == 0);
+     std::vector<Byte> out;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 1ac5443fb1f864e42b514bceac8dd173bb8d936b..8df849052566a03e446c1a926710ffbcb019c877 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -415,6 +415,13 @@ bool memory_sub_partition::ft_try_force_l2_tag_update(
+   if (!m_L2cache->ft_enabled() || !l2_char_no_resource_leak()) return false;
+   if (!m_L2cache->ft_try_force_tag_access(addr, m_memcpy_cycle_offset + time, mask))
+     return false;
++  // Only an accepted, drained, clean host prefill may replace reference
++  // symbols. A refusal leaves both the reference and offset unchanged.
++  if (m_config->m_L2_config.m_ep_l2_ideal_read_hit) {
++    ep_l2_ideal::ReferenceMemory::Mask bytes{};
++    for (unsigned b = 0; b < 128; ++b) bytes[b] = mask.test(b / 32);
++    m_ideal_reference.host_prefill(addr & ~uint64_t(127), bytes);
++  }
+   ++m_memcpy_cycle_offset;
+   return true;
+ }

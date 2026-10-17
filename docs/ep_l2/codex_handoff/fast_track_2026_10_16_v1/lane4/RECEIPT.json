@@ -1,54 +1,26 @@
 {
   "schema_version": 1,
   "lane_id": 4,
-  "task_id": "FT20261017_LANE4_REFERENCE_SYNC_r1",
-  "status": "SOURCE_REFERENCE_SYNC_IMPLEMENTED_CPP_QUALIFICATION_DEPENDENCY_PENDING",
+  "task_id": "FT20261017_LANE4_R14_SHORT_CONTINUE",
+  "status": "R1_1_INTEGRATION_HANDOFF_READY_CPP_AND_SCIENCE_PENDING",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "continuation_commit": "99e7515f81b0038ac49d274b73f774e8ea801e46",
-  "previous_continuation_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
+  "continuation_commit": "d962f847cbf7ba6d525bbb23964fee392bd8a69f",
+  "previous_continuation_commit": "99e7515f81b0038ac49d274b73f774e8ea801e46",
   "host": "huangrulin-174",
   "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "framework_worktree": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1",
   "core_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1",
+  "framework_tooling_commit": "6ecb02ab496f5df2db40401fe9da18cfb68235d6",
   "framework_source_commit": null,
   "core_source_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
-  "framework_tooling_commit": "705cd7b30d825cd1d9887e48427475a126d9bc83",
-  "core_source_identity_scope": "EXACT_UNCOMPILED_LANE4_CANDIDATE_NOT_OFFICIAL_R1_1",
-  "core_remote_readback_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+  "core_source_identity_scope": "UNCHANGED_UNCOMPILED_CANDIDATE_NOT_OFFICIAL_R1_1",
   "core_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
+  "core_remote_head_verified": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
   "binary_sha256": null,
   "config_sha256": null,
   "trace_identity": null,
-  "runtime_null_reason": "No official/compiled R1.1 identity, per-run config/trace or acceptance is fabricated from the static source candidate.",
-  "exact_static_parent": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
-  "source_adaptation": {
-    "status": "STATIC_CANDIDATE_NOT_COMPILED_NOT_QUALIFIED",
-    "base_core_commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
-    "tree_equivalent_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
-    "result_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
-    "reference_patch_parent_tree": "5e03cbadd8ab598717bab7d56bc230560b61b8b5",
-    "original_conflicts": [
-      "tests/ep_l2/test_ft_wbuf.cc"
-    ],
-    "remaining_conflicts": 0,
-    "obsolete_getter_patch_applied": false,
-    "fixture_resolution": "Extract exact c948 clock implementation; add ideal options only; keep all test bodies exact.",
-    "preserved_producer_sha256": {
-      "src/gpgpu-sim/ep-l2-ft-cache.inc": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839",
-      "tests/ep_l2/test_ft_memcpy_clock.cc": "a9b6f454ff6d7a6ff6e428ba17ee301c05fbb3274cbd982f7952d36e8ea9cf39",
-      "tests/ep_l2/test_ft_host_prefill.cc": "48b655c1ec8101f7eec4a4427cdeef696382e2ae457a770d3380c5210f8c264d",
-      "tests/ep_l2/R0_1_REPAIR_SCOPE.md": "784eab3d833d4cfb614aeb16e4b5738e8a76e396b88e70d3e9cfe3c7f92bc9f2"
-    },
-    "combined_patch_sha256": "6c56d036baf566c201e854692cd6a5be5fd52118527e01f28c6b4d7fc502d74b",
-    "combined_patch_roundtrip": true,
-    "compiler_invocations": 0,
-    "production_tests_run": 0,
-    "simulations": 0,
-    "binary_sha256": null,
-    "runtime_config_sha256": null,
-    "trace_content_sha256": null
-  },
+  "ideal_vector": null,
   "feature_vector": {
     "adaptive_policy": false,
     "bank_count": 4,
@@ -60,153 +32,205 @@
     "unified_wb": false,
     "wbuf_entries": 16
   },
-  "ideal_vector": null,
-  "planned_ideal_vectors": {
-    "B16_BANKED": {
-      "meta": false,
-      "read_hit": false,
-      "wb": false
+  "runtime_null_reason": "No official R1.1 runtime, qualified application config, trace/run identity or binary exists in this short source-only continuation.",
+  "integration_checklist": "docs/ep_l2/review_packs/FT20261017_LANE4_R1_1_INTEGRATION_r1/INTEGRATION_CHECKLIST.md",
+  "qualification_contract": "docs/ep_l2/review_packs/FT20261017_LANE4_R1_1_INTEGRATION_r1/R1_1_QUALIFICATION.json",
+  "minimal_patch_identity": {
+    "exact_review_base_tree": "5e03cbadd8ab598717bab7d56bc230560b61b8b5",
+    "review_base_scope": "c948 + existing ideals + corrected fixture + native-offset Tag touch; NOT a bare official c948 tree",
+    "candidate_core_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+    "candidate_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
+    "minimal_sync_files": [
+      "src/gpgpu-sim/ep-l2-ideal-reference.h",
+      "src/gpgpu-sim/l2cache.cc"
+    ],
+    "new_regression_files": [
+      "tests/ep_l2/test_ideal_host_prefill_reference.cc",
+      "tests/ep_l2/test_ideal_host_prefill_partition.cc",
+      "tests/ep_l2/ideal_host_prefill_b16.config"
+    ],
+    "patch_sha256": {
+      "CORE_HOST_PREFILL_SYNC_MINIMAL.patch": "fe4d522e058dedf2ad124cca211d1a36fd0d4c7ec78dd7b39e38133a12b5fa56",
+      "CORE_HOST_PREFILL_REGRESSIONS.patch": "82b91b19f7ced542bdd6cf006cf70f7b89593d6798f13ca8e2fff42849daca57"
     },
-    "I_META": {
-      "meta": true,
-      "read_hit": false,
-      "wb": false
-    },
-    "I_READ_HIT": {
-      "meta": false,
-      "read_hit": true,
-      "wb": false
-    },
-    "I_WB": {
-      "meta": false,
-      "read_hit": false,
-      "wb": true
-    },
-    "I_WB_META": {
-      "meta": true,
-      "read_hit": false,
-      "wb": true
-    }
+    "patch_sequence_roundtrip": true,
+    "actual_official_R1_1_commit": null,
+    "file_identities": [
+      {
+        "path": "src/gpgpu-sim/ep-l2-ideal-reference.h",
+        "preimage_sha256": "2b24e1eac6ba2670b828bcf913f788b4ebbf3f24dc9da8a779f7a23988a1ad6e",
+        "postimage_sha256": "84a618b7dd73167a6bd45f9eba0f0b7701d3c92eddd723ee0346537251f8cf75",
+        "postimage_git_blob": "41da8ec3dfc7a27f2e1c55ff0a4f37d5d03513e6"
+      },
+      {
+        "path": "src/gpgpu-sim/l2cache.cc",
+        "preimage_sha256": "be36c9b52685b138aaa10df0bdf99d9c023591255f00b48fb90fe1bb02f953a8",
+        "postimage_sha256": "38bc110f2982160c3f448f1c51f86f9193c03bcd7baa409cbc6e7ca699d4911a",
+        "postimage_git_blob": "8df849052566a03e446c1a926710ffbcb019c877"
+      },
+      {
+        "path": "tests/ep_l2/test_ideal_host_prefill_reference.cc",
+        "preimage_sha256": null,
+        "postimage_sha256": "bd85a5d0344195ffc3cea2ebb65c4dad7df700010bcba3705c9bbffa8c47642b",
+        "postimage_git_blob": "7ec7c85d3cc5903e5f0b6e400c707a60856611d9"
+      },
+      {
+        "path": "tests/ep_l2/test_ideal_host_prefill_partition.cc",
+        "preimage_sha256": null,
+        "postimage_sha256": "513313c30910780a0c35e2d8bf9665df405c3c869937c932f20775bca644b306",
+        "postimage_git_blob": "6df7470f241c4acd5c0bacfd04c6d75de6bd8748"
+      },
+      {
+        "path": "tests/ep_l2/ideal_host_prefill_b16.config",
+        "preimage_sha256": null,
+        "postimage_sha256": "6d61e9b1ad9a26f68bdf563d0c2a531e0e5484f365a0ee37407357204f29662c",
+        "postimage_git_blob": "fd0ce7d4c4c96de278f5ec2f2cc5370cd1f5240e"
+      }
+    ],
+    "compiler_invocations": 0,
+    "cpp_executions": 0
   },
+  "current_client_binding": {
+    "observed_at": "2026-10-17T02:31:56.061764+00:00",
+    "client_contract_sha256": "7162c20cd46cd5f3b33d9a0dd545bcda490944a1dab0d41990dd3e9730b9b6cb",
+    "bindings": [
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+        "sha256": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
+        "source_commit": "02440185c5cc349f1569f5d11e682902939b0ee3",
+        "git_source": "util/ep_l2/ft_lane5/registry.py",
+        "working_file_equals_published_source": true
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+        "sha256": "792800a8db5ebd6c558c4dbcef41e95bc054a22c64e80da918035632df6a78ae",
+        "source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
+        "git_source": "util/ep_l2/ft_lane5/run.py",
+        "working_file_equals_published_source": true
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/acceptance.py",
+        "sha256": "a257472ee3ceaeee4eb41a07659e1960069afe5fb06a47e11f7054b12f4708e3",
+        "source_commit": "51f4abff787d94d93cc300ac15945768af7a161f",
+        "git_source": "util/ep_l2/ft_lane5/acceptance.py",
+        "working_file_equals_published_source": true
+      }
+    ],
+    "all_bindings_match": true,
+    "r7_mismatch": "HISTORICAL_RESOLVED_BY_LANE5_PUBLICATION; old expected registry hash8b4e... superseded by current6b2023...",
+    "canonical_root": "/workspace/ep_l2_ft20261016_shared",
+    "registry_forked": false,
+    "native_scientific_authority_binding": {
+      "kind": "LOCAL_CURRENT_POINTER",
+      "manifest_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
+      "generation": 2,
+      "revision": "FT20261016_LANE5_REVIEW_R3_SUPERSESSION_r1",
+      "canonical_sha256": "953e1526054f7e81e04012ceaaaa7a251cb388d7eadda3fac6198dc61fb1f5f7"
+    },
+    "current_accepted_rows": 0,
+    "launch_authorizations": 0,
+    "consumed_runner_inputs": [
+      {
+        "path": "/workspace/results/ep_l2_ft20261016/lane4/tool_cache/51f4abff787d94d93cc300ac15945768af7a161f/validate.py",
+        "sha256": "9843ebbf6c25503e010b4bc60f16b43d587662470ecf76de715144a46c1358e8",
+        "git_source": "51f4abff787d94d93cc300ac15945768af7a161f:util/ep_l2/ft_lane5/validate.py"
+      },
+      {
+        "path": "/workspace/results/ep_l2_ft20261016/lane4/tool_cache/51f4abff787d94d93cc300ac15945768af7a161f/feature_schema.py",
+        "sha256": "26353fa1724d69cc63ab0bc8ac0d13650210a6824b05b49ea44499e785aad6e7",
+        "git_source": "51f4abff787d94d93cc300ac15945768af7a161f:util/ep_l2/ft_lane5/feature_schema.py"
+      },
+      {
+        "path": "/workspace/results/ep_l2_ft20261016/lane4/tool_cache/51f4abff787d94d93cc300ac15945768af7a161f/acceptance.py",
+        "sha256": "a257472ee3ceaeee4eb41a07659e1960069afe5fb06a47e11f7054b12f4708e3",
+        "git_source": "51f4abff787d94d93cc300ac15945768af7a161f:util/ep_l2/ft_lane5/acceptance.py"
+      },
+      {
+        "path": "/workspace/results/ep_l2_ft20261016/lane4/tool_cache/51f4abff787d94d93cc300ac15945768af7a161f/run.py",
+        "sha256": "792800a8db5ebd6c558c4dbcef41e95bc054a22c64e80da918035632df6a78ae",
+        "git_source": "51f4abff787d94d93cc300ac15945768af7a161f:util/ep_l2/ft_lane5/run.py"
+      }
+    ],
+    "engineering_pilot_status": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
+    "engineering_pilot_used": false
+  },
+  "dependency_receipts": [
+    {
+      "lane_id": 1,
+      "publication_commit": "7ea8cdc85f5be1a6ce31df2f216c8d16d2546c9d",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
+      "receipt_sha256": "63238a29b627c6391c34303f02dfe1dbd78e7a3701e3f10d2b033cff03770e38"
+    },
+    {
+      "lane_id": 5,
+      "publication_commit": "d5317bd25dd0d5debd5abed5d5cf6300e7bd6982",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RECEIPT.json",
+      "receipt_sha256": "2898ff12ccd3d2289009f07583221afdc2ea27b859145d8011d82fa2333a2d14"
+    }
+  ],
+  "validation": {
+    "framework_tooling_commit": "6ecb02ab496f5df2db40401fe9da18cfb68235d6",
+    "new_python_guard_tests": 2,
+    "python_guard_status": "PASS",
+    "python_guard_names": [
+      "test_registry_hash_mismatch_rejects_before_any_metadata_or_claim",
+      "test_missing_link_manifest_never_acquires_shared_lease"
+    ],
+    "source": "util/ep_l2/tests/test_ft_lane4_qualification_entry.py",
+    "minimal_patch_sequence_roundtrip": true,
+    "current_client_matches_git_source": true,
+    "native_V2_authority_load": "PASS",
+    "previous_66_tests": "NOT_RERUN_UNCHANGED",
+    "new_cpp_cases": 2,
+    "cpp_compilations": 0,
+    "cpp_executions": 0,
+    "application_runs": 0,
+    "scope": "Guard unit tests + source packaging + current contract identity; no C++ or scientific correctness PASS."
+  },
+  "active_runs": [],
+  "not_run_cells": 18,
+  "waiter_created": false,
+  "background_worker_created": false,
   "historical_affected_runtime": {
     "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
     "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
     "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea"
   },
-  "historical_runtime_qualification": "WITHDRAWN_NOT_CURRENT_PERFORMANCE",
-  "dependency_receipts": [
-    {
-      "lane_id": 1,
-      "publication_commit": "85534de235345292a153d9983cfd0d24d8033bb2",
-      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
-      "receipt_sha256": "ae74913c47f726ffb8b9621778a6adcffcb8ca82f2a4981dc67ca7f9fbfd0b4d"
-    },
-    {
-      "lane_id": 5,
-      "publication_commit": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf",
-      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RECEIPT.json",
-      "receipt_sha256": "cba3dbbe447b97082cda956df47a81c51869fa114609e34053346fdd2d7cc499"
-    }
-  ],
-  "dependency_continuation": {
-    "observed_at": "2026-10-16T17:09:02.288243+00:00",
-    "latest_remote_heads": {
-      "1": "85534de235345292a153d9983cfd0d24d8033bb2",
-      "5": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf"
-    },
-    "initial_remote_heads": {
-      "1": "85534de235345292a153d9983cfd0d24d8033bb2",
-      "5": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf"
-    },
-    "changed": false,
-    "source_candidate_only": true,
-    "official_R1_1_binary": null,
-    "wait_mode": "EXISTING_COORDINATOR_EVENT_CONTINUATION",
-    "lane4_disk_waiter": null,
-    "lane4_release_waiter": null,
-    "pid": null,
-    "lock": null,
-    "deadline": null,
-    "polling_loop_created": false,
-    "next_trigger": "Official separate R1.1 source+binary and current Lane5 repair/ideal qualification and same-binary B16; current registry contract must bind. Rebind source before any guarded test or run.",
-    "note": "Bounded fetch at phase boundaries; no resource loop, autonomous build or repeated unchanged tests."
-  },
-  "validation": {
-    "observed_at": "2026-10-16T17:07:00.818243+00:00",
-    "core_source_commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
-    "core_tree": "1949be28284e3d9d1674ee21211eb5885e75a128",
-    "source_patch_roundtrip": true,
-    "regression_templates_equal_core": true,
-    "python_syntax_files": 2,
-    "previous_66_runner_tests": "NOT_RERUN_UNCHANGED_SOURCE",
-    "new_cpp_test_sources": 2,
-    "new_cpp_tests_executed": 0,
-    "compiler_invocations": 0,
-    "production_builds": 0,
-    "simulations": 0,
-    "registry_client_binding": {
-      "expected": "8b4e820b9fccd7921f582807c2ee803b59dd57e640dacc92b20be640cbb10091",
-      "actual": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
-      "match": false
-    },
-    "current_authority_native_api_status": "NOT_RECHECKED_FAIL_CLOSED_DURING_REGISTRY_CONTRACT_TRANSITION",
-    "note": "Source-only validation; no resource claim or registry replacement. Dynamic launch check will require a coherent Lane5 client contract.",
-    "production_driver_help": "PASS_NO_ADMISSION",
-    "framework_tooling_commit": "705cd7b30d825cd1d9887e48427475a126d9bc83",
-    "final_registry_client_binding": {
-      "expected": "8b4e820b9fccd7921f582807c2ee803b59dd57e640dacc92b20be640cbb10091",
-      "actual": "6b20231ef33ed891344068cac29b59a4dc0b09af88624d7793cda52f6639d95f",
-      "match": false
-    }
-  },
-  "qualification_plan": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/QUALIFICATION_PREPARATION.json",
-  "active_runs": [],
-  "own_running_simulators": 0,
-  "waiters": {
-    "lane4_disk_gate_waiter_created": false,
-    "lane4_dependency_daemon_created": false,
-    "pid": null,
-    "lock": null,
-    "deadline": null,
-    "mode": "Coordinator event continuation, with bounded dependency fetches at phase boundaries; no untracked resident process."
-  },
+  "historical_results": "OLD_R0_R1_WITHDRAWN_1_721_HISTORICAL_ONLY",
   "artifacts": [
     "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2",
     "docs/ep_l2/review_packs/FT20261016_LANE4_OFF_EQUIVALENCE_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE4_R1_HANDOFF_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R5_STATIC_ADAPT_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE4_R1_1_INTEGRATION_r1"
   ],
-  "not_run_cells": 18,
-  "preparation_grid": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/R1_1_PREPARATION.json",
-  "live_check": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/LIVE_CHECK.json",
-  "preservation": "docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1/PRESERVATION.json",
-  "priority_contract": {
-    "R0_1_and_first_Lane5_pairs_first": true,
-    "disk_floor_bytes_unchanged": 51539607552,
-    "Lane1_build_growth_bytes_unchanged": 2147483648,
-    "production_builds": 0,
-    "compiler_invocations": 0,
-    "application_simulations": 0,
-    "resource_leases_claimed": 0,
-    "other_project_changes": 0,
-    "Storage_Ops_deletions_or_migrations": 0
-  },
   "blockers": [
     {
-      "scope": "production C++ validation",
-      "reason": "No official separate R1.1 libraries/binary or live guarded test admission. Two new regression sources are NOT_COMPILED_NOT_RUN."
+      "scope": "C++ qualification",
+      "reason": "Official R1.1 source/libraries and guarded execution authorization absent; both new cases remain NOT_COMPILED_NOT_RUN."
     },
     {
-      "scope": "formal18 cells",
-      "reason": "Need same-R1.1-binary B16 plus current independent repair/ideal qualifications and OFF/ideal launch authorization."
-    },
-    {
-      "scope": "current central client binding",
-      "reason": "Observed Lane5 registry working-file SHA differs from current shared CLIENT_CONTRACT; existing loader rejects before claim. Await publisher coherent contract, no bypass."
+      "scope": "18-cell science",
+      "reason": "Need official same-R1.1-binary B16, current independent repair+ideal gates and OFF+ideal launch authorizations."
     }
   ],
-  "next_action": "After exact official source/runtime publication, rebind the candidate patch to the actual parent; run two host-prefill cases and affected ideal regressions under original shared admission, then obtain Lane5 qualification before rolling18 cells. Do not create another disk waiter.",
-  "updated_at": "2026-10-16T17:09:39.401743+00:00"
+  "resolved_historical_blockers": [
+    "r7 registry hash drift resolved by current Lane5 publication; all current files match contract and declared Git bytes."
+  ],
+  "short_goal": {
+    "scope": "One bounded integration handoff",
+    "normal_end_condition": "Own Framework push, exact readback and short Goal completion; no autonomous waiting remains."
+  },
+  "actual_resource_scope": {
+    "compiler_invocations": 0,
+    "cpp_executions": 0,
+    "application_runs": 0,
+    "resource_claims": 0,
+    "Storage_Ops_actions": 0,
+    "other_project_changes": 0
+  },
+  "next_trigger": "Coordinator publishes actual R1.1 and current qualification event; rebind to exact official source before any future guarded C++/matrix work.",
+  "updated_at": "2026-10-17T02:33:52.195201+00:00"
 }

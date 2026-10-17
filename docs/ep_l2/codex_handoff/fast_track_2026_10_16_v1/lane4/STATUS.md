@@ -1,74 +1,56 @@
-# Lane 4 review_r7 — source fix delivered, runtime qualification pending
+# Lane4 r14 short CONTINUE — future R1.1 integration handoff
 
-Status: SOURCE_REFERENCE_SYNC_IMPLEMENTED_CPP_QUALIFICATION_DEPENDENCY_PENDING.
-Read full r7 at99e7515f81b0038ac49d274b73f774e8ea801e46; original
-6c136e2a scientific contract unchanged. Continued both original execution
-branches `hrl/ep-l2-ft20261016-lane4-v1`, without restarting a Goal.
+Status: R1_1_INTEGRATION_HANDOFF_READY_CPP_AND_SCIENCE_PENDING.
+Full r14 consumed at d962f847cbf7ba6d525bbb23964fee392bd8a69f; original
+6c136e2a science unchanged. One explicitly requested short Goal, normal end
+following push/readback. No new background worker, disk waiter or long polling.
 
-Node: huangrulin-174.
+Node: huangrulin-174. Existing execution branch in both repos:
+`hrl/ep-l2-ft20261016-lane4-v1`.
 Framework WT: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1`.
 Core WT: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1`.
-Frozen tooling: `705cd7b30d825cd1d9887e48427475a126d9bc83`.
-New Core source: `8ff56eb0804a027f1e253e629dd2915b02bc03b5`; pushed and fetched exact same SHA.
-Core candidate tree: `1949be28284e3d9d1674ee21211eb5885e75a128`.
-This is UNCOMPILED/NOT_QUALIFIED source, not official R1.1. No new binary,
-application config/trace identity or run key. Old b8b3/438df runtime/binary are
-preserved in the previous receipt, not attributed to this new source.
+Core candidate/verified remote: `8ff56eb0804a027f1e253e629dd2915b02bc03b5`
+(unchanged, uncompiled, tree `1949be28284e3d9d1674ee21211eb5885e75a128`).
+Framework tooling source: `6ecb02ab496f5df2db40401fe9da18cfb68235d6`.
+No new official R1.1 runtime/binary/application config/trace/run identity.
 
-## Actual work completed
+Completed this bounded continuation:
 
-- Precisely adapted to Lane1 c948184504d82b80e23eb3f4ff6cdfd328ba9355,
-  publication57e1c363 tree-equivalent. Did not reapply the obsolete getter fix.
-- Found one real old-patch conflict in test_ft_wbuf.cc. Extracted the exact
-  repaired c948 physical-clock fixture, added ideal options, retained test
-  bodies verbatim. Source audit records the conflict/resolution and exact
-  unchanged producer FT include, two repair tests and host-scope bytes.
-- Implemented the minimal I_READ_HIT host-reference hook after successful
-  clean/drained native prefill. Selected sector bytes become unknown version0;
-  other bytes/lines, response copies and monotonic producer clock are retained.
-  Refusals precede reference/offset mutation. Later quiescent prefill remains
-  allowed; no initial-only scope narrowing or numeric data invention.
-- Tag touch uses native memcpy-offset time; bank/reply time stays physical.
-- Added header and real-partition regression sources. Partition sequence covers
-  GPU producer, dirty refusal, actual WB/clean eviction, later prefill, repeated
-  prefill, held response and untouched sector. Expected old failure is described,
-  not reported as an observed red/green result. Both C++ tests remain NOT_RUN.
-- Frozen patch replay/round-trip and exact Core tree verified;2 changed Python
-  tools syntax-checked; production driver help exposes --include-host-prefill
-  without admission. Original18 overlays/modes checked, all18 NOT_RUN with
-  null runtime keys/metrics. No I_BANK or matrix expansion.
-- No unchanged66-test suite repeated. Five frozen packs/112 indexed files
-  checksum-verified unchanged; no old raw/trace/binary rewrite or rerun.
+- Prepared full-index minimal2-src-file synchronization patch, separate3-file
+  C++ regression/config patch, optional Tag-time patch, exact pre/post SHA256/Git
+  blobs and integration ordering. Applying the two main patches to exact review
+  base5e03cbad reproduces the entire Core candidate tree. This base contains
+  existing ideals and native-offset Tag fix; it is not bare c948 or a release.
+- INTEGRATION_CHECKLIST.md records selected-sector unknown version0, retained
+  unselected producer state and snapshots, monotonic next_version_, held-response
+  drain, dirty refusal and physical-bank vs native Tag-offset semantics. No Core
+  semantic edit or initial-only scope restriction was needed.
+- R1_1_QUALIFICATION.json binds the two new regression/config source hashes,
+  exact NOT_COMPILED_NOT_RUN states, future source/library/compiler/executable/
+  output identity requirements and independent gate/18-cell launch conditions.
+- Fixed a concrete Framework omission: directed C++ test entry formerly imported
+  registry without the hash guard. It now uses the same verified central loader;
+  link metadata is checked before lease acquisition.2 targeted Python guard tests
+  PASS, no compiler/claim. Unchanged66-tool suite and prior C++ tests not rerun.
+- Current Lane5 registry file hash6b20231e and Git source02440185 match the
+  shared CLIENT_CONTRACT. Runner/acceptance source bytes also match. Native V2
+  authority loaded:0 current accepted rows,0 launch authorizations. Prior r7
+  hash mismatch remains historical evidence, not a current blocker or waiver.
 
-## Real dependencies and resource boundary
+Latest dependency publications: Lane1 `7ea8cdc85f5be1a6ce31df2f216c8d16d2546c9d`;
+Lane5 `d5317bd25dd0d5debd5abed5d5cf6300e7bd6982`. Current snapshots
+and exact receipt hashes are in the pack. No official R1.1 is published in those
+receipts. Lane1 R0.1/21 producer cases and Lane5 first formal pairs retain priority.
+Both new C++ cases are NOT_COMPILED_NOT_RUN; original18 cells all NOT_RUN.
+No old1.721x or withdrawn R0/R1 result is promoted to current performance.
 
-Latest fetched Lane1 `85534de235345292a153d9983cfd0d24d8033bb2`
-still binds uncompiled c948/Framework3ab150 and binary=null. Lane5
-`e8f701995a27154ffcc54cc38245dde8cd7f9bdf` still provides no new
-current-accepted application pair. A separate official R1.1 and current
-repair+ideal qualification with same-binary B16 are absent. Candidate-source
-completion never grants formal performance acceptance; old R0/R1 remain
-withdrawn and1.721x remains historical.
+Actual bounded observation 2026-10-17T02:31:56.073391+00:00: EP-L2 active
+run/lease counts 0/0; workspace
+f_bavail 20149149696B. No own compile, simulator, resource
+claim, migration, deletion or change to DTC-L1/C16/other project processes/data.
+Existing production resource floors/policies unchanged; engineering pilot unused.
 
-The current shared registry file hash differs from CLIENT_CONTRACT's expected
-hash (exact bytes in VALIDATION). Existing fail-closed loader refused before
-any claim. The registry publisher's coherent update is required; no central
-file was edited and no authority/cache fallback was introduced.
-
-Metadata-only live check at 2026-10-16T17:07:32.586929+00:00: EP-L2 active
-runs/leases0/0, own simulators0;2 observed live simulators
-belong to DTC-L1. C16/other project data and processes were not modified.
-Workspace f_bavail=29621444608B.
-48GiB+2GiB formal build and original simulation/CPU/RAM policies are unchanged.
-No compiler, production build, simulator, resource lease, migration or deletion
-was invoked. Lane1 alone owns the disk GateWaiter; Lane4 created none.
-
-Dependency fetches were bounded phase checks; no low-space admission retries,
-repeated unchanged tests or hidden background worker. Waiter PID/lock/deadline
-are null. Await the existing coordinator's exact release event, then rebind
-source and use guarded finite C++ tests; do not call the static candidate an
-accepted R1.1. Lane1 R0.1 and Lane5 first formal pairs retain priority.
-
-Review pack: `docs/ep_l2/review_packs/FT20261017_LANE4_REFERENCE_SYNC_r1`.
-RECEIPT lists exact source/tool/overlay/dependency hashes and actual test scope;
-previous STATUS/RECEIPT and all previous review packs remain available.
+New review pack: `docs/ep_l2/review_packs/FT20261017_LANE4_R1_1_INTEGRATION_r1`.
+Previous STATUS/RECEIPT and frozen review packs are retained. This short Goal
+ends after remote publication verification. Future official source/qualification
+arrival requires a coordinator event; no background wakeup is promised.
