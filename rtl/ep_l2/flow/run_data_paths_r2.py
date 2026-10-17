@@ -4,9 +4,9 @@ Caller holds central EDA lease. Same immutable netlists/Liberty/SDC as finalcost
 """
 import argparse,json,subprocess,os,hashlib,re,gzip
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--runs-root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--liberty',type=Path,required=True);a=p.parse_args();a.out.mkdir(exist_ok=False,parents=True);root=Path(__file__).resolve().parents[1];result=[]
+p=argparse.ArgumentParser();p.add_argument('--runs-root',type=Path,required=True);p.add_argument('--run-suffix',default='-map-v2');p.add_argument('--out',type=Path,required=True);p.add_argument('--liberty',type=Path,required=True);a=p.parse_args();a.out.mkdir(exist_ok=False,parents=True);root=Path(__file__).resolve().parents[1];result=[]
 for mode in ('B16','S64','UNIFIED'):
- run=a.runs_root/(mode+'-map-v2');r=json.loads((run/'FLOW_RECEIPT.json').read_text());net=Path(r['STA_root'])/'STA_netlist.v';compressed=not net.exists();source_net=net.with_suffix('.v.gz') if compressed else net;blob=gzip.decompress(source_net.read_bytes()) if compressed else source_net.read_bytes();assert hashlib.sha256(blob).hexdigest()==r['netlist_sha256'];assert hashlib.sha256(a.liberty.read_bytes()).hexdigest()==r['library_sha256'];assert hashlib.sha256((root/'flow/common.sdc').read_bytes()).hexdigest()==r['sdc_sha256'];d=a.out/mode;d.mkdir()
+ run=a.runs_root/(mode+a.run_suffix);r=json.loads((run/'FLOW_RECEIPT.json').read_text());net=Path(r['STA_root'])/'STA_netlist.v';compressed=not net.exists();source_net=net.with_suffix('.v.gz') if compressed else net;blob=gzip.decompress(source_net.read_bytes()) if compressed else source_net.read_bytes();assert hashlib.sha256(blob).hexdigest()==r['netlist_sha256'];assert hashlib.sha256(a.liberty.read_bytes()).hexdigest()==r['library_sha256'];assert hashlib.sha256((root/'flow/common.sdc').read_bytes()).hexdigest()==r['sdc_sha256'];d=a.out/mode;d.mkdir()
  if compressed:net=d/'EXACT_STA_INPUT.v';net.write_bytes(blob)
  env=os.environ.copy();env.update(LIBERTY=str(a.liberty.resolve()),NETLIST=str(net),OUTPUT_DIR=str(d),RTL_ROOT=str(root),IO_DRIVE_CELL='BUF_X1',OUTPUT_LOAD_LIB_UNITS='5.0',LIB_TIME_UNIT_NS='1.0',CLOCK_PERIOD_NS='0.883392226')
  cmd=['sta','-threads','1','-exit','-no_init',str(root/'flow/opensta_data_paths_r2.tcl')]
