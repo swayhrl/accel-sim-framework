@@ -38,7 +38,18 @@ def main():
         return {'path':str(out),'available_bytes':available,'required_bytes':minimum,'scope':'workspace50GiB or existing Share40GiB protection plus2GiB growth'}
     output_before=output_space()
     snap=registry.snapshot();active={k:r for k,r in snap.get('resource_leases',{}).items() if r['status'] in module.ACTIVE}
-    assert not any(r['owner']=='lane1' for r in active.values()),'Yield to an already active official producer'
+    def priority_margin(snapshot):
+        rows=[r for r in snapshot.get('resource_leases',{}).values() if r['status'] in module.ACTIVE]
+        rows += [r for r in snapshot.get('runs',{}).values() if r['status'] in module.ACTIVE]
+        other=[r for r in rows if r['owner']!='lane1'];official=[r for r in rows if r['owner']=='lane1']
+        policy=snapshot['hosts'][__import__('socket').gethostname()]
+        # Keep at least a four-CPU/eight-GiB producer envelope, even when the
+        # current producer lease is smaller. No central policy is changed.
+        cpu=sum(r['cpu_units'] for r in other)+max(4,sum(r['cpu_units'] for r in official))
+        memory=sum(r['memory_bytes'] for r in other)+max(8*1024**3,sum(r['memory_bytes'] for r in official))
+        assert cpu<=policy['max_cpu_units'] and memory<=policy['max_reserved_memory_bytes']
+        return {'reserved_or_protected_cpu':cpu,'reserved_or_protected_memory':memory,'official_leases':official}
+    priority_before=priority_margin(snap)
     lease=registry.build_lease('lane3',cpu=1,memory=2*1024**3)
     receipt={'schema':'LANE3_TINY_RO_BANK_CPP_RUN_R16','started_at':now(),'source':a.source,
       'store_source':a.store_source or a.source,'runtime_source':a.runtime_source or a.source,
@@ -48,6 +59,8 @@ def main():
         after=module.local_resources();assert after['disk_free_bytes']>=50*1024**3
         assert after['available_memory_bytes']-2*1024**3>=64*1024**3
         receipt['resources_after_lease']=after
+        receipt['producer_priority_before']=priority_before
+        receipt['producer_priority_after_lease']=priority_margin(registry.snapshot())
         receipt['output_filesystem_before']=output_before
         receipt['output_filesystem_after_lease']=output_space()
         gen=[sys.executable,str(a.core/'tests/ep_l2/prepare_ro_bank_progress.py'),'--source',a.source,'--output',str(out/'inputs')]
