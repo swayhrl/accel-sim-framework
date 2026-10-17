@@ -1,0 +1,1 @@
+D2 delivered and read back before L25.6 actual positive native checks,1 fixture entry compile/link,0 runtime recompile,0 full apps. Both exact original requested conditions now available; lane5 independent qualification/current V2/application ownership unchanged. Old frozen official7b8/9bd/2309 and all prior evidence preserved.
