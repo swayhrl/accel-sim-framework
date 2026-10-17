@@ -2,7 +2,7 @@
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
   "task_id": "FT20261017_LANE1_R19_L25_r1",
-  "status": "R19_L25_PRODUCER_PASS_REMOTE_HANDOFF_NEXT",
+  "status": "LOCAL_IDEALS_RUNTIME_PRODUCER_PASS_PUBLISH_NOW_CONTINUE_STRUCTURE",
   "review_coordination_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
@@ -210,13 +210,13 @@
   "fixture_executable": "/workspace/build/ep-l2-ft20261017-lane1-headroom-r19-followup-r1/production_probe",
   "fixture_build_source_commit": "7c55da32254b7616e1964ee971b23cdcae283b0e",
   "current_directed_processes": 0,
-  "current_lease_id": "ad765b23e7154cf48763320a3d53d208",
+  "current_lease_id": "cdfab4db46e8465abafcbacc9e93e341",
   "current_lease_released": true,
-  "review_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_R19_L25_r1",
-  "goal_state": "ACTIVE_PARALLEL_LOCAL_IDEAL_INTAKE",
+  "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_LOCAL_IDEALS_RELEASE_r1",
+  "goal_state": "ACTIVE_PARALLEL_ROLLING_RELEASE",
   "gate_waiter_started": false,
-  "recorded_at": "2026-10-17T11:22:05.526125+00:00",
-  "next_action": "Consume matching updated registry binding; perform39 native/OFF gates and6 profile parser checks on exact immutable author binary; no duplicate full compile.",
+  "recorded_at": "2026-10-17T11:34:01.919727+00:00",
+  "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification.",
   "headroom_delivery": {
     "D4": {
       "publication": "3cc3660684cad09c5decf2684c62e2c7b26e6b25",
@@ -277,9 +277,72 @@
   "trace_identity": null,
   "trace_identity_scope": "NO_LANE1_APPLICATION_OR_TRACE_REPLAY; synthetic40-request native production fixture pinned by35c6767c source and fixture binary/archive hashes. Lane5 retains full original Conv/FWT trace content and r17/non-atomic input proofs for applications.",
   "runtime_candidate": {
+    "schema": "EPL2_LANE1_PARALLEL_RUNTIME_RELEASE_V1",
+    "release_id": "POTENTIAL_LOCAL_IDEALS_R1",
+    "status": "PRODUCER_CHECKS_PASS_LANE5_INDEPENDENT_SCOPE_QUALIFICATION_REQUIRED",
+    "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+    "authority": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
+    "core_source_commit": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
+    "core_tree": "9e71a1a2258769b18ef6543a534f2afc7ddcf337",
+    "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+    "binary": "/workspace/ep_l2_parallel_lane1/local_ideals_release_r4/binaries/accel-sim.out",
+    "binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5",
+    "frozen_R19_binary_replaced": false,
+    "official_7b8_preserved": true,
+    "runtime_build_reused_from_author": true,
+    "actual_author_build_receipt_sha256": "27fb52d522145a1f59ed9e633c5adf6a0a473dc7a28f6caab8f6b942d483bef8",
+    "actual_build_core_path": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane4-local-ideals-r1",
+    "actual_build_framework_path": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane4-v1",
+    "lane1_frozen_equivalent_core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-local-r1",
+    "lane1_frozen_framework": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
+    "fixture_tool_source_commit": "a4446d407d914564b30b01befff3b13528169485",
+    "fixture_repair": "I_META real requests only; original fake pointer SIGSEGV retained, B1/runtime unchanged.39 positive native cases verified by exact binary/log/source hashes; existing32 reused without replay.",
+    "producer_checks": 39,
+    "native_effective_profiles": 6,
+    "producer_receipt_path": "/workspace/ep_l2_parallel_lane1/local_ideals_release_r4/INTAKE_RECEIPT.json",
+    "producer_receipt_sha256": "9999861749b518be593ee40e564bcc1300a5a65cb24af0b65ad531b19b0dc86c",
+    "producer_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_LOCAL_IDEALS_RELEASE_r1/INTAKE_RECEIPT.json",
+    "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/local_ideals_release_r4/RUNTIME_CONFIG_MANIFEST.json",
+    "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_LOCAL_IDEALS_CONFIG_MANIFEST_R1.json",
+    "producer_manifest_sha256": "5830aa73d62292832627a747d6003caa48f57a29dd304e2eff08ae76e3c1c647",
+    "supported_profiles": [
+      "B16_OFF",
+      "U_WB16_OFF",
+      "I_WB",
+      "I_META",
+      "I_WB_META",
+      "I_READ_HIT"
+    ],
+    "unsupported_profiles": [
+      "S64",
+      "U_CAP16",
+      "P2",
+      "I_BANK",
+      "I_L2_SERVICE",
+      "I_MEM_ALL_DATA"
+    ],
+    "combination_guards": [
+      "I_READ_HIT + U,WB,META refused",
+      "I_WB only static FT source",
+      "I_META requires descriptor model; metadata identity/order preserved"
+    ],
+    "scope": "Finite OFF anchors plus separately scoped local WB/META/read diagnostic modes; non-atomic trace proof inherited only for exact existing bodies; not ALL_DATA or numeric SASS output qualification.",
+    "trace_identity": "No new full application run by Lane1. Lane5 attaches existing frozen complete input/body manifests to every run; no synthetic trace or binary mixing.",
+    "native_profile_config_hashes": {
+      "B16_OFF": "c15753a37b7a984fc5fd354f1155a58d6f2ce98e49923714bb88c6e012f383df",
+      "U_WB16_OFF": "169447c3069c9ea8c4d3fc5aad25766c4b6c3dc4df734a83af1bb3ef442c99f2",
+      "I_WB": "10141d03d113144dd92baa335525f9dbbc0568db1624482aa24316c9523395b6",
+      "I_META": "c97d810633ee95cc74705a1604d547ed1c97006ba55457cfadb32ffad055458a",
+      "I_WB_META": "e8209366238486990ae1795bf8e427c35df68d3534954ad14d4e0737a33302be",
+      "I_READ_HIT": "b80aef0e85245d09c7080dfc91f758fcfcf95d71522b9cb06beaa19646e2fcc2"
+    },
+    "budget_owner": "lane5",
+    "new_full_application_starts": 0,
+    "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification."
+  },
+  "new_runtime_source": {
     "core": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
     "framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-    "status": "BUILT_BY_AUTHOR_PENDING_LANE1_INTAKE_CLIENT_BINDING_UPDATE",
-    "official_7b8_frozen_worktree_still_at_7b8": true
+    "binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5"
   }
 }

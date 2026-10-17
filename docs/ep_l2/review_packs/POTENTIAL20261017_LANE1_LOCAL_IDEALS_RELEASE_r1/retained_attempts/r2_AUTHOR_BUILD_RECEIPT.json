@@ -1,0 +1,88 @@
+{
+  "status": "BUILT_NOT_INDEPENDENTLY_QUALIFIED",
+  "core_source_commit": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
+  "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "driver_sha256": "cd40979b634b82d8639d6b7f5664e91be3cdb29563ed62baa67b4c1e56ca05c7",
+  "client_contract_sha256": "0cd0bd986bec2411d432b9955d7fe62f29b37ca9a8e446d8b251fd91c5c896ff",
+  "registry_sha256": "6f2203626ffe72e89d1b140d5b4eea7bf0df505d9d605b544b84663aa42d6b60",
+  "core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane4-local-ideals-r1",
+  "build": "/workspace/build/ep-l2-potential20261017-lane4-local-r1",
+  "out": "/workspace/ep_l2_potential20261017_lane4_results/local_r1_build",
+  "targets": [
+    "accel-sim.out",
+    "ep_l2_ideal_wb",
+    "ep_l2_ideal_meta",
+    "ep_l2_ideal_meta_integrated",
+    "ep_l2_ideal_read_hit",
+    "ep_l2_ideal_host_prefill_reference",
+    "ep_l2_ideal_host_prefill_partition",
+    "ep_l2_ft_a1",
+    "ep_l2_common_delta_r16",
+    "ep_l2_ft_host_prefill",
+    "ep_l2_ft_memcpy_clock",
+    "ep_l2_ft_directed",
+    "ep_l2_ft_partition"
+  ],
+  "commands": [
+    {
+      "name": "configure",
+      "command": [
+        "cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane4-v1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-potential20261017-lane4-local-r1",
+        "-G",
+        "Unix Makefiles",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+      ],
+      "log": "/workspace/ep_l2_potential20261017_lane4_results/local_r1_build/configure.log",
+      "process": {
+        "pid": 2114996,
+        "start_ticks": 898811568,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "8c399109989f4e5bb04057a4e7db9350a7720c330ce854230c3f57f52928c346"
+    },
+    {
+      "name": "compile",
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/build/ep-l2-potential20261017-lane4-local-r1",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_ideal_wb",
+        "ep_l2_ideal_meta",
+        "ep_l2_ideal_meta_integrated",
+        "ep_l2_ideal_read_hit",
+        "ep_l2_ideal_host_prefill_reference",
+        "ep_l2_ideal_host_prefill_partition",
+        "ep_l2_ft_a1",
+        "ep_l2_common_delta_r16",
+        "ep_l2_ft_host_prefill",
+        "ep_l2_ft_memcpy_clock",
+        "ep_l2_ft_directed",
+        "ep_l2_ft_partition",
+        "-j2"
+      ],
+      "log": "/workspace/ep_l2_potential20261017_lane4_results/local_r1_build/compile.log",
+      "process": {
+        "pid": 2115178,
+        "start_ticks": 898811768,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "0c6d4b24fa679f5a9532803aa814890fb7043b80dd516fdff3df88c05128aa35"
+    }
+  ],
+  "full_application_starts": 0,
+  "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+  "resources_before": {
+    "available_memory_bytes": 165625978880,
+    "disk_free_bytes": 73965981696
+  },
+  "lease_id": "847e11051e54433ba117a49b5bcd95d8",
+  "binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5"
+}
