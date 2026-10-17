@@ -1,0 +1,1042 @@
+{
+  "status": "PASS_CPU_SCOPE_WITH_EXPECTED_VALUE_REJECTIONS",
+  "input_commits": {
+    "frozen_core": "6fba0136f8465b59fe5858a950fa39efb265f654",
+    "framework_build": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+    "V1": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+    "Y_V1": "b673d046b38f61159b5db67a477d58d1afa4662f",
+    "X_framework_snapshot": "49fb5d1b62b6f2387abc2d568bc8ae7543dc0df4",
+    "X_core_snapshot": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+    "X_historical_stop_and_trace_build": "0c8fcb571977303f3e87ecb0cac6cf7bd25d3cfc"
+  },
+  "selected_framework_route_files_match": {
+    "gpu-simulator/trace-driven/trace_driven.cc": "EXACT_BLOB_BYTES",
+    "gpu-simulator/trace-driven/trace_driven.h": "EXACT_BLOB_BYTES",
+    "gpu-simulator/trace-parser/trace_parser.cc": "EXACT_BLOB_BYTES",
+    "gpu-simulator/trace-parser/trace_parser.h": "EXACT_BLOB_BYTES",
+    "gpu-simulator/ISA_Def/ampere_opcode.h": "EXACT_BLOB_BYTES"
+  },
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "synthetic_case_count": 25,
+  "wrong_expectation_controls": 25,
+  "semantic_status_counts": {
+    "PASS_SYNTHETIC_CONDITIONAL": 8,
+    "REJECT_SYNTHETIC_CONTRACT": 13,
+    "UNPROVEN_NO_VALUE_PREDICATE": 4
+  },
+  "source_hash_rows": 30,
+  "synthetic_results": [
+    {
+      "id": "VV01_NO_E_LSL",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV01_NO_E_LSL",
+        "markers": [],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV02_NO_E_NO_HB",
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "observed": {
+        "case": "VV02_NO_E_NO_HB",
+        "markers": [],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 2,
+        "status": "UNPROVEN_NO_VALUE_PREDICATE",
+        "unresolved": [
+          "r"
+        ],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV03_E_AFTER_PUBLISH",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV03_E_AFTER_PUBLISH",
+        "markers": [
+          {
+            "op": "source_E"
+          }
+        ],
+        "reads": [
+          {
+            "from": "new",
+            "hex": "09",
+            "label": "r",
+            "versions": [
+              1
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV04_ORDINARY_COMMIT_ONLY",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV04_ORDINARY_COMMIT_ONLY",
+        "markers": [
+          {
+            "op": "ordinary_pending_commit"
+          }
+        ],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV05_KERNEL_DONE_ONLY",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV05_KERNEL_DONE_ONLY",
+        "markers": [
+          {
+            "op": "kernel_done"
+          }
+        ],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV06_SIDECAR_IS_NOT_PUBLISH",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV06_SIDECAR_IS_NOT_PUBLISH",
+        "markers": [
+          {
+            "op": "sidecar_complete"
+          }
+        ],
+        "reads": [
+          {
+            "from": "memory",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV07_ACK_NO_VALUE_BINDING",
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "observed": {
+        "case": "VV07_ACK_NO_VALUE_BINDING",
+        "markers": [
+          {
+            "op": "write_ack"
+          }
+        ],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 2,
+        "status": "UNPROVEN_NO_VALUE_PREDICATE",
+        "unresolved": [
+          "r"
+        ],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV08_PARTIAL_BYTE_STALE",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV08_PARTIAL_BYTE_STALE",
+        "markers": [],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07070707",
+            "label": "r",
+            "versions": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07070707",
+            "required_by_synthetic_contract": [
+              "07090707"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV09_PARTIAL_BYTE_EXACT",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV09_PARTIAL_BYTE_EXACT",
+        "markers": [],
+        "reads": [
+          {
+            "from": "memory",
+            "hex": "07090707",
+            "label": "r",
+            "versions": [
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV10_SECTOR_BOUNDARY",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV10_SECTOR_BOUNDARY",
+        "markers": [],
+        "reads": [
+          {
+            "from": "memory",
+            "hex": "aabb",
+            "label": "r",
+            "versions": [
+              1,
+              1
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV11_UNTOUCHED_SAME_LINE",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV11_UNTOUCHED_SAME_LINE",
+        "markers": [],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "00",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV12_ATOMIC_CACHED_OLD",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV12_ATOMIC_CACHED_OLD",
+        "markers": [
+          {
+            "new_hex": "09000000",
+            "old_hex": "07000000",
+            "op": "atomic_result"
+          }
+        ],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07000000",
+            "label": "r",
+            "versions": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07000000",
+            "required_by_synthetic_contract": [
+              "09000000"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV13_ATOMIC_NEW_LOWER",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV13_ATOMIC_NEW_LOWER",
+        "markers": [
+          {
+            "new_hex": "09000000",
+            "old_hex": "07000000",
+            "op": "atomic_result"
+          }
+        ],
+        "reads": [
+          {
+            "from": "atomic_before",
+            "hex": "07000000",
+            "label": "atomic_old_return",
+            "versions": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "from": "memory",
+            "hex": "09000000",
+            "label": "r",
+            "versions": [
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV14_DUPLICATE_ATOMIC_NEGATIVE",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV14_DUPLICATE_ATOMIC_NEGATIVE",
+        "markers": [],
+        "reads": [
+          {
+            "from": "memory",
+            "hex": "0b000000",
+            "label": "r",
+            "versions": [
+              2,
+              2,
+              2,
+              2
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "0b000000",
+            "required_by_synthetic_contract": [
+              "09000000"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV15_BYPASS_THEN_CACHEABLE",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV15_BYPASS_THEN_CACHEABLE",
+        "markers": [],
+        "reads": [
+          {
+            "from": "memory",
+            "hex": "09",
+            "label": "bypass",
+            "versions": [
+              1
+            ]
+          },
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "cache",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "cache",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV16_MEMBAR_WITHOUT_SELECTED_E",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV16_MEMBAR_WITHOUT_SELECTED_E",
+        "markers": [
+          {
+            "op": "membar",
+            "selected_E": false
+          }
+        ],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV17_MEMBAR_SELECTED_E",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV17_MEMBAR_SELECTED_E",
+        "markers": [
+          {
+            "op": "membar",
+            "selected_E": true
+          },
+          {
+            "op": "source_E"
+          }
+        ],
+        "reads": [
+          {
+            "from": "new",
+            "hex": "09",
+            "label": "r",
+            "versions": [
+              1
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV18_PROXY_IS_NOT_COHERENCE",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV18_PROXY_IS_NOT_COHERENCE",
+        "markers": [
+          {
+            "op": "proxy_fence"
+          }
+        ],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV19_CROSS_SM_NO_HB",
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "observed": {
+        "case": "VV19_CROSS_SM_NO_HB",
+        "markers": [],
+        "reads": [
+          {
+            "from": "SM1_old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 2,
+        "status": "UNPROVEN_NO_VALUE_PREDICATE",
+        "unresolved": [
+          "r"
+        ],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV20_CROSS_SM_WITH_HB",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV20_CROSS_SM_WITH_HB",
+        "markers": [
+          {
+            "op": "hb_assertion",
+            "scope": "SYNTHETIC_ONLY"
+          }
+        ],
+        "reads": [
+          {
+            "from": "SM1_old",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV21_CROSS_KERNEL_WITH_E",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV21_CROSS_KERNEL_WITH_E",
+        "markers": [
+          {
+            "op": "kernel_done"
+          },
+          {
+            "op": "source_E"
+          }
+        ],
+        "reads": [
+          {
+            "from": "new",
+            "hex": "09",
+            "label": "r",
+            "versions": [
+              1
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV22_PENDING_OLD_NEW",
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "observed": {
+        "case": "VV22_PENDING_OLD_NEW",
+        "markers": [
+          {
+            "op": "source_E"
+          }
+        ],
+        "reads": [
+          {
+            "from": "pending_old",
+            "hex": "07",
+            "label": "old_consumer",
+            "versions": [
+              0
+            ]
+          },
+          {
+            "from": "new",
+            "hex": "09",
+            "label": "new_consumer",
+            "versions": [
+              1
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 0,
+        "status": "PASS_SYNTHETIC_CONDITIONAL",
+        "unresolved": [],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "REJECT_SYNTHETIC_CONTRACT",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV23_LATE_OLD_POLLUTES_NEW",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV23_LATE_OLD_POLLUTES_NEW",
+        "markers": [
+          {
+            "op": "source_E"
+          }
+        ],
+        "reads": [
+          {
+            "from": "pending_old",
+            "hex": "07",
+            "label": "new_consumer",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "new_consumer",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV24_E_BEFORE_WRITE_PUBLISH",
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "observed": {
+        "case": "VV24_E_BEFORE_WRITE_PUBLISH",
+        "markers": [
+          {
+            "op": "source_E"
+          }
+        ],
+        "reads": [
+          {
+            "from": "new_but_prepublication",
+            "hex": "07",
+            "label": "r",
+            "versions": [
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 1,
+        "status": "REJECT_SYNTHETIC_CONTRACT",
+        "unresolved": [],
+        "violations": [
+          {
+            "label": "r",
+            "observed": "07",
+            "required_by_synthetic_contract": [
+              "09"
+            ]
+          }
+        ]
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    },
+    {
+      "id": "VV25_MIXED_SIZE_RACE_UNRESOLVED",
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "observed": {
+        "case": "VV25_MIXED_SIZE_RACE_UNRESOLVED",
+        "markers": [],
+        "reads": [
+          {
+            "from": "old",
+            "hex": "07070707",
+            "label": "r",
+            "versions": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "scope": "external payload/read-from assumptions; no production values",
+        "semantic_exit": 2,
+        "status": "UNPROVEN_NO_VALUE_PREDICATE",
+        "unresolved": [
+          "r"
+        ],
+        "violations": []
+      },
+      "harness_exit": 0,
+      "wrong_expectation_control": {
+        "requested_status": "PASS_SYNTHETIC_CONDITIONAL",
+        "exit": 1
+      }
+    }
+  ],
+  "header_results": [
+    {
+      "source": "frozen",
+      "commit": "6fba0136f8465b59fe5858a950fa39efb265f654",
+      "exit": 0,
+      "compile_flags": [
+        "-std=c++14",
+        "-O0",
+        "-g0",
+        "assertions enabled"
+      ],
+      "observations": [
+        {
+          "case": "NO_E_PARTIAL_BYTE_OVERLAY",
+          "mode": "IO",
+          "production_metadata_hit": true,
+          "external_old_byte": 7,
+          "external_published_byte": 9,
+          "production_value_proof": false
+        },
+        {
+          "case": "NO_E_PARTIAL_BYTE_OVERLAY",
+          "mode": "OO",
+          "production_metadata_hit": true,
+          "external_old_byte": 7,
+          "external_published_byte": 9,
+          "production_value_proof": false
+        },
+        {
+          "case": "K1_FROZEN_CORE",
+          "status": "NO_API_NOT_TESTED"
+        }
+      ],
+      "scope": "metadata + external synthetic byte overlays only"
+    },
+    {
+      "source": "published_X",
+      "commit": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+      "exit": 0,
+      "compile_flags": [
+        "-std=c++14",
+        "-O0",
+        "-g0",
+        "assertions enabled"
+      ],
+      "observations": [
+        {
+          "case": "NO_E_PARTIAL_BYTE_OVERLAY",
+          "mode": "IO",
+          "production_metadata_hit": true,
+          "external_old_byte": 7,
+          "external_published_byte": 9,
+          "production_value_proof": false
+        },
+        {
+          "case": "NO_E_PARTIAL_BYTE_OVERLAY",
+          "mode": "OO",
+          "production_metadata_hit": true,
+          "external_old_byte": 7,
+          "external_published_byte": 9,
+          "production_value_proof": false
+        },
+        {
+          "case": "E_OLD_PENDING_NEW_ALLOCATION",
+          "old_external_version": 7,
+          "new_external_version": 9,
+          "old_identity_retained_to_final_ref": true,
+          "production_value_proof": false
+        }
+      ],
+      "scope": "metadata + external synthetic byte overlays only"
+    }
+  ],
+  "production_value_tests": 0,
+  "full_simulator_runs": 0,
+  "performance_runs": 0,
+  "actual_trace_body_reads": 0,
+  "production_source_modifications": 0,
+  "k2_implemented": false,
+  "k1_independent_acceptance": "NOT_GRANTED_BY_V2",
+  "scientific_gate": "VALUE_CORRECTNESS_UNPROVEN; K2_FUTURE_ONLY_REQUIRES_SEPARATE_AUTHORIZATION"
+}

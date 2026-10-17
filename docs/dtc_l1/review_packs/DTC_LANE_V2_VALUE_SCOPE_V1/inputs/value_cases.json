@@ -1,0 +1,1080 @@
+{
+  "schema": 1,
+  "scope": "CPU_SYNTHETIC_READ_FROM_BYTE_VERSIONS_ONLY_NOT_K2",
+  "cases": [
+    {
+      "id": "VV01_NO_E_LSL",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "合成单writer明确publish先于后读；要求09",
+      "hardware_gap": "需要真实payload传播/逐load oracle及SASS顺序绑定；不能由header得出值",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV02_NO_E_NO_HB",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": null
+        }
+      ],
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "conditional_predicate": "只有issue顺序；不指定架构允许值集合",
+      "hardware_gap": "缺HB/scope与write visibility点，不能宣布07非法",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV03_E_AFTER_PUBLISH",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "source_E"
+        },
+        {
+          "op": "capture",
+          "name": "new"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "new",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "外部假设新请求在publish后且下层提供09；K1只撤映射",
+      "hardware_gap": "需要真实payload传播/逐load oracle及SASS顺序绑定；不能由header得出值",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV04_ORDINARY_COMMIT_ONLY",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "ordinary_pending_commit"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "人为要求publish后读09，DTC仍显式选old",
+      "hardware_gap": "ordinary Tag提交不是DTC查询撤销或payload更新",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV05_KERNEL_DONE_ONLY",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "kernel_done"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "条件化跨kernel HB与写publish；仍显式old映射",
+      "hardware_gap": "真实stream/API同步与数据可见性必须另绑定；kernel_done记录不足",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV06_SIDECAR_IS_NOT_PUBLISH",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "sidecar_complete"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "memory",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "负例故意把sidecar当作publish，错误要求09",
+      "hardware_gap": "source完成与ACK/visibility分离；本例是错误主张负控",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV07_ACK_NO_VALUE_BINDING",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "write_ack"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": null
+        }
+      ],
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "conditional_predicate": "ACK marker无byte传播定义，不指定允许值",
+      "hardware_gap": "WB本地ack可能不向lower发write；ACK不能无条件等同全局publish",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV08_PARTIAL_BYTE_STALE",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 1,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 4
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "07090707"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "无竞争且外部完成后读4B，byte1=09其余保持07",
+      "hardware_gap": "需要真实payload传播/逐load oracle及SASS顺序绑定；不能由header得出值",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV09_PARTIAL_BYTE_EXACT",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 1,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "memory",
+          "offset": 0,
+          "size": 4
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "07090707"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "合成字节规则固定，未写byte保持初值",
+      "hardware_gap": "mask仅描述覆盖范围，不是真实payload版本证据",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV10_SECTOR_BOUNDARY",
+      "initial_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "events": [
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 31,
+          "hex": "aabb"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "memory",
+          "offset": 31,
+          "size": 2
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "aabb"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "外部合成完整2B publication后读aabb",
+      "hardware_gap": "需真实coalescing分割、byte mask与两sector合成值测试",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV11_UNTOUCHED_SAME_LINE",
+      "initial_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "aa"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 64,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "00"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "写byte0；读byte64仍00，不必要求版本号一致",
+      "hardware_gap": "行/sector false sharing不等同数据依赖",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV12_ATOMIC_CACHED_OLD",
+      "initial_hex": "07000000",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "atomic_result",
+          "old_hex": "07000000",
+          "new_hex": "09000000"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09000000"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 4
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09000000"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "合成atomic恰好一次7变9，后读要求09",
+      "hardware_gap": "真实atomic payload/返回值/作用域未执行；global route不更新DTC",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV13_ATOMIC_NEW_LOWER",
+      "initial_hex": "07000000",
+      "events": [
+        {
+          "op": "capture",
+          "name": "atomic_before"
+        },
+        {
+          "op": "atomic_result",
+          "old_hex": "07000000",
+          "new_hex": "09000000"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09000000"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "atomic_old_return",
+          "from": "atomic_before",
+          "offset": 0,
+          "size": 4
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "memory",
+          "offset": 0,
+          "size": 4
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "atomic_old_return",
+          "allowed_hex": [
+            "07000000"
+          ]
+        },
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09000000"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "合成恰好一次7变9；RMW旧返回07与发布后新读09分别检查，非真实atomic执行",
+      "hardware_gap": "需对应SASS atom/red与order/scope映射及旧返回值oracle",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV14_DUPLICATE_ATOMIC_NEGATIVE",
+      "initial_hex": "07000000",
+      "events": [
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09000000"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w_duplicate",
+          "offset": 0,
+          "hex": "0b000000"
+        },
+        {
+          "op": "publish",
+          "uid": "w_duplicate"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "memory",
+          "offset": 0,
+          "size": 4
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09000000"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "同一逻辑atomic预期7变9；重复更新到11必须拒绝",
+      "hardware_gap": "负例只验证外部值规格；非生产atomic重复证据",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV15_BYPASS_THEN_CACHEABLE",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "bypass",
+          "from": "memory",
+          "offset": 0,
+          "size": 1
+        },
+        {
+          "op": "read",
+          "label": "cache",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "bypass",
+          "allowed_hex": [
+            "09"
+          ]
+        },
+        {
+          "label": "cache",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "两个后读均条件化要求09；旁路读09不能刷新显式old映射",
+      "hardware_gap": "源BYPASS/STRONG.GPU route不是泛化coherence保证",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV16_MEMBAR_WITHOUT_SELECTED_E",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "membar",
+          "selected_E": false
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "外部HB仅为fixture；MEMBAR marker不隐式清映射",
+      "hardware_gap": "scoreboard pendingWrites与store outstanding/真实ISA fence必须另证",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV17_MEMBAR_SELECTED_E",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "membar",
+          "selected_E": true
+        },
+        {
+          "op": "source_E"
+        },
+        {
+          "op": "capture",
+          "name": "new"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "new",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "新查找选新allocation且下层已publish，条件化09",
+      "hardware_gap": "生产source条件与new request/readfrom仍需绑定",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV18_PROXY_IS_NOT_COHERENCE",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "proxy_fence"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "合成HB条件下仍需09；proxy marker不能改变payload",
+      "hardware_gap": "不能由same-warp younger retire过滤得出值",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV19_CROSS_SM_NO_HB",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "SM1_old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "SM1_old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": null
+        }
+      ],
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "conditional_predicate": "未提供跨SM HB与scope；不分类07合法或非法",
+      "hardware_gap": "必须绑定GPU scope、publication与consumer同步",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV20_CROSS_SM_WITH_HB",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "SM1_old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "hb_assertion",
+          "scope": "SYNTHETIC_ONLY"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "SM1_old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "明确外部HB后读要求09；SM0写不自动撤SM1映射",
+      "hardware_gap": "单SM K1入口没有写传播/远端定向撤销协议",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV21_CROSS_KERNEL_WITH_E",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "kernel_done"
+        },
+        {
+          "op": "source_E"
+        },
+        {
+          "op": "capture",
+          "name": "new"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "new",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "真实kernel-done与E分别记录，外部顺序与lower09显式给定",
+      "hardware_gap": "实际kernel/API同步和地址身份仍需真实绑定",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV22_PENDING_OLD_NEW",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "pending_old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "source_E"
+        },
+        {
+          "op": "capture",
+          "name": "new"
+        },
+        {
+          "op": "read",
+          "label": "old_consumer",
+          "from": "pending_old",
+          "offset": 0,
+          "size": 1
+        },
+        {
+          "op": "read",
+          "label": "new_consumer",
+          "from": "new",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "old_consumer",
+          "allowed_hex": [
+            "07"
+          ]
+        },
+        {
+          "label": "new_consumer",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "PASS_SYNTHETIC_CONDITIONAL",
+      "conditional_predicate": "外部read-from规定旧消费者先于写取07；新消费者在publish后取09",
+      "hardware_gap": "旧read的取值时间与ISA允许集合仍UNPROVEN；身份安全不定读值",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV23_LATE_OLD_POLLUTES_NEW",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "pending_old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "source_E"
+        },
+        {
+          "op": "read",
+          "label": "new_consumer",
+          "from": "pending_old",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "new_consumer",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "新consumer在publish之后却取07，条件化规格拒绝",
+      "hardware_gap": "需UID/physical+generation绑定外加payload版本；generation不是版本号",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV24_E_BEFORE_WRITE_PUBLISH",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 0,
+          "hex": "09"
+        },
+        {
+          "op": "source_E"
+        },
+        {
+          "op": "capture",
+          "name": "new_but_prepublication"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "new_but_prepublication",
+          "offset": 0,
+          "size": 1
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": [
+            "09"
+          ]
+        }
+      ],
+      "expected_status": "REJECT_SYNTHETIC_CONTRACT",
+      "conditional_predicate": "后读要求publish后fresh；E后提前捕获的07不因publish变09",
+      "hardware_gap": "仅写时invalidate不足；待发布写与重新分配/返回交错需独立K2合同",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    },
+    {
+      "id": "VV25_MIXED_SIZE_RACE_UNRESOLVED",
+      "initial_hex": "07070707",
+      "events": [
+        {
+          "op": "capture",
+          "name": "old"
+        },
+        {
+          "op": "write_intent",
+          "uid": "w",
+          "offset": 1,
+          "hex": "09"
+        },
+        {
+          "op": "publish",
+          "uid": "w"
+        },
+        {
+          "op": "read",
+          "label": "r",
+          "from": "old",
+          "offset": 0,
+          "size": 4
+        }
+      ],
+      "required_reads": [
+        {
+          "label": "r",
+          "allowed_hex": null
+        }
+      ],
+      "expected_status": "UNPROVEN_NO_VALUE_PREDICATE",
+      "conditional_predicate": "没有无竞争/适用ISA保证，不把字节合成规则外推",
+      "hardware_gap": "需原硬件语义、精确线程/HB与race资格；STOP全ISA主张",
+      "read_from_selection": "EXTERNAL_FIXTURE_ASSUMPTION_NOT_CACHE_IMPLEMENTATION"
+    }
+  ]
+}
