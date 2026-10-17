@@ -1,0 +1,405 @@
+{
+  "H0_group_mean_unchanged": 1.0016002037656606,
+  "H0_raw_modified": false,
+  "current_authority": {
+    "canonical_sha256": "71c01fc14ed2fabe019dd66a56ede14e7db2722df64e72d6106d80c07d0d8189",
+    "generation": 17,
+    "kind": "LOCAL_CURRENT_POINTER",
+    "manifest_sha256": "5a8523f3940d02e5655cf68f57fa4a93de3d82ea4a484f75cae122832dcf1418",
+    "revision": "FT20261017_LANE5_R19_D4_SAD_ACCEPTED_r1"
+  },
+  "headroom_metrics_tool_sha256": "329447ea96ea0e65383dec67d57fa41e660f0a2c52aeac9d398d554a5ac36a59",
+  "interpretation": [
+    "vectorAdd: same-condition U benefit is3cycles, while both modes are about38.8%faster than their ownH0; downstream acceleration helps the application without exposing a substantial relative U advantage here.",
+    "SAD known diagnostic control: B223/U221cycles faster than ownH0; newsame-condition U22cycles advantage versus original24, near-neutral.",
+    "Controls are already known workloads, not unseen holdouts; no statistical significance, C1resident capacity benefit, numericSASS or global critical-path proportion is inferred.",
+    "Record peak, physical post-lower-drain sampled WB-role occupancy, mode-specific staging-lifetime bounds, WAD-lifetime means and GPUcycles remain distinct.",
+    "D2/L25 selected applications remain pending exact producer and independent condition qualifications."
+  ],
+  "new_actual_simulations": 0,
+  "no_pooled_or_new_suite_mean": true,
+  "pairs": [
+    {
+      "C_B_H0": 73696,
+      "C_B_h": 45055,
+      "C_U_H0": 73549,
+      "C_U_h": 45052,
+      "J_h": 0.9980717760422473,
+      "S_H0": 1.0019986675549633,
+      "S_h": 1.0000665897185474,
+      "delta_B_h_minus_H0": -28641,
+      "delta_U_h_minus_H0": -28497,
+      "regime": "D4",
+      "workload": "vectorAdd_4M"
+    },
+    {
+      "C_B_H0": 110773,
+      "C_B_h": 110550,
+      "C_U_H0": 110749,
+      "C_U_h": 110528,
+      "J_h": 0.9999823421668953,
+      "S_H0": 1.0002167062456546,
+      "S_h": 1.0001990445859872,
+      "delta_B_h_minus_H0": -223,
+      "delta_U_h_minus_H0": -221,
+      "regime": "D4",
+      "workload": "sad"
+    }
+  ],
+  "read_only_derivation_lease": {
+    "cpu_units": 1,
+    "created_at": "2026-10-17T10:39:24.871200+00:00",
+    "host": "huangrulin-174",
+    "memory_bytes": 2147483648,
+    "owner": "lane5",
+    "status": "RELEASED",
+    "updated_at": "2026-10-17T10:39:25.330919+00:00"
+  },
+  "source_evidence": [
+    {
+      "mode": "B16_BANKED",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/94200296d9d113f8d5e8ed7d715c60873bb977a84c1e6af6789f9f1448286f25/raw.log",
+      "raw_log_sha256": "7b4ba6521acb7521a96e31ced6ae03eac186d1e7ba6bbf0a34202985e07a26cb",
+      "regime": "H0",
+      "run_key": "94200296d9d113f8d5e8ed7d715c60873bb977a84c1e6af6789f9f1448286f25",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "workload": "vectorAdd_4M"
+    },
+    {
+      "mode": "B16_BANKED",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/6ef421a6d4aa3657c99f9fe8aaca59e554c0fbf29f183f4656db02aa32dbe4dd/raw.log",
+      "raw_log_sha256": "d5d685c150005461e72415d0a6c11a558d470d367616bdec05c465a730c91313",
+      "regime": "D4",
+      "run_key": "6ef421a6d4aa3657c99f9fe8aaca59e554c0fbf29f183f4656db02aa32dbe4dd",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "c534efa105da9f9c3a405c59e4f021c8924a01ee6f7aa16e164eacc2b0a00875",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "workload": "vectorAdd_4M"
+    },
+    {
+      "mode": "U_WB16",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/151651da1baef94d5f9148d6ed61a9e469e63c2d72288beb93c0095440985a1f/raw.log",
+      "raw_log_sha256": "99362ef86872a329e49142a007c56243d76d07babfbe6a9d2821d81ca9ee924b",
+      "regime": "H0",
+      "run_key": "151651da1baef94d5f9148d6ed61a9e469e63c2d72288beb93c0095440985a1f",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": true,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "workload": "vectorAdd_4M"
+    },
+    {
+      "mode": "U_WB16",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/5f6cd45cb42c0c12ba7bbf2e1f5dd6a9048a63b5e86f126a612546560ec84bc7/raw.log",
+      "raw_log_sha256": "b5836756d77336399f353a96c6d9c5e5a4420fd05164ec2eba4690a1e95a0976",
+      "regime": "D4",
+      "run_key": "5f6cd45cb42c0c12ba7bbf2e1f5dd6a9048a63b5e86f126a612546560ec84bc7",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": true,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "6a6ee5b38b2f8327906747b67c47c71d87f464ee7b646e48728cafd586f5208b",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "workload": "vectorAdd_4M"
+    },
+    {
+      "mode": "B16_BANKED",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/734ba20d8648a25fb5930c4b8f2c207f658eca924a2d4c52ed0f24d19edbd533/raw.log",
+      "raw_log_sha256": "8d6201579b9f95a742238a397bd9ce0360cdd52a10c933f4d22b88305608904f",
+      "regime": "H0",
+      "run_key": "734ba20d8648a25fb5930c4b8f2c207f658eca924a2d4c52ed0f24d19edbd533",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+        "workload": "sad"
+      },
+      "workload": "sad"
+    },
+    {
+      "mode": "B16_BANKED",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/697edba15b66ca6bcf84f988d154c7d3146567c5f44c2ccb63a064fb537a19f7/raw.log",
+      "raw_log_sha256": "a9b94934c510b60263421102a9db7006547a3669b088311d7d3df660167aae5d",
+      "regime": "D4",
+      "run_key": "697edba15b66ca6bcf84f988d154c7d3146567c5f44c2ccb63a064fb537a19f7",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "c534efa105da9f9c3a405c59e4f021c8924a01ee6f7aa16e164eacc2b0a00875",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+        "workload": "sad"
+      },
+      "workload": "sad"
+    },
+    {
+      "mode": "U_WB16",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/5031d2cfb8a7b2a607a44e148cc20703643e4345e67f35307d5709f46de5b9a9/raw.log",
+      "raw_log_sha256": "692a95ad2fffef5955915d9bc1709da1db018901eba41e4a7850e6f87d98ce64",
+      "regime": "H0",
+      "run_key": "5031d2cfb8a7b2a607a44e148cc20703643e4345e67f35307d5709f46de5b9a9",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": true,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+        "workload": "sad"
+      },
+      "workload": "sad"
+    },
+    {
+      "mode": "U_WB16",
+      "pressure_derivation_only_no_application_rerun": true,
+      "raw_log_path": "/workspace/results/ep_l2_ft20261016/8dea37d7a12154bea54131a8ad5632bcaacab586e0665bd6e72f64e9e17062f9/raw.log",
+      "raw_log_sha256": "a7bac9c072f1f3a44f0a72db2c95cb6b6deec726b5f95e73dcd18911ca5f2d54",
+      "regime": "D4",
+      "run_key": "8dea37d7a12154bea54131a8ad5632bcaacab586e0665bd6e72f64e9e17062f9",
+      "source_config_trace_binary_identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": true,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "6a6ee5b38b2f8327906747b67c47c71d87f464ee7b646e48728cafd586f5208b",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+        "workload": "sad"
+      },
+      "workload": "sad"
+    }
+  ],
+  "status": "TWO_CURRENT_ACCEPTED_D4_DIAGNOSTIC_ROBUSTNESS_PAIRS"
+}
