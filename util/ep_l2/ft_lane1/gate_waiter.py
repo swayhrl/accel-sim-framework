@@ -57,10 +57,22 @@ def wait_owned_child(process, engineering):
                 signalled = True
 
 
-def authorization_from_lane5(request, cache):
-    subprocess.run(['git', 'fetch', '--no-tags', 'origin', 'hrl/ep-l2-ft20261016-lane5-v1'],
-                   cwd=pilot.REPOSITORY, check=True, timeout=45, stdout=subprocess.DEVNULL)
+def authorization_from_lane5(request, cache, status=None):
+    try:
+        subprocess.run(['git', 'fetch', '--no-tags', 'origin', 'hrl/ep-l2-ft20261016-lane5-v1'],
+                       cwd=pilot.REPOSITORY, check=True, timeout=45, stdout=subprocess.DEVNULL)
+    except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as error:
+        # An unavailable dependency grants nothing. Never consume a cached ref
+        # or authorization after a failed fetch; retain the single600s waiter
+        # so a transient transport failure cannot disable the formal path.
+        if status is not None:
+            status['lane5_dependency'] = {'status': 'FETCH_UNAVAILABLE_NO_AUTHORIZATION',
+                'observed_at': pilot.utc(), 'error': repr(error)}
+        return None
     ref = pilot.git('rev-parse', pilot.LANE5_REF).decode().strip()
+    if status is not None:
+        status['lane5_dependency'] = {'status': 'FRESH_FETCH_COMPLETED',
+            'observed_at': pilot.utc(), 'publication': ref}
     path = 'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/LOW_SPACE_PILOT_AUTHORIZATION.json'
     found = subprocess.run(['git', 'cat-file', '-e', ref + ':' + path], cwd=pilot.REPOSITORY,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
@@ -145,7 +157,7 @@ def main():
                     if not STOP and formal_ready(central_snapshot()):
                         run_formal(request, state, args.output, status); status['invocations'] += 1; break
                 if not state['active_builds'] and not state['active_runs']:
-                    authorization = authorization_from_lane5(request, args.output)
+                    authorization = authorization_from_lane5(request, args.output, status)
                     if authorization:
                         publication, path, data = authorization
                         status['lane5_authorization_publication'] = publication
