@@ -38,4 +38,18 @@ class UnifiedScopeTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    p=Path(tmp)/'raw.log';p.write_text(ACTUAL.read_text()*2)
    with self.assertRaises(ValueError):references(p)
+
+class DerivedAnchorTests(unittest.TestCase):
+ def test_extra_anchor_is_pinned_and_does_not_reset_seed_or_count(self):
+  from test_parallel_registry import ParallelRegistry
+  from test_lane5 import identity
+  from registry import write_json
+  import hashlib
+  f=ParallelRegistry();f.setUp();self.addCleanup(f.tearDown)
+  row=identity();row.update(IDENTITY,workload='vectorAdd_4M');row['feature_vector'],row['ideal_vector']=expected('B16_OFF')
+  p=f.root/'anchor.json';write_json(p,{'identity':row});b={'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+  before=f.registry.snapshot();cell=f.registry.register_unified_vector_anchor(row,b);again=f.registry.register_unified_vector_anchor(row,b);after=f.registry.snapshot()
+  self.assertEqual(cell,again);self.assertEqual(before['runs'],after['runs']);self.assertEqual(before['campaigns']['EPL2_PARALLEL_POTENTIAL_20261017_V1']['seed_cells'],after['campaigns']['EPL2_PARALLEL_POTENTIAL_20261017_V1']['seed_cells'])
+  other=copy.deepcopy(row);other['trace_content_sha256']='8'*64
+  with self.assertRaises(ValueError):f.registry.register_unified_vector_anchor(other,b)
 if __name__=='__main__':unittest.main()

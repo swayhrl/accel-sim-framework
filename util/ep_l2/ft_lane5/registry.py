@@ -322,6 +322,26 @@ class Registry:
             campaign['extra_cells'].append(cell)
             return cell
 
+    def register_unified_vector_anchor(self, identity, checkpoint):
+        """One additional matchedfb B16 OFF; never overwrite the source37 seedI011."""
+        from unified_scope import features
+        features(identity,'B16_OFF')
+        if identity['workload']!='vectorAdd_4M':raise ValueError('derived anchor is exact vector input only')
+        proof=Path(checkpoint['path'])
+        if hashlib.sha256(proof.read_bytes()).hexdigest()!=checkpoint['sha256'] or json.loads(proof.read_text()).get('identity')!=identity:
+            raise ValueError('derived anchor exact identity checkpoint changed')
+        with self.locked() as data:
+            campaign=data.get('campaigns',{}).get(PARALLEL)
+            if not campaign or time.time()>=campaign['deadline_unix']:raise ValueError('missing/expired new campaign')
+            cell={'cell_id':'E_VECTOR_OFF_UNIFIED_FB_R1','experiment_id':PARALLEL,'mode':'B16_OFF','condition':'H0','workload_alias':'vectorAdd_4M','expected_run_key':run_key(identity),'selection_checkpoint':checkpoint}
+            old=next((v for v in campaign['extra_cells'] if v['cell_id']==cell['cell_id']),None)
+            if old is not None:
+                if old!=cell:raise ValueError('derived anchor cannot be rebound')
+                return old
+            if len(campaign['extra_cells'])>=22:raise ValueError('additional cell budget exhausted')
+            campaign['extra_cells'].append(cell)
+            return cell
+
     @staticmethod
     def check_experiment(data, experiment, identity, owner, retry_key=None):
         base = {'experiment_id', 'regime', 'deadline_unix'}
