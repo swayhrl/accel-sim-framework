@@ -70,12 +70,14 @@ module ep_l2_slice_ctrl #(
     localparam [1:0] L_NONE=0, L_COPY=1, L_WB=2;
     localparam [GEN_W-1:0] GMAX={GEN_W{1'b1}};
     localparam integer WB_BEGIN=N_PAYLOAD-STATIC_WB;
-    reg [2:0] role [0:N_PAYLOAD-1];
-    reg [GEN_W-1:0] generation [0:N_PAYLOAD-1];
-    reg [TAG_W-1:0] owner_tag [0:N_PAYLOAD-1];
-    reg [5:0] pins [0:N_PAYLOAD-1];
-    reg [3:0] sectors_ready [0:N_PAYLOAD-1], sectors_pending [0:N_PAYLOAD-1], dirty [0:N_PAYLOAD-1];
-    reg [PID_W-1:0] tag_map [0:N_TAG-1];
+    reg [N_PAYLOAD*3-1:0] role_bits;
+    reg [N_PAYLOAD*GEN_W-1:0] generation_bits;
+    reg [N_PAYLOAD*TAG_W-1:0] owner_tag_bits;
+    reg [N_PAYLOAD*6-1:0] pins_bits;
+    reg [N_PAYLOAD*4-1:0] sectors_ready_bits;
+    reg [N_PAYLOAD*4-1:0] sectors_pending_bits;
+    reg [N_PAYLOAD*4-1:0] dirty_bits;
+    reg [N_TAG*PID_W-1:0] tag_map_bits;
     reg [N_TAG-1:0] tag_live;
     reg [N_WAD-1:0] wad_live, wad_sent;
     reg [ADDR_W-1:0] wad_addr [0:N_WAD-1];
@@ -103,8 +105,8 @@ module ep_l2_slice_ctrl #(
     reg p_install_dirty;
     reg [15:0] pending_sector_count;
     wire old_live = req_tag < N_TAG && tag_live[req_tag];
-    wire [PID_W-1:0] old_pid = old_live ? tag_map[req_tag] : req_tag;
-    wire evict_dirty = req_op==0 && old_live && |dirty[old_pid];
+    wire [PID_W-1:0] old_pid = old_live ? tag_map_bits[(req_tag)*PID_W +:PID_W] : req_tag;
+    wire evict_dirty = req_op==0 && old_live && |dirty_bits[(old_pid)*4 +:4];
     function automatic [3:0] byte_sectors(input [127:0] be);
         integer s; begin
             for (s=0;s<4;s=s+1) byte_sectors[s]=|be[s*32 +:32];
@@ -129,8 +131,8 @@ module ep_l2_slice_ctrl #(
         end
         have_landing=0; have_staging=0; free_landing=0; free_staging=0; free_bank_exists=0;
         for (integer j=0;j<N_PAYLOAD;j=j+1) begin
-            if (role[j]==FREE && (j%4)==(req_tag%4)) free_bank_exists=1;
-            if (role[j]==FREE && generation[j] < GMAX-1) begin
+            if (role_bits[(j)*3 +:3]==FREE && (j%4)==(req_tag%4)) free_bank_exists=1;
+            if (role_bits[(j)*3 +:3]==FREE && generation_bits[(j)*GEN_W +:GEN_W] < GMAX-1) begin
                 if (MODE==1 && !have_landing && (j%4)==(req_tag%4)) begin
                     have_landing=1; free_landing=j;
                 end
@@ -140,15 +142,15 @@ module ep_l2_slice_ctrl #(
             end
         end
     end
-    wire old_unpinned = !old_live || (pins[old_pid]==0 && sectors_pending[old_pid]==0);
-    wire reuse_ok = !old_live ? generation[old_pid]<GMAX-1 : generation[old_pid]<GMAX-2;
+    wire old_unpinned = !old_live || (pins_bits[(old_pid)*6 +:6]==0 && sectors_pending_bits[(old_pid)*4 +:4]==0);
+    wire reuse_ok = !old_live ? generation_bits[(old_pid)*GEN_W +:GEN_W]<GMAX-1 : generation_bits[(old_pid)*GEN_W +:GEN_W]<GMAX-2;
     wire install_ok = old_unpinned && (!evict_dirty || (have_wad && (MODE==1 || have_staging))) &&
         (MODE==1 && (evict_dirty || !old_live) ? have_landing : reuse_ok);
-    wire read_ok = old_live && role[old_pid]==RESIDENT &&
-        pins[old_pid]<32 && reference_count<512 && req_ready_sectors!=0 &&
-        (req_ready_sectors & ~sectors_ready[old_pid])==0;
+    wire read_ok = old_live && role_bits[(old_pid)*3 +:3]==RESIDENT &&
+        pins_bits[(old_pid)*6 +:6]<32 && reference_count<512 && req_ready_sectors!=0 &&
+        (req_ready_sectors & ~sectors_ready_bits[(old_pid)*4 +:4])==0;
     wire write_ok = old_live && old_unpinned;
-    wire invalidate_ok = old_live && old_unpinned && dirty[old_pid]==0 && generation[old_pid]!=GMAX;
+    wire invalidate_ok = old_live && old_unpinned && dirty_bits[(old_pid)*4 +:4]==0 && generation_bits[(old_pid)*GEN_W +:GEN_W]!=GMAX;
     assign generation_blocked = state==IDLE && req_valid &&
         (req_op==0 && !install_ok && old_unpinned &&
          ((MODE!=1 && !reuse_ok) || (MODE==1 && !have_landing && free_bank_exists)));
@@ -156,11 +158,11 @@ module ep_l2_slice_ctrl #(
         req_tag<N_TAG && (req_op==0 ? install_ok : req_op==1 ? read_ok : req_op==2 ? write_ok : invalidate_ok);
     wire req_fire=req_valid && req_ready;
     wire abort_fire=native_abort && state!=IDLE && state!=RESPONSE && p_op!=1;
-    wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation[p_landing] :
-        generation[p_landing]+(p_old_live ? 2 : 1);
-    wire fill_identity=fill_pid<N_PAYLOAD && role[fill_pid]==RESIDENT &&
-        generation[fill_pid]==fill_gen && owner_tag[fill_pid]==fill_tag &&
-        fill_sectors!=0 && (fill_sectors & ~sectors_pending[fill_pid])==0;
+    wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation_bits[(p_landing)*GEN_W +:GEN_W] :
+        generation_bits[(p_landing)*GEN_W +:GEN_W]+(p_old_live ? 2 : 1);
+    wire fill_identity=fill_pid<N_PAYLOAD && role_bits[(fill_pid)*3 +:3]==RESIDENT &&
+        generation_bits[(fill_pid)*GEN_W +:GEN_W]==fill_gen && owner_tag_bits[(fill_pid)*TAG_W +:TAG_W]==fill_tag &&
+        fill_sectors!=0 && (fill_sectors & ~sectors_pending_bits[(fill_pid)*4 +:4])==0;
     wire [WAD_W-1:0] head_wad=wb_fifo[wb_head];
     wire [PID_W-1:0] head_pid=wad_payload[head_wad];
     reg fe_request, fe_write;
@@ -219,21 +221,22 @@ module ep_l2_slice_ctrl #(
     assign native_commit=state==COMMIT && native_ready && !abort_fire &&
         (p_op==3 || p_be==0 || ge);
     assign native_tag=p_tag; assign native_pid=p_landing;
-    assign native_gen=p_op==0 ? landing_generation : generation[p_landing];
+    assign native_gen=p_op==0 ? landing_generation : generation_bits[(p_landing)*GEN_W +:GEN_W];
     assign rsp_valid=state==RESPONSE; assign rsp_retry=p_retry;
     assign rsp_id=p_id; assign rsp_pid=p_landing; assign rsp_gen=p_result_gen;
     wire rsp_fire=rsp_valid && rsp_ready;
     wire internal_pin_add=req_fire && req_op==1;
     wire internal_pin_sub=rsp_fire && p_op==1;
-    assign pin_ready=rst_n && pin_pid<N_PAYLOAD && role[pin_pid]==RESIDENT && generation[pin_pid]==pin_gen &&
+    assign pin_ready=rst_n && pin_pid<N_PAYLOAD && role_bits[(pin_pid)*3 +:3]==RESIDENT && generation_bits[(pin_pid)*GEN_W +:GEN_W]==pin_gen &&
         !internal_pin_add && !internal_pin_sub &&
         !(state!=IDLE && state!=RESPONSE && p_old_live && pin_pid==p_old) &&
-        (pin_increment ? pins[pin_pid]<32 && reference_count<512 : pins[pin_pid]!=0);
+        (pin_increment ? pins_bits[(pin_pid)*6 +:6]<32 && reference_count<512 : pins_bits[(pin_pid)*6 +:6]!=0);
     wire pin_fire=pin_valid && pin_ready;
     assign wb_valid=wb_state==W_SEND;
     assign wb_be=wad_bytes[active_wad]; assign wb_addr=wad_addr[active_wad];
     assign wb_ticket=active_wad; assign wb_ticket_gen=wad_generation[active_wad];
     wire lower_accept=wb_valid && wb_ready;
+    wire [PID_W-1:0] active_pid=wad_payload[active_wad];
     wire done_identity=done_ticket<N_WAD && wad_live[done_ticket] && wad_generation[done_ticket]==done_gen;
     assign done_ready=rst_n && (!done_identity || wad_sent[done_ticket]);
     assign done_dropped=done_valid && done_ready && !done_identity;
@@ -255,11 +258,6 @@ module ep_l2_slice_ctrl #(
             p_data<=0; p_be<=0; p_ready<=0; p_pending<=0; p_install_dirty<=0;
             // No reset of 1024-bit data holding registers is required: valid
             // bits guard them. SRAM contents likewise are never reset to DFFs.
-            for (integer i=0;i<N_PAYLOAD;i=i+1) begin
-                role[i]<=FREE; generation[i]<=0; owner_tag[i]<=0; pins[i]<=0;
-                sectors_ready[i]<=0; sectors_pending[i]<=0; dirty[i]<=0;
-            end
-            for (integer t=0;t<N_TAG;t=t+1) tag_map[t]<=0;
             for (integer w=0;w<N_WAD;w=w+1) begin
                 wad_generation[w]<=0; wad_addr[w]<=0; wad_payload[w]<=0;
                 wad_payload_gen[w]<=0; wad_bytes[w]<=0; wb_fifo[w]<=0;
@@ -272,11 +270,6 @@ module ep_l2_slice_ctrl #(
             pending_sector_count<=pending_sector_count+
                 ((native_commit && p_op==0) ? pop4(p_pending) : 0)-
                 (fill_fire ? pop4(fill_sectors) : 0);
-            if (pin_fire) pins[pin_pid]<=pin_increment ? pins[pin_pid]+1 : pins[pin_pid]-1;
-            if (fill_fire) begin
-                sectors_ready[fill_pid]<=sectors_ready[fill_pid] | fill_sectors;
-                sectors_pending[fill_pid]<=sectors_pending[fill_pid] & ~fill_sectors;
-            end
             if (done_fire) begin wad_live[done_ticket]<=0; wad_sent[done_ticket]<=0; end
             if (req_fire) begin
                 p_op<=req_op; p_id<=req_id; p_tag<=req_tag; p_old<=old_pid;
@@ -285,16 +278,13 @@ module ep_l2_slice_ctrl #(
                 p_ready<=req_ready_sectors; p_pending<=req_pending_sectors;
                 p_install_dirty<=req_install_dirty; p_new_reserved<=0;
                 p_landing<=old_pid;
-                p_result_gen<=old_live ? generation[old_pid] : 0;
-                if (req_op==1) begin pins[old_pid]<=pins[old_pid]+1; state<=HIT_READ; end
+                p_result_gen<=old_live ? generation_bits[(old_pid)*GEN_W +:GEN_W] : 0;
+                if (req_op==1) begin state<=HIT_READ; end
                 else begin
                     state<=COMMIT;
                     if (req_op==0) begin
                         if (MODE==1 && (evict_dirty || !old_live)) begin
                             p_landing<=free_landing; p_new_reserved<=1;
-                            role[free_landing]<=RESERVE_R;
-                            generation[free_landing]<=generation[free_landing]+1;
-                            owner_tag[free_landing]<=req_tag;
                         end
                         if (evict_dirty) begin
                             p_wad<=free_wad; wad_live[free_wad]<=1; wad_sent[free_wad]<=0;
@@ -302,12 +292,10 @@ module ep_l2_slice_ctrl #(
                             wad_addr[free_wad]<=req_victim_addr; wad_bytes[free_wad]<=req_victim_be;
                             if (MODE==1) begin
                                 p_staging<=old_pid; wad_payload[free_wad]<=old_pid;
-                                wad_payload_gen[free_wad]<=generation[old_pid];
+                                wad_payload_gen[free_wad]<=generation_bits[(old_pid)*GEN_W +:GEN_W];
                             end else begin
                                 p_staging<=free_staging; wad_payload[free_wad]<=free_staging;
-                                generation[free_staging]<=generation[free_staging]+1;
-                                role[free_staging]<=RESERVE_W;
-                                wad_payload_gen[free_wad]<=generation[free_staging]+1;
+                                wad_payload_gen[free_wad]<=generation_bits[(free_staging)*GEN_W +:GEN_W]+1;
                                 state<=COPY_READ;
                             end
                         end
@@ -317,7 +305,7 @@ module ep_l2_slice_ctrl #(
             if (ge && state==HIT_READ) state<=READ_RETURN;
             if (state==READ_RETURN) begin
                 rsp_data<=ram_rdata[p_old[1:0]*1024 +:1024]; state<=RESPONSE;
-                p_result_gen<=generation[p_old];
+                p_result_gen<=generation_bits[(p_old)*GEN_W +:GEN_W];
             end
             if (ge && state==COPY_READ) begin state<=COPY_RETURN; latch_owner<=L_COPY; end
             if (state==COPY_RETURN) begin
@@ -327,35 +315,22 @@ module ep_l2_slice_ctrl #(
             if (native_commit) begin
                 if (p_op==0) begin
                     if (p_dirty) begin
-                        role[p_staging]<=WB; wb_fifo[wb_tail]<=p_wad; wb_tail<=wb_tail+1;
+                        wb_fifo[wb_tail]<=p_wad; wb_tail<=wb_tail+1;
                     end
-                    if (!p_new_reserved) generation[p_landing]<=landing_generation;
-                    role[p_landing]<=RESIDENT; owner_tag[p_landing]<=p_tag;
-                    sectors_ready[p_landing]<=p_ready; sectors_pending[p_landing]<=p_pending;
-                    dirty[p_landing]<=p_install_dirty ? byte_sectors(p_be) : 0;
-                    tag_map[p_tag]<=p_landing; tag_live[p_tag]<=1; p_result_gen<=landing_generation;
-                end else if (p_op==2) begin
-                    dirty[p_landing]<=dirty[p_landing] | byte_sectors(p_be);
-                    sectors_ready[p_landing]<=sectors_ready[p_landing] | p_ready;
+                    tag_live[p_tag]<=1; p_result_gen<=landing_generation;
                 end else if (p_op==3) begin
-                    role[p_landing]<=FREE; generation[p_landing]<=generation[p_landing]+1;
-                    tag_live[p_tag]<=0; sectors_ready[p_landing]<=0; dirty[p_landing]<=0;
+                    tag_live[p_tag]<=0;
                 end
                 state<=RESPONSE;
             end
             if (abort_fire) begin
                 if (p_has_wad) wad_live[p_wad]<=0;
-                if (p_new_reserved) begin
-                    role[p_landing]<=FREE; generation[p_landing]<=generation[p_landing]+1;
-                end
                 if (p_dirty && MODE!=1) begin
-                    role[p_staging]<=FREE; generation[p_staging]<=generation[p_staging]+1;
                     if (latch_owner==L_COPY) latch_owner<=L_NONE;
                 end
                 p_retry<=1; state<=RESPONSE;
             end
             if (rsp_fire) begin
-                if (p_op==1) pins[p_landing]<=pins[p_landing]-1;
                 state<=IDLE;
             end
             if (gw) begin active_wad<=head_wad; wb_state<=W_RETURN; latch_owner<=L_WB; end
@@ -364,13 +339,85 @@ module ep_l2_slice_ctrl #(
             end
             if (wb_state==W_BUFFER) begin wb_data<=copy_latch; latch_owner<=L_NONE; wb_state<=W_SEND; end
             if (lower_accept) begin
-                role[wad_payload[active_wad]]<=FREE;
-                generation[wad_payload[active_wad]]<=generation[wad_payload[active_wad]]+1;
-                sectors_ready[wad_payload[active_wad]]<=0; dirty[wad_payload[active_wad]]<=0;
                 wad_sent[active_wad]<=1; wb_head<=wb_head+1; wb_state<=W_IDLE;
             end
         end
     end
+
+    // Direct vector slices keep every combinational dependency explicit.
+    // Explicit word-local flops. This is standard-cell metadata, not SRAM.
+    // Each word has finite decoded update ports; precedence matches the
+    // original single sequential process. Data SRAM remains a blackbox cut.
+    genvar m;
+    generate for(m=0;m<N_PAYLOAD;m=m+1)begin: metadata
+        always @(posedge clk) begin
+            if(!rst_n) begin
+                role_bits[m*3 +:3]<=FREE;
+                generation_bits[m*GEN_W +:GEN_W]<=0;
+                owner_tag_bits[m*TAG_W +:TAG_W]<=0;
+                pins_bits[m*6 +:6]<=0;
+                sectors_ready_bits[m*4 +:4]<=0;
+                sectors_pending_bits[m*4 +:4]<=0;
+                dirty_bits[m*4 +:4]<=0;
+            end else begin
+                if(pin_fire && pin_pid==m) pins_bits[m*6 +:6]<=pin_increment ? pins_bits[(m)*6 +:6]+1 : pins_bits[(m)*6 +:6]-1;
+                if(fill_fire && fill_pid==m)begin
+                    sectors_ready_bits[m*4 +:4]<=sectors_ready_bits[(m)*4 +:4]|fill_sectors;
+                    sectors_pending_bits[m*4 +:4]<=sectors_pending_bits[(m)*4 +:4]&~fill_sectors;
+                end
+                if(req_fire)begin
+                    if(req_op==1 && old_pid==m) pins_bits[m*6 +:6]<=pins_bits[(m)*6 +:6]+1;
+                    if(req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m)begin
+                        role_bits[m*3 +:3]<=RESERVE_R;
+                        generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
+                        owner_tag_bits[m*TAG_W +:TAG_W]<=req_tag;
+                    end
+                    if(req_op==0 && evict_dirty && MODE!=1 && free_staging==m)begin
+                        role_bits[m*3 +:3]<=RESERVE_W;
+                        generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
+                    end
+                end
+                if(native_commit)begin
+                    if(p_op==0)begin
+                        if(p_dirty && p_staging==m)role_bits[m*3 +:3]<=WB;
+                        if(p_landing==m)begin
+                            if(!p_new_reserved)generation_bits[m*GEN_W +:GEN_W]<=landing_generation;
+                            role_bits[m*3 +:3]<=RESIDENT;owner_tag_bits[m*TAG_W +:TAG_W]<=p_tag;
+                            sectors_ready_bits[m*4 +:4]<=p_ready;sectors_pending_bits[m*4 +:4]<=p_pending;
+                            dirty_bits[m*4 +:4]<=p_install_dirty ? byte_sectors(p_be) : 0;
+                        end
+                    end else if(p_op==2 && p_landing==m)begin
+                        dirty_bits[m*4 +:4]<=dirty_bits[(m)*4 +:4]|byte_sectors(p_be);
+                        sectors_ready_bits[m*4 +:4]<=sectors_ready_bits[(m)*4 +:4]|p_ready;
+                    end else if(p_op==3 && p_landing==m)begin
+                        role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
+                        sectors_ready_bits[m*4 +:4]<=0;dirty_bits[m*4 +:4]<=0;
+                    end
+                end
+                if(abort_fire)begin
+                    if(p_new_reserved && p_landing==m)begin
+                        role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
+                    end
+                    if(p_dirty && MODE!=1 && p_staging==m)begin
+                        role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
+                    end
+                end
+                if(rsp_fire && p_op==1 && p_landing==m)pins_bits[m*6 +:6]<=pins_bits[(m)*6 +:6]-1;
+                if(lower_accept && active_pid==m)begin
+                    role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
+                    sectors_ready_bits[m*4 +:4]<=0;dirty_bits[m*4 +:4]<=0;
+                end
+            end
+        end
+    end endgenerate
+    genvar t;
+    generate for(t=0;t<N_TAG;t=t+1)begin: mapping
+        always @(posedge clk)begin
+            if(!rst_n)tag_map_bits[t*PID_W +:PID_W]<=0;
+            else if(native_commit && p_op==0 && p_tag==t)tag_map_bits[t*PID_W +:PID_W]<=p_landing;
+        end
+    end endgenerate
+
 `ifndef SYNTHESIS
     initial begin
         if (N_PAYLOAD%4 || N_TAG%4 || N_PAYLOAD<=N_TAG+STATIC_WB ||
@@ -381,8 +428,8 @@ module ep_l2_slice_ctrl #(
         if ((gf && ge && fill_pid[1:0]==fe_pid[1:0]) ||
             (gf && gw && fill_pid[1:0]==head_pid[1:0]) ||
             (ge && gw && fe_pid[1:0]==head_pid[1:0])) $fatal(1,"P1 bank oversubscription");
-        if (gw && (role[head_pid]!=WB || generation[head_pid]!=wad_payload_gen[head_wad])) $fatal(1,"stale WB handle");
-        if (lower_accept && generation[wad_payload[active_wad]]==GMAX) $fatal(1,"generation wrap");
+        if (gw && (role_bits[(head_pid)*3 +:3]!=WB || generation_bits[(head_pid)*GEN_W +:GEN_W]!=wad_payload_gen[head_wad])) $fatal(1,"stale WB handle");
+        if (lower_accept && generation_bits[(active_pid)*GEN_W +:GEN_W]==GMAX) $fatal(1,"generation wrap");
     end
 `endif
 endmodule

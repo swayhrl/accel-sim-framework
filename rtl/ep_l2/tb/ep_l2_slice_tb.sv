@@ -42,7 +42,7 @@ module ep_l2_slice_tb;
     reg [WW-1:0] received_ticket [0:1023];
     reg [GEN_W-1:0] received_gen [0:1023];
     integer expected_wbs=0,received_wbs=0,completed_wbs=0,cycles=0,copy_reads=0,copy_writes=0,bank_ops=0;
-    integer replies=0,accepted=0,aborted=0;reg [31:0] prng=32'h31d2c0de;
+    integer replies=0,accepted=0,aborted=0,conflicts=0,parallel_banks=0;reg [31:0] prng=32'h31d2c0de;
     reg random_backpressure=0;reg force_wb_block=1;reg force_rsp_block=0;
     reg [31:0] last_rsp_uid=0;reg [1023:0] last_rsp_data;
     reg last_rsp_retry;reg [PW-1:0] last_rsp_pid;reg [GEN_W-1:0] last_rsp_gen;
@@ -61,6 +61,9 @@ module ep_l2_slice_tb;
         for (integer b=0;b<4;b=b+1) if(ram_enable[b])bank_ops=bank_ops+1;
         if(dut.ge && dut.state==3)copy_reads=copy_reads+1;
         if(dut.ge && dut.state==5)copy_writes=copy_writes+1;
+        if((dut.requests[0] && dut.requests[1] && dut.request_banks[1:0]==dut.request_banks[3:2]) ||
+           (dut.requests[1] && dut.requests[2] && dut.request_banks[3:2]==dut.request_banks[5:4]))conflicts=conflicts+1;
+        if((dut.gf && dut.ge) || (dut.gf && dut.gw) || (dut.ge && dut.gw))parallel_banks=parallel_banks+1;
         if(req_valid && req_ready)accepted=accepted+1;
         if(rsp_valid && rsp_ready) begin
             if(rsp_id<=last_rsp_uid) $fatal(1,"duplicate/reordered frontend completion");
@@ -173,6 +176,19 @@ module ep_l2_slice_tb;
         while(!fill_ready)@(negedge clk);tick();fill_valid=0;
         data=pattern(5);for(integer j=0;j<4;j=j+1)data[8*j +:8]=reference[1][8*j +:8];reference[1]=data;
         read_check(1);$display("CASE3 dirty bytes survive delayed fill PASS");
+        // Additional controlled same-bank and independent-bank real traffic.
+        for(integer bankcase=0;bankcase<2;bankcase=bankcase+1)begin
+            install(3+bankcase,64'h8000+128*bankcase,0,{128{1'b1}},0,15,0);
+            prev=replies+aborted;prepare(1,N_TAG-1,address[N_TAG-1],0,0,15,0,0);admit();
+            @(negedge clk);fill_valid=1;fill_tag=3+bankcase;fill_pid=handle_pid[3+bankcase];
+            fill_gen=handle_gen[3+bankcase];fill_sectors=15;fill_be={128{1'b1}};fill_protect_be=0;fill_data=pattern(40+bankcase);#1;
+            while(!fill_ready)@(negedge clk);tick();fill_valid=0;
+            reference[3+bankcase]=pattern(40+bankcase);wait_replies(prev);
+            if(last_rsp_data!==reference[N_TAG-1])$fatal(1,"contended read snapshot changed");
+            read_check(3+bankcase);
+        end
+        if(conflicts==0 || parallel_banks==0)$fatal(1,"bank contention/independence not exercised");
+        $display("CASE3b actual same-bank contention and cross-bank parallel grants PASS");
         // 4. Descriptor pin stops replacement; read response holds snapshot.
         force_rsp_block=1;prev=replies+aborted;prepare(1,1,address[1],0,0,15,0,0);admit();
         repeat(6)tick();if(!rsp_valid || reference_count!=1 || rsp_data!==reference[1])$fatal(1,"read snapshot/pin missing");
@@ -204,10 +220,14 @@ module ep_l2_slice_tb;
         $display("CASE7 old-address hazard until set_done PASS");
         // 8. Stale lower event cannot mutate a reused incarnation.
         old_handle=handle_pid[2];old_gen=handle_gen[2];
-        install(2,64'h7000,pattern(8),{128{1'b1}},15,0,0);
+        install(2,64'h7000,pattern(8),{128{1'b1}},0,15,0);
         @(negedge clk);fill_valid=1;fill_pid=old_handle;fill_gen=old_gen;fill_tag=2;fill_sectors=15;
         fill_data=0;fill_be={128{1'b1}};fill_protect_be=0;#1;
-        if(!fill_ready || !fill_dropped)$fatal(1,"stale fill not rejected");tick();fill_valid=0;read_check(2);
+        if(!fill_ready || !fill_dropped)$fatal(1,"stale fill not rejected");tick();fill_valid=0;
+        if(dut.sectors_pending_bits[handle_pid[2]*4 +:4]!=15)$fatal(1,"late old generation consumed new fill state");
+        @(negedge clk);fill_valid=1;fill_pid=handle_pid[2];fill_gen=handle_gen[2];fill_data=pattern(8);#1;
+        if(fill_dropped)$fatal(1,"fresh generation was corrupted by old fill");
+        while(!fill_ready)@(negedge clk);tick();fill_valid=0;read_check(2);
         @(negedge clk);done_valid=1;done_ticket=received_ticket[0];done_gen=received_gen[0];#1;
         if(!done_ready || !done_dropped)$fatal(1,"stale set_done accepted");tick();done_valid=0;
         $display("CASE8 late fill/completion identity rejection PASS");
@@ -220,6 +240,9 @@ module ep_l2_slice_tb;
             prepare(0,0,64'h90000,pattern(90),{128{1'b1}},15,0,1);
             repeat(10)tick();if(req_ready || wad_count!=cap || wb_count!=cap)$fatal(1,"full quota partially committed");req_valid=0;
         end
+        @(negedge clk);done_valid=1;done_ticket=received_ticket[0];done_gen=received_gen[0];#1;
+        if(!done_ready || !done_dropped)$fatal(1,"old WAD generation aliased reused live entry");
+        tick();done_valid=0;if(wad_count!=cap)$fatal(1,"stale done freed reused WAD");
         force_wb_block=0;wait_lower();close_wads();read_check(0);
         $display("CASE9 full-dimension actual WB peak%0d refusal/recovery/versions PASS",cap);
         // 10. Small reproducible random ready/valid delays and byte masks.
@@ -234,8 +257,8 @@ module ep_l2_slice_tb;
         if(MODE==1 && (copy_reads!=0 || copy_writes!=0))$fatal(1,"Unified copied bytes");
         if(MODE!=1 && (copy_reads==0 || copy_reads!=copy_writes))$fatal(1,"static copy optimized/dead");
         $display("CASE10 random backpressure/byte reference/exact-once/drain PASS");
-        $display("RTL_RESULT mode=%0d tags=%0d physical=%0d wb_peak=%0d WAD=%0d gen=%0d accepted=%0d replies=%0d rollback=%0d WB=%0d copy_read=%0d copy_write=%0d bank_ops=%0d cycles=%0d PASS",
-            MODE,N_TAG,N_PAYLOAD,cap,N_WAD,GEN_W,accepted,replies,aborted,received_wbs,copy_reads,copy_writes,bank_ops,cycles);
+        $display("RTL_RESULT mode=%0d tags=%0d physical=%0d wb_peak=%0d WAD=%0d gen=%0d accepted=%0d replies=%0d rollback=%0d WB=%0d copy_read=%0d copy_write=%0d bank_ops=%0d conflicts=%0d parallel_banks=%0d cycles=%0d PASS",
+            MODE,N_TAG,N_PAYLOAD,cap,N_WAD,GEN_W,accepted,replies,aborted,received_wbs,copy_reads,copy_writes,bank_ops,conflicts,parallel_banks,cycles);
         $finish;
     end
 endmodule
