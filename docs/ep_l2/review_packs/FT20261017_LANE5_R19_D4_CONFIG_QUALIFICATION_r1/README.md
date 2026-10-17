@@ -1,0 +1,5 @@
+# D4 independently admitted configuration
+
+Same official source/mainbinary, five unchanged H0 config layers plus exact published Q4 and D4 clock overlays. New config hashesB c534efa1/U6a6ee5b3 match Lane1. Only4 native options differ from H0; extra downstream buffers/sharedcredit1279 equally applied. Actual Lane5 own2 native production replays PASS with exact archive/fixture/source/config/raw/published identity checks, original11 within unchanged scope retained. No Lane5 compiler or full application started in this pack.
+
+Independent fixture covers one partition/two subpartitions,40 exact-once responses,5 WB accepts/set_done,2 dirty-sector version labels/cold lower and resident hit reference, physical bank1op/cycle, actual native domain ticks and fixed100GPUcycles, full credit/drain. It does not cover64slice application closure or queue saturation; terminal application acceptance remains required. Ordinary symbolic/non-atomic input and legacy-native-byte scope unchanged. No numeric SASS/TVD/RO/Ideal or C1 legacy headroom claim.
