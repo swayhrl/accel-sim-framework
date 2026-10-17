@@ -13,6 +13,8 @@ def main():
     prefixes=('/workspace/results/ep_l2_ft20261016/',
               '/workspace/ep_l2_potential20261017_lane5_results/')
     expected='23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee'
+    reviewed_fb=json.loads((PACK/'EXTERNAL_PROJECT_UNIFIED_FB_REVIEW.json').read_text())
+    assert reviewed_fb['status']=='PASS_EXACT_INDEPENDENT_EP_L2_UNIFIED_FB_IDENTITY'
     unknown=[];samples=0
     for line in (ROOT/'RESOURCE_SAMPLES.jsonl').read_text().splitlines():
         snapshot=json.loads(line);samples+=1
@@ -31,18 +33,29 @@ def main():
                 text='\n'.join(p.read_text() for p in configs)
                 known_ft=digest==expected and '-gpgpu_ep_l2_ft_mode ' in text
                 known_native=False
+                known_fb=False
                 if digest=='37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5':
                     data=binary.read_bytes()
                     known_native=(b'-gpgpu_dtc_l1_mode' not in data and b'DTC_L1_' not in data
                         and b'-gpgpu_ep_l2_ft_mode' in data and b'-gpgpu_ep_l2_payload_mode' in data
                         and '-gpgpu_ep_l2_payload_mode ' in text)
-                valid=((known_ft or known_native) and configs and all(p.parent==binary.parent for p in configs)
+                if digest=='fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7':
+                    proof=reviewed_fb['identities'].get(key)
+                    assert proof and proof['binary']==str(binary) and proof['binary_sha256']==digest
+                    assert [(str(p),sha(p)) for p in configs]==[(p['path'],p['sha256']) for p in proof['configs']]
+                    for metadata in [proof['metadata']]+proof['extra_metadata']:
+                        assert sha(metadata['path'])==metadata['sha256']
+                    data=binary.read_bytes()
+                    known_fb=(b'-gpgpu_dtc_l1_mode' not in data and b'DTC_L1_' not in data
+                        and b'-gpgpu_ep_l2_ft_mode' in data and b'-gpgpu_ep_l2_payload_mode' in data
+                        and '-gpgpu_ep_l2_payload_mode ' in text)
+                valid=((known_ft or known_native or known_fb) and configs and all(p.parent==binary.parent for p in configs)
                     and not any(line.lstrip().startswith('-gpgpu_dtc') for line in text.splitlines()))
                 assert valid,'Binary/config outside verified independent EP-L2 identity'
                 identities[key]=dict(first_observed_utc=snapshot['utc'],pid=item['pid'],
                     start_ticks=item['start_ticks'],binary=str(binary),binary_sha256=digest,
                     configs=[dict(path=str(p),sha256=sha(p)) for p in configs],
-                    status='INDEPENDENT_EP_L2_DTC_ABSENT_BINARY_37DC' if known_native else 'INDEPENDENT_EP_L2_NO_DTC_CONFIG')
+                    status='INDEPENDENT_EP_L2_DTC_ABSENT_BINARY_FB674' if known_fb else 'INDEPENDENT_EP_L2_DTC_ABSENT_BINARY_37DC' if known_native else 'INDEPENDENT_EP_L2_NO_DTC_CONFIG')
             except (OSError,AssertionError) as exc:
                 unknown.append(dict(sample_utc=snapshot['utc'],process=item,error=str(exc)))
     record=dict(utc=now(),status='PASS_ALL_SAMPLED_FOREIGN_PROCESSES_IDENTIFIED' if not unknown else 'UNRESOLVED_FOREIGN_IDENTITY_REQUIRES_REVIEW',

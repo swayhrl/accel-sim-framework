@@ -1,5 +1,6 @@
 """Render already-audited terminal data; preserve the fixed two-holdout contract."""
 from common import *
+from datetime import timedelta
 
 
 def read_table(name):
@@ -77,7 +78,12 @@ def main():
         if 'FIXED_T1C' in rows:
             lines += ['', 'L2/DRAM 可比性：`' + rows['FIXED_T1C']['L2_DRAM_comparability'] + '`。']
         lines.append('')
-    lines += ['以上计数比较描述同一定义下的变化；不把 credit 转换成 DRAM 字节，'
+    lines += ['两个固定 holdout 的周期均低于原 OO：DWT2D 改善幅度很小，BICG 改善幅度较大。'
+        '但 BICG 仍比原 C+ 增加62.334%周期；这项负收益完整保留，不能据此建立普适优越性或替换论文主配置。'
+        'DWT2D 的新增分配减少伴随极小的 DRAM read payload 变化；BICG 的新增分配计数变化很小，'
+        'DRAM read payload 变化更大，且 ready-to-collect 与 fully-ready-to-complete 条件均值上升。'
+        '这些现象描述同一固定模型下的共现变化，尚无可加的整机周期归因。', '',
+        '以上计数比较描述同一定义下的变化；不把 credit 转换成 DRAM 字节，'
         '不把条件服务均值差当作可加的整机周期贡献。C+ 无 DTC 路径字段标 UNAVAILABLE。'
         'L2/DRAM 采用 Lane M 已冻结的单 stream、终态、controller 和 atom 单位检查；'
         '不能闭合时标 UNCOMPARABLE。详细定义、分母及来源见 '
@@ -100,6 +106,13 @@ def main():
         '资源压力与 swap/OOM 计数包含所有项目，不能归因于 DTC；分钟采样不能证明采样间无瞬态。'
         '逐点 time-v 和全局 counter delta 见 [EXECUTION_RESOURCES.tsv](EXECUTION_RESOURCES.tsv) 与 '
         '[RESOURCE_EXECUTION_SUMMARY.json](RESOURCE_EXECUTION_SUMMARY.json)。', '',
+        f"期间 host pswpin/pswpout 分别增加 {summary['counters']['pswpin']['last_minus_first']} / "
+        f"{summary['counters']['pswpout']['last_minus_first']} pages，"
+        f"cgroup swap.current 变化 {summary['counters']['cgroup_swap_current']['last_minus_first']} bytes；"
+        f"cgroup oom/oom_kill 增量分别为 {summary['cgroup_events']['oom']['maximum_minus_first']} / "
+        f"{summary['cgroup_events']['oom_kill']['maximum_minus_first']}。"
+        '不把非零 host swap 活动改写成零，也不从累计历史 oom_kill 推断本次运行发生 OOM。'
+        '两个10秒准入 probe 与运行期 emergency 门槛分别核验，见最终资源/身份复核。', '',
         '物理池仍为 640×128B=80KiB，ordinary 16KiB，shared 96KiB，OO PIB128，'
         '4 Tag banks、原有限服务配额与 global lower cap32768 均保持。Tag 从128条增至512条，'
         '逻辑覆盖16KiB→64KiB；每 lookup 最大 way 比较由4增至8。'
@@ -108,7 +121,9 @@ def main():
         '1 cycle lookup 是冻结模拟假设，PPA/native、等面积与同频结论均 UNAVAILABLE。'
         '[RESOURCE_OVERHEAD.tsv](RESOURCE_OVERHEAD.tsv) 的 A/B/T0 行仅是既有审计参考，本轮没有执行这些点。', '',
         '## 身份、预注册与执行收口', '',
-        f"完整预注册提交 `{prereg['commit']}` 已于 `{prereg['utc']}` push 并 fetch-back，早于两个新启动；"
+        f"完整预注册提交 `{prereg['commit']}` 已于北京时间 "
+        f"`{datetime.fromisoformat(prereg['utc']).astimezone(timezone(timedelta(hours=8))).isoformat()}` "
+        'push 并 fetch-back，早于两个新启动；'
         f"终态独立复核仍有 {audit['preregistered_files_unchanged']} 份冻结文件逐字节不变。"
         f"实际新启动 {audit['actual_starts']} 次，时间区间最大并发 {audit['maximum_new_DTC_concurrency']}；"
         'DWT2D strict PASS 后才启动 BICG，每个输入一次，没有重试或因性能调整参数。', '',
@@ -123,7 +138,13 @@ def main():
             '原 coordinator、冻结63文件、timeout 和资源门槛均未修改，BICG 保持原进程运行。'
             '所有采样外部进程身份已闭合；原保守拒绝及首次未知证据不被清除。'
             '详见 [WRAPPER_SCOPE_ASSESSMENT.md](WRAPPER_SCOPE_ASSESSMENT.md)、外部身份收据与最终合同审计。', '']
-    lines += ['后台监控只读取终态与心跳，不负责 simulator 启动、重试或科学验收。'
+    lines += ['终态归档曾因第三个新 EP-L2 二进制的13条采样记录中断，原始失败已保存于 diagnostics/。'
+        '这13条记录来自两个 PID/start_ticks 身份；恢复后按其精确 fb67448d… binary、'
+        'Core/Framework 来源、逐配置及 input metadata SHA 单独闭合，只补充只读身份审计。'
+        '197份资源样本中的23个独立外部进程均已识别；没有放宽原执行门槛或增加实际 attempt。'
+        '见 [EXTERNAL_PROJECT_UNIFIED_FB_REVIEW.json](EXTERNAL_PROJECT_UNIFIED_FB_REVIEW.json) 与 '
+        '[TERMINAL_ARCHIVE_REPAIR_RECEIPT.json](TERMINAL_ARCHIVE_REPAIR_RECEIPT.json)。', '',
+        '后台监控只读取终态与心跳，不负责 simulator 启动、重试或科学验收。'
         '终态归档工具也只在原执行权与 simulator 退出后读取完整 raw。'
         'strict、原始终态文件 SHA、输入/source/config 身份与独立数值重算见 '
         '[STRICT_AUDIT.json](STRICT_AUDIT.json)、[FINAL_CONTRACT_AUDIT.json](FINAL_CONTRACT_AUDIT.json)、'
