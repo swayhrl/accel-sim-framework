@@ -1,0 +1,1721 @@
+R19_NATIVE_EFFECTIVE_OPTIONS_BEGIN
+-save_embedded_ptx                      0 # saves ptx files embedded in binary as <n>.ptx
+-keep                                   0 # keep intermediate files created by GPGPU-Sim when interfacing with external programs
+-gpgpu_ptx_save_converted_ptxplus                    0 # Saved converted ptxplus to a file
+-gpgpu_occupancy_sm_number                   70 # The SM number to pass to ptxas when getting register usage for computing GPU occupancy. This parameter is required in the config.
+-ptx_opcode_latency_int      4,13,4,5,145,21 # Opcode latencies for integers <ADD,MAX,MUL,MAD,DIV,SHFL>Default 1,1,19,25,145,32
+-ptx_opcode_latency_fp          4,13,4,5,39 # Opcode latencies for single precision floating points <ADD,MAX,MUL,MAD,DIV>Default 1,1,1,1,30
+-ptx_opcode_latency_dp         8,19,8,8,330 # Opcode latencies for double precision floating points <ADD,MAX,MUL,MAD,DIV>Default 8,8,8,8,335
+-ptx_opcode_latency_sfu                  100 # Opcode latencies for SFU instructionsDefault 8
+-ptx_opcode_latency_tesnor                   64 # Opcode latencies for Tensor instructionsDefault 64
+-ptx_opcode_initiation_int          2,2,2,2,8,4 # Opcode initiation intervals for integers <ADD,MAX,MUL,MAD,DIV,SHFL>Default 1,1,4,4,32,4
+-ptx_opcode_initiation_fp            2,2,2,2,4 # Opcode initiation intervals for single precision floating points <ADD,MAX,MUL,MAD,DIV>Default 1,1,1,1,5
+-ptx_opcode_initiation_dp          4,4,4,4,130 # Opcode initiation intervals for double precision floating points <ADD,MAX,MUL,MAD,DIV>Default 8,8,8,8,130
+-ptx_opcode_initiation_sfu                    8 # Opcode initiation intervals for sfu instructionsDefault 8
+-ptx_opcode_initiation_tensor                   64 # Opcode initiation intervals for tensor instructionsDefault 64
+-cdp_latency         7200,8000,100,12000,1600 # CDP API latency <cudaStreamCreateWithFlags, cudaGetParameterBufferV2_init_perWarp, cudaGetParameterBufferV2_perKernel, cudaLaunchDeviceV2_init_perWarp, cudaLaunchDevicV2_perKernel>Default 7200,8000,100,12000,1600
+-network_mode                           2 # Interconnection network mode
+-inter_config_file                   mesh # Interconnection network config file
+-icnt_in_buffer_limit                  512 # in_buffer_limit
+-icnt_out_buffer_limit                  512 # out_buffer_limit
+-icnt_subnets                           2 # subnets
+-icnt_arbiter_algo                      1 # arbiter_algo
+-icnt_verbose                           0 # inct_verbose
+-icnt_grant_cycles                      1 # grant_cycles
+-gpgpu_ptx_use_cuobjdump                    1 # Use cuobjdump to extract ptx and sass from binaries
+-gpgpu_experimental_lib_support                    0 # Try to extract code from cuda libraries [Broken because of unknown cudaGetExportTable]
+-checkpoint_option                      0 #  checkpointing flag (0 = no checkpoint)
+-checkpoint_kernel                      1 #  checkpointing during execution of which kernel (1- 1st kernel)
+-checkpoint_CTA                         0 #  checkpointing after # of CTA (< less than total CTA)
+-resume_option                          0 #  resume flag (0 = no resume)
+-resume_kernel                          0 #  Resume from which kernel (1= 1st kernel)
+-resume_CTA                             0 #  resume from which CTA 
+-checkpoint_CTA_t                       0 #  resume from which CTA 
+-checkpoint_insn_Y                      0 #  resume from which CTA 
+-gpgpu_ptx_convert_to_ptxplus                    0 # Convert SASS (native ISA) to ptxplus and run ptxplus
+-gpgpu_ptx_force_max_capability                   70 # Force maximum compute capability
+-gpgpu_ptx_inst_debug_to_file                    0 # Dump executed instructions' debug information to file
+-gpgpu_ptx_inst_debug_file       inst_debug.txt # Executed instructions' debug output file
+-gpgpu_ptx_inst_debug_thread_uid                    1 # Thread UID for executed instructions' debug output
+-gpgpu_simd_model                       1 # 1 = post-dominator
+-gpgpu_shader_core_pipeline              2048:32 # shader core pipeline config, i.e., {<nthread>:<warpsize>}
+-gpgpu_tex_cache:l1  N:4:128:256,L:R:m:N:L,T:512:8,128:2 # per-shader L1 texture cache  (READ-ONLY) config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq>:<rf>}
+-gpgpu_const_cache:l1 N:128:64:8,L:R:f:N:L,S:2:64,4 # per-shader L1 constant memory cache  (READ-ONLY) config  {<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>,<mshr>:<N>:<merge>,<mq>} 
+-gpgpu_cache:il1     N:64:128:16,L:R:f:N:L,S:2:48,4 # shader L1 instruction cache config  {<sector?>:<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>:<set_index_fn>,<mshr>:<N>:<merge>,<mq>} 
+-gpgpu_cache:dl1     S:4:128:128,L:T:m:L:L,A:512:8,16:0,32 # per-shader L1 data cache config  {<sector?>:<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>:<set_index_fn>,<mshr>:<N>:<merge>,<mq>:<fifo_entry>,<data_port_width> | none}
+-gpgpu_l1_cache_write_ratio                   25 # L1D write ratio
+-gpgpu_l1_banks                         4 # The number of L1 cache banks
+-gpgpu_l1_banks_byte_interleaving                   32 # l1 banks byte interleaving granularity
+-gpgpu_l1_banks_hashing_function                    0 # l1 banks hashing function
+-gpgpu_l1_latency                      20 # L1 Hit Latency
+-gpgpu_smem_latency                    20 # smem Latency
+-gpgpu_cache:dl1PrefL1                 none # per-shader L1 data cache config  {<sector?>:<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>:<set_index_fn>,<mshr>:<N>:<merge>,<mq>:<fifo_entry>,<data_port_width> | none}
+-gpgpu_cache:dl1PrefShared                 none # per-shader L1 data cache config  {<sector?>:<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>:<set_index_fn>,<mshr>:<N>:<merge>,<mq>:<fifo_entry>,<data_port_width> | none}
+-gpgpu_gmem_skip_L1D                    0 # global memory access skip L1D cache (implements -Xptxas -dlcm=cg, default=no skip)
+-gpgpu_perfect_mem                      0 # enable perfect memory mode (no cache miss)
+-n_regfile_gating_group                    4 # group of lanes that should be read/written together)
+-gpgpu_clock_gated_reg_file                    0 # enable clock gated reg file for power calculations
+-gpgpu_clock_gated_lanes                    1 # enable clock gated lanes for power calculations
+-gpgpu_shader_registers                65536 # Number of registers per shader core. Limits number of concurrent CTAs. (default 8192)
+-gpgpu_registers_per_block                65536 # Maximum number of registers per CTA. (default 8192)
+-gpgpu_ignore_resources_limitation                    0 # gpgpu_ignore_resources_limitation (default 0)
+-gpgpu_shader_cta                      32 # Maximum number of concurrent CTAs in shader (default 32)
+-gpgpu_num_cta_barriers                   16 # Maximum number of named barriers per CTA (default 16)
+-gpgpu_n_clusters                      80 # number of processing clusters
+-gpgpu_n_cores_per_cluster                    1 # number of simd cores per cluster
+-gpgpu_n_cluster_ejection_buffer_size                   32 # number of packets in ejection buffer
+-gpgpu_n_ldst_response_buffer_size                    2 # number of response packets in ld/st unit ejection buffer
+-gpgpu_shmem_per_block                65536 # Size of shared memory per thread block or CTA (default 48kB)
+-gpgpu_shmem_size                   98304 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_option       0,8,16,32,64,96 # Option list of shared memory sizes
+-gpgpu_unified_l1d_size                  128 # Size of unified data cache(L1D + shared memory) in KB
+-gpgpu_adaptive_cache_config                    0 # adaptive_cache_config
+-gpgpu_ep_l2_assert_fixed_l1_assoc                    1 # assert that the configured EP-L2 L1D associativity never changes
+-gpgpu_shmem_sizeDefault                98304 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_size_PrefL1                16384 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_size_PrefShared                16384 # Size of shared memory per shader core (default 16kB)
+-gpgpu_shmem_num_banks                   32 # Number of banks in the shared memory in each shader core (default 16)
+-gpgpu_shmem_limited_broadcast                    0 # Limit shared memory to do one broadcast per cycle (default on)
+-gpgpu_shmem_warp_parts                    1 # Number of portions a warp is divided into for shared memory bank conflict check 
+-gpgpu_mem_unit_ports                    1 # The number of memory transactions allowed per core cycle
+-gpgpu_shmem_warp_parts                    1 # Number of portions a warp is divided into for shared memory bank conflict check 
+-gpgpu_warpdistro_shader                   -1 # Specify which shader core to collect the warp size distribution from
+-gpgpu_warp_issue_shader                    0 # Specify which shader core to collect the warp issue distribution from
+-gpgpu_local_mem_map                    1 # Mapping from local memory space address to simulated GPU physical address space (default = enabled)
+-gpgpu_num_reg_banks                   16 # Number of register banks (default = 8)
+-gpgpu_reg_bank_use_warp_id                    0 # Use warp ID in mapping registers to banks (default = off)
+-gpgpu_sub_core_model                    1 # Sub Core Volta/Pascal model (default = off)
+-gpgpu_enable_specialized_operand_collector                    0 # enable_specialized_operand_collector
+-gpgpu_operand_collector_num_units_sp                    4 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_dp                    0 # number of collector units (default = 0)
+-gpgpu_operand_collector_num_units_sfu                    4 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_int                    0 # number of collector units (default = 0)
+-gpgpu_operand_collector_num_units_tensor_core                    4 # number of collector units (default = 4)
+-gpgpu_operand_collector_num_units_mem                    2 # number of collector units (default = 2)
+-gpgpu_operand_collector_num_units_gen                    8 # number of collector units (default = 0)
+-gpgpu_operand_collector_num_in_ports_sp                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_dp                    0 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_in_ports_sfu                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_int                    0 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_in_ports_tensor_core                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_mem                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_in_ports_gen                    8 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_out_ports_sp                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_dp                    0 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_out_ports_sfu                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_int                    0 # number of collector unit in ports (default = 0)
+-gpgpu_operand_collector_num_out_ports_tensor_core                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_mem                    1 # number of collector unit in ports (default = 1)
+-gpgpu_operand_collector_num_out_ports_gen                    8 # number of collector unit in ports (default = 0)
+-gpgpu_coalesce_arch                   70 # Coalescing arch (GT200 = 13, Fermi = 20)
+-gpgpu_num_sched_per_core                    4 # Number of warp schedulers per core
+-gpgpu_max_insn_issue_per_warp                    1 # Max number of instructions that can be issued per warp in one cycle by scheduler (either 1 or 2)
+-gpgpu_dual_issue_diff_exec_units                    1 # should dual issue use two different execution unit resources (Default = 1)
+-gpgpu_simt_core_sim_order                    1 # Select the simulation order of cores in a cluster (0=Fix, 1=Round-Robin)
+-gpgpu_pipeline_widths 4,4,4,4,4,4,4,4,4,4,8,4,4 # Pipeline widths ID_OC_SP,ID_OC_DP,ID_OC_INT,ID_OC_SFU,ID_OC_MEM,OC_EX_SP,OC_EX_DP,OC_EX_INT,OC_EX_SFU,OC_EX_MEM,EX_WB,ID_OC_TENSOR_CORE,OC_EX_TENSOR_CORE
+-gpgpu_tensor_core_avail                    1 # Tensor Core Available (default=0)
+-gpgpu_num_sp_units                     4 # Number of SP units (default=1)
+-gpgpu_num_dp_units                     4 # Number of DP units (default=0)
+-gpgpu_num_int_units                    4 # Number of INT units (default=0)
+-gpgpu_num_sfu_units                    4 # Number of SF units (default=1)
+-gpgpu_num_tensor_core_units                    4 # Number of tensor_core units (default=1)
+-gpgpu_num_mem_units                    1 # Number if ldst units (default=1) WARNING: not hooked up to anything
+-gpgpu_scheduler                      lrr # Scheduler configuration: < lrr | gto | two_level_active > If two_level_active:<num_active_warps>:<inner_prioritization>:<outer_prioritization>For complete list of prioritization values see shader.h enum scheduler_prioritization_typeDefault: gto
+-gpgpu_concurrent_kernel_sm                    0 # Support concurrent kernels on a SM (default = disabled)
+-gpgpu_perfect_inst_const_cache                    1 # perfect inst and const cache mode, so all inst and const hits in the cache(default = disabled)
+-gpgpu_inst_fetch_throughput                    4 # the number of fetched intruction per warp each cycle
+-gpgpu_reg_file_port_throughput                    2 # the number ports of the register file
+-specialized_unit_1         1,4,4,4,4,BRA # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_2       1,4,200,4,4,TEX # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_3      1,4,8,4,4,TENSOR # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_4         0,4,4,4,4,BRA # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_5         0,4,4,4,4,BRA # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_6         0,4,4,4,4,BRA # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_7         0,4,4,4,4,BRA # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-specialized_unit_8         0,4,4,4,4,BRA # specialized unit config {<enabled>,<num_units>:<latency>:<initiation>,<ID_OC_SPEC>:<OC_EX_SPEC>,<NAME>}
+-gpgpu_perf_sim_memcpy                    1 # Fill the L2 cache on memcpy
+-gpgpu_simple_dram_model                    0 # simple_dram_model with fixed latency and BW
+-gpgpu_dram_scheduler                    1 # 0 = fifo, 1 = FR-FCFS (defaul)
+-gpgpu_dram_partition_queues        64:512:256:64 # i2$:$2d:d2$:$2i
+-l2_ideal                               0 # Use a ideal L2 cache that always hit
+-gpgpu_cache:dl2     S:64:128:16,L:B:m:L:P,A:128:1,128:0,32 # unified banked L2 data cache config  {<sector?>:<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>:<set_index_fn>,<mshr>:<N>:<merge>,<mq>:<fifo_entry>,<data_port_width>
+-gpgpu_ep_l2_descriptor_pool_size                  512 # EP-L2 B0 shared long-lived descriptor-pool capacity (0 disables)
+-gpgpu_ep_l2_descriptor_per_line_cap                   32 # EP-L2 B0 maximum long-lived descriptors per 128B L2 line
+-gpgpu_ep_l2_wad_entries                  256 # EP-L2 B0 dirty write-address descriptor capacity (0 disables)
+-gpgpu_ep_l2_payload_mode                    2 # EP-L2 payload mode: 0=off, 1=Legacy, 2=Banked
+-gpgpu_ep_l2_ft_mode                    1 # FT mode: 0 old static, 1 finite WBUF, 2 unified WB
+-gpgpu_ep_l2_wbuf_entries                   16 # Additional WB payload budget: 0 off, 8 sensitivity, 16 primary
+-gpgpu_ep_l2_payload_policy                    0 # EP-L2 payload policy: 0=static (only M1-supported policy)
+-gpgpu_ep_l2_feature_unified_payload                    0 # EP-L2 future Unified Payload feature (unsupported in M1)
+-gpgpu_ep_l2_feature_ro_pending_state                    0 # EP-L2 future RO pending-state feature (unsupported in M1)
+-gpgpu_ep_l2_feature_tvd                    0 # EP-L2 future TVD feature (unsupported in M1)
+-gpgpu_ep_l2_feature_adaptive_policy                    0 # EP-L2 future adaptive policy feature (unsupported in M1)
+-gpgpu_ep_l2_b0_stats                    1 # emit timing-neutral EPL2B0V1 target instrumentation
+-gpgpu_ep_l2_m0a_stats                    0 # emit timing-neutral EPL2M0AV1 generic observability
+-gpgpu_cache:dl2_texture_only                    0 # L2 cache used for texture only
+-gpgpu_n_mem                           32 # number of memory modules (e.g. memory controllers) in gpu
+-gpgpu_n_sub_partition_per_mchannel                    2 # number of memory subpartition in each memory module
+-gpgpu_n_mem_per_ctrlr                    1 # number of memory chips per memory controller
+-gpgpu_memlatency_stat                   14 # track and display latency statistics 0x2 enables MC, 0x4 enables queue logs
+-gpgpu_frfcfs_dram_sched_queue_size                  512 # 0 = unlimited (default); # entries per chip
+-gpgpu_dram_return_queue_size                  768 # 0 = unlimited (default); # entries per chip
+-gpgpu_l2_wb_progress_credit                    1 # reserved no-return writeback credits per memory channel
+-gpgpu_l2_char_dram_issue_hold_cycles                    0 # directed test hook: hold initial L2-to-DRAM issues
+-gpgpu_l2_char_dram_issue_hold_after_issues                    0 # directed test hook: arm hold after this many L2-to-DRAM issues
+-gpgpu_l2_char_returnq_hold_cycles                    0 # directed test hook: hold an occupied DRAM-to-L2 return queue
+-gpgpu_l2_char_enable                    0 # enable timing-neutral L2CHARV1 instrumentation
+-gpgpu_l2_char_window                 5000 # L2 cache-cycle samples per L2CHARV1 window
+-gpgpu_l2_char_set_detail                    1 # collect L2CHARV1 per-set reservation distribution
+-gpgpu_l2_char_emit_windows                    1 # emit L2CHARV1 temporal window records
+-gpgpu_dram_buswidth                   16 # default = 4 bytes (8 bytes per cycle at DDR)
+-gpgpu_dram_burst_length                    2 # Burst length of each DRAM request (default = 4 data bus cycle)
+-dram_data_command_freq_ratio                    2 # Frequency ratio between DRAM data bus and command bus (default = 2 times, i.e. DDR)
+-gpgpu_dram_timing_opt nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40: CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3 # DRAM timing parameters = {nbk:tCCD:tRRD:tRCD:tRAS:tRP:tRC:CL:WL:tCDLR:tWR:nbkgrp:tCCDL:tRTPL}
+-gpgpu_l2_rop_latency                  160 # ROP queue latency (default 85)
+-dram_latency                         100 # DRAM latency (default 30)
+-dram_dual_bus_interface                    1 # dual_bus_interface (default = 0) 
+-dram_bnk_indexing_policy                    0 # dram_bnk_indexing_policy (0 = normal indexing, 1 = Xoring with the higher bits) (Default = 0)
+-dram_bnkgrp_indexing_policy                    1 # dram_bnkgrp_indexing_policy (0 = take higher bits, 1 = take lower bits) (Default = 0)
+-dram_seperate_write_queue_enable                    0 # Seperate_Write_Queue_Enable
+-dram_write_queue_size             32:28:16 # Write_Queue_Size
+-dram_elimnate_rw_turnaround                    0 # elimnate_rw_turnaround i.e set tWTR and tRTW = 0
+-icnt_flit_size                        40 # icnt_flit_size
+-SST_mode                               0 # SST mode
+-gpgpu_mem_addr_mapping dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RBBBCCCB.CCCSSSSS # mapping memory address to dram model {dramid@<start bit>;<memory address map>}
+-gpgpu_mem_addr_test                    0 # run sweep test to check address mapping for aliased address
+-gpgpu_mem_address_mask                    1 # 0 = old addressing mask, 1 = new addressing mask, 2 = new add. mask + flipped bank sel and chip sel bits
+-gpgpu_memory_partition_indexing                    2 # 0 = no indexing, 1 = bitwise xoring, 2 = IPoly, 3 = custom indexing
+-accelwattch_xml_file accelwattch_sass_sim.xml # AccelWattch XML file
+-power_simulation_enabled                    0 # Turn on power simulator (1=On, 0=Off)
+-power_per_cycle_dump                    0 # Dump detailed power output each cycle
+-hw_perf_file_name            hw_perf.csv # Hardware Performance Statistics file
+-hw_perf_bench_name                       # Kernel Name in Hardware Performance Statistics file
+-power_simulation_mode                    0 # Switch performance counter input for power simulation (0=Sim, 1=HW, 2=HW-Sim Hybrid)
+-dvfs_enabled                           0 # Turn on DVFS for power model
+-aggregate_power_stats                    0 # Accumulate power across all kernels
+-accelwattch_hybrid_perfsim_L1_RH                    0 # Get L1 Read Hits for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L1_RM                    0 # Get L1 Read Misses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L1_WH                    0 # Get L1 Write Hits for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L1_WM                    0 # Get L1 Write Misses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L2_RH                    0 # Get L2 Read Hits for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L2_RM                    0 # Get L2 Read Misses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L2_WH                    0 # Get L2 Write Hits for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_L2_WM                    0 # Get L2 Write Misses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_CC_ACC                    0 # Get Constant Cache Acesses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_SHARED_ACC                    0 # Get Shared Memory Acesses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_DRAM_RD                    0 # Get DRAM Reads for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_DRAM_WR                    0 # Get DRAM Writes for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_NOC                    0 # Get Interconnect Acesses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_PIPE_DUTY                    0 # Get Pipeline Duty Cycle Acesses for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_NUM_SM_IDLE                    0 # Get Number of Idle SMs for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_CYCLES                    0 # Get Executed Cycles for Accelwattch-Hybrid from Accel-Sim
+-accelwattch_hybrid_perfsim_VOLTAGE                    0 # Get Chip Voltage for Accelwattch-Hybrid from Accel-Sim
+-power_trace_enabled                    0 # produce a file for the power trace (1=On, 0=Off)
+-power_trace_zlevel                     6 # Compression level of the power trace output log (0=no comp, 9=highest)
+-steady_power_levels_enabled                    0 # produce a file for the steady power levels (1=On, 0=Off)
+-steady_state_definition                  8:4 # allowed deviation:number of samples
+-gpgpu_max_cycle                        0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_insn                         0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_cta                          0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_max_completed_cta                    0 # terminates gpu simulation early (0 = no limit)
+-gpgpu_runtime_stat                   500 # display runtime statistics such as dram utilization {<freq>:<flag>}
+-liveness_message_freq                    1 # Minimum number of seconds between simulation liveness messages (0 = always print)
+-gpgpu_compute_capability_major                    7 # Major compute capability version number
+-gpgpu_compute_capability_minor                    0 # Minor compute capability version number
+-gpgpu_flush_l1_cache                    1 # Flush L1 cache at the end of each kernel call
+-gpgpu_flush_l2_cache                    0 # Flush L2 cache at the end of each kernel call
+-gpgpu_deadlock_detect                    1 # Stop the simulation at deadlock (1=on (default), 0=off)
+-gpgpu_ptx_instruction_classification                    0 # if enabled will classify ptx instruction types per kernel (Max 255 kernels now)
+-gpgpu_ptx_sim_mode                     0 # Select between Performance (default) or Functional simulation (1)
+-gpgpu_clock_domains 1132.0:1132.0:1132.0:850.0 # Clock Domain Frequencies in MhZ {<Core Clock>:<ICNT Clock>:<L2 Clock>:<DRAM Clock>}
+-gpgpu_max_concurrent_kernel                  128 # maximum kernels that can run concurrently on GPU, set this value according to max resident grids for your compute capability
+-gpgpu_cflog_interval                    0 # Interval between each snapshot in control flow logger
+-visualizer_enabled                     0 # Turn on visualizer output (1=On, 0=Off)
+-visualizer_outputfile                 NULL # Specifies the output log file for visualizer
+-visualizer_zlevel                      6 # Compression level of the visualizer output log (0=no comp, 9=highest)
+-gpgpu_stack_size_limit                 1024 # GPU thread stack size
+-gpgpu_heap_size_limit              8388608 # GPU malloc heap size 
+-gpgpu_runtime_sync_depth_limit                    2 # GPU device runtime synchronize depth
+-gpgpu_runtime_pending_launch_count_limit                 2048 # GPU device runtime pending launch count
+-trace_enabled                          0 # Turn on traces
+-trace_components                    none # comma seperated list of traces to enable. Complete list found in trace_streams.tup. Default none
+-trace_sampling_core                    0 # The core which is printed using CORE_DPRINTF. Default 0
+-trace_sampling_memory_partition                   -1 # The memory partition which is printed using MEMPART_DPRINTF. Default -1 (i.e. all)
+-enable_ptx_file_line_stats                    1 # Turn on PTX source line statistic profiling. (1 = On)
+-ptx_line_stats_filename gpgpu_inst_stats.txt # Output file for PTX source line statistics.
+-gpgpu_kernel_launch_latency                 5000 # Kernel launch latency in cycles. Default: 0
+-gpgpu_cdp_enabled                      0 # Turn on CDP
+-gpgpu_TB_launch_latency                    0 # thread block launch latency in cycles. Default: 0
+-trace               ./traces/kernelslist.g # traces kernel filetraces kernel file directory
+-trace_opcode_latency_initiation_int                  2,2 # Opcode latencies and initiation for integers in trace driven mode <latency,initiation>
+-trace_opcode_latency_initiation_sp                  2,2 # Opcode latencies and initiation for sp in trace driven mode <latency,initiation>
+-trace_opcode_latency_initiation_dp                  8,4 # Opcode latencies and initiation for dp in trace driven mode <latency,initiation>
+-trace_opcode_latency_initiation_sfu                 20,8 # Opcode latencies and initiation for sfu in trace driven mode <latency,initiation>
+-trace_opcode_latency_initiation_tensor                  2,2 # Opcode latencies and initiation for tensor in trace driven mode <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_1                  4,4 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_2                200,4 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_3                  2,2 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_4                  4,4 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_5                  4,4 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_6                  4,4 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_7                  4,4 # specialized unit config <latency,initiation>
+-trace_opcode_latency_initiation_spec_op_8                  4,4 # specialized unit config <latency,initiation>
+R19_NATIVE_EFFECTIVE_OPTIONS_END
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 64
+addr_dec_mask[CHIP]  = 0000000000001f00 	high:13 low:8
+addr_dec_mask[BK]    = 00000000000e2000 	high:20 low:13
+addr_dec_mask[ROW]   = 00000001fff00000 	high:33 low:20
+addr_dec_mask[COL]   = 000000000001c0ff 	high:17 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000002000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:850000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000117647058824
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+R19_EFFECTIVE|regime=WAD256_Q4|mode=1|nmem=32|slices=64|queues=64:512:256:64|scheduler=512|dram_return=768|shared_credit_derived=1279|private_per_subpart=1|wb_progress_credit=1|dram_latency_gpu_cycles=100|detailed_dram=1|expected_dram_hz=850000000|atom=32|burst=2|busW=16|dram_banks=16
+*** Initializing Memory Statistics ***
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=1|window_end_cycle=5001|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=2|completion_cycle=5002|samples=5001|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=2|completion_cycle=5002|samples=5001|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+R19_CLOCK|core_ticks=10000|l2_ticks=10000|dram_ticks=7509|icnt_ticks=10000|native_next_clock_domain=1
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=5001|window_end_cycle=10002|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=5002|completion_cycle=10002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=5002|completion_cycle=10002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1|enter=10001|ready=10161|delta=160
+L3_ROP_READY|uid=2|enter=10164|ready=10324|delta=160
+L3_ROP_READY|uid=3|enter=10327|ready=10487|delta=160
+L3_ROP_READY|uid=4|enter=10490|ready=10650|delta=160
+L3_ROP_READY|uid=5|enter=10653|ready=10813|delta=160
+L3_ROP_READY|uid=6|enter=10816|ready=10976|delta=160
+L3_ROP_READY|uid=7|enter=10979|ready=11139|delta=160
+L3_ROP_READY|uid=8|enter=11142|ready=11302|delta=160
+L3_ROP_READY|uid=9|enter=11305|ready=11465|delta=160
+L3_ROP_READY|uid=10|enter=11468|ready=11628|delta=160
+L3_ROP_READY|uid=11|enter=11631|ready=11791|delta=160
+L3_ROP_READY|uid=12|enter=11794|ready=11954|delta=160
+L3_ROP_READY|uid=13|enter=11957|ready=12117|delta=160
+L3_ROP_READY|uid=14|enter=12120|ready=12280|delta=160
+L3_ROP_READY|uid=15|enter=12283|ready=12443|delta=160
+L3_ROP_READY|uid=16|enter=12446|ready=12606|delta=160
+L3_ROP_READY|uid=17|enter=12609|ready=12769|delta=160
+L3_ROP_READY|uid=18|enter=12772|ready=12932|delta=160
+L3_ROP_READY|uid=19|enter=12935|ready=13095|delta=160
+L3_ROP_READY|uid=20|enter=13098|ready=13258|delta=160
+L3_ROP_READY|uid=21|enter=13261|ready=13421|delta=160
+L3_ROP_READY|uid=22|enter=13424|ready=13584|delta=160
+L3_ROP_READY|uid=23|enter=13587|ready=13747|delta=160
+L3_ROP_READY|uid=24|enter=13750|ready=13910|delta=160
+L3_ROP_READY|uid=25|enter=13913|ready=14073|delta=160
+L3_ROP_READY|uid=26|enter=14076|ready=14236|delta=160
+L3_ROP_READY|uid=27|enter=14239|ready=14399|delta=160
+L3_ROP_READY|uid=28|enter=14402|ready=14562|delta=160
+L3_ROP_READY|uid=29|enter=14565|ready=14725|delta=160
+L3_ROP_READY|uid=30|enter=14728|ready=14888|delta=160
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=10002|window_end_cycle=15002|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=10002|completion_cycle=15002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=14|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=10002|completion_cycle=15002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=31|enter=14891|ready=15051|delta=160
+L3_ROP_READY|uid=32|enter=15054|ready=15214|delta=160
+L3_ROP_READY|uid=33|enter=15217|ready=15377|delta=160
+L3_ROP_READY|uid=34|enter=15380|ready=15540|delta=160
+L3_ROP_READY|uid=35|enter=15543|ready=15703|delta=160
+L3_ROP_READY|uid=36|enter=15706|ready=15866|delta=160
+L3_ROP_READY|uid=37|enter=15869|ready=16029|delta=160
+L3_ROP_READY|uid=38|enter=16032|ready=16192|delta=160
+L3_ROP_READY|uid=39|enter=16195|ready=16355|delta=160
+L3_ROP_READY|uid=40|enter=16358|ready=16518|delta=160
+L3_ROP_READY|uid=41|enter=16521|ready=16681|delta=160
+L3_ROP_READY|uid=42|enter=16684|ready=16844|delta=160
+L3_ROP_READY|uid=43|enter=16847|ready=17007|delta=160
+L3_ROP_READY|uid=44|enter=17010|ready=17170|delta=160
+L3_ROP_READY|uid=45|enter=17173|ready=17333|delta=160
+L3_ROP_READY|uid=46|enter=17336|ready=17496|delta=160
+L3_ROP_READY|uid=47|enter=17499|ready=17659|delta=160
+L3_ROP_READY|uid=48|enter=17662|ready=17822|delta=160
+L3_ROP_READY|uid=49|enter=17825|ready=17985|delta=160
+L3_ROP_READY|uid=50|enter=17988|ready=18148|delta=160
+L3_ROP_READY|uid=51|enter=18151|ready=18311|delta=160
+L3_ROP_READY|uid=52|enter=18314|ready=18474|delta=160
+L3_ROP_READY|uid=53|enter=18477|ready=18637|delta=160
+L3_ROP_READY|uid=54|enter=18640|ready=18800|delta=160
+L3_ROP_READY|uid=55|enter=18803|ready=18963|delta=160
+L3_ROP_READY|uid=56|enter=18966|ready=19126|delta=160
+L3_ROP_READY|uid=57|enter=19129|ready=19289|delta=160
+L3_ROP_READY|uid=58|enter=19292|ready=19452|delta=160
+L3_ROP_READY|uid=59|enter=19455|ready=19615|delta=160
+L3_ROP_READY|uid=60|enter=19618|ready=19778|delta=160
+L3_ROP_READY|uid=61|enter=19781|ready=19941|delta=160
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=15002|window_end_cycle=20002|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=15002|completion_cycle=20002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=45|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=15002|completion_cycle=20002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=62|enter=19944|ready=20104|delta=160
+L3_ROP_READY|uid=63|enter=20107|ready=20267|delta=160
+L3_ROP_READY|uid=64|enter=20270|ready=20430|delta=160
+L3_ROP_READY|uid=65|enter=20433|ready=20593|delta=160
+L3_ROP_READY|uid=66|enter=20596|ready=20756|delta=160
+L3_ROP_READY|uid=67|enter=20759|ready=20919|delta=160
+L3_ROP_READY|uid=68|enter=20922|ready=21082|delta=160
+L3_ROP_READY|uid=69|enter=21085|ready=21245|delta=160
+L3_ROP_READY|uid=70|enter=21248|ready=21408|delta=160
+L3_ROP_READY|uid=71|enter=21411|ready=21571|delta=160
+L3_ROP_READY|uid=72|enter=21574|ready=21734|delta=160
+L3_ROP_READY|uid=73|enter=21737|ready=21897|delta=160
+L3_ROP_READY|uid=74|enter=21900|ready=22060|delta=160
+L3_ROP_READY|uid=75|enter=22063|ready=22223|delta=160
+L3_ROP_READY|uid=76|enter=22226|ready=22386|delta=160
+L3_ROP_READY|uid=77|enter=22389|ready=22549|delta=160
+L3_ROP_READY|uid=78|enter=22552|ready=22712|delta=160
+L3_ROP_READY|uid=79|enter=22715|ready=22875|delta=160
+L3_ROP_READY|uid=80|enter=22878|ready=23038|delta=160
+L3_ROP_READY|uid=81|enter=23041|ready=23201|delta=160
+L3_ROP_READY|uid=82|enter=23204|ready=23364|delta=160
+L3_ROP_READY|uid=83|enter=23367|ready=23527|delta=160
+L3_ROP_READY|uid=84|enter=23530|ready=23690|delta=160
+L3_ROP_READY|uid=85|enter=23693|ready=23853|delta=160
+L3_ROP_READY|uid=86|enter=23856|ready=24016|delta=160
+L3_ROP_READY|uid=87|enter=24019|ready=24179|delta=160
+L3_ROP_READY|uid=88|enter=24182|ready=24342|delta=160
+L3_ROP_READY|uid=89|enter=24345|ready=24505|delta=160
+L3_ROP_READY|uid=90|enter=24508|ready=24668|delta=160
+L3_ROP_READY|uid=91|enter=24671|ready=24831|delta=160
+L3_ROP_READY|uid=92|enter=24834|ready=24994|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=20002|completion_cycle=25002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=76|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=20002|completion_cycle=25002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=20002|window_end_cycle=25003|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=93|enter=24997|ready=25157|delta=160
+L3_ROP_READY|uid=94|enter=25160|ready=25320|delta=160
+L3_ROP_READY|uid=95|enter=25323|ready=25483|delta=160
+L3_ROP_READY|uid=96|enter=25486|ready=25646|delta=160
+L3_ROP_READY|uid=97|enter=25649|ready=25809|delta=160
+L3_ROP_READY|uid=98|enter=25812|ready=25972|delta=160
+L3_ROP_READY|uid=99|enter=25975|ready=26135|delta=160
+L3_ROP_READY|uid=100|enter=26138|ready=26298|delta=160
+L3_ROP_READY|uid=101|enter=26301|ready=26461|delta=160
+L3_ROP_READY|uid=102|enter=26464|ready=26624|delta=160
+L3_ROP_READY|uid=103|enter=26627|ready=26787|delta=160
+L3_ROP_READY|uid=104|enter=26790|ready=26950|delta=160
+L3_ROP_READY|uid=105|enter=26953|ready=27113|delta=160
+L3_ROP_READY|uid=106|enter=27116|ready=27276|delta=160
+L3_ROP_READY|uid=107|enter=27279|ready=27439|delta=160
+L3_ROP_READY|uid=108|enter=27442|ready=27602|delta=160
+L3_ROP_READY|uid=109|enter=27605|ready=27765|delta=160
+L3_ROP_READY|uid=110|enter=27768|ready=27928|delta=160
+L3_ROP_READY|uid=111|enter=27931|ready=28091|delta=160
+L3_ROP_READY|uid=112|enter=28094|ready=28254|delta=160
+L3_ROP_READY|uid=113|enter=28257|ready=28417|delta=160
+L3_ROP_READY|uid=114|enter=28420|ready=28580|delta=160
+L3_ROP_READY|uid=115|enter=28583|ready=28743|delta=160
+L3_ROP_READY|uid=116|enter=28746|ready=28906|delta=160
+L3_ROP_READY|uid=117|enter=28909|ready=29069|delta=160
+L3_ROP_READY|uid=118|enter=29072|ready=29232|delta=160
+L3_ROP_READY|uid=119|enter=29235|ready=29395|delta=160
+L3_ROP_READY|uid=120|enter=29398|ready=29558|delta=160
+L3_ROP_READY|uid=121|enter=29561|ready=29721|delta=160
+L3_ROP_READY|uid=122|enter=29724|ready=29884|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=25002|completion_cycle=30002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=106|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=25002|completion_cycle=30002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=25003|window_end_cycle=30003|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=123|enter=29887|ready=30047|delta=160
+L3_ROP_READY|uid=124|enter=30050|ready=30210|delta=160
+L3_ROP_READY|uid=125|enter=30213|ready=30373|delta=160
+L3_ROP_READY|uid=126|enter=30376|ready=30536|delta=160
+L3_ROP_READY|uid=127|enter=30539|ready=30699|delta=160
+L3_ROP_READY|uid=128|enter=30702|ready=30862|delta=160
+L3_ROP_READY|uid=129|enter=30865|ready=31025|delta=160
+L3_ROP_READY|uid=130|enter=31028|ready=31188|delta=160
+L3_ROP_READY|uid=131|enter=31191|ready=31351|delta=160
+L3_ROP_READY|uid=132|enter=31354|ready=31514|delta=160
+L3_ROP_READY|uid=133|enter=31517|ready=31677|delta=160
+L3_ROP_READY|uid=134|enter=31680|ready=31840|delta=160
+L3_ROP_READY|uid=135|enter=31843|ready=32003|delta=160
+L3_ROP_READY|uid=136|enter=32006|ready=32166|delta=160
+L3_ROP_READY|uid=137|enter=32169|ready=32329|delta=160
+L3_ROP_READY|uid=138|enter=32332|ready=32492|delta=160
+L3_ROP_READY|uid=139|enter=32495|ready=32655|delta=160
+L3_ROP_READY|uid=140|enter=32658|ready=32818|delta=160
+L3_ROP_READY|uid=141|enter=32821|ready=32981|delta=160
+L3_ROP_READY|uid=142|enter=32984|ready=33144|delta=160
+L3_ROP_READY|uid=143|enter=33147|ready=33307|delta=160
+L3_ROP_READY|uid=144|enter=33310|ready=33470|delta=160
+L3_ROP_READY|uid=145|enter=33473|ready=33633|delta=160
+L3_ROP_READY|uid=146|enter=33636|ready=33796|delta=160
+L3_ROP_READY|uid=147|enter=33799|ready=33959|delta=160
+L3_ROP_READY|uid=148|enter=33962|ready=34122|delta=160
+L3_ROP_READY|uid=149|enter=34125|ready=34285|delta=160
+L3_ROP_READY|uid=150|enter=34288|ready=34448|delta=160
+L3_ROP_READY|uid=151|enter=34451|ready=34611|delta=160
+L3_ROP_READY|uid=152|enter=34614|ready=34774|delta=160
+L3_ROP_READY|uid=153|enter=34777|ready=34937|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=30002|completion_cycle=35002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=137|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=30002|completion_cycle=35002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=30003|window_end_cycle=35003|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=154|enter=34940|ready=35100|delta=160
+L3_ROP_READY|uid=155|enter=35103|ready=35263|delta=160
+L3_ROP_READY|uid=156|enter=35266|ready=35426|delta=160
+L3_ROP_READY|uid=157|enter=35429|ready=35589|delta=160
+L3_ROP_READY|uid=158|enter=35592|ready=35752|delta=160
+L3_ROP_READY|uid=159|enter=35755|ready=35915|delta=160
+L3_ROP_READY|uid=160|enter=35918|ready=36078|delta=160
+L3_ROP_READY|uid=161|enter=36081|ready=36241|delta=160
+L3_ROP_READY|uid=162|enter=36244|ready=36404|delta=160
+L3_ROP_READY|uid=163|enter=36407|ready=36567|delta=160
+L3_ROP_READY|uid=164|enter=36570|ready=36730|delta=160
+L3_ROP_READY|uid=165|enter=36733|ready=36893|delta=160
+L3_ROP_READY|uid=166|enter=36896|ready=37056|delta=160
+L3_ROP_READY|uid=167|enter=37059|ready=37219|delta=160
+L3_ROP_READY|uid=168|enter=37222|ready=37382|delta=160
+L3_ROP_READY|uid=169|enter=37385|ready=37545|delta=160
+L3_ROP_READY|uid=170|enter=37548|ready=37708|delta=160
+L3_ROP_READY|uid=171|enter=37711|ready=37871|delta=160
+L3_ROP_READY|uid=172|enter=37874|ready=38034|delta=160
+L3_ROP_READY|uid=173|enter=38037|ready=38197|delta=160
+L3_ROP_READY|uid=174|enter=38200|ready=38360|delta=160
+L3_ROP_READY|uid=175|enter=38363|ready=38523|delta=160
+L3_ROP_READY|uid=176|enter=38526|ready=38686|delta=160
+L3_ROP_READY|uid=177|enter=38689|ready=38849|delta=160
+L3_ROP_READY|uid=178|enter=38852|ready=39012|delta=160
+L3_ROP_READY|uid=179|enter=39015|ready=39175|delta=160
+L3_ROP_READY|uid=180|enter=39178|ready=39338|delta=160
+L3_ROP_READY|uid=181|enter=39341|ready=39501|delta=160
+L3_ROP_READY|uid=182|enter=39504|ready=39664|delta=160
+L3_ROP_READY|uid=183|enter=39667|ready=39827|delta=160
+L3_ROP_READY|uid=184|enter=39830|ready=39990|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=35002|completion_cycle=40002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=168|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=35002|completion_cycle=40002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=35003|window_end_cycle=40004|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=185|enter=39993|ready=40153|delta=160
+L3_ROP_READY|uid=186|enter=40156|ready=40316|delta=160
+L3_ROP_READY|uid=187|enter=40319|ready=40479|delta=160
+L3_ROP_READY|uid=188|enter=40482|ready=40642|delta=160
+L3_ROP_READY|uid=189|enter=40645|ready=40805|delta=160
+L3_ROP_READY|uid=190|enter=40808|ready=40968|delta=160
+L3_ROP_READY|uid=191|enter=40971|ready=41131|delta=160
+L3_ROP_READY|uid=192|enter=41134|ready=41294|delta=160
+L3_ROP_READY|uid=193|enter=41297|ready=41457|delta=160
+L3_ROP_READY|uid=194|enter=41460|ready=41620|delta=160
+L3_ROP_READY|uid=195|enter=41623|ready=41783|delta=160
+L3_ROP_READY|uid=196|enter=41786|ready=41946|delta=160
+L3_ROP_READY|uid=197|enter=41949|ready=42109|delta=160
+L3_ROP_READY|uid=198|enter=42112|ready=42272|delta=160
+L3_ROP_READY|uid=199|enter=42275|ready=42435|delta=160
+L3_ROP_READY|uid=200|enter=42438|ready=42598|delta=160
+L3_ROP_READY|uid=201|enter=42601|ready=42761|delta=160
+L3_ROP_READY|uid=202|enter=42764|ready=42924|delta=160
+L3_ROP_READY|uid=203|enter=42927|ready=43087|delta=160
+L3_ROP_READY|uid=204|enter=43090|ready=43250|delta=160
+L3_ROP_READY|uid=205|enter=43253|ready=43413|delta=160
+L3_ROP_READY|uid=206|enter=43416|ready=43576|delta=160
+L3_ROP_READY|uid=207|enter=43579|ready=43739|delta=160
+L3_ROP_READY|uid=208|enter=43742|ready=43902|delta=160
+L3_ROP_READY|uid=209|enter=43905|ready=44065|delta=160
+L3_ROP_READY|uid=210|enter=44068|ready=44228|delta=160
+L3_ROP_READY|uid=211|enter=44231|ready=44391|delta=160
+L3_ROP_READY|uid=212|enter=44394|ready=44554|delta=160
+L3_ROP_READY|uid=213|enter=44557|ready=44717|delta=160
+L3_ROP_READY|uid=214|enter=44720|ready=44880|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=40002|completion_cycle=45002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=198|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=40002|completion_cycle=45002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=40004|window_end_cycle=45004|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=215|enter=44883|ready=45043|delta=160
+L3_ROP_READY|uid=216|enter=45046|ready=45206|delta=160
+L3_ROP_READY|uid=217|enter=45209|ready=45369|delta=160
+L3_ROP_READY|uid=218|enter=45372|ready=45532|delta=160
+L3_ROP_READY|uid=219|enter=45535|ready=45695|delta=160
+L3_ROP_READY|uid=220|enter=45698|ready=45858|delta=160
+L3_ROP_READY|uid=221|enter=45861|ready=46021|delta=160
+L3_ROP_READY|uid=222|enter=46024|ready=46184|delta=160
+L3_ROP_READY|uid=223|enter=46187|ready=46347|delta=160
+L3_ROP_READY|uid=224|enter=46350|ready=46510|delta=160
+L3_ROP_READY|uid=225|enter=46513|ready=46673|delta=160
+L3_ROP_READY|uid=226|enter=46676|ready=46836|delta=160
+L3_ROP_READY|uid=227|enter=46839|ready=46999|delta=160
+L3_ROP_READY|uid=228|enter=47002|ready=47162|delta=160
+L3_ROP_READY|uid=229|enter=47165|ready=47325|delta=160
+L3_ROP_READY|uid=230|enter=47328|ready=47488|delta=160
+L3_ROP_READY|uid=231|enter=47491|ready=47651|delta=160
+L3_ROP_READY|uid=232|enter=47654|ready=47814|delta=160
+L3_ROP_READY|uid=233|enter=47817|ready=47977|delta=160
+L3_ROP_READY|uid=234|enter=47980|ready=48140|delta=160
+L3_ROP_READY|uid=235|enter=48143|ready=48303|delta=160
+L3_ROP_READY|uid=236|enter=48306|ready=48466|delta=160
+L3_ROP_READY|uid=237|enter=48469|ready=48629|delta=160
+L3_ROP_READY|uid=238|enter=48632|ready=48792|delta=160
+L3_ROP_READY|uid=239|enter=48795|ready=48955|delta=160
+L3_ROP_READY|uid=240|enter=48958|ready=49118|delta=160
+L3_ROP_READY|uid=241|enter=49121|ready=49281|delta=160
+L3_ROP_READY|uid=242|enter=49284|ready=49444|delta=160
+L3_ROP_READY|uid=243|enter=49447|ready=49607|delta=160
+L3_ROP_READY|uid=244|enter=49610|ready=49770|delta=160
+L3_ROP_READY|uid=245|enter=49773|ready=49933|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=45002|completion_cycle=50002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=229|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=45002|completion_cycle=50002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=45004|window_end_cycle=50004|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=246|enter=49936|ready=50096|delta=160
+L3_ROP_READY|uid=247|enter=50099|ready=50259|delta=160
+L3_ROP_READY|uid=248|enter=50262|ready=50422|delta=160
+L3_ROP_READY|uid=249|enter=50425|ready=50585|delta=160
+L3_ROP_READY|uid=250|enter=50588|ready=50748|delta=160
+L3_ROP_READY|uid=251|enter=50751|ready=50911|delta=160
+L3_ROP_READY|uid=252|enter=50914|ready=51074|delta=160
+L3_ROP_READY|uid=253|enter=51077|ready=51237|delta=160
+L3_ROP_READY|uid=254|enter=51240|ready=51400|delta=160
+L3_ROP_READY|uid=255|enter=51403|ready=51563|delta=160
+L3_ROP_READY|uid=256|enter=51566|ready=51726|delta=160
+L3_ROP_READY|uid=257|enter=51729|ready=51889|delta=160
+L3_ROP_READY|uid=258|enter=51892|ready=52052|delta=160
+L3_ROP_READY|uid=259|enter=52055|ready=52215|delta=160
+L3_ROP_READY|uid=260|enter=52218|ready=52378|delta=160
+L3_ROP_READY|uid=261|enter=52381|ready=52541|delta=160
+L3_ROP_READY|uid=262|enter=52544|ready=52704|delta=160
+L3_ROP_READY|uid=263|enter=52707|ready=52867|delta=160
+L3_ROP_READY|uid=264|enter=52870|ready=53030|delta=160
+L3_ROP_READY|uid=265|enter=53033|ready=53193|delta=160
+L3_ROP_READY|uid=266|enter=53196|ready=53356|delta=160
+L3_ROP_READY|uid=267|enter=53359|ready=53519|delta=160
+L3_ROP_READY|uid=268|enter=53522|ready=53682|delta=160
+L3_ROP_READY|uid=269|enter=53685|ready=53845|delta=160
+L3_ROP_READY|uid=270|enter=53848|ready=54008|delta=160
+L3_ROP_READY|uid=271|enter=54011|ready=54171|delta=160
+L3_ROP_READY|uid=272|enter=54174|ready=54334|delta=160
+L3_ROP_READY|uid=273|enter=54337|ready=54497|delta=160
+L3_ROP_READY|uid=274|enter=54500|ready=54660|delta=160
+L3_ROP_READY|uid=275|enter=54663|ready=54823|delta=160
+L3_ROP_READY|uid=276|enter=54826|ready=54986|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=50002|completion_cycle=55002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=260|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=50002|completion_cycle=55002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=50004|window_end_cycle=55005|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=277|enter=54989|ready=55149|delta=160
+L3_ROP_READY|uid=278|enter=55152|ready=55312|delta=160
+L3_ROP_READY|uid=279|enter=55315|ready=55475|delta=160
+L3_ROP_READY|uid=280|enter=55478|ready=55638|delta=160
+L3_ROP_READY|uid=281|enter=55641|ready=55801|delta=160
+L3_ROP_READY|uid=282|enter=55804|ready=55964|delta=160
+L3_ROP_READY|uid=283|enter=55967|ready=56127|delta=160
+L3_ROP_READY|uid=284|enter=56130|ready=56290|delta=160
+L3_ROP_READY|uid=285|enter=56293|ready=56453|delta=160
+L3_ROP_READY|uid=286|enter=56456|ready=56616|delta=160
+L3_ROP_READY|uid=287|enter=56619|ready=56779|delta=160
+L3_ROP_READY|uid=288|enter=56782|ready=56942|delta=160
+L3_ROP_READY|uid=289|enter=56945|ready=57105|delta=160
+L3_ROP_READY|uid=290|enter=57108|ready=57268|delta=160
+L3_ROP_READY|uid=291|enter=57271|ready=57431|delta=160
+L3_ROP_READY|uid=292|enter=57434|ready=57594|delta=160
+L3_ROP_READY|uid=293|enter=57597|ready=57757|delta=160
+L3_ROP_READY|uid=294|enter=57760|ready=57920|delta=160
+L3_ROP_READY|uid=295|enter=57923|ready=58083|delta=160
+L3_ROP_READY|uid=296|enter=58086|ready=58246|delta=160
+L3_ROP_READY|uid=297|enter=58249|ready=58409|delta=160
+L3_ROP_READY|uid=298|enter=58412|ready=58572|delta=160
+L3_ROP_READY|uid=299|enter=58575|ready=58735|delta=160
+L3_ROP_READY|uid=300|enter=58738|ready=58898|delta=160
+L3_ROP_READY|uid=301|enter=58901|ready=59061|delta=160
+L3_ROP_READY|uid=302|enter=59064|ready=59224|delta=160
+L3_ROP_READY|uid=303|enter=59227|ready=59387|delta=160
+L3_ROP_READY|uid=304|enter=59390|ready=59550|delta=160
+L3_ROP_READY|uid=305|enter=59553|ready=59713|delta=160
+L3_ROP_READY|uid=306|enter=59716|ready=59876|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=55002|completion_cycle=60002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=290|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=55002|completion_cycle=60002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=55005|window_end_cycle=60005|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=307|enter=59879|ready=60039|delta=160
+L3_ROP_READY|uid=308|enter=60042|ready=60202|delta=160
+L3_ROP_READY|uid=309|enter=60205|ready=60365|delta=160
+L3_ROP_READY|uid=310|enter=60368|ready=60528|delta=160
+L3_ROP_READY|uid=311|enter=60531|ready=60691|delta=160
+L3_ROP_READY|uid=312|enter=60694|ready=60854|delta=160
+L3_ROP_READY|uid=313|enter=60857|ready=61017|delta=160
+L3_ROP_READY|uid=314|enter=61020|ready=61180|delta=160
+L3_ROP_READY|uid=315|enter=61183|ready=61343|delta=160
+L3_ROP_READY|uid=316|enter=61346|ready=61506|delta=160
+L3_ROP_READY|uid=317|enter=61509|ready=61669|delta=160
+L3_ROP_READY|uid=318|enter=61672|ready=61832|delta=160
+L3_ROP_READY|uid=319|enter=61835|ready=61995|delta=160
+L3_ROP_READY|uid=320|enter=61998|ready=62158|delta=160
+L3_ROP_READY|uid=321|enter=62161|ready=62321|delta=160
+L3_ROP_READY|uid=322|enter=62324|ready=62484|delta=160
+L3_ROP_READY|uid=323|enter=62487|ready=62647|delta=160
+L3_ROP_READY|uid=324|enter=62650|ready=62810|delta=160
+L3_ROP_READY|uid=325|enter=62813|ready=62973|delta=160
+L3_ROP_READY|uid=326|enter=62976|ready=63136|delta=160
+L3_ROP_READY|uid=327|enter=63139|ready=63299|delta=160
+L3_ROP_READY|uid=328|enter=63302|ready=63462|delta=160
+L3_ROP_READY|uid=329|enter=63465|ready=63625|delta=160
+L3_ROP_READY|uid=330|enter=63628|ready=63788|delta=160
+L3_ROP_READY|uid=331|enter=63791|ready=63951|delta=160
+L3_ROP_READY|uid=332|enter=63954|ready=64114|delta=160
+L3_ROP_READY|uid=333|enter=64117|ready=64277|delta=160
+L3_ROP_READY|uid=334|enter=64280|ready=64440|delta=160
+L3_ROP_READY|uid=335|enter=64443|ready=64603|delta=160
+L3_ROP_READY|uid=336|enter=64606|ready=64766|delta=160
+L3_ROP_READY|uid=337|enter=64769|ready=64929|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=60002|completion_cycle=65002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=321|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=60002|completion_cycle=65002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=60005|window_end_cycle=65005|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=338|enter=64932|ready=65092|delta=160
+L3_ROP_READY|uid=339|enter=65095|ready=65255|delta=160
+L3_ROP_READY|uid=340|enter=65258|ready=65418|delta=160
+L3_ROP_READY|uid=341|enter=65421|ready=65581|delta=160
+L3_ROP_READY|uid=342|enter=65584|ready=65744|delta=160
+L3_ROP_READY|uid=343|enter=65747|ready=65907|delta=160
+L3_ROP_READY|uid=344|enter=65910|ready=66070|delta=160
+L3_ROP_READY|uid=345|enter=66073|ready=66233|delta=160
+L3_ROP_READY|uid=346|enter=66236|ready=66396|delta=160
+L3_ROP_READY|uid=347|enter=66399|ready=66559|delta=160
+L3_ROP_READY|uid=348|enter=66562|ready=66722|delta=160
+L3_ROP_READY|uid=349|enter=66725|ready=66885|delta=160
+L3_ROP_READY|uid=350|enter=66888|ready=67048|delta=160
+L3_ROP_READY|uid=351|enter=67051|ready=67211|delta=160
+L3_ROP_READY|uid=352|enter=67214|ready=67374|delta=160
+L3_ROP_READY|uid=353|enter=67377|ready=67537|delta=160
+L3_ROP_READY|uid=354|enter=67540|ready=67700|delta=160
+L3_ROP_READY|uid=355|enter=67703|ready=67863|delta=160
+L3_ROP_READY|uid=356|enter=67866|ready=68026|delta=160
+L3_ROP_READY|uid=357|enter=68029|ready=68189|delta=160
+L3_ROP_READY|uid=358|enter=68192|ready=68352|delta=160
+L3_ROP_READY|uid=359|enter=68355|ready=68515|delta=160
+L3_ROP_READY|uid=360|enter=68518|ready=68678|delta=160
+L3_ROP_READY|uid=361|enter=68681|ready=68841|delta=160
+L3_ROP_READY|uid=362|enter=68844|ready=69004|delta=160
+L3_ROP_READY|uid=363|enter=69007|ready=69167|delta=160
+L3_ROP_READY|uid=364|enter=69170|ready=69330|delta=160
+L3_ROP_READY|uid=365|enter=69333|ready=69493|delta=160
+L3_ROP_READY|uid=366|enter=69496|ready=69656|delta=160
+L3_ROP_READY|uid=367|enter=69659|ready=69819|delta=160
+L3_ROP_READY|uid=368|enter=69822|ready=69982|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=65002|completion_cycle=70002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=352|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=65002|completion_cycle=70002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=65005|window_end_cycle=70006|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=369|enter=69985|ready=70145|delta=160
+L3_ROP_READY|uid=370|enter=70148|ready=70308|delta=160
+L3_ROP_READY|uid=371|enter=70311|ready=70471|delta=160
+L3_ROP_READY|uid=372|enter=70474|ready=70634|delta=160
+L3_ROP_READY|uid=373|enter=70637|ready=70797|delta=160
+L3_ROP_READY|uid=374|enter=70800|ready=70960|delta=160
+L3_ROP_READY|uid=375|enter=70963|ready=71123|delta=160
+L3_ROP_READY|uid=376|enter=71126|ready=71286|delta=160
+L3_ROP_READY|uid=377|enter=71289|ready=71449|delta=160
+L3_ROP_READY|uid=378|enter=71452|ready=71612|delta=160
+L3_ROP_READY|uid=379|enter=71615|ready=71775|delta=160
+L3_ROP_READY|uid=380|enter=71778|ready=71938|delta=160
+L3_ROP_READY|uid=381|enter=71941|ready=72101|delta=160
+L3_ROP_READY|uid=382|enter=72104|ready=72264|delta=160
+L3_ROP_READY|uid=383|enter=72267|ready=72427|delta=160
+L3_ROP_READY|uid=384|enter=72430|ready=72590|delta=160
+L3_ROP_READY|uid=385|enter=72593|ready=72753|delta=160
+L3_ROP_READY|uid=386|enter=72756|ready=72916|delta=160
+L3_ROP_READY|uid=387|enter=72919|ready=73079|delta=160
+L3_ROP_READY|uid=388|enter=73082|ready=73242|delta=160
+L3_ROP_READY|uid=389|enter=73245|ready=73405|delta=160
+L3_ROP_READY|uid=390|enter=73408|ready=73568|delta=160
+L3_ROP_READY|uid=391|enter=73571|ready=73731|delta=160
+L3_ROP_READY|uid=392|enter=73734|ready=73894|delta=160
+L3_ROP_READY|uid=393|enter=73897|ready=74057|delta=160
+L3_ROP_READY|uid=394|enter=74060|ready=74220|delta=160
+L3_ROP_READY|uid=395|enter=74223|ready=74383|delta=160
+L3_ROP_READY|uid=396|enter=74386|ready=74546|delta=160
+L3_ROP_READY|uid=397|enter=74549|ready=74709|delta=160
+L3_ROP_READY|uid=398|enter=74712|ready=74872|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=70002|completion_cycle=75002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=382|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=70002|completion_cycle=75002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=70006|window_end_cycle=75006|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=399|enter=74875|ready=75035|delta=160
+L3_ROP_READY|uid=400|enter=75038|ready=75198|delta=160
+L3_ROP_READY|uid=401|enter=75201|ready=75361|delta=160
+L3_ROP_READY|uid=402|enter=75364|ready=75524|delta=160
+L3_ROP_READY|uid=403|enter=75527|ready=75687|delta=160
+L3_ROP_READY|uid=404|enter=75690|ready=75850|delta=160
+L3_ROP_READY|uid=405|enter=75853|ready=76013|delta=160
+L3_ROP_READY|uid=406|enter=76016|ready=76176|delta=160
+L3_ROP_READY|uid=407|enter=76179|ready=76339|delta=160
+L3_ROP_READY|uid=408|enter=76342|ready=76502|delta=160
+L3_ROP_READY|uid=409|enter=76505|ready=76665|delta=160
+L3_ROP_READY|uid=410|enter=76668|ready=76828|delta=160
+L3_ROP_READY|uid=411|enter=76831|ready=76991|delta=160
+L3_ROP_READY|uid=412|enter=76994|ready=77154|delta=160
+L3_ROP_READY|uid=413|enter=77157|ready=77317|delta=160
+L3_ROP_READY|uid=414|enter=77320|ready=77480|delta=160
+L3_ROP_READY|uid=415|enter=77483|ready=77643|delta=160
+L3_ROP_READY|uid=416|enter=77646|ready=77806|delta=160
+L3_ROP_READY|uid=417|enter=77809|ready=77969|delta=160
+L3_ROP_READY|uid=418|enter=77972|ready=78132|delta=160
+L3_ROP_READY|uid=419|enter=78135|ready=78295|delta=160
+L3_ROP_READY|uid=420|enter=78298|ready=78458|delta=160
+L3_ROP_READY|uid=421|enter=78461|ready=78621|delta=160
+L3_ROP_READY|uid=422|enter=78624|ready=78784|delta=160
+L3_ROP_READY|uid=423|enter=78787|ready=78947|delta=160
+L3_ROP_READY|uid=424|enter=78950|ready=79110|delta=160
+L3_ROP_READY|uid=425|enter=79113|ready=79273|delta=160
+L3_ROP_READY|uid=426|enter=79276|ready=79436|delta=160
+L3_ROP_READY|uid=427|enter=79439|ready=79599|delta=160
+L3_ROP_READY|uid=428|enter=79602|ready=79762|delta=160
+L3_ROP_READY|uid=429|enter=79765|ready=79925|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=75002|completion_cycle=80002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=413|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=75002|completion_cycle=80002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=75006|window_end_cycle=80006|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=430|enter=79928|ready=80088|delta=160
+L3_ROP_READY|uid=431|enter=80091|ready=80251|delta=160
+L3_ROP_READY|uid=432|enter=80254|ready=80414|delta=160
+L3_ROP_READY|uid=433|enter=80417|ready=80577|delta=160
+L3_ROP_READY|uid=434|enter=80580|ready=80740|delta=160
+L3_ROP_READY|uid=435|enter=80743|ready=80903|delta=160
+L3_ROP_READY|uid=436|enter=80906|ready=81066|delta=160
+L3_ROP_READY|uid=437|enter=81069|ready=81229|delta=160
+L3_ROP_READY|uid=438|enter=81232|ready=81392|delta=160
+L3_ROP_READY|uid=439|enter=81395|ready=81555|delta=160
+L3_ROP_READY|uid=440|enter=81558|ready=81718|delta=160
+L3_ROP_READY|uid=441|enter=81721|ready=81881|delta=160
+L3_ROP_READY|uid=442|enter=81884|ready=82044|delta=160
+L3_ROP_READY|uid=443|enter=82047|ready=82207|delta=160
+L3_ROP_READY|uid=444|enter=82210|ready=82370|delta=160
+L3_ROP_READY|uid=445|enter=82373|ready=82533|delta=160
+L3_ROP_READY|uid=446|enter=82536|ready=82696|delta=160
+L3_ROP_READY|uid=447|enter=82699|ready=82859|delta=160
+L3_ROP_READY|uid=448|enter=82862|ready=83022|delta=160
+L3_ROP_READY|uid=449|enter=83025|ready=83185|delta=160
+L3_ROP_READY|uid=450|enter=83188|ready=83348|delta=160
+L3_ROP_READY|uid=451|enter=83351|ready=83511|delta=160
+L3_ROP_READY|uid=452|enter=83514|ready=83674|delta=160
+L3_ROP_READY|uid=453|enter=83677|ready=83837|delta=160
+L3_ROP_READY|uid=454|enter=83840|ready=84000|delta=160
+L3_ROP_READY|uid=455|enter=84003|ready=84163|delta=160
+L3_ROP_READY|uid=456|enter=84166|ready=84326|delta=160
+L3_ROP_READY|uid=457|enter=84329|ready=84489|delta=160
+L3_ROP_READY|uid=458|enter=84492|ready=84652|delta=160
+L3_ROP_READY|uid=459|enter=84655|ready=84815|delta=160
+L3_ROP_READY|uid=460|enter=84818|ready=84978|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=80002|completion_cycle=85002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=444|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=80002|completion_cycle=85002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=80006|window_end_cycle=85007|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=461|enter=84981|ready=85141|delta=160
+L3_ROP_READY|uid=462|enter=85144|ready=85304|delta=160
+L3_ROP_READY|uid=463|enter=85307|ready=85467|delta=160
+L3_ROP_READY|uid=464|enter=85470|ready=85630|delta=160
+L3_ROP_READY|uid=465|enter=85633|ready=85793|delta=160
+L3_ROP_READY|uid=466|enter=85796|ready=85956|delta=160
+L3_ROP_READY|uid=467|enter=85959|ready=86119|delta=160
+L3_ROP_READY|uid=468|enter=86122|ready=86282|delta=160
+L3_ROP_READY|uid=469|enter=86285|ready=86445|delta=160
+L3_ROP_READY|uid=470|enter=86448|ready=86608|delta=160
+L3_ROP_READY|uid=471|enter=86611|ready=86771|delta=160
+L3_ROP_READY|uid=472|enter=86774|ready=86934|delta=160
+L3_ROP_READY|uid=473|enter=86937|ready=87097|delta=160
+L3_ROP_READY|uid=474|enter=87100|ready=87260|delta=160
+L3_ROP_READY|uid=475|enter=87263|ready=87423|delta=160
+L3_ROP_READY|uid=476|enter=87426|ready=87586|delta=160
+L3_ROP_READY|uid=477|enter=87589|ready=87749|delta=160
+L3_ROP_READY|uid=478|enter=87752|ready=87912|delta=160
+L3_ROP_READY|uid=479|enter=87915|ready=88075|delta=160
+L3_ROP_READY|uid=480|enter=88078|ready=88238|delta=160
+L3_ROP_READY|uid=481|enter=88241|ready=88401|delta=160
+L3_ROP_READY|uid=482|enter=88404|ready=88564|delta=160
+L3_ROP_READY|uid=483|enter=88567|ready=88727|delta=160
+L3_ROP_READY|uid=484|enter=88730|ready=88890|delta=160
+L3_ROP_READY|uid=485|enter=88893|ready=89053|delta=160
+L3_ROP_READY|uid=486|enter=89056|ready=89216|delta=160
+L3_ROP_READY|uid=487|enter=89219|ready=89379|delta=160
+L3_ROP_READY|uid=488|enter=89382|ready=89542|delta=160
+L3_ROP_READY|uid=489|enter=89545|ready=89705|delta=160
+L3_ROP_READY|uid=490|enter=89708|ready=89868|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=85002|completion_cycle=90002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=474|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=85002|completion_cycle=90002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=85007|window_end_cycle=90007|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=491|enter=89871|ready=90031|delta=160
+L3_ROP_READY|uid=492|enter=90034|ready=90194|delta=160
+L3_ROP_READY|uid=493|enter=90197|ready=90357|delta=160
+L3_ROP_READY|uid=494|enter=90360|ready=90520|delta=160
+L3_ROP_READY|uid=495|enter=90523|ready=90683|delta=160
+L3_ROP_READY|uid=496|enter=90686|ready=90846|delta=160
+L3_ROP_READY|uid=497|enter=90849|ready=91009|delta=160
+L3_ROP_READY|uid=498|enter=91012|ready=91172|delta=160
+L3_ROP_READY|uid=499|enter=91175|ready=91335|delta=160
+L3_ROP_READY|uid=500|enter=91338|ready=91498|delta=160
+L3_ROP_READY|uid=501|enter=91501|ready=91661|delta=160
+L3_ROP_READY|uid=502|enter=91664|ready=91824|delta=160
+L3_ROP_READY|uid=503|enter=91827|ready=91987|delta=160
+L3_ROP_READY|uid=504|enter=91990|ready=92150|delta=160
+L3_ROP_READY|uid=505|enter=92153|ready=92313|delta=160
+L3_ROP_READY|uid=506|enter=92316|ready=92476|delta=160
+L3_ROP_READY|uid=507|enter=92479|ready=92639|delta=160
+L3_ROP_READY|uid=508|enter=92642|ready=92802|delta=160
+L3_ROP_READY|uid=509|enter=92805|ready=92965|delta=160
+L3_ROP_READY|uid=510|enter=92968|ready=93128|delta=160
+L3_ROP_READY|uid=511|enter=93131|ready=93291|delta=160
+L3_ROP_READY|uid=512|enter=93294|ready=93454|delta=160
+L3_ROP_READY|uid=513|enter=93457|ready=93617|delta=160
+L3_ROP_READY|uid=514|enter=93620|ready=93780|delta=160
+L3_ROP_READY|uid=515|enter=93783|ready=93943|delta=160
+L3_ROP_READY|uid=516|enter=93946|ready=94106|delta=160
+L3_ROP_READY|uid=517|enter=94109|ready=94269|delta=160
+L3_ROP_READY|uid=518|enter=94272|ready=94432|delta=160
+L3_ROP_READY|uid=519|enter=94435|ready=94595|delta=160
+L3_ROP_READY|uid=520|enter=94598|ready=94758|delta=160
+L3_ROP_READY|uid=521|enter=94761|ready=94921|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=90002|completion_cycle=95002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=505|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=90002|completion_cycle=95002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=90007|window_end_cycle=95007|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=522|enter=94924|ready=95084|delta=160
+L3_ROP_READY|uid=523|enter=95087|ready=95247|delta=160
+L3_ROP_READY|uid=524|enter=95250|ready=95410|delta=160
+L3_ROP_READY|uid=525|enter=95413|ready=95573|delta=160
+L3_ROP_READY|uid=526|enter=95576|ready=95736|delta=160
+L3_ROP_READY|uid=527|enter=95739|ready=95899|delta=160
+L3_ROP_READY|uid=528|enter=95902|ready=96062|delta=160
+L3_ROP_READY|uid=529|enter=96065|ready=96225|delta=160
+L3_ROP_READY|uid=530|enter=96228|ready=96388|delta=160
+L3_ROP_READY|uid=531|enter=96391|ready=96551|delta=160
+L3_ROP_READY|uid=532|enter=96554|ready=96714|delta=160
+L3_ROP_READY|uid=533|enter=96717|ready=96877|delta=160
+L3_ROP_READY|uid=534|enter=96880|ready=97040|delta=160
+L3_ROP_READY|uid=535|enter=97043|ready=97203|delta=160
+L3_ROP_READY|uid=536|enter=97206|ready=97366|delta=160
+L3_ROP_READY|uid=537|enter=97369|ready=97529|delta=160
+L3_ROP_READY|uid=538|enter=97532|ready=97692|delta=160
+L3_ROP_READY|uid=539|enter=97695|ready=97855|delta=160
+L3_ROP_READY|uid=540|enter=97858|ready=98018|delta=160
+L3_ROP_READY|uid=541|enter=98021|ready=98181|delta=160
+L3_ROP_READY|uid=542|enter=98184|ready=98344|delta=160
+L3_ROP_READY|uid=543|enter=98347|ready=98507|delta=160
+L3_ROP_READY|uid=544|enter=98510|ready=98670|delta=160
+L3_ROP_READY|uid=545|enter=98673|ready=98833|delta=160
+L3_ROP_READY|uid=546|enter=98836|ready=98996|delta=160
+L3_ROP_READY|uid=547|enter=98999|ready=99159|delta=160
+L3_ROP_READY|uid=548|enter=99162|ready=99322|delta=160
+L3_ROP_READY|uid=549|enter=99325|ready=99485|delta=160
+L3_ROP_READY|uid=550|enter=99488|ready=99648|delta=160
+L3_ROP_READY|uid=551|enter=99651|ready=99811|delta=160
+L3_ROP_READY|uid=552|enter=99814|ready=99974|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=95002|completion_cycle=100002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=536|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=95002|completion_cycle=100002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=95007|window_end_cycle=100008|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=553|enter=99977|ready=100137|delta=160
+L3_ROP_READY|uid=554|enter=100140|ready=100300|delta=160
+L3_ROP_READY|uid=555|enter=100303|ready=100463|delta=160
+L3_ROP_READY|uid=556|enter=100466|ready=100626|delta=160
+L3_ROP_READY|uid=557|enter=100629|ready=100789|delta=160
+L3_ROP_READY|uid=558|enter=100792|ready=100952|delta=160
+L3_ROP_READY|uid=559|enter=100955|ready=101115|delta=160
+L3_ROP_READY|uid=560|enter=101118|ready=101278|delta=160
+L3_ROP_READY|uid=561|enter=101281|ready=101441|delta=160
+L3_ROP_READY|uid=562|enter=101444|ready=101604|delta=160
+L3_ROP_READY|uid=563|enter=101607|ready=101767|delta=160
+L3_ROP_READY|uid=564|enter=101770|ready=101930|delta=160
+L3_ROP_READY|uid=565|enter=101933|ready=102093|delta=160
+L3_ROP_READY|uid=566|enter=102096|ready=102256|delta=160
+L3_ROP_READY|uid=567|enter=102259|ready=102419|delta=160
+L3_ROP_READY|uid=568|enter=102422|ready=102582|delta=160
+L3_ROP_READY|uid=569|enter=102585|ready=102745|delta=160
+L3_ROP_READY|uid=570|enter=102748|ready=102908|delta=160
+L3_ROP_READY|uid=571|enter=102911|ready=103071|delta=160
+L3_ROP_READY|uid=572|enter=103074|ready=103234|delta=160
+L3_ROP_READY|uid=573|enter=103237|ready=103397|delta=160
+L3_ROP_READY|uid=574|enter=103400|ready=103560|delta=160
+L3_ROP_READY|uid=575|enter=103563|ready=103723|delta=160
+L3_ROP_READY|uid=576|enter=103726|ready=103886|delta=160
+L3_ROP_READY|uid=577|enter=103889|ready=104049|delta=160
+L3_ROP_READY|uid=578|enter=104052|ready=104212|delta=160
+L3_ROP_READY|uid=579|enter=104215|ready=104375|delta=160
+L3_ROP_READY|uid=580|enter=104378|ready=104538|delta=160
+L3_ROP_READY|uid=581|enter=104541|ready=104701|delta=160
+L3_ROP_READY|uid=582|enter=104704|ready=104864|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=100002|completion_cycle=105002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=567|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=100002|completion_cycle=105002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=100008|window_end_cycle=105008|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=583|enter=104867|ready=105027|delta=160
+L3_ROP_READY|uid=584|enter=105030|ready=105190|delta=160
+L3_ROP_READY|uid=585|enter=105193|ready=105353|delta=160
+L3_ROP_READY|uid=586|enter=105356|ready=105516|delta=160
+L3_ROP_READY|uid=587|enter=105519|ready=105679|delta=160
+L3_ROP_READY|uid=588|enter=105682|ready=105842|delta=160
+L3_ROP_READY|uid=589|enter=105845|ready=106005|delta=160
+L3_ROP_READY|uid=590|enter=106008|ready=106168|delta=160
+L3_ROP_READY|uid=591|enter=106171|ready=106331|delta=160
+L3_ROP_READY|uid=592|enter=106334|ready=106494|delta=160
+L3_ROP_READY|uid=593|enter=106497|ready=106657|delta=160
+L3_ROP_READY|uid=594|enter=106660|ready=106820|delta=160
+L3_ROP_READY|uid=595|enter=106823|ready=106983|delta=160
+L3_ROP_READY|uid=596|enter=106986|ready=107146|delta=160
+L3_ROP_READY|uid=597|enter=107149|ready=107309|delta=160
+L3_ROP_READY|uid=598|enter=107312|ready=107472|delta=160
+L3_ROP_READY|uid=599|enter=107475|ready=107635|delta=160
+L3_ROP_READY|uid=600|enter=107638|ready=107798|delta=160
+L3_ROP_READY|uid=601|enter=107801|ready=107961|delta=160
+L3_ROP_READY|uid=602|enter=107964|ready=108124|delta=160
+L3_ROP_READY|uid=603|enter=108127|ready=108287|delta=160
+L3_ROP_READY|uid=604|enter=108290|ready=108450|delta=160
+L3_ROP_READY|uid=605|enter=108453|ready=108613|delta=160
+L3_ROP_READY|uid=606|enter=108616|ready=108776|delta=160
+L3_ROP_READY|uid=607|enter=108779|ready=108939|delta=160
+L3_ROP_READY|uid=608|enter=108942|ready=109102|delta=160
+L3_ROP_READY|uid=609|enter=109105|ready=109265|delta=160
+L3_ROP_READY|uid=610|enter=109268|ready=109428|delta=160
+L3_ROP_READY|uid=611|enter=109431|ready=109591|delta=160
+L3_ROP_READY|uid=612|enter=109594|ready=109754|delta=160
+L3_ROP_READY|uid=613|enter=109757|ready=109917|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=105002|completion_cycle=110002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=597|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=105002|completion_cycle=110002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=105008|window_end_cycle=110008|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=614|enter=109920|ready=110080|delta=160
+L3_ROP_READY|uid=615|enter=110083|ready=110243|delta=160
+L3_ROP_READY|uid=616|enter=110246|ready=110406|delta=160
+L3_ROP_READY|uid=617|enter=110409|ready=110569|delta=160
+L3_ROP_READY|uid=618|enter=110572|ready=110732|delta=160
+L3_ROP_READY|uid=619|enter=110735|ready=110895|delta=160
+L3_ROP_READY|uid=620|enter=110898|ready=111058|delta=160
+L3_ROP_READY|uid=621|enter=111061|ready=111221|delta=160
+L3_ROP_READY|uid=622|enter=111224|ready=111384|delta=160
+L3_ROP_READY|uid=623|enter=111387|ready=111547|delta=160
+L3_ROP_READY|uid=624|enter=111550|ready=111710|delta=160
+L3_ROP_READY|uid=625|enter=111713|ready=111873|delta=160
+L3_ROP_READY|uid=626|enter=111876|ready=112036|delta=160
+L3_ROP_READY|uid=627|enter=112039|ready=112199|delta=160
+L3_ROP_READY|uid=628|enter=112202|ready=112362|delta=160
+L3_ROP_READY|uid=629|enter=112365|ready=112525|delta=160
+L3_ROP_READY|uid=630|enter=112528|ready=112688|delta=160
+L3_ROP_READY|uid=631|enter=112691|ready=112851|delta=160
+L3_ROP_READY|uid=632|enter=112854|ready=113014|delta=160
+L3_ROP_READY|uid=633|enter=113017|ready=113177|delta=160
+L3_ROP_READY|uid=634|enter=113180|ready=113340|delta=160
+L3_ROP_READY|uid=635|enter=113343|ready=113503|delta=160
+L3_ROP_READY|uid=636|enter=113506|ready=113666|delta=160
+L3_ROP_READY|uid=637|enter=113669|ready=113829|delta=160
+L3_ROP_READY|uid=638|enter=113832|ready=113992|delta=160
+L3_ROP_READY|uid=639|enter=113995|ready=114155|delta=160
+L3_ROP_READY|uid=640|enter=114158|ready=114318|delta=160
+L3_ROP_READY|uid=641|enter=114321|ready=114481|delta=160
+L3_ROP_READY|uid=642|enter=114484|ready=114644|delta=160
+L3_ROP_READY|uid=643|enter=114647|ready=114807|delta=160
+L3_ROP_READY|uid=644|enter=114810|ready=114970|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=110002|completion_cycle=115002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=628|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=110002|completion_cycle=115002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=110008|window_end_cycle=115009|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=645|enter=114973|ready=115133|delta=160
+L3_ROP_READY|uid=646|enter=115136|ready=115296|delta=160
+L3_ROP_READY|uid=647|enter=115299|ready=115459|delta=160
+L3_ROP_READY|uid=648|enter=115462|ready=115622|delta=160
+L3_ROP_READY|uid=649|enter=115625|ready=115785|delta=160
+L3_ROP_READY|uid=650|enter=115788|ready=115948|delta=160
+L3_ROP_READY|uid=651|enter=115951|ready=116111|delta=160
+L3_ROP_READY|uid=652|enter=116114|ready=116274|delta=160
+L3_ROP_READY|uid=653|enter=116277|ready=116437|delta=160
+L3_ROP_READY|uid=654|enter=116440|ready=116600|delta=160
+L3_ROP_READY|uid=655|enter=116603|ready=116763|delta=160
+L3_ROP_READY|uid=656|enter=116766|ready=116926|delta=160
+L3_ROP_READY|uid=657|enter=116929|ready=117089|delta=160
+L3_ROP_READY|uid=658|enter=117092|ready=117252|delta=160
+L3_ROP_READY|uid=659|enter=117255|ready=117415|delta=160
+L3_ROP_READY|uid=660|enter=117418|ready=117578|delta=160
+L3_ROP_READY|uid=661|enter=117581|ready=117741|delta=160
+L3_ROP_READY|uid=662|enter=117744|ready=117904|delta=160
+L3_ROP_READY|uid=663|enter=117907|ready=118067|delta=160
+L3_ROP_READY|uid=664|enter=118070|ready=118230|delta=160
+L3_ROP_READY|uid=665|enter=118233|ready=118393|delta=160
+L3_ROP_READY|uid=666|enter=118396|ready=118556|delta=160
+L3_ROP_READY|uid=667|enter=118559|ready=118719|delta=160
+L3_ROP_READY|uid=668|enter=118722|ready=118882|delta=160
+L3_ROP_READY|uid=669|enter=118885|ready=119045|delta=160
+L3_ROP_READY|uid=670|enter=119048|ready=119208|delta=160
+L3_ROP_READY|uid=671|enter=119211|ready=119371|delta=160
+L3_ROP_READY|uid=672|enter=119374|ready=119534|delta=160
+L3_ROP_READY|uid=673|enter=119537|ready=119697|delta=160
+L3_ROP_READY|uid=674|enter=119700|ready=119860|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=115002|completion_cycle=120002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=659|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=115002|completion_cycle=120002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=115009|window_end_cycle=120009|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=675|enter=119863|ready=120023|delta=160
+L3_ROP_READY|uid=676|enter=120026|ready=120186|delta=160
+L3_ROP_READY|uid=677|enter=120189|ready=120349|delta=160
+L3_ROP_READY|uid=678|enter=120352|ready=120512|delta=160
+L3_ROP_READY|uid=679|enter=120515|ready=120675|delta=160
+L3_ROP_READY|uid=680|enter=120678|ready=120838|delta=160
+L3_ROP_READY|uid=681|enter=120841|ready=121001|delta=160
+L3_ROP_READY|uid=682|enter=121004|ready=121164|delta=160
+L3_ROP_READY|uid=683|enter=121167|ready=121327|delta=160
+L3_ROP_READY|uid=684|enter=121330|ready=121490|delta=160
+L3_ROP_READY|uid=685|enter=121493|ready=121653|delta=160
+L3_ROP_READY|uid=686|enter=121656|ready=121816|delta=160
+L3_ROP_READY|uid=687|enter=121819|ready=121979|delta=160
+L3_ROP_READY|uid=688|enter=121982|ready=122142|delta=160
+L3_ROP_READY|uid=689|enter=122145|ready=122305|delta=160
+L3_ROP_READY|uid=690|enter=122308|ready=122468|delta=160
+L3_ROP_READY|uid=691|enter=122471|ready=122631|delta=160
+L3_ROP_READY|uid=692|enter=122634|ready=122794|delta=160
+L3_ROP_READY|uid=693|enter=122797|ready=122957|delta=160
+L3_ROP_READY|uid=694|enter=122960|ready=123120|delta=160
+L3_ROP_READY|uid=695|enter=123123|ready=123283|delta=160
+L3_ROP_READY|uid=696|enter=123286|ready=123446|delta=160
+L3_ROP_READY|uid=697|enter=123449|ready=123609|delta=160
+L3_ROP_READY|uid=698|enter=123612|ready=123772|delta=160
+L3_ROP_READY|uid=699|enter=123775|ready=123935|delta=160
+L3_ROP_READY|uid=700|enter=123938|ready=124098|delta=160
+L3_ROP_READY|uid=701|enter=124101|ready=124261|delta=160
+L3_ROP_READY|uid=702|enter=124264|ready=124424|delta=160
+L3_ROP_READY|uid=703|enter=124427|ready=124587|delta=160
+L3_ROP_READY|uid=704|enter=124590|ready=124750|delta=160
+L3_ROP_READY|uid=705|enter=124753|ready=124913|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=120002|completion_cycle=125002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=689|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=120002|completion_cycle=125002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=120009|window_end_cycle=125009|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=706|enter=124916|ready=125076|delta=160
+L3_ROP_READY|uid=707|enter=125079|ready=125239|delta=160
+L3_ROP_READY|uid=708|enter=125242|ready=125402|delta=160
+L3_ROP_READY|uid=709|enter=125405|ready=125565|delta=160
+L3_ROP_READY|uid=710|enter=125568|ready=125728|delta=160
+L3_ROP_READY|uid=711|enter=125731|ready=125891|delta=160
+L3_ROP_READY|uid=712|enter=125894|ready=126054|delta=160
+L3_ROP_READY|uid=713|enter=126057|ready=126217|delta=160
+L3_ROP_READY|uid=714|enter=126220|ready=126380|delta=160
+L3_ROP_READY|uid=715|enter=126383|ready=126543|delta=160
+L3_ROP_READY|uid=716|enter=126546|ready=126706|delta=160
+L3_ROP_READY|uid=717|enter=126709|ready=126869|delta=160
+L3_ROP_READY|uid=718|enter=126872|ready=127032|delta=160
+L3_ROP_READY|uid=719|enter=127035|ready=127195|delta=160
+L3_ROP_READY|uid=720|enter=127198|ready=127358|delta=160
+L3_ROP_READY|uid=721|enter=127361|ready=127521|delta=160
+L3_ROP_READY|uid=722|enter=127524|ready=127684|delta=160
+L3_ROP_READY|uid=723|enter=127687|ready=127847|delta=160
+L3_ROP_READY|uid=724|enter=127850|ready=128010|delta=160
+L3_ROP_READY|uid=725|enter=128013|ready=128173|delta=160
+L3_ROP_READY|uid=726|enter=128176|ready=128336|delta=160
+L3_ROP_READY|uid=727|enter=128339|ready=128499|delta=160
+L3_ROP_READY|uid=728|enter=128502|ready=128662|delta=160
+L3_ROP_READY|uid=729|enter=128665|ready=128825|delta=160
+L3_ROP_READY|uid=730|enter=128828|ready=128988|delta=160
+L3_ROP_READY|uid=731|enter=128991|ready=129151|delta=160
+L3_ROP_READY|uid=732|enter=129154|ready=129314|delta=160
+L3_ROP_READY|uid=733|enter=129317|ready=129477|delta=160
+L3_ROP_READY|uid=734|enter=129480|ready=129640|delta=160
+L3_ROP_READY|uid=735|enter=129643|ready=129803|delta=160
+L3_ROP_READY|uid=736|enter=129806|ready=129966|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=125002|completion_cycle=130002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=720|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=125002|completion_cycle=130002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=125009|window_end_cycle=130010|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=737|enter=129969|ready=130129|delta=160
+L3_ROP_READY|uid=738|enter=130132|ready=130292|delta=160
+L3_ROP_READY|uid=739|enter=130295|ready=130455|delta=160
+L3_ROP_READY|uid=740|enter=130458|ready=130618|delta=160
+L3_ROP_READY|uid=741|enter=130621|ready=130781|delta=160
+L3_ROP_READY|uid=742|enter=130784|ready=130944|delta=160
+L3_ROP_READY|uid=743|enter=130947|ready=131107|delta=160
+L3_ROP_READY|uid=744|enter=131110|ready=131270|delta=160
+L3_ROP_READY|uid=745|enter=131273|ready=131433|delta=160
+L3_ROP_READY|uid=746|enter=131436|ready=131596|delta=160
+L3_ROP_READY|uid=747|enter=131599|ready=131759|delta=160
+L3_ROP_READY|uid=748|enter=131762|ready=131922|delta=160
+L3_ROP_READY|uid=749|enter=131925|ready=132085|delta=160
+L3_ROP_READY|uid=750|enter=132088|ready=132248|delta=160
+L3_ROP_READY|uid=751|enter=132251|ready=132411|delta=160
+L3_ROP_READY|uid=752|enter=132414|ready=132574|delta=160
+L3_ROP_READY|uid=753|enter=132577|ready=132737|delta=160
+L3_ROP_READY|uid=754|enter=132740|ready=132900|delta=160
+L3_ROP_READY|uid=755|enter=132903|ready=133063|delta=160
+L3_ROP_READY|uid=756|enter=133066|ready=133226|delta=160
+L3_ROP_READY|uid=757|enter=133229|ready=133389|delta=160
+L3_ROP_READY|uid=758|enter=133392|ready=133552|delta=160
+L3_ROP_READY|uid=759|enter=133555|ready=133715|delta=160
+L3_ROP_READY|uid=760|enter=133718|ready=133878|delta=160
+L3_ROP_READY|uid=761|enter=133881|ready=134041|delta=160
+L3_ROP_READY|uid=762|enter=134044|ready=134204|delta=160
+L3_ROP_READY|uid=763|enter=134207|ready=134367|delta=160
+L3_ROP_READY|uid=764|enter=134370|ready=134530|delta=160
+L3_ROP_READY|uid=765|enter=134533|ready=134693|delta=160
+L3_ROP_READY|uid=766|enter=134696|ready=134856|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=130002|completion_cycle=135002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=751|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=130002|completion_cycle=135002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=130010|window_end_cycle=135010|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=767|enter=134859|ready=135019|delta=160
+L3_ROP_READY|uid=768|enter=135022|ready=135182|delta=160
+L3_ROP_READY|uid=769|enter=135185|ready=135345|delta=160
+L3_ROP_READY|uid=770|enter=135348|ready=135508|delta=160
+L3_ROP_READY|uid=771|enter=135511|ready=135671|delta=160
+L3_ROP_READY|uid=772|enter=135674|ready=135834|delta=160
+L3_ROP_READY|uid=773|enter=135837|ready=135997|delta=160
+L3_ROP_READY|uid=774|enter=136000|ready=136160|delta=160
+L3_ROP_READY|uid=775|enter=136163|ready=136323|delta=160
+L3_ROP_READY|uid=776|enter=136326|ready=136486|delta=160
+L3_ROP_READY|uid=777|enter=136489|ready=136649|delta=160
+L3_ROP_READY|uid=778|enter=136652|ready=136812|delta=160
+L3_ROP_READY|uid=779|enter=136815|ready=136975|delta=160
+L3_ROP_READY|uid=780|enter=136978|ready=137138|delta=160
+L3_ROP_READY|uid=781|enter=137141|ready=137301|delta=160
+L3_ROP_READY|uid=782|enter=137304|ready=137464|delta=160
+L3_ROP_READY|uid=783|enter=137467|ready=137627|delta=160
+L3_ROP_READY|uid=784|enter=137630|ready=137790|delta=160
+L3_ROP_READY|uid=785|enter=137793|ready=137953|delta=160
+L3_ROP_READY|uid=786|enter=137956|ready=138116|delta=160
+L3_ROP_READY|uid=787|enter=138119|ready=138279|delta=160
+L3_ROP_READY|uid=788|enter=138282|ready=138442|delta=160
+L3_ROP_READY|uid=789|enter=138445|ready=138605|delta=160
+L3_ROP_READY|uid=790|enter=138608|ready=138768|delta=160
+L3_ROP_READY|uid=791|enter=138771|ready=138931|delta=160
+L3_ROP_READY|uid=792|enter=138934|ready=139094|delta=160
+L3_ROP_READY|uid=793|enter=139097|ready=139257|delta=160
+L3_ROP_READY|uid=794|enter=139260|ready=139420|delta=160
+L3_ROP_READY|uid=795|enter=139423|ready=139583|delta=160
+L3_ROP_READY|uid=796|enter=139586|ready=139746|delta=160
+L3_ROP_READY|uid=797|enter=139749|ready=139909|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=135002|completion_cycle=140002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=781|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=135002|completion_cycle=140002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=135010|window_end_cycle=140010|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=798|enter=139912|ready=140072|delta=160
+L3_ROP_READY|uid=799|enter=140075|ready=140235|delta=160
+L3_ROP_READY|uid=800|enter=140238|ready=140398|delta=160
+L3_ROP_READY|uid=801|enter=140401|ready=140561|delta=160
+L3_ROP_READY|uid=802|enter=140564|ready=140724|delta=160
+L3_ROP_READY|uid=803|enter=140727|ready=140887|delta=160
+L3_ROP_READY|uid=804|enter=140890|ready=141050|delta=160
+L3_ROP_READY|uid=805|enter=141053|ready=141213|delta=160
+L3_ROP_READY|uid=806|enter=141216|ready=141376|delta=160
+L3_ROP_READY|uid=807|enter=141379|ready=141539|delta=160
+L3_ROP_READY|uid=808|enter=141542|ready=141702|delta=160
+L3_ROP_READY|uid=809|enter=141705|ready=141865|delta=160
+L3_ROP_READY|uid=810|enter=141868|ready=142028|delta=160
+L3_ROP_READY|uid=811|enter=142031|ready=142191|delta=160
+L3_ROP_READY|uid=812|enter=142194|ready=142354|delta=160
+L3_ROP_READY|uid=813|enter=142357|ready=142517|delta=160
+L3_ROP_READY|uid=814|enter=142520|ready=142680|delta=160
+L3_ROP_READY|uid=815|enter=142683|ready=142843|delta=160
+L3_ROP_READY|uid=816|enter=142846|ready=143006|delta=160
+L3_ROP_READY|uid=817|enter=143009|ready=143169|delta=160
+L3_ROP_READY|uid=818|enter=143172|ready=143332|delta=160
+L3_ROP_READY|uid=819|enter=143335|ready=143495|delta=160
+L3_ROP_READY|uid=820|enter=143498|ready=143658|delta=160
+L3_ROP_READY|uid=821|enter=143661|ready=143821|delta=160
+L3_ROP_READY|uid=822|enter=143824|ready=143984|delta=160
+L3_ROP_READY|uid=823|enter=143987|ready=144147|delta=160
+L3_ROP_READY|uid=824|enter=144150|ready=144310|delta=160
+L3_ROP_READY|uid=825|enter=144313|ready=144473|delta=160
+L3_ROP_READY|uid=826|enter=144476|ready=144636|delta=160
+L3_ROP_READY|uid=827|enter=144639|ready=144799|delta=160
+L3_ROP_READY|uid=828|enter=144802|ready=144962|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=140002|completion_cycle=145002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=812|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=140002|completion_cycle=145002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=140010|window_end_cycle=145011|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=829|enter=144965|ready=145125|delta=160
+L3_ROP_READY|uid=830|enter=145128|ready=145288|delta=160
+L3_ROP_READY|uid=831|enter=145291|ready=145451|delta=160
+L3_ROP_READY|uid=832|enter=145454|ready=145614|delta=160
+L3_ROP_READY|uid=833|enter=145617|ready=145777|delta=160
+L3_ROP_READY|uid=834|enter=145780|ready=145940|delta=160
+L3_ROP_READY|uid=835|enter=145943|ready=146103|delta=160
+L3_ROP_READY|uid=836|enter=146106|ready=146266|delta=160
+L3_ROP_READY|uid=837|enter=146269|ready=146429|delta=160
+L3_ROP_READY|uid=838|enter=146432|ready=146592|delta=160
+L3_ROP_READY|uid=839|enter=146595|ready=146755|delta=160
+L3_ROP_READY|uid=840|enter=146758|ready=146918|delta=160
+L3_ROP_READY|uid=841|enter=146921|ready=147081|delta=160
+L3_ROP_READY|uid=842|enter=147084|ready=147244|delta=160
+L3_ROP_READY|uid=843|enter=147247|ready=147407|delta=160
+L3_ROP_READY|uid=844|enter=147410|ready=147570|delta=160
+L3_ROP_READY|uid=845|enter=147573|ready=147733|delta=160
+L3_ROP_READY|uid=846|enter=147736|ready=147896|delta=160
+L3_ROP_READY|uid=847|enter=147899|ready=148059|delta=160
+L3_ROP_READY|uid=848|enter=148062|ready=148222|delta=160
+L3_ROP_READY|uid=849|enter=148225|ready=148385|delta=160
+L3_ROP_READY|uid=850|enter=148388|ready=148548|delta=160
+L3_ROP_READY|uid=851|enter=148551|ready=148711|delta=160
+L3_ROP_READY|uid=852|enter=148714|ready=148874|delta=160
+L3_ROP_READY|uid=853|enter=148877|ready=149037|delta=160
+L3_ROP_READY|uid=854|enter=149040|ready=149200|delta=160
+L3_ROP_READY|uid=855|enter=149203|ready=149363|delta=160
+L3_ROP_READY|uid=856|enter=149366|ready=149526|delta=160
+L3_ROP_READY|uid=857|enter=149529|ready=149689|delta=160
+L3_ROP_READY|uid=858|enter=149692|ready=149852|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=145002|completion_cycle=150002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=843|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=145002|completion_cycle=150002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=145011|window_end_cycle=150011|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=859|enter=149855|ready=150015|delta=160
+L3_ROP_READY|uid=860|enter=150018|ready=150178|delta=160
+L3_ROP_READY|uid=861|enter=150181|ready=150341|delta=160
+L3_ROP_READY|uid=862|enter=150344|ready=150504|delta=160
+L3_ROP_READY|uid=863|enter=150507|ready=150667|delta=160
+L3_ROP_READY|uid=864|enter=150670|ready=150830|delta=160
+L3_ROP_READY|uid=865|enter=150833|ready=150993|delta=160
+L3_ROP_READY|uid=866|enter=150996|ready=151156|delta=160
+L3_ROP_READY|uid=867|enter=151159|ready=151319|delta=160
+L3_ROP_READY|uid=868|enter=151322|ready=151482|delta=160
+L3_ROP_READY|uid=869|enter=151485|ready=151645|delta=160
+L3_ROP_READY|uid=870|enter=151648|ready=151808|delta=160
+L3_ROP_READY|uid=871|enter=151811|ready=151971|delta=160
+L3_ROP_READY|uid=872|enter=151974|ready=152134|delta=160
+L3_ROP_READY|uid=873|enter=152137|ready=152297|delta=160
+L3_ROP_READY|uid=874|enter=152300|ready=152460|delta=160
+L3_ROP_READY|uid=875|enter=152463|ready=152623|delta=160
+L3_ROP_READY|uid=876|enter=152626|ready=152786|delta=160
+L3_ROP_READY|uid=877|enter=152789|ready=152949|delta=160
+L3_ROP_READY|uid=878|enter=152952|ready=153112|delta=160
+L3_ROP_READY|uid=879|enter=153115|ready=153275|delta=160
+L3_ROP_READY|uid=880|enter=153278|ready=153438|delta=160
+L3_ROP_READY|uid=881|enter=153441|ready=153601|delta=160
+L3_ROP_READY|uid=882|enter=153604|ready=153764|delta=160
+L3_ROP_READY|uid=883|enter=153767|ready=153927|delta=160
+L3_ROP_READY|uid=884|enter=153930|ready=154090|delta=160
+L3_ROP_READY|uid=885|enter=154093|ready=154253|delta=160
+L3_ROP_READY|uid=886|enter=154256|ready=154416|delta=160
+L3_ROP_READY|uid=887|enter=154419|ready=154579|delta=160
+L3_ROP_READY|uid=888|enter=154582|ready=154742|delta=160
+L3_ROP_READY|uid=889|enter=154745|ready=154905|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=150002|completion_cycle=155002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=873|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=150002|completion_cycle=155002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=150011|window_end_cycle=155011|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=890|enter=154908|ready=155068|delta=160
+L3_ROP_READY|uid=891|enter=155071|ready=155231|delta=160
+L3_ROP_READY|uid=892|enter=155234|ready=155394|delta=160
+L3_ROP_READY|uid=893|enter=155397|ready=155557|delta=160
+L3_ROP_READY|uid=894|enter=155560|ready=155720|delta=160
+L3_ROP_READY|uid=895|enter=155723|ready=155883|delta=160
+L3_ROP_READY|uid=896|enter=155886|ready=156046|delta=160
+L3_ROP_READY|uid=897|enter=156049|ready=156209|delta=160
+L3_ROP_READY|uid=898|enter=156212|ready=156372|delta=160
+L3_ROP_READY|uid=899|enter=156375|ready=156535|delta=160
+L3_ROP_READY|uid=900|enter=156538|ready=156698|delta=160
+L3_ROP_READY|uid=901|enter=156701|ready=156861|delta=160
+L3_ROP_READY|uid=902|enter=156864|ready=157024|delta=160
+L3_ROP_READY|uid=903|enter=157027|ready=157187|delta=160
+L3_ROP_READY|uid=904|enter=157190|ready=157350|delta=160
+L3_ROP_READY|uid=905|enter=157353|ready=157513|delta=160
+L3_ROP_READY|uid=906|enter=157516|ready=157676|delta=160
+L3_ROP_READY|uid=907|enter=157679|ready=157839|delta=160
+L3_ROP_READY|uid=908|enter=157842|ready=158002|delta=160
+L3_ROP_READY|uid=909|enter=158005|ready=158165|delta=160
+L3_ROP_READY|uid=910|enter=158168|ready=158328|delta=160
+L3_ROP_READY|uid=911|enter=158331|ready=158491|delta=160
+L3_ROP_READY|uid=912|enter=158494|ready=158654|delta=160
+L3_ROP_READY|uid=913|enter=158657|ready=158817|delta=160
+L3_ROP_READY|uid=914|enter=158820|ready=158980|delta=160
+L3_ROP_READY|uid=915|enter=158983|ready=159143|delta=160
+L3_ROP_READY|uid=916|enter=159146|ready=159306|delta=160
+L3_ROP_READY|uid=917|enter=159309|ready=159469|delta=160
+L3_ROP_READY|uid=918|enter=159472|ready=159632|delta=160
+L3_ROP_READY|uid=919|enter=159635|ready=159795|delta=160
+L3_ROP_READY|uid=920|enter=159798|ready=159958|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=155002|completion_cycle=160002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=904|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=155002|completion_cycle=160002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=155011|window_end_cycle=160012|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=921|enter=159961|ready=160121|delta=160
+L3_ROP_READY|uid=922|enter=160124|ready=160284|delta=160
+L3_ROP_READY|uid=923|enter=160287|ready=160447|delta=160
+L3_ROP_READY|uid=924|enter=160450|ready=160610|delta=160
+L3_ROP_READY|uid=925|enter=160613|ready=160773|delta=160
+L3_ROP_READY|uid=926|enter=160776|ready=160936|delta=160
+L3_ROP_READY|uid=927|enter=160939|ready=161099|delta=160
+L3_ROP_READY|uid=928|enter=161102|ready=161262|delta=160
+L3_ROP_READY|uid=929|enter=161265|ready=161425|delta=160
+L3_ROP_READY|uid=930|enter=161428|ready=161588|delta=160
+L3_ROP_READY|uid=931|enter=161591|ready=161751|delta=160
+L3_ROP_READY|uid=932|enter=161754|ready=161914|delta=160
+L3_ROP_READY|uid=933|enter=161917|ready=162077|delta=160
+L3_ROP_READY|uid=934|enter=162080|ready=162240|delta=160
+L3_ROP_READY|uid=935|enter=162243|ready=162403|delta=160
+L3_ROP_READY|uid=936|enter=162406|ready=162566|delta=160
+L3_ROP_READY|uid=937|enter=162569|ready=162729|delta=160
+L3_ROP_READY|uid=938|enter=162732|ready=162892|delta=160
+L3_ROP_READY|uid=939|enter=162895|ready=163055|delta=160
+L3_ROP_READY|uid=940|enter=163058|ready=163218|delta=160
+L3_ROP_READY|uid=941|enter=163221|ready=163381|delta=160
+L3_ROP_READY|uid=942|enter=163384|ready=163544|delta=160
+L3_ROP_READY|uid=943|enter=163547|ready=163707|delta=160
+L3_ROP_READY|uid=944|enter=163710|ready=163870|delta=160
+L3_ROP_READY|uid=945|enter=163873|ready=164033|delta=160
+L3_ROP_READY|uid=946|enter=164036|ready=164196|delta=160
+L3_ROP_READY|uid=947|enter=164199|ready=164359|delta=160
+L3_ROP_READY|uid=948|enter=164362|ready=164522|delta=160
+L3_ROP_READY|uid=949|enter=164525|ready=164685|delta=160
+L3_ROP_READY|uid=950|enter=164688|ready=164848|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=160002|completion_cycle=165002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=935|missq_avg=0|lowerq_avg=0|bank_logical_ops=30|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=160002|completion_cycle=165002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=951|enter=164851|ready=165011|delta=160
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=160012|window_end_cycle=165012|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=952|enter=165014|ready=165174|delta=160
+L3_ROP_READY|uid=953|enter=165177|ready=165337|delta=160
+L3_ROP_READY|uid=954|enter=165340|ready=165500|delta=160
+L3_ROP_READY|uid=955|enter=165503|ready=165663|delta=160
+L3_ROP_READY|uid=956|enter=165666|ready=165826|delta=160
+L3_ROP_READY|uid=957|enter=165829|ready=165989|delta=160
+L3_ROP_READY|uid=958|enter=165992|ready=166152|delta=160
+L3_ROP_READY|uid=959|enter=166155|ready=166315|delta=160
+L3_ROP_READY|uid=960|enter=166318|ready=166478|delta=160
+L3_ROP_READY|uid=961|enter=166481|ready=166641|delta=160
+L3_ROP_READY|uid=962|enter=166644|ready=166804|delta=160
+L3_ROP_READY|uid=963|enter=166807|ready=166967|delta=160
+L3_ROP_READY|uid=964|enter=166970|ready=167130|delta=160
+L3_ROP_READY|uid=965|enter=167133|ready=167293|delta=160
+L3_ROP_READY|uid=966|enter=167296|ready=167456|delta=160
+L3_ROP_READY|uid=967|enter=167459|ready=167619|delta=160
+L3_ROP_READY|uid=968|enter=167622|ready=167782|delta=160
+L3_ROP_READY|uid=969|enter=167785|ready=167945|delta=160
+L3_ROP_READY|uid=970|enter=167948|ready=168108|delta=160
+L3_ROP_READY|uid=971|enter=168111|ready=168271|delta=160
+L3_ROP_READY|uid=972|enter=168274|ready=168434|delta=160
+L3_ROP_READY|uid=973|enter=168437|ready=168597|delta=160
+L3_ROP_READY|uid=974|enter=168600|ready=168760|delta=160
+L3_ROP_READY|uid=975|enter=168763|ready=168923|delta=160
+L3_ROP_READY|uid=976|enter=168926|ready=169086|delta=160
+L3_ROP_READY|uid=977|enter=169089|ready=169249|delta=160
+L3_ROP_READY|uid=978|enter=169252|ready=169412|delta=160
+L3_ROP_READY|uid=979|enter=169415|ready=169575|delta=160
+L3_ROP_READY|uid=980|enter=169578|ready=169738|delta=160
+L3_ROP_READY|uid=981|enter=169741|ready=169901|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=165002|completion_cycle=170002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=965|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=165002|completion_cycle=170002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=165012|window_end_cycle=170012|dram_cycles=3754|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120128|bandwidth_util=0.000000000
+L3_ROP_READY|uid=982|enter=169904|ready=170064|delta=160
+L3_ROP_READY|uid=983|enter=170067|ready=170227|delta=160
+L3_ROP_READY|uid=984|enter=170230|ready=170390|delta=160
+L3_ROP_READY|uid=985|enter=170393|ready=170553|delta=160
+L3_ROP_READY|uid=986|enter=170556|ready=170716|delta=160
+L3_ROP_READY|uid=987|enter=170719|ready=170879|delta=160
+L3_ROP_READY|uid=988|enter=170882|ready=171042|delta=160
+L3_ROP_READY|uid=989|enter=171045|ready=171205|delta=160
+L3_ROP_READY|uid=990|enter=171208|ready=171368|delta=160
+L3_ROP_READY|uid=991|enter=171371|ready=171531|delta=160
+L3_ROP_READY|uid=992|enter=171534|ready=171694|delta=160
+L3_ROP_READY|uid=993|enter=171697|ready=171857|delta=160
+L3_ROP_READY|uid=994|enter=171860|ready=172020|delta=160
+L3_ROP_READY|uid=995|enter=172023|ready=172183|delta=160
+L3_ROP_READY|uid=996|enter=172186|ready=172346|delta=160
+L3_ROP_READY|uid=997|enter=172349|ready=172509|delta=160
+L3_ROP_READY|uid=998|enter=172512|ready=172672|delta=160
+L3_ROP_READY|uid=999|enter=172675|ready=172835|delta=160
+L3_ROP_READY|uid=1000|enter=172838|ready=172998|delta=160
+L3_ROP_READY|uid=1001|enter=173001|ready=173161|delta=160
+L3_ROP_READY|uid=1002|enter=173164|ready=173324|delta=160
+L3_ROP_READY|uid=1003|enter=173327|ready=173487|delta=160
+L3_ROP_READY|uid=1004|enter=173490|ready=173650|delta=160
+L3_ROP_READY|uid=1005|enter=173653|ready=173813|delta=160
+L3_ROP_READY|uid=1006|enter=173816|ready=173976|delta=160
+L3_ROP_READY|uid=1007|enter=173979|ready=174139|delta=160
+L3_ROP_READY|uid=1008|enter=174142|ready=174302|delta=160
+L3_ROP_READY|uid=1009|enter=174305|ready=174465|delta=160
+L3_ROP_READY|uid=1010|enter=174468|ready=174628|delta=160
+L3_ROP_READY|uid=1011|enter=174631|ready=174791|delta=160
+L3_ROP_READY|uid=1012|enter=174794|ready=174954|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=170002|completion_cycle=175002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=996|missq_avg=0|lowerq_avg=0|bank_logical_ops=31|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=170002|completion_cycle=175002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=170012|window_end_cycle=175013|dram_cycles=3755|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=120160|bandwidth_util=0.000000000
+L3_ROP_READY|uid=1013|enter=174957|ready=175117|delta=160
+L3_ROP_READY|uid=1014|enter=175120|ready=175280|delta=160
+L3_ROP_READY|uid=1015|enter=175283|ready=175443|delta=160
+L3_ROP_READY|uid=1016|enter=175446|ready=175606|delta=160
+L3_ROP_READY|uid=1017|enter=175609|ready=175769|delta=160
+L3_ROP_READY|uid=1018|enter=175772|ready=175932|delta=160
+L3_ROP_READY|uid=1019|enter=175935|ready=176095|delta=160
+L3_ROP_READY|uid=1020|enter=176098|ready=176258|delta=160
+L3_ROP_READY|uid=1021|enter=176261|ready=176421|delta=160
+L3_ROP_READY|uid=1022|enter=176424|ready=176584|delta=160
+L3_ROP_READY|uid=1023|enter=176587|ready=176747|delta=160
+L3_ROP_READY|uid=1024|enter=176750|ready=176910|delta=160
+L3_ROP_READY|uid=1025|enter=176913|ready=177073|delta=160
+L3_ROP_READY|uid=1027|enter=177077|ready=177237|delta=160
+L3_ROP_READY|uid=1029|enter=177241|ready=177401|delta=160
+L3_ROP_READY|uid=1031|enter=177405|ready=177565|delta=160
+L3_ROP_READY|uid=1033|enter=177569|ready=177729|delta=160
+L3_ROP_READY|uid=1035|enter=177733|ready=177893|delta=160
+L3_ROP_READY|uid=1037|enter=177897|ready=178057|delta=160
+L3_ROP_READY|uid=1039|enter=178061|ready=178221|delta=160
+L3_ROP_READY|uid=1041|enter=178225|ready=178385|delta=160
+L3_ROP_READY|uid=1043|enter=178389|ready=178549|delta=160
+L3_ROP_READY|uid=1045|enter=178553|ready=178713|delta=160
+L3_ROP_READY|uid=1047|enter=178717|ready=178877|delta=160
+L3_ROP_READY|uid=1049|enter=178881|ready=179041|delta=160
+L3_ROP_READY|uid=1051|enter=179045|ready=179205|delta=160
+L3_ROP_READY|uid=1053|enter=179209|ready=179369|delta=160
+L3_ROP_READY|uid=1055|enter=179373|ready=179533|delta=160
+L3_ROP_READY|uid=1057|enter=179537|ready=179697|delta=160
+L3_ROP_READY|uid=1059|enter=179701|ready=179861|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=175002|completion_cycle=180002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=5|resident_payload_avg=1021|missq_avg=0|lowerq_avg=5|bank_logical_ops=84|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=175002|completion_cycle=180002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1061|enter=179865|ready=180025|delta=160
+L3_ROP_READY|uid=1063|enter=180029|ready=180189|delta=160
+L3_ROP_READY|uid=1065|enter=180193|ready=180353|delta=160
+L3_ROP_READY|uid=1067|enter=180357|ready=180517|delta=160
+L3_ROP_READY|uid=1069|enter=180521|ready=180681|delta=160
+L3_ROP_READY|uid=1071|enter=180685|ready=180845|delta=160
+L3_ROP_READY|uid=1073|enter=180849|ready=181009|delta=160
+L3_ROP_READY|uid=1075|enter=181013|ready=181173|delta=160
+L3_ROP_READY|uid=1077|enter=181177|ready=181337|delta=160
+L3_ROP_READY|uid=1079|enter=181341|ready=181501|delta=160
+L3_ROP_READY|uid=1081|enter=181505|ready=181665|delta=160
+L3_ROP_READY|uid=1083|enter=181669|ready=181829|delta=160
+L3_ROP_READY|uid=1085|enter=181833|ready=181993|delta=160
+L3_ROP_READY|uid=1087|enter=181997|ready=182157|delta=160
+L3_ROP_READY|uid=1089|enter=182161|ready=182321|delta=160
+L3_ROP_READY|uid=1091|enter=182325|ready=182485|delta=160
+L3_ROP_READY|uid=1093|enter=182489|ready=182649|delta=160
+L3_ROP_READY|uid=1095|enter=182653|ready=182813|delta=160
+L3_ROP_READY|uid=1097|enter=182817|ready=182977|delta=160
+L3_ROP_READY|uid=1099|enter=182981|ready=183141|delta=160
+L3_ROP_READY|uid=1101|enter=183145|ready=183305|delta=160
+L3_ROP_READY|uid=1103|enter=183309|ready=183469|delta=160
+L3_ROP_READY|uid=1105|enter=183473|ready=183633|delta=160
+L3_ROP_READY|uid=1107|enter=183637|ready=183797|delta=160
+L3_ROP_READY|uid=1109|enter=183801|ready=183961|delta=160
+L3_ROP_READY|uid=1111|enter=183965|ready=184125|delta=160
+L3_ROP_READY|uid=1113|enter=184129|ready=184289|delta=160
+L3_ROP_READY|uid=1115|enter=184293|ready=184453|delta=160
+L3_ROP_READY|uid=1117|enter=184457|ready=184617|delta=160
+L3_ROP_READY|uid=1119|enter=184621|ready=184781|delta=160
+L3_ROP_READY|uid=1121|enter=184785|ready=184945|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=180002|completion_cycle=185002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=33|resident_payload_avg=1024|missq_avg=0|lowerq_avg=33|bank_logical_ops=124|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=180002|completion_cycle=185002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1123|enter=184949|ready=185109|delta=160
+L3_ROP_READY|uid=1125|enter=185113|ready=185273|delta=160
+L3_ROP_READY|uid=1127|enter=185277|ready=185437|delta=160
+L3_ROP_READY|uid=1129|enter=185441|ready=185601|delta=160
+L3_ROP_READY|uid=1131|enter=185605|ready=185765|delta=160
+L3_ROP_READY|uid=1133|enter=185769|ready=185929|delta=160
+L3_ROP_READY|uid=1135|enter=185933|ready=186093|delta=160
+L3_ROP_READY|uid=1137|enter=186097|ready=186257|delta=160
+L3_ROP_READY|uid=1139|enter=186261|ready=186421|delta=160
+L3_ROP_READY|uid=1141|enter=186425|ready=186585|delta=160
+L3_ROP_READY|uid=1143|enter=186589|ready=186749|delta=160
+L3_ROP_READY|uid=1145|enter=186753|ready=186913|delta=160
+L3_ROP_READY|uid=1147|enter=186917|ready=187077|delta=160
+L3_ROP_READY|uid=1149|enter=187081|ready=187241|delta=160
+L3_ROP_READY|uid=1151|enter=187245|ready=187405|delta=160
+L3_ROP_READY|uid=1153|enter=187409|ready=187569|delta=160
+L3_ROP_READY|uid=1155|enter=187573|ready=187733|delta=160
+L3_ROP_READY|uid=1157|enter=187737|ready=187897|delta=160
+L3_ROP_READY|uid=1159|enter=187901|ready=188061|delta=160
+L3_ROP_READY|uid=1161|enter=188065|ready=188225|delta=160
+L3_ROP_READY|uid=1163|enter=188229|ready=188389|delta=160
+L3_ROP_READY|uid=1165|enter=188393|ready=188553|delta=160
+L3_ROP_READY|uid=1167|enter=188557|ready=188717|delta=160
+L3_ROP_READY|uid=1169|enter=188721|ready=188881|delta=160
+L3_ROP_READY|uid=1171|enter=188885|ready=189045|delta=160
+L3_ROP_READY|uid=1173|enter=189049|ready=189209|delta=160
+L3_ROP_READY|uid=1175|enter=189213|ready=189373|delta=160
+L3_ROP_READY|uid=1177|enter=189377|ready=189537|delta=160
+L3_ROP_READY|uid=1179|enter=189541|ready=189701|delta=160
+L3_ROP_READY|uid=1181|enter=189705|ready=189865|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=185002|completion_cycle=190002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=64|resident_payload_avg=1024|missq_avg=0|lowerq_avg=64|bank_logical_ops=120|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=185002|completion_cycle=190002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1183|enter=189869|ready=190029|delta=160
+L3_ROP_READY|uid=1185|enter=190033|ready=190193|delta=160
+L3_ROP_READY|uid=1187|enter=190197|ready=190357|delta=160
+L3_ROP_READY|uid=1189|enter=190361|ready=190521|delta=160
+L3_ROP_READY|uid=1191|enter=190525|ready=190685|delta=160
+L3_ROP_READY|uid=1193|enter=190689|ready=190849|delta=160
+L3_ROP_READY|uid=1195|enter=190853|ready=191013|delta=160
+L3_ROP_READY|uid=1197|enter=191017|ready=191177|delta=160
+L3_ROP_READY|uid=1199|enter=191181|ready=191341|delta=160
+L3_ROP_READY|uid=1201|enter=191345|ready=191505|delta=160
+L3_ROP_READY|uid=1203|enter=191509|ready=191669|delta=160
+L3_ROP_READY|uid=1205|enter=191673|ready=191833|delta=160
+L3_ROP_READY|uid=1207|enter=191837|ready=191997|delta=160
+L3_ROP_READY|uid=1209|enter=192001|ready=192161|delta=160
+L3_ROP_READY|uid=1211|enter=192165|ready=192325|delta=160
+L3_ROP_READY|uid=1213|enter=192329|ready=192489|delta=160
+L3_ROP_READY|uid=1215|enter=192493|ready=192653|delta=160
+L3_ROP_READY|uid=1217|enter=192657|ready=192817|delta=160
+L3_ROP_READY|uid=1219|enter=192821|ready=192981|delta=160
+L3_ROP_READY|uid=1221|enter=192985|ready=193145|delta=160
+L3_ROP_READY|uid=1223|enter=193149|ready=193309|delta=160
+L3_ROP_READY|uid=1225|enter=193313|ready=193473|delta=160
+L3_ROP_READY|uid=1227|enter=193477|ready=193637|delta=160
+L3_ROP_READY|uid=1229|enter=193641|ready=193801|delta=160
+L3_ROP_READY|uid=1231|enter=193805|ready=193965|delta=160
+L3_ROP_READY|uid=1233|enter=193969|ready=194129|delta=160
+L3_ROP_READY|uid=1235|enter=194133|ready=194293|delta=160
+L3_ROP_READY|uid=1237|enter=194297|ready=194457|delta=160
+L3_ROP_READY|uid=1239|enter=194461|ready=194621|delta=160
+L3_ROP_READY|uid=1241|enter=194625|ready=194785|delta=160
+L3_ROP_READY|uid=1243|enter=194789|ready=194949|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=190002|completion_cycle=195002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=94|resident_payload_avg=1024|missq_avg=0|lowerq_avg=94|bank_logical_ops=124|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=190002|completion_cycle=195002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1245|enter=194953|ready=195113|delta=160
+L3_ROP_READY|uid=1247|enter=195117|ready=195277|delta=160
+L3_ROP_READY|uid=1249|enter=195281|ready=195441|delta=160
+L3_ROP_READY|uid=1251|enter=195445|ready=195605|delta=160
+L3_ROP_READY|uid=1253|enter=195609|ready=195769|delta=160
+L3_ROP_READY|uid=1255|enter=195773|ready=195933|delta=160
+L3_ROP_READY|uid=1257|enter=195937|ready=196097|delta=160
+L3_ROP_READY|uid=1259|enter=196101|ready=196261|delta=160
+L3_ROP_READY|uid=1261|enter=196265|ready=196425|delta=160
+L3_ROP_READY|uid=1263|enter=196429|ready=196589|delta=160
+L3_ROP_READY|uid=1265|enter=196593|ready=196753|delta=160
+L3_ROP_READY|uid=1267|enter=196757|ready=196917|delta=160
+L3_ROP_READY|uid=1269|enter=196921|ready=197081|delta=160
+L3_ROP_READY|uid=1271|enter=197085|ready=197245|delta=160
+L3_ROP_READY|uid=1273|enter=197249|ready=197409|delta=160
+L3_ROP_READY|uid=1275|enter=197413|ready=197573|delta=160
+L3_ROP_READY|uid=1277|enter=197577|ready=197737|delta=160
+L3_ROP_READY|uid=1279|enter=197741|ready=197901|delta=160
+L3_ROP_READY|uid=1281|enter=197905|ready=198065|delta=160
+L3_ROP_READY|uid=1283|enter=198069|ready=198229|delta=160
+L3_ROP_READY|uid=1285|enter=198233|ready=198393|delta=160
+L3_ROP_READY|uid=1287|enter=198397|ready=198557|delta=160
+L3_ROP_READY|uid=1289|enter=198561|ready=198721|delta=160
+L3_ROP_READY|uid=1291|enter=198725|ready=198885|delta=160
+L3_ROP_READY|uid=1293|enter=198889|ready=199049|delta=160
+L3_ROP_READY|uid=1295|enter=199053|ready=199213|delta=160
+L3_ROP_READY|uid=1297|enter=199217|ready=199377|delta=160
+L3_ROP_READY|uid=1299|enter=199381|ready=199541|delta=160
+L3_ROP_READY|uid=1301|enter=199545|ready=199705|delta=160
+L3_ROP_READY|uid=1303|enter=199709|ready=199869|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=195002|completion_cycle=200002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=125|resident_payload_avg=1024|missq_avg=0|lowerq_avg=125|bank_logical_ops=120|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=195002|completion_cycle=200002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1305|enter=199873|ready=200033|delta=160
+L3_ROP_READY|uid=1307|enter=200037|ready=200197|delta=160
+L3_ROP_READY|uid=1309|enter=200201|ready=200361|delta=160
+L3_ROP_READY|uid=1311|enter=200365|ready=200525|delta=160
+L3_ROP_READY|uid=1313|enter=200529|ready=200689|delta=160
+L3_ROP_READY|uid=1315|enter=200693|ready=200853|delta=160
+L3_ROP_READY|uid=1317|enter=200857|ready=201017|delta=160
+L3_ROP_READY|uid=1319|enter=201021|ready=201181|delta=160
+L3_ROP_READY|uid=1321|enter=201185|ready=201345|delta=160
+L3_ROP_READY|uid=1323|enter=201349|ready=201509|delta=160
+L3_ROP_READY|uid=1325|enter=201513|ready=201673|delta=160
+L3_ROP_READY|uid=1327|enter=201677|ready=201837|delta=160
+L3_ROP_READY|uid=1329|enter=201841|ready=202001|delta=160
+L3_ROP_READY|uid=1331|enter=202005|ready=202165|delta=160
+L3_ROP_READY|uid=1333|enter=202169|ready=202329|delta=160
+L3_ROP_READY|uid=1335|enter=202333|ready=202493|delta=160
+L3_ROP_READY|uid=1337|enter=202497|ready=202657|delta=160
+L3_ROP_READY|uid=1339|enter=202661|ready=202821|delta=160
+L3_ROP_READY|uid=1341|enter=202825|ready=202985|delta=160
+L3_ROP_READY|uid=1343|enter=202989|ready=203149|delta=160
+L3_ROP_READY|uid=1345|enter=203153|ready=203313|delta=160
+L3_ROP_READY|uid=1347|enter=203317|ready=203477|delta=160
+L3_ROP_READY|uid=1349|enter=203481|ready=203641|delta=160
+L3_ROP_READY|uid=1351|enter=203645|ready=203805|delta=160
+L3_ROP_READY|uid=1353|enter=203809|ready=203969|delta=160
+L3_ROP_READY|uid=1355|enter=203973|ready=204133|delta=160
+L3_ROP_READY|uid=1357|enter=204137|ready=204297|delta=160
+L3_ROP_READY|uid=1359|enter=204301|ready=204461|delta=160
+L3_ROP_READY|uid=1361|enter=204465|ready=204625|delta=160
+L3_ROP_READY|uid=1363|enter=204629|ready=204789|delta=160
+L3_ROP_READY|uid=1365|enter=204793|ready=204953|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=200002|completion_cycle=205002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=155|resident_payload_avg=1024|missq_avg=0|lowerq_avg=155|bank_logical_ops=124|bank_true_conflict_ops=0|bank_wait_cycles=0
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=200002|completion_cycle=205002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1367|enter=204957|ready=205117|delta=160
+L3_ROP_READY|uid=1369|enter=205121|ready=205281|delta=160
+L3_ROP_READY|uid=1371|enter=205285|ready=205445|delta=160
+L3_ROP_READY|uid=1373|enter=205449|ready=205609|delta=160
+L3_ROP_READY|uid=1375|enter=205613|ready=205773|delta=160
+L3_ROP_READY|uid=1377|enter=205777|ready=205937|delta=160
+L3_ROP_READY|uid=1379|enter=205941|ready=206101|delta=160
+L3_ROP_READY|uid=1381|enter=206105|ready=206265|delta=160
+L3_ROP_READY|uid=1383|enter=206269|ready=206429|delta=160
+L3_ROP_READY|uid=1385|enter=206433|ready=206593|delta=160
+L3_ROP_READY|uid=1387|enter=206597|ready=206757|delta=160
+L3_ROP_READY|uid=1389|enter=206761|ready=206921|delta=160
+L3_ROP_READY|uid=1391|enter=206925|ready=207085|delta=160
+L3_ROP_READY|uid=1393|enter=207089|ready=207249|delta=160
+L3_ROP_READY|uid=1395|enter=207253|ready=207413|delta=160
+L3_ROP_READY|uid=1397|enter=207417|ready=207577|delta=160
+L3_ROP_READY|uid=1399|enter=207581|ready=207741|delta=160
+L3_ROP_READY|uid=1401|enter=207745|ready=207905|delta=160
+L3_ROP_READY|uid=1403|enter=207909|ready=208069|delta=160
+L3_ROP_READY|uid=1405|enter=208073|ready=208233|delta=160
+L3_ROP_READY|uid=1407|enter=208237|ready=208397|delta=160
+L3_ROP_READY|uid=1409|enter=208401|ready=208561|delta=160
+L3_ROP_READY|uid=1411|enter=208566|ready=208726|delta=160
+L3_ROP_READY|uid=1413|enter=208731|ready=208891|delta=160
+L3_ROP_READY|uid=1415|enter=208896|ready=209056|delta=160
+L3_ROP_READY|uid=1417|enter=209061|ready=209221|delta=160
+L3_ROP_READY|uid=1419|enter=209226|ready=209386|delta=160
+L3_ROP_READY|uid=1421|enter=209391|ready=209551|delta=160
+L3_ROP_READY|uid=1423|enter=209556|ready=209716|delta=160
+L3_ROP_READY|uid=1425|enter=209721|ready=209881|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=205002|completion_cycle=210002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=186|resident_payload_avg=1024|missq_avg=0|lowerq_avg=186|bank_logical_ops=120|bank_true_conflict_ops=9|bank_wait_cycles=9
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=205002|completion_cycle=210002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1427|enter=209886|ready=210046|delta=160
+L3_ROP_READY|uid=1429|enter=210051|ready=210211|delta=160
+L3_ROP_READY|uid=1431|enter=210216|ready=210376|delta=160
+L3_ROP_READY|uid=1433|enter=210381|ready=210541|delta=160
+L3_ROP_READY|uid=1435|enter=210546|ready=210706|delta=160
+L3_ROP_READY|uid=1437|enter=210711|ready=210871|delta=160
+L3_ROP_READY|uid=1439|enter=210876|ready=211036|delta=160
+L3_ROP_READY|uid=1441|enter=211041|ready=211201|delta=160
+L3_ROP_READY|uid=1443|enter=211206|ready=211366|delta=160
+L3_ROP_READY|uid=1445|enter=211371|ready=211531|delta=160
+L3_ROP_READY|uid=1447|enter=211536|ready=211696|delta=160
+L3_ROP_READY|uid=1449|enter=211701|ready=211861|delta=160
+L3_ROP_READY|uid=1451|enter=211866|ready=212026|delta=160
+L3_ROP_READY|uid=1453|enter=212031|ready=212191|delta=160
+L3_ROP_READY|uid=1455|enter=212196|ready=212356|delta=160
+L3_ROP_READY|uid=1457|enter=212361|ready=212521|delta=160
+L3_ROP_READY|uid=1459|enter=212526|ready=212686|delta=160
+L3_ROP_READY|uid=1461|enter=212691|ready=212851|delta=160
+L3_ROP_READY|uid=1463|enter=212856|ready=213016|delta=160
+L3_ROP_READY|uid=1465|enter=213021|ready=213181|delta=160
+L3_ROP_READY|uid=1467|enter=213186|ready=213346|delta=160
+L3_ROP_READY|uid=1469|enter=213351|ready=213511|delta=160
+L3_ROP_READY|uid=1471|enter=213516|ready=213676|delta=160
+L3_ROP_READY|uid=1473|enter=213681|ready=213841|delta=160
+L3_ROP_READY|uid=1475|enter=213846|ready=214006|delta=160
+L3_ROP_READY|uid=1477|enter=214011|ready=214171|delta=160
+L3_ROP_READY|uid=1479|enter=214176|ready=214336|delta=160
+L3_ROP_READY|uid=1481|enter=214341|ready=214501|delta=160
+L3_ROP_READY|uid=1483|enter=214506|ready=214666|delta=160
+L3_ROP_READY|uid=1485|enter=214671|ready=214831|delta=160
+L3_ROP_READY|uid=1487|enter=214836|ready=214996|delta=160
+EPL2B0V1|scope=window|interval=5000_cycle|slice=0|start_cycle=210002|completion_cycle=215002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=216|resident_payload_avg=1024|missq_avg=0|lowerq_avg=216|bank_logical_ops=124|bank_true_conflict_ops=31|bank_wait_cycles=31
+EPL2B0V1|scope=window|interval=5000_cycle|slice=1|start_cycle=210002|completion_cycle=215002|samples=5000|line_mshr_avg=0|descriptor_avg=0|wad_avg=0|resident_payload_avg=0|missq_avg=0|lowerq_avg=0|bank_logical_ops=0|bank_true_conflict_ops=0|bank_wait_cycles=0
+L3_ROP_READY|uid=1489|enter=215001|ready=215161|delta=160
+L3_ROP_READY|uid=1491|enter=215166|ready=215326|delta=160
+L3_ROP_READY|uid=1493|enter=215331|ready=215491|delta=160
+L3_ROP_READY|uid=1495|enter=215496|ready=215656|delta=160
+L3_ROP_READY|uid=1497|enter=215661|ready=215821|delta=160
+L3_ROP_READY|uid=1499|enter=215826|ready=215986|delta=160
+L3_ROP_READY|uid=1501|enter=215991|ready=216151|delta=160
+L3_ROP_READY|uid=1503|enter=216156|ready=216316|delta=160
+L3_ROP_READY|uid=1505|enter=216321|ready=216481|delta=160
+L3_ROP_READY|uid=1507|enter=216486|ready=216646|delta=160
+L3_ROP_READY|uid=1509|enter=216651|ready=216811|delta=160
+L3_ROP_READY|uid=1511|enter=216816|ready=216976|delta=160
+L3_ROP_READY|uid=1513|enter=216981|ready=217141|delta=160
+L3_ROP_READY|uid=1515|enter=217146|ready=217306|delta=160
+L3_ROP_READY|uid=1517|enter=217311|ready=217471|delta=160
+L3_ROP_READY|uid=1519|enter=217476|ready=217636|delta=160
+L3_ROP_READY|uid=1521|enter=217641|ready=217801|delta=160
+L3_ROP_READY|uid=1523|enter=217806|ready=217966|delta=160
+L3_ROP_READY|uid=1525|enter=217971|ready=218131|delta=160
+L3_ROP_READY|uid=1527|enter=218136|ready=218296|delta=160
+L3_ROP_READY|uid=1529|enter=218301|ready=218461|delta=160
+L3_ROP_READY|uid=1531|enter=218466|ready=218626|delta=160
+L3_ROP_READY|uid=1533|enter=218631|ready=218791|delta=160
+L3_ROP_READY|uid=1535|enter=218796|ready=218956|delta=160
+L3_ROP_READY|uid=1537|enter=219018|ready=219178|delta=160
+L3_WAD_BOUNDARY_PASS|cap=256|live=256|lower_accepted_data_released=256|set_done=0|257th_refused_before_mutation=1|same_address_blocked=1|physical_payload_slots=1168
+EPL2DRAMV1|scope=window|interval=5000_cycle|channel=0|window_start_cycle=175013|window_end_cycle=219247|dram_cycles=1427|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=45664|bandwidth_util=0.000000000
+L3_ROP_READY|uid=1540|enter=219732|ready=219892|delta=160
+L3_PRODUCTION_PASS|regime=WAD256_Q4|mode=1|exact_once=1282|real_set_done=257|WAD_drained=1|data_before_control_release=1|resident_read_after_WB_drain=1|evicted_WB_UID_snapshots=256|max_bank_ops=1|drain_gpu_cycles=649|native_detailed_dram=1|dram_hold_fixture_only=1
+	Command being timed: "/workspace/build/ep-l2-potential20261017-lane3-wad-r2/probe WAD256_Q4 /workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-0.config /workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-1.config /workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-2.config /workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-3.config /workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-4.config /workspace/worktrees/accel-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/parallel_potential_lane3/wad256_q4.config"
+	User time (seconds): 4.07
+	System time (seconds): 0.20
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:04.29
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 344064
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 85771
+	Voluntary context switches: 1
+	Involuntary context switches: 1550
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 312
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
