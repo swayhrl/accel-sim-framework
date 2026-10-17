@@ -1,7 +1,26 @@
-# Lane2 — EPL2_RTL_COST_OPEN_FLOW_V1 active, functional checkpoint delivered
+# Lane2 — EPL2_RTL_COST_OPEN_FLOW_V1, active cost stage
 
-Authorityf1980a84 §§0/1/4/5 read; exact finiteSIMsource9bd30ed9 resolved from releaseIndex72ac64f2. Independent task branch hrl/ep-l2-rtl-cost-v1, rtl/ep_l2 contains actual synthesizable controller/access datapath B16/U/S64 and realbyte SRAM simulation; payloadSRAM remains explicit macro, not synthesizedDFF storage. TraditionalTag/MSHR costs are excluded UNKNOWN. Read SIM_RTL_TIMING_GAP: this first controller is NOT cycle/throughput matched to currentSIM. It uses finitebank RR, synchronous return pipeline and serialized frontend; no performance simulation was silently changed.
+Authority f1980a84c8e637ff2050048bd11b3c1fa5362583, RTL task §4.
+T0 2026-10-17T14:55:14Z; first8h checkpoint2026-10-17T22:55:14Z.
 
-Full1024Tag/1168payload byte oracle checks PASS for B/U/S, including WAD128/129th wait and same request resume, pin/snapshot/byte merge/late generations, staticcopy versus U in-place, FIFO wrap/drain; smallGEN3 exhaustion refusal PASS. Exact test/RTL hashes and logs in RTL_COST_OPEN_FLOW_V1_PREP_r1. DC scripts/filelist/constraints/explicit library inputs provided, DC UNRUN. Tiny existingYosys/Liberty/OpenSTA smoke passed; NO EPL2 area/timing figures available yet. B16 full mapping remains in flight under bounded1CPU8GiB lease; U/S cost pending. First8h checkpoint22:55:14UTC. Goal remains ACTIVE.
+Current changed-path hardware source25097f4b6 (full SHA in RECEIPT),
+same B16/Unified/S64 full-size parameters. The initial limited suite missed
+a same-edge destructive-admission/external-pin race. Actual old-red and
+corrected full integration new-green are published under
+rtl/ep_l2/validation/pin_admission_r1. No simulator candidate was changed.
+B16-map-v3 and UNIFIED-map-v3 were stopped before producing any PPA result.
+New B16/Unified ABC-fast mappings use separate central8GiB leases, identical
+RTL/library/constraints/effort and512MiB per-job output caps. All retained
+EDA outputs remain counted in the central12GiB root. One extra admission
+request was correctly refused before execution when shared quota was full.
 
-All retainedEDA outputs counted under central12GiB actualroot, phase forecasts/resource floors unchanged. Own new simulator build intermediates losslessly compressed with original hashes, no old data deleted/migrated. One initial shell failed to stop after a rejected forecast; incident retained and excluded from qualification, fail-closed guard used for all subsequent runs. No fullGPU app, new simulator build or scientific ledger mutation. OriginalTVDbe5dcbe1/common099aeb5a/structural26ed1da6 unchanged; old TVD3 regressions stillNOT_COMPILED_NOT_RUN; original frozen reviewpacks retained.
+No EPL2 cell area or STA number is available yet. DC entry/filelist/physical
+constraints/library parameters are delivered, DC UNRUN. SRAM146KiB macro
+area/delay and reused native Tag/MSHR cost remain UNKNOWN. Serialized
+frontend II4 read/II3 write and copy/WB/arbitration/approval differences are
+explicit in SIM_RTL_TIMING_GAP; this is not matched-throughput wholeL2.
+
+Old PREP_r1 and old TVD/common/structural evidence remain unchanged.
+TVD r14's three uncompiled tests remain NOT_COMPILED_NOT_RUN. No full GPU
+application, performance acceptance, Ideal synthesis or background waiter.
+Goal continues toward real open reports and first cost revision.
