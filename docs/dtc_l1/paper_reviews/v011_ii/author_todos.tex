@@ -1,0 +1,17 @@
+% Load this file in the paper preamble before \begin{document}.
+% Default: print short TODO IDs and labels in the author-review copy.
+% The full open question, evidence and closure criterion live in TODO_REGISTER.md.
+% Hiding markers is a reading option, not evidence that an item has been resolved.
+\newif\ifdtcshowtodos
+\dtcshowtodostrue
+\providecommand{\dtctodo}[2]{}
+\renewcommand{\dtctodo}[2]{%
+  \ifdtcshowtodos
+    \begingroup\footnotesize\textbf{[TODO #1: #2]}\endgroup
+  \fi
+}
+\AtBeginDocument{%
+  \PackageWarningNoLine{DTC-author-review}{Scientific TODOs remain open; consult TODO_REGISTER.md}%
+}
+% For a clean reading copy, place \dtcshowtodosfalse after loading this file.
+% Do not remove existing H1/Pending markers or bypass the submission checker.
