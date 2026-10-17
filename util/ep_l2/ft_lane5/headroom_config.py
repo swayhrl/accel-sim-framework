@@ -72,3 +72,28 @@ def validate(spec,release,configs,assets):
     require(m['evidence'],'Missing affected production evidence')
     return {'experiment_id':EXPERIMENT,'regime':regime,'condition_qualification_sha256':binding['sha256'],
             'runtime_config_sha256':row['runtime_config_sha256'],'effective_options_sha256':hashlib.sha256(canonical(effective)).hexdigest()}
+
+
+def validate_runtime_dump(raw_path,spec):
+    """Verify actual official executable's parsed options and initialized clocks."""
+    import re
+    require(spec.get('experiment_id')==EXPERIMENT,'Not an r19 runtime dump')
+    expected={**OVERRIDES[spec['regime']],'-dram_latency':'25' if spec['regime']=='L25' else '100',
+        '-gpgpu_simple_dram_model':'0','-gpgpu_ep_l2_wad_entries':'128',
+        '-gpgpu_ep_l2_descriptor_pool_size':'512','-gpgpu_ep_l2_descriptor_per_line_cap':'32',
+        '-gpgpu_ep_l2_wbuf_entries':'16','-gpgpu_ep_l2_payload_mode':'2',
+        '-gpgpu_ep_l2_ft_mode':'2' if spec['identity']['feature_vector']['unified_wb'] else '1'}
+    if spec['regime']=='Q4':expected['-gpgpu_clock_domains']='1132.0:1132.0:1132.0:850.0'
+    actual={};clocks=[]
+    with Path(raw_path).open() as stream:
+        for line in stream:
+            if line.startswith('-'):
+                tokens=line.split('#',1)[0].split(None,1)
+                if len(tokens)==2 and tokens[0] in expected:
+                    require(tokens[0] not in actual,'Repeated effective config option dump')
+                    actual[tokens[0]]=tokens[1].strip()
+            if line.startswith('GPGPU-Sim uArch: clock freqs: '):
+                clocks.append([float(x) for x in line.split('freqs: ',1)[1].strip().split(':')])
+    require(actual==expected,'Actual production option dump differs from qualified effective config')
+    require(len(clocks)==1 and clocks[0]==[float(x)*1e6 for x in expected['-gpgpu_clock_domains'].split(':')],'Initialized production clocks differ from condition')
+    return {'status':'ACTUAL_OPTION_DUMP_AND_INITIALIZED_CLOCKS_MATCH','options':actual,'clock_frequencies_Hz':clocks[0]}

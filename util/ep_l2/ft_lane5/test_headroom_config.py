@@ -25,6 +25,22 @@ class HeadroomConfigTests(unittest.TestCase):
     def save(self):
         self.path.write_text(json.dumps(self.manifest));self.release['downstream_config_qualification']={'path':str(self.path),'sha256':digest(self.path)}
     def check(self):return validate(self.spec,self.release,self.configs,self.assets)
+    def test_actual_initialized_dump_and_clock_guard(self):
+        from headroom_config import validate_runtime_dump
+        raw=self.root/'raw.log';native=Path('/workspace/results/ep_l2_ft20261016/8f445bf74185f8c6640741372a637ae873be08ac796a2920441e0379acd6c86c/raw.log')
+        lines=[]
+        with native.open() as stream:
+            for line in stream:
+                if line.startswith('-') or line.startswith('GPGPU-Sim uArch: clock freqs: '):lines.append(line)
+        text=''.join(lines)
+        import re
+        for key,value in OVERRIDES['D4'].items():text=re.sub(r'(?m)^'+re.escape(key)+r'\s+[^#\n]+',key+' '+value+' ',text)
+        text=text.replace(':850000000.000000',':3400000000.000000');raw.write_text(text)
+        self.assertEqual(validate_runtime_dump(raw,self.spec)['clock_frequencies_Hz'][-1],3400000000)
+        raw.write_text(text.replace(':3400000000.000000',':850000000.000000'))
+        with self.assertRaisesRegex(ValueError,'clocks differ'):validate_runtime_dump(raw,self.spec)
+        raw.write_text(text.replace('-dram_latency                         100','-dram_latency                         25'))
+        with self.assertRaisesRegex(ValueError,'option dump differs'):validate_runtime_dump(raw,self.spec)
     def test_exact_condition_pass(self):self.assertEqual(self.check()['regime'],'D4')
     def test_missing_condition_qualification_refuses(self):
         with self.assertRaisesRegex(ValueError,'Diagnostic requires'):validate(self.spec,{},self.configs,self.assets)
