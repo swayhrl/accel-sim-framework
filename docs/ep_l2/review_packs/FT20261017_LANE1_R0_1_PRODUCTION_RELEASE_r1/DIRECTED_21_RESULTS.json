@@ -1,0 +1,499 @@
+{
+  "attempted": 21,
+  "passed": 21,
+  "failed": 0,
+  "cases": [
+    {
+      "name": "host_prefill_1_8",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "process": {
+        "pid": 1716183,
+        "start_ticks": 895844221,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "wall_seconds": 1.0070762317627668,
+      "pass_and_clock_lines": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_1_8_0",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ],
+      "process": {
+        "pid": 1716187,
+        "start_ticks": 895844331,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "bcecccc40489da91b1eeabbf77ee96082c3292d4ef90ef98bedbe6898980bc96",
+      "wall_seconds": 0.20321249403059483,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=0|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=8 peak=8 PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_1_8_4096",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ],
+      "process": {
+        "pid": 1716188,
+        "start_ticks": 895844361,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "e85896e95cacdcaa70292c2dfc093fb921d6c9dc1099c1598c4ed07c46ebcf26",
+      "wall_seconds": 0.40402318723499775,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=8 peak=8 PASS"
+      ]
+    },
+    {
+      "name": "warm_clock_1_8",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "process": {
+        "pid": 1716189,
+        "start_ticks": 895844412,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "a0a4122037f7b6fce18cabec42a88d0c22c57ac8b7f7d55de7d91c655e4c5141",
+      "wall_seconds": 0.4041254576295614,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=8 peak=8 PASS"
+      ]
+    },
+    {
+      "name": "partition_1_8",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "process": {
+        "pid": 1716190,
+        "start_ticks": 895844462,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "wall_seconds": 0.20287766307592392,
+      "pass_and_clock_lines": [
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=8 peak=8 PASS"
+      ]
+    },
+    {
+      "name": "host_prefill_1_16",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "process": {
+        "pid": 1716191,
+        "start_ticks": 895844493,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "wall_seconds": 1.0064519010484219,
+      "pass_and_clock_lines": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_1_16_0",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ],
+      "process": {
+        "pid": 1716201,
+        "start_ticks": 895844604,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "8ca4d23a595feb6b5253f4c6eb77d2d1f33cd357baaccddf7b2ed13c82ec5fb1",
+      "wall_seconds": 0.203211085870862,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=0|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=16 peak=16 PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_1_16_4096",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "process": {
+        "pid": 1716206,
+        "start_ticks": 895844634,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "0b922bba7130f001368305a7a573c4f2241494ad8a6aa452d95f35959b7d9c38",
+      "wall_seconds": 0.4040936678647995,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=16 peak=16 PASS"
+      ]
+    },
+    {
+      "name": "warm_clock_1_16",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "process": {
+        "pid": 1716325,
+        "start_ticks": 895844684,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "2fd6d4019aa7f51369f9032c22afa7c11676c6bffd4dc02400066d9b112f39ec",
+      "wall_seconds": 0.4040193762630224,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=16 peak=16 PASS"
+      ]
+    },
+    {
+      "name": "partition_1_16",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "process": {
+        "pid": 1716333,
+        "start_ticks": 895844734,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "5a0ab0edec0ccd0006db0645874515bc1d5496aa4337b9f9326ab369251327ef",
+      "wall_seconds": 0.20316056907176971,
+      "pass_and_clock_lines": [
+        "FT real partition lower-full/WBUF/WAD/set_done mode=1 C=16 peak=16 PASS"
+      ]
+    },
+    {
+      "name": "host_prefill_2_8",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "process": {
+        "pid": 1716344,
+        "start_ticks": 895844765,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "wall_seconds": 1.0066106207668781,
+      "pass_and_clock_lines": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_2_8_0",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ],
+      "process": {
+        "pid": 1716346,
+        "start_ticks": 895844875,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "4057dc983581f84e9fd8b24b54f9dbc22535f0ddc648e19b0ce62f74be310d64",
+      "wall_seconds": 0.20279272086918354,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=0|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=8 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_2_8_4096",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ],
+      "process": {
+        "pid": 1716347,
+        "start_ticks": 895844913,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "5e63782782efc985ad6b04cfb87c8eac05025d85599f920ec60d9eae16d373e9",
+      "wall_seconds": 0.4035177808254957,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=8 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "warm_clock_2_8",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "process": {
+        "pid": 1716352,
+        "start_ticks": 895844963,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "de5f9e4305a8deb424bdbd691cab9a5a16f8a4ec54eaae6ec242498ef226958c",
+      "wall_seconds": 0.4044181276112795,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=8 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "partition_2_8",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "process": {
+        "pid": 1716357,
+        "start_ticks": 895845014,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "eb248e9b36885a5f9bfa3e9dc5e1f353be4625a13d177bd1dc5f54de84de1a16",
+      "wall_seconds": 0.20321421325206757,
+      "pass_and_clock_lines": [
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=8 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "host_prefill_2_16",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "process": {
+        "pid": 1716358,
+        "start_ticks": 895845045,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "wall_seconds": 1.0067948922514915,
+      "pass_and_clock_lines": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_2_16_0",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ],
+      "process": {
+        "pid": 1716360,
+        "start_ticks": 895845155,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "5f597e650c42f534ba648cdf1071ac1fa9846cda5050afbaf8a1d902168a65fb",
+      "wall_seconds": 0.2028255145996809,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=0|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=16 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "physical_clock_2_16_4096",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "process": {
+        "pid": 1716361,
+        "start_ticks": 895845186,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "c2077a20745b9e0cd688eee831b191ffca35fdf4c03adfb144f04213b4dab9ae",
+      "wall_seconds": 0.404474213719368,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=16 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "warm_clock_2_16",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "process": {
+        "pid": 1716366,
+        "start_ticks": 895845236,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "c0194c084d68f661962dd290884764877127770d5402c5ffcea00fca53937319",
+      "wall_seconds": 0.4038882926106453,
+      "pass_and_clock_lines": [
+        "CLOCK_AUDIT|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1",
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=16 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "partition_2_16",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "process": {
+        "pid": 1716367,
+        "start_ticks": 895845286,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "5e4dab86eae1f3598d4d682ae510cb3eafb02e7819efcdd0bb3a29c454653637",
+      "wall_seconds": 0.2029198855161667,
+      "pass_and_clock_lines": [
+        "FT real partition lower-full/WBUF/WAD/set_done mode=2 C=16 peak=126 PASS"
+      ]
+    },
+    {
+      "name": "ft_directed",
+      "exit_code": 0,
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2/tests/ep_l2/ft_wbuf.config"
+      ],
+      "process": {
+        "pid": 1716368,
+        "start_ticks": 895845319,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "wall_seconds": 1.6098782140761614,
+      "pass_and_clock_lines": [
+        "FT production capacity/version/drain mode=1 C=8 PASS",
+        "FT production capacity/version/drain mode=1 C=16 PASS",
+        "FT production capacity/version/drain mode=2 C=8 PASS",
+        "FT production capacity/version/drain mode=2 C=16 PASS",
+        "FT WAD128 pre-mutation refusal and drain PASS",
+        "FT sector identity, merge, fill and response-backpressure pins PASS",
+        "FT production same-bank pool-full, nonmutating refusal, WB progress PASS",
+        "FT independent store/WB/lower/fill/merged-response version reference PASS",
+        "FT production directed suite PASS"
+      ]
+    }
+  ],
+  "independent_qualification": false
+}

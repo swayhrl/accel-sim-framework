@@ -1,0 +1,9 @@
+# Lane1 — formal R0.1 repaired build in progress
+
+As of 2026-10-17T03:02:10.827909+00:00, bounded CONTINUE Goal ACTIVE; deadline03:56:33UTC (Beijing11:56:33) unchanged. Latest authorityd962f847 r12/r13/r14 consumed. Source Opsr13 actually released only the two authorized PolyBench closeout trees; combined immediate measured df gains66,329,825,280B, originaltgz and other scientific assets retained.
+
+Original singleton legally passed50GiB/two>=60s samples/central lease and invoked original c948/3ab formal build once at02:48UTC. CMake configured; compilation failed on protected config field access. All original sources, failed directory/logs/receipt retained, pilot cancelled. Waiter and pidfd publisher finished; no new waiter.
+
+Ordinary access fix adds a public const observer and reads the same FT mode. New Core8d1161f86905e2eb5943a8dce699ddc3741373f6; producing Frameworkea77282e2869d740d91a7839c3ac277fee41bac3 only changes exact Core pin and isolated source/build paths. Driver AST excluding those3 constants is identical to3ab: unchanged50GiB entry,48GiB runtime floor,64GiB memory,2jobs,21 commands/limits. Both repositories published/read back. Sole fresh guarded build started03:00:18UTC, PID1706464/start895798961, own central leasebde8bea455a74352ab5f421d89072df0, actual phaseBUILDING; source paths and output are in RECEIPT. New run is original guarded formal producer, not the cancelled engineering pilot.
+
+No official released binary or new scientific qualification yet; actual completed producer tests at this snapshot0/21. Old R0/R1 SUSPENDED, current accepted pairs0, no application launched. Only after actual21 PASS and immutable release freeze can Lane5 independently rebind the new source/path and all11 gates. Do not point its old hardcoded c948/3ab/build paths at this new identity. Evidence:docs/ep_l2/review_packs/FT20261017_LANE1_R0_1_COMPILE_ACCESS_FIX_r1.
