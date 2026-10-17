@@ -267,7 +267,7 @@ def run(spec, registry):
         experiment['deadline_unix'] = campaign['deadline_unix']
     elif spec.get('experiment_id'):
         raise ValueError('Unknown experiment; no unaccounted launch')
-    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, **({'experiment':experiment} if experiment else {}))
+    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, memory=spec.get('memory_reservation_bytes'), **({'experiment':experiment} if experiment else {}))
     if not fresh:
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
     lease = allocation['lease_id']

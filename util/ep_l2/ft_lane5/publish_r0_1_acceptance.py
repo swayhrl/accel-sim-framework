@@ -28,7 +28,7 @@ def stage_qualification(release_path,review_path,pack):
     require(Path(binding['path']).resolve()==review_path.resolve() and digest(review_path)==binding['sha256'],'Condition qualification bytes differ')
     require(review['status']=='INDEPENDENT_CONFIG_PASS' and review['experiment_id'] in (EXPERIMENT,'EPL2_PARALLEL_POTENTIAL_20261017_V1'),'Condition checks not independently closed')
     for ev in review['evidence']:require(digest(ev['path'])==ev['sha256'],'Qualification evidence changed')
-    require(review.get('lane1_publication_verified') is True and review.get('independent_affected_production_pass') is True,'Missing Lane1 remote or independent affected production check')
+    require(review.get('producer_publication_verified',review.get('lane1_publication_verified')) is True and review.get('independent_affected_production_pass') is True,'Missing Lane1 remote or independent affected production check')
     require(review['evidence'],'No actual affected evidence')
     # Each mode must pass the identical positive whitelist used at run admission.
     from run import asset_manifest
