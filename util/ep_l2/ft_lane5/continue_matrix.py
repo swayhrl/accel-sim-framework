@@ -192,6 +192,10 @@ def main(queue_path):
                 if any(d not in ('ACCEPTED', 'UNSTARTED', 'COMPLETE_VALID', *ACTIVE) for d in dispositions):
                     raise RuntimeError('Historical failed key requires explicit audited recovery; never automatic retry: ' + unit['id'])
                 if all(d == 'COMPLETE_VALID' for d in dispositions):
+                    if specs[0]['regime']=='P2':
+                        from review_r0_1_pair import p2_h0_candidates
+                        if any(len(p2_h0_candidates(manifest['rows'],spec,mode))!=1 for spec,mode in zip(specs,['B16_BANKED','U_WB16'])):
+                            continue  # Complete P2 is retained until its same-source one-port anchors are accepted.
                     for item in unit['specs']:
                         if digest(item['path']) != item['sha256']:
                             raise ValueError('Frozen execution spec changed')
