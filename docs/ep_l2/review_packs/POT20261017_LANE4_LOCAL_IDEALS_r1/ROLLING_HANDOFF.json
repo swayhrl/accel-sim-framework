@@ -1,0 +1,58 @@
+{
+  "schema": "EPL2_LANE4_POTENTIAL_PRODUCER_HANDOFF_V1",
+  "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+  "contract_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
+  "module_owner": "lane4",
+  "runtime_release_owner": "lane1",
+  "independent_and_application_owner": "lane5",
+  "base_core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+  "source_candidate": "b428535677bc779fbd8e117ccac68952d78650ff",
+  "compiled_runtime_core": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
+  "compiled_runtime_framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "diagnostic_binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5",
+  "binary_scope": "Lane4 producer-validation binary; not a Lane1 common release or application qualification",
+  "code_unchanged_between_library_and_testfix": true,
+  "patch_sha256": "fcce794882d760ddc2a3087710ba78c4f375d0814e8cb38942f5bb5a1e2bd93a",
+  "mode_aliases": {
+    "I_WM": "I_WB_META"
+  },
+  "modes": {
+    "I_WB": {
+      "status": "PRODUCER_NATIVE_DIRECTED_PASS_READY_FOR_INTEGRATION",
+      "released": true,
+      "evidence": "ideal_wb includes C8/C16 extra storage, three real copy services, WAD128 refusal and full drain"
+    },
+    "I_WB_META": {
+      "status": "PRODUCER_NATIVE_COMBINED_PRESSURE_PASS_READY_FOR_INTEGRATION",
+      "released": true,
+      "evidence": "50 live WB,160 lines,680 requests and ordinary lower/fill/response retirement"
+    },
+    "I_META": {
+      "status": "NATIVE_INTEGRATED_PASS_STANDALONE_FIXTURE_REPAIR_PENDING",
+      "released": false,
+      "evidence": "200 lines/1640 responses native integrated PASS; old fake-pointer allocator fixture FAIL preserved, fixed source pending consistent-flags rerun"
+    },
+    "I_READ_HIT": {
+      "status": "PRODUCER_NATIVE_READ_AND_HOST_FIXTURES_PASS_PENDING_H0_EFFECTIVE_CONFIG_QUALIFICATION",
+      "released": true,
+      "evidence": "reference/data/dependency/bank/response and later host-prefill fixtures PASS; no combinations with WB/META/U enabled"
+    }
+  },
+  "actual_directed_executions": 25,
+  "pass_count": 24,
+  "fail_count": 1,
+  "new_full_applications": 0,
+  "next_actions": [
+    "Lane1 may integrate I_WB/I_WB_META now; do not wait for ALL_DATA.",
+    "Lane5 independently verify applicable native mode gates and same-new-binary B16 anchors; full applications only in central campaign budget.",
+    "I_META standalone fake-token fixture failure and repair attempts remain preserved; continue its small affected retry when a lease is available.",
+    "I_READ_HIT H0 config must retain ROP160 and native scope; no RO claim or combined-mode guard deletion."
+  ],
+  "older_candidates_preserved": [
+    "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+    "3a3950d974480477339f7cebc42027fe4810af65"
+  ],
+  "revoked_R0_R1_remain_revoked": true,
+  "historical_1_721_not_current": true,
+  "created_at": "2026-10-17T11:42:11.384632+00:00"
+}

@@ -1,0 +1,1 @@
+Lane4 potential: local modes rolling producer handoff published; ALL_DATA source implemented, build pending shared8CPU/32GiB admission. See docs/ep_l2/review_packs/POT20261017_LANE4_LOCAL_IDEALS_r1/ROLLING_HANDOFF.json. No full application starts; original candidates/withdrawals preserved.
