@@ -11,9 +11,10 @@ def main():
  client=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text());path=Path(client['registry_client'])
  assert sha(path)==client['registry_client_sha256'],'registry hash mismatch'
  s=importlib.util.spec_from_file_location('lane4_directed_registry',path);api=importlib.util.module_from_spec(s);s.loader.exec_module(api)
- reg=api.Registry(client['canonical_root']);lease=reg.build_lease('lane4',cpu=1,memory=2*1024**3)
- a.out.mkdir(exist_ok=False,parents=True);base=str(core/'configs/tested-cfgs/SM7_QV100/gpgpusim.config');overlay=str(core/'tests/ep_l2/ft_wbuf.config');t=core/'tests/ep_l2'
- items=[('ideal_wb',[base,overlay]),('ideal_meta',[]),('ideal_meta_integrated',[base,str(t/'ideal_meta_integrated.config')]),
+ reg=api.Registry(client['canonical_root']);a.out.mkdir(exist_ok=False,parents=True)
+ lease=reg.build_lease('lane4',cpu=1,memory=2*1024**3)
+ base=str(core/'configs/tested-cfgs/SM7_QV100/gpgpusim.config');overlay=str(core/'tests/ep_l2/ft_wbuf.config');t=core/'tests/ep_l2'
+ items=[('ideal_wb',[base,overlay]),('ideal_meta',[base,overlay]),('ideal_meta_integrated',[base,str(t/'ideal_meta_integrated.config')]),
   ('ideal_host_prefill_reference',[]),('ideal_host_prefill_partition',[base,str(t/'ideal_host_prefill_b16.config')]),
   ('ideal_read_hit',[base,str(t/'ideal_read_hit.config')]),('ft_directed',[base,overlay])]
  for mode in [1,2]:
