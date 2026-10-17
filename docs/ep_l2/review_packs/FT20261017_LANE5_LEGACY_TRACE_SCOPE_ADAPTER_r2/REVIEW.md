@@ -1,0 +1,7 @@
+# Legacy input-auditor compatibility and full remaining eligibility
+
+The first convolution audit refused a native legacy memory row with zero active mask but all32 address fields retained. Native trace_parser.cc consumes only active-lane addresses and ignores the remaining numeric fields. Auditor r2 accepts and validates the explicit full32 form while still recognizing/counting every opcode, including masked atomic rows. Four focused guards pass; unknown/truncated records still refuse. No source trace/config/runtime file changed. Failed r1 report is retained.
+
+Fresh bounded full-content scans of convolution and FWT complete with exact original raw-byte content hashes, native full TB/warp/instruction coverage and zero global/shared atomic records. Combined with prior SAD/vectorAdd/CFD proofs, all five input sets now have complete non-atomic eligibility. No production data is omitted based on workload names.
+
+A separate immutable r2 certificate differs only in the input-auditor tool hash/reviewed native grammar adapter. Original runtime/Core/Framework/vendor/binary/config/budget, all11 actual gates, symbolic oracle and allowed B16/U16 feature vectors are identical. Initial certificate and running vectorAdd specs remain untouched. New exact r2 launch authority will be installed only at the next boundary with no active simulator; current pointer/generation stay unchanged here. No repeated compiler/test qualification/application and no numeric SASS/atomic ALU claim.
