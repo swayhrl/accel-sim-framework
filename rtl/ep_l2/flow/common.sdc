@@ -8,7 +8,17 @@ create_clock -name slice_clk -period $::env(CLOCK_PERIOD_NS) [get_ports clk]
 set_clock_uncertainty 0.05 [get_clocks slice_clk]
 set_clock_transition 0.05 [get_clocks slice_clk]
 set data_names [list]
-foreach name [get_full_name [all_inputs]] { if {$name ne "clk"} { lappend data_names $name } }
+if {[namespace exists sta]} {
+    foreach port [all_inputs] {
+        set name [get_full_name $port]
+        if {$name ne "clk"} { lappend data_names $name }
+    }
+} else {
+    foreach_in_collection port [all_inputs] {
+        set name [get_object_name $port]
+        if {$name ne "clk"} { lappend data_names $name }
+    }
+}
 set data_inputs [get_ports $data_names]
 set_input_delay 0.10 -clock slice_clk $data_inputs
 set_driving_cell -lib_cell $::env(IO_DRIVE_CELL) $data_inputs
