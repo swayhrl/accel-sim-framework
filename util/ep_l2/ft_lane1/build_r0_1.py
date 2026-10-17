@@ -13,10 +13,10 @@ import subprocess
 import sys
 import time
 
-CORE_CANDIDATE = '8d1161f86905e2eb5943a8dce699ddc3741373f6'
+CORE_CANDIDATE = '088146f7f85b4073deb5d166a0a4484c7f3b48b2'
 PYBIND11_COMMIT = 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
-FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-r0-1-buildfix')
-BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r1')
+FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
+BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
 DISK_FLOOR = 48 * 1024**3
 MEMORY_FLOOR = 64 * 1024**3
 BUILD_GROWTH = 2 * 1024**3
