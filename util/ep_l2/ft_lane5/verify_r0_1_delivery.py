@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from acceptance import BRANCH,MANIFEST,bind_manifest,load_current_authority,require_current_result
+from acceptance import BRANCH,MANIFEST,bind_manifest,load_current_authority,require_current_result,require_publication_boundary
 from registry import Registry,ACTIVE,write_json
 from run import digest,require
 
@@ -39,9 +39,9 @@ def main():
     else:
         q=json.loads((a.qualification_pack/'RECEIPT.json').read_text());require(q['generation']==manifest['generation'] and q['manifest_sha256']==sha,'Qualification is not current ledger')
     accepted=[r for r in manifest['rows'] if r['scientific_acceptance']=='CURRENT_ACCEPTED'];pairs=sum(not r.get('experiment_id') for r in accepted)//2;diagnostic_pairs=sum(r.get('experiment_id')=='EPL2_DOWNSTREAM_HEADROOM_R19' for r in accepted)//2
-    require(not any(r['status'] in ACTIVE for r in Registry().snapshot()['runs'].values()),'Install current pointer at no-active-simulator boundary')
+    require_publication_boundary(Registry())
     with (SHARED/'REGISTRY.lock').open('a+') as lock:
-        fcntl.flock(lock,fcntl.LOCK_EX);p=SHARED/'CLIENT_CONTRACT.json';client=json.loads(p.read_text());client['scientific_acceptance']={'path':str(path),'sha256':sha,'generation':manifest['generation'],'revision':manifest['revision'],'publication_commit':head};write_json(p,client)
+        fcntl.flock(lock,fcntl.LOCK_EX);p=SHARED/'CLIENT_CONTRACT.json';client=json.loads(p.read_text());client['scientific_acceptance']={'path':str(path),'sha256':sha,'generation':manifest['generation'],'revision':manifest['revision'],'publication_commit':head,'snapshot_path':str((a.qualification_pack if a.qualification_only else packs[1])/'SCIENTIFIC_ACCEPTANCE_V2.json')};write_json(p,client)
         if a.qualification_only:
             p=SHARED/('LANE5_CONTINUE_PARALLEL.json' if is_parallel else 'LANE5_CONTINUE_R19.json');m=json.loads(p.read_text()) if p.exists() else {};m.update(status='ACTIVE_'+a.regime+'_CONDITION_QUALIFIED_READY',verified_publication=head,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
         elif a.regime:

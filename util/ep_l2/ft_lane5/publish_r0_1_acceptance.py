@@ -6,7 +6,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from acceptance import load_current_authority,current_manifest,MANIFEST
+from acceptance import load_current_authority,current_manifest,MANIFEST,require_publication_boundary
 from package_r0 import freeze_checksums
 from registry import Registry,ACTIVE
 from run import digest,require
@@ -21,7 +21,7 @@ def stage_qualification(release_path,review_path,pack):
     from headroom_config import EXPERIMENT,validate as validate_condition
     require(not pack.exists(),'Qualification acceptance pack exists')
     state=load_current_authority();ledger=current_manifest(state)
-    require(not any(r['status'] in ACTIVE for r in Registry().snapshot()['runs'].values()),'Qualification publication needs no-active-simulator boundary')
+    require_publication_boundary(Registry())
     release=json.loads(release_path.read_text());review=json.loads(review_path.read_text())
     require(release['status']=='INDEPENDENTLY_QUALIFIED' and release['qualified_by']=='lane5','Missing independent envelope')
     binding=release['downstream_config_qualification']
@@ -60,7 +60,7 @@ def main():
     state=load_current_authority();ledger=current_manifest(state);old_count=len(ledger['rows']);old_rows=json.dumps(ledger['rows'],sort_keys=True)
     review_path=a.pair_pack/'SCIENTIFIC_REVIEW.json';review=json.loads(review_path.read_text())
     require(review['status']=='INDEPENDENT_TERMINAL_AND_CURRENT_AUTHORITY_REVIEW_PASS' and review['checked_current_authority']['manifest_sha256']==state['binding']['manifest_sha256'],'Stale/unreviewed pair')
-    require(not any(r['status'] in ACTIVE for r in Registry().snapshot()['runs'].values()),'Publish scientific pointer at no-active-simulator boundary')
+    require_publication_boundary(Registry())
     rows=review['scientific_acceptance_rows_proposed'];require(len(rows)==2 and {r['mode'] for r in rows}=={'B16_BANKED','U_WB16'},'Incomplete pair')
     require(all(r['scientific_acceptance']=='CURRENT_ACCEPTED' and r['original_terminal_status']=='COMPLETE_VALID' for r in rows),'Nonvalid accepted proposal')
     require(not ({r['run_key'] for r in rows}&{r['run_key'] for r in ledger['rows']}),'Existing result cannot be overwritten')

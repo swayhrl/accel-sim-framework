@@ -155,7 +155,7 @@ class Registry:
         if kind == 'build' and cpu > policy['max_build_jobs']:
             raise ValueError('build jobs exceed shared policy')
 
-    def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None):
+    def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None, client_binding=None):
         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
             raise ValueError('explicit lane owner required')
         if type(cpu) is not int or cpu < 1:
@@ -190,6 +190,7 @@ class Registry:
                    'status': 'RESERVED', 'created_at': now(), 'cpu_units': cpu,
                    'memory_bytes': memory, 'scan': identity['workload'] == 'scan',
                    'result_directory': str(result_directory), 'process': None}
+            if client_binding is not None: row['client_binding'] = json.loads(json.dumps(client_binding))
             if experiment is not None: row.update(experiment)
             data['runs'][key] = row
             return True, row

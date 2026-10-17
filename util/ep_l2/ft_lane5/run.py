@@ -17,7 +17,7 @@ import time
 from registry import Registry, canonical, run_key, write_json, process_identity, local_resources
 from validate import validate_summary, require
 from feature_schema import ro_bits
-from acceptance import load_current_authority, current_manifest, reject_withdrawn, authorize_launch
+from acceptance import load_current_authority, current_manifest, reject_withdrawn, authorize_launch, immutable_loader_binding
 
 GATES = {'old_all_off_equivalence', 'finite_wbuf', 'requester_exact_once',
          'sector_reference_data', 'stale_fill', 'resource_closure',
@@ -267,7 +267,7 @@ def run(spec, registry):
         experiment['deadline_unix'] = campaign['deadline_unix']
     elif spec.get('experiment_id'):
         raise ValueError('Unknown experiment; no unaccounted launch')
-    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, memory=spec.get('memory_reservation_bytes'), **({'experiment':experiment} if experiment else {}))
+    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, memory=spec.get('memory_reservation_bytes'), client_binding=immutable_loader_binding(), **({'experiment':experiment} if experiment else {}))
     if not fresh:
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
     lease = allocation['lease_id']

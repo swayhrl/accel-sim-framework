@@ -68,7 +68,15 @@ def load_current_authority(client_path=CLIENT):
     path = Path(pointer['path']).resolve(strict=True)
     repo = path.parents[5]  # docs/ep_l2/codex_handoff/<stage>/lane5/file
     require(path == repo / MANIFEST, 'noncanonical scientific acceptance path')
-    return bind_manifest(path.read_bytes(), {'kind': 'LOCAL_CURRENT_POINTER',
+    # Immutable V2 snapshots let one result be published while other compatible
+    # clients keep validating against the exact atomic current pointer.
+    snapshot = pointer.get('snapshot_path')
+    payload = path
+    if snapshot is not None:
+        payload = Path(snapshot).resolve(strict=True)
+        require(payload.is_relative_to(repo / 'docs/ep_l2/review_packs') and
+                payload.name == 'SCIENTIFIC_ACCEPTANCE_V2.json', 'unsafe current snapshot')
+    return bind_manifest(payload.read_bytes(), {'kind': 'LOCAL_CURRENT_POINTER',
         'manifest_sha256': pointer['sha256'], 'generation': pointer['generation'],
         'revision': pointer['revision']}, lambda name: (repo / name).read_bytes())
 
@@ -146,3 +154,32 @@ def require_current_result(identity, raw_log_sha256, cycles, instructions, state
             'accepted result metrics mismatch')
     return {'run_key': key, 'scientific_acceptance': 'CURRENT_ACCEPTED',
             'authority': state['binding']}
+
+
+# Capture the executed loader bytes once; later source publication cannot rebind
+# an already running client to code it did not import.
+EXECUTED_LOADER_SHA256 = sha(Path(__file__).read_bytes())
+
+
+def immutable_loader_binding(client_path=CLIENT):
+    client = json.loads(Path(client_path).read_text())
+    require(client['acceptance_module_sha256'] == EXECUTED_LOADER_SHA256,
+            'running loader differs from published client contract')
+    return {'acceptance_module_sha256': EXECUTED_LOADER_SHA256,
+            'acceptance_source_commit': client['acceptance_source_commit'],
+            'immutable_scientific_pointer': True}
+
+
+def require_publication_boundary(registry):
+    """Legacy clients drain first; only content-bound new clients permit overlap."""
+    from registry import ACTIVE
+    active = [r for r in registry.snapshot()['runs'].values() if r['status'] in ACTIVE]
+    if not active:
+        return
+    client = json.loads(CLIENT.read_text())
+    allowed = client.get('immutable_acceptance_clients', [])
+    for row in active:
+        binding = row.get('client_binding')
+        require(binding is not None and binding.get('immutable_scientific_pointer') is True
+            and {k:binding[k] for k in ('acceptance_module_sha256','acceptance_source_commit')} in allowed,
+            'Legacy/unbound active simulator must drain before scientific publication')
