@@ -1,0 +1,61 @@
+{
+  "schema": "LANE3_RO_NATIVE_OWNERSHIP_SOURCE_REVIEW_R14",
+  "source": "eace3a172e5b290dc6a9417b6c255e99f9221ef9",
+  "prior_source": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+  "status": "SOURCE_GUARD_PRESENT_NOT_COMPILED_OR_QUALIFIED",
+  "checks": {
+    "source_witness_native_add_has_no_ro_owner_exclusion": true,
+    "source_witness_issued_sector_can_coalesce_without_lower": true,
+    "source_witness_ro_ready_does_not_enqueue_native_response": true,
+    "eligible_original_read_not_reclassified": true,
+    "commit_refuses_before_native_or_ro_mutation": true,
+    "preview_refuses_before_normal_fallback": true,
+    "guard_uses_existing_target_without_address_scan": true,
+    "direct_host_epoch_guard_and_prefill_unchanged": true,
+    "existing_target_index_unchanged": true
+  },
+  "preserved_source": {
+    "ep-l2-ro-oracle.h": {
+      "unchanged": true,
+      "sha256": "ff1b7a17e508a3ae1da97a558ae86ba20681eb05e2e8ac4e94059bcdf8ecf0b2"
+    },
+    "ep-l2-ro-sha256.h": {
+      "unchanged": true,
+      "sha256": "19a999d727b654c5d4a2d44641b965f89ba493ecf8a9f2b8954f62ebbb90da76"
+    },
+    "ep-l2-ro-transactions.h": {
+      "unchanged": true,
+      "sha256": "34c3f7c1f51db42cde6fd0b7f00210be6490f65a1213287977872033980e24f9"
+    },
+    "ep-l2-ro-store-port.h": {
+      "unchanged": true,
+      "sha256": "def8cccc442d07c29671db3bbfd1c92b0849b18344e8e108b8fee05c271cda9d"
+    },
+    "gpu-cache.cc": {
+      "unchanged": true,
+      "sha256": "0ac02730575c61c4650bf3bdf807659538290c6b4256e54472162789eba0e7dc"
+    },
+    "gpu-cache.h": {
+      "unchanged": true,
+      "sha256": "e69df9f61afe004320c4660c192e81dd4cd3f8a64fbc595e8dcbceaf86c2cdda"
+    },
+    "l2cache.cc": {
+      "unchanged": true,
+      "sha256": "4b6b591d26e911634b6881a34e50f4600c5645d6f0cc3fa16f2776e11ad8cf9e"
+    },
+    "gpu-sim.cc": {
+      "unchanged": true,
+      "sha256": "e56f26c87e6ff3b91276444518c50f82c998cf14951aa1cc1f32fe7d8276ff3f"
+    }
+  },
+  "cpp_execution": false,
+  "independent_qualification": false,
+  "counterexample": [
+    "RO A/sector0 is lower-accepted with bypass=OFF, owning native line entry A",
+    "TEXTURE_ACC_R A/sector0 reaches native send_read_request; issued mask suppresses another lower packet",
+    "native add allocates a descriptor/pin on the RO-owned entry",
+    "RO return updates ro_line_ready but never queues that native descriptor",
+    "native response and its pin cannot drain without another native mark_ready event"
+  ],
+  "note": "Counterexample is derived from source call edges, not an observed simulator execution."
+}

@@ -1,15 +1,17 @@
-# Lane 3 r7 — 精确 c948 适配完成，正式 release 仍待发布
+# Lane 3 r14 — RO生命周期审查完成，局部修复待生产验证
 
-状态 `EXACT_C948_STATIC_ADAPTATION_COMPLETE_OFFICIAL_RELEASE_PENDING`。已完整读取协调99e7515f81b0038ac49d274b73f774e8ea801e46的r7合同，继续原Lane3分支/worktree，未创建或重启Goal。
+本轮状态 `RO_LIFECYCLE_REVIEW_COMPLETE_LOCAL_FIX_UNCOMPILED`。依用户要求在原窗口启动一次短时CONTINUE Goal，完整读取协调d962f847cbf7ba6d525bbb23964fee392bd8a69f；未重新初始化项目，未等待binary。
 
-Core准确源码 **5ae8b06d58b61189140f571ab37b5f6d51228632**，已push/fetch/ls-remote回读一致；Framework审计源码 **f5c407616dd481eb12630666b10387b2652cc525**。合入Lane1未编译c948184504d82b80e23eb3f4ff6cdfd328ba9355，和发布57e1c363aede1a7790bdf94136d832d35ee7b34b同tree。相对Lane3 r6仅有公共夹具时钟同步和header一行空白清理；未重复应用getter删除。RO直接try-prefill epoch guard、generation/sector/response/offset拒绝及共享D512实现保留，RO生产实现字节不变。
+确认并修复1个源码缺口F1：非RO native请求可并入RO-owned Line-MSHR，RO返回不负责唤醒该native descriptor，存在descriptor/pin无法排空路径；bypass模式也有native借用RO landing的所有权冲突。修复在preview和ft_access入口统一拒绝这种混用，保持原始已认证global read合并、共享D512和原oracle范围。
 
-本轮实际完成30项静态源码检查、10项Python审计工具测试、5项隔离index补丁检查、2项完整Core树重建及2个Framework driver blob重建。源码身份改变后只验证一次；未重复旧oracle/calibration/module/config suite。19条原有生产定向调用准确准备，全部NOT_RUN。C++配置/构建/运行、正式应用和新run-key均0；binary/config运行身份为空，独立资格=false，不是正式RO发布。
+准确Core源码 **3f3a8149b1ba18c1421a2a1a7f4073d76ad641f3**（父修复eace3a17补充lower已接受后的回归边界），Framework审查工具源码 **d0e684c5f1c3de0971f98ae6ed92e20079707996**。相对此前5ae源码：13行生产守卫、60行针对性回归源码，只有3个Core文件变化；oracle、transaction/store-port、公共allocator/descriptor实现、host-prefill和GPU/Framework epoch桥保持原字节。官方公共candidate仍为c948，本分支不是公共R2。
 
-两次低频release观察间隔 **626.407秒**，Lane1仍85534de2且binary=null。并发观察到Lane5后续 **300c1010161b270ae73414b8146d238c961f0cd0**，已读取准确STATUS/RECEIPT：`NO_SAFE_PILOT_ENVELOPE`、仍无正式binary/新科学接受；其工程pilot工具不构成Lane3权限或正式资格。原科学V2和旧R0/R1应用SUSPENDED保持。晚到metadata单独记录，不是另一轮轮询。
+实际执行为聚焦不可变源码审查：9个source predicates、8个文件不变比较；旧提交检出F1，新提交确认guard存在。保留interim eace审查与补丁身份；最终delta apply及c948+r7冻结补丁+新delta精确树重建PASS。未重跑旧30/10 suite、module/calibration/config/oracle。没有C++配置/构建/执行，独立RO科学资格=false、binary=null。19条原production invocation继续全部NOT_RUN，runtime内部从11组增至12组。
 
-等待子任务记为 **RESOURCE_WAIT_EXPIRED**，主项目及原生产验证任务未宣告完成。当前Goal API返回null；依照不重启指令未创建Goal，也没有后台常驻或自动恢复承诺。只完成一次本轮内有界等待。Lane3没有GateWaiter、release listener、PID/锁/期限或等待lease；Lane1仍唯一磁盘等待者。
+独立审查覆盖RO_PENDING detach、Payload事务独立所有权、stale generation/sector、shared descriptor exact-once、grant-cycle response/ICNT、host prefill epoch和offset、queued-vs-accepted lower及允许的detached duplicate traffic。与TVD准确候选ab413abc比对得到6个common文件交集，具体列出role/free计数、lower接受、host alias/prefill、TVD直接响应入口、victim/reclaim及drain/flush合同；未合入TVD/Ideal、未替Lane1集成公共R2、未扩实验矩阵。
 
-关闭快照UTC 2026-10-16T17:14:52.699853+00:00：workspace f_bavail **29,493,268,480B**（27.468GiB），中央活动run/lease **0/0**；观察到2个DTC accel-sim进程，另消费Lane5对活跃C16的保护证据。未触碰任何其它项目的进程/数据/配额；本Lane删除、迁移、Storage-Ops操作、低空间构建例外均0。48GiB+2GiB及其余正式政策未变，快照不当作未来准入。
+初始当前依赖回执：Lane1 7ea8cdc85f5be1a6ce31df2f216c8d16d2546c9d，Lane5 d5317bd25dd0d5debd5abed5d5cf6300e7bd6982；均无新binary。现场中央EP-L2 run/lease0/0；Lane1既有GateWaiter PID1628339的start_ticks与现场一致、invocations=0，不能把旧Goal结束理解成其进程已停。本Lane未创建build/sim/waiter/listener，未改资源门槛，未动DTC-L1/C16/Storage-Ops进程、数据或配额。实际快照时间与身份在INTAKE_AND_RESOURCE.json；不是未来准入保证。
 
-新pack `docs/ep_l2/review_packs/FT20261017_LANE3_AUTONOMOUS_EXACT_CANDIDATE_r7` 保留旧r1–r6全部154个tracked文件；五个完整commandlist oracle不重抓、不扩scope。下一触发是官方准确父版本/真实producer发布或协调续行；先rebind最终源码，在合法共享准入且不抢Lane1/Lane5主线时做生产定向，由Lane5独立RO认证。首批B16/U_WB16不等待RO。Framework发布SHA以本次提交和远端readback记录为准，源码SHA与报告发布SHA分别记录。
+新pack `docs/ep_l2/review_packs/FT20261017_LANE3_REVIEW_R14_LIFECYCLE_r1` 包含F1调用链、新增回归源码补丁、未来TVD接口风险表、准确下一轮input/19项矩阵及全部NOT_RUN状态。旧191个Lane3 review-pack tracked文件和五个完整commandlist oracle保留，无trace重抓或输入改写。
+
+下一事件：官方准确最终父版本和合法生产依赖到达后，由用户/协调发新的短CONTINUE；先rebind源码，在原共享准入下生成实际RO binary，再运行19项并交Lane5独立资格。U_WB-only binary不能作为RO binary。旧R0/R1应用继续SUSPENDED，当前无正式RO性能证据。本次短Goal在push/远端回读通过后完成，研究主线及生产资格仍待后续。
