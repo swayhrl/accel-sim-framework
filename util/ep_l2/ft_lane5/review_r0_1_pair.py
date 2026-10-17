@@ -18,6 +18,15 @@ REPO=Path(__file__).resolve().parents[3]
 ORDER=('sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21')
 
 
+def p2_h0_candidates(rows, spec, mode):
+    profile='B16_OFF' if mode=='B16_BANKED' else 'U_OFF'
+    return [r for r in rows if r.get('profile')==profile and r.get('regime')=='H0'
+            and r['scientific_acceptance']=='CURRENT_ACCEPTED'
+            and all(r['identity'][k]==spec['identity'][k] for k in
+                ('workload','core_source_commit','framework_source_commit','binary_sha256',
+                 'trace_content_sha256','epoch_range','termination_contract'))]
+
+
 def review(spec,registry,native_proof=None):
     key=run_key(spec['identity']);row=registry['runs'][key]
     require(row['status']=='COMPLETE_VALID' and row['identity']==spec['identity'],'No exact valid canonical terminal')
@@ -118,7 +127,12 @@ def main():
                 csv_write(a.pack/(mode+'_DRAM_WINDOWS.csv'),pressure['DRAM_windows'])
             h0=[]
             for mode,spec in zip(('B16_BANKED','U_WB16'),specs):
-                matches=[r for r in ledger['rows'] if r['workload']==a.workload and r['mode']==mode and r['runtime_config_sha256']==H0[mode] and r['binary_sha256']==spec['identity']['binary_sha256'] and r['trace_content_sha256']==spec['identity']['trace_content_sha256'] and r['scientific_acceptance']=='CURRENT_ACCEPTED']
+                if a.regime=='P2':
+                    # P2 belongs to the explicitly qualified FB runtime. Its matching
+                    # one-port baseline is the new FB OFF endpoint, never source2309.
+                    matches=p2_h0_candidates(ledger['rows'],spec,mode)
+                else:
+                    matches=[r for r in ledger['rows'] if r['workload']==a.workload and r['mode']==mode and r['runtime_config_sha256']==H0[mode] and r['binary_sha256']==spec['identity']['binary_sha256'] and r['trace_content_sha256']==spec['identity']['trace_content_sha256'] and r['scientific_acceptance']=='CURRENT_ACCEPTED']
                 require(len(matches)==1 and matches[0]['instructions']==results[0]['summary']['instructions'],'Exact accepted H0/instruction reference missing')
                 h0.append(matches[0])
             cb,cu=(r['observed_cycles'] for r in h0);hb,hu=(r['summary']['cycles'] for r in results)

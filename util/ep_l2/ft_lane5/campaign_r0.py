@@ -135,8 +135,13 @@ def publish_pair(workload, results, specs, stage_root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--campaign', type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--campaign', type=Path)
+    mode.add_argument('--continue-matrix', type=Path)
     args = parser.parse_args()
+    if args.continue_matrix:
+        from continue_matrix import main as continue_matrix
+        raise SystemExit(continue_matrix(args.continue_matrix))
     config = json.loads(args.campaign.read_text())
     registry = Registry()
     results = []
