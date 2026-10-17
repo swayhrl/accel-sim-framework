@@ -52,28 +52,27 @@
 
 ## 你指出的引言第4段，怎样标记
 
-引言中的“We ask when this organization is preferable ...”后放三个标记：
-
-- `COV-01`：逻辑Tag覆盖的实际收益及代价。
-- `CMP-01`：相对传统cache的性能解释。
-- `HW-01`：有限服务的实现与PPA。
-
-贡献段另标`NOV-01`，避免把逻辑写顺误认为独立创新性已经证明。
+引言中的“We ask when this organization is preferable ...”后放三个标记：COV-01（逻辑Tag覆盖的实际收益及代价）、CMP-01（相对传统cache的性能解释）、HW-01（有限服务的实现与PPA）。贡献段另标NOV-01，避免把逻辑写顺误认为独立创新性已经证明。
 
 这些TODO不反过来否定已有结构事实，也不要求“改出正收益”才能关闭。补证不支持更强主张时，应缩小主张并记录依据。
 
 ## 后续合入方式（本轮未执行）
 
-在论文工作树，而不是Lane T/A的执行工作树中：
+只在论文工作树中操作，不在Lane T/A执行工作树中合入。备份并核对v0.11-I源包；用本目录`motivation.tex`替换`sections/motivation.tex`，用`introduction_with_todos.tex`替换`sections/introduction.tex`。
 
-1. 备份并核对v0.11-I的源包身份。
-2. 把本目录`motivation.tex`覆盖论文的`sections/motivation.tex`。
-3. 把`introduction_with_todos.tex`覆盖论文的`sections/introduction.tex`。
-4. 若需要显示开关，把`author_todos.tex`放到论文根目录，并在`main.tex`的`\\begin{document}`前加`\\input{author_todos}`。两份替换文件自身已提供默认可见的fallback标记，不加载开关文件也不会因缺少TODO宏而故意中断。
-5. 作者审阅版保留默认显示。纯阅读版可在加载开关后写`\\dtcshowtodosfalse`。这只影响标记显示，原H1/Pending项和submission检查不能移除。
-6. 更新版本标识后重新编译、核对引用和所有页。第二节增加了一些动机文字和TODO标记，本轮未证明页数仍为4+1。按内容去重和浮动体组织处理，不缩字号/页边距。
+需要开关时，将`author_todos.tex`复制到论文根目录，并在main.tex的导言区加载：
 
-本轮不修改第三至六节、图表数据、参考文献、原44行或任何运行参数。`EDIT-01`登记第二节与IV既有BICG数字叙述的去重任务，待审IV时再处理，不在本轮默默删除原结果。
+```latex
+\input{author_todos}
+% 默认显示TODO。纯阅读版可加下一行；它不表示问题已关闭。
+% \dtcshowtodosfalse
+```
+
+两份替换文件自身也提供默认可见的fallback标记。即使未加载开关文件，也不应因缺少TODO宏而中断。原H1/Pending项及submission检查继续保留。
+
+更新版本标识后须重新编译、核对引用及所有页。第二节增加了动机文字和TODO标记，本轮未证明页数仍为4+1。按内容去重和浮动体组织处理，不缩字号/页边距。
+
+本轮不修改第三至六节、图表数据、参考文献、原44行或任何运行参数。EDIT-01登记第二节与IV既有BICG叙述的去重任务，待审IV时再处理，不在本轮默默删除原结果。
 
 ## 实验证据范围
 
