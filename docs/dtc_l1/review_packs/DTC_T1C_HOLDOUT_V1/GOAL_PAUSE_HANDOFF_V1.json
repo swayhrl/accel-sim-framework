@@ -1,0 +1,80 @@
+{
+  "utc": "2026-10-17T13:29:46.615896+00:00",
+  "status": "BACKGROUND_VERIFIED_READY_FOR_EXPLICIT_GOAL_PAUSE",
+  "user_instruction": "转为后台执行，然后暂停goal吧",
+  "host": "huangrulin-174",
+  "head_before_handoff": "92d07349fb1d04232ba6ffe30df05dffd38b049e",
+  "process_identities": [
+    {
+      "pid": 2132794,
+      "start_ticks": 898867525,
+      "role": "original_finite_coordinator",
+      "state": "S",
+      "parent_pid": 375900,
+      "session": 2132794,
+      "tty_nr": 0,
+      "stdin": "/dev/null"
+    },
+    {
+      "pid": 2141192,
+      "start_ticks": 898900915,
+      "role": "original_BICG_simulator",
+      "state": "R",
+      "parent_pid": 2141191,
+      "session": 2141191,
+      "tty_nr": 0,
+      "stdin": "/dev/null"
+    },
+    {
+      "pid": 2238870,
+      "start_ticks": 899502188,
+      "role": "detached_passive_status",
+      "state": "S",
+      "parent_pid": 1,
+      "session": 2238870,
+      "tty_nr": 0,
+      "stdin": "/dev/null"
+    },
+    {
+      "pid": 2242319,
+      "start_ticks": 899527715,
+      "role": "detached_terminal_archive",
+      "state": "S",
+      "parent_pid": 1,
+      "session": 2242319,
+      "tty_nr": 0,
+      "stdin": "/dev/null"
+    }
+  ],
+  "execution_status": {
+    "utc": "2026-10-17T13:29:41.163276+00:00",
+    "authority_pid": 2132794,
+    "launched": [
+      "DTC_T1C_HOLDOUT_V1_DWT2D",
+      "DTC_T1C_HOLDOUT_V1_BICG"
+    ],
+    "active": [
+      "DTC_T1C_HOLDOUT_V1_BICG"
+    ],
+    "terminal": {
+      "DTC_T1C_HOLDOUT_V1_DWT2D": "PASS_STRICT_HOLDOUT_SCOPE"
+    },
+    "halted": "SCIENTIFIC_AUTHORITY_CONFLICT_STOP_FURTHER_LAUNCH",
+    "not_launched": []
+  },
+  "preregistered_63_files_unchanged": true,
+  "existing_simulator_and_timeout_unchanged": true,
+  "no_new_attempt_no_retry": true,
+  "passive_status_path": "/workspace/dtc-t1c-holdout-174-v1/PASSIVE_STATUS_HEARTBEAT.json",
+  "archive_log": "/workspace/dtc-t1c-holdout-174-v1/TERMINAL_ARCHIVE.log",
+  "archive_terminal_path": "/workspace/dtc-t1c-holdout-174-v1/TERMINAL_ARCHIVE_TERMINAL.json",
+  "authorized_background_work": "Existing original simulator/coordinator, passive status logger, and terminal-only archive worker continue. Archive worker never starts a simulator, changes Git, or claims goal completion.",
+  "on_resume": [
+    "Inspect current actual PID/start_ticks and authority terminal; never restart on observation expiry.",
+    "Inspect TERMINAL_ARCHIVE_TERMINAL.json and log; if a CPU archive failure occurred, preserve evidence and repair deterministically without another simulator attempt.",
+    "Audit all17 COMPLETION_REQUIREMENTS.tsv against actual sixarm matrix, strict/receipts, typed mechanisms, resource and scientific scope.",
+    "Preserve conservative external-project halt marker and source/config/runtime identities; complete source/raw/root SHA ledgers and FILES_SHA256.tsv.",
+    "Commit complete review pack, push/fetch-back, verify final HEAD/tree/fileSHA/clean and external final receipt; only then mark complete."
+  ],
+  "pause_state_control": "Goal pause will be requested through update_goal after this handoff is pushed and fetched. Background helpers cannot resume the Goal."
+}
