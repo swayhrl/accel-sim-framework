@@ -8,11 +8,11 @@ CORE=Path('/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-s64-r1')
 FW=Path('/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1')
 BUILD=Path('/workspace/build/ep-l2-potential20261017-lane1-structure-r1')
 OUT=Path('/workspace/ep_l2_parallel_lane1/structural_build_r2')
-EXPECTED='22832e0cf4bd62b24b3b520b13caaa2429606f53'
+EXPECTED='8960ace40bece2acf81e62f95f77fa2d637b258d'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def head(p):return subprocess.check_output(['git','rev-parse','HEAD'],cwd=p,text=True).strip()
 def main():
- OUT.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0));r={'schema':'EPL2_LANE1_STRUCTURAL_BUILD_V1','status':'PREFLIGHT','authority':'a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900','core_source_commit':head(CORE),'framework_source_commit':head(FW),'driver_source_commit':head(REPO),'build':str(BUILD),'out':str(OUT),'compiler_started':False,'jobs':2,'application_starts':0,'independent_qualification':False,'disk_floor_bytes':48*2**30,'memory_floor_bytes':64*2**30,'commands':[],'resource_samples':0,'own_process_group_max_rss_bytes':0,'own_process_group_rss_scope':'sampled sum of VmRSS in the owned CMake process group; shared pages may be counted more than once','peak_workspace_growth_bytes':0}
+ OUT.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0));r={'schema':'EPL2_LANE1_STRUCTURAL_BUILD_V1','status':'PREFLIGHT','authority':'a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900','core_source_commit':head(CORE),'framework_source_commit':head(FW),'driver_source_commit':head(REPO),'build':str(BUILD),'core':str(CORE),'framework':str(FW),'out':str(OUT),'compiler_started':False,'jobs':2,'application_starts':0,'independent_qualification':False,'disk_floor_bytes':48*2**30,'memory_floor_bytes':64*2**30,'commands':[],'resource_samples':0,'own_process_group_max_rss_bytes':0,'own_process_group_rss_scope':'sampled sum of VmRSS in the owned CMake process group; shared pages may be counted more than once','peak_workspace_growth_bytes':0}
  def save():q=OUT/'BUILD_RECEIPT.tmp';q.write_text(json.dumps(r,indent=2)+'\n');q.replace(OUT/'BUILD_RECEIPT.json')
  clp=Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json');cl=json.loads(clp.read_text());r['registry_source_commit']=cl['registry_source_commit'];r['registry_sha256']=sha(cl['registry_client'])
  if r['registry_sha256']!=cl['registry_client_sha256']:r['status']='CLIENT_BINDING_HOLD_PRELEASE_NO_COMPILER';save();return
