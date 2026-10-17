@@ -1,8 +1,8 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261017_LANE1_R8_AUTOMATIC_OUTCOME",
-  "status": "WAITER_STOPPED_FAIL_CLOSED",
+  "task_id": "FT20261017_LANE1_R11_CONTINUE_CHECKPOINT_07",
+  "status": "BOUNDED_CONTINUE_ACTIVE_FORMAL_RESOURCE_WAIT_PILOT_INDEPENDENTLY_DENIED",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "review_coordination_commit": "6917bc6a76d1f71097b0f2d093372097669397d2",
   "host": "huangrulin-174",
@@ -173,10 +173,10 @@
     }
   },
   "resource_observation": {
-    "recorded_at": "2026-10-16T23:57:45.942013+00:00",
+    "recorded_at": "2026-10-17T01:03:44.343068+00:00",
     "f_bavail_bytes": {
-      "/workspace": 21335908352,
-      "/root/share": 47407775744
+      "/workspace": 21320085504,
+      "/root/share": 47368609792
     },
     "central_active": {
       "runs": {},
@@ -223,10 +223,11 @@
     "docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r2",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R8_BOUNDED_WAIT_r2",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R11_CONTINUE_START_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T090024"
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T090024",
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R11_NETWORK_RECOVERY_r1"
   ],
-  "recorded_at": "2026-10-17T01:00:24.545116+00:00",
-  "background_worker_running": false,
+  "recorded_at": "2026-10-17T01:03:44.343068+00:00",
+  "background_worker_running": true,
   "next_action": "Engineering evidence only: review any ordinary failure and bounded remediation; official release/independent11gate/formal resource admission remain separate. If the formal driver won, audit/freeze its official binary before announcing a release.",
   "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
   "engineering_pilot": {
@@ -236,7 +237,7 @@
     "driver_source_commit": "1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd",
     "driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
     "classification": "ENGINEERING_ONLY",
-    "status": "WAITER_STOPPED_FAIL_CLOSED",
+    "status": "NOT_EXECUTED_NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
     "authorization": null,
     "central_pilot_adapter": "AVAILABLE_LANE5_SOURCE205782b9; three private-ledger caller integrations PASS; no real authorization or registration",
     "actual_lease": null,
@@ -263,17 +264,17 @@
     "passed_directed_tests": 0
   },
   "gate_waiter": {
-    "status": "WAITER_STOPPED_FAIL_CLOSED",
+    "status": "WAITING_RESOURCE_OR_LANE5_AUTHORIZATION",
     "pid": {
-      "pid": 1156558,
-      "ppid": 1156554,
-      "pgrp": 1156544,
+      "pid": 1585205,
+      "ppid": 1585186,
+      "pgrp": 1585186,
       "state": "R",
-      "start_ticks": 892416307,
+      "start_ticks": 895092527,
       "cpu_ticks": 5,
       "rss_bytes": 16777216,
       "io": {
-        "rchar": 1652778,
+        "rchar": 1652779,
         "wchar": 122,
         "syscr": 246,
         "syscw": 3,
@@ -283,10 +284,10 @@
       }
     },
     "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-    "started_at": "2026-10-16T17:36:31.803997+00:00",
+    "started_at": "2026-10-17T01:02:34.009278+00:00",
     "request_path": "/workspace/ep_l2_ft20261016_shared/pilot_requests/EP_L2_R0_1_ENGINEERING_20261017_L1_P01/r2/LOW_SPACE_PILOT_REQUEST.json",
     "request_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
-    "deadline_unix": 1792343848.8041663,
+    "deadline_unix": 1792343848.0094368,
     "cadence_seconds": 600,
     "waiting_lease": null,
     "automatic_execution_enabled": true,
@@ -294,7 +295,7 @@
     "source_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
     "invocations": 0,
-    "last_observed_at": "2026-10-17T00:59:35.059073+00:00",
+    "last_observed_at": "2026-10-17T01:02:34.109925+00:00",
     "last_state": {
       "policy": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -317,30 +318,28 @@
         "device": 156,
         "fsid": 1349835467748716946,
         "block_bytes": 4096,
-        "available_bytes": 21320503296,
-        "free_including_reserved_bytes": 213375078400,
+        "available_bytes": 21320245248,
+        "free_including_reserved_bytes": 213374820352,
         "total_bytes": 3779302981632
       },
-      "available_memory_bytes": 196868886528
+      "available_memory_bytes": 196875878400
     },
-    "error": "TimeoutExpired(['git', 'fetch', '--no-tags', 'origin', 'hrl/ep-l2-ft20261016-lane5-v1'], 44.999991830438375)",
-    "finished_at": "2026-10-17T01:00:20.061676+00:00",
-    "actual_process_finished": true
+    "output": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r2/gate_waiter_r3"
   },
   "outcome_publisher": {
     "status": "WAITING_EXISTING_PIDFD_NO_DISK_OR_GIT_POLL",
     "pid": {
-      "pid": 1156581,
-      "ppid": 1156571,
-      "pgrp": 1156571,
+      "pid": 1585258,
+      "ppid": 1585244,
+      "pgrp": 1585244,
       "state": "R",
-      "start_ticks": 892416419,
+      "start_ticks": 895093528,
       "cpu_ticks": 6,
       "rss_bytes": 16777216,
       "io": {
-        "rchar": 1764889,
+        "rchar": 1773022,
         "wchar": 122,
-        "syscr": 262,
+        "syscr": 274,
         "syscw": 3,
         "read_bytes": 0,
         "write_bytes": 0,
@@ -348,15 +347,15 @@
       }
     },
     "watched_pid": {
-      "pid": 1156558,
-      "ppid": 1156554,
-      "pgrp": 1156544,
+      "pid": 1585205,
+      "ppid": 1585186,
+      "pgrp": 1585186,
       "state": "R",
-      "start_ticks": 892416307,
+      "start_ticks": 895092527,
       "cpu_ticks": 5,
       "rss_bytes": 16777216,
       "io": {
-        "rchar": 1652778,
+        "rchar": 1652779,
         "wchar": 122,
         "syscr": 246,
         "syscw": 3,
@@ -368,12 +367,12 @@
     "request_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
     "source": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/publish_pilot_outcome.py",
     "source_sha256": "d7bd4e69e1fc6533b91f91ab1fbba96529f438bdde557ff42fc863b30daeb691",
-    "deadline_unix": 1792343968.8041663,
-    "started_at": "2026-10-16T17:36:32.931630+00:00"
+    "deadline_unix": 1792343968.0094368,
+    "started_at": "2026-10-17T01:02:44.021510+00:00"
   },
   "continue_goal": {
     "status_at_recording": "ACTIVE",
-    "recorded_at_utc": "2026-10-16T23:57:45.942013+00:00",
+    "recorded_at_utc": "2026-10-17T01:03:44.343068+00:00",
     "t0_utc": "2026-10-16T17:56:33+00:00",
     "deadline_utc": "2026-10-17T03:56:33+00:00",
     "deadline_beijing": "2026-10-17T11:56:33+08:00",
@@ -438,10 +437,10 @@
       ]
     }
   },
-  "continue_checkpoint": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/continue_r11/CHECKPOINT_06.json",
+  "continue_checkpoint": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/continue_r11/CHECKPOINT_07.json",
   "latest_ops_observation": {
-    "source_publication": "d026b5e527d80ecdd1b354649cf282bb35c63a7f",
-    "target_publication": "349c748d6526a40ad0d6c0ea48029563819b165a",
+    "source_publication": "f5b59f6fd31a8b43e9695347e90594aed78f808c",
+    "target_publication": "18297948ac349a8d415692f4601cda4f4c5e5691",
     "verified_polybench_ranges": 35,
     "actual_source_release_bytes": 0
   },
@@ -458,5 +457,16 @@
     "status": "WAITER_STOPPED_FAIL_CLOSED",
     "evidence_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T090024",
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01"
+  },
+  "gate_waiter_recovery": {
+    "reason": "READONLY_GITHUB_FETCH_TIMEOUT_EXIT; restored only after old owner absent/locks free/central empty",
+    "previous_waiter_pid": 1156558,
+    "previous_terminal_publication": "605ebc77d87710d75c2038eb53cbdbdbc37b960c",
+    "current_waiter_pid": 1585205,
+    "current_publisher_pid": 1585258,
+    "original_absolute_deadline_unix": 1792343848.8041663,
+    "deadline_extended": false,
+    "request_and_driver_unchanged": true,
+    "recovery_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_R11_NETWORK_RECOVERY_r1"
   }
 }
