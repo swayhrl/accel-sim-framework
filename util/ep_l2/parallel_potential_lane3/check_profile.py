@@ -30,10 +30,21 @@ def limits():
 def main():
  p=argparse.ArgumentParser();p.add_argument('profile',choices=PROFILES);p.add_argument('--build',action='store_true');a=p.parse_args()
  out=RAW/(a.profile+'_r2');out.mkdir(parents=True,exist_ok=False)
- client=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text());assert digest(client['registry_client'])==client['registry_client_sha256']
- sys.path.insert(0,str(Path(client['registry_client']).parent));from registry import Registry,local_resources,process_identity
+ client=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text())
+ module_path=Path(client['registry_client'])
+ if digest(module_path)!=client['registry_client_sha256']:
+  # Owner may be editing its worktree. Consume only the immutable published
+  # client named by CLIENT_CONTRACT, never its uncommitted replacement.
+  owner=module_path.parents[3];relative=module_path.relative_to(owner)
+  data=subprocess.check_output(['git','show',client['registry_source_commit']+':'+str(relative)],cwd=owner)
+  assert hashlib.sha256(data).hexdigest()==client['registry_client_sha256']
+  cache=RAW/'.published_registry'/client['registry_client_sha256'];cache.mkdir(parents=True,exist_ok=True)
+  module_path=cache/'registry.py'
+  if module_path.exists():assert module_path.read_bytes()==data
+  else:module_path.write_bytes(data);module_path.chmod(0o444)
+ sys.path.insert(0,str(module_path.parent));from registry import Registry,local_resources,process_identity
  reg=Registry();old=json.loads(OLD.read_text());binding=old['fixture_build_identity']
- fixture=TASK/'production_probe.cc';r={'schema':'LANE3_PARALLEL_AFFECTED_V1','profile':a.profile,'status':'STARTED','application_starts':0,'full_builds':0,'runtime_code_recompiled':False,'commands':[],'registry_client_sha256':digest(client['registry_client']),'fixture_source_sha256':digest(fixture),'tool_parent_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()}
+ fixture=TASK/'production_probe.cc';r={'schema':'LANE3_PARALLEL_AFFECTED_V1','profile':a.profile,'status':'STARTED','application_starts':0,'full_builds':0,'runtime_code_recompiled':False,'commands':[],'registry_client_sha256':digest(module_path),'registry_import_path':str(module_path),'fixture_source_sha256':digest(fixture),'tool_parent_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()}
  def safe():
   live=local_resources();assert live['disk_free_bytes']>=50*2**30 and live['available_memory_bytes']-4*2**30>=64*2**30
   f=os.statvfs('/root/share');assert f.f_bavail*f.f_frsize>=40*2**30
