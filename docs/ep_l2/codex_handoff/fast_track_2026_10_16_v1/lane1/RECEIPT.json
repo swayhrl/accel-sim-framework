@@ -1,8 +1,8 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261017_LANE1_R11_CONTINUE_CHECKPOINT_07",
-  "status": "BOUNDED_CONTINUE_ACTIVE_FORMAL_RESOURCE_WAIT_PILOT_INDEPENDENTLY_DENIED",
+  "task_id": "FT20261017_LANE1_R8_AUTOMATIC_OUTCOME",
+  "status": "WAITER_STOPPED_FAIL_CLOSED",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "review_coordination_commit": "6917bc6a76d1f71097b0f2d093372097669397d2",
   "host": "huangrulin-174",
@@ -224,10 +224,11 @@
     "docs/ep_l2/review_packs/FT20261017_LANE1_R8_BOUNDED_WAIT_r2",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R11_CONTINUE_START_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T090024",
-    "docs/ep_l2/review_packs/FT20261017_LANE1_R11_NETWORK_RECOVERY_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R11_NETWORK_RECOVERY_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T094312"
   ],
-  "recorded_at": "2026-10-17T01:03:44.343068+00:00",
-  "background_worker_running": true,
+  "recorded_at": "2026-10-17T01:43:12.320607+00:00",
+  "background_worker_running": false,
   "next_action": "Engineering evidence only: review any ordinary failure and bounded remediation; official release/independent11gate/formal resource admission remain separate. If the formal driver won, audit/freeze its official binary before announcing a release.",
   "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
   "engineering_pilot": {
@@ -237,7 +238,7 @@
     "driver_source_commit": "1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd",
     "driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
     "classification": "ENGINEERING_ONLY",
-    "status": "NOT_EXECUTED_NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
+    "status": "WAITER_STOPPED_FAIL_CLOSED",
     "authorization": null,
     "central_pilot_adapter": "AVAILABLE_LANE5_SOURCE205782b9; three private-ledger caller integrations PASS; no real authorization or registration",
     "actual_lease": null,
@@ -264,7 +265,7 @@
     "passed_directed_tests": 0
   },
   "gate_waiter": {
-    "status": "WAITING_RESOURCE_OR_LANE5_AUTHORIZATION",
+    "status": "WAITER_STOPPED_FAIL_CLOSED",
     "pid": {
       "pid": 1585205,
       "ppid": 1585186,
@@ -295,7 +296,7 @@
     "source_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
     "invocations": 0,
-    "last_observed_at": "2026-10-17T01:02:34.109925+00:00",
+    "last_observed_at": "2026-10-17T01:42:47.783920+00:00",
     "last_state": {
       "policy": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -318,13 +319,15 @@
         "device": 156,
         "fsid": 1349835467748716946,
         "block_bytes": 4096,
-        "available_bytes": 21320245248,
-        "free_including_reserved_bytes": 213374820352,
+        "available_bytes": 21317779456,
+        "free_including_reserved_bytes": 213372354560,
         "total_bytes": 3779302981632
       },
-      "available_memory_bytes": 196875878400
+      "available_memory_bytes": 196804141056
     },
-    "output": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r11/network_recovery_r2/gate_waiter_r3"
+    "error": "CalledProcessError(128, ['git', 'fetch', '--no-tags', 'origin', 'hrl/ep-l2-ft20261016-lane5-v1'])",
+    "finished_at": "2026-10-17T01:43:08.416440+00:00",
+    "actual_process_finished": true
   },
   "outcome_publisher": {
     "status": "WAITING_EXISTING_PIDFD_NO_DISK_OR_GIT_POLL",
@@ -455,7 +458,7 @@
     "formal_promotion": false,
     "compiler_capable_phase_started": false,
     "status": "WAITER_STOPPED_FAIL_CLOSED",
-    "evidence_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T090024",
+    "evidence_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T094312",
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01"
   },
   "gate_waiter_recovery": {
