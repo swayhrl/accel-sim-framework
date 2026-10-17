@@ -13,10 +13,10 @@ import subprocess
 import sys
 import time
 
-CORE_CANDIDATE = '4bdb59502fed2f83b2eb465edb92976a448a8753'
+CORE_CANDIDATE = '7b8e6ac70b8fe0f1bd37efca11acb5284938825d'
 PYBIND11_COMMIT = 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
-FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-red')
-BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-a1-red')
+FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1')
+BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1')
 DISK_FLOOR = 48 * 1024**3
 MEMORY_FLOOR = 64 * 1024**3
 BUILD_GROWTH = 2 * 1024**3
@@ -49,8 +49,24 @@ def repair_commands(build, core):
     commands = []
     for mode in (1, 2):
         for c in (8, 16):
+            prefix = [base, overlay, str(mode), str(c)]
+            commands.append((f'host_prefill_{mode}_{c}',
+                [str(build / 'gpgpu-sim/ep_l2_ft_host_prefill'), *prefix]))
+            for offset in (0, 4096):
+                commands.append((f'physical_clock_{mode}_{c}_{offset}',
+                    [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, str(offset)]))
+            commands.append((f'warm_clock_{mode}_{c}',
+                [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, '4096', 'warm_hit']))
+            commands.append((f'partition_{mode}_{c}',
+                [str(build / 'gpgpu-sim/ep_l2_ft_partition'), *prefix]))
+    commands.append(('ft_directed',
+        [str(build / 'gpgpu-sim/ep_l2_ft_directed'), base, overlay]))
+    for mode in (1, 2):
+        for c in (8, 16):
             commands.append((f'a1_{mode}_{c}',
                 [str(build / 'gpgpu-sim/ep_l2_ft_a1'), base, overlay, str(mode), str(c)]))
+    for case in ('b1-read-first', 'b1-atomic-first', 'b1-multi', 'b1-b16', 'b1-dirty', 'b1-version-only'):
+        commands.append((case, [str(build / 'gpgpu-sim/ep_l2_common_delta_r16'), base, overlay, case]))
     return commands
 
 
@@ -117,6 +133,7 @@ def main():
     from registry import Registry, ACTIVE, local_resources, process_identity
     registry = Registry(client['canonical_root'])
     report = {'status': 'PREFLIGHT', 'owner': 'lane1', 'release': 'R0.1',
+        'producer_revision': 'A1_B1_R1', 'preserved_official_producer': '9898c56d7a010c934de327784076ba0b9a36c9c4',
         'framework_source_commit': head(fw), 'core_source_commit': head(args.core),
         'framework_worktree': str(fw), 'core_worktree': str(args.core),
         'build': str(args.build), 'independent_qualification': False,
@@ -153,7 +170,7 @@ def main():
             'configs/tested-cfgs/SM7_QV100/gpgpusim.config', 'tests/ep_l2/ft_wbuf.config',
             'tests/ep_l2/test_ft_host_prefill.cc', 'tests/ep_l2/test_ft_memcpy_clock.cc',
             'tests/ep_l2/test_ft_partition.cc', 'tests/ep_l2/test_ft_wbuf.cc',
-            'tests/ep_l2/test_ft_a1.cc')]
+            'tests/ep_l2/test_ft_a1.cc', 'tests/ep_l2/test_common_delta_r16.cc')]
         inputs += [(fw, f'tests/ep_l2/ft20261016/r0_1/{p}.config')
                    for p in ('b16_banked', 'u_wb16', 'b8_banked', 'u_wb8')]
         report['input_sha256'] = {str(root / p): digest(root / p) for root, p in inputs}
@@ -195,9 +212,11 @@ def main():
              '-G', 'Unix Makefiles', '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'], 'configure')
         report['status'] = 'BUILDING'
         report['compiler_started'] = True
-        targets = ['ep_l2_ft_a1']
+        targets = ['accel-sim.out', 'ep_l2_ft_memcpy_clock', 'ep_l2_ft_host_prefill',
+                   'ep_l2_ft_directed', 'ep_l2_ft_partition', 'ep_l2_ft_a1',
+                   'ep_l2_common_delta_r16']
         run(['cmake', '--build', str(args.build), '--target', *targets, '-j2'], 'build')
-        report['binary'] = str(args.build / 'gpgpu-sim/ep_l2_ft_a1')
+        report['binary'] = str(args.build / 'accel-sim.out')
         report['binary_sha256'] = digest(report['binary'])
         report['framework_build_stamp'] = (args.build / 'accelsim_version.h').read_text()
         flags = sorted(args.build.rglob('flags.make'))
