@@ -1,6 +1,6 @@
 # DC UNRUN by Lane2. Same RTL/parameters/controller timing cut as open flow.
 # Required real library values; never upload target DBs/Liberty to GitHub.
-foreach key {RTL_REPO TARGET_LIBS LINK_LIBS DC_OUT MODE IO_DRIVE_CELL OUTPUT_LOAD_LIB_UNITS PVT_LABEL LIB_TIME_UNIT_NS} {
+foreach key {RTL_REPO TARGET_LIBS LINK_LIBS DC_OUT MODE IO_DRIVE_CELL OUTPUT_LOAD_LIB_UNITS PVT_LABEL OPERATING_CONDITIONS LIB_TIME_UNIT_NS} {
     if {![info exists ::env($key)] || $::env($key) eq ""} { error "Missing required environment $key" }
 }
 puts "DC PVT_LABEL=$::env(PVT_LABEL); physical time converted by declared LIB_TIME_UNIT_NS=$::env(LIB_TIME_UNIT_NS); verify report_units"
@@ -22,6 +22,9 @@ analyze -format sverilog -define SYNTHESIS $sources
 elaborate ep_l2_slice_ctrl -parameters "MODE=$mode,STATIC_WB=$wb,N_TAG=1024,N_PAYLOAD=1168,N_WAD=128,GEN_W=32"
 current_design ep_l2_slice_ctrl
 link
+# Actual operating-condition name from the selected real DB, not a label.
+set_operating_conditions $::env(OPERATING_CONDITIONS)
+report_design > $::env(DC_OUT)/design_environment.rpt
 report_units > $::env(DC_OUT)/units.rpt
 check_design > $::env(DC_OUT)/check_design.rpt
 source $::env(RTL_REPO)/rtl/ep_l2/flow/common.sdc

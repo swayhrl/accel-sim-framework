@@ -12,7 +12,7 @@ Traditional Tag/LRU/dirty-byte/MSHR/noC/DRAM control is external and not free.
 
 DC: set RTL_REPO, TARGET_LIBS (Tcl list of actual .db files), LINK_LIBS (Tcl
 list, including real macro libraries if applicable), DC_OUT, MODE=0/1/2,
-IO_DRIVE_CELL, OUTPUT_LOAD_LIB_UNITS, PVT_LABEL and LIB_TIME_UNIT_NS; optionally CLOCK_PERIOD_NS. Run:
+IO_DRIVE_CELL, OUTPUT_LOAD_LIB_UNITS, PVT_LABEL, OPERATING_CONDITIONS and LIB_TIME_UNIT_NS; optionally CLOCK_PERIOD_NS. Run:
 
     dc_shell -f rtl/ep_l2/flow/run_dc.tcl
 
@@ -67,3 +67,7 @@ No cell, bit, connection or constant changes. Both netlist hashes and the
 format proof are retained. OpenSTA still uses the same library and SDC.
 A successful resumed phase writes FLOW_RECEIPT with exact mapping-source and
 STA-phase identities; incomplete/failed phases never create that receipt.
+
+DC OPERATING_CONDITIONS must name an actual condition in the selected real DB;
+the script applies it with set_operating_conditions and records report_design.
+PVT_LABEL alone is descriptive and is not used as a fabricated library corner.
