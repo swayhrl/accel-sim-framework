@@ -1,5 +1,3 @@
-# Lane5 — active R19 and parallel potential execution
+# Lane5 — r19 rolling diagnostics
 
-Actual 2026-10-17T11:39:43.652043+00:00: 4 central active sims; 4 CPU / 24GiB reserved, plus separately recorded small leases. R19 starts14/24, accepted12, original deadline17:09:16UTC unchanged. New campaign starts2/72, accepted0, exact-source anchor reuse7 logical cells; new deadline2026-10-18T11:30:14.500719+00:00. T0 not reset.
-
-Current V2generation20; old10 H0 accepted,12 prior R19 accepted and sixwithdrawals retained. Existing two foreground pair controllers use the single central registry/lock; no extra watcher/GateWaiter. New output physical workspace. Original48GiB workspace/40GiB Share/64GiB availableRAM guards retained. D2/L25 independently qualified, ROP40 independently qualified for frozen2309 binary. Further ready categories are reviewed while these runs execute; no OFF anchor is assumed reusable across different binaries. Raw/trace/config/frozenpacks untouched.
+H0 five accepted pairs and geomean1.0016002037656606 retained. 7 r19 diagnostic pairs accepted in staged V2 generation21; latest D2/convolutionSeparable. Remote readback and shared pointer install required before announcing delivery. Existing full-input/64slice/current V2 and original resource protections remain. T0 07:09:16UTC, deadline17:09:16UTC. No compiler, migration, extra waiter. Exact identity/results in docs/ep_l2/review_packs/FT20261017_LANE5_R19_D2_CONVOLUTIONSEPARABLE_PAIR_r1.
