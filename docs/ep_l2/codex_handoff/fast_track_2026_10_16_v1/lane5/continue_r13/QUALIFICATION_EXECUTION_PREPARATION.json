@@ -1,0 +1,84 @@
+{
+  "schema_version": "EPL2_R0_1_REMAINING_GATE_EXECUTION_PREPARATION_V1",
+  "at_utc": "2026-10-17T02:30:15.715235+00:00",
+  "status": "PREPARED_NOT_RUN_NO_QUALIFICATION",
+  "official_binary_sha256": null,
+  "source_rebind": "Must be exact final official producer; candidate c948/3ab is not an executable identity",
+  "resource_admission": "No lease until official release. Directed replay uses canonical build/test lease; any long OFF qualification application needs its own canonical run key/claim, counts toward max2 simultaneous long simulations, unchanged floors. Never run qualification applications as an unregistered build process.",
+  "directed_matrix": {
+    "count": 21,
+    "plan": "docs/ep_l2/review_packs/FT20261017_LANE5_ENGINEERING_PILOT_REVIEW_r1/INDEPENDENT_GATE_PLAN_r7.json",
+    "runner": "util/ep_l2/ft_lane5/qualify_r0_1.py",
+    "certificate_auto_issue": false
+  },
+  "mode_legality": {
+    "status": "NOT_RUN",
+    "executable": "Official build/gpgpu-sim/ep_l2_ft_directed, exact published test hash",
+    "args": [
+      "official Core/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+      "official Core/tests/ep_l2/ft_wbuf.config"
+    ],
+    "invalid_mode_capacity_pairs": [
+      [
+        1,
+        7
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        3,
+        16
+      ]
+    ],
+    "required_returncode": -6,
+    "required_marker": "EP-L2 FT invalid mode/WBUF/banked/WAD/allocation contract",
+    "must_not_accept": "INVALID CONFIG WAS ACCEPTED",
+    "core_dump_disabled": true,
+    "scope": "Same original R0 legality counterexamples on actual new official executable, not inherited old PASS"
+  },
+  "affected_off_equivalence": {
+    "status": "NOT_RUN",
+    "workload": "vectorAdd_4M",
+    "scope": "One affected OFF production comparison per unchanged r7 plan; no full3-workload/old80 calibration replay",
+    "baseline_run_key": "61a666655f9ef908ef5dbacedb1457acffb26f223940fa4798ded4f7249b66ec",
+    "baseline_core": "4fb91f0a5c9eb3bf494a154ea1f24b9a56b34617",
+    "expected_native_cycles": 73873,
+    "expected_native_instructions": 56000000,
+    "baseline_raw_sha256": "62dfb0770eb9db4f18b676fcd280abc89d19d0d2993287a44276f179e254052d",
+    "csv_families": [
+      "summary",
+      "slice",
+      "kernel",
+      "bank",
+      "l1",
+      "dram",
+      "window"
+    ],
+    "comparison": "Native totals and7 CSV files byte-identical; bind exact baseline hashes/current official four OFF ordered configs and complete trace closure; full normal/drained native64-slice invariants. No FT/RO/TVD/ideal performance claim.",
+    "parser": "Official producing Framework/util/ep_l2/parse_epl2_b0.py, source-hash pinned before use",
+    "deadline_seconds": 900,
+    "no_automatic_scientific_acceptance_or_launch_authority": true
+  },
+  "certificate_prerequisites": [
+    "Exact official producer and independent directed/runtime evidence",
+    "All original11 gate claims independently reviewed; explicit stable input/source/binary and vendor binding",
+    "Publish new independently qualified envelope; retain old withdrawal entries and old hold proof",
+    "V2 generation advance only for exact new eligible launch vectors, source/binary and certificate hash",
+    "Full trace/config/aux/environment hashing and registry dedup/current resource admission before any formal pair"
+  ],
+  "order": [
+    "sad",
+    "vectorAdd_4M",
+    "cfd_097k",
+    "convolutionSeparable",
+    "FWT_7_21"
+  ],
+  "first_pair_delivery": "As soon as both new rows are COMPLETE_VALID and current V2 CURRENT_ACCEPTED, publish immutable pair/review pack and exact source/config/binary/full trace/raw/proof identities for Lane6; do not wait5",
+  "group_geomean": "Only after all5 current-accepted same-release pairs; no old withdrawn row reuse"
+}
