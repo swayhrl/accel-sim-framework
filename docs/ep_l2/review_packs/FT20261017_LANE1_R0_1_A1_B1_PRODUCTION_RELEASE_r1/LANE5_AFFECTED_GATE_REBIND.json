@@ -1,0 +1,52 @@
+{
+  "status": "LANE5_INDEPENDENT_REBIND_AND_ALL11_A1_B1_REQUIRED",
+  "new_source": {
+    "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+    "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "source_worktrees": {
+      "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1",
+      "framework": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1",
+      "vendor": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/extern/pybind11"
+    },
+    "build": "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1",
+    "driver_sha256": "95816c1ab1ea70873d845eeb7c252a4b49109cea29045ff80309a220fc84bc1e",
+    "framework_build_stamp": "const char *g_accelsim_version=\"accelsim-commit-9bd17f9db_modified_0.0_26-10-17-11-41-57\";",
+    "baseline_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+    "baseline_framework": "861a06b91e309832161eab0836b512853c833ffb",
+    "A1_fix_commit": "eabe59a8c3963a82920ef4c1572b13070c536d4a",
+    "A1_final_observers_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "B1_producer_commit": "3037ce12a9ea8a75a39f5fa18f32c047febcebba",
+    "B1_consumed_cherry_pick": "a1531ca47463f87eb17cb8e017456c0a6395ec8c",
+    "B1_framework_handoff": "292d927493739c9b2421e16bcea0509cae4e9c14",
+    "B1_fixture_source": "00edf6b9295fc3e4558654dec7ab6281dcb69d95",
+    "runtime_config_sha256": {
+      "B16_BANKED": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+      "U_WB16": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+      "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
+      "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
+    },
+    "trace_identity": null,
+    "trace_scope": "DIRECTED_ONLY_NO_TRACED_APPLICATION; complete future trace identity belongs to Lane5"
+  },
+  "new_binary": {
+    "name": "accel-sim.out",
+    "producing_path": "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/accel-sim.out",
+    "frozen_path": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/r0_1_a1_b1_release_20261017_r1/binaries/accel-sim.out",
+    "sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+    "bytes": 75841576,
+    "producing_mode": "0o555",
+    "frozen_mode": "0o555"
+  },
+  "original21_pass": 21,
+  "new_A1_pass": 4,
+  "new_B1_pass": 6,
+  "producer_total": 31,
+  "scientific_acceptance": false,
+  "applications_authorized": false,
+  "accepted_pairs": 0,
+  "required": "Verify exact new producer/source/7target identities and all31 actual logs; independently replay affected A1 real16way and original11 including source/OFF/legality/sector/WB/bank/exact-once/drain; assess B1 atomic scope and complete current V2 input/trace/config/64slice identity before any first frozen pair. Never inherit e424 or old21/old11 authority.",
+  "B1_limitations": "Real MSHR/Tag mask/byte/version/callback-consumer/WB tests at B16,U16 and native multiatomic; no numerical PTX ALU/shader/application, no concurrent FT atomics or claimed B8/U8 atomic validation",
+  "A1_scope": "Allfour B8/B16/U8/U16, real cache/tag/subpartition plus controlled external lower; original four partition tests also run real simple DRAM/set_done",
+  "owner": "lane5"
+}

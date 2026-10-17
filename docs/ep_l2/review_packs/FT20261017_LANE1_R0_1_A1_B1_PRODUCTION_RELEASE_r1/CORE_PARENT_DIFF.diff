@@ -1,0 +1,602 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ca496a8f..8e06c06c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -190,3 +190,16 @@ foreach(repair_test ft_memcpy_clock ft_host_prefill)
+       entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
+       ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+ endforeach()
++
++add_executable(ep_l2_ft_a1 EXCLUDE_FROM_ALL tests/ep_l2/test_ft_a1.cc)
++target_include_directories(ep_l2_ft_a1 PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_ft_a1 PRIVATE -Wl,--start-group
++    entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++    ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++# Lane2 minimal public atomic-sector regression, without TVD integration.
++add_executable(ep_l2_common_delta_r16 EXCLUDE_FROM_ALL tests/ep_l2/test_common_delta_r16.cc)
++target_include_directories(ep_l2_common_delta_r16 PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_common_delta_r16 PRIVATE -Wl,--start-group
++    entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++    ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 06b01560..071ddd4d 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -111,8 +111,19 @@ bool l2_cache::ft_response_ready(unsigned long long cycle) {
+   mem_fetch *mf = baseline_cache::peek_next_access();
+   std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
+   assert(it != m_ft_read_refs.end());
+-  return m_ep_l2_payload.request(it->second, false, cycle,
++  const bool granted = m_ep_l2_payload.request(it->second, false, cycle,
+       (unsigned long long)-1, ep_l2_payload_store::RESIDENT_HIT_READ) == ep_l2_payload_store::GRANTED;
++  if (granted && mf->isatomic()) {
++    // Symbolic write-completion label only, matching the existing atomic-HIT
++    // convention. Do not execute the PTX atomic callback here: it belongs to
++    // the response consumer (memory_sub_partition::pop / shader). Pins retain
++    // this exact generation until the response is enqueued and committed.
++    auto &slot = m_ep_l2_payload.inspect_mutable(it->second);
++    for (unsigned s = 0; s < 4; ++s)
++      if (mf->get_access_sector_mask().test(s))
++        slot.versions[s] = (unsigned long long)mf->get_request_uid() + 1;
++  }
++  return granted;
+ }
+ 
+ void l2_cache::cycle() {
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 0f1efcff..9726f938 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -219,6 +219,7 @@ tag_array::tag_array(cache_config &config, int core_id, int type_id)
+ }
+ 
+ void tag_array::init(int core_id, int type_id) {
++  m_ft_request = NULL; m_ft_index = NULL; m_ft_identity_redirects = 0; m_ft_last_raw_candidate = (unsigned)-1;
+   m_access = 0;
+   m_miss = 0;
+   m_pending_hit = 0;
+@@ -433,6 +434,18 @@ enum cache_request_status tag_array::probe(new_addr_type addr, unsigned &idx,
+     abort();  // if an unreserved block exists, it is either invalid or
+               // replaceable
+ 
++  // A multi-cycle FT copy/bank retry already owns a particular victim.
++  // Completing another way's fill may change the LRU candidate above, but
++  // cannot change this transaction's Tag or its WAD/payload generation.
++  // This same probe is used by preview, data_cache::access and native access.
++  if (mf && m_ft_request && *m_ft_request == mf) {
++    const unsigned held = *m_ft_index;
++    assert(held < m_config.get_num_lines() &&
++           held / m_config.m_assoc == set_index &&
++           !m_lines[held]->is_reserved_line());
++    if (idx != held) { ++m_ft_identity_redirects; m_ft_last_raw_candidate = idx; }
++    idx = held;
++  }
+   return MISS;
+ }
+ 
+@@ -821,6 +834,22 @@ void mshr_table::descriptor_chain_snapshot(
+   }
+ }
+ 
++void mshr_table::atomic_fill_masks(new_addr_type block_addr,
++    const mem_access_sector_mask_t &returned, mem_access_sector_mask_t &sectors,
++    mem_access_byte_mask_t &bytes) const {
++  sectors.reset(); bytes.reset();
++  const auto entry = m_data.find(block_addr);
++  assert(entry != m_data.end());
++  for (const auto mf : entry->second.m_list) {
++    if (!mf->isatomic()) continue;
++    const auto overlap = mf->get_access_sector_mask() & returned;
++    sectors |= overlap;
++    for (unsigned b = 0; b < MAX_MEMORY_ACCESS_SIZE; ++b)
++      if (overlap.test(b / SECTOR_SIZE) && mf->get_access_byte_mask().test(b))
++        bytes.set(b);
++  }
++}
++
+ /// Accept a new cache fill response: mark entry ready for processing
+ void mshr_table::mark_ready(new_addr_type block_addr, bool &has_atomic,
+                             const mem_access_sector_mask_t &sectors) {
+@@ -834,6 +863,11 @@ void mshr_table::mark_ready(new_addr_type block_addr, bool &has_atomic,
+     return;
+   }
+ 
++  mem_access_sector_mask_t atomic_sectors;
++  mem_access_byte_mask_t atomic_bytes;
++  atomic_fill_masks(block_addr, sectors, atomic_sectors, atomic_bytes);
++  has_atomic = atomic_sectors.any();
++
+   mshr_entry &entry = a->second;
+   entry.m_ready_sectors |= sectors;
+   entry.m_pending_sectors &= ~sectors;
+@@ -1604,10 +1638,18 @@ void baseline_cache::fill(mem_fetch *mf, unsigned time) {
+     if (!block->is_modified_line()) {
+       m_tag_array->inc_dirty();
+     }
+-    block->set_status(MODIFIED,
+-                      mf->get_access_sector_mask());  // mark line as dirty for
+-                                                      // atomic operation
+-    block->set_byte_mask(mf);
++    if (m_mshrs.descriptor_pool_capacity()) {
++      mem_access_sector_mask_t atomic_sectors;
++      mem_access_byte_mask_t atomic_bytes;
++      m_mshrs.atomic_fill_masks(e->second.m_block_addr,
++          mf->get_access_sector_mask(), atomic_sectors, atomic_bytes);
++      block->set_status(MODIFIED, atomic_sectors);
++      block->set_byte_mask(atomic_bytes);
++    } else {
++      // Preserve the historical non-sector-descriptor behavior.
++      block->set_status(MODIFIED, mf->get_access_sector_mask());
++      block->set_byte_mask(mf);
++    }
+   }
+   m_tag_array->l2_char_tracking_refresh_line(e->second.m_cache_index);
+   m_extra_mf_fields.erase(mf);
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index ea4eb514..62aeee77 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -1025,6 +1025,15 @@ class tag_array {
+                                    unsigned &idx, bool &wb,
+                                    evicted_block_info &evicted, mem_fetch *mf);
+ 
++  // Alias the existing serialized FT transaction, not a second reservation.
++  // All preview/native probes see its victim; fills use their own request.
++  void bind_ft_replacement(mem_fetch *const *request, const unsigned *index) {
++    assert(!m_ft_request && request && index);
++    m_ft_request = request; m_ft_index = index;
++  }
++  unsigned long long ft_identity_redirects() const { return m_ft_identity_redirects; }
++  unsigned ft_last_raw_candidate() const { return m_ft_last_raw_candidate; }
++
+   void fill(new_addr_type addr, unsigned time, mem_fetch *mf, bool is_write);
+   void fill(unsigned idx, unsigned time, mem_fetch *mf);
+   void fill(new_addr_type addr, unsigned time, mem_access_sector_mask_t mask,
+@@ -1084,6 +1093,11 @@ class tag_array {
+   cache_config &m_config;
+ 
+   cache_block_t **m_lines; /* nbanks x nset x assoc lines in total */
++  mem_fetch *const *m_ft_request;
++  const unsigned *m_ft_index;
++  mutable unsigned long long m_ft_identity_redirects;
++  mutable unsigned m_ft_last_raw_candidate;
++
+ 
+   unsigned m_access;
+   unsigned m_miss;
+@@ -1157,6 +1171,12 @@ class mshr_table {
+   /// Accept a new cache fill response: mark entry ready for processing
+   void mark_ready(new_addr_type block_addr, bool &has_atomic,
+                   const mem_access_sector_mask_t &sectors);
++  // D512 uses one line key for independent sector returns. Only live atomic
++  // requesters intersecting THIS fill may contribute dirty sectors/bytes.
++  void atomic_fill_masks(new_addr_type block_addr,
++                        const mem_access_sector_mask_t &returned,
++                        mem_access_sector_mask_t &sectors,
++                        mem_access_byte_mask_t &bytes) const;
+   void mark_ready(new_addr_type block_addr, bool &has_atomic) {
+     mem_access_sector_mask_t all_sectors;
+     all_sectors.set();
+@@ -2597,6 +2617,7 @@ class l2_cache : public data_cache {
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
+     m_ft_last_wb_versions.fill(0);
++    if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);
+   }
+ 
+   virtual ~l2_cache() {}
+@@ -2702,6 +2723,25 @@ class l2_cache : public data_cache {
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
++  // Read-only production transaction observations for cross-cycle regressions.
++  unsigned ft_pending_index_for_test() const { assert(m_ft_pending.request); return m_ft_pending.tag_index; }
++  unsigned long long ft_identity_redirects_for_test() const { return m_tag_array->ft_identity_redirects(); }
++  unsigned ft_last_redirect_from_for_test() const { return m_tag_array->ft_last_raw_candidate(); }
++  new_addr_type ft_native_tag_owner_for_test(unsigned index) const {
++    return m_tag_array->get_block(index)->m_block_addr;
++  }
++  unsigned ft_pending_phase_for_test() const { assert(m_ft_pending.request); return m_ft_pending.phase; }
++  cache_request_status ft_raw_probe_for_test(mem_fetch *mf, unsigned &index) const {
++    return m_tag_array->probe(m_config.block_addr(mf->get_addr()), index,
++        mf->get_access_sector_mask(), mf->is_write(), true);
++  }
++  unsigned ft_reserved_ways_for_test(new_addr_type addr) const {
++    unsigned n = 0, first = m_config.set_index(addr) * m_config.get_assoc();
++    for (unsigned i = first; i < first + m_config.get_assoc(); ++i)
++      n += m_tag_array->get_block(i)->is_reserved_line();
++    return n;
++  }
++
+   bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
+       m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used()); }
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+diff --git a/tests/ep_l2/test_common_delta_r16.cc b/tests/ep_l2/test_common_delta_r16.cc
+new file mode 100644
+index 00000000..e297c520
+--- /dev/null
++++ b/tests/ep_l2/test_common_delta_r16.cc
+@@ -0,0 +1,196 @@
++// Real production l2_cache/MSHR/Tag calls; lower returns are deliberately
++// scheduled by the fixture. No extracted/reimplemented cache algorithm.
++#include <cassert>
++#include <cstdio>
++#include <deque>
++#include <map>
++#include <set>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/option_parser.h"
++
++static void require(bool ok,const char *reason) {
++  if(!ok){fprintf(stderr,"COMMON_DELTA_FAIL|%s\n",reason);exit(42);}
++}
++static unsigned callbacks=0;
++static void atomic_callback(const inst_t *,ptx_thread_info *) {++callbacks;}
++struct delta_port:mem_fetch_interface {
++  bool blocked=true;std::deque<mem_fetch*> packets;
++  bool full(unsigned,bool)const override{return blocked;}
++  void push(mem_fetch *mf)override{packets.push_back(mf);}
++};
++struct inspected_cache:l2_cache {
++  using l2_cache::l2_cache;
++  cache_block_t *block(unsigned index=0){return m_tag_array->get_block(index);}
++};
++struct delta_fixture {
++  gpgpu_context ctx;gpgpu_sim_config cfg;exec_gpgpu_sim *gpu;
++  partition_mf_allocator *alloc;inspected_cache *cache;delta_port port;
++  unsigned now=1,mode;std::set<unsigned> responses;
++  delta_fixture(const char *base,const char *overlay,unsigned ft=2,unsigned sets=1,unsigned ways=1)
++      :cfg(&ctx),mode(ft) {
++    auto p=option_parser_create();ctx.ptx_reg_options(p);
++    ctx.func_sim->ptx_opcocde_latency_options(p);icnt_reg_options(p);cfg.reg_options(p);
++    option_parser_cfgfile(p,base);option_parser_cfgfile(p,overlay);
++    const auto ms=std::to_string(ft);
++    const char *args[]={"common-delta","-gpgpu_ep_l2_ft_mode",ms.c_str(),
++      "-gpgpu_ep_l2_wbuf_entries",ft?"16":"0","-gpgpu_ep_l2_payload_mode",ft?"2":"0"};
++    option_parser_cmdline(p,7,args);
++    const auto geometry="S:"+std::to_string(sets)+":128:"+std::to_string(ways)+",L:B:m:L:L,A:128:1,256:0,32";
++    const char *geo[]={"common-delta","-gpgpu_cache:dl2",geometry.c_str()};
++    option_parser_cmdline(p,3,geo);cfg.init();option_parser_destroy(p);
++    gpu=new exec_gpgpu_sim(cfg,&ctx);gpu->gpu_sim_cycle=now;
++    const auto memory=gpu->getMemoryConfig();alloc=new partition_mf_allocator(memory);
++    cache=new inspected_cache("COMMON_DELTA",const_cast<memory_config*>(memory)->m_L2_config,
++      0,0,&port,alloc,IN_PARTITION_L2_MISS_QUEUE,gpu,L2_GPU_CACHE);
++  }
++  ~delta_fixture(){delete cache;delete alloc;delete gpu;}
++  mem_fetch *make(new_addr_type address,bool atomic=false,bool write=false) {
++    active_mask_t active;active.set(0);mem_access_sector_mask_t sectors;sectors.set((address>>5)&3);
++    mem_access_byte_mask_t bytes;unsigned first=address&127;
++    // Atomic touches four bytes, ordinary reads/writes complete a sector.
++    for(unsigned n=0;n<(atomic?4u:32u);++n)bytes.set(first+n);
++    if(atomic){
++      warp_inst_t inst(gpu->getShaderCoreConfig());inst.initiation_interval=1;
++      inst.space=memory_space_t(global_space);inst.issue(active,0,now,0,0,0);
++      // An opaque non-null cookie is never dereferenced by this callback.
++      inst.add_callback(0,atomic_callback,nullptr,reinterpret_cast<ptx_thread_info*>(&callbacks),true);
++      mem_access_t access(GLOBAL_ACC_R,address,32,false,active,bytes,sectors,&ctx);
++      auto mf=new mem_fetch(access,&inst,0,8,0,0,0,gpu->getMemoryConfig(),now);
++      assert(mf->isatomic());return mf;
++    }
++    return alloc->alloc(address,write?GLOBAL_ACC_W:GLOBAL_ACC_R,active,bytes,sectors,32,write,now,0,0,0,nullptr,0);
++  }
++  void tick(){cache->cycle();gpu->gpu_sim_cycle=++now;}
++  bool access(mem_fetch *mf,unsigned limit=100){
++    for(unsigned n=0;n<limit;++n){std::list<cache_event> events;
++      auto status=cache->access(mf->get_addr(),mf,now,events);tick();
++      if(status!=RESERVATION_FAIL)return true;
++    }return false;
++  }
++  std::map<unsigned,mem_fetch*> lower(unsigned count){
++    port.blocked=false;std::map<unsigned,mem_fetch*> result;
++    for(unsigned n=0;n<1000 && result.size()<count;++n){tick();
++      while(!port.packets.empty()){
++        auto mf=port.packets.front();port.packets.pop_front();
++        require(mf->get_access_type()!=L2_WRBK_ACC,"unexpected WB during lower collection");
++        result[(mf->get_addr()>>5)&3]=mf;
++      }
++    }require(result.size()==count,"lower issue count");return result;
++  }
++  void fill(mem_fetch *mf,const std::array<unsigned long long,4>&versions){
++    mf->set_ft_wb_data(versions);
++    while(cache->ep_l2_payload_fill_request(mf,now)!=ep_l2_payload_store::GRANTED)tick();
++    cache->fill(mf,now);tick();
++  }
++  void respond(unsigned count){
++    for(unsigned n=0;n<count;++n){
++      require(cache->access_ready(),"missing production descriptor response");
++      while(!cache->ft_response_ready(now))tick();
++      auto mf=cache->peek_next_access();
++      require(responses.insert(mf->get_request_uid()).second,"duplicate response UID");
++      cache->commit_next_access();
++      // Cache does not execute the ALU callback. Like subpartition::pop(),
++      // the simulated consumer executes it after real response retirement.
++      if(mf->isatomic())mf->do_atomic();tick();
++    }
++  }
++  void wb(unsigned expected_mask,const mem_access_byte_mask_t&bytes,
++          const std::array<unsigned long long,4>&versions){
++    auto w=make(128,false,true);require(access(w),"eviction request accepted");delete w;
++    port.blocked=false;bool seen=false;
++    for(unsigned n=0;n<1000 && !seen;++n){tick();
++      if(port.packets.empty())continue;
++      auto mf=port.packets.front();port.packets.pop_front();
++      require(mf->get_access_type()==L2_WRBK_ACC,"expected actual WB packet");
++      printf("WB|sector_mask=%lu|dirty_bytes=%zu|versions=%llu,%llu,%llu,%llu\n",
++        mf->get_access_sector_mask().to_ulong(),mf->get_access_byte_mask().count(),
++        mf->get_ft_wb_data()[0],mf->get_ft_wb_data()[1],mf->get_ft_wb_data()[2],mf->get_ft_wb_data()[3]);
++      require(mf->get_access_sector_mask().to_ulong()==expected_mask,"WB sector mask contaminated");
++      require(mf->get_access_byte_mask()==bytes,"WB byte mask contaminated");
++      require(mf->has_ft_wb_data(),"WB lacks independent symbolic backing");
++      // Only the packet's dirty sectors carry a WB obligation. Unrequested
++      // sectors may have no resident backing and are not full-line data.
++      for(unsigned s=0;s<4;++s)if(expected_mask&(1u<<s))
++        require(mf->get_ft_wb_data()[s]==versions[s],"WB stale symbolic atomic version");
++      require(cache->ep_l2_wad_contains(0),"WAD survives lower accept");
++      cache->ep_l2_wad_complete(0,now);delete mf;seen=true;
++    }
++    require(seen&&cache->ft_drained()&&!cache->mshr_entries_used()&&!cache->ep_l2_wad_occupancy(),"WB/MSHR/pin drain");
++  }
++};
++
++static void mixed(const char *base,const char *overlay,bool ordinary_first,bool retire_atomic_early,unsigned mode,bool check_versions,bool prior_dirty=false){
++  delta_fixture f(base,overlay,mode);callbacks=0;
++  mem_access_byte_mask_t prior_bytes;unsigned long long prior_version=400;
++  if(prior_dirty){auto w=f.make(96,false,true);require(f.access(w),"prior dirty sector write");
++    prior_bytes=w->get_access_byte_mask();prior_version=(unsigned long long)w->get_request_uid()+1;delete w;}
++  auto atomic=f.make(0,true),read=f.make(32);
++  require(f.access(atomic)&&f.access(read),"same-line atomic/read production admission");
++  auto packets=f.lower(2);std::array<unsigned long long,4> memory{{100,200,300,prior_version}};
++  const unsigned first=ordinary_first?1:0,second=1-first;
++  f.fill(packets.at(first),memory);
++  auto dirty=f.cache->block()->get_dirty_sector_mask().to_ulong();
++  printf("FILL1|order=%s|dirty=%lu|callbacks=%u\n",ordinary_first?"read-first":"atomic-first",dirty,callbacks);
++  require(dirty==((prior_dirty?8u:0u)|(ordinary_first?0u:1u)),"ordinary sector incorrectly marked atomic dirty");
++  require(callbacks==0,"fill must not execute atomic ALU callback");
++  if(retire_atomic_early){f.respond(1);require(callbacks==1,"atomic callback at consumer exactly once");}
++  f.fill(packets.at(second),memory);
++  dirty=f.cache->block()->get_dirty_sector_mask().to_ulong();
++  printf("FILL2|dirty=%lu|dirty_bytes=%zu\n",dirty,f.cache->block()->get_dirty_byte_mask().count());
++  require(dirty==(prior_dirty?9u:1u),"late ordinary fill contaminated dirty sectors");
++  require(f.cache->block()->get_dirty_byte_mask()==(atomic->get_access_byte_mask()|prior_bytes),"dirty bytes must come from atomic requester");
++  f.respond(retire_atomic_early?1:2);require(callbacks==1,"one callback for one atomic response");
++  if(mode){
++    const auto h=f.cache->ep_l2_tag_payload_handle_for_test(0);
++    const auto got=f.cache->ep_l2_payload_for_test().inspect(h).versions;
++    printf("VERSION|atomic_uid=%u|got=%llu|expected=%llu|ordinary=%llu\n",atomic->get_request_uid(),got[0],(unsigned long long)atomic->get_request_uid()+1,got[1]);
++    if(check_versions)require(got[0]==(unsigned long long)atomic->get_request_uid()+1 && got[1]==200,"atomic miss missing symbolic completion version");
++    auto expected=memory;expected[0]=(unsigned long long)atomic->get_request_uid()+1;
++    f.wb(prior_dirty?9:1,atomic->get_access_byte_mask()|prior_bytes,check_versions?expected:got);
++  }
++  require(!f.cache->mshr_entries_used()&&!f.cache->access_ready(),"all descriptors retired");
++  delete atomic;delete read;
++  puts("PASS B1 real MSHR/Tag mixed sector fill/response/WB");
++}
++static void version_only(const char *base,const char *overlay){
++  delta_fixture f(base,overlay,2);callbacks=0;auto a=f.make(0,true);
++  require(f.access(a),"single atomic miss admission");auto packets=f.lower(1);
++  std::array<unsigned long long,4> memory{{100,0,0,0}};f.fill(packets.at(0),memory);f.respond(1);
++  const auto h=f.cache->ep_l2_tag_payload_handle_for_test(0);
++  const auto got=f.cache->ep_l2_payload_for_test().inspect(h).versions;
++  printf("VERSION_ONLY|got=%llu|expected=%llu|callbacks=%u\n",got[0],(unsigned long long)a->get_request_uid()+1,callbacks);
++  require(got[0]==(unsigned long long)a->get_request_uid()+1,"atomic miss missing symbolic completion version");
++  require(callbacks==1,"atomic callback belongs to response consumer");
++  memory[0]=(unsigned long long)a->get_request_uid()+1;f.wb(1,a->get_access_byte_mask(),memory);
++  delete a;puts("PASS B1 atomic miss completion version and later WB");
++}
++static void multi(const char *base,const char *overlay){
++  // FT deliberately serializes atomics on a pinned native line; descriptor
++  // mode without FT allows multiple atomic waiters and must also be correct.
++  delta_fixture f(base,overlay,0);callbacks=0;
++  auto a=f.make(0,true),b=f.make(64,true),r=f.make(32);
++  require(f.access(a)&&f.access(b)&&f.access(r),"multiatomic native admission");
++  auto packets=f.lower(3);std::array<unsigned long long,4> memory{{10,20,30,40}};
++  f.fill(packets.at(2),memory);f.respond(1);require(callbacks==1,"first atomic retired");
++  f.fill(packets.at(1),memory);
++  require(f.cache->block()->get_dirty_sector_mask().to_ulong()==4,"ordinary late sector after retired atomic must remain clean");
++  f.fill(packets.at(0),memory);f.respond(2);
++  require(callbacks==2,"two atomic consumers exactly once");
++  require(f.cache->block()->get_dirty_sector_mask().to_ulong()==5,"two atomic dirty sectors only");
++  require(f.cache->block()->get_dirty_byte_mask()==(a->get_access_byte_mask()|b->get_access_byte_mask()),"multiple atomic byte masks");
++  require(!f.cache->mshr_entries_used(),"multiatomic descriptor drain");
++  delete a;delete b;delete r;puts("PASS B1 real native multiatomic late ordinary sector");
++}
++int main(int argc,char **argv){
++  setvbuf(stdout,nullptr,_IOLBF,0);assert(argc==4);std::string test=argv[3];
++  if(test=="b1-read-first")mixed(argv[1],argv[2],true,false,2,true);
++  else if(test=="b1-atomic-first")mixed(argv[1],argv[2],false,true,2,true);
++  else if(test=="b1-multi")multi(argv[1],argv[2]);
++  else if(test=="b1-b16")mixed(argv[1],argv[2],true,false,1,true);
++  else if(test=="b1-dirty")mixed(argv[1],argv[2],true,false,2,true,true);
++  else if(test=="b1-version-only")version_only(argv[1],argv[2]);
++  else return 78;
++}
+diff --git a/tests/ep_l2/test_ft_a1.cc b/tests/ep_l2/test_ft_a1.cc
+new file mode 100644
+index 00000000..8bcabc27
+--- /dev/null
++++ b/tests/ep_l2/test_ft_a1.cc
+@@ -0,0 +1,180 @@
++// Real production memory_sub_partition/cache/tag paths. The external lower-memory
++// fixture controls response order/latency through the real lower and Return FIFOs;
++// it never mutates Tags, payloads, pending transactions or the bank arbiter.
++#include <cassert>
++#include <cstdio>
++#include <map>
++#include <set>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/gpgpu-sim/mem_latency_stat.h"
++#include "../../src/option_parser.h"
++
++using versions = std::array<unsigned long long,4>;
++struct fixture {
++  gpgpu_context ctx;
++  gpgpu_sim_config cfg;
++  exec_gpgpu_sim *gpu;
++  memory_stats_t *stats;
++  memory_partition_unit *part;
++  memory_sub_partition *sp;
++  partition_mf_allocator *alloc;
++  l2_cache *cache;
++  std::map<new_addr_type,mem_fetch *> reads;
++  std::map<new_addr_type,versions> memory;
++  std::map<unsigned,versions> expected;
++  std::set<unsigned> replies;
++  std::vector<mem_fetch *> wb;
++  bool block_lower = false;
++  unsigned lower_wb = 0, completed_wb = 0;
++  unsigned long long bank_max = 0;
++  fixture(char **argv):cfg(&ctx) {
++    option_parser_t p=option_parser_create();
++    ctx.ptx_reg_options(p);ctx.func_sim->ptx_opcocde_latency_options(p);icnt_reg_options(p);cfg.reg_options(p);
++    option_parser_cfgfile(p,argv[1]);option_parser_cfgfile(p,argv[2]);
++    const char *args[]={"a1","-gpgpu_ep_l2_ft_mode",argv[3],"-gpgpu_ep_l2_wbuf_entries",argv[4],
++      "-gpgpu_cache:dl2","S:64:128:16,L:B:m:L:L,A:128:1,256:0,32",
++      "-gpgpu_dram_partition_queues","512:2:64:64"};
++    option_parser_cmdline(p,9,args);cfg.init();option_parser_destroy(p);
++    gpu=new exec_gpgpu_sim(cfg,&ctx);gpu->gpu_sim_cycle=1;
++    auto mc=gpu->getMemoryConfig();
++    assert(mc->m_L2_config.get_num_lines()==1024 && mc->m_L2_config.get_assoc()==16);
++    stats=new memory_stats_t(cfg.num_shader(),gpu->getShaderCoreConfig(),mc,gpu);
++    part=new memory_partition_unit(0,mc,stats,gpu);sp=part->get_sub_partition(0);
++    cache=sp->ft_cache_for_test();alloc=new partition_mf_allocator(mc);
++  }
++  ~fixture(){delete alloc;delete part;delete stats;delete gpu;}
++  mem_fetch *make(new_addr_type addr,bool write) {
++    active_mask_t active;active.set(0);mem_access_byte_mask_t bytes;
++    unsigned sec=(addr>>5)&3;for(unsigned i=32*sec;i<32*(sec+1);++i)bytes.set(i);
++    mem_access_sector_mask_t sectors;sectors.set(sec);
++    auto mf=alloc->alloc(addr,write?GLOBAL_ACC_W:GLOBAL_ACC_R,active,bytes,sectors,32,
++        write,gpu->gpu_sim_cycle,0,0,0,NULL,0);
++    versions v={{0,0,0,0}};
++    if(write) v[sec]=(unsigned long long)mf->get_request_uid()+1;
++    else {
++      auto line=addr&~127ull;
++      if(!memory.count(line)) memory[line]={{line+11,line+22,line+33,line+44}};
++      v[sec]=memory[line][sec];
++    }
++    expected[mf->get_request_uid()]=v;
++    return mf;
++  }
++  void step() {
++    unsigned long long before[4];for(unsigned b=0;b<4;++b)before[b]=cache->ep_l2_payload_bank_grants(b);
++    part->cache_cycle(gpu->gpu_sim_cycle);
++    for(unsigned b=0;b<4;++b) {
++      auto n=cache->ep_l2_payload_bank_grants(b)-before[b];assert(n<=1);bank_max=std::max(bank_max,n);
++    }
++    while(auto r=sp->pop()) {
++      assert(expected.count(r->get_request_uid()) && replies.insert(r->get_request_uid()).second);
++      if(!r->get_is_write()) {
++        assert(r->has_ft_wb_data());unsigned sec=(r->get_addr()>>5)&3;
++        assert(r->get_ft_wb_data()[sec]==expected.at(r->get_request_uid())[sec]);
++      }
++      delete r;
++    }
++    if(!block_lower) drain_lower();
++    ++gpu->gpu_sim_cycle;
++  }
++  void drain_lower() {
++    while(!sp->L2_dram_queue_empty()) {
++      auto r=sp->L2_dram_queue_top();sp->L2_dram_queue_pop();
++      if(r->get_access_type()==L2_WRBK_ACC) {
++        assert(r->has_ft_wb_data() && r->get_ft_wb_data()==memory.at(r->get_addr()));
++        assert(cache->ep_l2_wad_contains(r->get_addr()));
++        ++lower_wb;wb.push_back(r);
++      } else assert(reads.insert({r->get_addr(),r}).second);
++    }
++  }
++  void send(mem_fetch *r) {assert(!sp->full());sp->push(r,gpu->gpu_sim_cycle);}
++  void return_read(new_addr_type addr) {
++    auto it=reads.find(addr);assert(it!=reads.end());auto r=it->second;reads.erase(it);
++    assert(!sp->dram_L2_queue_full());r->set_ft_wb_data(memory.at(addr&~127ull));r->set_reply();
++    sp->dram_L2_queue_push(r);
++  }
++  void until_frontend_empty() {
++    for(unsigned i=0;i<1000;++i) {step();if(!sp->ep_l2_icntl2_occupancy()) {step();return;}}
++    assert(false);
++  }
++};
++
++int main(int argc,char **argv) {
++  assert(argc==5);setvbuf(stdout,NULL,_IOLBF,0);fixture f(argv);
++  unsigned mode=std::stoul(argv[3]),c=std::stoul(argv[4]);
++  const new_addr_type stride=64*128, victim=13*stride, incoming=16*stride, other=128;
++  // Invalid-way selection is descending: read0->way15, dirty13->way2;
++  // all other fifteen ways retain real lower read sectors RESERVED.
++  for(unsigned i=0;i<16;++i) {
++    auto r=f.make(i*stride,i==13);
++    if(i==13) f.memory[victim]=f.expected.at(r->get_request_uid());
++    f.send(r);f.until_frontend_empty();
++  }
++  assert(f.cache->ft_reserved_ways_for_test(0)==15 && f.reads.size()==15);
++  auto sector_write=f.make(victim+64,true);
++  f.memory[victim][2]=(unsigned long long)sector_write->get_request_uid()+1;
++  f.send(sector_write);f.until_frontend_empty();
++  auto held=f.cache->ep_l2_tag_payload_handle_for_test(2);
++  assert(f.cache->ep_l2_payload_for_test().inspect(held).versions==f.memory.at(victim));
++  // For U_WB, a real ready response from another set (also bank2) consumes
++  // the port before frontend admission, creating its cross-cycle retry.
++  if(mode==2) {
++    for(new_addr_type a:{other,other+stride}) {
++      auto r=f.make(a,false);f.send(r);f.until_frontend_empty();
++    }
++  }
++  // Fill the actual two-entry lower FIFO with reads from other sets. Its
++  // backpressure must retain the WB payload until a real lower accept.
++  f.block_lower=true;
++  for(new_addr_type addr:{256ull,384ull}) {
++    auto r=f.make(addr,false);f.send(r);f.until_frontend_empty();
++  }
++  assert(f.sp->ep_l2_l2dram_occupancy()==2);
++  auto request=f.make(incoming,true);unsigned request_uid=request->get_request_uid();
++  unsigned first=(unsigned)-1;assert(f.cache->ft_raw_probe_for_test(request,first)==MISS && first==2);
++  f.send(request);
++  if(mode==2) { f.return_read(other+stride);f.step();assert(f.cache->access_ready()); }
++  // push has a one-cycle ROP-to-frontend boundary. For U ensure the ready
++  // response is consumed on the actual admission cycle by pre-queueing request.
++  for(unsigned n=0;n<8 && !f.cache->ft_reservation_active();++n) f.step();
++  assert(f.cache->ft_reservation_active() && f.cache->ft_pending_index_for_test()==2);
++  assert(mode==2 || f.cache->ft_pending_phase_for_test()==1);
++  assert(f.cache->ep_l2_wad_contains(victim));
++  printf("A1 armed mode=%u C=%u native16way=1 reserved=15 pending=2 phase=%u victim_id=%u generation=%u\n",
++      mode,c,f.cache->ft_pending_phase_for_test(),held.payload_id,held.generation);
++  // This real old read enters the native ReturnQ after phase0/denial and
++  // before the next frontend retry. Production fill precedes frontend probe.
++  f.return_read(0);
++  f.step(); // Old source must fail its pending.tag_index==reprobe.index assert.
++  assert(f.cache->ft_identity_redirects_for_test()>0 && f.cache->ft_last_redirect_from_for_test()==15);
++  printf("A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=%llu\n",
++      f.cache->ft_identity_redirects_for_test());
++  // Remaining fills and real lower FIFO accept; deliberately hold set_done
++  // until staging is gone, proving WAD's distinct lower lifetime.
++  for(unsigned n=0;n<1000 && !f.replies.count(request_uid);++n) f.step();
++  assert(f.replies.count(request_uid));
++  auto landed=f.cache->ep_l2_tag_payload_handle_for_test(2);
++  const auto &new_line=f.cache->ep_l2_payload_for_test().inspect(landed);
++  assert(f.cache->ft_native_tag_owner_for_test(2)==incoming && f.cache->ft_native_tag_owner_for_test(15)==0);
++  assert(new_line.owner==incoming && new_line.versions[0]==(unsigned long long)request_uid+1);
++  auto competed=f.cache->ep_l2_tag_payload_handle_for_test(15);
++  assert(f.cache->ep_l2_payload_for_test().inspect(competed).owner==0);
++
++  for(unsigned n=0;n<4;++n)f.step();
++  assert(f.lower_wb==0 && f.cache->ft_wb_staged()==1 && f.cache->ep_l2_wad_contains(victim));
++  f.block_lower=false;f.drain_lower();
++  std::vector<new_addr_type> remaining;for(auto &entry:f.reads)remaining.push_back(entry.first);
++  for(auto addr:remaining){f.return_read(addr);f.step();}
++  for(unsigned n=0;n<1000 && (f.cache->ft_wb_staged() || !f.cache->miss_queue_empty() || !f.sp->L2_dram_queue_empty());++n)f.step();
++  assert(f.lower_wb==1 && f.cache->ft_wb_staged()==0 && f.cache->ep_l2_wad_contains(victim));
++  for(auto w:f.wb){f.sp->set_done(w);delete w;++f.completed_wb;}f.wb.clear();
++  for(unsigned n=0;n<1000 && f.part->busy();++n)f.step();
++  assert(f.completed_wb==1 && f.replies.size()==f.expected.size());
++  assert(f.sp->l2_char_no_resource_leak() && f.cache->ft_drained() && !f.part->busy());
++  assert(f.cache->ep_l2_payload_pending_operations()==0 && !f.cache->ep_l2_wad_occupancy());
++  assert(f.bank_max==1 && f.cache->ep_l2_payload_for_test().physical_slots()==1152+c);
++  f.cache->ft_print(stdout,0);
++  printf("A1 production 16way cross-cycle fill/exact-once/versions/lower-accept/set_done/bank/drain mode=%u C=%u PASS\n",mode,c);
++}

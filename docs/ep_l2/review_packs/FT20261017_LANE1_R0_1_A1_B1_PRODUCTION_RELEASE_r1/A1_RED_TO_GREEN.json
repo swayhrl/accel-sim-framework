@@ -1,0 +1,94 @@
+{
+  "old_runtime_source": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+  "old_test_source": "91bf7b29a90232abe551f011014d791177b50e60",
+  "old_binary_sha256": "88b1b983d2eec65069adf92975ac6118c05f3403476aee00caeecaf89d95df12",
+  "old_failures": [
+    {
+      "mode": 1,
+      "wbuf": 8,
+      "status": "REPRODUCED_OLD_NATIVE_ASSERT_SIGABRT",
+      "log_sha256": "03afcb32ce663231f2703540acd6020ed9ffe1387c487a5698df0fcf36acf3d1"
+    },
+    {
+      "mode": 1,
+      "wbuf": 16,
+      "status": "REPRODUCED_OLD_NATIVE_ASSERT_SIGABRT",
+      "log_sha256": "6544295cf3c40f750bc49b1e327b5711c8c273154ca5e130e67add91d5e74e42"
+    },
+    {
+      "mode": 2,
+      "wbuf": 8,
+      "status": "REPRODUCED_OLD_NATIVE_ASSERT_SIGABRT",
+      "log_sha256": "444de528a68c94f85617fe5eca99dcb02a8e14ff862d379fecd55c01b6556488"
+    },
+    {
+      "mode": 2,
+      "wbuf": 16,
+      "status": "REPRODUCED_OLD_NATIVE_ASSERT_SIGABRT",
+      "log_sha256": "c828952b065979eae7e6e4413e779c40192c1bde19c84fe5ca3dbbc3ca2b188d"
+    }
+  ],
+  "old_evidence_publication": "3f9fe6f9f",
+  "old_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_A1_REAL_RED_r1",
+  "new_producing_source": {
+    "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+    "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "source_worktrees": {
+      "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1",
+      "framework": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1",
+      "vendor": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/extern/pybind11"
+    },
+    "build": "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1",
+    "driver_sha256": "95816c1ab1ea70873d845eeb7c252a4b49109cea29045ff80309a220fc84bc1e",
+    "framework_build_stamp": "const char *g_accelsim_version=\"accelsim-commit-9bd17f9db_modified_0.0_26-10-17-11-41-57\";",
+    "baseline_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+    "baseline_framework": "861a06b91e309832161eab0836b512853c833ffb",
+    "A1_fix_commit": "eabe59a8c3963a82920ef4c1572b13070c536d4a",
+    "A1_final_observers_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "B1_producer_commit": "3037ce12a9ea8a75a39f5fa18f32c047febcebba",
+    "B1_consumed_cherry_pick": "a1531ca47463f87eb17cb8e017456c0a6395ec8c",
+    "B1_framework_handoff": "292d927493739c9b2421e16bcea0509cae4e9c14",
+    "B1_fixture_source": "00edf6b9295fc3e4558654dec7ab6281dcb69d95",
+    "runtime_config_sha256": {
+      "B16_BANKED": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+      "U_WB16": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+      "B8_BANKED": "877598ecd6af81bc3198d1f2fd3c4473505fcf43fbc5d4a1c37e52e929d3a2ef",
+      "U_WB8": "c100db4d17d83c5d76a0de9823bf6fcf7ed0936ae34e80275b46deed489fe504"
+    },
+    "trace_identity": null,
+    "trace_scope": "DIRECTED_ONLY_NO_TRACED_APPLICATION; complete future trace identity belongs to Lane5"
+  },
+  "new_four_cases": [
+    {
+      "case": "a1_1_8",
+      "armed": "A1 armed mode=1 C=8 native16way=1 reserved=15 pending=2 phase=1 victim_id=2 generation=1",
+      "real_boundary": "A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=4",
+      "production_summary": "EPL2FTV1|SUMMARY|slice=0|mode=1|wbuf=8|physical_slots=1160|accepted=20|wb_created=1|wb_completed=1|wb_lower_accept=1|wbuf_full=0|pool_full=0|pin_block=0|bank_block=0|issue_block=0|copy_lines=1|copy_bytes=128|staging_reads=1|staged_max=1|staging_lifetime=6|borrow_resident=0|borrow_bypass=0|rollback=0|version_checks=1|wb_live=0|wb_slots=0|reserved=0|read_refs=0|role_free=1142|role_resident=18|role_bypass=0|ownership_consistent=1|observed_cycles=82|wb_occupancy_sum=5|descriptor_responses=17",
+      "closure": "Native Tag owner2=incoming,owner15=old competing; exact-one UID replies, two victim sector versions, true lower FIFO2 backpressure, old WB lower accept then later actual subpartition set_done, no transient leftovers, each bank grant delta<=1 each physical cycle; assertions in frozen fixture"
+    },
+    {
+      "case": "a1_1_16",
+      "armed": "A1 armed mode=1 C=16 native16way=1 reserved=15 pending=2 phase=1 victim_id=2 generation=1",
+      "real_boundary": "A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=4",
+      "production_summary": "EPL2FTV1|SUMMARY|slice=0|mode=1|wbuf=16|physical_slots=1168|accepted=20|wb_created=1|wb_completed=1|wb_lower_accept=1|wbuf_full=0|pool_full=0|pin_block=0|bank_block=0|issue_block=0|copy_lines=1|copy_bytes=128|staging_reads=1|staged_max=1|staging_lifetime=6|borrow_resident=0|borrow_bypass=0|rollback=0|version_checks=1|wb_live=0|wb_slots=0|reserved=0|read_refs=0|role_free=1150|role_resident=18|role_bypass=0|ownership_consistent=1|observed_cycles=82|wb_occupancy_sum=5|descriptor_responses=17",
+      "closure": "Native Tag owner2=incoming,owner15=old competing; exact-one UID replies, two victim sector versions, true lower FIFO2 backpressure, old WB lower accept then later actual subpartition set_done, no transient leftovers, each bank grant delta<=1 each physical cycle; assertions in frozen fixture"
+    },
+    {
+      "case": "a1_2_8",
+      "armed": "A1 armed mode=2 C=8 native16way=1 reserved=15 pending=2 phase=0 victim_id=14 generation=1",
+      "real_boundary": "A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=4",
+      "production_summary": "EPL2FTV1|SUMMARY|slice=0|mode=2|wbuf=8|physical_slots=1160|accepted=22|wb_created=1|wb_completed=1|wb_lower_accept=1|wbuf_full=0|pool_full=0|pin_block=0|bank_block=1|issue_block=0|copy_lines=0|copy_bytes=0|staging_reads=1|staged_max=1|staging_lifetime=5|borrow_resident=1|borrow_bypass=0|rollback=0|version_checks=1|wb_live=0|wb_slots=0|reserved=0|read_refs=0|role_free=1140|role_resident=20|role_bypass=0|ownership_consistent=1|observed_cycles=90|wb_occupancy_sum=4|descriptor_responses=19",
+      "closure": "Native Tag owner2=incoming,owner15=old competing; exact-one UID replies, two victim sector versions, true lower FIFO2 backpressure, old WB lower accept then later actual subpartition set_done, no transient leftovers, each bank grant delta<=1 each physical cycle; assertions in frozen fixture"
+    },
+    {
+      "case": "a1_2_16",
+      "armed": "A1 armed mode=2 C=16 native16way=1 reserved=15 pending=2 phase=0 victim_id=14 generation=1",
+      "real_boundary": "A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=4",
+      "production_summary": "EPL2FTV1|SUMMARY|slice=0|mode=2|wbuf=16|physical_slots=1168|accepted=22|wb_created=1|wb_completed=1|wb_lower_accept=1|wbuf_full=0|pool_full=0|pin_block=0|bank_block=1|issue_block=0|copy_lines=0|copy_bytes=0|staging_reads=1|staged_max=1|staging_lifetime=5|borrow_resident=1|borrow_bypass=0|rollback=0|version_checks=1|wb_live=0|wb_slots=0|reserved=0|read_refs=0|role_free=1148|role_resident=20|role_bypass=0|ownership_consistent=1|observed_cycles=90|wb_occupancy_sum=4|descriptor_responses=19",
+      "closure": "Native Tag owner2=incoming,owner15=old competing; exact-one UID replies, two victim sector versions, true lower FIFO2 backpressure, old WB lower accept then later actual subpartition set_done, no transient leftovers, each bank grant delta<=1 each physical cycle; assertions in frozen fixture"
+    }
+  ],
+  "old_new_schedule": "IDENTICAL; fixed fixture adds only post-boundary observer assertions",
+  "external_lower_fixture_scope": "Real production cache/tag/memory_sub_partition/FIFO and bank path; controlled external lower-memory response order, not full DRAM or shader execution"
+}
