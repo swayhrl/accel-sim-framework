@@ -64,7 +64,8 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D4_DELIVERED_Q4_STARTED_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_CONVOLUTIONSEPARABLE_PAIR_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_R19_FOLLOWUP_FIXTURE_PREPARATION_REQUEST_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R19_FOLLOWUP_FIXTURE_PREPARATION_REQUEST_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_CONV_DELIVERED_FWT_STARTED_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
@@ -1598,16 +1599,139 @@
     "T0_utc": "2026-10-17T07:09:16Z",
     "accepted_new_applications": 6,
     "active_registry_leases": {},
-    "active_registry_runs": {},
-    "active_run_keys": [],
+    "active_registry_runs": {
+      "7c69083409fffcc7bb1dd5a5004fcc24b6ad33793603ee1b7b1ff4dc87ecb014": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cpu_units": 1,
+        "created_at": "2026-10-17T09:24:09.688467+00:00",
+        "deadline_unix": 1792256956,
+        "experiment_id": "EPL2_DOWNSTREAM_HEADROOM_R19",
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": true,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": true,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "ce75220c2111224d6ea666fc06dc455964895cff82efb8ab34243069c26b7c68",
+          "termination_contract": {
+            "hardware_drained": true,
+            "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+            "normal_exit": true,
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+          "workload": "FWT_7_21"
+        },
+        "lease_id": "08fe903a34f4499ea8d36d82d0916113",
+        "memory_bytes": 8589934592,
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 2030290,
+          "start_ticks": 898102275
+        },
+        "regime": "Q4",
+        "result_directory": "/workspace/results/ep_l2_ft20261016/7c69083409fffcc7bb1dd5a5004fcc24b6ad33793603ee1b7b1ff4dc87ecb014",
+        "run_key": "7c69083409fffcc7bb1dd5a5004fcc24b6ad33793603ee1b7b1ff4dc87ecb014",
+        "scan": false,
+        "status": "RUNNING",
+        "updated_at": "2026-10-17T09:24:11.416325+00:00"
+      },
+      "fa11ab049c8701bb23094d74d7173bd2a40f18309215a519c5f2e3efae2bba10": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cpu_units": 1,
+        "created_at": "2026-10-17T09:24:09.708379+00:00",
+        "deadline_unix": 1792256956,
+        "experiment_id": "EPL2_DOWNSTREAM_HEADROOM_R19",
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": true,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": false,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "1009a9ce3b00873ce75bbd01737630fe051951404d1a37b565e987e0571bff60",
+          "termination_contract": {
+            "hardware_drained": true,
+            "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+            "normal_exit": true,
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+          "workload": "FWT_7_21"
+        },
+        "lease_id": "eafdf1a3036b4c07b4b08de41c559c50",
+        "memory_bytes": 8589934592,
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 2030291,
+          "start_ticks": 898102305
+        },
+        "regime": "Q4",
+        "result_directory": "/workspace/results/ep_l2_ft20261016/fa11ab049c8701bb23094d74d7173bd2a40f18309215a519c5f2e3efae2bba10",
+        "run_key": "fa11ab049c8701bb23094d74d7173bd2a40f18309215a519c5f2e3efae2bba10",
+        "scan": false,
+        "status": "RUNNING",
+        "updated_at": "2026-10-17T09:24:11.711886+00:00"
+      }
+    },
+    "active_run_keys": [
+      "7c69083409fffcc7bb1dd5a5004fcc24b6ad33793603ee1b7b1ff4dc87ecb014",
+      "fa11ab049c8701bb23094d74d7173bd2a40f18309215a519c5f2e3efae2bba10"
+    ],
     "actual_affected_tool_tests": 33,
-    "actual_controllers": [],
+    "actual_controllers": [
+      {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2030276,
+        "start_ticks": 898101936
+      }
+    ],
+    "adaptive_conditions_selected": [],
     "condition_qualification": "D4_AND_Q4_INDEPENDENT_PASS_BOTH_V2_AUTHORIZED",
     "coordination_commit": "28e8fce027046643b909c58469e9c7697522a3df",
     "current_V2_generation": 13,
     "current_resources": {
-      "available_memory_bytes": 172963864576,
-      "disk_free_bytes": 77234122752
+      "available_memory_bytes": 168281124864,
+      "disk_free_bytes": 76238929920
     },
     "deadline_unix": 1792256956,
     "deadline_utc": "2026-10-17T17:09:16Z",
@@ -1615,7 +1739,8 @@
     "duplicate_waiter_or_watcher": false,
     "first_pair_delivery_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D4_FIRST_PAIR_DELIVERY_r1",
     "first_pair_start_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D4_FIRST_PAIR_STARTED_r1",
-    "formal_simulations": 6,
+    "followup_fixture_preparation_request_publication": "f2536c92ba8e2254dbfd62f46f05e4e7fdfd36d1",
+    "formal_simulations": 8,
     "initial_order": [
       "D4/convolutionSeparable",
       "D4/FWT_7_21",
@@ -1627,7 +1752,7 @@
     "lane1_latest_verified_head": "605c7b09d78092b9bcc574a27e66c069f9ccde2a",
     "lane5_compilations": 0,
     "last_dependency_check_utc": "2026-10-17T07:18:09Z",
-    "latest_live_checkpoint_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D4_DELIVERED_Q4_STARTED_r1",
+    "latest_live_checkpoint_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_CONV_DELIVERED_FWT_STARTED_r1",
     "latest_pair_delivery": {
       "H0_accepted_pairs": 5,
       "acceptance_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1",
@@ -1774,14 +1899,14 @@
       "status": "CURRENT_ACCEPTED_PENDING_REMOTE_POINTER_INSTALL",
       "workload": "convolutionSeparable"
     },
-    "latest_pair_publication": "8bd642744bea1d302e59f0e5a205ea2378593646",
-    "latest_pair_remote_readback_log": "/workspace/results/ep_l2_ft20261016/lane5_r19_campaign_r1/D4_FWT_7_21_REMOTE_DELIVERY_r1.log",
+    "latest_pair_publication": "05de8019d026c1d3c795487726dffca508358dfb",
+    "latest_pair_remote_readback_log": "/workspace/results/ep_l2_ft20261016/lane5_r19_campaign_r1/Q4_convolutionSeparable_REMOTE_DELIVERY_r1.log",
     "latest_verified_preparation_publication": "be24b7eeafd6b717a85999f14773d0c1bc6e4c5e",
     "new_complete_valid_applications": 6,
     "new_full_application_cap": 24,
-    "new_full_application_started": 6,
+    "new_full_application_started": 8,
     "new_independently_reviewed_pairs": 3,
-    "next_action": "Push/readback current V2 generation13 and immediate Q4Conv Lane6 delivery, then prepared Q4FWT B/U; initial8 evidence checkpoint follows",
+    "next_action": "Q4FWT terminal independentreview/currentV2 delivery then complete initial8 S/J pressure/residency checkpoint BEFORE at-most2 adaptive conditions",
     "next_dependency_check_no_earlier_than_utc": "2026-10-17T07:28:09Z",
     "original_H0_geomean": 1.0016002037656606,
     "original_H0_pairs": 5,
@@ -1795,11 +1920,11 @@
     "r19_accepted_pairs": 3,
     "runtime_config_dump_guard_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_RUNTIME_CONFIG_GUARD_r1",
     "schema_version": "EPL2_LANE5_R19_CONTINUE_V1",
-    "share_free_bytes": 45028237312,
+    "share_free_bytes": 44862210048,
     "shared_registry": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
-    "status": "ACTIVE_Q4_CONV_INDEPENDENT_PASS_NEXT_V2_STAGED",
+    "status": "Q4_CONV_CURRENT_ACCEPTED_Q4_FWT_ACTUALLY_RUNNING",
     "tool_preparation_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_TOOL_PREPARATION_r1",
-    "updated_at": "2026-10-17T09:23:35.969340+00:00",
+    "updated_at": "2026-10-17T09:24:51.555640+00:00",
     "verified_tool_publication": "0418e9ceedf51bf70e8581486d092b62d3f6ec6b"
   },
   "resource_recovery": {
@@ -1834,10 +1959,10 @@
   "static_candidate_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
   "static_candidate_core_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
   "static_candidate_framework": "861a06b91e309832161eab0836b512853c833ffb",
-  "status": "ACTIVE_Q4_CONV_INDEPENDENT_PASS_NEXT_V2_STAGED",
+  "status": "Q4_CONV_CURRENT_ACCEPTED_Q4_FWT_ACTUALLY_RUNNING",
   "task_id": "FT20261017_LANE5_CONTINUE_R13_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-17T08:49:34.500431+00:00",
+  "updated_at": "2026-10-17T09:24:51.555640+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
