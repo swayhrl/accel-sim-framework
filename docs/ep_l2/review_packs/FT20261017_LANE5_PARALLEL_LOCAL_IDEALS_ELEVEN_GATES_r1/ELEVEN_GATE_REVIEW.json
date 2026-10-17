@@ -1,0 +1,169 @@
+{
+  "actual_constructor_profiles": 6,
+  "actual_invalid_modes": 8,
+  "gates": {
+    "bank_service": {
+      "actual_evidence": [
+        "physical_clock_1_16_0",
+        "physical_clock_1_16_4096",
+        "warm_clock_1_16",
+        "physical_clock_2_16_0",
+        "physical_clock_2_16_4096",
+        "warm_clock_2_16",
+        "ideal_wb",
+        "ideal_read_hit"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "finite_wbuf": {
+      "actual_evidence": [
+        "partition_1_16",
+        "partition_2_16",
+        "ft_directed",
+        "ideal_wb"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "memcpy_payload_identity": {
+      "actual_evidence": [
+        "host_prefill_1_16",
+        "host_prefill_2_16",
+        "ideal_host_prefill_reference",
+        "ideal_host_prefill_partition"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "mode_legality": {
+      "actual_evidence": [
+        "local_mode_guards_r1/RECEIPT.json",
+        "local_effective_replay_r1/RECEIPT.json"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "old_all_off_equivalence": {
+      "actual_evidence": [
+        "NATIVE_OFF_RESULT.json"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "physical_bank_clock": {
+      "actual_evidence": [
+        "physical_clock_1_16_0",
+        "physical_clock_1_16_4096",
+        "warm_clock_1_16",
+        "physical_clock_2_16_0",
+        "physical_clock_2_16_4096",
+        "warm_clock_2_16"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "requester_exact_once": {
+      "actual_evidence": [
+        "ft_directed",
+        "a1_1_16",
+        "a1_2_16",
+        "ideal_meta_integrated",
+        "ideal_meta_integrated_B16"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "resource_closure": {
+      "actual_evidence": [
+        "host_prefill_1_16",
+        "physical_clock_1_16_0",
+        "physical_clock_1_16_4096",
+        "warm_clock_1_16",
+        "partition_1_16",
+        "host_prefill_2_16",
+        "physical_clock_2_16_0",
+        "physical_clock_2_16_4096",
+        "warm_clock_2_16",
+        "partition_2_16",
+        "ft_directed",
+        "a1_1_16",
+        "a1_2_16",
+        "b1-read-first",
+        "b1-atomic-first",
+        "b1-multi",
+        "b1-b16",
+        "b1-dirty",
+        "b1-version-only",
+        "ideal_wb",
+        "ideal_meta",
+        "ideal_meta_integrated",
+        "ideal_read_hit",
+        "ideal_host_prefill_reference",
+        "ideal_host_prefill_partition",
+        "ideal_meta_integrated_B16",
+        "ideal_read_hit_B16"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "sector_reference_data": {
+      "actual_evidence": [
+        "ft_directed",
+        "b1-read-first",
+        "b1-atomic-first",
+        "b1-version-only",
+        "ideal_wb",
+        "ideal_read_hit",
+        "ideal_read_hit_B16"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "stale_fill": {
+      "actual_evidence": [
+        "host_prefill_1_16",
+        "host_prefill_2_16",
+        "a1_1_16",
+        "a1_2_16",
+        "ideal_host_prefill_partition"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    },
+    "wb_lifecycle": {
+      "actual_evidence": [
+        "partition_1_16",
+        "partition_2_16",
+        "ft_directed",
+        "ideal_wb"
+      ],
+      "production_driven": true,
+      "status": "PASS"
+    }
+  },
+  "native_off_csv_hashes": {
+    "target_bank.csv": "c184e39a8eda845671a866ef64aeb42429669c79b1dfadeb1fc496ea8a4781cb",
+    "target_dram.csv": "a1f509e9ae5660c89e4eb7b11730757f245eefc8f30dd11695ba3877768f2e39",
+    "target_kernel.csv": "7d98c001c8d4fa5d7d9d86073a147bcca2af926dd99775c88b931ec2e5331e5d",
+    "target_l1.csv": "603ee494fcb065e34850cdaa4d7389a46ff7a857ca68bc3820ca38f6afcf6e0d",
+    "target_slice.csv": "feb227c0d875cb1861001346f4cd6c9eb35cdf52267459cc1b51b1a5efd0603e",
+    "target_summary.csv": "f08f4b461c830f77501d3f47111f5fa6bf5b3dc9cdc81f7413d4e824dc507093",
+    "target_window.csv": "d7de54d5958def0698f569fa4a2b5267db37251fa2a6ac463ee60ec40fe38359"
+  },
+  "native_off_metrics": {
+    "cycle": 73873,
+    "insn": 56000000
+  },
+  "new_actual_assertion_processes": 27,
+  "new_full_application_canaries": 1,
+  "producer_publication": "72f2d7c8999720c862b96f353c3e5d07c63de72e",
+  "retained_input_proof": "Explicit identical10 source trees/objects plus retained full body/opcode/legacy proofs; no report retagged. New host/reference cases independently executed.",
+  "scope": "Symbolic32B physical data and byte-reference localread semantics. I_WB pays dynamic extra backing and realcopy/bank/WAD/lower services; I_META lifts only3 metadata capacities; I_READ_HIT retainsROP/bank/response/dependency waits. NoALL_DATA, numericalSASS/ALU, strong-static orPPA qualification.",
+  "source_identity": {
+    "binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5",
+    "core_source_commit": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
+    "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199"
+  },
+  "status": "ALL_ELEVEN_NEW_SOURCE_GATES_PASS"
+}
