@@ -391,7 +391,7 @@ validation=dict(status='PASS_CPU_CONSUMER_ONLY_WITH_EXPLICIT_MISSING_FIELDS',
 write('CPU_CONSUMER_VALIDATION.json',json.dumps(validation,ensure_ascii=False,indent=2)+'\n')
 if CHECK:
     manifest = list(csv.DictReader((PACK/'FILES_SHA256.tsv').open(),delimiter='\t'))
-    files = {str(p.relative_to(PACK)) for p in PACK.rglob('*') if p.is_file() and p.name != 'FILES_SHA256.tsv'}
+    files = {str(p.relative_to(PACK)) for p in PACK.rglob('*') if p.is_file() and p != PACK/'FILES_SHA256.tsv'}
     assert files == {r['path'] for r in manifest}, 'incomplete package manifest'
     for row in manifest:
         data=(PACK/row['path']).read_bytes()
