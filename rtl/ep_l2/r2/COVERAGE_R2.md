@@ -36,7 +36,7 @@ whole-app numerical results, post-map equivalence, macro binding/layout/power
 and current-SIM timing/throughput matching remain NOT_QUALIFIED/UNRUN.
 
 Actual additional evidence: Yosys SAT compares the frozen R1 metadata module
-with the actual R2 module for SUPPORT_RES0 and1, GEN32/DYNAMIC_OWNER1. A six-step
+with the actual R2 module for SUPPORT_RES0 and1, GEN32/DYNAMIC_OWNER1; final source also checks STATIC_RESIDENT1 with only unreachable WB/reservation/release controls tied0 in both designs. A six-step
 reset proof and induction from equal zero state both pass with event controls
 unconstrained, including overlaps. This checks local generation/control
 precedence; static guarded owner reduction and global allocator are outside

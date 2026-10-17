@@ -406,6 +406,29 @@ module ep_l2_slice_ctrl #(
     // Direct vector slices keep every combinational dependency explicit.
     // Constant slot classes at elaboration; data SRAM is still full1168.
     // WB-only static bypass slots have no active owner in this finite path.
+    // R2 control/data distribution in16-slot groups. Values outside a
+    // word's update group are unobservable by its qualified write enables.
+    // Group masks are real charged gates; no buffer/timing exception magic.
+    localparam integer META_GROUP=16,META_GROUPS=(N_PAYLOAD+META_GROUP-1)/META_GROUP;
+    wire [META_GROUPS-1:0] group_landing,group_fill,group_pin,group_owner;
+    wire [META_GROUPS*4-1:0] group_ready,group_pending,group_dirty,group_install_dirty,group_fill_sectors;
+    wire [META_GROUPS*TAG_W-1:0] group_new_owner;
+    wire [META_GROUPS-1:0] group_old_live,group_reserved,group_pin_increment;
+    generate for(genvar g=0;g<META_GROUPS;g=g+1)begin: metadata_distribution
+        assign group_landing[g]=p_landing/META_GROUP==g;
+        assign group_fill[g]=fill_pid/META_GROUP==g;
+        assign group_pin[g]=pin_pid/META_GROUP==g;
+        assign group_owner[g]=req_fire ? free_landing/META_GROUP==g : group_landing[g];
+        assign group_ready[g*4 +:4]=p_ready & {4{group_landing[g]}};
+        assign group_pending[g*4 +:4]=p_pending & {4{group_landing[g]}};
+        assign group_dirty[g*4 +:4]=byte_sectors(p_be) & {4{group_landing[g]}};
+        assign group_install_dirty[g*4 +:4]=group_dirty[g*4 +:4] & {4{p_install_dirty}};
+        assign group_fill_sectors[g*4 +:4]=fill_sectors & {4{group_fill[g]}};
+        assign group_new_owner[g*TAG_W +:TAG_W]=(req_fire?req_tag:p_tag) & {TAG_W{group_owner[g]}};
+        assign group_old_live[g]=p_old_live && group_landing[g];
+        assign group_reserved[g]=p_new_reserved && group_landing[g];
+        assign group_pin_increment[g]=pin_increment && group_pin[g];
+    end endgenerate
     genvar m;
     generate for(m=0;m<N_PAYLOAD;m=m+1)begin: metadata
         if(MODE!=1 && m>=N_TAG && m<WB_BEGIN)begin: unused_static_bypass
@@ -419,20 +442,20 @@ module ep_l2_slice_ctrl #(
         end else begin: active
             wire [TAG_W-1:0] word_owner;
             assign owner_tag_bits[m*TAG_W +:TAG_W]=(MODE!=1 && m<N_TAG)?TAG_W'(m):word_owner;
-            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(MODE==1)) word_state(
+            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(MODE==1),.STATIC_RESIDENT(MODE!=1 && m<N_TAG)) word_state(
                 .clk(clk),.rst_n(rst_n),
                 .reserve_resident(req_fire && req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m),
                 .reserve_wb(req_fire && req_op==0 && evict_dirty && MODE!=1 && free_staging==m),
-                .new_owner(req_fire ? req_tag : p_tag),
-                .pin_update(pin_fire && pin_pid==m),.pin_increment(pin_increment),
+                .new_owner(group_new_owner[(m/META_GROUP)*TAG_W +:TAG_W]),
+                .pin_update(pin_fire && pin_pid==m),.pin_increment(group_pin_increment[m/META_GROUP]),
                 .read_pin_add(req_fire && req_op==1 && old_pid==m),
                 .read_pin_release(rsp_fire && p_op==1 && p_landing==m),
-                .fill_update(fill_fire && fill_pid==m),.fill_sectors(fill_sectors),
+                .fill_update(fill_fire && fill_pid==m),.fill_sectors(group_fill_sectors[(m/META_GROUP)*4 +:4]),
                 .become_wb(native_commit && p_op==0 && p_dirty && p_staging==m),
-                .install(native_commit && p_op==0 && p_landing==m),.already_reserved(p_new_reserved),
-                .install_old_live(p_old_live),.install_ready(p_ready),.install_pending(p_pending),
-                .install_dirty(p_install_dirty ? byte_sectors(p_be) : 4'b0),
-                .hit_write(native_commit && p_op==2 && p_landing==m),.write_ready(p_ready),.write_dirty(byte_sectors(p_be)),
+                .install(native_commit && p_op==0 && p_landing==m),.already_reserved(group_reserved[m/META_GROUP]),
+                .install_old_live(group_old_live[m/META_GROUP]),.install_ready(group_ready[(m/META_GROUP)*4 +:4]),.install_pending(group_pending[(m/META_GROUP)*4 +:4]),
+                .install_dirty(group_install_dirty[(m/META_GROUP)*4 +:4]),
+                .hit_write(native_commit && p_op==2 && p_landing==m),.write_ready(group_ready[(m/META_GROUP)*4 +:4]),.write_dirty(group_dirty[(m/META_GROUP)*4 +:4]),
                 .invalidate(native_commit && p_op==3 && p_landing==m),
                 .rollback_release(abort_fire && ((p_new_reserved && p_landing==m) || (p_dirty && MODE!=1 && p_staging==m))),
                 .lower_release(lower_accept && active_pid==m),

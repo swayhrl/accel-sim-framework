@@ -61,3 +61,38 @@ No frontend/bank/SRAM/approval phase is added in R2. Existing R1 SIM/RTL gaps
 remain; no timing closure is implied by this source-level equivalence argument.
 Dynamic late rollback after destructive native commit and whole-app numeric
 correctness remain unqualified. No new SIM-performance pairing is authorized.
+
+## Measured second refinement:16-word metadata distribution
+
+The first R2 B16 mapping (be2773c14; R2 v1) measured area2006501.308,
+WNS-10.299947ns at target and-9.183339ns at2ns. The actual worst path is
+p_be[107] -> byte_sectors[3] (fanout1026,1597.49fF,6.14268ns gate delay) ->
+install_dirty[3] (fanout1024,1586.53fF,4.380058ns) -> word0 dirty FF.
+That trial is retained, not the final three-mode cost candidate.
+
+Final R2 distributes metadata input data through real16-slot group masks.
+For word m, landing-group equality is necessarily true when install/hit_write
+is asserted because both enables require p_landing==m. Fill-group equality
+holds when fill_update; pin-group equality holds when pin_update. Owner data
+is used either on reserve_resident (req_fire, free_landing==m) or install
+(native_commit, p_landing==m). req_fire(IDLE) and native_commit(COMMIT) are
+mutually exclusive. Therefore all observed input bits are unchanged on their
+write events; only unobserved values at other words are replaced by0. No state,
+cycle, capacity, arbitration or update priority changes. All mode organizations
+use the same group distribution. Its AND/decode/buffer logic is fully mapped.
+
+Additional static role proof for B16 AND S64: resident slots m<1024 resetFREE,
+are installedRESIDENT, and invalidate toFREE. They are never reservation/WB
+slots: free_staging is in[WB_BEGIN,1168), new_reserved is0 and lower accepts
+only a WAD staging PID. Static dirty replacement keeps its old resident live
+until the approved incoming install; rollback only releases staging. Thus
+resident role[2:1] is constant0, and reserve/WB/rollback/lower-release logic is
+unreachable for that slot class. STATIC_RESIDENT prunes exactly those branches,
+not generation/pins/ready/pending/dirty or staging metadata. SAT word comparison
+for this class explicitly ties only those unreachable inputs0 in BOTH R1/R2;
+the dynamic/WB word classes keep unconstrained coincident controls.
+
+Redundant static state accounting:11*1024 Tag-map FF +10*1024 owner FF plus
+up to2*1024 role bits and one shared captured-resident-handle high bit. Real
+mapped FF counts, rather than this bound, determine charged area. GEN32 remains
+on every used slot and WAD; data146KiB is unchanged.

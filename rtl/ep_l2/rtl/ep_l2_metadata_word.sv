@@ -2,7 +2,7 @@
 // thousands of procedural writers to one giant packed vector in EDA frontends.
 // SUPPORT_RES=0 is a static staging slot: resident-only fields are constants.
 module ep_l2_metadata_word #(
-    parameter integer GEN_W=32,TAG_W=10,SUPPORT_RES=1,DYNAMIC_OWNER=1
+    parameter integer GEN_W=32,TAG_W=10,SUPPORT_RES=1,DYNAMIC_OWNER=1,STATIC_RESIDENT=0
 )(
     input wire clk,rst_n,
     input wire reserve_resident,reserve_wb,
@@ -24,7 +24,8 @@ module ep_l2_metadata_word #(
     // Preserve procedural precedence, including coincident release events:
     // later release/invalidate overrides install with a +1 generation step.
     wire install_step_two=SUPPORT_RES && install && !already_reserved &&
-        install_old_live && !invalidate && !rollback_release && !lower_release;
+        install_old_live && !invalidate &&
+        (STATIC_RESIDENT || (!rollback_release && !lower_release));
     wire [GEN_W-1:0] next_generation=generation+(install_step_two ? 2 : 1);
     assign owner_tag=DYNAMIC_OWNER ? dynamic_owner : {TAG_W{1'b0}};
     always @(posedge clk) begin
@@ -36,10 +37,10 @@ module ep_l2_metadata_word #(
                 if(pin_update)pins<=pin_increment?pins+1:pins-1;
                 if(fill_update)begin sectors_ready<=sectors_ready|fill_sectors;sectors_pending<=sectors_pending&~fill_sectors;end
                 if(read_pin_add)pins<=pins+1;
-                if(reserve_resident)begin role<=3;generation<=next_generation;dynamic_owner<=new_owner;end
+                if(!STATIC_RESIDENT && reserve_resident)begin role<=3;generation<=next_generation;dynamic_owner<=new_owner;end
             end
-            if(reserve_wb)begin role<=4;generation<=next_generation;end
-            if(become_wb)role<=2;
+            if(!STATIC_RESIDENT && reserve_wb)begin role<=4;generation<=next_generation;end
+            if(!STATIC_RESIDENT && become_wb)role<=2;
             if(SUPPORT_RES)begin
                 if(install)begin
                     if(!already_reserved)generation<=next_generation;
@@ -48,9 +49,9 @@ module ep_l2_metadata_word #(
                 if(hit_write)begin dirty<=dirty|write_dirty;sectors_ready<=sectors_ready|write_ready;end
                 if(invalidate)begin role<=0;generation<=next_generation;sectors_ready<=0;dirty<=0;end
             end
-            if(rollback_release)begin role<=0;generation<=next_generation;end
+            if(!STATIC_RESIDENT && rollback_release)begin role<=0;generation<=next_generation;end
             if(SUPPORT_RES && read_pin_release)pins<=pins-1;
-            if(lower_release)begin role<=0;generation<=next_generation;sectors_ready<=0;dirty<=0;end
+            if(!STATIC_RESIDENT && lower_release)begin role<=0;generation<=next_generation;sectors_ready<=0;dirty<=0;end
         end
     end
 endmodule
