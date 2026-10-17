@@ -1,0 +1,5 @@
+# Lane5: r15 A1 delta within original scientific qualification
+
+Consumed newly published coordinator r15 after Lane1 status revealed a newer coordination snapshot. Its extraction counterexample is not a full production execution and is not automatically written to acceptance V2. Current Core088146f7f85b4073deb5d166a0a4484c7f3b48b2 retains exact ft_access/native tag/probe code from c948; the access/fixture fixes do not close A1. No reproduction was compiled or run by Lane5.
+
+The original11 gates stay in place. Existing21 producer tests alone are insufficient without actual multicycle16-way competing-fill replacement regressions for matched B/U C8/C16 on the repaired official binary. The precise real path/schedule/data/request/bank/WAD/drain requirements are in A1_AFFECTED_GATE_PLAN.json. Lane1 fixes/integrates and owns compilation; Lane5 independently validates the real release. RO A2/A3 stay separate; no formal mainline application or new scientific acceptance is issued here. Active bounded Goal deadline unchanged.

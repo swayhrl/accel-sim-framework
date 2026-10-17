@@ -1,0 +1,80 @@
+{
+  "a1_code_scope_identity": {
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": {
+      "c948_sha256": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839",
+      "current_sha256": "016e1d4fa031230acca8437f7bc998b7434fbd1aed9d21e60aaa262a040a0839",
+      "unchanged": true
+    },
+    "src/gpgpu-sim/gpu-cache.cc": {
+      "c948_sha256": "a66077c532dc1f7498ebaed17e3534be3ea7a36a1f0222b6e75375b44b7ce388",
+      "current_sha256": "a66077c532dc1f7498ebaed17e3534be3ea7a36a1f0222b6e75375b44b7ce388",
+      "unchanged": true
+    }
+  },
+  "affected_original_gates": [
+    "finite_wbuf",
+    "bank_service",
+    "requester_exact_once",
+    "sector_reference_data",
+    "stale_fill",
+    "resource_closure",
+    "wb_lifecycle"
+  ],
+  "at_utc": "2026-10-17T03:09:27.371643+00:00",
+  "cases": [
+    {
+      "banks": 4,
+      "max_ops_per_bank_physical_cycle": 1,
+      "mode": "B8_BANKED",
+      "physical_payload_slots": 1160,
+      "wbuf_entries": 8
+    },
+    {
+      "banks": 4,
+      "max_ops_per_bank_physical_cycle": 1,
+      "mode": "B16_BANKED",
+      "physical_payload_slots": 1168,
+      "wbuf_entries": 16
+    },
+    {
+      "banks": 4,
+      "max_ops_per_bank_physical_cycle": 1,
+      "mode": "U_WB8",
+      "physical_payload_slots": 1160,
+      "wbuf_entries": 8
+    },
+    {
+      "banks": 4,
+      "max_ops_per_bank_physical_cycle": 1,
+      "mode": "U_WB16",
+      "physical_payload_slots": 1168,
+      "wbuf_entries": 16
+    }
+  ],
+  "current_scientific_ledger": "No automatic edit/withdrawal; old six remain withdrawn, no new CURRENT_ACCEPTED rows",
+  "current_unqualified_candidate_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+  "deadline_utc": "2026-10-17T12:19:03Z",
+  "original_user_continue_authority": "31251186feccffec192cc1fef8fc7d8164d12d9f",
+  "ownership": {
+    "independent_real_binary_evidence": "lane5 after exact release/real producer tests",
+    "lane5_compiler_or_reproduction_run_this_revision": false,
+    "production_fix_and_official_compile": "lane1"
+  },
+  "qualification_change": "Additional production scenarios within original11 gates, not a new model/budget/oracle or automatic ledger withdrawal",
+  "required_real_schedule": [
+    "Instantiate actual production cache/tag/partition paths with a real16-way set and exact original budget/bank policy",
+    "One older other-way read fill remains pending/RESERVED while another dirty way is the initially chosen only evictable victim; other ways unavailable",
+    "Begin real new-address replacement and force its multicycle copy/bank-denial boundary; retain actual requester/pending victim/WAD/staging/landing and generation identities",
+    "Complete unrelated older way fill before frontend retries same request, making competing victim selection change possible; require explicit evidence that this boundary was exercised, not a vacuous one-way fixture",
+    "Verify preview, preserved victim and native data_cache Tag commit share the transaction identity OR old WAD/staging/landing/bank/generation reservation fully rolls back before new preparation",
+    "Validate exact-one response, independent sector versions, old dirty data through lower accept/set_done and WAD/WB lifetimes, complete transient resource quiescence",
+    "Cover B C8/C16 and U C8/C16; no extra ports/buffers, no dropped assertion, no local tag_index overwrite without proper native transaction/rollback"
+  ],
+  "schema_version": "EPL2_LANE5_R15_A1_AFFECTED_GATE_ADDENDUM_V1",
+  "source_diff_scope": "c948->current changes only public accessor/gpu-sim reader and host fixture native absolute-cycle caller. ft_access/probe/fill bodies unmodified. This is targeted applicability comparison, not a repeated static or calibration suite.",
+  "status": "PENDING_REAL_PRODUCTION_REGRESSION_NO_ACCEPTANCE",
+  "supplemental_audit_path": "docs/ep_l2/chatgpt_handoff/fast_track_2026_10_17_review_r15/SOURCE_AUDIT.md",
+  "supplemental_audit_sha256": "edb0235c87f73824b189b9721e80186a2b31a6c058c1ae0628a1a548b6274e50",
+  "supplemental_coordinator_publication": "8985f602a425d3049b77f68c6e90911dde2c4920",
+  "unrelated_RO_A2_A3": "Lane3 owns; not required to delay RO-OFF common mainline except shared arbiter ABI changes need common requalification"
+}
