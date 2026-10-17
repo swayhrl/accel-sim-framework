@@ -13,11 +13,11 @@ files=[repo/x for x in (root/'flow/filelist.f').read_text().splitlines() if x an
 abc=out/'abc.constr';abc.write_text(f'set_driving_cell {a.drive_cell}\nset_load {a.load}\n')
 script=out/'synth.ys';script.write_text('\n'.join([
  'read_verilog -sv -defer -D SYNTHESIS '+' '.join(map(quote,files)),
- f'hierarchy -check -top ep_l2_slice_ctrl -chparam MODE {mode} -chparam STATIC_WB {wb} -chparam N_TAG 1024 -chparam N_PAYLOAD 1168 -chparam N_WAD 128 -chparam GEN_W 32', 'synth -top ep_l2_slice_ctrl -noabc',
+ f'hierarchy -check -top ep_l2_slice_ctrl -chparam MODE {mode} -chparam STATIC_WB {wb} -chparam N_TAG 1024 -chparam N_PAYLOAD 1168 -chparam N_WAD 128 -chparam GEN_W 32', 'log -stdout SYNTHESIS_START', 'synth -top ep_l2_slice_ctrl -noabc', 'log -stdout GENERIC_SYNTHESIS_COMPLETE',
  'check -assert','select -assert-none t:$dlatch t:$_DLATCH_*',
  f'read_liberty -lib {quote(lib)}', 'dffunmap',f'dfflibmap -liberty {quote(lib)}',
  f'abc -liberty {quote(lib)} -constr {quote(abc)} -D 883',
- 'clean',f'tee -o {quote(out/"stat.json")} stat -json -liberty {quote(lib)}',
+ 'log -stdout LIBRARY_MAPPING_COMPLETE', 'clean',f'tee -o {quote(out/"stat.json")} stat -json -liberty {quote(lib)}',
  f'write_verilog -noattr -noexpr {quote(out/"mapped.v")}',
  'check -assert','select -assert-none t:$dlatch t:$_DLATCH_*'
  ])+'\n')

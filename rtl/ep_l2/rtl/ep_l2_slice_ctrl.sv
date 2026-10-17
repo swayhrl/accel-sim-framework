@@ -70,14 +70,14 @@ module ep_l2_slice_ctrl #(
     localparam [1:0] L_NONE=0, L_COPY=1, L_WB=2;
     localparam [GEN_W-1:0] GMAX={GEN_W{1'b1}};
     localparam integer WB_BEGIN=N_PAYLOAD-STATIC_WB;
-    reg [N_PAYLOAD*3-1:0] role_bits;
-    reg [N_PAYLOAD*GEN_W-1:0] generation_bits;
-    reg [N_PAYLOAD*TAG_W-1:0] owner_tag_bits;
-    reg [N_PAYLOAD*6-1:0] pins_bits;
-    reg [N_PAYLOAD*4-1:0] sectors_ready_bits;
-    reg [N_PAYLOAD*4-1:0] sectors_pending_bits;
-    reg [N_PAYLOAD*4-1:0] dirty_bits;
-    reg [N_TAG*PID_W-1:0] tag_map_bits;
+    wire [N_PAYLOAD*3-1:0] role_bits;
+    wire [N_PAYLOAD*GEN_W-1:0] generation_bits;
+    wire [N_PAYLOAD*TAG_W-1:0] owner_tag_bits;
+    wire [N_PAYLOAD*6-1:0] pins_bits;
+    wire [N_PAYLOAD*4-1:0] sectors_ready_bits;
+    wire [N_PAYLOAD*4-1:0] sectors_pending_bits;
+    wire [N_PAYLOAD*4-1:0] dirty_bits;
+    wire [N_TAG*PID_W-1:0] tag_map_bits;
     reg [N_TAG-1:0] tag_live;
     reg [N_WAD-1:0] wad_live, wad_sent;
     reg [ADDR_W-1:0] wad_addr [0:N_WAD-1];
@@ -173,8 +173,8 @@ module ep_l2_slice_ctrl #(
         fe_request=0; fe_write=0; fe_pid=p_old; fe_bytes=p_be; fe_data=p_data;
         if (!abort_fire) begin
             if (state==HIT_READ) fe_request=1;
-            if (state==COPY_READ && latch_owner==L_NONE) fe_request=1;
-            if (state==COPY_WRITE && latch_owner==L_COPY) begin
+            if (MODE!=1 && state==COPY_READ && latch_owner==L_NONE) fe_request=1;
+            if (MODE!=1 && state==COPY_WRITE && latch_owner==L_COPY) begin
                 fe_request=1; fe_pid=p_staging; fe_write=1;
                 fe_bytes={128{1'b1}}; fe_data=copy_latch;
             end
@@ -184,7 +184,7 @@ module ep_l2_slice_ctrl #(
         end
     end
     wire wb_request=wb_state==W_IDLE && wb_count!=0 && latch_owner==L_NONE &&
-        state!=COPY_READ && state!=COPY_RETURN && state!=COPY_WRITE;
+        (MODE==1 || (state!=COPY_READ && state!=COPY_RETURN && state!=COPY_WRITE));
     wire [2:0] requests={wb_request,fe_request,(fill_valid && fill_identity)};
     wire [5:0] request_banks={head_pid[1:0],fe_pid[1:0],fill_pid[1:0]};
     wire [2:0] grants;
@@ -307,11 +307,11 @@ module ep_l2_slice_ctrl #(
                 rsp_data<=ram_rdata[p_old[1:0]*1024 +:1024]; state<=RESPONSE;
                 p_result_gen<=generation_bits[(p_old)*GEN_W +:GEN_W];
             end
-            if (ge && state==COPY_READ) begin state<=COPY_RETURN; latch_owner<=L_COPY; end
-            if (state==COPY_RETURN) begin
+            if (MODE!=1 && ge && state==COPY_READ) begin state<=COPY_RETURN; latch_owner<=L_COPY; end
+            if (MODE!=1 && state==COPY_RETURN) begin
                 copy_latch<=ram_rdata[p_old[1:0]*1024 +:1024]; state<=COPY_WRITE;
             end
-            if (ge && state==COPY_WRITE) begin latch_owner<=L_NONE; state<=COMMIT; end
+            if (MODE!=1 && ge && state==COPY_WRITE) begin latch_owner<=L_NONE; state<=COMMIT; end
             if (native_commit) begin
                 if (p_op==0) begin
                     if (p_dirty) begin
@@ -345,79 +345,46 @@ module ep_l2_slice_ctrl #(
     end
 
     // Direct vector slices keep every combinational dependency explicit.
-    // Explicit word-local flops. This is standard-cell metadata, not SRAM.
-    // Each word has finite decoded update ports; precedence matches the
-    // original single sequential process. Data SRAM remains a blackbox cut.
+    // Constant slot classes at elaboration; data SRAM is still full1168.
+    // WB-only static bypass slots have no active owner in this finite path.
     genvar m;
     generate for(m=0;m<N_PAYLOAD;m=m+1)begin: metadata
-        always @(posedge clk) begin
-            if(!rst_n) begin
-                role_bits[m*3 +:3]<=FREE;
-                generation_bits[m*GEN_W +:GEN_W]<=0;
-                owner_tag_bits[m*TAG_W +:TAG_W]<=0;
-                pins_bits[m*6 +:6]<=0;
-                sectors_ready_bits[m*4 +:4]<=0;
-                sectors_pending_bits[m*4 +:4]<=0;
-                dirty_bits[m*4 +:4]<=0;
-            end else begin
-                if(pin_fire && pin_pid==m) pins_bits[m*6 +:6]<=pin_increment ? pins_bits[(m)*6 +:6]+1 : pins_bits[(m)*6 +:6]-1;
-                if(fill_fire && fill_pid==m)begin
-                    sectors_ready_bits[m*4 +:4]<=sectors_ready_bits[(m)*4 +:4]|fill_sectors;
-                    sectors_pending_bits[m*4 +:4]<=sectors_pending_bits[(m)*4 +:4]&~fill_sectors;
-                end
-                if(req_fire)begin
-                    if(req_op==1 && old_pid==m) pins_bits[m*6 +:6]<=pins_bits[(m)*6 +:6]+1;
-                    if(req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m)begin
-                        role_bits[m*3 +:3]<=RESERVE_R;
-                        generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
-                        owner_tag_bits[m*TAG_W +:TAG_W]<=req_tag;
-                    end
-                    if(req_op==0 && evict_dirty && MODE!=1 && free_staging==m)begin
-                        role_bits[m*3 +:3]<=RESERVE_W;
-                        generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
-                    end
-                end
-                if(native_commit)begin
-                    if(p_op==0)begin
-                        if(p_dirty && p_staging==m)role_bits[m*3 +:3]<=WB;
-                        if(p_landing==m)begin
-                            if(!p_new_reserved)generation_bits[m*GEN_W +:GEN_W]<=landing_generation;
-                            role_bits[m*3 +:3]<=RESIDENT;owner_tag_bits[m*TAG_W +:TAG_W]<=p_tag;
-                            sectors_ready_bits[m*4 +:4]<=p_ready;sectors_pending_bits[m*4 +:4]<=p_pending;
-                            dirty_bits[m*4 +:4]<=p_install_dirty ? byte_sectors(p_be) : 0;
-                        end
-                    end else if(p_op==2 && p_landing==m)begin
-                        dirty_bits[m*4 +:4]<=dirty_bits[(m)*4 +:4]|byte_sectors(p_be);
-                        sectors_ready_bits[m*4 +:4]<=sectors_ready_bits[(m)*4 +:4]|p_ready;
-                    end else if(p_op==3 && p_landing==m)begin
-                        role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
-                        sectors_ready_bits[m*4 +:4]<=0;dirty_bits[m*4 +:4]<=0;
-                    end
-                end
-                if(abort_fire)begin
-                    if(p_new_reserved && p_landing==m)begin
-                        role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
-                    end
-                    if(p_dirty && MODE!=1 && p_staging==m)begin
-                        role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
-                    end
-                end
-                if(rsp_fire && p_op==1 && p_landing==m)pins_bits[m*6 +:6]<=pins_bits[(m)*6 +:6]-1;
-                if(lower_accept && active_pid==m)begin
-                    role_bits[m*3 +:3]<=FREE;generation_bits[m*GEN_W +:GEN_W]<=generation_bits[(m)*GEN_W +:GEN_W]+1;
-                    sectors_ready_bits[m*4 +:4]<=0;dirty_bits[m*4 +:4]<=0;
-                end
-            end
+        if(MODE!=1 && m>=N_TAG && m<WB_BEGIN)begin: unused_static_bypass
+            assign role_bits[m*3 +:3]=FREE;
+            assign generation_bits[m*GEN_W +:GEN_W]=0;
+            assign owner_tag_bits[m*TAG_W +:TAG_W]=0;
+            assign pins_bits[m*6 +:6]=0;
+            assign sectors_ready_bits[m*4 +:4]=0;
+            assign sectors_pending_bits[m*4 +:4]=0;
+            assign dirty_bits[m*4 +:4]=0;
+        end else begin: active
+            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG)) word_state(
+                .clk(clk),.rst_n(rst_n),
+                .reserve_resident(req_fire && req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m),
+                .reserve_wb(req_fire && req_op==0 && evict_dirty && MODE!=1 && free_staging==m),
+                .new_owner(req_fire ? req_tag : p_tag),
+                .pin_update(pin_fire && pin_pid==m),.pin_increment(pin_increment),
+                .read_pin_add(req_fire && req_op==1 && old_pid==m),
+                .read_pin_release(rsp_fire && p_op==1 && p_landing==m),
+                .fill_update(fill_fire && fill_pid==m),.fill_sectors(fill_sectors),
+                .become_wb(native_commit && p_op==0 && p_dirty && p_staging==m),
+                .install(native_commit && p_op==0 && p_landing==m),.already_reserved(p_new_reserved),
+                .install_generation(landing_generation),.install_ready(p_ready),.install_pending(p_pending),
+                .install_dirty(p_install_dirty ? byte_sectors(p_be) : 4'b0),
+                .hit_write(native_commit && p_op==2 && p_landing==m),.write_ready(p_ready),.write_dirty(byte_sectors(p_be)),
+                .invalidate(native_commit && p_op==3 && p_landing==m),
+                .rollback_release(abort_fire && ((p_new_reserved && p_landing==m) || (p_dirty && MODE!=1 && p_staging==m))),
+                .lower_release(lower_accept && active_pid==m),
+                .role(role_bits[m*3 +:3]),.generation(generation_bits[m*GEN_W +:GEN_W]),
+                .owner_tag(owner_tag_bits[m*TAG_W +:TAG_W]),.pins(pins_bits[m*6 +:6]),
+                .sectors_ready(sectors_ready_bits[m*4 +:4]),.sectors_pending(sectors_pending_bits[m*4 +:4]),.dirty(dirty_bits[m*4 +:4]));
         end
     end endgenerate
     genvar t;
     generate for(t=0;t<N_TAG;t=t+1)begin: mapping
-        always @(posedge clk)begin
-            if(!rst_n)tag_map_bits[t*PID_W +:PID_W]<=0;
-            else if(native_commit && p_op==0 && p_tag==t)tag_map_bits[t*PID_W +:PID_W]<=p_landing;
-        end
+        ep_l2_tag_map_word #(.PID_W(PID_W)) word_state(.clk(clk),.rst_n(rst_n),
+            .write(native_commit && p_op==0 && p_tag==t),.data(p_landing),.payload(tag_map_bits[t*PID_W +:PID_W]));
     end endgenerate
-
 `ifndef SYNTHESIS
     initial begin
         if (N_PAYLOAD%4 || N_TAG%4 || N_PAYLOAD<=N_TAG+STATIC_WB ||
