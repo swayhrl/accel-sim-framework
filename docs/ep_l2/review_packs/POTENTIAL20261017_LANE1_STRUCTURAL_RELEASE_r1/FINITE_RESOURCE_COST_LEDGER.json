@@ -1,0 +1,57 @@
+{
+  "nominal_per_slice": {
+    "tags": 1024,
+    "payload_slots": 1168,
+    "bytes_per_slot": 128,
+    "banks": 4,
+    "line_ops_per_bank_physical_GPUcycle": 1,
+    "copy_latch_bytes_outside_pool": 128,
+    "descriptors": 512,
+    "line_mshr": 128,
+    "per_address": 32,
+    "WAD": 128
+  },
+  "B16_static": {
+    "resident": 1024,
+    "bypass": 128,
+    "WB": 16,
+    "per_bank": [
+      256,
+      32,
+      4
+    ]
+  },
+  "S64_static": {
+    "resident": 1024,
+    "bypass": 80,
+    "WB": 64,
+    "per_bank": [
+      256,
+      20,
+      16
+    ],
+    "boundaries": [
+      0,
+      1024,
+      1104,
+      1168
+    ],
+    "payload_delta": 0,
+    "role_delta": {
+      "WB": 48,
+      "bypass": -48
+    },
+    "copy_protocol": "source read -> common latch -> staging write -> send read retained"
+  },
+  "U_CAP16": {
+    "payload_slots": 1168,
+    "reserved_plus_live_max": 16,
+    "scope": "pending reservation + live WB data responsibilities",
+    "release": "real lower acceptance",
+    "WAD_release": "real set_done",
+    "logical_cost": "bounded WB-responsibility counters/pending flag and admission/rollback logic; not inferred RTL area"
+  },
+  "physical_PPA": "UNMEASURED; C++ bytes/counters do not establish hardware area/timing",
+  "comparison": "U_CAP16/B16 is equal local WB concurrency organization comparison, includes copy and physical landing/bank differences; not copy-only",
+  "dynamic_WB_ideal": "Explicit extra diagnostic backing outside finite payload bound"
+}
