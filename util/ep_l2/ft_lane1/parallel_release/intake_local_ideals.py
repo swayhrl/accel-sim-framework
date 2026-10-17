@@ -23,7 +23,7 @@ def loadmod(n,p):
  s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,required=True);a=p.parse_args();out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,required=True);p.add_argument('--reuse-prefix-receipt',type=Path);a=p.parse_args();out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
  r={'schema':'EPL2_LANE1_ROLLING_RUNTIME_INTAKE_V1','status':'PREFLIGHT','authority':'a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900','core_source_commit':C_SHA,'framework_source_commit':F_SHA,'core_tree':subprocess.check_output(['git','rev-parse',C_SHA+'^{tree}'],cwd=CORE,text=True).strip(),'tool_source_commit':head(REPO),'runtime_recompiled_by_lane1':False,'application_starts':0,'independent_qualification':False,'commands':[],'tests':[],'disk_floor_bytes':48*2**30,'memory_floor_bytes':64*2**30,'jobs':1,'unsupported':['S64','U_CAP16','P2','I_BANK','I_L2_SERVICE','I_MEM_ALL_DATA']}
  def save():write(out/'INTAKE_RECEIPT.json',r)
  clpath=Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json');cl=json.loads(clpath.read_text());r['client_contract_sha256']=sha(clpath);r['actual_registry_sha256']=sha(cl['registry_client']);r['published_registry_sha256']=cl['registry_client_sha256']
@@ -65,9 +65,28 @@ def main():
   for name in ['ideal_meta_integrated','ideal_read_hit']:
    cfg=out/(name+'_B16.config');cfg.write_text((testdir/(name+'.config')).read_text()+'\n-gpgpu_ep_l2_ft_mode 1\n-gpgpu_ep_l2_wbuf_entries 16\n-gpgpu_ep_l2_wad_entries 128\n')
    tests.append((name+'_B16',[str(BUILD/'gpgpu-sim'/('ep_l2_'+name)),base,str(cfg)]))
+  # The old allocator fixture used invalid low pointer tokens; B1 now reads
+  # real atomic request state during sector completion. Fix the fixture only.
+  fmap={}
+  for line in (BUILD/'gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make').read_text().splitlines():
+   if line.startswith('CXX_'):k,v=line.split(' = ',1);fmap[k]=v
+  fixedsrc=Path(__file__).with_name('test_ideal_meta_real.cc');fixedexe=out/'test_ideal_meta_real'
+  run(['/usr/bin/c++',*shlex.split(fmap['CXX_DEFINES']),*shlex.split(fmap['CXX_INCLUDES']),'-I'+str(CORE/'tests/ep_l2'),'-O0','-g0','-fPIC','-std=gnu++17',str(fixedsrc),'-o',str(fixedexe),'-Wl,--start-group',*map(str,libs),'-Wl,--end-group','-lz','-ldl','-lGL','-lpthread','-lm'],'compile_real_request_unit')
+  r['repaired_unit_fixture']={'source_sha256':sha(fixedsrc),'source_commit':head(REPO),'executable_sha256':sha(fixedexe),'runtime_changes':False,'old_failed_test_retained':'/workspace/ep_l2_parallel_lane1/local_ideals_release_r2/ideal_meta.log'}
+  tests=[(name,[str(fixedexe),base,str(testdir/'ideal_meta_integrated.config')]) if name=='ideal_meta' else (name,cmd) for name,cmd in tests]
+  cached={}
+  if a.reuse_prefix_receipt:
+   prior=json.loads(a.reuse_prefix_receipt.read_text());assert prior['core_source_commit']==C_SHA and prior['framework_source_commit']==F_SHA and prior['binary_sha256']==r['binary_sha256']
+   for rec in prior['tests']:
+    assert rec['exit_code']==0 and sha(rec['log'])==rec['log_sha256']
+    cmd=rec['command'][2:];assert sha(cmd[0])==prior['test_executables_sha256'][cmd[0]];cached[tuple(cmd)]=rec
+   r['reused_prefix_receipt']={'path':str(a.reuse_prefix_receipt),'sha256':sha(a.reuse_prefix_receipt),'verified_tests':len(cached)}
   r['planned_tests']=tests;save()
   for name,cmd in tests:
-   r.setdefault('test_executables_sha256',{})[cmd[0]]=sha(cmd[0]);rec=run(cmd,name);r['tests'].append(rec);save()
+   r.setdefault('test_executables_sha256',{})[cmd[0]]=sha(cmd[0])
+   if tuple(cmd) in cached:rec=dict(cached[tuple(cmd)],reused_content_immutable=True)
+   else:rec=run(cmd,name)
+   r['tests'].append(rec);save()
   # Compile only an independent native parser/constructor entry against exact
   # production+trace libraries. This is not a simulator runtime rebuild.
   small=out/'effective_entry';small.mkdir();flagmap={}
