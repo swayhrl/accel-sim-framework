@@ -1,0 +1,498 @@
+{
+  "schema": "EPL2_LANE3_LANE2_SHARED_MIN_STIMULUS_V1",
+  "line_bytes": 128,
+  "sector_bytes": 32,
+  "modes": [
+    "B16",
+    "S64",
+    "Unified"
+  ],
+  "source_scope": "Finite non-atomic protocol; no RO/TVD/Ideal/whole-GPU proof",
+  "cycle_policy": "Event/precondition driven; do not copy fixture waits as free buffers or new pipeline assumptions",
+  "cases": [
+    {
+      "case_id": "C01",
+      "name": "same_sector_two_32bit_producers",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "1-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "01020304",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "store",
+          "request_id": "1-2",
+          "address": 4104,
+          "size": 4,
+          "data_hex": "11223344",
+          "byte_mask_128_hex": "00000000000000000000000000000f00",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 3,
+          "op": "read",
+          "request_id": "1-3",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "r",
+          "expected_hex": "010203045e5f5c5d11223344565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "NEW mask32 B/U: mask union8 and sector UID only, numeric bytes unobservable",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "010203045e5f5c5d11223344565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C02",
+      "name": "adjacent_64bit_cross_sector",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "2-1",
+          "address": 4120,
+          "size": 8,
+          "data_hex": "0102030405060708",
+          "byte_mask_128_hex": "000000000000000000000000ff000000",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "store",
+          "request_id": "2-2",
+          "address": 4128,
+          "size": 8,
+          "data_hex": "a1a2a3a4a5a6a7a8",
+          "byte_mask_128_hex": "0000000000000000000000ff00000000",
+          "sector_mask": 2,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 3,
+          "op": "read",
+          "request_id": "2-3",
+          "address": 4096,
+          "size": 64,
+          "snapshot_id": "r",
+          "expected_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d0102030405060708a1a2a3a4a5a6a7a872737071767774756a6b68696e6f6c6d6263606166676465"
+        }
+      ],
+      "simulator_scope": "NEW mask64 B/U: masks16/sector labels/partial fill, no numeric merge claim",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d0102030405060708a1a2a3a4a5a6a7a872737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C03",
+      "name": "delayed_read_then_partial_later_producer",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "3-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "10203040",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "read",
+          "request_id": "3-2",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "held",
+          "expected_hex": "102030405e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        },
+        {
+          "step": 3,
+          "op": "observe",
+          "request_id": "3-3",
+          "assertion": "Hold response5cycles; conflicting store must remain uncommitted/pins1"
+        },
+        {
+          "step": 4,
+          "op": "observe",
+          "request_id": "3-4",
+          "assertion": "Consume held requester exactly once, then pins0"
+        },
+        {
+          "step": 5,
+          "op": "store",
+          "request_id": "3-5",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "55667788",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 6,
+          "op": "expect_snapshot",
+          "request_id": "3-6",
+          "snapshot_id": "held",
+          "expected_hex": "102030405e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "NEW snapshot B/U: actual pin refusal, retained sector snapshot and commit release",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "556677885e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C04",
+      "name": "local_slot_reuse_before_WAD_completion",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "4-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "11223344",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "observe",
+          "request_id": "4-2",
+          "assertion": "Dirty WB lower_accept releases local data; WAD remains live"
+        },
+        {
+          "step": 3,
+          "op": "observe",
+          "request_id": "4-3",
+          "assertion": "Reuse freed slot for another line; same-line demand refused"
+        },
+        {
+          "step": 4,
+          "op": "observe",
+          "request_id": "4-4",
+          "assertion": "True set_done releases WAD once; same-line demand may proceed"
+        },
+        {
+          "step": 5,
+          "op": "read",
+          "request_id": "4-5",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "r",
+          "expected_hex": "112233445e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "REUSE WAD256 actual partition B/U + A1; numeric lower persistence not asserted",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "112233445e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C05",
+      "name": "bank_conflict_fixed_victim_retry",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "5-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "abcd1234",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "observe",
+          "request_id": "5-2",
+          "assertion": "Existing contender owns victim bank; head retries with samevictim/token"
+        },
+        {
+          "step": 3,
+          "op": "observe",
+          "request_id": "5-3",
+          "assertion": "Independent ready other-bank hit remains blocked by pending frontend head"
+        },
+        {
+          "step": 4,
+          "op": "observe",
+          "request_id": "5-4",
+          "assertion": "Head later commits once; independent hit then proceeds"
+        },
+        {
+          "step": 5,
+          "op": "read",
+          "request_id": "5-5",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "r",
+          "expected_hex": "abcd12345e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "NEW frontendHOL B/U + REUSE A1 native16way conflict/victim-binding",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "abcd12345e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C06",
+      "name": "legal_rollback_no_visible_commit",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "observe",
+          "request_id": "6-1",
+          "assertion": "Attempt write reserves resources but must not commit before acceptance"
+        },
+        {
+          "step": 2,
+          "op": "observe",
+          "request_id": "6-2",
+          "assertion": "Legal rollback cancels pending tokens and releases reservations once"
+        },
+        {
+          "step": 3,
+          "op": "read",
+          "request_id": "6-3",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "before",
+          "expected_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        },
+        {
+          "step": 4,
+          "op": "store",
+          "request_id": "6-4",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "01010101",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 5,
+          "op": "read",
+          "request_id": "6-5",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "after",
+          "expected_hex": "010101015e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "GAP: common ft_rollback source checked; no newly proven legal dynamic trigger",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "010101015e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C07",
+      "name": "response_lower_backpressure",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "7-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "04030201",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "read",
+          "request_id": "7-2",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "held",
+          "expected_hex": "040302015e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        },
+        {
+          "step": 3,
+          "op": "observe",
+          "request_id": "7-3",
+          "assertion": "Stall lower/response consumer; hold payload pin and data snapshot"
+        },
+        {
+          "step": 4,
+          "op": "observe",
+          "request_id": "7-4",
+          "assertion": "Release ready; commit once and drain descriptors/WB/WAD"
+        },
+        {
+          "step": 5,
+          "op": "expect_snapshot",
+          "request_id": "7-5",
+          "snapshot_id": "held",
+          "expected_hex": "040302015e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "REUSE FT/A1 partition pressure; NEW snapshot covers held consumer only",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "040302015e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C08",
+      "name": "capacity_refusal_exact_once_release",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "observe",
+          "request_id": "8-1",
+          "assertion": "Fill configured WB/WAD boundary, then refuse capacity+1 before mutation"
+        },
+        {
+          "step": 2,
+          "op": "observe",
+          "request_id": "8-2",
+          "assertion": "After true release, retry exact same request once and drain"
+        },
+        {
+          "step": 3,
+          "op": "store",
+          "request_id": "8-3",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "99aabbcc",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 4,
+          "op": "read",
+          "request_id": "8-4",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "r",
+          "expected_hex": "99aabbcc5e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "REUSE WAD256257th refusal and earlier WBUF/Pool directed capacity cases",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "99aabbcc5e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C09",
+      "name": "stale_incarnation_after_payload_reuse",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "9-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "11224488",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "observe",
+          "request_id": "9-2",
+          "assertion": "Retire old incarnation, reuse same physicalslot for newowner/generation"
+        },
+        {
+          "step": 3,
+          "op": "observe",
+          "request_id": "9-3",
+          "assertion": "Late oldhandle/event must not modify newowner; no wraparound claim"
+        },
+        {
+          "step": 4,
+          "op": "read",
+          "request_id": "9-4",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "new",
+          "expected_hex": "112244885e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        }
+      ],
+      "simulator_scope": "NEW stale_handle B/U actual production type rejects oldgeneration; full packet/wrap gap",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "112244885e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    },
+    {
+      "case_id": "C10",
+      "name": "partial_store_with_late_sector_fill",
+      "line_address": 4096,
+      "initial_line_hex": "5a5b58595e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425",
+      "events": [
+        {
+          "step": 1,
+          "op": "store",
+          "request_id": "10-1",
+          "address": 4096,
+          "size": 4,
+          "data_hex": "0a0b0c0d",
+          "byte_mask_128_hex": "0000000000000000000000000000000f",
+          "sector_mask": 1,
+          "native_coalesced_request_bytes": 32
+        },
+        {
+          "step": 2,
+          "op": "observe",
+          "request_id": "10-2",
+          "assertion": "Lower snapshot for untouched bytes arrives after partial producer"
+        },
+        {
+          "step": 3,
+          "op": "read",
+          "request_id": "10-3",
+          "address": 4096,
+          "size": 32,
+          "snapshot_id": "merged",
+          "expected_hex": "0a0b0c0d5e5f5c5d52535051565754554a4b48494e4f4c4d4243404146474445"
+        },
+        {
+          "step": 4,
+          "op": "observe",
+          "request_id": "10-4",
+          "assertion": "Dirty byte mask stays4; other sectors and newincarnation remain unchanged"
+        }
+      ],
+      "simulator_scope": "NEW partial mask/fill producer tests + REUSE sector merge; numeric byte merge remains RTL obligation",
+      "byte_reference_scope": "Independent numeric byte-address model only; not simulator byte output or lifecycle proof",
+      "RTL_adapter_must_check": "Apply ready/valid and lifecycle assertions; compare actual1024bit/byte-enable data, snapshots and exact-once/drain separately",
+      "final_line_hex": "0a0b0c0d5e5f5c5d52535051565754554a4b48494e4f4c4d42434041464744457a7b78797e7f7c7d72737071767774756a6b68696e6f6c6d62636061666764651a1b18191e1f1c1d12131011161714150a0b08090e0f0c0d02030001060704053a3b38393e3f3c3d32333031363734352a2b28292e2f2c2d2223202126272425"
+    }
+  ]
+}

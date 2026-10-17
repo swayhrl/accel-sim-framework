@@ -1,0 +1,262 @@
+{
+  "scope": "ACTUAL_FROZEN_CACHE_MASK_SECTOR_SNAPSHOT_AND_HANDLE_CHECKS_NOT_NUMERIC_BYTE_OR_FULL_PARTITION_PROOF",
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/usr/local/cuda-11.8/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src",
+        "-I/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1",
+        "-I/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/ISA_Def",
+        "-I/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/trace-driven",
+        "-I/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/trace-parser",
+        "-I/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/routers",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/libcuda",
+        "-I/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/routers",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-std=gnu++17",
+        "-c",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane3-v1/util/ep_l2/mechanism_analysis_v1/minimal_cache_probe.cc",
+        "-o",
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe.o"
+      ],
+      "process": {
+        "pid": 2319442,
+        "start_ticks": 900127791,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/compile.log",
+      "exit": 0,
+      "sha256": "02db45b63e2717b55a61b71bdffbfdff0e41853d968e9a49d476297fcf08d822"
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe.o",
+        "-o",
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-driven/libtrace-driven.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-ldl",
+        "-lGL",
+        "-lpthread",
+        "-lm"
+      ],
+      "process": {
+        "pid": 2319448,
+        "start_ticks": 900128008,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/link.log",
+      "exit": 0,
+      "sha256": "131782e235cfbf4982ef0eb1d7ba03b00cb76d121c6add745210f6294a875f01"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "mask32",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-4.config"
+      ],
+      "process": {
+        "pid": 2319452,
+        "start_ticks": 900128181,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/B16_BANKED_mask32.log",
+      "exit": 0,
+      "sha256": "fd563ea4e4303a294de4db8fdc9d25ecdeb5a3486a0f442134e108b4c2e1ee6c"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "mask64",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-4.config"
+      ],
+      "process": {
+        "pid": 2319454,
+        "start_ticks": 900128208,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/B16_BANKED_mask64.log",
+      "exit": 0,
+      "sha256": "6a5e797b5ae91f71d1afbfbcf51361853c33a7afa2caef63ff628de71c84467a"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "snapshot",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-4.config"
+      ],
+      "process": {
+        "pid": 2319456,
+        "start_ticks": 900128236,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/B16_BANKED_snapshot.log",
+      "exit": 0,
+      "sha256": "333ba12c9524fe17131326f25065993c70e29bde921d83562ab53e6117d1839b"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "stale_handle",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-4.config"
+      ],
+      "process": {
+        "pid": 2319458,
+        "start_ticks": 900128263,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/B16_BANKED_stale_handle.log",
+      "exit": 0,
+      "sha256": "fb80aac7babf73b8db288261ecebc23759089cb7e902d177ce85c2f9af5f00fc"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "mask32",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-4.config"
+      ],
+      "process": {
+        "pid": 2319461,
+        "start_ticks": 900128305,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/U_WB16_mask32.log",
+      "exit": 0,
+      "sha256": "e882bc6f9914e5bdd1ac09ef5f5bb08546830288a2259af087e10e63eae3a540"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "mask64",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-4.config"
+      ],
+      "process": {
+        "pid": 2319463,
+        "start_ticks": 900128332,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/U_WB16_mask64.log",
+      "exit": 0,
+      "sha256": "9634e6e762077092dc7b38b1834c89668f41e0269b01d7a02f690e369580c984"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "snapshot",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-4.config"
+      ],
+      "process": {
+        "pid": 2319465,
+        "start_ticks": 900128360,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/U_WB16_snapshot.log",
+      "exit": 0,
+      "sha256": "1b5e343c0689eca33ffb3a3208158904034b5f35165ff7c98d817dfd25e44fac"
+    },
+    {
+      "command": [
+        "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/probe",
+        "stale_handle",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-4.config"
+      ],
+      "process": {
+        "pid": 2319467,
+        "start_ticks": 900128387,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_mechanism_lane3_v1/minimal_cpp_r1/U_WB16_stale_handle.log",
+      "exit": 0,
+      "sha256": "fa72d7e42c707f049ebe9719b7c554731ab34e29e1eaf79f1340b30605e21a1a"
+    }
+  ],
+  "source_core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+  "source_framework": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+  "new_apps": 0,
+  "before": {
+    "available_memory_bytes": 177318490112,
+    "disk_free_bytes": 58434244608,
+    "share_disk_free_bytes": 44453953536
+  },
+  "lease": "6423573798d74875915db1a75e4fd971",
+  "source_sha256": "4d1b82046c67c5cb7301eb6d0d3f8c7ceb549ebd412bec46198bf66c7bc0e36f",
+  "archives": {
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libentrypoint.a": "7cb673caf7a2898dfcc264a4a93336fa495ebbea5ca89238d62e164208d760fe",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda/libcuda.a": "de67d94de02dcb54ab9415c614e27d18ae1852f38e70868448197c44206d787e",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/cuda-sim/libptxsim.a": "95fbad61b8b5f57073244f0eed782d01e2cd51ad4d56f82e9e9e8abd3ebd56f9",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a": "b7628023eee94681ac859cc5721494a2c582994a799669ed143a5d127f3d9426",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/intersim2/libintersim.a": "8cb38dad895640840967c6f7a764dd6eb78b8a932fb963a31d7fb16a4467bb4a",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a": "91316c734141019d1b89c287f04324a072fd5e29fd40e1617a6eab6089fae66b",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-driven/libtrace-driven.a": "87d794e8cb8397ccd8cf4ba0993f0b27ef13c1e05734f26661a07f43df57e247",
+    "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-parser/libtrace-parser.a": "8b43c3e731f35d2456eee61922309cd214c105d85af115b1e089d451e19f0a0b"
+  },
+  "binary_sha256": "13b24df3cd61066d0752c03efdce9591037236daec9889b2ceabbf50040820a7",
+  "status": "EIGHT_FROZEN_PRODUCTION_CACHE_OR_TYPE_CHECKS_PASS_BYTE_VALUES_UNOBSERVABLE",
+  "released": true
+}

@@ -1,0 +1,11 @@
+# 最小正确性：10个共享场景、10次新增C++驱动；不等同于全byte数值验证
+
+MINIMAL_VALIDATION_COVERAGE.csv逐类标明复用、新增及缺口。新增C++共有10个进程：mask32、mask64、snapshot、stale_handle各B/U（8次），frontend_hol各B/U（2次）；两次stale子进程的预期SIGABRT不代表父测试失败。注意stale_handle内部公共store固定mode2；两次只改变外层B/U初始化配置，不是两种generation政策的独立覆盖。公共handle校验本身不依赖角色政策，此证据仍只到公共类型，不能扩展成B/U完整晚到packet路径。使用真实Core7b8 cache/Tag/payload/MSHR/响应方法与冻结archive，lower response为明确的sector-label外壳，不是完整GPU/partition执行。没有改runtime或重跑旧合格case。
+
+SHARED_STIMULI.json含10个短场景，4/8byte合法对齐写、已知128B初值、128bit byte-mask、sector mask、request/snapshot identity及阶段断言。byte_reference.py完全不导入模拟器/RTL，是byte-address字典和不可变read snapshot。REFERENCE_SELF_CHECK的10个PASS只证明参考/向量自洽；observe内的ready/valid、rollback、capacity和generation断言由Lane2实际RTL adapter执行，目前没有RTL输出输入该检查。
+
+实际cache测试只能观察构造coalesced32B请求的mask、dirty-byte metadata、32B sector producer-version、pin/request/lifecycle。未覆盖字节保留的数值期望给RTL；模拟器没有输出那些1024bit实际数据，不能把reference自测、trace文件hash或sector UID相等称生产byte-merge证明。ALL_DATA虽为byte-address producer-version符号，当前known_numeric_bytes=0，也不是数值SASS等价。
+
+原RO Core30c2920a保留；其r16 RO源码绑定回归不被挪用为普通Core7b8/新combinedCore9bd30的资格。新C++仅覆盖Core7b8，未来combined runtime必须由Lane1/5按受影响范围消费/重放同一小驱动；已有producer/独立资格另有身份，不从文件名继承。
+
+合法rollback仍是明确缺口：公共ft_rollback源码有cancel/release/restore路径，现有受理输入的raw rollback=0；本轮没有用私有状态注入或违反前端预检来捏造动态PASS。晚到事件的新证据只到旧handle拒绝，不宣称完整packet路由或generation回绕；有限generation位宽/存活约束交Lane2。
