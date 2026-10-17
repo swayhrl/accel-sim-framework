@@ -113,11 +113,13 @@ def validate_atomic_input_scope(spec, release, traces):
     require(audit['status'] == 'COMPLETE_NATIVE_OPCODE_AUDIT' and
             audit['input_scope'] == 'COMPLETE_INPUT_HAS_NO_NATIVE_ATOMIC_OPCODE_RECORDS',
             'input atomic scope not independently cleared')
+    from local_ideal_scope import input_source_identity
+    input_identity,input_producer=input_source_identity(spec,release)
     require(audit['tool_sha256'] == release['atomic_input_auditor_sha256'] and
-            audit['producer_publication'] == release['producer_publication_commit'],
+            audit['producer_publication'] == input_producer,
             'input scope tool/producer differs from qualified release')
     for name in ('core_source_commit', 'framework_source_commit', 'binary_sha256', 'trace_content_sha256'):
-        require(audit['identity'][name] == spec['identity'][name], 'input scope identity mismatch: ' + name)
+        require(audit['identity'][name] == (spec['identity'][name] if name=='trace_content_sha256' else input_identity[name]), 'input scope identity mismatch: ' + name)
     require(audit['trace_content_manifest'] == traces and
             audit['global_atomic_records_with_repeats'] == 0 and
             audit['shared_atomic_records_with_repeats'] == 0,
@@ -139,8 +141,10 @@ def validate_native_legacy_semantic_proof(spec, release, traces, binding=None):
     require(report['status'] == 'PASS_FULL_NATIVE_BYTE_AND_ZERO_MASK_SEMANTIC_PROOF' and
             report['tool_sha256'] == binding['tool_sha256'] and
             report['tooling_source_commit'] == binding['source_commit'], 'r17 proof incomplete or different source')
+    from local_ideal_scope import input_source_identity
+    input_identity,_=input_source_identity(spec,release)
     for name in ('core_source_commit', 'framework_source_commit', 'binary_sha256'):
-        require(report['source_identity'][name] == spec['identity'][name], 'r17 semantic source/binary mismatch')
+        require(report['source_identity'][name] == input_identity[name], 'r17 semantic source/binary mismatch')
     matches = [r for r in report['workloads'] if r['workload'] == spec['identity']['workload']]
     require(len(matches) == 1 and matches[0]['status'] == 'FULL_ORIGINAL_BYTES_AND_NATIVE_ZERO_MASK_SEMANTICS_PROVEN', 'r17 workload scope unsupported')
     bodies = [{k: f[k] for k in ('name', 'sha256', 'bytes')} for f in matches[0]['files']]
@@ -155,18 +159,23 @@ def inspect(spec):
     reject_withdrawn(identity, current_manifest(authority))
     require(set(identity['ideal_vector']) == IDEALS, 'ideal vector must include every V1 ideal mode')
     feature = identity['feature_vector']
-    detach, bypass = ro_bits(feature)
-    for flag in ('finite_wbuf', 'unified_wb', 'tvd', 'adaptive_policy'):
-        require(type(feature[flag]) is bool, 'feature flag must be boolean')
-    for field in ('wbuf_entries', 'payload_capacity_per_slice', 'bank_count', 'ops_per_bank_cycle'):
-        require(type(feature[field]) is int, 'resource capacity/service field must be an integer')
-    require(all(type(v) is bool for v in identity['ideal_vector'].values()), 'ideal flags must be boolean')
-    require(feature['finite_wbuf'] is True and feature['wbuf_entries'] in (8, 16), 'finite WBUF capacity required')
-    require(feature['payload_capacity_per_slice'] == 1152 + feature['wbuf_entries'], 'unmatched data budget')
-    require(feature['bank_count'] == 4 and feature['ops_per_bank_cycle'] == 1, 'bank service mismatch')
-    require(not feature['adaptive_policy'], 'adaptive policy is not a qualified V1 mode')
-    require(feature['unified_wb'] or not (feature['tvd'] or detach or bypass), 'TVD/RO require integrated unified substrate')
-    require(not any(identity['ideal_vector'].values()), 'ideal runs use Lane 4 diagnostic runner and separate tables')
+    if spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
+        from local_ideal_scope import features as local_features
+        require(digest(spec['scope_tool']['path'])==spec['scope_tool']['sha256'],'Local scope tool changed')
+        local_features(identity,spec['profile'])
+    else:
+        detach, bypass = ro_bits(feature)
+        for flag in ('finite_wbuf', 'unified_wb', 'tvd', 'adaptive_policy'):
+            require(type(feature[flag]) is bool, 'feature flag must be boolean')
+        for field in ('wbuf_entries', 'payload_capacity_per_slice', 'bank_count', 'ops_per_bank_cycle'):
+            require(type(feature[field]) is int, 'resource capacity/service field must be an integer')
+        require(all(type(v) is bool for v in identity['ideal_vector'].values()), 'ideal flags must be boolean')
+        require(feature['finite_wbuf'] is True and feature['wbuf_entries'] in (8, 16), 'finite WBUF capacity required')
+        require(feature['payload_capacity_per_slice'] == 1152 + feature['wbuf_entries'], 'unmatched data budget')
+        require(feature['bank_count'] == 4 and feature['ops_per_bank_cycle'] == 1, 'bank service mismatch')
+        require(not feature['adaptive_policy'], 'adaptive policy is not a qualified V1 mode')
+        require(feature['unified_wb'] or not (feature['tvd'] or detach or bypass), 'TVD/RO require integrated unified substrate')
+        require(not any(identity['ideal_vector'].values()), 'ideal runs use Lane 4 diagnostic runner and separate tables')
     require(identity['epoch_range'].get('scope') == 'full_application', 'diagnostic fragments cannot enter implementation results')
     require(digest(spec['binary']) == identity['binary_sha256'], 'binary content mismatch')
     configs = asset_manifest(spec['configs'], ordered=True)
@@ -351,7 +360,11 @@ def run(spec, registry):
             require(normal and cycles is not None and instructions is not None, 'missing native terminal execution evidence')
             if experiment is not None:
                 from headroom_config import validate_runtime_dump
-                result['downstream_effective_config'] = validate_runtime_dump(directory / 'raw.log', spec)
+                if spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
+                    from local_ideal_scope import runtime_dump
+                    result['downstream_effective_config']=runtime_dump(directory/'raw.log',spec)
+                else:
+                    result['downstream_effective_config'] = validate_runtime_dump(directory / 'raw.log', spec)
             # Parser adapter must produce terminal_summary.json with explicit, source-mapped fields.
             parser = spec['parser']
             with (directory / 'parser.log').open('xb') as output:

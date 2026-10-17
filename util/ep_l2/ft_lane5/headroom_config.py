@@ -60,6 +60,9 @@ def validate(spec,release,configs,assets):
         return None
     require(digest(binding['path'])==binding['sha256'],'Condition qualification changed')
     m=json.loads(Path(binding['path']).read_text())
+    if m.get('qualification_kind')=='LOCAL_IDEAL_NATIVE_V1':
+        from local_ideal_scope import validate as validate_local
+        return validate_local(spec,release,configs,assets,m)
     require(m['status']=='INDEPENDENT_CONFIG_PASS' and m['coordination_commit']==(COORDINATION if m['experiment_id']==EXPERIMENT else PARALLEL_COORDINATION),'Unqualified condition')
     require(spec.get('experiment_id')==m['experiment_id'] and m['experiment_id'] in (EXPERIMENT,PARALLEL_EXPERIMENT),'Wrong experiment grouping')
     regime=spec.get('regime');require(regime==m['regime'],'Unknown/mismatched condition')

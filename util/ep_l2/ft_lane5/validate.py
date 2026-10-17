@@ -220,8 +220,18 @@ def validate_summary(summary, identity):
     slices = summary.get('slices')
     require(slices == 64, 'performance summary must cover all 64 slices')
     capacity = identity['feature_vector']['payload_capacity_per_slice']
-    require(capacity in (1168, 1160) and summary['payload_capacity'] == capacity * slices,
-            'physical budget/scope mismatch')
+    if summary.get('diagnostic_scope') == 'LOCAL_IDEAL_NATIVE_V1':
+        nominal = identity['feature_vector'].get('nominal_payload_capacity_per_slice')
+        extra = summary.get('diagnostic_payload_extra_slots')
+        require(nominal == 1168 and integer(extra), 'explicit local nominal/extra capacity required')
+        require(identity['feature_vector']['diagnostic_extra_payload_backing'] == identity['ideal_vector']['wb'], 'wrong diagnostic capacity declaration')
+        require(capacity == (None if identity['ideal_vector']['wb'] else nominal), 'local finite/diagnostic capacity confused')
+        by_slice = summary.get('diagnostic_payload_extra_by_slice', {})
+        require(set(by_slice) == {str(i) for i in range(64)} and all(integer(v) and v <= 128 for v in by_slice.values()) and sum(by_slice.values()) == extra, 'exact per-slice diagnostic backing missing')
+        require((identity['ideal_vector']['wb'] or extra == 0) and summary['payload_capacity'] == nominal * slices + extra, 'local diagnostic backing conservation failed')
+    else:
+        require(capacity in (1168, 1160) and summary['payload_capacity'] == capacity * slices,
+                'physical budget/scope mismatch')
     require(summary['payload_free'] + sum(roles.values()) == summary['payload_capacity'], 'payload conservation failure')
     require(summary.get('requester_exact_once_audit') is True, 'aggregate counts alone cannot prove exact-once responses')
     require(summary.get('data_correctness_qualification') is True, 'data correctness qualification missing')

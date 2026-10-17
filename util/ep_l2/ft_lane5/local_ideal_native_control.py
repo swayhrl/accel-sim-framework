@@ -2,6 +2,7 @@
 import argparse,csv,json,os,resource,shutil,subprocess,sys,time
 from pathlib import Path
 from registry import Registry,run_key,write_json,process_identity,PARALLEL
+from acceptance import immutable_loader_binding
 from run import digest,require,asset_manifest,content_hash,process_tree_rss,terminate_owned,tree_bytes
 from qualify_native_off import BASELINE,CSVS,ENV,native_metrics,safe_resources
 
@@ -29,7 +30,7 @@ def prepare():
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prepare-only',action='store_true');a=p.parse_args();h,prod,s,cell,r=prepare()
  if a.prepare_only:print(json.dumps({'status':'CANARY_REGISTERED_NOT_STARTED','cell':cell,'new_application_starts':0}));return
- snap=r.snapshot();deadline=snap['campaigns'][PARALLEL]['deadline_unix'];require(time.time()<deadline,'No new canary after deadline');safe_resources();directory=OUT/s['run_key'];fresh,allocation=r.claim(s['identity'],'lane5',directory,cpu=1,memory=4*2**30,experiment={'experiment_id':PARALLEL,'regime':'H0','profile':'NATIVE_OFF_CONTROL','cell_id':cell['cell_id'],'deadline_unix':deadline})
+ snap=r.snapshot();deadline=snap['campaigns'][PARALLEL]['deadline_unix'];require(time.time()<deadline,'No new canary after deadline');safe_resources();directory=OUT/s['run_key'];fresh,allocation=r.claim(s['identity'],'lane5',directory,cpu=1,memory=4*2**30,client_binding=immutable_loader_binding(),experiment={'experiment_id':PARALLEL,'regime':'H0','profile':'NATIVE_OFF_CONTROL','cell_id':cell['cell_id'],'deadline_unix':deadline})
  if not fresh:print('DUPLICATE_CONTROL_NOT_STARTED');return
  proc=None;status='INCOMPLETE';report={'qualification_control':True,'experiment_id':PARALLEL,'cell_id':cell['cell_id'],'identity':s['identity'],'run_key':s['run_key'],'allocation':allocation,'status':status};resource.setrlimit(resource.RLIMIT_CORE,(0,0));started=time.monotonic()
  try:

@@ -1,0 +1,35 @@
+.....E.E......
+======================================================================
+ERROR: test_exact_source_and_complete_bytes_pass (test_native_semantic_admission.NativeSemanticAdmission.test_exact_source_and_complete_bytes_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_native_semantic_admission.py", line 9, in test_exact_source_and_complete_bytes_pass
+    def test_exact_source_and_complete_bytes_pass(self):validate_native_legacy_semantic_proof(self.spec,self.release,self.traces,self.binding)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py", line 145, in validate_native_legacy_semantic_proof
+    input_identity,_=input_source_identity(spec,release)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/local_ideal_scope.py", line 57, in input_source_identity
+    if binding is None:return {k:spec['identity'][k] for k in IDENTITY},release['producer_publication_commit']
+                                                                        ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'producer_publication_commit'
+
+======================================================================
+ERROR: test_wrong_source_or_partial_body_refuses (test_native_semantic_admission.NativeSemanticAdmission.test_wrong_source_or_partial_body_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_native_semantic_admission.py", line 18, in test_wrong_source_or_partial_body_refuses
+    with self.assertRaises(ValueError):validate_native_legacy_semantic_proof(self.spec,self.release,self.traces,self.binding)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py", line 145, in validate_native_legacy_semantic_proof
+    input_identity,_=input_source_identity(spec,release)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/local_ideal_scope.py", line 57, in input_source_identity
+    if binding is None:return {k:spec['identity'][k] for k in IDENTITY},release['producer_publication_commit']
+                                                                        ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'producer_publication_commit'
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.015s
+
+FAILED (errors=2)

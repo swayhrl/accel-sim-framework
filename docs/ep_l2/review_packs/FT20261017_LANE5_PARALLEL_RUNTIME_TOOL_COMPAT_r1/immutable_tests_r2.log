@@ -1,0 +1,17 @@
+..F.................................................
+======================================================================
+FAIL: test_pointer_snapshot_survives_canonical_staging (test_immutable_publication.ImmutablePublicationTests.test_pointer_snapshot_survives_canonical_staging)
+----------------------------------------------------------------------
+ValueError: missing current supersession schema
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_immutable_publication.py", line 17, in test_pointer_snapshot_survives_canonical_staging
+    with self.assertRaisesRegex(ValueError,'bytes changed'):acceptance.load_current_authority(client)
+AssertionError: "bytes changed" does not match "missing current supersession schema"
+
+----------------------------------------------------------------------
+Ran 52 tests in 0.315s
+
+FAILED (failures=1)
