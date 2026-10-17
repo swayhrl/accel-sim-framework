@@ -1,0 +1,17 @@
+read_verilog -sv -defer -D SYNTHESIS "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-v1/rtl/ep_l2/rtl/ep_l2_bank_arbiter.sv" "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv" "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-v1/rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv" "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-v1/rtl/ep_l2/rtl/ep_l2_payload_sram.sv" "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-v1/rtl/ep_l2/rtl/ep_l2_slice.sv"
+hierarchy -check -top ep_l2_slice_ctrl -chparam MODE 1 -chparam STATIC_WB 16 -chparam N_TAG 1024 -chparam N_PAYLOAD 1168 -chparam N_WAD 128 -chparam GEN_W 32
+log -stdout SYNTHESIS_START
+synth -top ep_l2_slice_ctrl -noabc
+log -stdout GENERIC_SYNTHESIS_COMPLETE
+check -assert
+select -assert-none t:$dlatch t:$_DLATCH_*
+read_liberty -lib "/workspace/ep_l2_rtl_cost_open_flow_v1/r1/Nangate45_typ.lib"
+dffunmap
+dfflibmap -liberty "/workspace/ep_l2_rtl_cost_open_flow_v1/r1/Nangate45_typ.lib"
+abc -exe "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-v1/rtl/ep_l2/flow/abc_linebuffered.sh" -script "+strash;map,-D,883;cleanup,-i,-o;buffer;upsize,-D,883;dnsize,-D,883;stime,-p" -liberty "/workspace/ep_l2_rtl_cost_open_flow_v1/r1/Nangate45_typ.lib" -constr "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_OPEN_FLOW_V1_lane2_r1/UNIFIED-map-clean-v2/abc.constr" -D 883
+log -stdout LIBRARY_MAPPING_COMPLETE
+clean
+tee -o "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_OPEN_FLOW_V1_lane2_r1/UNIFIED-map-clean-v2/stat.json" stat -json -liberty "/workspace/ep_l2_rtl_cost_open_flow_v1/r1/Nangate45_typ.lib"
+write_verilog -noattr -noexpr "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_OPEN_FLOW_V1_lane2_r1/UNIFIED-map-clean-v2/mapped.v"
+check -assert
+select -assert-none t:$dlatch t:$_DLATCH_*
