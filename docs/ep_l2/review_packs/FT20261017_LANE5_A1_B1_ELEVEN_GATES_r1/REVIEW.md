@@ -1,0 +1,9 @@
+# Corrected A1/B1 independent11 qualification
+
+All original11 gates pass independently for exact Core7b8e6ac7 / Framework9bd17f9d / vendor f90c430c / binary23094a9d. Actual Lane5 independent31 includes original21, four final strong A1 and six B1, followed by four invalid-mode rejections and a new registered native OFF control. OFF totals73873/56000000, all64 clean slices and seven CSV files match frozen native baseline exactly. Original R0/R1 withdrawals are retained. New certificate scope is B16_BANKED/U_WB16 with full native non-atomic input proof; TVD/RO/Ideal and numeric SASS/PTX correctness are excluded.
+
+SAD, vectorAdd and CFD full trace bytes/opcodes are independently complete and have zero global/shared atomic records. First pair remains predeclared SAD negative control. Every application now requires the source/binary/trace-bound content proof in the runner, not an assumption from names. Four focused admission guards passed. Convolution auditor encountered unsupported native address-tail syntax and refused eligibility; its ordinary parser compatibility repair is separate and does not invalidate completed first3 input proofs or block the first pair. No convolution/FWT launch permission or result is claimed.
+
+ELEVEN_GATE_REVIEW maps actual tests to each gate and limits stale-fill qualification to attached B/U lifecycle. A1 keeps the same pending victim/Tag/payload generation across competing fill, true lower backpressure/accept and distinct set_done. Current raw C1 legacy resident-headroom is not used for causal claims.
+
+This milestone issues independent source qualification only. Current V2 launch authorization and fresh central resource admission still precede each primary application. Accepted pairs remain0 at this publication. Raw CSV CRLF and all logs are preserved; whitespace checks are scoped to docs/JSON/Python.

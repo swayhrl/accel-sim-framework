@@ -1,0 +1,113 @@
+{
+  "controller_identity": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "pid": 1768968,
+    "start_ticks": 896152193
+  },
+  "global_atomic_records_with_repeats": 0,
+  "identity": {
+    "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+    "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "epoch_range": {
+      "epochs": "all",
+      "scope": "full_application"
+    },
+    "feature_vector": {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 1168,
+      "ro": false,
+      "tvd": false,
+      "unified_wb": false,
+      "wbuf_entries": 16
+    },
+    "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+    "ideal_vector": {
+      "meta": false,
+      "read_hit": false,
+      "wb": false
+    },
+    "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+    "termination_contract": {
+      "hardware_drained": true,
+      "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+      "normal_exit": true,
+      "timeout_seconds": 3600
+    },
+    "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+    "workload": "vectorAdd_4M"
+  },
+  "input_scope": "COMPLETE_INPUT_HAS_NO_NATIVE_ATOMIC_OPCODE_RECORDS",
+  "limitations": "Opcode/input eligibility only; no atomic numeric correctness, A1/eleven-gate qualification or performance authority",
+  "native_schema_sources": {
+    "gpu-simulator/ISA_Def/ampere_opcode.h": "af35b0e1d889570e90b5a871fb1100c7bb9393412f06831a20fd2857529b4cfd",
+    "gpu-simulator/ISA_Def/kepler_opcode.h": "475f57896508a698059f7180ab4b8ad9db5861f7ccc5fde8f76fffac0e1e358d",
+    "gpu-simulator/ISA_Def/pascal_opcode.h": "c5fb9b3d75a006c8cba23033095fe0d37d55e380fcd46db074ae43be9ba1e74a",
+    "gpu-simulator/ISA_Def/turing_opcode.h": "f89f4a87600c11973c3f886ec701e952741c6718b304013c71f548cc9190136c",
+    "gpu-simulator/ISA_Def/volta_opcode.h": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+    "gpu-simulator/trace-driven/trace_driven.cc": "7614c6b5196b030daa9e9db08d712bd0e9f6c303e5bca1181f8b5a8d35699327",
+    "gpu-simulator/trace-parser/trace_parser.cc": "9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28",
+    "gpu-simulator/trace-parser/trace_parser.h": "f483cfef7b15d765f737d27d88b5d171231078c09da51cb6da23f1139da141dd"
+  },
+  "ordered_kernel_instances": 1,
+  "producer_publication": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+  "resource_lease": "abec7f91578444ed942f9e510688ef19",
+  "scientific_acceptance_or_launch": false,
+  "shared_atomic_records_with_repeats": 0,
+  "status": "COMPLETE_NATIVE_OPCODE_AUDIT",
+  "tool_sha256": "6ad289048168c83b1354ac73c63e9c9444fec75ac8963b3e99e4f0a8896962b8",
+  "tooling_source_commit": "e4e5ec8f471ee23ea3b42fc229b5cabf99cc10c8",
+  "trace_content_manifest": [
+    {
+      "bytes": 103535866,
+      "name": "kernel-1.traceg",
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d"
+    },
+    {
+      "bytes": 94,
+      "name": "kernelslist.g",
+      "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a"
+    }
+  ],
+  "trace_files": [
+    {
+      "active_lane_instruction_records": 56000000,
+      "atomic_absence": true,
+      "blocks": 15625,
+      "bytes": 103535866,
+      "global_atomic_active_lane_records": 0,
+      "global_atomic_opcodes": {},
+      "global_atomic_records": 0,
+      "instruction_records": 2000000,
+      "metadata": {
+        "binary version": "70",
+        "block dim": "(256,1,1)",
+        "cuda stream id": "0",
+        "grid dim": "(15625,1,1)",
+        "kernel id": "1",
+        "kernel name": "_Z6VecAddPKfS0_Pfi",
+        "nregs": "12",
+        "shmem": "0"
+      },
+      "name": "kernel-1.traceg",
+      "opcode_counts": {
+        "EXIT": 250000,
+        "FADD": 125000,
+        "IMAD": 125000,
+        "IMAD.WIDE": 375000,
+        "ISETP.GE.AND": 125000,
+        "LDG.E.SYS": 250000,
+        "MOV": 250000,
+        "S2R": 250000,
+        "SHFL.IDX": 125000,
+        "STG.E.SYS": 125000
+      },
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+      "shared_atomic_opcodes": {},
+      "shared_atomic_records": 0,
+      "status": "COMPLETE_NATIVE_OPCODE_COVERAGE"
+    }
+  ]
+}
