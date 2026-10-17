@@ -31,16 +31,11 @@ module ep_l2_metadata_word #(
     wire [GEN_W-1:0] prefix[0:PREFIX_L];
     assign prefix[0]={generation[GEN_W-1:1],generation[0]|install_step_two};
     generate for(genvar level=0;level<PREFIX_L;level=level+1)begin: increment_prefix
-      for(genvar bitno=0;bitno<GEN_W;bitno=bitno+1)begin: bit_prefix
-        if(bitno>=(1<<level))assign prefix[level+1][bitno]=prefix[level][bitno]&prefix[level][bitno-(1<<level)];
-        else assign prefix[level+1][bitno]=prefix[level][bitno];
-      end
+      localparam [GEN_W-1:0] LOW_ONES={GEN_W{1'b1}} >> (GEN_W-(1<<level));
+      assign prefix[level+1]=prefix[level]&((prefix[level]<<(1<<level))|LOW_ONES);
     end endgenerate
-    wire [GEN_W-1:0] carry,next_generation;
-    assign carry[0]=!install_step_two;
-    generate for(genvar bitno=1;bitno<GEN_W;bitno=bitno+1)begin: increment_carry
-      assign carry[bitno]=prefix[PREFIX_L][bitno-1];
-    end endgenerate
+    wire [GEN_W-1:0] carry={prefix[PREFIX_L][GEN_W-2:0],!install_step_two};
+    wire [GEN_W-1:0] next_generation;
     assign next_generation=generation^carry;
     assign owner_tag=DYNAMIC_OWNER ? dynamic_owner : {TAG_W{1'b0}};
     always @(posedge clk) begin
