@@ -58,7 +58,7 @@ CPU执行记录：单点峰值RSS最高5,009,408 KiB（约4.78GiB）；采样并
 
 保留一次确定性包装修复：V1把独立EP-L2项目误识别为DTC执行权冲突；在没有新点完成性能时，V2仅按固定binary/config/path fingerprint区分该项目，所有项目仍计入同一资源压力与内存门槛。原2个runner按UUID/PID/start_ticks接续，未重启、未重置超时、未创建新attempt。修复在后续5点启动前push/fetch-back；原HOLD、交接证据及退出码保留在 [wrapper_repair_v2](wrapper_repair_v2) 和 [WRAPPER_AUTHORITY_SCOPE_REPAIR_V2.md](WRAPPER_AUTHORITY_SCOPE_REPAIR_V2.md)。
 
-用户13:03要求后台监控并暂停Goal后，独立只读observer仅记录状态；最初一次observer因继承PYTHONHOME启动失败，以system Python -E确定性修复，未触及模拟或参数。observer于16:46自然退出并写完成标记。监控交接提交84ff15071的两次TLS推送失败如实保留于pause handoff，最终交付push/fetch-back会一并包含该提交。旧工具轮询停止不等于模拟失败；原实际7个attempt均自然exit0。
+用户13:03要求后台监控并暂停Goal后，独立只读observer仅记录状态；最初一次observer因继承PYTHONHOME启动失败，以system Python -E确定性修复，未触及模拟或参数。observer于16:46自然退出并写完成标记。监控交接提交84ff15071的两次TLS推送失败如实保留于pause handoff，该提交已随完整内容303019529一并推送并fetch-back核实，见 CONTENT_PUBLICATION_FETCH_BACK.json。旧工具轮询停止不等于模拟失败；原实际7个attempt均自然exit0。
 
 原Lane A HEAD f5c37d6e、Core6fba0136均clean且未变；原44行manifest、HOLD_LAUNCHES、ROW_ADMISSION_HOLDS、旧锁inode与无owner状态均复核。5个旧对照stdout/start/terminal/config/runtime身份再次核实。未重启原Goal、未写旧raw。未运行DWT2D/BICG holdout、T2、modern128、LUD/2D/其它新输入或新机制；没有改原GM12或主图。
 
@@ -66,4 +66,4 @@ CPU执行记录：单点峰值RSS最高5,009,408 KiB（约4.78GiB）；采样并
 
 最终矩阵 [FULL_MATRIX.tsv](FULL_MATRIX.tsv)，固定评分 [DISCOVERY_SCORE.tsv](DISCOVERY_SCORE.tsv)，每UUID的 [strict](strict) 与 [run_receipts](run_receipts)，独立终态审计 [FINAL_IDENTITY_AUDIT.json](FINAL_IDENTITY_AUDIT.json)，完整attempt原文件SHA [FINAL_RAW_FILES_SHA256.tsv](FINAL_RAW_FILES_SHA256.tsv)，控制身份 [FINAL_CONTROL_IDENTITIES.tsv](FINAL_CONTROL_IDENTITIES.tsv)，根目录收据/资源SHA [ROOT_EVIDENCE_SHA256.tsv](ROOT_EVIDENCE_SHA256.tsv)，包内文件SHA [FILES_SHA256.tsv](FILES_SHA256.tsv)。大raw和资源样本保留在原174 `/workspace/dtc-tag-pilot-174-v1`，未提交日志、trace、binary或build树。
 
-本T1到此结束。C值得提交“同一个配置的独立holdout + 实际硬件成本”审查；两输入探索GM不是论文GM12。当前没有自动holdout/T2执行权，不能把C替换进原44行、原IO/OO或冻结主结果。最终commit/tree/remote fetch-back回执另保存在原174根目录，以避免Git提交自身hash的循环依赖。
+本T1到此结束。C值得提交“同一个配置的独立holdout + 实际硬件成本”审查；两输入探索GM不是论文GM12。当前没有自动holdout/T2执行权，不能把C替换进原44行、原IO/OO或冻结主结果。完整科学内容提交303019529已逐文件push/fetch-back，回执见 [CONTENT_PUBLICATION_FETCH_BACK.json](CONTENT_PUBLICATION_FETCH_BACK.json)。最终元数据提交的commit/tree/remote/manifest/clean回执另保存在原174根目录 FINAL_FETCH_BACK.json，以避免Git提交自身hash的循环依赖。
