@@ -50,7 +50,11 @@ def main():
             p=SHARED/('LANE5_CONTINUE_PARALLEL.json' if is_parallel else 'LANE5_CONTINUE_R19.json');m=json.loads(p.read_text()) if p.exists() else {};m.update(status='ACTIVE_'+a.regime+'_CONDITION_QUALIFIED_READY',verified_publication=head,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
         elif a.regime or a.single_pack:
             p=SHARED/('LANE5_CONTINUE_PARALLEL.json' if is_parallel else 'LANE5_CONTINUE_R19.json');m=json.loads(p.read_text()) if p.exists() else {};m.update(status=('ROLLING_PARALLEL_CURRENT_ACCEPTED' if is_parallel else 'ROLLING_R19_CURRENT_ACCEPTED'),verified_publication=head,actual_worker=None,latest_pair_delivery=handoff,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
-            write_json(SHARED/'coordination_requests'/(('LANE5_TO_LANE6_PARALLEL_' if is_parallel else 'LANE5_TO_LANE6_R19_')+(a.regime or 'H0')+'_'+a.workload.upper()+('_'+handoff['profile'] if a.single_pack else '')+'.json'),{'status':'CURRENT_ACCEPTED','experiment_id':'EPL2_PARALLEL_POTENTIAL_20261017_V1' if is_parallel else 'EPL2_DOWNSTREAM_HEADROOM_R19','regime':a.regime,'publication_commit':head,'generation':manifest['generation'],'current_manifest_sha256':sha,'handoff':handoff})
+            event_name=(('LANE5_TO_LANE6_PARALLEL_' if is_parallel else 'LANE5_TO_LANE6_R19_')+(a.regime or 'H0')+'_'+a.workload.upper()+('_'+handoff['profile'] if a.single_pack else '')+'.json')
+            event={'status':'CURRENT_ACCEPTED','experiment_id':'EPL2_PARALLEL_POTENTIAL_20261017_V1' if is_parallel else 'EPL2_DOWNSTREAM_HEADROOM_R19','regime':a.regime,'publication_commit':head,'generation':manifest['generation'],'current_manifest_sha256':sha,'handoff':handoff}
+            write_json(SHARED/'coordination_requests'/event_name,event)
+            if is_parallel:
+                write_json(SHARED/'coordination_requests'/event_name.replace('TO_LANE6_','TO_LANE3_',1),event)
         else:
             p=SHARED/'LANE5_CONTINUE_R13.json';m=json.loads(p.read_text());m.update(status=f'ACTIVE_{pairs}_CURRENT_ACCEPTED_PAIRS',verified_publication=head,actual_worker=None,current_accepted_pairs=pairs,latest_pair_delivery=handoff,at_utc=datetime.now(timezone.utc).isoformat());write_json(p,m)
             write_json(SHARED/'coordination_requests'/('LANE5_TO_LANE6_CURRENT_ACCEPTED_R0_1_'+a.workload.upper()+'.json'),{'status':'CURRENT_ACCEPTED','publication_commit':head,'generation':manifest['generation'],'current_manifest_sha256':sha,'handoff':handoff})
