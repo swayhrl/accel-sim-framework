@@ -1,0 +1,45 @@
+% v0.11-I Introduction text retained; only author TODO markers/comments added.
+% Replace sections/introduction.tex when applying this review patch.
+\providecommand{\dtctodo}[2]{\textbf{[TODO #1: #2]}}
+\section{Introduction}
+GPU L1 caches need storage and service bandwidth for new requests and outstanding accesses~\cite{kroft,hierarchical_mha,bandwidth}.
+In the reservation-based L1 studied here, a miss reserves a way until its response returns~\cite{li2015}.
+When every way in a set is reserved, another same-set miss stalls even if miss-tracking entries remain free.
+A larger cache can ease this constraint, but retains the same tag-to-data allocation rule.
+
+Decoupled-Tag Cache (DTC) separates address lookup from data retention~\cite{zhao2024}.
+New requests search tag mappings.
+Admitted transactions and their consumers keep physical-line indices.
+DTC can therefore replace a mapping while preserving the old transaction's destination and its consumers' data.
+Returned data stay in a per-SM pool.
+The pending-instruction buffer (PIB) stores indices and dependencies instead of complete result vectors.
+Consumers later collect their data from the pool.
+
+In-order DTC (IO) completes instructions in admission order.
+It releases replaced lines at the replacing instruction's completion.
+A ready instruction retains its PIB entry while older instructions wait.
+Out-of-order DTC (OO) tracks consumer references and permits eligible instructions to complete independently.
+It can release replaced lines sooner, but requires reference state, waiter updates, and ready selection.
+
+Tag replacement introduces a separate cost.
+Once a mapping is replaced, later requests cannot hit or merge with its old allocation.
+The data may still occupy the pool to serve existing consumers.
+Collection and reference updates also require service bandwidth~\cite{dtc-artifact}.
+We ask when this organization is preferable to a larger searchable cache or conventional waiting buffer.
+% These three IDs mark the specific argument that remains open in paragraph 4.
+% Correct separation of lifetimes does not yet establish superior performance or lower cost.
+\dtctodo{COV-01}{Tag-coverage evidence}
+\dtctodo{CMP-01}{Performance attribution versus C+}
+\dtctodo{HW-01}{Realize and cost finite services}
+
+The IO/OO designs originate in the Unified-Cache GPGPU work~\cite{zhao2024}.
+This study adds a 64-SM model with finite lookup, refill, wakeup, collection, and retirement services~\cite{dtc-artifact}.
+Comparisons include cache expansion and larger conventional waiting buffers.
+A separate control matches IO/OO waiting depth.
+With 128 PIB entries, OO is $1.963\times$ faster than IO on BICG.
+It still reaches only $0.533\times$ the performance of the enhanced conventional design, \cplus{}.
+On GEMM, OO instead reaches $1.097\times$ the performance of \cplus{}.
+These results distinguish faster consumer completion from an advantage over conventional cache expansion.
+% TODO NOV-01: Finalize the independent contribution relative to the thesis and nearest designs.
+% Keep original design attribution. An account of validation work is not itself a new mechanism.
+\dtctodo{NOV-01}{Independent contribution and prior-art boundary}
