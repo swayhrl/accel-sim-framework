@@ -1,0 +1,77 @@
+{
+  "C1_legacy_headroom_used": false,
+  "H0_acceptance_withdrawal": false,
+  "core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+  "new_scientific_gate_failure": false,
+  "new_simulator_or_compiler_runs": 0,
+  "required_reporting": "Retain raw/derived old fields, describe their source-defined phase. A zero sampled U occupancy does not establish zero pending WB or zero WB latency. Use same-mode across conditions and separately source-defined WAD lifetime/pressure/drain evidence.",
+  "sources": [
+    {
+      "anchors": [
+        {
+          "first": 129,
+          "last": 135,
+          "text": "void l2_cache::cycle() {\n  baseline_cache::cycle();\n  if (ft_enabled()) {\n    ++m_ft_stats.observed_cycles;\n    m_ft_stats.staging_occupancy_sum += m_ep_l2_payload.wb_used();\n  }\n}"
+        },
+        {
+          "first": 265,
+          "last": 284,
+          "text": "      if (p.phase == 0) {\n        m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.victim,\n            false, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT);\n        if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n          ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n        }\n        p.born = physical_cycle; // actual source readout starts data-staging lifetime\n        p.copy_versions = m_ep_l2_payload.inspect(p.victim).versions;\n        p.phase = 1;\n        return RESERVATION_FAIL;\n      }\n      if (p.phase == 1) {\n        m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.staging,\n            true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE);\n        if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n          ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n        }\n        m_ep_l2_payload.inspect_mutable(p.staging).versions = p.copy_versions;\n        m_ep_l2_payload.transfer(p.staging, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);\n        ++m_ft_stats.copy_lines; p.phase = 2;"
+        },
+        {
+          "first": 298,
+          "last": 303,
+          "text": "    if (p.dirty && m_config.m_ep_l2_ft_mode == 2) {\n      p.born = physical_cycle; // in-place WB role starts at actual producer commit\n      m_ep_l2_payload.transfer(p.victim, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);\n      if (p.victim.payload_id < 1024) ++m_ft_stats.borrow_resident;\n      else if (p.victim.payload_id < 1152) ++m_ft_stats.borrow_bypass;\n    }"
+        },
+        {
+          "first": 353,
+          "last": 365,
+          "text": "    std::list<cache_event> &events) {\n  if (ft_enabled() && mf->get_access_type() == L2_WRBK_ACC) {\n    ft_replacement &p = m_ft_pending;\n    assert(p.request && p.dirty && p.wad && !p.bound);\n    assert(m_config.block_addr(mf->get_addr()) == p.victim_address);\n    ft_wb_record r; r.handle = p.staging; r.born = p.born;\n    r.expected = m_ep_l2_payload.inspect(p.staging).versions;\n    assert(m_ft_wb.size() < m_config.m_ep_l2_wad_entries);\n    assert(m_ft_wb.insert(std::make_pair(mf, r)).second);\n    mf->set_ep_l2_payload_identity(p.staging.payload_id, p.staging.generation);\n    p.bound = true; ++m_ft_stats.wb_created;\n    m_ft_stats.staged_max = std::max(m_ft_stats.staged_max, (unsigned long long)m_ft_wb.size());\n  }"
+        },
+        {
+          "first": 383,
+          "last": 396,
+          "text": "void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {\n  if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return;\n  std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);\n  assert(it != m_ft_wb.end());\n  assert(mf->has_ft_wb_data() && mf->get_ft_wb_data() == it->second.expected);\n  // The physical lower FIFO now carries this packet's dirty sector bytes;\n  // all subsequent queues must retain data until actual set_done. No original\n  // payload pointer is needed with TVD disabled. These FIFO bytes are ledgered.\n  m_ep_l2_payload.release(it->second.handle);\n  m_ft_stats.staging_lifetime += cycle >= it->second.born ? cycle - it->second.born : 0;\n  ++m_ft_stats.lower_accept;\n  m_ft_wb.erase(it);\n}\n"
+        }
+      ],
+      "sha256": "f445bfd8f336445e28b0225893e14d8cb6946f375fd86375b925fc8948804a7d",
+      "source": "src/gpgpu-sim/ep-l2-ft-cache.inc"
+    },
+    {
+      "anchors": [
+        {
+          "first": 1559,
+          "last": 1568,
+          "text": "void baseline_cache::cycle() {\n  if (!m_miss_queue.empty()) {\n    mem_fetch *mf = m_miss_queue.front();\n    if (!m_memport->full(mf->size(), mf->get_is_write()) &&\n        lower_ready(mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {\n      m_miss_queue.pop_front();\n      m_memport->push(mf);\n      lower_accepted(mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n    }\n  }"
+        }
+      ],
+      "sha256": "0b350205d949d19ebd35e04324935e1704a970046327681525a7cf832c26b69f",
+      "source": "src/gpgpu-sim/gpu-cache.cc"
+    },
+    {
+      "anchors": [
+        {
+          "first": 2300,
+          "last": 2304,
+          "text": "  }\n  // FT public allocation primitives. Preview does not acquire a resource.\n  unsigned physical_slots() const { return m_slots.size(); }\n  unsigned wb_used() const { return used(WB); }\n  unsigned pending_sector_count() const { unsigned n=0;"
+        },
+        {
+          "first": 2332,
+          "last": 2335,
+          "text": "  void transfer(const payload_handle &h, role r, state st) {\n    slot &s = inspect_mutable(h); assert(s.pending_sector_mask.none());\n    s.allocation_role = r; s.status = st;\n  }"
+        },
+        {
+          "first": 2538,
+          "last": 2544,
+          "text": "  unsigned used(role wanted_role) const {\n    unsigned n = 0;\n    for (std::vector<slot>::const_iterator i = m_slots.begin(); i != m_slots.end(); ++i)\n      if (i->occupied() && i->allocation_role == wanted_role) ++n;\n    return n;\n  }\n  unsigned count_state(role wanted_role, state wanted) const {"
+        }
+      ],
+      "sha256": "7d4ac622d36f882dd30390934b565d5f3bcf833d3b6872787e9b17858d040e82",
+      "source": "src/gpgpu-sim/gpu-cache.h"
+    }
+  ],
+  "staged_max": "max m_ft_wb record count at send_write_request bind, distinct sampled object/phase from occupiedWB slots",
+  "staging_lifetime": "B start resets at actual victim readout/copy phase0; U start resets at actual producer commit. Both end at lowerFIFO push/accept, before actual DRAM set_done. Cross-mode total/average is not an identically bounded WAD lifetime.",
+  "status": "INTERPRETATION_RESTRICTION_SOURCE_VERIFIED_NO_RUNTIME_OR_QUALIFICATION_CHANGE",
+  "wb_occupancy_sum": "sum of occupied physical slots with allocation_roleWB sampled after baseline_cache::cycle lower drain; both organizations dynamically transfer slots into WB role. It is not dedicated-WBUF-only, not event-record peak or common continuous residence integral."
+}
