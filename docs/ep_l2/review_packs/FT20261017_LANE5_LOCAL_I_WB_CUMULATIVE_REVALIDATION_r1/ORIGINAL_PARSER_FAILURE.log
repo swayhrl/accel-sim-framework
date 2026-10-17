@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_LOCAL_PARSER_DEPENDENCY_RECOVERY_r1/parse_with_frozen_dependencies.py", line 7, in <module>
+    p=argparse.ArgumentParser();p.add_argument("--raw",type=Path,required=True);p.add_argument("--out",type=Path,required=True);a=p.parse_args();s=json.loads(Path("input_spec.json").read_text());a.out.write_text(json.dumps(parse(a.raw,s),indent=2)+"\n")
+                                                                                                                                                                                                                               ^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_LOCAL_IDEALS_ELEVEN_GATES_r1/parse_local_ideal_terminal.py", line 28, in parse
+    if slice_id in ideal:raise ValueError('duplicate ideal application slice')
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: duplicate ideal application slice

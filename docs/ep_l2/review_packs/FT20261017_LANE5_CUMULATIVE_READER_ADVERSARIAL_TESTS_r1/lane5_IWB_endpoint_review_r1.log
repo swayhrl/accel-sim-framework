@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/review_local_endpoint.py", line 41, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/review_local_endpoint.py", line 18, in main
+    snapshot=r.snapshot();result,directory=review(spec,snapshot);require(not any(x['run_key']==result['run_key'] for x in ledger['rows']),'Previously accepted endpoint')
+                                           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/review_r0_1_pair.py", line 56, in review
+    require(summary==result['summary']==json.loads((directory/'terminal_summary.json').read_text()),'Independent reparse differs')
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py", line 17, in require
+    raise InvalidEvidence(message)
+validate.InvalidEvidence: Independent reparse differs

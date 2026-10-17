@@ -12,7 +12,7 @@ def digest(path):
 
 
 def parse(raw, spec):
-    final={};native={};ideal={}
+    final={};native={};ideal={};ideal_frames={}
     import sys
     from pathlib import Path
     sys.path.insert(0,str(Path(spec['scope_tool']['path']).parent))
@@ -25,13 +25,16 @@ def parse(raw, spec):
             if match:native[match[1]]=int(match[2])
             if line.startswith('EPL2IDEALV1|scope=application|'):
                 values=dict(v.split('=',1) for v in line.strip().split('|')[1:]);slice_id=int(values['slice']);
-                if slice_id in ideal:raise ValueError('duplicate ideal application slice')
-                ideal[slice_id]={k:(v if k in ('scope','reference') else int(v)) for k,v in values.items()}
+                if 'cycle' not in native:raise ValueError('cumulative ideal snapshot lacks native clock context')
+                row={k:(v if k in ('scope','reference') else int(v)) for k,v in values.items()};key=(native['cycle'],slice_id)
+                if key in ideal_frames and ideal_frames[key]!=row:raise ValueError('conflicting ideal snapshot in one native clock context')
+                ideal_frames[key]=row
             if not line.startswith(('EPL2FTV1|SUMMARY|','EPL2FTV1|TERMINAL|','EPL2B0V1|INVARIANT|')):continue
             parts=line.strip().split('|');values=dict(v.split('=',1) for v in parts[2:])
             kind=parts[1]
             if kind=='INVARIANT' and values['kernel_uid']!='18446744073709551615':continue
             final[kind,int(values['slice'])]={k:int(v) for k,v in values.items()}
+    ideal={sid:row for (cycle,sid),row in ideal_frames.items() if cycle==native['cycle']}
     expected={(kind,s) for kind in ('SUMMARY','TERMINAL','INVARIANT') for s in range(64)}
     if set(final)!=expected:raise ValueError('missing exact 64-slice FT/B0 terminal snapshot')
     feature=spec['identity']['feature_vector'];cap=feature['nominal_payload_capacity_per_slice']
@@ -51,6 +54,7 @@ def parse(raw, spec):
     summaries=[final['SUMMARY',s] for s in range(64)];terminals=[final['TERMINAL',s] for s in range(64)]
     invariants=[final['INVARIANT',s] for s in range(64)]
     for slice_id,(s,t,i) in enumerate(zip(summaries,terminals,invariants)):
+        if s['observed_cycles']!=native['cycle']:raise ValueError('FT terminal snapshot does not match final native cumulative clock')
         actual_cap=cap+extras.get(slice_id,0)
         if enabled and s['wbuf_full']!=ideal[slice_id]['wb_data_full']:raise ValueError('inconsistent WB refusal counters')
         if s['physical_slots']!=actual_cap or s['wbuf']!=feature['wbuf_entries'] or s['mode']!=(2 if feature['unified_wb'] else 1):
@@ -94,12 +98,17 @@ def parse(raw, spec):
 
 
 def parse_structure(raw,spec,final):
-    records={}
+    frames={};clock=None
     for line in Path(raw).open():
+        match=re.fullmatch(r'gpu_tot_sim_cycle\s*=\s*(\d+)\s*',line)
+        if match:clock=int(match[1])
         if not line.startswith('EPL2STRUCTV1|'):continue
         parts=line.strip().split('|');row={k:int(v) for k,v in (p.split('=',1) for p in parts[2:])};key=(parts[1],row['slice'])
-        if key in records:raise ValueError('Duplicate native structural terminal')
-        records[key]=row
+        if clock is None:raise ValueError('Structural cumulative snapshot lacks native clock context')
+        key=(clock,*key)
+        if key in frames and frames[key]!=row:raise ValueError('Conflicting structural terminal in one native clock context')
+        frames[key]=row
+    records={(kind,sid):row for (cycle,kind,sid),row in frames.items() if cycle==clock}
     if set(records)!={(kind,s) for kind in ['BANK_PEAK','WB_QUOTA','CONFIG'] for s in range(64)}:raise ValueError('Missing exact64 structural config/peak/quota scope')
     f=spec['identity']['feature_vector'];s64=f['static_s64']
     for sid in range(64):

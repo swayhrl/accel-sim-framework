@@ -11,17 +11,35 @@ def lines(raw):
   yield from stream
 
 def references(raw):
- main=None;sections={};spaces={}
+ blocks=[];block=None;last_native_cycle=None
  for line in lines(raw):
+  metric=re.fullmatch(r'gpu_tot_sim_cycle\s*=\s*(\d+)\s*',line)
+  if metric:
+   last_native_cycle=int(metric[1])
+   if block is not None:
+    require(block['cycle'] is None or block['cycle']==last_native_cycle,'Reference/native clock association changed')
+    block['cycle']=last_native_cycle
   if not line.startswith('EPL2MEMREFV1|'):continue
   parts=line.strip().split('|')[1:]
   if parts[0].startswith('scope='):kind='MAIN'
   else:kind=parts.pop(0)
   row=dict(p.split('=',1) for p in parts)
+  if kind=='MAIN':
+   if block is not None:
+    require(block['cycle'] is not None,'Repeated reference dump without native statistics context')
+    blocks.append(block)
+   block={'cycle':None,'sections':{},'spaces':{}}
+  require(block is not None,'Reference sections without cumulative header')
   if kind=='SPACE':
-   sid=int(row['space']);require(sid not in spaces,'Duplicate cumulative memory-space scope');spaces[sid]=int(row['instructions']);continue
-  require(kind in ('MAIN','SNAPSHOTS','IDENTITY','UNIQUENESS') and kind not in sections,'Duplicate/unknown reference terminal')
-  sections[kind]=row
+   sid=int(row['space']);require(sid not in block['spaces'],'Duplicate memory-space scope within final cumulative dump');block['spaces'][sid]=int(row['instructions']);continue
+  require(kind in ('MAIN','SNAPSHOTS','IDENTITY','UNIQUENESS') and kind not in block['sections'],'Duplicate/unknown reference terminal section')
+  block['sections'][kind]=row
+ require(block is not None,'Missing final cumulative reference dump')
+ if last_native_cycle is not None:require(block['cycle']==last_native_cycle,'Reference final dump not paired with final native clock')
+ blocks.append(block);sections=block['sections'];spaces=block['spaces']
+ for previous in blocks[:-1]:
+  require(previous['cycle']<=block['cycle'],'Non-monotonic cumulative dump context')
+  if previous['cycle']==block['cycle']:require(previous['sections']==sections and previous['spaces']==spaces,'Conflicting reference snapshots at one native cycle')
  require(set(sections)=={'MAIN','SNAPSHOTS','IDENTITY','UNIQUENESS'},'Missing exact cumulative reference terminal sections')
  r=sections['MAIN'];snap=sections['SNAPSHOTS'];ids=sections['IDENTITY'];unique=sections['UNIQUENESS']
  require(r['scope']=='cumulative' and r['mode']=='I_MEM_ALL_DATA' and r['instruction_path']=='NATIVE' and r['data_hierarchy']=='NOT_APPLICABLE','Wrong actual reference path/scope')
@@ -41,7 +59,7 @@ def references(raw):
  require(a['pending_requests']==a['pending_instructions']==c['pending_barriers']==c['pending_native_stores']==0 and a['drained']==1,'Reference request/instruction/store/barrier state not drained')
  # These two printed zeroes are asserted by source, not measured stall/violation counters.
  require(a['memory_resource_wait']==a['ready_latency_violations']==0,'Source reference invariant violated')
- return {'records':sections,'space_instructions':{str(k):v for k,v in spaces.items()},'numeric_records':nums,'source_asserted_invariants':{'ready_at_eligible_plus_one_physical_GPUcycle':True,'no_finite_memory_admission_or_response_quota':True,'printed_literal_fields':['memory_resource_wait','ready_latency_violations']},'measured_residual':{'producer_dependency_cycles':a['dependency_cycles'],'reference_ready_to_architectural_consume_cycles':a['ready_to_consume_cycles'],'SM_register_writeback_wait_attempts':a['sm_register_wait_attempts']}}
+ return {'selected_cumulative_native_cycle':block['cycle'],'cumulative_dump_count':len(blocks),'records':sections,'space_instructions':{str(k):v for k,v in spaces.items()},'numeric_records':nums,'source_asserted_invariants':{'ready_at_eligible_plus_one_physical_GPUcycle':True,'no_finite_memory_admission_or_response_quota':True,'printed_literal_fields':['memory_resource_wait','ready_latency_violations']},'measured_residual':{'producer_dependency_cycles':a['dependency_cycles'],'reference_ready_to_architectural_consume_cycles':a['ready_to_consume_cycles'],'SM_register_writeback_wait_attempts':a['sm_register_wait_attempts']}}
 
 def parse(raw,spec):
  require(spec['scientific_scope']=='ALL_DATA_REFERENCE_V1','Another scope cannot use ALL_DATA terminal')

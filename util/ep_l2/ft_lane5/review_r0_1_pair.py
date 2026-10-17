@@ -52,7 +52,7 @@ def review(spec,registry,native_proof=None):
             actual=runtime_dump(raw,spec)
         else:actual=validate_runtime_dump(raw,spec)
         require(actual==result['downstream_effective_config'],'Actual initialized config/clock evidence differs')
-    parser=runpy.run_path(spec['parser']['path']);summary=parser['parse'](raw,spec)
+    parser=runpy.run_path(spec['parser']['path']);summary=json.loads(json.dumps(parser['parse'](raw,spec),allow_nan=False)) # Match the actual parser CLI JSON transport, including integer map keys.
     require(summary==result['summary']==json.loads((directory/'terminal_summary.json').read_text()),'Independent reparse differs')
     require(validate_summary(summary,spec['identity'])==result['validation'],'Native terminal validation differs')
     return result,directory
