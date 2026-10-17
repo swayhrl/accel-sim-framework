@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "status": "BASELINE_REGRESSION_PASS_K1_NOT_RUN_SCIENTIFIC_STOP",
+  "baseline_directed_regression": {
+    "count": 4,
+    "passed": 4,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "dtc_l1_m1_common_test",
+        "status": "PASS_BASELINE_ONLY",
+        "time_seconds": "0.00286441"
+      },
+      {
+        "name": "dtc_l1_bad_generation_test",
+        "status": "PASS_BASELINE_ONLY",
+        "time_seconds": "0.0862665"
+      },
+      {
+        "name": "dtc_l1_completion_accounting_test",
+        "status": "PASS_BASELINE_ONLY",
+        "time_seconds": "0.0862312"
+      },
+      {
+        "name": "dtc_l1_finite_service_test",
+        "status": "PASS_BASELINE_ONLY",
+        "time_seconds": "0.00464861"
+      }
+    ],
+    "log": "/workspace/dtc-lane-x-optin-invalidation-174-v1/ctest.log",
+    "junit_sha256": "3ca0f603b98999e7f14fdec43c0aa8ec02bcf3fdd1482fa0bb67e5e86fde078a",
+    "coverage_limit": "Existing baseline production helpers only; not K1 source-event tests"
+  },
+  "k1_correctness_pass": false,
+  "k1_cases": [
+    {
+      "id": "K1-01",
+      "check": "Production parser missing/0/1; default OFF; unsupported mode handling",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-02",
+      "check": "No ordinary event or original guard false: no DTC state change",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-03",
+      "check": "Idle cluster with another cluster active; no false kernel-end assumption",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-04",
+      "check": "Repeated idle-cluster request; distinguish request from deferred ordinary commit",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-05",
+      "check": "MEMBAR release with other live warps; preserve all their physical owners",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-06",
+      "check": "Cache preference event and original flush predicates; scope matches Lane V",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-07",
+      "check": "Visible ready line with Ref=0: exactly one safe reclaim",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-08",
+      "check": "Ready line with Ref>0: retain through collection and blocked writeback",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-09",
+      "check": "Allocated miss before lower-create/inject: preserve UID, generation and credit ownership",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-10",
+      "check": "Split/out-of-order sectors returning after visibility loss: complete all exactly once",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-11",
+      "check": "Duplicate and invalid sector reply remains fatal; no dropped reply",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-12",
+      "check": "Same address re-access while old generation pending: independent allocation and response route",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-13",
+      "check": "Finite-service partial waiter update and late merge survive event; quotas unchanged",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-14",
+      "check": "Retire last reference after visibility loss: reclaim exactly once; shadow Ref equality",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-15",
+      "check": "Recycled generation and reused PIB slot: stale reply remains hard failure",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-16",
+      "check": "Repeated events do not double-free or overwrite first map-loss timestamp",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-17",
+      "check": "No free physical space or full lower queues: retain partial allocation and ordinary backpressure",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-18",
+      "check": "IO passive release with no replacing PIB owner: explicitly unsupported pending scope decision",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-19",
+      "check": "Source request while conventional cache unused/busy: approved event timing required",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    },
+    {
+      "id": "K1-20",
+      "check": "Allocated+free=capacity; retained owners; lower acquire-release=outstanding; no leaks at drain",
+      "status": "NOT_RUN_SCIENTIFIC_STOP",
+      "reason": "No K1 implementation after source-event STOP"
+    }
+  ],
+  "k0_runtime_equivalence": "NOT_RUN_NEW_OPTION_NOT_IMPLEMENTED",
+  "functional_source_equality_to_frozen": true,
+  "formal_performance_matrix": "NOT_RUN_OO_ONLY_AFTER_EXTERNAL_GATES",
+  "io_k1_scope": "NOT_IMPLEMENTED_DO_NOT_EXPAND_PASSIVE_RELEASE",
+  "modern_sector_k1_scope": "NOT_IMPLEMENTED",
+  "external_lane_v_gate": "PENDING",
+  "external_lane_y_gate": "PENDING",
+  "full_gaussian_gemm_jobs_dispatched": 0
+}

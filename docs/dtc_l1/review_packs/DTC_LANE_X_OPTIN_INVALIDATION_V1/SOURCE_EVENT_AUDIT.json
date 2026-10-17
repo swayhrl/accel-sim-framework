@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "source_sha": "f8b34dd7a738caddf4f23dd417e34c0b63c206d9",
+  "frozen_sha": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "audit_kind": "STATIC_SOURCE_ONLY_NO_BENCHMARK_EVENT_MEASUREMENTS",
+  "status": "SCIENTIFIC_STOP_SOURCE_EVENT_CONTRACT_MISMATCH",
+  "production_code_changed": false,
+  "ordinary_event_sources": [
+    {
+      "site": "src/gpgpu-sim/gpu-sim.cc:2515-2527",
+      "predicate": "CORE tick && gpgpu_flush_l1_cache && cluster.get_not_completed()==0",
+      "after": [
+        "issue_block2core()",
+        "decrement_kernel_latency()"
+      ],
+      "scope": "each idle cluster separately",
+      "unique_kernel_end_guard": false,
+      "requires_other_clusters_complete": false,
+      "can_repeat_on_consecutive_core_ticks": true
+    },
+    {
+      "site": "src/gpgpu-sim/shader.cc:6877-6888",
+      "predicate": "warp MEMBAR && !scoreboard.pendingWrites(warp_id) && flush_l1()",
+      "scope": "one core; other warp and DTC drain not tested at caller"
+    },
+    {
+      "site": "src/gpgpu-sim/gpu-sim.cc:1749-1754",
+      "predicate": "requested cache preference != current status",
+      "scope": "all clusters",
+      "flush_l1_flag_required_at_caller": false
+    }
+  ],
+  "shared_request_site": "src/gpgpu-sim/shader.cc:4012-4015",
+  "pending_request_site": "src/gpgpu-sim/gpu-cache.cc:1268-1279",
+  "actual_commit_site": "src/gpgpu-sim/gpu-cache.cc:1281-1286",
+  "actual_commit_predicate": "m_invalidate_pending && miss_queue.empty() && extra_mf_fields.empty() && mshrs.empty()",
+  "drain_predicate_site": "src/gpgpu-sim/gpu-cache.h:1474-1478",
+  "tag_transition_site": "src/gpgpu-sim/gpu-cache.cc:478-487",
+  "unused_tag_array_can_return_early": true,
+  "request_and_commit_same_cycle_guaranteed": false,
+  "explicit_ordinary_invalidation_stall_cycles": 0,
+  "existing_deferral": "until conventional miss lifecycle inactive; no new fixed latency",
+  "dtc_invalidation_timing_model": "NOT_IMPLEMENTED_NOT_APPROVED",
+  "reason_for_stop": "User explicitly requires scientific STOP when the purported kernel-end event is not the expected timing. Source is a repeated per-cluster-idle predicate plus other callers, with request/commit separation. No replacement event or delay is introduced.",
+  "lane_v_contract": "NOT_CONSUMED_EXTERNAL_GATE",
+  "lane_y_validation": "NOT_PERFORMED_EXTERNAL_GATE",
+  "source_file_hashes": [
+    {
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "537d8a68effb56c02c28bbfea68fd6a92fa9644a70606c9d8dcabf10807a4b15",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-sim.h",
+      "sha256": "1ac66c8016e1f5b4b57f392c298c54811b8dd93829a70439ee9c5bb58e7508e8",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "sha256": "5964c1bdaf37b23d6bf57f499e687ef717a0570eaebc1dd241345c6340c84cb1",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "src/gpgpu-sim/shader.h",
+      "sha256": "7b615df952b0300fedd2047bd6f0135d0526fb11811cde7a649cef2431d22cc8",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "ea90f6b72af49fff343458b767521046b7b1b02ee9e78884cc9e6d796ea7e734",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "9551bdbcfb0d1e0cf8938481778c0d6a1fb0201fd6b755d76f1541a98664b9ff",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "sha256": "b63a0afdc85ca6301559afd013907387af8874d4ebdf3670a8d085640651e9d4",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "0fa57ed7a7a7a80c6ce48b460eebf105a40d91abdb9868434b4e8a3fc9310814",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "gpgpusim_check.cmake",
+      "sha256": "f028c90ee4059a34e4121fc9a80d1a992d0de5dc98397e06f381c9f91514ea92",
+      "byte_identical_to_frozen": true
+    },
+    {
+      "path": "gpgpusim_gen_build_string.cmake",
+      "sha256": "c9ee0e1c647fdbfc7a37f6ec14e136d8fb5b196bc32b977ac6e61e4bbb62ba42",
+      "byte_identical_to_frozen": true
+    }
+  ]
+}
