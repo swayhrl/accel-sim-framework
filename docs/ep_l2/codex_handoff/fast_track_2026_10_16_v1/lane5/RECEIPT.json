@@ -82,7 +82,9 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_R19_SELECTED_PRODUCER_DEPENDENCY_AUDIT_r2",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R19_SELECTED_PRODUCER_BLOCKED_r3",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D2_CONVOLUTIONSEPARABLE_PAIR_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D2_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D2_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_ROP40_H0_CONVOLUTIONSEPARABLE_PAIR_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_ROP40_H0_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
@@ -3824,6 +3826,159 @@
     "tests": "43 PASS synthetic tool tests; no scientific PASS implied",
     "workspace_growth_reserve_per_new_run": 2147483648
   },
+  "parallel_continue": {
+    "current_V2_generation": 22,
+    "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+    "latest_pair_delivery": {
+      "H0_accepted_pairs": 5,
+      "acceptance_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_ROP40_H0_CONVOLUTIONSEPARABLE_ACCEPTANCE_r1",
+      "all5_required_before_geomean": false,
+      "comparison": {
+        "C_B_H0": 292932,
+        "C_B_h": 290203,
+        "C_U_H0": 291525,
+        "C_U_h": 291161,
+        "H0_run_keys": [
+          "8f445bf74185f8c6640741372a637ae873be08ac796a2920441e0379acd6c86c",
+          "bac7a2e6ebe99f1af89b15bc811c1876e42fd8de745f04407eac34c4f36a12ae"
+        ],
+        "J_h": 0.9919223653940132,
+        "S_H0": 1.0048263442243375,
+        "S_h": 0.9967097241732238,
+        "capacity_above_C16_observed": true,
+        "cycle_reduction_percent": -0.3301137479626348,
+        "delta_B_h_minus_H0": -2729,
+        "delta_U_h_minus_H0": -364,
+        "diagnostic_only": true,
+        "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+        "instructions_equal": true,
+        "interpretation_limit": "role transfers alone do not establish capacity benefit; compare copy service and strong static redivision before attribution",
+        "regime": "ROP40_H0",
+        "same_binary": true,
+        "speedup_B16_over_U_WB16": 0.9967097241732238,
+        "workload": "convolutionSeparable"
+      },
+      "current_accepted_pairs": 5,
+      "diagnostic_only": true,
+      "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+      "ledger_generation": 22,
+      "ledger_sha256": "0f5ccce8c020b3e73f246afd96d0c06f1c0523f5f5e491b322bb77d714377094",
+      "pair_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_ROP40_H0_CONVOLUTIONSEPARABLE_PAIR_r1",
+      "r19_accepted_pairs": 7,
+      "regime": "ROP40_H0",
+      "rows": [
+        {
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "identity": {
+            "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+            "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+            "epoch_range": {
+              "epochs": "all",
+              "scope": "full_application"
+            },
+            "feature_vector": {
+              "adaptive_policy": false,
+              "bank_count": 4,
+              "finite_wbuf": true,
+              "ops_per_bank_cycle": 1,
+              "payload_capacity_per_slice": 1168,
+              "ro": false,
+              "tvd": false,
+              "unified_wb": false,
+              "wbuf_entries": 16
+            },
+            "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+            "ideal_vector": {
+              "meta": false,
+              "read_hit": false,
+              "wb": false
+            },
+            "runtime_config_sha256": "7dc666c4b58ad9046c10f9ab6b33b7f50d941cf95f50020b1a8ddbb867162b3e",
+            "termination_contract": {
+              "hardware_drained": true,
+              "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+              "normal_exit": true,
+              "timeout_seconds": 3600
+            },
+            "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+            "workload": "convolutionSeparable"
+          },
+          "instructions": 714547200,
+          "mode": "B16_BANKED",
+          "observed_cycles": 290203,
+          "original_terminal_status": "COMPLETE_VALID",
+          "raw_log_sha256": "cb26bd8428c25e9f08846eb8657ff37306dd41a49d6ab24076a2eaa9d58b53ee",
+          "regime": "ROP40_H0",
+          "run_key": "02dfb132035dfbc464c0e43a11ca022a10777b059dc59b20ba2e474b4c1bf658",
+          "runtime_config_sha256": "7dc666c4b58ad9046c10f9ab6b33b7f50d941cf95f50020b1a8ddbb867162b3e",
+          "scientific_acceptance": "CURRENT_ACCEPTED",
+          "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+          "workload": "convolutionSeparable"
+        },
+        {
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "identity": {
+            "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+            "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+            "epoch_range": {
+              "epochs": "all",
+              "scope": "full_application"
+            },
+            "feature_vector": {
+              "adaptive_policy": false,
+              "bank_count": 4,
+              "finite_wbuf": true,
+              "ops_per_bank_cycle": 1,
+              "payload_capacity_per_slice": 1168,
+              "ro": false,
+              "tvd": false,
+              "unified_wb": true,
+              "wbuf_entries": 16
+            },
+            "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+            "ideal_vector": {
+              "meta": false,
+              "read_hit": false,
+              "wb": false
+            },
+            "runtime_config_sha256": "90769ea3ce29cf803f85179cf37d161271b8f6073ca9a5784c0b2d6f31aec6d7",
+            "termination_contract": {
+              "hardware_drained": true,
+              "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+              "normal_exit": true,
+              "timeout_seconds": 3600
+            },
+            "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+            "workload": "convolutionSeparable"
+          },
+          "instructions": 714547200,
+          "mode": "U_WB16",
+          "observed_cycles": 291161,
+          "original_terminal_status": "COMPLETE_VALID",
+          "raw_log_sha256": "5624942bc6fb18a6d7f8cbfbf05c86a4b2681f14fc254cc378ca70356580be52",
+          "regime": "ROP40_H0",
+          "run_key": "1e3f511226c569728a0b7c3eafe148bd6aa2163838c0698c4a09a8b67f31adbb",
+          "runtime_config_sha256": "90769ea3ce29cf803f85179cf37d161271b8f6073ca9a5784c0b2d6f31aec6d7",
+          "scientific_acceptance": "CURRENT_ACCEPTED",
+          "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+          "workload": "convolutionSeparable"
+        }
+      ],
+      "schema_version": "EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_PAIR_V1",
+      "source_manifest_sha256": "083e491e6bdd713c1767cef3c2109f8ac93aa7210084a2ef39b11a6c9e2ce099",
+      "status": "CURRENT_ACCEPTED_PENDING_REMOTE_POINTER_INSTALL",
+      "workload": "convolutionSeparable"
+    },
+    "next_action": "Push remote readback, current pointer install, immediate Lane6 delivery; next r19 pair",
+    "r19_accepted_pairs": 7,
+    "status": "ACTIVE_ROLLING_R19_CURRENT_ACCEPTED"
+  },
   "previous_r9_status": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST_FORMAL_QUALIFICATION_PENDING",
   "publication_readback_previous_r3": {
     "core_verified_publication": "a9457986625ad44c27229afc3f61dbabbada3e53",
@@ -4177,7 +4332,7 @@
   "static_candidate_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
   "static_candidate_core_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
   "static_candidate_framework": "861a06b91e309832161eab0836b512853c833ffb",
-  "status": "ACTIVE_ROLLING_EPL2_DOWNSTREAM_HEADROOM_R19",
+  "status": "ACTIVE_ROLLING_EPL2_PARALLEL_POTENTIAL_20261017_V1",
   "task_id": "FT20261017_LANE5_CONTINUE_R13_r1",
   "trace_identity": null,
   "updated_at": "2026-10-17T09:24:51.555640+00:00",

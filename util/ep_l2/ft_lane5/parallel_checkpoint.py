@@ -16,7 +16,7 @@ def main():
  new=[x for x in r['runs'].values() if x.get('experiment_id')==PARALLEL];old=[x for x in r['runs'].values() if x.get('experiment_id')==R19]
  for cell in ledger['cells']:
   own=[x for x in new if x.get('cell_id')==cell['cell_id']]
-  cell.update(new_starts=len(own),actual_status='AWAITING_INDEPENDENT_QUALIFICATION',reuse_source=None)
+  cell.update(new_starts=sum(attempt_count(v) for v in own),actual_status='AWAITING_INDEPENDENT_QUALIFICATION',reuse_source=None)
   if own:
    cell.update(actual_status='CURRENT_ACCEPTED' if all(x['run_key'] in accepted for x in own) else own[-1]['status'],runs=own)
   elif cell['mode'] in ('B16_OFF','U_OFF'):
@@ -28,7 +28,7 @@ def main():
   if row.get('process'):
    try:assert process_identity(row['process']['pid'])==row['process']
    except (AssertionError,FileNotFoundError,ProcessLookupError):row['snapshot_warning']='Registry live row does not match currently readable PID identity; do not reclaim automatically'
- stamp=datetime.now(timezone.utc).isoformat();ledger.update(updated_at=stamp,new_starts=sum(attempt_count(v) for v in new),accepted_new=sum(x['run_key'] in accepted for x in new),reused=sum(x['reuse_source'] is not None for x in ledger['cells']),running=sum(x['status'] in ACTIVE for x in new),failed=sum(x['status'] in ('FAILED','TIMEOUT','RESOURCE_LIMIT','INCOMPLETE') for x in new),remaining_start_budget=72-sum(attempt_count(v) for v in new),current_V2_generation=v['generation'],active_runs=active,active_resource_leases=[x for x in r['resource_leases'].values() if x['status'] in ACTIVE])
+ stamp=datetime.now(timezone.utc).isoformat();ledger.update(updated_at=stamp,new_starts=sum(attempt_count(v) for v in new),accepted_new=sum(x['run_key'] in accepted for x in new),reused=sum(x['reuse_source'] is not None for x in ledger['cells']),running=sum(x['status'] in ACTIVE for x in new),failed=sum(a['status'] in ('FAILED','TIMEOUT','RESOURCE_LIMIT','INCOMPLETE') for x in new for a in x.get('attempt_history',[])+[x]),remaining_start_budget=72-sum(attempt_count(v) for v in new),current_V2_generation=v['generation'],active_runs=active,active_resource_leases=[x for x in r['resource_leases'].values() if x['status'] in ACTIVE])
  write_json(path,ledger)
  receipt={'at':stamp,'resources':local_resources(),'current_scientific_pointer':json.loads((rpath:=Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json')).read_text())['scientific_acceptance'],'new_campaign':{k:ledger[k] for k in ('new_starts','accepted_new','reused','running','failed','remaining_start_budget')},'new_campaign_registration':r['campaigns'][PARALLEL],'r19':{'starts':sum(attempt_count(v) for v in old),'accepted':sum(x['run_key'] in accepted for x in old),'cap':24,'deadline_unix':1792256956,'active':[x for x in old if x['status'] in ACTIVE]},'active_runs':active,'active_leases':ledger['active_resource_leases'],'no_background_watcher_created':True}
  write_json(args.out,receipt)

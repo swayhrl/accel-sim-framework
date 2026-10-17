@@ -6,7 +6,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from acceptance import load_current_authority,current_manifest,MANIFEST,require_publication_boundary
+from acceptance import load_current_authority,current_manifest,MANIFEST,require_publication_boundary,authorize_launch,reject_withdrawn
 from package_r0 import freeze_checksums
 from registry import Registry,ACTIVE
 from run import digest,require
@@ -14,6 +14,25 @@ from run import digest,require
 REPO=Path(__file__).resolve().parents[3]
 HANDOFF=REPO/'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5'
 
+
+
+def recheck_review_currentness(review,pack,state):
+    """Cache immutable payload review; recheck exact target qualification/currentness."""
+    require(review['status']=='INDEPENDENT_TERMINAL_AND_CURRENT_AUTHORITY_REVIEW_PASS','Unreviewed payload')
+    if review['checked_current_authority']['manifest_sha256']==state['binding']['manifest_sha256']:
+        return {'status':'SAME_CURRENT_V2','authority':state['binding']}
+    require(review['checked_current_authority']['generation']<state['binding']['generation'],'Authority did not advance monotonically')
+    source=json.loads((pack/'SOURCE_MANIFEST.json').read_text())
+    for row in source['runs']:
+        reject_withdrawn(row['identity'],current_manifest(state))
+        spec=json.loads((pack/row['mode']/'input_spec.json').read_text())
+        require(digest(spec['qualified_release'])==row['qualification_sha256'],'Target qualification changed since cached review')
+        auth=authorize_launch(row['identity'],row['qualification_sha256'],state)
+        require(auth==row['input_audit']['scientific_launch_authorization'],'Exact target authorization changed')
+    return {'status':'UNCHANGED_FROZEN_PAYLOAD_TARGETS_RECHECKED_UNDER_NEW_CURRENT_V2',
+            'reviewed_authority':review['checked_current_authority'],'current_authority':state['binding'],
+            'source_manifest_sha256':digest(pack/'SOURCE_MANIFEST.json'),
+            'full_trace_simulation_repeated':False,'target_qualification_and_withdrawal_rechecked':True}
 
 
 def stage_qualification(release_path,review_path,pack):
@@ -61,7 +80,7 @@ def main():
         sha,name=line.split('  ',1);require(digest(a.pair_pack/name)==sha,'Pair pack changed')
     state=load_current_authority();ledger=current_manifest(state);old_count=len(ledger['rows']);old_rows=json.dumps(ledger['rows'],sort_keys=True)
     review_path=a.pair_pack/'SCIENTIFIC_REVIEW.json';review=json.loads(review_path.read_text())
-    require(review['status']=='INDEPENDENT_TERMINAL_AND_CURRENT_AUTHORITY_REVIEW_PASS' and review['checked_current_authority']['manifest_sha256']==state['binding']['manifest_sha256'],'Stale/unreviewed pair')
+    currentness=recheck_review_currentness(review,a.pair_pack,state)
     require_publication_boundary(Registry())
     rows=review['scientific_acceptance_rows_proposed'];require(len(rows)==2 and {r['mode'] for r in rows}=={'B16_BANKED','U_WB16'},'Incomplete pair')
     require(all(r['scientific_acceptance']=='CURRENT_ACCEPTED' and r['original_terminal_status']=='COMPLETE_VALID' for r in rows),'Nonvalid accepted proposal')
@@ -81,6 +100,7 @@ def main():
     parallel_rows=sum(r.get('experiment_id')=='EPL2_PARALLEL_POTENTIAL_20261017_V1' for r in accepted)
     ledger['status']=f'{pairs}_CURRENT_ACCEPTED_H0_PAIRS_{diagnostic_pairs}_R19_DIAGNOSTIC_PAIRS_{parallel_rows}_PARALLEL_ROWS';path=REPO/MANIFEST;path.write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
     a.acceptance_pack.mkdir(parents=True);shutil.copyfile(path,a.acceptance_pack/'SCIENTIFIC_ACCEPTANCE_V2.json')
+    (a.acceptance_pack/'CURRENTNESS_RECHECK.json').write_text(json.dumps(currentness,indent=2,sort_keys=True)+'\n')
     delivery={'schema_version':'EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_PAIR_V1','status':'CURRENT_ACCEPTED_PENDING_REMOTE_POINTER_INSTALL','workload':review['workload'],'pair_pack':str(a.pair_pack.relative_to(REPO)),'acceptance_pack':str(a.acceptance_pack.relative_to(REPO)),'ledger_generation':ledger['generation'],'ledger_sha256':digest(path),'current_accepted_pairs':pairs,'all5_required_before_geomean':True,'rows':rows,'comparison':json.loads((a.pair_pack/'COMPARISON.json').read_text()),'source_manifest_sha256':digest(a.pair_pack/'SOURCE_MANIFEST.json')}
     if review.get('experiment_id'):
         delivery.update(experiment_id=review['experiment_id'],regime=review['regime'],H0_accepted_pairs=pairs,r19_accepted_pairs=diagnostic_pairs,all5_required_before_geomean=False,diagnostic_only=True)
