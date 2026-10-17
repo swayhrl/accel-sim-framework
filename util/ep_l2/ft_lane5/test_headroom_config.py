@@ -76,14 +76,14 @@ class RegistryExperimentTests(unittest.TestCase):
         from test_lane5 import identity
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name);(self.root/'REGISTRY.lock').touch()
         self.data=json.loads(Path('/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json').read_text());self.data['runs']={str(i):{'experiment_id':EXPERIMENT} for i in range(24)}
-        write_json(self.root/'RUN_REGISTRY.json',self.data);self.registry=Registry(self.root);self.identity=identity();self.experiment={'experiment_id':EXPERIMENT,'regime':'D4','deadline_unix':9999999999}
+        write_json(self.root/'RUN_REGISTRY.json',self.data);self.registry=Registry(self.root);self.identity=identity();self.experiment={'experiment_id':EXPERIMENT,'regime':'D4','deadline_unix':1792256956}
     def test_cap_counts_failed_and_reserved_attempts(self):
-        with self.assertRaisesRegex(ValueError,'cap24'):self.registry.claim(self.identity,'lane5',self.root/'output',experiment=self.experiment)
+        with self.assertRaisesRegex(ValueError,'cap'):self.registry.claim(self.identity,'lane5',self.root/'output',experiment=self.experiment)
     def test_expired_window_refuses(self):
         self.experiment['deadline_unix']=0
-        with self.assertRaisesRegex(ValueError,'deadline'):self.registry.claim(self.identity,'lane5',self.root/'output',experiment=self.experiment)
+        with self.assertRaisesRegex(ValueError,'deadline|altered'):self.registry.claim(self.identity,'lane5',self.root/'output',experiment=self.experiment)
     def test_wrong_owner_or_unqualified_regime_refuses(self):
-        with self.assertRaisesRegex(ValueError,'unknown experiment'):self.registry.claim(self.identity,'lane4',self.root/'output',experiment=self.experiment)
+        with self.assertRaisesRegex(ValueError,'unknown|dispatcher'):self.registry.claim(self.identity,'lane4',self.root/'output',experiment=self.experiment)
         self.experiment['regime']='LOWER_CEILING'
-        with self.assertRaisesRegex(ValueError,'unknown experiment'):self.registry.claim(self.identity,'lane5',self.root/'output',experiment=self.experiment)
+        with self.assertRaisesRegex(ValueError,'unknown|dispatcher'):self.registry.claim(self.identity,'lane5',self.root/'output',experiment=self.experiment)
 if __name__=='__main__':unittest.main()

@@ -27,12 +27,23 @@ FEATURES = {'finite_wbuf', 'unified_wb', 'tvd', 'ro', 'adaptive_policy',
             'wbuf_entries', 'payload_capacity_per_slice', 'bank_count', 'ops_per_bank_cycle'}
 IDEALS = {'wb', 'meta', 'read_hit'}
 RESULT_ROOT = Path('/workspace/results/ep_l2_ft20261016')
+WORKSPACE_RESULT_ROOT = Path('/workspace/ep_l2_potential20261017_lane5_results')
 RESULT_DISK_FLOOR = 40 * 1024**3  # Preserve the existing Share protection.
 
 
 def result_disk_free_bytes():
     stat = os.statvfs(RESULT_ROOT)
     return stat.f_bavail * stat.f_frsize
+
+
+def output_root(spec):
+    root = Path(spec.get('result_root', str(RESULT_ROOT))).resolve(strict=True)
+    require(root in {RESULT_ROOT.resolve(strict=True), WORKSPACE_RESULT_ROOT}, 'Unapproved result filesystem/root')
+    if root == WORKSPACE_RESULT_ROOT:
+        require(root.stat().st_dev == Path('/workspace').stat().st_dev and
+                root.stat().st_dev != Path('/root/share').stat().st_dev,
+                'New output must use the verified workspace physical filesystem')
+    return root
 
 
 def digest(path):
@@ -239,7 +250,8 @@ def run(spec, registry):
             'result filesystem below existing Share40GiB protection; no claim')
     audit = inspect(spec)
     key = audit['run_key']
-    directory = RESULT_ROOT / key
+    root = output_root(spec)
+    directory = root / key
     require(result_disk_free_bytes() >= RESULT_DISK_FLOOR,
             'result filesystem changed during input audit; no claim')
     experiment = None
@@ -247,6 +259,14 @@ def run(spec, registry):
         deadline = 1792220956 + 36000  # This explicitly authorized r19 CONTINUE T0 +10h.
         require(time.time() + spec['timeout_seconds'] < deadline, 'Insufficient bounded window for original timeout')
         experiment = {'experiment_id':spec['experiment_id'],'regime':spec['regime'],'deadline_unix':deadline}
+    elif spec.get('experiment_id') == 'EPL2_PARALLEL_POTENTIAL_20261017_V1':
+        from registry import PARALLEL
+        campaign = registry.snapshot().get('campaigns', {}).get(PARALLEL)
+        require(campaign is not None, 'New campaign must be centrally registered')
+        experiment = {k:spec[k] for k in ('experiment_id','regime','cell_id','profile')}
+        experiment['deadline_unix'] = campaign['deadline_unix']
+    elif spec.get('experiment_id'):
+        raise ValueError('Unknown experiment; no unaccounted launch')
     fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, **({'experiment':experiment} if experiment else {}))
     if not fresh:
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
@@ -255,7 +275,8 @@ def run(spec, registry):
     created_directory = False
     status, detail = 'INCOMPLETE', 'runner interrupted before terminal validation'
     result = {'run_key': key, 'identity': spec['identity'], 'allocation': allocation,
-              'audit': audit, 'status': status}
+              'audit': audit, 'status': status,
+              'output_filesystem': {'realpath': str(root), 'st_dev':root.stat().st_dev}}
     started = time.monotonic()
     try:
         directory.mkdir(parents=True, exist_ok=False)
@@ -289,7 +310,7 @@ def run(spec, registry):
         require(all(environment[k] == '1' for k in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS')),
                 'single CPU reservation cannot launch threaded child')
         policy = registry.snapshot()['hosts'][allocation['host']]
-        require(tree_bytes(RESULT_ROOT) < policy['max_result_bytes'], 'shared EP-L2 output ceiling')
+        require(sum(tree_bytes(p) for p in {RESULT_ROOT.resolve(), root}) < policy['max_result_bytes'], 'shared EP-L2 output ceiling')
         with (directory / 'raw.log').open('xb') as log:
             process = subprocess.Popen(command, cwd=directory, stdout=log, stderr=subprocess.STDOUT,
                                        env=environment, start_new_session=True)
@@ -299,14 +320,15 @@ def run(spec, registry):
                 peak_rss = max(peak_rss, process_tree_rss(process.pid))
                 live = local_resources()
                 if (time.monotonic() - started > spec['timeout_seconds'] or
-                    experiment is not None and time.time() >= experiment['deadline_unix']):
+                    experiment is not None and experiment['experiment_id'] == 'EPL2_DOWNSTREAM_HEADROOM_R19' and time.time() >= experiment['deadline_unix']):
                     status, detail = 'TIMEOUT', 'explicit runtime deadline'
                     terminate_owned(process)
                     break
                 if (peak_rss > allocation['memory_bytes'] or
                     (directory / 'raw.log').stat().st_size > policy['default_run_output_limit_bytes'] or
-                    tree_bytes(RESULT_ROOT) > policy['max_result_bytes'] or
+                    sum(tree_bytes(p) for p in {RESULT_ROOT.resolve(), root}) > policy['max_result_bytes'] or
                     result_disk_free_bytes() < RESULT_DISK_FLOOR or
+                    (root == WORKSPACE_RESULT_ROOT and (os.statvfs(root).f_bavail * os.statvfs(root).f_frsize < policy['min_disk_free_bytes'])) or
                     live['disk_free_bytes'] < policy['min_disk_free_bytes'] or
                     live['available_memory_bytes'] < policy['min_available_memory_bytes']):
                     status, detail = 'RESOURCE_LIMIT', 'own run exceeded shared resource safety policy'
@@ -327,7 +349,7 @@ def run(spec, registry):
                         if match[1] == 'cycle': cycles = int(match[2])
                         else: instructions = int(match[2])
             require(normal and cycles is not None and instructions is not None, 'missing native terminal execution evidence')
-            if experiment is not None:
+            if experiment is not None and experiment['experiment_id'] == 'EPL2_DOWNSTREAM_HEADROOM_R19':
                 from headroom_config import validate_runtime_dump
                 result['downstream_effective_config'] = validate_runtime_dump(directory / 'raw.log', spec)
             # Parser adapter must produce terminal_summary.json with explicit, source-mapped fields.

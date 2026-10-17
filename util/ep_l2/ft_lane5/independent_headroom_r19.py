@@ -42,6 +42,8 @@ def safe():
 
 
 def audit(handoff):
+    global FIXTURE
+    FIXTURE=Path(handoff['fixture_executable']) if handoff['regime'] in ('D2','L25') else FIXTURE
     pub=handoff['publication'];remote=git('rev-parse','refs/remotes/origin/hrl/ep-l2-ft20261016-lane1-v1').decode().strip()
     require(subprocess.run(['git','merge-base','--is-ancestor',pub,remote],cwd=REPO).returncode==0,'Unpublished Lane1 handoff')
     manifest_path=Path(handoff['producer_manifest_raw_path']);require(digest(manifest_path)==handoff['producer_manifest_sha256'],'Producer manifest bytes changed')
@@ -52,11 +54,11 @@ def audit(handoff):
     for root,key in ((CORE,'core_source_commit'),(FW,'framework_source_commit')):
         require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()==handoff['source_identity'][key],'Moved producing source')
         require(not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=root),'Dirty runtime source')
-    build=receipt['fixture_build_identity'];fixture_path='util/ep_l2/ft_lane1/headroom_r19/production_probe.cc';source=git('show',handoff['tool_fixture_source_commit']+':'+fixture_path)
+    build=receipt['fixture_build_identity'];fixture_path='util/ep_l2/ft_lane1/'+('headroom_r19_followup' if handoff['regime'] in ('D2','L25') else 'headroom_r19')+'/production_probe.cc';source=git('show',handoff['tool_fixture_source_commit']+':'+fixture_path)
     require(hashlib.sha256(source).hexdigest()==build['fixture_source_sha256']==digest(L1/fixture_path),'Fixture source differs from exact publication')
     require(build['runtime_recompiled'] is False and build['binary_sha256']==handoff['fixture_binary_sha256']==digest(FIXTURE),'Fixture is not official unchanged-archive build')
     for p,h in build['archives_sha256'].items():require(digest(p)==h,'Native production archive changed')
-    for row in receipt['commands']:
+    for row in receipt.get('commands',receipt.get('tests',[]))+build.get('actual_compile_and_link',[]):
         require(row['exit_code']==0 and digest(row['log'])==row['log_sha256'],'Producer compile/test raw missing')
         archived=handoff['producer_receipt_repository_path'].rsplit('/',1)[0]+'/logs/'+Path(row['log']).name
         require(Path(row['log']).read_bytes()==git('show',pub+':'+archived),'Producer raw is not exact remote evidence')
@@ -73,7 +75,7 @@ def audit(handoff):
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--handoff',type=Path,required=True);a.add_argument('--out',type=Path,required=True);args=a.parse_args()
-    handoff=json.loads(args.handoff.read_text());require(handoff['regime'] in ('D4','Q4'),'Affected replay not qualified for additional fixture regimes')
+    handoff=json.loads(args.handoff.read_text());require(handoff['regime'] in ('D4','Q4','D2','L25'),'Affected replay not qualified for additional fixture regimes')
     manifest,producer,binding=audit(handoff);require(not args.out.exists(),'Independent revision exists');args.out.mkdir(parents=True)
     report={'status':'INDEPENDENT_AFFECTED_RUNNING','experiment_id':EXPERIMENT,'regime':handoff['regime'],'identity':handoff['source_identity'],'tooling_source_commit':git('rev-parse','HEAD').decode().strip(),'tool_sha256':digest(__file__),'producer_binding':binding,'producer_receipt':producer,'tests':[],'resources_before':safe(),'compiler_started':False,'full_applications':0}
     r=Registry();lease=None;process=None;resource.setrlimit(resource.RLIMIT_CORE,(0,0))
@@ -94,9 +96,13 @@ def main():
             markers=[l for l in text.splitlines() if l.startswith(('R19_EFFECTIVE|','R19_CLOCK|','R19_DELAY_CAPTURE|','R19_PRODUCTION_PASS|'))]
             end=[l for l in markers if l.startswith('R19_PRODUCTION_PASS|')];require(len(end)==1,'Missing independent native terminal marker')
             values=dict(p.split('=',1) for p in end[0].split('|')[1:]);require(values['regime']==handoff['regime'] and int(values['mode'])==(2 if mode=='U_WB16' else 1),'Wrong native mode/condition')
-            for field,value in {'exact_once':'40','wb_lower_accept_and_set_done':'5','two_dirty_sector_versions':'1','cold_sectors':'2','subpartitions_exercised':'2','credit_drained':'1','bank_max_ops_per_physical_cycle':'1','fixed_delay_at_least100_gpu_cycles':'1','runtime_archives_unchanged':'1'}.items():require(values[field]==value,'Missing production closure '+field)
+            for field,value in {'exact_once':'40','wb_lower_accept_and_set_done':'5','two_dirty_sector_versions':'1','cold_sectors':'2','subpartitions_exercised':'2','credit_drained':'1','bank_max_ops_per_physical_cycle':'1','runtime_archives_unchanged':'1'}.items():require(values[field]==value,'Missing production closure '+field)
+            if handoff['regime'] in ('D2','L25'):
+                require(values['fixed_delay_gpu_cycles']==('25' if handoff['regime']=='L25' else '100') and values['fixed_delay_verified']=='1','Exact latency not independently proved')
+            else:
+                require(values['fixed_delay_at_least100_gpu_cycles']=='1','Original fixed latency missing')
             case.update(status='PASS',native_markers=markers,native_effective_options=opts);write_json(args.out/'INDEPENDENT_AFFECTED.json',report);print(mode,'INDEPENDENT_AFFECTED_PASS',flush=True);process=None
-        audit(handoff);report['status']='INDEPENDENT_AFFECTED_PRODUCTION_PASS';report['scope']='One actual native partition/two subpartitions; detailed DRAM native clock, exact config, five WB lower accept/set_done with two dirty-sector versions, forty responses/cold sectors/real hits, credit/physical bank/fixed100GPUcycle/drain. Not saturation or64slice full-application proof; unchanged original11 evidence retained within scope.'
+        audit(handoff);report['status']='INDEPENDENT_AFFECTED_PRODUCTION_PASS';report['scope']='One actual native partition/two subpartitions; detailed DRAM native clock, exact config, five WB lower accept/set_done with two dirty-sector versions, forty responses/cold sectors/real hits, credit/physical bank/condition-specific fixedGPUcycle/drain. Not saturation or64slice full-application proof; unchanged original11 evidence retained within scope.'
     except BaseException as error:report.update(status='INDEPENDENT_AFFECTED_FAILED_RETAIN_RAW_NO_APPLICATION',error=repr(error));raise
     finally:
         if process is not None:terminate_owned(process)

@@ -116,7 +116,7 @@ def publish_pair(workload, results, specs, stage_root):
                 raise ValueError('mixed-source/input pair: ' + field)
         metrics = []
         for row in rows:
-            directory = Path('/workspace/results/ep_l2_ft20261016') / row['run_key']
+            directory = Path(next(r for r in actual if r['run_key'] == row['run_key'])['allocation']['result_directory'])
             b0 = b0_metrics(directory)
             metrics.append({'workload': workload, 'mode': row['mode'], 'run_key': row['run_key'],
                             **ft_metrics(directory), **b0['aggregate']})
