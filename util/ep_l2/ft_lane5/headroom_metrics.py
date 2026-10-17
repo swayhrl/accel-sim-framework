@@ -15,10 +15,13 @@ SUM_FIELDS=('samples','c7d_l2_to_dram_full_block','c7d_dram_issue_eligible',
 def parse_rows(lines):
     app={};windows=[];l2windows=[]
     for line in lines:
-        if line.startswith(('EPL2B0V1|','EPL2DRAMV1|')):
+        if line.startswith(('EPL2B0V1|scope=','EPL2DRAMV1|scope=')):
             r=dict(p.split('=',1) for p in line.strip().split('|')[1:])
             if line.startswith('EPL2B0V1|') and r['scope']=='application':
-                i=int(r['slice']);require(i not in app,'Repeated application aggregate');app[i]=r
+                i=int(r['slice'])
+                if i in app:
+                    require(int(r['completion_cycle'])>=int(app[i]['completion_cycle']) and int(r['samples'])>=int(app[i]['samples']),'Cumulative application clock/sample regression')
+                app[i]=r  # Native prints cumulative application state after each kernel; use final.
             elif line.startswith('EPL2DRAMV1|') and r['scope']=='window':windows.append(r)
             elif line.startswith('EPL2B0V1|') and r['scope']=='window':l2windows.append(r)
     require(set(app)==set(range(64)),'Exact64 application pressure rows required')

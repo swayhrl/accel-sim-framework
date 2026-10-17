@@ -1,0 +1,5 @@
+# r19 conditional full-input preparation and frozen H0 pressure reference
+
+Eight diagnostic specs prepared from exact accepted Convolution/FWT inputs with new D4/Q4 config hashes/run keys and experiment/regime labels. Complete original kernelslist/body paths and nonatomic/native legacy proofs retained. No trace re-scan/conversion/crop or simulator execution. Drafts require condition envelopes; official and independent affected checks pending.
+
+Four H0 raw logs reused by exact hash/current acceptance; derived pressure only here. L2-full density uses sampled L2 slice-cycles, not an invented eligible-read denominator. Scheduler/credit/return use actual issue attempts; DRAM windows use emitted DRAM-channel ticks. Finite5000-GPU-cycle windows exclude terminal tails. WAD average is mean of64 source-truncated per-slice averages. Missing is not zero. Native cumulative application dumps use final monotone state after each kernel. Initial extraction compatibility failures retained; final6 tool tests PASS. Existing C1 legacy headroom excluded.

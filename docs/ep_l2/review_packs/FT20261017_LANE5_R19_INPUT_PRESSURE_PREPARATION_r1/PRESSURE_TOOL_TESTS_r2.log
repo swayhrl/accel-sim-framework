@@ -1,0 +1,49 @@
+test_distinct_normalization_denominators (test_headroom_metrics.MetricsTests.test_distinct_normalization_denominators) ... ERROR
+test_duplicate_application_records_refuse (test_headroom_metrics.MetricsTests.test_duplicate_application_records_refuse) ... ok
+test_missing_field_never_becomes_zero (test_headroom_metrics.MetricsTests.test_missing_field_never_becomes_zero) ... ERROR
+test_no_dram_windows_never_implies_nonbinding (test_headroom_metrics.MetricsTests.test_no_dram_windows_never_implies_nonbinding) ... ok
+test_other_native_records_are_not_misparsed (test_headroom_metrics.MetricsTests.test_other_native_records_are_not_misparsed) ... ERROR
+
+======================================================================
+ERROR: test_distinct_normalization_denominators (test_headroom_metrics.MetricsTests.test_distinct_normalization_denominators)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_headroom_metrics.py", line 10, in test_distinct_normalization_denominators
+    a=parse_rows(self.rows())['aggregate'];self.assertEqual(a['L2_to_DRAM_full_per_sampled_L2_slice_cycle'],.1);self.assertEqual(a['scheduler_full_per_actual_issue_attempt'],.5);self.assertEqual(a['scheduler_full_per_sampled_DRAM_channel_tick'],.05)
+      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/headroom_metrics.py", line 24, in parse_rows
+    require(set(app)==set(range(64)),'Exact64 application pressure rows required')
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py", line 17, in require
+    raise InvalidEvidence(message)
+validate.InvalidEvidence: Exact64 application pressure rows required
+
+======================================================================
+ERROR: test_missing_field_never_becomes_zero (test_headroom_metrics.MetricsTests.test_missing_field_never_becomes_zero)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_headroom_metrics.py", line 13, in test_missing_field_never_becomes_zero
+    with self.assertRaises(KeyError):parse_rows(r)
+                                     ^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/headroom_metrics.py", line 24, in parse_rows
+    require(set(app)==set(range(64)),'Exact64 application pressure rows required')
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py", line 17, in require
+    raise InvalidEvidence(message)
+validate.InvalidEvidence: Exact64 application pressure rows required
+
+======================================================================
+ERROR: test_other_native_records_are_not_misparsed (test_headroom_metrics.MetricsTests.test_other_native_records_are_not_misparsed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/test_headroom_metrics.py", line 17, in test_other_native_records_are_not_misparsed
+    r=self.rows();r.append('EPL2B0V1|QUIESCENT|slice=0|pass=1');self.assertEqual(parse_rows(r)['aggregate']['samples'],6400)
+                                                                                 ^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/headroom_metrics.py", line 24, in parse_rows
+    require(set(app)==set(range(64)),'Exact64 application pressure rows required')
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py", line 17, in require
+    raise InvalidEvidence(message)
+validate.InvalidEvidence: Exact64 application pressure rows required
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+FAILED (errors=3)
