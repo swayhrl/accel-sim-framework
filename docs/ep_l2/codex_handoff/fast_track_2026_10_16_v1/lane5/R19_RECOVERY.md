@@ -1,3 +1,7 @@
+# Latest initial8 terminal checkpoint
+
+Q4FWT controller session8737 terminal0; PIDs2030276/2030290/2030291 now historical, never restart. Both canonical runs COMPLETE_VALID; independent full review PASS B491788/U491236, equal791609344 instructions. V2gen14 staged, requires push/readback+central pointer before announcement. No active EP-L2 simulator. Next verify/publish Q4FWT, summarize_headroom_r19.py --regimes D4 Q4 to a new output revision, then evidence-based max2adaptive +one robustness checkpoint BEFORE new apps. Original deadline17:09:16UTC/cap24 unchanged.
+
 # Latest Q4FWT live checkpoint
 
 As of 2026-10-17T09:24:51.555640+00:00: Q4FWT actual controller2030276/start898101936, session8737; exact RUNNING keys 7c69083409fffcc7bb1dd5a5004fcc24b6ad33793603ee1b7b1ff4dc87ecb014, fa11ab049c8701bb23094d74d7173bd2a40f18309215a519c5f2e3efae2bba10. PID/boot/start in docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_CONV_DELIVERED_FWT_STARTED_r1/RECEIPT.json and live registry. Old Q4Conv session99795 terminal0; never restart. Current V2gen13/05de8019d026c1d3c795487726dffca508358dfb installed and delivered. New8started/6accepted/2running. Next review_r0_1_pair.py --regime Q4 --workload FWT_7_21 with admitted specs and new FT20261017_LANE5_R19_Q4_FWT_7_21_PAIR_r1/ACCEPTANCE_r1; push/readback/currentpointer/L6, then summarize both D4/Q4 and checkpoint before max2adaptive. T0/deadline/cap unchanged.
