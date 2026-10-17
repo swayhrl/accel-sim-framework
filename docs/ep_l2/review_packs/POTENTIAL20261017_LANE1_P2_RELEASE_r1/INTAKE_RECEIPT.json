@@ -1,0 +1,3340 @@
+{
+  "schema": "EPL2_LANE1_ROLLING_RUNTIME_INTAKE_V1",
+  "status": "P2_STRUCTURAL_LOCAL_IDEALS_PRODUCER_PASS_LANE5_INDEPENDENT_QUALIFICATION_REQUIRED",
+  "authority": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
+  "core_source_commit": "963635c0dbb79cce5c83506d3db13f067e60aae5",
+  "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "core_tree": "98b4a80e1af6b99932fb84099e9dec223377c3b2",
+  "tool_source_commit": "f651c2d6c29f10d5a1b0b63e94f3f78855a3a77e",
+  "runtime_recompiled_by_lane1": true,
+  "runtime_recompiled_during_intake": false,
+  "application_starts": 0,
+  "independent_qualification": false,
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/libcuda",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/routers",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-std=gnu++17",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/parallel_release/test_ideal_meta_real.cc",
+        "-o",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/test_ideal_meta_real",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-driven/libtrace-driven.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-ldl",
+        "-lGL",
+        "-lpthread",
+        "-lm"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/compile_real_request_unit.log",
+      "process": {
+        "pid": 2166353,
+        "start_ticks": 898985387,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "b97308bef12bd07a5242aeb02ccca52c452bc53d207eedf07dee0910cf35ae86",
+      "wall_seconds": 3.621944520622492
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_1_8.log",
+      "process": {
+        "pid": 2166365,
+        "start_ticks": 898985770,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "f799434bf12b47c3058707556ddae7070cbdaba3016eace3507a02a97f1efffd",
+      "wall_seconds": 1.007624400779605
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_8_0.log",
+      "process": {
+        "pid": 2166375,
+        "start_ticks": 898985881,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "96652d711845754d41271669b533e423ab4102ce53abe238feda7ff69b1c7180",
+      "wall_seconds": 0.40460611693561077
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_8_4096.log",
+      "process": {
+        "pid": 2166380,
+        "start_ticks": 898985932,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e2d18201674f56f92c7ab5161235c4095939c1ba2bcd71e472b3eb209acb3cd4",
+      "wall_seconds": 0.4040937162935734
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_1_8.log",
+      "process": {
+        "pid": 2166382,
+        "start_ticks": 898985983,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "09bfab9ab93dee122d6635f3b0d262168d6a96fc3cf3faa9a439fee9fe116f26",
+      "wall_seconds": 0.40457350201904774
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_1_8.log",
+      "process": {
+        "pid": 2166384,
+        "start_ticks": 898986034,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1c30c7ed05181b352dfb2fa7718ed4f4a7b8d325702395a4814261bbde455a24",
+      "wall_seconds": 0.4045361466705799
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_1_16.log",
+      "process": {
+        "pid": 2166386,
+        "start_ticks": 898986085,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "ecbc02430fa77b98d942c909a84de27674b1a0fab998fc7361f4f2ab51e9ee11",
+      "wall_seconds": 1.007656555622816
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_16_0.log",
+      "process": {
+        "pid": 2166505,
+        "start_ticks": 898986197,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "aae551fdc93c8c9387fe68db07c1c13937735390b9f5eb4b5e08a003b46db521",
+      "wall_seconds": 0.40433639101684093
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_16_4096.log",
+      "process": {
+        "pid": 2166538,
+        "start_ticks": 898986248,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "dd0a9caab744bbf96b9f847a3a8de7f3abe6d0346ab7000f687e2218c92bd3c2",
+      "wall_seconds": 0.4044266361743212
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_1_16.log",
+      "process": {
+        "pid": 2166540,
+        "start_ticks": 898986299,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "424c7f89c95732cc7a24cd9cbbf371f4795bd680ef0ef39b07939c701ec598fa",
+      "wall_seconds": 0.4043144341558218
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_1_16.log",
+      "process": {
+        "pid": 2166549,
+        "start_ticks": 898986349,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5a1678a3dd97d0a43d8b9edeb7862f97df5957f4178c4b041b9cd8580b758e8a",
+      "wall_seconds": 0.2034020721912384
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_2_8.log",
+      "process": {
+        "pid": 2166557,
+        "start_ticks": 898986380,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "cc8d93353665b0e74472f617d8759fb53589dcc6cda028a8bf028592202aba96",
+      "wall_seconds": 1.0080677308142185
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_8_0.log",
+      "process": {
+        "pid": 2166560,
+        "start_ticks": 898986492,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a6dcb8522d579c110c63c2ce6f5491cf98ed6548c155cab21a49a63849b7739c",
+      "wall_seconds": 0.20307587832212448
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_8_4096.log",
+      "process": {
+        "pid": 2166562,
+        "start_ticks": 898986523,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "edace98573c4ecb9eb594a3a09e575cf09f94ab227238110ecdd884da8fbff80",
+      "wall_seconds": 0.40429335460066795
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_2_8.log",
+      "process": {
+        "pid": 2166584,
+        "start_ticks": 898986574,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "aec10da94d6e39700e523d3b8774eb80e68ad86409feaed6266e7da96cb44f28",
+      "wall_seconds": 0.40442956425249577
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_2_8.log",
+      "process": {
+        "pid": 2166620,
+        "start_ticks": 898986625,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d49b0241c58638b106f120a7e756d6e332af5e2ae8a9dd28e2e9471905394218",
+      "wall_seconds": 0.40445253998041153
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_2_16.log",
+      "process": {
+        "pid": 2166629,
+        "start_ticks": 898986676,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "01c68ecad62ea4655222e903b688ffcc5bec8895b3f274aaaa90701b673ab43c",
+      "wall_seconds": 1.007889674976468
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_16_0.log",
+      "process": {
+        "pid": 2166632,
+        "start_ticks": 898986788,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "daed55354a9da311d14a062c6fedd854fac1d8a53b6289a43d87458fe70c6018",
+      "wall_seconds": 0.20348074659705162
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_16_4096.log",
+      "process": {
+        "pid": 2166634,
+        "start_ticks": 898986819,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "22557b4f0b31b747be8a782183be26d9e1a1624cb72753e2961517245c5f19c4",
+      "wall_seconds": 0.4044949449598789
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_2_16.log",
+      "process": {
+        "pid": 2166636,
+        "start_ticks": 898986870,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "b98eea1568dd8bf5df9364dacf132b4e4f4a3bab41c263e1de8e5b4fb4157597",
+      "wall_seconds": 0.40390128642320633
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_2_16.log",
+      "process": {
+        "pid": 2166638,
+        "start_ticks": 898986920,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "218a1fa4bb398581afa1bdad3788e869905208cc5b09bb876909f0a8c769eef8",
+      "wall_seconds": 0.20328864082694054
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ft_directed.log",
+      "process": {
+        "pid": 2166644,
+        "start_ticks": 898986951,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e475a47c1397121c8cb54151d02daeaacde05a18fc034588cd397ea96b8f6e3c",
+      "wall_seconds": 1.4101131670176983
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_1_8.log",
+      "process": {
+        "pid": 2166664,
+        "start_ticks": 898987103,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "8e144ca65daee8af783d83b2fbbb8d54c5d8b6a6e6ab38a9e825d6b357744e97",
+      "wall_seconds": 0.20335828699171543
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_1_16.log",
+      "process": {
+        "pid": 2166666,
+        "start_ticks": 898987134,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "9aa0da036e835b4de8a25ddaa13a226b893cc9813a3ae1cc47f3b0569e442007",
+      "wall_seconds": 0.20347113721072674
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_2_8.log",
+      "process": {
+        "pid": 2166669,
+        "start_ticks": 898987165,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "92f4afa4227918be1d71deb011f158898267934b1a4d154e3bc83a0f80870586",
+      "wall_seconds": 0.2034025676548481
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_2_16.log",
+      "process": {
+        "pid": 2166671,
+        "start_ticks": 898987197,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1740fea2432bbe3c36c83080f481eeb8d03b7fa2862a97708a50d7dba2583826",
+      "wall_seconds": 0.20315425284206867
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-read-first"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-read-first.log",
+      "process": {
+        "pid": 2166673,
+        "start_ticks": 898987228,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1a7dd53a0f5ce4d6e0d3c47eefbfe01e9921821119aaa06d909aeea7c91c69f9",
+      "wall_seconds": 0.2035644669085741
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-atomic-first"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-atomic-first.log",
+      "process": {
+        "pid": 2166675,
+        "start_ticks": 898987259,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a18a2aa71764d2abed2770a0056c4c3ee336e4ae8839594ef6d08695a2872c95",
+      "wall_seconds": 0.20336516574025154
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-multi"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-multi.log",
+      "process": {
+        "pid": 2166677,
+        "start_ticks": 898987291,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "72b2fcf367274c24bc1b25da190689bdae2cc065c8538ca4d274716a196d2845",
+      "wall_seconds": 0.20321590267121792
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-b16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-b16.log",
+      "process": {
+        "pid": 2166752,
+        "start_ticks": 898987322,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "297885cd9ced916281b52336fadcf37a9c6a25fd0cd684a271b60bf7eb26af89",
+      "wall_seconds": 0.2033247221261263
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-dirty"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-dirty.log",
+      "process": {
+        "pid": 2166754,
+        "start_ticks": 898987353,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5323f9c464dec3ddfaaa8699917bc8653b9a49943f838c3332bc328df9ca7417",
+      "wall_seconds": 0.20303606800734997
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-version-only"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-version-only.log",
+      "process": {
+        "pid": 2166756,
+        "start_ticks": 898987385,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "3f4c24cfd2c0a3c8766cd49505419d8dd6623b3fa8810520546848cf1ea3e2d5",
+      "wall_seconds": 0.20344124361872673
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_wb",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_wb.log",
+      "process": {
+        "pid": 2166758,
+        "start_ticks": 898987415,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "344b099b37dab5d0476efcc67babb0793f889bb8c6a8c50a6c10d02ad171772c",
+      "wall_seconds": 0.8062902260571718
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/test_ideal_meta_real",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta.log",
+      "process": {
+        "pid": 2166760,
+        "start_ticks": 898987506,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "4913b5104149d3fe2e51b4a0284ca7a34838779d5591fd2b24018dc3ace24d77",
+      "wall_seconds": 0.2028772346675396
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated.log",
+      "process": {
+        "pid": 2166762,
+        "start_ticks": 898987538,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "bf826af7c1ab780822f785ad9f0babc673b093da71ad867ac68cd18b3a41ca09",
+      "wall_seconds": 0.40436311066150665
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_read_hit.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit.log",
+      "process": {
+        "pid": 2166764,
+        "start_ticks": 898987589,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d6c2711f2338740ef5b08aed66b4993c114a5f40fa710ca77ad56a54daf01585",
+      "wall_seconds": 0.6053524427115917
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_reference"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_host_prefill_reference.log",
+      "process": {
+        "pid": 2166766,
+        "start_ticks": 898987650,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d68357029cd990499cc4a4d341d11de922c3f3756d4982a6e30a15000fb80d51",
+      "wall_seconds": 0.20324073545634747
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_host_prefill_b16.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_host_prefill_partition.log",
+      "process": {
+        "pid": 2166768,
+        "start_ticks": 898987682,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e1c7a740aa1b05cd618e8d8c52a75c1ae179ef1caa587f74cdbce181a617104f",
+      "wall_seconds": 0.20309994369745255
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated_B16.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated_B16.log",
+      "process": {
+        "pid": 2166828,
+        "start_ticks": 898987713,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "007219afdde1404d3c22f2df1b6f1addae961fd7d0ebe525d25a5fcf6e365e35",
+      "wall_seconds": 0.4044531751424074
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit_B16.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit_B16.log",
+      "process": {
+        "pid": 2166919,
+        "start_ticks": 898987765,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "62b8ca153bec420116442be4459760347cd392af875c875b80a657c3290285c5",
+      "wall_seconds": 0.6050926987081766
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "1",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/S64_capacity.log",
+      "process": {
+        "pid": 2166921,
+        "start_ticks": 898987836,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5e118295bf37ab6999ce09f0c05b94f045bcdcd8e31422a656735509ccfe73c9",
+      "wall_seconds": 0.6057214997708797
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/UCAP_capacity.log",
+      "process": {
+        "pid": 2166926,
+        "start_ticks": 898987909,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "9fbeed339916f8846be1bc61000736db3e5b2a4ea13c71427362562ceb850a3c",
+      "wall_seconds": 0.20322457142174244
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap_retry",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/UCAP_bank_retry.log",
+      "process": {
+        "pid": 2166928,
+        "start_ticks": 898987940,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "7f31c28b62ca31ec3cb8531440bbb184a917efcb2c16730e4568641b0c2827a1",
+      "wall_seconds": 0.20365196093916893
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "1",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_S64.log",
+      "process": {
+        "pid": 2166930,
+        "start_ticks": 898987972,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a6b3548d9b1244bfe2c1773aca1d107bd61b1686edac821b3871fd61690617ea",
+      "wall_seconds": 0.2032984271645546
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_UCAP.log",
+      "process": {
+        "pid": 2166932,
+        "start_ticks": 898988003,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "c57a85cc6d29d34809fae7c995942e217a0661cf7ec94be2fe98b2d483764d5c",
+      "wall_seconds": 0.20324881933629513
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1",
+        "rollback"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_UCAP_rollback.log",
+      "process": {
+        "pid": 2166940,
+        "start_ticks": 898988034,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5a18021a65727493765e861662d02ba1a0998d741e9418f104c7671379065ad6",
+      "wall_seconds": 0.20356311835348606
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1",
+        "mixed"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_UCAP_mixed.log",
+      "process": {
+        "pid": 2166942,
+        "start_ticks": 898988065,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "c58e389d1b546ddebf0931458863c1dbc4d34189862d7396da61f11e1dc07bcc",
+      "wall_seconds": 0.20334147661924362
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/B16_static_control.log",
+      "process": {
+        "pid": 2166944,
+        "start_ticks": 898988096,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "fccd6254e06cab02ab02c8fbfa4a1f8efcb95bbca1366dfd9f72e3cd3d75b84b",
+      "wall_seconds": 0.6050071865320206
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/U_uncapped_control.log",
+      "process": {
+        "pid": 2166949,
+        "start_ticks": 898988167,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "eaf35204f323ba305f0e7145e1509b84ed9d635e499cf5fb9d47e343d9b68bb9",
+      "wall_seconds": 0.20291989110410213
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P1_mode1.log",
+      "process": {
+        "pid": 2166951,
+        "start_ticks": 898988199,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5243baf1edfe19a62902664ae81a2eb2bde0e3deb34ace7e4da7f2a590be8e1d",
+      "wall_seconds": 0.8066562041640282
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "2"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_mode1.log",
+      "process": {
+        "pid": 2166979,
+        "start_ticks": 898988290,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "119f908d21a9d906acad115c8514c2abbd92aac88880ba057183320c1db6c5b7",
+      "wall_seconds": 0.8068500198423862
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P1_mode2.log",
+      "process": {
+        "pid": 2166987,
+        "start_ticks": 898988382,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "ad98663422d33a97546183c10fbe6164b11feb284d330594b62345c3850737b6",
+      "wall_seconds": 0.806624760851264
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "2"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_mode2.log",
+      "process": {
+        "pid": 2166995,
+        "start_ticks": 898988473,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "4e15f542c3066096c21a44e8986a20fbfb95dfe9abcb17d460e6eff0d6e532c1",
+      "wall_seconds": 0.807223467156291
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/usr/local/cuda-11.8/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+        "-I/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator/ISA_Def",
+        "-I/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator/trace-driven",
+        "-I/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator/trace-parser",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/routers",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/libcuda",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/routers",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-std=gnu++17",
+        "-c",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/parallel_release/effective_config.cc",
+        "-o",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective.o"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_compile.log",
+      "process": {
+        "pid": 2167003,
+        "start_ticks": 898988555,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "f2b96889b4fdda1298092691fd5db9103db298af571c7b526a915422c1e69afe",
+      "wall_seconds": 2.0119375083595514
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective.o",
+        "-o",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-driven/libtrace-driven.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-ldl",
+        "-lGL",
+        "-lpthread",
+        "-lm"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_link.log",
+      "process": {
+        "pid": 2167066,
+        "start_ticks": 898988757,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "96043dea345969d06fddb51e23e72d199c1f8301134439de7cad728348bc90b1",
+      "wall_seconds": 1.6117129549384117
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/usr/local/cuda-11.8/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+        "-I/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator/ISA_Def",
+        "-I/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator/trace-driven",
+        "-I/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator/trace-parser",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/routers",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/libcuda",
+        "-I/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src/intersim2/routers",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/src",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-std=gnu++17",
+        "-c",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1/util/ep_l2/ft_lane1/parallel_release/production_probe_p2.cc",
+        "-o",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe.o"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/p2_probe_compile.log",
+      "process": {
+        "pid": 2167080,
+        "start_ticks": 898988929,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "51e141953761fa9834ba50a2d1fda9b5487fdae1b470d04439e62bc28d728cd5",
+      "wall_seconds": 2.2150908540934324
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe.o",
+        "-o",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-driven/libtrace-driven.a",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-ldl",
+        "-lGL",
+        "-lpthread",
+        "-lm"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/p2_probe_link.log",
+      "process": {
+        "pid": 2167085,
+        "start_ticks": 898989152,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1cfa6a5f180677fb7aed43e40ab1860d6c4fcad0905e98b8eade7f4283c4e9ef",
+      "wall_seconds": 1.8126282077282667
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/B16_OFF/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/B16_OFF/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/B16_OFF/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/B16_OFF/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/B16_OFF/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/B16_OFF/config-5.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/B16_OFF_effective.log",
+      "process": {
+        "pid": 2167254,
+        "start_ticks": 898989345,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "11ed87acc41c197f1e1688f6d7a405c28c89b70c0b2705253daf211c7ee47525",
+      "wall_seconds": 0.40447997860610485
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_WB16_OFF/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_WB16_OFF/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_WB16_OFF/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_WB16_OFF/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_WB16_OFF/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_WB16_OFF/config-5.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/U_WB16_OFF_effective.log",
+      "process": {
+        "pid": 2167258,
+        "start_ticks": 898989386,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "81ab112d20949cda71bf4b31e439b968fd3f14c8fa85fd108ac770100a1c2052",
+      "wall_seconds": 0.40413444489240646
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB/config-5.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/I_WB_effective.log",
+      "process": {
+        "pid": 2167260,
+        "start_ticks": 898989428,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "f7c136447d02ead3468205b9ce66db16fbddcdc32e47012572dadf4af0fab7c1",
+      "wall_seconds": 0.40447309613227844
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_META/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_META/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_META/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_META/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_META/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_META/config-5.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/I_META_effective.log",
+      "process": {
+        "pid": 2167262,
+        "start_ticks": 898989469,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1952abc20416a042c788ee5c23f996d732c4b823c3633863ed4e75e5fcd563c0",
+      "wall_seconds": 0.4040421899408102
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB_META/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB_META/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB_META/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB_META/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB_META/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_WB_META/config-5.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/I_WB_META_effective.log",
+      "process": {
+        "pid": 2167264,
+        "start_ticks": 898989510,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "83f5a56e8d71d1a724fdd04c26a09aa08a929b745877777a69468251b04806d2",
+      "wall_seconds": 0.40438841097056866
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_READ_HIT/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_READ_HIT/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_READ_HIT/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_READ_HIT/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_READ_HIT/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/I_READ_HIT/config-5.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/I_READ_HIT_effective.log",
+      "process": {
+        "pid": 2167270,
+        "start_ticks": 898989552,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "fab47a462a54c685eac75b611c19b360344b0b74d27d480d258991769a563a58",
+      "wall_seconds": 0.40401680395007133
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/S64/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/S64_effective.log",
+      "process": {
+        "pid": 2167272,
+        "start_ticks": 898989593,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "019184fbda5b3a2d2fd98d67da18221cc20a6438b2bdbc3429cab7267c1ba137",
+      "wall_seconds": 0.4042911175638437
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/U_CAP16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/U_CAP16_effective.log",
+      "process": {
+        "pid": 2167297,
+        "start_ticks": 898989634,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "cc4fb3d22537cf3a4545bb98d5e29f2e106f57b9f62b81d16298470b0935c0d6",
+      "wall_seconds": 0.404332784935832
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_B16_effective.log",
+      "process": {
+        "pid": 2167306,
+        "start_ticks": 898989676,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "45c93b61234488bcba5816d40823ab783fd41260ffe02bf30a00e2d74dd7da37",
+      "wall_seconds": 0.40421650372445583
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe",
+        "P2",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_B16_native_partition.log",
+      "process": {
+        "pid": 2167308,
+        "start_ticks": 898989717,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "fbed05657e701788311d368ffa44d2f1a71587d97a6cc10e3ae20d097bd817ee",
+      "wall_seconds": 0.6061682272702456
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/effective_config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_U_WB16_effective.log",
+      "process": {
+        "pid": 2167310,
+        "start_ticks": 898989779,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "c4f283a219b0bee6b85f54eb77416b230259f927538a3533f09fa67895ff8061",
+      "wall_seconds": 0.4045400619506836
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe",
+        "P2",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_U_WB16_native_partition.log",
+      "process": {
+        "pid": 2167312,
+        "start_ticks": 898989821,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "937f064cde5a80ce07a338d688aee2ae3e67c03915527896cadd7f7a6f61699d",
+      "wall_seconds": 0.605264212936163
+    }
+  ],
+  "tests": [
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_1_8.log",
+      "process": {
+        "pid": 2166365,
+        "start_ticks": 898985770,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "f799434bf12b47c3058707556ddae7070cbdaba3016eace3507a02a97f1efffd",
+      "wall_seconds": 1.007624400779605
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_8_0.log",
+      "process": {
+        "pid": 2166375,
+        "start_ticks": 898985881,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "96652d711845754d41271669b533e423ab4102ce53abe238feda7ff69b1c7180",
+      "wall_seconds": 0.40460611693561077
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_8_4096.log",
+      "process": {
+        "pid": 2166380,
+        "start_ticks": 898985932,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e2d18201674f56f92c7ab5161235c4095939c1ba2bcd71e472b3eb209acb3cd4",
+      "wall_seconds": 0.4040937162935734
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_1_8.log",
+      "process": {
+        "pid": 2166382,
+        "start_ticks": 898985983,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "09bfab9ab93dee122d6635f3b0d262168d6a96fc3cf3faa9a439fee9fe116f26",
+      "wall_seconds": 0.40457350201904774
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_1_8.log",
+      "process": {
+        "pid": 2166384,
+        "start_ticks": 898986034,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1c30c7ed05181b352dfb2fa7718ed4f4a7b8d325702395a4814261bbde455a24",
+      "wall_seconds": 0.4045361466705799
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_1_16.log",
+      "process": {
+        "pid": 2166386,
+        "start_ticks": 898986085,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "ecbc02430fa77b98d942c909a84de27674b1a0fab998fc7361f4f2ab51e9ee11",
+      "wall_seconds": 1.007656555622816
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_16_0.log",
+      "process": {
+        "pid": 2166505,
+        "start_ticks": 898986197,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "aae551fdc93c8c9387fe68db07c1c13937735390b9f5eb4b5e08a003b46db521",
+      "wall_seconds": 0.40433639101684093
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_1_16_4096.log",
+      "process": {
+        "pid": 2166538,
+        "start_ticks": 898986248,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "dd0a9caab744bbf96b9f847a3a8de7f3abe6d0346ab7000f687e2218c92bd3c2",
+      "wall_seconds": 0.4044266361743212
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_1_16.log",
+      "process": {
+        "pid": 2166540,
+        "start_ticks": 898986299,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "424c7f89c95732cc7a24cd9cbbf371f4795bd680ef0ef39b07939c701ec598fa",
+      "wall_seconds": 0.4043144341558218
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_1_16.log",
+      "process": {
+        "pid": 2166549,
+        "start_ticks": 898986349,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5a1678a3dd97d0a43d8b9edeb7862f97df5957f4178c4b041b9cd8580b758e8a",
+      "wall_seconds": 0.2034020721912384
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_2_8.log",
+      "process": {
+        "pid": 2166557,
+        "start_ticks": 898986380,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "cc8d93353665b0e74472f617d8759fb53589dcc6cda028a8bf028592202aba96",
+      "wall_seconds": 1.0080677308142185
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_8_0.log",
+      "process": {
+        "pid": 2166560,
+        "start_ticks": 898986492,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a6dcb8522d579c110c63c2ce6f5491cf98ed6548c155cab21a49a63849b7739c",
+      "wall_seconds": 0.20307587832212448
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_8_4096.log",
+      "process": {
+        "pid": 2166562,
+        "start_ticks": 898986523,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "edace98573c4ecb9eb594a3a09e575cf09f94ab227238110ecdd884da8fbff80",
+      "wall_seconds": 0.40429335460066795
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_2_8.log",
+      "process": {
+        "pid": 2166584,
+        "start_ticks": 898986574,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "aec10da94d6e39700e523d3b8774eb80e68ad86409feaed6266e7da96cb44f28",
+      "wall_seconds": 0.40442956425249577
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_2_8.log",
+      "process": {
+        "pid": 2166620,
+        "start_ticks": 898986625,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d49b0241c58638b106f120a7e756d6e332af5e2ae8a9dd28e2e9471905394218",
+      "wall_seconds": 0.40445253998041153
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/host_prefill_2_16.log",
+      "process": {
+        "pid": 2166629,
+        "start_ticks": 898986676,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "01c68ecad62ea4655222e903b688ffcc5bec8895b3f274aaaa90701b673ab43c",
+      "wall_seconds": 1.007889674976468
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_16_0.log",
+      "process": {
+        "pid": 2166632,
+        "start_ticks": 898986788,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "daed55354a9da311d14a062c6fedd854fac1d8a53b6289a43d87458fe70c6018",
+      "wall_seconds": 0.20348074659705162
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/physical_clock_2_16_4096.log",
+      "process": {
+        "pid": 2166634,
+        "start_ticks": 898986819,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "22557b4f0b31b747be8a782183be26d9e1a1624cb72753e2961517245c5f19c4",
+      "wall_seconds": 0.4044949449598789
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/warm_clock_2_16.log",
+      "process": {
+        "pid": 2166636,
+        "start_ticks": 898986870,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "b98eea1568dd8bf5df9364dacf132b4e4f4a3bab41c263e1de8e5b4fb4157597",
+      "wall_seconds": 0.40390128642320633
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/partition_2_16.log",
+      "process": {
+        "pid": 2166638,
+        "start_ticks": 898986920,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "218a1fa4bb398581afa1bdad3788e869905208cc5b09bb876909f0a8c769eef8",
+      "wall_seconds": 0.20328864082694054
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ft_directed.log",
+      "process": {
+        "pid": 2166644,
+        "start_ticks": 898986951,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e475a47c1397121c8cb54151d02daeaacde05a18fc034588cd397ea96b8f6e3c",
+      "wall_seconds": 1.4101131670176983
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_1_8.log",
+      "process": {
+        "pid": 2166664,
+        "start_ticks": 898987103,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "8e144ca65daee8af783d83b2fbbb8d54c5d8b6a6e6ab38a9e825d6b357744e97",
+      "wall_seconds": 0.20335828699171543
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_1_16.log",
+      "process": {
+        "pid": 2166666,
+        "start_ticks": 898987134,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "9aa0da036e835b4de8a25ddaa13a226b893cc9813a3ae1cc47f3b0569e442007",
+      "wall_seconds": 0.20347113721072674
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_2_8.log",
+      "process": {
+        "pid": 2166669,
+        "start_ticks": 898987165,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "92f4afa4227918be1d71deb011f158898267934b1a4d154e3bc83a0f80870586",
+      "wall_seconds": 0.2034025676548481
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/a1_2_16.log",
+      "process": {
+        "pid": 2166671,
+        "start_ticks": 898987197,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1740fea2432bbe3c36c83080f481eeb8d03b7fa2862a97708a50d7dba2583826",
+      "wall_seconds": 0.20315425284206867
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-read-first"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-read-first.log",
+      "process": {
+        "pid": 2166673,
+        "start_ticks": 898987228,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1a7dd53a0f5ce4d6e0d3c47eefbfe01e9921821119aaa06d909aeea7c91c69f9",
+      "wall_seconds": 0.2035644669085741
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-atomic-first"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-atomic-first.log",
+      "process": {
+        "pid": 2166675,
+        "start_ticks": 898987259,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a18a2aa71764d2abed2770a0056c4c3ee336e4ae8839594ef6d08695a2872c95",
+      "wall_seconds": 0.20336516574025154
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-multi"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-multi.log",
+      "process": {
+        "pid": 2166677,
+        "start_ticks": 898987291,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "72b2fcf367274c24bc1b25da190689bdae2cc065c8538ca4d274716a196d2845",
+      "wall_seconds": 0.20321590267121792
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-b16"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-b16.log",
+      "process": {
+        "pid": 2166752,
+        "start_ticks": 898987322,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "297885cd9ced916281b52336fadcf37a9c6a25fd0cd684a271b60bf7eb26af89",
+      "wall_seconds": 0.2033247221261263
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-dirty"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-dirty.log",
+      "process": {
+        "pid": 2166754,
+        "start_ticks": 898987353,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5323f9c464dec3ddfaaa8699917bc8653b9a49943f838c3332bc328df9ca7417",
+      "wall_seconds": 0.20303606800734997
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-version-only"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/b1-version-only.log",
+      "process": {
+        "pid": 2166756,
+        "start_ticks": 898987385,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "3f4c24cfd2c0a3c8766cd49505419d8dd6623b3fa8810520546848cf1ea3e2d5",
+      "wall_seconds": 0.20344124361872673
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_wb",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_wb.log",
+      "process": {
+        "pid": 2166758,
+        "start_ticks": 898987415,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "344b099b37dab5d0476efcc67babb0793f889bb8c6a8c50a6c10d02ad171772c",
+      "wall_seconds": 0.8062902260571718
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/test_ideal_meta_real",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta.log",
+      "process": {
+        "pid": 2166760,
+        "start_ticks": 898987506,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "4913b5104149d3fe2e51b4a0284ca7a34838779d5591fd2b24018dc3ace24d77",
+      "wall_seconds": 0.2028772346675396
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated.log",
+      "process": {
+        "pid": 2166762,
+        "start_ticks": 898987538,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "bf826af7c1ab780822f785ad9f0babc673b093da71ad867ac68cd18b3a41ca09",
+      "wall_seconds": 0.40436311066150665
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_read_hit.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit.log",
+      "process": {
+        "pid": 2166764,
+        "start_ticks": 898987589,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d6c2711f2338740ef5b08aed66b4993c114a5f40fa710ca77ad56a54daf01585",
+      "wall_seconds": 0.6053524427115917
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_reference"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_host_prefill_reference.log",
+      "process": {
+        "pid": 2166766,
+        "start_ticks": 898987650,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d68357029cd990499cc4a4d341d11de922c3f3756d4982a6e30a15000fb80d51",
+      "wall_seconds": 0.20324073545634747
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_host_prefill_b16.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_host_prefill_partition.log",
+      "process": {
+        "pid": 2166768,
+        "start_ticks": 898987682,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e1c7a740aa1b05cd618e8d8c52a75c1ae179ef1caa587f74cdbce181a617104f",
+      "wall_seconds": 0.20309994369745255
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated_B16.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated_B16.log",
+      "process": {
+        "pid": 2166828,
+        "start_ticks": 898987713,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "007219afdde1404d3c22f2df1b6f1addae961fd7d0ebe525d25a5fcf6e365e35",
+      "wall_seconds": 0.4044531751424074
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit_B16.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit_B16.log",
+      "process": {
+        "pid": 2166919,
+        "start_ticks": 898987765,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "62b8ca153bec420116442be4459760347cd392af875c875b80a657c3290285c5",
+      "wall_seconds": 0.6050926987081766
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "1",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/S64_capacity.log",
+      "process": {
+        "pid": 2166921,
+        "start_ticks": 898987836,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5e118295bf37ab6999ce09f0c05b94f045bcdcd8e31422a656735509ccfe73c9",
+      "wall_seconds": 0.6057214997708797
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/UCAP_capacity.log",
+      "process": {
+        "pid": 2166926,
+        "start_ticks": 898987909,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "9fbeed339916f8846be1bc61000736db3e5b2a4ea13c71427362562ceb850a3c",
+      "wall_seconds": 0.20322457142174244
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap_retry",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/UCAP_bank_retry.log",
+      "process": {
+        "pid": 2166928,
+        "start_ticks": 898987940,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "7f31c28b62ca31ec3cb8531440bbb184a917efcb2c16730e4568641b0c2827a1",
+      "wall_seconds": 0.20365196093916893
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "1",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_S64.log",
+      "process": {
+        "pid": 2166930,
+        "start_ticks": 898987972,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a6b3548d9b1244bfe2c1773aca1d107bd61b1686edac821b3871fd61690617ea",
+      "wall_seconds": 0.2032984271645546
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_UCAP.log",
+      "process": {
+        "pid": 2166932,
+        "start_ticks": 898988003,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "c57a85cc6d29d34809fae7c995942e217a0661cf7ec94be2fe98b2d483764d5c",
+      "wall_seconds": 0.20324881933629513
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1",
+        "rollback"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_UCAP_rollback.log",
+      "process": {
+        "pid": 2166940,
+        "start_ticks": 898988034,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5a18021a65727493765e861662d02ba1a0998d741e9418f104c7671379065ad6",
+      "wall_seconds": 0.20356311835348606
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1",
+        "mixed"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/A1_UCAP_mixed.log",
+      "process": {
+        "pid": 2166942,
+        "start_ticks": 898988065,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "c58e389d1b546ddebf0931458863c1dbc4d34189862d7396da61f11e1dc07bcc",
+      "wall_seconds": 0.20334147661924362
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/B16_static_control.log",
+      "process": {
+        "pid": 2166944,
+        "start_ticks": 898988096,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "fccd6254e06cab02ab02c8fbfa4a1f8efcb95bbca1366dfd9f72e3cd3d75b84b",
+      "wall_seconds": 0.6050071865320206
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/U_uncapped_control.log",
+      "process": {
+        "pid": 2166949,
+        "start_ticks": 898988167,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "eaf35204f323ba305f0e7145e1509b84ed9d635e499cf5fb9d47e343d9b68bb9",
+      "wall_seconds": 0.20291989110410213
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P1_mode1.log",
+      "process": {
+        "pid": 2166951,
+        "start_ticks": 898988199,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "5243baf1edfe19a62902664ae81a2eb2bde0e3deb34ace7e4da7f2a590be8e1d",
+      "wall_seconds": 0.8066562041640282
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "2"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_mode1.log",
+      "process": {
+        "pid": 2166979,
+        "start_ticks": 898988290,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "119f908d21a9d906acad115c8514c2abbd92aac88880ba057183320c1db6c5b7",
+      "wall_seconds": 0.8068500198423862
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P1_mode2.log",
+      "process": {
+        "pid": 2166987,
+        "start_ticks": 898988382,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "ad98663422d33a97546183c10fbe6164b11feb284d330594b62345c3850737b6",
+      "wall_seconds": 0.806624760851264
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "2"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_mode2.log",
+      "process": {
+        "pid": 2166995,
+        "start_ticks": 898988473,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "4e15f542c3066096c21a44e8986a20fbfb95dfe9abcb17d460e6eff0d6e532c1",
+      "wall_seconds": 0.807223467156291
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe",
+        "P2",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_B16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_B16_native_partition.log",
+      "process": {
+        "pid": 2167308,
+        "start_ticks": 898989717,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "fbed05657e701788311d368ffa44d2f1a71587d97a6cc10e3ae20d097bd817ee",
+      "wall_seconds": 0.6061682272702456
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/effective_entry/p2_probe",
+        "P2",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-0.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-1.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-2.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-3.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-4.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-5.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/configs/P2_U_WB16/config-6.config"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_release_r1/P2_U_WB16_native_partition.log",
+      "process": {
+        "pid": 2167312,
+        "start_ticks": 898989821,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "937f064cde5a80ce07a338d688aee2ae3e67c03915527896cadd7f7a6f61699d",
+      "wall_seconds": 0.605264212936163
+    }
+  ],
+  "disk_floor_bytes": 51539607552,
+  "memory_floor_bytes": 68719476736,
+  "jobs": 1,
+  "unsupported": [
+    "I_BANK",
+    "I_L2_SERVICE",
+    "I_MEM_ALL_DATA"
+  ],
+  "client_contract_sha256": "5290777df7c6222cb9454a4625591d2a88bdeb783c2df931ba449e5800912e34",
+  "actual_registry_sha256": "7dbbb732834e5a604dc4986546907aa32b237333cb841080dd350ca7538c39a7",
+  "published_registry_sha256": "7dbbb732834e5a604dc4986546907aa32b237333cb841080dd350ca7538c39a7",
+  "preserved_official_files": {
+    "tests/ep_l2/test_ft_a1.cc": "7cc5a0a9583e423fd308b34e6d86ad1ec32faa254cfa761f4649866d52bfd830",
+    "tests/ep_l2/test_common_delta_r16.cc": "3c5fac9a38c2aa64c33d890f7fdd3f8aa69c232ccaaa8be6618895310484387b",
+    "tests/ep_l2/test_ft_memcpy_clock.cc": "a9b6f454ff6d7a6ff6e428ba17ee301c05fbb3274cbd982f7952d36e8ea9cf39",
+    "tests/ep_l2/test_ft_host_prefill.cc": "05a8e13b01815b5b6e54777f4a835c2451b6932a918ace79039a7963b86bbc62"
+  },
+  "preserved_official_functions": {
+    "void mshr_table::atomic_fill_masks(": "467a4f96b7a2f84565f98540862ec72017dba139303c41b6bc8cae330f17b543",
+    "unsigned long long l2_cache::ft_physical_cycle()": "379db1bf4aaf16b55fef416ecffb38dac6084dbf7786ca9e331feecd9ea1df5f"
+  },
+  "author_build_receipt": "/workspace/ep_l2_parallel_lane1/p2_build_r1/BUILD_RECEIPT.json",
+  "author_build_receipt_sha256": "ed61b5fc876ca4c965d4610d2b196d59c0d6b1af9f90619573e8bb5307be89fd",
+  "binary_sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
+  "assertion_flags_sha256": {
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-driven/CMakeFiles/trace-driven.dir/flags.make": "c1b8ebe11ea4126034691e04937ef67494c2f5bd441f2bf371661f1fcb022689",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make": "909f7ced6dcfd6146f01fd98dc47c33ae99be4480c6813bd4f88a0eb8b50b72d",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/flags.make": "3edc40da121e3c6804001b8bcda9f4d4af90d9eda48d948ae406dca7c5c12dca",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/intersim2/CMakeFiles/intersim.dir/flags.make": "7e61eef5d00abc5480cce895ca988694fa3c33e8969e6e3629a8d4148eec27dc",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/cuda-sim/CMakeFiles/ptxsim.dir/flags.make": "f52c8970d8c9ac6859fe0a72881eb0b4366aa2414abec15d30ce32afb45181cd",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/flags.make": "f17d3a6f4b6d5092b305dcab8166523837390b1e15f187a3cb516fa6ecf3da40",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_wb.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_host_prefill.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_partition.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap_retry.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/cudart.dir/flags.make": "092f716d4821e3eaaf318980148649660055648bac1921269e59bbee73d8de6e",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/entrypoint.dir/flags.make": "634a44b38d0657241bb8b64a3d180c2362e1e013bc839db2becdc23b634a9996",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta_integrated.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_read_hit.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_directed.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_memcpy_clock.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_a1.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_s64.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_common_delta_r16.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_p2.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_partition.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_reference.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda/CMakeFiles/cuda.dir/flags.make": "730db8084073bcf17357da1476ceadbe6b19ce01f8e9f6d410e44b14648a2d36",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/CMakeFiles/accel_sim.dir/flags.make": "bf76358ba3ef647edf73aa688067e7628744d0e12be1a99af0a96a71e7aaaeea",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/CMakeFiles/accel-sim.out.dir/flags.make": "03e6ee654f2e718c84f44ba58a6f3f950101544a64e6d94271964d62736a97c2",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-parser/CMakeFiles/trace-parser.dir/flags.make": "c1b8ebe11ea4126034691e04937ef67494c2f5bd441f2bf371661f1fcb022689"
+  },
+  "filesystem_identity": {
+    "/workspace/ep_l2_parallel_lane1/p2_release_r1": {
+      "realpath": "/workspace/ep_l2_parallel_lane1/p2_release_r1",
+      "st_dev": 156
+    },
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1": {
+      "realpath": "/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+      "st_dev": 156
+    },
+    "/root/share": {
+      "realpath": "/root/share",
+      "st_dev": 2431
+    }
+  },
+  "resources_before": {
+    "available_memory_bytes": 179721211904,
+    "disk_free_bytes": 67080794112,
+    "share_disk_free_bytes": 44478480384,
+    "output_free_bytes": 67080794112,
+    "build_free_bytes": 67080794112
+  },
+  "lease_id": "5d7c67b6aa2a4091af88a57b0cbc485c",
+  "archives_sha256": {
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libentrypoint.a": "ae51b0f86120202ccf1b3933337a3293ee20e54de034c91b2ea7f4148f843115",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda/libcuda.a": "2171fae21d141017e3b7fe8533c48279a00c97ff9bbf4616ddc4d6663194599a",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/cuda-sim/libptxsim.a": "3ffa5c702307a3efde06ac235f1eec7f4885453b7ec407e51919b5eaa81ab87b",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a": "235c0c6732b5a3435f706cdcc8f86377be92d2e862518094ccaabe63fc8165a5",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/intersim2/libintersim.a": "c9dfcfef6e3107735308f9ce94345e34e67271d7ae826cf7bd5acf4cfe20db24",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a": "d9714cb400feb17f32df10fa3302e773673bcb1751db42851296cecb1d2dc85e",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-driven/libtrace-driven.a": "e5bbb600e51f46334d611d3a8f48ba9f12bfa32c19d377337d469a7cb5613693",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-parser/libtrace-parser.a": "654c210c86884b4bb0a6ac0beacf86b22eac9d8ccbdf05d2c7493e4d74d338d0"
+  },
+  "repaired_unit_fixture": {
+    "source_sha256": "2540b3d4dac369cf6c6261bfeb7df0eaf68340b433b67cba713c76f884b30f8b",
+    "source_commit": "f651c2d6c29f10d5a1b0b63e94f3f78855a3a77e",
+    "executable_sha256": "7e66ce254e58e8a0f44b98b96f9f4ecf30e4c6725d281d96ff374858da2d18b6",
+    "runtime_changes": false,
+    "old_failed_test_retained": "/workspace/ep_l2_parallel_lane1/local_ideals_release_r2/ideal_meta.log"
+  },
+  "planned_tests": [
+    [
+      "host_prefill_1_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ]
+    ],
+    [
+      "physical_clock_1_8_0",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ]
+    ],
+    [
+      "physical_clock_1_8_4096",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ]
+    ],
+    [
+      "warm_clock_1_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ]
+    ],
+    [
+      "partition_1_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ]
+    ],
+    [
+      "host_prefill_1_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ]
+    ],
+    [
+      "physical_clock_1_16_0",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ]
+    ],
+    [
+      "physical_clock_1_16_4096",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ]
+    ],
+    [
+      "warm_clock_1_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ]
+    ],
+    [
+      "partition_1_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ]
+    ],
+    [
+      "host_prefill_2_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ]
+    ],
+    [
+      "physical_clock_2_8_0",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ]
+    ],
+    [
+      "physical_clock_2_8_4096",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ]
+    ],
+    [
+      "warm_clock_2_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ]
+    ],
+    [
+      "partition_2_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ]
+    ],
+    [
+      "host_prefill_2_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ]
+    ],
+    [
+      "physical_clock_2_16_0",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ]
+    ],
+    [
+      "physical_clock_2_16_4096",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ]
+    ],
+    [
+      "warm_clock_2_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ]
+    ],
+    [
+      "partition_2_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ]
+    ],
+    [
+      "ft_directed",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ]
+    ],
+    [
+      "a1_1_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ]
+    ],
+    [
+      "a1_1_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ]
+    ],
+    [
+      "a1_2_8",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ]
+    ],
+    [
+      "a1_2_16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ]
+    ],
+    [
+      "b1-read-first",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-read-first"
+      ]
+    ],
+    [
+      "b1-atomic-first",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-atomic-first"
+      ]
+    ],
+    [
+      "b1-multi",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-multi"
+      ]
+    ],
+    [
+      "b1-b16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-b16"
+      ]
+    ],
+    [
+      "b1-dirty",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-dirty"
+      ]
+    ],
+    [
+      "b1-version-only",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-version-only"
+      ]
+    ],
+    [
+      "ideal_wb",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_wb",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ]
+    ],
+    [
+      "ideal_meta",
+      [
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/test_ideal_meta_real",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ]
+    ],
+    [
+      "ideal_meta_integrated",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_meta_integrated.config"
+      ]
+    ],
+    [
+      "ideal_read_hit",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_read_hit.config"
+      ]
+    ],
+    [
+      "ideal_host_prefill_reference",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_reference"
+      ]
+    ],
+    [
+      "ideal_host_prefill_partition",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ideal_host_prefill_b16.config"
+      ]
+    ],
+    [
+      "ideal_meta_integrated_B16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_meta_integrated_B16.config"
+      ]
+    ],
+    [
+      "ideal_read_hit_B16",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_parallel_lane1/p2_release_r1/ideal_read_hit_B16.config"
+      ]
+    ],
+    [
+      "S64_capacity",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "1",
+        "0",
+        "1"
+      ]
+    ],
+    [
+      "UCAP_capacity",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1"
+      ]
+    ],
+    [
+      "UCAP_bank_retry",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap_retry",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config"
+      ]
+    ],
+    [
+      "A1_S64",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "1",
+        "0",
+        "1"
+      ]
+    ],
+    [
+      "A1_UCAP",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1"
+      ]
+    ],
+    [
+      "A1_UCAP_rollback",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1",
+        "rollback"
+      ]
+    ],
+    [
+      "A1_UCAP_mixed",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "16",
+        "1",
+        "mixed"
+      ]
+    ],
+    [
+      "B16_static_control",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1"
+      ]
+    ],
+    [
+      "U_uncapped_control",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ]
+    ],
+    [
+      "P1_mode1",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "1"
+      ]
+    ],
+    [
+      "P2_mode1",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "2"
+      ]
+    ],
+    [
+      "P1_mode2",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "1"
+      ]
+    ],
+    [
+      "P2_mode2",
+      [
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "2"
+      ]
+    ]
+  ],
+  "test_executables_sha256": {
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_host_prefill": "74b154b6c8c7be84ab085f092aad2fe8a66f05bb956c17022617616491895d62",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_memcpy_clock": "4dea19692dbf9affc4438410a5190e16d959e3eab59619c5ca188283ecf66e90",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_partition": "d44bf5c3e809c27b22b3f3b20373e04e6478284587d83ae55563ec7e35a11d3d",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_directed": "6f4512d43573c796ecc71a8d673848e25081e856b084b4a5a63e24841f47d6a1",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ft_a1": "323993f2bee57c19a55202438c69b54a3fc0e70069cdd028e0a53e652324bf9a",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_common_delta_r16": "d3750cc74fb176122453ec1d9334a54a379d27be2f91b9e903061630a48864cc",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_wb": "d7928c0ac4fc2594763f8b142195a2772d9b1c89f9889aedbc39b856bb497a65",
+    "/workspace/ep_l2_parallel_lane1/p2_release_r1/test_ideal_meta_real": "7e66ce254e58e8a0f44b98b96f9f4ecf30e4c6725d281d96ff374858da2d18b6",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_meta_integrated": "48ecbd5073e3cd4caae1635f45b450c560152a3f1df089020a0271805da03817",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_read_hit": "4caa5decab1fa009163121e4e834acf3ade71fcc06dedaf0a31ac18d13343d6f",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_reference": "17f14d20008f13f291346911435d09f0c229483214f4f0129c2e4788e260a452",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_ideal_host_prefill_partition": "f2c1d36e5cb895618f9b7f2d1b1f652c5ea6f4ee94162d31f20939f7ac04a395",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_s64": "dd7adec748f2c69c16b0580ecfca9c3aefc3a32494ba40864094137d55bb0a0f",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap": "7b32f79eabcdce2d2d0ce88c7d407a70b600e6c71b836d18d01e6a85fc6cf3a0",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_ucap_retry": "c732aae21075161f380cbc27fc94ede08310c828d8680059d666db3ecc4caaf7",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_a1": "0997d2246d7d68f1c965fd97215bd546141fbb77c3c8e7f2437e0046b5d7b866",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/ep_l2_potential_p2": "6c40c9846c26be27e5125bb4533526de3610a8ab3b77fc18d32720e38cc6500c"
+  },
+  "effective_entry_source_sha256": "5560e41582087e14b048ea3f817342a24716c454ffbdb4feec061cc7db1ebb44",
+  "effective_entry_sha256": "391df692a8795a415b4e571f560c67cc66c93e389989494d81b3d9870f7e2f27",
+  "production_p2_probe": {
+    "source_sha256": "93415326cf9f2ddc9c8305210742efa888da5e9d96268176afeeccef2254e5f1",
+    "executable_sha256": "2831d07f80b48541c6ea78b34ad66923f50c916e452c3f826407622ae65c6556",
+    "source_commit": "f651c2d6c29f10d5a1b0b63e94f3f78855a3a77e"
+  },
+  "binary": "/workspace/ep_l2_parallel_lane1/p2_release_r1/binaries/accel-sim.out",
+  "lease_released": true,
+  "resources_after": {
+    "available_memory_bytes": 179340398592,
+    "disk_free_bytes": 66736680960,
+    "share_disk_free_bytes": 44478455808,
+    "output_free_bytes": 66736680960,
+    "build_free_bytes": 66736680960
+  },
+  "finished_at_utc": "2026-10-17T11:52:08.130425+00:00"
+}

@@ -1,0 +1,167 @@
+{
+  "schema": "EPL2_LANE1_STRUCTURAL_BUILD_V1",
+  "status": "BUILT_NOT_TESTED_NOT_INDEPENDENTLY_QUALIFIED",
+  "authority": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
+  "core_source_commit": "963635c0dbb79cce5c83506d3db13f067e60aae5",
+  "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "driver_source_commit": "2d6d1118fb27b11d85b6b9c55fe03e50f57fc436",
+  "build": "/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+  "core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1",
+  "framework": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
+  "out": "/workspace/ep_l2_parallel_lane1/p2_build_r1",
+  "compiler_started": true,
+  "jobs": 2,
+  "application_starts": 0,
+  "independent_qualification": false,
+  "disk_floor_bytes": 51539607552,
+  "memory_floor_bytes": 68719476736,
+  "commands": [
+    {
+      "command": [
+        "cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+        "-G",
+        "Unix Makefiles",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_build_r1/configure.log",
+      "process": {
+        "pid": 2157810,
+        "start_ticks": 898959611,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "3acf68b896f41a3beaf5dafc58b0002ab88da6af3c61b407da496ce12dfd749e",
+      "wall_seconds": 2.074827779084444
+    },
+    {
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_ft_memcpy_clock",
+        "ep_l2_ft_host_prefill",
+        "ep_l2_ft_directed",
+        "ep_l2_ft_partition",
+        "ep_l2_ft_a1",
+        "ep_l2_common_delta_r16",
+        "ep_l2_ideal_wb",
+        "ep_l2_ideal_meta",
+        "ep_l2_ideal_meta_integrated",
+        "ep_l2_ideal_read_hit",
+        "ep_l2_ideal_host_prefill_reference",
+        "ep_l2_ideal_host_prefill_partition",
+        "ep_l2_potential_s64",
+        "ep_l2_potential_a1",
+        "ep_l2_potential_ucap",
+        "ep_l2_potential_ucap_retry",
+        "ep_l2_potential_p2",
+        "-j2"
+      ],
+      "log": "/workspace/ep_l2_parallel_lane1/p2_build_r1/build.log",
+      "process": {
+        "pid": 2158012,
+        "start_ticks": 898959818,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "3884576d7be362efabccb2c97308131cef61815b561b266dcb4de2bd08f4ad78",
+      "wall_seconds": 215.32338941842318
+    }
+  ],
+  "resource_samples": 1048,
+  "own_process_group_max_rss_bytes": 922746880,
+  "own_process_group_rss_scope": "sampled sum of VmRSS in the owned CMake process group; shared pages may be counted more than once",
+  "peak_workspace_growth_bytes": 1911640064,
+  "registry_source_commit": "01942c3db08c46184537c66bcf14026bb0d1667a",
+  "registry_sha256": "7ab844018fee1f94930075920a82bee9f623236c04dba53157ec723d66abb007",
+  "min_available_memory_bytes": 154165338112,
+  "min_workspace_free_bytes": 67095515136,
+  "min_share_free_bytes": 44478238720,
+  "resources_before": {
+    "available_memory_bytes": 168465055744,
+    "disk_free_bytes": 69007155200,
+    "share_disk_free_bytes": 44482666496
+  },
+  "initial_workspace_free_bytes": 69007155200,
+  "filesystems": {
+    "/workspace": {
+      "realpath": "/workspace",
+      "st_dev": 156
+    },
+    "/workspace/ep_l2_parallel_lane1/p2_build_r1": {
+      "realpath": "/workspace/ep_l2_parallel_lane1/p2_build_r1",
+      "st_dev": 156
+    },
+    "/root/share": {
+      "realpath": "/root/share",
+      "st_dev": 2431
+    }
+  },
+  "lease_id": "027f7967c4aa4879aefce64d7c2f7c96",
+  "targets": [
+    "accel-sim.out",
+    "ep_l2_ft_memcpy_clock",
+    "ep_l2_ft_host_prefill",
+    "ep_l2_ft_directed",
+    "ep_l2_ft_partition",
+    "ep_l2_ft_a1",
+    "ep_l2_common_delta_r16",
+    "ep_l2_ideal_wb",
+    "ep_l2_ideal_meta",
+    "ep_l2_ideal_meta_integrated",
+    "ep_l2_ideal_read_hit",
+    "ep_l2_ideal_host_prefill_reference",
+    "ep_l2_ideal_host_prefill_partition",
+    "ep_l2_potential_s64",
+    "ep_l2_potential_a1",
+    "ep_l2_potential_ucap",
+    "ep_l2_potential_ucap_retry",
+    "ep_l2_potential_p2"
+  ],
+  "assertion_flags_sha256": {
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-driven/CMakeFiles/trace-driven.dir/flags.make": "c1b8ebe11ea4126034691e04937ef67494c2f5bd441f2bf371661f1fcb022689",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make": "909f7ced6dcfd6146f01fd98dc47c33ae99be4480c6813bd4f88a0eb8b50b72d",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/flags.make": "3edc40da121e3c6804001b8bcda9f4d4af90d9eda48d948ae406dca7c5c12dca",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/intersim2/CMakeFiles/intersim.dir/flags.make": "7e61eef5d00abc5480cce895ca988694fa3c33e8969e6e3629a8d4148eec27dc",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/cuda-sim/CMakeFiles/ptxsim.dir/flags.make": "f52c8970d8c9ac6859fe0a72881eb0b4366aa2414abec15d30ce32afb45181cd",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/flags.make": "f17d3a6f4b6d5092b305dcab8166523837390b1e15f187a3cb516fa6ecf3da40",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_wb.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_host_prefill.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_partition.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap_retry.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/cudart.dir/flags.make": "092f716d4821e3eaaf318980148649660055648bac1921269e59bbee73d8de6e",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/entrypoint.dir/flags.make": "634a44b38d0657241bb8b64a3d180c2362e1e013bc839db2becdc23b634a9996",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta_integrated.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_read_hit.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_directed.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_memcpy_clock.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_a1.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_s64.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_common_delta_r16.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_potential_p2.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_partition.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_reference.dir/flags.make": "b233cb13a2f18412ef09ae268157d6846dde34f2a8424af4e39b2cb45291cef4",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/gpgpu-sim/libcuda/CMakeFiles/cuda.dir/flags.make": "730db8084073bcf17357da1476ceadbe6b19ce01f8e9f6d410e44b14648a2d36",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/CMakeFiles/accel_sim.dir/flags.make": "bf76358ba3ef647edf73aa688067e7628744d0e12be1a99af0a96a71e7aaaeea",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/CMakeFiles/accel-sim.out.dir/flags.make": "03e6ee654f2e718c84f44ba58a6f3f950101544a64e6d94271964d62736a97c2",
+    "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/trace-parser/CMakeFiles/trace-parser.dir/flags.make": "c1b8ebe11ea4126034691e04937ef67494c2f5bd441f2bf371661f1fcb022689"
+  },
+  "binary_sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
+  "binary": "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/accel-sim.out",
+  "lease_released": true,
+  "resources_after": {
+    "available_memory_bytes": 179762171904,
+    "disk_free_bytes": 67095842816,
+    "share_disk_free_bytes": 44478480384
+  },
+  "finished_at_utc": "2026-10-17T11:50:42.328282+00:00"
+}
