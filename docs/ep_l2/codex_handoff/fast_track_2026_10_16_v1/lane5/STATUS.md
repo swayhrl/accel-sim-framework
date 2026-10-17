@@ -1,3 +1,5 @@
-# Lane5 — r19 rolling diagnostics
+# Lane5 — both D4 pairs accepted; Q4 qualification staged
 
-H0 five accepted pairs and geomean1.0016002037656606 retained. 2 r19 diagnostic pairs accepted in staged V2 generation11; latest D4/FWT_7_21. Remote readback and shared pointer install required before announcing delivery. Existing full-input/64slice/current V2 and original resource protections remain. T0 07:09:16UTC, deadline17:09:16UTC. No compiler, migration, extra waiter. Exact identity/results in docs/ep_l2/review_packs/FT20261017_LANE5_R19_D4_FWT_7_21_PAIR_r1.
+D4Convolution B267521/U268544; D4FWT B452758/U451254, equal791609344 full instructions. FWT independent native/currentV2/identity/64slice replay PASS, exact34file remote readback8bd642744bea1d302e59f0e5a205ea2378593646 installed generation11 and immediate Lane6 delivery. Two-workload D4 diagnostic S geomean0.9997553732076547, interaction J geomean0.9958063045125356; no broad relative benefit claimed. Original H0five mean1.0016002037656606 and all withdrawals retained.
+
+No active simulator at this boundary. Q4 previously independent2actual checks PASS; generation12 adds only its exact two-mode launch authorizations, all24 historical result rows unchanged. It is staged, not live until push/readback+pointer install. Next prepared Q4Conv/FWT pairs, no adaptive selection before initial8. All resource/time/run caps unchanged. No compiler, cleanup, migration, extra waiter or other-project signal.
