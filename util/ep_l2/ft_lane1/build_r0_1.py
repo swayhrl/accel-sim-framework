@@ -13,7 +13,7 @@ import subprocess
 import sys
 import time
 
-CORE_CANDIDATE = '322f3694bcc54c435b5d05eaf84601a724b634ab'
+CORE_CANDIDATE = '9ea66e003cf054ec879b3525d1a3bec44df52bf2'
 PYBIND11_COMMIT = 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
 FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1')
 BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1')
