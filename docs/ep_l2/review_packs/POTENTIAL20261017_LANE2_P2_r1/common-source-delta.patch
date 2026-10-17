@@ -1,0 +1,597 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index cb2dd9ff..3e2981f0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -205,7 +205,7 @@ target_link_libraries(ep_l2_common_delta_r16 PRIVATE -Wl,--start-group
+     ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+ 
+ # Opt-in source-bound structural diagnostics, not application experiments.
+-foreach(potential_test potential_s64 potential_a1 potential_ucap potential_ucap_retry)
++foreach(potential_test potential_s64 potential_a1 potential_ucap potential_ucap_retry potential_p2)
+   add_executable(ep_l2_${potential_test} EXCLUDE_FROM_ALL tests/ep_l2/test_${potential_test}.cc)
+   target_include_directories(ep_l2_${potential_test} PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+   target_link_libraries(ep_l2_${potential_test} PRIVATE -Wl,--start-group
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index c356f377..0f8989fe 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -425,16 +425,19 @@ void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
+ void l2_cache::ft_print(FILE *fp, unsigned slice) const {
+   if (!ft_enabled()) return;
+   ft_assert_quota();
++  fprintf(fp,"EPL2STRUCTV1|BANK_PEAK|slice=%u|ops_per_physical_cycle=%u|bank0=%u|bank1=%u|bank2=%u|bank3=%u\n",slice,
++      m_ep_l2_payload.bank_service_limit(),m_ep_l2_payload.bank_peak(0),m_ep_l2_payload.bank_peak(1),
++      m_ep_l2_payload.bank_peak(2),m_ep_l2_payload.bank_peak(3));
+   fprintf(fp, "EPL2STRUCTV1|WB_QUOTA|slice=%u|cap=%u|reserved=%u|live=%u|reserved_peak=%u|live_peak=%u|total_peak=%u|refusal_attempts=%llu|pending_retry_calls=%llu|rollback_releases=%llu|lower_accept_releases=%llu\n",
+       slice, m_config.m_ep_l2_wb_local_cap, m_ft_quota.reserved, m_ft_quota.live,
+       m_ft_quota.reserved_peak, m_ft_quota.live_peak, m_ft_quota.total_peak,
+       m_ft_quota.refusals, m_ft_quota.retries, m_ft_quota.rollbacks, m_ft_quota.lower_accept);
+   fprintf(fp, "EPL2STRUCTV1|CONFIG|slice=%u|static_s64=%u|physical_slots=%u|"
+       "resident_nominal=1024|bypass_capacity=%u|wb_begin=%u|static_wb_capacity=%u|"
+-      "legacy_wbuf=%u|bank_count=4|bank_ops_per_physical_cycle=1|copy_latch_bytes=128\n",
++      "legacy_wbuf=%u|bank_count=4|bank_ops_per_physical_cycle=%u|copy_latch_bytes=128\n",
+       slice, m_config.m_ep_l2_static_s64 ? 1 : 0, m_ep_l2_payload.physical_slots(),
+       m_ep_l2_payload.bypass_capacity(), m_ep_l2_payload.wb_begin(),
+-      m_ep_l2_payload.static_wb_capacity(), m_config.m_ep_l2_wbuf_entries);
++      m_ep_l2_payload.static_wb_capacity(), m_config.m_ep_l2_wbuf_entries, m_ep_l2_payload.bank_service_limit());
+   fprintf(fp, "EPL2FTV1|SUMMARY|slice=%u|mode=%u|wbuf=%u|physical_slots=%u|"
+       "accepted=%llu|wb_created=%llu|wb_completed=%llu|wb_lower_accept=%llu|wbuf_full=%llu|pool_full=%llu|pin_block=%llu|"
+       "bank_block=%llu|issue_block=%llu|copy_lines=%llu|copy_bytes=%llu|staging_reads=%llu|"
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 0878efd5..da609de1 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -585,6 +585,7 @@ class cache_config {
+     m_ep_l2_wbuf_entries = 0;
+     m_ep_l2_static_s64 = false;
+     m_ep_l2_wb_local_cap = 0;
++    m_ep_l2_bank_ops = 1;
+     m_ep_l2_payload_policy = 0;
+     m_ep_l2_feature_unified_payload = false;
+     m_ep_l2_feature_ro_pending_state = false;
+@@ -946,6 +947,7 @@ class cache_config {
+   unsigned m_ep_l2_wbuf_entries;
+   bool m_ep_l2_static_s64;
+   unsigned m_ep_l2_wb_local_cap;
++  unsigned m_ep_l2_bank_ops;
+   // M1 is infrastructure: functional mechanism bits default OFF.
+   // Policy 0 is the only currently supported static policy.
+   unsigned m_ep_l2_payload_policy;
+@@ -2153,8 +2155,8 @@ class ep_l2_payload_store {
+     bool occupied() const { return status != FREE; }
+   };
+   ep_l2_payload_store(unsigned mode = 0, unsigned ft_mode = 0, unsigned wbuf = 0,
+-                      bool static_s64 = false)
+-      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_static_s64(static_s64), m_cycle((unsigned long long)-1),
++                      bool static_s64 = false, unsigned bank_ops = 1)
++      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_static_s64(static_s64), m_bank_ops(bank_ops), m_cycle((unsigned long long)-1),
+         m_resident_reads(0), m_resident_writes(0), m_bypass_reads(0),
+         m_bypass_writes(0), m_bank_logical_ops(0), m_bank_attempts(0),
+         m_bank_grants(0), m_bank_retry_attempts(0),
+@@ -2165,8 +2167,11 @@ class ep_l2_payload_store {
+         m_next_sequence(0) {
+     if (static_s64 && (mode != 2 || ft_mode != 1 || wbuf != 16))
+       throw std::invalid_argument("S64 requires static banked FT1, legacy WBUF16 anchor");
++    if (bank_ops != 1 && (bank_ops != 2 || mode != 2 || !ft_mode || wbuf != 16 || static_s64))
++      throw std::invalid_argument("P2 requires banked B16/U16, no S64 combination");
+     m_slots.resize(static_s64 ? 1168 : k_physical_slots + wbuf);
+     for (unsigned bank = 0; bank < 4; ++bank) {
++      m_bank_services[bank] = 0; m_bank_peak[bank] = 0;
+       m_bank_logical_ops_by_bank[bank] = 0;
+       m_bank_grants_by_bank[bank] = 0;
+       m_bank_true_conflict_ops_by_bank[bank] = 0;
+@@ -2179,6 +2184,8 @@ class ep_l2_payload_store {
+   unsigned resident_used() const { return used(RESIDENT); }
+   unsigned bypass_used() const { return used(BYPASS); }
+   unsigned resident_free() const { return k_resident_slots - resident_used(); }
++  unsigned bank_service_limit() const { return m_bank_ops; }
++  unsigned bank_peak(unsigned b) const { assert(b<4); return m_bank_peak[b]; }
+   unsigned bypass_capacity() const { return m_static_s64 ? 80 : k_bypass_slots; }
+   unsigned wb_begin() const { return k_resident_slots + bypass_capacity(); }
+   unsigned static_wb_capacity() const { return m_static_s64 ? 64 : m_wbuf; }
+@@ -2400,21 +2407,23 @@ class ep_l2_payload_store {
+     if (m_cycle != cycle) {
+       m_cycle = cycle;
+       m_resident_reads = m_resident_writes = m_bypass_reads = m_bypass_writes = 0;
+-      m_bank_granted.reset();
++      std::fill(m_bank_services, m_bank_services+4, 0);
+       if (banked()) {
+         for (unsigned b = 0; b < 4; ++b) {
+           // A production retry need not return in the single cycle after it
+           // was selected.  Retain an unconsumed oldest grant until its owner
+-          // actually retries; clearing it here loses the request.  Two
++          // actually retries; with P2 retain up to two identities, then fill
++          // unused selections from the oldest pending list. Clearing loses
++          // the request. Two
+           // interleaved same-bank retries would otherwise select-and-discard
+           // each other forever, eventually deadlocking the memory system.
+-          if (!m_granted[b].empty()) continue;
+-          if (m_pending[b].empty()) continue;
+-          unsigned best = 0;
+-          for (unsigned i = 1; i < m_pending[b].size(); ++i)
+-            if (m_pending[b][i].sequence < m_pending[b][best].sequence) best = i;
+-          m_granted[b].push_back(m_pending[b][best]);
+-          m_pending[b].erase(m_pending[b].begin() + best);
++          while (m_granted[b].size() < m_bank_ops && !m_pending[b].empty()) {
++            unsigned best = 0;
++            for (unsigned i = 1; i < m_pending[b].size(); ++i)
++              if (m_pending[b][i].sequence < m_pending[b][best].sequence) best = i;
++            m_granted[b].push_back(m_pending[b][best]);
++            m_pending[b].erase(m_pending[b].begin() + best);
++          }
+         }
+       }
+     }
+@@ -2430,13 +2439,13 @@ class ep_l2_payload_store {
+     assert(global_id < m_slots.size());
+     const unsigned bank = global_id % 4;
+     ++m_bank_attempts;
+-    if (!m_granted[bank].empty()) {
+-      const pending_op op = m_granted[bank].front();
++    for (unsigned selected=0; selected<m_granted[bank].size(); ++selected) {
++      const pending_op op = m_granted[bank][selected];
+       if (op.r == r && op.id == id && op.write == write) {
+         // Its first call was accounted as the logical operation.  This call
+         // is the retry that finally consumes an oldest-ready grant.
+         ++m_bank_retry_attempts;
+-        m_granted[bank].clear(); m_bank_granted.set(bank); ++m_bank_grants;
++        m_granted[bank].erase(m_granted[bank].begin()+selected); consume_bank(bank); ++m_bank_grants;
+         ++m_bank_grants_by_bank[bank];
+         if (op.true_conflict) {
+           const unsigned long long waited = cycle - op.first_conflict_cycle;
+@@ -2454,15 +2463,15 @@ class ep_l2_payload_store {
+           m_pending[bank][i].write == write) pending_index = i;
+     if (pending_index >= 0) ++m_bank_retry_attempts;
+ 
+-    // No selected older op, no queued older op, and no operation consumed on
+-    // this bank this cycle: the first ready op uses an idle bank immediately.
++    // No selected/queued older op: a ready operation may consume one of the
++    // finite remaining services of this bank in this physical cycle.
+     // There is no reason to stage it until N+1 merely to wait for hypothetical
+     // later arrivals in the same cycle.
+     if (m_granted[bank].empty() && m_pending[bank].empty() &&
+-        !m_bank_granted.test(bank)) {
++        m_bank_services[bank] < m_bank_ops) {
+       assert(pending_index < 0);
+       record_logical_operation(bank, op_class);
+-      m_bank_granted.set(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
++      consume_bank(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
+       return GRANTED;
+     }
+ 
+@@ -2504,6 +2513,7 @@ class ep_l2_payload_store {
+   // order at the grant site.
+   void enqueue(role r, unsigned id, bool write, unsigned long long sequence) {
+     assert(banked());
++    assert(r != BYPASS || id < bypass_capacity());
+     const unsigned global_id = r == BYPASS ? k_resident_slots + id : id;
+     assert(global_id < m_slots.size());
+     m_pending[global_id % 4].push_back(pending_op(r, id, write,
+@@ -2512,16 +2522,17 @@ class ep_l2_payload_store {
+   bool grant_oldest(role r, unsigned id, bool write, unsigned long long cycle,
+                     unsigned long long *granted_sequence = NULL) {
+     if (!enabled() || !banked()) return request(r, id, write, cycle) == GRANTED;
+-    if (m_cycle != cycle) { m_cycle = cycle; m_bank_granted.reset(); }
++    if (m_ft_mode && m_cycle != (unsigned long long)-1) assert(cycle >= m_cycle);
++    if (m_cycle != cycle) { m_cycle = cycle; std::fill(m_bank_services,m_bank_services+4,0); }
+     const unsigned global_id = r == BYPASS ? k_resident_slots + id : id;
+     const unsigned bank = global_id % 4;
+-    if (m_bank_granted.test(bank) || m_pending[bank].empty()) return false;
++    if (m_bank_services[bank] >= m_bank_ops || m_pending[bank].empty()) return false;
+     std::vector<pending_op> &q = m_pending[bank];
+     unsigned best = 0;
+     for (unsigned i = 1; i < q.size(); ++i)
+       if (q[i].sequence < q[best].sequence) best = i;
+     pending_op op = q[best]; q.erase(q.begin() + best);
+-    m_bank_granted.set(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
++    consume_bank(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
+     if (granted_sequence) *granted_sequence = op.sequence;
+     return op.r == r && op.id == id && op.write == write;
+   }
+@@ -2551,6 +2562,10 @@ class ep_l2_payload_store {
+     return true;
+   }
+  private:
++  void consume_bank(unsigned bank) {
++    assert(m_bank_services[bank] < m_bank_ops);
++    ++m_bank_services[bank]; m_bank_peak[bank] = std::max(m_bank_peak[bank],m_bank_services[bank]);
++  }
+   bool static_role_matches(unsigned id, role r) const {
+     return id < physical_slots() &&
+       (r == RESIDENT ? id < k_resident_slots :
+@@ -2602,7 +2617,8 @@ class ep_l2_payload_store {
+     role r; unsigned id; bool write; unsigned long long sequence;
+     bool true_conflict; unsigned long long first_conflict_cycle;
+   };
+-  unsigned m_mode, m_ft_mode, m_wbuf; bool m_static_s64; unsigned long long m_cycle;
++  unsigned m_mode, m_ft_mode, m_wbuf; bool m_static_s64;
++  unsigned m_bank_ops; unsigned long long m_cycle;
+   unsigned m_resident_reads, m_resident_writes, m_bypass_reads, m_bypass_writes;
+   unsigned long long m_bank_logical_ops, m_bank_attempts, m_bank_grants,
+       m_bank_retry_attempts, m_bank_true_conflict_ops,
+@@ -2614,7 +2630,7 @@ class ep_l2_payload_store {
+       m_bank_fill_write, m_bank_wb_readout, m_bank_bypass_fill,
+       m_bank_bypass_read;
+   unsigned long long m_next_sequence;
+-  std::bitset<4> m_bank_granted; std::vector<slot> m_slots;
++  unsigned m_bank_services[4], m_bank_peak[4]; std::vector<slot> m_slots;
+   std::vector<pending_op> m_pending[4], m_granted[4];
+ };
+ 
+@@ -2633,7 +2649,7 @@ class l2_cache : public data_cache {
+         m_ep_l2_wad_lifetime_sum(0), m_ep_l2_wad_lifetime_count(0),
+         m_ep_l2_wad_lifetime_max(0),
+         m_ep_l2_payload(config.m_ep_l2_payload_mode, config.m_ep_l2_ft_mode,
+-                         config.m_ep_l2_wbuf_entries, config.m_ep_l2_static_s64),
++                         config.m_ep_l2_wbuf_entries, config.m_ep_l2_static_s64, config.m_ep_l2_bank_ops),
+         m_ep_l2_last_payload_request_result(ep_l2_payload_store::GRANTED),
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
+@@ -2872,6 +2888,11 @@ class l2_cache : public data_cache {
+   std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
+   std::array<unsigned long long,4> m_ft_last_wb_versions;
+   void validate_ep_l2_mode_config() const {
++    if (m_config.m_ep_l2_bank_ops != 1 &&
++        (m_config.m_ep_l2_bank_ops != 2 || !ft_enabled() || m_config.m_ep_l2_wbuf_entries != 16 ||
++         m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap)) {
++      fprintf(stderr,"EP-L2 P2 requires B16/U_WB16; combined S64/quota profiles not contracted\n"); abort();
++    }
+     if (m_config.m_ep_l2_wb_local_cap &&
+         (m_config.m_ep_l2_wb_local_cap != 16 || m_config.m_ep_l2_ft_mode != 2 ||
+          m_config.m_ep_l2_wbuf_entries != 16)) {
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 284a6de9..04507c49 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -279,6 +279,9 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp, "-gpgpu_ep_l2_wb_local_cap", OPT_UINT32,
+                          &m_L2_config.m_ep_l2_wb_local_cap,
+                          "Local reserved+live WB responsibility cap (0=uncapped; 16=U_CAP16)", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_bank_ops", OPT_UINT32,
++                         &m_L2_config.m_ep_l2_bank_ops,
++                         "Real operations per bank per physical GPU cycle (1=P1, 2=P2)", "1");
+   option_parser_register(opp, "-gpgpu_ep_l2_static_s64", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_static_s64,
+                          "Opt-in S64 static1024/80/64 fixed1168 payload layout; FT1/WBUF16 only", "0");
+diff --git a/tests/ep_l2/potential_fixture.h b/tests/ep_l2/potential_fixture.h
+index b34205fa..efca038d 100644
+--- a/tests/ep_l2/potential_fixture.h
++++ b/tests/ep_l2/potential_fixture.h
+@@ -40,8 +40,8 @@ struct fixture {
+       "-gpgpu_cache:dl2","S:64:128:16,L:B:m:L:L,A:128:1,256:0,32",
+       "-gpgpu_dram_partition_queues","512:2:64:64",
+       "-gpgpu_ep_l2_static_s64",argv[5],
+-      "-gpgpu_ep_l2_wb_local_cap",argv[6]};
+-    option_parser_cmdline(p,13,args);cfg.init();option_parser_destroy(p);
++      "-gpgpu_ep_l2_wb_local_cap",argv[6],"-gpgpu_ep_l2_bank_ops",argv[7]};
++    option_parser_cmdline(p,15,args);cfg.init();option_parser_destroy(p);
+     gpu=new exec_gpgpu_sim(cfg,&ctx);gpu->gpu_sim_cycle=1;
+     auto mc=gpu->getMemoryConfig();
+     assert(mc->m_L2_config.get_num_lines()==1024 && mc->m_L2_config.get_assoc()==16);
+@@ -71,7 +71,7 @@ struct fixture {
+     part->cache_cycle(gpu->gpu_sim_cycle);
+     cache->ft_assert_quota();
+     for(unsigned b=0;b<4;++b) {
+-      auto n=cache->ep_l2_payload_bank_grants(b)-before[b];assert(n<=1);bank_max=std::max(bank_max,n);
++      auto n=cache->ep_l2_payload_bank_grants(b)-before[b];assert(n<=cache->ep_l2_payload_for_test().bank_service_limit());bank_max=std::max(bank_max,n);
+     }
+     while(auto r=sp->pop()) {
+       assert(expected.count(r->get_request_uid()) && replies.insert(r->get_request_uid()).second);
+diff --git a/tests/ep_l2/test_potential_a1.cc b/tests/ep_l2/test_potential_a1.cc
+index fcf82f23..0b59b6bb 100644
+--- a/tests/ep_l2/test_potential_a1.cc
++++ b/tests/ep_l2/test_potential_a1.cc
+@@ -6,9 +6,9 @@ struct credit_fault : cache_config {
+   static unsigned &capacity(cache_config &c) { return c.*(&credit_fault::m_miss_queue_size); }
+ };
+ int main(int argc,char **argv) {
+-  assert(argc==7 || argc==8);
+-  const bool rollback=argc==8 && std::string(argv[7])=="rollback";
+-  const unsigned extra=argc==8 && !rollback?15:0;setvbuf(stdout,NULL,_IOLBF,0);fixture f(argv);
++  assert(argc==8 || argc==9);
++  const bool rollback=argc==9 && std::string(argv[8])=="rollback";
++  const unsigned extra=argc==9 && !rollback?15:0;setvbuf(stdout,NULL,_IOLBF,0);fixture f(argv);
+   unsigned mode=std::stoul(argv[3]),c=std::stoul(argv[4]);
+   const new_addr_type stride=64*128, victim=13*stride, incoming=16*stride, other=128;
+   // Invalid-way selection is descending: read0->way15, dirty13->way2;
+diff --git a/tests/ep_l2/test_potential_p2.cc b/tests/ep_l2/test_potential_p2.cc
+new file mode 100644
+index 00000000..1ae3d45d
+--- /dev/null
++++ b/tests/ep_l2/test_potential_p2.cc
+@@ -0,0 +1,206 @@
++// Production l2_cache access/issue/fill/response tests against symbolic data versions.
++#include <sys/wait.h>
++#include <unistd.h>
++#include <cassert>
++#include <cstdio>
++#include <deque>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/option_parser.h"
++
++struct lower_port : mem_fetch_interface {
++  bool blocked;
++  std::deque<mem_fetch *> packets;
++  lower_port() : blocked(true) {}
++  bool full(unsigned, bool) const override { return blocked; }
++  void push(mem_fetch *mf) override {
++    if (mf->get_access_type() == L2_WRBK_ACC) assert(mf->has_ft_wb_data());
++    packets.push_back(mf);
++  }
++};
++
++struct p2_fixture {
++  gpgpu_context context;
++  gpgpu_sim_config config;
++  exec_gpgpu_sim *gpu;
++  const memory_config *memory;
++  partition_mf_allocator *allocator;
++  l2_cache *cache;
++  lower_port port;
++  unsigned time;
++  p2_fixture(const char *base, const char *overlay, unsigned mode, unsigned c, unsigned sets=1,unsigned ports=1)
++      : config(&context), gpu(NULL), memory(NULL), allocator(NULL), cache(NULL), time(1) {
++    option_parser_t p = option_parser_create();
++    context.ptx_reg_options(p); context.func_sim->ptx_opcocde_latency_options(p);
++    icnt_reg_options(p); config.reg_options(p);
++    option_parser_cfgfile(p,base); option_parser_cfgfile(p,overlay);
++    std::string mode_s=std::to_string(mode), c_s=std::to_string(c), ports_s=std::to_string(ports);
++    const char *args[]={"ft-test","-gpgpu_ep_l2_ft_mode",mode_s.c_str(),"-gpgpu_ep_l2_wbuf_entries",c_s.c_str(),"-gpgpu_ep_l2_bank_ops",ports_s.c_str()};
++    option_parser_cmdline(p,7,args);
++    std::string geometry="S:"+std::to_string(sets)+":128:16,L:B:m:L:L,A:128:1,256:0,32";
++    const char *geoargs[]={"ft-test","-gpgpu_cache:dl2",geometry.c_str()};
++    option_parser_cmdline(p,3,geoargs); config.init(); option_parser_destroy(p);
++    gpu = new exec_gpgpu_sim(config,&context); memory = gpu->getMemoryConfig();
++    gpu->gpu_sim_cycle = time;
++    cache_config &cc = const_cast<memory_config *>(memory)->m_L2_config;
++
++    allocator = new partition_mf_allocator(memory);
++    cache = new l2_cache("FT_TEST",cc,0,0,&port,allocator,IN_PARTITION_L2_MISS_QUEUE,gpu,L2_GPU_CACHE);
++  }
++  ~p2_fixture() { delete cache; delete allocator; delete gpu; }
++  mem_fetch *make(new_addr_type a, bool wr, mem_access_type type=GLOBAL_ACC_W) {
++    active_mask_t active; active.set(0);
++    mem_access_byte_mask_t bytes;
++    unsigned sector=(a >> 5)&3;
++    for(unsigned b=sector*32;b<sector*32+32;++b) bytes.set(b);
++    mem_access_sector_mask_t mask;mask.set(sector);
++    return allocator->alloc(a,type,active,bytes,mask,32,wr,time,0,0,0,NULL,0);
++  }
++  void cycle() {
++    // Every direct fill/response/access and cache lower callback must use the
++    // same physical cycle; native fixture time must never run one cycle ahead.
++    assert(gpu->gpu_sim_cycle == time && gpu->gpu_tot_sim_cycle == 0);
++    cache->cycle(); gpu->gpu_sim_cycle = ++time;
++  }
++  bool access(mem_fetch *mf, unsigned limit=32) {
++    for(unsigned n=0;n<limit;++n) {
++      std::list<cache_event> events;
++      auto r=cache->access(mf->get_addr(),mf,time,events); cycle();
++      if(r!=RESERVATION_FAIL) return true;
++    }
++    return false;
++  }
++  ep_l2::PayloadHandle resident() { return cache->ep_l2_tag_payload_handle_for_test(0); }
++  unsigned staged() { return cache->ft_wb_staged(); }
++  unsigned wad() { return cache->ep_l2_wad_occupancy(); }
++  void drain_wb(std::map<new_addr_type,std::array<unsigned long long,4>> &reference) {
++    port.blocked=false;
++    for(unsigned n=0;n<10000 && (staged() || !cache->miss_queue_empty() || !port.packets.empty());++n) {
++      cycle();
++      while(!port.packets.empty()) {
++        mem_fetch *mf=port.packets.front();port.packets.pop_front();
++        assert(mf->get_access_type()==L2_WRBK_ACC);
++        assert(mf->get_ft_wb_data()==reference.at(mf->get_addr()));
++        // Actual lower acceptance has freed staging, while WAD remains live.
++        assert(cache->ep_l2_wad_contains(mf->get_addr()));
++        cache->ep_l2_wad_complete(mf->get_addr(),time);delete mf;
++      }
++    }
++    assert(!staged() && !wad() && cache->miss_queue_empty());
++    assert(cache->ep_l2_payload_for_test().wb_used()==0);
++    assert(cache->ep_l2_payload_pending_operations()==0);
++  }
++};
++
++
++
++static void arbiter(unsigned mode,unsigned ports) {
++  using P=ep_l2_payload_store;
++  for(unsigned bad:{0u,3u}) {
++    bool refused=false;try{P invalid(2,mode,16,false,bad);}catch(const std::invalid_argument&){refused=true;}assert(refused);
++  }
++  bool refused=false;try{P invalid(2,mode,8,false,2);}catch(const std::invalid_argument&){refused=true;}assert(refused);
++  refused=false;try{P invalid(2,1,16,true,2);}catch(const std::invalid_argument&){refused=true;}assert(refused);
++  for(unsigned pattern=0;pattern<3;++pattern) {
++    P p(2,mode,16,false,ports);
++    std::vector<P::payload_handle> h;
++    for(unsigned id:{0u,4u,8u,1u,5u,9u})h.push_back(p.reserve(id,P::RESIDENT,128*(id+1),P::RESIDENT_VALID));
++    bool w0=pattern!=0,w1=pattern==1;
++    assert(p.request(h[0],w0,100)==P::GRANTED);
++    auto second=p.request(h[1],w1,100);assert(second==(ports==2?P::GRANTED:P::BANK_TRUE_CONTENTION));
++    assert(p.request(h[2],false,100)==P::BANK_TRUE_CONTENTION);
++    assert(p.request(h[3],false,100)==P::GRANTED);
++    assert(p.request(h[4],true,100)==(ports==2?P::GRANTED:P::BANK_TRUE_CONTENTION));
++    // Cancellation retires a pending/selected identity without a consumed
++    // port being refunded. Its stale generation remains invalid after reuse.
++    p.cancel_request(h[2],false);
++    assert(p.request(h[5],false,100)==P::BANK_TRUE_CONTENTION);
++    p.cancel_request(h[5],false);
++    if(ports==1){p.cancel_request(h[4],true);assert(p.request(h[1],w1,101)==P::GRANTED);}
++    assert(!p.pending_operations());
++    assert(p.bank_peak(0)==ports && p.bank_peak(1)==ports);
++    // A denied retry can retain its selection for several cycles while
++    // independent-bank traffic advances the same physical arbiter clock.
++    assert(p.request(h[2],true,101)==(ports==2?P::GRANTED:P::BANK_TRUE_CONTENTION));
++    if(ports==2)assert(p.request(h[1],true,101)==P::GRANTED);
++    assert(p.request(h[0],false,101)==P::BANK_TRUE_CONTENTION);
++    if(ports==1)p.cancel_request(h[2],true);
++    assert(p.request(h[3],false,102)==P::GRANTED);
++    assert(p.request(h[3],false,103)==P::GRANTED);
++    assert(p.request(h[0],false,104)==P::GRANTED);
++    assert(!p.pending_operations());
++    assert(p.request(h[0],false,105)==P::GRANTED);
++    assert(p.request(h[1],false,105)==(ports==2?P::GRANTED:P::BANK_TRUE_CONTENTION));
++    assert(p.request(h[2],false,105)==P::BANK_TRUE_CONTENTION);
++    auto before_cancel=p.bank_grants(0);
++    assert(p.request(h[3],false,106)==P::GRANTED); // selects older bank0 work
++    p.cancel_request(h[1],false);p.cancel_request(h[2],false);
++    assert(!p.pending_operations() && p.bank_grants(0)==before_cancel);
++    assert(p.request(h[2],false,106)==P::GRANTED); // new identity after cancel
++    p.release(h[2]);assert(!p.handle_live(h[2]));
++    auto fresh=p.reserve(8,P::RESIDENT,8888,P::RESIDENT_VALID);assert(fresh.generation!=h[2].generation);
++    for(unsigned bad=0;bad<2;++bad) {
++      pid_t child=fork();assert(child>=0);
++      if(!child){if(bad==0)p.request(h[2],false,107);else p.request(fresh,false,1);_exit(0);}
++      int status;assert(waitpid(child,&status,0)==child && WIFSIGNALED(status) && WTERMSIG(status)==SIGABRT);
++    }
++    printf("P%u arbiter mode%u pattern%u true grants=%llu logical=%llu retries=%llu wait=%llu peaks=%u/%u PASS\n",ports,mode,pattern,p.bank_grants(),p.bank_logical_ops(),p.bank_retry_attempts(),p.bank_wait_cycles(),p.bank_peak(0),p.bank_peak(1));
++  }
++}
++int main(int argc,char **argv) {
++  assert(argc==5);setvbuf(stdout,NULL,_IOLBF,0);
++  unsigned mode=std::stoul(argv[3]),ports=std::stoul(argv[4]);arbiter(mode,ports);
++  p2_fixture f(argv[1],argv[2],mode,16,64,ports);
++  std::map<new_addr_type,std::array<unsigned long long,4>> ref;
++  const new_addr_type stride=64*128;
++  for(unsigned i=0;i<16;++i) {
++    auto w=f.make(i*stride,true);assert(f.access(w));
++    ref[i*stride]={{(unsigned long long)w->get_request_uid()+1,0,0,0}};delete w;
++  }
++  std::vector<mem_fetch *> reads;
++  for(unsigned s=0;s<3;++s){auto r=f.make(128*(s+1),false,GLOBAL_ACC_R);assert(f.access(r));reads.push_back(r);}
++  f.port.blocked=false;for(unsigned n=0;n<100 && f.port.packets.size()<3;++n)f.cycle();
++  assert(f.port.packets.size()==3);f.port.blocked=true;
++  std::vector<mem_fetch *> returns;while(!f.port.packets.empty()){returns.push_back(f.port.packets.front());f.port.packets.pop_front();}
++  std::array<unsigned long long,4> data={{101,0,0,0}};for(auto r:returns)r->set_ft_wb_data(data);
++  std::vector<bool> filled(3,false);bool committed=false;unsigned fills=0,responses=0,peak=0;
++  std::set<unsigned> response_uids;
++  auto w=f.make(16*stride,true);std::list<cache_event> events;
++  for(unsigned n=0;n<100 && (!committed || fills<3 || responses<3);++n) {
++    unsigned long long before[4];for(unsigned b=0;b<4;++b)before[b]=f.cache->ep_l2_payload_bank_grants(b);
++    for(unsigned i=0;i<3;++i)if(!filled[i] && f.cache->ep_l2_payload_fill_request(returns[i],f.time)==ep_l2_payload_store::GRANTED) {
++      f.cache->fill(returns[i],100001+1000*n);filled[i]=true;++fills;
++    }
++    if(!committed)committed=f.cache->access(w->get_addr(),w,200001+1000*n,events)!=RESERVATION_FAIL;
++    if(f.cache->access_ready() && f.cache->ft_response_ready(f.time)) {
++      auto r=f.cache->peek_next_access();assert(r->get_ft_wb_data()==data && response_uids.insert(r->get_request_uid()).second);
++      f.cache->commit_next_access();++responses;
++    }
++    for(unsigned b=0;b<4;++b){auto d=f.cache->ep_l2_payload_bank_grants(b)-before[b];assert(d<=ports);peak=std::max(peak,(unsigned)d);}
++    f.cycle();
++  }
++  assert(committed && fills==3 && responses==3 && peak==ports);
++  for(auto r:reads)delete r;delete w;
++  assert(f.cache->ft_wb_staged()==1 && f.cache->ep_l2_wad_occupancy()==1);
++  // Real lower readout and a same-bank native resident hit write share one
++  // physical cycle: P2 admits both, P1 waits. Native timestamps do not refill.
++  f.port.blocked=false;
++  auto before=f.cache->ep_l2_payload_bank_grants();f.cache->cycle();
++  assert(f.port.packets.size()==1 && !f.cache->ft_wb_staged() && f.cache->ep_l2_wad_occupancy()==1);
++  auto hit=f.make((mode==1?3:4)*stride,true);
++  auto result=f.cache->access(hit->get_addr(),hit,9999999,events);
++  assert((result!=RESERVATION_FAIL)==(ports==2));
++  if(result==RESERVATION_FAIL){f.cycle();assert(f.cache->access(hit->get_addr(),hit,19999999,events)!=RESERVATION_FAIL);}
++  else assert(f.cache->ep_l2_payload_bank_grants()-before==2);
++  delete hit;
++  auto packet=f.port.packets.front();f.port.packets.pop_front();assert(packet->get_ft_wb_data()==ref.at(packet->get_addr()));
++  f.cache->ep_l2_wad_complete(packet->get_addr(),f.time);delete packet;
++  assert(f.cache->ft_drained() && !f.cache->ep_l2_wad_occupancy() && !f.cache->ep_l2_payload_pending_operations());
++  assert(f.cache->ep_l2_payload_bank_fill_write()==3 && f.cache->ep_l2_payload_bank_resident_hit_read()==3);
++  assert(f.cache->ep_l2_payload_bank_wb_readout()==(mode==1?2:1));
++  for(unsigned b=0;b<4;++b)assert(f.cache->ep_l2_payload_for_test().bank_peak(b)<=ports);
++  f.cache->ft_print(stdout,0);
++  printf("P%u real mode%u fill/response/resident-write/copy/WB contention native-time-varied physical budget peak%u exact-once/data/drain PASS\n",ports,mode,peak);
++}
+diff --git a/tests/ep_l2/test_potential_s64.cc b/tests/ep_l2/test_potential_s64.cc
+index 291d9dc7..a3929df9 100644
+--- a/tests/ep_l2/test_potential_s64.cc
++++ b/tests/ep_l2/test_potential_s64.cc
+@@ -30,12 +30,13 @@ static void layout() {
+   puts("S64 layout boundaries/bank counts/full-release/illegal combinations/default B8 B16 PASS");
+ }
+ int main(int argc,char **argv) {
+-  assert(argc==7 && std::stoul(argv[3])==1 && std::stoul(argv[5])==1);
++  assert(argc==8 && std::stoul(argv[3])==1);
+   setvbuf(stdout,NULL,_IOLBF,0);layout();fixture f(argv);f.block_lower=true;
+   const new_addr_type stride=64*128;
++  const unsigned cap=std::stoul(argv[5])?64:16, limit=18+cap;
+   // No synthetic array occupancy: native dirty writes, real WB packets and
+   // a full two-entry lower FIFO accumulate 64 local staging responsibilities.
+-  for(unsigned i=0;i<82;++i) {
++  for(unsigned i=0;i<limit;++i) {
+     // Make way0 (bank0) the first LRU victim to cover a true same-bank
+     // source-read/staging-write pair; the normal descending sequence also
+     // supplies cross-bank pairs. Touches use actual frontend hit writes.
+@@ -46,26 +47,26 @@ int main(int argc,char **argv) {
+     auto r=f.make(i*stride,true);f.memory[i*stride]=f.expected.at(r->get_request_uid());
+     f.send(r);f.until_frontend_empty();
+   }
+-  assert(f.sp->ep_l2_l2dram_occupancy()==2 && f.cache->ft_wb_staged()==64);
+-  assert(f.cache->ep_l2_wad_occupancy()==66 && f.cache->ep_l2_wad_capacity()==128);
+-  auto r=f.make(82*stride,true);unsigned uid=r->get_request_uid();f.memory[82*stride]=f.expected.at(uid);f.send(r);
++  assert(f.sp->ep_l2_l2dram_occupancy()==2 && f.cache->ft_wb_staged()==cap);
++  assert(f.cache->ep_l2_wad_occupancy()==cap+2 && f.cache->ep_l2_wad_capacity()==128);
++  auto r=f.make(limit*stride,true);unsigned uid=r->get_request_uid();f.memory[limit*stride]=f.expected.at(uid);f.send(r);
+   for(unsigned n=0;n<8;++n)f.step();
+-  assert(!f.replies.count(uid) && !f.cache->ft_reservation_active() && f.cache->ft_wb_staged()==64);
++  assert(!f.replies.count(uid) && !f.cache->ft_reservation_active() && f.cache->ft_wb_staged()==cap);
+   const auto &p=f.cache->ep_l2_payload_for_test();
+-  assert(p.wb_used()==64 && p.ownership_consistent());
++  assert(p.wb_used()==cap && p.ownership_consistent());
+   for(unsigned n=0;n<8;++n)f.step();
+-  assert(f.cache->ft_wb_staged()==64 && f.cache->ep_l2_wad_occupancy()==66 && !f.cache->ft_reservation_active());
+-  puts("S64 production local WB peak=64 (>16), 65th refusal/no partial commit/lower full PASS");
++  assert(f.cache->ft_wb_staged()==cap && f.cache->ep_l2_wad_occupancy()==cap+2 && !f.cache->ft_reservation_active());
++  puts("S64 production local WB actual configured local WB full/refusal/no partial commit/lower full PASS");
+   f.block_lower=false;f.drain_lower();
+   for(unsigned n=0;n<2000 && (!f.replies.count(uid) || f.cache->ft_wb_staged() || !f.cache->miss_queue_empty() || !f.sp->L2_dram_queue_empty());++n)f.step();
+-  assert(f.replies.count(uid) && f.lower_wb==67 && !f.cache->ft_wb_staged());
+-  assert(f.cache->ep_l2_wad_occupancy()==67);
++  assert(f.replies.count(uid) && f.lower_wb==cap+3 && !f.cache->ft_wb_staged());
++  assert(f.cache->ep_l2_wad_occupancy()==cap+3);
+   for(auto w:f.wb){f.sp->set_done(w);delete w;++f.completed_wb;}f.wb.clear();
+   for(unsigned n=0;n<1000 && f.part->busy();++n)f.step();
+-  assert(f.completed_wb==67 && f.replies.size()==98 && f.replies.size()==f.expected.size());
++  assert(f.completed_wb==cap+3 && f.replies.size()==cap+34 && f.replies.size()==f.expected.size());
+   assert(f.sp->l2_char_no_resource_leak() && f.cache->ft_drained() && !f.part->busy());
+   assert(!f.cache->ep_l2_payload_pending_operations() && !f.cache->ep_l2_wad_occupancy());
+-  assert(f.cache->ep_l2_payload_bank_wb_readout()>=134 && f.bank_max==1);
++  assert(f.cache->ep_l2_payload_bank_wb_readout()>=2*(cap+3) && f.bank_max==1);
+   printf("S64 real copy source/staging banks: same=%u cross=%u\n",f.same_bank_copy,f.cross_bank_copy);
+   assert(f.same_bank_copy && f.cross_bank_copy);
+   f.cache->ft_print(stdout,0);
+diff --git a/tests/ep_l2/test_potential_ucap.cc b/tests/ep_l2/test_potential_ucap.cc
+index 08d7ce2b..82902c2c 100644
+--- a/tests/ep_l2/test_potential_ucap.cc
++++ b/tests/ep_l2/test_potential_ucap.cc
+@@ -1,6 +1,6 @@
+ #include "potential_fixture.h"
+ int main(int argc,char **argv) {
+-  assert(argc==7 && std::stoul(argv[3])==2 && std::stoul(argv[5])==0 && std::stoul(argv[6])==16);
++  assert(argc==8 && std::stoul(argv[3])==2 && std::stoul(argv[5])==0 && (std::stoul(argv[6])==16 || std::stoul(argv[6])==0));
+   setvbuf(stdout,NULL,_IOLBF,0);fixture f(argv);f.block_lower=true;
+   const new_addr_type stride=64*128;
+   // No synthetic array occupancy: native dirty writes, real WB packets and
+@@ -12,6 +12,18 @@ int main(int argc,char **argv) {
+   assert(f.sp->ep_l2_l2dram_occupancy()==2 && f.cache->ft_wb_staged()==16);
+   assert(f.cache->ep_l2_wad_occupancy()==18 && f.cache->ep_l2_wad_capacity()==128);
+   auto r=f.make(34*stride,true);unsigned uid=r->get_request_uid();f.memory[34*stride]=f.expected.at(uid);f.send(r);
++  if(!std::stoul(argv[6])) {
++    f.until_frontend_empty();
++    assert(f.cache->ft_wb_staged()==17 && f.cache->ep_l2_payload_for_test().wb_used()==17 && f.cache->ep_l2_wad_occupancy()==19);
++    assert(!f.cache->ft_wb_quota_live() && !f.cache->ft_wb_quota_reserved());
++    f.block_lower=false;f.drain_lower();
++    for(unsigned n=0;n<1000 && (f.cache->ft_wb_staged() || !f.cache->miss_queue_empty() || !f.sp->L2_dram_queue_empty());++n)f.step();
++    assert(f.lower_wb==19 && f.cache->ep_l2_wad_occupancy()==19 && f.replies.count(uid));
++    for(auto w:f.wb){f.sp->set_done(w);delete w;}f.wb.clear();
++    for(unsigned n=0;n<1000 && f.part->busy();++n)f.step();
++    assert(f.cache->ft_drained() && !f.part->busy() && f.sp->l2_char_no_resource_leak() && !f.cache->ep_l2_wad_occupancy());
++    f.cache->ft_print(stdout,0);puts("U_WB16 default quota-OFF actual staging17 (>16), same1168/in-place/versions/WAD/exact-once/drain PASS");return 0;
++  }
+   for(unsigned n=0;n<8;++n)f.step();
+   assert(!f.replies.count(uid) && !f.cache->ft_reservation_active() && f.cache->ft_wb_staged()==16);
+   assert(f.cache->ft_wb_quota_live()==16 && !f.cache->ft_wb_quota_reserved() && f.cache->ft_wb_quota_refusals()>0);

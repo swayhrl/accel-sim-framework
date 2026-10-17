@@ -1,0 +1,189 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 3d541801..c356f377 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -151,6 +151,10 @@ void l2_cache::commit_next_access() {
+ void l2_cache::ft_rollback() {
+   ft_replacement &p = m_ft_pending;
+   assert(p.request && !p.bound);
++  if (p.quota_reserved) {
++    assert(m_ft_quota.reserved == 1); --m_ft_quota.reserved;
++    p.quota_reserved = false; ++m_ft_quota.rollbacks;
++  }
+   if (p.wad) {
+     assert(m_ep_l2_wad_entries_live.erase(p.victim_address) == 1);
+     assert(m_ep_l2_wad_birth_cycle.erase(p.victim_address) == 1);
+@@ -165,12 +169,15 @@ void l2_cache::ft_rollback() {
+   set_tag_payload_handle(p.tag_index, p.victim);
+   ++m_ft_stats.rollback;
+   p = ft_replacement();
++  ft_assert_quota();
+ }
+ 
+ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     unsigned time, std::list<cache_event> &events) {
+   // memcpy offset orders native Tag timestamps; it is not elapsed hardware
+   // time and must never reset the payload bank arbiter or WB/WAD lifetimes.
++  ft_assert_quota();
++  if (m_ft_pending.request == mf && m_ft_pending.quota_reserved) ++m_ft_quota.retries;
+   const unsigned long long physical_cycle = ft_physical_cycle();
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   const new_addr_type owner = m_config.block_addr(addr);
+@@ -229,6 +236,12 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+       if (!landing.valid()) { ++m_ft_stats.pool_full; return RESERVATION_FAIL; }
+       if (dirty) staging = victim;
+     }
++    // All issue/WAD/staging/landing prechecks passed. Reserve quota before
++    // exposing any cross-cycle transaction; retries keep this one token.
++    if (dirty && m_config.m_ep_l2_wb_local_cap &&
++        m_ft_quota.reserved + m_ft_quota.live >= m_config.m_ep_l2_wb_local_cap) {
++      ++m_ft_quota.refusals; return RESERVATION_FAIL;
++    }
+     // The only producer is the serialized frontend head. While this token is
+     // live no other frontend request can steal its prechecked issue slots;
+     // fills and lower drains cannot add entries to m_miss_queue.
+@@ -239,6 +252,11 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+         (m_config.m_ep_l2_ft_mode == 2 && live ? victim.payload_id : index);
+     if (live) p.saved = m_ep_l2_payload.inspect(victim);
+     if (dirty) {
++      if (m_config.m_ep_l2_wb_local_cap) {
++        assert(!m_ft_quota.reserved); ++m_ft_quota.reserved; p.quota_reserved = true;
++        m_ft_quota.reserved_peak = std::max(m_ft_quota.reserved_peak, m_ft_quota.reserved);
++        m_ft_quota.total_peak = std::max(m_ft_quota.total_peak, m_ft_quota.reserved + m_ft_quota.live);
++      }
+       p.victim_address = m_tag_array->get_block(index)->m_block_addr;
+       assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);
+       assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(p.victim_address, physical_cycle)).second);
+@@ -360,7 +378,13 @@ void l2_cache::send_write_request(mem_fetch *mf, cache_event event, unsigned tim
+     assert(m_ft_wb.size() < m_config.m_ep_l2_wad_entries);
+     assert(m_ft_wb.insert(std::make_pair(mf, r)).second);
+     mf->set_ep_l2_payload_identity(p.staging.payload_id, p.staging.generation);
++    if (m_config.m_ep_l2_wb_local_cap) {
++      assert(p.quota_reserved && m_ft_quota.reserved == 1);
++      --m_ft_quota.reserved; ++m_ft_quota.live; p.quota_reserved = false;
++      m_ft_quota.live_peak = std::max(m_ft_quota.live_peak, m_ft_quota.live);
++    }
+     p.bound = true; ++m_ft_stats.wb_created;
++    ft_assert_quota();
+     m_ft_stats.staged_max = std::max(m_ft_stats.staged_max, (unsigned long long)m_ft_wb.size());
+   }
+   data_cache::send_write_request(mf, event, time, events);
+@@ -391,11 +415,20 @@ void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
+   m_ep_l2_payload.release(it->second.handle);
+   m_ft_stats.staging_lifetime += cycle >= it->second.born ? cycle - it->second.born : 0;
+   ++m_ft_stats.lower_accept;
++  if (m_config.m_ep_l2_wb_local_cap) {
++    assert(m_ft_quota.live); --m_ft_quota.live; ++m_ft_quota.lower_accept;
++  }
+   m_ft_wb.erase(it);
++  ft_assert_quota();
+ }
+ 
+ void l2_cache::ft_print(FILE *fp, unsigned slice) const {
+   if (!ft_enabled()) return;
++  ft_assert_quota();
++  fprintf(fp, "EPL2STRUCTV1|WB_QUOTA|slice=%u|cap=%u|reserved=%u|live=%u|reserved_peak=%u|live_peak=%u|total_peak=%u|refusal_attempts=%llu|pending_retry_calls=%llu|rollback_releases=%llu|lower_accept_releases=%llu\n",
++      slice, m_config.m_ep_l2_wb_local_cap, m_ft_quota.reserved, m_ft_quota.live,
++      m_ft_quota.reserved_peak, m_ft_quota.live_peak, m_ft_quota.total_peak,
++      m_ft_quota.refusals, m_ft_quota.retries, m_ft_quota.rollbacks, m_ft_quota.lower_accept);
+   fprintf(fp, "EPL2STRUCTV1|CONFIG|slice=%u|static_s64=%u|physical_slots=%u|"
+       "resident_nominal=1024|bypass_capacity=%u|wb_begin=%u|static_wb_capacity=%u|"
+       "legacy_wbuf=%u|bank_count=4|bank_ops_per_physical_cycle=1|copy_latch_bytes=128\n",
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 98452294..0878efd5 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -584,6 +584,7 @@ class cache_config {
+     m_ep_l2_ft_mode = 0;
+     m_ep_l2_wbuf_entries = 0;
+     m_ep_l2_static_s64 = false;
++    m_ep_l2_wb_local_cap = 0;
+     m_ep_l2_payload_policy = 0;
+     m_ep_l2_feature_unified_payload = false;
+     m_ep_l2_feature_ro_pending_state = false;
+@@ -944,6 +945,7 @@ class cache_config {
+   unsigned m_ep_l2_ft_mode;
+   unsigned m_ep_l2_wbuf_entries;
+   bool m_ep_l2_static_s64;
++  unsigned m_ep_l2_wb_local_cap;
+   // M1 is infrastructure: functional mechanism bits default OFF.
+   // Policy 0 is the only currently supported static policy.
+   unsigned m_ep_l2_payload_policy;
+@@ -2739,6 +2741,19 @@ class l2_cache : public data_cache {
+   bool ft_try_force_tag_access(new_addr_type addr, unsigned time,
+                                mem_access_sector_mask_t mask);
+   unsigned long long ft_physical_cycle() const;
++  unsigned ft_wb_quota_reserved() const { return m_ft_quota.reserved; }
++  unsigned ft_wb_quota_live() const { return m_ft_quota.live; }
++  unsigned long long ft_wb_quota_rollbacks() const { return m_ft_quota.rollbacks; }
++  unsigned long long ft_wb_quota_refusals() const { return m_ft_quota.refusals; }
++  unsigned long long ft_wb_quota_retries() const { return m_ft_quota.retries; }
++  void ft_assert_quota() const {
++    if (!m_config.m_ep_l2_wb_local_cap) {
++      assert(!m_ft_quota.reserved && !m_ft_quota.live); return;
++    }
++    assert(m_ft_quota.reserved + m_ft_quota.live <= 16);
++    assert(m_ft_quota.reserved == (m_ft_pending.quota_reserved ? 1u : 0u));
++    assert(m_ft_quota.live == m_ft_wb.size());
++  }
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
+@@ -2762,7 +2777,8 @@ class l2_cache : public data_cache {
+   }
+ 
+   bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
+-      m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used()); }
++      m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used() &&
++      !m_ft_quota.reserved && !m_ft_quota.live); }
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+   void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
+   void descriptor_admitted(mem_fetch *mf, unsigned cache_index) override;
+@@ -2826,9 +2842,9 @@ class l2_cache : public data_cache {
+     ep_l2_payload_store::slot saved;
+     std::array<unsigned long long,4> copy_versions;
+     unsigned long long born;
+-    bool dirty, wad, landing_reserved, bound;
++    bool dirty, wad, landing_reserved, bound, quota_reserved;
+     ft_replacement() : request(NULL), tag_index(0), phase(0), landing_id((unsigned)-1), victim_address(0),
+-        born(0), dirty(false), wad(false), landing_reserved(false), bound(false) { copy_versions.fill(0); }
++        born(0), dirty(false), wad(false), landing_reserved(false), bound(false), quota_reserved(false) { copy_versions.fill(0); }
+   };
+   struct ft_wb_record {
+     ep_l2_payload_store::payload_handle handle;
+@@ -2846,12 +2862,21 @@ class l2_cache : public data_cache {
+         staged_max(0), staging_lifetime(0), borrow_bypass(0), borrow_resident(0),
+         rollback(0), data_checks(0), observed_cycles(0), staging_occupancy_sum(0), descriptor_responses(0) {}
+   };
++  struct ft_quota {
++    unsigned reserved = 0, live = 0, reserved_peak = 0, live_peak = 0, total_peak = 0;
++    unsigned long long refusals = 0, retries = 0, rollbacks = 0, lower_accept = 0;
++  } m_ft_quota;
+   ft_replacement m_ft_pending;
+   ft_counters m_ft_stats;
+   std::map<mem_fetch *,ft_wb_record> m_ft_wb;
+   std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
+   std::array<unsigned long long,4> m_ft_last_wb_versions;
+   void validate_ep_l2_mode_config() const {
++    if (m_config.m_ep_l2_wb_local_cap &&
++        (m_config.m_ep_l2_wb_local_cap != 16 || m_config.m_ep_l2_ft_mode != 2 ||
++         m_config.m_ep_l2_wbuf_entries != 16)) {
++      fprintf(stderr, "EP-L2 local WB cap16 requires unified FT2/WBUF16\n"); abort();
++    }
+     if (m_config.m_ep_l2_static_s64 &&
+         (m_config.m_ep_l2_ft_mode != 1 || m_config.m_ep_l2_wbuf_entries != 16)) {
+       fprintf(stderr, "EP-L2 S64 requires static FT1/WBUF16, fixed1168 layout\n"); abort();
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index c89cc2f7..284a6de9 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -276,6 +276,9 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp, "-gpgpu_ep_l2_wbuf_entries", OPT_UINT32,
+                          &m_L2_config.m_ep_l2_wbuf_entries,
+                          "Additional WB payload budget: 0 off, 8 sensitivity, 16 primary", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_wb_local_cap", OPT_UINT32,
++                         &m_L2_config.m_ep_l2_wb_local_cap,
++                         "Local reserved+live WB responsibility cap (0=uncapped; 16=U_CAP16)", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_static_s64", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_static_s64,
+                          "Opt-in S64 static1024/80/64 fixed1168 payload layout; FT1/WBUF16 only", "0");
