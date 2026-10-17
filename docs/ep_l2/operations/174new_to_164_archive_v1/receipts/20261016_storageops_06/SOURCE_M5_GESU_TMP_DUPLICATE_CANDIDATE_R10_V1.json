@@ -1,0 +1,49 @@
+{
+  "schema": "STORAGE_OPS_R10_OLD174_M5_GESU_TMP_DUPLICATE_CANDIDATE_V1",
+  "audited_at_utc": "2026-10-17T01:58:00Z",
+  "scope": "READ_ONLY_CANDIDATE_NO_ARCHIVE_TRANSFER_OR_SOURCE_RELEASE",
+  "project": "DTC-L1 M5 gesu historical unpack-check copies",
+  "candidate_directories": [
+    {
+      "source_path": "/tmp/m5-gesu-unpack-check.FGnex7",
+      "directory_inode": 34300265,
+      "allocated_bytes": 993886208,
+      "regular_files": 18,
+      "manifest_sha256": "b2e8cb715566aa620c66109da93ed4e552cbfba62af10c9f80d04296ec73a5d2",
+      "manifest_file_hashes_verified": true,
+      "manifest_exact_file_set_verified": true,
+      "current_direct_process_references": 0
+    },
+    {
+      "source_path": "/tmp/m5-gesu-unpack-check.F9XDGy",
+      "directory_inode": 34324838,
+      "allocated_bytes": 993886208,
+      "regular_files": 18,
+      "manifest_sha256": "b2e8cb715566aa620c66109da93ed4e552cbfba62af10c9f80d04296ec73a5d2",
+      "manifest_file_hashes_verified": true,
+      "manifest_exact_file_set_verified": true,
+      "current_direct_process_references": 0
+    }
+  ],
+  "canonical_root_to_keep": "/workspace/m5-trace-immutable/gesu/gesu",
+  "canonical_root_manifest_sha256": "b2e8cb715566aa620c66109da93ed4e552cbfba62af10c9f80d04296ec73a5d2",
+  "canonical_manifest_file_hashes_verified": true,
+  "canonical_exact_file_set_verified": true,
+  "compressed_archive_to_keep": "/workspace/m5-trace-immutable/gesu/gesu.tar.zst",
+  "compressed_archive_sha256": "0d2ba5d069a88e331c1575dd8c2f5a8defe4d36d255464f998245454d86d7c03",
+  "compressed_archive_bytes": 59339020,
+  "compressed_archive_zstd_integrity": "PASS",
+  "compressed_archive_tar_compare_against_canonical_root": "PASS_ALL_MEMBERS_GNU_TAR_COMPARE_NO_DIFFERENCES; no separate xattr/ACL audit",
+  "compressed_archive_exact_file_set_against_canonical_root": "PASS_18_FILES_NO_EXTRA",
+  "candidate_total_allocated_bytes_upper_bound": 1987772416,
+  "current_164_archive_coverage_for_this_candidate": "NOT_ESTABLISHED",
+  "proposed_smallest_164_transfer": "Only the 59,339,020-byte gesu.tar.zst plus its SHA256/member manifest, after the sole B001 bridge batch is closed or explicitly canceled; 174-new must independently verify and test restore on 164.",
+  "restore_command_after_164_archive_verified": "mkdir -p <new-absent-recovery-directory> && tar --use-compress-program=zstd -xf <verified-gesu.tar.zst> -C <new-absent-recovery-directory>; then verify all 18 files against SHA256SUMS before any path promotion",
+  "active_and_future_consumer_risk": "No direct process cmdline/cwd/exe/fd references or current RUN_REGISTRY reference to either temporary root. A bounded DTC/M5 source-script search found no exact temporary-name reference; future or external consumer is not proven absent.",
+  "scientific_retention": "Canonical raw .trace/.traceg and compressed archive stay KEEP. These two /tmp trees are unpack-check duplicates only, but scientific content still requires explicit exact-scope release approval under V7/R10.",
+  "bridge_state": "R1_197_NATIVE_RESTORE_B001 remains the sole payload; no second data payload may be staged under current source disposition.",
+  "source_action": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "source_original_released_bytes": 0,
+  "next": "If user approves this exact two-directory conditional release, coordinate target cancellation/closeout of the blocked R1 B001 sole bridge batch, archive the 59 MB tar and manifest to 164 in one compliant batch, verify full restore and fresh inactive/source identities, then seek/confirm final exact release authorization before removing only these two temporary duplicate trees. Otherwise retain all data."
+}
