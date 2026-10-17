@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import runpy
 import shutil
+import subprocess
 import time
 
 from acceptance import load_current_authority, current_manifest
@@ -88,7 +89,7 @@ def main():
         csv_write(a.pack/'RAW_LOG_INDEX.csv',raw_index)
         review_receipt={'status':'INDEPENDENT_TERMINAL_AND_CURRENT_AUTHORITY_REVIEW_PASS','workload':a.workload,'scientific_acceptance_rows_proposed':rows,'checked_current_authority':state['binding'],'review_resource_lease':lease,'review_resource_lease_terminal':'RELEASED_IN_FINALLY','no_simulator_or_compiler_started':True,'next_step':'Publish these exact rows in next V2 generation and remote-read back before announcing current acceptance','scope':'Symbolic32B sector version/request/hardware lifecycle; full native non-atomic inputs only; no numeric SASS output; no geomean until5; C1 legacy headroom excluded'}
         if a.regime:
-            review_receipt.update(experiment_id=EXPERIMENT,regime=a.regime,scope='Full native nonatomic symbolic32B sector/request/WB lifecycle; r19 same-condition diagnostic, H0 immutable; no numeric SASS or C1 causal claim')
+            review_receipt.update(experiment_id=EXPERIMENT,regime=a.regime,review_tooling_source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip(),review_tool_sha256=digest(__file__),pressure_tool_sha256=digest(Path(__file__).with_name('headroom_metrics.py')),scope='Full native nonatomic symbolic32B sector/request/WB lifecycle; r19 same-condition diagnostic, H0 immutable; no numeric SASS or C1 causal claim')
         if a.native_legacy_proof:
             review_receipt['supplemental_native_legacy_semantic_proof']={'path':str(a.native_legacy_proof),'sha256':digest(a.native_legacy_proof)}
         elif specs[0].get('native_legacy_semantic_proof'):
