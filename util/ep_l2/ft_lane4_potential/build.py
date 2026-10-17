@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import subprocess
 import time
 
@@ -19,6 +20,7 @@ def main():
     p.add_argument('--core',type=Path,required=True);p.add_argument('--build',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True);p.add_argument('--targets',nargs='+',required=True)
     p.add_argument('--jobs',type=int,default=2);p.add_argument('--memory-gib',type=int,default=8)
+    p.add_argument('--resume-from',type=Path)
     a=p.parse_args();fw=Path(__file__).resolve().parents[3]
     assert a.jobs in (1,2) and a.memory_gib>=4*a.jobs,'at least4GiB per build worker'
     a.out.mkdir(parents=True,exist_ok=False)
@@ -46,7 +48,19 @@ def main():
         vendor=fw/'gpu-simulator/extern/pybind11'
         report['vendor_commit']=head(vendor)
         assert report['vendor_commit']=='f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
-        assert not a.build.exists(),'immutable new build directory required'
+        if a.resume_from:
+            previous=json.loads(a.resume_from.read_text())
+            assert previous['status']=='FAILED_OR_RESOURCE_HOLD' and previous['build']==str(a.build)
+            assert previous['core']==str(a.core),'same owned source path required for incremental reuse'
+            report['incremental_from_receipt']=str(a.resume_from)
+            report['incremental_from_receipt_sha256']=sha(a.resume_from)
+            report['previous_source_commit']=previous['core_source_commit']
+            report['preserved_previous_binaries']=[]
+            for binary in [a.build/'accel-sim.out',*sorted((a.build/'gpgpu-sim').glob('ep_l2_*'))]:
+                if not binary.is_file():continue
+                saved=a.out/('previous_'+binary.name);shutil.copy2(binary,saved)
+                report['preserved_previous_binaries'].append(dict(path=str(saved),sha256=sha(saved)))
+        else:assert not a.build.exists(),'immutable new build directory required'
         live=resources();report['resources_before']=live
         assert live['disk_free_bytes']>=50*1024**3,'build growth margin'
         lease=registry.build_lease('lane4',cpu=a.jobs,memory=a.memory_gib*1024**3)
