@@ -1,0 +1,11 @@
+# 终端机制表的定义（沿用已验Lane M，不改变选点）
+
+这是输出整理工具，不是observer或新模拟点。analyze_terminal_metrics.py只有在整个临时authority自然收口之后才读取新结果；不读部分周期排序，不改DISCOVERY_SCORE规则。完整定义来源为M提交d723784a8的METRIC_DEFINITIONS.tsv和冻结Core6fba0136源SHA。
+
+ready/pending/new均取最后一次累计DTC成功128B reference结果；分母为三者之和，并与completion_dependency_count核对。它不是Tag grant/查找尝试数，不含失败重试；只在同一DTC路径、同一输入之间比较，不能和C+普通32B cache统计拼接成统一命中率。Tag eviction是逻辑映射替换事件，new_misses不是唯一地址数或DRAM字节。OO未输出的Tag/pool拒绝周期、在途重复地址标UNAVAILABLE。
+
+PIB/physical均值为相应积分除以64SM全workload core-cycle samples，含idle/tail。ready→collect、collection、WB及fully-ready→complete平均值分母为cacheable warp instruction retired；它们是fully-ready之后的重叠区间，不是完整issue/refill/replay时延或GPU周期贡献。map-loss→free只包含已经释放的allocation区间，排除仍tag-visible的终端resident；IO/OO事件群体因回收规则不同而不同。
+
+每个新点还与其已验原OO核对cacheable dependency总数、cacheable retired和collected sector工作量；来源/指令身份在strict另核。不把跨kernel累计快照相加，不把credit×128称DRAM量。硬件时序、面积、完整架构数值仍未验证。
+
+T0单列OO128相对IO128的速度比=新IO128 cycles/原OO128 cycles；IO128相对IO256比=原IO256 cycles/新IO128 cycles。相同active深度不代表相同组织成本，更不直接解释与C+的差额。所有T1选点仍严格按原两个发现输入R_min/R_g，增加描述表不构成新的选择维度。
