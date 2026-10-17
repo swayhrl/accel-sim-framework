@@ -1,7 +1,7 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261017_LANE1_R0_1_PRODUCTION_DELIVERY_r1",
+  "task_id": "FT20261017_LANE1_BOUNDED_CONTINUE_CLOSEOUT_r1",
   "status": "OFFICIAL_R0_1_PRODUCER_READY_21_PASS_LANE5_INDEPENDENT_QUALIFICATION_PENDING",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "review_coordination_commit": "d962f847cbf7ba6d525bbb23964fee392bd8a69f",
@@ -234,9 +234,10 @@
     "docs/ep_l2/review_packs/FT20261017_LANE1_R0_1_PRODUCTION_RELEASE_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R0_1_DELIVERY_r1",
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/R0_1_PRODUCTION_RELEASE.json",
-    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BASELINE_CONTRACT_R0_1_V1.json"
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BASELINE_CONTRACT_R0_1_V1.json",
+    "docs/ep_l2/review_packs/FT20261017_LANE1_BOUNDED_CONTINUE_CLOSEOUT_r1"
   ],
-  "recorded_at": "2026-10-17T03:13:12.845679+00:00",
+  "recorded_at": "2026-10-17T03:15:57.399921+00:00",
   "background_worker_running": false,
   "next_action": "Lane5 independently rebinds new official source/build paths and all11 gates; only its current scientific authority may run five B16/U_WB16 application pairs. Lane1 bounded producer scope complete after this final remote verification; no new waiter or application started.",
   "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
@@ -416,8 +417,8 @@
     "started_at": "2026-10-17T01:57:03.259823+00:00"
   },
   "continue_goal": {
-    "status_at_recording": "ACTIVE_FINAL_REMOTE_DELIVERY_VERIFICATION",
-    "recorded_at_utc": "2026-10-17T03:13:12.845679+00:00",
+    "status_at_recording": "ACTIVE_FINAL_CLOSEOUT_AFTER_VERIFIED_LANE1_SCOPE_COMPLETION",
+    "recorded_at_utc": "2026-10-17T03:15:57.399921+00:00",
     "t0_utc": "2026-10-16T17:56:33+00:00",
     "deadline_utc": "2026-10-17T03:56:33+00:00",
     "deadline_beijing": "2026-10-17T11:56:33+08:00",
@@ -430,7 +431,12 @@
     ],
     "lane1_authorized_scope_complete": true,
     "termination_condition": "AUTHORIZED_LANE1_PRODUCER_WORK_COMPLETE_AFTER_FINAL_REMOTE_READBACK",
-    "background_liveness_does_not_imply_goal_liveness": true
+    "background_liveness_does_not_imply_goal_liveness": true,
+    "completed_delivery_publication": "210f0bce7856f1ebb5030939b24f1b7f4c21f650",
+    "producer_artifact_publication": "9898c56d7a010c934de327784076ba0b9a36c9c4",
+    "required_lane1_builds_or_tests_remaining": 0,
+    "termination_reason": "AUTHORIZED_LANE1_WORK_COMPLETE_BEFORE_TEN_HOUR_DEADLINE",
+    "api_goal_to_close_after_this_final_readback": true
   },
   "latest_dependencies": {
     "lane5": {
