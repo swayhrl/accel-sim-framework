@@ -47,3 +47,10 @@ Review pack: [RTL_COST_TIMING_REFINEMENT_R2_r1](../../../review_packs/RTL_COST_T
 Precise source/config/binary/trace/library/SDC/tool/netlist identities are in
 RTL_COST_R2_RECEIPT and per-run raw receipts. Read the enclosing Git commit as
 the publication identity; hardware identity is the immutable source above.
+
+Artifact publication e0dd39baa19600512164cb0099bdb6bc3c5524a4 has exact
+GitHub readback of all3 heads, all327 pack blob identities and selected file
+bytes. The review pack is immutable. See RTL_R2_PUBLICATION_CLOSEOUT_r1.json
+for that readback and final resource audit charging all3 worktree copies and
+actual new Git object disk bytes; all own leases are released. This final
+metadata commit is separately read back by the publisher. No waiter remains.
