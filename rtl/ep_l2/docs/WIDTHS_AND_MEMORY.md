@@ -53,3 +53,19 @@ present in all146KiB. Elaborated static bypass metadata constants are real
 mode pruning, not deletion of data storage. Unified needs metadata for every
 slot it can dynamically borrow. Do not use this cost as an implemented
 independent bypass-cache/RO/TVD subsystem.
+
+Full-size Unified boundary qualification additionally filled all1024 native
+Tags, then retained36 dirty WB payloads in bank3 and reached physicalID1167
+(row291). A37th same-bank dirty replacement stayed refused while108 lines
+in other banks were free; the very same requester resumed after one actual
+lower acceptance. All37 WB byte snapshots and exact resource drain passed.
+See validation/unified_last_physical_r1. This is not a full-app test.
+
+Prototype cost is not an area-optimal static baseline: this common first
+controller retains11-bit Tag-map FFs even for fixed static mapping, and
+static resident owner fields can also be hardwired in a future refinement.
+Per-word metadata increment logic is explicitly standard-cell mapped rather
+than shared or assumed as a free memory operation. Mode pruning removes
+static copy from Unified and inactive static-bypass metadata, but no minimum
+hardware-area claim is made. Interpret B/U ratios only for this disclosed
+prototype, not as whole-L2 percentage overhead or proof of optimized designs.
