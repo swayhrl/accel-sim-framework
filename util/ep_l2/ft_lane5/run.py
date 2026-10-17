@@ -91,6 +91,29 @@ def validate_config_closure(spec):
                 require(token in assets, 'unaccounted configuration file dependency: ' + token)
 
 
+
+def validate_atomic_input_scope(spec, release, traces):
+    if release.get('application_input_scope') != 'FULL_NATIVE_NONATOMIC_ONLY':
+        return None
+    proof = spec.get('atomic_input_scope')
+    require(isinstance(proof, dict), 'complete non-atomic input proof required')
+    require(digest(proof['path']) == proof['sha256'], 'atomic input proof changed')
+    audit = json.loads(Path(proof['path']).read_text())
+    require(audit['status'] == 'COMPLETE_NATIVE_OPCODE_AUDIT' and
+            audit['input_scope'] == 'COMPLETE_INPUT_HAS_NO_NATIVE_ATOMIC_OPCODE_RECORDS',
+            'input atomic scope not independently cleared')
+    require(audit['tool_sha256'] == release['atomic_input_auditor_sha256'] and
+            audit['producer_publication'] == release['producer_publication_commit'],
+            'input scope tool/producer differs from qualified release')
+    for name in ('core_source_commit', 'framework_source_commit', 'binary_sha256', 'trace_content_sha256'):
+        require(audit['identity'][name] == spec['identity'][name], 'input scope identity mismatch: ' + name)
+    require(audit['trace_content_manifest'] == traces and
+            audit['global_atomic_records_with_repeats'] == 0 and
+            audit['shared_atomic_records_with_repeats'] == 0,
+            'complete trace proof missing or atomic opcode present')
+    return {'sha256': proof['sha256'], 'scope': 'FULL_NATIVE_NONATOMIC_ONLY'}
+
+
 def inspect(spec):
     identity = spec['identity']
     key = run_key(identity)
@@ -138,6 +161,7 @@ def inspect(spec):
                 'unpassed/nonproduction qualification: ' + name)
         require(digest(gate['evidence_path']) == gate['evidence_sha256'], 'qualification artifact changed')
         evidence.append({'gate': name, 'sha256': gate['evidence_sha256']})
+    atomic_scope = validate_atomic_input_scope(spec, release, traces)
     parser = spec['parser']
     require(digest(parser['path']) == parser['sha256'], 'parser source content mismatch')
     require(type(spec['timeout_seconds']) is int and spec['timeout_seconds'] > 0, 'explicit positive timeout required')
@@ -148,7 +172,7 @@ def inspect(spec):
     return {'run_key': key, 'configs': configs, 'auxiliary_assets': assets,
             'traces': traces, 'qualification_evidence': evidence,
             'qualified_release_sha256': digest(spec['qualified_release']),
-            'scientific_launch_authorization': launch_authorization}
+            'scientific_launch_authorization': launch_authorization, 'atomic_input_scope': atomic_scope}
 
 
 def tree_bytes(root):
