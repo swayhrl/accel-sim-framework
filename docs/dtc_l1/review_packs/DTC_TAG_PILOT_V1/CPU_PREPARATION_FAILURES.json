@@ -1,0 +1,16 @@
+[
+  {
+    "stage": "CPU_PREREG_A1",
+    "new_attempts": 0,
+    "failure": "multiline quoted DRAM timing prints normalized whitespace; literal shlex token list differed from echo token list",
+    "repair": "canonicalize whitespace for comparison only; original config bytes and scientific options unchanged",
+    "classification": "DETERMINISTIC_WRAPPER_REPAIR"
+  },
+  {
+    "stage": "CPU_PREREG_A2",
+    "new_attempts": 0,
+    "failure": "original lists contain three MemcpyHtoD commands in addition to ordered kernel members",
+    "repair": "validate kernel subsequence separately; preserve original full list including all memcpy commands byte-for-byte",
+    "classification": "DETERMINISTIC_WRAPPER_REPAIR"
+  }
+]

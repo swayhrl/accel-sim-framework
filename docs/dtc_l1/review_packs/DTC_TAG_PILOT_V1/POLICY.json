@@ -1,0 +1,57 @@
+{
+  "status": "FROZEN_BEFORE_NEW_PERFORMANCE",
+  "authorization": "103c12ca28e0b5fb66f45b905a04108b501f8ec7",
+  "max_new_attempts": 7,
+  "max_parallel": 2,
+  "workloads": [
+    "GEMM",
+    "Gaussian"
+  ],
+  "holdouts_run": false,
+  "service_t2": false,
+  "tuning_after_results": false,
+  "preregistered_order": [
+    "DTC_TAG_PILOT_V1_T0_GEMM",
+    "DTC_TAG_PILOT_V1_T1_A_GEMM",
+    "DTC_TAG_PILOT_V1_T1_A_Gaussian",
+    "DTC_TAG_PILOT_V1_T1_B_GEMM",
+    "DTC_TAG_PILOT_V1_T1_B_Gaussian",
+    "DTC_TAG_PILOT_V1_T1_C_GEMM",
+    "DTC_TAG_PILOT_V1_T1_C_Gaussian"
+  ],
+  "selection": {
+    "reference": "accepted original OO128 same full input",
+    "R_min_threshold": 0.98,
+    "R_geomean_threshold": 1.02,
+    "tie_relative_geomean_difference": 0.005,
+    "tie_break": [
+      "fewer mappings",
+      "lower ways"
+    ],
+    "no_candidate": "NO_QUALIFIED_TAG_PROMOTION_IN_T1",
+    "require_both_strict_pass": true
+  },
+  "admission": {
+    "host_MemAvailable_min_gib": 32,
+    "cgroup_headroom_min_gib": 32,
+    "disk_free_min_gib": 10,
+    "memory_pressure_avg10_max": 1,
+    "io_pressure_avg10_max": 25,
+    "swapped_pages_delta_max": 0,
+    "oom_event_delta_max": 0,
+    "probe_interval_seconds": 10,
+    "external_simulators_allowed": 0,
+    "old_lock_owners_allowed": 0
+  },
+  "resource_stop": {
+    "cgroup_headroom_min_gib": 8,
+    "disk_free_min_gib": 2,
+    "memory_pressure_avg10_max": 10,
+    "consecutive_samples": 3,
+    "signal_only_own_process_groups": true
+  },
+  "failures": "PRESERVE_NO_SCIENTIFIC_RETUNE_NO_AUTOMATIC_RETRY; correctness/identity gap stops candidate or full gate",
+  "after_T1": "STOP_FOR_REVIEW_NO_AUTOMATIC_HOLDOUT",
+  "raw_root": "/workspace/dtc-tag-pilot-174-v1",
+  "source_changes": false
+}

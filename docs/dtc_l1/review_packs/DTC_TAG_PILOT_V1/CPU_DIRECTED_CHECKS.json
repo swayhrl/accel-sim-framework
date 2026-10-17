@@ -1,0 +1,110 @@
+{
+  "status": "PASS_CPU_ONLY_NOT_FULL_REPLAY_QUALIFICATION",
+  "checks": [
+    {
+      "source": "docs/dtc_l1/review_packs/DTC_TAG_PILOT_V1/scripts/candidate_cpu_check.cc",
+      "source_sha256": "40a076f02b04871e837f34600adfc72961cf5cba7c28ee33fa01a11c21ee5ea5",
+      "compile_argv": [
+        "g++",
+        "-std=c++17",
+        "-O0",
+        "-g0",
+        "-I",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim",
+        "/workspace/worktrees/accel-sim-iscas2027-dtc-tag-pilot-174-v1/docs/dtc_l1/review_packs/DTC_TAG_PILOT_V1/scripts/candidate_cpu_check.cc",
+        "-o",
+        "/workspace/builds/dtc-tag-pilot-174-v1/candidate_cpu_check"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "binary_sha256": "f541a85cfa16489cbdcf7b7c40dda0b3483ec74a5589d744eed73ac8ca67faca",
+      "stdout": "IO active_PIB128 admission_bound PASS\nOO sets=32 ways=4 entries=128 bank_quota/search/retained/pending_replacement/generation/ref PASS\nOO sets=32 ways=8 entries=256 bank_quota/search/retained/pending_replacement/generation/ref PASS\nOO sets=64 ways=4 entries=256 bank_quota/search/retained/pending_replacement/generation/ref PASS\nOO sets=64 ways=8 entries=512 bank_quota/search/retained/pending_replacement/generation/ref PASS\n",
+      "stderr": "",
+      "negative_assertions_expected": false
+    },
+    {
+      "source": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_m1_common_test.cc",
+      "source_sha256": "ed87e068fbc4abaf42f8b21723212c995368bcc937b06bf15568e297a488d82d",
+      "compile_argv": [
+        "g++",
+        "-std=c++17",
+        "-O0",
+        "-g0",
+        "-I",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_m1_common_test.cc",
+        "-o",
+        "/workspace/builds/dtc-tag-pilot-174-v1/dtc_l1_m1_common_test"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "binary_sha256": "ffd99127988f9e0c952e7b33e3379bf15999c74656e9fbd780b04d1e4dba1543",
+      "stdout": "",
+      "stderr": "",
+      "negative_assertions_expected": false
+    },
+    {
+      "source": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_bad_generation_test.cc",
+      "source_sha256": "61de8df2c9ab78d8fc385e6b0fdf4a9fa4cfa31bf7f55a83c94daf5376931502",
+      "compile_argv": [
+        "g++",
+        "-std=c++17",
+        "-O0",
+        "-g0",
+        "-I",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_bad_generation_test.cc",
+        "-o",
+        "/workspace/builds/dtc-tag-pilot-174-v1/dtc_l1_bad_generation_test"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "binary_sha256": "71a3eb83c9cf8331083cce1d4116561dd52ae239e1684e8da97554ef05c4a51b",
+      "stdout": "",
+      "stderr": "dtc_l1_bad_generation_test: /workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim/dtc-l1-common.h:634: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) && \"OO fill must match the original physical generation\"' failed.\n",
+      "negative_assertions_expected": true
+    },
+    {
+      "source": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_completion_accounting_test.cc",
+      "source_sha256": "ea5be6db9de19770723beda8bcfa584101c0afbe74847d28e0910950620f8908",
+      "compile_argv": [
+        "g++",
+        "-std=c++17",
+        "-O0",
+        "-g0",
+        "-I",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_completion_accounting_test.cc",
+        "-o",
+        "/workspace/builds/dtc-tag-pilot-174-v1/dtc_l1_completion_accounting_test"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "binary_sha256": "2ba41347894625edf8ee167e9f4742352f1b48f04c9142a4ed971dbec10e37f7",
+      "stdout": "",
+      "stderr": "dtc_l1_completion_accounting_test: /workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim/dtc-l1-common.h:132: unsigned int dtc_l1::completion_accounting::close_once(unsigned int): Assertion `m_state == lifecycle::READY' failed.\n",
+      "negative_assertions_expected": true
+    },
+    {
+      "source": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_finite_service_test.cc",
+      "source_sha256": "2fec04605b01179e194da03bb2f169f642c6b2801ef9a8ed5e10094eff83eacd",
+      "compile_argv": [
+        "g++",
+        "-std=c++17",
+        "-O0",
+        "-g0",
+        "-I",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/src/gpgpu-sim",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1/tests/dtc_l1_finite_service_test.cc",
+        "-o",
+        "/workspace/builds/dtc-tag-pilot-174-v1/dtc_l1_finite_service_test"
+      ],
+      "compile_exit": 0,
+      "run_exit": 0,
+      "binary_sha256": "aac8332e3b507a43bea9812c24fb5d98efc6e6a207403b5ca192d7d0935846c9",
+      "stdout": "",
+      "stderr": "",
+      "negative_assertions_expected": false
+    }
+  ]
+}
