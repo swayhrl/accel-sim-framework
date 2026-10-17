@@ -5,7 +5,7 @@
     "review_commit": "92de53a63616f9fcc53f2058ad975c3c8f90b13c"
   },
   "evidence_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1",
-  "generation": 25,
+  "generation": 26,
   "launch_authorizations": [
     {
       "application_scope": "FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF",
@@ -660,7 +660,7 @@
       "status": "CURRENT_QUALIFIED_FOR_LAUNCH"
     }
   ],
-  "revision": "FT20261017_LANE5_R19_D2_FWT_7_21_ACCEPTED_r1",
+  "revision": "FT20261017_LANE5_PARALLEL_H0_B16_OFF_VECTORADD_4M_ACCEPTED_r1",
   "rows": [
     {
       "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
@@ -2671,13 +2671,77 @@
       "scientific_acceptance": "CURRENT_ACCEPTED",
       "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
       "workload": "FWT_7_21"
+    },
+    {
+      "binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5",
+      "cell_id": "I011",
+      "core_source_commit": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
+      "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+      "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+      "identity": {
+        "binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5",
+        "core_source_commit": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "diagnostic_extra_payload_backing": false,
+          "finite_wbuf": true,
+          "ideal_meta": false,
+          "ideal_read_hit": false,
+          "ideal_wb": false,
+          "nominal_payload_capacity_per_slice": 1168,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wb_data_capacity_non_binding": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "c15753a37b7a984fc5fd354f1155a58d6f2ce98e49923714bb88c6e012f383df",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "independent_review": {
+        "path": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_H0_VECTORADD_4M_B16_OFF_POINT_r1/SCIENTIFIC_REVIEW.json",
+        "sha256": "f44b66cdf0867510accca9bfb3cf0d032f811e71a0ae15f7d3c003c03cae101f"
+      },
+      "instructions": 56000000,
+      "mode": "B16_BANKED",
+      "observed_cycles": 73696,
+      "original_terminal_status": "COMPLETE_VALID",
+      "profile": "B16_OFF",
+      "raw_log_sha256": "eacc5129e368ced31511e8a3b56d77b10b869f67ac39787e338feaaf126777c7",
+      "regime": "H0",
+      "run_key": "b6dbf02f3fd4aa092573cf06753021c94162156f05905d8c5814e19537c8aadc",
+      "runtime_config_sha256": "c15753a37b7a984fc5fd354f1155a58d6f2ce98e49923714bb88c6e012f383df",
+      "scientific_acceptance": "CURRENT_ACCEPTED",
+      "scientific_scope": "LOCAL_IDEAL_NATIVE_V1",
+      "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+      "workload": "vectorAdd_4M"
     }
   ],
   "schema_version": "EPL2_SCIENTIFIC_ACCEPTANCE_V2",
-  "status": "5_CURRENT_ACCEPTED_H0_PAIRS_8_R19_DIAGNOSTIC_PAIRS_2_PARALLEL_ROWS",
+  "status": "5_CURRENT_ACCEPTED_H0_PAIRS_8_R19_DIAGNOSTIC_PAIRS_3_PARALLEL_ROWS",
   "supersedes": {
-    "manifest_sha256": "5d18660f885464455ce60d7a7115809f3665303518ccf374bb81d4625e65651d",
-    "publication_commit": "eff8aa3cb520d4ba866aae6e5754359f39e96b1d"
+    "manifest_sha256": "dc627909898e900dd56a9e7ba086f3b00f56a73f1dfceef638110a250284c1c7",
+    "publication_commit": "366befddc74940662f06f6882a4f97929e598959"
   },
   "supersession_evidence": [
     {
@@ -2783,9 +2847,13 @@
     {
       "path": "docs/ep_l2/review_packs/FT20261017_LANE5_R19_D2_FWT_7_21_PAIR_r1/SCIENTIFIC_REVIEW.json",
       "sha256": "275fcde69bb79238e89ea69fcd78f0b016e31ee63b6a3249ef3cf0504284d3f5"
+    },
+    {
+      "path": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_H0_VECTORADD_4M_B16_OFF_POINT_r1/SCIENTIFIC_REVIEW.json",
+      "sha256": "f44b66cdf0867510accca9bfb3cf0d032f811e71a0ae15f7d3c003c03cae101f"
     }
   ],
-  "updated_at": "2026-10-17T13:01:17.006983+00:00",
+  "updated_at": "2026-10-17T13:03:01.511848+00:00",
   "withdrawn_releases": [
     {
       "binary_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
