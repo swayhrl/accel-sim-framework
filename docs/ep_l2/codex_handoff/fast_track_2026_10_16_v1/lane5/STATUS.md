@@ -1,3 +1,7 @@
-# Lane5 — r19 rolling diagnostics
+# Lane5 — all initial8 CURRENT_ACCEPTED; D2/L25 and D4 robustness selected
 
-H0 five accepted pairs and geomean1.0016002037656606 retained. 4 r19 diagnostic pairs accepted in staged V2 generation14; latest Q4/FWT_7_21. Remote readback and shared pointer install required before announcing delivery. Existing full-input/64slice/current V2 and original resource protections remain. T0 07:09:16UTC, deadline17:09:16UTC. No compiler, migration, extra waiter. Exact identity/results in docs/ep_l2/review_packs/FT20261017_LANE5_R19_Q4_FWT_7_21_PAIR_r1.
+Q4FWT B491788/U491236, equal791609344instructions; independent full identity/currentV2/native64slice/request/WB/sector/drain PASS. Remote34303c26825eda5f79b308442cd54555e2ae4b3d/34files installed gen14 and immediate Lane6 delivery. D4 and Q4 predeclared two-workload Smeans0.9997553732076547/0.994794657046569, Jmeans0.9958063045125356/0.9908651833538097; original H0five1.0016002037656606 untouched.
+
+docs/ep_l2/review_packs/FT20261017_LANE5_R19_INITIAL8_AND_SELECTION_r1 freezes all8 evidence and selection BEFORE new apps: D2 intermediate detailed-DRAM interval and L25 fixed25GPUcycle isolation, each Conv/FWT B/U; D4 vector/SAD diagnostic robustness four apps in parallel with producer dependency. Planned total20≤24. Q4 still has scheduler/WAD pressure despite zero lowerqueue-full; D4 primary-full metrics and WAD pressure markedly lower, B staging-full gone. No blanket nonbinding/capacity/critical-path proportion claim.
+
+No active EP-L2 simulator now. Next explicit q1 D4 robustness envelope/currentV2 admission then two pairs; Lane1 remains unique D2/L25 producer/test-entry owner, exact handoffs and independent affected checks required. No runtime compile, old-data cleanup, migration or newwatcher by Lane5. Original source/binary, eleven gates/withdrawals,48GiBworkspace/40GiBShare/64GiBRAM/max2long/8CPU/32GiB and17:09:16UTC deadline unchanged.
