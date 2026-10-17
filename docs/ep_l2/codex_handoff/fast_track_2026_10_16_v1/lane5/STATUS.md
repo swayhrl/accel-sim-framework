@@ -1,7 +1,7 @@
-# Lane5 — first recovered L25 pair; four simulations continue
+# Lane5 — selected R19 matrix complete; new campaign continues
 
-L25Convolution B268412/U267383, B/U1.0038484122027205, independently complete and stagedV228 pending exactremote readback. OldU resource-stop attempt preserved under the same run-key with new successful attempt. No L25 group mean until FWTB/U accepted. OriginalH0mean1.0016002037656606 unchanged.
+R19all20selected full results complete and independently reviewed,21actual starts with one preserved8GiB resource-stop/retry. L25FWT B450804/U450432 stagedV229 pendingpush/readback; L25Convolution B268412/U267383 alreadycurrentaccepted. No newR19selected run remains; originalcap24/deadline17:09:16UTC retained. No L25group mean until currentpublication. H0five mean1.0016002037656606 unchanged.
 
-Actual4sim: L25FWTB/U and ICNT2ConvolutionB/U. ICNT2U nowrecovered andrunning; its priorstop remains inhistory. R19starts21/cap24; newcampaign starts9/cap72. Both frozen deadlines unchanged. Only12GiB aggregate output ceiling changed percoord20f1aab8; physicalworkspace newoutputs/tmp, oldraw retained,48/40/64GiB floors and4sim8CPU32GiB unchanged.
+Actual3sim: ICNT2ConvolutionU, new unifiedfb nativeOFF control, source37vectorI_WB. ICNT2B completevalid andwaitingU. Source37I_META preclaimrefused by workspace48GiB floor after conservative full remaining growth;0newstarts/no lease, failedcontroller preserved. Newcampaign11attempts/cap72, existingT0/deadlineunchanged. I_META canresume on materialslot release.
 
-Unifiedfb49affected checks,11constructors,13expectedrejections and scoped reader/inputsource preparation are complete; nativeOFFcanary registered but notstarted while all4slots busy. No newsource application qualification or result claimed. Nextfree slot will advance this canary and ready local/finite categories without blocking existing runs. No compile, newwatcher or migration.
+Unifiedsource49assertions+11constructors+13expectedrejections andexactinput/reader preparation complete; newnativeOFFcanary running beforefresh11gate certificate/currentV2qualification. Allnewoutput/tmp realworkspace, aggregate12GiB onlyperexplicitcoord20f1aab8. Otherfloors48/40/64GiB,4sim8CPU32GiB andperrun2GiB raw cap preserved. No build, migration, deletion or extra watcher.

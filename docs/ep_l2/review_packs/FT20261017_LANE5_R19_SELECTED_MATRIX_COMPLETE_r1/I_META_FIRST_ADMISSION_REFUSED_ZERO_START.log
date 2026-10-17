@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py", line 433, in <module>
+    main()
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py", line 426, in main
+    result = inspect(spec) if args.check_only else run(spec, Registry(args.registry_root))
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py", line 290, in run
+    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, memory=spec.get('memory_reservation_bytes'), client_binding=immutable_loader_binding(), retry_checkpoint=retry, **({'experiment':experiment} if experiment else {}))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py", line 252, in claim
+    output_budget = admit_result_output(data, host, identity, result_directory)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py", line 151, in admit_result_output
+    raise ValueError('workspace floor after conservative concurrent output growth')
+ValueError: workspace floor after conservative concurrent output growth

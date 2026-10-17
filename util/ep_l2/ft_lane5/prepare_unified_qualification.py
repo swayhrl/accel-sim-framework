@@ -5,6 +5,7 @@ from registry import Registry,write_json,PARALLEL
 from run import digest,require,GATES,asset_manifest,content_hash
 from unified_scope import IDENTITY,features,LOCAL
 from package_r0 import freeze_checksums
+from qualify_r0_1 import check_directed_log
 
 REPO=Path(__file__).resolve().parents[3]
 H=REPO/'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5'
@@ -16,7 +17,12 @@ def main():
  require(native['status']=='COMPLETE_VALID' and native['off_equivalence']=='PASS' and native['identity']['binary_sha256']==IDENTITY['binary_sha256'],'Newfb nativeOFF not qualified')
  require(ind['status']=='AFFECTED_NEW_RUNTIME_ASSERTIONS_PASS_ELEVEN_AND_MODE_REVIEW_PENDING' and len(ind['tests'])==49,'New actual49 incomplete')
  require(construct['status']=='11_ACTUAL_CONSTRUCTORS_5_EXPECTED_NATIVE_REJECTIONS_PASS_NOT_FULL_QUALIFICATION' and guards['status']=='ALL8_EXPECTED_NATIVE_REJECTIONS_PASS','New constructor/mode/reference guards incomplete')
- for row in ind['tests']:require(row['exit_code']==0 and row['status']=='ACTUAL_ASSERTIONS_PASS' and digest(row['log'])==row['sha256'],'Changed independent native evidence')
+ for row in ind['tests']:
+  require(row['exit_code']==0 and row['status']=='ACTUAL_ASSERTIONS_PASS' and digest(row['log'])==row['sha256'],'Changed independent native evidence')
+  if row['case'] in [v['case'] for v in ind['tests'][:19]]:
+   case={'case':row['case'],'argv':row['command'][1:]}
+   if 'clock' in row['case']:case['required_clock']={'offset':0 if row['case'].endswith('_0') else 4096}
+   check_directed_log(case,Path(row['log']).read_text())
  for row in construct['positive']+construct['expected_rejections']+guards['rows']:require(digest(row['log'])==row['sha256'],'Changed actual constructors/rejections')
  require(Registry().snapshot()['runs'][native['run_key']]['status']=='COMPLETE_VALID','Canary not canonical complete')
  require(digest(hand['binary'])==IDENTITY['binary_sha256'],'Official binary changed');manifest=json.loads(Path(hand['producer_manifest_path']).read_text());prod=json.loads(Path(hand['producer_receipt_path']).read_text());supp=json.loads(Path(hand['supplement_receipt_path']).read_text())
