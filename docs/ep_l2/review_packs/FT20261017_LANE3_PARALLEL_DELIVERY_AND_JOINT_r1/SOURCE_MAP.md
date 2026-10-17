@@ -1,0 +1,14 @@
+# Actual option consumption and scope
+
+All original sources pinned to Core7b8; blob/file hashes in SOURCE_BINDINGS.json.
+
+| Profile | Registration / initialization | Actual consuming production path | Evidence and remaining gap |
+|---|---|---|---|
+| ROP40_H0 | gpu-sim.cc memory_config::reg_options -gpgpu_l2_rop_latency, &rop_latency (default85; effective H0=160) | l2cache.cc memory_sub_partition::push ready_cycle=cycle+rop_latency; cache_cycle checks ready and queue space before moving FIFO head | Actual B/U transitions >=40 and first/isolated40; simultaneous sectors serialize. No early return. |
+| L1_32_H0 | shader_core_config::reg_options -gpgpu_cache:dl1; shader.h init m_L1D_config.init. Old fixed guard requires128ways | cache_config parser nset/assoc; tag_array::probe set*assoc boundary and Tag allocation/fill. shader.cc max_cta retains cross-kernel assoc/adaptive guards; ldst_unit uses same L1 config | Frozen init aborts32. Explicit expected_l1_assoc64 candidate defaults128; one capacity field changes. Actual Tag indices0..255, full/reservation/partial/refill and initialized MSHR512:8/queue16:0/banks4/20cycles tested. No new official binary. |
+| ICNT2_H0 | gpu-sim.cc -gpgpu_clock_domains; init_clock_domains maps four values and inverse periods | next_clock_domain gives ICNT masks; cycle invokes icnt_transfer onICNT; icnt_wrapper network_mode2 binds LocalInterconnect::Advance, real iSLIP xbar retained | Native ticks19999/10000, real bidirectional packets20, SM/L2/DRAM frequencies unchanged. Small fixture calls actual wrapper using native masks, not full SM traffic. |
+| WAD256_Q4 | gpu-sim.cc -gpgpu_ep_l2_wad_entries -> m_L2_config. validate_ep_l2_mode_config requires nonzero WAD, not128 | ep-l2-ft-cache.inc ft_access refuses size>=config before mutation; WB record bound before destructive commit. ft_issue WB lower acceptance frees localdata only; gpu-cache.cc ep_l2_wad_complete erases control/birth on l2cache.cc memory_sub_partition::set_done L2_WRBK | Actual cap256 bothB/U,257th refused, same-address blocked,256 lower-accepted records0set_done, then257 realset_done drain. +128 metadata/slice; no WB-data expansion. |
+
+ROP and ICNT change finite service only. L1 changes the L2 arrival stream/locality though original trace is fixed. WAD changes persistent completion-control capacity inQ4, not payload data. All finite B/U preserve1024Tags,1168payloads,4banks,1op/bank/physical-cycle,D512,LineMSHR128 and32requests/address. No RO oracle reinterpretation, trace edits, new input capture or ideal scope expansion.
+
+Unknown initial symbol/version0 is not numeric zero. Detailed DRAM in this fixture does not maintain a persistent symbolic lower-memory map. The retained failed WAD fixture incorrectly expected an evicted UID to be supplied by timing-only DRAM; final proof checks actual lower-accept snapshots and a resident read. Full-native application scientific version acceptance remains withLane5.

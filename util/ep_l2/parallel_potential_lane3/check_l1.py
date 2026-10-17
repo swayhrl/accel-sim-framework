@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Leased affected-path fixture; no full build, app launch or science acceptance."""
-import argparse, copy, datetime, hashlib, json, os, resource, shlex, subprocess, sys
+import argparse, copy, datetime, hashlib, json, os, resource, shlex, signal, subprocess, sys
 from pathlib import Path
 
 REPO=Path(__file__).resolve().parents[3]
@@ -28,8 +28,8 @@ def limits():
  resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_CPU,(90,90))
  resource.setrlimit(resource.RLIMIT_AS,(4*2**30,4*2**30));resource.setrlimit(resource.RLIMIT_FSIZE,(256*2**20,256*2**20))
 def main():
- p=argparse.ArgumentParser();p.add_argument('profile',choices=PROFILES);p.add_argument('--build',action='store_true');a=p.parse_args()
- out=RAW/(a.profile+'_r4');out.mkdir(parents=True,exist_ok=False)
+ p=argparse.ArgumentParser();p.add_argument('profile',choices=['L1_32_H0']);p.add_argument('--build',action='store_true');p.add_argument('--revision',default=None);a=p.parse_args()
+ out=RAW/(a.profile+'_'+(a.revision or 'r4'));out.mkdir(parents=True,exist_ok=False)
  client=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text())
  module_path=Path(client['registry_client'])
  if digest(module_path)!=client['registry_client_sha256']:
@@ -53,10 +53,10 @@ def main():
  def run(cmd,name):
   safe();log=out/(name+'.log');wrapped=['/usr/bin/time','-v',*cmd]
   with log.open('x') as f:
-   child=subprocess.Popen(wrapped,stdout=f,stderr=subprocess.STDOUT,cwd=out,env=dict(os.environ,OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1'),preexec_fn=limits)
+   child=subprocess.Popen(wrapped,stdout=f,stderr=subprocess.STDOUT,cwd=out,start_new_session=True,env=dict(os.environ,OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1'),preexec_fn=limits)
    row={'command':wrapped,'process':process_identity(child.pid),'log':str(log)};r['commands'].append(row)
    try:row['exit_code']=child.wait(timeout=100)
-   except subprocess.TimeoutExpired:child.kill();child.wait();raise
+   except subprocess.TimeoutExpired:os.killpg(child.pid,signal.SIGKILL);child.wait();raise
   row['sha256']=digest(log);assert row['exit_code']==0,(name,row['exit_code']);return row
  r['resources_before']=safe();lease=None
  try:
@@ -93,7 +93,10 @@ def main():
     s=copy.deepcopy(json.loads((ORIGINAL/(workload+'_'+mode+'.json')).read_text()));s.update(configs=assets,experiment_id=manifest['experiment_id'],regime=a.profile,qualified_release='PENDING_LANE5_INDEPENDENT_PROFILE_QUALIFICATION')
     s['identity']['runtime_config_sha256']=runtime_hash;s['producer_profile_manifest']=str(out/'PROFILE_MANIFEST.json');write(out/(workload+'_'+mode+'.json'),s)
   bd=manifest['modes']['B16_BANKED']['native_effective_options'];ud=manifest['modes']['U_WB16']['native_effective_options'];assert {k for k in bd if bd[k]!=ud[k]}=={'-gpgpu_ep_l2_ft_mode'}
-  manifest['official_binary_supports_profile']=False;manifest['candidate_core']='0cde5e902a5fa787cae82ac82907e81df4b5d8dc';manifest['new_runtime_binary']=None;manifest['status']='SOURCE_PATCH_AND_PARTIAL_RUNTIME_PROBE_PASS_PENDING_LANE1_RELEASE';write(out/'PROFILE_MANIFEST.json',manifest);r['manifest_sha256']=digest(out/'PROFILE_MANIFEST.json');r['status']='AFFECTED_PRODUCTION_PASS_PENDING_INDEPENDENT_ADMISSION'
+  manifest['official_binary_supports_profile']=False;manifest['candidate_core']='0cde5e902a5fa787cae82ac82907e81df4b5d8dc';manifest['new_runtime_binary']=None;manifest['reference_frozen_runtime_identity']=manifest['identity'];manifest['identity']={**manifest['identity'],'core_source_commit':manifest['candidate_core'],'binary_sha256':None};manifest['binary']=None;manifest['scope']='One changed gpu-sim.cc unit plus fixture, linked with unchanged official archives; not an official runtime release';
+  for draft in [*out.glob('convolutionSeparable_*.json'),*out.glob('FWT_7_21_*.json')]:
+   data=json.loads(draft.read_text());data['identity'].update(core_source_commit=manifest['candidate_core'],binary_sha256=None);data.update(binary=None,not_launchable=True,qualified_release='PENDING_LANE1_NEW_RUNTIME_AND_LANE5_INDEPENDENT_QUALIFICATION');write(draft,data)
+  manifest['status']='SOURCE_PATCH_AND_PARTIAL_RUNTIME_PROBE_PASS_PENDING_LANE1_RELEASE';write(out/'PROFILE_MANIFEST.json',manifest);r['manifest_sha256']=digest(out/'PROFILE_MANIFEST.json');r['status']='SOURCE_PATCH_PARTIAL_RUNTIME_PROBE_PASS_NOT_OFFICIAL_RELEASE'
  except BaseException as e:r['status']='FAILED_ATTEMPT_RETAINED';r['error']=repr(e);raise
  finally:
   if lease:reg.release_build(lease,'lane3');r['lease_released']=True

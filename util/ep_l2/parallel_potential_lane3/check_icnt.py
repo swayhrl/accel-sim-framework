@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Leased affected-path fixture; no full build, app launch or science acceptance."""
-import argparse, copy, datetime, hashlib, json, os, resource, shlex, subprocess, sys
+import argparse, copy, datetime, hashlib, json, os, resource, shlex, signal, subprocess, sys
 from pathlib import Path
 
 REPO=Path(__file__).resolve().parents[3]
@@ -28,8 +28,8 @@ def limits():
  resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_CPU,(90,90))
  resource.setrlimit(resource.RLIMIT_AS,(4*2**30,4*2**30));resource.setrlimit(resource.RLIMIT_FSIZE,(256*2**20,256*2**20))
 def main():
- p=argparse.ArgumentParser();p.add_argument('profile',choices=PROFILES);p.add_argument('--build',action='store_true');a=p.parse_args()
- out=RAW/(a.profile+'_r2');out.mkdir(parents=True,exist_ok=False)
+ p=argparse.ArgumentParser();p.add_argument('profile',choices=['ICNT2_H0']);p.add_argument('--build',action='store_true');p.add_argument('--revision',default=None);a=p.parse_args()
+ out=RAW/(a.profile+'_'+(a.revision or 'r2'));out.mkdir(parents=True,exist_ok=False)
  client=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text())
  module_path=Path(client['registry_client'])
  if digest(module_path)!=client['registry_client_sha256']:
@@ -53,10 +53,10 @@ def main():
  def run(cmd,name):
   safe();log=out/(name+'.log');wrapped=['/usr/bin/time','-v',*cmd]
   with log.open('x') as f:
-   child=subprocess.Popen(wrapped,stdout=f,stderr=subprocess.STDOUT,cwd=out,env=dict(os.environ,OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1'),preexec_fn=limits)
+   child=subprocess.Popen(wrapped,stdout=f,stderr=subprocess.STDOUT,cwd=out,start_new_session=True,env=dict(os.environ,OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1'),preexec_fn=limits)
    row={'command':wrapped,'process':process_identity(child.pid),'log':str(log)};r['commands'].append(row)
    try:row['exit_code']=child.wait(timeout=100)
-   except subprocess.TimeoutExpired:child.kill();child.wait();raise
+   except subprocess.TimeoutExpired:os.killpg(child.pid,signal.SIGKILL);child.wait();raise
   row['sha256']=digest(log);assert row['exit_code']==0,(name,row['exit_code']);return row
  r['resources_before']=safe();lease=None
  try:
