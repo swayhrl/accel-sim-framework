@@ -23,7 +23,7 @@ def main():
  producer=json.loads(git('show',pub+':'+prefix+'/evidence/RECEIPT.json'));source=json.loads(git('show',pub+':'+prefix+'/SOURCE_IDENTITY.json'));build=producer['fixture_build_identity']
  require(producer['status']=='AFFECTED_PRODUCTION_PASS_PENDING_INDEPENDENT_ADMISSION' and producer['runtime_code_recompiled'] is False and m['allowed_overlay']==FINITE_OVERRIDES[profile],'Producer condition/source scope differs')
  fixture=Path(handoff['replay'][0]['command'][2]);require(digest(fixture)==build['binary_sha256'],'Changed actual fixture binary')
- src='util/ep_l2/parallel_potential_lane3/production_probe.cc';require(__import__('hashlib').sha256(git('show',source['tool_source_commit']+':'+src)).hexdigest()==source['executed_fixture_sha256']==build['fixture_source_sha256'],'Fixture exact source not bound')
+ src='util/ep_l2/parallel_potential_lane3/'+('icnt_probe.cc' if profile=='ICNT2_H0' else 'production_probe.cc');require(__import__('hashlib').sha256(git('show',source['tool_source_commit']+':'+src)).hexdigest()==source['executed_fixture_sha256']==build['fixture_source_sha256'],'Fixture exact source not bound')
  require(digest(m['binary'])==m['identity']['binary_sha256']==handoff['identity']['binary_sha256'],'Main binary changed')
  for path,sha in build['archives_sha256'].items():require(digest(path)==sha,'Official native archive changed')
  for root,key in [(Path('/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1'),'core_source_commit'),(Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1'),'framework_source_commit')]:
@@ -44,6 +44,7 @@ def main():
    require(content_hash({'ordered_configs':manifest[:5],'auxiliary_assets':[],'environment':base['environment']})==H0[mode],'Original H0 content changed')
    for workload,cellbase in [('convolutionSeparable',1),('FWT_7_21',3)]:
     spec=copy.deepcopy(json.loads((ORIGINAL/(workload+'_'+mode+'.json')).read_text()));spec.update(configs=configs,experiment_id=PARALLEL_EXPERIMENT,regime=profile,profile=mode,cell_id='F'+f'{cellbase+(mode=="U_WB16"):03d}' if profile=='ROP40_H0' else 'F'+f'{cellbase+8+(mode=="U_WB16"):03d}',qualified_release=str(qpath),result_root=str(OUT),runner_tooling_source_commit=git('rev-parse','HEAD').decode().strip())
+    spec['native_legacy_semantic_proof']=json.loads((ORIGINAL/'FWT_7_21_B16_BANKED.json').read_text())['native_legacy_semantic_proof']
     spec['identity']['runtime_config_sha256']=content_hash({'ordered_configs':manifest,'auxiliary_assets':[],'environment':base['environment']});sp=specdir/(workload+'_'+mode+'.json');write_json(sp,spec);specpaths.append(str(sp))
    modes[mode]={'ordered_configs':manifest,'auxiliary_assets':[],'environment':base['environment'],'runtime_config_sha256':spec['identity']['runtime_config_sha256'],'effective_options':row['effective_options']}
    command=[str(fixture),profile,*[x['path'] for x in configs]];log=pack/(mode+'.log');safe()
@@ -54,6 +55,8 @@ def main():
    require(proc.returncode==0,'Independent affected check failed');text=log.read_text();producer_log=next(v['log'] for v in handoff['replay'] if mode in Path(v['log']).name);require(native_options(text)==native_options(Path(producer_log).read_text()),'Actual native full options differ')
    dump=validate_runtime_dump(log,spec);markers=[x for x in text.splitlines() if x.startswith('L3_PRODUCTION_PASS|')];require(len(markers)==1,'No exact native close marker');values=dict(v.split('=',1) for v in markers[0].split('|')[1:])
    for k,v in {'regime':profile,'mode':'2' if mode=='U_WB16' else '1','exact_once':'40','wb_lower_accept_and_set_done':'5','two_dirty_sector_versions':'1','cold_sectors':'2','subpartitions_exercised':'2','credit_drained':'1','bank_max_ops_per_physical_cycle':'1','fixed_delay_gpu_cycles':'100','fixed_delay_verified':'1','runtime_archives_unchanged':'1'}.items():require(values[k]==v,'Incomplete actual production marker '+k)
+   if profile=='ICNT2_H0':
+    noc=[dict(v.split('=',1) for v in x.split('|')[1:]) for x in text.splitlines() if x.startswith('L3_ICNT_LOCAL_XBAR_PASS|')];require(len(noc)==1 and all(noc[0][k]==v for k,v in {'network_mode':'2','bidirectional_packets':'20','exact_once':'1','drained':'1'}.items()),'Actual local crossbar bidirectional completion/drain missing')
    rops=[dict(v.split('=',1) for v in x.split('|')[1:]) for x in text.splitlines() if x.startswith('L3_ROP_READY|')];require(len(rops)==40 and all(int(x['delta'])>= (40 if profile=='ROP40_H0' else 160) for x in rops) and min(int(x['delta']) for x in rops)==(40 if profile=='ROP40_H0' else 160),'Actual ROP ready timing differs')
    tests.append({'status':'PASS','mode':mode,'command':command,'process':pid,'log':str(log),'log_sha256':digest(log),'peak_rss_bytes':peak,'actual_runtime':dump,'actual_marker':values,'ROP_minimum_delay_verified_events':len(rops),'ROP_delta_histogram':dict(__import__('collections').Counter(x['delta'] for x in rops))});proc=None
   for path,sha in build['archives_sha256'].items():require(digest(path)==sha,'Native archive changed during independent replay')

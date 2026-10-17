@@ -28,7 +28,7 @@ R19_DEADLINE = 1792256956
 PARALLEL_ABSOLUTE_DEADLINE = 1792332000  # 2026-10-18 14:00:00 UTC
 PARALLEL_PROFILES = {'B16_BANKED','U_WB16','B16_OFF','U_OFF','I_WB','I_META','I_WB_META','I_READ_HIT',
     'I_MEM_ALL_DATA','S64','U_CAP16','P2','ROP40_H0','L1_32_H0','ICNT2_H0',
-    'WAD256_Q4','I_BANK','I_L2_SERVICE'}
+    'WAD256_Q4','I_BANK','I_L2_SERVICE','NATIVE_OFF_CONTROL'}
 
 
 def now():
@@ -215,6 +215,29 @@ class Registry:
             campaigns[PARALLEL] = entry
             return entry
 
+    def register_native_off_control(self, identity, checkpoint):
+        """One explicit new-source all-OFF canary, charged to the new72 budget."""
+        key = run_key(identity)
+        proof = Path(checkpoint['path'])
+        if hashlib.sha256(proof.read_bytes()).hexdigest() != checkpoint['sha256']:
+            raise ValueError('canary selection checkpoint changed')
+        with self.locked() as data:
+            campaign = data.get('campaigns', {}).get(PARALLEL)
+            if not campaign or time.time() >= campaign['deadline_unix']:
+                raise ValueError('missing/expired new campaign')
+            cell = {'cell_id':'E_NATIVE_OFF_LOCAL_R1','experiment_id':PARALLEL,
+                    'mode':'NATIVE_OFF_CONTROL','condition':'H0',
+                    'workload_alias':identity['workload'], 'expected_run_key':key,
+                    'selection_checkpoint':checkpoint}
+            old = next((c for c in campaign['extra_cells'] if c['cell_id']==cell['cell_id']),None)
+            if old is not None:
+                if old != cell: raise ValueError('canary registration cannot be rebound')
+                return old
+            if len(campaign['extra_cells']) >= 22:
+                raise ValueError('additional cell budget exhausted')
+            campaign['extra_cells'].append(cell)
+            return cell
+
     @staticmethod
     def check_experiment(data, experiment, identity, owner):
         base = {'experiment_id', 'regime', 'deadline_unix'}
@@ -239,6 +262,8 @@ class Registry:
                     or cell['condition'] != experiment['regime']
                     or cell['mode'] != experiment['profile']):
                 raise ValueError('unknown or mismatched positive campaign cell')
+            if cell.get('expected_run_key',run_key(identity)) != run_key(identity):
+                raise ValueError('extra cell exact runtime identity differs')
             if any(r.get('experiment_id') == PARALLEL and r.get('cell_id') == experiment['cell_id']
                     for r in data['runs'].values()):
                 raise ValueError('cell already attempted; audited retry required')

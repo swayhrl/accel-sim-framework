@@ -1,0 +1,178 @@
+{
+  "application_starts": 0,
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/usr/local/cuda-11.8/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src",
+        "-I/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1",
+        "-I/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/ISA_Def",
+        "-I/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/trace-driven",
+        "-I/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/trace-parser",
+        "-I/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/routers",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/libcuda",
+        "-I/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src/intersim2/routers",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/src",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-std=gnu++17",
+        "-c",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane3-v1/util/ep_l2/parallel_potential_lane3/icnt_probe.cc",
+        "-o",
+        "/workspace/build/ep-l2-potential20261017-lane3-icnt-r1/probe.o"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/ep-l2-potential20261017-lane3/ICNT2_H0_r2/compile.log",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2127555,
+        "start_ticks": 898848683
+      },
+      "sha256": "f2ef3faa7c8ee742423db247b1b8eaa9291bdf99d85ca0fa24d10958d9c77634"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/usr/bin/c++",
+        "/workspace/build/ep-l2-potential20261017-lane3-icnt-r1/probe.o",
+        "-o",
+        "/workspace/build/ep-l2-potential20261017-lane3-icnt-r1/probe",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-driven/libtrace-driven.a",
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-ldl",
+        "-lGL",
+        "-lpthread",
+        "-lm"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/ep-l2-potential20261017-lane3/ICNT2_H0_r2/link.log",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2127563,
+        "start_ticks": 898848906
+      },
+      "sha256": "7e7d7eeb180139dedace2f2dfd965be66f35273c268c1e5994548988a71a8797"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane3-icnt-r1/probe",
+        "ICNT2_H0",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/B16_BANKED/config-4.config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/parallel_potential_lane3/icnt2_h0.config"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/ep-l2-potential20261017-lane3/ICNT2_H0_r2/B16_BANKED.log",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2127689,
+        "start_ticks": 898849088
+      },
+      "sha256": "fad57dc52fe21d9995fb0cc1cfec6ddd6dc06c47d455265adad119feb75bfaa1"
+    },
+    {
+      "command": [
+        "/usr/bin/time",
+        "-v",
+        "/workspace/build/ep-l2-potential20261017-lane3-icnt-r1/probe",
+        "ICNT2_H0",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-0.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-1.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-2.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-3.config",
+        "/workspace/results/ep_l2_ft20261016/lane5_r0_qualification_r1/inputs/U_WB16/config-4.config",
+        "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane3-v1/tests/ep_l2/parallel_potential_lane3/icnt2_h0.config"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/ep-l2-potential20261017-lane3/ICNT2_H0_r2/U_WB16.log",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2127692,
+        "start_ticks": 898849156
+      },
+      "sha256": "d089a7ee251bf7e22c1f143c3a18ce2862632090a2acbc63f73959e1cc0f46ee"
+    }
+  ],
+  "finished_at": "2026-10-17T11:28:40.907958+00:00",
+  "fixture_build_identity": {
+    "archives_sha256": {
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libcuda/libcuda.a": "de67d94de02dcb54ab9415c614e27d18ae1852f38e70868448197c44206d787e",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/libentrypoint.a": "7cb673caf7a2898dfcc264a4a93336fa495ebbea5ca89238d62e164208d760fe",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a": "91316c734141019d1b89c287f04324a072fd5e29fd40e1617a6eab6089fae66b",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/cuda-sim/libptxsim.a": "95fbad61b8b5f57073244f0eed782d01e2cd51ad4d56f82e9e9e8abd3ebd56f9",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a": "b7628023eee94681ac859cc5721494a2c582994a799669ed143a5d127f3d9426",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/src/intersim2/libintersim.a": "8cb38dad895640840967c6f7a764dd6eb78b8a932fb963a31d7fb16a4467bb4a",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-driven/libtrace-driven.a": "87d794e8cb8397ccd8cf4ba0993f0b27ef13c1e05734f26661a07f43df57e247",
+      "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/trace-parser/libtrace-parser.a": "8b43c3e731f35d2456eee61922309cd214c105d85af115b1e089d451e19f0a0b"
+    },
+    "binary_sha256": "b3bba36fd647386091ad4a728a1dc4295d67f9c01b6bc79e66c61ac9b99d9835",
+    "fixture_source_sha256": "e86d30a34cd5f8326b90a1d388702401b24b1348195e0955d60cb1570816fc9b",
+    "runtime_core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "runtime_framework": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5"
+  },
+  "fixture_source_sha256": "e86d30a34cd5f8326b90a1d388702401b24b1348195e0955d60cb1570816fc9b",
+  "full_builds": 0,
+  "lease_id": "e346644436df4fc592d8b31d67c0cb6d",
+  "lease_released": true,
+  "manifest_sha256": "9f1a55fa2f8476885143190ecab69710c0898654b1998d8ecc5f0355468ac066",
+  "profile": "ICNT2_H0",
+  "registry_client_sha256": "6f2203626ffe72e89d1b140d5b4eea7bf0df505d9d605b544b84663aa42d6b60",
+  "registry_import_path": "/workspace/ep-l2-potential20261017-lane3/.published_registry/6f2203626ffe72e89d1b140d5b4eea7bf0df505d9d605b544b84663aa42d6b60/registry.py",
+  "resources_after_lease": {
+    "available_memory_bytes": 163823329280,
+    "disk_free_bytes": 72228184064,
+    "output_available": 72228184064,
+    "output_realpath": "/workspace/ep-l2-potential20261017-lane3/ICNT2_H0_r2",
+    "output_st_dev": 156
+  },
+  "resources_before": {
+    "available_memory_bytes": 163824128000,
+    "disk_free_bytes": 72228184064,
+    "output_available": 72228184064,
+    "output_realpath": "/workspace/ep-l2-potential20261017-lane3/ICNT2_H0_r2",
+    "output_st_dev": 156
+  },
+  "runtime_code_recompiled": false,
+  "schema": "LANE3_PARALLEL_AFFECTED_V1",
+  "status": "AFFECTED_PRODUCTION_PASS_PENDING_INDEPENDENT_ADMISSION",
+  "tool_parent_commit": "6bc650a18130b74672dd8ed82476e141a5b1763e"
+}

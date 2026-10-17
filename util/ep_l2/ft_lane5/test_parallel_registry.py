@@ -80,5 +80,24 @@ class ParallelRegistry(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'already attempted'):
             self.registry.claim(other,'lane5','/unused',resources=self.resources,experiment=self.exp)
 
+    def test_native_off_registration_preserves_count_and_pins_identity(self):
+        from registry import write_json
+        import hashlib
+        proof=self.root/'checkpoint.json';proof.write_text('{}')
+        binding={'path':str(proof),'sha256':hashlib.sha256(proof.read_bytes()).hexdigest()}
+        cell=self.registry.register_native_off_control(identity(),binding)
+        self.assertEqual(len(self.registry.snapshot()['runs']),0)
+        exp={'experiment_id':PARALLEL,'regime':'H0','profile':'NATIVE_OFF_CONTROL',
+             'cell_id':cell['cell_id'],'deadline_unix':self.campaign['deadline_unix']}
+        bad=identity();bad['binary_sha256']='f'*64
+        with self.assertRaisesRegex(ValueError,'exact runtime identity'):
+            self.registry.claim(bad,'lane5','/unused',resources=self.resources,experiment=exp)
+        fresh,row=self.registry.claim(identity(),'lane5','/unused',resources=self.resources,experiment=exp)
+        self.assertTrue(fresh)
+        self.assertEqual(sum(v.get('experiment_id')==PARALLEL for v in self.registry.snapshot()['runs'].values()),1)
+        proof.write_text('{"changed":true}')
+        with self.assertRaisesRegex(ValueError,'checkpoint changed'):
+            self.registry.register_native_off_control(identity(),binding)
+
 
 if __name__=='__main__':unittest.main()
