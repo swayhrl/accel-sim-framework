@@ -1,0 +1,74 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 06b01560..071ddd4d 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -114 +114 @@ bool l2_cache::ft_response_ready(unsigned long long cycle) {
+-  return m_ep_l2_payload.request(it->second, false, cycle,
++  const bool granted = m_ep_l2_payload.request(it->second, false, cycle,
+@@ -115,0 +116,11 @@ bool l2_cache::ft_response_ready(unsigned long long cycle) {
++  if (granted && mf->isatomic()) {
++    // Symbolic write-completion label only, matching the existing atomic-HIT
++    // convention. Do not execute the PTX atomic callback here: it belongs to
++    // the response consumer (memory_sub_partition::pop / shader). Pins retain
++    // this exact generation until the response is enqueued and committed.
++    auto &slot = m_ep_l2_payload.inspect_mutable(it->second);
++    for (unsigned s = 0; s < 4; ++s)
++      if (mf->get_access_sector_mask().test(s))
++        slot.versions[s] = (unsigned long long)mf->get_request_uid() + 1;
++  }
++  return granted;
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 0f1efcff..a01849db 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -823,0 +824,16 @@ void mshr_table::descriptor_chain_snapshot(
++void mshr_table::atomic_fill_masks(new_addr_type block_addr,
++    const mem_access_sector_mask_t &returned, mem_access_sector_mask_t &sectors,
++    mem_access_byte_mask_t &bytes) const {
++  sectors.reset(); bytes.reset();
++  const auto entry = m_data.find(block_addr);
++  assert(entry != m_data.end());
++  for (const auto mf : entry->second.m_list) {
++    if (!mf->isatomic()) continue;
++    const auto overlap = mf->get_access_sector_mask() & returned;
++    sectors |= overlap;
++    for (unsigned b = 0; b < MAX_MEMORY_ACCESS_SIZE; ++b)
++      if (overlap.test(b / SECTOR_SIZE) && mf->get_access_byte_mask().test(b))
++        bytes.set(b);
++  }
++}
++
+@@ -836,0 +853,5 @@ void mshr_table::mark_ready(new_addr_type block_addr, bool &has_atomic,
++  mem_access_sector_mask_t atomic_sectors;
++  mem_access_byte_mask_t atomic_bytes;
++  atomic_fill_masks(block_addr, sectors, atomic_sectors, atomic_bytes);
++  has_atomic = atomic_sectors.any();
++
+@@ -1607,4 +1628,12 @@ void baseline_cache::fill(mem_fetch *mf, unsigned time) {
+-    block->set_status(MODIFIED,
+-                      mf->get_access_sector_mask());  // mark line as dirty for
+-                                                      // atomic operation
+-    block->set_byte_mask(mf);
++    if (m_mshrs.descriptor_pool_capacity()) {
++      mem_access_sector_mask_t atomic_sectors;
++      mem_access_byte_mask_t atomic_bytes;
++      m_mshrs.atomic_fill_masks(e->second.m_block_addr,
++          mf->get_access_sector_mask(), atomic_sectors, atomic_bytes);
++      block->set_status(MODIFIED, atomic_sectors);
++      block->set_byte_mask(atomic_bytes);
++    } else {
++      // Preserve the historical non-sector-descriptor behavior.
++      block->set_status(MODIFIED, mf->get_access_sector_mask());
++      block->set_byte_mask(mf);
++    }
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index ea4eb514..4f881212 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -1159,0 +1160,6 @@ class mshr_table {
++  // D512 uses one line key for independent sector returns. Only live atomic
++  // requesters intersecting THIS fill may contribute dirty sectors/bytes.
++  void atomic_fill_masks(new_addr_type block_addr,
++                        const mem_access_sector_mask_t &returned,
++                        mem_access_sector_mask_t &sectors,
++                        mem_access_byte_mask_t &bytes) const;
