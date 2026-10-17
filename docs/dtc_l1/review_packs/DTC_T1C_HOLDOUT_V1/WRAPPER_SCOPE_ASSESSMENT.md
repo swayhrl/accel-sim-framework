@@ -5,3 +5,5 @@
 此时两个授权attempt都已实际启动：DWT2D已strict PASS，BICG原进程继续。无需改变运行中的coordinator或冻结脚本，也没有新派发、重启、timeout重置或科学参数变化。所有项目的资源占用继续计入原cgroup/host/PSI/disk门槛；无旧锁owner或原A/M/T执行权冲突。
 
 EXTERNAL_PROJECT_IDENTITY_REVIEW.json保存逐PID/start_ticks、binary与实际命令config SHA。最终报告保留原halt标记并解释其范围；任何另一个未核未知项目仍需单独审计，不由此放宽binary/config或资源门槛。此为只读包装归属核验，不是DTC协议或观测器修改。
+
+后续一项EP-L2 native-off控制使用精确binary37dc7794…；其已核source a26b3566 / Framework8ab6013e、启动器与input-assets身份闭合，配置无DTC选项，binary也不含DTC选项或统计标记。EXTERNAL_PROJECT_NATIVE_OFF_REVIEW.json保存证据，首次未识别状态原样归档；仅只读外部身份审计识别此精确binary，执行中的63份冻结条件、coordinator、资源门槛及timeout均未改动。没有读取外部candidate性能或启动其程序。

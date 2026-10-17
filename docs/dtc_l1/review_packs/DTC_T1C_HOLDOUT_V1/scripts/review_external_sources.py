@@ -26,14 +26,20 @@ def main():
             try:
                 digest=sha(binary)
                 text='\n'.join(p.read_text() for p in configs)
-                valid=(digest==expected and configs and all(p.parent==binary.parent for p in configs)
-                    and '-gpgpu_ep_l2_ft_mode ' in text
+                known_ft=digest==expected and '-gpgpu_ep_l2_ft_mode ' in text
+                known_native=False
+                if digest=='37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5':
+                    data=binary.read_bytes()
+                    known_native=(b'-gpgpu_dtc_l1_mode' not in data and b'DTC_L1_' not in data
+                        and b'-gpgpu_ep_l2_ft_mode' in data and b'-gpgpu_ep_l2_payload_mode' in data
+                        and '-gpgpu_ep_l2_payload_mode ' in text)
+                valid=((known_ft or known_native) and configs and all(p.parent==binary.parent for p in configs)
                     and not any(line.lstrip().startswith('-gpgpu_dtc') for line in text.splitlines()))
                 assert valid,'Binary/config outside verified independent EP-L2 identity'
                 identities[key]=dict(first_observed_utc=snapshot['utc'],pid=item['pid'],
                     start_ticks=item['start_ticks'],binary=str(binary),binary_sha256=digest,
                     configs=[dict(path=str(p),sha256=sha(p)) for p in configs],
-                    status='INDEPENDENT_EP_L2_NO_DTC_CONFIG')
+                    status='INDEPENDENT_EP_L2_NATIVE_OFF_NO_DTC_MARKERS' if known_native else 'INDEPENDENT_EP_L2_NO_DTC_CONFIG')
             except (OSError,AssertionError) as exc:
                 unknown.append(dict(sample_utc=snapshot['utc'],process=item,error=str(exc)))
     record=dict(utc=now(),status='PASS_ALL_SAMPLED_FOREIGN_PROCESSES_IDENTIFIED' if not unknown else 'UNRESOLVED_FOREIGN_IDENTITY_REQUIRES_REVIEW',
