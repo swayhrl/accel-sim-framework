@@ -10,6 +10,7 @@ REPO=Path(__file__).resolve().parents[3]
 OUT=Path('/workspace/ep_l2_potential20261017_lane5_results')
 HAND=Path('/workspace/ep_l2_ft20261016_shared/lane1/PARALLEL_LOCAL_IDEALS_RELEASE_r1.json')
 CHECK=OUT/'LOCAL_IDEAL_NATIVE_OFF_CHECKPOINT_r1.json'
+RESULT_NAME='LOCAL_IDEAL_NATIVE_OFF_RESULT_r1.json'
 
 
 def prepare():
@@ -38,10 +39,11 @@ def main():
   for i,row in enumerate(s['configs']):
    target=directory/f'config-{i}.config';shutil.copyfile(row['path'],target);require(digest(target)==s['config_manifest'][i]['sha256'],'Snapshot config changed');command+=['-config',str(target)]
   command+=['-trace',next(v['path'] for v in s['traces'] if v['name']=='kernelslist.g')];report['command']=command
+  temporary=directory/'tmp';temporary.mkdir();require(temporary.stat().st_dev==OUT.stat().st_dev,'Native control temporary filesystem changed');environment=dict(os.environ,**ENV,TMPDIR=str(temporary),TMP=str(temporary),TEMP=str(temporary))
   with (directory/'raw.log').open('xb') as stream:
-   proc=subprocess.Popen(command,cwd=directory,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,**ENV),start_new_session=True);report['process']=process_identity(proc.pid);r.update(s['run_key'],allocation['lease_id'],'RUNNING',process=report['process']);peak=0
+   proc=subprocess.Popen(command,cwd=directory,stdout=stream,stderr=subprocess.STDOUT,env=environment,start_new_session=True);report['process']=process_identity(proc.pid);r.update(s['run_key'],allocation['lease_id'],'RUNNING',process=report['process']);peak=0
    while proc.poll() is None:
-    safe_resources();peak=max(peak,process_tree_rss(proc.pid));require(peak<=allocation['memory_bytes'] and time.monotonic()-started<3600 and (directory/'raw.log').stat().st_size<2*2**30 and tree_bytes(OUT)<8*2**30,'Canary resource/timeout cap');time.sleep(1)
+    safe_resources();peak=max(peak,process_tree_rss(proc.pid));require(peak<=allocation['memory_bytes'] and time.monotonic()-started<3600 and (directory/'raw.log').stat().st_size<2*2**30 and sum(tree_bytes(p) for p in {OUT,BASELINE.parent.resolve()})<r.snapshot()['hosts'][allocation['host']]['max_result_bytes'],'Canary resource/timeout cap');time.sleep(1)
   require(proc.returncode==0 and 'GPGPU-Sim: *** exit detected ***' in (directory/'raw.log').read_text(),'Native control exit failed')
   require(digest(s['parser'])==s['parser_sha256'],'Parser changed');cmd=[sys.executable,s['parser'],str(directory/'raw.log'),'--out',str(directory),'--framework-commit',h['framework_source_commit'],'--core-commit',h['core_source_commit'],'--source-log',str(directory/'raw.log')];parsed=subprocess.run(cmd,cwd=directory,capture_output=True,timeout=120);(directory/'parser.stdout').write_bytes(parsed.stdout);(directory/'parser.stderr').write_bytes(parsed.stderr);require(parsed.returncode==0,'Native parser failed')
   summary=next(csv.DictReader((directory/'target_summary.csv').open()));require(all(summary[k]=='1' for k in ('invariants_terminal_clean','invariants_payload_consistent')) and summary['slice_count']=='64' and summary['terminal_invariant_records']=='64','Native all64 closure failed')
@@ -54,6 +56,6 @@ def main():
  except BaseException as e:status='FAILED';report['error']=repr(e);raise
  finally:
   if proc:terminate_owned(proc)
-  report.update(status=status,exit_code=proc.returncode if proc else None,wall_seconds=time.monotonic()-started,raw_log_sha256=digest(directory/'raw.log') if (directory/'raw.log').exists() else None);write_json(directory/'run_status.json',report);r.update(s['run_key'],allocation['lease_id'],status,exit_code=report['exit_code'],raw_log_sha256=report['raw_log_sha256'],detail=report.get('error','NativeOFF all64/metrics/sevenCSV equivalence'));write_json(OUT/'LOCAL_IDEAL_NATIVE_OFF_RESULT_r1.json',report)
+  report.update(status=status,exit_code=proc.returncode if proc else None,wall_seconds=time.monotonic()-started,raw_log_sha256=digest(directory/'raw.log') if (directory/'raw.log').exists() else None);write_json(directory/'run_status.json',report);r.update(s['run_key'],allocation['lease_id'],status,exit_code=report['exit_code'],raw_log_sha256=report['raw_log_sha256'],detail=report.get('error','NativeOFF all64/metrics/sevenCSV equivalence'));write_json(OUT/RESULT_NAME,report)
  print(json.dumps({'status':status,'run_key':s['run_key']}))
 if __name__=='__main__':main()

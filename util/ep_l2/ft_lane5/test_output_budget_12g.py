@@ -3,6 +3,7 @@ import unittest,socket
 from unittest.mock import patch
 from registry import admit_result_output,live_result_output
 from test_lane5 import identity
+from test_parallel_registry import ParallelRegistry
 
 class OutputBudget12G(unittest.TestCase):
  def setUp(self):
@@ -32,4 +33,15 @@ class OutputBudget12G(unittest.TestCase):
   a=self.admit();self.assertEqual(a['predicted_growth_bytes'],2*2**30+128*2**20);self.assertEqual(self.data['hosts'][self.host]['default_run_output_limit_bytes'],2*2**30)
  def test_share_output_path_rejected(self):
   with self.assertRaises(ValueError):live_result_output('/root/share/new_unapproved_run')
+
+class ExplicitNativeCell(unittest.TestCase):
+ def test_unknown_cell_and_wrong_runtime_refused_without_extra_start(self):
+  fixture=ParallelRegistry();fixture.setUp();self.addCleanup(fixture.tearDown)
+  from registry import write_json
+  import hashlib
+  proof=fixture.root/'canary.json';write_json(proof,{})
+  binding={'path':str(proof),'sha256':hashlib.sha256(proof.read_bytes()).hexdigest()}
+  for cell in ['unknown','E_NATIVE_OFF_UNIFIED_FB_R1']:
+   with self.assertRaises(ValueError):fixture.registry.register_native_off_control(identity(),binding,cell_id=cell)
+  self.assertEqual(fixture.registry.snapshot()['runs'],{})
 if __name__=='__main__':unittest.main()

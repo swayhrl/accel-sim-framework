@@ -295,8 +295,12 @@ class Registry:
             campaigns[PARALLEL] = entry
             return entry
 
-    def register_native_off_control(self, identity, checkpoint):
+    def register_native_off_control(self, identity, checkpoint, cell_id="E_NATIVE_OFF_LOCAL_R1"):
         """One explicit new-source all-OFF canary, charged to the new72 budget."""
+        if cell_id not in {'E_NATIVE_OFF_LOCAL_R1','E_NATIVE_OFF_UNIFIED_FB_R1'}:
+            raise ValueError('unknown explicitly predeclared native canary')
+        if cell_id == 'E_NATIVE_OFF_UNIFIED_FB_R1' and identity['binary_sha256'] != 'fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7':
+            raise ValueError('new unified canary requires exact official runtime')
         key = run_key(identity)
         proof = Path(checkpoint['path'])
         if hashlib.sha256(proof.read_bytes()).hexdigest() != checkpoint['sha256']:
@@ -305,7 +309,7 @@ class Registry:
             campaign = data.get('campaigns', {}).get(PARALLEL)
             if not campaign or time.time() >= campaign['deadline_unix']:
                 raise ValueError('missing/expired new campaign')
-            cell = {'cell_id':'E_NATIVE_OFF_LOCAL_R1','experiment_id':PARALLEL,
+            cell = {'cell_id':cell_id,'experiment_id':PARALLEL,
                     'mode':'NATIVE_OFF_CONTROL','condition':'H0',
                     'workload_alias':identity['workload'], 'expected_run_key':key,
                     'selection_checkpoint':checkpoint}
