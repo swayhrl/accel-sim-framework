@@ -1,6 +1,6 @@
 {
   "schema": "STORAGE_OPS_V7_TARGET_REV06",
-  "time": "2026-10-17T00:40:52.296181+00:00",
+  "time": "2026-10-17T01:25:30.700823+00:00",
   "amendment_sha": "5e1df072495cdc9ee3bb84ac593d84387924c037",
   "S01": "SOURCE_RELEASED_BRIDGE_CLEANED",
   "S02": "SOURCE_RELEASED_BRIDGE_CLEANED",
@@ -12,7 +12,7 @@
   "source_df_observed_gain_bytes": 812617728,
   "source_s02_released_bytes": 403701760,
   "verified_restore_bytes": 8320509315,
-  "restore_scope": "S01_S02_TARGET_SAMPLES_PLUS_R1_FULL_TARGET_CONTENT; OLD174_NATIVE_RESTORE_IS_B001_SAMPLE_ONLY",
+  "restore_scope": "S01_S02_TARGET_SAMPLES_PLUS_R1_AND_R1R_FULL_TARGET_CONTENT; R2_RESTORE_IN_PROGRESS; OLD174_NATIVE_SAMPLE_ONLY",
   "source_deletions_by_target": 0,
   "git_sources": "SOURCE_KEEP_NO_DELETION",
   "single_receiver": true,
@@ -47,7 +47,7 @@
   "r1_batches_verified": 14,
   "r1_b002_bridge": "BRIDGE_CLEANED",
   "r1_b002_target_publication_commit": "1ff521d336d2b0ab2148174970da6548e730d072",
-  "next_gate": "WAIT_SOURCE_NEXT_EXACT_R2_READY_OR_AGREED_WINDOW_CHANGE",
+  "next_gate": "COMPLETE_R2_FULL_CONTENT_RESTORE_THEN_VERSIONED_PROJECT_INDEX_AND_SOURCE_ACCEPTANCE",
   "source_release_approval": "NOT_GRANTED",
   "latest_receiver_guard_checks": 18,
   "latest_target_data_receipt_commit": "18297948ac349a8d415692f4601cda4f4c5e5691",
@@ -124,14 +124,16 @@
   "r1r_full_target_restored_files": 10534,
   "r1r_full_target_restored_bytes": 3566327342,
   "r1r_original_source_released_bytes": 0,
-  "r2_archive_state": "FRESH_WINDOW_SELECTION_AND_ACK_PENDING_SOURCE_INDEPENDENT_REVIEW_NO_DATA_YET",
+  "r2_archive_state": "ALL_18453_FILES_DEST_VERIFIED_SOURCE_KEEP_ACKED_BRIDGE_CLOSED_FULL_NAS_RESTORE_RUNNING",
   "r2_batches_source_keep_and_bridge_closed": 12,
-  "r2_batches_dest_verified": 2,
+  "r2_batches_dest_verified": 12,
   "latest_workspace_observation_r10": {
     "receipt_path": "docs/ep_l2/operations/174new_to_164_archive_v1/receipts/20261016_storageops_06/WORKSPACE_OBSERVATION_R10_20261017T000138Z.json",
     "sha256": "1e25b96ce51b2421e2004aee843a6899f421a5a8c106f1ad1899f68f8f776edf",
     "available_bytes": 21335371776,
     "observed_at_utc": "2026-10-17T00:01:38.734052+00:00",
     "not_independent_lane5_admission": true
-  }
+  },
+  "r2_restore_state": "IN_PROGRESS_NO_FINAL_FULL_RESTORE_CLAIM",
+  "source_release_time_scope": "821599805 logical bytes are historical S01/S02 only; current ten-hour scientific original release remains zero"
 }
