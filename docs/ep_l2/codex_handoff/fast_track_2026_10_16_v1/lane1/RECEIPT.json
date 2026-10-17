@@ -213,7 +213,7 @@
   "current_lease_id": "e3b938a65bc94a028b1bbf88c1307185",
   "current_lease_released": true,
   "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_STRUCTURAL_RELEASE_r1",
-  "goal_state": "ACTIVE_PARALLEL_ROLLING_RELEASE",
+  "goal_state": "ACTIVE_READY_MODULE_ROLLING_INTEGRATION",
   "gate_waiter_started": false,
   "recorded_at": "2026-10-17T11:43:46.915294+00:00",
   "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification.",
@@ -302,9 +302,9 @@
     "producer_receipt_path": "/workspace/ep_l2_parallel_lane1/structural_release_r1/INTAKE_RECEIPT.json",
     "producer_receipt_sha256": "faba701ae44f8e0866fb019b4cf48d0a623bb660b0dc6e0708d7a09413a12549",
     "producer_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_STRUCTURAL_RELEASE_r1/INTAKE_RECEIPT.json",
-    "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/structural_release_r1/RUNTIME_CONFIG_MANIFEST.json",
-    "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_STRUCTURAL_CONFIG_MANIFEST_R1.json",
-    "producer_manifest_sha256": "2555d2d997f65e953f0323c8ddce2bc85ca85a2b2582fc5f65c18ff33fc7cecf",
+    "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/structural_release_manifest_r2/RUNTIME_CONFIG_MANIFEST.json",
+    "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_STRUCTURAL_CONFIG_MANIFEST_R2.json",
+    "producer_manifest_sha256": "f6748410b36a0328eadfa8838eebded2f722a8123ce47d5fcd1cee25d0cd8e33",
     "supported_profiles": [
       "B16_OFF",
       "U_WB16_OFF",
@@ -340,11 +340,27 @@
     },
     "budget_owner": "lane5",
     "new_full_application_starts": 0,
-    "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification."
+    "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification.",
+    "handoff_revision": "r2",
+    "supersedes_manifest_revision": "r1_METADATA_ONLY_RUNTIME_AND_CONFIG_HASHES_UNCHANGED"
   },
   "new_runtime_source": {
     "core": "8960ace40bece2acf81e62f95f77fa2d637b258d",
     "framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
     "binary_sha256": "3d68d8e87ea725c3d88071f368ae2b91866c1d03195d852942450433d9badb64"
+  },
+  "structural_metadata_revision": "r2",
+  "measured_structural_build_resources": {
+    "jobs": 2,
+    "resource_samples": 1018,
+    "own_process_group_max_rss_bytes": 914358272,
+    "own_process_group_rss_scope": "sampled sum of VmRSS in the owned CMake process group; shared pages may be counted more than once",
+    "peak_workspace_growth_bytes": 2004893696,
+    "min_workspace_free_bytes": 69356380160,
+    "min_share_free_bytes": 44483264512,
+    "min_available_memory_bytes": 155172343808,
+    "lease_id": "9fe452d038f741de86c8fbd035065ab0",
+    "lease_released": true,
+    "correction": "Own structural full build sampled RSS/growth was measured; old generic R1 scope sentence about unmeasured author RSS applies only to first37dc author build, not this3d68 own build."
   }
 }
