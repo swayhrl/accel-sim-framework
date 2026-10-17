@@ -102,7 +102,8 @@ int main(int argc,char **argv){
   // Every supplied fragment in order, including native trace config. No cmdline
   // parser invocation or fixture-specific queue/clock/geometry override follows.
   for(int i=2;i<argc;++i)option_parser_cfgfile(parser,argv[i]);
-  cfg.init();trace.parse_config();puts("R19_NATIVE_EFFECTIVE_OPTIONS_BEGIN");option_parser_print(parser,stdout);puts("R19_NATIVE_EFFECTIVE_OPTIONS_END");option_parser_destroy(parser);
+  puts("R19_NATIVE_EFFECTIVE_OPTIONS_BEGIN");option_parser_print(parser,stdout);puts("R19_NATIVE_EFFECTIVE_OPTIONS_END");
+  cfg.init();trace.parse_config();option_parser_destroy(parser);
   clock_probe_gpu gpu(cfg,&ctx);gpu.gpu_sim_cycle=1;auto mc=gpu.getMemoryConfig();
   assert(mc->m_n_mem==32 && mc->m_n_mem_sub_partition==64 && mc->m_n_sub_partition_per_memory_channel==2);
   assert(!mc->simple_dram_model && !mc->l2_ideal && !mc->seperate_write_queue_enabled);
