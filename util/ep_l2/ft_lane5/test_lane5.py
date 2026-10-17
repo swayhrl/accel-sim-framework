@@ -116,6 +116,8 @@ class RegistryTests(unittest.TestCase):
                   'min_disk_free_bytes': 48 * 1024**3, 'max_build_jobs': 4, 'scan_exclusive': True}
         (self.root / 'RUN_REGISTRY.json').write_text(json.dumps({'authority_host': self.host,
             'hosts': {self.host: policy}, 'runs': {}, 'resource_leases': {}}))
+        budget_patch=patch('registry.admit_result_output',return_value={'predicted_growth_bytes':256*2**20})
+        budget_patch.start();self.addCleanup(budget_patch.stop)
         self.registry = Registry(self.root)
         self.resources = {'available_memory_bytes': 2**50, 'disk_free_bytes': 2**50}
 

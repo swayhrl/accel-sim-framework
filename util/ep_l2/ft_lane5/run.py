@@ -261,6 +261,12 @@ def run(spec, registry):
     key = audit['run_key']
     root = output_root(spec)
     directory = root / key
+    retry = spec.get('retry_checkpoint')
+    if retry is not None:
+        require(digest(retry['path']) == retry['sha256'], 'Audited retry checkpoint changed')
+        recovery = json.loads(Path(retry['path']).read_text())
+        directory = Path(recovery['new_result_directory'])
+        require(directory.parent == root and recovery['run_key'] == key, 'Retry changed root or identity')
     require(result_disk_free_bytes() >= RESULT_DISK_FLOOR,
             'result filesystem changed during input audit; no claim')
     experiment = None
@@ -276,7 +282,7 @@ def run(spec, registry):
         experiment['deadline_unix'] = campaign['deadline_unix']
     elif spec.get('experiment_id'):
         raise ValueError('Unknown experiment; no unaccounted launch')
-    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, memory=spec.get('memory_reservation_bytes'), client_binding=immutable_loader_binding(), **({'experiment':experiment} if experiment else {}))
+    fresh, allocation = registry.claim(spec['identity'], spec['owner'], directory, memory=spec.get('memory_reservation_bytes'), client_binding=immutable_loader_binding(), retry_checkpoint=retry, **({'experiment':experiment} if experiment else {}))
     if not fresh:
         return {'status': 'DUPLICATE_NOT_LAUNCHED', 'existing': allocation}
     lease = allocation['lease_id']
@@ -313,7 +319,12 @@ def run(spec, registry):
         for config in configs:
             command.extend(['-config', str(config)])
         command.extend(['-trace', str(Path(trace).resolve())])
+        temporary = directory / 'tmp'
+        temporary.mkdir(exist_ok=False)
+        require(temporary.resolve().is_relative_to(root) and temporary.stat().st_dev == root.stat().st_dev, 'Temporary output left approved workspace filesystem')
+        result['temporary_filesystem'] = {'realpath': str(temporary.resolve()), 'st_dev': temporary.stat().st_dev}
         environment = os.environ.copy()
+        environment.update(TMPDIR=str(temporary), TMP=str(temporary), TEMP=str(temporary))
         environment.update(OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
         environment.update(spec.get('environment', {}))
         require(all(environment[k] == '1' for k in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS')),

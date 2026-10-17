@@ -102,6 +102,59 @@ def local_resources():
             'share_disk_free_bytes': os.statvfs('/root/share').f_bavail * os.statvfs('/root/share').f_frsize}
 
 
+
+RESULT_WORKSPACE = Path('/workspace/ep_l2_potential20261017_lane5_results')
+RESULT_LEGACY = Path('/workspace/results/ep_l2_ft20261016')
+
+
+def retained_tree_bytes(root):
+    return sum(p.stat().st_size for p in root.rglob('*') if p.is_file() and not p.is_symlink()) if root.exists() else 0
+
+
+def live_result_output(result_directory):
+    """Called under REGISTRY.lock: actual roots/devices/space, never caller counters."""
+    directory=Path(result_directory)
+    root=directory.parent.resolve(strict=True)
+    if root != RESULT_WORKSPACE or root.stat().st_dev != Path('/workspace').stat().st_dev or root.stat().st_dev == Path('/root/share').stat().st_dev:
+        raise ValueError('new full-application outputs require verified physical workspace')
+    roots={RESULT_LEGACY.resolve(strict=True),RESULT_WORKSPACE.resolve(strict=True)}
+    return {'roots':{str(p):{'bytes':retained_tree_bytes(p),'st_dev':p.stat().st_dev} for p in roots},
+            'actual_bytes':sum(retained_tree_bytes(p) for p in roots),
+            'resources':local_resources(),'workspace_root':str(root),'workspace_st_dev':root.stat().st_dev}
+
+
+def admit_result_output(data, host, identity, result_directory):
+    """Shared retained total plus concurrent predicted growth, independent of campaign."""
+    policy=data['hosts'][host];state=live_result_output(result_directory)
+    if state['actual_bytes'] >= policy['max_result_bytes']:
+        raise ValueError('aggregate EP-L2 retained output ceiling')
+    # A full 2GiB raw-log allowance plus128MiB snapshots/derived output for unknown input/runtime.
+    # Same-binary/full-input prior complete directories support a conservative measured forecast:
+    # at least256MiB and twice the largest observed full directory. Hard per-run2GiB stays unchanged.
+    samples=[]
+    for row in data['runs'].values():
+        if row['status']!='COMPLETE_VALID' or any(row['identity'][k]!=identity[k] for k in
+            ('binary_sha256','core_source_commit','framework_source_commit','workload','trace_content_sha256','epoch_range')):
+            continue
+        directory=Path(row['result_directory'])
+        if directory.is_dir():
+            samples.append({'run_key':row['run_key'],'bytes':retained_tree_bytes(directory),
+                            'receipt_sha256':hashlib.sha256((directory/'run_status.json').read_bytes()).hexdigest()})
+    growth=max(256*2**20,2*max(v['bytes'] for v in samples)) if samples else policy['default_run_output_limit_bytes']+128*2**20
+    pending=sum(max(0,row.get('output_budget',{}).get('predicted_growth_bytes',policy['default_run_output_limit_bytes']+128*2**20)-retained_tree_bytes(Path(row['result_directory'])))
+                for row in data['runs'].values() if row['status'] in ACTIVE)
+    if state['actual_bytes']+pending+growth>policy['max_result_bytes']:
+        raise ValueError('aggregate output ceiling plus concurrent predicted growth')
+    resources=state['resources']
+    pending_physical=sum(policy['default_run_output_limit_bytes']+128*2**20 for row in data['runs'].values() if row['status'] in ACTIVE)
+    if resources['disk_free_bytes']-pending_physical-(policy['default_run_output_limit_bytes']+128*2**20)<policy['min_disk_free_bytes']:
+        raise ValueError('workspace floor after conservative concurrent output growth')
+    if resources['share_disk_free_bytes']<40*2**30:
+        raise ValueError('Share free-space safety floor under output lock')
+    return {**state,'predicted_growth_bytes':growth,'concurrent_unwritten_growth_bytes':pending,
+            'accounted_after_admission_bytes':state['actual_bytes']+pending+growth,'same_binary_full_input_samples':samples,
+            'forecast_policy':'unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged'}
+
 def process_identity(pid):
     # /proc stat field 22 survives pid reuse; commands can contain spaces/parentheses.
     stat = Path(f'/proc/{pid}/stat').read_text()
@@ -196,6 +249,7 @@ class Registry:
                 raise ValueError('positive memory allocation required')
             self.admission(data, host, cpu, memory, identity['workload'] == 'scan',
                            'simulation', resources if resources is not None else local_resources())
+            output_budget = admit_result_output(data, host, identity, result_directory)
             output_root = Path(result_directory).parent
             if output_root == Path('/workspace/ep_l2_potential20261017_lane5_results'):
                 if (output_root.stat().st_dev != Path('/workspace').stat().st_dev or
@@ -211,6 +265,7 @@ class Registry:
                    'status': 'RESERVED', 'created_at': now(), 'cpu_units': cpu,
                    'memory_bytes': memory, 'scan': identity['workload'] == 'scan',
                    'result_directory': str(result_directory), 'process': None}
+            row['output_budget']=output_budget
             if retry_checkpoint is not None:
                 row['attempt_history']=history
                 row['retry_checkpoint']=retry_checkpoint
