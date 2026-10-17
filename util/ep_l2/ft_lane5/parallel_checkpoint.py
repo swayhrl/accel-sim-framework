@@ -3,7 +3,7 @@ import argparse,json,socket
 from datetime import datetime,timezone
 from pathlib import Path
 from registry import Registry,ACTIVE,PARALLEL,R19,write_json,local_resources,process_identity,attempt_count
-from acceptance import load_current_authority,current_manifest
+from acceptance import load_current_authority,current_manifest,authorize_launch
 from run import digest,tree_bytes,RESULT_ROOT,WORKSPACE_RESULT_ROOT
 
 REPO=Path(__file__).resolve().parents[3]
@@ -39,8 +39,11 @@ def main():
   if cell['cell_id'] in prepared:
    path,spec=prepared[cell['cell_id']];identity=spec['identity'];qsha=digest(Path(spec['qualified_release']))
    cell['current_execution_spec']={'path':str(path.relative_to(REPO)),'sha256':digest(path),'identity':identity,'qualified_release_sha256':qsha}
-   matches=[v for v in manifest['launch_authorizations'] if v['status']=='CURRENT_QUALIFIED_FOR_LAUNCH' and v.get('experiment_id')==spec['experiment_id'] and v.get('regime')==spec['regime'] and v.get('qualified_release_sha256')==qsha and all(v.get(k)==identity.get(k) for k in ['core_source_commit','framework_source_commit','binary_sha256','feature_vector','ideal_vector'])]
-   if not own and matches:cell['actual_status']='CURRENT_QUALIFIED_AWAITING_RESOURCE_ADMISSION'
+   # The published unified certificate covers exact P2 vectors as well as H0.
+   # Its envelope label is H0; unified_scope separately binds the exact P2 config.
+   try:auth=authorize_launch(identity,qsha,state)
+   except ValueError:auth=None
+   if not own and auth and auth.get('experiment_id')==spec['experiment_id']:cell['actual_status']='CURRENT_QUALIFIED_AWAITING_RESOURCE_ADMISSION'
  active=[v for v in registry['runs'].values() if v['status'] in ACTIVE]
  ledger['extra_cells']=[{**cell,'runs':[v for v in new if v.get('cell_id')==cell['cell_id']],
   'paper_acceptance':'CURRENT_ACCEPTED' if any(v.get('cell_id')==cell['cell_id'] and v['run_key'] in accepted for v in new) else 'NOT_CURRENT_ACCEPTED'}
