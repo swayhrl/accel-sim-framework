@@ -1,3 +1,7 @@
+# Latest blocked transition checkpoint
+
+2026-10-17T11:08:31.635513+00:00: thirdconsecutive sameproducerdependency confirmed; exact docs/ep_l2/review_packs/FT20261017_LANE5_R19_SELECTED_PRODUCER_BLOCKED_r3 receipt/observation/RESUME. Goaltransition toblocked occurs AFTER ownpush/readback. All12newapps CURRENT_ACCEPTEDgen17, selectedD2/L25remaining8unrun. No activeEPworker/lease/backgroundwatcher, all oldcontrollers terminal0; NEVER restartcompletedkeys. Lane1fresh605c unchanged/sharedselectedhandoffsabsent/nativeprocess0. Uniqueofficialproducerrequest e5b9... waiting. On actualexternalchange userresumes sameGoal; fresh blocked auditcount, consumeexactnewsource/config/fixture thenownindependentchecks (noL5compile) andexistingV2/runpipeline. No scientific/resource/window changes.
+
 # Latest producer dependency audit2
 
 As of 2026-10-17T10:55:44.805229+00:00: true sameexternal dependency confirmedsecondGoalturn, noactiveEPworker/lease. Lane1freshremote605c unchanged/sharedD2L25absent/matchingprobe-buildprocess0. GoalACTIVE, no update_goal yet. Nextcheckunix 1792235144.805242 (≥600s). If sameimpasse recurs nextGoalturn and no meaningfulworkavailable, apply3-turn blockedaudit and publishaccurateSTATUS/receipt thenupdate_goal blocked; do NOTmarkcomplete. All12actualnewapps CURRENT_ACCEPTEDgen17; selectedD2/L25remaining8unrun. No compiler/watchers/cleanup; sameuserdeadline17:09:16UTC/limits.
