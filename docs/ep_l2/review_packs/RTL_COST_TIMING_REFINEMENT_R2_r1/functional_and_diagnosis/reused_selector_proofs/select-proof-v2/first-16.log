@@ -1,0 +1,357 @@
+
+-- Executing script file `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.ys' --
+
+1. Executing Verilog-2005 frontend: /workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv
+Parsing SystemVerilog input from `/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv' to AST representation.
+Generating RTLIL representation for module `\ep_l2_metadata_word'.
+Generating RTLIL representation for module `\ep_l2_tag_map_word'.
+Generating RTLIL representation for module `\ep_l2_first_one'.
+Generating RTLIL representation for module `\ep_l2_index_mux'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv
+Parsing SystemVerilog input from `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv' to AST representation.
+Generating RTLIL representation for module `\equiv'.
+Successfully finished Verilog frontend.
+
+3. Executing PREP pass.
+
+3.1. Executing HIERARCHY pass (managing design hierarchy).
+
+3.1.1. Analyzing design hierarchy..
+Top module:  \equiv
+Used module:     \ep_l2_first_one
+Parameter \N = 16
+Parameter \W = 4
+
+3.1.2. Executing AST frontend in derive mode using pre-parsed AST for module `\ep_l2_first_one'.
+Parameter \N = 16
+Parameter \W = 4
+Generating RTLIL representation for module `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one'.
+
+3.1.3. Analyzing design hierarchy..
+Top module:  \equiv
+Used module:     $paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one
+
+3.1.4. Analyzing design hierarchy..
+Top module:  \equiv
+Used module:     $paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one
+Removing unused module `\ep_l2_index_mux'.
+Removing unused module `\ep_l2_first_one'.
+Removing unused module `\ep_l2_tag_map_word'.
+Removing unused module `\ep_l2_metadata_word'.
+Removed 4 unused modules.
+Mapping positional arguments of cell equiv.dut ($paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one).
+
+3.2. Executing PROC pass (convert processes to netlists).
+
+3.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+3.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 16 switch rules as full_case in process $proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443 in module equiv.
+Removed a total of 0 dead cases.
+
+3.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 34 assignments to connections.
+
+3.2.4. Executing PROC_INIT pass (extract init attributes).
+
+3.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~16 debug messages>
+
+3.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1540'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1538'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1536'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1534'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1532'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1530'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1528'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1526'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1524'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1522'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1520'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1518'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1516'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1514'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1512'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1511'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1510'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1509'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1508'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1507'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1506'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1505'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1504'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1503'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1502'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1501'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1500'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1499'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1498'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1497'.
+Creating decoders for process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1496'.
+Creating decoders for process `\equiv.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443'.
+     1/32: $16\expected_index[3:0]
+     2/32: $16\expected_found[0:0]
+     3/32: $15\expected_index[3:0]
+     4/32: $15\expected_found[0:0]
+     5/32: $14\expected_index[3:0]
+     6/32: $14\expected_found[0:0]
+     7/32: $13\expected_index[3:0]
+     8/32: $13\expected_found[0:0]
+     9/32: $12\expected_index[3:0]
+    10/32: $12\expected_found[0:0]
+    11/32: $11\expected_index[3:0]
+    12/32: $11\expected_found[0:0]
+    13/32: $10\expected_index[3:0]
+    14/32: $10\expected_found[0:0]
+    15/32: $9\expected_index[3:0]
+    16/32: $9\expected_found[0:0]
+    17/32: $8\expected_index[3:0]
+    18/32: $8\expected_found[0:0]
+    19/32: $7\expected_index[3:0]
+    20/32: $7\expected_found[0:0]
+    21/32: $6\expected_index[3:0]
+    22/32: $6\expected_found[0:0]
+    23/32: $5\expected_index[3:0]
+    24/32: $5\expected_found[0:0]
+    25/32: $4\expected_index[3:0]
+    26/32: $4\expected_found[0:0]
+    27/32: $3\expected_index[3:0]
+    28/32: $3\expected_found[0:0]
+    29/32: $2\expected_index[3:0]
+    30/32: $2\expected_found[0:0]
+    31/32: $1\expected_index[3:0]
+    32/32: $1\expected_found[0:0]
+
+3.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[15]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1540'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[14]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1538'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[13]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1536'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[12]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1534'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[11]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1532'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[10]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1530'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[9]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1528'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[8]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1526'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[7]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1524'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[6]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1522'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[5]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1520'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[4]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1518'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[3]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1516'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[2]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1514'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[1]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1512'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[31]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1511'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[30]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1510'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[29]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1509'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[28]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1508'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[27]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1507'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[26]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1506'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[25]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1505'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[24]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1504'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[23]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1503'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[22]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1502'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[21]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1501'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[20]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1500'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[19]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1499'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[18]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1498'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[17]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1497'.
+No latch inferred for signal `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.\value[16]' from process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1496'.
+No latch inferred for signal `\equiv.\expected_found' from process `\equiv.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443'.
+No latch inferred for signal `\equiv.\expected_index' from process `\equiv.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443'.
+No latch inferred for signal `\equiv.$fordecl_block$1441.j' from process `\equiv.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443'.
+
+3.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+
+3.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1540'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1538'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1536'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1534'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1532'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1530'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1528'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1526'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1524'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1522'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1520'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1518'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1516'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1514'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1512'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1511'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1510'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1509'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1508'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1507'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1506'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1505'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1504'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1503'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1502'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1501'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1500'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1499'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1498'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1497'.
+Removing empty process `$paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:77$1496'.
+Found and cleaned up 16 empty switches in `\equiv.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443'.
+Removing empty process `equiv.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2/select-proof-v2/first-16.sv:4$1443'.
+Cleaned up 16 empty switches.
+
+3.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.
+Optimizing module equiv.
+<suppressed ~2 debug messages>
+
+3.3. Executing FLATTEN pass (flatten design).
+Deleting now unused module $paramod$e1a650209bd2b31a89521b80f503b9e995bddae8\ep_l2_first_one.
+<suppressed ~1 debug messages>
+
+3.4. Executing FUTURE pass.
+
+3.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+Removed 0 unused cells and 135 unused wires.
+<suppressed ~2 debug messages>
+
+3.7. Executing CHECK pass (checking for obvious problems).
+Checking module equiv...
+Found and reported 0 problems.
+
+3.8. Executing OPT pass (performing simple optimizations).
+
+3.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\equiv'.
+Computing hashes of 96 cells of `\equiv'.
+Finding duplicate cells in `\equiv'.
+Removed a total of 0 cells.
+
+3.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \equiv..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~65 debug messages>
+
+3.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \equiv.
+Performed a total of 0 changes.
+
+3.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\equiv'.
+Computing hashes of 96 cells of `\equiv'.
+Finding duplicate cells in `\equiv'.
+Removed a total of 0 cells.
+
+3.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+
+3.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.8.8. Finished fast OPT passes. (There is nothing left to do.)
+
+3.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 3 bits (of 4) from mux cell equiv.$procmux$1627 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1541 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1539 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1537 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1535 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1533 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1531 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1529 ($mux).
+Removed top 3 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1527 ($mux).
+Removed top 2 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1525 ($mux).
+Removed top 2 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1523 ($mux).
+Removed top 2 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1521 ($mux).
+Removed top 2 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1519 ($mux).
+Removed top 1 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1517 ($mux).
+Removed top 1 bits (of 4) from mux cell equiv.$flatten\dut.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:81$1515 ($mux).
+Removed top 3 bits (of 4) from wire equiv.$2\expected_index[3:0].
+
+3.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+Removed 0 unused cells and 1 unused wires.
+<suppressed ~1 debug messages>
+
+3.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+3.12. Executing OPT pass (performing simple optimizations).
+
+3.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\equiv'.
+Computing hashes of 96 cells of `\equiv'.
+Finding duplicate cells in `\equiv'.
+Removed a total of 0 cells.
+
+3.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+
+3.12.4. Finished fast OPT passes.
+
+3.13. Executing SORT pass.
+
+3.14. Printing statistics.
+
+=== equiv ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      102 wires
+      303 wire bits
+       41 public wires
+      203 public wire bits
+        2 ports
+       17 port bits
+       96 cells
+        2   $eq
+       16   $logic_and
+       15   $logic_not
+       47   $mux
+       15   $or
+        1   $scopeinfo
+
+3.15. Executing CHECK pass (checking for obvious problems).
+Checking module equiv...
+Found and reported 0 problems.
+
+4. Executing SAT pass (solving SAT problems in the circuit).
+Using SAT solver `minisat`.
+
+Setting up SAT problem:
+Final constraint equation: { } = { }
+Imported 96 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+Solving problem with 899 variables and 2347 clauses..
+SAT proof finished - no model found: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+

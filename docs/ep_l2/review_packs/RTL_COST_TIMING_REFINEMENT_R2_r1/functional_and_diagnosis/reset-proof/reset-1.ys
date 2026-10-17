@@ -1,0 +1,7 @@
+read_verilog -sv "/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv" "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/reset-proof/reset-1.sv"
+hierarchy -top reset_equiv
+setattr -mod -unset keep_hierarchy
+setattr -unset keep_hierarchy
+flatten
+prep -top reset_equiv
+sat -prove equal 1 -verify

@@ -1,0 +1,15 @@
+CASE1 full-line byte data/mapping/bank-compatible handle PASS mode2
+CASE2 32/64-bit byte merge and untouched bytes PASS
+CASE3 dirty bytes survive delayed fill PASS
+CASE3b actual same-bank contention and cross-bank parallel grants PASS
+CASE4 response snapshot/backpressure and real pins PASS
+CASE4b same-edge destructive acquisition/pin exclusion and unrelated-pin parallelism PASS
+CASE5 native rollback/fixed victim/exact-once release PASS
+CASE6 real WB bytes/copy/in-place/lower_accept split PASS
+CASE7 old-address hazard until set_done PASS
+CASE8 late fill/completion identity rejection PASS
+CASE9 full-dimension actual WB peak64 refusal/SAME-request-credit-recovery/versions PASS
+CASE9b WAD128 full after lower accept,129th same-request resume/FIFO-wrap/exact drain PASS
+CASE10 random backpressure/byte reference/exact-once/drain PASS
+RTL_RESULT mode=2 tags=1024 physical=1168 wb_peak=64 WAD=128 gen=32 accepted=272 replies=266 rollback=6 WB=195 copy_read=198 copy_write=198 bank_ops=861 conflicts=1 parallel_banks=2 cycles=2191 PASS
+/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/tb/ep_l2_slice_tb.sv:340: $finish called at 21936000 (1ps)

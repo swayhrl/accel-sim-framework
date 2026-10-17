@@ -1,36 +1,357 @@
 {
+  "schema": "RTL_COST_R2_RECEIPT",
   "Goal": "EPL2_RTL_COST_TIMING_REFINEMENT_R2_BOUNDED",
-  "status": "ACTIVE_FINAL_FULL_TAG_BOUNDARY_PENDING_NOT_FINAL",
+  "status": "FUNCTIONAL_THREE_MODE_MAP_STA_COMPLETE_TIMING_UNCLOSED",
   "authority": "f2a2fec3ee5e1bb42aa298c84d25bdd9bd70e13e",
-  "T0_UTC": "2026-10-17T17:30:58Z",
   "canonical_RTL_commit": "f54d3c054a6a03c85b40a1c5018751958c78a129",
-  "actual_map_STA_all_three_complete": true,
-  "all_three_base_and_GEN3_functional_pass": true,
-  "all_three_actual_Lane3_bytes_pass": true,
-  "highest_Unified1167_boundary": "RUNNING_NOT_YET_PASS",
-  "current_SIM_performance_pairing": false,
-  "SRAM_macro_area_delay": null,
-  "DC": "UNRUN",
-  "R1_frozen": "09de19579c0708f6542dfd65e1f3aae8a9a8b841",
-  "TVD_three_tests": "NOT_COMPILED_NOT_RUN",
-  "official_SIM_and_Lane5_unchanged_by_this_Goal": true,
+  "selected_variant": "LAST_BOUNDED_VECTOR_PREFIX_RESET_TREE_TAG_MAP_MASK",
+  "qualified_previous_variant_root": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2",
+  "source_files": [
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_bank_arbiter.sv",
+      "sha256": "f61e66390382aae2e84bffb00b8e46f260257c17dc82d339db13dc3b58417afb"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_metadata_word.sv",
+      "sha256": "3911cc581b05db6eed15654cd760a7a0b58c460c8dd312fa109b649245b19bd1"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv",
+      "sha256": "1ccdedf218a23e11d95b65260cc440bed367fe9f3ecbacd972168f70b95e9aaa"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_payload_sram.sv",
+      "sha256": "6cef629e73ee696dedcb9133c661fd64425b7390af5cd9fcf4ef592ddb903453"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_slice.sv",
+      "sha256": "0888dfbec52fadad96918c03ba1a7f3669a604ed0fa2f48bdfd753255c0ead18"
+    }
+  ],
+  "R1_frozen_publication": "09de19579c0708f6542dfd65e1f3aae8a9a8b841",
+  "T0_UTC": "2026-10-17T17:30:58Z",
+  "checkpoint4h_UTC": "2026-10-17T21:30:58Z",
+  "hard6h_stop_UTC": "2026-10-17T23:30:58Z",
+  "reports_collected_UTC": "2026-10-17T19:48:36.406034+00:00",
+  "finite_SIM_spec_Core": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+  "finite_SIM_spec_Framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "finite_SIM_producer_binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+  "spec_identity_only_not_new_application_result": true,
+  "formal_SIM_changed": false,
+  "Lane5_app_runs_started": 0,
+  "new_pipeline_or_throughput_changes": false,
+  "R1_SIM_RTL_gaps_remain": true,
+  "same_library_SDC_mapping_effort_RTL_all_modes": true,
+  "all_modes_timing_unclosed": true,
+  "SRAM_macro_area": null,
+  "SRAM_macro_delay": null,
+  "whole_slice_PPA": false,
+  "paper_performance_pairing_eligible": false,
+  "DC": "UNRUN_NO_DC_SHELL_PRECISE_SCRIPTS_FILELIST_CONSTRAINTS_ENV_DELIVERED",
+  "power_postlayout": "UNRUN",
+  "qualification": "actual full-size base+pin/capacity/WAD/stale/backpressure/GEN3+Unified1167; Lane3 actual10vectors per mode; actual source helper SAT; no whole-GPU/late dynamic rollback/post-map proof",
+  "source_binary_trace_identity": "per-run RTL/config/VVP/netlist/SDC/Lib/tool/stimulus hashes, all bound to canonical RTL blobs",
   "artifact_root": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3",
-  "modes": {
+  "modes": [
+    {
+      "mode": "B16",
+      "R1_area": 2069971.0359999998,
+      "R2_area": 1598557.0580000002,
+      "area_change_percent": -22.773940784744372,
+      "R1_target_WNS_ns": -13.614565,
+      "R2_target_WNS_ns": -1.413025,
+      "R1_2ns_WNS_ns": -12.497957,
+      "R2_2ns_WNS_ns": -0.296418,
+      "R1_target_TNS_ns": -1102450.875,
+      "R2_target_TNS_ns": -92254.578125,
+      "R1_buckets": {
+        "ep_l2_slice_ctrl_other": {
+          "instances": 1,
+          "area": 843230.906,
+          "sequential_area": 162385.02000000002,
+          "cells": 748371,
+          "sequential_cells": 35910
+        },
+        "ep_l2_metadata_word": {
+          "instances": 1040,
+          "area": 1141786.9119999998,
+          "sequential_area": 294183.232,
+          "cells": 976672,
+          "sequential_cells": 65056
+        },
+        "ep_l2_tag_map_word": {
+          "instances": 1024,
+          "area": 84439.04,
+          "sequential_area": 50935.808000000005,
+          "cells": 50176,
+          "sequential_cells": 11264
+        },
+        "ep_l2_bank_arbiter": {
+          "instances": 1,
+          "area": 514.178,
+          "sequential_area": 36.176,
+          "cells": 489,
+          "sequential_cells": 8
+        }
+      },
+      "R2_buckets": {
+        "ep_l2_slice_ctrl_other": {
+          "instances": 838,
+          "area": 443558.458,
+          "sequential_area": 162380.49800000002,
+          "cells": 341520,
+          "sequential_cells": 35909
+        },
+        "ep_l2_index_mux": {
+          "instances": 15,
+          "area": 483216.93,
+          "sequential_area": 0.0,
+          "cells": 525022,
+          "sequential_cells": 0
+        },
+        "ep_l2_first_one": {
+          "instances": 2,
+          "area": 334.62800000000004,
+          "sequential_area": 0.0,
+          "cells": 381,
+          "sequential_cells": 0
+        },
+        "ep_l2_metadata_word": {
+          "instances": 1040,
+          "area": 670932.8640000002,
+          "sequential_area": 238616.896,
+          "cells": 506496,
+          "sequential_cells": 52768
+        },
+        "ep_l2_bank_arbiter": {
+          "instances": 1,
+          "area": 514.178,
+          "sequential_area": 36.176,
+          "cells": 489,
+          "sequential_cells": 8
+        }
+      },
+      "metadata_FF_audit": {
+        "actual_removed_FF": 23553,
+        "static_map_owner_role_and_captured_handle_upper_bound_removed_FF": 23553,
+        "matches_static_bound": true,
+        "scope": "Static role pruning may remove only1 or2 role bits per resident after mapping; actual charged FF and residual role implementation must be explained. All used generation/pins/ready/pending/dirty/WAD/data holding state remains charged."
+      },
+      "same_library_SDC_parameters_effort": true,
+      "SRAM_macro_area": null,
+      "SRAM_macro_delay": null,
+      "whole_slice_PPA": false,
+      "paper_performance_pairing_eligible": false
+    },
+    {
+      "mode": "S64",
+      "R1_area": 2121045.696,
+      "R2_area": 1627498.6560000004,
+      "area_change_percent": -23.269043233286357,
+      "R1_target_WNS_ns": -13.612103,
+      "R2_target_WNS_ns": -1.400875,
+      "R1_2ns_WNS_ns": -12.495495,
+      "R2_2ns_WNS_ns": -0.284268,
+      "R1_target_TNS_ns": -1121091.25,
+      "R2_target_TNS_ns": -93220.257812,
+      "R1_buckets": {
+        "ep_l2_slice_ctrl_other": {
+          "instances": 1,
+          "area": 877285.8220000003,
+          "sequential_area": 164718.372,
+          "cells": 775653,
+          "sequential_cells": 36426
+        },
+        "ep_l2_metadata_word": {
+          "instances": 1088,
+          "area": 1158806.656,
+          "sequential_area": 301563.136,
+          "cells": 988288,
+          "sequential_cells": 66688
+        },
+        "ep_l2_tag_map_word": {
+          "instances": 1024,
+          "area": 84439.04,
+          "sequential_area": 50935.808000000005,
+          "cells": 50176,
+          "sequential_cells": 11264
+        },
+        "ep_l2_bank_arbiter": {
+          "instances": 1,
+          "area": 514.178,
+          "sequential_area": 36.176,
+          "cells": 489,
+          "sequential_cells": 8
+        }
+      },
+      "R2_buckets": {
+        "ep_l2_slice_ctrl_other": {
+          "instances": 877,
+          "area": 452625.0680000001,
+          "sequential_area": 164713.85,
+          "cells": 349103,
+          "sequential_cells": 36425
+        },
+        "ep_l2_index_mux": {
+          "instances": 15,
+          "area": 483216.93,
+          "sequential_area": 0.0,
+          "cells": 525022,
+          "sequential_cells": 0
+        },
+        "ep_l2_first_one": {
+          "instances": 2,
+          "area": 444.75200000000007,
+          "sequential_area": 0.0,
+          "cells": 500,
+          "sequential_cells": 0
+        },
+        "ep_l2_metadata_word": {
+          "instances": 1088,
+          "area": 690697.7280000001,
+          "sequential_area": 245996.80000000002,
+          "cells": 520704,
+          "sequential_cells": 54400
+        },
+        "ep_l2_bank_arbiter": {
+          "instances": 1,
+          "area": 514.178,
+          "sequential_area": 36.176,
+          "cells": 489,
+          "sequential_cells": 8
+        }
+      },
+      "metadata_FF_audit": {
+        "actual_removed_FF": 23553,
+        "static_map_owner_role_and_captured_handle_upper_bound_removed_FF": 23553,
+        "matches_static_bound": true,
+        "scope": "Static role pruning may remove only1 or2 role bits per resident after mapping; actual charged FF and residual role implementation must be explained. All used generation/pins/ready/pending/dirty/WAD/data holding state remains charged."
+      },
+      "same_library_SDC_parameters_effort": true,
+      "SRAM_macro_area": null,
+      "SRAM_macro_delay": null,
+      "whole_slice_PPA": false,
+      "paper_performance_pairing_eligible": false
+    },
+    {
+      "mode": "UNIFIED",
+      "R1_area": 2525345.746,
+      "R2_area": 2432606.4420000003,
+      "area_change_percent": -3.6723408724089857,
+      "R1_target_WNS_ns": -36.605915,
+      "R2_target_WNS_ns": -1.700971,
+      "R1_2ns_WNS_ns": -35.489307,
+      "R2_2ns_WNS_ns": -0.584364,
+      "R1_target_TNS_ns": -3507322.75,
+      "R2_target_TNS_ns": -164782.6875,
+      "R1_buckets": {
+        "ep_l2_slice_ctrl_other": {
+          "instances": 1,
+          "area": 1141716.6879999998,
+          "sequential_area": 165930.268,
+          "cells": 970361,
+          "sequential_cells": 36694
+        },
+        "ep_l2_metadata_word": {
+          "instances": 1168,
+          "area": 1298675.84,
+          "sequential_area": 332746.84800000006,
+          "cells": 1113104,
+          "sequential_cells": 73584
+        },
+        "ep_l2_tag_map_word": {
+          "instances": 1024,
+          "area": 84439.04,
+          "sequential_area": 50935.808000000005,
+          "cells": 50176,
+          "sequential_cells": 11264
+        },
+        "ep_l2_bank_arbiter": {
+          "instances": 1,
+          "area": 514.178,
+          "sequential_area": 36.176,
+          "cells": 489,
+          "sequential_cells": 8
+        }
+      },
+      "R2_buckets": {
+        "ep_l2_slice_ctrl_other": {
+          "instances": 940,
+          "area": 499246.622,
+          "sequential_area": 165930.268,
+          "cells": 390182,
+          "sequential_cells": 36694
+        },
+        "ep_l2_index_mux": {
+          "instances": 15,
+          "area": 483216.93,
+          "sequential_area": 0.0,
+          "cells": 525022,
+          "sequential_cells": 0
+        },
+        "ep_l2_first_one": {
+          "instances": 5,
+          "area": 3133.480000000001,
+          "sequential_area": 0.0,
+          "cells": 3562,
+          "sequential_cells": 0
+        },
+        "ep_l2_metadata_word": {
+          "instances": 1168,
+          "area": 1362056.192,
+          "sequential_area": 332746.84800000006,
+          "cells": 1179680,
+          "sequential_cells": 73584
+        },
+        "ep_l2_tag_map_word": {
+          "instances": 1024,
+          "area": 84439.04,
+          "sequential_area": 50935.808000000005,
+          "cells": 50176,
+          "sequential_cells": 11264
+        },
+        "ep_l2_bank_arbiter": {
+          "instances": 1,
+          "area": 514.178,
+          "sequential_area": 36.176,
+          "cells": 489,
+          "sequential_cells": 8
+        }
+      },
+      "metadata_FF_audit": {
+        "actual_removed_FF": 0,
+        "static_map_owner_role_and_captured_handle_upper_bound_removed_FF": 0,
+        "matches_static_bound": true,
+        "scope": "Static role pruning may remove only1 or2 role bits per resident after mapping; actual charged FF and residual role implementation must be explained. All used generation/pins/ready/pending/dirty/WAD/data holding state remains charged."
+      },
+      "same_library_SDC_parameters_effort": true,
+      "SRAM_macro_area": null,
+      "SRAM_macro_delay": null,
+      "whole_slice_PPA": false,
+      "paper_performance_pairing_eligible": false
+    }
+  ],
+  "TVD_three_tests": "NOT_COMPILED_NOT_RUN",
+  "preserved_Core_candidates": {
+    "TVD": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "common": "099aeb5ac002ddc03ab8dc295caa1333d9aa50e1",
+    "structural": "26ed1da60249727870802c84f52fabe72274c541"
+  },
+  "cross_mode_partial_area_ratios": {
     "B16": {
-      "area": 1598557.0580000002,
-      "WNS": -1.413025,
-      "WNS2ns": -0.296418
+      "R1_Unified_over_baseline": 1.219990860780334,
+      "R2_Unified_over_baseline": 1.5217514006309558,
+      "scope": "same reference standard-cell controller/access cut only; excludes unknown SRAM/native logic; not whole-L2/net benefit"
     },
     "S64": {
-      "area": 1627498.6560000004,
-      "WNS": -1.400875,
-      "WNS2ns": -0.284268
-    },
-    "UNIFIED": {
-      "area": 2432606.4420000003,
-      "WNS": -1.700971,
-      "WNS2ns": -0.584364
+      "R1_Unified_over_baseline": 1.1906135500816668,
+      "R2_Unified_over_baseline": 1.4946902923894025,
+      "scope": "same reference standard-cell controller/access cut only; excludes unknown SRAM/native logic; not whole-L2/net benefit"
     }
   },
-  "UTC": "2026-10-17T19:24:06.436186+00:00"
+  "review_pack": "docs/ep_l2/review_packs/RTL_COST_TIMING_REFINEMENT_R2_r1",
+  "publication_identity": "enclosing Git commit; exact remote readback is recorded by publisher outside the commit to avoid self-hash circularity",
+  "publication_UTC": "2026-10-17T19:48:36.979428+00:00",
+  "Goal_scope": "bounded engineering exploration completed, negative timing outcome retained; no resident waiter",
+  "mandatory_functional_final_receipt": "functional_and_diagnosis/qualification-vector/unified-last-physical/FUNCTIONAL_RECEIPT.json"
 }

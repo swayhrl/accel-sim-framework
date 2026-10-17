@@ -1,0 +1,398 @@
+
+-- Executing script file `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/prove-1-0.ys' --
+
+1. Executing Verilog-2005 frontend: /workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv
+Parsing SystemVerilog input from `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv' to AST representation.
+Generating RTLIL representation for module `\ep_l2_metadata_word_r1'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv
+Parsing SystemVerilog input from `/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv' to AST representation.
+Generating RTLIL representation for module `\ep_l2_metadata_word'.
+Generating RTLIL representation for module `\ep_l2_tag_map_word'.
+Generating RTLIL representation for module `\ep_l2_first_one'.
+Generating RTLIL representation for module `\ep_l2_index_mux'.
+Generating RTLIL representation for module `\ep_l2_control_inverter'.
+Generating RTLIL representation for module `\ep_l2_control_buffer'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: /workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/wrapper-1-0.sv
+Parsing SystemVerilog input from `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/wrapper-1-0.sv' to AST representation.
+Generating RTLIL representation for module `\word_equiv'.
+Successfully finished Verilog frontend.
+
+4. Executing PREP pass.
+
+4.1. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1.1. Analyzing design hierarchy..
+Top module:  \word_equiv
+Used module:     \ep_l2_metadata_word
+Used module:     \ep_l2_metadata_word_r1
+Parameter \SUPPORT_RES = 1
+Parameter \STATIC_RESIDENT = 0
+
+4.1.2. Executing AST frontend in derive mode using pre-parsed AST for module `\ep_l2_metadata_word'.
+Parameter \SUPPORT_RES = 1
+Parameter \STATIC_RESIDENT = 0
+Generating RTLIL representation for module `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word'.
+Parameter \SUPPORT_RES = 1
+
+4.1.3. Executing AST frontend in derive mode using pre-parsed AST for module `\ep_l2_metadata_word_r1'.
+Parameter \SUPPORT_RES = 1
+Generating RTLIL representation for module `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001'.
+
+4.1.4. Analyzing design hierarchy..
+Top module:  \word_equiv
+Used module:     $paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word
+Used module:     $paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001
+
+4.1.5. Analyzing design hierarchy..
+Top module:  \word_equiv
+Used module:     $paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word
+Used module:     $paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001
+Removing unused module `\ep_l2_control_buffer'.
+Removing unused module `\ep_l2_control_inverter'.
+Removing unused module `\ep_l2_index_mux'.
+Removing unused module `\ep_l2_first_one'.
+Removing unused module `\ep_l2_tag_map_word'.
+Removing unused module `\ep_l2_metadata_word'.
+Removing unused module `\ep_l2_metadata_word_r1'.
+Removed 7 unused modules.
+
+4.2. Executing PROC pass (convert processes to netlists).
+
+4.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+Found and cleaned up 1 empty switch in `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+Cleaned up 2 empty switches.
+
+4.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 2 switch rules as full_case in process $proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500 in module $paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.
+Marked 2 switch rules as full_case in process $proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541 in module $paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.
+Removed a total of 0 dead cases.
+
+4.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 6 assignments to connections.
+
+4.2.4. Executing PROC_INIT pass (extract init attributes).
+
+4.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+4.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~30 debug messages>
+
+4.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1537'.
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1533'.
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1529'.
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1525'.
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1521'.
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:32$1519'.
+Creating decoders for process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+     1/7: $0\dynamic_owner[9:0]
+     2/7: $0\dirty[3:0]
+     3/7: $0\sectors_pending[3:0]
+     4/7: $0\sectors_ready[3:0]
+     5/7: $0\pins[5:0]
+     6/7: $0\generation[31:0]
+     7/7: $0\role[2:0]
+Creating decoders for process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+     1/7: $0\dirty[3:0]
+     2/7: $0\sectors_pending[3:0]
+     3/7: $0\sectors_ready[3:0]
+     4/7: $0\pins[5:0]
+     5/7: $0\owner_tag[9:0]
+     6/7: $0\generation[31:0]
+     7/7: $0\role[2:0]
+
+4.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\prefix[5]' from process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1537'.
+No latch inferred for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\prefix[4]' from process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1533'.
+No latch inferred for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\prefix[3]' from process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1529'.
+No latch inferred for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\prefix[2]' from process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1525'.
+No latch inferred for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\prefix[1]' from process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1521'.
+No latch inferred for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\prefix[0]' from process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:32$1519'.
+
+4.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\role' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1734' with positive edge clock.
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\generation' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1735' with positive edge clock.
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\pins' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1736' with positive edge clock.
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\sectors_ready' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1737' with positive edge clock.
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\sectors_pending' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1738' with positive edge clock.
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\dirty' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1739' with positive edge clock.
+Creating register for signal `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.\dynamic_owner' using process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+  created $dff cell `$procdff$1740' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\role' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1741' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\generation' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1742' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\owner_tag' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1743' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\pins' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1744' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\sectors_ready' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1745' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\sectors_pending' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1746' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.\dirty' using process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+  created $dff cell `$procdff$1747' with positive edge clock.
+
+4.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+4.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1537'.
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1533'.
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1529'.
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1525'.
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1521'.
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:32$1519'.
+Found and cleaned up 15 empty switches in `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+Removing empty process `$paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:41$1500'.
+Found and cleaned up 15 empty switches in `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+Removing empty process `$paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:23$1541'.
+Cleaned up 30 empty switches.
+
+4.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.
+<suppressed ~23 debug messages>
+Optimizing module word_equiv.
+Optimizing module $paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.
+<suppressed ~8 debug messages>
+
+4.3. Executing FLATTEN pass (flatten design).
+Deleting now unused module $paramod$dee15a212ab09d1b8159f5ba11347bdbe36d5810\ep_l2_metadata_word.
+Deleting now unused module $paramod\ep_l2_metadata_word_r1\SUPPORT_RES=s32'00000000000000000000000000000001.
+<suppressed ~2 debug messages>
+
+4.4. Executing FUTURE pass.
+
+4.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+4.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+Removed 4 unused cells and 124 unused wires.
+<suppressed ~5 debug messages>
+
+4.7. Executing CHECK pass (checking for obvious problems).
+Checking module word_equiv...
+Found and reported 0 problems.
+
+4.8. Executing OPT pass (performing simple optimizations).
+
+4.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+4.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 139 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Computing hashes of 129 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+<suppressed ~30 debug messages>
+Removed a total of 10 cells.
+
+4.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \word_equiv..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~102 debug messages>
+
+4.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \word_equiv.
+Performed a total of 0 changes.
+
+4.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 129 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Removed a total of 0 cells.
+
+4.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+Removed 0 unused cells and 10 unused wires.
+<suppressed ~1 debug messages>
+
+4.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+4.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+4.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \word_equiv..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~102 debug messages>
+
+4.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \word_equiv.
+Performed a total of 0 changes.
+
+4.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 129 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Removed a total of 0 cells.
+
+4.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+
+4.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+4.8.14. Finished fast OPT passes. (There is nothing left to do.)
+
+4.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 30 bits (of 32) from mux cell word_equiv.$ternary$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/wrapper-1-0.sv:5$1484 ($mux).
+Removed top 30 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/wrapper-1-0.sv:5$1485 ($add).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$flatten\a.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:32$1550 ($add).
+Removed top 26 bits (of 32) from mux cell word_equiv.$flatten\a.$ternary$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1545 ($mux).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$flatten\a.$sub$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1544 ($sub).
+Removed top 26 bits (of 32) from port Y of cell word_equiv.$flatten\a.$sub$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1544 ($sub).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$flatten\a.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1543 ($add).
+Removed top 26 bits (of 32) from port Y of cell word_equiv.$flatten\a.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1543 ($add).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1540 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1540 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1540 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1536 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1536 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1536 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1532 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1532 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1532 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1528 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1528 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1528 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1524 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1524 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\b.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:35$1524 ($and).
+Removed top 26 bits (of 32) from mux cell word_equiv.$flatten\b.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1504 ($mux).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$flatten\b.$sub$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1503 ($sub).
+Removed top 26 bits (of 32) from port Y of cell word_equiv.$flatten\b.$sub$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1503 ($sub).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$flatten\b.$add$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1502 ($add).
+Removed top 26 bits (of 32) from port Y of cell word_equiv.$flatten\b.$add$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1502 ($add).
+Removed top 26 bits (of 32) from wire word_equiv.$flatten\b.$ternary$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1504_Y.
+Removed top 26 bits (of 32) from wire word_equiv.$flatten\b.$sub$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1503_Y.
+Removed top 26 bits (of 32) from wire word_equiv.$flatten\b.$add$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:47$1502_Y.
+Removed top 26 bits (of 32) from wire word_equiv.$flatten\a.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1543_Y.
+Removed top 26 bits (of 32) from wire word_equiv.$flatten\a.$sub$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1544_Y.
+Removed top 26 bits (of 32) from wire word_equiv.$flatten\a.$ternary$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/r1_word.sv:29$1545_Y.
+Removed top 30 bits (of 32) from wire word_equiv.$ternary$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/qualification-vector/word-induction/wrapper-1-0.sv:5$1484_Y.
+
+4.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+Removed 0 unused cells and 7 unused wires.
+<suppressed ~1 debug messages>
+
+4.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+4.12. Executing OPT pass (performing simple optimizations).
+
+4.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+4.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 129 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Removed a total of 0 cells.
+
+4.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+
+4.12.4. Finished fast OPT passes.
+
+4.13. Executing SORT pass.
+
+4.14. Printing statistics.
+
+=== word_equiv ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      213 wires
+     1787 wire bits
+      111 public wires
+      704 public wire bits
+       25 ports
+       52 port bits
+      129 cells
+        4   $add
+        7   $and
+       14   $dff
+        1   $eq
+        7   $logic_and
+        5   $logic_not
+        1   $logic_or
+       77   $mux
+        1   $not
+        7   $or
+        2   $scopeinfo
+        2   $sub
+        1   $xor
+
+4.15. Executing CHECK pass (checking for obvious problems).
+Checking module word_equiv...
+Found and reported 0 problems.
+
+5. Executing SAT pass (solving SAT problems in the circuit).
+Using SAT solver `minisat`.
+
+Setting up time step 1:
+Final constraint equation: { } = { }
+Imported 129 cells to SAT database.
+Final init constraint equation: { \b.dynamic_owner \b.dirty \b.sectors_pending \b.sectors_ready \b.pins \b.generation \b.role \a.dirty \a.sectors_pending \a.sectors_ready \a.pins \a.owner_tag \a.generation \a.role } = 126'000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+Setting up time step 2:
+Final constraint equation: { } = { }
+Imported 129 cells to SAT database.
+
+Setting up time step 1:
+Final constraint equation: { } = { }
+Imported 129 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+** Trying induction with length 1 **
+
+Setting up time step 3:
+Final constraint equation: { } = { }
+Imported 129 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+[base case 1] Solving problem with 24118 variables and 64610 clauses..
+Base case for induction length 1 proven.
+
+Setting up time step 2:
+Final constraint equation: { } = { }
+Imported 129 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+[induction step 1] Solving problem with 15814 variables and 42153 clauses..
+Induction step proven: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+

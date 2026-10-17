@@ -1,28 +1,49 @@
-# Lane2 — RTL R2 bounded refinement active
+# Lane2 — bounded RTL R2 delivered; timing remains unclosed
 
-Canonical RTL f54d3c054; authority f2a2fec3. T0 2026-10-17T17:30:58Z;
-first4h checkpoint21:30:58Z; hard6h stop23:30:58Z. Original Goal not restarted.
+Authority f2a2fec3ee5e1bb42aa298c84d25bdd9bd70e13e section1. T0
+2026-10-17T17:30:58Z. New bounded Goal; original Lane2 history retained.
+Canonical five-file hardware source f54d3c054a6a03c85b40a1c5018751958c78a129.
 
-Three-mode full-size actual mapping/two-periodSTA completed. All remain unclosed.
-All three full base+pin/WAD128/129th/stale/backpressure tests and GEN3 pass;
-actual Lane3 ten byte vectors pass all modes. The final full1024Tag/1167/bank3
-case is currently RUNNING, not yet PASS. Final review pack publication follows
-that receipt and exact identities; no timing/whole-slice/performance pairing.
+Selected final variant: balanced bank-compatible1168-slot allocation,
+16-word metadata/Tag-map masks, GEN32 prefix, real charged reset distribution,
+and proved B16/S64 fixed map/owner/role hardwires. No capacity/bank service/
+lifecycle/clock stage/II changes relative to R1. Unified retains dynamic state.
 
-R1 frozen09de remains intact:177 public assets,21 large archives and5 accepted
-original functional binaries verified read-only; no original test rerun.
+|Mode|Reference standard-cell area|Change vs R1|WNS0.883392226ns|WNS2ns|
+|---|---:|---:|---:|---:|
+|B16|1598557.058|-22.774%|-1.413025|-0.296418|
+|S64|1627498.656|-23.269%|-1.400875|-0.284268|
+|UNIFIED|2432606.442|-3.672%|-1.700971|-0.584364|
 
-Selected source adds banked balanced allocation, proven static map/owner/role
-hardwires,16-word distribution, exact GEN32 prefix, real reset repeaters and
-Tag-map data masks. No pipeline/II/resource capacity changed from R1. Same
-Nangate library/SDC/ABC effort for all. SRAM146KiB and native external costs
-UNKNOWN. DC/power/layout UNRUN. No official SIM patch or Lane5 app started.
+Actual full-size base/pin/adjacent grant/WAD129th/stale/backpressure and GEN3,
+Unified1024Tag/PID1167/bank3 test and all three Lane3 actual byte suites PASS.
+R1 terminal counters/cycles are identical; helper and scoped word/reset/Tagmap
+proofs are attached. No whole-controller/global/post-map/whole-GPU proof;
+dynamic late rollback after destructive commit remains unqualified.
 
-Earlier ed1c6ea12 candidate is fully qualified and retained as fallback. Its
-full-tag boundary already passed. Source/proofs and original attempts remain.
-Ordinary engineering corrections include bounded Icarus vector elaboration.
+All three modes use identical Nangate typical1.1V25C/library/SDC/ABC effort.
+All target and2ns timing FAIL, ordinary FF data paths also unclosed. Real
+buffers and control metadata are charged. SRAM146KiB macro delay/area and
+native Tag/LRU/MSHR/dirty-byte/NoC costs UNKNOWN. No whole-slice PPA/net-benefit
+or current SIM performance pairing. Existing SIM/RTL II4/II3/copy/return/
+arbitration/native-approval gaps remain. Lane1 timing proposals are separate;
+no official SIM change or Lane5 application launched.
 
-TVD/common/structural Core candidates remain be5dcbe1/099aeb5a/26ed1da6 clean.
-TVD r14 three tests remain NOT_COMPILED_NOT_RUN; no complete TVD claim.
-All current EDA runs use central leases and own12GiB despite newer shared16GiB;
-48/40GiB disk and64GiB availableRAM floors unchanged. No resident waiter.
+Exact sameRTL DC entry/filelist/constraints/DB/PVT/units handoff is ready;
+dc_shell absent: DC UNRUN. Power and post-layout UNRUN. No additional stage
+or throughput change is silently inferred from negative STA.
+
+R1 frozen09de:177 public assets,21 original large archives and5 accepted
+functional binaries verified unchanged read-only. Earlier qualified ed1
+variant and trial failures/time/resource stops are preserved and classified.
+TVD/common/structural Core remain be5dcbe1/099aeb5a/26ed1da6 clean; TVD r14
+three tests NOT_COMPILED_NOT_RUN. No complete TVD claim.
+
+Central admission and leases were used; own12GiB,workspace48GiB/Share40GiB/
+availableRAM64GiB floors retained despite newer shared16GiB policy. No
+Storage-Ops/delete/migration or foreign process/data/quota action; no waiter.
+
+Review pack: [RTL_COST_TIMING_REFINEMENT_R2_r1](../../../review_packs/RTL_COST_TIMING_REFINEMENT_R2_r1/README.md).
+Precise source/config/binary/trace/library/SDC/tool/netlist identities are in
+RTL_COST_R2_RECEIPT and per-run raw receipts. Read the enclosing Git commit as
+the publication identity; hardware identity is the immutable source above.

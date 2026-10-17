@@ -1,0 +1,238 @@
+
+-- Executing script file `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/tag-map-proof/proof.ys' --
+
+1. Executing Verilog-2005 frontend: /workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv
+Parsing SystemVerilog input from `/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv' to AST representation.
+Generating RTLIL representation for module `\ep_l2_metadata_word'.
+Generating RTLIL representation for module `\ep_l2_tag_map_word'.
+Generating RTLIL representation for module `\ep_l2_first_one'.
+Generating RTLIL representation for module `\ep_l2_index_mux'.
+Generating RTLIL representation for module `\ep_l2_control_inverter'.
+Generating RTLIL representation for module `\ep_l2_control_buffer'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/tag-map-proof/wrapper.sv
+Parsing SystemVerilog input from `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/tag-map-proof/wrapper.sv' to AST representation.
+Generating RTLIL representation for module `\equiv'.
+Successfully finished Verilog frontend.
+
+3. Executing PREP pass.
+
+3.1. Executing HIERARCHY pass (managing design hierarchy).
+
+3.1.1. Analyzing design hierarchy..
+Top module:  \equiv
+Used module:     \ep_l2_tag_map_word
+
+3.1.2. Analyzing design hierarchy..
+Top module:  \equiv
+Used module:     \ep_l2_tag_map_word
+Removing unused module `\ep_l2_control_buffer'.
+Removing unused module `\ep_l2_control_inverter'.
+Removing unused module `\ep_l2_index_mux'.
+Removing unused module `\ep_l2_first_one'.
+Removing unused module `\ep_l2_metadata_word'.
+Removed 5 unused modules.
+Mapping positional arguments of cell equiv.new_word (ep_l2_tag_map_word).
+Mapping positional arguments of cell equiv.old_word (ep_l2_tag_map_word).
+
+3.2. Executing PROC pass (convert processes to netlists).
+
+3.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+3.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 1 switch rules as full_case in process $proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:71$59 in module ep_l2_tag_map_word.
+Removed a total of 0 dead cases.
+
+3.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 0 assignments to connections.
+
+3.2.4. Executing PROC_INIT pass (extract init attributes).
+
+3.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~2 debug messages>
+
+3.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\ep_l2_tag_map_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:71$59'.
+     1/1: $0\payload[10:0]
+
+3.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+3.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\ep_l2_tag_map_word.\payload' using process `\ep_l2_tag_map_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:71$59'.
+  created $dff cell `$procdff$1479' with positive edge clock.
+
+3.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 2 empty switches in `\ep_l2_tag_map_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:71$59'.
+Removing empty process `ep_l2_tag_map_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-cost-r2-fanout-v3/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:71$59'.
+Cleaned up 2 empty switches.
+
+3.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ep_l2_tag_map_word.
+<suppressed ~1 debug messages>
+Optimizing module equiv.
+<suppressed ~1 debug messages>
+
+3.3. Executing FLATTEN pass (flatten design).
+Deleting now unused module ep_l2_tag_map_word.
+<suppressed ~2 debug messages>
+
+3.4. Executing FUTURE pass.
+
+3.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+Removed 2 unused cells and 11 unused wires.
+<suppressed ~3 debug messages>
+
+3.7. Executing CHECK pass (checking for obvious problems).
+Checking module equiv...
+Found and reported 0 problems.
+
+3.8. Executing OPT pass (performing simple optimizations).
+
+3.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\equiv'.
+Computing hashes of 17 cells of `\equiv'.
+Finding duplicate cells in `\equiv'.
+Removed a total of 0 cells.
+
+3.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \equiv..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~6 debug messages>
+
+3.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \equiv.
+Performed a total of 0 changes.
+
+3.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\equiv'.
+Computing hashes of 17 cells of `\equiv'.
+Finding duplicate cells in `\equiv'.
+Removed a total of 0 cells.
+
+3.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+
+3.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.8.8. Finished fast OPT passes. (There is nothing left to do.)
+
+3.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 27 bits (of 32) from port B of cell equiv.$div$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/tag-map-proof/wrapper.sv:4$1470 ($div).
+Removed top 27 bits (of 32) from port B of cell equiv.$div$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3/tag-map-proof/wrapper.sv:4$1469 ($div).
+
+3.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+
+3.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+3.12. Executing OPT pass (performing simple optimizations).
+
+3.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module equiv.
+
+3.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\equiv'.
+Computing hashes of 17 cells of `\equiv'.
+Finding duplicate cells in `\equiv'.
+Removed a total of 0 cells.
+
+3.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \equiv..
+
+3.12.4. Finished fast OPT passes.
+
+3.13. Executing SORT pass.
+
+3.14. Printing statistics.
+
+=== equiv ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       32 wires
+      233 wire bits
+       22 public wires
+      121 public wire bits
+        8 ports
+       37 port bits
+       17 cells
+        1   $and
+        2   $dff
+        2   $div
+        3   $eq
+        2   $logic_and
+        1   $logic_not
+        4   $mux
+        2   $scopeinfo
+
+3.15. Executing CHECK pass (checking for obvious problems).
+Checking module equiv...
+Found and reported 0 problems.
+
+4. Executing SAT pass (solving SAT problems in the circuit).
+Using SAT solver `minisat`.
+
+Setting up time step 1:
+Final constraint equation: { } = { }
+Imported 17 cells to SAT database.
+Final init constraint equation: { \old_word.payload \new_word.payload } = 22'0000000000000000000000
+
+Setting up time step 2:
+Final constraint equation: { } = { }
+Imported 17 cells to SAT database.
+
+Setting up time step 1:
+Final constraint equation: { } = { }
+Imported 17 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+** Trying induction with length 1 **
+
+Setting up time step 3:
+Final constraint equation: { } = { }
+Imported 17 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+[base case 1] Solving problem with 49756 variables and 147827 clauses..
+Base case for induction length 1 proven.
+
+Setting up time step 2:
+Final constraint equation: { } = { }
+Imported 17 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+[induction step 1] Solving problem with 33122 variables and 98383 clauses..
+Induction step proven: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+
