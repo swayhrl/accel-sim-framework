@@ -35,3 +35,14 @@ versions and effort are retained with every successful mapping.
 with four explicit SRAM blackboxes. The controller cost filelist excludes
 these macros at its documented timing cut. `run_functional.py --full-top`
 qualifies this integration using the same byte-reference transaction tests.
+
+The installed ABC fast default failed at `buffer`: a dangling mapped node
+had no fanout. `--mapping fast-clean` uses explicit strash/map, then
+`cleanup -i -o` before buffer/upsize/dnsize/stime. Cleanup removes only dead
+logic and preserves all PIs/POs; it changes no clock/IO/fanout constraints.
+ABC receives combinational graphs only; state registers remain at the RTL
+boundaries. This explicit effort must be the SAME for B16/Unified/S64. Raw
+failed/default scripts and the full-size cleaned-graph diagnosis are retained.
+Final timing comes from independent OpenSTA, not ABC's requested target.
+All future tool temporaries use TMPDIR inside the counted output directory.
+OpenSTA is explicitly single-threaded.

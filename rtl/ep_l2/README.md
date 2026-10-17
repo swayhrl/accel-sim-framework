@@ -21,8 +21,10 @@ replaced with DFF data arrays for area reporting.
 
 The full integration top passed the same independent byte-reference tests
 for B16/Unified/S64 and generation exhaustion under central lease
-e369a32832124998a7f708cb732fd2b6. Exact source/binary/stimulus identities and
-logs are in [validation/fulltop_r1](validation/fulltop_r1). Full-size cost
+65e7378fe2fd495baff151a1dfc7b974. A same-edge pin/admission defect was
+reproduced old-red and corrected before the final source freeze. Exact
+old/new source/binary/stimulus identities and logs are in
+[validation/pin_admission_r1](validation/pin_admission_r1). Full-size cost
 usesGEN32; GEN3 is only the bounded exhaustion test. See
 [stimulus contract](docs/SHARED_STIMULI.json) for the twelve test categories.
 `run_functional.py --full-top` requires a central lease in this shared host.
