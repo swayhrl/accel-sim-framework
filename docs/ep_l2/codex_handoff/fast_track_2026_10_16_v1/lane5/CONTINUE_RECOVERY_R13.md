@@ -1,3 +1,7 @@
+# Completed bounded CONTINUE — no experiment restart needed
+
+All5 pairs and cohort are complete/current accepted, remote cohort e6714dadb6cd5deb45185939a1bb3a2c488892c3. Read FINAL_RECEIPT_R0_1_A1_B1.json and fresh live V2. No owned process/lease remains. The historical running-window recovery instructions below are retained for audit only; do not repeat their already completed simulations or qualification.
+
 # Existing Lane5 bounded CONTINUE recovery
 
 Use the original worktree/branch and existing Goal; do not recreate/reinitialize while it is active. T0 2026-10-17T02:19:03Z, hard deadline12:19:03Z. Four repaired-source pairs are CURRENT_ACCEPTED. Latest independently verified pair publication e12a239806cb41e5bfa53ee89d781d9178af997b, current V2 generation7; read live CLIENT_CONTRACT and current authority instead of trusting this snapshot after newer updates. LIVE_CHECKPOINT_R13.json records actual final-pair registry/process/start/boot/lease identities at its timestamp. No promise that a process survives a platform stop.
