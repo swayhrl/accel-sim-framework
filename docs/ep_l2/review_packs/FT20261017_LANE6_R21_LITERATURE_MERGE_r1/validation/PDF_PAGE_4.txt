@@ -1,0 +1,63 @@
+            (a) Local staging pressure                          (b) Bank work and waiting                            (c) Downstream admission
+                                    U: all 0
+    SAD      0
+
+  Vector
+    CFD      5 events
+
+  Conv.
+   FWT
+
+           0.0             0.4             0.8                 0             10             20                     0.0         0.8             1.6
+                        WB-full attempts (M)                             Reduction vs B16 (%)                            L2→DRAM full attempts (M)
+                          B16       U-WB16                             Ops / grants     Op. wait sum
+
+
+Fig. 3. H0 application-cumulative pressure and service observations. (a) WB-data-full refusal attempts; CFD’s small B16 count is labeled explicitly. (b)
+Separate relative reductions in logical work/successful modeled bank grants and in summed per-operation conflict waits. Logical operations and grants coincide
+at drain in these runs, but are independently checked counters. (c) Frontend attempts denied when the L2-to-DRAM queue is full. M denotes 106 . Attempt
+counts and operation-wait sums are not elapsed GPU cycles or unique transactions; reductions and increases do not establish causality.
+
+
+
+           Condition        Target DRAM MHz       Accepted B/U pairs                An equal 1168-slot strong static control remains unqualified;
+           H0 (reused)                      850                 2/2              B16/U combines copy removal and pooling. WBUF8 has 1160
+           Q4                               850                 0/2              slots. TVD/RO/Ideal and physical PPA remain separate gaps.
+           D4                              3400                 0/2
+                                                                                                    V. Related Work and Scope
+Fig. 4. Authorized r19 targets for Convolution/FWT. Q4/D4 lack published
+qualified native pairs at this snapshot. Counts are accepted pairs, not             The Virtual Write Queue exposes LLC dirty-line candidates
+performance. H0 five-workload results remain unchanged.                          to DRAM scheduling while retaining a physical write queue [1].
+                                                                                 Decoupled last-write prediction keeps candidate addresses in
+                                                                                 a last-write buffer and data in the LLC; evicted dirty blocks
+from 3,983,744 to 3,976,064 B. These correlated changes                          use a separate write buffer [2]. The Dirty-Block Index (DBI)
+motivate ordering/service diagnosis; they do not identify a                      separates dirty bits from tags and groups them by DRAM
+unique cause. SAD has no observed WB-data-full pressure and                      row [3]. Neither cache retention nor independent dirty metadata
+differs by only 24 cycles. Neither case is discarded.                            originates here. Our focus is tag reuse with the victim’s original
+                                                                                 slot still owned, a distinct incoming landing, and separate
+C. Downstream Service Sensitivity and Interaction                                payload/order retirement. DBI dirty status is not the WAD’s
+  R19 authorizes Convolution/FWT under H0, Q4, and D4,                           in-flight same-address ordering state.
+with D4 pairs first. For each condition ℎ, define                                   V-Way decouples tag/data placement [7]; Tag-Split Cache
+                                                                                 separates request and storage granularity [8]. Unified GPU
+        𝑆(ℎ) = 𝐶 𝐵 (ℎ)/𝐶𝑈 (ℎ),                 𝐽 (ℎ) = 𝑆(ℎ)/𝑆(H0).        (2)    memory reallocates SM register/cache/scratchpad storage [9].
+                                                                                 In-cache MSHRs [10], MiCache’s shared FPGA data/MSHR
+Retain all four cycles and absolute changes. 𝐶 𝐵 (H0)/𝐶𝑈 (ℎ)                     storage [11], and DL-MSHR’s linked slots, including write-
+confounds mechanism and downstream changes. Diagnostic                           miss data [12], motivate distinguishing what is shared. Our
+results never enter the H0 mean.                                                 comparison fixes resident-tag and miss-tracking budgets; it
+   Q4 enlarges downstream queues, scheduler/return storage,                      evaluates dirty-payload ownership rather than extra lookup or
+and derived credit 319 → 1279. Request buffers also affect                       request-tracking capacity.
+scheduling visibility and implementation complexity [6]. D4
+retains Q4 buffering and raises DRAM 850 → 3400 MHz,                                 VI. Conclusion
+with core/ICNT/L2 fixed at 1132 MHz. Integer DRAM timings        EP-L2 separates resident-tag visibility, dirty-payload own-
+shorten physically; the fixed 100-GPU-cycle interface delay ership, and writeback ordering to eliminate resident-to-WB
+remains. These are grouped buffering/credit and DRAM- relocation under a fixed payload and bank-service budget.
+domain interventions, not pure bandwidth or free hardware.     Five independently received native nonatomic pairs remove all
+   Figure 4 tracks accepted-pair coverage. New pairs require measured copies but deliver only a 1.001600 geometric-mean
+exact regime/configuration identity and current V2/native speed ratio, including a CFD slowdown. Local staging relief
+closure. Interpret 𝐽 with copy work, residence, bank service, coincides with more downstream admission denials in three
+valid opportunity ratios, and queue maxima. Faster service can workloads; a controlled service study is required to resolve
+shorten B16 WB residence, so 𝑆 need not rise monotonically. causality. Independent elasticity benefits and physical area,
+SMS does not establish EP-L2’s bottleneck. Adaptive points timing, and power advantages remain unproven.
+need an evidence checkpoint; simple-memory diagnostics
+require separate qualification.
+

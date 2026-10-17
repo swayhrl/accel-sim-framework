@@ -1,0 +1,55 @@
+                   EP-L2: Elastic Payload Storage for
+                 In-Place Writeback in GPU L2 Caches
+                                               Author information to be completed
+                                     English working draft EN-v6 (r21) — not for submission
+
+
+   Abstract—A fixed-partition L2 may copy a dirty victim into          physical GPU cycle, and a common 128-B copy latch outside
+a writeback buffer even though its data do not change. Elastic         the pool. Both also retain 128 writeback address-directory
+Payload L2 (EP-L2) retains the victim in place, separates tag          (WAD) entries and the same request-metadata limits. Sixteen
+visibility from payload ownership and writeback ordering, and
+allocates resident/writeback roles across a shared pool. We evaluate   is the static data quota, not the U-WB control limit.
+this WB-only mechanism against a fixed-partition reference with           Figure 1 shows the declared service model. WB-only pooling
+equal payload capacity and modeled bank service. Independent           can borrow reference bypass-return slots, but concurrent dy-
+intake of five complete H0 native nonatomic workload pairs             namic bypass use is unvalidated. Idle bypass capacity therefore
+confirms removal of all resident-to-writeback copies. However, the     makes a WB-heavy static control important.
+geometric-mean execution-speed ratio is only 1.001600, with one
+slowdown; end-to-end performance is nearly unchanged. Three               A resident tag names a payload through a slot identi-
+pressured workloads eliminate WB-data-full events while increas-       fier and generation. Each slot has one authoritative owner;
+ing downstream queue-admission denials. These observations             ready/pending sector masks and pins track its consumers. The
+motivate a controlled downstream-headroom study rather than            initial design preserves the resident bank class:
+establish its cause. The evidence covers symbolic sector versions
+and resource lifecycle, not numerical SASS outputs. Independent                    bank( 𝑝) = 𝑝 mod 4 = tag_index mod4.              (1)
+elasticity benefits, general workload speedup, and physical PPA
+advantages remain unestablished.                                       A globally free slot is therefore not necessarily a legal landing
+   Index Terms—GPU, L2 cache, writeback, tag–data decoupling,          for a given tag. The 1024 tags bound resident visibility; a
+resource sharing                                                       temporarily reserved incoming landing is not an additional
+                                                                       visible resident line.
+                        I. Introduction
+   A dirty eviction changes a line’s consumer without changing B. Replacement as a Transaction
+its data. Our reference nevertheless copies it to a writeback          Before a dirty replacement commits, the controller obtains
+buffer (WBUF), competing with demand accesses and fills. A the address-ordering entry, required issue resources, and a legal
+full WBUF can block eviction despite idle storage elsewhere. landing. In B16, it reads the victim into the latch and writes
+Removing copy work helps only when other resources allow WBUF before reusing the resident slot. In U-WB16, dirty
+progress.                                                           line 𝐴 remains in payload 𝑝 as WB_STAGED; new resident 𝐵
+   Prior designs already retain dirty data in the LLC and receives 𝑞 ≠ 𝑝. The send read and lower data carrier remain
+separately expose writeback candidates or dirty metadata [1]– necessary in both modes.
+[3]. Our question is narrower: can a resident tag be reused while      Precheck refusals acquire no visible ownership; bank retries
+its evicted dirty payload retains its original physical slot? EP-L2 may retain reservations across cycles. The reserved victim,
+implements this transition with a legal incoming landing and requester, and eventual native tag commit must agree. If an
+distinct local-data and address-ordering release events, under intervening fill changes a subsequent victim selection, the
+fixed tag, payload, and bank-service budgets. Storage sharing controller must preserve the original transaction or fully roll it
+alone is not the proposed contribution.                             back before preparing another. Rollback releases reservations,
+   Five matched pairs remove copies but yield only a 0.160% not bank work already performed.
+geometric-mean speed-ratio gain. Strong static controls must           The repaired release passes producer and independent
+isolate elasticity from copy removal; concurrent bypass and directed qualification, including the tested cross-cycle bound-
+TVD/RO are outside this WB-only comparison.                         ary. Application qualification remains bounded by the native
+                        II. EP-L2 Design                            nonatomic scope below.
+A. One-Slice Organization and Comparison Boundary                      C. Separate Release Events
+   The primary reference, B16 (B16_BANKED), partitions 1168              At committed replacement time 𝑡𝑟 , the old tag can be reused.
+line-sized slots into 1024 resident, 128 bypass-return, and 16         Payload 𝑝 remains protected until actual downstream data
+WBUF slots. U-WB16 (U_WB16) permits resident and WB                    acceptance 𝑡 𝑎 . The WAD retains same-address ordering until
+allocations across this physical pool. Each slot is 128 B with         writeback completion 𝑡 𝑑 . A software queue pointer alone does
+four 32-B sectors. Both modes provision four banks of 292              not constitute a data handoff: a separately accounted lower
+slots, at most one modeled line-sized operation per bank per           carrier must own the dirty data before local staging is released.
+

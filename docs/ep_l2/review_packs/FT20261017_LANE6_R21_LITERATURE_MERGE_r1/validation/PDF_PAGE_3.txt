@@ -1,0 +1,70 @@
+                             (a) End-to-end change (expanded scale)                                                       (b) Actual resident-to-WB copies
+
+
+
+
+                                                                                     Completed copies (thousands)
+                       0.6                                       +0.480                                             600                                        546.87
+Cycle reduction (%)
+
+
+                                                                                                                               U-WB16: all 0      B16 copies
+                       0.4                                                +0.310
+                                           +0.199                                                                   400
+                       0.2
+                               +0.022
+                       0.0                                                                                          200                                                 178.57
+                                                                                                                                        100.57
+                      −0.2                                                                                                   3.98                   31.12
+                                                      -0.214                                                          0
+                                SAD        Vector      CFD        Conv.   FWT                                                SAD        Vector      CFD        Conv.    FWT
+
+
+
+Fig. 2. Five independently received H0 native pairs, unchanged by diagnostic conditions. (a) Cycle reduction 100(𝐶𝐵 − 𝐶𝑈 )/𝐶𝐵 , on an expanded scale with
+zero denoting B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies;
+U-WB16 is zero in every pair. Vector, Conv., and FWT denote vectorAdd_4M, convolutionSeparable, and FWT_7_21. No error bars or significance claim.
+
+
+
+   The fixed development set is convolutionSeparable,                              and 0.310%, while CFD increases cycles by 0.214%. The
+FWT_7_21, cfd_097k, vectorAdd_4M, and SAD. Accepted                                geometric mean of 𝐶 𝐵 /𝐶𝑈 is 1.001600, or a 0.160% speed-ratio
+manifests bind each complete commandlist, input size, and                          gain. These deterministic paired observations establish neither
+trace body; workload names alone are insufficient. SAD is                          statistical significance nor general GPU speedup. Exact paired
+the predeclared negative control. All five pairs, including                        cycles and source/configuration/input/raw identities accompany
+slowdowns, enter the geometric mean. This development set                          the artifact tables.
+does not establish holdout or general GPU coverage.                                   Figure 2(b) shows removal of every measured resident-to-WB
+                                                                                   copy. A committed non-rolled-back B16 writeback uses two
+B. Correctness Before Performance                                                  copy operations and one send read; U-WB16 retains the send
+   The repaired producer and its independent replay each                           read. This local operation saving is not a speedup model. Actual
+pass 31 directed invocations, and Lane5 accepts the complete                       WB counts also change: CFD completes 31,123/31,063 WBs
+eleven-gate protocol. Per-spec complete-content proofs restrict                    and FWT 178,569/178,585 for B16/U-WB16. Consequently,
+application qualification to native nonatomic inputs. New results                  the run-level logical-operation difference need not equal twice
+remain bound to the exact source, binary, configurations, and                      either mode’s WB count. Artifact tables preserve actual
+input content.                                                                     WB/send-read and DRAM-byte totals.
+   Qualification covers host-prefill identity, physical-cycle
+grants, generation reuse, partial/out-of-order sectors, response                   B. Local Pressure and Downstream Service
+backpressure, and separate WB acceptance/completion. Native          Vector, Convolution, and FWT record 440,161, 845,097,
+tag time may include a host-copy offset; bank service must        and 890,294 B16 WB-data-full events; U-WB16 records zero.
+use the physical clock. Nonatomic results do not qualify mixed    Figure 3(b) shows less modeled bank work and lower aggregate
+atomic workloads.                                                 conflict waits. Successful grants are actual model-service
+   SASS traces do not supply complete numerical payloads. The     observations, not estimates obtained by multiplying copies.
+supported checks concern ownership, symbolic sector versions,     At drained termination, their equality to logical operations
+requester/transaction identity, and resource drain; they are not  implies neither elapsed-time nor RTL timing/energy savings.
+full numerical application verification. The independent paper       For the same three workloads, L2-to-DRAM full-block
+intake rehashes full native trace bodies, executable, ordered     attempts rise from 1.104M to 1.764M, 0.218M to 1.132M,
+configurations, and raw logs, reparses all 64 slice terminals     and 0.013M to 0.968M. This is consistent with pressure
+with the producing parser, and checks the current withdrawal      moving downstream after local staging relief. It does not
+authority. Legacy zero-mask records remain in the original        independently identify the limiting queue or DRAM service.
+inputs under a source-bound native-byte semantic proof; no        Denials may repeat for one frontend head and overlap other
+rows are removed. Historical PASS cannot override a later         blockers. From final cumulative observations of all 32 channels,
+scientific withdrawal.                                            the modeled issued-byte/atom-cycle fractions are 64.5/64.8%
+              IV. Results and Causal Analysis                     for Convolution and 14.1/14.1% for FWT. Even frequent
+                                                                  queue denials therefore do not prove global DRAM-bandwidth
+A. Performance and Internal Movement                              saturation. Kernel-boundary cumulative snapshots are not
+   All five predeclared H0 pairs pass independent paper intake summed.
+against the current Lane5 V2 authority. Each pair has equal          CFD is a useful counterexample: despite removing copies and
+instruction counts and matched full input/termination scope. lowering bank waits from 102,546 to 91,029, U-WB16 takes
+Figure 2(a) reports the complete set: SAD is almost tied; Vector, 169 more cycles. WAD-hazard events increase from 9,841 to
+Convolution, and FWT reduce cycles by 0.199%, 0.480%, 13,400, WB counts differ, and successful DRAM writes change
+

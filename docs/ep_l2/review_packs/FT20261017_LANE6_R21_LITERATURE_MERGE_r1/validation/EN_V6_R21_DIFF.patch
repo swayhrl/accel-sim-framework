@@ -1,0 +1,155 @@
+--- published_EN_v6_r19.tex
++++ EN_v6_r21.tex
+@@ -18,11 +18,11 @@
+ \footnotesize MEASUREMENTS PENDING\par\medskip
+ \parbox{.91\linewidth}{\centering\footnotesize #4}
+ \end{minipage}}}
+-\hypersetup{pdftitle={EP-L2: Elastic Payload Storage for In-Place Writeback in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v6 r19: frozen H0 results and separate downstream-service interaction}}
++\hypersetup{pdftitle={EP-L2: Elastic Payload Storage for In-Place Writeback in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v6 r21: verified writeback literature; frozen H0 results; separate r19 sensitivity}}
+ \hyphenation{write-back micro-ar-chi-tec-ture in-di-rec-tion}
+ \begin{document}
+ \title{EP-L2: Elastic Payload Storage for\\In-Place Writeback in GPU L2 Caches}
+-\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v6 (r19) --- not for submission}}
++\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v6 (r21) --- not for submission}}
+ \maketitle
+ \begin{abstract}
+ A fixed-partition L2 may copy a dirty victim into a writeback buffer even though its data do not change. Elastic Payload L2 (EP-L2) retains the victim in place, separates tag visibility from payload ownership and writeback ordering, and allocates resident/writeback roles across a shared pool. We evaluate this WB-only mechanism against a fixed-partition reference with equal payload capacity and modeled bank service. Independent intake of five complete H0 native nonatomic workload pairs confirms removal of all resident-to-writeback copies. However, the geometric-mean execution-speed ratio is only 1.001600, with one slowdown; end-to-end performance is nearly unchanged. Three pressured workloads eliminate WB-data-full events while increasing downstream queue-admission denials. These observations motivate a controlled downstream-headroom study rather than establish its cause. The evidence covers symbolic sector versions and resource lifecycle, not numerical SASS outputs. Independent elasticity benefits, general workload speedup, and physical PPA advantages remain unestablished.
+@@ -32,11 +32,11 @@
+ \end{IEEEkeywords}
+ 
+ \section{Introduction}
+-A dirty eviction changes a line's consumer without changing its data. Yet the fixed-partition reference studied here copies the victim from resident storage to a writeback buffer (WBUF) before reusing its slot. A source-bank read, destination-bank write, and later send read compete with demand accesses and fills. A fixed WBUF quota can also block evictions despite idle slots elsewhere. Removing this work helps execution only if progress is not limited by another resource.
+-
+-\epl{} transfers ownership instead of location. Dirty data remain in place while the incoming resident receives another eligible slot; the old tag, payload, and writeback-ordering entry retire separately. Resident lookup capacity stays fixed. Tag--data indirection and storage sharing are established ideas~\cite{vway,unified,farkas,micache}. Our proposed contribution is an in-place dirty-writeback protocol with explicit ownership and release obligations under a fixed payload and bank-service budget.
+-
+-The primary question is whether copy removal and resident/WB pooling improve useful service enough to justify control cost. Five matched workload pairs show substantial copy reduction but only a 0.160\% geometric-mean speed-ratio gain. Concurrent dynamic bypass and optional TVD/RO mechanisms are outside this comparison. Strong static controls remain necessary to distinguish elasticity from the selected reference partition.
++A dirty eviction changes a line's consumer without changing its data. Our reference nevertheless copies it to a writeback buffer (WBUF), competing with demand accesses and fills. A full WBUF can block eviction despite idle storage elsewhere. Removing copy work helps only when other resources allow progress.
++
++Prior designs already retain dirty data in the LLC and separately expose writeback candidates or dirty metadata~\cite{vwq,lastwrite,dbi}. Our question is narrower: can a resident tag be reused while its evicted dirty payload retains its original physical slot? \epl{} implements this transition with a legal incoming landing and distinct local-data and address-ordering release events, under fixed tag, payload, and bank-service budgets. Storage sharing alone is not the proposed contribution.
++
++Five matched pairs remove copies but yield only a 0.160\% geometric-mean speed-ratio gain. Strong static controls must isolate elasticity from copy removal; concurrent bypass and TVD/RO are outside this WB-only comparison.
+ 
+ \section{EP-L2 Design}
+ \subsection{One-Slice Organization and Comparison Boundary}
+@@ -164,7 +164,7 @@
+ 
+ \section{Results and Causal Analysis}
+ \subsection{Performance and Internal Movement}
+-All five predeclared H0 pairs pass independent paper intake against current Lane5 V2 generation~8. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup. Exact paired cycles and source/configuration/input/raw identities accompany the artifact tables.
++All five predeclared H0 pairs pass independent paper intake against the current Lane5 V2 authority. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup. Exact paired cycles and source/configuration/input/raw identities accompany the artifact tables.
+ 
+ Figure~\ref{fig:mainresults}(b) shows removal of every measured resident-to-WB copy. A committed non-rolled-back B16 writeback uses two copy operations and one send read; U-WB16 retains the send read. This local operation saving is not a speedup model. Actual WB counts also change: CFD completes 31,123/31,063 WBs and FWT 178,569/178,585 for B16/U-WB16. Consequently, the run-level logical-operation difference need not equal twice either mode's WB count. Artifact tables preserve actual WB/send-read and DRAM-byte totals.
+ 
+@@ -204,102 +204,22 @@
+ \end{equation}
+ Retain all four cycles and absolute changes. $C_B(\mathrm{H0})/C_U(h)$ confounds mechanism and downstream changes. Diagnostic results never enter the H0 mean.
+ 
+-Q4 expands downstream queues/scheduler/return storage and derived credit $319\to1279$. D4 changes DRAM $850\to3400$\,MHz; core/ICNT/L2 stay1132\,MHz. Integer DRAM timings have shorter physical duration; the fixed100-GPU-cycle interface latency remains. This grouped buffering/credit and DRAM-domain sensitivity is neither pure bandwidth nor a free hardware improvement.
+-
+-Figure~\ref{fig:controls} records the gap. New pairs need exact regime/config identity and current V2/native closure. Interpret $J$ with copy work, residence, bank service, valid opportunity ratios and queue maxima. Faster service may shorten B16 WB residence; $S$ need not increase monotonically. Counts alone cannot establish nonbinding service. Adaptive points need a prior evidence checkpoint; simple-memory diagnostics require separate qualification/statistics.
+-
+-An equal1168-slot static control remains unqualified; current B16/U combines copy removal and pooling. WBUF8 has1160 slots. TVD/RO/Ideal and physical PPA remain separate gaps.
++Q4 enlarges downstream queues, scheduler/return storage, and derived credit $319\to1279$. Request buffers also affect scheduling visibility and implementation complexity~\cite{sms}. D4 retains Q4 buffering and raises DRAM $850\to3400$\,MHz, with core/ICNT/L2 fixed at 1132\,MHz. Integer DRAM timings shorten physically; the fixed 100-GPU-cycle interface delay remains. These are grouped buffering/credit and DRAM-domain interventions, not pure bandwidth or free hardware.
++
++Figure~\ref{fig:controls} tracks accepted-pair coverage. New pairs require exact regime/configuration identity and current V2/native closure. Interpret $J$ with copy work, residence, bank service, valid opportunity ratios, and queue maxima. Faster service can shorten B16 WB residence, so $S$ need not rise monotonically. SMS does not establish EP-L2's bottleneck. Adaptive points need an evidence checkpoint; simple-memory diagnostics require separate qualification.
++
++An equal 1168-slot strong static control remains unqualified; B16/U combines copy removal and pooling. WBUF8 has 1160 slots. TVD/RO/Ideal and physical PPA remain separate gaps.
+ 
+ \section{Related Work and Scope}
+-V-Way decouples placement~\cite{vway}; Tag-Split Cache changes storage granularity while retaining coarse requests~\cite{tsc}. \epl{} fixes resident tags and sectors. Gebhart \emph{et al.} repartition SM-local storage at kernel boundaries using a write-through cache~\cite{unified}.
+-
+-In-cache MSHRs reuse storage for pending-load information~\cite{farkas}; MiCache shares FPGA storage between cache lines and MSHR subentries~\cite{micache}; DL-MSHR adapts linked miss slots that can also hold write data~\cite{dlmshr}. Our focus is existing dirty data remaining in place while tag visibility and WB ordering retire separately. MRPB reorders/bypasses GPU L1 requests~\cite{mrpb}, and victim caching retains displaced lines~\cite{victim}. TVD/RO combinations require separate evaluation; additive benefits are not assumed.
++The Virtual Write Queue exposes LLC dirty-line candidates to DRAM scheduling while retaining a physical write queue~\cite{vwq}. Decoupled last-write prediction keeps candidate addresses in a last-write buffer and data in the LLC; evicted dirty blocks use a separate write buffer~\cite{lastwrite}. The Dirty-Block Index (DBI) separates dirty bits from tags and groups them by DRAM row~\cite{dbi}. Neither cache retention nor independent dirty metadata originates here. Our focus is tag reuse with the victim's original slot still owned, a distinct incoming landing, and separate payload/order retirement. DBI dirty status is not the WAD's in-flight same-address ordering state.
++
++V-Way decouples tag/data placement~\cite{vway}; Tag-Split Cache separates request and storage granularity~\cite{tsc}. Unified GPU memory reallocates SM register/cache/scratchpad storage~\cite{unified}. In-cache MSHRs~\cite{farkas}, MiCache's shared FPGA data/MSHR storage~\cite{micache}, and DL-MSHR's linked slots, including write-miss data~\cite{dlmshr}, motivate distinguishing what is shared. Our comparison fixes resident-tag and miss-tracking budgets; it evaluates dirty-payload ownership rather than extra lookup or request-tracking capacity.
+ 
+ \section{Conclusion}
+ \epl{} separates resident-tag visibility, dirty-payload ownership, and writeback ordering to eliminate resident-to-WB relocation under a fixed payload and bank-service budget. Five independently received native nonatomic pairs remove all measured copies but deliver only a 1.001600 geometric-mean speed ratio, including a CFD slowdown. Local staging relief coincides with more downstream admission denials in three workloads; a controlled service study is required to resolve causality. Independent elasticity benefits and physical area, timing, and power advantages remain unproven.
+ 
+ % Keep the optional fifth page reference-only. No technical appendix on that page.
+ \clearpage
+-% Generated by IEEEtran.bst, version: 1.14 (2015/08/26)
+-\begin{thebibliography}{10}
+-\providecommand{\url}[1]{#1}
+-\csname url@samestyle\endcsname
+-\providecommand{\newblock}{\relax}
+-\providecommand{\bibinfo}[2]{#2}
+-\providecommand{\BIBentrySTDinterwordspacing}{\spaceskip=0pt\relax}
+-\providecommand{\BIBentryALTinterwordstretchfactor}{4}
+-\providecommand{\BIBentryALTinterwordspacing}{\spaceskip=\fontdimen2\font plus
+-\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+-  \fontdimen4\font\relax}
+-\providecommand{\BIBforeignlanguage}[2]{{%
+-\expandafter\ifx\csname l@#1\endcsname\relax
+-\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+-\typeout{** loaded for the language `#1'. Using the pattern for}%
+-\typeout{** the default language instead.}%
+-\else
+-\language=\csname l@#1\endcsname
+-\fi
+-#2}}
+-\providecommand{\BIBdecl}{\relax}
+-\BIBdecl
+-
+-\bibitem{vway}
+-M.~K. Qureshi, D.~Thompson, and Y.~N. Patt, ``The {V-Way} cache: Demand-based
+-  associativity via global replacement,'' in \emph{Proceedings of the 32nd
+-  Annual International Symposium on Computer Architecture (ISCA)}, 2005, pp.
+-  544--555.
+-
+-\bibitem{unified}
+-M.~Gebhart, S.~W. Keckler, B.~Khailany, R.~Krashinsky, and W.~J. Dally,
+-  ``Unifying primary cache, scratch, and register file memories in a throughput
+-  processor,'' in \emph{Proceedings of the 45th Annual IEEE/ACM International
+-  Symposium on Microarchitecture (MICRO)}, 2012, pp. 96--106.
+-
+-\bibitem{farkas}
+-K.~I. Farkas and N.~P. Jouppi, ``Complexity/performance tradeoffs with
+-  non-blocking loads,'' Digital Equipment Corporation, Western Research
+-  Laboratory, Research Report 94/3, Mar. 1994.
+-
+-\bibitem{micache}
+-S.~Xu, S.~Lu, Z.~Shao, X.~Liao, and H.~Jin, ``{MiCache}: An {MSHR}-inclusive
+-  non-blocking cache design for {FPGAs},'' in \emph{Proceedings of the 2024
+-  ACM/SIGDA International Symposium on Field Programmable Gate Arrays (FPGA)},
+-  2024, pp. 22--32.
+-
+-\bibitem{accelsim}
+-M.~Khairy, Z.~Shen, T.~M. Aamodt, and T.~G. Rogers, ``{Accel-Sim}: An
+-  extensible simulation framework for validated {GPU} modeling,'' in
+-  \emph{Proceedings of the 47th Annual International Symposium on Computer
+-  Architecture (ISCA)}, 2020, pp. 473--486.
+-
+-\bibitem{gpgpusim}
+-A.~Bakhoda, G.~L. Yuan, W.~W.~L. Fung, H.~Wong, and T.~M. Aamodt, ``Analyzing
+-  {CUDA} workloads using a detailed {GPU} simulator,'' in \emph{Proceedings of
+-  the IEEE International Symposium on Performance Analysis of Systems and
+-  Software (ISPASS)}, 2009, pp. 163--174.
+-
+-\bibitem{tsc}
+-L.~Li, A.~B. Hayes, S.~L. Song, and E.~Z. Zhang, ``Tag-split cache for
+-  efficient {GPGPU} cache utilization,'' in \emph{Proceedings of the 2016
+-  International Conference on Supercomputing (ICS)}, 2016, pp. 43:1--43:12.
+-
+-\bibitem{dlmshr}
+-Y.~Gu and L.~Chen, ``Dynamically linked {MSHRs} for adaptive miss handling in
+-  {GPUs},'' in \emph{Proceedings of the International Conference on
+-  Supercomputing (ICS)}, 2019, pp. 510--521.
+-
+-\bibitem{mrpb}
+-W.~Jia, K.~A. Shaw, and M.~Martonosi, ``{MRPB}: Memory request prioritization
+-  for massively parallel processors,'' in \emph{Proceedings of the 20th IEEE
+-  International Symposium on High Performance Computer Architecture (HPCA)},
+-  2014, pp. 272--283.
+-
+-\bibitem{victim}
+-N.~P. Jouppi, ``Improving direct-mapped cache performance by the addition of a
+-  small fully-associative cache and prefetch buffers,'' in \emph{Proceedings of
+-  the 17th Annual International Symposium on Computer Architecture (ISCA)},
+-  1990, pp. 364--373.
+-
+-\end{thebibliography}
+-
++\bibliographystyle{IEEEtran}
++\bibliography{references_verified}
+ \end{document}

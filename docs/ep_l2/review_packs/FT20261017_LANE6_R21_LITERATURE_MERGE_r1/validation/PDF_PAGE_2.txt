@@ -1,0 +1,70 @@
+              (a) Logical organization of one L2 slice                                   (b) Copy removal and separate release events
+                                                                                B16: source read + destination write + send read
+                  L1 / interconnect requests and responses
+
+
+     Resident tags: 1024                                                         Resident 𝐴              Latch              WBUF 𝐴               Lower
+                              Descriptors: 512            WAD: 128
+         handles: ID
+                             Line-MSHRs: 128            address ordering
+        + generation
+                                                                                U-WB16: keep 𝐴 at 𝑝; assign new resident 𝐵 to 𝑞
+           Ownership / reservation / bank-compatible allocation
+              Four-bank arbitration (not extra bank ports)                               Payload 𝑝: resident           send read
+                                                                                           → WB staged                                 Lower data carrier
+                                       handle, sector, grant
+
+             Payload pool: 1168 × 128 B; 4 banks × 292 slots                    After a successful replacement ( 𝑝 ≠ 𝑞):
+              Resident and WB owners; shared physical slots
+                                                                                𝑡𝑟 : reuse old tag; preserve staged payload 𝑝
+                                       fill / WB data
+                                                                                𝑡𝑎 : lower accepts data; WB-only slot 𝑝 can be freed
+            Accounted lower data carriers / L2-to-DRAM queue
+                                                                                𝑡𝑑 : complete WB and release WAD ordering entry
+
+Fig. 1. Declared WB-only design, not a physical floorplan or a measured cycle schedule. Dashed links denote control dependencies; solid links denote data
+movement. B16 uses fixed 1024/128/16 role quotas over the same banks; U-WB16 allows resident/WB allocation across those slots. Concurrent dynamic bypass
+service is not established. Both retain a 128-B copy latch outside the pool. Optional TVD/RO consumers are not drawn as extra data arrays.
+
+
+
+A late event for 𝐴 uses its own handle/transaction identity, not                                          TABLE I
+the tag now naming 𝐵.                                                              Declared matched configuration. L2 capacities are per slice.
+
+   For tracked reads, requester descriptors and payload pins                  Resource                            Setting
+remain live until response-queue acceptance or internal con-
+                                                                              Compute / clock domains             80 SMs; core/ICNT/L2: 1132 MHz;
+sumption. Line-MSHR retirement and pending-sector com-                                                            DRAM: 850 MHz
+pletion are checked separately. Neither event releases a WB                   L1 (fixed)                          64 KiB/SM; 4 banks; 20-cycle setting
+address-ordering obligation. A read of one ready sector does                  L2 tags / data                      1024 tags; 1168 slots, 146 KiB
+                                                                              Line / sectors / banks              128 B / 4 × 32 B / 4 × 292 slots
+not imply that an entire line is ready. Atomic and ordinary                   Service / common latch              1 op/bank/physical cycle / 128 B
+requests sharing a line additionally require sector-appropriate               Descriptors / Line-MSHRs            512 / 128; 32 requesters/address
+dirty and version handling.                                                   WAD / lower queue                   128 / 128 entries
+                                                                              Chip / memory channels              64 slices / 32 channels
+   Local drain progress requires both eventual lower service                  L2 ROP delay                        160-cycle model setting
+and a bank retry that remains identifiable until completion                   DRAM scheduler / return             128 / 192 entries per channel
+or explicit cancellation. An oldest-selected grant alone cannot               WBUF8 (not evaluated)               1160 slots, 145 KiB; 4 × 290 slots
+guarantee progress if its requester changes identity or stops
+retrying. Whole-GPU deadlock freedom is not established by
+these local requirements.                                                        TVD retains displaced payloads within a shared 128-entry
+                                                                              WAD/TVD budget. RO controls pending-tag detachment and
+                                                                              Line-MSHR bypass under a whole-commandlist read-only
+D. Implementation Cost and Separate Extensions                                oracle. Both are OFF here. TVD lacks official integrated
+   Primary payload storage is 146 KiB/slice, or 9.125 MiB                     qualification; RO has isolated source-bound C++ checks,
+over 64 slices; common latches add 8 KiB/chip. A slot index                   but its 19 production obligations and independent scientific
+requires 𝑃 = 11 bits. Explicit tag handles occupy 1024(𝑃 + 𝐺)                 qualification remain pending. Neither has accepted application
+bits for generation width 𝐺; up to 128 WB handles require                     results or an extra data/descriptor pool.
+128(𝑃 + 𝐺) bits plus state and transaction binding. These
+                                                                                                III. Evaluation Methodology
+are gross representations, not measured incremental area: the
+reference already includes some common fields.                                A. Matched Inputs and Declared Machine
+   Incremental cost includes handle selection, owner/generation                  We use the Accel-Sim SASS flow and GPGPU-Sim
+checks, bank-compatible allocation, arbitration, and rollback.                performance-model lineage [4], [5]. Their published validation
+Queue depths, generation/pin bounds, pipeline stages, SRAM                    does not validate this modified L2. B16 and U-WB16 must
+ports, and the carrier after 𝑡 𝑎 need concrete mappings. Symbolic             execute with the same independently qualified binary, complete
+versions are verification state, not payload RAM. Equal                       trace input, non-mode settings, timing scope, and termination
+capacity/throughput does not prove equal hit latency, area, clock,            rules. Table I records the current ordered research configuration,
+or energy. No RTL synthesis, STA, or power measurement is                     including the modified L2; it is not a reconstruction of
+available.                                                                    undocumented commercial-cache internals.
+

@@ -1,51 +1,11 @@
-# Lane6 r19 — parallel writing / condition-native mapping prepared
+# Lane6 r21 — R20 merged; bounded manuscript task complete
 
-Original branch/worktree retained. Base d3d7b4fe9059d68aa0793eec58b5f32488138c10
-already completed H0 all5 native paper intakes and real EN-v6 Fig2/3; the r19
-coordination snapshot's earlier SAD-only status is historical. All10 H0 rows
-rechecked against live V2 generation8 at `be24b7eeafd6b717a85999f14773d0c1bc6e4c5e`.
-H0 mean **1.0016002037656606x**, CFD regression and SAD near tie unchanged.
+Original branch `hrl/ep-l2-ft20261016-lane6-v1` and worktree retained; start HEAD `75cf0ccf8be56f5bc4f852d20f95547615cfd701`. Read full r21 contract `1db2ff7a1aa2eb3b221e6184b9abf149c7e178de` and complete R20 module `222975a65dc1a6aa133d2942612f6d8001a534de`. Published deliverable: `docs/ep_l2/review_packs/FT20261017_LANE6_R21_LITERATURE_MERGE_r1/EP_L2_EN_v6_r21.tex` and PDF, four technical pages plus one reference-only page.
 
-Actual new Q4/D4 pairs received **0**, new apps launched by this Lane **0**.
-Lane1 delivered D4/Q4 producer manifests/affected checks at
-`31add7b3ae4e7fcc3c251b8ee0fac3f9461d6af3`, same official source/binary. Exact producer
-config hashes are recorded in PRODUCER_CONDITIONS.json and RECEIPT; producer
-status is NOT_INDEPENDENTLY_QUALIFIED, not application performance evidence.
-Lane5 latest inspected publication `e7f804192757a8c260cccde4f0859a4343f33795` is preparing the
-independent condition step; its older Lane1 dependency snapshot is superseded
-by the producer delivery just read. No new V2 current pair is present.
-Registry snapshot at publication shows no EP-L2 active run/lease; other projects
-remain untouched. No claim that the r19 experiment matrix has completed or produced neutral gains.
+Substantive replacement of Introduction and Related Work attributes dirty-data retention, address-only writeback candidates and independent dirty metadata to VWQ, decoupled last-write prediction and DBI. EP-L2's narrower question is tag reuse with the victim retaining its original independently owned slot, a separate legal landing, and distinct payload/order retirement. SMS explains queue visibility/cost; D4 explicitly retains Q4 buffering and raises DRAM frequency. No broad first-invention, imported performance/PPA, or asserted downstream bottleneck. Four new author PDFs were fetched and relevant sections independently checked; old references keep their documented inherited audit scope. Twelve of fourteen preserved BibTeX keys are cited; optional MRPB/victim discussion was removed, not appended elsewhere.
 
-EN-v6-r19 source/PDF preserve4 technical+1 reference pages and H0 numeric
-figures. New downstream-service subsection defines S(h),J(h), paired four-cycle
-comparison and separate diagnostic grouping. Fig4 shows authorized targets and
-actual accepted-pair counts, not zero-filled performance. Q4's four added
-storage groups and319→1279 derived credit are accounted; D4 is DRAM-domain
-service sensitivity with fixed100-GPU-cycle interface latency, not pure BW.
+All five existing H0 native intakes remain valid against fresh V2 generation9 at `5f840e5e27da428c217f3ded639aa765eabef26f`. Original 1.0016002037656606x (+0.160%) H0 speed-ratio mean, CFD regression, real Fig2/Fig3 and raw/identity mappings unchanged. No new native intake or experimental values this round. 458 old pack files are preserved byte-for-byte. Abstract, architecture/lifecycle/PPA, methodology and conclusion are unchanged; H0 results text changes only its stale authority label. No empirical capacity, statistical-significance or physical PPA claim added. TVD/RO/Ideal remain separate qualification gaps.
 
-Prepared native reader minimally extends the old H0 config mapping through
-Lane5's published downstream_config_qualification interface and exact validator
-source/evidence hashes. All old release/feature/ideal/input/body/raw/64slice/
-drain gates remain. The common config skips original mode overlay index4,
-not the appended downstream overlay. This code is NOT application-validated:
-there is no qualified new pair to execute it on. It rejects missing envelopes.
-Post-native calculator requires the complete r19 receipt, exact regime/run-key,
-current V2, original H0 prefix and approved effective actual runtime dumps.
-It retains staging/WAD/service/pressure sources; absent frontend/WBUF opportunity
-denominators remain null. Diagnostic mean only on complete same-condition
-Conv/FWT; none emitted now. No second scientific acceptance authority.
+Actual initial checkpoint: D4 Convolution B/U PIDs1948411/1948412 and matching central run keys RUNNING. Lane5 independently qualified D4 (V2gen9) and Q4 condition paths; Q4 V2 authorization/application acceptance is separate. Final fresh V2 has no new CURRENT_ACCEPTED rows. r19 native intake and S/J interface are preserved and documented in NEXT_RESULT_INTAKE.md. Future D4/Q4 accepted pairs are **follow-up data dependencies**, not a failure or blocker for this completed literature task. No persistent poller, new simulator, process signal, ledger/config/raw/registry mutation or storage work.
 
-Next event: delivered Lane1 condition evidence→Lane5 independent condition/PASS and
-CURRENT_ACCEPTED D4 pair→Lane6 immediate new-directory native reception and
-in-place sensitivity subsection update, without waiting Q4 or adaptive points.
-No watcher/waiter is created. Equal-total static/TVD/RO/Ideal/RTL PPA remain
-separate qualified-evidence gaps; no unauthorized config/experiment is run.
-
-Pack `docs/ep_l2/review_packs/FT20261017_LANE6_R19_HEADROOM_INTAKE_r1`. All395 prior pack files preserved byte-for-byte.
-Old native test suites not repeated;7 new paper guards and1 missing-envelope
-negative check are synthetic only. No builds/simulators/leases/raw CSV/ledger/
-other process/storage mutations. Source/config/binary/trace identities remain
-bound to previous accepted H0 producer; producer Q4/D4 config hashes are now bound, while accepted condition run keys
-and scientific result values remain unset. Original branch publication is non-force; exact SHA
-and critical blobs are verified remotely outside the self-referencing commit.
+Validation: final compiler and BibTeX pass; zero overfull/undefined citations/warnings, all fonts embedded/no Type3, all12 citations resolved in first-use order, unchanged font/margin preamble, previews checked, new rebuild script exercised in isolated scratch with identical extracted PDF text. Source hashes/citation map/BibTeX/figure provenance/compiler logs/page previews accompany the pack. Original-branch publication is non-force; exact containing commit/tree and critical blobs are checked through GitHub remote readback outside the self-referencing commit.

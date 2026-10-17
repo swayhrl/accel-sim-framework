@@ -1,0 +1,9 @@
+# Substantive merge review
+
+Introduction replaces broad indirection/storage-sharing positioning with direct writeback precedents and the narrow tag-reuse/ownership question. Related Work replaces the previous brief survey, distinguishes VWQ from the physical WB queue, address-only predicted candidates from evicted dirty data, and DBI dirtiness from WAD ordering. Generic storage sharing is explicitly attributed to prior work. The r19 section uses SMS to explain why queue capacity changes scheduling visibility and cost, and spells out D4's combined Q4 buffering plus faster DRAM domain.
+
+H0 is unchanged: five independently received pairs, true Fig2/Fig3, CFD regression, deterministic rather than statistically significant observations, and geometric mean 1.0016002037656606x (+0.160%). Copy elimination does not isolate elasticity, establish a capacity benefit, or measure area/power. Mechanism, lifecycle, physical-bank fairness, experiment inputs and raw results are unchanged. TVD/RO/Ideal remain outside accepted primary application evidence; PPA remains source-level representation/cost accounting with no RTL synthesis, STA or power measurement.
+
+The original Results numerical text, architecture/lifecycle/cost section, methodology, abstract and conclusion are preserved, apart from replacing stale generation8 wording with the current V2 authority. Old packs are immutable. No regression/native suites or simulation are repeated for this documentation change.
+
+Manuscript still needs true qualified r19 results to resolve downstream causality, a qualified equal-total strong static comparison to isolate elasticity, and physical implementation evidence for PPA. These are future data/qualification dependencies. None is presented as completed and none blocks this bounded literature deliverable. An accepted r19 pair should trigger a new native-intake revision, not a background watcher.
