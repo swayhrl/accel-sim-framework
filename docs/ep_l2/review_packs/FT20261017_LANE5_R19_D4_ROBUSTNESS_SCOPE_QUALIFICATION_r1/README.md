@@ -1,0 +1,3 @@
+# D4 robustness input-scope normalization
+
+The selected D4 condition reuses its exact2 actual independent affected native checks and unchanged11 gates. New executions0. Original q1 ordinary full-native nonatomic auditor and frozen accepted SAD/vector body scope replace the inapplicable Conv/FWT-only q2 legacy auditor; source/config/binary/runtime are unchanged. Four explicit specs bind the exact same per-mode D4 config hashes. This normalizes already proven evidence, not a new producer runtime or repeat of historical tests. Existing V2 authorization, remote readback and resource admission still precede all applications.

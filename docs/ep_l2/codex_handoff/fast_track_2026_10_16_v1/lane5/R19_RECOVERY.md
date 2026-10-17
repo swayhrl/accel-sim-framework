@@ -1,3 +1,7 @@
+# Latest post-initial8 checkpoint
+
+All initial8 CURRENT_ACCEPTED/currentV2gen14 publication34303c26825eda5f79b308442cd54555e2ae4b3d. Selection e5b9c4db602529a87b6a8cac5d32d3c1f7c0f7e4 exact12filesverified and shared Lane1 D2/L25 request+Lane6 completeQ4 adapter delivered. NO active EP-L2 simulator (Q4FWT8737 terminal0). Gen15 ordinary q1 D4 robustness envelope staged, needs push/readback qualification-only pointer before launch. Envelope H/R19_D4_ROBUSTNESS_INDEPENDENTLY_QUALIFIED_r1.json sha4d4a7f36009e2d655558af9224c80385dae74a483f16c7ab69b2f4d540fac55c; actual old2 D4 affected tests reused/new0. Specs H/r19_specs_admitted_robustness_r1/D4 for vectorAdd_4M/sad. Campaigns W/D4_ROBUSTNESS_<workload>_CAMPAIGN.json, unique runtime dirs. Next authorize scope then vector B/U, review/publish/currentpointer, then SAD. D2/L25 require unique Lane1 new affected-probe and exact source/config handoffs; never compile byL5. Goalactive deadline17:09:16UTC/max24, planned20.
+
 # Latest initial8 terminal checkpoint
 
 Q4FWT controller session8737 terminal0; PIDs2030276/2030290/2030291 now historical, never restart. Both canonical runs COMPLETE_VALID; independent full review PASS B491788/U491236, equal791609344 instructions. V2gen14 staged, requires push/readback+central pointer before announcement. No active EP-L2 simulator. Next verify/publish Q4FWT, summarize_headroom_r19.py --regimes D4 Q4 to a new output revision, then evidence-based max2adaptive +one robustness checkpoint BEFORE new apps. Original deadline17:09:16UTC/cap24 unchanged.
