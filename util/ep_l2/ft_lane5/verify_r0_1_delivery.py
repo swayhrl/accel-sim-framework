@@ -18,14 +18,14 @@ def git(*args):return subprocess.check_output(['git',*args],cwd=REPO)
 
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since-publication',required=True);ap.add_argument('--workload');ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0','WAD256_Q4'));ap.add_argument('--qualification-pack',type=Path);ap.add_argument('--qualification-only',action='store_true');a=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since-publication',required=True);ap.add_argument('--workload');ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0','WAD256_Q4','LOCAL_IDEALS_ORDINARY','LOCAL_IDEALS_LEGACY'));ap.add_argument('--qualification-pack',type=Path);ap.add_argument('--qualification-only',action='store_true');a=ap.parse_args()
     ref='refs/remotes/origin/'+BRANCH
     subprocess.run(['git','-c','gc.auto=0','-c','url.https://github.com/.insteadOf=git@github.com:','-c','credential.helper=!gh auth git-credential','fetch','--no-tags','origin','refs/heads/'+BRANCH+':'+ref],cwd=REPO,check=True)
     head=git('rev-parse','HEAD').decode().strip();require(head==git('rev-parse',ref).decode().strip(),'Remote own branch SHA differs')
     files=git('diff','--name-only',a.since_publication,head).decode().splitlines()
     for name in files:require((REPO/name).read_bytes()==git('show',head+':'+name),'Remote object/file differs '+name)
     require(a.workload or (a.qualification_only and a.qualification_pack is not None),'Workload or qualification-only pack required')
-    is_parallel=a.regime in ('ROP40_H0','ICNT2_H0','WAD256_Q4')
+    is_parallel=a.regime in ('ROP40_H0','ICNT2_H0','WAD256_Q4','LOCAL_IDEALS_ORDINARY','LOCAL_IDEALS_LEGACY')
     prefix=(('FT20261017_LANE5_PARALLEL_' if is_parallel else 'FT20261017_LANE5_R19_')+a.regime+'_' if a.regime else 'FT20261017_LANE5_R0_1_A1_B1_')+(a.workload or '').upper()
     packs=[REPO/'docs/ep_l2/review_packs'/(prefix+suffix) for suffix in ('_PAIR_r1','_ACCEPTANCE_r1')] if not a.qualification_only else []
     for pack in packs+([a.qualification_pack] if a.qualification_pack else []):

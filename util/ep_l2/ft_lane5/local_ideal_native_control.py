@@ -28,13 +28,13 @@ def prepare():
 
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prepare-only',action='store_true');a=p.parse_args();h,prod,s,cell,r=prepare()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prepare-only',action='store_true');p.add_argument('--retry-checkpoint',type=Path);a=p.parse_args();h,prod,s,cell,r=prepare()
  if a.prepare_only:print(json.dumps({'status':'CANARY_REGISTERED_NOT_STARTED','cell':cell,'new_application_starts':0}));return
- snap=r.snapshot();deadline=snap['campaigns'][PARALLEL]['deadline_unix'];require(time.time()<deadline,'No new canary after deadline');safe_resources();directory=OUT/s['run_key'];fresh,allocation=r.claim(s['identity'],'lane5',directory,cpu=1,memory=4*2**30,client_binding=immutable_loader_binding(),experiment={'experiment_id':PARALLEL,'regime':'H0','profile':'NATIVE_OFF_CONTROL','cell_id':cell['cell_id'],'deadline_unix':deadline})
+ snap=r.snapshot();deadline=snap['campaigns'][PARALLEL]['deadline_unix'];require(time.time()<deadline,'No new canary after deadline');safe_resources();directory=OUT/(s['run_key']+('_attempt_r2' if a.retry_checkpoint else ''));recovery={'path':str(a.retry_checkpoint),'sha256':digest(a.retry_checkpoint)} if a.retry_checkpoint else None;fresh,allocation=r.claim(s['identity'],'lane5',directory,cpu=1,memory=4*2**30,client_binding=immutable_loader_binding(),retry_checkpoint=recovery,experiment={'experiment_id':PARALLEL,'regime':'H0','profile':'NATIVE_OFF_CONTROL','cell_id':cell['cell_id'],'deadline_unix':deadline})
  if not fresh:print('DUPLICATE_CONTROL_NOT_STARTED');return
  proc=None;status='INCOMPLETE';report={'qualification_control':True,'experiment_id':PARALLEL,'cell_id':cell['cell_id'],'identity':s['identity'],'run_key':s['run_key'],'allocation':allocation,'status':status};resource.setrlimit(resource.RLIMIT_CORE,(0,0));started=time.monotonic()
  try:
-  directory.mkdir(exist_ok=False);write_json(directory/'input_assets.json',s);binary=directory/'accel-sim.out';shutil.copyfile(h['binary'],binary);require(digest(binary)==h['binary_sha256'],'Snapshot binary changed');command=[str(binary)]
+  directory.mkdir(exist_ok=False);write_json(directory/'input_assets.json',s);binary=directory/'accel-sim.out';shutil.copyfile(h['binary'],binary);binary.chmod(0o555);require(digest(binary)==h['binary_sha256'],'Snapshot binary changed');command=[str(binary)]
   for i,row in enumerate(s['configs']):
    target=directory/f'config-{i}.config';shutil.copyfile(row['path'],target);require(digest(target)==s['config_manifest'][i]['sha256'],'Snapshot config changed');command+=['-config',str(target)]
   command+=['-trace',next(v['path'] for v in s['traces'] if v['name']=='kernelslist.g')];report['command']=command

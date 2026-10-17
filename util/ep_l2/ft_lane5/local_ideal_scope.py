@@ -18,8 +18,8 @@ def digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def features(identity,profile):
  require(all(identity[k]==v for k,v in IDENTITY.items()),'Local ideal has no independent scope for another runtime')
  f=identity['feature_vector'];i=identity['ideal_vector'];require(set(f)==COMMON|EXTRA and profile in PROFILE_BITS,'Incomplete local feature vector/profile')
- wb,meta,read=PROFILE_BITS[profile];require(i=={'wb':wb,'meta':meta,'read_hit':read},'Wrong local ideal vector')
- require(f=={'finite_wbuf':True,'unified_wb':profile=='U_OFF','tvd':False,'ro':False,'adaptive_policy':False,'wbuf_entries':16,'payload_capacity_per_slice':None if wb else 1168,'bank_count':4,'ops_per_bank_cycle':1,'ideal_wb':wb,'ideal_meta':meta,'ideal_read_hit':read,'nominal_payload_capacity_per_slice':1168,'diagnostic_extra_payload_backing':wb,'wb_data_capacity_non_binding':wb},'Unqualified local resources/feature combination')
+ wb,meta,read=PROFILE_BITS[profile];require(canonical(i)==canonical({'wb':wb,'meta':meta,'read_hit':read}),'Wrong local ideal vector')
+ require(canonical(f)==canonical({'finite_wbuf':True,'unified_wb':profile=='U_OFF','tvd':False,'ro':False,'adaptive_policy':False,'wbuf_entries':16,'payload_capacity_per_slice':None if wb else 1168,'bank_count':4,'ops_per_bank_cycle':1,'ideal_wb':wb,'ideal_meta':meta,'ideal_read_hit':read,'nominal_payload_capacity_per_slice':1168,'diagnostic_extra_payload_backing':wb,'wb_data_capacity_non_binding':wb}),'Unqualified local resources/feature combination')
 
 
 def validate(spec,release,configs,assets,review):

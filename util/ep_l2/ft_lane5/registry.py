@@ -31,6 +31,10 @@ PARALLEL_PROFILES = {'B16_BANKED','U_WB16','B16_OFF','U_OFF','I_WB','I_META','I_
     'WAD256_Q4','I_BANK','I_L2_SERVICE','NATIVE_OFF_CONTROL'}
 
 
+def attempt_count(row):
+    return 1 + len(row.get('attempt_history', []))
+
+
 def now():
     return datetime.now(timezone.utc).isoformat()
 
@@ -155,7 +159,7 @@ class Registry:
         if kind == 'build' and cpu > policy['max_build_jobs']:
             raise ValueError('build jobs exceed shared policy')
 
-    def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None, client_binding=None):
+    def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None, client_binding=None, retry_checkpoint=None):
         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
             raise ValueError('explicit lane owner required')
         if type(cpu) is not int or cpu < 1:
@@ -163,10 +167,27 @@ class Registry:
         key = run_key(identity)
         host = socket.gethostname()
         with self.locked() as data:
-            if key in data['runs']:
-                return False, data['runs'][key]
+            previous = data['runs'].get(key)
+            if previous is not None and retry_checkpoint is None:
+                return False, previous
+            history = []
+            if retry_checkpoint is not None:
+                path=Path(retry_checkpoint['path'])
+                if hashlib.sha256(path.read_bytes()).hexdigest()!=retry_checkpoint['sha256']:
+                    raise ValueError('retry decision checkpoint changed')
+                recovery=json.loads(path.read_text())
+                if (previous is None or owner!='lane5' or previous['owner']!=owner
+                    or previous['status'] not in {'FAILED','TIMEOUT','RESOURCE_LIMIT','INCOMPLETE'}
+                    or previous['identity']!=identity or previous['lease_id']!=recovery.get('previous_lease_id')
+                    or recovery.get('run_key')!=key or not recovery.get('engineering_reason')
+                    or str(result_directory)!=recovery.get('new_result_directory')
+                    or str(result_directory)==previous['result_directory']):
+                    raise ValueError('retry requires exact failed terminal/owner/identity/new evidence directory')
+                if (experiment is None and previous.get('experiment_id') is not None) or (experiment is not None and any(previous.get(k)!=v for k,v in experiment.items())):
+                    raise ValueError('retry cannot change campaign, condition, cell or deadline')
+                history=previous.get('attempt_history',[])+[{k:v for k,v in previous.items() if k!='attempt_history'}]
             if experiment is not None:
-                self.check_experiment(data, experiment, identity, owner)
+                self.check_experiment(data, experiment, identity, owner, retry_key=key if retry_checkpoint else None)
             policy = data['hosts'][host]
             if policy['boot_id'] != Path('/proc/sys/kernel/random/boot_id').read_text().strip():
                 raise ValueError('host reboot: Lane 5 must reconcile preserved reservations')
@@ -190,6 +211,9 @@ class Registry:
                    'status': 'RESERVED', 'created_at': now(), 'cpu_units': cpu,
                    'memory_bytes': memory, 'scan': identity['workload'] == 'scan',
                    'result_directory': str(result_directory), 'process': None}
+            if retry_checkpoint is not None:
+                row['attempt_history']=history
+                row['retry_checkpoint']=retry_checkpoint
             if client_binding is not None: row['client_binding'] = json.loads(json.dumps(client_binding))
             if experiment is not None: row.update(experiment)
             data['runs'][key] = row
@@ -240,7 +264,7 @@ class Registry:
             return cell
 
     @staticmethod
-    def check_experiment(data, experiment, identity, owner):
+    def check_experiment(data, experiment, identity, owner, retry_key=None):
         base = {'experiment_id', 'regime', 'deadline_unix'}
         name = experiment.get('experiment_id')
         if owner != 'lane5':
@@ -265,7 +289,7 @@ class Registry:
                 raise ValueError('unknown or mismatched positive campaign cell')
             if cell.get('expected_run_key',run_key(identity)) != run_key(identity):
                 raise ValueError('extra cell exact runtime identity differs')
-            if any(r.get('experiment_id') == PARALLEL and r.get('cell_id') == experiment['cell_id']
+            if any(r.get('experiment_id') == PARALLEL and r.get('cell_id') == experiment['cell_id'] and r.get('run_key') != retry_key
                     for r in data['runs'].values()):
                 raise ValueError('cell already attempted; audited retry required')
             deadline, cap = campaign['deadline_unix'], campaign['maximum_starts']
@@ -273,7 +297,7 @@ class Registry:
             raise ValueError('unknown experiment allocation')
         if time.time() >= deadline:
             raise ValueError('bounded experiment deadline')
-        if sum(r.get('experiment_id') == name for r in data['runs'].values()) >= cap:
+        if sum(attempt_count(r) for r in data['runs'].values() if r.get('experiment_id') == name) >= cap:
             raise ValueError('campaign full-application cap includes failed/reserved runs')
 
     def update(self, key, lease_id, status, **fields):

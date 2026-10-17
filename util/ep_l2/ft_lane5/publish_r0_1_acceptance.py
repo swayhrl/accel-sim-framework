@@ -37,11 +37,13 @@ def stage_qualification(release_path,review_path,pack):
         validate_condition(spec,release,asset_manifest(spec['configs'],ordered=True),asset_manifest(spec['auxiliary_assets']) if spec['auxiliary_assets'] else [])
     original_rows=json.dumps(ledger['rows'],sort_keys=True);original_auth=list(ledger['launch_authorizations'])
     require(not any(r['qualified_release_sha256']==digest(release_path) for r in original_auth),'Envelope already authorized')
-    for feature in release['qualified_feature_vectors']:
-        ledger['launch_authorizations'].append({**{k:release[k] for k in ('core_source_commit','framework_source_commit','binary_sha256')},'feature_vector':feature,'ideal_vector':{'meta':False,'read_hit':False,'wb':False},'qualified_release_sha256':digest(release_path),'status':'CURRENT_QUALIFIED_FOR_LAUNCH','application_scope':'FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF','experiment_id':review['experiment_id'],'regime':review['regime']})
+    vectors=release.get('qualified_modes') or [{'feature_vector':f,'ideal_vector':{'meta':False,'read_hit':False,'wb':False}} for f in release['qualified_feature_vectors']]
+    for mode in vectors:
+        require(mode['feature_vector'] in release['qualified_feature_vectors'],'Qualified mode feature missing')
+        ledger['launch_authorizations'].append({**{k:release[k] for k in ('core_source_commit','framework_source_commit','binary_sha256')},'feature_vector':mode['feature_vector'],'ideal_vector':mode['ideal_vector'],'qualified_release_sha256':digest(release_path),'status':'CURRENT_QUALIFIED_FOR_LAUNCH','application_scope':'FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF','experiment_id':review['experiment_id'],'regime':review['regime']})
     proof={'path':str(review_path.relative_to(REPO)),'sha256':digest(review_path)}
     ledger['supersession_evidence'].append(proof);ledger['supersedes']={'manifest_sha256':state['binding']['manifest_sha256'],'publication_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()}
-    ledger['generation']+=1;ledger['revision']='FT20261017_LANE5_R19_'+review['regime']+'_CONFIG_QUALIFIED_r1';ledger['updated_at']=datetime.now(timezone.utc).isoformat()
+    ledger['generation']+=1;ledger['revision']='FT20261017_LANE5_'+('R19_' if review['experiment_id']==EXPERIMENT else 'PARALLEL_')+review['regime']+'_'+release['release_name']+'_CONFIG_QUALIFIED_r1';ledger['updated_at']=datetime.now(timezone.utc).isoformat()
     require(json.dumps(ledger['rows'],sort_keys=True)==original_rows and ledger['launch_authorizations'][:len(original_auth)]==original_auth,'Prior rows/auth changed')
     path=REPO/MANIFEST;path.write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n');pack.mkdir(parents=True)
     shutil.copyfile(path,pack/'SCIENTIFIC_ACCEPTANCE_V2.json')
