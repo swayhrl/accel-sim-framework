@@ -1,0 +1,22 @@
+From https://github.com/swayhrl/accel-sim-framework
+ * branch                534338ed2219a3e719189c470414152987795fd8 -> FETCH_HEAD
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1/docs/ep_l2/review_packs/FT20261017_LANE6_R17_SAD_INTAKE_r1/intake_engine.py", line 69, in receive
+    try:legacy.read_native_packet(R,spec,context)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1/docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r3/native_pair_intake.py", line 86, in read_native_packet
+    require(audit["qualified_release_sha256"] == hashlib.sha256(qbytes).hexdigest(), "Different qualification bytes")
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1/docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r3/result_intake.py", line 22, in require
+    raise ValueError(message)
+ValueError: Different qualification bytes
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1/docs/ep_l2/review_packs/FT20261017_LANE6_R17_SAD_INTAKE_r1/receive_incremental.py", line 3, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--adapter',type=Path,required=True);p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args();assert not a.output_dir.exists();a.output_dir.mkdir(parents=True);s=importlib.util.spec_from_file_location('engine',Path(__file__).with_name('intake_engine.py'));m=importlib.util.module_from_spec(s);s.loader.exec_module(m);m.R=a.repo.resolve();m.OLD=m.R/'docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r3';m.P=a.output_dir.resolve();m.write('NATIVE_ADAPTER_SAD.json',json.loads(a.adapter.read_text()));m.write('native_pair_intake_v2a.py',Path(__file__).with_name('native_pair_intake_v2a.py').read_bytes());m.receive()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane6-v1/docs/ep_l2/review_packs/FT20261017_LANE6_R17_SAD_INTAKE_r1/intake_engine.py", line 71, in receive
+    assert 'Do not broaden data scope' in str(error),str(error);write('validation/OLD_NATIVE_SCOPE_MISMATCH.json',{'status':'EXPECTED_FAIL_CLOSED_SCHEMA_SPELLING','reason':str(error),'old_files_changed':False})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Different qualification bytes

@@ -1,11 +1,40 @@
-# Lane6 r17 — SAD received, EN-v5 minimally updated
+# Lane6 r18 — complete native paper intake and EN-v6
 
-Original branch/worktree retained. Initial intake used V2 generation7 at `c24816d3c8a7c768c3e254f6c1dc70523e7847ea` ; the publication check rebinds generation8 below. Native producer/qualification/config/binary/trace/raw identities verified; full trace bodies rehashed; original source-bound parser reproduces both64-slice hardware terminals. RuntimeCore `7b8e6ac70b8fe0f1bd37efca11acb5284938825d`, Framework `9bd17f9db3e8cbbc3fdad7283d1e292918546fd5`, binary `23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee`.
+All five predeclared pairs / ten runs independently accepted by Lane6 under
+fresh live Lane5 V2 generation8 at
+`534338ed2219a3e719189c470414152987795fd8`. Original SAD preserved and
+rebound; Vector/CFD pass original native consumer, Conv/FWT pass the same
+consumer with actual official r2 certificate and extra native-byte semantic
+closure. Two failed old prepared-adapter attempts remain separate. No input,
+qualification, mechanism, runtime config or ledger was changed.
 
-SAD cycles110773/110749, copy3975/0, logical bank ops483611/475661; WB-data-full0/0. Near tie, no capacity-benefit or across-application conclusion, no statistical-significance/physical-energy claim. Full table and causal limits are in `docs/ep_l2/review_packs/FT20261017_LANE6_R17_SAD_INTAKE_r1/SAD_RESULT_AND_CAUSAL_ANALYSIS.md`.
+Core `7b8e6ac70b8fe0f1bd37efca11acb5284938825d`; producing Framework `9bd17f9db3e8cbbc3fdad7283d1e292918546fd5`; binary `23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee`.
+SOURCE_IDENTITY_MATRIX binds full config/trace/raw/qualification identities,
+full body hashes and64-slice source-parser closure. Every32-channel final
+cumulative DRAM byte total independently matches64-slice application totals;
+repeated kernel snapshots are not summed. No C1 legacy headroom attribution.
 
-This Lane6 revision consumes1/5; official ledger accepted4/5 at initial intake and5/5 at publication. Others are metadata-discovered, not numerical paper intake. No five-workload chart/group geomean. Exact independent EN-v5 preserved as basis, outdated21/open-qualification/zero-result prose minimally updated to31+11gate and scoped SAD evidence. Architecture, pending Fig2–4, ten references and4+1 PDF budget retained. Old EN-v4 and all prior packs unchanged. PPA remains unmeasured.
+Independently computed geomean B/U **1.0016002037656606x**
+(+0.160020% speed ratio), including
+CFD169-cycle regression and SAD24-cycle near tie. Actual WB/copy/logical ops/
+model grants/operation waits/WBUF/WAD/downstream events/bytes remain separate.
+Copy removal and local quota pressure relief do not prove independent
+elasticity speedup, statistics/generalization or DRAM saturation.
 
-New native adapter preserves original checks; current publication pack bytes equal original9aad3338, exact two symbolic-scope spellings accepted only with full-native-nonatomic/per-spec proof. Actual raw application tag uses scope/interval, not window. Six new narrow guards pass. Event-driven incremental entry prepared; unknown schema fails closed. No simulator/build/new experiment/ledger/process mutation or persistent poller. Publication targets the original branch; the containing Git commit and external remote readback identify the publication SHA.
+EN-v6 replaces Fig2/3 reservations and obsolete results prose with the complete
+received data. PDF has4 technical+1 reference pages,10 citations, readable real
+plots and unchanged IEEE margin/body font. Fig4 remains a pending equal-total
+control. Scope/abstract/conclusion report near-neutral mean performance;
+TVD/RO/Ideal and RTL/STA/power remain explicitly unqualified/unmeasured.
 
-Publication closure: current Lane5 generation 8 at `534338ed2219a3e719189c470414152987795fd8` accepts **5/5** pairs. Both SAD rows were rechecked with the unchanged current V2 identity/raw/metrics/withdrawal gates. Lane6 numerical coverage remains **1/5**; all four other pairs are metadata-only prepared adapters, not ingested results. The original generation-7 intake is preserved as historical evidence; `validation/PREPUBLICATION_AUTHORITY.json` supplies the fresh publication binding. No cohort plot or mean is emitted.
+Review-only queue-headroom2x2 proposal for Conv/FWT/CFD: six existing cells,
+at most six new after separate approval and exact config/resource/scientific
+qualification. Equal1168-slot1024/112/32 static control is separate and not
+implemented. No executable config or experiment is created.
+
+Pack `docs/ep_l2/review_packs/FT20261017_LANE6_R18_FIVE_PAIR_EN_V6_r1` contains five exact intake receipts, figure provenance,
+all tables/claim map/PPA status and new source/PDF. All283 old pack files remain
+byte-identical. No simulator/build/new experiment, process signal, other-Lane
+restart, cleanup/migration, ledger/raw scientific CSV edit or persistent poller.
+Publication uses the original branch without force; containing Git SHA and
+external exact remote readback establish final publication identity.
