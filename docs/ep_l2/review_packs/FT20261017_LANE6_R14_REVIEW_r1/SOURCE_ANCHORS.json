@@ -1,0 +1,173 @@
+[
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2101,
+    "excerpt": "  static const unsigned k_physical_slots = 1152;\n  static const unsigned k_resident_slots = 1024;\n  static const unsigned k_bypass_slots = 128;\n  enum role { RESIDENT, BYPASS, WB };\n  // A boolean cannot distinguish an ordinary target-payload retry from a\n  // physical same-bank denial.  C6c needs that distinction both for correct\n  // same-cycle admission and for meaningful B0-Banked telemetry.\n  enum request_result { GRANTED, LEGACY_PORT_BUSY, BANK_TRUE_CONTENTION };\n  // C7d is observation-only: this labels the logical payload RAM operation\n  // at its real call site.  It does not participate in arbitration.\n  enum operation_class {\n    RESIDENT_HIT_READ,\n    RESIDENT_WRITE,\n    FILL_WRITE,\n    WB_READOUT,\n    BYPASS_FILL,\n    BYPASS_READ\n  };",
+    "id": "A1_POOL_CAPACITY",
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2084
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2145,
+    "excerpt": "        m_bank_wb_readout(0), m_bank_bypass_fill(0), m_bank_bypass_read(0),\n        m_next_sequence(0) {\n    m_slots.resize(k_physical_slots + wbuf);\n    for (unsigned bank = 0; bank < 4; ++bank) {\n      m_bank_logical_ops_by_bank[bank] = 0;\n      m_bank_grants_by_bank[bank] = 0;\n      m_bank_true_conflict_ops_by_bank[bank] = 0;\n      m_bank_true_conflict_events_by_bank[bank] = 0;\n      m_bank_wait_cycles_by_bank[bank] = 0;",
+    "id": "A2_ARRAY_SIZE",
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2137
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2305,
+    "excerpt": "  payload_handle preview_free(role r, unsigned bank = (unsigned)-1) const {\n    for (unsigned id = 0; id < m_slots.size(); ++id) {\n      if (m_slots[id].occupied() || (bank != (unsigned)-1 && id % 4 != bank)) continue;\n      if (m_ft_mode == 1 && ((r == WB && id < k_physical_slots) ||\n          (r == RESIDENT && id >= k_resident_slots) ||\n          (r == BYPASS && (id < k_resident_slots || id >= k_physical_slots)))) continue;\n      return payload_handle(id, m_slots[id].generation + 1);\n    }\n    return payload_handle();\n  }\n  payload_handle reserve(unsigned id, role r, new_addr_type owner, state st) {\n    assert(m_ft_mode && id < m_slots.size() && !m_slots[id].occupied());\n    slot &s = m_slots[id];\n    assert(s.generation != std::numeric_limits<unsigned>::max());\n    ++s.generation; s.allocation_role = r; s.status = st; s.owner = owner;\n    s.pending_sector_mask.reset(); s.ready_sector_mask.reset(); s.pins = 0; s.versions.fill(0);\n    return payload_handle(id, s.generation);\n  }",
+    "id": "A3_STATIC_VS_SHARED_ALLOCATION",
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2288
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2371,
+    "excerpt": "  request_result request(role r, unsigned id, bool write, unsigned long long cycle,\n                         unsigned long long sequence = (unsigned long long)-1,\n                         operation_class op_class = RESIDENT_HIT_READ) {\n    if (!enabled()) return GRANTED;\n    if (m_ft_mode && m_cycle != (unsigned long long)-1)\n      assert(cycle >= m_cycle && \"FT bank clock must be physical and monotonic\");\n    if (m_cycle != cycle) {\n      m_cycle = cycle;\n      m_resident_reads = m_resident_writes = m_bypass_reads = m_bypass_writes = 0;\n      m_bank_granted.reset();\n      if (banked()) {\n        for (unsigned b = 0; b < 4; ++b) {\n          // A production retry need not return in the single cycle after it",
+    "id": "A4_PHYSICAL_CYCLE",
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2359
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2813,
+    "excerpt": "  std::array<unsigned long long,4> m_ft_last_wb_versions;\n  void validate_ep_l2_mode_config() const {\n    if (m_config.m_ep_l2_ft_mode > 2 ||\n        (!m_config.m_ep_l2_ft_mode && m_config.m_ep_l2_wbuf_entries) ||\n        (m_config.m_ep_l2_ft_mode &&\n         ((m_config.m_ep_l2_wbuf_entries != 8 && m_config.m_ep_l2_wbuf_entries != 16) ||\n          m_config.m_ep_l2_payload_mode != 2 || !ep_l2_wad_enabled() ||\n          m_config.m_alloc_policy != ON_MISS))) {\n      fprintf(stderr, \"EP-L2 FT invalid mode/WBUF/banked/WAD/allocation contract\\n\"); abort();\n    }\n    if (m_config.m_ep_l2_payload_policy != 0 ||\n        m_config.m_ep_l2_feature_unified_payload ||\n        m_config.m_ep_l2_feature_ro_pending_state ||\n        m_config.m_ep_l2_feature_tvd ||\n        m_config.m_ep_l2_feature_adaptive_policy) {\n      fprintf(stderr,\n              \"EP-L2 configuration error: M1 supports only static payload \"\n              \"policy with all functional mechanism features OFF\\n\");\n      abort();\n    }\n  }",
+    "id": "A5_MODE_INTERFACE",
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2793
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 246,
+    "excerpt": "    // Compute the actual target policy's issue needs before acquiring anything.\n    const bool read = !mf->get_is_write();\n    const new_addr_type key = m_config.mshr_addr(addr);\n    unsigned slots = dirty ? 1 : 0;\n    if (read) {\n      if (m_mshrs.full(key)) return RESERVATION_FAIL;\n      if (m_mshrs.needs_lower_read(key, mf->get_access_sector_mask())) ++slots;\n    } else if (m_config.m_write_alloc_policy == WRITE_ALLOCATE) {\n      if (m_mshrs.full(key)) return RESERVATION_FAIL;\n      slots += 2;\n    } else if (m_config.m_write_alloc_policy == FETCH_ON_WRITE &&\n               mf->get_access_byte_mask().count() != m_config.get_atom_sz()) {\n      if (m_mshrs.full(key)) return RESERVATION_FAIL;\n      ++slots;\n    }\n    if (!miss_queue_has_slots(slots)) { ++m_ft_stats.issue_block; return RESERVATION_FAIL; }\n    if (dirty && m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries) {\n      ++m_ep_l2_wad_full_block_count; return RESERVATION_FAIL;\n    }\n    ep_l2::PayloadHandle staging, landing;\n    if (dirty && m_config.m_ep_l2_ft_mode == 1) {\n      staging = m_ep_l2_payload.preview_free(ep_l2_payload_store::WB);\n      if (!staging.valid()) { ++m_ft_stats.wbuf_full; return RESERVATION_FAIL; }\n    }\n    if (m_config.m_ep_l2_ft_mode == 2 && (dirty || !live)) {\n      landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);\n      if (!landing.valid()) { ++m_ft_stats.pool_full; return RESERVATION_FAIL; }\n      if (dirty) staging = victim;\n    }\n    // The only producer is the serialized frontend head. While this token is\n    // live no other frontend request can steal its prechecked issue slots;\n    // fills and lower drains cannot add entries to m_miss_queue.\n    ft_replacement &p = m_ft_pending;\n    p.request = mf; p.tag_index = index; p.dirty = dirty; p.victim = live ? victim : ep_l2::PayloadHandle();\n    p.born = physical_cycle;\n    p.landing_id = landing.valid() ? landing.payload_id :\n        (m_config.m_ep_l2_ft_mode == 2 && live ? victim.payload_id : index);\n    if (live) p.saved = m_ep_l2_payload.inspect(victim);\n    if (dirty) {\n      p.victim_address = m_tag_array->get_block(index)->m_block_addr;\n      assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);\n      assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(p.victim_address, physical_cycle)).second);\n      p.wad = true;\n      if (m_config.m_ep_l2_ft_mode == 1)\n        p.staging = m_ep_l2_payload.reserve(staging.payload_id,\n            ep_l2_payload_store::WB, p.victim_address, ep_l2_payload_store::WB_RESERVED);\n      else p.staging = staging;\n    }\n    if (landing.valid()) {\n      p.landing = m_ep_l2_payload.reserve(landing.payload_id,\n          ep_l2_payload_store::RESIDENT, owner, ep_l2_payload_store::RESIDENT_FILL_PENDING);\n      p.landing_reserved = true;\n    }\n  }\n",
+    "id": "A6_RESERVATION_TOKEN",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 192
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 302,
+    "excerpt": "  bool replacement = m_ft_pending.request == mf;\n  if (replacement) {\n    ft_replacement &p = m_ft_pending;\n    assert(p.tag_index == index && probe == MISS);\n    if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {\n      // A shared, explicitly costed 128B copy-pipeline latch bridges same-bank\n      // read and write cycles. Both compared organizations include this latch.\n      if (p.phase == 0) {\n        m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.victim,\n            false, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT);\n        if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n          ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n        }\n        p.born = physical_cycle; // actual source readout starts data-staging lifetime\n        p.copy_versions = m_ep_l2_payload.inspect(p.victim).versions;\n        p.phase = 1;\n        return RESERVATION_FAIL;\n      }\n      if (p.phase == 1) {\n        m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.staging,\n            true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE);\n        if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n          ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n        }\n        m_ep_l2_payload.inspect_mutable(p.staging).versions = p.copy_versions;\n        m_ep_l2_payload.transfer(p.staging, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);\n        ++m_ft_stats.copy_lines; p.phase = 2;\n      }\n    }\n    // Locally absorbed writes consume an actual payload RAM write. Request\n    // the stable prospective ID before changing victim/tag ownership, so a\n    // same-bank denial cannot expose a partially installed new generation.\n    if (mf->get_is_write()) {\n      m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(\n          ep_l2_payload_store::RESIDENT, p.landing_id, true, physical_cycle,\n          (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE);\n      if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n        ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n      }\n    }\n    if (p.dirty && m_config.m_ep_l2_ft_mode == 2) {\n      p.born = physical_cycle; // in-place WB role starts at actual producer commit\n      m_ep_l2_payload.transfer(p.victim, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);\n      if (p.victim.payload_id < 1024) ++m_ft_stats.borrow_resident;\n      else if (p.victim.payload_id < 1152) ++m_ft_stats.borrow_bypass;\n    }\n    if (!p.landing_reserved) {\n      const unsigned id = p.landing_id;\n      if (m_ep_l2_payload.handle_live(p.victim)) m_ep_l2_payload.release(p.victim);\n      p.landing = m_ep_l2_payload.reserve(id, ep_l2_payload_store::RESIDENT,\n          owner, ep_l2_payload_store::RESIDENT_FILL_PENDING);\n      p.landing_reserved = true;\n    }\n    set_tag_payload_handle(index, p.landing);\n  } else {\n    const ep_l2::PayloadHandle h = tag_payload_handle(index);",
+    "id": "A7_COPY_AND_COMMIT",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 247
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 156,
+    "excerpt": "void l2_cache::ft_rollback() {\n  ft_replacement &p = m_ft_pending;\n  assert(p.request && !p.bound);\n  if (p.wad) {\n    assert(m_ep_l2_wad_entries_live.erase(p.victim_address) == 1);\n    assert(m_ep_l2_wad_birth_cycle.erase(p.victim_address) == 1);\n  }\n  if (p.staging.valid() && p.staging != p.victim && m_ep_l2_payload.handle_live(p.staging)) {\n    m_ep_l2_payload.cancel_request(p.staging, true);\n    m_ep_l2_payload.release(p.staging);\n  }\n  if (p.landing_reserved && m_ep_l2_payload.handle_live(p.landing))\n    m_ep_l2_payload.release(p.landing);\n  if (p.victim.valid()) m_ep_l2_payload.restore(p.victim.payload_id, p.saved);\n  set_tag_payload_handle(p.tag_index, p.victim);\n  ++m_ft_stats.rollback;\n  p = ft_replacement();",
+    "id": "A8_ROLLBACK",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 140
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 384,
+    "excerpt": "void l2_cache::send_write_request(mem_fetch *mf, cache_event event, unsigned time,\n    std::list<cache_event> &events) {\n  if (ft_enabled() && mf->get_access_type() == L2_WRBK_ACC) {\n    ft_replacement &p = m_ft_pending;\n    assert(p.request && p.dirty && p.wad && !p.bound);\n    assert(m_config.block_addr(mf->get_addr()) == p.victim_address);\n    ft_wb_record r; r.handle = p.staging; r.born = p.born;\n    r.expected = m_ep_l2_payload.inspect(p.staging).versions;\n    assert(m_ft_wb.size() < m_config.m_ep_l2_wad_entries);\n    assert(m_ft_wb.insert(std::make_pair(mf, r)).second);\n    mf->set_ep_l2_payload_identity(p.staging.payload_id, p.staging.generation);\n    p.bound = true; ++m_ft_stats.wb_created;\n    m_ft_stats.staged_max = std::max(m_ft_stats.staged_max, (unsigned long long)m_ft_wb.size());\n  }\n  data_cache::send_write_request(mf, event, time, events);\n}\n\nbool l2_cache::lower_ready(mem_fetch *mf, unsigned long long cycle) {\n  if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return true;\n  std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);\n  assert(it != m_ft_wb.end());\n  const ep_l2_payload_store::request_result result = m_ep_l2_payload.request(\n      it->second.handle, false, cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT);\n  if (result != ep_l2_payload_store::GRANTED) { ++m_ft_stats.bank_block; return false; }\n  assert(m_ep_l2_payload.inspect(it->second.handle).versions == it->second.expected);\n  m_ft_last_wb_versions = it->second.expected;\n  mf->set_ft_wb_data(it->second.expected);\n  ++m_ft_stats.staging_reads; ++m_ft_stats.data_checks;\n  return true;\n}\n\nvoid l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {\n  if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return;\n  std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);\n  assert(it != m_ft_wb.end());\n  assert(mf->has_ft_wb_data() && mf->get_ft_wb_data() == it->second.expected);\n  // The physical lower FIFO now carries this packet's dirty sector bytes;\n  // all subsequent queues must retain data until actual set_done. No original\n  // payload pointer is needed with TVD disabled. These FIFO bytes are ledgered.\n  m_ep_l2_payload.release(it->second.handle);\n  m_ft_stats.staging_lifetime += cycle >= it->second.born ? cycle - it->second.born : 0;\n  ++m_ft_stats.lower_accept;\n  m_ft_wb.erase(it);\n}",
+    "id": "A9_WB_SEND_ACCEPT",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 341
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 90,
+    "excerpt": "void l2_cache::descriptor_admitted(mem_fetch *mf, unsigned index) {\n  if (!ft_enabled()) return;\n  const ep_l2::PayloadHandle h = tag_payload_handle(index);\n  assert(m_ep_l2_payload.handle_owner_matches(h, m_config.block_addr(mf->get_addr())));\n  mf->set_ep_l2_payload_identity(h.payload_id, h.generation);\n  assert(m_ft_read_refs.insert(std::make_pair(mf, h)).second);\n  m_ep_l2_payload.pin(h);\n}\n",
+    "id": "A10_DESCRIPTOR_PIN",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 82
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 138,
+    "excerpt": "void l2_cache::commit_next_access() {\n  if (!ft_enabled()) { baseline_cache::commit_next_access(); return; }\n  // A synthetic write-allocate response may already have been deleted by the\n  // frontend. Use its pointer only as an identity key, never dereference it.\n  mem_fetch *mf = baseline_cache::peek_next_access();\n  std::map<mem_fetch *,ep_l2::PayloadHandle>::iterator it = m_ft_read_refs.find(mf);\n  assert(it != m_ft_read_refs.end());\n  const ep_l2::PayloadHandle h = it->second;\n  baseline_cache::commit_next_access();\n  m_ep_l2_payload.unpin(h);\n  m_ft_read_refs.erase(it);\n  ++m_ft_stats.descriptor_responses;\n}",
+    "id": "A11_RESPONSE_UNPIN",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 126
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 889,
+    "excerpt": "void mshr_table::commit_next_access() {\n  assert(access_ready());\n  if (!m_current_descriptor_response.empty()) {\n    ready_descriptor ready = m_current_descriptor_response.front();\n    table::iterator entry = m_data.find(ready.m_block_addr);\n    assert(entry != m_data.end());\n    ep_l2_descriptor &descriptor = m_descriptor_pool[ready.m_descriptor_id];\n    std::list<unsigned>::iterator id = std::find(\n        entry->second.m_descriptor_ids.begin(), entry->second.m_descriptor_ids.end(),\n        ready.m_descriptor_id);\n    assert(id != entry->second.m_descriptor_ids.end());\n    std::list<mem_fetch *>::iterator mf = std::find(\n        entry->second.m_list.begin(), entry->second.m_list.end(), descriptor.m_mf);\n    assert(mf != entry->second.m_list.end());\n    entry->second.m_descriptor_ids.erase(id);\n    entry->second.m_list.erase(mf);\n    descriptor = ep_l2_descriptor();\n    m_free_descriptor_ids.push_back(ready.m_descriptor_id);\n    m_current_descriptor_response.pop_front();\n    if (entry->second.m_list.empty()) m_data.erase(entry);\n    return;\n  }\n\n  new_addr_type block_addr = m_current_response.front();\n  table::iterator entry = m_data.find(block_addr);\n  assert(entry != m_data.end() && !entry->second.m_list.empty());\n  entry->second.m_list.pop_front();",
+    "id": "A12_DESCRIPTOR_LINE_RETIRE",
+    "path": "src/gpgpu-sim/gpu-cache.cc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 863
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2583,
+    "excerpt": "\nvoid l2_cache::ep_l2_wad_complete(new_addr_type block_addr,\n                                   unsigned long long cycle) {\n  if (!ep_l2_wad_enabled()) return;\n  const new_addr_type normalized = m_config.block_addr(block_addr);\n  std::map<new_addr_type, unsigned long long>::iterator birth =\n      m_ep_l2_wad_birth_cycle.find(normalized);\n  assert(birth != m_ep_l2_wad_birth_cycle.end());\n  // CUDA memcpy traffic can carry a local dispatch offset whereas set_done()\n  // uses the global cycle.  Saturate that instrumentation-only corner rather\n  // than allowing an unsigned underflow to corrupt the lifetime histogram.\n  const unsigned long long lifetime =\n      cycle >= birth->second ? cycle - birth->second : 0;\n  m_ep_l2_wad_lifetime_sum += lifetime;\n  ++m_ep_l2_wad_lifetime_count;\n  m_ep_l2_wad_lifetime_max = std::max(m_ep_l2_wad_lifetime_max, lifetime);\n  ++m_ep_l2_wad_lifetime_hist[lifetime];\n  m_ep_l2_wad_birth_cycle.erase(birth);\n  const size_t erased = m_ep_l2_wad_entries_live.erase(normalized);\n  assert(erased == 1);\n}",
+    "id": "A13_WAD_COMPLETE",
+    "path": "src/gpgpu-sim/gpu-cache.cc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2563
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 1133,
+    "excerpt": "    if (m_L2cache->access_ready() && !m_L2_icnt_queue->full() &&\n        m_L2cache->ft_response_ready(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {\n      // Keep the EP-L2 descriptor live until this response has actually been\n      // accepted by the L2->ICNT queue below.\n      mem_fetch *mf = m_L2cache->peek_next_access();\n      if (mf->get_access_type() !=\n          L2_WR_ALLOC_R) {  // Don't pass write allocate read request back to\n                            // upper level cache\n        mf->set_reply();\n        mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE,\n                       m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n        ep_l2_m0a_record_response_enqueue();\n        ft_record_response(mf);\n        m_L2_icnt_queue->push(mf);\n      } else {\n        if (m_config->m_L2_config.m_write_alloc_policy == FETCH_ON_WRITE) {\n          mem_fetch *original_wr_mf = mf->get_original_wr_mf();\n          assert(original_wr_mf);\n          original_wr_mf->set_reply();\n          original_wr_mf->set_status(\n              IN_PARTITION_L2_TO_ICNT_QUEUE,\n              m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n          ep_l2_m0a_record_response_enqueue();\n          ft_record_response(original_wr_mf);\n          m_L2_icnt_queue->push(original_wr_mf);\n        }\n        m_request_tracker.erase(mf);\n        delete mf;\n      }\n      m_L2cache->commit_next_access();\n    }\n  }\n",
+    "id": "A14_RESPONSE_QUEUE",
+    "path": "src/gpgpu-sim/l2cache.cc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 1101
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2554,
+    "excerpt": "  void record_logical_operation(unsigned bank, operation_class op_class) {\n    ++m_bank_logical_ops;\n    ++m_bank_logical_ops_by_bank[bank];\n    switch (op_class) {\n      case RESIDENT_HIT_READ: ++m_bank_resident_hit_read; break;\n      case RESIDENT_WRITE: ++m_bank_resident_write; break;\n      case FILL_WRITE: ++m_bank_fill_write; break;\n      case WB_READOUT: ++m_bank_wb_readout; break;\n      case BYPASS_FILL: ++m_bank_bypass_fill; break;\n      case BYPASS_READ: ++m_bank_bypass_read; break;\n    }\n  }\n  struct pending_op {",
+    "id": "A15_NATIVE_BANK_CLASSES",
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2542
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 2192,
+    "excerpt": "          \"wad_avg=%llu|wad_p95=%u|wad_max=%u|resident_payload_avg=%llu|\"\n          \"resident_payload_p95=%u|resident_payload_max=%u|bypass_payload_avg=%llu|\"\n          \"bypass_payload_p95=%u|bypass_payload_max=%u|missq_avg=%llu|missq_max=%u|\"\n          \"lowerq_avg=%llu|lowerq_max=%u|block_descriptor=%llu|block_wad=%llu|\"\n          \"block_payload=%llu|block_bank=%llu|block_l1=%llu|block_lower=%llu|\"\n          \"bank_requests=%llu|bank_grants=%llu|bank_conflicts=%llu|\"\n          \"bank_logical_ops=%llu|bank_attempts=%llu|bank_retry_attempts=%llu|\"\n          \"bank_true_conflict_ops=%llu|bank_true_conflict_events=%llu|\"\n          \"bank_wait_cycles=%llu|\"\n          \"c7d_line_alloc_eligible=%llu|c7d_line_alloc_block=%llu|\"\n          \"c7d_tag_set_all_reserved_block=%llu|\"\n          \"c7d_line_mshr_alloc_eligible=%llu|c7d_line_mshr_full_block=%llu|\"\n          \"c7d_descriptor_alloc_eligible=%llu|c7d_descriptor_pool_full_block=%llu|\"\n          \"c7d_per_address_cap_eligible=%llu|c7d_per_address_cap_block=%llu|\"\n          \"c7d_descriptor_chain_depth_avg=%llu|c7d_descriptor_chain_depth_p95=%u|\"\n          \"c7d_descriptor_chain_depth_max=%u|\"\n          \"c7d_wad_full_events=%llu|c7d_wad_hazard_events=%llu|c7d_wad_hazard_wait_cycles=%llu|\"\n          \"c7d_wad_lifetime_avg=%llu|c7d_wad_lifetime_p95=%llu|c7d_wad_lifetime_max=%llu|\"\n          \"c7d_reserved_avg=%llu|c7d_reserved_p95=%u|c7d_reserved_max=%u|c7d_reserved_set_max=%u|\"\n          \"c7d_resident_valid_avg=%llu|c7d_resident_valid_p95=%u|c7d_resident_valid_max=%u|\"\n          \"c7d_resident_dirty_avg=%llu|c7d_resident_dirty_p95=%u|c7d_resident_dirty_max=%u|\"\n          \"c7d_resident_pending_sector_avg=%llu|c7d_resident_pending_sector_p95=%u|c7d_resident_pending_sector_max=%u|\"\n          \"c7d_bypass_pending_avg=%llu|c7d_bypass_pending_p95=%u|c7d_bypass_pending_max=%u|\"\n          \"c7d_bypass_ready_avg=%llu|c7d_bypass_ready_p95=%u|c7d_bypass_ready_max=%u|\"\n          \"c7d_payload_service_port_denial=%llu|c7d_payload_capacity_allocation_denial=%llu|\"\n          \"c7d_missq_full_block=%llu|c7d_l2_to_dram_full_block=%llu|\"\n          \"c7d_dram_issue_eligible=%llu|c7d_dram_read_issues=%llu|c7d_dram_write_issues=%llu|\"\n          \"c7d_dram_scheduler_full_block=%llu|c7d_dram_returnq_block=%llu|\"\n          \"c7d_dram_credit_block=%llu|c7d_dram_return_eligible=%llu|\"\n          \"c7d_dram_to_l2_full_block=%llu|c7d_dram_scheduler_occ_avg=%llu|\"\n          \"c7d_dram_scheduler_occ_max=%u|\"\n          \"c7d_bank0_logical_ops=%llu|c7d_bank1_logical_ops=%llu|c7d_bank2_logical_ops=%llu|c7d_bank3_logical_ops=%llu|\"\n          \"c7d_bank0_grants=%llu|c7d_bank1_grants=%llu|c7d_bank2_grants=%llu|c7d_bank3_grants=%llu|\"\n          \"c7d_bank0_true_conflict_ops=%llu|c7d_bank1_true_conflict_ops=%llu|c7d_bank2_true_conflict_ops=%llu|c7d_bank3_true_conflict_ops=%llu|\"\n          \"c7d_bank0_wait_cycles=%llu|c7d_bank1_wait_cycles=%llu|c7d_bank2_wait_cycles=%llu|c7d_bank3_wait_cycles=%llu|\"\n          \"c7d_bank_resident_hit_read=%llu|c7d_bank_resident_write=%llu|c7d_bank_fill_write=%llu|c7d_bank_wb_readout=%llu|c7d_bank_bypass_fill=%llu|c7d_bank_bypass_read=%llu|\"\n          \"c7e_tag_way_alloc_need=%llu|c7e_tag_way_alloc_block=%llu|\"\n          \"c7e_line_mshr_need=%llu|c7e_descriptor_need=%llu|c7e_per_address_cap_check=%llu|\"\n          \"c7e_dram_issue_attempt=%llu|c7e_dram_successful_read_issues=%llu|c7e_dram_successful_write_issues=%llu|\"\n          \"c7e_dram_successful_read_bytes=%llu|c7e_dram_successful_write_bytes=%llu|\"\n          \"c7e_dram_scheduler_full_observed=%llu|c7e_dram_scheduler_causal_block=%llu|\"\n          \"c7e_dram_to_l2_return_path_block=%llu|c7e_wad_lifetime_kernel_available=%u\\n\",\n          uid == (unsigned long long)-1 ? \"application\" : \"kernel\",",
+    "id": "A16_NATIVE_APP_COUNTERS",
+    "path": "src/gpgpu-sim/l2cache.cc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 2150
+  },
+  {
+    "commit": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
+    "end_line": 406,
+    "excerpt": "  if (!ft_enabled()) return;\n  fprintf(fp, \"EPL2FTV1|SUMMARY|slice=%u|mode=%u|wbuf=%u|physical_slots=%u|\"\n      \"accepted=%llu|wb_created=%llu|wb_completed=%llu|wb_lower_accept=%llu|wbuf_full=%llu|pool_full=%llu|pin_block=%llu|\"\n      \"bank_block=%llu|issue_block=%llu|copy_lines=%llu|copy_bytes=%llu|staging_reads=%llu|\"\n      \"staged_max=%llu|staging_lifetime=%llu|borrow_resident=%llu|borrow_bypass=%llu|\"\n      \"rollback=%llu|version_checks=%llu|wb_live=%u|wb_slots=%u|reserved=%u|read_refs=%u|\"\n      \"role_free=%u|role_resident=%u|role_bypass=%u|ownership_consistent=%u|\"\n      \"observed_cycles=%llu|wb_occupancy_sum=%llu|descriptor_responses=%llu\\n\",\n      slice, m_config.m_ep_l2_ft_mode, m_config.m_ep_l2_wbuf_entries,\n      m_ep_l2_payload.physical_slots(), m_ft_stats.accepted, m_ft_stats.wb_created,\n      m_ep_l2_wad_lifetime_count, m_ft_stats.lower_accept,\n      m_ft_stats.wbuf_full, m_ft_stats.pool_full, m_ft_stats.pin_block,\n      m_ft_stats.bank_block, m_ft_stats.issue_block, m_ft_stats.copy_lines,\n      m_ft_stats.copy_lines * 128, m_ft_stats.staging_reads, m_ft_stats.staged_max,\n      m_ft_stats.staging_lifetime, m_ft_stats.borrow_resident, m_ft_stats.borrow_bypass,\n      m_ft_stats.rollback, m_ft_stats.data_checks, (unsigned)m_ft_wb.size(),\n      m_ep_l2_payload.wb_used(), m_ft_pending.request ? 1 : 0, (unsigned)m_ft_read_refs.size(),\n      m_ep_l2_payload.free_slots(), m_ep_l2_payload.resident_used(), m_ep_l2_payload.bypass_used(),\n      m_ep_l2_payload.ownership_consistent() ? 1 : 0, m_ft_stats.observed_cycles,\n      m_ft_stats.staging_occupancy_sum, m_ft_stats.descriptor_responses);",
+    "id": "A17_WB_STATS",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "repository": "swayhrl/gpgpu-sim",
+    "start_line": 387
+  },
+  {
+    "commit": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
+    "end_line": 65,
+    "excerpt": "def repair_commands(build, core):\n    base = str(core / 'configs/tested-cfgs/SM7_QV100/gpgpusim.config')\n    overlay = str(core / 'tests/ep_l2/ft_wbuf.config')\n    commands = []\n    for mode in (1, 2):\n        for c in (8, 16):\n            prefix = [base, overlay, str(mode), str(c)]\n            commands.append((f'host_prefill_{mode}_{c}',\n                [str(build / 'gpgpu-sim/ep_l2_ft_host_prefill'), *prefix]))\n            for offset in (0, 4096):\n                commands.append((f'physical_clock_{mode}_{c}_{offset}',\n                    [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, str(offset)]))\n            commands.append((f'warm_clock_{mode}_{c}',\n                [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, '4096', 'warm_hit']))\n            commands.append((f'partition_{mode}_{c}',\n                [str(build / 'gpgpu-sim/ep_l2_ft_partition'), *prefix]))\n    commands.append(('ft_directed',\n        [str(build / 'gpgpu-sim/ep_l2_ft_directed'), base, overlay]))\n    return commands\n",
+    "id": "A18_PRODUCER_21",
+    "path": "util/ep_l2/ft_lane1/build_r0_1.py",
+    "repository": "swayhrl/accel-sim-framework",
+    "start_line": 46
+  },
+  {
+    "commit": "70675cc3b2cd63e29fc7ab2b0b54dc924011f5e4",
+    "end_line": 121,
+    "excerpt": "                require(file_hash(root / f\"config-{index}.config\") == record[\"sha256\"], \"Frozen runtime config changed\")\n            summary = result[\"summary\"]\n            require(result[\"validation\"][\"status\"] == \"PASS\" and summary[\"hardware_drained\"] is True, \"Unvalidated summary\")\n            require(summary[\"slices\"] == 64 and summary[\"requester_exact_once_audit\"] is True and summary[\"data_correctness_qualification\"] is True,\n                    \"Incomplete identity/scoped reference gate\")\n            for k in (\"live_descriptors\", \"live_line_mshrs\", \"live_wad\", \"pending_lower_reads\", \"pending_returns\", \"pending_responses\", \"transient_payloads\"):\n                require(summary[k] == 0, \"Terminal resource leak\")\n            require(summary[\"wb_created\"] == summary[\"wb_lower_accepted\"] == summary[\"wb_completed\"], \"WB milestone leak\")\n            require(summary[\"payload_free\"] + sum(summary[\"payload_roles\"].values()) == summary[\"payload_capacity\"] == 1168 * 64, \"Payload budget\")\n            for k in (\"cycles\", \"instructions\"):\n                require(summary[k] == int(row[k]), \"CSV/native total mismatch\")\n            require(all(g[\"status\"] == \"PASS\" and g[\"production_driven\"] is True for g in q[\"gates\"].values()), \"Qualification gates\")\n            require(q[\"data_correctness_scope\"] == \"SYMBOLIC_32B_SECTOR_VERSIONS_AND_REQUEST_IDENTITY_NOT_NUMERIC_SASS_PAYLOAD\", \"Do not broaden data scope\")\n            # The only excluded config record is the exact hash-checked mode\n            # overlay, so the common fingerprint is derived, not guessed.\n            common = canonical_sha({\"configs_before_mode_overlay\": audit[\"configs\"][:-1],\n                                    \"auxiliary_assets\": audit[\"auxiliary_assets\"], \"environment\": spec.get(\"environment\", {})})\n            runs.append({\"workload\": row[\"workload\"], \"mode\": row[\"mode\"], \"status\": row[\"status\"],\n                         \"run_key\": row[\"run_key\"], \"identity\": ident, \"summary\": summary,\n                         \"raw_log_sha256\": result[\"raw_log_sha256\"], \"effective_base_config_sha256\": common,\n                         \"validation\": {k: True for k in REQUIRED_GATES},\n                         \"validation_mapping\": \"repaired release independent certificate + current scientific acceptance + native summary/identity/resource checks above; not application full-byte validation\",\n                         \"numeric_payload_validation\": \"UNAVAILABLE_SASS_DATALESS\", \"original_row\": row,\n                         \"original_result\": result, \"original_spec\": spec})",
+    "id": "A19_NATIVE_INTAKE_PRIMARY_BUDGET",
+    "path": "docs/ep_l2/review_packs/FT20261016_LANE6_PAPER_PPA_r3/native_pair_intake.py",
+    "repository": "swayhrl/accel-sim-framework",
+    "start_line": 98
+  }
+]

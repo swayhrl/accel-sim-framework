@@ -1,0 +1,294 @@
+                   EP-L2: Elastic Payload Storage for
+                 In-Place Writeback in GPU L2 Caches
+                                             Author information to be completed
+                                       English working draft EN-v4 — not for submission
+
+
+   Abstract—In a fixed-partition GPU L2, a dirty victim may          Our focus is instead the resident-to-writeback data lifetime:
+need to move from resident storage to a writeback buffer even        retaining dirty data in place while separately releasing tag
+though only its consumer has changed. The copy consumes bank         visibility and address-ordering state. This transition requires
+service, while static role quotas prevent idle capacity from being
+borrowed. Elastic Payload L2 (EP-L2) separates resident-tag          evaluating both data-service demand and access to otherwise
+visibility, physical data ownership, and writeback ordering. A       idle capacity.
+dirty victim becomes writeback-staged in its original slot; the         This paper presents the in-place writeback protocol and
+incoming resident receives a distinct, bank-compatible slot. The     its bounded resource model, then organizes evaluation around
+design retains the reference’s payload capacity and bank-service     three questions: which bank operations disappear, whether static
+budget, eliminating resident-to-writeback copying without adding
+resident tags or miss-tracking entries. We specify the ownership     staging capacity actually blocks progress, and whether useful
+protocol and a matched evaluation that separates copy elimination,   L2 service improves application execution. Optional victim-
+relief of staging-capacity pressure, and application performance.    retention and read-only paths are scoped separately; they are
+Independently qualified application measurements and physical        not prerequisites for the primary writeback comparison.
+implementation results remain pending; this working draft makes
+no empirical speedup, area, or energy claim.                                               II. EP-L2 Design
+   Index Terms—GPU, L2 cache, writeback, tag–data decoupling,
+resource sharing                                                     A. One-Slice Organization and Matched Reference
+                                                                      Figure 1 places the payload pool beside the distinct lookup,
+                        I. Introduction                            request-tracking, and ordering structures. The primary reference,
+   A cache line’s visibility, data, and transaction state need not B16 (B16_BANKED), has 1024 resident, 128 bypass-return,
+have the same lifetime. On a dirty eviction, the old resident and 16 WBUF payload slots. U-WB16 (U_WB16) dynamically
+tag can become reusable before the lower memory system shares the same 1168 slots. Each slot is 128 B, with four 32-B
+accepts the data. Same-address ordering may persist even after sectors. Both modes provision four banks of 292 slots and at
+that transfer. A design must preserve the data and ordering most one line-sized operation per bank per physical GPU cycle.
+obligations without unnecessarily retaining the original tag or Both also provision a common 128-B copy latch outside the
+moving data merely to change their role.                           pool and 128 WAD/control entries. Sixteen is the reference’s
+   We study an L2 with fixed quotas for resident, bypass-return, WB data quota, not a new U-WB control limit.
+and writeback-buffer (WBUF) payloads. Its banked reference            A tag names a payload by {slot identifier, generation}. Each
+copies a dirty victim into WBUF before reusing the resident slot. slot has one authoritative owner; valid/pending sector masks
+The copy requires a source read and destination write; sending and pins protect its consumers. The initial design retains the
+the staged line requires another read. A larger WBUF can resident bank class,
+relieve a quota limit but does not remove the copy. Conversely,
+fewer copy operations need not improve execution time if                       bank( 𝑝) = 𝑝 mod 4 = tag_index mod4.               (1)
+another resource determines progress.                              A globally free slot is therefore not necessarily a legal landing
+   The design insight is to transfer ownership rather than slot for a particular replacement. The fixed 1024 resident tags
+location. In EP-L2, the dirty payload remains in place, while remain the lookup-capacity limit, even when resident data use
+an independently allocated slot receives the incoming resident previously nonresident slots.
+line. Resident and WB allocations can borrow free slots across
+the fixed role partitions, while resident tags stay fixed. This B. Reservation, In-Place Transition, and Release
+WB-only path does not establish concurrent dynamic bypass             Before replacing a dirty line, the controller reserves the WAD
+service. The mechanism can thus reduce internal movement entry, required issue resources, and a legal data destination. In
+and expose idle slots to transient consumers; these are distinct B16, the old data are read from the resident bank and written
+potential benefits.                                                through the latch to WBUF. Only after that copy is safe can the
+   Tag–data indirection and storage unification have been ex- original resident slot be reused. WBUF subsequently supplies
+plored previously. V-Way decouples tag and data placement [1]; a bank read for the lower send.
+unified GPU local memory reallocates capacity among registers,        In U-WB16, a dirty line 𝐴 retains payload 𝑝 and changes
+cache, and scratchpad [2]; in-cache MSHR storage and MiCache role to WB_STAGED. A different slot 𝑞 is reserved for the
+reuse cache storage for pending-request information [3], [4]. new resident 𝐵; its tag points to 𝑞, not 𝑝. This removes
+              (a) Logical organization of one L2 slice                                   (b) Copy removal and separate release events
+                                                                                B16: source read + destination write + send read
+                  L1 / interconnect requests and responses
+
+
+     Resident tags: 1024                                                          Resident 𝐴             Latch             WBUF 𝐴                Lower
+                               Descriptors: 512           WAD: 128
+         handles: ID
+                              Line-MSHRs: 128           address ordering
+        + generation
+                                                                                U-WB16: keep 𝐴 at 𝑝; assign new resident 𝐵 to 𝑞
+            Ownership / reservation / bank-compatible allocation
+               Four-bank arbitration (not extra bank ports)                              Payload 𝑝: resident           send read
+                                                                                           → WB staged                                 Lower data carrier
+                                       handle, sector, grant
+
+             Payload pool: 1168 × 128 B; 4 banks × 292 slots                    After a successful replacement ( 𝑝 ≠ 𝑞):
+                Resident / bypass-return / WB-staged roles
+                                                                                𝑡𝑟 : reuse old tag; preserve staged payload 𝑝
+                                       fill / WB data
+                                                                                𝑡𝑎 : lower accepts data; WB-only slot 𝑝 can be freed
+            Accounted lower data carriers / L2-to-DRAM queue
+                                                                                𝑡𝑑 : complete WB and release WAD ordering entry
+
+Fig. 1. Declared WB-only design, not a physical floorplan or a measured cycle schedule. Dashed links denote control dependencies; solid links denote data
+movement. B16 uses fixed 1024/128/16 role quotas over the same banks; U-WB16 shares those slots. Both retain a 128-B copy latch outside the pool. Optional
+TVD/RO consumers are not drawn as extra data arrays.
+
+
+
+resident-to-WBUF copying, but retains the send read, lower- controls pending-tag detachment and Line-MSHR bypass
+queue occupancy, and receiving data carrier. Pre-reservation under a complete-commandlist, line-granular read-only oracle.
+refusals leave visible ownership unchanged; bank retries can Detached fills complete original consumers without reinstalling
+retain reservations. A failed final commit restores ownership replaced tags. Both extensions are OFF in the primary B16/U-
+and releases reservations, without erasing bank work already WB16 experiment and receive no extra payload array or
+performed. Accepted requests always have a reserved return descriptor pool.
+location.                                                             Primary payload storage is 146 KiB/slice, or 9.125 MiB
+     At committed replacement time 𝑡𝑟 , the tag can be reused; over 64 slices; common latches add 8 KiB/chip. An identifier
+the staged payload survives until actual lower data acceptance needs 𝑃 = ⌈log2 1168⌉ = 11 bits. Explicit tag handles cost
+𝑡 𝑎 . The writeback address directory (WAD) maintains ordering 1024(𝑃 + 𝐺) bits for generation width 𝐺; up to 128 WB
+until real completion 𝑡 𝑑 . Merely enqueueing a software pointer handles add 128(𝑃 + 𝐺) bits plus state and packet binding.
+does not establish that the lower path owns the data. The Shared baseline fields are not counted again as pooling overhead.
+receiving carrier must be accounted for before the local staging Generation width, pin bounds, allocation selection, arbitration,
+slot is released. A late event for 𝐴 uses its transaction/handle rollback state, and lookup ports require a concrete hardware
+identity and cannot modify 𝐵 through a reused tag index.            mapping. Handle validation includes generation/owner compar-
+     For a tracked read, its requester descriptor and payload pin isons; bank-compatible free-slot selection and bounded oldest-
+survive until the response is accepted by the L2-to-interconnect ready arbitration are not free hardware. Symbolic verification
+queue (or an internal response is consumed). The Line-MSHR versions are not payload RAM or automatically hardware fields.
+persists until its last tracked requester retires; payload pending- Equal storage and bank budgets do not establish equal area or
+sector state remains separately checked. Neither retirement frequency; matched RTL, SRAM macros, and timing/power
+event releases the independent WB WAD. Partial readiness and measurements remain necessary.
+stale generations cannot authorize payload reuse. WB draining
+                                                                                   III. Evaluation Methodology
+needs no new resident miss; eventual bank/lower service is
+assumed, not whole-GPU deadlock freedom.                            A. Controlled Comparison and Workloads
+                                                                      The implementation uses Accel-Sim’s SASS flow and
+C. Optional Consumers and Implementation Cost                       the GPGPU-Sim performance-model lineage [5], [6]. These
+     TVD and RO are separate, uncompiled source candidates, citations identify the tools; their hardware-correlation results
+not qualified production extensions. TVD is specified to do not validate our modified L2. The same independently
+retain victim payloads without resident tags, using a shared qualified repaired binary must execute both modes with
+WAD/TVD budget of 128 address entries and one additional identical complete traces, non-mode configurations, timing
+lookup cycle after a tag miss. Valid-sector reads can be scope, and termination rules. Table I lists the declared research
+served in place; clean writes/atomics require promotion, while configuration, not undocumented commercial-GPU internals.
+dirty writes/atomics wait for writeback completion. Retained          The development set is convolutionSeparable, FWT_7_21,
+data remain explicitly owned. The RO extension separately cfd_097k, vectorAdd_4M, and sad, the predeclared negative
+                     (a) Application performance                                                   (b) Measured WB and copy work
+                       MEASUREMENTS PENDING
+                                                                                                     MEASUREMENTS PENDING
+    Five fixed workloads: convolutionSeparable, FWT, CFD, vectorAdd,
+                                                                                         Completed copy transfers, send-read grants, and WB totals.
+                                    sad.
+                                                                                               Logical operation classes reported separately.
+               Paired cycles and 𝐶𝐵 /𝐶𝑈 ; include slowdowns.
+
+
+
+
+Fig. 2. Reserved main-result area. The two panels will use the same current-qualified binary and matched inputs. No bars, values, reference line, or mean have
+been fabricated; blank space is intentional.
+
+
+
+                            TABLE I                                             for actual measurements, not plotted results. Earlier invalidated
+     Matched evaluation configuration (per slice unless stated).                runs are excluded. The following specifies how each panel will
+                                                                                support or reject a claim; findings will replace this text after
+Resource                            Setting
+                                                                                acceptance.
+Resident / total payload            1024 tags / 1168 slots (146 KiB)
+Line / sectors / banks              128 B / 4 × 32 B / 4 × 292 slots
+Bank service / copy latch           1 op/bank/physical cycle / 128 B            A. End-to-End Performance and Copy Work
+Descriptors / Line-MSHRs            512 / 128; at most 32 requesters/address
+WAD / L2-to-DRAM queue              128 / 128 entries                              Figure 2(a) is reserved for the full five-workload B16/U-
+Chip / memory channels              64 slices / 32 channels                     WB16 comparison. With matching instruction counts and
+DRAM / scheduler / return           850 MHz / 128 / 192 entries per channel     timing scope, speedup is 𝑆 = 𝐶 𝐵16 /𝐶𝑈−𝑊 𝐵16 . Pairwise cycles
+L1 (fixed)                          64 KiB/core; 4 banks; 20-cycle setting
+WBUF8 sensitivity                   1160 slots, 145 KiB; 4 × 290 bankslots      accompany the figure, and negative controls and regressions
+                                                                                remain visible.
+                                                                                   For one committed, non-rolled-back WB episode, the
+control whose pressure remains to be checked. Btree and dwt2d                   specified reference performs three logical staging/send bank
+are reserved for validation after policy selection, with scan                   operations, whereas the in-place path performs the send read
+scheduled separately. Slowdowns remain in the result set. A                     only. This is a protocol count, not a 3× speedup. Actual
+five-workload geometric mean is computed only after every pair                  runs may evict different numbers of lines; Fig. 2(b) therefore
+satisfies the common criteria, rather than averaging a favorable                reports measured copy/send operations and WB totals in both
+completed subset.                                                               modes. Retry attempts are not new logical operations; work
+                                                                                consumed before rollback still counts. Per-episode reduction
+B. Correctness and Timing Qualification                                         cannot replace application totals. The native operation classes
+   Qualification requires directed tests on actual cache/partition              group copy reads with send reads and copy writes with resident
+paths, not only detached helper models. The repaired candidate                  writes; their physical split requires an audited event mapping.
+has not yet run these production tests. Required coverage
+includes nonzero host-memcpy offsets, at most one bank                          B. Capacity Pressure, Service, and Downstream Effects
+grant per physical cycle, valid host-prefill payload identity,
+generation reuse, sector returns, response backpressure, and                       A nonzero borrowing counter does not demonstrate a
+distinct WB data-acceptance/completion events. Native tag-                      capacity benefit. Figure 3(a) relates WB-data-full waits to
+ordering timestamps must not alter bank-service time. Host                      staged/reserved occupancy, pool-full or bank-compatible land-
+prefill rejects dirty, pinned, pending, or nonquiescent state                   ing failures, and separately recorded WAD pressure. A capacity
+before mutation.                                                                claim needs binding static quota pressure and useful allocation
+   Complete numerical payloads are unavailable in the SASS                      from otherwise inaccessible slots. An idle bypass partition may
+traces. The supported checks are therefore ownership, sym-                      supply headroom in this workload set, but does not establish
+bolic sector versions, requester/transaction identity, and final                the best static partition.
+resource drain, not full numerical application correctness.                        Figure 3(b) separates logical operations, physical bank grants,
+Source/binary/configuration/trace identities and current inde-                  and waiting. Summed per-operation waits are not elapsed GPU
+pendent acceptance accompany every result. Normal exit                          cycles and cannot be directly subtracted from application time.
+or a historical certificate cannot override later qualification                 Fig. 3(c) tests whether improved admission merely transfers
+withdrawal.                                                                     pressure to the lower queue, scheduler, or DRAM. WB-data
+                                                                                release at lower acceptance and WAD release at completion
+                IV. Results and Causal Analysis                                 must remain distinguishable. Together, these panels connect
+Result status. No currently accepted application pair is avail-                 copy/capacity changes to useful service rather than only to
+able for this revision. Figures 2–4 are fixed-size reservations                 counters that happen to decrease.
+         (a) Capacity and ordering                                (b) Useful bank service                              (c) Downstream pressure
+                                                                                                                      MEASUREMENTS PENDING
+         MEASUREMENTS PENDING                                   MEASUREMENTS PENDING
+                                                                                                                     Matched lower/DRAM bytes and
+    Staged/reserved occupancy; WB-data-full                 Logical operations; physical grants and
+                                                                                                                          queue/service evidence.
+             and pool/landing waits.                        grant-limit check; waiting per operation.
+                                                                                                                    Separate lower acceptance from WB
+        WAD pressure shown separately.                       Not a subtraction from elapsed cycles.
+                                                                                                                                completion.
+
+
+
+
+Fig. 3. Reserved causal-analysis area. These three panels distinguish staging capacity, bank service, and pressure transferred downstream. Metrics with different
+units must not share an unlabeled scale. The future data determine the conclusion, not the panel titles.
+
+
+
+                                                                                                        V. Related Work and Scope
+                                                                                    Flexible storage organization. V-Way increases tag capac-
+                        Strong control / sensitivity                            ity relative to data and uses indirection for demand-based
+                        MEASUREMENTS PENDING                                    associativity [1]. Tag-Split Cache instead changes data-storage
+      Equal-total-capacity static repartition and/or the planned WBUF8          granularity while retaining coarse request granularity [7]. EP-
+                                   sensitivity.                                 L2 fixes resident tags and line/sector sizes, targeting cross-role
+              Select only after the stated scientific preconditions.
+                                                                                payload lifetimes rather than either form of spatial packing.
+                                                                                    Storage reused for transient state. In-cache MSHR designs
+                                                                                reuse cache storage for pending-load information, subject to
+Fig. 4. Reserved control panel. A fixed repartition tests whether an allocation placement and port constraints [3]. MiCache shares FPGA
+chosen in advance suffices; a copy-service diagnostic tests a different cause. storage between cache lines and MSHR subentries, converting
+This slot is not a claim that either experiment has run.
+                                                                                MSHR entries to cache entries on response [4]. EP-L2 instead
+                                                                                retains existing dirty data during resident-to-WB transition,
+C. Strong Controls and Cost Sensitivity                                         with  request metadata and WAD separately bounded.
+                                                                                    Other resource and access policies. Gebhart et al. repar-
+   A capacity-sharing claim requires a strong equal-1168-slot
+                                                                                tition SM-local registers/cache/scratchpad storage at kernel
+static control, such as 1024 resident/112 bypass/32 WBUF,
+                                                                                boundaries; their evaluated cache is write-through [2]. DL-
+charging its reduced bypass quota. This repartition is not
+                                                                                MSHR links slots to adapt primary/secondary-miss capacity;
+executable in the frozen 8/16-entry interface; it needs an
+                                                                                its slots can also carry write-miss data [8]. MRPB reorders and
+explicit implementation and independent qualification. An
+                                                                                bypasses requests before GPU L1 access [9], whereas victim
+independently qualified equal-copy-service diagnostic may be
+                                                                                caching retains displaced lines for reuse [10]. These address
+needed when copy elimination could explain the difference.
+                                                                                related resource limits but are not direct implementations
+The planned, still unqualified WBUF8 sensitivity checks a
+                                                                                of the WB-only comparison. Potential combinations require
+second budget; these comparisons do not add free metadata or
+                                                                                measurement rather than assumed additive benefit.
+bank ports.
+   If local service improves without end-to-end benefit, a                                               VI. Conclusion
+representative case crosses baseline/mechanism with orig-                           EP-L2 transfers dirty-payload ownership without relocating
+inal/one justified downstream-headroom setting. This four- the data, while separating resident visibility and WB ordering.
+point interaction test differs from simply showing that faster Its architectural effects are fewer copy operations and more
+memory helps both modes. Ideal WB-capacity, metadata, and flexible access to a fixed payload budget. Their workload value
+read-hit diagnostics require a separate same-binary baseline must be established through matched performance, true capacity
+and remain optimistic diagnostics, not implemented EP-L2 pressure, service, and cost evidence. The reserved result panels
+performance. Optional TVD/RO results enter only after their make that remaining evaluation explicit without presenting
+own qualification; the reserved panels do not authorize new unmeasured benefits.
+experiments.
+   The final interpretation must also include added control
+latency and implementation cost. Equal data bytes are not equal
+area, and fewer bank accesses alone do not establish energy
+savings. Macro energy, arbitration/selection, wiring, leakage,
+and execution duration need compatible implementation inputs.
+No physical PPA number is available in this revision.
+                              References
+ [1] M. K. Qureshi, D. Thompson, and Y. N. Patt, “The V-Way cache: Demand-
+     based associativity via global replacement,” in Proceedings of the 32nd
+     Annual International Symposium on Computer Architecture (ISCA), 2005,
+     pp. 544–555.
+ [2] M. Gebhart, S. W. Keckler, B. Khailany, R. Krashinsky, and W. J.
+     Dally, “Unifying primary cache, scratch, and register file memories in a
+     throughput processor,” in Proceedings of the 45th Annual IEEE/ACM
+     International Symposium on Microarchitecture (MICRO), 2012, pp. 96–
+     106.
+ [3] K. I. Farkas and N. P. Jouppi, “Complexity/performance tradeoffs with
+     non-blocking loads,” Digital Equipment Corporation, Western Research
+     Laboratory, Research Report 94/3, Mar. 1994.
+ [4] S. Xu, S. Lu, Z. Shao, X. Liao, and H. Jin, “MiCache: An MSHR-
+     inclusive non-blocking cache design for FPGAs,” in Proceedings of the
+     2024 ACM/SIGDA International Symposium on Field Programmable
+     Gate Arrays (FPGA), 2024, pp. 22–32.
+ [5] M. Khairy, Z. Shen, T. M. Aamodt, and T. G. Rogers, “Accel-Sim:
+     An extensible simulation framework for validated GPU modeling,” in
+     Proceedings of the 47th Annual International Symposium on Computer
+     Architecture (ISCA), 2020, pp. 473–486.
+ [6] A. Bakhoda, G. L. Yuan, W. W. L. Fung, H. Wong, and T. M. Aamodt,
+     “Analyzing CUDA workloads using a detailed GPU simulator,” in
+     Proceedings of the IEEE International Symposium on Performance
+     Analysis of Systems and Software (ISPASS), 2009, pp. 163–174.
+ [7] L. Li, A. B. Hayes, S. L. Song, and E. Z. Zhang, “Tag-split cache
+     for efficient GPGPU cache utilization,” in Proceedings of the 2016
+     International Conference on Supercomputing (ICS), 2016, pp. 43:1–43:12.
+ [8] Y. Gu and L. Chen, “Dynamically linked MSHRs for adaptive miss
+     handling in GPUs,” in Proceedings of the International Conference on
+     Supercomputing (ICS), 2019, pp. 510–521.
+ [9] W. Jia, K. A. Shaw, and M. Martonosi, “MRPB: Memory request
+     prioritization for massively parallel processors,” in Proceedings of the
+     20th IEEE International Symposium on High Performance Computer
+     Architecture (HPCA), 2014, pp. 272–283.
+[10] N. P. Jouppi, “Improving direct-mapped cache performance by the
+     addition of a small fully-associative cache and prefetch buffers,” in
+     Proceedings of the 17th Annual International Symposium on Computer
+     Architecture (ISCA), 1990, pp. 364–373.
+

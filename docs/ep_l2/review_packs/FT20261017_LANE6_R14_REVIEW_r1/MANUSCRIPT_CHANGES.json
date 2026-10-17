@@ -1,0 +1,72 @@
+[
+  {
+    "reason": "PDF subject",
+    "before": "Lane6 EN-v3: accepted-result slots pending; source-bound PPA; no empirical results",
+    "after": "Lane6 EN-v4: r14 scientific consistency corrections; no empirical results"
+  },
+  {
+    "reason": "Revision label",
+    "before": "English working draft EN-v3",
+    "after": "English working draft EN-v4"
+  },
+  {
+    "reason": "Do not claim a generally integrated all-consumer pool from resident/WB allocation code",
+    "before": "All roles share the same total data capacity, but the resident-tag count stays fixed.",
+    "after": "Resident and WB allocations can borrow free slots across the fixed role partitions, while resident tags stay fixed. This WB-only path does not establish concurrent dynamic bypass service."
+  },
+  {
+    "reason": "Separate bounded WB metadata from static data quota",
+    "before": "Both also provision a common 128-B copy latch outside the allocatable pool.",
+    "after": "Both also provision a common 128-B copy latch outside the pool and 128 WAD/control entries. Sixteen is the reference's WB data quota, not a new U-WB control limit."
+  },
+  {
+    "reason": "Make descriptor, Line-MSHR, payload and WAD retirement independently explicit",
+    "before": "Pins survive bank reads and response backpressure. Partial-sector readiness does not make a whole line valid, and old generations cannot access reused storage. The WB drain path does not require admission of a new resident miss. This prevents that local allocation cycle, assuming eventual bank and lower-system service; it is not a whole-GPU deadlock proof.",
+    "after": "For a tracked read, its requester descriptor and payload pin survive until the response is accepted by the L2-to-interconnect queue (or an internal response is consumed). The Line-MSHR persists until its last tracked requester retires; payload pending-sector state remains separately checked. Neither retirement event releases the independent WB WAD. Partial readiness and stale generations cannot authorize payload reuse. WB draining needs no new resident miss; eventual bank/lower service is assumed, not whole-GPU deadlock freedom."
+  },
+  {
+    "reason": "Mark extension maturity in the mechanism paragraph",
+    "before": "TVD retains victim payloads without resident tags,",
+    "after": "TVD and RO are separate, uncompiled source candidates, not qualified production extensions. TVD is specified to retain victim payloads without resident tags,"
+  },
+  {
+    "reason": "Do not read planned production test coverage as a completed validation",
+    "before": "Directed tests exercise actual cache/partition paths, not only detached helper models. They cover",
+    "after": "Qualification requires directed tests on actual cache/partition paths, not only detached helper models. The repaired candidate has not yet run these production tests. Required coverage includes"
+  },
+  {
+    "reason": "Limit three-to-one operation count; failed speculative copies can still consume service",
+    "before": "For one otherwise equivalent completed WB episode,",
+    "after": "For one committed, non-rolled-back WB episode,"
+  },
+  {
+    "reason": "Preserve speculative/rollback work in measured accounting",
+    "before": "Retry attempts are not new logical operations, and a reduction per episode must not be substituted for the measured application total.",
+    "after": "Retry attempts are not new logical operations; work consumed before rollback still counts. Per-episode reduction cannot replace application totals."
+  },
+  {
+    "reason": "Expose the missing executable strong-control implementation instead of promising a ready experiment",
+    "before": "When capacity sharing contributes, Fig.~\\ref{fig:controls} uses an equal-1168-slot static repartition, such as 1024 resident/112 bypass/32 WBUF. Its reduced bypass quota is an explicit cost.",
+    "after": "A capacity-sharing claim requires a strong equal-1168-slot static control, such as 1024 resident/112 bypass/32 WBUF, charging its reduced bypass quota. This repartition is not executable in the frozen 8/16-entry interface; it needs an explicit implementation and independent qualification."
+  },
+  {
+    "reason": "Sensitivity is not already independently qualified",
+    "before": "The already planned WBUF8 sensitivity checks a second budget;",
+    "after": "The planned, still unqualified WBUF8 sensitivity checks a second budget;"
+  },
+  {
+    "reason": "Use actually emitted copy/send counters; do not imply a native typed physical copy split exists",
+    "before": "Source reads, destination writes, send reads, and completed WB totals.\\\\Common denominator and units stated per panel.\nRetry attempts are not new logical operations; work consumed before rollback still counts. Per-episode reduction cannot replace application totals.",
+    "after": "Completed copy transfers, send-read grants, and WB totals.\\\\Logical operation classes reported separately.\nRetry attempts are not new logical operations; work consumed before rollback still counts. Per-episode reduction cannot replace application totals. The native operation classes group copy reads with send reads and copy writes with resident writes; their physical split requires an audited event mapping."
+  },
+  {
+    "reason": "Distinguish pre-reservation refusal, held bank retry token and failed commit rollback",
+    "before": "Failed reservation leaves the old tag, owner, and pending state unchanged.",
+    "after": "Pre-reservation refusals leave visible ownership unchanged; bank retries can retain reservations. A failed final commit restores ownership and releases reservations, without erasing bank work already performed."
+  },
+  {
+    "reason": "Do not inherit old sad pressure qualification into current unrun comparison",
+    "before": "and sad; sad is the low-pressure negative control.",
+    "after": "and sad, the predeclared negative control whose pressure remains to be checked."
+  }
+]
