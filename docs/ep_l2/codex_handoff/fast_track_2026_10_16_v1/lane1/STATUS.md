@@ -1,11 +1,1 @@
-# Lane1 r8 automatic outcome
-
-Status: WAITER_STOPPED_FAIL_CLOSED
-
-The unique waiter has finished; no automatic retry is running. Core/Framework/source identities remain in RECEIPT.json.
-
-Pilot evidence is ENGINEERING_ONLY. Formal scientific runtime/binary/qualification/accepted-pair fields retain their preceding values; no engineering promotion occurred.
-
-Actual directed attempts: 0; passes: 0. Exact timings/resource samples/binary identity/stop reason: docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T094312.
-
-Engineering evidence only: review any ordinary failure and bounded remediation; official release/independent11gate/formal resource admission remain separate. If the formal driver won, audit/freeze its official binary before announcing a release.
+Lane1 bounded CONTINUE Goal remains active until03:56:33UTC. Prior waiter1585205 exited on GitHub transport failure, no invocation; prior publisher push failure has been repaired and old outcome45fdc2dc is now remote. Both old PIDs absent. New guarded source248191e3 treats failed fetch as unavailable/no authorization and keeps600s single waiting cadence; malformed fresh data/source/registry errors still stop. Three focused checks PASS. Requestr3 is control identity rebind only; all source/config/21 commands/resource numbers/outputs/pilotid unchanged, prior Lane5 NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST remains effective and no duplicate resource review requested. New singleton restoration pending; no build lease/CMake/C++/binary/pair. Original worker deadline and this Goal deadline will not be extended.

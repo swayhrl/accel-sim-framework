@@ -2,7 +2,7 @@
   "schema_version": "EP_L2_LOW_SPACE_PILOT_REQUEST_V1",
   "status": "REQUESTED_INDEPENDENT_LANE5_REVIEW_REQUIRED",
   "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
-  "created_at": "2026-10-16T17:33:12.559751+00:00",
+  "created_at": "2026-10-17T01:55:17.863633+00:00",
   "review_authority_commit": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
   "host": "huangrulin-174",
   "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -12,7 +12,7 @@
     "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
     "driver_source_commit": "1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd",
     "pilot_driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
-    "gate_waiter_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
+    "gate_waiter_sha256": "75b511456763dd35bb5125fed364f3a090306b02e081dcd6cd991ba9a1d624ed",
     "official_driver_sha256": "9b9943c65d41b5776075d8488414b0c2f55b3dcab8a22801eab966397578a82c"
   },
   "source_paths": {
@@ -411,9 +411,9 @@
     "framework_including_vendor": 17727488,
     "core": 14307328
   },
-  "request_revision": 2,
-  "supersedes_request_publication": "248c93acc611679afe42590760481f451773003d",
-  "supersedes_request_sha256": "3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb",
+  "request_revision": 3,
+  "supersedes_request_publication": "50d3a648704235ff03be6b5b7e4f8f33a904500d",
+  "supersedes_request_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
   "memory_bytes": 8589934592,
   "max_duration_seconds": 3600,
   "execution_identity": {
@@ -459,15 +459,16 @@
     "independent_tool_tests": "39 pilot +10 affected registry, retained not rerun; not authorization"
   },
   "previous_lane5_decision": {
-    "status": "NO_SAFE_PILOT_ENVELOPE",
-    "publication": "300c1010161b270ae73414b8146d238c961f0cd0",
-    "lane1_ref_read_then": "85534de235345292a153d9983cfd0d24d8033bb2",
-    "resolution": "Exact raw request/driver/locations/roots now supplied and compatible. All numeric unknowns still require independent Lane5 re-review; refusal never becomes approval."
+    "status": "NO_SAFE_PILOT_ENVELOPE_AFTER_REQUEST",
+    "publication": "827a6377ac542dc57123d956d23e637313794ed0",
+    "resource_denial_remains_applicable": true,
+    "identity_only_change": "r3 binds guarded Git transport handling; sources, pilot runner, budget, outputs, one-use campaign and21 commands unchanged"
   },
   "monitor_plan": "Sample locally at<=1s target (0.2s pacing), independent Lane5 monitor at<=2s approved ceiling,2s stalled watchdog; includes controller and child affinity in same two CPUs. Protected-process/source/mount/TTL/STOP latch remain owner API authoritative.",
   "source_generated_setup_accounting": "Isolated Core/setup is explicitly declared; local own-growth monitor includes source input roots. Backend output-root accounting charges any source/journal-control metadata outside its fresh roots conservatively to total-FS contraction/external reserve, never ignores it.",
   "pre_release_receipt_policy": "Exact immutable journal in new audit_control_root before central release; final report binds journal hash. Release attempted even after failed/stopped command; no token replay.",
-  "lane5_followup": "Please independently review this r2 request, rather than the absent-request85534de snapshot. Approve only quantitatively reliable per-filesystem numbers; otherwise retain NO_SAFE_PILOT_ENVELOPE. No user generic approval is needed again.",
+  "lane5_followup": "No duplicate resource re-review requested. Prior independent denial persists. This control-only revision binds fail-closed Git transport handling. Only meaningful new resource evidence can justify re-review; any future authorization must bind this exact raw revision and be registered independently.",
   "waiter_original_deadline_unix": 1792343849.0946963,
-  "waiter_deadline_must_not_be_extended": true
+  "waiter_deadline_must_not_be_extended": true,
+  "gate_waiter_source_commit": "248191e379ba4d66c55baea75d3346e719c7fc51"
 }

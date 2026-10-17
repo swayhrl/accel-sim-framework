@@ -1,8 +1,8 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261017_LANE1_R8_AUTOMATIC_OUTCOME",
-  "status": "WAITER_STOPPED_FAIL_CLOSED",
+  "task_id": "FT20261017_LANE1_R11_TRANSPORT_FIX_r1",
+  "status": "BOUNDED_CONTINUE_ACTIVE_TRANSPORT_FIXED_PENDING_UNIQUE_WAITER_RESTORE",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "review_coordination_commit": "6917bc6a76d1f71097b0f2d093372097669397d2",
   "host": "huangrulin-174",
@@ -170,6 +170,11 @@
       "executed": 0,
       "passed": 0,
       "classification": "ENGINEERING_EVIDENCE_ONLY_NOT_FORMAL_QUALIFICATION"
+    },
+    "gate_waiter_transport": {
+      "focused_cases": 3,
+      "status": "PASS_NO_REAL_AUTHORIZATION_OR_COMPILER",
+      "source_publication": "248191e379ba4d66c55baea75d3346e719c7fc51"
     }
   },
   "resource_observation": {
@@ -225,20 +230,21 @@
     "docs/ep_l2/review_packs/FT20261017_LANE1_R11_CONTINUE_START_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T090024",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R11_NETWORK_RECOVERY_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T094312"
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R8_OUTCOME_20261017T094312",
+    "docs/ep_l2/review_packs/FT20261017_LANE1_R11_TRANSPORT_FIX_r1"
   ],
-  "recorded_at": "2026-10-17T01:43:12.320607+00:00",
+  "recorded_at": "2026-10-17T01:55:17.863633+00:00",
   "background_worker_running": false,
   "next_action": "Engineering evidence only: review any ordinary failure and bounded remediation; official release/independent11gate/formal resource admission remain separate. If the formal driver won, audit/freeze its official binary before announcing a release.",
   "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
   "engineering_pilot": {
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
     "request_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/LOW_SPACE_PILOT_REQUEST.json",
-    "request_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
+    "request_sha256": "1b6ab366fea69c54706e0d4ad9a389ba83fc696e8c3570a2ad3606ac6e236b1a",
     "driver_source_commit": "1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd",
     "driver_sha256": "f5e660913649adb614a06baacecaf5a0640693f7969ce2976f75f08ec42ba527",
     "classification": "ENGINEERING_ONLY",
-    "status": "WAITER_STOPPED_FAIL_CLOSED",
+    "status": "NOT_EXECUTED_PRIOR_INDEPENDENT_RESOURCE_DENIAL_REMAINS",
     "authorization": null,
     "central_pilot_adapter": "AVAILABLE_LANE5_SOURCE205782b9; three private-ledger caller integrations PASS; no real authorization or registration",
     "actual_lease": null,
@@ -258,9 +264,9 @@
     "formal_application_permission": false,
     "proposed_envelope_only": true,
     "actual_admission_calls": 0,
-    "request_publication": "50d3a648704235ff03be6b5b7e4f8f33a904500d",
-    "central_inbox": "/workspace/ep_l2_ft20261016_shared/pilot_requests/EP_L2_R0_1_ENGINEERING_20261017_L1_P01/r2/REQUEST_POINTER.json",
-    "request_revision": 2,
+    "request_publication": null,
+    "central_inbox": null,
+    "request_revision": 3,
     "independent_decision_publication": "827a6377ac542dc57123d956d23e637313794ed0",
     "passed_directed_tests": 0
   },
@@ -375,7 +381,7 @@
   },
   "continue_goal": {
     "status_at_recording": "ACTIVE",
-    "recorded_at_utc": "2026-10-17T01:03:44.343068+00:00",
+    "recorded_at_utc": "2026-10-17T01:55:17.863633+00:00",
     "t0_utc": "2026-10-16T17:56:33+00:00",
     "deadline_utc": "2026-10-17T03:56:33+00:00",
     "deadline_beijing": "2026-10-17T11:56:33+08:00",
@@ -471,5 +477,30 @@
     "deadline_extended": false,
     "request_and_driver_unchanged": true,
     "recovery_pack": "docs/ep_l2/review_packs/FT20261017_LANE1_R11_NETWORK_RECOVERY_r1"
+  },
+  "gate_waiter_control_revision": {
+    "source_publication": "248191e379ba4d66c55baea75d3346e719c7fc51",
+    "gate_waiter_sha256": "75b511456763dd35bb5125fed364f3a090306b02e081dcd6cd991ba9a1d624ed",
+    "r2_sha256": "f992a65187ea46413cec85623af16cdd39e180b817e23f9002419d03cbf7129e",
+    "r3_sha256": "1b6ab366fea69c54706e0d4ad9a389ba83fc696e8c3570a2ad3606ac6e236b1a",
+    "changed_top_level_fields": [
+      "created_at",
+      "gate_waiter_source_commit",
+      "identity",
+      "lane5_followup",
+      "previous_lane5_decision",
+      "request_revision",
+      "supersedes_request_publication",
+      "supersedes_request_sha256"
+    ],
+    "numeric_budget_unchanged": true,
+    "source_binary_config_commands_unchanged": true,
+    "pilot_driver_unchanged": true,
+    "new_numeric_resource_review_requested": false,
+    "actual_central_authorizations_leases_or_compilers": 0,
+    "focused_transport_tests": 3,
+    "unchanged_suites_repeated": 0,
+    "original_deadline_extended": false,
+    "goal_deadline_utc": "2026-10-17T03:56:33+00:00"
   }
 }
