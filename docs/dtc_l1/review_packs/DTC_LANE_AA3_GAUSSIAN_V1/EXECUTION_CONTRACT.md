@@ -1,0 +1,9 @@
+# Unreleased execution contract
+
+Maximum aggregate AA+AA2+AA3 actual full Gaussian starts=4, one per inherited UUID, no reset/retry. Fixed intended order: K0_32x4,K0_64x8,K1_32x4,K1_64x8. Parallel cap1. No actual authority acquired. Any matching historical RUN_START/PID attempt identity blocks duplicate initiation. Failures remain in the matrix. Wrapper repair cannot create another simulator start or reset the original7200s deadline.
+
+Before future release: exact fixed source/X/V/Y2/Z2/U and binary/library/ldd+actual maps, full267-option echo,510 member hashes/order/CTA/instructions/full list/ROI, accepted observer supplement, immutable runner+strict SHA/specs/metric dictionary/formulas/resources and an independently fetched publication are mandatory. A guard is not a runner. No default launch command is released here.
+
+Fresh all-project admission requires original174 identity, no conflicting/unresolved DTC authority or execution FLOCK, hostMemAvailable≥32GiB, cgroupheadroom≥32GiB, diskfree≥10GiB, memoryfullPSI avg10≤1, IOfullPSI avg10≤25, ≥10s probe, no pswpin/out increase and no new OOM/oom_kill. Include external projects, totalRSS, actual cgroup use/swap, perprocessI/O, CPUquota/affinity/load/PSI and diskstats. Frozen CPU probe shows broad spare capacity but gives no authority waiver. No termination of foreign jobs, deletion of their files or retuning of service options.
+
+Natural exit0, single actual start, full510-kernel ordered instruction/CTA identity, all effective options, correct loaded runtime,64SM, OO/PIB/physical/ordinary/Tag/pool/sector/Ref/generation/lower-credit/finite conservation are required. Preserve unavailable fields as typed UNAVAILABLE, not PASS. K1-specific checks use actual event summaries and corrected event-reclaim accounting. Both K0 full comparisons with frozen old controls must pass before any K1. This pack records NOT_RUN for all such run gates.

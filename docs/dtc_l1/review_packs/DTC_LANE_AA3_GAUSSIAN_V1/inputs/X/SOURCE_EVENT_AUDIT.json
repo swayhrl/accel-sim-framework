@@ -1,0 +1,173 @@
+{
+  "schema_version": 2,
+  "status": "USER_STOP_LIFTED_EAGER_SOURCE_REQUEST_CONTRACT_IMPLEMENTED_OO",
+  "core_sha": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "frozen_core_sha": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "authority": "User explicit ruling: third option, eager source-request semantics; preserve all original callers and ordinary deferred commit",
+  "lane_v_contracts": [
+    {
+      "framework_sha": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+      "path": "docs/dtc_l1/review_packs/DTC_LANE_V_SEMANTIC_V1/K1_SEMANTIC_CONTRACT.md",
+      "sha256": "7bacc5cab3f8ef288434721fd1c51811a1183e3c86d48a3ecd74bfadc728b0ce",
+      "fully_read": true
+    },
+    {
+      "framework_sha": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+      "path": "docs/dtc_l1/review_packs/DTC_LANE_V_SEMANTIC_V1/SOURCE_EVENT_MAP.md",
+      "sha256": "d3540188f7b97cc591e1685185646f813cfb43087d2d60a816923546532cc103",
+      "fully_read": true
+    }
+  ],
+  "k1_linearization_point": "ldst_unit::invalidate source-request entry; before ordinary.invalidate call",
+  "request_sources": [
+    "IDLE_CLUSTER",
+    "MEMBAR",
+    "CACHE_CONFIG_CHANGE"
+  ],
+  "new_kernel_end_event": false,
+  "idle_request_deduplication": false,
+  "ordinary_cache_modified": false,
+  "dtc_extra_simulated_cycles": 0,
+  "hardware_zero_cost_claim": false,
+  "observer": "K1-only inherited read-only m_invalidate_pending adapter; actual ordinary methods unchanged",
+  "ordinary_commit_count_definition": "ordinary pending retirement invoked tag_array.invalidate; unused array may no-op; not valid-map-change count",
+  "source_request_and_ordinary_commit_time_equality_claimed": false,
+  "detailed_logging": "existing debug-event limit; counts/first-last cycles plus omitted records in summary",
+  "static_checks": [
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "check": "whole_file_byte_identical_to_frozen",
+      "sha256": "ea90f6b72af49fff343458b767521046b7b1b02ee9e78884cc9e6d796ea7e734",
+      "pass": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "check": "whole_file_byte_identical_to_frozen",
+      "sha256": "9551bdbcfb0d1e0cf8938481778c0d6a1fb0201fd6b755d76f1541a98664b9ff",
+      "pass": true
+    },
+    {
+      "symbol": "class io_frontend {",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "ef6c089e909827c68351fe76d2bed34c43136cdf89a2be019926d462c99ec575",
+      "pass": true
+    },
+    {
+      "symbol": "class sector_oo_frontend {",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "e4d756817af4592a834e6ff8bd8b3413f08ca0b06bbe56e87377e6714be6dfe7",
+      "pass": true
+    },
+    {
+      "symbol": "class service_quota {",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "e49a41ffb4ce97b7617fb83b42c685fb53958b3a34d563cfe46672cd7c5a75c6",
+      "pass": true
+    },
+    {
+      "symbol": "struct service_entry {",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "671e6405e2d244d49dd810bd36c12bf6b44915cf1a57dce51f5616f190d3be7b",
+      "pass": true
+    },
+    {
+      "symbol": "class completion_accounting {",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "8cd57969493555be506cef04ae98543c4a7695cfe6c4e191b68d242efb6a966f",
+      "pass": true
+    },
+    {
+      "symbol": "oo_frontend::void complete(physical_identity",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "24efb78148b361e53e3b8ce8132aba54a97069c0741823aa0a9a2eb956296f1e",
+      "pass": true
+    },
+    {
+      "symbol": "oo_frontend::void advance_service(uint64_t",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "f8908164522d78e9e3df6e688ff0071fb41802a0095d055d47b159584f867be9",
+      "pass": true
+    },
+    {
+      "symbol": "oo_frontend::bool retire_one_ready(",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "75bf40a95e31e77ee979d4dc44671c4993d02a08c06b9f9333ea99e1f8cb3aeb",
+      "pass": true
+    },
+    {
+      "symbol": "oo_frontend::bool retire_ready_uid(",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "b0474af5b7fd215aa3704c30a9b15cb9082824df08854dc51c6bc9c168c557f0",
+      "pass": true
+    },
+    {
+      "symbol": "oo_frontend::void attach_reference(",
+      "check": "body_byte_identical_to_frozen",
+      "sha256": "7f352ed3bdbdbcbd4395a05baad13a98fd7be6f4f0cca6e19e9fd9d0189fabd7",
+      "pass": true
+    },
+    {
+      "symbol": "bool ldst_unit::dtc_l1_io_consume_response(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "bool ldst_unit::dtc_l1_oo_consume_response(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "bool ldst_unit::dtc_l1_io_memory_cycle(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "bool ldst_unit::dtc_l1_oo_memory_cycle(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "void ldst_unit::dtc_l1_io_issue_lower_requests(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "void ldst_unit::dtc_l1_oo_issue_lower_requests(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "bool ldst_unit::dtc_l1_io_writeback_head(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "bool ldst_unit::dtc_l1_oo_writeback_ready(",
+      "check": "body_byte_identical_to_frozen",
+      "pass": true
+    },
+    {
+      "symbol": "bool shader_core_ctx::warp_waiting_at_mem_barrier(",
+      "check": "body_byte_identical_except_source_label",
+      "pass": true
+    },
+    {
+      "symbol": "void gpgpu_sim::change_cache_config(",
+      "check": "body_byte_identical_except_source_label",
+      "pass": true
+    },
+    {
+      "symbol": "void gpgpu_sim::cycle()",
+      "check": "body_byte_identical_except_source_label",
+      "pass": true
+    }
+  ],
+  "dynamic_source_selected_sm_coverage": "NOT_FULL_RUNTIME_TESTED_LANE_Y_GATE",
+  "no_inflight_handler_change": true,
+  "value_correctness": "UNPROVEN",
+  "all_isa_correctness": "UNPROVEN",
+  "lane_y": "PENDING_BEFORE_FULL_PERFORMANCE_SIMULATION",
+  "io_k1": "IO_K1_UNIMPLEMENTED_STOP",
+  "modern_k1": "OUT_OF_SCOPE_STOP",
+  "full_gaussian_gemm_runs": 0
+}

@@ -1,0 +1,45 @@
+{
+  "classification": "SAFE_TO_RETIRE_DISPATCHER_CANDIDATE",
+  "as_of_shanghai": "2026-10-18T01:32:49.325309+08:00",
+  "target": {
+    "pid": 1425986,
+    "start_ticks": 584741606
+  },
+  "authority_still_live": true,
+  "flock_still_held": true,
+  "approval_required": true,
+  "approval_source": "User explicitly limited this Goal to CPU-only read-only audit and requires explicit approval before deactivation.",
+  "signals_sent": 0,
+  "deactivation_performed": false,
+  "candidate_reason": "No target IO/OO run/monitor/runner observed, gate files absent, retained log contains only WAIT; only configured future work is 2D under frozen STOP, not current Gaussian AA2.",
+  "live_sleep_child": {
+    "pid": 2994672,
+    "start_ticks": 901031869,
+    "inherits_same_flock": true
+  },
+  "final_log_prefix": {
+    "prefix_bytes": 20384838,
+    "prefix_sha256": "465b31b1da63d2ca7468067de0150b479380467d16e757a9e3976841652b9a45",
+    "event_counts": {
+      "FAST64_4_2D_CORE41_WAIT_BASE_STRICT_GATE": 52674
+    }
+  },
+  "last_wait_log_at_shanghai": "2026-10-18T01:32:27+08:00",
+  "other_core41_collector_preserve": {
+    "pid": 1482676,
+    "start_ticks": 585007227
+  },
+  "potential_future_work": {
+    "IO": "Can be launched first if all legacy file/resource/downstream gates later pass; not authorized under current 2D STOP.",
+    "OO": "Configured later in same loop; start_monitor same-local-statement unbound-lower failure may prevent reaching it; no guarantee both modes launch.",
+    "closeout_monitors": "Configured per mode; no matching live monitor or artifact found."
+  },
+  "initial_receipt_classifier_correction": "See PROCESS_CLASSIFIER_CORRECTION.json: initial 8 candidates reduce to one independent EP-L2 simulator; final exact classifier finds zero visible accel-sim.out.",
+  "minimum_future_action_scope": "Only after explicit user approval and fresh identity/child/artifact check: PID-specific SIGTERM via pidfd to the same parent-shell incarnation; let inherited sleep finish; no group signals, child signals, unlink, unlock or helper/script changes.",
+  "does_not_authorize": "No AA2 restart or authority takeover. Other controllers and locks require independent admission.",
+  "receipt_sha256": {
+    "initial": "13228e5f6c87a774006237b6e17a9480e5d51e0a5e7358408103df74c6eb4409",
+    "final": "3d4757a0cc2fcc05c31456df879f47488018a4514f38a1d0a362f8ba17e13221"
+  },
+  "snapshot_limits": "Visible namespace, non-atomic process scan, historical deleted artifacts unprovable; recheck immediately before any approved state change."
+}

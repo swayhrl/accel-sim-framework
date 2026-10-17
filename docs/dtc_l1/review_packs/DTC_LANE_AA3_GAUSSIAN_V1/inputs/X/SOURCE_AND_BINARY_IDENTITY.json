@@ -1,0 +1,294 @@
+{
+  "schema_version": 2,
+  "recorded_at_shanghai": "2026-10-18T00:28:37.094316+08:00",
+  "status": "NEW_OO_K1_IMPLEMENTATION_BUILD_LOCAL_CPU_CHECKS_PASSED_LANE_Y_PENDING",
+  "goal": "DTC_LANE_X_OPTIN_INVALIDATION_IMPLEMENTATION_174_V1",
+  "host": "huangrulin-174",
+  "uid": 0,
+  "core_worktree": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x-invalidate-optin-core-174-v1",
+  "core_branch": "hrl/iscas2027-dtc-lane-x-invalidate-optin-core-174-v1",
+  "frozen_core_sha": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "built_core_sha": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "configured_core_sha": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "post_test_core_sha": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "post_test_core_status_porcelain": "",
+  "embedded_core_build_string": "gpgpu-sim_git-commit-c0a5e2c3_modified_0.0.",
+  "new_option": "-gpgpu_dtc_l1_invalidate_on_source_event",
+  "option_parser_type": "OPT_BOOL",
+  "option_default": 0,
+  "k1_supported_mode": "PAPER_OO only; finite_service=0 or1",
+  "io_k1": "IO_K1_UNIMPLEMENTED_STOP",
+  "modern_k1": "OUT_OF_SCOPE_STOP",
+  "k1_correctness_pass": false,
+  "lane_v_contract_sha": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+  "lane_y_independent_validation": "PENDING_BEFORE_FULL_PERFORMANCE_SIMULATION",
+  "full_performance_jobs_dispatched": 0,
+  "value_correctness": "UNPROVEN",
+  "core_build_directory": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1",
+  "trace_build_directory": "/workspace/builds/dtc-lane-x-trace-c0a5e2c3-174-v1",
+  "core_configure_flags": [
+    "-G Ninja",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DGPGPUSIM_BUILD_DTC_L1_TESTS=ON",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+  ],
+  "build_parallelism": 4,
+  "configure_exit_code": 0,
+  "build_exit_code": 0,
+  "ctest_exit_code": 0,
+  "trace_build_exit_code": 0,
+  "assertions_enabled": true,
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "cmake": "cmake version 3.31.7",
+  "cuda_root": "/usr/local/cuda-11.8",
+  "compile_commands_sha256": "78c79944e5f8f3b474fb0646ef8c4c9388c7a6916342307d196a959584c32f95",
+  "trace_compile_commands_sha256": "dd1f7c76d59bdee9a83e85b6c4dafc19df7e58351f6a23b2f356c9eeeb9f2f82",
+  "source_identity_before_after": {
+    "matching": true,
+    "tracked_executable_input_files": 372,
+    "manifest_sha256": "09f38fc81d6566687f9c7d870ddd880f9de2024597dfe0ee19c15bc89418c3ee",
+    "before_snapshot": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/source-before-final-build.json",
+    "after_snapshot": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/source-after-final-tests.json"
+  },
+  "source_files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "cee3ea1480c8f40dbed7676ea95700484a4f4593a36cf48e40c01f9d5d8d5ab6"
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "sha256": "798b3b416ce3223799af870438273167f0d257f1f432a1f0aad9dced06f81510"
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-invalidation.h",
+      "sha256": "85dbad1028354142c5f3ca9873fe612aca89d8d6cd666652bcbd28c8280ab2b9"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "b46c0e89b2539709edfb2c8b2c13073b7d1f415c7c43fa75a8f7838d94cc6d91"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "sha256": "8c9e02b57876c67324c2ec10114022e1b5cd16284ea327b8f222b46c3ff27d45"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.h",
+      "sha256": "c3a47c09ad55bea2e169cc1f1989866ce3d8d2f86c3b277d62184f1a9983c447"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "ea90f6b72af49fff343458b767521046b7b1b02ee9e78884cc9e6d796ea7e734"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "9551bdbcfb0d1e0cf8938481778c0d6a1fb0201fd6b755d76f1541a98664b9ff"
+    },
+    {
+      "path": "tests/dtc_l1_source_invalidation_test.cc",
+      "sha256": "06ffaa34a4b9f64b5a5ab8dd448f1f38ca83335e64d38e6187b5e089cd874e62"
+    },
+    {
+      "path": "tests/dtc_l1_source_invalidation_integration_test.cc",
+      "sha256": "f9e86aa2a4a076a16574f026dc090085915dbc69b5f323b53c752db2521c08de"
+    },
+    {
+      "path": "tests/dtc_l1_k0_equivalence_test.cc",
+      "sha256": "d75b84477050861c821ab6c4ec6bc11ac84ade265a4793ca91337ef49654fdeb"
+    }
+  ],
+  "framework_build_source_sha": "0c8fcb571977303f3e87ecb0cac6cf7bd25d3cfc",
+  "framework_review_sha_locator": "GIT_DELIVERY.json payload SHA plus final receipt commit in branch history",
+  "framework_code_trees_unchanged_from_build": {
+    "gpu-simulator": "c99766f8783a48e20d5e2ebd28b365df0bbf6287",
+    "util": "9da4db60f878a37d6f45d091ac9289f3e6367db4"
+  },
+  "trace_build_recipe": {
+    "file": "BUILD_TRACE_CPU_ONLY.cmake",
+    "sha256": "a4e7d3f9c37dbcd27e02d3ac2296fc77c3915047936481ad42d412f0a381e0bd",
+    "purpose": "Compile unchanged Framework trace executable against fresh Core shared library without optional Python binding dependency; no workload invocation",
+    "generated_accelsim_version_header": "/workspace/builds/dtc-lane-x-trace-c0a5e2c3-174-v1/accelsim_version.h"
+  },
+  "runtime_loader_pin": {
+    "required_ld_library_path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1",
+    "ctest_integration_environment_pins_library": true,
+    "trace_ldd_pinned_log": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/trace-ldd-pinned.log",
+    "warning": "A future authorized run must pin and verify this actual library; inherited LD_LIBRARY_PATH is not an identity guarantee"
+  },
+  "binaries": [
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/libcudart.so",
+      "size_bytes": 4990496,
+      "sha256": "06957c897f8248fa2b08a5c18823207db8dda954c218337ba399ba70e7f97b56",
+      "elf_build_id": "12eb1792a8e09e7e3faefb2ea7bf9d5d2802b23f"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/libentrypoint.a",
+      "size_bytes": 483030,
+      "sha256": "77925966bb61ddd0c87f57239131411e396865288f616aafc89a2d4404af6d4a"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/src/gpgpu-sim/libgpgpusim.a",
+      "size_bytes": 2243726,
+      "sha256": "b91580c766dde9d89e1821c25652a1d1f3ae658ddd1303799888fe6391662f2a"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_m1_common_test",
+      "size_bytes": 121944,
+      "sha256": "4f32646d9302f419ff1514fb36d03c16e06e1b15baaf501a1ccf32cf83096999",
+      "elf_build_id": "03f311e1efacc79355caa0564f8d07a3f7c6375d"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_bad_generation_test",
+      "size_bytes": 34904,
+      "sha256": "89f8150afab0f49b4cc3ba1d1ae2ce43e0bf781f12546c1fdc63490a7a5eb21d",
+      "elf_build_id": "d4e316b40bb31cf64725cb312472ab49cc94e4aa"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_completion_accounting_test",
+      "size_bytes": 17520,
+      "sha256": "22158eb7f517265c384c5b843bb8c82ed37819fcf6c68ef5e9f06297c3b71ffc",
+      "elf_build_id": "e440ff985721f9e216a947bfaa2602a069256ed6"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_finite_service_test",
+      "size_bytes": 65480,
+      "sha256": "dd07fd59b462d3cc52567dc6c0414f3547b5c133726e8219bdcb23963bbf2020",
+      "elf_build_id": "0669af6bf89eadfe26a09e9635d9426623a22dde"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_source_invalidation_test",
+      "size_bytes": 57200,
+      "sha256": "2557bfa841e3070c055487f99741fc67ef8037cf220c5fee6e68d1f75f2e00fa",
+      "elf_build_id": "85fc40d004e97d6cc0a3d2636f027f9ab3cad923"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_source_invalidation_integration_test",
+      "size_bytes": 75304,
+      "sha256": "b05d8f80b54d89d275d2cd7ac6068801d6c910fbc5fcf72eb11aae80e0c58f35",
+      "elf_build_id": "e1d0243e686ae24734b0bd938385a0e4caa9ed42"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_k0_equivalence_test",
+      "size_bytes": 70088,
+      "sha256": "7d21ee1d20e0ddc5cb48cede404dd977a57c056849485afbb90a6e3b2e1c71ad",
+      "elf_build_id": "4c1c66075aae066f7f314c0e253d99a63dad5e4e"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-trace-c0a5e2c3-174-v1/accel-sim.out",
+      "size_bytes": 300952,
+      "sha256": "2cd45b1b91985b19255ff5c9db3b49a3ee46b5a479272eacd2a42fb2bf9ac9ae",
+      "elf_build_id": "cb1cf240369864c1c9e4c28f1385b41c013d18b9"
+    }
+  ],
+  "tests": [
+    {
+      "name": "dtc_l1_m1_common_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.0048172"
+    },
+    {
+      "name": "dtc_l1_bad_generation_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.086021"
+    },
+    {
+      "name": "dtc_l1_completion_accounting_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.0865571"
+    },
+    {
+      "name": "dtc_l1_finite_service_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.00476799"
+    },
+    {
+      "name": "dtc_l1_source_invalidation_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.493281"
+    },
+    {
+      "name": "dtc_l1_source_invalidation_integration_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.0041747"
+    },
+    {
+      "name": "dtc_l1_k0_equivalence_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.00481011"
+    }
+  ],
+  "raw_evidence": [
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-configure.log",
+      "sha256": "7d19ff63ecdccb7a8d6097e345d7d7e8596236088d91d6cb1281801a3020bef8",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-build.log",
+      "sha256": "9d2f7f6390e96fb55406c98123fa6542a9b946da31081e1919c8760809c929f0",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-ctest.log",
+      "sha256": "53a395fe6e8e426f08951337ff47d7188901ede96858e7bbf99e44f90fbc8e53",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-ctest.xml",
+      "sha256": "6522fe6e97e322125c7c3a93b6448fbc6c79f225ed8abe734ad647525d362647",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/trace-configure.log",
+      "sha256": "ee35adb286461798ea7dccdc6a41a012188b05102cb50778ae67a30dd23b578a",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/trace-build.log",
+      "sha256": "dd7046cddfbe3262852b0c7c6a133057a5b70aed0e98142dcd94a04cd8bed598",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/trace-ldd-pinned.log",
+      "sha256": "93b9ddc9d0e0ffc991a11d3e574389e2c983524bf6a4401d20a0567955c9ac28",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/cpu-test-ldd-pinned.log",
+      "sha256": "4314e444dbc25fc8d69f0ea43aadb479db3f146a6a353c10dfed55902c224907",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/source-before-final-build.json",
+      "sha256": "7350daa9045d5a74b3863da25cc8a5d2aad2a9de0fd5e755cf6242fd342cf766",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/source-after-final-tests.json",
+      "sha256": "7350daa9045d5a74b3863da25cc8a5d2aad2a9de0fd5e755cf6242fd342cf766",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/k0-frozen-trace.stdout",
+      "sha256": "efd7549aeb497209b31cdd1f88f8237a4574b0f6000b5467d36767d9cc19e65c",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-k0-new-trace.stdout",
+      "sha256": "efd7549aeb497209b31cdd1f88f8237a4574b0f6000b5467d36767d9cc19e65c",
+      "committed": false
+    }
+  ],
+  "excluded_build_candidates": [
+    {
+      "path": "/workspace/builds/dtc-lane-x-optin-invalidation-k1-174-v1",
+      "reason": "Bring-up/incremental directory had an old embedded build string even after generator refreshed detailed_version; not a released binary identity"
+    },
+    {
+      "path": "/workspace/builds/dtc-lane-x-optin-invalidation-174-v1",
+      "reason": "Historical unmodified baseline, not a K1 binary"
+    }
+  ],
+  "core_patch_format": "git diff --binary --unified=0; apply with git apply --unidiff-zero"
+}
