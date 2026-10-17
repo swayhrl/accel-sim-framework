@@ -94,7 +94,12 @@ def publish_pair(workload, results, specs, stage_root):
                'cycles': result.get('summary', {}).get('cycles'),
                'instructions': result.get('summary', {}).get('instructions'),
                'raw_log_sha256': result.get('raw_log_sha256')}
+        if spec.get('experiment_id'):
+            row.update(experiment_id=spec['experiment_id'],regime=spec['regime'])
         rows.append(row)
+    if specs[0].get('experiment_id'):
+        if any((s.get('experiment_id'),s.get('regime')) != (specs[0]['experiment_id'],specs[0]['regime']) for s in specs):
+            raise ValueError('different diagnostic experiment/condition within pair')
     path = stage_root / ('pair_' + workload)
     path.mkdir(exist_ok=False)
     write_json(path / 'PAIR_RECEIPT.json', {'workload': workload,
@@ -116,6 +121,8 @@ def publish_pair(workload, results, specs, stage_root):
             metrics.append({'workload': workload, 'mode': row['mode'], 'run_key': row['run_key'],
                             **ft_metrics(directory), **b0['aggregate']})
             write_json(path / (row['mode'] + '_B0_NATIVE.json'), b0)
+        if specs[0].get('experiment_id'):
+            for metric in metrics:metric.update(experiment_id=specs[0]['experiment_id'],regime=specs[0]['regime'])
         csv_write(path / 'RESOURCE_MOVEMENT.csv', metrics)
         write_json(path / 'COMPARISON.json', {'workload': workload,
             'speedup_B16_over_U_WB16': rows[0]['cycles'] / rows[1]['cycles'],

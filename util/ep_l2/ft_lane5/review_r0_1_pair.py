@@ -88,7 +88,7 @@ def main():
             identity=spec['identity'];rows.append({'run_key':result['run_key'],'identity':identity,**{k:identity[k] for k in ('core_source_commit','framework_source_commit','binary_sha256','runtime_config_sha256','trace_content_sha256','workload')},'mode':mode,'scientific_acceptance':'CURRENT_ACCEPTED','original_terminal_status':'COMPLETE_VALID','raw_log_sha256':result['raw_log_sha256'],'observed_cycles':result['summary']['cycles'],'instructions':result['summary']['instructions']})
             manifest.append({'mode':mode,'identity':identity,'run_key':result['run_key'],'qualification_sha256':result['audit']['qualified_release_sha256'],'atomic_input_scope':spec['atomic_input_scope'],'input_audit':result['audit'],'hardware_terminal':result['summary'],'registry_terminal':snap['runs'][result['run_key']]})
         if a.regime:
-            for row in rows: row.update(experiment_id=EXPERIMENT,regime=a.regime)
+            for row in rows+raw_index: row.update(experiment_id=EXPERIMENT,regime=a.regime)
         csv_write(a.pack/'RAW_LOG_INDEX.csv',raw_index)
         review_receipt={'status':'INDEPENDENT_TERMINAL_AND_CURRENT_AUTHORITY_REVIEW_PASS','workload':a.workload,'scientific_acceptance_rows_proposed':rows,'checked_current_authority':state['binding'],'review_resource_lease':lease,'review_resource_lease_terminal':'RELEASED_IN_FINALLY','no_simulator_or_compiler_started':True,'next_step':'Publish these exact rows in next V2 generation and remote-read back before announcing current acceptance','scope':'Symbolic32B sector version/request/hardware lifecycle; full native non-atomic inputs only; no numeric SASS output; no geomean until5; C1 legacy headroom excluded'}
         if a.regime:
