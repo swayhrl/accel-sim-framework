@@ -60,6 +60,7 @@ def main():
         require(row['exit_code']==0 and row['independent_validation']['status']=='PASS' and digest(row['log'])==row['log_sha256'], 'Independent evidence changed')
     args.out.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
     report={'status':'INCOMPLETE','producer_publication':args.producer_publication,
+            'controller_identity':process_identity(os.getpid()),
             'qualification_runner_sha256':digest(__file__),
             'qualification_runner_source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[3],text=True).strip(),
             'producer_report_sha256':digest(args.producer_report),'independent21_sha256':digest(args.independent_directed),
@@ -97,9 +98,15 @@ def main():
         for i,source in enumerate(configs):
             target=directory/f'config-{i}.config';shutil.copyfile(source,target);require(digest(target)==cm[i]['sha256'],'Snapshot config changed');command+=['-config',str(target)]
         command+=['-trace',next(r['path'] for r in traces if r['name']=='kernelslist.g')];started=time.monotonic();peak=0
+        report['native_control']={'run_key':key,'identity':identity,'directory':str(directory),
+                                  'command':command,'parser':str(parser),'parser_sha256':parser_sha,
+                                  'allocation':allocation}
+        write_json(args.out/'NATIVE_OFF_AND_MODE_GATES.json',report)
         with (directory/'raw.log').open('xb') as stream:
             safe_resources();process=subprocess.Popen(command,cwd=directory,env=dict(os.environ,**ENV),stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
-            registry.update(key,allocation['lease_id'],'RUNNING',process=process_identity(process.pid))
+            report['native_control']['process']=process_identity(process.pid)
+            registry.update(key,allocation['lease_id'],'RUNNING',process=report['native_control']['process'])
+            write_json(args.out/'NATIVE_OFF_AND_MODE_GATES.json',report)
             while process.poll() is None:
                 safe_resources();peak=max(peak,process_tree_rss(process.pid))
                 require(time.time()<args.deadline_unix-5 and time.monotonic()-started<900,'Native control timeout')
@@ -121,7 +128,10 @@ def main():
     except BaseException as error:
         report['status']='FAILED_FROZEN_EVIDENCE_NO_CERTIFICATE';report['error']=repr(error);terminal='FAILED';raise
     finally:
-        if process is not None:terminate_owned(process)
+        if process is not None:
+            terminate_owned(process)
+            report['native_control'].update(exit_code=process.returncode,wall_seconds=time.monotonic()-started,
+                                             sampled_peak_tree_rss_bytes=peak)
         if lease is not None:registry.release_build(lease,'lane5')
         if allocation is not None and key is not None and 'existing' not in report:
             raw=digest(directory/'raw.log') if created_directory and (directory/'raw.log').exists() else None
