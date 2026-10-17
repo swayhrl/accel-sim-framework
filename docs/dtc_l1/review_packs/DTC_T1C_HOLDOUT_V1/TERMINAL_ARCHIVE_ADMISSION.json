@@ -1,0 +1,60 @@
+{
+  "utc": "2026-10-17T13:22:12.039523+00:00",
+  "status": "PASS_DETACHED_TERMINAL_ARCHIVE_WAITING",
+  "active": {
+    "utc": "2026-10-17T13:21:45.849976+00:00",
+    "process": {
+      "pid": 2242319,
+      "state": "R",
+      "start_ticks": 899527715,
+      "argv": [
+        "/usr/bin/python3",
+        "-E",
+        "-B",
+        "/workspace/worktrees/accel-sim-iscas2027-dtc-t1c-holdout-174-v1/docs/dtc_l1/review_packs/DTC_T1C_HOLDOUT_V1/scripts/terminal_archive_worker.py"
+      ],
+      "rss_kib": 12288
+    },
+    "authority": {
+      "pid": 2132794,
+      "start_ticks": 898867525,
+      "utc": "2026-10-17T11:31:45.447057+00:00",
+      "max_new_attempts": 2,
+      "max_parallel": 1,
+      "old_locks": "READ_ONLY_NEVER_ACQUIRED",
+      "foreground": true
+    },
+    "role": "TERMINAL_CPU_ARCHIVE_ONLY_NO_SIMULATOR_OR_GIT",
+    "wall_wait_seconds": 43200,
+    "interval_seconds": 30
+  },
+  "parent_pid": 1,
+  "stdin": "/dev/null",
+  "log": "/workspace/dtc-t1c-holdout-174-v1/TERMINAL_ARCHIVE.log",
+  "preregistered_63_files_unchanged": true,
+  "guard": "REPORT_REFUSES_BEFORE_AUTHORITY_TERMINAL_WITHOUT_OUTPUT",
+  "no_new_simulator_no_Git_no_automatic_retry": true,
+  "scripts": [
+    {
+      "path": "scripts/finalize_holdout.py",
+      "sha256": "7bb01c47766b283948767b2a120cc4b14d2807d0e611022f683b37c57d5f45bb"
+    },
+    {
+      "path": "scripts/summarize_terminal_resources.py",
+      "sha256": "8b0ac4b04f2b2d42bdf66c46bab90473da6a2fd50206e6a85435d5b5c7f26d65"
+    },
+    {
+      "path": "scripts/audit_terminal_evidence.py",
+      "sha256": "31f52147832b48c8c32143c9725bfd72676c31a98e4ee2386a6edc1a46642e14"
+    },
+    {
+      "path": "scripts/render_review_report.py",
+      "sha256": "076a3789ce12ff21c0880225b20433125100458cb10e32061a7e87e6683732ad"
+    },
+    {
+      "path": "scripts/terminal_archive_worker.py",
+      "sha256": "cb5742bd6a848381d9a3bef9ccbf998c8d8dfb88a96f55a557923428a4c1d10f"
+    }
+  ],
+  "next": "Wait for actual authority and simulator PID/start_ticks to exit, archive exactly once; agent then audits all17 requirements and publishes."
+}
