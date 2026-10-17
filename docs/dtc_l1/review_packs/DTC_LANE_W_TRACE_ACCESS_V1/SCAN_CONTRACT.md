@@ -8,6 +8,10 @@
 
 解码前应固定独立分析器身份并用已验收 parser 分支对照小型 CPU fixtures 验证：version 0 与3布局、可选 lineinfo、active mask、opcode width、list-all、base-stride、base-delta、signed stride/delta、地址溢出、跨128B边界。出现非连续 mask base-stride 时不可自行补地址；该记录地址和相关统计记 UNAVAILABLE，保存合同缺口。不要执行 native 或原仿真二进制作为 oracle。
 
+续轮已完成上述纯函数级六组合成预检，模块SHA在 `CPU_ACCESS_SEMANTICS_PREFLIGHT.json` 固定；已封存sparse-mask oracle用于少量lane的诊断比对。它尚不覆盖完整parser等价性、真实trace头/CTA流和实际扫描入口，仍不得将预检通过称为原trace scan完成。
+
+后续还加入 `stream_access_scan.py`（默认仅准入检查）及 `CPU_STREAM_PREFLIGHT.json`，覆盖合成CTA/warp流和完整性拒绝；`cross_kernel_reuse.py`及对应预检覆盖合成跨kernel集合比较。当前准入拒绝保存为 `SCAN_ADMISSION.json`，真实trace字段及实际跨kernel批量归约仍未验证，主表中的UNAVAILABLE保持不变。
+
 每条可解码 memory record 保存 workload/kernel/list position/CTA/warp/intra-warp ordinal/PC/opcode/space/cache class/active mask/width 与逐 lane 地址，转换为128B line内128bit byte mask和32B sector mask；不保存或推断 load值。按 kernel 汇总 R/W/atomic/bypass/fence，并保留 cacheable read 与其他路径区别。精确 line 集合可使用有上限的磁盘索引或内存集合，必须记录内存/输出上限和 checkpoint，禁止无界导出原trace。
 
 输出每 kernel 的 distinct R/W lines，所有已完整处理 kernel 的 R∩R、相邻 kernel W∩R（可额外提供非相邻候选），line alias 与 byte overlap 分列。不同 warp 的记录无序，不能用文件 CTA 遍历顺序推断时序。同 warp 记录先后单列。没有 stream 或动态 invalidate 时间时只能使用 list ordinal 的候选语义；源码事件类型与动态事件实例分开。

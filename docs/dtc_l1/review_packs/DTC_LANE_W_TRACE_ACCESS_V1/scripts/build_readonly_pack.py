@@ -218,9 +218,10 @@ def build():
       (CORE_REPO,CORE,'src/gpgpu-sim/shader.cc',[(2622,2656),(3899,3930),(4007,4015)]),
       (CORE_REPO,CORE,'src/gpgpu-sim/gpu-sim.cc',[(1748,1756),(2518,2528)]),
       (CORE_REPO,CORE,'src/gpgpu-sim/dtc-l1-common.h',[(560,586),(690,718)]),
-      (REPO,FRAMEWORK,'gpu-simulator/trace-parser/trace_parser.cc',[(100,120),(152,184),(282,328),(390,437)]),
+      (REPO,FRAMEWORK,'gpu-simulator/trace-parser/trace_parser.cc',[(61,79),(100,120),(152,184),(282,328),(390,437)]),
       (REPO,FRAMEWORK,'gpu-simulator/trace-driven/trace_driven.cc',[(384,434)]),
       (REPO,FRAMEWORK,'gpu-simulator/accel-sim.cc',[(48,70),(92,119)]),
+      (REPO,FRAMEWORK,'gpu-simulator/trace-parser/trace_parser.h',[(14,20),(35,46)]),
     ]
     for i,(repo,commit,path,spans) in enumerate(excerpts,1):
         data=blob(commit,path,repo=repo)

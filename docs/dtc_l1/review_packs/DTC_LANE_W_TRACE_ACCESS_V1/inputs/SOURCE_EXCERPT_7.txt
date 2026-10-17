@@ -1,0 +1,20 @@
+/workspace/repos/accel-sim-framework 18a68dcccd795f1b6cda75504e9450d00c9cee02:gpu-simulator/trace-parser/trace_parser.h SHA256=b09cc947cf590777fe5c9a4e5522edb66767078aa5983bca835a31944c6a4206
+14: #include <vector>
+15:
+16: #define WARP_SIZE 32
+17: #define MAX_DST 1
+18: #define MAX_SRC 4
+19:
+20: enum command_type {
+35: enum address_format {
+36:   list_all = 0,
+37:   base_stride = 1,
+38:   base_delta = 2,
+39:   tma_list_all = 3,
+40:   tma_base_delta = 4
+41: };
+42:
+43: struct trace_command {
+44:   std::string command_string;
+45:   command_type m_type;
+46: };

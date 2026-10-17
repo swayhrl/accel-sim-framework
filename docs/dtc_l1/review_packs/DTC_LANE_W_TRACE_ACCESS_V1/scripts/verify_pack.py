@@ -87,9 +87,27 @@ def verify():
     assert not list(ROOT.rglob('*.traceg*'))
     check=json.loads((ROOT/'CPU_READONLY_CHECKS.json').read_text())
     assert not check['full_access_semantics_complete'] and check['new_simulation_attempts']==0
+    preflight=json.loads((ROOT/'CPU_ACCESS_SEMANTICS_PREFLIGHT.json').read_text())
+    assert preflight['status']=='PASS_SYNTHETIC_CPU_LEGALITY_ONLY' and len(preflight['passed'])==6
+    assert preflight['analyzer_sha256']==hashlib.sha256((ROOT/'scripts/access_semantics.py').read_bytes()).hexdigest()
+    assert preflight['test_sha256']==hashlib.sha256((ROOT/'scripts/preflight_access_semantics.py').read_bytes()).hexdigest()
+    assert preflight['original_trace_body_opens']==preflight['native_or_simulator_executions']==0
+    for receipt_name,source_name,test_name,hash_key in [
+        ('CPU_STREAM_PREFLIGHT.json','stream_access_scan.py','preflight_stream_access.py','runner_sha256'),
+        ('CPU_CROSS_KERNEL_PREFLIGHT.json','cross_kernel_reuse.py','preflight_cross_kernel.py','reducer_sha256')]:
+        receipt=json.loads((ROOT/receipt_name).read_text())
+        assert receipt['status'].startswith('PASS_SYNTHETIC_')
+        assert receipt[hash_key]==hashlib.sha256((ROOT/'scripts'/source_name).read_bytes()).hexdigest()
+        assert receipt['test_sha256']==hashlib.sha256((ROOT/'scripts'/test_name).read_bytes()).hexdigest()
+        assert receipt['original_trace_body_opens']==receipt['native_or_simulator_executions']==0
+    scan_admission=json.loads((ROOT/'SCAN_ADMISSION.json').read_text())
+    assert scan_admission['decision']=='REFUSE_BEFORE_BODY_OPEN'
+    assert not scan_admission['scan_requested'] and scan_admission['body_opens_at_admission']==0
     return dict(status='PASS', body_proof_members=523, scope_rows=527,
                 access_counts_reconciled=True, unavailable_fields_preserved=True,
-                trace_payloads_in_pack=0, new_simulation_attempts=0)
+                trace_payloads_in_pack=0, new_simulation_attempts=0,
+                synthetic_cpu_preflight_groups=6,analyzer_identity_matches_preflight=True,
+                stream_and_cross_kernel_synthetic_checks=True,body_scan_admission='REFUSED')
 
 
 def manifest():

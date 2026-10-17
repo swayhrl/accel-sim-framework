@@ -2,6 +2,8 @@
 
 状态：**DEFERRED_SAFE_STOP — 身份及既有访问分布已固定；地址/PC 流式 scan 因高 I/O 压力暂停。** 审阅始于2026-10-17，封存日期2026-10-18（Asia/Shanghai）。主机 `huangrulin-174`，账户 uid0/root。独立 Framework 分支 `hrl/iscas2027-dtc-lane-w-trace-semantics-174-v1`，基线18a68dcc；不改 Core、decoder、trace 或旧 raw。
 
+续轮已补齐独立CPU分析辅助模块及六组合成合法性预检，另加入有资源准入的stream读取入口和跨kernel集合比较纯函数，以内存合成CTA流/地址集预检，见 `ANALYZER_CONTRACT.md` 及三个 `CPU_*PREFLIGHT.json`。验证version0/3、地址展开、精确byte/sector masks、完整CTA/warp计数与同warp记录先后；没有读取原trace，也不把合成数据当作任何工作负载的扫描结果。只准入检查仍因高I/O压力与磁盘使用率拒绝body open，见 `SCAN_ADMISSION.json`，故下列科学结论不变。
+
 Gaussian **具备值得研究的结构性可能，但“确有跨 kernel 可查询 Tag 复用”尚未证实**。原510个kernel由255个 Fan1和255个 Fan2组成，既有 CPU proof 记录557,456条cacheable global load、186,200条store。冻结OO实现保留有效Tag，传统L1 invalidate路径未清除DTC映射。这些事实支持候选研究；没有扫描地址，无法确认任一跨kernel R∩R、W∩R、可复用distinct lines，或映射在下一kernel仍位于同SM且可查询。对应字段全部UNAVAILABLE。
 
 **目前不能点名任何实际暴露旧DTC映射的PC。** 四个指定负载均有cacheable reads和stores，可列为风险筛查对象；Gaussian/DWT2D/BICG有跨kernel候选范围，GEMM原输入仅1个kernel，跨kernel对不存在。真正可能暴露旧映射的读PC需同时具备：读到此前DTC映射的line、相关store/atomic/invalidate未使映射失效、映射仍驻留且属于同一DTC查询域。byte重叠才是比line别名更强的写读候选；依然不证明读到旧值或native错误。逐PC字段UNAVAILABLE。
@@ -31,5 +33,7 @@ T输入源提交 `f520a445436b57c0a0f2494fb858a1636f04d2bc`；U只读提交 `16e
 - `MEASURED_VS_INFERRED.md`、`SCAN_CONTRACT.md`：证据边界、暂停点及后续CPU扫描要求。
 - `RESOURCE_PREFLIGHT.json`、`CPU_READONLY_CHECKS.json`、`PROVENANCE_SHA256.tsv`、`FILES_SHA256.tsv`：资源、身份与内容完整性。
 - `scripts/build_readonly_pack.py`、`scripts/verify_pack.py`：只读整理和独立包校验；没有仿真启动路径。
+- `scripts/access_semantics.py`、`scripts/preflight_access_semantics.py`：纯CPU辅助分析及合成预检，无原trace读取入口；当前既非完整parser等价证明，也非实际扫描器。
+- `scripts/stream_access_scan.py`：有资源准入的单worker CPU流式入口，默认仅检查、当前拒绝body open；`cross_kernel_reuse.py`是纯集合比较辅助函数。相应合成预检均不读取原trace。
 
 零新模拟attempt；零GPU/native工具执行；零trace body open；零旧raw读写；零后台scan或自动恢复任务。地址/PC、byte/sector mask、distinct lines和任何性能外推仍未完成，不能将本包称为完整trace访问语义扫描报告。

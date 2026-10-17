@@ -1,4 +1,23 @@
 /workspace/repos/accel-sim-framework 18a68dcccd795f1b6cda75504e9450d00c9cee02:gpu-simulator/trace-parser/trace_parser.cc SHA256=f63db893d39bfcd4cbf679ea1158fd9a0594211181333e13b2fdbb478d60ddb7
+61: unsigned inst_trace_t::get_datawidth_from_opcode(
+62:     const std::vector<std::string> &opcode) const {
+63:   for (unsigned i = 0; i < opcode.size(); ++i) {
+64:     if (is_number(opcode[i])) {
+65:       return (std::stoi(opcode[i], NULL) / 8);
+66:     } else if (opcode[i][0] == 'U' && is_number(opcode[i].substr(1))) {
+67:       // handle the U* case
+68:       unsigned bits;
+69:       sscanf(opcode[i].c_str(), "U%u", &bits);
+70:       return bits / 8;
+71:     }
+72:   }
+73:
+74:   return 4;  // default is 4 bytes
+75: }
+76:
+77: static bool hasEnding(const std::string &s, const std::string &suffix) {
+78:   if (s.length() < suffix.length()) return false;
+79:   return s.compare(s.length() - suffix.length(), suffix.length(), suffix) == 0;
 100: void inst_memadd_info_t::base_stride_decompress(
 101:     unsigned long long base_address, int stride,
 102:     const std::bitset<WARP_SIZE> &mask) {
