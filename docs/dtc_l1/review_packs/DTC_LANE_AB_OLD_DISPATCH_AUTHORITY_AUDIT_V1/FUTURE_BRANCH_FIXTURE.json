@@ -1,0 +1,18 @@
+{
+  "status": "EXPECTED_ISOLATED_BASH_SCOPE_FAILURE",
+  "script_source": "auto_dispatch_fast64_4_2d_core41_v1.sh:73",
+  "script_sha256": "6521332b1bf6814cc165a5dce1150d82eee50813ec363e4d271224d8f123728b",
+  "fixture": "set -u; f() { local mode=$1 lower=$2 run=$lower; }; f IO io",
+  "fixture_sha256": "33d1dfdc1aba11feb029e3aa75a3f6f11703326341ce247ae74fb01b4a6c2c03",
+  "bash_version": "GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)",
+  "exit": 127,
+  "stderr": "environment: line 1: lower: unbound variable\n",
+  "target_initial_env_key_presence_only": {
+    "lower": false,
+    "BASH_ENV": false
+  },
+  "conclusion": "The same local statement expands run using prior lower, not the newly assigned argument. With no prior lower, set -u aborts at start_monitor; IO dispatch occurs before this call. OO is configured later but not guaranteed reachable. Do not repair or rely on this as a scientific gate.",
+  "original_script_or_helpers_executed": false,
+  "signals_sent": 0,
+  "limits": "Did not inspect private live Bash variable storage or execute the original future branch."
+}

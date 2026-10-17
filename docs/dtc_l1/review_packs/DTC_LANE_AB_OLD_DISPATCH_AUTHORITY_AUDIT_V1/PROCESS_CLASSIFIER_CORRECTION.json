@@ -1,0 +1,21 @@
+{
+  "status": "PRESERVED_DETERMINISTIC_PROCESS_CLASSIFIER_CORRECTION",
+  "initial_receipt_sha256": "13228e5f6c87a774006237b6e17a9480e5d51e0a5e7358408103df74c6eb4409",
+  "initial_collector_sha256": "37f4a77c83cfcffb14b207d59be00ceb1eb61b98b6d80e1e2731e7816250ad1f",
+  "initial_candidate_count": 8,
+  "corrected_actual_simulator_count_in_same_initial_data": 1,
+  "corrected_actual_simulator_pids": [
+    2938324
+  ],
+  "false_positive_pids": [
+    240006,
+    310308,
+    525567,
+    534802,
+    815446,
+    949578,
+    1482676
+  ],
+  "cause": "Prefix basename match accel-sim* incorrectly included Framework directory arguments named accel-sim-decoupled-l1-fast64. Exact accel-sim.out executable/argv basename fixes this.",
+  "impact": "Target PID/start_ticks, script/fd255 SHA, FLOCK holders and base gate observations unaffected. Initial field is only a candidate list, not 8 actual simulators. Final receipt uses corrected classifier. No signals, helper execution or scientific gate changes."
+}
