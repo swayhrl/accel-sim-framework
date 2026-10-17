@@ -20,7 +20,8 @@ OVERRIDES = {'Q4':Q4, 'D4':{**Q4,'-gpgpu_clock_domains':'1132.0:1132.0:1132.0:34
 PARALLEL_EXPERIMENT = 'EPL2_PARALLEL_POTENTIAL_20261017_V1'
 PARALLEL_COORDINATION = 'a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900'
 FINITE_OVERRIDES = {'ROP40_H0':{'-gpgpu_l2_rop_latency':'40'},
-                    'ICNT2_H0':{'-gpgpu_clock_domains':'1132.0:2264.0:1132.0:850.0'}}
+                    'ICNT2_H0':{'-gpgpu_clock_domains':'1132.0:2264.0:1132.0:850.0'},
+                    'WAD256_Q4':{**Q4,'-gpgpu_ep_l2_wad_entries':'256'}}
 
 
 def condition_overrides(experiment, regime):
@@ -99,6 +100,7 @@ def validate_runtime_dump(raw_path,spec):
     if spec['experiment_id']==PARALLEL_EXPERIMENT:
         expected.setdefault('-gpgpu_clock_domains','1132.0:1132.0:1132.0:850.0')
         expected.setdefault('-gpgpu_l2_rop_latency','160')
+        if spec['regime']=='WAD256_Q4':expected['-gpgpu_ep_l2_wad_entries']='256'
     actual={};clocks=[]
     with Path(raw_path).open() as stream:
         for line in stream:

@@ -29,7 +29,7 @@ class FiniteTests(unittest.TestCase):
   self.spec['experiment_id']='EPL2_DOWNSTREAM_HEADROOM_R19'
   with self.assertRaises(ValueError):self.check()
  def test_unimplemented_finite_is_not_automatically_qualified(self):
-  self.spec['regime']='WAD256_Q4';self.reseal()
+  self.spec['regime']='L1_32_H0';self.reseal()
   with self.assertRaises(ValueError):self.check()
 
 if __name__=='__main__':unittest.main()
