@@ -1,27 +1,37 @@
 {
   "schema_version": "EP_L2_LANE_RECEIPT_V1",
   "lane_id": 2,
-  "status": "C948_ADAPTER_DELIVERED_DEPENDENCY_WAIT_EXPIRED",
+  "task_id": "FT20261017_LANE2_R14_BOUNDED_INTEGRATION_REVIEW",
+  "status": "R14_SOURCE_REVIEW_DELIVERED_NOT_COMPILED_NOT_RUN",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "continuation_commit": "99e7515f81b0038ac49d274b73f774e8ea801e46",
+  "continuation_commit": "d962f847cbf7ba6d525bbb23964fee392bd8a69f",
   "framework_branch": "hrl/ep-l2-ft20261016-lane2-v1",
   "framework_source_commit": null,
-  "framework_engineering_parent_commit": "87885c05a258dacfe863b682f4f63b40f9625ebb",
-  "framework_usage": "standalone Core fixture; Framework hosts docs and release listener only",
-  "listener_implementation_commit": "e4d2d13fb23c89401ef6d2eb3cca8195124d63ed",
+  "framework_usage": "documentation/source preparation only; Framework publication is containing Git commit",
+  "framework_previous_publication": "dc21af497c319672c30752ed2192a2a8cc937bab",
+  "target_framework_build_input": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
   "core_branch": "hrl/ep-l2-ft20261016-lane2-v1",
-  "core_source_commit": "ab413abc2030bfc9aaeea0579b34dfa998671adb",
-  "previous_core_source_commit": "45a2f1d2c36c4ceee108ac88cae2e3a86ef1d827",
+  "core_source_commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+  "previous_core_source_commit": "ab413abc2030bfc9aaeea0579b34dfa998671adb",
   "exact_static_target": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
   "target_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
-  "target_framework_build_input": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
-  "target_kind": "official Lane1 source candidate, uncompiled; not an official binary release",
   "official_runtime_parent": null,
   "binary_sha256": null,
   "binary_path": null,
   "compiled": false,
   "config_sha256": "235e7325aa35e9c9c15ee321df3f0fafb7b10ead1f73cc97a284e9ad880cd9b0",
-  "stimulus_sha256": "f83b5e2c0a0bb1d95fbf07c2e84319727ff1cdb7ad2c7dc6f4b848c9dd045b3e",
+  "ordered_configs": [
+    {
+      "path": "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+    },
+    {
+      "path": "tests/ep_l2/ft_wbuf.config",
+      "sha256": "b8748fe67aafc617eacb11e04f296990f1c88e5b51bdd24295466ab85c9e9372"
+    }
+  ],
+  "config_identity_scope": "same frozen ordered config bytes; fixture SHA binds all constructor overrides including new texture-only case",
+  "stimulus_sha256": "9c12193b3055d8312ee689dcc6451f0bd27b985217894a6e60f722e021ad41b2",
   "trace_identity": null,
   "run_keys": [],
   "feature_vector": {
@@ -36,98 +46,64 @@
     "meta": false,
     "read_hit": false
   },
+  "new_source_changes": [
+    "cache eligibility before TVD frontend",
+    "bypass requester admission token",
+    "separate clean and total retention physical slot-cycle metrics"
+  ],
+  "new_regression_source_groups": 3,
   "validation": {
-    "new_exact_c948_patch_and_blob_checks": "PASS on candidate and same-tree public commit",
-    "upstream_two_file_delta": "CONSUMED_EXACT_BYTES",
-    "old_getter_patch_reapplied": false,
-    "new_textual_conflicts": 0,
-    "new_python_listener_guard_tests": 13,
-    "python_guard_executions": 1,
-    "prepared_CPP_positive": 9,
-    "prepared_CPP_negative": 4,
-    "new_CPP_executions": 0,
-    "old_static_or_module_tests_rerun": false,
-    "independent_qualification": false,
+    "source_findings": "SOURCE_INSPECTION_ONLY_NO_RUNTIME_REPRODUCTION",
+    "new_diff_whitespace": "PASS_HYGIENE_ONLY",
+    "CPP_compiles": 0,
+    "CPP_process_executions": 0,
+    "prepared_CPP_processes": 11,
+    "prepared_positive_groups": 24,
+    "prepared_expected_rejections": 7,
+    "prepared_CPP_status": "NOT_COMPILED_NOT_RUN",
+    "old_static_patch_tests_repeated": false,
+    "old_getter_or_listener_tests_repeated": false,
+    "Python_test_suites": 0,
     "formal_workloads": 0,
-    "engineering_only_incremental_guards": {
-      "count": 2,
-      "source_commit": "87885c05a258dacfe863b682f4f63b40f9625ebb",
-      "status": "PASS_PYTHON_ONLY",
-      "old13_rerun": false,
-      "first_module_path_error_retained": true
+    "independent_qualification": false
+  },
+  "reviewed_interfaces": {
+    "RO_core": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+    "Ideal_core": "8ff56eb0804a027f1e253e629dd2915b02bc03b5"
+  },
+  "dependency_receipts": {
+    "1": {
+      "framework_publication": "7ea8cdc85f5be1a6ce31df2f216c8d16d2546c9d",
+      "STATUS.md_sha256": "d91bf4d94738d2809a0df73ab3afeef402246cd229374fb0882dfb65c26be093",
+      "RECEIPT.json_sha256": "63238a29b627c6391c34303f02dfe1dbd78e7a3701e3f10d2b033cff03770e38"
+    },
+    "3": {
+      "framework_publication": "e8d6f9671da0748b5f4eb780d6cdf163e91b58d1",
+      "STATUS.md_sha256": "b5c26ebce71245b37631aaf11bab394870d728664ee4ec10a85d4f9475198a25",
+      "RECEIPT.json_sha256": "bf620d15ad1faa04c39be8e12d43225144d10b23dab7d2ffd7421e747b292e41"
+    },
+    "4": {
+      "framework_publication": "3a3950d974480477339f7cebc42027fe4810af65",
+      "STATUS.md_sha256": "4c5d29d2d6d4fd309228ddad14d43f867c5a7784c2e04fff48ea8fb48d068ba4",
+      "RECEIPT.json_sha256": "3162590cdc058964a673f3f5cddb9de72c0349ce8950a03e760be572ab17e0a2"
+    },
+    "5": {
+      "framework_publication": "d5317bd25dd0d5debd5abed5d5cf6300e7bd6982",
+      "STATUS.md_sha256": "6c3b6c51744faaa76724c5e2db6c82def6cd9180693e1e36d5ce187bb929a187",
+      "RECEIPT.json_sha256": "2898ff12ccd3d2289009f07583221afdc2ea27b859145d8011d82fa2333a2d14",
+      "acceptance_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a"
     }
   },
-  "dependency_receipts": [
-    {
-      "lane": 1,
-      "framework_publication": "85534de235345292a153d9983cfd0d24d8033bb2",
-      "receipt_sha256": "ae74913c47f726ffb8b9621778a6adcffcb8ca82f2a4981dc67ca7f9fbfd0b4d",
-      "runtime_ready": false
-    },
-    {
-      "lane": 5,
-      "framework_publication": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf",
-      "acceptance_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
-      "generation": 2,
-      "accepted_formal_pairs": 0
-    }
-  ],
   "active_runs": [],
   "active_build_lease": null,
   "disk_gate_waiter_created": false,
   "release_event_listener": {
-    "status": "DEPENDENCY_WAIT_EXPIRED",
-    "pid": 1125676,
-    "start_ticks": 892240735,
-    "started_utc": "2026-10-16T17:07:16.116958+00:00",
-    "deadline_utc": "2026-10-16T17:17:16.116958+00:00",
-    "lock": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane2/release_event.lock",
-    "kind": "READ_ONLY_RELEASE_EVENT_NOT_DISK_WAITER",
-    "interval_seconds": 600,
-    "duration_seconds": 600,
-    "listener_source_commit": "8cbbf5c888d687bb16baa6de203cb79b309f9098",
-    "listener_source_sha256": "13ae59e647385feba3f360a32226e65b61afa65b1b954f7c26da7b21d9adba4b",
-    "expected_core": "c948184504d82b80e23eb3f4ff6cdfd328ba9355",
-    "expected_framework": "3ab150b3e99ff3ed759b8cdc5154cfb5744042a7",
-    "events": [
-      {
-        "admission_granted": false,
-        "independent_qualification": false,
-        "resource_check_performed": false,
-        "compiler_or_simulator_started": false,
-        "state": "WAIT_OFFICIAL_BINARY",
-        "detail": "pinned source has no published ready binary",
-        "lane1_publication": "85534de235345292a153d9983cfd0d24d8033bb2",
-        "lane5_publication": "e8f701995a27154ffcc54cc38245dde8cd7f9bdf",
-        "receipt_sha256": "ae74913c47f726ffb8b9621778a6adcffcb8ca82f2a4981dc67ca7f9fbfd0b4d",
-        "acceptance_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
-        "observed_utc": "2026-10-16T17:07:20.160786+00:00"
-      },
-      {
-        "admission_granted": false,
-        "independent_qualification": false,
-        "resource_check_performed": false,
-        "compiler_or_simulator_started": false,
-        "state": "WAIT_OFFICIAL_BINARY",
-        "detail": "pinned source has no published ready binary",
-        "lane1_publication": "248c93acc611679afe42590760481f451773003d",
-        "lane5_publication": "300c1010161b270ae73414b8146d238c961f0cd0",
-        "receipt_sha256": "5284c4c65a2211190ed52d75ace9b9b7e3e23b508ffa8fa97720265d9369f931",
-        "acceptance_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
-        "observed_utc": "2026-10-16T17:17:20.257904+00:00"
-      }
-    ],
-    "disk_gate_waiter_created": false,
-    "build_lease_acquired": false,
-    "compiler_or_simulator_started": false,
+    "status": "NOT_STARTED_THIS_GOAL",
     "process_active": false,
-    "finished_utc": "2026-10-16T17:17:20.258580+00:00"
+    "historical_listener": "see prior frozen RELEASE_WAIT_r1"
   },
-  "scientific_acceptance": "old R0/R1 applications SUSPENDED; new source uncompiled/unqualified",
-  "next_trigger": "Official Lane1 release with exact source/Framework/local binary and producer proof, followed by actual shared safe admission; no waiter remains active",
-  "task_id": "FT20261016_LANE2_TVD",
-  "host": "huangrulin-174",
-  "current_review_pack": "docs/ep_l2/review_packs/FT20261017_LANE2_RELEASE_WAIT_r1",
+  "scientific_acceptance": "old R0/R1 SUSPENDED; no new qualified TVD binary or accepted performance data",
+  "current_review_pack": "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1",
   "artifacts": [
     "docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/",
     "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r1/",
@@ -137,38 +113,21 @@
     "docs/ep_l2/review_packs/FT20261016_LANE2_REPAIR_PREADAPT_r1",
     "docs/ep_l2/review_packs/FT20261016_LANE2_EXACT62_STATIC_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE2_C948_STATIC_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE2_RELEASE_WAIT_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE2_RELEASE_WAIT_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1"
   ],
   "worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-repair-r3",
+  "host": "huangrulin-174",
   "blocked_scopes": [
-    "new C++ producer validation awaits official baseline and shared safe admission",
-    "formal TVD applications await Lane1 R2 integration and Lane5 independent TVD qualification"
+    "official R0.1 parent/binary/producer proof not published",
+    "shared safe admission and Lane1/Lane5 priority before own build",
+    "all current C++ regression source uncompiled/unrun",
+    "R2 unified role/owner/epoch/descriptor/Tag/prefill and bank-lifetime integrations unresolved",
+    "joint Ideal routing requires explicit feature contract; no silent service-priority choice",
+    "Lane5 independent TVD qualification required before formal application"
   ],
-  "wait_subtask_status": "EXPIRED_AFTER_FINITE_AUTHORIZED_WINDOW",
+  "bounded_review_deliverable_complete": true,
   "main_runtime_objective_complete": false,
-  "release_wait_receipt_sha256": "70e987c612be50ebb8420e7bbf1141314eea35b0b1f2df4116c5774499f53959",
-  "latest_dependency_observation": {
-    "lane1_publication": "248c93acc611679afe42590760481f451773003d",
-    "lane1_receipt_sha256": "5284c4c65a2211190ed52d75ace9b9b7e3e23b508ffa8fa97720265d9369f931",
-    "lane5_publication": "300c1010161b270ae73414b8146d238c961f0cd0",
-    "lane5_acceptance_sha256": "eccaa5bd0f24849dc4ae1c63754785a1cba29eefe23103491013088088ced37a",
-    "official_binary_published": false
-  },
-  "finite_runtime_plan": {
-    "path": "docs/ep_l2/review_packs/FT20261017_LANE2_RELEASE_WAIT_r1/FINITE_RUNTIME_ACTIVATION.json",
-    "CPP_processes_planned": 10,
-    "positive_groups_planned": 21,
-    "rejection_groups_planned": 7,
-    "executed": 0,
-    "note": "finite required new/affected producers only, not an application allocation"
-  },
-  "fixture_version_presence_followup": {
-    "source_commit": "ab413abc2030bfc9aaeea0579b34dfa998671adb",
-    "change": "read replies must contain explicit sector-version backing rather than silently default missing data to0",
-    "runtime_tested": false,
-    "previous_zero_version_tests": "retained historical local scope; zero-value equality alone did not prove presence"
-  },
-  "next_listener_implementation_commit": "87885c05a258dacfe863b682f4f63b40f9625ebb",
-  "next_listener_implementation_sha256": "2446033f6ef604b7643d151d75f5452b5d80f37fe6bc2f638c4173f20d069d2e",
-  "next_listener_active": false
+  "next_trigger": "User event-driven CONTINUE after official parent and shared admission; no resident waiter or automatic polling",
+  "remaining_gate_details": "docs/ep_l2/review_packs/FT20261017_LANE2_R14_INTEGRATION_RISK_r1/LANE2_TVD_INTEGRATION_READINESS_AND_UNTESTED_GATES.md"
 }

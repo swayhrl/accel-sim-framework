@@ -1,0 +1,155 @@
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index e6efd131..6fa71cc0 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -163,0 +164 @@ void l2_cache::tvd_print(FILE *fp, unsigned slice) {
++      "clean_retention_slot_cycles=%llu|total_retention_slot_cycles=%llu|"
+@@ -169,0 +171,2 @@ void l2_cache::tvd_print(FILE *fp, unsigned slice) {
++      (unsigned long long)s.clean_retention_slot_cycles,
++      (unsigned long long)(s.clean_retention_slot_cycles + s.tvd_extra_retention_slot_cycles),
+diff --git a/src/gpgpu-sim/ep-l2-tvd-directory.h b/src/gpgpu-sim/ep-l2-tvd-directory.h
+index 19fbd1f4..31720e6c 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -100,0 +101,2 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
++    // Keep the original post-lower-accept DIRTY metric separate from clean
++    // occupancy. Both are physical slot cycles, never memcpy Tag timestamps.
+@@ -101,0 +104 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
++    std::uint64_t clean_retention_slot_cycles;
+@@ -106 +109,2 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+-        wb_staging_slot_cycles(0), tvd_extra_retention_slot_cycles(0) {}
++        wb_staging_slot_cycles(0), tvd_extra_retention_slot_cycles(0),
++        clean_retention_slot_cycles(0) {}
+@@ -336,0 +341 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
++      if (e.status == CLEAN) m_stats.clean_retention_slot_cycles += delta;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 32112faa..421ac2f2 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1194 +1194,5 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+-    const auto result = m_L2cache->tvd_frontend(mf, now, !m_L2_icnt_queue->full());
++    // Use the same cache eligibility as the ordinary frontend. A detached
++    // texture victim must not turn a bypassing global read into a cache hit.
++    const bool cache_eligible = !m_config->m_L2_texure_only || mf->istexture();
++    const auto result = cache_eligible ?
++        m_L2cache->tvd_frontend(mf, now, !m_L2_icnt_queue->full()) : l2_cache::TVD_NORMAL;
+@@ -1539,0 +1544,2 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
++      // Bypassed requests still complete through ft_record_response().
++      ft_record_admission(mf);
+diff --git a/tests/ep_l2/test_tvd_production.cc b/tests/ep_l2/test_tvd_production.cc
+index d3eab13d..c65cf317 100644
+--- a/tests/ep_l2/test_tvd_production.cc
++++ b/tests/ep_l2/test_tvd_production.cc
+@@ -20 +20 @@ struct scenario {
+-  explicit scenario(const char *base, const char *overlay, bool dirty=false, bool tvd=true, bool hold=false, unsigned sets=1, unsigned ft_mode=2, unsigned ways=1, unsigned wbuf=16)
++  explicit scenario(const char *base, const char *overlay, bool dirty=false, bool tvd=true, bool hold=false, unsigned sets=1, unsigned ft_mode=2, unsigned ways=1, unsigned wbuf=16, bool texture_only=false)
+@@ -30,0 +31,4 @@ struct scenario {
++    if(texture_only) {
++      const char *routing[]={"tvd-test","-gpgpu_cache:dl2_texture_only","1"};
++      option_parser_cmdline(p,3,routing);
++    }
+@@ -68 +72 @@ struct scenario {
+-  mem_fetch *make(new_addr_type address, bool write=false) {
++  mem_fetch *make(new_addr_type address, bool write=false, bool texture=false) {
+@@ -72,0 +77,10 @@ struct scenario {
++    assert(!texture || !write);
++    if(texture) {
++      // istexture() reads the instruction's space, not the access-type enum.
++      warp_inst_t instruction(gpu->getShaderCoreConfig());instruction.initiation_interval=1;
++      instruction.space=memory_space_t(tex_space);
++      instruction.issue(active,0,gpu->gpu_sim_cycle,0,0,0);
++      mem_access_t access(TEXTURE_ACC_R,address,32,false,active,bytes,sectors,&context);
++      auto mf=new mem_fetch(access,&instruction,0,8,0,0,0,gpu->getMemoryConfig(),gpu->gpu_sim_cycle);
++      assert(mf->istexture());return mf;
++    }
+@@ -141,0 +156,84 @@ struct scenario {
++// New r14 gates. They are deliberately separate from all frozen selectors.
++// Source preparation only until this exact revision is compiled and executed.
++static void texture_bypass_does_not_consume_tvd(const char *base,const char *overlay) {
++  scenario f(base,overlay,false,true,false,1,2,1,16,true);
++  auto texture_push=[&](new_addr_type address) {
++    auto mf=f.make(address,false,true);const auto uid=mf->get_request_uid();
++    f.sp->push(mf,f.gpu->gpu_sim_cycle);return uid;
++  };
++  auto a=texture_push(0);f.await(a);
++  auto b=texture_push(128);f.await(b);f.drain();
++  auto dir=f.cache()->tvd_for_test();const auto t=dir->find(0);
++  assert(dir->live(t));const auto h=dir->at(t.index).payload;
++  const auto lower=f.sp->ep_l2_lower_read_issue_count();
++  const auto served=dir->stats().read_responses;
++  const auto uid=f.push(0);bool returned=false;
++  // A bypass return has no cache payload identity/version contract. Inspect
++  // its real queue response here; do not weaken collect()'s cache-read guard
++  // or claim a numerical data comparison for dataless lower memory.
++  for(unsigned n=0;n<10000 && !returned;++n) {
++    f.step(false);
++    if(auto mf=f.sp->pop()) {
++      assert(mf->get_request_uid()==uid && !returned);
++      assert(!mf->has_ep_l2_payload_identity());
++      delete mf;returned=true;
++    }
++  }
++  assert(returned && f.sp->ep_l2_lower_read_issue_count()==lower+1);
++  assert(dir->stats().read_responses==served && dir->live(t) && dir->at(t.index).payload==h);
++  auto again=texture_push(0);f.await(again);
++  assert(f.responses.at(again)==0 && dir->stats().read_responses==served+1);
++  f.drain();f.sp->flushL2();assert(!dir->occupied());
++  puts("PASS r14_texture_only_global_bypass_exact_once_then_texture_TVD_service");
++}
++
++static void clean_retention_physical_cost(const char *base,const char *overlay) {
++  scenario f(base,overlay);f.warm(0,4096);
++  auto b=f.push(128);f.await(b);f.drain();
++  auto dir=f.cache()->tvd_for_test();assert(dir->occupied()==1 && dir->live(dir->find(0)));
++  dir->advance(f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle);
++  const auto clean=dir->stats().clean_retention_slot_cycles;
++  const auto dirty=dir->stats().tvd_extra_retention_slot_cycles;
++  const auto grants=f.cache()->ep_l2_payload_for_test().bank_grants();
++  for(unsigned n=0;n<7;++n)f.step();
++  dir->advance(f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle);
++  assert(dir->stats().clean_retention_slot_cycles==clean+7);
++  assert(dir->stats().tvd_extra_retention_slot_cycles==dirty);
++  assert(f.cache()->ep_l2_payload_for_test().bank_grants()==grants);
++  // Exact host alias retirement contributes no fabricated offset cycles.
++  const auto before=dir->stats().clean_retention_slot_cycles;
++  assert(f.try_warm(0));assert(!dir->live(dir->find(0)));
++  assert(dir->stats().clean_retention_slot_cycles==before);
++  f.drain();f.sp->flushL2();assert(!dir->occupied());
++  puts("PASS r14_clean_retention_physical_slot_cycles_no_memcpy_offset_cost");
++}
++
++static void full_shared_directory_dirty_promotion(const char *base,const char *overlay) {
++  scenario f(base,overlay,true);
++  // Unlike the existing all-mandatory WAD-full gate, start with all 128
++  // shared address entries holding clean victims, then promote one while
++  // replacing a dirty resident. No transient 129th address/second owner.
++  for(unsigned line=0;line<128;++line) {
++    auto uid=f.push(new_addr_type(line)*128);f.await(uid);
++  }
++  auto dirty=f.push(new_addr_type(128)*128,true);f.await(dirty);
++  auto dir=f.cache()->tvd_for_test();assert(dir->occupied()==128 && !dir->mandatory());
++  auto source=dir->find(0);assert(dir->live(source));
++  const auto promoted=dir->at(source.index).payload;
++  const auto victim=f.cache()->ep_l2_tag_payload_handle_for_test(0);
++  const auto pools=f.cache()->ep_l2_payload_for_test().physical_slots();
++  auto write=f.push(0,true);f.await(write);
++  const auto wb=dir->find(new_addr_type(128)*128);
++  assert(dir->occupied()==128 && dir->mandatory()==1 && dir->live(wb));
++  assert(wb.index==source.index && wb.incarnation!=source.incarnation && !dir->live(source));
++  assert(dir->at(wb.index).payload==victim && !dir->live(dir->find(0)));
++  assert(f.cache()->ep_l2_tag_payload_handle_for_test(0)==promoted);
++  assert(f.cache()->ep_l2_payload_for_test().physical_slots()==pools && pools==1168);
++  assert(f.cache()->ep_l2_payload_for_test().ownership_consistent());
++  auto read=f.push(0);f.await(read);assert(f.responses.at(read)==(unsigned long long)write+1);
++  f.drain();assert(dir->occupied()==128 && !dir->mandatory());
++  assert(dir->at(wb.index).status==l2_cache::tvd_directory::WB_COMPLETE);
++  f.sp->flushL2();assert(!dir->occupied());
++  puts("PASS r14_shared128_clean_to_mandatory_dirty_promotion_same_slot_same_payload");
++}
++
+@@ -442,0 +541,5 @@ int main(int argc,char **argv) {
++    if (negative=="--r14-integration-gates") {
++      texture_bypass_does_not_consume_tvd(argv[1],argv[2]);
++      clean_retention_physical_cost(argv[1],argv[2]);
++      full_shared_directory_dirty_promotion(argv[1],argv[2]);return 0;
++    }

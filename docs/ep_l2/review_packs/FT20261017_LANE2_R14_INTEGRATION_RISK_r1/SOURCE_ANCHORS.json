@@ -1,0 +1,446 @@
+[
+  {
+    "candidate": "TVD_before",
+    "commit": "ab413abc2030bfc9aaeea0579b34dfa998671adb",
+    "file": "src/gpgpu-sim/l2cache.cc",
+    "sha256": "70199566a2f0ef24fc1d522caa1194aa5653bd37a3cbdc9a74d0412bdcc3c5ea",
+    "anchors": {
+      "bool tvd_frontend_handled": [
+        {
+          "line": 1190,
+          "text": "  bool tvd_frontend_handled = false;"
+        }
+      ],
+      "const auto result = m_L2cache->tvd_frontend": [
+        {
+          "line": 1194,
+          "text": "    const auto result = m_L2cache->tvd_frontend(mf, now, !m_L2_icnt_queue->full());"
+        }
+      ],
+      "void memory_sub_partition::ft_record_admission": [
+        {
+          "line": 2566,
+          "text": "void memory_sub_partition::ft_record_admission(const mem_fetch *mf) {"
+        }
+      ],
+      "void memory_sub_partition::ft_record_response": [
+        {
+          "line": 2572,
+          "text": "void memory_sub_partition::ft_record_response(const mem_fetch *mf) {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "TVD_after",
+    "commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "file": "src/gpgpu-sim/l2cache.cc",
+    "sha256": "12679e8fd8b84183faf4b6dc356404b1c880d84f54bbb440319b4c445f54d6cb",
+    "anchors": {
+      "const bool cache_eligible": [
+        {
+          "line": 1196,
+          "text": "    const bool cache_eligible = !m_config->m_L2_texure_only || mf->istexture();"
+        }
+      ],
+      "// Bypassed requests": [
+        {
+          "line": 1544,
+          "text": "      // Bypassed requests still complete through ft_record_response()."
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "TVD_after",
+    "commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "file": "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+    "sha256": "d2b81bb912083d9b08b245b04c5b1620b9a087ddcab5cd737239a04e672a1b65",
+    "anchors": {
+      "tvd_frontend_result": [
+        {
+          "line": 33,
+          "text": "l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,"
+        }
+      ],
+      "tvd_promote(": [
+        {
+          "line": 88,
+          "text": "bool l2_cache::tvd_promote(mem_fetch *mf, unsigned time, std::list<cache_event> &events) {"
+        }
+      ],
+      "tvd_response_commit": [
+        {
+          "line": 80,
+          "text": "void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {"
+        }
+      ],
+      "total_retention_slot_cycles": [
+        {
+          "line": 164,
+          "text": "      \"clean_retention_slot_cycles=%llu|total_retention_slot_cycles=%llu|\""
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "TVD_after",
+    "commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "file": "src/gpgpu-sim/ep-l2-tvd-directory.h",
+    "sha256": "6f6610c6632219337ed2b0100c1d26e2fb3a78df88ad729470fabf36d82d367a",
+    "anchors": {
+      "preview_dirty_promotion(": [
+        {
+          "line": 265,
+          "text": "  promotion_plan preview_dirty_promotion(ticket source, address_type victim_line,"
+        }
+      ],
+      "commit_dirty_promotion(": [
+        {
+          "line": 283,
+          "text": "  result commit_dirty_promotion(const promotion_plan &p, cycle_type now,"
+        }
+      ],
+      "result lower_accept(": [
+        {
+          "line": 312,
+          "text": "  result lower_accept(ticket t, bool lower_has_independent_data, cycle_type now) {"
+        }
+      ],
+      "result set_done(": [
+        {
+          "line": 319,
+          "text": "  result set_done(ticket t, cycle_type now) {"
+        }
+      ],
+      "void advance(": [
+        {
+          "line": 334,
+          "text": "  void advance(cycle_type now) {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "TVD_after",
+    "commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "file": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "sha256": "11a50c64b24bff1924b5c9007daaafb127811613a7be53be05848e85f7e533ee",
+    "anchors": {
+      "ft_try_force_tag_access(": [
+        {
+          "line": 10,
+          "text": "  if (!ft_try_force_tag_access(addr, time, mask)) {"
+        },
+        {
+          "line": 16,
+          "text": "bool l2_cache::ft_try_force_tag_access(new_addr_type addr, unsigned time,"
+        }
+      ],
+      "bool l2_cache::lower_ready": [
+        {
+          "line": 419,
+          "text": "bool l2_cache::lower_ready(mem_fetch *mf, unsigned long long cycle) {"
+        }
+      ],
+      "void l2_cache::lower_accepted": [
+        {
+          "line": 433,
+          "text": "void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "TVD_after",
+    "commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "file": "src/gpgpu-sim/gpu-cache.h",
+    "sha256": "907521e055011f99be83ecf156013de0dc7323cb855fbc437da748fd1fc24560",
+    "anchors": {
+      "enum role": [
+        {
+          "line": 2104,
+          "text": "  enum role { RESIDENT, BYPASS, WB, TVD };"
+        }
+      ],
+      "unsigned free_slots()": [
+        {
+          "line": 2303,
+          "text": "  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB) - used(TVD); }"
+        }
+      ],
+      "void transfer(": [
+        {
+          "line": 2329,
+          "text": "  void transfer(const payload_handle &h, role r, state st) {"
+        }
+      ],
+      "request_result request(role": [
+        {
+          "line": 2377,
+          "text": "  request_result request(role r, unsigned id, bool write, unsigned long long cycle,"
+        }
+      ],
+      "bool ownership_consistent()": [
+        {
+          "line": 2515,
+          "text": "  bool ownership_consistent() const {"
+        }
+      ],
+      "void tvd_bind(": [
+        {
+          "line": 1077,
+          "text": "  void tvd_bind(unsigned index, new_addr_type address, unsigned time, unsigned valid) {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "TVD_after",
+    "commit": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
+    "file": "tests/ep_l2/test_tvd_production.cc",
+    "sha256": "9c12193b3055d8312ee689dcc6451f0bd27b985217894a6e60f722e021ad41b2",
+    "anchors": {
+      "texture_bypass_does_not_consume_tvd": [
+        {
+          "line": 158,
+          "text": "static void texture_bypass_does_not_consume_tvd(const char *base,const char *overlay) {"
+        },
+        {
+          "line": 542,
+          "text": "      texture_bypass_does_not_consume_tvd(argv[1],argv[2]);"
+        }
+      ],
+      "clean_retention_physical_cost": [
+        {
+          "line": 190,
+          "text": "static void clean_retention_physical_cost(const char *base,const char *overlay) {"
+        },
+        {
+          "line": 543,
+          "text": "      clean_retention_physical_cost(argv[1],argv[2]);"
+        }
+      ],
+      "full_shared_directory_dirty_promotion": [
+        {
+          "line": 211,
+          "text": "static void full_shared_directory_dirty_promotion(const char *base,const char *overlay) {"
+        },
+        {
+          "line": 544,
+          "text": "      full_shared_directory_dirty_promotion(argv[1],argv[2]);return 0;"
+        }
+      ],
+      "--r14-integration-gates": [
+        {
+          "line": 541,
+          "text": "    if (negative==\"--r14-integration-gates\") {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "RO",
+    "commit": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+    "file": "src/gpgpu-sim/gpu-cache.cc",
+    "sha256": "0ac02730575c61c4650bf3bdf807659538290c6b4256e54472162789eba0e7dc",
+    "anchors": {
+      "if (m_ro) m_ro->check_access": [
+        {
+          "line": 2528,
+          "text": "  if (m_ro) m_ro->check_access(mf);"
+        }
+      ],
+      "m_ro->record_accepted": [
+        {
+          "line": 2531,
+          "text": "    if(m_ro && r!=RESERVATION_FAIL)m_ro->record_accepted(mf);"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "RO",
+    "commit": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+    "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+    "sha256": "7c8669619401efa76564ce2f0600080fcc4dec753c681d6b4b458a42caa1589a",
+    "anchors": {
+      "bool prefill_allowed": [
+        {
+          "line": 61,
+          "text": "  bool prefill_allowed() const {"
+        }
+      ],
+      "void record_accepted": [
+        {
+          "line": 93,
+          "text": "  void record_accepted(mem_fetch *m) {"
+        }
+      ],
+      "bool preview(": [
+        {
+          "line": 163,
+          "text": "  bool preview(mem_fetch *m,l2_access_plan &p) const {"
+        }
+      ],
+      "bool merge_existing": [
+        {
+          "line": 204,
+          "text": "  bool merge_existing(mem_fetch *m,unsigned time,std::list<cache_event>&events,cache_request_status &r) {"
+        }
+      ],
+      "void detach(": [
+        {
+          "line": 109,
+          "text": "  void detach(ep_l2_ro::tag_binding t,handle h) override {"
+        }
+      ],
+      "bool capacity(": [
+        {
+          "line": 145,
+          "text": "  bool capacity(mem_fetch *m,bool existing) const {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "RO",
+    "commit": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+    "file": "src/gpgpu-sim/ep-l2-ro-store-port.h",
+    "sha256": "def8cccc442d07c29671db3bbfd1c92b0849b18344e8e108b8fee05c271cda9d",
+    "anchors": {
+      "bool pin(": [
+        {
+          "line": 28,
+          "text": "  bool pin(identity h) {"
+        }
+      ],
+      "bool response_read": [
+        {
+          "line": 66,
+          "text": "  bool response_read(identity h,unsigned mask,uint64_t cycle) {"
+        }
+      ],
+      "void tag_ready": [
+        {
+          "line": 77,
+          "text": "  void tag_ready(tag_binding t,identity h,new_addr_type line,unsigned mask,bool complete) {"
+        }
+      ],
+      "void tag_detach": [
+        {
+          "line": 82,
+          "text": "  void tag_detach(tag_binding t,identity h) {"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "RO",
+    "commit": "5ae8b06d58b61189140f571ab37b5f6d51228632",
+    "file": "src/gpgpu-sim/gpu-cache.h",
+    "sha256": "e69df9f61afe004320c4660c192e81dd4cd3f8a64fbc595e8dcbceaf86c2cdda",
+    "anchors": {
+      "enum role": [
+        {
+          "line": 2124,
+          "text": "  enum role { RESIDENT, BYPASS, WB, RO };"
+        }
+      ],
+      "unsigned free_slots()": [
+        {
+          "line": 2327,
+          "text": "  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB) - used(RO); }"
+        }
+      ],
+      "bool ownership_consistent()": [
+        {
+          "line": 2543,
+          "text": "  bool ownership_consistent() const {"
+        }
+      ],
+      "bool ft_drained()": [
+        {
+          "line": 2767,
+          "text": "  bool ft_drained() const { return ro_drained() && (!ft_enabled() || (!m_ft_pending.request &&"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "Ideal",
+    "commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+    "file": "src/gpgpu-sim/l2cache.cc",
+    "sha256": "38bc110f2982160c3f448f1c51f86f9193c03bcd7baa409cbc6e7ca699d4911a",
+    "anchors": {
+      "bool memory_sub_partition::ft_try_force_l2_tag_update": [
+        {
+          "line": 411,
+          "text": "bool memory_sub_partition::ft_try_force_l2_tag_update("
+        }
+      ],
+      "bool memory_sub_partition::ep_l2_ideal_serve_read": [
+        {
+          "line": 1124,
+          "text": "bool memory_sub_partition::ep_l2_ideal_serve_read("
+        }
+      ],
+      "m_ideal_arrivals.erase(mf)": [
+        {
+          "line": 1207,
+          "text": "        m_ideal_arrivals.erase(mf);"
+        },
+        {
+          "line": 1562,
+          "text": "        m_ideal_arrivals.erase(mf);"
+        },
+        {
+          "line": 1585,
+          "text": "        m_ideal_arrivals.erase(mf);"
+        },
+        {
+          "line": 2585,
+          "text": "  m_ideal_arrivals.erase(mf);"
+        },
+        {
+          "line": 2592,
+          "text": "    m_ideal_arrivals.erase(mf);"
+        },
+        {
+          "line": 2608,
+          "text": "  m_ideal_arrivals.erase(mf);"
+        },
+        {
+          "line": 2622,
+          "text": "  m_ideal_arrivals.erase(mf);"
+        }
+      ],
+      "m_ideal_responses.emplace": [
+        {
+          "line": 1157,
+          "text": "  assert(m_ideal_responses.emplace(mf, std::move(snapshot)).second);"
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "Ideal",
+    "commit": "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
+    "file": "src/gpgpu-sim/gpu-cache.h",
+    "sha256": "eff451eabd73dbaf8e3e87fb2b6b1db66b421e8779fccb8fc29575abf18da812",
+    "anchors": {
+      "ep_l2_ideal_read_dependency": [
+        {
+          "line": 2783,
+          "text": "  bool ep_l2_ideal_read_dependency(new_addr_type addr) const {"
+        }
+      ],
+      "ep_l2_ideal_read_bank": [
+        {
+          "line": 2787,
+          "text": "  ep_l2_payload_store::request_result ep_l2_ideal_read_bank("
+        }
+      ]
+    }
+  }
+]
