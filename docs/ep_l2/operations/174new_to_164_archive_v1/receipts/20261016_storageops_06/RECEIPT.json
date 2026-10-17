@@ -1,6 +1,6 @@
 {
   "schema": "STORAGE_OPS_V7_TARGET_REV06",
-  "time": "2026-10-17T01:50:54.841896+00:00",
+  "time": "2026-10-17T01:57:18.046260+00:00",
   "amendment_sha": "5e1df072495cdc9ee3bb84ac593d84387924c037",
   "S01": "SOURCE_RELEASED_BRIDGE_CLEANED",
   "S02": "SOURCE_RELEASED_BRIDGE_CLEANED",
@@ -47,7 +47,7 @@
   "r1_batches_verified": 14,
   "r1_b002_bridge": "BRIDGE_CLEANED",
   "r1_b002_target_publication_commit": "1ff521d336d2b0ab2148174970da6548e730d072",
-  "next_gate": "SOURCE_GATE_HOLD: AUTHENTIC_LANE1_OWNER_STATE_OR_SOURCE_APPROVED_SAFE_CANCELLATION_FOR_QUICK_RECLAIM_SCOPE",
+  "next_gate": "LANE1_OWNER_AUTHENTIC_LIVE_WAITING_STATE_THEN_SOURCE_RECHECK_SAME_READY; NO_CURRENT_ALTERNATIVE_RELEASE_SCOPE",
   "source_release_approval": "NOT_GRANTED",
   "latest_receiver_guard_checks": 18,
   "latest_target_data_receipt_commit": "18297948ac349a8d415692f4601cda4f4c5e5691",
@@ -191,5 +191,18 @@
     "next": "Target retain the sole B001 bridge payload until a fresh authentic live Lane1 GateWaiter status permits source check-ready, or coordinate safe cancellation; no second payload or original release."
   },
   "active_target_data_workers": 0,
-  "native_197_first_trial_bridge_disposition": "RETAIN_UNCHANGED_PER_SOURCE_HOLD_NO_SECOND_PAYLOAD"
+  "native_197_first_trial_bridge_disposition": "RETAIN_UNCHANGED_SOURCE_EXPLICITLY_DENIES_CLEANUP_AND_SECOND_PAYLOAD",
+  "native_197_first_trial_source_disposition": {
+    "schema": "STORAGE_OPS_R10_OLD174_R1_197_B001_BLOCKED_TRIAL_SOURCE_DISPOSITION_PUBLICATION",
+    "commit": "b155b2c013381320d6e7fd196abc82446bce8447",
+    "receipt_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261016_storageops_02/R1_197_B001_BLOCKED_TRIAL_SOURCE_DISPOSITION_R10_V1.json",
+    "receipt_sha256": "5d4ec99113444aaebd72f2520fb9af8f7c03b733039047a7b01ce3c700438e7b",
+    "github_raw_readback_verified": true,
+    "target_request_sha256": "e285aedaa1320caa28637227d39d9a0d1901b53094916c9249b882e33607f55b",
+    "source_decision": "RETAIN_EXISTING_SOLE_B001_PAYLOAD_AWAIT_FRESH_LIVE_LANE1_GATE",
+    "target_may_cleanup_bridge_B001_under_this_decision": false,
+    "target_may_stage_second_payload_under_this_decision": false,
+    "source_action": "SOURCE_KEEP",
+    "source_original_released_bytes": 0
+  }
 }
