@@ -1,0 +1,702 @@
+{
+  "runs": [
+    {
+      "atomic_input_scope": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_LEGACY_TRACE_SCOPE_ADAPTER_r2/FWT_7_21_ATOMIC_SCOPE_r1.json",
+        "sha256": "6d9e114c6520d8e9e51e54f5b1668302da2e9cc963ff55f604f69a6408341d3a"
+      },
+      "hardware_terminal": {
+        "cycles": 493189,
+        "data_correctness_qualification": true,
+        "hardware_drained": true,
+        "instructions": 791609344,
+        "live_descriptors": 0,
+        "live_line_mshrs": 0,
+        "live_wad": 0,
+        "payload_capacity": 74752,
+        "payload_free": 9216,
+        "payload_roles": {
+          "BYPASS": 0,
+          "RESIDENT_OR_FILL": 65536,
+          "WB_STAGED": 0
+        },
+        "pending_lower_reads": 0,
+        "pending_responses": 0,
+        "pending_returns": 0,
+        "raw_log_sha256": "587de5c5da223952526c3ea7f692d3707b9d43eed408f151c5bc907d7c4f6e93",
+        "requester_exact_once_audit": true,
+        "responses": 10223616,
+        "slices": 64,
+        "source_map": {
+          "WB": "FT SUMMARY real packet-created/lower-push/set_done counts",
+          "data_qualification": "separate Lane 5 qualified_release artifact; never inferred from aggregate counters",
+          "drain": "FT TERMINAL actual memory_sub_partition::l2_char_no_resource_leak",
+          "native": "terminal gpu_tot_sim_cycle/insn; not slice-summed",
+          "requesters": "FT TERMINAL actual admission/response token insert/erase",
+          "roles": "FT SUMMARY sole payload-store ownership"
+        },
+        "transient_payloads": 0,
+        "unique_requesters": 10223616,
+        "wb_completed": 178569,
+        "wb_created": 178569,
+        "wb_lower_accepted": 178569,
+        "workload_termination": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        }
+      },
+      "identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+        "workload": "FWT_7_21"
+      },
+      "input_audit": {
+        "atomic_input_scope": {
+          "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+          "sha256": "6d9e114c6520d8e9e51e54f5b1668302da2e9cc963ff55f604f69a6408341d3a"
+        },
+        "auxiliary_assets": [],
+        "configs": [
+          {
+            "bytes": 9367,
+            "name": "config-0.config",
+            "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+          },
+          {
+            "bytes": 672,
+            "name": "config-1.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          },
+          {
+            "bytes": 715,
+            "name": "config-2.config",
+            "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3"
+          },
+          {
+            "bytes": 175,
+            "name": "config-3.config",
+            "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42"
+          },
+          {
+            "bytes": 127,
+            "name": "config-4.config",
+            "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08"
+          }
+        ],
+        "qualification_evidence": [
+          {
+            "gate": "old_all_off_equivalence",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "memcpy_payload_identity",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "requester_exact_once",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "resource_closure",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "finite_wbuf",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "sector_reference_data",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "mode_legality",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "stale_fill",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "wb_lifecycle",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "physical_bank_clock",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "bank_service",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          }
+        ],
+        "qualified_release_sha256": "cf06cb33540dcd788910238975a3eb2382c791f7d58092a47d192ae4faf9cd41",
+        "run_key": "cd71e52f70a4d4310a42386a56840f7683b334e341c9102b252b5ec0ede6dc0b",
+        "scientific_launch_authorization": {
+          "application_scope": "FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF",
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": true,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": false,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "qualified_release_sha256": "cf06cb33540dcd788910238975a3eb2382c791f7d58092a47d192ae4faf9cd41",
+          "status": "CURRENT_QUALIFIED_FOR_LAUNCH"
+        },
+        "traces": [
+          {
+            "bytes": 38800369,
+            "name": "kernel-1.traceg",
+            "sha256": "eec15f54d15e17884b1f55e5b8117d604351be77d17326145b78be73abe9f23a"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-10.traceg",
+            "sha256": "40ba49d4458e9b5e7d52177633a797685b036cd88251a3baa9c9b39d24f77587"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-11.traceg",
+            "sha256": "46009bb696b766e624f9b1ffee26ea1a52f7bcec2563779a93fa8b8d088193bc"
+          },
+          {
+            "bytes": 387379205,
+            "name": "kernel-12.traceg",
+            "sha256": "5fc67143969de86db327aba2ba33c2258e3efbd21fcce46db02cfc79135f9406"
+          },
+          {
+            "bytes": 41606232,
+            "name": "kernel-13.traceg",
+            "sha256": "70a7deceb52741302d35ff27cbbc0ad0c3bb4c93769ce889ceea1f40c300d838"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-14.traceg",
+            "sha256": "c257bda12615d43386e20b858a6e1a243bf68c36b8ba6b59d4d8b7daa1beecf5"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-15.traceg",
+            "sha256": "84009c3e82c8eb688cfbc54670fac3e946ebe0faff49861469f7950d40f2b3f9"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-16.traceg",
+            "sha256": "9e898859a4d06dd25cc10c477b5d18dc46068f6009e779364df3cedda9f7fe65"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-17.traceg",
+            "sha256": "22641e4c4d6d9f1c7c272c8a38dbb38832ab735ca5a3707cb63181474cdbc5b9"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-18.traceg",
+            "sha256": "9d2b7af644700bd3ae94d082d324991ccd8c0dde7d3ff3b190deb3fe85b0ebcf"
+          },
+          {
+            "bytes": 387379205,
+            "name": "kernel-19.traceg",
+            "sha256": "c018835db0d2ddd7f2a02eee80ff1dc9ca5f3cc5644f3a76cd717a88a5db435c"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-2.traceg",
+            "sha256": "6943593cfe082ff52b7caa861c7e6808a39b6700a585258726a6b2e0313f214c"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-3.traceg",
+            "sha256": "8aa153ab3d05e26b73dd0a719a3f2e9276fc820c5e2df720a4d5b2a510c619c5"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-4.traceg",
+            "sha256": "72bc27338ac967cce089cd1764068fc28588a3fa525e351defb6430c5c44addd"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-5.traceg",
+            "sha256": "6be3efdac6f9c6cab99f31f43f53f47417a4e8c86da122bfc7e7dfeba3d6e80e"
+          },
+          {
+            "bytes": 387379204,
+            "name": "kernel-6.traceg",
+            "sha256": "bee69843a006907c55d607c792b095e9f1862f9d05b07e0558ce4d5870f65864"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-7.traceg",
+            "sha256": "17079e74020ed36858a6272875df9623481efac9ae4fea1d362c5dd5844bb33f"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-8.traceg",
+            "sha256": "a16f2464425277d861ed815d8a26c6c0a81bc48ed434514c9875460f266096aa"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-9.traceg",
+            "sha256": "79eb02ad54f23642070d31334dfad1fc4adb1a5ae7a1027cb91bc16429f24b25"
+          },
+          {
+            "bytes": 386,
+            "name": "kernelslist.g",
+            "sha256": "9dfd2639f6660bef2feac69405597380835d4d08f1e0bdb9dd9b2022ed1a0f26"
+          }
+        ]
+      },
+      "mode": "B16_BANKED",
+      "qualification_sha256": "cf06cb33540dcd788910238975a3eb2382c791f7d58092a47d192ae4faf9cd41",
+      "registry_terminal": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cpu_units": 1,
+        "created_at": "2026-10-17T05:13:23.364191+00:00",
+        "detail": "qualified binary, exact inputs, legal hardware terminal and closure",
+        "exit_code": 0,
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": true,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": false,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "29995661b72e911af344e99759bfe1fef5b899abfa245fcb73cb6accbbcd256f",
+          "termination_contract": {
+            "hardware_drained": true,
+            "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+            "normal_exit": true,
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+          "workload": "FWT_7_21"
+        },
+        "lease_id": "c9ad2c802238487b88b1323fae4ae4a7",
+        "memory_bytes": 8589934592,
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 1830598,
+          "start_ticks": 896597507
+        },
+        "raw_log_sha256": "587de5c5da223952526c3ea7f692d3707b9d43eed408f151c5bc907d7c4f6e93",
+        "result_directory": "/workspace/results/ep_l2_ft20261016/cd71e52f70a4d4310a42386a56840f7683b334e341c9102b252b5ec0ede6dc0b",
+        "run_key": "cd71e52f70a4d4310a42386a56840f7683b334e341c9102b252b5ec0ede6dc0b",
+        "scan": false,
+        "status": "COMPLETE_VALID",
+        "updated_at": "2026-10-17T05:53:57.775488+00:00"
+      },
+      "run_key": "cd71e52f70a4d4310a42386a56840f7683b334e341c9102b252b5ec0ede6dc0b"
+    },
+    {
+      "atomic_input_scope": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_LEGACY_TRACE_SCOPE_ADAPTER_r2/FWT_7_21_ATOMIC_SCOPE_r1.json",
+        "sha256": "6d9e114c6520d8e9e51e54f5b1668302da2e9cc963ff55f604f69a6408341d3a"
+      },
+      "hardware_terminal": {
+        "cycles": 491662,
+        "data_correctness_qualification": true,
+        "hardware_drained": true,
+        "instructions": 791609344,
+        "live_descriptors": 0,
+        "live_line_mshrs": 0,
+        "live_wad": 0,
+        "payload_capacity": 74752,
+        "payload_free": 9216,
+        "payload_roles": {
+          "BYPASS": 0,
+          "RESIDENT_OR_FILL": 65536,
+          "WB_STAGED": 0
+        },
+        "pending_lower_reads": 0,
+        "pending_responses": 0,
+        "pending_returns": 0,
+        "raw_log_sha256": "39c31396df9b3f5105f1218838a982af9b974623dd30c16d09ce787194825744",
+        "requester_exact_once_audit": true,
+        "responses": 10223616,
+        "slices": 64,
+        "source_map": {
+          "WB": "FT SUMMARY real packet-created/lower-push/set_done counts",
+          "data_qualification": "separate Lane 5 qualified_release artifact; never inferred from aggregate counters",
+          "drain": "FT TERMINAL actual memory_sub_partition::l2_char_no_resource_leak",
+          "native": "terminal gpu_tot_sim_cycle/insn; not slice-summed",
+          "requesters": "FT TERMINAL actual admission/response token insert/erase",
+          "roles": "FT SUMMARY sole payload-store ownership"
+        },
+        "transient_payloads": 0,
+        "unique_requesters": 10223616,
+        "wb_completed": 178585,
+        "wb_created": 178585,
+        "wb_lower_accepted": 178585,
+        "workload_termination": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        }
+      },
+      "identity": {
+        "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+        "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": true,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+        "workload": "FWT_7_21"
+      },
+      "input_audit": {
+        "atomic_input_scope": {
+          "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+          "sha256": "6d9e114c6520d8e9e51e54f5b1668302da2e9cc963ff55f604f69a6408341d3a"
+        },
+        "auxiliary_assets": [],
+        "configs": [
+          {
+            "bytes": 9367,
+            "name": "config-0.config",
+            "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+          },
+          {
+            "bytes": 672,
+            "name": "config-1.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+          },
+          {
+            "bytes": 715,
+            "name": "config-2.config",
+            "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3"
+          },
+          {
+            "bytes": 175,
+            "name": "config-3.config",
+            "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42"
+          },
+          {
+            "bytes": 123,
+            "name": "config-4.config",
+            "sha256": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50"
+          }
+        ],
+        "qualification_evidence": [
+          {
+            "gate": "requester_exact_once",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "stale_fill",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "finite_wbuf",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "mode_legality",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "resource_closure",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "sector_reference_data",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "bank_service",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "memcpy_payload_identity",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "wb_lifecycle",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "old_all_off_equivalence",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          },
+          {
+            "gate": "physical_bank_clock",
+            "sha256": "c21c1904baba450d30ded2c7044a10a1dfd0f2ad6ab450ea6551461ad6c147f9"
+          }
+        ],
+        "qualified_release_sha256": "cf06cb33540dcd788910238975a3eb2382c791f7d58092a47d192ae4faf9cd41",
+        "run_key": "c74af1c07c772dc9191e35549339aa3eace4ad59a777c828fb13a456de1fdfb9",
+        "scientific_launch_authorization": {
+          "application_scope": "FULL_NATIVE_NONATOMIC_ONLY_WITH_PER_SPEC_COMPLETE_CONTENT_PROOF",
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": true,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": true,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "qualified_release_sha256": "cf06cb33540dcd788910238975a3eb2382c791f7d58092a47d192ae4faf9cd41",
+          "status": "CURRENT_QUALIFIED_FOR_LAUNCH"
+        },
+        "traces": [
+          {
+            "bytes": 38800369,
+            "name": "kernel-1.traceg",
+            "sha256": "eec15f54d15e17884b1f55e5b8117d604351be77d17326145b78be73abe9f23a"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-10.traceg",
+            "sha256": "40ba49d4458e9b5e7d52177633a797685b036cd88251a3baa9c9b39d24f77587"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-11.traceg",
+            "sha256": "46009bb696b766e624f9b1ffee26ea1a52f7bcec2563779a93fa8b8d088193bc"
+          },
+          {
+            "bytes": 387379205,
+            "name": "kernel-12.traceg",
+            "sha256": "5fc67143969de86db327aba2ba33c2258e3efbd21fcce46db02cfc79135f9406"
+          },
+          {
+            "bytes": 41606232,
+            "name": "kernel-13.traceg",
+            "sha256": "70a7deceb52741302d35ff27cbbc0ad0c3bb4c93769ce889ceea1f40c300d838"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-14.traceg",
+            "sha256": "c257bda12615d43386e20b858a6e1a243bf68c36b8ba6b59d4d8b7daa1beecf5"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-15.traceg",
+            "sha256": "84009c3e82c8eb688cfbc54670fac3e946ebe0faff49861469f7950d40f2b3f9"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-16.traceg",
+            "sha256": "9e898859a4d06dd25cc10c477b5d18dc46068f6009e779364df3cedda9f7fe65"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-17.traceg",
+            "sha256": "22641e4c4d6d9f1c7c272c8a38dbb38832ab735ca5a3707cb63181474cdbc5b9"
+          },
+          {
+            "bytes": 38800370,
+            "name": "kernel-18.traceg",
+            "sha256": "9d2b7af644700bd3ae94d082d324991ccd8c0dde7d3ff3b190deb3fe85b0ebcf"
+          },
+          {
+            "bytes": 387379205,
+            "name": "kernel-19.traceg",
+            "sha256": "c018835db0d2ddd7f2a02eee80ff1dc9ca5f3cc5644f3a76cd717a88a5db435c"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-2.traceg",
+            "sha256": "6943593cfe082ff52b7caa861c7e6808a39b6700a585258726a6b2e0313f214c"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-3.traceg",
+            "sha256": "8aa153ab3d05e26b73dd0a719a3f2e9276fc820c5e2df720a4d5b2a510c619c5"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-4.traceg",
+            "sha256": "72bc27338ac967cce089cd1764068fc28588a3fa525e351defb6430c5c44addd"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-5.traceg",
+            "sha256": "6be3efdac6f9c6cab99f31f43f53f47417a4e8c86da122bfc7e7dfeba3d6e80e"
+          },
+          {
+            "bytes": 387379204,
+            "name": "kernel-6.traceg",
+            "sha256": "bee69843a006907c55d607c792b095e9f1862f9d05b07e0558ce4d5870f65864"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-7.traceg",
+            "sha256": "17079e74020ed36858a6272875df9623481efac9ae4fea1d362c5dd5844bb33f"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-8.traceg",
+            "sha256": "a16f2464425277d861ed815d8a26c6c0a81bc48ed434514c9875460f266096aa"
+          },
+          {
+            "bytes": 38800369,
+            "name": "kernel-9.traceg",
+            "sha256": "79eb02ad54f23642070d31334dfad1fc4adb1a5ae7a1027cb91bc16429f24b25"
+          },
+          {
+            "bytes": 386,
+            "name": "kernelslist.g",
+            "sha256": "9dfd2639f6660bef2feac69405597380835d4d08f1e0bdb9dd9b2022ed1a0f26"
+          }
+        ]
+      },
+      "mode": "U_WB16",
+      "qualification_sha256": "cf06cb33540dcd788910238975a3eb2382c791f7d58092a47d192ae4faf9cd41",
+      "registry_terminal": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cpu_units": 1,
+        "created_at": "2026-10-17T05:13:24.567533+00:00",
+        "detail": "qualified binary, exact inputs, legal hardware terminal and closure",
+        "exit_code": 0,
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+          "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": true,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": true,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "5d4dd9034439ece4d170a762ebd1b47972dac2f364e32d845df4e638c1496b3c",
+          "termination_contract": {
+            "hardware_drained": true,
+            "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+            "normal_exit": true,
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+          "workload": "FWT_7_21"
+        },
+        "lease_id": "3fd50a65eae14f68aabffa62f0f397b5",
+        "memory_bytes": 8589934592,
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 1830603,
+          "start_ticks": 896597624
+        },
+        "raw_log_sha256": "39c31396df9b3f5105f1218838a982af9b974623dd30c16d09ce787194825744",
+        "result_directory": "/workspace/results/ep_l2_ft20261016/c74af1c07c772dc9191e35549339aa3eace4ad59a777c828fb13a456de1fdfb9",
+        "run_key": "c74af1c07c772dc9191e35549339aa3eace4ad59a777c828fb13a456de1fdfb9",
+        "scan": false,
+        "status": "COMPLETE_VALID",
+        "updated_at": "2026-10-17T05:54:24.509326+00:00"
+      },
+      "run_key": "c74af1c07c772dc9191e35549339aa3eace4ad59a777c828fb13a456de1fdfb9"
+    }
+  ]
+}
