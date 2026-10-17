@@ -1,0 +1,1 @@
+Final Lane1 producer delivery pointer and explicit four-state closeout. Frozen producer bytes at9898c56d7a010c934de327784076ba0b9a36c9c4 are unchanged. Lane5 independent affected source/path rebind and all11/current scientific gates remain pending. No formal applications started, old science remains withdrawn.
