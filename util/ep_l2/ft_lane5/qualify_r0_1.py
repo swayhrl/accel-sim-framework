@@ -70,6 +70,8 @@ def audit_producer(path, publication, published_path):
     require(p.get('engineering_classification') not in ('ENGINEERING_ONLY', 'ENGINEERING_PILOT') and
             p.get('classification') not in ('ENGINEERING_ONLY', 'ENGINEERING_PILOT'), 'Engineering binary is ineligible')
     require(Path(p['build']).resolve() == BUILD and Path(p['binary']).resolve() == BUILD / 'accel-sim.out', 'Foreign/engineering build root')
+    require(Path(p['core_worktree']).resolve() == CORE and Path(p['framework_worktree']).resolve() == FRAMEWORK,
+            'Foreign/engineering producing worktree')
     require(digest(p['binary']) == p['binary_sha256'], 'Official binary hash mismatch')
     plan = json.loads(PLAN.read_text())
     for root, key in [(CORE, 'core_source_commit'), (FRAMEWORK, 'framework_source_commit')]:
@@ -80,6 +82,8 @@ def audit_producer(path, publication, published_path):
     vendor = FRAMEWORK / 'gpu-simulator/extern/pybind11'
     require(git(vendor, 'rev-parse', 'HEAD').decode().strip() == p['pybind11']['commit'] == 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b', 'Vendor mismatch')
     require(not git(vendor, 'status', '--porcelain', '--untracked-files=no'), 'Dirty vendor')
+    require(digest(FRAMEWORK / 'util/ep_l2/ft_lane1/build_r0_1.py') == p['driver_sha256'], 'Official build entry changed')
+    require((BUILD / 'accelsim_version.h').read_text() == p['framework_build_stamp'], 'Framework build stamp changed')
     require(bool(p['assertion_flags_sha256']), 'Missing assertion flags')
     for name, h in p['assertion_flags_sha256'].items():
         require(digest(name) == h and '-DNDEBUG' not in Path(name).read_text(), 'Changed flags or disabled assertions')
@@ -95,6 +99,10 @@ def audit_producer(path, publication, published_path):
     for name in ('configure', 'build'):
         rows = [r for r in p['commands'] if Path(r['log']).name == name + '.log']
         require(len(rows) == 1 and rows[0]['exit_code'] == 0 and digest(rows[0]['log']) == rows[0]['log_sha256'], 'Missing exact compiler log')
+        expected = (['cmake', '-S', str(FRAMEWORK / 'gpu-simulator'), '-B', str(BUILD), '-G', 'Unix Makefiles', '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8']
+                    if name == 'configure' else ['cmake', '--build', str(BUILD), '--target', 'accel-sim.out',
+                    'ep_l2_ft_memcpy_clock', 'ep_l2_ft_host_prefill', 'ep_l2_ft_directed', 'ep_l2_ft_partition', '-j2'])
+        require(rows[0]['command'] == expected, 'Compiler entry/output differs from frozen official invocation')
     return p, plan, commands
 
 
