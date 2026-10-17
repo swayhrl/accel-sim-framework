@@ -1,0 +1,45 @@
+% Replacement for sections/motivation.tex in the v0.11-I paper source.
+% Text revision only. This file has not been compiled in this review session.
+% Author TODOs are visible by default; detailed closure criteria are in TODO_REGISTER.md.
+\providecommand{\dtctodo}[2]{\textbf{[TODO #1: #2]}}
+\section{Allocation and Retention Trade-off}
+\label{sec:motivation}
+
+\textit{Waiting capacity and cache capacity.}
+The BICG controls in Section~IV separate two resource choices~\cite{dtc-artifact}.
+Increasing the conventional PIB from 8 to 128 entries retains the 16-KiB cache and 32 MSHRs.
+PIB-full events disappear, yet replay takes 5.43\% more cycles.
+A separate 80-KiB cache gives a $3.002\times$ speedup over the 16-KiB cache.
+It retains eight PIB entries and 32 MSHRs.
+PIB capacity alone does not explain the performance difference.
+% TODO CMP-01: These are accepted resource contrasts, not a hit-rate-only attribution.
+% Preserve the nonbinding cap and inactive-option qualifications in the existing methods.
+\dtctodo{CMP-01}{Explain the gap to conventional designs}
+
+\textit{Lookup and retained data.}
+Suppose two admitted instructions share a physical line.
+Each PIB entry records its index and dependencies, not a private copy of the data~\cite{zhao2024}.
+If the line's tag is replaced, both instructions keep their physical references.
+Later lookups cannot find that allocation.
+The evaluated DTC read path has 640 physical lines but only 128 tag mappings.
+Its pool can retain 80~KiB, but at most 16~KiB can remain mapped.
+Pool size and lookup coverage therefore need separate evaluation.
+% This is a worked structural example, not a measured request trace or a proof of savings.
+% TODO COV-01: Consume the complete accepted T1 matrix before claiming a useful Tag benefit.
+% TODO HW-01: Include indices, dependencies, waiter state, ports and the ordinary side array.
+\dtctodo{COV-01}{Tag-coverage evidence}
+\dtctodo{HW-01}{Storage and service cost}
+
+\textit{Readiness and release.}
+The IO/OO BICG control fixes the PIB at 128 entries and the pool at 640 lines~\cite{dtc-artifact}.
+Mean ready-to-collection wait is 3,557.95 core cycles for IO and 1.16 for OO.
+These means cover retired cacheable warp instructions.
+Each interval starts after all references have been admitted and their data are ready.
+The instruction still occupies its PIB entry during this wait.
+IO can also retain lines assigned to its release list.
+Completion and reclamation therefore require evaluation at matched waiting depth.
+Figure~\ref{fig:design} illustrates the different release points.
+% TODO ORG-01: BICG supports the matched-depth observation; GEMM T0 remains pending review.
+% A short post-ready interval does not identify the full issue-to-completion latency.
+% This comparison does not by itself close CMP-01, prove net area saving or establish generality.
+\dtctodo{ORG-01}{GEMM matched-depth evidence}
