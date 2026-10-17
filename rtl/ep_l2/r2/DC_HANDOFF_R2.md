@@ -36,3 +36,6 @@ metadata file; the filelist is unchanged. Open flow preserves real inverter
 pairs to distribute fanout; DC can optimize/rebuffer the same function under
 the actual target DB and set_max_fanout. Verify both global reset and data nets,
 with reset still timed. Parallel-prefix generation is GEN32 and adds no state.
+
+Actual DC execution also writes hashes of every selected target/link DB to
+library_sha256.txt; no private DB or invented hash is part of this handoff.

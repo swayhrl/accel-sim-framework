@@ -13,6 +13,13 @@ foreach lib [concat $target_library $::env(LINK_LIBS)] {
     if {$lib ne "*" && ![file exists $lib]} { error "Library not found: $lib" }
 }
 file mkdir $::env(DC_OUT)
+# Exact private DB identity is recorded only when this entry actually runs.
+# Tcl exec passes each path as one argument; there is no shell interpolation.
+set library_identity [open $::env(DC_OUT)/library_sha256.txt w]
+foreach lib [concat $target_library $::env(LINK_LIBS)] {
+    if {$lib ne "*"} { puts $library_identity [exec sha256sum -- $lib] }
+}
+close $library_identity
 define_design_lib WORK -path $::env(DC_OUT)/WORK
 set sources [list]
 set f [open $::env(RTL_REPO)/rtl/ep_l2/flow/filelist.f r]
