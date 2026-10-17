@@ -1,0 +1,46 @@
+{
+  "architectural_value_correctness": "UNPROVEN",
+  "as_of": "2026-10-18T00:39:16.947415+08:00",
+  "checks": 62,
+  "cross_sm_coherence": "UNPROVEN",
+  "execution_authority": "Lane AA only; this runner creates no execution authority",
+  "fixture_limits": [
+    "clock and scoreboard inputs",
+    "packet accessor/ownership fixture, no real mem_fetch constructor/NoC",
+    "WB grant fixture; real production failure branch executed, operand collector arbitration not simulated",
+    "register scoreboard completion shim uses production completion_accounting",
+    "ordinary L1D protected custom-Tag constructor; GPU perf-counter registration not exercised",
+    "cache configuration aftermath omitted from source-selected block",
+    "no complete shader_core/ldst ABI object or full gpgpu_sim cycle executed",
+    "full lower-create/ICNT issue integration not executed; unchanged method bodies independently hash-checked"
+  ],
+  "frozen_core": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "full_input_pairing": "NOT_RUN_CPU_ONLY; Lane AA owns complete identical-input K0/K1 dispatch",
+  "full_simulations_dispatched": 0,
+  "goal": "DTC_LANE_Y2_INDEPENDENT_K1_REQUAL_174",
+  "io": "IO_K1_UNIMPLEMENTED_STOP",
+  "k0_cpu_default_off_equivalent": true,
+  "lane_v_commit": "26abd496417d9392245052e54fbd9ba27c6ffd96",
+  "modern": "HOLD",
+  "negative_control": {
+    "case": "source_negative",
+    "changed": 0,
+    "tag_queryable_after": true
+  },
+  "new_execution_authorities": 0,
+  "positive_control": {
+    "case": "source_idle",
+    "changed": 1,
+    "old_tag_queryable_after": false,
+    "old_tag_queryable_before": true
+  },
+  "production_k1_executed": true,
+  "production_source_modified": false,
+  "qualification_scope": "OO logical mapping/lifetime and explicit zero-added-cycle source-request model; not full GPU/NoC integration or PPA",
+  "reason": "Real published K1 OO APIs and exact production source statements passed CPU structural/timing contracts within disclosed fixture scope",
+  "schema": 2,
+  "status": "PASS_K1_OO_MODEL_SCOPE",
+  "target_core": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "unchanged_collateral_methods": 7,
+  "x_producer_fetch_back_verified": true
+}

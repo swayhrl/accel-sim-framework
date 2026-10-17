@@ -1,0 +1,47 @@
+{
+  "status": "HOLD_SHARED_OBSERVER_CONTRACT_UNRESOLVED",
+  "core": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "K_option": "-gpgpu_dtc_l1_invalidate_on_source_event",
+  "default_value": 0,
+  "excerpts": [
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "first_line": 3665,
+      "last_line": 3671,
+      "text": "void ldst_unit::print_dtc_l1_stats(FILE *fp) const {\n  if (m_config->dtc_l1_invalidate_on_source_event)\n    m_dtc_invalidation.print(fp);\n  if (dtc_l1_finite_service_active()) {\n    fprintf(fp, \"DTC_SERVICE_V1 sm=%u samples=%llu pib_integral=%llu \"\n                \"physical_integral=%llu collected_sectors=%llu \"\n                \"fully_ready_to_complete_sum=%llu retired=%llu \""
+    },
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "first_line": 4014,
+      "last_line": 4031,
+      "text": "void ldst_unit::invalidate(dtc_l1::invalidation_source source) {\n  if (m_config->dtc_l1_invalidate_on_source_event) {\n    assert(m_dtc_l1_oo_frontend && m_L1D);\n    auto &ordinary =\n        *static_cast<dtc_l1::invalidation_observed_cache<l1_cache> *>(m_L1D);\n    const uint64_t cycle = m_core->get_gpu()->global_cycle();\n    if (dtc_l1_finite_service_active()) dtc_l1_sample_service_occupancy(cycle);\n    m_dtc_invalidation.request(cycle, source, *m_dtc_l1_oo_frontend, ordinary);\n    return;\n  }\n  // Original K0 ordinary request, including its existing deferred commit.\n  m_L1D->invalidate();\n}\n\nsimd_function_unit::simd_function_unit(const shader_core_config *config) {\n  m_config = config;\n  m_dispatch_reg = new warp_inst_t(config);\n}"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "first_line": 5169,
+      "last_line": 5180,
+      "text": "  if (m_L1D) {\n    if (m_config->dtc_l1_invalidate_on_source_event) {\n      auto &ordinary =\n          *static_cast<dtc_l1::invalidation_observed_cache<l1_cache> *>(m_L1D);\n      m_dtc_invalidation.cycle(m_core->get_gpu()->global_cycle(), ordinary);\n    } else {\n      m_L1D->cycle();\n    }\n    if (m_config->m_L1D_config.l1_latency > 0) L1_latency_queue_cycle();\n  }\n  dtc_l1_io_issue_lower_requests();\n  dtc_l1_oo_issue_lower_requests();"
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-invalidation.h",
+      "first_line": 22,
+      "last_line": 32,
+      "text": "}\n\ninline void register_source_invalidation_option(option_parser_t parser,\n                                                bool *enabled) {\n  option_parser_register(parser, \"-gpgpu_dtc_l1_invalidate_on_source_event\",\n                         OPT_BOOL, enabled,\n                         \"Opt-in OO lookup invalidation at existing LDST source \"\n                         \"requests; preserves physical owners (IO unsupported)\",\n                         \"0\");\n}\n"
+    }
+  ],
+  "source_request_count_hook": "source_invalidation_observer::request at LDST source request",
+  "actual_counter_availability": {
+    "K0": "NO_SOURCE_INVALIDATION_SUMMARY_PRINTED",
+    "K1": "DTC_INVALIDATE_V1_SUMMARY_PER_SM_CUMULATIVE"
+  },
+  "summary_print_guard": "K_OPTION==1",
+  "detailed_records_limit_option": "-gpgpu_dtc_l1_debug_event_limit",
+  "detailed_records_default": 0,
+  "aggregate_counters_bounded_by_detail_limit": false,
+  "source_requested_policy": "SAME_NEW_BINARY_SAME_OPTIONS_EXCEPT_K_TAG_SAME_EVENT_OBSERVATION_CONTRACT_AND_OVERHEAD",
+  "author_time_model": "ZERO_ADDITIONAL_SIMULATED_CYCLES_AT_SOURCE_REQUEST",
+  "host_overhead_equal_to_simulated_cycles": false,
+  "AA2_accepts_observer_parity": false,
+  "requires_independent_gate_or_scientific_resolution": true,
+  "no_Core_modification_or_second_Core_requested": true
+}

@@ -1,0 +1,42 @@
+{
+  "utc": "2026-10-17T16:36:01.853639+00:00",
+  "status": "HOLD_OBSERVED_FOREIGN_DTC_FD_LOCKS",
+  "checked_process_incarnations": [
+    {
+      "pid": 1201946,
+      "start_ticks": 583777956
+    },
+    {
+      "pid": 1425986,
+      "start_ticks": 584741606
+    },
+    {
+      "pid": 3261725,
+      "start_ticks": 550392315
+    },
+    {
+      "pid": 3291777,
+      "start_ticks": 550530984
+    }
+  ],
+  "actual_fdinfo_lock_witnesses": [
+    {
+      "pid": 1425986,
+      "start_ticks": 584741606,
+      "fd": "9",
+      "fd_target": "/workspace/fast64-primary-r4/.fast64_4_2d_core41_autodispatch_v1.lock",
+      "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37920070\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37920070 0 EOF\n",
+      "device": 156,
+      "inode": 37920070,
+      "lock_lines": [
+        "lock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37920070 0 EOF"
+      ],
+      "fdinfo_sha256": "28b3b834c7005190fbb524e935fcc3a4123807d1d8bf69118b570d7213ac5b5f"
+    }
+  ],
+  "no_foreign_DTC_fd_locks": false,
+  "proc_locks_only_is_not_sufficient_absence_proof": true,
+  "original_proc_locks_observation_preserved": true,
+  "locks_acquired_by_AA2": false,
+  "note": "A live fdinfo FLOCK may show owner0 and be absent from global /proc/locks. Do not turn global absence into release PASS."
+}

@@ -1,0 +1,55 @@
+{
+  "status": "DRAFT_SCIENTIFIC_AND_AUTHORITY_HOLD",
+  "inherited_total_start_cap": 4,
+  "AA_V1_starts": 0,
+  "AA2_starts": 0,
+  "max_parallel": 1,
+  "parallel2_enabled": false,
+  "per_point_timeout_seconds": 7200,
+  "timeout_clock": "MONOTONIC_ABSOLUTE_FROM_FIRST_ACTUAL_START_NO_RESET",
+  "actual_starts_per_uuid_max": 1,
+  "automatic_retry": false,
+  "run_order": [
+    "K0_32x4",
+    "K0_64x8",
+    "K1_32x4",
+    "K1_64x8"
+  ],
+  "K1_requires_both_new_K0_strict_exact_cycles": true,
+  "calibration_cycles": {
+    "K0_32x4": 3798174,
+    "K0_64x8": 3278356
+  },
+  "admission": {
+    "host_MemAvailable_min_gib": 32,
+    "cgroup_headroom_min_gib": 32,
+    "disk_free_min_gib": 10,
+    "memory_full_PSI_avg10_max": 1,
+    "IO_full_PSI_avg10_max": 25,
+    "probe_seconds": 10,
+    "swap_page_delta_max": 0,
+    "oom_delta_max": 0,
+    "foreign_DTC_authorities_allowed": 0,
+    "unknown_control_helpers_allowed": 0,
+    "old_lock_holders_allowed": 0,
+    "check_global_proc_locks_AND_foreign_process_fdinfo": true,
+    "all_external_project_RSS_cgroup_swap_PSI_disk_IO_counted": true
+  },
+  "monitor_seconds": 30,
+  "emergency": {
+    "cgroup_headroom_min_gib": 8,
+    "disk_free_min_gib": 2,
+    "memory_full_PSI_avg10_max": 10,
+    "consecutive_samples": 3,
+    "own_PID_start_ticks_bound_process_group_only": true
+  },
+  "no_other_process_signals": true,
+  "no_other_files_deleted": true,
+  "no_old_lock_acquisition": true,
+  "no_old_Goal_restart": true,
+  "production_runner": "UNAVAILABLE_PENDING_ADMISSION",
+  "execution_guard_script": "scripts/execution_guard.py",
+  "execution_guard_is_NOT_a_production_runner": true,
+  "model_value_correctness": "UNAVAILABLE",
+  "W_address_scan": "UNAVAILABLE_ATTRIBUTION_GAP"
+}
