@@ -1,6 +1,6 @@
 {
   "schema": "STORAGE_OPS_V7_TARGET_REV06",
-  "time": "2026-10-17T01:30:27.106363+00:00",
+  "time": "2026-10-17T01:50:54.841896+00:00",
   "amendment_sha": "5e1df072495cdc9ee3bb84ac593d84387924c037",
   "S01": "SOURCE_RELEASED_BRIDGE_CLEANED",
   "S02": "SOURCE_RELEASED_BRIDGE_CLEANED",
@@ -47,7 +47,7 @@
   "r1_batches_verified": 14,
   "r1_b002_bridge": "BRIDGE_CLEANED",
   "r1_b002_target_publication_commit": "1ff521d336d2b0ab2148174970da6548e730d072",
-  "next_gate": "WAIT_INDEPENDENT_SOURCE_NATIVE_B001_VERIFIED_ACK_THEN_EXACT_BRIDGE_CLEANUP_NO_B002",
+  "next_gate": "SOURCE_GATE_HOLD: AUTHENTIC_LANE1_OWNER_STATE_OR_SOURCE_APPROVED_SAFE_CANCELLATION_FOR_QUICK_RECLAIM_SCOPE",
   "source_release_approval": "NOT_GRANTED",
   "latest_receiver_guard_checks": 18,
   "latest_target_data_receipt_commit": "18297948ac349a8d415692f4601cda4f4c5e5691",
@@ -174,5 +174,22 @@
     "receipt_sha256": "bba0b589c04987939ca152d79809caaea0cdd3e26a6687b84bf63f803af297c8",
     "github_readback_verified": true
   },
-  "native_197_first_trial_bridge_allocated_bytes": 470249472
+  "native_197_first_trial_bridge_allocated_bytes": 470249472,
+  "native_197_first_trial_native_import_started": false,
+  "native_197_first_trial_native_verified_files": 0,
+  "native_197_first_trial_source_gate_hold": {
+    "schema": "STORAGE_OPS_R10_OLD174_R1_197_B001_SOURCE_GATE_HOLD_PUBLICATION",
+    "commit": "79f48b5275c97b6a203fbc4a0e67c801b6ee8323",
+    "receipt_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261016_storageops_02/R1_197_NATIVE_RESTORE_B001_SOURCE_GATE_HOLD_R10_V1.json",
+    "receipt_sha256": "cef93160e6f9804dd64c342bcac15b9055591da4f95a16ead9bb96b27a251bc7",
+    "github_raw_readback_verified": true,
+    "batch_id": "R1_197_NATIVE_RESTORE_B001",
+    "source_check_ready_result": "FAIL_CLOSED_BEFORE_PAYLOAD_HASH_OR_NATIVE_IMPORT",
+    "source_action": "SOURCE_KEEP",
+    "source_release_authorized": false,
+    "source_released_bytes": 0,
+    "next": "Target retain the sole B001 bridge payload until a fresh authentic live Lane1 GateWaiter status permits source check-ready, or coordinate safe cancellation; no second payload or original release."
+  },
+  "active_target_data_workers": 0,
+  "native_197_first_trial_bridge_disposition": "RETAIN_UNCHANGED_PER_SOURCE_HOLD_NO_SECOND_PAYLOAD"
 }
