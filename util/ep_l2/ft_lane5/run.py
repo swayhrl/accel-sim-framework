@@ -351,7 +351,7 @@ def run(spec, registry):
                     break
                 if (peak_rss > allocation['memory_bytes'] or
                     (directory / 'raw.log').stat().st_size > policy['default_run_output_limit_bytes'] or
-                    sum(tree_bytes(p) for p in {RESULT_ROOT.resolve(), root}) > policy['max_result_bytes'] or
+                    sum(tree_bytes(p) for p in {RESULT_ROOT.resolve(), root}) >= policy['max_result_bytes'] or
                     result_disk_free_bytes() < RESULT_DISK_FLOOR or
                     (root == WORKSPACE_RESULT_ROOT and (os.statvfs(root).f_bavail * os.statvfs(root).f_frsize < policy['min_disk_free_bytes'])) or
                     live['disk_free_bytes'] < policy['min_disk_free_bytes'] or

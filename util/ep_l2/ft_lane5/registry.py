@@ -146,7 +146,7 @@ def admit_result_output(data, host, identity, result_directory):
     if state['actual_bytes']+pending+growth>policy['max_result_bytes']:
         raise ValueError('aggregate output ceiling plus concurrent predicted growth')
     resources=state['resources']
-    pending_physical=sum(policy['default_run_output_limit_bytes']+128*2**20 for row in data['runs'].values() if row['status'] in ACTIVE)
+    pending_physical=sum(max(0,policy['default_run_output_limit_bytes']+128*2**20-retained_tree_bytes(Path(row['result_directory']))) for row in data['runs'].values() if row['status'] in ACTIVE)
     if resources['disk_free_bytes']-pending_physical-(policy['default_run_output_limit_bytes']+128*2**20)<policy['min_disk_free_bytes']:
         raise ValueError('workspace floor after conservative concurrent output growth')
     if resources['share_disk_free_bytes']<40*2**30:
@@ -250,16 +250,8 @@ class Registry:
             self.admission(data, host, cpu, memory, identity['workload'] == 'scan',
                            'simulation', resources if resources is not None else local_resources())
             output_budget = admit_result_output(data, host, identity, result_directory)
-            output_root = Path(result_directory).parent
-            if output_root == Path('/workspace/ep_l2_potential20261017_lane5_results'):
-                if (output_root.stat().st_dev != Path('/workspace').stat().st_dev or
-                        output_root.stat().st_dev == Path('/root/share').stat().st_dev):
-                    raise ValueError('new output must use actual workspace filesystem')
-                stat = os.statvfs(output_root)
-                pending_output = sum(policy['default_run_output_limit_bytes'] for r in data['runs'].values()
-                    if r['status'] in ACTIVE and Path(r['result_directory']).parent == output_root)
-                if stat.f_bavail * stat.f_frsize - pending_output - policy['default_run_output_limit_bytes'] < policy['min_disk_free_bytes']:
-                    raise ValueError('workspace floor plus concurrent output growth budget')
+            # Physical verification/floors and remaining full2GiB+128MiB growth
+            # were checked under this same lock above; existing bytes are already in statvfs.
             row = {'run_key': key, 'identity': identity, 'owner': owner, 'host': host,
                    'boot_id': policy['boot_id'], 'lease_id': uuid.uuid4().hex,
                    'status': 'RESERVED', 'created_at': now(), 'cpu_units': cpu,

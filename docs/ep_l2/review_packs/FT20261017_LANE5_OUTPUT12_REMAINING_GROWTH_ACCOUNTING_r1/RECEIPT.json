@@ -1,0 +1,8 @@
+{
+  "budget_unchanged": "12GiB total; workspace48GiB,Share40GiB,availableRAM64GiB;4sim8CPU32GiB; both campaign T0/deadlines/counts unchanged",
+  "monitor": "Aggregate actual >=12GiB stops own run, no second enlargement",
+  "reason": "statvfs already includes existing live-run binary/log bytes; subtract only remaining worst-case growth, not those existing bytes twice. Remove duplicate legacy physical-space preflight now covered under the same canonical lock.",
+  "reservation_unchanged": "Full2GiB raw cap+128MiB snapshots/derived allowance per unknown/live run, less actual already-retained bytes; no floor reduced",
+  "status": "EXACT_REMAINING_OUTPUT_ACCOUNTING_FIX_NO_LIMIT_CHANGE",
+  "tests": "Corrected already-written sample passes at52.2GiB;52.1GiB fails because full remaining growth would cross48GiB. Other output boundary/negative tests pass."
+}

@@ -31,6 +31,14 @@ class OutputBudget12G(unittest.TestCase):
     self.state['resources'][k]=old
  def test_safe_unknown_forecast_keeps_old_raw_cap(self):
   a=self.admit();self.assertEqual(a['predicted_growth_bytes'],2*2**30+128*2**20);self.assertEqual(self.data['hosts'][self.host]['default_run_output_limit_bytes'],2*2**30)
+ def test_already_written_bytes_not_double_subtracted_from_statvfs(self):
+  self.state['actual_bytes']=int(7.5*2**30)
+  self.state['resources']['disk_free_bytes']=int(52.2*2**30)
+  self.data['runs']['active']={'status':'RUNNING','result_directory':'/synthetic-existing','output_budget':{'predicted_growth_bytes':2*2**30}}
+  with patch('registry.retained_tree_bytes',return_value=128*2**20):self.admit()
+  # Remaining reserve still covers every byte up to the unchanged2GiB raw+128MiB total.
+  self.state['resources']['disk_free_bytes']=int(52.1*2**30)
+  with patch('registry.retained_tree_bytes',return_value=128*2**20),self.assertRaisesRegex(ValueError,'workspace floor'):self.admit()
  def test_share_output_path_rejected(self):
   with self.assertRaises(ValueError):live_result_output('/root/share/new_unapproved_run')
 
