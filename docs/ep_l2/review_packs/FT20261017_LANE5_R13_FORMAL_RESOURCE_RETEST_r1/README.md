@@ -1,0 +1,3 @@
+# Lane5 r13 independent standard resource retest
+
+Consumed exact source A/B release receipts and closeout, verified their raw SHA256, actual source namespace/device and independent live /workspace/Share/memory/central state. Source immediate df delta sum66,329,825,280B is distinguished from current free space and archival bytes. Current standard50GiB Lane1 precheck passes; no build/test lease or pilot token is created. Lane1 remains sole build owner and must acquire its own current central lease after existing guarded entry checks. Not production or scientific qualification. Old packs, data and withdrawals remain intact. Bounded Goal remains ACTIVE to2026-10-17T12:19:03Z.
