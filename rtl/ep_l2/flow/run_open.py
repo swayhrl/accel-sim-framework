@@ -10,7 +10,7 @@ assert 'cell (' in lib.read_text() or 'cell(' in lib.read_text()
 mode={'B16':0,'UNIFIED':1,'S64':2}[a.mode];wb=64 if mode==2 else 16
 quote=lambda x:'"'+str(x).replace('\\','\\\\').replace('"','\\"')+'"'
 files=[repo/x for x in (root/'flow/filelist.f').read_text().splitlines() if x and not x.startswith('#')]
-source_identity={'git_HEAD_at_start':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'git_status_at_start':subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True),'entry_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'RTL_files':[{ 'path':str(f.relative_to(repo)),'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in files]}
+source_identity={'git_HEAD_at_start':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'git_status_at_start':subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True),'entry_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'flow_files':{str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in [root/'flow/run_open.py',root/'flow/common.sdc',root/'flow/opensta.tcl',root/'flow/filelist.f',root/'flow/abc_linebuffered.sh']},'RTL_files':[{ 'path':str(f.relative_to(repo)),'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in files]}
 (out/'SOURCE_IDENTITY_START.json').write_text(json.dumps(source_identity,indent=2)+'\n')
 abc_options={'standard':'','fast':'-fast ','fast-clean':'-script "+strash;map,-D,883;cleanup,-i,-o;buffer;upsize,-D,883;dnsize,-D,883;stime,-p" '}[a.mapping]
 abc=out/'abc.constr';abc.write_text(f'set_driving_cell {a.drive_cell}\nset_load {a.load}\n')
@@ -19,7 +19,7 @@ script=out/'synth.ys';script.write_text('\n'.join([
  f'hierarchy -check -top ep_l2_slice_ctrl -chparam MODE {mode} -chparam STATIC_WB {wb} -chparam N_TAG 1024 -chparam N_PAYLOAD 1168 -chparam N_WAD 128 -chparam GEN_W 32', 'log -stdout SYNTHESIS_START', 'synth -top ep_l2_slice_ctrl -noabc', 'log -stdout GENERIC_SYNTHESIS_COMPLETE',
  'check -assert','select -assert-none t:$dlatch t:$_DLATCH_*',
  f'read_liberty -lib {quote(lib)}', 'dffunmap',f'dfflibmap -liberty {quote(lib)}',
- f'abc {abc_options}-liberty {quote(lib)} -constr {quote(abc)} -D 883',
+ f'abc -exe {quote(root/"flow/abc_linebuffered.sh")} {abc_options}-liberty {quote(lib)} -constr {quote(abc)} -D 883',
  'log -stdout LIBRARY_MAPPING_COMPLETE', 'clean',f'tee -o {quote(out/"stat.json")} stat -json -liberty {quote(lib)}',
  f'write_verilog -noattr -noexpr {quote(out/"mapped.v")}',
  'check -assert','select -assert-none t:$dlatch t:$_DLATCH_*'
@@ -28,7 +28,7 @@ start=time.time()
 tool_tmp=out/'tool_tmp';tool_tmp.mkdir();tool_env=os.environ.copy();tool_env['TMPDIR']=str(tool_tmp)
 with (out/'yosys.log').open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(script)],stdout=f,stderr=subprocess.STDOUT,env=tool_env,check=True)
 assert (out/'mapped.v').stat().st_size>10000,'meaningful connected design absent'
-env=os.environ.copy();env.update(LIBERTY=str(lib),NETLIST=str(out/'mapped.v'),RTL_ROOT=str(root),IO_DRIVE_CELL=a.drive_cell,OUTPUT_LOAD_LIB_UNITS=str(a.load))
+env=os.environ.copy();env.update(LIBERTY=str(lib),NETLIST=str(out/'mapped.v'),RTL_ROOT=str(root),IO_DRIVE_CELL=a.drive_cell,OUTPUT_LOAD_LIB_UNITS=str(a.load),LIB_TIME_UNIT_NS='1.0')
 for label,period in [('target_1132MHz',0.883392226),('exploration_2ns',2.0)]:
  d=out/label;d.mkdir();env.update(OUTPUT_DIR=str(d),CLOCK_PERIOD_NS=str(period))
  with (d/'sta.log').open('w') as f:subprocess.run(['sta','-threads','1','-exit','-no_init',str(root/'flow/opensta.tcl')],stdout=f,stderr=subprocess.STDOUT,env=env,check=True)

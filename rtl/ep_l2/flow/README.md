@@ -46,3 +46,12 @@ failed/default scripts and the full-size cleaned-graph diagnosis are retained.
 Final timing comes from independent OpenSTA, not ABC's requested target.
 All future tool temporaries use TMPDIR inside the counted output directory.
 OpenSTA is explicitly single-threaded.
+
+`abc_linebuffered.sh` forces line-buffered stdout/stderr for the installed
+persistent ABC interface. Without it the tiny metadata-word mapped output
+was written but the completion marker remained buffered while both parent
+and child waited on pipes. The actual word-module smoke now completes and
+passes library-linked `check -assert`; this is backend qualification, not
+an EPL2 cost result. Full controller mapping/STA must still complete.
+The open flow declares LIB_TIME_UNIT_NS=1.0 for the selected Nangate1ns
+library; changing library time units requires an explicit matching setting.
