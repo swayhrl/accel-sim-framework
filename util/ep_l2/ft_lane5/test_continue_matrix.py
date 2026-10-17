@@ -18,11 +18,25 @@ KEY = run_key(SPEC['identity'])
 CAMPAIGN = {'experiment_id': PARALLEL, 't0_unix': 1792236614.5007188,
             'deadline_unix': 1792323014.5007188, 'maximum_starts': 72}
 POLICY = {'max_simulators': 4, 'max_cpu_units': 8, 'max_reserved_memory_bytes': 32*2**30,
-          'max_result_bytes': 12*2**30, 'min_disk_free_bytes': 48*2**30,
+          'max_result_bytes': 16*2**30, 'min_disk_free_bytes': 48*2**30,
           'min_available_memory_bytes': 64*2**30, 'default_run_output_limit_bytes': 2*2**30}
 
 
 class Safety(unittest.TestCase):
+    def test_retry_adoption_requires_existing_exact_active_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            proof=Path(directory)/'decision.json';proof.write_text('{}')
+            spec=copy.deepcopy(SPEC)
+            spec['retry_checkpoint']={'path':str(proof),'sha256':cm.digest(proof)}
+            row={'identity':spec['identity'],'status':'RUNNING',
+                 'retry_checkpoint':spec['retry_checkpoint'],'attempt_history':[{'status':'FAILED'}]}
+            cm.validate_adopted_retry(spec,{'runs':{KEY:row}})
+            for rows in [{},{KEY:{**row,'status':'FAILED'}},{KEY:{**row,'attempt_history':[]}},
+                         {KEY:{**row,'retry_checkpoint':{}}}]:
+                with self.assertRaises(ValueError):cm.validate_adopted_retry(spec,{'runs':rows})
+            proof.write_text('{"changed":true}')
+            with self.assertRaises(ValueError):cm.validate_adopted_retry(spec,{'runs':{KEY:row}})
+
     def test_never_relaunch_existing_states(self):
         for status in ['RUNNING', 'RESERVED', 'COMPLETE_VALID', 'FAILED', 'TIMEOUT', 'RESOURCE_LIMIT']:
             registry = {'runs': {KEY: {'identity': SPEC['identity'], 'status': status}}}

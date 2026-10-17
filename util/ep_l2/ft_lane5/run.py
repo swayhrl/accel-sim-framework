@@ -14,7 +14,7 @@ import subprocess
 import sys
 import time
 
-from registry import Registry, canonical, run_key, write_json, process_identity, local_resources
+from registry import Registry, canonical, run_key, write_json, process_identity, local_resources, retained_tree_bytes
 from validate import validate_summary, require
 from feature_schema import ro_bits
 from acceptance import load_current_authority, current_manifest, reject_withdrawn, authorize_launch, immutable_loader_binding
@@ -230,7 +230,7 @@ def inspect(spec):
 
 
 def tree_bytes(root):
-    return sum(p.stat().st_size for p in root.rglob('*') if p.is_file() and not p.is_symlink()) if root.exists() else 0
+    return retained_tree_bytes(root)
 
 
 def process_tree_rss(pid):

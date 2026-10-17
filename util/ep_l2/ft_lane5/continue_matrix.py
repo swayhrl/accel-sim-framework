@@ -44,6 +44,19 @@ def memory_reservation(spec, policy):
     return memory
 
 
+def validate_adopted_retry(spec, snapshot):
+    """Observe an already audited retry; the queue never authorizes a retry itself."""
+    retry = spec.get('retry_checkpoint')
+    if retry is None:
+        return
+    row = snapshot['runs'].get(run_key(spec['identity']))
+    if (not row or row['identity'] != spec['identity'] or
+            row['status'] not in ACTIVE | {'COMPLETE_VALID'} or
+            row.get('retry_checkpoint') != retry or not row.get('attempt_history') or
+            digest(retry['path']) != retry['sha256']):
+        raise ValueError('Queue may only adopt an existing exact audited retry')
+
+
 def disposition(spec, registry, accepted):
     """Existing keys are observed, never reset, retried, or launched again."""
     key = run_key(spec['identity'])
@@ -186,8 +199,9 @@ def main(queue_path):
             if not path.is_relative_to(H) or digest(path) != item['sha256']:
                 raise ValueError('Prepared spec changed/outside original worktree')
             spec = json.loads(path.read_text())
-            if spec['experiment_id'] != PARALLEL or spec.get('retry_checkpoint'):
+            if spec['experiment_id'] != PARALLEL:
                 raise ValueError('No other campaign or implicit retry')
+            validate_adopted_retry(spec, snapshot)
             specs.append(spec)
         if len(specs) != (1 if unit['kind'] == 'single' else 2):
             raise ValueError('Invalid explicit endpoint/pair unit')
@@ -212,7 +226,7 @@ def main(queue_path):
                 raise ValueError('Queue changed while running; current simulations remain untouched')
             snapshot = read_registry(registry)
             expected_policy = {'max_simulators':4,'max_cpu_units':8,'max_reserved_memory_bytes':32*2**30,
-                               'max_result_bytes':12*2**30,'min_disk_free_bytes':48*2**30,
+                               'max_result_bytes':16*2**30,'min_disk_free_bytes':48*2**30,
                                'min_available_memory_bytes':64*2**30,'default_run_output_limit_bytes':2*2**30}
             if any(snapshot['hosts'][socket.gethostname()][k] != v for k,v in expected_policy.items()):
                 raise ValueError('Central policy changed outside frozen authorization')

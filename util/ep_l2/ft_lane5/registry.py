@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import socket
+import stat
 import tempfile
 import time
 import uuid
@@ -108,7 +109,17 @@ RESULT_LEGACY = Path('/workspace/results/ep_l2_ft20261016')
 
 
 def retained_tree_bytes(root):
-    return sum(p.stat().st_size for p in root.rglob('*') if p.is_file() and not p.is_symlink()) if root.exists() else 0
+    # Atomic progress writers can replace/unlink a temporary file between the
+    # directory scan and stat. Only ENOENT is benign; permission/I/O errors fail closed.
+    total = 0
+    for path in root.rglob('*'):
+        try:
+            info = path.stat(follow_symlinks=False)
+        except FileNotFoundError:
+            continue
+        if stat.S_ISREG(info.st_mode):
+            total += info.st_size
+    return total
 
 
 def live_result_output(result_directory):
