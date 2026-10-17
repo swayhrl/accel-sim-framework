@@ -1,0 +1,24 @@
+{
+  "evidence": "trace_driven.cc switches these native enums to m_isatomic=true; global cases CACHE_GLOBAL/L2, ATOMS shared_space. Parser prefix depends on trace_version<3 and enable_lineinfo. Full file opcode coverage must fail closed on unknown/truncated rows.",
+  "files_sha256": {
+    "gpu-simulator/ISA_Def/ampere_opcode.h": "af35b0e1d889570e90b5a871fb1100c7bb9393412f06831a20fd2857529b4cfd",
+    "gpu-simulator/ISA_Def/kepler_opcode.h": "475f57896508a698059f7180ab4b8ad9db5861f7ccc5fde8f76fffac0e1e358d",
+    "gpu-simulator/ISA_Def/pascal_opcode.h": "c5fb9b3d75a006c8cba23033095fe0d37d55e380fcd46db074ae43be9ba1e74a",
+    "gpu-simulator/ISA_Def/turing_opcode.h": "f89f4a87600c11973c3f886ec701e952741c6718b304013c71f548cc9190136c",
+    "gpu-simulator/ISA_Def/volta_opcode.h": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+    "gpu-simulator/trace-driven/trace_driven.cc": "7614c6b5196b030daa9e9db08d712bd0e9f6c303e5bca1181f8b5a8d35699327",
+    "gpu-simulator/trace-parser/trace_parser.cc": "9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28",
+    "gpu-simulator/trace-parser/trace_parser.h": "f483cfef7b15d765f737d27d88b5d171231078c09da51cb6da23f1139da141dd"
+  },
+  "native_global_atomic_enums": [
+    "OP_ATOM",
+    "OP_ATOMG",
+    "OP_RED"
+  ],
+  "native_shared_atomic_enums": [
+    "OP_ATOMS"
+  ],
+  "schema_version": "EPL2_NATIVE_ATOMIC_TRACE_SCHEMA_BINDING_V1",
+  "scope": "Schema preparation only. No full production trace scan at this phase; execute after corrected candidate release milestone.",
+  "source_framework": "861a06b91e309832161eab0836b512853c833ffb"
+}
