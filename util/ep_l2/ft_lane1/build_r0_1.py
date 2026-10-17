@@ -13,10 +13,10 @@ import subprocess
 import sys
 import time
 
-CORE_CANDIDATE = '088146f7f85b4073deb5d166a0a4484c7f3b48b2'
+CORE_CANDIDATE = '4bdb59502fed2f83b2eb465edb92976a448a8753'
 PYBIND11_COMMIT = 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
-FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
-BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-r0-1-buildfix-r2')
+FRAMEWORK_ROOT = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-red')
+BUILD_ROOT = Path('/workspace/build/ep-l2-ft20261017-lane1-a1-red')
 DISK_FLOOR = 48 * 1024**3
 MEMORY_FLOOR = 64 * 1024**3
 BUILD_GROWTH = 2 * 1024**3
@@ -49,18 +49,8 @@ def repair_commands(build, core):
     commands = []
     for mode in (1, 2):
         for c in (8, 16):
-            prefix = [base, overlay, str(mode), str(c)]
-            commands.append((f'host_prefill_{mode}_{c}',
-                [str(build / 'gpgpu-sim/ep_l2_ft_host_prefill'), *prefix]))
-            for offset in (0, 4096):
-                commands.append((f'physical_clock_{mode}_{c}_{offset}',
-                    [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, str(offset)]))
-            commands.append((f'warm_clock_{mode}_{c}',
-                [str(build / 'gpgpu-sim/ep_l2_ft_memcpy_clock'), *prefix, '4096', 'warm_hit']))
-            commands.append((f'partition_{mode}_{c}',
-                [str(build / 'gpgpu-sim/ep_l2_ft_partition'), *prefix]))
-    commands.append(('ft_directed',
-        [str(build / 'gpgpu-sim/ep_l2_ft_directed'), base, overlay]))
+            commands.append((f'a1_{mode}_{c}',
+                [str(build / 'gpgpu-sim/ep_l2_ft_a1'), base, overlay, str(mode), str(c)]))
     return commands
 
 
@@ -162,7 +152,8 @@ def main():
         inputs = [(args.core, p) for p in (
             'configs/tested-cfgs/SM7_QV100/gpgpusim.config', 'tests/ep_l2/ft_wbuf.config',
             'tests/ep_l2/test_ft_host_prefill.cc', 'tests/ep_l2/test_ft_memcpy_clock.cc',
-            'tests/ep_l2/test_ft_partition.cc', 'tests/ep_l2/test_ft_wbuf.cc')]
+            'tests/ep_l2/test_ft_partition.cc', 'tests/ep_l2/test_ft_wbuf.cc',
+            'tests/ep_l2/test_ft_a1.cc')]
         inputs += [(fw, f'tests/ep_l2/ft20261016/r0_1/{p}.config')
                    for p in ('b16_banked', 'u_wb16', 'b8_banked', 'u_wb8')]
         report['input_sha256'] = {str(root / p): digest(root / p) for root, p in inputs}
@@ -204,10 +195,9 @@ def main():
              '-G', 'Unix Makefiles', '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'], 'configure')
         report['status'] = 'BUILDING'
         report['compiler_started'] = True
-        targets = ['accel-sim.out', 'ep_l2_ft_memcpy_clock', 'ep_l2_ft_host_prefill',
-                   'ep_l2_ft_directed', 'ep_l2_ft_partition']
+        targets = ['ep_l2_ft_a1']
         run(['cmake', '--build', str(args.build), '--target', *targets, '-j2'], 'build')
-        report['binary'] = str(args.build / 'accel-sim.out')
+        report['binary'] = str(args.build / 'gpgpu-sim/ep_l2_ft_a1')
         report['binary_sha256'] = digest(report['binary'])
         report['framework_build_stamp'] = (args.build / 'accelsim_version.h').read_text()
         flags = sorted(args.build.rglob('flags.make'))
