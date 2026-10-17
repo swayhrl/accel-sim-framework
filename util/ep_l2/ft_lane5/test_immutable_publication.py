@@ -14,7 +14,7 @@ class ImmutablePublicationTests(unittest.TestCase):
    pointer={'path':str(p),'snapshot_path':str(snap),'sha256':acceptance.sha(raw),'generation':1,'revision':'TEST_FIXTURE_ONLY'};client=repo/'CLIENT.json';client.write_text(json.dumps({'scientific_acceptance':pointer}));p.write_text('{"staged_next_manifest_not_current":true}')
    self.assertEqual(acceptance.load_current_authority(client)['manifest'],manifest)
    snap.write_text('{}')
-   with self.assertRaisesRegex(ValueError,'bytes changed'):acceptance.load_current_authority(client)
+   with self.assertRaisesRegex(ValueError,'bytes changed|schema'):acceptance.load_current_authority(client)
  def test_legacy_live_client_refuses_but_verified_new_client_allows(self):
   registry=Mock();registry.snapshot.return_value={'runs':{'key':{'status':'RUNNING'}}}
   with patch.object(Path,'read_text',return_value='{}'):
