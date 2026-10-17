@@ -1,153 +1,36 @@
 {
-  "task": "EPL2_RTL_COST_OPEN_FLOW_V1",
-  "lane_id": 2,
-  "status": "FIRST_RTL_COST_REVISION_DELIVERED_FUNCTIONAL_AND_OPEN_FLOW_COMPLETE_TIMING_UNCLOSED",
-  "authority": "f1980a84c8e637ff2050048bd11b3c1fa5362583",
-  "first_checkpoint_utc": "2026-10-17T22:55:14Z",
-  "finite_SIM_source": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
-  "paper_H0_source": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
-  "RTL_source_commit": "25097f4b6dca4ac3fcc2d3cf615fb97c78c5bf71",
-  "RTL_files": {
-    "rtl/ep_l2/rtl/ep_l2_bank_arbiter.sv": "f61e66390382aae2e84bffb00b8e46f260257c17dc82d339db13dc3b58417afb",
-    "rtl/ep_l2/rtl/ep_l2_metadata_word.sv": "1100d272c48fa841e0d3885f0e984db0eb6eb5ba7cb7b2a10c8be73bf9156fd1",
-    "rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv": "6b54078c0c1b7a4e311d590be6025665056f11f4c04cd0a857407e12677c7042",
-    "rtl/ep_l2/rtl/ep_l2_payload_sram.sv": "6cef629e73ee696dedcb9133c661fd64425b7390af5cd9fcf4ef592ddb903453",
-    "rtl/ep_l2/rtl/ep_l2_slice.sv": "0888dfbec52fadad96918c03ba1a7f3669a604ed0fa2f48bdfd753255c0ead18",
-    "rtl/ep_l2/rtl/ep_l2_slice_top.sv": "ae7ab43b0f523d857ac6d0d0f316dae3063094478a8aef91d70e70733e9f718c"
-  },
-  "functional_scope": "full-size B16/Unified/S64 byte/lifecycle suite on frozen CTRL6b54078c; pin race real old-red/new-green; independent Unified highestPID1167 and per-bank-full recovery; GEN3 bounded exhaustion only",
-  "source_tree": "hrl/ep-l2-rtl-cost-v1",
-  "publication": "containing commit; both original Lane2 and dedicated RTL branch; remote fetch/readback verified after push",
-  "cell_area": {
-    "B16": 2069971.0359999998,
-    "UNIFIED": 2525345.746,
-    "S64": 2121045.696
-  },
-  "SRAM_macro_area": null,
-  "SRAM_delay": null,
-  "STA": "ACTUAL_TWO_PERIOD_REPORTS_COMPLETE_ALL_THREE_TARGET_WNS_NEGATIVE",
-  "DC": "UNRUN_NO_DC_SHELL_OR_LOCAL_TARGET_DB_HERE_SCRIPTS_ONLY",
-  "mandatory_scope": "controller+access datapath; nativeTag/MSHR and SRAM cost unknown; NOT fullL2 or matchedSIMtiming",
-  "resource_policy": "central leases; all own retained EDA artifacts included in shared12GiB root; 48GiB workspace/40GiB Share/64GiB RAM floors unchanged",
-  "no_complete_apps": true,
-  "Core_candidates_preserved": {
-    "TVD": "be5dcbe1fa5b9a501e81a77a6c399e6f6530e536",
-    "common": "099aeb5ac002ddc03ab8dc295caa1333d9aa50e1",
-    "structural": "26ed1da60249727870802c84f52fabe72274c541"
-  },
-  "old_TVD_three_tests": "NOT_COMPILED_NOT_RUN",
-  "qualification_fix": "same-edge destructive admission/external pin race; old-red then full-size B16/U/S64 new-green; prior mapped attempts stopped with no PPA result",
-  "functional_receipt": "rtl/ep_l2/validation/pin_admission_r1/NEW_GREEN_FUNCTIONAL_RECEIPT.json",
-  "old_red_receipt": "rtl/ep_l2/validation/pin_admission_r1/OLD_RED_RECEIPT.json",
-  "completed_UTC": "2026-10-17T17:12:17.783998+00:00",
-  "flow_source_commit": "68d9c6bd972aa04dbf417d39ae038ddb5277a604",
-  "review_pack": "docs/ep_l2/review_packs/RTL_COST_OPEN_FLOW_V1_r1",
-  "review_pack_receipt_sha256": "55e405092b1c91c3ab66f1fe06f961c45e66212b576a1753c2e87b4309a8edff",
-  "review_pack_hash_manifest_sha256": "dfa34552faac1b45af9542703a0792ee9b810848891b070ef19fffb6791812c4",
-  "timing_target_WNS_ns": {
-    "B16": -13.614565,
-    "UNIFIED": -36.605915,
-    "S64": -13.612103
-  },
-  "functional_binary_identities": [
-    {
-      "mode": 0,
-      "GEN_W": 32,
-      "VVP_sha256": "8435dfb0242fbb7fef2d2b73a01f63f338ab243bce6a1789e88a7dd0068597cc",
-      "stimulus_TB_sha256": "dd27ac92692fcf5f7f033bffb0472283cb977c6b1a779c7a1a7312a94697cf36"
-    },
-    {
-      "mode": 1,
-      "GEN_W": 32,
-      "VVP_sha256": "e9b2d7067c2588ef6b004cbc88da960760fd3105d556cac1e5033ae231d0e4a3",
-      "stimulus_TB_sha256": "dd27ac92692fcf5f7f033bffb0472283cb977c6b1a779c7a1a7312a94697cf36"
-    },
-    {
-      "mode": 2,
-      "GEN_W": 32,
-      "VVP_sha256": "42d86d763084f42b068b8adb3b738944215c5123cbadfd5ae903822c89b2c951",
-      "stimulus_TB_sha256": "dd27ac92692fcf5f7f033bffb0472283cb977c6b1a779c7a1a7312a94697cf36"
-    },
-    {
-      "mode": 0,
-      "GEN_W": 3,
-      "VVP_sha256": "13077bd88c6c0bd4b97924621db3697c25c8f8268b1c8e25616f1abe924e4e3e",
-      "stimulus_TB_sha256": "dd27ac92692fcf5f7f033bffb0472283cb977c6b1a779c7a1a7312a94697cf36"
-    },
-    {
-      "mode": "UNIFIED_LAST_PHYSICAL",
-      "GEN_W": 32,
-      "VVP_sha256": "b7510915dc3916ecfe4c5a0512a8d94bc85af78a4e0132974078919d774fcb91",
-      "stimulus_TB_sha256": "a0cfb7516eac15a2b2fe72c2c19a51340d0ac0567d21ed0e09c3f85323372b61"
-    }
-  ],
-  "netlist_identities": {
+  "Goal": "EPL2_RTL_COST_TIMING_REFINEMENT_R2_BOUNDED",
+  "status": "ACTIVE_FINAL_FULL_TAG_BOUNDARY_PENDING_NOT_FINAL",
+  "authority": "f2a2fec3ee5e1bb42aa298c84d25bdd9bd70e13e",
+  "T0_UTC": "2026-10-17T17:30:58Z",
+  "canonical_RTL_commit": "f54d3c054a6a03c85b40a1c5018751958c78a129",
+  "actual_map_STA_all_three_complete": true,
+  "all_three_base_and_GEN3_functional_pass": true,
+  "all_three_actual_Lane3_bytes_pass": true,
+  "highest_Unified1167_boundary": "RUNNING_NOT_YET_PASS",
+  "current_SIM_performance_pairing": false,
+  "SRAM_macro_area_delay": null,
+  "DC": "UNRUN",
+  "R1_frozen": "09de19579c0708f6542dfd65e1f3aae8a9a8b841",
+  "TVD_three_tests": "NOT_COMPILED_NOT_RUN",
+  "official_SIM_and_Lane5_unchanged_by_this_Goal": true,
+  "artifact_root": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_COST_TIMING_REFINEMENT_R2_lane2_v3",
+  "modes": {
     "B16": {
-      "raw_mapped_sha256": "1a3d66ff738cec6960378dd4313c54cf2613af00ab2054edfb013fb6610b3bcd",
-      "STA_netlist_sha256": "16d409a93634c8da55689432bd2efe230dfde2ba92227660d5266cb3bb6ca84a",
-      "parameters": {
-        "MODE": 0,
-        "STATIC_WB": 16,
-        "N_TAG": 1024,
-        "N_PAYLOAD": 1168,
-        "N_WAD": 128,
-        "GEN_W": 32,
-        "data_bits": 1024,
-        "banks": 4,
-        "rows_per_bank": 292,
-        "P": 1
-      }
-    },
-    "UNIFIED": {
-      "raw_mapped_sha256": "a1885db0741d76bf201c2510402195eebb06ad88080074198df750d82e025693",
-      "STA_netlist_sha256": "4dd7c3b6e4de3d0684625639032f7d044af70b204ba28068b9f0775f9d8df4e4",
-      "parameters": {
-        "MODE": 1,
-        "STATIC_WB": 16,
-        "N_TAG": 1024,
-        "N_PAYLOAD": 1168,
-        "N_WAD": 128,
-        "GEN_W": 32,
-        "data_bits": 1024,
-        "banks": 4,
-        "rows_per_bank": 292,
-        "P": 1
-      }
+      "area": 1598557.0580000002,
+      "WNS": -1.413025,
+      "WNS2ns": -0.296418
     },
     "S64": {
-      "raw_mapped_sha256": "14bccaccdb9e810905c786a859a8d62f1fe096465c214e9aaaf60ba26e136909",
-      "STA_netlist_sha256": "dc41d841ffaa204bcf005e779dcb8318575aeb2a60a72dbfb1309e902425226e",
-      "parameters": {
-        "MODE": 2,
-        "STATIC_WB": 64,
-        "N_TAG": 1024,
-        "N_PAYLOAD": 1168,
-        "N_WAD": 128,
-        "GEN_W": 32,
-        "data_bits": 1024,
-        "banks": 4,
-        "rows_per_bank": 292,
-        "P": 1
-      }
+      "area": 1627498.6560000004,
+      "WNS": -1.400875,
+      "WNS2ns": -0.284268
+    },
+    "UNIFIED": {
+      "area": 2432606.4420000003,
+      "WNS": -1.700971,
+      "WNS2ns": -0.584364
     }
   },
-  "shared_stimuli_sha256": "4b3b57e479084e2b1b9c0cb2b7afbb293142430f2864a1a88b5eb7d8f18e38dc",
-  "library_sha256": "2efd0b32eb580e4e60e72fc0575bb3bc69aac907c91d908442e4ae6d7fe55895",
-  "canonical_SDC_sha256": "de89d1bdbeaefbbeeb316bfa00525e18e0c9fc013555796f75cc158a1641cbb2",
-  "same_hardware_library_SDC_effort_all_three": true,
-  "paper_performance_pairing_eligible": false,
-  "power": "UNRUN",
-  "post_layout": false,
-  "resource_all_own_goal_leases_released": true,
-  "resource_audit": "docs/ep_l2/review_packs/RTL_COST_OPEN_FLOW_V1_r1/resources/POST_COLLECTION_RESOURCE_AUDIT.json",
-  "archive_index": "docs/ep_l2/review_packs/RTL_COST_OPEN_FLOW_V1_r1/ARTIFACT_ARCHIVE_INDEX.json",
-  "no_dependency_waiter": true,
-  "historical_admission_incident_disclosed": "docs/ep_l2/review_packs/RTL_COST_OPEN_FLOW_V1_r1/ADMISSION_INCIDENT.json",
-  "remaining": [
-    "real SRAM macro binding/Liberty and excluded Tag/MSHR costs",
-    "prototype target timing/DRC closure and static baseline refinement",
-    "SIM/RTL cycle-throughput reconciliation before paper performance pairing",
-    "DC/power/physical optional flows UNRUN"
-  ],
-  "mapping_effort": "identical explicit ABC fast-clean across B16/U/S64; bounded, not optimized closure"
+  "UTC": "2026-10-17T19:24:06.436186+00:00"
 }
