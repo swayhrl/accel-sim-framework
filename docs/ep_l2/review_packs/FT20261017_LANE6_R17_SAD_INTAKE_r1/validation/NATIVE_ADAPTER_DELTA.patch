@@ -1,0 +1,28 @@
+--- frozen_r3/native_pair_intake.py
++++ r17/native_pair_intake_v2a.py
+@@ -11,6 +11,16 @@
+ 
+ REPORT = "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/"
+ 
++
++
++ALLOWED_SYMBOLIC_SCOPES = {
++    "SYMBOLIC_32B_SECTOR_VERSIONS_AND_REQUEST_IDENTITY_NOT_NUMERIC_SASS_PAYLOAD",
++    "SYMBOLIC_32B_SECTOR_VERSIONS_REQUEST_IDENTITY_NOT_NUMERIC_SASS_PAYLOAD",
++}
++
++def require_scope_compatibility(certificate):
++    require(certificate.get("data_correctness_scope") in ALLOWED_SYMBOLIC_SCOPES, "Unknown symbolic data scope")
++    require(certificate.get("application_input_scope") == "FULL_NATIVE_NONATOMIC_ONLY", "Only complete native nonatomic application scope is supported")
+ 
+ def file_hash(path):
+     h = hashlib.sha256()
+@@ -107,7 +117,7 @@
+             for k in ("cycles", "instructions"):
+                 require(summary[k] == int(row[k]), "CSV/native total mismatch")
+             require(all(g["status"] == "PASS" and g["production_driven"] is True for g in q["gates"].values()), "Qualification gates")
+-            require(q["data_correctness_scope"] == "SYMBOLIC_32B_SECTOR_VERSIONS_AND_REQUEST_IDENTITY_NOT_NUMERIC_SASS_PAYLOAD", "Do not broaden data scope")
++            require_scope_compatibility(q)
+             # The only excluded config record is the exact hash-checked mode
+             # overlay, so the common fingerprint is derived, not guessed.
+             common = canonical_sha({"configs_before_mode_overlay": audit["configs"][:-1],
