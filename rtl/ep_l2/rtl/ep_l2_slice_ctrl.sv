@@ -229,6 +229,11 @@ module ep_l2_slice_ctrl #(
     wire internal_pin_sub=rsp_fire && p_op==1;
     assign pin_ready=rst_n && pin_pid<N_PAYLOAD && role_bits[(pin_pid)*3 +:3]==RESIDENT && generation_bits[(pin_pid)*GEN_W +:GEN_W]==pin_gen &&
         !internal_pin_add && !internal_pin_sub &&
+        // On the admission edge state is still IDLE. A destructive request
+        // acquiring this victim wins over a new external descriptor pin.
+        // Gate only a real req_fire: a blocked request must still let an
+        // existing pin decrement, and unrelated payloads remain independent.
+        !(req_fire && req_op!=1 && old_live && pin_pid==old_pid) &&
         !(state!=IDLE && state!=RESPONSE && p_old_live && pin_pid==p_old) &&
         (pin_increment ? pins_bits[(pin_pid)*6 +:6]<32 && reference_count<512 : pins_bits[(pin_pid)*6 +:6]!=0);
     wire pin_fire=pin_valid && pin_ready;

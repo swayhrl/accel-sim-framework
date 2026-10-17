@@ -79,3 +79,17 @@ simulator was modified. Until then this is first-version feasibility/cost of
 the disclosed RTL boundary, not proof that the current SIM throughput has
 this area/frequency. P2/U_CAP16 are not synthesized here; a final P2 claim
 requires matching real extra-port/bank implementation and cost.
+
+## First functional qualification correction
+
+The initial byte-functional suite omitted same-edge external-pin acquisition
+against a destructive frontend admission. A new actual compiled regression
+reproduced old-red: op0 req_ready=1 and pin_ready=1, so a victim could acquire
+a pin after its unpinned precheck on that same IDLE edge. The corrected RTL
+excludes only a pin to the selected old payload when req_fire occurs for
+install/write/invalidate. An already blocked request still permits existing
+pin decrements; unrelated payload pins remain concurrent. The integration
+suite covers dirty/clean replacement, write, invalidate, unrelated pin and
+exact rollback/reference drain. This is an RTL admission correction, not a
+change to the finite simulator mechanism or its accepted evidence. Initial
+pre-correction mappings were stopped and cannot serve as final costs.

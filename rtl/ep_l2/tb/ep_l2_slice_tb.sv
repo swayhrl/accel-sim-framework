@@ -206,6 +206,36 @@ module ep_l2_slice_tb;
         repeat(5)tick();if(req_ready || wad_count!=0)$fatal(1,"pin allowed partial replacement");req_valid=0;
         @(negedge clk);pin_valid=1;pin_increment=0;#1;while(!pin_ready)@(negedge clk);tick();pin_valid=0;
         $display("CASE4 response snapshot/backpressure and real pins PASS");
+        // 4b. Acquisition and a conflicting descriptor pin must not both fire
+        // on the IDLE admission edge. Cover dirty/clean replace, write, and
+        // invalidate; abort before native commit preserves independent bytes.
+        for(integer race=0;race<4;race=race+1)begin
+            prev=replies+aborted;native_ready=0;
+            prepare(race<2?0:race==2?2:3,race==0 || race==2?1:3,
+                    64'hb000+128*race,pattern(60+race),{128{1'b1}},15,0,1);
+            pin_valid=1;pin_increment=1;pin_pid=handle_pid[req_tag];pin_gen=handle_gen[req_tag];#1;
+            if(!req_ready || pin_ready)$fatal(1,"PIN_ADMISSION_RACE op%0d req_ready%0b pin_ready%0b",req_op,req_ready,pin_ready);
+            admit();pin_valid=0;repeat(8)tick();
+            if(reference_count!=0)$fatal(1,"conflicting pin admitted with destructive acquisition");
+            native_abort=1;tick();native_abort=0;wait_replies(prev);native_ready=1;
+            if(!last_rsp_retry || wad_count!=0 || wb_count!=0)$fatal(1,"race rollback leaked reservation");
+        end
+        // No global pin block: independent resident reference can be granted
+        // concurrently with the selected victim's acquisition and then released.
+        prev=replies+aborted;native_ready=0;
+        prepare(0,1,64'hc000,pattern(64),{128{1'b1}},15,0,1);
+        pin_valid=1;pin_increment=1;pin_pid=handle_pid[N_TAG-1];pin_gen=handle_gen[N_TAG-1];#1;
+        if(!req_ready || !pin_ready)$fatal(1,"unrelated pin unnecessarily serialized");
+        admit();pin_valid=0;if(reference_count!=1)$fatal(1,"independent pin lost");
+        @(negedge clk);pin_valid=1;pin_increment=0;#1;
+        if(!pin_ready)$fatal(1,"independent pin release blocked");tick();pin_valid=0;
+        repeat(8)tick();native_abort=1;tick();native_abort=0;wait_replies(prev);native_ready=1;
+        if(reference_count!=0 || wad_count!=0 || wb_count!=0)$fatal(1,"independent pin/abort leak");
+        read_check(1);read_check(3);
+        $display("CASE4b same-edge destructive acquisition/pin exclusion and unrelated-pin parallelism PASS");
+`ifdef EP_L2_PIN_ADMISSION_ONLY
+        $finish;
+`endif
         // 5. Native precommit rollback after real staged copy; fixed victim
         // survives changes to raw upstream Tag input after admission.
         prev=replies+aborted;native_ready=0;

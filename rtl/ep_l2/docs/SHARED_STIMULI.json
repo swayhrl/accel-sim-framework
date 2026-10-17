@@ -7,7 +7,7 @@
     {"name":"same_sector_32_64","TB":"CASE2","base_seed":1,"writes":[{"seed":2,"byte_range":[4,7],"little_endian_value":"0xa5988b7e"},{"seed":3,"byte_range":[16,23],"little_endian_value":"0x9a8d807366594c3f"}],"checks":["same32B sector","uncovered bytes unchanged"]},
     {"name":"delayed_fill","TB":"CASE3","initial_seed":4,"initial_byte_range":[0,3],"fill_seed":5,"protect_range":[0,3],"checks":["known dirty bytes survive","other bytes filled","ready/pending sectors"]},
     {"name":"real_bank_competition","TB":"CASE3b","checks":["samebank fill/read only one grant","differentbanks parallel","correct snapshots"]},
-    {"name":"pins_and_backpressure","TB":"CASE4","checks":["response stable","pin survives stall","external descriptor pin blocks replacement","exact decrements"]},
+    {"name":"pins_and_backpressure","TB":"CASE4","checks":["response stable","pin survives stall","external descriptor pin blocks replacement","exact decrements","same-edge destructive acquisition excludes conflicting external pin for dirty/clean install, write and invalidate","unrelated pin still accepted concurrently"]},
     {"name":"native_approval_abort","TB":"CASE5","checks":["captured victim ignores changed raw Tag input","reservation rollback","old bytes unchanged","one retry response"]},
     {"name":"copy_or_inplace","TB":"CASE6","checks":["B/S actual1024-bit source/latch/staging path","U no staticcopy grants","WB bytes/mask correct"]},
     {"name":"loweraccept_before_done","TB":"CASE7","checks":["slot freed at acceptance","WAD still waits","same old line rejected until done"]},
