@@ -1,0 +1,57 @@
+/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1 6fba0136f8465b59fe5858a950fa39efb265f654:src/gpgpu-sim/dtc-l1-common.h SHA256=b63a0afdc85ca6301559afd013907387af8874d4ebdf3670a8d085640651e9d4
+560:   // See io_frontend::will_new_miss().  Existing Valid/Pending tags need no
+561:   // lower candidate and must remain serviceable while that queue is full.
+562:   bool will_new_miss(uint64_t address) {
+563:     const uint64_t line = address & ~(kLogicalLineBytes - 1);
+564:     return find_tag(line) == nullptr;
+565:   }
+566:
+567:   io_access_result access(uint64_t cycle, uint64_t uid, uint64_t address) {
+568:     begin_cycle(cycle);
+569:     entry *owner = find_entry(uid);
+570:     assert(owner);
+571:     const uint64_t line = address & ~(kLogicalLineBytes - 1);
+572:     tag_entry *tag = find_tag(line);
+573:     if (tag) {
+574:       attach_reference(*owner, tag->physical);
+575:       ++(m_phys[tag->physical.id].ready ? m_valid_hits : m_pending_hits);
+576:       assert_shadow_refs();
+577:       return {m_phys[tag->physical.id].ready ? io_access_kind::VALID_HIT
+578:                                               : io_access_kind::PENDING_HIT,
+579:               tag->physical};
+580:     }
+581:     if (m_allocations_this_cycle >= m_cfg.allocation_width) {
+582:       ++m_allocation_width_limited_events;
+583:       return {io_access_kind::NO_FREE_LINE, {}};
+584:     }
+585:
+586:     tag_entry *victim = select_victim(line);
+690:     auto selected = m_entries.end();
+691:     for (auto it = m_entries.begin(); it != m_entries.end(); ++it) {
+692:       if (entry_ready(*it)) {
+693:         selected = it;
+694:         break;
+695:       }
+696:     }
+697:     if (selected == m_entries.end()) return false;
+698:     bool older_unready = false;
+699:     for (auto it = m_entries.begin(); it != selected; ++it)
+700:       older_unready |= !entry_ready(*it);
+701:     if (older_unready) ++m_out_of_order_retires;
+702:     for (const physical_identity identity : selected->references) {
+703:       physical_line &physical = m_phys[identity.id];
+704:       assert(physical.allocated && physical.generation == identity.generation &&
+705:              physical.ref_count);
+706:       --physical.ref_count;
+707:       if (!physical.tag_valid && physical.ref_count == 0) {
+708:         release(identity);
+709:         ++m_final_ref_reclaims;
+710:       }
+711:     }
+712:     m_slots[selected->slot].active = false;
+713:     if (retired_uid) *retired_uid = selected->uid;
+714:     m_entries.erase(selected);
+715:     m_retire_cycle = cycle;
+716:     ++m_retires;
+717:     assert_shadow_refs();
+718:     return true;

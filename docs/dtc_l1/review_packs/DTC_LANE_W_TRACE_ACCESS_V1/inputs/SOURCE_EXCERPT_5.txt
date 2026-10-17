@@ -1,0 +1,52 @@
+/workspace/repos/accel-sim-framework 18a68dcccd795f1b6cda75504e9450d00c9cee02:gpu-simulator/trace-driven/trace_driven.cc SHA256=e82e9156bd28d61a044e1f677dc9e0e162290043404730ac9a81dae5ab402689
+384:     case OP_LDG:
+385:     // LDGSTS is loading the values needed directly from the global memory to
+386:     // shared memory. Before this feature, the values need to be loaded to
+387:     // registers first, then store to the shared memory.
+388:     case OP_LDGSTS:  // Add for memcpy_async
+389:     case OP_LDL:
+390:       assert(data_size > 0);
+391:       memory_op = memory_load;
+392:       cache_op = CACHE_ALL;
+393:       if (m_opcode == OP_LDL)
+394:         space.set_type(local_space);
+395:       else
+396:         space.set_type(global_space);
+397:       // Add for LDGSTS instruction
+398:       if (m_opcode == OP_LDGSTS) m_is_ldgsts = true;
+399:       // check the cache scope, if its strong GPU, then bypass L1
+400:       if ((trace.check_opcode_contain(opcode_tokens, "STRONG") &&
+401:            trace.check_opcode_contain(opcode_tokens, "GPU")) ||
+402:           trace.check_opcode_contain(opcode_tokens, "BYPASS")) {
+403:         cache_op = CACHE_GLOBAL;
+404:       }
+405:       break;
+406:     case OP_STG:
+407:     case OP_STL:
+408:       assert(data_size > 0);
+409:       memory_op = memory_store;
+410:       cache_op = CACHE_ALL;
+411:       if (m_opcode == OP_STL)
+412:         space.set_type(local_space);
+413:       else
+414:         space.set_type(global_space);
+415:       // check the cache scope, if its strong GPU, then bypass L1
+416:       if ((trace.check_opcode_contain(opcode_tokens, "STRONG") &&
+417:            trace.check_opcode_contain(opcode_tokens, "GPU")) ||
+418:           trace.check_opcode_contain(opcode_tokens, "BYPASS")) {
+419:         cache_op = CACHE_GLOBAL;
+420:       }
+421:       break;
+422:     case OP_ATOMG:
+423:     case OP_RED:
+424:     case OP_ATOM:
+425:       assert(data_size > 0);
+426:       memory_op = memory_load;
+427:       op = LOAD_OP;
+428:       space.set_type(global_space);
+429:       m_isatomic = true;
+430:       cache_op = CACHE_GLOBAL;  // all the atomics should be done at L2
+431:       break;
+432:     case OP_LDS:
+433:       assert(data_size > 0);
+434:       memory_op = memory_load;

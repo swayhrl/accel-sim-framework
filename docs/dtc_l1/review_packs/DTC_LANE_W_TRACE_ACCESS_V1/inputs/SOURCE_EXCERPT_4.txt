@@ -1,0 +1,150 @@
+/workspace/repos/accel-sim-framework 18a68dcccd795f1b6cda75504e9450d00c9cee02:gpu-simulator/trace-parser/trace_parser.cc SHA256=f63db893d39bfcd4cbf679ea1158fd9a0594211181333e13b2fdbb478d60ddb7
+100: void inst_memadd_info_t::base_stride_decompress(
+101:     unsigned long long base_address, int stride,
+102:     const std::bitset<WARP_SIZE> &mask) {
+103:   bool first_bit1_found = false;
+104:   bool last_bit1_found = false;
+105:   unsigned long long addra = base_address;
+106:   for (int s = 0; s < WARP_SIZE; s++) {
+107:     if (mask.test(s) && !first_bit1_found) {
+108:       first_bit1_found = true;
+109:       addrs[s] = base_address;
+110:     } else if (first_bit1_found && !last_bit1_found) {
+111:       if (mask.test(s)) {
+112:         addra += stride;
+113:         addrs[s] = addra;
+114:       } else
+115:         last_bit1_found = true;
+116:     } else
+117:       addrs[s] = 0;
+118:   }
+119: }
+120:
+152: bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
+153:                                      unsigned enable_lineinfo,
+154:                                      dim3 header_cta_id,
+155:                                      dim3 header_cluster_cta_id,
+156:                                      dim3 header_cluster_id,
+157:                                      unsigned header_cluster_rank) {
+158:   std::stringstream ss;
+159:   ss.str(trace);
+160:
+161:   std::string temp;
+162:
+163:   // Start Parsing
+164:
+165:   if (trace_version < 3) {
+166:     // for older trace version, read the tb ids and ignore
+167:     unsigned threadblock_x = 0, threadblock_y = 0, threadblock_z = 0,
+168:              warpid_tb = 0;
+169:
+170:     ss >> std::dec >> threadblock_x >> threadblock_y >> threadblock_z >>
+171:         warpid_tb;
+172:   } else {
+173:     // Set the cta ids
+174:     cta_id = header_cta_id;
+175:     cluster_cta_id = header_cluster_cta_id;
+176:     cluster_id = header_cluster_id;
+177:     cluster_rank = header_cluster_rank;
+178:   }
+179:   if (enable_lineinfo) {
+180:     ss >> std::dec >> line_num;
+181:   }
+182:
+183:   ss >> std::hex >> m_pc;
+184:   ss >> std::hex >> mask;
+282:     // read the memory width from the opcode, as nvbit can report it incorrectly
+283:     std::vector<std::string> opcode_tokens = get_opcode_tokens();
+284:     memadd_info->width = get_datawidth_from_opcode(opcode_tokens);
+285:
+286:     ss >> std::dec >> address_mode;
+287:     if (address_mode == address_format::list_all) {
+288:       // read addresses one by one from the file
+289:       for (int s = 0; s < WARP_SIZE; s++) {
+290:         if (mask_bits.test(s))
+291:           ss >> std::hex >> memadd_info->addrs[s];
+292:         else
+293:           memadd_info->addrs[s] = 0;
+294:       }
+295:     } else if (address_mode == address_format::base_stride) {
+296:       // read addresses as base address and stride
+297:       unsigned long long base_address = 0;
+298:       int stride = 0;
+299:       ss >> std::hex >> base_address;
+300:       ss >> std::dec >> stride;
+301:       memadd_info->base_stride_decompress(base_address, stride, mask_bits);
+302:     } else if (address_mode == address_format::base_delta) {
+303:       unsigned long long base_address = 0;
+304:       std::vector<long long> deltas;
+305:       // read addresses as base address and deltas
+306:       ss >> std::hex >> base_address;
+307:       // No delta will be pushed if there is only one bit set in the mask
+308:       // Find the first bit set
+309:       int first_bit_set = -1;
+310:       for (int s = 0; s < WARP_SIZE; s++) {
+311:         if (mask_bits.test(s)) {
+312:           first_bit_set = s;
+313:           break;
+314:         }
+315:       }
+316:       for (int s = first_bit_set + 1; s < WARP_SIZE; s++) {
+317:         if (mask_bits.test(s)) {
+318:           long long delta = 0;
+319:           ss >> std::dec >> delta;
+320:           deltas.push_back(delta);
+321:         }
+322:       }
+323:       memadd_info->base_delta_decompress(base_address, deltas, mask_bits);
+324:     } else {
+325:       assert(0 && "Unsupported address mode");
+326:     }
+327:   }
+328:
+390: std::vector<trace_command> trace_parser::parse_commandlist_file() {
+391:   std::ifstream fs;
+392:   fs.open(kernellist_filename);
+393:
+394:   if (!fs.is_open()) {
+395:     std::cerr << "Unable to open file: " << kernellist_filename << std::endl;
+396:     exit(1);
+397:   }
+398:
+399:   std::string directory(kernellist_filename);
+400:   const size_t last_slash_idx = directory.rfind('/');
+401:   if (std::string::npos != last_slash_idx) {
+402:     directory = directory.substr(0, last_slash_idx);
+403:   }
+404:
+405:   std::string line, filepath;
+406:   std::vector<trace_command> commandlist;
+407:   while (!fs.eof()) {
+408:     getline(fs, line);
+409:     if (line.empty())
+410:       continue;
+411:     else if (line.substr(0, 10) == "MemcpyHtoD") {
+412:       trace_command command;
+413:       command.command_string = line;
+414:       command.m_type = command_type::cpu_gpu_mem_copy;
+415:       commandlist.push_back(command);
+416:     } else if (line.substr(0, 6) == "kernel") {
+417:       trace_command command;
+418:       command.m_type = command_type::kernel_launch;
+419:       filepath = directory + "/" + line;
+420:       command.command_string = filepath;
+421:       commandlist.push_back(command);
+422:     }
+423:     // ignore gpu_to_cpu_memory_cpy
+424:   }
+425:
+426:   fs.close();
+427:   return commandlist;
+428: }
+429:
+430: void trace_parser::parse_memcpy_info(const std::string &memcpy_command,
+431:                                      size_t &address, size_t &count) {
+432:   std::vector<std::string> params;
+433:   split(memcpy_command, params, ',');
+434:   assert(params.size() == 3);
+435:   std::stringstream ss;
+436:   ss.str(params[1]);
+437:   ss >> std::hex >> address;

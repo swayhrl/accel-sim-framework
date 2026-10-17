@@ -1,0 +1,21 @@
+/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1 6fba0136f8465b59fe5858a950fa39efb265f654:src/gpgpu-sim/gpu-sim.cc SHA256=537d8a68effb56c02c28bbfea68fd6a92fa9644a70606c9d8dcabf10807a4b15
+1748:
+1749: void gpgpu_sim::change_cache_config(FuncCache cache_config) {
+1750:   if (cache_config != m_shader_config->m_L1D_config.get_cache_status()) {
+1751:     printf("FLUSH L1 Cache at configuration change between kernels\n");
+1752:     for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
+1753:       m_cluster[i]->cache_invalidate();
+1754:     }
+1755:   }
+1756:
+2518:     // Depending on configuration, invalidate the caches once all of threads are
+2519:     // completed.
+2520:     int all_threads_complete = 1;
+2521:     if (m_config.gpgpu_flush_l1_cache) {
+2522:       for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
+2523:         if (m_cluster[i]->get_not_completed() == 0)
+2524:           m_cluster[i]->cache_invalidate();
+2525:         else
+2526:           all_threads_complete = 0;
+2527:       }
+2528:     }

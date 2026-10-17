@@ -1,0 +1,77 @@
+/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1 6fba0136f8465b59fe5858a950fa39efb265f654:src/gpgpu-sim/shader.cc SHA256=5964c1bdaf37b23d6bf57f499e687ef717a0570eaebc1dd241345c6340c84cb1
+2622:     warp_inst_t &inst, dtc_l1_m4_operation operation) {
+2623:   if (!dtc_l1_paper_io_active() && !dtc_l1_paper_oo_active()) return true;
+2624:   const unsigned uid = inst.get_uid();
+2625:   if (dtc_l1_paper_io_active()) {
+2626:     if (dtc_l1_io_find_entry(uid)) return true;
+2627:     if (!m_dtc_l1_io_frontend->admit(uid)) return false;
+2628:     m_dtc_l1_io_frontend->add_external_dependency(uid);
+2629:     m_dtc_l1_io_pib.push_back({inst, {}, 0, operation, false});
+2630:     m_dtc_l1_io_pib_peak = std::max(
+2631:         m_dtc_l1_io_pib_peak, static_cast<uint64_t>(m_dtc_l1_io_pib.size()));
+2632:   } else {
+2633:     if (dtc_l1_oo_find_entry(uid)) return true;
+2634:     const bool admitted = dtc_l1_sector_oo_active()
+2635:                               ? m_dtc_l1_sector_frontend->admit(uid)
+2636:                               : m_dtc_l1_oo_frontend->admit(uid);
+2637:     if (!admitted) return false;
+2638:     if (dtc_l1_sector_oo_active())
+2639:       m_dtc_l1_sector_frontend->add_external_dependency(uid);
+2640:     else
+2641:       m_dtc_l1_oo_frontend->add_external_dependency(uid);
+2642:     m_dtc_l1_oo_pib.push_back({inst, {}, 0, operation, false});
+2643:   }
+2644:   switch (operation) {
+2645:     case dtc_l1_m4_operation::STORE: ++m_dtc_l1_m4_store_admits; break;
+2646:     case dtc_l1_m4_operation::ATOMIC: ++m_dtc_l1_m4_atomic_admits; break;
+2647:     case dtc_l1_m4_operation::BYPASS_LOAD:
+2648:       ++m_dtc_l1_m4_bypass_load_admits;
+2649:       break;
+2650:     case dtc_l1_m4_operation::PROXY_FENCE:
+2651:       ++m_dtc_l1_m4_proxy_fence_admits;
+2652:       break;
+2653:     case dtc_l1_m4_operation::CACHEABLE_LOAD: assert(false); break;
+2654:   }
+2655:   return true;
+2656: }
+3899:       inst.pc, access.get_type(), access.get_addr(), access.get_size(),
+3900:       access.is_tma(), access.get_tma_mbar_addr());
+3901:   bool bypassL1D = false;
+3902:   if (CACHE_GLOBAL == inst.cache_op || (m_L1D == NULL)) {
+3903:     bypassL1D = true;
+3904:   } else if (inst.space.is_global()) {  // global memory access
+3905:     // skip L1 cache if the option is enabled
+3906:     if (m_core->get_config()->gmem_skip_L1D && (CACHE_L1 != inst.cache_op))
+3907:       bypassL1D = true;
+3908:   }
+3909:   // Atomics retain their source-defined architectural route even though the
+3910:   // PTX model classifies them as LOAD_OP.  They are never DTC mergeable reads.
+3911:   dtc_l1_m4_operation observed_operation =
+3912:       dtc_l1_m4_operation::CACHEABLE_LOAD;
+3913:   if (inst.isatomic())
+3914:     observed_operation = dtc_l1_m4_operation::ATOMIC;
+3915:   else if (inst.is_store())
+3916:     observed_operation = dtc_l1_m4_operation::STORE;
+3917:   else if (inst.is_load() && bypassL1D)
+3918:     observed_operation = dtc_l1_m4_operation::BYPASS_LOAD;
+3919:   if (observed_operation != dtc_l1_m4_operation::CACHEABLE_LOAD &&
+3920:       !dtc_l1_m4_observe_admit(inst, observed_operation)) {
+3921:     stall_reason = BK_CONF;
+3922:     access_type = inst.is_store() ? G_MEM_ST : G_MEM_LD;
+3923:     return false;
+3924:   }
+3925:   if (dtc_l1_paper_io_active() && inst.is_load() && !inst.isatomic() &&
+3926:       !bypassL1D) {
+3927:     return dtc_l1_io_memory_cycle(inst, stall_reason, access_type);
+3928:   }
+3929:   if (dtc_l1_paper_oo_active() && inst.is_load() && !inst.isatomic() &&
+3930:       !bypassL1D) {
+4007: void ldst_unit::flush() {
+4008:   // Flush L1D cache
+4009:   m_L1D->flush();
+4010: }
+4011:
+4012: void ldst_unit::invalidate() {
+4013:   // Flush L1D cache
+4014:   m_L1D->invalidate();
+4015: }

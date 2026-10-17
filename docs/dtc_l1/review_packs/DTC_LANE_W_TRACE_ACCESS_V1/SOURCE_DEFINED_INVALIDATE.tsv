@@ -1,0 +1,7 @@
+event_id	source_commit	source_anchor	condition	conventional_L1_effect	DTC_mapping_effect	dynamic_event_count
+INV_CONFIG_CHANGE	6fba0136f8465b59fe5858a950fa39efb265f654	gpu-sim.cc:1748	cache_config differs from current status	cluster cache_invalidate -> ldst_unit::invalidate -> m_L1D->invalidate	NO_DTC_INVALIDATE_CALL_IN_THIS_PATH	UNAVAILABLE
+INV_CLUSTER_IDLE	6fba0136f8465b59fe5858a950fa39efb265f654	gpu-sim.cc:2518	gpgpu_flush_l1_cache enabled AND cluster get_not_completed()==0	cluster cache_invalidate -> ldst_unit::invalidate -> m_L1D->invalidate	NO_DTC_INVALIDATE_CALL_IN_THIS_PATH	UNAVAILABLE
+INV_MEMCPY_UNESTABLISHED	18a68dcccd795f1b6cda75504e9450d00c9cee02	accel-sim.cc:98	MemcpyHtoD list command	perf_memcpy_to_gpu invoked; not evidence of L1 invalidation	UNAVAILABLE_NO_IMPLICIT_DTC_INVALIDATE_ASSUMED	UNAVAILABLE
+STORE_OBSERVATION	6fba0136f8465b59fe5858a950fa39efb265f654	shader.cc:3909	inst.is_store()	source store path retained	M4 external dependency observation; no Tag ownership/invalidate in observed path	UNAVAILABLE
+ATOMIC_OBSERVATION	6fba0136f8465b59fe5858a950fa39efb265f654	shader.cc:3909	inst.isatomic()	source atomic path retained	never treated as DTC mergeable read; no global order inferred	UNAVAILABLE
+OO_RETIRE	6fba0136f8465b59fe5858a950fa39efb265f654	dtc-l1-common.h:690	ready instruction retires	UNAVAILABLE	decrements ref_count; reclaims only if !tag_valid AND ref_count==0; valid mapping can persist	UNAVAILABLE
