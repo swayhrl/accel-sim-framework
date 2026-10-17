@@ -18,7 +18,9 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--core',type=Path,required=True);p.add_argument('--build',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True);p.add_argument('--targets',nargs='+',required=True)
+    p.add_argument('--jobs',type=int,default=2);p.add_argument('--memory-gib',type=int,default=8)
     a=p.parse_args();fw=Path(__file__).resolve().parents[3]
+    assert a.jobs in (1,2) and a.memory_gib>=4*a.jobs,'at least4GiB per build worker'
     a.out.mkdir(parents=True,exist_ok=False)
     client_path=Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json')
     client=json.loads(client_path.read_text());path=Path(client['registry_client'])
@@ -28,7 +30,8 @@ def main():
     registry=api.Registry(client['canonical_root'])
     report=dict(status='PREFLIGHT',core_source_commit=head(a.core),framework_source_commit=head(fw),
         driver_sha256=sha(__file__),client_contract_sha256=sha(client_path),registry_sha256=sha(path),
-        core=str(a.core),build=str(a.build),out=str(a.out),targets=a.targets,commands=[],full_application_starts=0)
+        core=str(a.core),build=str(a.build),out=str(a.out),targets=a.targets,commands=[],full_application_starts=0,
+        cpu_units=a.jobs,memory_bytes=a.memory_gib*1024**3)
     def save():(a.out/'BUILD_RECEIPT.json').write_text(json.dumps(report,indent=2)+'\n')
     def resources():
         live=api.local_resources();share=os.statvfs('/root/share')
@@ -46,7 +49,7 @@ def main():
         assert not a.build.exists(),'immutable new build directory required'
         live=resources();report['resources_before']=live
         assert live['disk_free_bytes']>=50*1024**3,'build growth margin'
-        lease=registry.build_lease('lane4',cpu=2,memory=8*1024**3)
+        lease=registry.build_lease('lane4',cpu=a.jobs,memory=a.memory_gib*1024**3)
         report['lease_id']=lease;resources();save()
         env=dict(os.environ,GPGPUSIM_ROOT=str(a.core),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',
             ACCELSIM_CONFIG='release',PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],
@@ -60,6 +63,16 @@ def main():
                     row['process']=api.process_identity(proc.pid);save()
                     while proc.poll() is None:
                         resources()
+                        rss=0
+                        for entry in Path('/proc').iterdir():
+                            if not entry.name.isdigit():continue
+                            try:
+                                if os.getpgid(int(entry.name))!=proc.pid:continue
+                                for line in (entry/'status').read_text().splitlines():
+                                    if line.startswith('VmRSS:'):rss+=int(line.split()[1])*1024
+                            except (ProcessLookupError,FileNotFoundError,PermissionError):pass
+                        row['peak_process_group_rss_bytes']=max(rss,row.get('peak_process_group_rss_bytes',0))
+                        assert rss<report['memory_bytes'],'owned build exceeds its memory reservation'
                         assert time.monotonic()-start<1800,'owned build timeout'
                         time.sleep(1)
                 row['exit_code']=proc.returncode;row['log_sha256']=sha(row['log']);save()
@@ -71,7 +84,7 @@ def main():
                     except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);proc.wait()
         report['status']='BUILDING';save()
         run('configure',['cmake','-S',str(fw/'gpu-simulator'),'-B',str(a.build),'-G','Unix Makefiles','-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'])
-        run('compile',['cmake','--build',str(a.build),'--target',*a.targets,'-j2'])
+        run('compile',['cmake','--build',str(a.build),'--target',*a.targets,'-j'+str(a.jobs)])
         assert head(a.core)==report['core_source_commit'] and head(fw)==report['framework_source_commit']
         report['binary_sha256']=sha(a.build/'accel-sim.out') if (a.build/'accel-sim.out').exists() else None
         report['status']='BUILT_NOT_INDEPENDENTLY_QUALIFIED'
