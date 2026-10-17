@@ -1,0 +1,25 @@
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 717658bc..ea4eb514 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -854,6 +854,7 @@ class cache_config {
+   }
+   bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }
+   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }
++  unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }
+   enum mshr_config_t get_mshr_type() const { return m_mshr_type; }
+   void set_assoc(unsigned n) {
+     // set new assoc. L1 cache dynamically resized in Volta
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index b122ac3e..323f99b0 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -2323,7 +2323,7 @@ void shader_core_ctx::dump_warp_state(FILE *fout) const {
+ 
+ void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {
+   if (m_memory_config->m_perf_sim_memcpy) {
+-    if (m_memory_config->m_L2_config.m_ep_l2_ft_mode) {
++    if (m_memory_config->m_L2_config.ep_l2_ft_mode()) {
+       // FT host prefill must name the same complete address as its resident
+       // owner. The legacy unsigned temporary truncated 64-bit trace pointers.
+       // Touch each intersected 32B sector once, including unaligned endpoints;
