@@ -28,11 +28,6 @@ start=time.time()
 tool_tmp=out/'tool_tmp';tool_tmp.mkdir();tool_env=os.environ.copy();tool_env['TMPDIR']=str(tool_tmp)
 with (out/'yosys.log').open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(script)],stdout=f,stderr=subprocess.STDOUT,env=tool_env,check=True)
 assert (out/'mapped.v').stat().st_size>10000,'meaningful connected design absent'
-env=os.environ.copy();env.update(LIBERTY=str(lib),NETLIST=str(out/'mapped.v'),RTL_ROOT=str(root),IO_DRIVE_CELL=a.drive_cell,OUTPUT_LOAD_LIB_UNITS=str(a.load),LIB_TIME_UNIT_NS='1.0')
-for label,period in [('target_1132MHz',0.883392226),('exploration_2ns',2.0)]:
- d=out/label;d.mkdir();env.update(OUTPUT_DIR=str(d),CLOCK_PERIOD_NS=str(period))
- with (d/'sta.log').open('w') as f:subprocess.run(['sta','-threads','1','-exit','-no_init',str(root/'flow/opensta.tcl')],stdout=f,stderr=subprocess.STDOUT,env=env,check=True)
- log=(d/'sta.log').read_text();assert 'Error:' not in log and 'error:' not in log,log[-3000:]
-assert source_identity['RTL_files']==[{ 'path':str(f.relative_to(repo)),'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in files],'RTL changed during mapping'
-receipt={'mode':a.mode,'mapping_effort':a.mapping,'source_identity_at_start':source_identity,'parameters':{'MODE':mode,'STATIC_WB':wb,'N_TAG':1024,'N_PAYLOAD':1168,'N_WAD':128,'GEN_W':32,'data_bits':1024,'banks':4,'rows_per_bank':292,'P':1},'scope':'mapped control+access datapath; SRAM and traditional Tag/MSHR excluded, NOT whole L2','library_path':str(lib),'library_sha256':hashlib.sha256(lib.read_bytes()).hexdigest(),'RTL_files':[{ 'path':str(f.relative_to(repo)),'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in files],'netlist_sha256':hashlib.sha256((out/'mapped.v').read_bytes()).hexdigest(),'sdc_sha256':hashlib.sha256((root/'flow/common.sdc').read_bytes()).hexdigest(),'tools':{cmd:subprocess.check_output(args,stderr=subprocess.STDOUT,text=True).strip() for cmd,args in [('yosys',['yosys','-V']),('OpenSTA',['sta','-version'])]},'elapsed_seconds':time.time()-start,'SRAM_area':None,'SRAM_delay':None,'post_layout':False}
-(out/'FLOW_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt),flush=True)
+# Mapping is immutable. STA can resume independently after format/tool fixes.
+subprocess.run(['python3',str(root/'flow/run_sta.py'),'--mapped-run',str(out),
+    '--mode',a.mode,'--liberty',str(lib),'--drive-cell',a.drive_cell,'--load',str(a.load)],check=True)

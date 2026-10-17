@@ -37,7 +37,7 @@ for directory in a.runs:
   return total
  top='\\ep_l2_slice_ctrl' if '\\ep_l2_slice_ctrl' in modules else 'ep_l2_slice_ctrl';total=accumulate(top);total['combinational_area']=total['area']-total['sequential_area'];timing={}
  for label in ['target_1132MHz','exploration_2ns']:
-  d=directory/label;path=(d/'critical_paths.rpt').read_text();coverage=(d/'constraint_coverage.rpt').read_text()
+  d=Path(receipt.get('STA_root',str(directory)))/label;path=(d/'critical_paths.rpt').read_text();coverage=(d/'constraint_coverage.rpt').read_text()
   timing[label]={'wns_ns':metric(r'wns max\s+([-+\d.eE]+)',(d/'wns.rpt').read_text()),'tns_ns':metric(r'tns max\s+([-+\d.eE]+)',(d/'tns.rpt').read_text()),'worst_reported_data_arrival_ns_includes_IO_budget':metric(r'([-+\d.eE]+)\s+data arrival time',path),'reported_slack_ns':metric(r'([-+\d.eE]+)\s+slack\s+\(',path),'constraint_coverage_report':coverage,'scope':'controller/interface netlist only; external SRAM0.10ns budget is assumption, not macro delay; no SPEF','design_rules_report':str(d/'design_rules.rpt')}
   timing[label]['path_classes']={}
   for cls,file in [('hit_data_interface','hit_data_interface.rpt'),('allocation_request_interface','allocation_interface.rpt'),('WB_interface','wb_interface.rpt')]:

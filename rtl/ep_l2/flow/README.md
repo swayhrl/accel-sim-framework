@@ -55,3 +55,15 @@ passes library-linked `check -assert`; this is backend qualification, not
 an EPL2 cost result. Full controller mapping/STA must still complete.
 The open flow declares LIB_TIME_UNIT_NS=1.0 for the selected Nangate1ns
 library; changing library time units requires an explicit matching setting.
+
+`run_sta.py --mapped-run /absolute/existing_run --mode B16 --liberty
+/absolute/real.lib --phase new_revision` resumes STA without re-synthesis.
+It checks full-size parameters, frozen RTL and SDC hashes, mapped-cell
+statistics and final Yosys connectivity check. The original mapped.v is
+immutable. OpenSTA rejects Yosys's residual `wire signed` declarations;
+`sta_netlist.py` removes only this qualifier after proving all affected uses
+are explicit bit/range selections or full-width constant loop assignments.
+No cell, bit, connection or constant changes. Both netlist hashes and the
+format proof are retained. OpenSTA still uses the same library and SDC.
+A successful resumed phase writes FLOW_RECEIPT with exact mapping-source and
+STA-phase identities; incomplete/failed phases never create that receipt.
