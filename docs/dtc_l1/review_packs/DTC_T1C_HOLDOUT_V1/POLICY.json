@@ -1,0 +1,47 @@
+{
+  "status": "FROZEN_BEFORE_ANY_NEW_CANDIDATE_PERFORMANCE",
+  "authorization": "AUTHORIZATION.md",
+  "max_new_attempts": 2,
+  "max_parallel": 1,
+  "workloads": [
+    "DWT2D",
+    "BICG"
+  ],
+  "service_t2": false,
+  "tuning_after_results": false,
+  "preregistered_order": [
+    "DTC_T1C_HOLDOUT_V1_DWT2D",
+    "DTC_T1C_HOLDOUT_V1_BICG"
+  ],
+  "admission": {
+    "host_MemAvailable_min_gib": 32,
+    "cgroup_headroom_min_gib": 32,
+    "disk_free_min_gib": 10,
+    "memory_pressure_avg10_max": 1,
+    "io_pressure_avg10_max": 25,
+    "swapped_pages_delta_max": 0,
+    "oom_event_delta_max": 0,
+    "probe_interval_seconds": 10,
+    "external_simulators_allowed": 0,
+    "old_lock_owners_allowed": 0
+  },
+  "resource_stop": {
+    "cgroup_headroom_min_gib": 8,
+    "disk_free_min_gib": 2,
+    "memory_pressure_avg10_max": 10,
+    "consecutive_samples": 3,
+    "signal_only_own_process_groups": true
+  },
+  "failures": "PRESERVE_NO_SCIENTIFIC_RETUNE_NO_AUTOMATIC_RETRY; correctness/identity gap stops candidate or full gate",
+  "raw_root": "/workspace/dtc-t1c-holdout-174-v1",
+  "source_changes": false,
+  "no_new_performance_threshold": true,
+  "wall_timeouts_seconds": {
+    "DWT2D": 3600,
+    "BICG": 28800
+  },
+  "timeout_rationale": "Frozen before results: DWT2D original OO335s ->3600s; BICG12471s ->28800s; no reset or retry",
+  "independent_EP_L2": "Reuse exact Lane T V2 fingerprint; all projects count toward resource limits",
+  "holdout_execution_authorized": true,
+  "after_holdouts": "DWT2D_STRICT_PASS_THEN_BICG; STOP_AFTER_TWO_OR_LEGAL_FAILURE"
+}
