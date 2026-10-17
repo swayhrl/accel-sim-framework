@@ -61,6 +61,11 @@ def audit(handoff):
     for row in receipt.get('commands',receipt.get('tests',[]))+build.get('actual_compile_and_link',[]):
         require(row['exit_code']==0 and digest(row['log'])==row['log_sha256'],'Producer compile/test raw missing')
         archived=handoff['producer_receipt_repository_path'].rsplit('/',1)[0]+'/logs/'+Path(row['log']).name
+        # L25 reuses the exact fixture compiled and published with D2.
+        # Keep the same Git object binding; do not manufacture a second build.
+        candidates=git('ls-tree','-r','--name-only',pub,'--',archived).decode().splitlines()
+        if not candidates and handoff['regime']=='L25' and row in build.get('actual_compile_and_link',[]):
+            archived=archived.replace('FT20261017_LANE1_R19_L25_r1','FT20261017_LANE1_R19_D2_r1')
         require(Path(row['log']).read_bytes()==git('show',pub+':'+archived),'Producer raw is not exact remote evidence')
     for mode,row in manifest['modes'].items():
         configs=asset_manifest(row['configs'],ordered=True);require(configs==row['ordered_config_manifest'],'Frozen config content changed')

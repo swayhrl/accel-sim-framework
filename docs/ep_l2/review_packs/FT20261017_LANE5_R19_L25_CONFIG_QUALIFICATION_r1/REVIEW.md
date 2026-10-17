@@ -1,0 +1,1 @@
+L25 exact same frozen binary/config delta independently exercised in B/U. Original11 evidence reused without replay. New physical clock/fixed delay,40 responses/five WB/lower set_done/two dirty-sector versions/credit-drain assertions PASS. Full64slice complete-input application and currentV2 authorization remain mandatory. No compile, no app starts in this pack.
