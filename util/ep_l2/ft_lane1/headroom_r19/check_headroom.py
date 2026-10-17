@@ -33,6 +33,13 @@ def options(log):
   if pair and pair[0].startswith('-'):result[pair[0]]=pair[1].strip() if len(pair)>1 else ''
  return result
 
+def authored_options(paths):
+ result={}
+ for path in paths:
+  tokens=shlex.split(Path(path).read_text(),comments=True);assert len(tokens)%2==0
+  for key,value in zip(tokens[::2],tokens[1::2]):assert key.startswith('-') and key!='-config';result[key]=value
+ return result
+
 def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--regime',choices=['D4','Q4'],required=True);parser.add_argument('--out',type=Path,required=True);parser.add_argument('--build-fixture',action='store_true');args=parser.parse_args()
  out=args.out.resolve();out.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
@@ -68,7 +75,11 @@ def main():
    write(BUILD/'BUILD_IDENTITY.json',{'fixture_source_sha256':digest(fixture),'fixture_source_commit':r['tool_source_commit'],'archives_sha256':arches,'binary_sha256':digest(BUILD/'production_probe'),'runtime_source':SOURCE_SHA,'runtime_framework':FRAMEWORK_SHA,'actual_compile_and_link':r['commands'],'runtime_recompiled':False})
   binding=json.loads((BUILD/'BUILD_IDENTITY.json').read_text());assert binding['fixture_source_sha256']==digest(fixture) and binding['binary_sha256']==digest(BUILD/'production_probe')
   for p,h in binding['archives_sha256'].items():assert digest(p)==h
-  r['fixture_build_identity']=binding;manifest={'schema':'EP_L2_HEADROOM_CONFIG_MANIFEST_V1','experiment_id':'EPL2_DOWNSTREAM_HEADROOM_R19','regime':args.regime,'runtime_core':SOURCE_SHA,'runtime_framework':FRAMEWORK_SHA,'official_binary_sha256':BINARY_SHA,'runtime_code_changed':False,'allowed_overlay_values':D4 if args.regime=='D4' else Q4,'all_other_effective_parameters_must_equal_H0_same_mode':True,'semantic_scope':'Detailed DRAM; all base integer timings/banks/atom/mapping/cache resources unchanged; shared credit1279 vs319 is extra cost, D4 retains fixed100GPUcycles','modes':{}}
+  r['fixture_build_identity']=binding;manifest={'schema':'EP_L2_HEADROOM_CONFIG_MANIFEST_V1','experiment_id':'EPL2_DOWNSTREAM_HEADROOM_R19','regime':args.regime,'runtime_core':SOURCE_SHA,'runtime_framework':FRAMEWORK_SHA,'official_binary_sha256':BINARY_SHA,'runtime_code_changed':False,'allowed_overlay_values':D4 if args.regime=='D4' else Q4,'all_other_effective_parameters_must_equal_H0_same_mode':True,'semantic_scope':'Detailed DRAM; all base integer timings/banks/atom/mapping/cache resources unchanged; shared credit1279 vs319 is extra cost, D4 retains fixed100GPUcycles','identity':{'core_source_commit':SOURCE_SHA,'framework_source_commit':FRAMEWORK_SHA,'binary_sha256':BINARY_SHA},'status':'PRODUCER_CHECKS_ONLY_NOT_INDEPENDENTLY_QUALIFIED','modes':{}}
+  overlay_paths=[CONFIGS/'q4.config']+([CONFIGS/'d4_clock.config'] if args.regime=='D4' else [])
+  (out/'overlays').mkdir();manifest['overlays']=[]
+  for p in overlay_paths:
+   dest=out/'overlays'/p.name;shutil.copy2(p,dest);os.chmod(dest,0o444);manifest['overlays'].append({'path':str(dest),'sha256':digest(dest)})
   for mode in ['B16_BANKED','U_WB16']:
    original=baseline['modes'][mode];base=[Path(v['path']) for v in original['configs']]
    configs=base+[CONFIGS/'q4.config']+([CONFIGS/'d4_clock.config'] if args.regime=='D4' else [])
@@ -91,7 +102,7 @@ def main():
    config_hash=content_hash({'ordered_configs':ordered,'auxiliary_assets':[],'environment':original['environment']})
    assert config_hash!=original['runtime_config_sha256'];r['tests'].append(rec)
    write(out/f'{mode}_EFFECTIVE_OPTIONS.json',actual)
-   manifest['modes'][mode]={'configs':assets,'ordered_config_manifest':ordered,'runtime_config_sha256':config_hash,'H0_runtime_config_sha256':original['runtime_config_sha256'],'environment':original['environment'],'feature_vector':original['feature_vector'],'ideal_vector':original['ideal_vector'],'actual_native_effective_parameter_count':len(actual),'actual_changes_vs_H0':changes,'effective_options_path':str(out/f'{mode}_EFFECTIVE_OPTIONS.json'),'effective_options_sha256':digest(out/f'{mode}_EFFECTIVE_OPTIONS.json'),'native_clock_dump':clocks[0],'production_evidence':{'log':rec['log'],'log_sha256':rec['log_sha256'],'process':rec['process'],'exit_code':0},'H0_affected_control':reference}
+   manifest['modes'][mode]={'configs':assets,'ordered_config_manifest':ordered,'runtime_config_sha256':config_hash,'H0_runtime_config_sha256':original['runtime_config_sha256'],'environment':original['environment'],'feature_vector':original['feature_vector'],'ideal_vector':original['ideal_vector'],'effective_options':authored_options(configs),'actual_native_effective_parameter_count':len(actual),'actual_changes_vs_H0':changes,'effective_options_path':str(out/f'{mode}_EFFECTIVE_OPTIONS.json'),'effective_options_sha256':digest(out/f'{mode}_EFFECTIVE_OPTIONS.json'),'native_clock_dump':clocks[0],'production_evidence':{'log':rec['log'],'log_sha256':rec['log_sha256'],'process':rec['process'],'exit_code':0},'H0_affected_control':reference}
   # Across modes only original FT organization differs, budgets stay equal.
   b=options(manifest['modes']['B16_BANKED']['production_evidence']['log']);u=options(manifest['modes']['U_WB16']['production_evidence']['log']);assert {k for k in b if b[k]!=u[k]}=={'-gpgpu_ep_l2_ft_mode'}
   write(out/'HEADROOM_CONFIG_MANIFEST.json',manifest);r['status']='AFFECTED_PRODUCTION_CHECKS_PASS_READY_FOR_LANE5_INDEPENDENT_REVIEW';r['headroom_manifest_sha256']=digest(out/'HEADROOM_CONFIG_MANIFEST.json');assert digest(BINARY)==BINARY_SHA
