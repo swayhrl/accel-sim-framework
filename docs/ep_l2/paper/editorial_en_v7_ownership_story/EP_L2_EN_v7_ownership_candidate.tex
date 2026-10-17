@@ -27,7 +27,7 @@ GPU, L2 cache, writeback, tag--data decoupling, resource sharing
 \end{IEEEkeywords}
 
 \section{Introduction}
-The lifetime of a cache line is not one lifetime. A replacement can make its tag available for a new address, yet the evicted data may still be needed by a lower-level writeback. Even after those bytes have left the cache's local storage, ordering metadata may have to remain until the writeback completes. Cache organizations often simplify these transitions by coupling physical data locations to the roles they serve. That coupling can turn a change of ownership into a movement of data.
+Eviction does not end every obligation of a cache line at once. A replacement can make its tag available for a new address, yet the evicted data may still be needed by a lower-level writeback. Even after those bytes have left the cache's local storage, ordering metadata may have to remain until the writeback completes. Cache organizations often simplify these transitions by coupling physical data locations to the roles they serve. That coupling can turn a change of ownership into a movement of data.
 
 Consider the fixed-partition GPU L2 examined in this paper. To reuse a dirty resident line, it reads the victim from the resident array, copies it into a dedicated writeback-buffer (WBUF) slot, and eventually reads that slot for the lower-level send. These additional data-array operations move unchanged bytes. At the same time, a fixed WBUF quota can reject replacement while other payload slots are free. Such refusals expose an internal resource mismatch, but do not necessarily imply longer application execution: the downstream memory system may still determine when useful work completes.
 
