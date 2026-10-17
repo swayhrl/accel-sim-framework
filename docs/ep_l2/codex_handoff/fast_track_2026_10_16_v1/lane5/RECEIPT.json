@@ -32,7 +32,8 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_R15_A1_QUALIFICATION_ADDENDUM_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_OFFICIAL_INTAKE_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_INDEPENDENT21_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_OFF_MODE_GATES_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R0_1_OFF_MODE_GATES_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_R16_ATOMIC_SCOPE_PREPARATION_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": null,
@@ -45,25 +46,58 @@
   "bounded_continue": {
     "A1_addendum": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/continue_r13/A1_AFFECTED_GATE_ADDENDUM_R15.json",
     "T0_utc": "2026-10-17T02:19:03Z",
-    "active_leases": {},
+    "active_leases": {
+      "8b85cb6f1d2146b0a0147629dbd9a8de": {
+        "cpu_units": 2,
+        "created_at": "2026-10-17T03:41:57.417943+00:00",
+        "host": "huangrulin-174",
+        "memory_bytes": 8589934592,
+        "owner": "lane1",
+        "status": "RESERVED"
+      }
+    },
     "active_runs": {},
     "actual_resources": {
-      "available_memory_bytes": 187906740224,
-      "disk_free_bytes": 20385714176
+      "disk_free_bytes": 81468788736,
+      "source": "EVENT007 historical timestamp, not fresh admission"
     },
+    "actual_resources_at": "2026-10-17T03:44:32.763201+00:00",
     "additional_background_watcher": false,
     "at": "2026-10-17T02:25:08.668929+00:00",
+    "atomic_trace_preparation": {
+      "affected_followup_cases": 2,
+      "at_utc": "2026-10-17T03:52:42.094376+00:00",
+      "coordination_commit": "92de53a63616f9fcc53f2058ad975c3c8f90b13c",
+      "current_accepted_pairs": 0,
+      "deadline_utc": "2026-10-17T12:19:03Z",
+      "first_pair": "sad",
+      "initial_suite_cases": 12,
+      "known088_source_scanning": "REJECTED_BEFORE_FULL_SCAN_OR_LEASE",
+      "new_compiler_or_simulator_executions": 0,
+      "new_unit_cases": 14,
+      "next_action": "Receive corrected A1 official producer; review exact final old-red fixture and all31 real logs; bind independent gates to corrected source. Perform full atomic input audit only at new source milestone. No current21 replay.",
+      "production_trace_body_scans": 0,
+      "qualification_or_launch_authority": false,
+      "remaining_order": [
+        "vectorAdd_4M",
+        "cfd_097k",
+        "convolutionSeparable",
+        "FWT_7_21"
+      ],
+      "schema_version": "EPL2_LANE5_ATOMIC_INPUT_PREPARATION_R16_V1",
+      "status": "PREPARED_UNIT_FIXTURES_PASS_PRODUCTION_SCOPE_NOT_RUN"
+    },
     "authority": "31251186feccffec192cc1fef8fc7d8164d12d9f",
     "deadline_utc": "2026-10-17T12:19:03Z",
     "event": "CONTINUE_STARTED_PREPARATION_COMPLETE",
     "filesystems": {
       "/root/share": {
-        "available_bytes": 47450828800,
+        "available_bytes": 46987603968,
         "device": 2431,
         "fsid": 2757854780513707398
       },
       "/workspace": {
-        "available_bytes": 20385714176,
+        "available_bytes": 81468788736,
         "device": 156,
         "fsid": 1349835467748716946
       }
@@ -106,6 +140,7 @@
       }
     },
     "input_preparation": "10 metadata rows/5 ordered pairs; trace paths disjoint from approved PolyBench closeout; full trace hashing deferred until release",
+    "latest_dependency_event": "EVENT_007.json",
     "latest_event": {
       "V2_launch_authorizations": 0,
       "accepted_pairs": 0,
@@ -154,9 +189,9 @@
       "new_cpp_builds": 0,
       "new_simulations": 0,
       "path": "util/ep_l2/ft_lane5/qualify_native_off.py",
-      "provenance": "Signal-safe owned cleanup; controller/child/command/allocation and sampled RSS/time persisted. Exact source is this publication tree; no native control has started yet.",
+      "provenance": "Exact produced report retained in FT20261017_LANE5_R0_1_OFF_MODE_GATES_r1; no active owned worker",
       "sha256": "a95971a1b33160973d93e5ccfb2b53f90d8b57e36b8fd460c2b39740118fbde6",
-      "status": "OFFICIAL_INTAKE_REBOUND_READY_TO_EXECUTE"
+      "status": "ACTUALLY_EXECUTED_PASS_QUALIFICATION_CONTROL_ONLY"
     },
     "new_builds": 0,
     "new_guard_tests": {
@@ -167,7 +202,7 @@
     },
     "new_independent_production_tests": 0,
     "new_simulations": 0,
-    "next_action": "At>=600s event cadence receive fresh release; exact official provenance/21 tests audit, independent21 replay, close all11 gates including OFF/legality, update current V2 authority, then first valid pair. No compiler/migration/second GateWaiter.",
+    "next_action": "Receive corrected A1 official producer; review exact final old-red fixture and all31 real logs; bind independent gates to corrected source. Perform full atomic input audit only at new source milestone. No current21 replay.",
     "off_mode_qualification": {
       "V2_launch_authorizations": 0,
       "accepted_pairs": 0,
@@ -212,10 +247,11 @@
       "wall_seconds": 285.8838026765734
     },
     "official_producer": {
-      "binary_sha256": null,
-      "lane1_publication": "7ea8cdc85f5be1a6ce31df2f216c8d16d2546c9d",
-      "producer_actual_directed_count": 0,
-      "status": "NOT_AVAILABLE"
+      "binary_sha256": "e42432c7328e0ed17c1fbec6e823af5dc373e4abbc60ce335612da6953c77a4b",
+      "core_source_commit": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
+      "lane1_publication": "9898c56d7a010c934de327784076ba0b9a36c9c4",
+      "producer_actual_directed_count": 21,
+      "status": "DIRECTED21_AND_OFF_PASS_BUT_A1_KNOWN_BAD_NO_ELEVEN_GATE_CERTIFICATE"
     },
     "result_filesystem_guard": {
       "accepted_pairs": 0,
@@ -517,10 +553,10 @@
   "static_candidate_core": "088146f7f85b4073deb5d166a0a4484c7f3b48b2",
   "static_candidate_core_publication": "57e1c363aede1a7790bdf94136d832d35ee7b34b",
   "static_candidate_framework": "861a06b91e309832161eab0836b512853c833ffb",
-  "status": "ACTIVE_PREQUALIFICATION_PASS_WAIT_A1_REPAIR_ATOMIC_ELIGIBILITY",
+  "status": "ACTIVE_WAIT_CORRECTED_A1_OFFICIAL_PRODUCER_ATOMIC_PREPARATION_READY",
   "task_id": "FT20261017_LANE5_CONTINUE_R13_r1",
   "trace_identity": null,
-  "updated_at": "2026-10-17T03:34:28.649452+00:00",
+  "updated_at": "2026-10-17T03:52:42.094376+00:00",
   "validation": {
     "B16_U_WB16_qualification": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK",
     "R0": {
