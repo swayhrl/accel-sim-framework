@@ -1,3 +1,7 @@
+# Latest Q4Convolution terminal checkpoint
+
+Q4Conv controller session99795 terminal0; old PIDs2004595/2004634/2004642 now historical, never restart. Both canonical runs COMPLETE_VALID; independent full review PASS B290333/U293709, equal714547200 instructions. V2gen13 staged, requires push/readback+central pointer before announcement. No active EP-L2 simulator. Next verify/publish Q4Conv, then existing Q4_FWT_7_21_CAMPAIGN.json atW; no adaptive choice before final initialpair. Deadline17:09:16UTC/cap24 unchanged.
+
 # Latest actual Q4 checkpoint
 
 As of 2026-10-17T08:49:34.500431+00:00: Q4Conv controllerPID2004595/start897890338/boot59e1e1a4-84b6-431f-ac2d-03e340207019, unifiedexec99795. Actual two RUNNING run keys 2cf896205219d0af5fa06f40afce02519cb8c7ee6d684c349c7bd1bff566c689, 4daebfd0e227ecbebb8c45ba3fcd600c47143968f2943d18ad1c7bd32f472849. Exact native PID identities in docs/ep_l2/review_packs/FT20261017_LANE5_R19_D4_DELIVERED_Q4_STARTED_r1/RECEIPT.json and live registry. D4FWT session78105 is terminal0, never restart. V2gen12/e51984265031176b6ba380e05d33588b5159fc01 current; D4two pairs accepted/delivered. Next Q4Conv terminal same review_r0_1_pair.py --regime Q4 --workload convolutionSeparable, new Q4-specific pair/acceptance packs, push/readback pointer+Lane6; then prepared Q4FWT campaign. T007:09:16UTC/deadline17:09:16UTC, cap24.
