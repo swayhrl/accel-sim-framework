@@ -32,6 +32,11 @@ def main():
     client=Path(contract['registry_client']);assert sha(client)==contract['registry_client_sha256']
     spec=importlib.util.spec_from_file_location('lane5_central_registry',client);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     registry=module.Registry();pre=module.local_resources();assert pre['disk_free_bytes']>=50*1024**3
+    def output_space():
+        st=os.statvfs(out);minimum=(50 if os.stat(out).st_dev==os.stat('/workspace').st_dev else 42)*1024**3
+        available=st.f_bavail*st.f_frsize;assert available>=minimum
+        return {'path':str(out),'available_bytes':available,'required_bytes':minimum,'scope':'workspace50GiB or existing Share40GiB protection plus2GiB growth'}
+    output_before=output_space()
     snap=registry.snapshot();active={k:r for k,r in snap.get('resource_leases',{}).items() if r['status'] in module.ACTIVE}
     assert not any(r['owner']=='lane1' for r in active.values()),'Yield to an already active official producer'
     lease=registry.build_lease('lane3',cpu=1,memory=2*1024**3)
@@ -43,6 +48,8 @@ def main():
         after=module.local_resources();assert after['disk_free_bytes']>=50*1024**3
         assert after['available_memory_bytes']-2*1024**3>=64*1024**3
         receipt['resources_after_lease']=after
+        receipt['output_filesystem_before']=output_before
+        receipt['output_filesystem_after_lease']=output_space()
         gen=[sys.executable,str(a.core/'tests/ep_l2/prepare_ro_bank_progress.py'),'--source',a.source,'--output',str(out/'inputs')]
         for flag,value in [('--store-source',a.store_source),('--runtime-source',a.runtime_source)]:
             if value:gen += [flag,value]
