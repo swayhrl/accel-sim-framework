@@ -1,0 +1,63 @@
+{
+  "schema": "RO_BANK_SOURCE_BOUND_CPP_FIXTURE_V1",
+  "base_source": "30c2920a3754bdaae09511f93d91873959c09f15",
+  "headers": {
+    "gpu-cache.h": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "e69df9f61afe004320c4660c192e81dd4cd3f8a64fbc595e8dcbceaf86c2cdda"
+    },
+    "ep-l2-ro-transactions.h": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "sha256": "34c3f7c1f51db42cde6fd0b7f00210be6490f65a1213287977872033980e24f9"
+    },
+    "ep-l2-ro-oracle.h": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/ep-l2-ro-oracle.h",
+      "sha256": "ff1b7a17e508a3ae1da97a558ae86ba20681eb05e2e8ac4e94059bcdf8ecf0b2"
+    },
+    "ep-l2-ro-store-port.h": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/ep-l2-ro-store-port.h",
+      "sha256": "8fb2b33e0e1bc0f3ed1b0cdbf236d28847e44d4aa209064983ac1f38ed96fd2d"
+    },
+    "gpu-cache.cc": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "0ac02730575c61c4650bf3bdf807659538290c6b4256e54472162789eba0e7dc"
+    },
+    "ep-l2-ro-runtime.inc": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "4b1423b0d2ec7930b37259d32b67debc20e52012d88fd038b343486ef93ec545"
+    },
+    "ep-l2-ft-cache.inc": {
+      "source": "30c2920a3754bdaae09511f93d91873959c09f15",
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "2cc4cc11afb3a766235c0cb780e06b49a6f6f7c5b46ae38566611cee9a01fd5d"
+    }
+  },
+  "exact_method_sha256": {
+    "unsigned mshr_table::ro_targets_on_line": "c58d7a86113c64c1800bd4eddfafa50297828eebdd34311623fb127323d56793",
+    "unsigned mshr_table::targets_on_line": "4e26bfbb3e4f9344d7124240262c18471eaaba17b9960b07fdd4e74721d91df6",
+    "bool mshr_table::reserve_ro_descriptor": "727dd02370341f76489e8428158a274e26d75b8ebe018f12420fc1cd8e44c43d",
+    "bool mshr_table::ro_descriptor_live": "80868f75cb68c06caaeebae160e659f0fbfb879b488b0c138f646cbe1092f20f",
+    "void mshr_table::release_ro_descriptor": "c1345e3799ea72859ead369a77b13f75323c12876a82cfd7b4ae80c1f4123847",
+    "bool mshr_table::reserve_ro_line": "27fb796a434e08b33648ac0576d04e8ceabec61b634f9fa3d3a6062a4b9ef571",
+    "void mshr_table::bind_ro_line": "1b73b8655e127e94335c227e190c484a0a79ee69ade0286b80a83ab24cda6424",
+    "bool mshr_table::lookup_ro_line": "93cf6f86075076ed5845676c8fb4fe31175075bccfb7f9d2c6de9941caccd5e2",
+    "void mshr_table::release_ro_line": "8a5e5697239c76e63d170714246e5614081cbefb1a9188a72b74a5c3adfe1d01",
+    "void mshr_table::ro_line_issue": "d4655b299c0fc3755d6911ca96858070c76e1a3334ff1cae061d787a3021c4c9",
+    "void mshr_table::ro_line_ready": "3e26d445852ff7d811cc2efa80e44fd4e4cd3e413a14e00d29f87c8cafef660a",
+    "unsigned mshr_table::num_targets_used": "003e95597456026298cb9a14fc6ee86b057727ccd1dbd67386b6fe976f4419a5",
+    "  bool has_response()": "75146065945212355437113f84d5927dca8d90aa05075655a70f40415027a49c",
+    "  bool prepare(uint64_t cycle)": "cd5da1a1a39932234cb5be6f81bab178544ddceac03c8e374acd25cd87a20337",
+    "  void commit(uint64_t cycle)": "ef80e60d9a350bdd14e162f1242e8e16804313fc31261a7fdaa3590867b35882",
+    "l2_cache::ft_response_ready": "d5d93283108695ad1ab904ccfb1cbdd30354f35fb7704615b82e24bd0fd1973d"
+  },
+  "fixture_sha256": "37c9559388b6718e1bd924541ca93c5f9562a373c09ab6a4323e49a82ce7bed2",
+  "scope": "Actual payload-store/transaction/store-port headers and12 actual MSHR definitions; exact runtime has_response/prepare/commit and response scheduler bodies.",
+  "facades": "Synthetic physical clock, Tag callbacks, native ready flag and requester packet copy sink. Runtime response adapter forwards to actual transactions. Scheduler class qualifiers only renamed. Not a full cache/partition/DRAM simulation.",
+  "oracle": "Inline synthetic directed ranges only; no frozen real oracle input read/changed."
+}
