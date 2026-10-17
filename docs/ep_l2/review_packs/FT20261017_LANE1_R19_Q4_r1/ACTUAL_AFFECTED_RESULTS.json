@@ -1,0 +1,54 @@
+[
+  {
+    "mode": "B16_BANKED",
+    "runtime_config_sha256": "1009a9ce3b00873ce75bbd01737630fe051951404d1a37b565e987e0571bff60",
+    "effective_delta": {
+      "-gpgpu_frfcfs_dram_sched_queue_size": {
+        "H0": "128",
+        "condition": "512"
+      },
+      "-gpgpu_dram_partition_queues": {
+        "H0": "64:128:64:64",
+        "condition": "64:512:256:64"
+      },
+      "-gpgpu_dram_return_queue_size": {
+        "H0": "192",
+        "condition": "768"
+      }
+    },
+    "native_markers": [
+      "R19_EFFECTIVE|regime=Q4|mode=1|nmem=32|slices=64|queues=64:512:256:64|scheduler=512|dram_return=768|shared_credit_derived=1279|private_per_subpart=1|wb_progress_credit=1|dram_latency_gpu_cycles=100|detailed_dram=1|expected_dram_hz=850000000|atom=32|burst=2|busW=16|dram_banks=16",
+      "R19_CLOCK|core_ticks=10000|l2_ticks=10000|dram_ticks=7509|icnt_ticks=10000|native_next_clock_domain=1",
+      "R19_DELAY_CAPTURE|gpu_cycle=16545|ready_gpu_cycle=16645|fixed_latency_gpu_cycles=100",
+      "R19_PRODUCTION_PASS|regime=Q4|mode=1|exact_once=40|wb_lower_accept_and_set_done=5|two_dirty_sector_versions=1|cold_sectors=2|subpartitions_exercised=2|credit_drained=1|bank_max_ops_per_physical_cycle=1|fixed_delay_at_least100_gpu_cycles=1|runtime_archives_unchanged=1"
+    ],
+    "native_parameter_count": 260,
+    "pass": true
+  },
+  {
+    "mode": "U_WB16",
+    "runtime_config_sha256": "ce75220c2111224d6ea666fc06dc455964895cff82efb8ab34243069c26b7c68",
+    "effective_delta": {
+      "-gpgpu_frfcfs_dram_sched_queue_size": {
+        "H0": "128",
+        "condition": "512"
+      },
+      "-gpgpu_dram_partition_queues": {
+        "H0": "64:128:64:64",
+        "condition": "64:512:256:64"
+      },
+      "-gpgpu_dram_return_queue_size": {
+        "H0": "192",
+        "condition": "768"
+      }
+    },
+    "native_markers": [
+      "R19_EFFECTIVE|regime=Q4|mode=2|nmem=32|slices=64|queues=64:512:256:64|scheduler=512|dram_return=768|shared_credit_derived=1279|private_per_subpart=1|wb_progress_credit=1|dram_latency_gpu_cycles=100|detailed_dram=1|expected_dram_hz=850000000|atom=32|burst=2|busW=16|dram_banks=16",
+      "R19_CLOCK|core_ticks=10000|l2_ticks=10000|dram_ticks=7509|icnt_ticks=10000|native_next_clock_domain=1",
+      "R19_DELAY_CAPTURE|gpu_cycle=16537|ready_gpu_cycle=16637|fixed_latency_gpu_cycles=100",
+      "R19_PRODUCTION_PASS|regime=Q4|mode=2|exact_once=40|wb_lower_accept_and_set_done=5|two_dirty_sector_versions=1|cold_sectors=2|subpartitions_exercised=2|credit_drained=1|bank_max_ops_per_physical_cycle=1|fixed_delay_at_least100_gpu_cycles=1|runtime_archives_unchanged=1"
+    ],
+    "native_parameter_count": 260,
+    "pass": true
+  }
+]
