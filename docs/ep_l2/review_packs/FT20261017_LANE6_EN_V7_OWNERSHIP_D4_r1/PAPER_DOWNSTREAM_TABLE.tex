@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Paired cycles under matched service conditions. $S=C_B/C_U$; $J=S/S(\mathrm{H0})$. Q4 observations here cover Convolution only.}
+\label{tab:downstreamresults}\centering\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Workload, $h$ & $C_B$ & $C_U$ & $S$ & $J$ \\
+\midrule
+Conv., H0 & 292,932 & 291,525 & 1.004826 & 1.000000 \\
+Conv., D4 & 267,521 & 268,544 & 0.996191 & 0.991406 \\
+Conv., Q4 & 290,333 & 293,709 & 0.988506 & 0.983758 \\
+FWT, H0 & 493,189 & 491,662 & 1.003106 & 1.000000 \\
+FWT, D4 & 452,758 & 451,254 & 1.003333 & 1.000226 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+D4 accelerates both modes relative to H0 (Table~\ref{tab:downstreamresults}), but Convolution reverses U-WB's advantage: it takes 1023 more cycles than B16. FWT saves 1504 cycles, close to its H0 saving of 1527. The two-workload D4 geometric mean is 0.999755$\times$, with interaction 0.995806$\times$; this diagnostic result does not replace the five-workload H0 mean. More downstream headroom does not uniformly amplify the mechanism's benefit.
+
+D4 records no WB-data-full, L2-to-DRAM-full, or scheduler-full attempts in either mode, yet modeled bank-wait sums rise relative to H0. Observed zeros do not establish globally nonbinding service. Q4 Convolution also removes WBUF/lower-queue-full attempts, but U-WB is 3376 cycles slower; WAD-full attempts are 55,645/54,516 for B16/U-WB. Local data can leave well before ordering obligations retire. These repeated event counts identify candidate constraints, not unique stalls or a proven critical path. Staging durations start at B16's copy readout versus U-WB's producer commit, so only same-mode, across-condition comparisons share endpoints. Further attribution requires matched service and ordering evidence.

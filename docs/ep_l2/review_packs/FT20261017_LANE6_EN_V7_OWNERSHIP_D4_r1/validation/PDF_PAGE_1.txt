@@ -1,0 +1,55 @@
+               EP-L2: Decoupling Tag Residency from
+               Dirty-Data Lifetime in GPU L2 Caches
+                                              Author information to be completed
+                                       English working draft EN-v7 — not for submission
+
+
+   Abstract—Eviction ends tag residency before a dirty line’s        trols examine when these local savings matter; stronger static
+obligations end: data must survive until downstream acceptance,      partitions and physical cost remain necessary comparisons.
+and address ordering may persist until writeback completion. A
+fixed-partition L2 bridges these lifetimes by copying unchanged                II. Lifetime-Aware L2 Payload Storage
+bytes into a writeback buffer. EP-L2 instead transfers ownership:
+the victim retains its original banked slot, the incoming resident   A. Fixed Physical Resources, Different Data Lifetimes
+obtains a distinct legal landing, and local data and ordering
+state retire separately. At equal tag count, payload capacity,          The primary reference, B16 (B16_BANKED), partitions 1168
+and modeled bank service, five complete non-atomic workload          line-sized slots into 1024 resident, 128 bypass-return, and 16
+pairs eliminate all resident-to-writeback copies but yield only a    WBUF slots. U-WB16 (U_WB16) permits resident and WB
+1.001600 geometric-mean speed ratio, including one slowdown.         allocations across this physical pool. Each slot is 128 B with
+Under matched downstream controls, neither design records            four 32-B sectors. Both modes provision four banks of 292
+local-buffer refusals, yet U-WB’s relative performance does not
+uniformly improve. These results distinguish reduced internal        slots, at most one modeled line-sized operation per bank per
+work from application progress; competitive static allocation and    physical GPU cycle, and a common 128-B copy latch outside
+physical implementation cost remain unresolved.                      the pool. Both also retain 128 writeback address-directory
+   Index Terms—GPU, L2 cache, writeback, tag–data decoupling,        (WAD) entries and the same request-metadata limits. Sixteen
+resource sharing                                                     is the static data quota, not the U-WB control limit.
+                                                                        Figure 1 shows the declared service model. WB-only pooling
+                       I. Introduction                               can borrow reference bypass-return slots, but concurrent dy-
+   Eviction does not end every obligation of a cache line at         namic bypass use is unvalidated. Idle bypass capacity therefore
+once. Its tag can become reusable before its dirty bytes leave       makes a WB-heavy static control important.
+local storage; even then, same-address ordering may persist             A resident tag names a payload through a slot identi-
+until writeback completes. Coupling storage locations to these       fier and generation. Each slot has one authoritative owner;
+roles turns a change of ownership into data movement.                ready/pending sector masks and pins track its consumers. The
+   In our fixed-partition GPU L2 reference, replacing a dirty        initial design preserves the resident bank class:
+line requires a resident-bank read and writeback-buffer (WBUF)                   bank( 𝑝) = 𝑝 mod 4 = tag_index mod4.              (1)
+write before the later send read. These operations move
+unchanged bytes. A full WBUF can also reject replacement             A globally free slot is therefore not necessarily a legal landing
+despite free storage elsewhere. Such refusals expose a resource      for a given tag. The 1024 tags bound resident visibility; a
+mismatch, but do not directly measure application delay.             temporarily reserved incoming landing is not an additional
+   Our insight is to treat eviction as an ownership transfer.        visible resident line.
+The victim keeps its original payload slot while the incom-
+ing resident receives another bank-compatible landing. The           B. Eviction as an Ownership Transfer
+difficulty is maintaining one transaction across bank refusals          For dirty victim 𝐴 in slot 𝑝, B16 reads the resident and writes
+and intervening fills: victim identity, landing, and tag commit      WBUF before the send read. U-WB16 changes 𝑝’s owner to
+must agree. After commit, a real lower data carrier must             WB_STAGED and reserves distinct 𝑞 ≠ 𝑝 for incoming 𝐵. The
+take responsibility for the bytes before local storage is freed;     landing must match the tag’s bank class. Two copy operations
+writeback ordering retires later.                                    disappear; send read and lower data carriage remain.
+   EP-L2 realizes this protocol without adding payload capacity         The serialized frontend first checks issue-queue/MSHR needs,
+or modeled bank ports. Earlier work retains dirty candidates         victim pins and pending sectors, WAD capacity, and legal
+in LLCs, exposes address-only candidates, or separates dirty         staging/landing availability. Its pending transaction records
+metadata [1]–[3]. Our narrower question is ownership of the          requester, victim tag index, old payload handle, and acquired
+original physical payload after its resident tag is reused.          resources. A later probe by the same request uses this held
+   The evaluation separates internal work from execution.            victim, even if another way’s fill changes the raw LRU candidate.
+Five matched workloads eliminate copies and three avoid the          A different frontend request is refused while this transaction is
+reference’s WBUF-data limit, yet average speed-ratio gain is         pending. Bank denial retains its identity and reservations for
+only 0.160%, with a CFD regression. Matched downstream con-          retry.
+

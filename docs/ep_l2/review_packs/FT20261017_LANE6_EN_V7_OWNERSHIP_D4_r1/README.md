@@ -1,0 +1,9 @@
+# Lane6 EN-v7 — ownership story with actual downstream diagnostics
+
+Open EP_L2_EN_v7.pdf and EP_L2_EN_v7.tex. New revision retains all frozen H0 artifacts, all five H0 pairs and the +0.160% speed-ratio mean, real Fig2/Fig3 and twelve checked references. It adopts the independent EN-v7 lifetime framing after verifying the official Core algorithm, removes engineering progress terminology, and includes three newly complete native diagnostic intakes (D4 Convolution/FWT and Q4 Convolution). No coordinator/editorial numeric statement substitutes for intake.
+
+REVISION_LOGIC.md records the argument, SOURCE_MECHANISM_EVIDENCE_MAP.md maps algorithm claims to exact source, CITATION_SOURCE_MAP.md remaps the prior literature audit, and UNFINISHED_AND_NEXT.md states remaining limitations. RECEIVED_NATIVE_PAIRS.json plus immutable intakes/ contain the full paper-side receipts/source/binary/config/trace/raw/64-slice closure. The first Convolution attempt failed closed on authority advancement and is retained; its successful retry rebinds current authority. analysis/checkpoint1 contains independently calculated cycles, resources, S/J and conditional means. Q4 group mean is absent because only one Q4 workload is consumed.
+
+The compiled PDF must have four technical pages and one reference-only page. Validation includes compiler/BibTeX logs, all-page previews, font/citation/page checks, H0 preservation, and independent replay of the build entry in scratch. Build with `python3 build_paper.py --output-dir /tmp/epl2-en7-new-build`; optionally supply `--tex-deps /tmp/ep-l2-lane6-r5-texdeps` on this host. Standard IEEEtran/newtx/TikZ/BibTeX dependencies are not redistributed.
+
+No simulator or experiment is launched, no mechanism/configuration/input/raw scientific data/acceptance authority is altered, and no other Lane process is controlled. Original branch publication uses a non-force exact local commit/tree update followed by remote readback.

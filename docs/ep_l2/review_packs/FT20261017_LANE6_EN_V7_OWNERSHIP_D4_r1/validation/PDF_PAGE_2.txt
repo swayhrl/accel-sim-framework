@@ -1,0 +1,65 @@
+              (a) Logical organization of one L2 slice                                      (b) Copy removal and separate release events
+                                                                                   B16: source read + destination write + send read
+                  L1 / interconnect requests and responses
+
+
+     Resident tags: 1024                                                             Resident 𝐴              Latch             WBUF 𝐴                Lower
+                                Descriptors: 512           WAD: 128
+         handles: ID
+                               Line-MSHRs: 128           address ordering
+        + generation
+                                                                                   U-WB16: keep 𝐴 at 𝑝; assign new resident 𝐵 to 𝑞
+            Ownership / reservation / bank-compatible allocation
+               Four-bank arbitration (not extra bank ports)                                 Payload 𝑝: resident            send read
+                                                                                              → WB staged                                 Lower data carrier
+                                        handle, sector, grant
+
+             Payload pool: 1168 × 128 B; 4 banks × 292 slots                       After a successful replacement ( 𝑝 ≠ 𝑞):
+              Resident and WB owners; shared physical slots
+                                                                                   𝑡𝑟 : reuse old tag; preserve staged payload 𝑝
+                                        fill / WB data
+                                                                                   𝑡𝑎 : lower accepts data; WB-only slot 𝑝 can be freed
+            Accounted lower data carriers / L2-to-DRAM queue
+                                                                                   𝑡𝑑 : complete WB and release WAD ordering entry
+
+Fig. 1. From relocation to ownership transfer. (a) Resident tags, requester descriptors, and writeback address ordering are separately tracked around a fixed
+banked payload pool. (b) B16 copies an evicted dirty line to its WBUF; U-WB retains the bytes at 𝑝 while allocating a different landing 𝑞 for the incoming
+resident. Local storage is released after lower data acceptance, whereas address ordering persists to writeback completion. Both modes have equal data capacity,
+bank service, and a common copy latch. TVD/RO and concurrent dynamic bypass are outside the reported WB-only evaluation.
+
+
+
+   In B16, a common latch bridges the victim read and staging                       Added control includes bank-compatible allocation, han-
+write. In U-WB16, the reserved incoming landing remains                          dle/owner checks, pins, and rollback. Concrete SRAM ports,
+separate from the old dirty slot. Any incoming write obtains                     generation bounds, pipelines, and lower data carriers require
+its bank grant before ownership is changed. The controller                       implementation. Equal modeled capacity/service does not
+provisionally installs the landing, then invokes underlying tag                  establish equal hit latency, timing, area, or energy; no RTL
+access; refusal rolls back uncommitted reservations and restores                 synthesis, STA, or power measurement is available. TVD
+the saved victim/tag identity. Consumed bank operations remain                   and oracle-based RO are disabled, and neither has qualified
+charged. Successful underlying access binds the dirty writeback                  application results here; Ideal diagnostics are also outside this
+and clears the pending transaction. Directed tests exercise                      evaluation.
+intervening fills and cross-cycle victim identity.
+                                                                                                  III. Experimental Methodology
+C. Progress and Independent Retirement                           A. Matched Resources and Complete Inputs
+   At successful replacement 𝑡𝑟 , the old tag becomes reusable      We use the Accel-Sim SASS flow and GPGPU-Sim
+while 𝑝 remains protected (Fig. 1). After a granted send read performance-model lineage [4], [5]. Their published validation
+and actual lower-FIFO push at 𝑡 𝑎 , the packet carries the dirty does not validate this modified L2. B16 and U-WB16 execute
+data and local 𝑝 is released. WAD address ordering remains with the same independently qualified binary, complete trace
+until writeback completion 𝑡 𝑑 . A late event follows its own input, non-mode settings, timing scope, and termination rules.
+handle/transaction identity, not the reused tag.                 Table I records the modeled configuration, including the
+   Requester descriptors and pins survive until response accep- modified L2; it is not a reconstruction of undocumented
+tance or internal consumption. Generation identity and per- commercial-cache internals.
+sector readiness prevent a ready sector from implying a ready       The fixed development set is convolutionSeparable,
+line. Eventual lower service and stable bank retry identity are FWT_7_21, cfd_097k, vectorAdd_4M, and SAD. Artifacts bind
+necessary for local progress; whole-GPU deadlock freedom is each complete commandlist, input size, and trace body. SAD
+not established.                                                 is the predeclared negative control. All five pairs, including
+                                                                 slowdowns, enter the geometric mean. This development set
+D. Implementation Cost and Extension Boundary                    does not establish holdout or general GPU coverage.
+   The pool holds 146 KiB/slice, or 9.125 MiB across 64
+slices; common 128-B latches add 8 KiB/chip. An 11-bit B. Validation Boundary
+index identifies a slot. Tags need 1024(11 + 𝐺) handle bits         Independent tests cover pending-victim identity, physical-
+for generation width 𝐺, and up to 128 WB handles need cycle bank grants, host prefill, symbolic 32-B sector versions,
+128(11 + 𝐺) bits plus control state. These gross representations response backpressure, and separate WB acceptance/completion.
+are not incremental area: the reference already has common Every run closes all 64 slices’ outstanding requests and re-
+fields.                                                          source trackers. Complete opcode auditing restricts application
+

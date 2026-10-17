@@ -1,0 +1,9 @@
+# Evidence gaps and event-driven continuation
+
+- Q4 FWT is still outside this manuscript's numerical scope until a full pair is independently received. No missing condition is filled with zero and no Q4 group mean is emitted. Use the frozen r19 receive_condition_native.py with the exact published adapter and a **new** attempt directory, then analyze_received_conditions.py with a new checkpoint. Preserve failures and rebind fresh authority, including withdrawals; do not copy summary/coordinator numbers.
+- Equal1168-slot strong static repartition is not an implemented/qualified result. Existing B16 versus U-WB combines relocation removal and pooling; dynamic elasticity is not independently proved preferable to reasonable static allocation.
+- D4/Q4 jointly alter buffering, credits, scheduler visibility and/or DRAM timing. They are matched sensitivities, not a bandwidth-only causal instrument, hardware recommendation, or net PPA result. Repeated event sums can overlap. WB staging intervals begin at different events across B/U; compare only same mode across conditions, keep WAD completion distinct, and do not infer zero transient occupancy from post-drain samples. No unique bottleneck attribution or global deadlock proof follows.
+- Current correctness evidence covers complete non-atomic native trace transaction/symbolic-sector/lifecycle consistency. Numerical SASS outputs and mixed atomics are not independently verified by these application runs.
+- RTL/macros/ports, pipeline timing/STA and power remain absent. TVD/RO/Ideal remain separate mechanisms/diagnostics with no accepted application contribution to these results.
+
+No new experiments or waiting service is launched by this paper task. The next event is a newly accepted exact pair or separately authorized experiment, not a reason to block the completed revision.

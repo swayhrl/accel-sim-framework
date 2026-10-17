@@ -1,0 +1,176 @@
+--- independent_EN_v7_candidate.tex
++++ source_verified_EN_v7.tex
+@@ -12,14 +12,14 @@
+ \newcommand{\base}{B16}
+ \newcommand{\unif}{U-WB16}
+ \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+-\hypersetup{pdftitle={EP-L2: Elastic Payload Storage for In-Place Writeback in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v6 r21: verified writeback literature; frozen H0 results; separate r19 sensitivity}}
++\hypersetup{pdftitle={EP-L2: Decoupling Tag Residency from Dirty-Data Lifetime in GPU L2 Caches},pdfauthor={EP-L2 project; author information pending},pdfsubject={EN-v7: ownership transfer, five H0 pairs and independently audited downstream sensitivity}}
+ \hyphenation{write-back micro-ar-chi-tec-ture in-di-rec-tion}
+ \begin{document}
+ \title{EP-L2: Decoupling Tag Residency from\\Dirty-Data Lifetime in GPU L2 Caches}
+-\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{Independent editorial EN-v7 storyline candidate --- not for submission}}
++\author{\IEEEauthorblockN{Author information to be completed}\IEEEauthorblockA{English working draft EN-v7 --- not for submission}}
+ \maketitle
+ \begin{abstract}
+-Cache eviction ends a line's residency, but not necessarily its data lifetime: a dirty victim must survive until writeback data are accepted downstream, while address-ordering obligations may last even longer. A fixed-partition L2 can bridge these lifetimes by copying the victim into a dedicated writeback buffer, consuming data-array operations and temporary storage without changing its contents. We investigate a different principle: treat eviction as a transfer of payload ownership rather than a relocation of bytes. EP-L2 lets the dirty victim retain its physical slot, assigns an incoming resident a different bank-compatible slot, and independently tracks tag visibility, data ownership, and writeback ordering. Against a fixed-partition reference with the same tag count, data capacity, and modeled bank service, this WB-only implementation removes all measured resident-to-writeback copies across five complete non-atomic trace-driven workloads and eliminates writeback-buffer admission denials in three. Yet the geometric-mean speedup is only 1.0016, including one slowdown. The distinction between eliminated internal work and application progress motivates controlled study of downstream service and static resource allocation; hardware area and timing remain to be measured.
++Eviction ends tag residency before a dirty line's obligations end: data must survive until downstream acceptance, and address ordering may persist until writeback completion. A fixed-partition L2 bridges these lifetimes by copying unchanged bytes into a writeback buffer. EP-L2 instead transfers ownership: the victim retains its original banked slot, the incoming resident obtains a distinct legal landing, and local data and ordering state retire separately. At equal tag count, payload capacity, and modeled bank service, five complete non-atomic workload pairs eliminate all resident-to-writeback copies but yield only a 1.001600 geometric-mean speed ratio, including one slowdown. Under matched downstream controls, neither design records local-buffer refusals, yet U-WB's relative performance does not uniformly improve. These results distinguish reduced internal work from application progress; competitive static allocation and physical implementation cost remain unresolved.
+ \end{abstract}
+ 
+ \begin{IEEEkeywords}
+@@ -27,15 +27,15 @@
+ \end{IEEEkeywords}
+ 
+ \section{Introduction}
+-Eviction does not end every obligation of a cache line at once. A replacement can make its tag available for a new address, yet the evicted data may still be needed by a lower-level writeback. Even after those bytes have left the cache's local storage, ordering metadata may have to remain until the writeback completes. Cache organizations often simplify these transitions by coupling physical data locations to the roles they serve. That coupling can turn a change of ownership into a movement of data.
+-
+-Consider the fixed-partition GPU L2 examined in this paper. To reuse a dirty resident line, it reads the victim from the resident array, copies it into a dedicated writeback-buffer (WBUF) slot, and eventually reads that slot for the lower-level send. These additional data-array operations move unchanged bytes. At the same time, a fixed WBUF quota can reject replacement while other payload slots are free. Such refusals expose an internal resource mismatch, but do not necessarily imply longer application execution: the downstream memory system may still determine when useful work completes.
+-
+-Our key insight is that \emph{writeback changes who owns data, not what the data are}. Instead of allocating a second copy, a dirty victim can remain in its original payload slot while a new resident receives a distinct, bank-compatible landing. To make this legal, the cache must untangle three obligations: the old tag's visibility, the payload's last local consumer, and the writeback address's ordering lifetime. In a banked GPU cache, this is not merely a pointer update. A replacement spans bank arbitration, possible retries and intervening fills; its victim and incoming landing must remain consistent until tag commit. The writeback must later retain a real data carrier and an address-ordering record even after the local slot is freed.
+-
+-EP-L2 realizes this ownership-transfer protocol without increasing payload capacity or modeled bank ports. It reserves the incoming landing, binds retries to the chosen victim, and retires local data and writeback-ordering state at their respective completion events. Prior studies expose dirty writeback candidates, retain candidate data in LLCs, and separate dirty metadata from tags~\cite{vwq,lastwrite,dbi}. The narrower problem investigated here is \emph{post-eviction ownership of the original physical payload} while resident tags are free to be reused.
+-
+-This work contributes a lifetime-based formulation of L2 storage, a bank-constrained in-place writeback protocol, and an evaluation separating internal data movement from application progress. Across five matched full-application traces, all measured resident-to-WBUF copies disappear and three workloads no longer encounter the reference's WBUF-data limit. Nevertheless, the geometric-mean speedup is only 1.0016$\times$. Rather than equating reduced data movement with faster execution, the evaluation exposes the need to understand the backend service regime and to compare against stronger fixed partitions.
++Eviction does not end every obligation of a cache line at once. Its tag can become reusable before its dirty bytes leave local storage; even then, same-address ordering may persist until writeback completes. Coupling storage locations to these roles turns a change of ownership into data movement.
++
++In our fixed-partition GPU L2 reference, replacing a dirty line requires a resident-bank read and writeback-buffer (WBUF) write before the later send read. These operations move unchanged bytes. A full WBUF can also reject replacement despite free storage elsewhere. Such refusals expose a resource mismatch, but do not directly measure application delay.
++
++Our insight is to treat eviction as an ownership transfer. The victim keeps its original payload slot while the incoming resident receives another bank-compatible landing. The difficulty is maintaining one transaction across bank refusals and intervening fills: victim identity, landing, and tag commit must agree. After commit, a real lower data carrier must take responsibility for the bytes before local storage is freed; writeback ordering retires later.
++
++EP-L2 realizes this protocol without adding payload capacity or modeled bank ports. Earlier work retains dirty candidates in LLCs, exposes address-only candidates, or separates dirty metadata~\cite{vwq,lastwrite,dbi}. Our narrower question is ownership of the original physical payload after its resident tag is reused.
++
++The evaluation separates internal work from execution. Five matched workloads eliminate copies and three avoid the reference's WBUF-data limit, yet average speed-ratio gain is only 0.160\%, with a CFD regression. Matched downstream controls examine when these local savings matter; stronger static partitions and physical cost remain necessary comparisons.
+ 
+ \section{Lifetime-Aware L2 Payload Storage}
+ \subsection{Fixed Physical Resources, Different Data Lifetimes}
+@@ -99,32 +99,32 @@
+ A globally free slot is therefore not necessarily a legal landing for a given tag. The 1024 tags bound resident visibility; a temporarily reserved incoming landing is not an additional visible resident line.
+ 
+ \subsection{Eviction as an Ownership Transfer}
+-For a dirty victim $A$ held in payload $p$, B16 performs a resident read and WBUF write before the eventual send read. U-WB16 instead converts the owner of $p$ from resident to \texttt{WB\_STAGED}, leaving the bytes in place, and reserves a distinct slot $q\ne p$ for the incoming resident $B$. Because each tag has a fixed bank class, a free landing must belong to that same bank. A successful transfer saves the two copy operations, but does not eliminate the send read or the lower-level data carrier.
+-
+-This transition is performed as one serialized replacement transaction. Before reserving any state, the frontend checks required miss-queue capacity, outstanding pins and sectors, WAD availability, and legal staging and landing slots. For a pending replacement it records the requester, chosen tag index, old payload handle, and acquired resources. A later tag probe by the \emph{same request} uses the held victim index, even when a fill in another way has changed the raw LRU candidate. Preview and native tag access therefore agree across bank retries. Other frontend requests cannot take over that pending transaction.
+-
+-The tag-to-payload remapping is committed only after the necessary bank work is granted. If native access subsequently refuses the replacement, the controller rolls back uncommitted reservations and restores the old payload/tag identity; bank work already performed is still accounted for. Source-bound tests exercise competing fills, cross-cycle victim identity, and the unchanged one-operation-per-bank service rule.
++For dirty victim $A$ in slot $p$, B16 reads the resident and writes WBUF before the send read. U-WB16 changes $p$'s owner to \texttt{WB\_STAGED} and reserves distinct $q\ne p$ for incoming $B$. The landing must match the tag's bank class. Two copy operations disappear; send read and lower data carriage remain.
++
++The serialized frontend first checks issue-queue/MSHR needs, victim pins and pending sectors, WAD capacity, and legal staging/landing availability. Its pending transaction records requester, victim tag index, old payload handle, and acquired resources. A later probe by the same request uses this held victim, even if another way's fill changes the raw LRU candidate. A different frontend request is refused while this transaction is pending. Bank denial retains its identity and reservations for retry.
++
++In B16, a common latch bridges the victim read and staging write. In U-WB16, the reserved incoming landing remains separate from the old dirty slot. Any incoming write obtains its bank grant before ownership is changed. The controller provisionally installs the landing, then invokes underlying tag access; refusal rolls back uncommitted reservations and restores the saved victim/tag identity. Consumed bank operations remain charged. Successful underlying access binds the dirty writeback and clears the pending transaction. Directed tests exercise intervening fills and cross-cycle victim identity.
+ 
+ \subsection{Progress and Independent Retirement}
+-The ownership transfer does not make writeback instantaneous (Fig.~\ref{fig:organization}). At replacement commit $t_r$, the old tag can be reused while payload $p$ remains \texttt{WB\_STAGED}. At actual downstream acceptance $t_a$, the lower queue assumes responsibility for carrying the dirty bytes and the local slot can be released. The WAD record survives until writeback completion $t_d$ to preserve same-address ordering. Local payload storage and ordering metadata are thus reclaimed according to different last consumers.
+-
+-Outstanding reads follow the same ownership discipline: requester descriptors and payload pins remain live until their responses are accepted. Generation identity, per-sector readiness, and complete resource drain are validated separately.
++At successful replacement $t_r$, the old tag becomes reusable while $p$ remains protected (Fig.~\ref{fig:organization}). After a granted send read and actual lower-FIFO push at $t_a$, the packet carries the dirty data and local $p$ is released. WAD address ordering remains until writeback completion $t_d$. A late event follows its own handle/transaction identity, not the reused tag.
++
++Requester descriptors and pins survive until response acceptance or internal consumption. Generation identity and per-sector readiness prevent a ready sector from implying a ready line. Eventual lower service and stable bank retry identity are necessary for local progress; whole-GPU deadlock freedom is not established.
+ 
+ \begin{figure*}[t]
+ \centering
+ \includegraphics[width=\textwidth]{figures/fig2_results.pdf}
+-\caption{Five independently received H0 native pairs, unchanged by diagnostic conditions. (a) Cycle reduction $100(C_B-C_U)/C_B$, on an expanded scale with zero denoting B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies; U-WB16 is zero in every pair. Vector, Conv., and FWT denote vectorAdd\_4M, convolutionSeparable, and FWT\_7\_21. No error bars or significance claim.}
++\caption{Five H0 workload pairs; sensitivity results are reported separately. (a) Cycle reduction $100(C_B-C_U)/C_B$, on an expanded scale with zero denoting B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies; U-WB16 is zero in every pair. Vector, Conv., and FWT denote vectorAdd\_4M, convolutionSeparable, and FWT\_7\_21. No error bars or significance claim.}
+ \label{fig:mainresults}
+ \end{figure*}
+ 
+ \subsection{Implementation Cost and Extension Boundary}
+-The pool stores 146 KiB per L2 slice, or 9.125 MiB over 64 slices; each slice also has the same explicitly modeled 128-B copy latch in both designs. An 11-bit slot index names one of 1168 payload locations; generation and owner state accompany tag and WB handles. Some fields already exist in the reference, so the gross handle bit counts cannot be interpreted as incremental silicon area. The real added cost includes handle selection, bank-compatible allocation, ownership checks, pins, and transaction control. Equal modeled data capacity and bank throughput do not establish equal hit latency, circuit timing, area, or energy. No RTL synthesis, STA, or measured power is claimed.
+-
+-Transient-victim retention (TVD) and certified read-only bypass (RO) are separate potential clients of a decoupled payload design, but neither is enabled or scientifically qualified in the present WB-only application results.
++The pool holds 146 KiB/slice, or 9.125 MiB across 64 slices; common 128-B latches add 8 KiB/chip. An 11-bit index identifies a slot. Tags need $1024(11+G)$ handle bits for generation width $G$, and up to 128 WB handles need $128(11+G)$ bits plus control state. These gross representations are not incremental area: the reference already has common fields.
++
++Added control includes bank-compatible allocation, handle/owner checks, pins, and rollback. Concrete SRAM ports, generation bounds, pipelines, and lower data carriers require implementation. Equal modeled capacity/service does not establish equal hit latency, timing, area, or energy; no RTL synthesis, STA, or power measurement is available. TVD and oracle-based RO are disabled, and neither has qualified application results here; Ideal diagnostics are also outside this evaluation.
+ 
+ \section{Experimental Methodology}
+ \subsection{Matched Resources and Complete Inputs}
+-We use the Accel-Sim SASS flow and GPGPU-Sim performance-model lineage~\cite{accelsim,gpgpusim}. Their published validation does not validate this modified L2. B16 and U-WB16 must execute with the same independently qualified binary, complete trace input, non-mode settings, timing scope, and termination rules. Table~\ref{tab:configuration} records the current ordered research configuration, including the modified L2; it is not a reconstruction of undocumented commercial-cache internals.
++We use the Accel-Sim SASS flow and GPGPU-Sim performance-model lineage~\cite{accelsim,gpgpusim}. Their published validation does not validate this modified L2. B16 and U-WB16 execute with the same independently qualified binary, complete trace input, non-mode settings, timing scope, and termination rules. Table~\ref{tab:configuration} records the modeled configuration, including the modified L2; it is not a reconstruction of undocumented commercial-cache internals.
+ 
+ \begin{table}[t]
+ \caption{Declared matched configuration. L2 capacities are per slice.}
+@@ -147,16 +147,16 @@
+ \end{tabularx}
+ \end{table}
+ 
+-The fixed development set is convolutionSeparable, FWT\_7\_21, cfd\_097k, vectorAdd\_4M, and SAD. Accepted manifests bind each complete commandlist, input size, and trace body; workload names alone are insufficient. SAD is the predeclared negative control. All five pairs, including slowdowns, enter the geometric mean. This development set does not establish holdout or general GPU coverage.
++The fixed development set is convolutionSeparable, FWT\_7\_21, cfd\_097k, vectorAdd\_4M, and SAD. Artifacts bind each complete commandlist, input size, and trace body. SAD is the predeclared negative control. All five pairs, including slowdowns, enter the geometric mean. This development set does not establish holdout or general GPU coverage.
+ 
+ \subsection{Validation Boundary}
+-B16 and U-WB16 run the same simulator executable, complete original commandlists and trace bodies, and identical non-mode settings. Production and independent tests exercise cross-cycle replacement, physical-cycle bank grants, symbolic 32-B sector versions, host prefill, response backpressure, and distinct writeback acceptance and completion. Every qualified run closes its outstanding requests and resource trackers. Complete native opcode auditing restricts these experiments to non-atomic inputs. Since SASS traces lack full numerical payload values, these tests establish transaction and lifecycle consistency rather than numerical application-output correctness. The complete input, binary, configuration, log, and check identities are preserved in the reproducibility artifacts.
++Independent tests cover pending-victim identity, physical-cycle bank grants, host prefill, symbolic 32-B sector versions, response backpressure, and separate WB acceptance/completion. Every run closes all 64 slices' outstanding requests and resource trackers. Complete opcode auditing restricts application qualification to non-atomic inputs. SASS lacks full numerical payloads, so these checks establish transaction/lifecycle consistency rather than numerical output correctness. Reproducibility artifacts bind source, executable, ordered configurations, full commandlists/trace bodies and raw logs; all reported pairs undergo independent input, log, and terminal validation.
+ 
+ \section{From Saved Internal Work to Application Effects}
+ \subsection{Copy Removal Is Not a Speedup Model}
+-All five predeclared H0 workload pairs have complete trace-driven simulation results and pass the stated transaction-lifecycle checks. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup. Exact paired cycles and reproducibility identities accompany the evaluation artifacts.
+-
+-Figure~\ref{fig:mainresults}(b) shows removal of every measured resident-to-WB copy. A committed non-rolled-back B16 writeback uses two copy operations and one send read; U-WB16 retains the send read. This local operation saving is not a speedup model. Actual WB counts also change: CFD completes 31,123/31,063 WBs and FWT 178,569/178,585 for B16/U-WB16. Consequently, the run-level logical-operation difference need not equal twice either mode's WB count. Artifact tables preserve actual WB/send-read and DRAM-byte totals.
++All five predeclared H0 workload pairs have complete trace-driven simulation results and pass the stated transaction-lifecycle checks. Each pair has equal instruction counts and matched full input/termination scope. Figure~\ref{fig:mainresults}(a) reports the complete set: SAD is almost tied; Vector, Convolution, and FWT reduce cycles by 0.199\%, 0.480\%, and 0.310\%, while CFD increases cycles by 0.214\%. The geometric mean of $C_B/C_U$ is 1.001600, or a 0.160\% speed-ratio gain. These deterministic paired observations establish neither statistical significance nor general GPU speedup.
++
++Figure~\ref{fig:mainresults}(b) shows removal of every measured resident-to-WB copy. A committed non-rolled-back B16 writeback uses two copy operations and one send read; U-WB16 retains the send read. This local operation saving is not a speedup model. Actual WB counts also change: CFD completes 31,123/31,063 WBs and FWT 178,569/178,585 for B16/U-WB16. Consequently, the run-level logical-operation difference need not equal twice either mode's WB count.
+ 
+ \begin{figure*}[t]
+ \centering
+@@ -175,12 +175,10 @@
+ 
+ 
+ \subsection{Separating Buffer Headroom from Service Speed}
+-The local WBUF limit may cease to matter once the backend becomes faster, or the backend may prevent either mode from realizing its freed bank work. To distinguish these possibilities, we define two matched downstream conditions for Convolution and FWT. Q4 increases lower queue/scheduler/return buffering and its derived credits; D4 keeps Q4 and raises the modeled DRAM clock domain. Both interventions apply equally to B16 and U-WB16, without changing the L2 data pool or bank service. The extra storage and altered DRAM timing are not free hardware or a pure bandwidth change~\cite{sms}.
+-
+-For workload $w$ and condition $h$, the within-condition mechanism effect is $S_w(h)=C_{B,w}(h)/C_{U,w}(h)$; the interaction with H0 is $J_w(h)=S_w(h)/S_w(\mathrm{H0})$. Speeding up both designs does not by itself enlarge U-WB's advantage, and a faster backend can also reduce the reference's WBUF residence. These tests characterize an operating regime, not a production DRAM-frequency recommendation.
++Q4 expands downstream queues, scheduler/return storage and credits; D4 retains Q4 buffering and raises the DRAM domain (Table~\ref{tab:headroom}). Both compare B16/U-WB under identical conditions without changing L2 capacity/service. Buffers affect scheduling visibility and cost~\cite{sms}; D4 shortens physical DRAM timing while preserving the fixed 100-GPU-cycle interface delay. Neither intervention is free hardware or pure bandwidth.
+ 
+ \begin{table}[t]
+-\caption{Matched downstream sensitivity settings for Convolution and FWT; experiment results are distinct from the H0 five-workload cohort.}
++\caption{Matched downstream sensitivity settings; core/ICNT/L2 remain 1132\,MHz.}
+ \label{tab:headroom}\centering\footnotesize
+ \begin{tabular}{@{}lrrr@{}}
+ \toprule
+@@ -194,17 +192,40 @@
+ \end{tabular}
+ \end{table}
+ 
+-The original H0 cohort is retained regardless of later sensitivity results. A separate equal-capacity static repartition is still needed to show that dynamic pooling is preferable to a better fixed WB quota.
++For condition $h$, define $S_w(h)=C_{B,w}(h)/C_{U,w}(h)$ and $J_w(h)=S_w(h)/S_w(\mathrm{H0})$. All four cycles are retained; speeding both modes does not itself improve U-WB's relative effect. Diagnostic means never enter the five-workload H0 mean.
++
++\begin{table}[t]
++\caption{Paired cycles under matched service conditions. $S=C_B/C_U$; $J=S/S(\mathrm{H0})$. Q4 observations here cover Convolution only.}
++\label{tab:downstreamresults}\centering\footnotesize
++\begin{tabular}{@{}lrrrr@{}}
++\toprule
++Workload, $h$ & $C_B$ & $C_U$ & $S$ & $J$ \\
++\midrule
++Conv., H0 & 292,932 & 291,525 & 1.004826 & 1.000000 \\
++Conv., D4 & 267,521 & 268,544 & 0.996191 & 0.991406 \\
++Conv., Q4 & 290,333 & 293,709 & 0.988506 & 0.983758 \\
++FWT, H0 & 493,189 & 491,662 & 1.003106 & 1.000000 \\
++FWT, D4 & 452,758 & 451,254 & 1.003333 & 1.000226 \\
++\bottomrule
++\end{tabular}
++\end{table}
++
++D4 accelerates both modes relative to H0 (Table~\ref{tab:downstreamresults}), but Convolution reverses U-WB's advantage: it takes 1023 more cycles than B16. FWT saves 1504 cycles, close to its H0 saving of 1527. The two-workload D4 geometric mean is 0.999755$\times$, with interaction 0.995806$\times$; this diagnostic result does not replace the five-workload H0 mean. More downstream headroom does not uniformly amplify the mechanism's benefit.
++
++D4 records no WB-data-full, L2-to-DRAM-full, or scheduler-full attempts in either mode, yet modeled bank-wait sums rise relative to H0. Observed zeros do not establish globally nonbinding service. Q4 Convolution also removes WBUF/lower-queue-full attempts, but U-WB is 3376 cycles slower; WAD-full attempts are 55,645/54,516 for B16/U-WB. Local data can leave well before ordering obligations retire. These repeated event counts identify candidate constraints, not unique stalls or a proven critical path. Staging durations start at B16's copy readout versus U-WB's producer commit, so only same-mode, across-condition comparisons share endpoints. Further attribution requires matched service and ordering evidence.
++
++
++An equal-total strong static repartition remains unevaluated. Thus, current results combine copy removal and pooling; they do not isolate dynamic elasticity from a better fixed WB quota. Static allocation, service regime, and implementation cost bound the present performance claim.
+ 
+ \section{Relation to Prior Storage Decoupling}
+-The Virtual Write Queue exposes LLC dirty-line candidates to DRAM scheduling while retaining a physical write queue~\cite{vwq}. Decoupled last-write prediction keeps candidate addresses in a last-write buffer and data in the LLC; evicted dirty blocks use a separate write buffer~\cite{lastwrite}. The Dirty-Block Index (DBI) separates dirty bits from tags and groups them by DRAM row~\cite{dbi}. Their contributions concern candidate visibility, early cleaning, or dirty-state indexing; EP-L2 instead concerns the original payload slot's owner after the resident tag is reused, together with a distinct incoming landing and separate payload/order retirement. DBI dirty status is not the WAD's in-flight same-address ordering state.
+-
+-V-Way decouples tag/data placement~\cite{vway}; Tag-Split Cache separates request and storage granularity~\cite{tsc}. Gebhart et al. unify SM-local register, cache, and scratchpad storage~\cite{unified}. In-cache MSHRs~\cite{farkas}, MiCache's shared FPGA data/MSHR storage~\cite{micache}, and DL-MSHR's linked slots, including write-miss data~\cite{dlmshr}, motivate distinguishing what is shared. Our comparison fixes resident-tag and miss-tracking budgets; it evaluates dirty-payload ownership rather than extra lookup or request-tracking capacity.
++VWQ exposes dirty LLC candidates to scheduling while retaining a physical write queue~\cite{vwq}. Decoupled last-write prediction tracks candidate addresses separately while data remain in LLC; evicted dirty blocks use another write buffer~\cite{lastwrite}. DBI groups dirty metadata outside tags by DRAM row~\cite{dbi}. EP-L2 instead tracks the original slot after tag reuse, its distinct incoming landing, and separate payload/order retirement. DBI dirtiness is not WAD's in-flight address ordering.
++
++V-Way separates tag/data placement~\cite{vway}; Tag-Split Cache changes storage granularity~\cite{tsc}. Unified GPU memory shares SM-local register/cache/scratchpad storage~\cite{unified}. In-cache MSHRs~\cite{farkas}, MiCache's shared FPGA data/MSHR storage~\cite{micache}, and DL-MSHR's linked slots that also hold write-miss data~\cite{dlmshr} concern different shared resources. Our comparison fixes resident-tag and miss-tracking budgets.
+ 
+ \section{Conclusion}
+-Eviction need not force dirty data to move simply because a tag becomes reusable. EP-L2 turns that event into an ownership transfer: an evicted dirty line retains its slot, a new resident receives a legal landing, and local data storage and address-ordering state retire when their respective consumers finish. The protocol removes relocation work at a fixed payload capacity and modeled bank-service budget. Across five complete trace-driven workloads, every observed resident-to-WBUF copy disappears and three workloads avoid the reference WBUF-data limit, yet the geometric-mean speed ratio is only 1.0016. The central result is a distinction between \emph{internal storage efficiency} and \emph{system-level performance}: the latter depends on whether copy work and staging quotas lie on the critical path, and on the surrounding memory service. Determining the competitive static allocation and the physical cost of this flexibility remains essential before claiming a general advantage.
+-
+-% Keep the optional fifth page reference-only. No technical appendix on that page.
++Eviction need not relocate dirty data when a tag becomes reusable. EP-L2 preserves the victim's slot, allocates a legal incoming landing, and retires payload storage separately from writeback ordering. Five complete workloads eliminate copies but yield only a 1.001600 geometric-mean speed ratio. Reduced bank work and staging pressure therefore do not guarantee faster execution. Matched downstream controls do not uniformly amplify U-WB's relative benefit. Competitive static allocation and physical cost remain unresolved.
++
++% The fifth page contains references only.
+ \clearpage
+ \bibliographystyle{IEEEtran}
+ \bibliography{references_verified}

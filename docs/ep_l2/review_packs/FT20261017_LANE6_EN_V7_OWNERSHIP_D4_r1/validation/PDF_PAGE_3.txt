@@ -1,0 +1,79 @@
+                             (a) End-to-end change (expanded scale)                                                               (b) Actual resident-to-WB copies
+
+
+
+
+                                                                                             Completed copies (thousands)
+                       0.6                                        +0.480                                                    600                                        546.87
+Cycle reduction (%)
+
+
+                                                                                                                                       U-WB16: all 0      B16 copies
+                       0.4                                                  +0.310
+                                           +0.199                                                                           400
+                       0.2
+                               +0.022
+                       0.0                                                                                                  200                                                 178.57
+                                                                                                                                                100.57
+                      −0.2                                                                                                           3.98                   31.12
+                                                        -0.214                                                                0
+                                SAD        Vector       CFD       Conv.      FWT                                                     SAD        Vector      CFD        Conv.    FWT
+
+
+
+Fig. 2. Five H0 workload pairs; sensitivity results are reported separately. (a) Cycle reduction 100(𝐶𝐵 − 𝐶𝑈 )/𝐶𝐵 , on an expanded scale with zero denoting
+B16; CFD regression is retained. The speed-ratio geomean is 1.001600, not the mean of these percentages. (b) Actual completed 128-B copies; U-WB16 is
+zero in every pair. Vector, Conv., and FWT denote vectorAdd_4M, convolutionSeparable, and FWT_7_21. No error bars or significance claim.
+
+
+
+                                             TABLE I                                       the run-level logical-operation difference need not equal twice
+                      Declared matched configuration. L2 capacities are per slice.         either mode’s WB count.
+Resource                                            Setting                                B. Local Staging Relief and Its Downstream Cost
+Compute / clock domains                             80 SMs; core/ICNT/L2: 1132 MHz;
+                                                    DRAM: 850 MHz    Vector, Convolution, and FWT record 440,161, 845,097,
+L1 (fixed)                                                        and  890,294 B16 WB-data-full events; U-WB16 records zero.
+                                                    64 KiB/SM; 4 banks; 20-cycle setting
+L2 tags / data                                      1024 tags; 1168 slots, 146 KiB
+                                                                  Figure 3(b) shows less modeled bank work and lower aggregate
+Line / sectors / banks                              128 B / 4 × 32 B / 4 × 292 slots
+Service / common latch                                            conflict waits. Successful grants are actual model-service
+                                                    1 op/bank/physical cycle / 128 B
+Descriptors / Line-MSHRs                                          observations, not estimates obtained by multiplying copies.
+                                                    512 / 128; 32 requesters/address
+WAD / lower queue                                   128 / 128 entries
+                                                                  At drained termination, their equality to logical operations
+Chip / memory channels                              64 slices / 32 channels
+L2 ROP delay                                                      implies neither elapsed-time nor RTL timing/energy savings.
+                                                    160-cycle model setting
+DRAM scheduler / return                                              For the same three workloads, L2-to-DRAM full-block
+                                                    128 / 192 entries per channel
+                                                                  attempts rise from 1.104M to 1.764M, 0.218M to 1.132M,
+                                                                  and 0.013M to 0.968M. This is consistent with pressure
+qualification to non-atomic inputs. SASS lacks full numerical moving downstream after local staging relief. It does not
+payloads, so these checks establish transaction/lifecycle consis- independently identify the limiting queue or DRAM service.
+tency rather than numerical output correctness. Reproducibility Denials may repeat for one frontend head and overlap other
+artifacts bind source, executable, ordered configurations, full blockers. From final cumulative observations of all 32 channels,
+commandlists/trace bodies and raw logs; all reported pairs the modeled issued-byte/atom-cycle fractions are 64.5/64.8%
+undergo independent input, log, and terminal validation.          for Convolution and 14.1/14.1% for FWT. Even frequent
+                                                                  queue denials therefore do not prove global DRAM-bandwidth
+  IV. From Saved Internal Work to Application Effects             saturation. Kernel-boundary cumulative snapshots are not
+                                                                  summed.
+A. Copy Removal Is Not a Speedup Model                               CFD is a useful counterexample: despite removing copies and
+   All five predeclared H0 workload pairs have complete           lowering   bank waits from 102,546 to 91,029, U-WB16 takes
+trace-driven simulation results and pass the stated transaction-  169  more   cycles. WAD-hazard events increase from 9,841 to
+lifecycle checks. Each pair has equal instruction counts and      13,400,  WB   counts differ, and successful DRAM writes change
+matched full input/termination scope. Figure 2(a) reports the     from   3,983,744   to 3,976,064 B. These correlated changes
+complete set: SAD is almost tied; Vector, Convolution, and        motivate   ordering/service    diagnosis; they do not identify a
+FWT reduce cycles by 0.199%, 0.480%, and 0.310%, while            unique  cause. SAD    has no  observed WB-data-full pressure and
+CFD increases cycles by 0.214%. The geometric mean of             differs by  only 24  cycles.  Neither case is discarded.
+𝐶 𝐵 /𝐶𝑈 is 1.001600, or a 0.160% speed-ratio gain. These
+deterministic paired observations establish neither statistical C. Separating Buffer Headroom from Service Speed
+significance nor general GPU speedup.                                Q4 expands downstream queues, scheduler/return storage
+   Figure 2(b) shows removal of every measured resident-to-WB and credits; D4 retains Q4 buffering and raises the DRAM
+copy. A committed non-rolled-back B16 writeback uses two domain (Table II). Both compare B16/U-WB under identical
+copy operations and one send read; U-WB16 retains the send conditions without changing L2 capacity/service. Buffers affect
+read. This local operation saving is not a speedup model. Actual scheduling visibility and cost [6]; D4 shortens physical DRAM
+WB counts also change: CFD completes 31,123/31,063 WBs timing while preserving the fixed 100-GPU-cycle interface
+and FWT 178,569/178,585 for B16/U-WB16. Consequently, delay. Neither intervention is free hardware or pure bandwidth.
+
