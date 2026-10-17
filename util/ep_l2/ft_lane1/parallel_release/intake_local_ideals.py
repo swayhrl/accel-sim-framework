@@ -26,7 +26,10 @@ def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,required=True);a=p.parse_args();out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
  r={'schema':'EPL2_LANE1_ROLLING_RUNTIME_INTAKE_V1','status':'PREFLIGHT','authority':'a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900','core_source_commit':C_SHA,'framework_source_commit':F_SHA,'core_tree':subprocess.check_output(['git','rev-parse',C_SHA+'^{tree}'],cwd=CORE,text=True).strip(),'tool_source_commit':head(REPO),'runtime_recompiled_by_lane1':False,'application_starts':0,'independent_qualification':False,'commands':[],'tests':[],'disk_floor_bytes':48*2**30,'memory_floor_bytes':64*2**30,'jobs':1,'unsupported':['S64','U_CAP16','P2','I_BANK','I_L2_SERVICE','I_MEM_ALL_DATA']}
  def save():write(out/'INTAKE_RECEIPT.json',r)
- clpath=Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json');cl=json.loads(clpath.read_text());assert sha(cl['registry_client'])==cl['registry_client_sha256'];sys.path.insert(0,str(Path(cl['registry_client']).parent));from registry import Registry,local_resources,process_identity
+ clpath=Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json');cl=json.loads(clpath.read_text());r['client_contract_sha256']=sha(clpath);r['actual_registry_sha256']=sha(cl['registry_client']);r['published_registry_sha256']=cl['registry_client_sha256']
+ if r['actual_registry_sha256']!=r['published_registry_sha256']:
+  r['status']='CLIENT_BINDING_HOLD_PRELEASE_NO_COMPILER';save();print(r['status']);return
+ sys.path.insert(0,str(Path(cl['registry_client']).parent));from registry import Registry,local_resources,process_identity
  reg=Registry(cl['canonical_root']);guard=loadmod('official_guard',REPO/'util/ep_l2/ft_lane1/build_r0_1.py')
  def resources():
   live=local_resources();share=os.statvfs('/root/share');assert share.f_bavail*share.f_frsize>=40*2**30,'Share floor crossed'
