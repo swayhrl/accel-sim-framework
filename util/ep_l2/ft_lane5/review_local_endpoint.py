@@ -24,7 +24,15 @@ def main():
   baselines=[v for v in ledger['rows'] if v.get('profile')=='B16_OFF' and v['scientific_acceptance']=='CURRENT_ACCEPTED' and all(v['identity'][k]==identity[k] for k in ['core_source_commit','framework_source_commit','binary_sha256','trace_content_sha256','workload','epoch_range','termination_contract'])]
   comparison={'kind':'ALL_DATA_REFERENCE_ENDPOINT' if spec['scientific_scope']=='ALL_DATA_REFERENCE_V1' else 'FINITE_OR_LOCAL_ENDPOINT','profile':spec['profile'],'cycles':row['observed_cycles'],'instructions':row['instructions'],'same_binary_OFF':None,'OFF_over_endpoint':None,'EP_L2_speedup':None,'geomean':None,'diagnostic_only':True}
   if spec['profile']!='B16_OFF':
-   require(len(baselines)==1 and baselines[0]['instructions']==row['instructions'],'Exact accepted same-binary/input OFF anchor missing');b=baselines[0];comparison.update(same_binary_OFF={'run_key':b['run_key'],'cycles':b['observed_cycles']},OFF_over_endpoint=b['observed_cycles']/row['observed_cycles'])
+   require(len(baselines)<=1,'Ambiguous same-binary OFF anchor')
+   if baselines:
+    require(baselines[0]['instructions']==row['instructions'],'Complete native instruction count differs');b=baselines[0];comparison.update(same_binary_OFF={'run_key':b['run_key'],'cycles':b['observed_cycles']},OFF_over_endpoint=b['observed_cycles']/row['observed_cycles'],comparison_status='MATCHED_CURRENT_SAME_BINARY_OFF')
+   else:
+    require(spec['scientific_scope'] in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1'),'Exact accepted same-binary/input OFF anchor missing')
+    # Complete scoped endpoints can be accepted independently; no ratio may borrow another binary.
+    counts={v['instructions'] for v in ledger['rows'] if v['scientific_acceptance']=='CURRENT_ACCEPTED' and v['identity']['workload']==identity['workload'] and v['identity']['trace_content_sha256']==identity['trace_content_sha256'] and v['identity']['epoch_range']==identity['epoch_range']}
+    require(counts=={row['instructions']},'Complete retained-input native instruction count differs')
+    comparison.update(comparison_status='AWAITING_MATCHED_SAME_BINARY_OFF_NO_RATIO',input_instruction_count_check='Count only from immutable complete-input evidence; no cross-binary cycles or qualification reuse')
   write_json(a.pack/'COMPARISON.json',comparison)
   # Reuse the existing physical downstream observer; never rename it ALL_DATA.
   write_json(a.pack/'PRESSURE.json',analyze(directory) if spec['scientific_scope']!='ALL_DATA_REFERENCE_V1' else {'scope':'ALL_DATA_REFERENCE_V1','physical_data_WB_cache_DRAM':'NOT_APPLICABLE','reference':result['summary']['reference_terminal'],'instruction_fetch':'NATIVE_UNCHANGED'});write_json(a.pack/'RAW_LOG_INDEX.json',[{'path':str(directory/'raw.log'),'sha256':row['raw_log_sha256'],'run_key':row['run_key']}]);freeze_checksums(a.pack)
