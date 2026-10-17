@@ -103,11 +103,26 @@ def verify():
     scan_admission=json.loads((ROOT/'SCAN_ADMISSION.json').read_text())
     assert scan_admission['decision']=='REFUSE_BEFORE_BODY_OPEN'
     assert not scan_admission['scan_requested'] and scan_admission['body_opens_at_admission']==0
+    assert scan_admission['runner_sha256']==hashlib.sha256((ROOT/'scripts/stream_access_scan.py').read_bytes()).hexdigest()
+    v_commit='26abd496417d9392245052e54fbd9ba27c6ffd96'
+    provenance=read_rows('PROVENANCE_SHA256.tsv')
+    for original,copy in [('K1_SEMANTIC_CONTRACT.md','LANE_V_K1_SEMANTIC_CONTRACT.md'),
+                          ('SOURCE_EVENT_MAP.md','LANE_V_SOURCE_EVENT_MAP.md')]:
+        matches=[r for r in provenance if r['commit']==v_commit and r['path'].endswith('/'+original)]
+        assert len(matches)==1
+        assert matches[0]['sha256']==hashlib.sha256((ROOT/'inputs'/copy).read_bytes()).hexdigest()
+    events=read_rows('SOURCE_DEFINED_INVALIDATE.tsv')
+    assert {'INV_CONFIG_CHANGE','INV_CLUSTER_IDLE','INV_REGULAR_MEMBAR','KERNEL_DONE_NOT_INVALIDATE'}<={r['event_id'] for r in events}
+    audit=json.loads((ROOT/'COMPLETION_AUDIT.json').read_text())
+    assert audit['status']=='BOUNDED_REVIEW_REQUIREMENTS_MET'
+    assert audit['K1_contract_known'] and not audit['K1_performance_extrapolation_permitted']
+    assert not audit['full_original_body_scan_complete'] and not audit['auto_resume_or_background_scan']
     return dict(status='PASS', body_proof_members=523, scope_rows=527,
                 access_counts_reconciled=True, unavailable_fields_preserved=True,
                 trace_payloads_in_pack=0, new_simulation_attempts=0,
                 synthetic_cpu_preflight_groups=6,analyzer_identity_matches_preflight=True,
-                stream_and_cross_kernel_synthetic_checks=True,body_scan_admission='REFUSED')
+                stream_and_cross_kernel_synthetic_checks=True,body_scan_admission='REFUSED',
+                K1_contract_pinned=True,user_authorized_bounded_closure=True)
 
 
 def manifest():

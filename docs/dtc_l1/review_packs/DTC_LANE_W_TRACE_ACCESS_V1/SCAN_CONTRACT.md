@@ -16,4 +16,6 @@
 
 输出每 kernel 的 distinct R/W lines，所有已完整处理 kernel 的 R∩R、相邻 kernel W∩R（可额外提供非相邻候选），line alias 与 byte overlap 分列。不同 warp 的记录无序，不能用文件 CTA 遍历顺序推断时序。同 warp 记录先后单列。没有 stream 或动态 invalidate 时间时只能使用 list ordinal 的候选语义；源码事件类型与动态事件实例分开。
 
-即使找到 byte overlap，仍需满足“旧 Tag 可查询、未被替换、同一 DTC 域/SM、source-defined 生命周期覆盖、相关操作源模型排序”等条件才可能暴露旧映射。静态地址相交不能证明这些条件。任何原输入只能在已验原 consumer 范围内引用历史结果；K1 需独立合同/正确性评审，本 Goal 永不启动新模拟验证。
+即使找到 byte overlap，仍需满足“旧 Tag 可查询、未被替换、同一 DTC 域/SM、source-defined 生命周期覆盖、相关操作源模型排序”等条件才可能暴露旧映射。静态地址相交不能证明这些条件。任何原输入只能在已验原 consumer 范围内引用历史结果。K1科学合同已固定至Lane V26abd496；W不等待其实现、不做性能外推、本Goal永不启动新模拟验证。
+
+用户已明确资源反复不合格时以已发布的有界审查结果收口。当前触发该条件：结束本Lane，不设置后台重试或等候任务，body scan保留DEFERRED_SAFE_STOP；若日后另行继续，仍须重新核对资源、固定身份及CPU预检，不能用本包收口记录跳过准入。

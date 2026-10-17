@@ -21,6 +21,7 @@ CORE_REPO = Path('/workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-1
 A = 'f5c37d6edcce832a72cb0830021bffa78df6cc13'
 T = 'f520a445436b57c0a0f2494fb858a1636f04d2bc'
 U = '16e56912cfd02f2311a1603a29415dee829fd495'
+V = '26abd496417d9392245052e54fbd9ba27c6ffd96'
 FRAMEWORK = '18a68dcccd795f1b6cda75504e9450d00c9cee02'
 CORE = '6fba0136f8465b59fe5858a950fa39efb265f654'
 AP = 'docs/dtc_l1/iscas2027/service_closure_174_v1'
@@ -109,6 +110,9 @@ def build():
     source = json.loads(blob(T, TP + '/SOURCE_IDENTITY.json', 'inputs/T_SOURCE_IDENTITY.json'))
     blob(U, UP + '/SOURCE_INPUT_IDENTITY.json', 'inputs/U_SOURCE_INPUT_IDENTITY.json')
     blob(U, UP + '/AUTHORITY_TERMINAL.json', 'inputs/U_AUTHORITY_TERMINAL.json')
+    vp='docs/dtc_l1/review_packs/DTC_LANE_V_SEMANTIC_V1/'
+    blob(V,vp+'K1_SEMANTIC_CONTRACT.md','inputs/LANE_V_K1_SEMANTIC_CONTRACT.md')
+    blob(V,vp+'SOURCE_EVENT_MAP.md','inputs/LANE_V_SOURCE_EVENT_MAP.md')
     source_checks = []
     for r in source['files']:
         observed = sha(Path(r['path']).read_bytes())
@@ -215,13 +219,14 @@ def build():
     table('INPUT_CHECKS.tsv', checks)
     # Bind each source excerpt to the immutable implementation being reviewed.
     excerpts = [
-      (CORE_REPO,CORE,'src/gpgpu-sim/shader.cc',[(2622,2656),(3899,3930),(4007,4015)]),
-      (CORE_REPO,CORE,'src/gpgpu-sim/gpu-sim.cc',[(1748,1756),(2518,2528)]),
+      (CORE_REPO,CORE,'src/gpgpu-sim/shader.cc',[(2622,2656),(3899,3930),(4007,4015),(6875,6889)]),
+      (CORE_REPO,CORE,'src/gpgpu-sim/gpu-sim.cc',[(1027,1044),(1748,1756),(2518,2528)]),
       (CORE_REPO,CORE,'src/gpgpu-sim/dtc-l1-common.h',[(560,586),(690,718)]),
       (REPO,FRAMEWORK,'gpu-simulator/trace-parser/trace_parser.cc',[(61,79),(100,120),(152,184),(282,328),(390,437)]),
       (REPO,FRAMEWORK,'gpu-simulator/trace-driven/trace_driven.cc',[(384,434)]),
       (REPO,FRAMEWORK,'gpu-simulator/accel-sim.cc',[(48,70),(92,119)]),
       (REPO,FRAMEWORK,'gpu-simulator/trace-parser/trace_parser.h',[(14,20),(35,46)]),
+      (CORE_REPO,CORE,'src/gpgpu-sim/gpu-cache.cc',[(1264,1285)]),
     ]
     for i,(repo,commit,path,spans) in enumerate(excerpts,1):
         data=blob(commit,path,repo=repo)
@@ -236,7 +241,7 @@ def build():
     blob(FRAMEWORK, 'gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config', 'inputs/FROZEN_trace.config')
     table('PROVENANCE_SHA256.tsv', provenance)
     dump('CPU_READONLY_CHECKS.json', dict(status='PASS_METADATA_AND_ACCEPTED_PROOF_ONLY',
-        frozen=dict(A=A,T=T,U=U,framework=FRAMEWORK,core=CORE), new_simulation_attempts=0,
+        frozen=dict(A=A,T=T,U=U,V=V,framework=FRAMEWORK,core=CORE), new_simulation_attempts=0,
         trace_body_opens=0, trace_member_bytes_rehashed=0, prior_raw_reads=0, prior_raw_writes=0,
         decoder_changes=0, u_snapshot='IMMUTABLE_GIT_COMMIT_ONLY_NO_U_RAW',
         full_access_semantics_complete=False, scan_status='DEFERRED_SAFE_STOP',

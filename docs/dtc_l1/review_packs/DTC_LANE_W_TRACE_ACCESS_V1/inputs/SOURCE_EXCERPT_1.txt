@@ -75,3 +75,18 @@
 4013:   // Flush L1D cache
 4014:   m_L1D->invalidate();
 4015: }
+6875: bool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {
+6876:   if (!m_warp[warp_id]->get_membar()) return false;
+6877:   if (!m_scoreboard->pendingWrites(warp_id)) {
+6878:     m_warp[warp_id]->clear_membar();
+6879:     if (m_gpu->get_config().flush_l1()) {
+6880:       // Mahmoud fixed this on Nov 2019
+6881:       // Invalidate L1 cache
+6882:       // Based on Nvidia Doc, at MEM barrier, we have to
+6883:       //(1) wait for all pending writes till they are acked
+6884:       //(2) invalidate L1 cache to ensure coherence and avoid reading stall data
+6885:       cache_invalidate();
+6886:       // TO DO: you need to stall the SM for 5k cycles.
+6887:     }
+6888:     return false;
+6889:   }

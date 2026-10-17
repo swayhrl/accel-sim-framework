@@ -1,6 +1,6 @@
 # Lane W CPU 只读 trace 访问风险包
 
-入口：[LATEST_REPORT.md](LATEST_REPORT.md)。当前 `DEFERRED_SAFE_STOP`；已完成原输入身份、既有 CPU proof 和源码语义审阅，未进行地址/PC scan。
+入口：[LATEST_REPORT.md](LATEST_REPORT.md)。按用户明确的资源不合格收口条件，已完成有界审查；body scan保持 `DEFERRED_SAFE_STOP`。原输入身份、既有CPU proof、固定K1科学合同及源码事件已审阅，未进行地址/PC scan；不设置自动恢复任务，不做K1性能外推。
 
 独立CPU辅助模块和六组合成预检已加入；它们没有原trace读取入口，也不修改原decoder。再次运行合成预检后须重新seal，因为预检结果本身属于封存文件：
 

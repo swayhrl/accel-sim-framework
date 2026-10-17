@@ -1,6 +1,6 @@
 # 测量、源码事实与推断边界
 
-本包是 CPU 只读证据消费与风险筛查，状态 `DEFERRED_SAFE_STOP`。未扫描原 trace body，未新建模拟 attempt。`UNAVAILABLE` 不等于零；各表的 `ALL` 行是汇总，不能再与逐 kernel 行相加。
+本包是 CPU 只读证据消费与风险筛查，按用户明确的资源不合格收口条件完成有界审查；body scan保持 `DEFERRED_SAFE_STOP`。未扫描原 trace body，未新建模拟 attempt。`UNAVAILABLE` 不等于零；各表的 `ALL` 行是汇总，不能再与逐 kernel 行相加。
 
 | 类别 | 已知事实 | 适用边界 |
 |---|---|---|
@@ -21,4 +21,6 @@ line alias 指 `(address & ~127)` 相同；byte 冲突需两个精确覆盖 byte
 
 同一 kernel/CTA/warp 内可使用 trace 的 instruction ordinal 描述程序记录先后，但它不是源模型完成顺序，尤其不能跨 warp、跨 SM、跨 stream 编成全序。跨 kernel W→R 必须先称“前一 list kernel 的写与后续 list kernel 的读交集候选”，直到获得 stream/生命周期依据。
 
-旧 Hotspot 原结果与 HOLD 保留，禁止修补 sparse-mask 地址、借新格式结果解封旧输入。旧/新 2DConvolution 身份分离并维持新输入 STOP；LUD 不追加、不晋升。DWT2D/BICG 只读固定 U 提交身份/proof，未访问其 raw、锁、后台控制文件；不改变 U 封存结论。K1 的精确定义和评测合同本轮未提供，记录为 UNAVAILABLE。
+旧 Hotspot 原结果与 HOLD 保留，禁止修补 sparse-mask 地址、借新格式结果解封旧输入。旧/新 2DConvolution 身份分离并维持新输入 STOP；LUD 不追加、不晋升。DWT2D/BICG 只读固定 U 提交身份/proof，未访问其 raw、锁、后台控制文件；不改变 U 封存结论。用户确认U已正式完成，但本轮仍复查当前资源及其他模拟器，不以历史完成状态替代准入检查。
+
+K1合同已从Lane V固定提交 `26abd496417d9392245052e54fbd9ba27c6ffd96` 读入并哈希；不再把合同标为UNAVAILABLE。其线性化点是source请求到达LDST时的DTC lookup撤销，同时保护旧physical/generation和消费者，不能等同于ordinary的延后Tag commit、统一kernel-end广播或一般写后可见性。K1不作为本Lane性能外推对象，也不等待Lane X实现；详细边界见 `K1_REVIEW_SCOPE.md`。

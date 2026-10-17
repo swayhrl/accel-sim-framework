@@ -1,0 +1,281 @@
+{
+  "status": "BOUNDED_REVIEW_REQUIREMENTS_MET",
+  "utc": "2026-10-17T16:14:32.381651+00:00",
+  "authoritative_scope": "Original task plus explicit user resource-failure bounded-closure instruction in USER_SCOPE_UPDATE.md",
+  "previous_goal_turn_classification": "PROGRESS",
+  "full_original_body_scan_complete": false,
+  "original_trace_body_opens": 0,
+  "new_simulation_attempts": 0,
+  "auto_resume_or_background_scan": false,
+  "K1_contract_known": true,
+  "K1_performance_extrapolation_permitted": false,
+  "inputs": [
+    {
+      "workload": "Gaussian",
+      "members": "510",
+      "active_thread_instructions": "283685120",
+      "list_and_order": "PASS",
+      "accepted_member_sha_vs_body_proof": "PASS",
+      "current_members": "STAT_ONLY_NO_REHASH",
+      "body_scanned_this_lane": "False",
+      "source_sparse_mask_records": "0"
+    },
+    {
+      "workload": "GEMM",
+      "members": "1",
+      "active_thread_instructions": "739246080",
+      "list_and_order": "PASS",
+      "accepted_member_sha_vs_body_proof": "PASS",
+      "current_members": "STAT_ONLY_NO_REHASH",
+      "body_scanned_this_lane": "False",
+      "source_sparse_mask_records": "0"
+    },
+    {
+      "workload": "DWT2D",
+      "members": "10",
+      "active_thread_instructions": "148684429",
+      "list_and_order": "PASS",
+      "accepted_member_sha_vs_body_proof": "PASS",
+      "current_members": "STAT_ONLY_NO_REHASH",
+      "body_scanned_this_lane": "False",
+      "source_sparse_mask_records": "0"
+    },
+    {
+      "workload": "BICG",
+      "members": "2",
+      "active_thread_instructions": "145666048",
+      "list_and_order": "PASS",
+      "accepted_member_sha_vs_body_proof": "PASS",
+      "current_members": "STAT_ONLY_NO_REHASH",
+      "body_scanned_this_lane": "False",
+      "source_sparse_mask_records": "0"
+    }
+  ],
+  "requirements": [
+    {
+      "requirement": "original_174_cpu_only",
+      "status": "PASS",
+      "evidence": [
+        "RESOURCE_PREFLIGHT.json",
+        "CPU_AUDIT_GUARD.json"
+      ]
+    },
+    {
+      "requirement": "independent_branch_worktree",
+      "status": "PASS",
+      "evidence": [
+        "git worktree and branch state"
+      ]
+    },
+    {
+      "requirement": "original_Gaussian_GEMM_counts_list_SHA_members_source",
+      "status": "PASS_WITH_EXPLICIT_SHA_SCOPE",
+      "evidence": [
+        "INPUT_CHECKS.tsv",
+        "TRACE_SCOPE_SHA256.tsv",
+        "SOURCE_IDENTITY_CHECKS.tsv"
+      ],
+      "limit": "Member SHA reused accepted proof, current members stat only; original lists freshly hashed."
+    },
+    {
+      "requirement": "optional_U_input_identity_readonly",
+      "status": "PASS",
+      "evidence": [
+        "inputs/U_SOURCE_INPUT_IDENTITY.json"
+      ],
+      "limit": "No U raw access or activity interference; user confirms U completed."
+    },
+    {
+      "requirement": "CPU_legality_precheck_before_conditional_scan",
+      "status": "PASS_SYNTHETIC_ONLY",
+      "evidence": [
+        "CPU_ACCESS_SEMANTICS_PREFLIGHT.json",
+        "CPU_STREAM_PREFLIGHT.json",
+        "CPU_CROSS_KERNEL_PREFLIGHT.json"
+      ],
+      "limit": "No native tools or real-input parser equivalence claim."
+    },
+    {
+      "requirement": "current_IO_disk_memory_other_simulators",
+      "status": "PASS_RECHECKED",
+      "evidence": [
+        "RESOURCE_PREFLIGHT.json",
+        "SCAN_ADMISSION.json"
+      ],
+      "limit": "Admission refused for sustained IO pressure and near-full filesystem; external processes left intact."
+    },
+    {
+      "requirement": "resource_failure_stop_and_bounded_closure",
+      "status": "PASS_USER_AUTHORIZED_CONDITIONAL_CLOSURE",
+      "evidence": [
+        "USER_SCOPE_UPDATE.md",
+        "SCAN_ADMISSION.json"
+      ],
+      "limit": "Body scan remains DEFERRED_SAFE_STOP; no automatic retry."
+    },
+    {
+      "requirement": "kernel_order_memcpy_source_defined_invalidate",
+      "status": "PASS_WITH_DYNAMIC_FIELDS_UNAVAILABLE",
+      "evidence": [
+        "COMMAND_SEQUENCE.tsv",
+        "KERNEL_ORDER_AND_COVERAGE.tsv",
+        "SOURCE_DEFINED_INVALIDATE.tsv"
+      ],
+      "limit": "List order only; three request sources distinct from kernel-done and ordinary Tag commit."
+    },
+    {
+      "requirement": "access_class_distribution",
+      "status": "PASS_ACCEPTED_CPU_PROOF",
+      "evidence": [
+        "ACCESS_CLASS_COUNTS.tsv",
+        "inputs/OPCODE_FORMS.tsv",
+        "inputs/MEMORY_WIDTHS.tsv"
+      ],
+      "limit": "Warp instruction records; not actual address reuse or active-lane memory totals."
+    },
+    {
+      "requirement": "address_PC_line_byte_sector_analysis_if_admitted",
+      "status": "DEFERRED_PER_RESOURCE_AND_USER_BOUND",
+      "evidence": [
+        "SCAN_ADMISSION.json",
+        "CROSS_KERNEL_ALIAS_AND_REUSE.tsv",
+        "WRITE_READ_RISK.tsv"
+      ],
+      "limit": "All missing original-address/PC/distinct-line evidence remains UNAVAILABLE, never substituted with synthetic results."
+    },
+    {
+      "requirement": "alias_byte_conflict_warp_order_distinctions",
+      "status": "PASS_METHOD_AND_LIMITS",
+      "evidence": [
+        "MEASURED_VS_INFERRED.md",
+        "ANALYZER_CONTRACT.md",
+        "CPU_*PREFLIGHT.json"
+      ],
+      "limit": "Synthetic method checks only; cross-warp execution order unknown, no inferred total order."
+    },
+    {
+      "requirement": "Gaussian_queryable_reuse_answer",
+      "status": "PASS_BOUNDED_ANSWER",
+      "evidence": [
+        "LATEST_REPORT.md",
+        "K1_REVIEW_SCOPE.md"
+      ],
+      "limit": "Structural source possibility; actual same-SM lookup reuse and Tag residency not established."
+    },
+    {
+      "requirement": "old_mapping_workload_PC_answer",
+      "status": "PASS_BOUNDED_ANSWER",
+      "evidence": [
+        "WRITE_READ_RISK.tsv",
+        "LATEST_REPORT.md"
+      ],
+      "limit": "Workload risk screening only; no confirmed original PC or actual stale mapping exposure."
+    },
+    {
+      "requirement": "K1_authoritative_contract",
+      "status": "PASS_FIXED_V_COMMIT",
+      "evidence": [
+        "inputs/LANE_V_K1_SEMANTIC_CONTRACT.md",
+        "inputs/LANE_V_SOURCE_EVENT_MAP.md",
+        "PROVENANCE_SHA256.tsv"
+      ],
+      "limit": "V=26abd496417d9392245052e54fbd9ba27c6ffd96; LDST request boundary, preserve admitted identities; no wait for Lane X."
+    },
+    {
+      "requirement": "no_K1_performance_extrapolation",
+      "status": "PASS_SCOPE_PROHIBITION",
+      "evidence": [
+        "K1_REVIEW_SCOPE.md",
+        "LATEST_REPORT.md"
+      ],
+      "limit": "All selected originals used only for risk screening in this Lane."
+    },
+    {
+      "requirement": "Hotspot_2D_LUD_no_promotion",
+      "status": "PASS_PRESERVED",
+      "evidence": [
+        "MEASURED_VS_INFERRED.md",
+        "inputs/HOTSPOT_BOUNDARY.md",
+        "inputs/T_SCIENTIFIC_SCOPE.md"
+      ]
+    },
+    {
+      "requirement": "six_named_outputs_scripts_indexes_SHA",
+      "status": "PASS_LOCAL_RELEASE_SET",
+      "evidence": [
+        "TRACE_SCOPE_SHA256.tsv",
+        "ACCESS_CLASS_COUNTS.tsv",
+        "CROSS_KERNEL_ALIAS_AND_REUSE.tsv",
+        "WRITE_READ_RISK.tsv",
+        "MEASURED_VS_INFERRED.md",
+        "LATEST_REPORT.md",
+        "FILES_SHA256.tsv",
+        "scripts/"
+      ],
+      "limit": "Publication proved separately by remote ref and every manifest blob readback after commit/push."
+    },
+    {
+      "requirement": "no_new_simulation_no_GPU_native_no_trace_decoder_raw_mutation",
+      "status": "PASS_OWNED_ACTIONS",
+      "evidence": [
+        "CPU_AUDIT_GUARD.json",
+        "CPU_READONLY_CHECKS.json",
+        "SCAN_ADMISSION.json",
+        "CPU_*PREFLIGHT.json"
+      ],
+      "limit": "Zero own simulator/native executions and original body opens; no assertion about external jobs."
+    },
+    {
+      "requirement": "no_values_actual_happens_before_native_correctness_inference",
+      "status": "PASS_UNAVAILABLE_PRESERVED",
+      "evidence": [
+        "MEASURED_VS_INFERRED.md",
+        "WRITE_READ_RISK.tsv",
+        "K1_REVIEW_SCOPE.md"
+      ]
+    }
+  ],
+  "scan_disposition": {
+    "status": "DEFERRED_SAFE_STOP",
+    "admission": {
+      "available_memory": 341749866496,
+      "body_opens_at_admission": 0,
+      "decision": "REFUSE_BEFORE_BODY_OPEN",
+      "filesystem_free": 56100544512,
+      "io": "some avg10=16.35 avg60=14.20 avg300=13.16 total=148241188710\nfull avg10=16.29 avg60=14.11 avg300=13.08 total=128137985724\n",
+      "new_simulation_attempts": 0,
+      "phase": "PRE_BODY_ADMISSION",
+      "reasons": [
+        "IO_FULL_AVG10_GE_5_PERCENT",
+        "FILESYSTEM_USED_GE_98_PERCENT"
+      ],
+      "scan_requested": false,
+      "u_path_pids": [],
+      "utc": "2026-10-17T16:14:32.381651+00:00",
+      "runner_sha256": "de313803f9d070c206f53324d398b3a27f08f16938986c795ce7620d05b8a4c5"
+    },
+    "resource_failure_seen_in_three_consecutive_goal_turns": true,
+    "current_external_simulator_pids": [
+      2540200,
+      2540467,
+      3965219,
+      3965220
+    ]
+  },
+  "publication_verification": {
+    "method": "commit and push release, verify GitHub remote ref == local HEAD, fetch back and SHA256 every FILES_SHA256.tsv blob",
+    "receipt": "/workspace/dtc-lane-w-trace-semantics-174-v1/PUBLICATION_READBACK.json",
+    "receipt_is_external_to_avoid_commit_self_reference": true
+  },
+  "explicit_unknowns": [
+    "original PCs and addresses",
+    "128B line intersections",
+    "byte/sector overlap of original inputs",
+    "distinct reusable lines per segment",
+    "same-SM lookup reuse",
+    "actual Tag residency",
+    "actual stale value",
+    "native correctness",
+    "real happens-before"
+  ]
+}

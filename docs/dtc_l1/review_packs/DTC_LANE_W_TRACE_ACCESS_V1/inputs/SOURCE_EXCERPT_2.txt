@@ -1,4 +1,22 @@
 /workspace/worktrees/gpgpu-sim-iscas2027-dtc-service-closure-174-v1 6fba0136f8465b59fe5858a950fa39efb265f654:src/gpgpu-sim/gpu-sim.cc SHA256=537d8a68effb56c02c28bbfea68fd6a92fa9644a70606c9d8dcabf10807a4b15
+1027: void gpgpu_sim::set_kernel_done(kernel_info_t *kernel) {
+1028:   unsigned uid = kernel->get_uid();
+1029:   last_uid = uid;
+1030:   unsigned long long streamID = kernel->get_streamID();
+1031:   last_streamID = streamID;
+1032:   gpu_kernel_time.at(streamID).at(uid).end_cycle =
+1033:       gpu_tot_sim_cycle + gpu_sim_cycle;
+1034:   m_finished_kernel.push_back(uid);
+1035:   std::vector<kernel_info_t *>::iterator k;
+1036:   for (k = m_running_kernels.begin(); k != m_running_kernels.end(); k++) {
+1037:     if (*k == kernel) {
+1038:       kernel->end_cycle = gpu_sim_cycle + gpu_tot_sim_cycle;
+1039:       *k = NULL;
+1040:       break;
+1041:     }
+1042:   }
+1043:   assert(k != m_running_kernels.end());
+1044: }
 1748:
 1749: void gpgpu_sim::change_cache_config(FuncCache cache_config) {
 1750:   if (cache_config != m_shader_config->m_L1D_config.get_cache_status()) {

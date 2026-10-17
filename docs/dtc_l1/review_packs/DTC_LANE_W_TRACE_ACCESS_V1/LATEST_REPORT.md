@@ -1,6 +1,6 @@
 # DTC_LANE_W_TRACE_ACCESS_RISK_174_V1
 
-状态：**DEFERRED_SAFE_STOP — 身份及既有访问分布已固定；地址/PC 流式 scan 因高 I/O 压力暂停。** 审阅始于2026-10-17，封存日期2026-10-18（Asia/Shanghai）。主机 `huangrulin-174`，账户 uid0/root。独立 Framework 分支 `hrl/iscas2027-dtc-lane-w-trace-semantics-174-v1`，基线18a68dcc；不改 Core、decoder、trace 或旧 raw。
+状态：**BOUNDED_REVIEW_CLOSED；body scan保持DEFERRED_SAFE_STOP。** 按用户明确的“资源始终不合格时以有界审查结果收口”条件结束本Lane；不声称完成原trace地址扫描。审阅始于2026-10-17，封存日期2026-10-18（Asia/Shanghai）。主机 `huangrulin-174`，账户 uid0/root。独立 Framework 分支 `hrl/iscas2027-dtc-lane-w-trace-semantics-174-v1`，基线18a68dcc；不改 Core、decoder、trace 或旧 raw。
 
 续轮已补齐独立CPU分析辅助模块及六组合成合法性预检，另加入有资源准入的stream读取入口和跨kernel集合比较纯函数，以内存合成CTA流/地址集预检，见 `ANALYZER_CONTRACT.md` 及三个 `CPU_*PREFLIGHT.json`。验证version0/3、地址展开、精确byte/sector masks、完整CTA/warp计数与同warp记录先后；没有读取原trace，也不把合成数据当作任何工作负载的扫描结果。只准入检查仍因高I/O压力与磁盘使用率拒绝body open，见 `SCAN_ADMISSION.json`，故下列科学结论不变。
 
@@ -8,7 +8,9 @@ Gaussian **具备值得研究的结构性可能，但“确有跨 kernel 可查�
 
 **目前不能点名任何实际暴露旧DTC映射的PC。** 四个指定负载均有cacheable reads和stores，可列为风险筛查对象；Gaussian/DWT2D/BICG有跨kernel候选范围，GEMM原输入仅1个kernel，跨kernel对不存在。真正可能暴露旧映射的读PC需同时具备：读到此前DTC映射的line、相关store/atomic/invalidate未使映射失效、映射仍驻留且属于同一DTC查询域。byte重叠才是比line别名更强的写读候选；依然不证明读到旧值或native错误。逐PC字段UNAVAILABLE。
 
-**原输入目前不能支持K1性能外推。** K1合同/机制身份未固定；既有完整指令覆盖只能支持冻结consumer模型的输入范围。即便后续scan证实地址复用，也不能据此外推出Tag命中率、时序、性能或值正确性。四个负载本包都只作为风险筛查；本包不授予新模拟或自动晋升。Hotspot HOLD、2D新输入STOP及LUD不追加边界继续保留。
+**本Lane不做K1性能外推，原输入本包仅作风险筛查。** K1科学合同已固定至Lane V `26abd496417d9392245052e54fbd9ba27c6ffd96`：source-defined请求到达 `ldst_unit::invalidate()` 时撤销DTC查询映射，同时保护已接纳physical generation及未完成消费者；不是统一kernel-end广播或ordinary实际Tag commit。无需等待Lane X实现才能只读审查。即便地址scan证实复用，也不能据此外推出Tag命中率、时序、性能或值正确性。既有完整指令覆盖只支持冻结consumer输入范围；Hotspot HOLD、2D新输入STOP及LUD不追加边界继续保留。
+
+K1请求来源已区分idle-cluster、cache-config变化和regular MEMBAR；普通L1请求可先置pending，等其自身miss生命周期结束才提交Tag invalidate。没有动态SM/事件/lookup证据，不能把跨kernel地址相交、同SM查询复用、实际Tag驻留和数值正确性合并。详见 `K1_REVIEW_SCOPE.md`、固定V合同及 `SOURCE_DEFINED_INVALIDATE.tsv`。
 
 | 原输入 | kernels | active-thread instructions | cacheable read记录 | store记录 | list中的HtoD |
 |---|---:|---:|---:|---:|---:|
@@ -35,5 +37,7 @@ T输入源提交 `f520a445436b57c0a0f2494fb858a1636f04d2bc`；U只读提交 `16e
 - `scripts/build_readonly_pack.py`、`scripts/verify_pack.py`：只读整理和独立包校验；没有仿真启动路径。
 - `scripts/access_semantics.py`、`scripts/preflight_access_semantics.py`：纯CPU辅助分析及合成预检，无原trace读取入口；当前既非完整parser等价证明，也非实际扫描器。
 - `scripts/stream_access_scan.py`：有资源准入的单worker CPU流式入口，默认仅检查、当前拒绝body open；`cross_kernel_reuse.py`是纯集合比较辅助函数。相应合成预检均不读取原trace。
+- `K1_REVIEW_SCOPE.md`、`inputs/LANE_V_*.md`：K1权威合同、事件图与W边界；来源/SHA固定于PROVENANCE清单。
+- `USER_SCOPE_UPDATE.md`、`COMPLETION_AUDIT.json`：用户明确的资源不合格收口条件和逐项验收；完整原body扫描仍为未执行。
 
-零新模拟attempt；零GPU/native工具执行；零trace body open；零旧raw读写；零后台scan或自动恢复任务。地址/PC、byte/sector mask、distinct lines和任何性能外推仍未完成，不能将本包称为完整trace访问语义扫描报告。
+零新模拟attempt；零GPU/native工具执行；零trace body open；零旧仿真raw读写；零后台scan或自动恢复任务。地址/PC、byte/sector mask、distinct lines保留UNAVAILABLE；K1性能外推不在本Lane权限范围。当前资源反复不合格，故按明确授权以有界结果收口，不能将本包称为完整trace访问语义扫描报告。
