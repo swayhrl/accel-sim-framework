@@ -18,7 +18,7 @@ PIB capacity alone does not explain the performance difference.
 
 \textit{Lookup and retained data.}
 Suppose two admitted instructions share a physical line.
-Each PIB entry records its index and dependencies, not a private copy of the data~\cite{zhao2024}.
+Their PIB entries store physical-line indices and dependencies instead of result vectors~\cite{zhao2024}.
 If the line's tag is replaced, both instructions keep their physical references.
 Later lookups cannot find that allocation.
 The evaluated DTC read path has 640 physical lines but only 128 tag mappings.
