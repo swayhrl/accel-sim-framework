@@ -2,13 +2,13 @@
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
   "task_id": "FT20261017_LANE1_R19_L25_r1",
-  "status": "LOCAL_IDEALS_RUNTIME_PRODUCER_PASS_PUBLISH_NOW_CONTINUE_STRUCTURE",
+  "status": "PRODUCER61_NATIVE_AND11_CONFIG_PASS_LANE5_INDEPENDENT_SCOPE_PENDING",
   "review_coordination_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
-  "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
-  "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
-  "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+  "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+  "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
   "runtime_code_changed": false,
   "new_full_simulator_builds": 0,
   "new_application_runs": 0,
@@ -210,13 +210,13 @@
   "fixture_executable": "/workspace/build/ep-l2-ft20261017-lane1-headroom-r19-followup-r1/production_probe",
   "fixture_build_source_commit": "7c55da32254b7616e1964ee971b23cdcae283b0e",
   "current_directed_processes": 0,
-  "current_lease_id": "5d7c67b6aa2a4091af88a57b0cbc485c",
+  "current_lease_id": "0cc1afd1a74a49bd8dd8b39a71eb7865",
   "current_lease_released": true,
-  "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_P2_RELEASE_r1",
-  "goal_state": "ACTIVE_PARALLEL_ROLLING_RELEASE",
+  "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1",
+  "goal_state": "ACTIVE_FINAL_PUBLICATION_AND_REMOTE_READBACK",
   "gate_waiter_started": false,
-  "recorded_at": "2026-10-17T11:53:23.389461+00:00",
-  "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification.",
+  "recorded_at": "2026-10-17T12:07:16.524690+00:00",
+  "next_action": "Lane5 independently qualify new runtime OFF/affected paths and each requested scope, then run ready campaign cells/anchors via existing registry/currentV2/full-input pipeline. ALL_DATA uses reference identity/store/snapshot/dependency/consume/drain acceptance, not fictitious physical64slice WB proof. Lane6 consumes only independently accepted rows.",
   "headroom_delivery": {
     "D4": {
       "publication": "3cc3660684cad09c5decf2684c62e2c7b26e6b25",
@@ -278,33 +278,31 @@
   "trace_identity_scope": "NO_LANE1_APPLICATION_OR_TRACE_REPLAY; synthetic40-request native production fixture pinned by35c6767c source and fixture binary/archive hashes. Lane5 retains full original Conv/FWT trace content and r17/non-atomic input proofs for applications.",
   "runtime_candidate": {
     "schema": "EPL2_LANE1_PARALLEL_RUNTIME_RELEASE_V1",
-    "release_id": "POTENTIAL_P2_STRUCTURE_LOCAL_R1",
-    "status": "PRODUCER_CHECKS_PASS_LANE5_INDEPENDENT_SCOPE_QUALIFICATION_REQUIRED",
+    "release_id": "POTENTIAL_ALL_DATA_FINITE_LOCAL_R1",
+    "status": "PRODUCER61_NATIVE_AND11_CONFIG_PASS_LANE5_INDEPENDENT_SCOPE_PENDING",
     "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
     "authority": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
-    "core_source_commit": "963635c0dbb79cce5c83506d3db13f067e60aae5",
-    "core_tree": "98b4a80e1af6b99932fb84099e9dec223377c3b2",
+    "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+    "core_tree": "aae87630908a9eff06145034a2f798196e8f6c31",
     "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-    "binary": "/workspace/ep_l2_parallel_lane1/p2_release_r1/binaries/accel-sim.out",
-    "binary_sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
-    "frozen_R19_binary_replaced": false,
-    "official_7b8_preserved": true,
-    "runtime_build_reused_from_author": false,
-    "actual_author_build_receipt_sha256": "ed61b5fc876ca4c965d4610d2b196d59c0d6b1af9f90619573e8bb5307be89fd",
-    "actual_build_core_path": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1",
-    "actual_build_framework_path": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
-    "lane1_frozen_equivalent_core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-p2-r1",
-    "lane1_frozen_framework": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
-    "fixture_tool_source_commit": "f651c2d6c29f10d5a1b0b63e94f3f78855a3a77e",
-    "fixture_repair": "All54 native cases actually executed: original31 +8 local ideals +7 structural +2 equal1168 controls +4 finiteP1/P2 arbiter/cache +2 P2 real partition. Native parser10 profiles. All formal fixes retained, immutable test/source/library/exe hashes bound.",
-    "producer_checks": 54,
-    "native_effective_profiles": 10,
-    "producer_receipt_path": "/workspace/ep_l2_parallel_lane1/p2_release_r1/INTAKE_RECEIPT.json",
-    "producer_receipt_sha256": "926e17da79a23ed69dc1827ac9d353faa4299644453d926a5bde9dc17d0c6053",
-    "producer_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_P2_RELEASE_r1/INTAKE_RECEIPT.json",
-    "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/p2_release_r1/RUNTIME_CONFIG_MANIFEST.json",
-    "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_P2_CONFIG_MANIFEST_R1.json",
-    "producer_manifest_sha256": "f6dc92096cdce207a2bcfbca24eeab9e2ba9c3ca08f6be983ff072f3b266ea4a",
+    "binary": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/binaries/accel-sim.out",
+    "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+    "actual_build_core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-all-data-r1",
+    "actual_build_framework": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
+    "build_receipt": "/workspace/ep_l2_parallel_lane1/all_data_build_r2/BUILD_RECEIPT.json",
+    "build_receipt_sha256": "ec07462b3d69db261d7683269cf1b875d0bdb6cd636df0531f4301f59b449de1",
+    "tool_source_commit": "db1989c3006aa93f3b823805029cfc87d5688000",
+    "supplement_tool_source_commit": "b08db4f3234fdeb087d366dc572d9ea74477aff4",
+    "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/all_data_release_manifest_r1/RUNTIME_CONFIG_MANIFEST.json",
+    "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_ALL_DATA_CONFIG_MANIFEST_R1.json",
+    "producer_manifest_sha256": "2f4a1fd3648b60b19c9beb2b52adfd63f88244dade9bd9494b9494340c8f0d34",
+    "producer_receipt_path": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/INTAKE_RECEIPT.json",
+    "producer_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1/INTAKE_RECEIPT.json",
+    "producer_receipt_sha256": "6dbc814fd5d3274da69aaafbf0ff6408ce7a0a3112429dcb44c9e8de4d1a47ec",
+    "supplement_receipt_path": "/workspace/ep_l2_parallel_lane1/all_data_supplement_r1/SUPPLEMENT_RECEIPT.json",
+    "supplement_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1/SUPPLEMENT_SUPPLEMENT_RECEIPT.json",
+    "supplement_receipt_sha256": "c682334a14ec996a0fa2e8286893dd8d290168f352e3b4306a7219de0b3b385d",
+    "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1",
     "supported_profiles": [
       "B16_OFF",
       "U_WB16_OFF",
@@ -315,20 +313,17 @@
       "S64",
       "U_CAP16",
       "P2_B16",
-      "P2_U_WB16"
+      "P2_U_WB16",
+      "I_MEM_ALL_DATA"
     ],
     "unsupported_profiles": [
       "I_BANK",
       "I_L2_SERVICE",
-      "I_MEM_ALL_DATA"
+      "undeclared Ideal/finite structural combinations"
     ],
-    "combination_guards": [
-      "I_READ_HIT + U,WB,META refused",
-      "I_WB only static FT source",
-      "I_META requires descriptor model; metadata identity/order preserved"
-    ],
-    "scope": "Finite OFF/S64/U_CAP16/P2 plus separate local WB/META/read diagnostics. P2 same4banks1168 andmapping,2 actual line ops/bank/physicalGPUcycle equally toB/U. Not ALL_DATA/numeric SASS or inherited independent qualification. No P2+structure/quota/Ideals combinations admitted.",
-    "trace_identity": "No new full application run by Lane1. Lane5 attaches existing frozen complete input/body manifests to every run; no synthetic trace or binary mixing.",
+    "native_positive_cases": 61,
+    "expected_fail_closed_cases": 5,
+    "native_effective_profiles": 11,
     "native_profile_config_hashes": {
       "B16_OFF": "c15753a37b7a984fc5fd354f1155a58d6f2ce98e49923714bb88c6e012f383df",
       "U_WB16_OFF": "169447c3069c9ea8c4d3fc5aad25766c4b6c3dc4df734a83af1bb3ef442c99f2",
@@ -339,16 +334,61 @@
       "S64": "46835f86e15e207f1fb177ab29d6f7d61f0c36c7daab2cf0a9f40ab72c086767",
       "U_CAP16": "048c74de5195473c5fd061d8ab8b992ef22034052968df203a943ed019b98a9a",
       "P2_B16": "baa510d19ff0d08b7665825ed80001fe0eda1e994ca7ea616c8fc93586c3731b",
-      "P2_U_WB16": "ac6bef9185424b610efe92876600428580f18facdbf4ad23eae034dd5073224d"
+      "P2_U_WB16": "ac6bef9185424b610efe92876600428580f18facdbf4ad23eae034dd5073224d",
+      "I_MEM_ALL_DATA": "cafa95c4598940e4b65384872b63e372b71d6ded01fb8918123f2807dd22dd71"
     },
-    "budget_owner": "lane5",
-    "new_full_application_starts": 0,
-    "next_action": "Independently qualify this new runtime and each local Ideal scope; same-binary OFF anchors and all new runs count under72 starts/new campaign deadline. Do not block old-binary D2/L25 or wait for structure/ALL_DATA. Do not inherit old binary qualification."
+    "scientific_qualification_owner": "lane5",
+    "independent_qualification": false,
+    "new_full_applications_by_lane1": 0,
+    "frozen_R19_binary_replaced": false,
+    "prior_potential_releases_replaced": false,
+    "trace_identity": "No full application trace was consumed by these directed cases. Lane5 binds each exact existing complete input/body/host-payload manifest and new source/binary/config/run-key under current acceptance; non-atomic scope only. No synthetic full-app evidence.",
+    "same_binary_anchors_required": true,
+    "scope": {
+      "finite": "OFF/S64/U_CAP16/P2: native cache/sector/version/WB/lower-accept/WAD/bank/drain paths",
+      "local_ideals": "I_WB/META/WB_META/READ_HIT: explicitly scoped removals, retained native lifecycle; not ALL_DATA",
+      "all_data": {
+        "service": "END_TO_END_NATIVE_LDST_REFERENCE",
+        "reference_ready": "t_eligible+1 physical GPU cycle",
+        "eligibility": "real issue and required older producer visibility, no hidden finite memory admission",
+        "spaces": [
+          "global",
+          "local",
+          "param_local",
+          "shared",
+          "constant",
+          "param_kernel",
+          "texture"
+        ],
+        "preserved": [
+          "native instruction stream and issue resources",
+          "register dependencies and actual writeback/scoreboard completion",
+          "CTA and memory barriers",
+          "producer ordering and immutable byte/producer-version snapshots",
+          "native instruction-fetch hierarchy"
+        ],
+        "removed": [
+          "finite data-cache capacity and banks",
+          "data memory/NoC/LDST response FIFOs and admission",
+          "data link and per-tick return quotas"
+        ],
+        "residual": "actual SM register ports; ready-to-consume delay measured separately",
+        "data_cache_bank_WB_DRAM_statistics": "NOT_APPLICABLE; no energy-saving inference",
+        "unsupported": "atomic and LDGSTS fail closed; no numeric SASS output qualification"
+      }
+    },
+    "comparison_rules": [
+      "Old H0five/0.160% unchanged",
+      "Same finite h and same binary B/U yields S_EP; ALL_DATA opportunity ratio is separate, not EP-L2 speedup",
+      "Operational optimistic reference, not a strict mathematical upper bound for every schedule",
+      "All new starts/anchors/canaries count under72 and frozen new-campaign deadline; old R19 T0/cap/deadline remain separate"
+    ],
+    "next_action": "Lane5 independently qualify new runtime OFF/affected paths and each requested scope, then run ready campaign cells/anchors via existing registry/currentV2/full-input pipeline. ALL_DATA uses reference identity/store/snapshot/dependency/consume/drain acceptance, not fictitious physical64slice WB proof. Lane6 consumes only independently accepted rows."
   },
   "new_runtime_source": {
-    "core": "963635c0dbb79cce5c83506d3db13f067e60aae5",
+    "core": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
     "framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-    "binary_sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224"
+    "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7"
   },
   "structural_metadata_revision": "r2",
   "measured_structural_build_resources": {
@@ -363,5 +403,11 @@
     "lease_id": "9fe452d038f741de86c8fbd035065ab0",
     "lease_released": true,
     "correction": "Own structural full build sampled RSS/growth was measured; old generic R1 scope sentence about unmeasured author RSS applies only to first37dc author build, not this3d68 own build."
+  },
+  "current_runtime_is_old_R19": false,
+  "frozen_R19_runtime": {
+    "core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "framework": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+    "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee"
   }
 }
