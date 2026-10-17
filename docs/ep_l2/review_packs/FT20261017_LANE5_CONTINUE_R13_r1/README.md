@@ -1,0 +1,11 @@
+# Lane5 bounded CONTINUE — r13
+
+Active from2026-10-17T02:19:03Z to no later than2026-10-17T12:19:03Z (Beijing10:19:03–20:19:03). This is the explicitly requested new CONTINUE Goal in the original project/worktree/branch. Goal supervision is this active agent; no extra watcher/daemon or compiler is started.
+
+Consumed r10/r11/r12/r13 at31251186. PolyBench r13 conditional release belongs exclusively to the source Storage-Ops owner. Initial source notice waits for target recovery pointer; no source release receipt exists yet. Actual old174 workspace and Share are separately measured in INITIAL_LIVE_STATE.json; archived bytes are not root reclaim. Lane1 sole waiter is live and independently PID/start/boot matched; current official producer/binary absent.
+
+Existing21 execution/11-gate plan and ten row/five-pair preparation are reused. New lightweight prep checks only trace metadata and exact protected-scope disjointness. Full trace/config/source/binary identity is freshly bound at a legitimate release, never inherited from old R0/R1. New source guards have seven focused tests; no historical suite or production replay. qualify_r0_1.py requires exact published official receipt, actual21 producer executions, official paths/hashes/assertions/compiler logs and central resource admission. Its21 independent replays do not automatically certify11 gates: affected OFF/legality and evidence review remain explicit prerequisites.
+
+Resume: read CONTINUE_CONTRACT.json, latest recorded EVENT and canonical live registry. continue_r13.py --contract <this contract> --out /workspace/results/ep_l2_ft20261016/lane5_continue_r13_r1 performs one bounded observation only, enforces>=600s since prior observation and no fresh dependency action after deadline; it never claims a lease or dispatches a simulator. Do not launch it as another background watcher. At release use qualify_r0_1.py --help for explicit exact-publication-bound intake/replay. Preserve every failed/new revision; old packs remain intact.
+
+Mainline: official release →11 independent gates/current V2 launch authority →first accepted B16/U_WB16 pair→remaining4→geomean only after5. Formal48GiB(+2GiB Lane1 build),64GiB memory, CPU/concurrency/central registry, Share40GiB, old withdrawals and no engineering promotion are unchanged. All stages require a fresh status/receipt and remote readback.
