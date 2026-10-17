@@ -29,7 +29,9 @@ def native_options(text):
     section=text.split('R19_NATIVE_EFFECTIVE_OPTIONS_BEGIN\n',1)[1].split('R19_NATIVE_EFFECTIVE_OPTIONS_END',1)[0];out={}
     for line in section.splitlines():
         row=line.split('#',1)[0].strip().split(None,1)
-        if row and row[0].startswith('-'):require(row[0] not in out,'Repeated native option');out[row[0]]=row[1].strip() if len(row)>1 else ''
+        if row and row[0].startswith('-'):
+            value=row[1].strip() if len(row)>1 else ''
+            require(row[0] not in out or out[row[0]]==value,'Conflicting repeated native option');out[row[0]]=value
     return out
 
 
