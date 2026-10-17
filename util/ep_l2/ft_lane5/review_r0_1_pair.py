@@ -11,7 +11,7 @@ from acceptance import load_current_authority, current_manifest
 from campaign_r0 import publish_pair, csv_write
 from package_r0 import freeze_checksums
 from registry import Registry, run_key, write_json
-from run import inspect, digest, validate_summary, require
+from run import inspect, digest, validate_summary, require, GATES
 
 REPO=Path(__file__).resolve().parents[3]
 ORDER=('sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21')
@@ -24,6 +24,13 @@ def review(spec,registry):
     require(result['status']=='COMPLETE_VALID' and result['exit_code']==0 and result['run_key']==key and result['identity']==spec['identity'],'Invalid exact runtime result')
     require(json.loads((directory/'input_spec.json').read_text())==spec,'Frozen runtime spec differs')
     audit=inspect(spec) # Current source/binary/qualification/complete input content and V2.
+    # GATES is a set: ordering may differ across Python processes. Compare
+    # exact gate/hash membership and retain every other ordered input field.
+    original=result['audit']['qualification_evidence'];fresh=audit['qualification_evidence']
+    require(len(original)==len(fresh)==len(GATES) and
+            {(r['gate'],r['sha256']) for r in original}=={(r['gate'],r['sha256']) for r in fresh},
+            'Qualification gate/hash membership changed')
+    audit['qualification_evidence']=original
     require(audit==result['audit']==json.loads((directory/'input_audit.json').read_text()),'Input/qualification/authority audit changed')
     require(digest(directory/'accel-sim.out')==spec['identity']['binary_sha256'],'Frozen runtime binary changed')
     for item in audit['configs']+audit['auxiliary_assets']:
