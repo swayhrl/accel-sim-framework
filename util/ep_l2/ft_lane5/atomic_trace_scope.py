@@ -54,7 +54,11 @@ def instruction(line,version,lineinfo,block,warp,opcodes):
     require(all(re.fullmatch(r'[+-]?(?:0[xX])?[0-9a-fA-F]+',w) for w in tail),'Unparsed native memory/immediate tail')
     if width:
         require(bool(tail),'Missing native address mode');mode=integer(tail[0]);n=mask.bit_count()
-        sizes={0:{1+n,2+n},1:{3,4},2:{1+max(n,1),2+max(n,1),3+n}}
+        # Legacy traces can retain all32 address fields on masked memory rows.
+        # Native parser consumes only active-lane addresses and ignores the tail.
+        # Validate the entire numeric row for opcode coverage, without claiming
+        # that inactive address fields are executed or numerically meaningful.
+        sizes={0:{1+n,2+n,33,34},1:{3,4},2:{1+max(n,1),2+max(n,1),3+n}}
         require(mode in sizes and len(tail) in sizes[mode],'Unsupported native address tail')
     else:require(len(tail)<=1,'Extra nonmemory fields')
     enum=opcodes[base]
@@ -99,7 +103,8 @@ def inspect_lines(lines,maps,checkpoint=lambda:None):
             require(active and warp is not None and remaining is None,'Misplaced insts count');remaining=int(m[1]);continue
         require(active and warp is not None and remaining is not None and remaining>0,'Unparsed/truncated/extra instruction record')
         try:opcode,enum,lanes=instruction(s,version,lineinfo,block,warp,opcodes)
-        except (IndexError,TypeError) as error:raise ValueError('Truncated native instruction') from error
+        except (IndexError,TypeError) as error:raise ValueError('Truncated native instruction at line '+str(number)) from error
+        except ValueError as error:raise ValueError('Native instruction line '+str(number)+': '+str(error)) from error
         remaining-=1;records+=1;active_records+=lanes;hist[opcode]+=1
         if enum in GLOBAL:global_hist[opcode]+=1;active_atomic+=lanes
         if enum in SHARED:shared_hist[opcode]+=1
