@@ -1,165 +1,190 @@
 {
-  "schema_version": 1,
-  "status": "BASELINE_REGRESSION_PASS_K1_NOT_RUN_SCIENTIFIC_STOP",
-  "baseline_directed_regression": {
-    "count": 4,
-    "passed": 4,
-    "failed": 0,
-    "tests": [
-      {
-        "name": "dtc_l1_m1_common_test",
-        "status": "PASS_BASELINE_ONLY",
-        "time_seconds": "0.00286441"
-      },
-      {
-        "name": "dtc_l1_bad_generation_test",
-        "status": "PASS_BASELINE_ONLY",
-        "time_seconds": "0.0862665"
-      },
-      {
-        "name": "dtc_l1_completion_accounting_test",
-        "status": "PASS_BASELINE_ONLY",
-        "time_seconds": "0.0862312"
-      },
-      {
-        "name": "dtc_l1_finite_service_test",
-        "status": "PASS_BASELINE_ONLY",
-        "time_seconds": "0.00464861"
-      }
-    ],
-    "log": "/workspace/dtc-lane-x-optin-invalidation-174-v1/ctest.log",
-    "junit_sha256": "3ca0f603b98999e7f14fdec43c0aa8ec02bcf3fdd1482fa0bb67e5e86fde078a",
-    "coverage_limit": "Existing baseline production helpers only; not K1 source-event tests"
-  },
-  "k1_correctness_pass": false,
-  "k1_cases": [
+  "schema_version": 2,
+  "status": "LOCAL_CPU_CHECKS_PASSED_LANE_Y_PENDING_NOT_K1_CORRECTNESS_PASS",
+  "core_sha": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "ctest_count": 7,
+  "existing_regressions": 4,
+  "new_cpu_targets": 3,
+  "ctest_passed": 7,
+  "ctest_failed": 0,
+  "tests": [
     {
-      "id": "K1-01",
-      "check": "Production parser missing/0/1; default OFF; unsupported mode handling",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_m1_common_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.0048172"
     },
     {
-      "id": "K1-02",
-      "check": "No ordinary event or original guard false: no DTC state change",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_bad_generation_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.086021"
     },
     {
-      "id": "K1-03",
-      "check": "Idle cluster with another cluster active; no false kernel-end assumption",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_completion_accounting_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.0865571"
     },
     {
-      "id": "K1-04",
-      "check": "Repeated idle-cluster request; distinguish request from deferred ordinary commit",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_finite_service_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.00476799"
     },
     {
-      "id": "K1-05",
-      "check": "MEMBAR release with other live warps; preserve all their physical owners",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_source_invalidation_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.493281"
     },
     {
-      "id": "K1-06",
-      "check": "Cache preference event and original flush predicates; scope matches Lane V",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_source_invalidation_integration_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.0041747"
     },
     {
-      "id": "K1-07",
-      "check": "Visible ready line with Ref=0: exactly one safe reclaim",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-08",
-      "check": "Ready line with Ref>0: retain through collection and blocked writeback",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-09",
-      "check": "Allocated miss before lower-create/inject: preserve UID, generation and credit ownership",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-10",
-      "check": "Split/out-of-order sectors returning after visibility loss: complete all exactly once",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-11",
-      "check": "Duplicate and invalid sector reply remains fatal; no dropped reply",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-12",
-      "check": "Same address re-access while old generation pending: independent allocation and response route",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-13",
-      "check": "Finite-service partial waiter update and late merge survive event; quotas unchanged",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-14",
-      "check": "Retire last reference after visibility loss: reclaim exactly once; shadow Ref equality",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-15",
-      "check": "Recycled generation and reused PIB slot: stale reply remains hard failure",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-16",
-      "check": "Repeated events do not double-free or overwrite first map-loss timestamp",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-17",
-      "check": "No free physical space or full lower queues: retain partial allocation and ordinary backpressure",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-18",
-      "check": "IO passive release with no replacing PIB owner: explicitly unsupported pending scope decision",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-19",
-      "check": "Source request while conventional cache unused/busy: approved event timing required",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
-    },
-    {
-      "id": "K1-20",
-      "check": "Allocated+free=capacity; retained owners; lower acquire-release=outstanding; no leaks at drain",
-      "status": "NOT_RUN_SCIENTIFIC_STOP",
-      "reason": "No K1 implementation after source-event STOP"
+      "name": "dtc_l1_k0_equivalence_test",
+      "status": "LOCAL_CPU_CHECK_PASSED",
+      "seconds": "0.00481011"
     }
   ],
-  "k0_runtime_equivalence": "NOT_RUN_NEW_OPTION_NOT_IMPLEMENTED",
-  "functional_source_equality_to_frozen": true,
-  "formal_performance_matrix": "NOT_RUN_OO_ONLY_AFTER_EXTERNAL_GATES",
-  "io_k1_scope": "NOT_IMPLEMENTED_DO_NOT_EXPAND_PASSIVE_RELEASE",
-  "modern_sector_k1_scope": "NOT_IMPLEMENTED",
-  "external_lane_v_gate": "PENDING",
-  "external_lane_y_gate": "PENDING",
-  "full_gaussian_gemm_jobs_dispatched": 0
+  "test_witnesses": [
+    {
+      "case": "K1-ready-ref0-legacy-service-stale-generation",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-ready-ref0-finite-stale-generation",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-old-new-sectors-slot-reuse",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-old-new-sectors-slot-reuse-finite",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-finite-return-cursor-late-waiter-idempotent-map-loss",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-grant-cross-event-partial-allocation-pressure-completion",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-collection-WB-backpressure-sidecar-no-address-owner",
+      "local_cpu_check": "PASS",
+      "allocated": 0,
+      "refs": 0,
+      "pib": 0
+    },
+    {
+      "case": "K1-scope-OO-only-K0-all-modes",
+      "local_cpu_check": "PASS"
+    },
+    {
+      "case": "K1-production-parser-real-ordinary-deferred-commit",
+      "local_cpu_check": "PASS",
+      "value_correctness": "UNPROVEN"
+    }
+  ],
+  "source_and_commit_event_witnesses": [
+    "DTC_INVALIDATE_V1 sm=7 order=1 phase=LDST_SOURCE_REQUEST cycle=2 request=1 source=IDLE_CLUSTER changed=1 retained=1 reclaimed=0",
+    "DTC_INVALIDATE_V1 sm=7 order=2 phase=LDST_SOURCE_REQUEST cycle=2 request=2 source=IDLE_CLUSTER changed=0 retained=0 reclaimed=0",
+    "DTC_INVALIDATE_V1 sm=7 order=3 phase=LDST_SOURCE_REQUEST cycle=3 request=3 source=MEMBAR changed=0 retained=0 reclaimed=0",
+    "DTC_INVALIDATE_V1 sm=7 order=4 phase=ORDINARY_CACHE_CYCLE_RETURN cycle=4 ordinary_commit=1 first_request=1 last_request=3",
+    "DTC_INVALIDATE_V1 sm=7 order=5 phase=LDST_SOURCE_REQUEST cycle=4 request=4 source=CACHE_CONFIG_CHANGE changed=1 retained=1 reclaimed=0",
+    "DTC_INVALIDATE_V1 sm=7 order=6 phase=ORDINARY_REQUEST_RETURN cycle=4 ordinary_commit=2 first_request=4 last_request=4"
+  ],
+  "coverage_by_lane_v_case": [
+    {
+      "lane_v_case": "K1-01",
+      "status": "PARTIAL_LOCAL_CPU_AND_STATIC_CHECKS_PASSED",
+      "local_coverage": "Production parser omitted/0/1; K0 all modes; K1 OO-only; static original source predicates and no new kernel event; source labels counted",
+      "remaining": "Actual multi-SM source selection/runtime E-KERNEL absence needs Lane Y"
+    },
+    {
+      "lane_v_case": "K1-02",
+      "status": "LOCAL_CPU_CHECKS_PASSED",
+      "local_coverage": "Ready Ref0 frees without future instruction; ready/live and pending refs retained; old/new same address isolated; final Ref frees once; finite0/1",
+      "remaining": "Actual LDST/lower integration independent review"
+    },
+    {
+      "lane_v_case": "K1-03",
+      "status": "LOCAL_CPU_HELPER_CHECKS_PASSED",
+      "local_coverage": "Grant cycle binds no identity across E; partial accepted lines survive; remaining refs relookup/backpressure; completion helper exact closure",
+      "remaining": "Actual multi-line LDST admission/closure not dynamically exercised"
+    },
+    {
+      "lane_v_case": "K1-04",
+      "status": "PARTIAL_LOCAL_CPU_CHECKS_PASSED",
+      "local_coverage": "Production sector predicate out-of-order/reject duplicates and invalid sectors; metadata cursor/late pre-E waiter; slot reuse and stale fill SIGABRT",
+      "remaining": "No actual mem_fetch response FIFO fixture; unchanged handler byte comparison plus Lane Y required"
+    },
+    {
+      "lane_v_case": "K1-05",
+      "status": "PARTIAL_LOCAL_CPU_CHECKS_PASSED",
+      "local_coverage": "Production collection quota across E; withheld retirement represents WB refusal; Ref held until late retire",
+      "remaining": "No real operand-collector denial injection; Lane Y actual WB check"
+    },
+    {
+      "lane_v_case": "K1-06",
+      "status": "IO_K1_UNIMPLEMENTED_STOP",
+      "local_coverage": "IO flag1 explicitly rejected; K0 IO remains supported",
+      "remaining": "No orphan mechanism added or claimed"
+    },
+    {
+      "lane_v_case": "K1-07",
+      "status": "PARTIAL_LOCAL_CPU_AND_STATIC_CHECKS_PASSED",
+      "local_coverage": "Four external-dependency zero-address sidecar lifecycles; original operation/return/retire handlers unchanged; no extra invalidation",
+      "remaining": "No ISA payload execution/value proof for STORE/ATOMIC/BYPASS/PROXY_FENCE"
+    },
+    {
+      "lane_v_case": "K1-08",
+      "status": "PARTIAL_LOCAL_CPU_CHECKS_PASSED",
+      "local_coverage": "Real ordinary fill-owner drain; source 2,2,3 versus deferred commit4; separate same-cycle config request/commit; DTC owner still live after ordinary drain",
+      "remaining": "Whole GPU same-cycle/multi-SM orchestration remains Lane Y"
+    }
+  ],
+  "k0_equivalence": {
+    "scope": "deterministic CPU mechanism traces only; full LDST/GPU runtime equivalence unproven",
+    "frozen_header_sha": "6fba0136f8465b59fe5858a950fa39efb265f654",
+    "byte_identical": true,
+    "trace_sha256": "efd7549aeb497209b31cdd1f88f8237a4574b0f6000b5467d36767d9cc19e65c",
+    "source": "tests/dtc_l1_k0_equivalence_test.cc",
+    "frozen_trace_binary": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/dtc_l1_k0_frozen_trace",
+    "new_trace_binary": "/workspace/builds/dtc-lane-x-k1-release-c0a5e2c3-174-v1/dtc_l1_k0_equivalence_test",
+    "optimization": "C++17 -O3; assertions enabled"
+  },
+  "k1_correctness_pass": false,
+  "lane_y": "PENDING_REQUIRED_BEFORE_ANY_FULL_PERFORMANCE_SIMULATION",
+  "value_correctness": "VALUE_CORRECTNESS_UNPROVEN",
+  "all_isa_correctness": "UNPROVEN",
+  "full_gaussian_gemm_runs": 0,
+  "junit": {
+    "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-ctest.xml",
+    "sha256": "6522fe6e97e322125c7c3a93b6448fbc6c79f225ed8abe734ad647525d362647",
+    "successful_test_output_truncated_by_ctest": true
+  },
+  "full_witness_source": {
+    "path": "/workspace/dtc-lane-x-optin-invalidation-174-v1/k1/release-ctest.log",
+    "sha256": "53a395fe6e8e426f08951337ff47d7188901ede96858e7bbf99e44f90fbc8e53",
+    "verbose_output_complete": true
+  }
 }

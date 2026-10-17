@@ -1,88 +1,92 @@
-# Source events and state conservation
+# Eager source-request transition and ownership contract
 
-Status: `SCIENTIFIC_STOP`; the DTC transitions below are requirements for a
-future implementation, not executed code or a correctness proof.
+Current Core: `c0a5e2c31e407c57e3a4af3ce529c921e8059a05`.
+Authority: user ruling of 2026-10-18 and Lane V
+`26abd496417d9392245052e54fbd9ba27c6ffd96`.
+Status: `OO_IMPLEMENTED_LOCAL_CPU_CHECKS_ONLY_LANE_Y_PENDING`.
 
-All line numbers refer to frozen Core
-`6fba0136f8465b59fe5858a950fa39efb265f654`; Lane X changes documentation only.
+## Events and ordering
 
-## Actual ordinary source events
-
-| Request source | Existing predicate | Scope and ordering |
-| --- | --- | --- |
-| `gpu-sim.cc:2515-2527` | CORE tick; `gpgpu_flush_l1_cache`; cluster `get_not_completed()==0` | After `issue_block2core()` and latency decrement, independently per cluster; can repeat; not one kernel-end callback |
-| `shader.cc:6877-6888` | Warp has MEMBAR, its scoreboard has no pending writes, existing `flush_l1()` | Clears that warp's MEMBAR and requests its core's invalidation; other warps/cores need not be drained |
-| `gpu-sim.cc:1749-1754` | Cache preference differs from current status | All clusters, before configuration update; no flush-option predicate at this caller |
-
-`shader.h:3005,3447-3448` defines core `get_not_completed()` as its thread count;
-`shader.cc:7471-7475` sums that count within a cluster. Neither is an event ID or
-a once-per-kernel guard. Actual occurrence counts for particular benchmarks are
-unmeasured here.
-
-The shared chain is cluster/core `cache_invalidate()` ->
-`ldst_unit::invalidate()` (`shader.cc:4012-4015`) ->
-`baseline_cache::invalidate()` (`gpu-cache.cc:1268-1279`). The last function
-records `m_invalidate_pending=true` and tries to retire it.
-
-`retire_pending_invalidate()` (`gpu-cache.cc:1281-1286`) commits only when
-`!conventional_miss_lifecycle_active()`. That predicate requires an empty
-miss queue, extra-fields map and MSHRs (`gpu-cache.h:1474-1478`).
-`baseline_cache::cycle()` retries retirement (`gpu-cache.cc:1249-1265`).
-`tag_array::invalidate()` (`gpu-cache.cc:478-487`) also returns early if unused.
-Thus a source request, a deferred commit attempt and a meaningful valid-Tag
-transition are distinguishable. A future contract must identify which one
-defines the DTC event, including the unused-conventional-cache case.
-
-## Existing time model
-
-The ordinary invalidation loop adds no explicit simulated invalidation latency,
-bandwidth quota or SM stall. Conventional busy state can postpone its commit by
-an unbounded-in-advance number of existing cycles. The MEMBAR comment mentioning
-a possible 5k-cycle stall is a TODO, not implemented timing. No fixed delay or
-drain is added here. No zero-time or nonzero-time K1 model has been implemented
-or approved by this STOP. In particular, clearing DTC at the request call does
-not automatically reproduce the conventional deferred-commit timing.
-
-## Required OO conservation at an approved event
-
-For each visible mapping `(logical line, phys_id, generation)`, a future lookup
-invalidation must clear only the mapping and that physical generation's
-`tag_valid`. It must preserve allocated bytes/state while consumers own Refs.
-
-| State after visibility loss | Required lifetime |
+| Source | Preserved condition and scope |
 | --- | --- |
-| Ref > 0, lower request queued/in flight, sectors incomplete | Retain physical generation, owner request UID, expected/received sector masks, waiters, pending dependencies, lower credit, service state and all PIB references |
-| Ref > 0, response complete but finite metadata wakeup unfinished | Retain physical state and service-return cursor; no premature ready or retirement |
-| Ref > 0, data ready/collecting/writeback blocked | Preserve reference ownership through successful existing retirement |
-| Ref == 0, no remaining request/service owner | Reclaim exactly once under existing rules; record visibility-loss time consistently with finite-service map-loss accounting |
-| Re-access to invalidated logical address | Existing finite Tag/allocation/lower-create rules apply; a new physical generation must not alias the retained generation or consume its reply |
+| IDLE_CLUSTER | CORE tick after CTA issue/latency decrement; original flush flag and this cluster's not_completed==0; all cores of that cluster; repeatable |
+| MEMBAR | Warp MEMBAR and no scoreboard pendingWrites; clear MEMBAR and original flush_l1 condition; this core |
+| CACHE_CONFIG_CHANGE | Requested cache status differs; all clusters before original config update; independent of flush_l1 flag |
 
-The shadow Ref sum must equal live PIB references for each physical generation.
-Allocated + free must equal physical capacity. Every unmapped allocation must
-have an explicit retained owner or be reclaimable. Lower acquire minus release
-must equal outstanding requests. All sector fragments must complete exactly
-once before their existing owner/credit is released. Repeated events must not
-double-reclaim or replace the first map-loss timestamp of a retained generation.
+No kernel ID/unique completion condition is invented. Core/cluster forwards the
+source label to the same LD/ST request entry. True kernel completion, stores,
+atomics, bypass, PROXY_FENCE and `flush()` gain no new DTC call.
 
-Existing OO replacement demonstrates part of this lifecycle in
-`dtc-l1-common.h:588-604`; final-Ref release is at `:699-713` and `:731-745`.
-Those paths do not implement a source-event API. Integration must additionally
-preserve `shader.cc:3451-3484` response UID/sector ownership. A stale generation
-must remain a hard failure; a lookup miss is not permission to drop its reply.
-No new finite-service port quota, collection delay or physical resource may be
-introduced to repair the event contract.
+Within the existing source call, C++ execution order defines:
 
-## IO and remaining scope
+1. Sample finite occupancy up to the request edge, without advancing service.
+2. Count/source-label the request and revoke all currently visible OO mappings;
+   update physical tag_valid and one map-loss timestamp per such generation.
+3. Retain all live-Ref generations, or reclaim finished Ref0 generations once.
+4. Record source-request phase/order/cycle and DTC changed/retained/reclaimed.
+5. Invoke the original ordinary invalidate exactly once. Its original pending
+   and conventional drain logic either commits immediately or remains pending.
+6. Record ordinary immediate commit on return if pending cleared. Otherwise
+   observe the original ordinary cycle call and record its pending-to-clear
+   commit separately when it occurs. Several source requests may map to one
+   ordinary pending retirement; their first/last request sequence is recorded.
 
-IO records displaced physical identities in the replacing PIB owner's
-`release_on_retire` (`dtc-l1-common.h:273-279`) and releases them at FIFO retirement
-(`:354-362`). It has no OO Ref Count and no general release owner for an
-invalidation event when no replacing instruction exists. Do not invent a PIB
-owner, add OO Ref semantics, drain the GPU, or clear every physical line.
+The observer inherits cache code and only reads the protected pending bit;
+ordinary `gpu-cache.cc/h` are unchanged. A commit count means the ordinary
+retirement executed Tag invalidate; an unused Tag array may no-op. It is not a
+count of actual ordinary valid mappings changed. Both branches' commit times
+are not assumed equal. Detailed logs are bounded by the existing debug limit;
+summary counts/first-last cycles and omitted-record count are always explicit
+for K1. No complete event trace is claimed with a truncated log.
 
-A future common interface may accept an already-approved source event and
-report invalidated/retained/reclaimed counts for supported modes. Neither IO
-nor OO implements that interface in this STOP. IO's ownerless release problem
-is explicitly out of scope pending a mechanism-preserving resolution. The
-MODERN_OO_SECTOR frontend is also not implemented for K1. Full matrices remain
-OO-only and require external Lane V contract plus Lane Y independent validation.
+## Time model
+
+DTC directory invalidation is an atomic logical visibility operation at the
+source request with zero additional simulated-cycle latency and no new port
+quota. There is no hidden GPU drain, delay or hardware PPA claim. It changes no
+clock, finite-service grant, lower bandwidth, retire width, PIB or physical
+capacity. The source request may occur after the last service edge: immediate
+map-loss/free accounting therefore receives the explicit source cycle. A
+separate occupancy-observation timestamp avoids losing the pre-free interval
+without replenishing or advancing any service. K0 samples at its original edges.
+
+Grant-only finite Tag state records a cycle, not an identity. If E intervenes
+before access commits, access consults the revoked directory. References already
+accepted keep their saved identity; partial instructions retain accepted lines
+while their remaining references follow later lookups. The original next_reference
+and completion ledger paths are unchanged. Same-cycle ordering follows actual
+host call order, including core source requests relative to response/retire.
+
+## State conservation
+
+| Before E | At E | Later |
+| --- | --- | --- |
+| Visible, ready, Ref0, no service/waiter | Hide Tag; tag_valid=false; map-loss once; free immediately | Later allocation increments generation |
+| Visible, pending lower/sector return, Ref>0 | Hide Tag; retain identity/generation/Ref/PIB/waiters and all external queues/masks | Original saved identity receives all sectors; no Tag resurrection |
+| Visible, finite return queued or partly updated | Hide Tag; retain cursor, pending dependencies and all refs | Existing metadata width finishes readiness; no service advance at E |
+| Ready with live consumer or collection/WB blocked | Hide Tag; retain allocation/Ref and collection state | Existing successful WB/retire decrements final Ref and frees once |
+| Already hidden old generation | No state or map-loss change | Continues original owner lifecycle |
+| Post-E same-address lookup | Old identity cannot be found by Tag | Allocate legal new identity or backpressure; old/new may coexist |
+
+For each physical generation, Ref shadow equals live PIB references. Natural
+pending lower/return/service/collection owners retain consumer Refs; invalidation
+does not disturb this premise. Immediate free asserts ready/no waiter/no queued
+service-return owner. No generation increment occurs on E. Finite map-loss is
+inserted only for a visible mapping, so repeated E cannot overwrite the first
+loss time. Existing retirement reclaims at final Ref with no queue deletion.
+
+Physical allocated+free capacity, exact sector acceptance and lower acquire/
+release conservation remain the original mechanisms. The unchanged actual
+response path routes by saved UID/physical/generation, not by address lookup.
+Invalid generation and duplicate/invalid sector invariants remain hard errors.
+Local tests cover frontend identities and the production sector predicate;
+actual LD/ST/collector integration and architectural values require Lane Y.
+
+## Scope boundaries
+
+OO only. IO has no independent orphan/release owner; value1 fails with
+`IO_K1_UNIMPLEMENTED_STOP`, rather than creating an owner, fake instruction or
+OO references. Modern/Base/LEGACY value1 are rejected and their value0 paths
+remain supported. Disabled ordinary L1D and the external-cache constructor are
+not supported K1 combinations. No data payload/coherence/write-after-read,
+all-ISA or hardware timing correctness is inferred from lifetime balance.
