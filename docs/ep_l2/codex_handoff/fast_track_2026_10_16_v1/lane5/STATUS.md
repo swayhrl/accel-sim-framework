@@ -1,4 +1,10 @@
-# Lane5 — CONTINUE active, prequalification executed; A1/atomic eligibility pending
+# Lane5 — corrected A1/B1 independent31 PASS, full qualification pending
+
+New milestone: official Core7b8e6ac70b8fe0f1bd37efca11acb5284938825d / Framework9bd17f9db3e8cbbc3fdad7283d1e292918546fd5 / vendorf90c430c / binary23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee, producer publication05145b19. Exact seven-target compile and31 real producer logs audited. Lane5 independently executed31/31 PASS: original21 +4strong real A1 +6B1. Separate canonical lease released; no owned worker or application. No compile by Lane5.
+
+NEXT: execute affected new-source OFF+4illegal modes, full atomic input eligibility and original11 independent review. No certificate/currentV2 application authority issued, accepted pairs0. B1 is symbolic cache/mask/version/callback evidence, no numerical PTX ALU claim. Frozen first SAD negative control then original4; original Goal deadline12:19:03UTC remains.
+
+Earlier evidence below is historical and cannot qualify a different source.
 
 T0 UTC2026-10-17T02:19:03Z; hard deadline12:19:03Z (Beijing10:19–20:19). Original branch/worktree. Source/target Storage-Ops closed after exact authorized A/B release; no further cleanup/wakeup needed. Standard root resources restored; original48GiB+2GiB,64GiB/CPU/concurrency/central registry and Share40GiB stay.
 

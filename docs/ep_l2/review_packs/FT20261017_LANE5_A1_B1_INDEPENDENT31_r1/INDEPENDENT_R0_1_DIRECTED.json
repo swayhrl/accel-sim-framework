@@ -1,0 +1,788 @@
+{
+  "automatic_certificate_or_launch_authority": false,
+  "gates": {
+    "bank_service": "PENDING_INDEPENDENT_REVIEW",
+    "finite_wbuf": "PENDING_INDEPENDENT_REVIEW",
+    "memcpy_payload_identity": "PENDING_INDEPENDENT_REVIEW",
+    "mode_legality": "PENDING_INDEPENDENT_REVIEW",
+    "old_all_off_equivalence": "PENDING_INDEPENDENT_REVIEW",
+    "physical_bank_clock": "PENDING_INDEPENDENT_REVIEW",
+    "requester_exact_once": "PENDING_INDEPENDENT_REVIEW",
+    "resource_closure": "PENDING_INDEPENDENT_REVIEW",
+    "sector_reference_data": "PENDING_INDEPENDENT_REVIEW",
+    "stale_fill": "PENDING_INDEPENDENT_REVIEW",
+    "wb_lifecycle": "PENDING_INDEPENDENT_REVIEW"
+  },
+  "lease_id": "7665aa15375b4e63b8de5b9c5c5932a1",
+  "producer_publication": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+  "producer_report_sha256": "527c97db91e4a57a5981763fbc736fb7c51e8e8b5834e09dc8447a582ae108b8",
+  "scientific_qualification": false,
+  "source_identity": {
+    "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+    "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+    "pybind11": {
+      "commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/gpu-simulator/extern/pybind11"
+    }
+  },
+  "status": "INDEPENDENT31_PASS_REVIEW_ELEVEN_GATES_BEFORE_ANY_APPLICATION",
+  "tests": [
+    {
+      "binary_sha256": "fb43a7dea40d5d8ac31cb89f61d6b8db80bab465e102ca9a282e7c96d7c79ff3",
+      "case": "host_prefill_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/host_prefill_1_8.log",
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766253,
+        "start_ticks": 896134528
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_1_8_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "0"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_1_8_0.log",
+      "log_sha256": "bcecccc40489da91b1eeabbf77ee96082c3292d4ef90ef98bedbe6898980bc96",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766256,
+        "start_ticks": 896134622
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_1_8_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_1_8_4096.log",
+      "log_sha256": "e85896e95cacdcaa70292c2dfc093fb921d6c9dc1099c1598c4ed07c46ebcf26",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766257,
+        "start_ticks": 896134655
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "warm_clock_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/warm_clock_1_8.log",
+      "log_sha256": "a0a4122037f7b6fce18cabec42a88d0c22c57ac8b7f7d55de7d91c655e4c5141",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766258,
+        "start_ticks": 896134707
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "e153f8b5dc0db7b881b377708e6423c56f4e38f523cc463cbf6cc201a8ae33c8",
+      "case": "partition_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/partition_1_8.log",
+      "log_sha256": "db32b08b1bbcbca6cc009719f2e6644c4000edc5b5f3d277665fe885ef644425",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766259,
+        "start_ticks": 896134759
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "fb43a7dea40d5d8ac31cb89f61d6b8db80bab465e102ca9a282e7c96d7c79ff3",
+      "case": "host_prefill_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/host_prefill_1_16.log",
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766260,
+        "start_ticks": 896134790
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_1_16_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_1_16_0.log",
+      "log_sha256": "8ca4d23a595feb6b5253f4c6eb77d2d1f33cd357baaccddf7b2ed13c82ec5fb1",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766269,
+        "start_ticks": 896134881
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_1_16_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_1_16_4096.log",
+      "log_sha256": "0b922bba7130f001368305a7a573c4f2241494ad8a6aa452d95f35959b7d9c38",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766308,
+        "start_ticks": 896134925
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "warm_clock_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/warm_clock_1_16.log",
+      "log_sha256": "2fd6d4019aa7f51369f9032c22afa7c11676c6bffd4dc02400066d9b112f39ec",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766391,
+        "start_ticks": 896135011
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "e153f8b5dc0db7b881b377708e6423c56f4e38f523cc463cbf6cc201a8ae33c8",
+      "case": "partition_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/partition_1_16.log",
+      "log_sha256": "5a0ab0edec0ccd0006db0645874515bc1d5496aa4337b9f9326ab369251327ef",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766392,
+        "start_ticks": 896135067
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "fb43a7dea40d5d8ac31cb89f61d6b8db80bab465e102ca9a282e7c96d7c79ff3",
+      "case": "host_prefill_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/host_prefill_2_8.log",
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766393,
+        "start_ticks": 896135110
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_2_8_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "0"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_2_8_0.log",
+      "log_sha256": "4057dc983581f84e9fd8b24b54f9dbc22535f0ddc648e19b0ce62f74be310d64",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766395,
+        "start_ticks": 896135204
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_2_8_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_2_8_4096.log",
+      "log_sha256": "5e63782782efc985ad6b04cfb87c8eac05025d85599f920ec60d9eae16d373e9",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766397,
+        "start_ticks": 896135236
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "warm_clock_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8",
+        "4096",
+        "warm_hit"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/warm_clock_2_8.log",
+      "log_sha256": "de5f9e4305a8deb424bdbd691cab9a5a16f8a4ec54eaae6ec242498ef226958c",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766409,
+        "start_ticks": 896135288
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "e153f8b5dc0db7b881b377708e6423c56f4e38f523cc463cbf6cc201a8ae33c8",
+      "case": "partition_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/partition_2_8.log",
+      "log_sha256": "eb248e9b36885a5f9bfa3e9dc5e1f353be4625a13d177bd1dc5f54de84de1a16",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766410,
+        "start_ticks": 896135341
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "fb43a7dea40d5d8ac31cb89f61d6b8db80bab465e102ca9a282e7c96d7c79ff3",
+      "case": "host_prefill_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/host_prefill_2_16.log",
+      "log_sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766415,
+        "start_ticks": 896135371
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_2_16_0",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_2_16_0.log",
+      "log_sha256": "5f597e650c42f534ba648cdf1071ac1fa9846cda5050afbaf8a1d902168a65fb",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766417,
+        "start_ticks": 896135466
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "physical_clock_2_16_4096",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/physical_clock_2_16_4096.log",
+      "log_sha256": "c2077a20745b9e0cd688eee831b191ffca35fdf4c03adfb144f04213b4dab9ae",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766418,
+        "start_ticks": 896135520
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "f9214e742c7aa3d43d6bd47a745cd99208df49ee5f8edc81560735179012d681",
+      "case": "warm_clock_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096",
+        "warm_hit"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/warm_clock_2_16.log",
+      "log_sha256": "c0194c084d68f661962dd290884764877127770d5402c5ffcea00fca53937319",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766419,
+        "start_ticks": 896135572
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "e153f8b5dc0db7b881b377708e6423c56f4e38f523cc463cbf6cc201a8ae33c8",
+      "case": "partition_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/partition_2_16.log",
+      "log_sha256": "5e4dab86eae1f3598d4d682ae510cb3eafb02e7819efcdd0bb3a29c454653637",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766420,
+        "start_ticks": 896135623
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "6eae01a6e587b7630854ea88e4dccc03f53a0c811a3a3d97c1e479d984a8172d",
+      "case": "ft_directed",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/ft_directed.log",
+      "log_sha256": "251236cb7eade65e1226982f4f8776434c31c108c00407b1cee3f2fc22dd3412",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766421,
+        "start_ticks": 896135656
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "8916be8b59eae952972def46ed38169a6fd504c3bf5c4ee0f4199bf4a2e4fc38",
+      "case": "a1_1_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "8"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/a1_1_8.log",
+      "log_sha256": "efdf6c5b563123c75d3b88bae00fec31549f1756c175a6dee30b4ac243641d27",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766444,
+        "start_ticks": 896135810
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "8916be8b59eae952972def46ed38169a6fd504c3bf5c4ee0f4199bf4a2e4fc38",
+      "case": "a1_1_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/a1_1_16.log",
+      "log_sha256": "3881f616732bebba307472e615e666a2d0dfd1d6cd6d4b2106db9dbccb3d7a65",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766445,
+        "start_ticks": 896135841
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "8916be8b59eae952972def46ed38169a6fd504c3bf5c4ee0f4199bf4a2e4fc38",
+      "case": "a1_2_8",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "8"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/a1_2_8.log",
+      "log_sha256": "8d45edbd88a93b9e414cca88753eb61b280c62ad47235c508470bf3d09304dc0",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766446,
+        "start_ticks": 896135871
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "8916be8b59eae952972def46ed38169a6fd504c3bf5c4ee0f4199bf4a2e4fc38",
+      "case": "a1_2_16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/a1_2_16.log",
+      "log_sha256": "82bee6d2e22916236ab666034bc7b060190a0efd22454e6265541938230ec050",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766447,
+        "start_ticks": 896135921
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "d6c6fce6ec8fff77b4ef86bee11b2a843a9b1d2f3771f0dcc58701522c74bfc6",
+      "case": "b1-read-first",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-read-first"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/b1-read-first.log",
+      "log_sha256": "b38cdef04f22751715ac0de48062d280e3d6c6350e55d12fd1d022709d7db088",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766448,
+        "start_ticks": 896135951
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "d6c6fce6ec8fff77b4ef86bee11b2a843a9b1d2f3771f0dcc58701522c74bfc6",
+      "case": "b1-atomic-first",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-atomic-first"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/b1-atomic-first.log",
+      "log_sha256": "33ad711812ee321299b49262bfaefaba81dd2ff2734f1c1dc9b8ece0a6681d0e",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766449,
+        "start_ticks": 896135982
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "d6c6fce6ec8fff77b4ef86bee11b2a843a9b1d2f3771f0dcc58701522c74bfc6",
+      "case": "b1-multi",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-multi"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/b1-multi.log",
+      "log_sha256": "404f90fc431a0db8647d0d4c08f1131043a042c19b2ffa499fc866e3adc5fe9e",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766450,
+        "start_ticks": 896136013
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "d6c6fce6ec8fff77b4ef86bee11b2a843a9b1d2f3771f0dcc58701522c74bfc6",
+      "case": "b1-b16",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-b16"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/b1-b16.log",
+      "log_sha256": "b38cdef04f22751715ac0de48062d280e3d6c6350e55d12fd1d022709d7db088",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766454,
+        "start_ticks": 896136066
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "d6c6fce6ec8fff77b4ef86bee11b2a843a9b1d2f3771f0dcc58701522c74bfc6",
+      "case": "b1-dirty",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-dirty"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/b1-dirty.log",
+      "log_sha256": "79450c3fe1c7b9b180f63180d052e41e790ee334d2f4566a49e18c3f8b16033a",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766467,
+        "start_ticks": 896136114
+      },
+      "producer_stdout_equal": true
+    },
+    {
+      "binary_sha256": "d6c6fce6ec8fff77b4ef86bee11b2a843a9b1d2f3771f0dcc58701522c74bfc6",
+      "case": "b1-version-only",
+      "command": [
+        "/workspace/build/ep-l2-ft20261017-lane1-a1-fixed-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-a1-fixed-r1/tests/ep_l2/ft_wbuf.config",
+        "b1-version-only"
+      ],
+      "exit_code": 0,
+      "independent_validation": {
+        "scope": "Exact production-driven directed assertions/markers; no automatic eleven-gate certificate",
+        "status": "PASS"
+      },
+      "log": "/workspace/results/ep_l2_ft20261016/lane5_a1_b1_independent31_r1/b1-version-only.log",
+      "log_sha256": "0dba83b1e1378aab2910a9c0187b0e36e6726376398e99f4908075f8fd64b3ac",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1766468,
+        "start_ticks": 896136143
+      },
+      "producer_stdout_equal": true
+    }
+  ],
+  "unresolved_before_certificate": [
+    "Affected OFF production equivalence and mode-legality qualification per unchanged r7 plan",
+    "Independent sector/request/lifecycle evidence review, exact V2 launch authorization and complete input hashing"
+  ]
+}

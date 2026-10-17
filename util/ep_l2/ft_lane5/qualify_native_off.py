@@ -53,9 +53,9 @@ def main():
     args=ap.parse_args();require(time.time()<args.deadline_unix,'CONTINUE expired')
     producer,plan,commands=audit_producer(args.producer_report,args.producer_publication,args.published_report_path)
     independent=json.loads(args.independent_directed.read_text())
-    require(independent['status']=='INDEPENDENT21_PASS_REVIEW_ELEVEN_GATES_BEFORE_ANY_APPLICATION' and
-            len(independent['tests'])==21 and independent['source_identity']['binary_sha256']==producer['binary_sha256'] and
-            independent['producer_report_sha256']==digest(args.producer_report),'Exact actual independent21 required')
+    require(independent['status']=='INDEPENDENT31_PASS_REVIEW_ELEVEN_GATES_BEFORE_ANY_APPLICATION' and
+            len(independent['tests'])==31 and independent['source_identity']['binary_sha256']==producer['binary_sha256'] and
+            independent['producer_report_sha256']==digest(args.producer_report),'Exact actual independent31 required')
     for row in independent['tests']:
         require(row['exit_code']==0 and row['independent_validation']['status']=='PASS' and digest(row['log'])==row['log_sha256'], 'Independent evidence changed')
     args.out.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
