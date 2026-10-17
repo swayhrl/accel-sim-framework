@@ -1,0 +1,46 @@
+{
+  "status": "FROZEN_CPU_RESERVATION_NOT_AN_EXECUTION_GRANT",
+  "full_attempt_ceiling": 4,
+  "per_uuid_actual_start_limit": 1,
+  "default_parallel": 1,
+  "selected_max_parallel": 1,
+  "optional_parallel2": "NOT_ENABLED",
+  "wall_timeout_seconds_per_point": 7200,
+  "timeout_origin": "FIRST_ACTUAL_SIMULATOR_START_ABSOLUTE_MONOTONIC_DEADLINE",
+  "run_order": [
+    "K0_32x4",
+    "K0_64x8",
+    "K1_32x4",
+    "K1_64x8"
+  ],
+  "require_both_K0_strict_exact_calibration_before_any_K1": true,
+  "admission": {
+    "host": "huangrulin-174",
+    "host_MemAvailable_min_gib": 32,
+    "cgroup_headroom_min_gib": 32,
+    "disk_free_min_gib": 10,
+    "memory_full_PSI_avg10_max": 1,
+    "io_full_PSI_avg10_max": 25,
+    "probe_interval_seconds": 10,
+    "swap_in_out_page_delta_max": 0,
+    "oom_event_delta_max": 0,
+    "all_U_recorded_process_incarnations_absent": true,
+    "U_lock_owners_allowed": 0,
+    "unknown_simulator_or_DTC_coordinator_allowed": 0,
+    "all_projects_count_for_RSS_cgroup_swap_PSI_disk_IO": true,
+    "per_sim_RSS_reservation_gib": 4,
+    "per_sim_disk_reservation_gib": 2
+  },
+  "monitor_interval_seconds": 30,
+  "resource_stop": {
+    "cgroup_headroom_min_gib": 8,
+    "disk_free_min_gib": 2,
+    "memory_full_PSI_avg10_max": 10,
+    "consecutive_samples": 3,
+    "signal_only_own_PID_start_ticks_bound_process_groups": true
+  },
+  "failure_policy": "PRESERVE_ALL_NEGATIVE_DEGRADED_TIMEOUT_DEADLOCK_AND_PARTIAL_RAW_NO_RETUNE_NO_SECOND_ACTUAL_START",
+  "wrapper_recovery": "ORIGINAL_UUID_ABSOLUTE_TIMEOUT_ONLY_WITH_PROOF_OF_NO_SECOND_SIMULATOR_START",
+  "actual_new_full_starts": 0,
+  "canary_starts": 0
+}

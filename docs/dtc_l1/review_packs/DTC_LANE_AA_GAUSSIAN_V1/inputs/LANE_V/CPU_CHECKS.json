@@ -1,0 +1,74 @@
+{
+  "status": "PASS_BOUNDED_SOURCE_AND_HEADER_CHECKS",
+  "core": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "framework_build": "18a68dcccd795f1b6cda75504e9450d00c9cee02",
+  "evidence_commits": {
+    "A": "f5c37d6edcce832a72cb0830021bffa78df6cc13",
+    "T": "f520a445436b57c0a0f2494fb858a1636f04d2bc",
+    "U": "16e56912cfd02f2311a1603a29415dee829fd495"
+  },
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "compile_flags": [
+    "-std=c++14",
+    "-O0",
+    "-g0",
+    "assertions enabled"
+  ],
+  "static_checks": {
+    "ldst_invalidate_ordinary_only": true,
+    "ldst_flush_ordinary_only": true,
+    "no_dtc_frontend_invalidate_or_flush_api": true,
+    "sidecar_has_external_dependency_without_tag_access": true,
+    "oo_select_filters_younger_same_warp_behind_proxy": true,
+    "io_response_uses_saved_physical": true,
+    "oo_response_uses_saved_physical": true,
+    "ordinary_invalidate_deferred_for_ordinary_misses": true
+  },
+  "header_tests": [
+    {
+      "test": "dtc_l1_m1_common_test.cc",
+      "sha256": "ed87e068fbc4abaf42f8b21723212c995368bcc937b06bf15568e297a488d82d",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_child_abort": false
+    },
+    {
+      "test": "dtc_l1_finite_service_test.cc",
+      "sha256": "2fec04605b01179e194da03bb2f169f642c6b2801ef9a8ed5e10094eff83eacd",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_child_abort": false
+    },
+    {
+      "test": "dtc_l1_completion_accounting_test.cc",
+      "sha256": "ea5be6db9de19770723beda8bcfa584101c0afbe74847d28e0910950620f8908",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "dtc_l1_completion_accounting_test: <temporary-header-tests>/dtc-l1-common.h:132: unsigned int dtc_l1::completion_accounting::close_once(unsigned int): Assertion `m_state == lifecycle::READY' failed.\n",
+      "expected_child_abort": true
+    },
+    {
+      "test": "dtc_l1_bad_generation_test.cc",
+      "sha256": "61de8df2c9ab78d8fc385e6b0fdf4a9fa4cfa31bf7f55a83c94daf5376931502",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "dtc_l1_bad_generation_test: <temporary-header-tests>/dtc-l1-common.h:634: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) && \"OO fill must match the original physical generation\"' failed.\n",
+      "expected_child_abort": true
+    },
+    {
+      "test": "visibility_witness.cc",
+      "sha256": "646e0bd534289d688c4d5ebc17eea21b43c8f28eef2b2121dc2d087e00aaf834",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_child_abort": false
+    }
+  ],
+  "full_simulator_runs": 0,
+  "architectural_value_tests": 0,
+  "source_manifest_rows": 36,
+  "core_clean": true,
+  "scope": "No K1 implementation exists here. PASS is not data coherence or all-ISA correctness."
+}
