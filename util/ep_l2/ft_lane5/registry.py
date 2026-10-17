@@ -300,6 +300,30 @@ class Registry:
         if sum(attempt_count(r) for r in data['runs'].values() if r.get('experiment_id') == name) >= cap:
             raise ValueError('campaign full-application cap includes failed/reserved runs')
 
+    def revalidate_postprocessing(self, key, previous_lease, proof):
+        """No new simulator attempt: exact exit0 raw retained, parser-only recovery."""
+        path=Path(proof['path'])
+        if hashlib.sha256(path.read_bytes()).hexdigest()!=proof['sha256']:
+            raise ValueError('postprocessing recovery proof changed')
+        recovery=json.loads(path.read_text())
+        with self.locked() as data:
+            old=data['runs'][key]
+            if (old['owner']!='lane5' or old['lease_id']!=previous_lease or old['status']!='FAILED'
+                or old.get('exit_code')!=0 or old.get('detail')!='InvalidEvidence: production terminal parser failed'
+                or recovery.get('identity')!=old['identity'] or recovery.get('run_key')!=key
+                or recovery.get('old_terminal_sha256')!=hashlib.sha256(canonical(old)).hexdigest()
+                or recovery.get('status')!='COMPLETE_VALID' or recovery.get('new_simulator_starts')!=0
+                or recovery.get('raw_log_sha256')!=old['raw_log_sha256']):
+                raise ValueError('only exact exit0 parser failure permits audited revalidation')
+            directory=Path(recovery['new_result_directory']).resolve(strict=True)
+            if not directory.is_relative_to(Path('/workspace/ep_l2_potential20261017_lane5_results')):
+                raise ValueError('postprocessing evidence must stay on approved output filesystem')
+            history=old.get('validation_revisions',[])+[{k:v for k,v in old.items() if k!='validation_revisions'}]
+            data['runs'][key]={**old,'status':'COMPLETE_VALID','detail':'AUDITED_POSTPROCESSING_ONLY_REVALIDATION',
+                'result_directory':str(directory),'validation_revisions':history,
+                'postprocessing_revalidation':proof,'updated_at':now()}
+            return data['runs'][key]
+
     def update(self, key, lease_id, status, **fields):
         if status not in TERMINAL | {'RUNNING'}:
             raise ValueError('invalid status')

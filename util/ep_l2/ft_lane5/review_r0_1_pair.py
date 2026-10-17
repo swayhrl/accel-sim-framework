@@ -44,7 +44,11 @@ def review(spec,registry,native_proof=None):
     raw=directory/'raw.log';require(digest(raw)==result['raw_log_sha256'],'Raw log changed')
     if spec.get('experiment_id') in ('EPL2_DOWNSTREAM_HEADROOM_R19','EPL2_PARALLEL_POTENTIAL_20261017_V1'):
         from headroom_config import validate_runtime_dump
-        require(validate_runtime_dump(raw,spec)==result['downstream_effective_config'],'Actual initialized config/clock evidence differs')
+        if spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
+            from local_ideal_scope import runtime_dump
+            actual=runtime_dump(raw,spec)
+        else:actual=validate_runtime_dump(raw,spec)
+        require(actual==result['downstream_effective_config'],'Actual initialized config/clock evidence differs')
     parser=runpy.run_path(spec['parser']['path']);summary=parser['parse'](raw,spec)
     require(summary==result['summary']==json.loads((directory/'terminal_summary.json').read_text()),'Independent reparse differs')
     require(validate_summary(summary,spec['identity'])==result['validation'],'Native terminal validation differs')
