@@ -1,0 +1,135 @@
+diff --git a/tests/ep_l2/test_all_data_ldst.cc b/tests/ep_l2/test_all_data_ldst.cc
+index 98f05e5f..72b57a1d 100644
+--- a/tests/ep_l2/test_all_data_ldst.cc
++++ b/tests/ep_l2/test_all_data_ldst.cc
+@@ -1,4 +1,5 @@
+ #include "ideal_test_fixture.h"
++#include <cstring>
+ #include "../../src/gpgpu-sim/scoreboard.h"
+ 
+ // Friend fixture exposes existing production objects, not alternate callbacks.
+@@ -9,17 +10,18 @@ struct ep_l2_all_data_probe {
+     c.m_warp[0]->reset();c.m_warp[0]->init(0,0,0,active,0,0);
+     c.get_gpu()->all_data_reference().new_shared_epoch(c.get_sid(),0);
+   }
+-  static void issue(shader_core_ctx &c,memory_space_t space,bool store,unsigned reg,uint64_t address,bool barrier=false,bool unsupported=false) {
++  static void issue(shader_core_ctx &c,memory_space_t space,bool store,unsigned reg,uint64_t address,bool barrier=false,unsigned unsupported=0) {
+     auto *inst=new warp_inst_t(c.get_config());
+     inst->op=store?STORE_OP:LOAD_OP;inst->memory_op=store?memory_store:memory_load;
+     inst->space=space;inst->data_size=4;inst->cache_op=CACHE_ALL;
+-    inst->m_is_ldgsts=unsupported;
++    inst->m_is_ldgsts=unsupported==1;
++    if (unsupported==2) inst->add_callback(0,nullptr,nullptr,nullptr,true);
+     if (barrier) {inst->op=MEMORY_BARRIER_OP;inst->memory_op=no_memory_op;}
+     for (unsigned r=0;r<MAX_OUTPUT_VALUES;++r)inst->out[r]=0;
+     for (unsigned r=0;r<MAX_REG_OPERANDS;++r)inst->arch_reg.dst[r]=-1;
+     if (!store && !barrier) {inst->out[0]=reg;inst->arch_reg.dst[0]=reg;}
+     active_mask_t active;active.set(0);
+-    inst->issue(active,0,c.get_gpu()->gpu_sim_cycle,0,0,0);inst->set_addr(0,address);inst->generate_mem_accesses();
++    inst->issue(active,0,c.get_gpu()->gpu_sim_cycle+c.get_gpu()->gpu_tot_sim_cycle,0,0,0);inst->set_addr(0,address);inst->generate_mem_accesses();
+     if (store) c.get_gpu()->all_data_reference().native_store_issue(inst->get_uid(),c.get_sid(),0);
+     c.m_warp[0]->inc_inst_in_pipeline();if (!store)c.m_scoreboard->reserveRegisters(inst);
+     if (barrier) {
+@@ -41,10 +43,13 @@ struct ep_l2_all_data_probe {
+ 
+ int main(int argc,char **argv) {
+   assert(argc==3 || argc==4);Fixture f(argv[1],argv[2]);auto *c=ep_l2_all_data_probe::core(*f.gpu);
++  if (argc==4 && std::strcmp(argv[3],"--offset4096")==0) f.gpu->gpu_tot_sim_cycle=4096;
+   ep_l2_all_data_probe::prepare(*c);auto &s=f.gpu->all_data_reference();
+-  if (argc==4) {ep_l2_all_data_probe::issue(*c,global_space,false,1,0x1000,false,true);assert(false);}
++  if (argc==4 && std::strcmp(argv[3],"--unsupported")==0) {ep_l2_all_data_probe::issue(*c,global_space,false,1,0x1000,false,true);assert(false);}
++  if (argc==4 && std::strcmp(argv[3],"--atomic")==0) {ep_l2_all_data_probe::issue(*c,global_space,false,1,0x1000,false,2);assert(false);}
+   ep_l2_all_data_probe::issue(*c,global_space,false,1,0x100004000ULL);
+   assert(ep_l2_all_data_probe::pending(*c) && s.requests_ready==0);
++  assert(s.inspect(1).eligible==f.gpu->gpu_tot_sim_cycle && s.inspect(1).ready==f.gpu->gpu_tot_sim_cycle+1);
+   ep_l2_all_data_probe::cycle(*c,0);assert(ep_l2_all_data_probe::pending(*c));
+   ep_l2_all_data_probe::cycle(*c,1);assert(!ep_l2_all_data_probe::pending(*c));
+   assert(s.drained() && f.gpu->gpu_sim_insn==1);
+diff --git a/tests/ep_l2/test_all_data_reference.cc b/tests/ep_l2/test_all_data_reference.cc
+index 2c5d781e..e749799d 100644
+--- a/tests/ep_l2/test_all_data_reference.cc
++++ b/tests/ep_l2/test_all_data_reference.cc
+@@ -1,17 +1,24 @@
+ #include <cassert>
+ #include <cstdio>
++#include <cstring>
+ #include "../../src/gpgpu-sim/ep-l2-all-data-reference.h"
+ using Service=ep_l2_all_data::Service;
+ static Service::Mask mask(unsigned from,unsigned count) {
+   Service::Mask m{};for (unsigned b=from;b<from+count;++b)m[b]=true;return m;
+ }
+ int main(int argc,char **argv) {
++  if (argc==2 && std::strcmp(argv[1],"--duplicate-access")==0) {
++    Service s;auto a=s.begin(1,1,false,11),b=s.begin(2,1,false,11);
++    s.issue(a,0,0,mask(0,4),0,nullptr,123);s.issue(b,0,128,mask(0,4),0,nullptr,123);assert(false);
++  }
+   if (argc==2) {Service s;s.begin(1,0,false,11);s.begin(1,0,false,11);assert(false);}
+   (void)argv;
+   {
+     Service s;Service::Data first{},second{};first.fill(11);second.fill(22);
+     auto w=s.begin(1,1,true,11);auto write=s.issue(w,0,0x1000,mask(0,4),0,&first);
++    s.annotate(w,1,0x100,4,0,0,7);
+     auto r=s.begin(2,1,false,11);auto read=s.issue(r,0,0x1000,mask(0,8),0);
++    s.annotate(r,1,0x200,4,1,3,9); // Same producer address, another SM/warp.
+     auto free=s.begin(3,1,false,11);auto independent=s.issue(free,0,0x1000,mask(32,4),0);
+     auto younger=s.begin(4,1,true,11);auto overwrite=s.issue(younger,0,0x1000,mask(0,4),0,&second);
+     assert(!s.inspect(read).eligible_valid && s.inspect(independent).ready==1);
+@@ -34,7 +41,15 @@ int main(int argc,char **argv) {
+     s.advance(3);auto v=s.consume(rr,3);s.finish(n);
+     assert(v[0].value_known && v[0].value==22);
+     assert(!v[1].value_known && !v[2].value_known);
++    assert(v[1].version==0 && v[2].version==0);
+     assert(v[3].value_known && v[3].value==22);
++    auto later=s.begin(6,1,true,11);auto ww=s.issue(later,0,0x1000,mask(1,1),3,&first);
++    s.advance(4);s.consume(ww,4);s.finish(later);
++    auto after=s.begin(7,1,false,11);auto ar=s.issue(after,0,0x1000,mask(0,4),4);
++    s.advance(5);auto av=s.consume(ar,5);s.finish(after);
++    assert(av[1].value_known && av[1].value==11 && av[1].version>v[0].version);
++    assert(av[0]==v[0] && av[2]==v[2] && av[3]==v[3]);
++    assert(s.store_reference_commits==3 && s.drained());
+     s.print(stdout);
+   }
+   {
+diff --git a/tests/ep_l2/test_ideal_meta.cc b/tests/ep_l2/test_ideal_meta.cc
+index c7c721da..574a4ea0 100644
+--- a/tests/ep_l2/test_ideal_meta.cc
++++ b/tests/ep_l2/test_ideal_meta.cc
+@@ -1,22 +1,19 @@
+ #include <cassert>
+ #include <cstdint>
+ #include <cstdio>
+-#include "ideal_test_fixture.h"
+-#include <map>
++#include "ft_test_fixture.h"
++static fixture *request_fixture=nullptr;
++static std::vector<mem_fetch *> requests;
+ 
+-static Fixture *requests;
+-static std::map<unsigned,mem_fetch *> real_requests;
+ static mem_fetch *token(unsigned i) {
+-  auto it=real_requests.find(i);
+-  if(it!=real_requests.end())return it->second;
+-  auto mf=requests->make(0x100000ull+128ull*i);
+-  real_requests.emplace(i,mf);return mf;
++  while (requests.size()<=i) requests.push_back(request_fixture->make(0x1000+requests.size()*32,false,GLOBAL_ACC_R));
++  return requests[i];
+ }
+ static mem_access_sector_mask_t sector(unsigned i) {
+   mem_access_sector_mask_t s; s.set(i); return s;
+ }
+ int main(int argc,char **argv) {
+-  assert(argc==3);Fixture f(argv[1],argv[2]);requests=&f;
++  assert(argc==3);fixture native(argv[1],argv[2],1,16);request_fixture=&native;
+   // The ordinary OFF allocator still refuses at the independent limits.
+   mshr_table off(2, 1, 4, 2, false);
+   off.add_for_test(0x1000, token(0), sector(0));
+@@ -62,7 +59,6 @@ int main(int argc,char **argv) {
+     ideal.commit_next_access();
+     assert(ideal.descriptor_count_used() == 0);
+   }
+-  for(auto &entry:real_requests)delete entry.second;
+-  real_requests.clear();
+-  std::puts("Lane4 I_META allocator/sector/response/doubling tests: PASS (real requests, B1 preserved)");
++  for (auto request:requests) delete request;requests.clear();
++  std::puts("Lane4 I_META allocator/sector/response/doubling tests: PASS");
+ }

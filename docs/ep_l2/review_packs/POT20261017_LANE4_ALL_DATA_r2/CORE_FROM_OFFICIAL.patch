@@ -1,0 +1,2340 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8e06c06c..7959686a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -203,3 +203,14 @@ target_include_directories(ep_l2_common_delta_r16 PRIVATE ${CUDAToolkit_INCLUDE_
+ target_link_libraries(ep_l2_common_delta_r16 PRIVATE -Wl,--start-group
+     entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
+     ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++# Lane4 potential campaign: separately requested, never default build targets.
++foreach(ideal_test ideal_wb ideal_meta ideal_meta_integrated ideal_read_hit
++                   ideal_host_prefill_reference ideal_host_prefill_partition
++                   all_data_reference all_data_ldst)
++  add_executable(ep_l2_${ideal_test} EXCLUDE_FROM_ALL tests/ep_l2/test_${ideal_test}.cc)
++  target_include_directories(ep_l2_${ideal_test} PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++  target_link_libraries(ep_l2_${ideal_test} PRIVATE -Wl,--start-group
++      entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++      ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++endforeach()
+diff --git a/src/abstract_hardware_model.h b/src/abstract_hardware_model.h
+index 06c3082c..ef49eeed 100644
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -833,6 +833,7 @@ class mem_access_t {
+   }
+ 
+   new_addr_type get_addr() const { return m_addr; }
++  unsigned reference_access_uid() const { return m_uid; }
+   void set_addr(new_addr_type addr) { m_addr = addr; }
+   unsigned get_size() const { return m_req_size; }
+   const active_mask_t &get_warp_mask() const { return m_warp_mask; }
+diff --git a/src/gpgpu-sim/ep-l2-all-data-ldst.inc b/src/gpgpu-sim/ep-l2-all-data-ldst.inc
+new file mode 100644
+index 00000000..897e51fc
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-all-data-ldst.inc
+@@ -0,0 +1,116 @@
++// Included once in shader.cc. Full instruction issue and register writeback
++// remain native; no reference completion enters ordinary LDST/response FIFOs.
++bool ldst_unit::m_config_all_data() const {return m_config->ep_l2_mem_all_data;}
++
++void ldst_unit::all_data_issue(register_set &source) {
++  warp_inst_t *original=*(source.get_ready());
++  assert(original && !original->empty());
++  if (original->isatomic() || original->m_is_ldgsts) {
++    fprintf(stderr,"EPL2MEMREF_UNSUPPORTED|atomic=%u|ldgsts=%u|pc=%llu\n",
++            original->isatomic(),original->m_is_ldgsts,(unsigned long long)original->pc);
++    abort();
++  }
++  const bool data=original->is_load() || original->is_store();
++  assert(data || original->op==MEMORY_BARRIER_OP);
++  const auto space=original->space.get_type();
++  if (data && space!=global_space && space!=local_space && space!=param_space_local &&
++      space!=shared_space && space!=const_space && space!=param_space_kernel && space!=tex_space) {
++    fprintf(stderr,"EPL2MEMREF_UNSUPPORTED_SPACE|space=%u|pc=%llu\n",space,(unsigned long long)original->pc);
++    abort();
++  }
++  assert(!original->is_store() || (space!=const_space && space!=param_space_kernel && space!=tex_space));
++  const uint64_t now=m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle;
++  auto &service=m_gpu->all_data_reference();service.advance(now);
++  if (original->is_store()) assert(service.native_store_declared(original->get_uid()));
++  all_data_instruction group(*original);group.issued=now;group.inst.op_pipe=MEM__OP;
++  struct fragment {uint64_t line,original;ep_l2_all_data::Service::Mask mask;};
++  std::vector<fragment> fragments;
++  uint64_t domain=0;
++  if (data && space==shared_space && original->active_count()) {
++    domain=service.shared_domain(m_sid,m_core->reference_cta_id(original->warp_id()));
++    std::map<uint64_t,ep_l2_all_data::Service::Mask> lines;
++    assert(original->data_size>0);
++    for (unsigned lane=0;lane<original->warp_size();++lane) if (original->active(lane)) {
++      const uint64_t start=original->get_addr(lane);
++      assert(start<=UINT64_MAX-(original->data_size-1));
++      for (unsigned b=0;b<original->data_size;++b) lines[(start+b)&~uint64_t(127)][(start+b)%128]=true;
++    }
++    for (const auto &line:lines) fragments.push_back({line.first,0,line.second});
++  } else if (data) {
++    warp_inst_t walk(*original);
++    while (!walk.accessq_empty()) {
++      const auto &access=walk.accessq_back();
++      const uint64_t line=access.get_addr()&~uint64_t(127);
++      auto bytes=access.get_byte_mask();ep_l2_all_data::Service::Mask mask{};
++      assert(access.get_size()<=128 && access.get_addr()+access.get_size()-1<=line+127);
++      assert(bytes.any() || !original->active_count());
++      if (space==const_space || space==param_space_kernel || space==tex_space) {
++        // These native byte masks are cache-block-relative (possibly64B),
++        // unlike global/local's128B coalescer masks. Use the original active
++        // lane addresses in this exact native transaction, retaining identity.
++        for (unsigned lane=0;lane<original->warp_size();++lane)
++          if (access.get_warp_mask().test(lane) && original->active(lane))
++            for (unsigned b=0;b<original->data_size;++b) {
++              const uint64_t address=original->get_addr(lane)+b;
++              if (address>=access.get_addr() && address<access.get_addr()+access.get_size())
++                mask[address-line]=true;
++            }
++      } else
++        for (unsigned b=0;b<128;++b)
++          mask[b]=bytes.test(b) && line+b>=access.get_addr() && line+b<access.get_addr()+access.get_size();
++      fragments.push_back({line,access.reference_access_uid(),mask});walk.accessq_pop_back();
++    }
++    assert(!original->active_count() || !fragments.empty());
++  }
++  group.native_requests=original->accessq_count();
++  assert(space==shared_space || fragments.size()==group.native_requests);
++  group.reference_id=service.begin(original->get_uid(),fragments.size(),original->is_store(),data?space:unsigned(undefined_space));
++  service.annotate(group.reference_id,m_core->reference_kernel_id(original->warp_id()),
++      original->pc,original->get_streamID(),m_sid,original->warp_id(),original->dynamic_warp_id());
++  for (const auto &f:fragments)
++    group.requests.push_back(service.issue(group.reference_id,domain,f.line,f.mask,now,nullptr,f.original));
++  const unsigned wid=original->warp_id();
++  if (original->is_load() && space!=shared_space)
++    for (unsigned r=0;r<MAX_OUTPUT_VALUES;++r) if (original->out[r]>0)
++      m_pending_writes[wid][original->out[r]]+=group.native_requests;
++  if (original->is_store() && space!=shared_space)
++    for (unsigned n=0;n<group.native_requests;++n) m_core->inc_store_req(wid);
++  m_core->mem_instruction_stats(*original);m_core->incmem_stat(m_config->warp_size,1);
++  if (!m_all_data.emplace(group.reference_id,std::move(group)).second) abort();
++  original->clear(); // Consumes exactly the original SM memory-issue slot.
++}
++
++void ldst_unit::all_data_cycle() {
++  const uint64_t now=m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle;
++  auto &service=m_gpu->all_data_reference();service.advance(now);
++  // No per-tick response quota or head-of-line FIFO. Independently try every
++  // ready instruction; only real SM register-bank ports may defer consumption.
++  for (auto it=m_all_data.begin();it!=m_all_data.end();) {
++    auto &g=it->second;bool ready=now>g.issued;
++    for (auto id:g.requests) ready &= service.ready(id);
++    if (g.inst.op==MEMORY_BARRIER_OP)
++      for (auto before=m_all_data.begin();before!=it;++before)
++        if (before->second.inst.warp_id()==g.inst.warp_id()) ready=false;
++    if (!ready) {++it;continue;}
++    if (g.inst.is_load() && !m_operand_collector->writeback(g.inst)) {
++      ++service.sm_register_wait_attempts;++it;continue;
++    }
++    const unsigned wid=g.inst.warp_id();
++    for (auto id:g.requests) service.consume(id,now);
++    if (g.inst.is_load()) {
++      if (g.inst.space.get_type()!=shared_space)
++        for (unsigned r=0;r<MAX_OUTPUT_VALUES;++r) if (g.inst.out[r]>0) {
++          auto &pending=m_pending_writes[wid][g.inst.out[r]];
++          assert(pending>=g.native_requests);pending-=g.native_requests;
++          assert(pending==0);m_pending_writes[wid].erase(g.inst.out[r]);
++        }
++      m_scoreboard->releaseRegisters(&g.inst);
++    }
++    if (g.inst.is_store() && g.inst.space.get_type()!=shared_space)
++      for (unsigned n=0;n<g.native_requests;++n) m_core->reference_store_ack(wid);
++    m_core->dec_inst_in_pipeline(wid);m_core->warp_inst_complete(g.inst);
++    m_last_inst_gpu_sim_cycle=m_gpu->gpu_sim_cycle;m_last_inst_gpu_tot_sim_cycle=m_gpu->gpu_tot_sim_cycle;
++    if (g.inst.op==MEMORY_BARRIER_OP) service.barrier_complete(m_sid,wid);
++    service.finish(g.reference_id);it=m_all_data.erase(it);
++  }
++}
+diff --git a/src/gpgpu-sim/ep-l2-all-data-reference.h b/src/gpgpu-sim/ep-l2-all-data-reference.h
+new file mode 100644
+index 00000000..bf2bf0d5
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-all-data-reference.h
+@@ -0,0 +1,245 @@
++#ifndef EP_L2_ALL_DATA_REFERENCE_H
++#define EP_L2_ALL_DATA_REFERENCE_H
++#include <cstdio>
++#include <cstdlib>
++#include <cstdint>
++#include <map>
++#include <set>
++#include <vector>
++#include <cassert>
++#include "ep-l2-ideal-reference.h"
++
++// Operational reference, outside all finite cache/NoC/memory resources.
++// A transaction is eligible on real issue except for older overlapping stores.
++// Snapshots are captured at eligibility; readiness is exactly one physical tick
++// later, independently of SM register-port consumption or other responses.
++namespace ep_l2_all_data {
++class Service {
++ public:
++  using Mask=ep_l2_ideal::ReferenceMemory::Mask;
++  using Data=ep_l2_ideal::ReferenceMemory::Data;
++  using Snapshot=std::vector<ep_l2_ideal::Byte>;
++  struct Instruction {
++    uint64_t original,expected,issued=0,consumed=0,committed=0;
++    bool store;
++    unsigned space;
++    uint64_t kernel=0,pc=0,stream=0;
++    unsigned sm=0,warp=0,dynamic_warp=0;
++  };
++  struct Request {
++    uint64_t id,instruction,domain,line,issued,eligible=0,ready=0,original_access=0;
++    bool store,eligible_valid=false,ready_valid=false,known=false;
++    Mask mask;
++    Data data{};
++    Snapshot snapshot;
++    uint64_t snapshot_digest=0;
++  };
++  uint64_t begin(uint64_t original,unsigned expected,bool store,unsigned space) {
++    if (!record_identity(original,seen_instructions_)) {
++      fprintf(stderr,"EPL2MEMREF_DUPLICATE_ORIGINAL_INSTRUCTION|uid=%llu\n",(unsigned long long)original);abort();
++    }
++    ++unique_original_instructions;
++    const auto id=++instruction_sequence_;
++    instructions_.emplace(id,Instruction{original,expected,0,0,0,store,space});
++    issued_instruction_digest^=instruction_digest(instructions_.at(id));
++    ++instruction_count; ++space_instructions[space];
++    if (store) ++store_instructions;
++    else if (space==0) ++barrier_instructions;
++    else ++load_instructions;
++    return id;
++  }
++  void annotate(uint64_t id,uint64_t kernel,uint64_t pc,uint64_t stream,
++                unsigned sm,unsigned warp,unsigned dynamic_warp) {
++    auto &i=instructions_.at(id);issued_instruction_digest^=instruction_digest(i);
++    i.kernel=kernel;i.pc=pc;i.stream=stream;
++    i.sm=sm;i.warp=warp;i.dynamic_warp=dynamic_warp;
++    issued_instruction_digest^=instruction_digest(i);
++  }
++  void barrier_issue(unsigned sm,unsigned warp) {if (!barriers_.insert({sm,warp}).second) abort();}
++  bool barrier_pending(unsigned sm,unsigned warp) const {return barriers_.count({sm,warp});}
++  void barrier_complete(unsigned sm,unsigned warp) {if (barriers_.erase({sm,warp})!=1) abort();}
++  void native_store_issue(uint64_t original,unsigned sm,unsigned warp) {
++    if (!native_stores_.emplace(original,std::make_pair(sm,warp)).second) abort();
++    ++native_stores_issued;
++  }
++  bool native_store_declared(uint64_t original) const {return native_stores_.count(original);}
++  bool warp_stores_pending(unsigned sm,unsigned warp) const {
++    for (const auto &s:native_stores_) if (s.second==std::make_pair(sm,warp)) return true;
++    return false;
++  }
++  uint64_t issue(uint64_t instruction,uint64_t domain,uint64_t address,
++                 const Mask &mask,uint64_t now,const Data *known=nullptr,uint64_t original_access=0) {
++    advance(now);
++    auto &inst=instructions_.at(instruction);
++    assert(inst.issued<inst.expected && (address&127)==0);
++    bool any=false;for (bool bit:mask) any|=bit;assert(any);
++    Request req{};req.id=++request_sequence_;req.instruction=instruction;
++    req.domain=domain;req.line=address;req.issued=now;req.store=inst.store;req.mask=mask;
++    req.original_access=original_access;
++    if (original_access) {
++      if (!record_identity(original_access,seen_accesses_)) {
++        fprintf(stderr,"EPL2MEMREF_DUPLICATE_NATIVE_ACCESS|uid=%llu\n",(unsigned long long)original_access);abort();
++      }
++      ++unique_native_accesses;
++    }
++    if (known) {assert(req.store);req.known=true;req.data=*known;}
++    auto pos=requests_.emplace(req.id,req).first;
++    ++inst.issued;++requests_issued;
++    if (req.store) ++store_fragments;
++    make_eligible(pos->second,now);
++    return req.id;
++  }
++  void advance(uint64_t now) {
++    assert(!clock_valid_ || now>=clock_);
++    if (clock_valid_ && now==clock_) return;
++    clock_valid_=true;clock_=now;
++    for (auto &item:requests_) {
++      auto &r=item.second;
++      if (r.eligible_valid && !r.ready_valid && r.ready<=now) {
++        assert(r.ready==now && "reference service missed a physical tick");
++        r.ready_valid=true;++requests_ready;
++        assert(r.ready==r.eligible+1);
++        if (!r.store) {
++          ready_snapshot_digest^=r.snapshot_digest^r.id;
++          snapshot_bytes_ready+=r.snapshot.size();
++          for (const auto &b:r.snapshot) {if (b.value_known)++known_bytes;else ++symbolic_bytes;}
++        }
++        if (r.store) {
++          memory_[r.domain].write(r.line,r.mask,r.known?&r.data:nullptr);
++          ++store_fragment_commits;
++          auto &i=instructions_.at(r.instruction);++i.committed;
++          assert(i.committed<=i.expected);
++          if (i.committed==i.expected) {
++            ++store_reference_commits;
++            if (native_stores_.erase(i.original)) ++native_stores_committed;
++          }
++        }
++      }
++      if (!r.eligible_valid) make_eligible(r,now);
++    }
++  }
++  bool ready(uint64_t id) const {return requests_.at(id).ready_valid;}
++  const Request &inspect(uint64_t id) const {return requests_.at(id);}
++  Snapshot consume(uint64_t id,uint64_t now) {
++    auto it=requests_.find(id);assert(it!=requests_.end());auto &r=it->second;
++    assert(r.ready_valid && now>=r.ready);
++    Snapshot value=r.snapshot; // Value snapshot, never a mutable memory alias.
++    if (!r.store) {
++      assert(digest(value)==r.snapshot_digest);
++      consumed_snapshot_digest^=r.snapshot_digest^r.id;
++      snapshot_bytes_consumed+=value.size();
++    }
++    consume_delay_cycles+=now-r.ready;++requests_consumed;
++    auto &inst=instructions_.at(r.instruction);++inst.consumed;
++    assert(inst.consumed<=inst.expected);
++    requests_.erase(it);return value;
++  }
++  void finish(uint64_t id) {
++    auto &i=instructions_.at(id);
++    assert(i.issued==i.expected && i.consumed==i.expected);
++    assert(!i.store || i.committed==i.expected);
++    if (i.store && i.expected==0) {
++      ++store_reference_commits;
++      if (native_stores_.erase(i.original)) ++native_stores_committed;
++    }
++    consumed_instruction_digest^=instruction_digest(i);
++    ++instructions_consumed;instructions_.erase(id);
++  }
++  uint64_t new_shared_epoch(unsigned sm,unsigned cta) {
++    auto key=std::make_pair(sm,cta);auto old=shared_.find(key);
++    if (old!=shared_.end()) {
++      for (const auto &x:requests_) assert(x.second.domain!=old->second);
++      memory_.erase(old->second);
++    }
++    return shared_[key]=++domain_sequence_;
++  }
++  uint64_t shared_domain(unsigned sm,unsigned cta) const {return shared_.at({sm,cta});}
++  bool host_prefill(uint64_t address,uint64_t count) {
++    if (!drained()) return false;
++    memory_[0].host_prefill_range(address,count);return true;
++  }
++  void seed(uint64_t domain,uint64_t address,const std::vector<uint8_t> &data) {
++    assert(drained());memory_[domain].seed(address,data);
++  }
++  bool drained() const {return requests_.empty() && instructions_.empty() && barriers_.empty() && native_stores_.empty();}
++  void print(FILE *fp) const {
++    fprintf(fp,"EPL2MEMREFV1|scope=cumulative|mode=I_MEM_ALL_DATA|instruction_path=NATIVE|"
++      "data_hierarchy=NOT_APPLICABLE|instructions=%llu|instructions_consumed=%llu|"
++      "stores=%llu|store_reference_commits=%llu|requests=%llu|ready=%llu|consumed=%llu|"
++      "store_fragments=%llu|store_fragment_commits=%llu|dependency_cycles=%llu|"
++      "ready_to_consume_cycles=%llu|sm_register_wait_attempts=%llu|"
++      "memory_resource_wait=0|ready_latency_violations=0|pending_requests=%zu|pending_instructions=%zu|drained=%u\n",
++      (unsigned long long)instruction_count,(unsigned long long)instructions_consumed,
++      (unsigned long long)store_instructions,(unsigned long long)store_reference_commits,
++      (unsigned long long)requests_issued,(unsigned long long)requests_ready,(unsigned long long)requests_consumed,
++      (unsigned long long)store_fragments,(unsigned long long)store_fragment_commits,
++      (unsigned long long)dependency_cycles,(unsigned long long)consume_delay_cycles,
++      (unsigned long long)sm_register_wait_attempts,requests_.size(),instructions_.size(),drained());
++    fprintf(fp,"EPL2MEMREFV1|SNAPSHOTS|scope=cumulative|loads=%llu|barriers=%llu|bytes_ready=%llu|bytes_consumed=%llu|"
++      "known_bytes=%llu|symbolic_bytes=%llu|ready_digest=%llu|consumed_digest=%llu|data_scope=BYTE_ADDRESS_PRODUCER_VERSION_SYMBOLS\n",
++      (unsigned long long)load_instructions,(unsigned long long)barrier_instructions,
++      (unsigned long long)snapshot_bytes_ready,(unsigned long long)snapshot_bytes_consumed,
++      (unsigned long long)known_bytes,(unsigned long long)symbolic_bytes,
++      (unsigned long long)ready_snapshot_digest,(unsigned long long)consumed_snapshot_digest);
++    fprintf(fp,"EPL2MEMREFV1|IDENTITY|scope=cumulative|issued_instruction_digest=%llu|consumed_instruction_digest=%llu|pending_barriers=%zu|native_stores_issued=%llu|native_stores_committed=%llu|pending_native_stores=%zu\n",
++      (unsigned long long)issued_instruction_digest,(unsigned long long)consumed_instruction_digest,barriers_.size(),
++      (unsigned long long)native_stores_issued,(unsigned long long)native_stores_committed,native_stores_.size());
++    fprintf(fp,"EPL2MEMREFV1|UNIQUENESS|original_instructions=%llu|native_accesses=%llu|instruction_uid_blocks=%zu|access_uid_blocks=%zu|duplicate_policy=FAIL_CLOSED\n",
++      (unsigned long long)unique_original_instructions,(unsigned long long)unique_native_accesses,seen_instructions_.size(),seen_accesses_.size());
++    for (const auto &s:space_instructions)
++      fprintf(fp,"EPL2MEMREFV1|SPACE|space=%u|instructions=%llu\n",s.first,(unsigned long long)s.second);
++  }
++  uint64_t instruction_count=0,instructions_consumed=0,store_instructions=0,store_reference_commits=0;
++  uint64_t requests_issued=0,requests_ready=0,requests_consumed=0,store_fragments=0,store_fragment_commits=0;
++  uint64_t dependency_cycles=0,consume_delay_cycles=0,sm_register_wait_attempts=0;
++  uint64_t load_instructions=0,barrier_instructions=0,snapshot_bytes_ready=0,snapshot_bytes_consumed=0;
++  uint64_t known_bytes=0,symbolic_bytes=0,ready_snapshot_digest=0,consumed_snapshot_digest=0;
++  uint64_t issued_instruction_digest=0,consumed_instruction_digest=0;
++  uint64_t native_stores_issued=0,native_stores_committed=0;
++  uint64_t unique_original_instructions=0,unique_native_accesses=0;
++  std::map<unsigned,uint64_t> space_instructions;
++ private:
++  bool older_producer(const Request &r) const {
++    for (const auto &x:requests_) {
++      const auto &p=x.second;if (p.id>=r.id) break;
++      if (!p.store || p.ready_valid || p.domain!=r.domain || p.line!=r.line) continue;
++      for (unsigned b=0;b<128;++b) if (p.mask[b] && r.mask[b]) return true;
++    }
++    return false;
++  }
++  void make_eligible(Request &r,uint64_t now) {
++    if (older_producer(r)) return;
++    r.eligible_valid=true;r.eligible=now;r.ready=now+1;
++    dependency_cycles+=now-r.issued;
++    if (!r.store) {r.snapshot=memory_[r.domain].read(r.line,r.mask);r.snapshot_digest=digest(r.snapshot);}
++  }
++  static uint64_t digest(const Snapshot &snapshot) {
++    uint64_t d=1469598103934665603ULL;
++    for (const auto &b:snapshot)
++      for (uint64_t x:{b.address,b.version,uint64_t(b.value_known),uint64_t(b.value_known?b.value:0)})
++        {d^=x;d*=1099511628211ULL;}
++    return d;
++  }
++  static uint64_t instruction_digest(const Instruction &i) {
++    uint64_t d=1469598103934665603ULL;
++    for (uint64_t v:{i.original,i.expected,i.kernel,i.pc,i.stream,uint64_t(i.sm),uint64_t(i.warp),
++                    uint64_t(i.dynamic_warp),uint64_t(i.store),uint64_t(i.space)}) {d^=v;d*=1099511628211ULL;}
++    return d;
++  }
++  using IdBlocks=std::map<uint64_t,std::array<uint64_t,64>>;
++  static bool record_identity(uint64_t uid,IdBlocks &seen) {
++    auto &block=seen[uid/4096];auto &word=block[(uid%4096)/64];const uint64_t bit=uint64_t(1)<<(uid%64);
++    if (word&bit) return false;
++    word|=bit;return true;
++  }
++  bool clock_valid_=false;uint64_t clock_=0,instruction_sequence_=0,request_sequence_=0,domain_sequence_=0;
++  std::map<uint64_t,Instruction> instructions_;
++  std::map<uint64_t,Request> requests_;
++  std::map<uint64_t,ep_l2_ideal::ReferenceMemory> memory_;
++  std::map<std::pair<unsigned,unsigned>,uint64_t> shared_;
++  std::set<std::pair<unsigned,unsigned>> barriers_;
++  std::map<uint64_t,std::pair<unsigned,unsigned>> native_stores_;
++  IdBlocks seen_instructions_,seen_accesses_;
++};
++}
++#endif
+diff --git a/src/gpgpu-sim/ep-l2-ideal-reference.h b/src/gpgpu-sim/ep-l2-ideal-reference.h
+new file mode 100644
+index 00000000..c57e3630
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-ideal-reference.h
+@@ -0,0 +1,86 @@
++// Lane 4 diagnostic reference memory. Not physical cache/payload allocation.
++#ifndef EP_L2_IDEAL_REFERENCE_H
++#define EP_L2_IDEAL_REFERENCE_H
++#include <array>
++#include <cassert>
++#include <cstdint>
++#include <limits>
++#include <map>
++#include <vector>
++
++namespace ep_l2_ideal {
++struct Byte {
++  uint64_t address;
++  uint64_t version;
++  bool value_known;
++  uint8_t value;
++  bool operator==(const Byte &b) const {
++    return address == b.address && version == b.version &&
++           value_known == b.value_known && (!value_known || value == b.value);
++  }
++};
++// SASS traces have no data bytes/initial memory image. Their explicit
++// functional reference is (byte address,last committed producer version).
++// Cold data is a typed symbol, never an uninitialized cache-line value.
++// Production-path tests seed bytes and known writes through this same store.
++class ReferenceMemory {
++ public:
++  typedef std::array<bool, 128> Mask;
++  typedef std::array<uint8_t, 128> Data;
++  void seed(uint64_t address, const std::vector<uint8_t> &bytes) {
++    for (size_t i = 0; i < bytes.size(); ++i) known_[address + i] = bytes[i];
++  }
++  void write(uint64_t line, const Mask &mask, const Data *data = nullptr) {
++    assert((line & 127) == 0 && next_version_ != std::numeric_limits<uint64_t>::max());
++    const uint64_t version = ++next_version_;
++    auto it = versions_.find(line);
++    if (it == versions_.end()) it = versions_.emplace(line, Versions{}).first;
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      it->second[b] = version;
++      if (data) known_[line + b] = (*data)[b];
++      else known_.erase(line + b);
++    }
++  }
++  // Successful host prefill replaces selected sectors with fresh unknown
++  // version-zero symbols, matching the FT Payload contract. Never reset
++  // the producer clock or modify unselected bytes/older response copies.
++  void host_prefill(uint64_t line, const Mask &mask) {
++    assert((line & 127) == 0);
++    auto it = versions_.find(line);
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      if (it != versions_.end()) it->second[b] = 0;
++      known_.erase(line + b);
++    }
++  }
++  // Quiescent host writes in the end-to-end reference. Only already stored
++  // symbols need reset; a cold initial image is already explicitly unknown0.
++  void host_prefill_range(uint64_t address,uint64_t count) {
++    if (!count) return;
++    assert(address<=std::numeric_limits<uint64_t>::max()-(count-1));
++    const uint64_t last=address+count-1;
++    for (auto it=versions_.lower_bound(address & ~uint64_t(127));
++         it!=versions_.end() && it->first<=last;++it)
++      for (unsigned b=0;b<128;++b)
++        if (it->first+b>=address && it->first+b<=last) it->second[b]=0;
++    auto it=known_.lower_bound(address);
++    while (it!=known_.end() && it->first<=last) it=known_.erase(it);
++  }
++  std::vector<Byte> read(uint64_t line, const Mask &mask) const {
++    assert((line & 127) == 0);
++    std::vector<Byte> out;
++    const auto v = versions_.find(line);
++    for (unsigned b = 0; b < 128; ++b) if (mask[b]) {
++      const auto k = known_.find(line + b);
++      out.push_back(Byte{line + b, v == versions_.end() ? 0 : v->second[b],
++                         k != known_.end(), k == known_.end() ? uint8_t(0) : k->second});
++    }
++    return out;
++  }
++ private:
++  typedef std::array<uint64_t, 128> Versions;
++  uint64_t next_version_ = 0;
++  std::map<uint64_t, Versions> versions_;
++  std::map<uint64_t, uint8_t> known_;
++};
++}  // namespace ep_l2_ideal
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 9726f938..5bc010ce 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -34,6 +34,7 @@
+ #include "l2_admission_rules.h"
+ #include <algorithm>
+ #include <assert.h>
++#include <climits>
+ #include "gpu-sim.h"
+ #include "hashing.h"
+ 
+@@ -681,6 +682,9 @@ bool mshr_table::full(new_addr_type block_addr) const {
+ 
+ mshr_table::ep_l2_block_reason mshr_table::full_reason(
+     new_addr_type block_addr) const {
++  // This removes only allocation-capacity refusal. Existing sector merging,
++  // RAW/WAR/atomic handling and response retirement remain the ordinary path.
++  if (m_ideal_meta) return EP_L2_BLOCK_NONE;
+   table::const_iterator i = m_data.find(block_addr);
+   if (i != m_data.end()) {
+     const unsigned per_line_limit =
+@@ -696,6 +700,17 @@ mshr_table::ep_l2_block_reason mshr_table::full_reason(
+   return EP_L2_BLOCK_NONE;
+ }
+ 
++void mshr_table::ensure_descriptor_available() {
++  if (!m_free_descriptor_ids.empty()) return;
++  assert(m_ideal_meta && m_descriptor_pool_size);
++  // Allocate on demand; never rely on a guessed huge constant. IDs are kept in
++  // unsigned containers throughout the producer/consumer chain.
++  assert(m_descriptor_pool.size() < static_cast<size_t>(UINT_MAX));
++  const unsigned id = static_cast<unsigned>(m_descriptor_pool.size());
++  m_descriptor_pool.push_back(ep_l2_descriptor());
++  m_free_descriptor_ids.push_back(id);
++}
++
+ bool mshr_table::needs_lower_read(
+     new_addr_type block_addr, const mem_access_sector_mask_t &sectors) const {
+   if (!m_descriptor_pool_size) return !probe(block_addr);
+@@ -709,6 +724,7 @@ void mshr_table::add(new_addr_type block_addr, mem_fetch *mf) {
+   mshr_entry &entry = m_data[block_addr];
+   entry.m_list.push_back(mf);
+   if (m_descriptor_pool_size) {
++    ensure_descriptor_available();
+     assert(!m_free_descriptor_ids.empty());
+     unsigned id = m_free_descriptor_ids.back();
+     m_free_descriptor_ids.pop_back();
+@@ -720,8 +736,8 @@ void mshr_table::add(new_addr_type block_addr, mem_fetch *mf) {
+     entry.m_pending_sectors |= descriptor.m_sectors;
+     entry.m_issued_sectors |= descriptor.m_sectors;
+   }
+-  assert(m_data.size() <= m_num_entries);
+-  assert(entry.m_list.size() <=
++  assert(m_ideal_meta || m_data.size() <= m_num_entries);
++  assert(m_ideal_meta || entry.m_list.size() <=
+          (m_descriptor_pool_size ? m_descriptor_per_line_cap : m_max_merged));
+   // indicate that this MSHR entry contains an atomic operation
+   if (mf->isatomic()) {
+@@ -735,6 +751,7 @@ void mshr_table::add_for_test(new_addr_type block_addr, mem_fetch *mf,
+   assert(full_reason(block_addr) == EP_L2_BLOCK_NONE);
+   mshr_entry &entry = m_data[block_addr];
+   entry.m_list.push_back(mf);
++  ensure_descriptor_available();
+   unsigned id = m_free_descriptor_ids.back();
+   m_free_descriptor_ids.pop_back();
+   ep_l2_descriptor &descriptor = m_descriptor_pool[id];
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 62aeee77..27eb906a 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -591,6 +591,9 @@ class cache_config {
+     // M0a is deliberately opt-in.  It is a telemetry sidecar and is never
+     // consulted by the admission controller.
+     m_ep_l2_m0a_stats = false;
++    m_ep_l2_ideal_meta = false;
++    m_ep_l2_ideal_read_hit = false;
++    m_ep_l2_ideal_wb = false;
+   }
+   void init(char *config, FuncCache status) {
+     cache_status = status;
+@@ -855,6 +858,11 @@ class cache_config {
+   bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }
+   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }
+   unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }
++  // Lane1's structural runtime extends this query with S64/cap/P2 guards.
++  bool ep_l2_all_data_config_compatible() const {
++    return m_ep_l2_ft_mode==1 && m_ep_l2_wbuf_entries==16 &&
++        m_ep_l2_payload_mode==2 && !m_ep_l2_ideal_wb && !m_ep_l2_ideal_meta && !m_ep_l2_ideal_read_hit;
++  }
+   enum mshr_config_t get_mshr_type() const { return m_mshr_type; }
+   void set_assoc(unsigned n) {
+     // set new assoc. L1 cache dynamically resized in Volta
+@@ -934,6 +942,10 @@ class cache_config {
+   // EP-L2 B0 long-lived response descriptors. These deliberately do not
+   // reuse m_miss_queue, which remains the short lower-issue queue.
+   unsigned m_ep_l2_descriptor_pool_size;
++  // Lane 4 diagnostic only: dynamically backed metadata, never a budgeted mode.
++  bool m_ep_l2_ideal_meta;
++  bool m_ep_l2_ideal_read_hit;
++  bool m_ep_l2_ideal_wb;
+   unsigned m_ep_l2_descriptor_per_line_cap;
+   // EP-L2 write-address descriptors. Zero preserves the conventional path.
+   unsigned m_ep_l2_wad_entries;
+@@ -1134,11 +1146,13 @@ class mshr_table {
+ 
+   mshr_table(unsigned num_entries, unsigned max_merged,
+              unsigned descriptor_pool_size = 0,
+-             unsigned descriptor_per_line_cap = 0)
++             unsigned descriptor_per_line_cap = 0,
++             bool ideal_meta = false)
+       : m_num_entries(num_entries),
+         m_max_merged(max_merged),
+         m_descriptor_pool_size(descriptor_pool_size),
+-        m_descriptor_per_line_cap(descriptor_per_line_cap)
++        m_descriptor_per_line_cap(descriptor_per_line_cap),
++        m_ideal_meta(ideal_meta)
+ #if (tr1_hash_map_ismap == 0)
+         ,
+         m_data(2 * num_entries)
+@@ -1205,9 +1219,9 @@ class mshr_table {
+   unsigned descriptor_count_used() const {
+     return m_descriptor_pool_size == 0
+                ? num_targets_used()
+-               : m_descriptor_pool_size - m_free_descriptor_ids.size();
++               : m_descriptor_pool.size() - m_free_descriptor_ids.size();
+   }
+-  unsigned descriptor_pool_capacity() const { return m_descriptor_pool_size; }
++  unsigned descriptor_pool_capacity() const { return m_descriptor_pool.size(); }
+   void sector_masks(new_addr_type block_addr, mem_access_sector_mask_t &pending,
+                     mem_access_sector_mask_t &issued,
+                     mem_access_sector_mask_t &ready) const;
+@@ -1241,6 +1255,8 @@ class mshr_table {
+   const unsigned m_max_merged;
+   const unsigned m_descriptor_pool_size;
+   const unsigned m_descriptor_per_line_cap;
++  const bool m_ideal_meta;
++  void ensure_descriptor_available();
+ 
+   struct ep_l2_descriptor {
+     mem_fetch *m_mf;
+@@ -1506,7 +1522,8 @@ class baseline_cache : public cache_t {
+         m_tag_array(new tag_array(config, core_id, type_id)),
+         m_mshrs(config.m_mshr_entries, config.m_mshr_max_merge,
+                 config.m_ep_l2_descriptor_pool_size,
+-                config.m_ep_l2_descriptor_per_line_cap),
++                config.m_ep_l2_descriptor_per_line_cap,
++                config.m_ep_l2_ideal_meta),
+         m_bandwidth_management(config),
+         m_level(level),
+         m_gpu(gpu) {
+@@ -2105,7 +2122,7 @@ class ep_l2_payload_store {
+   static const unsigned k_physical_slots = 1152;
+   static const unsigned k_resident_slots = 1024;
+   static const unsigned k_bypass_slots = 128;
+-  enum role { RESIDENT, BYPASS, WB };
++  enum role { RESIDENT, BYPASS, WB, IDEAL_REFERENCE };
+   // A boolean cannot distinguish an ordinary target-payload retry from a
+   // physical same-bank denial.  C6c needs that distinction both for correct
+   // same-cycle admission and for meaningful B0-Banked telemetry.
+@@ -2147,8 +2164,10 @@ class ep_l2_payload_store {
+     }
+     bool occupied() const { return status != FREE; }
+   };
+-  ep_l2_payload_store(unsigned mode = 0, unsigned ft_mode = 0, unsigned wbuf = 0)
+-      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_cycle((unsigned long long)-1),
++  ep_l2_payload_store(unsigned mode = 0, unsigned ft_mode = 0, unsigned wbuf = 0,
++                      bool ideal_wb = false)
++      : m_mode(mode), m_ft_mode(ft_mode), m_wbuf(wbuf), m_ideal_wb(ideal_wb),
++        m_cycle((unsigned long long)-1),
+         m_resident_reads(0), m_resident_writes(0), m_bypass_reads(0),
+         m_bypass_writes(0), m_bank_logical_ops(0), m_bank_attempts(0),
+         m_bank_grants(0), m_bank_retry_attempts(0),
+@@ -2300,6 +2319,9 @@ class ep_l2_payload_store {
+   }
+   // FT public allocation primitives. Preview does not acquire a resource.
+   unsigned physical_slots() const { return m_slots.size(); }
++  unsigned diagnostic_wb_extra_slots() const {
++    return m_slots.size() - (k_physical_slots + m_wbuf);
++  }
+   unsigned wb_used() const { return used(WB); }
+   unsigned pending_sector_count() const { unsigned n=0;
+     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+@@ -2314,9 +2336,19 @@ class ep_l2_payload_store {
+           (r == BYPASS && (id < k_resident_slots || id >= k_physical_slots)))) continue;
+       return payload_handle(id, m_slots[id].generation + 1);
+     }
++    // A prospective ID is not an allocation. Only reserve() below grows the
++    // diagnostic backing after WAD/issue/ordering checks have succeeded.
++    if (m_ideal_wb && r == WB) {
++      assert(m_ft_mode == 1 && m_slots.size() < std::numeric_limits<unsigned>::max());
++      return payload_handle(static_cast<unsigned>(m_slots.size()), 1);
++    }
+     return payload_handle();
+   }
+   payload_handle reserve(unsigned id, role r, new_addr_type owner, state st) {
++    if (id == m_slots.size() && m_ideal_wb && r == WB) {
++      assert(m_ft_mode == 1 && id < std::numeric_limits<unsigned>::max());
++      m_slots.push_back(slot());
++    }
+     assert(m_ft_mode && id < m_slots.size() && !m_slots[id].occupied());
+     slot &s = m_slots[id];
+     assert(s.generation != std::numeric_limits<unsigned>::max());
+@@ -2581,7 +2613,9 @@ class ep_l2_payload_store {
+     role r; unsigned id; bool write; unsigned long long sequence;
+     bool true_conflict; unsigned long long first_conflict_cycle;
+   };
+-  unsigned m_mode, m_ft_mode, m_wbuf; unsigned long long m_cycle;
++  unsigned m_mode, m_ft_mode, m_wbuf;
++  bool m_ideal_wb;
++  unsigned long long m_cycle;
+   unsigned m_resident_reads, m_resident_writes, m_bypass_reads, m_bypass_writes;
+   unsigned long long m_bank_logical_ops, m_bank_attempts, m_bank_grants,
+       m_bank_retry_attempts, m_bank_true_conflict_ops,
+@@ -2612,7 +2646,7 @@ class l2_cache : public data_cache {
+         m_ep_l2_wad_lifetime_sum(0), m_ep_l2_wad_lifetime_count(0),
+         m_ep_l2_wad_lifetime_max(0),
+         m_ep_l2_payload(config.m_ep_l2_payload_mode, config.m_ep_l2_ft_mode,
+-                         config.m_ep_l2_wbuf_entries),
++                         config.m_ep_l2_wbuf_entries, config.m_ep_l2_ideal_wb),
+         m_ep_l2_last_payload_request_result(ep_l2_payload_store::GRANTED),
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
+@@ -2721,6 +2755,11 @@ class l2_cache : public data_cache {
+                                mem_access_sector_mask_t mask);
+   unsigned long long ft_physical_cycle() const;
+   unsigned ft_wb_staged() const { return m_ft_wb.size(); }
++  unsigned long long ideal_wb_data_full() const { return m_ft_stats.wbuf_full; }
++  unsigned ideal_wb_extra_slots() const { return m_ep_l2_payload.diagnostic_wb_extra_slots(); }
++  unsigned long long ft_copy_lines() const { return m_ft_stats.copy_lines; }
++  unsigned long long ft_staging_reads() const { return m_ft_stats.staging_reads; }
++  unsigned long long ft_lower_accepts() const { return m_ft_stats.lower_accept; }
+   unsigned ft_pending_lower_reads() const { return m_ep_l2_payload.pending_sector_count(); }
+   bool ft_reservation_active() const { return m_ft_pending.request != NULL; }
+   // Read-only production transaction observations for cross-cycle regressions.
+@@ -2787,6 +2826,32 @@ class l2_cache : public data_cache {
+   bool ep_l2_wad_contains(new_addr_type block_addr) const {
+     return m_ep_l2_wad_entries_live.count(block_addr) != 0;
+   }
++  bool ep_l2_ideal_read_dependency(new_addr_type addr) const {
++    return ep_l2_wad_contains(m_config.block_addr(addr)) ||
++           m_mshrs.probe(m_config.mshr_addr(addr));
++  }
++  ep_l2_payload_store::request_result ep_l2_ideal_read_bank(
++      mem_fetch *mf, unsigned long long cycle) {
++    unsigned index = (unsigned)-1;
++    const cache_request_status status = m_tag_array->probe(
++        m_config.block_addr(mf->get_addr()), index, mf, false, true);
++    // Real residents keep their actual bank. Cold reads use the selected
++    // replacement landing's bank without allocating it. All-reserved has no
++    // selected way; define a stable diagnostic bank in that special case.
++    if (status == RESERVATION_FAIL)
++      index = (mf->get_addr() / m_config.get_line_sz()) % 4;
++    return m_ep_l2_payload.request(ep_l2_payload_store::IDEAL_REFERENCE, index,
++                                  false, cycle);
++  }
++  void ep_l2_ideal_touch_resident(mem_fetch *mf, unsigned long long cycle) {
++    unsigned index = (unsigned)-1;
++    const new_addr_type line = m_config.block_addr(mf->get_addr());
++    if (m_tag_array->probe(line, index, mf, false, true) == HIT) {
++      // Preserve normal hit replacement age; a cold reference does not
++      // fabricate a resident tag or evict a real dirty producer.
++      m_tag_array->access(line, cycle, index, mf);
++    }
++  }
+ 
+   // Inspect only: no LRU update, tag/sector allocation, MSHR change, queue
+   // insertion, cache event, or normal cache statistic is permitted here.
+@@ -2833,6 +2898,18 @@ class l2_cache : public data_cache {
+   std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
+   std::array<unsigned long long,4> m_ft_last_wb_versions;
+   void validate_ep_l2_mode_config() const {
++    if ((m_config.m_ep_l2_ideal_wb && m_config.m_ep_l2_ft_mode != 1) ||
++        (m_config.m_ep_l2_ideal_read_hit &&
++         (m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ft_mode == 2))) {
++      fprintf(stderr, "I_WB requires static finite-WBUF source; I_READ_HIT is a standalone reference mode\n");
++      abort();
++    }
++    if ((m_config.m_ep_l2_ideal_meta && !m_config.ep_l2_descriptor_mode()) ||
++        (m_config.m_ep_l2_ideal_read_hit &&
++         (m_config.m_ep_l2_payload_mode != 2 || m_config.m_ep_l2_ideal_meta))) {
++      fprintf(stderr, "EP-L2 ideal mode requires target metadata/banked model; I_READ_HIT+I_META is not an admitted combination\n");
++      abort();
++    }
+     if (m_config.m_ep_l2_ft_mode > 2 ||
+         (!m_config.m_ep_l2_ft_mode && m_config.m_ep_l2_wbuf_entries) ||
+         (m_config.m_ep_l2_ft_mode &&
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 323f99b0..995bdce3 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -248,6 +248,15 @@ void memory_config::reg_options(class OptionParser *opp) {
+ 
+   option_parser_register(opp, "-l2_ideal", OPT_BOOL, &l2_ideal,
+                          "Use a ideal L2 cache that always hit", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ideal_meta", OPT_BOOL,
++                         &m_L2_config.m_ep_l2_ideal_meta,
++                         "Lane4 diagnostic: non-binding dynamic Line-MSHR/descriptor/per-address capacity; ordering retained", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ideal_read_hit", OPT_BOOL,
++                         &m_L2_config.m_ep_l2_ideal_read_hit,
++                         "Lane4 optimistic demand-read reference service; preserves ROP hit delay, bank, ordering, NoC/response queue", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ideal_wb", OPT_BOOL,
++                         &m_L2_config.m_ep_l2_ideal_wb,
++                         "Lane4 diagnostic extra WB data backing only; preserves finite WAD, copy/read banks, lower queues and DRAM", "0");
+   option_parser_register(
+       opp, "-gpgpu_cache:dl2", OPT_CSTR, &m_L2_config.m_config_string,
+       "unified banked L2 data cache config "
+@@ -463,6 +472,9 @@ void shader_core_config::reg_options(class OptionParser *opp) {
+                          "-Xptxas -dlcm=cg, default=no skip)",
+                          "0");
+ 
++  option_parser_register(opp, "-gpgpu_ep_l2_i_mem_all_data", OPT_BOOL,
++                         &ep_l2_mem_all_data,
++                         "End-to-end non-atomic data reference, ready=eligible+1 physical cycle", "0");
+   option_parser_register(opp, "-gpgpu_perfect_mem", OPT_BOOL,
+                          &gpgpu_perfect_mem,
+                          "enable perfect memory mode (no cache miss)", "0");
+@@ -1064,6 +1076,12 @@ gpgpu_sim::gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
+   gpgpu_ctx = ctx;
+   m_shader_config = &m_config.m_shader_config;
+   m_memory_config = &m_config.m_memory_config;
++  if (m_shader_config->ep_l2_mem_all_data) {
++    const auto &l2=m_memory_config->m_L2_config;
++    assert(!m_shader_config->gpgpu_perfect_mem && !m_memory_config->SST_mode);
++    assert(l2.ep_l2_all_data_config_compatible() && "ALL_DATA is a separate B16 OFF reference scope");
++  }
++
+   ctx->ptx_parser->set_ptx_warp_size(m_shader_config);
+   ptx_file_line_stats_create_exposed_latency_tracker(m_config.num_shader());
+ 
+@@ -1244,6 +1262,7 @@ bool gpgpu_sim::active() {
+       (gpu_completed_cta >= m_config.gpu_max_completed_cta_opt))
+     return false;
+   if (m_config.gpu_deadlock_detect && gpu_deadlock) return false;
++  if (m_shader_config->ep_l2_mem_all_data && !m_all_data_reference.drained()) return true;
+   for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++)
+     if (m_cluster[i]->get_not_completed() > 0) return true;
+   ;
+@@ -1356,6 +1375,7 @@ PowerscalingCoefficients *gpgpu_sim::get_scaling_coeffs() {
+ }
+ 
+ void gpgpu_sim::print_stats(unsigned long long streamID) {
++  if (m_shader_config->ep_l2_mem_all_data) m_all_data_reference.print(stdout);
+   gpgpu_ctx->stats->ptx_file_line_stats_write_file();
+   gpu_print_stat(streamID);
+ 
+@@ -2069,6 +2089,8 @@ void gpgpu_sim::cycle() {
+   int clock_mask = next_clock_domain();
+ 
+   if (clock_mask & CORE) {
++    if (m_shader_config->ep_l2_mem_all_data)
++      m_all_data_reference.advance(gpu_sim_cycle + gpu_tot_sim_cycle);
+     // shader core loading (pop from ICNT into core) follows CORE clock
+     for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++)
+       m_cluster[i]->icnt_cycle();
+@@ -2322,6 +2344,12 @@ void shader_core_ctx::dump_warp_state(FILE *fout) const {
+ }
+ 
+ void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {
++  if (m_shader_config->ep_l2_mem_all_data) {
++    assert(m_all_data_reference.host_prefill(dst_start_addr,count) &&
++           "ALL_DATA host prefill requires complete reference drain");
++    return;
++  }
++
+   if (m_memory_config->m_perf_sim_memcpy) {
+     if (m_memory_config->m_L2_config.ep_l2_ft_mode()) {
+       // FT host prefill must name the same complete address as its resident
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 573260a7..baf7c1f3 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -587,6 +587,7 @@ class watchpoint_event {
+ };
+ 
+ class gpgpu_sim : public gpgpu_t {
++  friend struct ep_l2_all_data_probe;
+  public:
+   gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx);
+ 
+@@ -612,6 +613,7 @@ class gpgpu_sim : public gpgpu_t {
+             (gpu_completed_cta >= m_config.gpu_max_completed_cta_opt));
+   }
+   void print_stats(unsigned long long streamID);
++  ep_l2_all_data::Service &all_data_reference() { return m_all_data_reference; }
+   void update_stats();
+   void deadlock_check();
+   void inc_completed_cta() { gpu_completed_cta++; }
+@@ -710,6 +712,7 @@ class gpgpu_sim : public gpgpu_t {
+   class memory_partition_unit **m_memory_partition_unit;
+   class memory_sub_partition **m_memory_sub_partition;
+ 
++  ep_l2_all_data::Service m_all_data_reference;
+   std::vector<kernel_info_t *> m_running_kernels;
+   std::map<unsigned long long, ep_l1d_snapshot> m_ep_l1d_kernel_start;
+   std::map<unsigned long long, bool> m_ep_l1d_kernel_overlap;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 6e6fcbdb..8df84905 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -415,6 +415,13 @@ bool memory_sub_partition::ft_try_force_l2_tag_update(
+   if (!m_L2cache->ft_enabled() || !l2_char_no_resource_leak()) return false;
+   if (!m_L2cache->ft_try_force_tag_access(addr, m_memcpy_cycle_offset + time, mask))
+     return false;
++  // Only an accepted, drained, clean host prefill may replace reference
++  // symbols. A refusal leaves both the reference and offset unchanged.
++  if (m_config->m_L2_config.m_ep_l2_ideal_read_hit) {
++    ep_l2_ideal::ReferenceMemory::Mask bytes{};
++    for (unsigned b = 0; b < 128; ++b) bytes[b] = mask.test(b / 32);
++    m_ideal_reference.host_prefill(addr & ~uint64_t(127), bytes);
++  }
+   ++m_memcpy_cycle_offset;
+   return true;
+ }
+@@ -1091,6 +1098,78 @@ void memory_sub_partition::l2_char_sample(unsigned long long cycle) {
+   m_l2_char_collector->sample_cycle(cycle, s);
+ }
+ 
++namespace {
++ep_l2_ideal::ReferenceMemory::Mask ideal_mask(const mem_fetch *mf) {
++  ep_l2_ideal::ReferenceMemory::Mask mask{};
++  const mem_access_byte_mask_t bytes = mf->get_access_byte_mask();
++  const mem_access_sector_mask_t sectors = mf->get_access_sector_mask();
++  bool any = false;
++  for (unsigned b = 0; b < 128; ++b) {
++    mask[b] = sectors.test(b / 32) && (bytes.none() || bytes.test(b));
++    any |= mask[b];
++  }
++  assert(any && "reference service requires a valid byte/sector mask");
++  return mask;
++}
++}
++
++void memory_sub_partition::ep_l2_ideal_commit_producer(mem_fetch *mf) {
++  if (!m_config->m_L2_config.m_ep_l2_ideal_read_hit) return;
++  const auto data = m_ideal_known_writes.find(mf);
++  m_ideal_reference.write(mf->get_addr() & ~uint64_t(127), ideal_mask(mf),
++      data == m_ideal_known_writes.end() ? nullptr : &data->second);
++  if (data != m_ideal_known_writes.end()) m_ideal_known_writes.erase(data);
++}
++
++bool memory_sub_partition::ep_l2_ideal_serve_read(
++    mem_fetch *mf, unsigned long long cycle) {
++  if (!m_config->m_L2_config.m_ep_l2_ideal_read_hit || mf->get_is_write() ||
++      mf->isatomic() || mf->get_access_type() == L2_WR_ALLOC_R ||
++      mf->get_access_type() == L1_WR_ALLOC_R)
++    return false;
++  // Preserve producer completion, including an atomic waiting in the actual
++  // response FIFO. Arrival identity avoids a WAR deadlock with younger writes
++  // that have not yet reached the frontend head.
++  bool dependency = m_L2cache->ep_l2_ideal_read_dependency(mf->get_addr());
++  const uint64_t line = mf->get_addr() & ~uint64_t(127);
++  const auto arrival = m_ideal_arrivals.find(mf);
++  assert(arrival != m_ideal_arrivals.end());
++  for (auto other : m_request_tracker) {
++    if (other == mf || (!other->get_is_write() && !other->isatomic()) ||
++        (other->get_addr() & ~uint64_t(127)) != line) continue;
++    const auto older = m_ideal_arrivals.find(other);
++    if (older != m_ideal_arrivals.end() && older->second < arrival->second)
++      dependency = true;
++  }
++  if (dependency) { ++m_ideal_dependency_wait; return true; }
++  if (m_L2_icnt_queue->full()) { ++m_ideal_response_wait; return true; }
++  if (m_L2cache->ep_l2_ideal_read_bank(mf, cycle) != ep_l2_payload_store::GRANTED) {
++    ++m_ideal_bank_wait; return true;
++  }
++  // The frontend head has already traversed the same ROP hit-delay path as a
++  // normal L2 hit. This is the real L2->ICNT response queue, never a synchronous
++  // callback/drop. Cold reads snapshot the explicit reference, not cache RAM.
++  auto snapshot = m_ideal_reference.read(line, ideal_mask(mf));
++  for (const auto &b : snapshot) {
++    if (b.value_known) ++m_ideal_known_bytes;
++    else ++m_ideal_symbolic_bytes;
++  }
++  assert(m_ideal_responses.emplace(mf, std::move(snapshot)).second);
++  m_L2cache->ep_l2_ideal_touch_resident(mf, cycle + m_memcpy_cycle_offset);
++  mf->set_reply();
++  mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE, cycle);
++  // Same frontend acceptance and real response audit as ordinary hits.
++  ft_record_admission(mf);
++  ft_record_response(mf);
++  m_L2_icnt_queue->push(mf);
++  m_icnt_L2_queue->pop();
++  ep_l2_m0a_record_response_enqueue();
++  m_l2_block_state.erase(mf);
++  if (m_l2_char_collector) m_l2_char_collector->clear_frontend_request(mf);
++  ++m_ideal_reads;
++  return true;
++}
++
+ void memory_sub_partition::cache_cycle(unsigned cycle) {
+   // L2 fill responses
+   if (!m_config->m_L2_config.disabled()) {
+@@ -1125,6 +1204,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+           m_L2_icnt_queue->push(original_wr_mf);
+         }
+         m_request_tracker.erase(mf);
++        m_ideal_arrivals.erase(mf);
+         delete mf;
+       }
+       m_L2cache->commit_next_access();
+@@ -1196,6 +1276,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+         ((m_config->m_L2_texure_only && mf->istexture()) ||
+          (!m_config->m_L2_texure_only))) {
+       // L2 is enabled and access is for L2
++      if (!ep_l2_ideal_serve_read(
++              mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+       l2_access_plan plan;
+       m_L2cache->preview_access(mf->get_addr(), mf, plan);
+       if (plan.exact)
+@@ -1466,6 +1548,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+         }
+         bool write_sent = was_write_sent(events);
+         bool read_sent = was_read_sent(events);
++        if (status != RESERVATION_FAIL && mf->get_is_write() && !mf->isatomic())
++          ep_l2_ideal_commit_producer(mf);
+         MEM_SUBPART_DPRINTF("Probing L2 cache Address=%llx, status=%u\n",
+                             mf->get_addr(), status);
+ 
+@@ -1475,6 +1559,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+             assert(!read_sent);
+             if (mf->get_access_type() == L1_WRBK_ACC) {
+               m_request_tracker.erase(mf);
++        m_ideal_arrivals.erase(mf);
+               delete mf;
+             } else {
+               mf->set_reply();
+@@ -1497,6 +1582,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+               !was_writeallocate_sent(events)) {
+             if (mf->get_access_type() == L1_WRBK_ACC) {
+               m_request_tracker.erase(mf);
++        m_ideal_arrivals.erase(mf);
+               delete mf;
+             } else if (m_config->m_L2_config.get_write_policy() == WRITE_BACK) {
+               mf->set_reply();
+@@ -1515,6 +1601,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+           // L2 cache lock-up: will try again next cycle.
+         }
+       }
++      }
+     } else {
+       // L2 is disabled or non-texture access to texture-only L2
+       mf->set_status(IN_PARTITION_L2_TO_DRAM_QUEUE,
+@@ -2103,6 +2190,27 @@ void memory_sub_partition::end_ep_l2_b0_kernel(FILE *fp,
+ 
+ void memory_sub_partition::print_ep_l2_b0_snapshot(FILE *fp,
+                                                     unsigned long long uid) const {
++  if ((m_config->m_L2_config.m_ep_l2_ideal_wb ||
++       m_config->m_L2_config.m_ep_l2_ideal_meta ||
++       m_config->m_L2_config.m_ep_l2_ideal_read_hit) && uid == (unsigned long long)-1) {
++    fprintf(fp, "EPL2IDEALV1|scope=application|slice=%u|ideal_meta=%u|ideal_read_hit=%u|ideal_wb=%u|"
++                "wb_data_full=%llu|diagnostic_wb_extra_slots=%u|"
++                "reference=BYTE_VERSION_SYMBOLS_WITH_OPTIONAL_KNOWN_VALUES|"
++                "reads_served=%llu|dependency_wait_attempts=%llu|bank_wait_attempts=%llu|"
++                "response_wait_attempts=%llu|known_bytes=%llu|symbolic_bytes=%llu|"
++                "line_mshr_full=%llu|descriptor_full=%llu|per_address_full=%llu|"
++                "reference_responses_live=%zu|reference_arrivals_live=%zu\n",
++            m_id, m_config->m_L2_config.m_ep_l2_ideal_meta,
++            m_config->m_L2_config.m_ep_l2_ideal_read_hit,
++            m_config->m_L2_config.m_ep_l2_ideal_wb,
++            m_L2cache->ideal_wb_data_full(), m_L2cache->ideal_wb_extra_slots(), m_ideal_reads,
++            m_ideal_dependency_wait, m_ideal_bank_wait, m_ideal_response_wait,
++            m_ideal_known_bytes, m_ideal_symbolic_bytes,
++            m_ep_l2_b0_accum.line_mshr_full_block,
++            m_ep_l2_b0_accum.descriptor_pool_full_block,
++            m_ep_l2_b0_accum.per_address_cap_block,
++            m_ideal_responses.size(), m_ideal_arrivals.size());
++  }
+   if (m_config->m_L2_config.ep_l2_m0a_stats_enabled()) {
+     ep_l2_m0a_accum m0 = m_ep_l2_m0a_accum;
+     unsigned long long start_cycle = 0;
+@@ -2289,7 +2397,9 @@ bool memory_sub_partition::l2_char_no_resource_leak() const {
+   return m_request_tracker.empty() && m_icnt_L2_queue->empty() &&
+          m_L2_dram_queue->empty() && m_dram_L2_queue->empty() &&
+          m_L2_icnt_queue->empty() && m_rop.empty() &&
+-         m_l2_block_state.empty() && m_L2cache->l2_char_no_pending_resources() &&
++         m_l2_block_state.empty() && m_ideal_responses.empty() &&
++         m_ideal_known_writes.empty() && m_ideal_arrivals.empty() &&
++         m_L2cache->l2_char_no_pending_resources() &&
+          m_L2cache->ep_l2_resident_pending() == 0 &&
+          m_L2cache->ep_l2_payload_pending_operations() == 0 &&
+          m_L2cache->ep_l2_tag_payload_consistent() && m_L2cache->ft_drained() &&
+@@ -2451,6 +2561,8 @@ void memory_sub_partition::push(mem_fetch *m_req, unsigned long long cycle) {
+     for (unsigned i = 0; i < reqs.size(); ++i) {
+       mem_fetch *req = reqs[i];
+       m_request_tracker.insert(req);
++      if (m_config->m_L2_config.m_ep_l2_ideal_read_hit)
++        assert(m_ideal_arrivals.emplace(req, m_ideal_next_arrival++).second);
+       if (req->istexture()) {
+         m_icnt_L2_queue->push(req);
+         req->set_status(IN_PARTITION_ICNT_TO_L2_QUEUE,
+@@ -2470,7 +2582,15 @@ void memory_sub_partition::push(mem_fetch *m_req, unsigned long long cycle) {
+ mem_fetch *memory_sub_partition::pop() {
+   mem_fetch *mf = m_L2_icnt_queue->pop();
+   m_request_tracker.erase(mf);
+-  if (mf && mf->isatomic()) mf->do_atomic();
++  m_ideal_arrivals.erase(mf);
++  if (mf && mf->isatomic()) {
++    mf->do_atomic();
++    ep_l2_ideal_commit_producer(mf);
++  }
++  if (mf) {
++    m_ideal_responses.erase(mf);
++    m_ideal_arrivals.erase(mf);
++  }
+   if (mf && (mf->get_access_type() == L2_WRBK_ACC ||
+              mf->get_access_type() == L1_WRBK_ACC)) {
+     delete mf;
+@@ -2485,6 +2605,7 @@ mem_fetch *memory_sub_partition::top() {
+              mf->get_access_type() == L1_WRBK_ACC)) {
+     m_L2_icnt_queue->pop();
+     m_request_tracker.erase(mf);
++  m_ideal_arrivals.erase(mf);
+     delete mf;
+     mf = NULL;
+   }
+@@ -2498,6 +2619,7 @@ void memory_sub_partition::set_done(mem_fetch *mf) {
+         mf->get_addr(), m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+   }
+   m_request_tracker.erase(mf);
++  m_ideal_arrivals.erase(mf);
+ }
+ 
+ void memory_sub_partition::accumulate_L2cache_stats(
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 793b4b92..1c890fe6 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -31,6 +31,7 @@
+ 
+ #ifndef MC_PARTITION_INCLUDED
+ #define MC_PARTITION_INCLUDED
++#include "ep-l2-ideal-reference.h"
+ 
+ #include "../abstract_hardware_model.h"
+ #include "dram.h"
+@@ -355,6 +356,20 @@ class memory_sub_partition {
+   void end_ep_l2_b0_kernel(FILE *fp, unsigned long long uid);
+   bool l2_char_no_resource_leak() const;
+ 
++  // Reference bytes/versions are diagnostic state, outside the physical budget.
++  void ep_l2_ideal_seed(uint64_t address, const std::vector<uint8_t> &data) {
++    m_ideal_reference.seed(address, data);
++  }
++  void ep_l2_ideal_known_write(mem_fetch *mf,
++                              const ep_l2_ideal::ReferenceMemory::Data &data) {
++    m_ideal_known_writes[mf] = data;
++  }
++  const std::vector<ep_l2_ideal::Byte> &ep_l2_ideal_response(mem_fetch *mf) const {
++    return m_ideal_responses.at(mf);
++  }
++  unsigned long long ep_l2_ideal_reads_served() const { return m_ideal_reads; }
++  unsigned long long ep_l2_ideal_dependency_waits() const { return m_ideal_dependency_wait; }
++
+   // EP-L2 C3b observation hooks.  They expose production state for directed
+   // regressions and instrumentation only; none participate in admission.
+   unsigned ep_l2_descriptor_count_used() const {
+@@ -429,6 +444,19 @@ class memory_sub_partition {
+   unsigned long long m_ft_unique_requesters = 0, m_ft_response_count = 0, m_ft_absorbed_count = 0;
+ 
+   // data
++  bool ep_l2_ideal_serve_read(mem_fetch *mf, unsigned long long cycle);
++  void ep_l2_ideal_commit_producer(mem_fetch *mf);
++  ep_l2_ideal::ReferenceMemory m_ideal_reference;
++  std::map<mem_fetch *, std::vector<ep_l2_ideal::Byte>> m_ideal_responses;
++  std::map<mem_fetch *, ep_l2_ideal::ReferenceMemory::Data> m_ideal_known_writes;
++  std::map<mem_fetch *, unsigned long long> m_ideal_arrivals;
++  unsigned long long m_ideal_next_arrival = 0;
++  unsigned long long m_ideal_reads = 0;
++  unsigned long long m_ideal_response_wait = 0;
++  unsigned long long m_ideal_bank_wait = 0;
++  unsigned long long m_ideal_dependency_wait = 0;
++  unsigned long long m_ideal_symbolic_bytes = 0;
++  unsigned long long m_ideal_known_bytes = 0;
+   unsigned m_id;  //< the global sub partition ID
+   const memory_config *m_config;
+   class l2_cache *m_L2cache;
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+index 3918fd7f..c6254b75 100644
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -533,6 +533,8 @@ void shader_core_ctx::reinit(unsigned start_thread, unsigned end_thread,
+ void shader_core_ctx::init_warps(unsigned cta_id, unsigned start_thread,
+                                  unsigned end_thread, unsigned ctaid,
+                                  int cta_size, kernel_info_t &kernel) {
++  if (m_config->ep_l2_mem_all_data)
++    m_gpu->all_data_reference().new_shared_epoch(m_sid,cta_id);
+   address_type start_pc = next_pc(start_thread);
+   unsigned kernel_id = kernel.get_uid();
+   if (m_config->model == POST_DOMINATOR) {
+@@ -1051,6 +1053,8 @@ void shader_core_ctx::issue_warp(register_set &pipe_reg_set,
+       m_warp[warp_id]->get_streamID());  // dynamic instruction information
+   m_stats->shader_cycle_distro[2 + (*pipe_reg)->active_count()]++;
+   func_exec_inst(**pipe_reg);
++  if (m_config->ep_l2_mem_all_data && (*pipe_reg)->is_store())
++    m_gpu->all_data_reference().native_store_issue((*pipe_reg)->get_uid(),m_sid,warp_id);
+ 
+   // Add LDGSTS instructions into a buffer
+   unsigned int ldgdepbar_id = m_warp[warp_id]->m_ldgdepbar_id;
+@@ -1077,6 +1081,8 @@ void shader_core_ctx::issue_warp(register_set &pipe_reg_set,
+ 
+   } else if (next_inst->op == MEMORY_BARRIER_OP) {
+     m_warp[warp_id]->set_membar();
++    if (m_config->ep_l2_mem_all_data)
++      m_gpu->all_data_reference().barrier_issue(m_sid,warp_id);
+   } else if (next_inst->m_is_ldgdepbar) {  // Add for LDGDEPBAR
+     m_warp[warp_id]->m_ldgdepbar_id++;
+     // If there are no added LDGSTS, insert an empty vector
+@@ -1331,7 +1337,9 @@ void scheduler_unit::cycle() {
+           warp(warp_id).ibuffer_flush();
+         } else {
+           valid_inst = true;
+-          if (!m_scoreboard->checkCollision(warp_id, pI)) {
++          if (!m_scoreboard->checkCollision(warp_id, pI) &&
++              !(m_shader->m_config->ep_l2_mem_all_data && pI->op==BARRIER_OP &&
++                m_shader->get_gpu()->all_data_reference().warp_stores_pending(m_shader->get_sid(),warp_id))) {
+             SCHED_DPRINTF(
+                 "Warp (warp_id %u, dynamic_warp_id %u) passes scoreboard\n",
+                 (*iter)->get_warp_id(), (*iter)->get_dynamic_warp_id());
+@@ -2675,7 +2683,10 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
+        mem_config, stats, sid, tpc);
+ }
+ 
++#include "ep-l2-all-data-ldst.inc"
++
+ void ldst_unit::issue(register_set &reg_set) {
++  if (m_config->ep_l2_mem_all_data) { all_data_issue(reg_set); return; }
+   warp_inst_t *inst = *(reg_set.get_ready());
+ 
+   // record how many pending register writes/memory accesses there are for this
+@@ -2845,6 +2856,7 @@ inst->space.get_type() != shared_space) { unsigned warp_id = inst->warp_id();
+ }
+ */
+ void ldst_unit::cycle() {
++  if (m_config->ep_l2_mem_all_data) { all_data_cycle(); return; }
+   writeback();
+ 
+   for (unsigned stage = 0; (stage + 1) < m_pipeline_depth; stage++)
+@@ -4056,6 +4068,8 @@ bool shader_core_ctx::warp_waiting_at_barrier(unsigned warp_id) const {
+ 
+ bool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {
+   if (!m_warp[warp_id]->get_membar()) return false;
++  if (m_config->ep_l2_mem_all_data && m_gpu->all_data_reference().barrier_pending(m_sid,warp_id))
++    return true;
+   if (!m_scoreboard->pendingWrites(warp_id)) {
+     m_warp[warp_id]->clear_membar();
+     if (m_gpu->get_config().flush_l1()) {
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+index 7ce04556..45374f94 100644
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -52,6 +52,7 @@
+ #include "delayqueue.h"
+ #include "dram.h"
+ #include "gpu-cache.h"
++#include "ep-l2-all-data-reference.h"
+ #include "mem_fetch.h"
+ #include "scoreboard.h"
+ #include "stack.h"
+@@ -1344,6 +1345,7 @@ class shader_core_mem_fetch_allocator;
+ class cache_t;
+ 
+ class ldst_unit : public pipelined_simd_unit {
++  friend struct ep_l2_all_data_probe;
+  public:
+   ldst_unit(mem_fetch_interface *icnt,
+             shader_core_mem_fetch_allocator *mf_allocator,
+@@ -1390,7 +1392,7 @@ class ldst_unit : public pipelined_simd_unit {
+       default:
+         return false;
+     }
+-    return m_dispatch_reg->empty();
++    return m_config_all_data() || m_dispatch_reg->empty();
+   }
+ 
+   virtual void active_lanes_in_pipeline();
+@@ -1424,6 +1426,18 @@ class ldst_unit : public pipelined_simd_unit {
+             unsigned sid, unsigned tpc);
+ 
+  protected:
++  bool m_config_all_data() const;
++  void all_data_issue(register_set &source);
++  void all_data_cycle();
++  struct all_data_instruction {
++    warp_inst_t inst;
++    std::vector<uint64_t> requests;
++    uint64_t reference_id,issued;
++    unsigned native_requests;
++    all_data_instruction(const warp_inst_t &i):inst(i),reference_id(0),issued(0),native_requests(0) {}
++  };
++  std::map<uint64_t,all_data_instruction> m_all_data;
++
+   bool shared_cycle(warp_inst_t &inst, mem_stage_stall_type &rc_fail,
+                     mem_stage_access_type &fail_type);
+   bool constant_cycle(warp_inst_t &inst, mem_stage_stall_type &rc_fail,
+@@ -1627,6 +1641,7 @@ class shader_core_config : public core_config {
+   // data
+   char *gpgpu_shader_core_pipeline_opt;
+   bool gpgpu_perfect_mem;
++  bool ep_l2_mem_all_data;
+   bool gpgpu_clock_gated_reg_file;
+   bool gpgpu_clock_gated_lanes;
+   enum divergence_support_t model;
+@@ -2068,6 +2083,7 @@ class shader_core_mem_fetch_allocator : public mem_fetch_allocator {
+ };
+ 
+ class shader_core_ctx : public core_t {
++  friend struct ep_l2_all_data_probe;
+  public:
+   // creator:
+   shader_core_ctx(class gpgpu_sim *gpu, class simt_core_cluster *cluster,
+@@ -2128,6 +2144,14 @@ class shader_core_ctx : public core_t {
+   void mem_instruction_stats(const warp_inst_t &inst);
+   void decrement_atomic_count(unsigned wid, unsigned n);
+   void inc_store_req(unsigned warp_id) { m_warp[warp_id]->inc_store_req(); }
++  unsigned reference_cta_id(unsigned warp_id) const { return m_warp[warp_id]->get_cta_id(); }
++  unsigned reference_kernel_id(unsigned warp_id) const {
++    auto kernel=m_warp[warp_id]->get_kernel_info();return kernel?kernel->get_uid():0;
++  }
++  void reference_store_ack(unsigned warp_id) {
++    assert(m_config->ep_l2_mem_all_data);
++    m_warp[warp_id]->dec_store_req();
++  }
+   void dec_inst_in_pipeline(unsigned warp_id) {
+     m_warp[warp_id]->dec_inst_in_pipeline();
+   }  // also used in writeback()
+@@ -2622,6 +2646,7 @@ class exec_shader_core_ctx : public shader_core_ctx {
+ };
+ 
+ class simt_core_cluster {
++  friend struct ep_l2_all_data_probe;
+  public:
+   simt_core_cluster(class gpgpu_sim *gpu, unsigned cluster_id,
+                     const shader_core_config *config,
+diff --git a/tests/ep_l2/all_data_reference.config b/tests/ep_l2/all_data_reference.config
+new file mode 100644
+index 00000000..586d39fe
+--- /dev/null
++++ b/tests/ep_l2/all_data_reference.config
+@@ -0,0 +1,16 @@
++-gpgpu_n_mem 1
++-gpgpu_n_sub_partition_per_mchannel 1
++-gpgpu_memory_partition_indexing 0
++-gpgpu_ep_l2_ft_mode 1
++-gpgpu_ep_l2_wbuf_entries 16
++-gpgpu_ep_l2_ideal_wb 0
++-gpgpu_ep_l2_ideal_meta 0
++-gpgpu_ep_l2_ideal_read_hit 0
++-gpgpu_ep_l2_i_mem_all_data 1
++-gpgpu_perfect_mem 0
++
++# Explicit native FT prerequisites for the standalone directed fixture.
++-gpgpu_ep_l2_payload_mode 2
++-gpgpu_ep_l2_descriptor_pool_size 512
++-gpgpu_ep_l2_descriptor_per_line_cap 32
++-gpgpu_ep_l2_wad_entries 128
+diff --git a/tests/ep_l2/ft_test_fixture.h b/tests/ep_l2/ft_test_fixture.h
+new file mode 100644
+index 00000000..b05752aa
+--- /dev/null
++++ b/tests/ep_l2/ft_test_fixture.h
+@@ -0,0 +1,100 @@
++#ifndef EP_L2_FT_TEST_FIXTURE_H
++#define EP_L2_FT_TEST_FIXTURE_H
++// Production l2_cache access/issue/fill/response tests against symbolic data versions.
++#include <cassert>
++#include <cstdio>
++#include <deque>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/option_parser.h"
++
++struct lower_port : mem_fetch_interface {
++  bool blocked;
++  std::deque<mem_fetch *> packets;
++  lower_port() : blocked(true) {}
++  bool full(unsigned, bool) const override { return blocked; }
++  void push(mem_fetch *mf) override {
++    if (mf->get_access_type() == L2_WRBK_ACC) assert(mf->has_ft_wb_data());
++    packets.push_back(mf);
++  }
++};
++
++struct fixture {
++  gpgpu_context context;
++  gpgpu_sim_config config;
++  exec_gpgpu_sim *gpu;
++  const memory_config *memory;
++  partition_mf_allocator *allocator;
++  l2_cache *cache;
++  lower_port port;
++  unsigned time;
++  fixture(const char *base, const char *overlay, unsigned mode, unsigned c, unsigned sets=1, bool ideal_wb=false, bool ideal_meta=false)
++      : config(&context), gpu(NULL), memory(NULL), allocator(NULL), cache(NULL), time(1) {
++    option_parser_t p = option_parser_create();
++    context.ptx_reg_options(p); context.func_sim->ptx_opcocde_latency_options(p);
++    icnt_reg_options(p); config.reg_options(p);
++    option_parser_cfgfile(p,base); option_parser_cfgfile(p,overlay);
++    std::string mode_s=std::to_string(mode), c_s=std::to_string(c);
++    const char *args[]={"ft-test","-gpgpu_ep_l2_ft_mode",mode_s.c_str(),"-gpgpu_ep_l2_wbuf_entries",c_s.c_str()};
++    option_parser_cmdline(p,5,args);
++    const char *idealargs[]={"ft-test","-gpgpu_ep_l2_ideal_wb",ideal_wb?"1":"0","-gpgpu_ep_l2_ideal_meta",ideal_meta?"1":"0"};
++    option_parser_cmdline(p,5,idealargs);
++    std::string geometry="S:"+std::to_string(sets)+":128:1,L:B:m:L:L,A:128:1,256:0,32";
++    const char *geoargs[]={"ft-test","-gpgpu_cache:dl2",geometry.c_str()};
++    option_parser_cmdline(p,3,geoargs); config.init(); option_parser_destroy(p);
++    gpu = new exec_gpgpu_sim(config,&context); memory = gpu->getMemoryConfig();
++    gpu->gpu_sim_cycle = time;
++    cache_config &cc = const_cast<memory_config *>(memory)->m_L2_config;
++
++    allocator = new partition_mf_allocator(memory);
++    cache = new l2_cache("FT_TEST",cc,0,0,&port,allocator,IN_PARTITION_L2_MISS_QUEUE,gpu,L2_GPU_CACHE);
++  }
++  ~fixture() { delete cache; delete allocator; delete gpu; }
++  mem_fetch *make(new_addr_type a, bool wr, mem_access_type type=GLOBAL_ACC_W) {
++    active_mask_t active; active.set(0);
++    mem_access_byte_mask_t bytes;
++    unsigned sector=(a >> 5)&3;
++    for(unsigned b=sector*32;b<sector*32+32;++b) bytes.set(b);
++    mem_access_sector_mask_t mask;mask.set(sector);
++    return allocator->alloc(a,type,active,bytes,mask,32,wr,time,0,0,0,NULL,0);
++  }
++  void cycle() {
++    // Every direct fill/response/access and cache lower callback must use the
++    // same physical cycle; native fixture time must never run one cycle ahead.
++    assert(gpu->gpu_sim_cycle == time && gpu->gpu_tot_sim_cycle == 0);
++    cache->cycle(); gpu->gpu_sim_cycle = ++time;
++  }
++  bool access(mem_fetch *mf, unsigned limit=32) {
++    for(unsigned n=0;n<limit;++n) {
++      std::list<cache_event> events;
++      auto r=cache->access(mf->get_addr(),mf,time,events); cycle();
++      if(r!=RESERVATION_FAIL) return true;
++    }
++    return false;
++  }
++  ep_l2::PayloadHandle resident() { return cache->ep_l2_tag_payload_handle_for_test(0); }
++  unsigned staged() { return cache->ft_wb_staged(); }
++  unsigned wad() { return cache->ep_l2_wad_occupancy(); }
++  void drain_wb(std::map<new_addr_type,std::array<unsigned long long,4>> &reference) {
++    port.blocked=false;
++    for(unsigned n=0;n<10000 && (staged() || !cache->miss_queue_empty() || !port.packets.empty());++n) {
++      cycle();
++      while(!port.packets.empty()) {
++        mem_fetch *mf=port.packets.front();port.packets.pop_front();
++        assert(mf->get_access_type()==L2_WRBK_ACC);
++        assert(mf->get_ft_wb_data()==reference.at(mf->get_addr()));
++        // Actual lower acceptance has freed staging, while WAD remains live.
++        assert(cache->ep_l2_wad_contains(mf->get_addr()));
++        cache->ep_l2_wad_complete(mf->get_addr(),time);delete mf;
++      }
++    }
++    assert(!staged() && !wad() && cache->miss_queue_empty());
++    assert(cache->ep_l2_payload_for_test().wb_used()==0);
++    assert(cache->ep_l2_payload_pending_operations()==0);
++  }
++};
++
++
++#endif
+diff --git a/tests/ep_l2/ideal_host_prefill_b16.config b/tests/ep_l2/ideal_host_prefill_b16.config
+new file mode 100644
+index 00000000..fd0ce7d4
+--- /dev/null
++++ b/tests/ep_l2/ideal_host_prefill_b16.config
+@@ -0,0 +1,17 @@
++# Production-directed test only. No application metrics or qualification yet.
++-gpgpu_n_mem 1
++-gpgpu_n_sub_partition_per_mchannel 1
++-gpgpu_memory_partition_indexing 0
++-gpgpu_simple_dram_model 1
++-gpgpu_l2_rop_latency 5
++-gpgpu_dram_partition_queues 512:128:64:1
++-gpgpu_cache:dl2 S:1:128:1,L:B:m:L:L,A:128:1,256:0,32
++-gpgpu_ep_l2_descriptor_pool_size 512
++-gpgpu_ep_l2_descriptor_per_line_cap 32
++-gpgpu_ep_l2_wad_entries 128
++-gpgpu_ep_l2_payload_mode 2
++-gpgpu_ep_l2_ft_mode 1
++-gpgpu_ep_l2_wbuf_entries 16
++-gpgpu_ep_l2_ideal_wb 0
++-gpgpu_ep_l2_ideal_meta 0
++-gpgpu_ep_l2_ideal_read_hit 1
+diff --git a/tests/ep_l2/ideal_meta_integrated.config b/tests/ep_l2/ideal_meta_integrated.config
+new file mode 100644
+index 00000000..f2d3552a
+--- /dev/null
++++ b/tests/ep_l2/ideal_meta_integrated.config
+@@ -0,0 +1,15 @@
++# This is a pressure fixture. Extra issue storage isolates metadata capacity;
++# application diagnostic overlays keep the original 128-entry issue queues.
++-gpgpu_n_mem 1
++-gpgpu_n_sub_partition_per_mchannel 1
++-gpgpu_memory_partition_indexing 0
++-gpgpu_simple_dram_model 1
++-gpgpu_l2_rop_latency 0
++-gpgpu_dram_partition_queues 2048:2048:2048:1
++-gpgpu_cache:dl2 S:64:128:16,L:B:m:L:P,A:128:1,2048:0,32
++-gpgpu_ep_l2_descriptor_pool_size 512
++-gpgpu_ep_l2_descriptor_per_line_cap 32
++-gpgpu_ep_l2_payload_mode 2
++-gpgpu_ep_l2_ideal_meta 1
++-gpgpu_l2_char_dram_issue_hold_after_issues 0
++-gpgpu_l2_char_dram_issue_hold_cycles 20000
+diff --git a/tests/ep_l2/ideal_read_hit.config b/tests/ep_l2/ideal_read_hit.config
+new file mode 100644
+index 00000000..05ebea0d
+--- /dev/null
++++ b/tests/ep_l2/ideal_read_hit.config
+@@ -0,0 +1,12 @@
++-gpgpu_n_mem 1
++-gpgpu_n_sub_partition_per_mchannel 1
++-gpgpu_memory_partition_indexing 0
++-gpgpu_simple_dram_model 1
++-gpgpu_l2_rop_latency 5
++-gpgpu_dram_partition_queues 512:128:64:1
++-gpgpu_cache:dl2 S:64:128:16,L:B:m:L:P,A:128:1,128:0,32
++-gpgpu_ep_l2_descriptor_pool_size 512
++-gpgpu_ep_l2_descriptor_per_line_cap 32
++-gpgpu_ep_l2_wad_entries 128
++-gpgpu_ep_l2_payload_mode 2
++-gpgpu_ep_l2_ideal_read_hit 1
+diff --git a/tests/ep_l2/ideal_read_hit_rop160.config b/tests/ep_l2/ideal_read_hit_rop160.config
+new file mode 100644
+index 00000000..bbbb0fa3
+--- /dev/null
++++ b/tests/ep_l2/ideal_read_hit_rop160.config
+@@ -0,0 +1,12 @@
++-gpgpu_n_mem 1
++-gpgpu_n_sub_partition_per_mchannel 1
++-gpgpu_memory_partition_indexing 0
++-gpgpu_simple_dram_model 1
++-gpgpu_l2_rop_latency 160
++-gpgpu_dram_partition_queues 512:128:64:1
++-gpgpu_cache:dl2 S:64:128:16,L:B:m:L:P,A:128:1,128:0,32
++-gpgpu_ep_l2_descriptor_pool_size 512
++-gpgpu_ep_l2_descriptor_per_line_cap 32
++-gpgpu_ep_l2_wad_entries 128
++-gpgpu_ep_l2_payload_mode 2
++-gpgpu_ep_l2_ideal_read_hit 1
+diff --git a/tests/ep_l2/ideal_test_fixture.h b/tests/ep_l2/ideal_test_fixture.h
+new file mode 100644
+index 00000000..66222b3e
+--- /dev/null
++++ b/tests/ep_l2/ideal_test_fixture.h
+@@ -0,0 +1,65 @@
++#ifndef EP_L2_IDEAL_TEST_FIXTURE_H
++#define EP_L2_IDEAL_TEST_FIXTURE_H
++#include <cassert>
++#include <cstdio>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/gpgpu-sim/mem_latency_stat.h"
++#include "../../src/option_parser.h"
++
++struct Fixture {
++  gpgpu_context ctx;
++  gpgpu_sim_config cfg;
++  exec_gpgpu_sim *gpu;
++  memory_stats_t *stats;
++  memory_partition_unit *part;
++  memory_sub_partition *sp;
++  partition_mf_allocator *alloc;
++  Fixture(const char *base, const char *overlay) : cfg(&ctx) {
++    auto opt = option_parser_create();
++    ctx.ptx_reg_options(opt); ctx.func_sim->ptx_opcocde_latency_options(opt);
++    icnt_reg_options(opt); cfg.reg_options(opt);
++    option_parser_cfgfile(opt, base); option_parser_cfgfile(opt, overlay);
++    cfg.init(); option_parser_destroy(opt);
++    gpu = new exec_gpgpu_sim(cfg, &ctx);
++    const auto mc = gpu->getMemoryConfig();
++    stats = new memory_stats_t(cfg.num_shader(), gpu->getShaderCoreConfig(), mc, gpu);
++    part = new memory_partition_unit(0, mc, stats, gpu);
++    sp = part->get_sub_partition(0);
++    alloc = new partition_mf_allocator(mc);
++  }
++  ~Fixture() { delete alloc; delete part; delete stats; delete gpu; }
++  mem_fetch *make(uint64_t address, bool write = false, unsigned bytes_count = 32) {
++    active_mask_t active; active.set(0);
++    mem_access_byte_mask_t bytes;
++    for (unsigned b = address % 128; b < address % 128 + bytes_count; ++b) bytes.set(b);
++    mem_access_sector_mask_t sectors; sectors.set((address / 32) % 4);
++    return alloc->alloc(address, write ? GLOBAL_ACC_W : GLOBAL_ACC_R,
++        active, bytes, sectors, 32, write, gpu->gpu_sim_cycle, 0, 0, 0, nullptr, 0);
++  }
++  void push(mem_fetch *mf) { sp->push(mf, gpu->gpu_sim_cycle); }
++  void cycle() {
++    part->cache_cycle(gpu->gpu_sim_cycle);
++    part->simple_dram_model_cycle(); ++gpu->gpu_sim_cycle;
++  }
++  void until_reply() {
++    for (unsigned i = 0; i < 10000 && !sp->ep_l2_l2icnt_occupancy(); ++i) cycle();
++    assert(sp->ep_l2_l2icnt_occupancy() == 1);
++  }
++  std::vector<ep_l2_ideal::Byte> read_response(mem_fetch *expected) {
++    until_reply(); assert(sp->top() == expected);
++    auto value = sp->ep_l2_ideal_response(expected);
++    assert(sp->pop() == expected); delete expected; return value;
++  }
++  void drain() {
++    for (unsigned i = 0; i < 10000 && part->busy(); ++i) {
++      cycle(); while (auto mf = sp->pop()) delete mf;
++    }
++    assert(!part->busy()); assert(sp->l2_char_no_resource_leak());
++  }
++};
++
++
++#endif
+diff --git a/tests/ep_l2/run_ideal_meta.sh b/tests/ep_l2/run_ideal_meta.sh
+new file mode 100644
+index 00000000..a29e1da3
+--- /dev/null
++++ b/tests/ep_l2/run_ideal_meta.sh
+@@ -0,0 +1,10 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
++out=${LANE4_TEST_BUILD:?set an isolated LANE4_TEST_BUILD directory}
++mkdir -p "$out"
++${CXX:-g++} -std=c++17 -O2 -ffunction-sections -fdata-sections \
++  -I"${CUDA_INSTALL_PATH:-/usr/local/cuda-11.8}/include" -I"$root/src" -I"$root" \
++  "$root/tests/ep_l2/test_ideal_meta.cc" "$root/src/gpgpu-sim/gpu-cache.cc" \
++  -Wl,--gc-sections -o "$out/test_ideal_meta"
++"$out/test_ideal_meta"
+diff --git a/tests/ep_l2/test_all_data_ldst.cc b/tests/ep_l2/test_all_data_ldst.cc
+new file mode 100644
+index 00000000..72b57a1d
+--- /dev/null
++++ b/tests/ep_l2/test_all_data_ldst.cc
+@@ -0,0 +1,93 @@
++#include "ideal_test_fixture.h"
++#include <cstring>
++#include "../../src/gpgpu-sim/scoreboard.h"
++
++// Friend fixture exposes existing production objects, not alternate callbacks.
++struct ep_l2_all_data_probe {
++  static shader_core_ctx *core(gpgpu_sim &gpu) {return gpu.m_cluster[0]->m_core[0];}
++  static void prepare(shader_core_ctx &c) {
++    active_mask_t active;active.set(0);
++    c.m_warp[0]->reset();c.m_warp[0]->init(0,0,0,active,0,0);
++    c.get_gpu()->all_data_reference().new_shared_epoch(c.get_sid(),0);
++  }
++  static void issue(shader_core_ctx &c,memory_space_t space,bool store,unsigned reg,uint64_t address,bool barrier=false,unsigned unsupported=0) {
++    auto *inst=new warp_inst_t(c.get_config());
++    inst->op=store?STORE_OP:LOAD_OP;inst->memory_op=store?memory_store:memory_load;
++    inst->space=space;inst->data_size=4;inst->cache_op=CACHE_ALL;
++    inst->m_is_ldgsts=unsupported==1;
++    if (unsupported==2) inst->add_callback(0,nullptr,nullptr,nullptr,true);
++    if (barrier) {inst->op=MEMORY_BARRIER_OP;inst->memory_op=no_memory_op;}
++    for (unsigned r=0;r<MAX_OUTPUT_VALUES;++r)inst->out[r]=0;
++    for (unsigned r=0;r<MAX_REG_OPERANDS;++r)inst->arch_reg.dst[r]=-1;
++    if (!store && !barrier) {inst->out[0]=reg;inst->arch_reg.dst[0]=reg;}
++    active_mask_t active;active.set(0);
++    inst->issue(active,0,c.get_gpu()->gpu_sim_cycle+c.get_gpu()->gpu_tot_sim_cycle,0,0,0);inst->set_addr(0,address);inst->generate_mem_accesses();
++    if (store) c.get_gpu()->all_data_reference().native_store_issue(inst->get_uid(),c.get_sid(),0);
++    c.m_warp[0]->inc_inst_in_pipeline();if (!store)c.m_scoreboard->reserveRegisters(inst);
++    if (barrier) {
++      c.m_warp[0]->set_membar();c.get_gpu()->all_data_reference().barrier_issue(c.get_sid(),0);
++      assert(c.warp_waiting_at_mem_barrier(0)); // Native scoreboard is empty here.
++    }
++    register_set source(1,"all_data_probe");source.move_in(inst);delete inst;
++    assert(c.m_ldst_unit->can_issue(**source.get_ready()));c.m_ldst_unit->issue(source);
++    assert(!source.has_ready());
++  }
++  static void cycle(shader_core_ctx &c,uint64_t now) {
++    c.get_gpu()->gpu_sim_cycle=now;
++    c.m_operand_collector.step();c.m_ldst_unit->cycle();
++  }
++  static bool pending(shader_core_ctx &c) {return c.m_scoreboard->pendingWrites(0);}
++  static bool stores_done(shader_core_ctx &c) {return c.m_warp[0]->stores_done();}
++  static unsigned in_pipeline(shader_core_ctx &c) {return c.m_warp[0]->num_inst_in_pipeline();}
++};
++
++int main(int argc,char **argv) {
++  assert(argc==3 || argc==4);Fixture f(argv[1],argv[2]);auto *c=ep_l2_all_data_probe::core(*f.gpu);
++  if (argc==4 && std::strcmp(argv[3],"--offset4096")==0) f.gpu->gpu_tot_sim_cycle=4096;
++  ep_l2_all_data_probe::prepare(*c);auto &s=f.gpu->all_data_reference();
++  if (argc==4 && std::strcmp(argv[3],"--unsupported")==0) {ep_l2_all_data_probe::issue(*c,global_space,false,1,0x1000,false,true);assert(false);}
++  if (argc==4 && std::strcmp(argv[3],"--atomic")==0) {ep_l2_all_data_probe::issue(*c,global_space,false,1,0x1000,false,2);assert(false);}
++  ep_l2_all_data_probe::issue(*c,global_space,false,1,0x100004000ULL);
++  assert(ep_l2_all_data_probe::pending(*c) && s.requests_ready==0);
++  assert(s.inspect(1).eligible==f.gpu->gpu_tot_sim_cycle && s.inspect(1).ready==f.gpu->gpu_tot_sim_cycle+1);
++  ep_l2_all_data_probe::cycle(*c,0);assert(ep_l2_all_data_probe::pending(*c));
++  ep_l2_all_data_probe::cycle(*c,1);assert(!ep_l2_all_data_probe::pending(*c));
++  assert(s.drained() && f.gpu->gpu_sim_insn==1);
++  ep_l2_all_data_probe::issue(*c,global_space,true,0,0x100004000ULL);
++  assert(!ep_l2_all_data_probe::stores_done(*c));
++  assert(s.warp_stores_pending(c->get_sid(),0));
++  ep_l2_all_data_probe::cycle(*c,2);
++  assert(ep_l2_all_data_probe::stores_done(*c) && s.store_reference_commits==1);
++  assert(!s.warp_stores_pending(c->get_sid(),0));
++  for (auto space:{local_space,shared_space,const_space,tex_space,param_space_kernel,param_space_local}) {
++    const uint64_t address=0xc4; //64B-block offset within a128B reference line.
++    const uint64_t domain=space==shared_space?s.shared_domain(c->get_sid(),0):0;
++    s.seed(domain,address,std::vector<uint8_t>(4,71));
++    ep_l2_all_data_probe::issue(*c,space,false,1,address);
++    const auto value=s.inspect(s.requests_issued).snapshot;
++    assert(value.size()==4);
++    for (unsigned b=0;b<4;++b)assert(value[b].address==address+b && value[b].value_known && value[b].value==71);
++    ep_l2_all_data_probe::cycle(*c,f.gpu->gpu_sim_cycle+1);
++    assert(s.drained() && !ep_l2_all_data_probe::pending(*c));
++  }
++  // Every response is ready at+1; a real SM register-bank conflict may consume
++  // later. It is measured separately, without a memory FIFO or return quota.
++  const auto before_ready=s.requests_ready;
++  ep_l2_all_data_probe::issue(*c,global_space,false,1,0x2000);
++  ep_l2_all_data_probe::issue(*c,global_space,false,17,0x3000);
++  ep_l2_all_data_probe::cycle(*c,f.gpu->gpu_sim_cycle+1);
++  assert(s.requests_ready==before_ready+2);
++  for (unsigned n=0;n<8 && !s.drained();++n)ep_l2_all_data_probe::cycle(*c,f.gpu->gpu_sim_cycle+1);
++  assert(s.drained() && ep_l2_all_data_probe::in_pipeline(*c)==0);
++  assert(s.instruction_count==s.instructions_consumed && s.requests_ready==s.requests_consumed);
++  assert(s.store_instructions==s.store_reference_commits);
++  assert(s.sm_register_wait_attempts>0 && s.consume_delay_cycles>0);
++  ep_l2_all_data_probe::issue(*c,global_space,true,0,0x4000);
++  ep_l2_all_data_probe::issue(*c,undefined_space,false,0,0,true);
++  assert(c->warp_waiting_at_mem_barrier(0));
++  ep_l2_all_data_probe::cycle(*c,f.gpu->gpu_sim_cycle+1);
++  assert(!c->warp_waiting_at_mem_barrier(0) && s.drained() && s.barrier_instructions==1);
++  assert(s.issued_instruction_digest==s.consumed_instruction_digest);
++  assert(s.ready_snapshot_digest==s.consumed_snapshot_digest && s.snapshot_bytes_ready==s.snapshot_bytes_consumed);
++  s.print(stdout);std::puts("ALL_DATA_NATIVE_LDST_SPACES_PENDING_REGISTER_STORE_COMPLETION PASS");
++}
+diff --git a/tests/ep_l2/test_all_data_reference.cc b/tests/ep_l2/test_all_data_reference.cc
+new file mode 100644
+index 00000000..e749799d
+--- /dev/null
++++ b/tests/ep_l2/test_all_data_reference.cc
+@@ -0,0 +1,76 @@
++#include <cassert>
++#include <cstdio>
++#include <cstring>
++#include "../../src/gpgpu-sim/ep-l2-all-data-reference.h"
++using Service=ep_l2_all_data::Service;
++static Service::Mask mask(unsigned from,unsigned count) {
++  Service::Mask m{};for (unsigned b=from;b<from+count;++b)m[b]=true;return m;
++}
++int main(int argc,char **argv) {
++  if (argc==2 && std::strcmp(argv[1],"--duplicate-access")==0) {
++    Service s;auto a=s.begin(1,1,false,11),b=s.begin(2,1,false,11);
++    s.issue(a,0,0,mask(0,4),0,nullptr,123);s.issue(b,0,128,mask(0,4),0,nullptr,123);assert(false);
++  }
++  if (argc==2) {Service s;s.begin(1,0,false,11);s.begin(1,0,false,11);assert(false);}
++  (void)argv;
++  {
++    Service s;Service::Data first{},second{};first.fill(11);second.fill(22);
++    auto w=s.begin(1,1,true,11);auto write=s.issue(w,0,0x1000,mask(0,4),0,&first);
++    s.annotate(w,1,0x100,4,0,0,7);
++    auto r=s.begin(2,1,false,11);auto read=s.issue(r,0,0x1000,mask(0,8),0);
++    s.annotate(r,1,0x200,4,1,3,9); // Same producer address, another SM/warp.
++    auto free=s.begin(3,1,false,11);auto independent=s.issue(free,0,0x1000,mask(32,4),0);
++    auto younger=s.begin(4,1,true,11);auto overwrite=s.issue(younger,0,0x1000,mask(0,4),0,&second);
++    assert(!s.inspect(read).eligible_valid && s.inspect(independent).ready==1);
++    assert(!s.host_prefill(0x1000,128));
++    s.advance(1);assert(s.ready(write) && s.ready(independent));
++    assert(s.inspect(read).eligible==1 && s.inspect(read).ready==2);
++    assert(s.inspect(overwrite).eligible==1 && s.inspect(overwrite).ready==2);
++    auto snapshot=s.inspect(read).snapshot;
++    s.consume(write,1);s.finish(w);s.consume(independent,1);s.finish(free);
++    s.advance(2);assert(s.ready(read) && s.ready(overwrite));
++    assert(snapshot==s.inspect(read).snapshot);
++    auto value=s.consume(read,2);s.finish(r);s.consume(overwrite,2);s.finish(younger);
++    for (unsigned b=0;b<8;++b) {
++      if (b<4)assert(value[b].value_known && value[b].value==11 && value[b].version>0);
++      else assert(!value[b].value_known && value[b].version==0);
++    }
++    assert(s.store_reference_commits==2 && s.drained());
++    assert(s.host_prefill(0x1001,2));
++    auto n=s.begin(5,1,false,11);auto rr=s.issue(n,0,0x1000,mask(0,4),2);
++    s.advance(3);auto v=s.consume(rr,3);s.finish(n);
++    assert(v[0].value_known && v[0].value==22);
++    assert(!v[1].value_known && !v[2].value_known);
++    assert(v[1].version==0 && v[2].version==0);
++    assert(v[3].value_known && v[3].value==22);
++    auto later=s.begin(6,1,true,11);auto ww=s.issue(later,0,0x1000,mask(1,1),3,&first);
++    s.advance(4);s.consume(ww,4);s.finish(later);
++    auto after=s.begin(7,1,false,11);auto ar=s.issue(after,0,0x1000,mask(0,4),4);
++    s.advance(5);auto av=s.consume(ar,5);s.finish(after);
++    assert(av[1].value_known && av[1].value==11 && av[1].version>v[0].version);
++    assert(av[0]==v[0] && av[2]==v[2] && av[3]==v[3]);
++    assert(s.store_reference_commits==3 && s.drained());
++    s.print(stdout);
++  }
++  {
++    // More simultaneous responses than every native response FIFO and quota.
++    Service s;auto instruction=s.begin(100,1024,false,11);std::vector<uint64_t> ids;
++    for (unsigned i=0;i<1024;++i) ids.push_back(s.issue(instruction,0,0x100000+i*128,mask(0,32),0));
++    s.advance(1);
++    assert(s.requests_ready==1024);
++    for (auto id:ids) {assert(s.inspect(id).ready==s.inspect(id).eligible+1);s.consume(id,1);}
++    s.finish(instruction);assert(s.drained() && s.requests_consumed==1024);s.print(stdout);
++  }
++  {
++    Service s;auto a=s.new_shared_epoch(0,0),b=s.new_shared_epoch(1,0);
++    Service::Data data{};data.fill(99);auto i=s.begin(1,1,true,3);auto w=s.issue(i,a,0,mask(0,4),0,&data);
++    s.advance(1);s.consume(w,1);s.finish(i);
++    auto j=s.begin(2,1,false,3);auto r=s.issue(j,b,0,mask(0,4),1);
++    s.advance(2);for (auto v:s.consume(r,2)) assert(v.version==0 && !v.value_known);s.finish(j);
++    auto c=s.new_shared_epoch(0,0);assert(c!=a);
++    auto k=s.begin(3,1,false,3);auto fresh=s.issue(k,c,0,mask(0,4),2);
++    s.advance(3);for (auto v:s.consume(fresh,3)) assert(v.version==0 && !v.value_known);s.finish(k);
++    assert(s.drained());
++  }
++  std::puts("ALL_DATA_REFERENCE_RAW_WAR_MASK_HOST_CLOCK_BURST_SHARED_SCOPE PASS");
++}
+diff --git a/tests/ep_l2/test_ft_wbuf.cc b/tests/ep_l2/test_ft_wbuf.cc
+index aa9f2c3a..8474a291 100644
+--- a/tests/ep_l2/test_ft_wbuf.cc
++++ b/tests/ep_l2/test_ft_wbuf.cc
+@@ -1,96 +1,4 @@
+-// Production l2_cache access/issue/fill/response tests against symbolic data versions.
+-#include <cassert>
+-#include <cstdio>
+-#include <deque>
+-#include "../../libcuda/gpgpu_context.h"
+-#include "../../src/gpgpu-sim/gpu-sim.h"
+-#include "../../src/gpgpu-sim/icnt_wrapper.h"
+-#include "../../src/gpgpu-sim/l2cache.h"
+-#include "../../src/option_parser.h"
+-
+-struct lower_port : mem_fetch_interface {
+-  bool blocked;
+-  std::deque<mem_fetch *> packets;
+-  lower_port() : blocked(true) {}
+-  bool full(unsigned, bool) const override { return blocked; }
+-  void push(mem_fetch *mf) override {
+-    if (mf->get_access_type() == L2_WRBK_ACC) assert(mf->has_ft_wb_data());
+-    packets.push_back(mf);
+-  }
+-};
+-
+-struct fixture {
+-  gpgpu_context context;
+-  gpgpu_sim_config config;
+-  exec_gpgpu_sim *gpu;
+-  const memory_config *memory;
+-  partition_mf_allocator *allocator;
+-  l2_cache *cache;
+-  lower_port port;
+-  unsigned time;
+-  fixture(const char *base, const char *overlay, unsigned mode, unsigned c, unsigned sets=1)
+-      : config(&context), gpu(NULL), memory(NULL), allocator(NULL), cache(NULL), time(1) {
+-    option_parser_t p = option_parser_create();
+-    context.ptx_reg_options(p); context.func_sim->ptx_opcocde_latency_options(p);
+-    icnt_reg_options(p); config.reg_options(p);
+-    option_parser_cfgfile(p,base); option_parser_cfgfile(p,overlay);
+-    std::string mode_s=std::to_string(mode), c_s=std::to_string(c);
+-    const char *args[]={"ft-test","-gpgpu_ep_l2_ft_mode",mode_s.c_str(),"-gpgpu_ep_l2_wbuf_entries",c_s.c_str()};
+-    option_parser_cmdline(p,5,args);
+-    std::string geometry="S:"+std::to_string(sets)+":128:1,L:B:m:L:L,A:128:1,256:0,32";
+-    const char *geoargs[]={"ft-test","-gpgpu_cache:dl2",geometry.c_str()};
+-    option_parser_cmdline(p,3,geoargs); config.init(); option_parser_destroy(p);
+-    gpu = new exec_gpgpu_sim(config,&context); memory = gpu->getMemoryConfig();
+-    gpu->gpu_sim_cycle = time;
+-    cache_config &cc = const_cast<memory_config *>(memory)->m_L2_config;
+-
+-    allocator = new partition_mf_allocator(memory);
+-    cache = new l2_cache("FT_TEST",cc,0,0,&port,allocator,IN_PARTITION_L2_MISS_QUEUE,gpu,L2_GPU_CACHE);
+-  }
+-  ~fixture() { delete cache; delete allocator; delete gpu; }
+-  mem_fetch *make(new_addr_type a, bool wr, mem_access_type type=GLOBAL_ACC_W) {
+-    active_mask_t active; active.set(0);
+-    mem_access_byte_mask_t bytes;
+-    unsigned sector=(a >> 5)&3;
+-    for(unsigned b=sector*32;b<sector*32+32;++b) bytes.set(b);
+-    mem_access_sector_mask_t mask;mask.set(sector);
+-    return allocator->alloc(a,type,active,bytes,mask,32,wr,time,0,0,0,NULL,0);
+-  }
+-  void cycle() {
+-    // Every direct fill/response/access and cache lower callback must use the
+-    // same physical cycle; native fixture time must never run one cycle ahead.
+-    assert(gpu->gpu_sim_cycle == time && gpu->gpu_tot_sim_cycle == 0);
+-    cache->cycle(); gpu->gpu_sim_cycle = ++time;
+-  }
+-  bool access(mem_fetch *mf, unsigned limit=32) {
+-    for(unsigned n=0;n<limit;++n) {
+-      std::list<cache_event> events;
+-      auto r=cache->access(mf->get_addr(),mf,time,events); cycle();
+-      if(r!=RESERVATION_FAIL) return true;
+-    }
+-    return false;
+-  }
+-  ep_l2::PayloadHandle resident() { return cache->ep_l2_tag_payload_handle_for_test(0); }
+-  unsigned staged() { return cache->ft_wb_staged(); }
+-  unsigned wad() { return cache->ep_l2_wad_occupancy(); }
+-  void drain_wb(std::map<new_addr_type,std::array<unsigned long long,4>> &reference) {
+-    port.blocked=false;
+-    for(unsigned n=0;n<10000 && (staged() || !cache->miss_queue_empty() || !port.packets.empty());++n) {
+-      cycle();
+-      while(!port.packets.empty()) {
+-        mem_fetch *mf=port.packets.front();port.packets.pop_front();
+-        assert(mf->get_access_type()==L2_WRBK_ACC);
+-        assert(mf->get_ft_wb_data()==reference.at(mf->get_addr()));
+-        // Actual lower acceptance has freed staging, while WAD remains live.
+-        assert(cache->ep_l2_wad_contains(mf->get_addr()));
+-        cache->ep_l2_wad_complete(mf->get_addr(),time);delete mf;
+-      }
+-    }
+-    assert(!staged() && !wad() && cache->miss_queue_empty());
+-    assert(cache->ep_l2_payload_for_test().wb_used()==0);
+-    assert(cache->ep_l2_payload_pending_operations()==0);
+-  }
+-};
++#include "ft_test_fixture.h"
+ 
+ static void capacity_and_versions(const char *base,const char *overlay,unsigned mode,unsigned c) {
+   fixture f(base,overlay,mode,c);
+diff --git a/tests/ep_l2/test_ideal_host_prefill_partition.cc b/tests/ep_l2/test_ideal_host_prefill_partition.cc
+new file mode 100644
+index 00000000..6df7470f
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_host_prefill_partition.cc
+@@ -0,0 +1,64 @@
++// Production regression source; NOT_RUN until exact R1.1 libraries/admission.
++#include "ideal_test_fixture.h"
++
++static mem_access_sector_mask_t sector(unsigned s) {
++  mem_access_sector_mask_t m; m.set(s); return m;
++}
++
++static bool warm(Fixture &f, uint64_t address, unsigned s) {
++  unsigned long long grants[4];
++  for (unsigned b=0;b<4;++b) grants[b]=f.sp->ft_bank_grants_for_test(b);
++  const unsigned offset=f.sp->ft_memcpy_offset_for_test();
++  bool accepted=f.sp->ft_try_force_l2_tag_update(address,
++      f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle,sector(s));
++  for (unsigned b=0;b<4;++b) assert(grants[b]==f.sp->ft_bank_grants_for_test(b));
++  assert(f.sp->ft_memcpy_offset_for_test()==offset+unsigned(accepted));
++  return accepted;
++}
++
++static void unknown(const std::vector<ep_l2_ideal::Byte> &value) {
++  assert(value.size()==32);
++  for (auto b:value) assert(b.version==0 && !b.value_known);
++}
++
++static std::vector<ep_l2_ideal::Byte> read(Fixture &f,uint64_t address) {
++  auto r=f.make(address);f.push(r);auto value=f.read_response(r);f.drain();return value;
++}
++
++int main(int argc,char **argv) {
++  assert(argc==3);Fixture f(argv[1],argv[2]);
++  const uint64_t a=0x100004000ULL, conflict=a+0x1000;
++  f.sp->ep_l2_ideal_seed(a+64,std::vector<uint8_t>(32,17));
++  assert(warm(f,a,0));assert(warm(f,a+32,1));
++  unknown(read(f,a));unknown(read(f,a+32));
++  auto w=f.make(a,true);ep_l2_ideal::ReferenceMemory::Data data{};data.fill(91);
++  f.sp->ep_l2_ideal_known_write(w,data);f.push(w);
++  f.until_reply();assert(f.sp->top()==w);assert(f.sp->pop()==w);delete w;f.drain();
++  auto produced=read(f,a);
++  for (auto b:produced) assert(b.version>0 && b.value_known && b.value==91);
++  // Dirty refusal is before reference mutation; old GPU producer remains visible.
++  assert(!warm(f,a,0));assert(read(f,a)==produced);
++  // An ordinary allocation read bypasses only the ideal read-service entry.
++  // It really evicts dirty A, performs WB/set_done and fills a clean victim.
++  active_mask_t active;active.set(0);mem_access_byte_mask_t bytes;
++  for (unsigned b=0;b<32;++b) bytes.set(b);
++  auto native=f.alloc->alloc(conflict,L1_WR_ALLOC_R,active,bytes,sector(0),32,false,
++      f.gpu->gpu_sim_cycle,0,0,0,nullptr,0);
++  f.push(native);f.until_reply();assert(f.sp->top()==native);
++  assert(f.sp->pop()==native);delete native;f.drain();
++  assert(f.sp->ft_cache_for_test()->ft_copy_lines()==1);
++  assert(f.sp->ft_cache_for_test()->ft_lower_accepts()==1);
++  // Later clean/quiescent prefill is allowed, even after a completed producer.
++  assert(warm(f,a+32,1));assert(read(f,a)==produced);
++  assert(warm(f,a,0));unknown(read(f,a));unknown(read(f,a+32));
++  assert(warm(f,a,0));unknown(read(f,a));
++  // A held real response blocks prefill and preserves its snapshot.
++  auto held=f.make(a);f.push(held);f.until_reply();
++  const auto snapshot=f.sp->ep_l2_ideal_response(held);
++  assert(!warm(f,a,0));assert(snapshot==f.sp->ep_l2_ideal_response(held));
++  assert(f.sp->pop()==held);delete held;f.drain();assert(warm(f,a,0));
++  // Unselected byte/sector state is not globally reset by host initialization.
++  auto untouched=read(f,a+64);
++  for (auto b:untouched) assert(b.version==0 && b.value_known && b.value==17);
++  f.drain();std::puts("IDEAL_HOST_PREFILL_REAL_GPU_WRITE_WB_REINIT_REFUSAL_RESPONSE PASS");
++}
+diff --git a/tests/ep_l2/test_ideal_host_prefill_reference.cc b/tests/ep_l2/test_ideal_host_prefill_reference.cc
+new file mode 100644
+index 00000000..7ec7c85d
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_host_prefill_reference.cc
+@@ -0,0 +1,44 @@
++// Header-only regression source; execution requires approved build admission.
++#include <cassert>
++#include <cstdio>
++#include "../../src/gpgpu-sim/ep-l2-ideal-reference.h"
++
++int main() {
++  using ep_l2_ideal::ReferenceMemory;
++  ReferenceMemory memory;
++  const uint64_t line = 0x100004000ULL;
++  ReferenceMemory::Mask all{}, selected{}, other{};
++  all.fill(true);
++  for (unsigned b = 32; b < 64; ++b) selected[b] = true;
++  for (unsigned b = 0; b < 32; ++b) other[b] = true;
++  ReferenceMemory::Data data{}; data.fill(91);
++  memory.seed(line, std::vector<uint8_t>(128, 17));
++  memory.write(line, all, &data);
++  auto before = memory.read(line, all);
++  assert(before[0].version > 0);
++  memory.host_prefill(line, selected);
++  auto after = memory.read(line, all);
++  for (unsigned b = 0; b < 128; ++b) {
++    if (selected[b]) {
++      // Replacement host bytes are unknown symbols, never fabricated zero data.
++      assert(after[b].version == 0 && !after[b].value_known);
++    } else assert(after[b] == before[b]);
++  }
++  // Snapshots already handed to responses remain immutable value copies.
++  assert(before[32].version > 0 && before[32].value_known && before[32].value == 91);
++  memory.host_prefill(line, selected);
++  assert(memory.read(line, all) == after);
++  memory.write(line, other);
++  auto next = memory.read(line, all);
++  assert(next[0].version > before[0].version && !next[0].value_known);
++  assert(next[32].version == 0 && !next[32].value_known);
++  // No truncation or reference aliasing of addresses above 4GiB.
++  memory.seed(line & 0xffffffffULL, std::vector<uint8_t>(128, 7));
++  memory.host_prefill(line, other);
++  for (auto b : memory.read(line & 0xffffffffULL, all))
++    assert(b.value_known && b.value == 7);
++  ReferenceMemory fresh;
++  fresh.host_prefill(line, selected);
++  for (auto b : fresh.read(line, selected)) assert(b.version == 0 && !b.value_known);
++  std::puts("IDEAL_HOST_PREFILL_REFERENCE_SECTOR_SNAPSHOT_MONOTONIC_ADDRESS PASS");
++}
+diff --git a/tests/ep_l2/test_ideal_meta.cc b/tests/ep_l2/test_ideal_meta.cc
+new file mode 100644
+index 00000000..574a4ea0
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_meta.cc
+@@ -0,0 +1,64 @@
++#include <cassert>
++#include <cstdint>
++#include <cstdio>
++#include "ft_test_fixture.h"
++static fixture *request_fixture=nullptr;
++static std::vector<mem_fetch *> requests;
++
++static mem_fetch *token(unsigned i) {
++  while (requests.size()<=i) requests.push_back(request_fixture->make(0x1000+requests.size()*32,false,GLOBAL_ACC_R));
++  return requests[i];
++}
++static mem_access_sector_mask_t sector(unsigned i) {
++  mem_access_sector_mask_t s; s.set(i); return s;
++}
++int main(int argc,char **argv) {
++  assert(argc==3);fixture native(argv[1],argv[2],1,16);request_fixture=&native;
++  // The ordinary OFF allocator still refuses at the independent limits.
++  mshr_table off(2, 1, 4, 2, false);
++  off.add_for_test(0x1000, token(0), sector(0));
++  off.add_for_test(0x1000, token(1), sector(0));
++  assert(off.full_reason(0x1000) == mshr_table::EP_L2_BLOCK_PER_ADDRESS_CAP);
++  off.add_for_test(0x2000, token(2), sector(0));
++  assert(off.full_reason(0x3000) == mshr_table::EP_L2_BLOCK_LINE_MSHR_FULL);
++
++  // Cross the original pool, line, and same-address limits many times. No
++  // guessed large capacity is substituted: real descriptor storage grows.
++  for (unsigned count : {1024u, 2048u}) {
++    mshr_table ideal(2, 1, 4, 2, true);
++    for (unsigned i = 0; i < count; ++i) {
++      const new_addr_type line = i < count / 2 ? 0x4000 : 0x8000 + i * 128;
++      assert(ideal.full_reason(line) == mshr_table::EP_L2_BLOCK_NONE);
++      ideal.add_for_test(line, token(i), sector(i % 4));
++    }
++    assert(ideal.descriptor_count_used() == count);
++    assert(ideal.descriptor_pool_capacity() >= count);
++    assert(ideal.num_entries_used() == 1 + count / 2);
++    bool atomic = false;
++    // Partial fill only releases the matching sectors. A response remains
++    // owned until commit; repeated peek is non-destructive.
++    ideal.mark_ready(0x4000, atomic, sector(0));
++    assert(!atomic);
++    assert(ideal.num_response_ready_targets() == count / 8);
++    assert(ideal.peek_next_access() == ideal.peek_next_access());
++    assert(ideal.descriptor_count_used() == count);
++    for (unsigned s = 1; s < 4; ++s) ideal.mark_ready(0x4000, atomic, sector(s));
++    for (unsigned i = count / 2; i < count; ++i)
++      ideal.mark_ready(0x8000 + i * 128, atomic, sector(i % 4));
++    std::set<mem_fetch *> responded;
++    while (ideal.access_ready()) {
++      assert(responded.insert(ideal.peek_next_access()).second);
++      ideal.commit_next_access();
++    }
++    assert(responded.size() == count);
++    assert(ideal.descriptor_count_used() == 0 && ideal.num_entries_used() == 0);
++    // Reuse all dynamic IDs after drain.
++    ideal.add_for_test(0x100000, token(count + 1), sector(3));
++    ideal.mark_ready(0x100000, atomic, sector(3));
++    assert(ideal.peek_next_access() == token(count + 1));
++    ideal.commit_next_access();
++    assert(ideal.descriptor_count_used() == 0);
++  }
++  for (auto request:requests) delete request;requests.clear();
++  std::puts("Lane4 I_META allocator/sector/response/doubling tests: PASS");
++}
+diff --git a/tests/ep_l2/test_ideal_meta_integrated.cc b/tests/ep_l2/test_ideal_meta_integrated.cc
+new file mode 100644
+index 00000000..0f372d53
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_meta_integrated.cc
+@@ -0,0 +1,41 @@
++#include "ideal_test_fixture.h"
++#include <set>
++
++int main(int argc, char **argv) {
++  assert(argc == 3);
++  Fixture f(argv[1],argv[2]);
++  std::set<mem_fetch *> expected;
++  // 200 lines x 4 sectors x 2 independent requesters exceed both original
++  // Line-MSHR128 and descriptor512 while preserving real sector lower reads.
++  for (unsigned line=0; line<200; ++line) for (unsigned s=0;s<4;++s)
++    for (unsigned copy=0;copy<2;++copy) {
++      auto mf=f.make(0x100000+line*128+s*32);expected.insert(mf);f.push(mf);
++    }
++  for(unsigned n=0;n<40;++n) {
++    auto mf=f.make(0x100000);expected.insert(mf);f.push(mf);
++  }
++  unsigned peak_lines=0,peak_descriptors=0;
++  for(unsigned i=0;i<12000;++i) {
++    f.cycle();
++    peak_lines=std::max(peak_lines,f.sp->ep_l2_line_mshr_entries());
++    peak_descriptors=std::max(peak_descriptors,f.sp->ep_l2_descriptor_count_used());
++    if(f.sp->ep_l2_descriptor_count_used()==1640)break;
++  }
++  assert(peak_lines>128 && peak_descriptors>512);
++  assert(f.sp->ep_l2_descriptor_count_used()==1640);
++  assert(f.sp->ep_l2_line_mshr_entries()==200);
++  f.part->l2_char_release_dram_issue_hold();
++  std::set<mem_fetch *> received;
++  for(unsigned i=0;i<100000 && f.part->busy();++i) {
++    f.cycle();
++    while(auto mf=f.sp->pop()) {
++      assert(expected.count(mf) && received.insert(mf).second);delete mf;
++    }
++  }
++  assert(received==expected);
++  assert(f.sp->ep_l2_lower_read_issue_count()==800);
++  assert(f.sp->ep_l2_descriptor_count_used()==0);
++  assert(!f.part->busy() && f.sp->l2_char_no_resource_leak());
++  f.sp->print_ep_l2_b0_snapshot(stdout,static_cast<unsigned long long>(-1));
++  std::printf("Lane4 I_META production 1640-request/200-line/800-sector/per-address/backpressure: PASS; peak_lines=%u peak_descriptors=%u\n",peak_lines,peak_descriptors);
++}
+diff --git a/tests/ep_l2/test_ideal_read_hit.cc b/tests/ep_l2/test_ideal_read_hit.cc
+new file mode 100644
+index 00000000..1e6a1924
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_read_hit.cc
+@@ -0,0 +1,75 @@
++#include "ideal_test_fixture.h"
++
++static void check_known(const std::vector<ep_l2_ideal::Byte> &v,
++                        uint64_t address, unsigned value, unsigned count=32) {
++  assert(v.size() == count);
++  for (unsigned i = 0; i < count; ++i)
++    assert(v[i].address == address+i && v[i].value_known && v[i].value == value);
++}
++
++int main(int argc, char **argv) {
++  assert(argc == 3);
++  {
++    Fixture f(argv[1], argv[2]);
++    f.sp->ep_l2_ideal_seed(0x1000, std::vector<uint8_t>(128, 17));
++    auto r = f.make(0x1020); f.push(r);
++    const auto rop=f.gpu->getMemoryConfig()->rop_latency;
++    std::printf("I_READ_HIT_ACTUAL_ROP_GPU_CYCLES=%u\n",rop);
++    for (unsigned i = 0; i < rop; ++i) { f.cycle(); assert(f.sp->ep_l2_ideal_reads_served()==0); }
++    auto value = f.read_response(r); check_known(value,0x1020,17);
++    assert(f.gpu->gpu_sim_cycle >= rop+1); // same configured ROP delay as normal hit
++    assert(f.sp->ep_l2_lower_read_issue_count() == 0);
++    // Cold data is a declared symbol, not a fabricated numeric zero.
++    r = f.make(0x2000); f.push(r); value = f.read_response(r);
++    for (auto b : value) assert(!b.value_known && b.version == 0);
++    f.drain();
++  }
++  {
++    Fixture f(argv[1],argv[2]);
++    auto a=f.make(0x3000), b=f.make(0x4000); f.push(a); f.push(b);
++    f.until_reply();
++    for(unsigned i=0;i<20;++i)f.cycle();
++    assert(f.sp->ep_l2_ideal_reads_served()==1);
++    assert(f.sp->ep_l2_icntl2_occupancy()==1);
++    f.read_response(a); f.read_response(b); f.drain();
++  }
++  {
++    Fixture f(argv[1],argv[2]);
++    f.sp->ep_l2_ideal_seed(0x5000,std::vector<uint8_t>(128,3));
++    auto w=f.make(0x5000,true,16); auto r=f.make(0x5000);
++    ep_l2_ideal::ReferenceMemory::Data data{}; data.fill(99);
++    f.sp->ep_l2_ideal_known_write(w,data); f.push(w); f.push(r);
++    f.until_reply(); assert(f.sp->top()==w);
++    for(unsigned i=0;i<20;++i)f.cycle();
++    // An older producer waiting for its real completion cannot be erased.
++    assert(f.sp->ep_l2_ideal_reads_served()==0);
++    assert(f.sp->ep_l2_ideal_dependency_waits()>0);
++    assert(f.sp->pop()==w); delete w;
++    auto value=f.read_response(r); assert(value.size()==32);
++    for(unsigned i=0;i<32;++i) {
++      assert(value[i].value_known && value[i].value==(i<16?99:3));
++      assert((value[i].version>0)==(i<16));
++    }
++    // A younger write cannot retroactively change an already served read.
++    auto before=f.make(0x5000), younger=f.make(0x5000,true);
++    f.push(before); f.push(younger); f.until_reply();
++    auto snapshot=f.sp->ep_l2_ideal_response(before);
++    for(unsigned i=0;i<10;++i)f.cycle();
++    assert(snapshot==f.sp->ep_l2_ideal_response(before));
++    assert(f.sp->pop()==before); delete before;
++    f.until_reply(); assert(f.sp->pop()==younger); delete younger;
++    r=f.make(0x5000);f.push(r);value=f.read_response(r);
++    for(auto byte:value) assert(!byte.value_known && byte.version>0);
++    f.drain();
++  }
++  {
++    // The exact production arbiter enforces a real same-bank fill/read
++    // conflict even though the ideal read has no resident payload owner.
++    ep_l2_payload_store p(2);
++    assert(p.request(ep_l2_payload_store::RESIDENT,0,true,1)==ep_l2_payload_store::GRANTED);
++    assert(p.request(ep_l2_payload_store::IDEAL_REFERENCE,4,false,1)==ep_l2_payload_store::BANK_TRUE_CONTENTION);
++    assert(p.request(ep_l2_payload_store::IDEAL_REFERENCE,4,false,2)==ep_l2_payload_store::GRANTED);
++    assert(p.bank_true_conflict_ops()==1 && p.pending_operations()==0);
++  }
++  std::puts("Lane4 I_READ_HIT production latency/backpressure/byte-version/RAW/WAR/bank tests: PASS");
++}
+diff --git a/tests/ep_l2/test_ideal_wb.cc b/tests/ep_l2/test_ideal_wb.cc
+new file mode 100644
+index 00000000..f69e2ea8
+--- /dev/null
++++ b/tests/ep_l2/test_ideal_wb.cc
+@@ -0,0 +1,108 @@
++#include "ft_test_fixture.h"
++
++static void extra_data_only(const char *base,const char *overlay,unsigned c) {
++  fixture f(base,overlay,1,c,1,true);
++  std::map<new_addr_type,std::array<unsigned long long,4>> reference;
++  const unsigned writes=c+26;
++  for(unsigned i=0;i<writes;++i) {
++    auto w=f.make(i*128,true,i%2?L1_WRBK_ACC:GLOBAL_ACC_W);
++    assert(f.access(w));
++    reference[i*128]={{static_cast<unsigned long long>(w->get_request_uid())+1,0,0,0}};
++    delete w;
++  }
++  assert(f.staged()==writes-1 && f.wad()==writes-1 && f.staged()>c);
++  assert(f.cache->ideal_wb_data_full()==0);
++  auto &pool=f.cache->ep_l2_payload_for_test();
++  assert(pool.diagnostic_wb_extra_slots()>0);
++  assert(pool.physical_slots()==1152+c+pool.diagnostic_wb_extra_slots());
++  // Capacity relief grants no free copy service: all staged WBs performed
++  // both the real source read and staging write through the common arbiter.
++  assert(f.cache->ft_copy_lines()==writes-1);
++  assert(f.cache->ft_staging_reads()==0 && f.cache->ft_lower_accepts()==0);
++  f.drain_wb(reference);
++  assert(f.cache->ft_staging_reads()==writes-1 && f.cache->ft_lower_accepts()==writes-1);
++  assert(f.cache->ideal_wb_data_full()==0);
++  f.cache->ft_print(stdout,0);
++  std::printf("I_WB extra storage/copy/read/packet-version/drain C=%u PASS; extra=%u\n",c,pool.diagnostic_wb_extra_slots());
++}
++
++static void wad_still_binds(const char *base,const char *overlay) {
++  fixture f(base,overlay,1,16,1,true);
++  std::map<new_addr_type,std::array<unsigned long long,4>> reference;
++  for(unsigned i=0;i<129;++i) {
++    auto w=f.make(i*128,true);assert(f.access(w));
++    reference[i*128]={{static_cast<unsigned long long>(w->get_request_uid())+1,0,0,0}};
++    delete w;
++  }
++  assert(f.wad()==128 && f.staged()==128 && f.cache->ideal_wb_data_full()==0);
++  auto resident=f.resident();const auto before=f.cache->ep_l2_payload_for_test().inspect(resident);
++  auto blocked=f.make(129*128,true);
++  assert(!f.access(blocked));
++  assert(f.resident()==resident && !f.cache->ft_reservation_active());
++  assert(f.cache->ep_l2_payload_for_test().inspect(resident).versions==before.versions);
++  assert(f.cache->ep_l2_wad_full_blocks()>0 && f.cache->ideal_wb_data_full()==0);
++  delete blocked;f.drain_wb(reference);
++  std::puts("I_WB WAD128/ordering/no-partial-mutation remains binding PASS");
++}
++
++static void combined_pressure(const char *base,const char *overlay) {
++  fixture f(base,overlay,1,16,1024,true,true);
++  std::map<new_addr_type,std::array<unsigned long long,4>> memory;
++  for(unsigned i=0;i<50;++i) {
++    auto w=f.make(i*128,true);assert(f.access(w));
++    memory[i*128]={{static_cast<unsigned long long>(w->get_request_uid())+1,0,0,0}};delete w;
++  }
++  for(unsigned i=0;i<50;++i) {
++    auto w=f.make((1024+i)*128,true);assert(f.access(w));
++    memory[(1024+i)*128]={{static_cast<unsigned long long>(w->get_request_uid())+1,0,0,0}};delete w;
++  }
++  std::set<mem_fetch *> expected,responded;
++  for(unsigned i=200;i<360;++i) for(unsigned n=0;n<4;++n) {
++    auto r=f.make(i*128,false,GLOBAL_ACC_R);assert(f.access(r));expected.insert(r);
++  }
++  for(unsigned n=0;n<40;++n) {
++    auto r=f.make(200*128,false,GLOBAL_ACC_R);assert(f.access(r));expected.insert(r);
++  }
++  assert(f.staged()==50 && f.wad()==50 && f.cache->mshr_entries_used()==160);
++  assert(f.cache->ep_l2_descriptor_count_used()==680);
++  assert(f.cache->ideal_wb_data_full()==0);
++  f.port.blocked=false;
++  for(unsigned n=0;n<100000 && (f.staged() || f.cache->mshr_entries_used() ||
++      !f.cache->miss_queue_empty() || !f.port.packets.empty());++n) {
++    f.cycle();
++    while(!f.port.packets.empty()) {
++      auto packet=f.port.packets.front();f.port.packets.pop_front();
++      if(packet->get_access_type()==L2_WRBK_ACC) {
++        assert(packet->get_ft_wb_data()==memory.at(packet->get_addr()));
++        assert(f.cache->ep_l2_wad_contains(packet->get_addr()));
++        f.cache->ep_l2_wad_complete(packet->get_addr(),f.time);delete packet;
++      } else {
++        // These untouched lines have an explicitly initialized version-zero
++        // reference; production fills/merged responses must retain that value.
++        std::array<unsigned long long,4> initial={{0,0,0,0}};
++        packet->set_ft_wb_data(initial);
++        while(f.cache->ep_l2_payload_fill_request(packet,f.time)!=ep_l2_payload_store::GRANTED)f.cycle();
++        f.cache->fill(packet,f.time);f.cycle();
++      }
++    }
++    while(f.cache->access_ready()) {
++      if(!f.cache->ft_response_ready(f.time)) {f.cycle();continue;}
++      auto r=f.cache->peek_next_access();
++      assert(expected.count(r) && responded.insert(r).second);
++      assert(r->get_ft_wb_data()[0]==0);
++      f.cache->commit_next_access();delete r;f.cycle();
++    }
++  }
++  assert(responded==expected && !f.staged() && !f.wad());
++  assert(f.cache->ep_l2_descriptor_count_used()==0 && f.cache->ep_l2_payload_pending_operations()==0);
++  assert(f.cache->ft_copy_lines()==50 && f.cache->ft_staging_reads()==50 && f.cache->ft_lower_accepts()==50);
++  std::puts("I_WB_META simultaneous 50 WB/160 lines/680 requester/version/retirement pressure PASS");
++}
++
++int main(int argc,char **argv) {
++  assert(argc==3);
++  extra_data_only(argv[1],argv[2],8);extra_data_only(argv[1],argv[2],16);
++  wad_still_binds(argv[1],argv[2]);
++  combined_pressure(argv[1],argv[2]);
++  std::puts("Lane4 I_WB production diagnostic PASS");
++}

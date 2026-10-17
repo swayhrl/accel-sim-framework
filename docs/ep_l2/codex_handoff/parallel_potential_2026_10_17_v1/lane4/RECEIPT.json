@@ -1,58 +1,115 @@
 {
-  "schema": "EPL2_LANE4_POTENTIAL_PRODUCER_HANDOFF_V1",
-  "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+  "schema": "EPL2_LANE4_POTENTIAL_ALL_DATA_PRODUCER_R2",
+  "status": "PRODUCER_NATIVE_AND_REFERENCE_PASS_READY_FOR_ROLLING_RELEASE_NOT_INDEPENDENT_APPLICATION_ACCEPTANCE",
   "contract_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
-  "module_owner": "lane4",
-  "runtime_release_owner": "lane1",
-  "independent_and_application_owner": "lane5",
-  "base_core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
-  "source_candidate": "b428535677bc779fbd8e117ccac68952d78650ff",
-  "compiled_runtime_core": "a26b3566744abd83c0c0ae2ce43be34e796206e7",
-  "compiled_runtime_framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-  "diagnostic_binary_sha256": "37dc77943e7667327069faa203139b089bcb88c7d38e6347602928e3ba6cd0b5",
-  "binary_scope": "Lane4 producer-validation binary; not a Lane1 common release or application qualification",
-  "code_unchanged_between_library_and_testfix": true,
-  "patch_sha256": "fcce794882d760ddc2a3087710ba78c4f375d0814e8cb38942f5bb5a1e2bd93a",
-  "mode_aliases": {
+  "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+  "execution_branch": "hrl/ep-l2-potential20261017-lane4-v1",
+  "base_official_core": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+  "author_core_source": "dbdb136c04ea0770931b11e9c1d3a20ff5c7a93f",
+  "common_compiled_core": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+  "common_compiled_framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+  "common_binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+  "common_binary_path": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/binaries/accel-sim.out",
+  "common_runtime_reference_blobs_match_author": {
+    "ep-l2-all-data-reference.h": "67591242d5036e8bdd92f5f4bfec1b1e92b6232091e592c7508c299069b35127",
+    "ep-l2-all-data-ldst.inc": "2ef35251622c790ac1f81bef1b1a4fde4f15816a242382381ebb7ee5559b72ae",
+    "ep-l2-ideal-reference.h": "5361bfb2198490479961ac508f999a125709e15fb4c5b70d802e05a4866e409e"
+  },
+  "common_fixture_source": "30a5026e3b6d321ed857c78ef12bb8b8f32216af",
+  "additional_host_prefill_source": "dbdb136c04ea0770931b11e9c1d3a20ff5c7a93f",
+  "runtime_semantics_qualification": "Lane4 producer native/reference only; full native trace and independent Lane5 qualification pending",
+  "new_common_tests": {
+    "initial_local_native_tests": 25,
+    "initial_pass": 24,
+    "initial_fail": 1,
+    "new_common_fixture_tests": 9,
+    "new_common_fixture_pass": 9,
+    "new_common_fixture_compiles": 3,
+    "additional_host_prefill_reference_tests": 1,
+    "additional_host_prefill_pass": 1,
+    "scope_conservation_checks": 2,
+    "scope_negative_mutations_rejected": 6,
+    "lane1_reused_native_tests": 59,
+    "lane1_expected_guard_rejections": 3,
+    "full_application_starts_by_lane4": 0
+  },
+  "all_data_physical_data_cache_wb_scope": "NOT_APPLICABLE; IFETCH remains native and its native hierarchy statistics may exist",
+  "all_data_scope_required": "full native instruction and request identity; stores reference commits; +1 physical readiness; snapshots; SM RF completion; full drain; unsupported fail closed",
+  "source_trace_identity": "C++ directed synthetic fixtures with actual native objects, not a full SASS trace application",
+  "application_launch_owner": "lane5",
+  "common_release_owner": "lane1",
+  "modes": {
+    "I_WB": "PRODUCER_READY_FOR_LANE1_RELEASE_AND_LANE5_INDEPENDENT_QUALIFICATION",
+    "I_META": "PRODUCER_READY_FOR_LANE1_RELEASE_AND_LANE5_INDEPENDENT_QUALIFICATION",
+    "I_WB_META": "PRODUCER_READY_FOR_LANE1_RELEASE_AND_LANE5_INDEPENDENT_QUALIFICATION",
+    "I_READ_HIT": "PRODUCER_READY_FOR_LANE1_RELEASE_AND_LANE5_INDEPENDENT_QUALIFICATION",
+    "I_MEM_ALL_DATA": "PRODUCER_READY_FOR_LANE1_RELEASE_AND_LANE5_INDEPENDENT_QUALIFICATION"
+  },
+  "aliases": {
     "I_WM": "I_WB_META"
   },
-  "modes": {
-    "I_WB": {
-      "status": "PRODUCER_NATIVE_DIRECTED_PASS_READY_FOR_INTEGRATION",
-      "released": true,
-      "evidence": "ideal_wb includes C8/C16 extra storage, three real copy services, WAD128 refusal and full drain"
-    },
-    "I_WB_META": {
-      "status": "PRODUCER_NATIVE_COMBINED_PRESSURE_PASS_READY_FOR_INTEGRATION",
-      "released": true,
-      "evidence": "50 live WB,160 lines,680 requests and ordinary lower/fill/response retirement"
-    },
-    "I_META": {
-      "status": "NATIVE_INTEGRATED_PASS_STANDALONE_FIXTURE_REPAIR_PENDING",
-      "released": false,
-      "evidence": "200 lines/1640 responses native integrated PASS; old fake-pointer allocator fixture FAIL preserved, fixed source pending consistent-flags rerun"
-    },
-    "I_READ_HIT": {
-      "status": "PRODUCER_NATIVE_READ_AND_HOST_FIXTURES_PASS_PENDING_H0_EFFECTIVE_CONFIG_QUALIFICATION",
-      "released": true,
-      "evidence": "reference/data/dependency/bank/response and later host-prefill fixtures PASS; no combinations with WB/META/U enabled"
-    }
+  "application_matrix": "Contract24 Ideal cells, central72 STARTS global budget; no private ledger or duplicate application launch",
+  "client_binding_at_final_observation": {
+    "client_contract_sha256": "72e39ff13ac5b35ed4e7d3062eb9fe40f4c094196c073856e58f902c94149076",
+    "registry_expected": "51959da78d960881954751cd262e44e889bd00bf66df8e5c3e9c59107fe56b05",
+    "registry_actual": "51959da78d960881954751cd262e44e889bd00bf66df8e5c3e9c59107fe56b05",
+    "registry_source_commit": "11796e9f7152ea4b22374d6169c4c6703b28847c",
+    "contract_source_commit": "de8fe21d9598660e40da8486e48f2d46acee4582"
   },
-  "actual_directed_executions": 25,
-  "pass_count": 24,
-  "fail_count": 1,
-  "new_full_applications": 0,
-  "next_actions": [
-    "Lane1 may integrate I_WB/I_WB_META now; do not wait for ALL_DATA.",
-    "Lane5 independently verify applicable native mode gates and same-new-binary B16 anchors; full applications only in central campaign budget.",
-    "I_META standalone fake-token fixture failure and repair attempts remain preserved; continue its small affected retry when a lease is available.",
-    "I_READ_HIT H0 config must retain ROP160 and native scope; no RO claim or combined-mode guard deletion."
+  "active_reservations_snapshot": [
+    {
+      "owner": "lane5",
+      "status": "RUNNING",
+      "cpu_units": 1,
+      "memory_bytes": 8589934592,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2143500,
+        "start_ticks": 898908796
+      }
+    },
+    {
+      "owner": "lane5",
+      "status": "RUNNING",
+      "cpu_units": 1,
+      "memory_bytes": 8589934592,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2143515,
+        "start_ticks": 898908814
+      }
+    },
+    {
+      "owner": "lane5",
+      "status": "RUNNING",
+      "cpu_units": 1,
+      "memory_bytes": 4294967296,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2141811,
+        "start_ticks": 898904360
+      }
+    },
+    {
+      "owner": "lane5",
+      "status": "RUNNING",
+      "cpu_units": 1,
+      "memory_bytes": 4294967296,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2141812,
+        "start_ticks": 898904372
+      }
+    }
   ],
+  "own_active_leases": [],
+  "old_review_pack_retained": "POT20261017_LANE4_LOCAL_IDEALS_r1",
   "older_candidates_preserved": [
     "8ff56eb0804a027f1e253e629dd2915b02bc03b5",
     "3a3950d974480477339f7cebc42027fe4810af65"
   ],
-  "revoked_R0_R1_remain_revoked": true,
+  "R0_R1_withdrawn": true,
   "historical_1_721_not_current": true,
-  "created_at": "2026-10-17T11:42:11.384632+00:00"
+  "full_application_starts_by_lane4": 0,
+  "created_at": "2026-10-17T12:05:09.815517+00:00"
 }

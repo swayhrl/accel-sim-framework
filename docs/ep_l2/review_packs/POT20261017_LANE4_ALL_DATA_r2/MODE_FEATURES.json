@@ -1,0 +1,41 @@
+{
+  "default": "OFF",
+  "profiles": [
+    "OFF",
+    "I_WB",
+    "I_META",
+    "I_WB_META",
+    "I_READ_HIT",
+    "I_MEM_ALL_DATA"
+  ],
+  "aliases": {
+    "I_WM": "I_WB_META"
+  },
+  "new_application_launch_owner": "lane5",
+  "common_release_owner": "lane1",
+  "ALL_DATA_scope": "END_TO_END_NATIVE_LDST_REFERENCE_WITH_REAL_SM_REGISTER_WRITEBACK",
+  "all_data_instruction_fetch": "native unchanged",
+  "all_data_data_hierarchy": "NOT_APPLICABLE",
+  "all_data_unsupported": [
+    "atomic",
+    "LDGSTS",
+    "surface",
+    "generic"
+  ],
+  "illegal": [
+    "READ_HIT+WB",
+    "READ_HIT+META",
+    "READ_HIT+U",
+    "ALL_DATA+U",
+    "ALL_DATA+other Ideal",
+    "ALL_DATA+perfect_mem",
+    "ALL_DATA+SST"
+  ],
+  "structural_merge_required_guards": [
+    "ALL_DATA+S64",
+    "ALL_DATA+U_CAP16",
+    "ALL_DATA+P2"
+  ],
+  "full_application_results": "NONE_LANE4",
+  "effective_configuration_required": "Full official H0 base + overlay, not overlay alone; retain read-hit ROP160 and native IFETCH"
+}

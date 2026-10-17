@@ -1,0 +1,34 @@
+In file included from /workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/gpgpu_context.h:3,
+                 from /workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/ft_test_fixture.h:7,
+                 from /workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/test_ideal_meta.cc:4:
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1816:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1816 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1729:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1729 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1527:3: warning:   when initialized here [-Wreorder]
+ 1527 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2350:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2350 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2350:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2350 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+In file included from /workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/test_ideal_meta.cc:4:
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/ft_test_fixture.h: In destructor ‘fixture::~fixture()’:
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/ft_test_fixture.h:54:30: warning: deleting object of polymorphic class type ‘partition_mf_allocator’ which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
+   54 |   ~fixture() { delete cache; delete allocator; delete gpu; }
+      |                              ^~~~~~~~~~~~~~~~
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/test_ideal_meta.cc: In function ‘int main(int, char**)’:
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/test_ideal_meta.cc:62:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   62 |   for (auto request:requests) delete request;requests.clear();
+      |   ^~~
+/workspace/ep_l2_potential20261017_lane4_results/common_native_replay_r1/source/tests/ep_l2/test_ideal_meta.cc:62:46: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   62 |   for (auto request:requests) delete request;requests.clear();
+      |                                              ^~~~~~~~

@@ -1,0 +1,31 @@
+# Lane4 end-to-end reference scope and rolling integration
+
+This revision retains the local-Ideal r1 pack and every historical candidate and withdrawal. Producer tests do not grant independent application qualification. Complete applications remain exclusively Lane5 under EPL2_PARALLEL_POTENTIAL_20261017_V1 and its unchanged global cap/deadline.
+
+## Integration boundaries
+
+Base official Core: `7b8e6ac70b8fe0f1bd37efca11acb5284938825d`. WB/META/joint/read-hit runtime: `a26b3566744abd83c0c0ae2ce43be34e796206e7`; real-request META fixture repair: `b428535677bc779fbd8e117ccac68952d78650ff`. ALL_DATA increment is the diff from b428 to the exact source in this pack receipt. Lane1 owns the common release and any structural-profile merge. I_WM and I_WB_META denote one scientific condition.
+
+All flags default OFF. I_READ_HIT remains exclusive of WB/META/U. ALL_DATA requires B16 FT mode1, perfect_mem=0, SST disabled, all other Ideal bits OFF. When integrated with the newer structural runtime, Lane1 must also explicitly reject ALL_DATA with S64, U_CAP16 or P2: these are separate scopes, not tested combinations. Do not remove a guard to create a combined scientific condition.
+
+Files: gpu-sim.cc/.h own the default-OFF flag, per-GPU reference, physical CORE tick, quiescent host prefill, activity/drain and cumulative records. shader.cc/.h and ep-l2-all-data-ldst.inc retain the original SM memory issue, original warp_inst copy/access identity, pending writes/store counts, operand collector register writeback and scoreboard release. ep-l2-all-data-reference.h owns reference requests/snapshots/producer dependencies. abstract_hardware_model.h exposes the existing native access UID without generating replacements. ep-l2-ideal-reference.h adds sparse byte-range host reset; existing read-hit selected-sector host reset remains in force.
+
+## Operational reference semantics
+
+Eligibility is real LDST issue plus only an earlier overlapping uncommitted producer. Each request becomes reference-ready at eligible+1 in the real gpu_sim_cycle+gpu_tot_sim_cycle clock. Requests are dynamic; every ready instruction is considered without a response FIFO, return quota or data-link arbitration. Original register ports remain real: ready-to-consume delay and register wait attempts are separate counters. Operand collection and SM instruction issue remain native. IFETCH remains native.
+
+Real global/local/parameter/constant/texture access queue entries keep their existing UIDs and transaction boundaries. Constant/texture block-relative masks are translated using active native lane addresses (including nonzero 64B offsets within128B). Shared accesses use active lanes and per-SM/CTA epochs; address reuse by another CTA does not retain old shared data. An original store commits reference once after all its fragments commit, and each native store acknowledgement and original instruction completion occurs exactly once. Typed cold address/version symbols are not numeric zeros; known-byte fixtures use the same reference engine.
+
+Reads capture a value snapshot at eligibility. A later write cannot mutate it, including when register-bank pressure holds its architectural consumption. RAW and WAW wait for overlapping earlier stores; disjoint requests do not wait. Store obligations are declared at real SM issue so a CTA barrier cannot become visible before an older store still travelling through operand collection. MEMBAR is tracked from SM issue through real reference completion; an empty scoreboard alone cannot clear it. Native barrier execution otherwise remains the original implementation.
+
+Entry is constructor-time opt-in. No native data cache dirty/WB state is created by ALL_DATA. Later host copies are supported when all reference instructions, requests, store obligations and barriers are quiescent; they reset selected bytes to unknown version0 without resetting the producer clock. Nonquiescent host copies refuse. Unsupported atomic, LDGSTS and unimplemented spaces fail closed. Their trace samples must be held, never silently filtered. Surface/generic support is not claimed.
+
+Original instruction UIDs and nonzero native request UIDs have persistent duplicate rejection using sparse4096-ID bitmaps (512B per covered block, plus map overhead). No finite admission/resource capacity is imposed. Original identity counts and issued/consumed instruction digests, native store issue/commit counts, byte snapshot counts/digests and per-space counts are emitted. Shared synthetic fragments have instruction+domain+line identity because native shared has no access queue UID.
+
+## Independent acceptance contract
+
+Lane5 first verifies exact common Core/Framework/compiler/vendor/binary and the complete effective config, trace identities, kernel/instruction totals, no truncation and unsupported-opcode/space coverage. Fixture geometry1 channel/1 slice is a directed scope, not a64-slice application certificate. Full applications retain actual H0 geometry and IFETCH/SM settings; read-hit retains actual ROP160. ALL_DATA data latency does not use the native ROP queue.
+
+For local Ideal modes, keep the existing native L2 bank/sector/WB/WAD/response/data/drain checks. For ALL_DATA select REFERENCE scope: data cache, physical L2/WB/DRAM activity is NOT_APPLICABLE, not an energy or0-cost statement. Require original instructions==consumed==unique originals; requests==ready==consumed; store fragments==commits; original stores==reference commits==SM native store issues==SM native store commits; load+store+MEMBAR==reference instructions; no pending request/instruction/barrier/store; all snapshots consumed with identical digests and bytes; actual +1 latency and unsupported/duplicate fail-closed regressions. Preserve native trace identity/completion gates. The supplied all_data_scope.py checks reference conservation only; it cannot grant full application acceptance or replace the external native trace and source/config gates.
+
+No application performance is claimed by this pack. Old R0/R1 remain withdrawn. Historical1.721x is not a current result. Positive, zero and negative future cycles remain in Lane5 records; this operational reference is not a mathematical bound for arbitrary schedules.
