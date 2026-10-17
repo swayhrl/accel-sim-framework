@@ -1,0 +1,1 @@
+The first readonly ledger refresh found an obsolete ROP40 r2 prepared spec referencing an absent qualification. The corrected selection uses existing executed r5/qualified r4. No lease, simulator start, scientific qualification or registry mutation occurred. Actual refreshed totals:18 starts,11 accepted new rows,3 validation-only revisions. Seed count remains50.
