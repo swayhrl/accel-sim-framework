@@ -1,0 +1,26 @@
+{
+  "schema": "TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE_V1",
+  "utc": "2026-10-18T11:40:14.745671+00:00",
+  "status": "PRE_READY_BUILDER_ALIAS_CORRECTION_REQUIRED_NO_DATA_TRANSFER",
+  "source_builder_commit": "b0e29601b22e6deec9e4ebb8af5d9e475334f9f8",
+  "source_builder_path": "docs/ep_l2/operations/tls_v10_174_to_164_source/build_tls_v10_binding.py",
+  "problem": "Source builder uses mounted_base in manifest.genuine164_destination_root; accepted target proposal binds canonical native /home/shared path there. These encode different five-field txids even though they map to the same NAS path.",
+  "required_bounded_fix": {
+    "genuine164_destination_root": "native_base",
+    "destination_path_on_174new": "mounted_base"
+  },
+  "minimal_manifest_reference": "tools/tls_v10_selector.py",
+  "manifest_format": "Keep source minimal V9 manifest fields and add destination_path_on_174new; no other additional fields required. Preserve frozen file order and exact source filesystem identity string.",
+  "independent_rows": "Reviewed source normalize matches target normalize byte-for-byte for synthetic files/directories. New 8-test adapter receipt and golden canonical vector are in this revision.",
+  "existing_real_manifest_conflict": false,
+  "existing_COPY_READY": false,
+  "source_resource_status": "HOLD from source 8501782 until fresh independent PASS",
+  "native_restore_probe": {
+    "file": "TLS_V10_TARGET_NATIVE_RESTORE_PROBE.json",
+    "sha256": "b3d019a7c1b7ec4f3f22301b6b001cb25f2ddeac20b4c662627f59d8a2f5c697"
+  },
+  "next_action": "Source correct unexecuted builder before any real selector/txid publication and explicitly ACK matching native-root encoding. Target will verify exact same manifest SHA and txid; no silent alias selection.",
+  "source_originals": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "source_recovered_bytes": 0
+}
