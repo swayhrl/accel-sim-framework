@@ -38,6 +38,7 @@ def recheck_review_currentness(review,pack,state):
 def stage_qualification(release_path,review_path,pack):
     """Add positive downstream envelopes to existing V2; preserve all result rows."""
     from headroom_config import EXPERIMENT,validate as validate_condition
+    release_path=release_path.resolve();review_path=review_path.resolve();pack=pack.resolve()
     require(not pack.exists(),'Qualification acceptance pack exists')
     state=load_current_authority();ledger=current_manifest(state)
     require_publication_boundary(Registry())
