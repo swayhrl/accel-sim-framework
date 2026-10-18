@@ -1,0 +1,667 @@
+{
+  "schema": "EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1",
+  "revision": "SOURCE_CANDIDATE_r2",
+  "authority": "c8aa87bdbe220853eb2d27d8babd448cff02a66e",
+  "started_utc": "2026-10-18T03:02:03Z",
+  "maximum_deadline_utc": "2026-10-18T07:02:03Z",
+  "updated_utc": "2026-10-18T03:36:15.258996+00:00",
+  "goal_status": "ACTIVE",
+  "execution_status": "CHECKPOINT_AT_UNCHANGED_RESOURCE_BOUNDARY_NO_OWN_BACKGROUND_WORKER",
+  "candidate_branch": "hrl/ep-l2-finite-service-microopt-lane1-v1",
+  "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+  "framework_source_commit": "cd522aab0382d87f60233dbd1f5769e333bda4a5",
+  "candidate_simulator_binary": null,
+  "candidate_binary_sha256": null,
+  "new_production_tests_executed": 0,
+  "producer_runtime_release_ready": false,
+  "scientific_qualification": "NO_NEW_BINARY_NO_LANE5_QUALIFICATION_NO_PERFORMANCE_CLAIM",
+  "source_verification": {
+    "status": "PASS_SOURCE_SYNTAX_AND_STANDALONE_ARBITER",
+    "core_sha": "84359d4ba492acb639a2092fa271e9169038bf7d",
+    "actual_guarded_commands": 9,
+    "unit_test_binary_sha256": "d70845aab41d7ddfe757167365ef47b1803066f79780df89e22987e46b39aaf2",
+    "native_CXX_syntax_only": 7,
+    "standalone_arbiter_modes": 3,
+    "native_runtime_ON_validation": false,
+    "receipt": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_SOURCE_CANDIDATE_r2/final_source_checks_r2/RECEIPT.json"
+  },
+  "baseline_native_opportunities": {
+    "source": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+    "MQ2_final_partial_mask_sector_UID_WAD_drain": {
+      "cases": 3,
+      "modes": [
+        "B16",
+        "S64",
+        "Unified"
+      ],
+      "status": "PASS_BASELINE_NOT_CANDIDATE_ON"
+    },
+    "RG1_final_actual_partition_full_FIFO_hostprefill_drain": {
+      "cases": 3,
+      "modes": [
+        "B16",
+        "S64",
+        "Unified"
+      ],
+      "status": "PASS_BASELINE_NOT_CANDIDATE_ON"
+    }
+  },
+  "formal_build": {
+    "status": "FORMAL_BUILD_RESOURCE_HOLD_NO_CMAKE_NO_COMPILER",
+    "compiler_started": false,
+    "CMake_started": false,
+    "resources_before": {
+      "available_memory_bytes": 163809923072,
+      "disk_free_bytes": 51838140416,
+      "share_disk_free_bytes": 44358529024
+    },
+    "minimum_preflight_bytes": 53687091200,
+    "own_lock_released": true,
+    "resource_peak": "NOT_APPLICABLE_NO_FORMAL_BUILD_PROCESS"
+  },
+  "resource_checkpoint": {
+    "workspace_free_bytes": 51833110528,
+    "workspace_shortfall_to_formal_bytes": 1853980672,
+    "client_binding_matches": true,
+    "other_active_runs": [
+      {
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3561141,
+          "start_ticks": 904578313
+        },
+        "run_key": "27f9f9e3c41a5115f5cfbe675704670988f8f24932847ff7a591165da7a66266"
+      },
+      {
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3561072,
+          "start_ticks": 904577709
+        },
+        "run_key": "30c48a23ee947be71d4d82f354374051c25d0b86b16ba62ef1d327ff7e54a0e8"
+      },
+      {
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3561181,
+          "start_ticks": 904578838
+        },
+        "run_key": "42ecfe130041ef3986458421ed5aa714e1aa2cd37fe2d0d4eceb80a447b9817d"
+      },
+      {
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3560838,
+          "start_ticks": 904576762
+        },
+        "run_key": "ab37352ffa136413a422d2a321d099ec156fe0ad4700e6e26236dd79ba2f606e"
+      }
+    ],
+    "own_reserved_leases": [],
+    "own_background_workers": [],
+    "legacy_waiter_1628339": "EXITED; central lock has no owner; no waiter resumed/created"
+  },
+  "prepared_not_executed": {
+    "MQ2_native_cases": 52,
+    "MQ2_effective_profiles": 6,
+    "RG1_new_cases_after_exact_OFF_reuse": 10,
+    "RG1_effective_profiles": 6,
+    "negative_guards_each_phase": 5
+  },
+  "capabilities": {
+    "default_OFF": [
+      "mq2",
+      "rg1"
+    ],
+    "supported_scientific_scope": "H0 finite P1 ordinary nonatomic B16/S64/Unified after actual producer and Lane5 checks",
+    "combined_11": "FAIL_CLOSED_UNQUALIFIED",
+    "Ideals_RO_TVD_atomic_P2_quota": "NO_INHERITED_QUALIFICATION",
+    "physical_bank_limit": 1,
+    "banks": 4,
+    "finite_payload_slots": 1168,
+    "pending_RG1_bound": 4,
+    "additional_Tag_probes": 0,
+    "queue_capacity_change": 0
+  },
+  "cost_delta_path": "https://github.com/swayhrl/accel-sim-framework/blob/cd522aab0382d87f60233dbd1f5769e333bda4a5/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/microopt/CONTROL_INTERFACE_DELTA_V1.md",
+  "resume_path": "https://github.com/swayhrl/accel-sim-framework/blob/cd522aab0382d87f60233dbd1f5769e333bda4a5/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/microopt/RESUME.md",
+  "application_starts_by_lane1": 0,
+  "old_releases_and_results_modified": false,
+  "source_push_readback": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_SOURCE_CANDIDATE_r2/SOURCE_REMOTE_READBACK_r2.json",
+  "review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_SOURCE_CANDIDATE_r2",
+  "files": {
+    "LOCATE_REMOTE_READBACK_r1.json": {
+      "sha256": "b9f25dbd1384ce5333dbca066cdd2e126eb6f41a626943d91a301a2f1ab5524e",
+      "bytes": 332
+    },
+    "SOURCE_REMOTE_READBACK_r2.json": {
+      "sha256": "2766b3ff93d36b3eeb722712d1c0979b517e8e10c100f4b8097f76d677279a28",
+      "bytes": 3413
+    },
+    "RESOURCE_CHECKPOINT_r2.json": {
+      "sha256": "8efc2ca3f343c0241c1fc28934615e23ff93d8ab8c5353480799ae55f4705a28",
+      "bytes": 3208
+    },
+    "rg1_host_baseline_r4/RECEIPT.json": {
+      "sha256": "95be207595972f77bb9b16182f5b3f38bbf0b6990240e8b79364e650d2fb7fdc",
+      "bytes": 8010
+    },
+    "rg1_host_baseline_r4/baseline_1_0.log": {
+      "sha256": "0df80f32e9930fafa2a08f260baad519220887fe4bb36cbd4ffdc3f5daa06982",
+      "bytes": 2971
+    },
+    "rg1_host_baseline_r4/mode1_s641.config": {
+      "sha256": "d18e0b78270e007132932168533aa41b8a8cb096e9cb447b76a2731664f15308",
+      "bytes": 395
+    },
+    "rg1_host_baseline_r4/mode1_s640.config": {
+      "sha256": "2b1b2f0459b24e28c8dec3ef78b1916dfcb580333a487deaccf3e36b1c75ebc8",
+      "bytes": 395
+    },
+    "rg1_host_baseline_r4/baseline_1_1.log": {
+      "sha256": "9bbe44e60a54802cc9df7a32873278667d5d28dc86821788825861ad8e255164",
+      "bytes": 2970
+    },
+    "rg1_host_baseline_r4/micro_fixture.h": {
+      "sha256": "165408d401d4b15b396f1dfef9edcab9760a5a02d82ea608e3cd88c91cd8a1ee",
+      "bytes": 5276
+    },
+    "rg1_host_baseline_r4/test_micro_mq2.cc": {
+      "sha256": "fe57db56e194290146e0d555ccaa18e912fc32acda5bde3deb6efcbda8bd6048",
+      "bytes": 3075
+    },
+    "rg1_host_baseline_r4/link.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "rg1_host_baseline_r4/mode2_s640.config": {
+      "sha256": "2b1b2f0459b24e28c8dec3ef78b1916dfcb580333a487deaccf3e36b1c75ebc8",
+      "bytes": 395
+    },
+    "rg1_host_baseline_r4/micro_partition_fixture.h": {
+      "sha256": "9fe3abd7878e08e1333cdd8564d53fa2a4ac473c7d52cfa294043f15553ea55a",
+      "bytes": 5773
+    },
+    "rg1_host_baseline_r4/baseline_2_0.log": {
+      "sha256": "a95982d9e843d69040dc3696503f16df9b18b328a0eb93291575fad47ba584ef",
+      "bytes": 2971
+    },
+    "final_formal_preflight_r2/BUILD_RECEIPT.json": {
+      "sha256": "cca095006ad201461ed295da586a5956f276529c651cd80c5e441f426f7103e9",
+      "bytes": 3209
+    },
+    "rg1_plan_r2/RECEIPT.json": {
+      "sha256": "b276c746749a0e03f95cd9b6c3e6f46969ecf8411f9b8314c087171a544a6a07",
+      "bytes": 41041
+    },
+    "rg1_plan_r2/B16_rg1.config": {
+      "sha256": "682a1e5a5448ba7634c83c60c172aa957174bebea0803c709160d064cdd602c0",
+      "bytes": 445
+    },
+    "rg1_plan_r2/S64_rg1.config": {
+      "sha256": "5633ac6e33ae9425b2644b53d1fe1c9f64f3d62a867b8291d4c22fae11223bf8",
+      "bytes": 445
+    },
+    "rg1_plan_r2/Unified_rg1.config": {
+      "sha256": "a3926b44764ea1d99505a81df186d4269b4fb194b778fcb53af6e57f7c6904ac",
+      "bytes": 445
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/service.config": {
+      "sha256": "b6fa4e89b382121b42f9d31285167fa9c56cdf7ade4aafd3563795201f2eb555",
+      "bytes": 38
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "rg1_plan_r2/configs/B16_rg1_1/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/service.config": {
+      "sha256": "b6fa4e89b382121b42f9d31285167fa9c56cdf7ade4aafd3563795201f2eb555",
+      "bytes": 38
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "rg1_plan_r2/configs/Unified_rg1_1/config-4.config": {
+      "sha256": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50",
+      "bytes": 123
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/service.config": {
+      "sha256": "4144ab93e368fbac478e7ee00018031ffe4c94b6a6a7b9cb8a6863ba242ea680",
+      "bytes": 38
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "rg1_plan_r2/configs/B16_rg1_0/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/service.config": {
+      "sha256": "b6fa4e89b382121b42f9d31285167fa9c56cdf7ade4aafd3563795201f2eb555",
+      "bytes": 38
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-6.config": {
+      "sha256": "ec32f330b25f127ff19479e7a2fa31a4af75323cedf654ff9d2a02f7a890012e",
+      "bytes": 109
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "rg1_plan_r2/configs/S64_rg1_1/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/service.config": {
+      "sha256": "4144ab93e368fbac478e7ee00018031ffe4c94b6a6a7b9cb8a6863ba242ea680",
+      "bytes": 38
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-6.config": {
+      "sha256": "ec32f330b25f127ff19479e7a2fa31a4af75323cedf654ff9d2a02f7a890012e",
+      "bytes": 109
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "rg1_plan_r2/configs/S64_rg1_0/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/service.config": {
+      "sha256": "4144ab93e368fbac478e7ee00018031ffe4c94b6a6a7b9cb8a6863ba242ea680",
+      "bytes": 38
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "rg1_plan_r2/configs/Unified_rg1_0/config-4.config": {
+      "sha256": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50",
+      "bytes": 123
+    },
+    "mq2_mask_baseline_r2/RECEIPT.json": {
+      "sha256": "962df3759da7b82e249ae76db3fed423165d0058f909ab89bf9b43d8c3cd786c",
+      "bytes": 7880
+    },
+    "mq2_mask_baseline_r2/baseline_1_0.log": {
+      "sha256": "54669bda0118b92988c4971c151ca62c58075f8fb97ca1301da4f0b3c75cdae5",
+      "bytes": 2926
+    },
+    "mq2_mask_baseline_r2/mode1_s641.config": {
+      "sha256": "d18e0b78270e007132932168533aa41b8a8cb096e9cb447b76a2731664f15308",
+      "bytes": 395
+    },
+    "mq2_mask_baseline_r2/mode1_s640.config": {
+      "sha256": "2b1b2f0459b24e28c8dec3ef78b1916dfcb580333a487deaccf3e36b1c75ebc8",
+      "bytes": 395
+    },
+    "mq2_mask_baseline_r2/baseline_1_1.log": {
+      "sha256": "14268eb236af677950cdd04b6d7bea1067e06dd623184d782b52ad9d06f1b268",
+      "bytes": 2925
+    },
+    "mq2_mask_baseline_r2/micro_fixture.h": {
+      "sha256": "165408d401d4b15b396f1dfef9edcab9760a5a02d82ea608e3cd88c91cd8a1ee",
+      "bytes": 5276
+    },
+    "mq2_mask_baseline_r2/test_micro_mq2.cc": {
+      "sha256": "36934ab267808012ade8927db9f1e3894a5d43a850d2cb4c808adb321c7181a2",
+      "bytes": 5071
+    },
+    "mq2_mask_baseline_r2/link.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "mq2_mask_baseline_r2/mode2_s640.config": {
+      "sha256": "2b1b2f0459b24e28c8dec3ef78b1916dfcb580333a487deaccf3e36b1c75ebc8",
+      "bytes": 395
+    },
+    "mq2_mask_baseline_r2/micro_partition_fixture.h": {
+      "sha256": "9fe3abd7878e08e1333cdd8564d53fa2a4ac473c7d52cfa294043f15553ea55a",
+      "bytes": 5773
+    },
+    "mq2_mask_baseline_r2/baseline_2_0.log": {
+      "sha256": "92a5bb28ce44e5947e2070aea77c524734bba850b1788d61a26981fa226edae0",
+      "bytes": 2924
+    },
+    "final_source_checks_r2/RECEIPT.json": {
+      "sha256": "855d848be8ef5c250cc36ad6b0abd21c3a7b7f912e45f6fc63e2db68ef00d622",
+      "bytes": 11339
+    },
+    "final_source_checks_r2/check_4.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/check_2.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/check_5.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/check_3.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/check_trace_decode.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/check_1.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/check_0.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/link_arbiter.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final_source_checks_r2/run_arbiter.log": {
+      "sha256": "a4bf174381dfeb280114b05c493cf418206de61d9f5f83f582f04c6387f18195",
+      "bytes": 5085
+    },
+    "mq2_plan_r2/RECEIPT.json": {
+      "sha256": "3c7e7979c000f010fb4e8c25bccd980c642a736d16f81defd91e046ab763269d",
+      "bytes": 45721
+    },
+    "mq2_plan_r2/Unified_mq2.config": {
+      "sha256": "0d72d96d35b774c18ba4c3aca39b3a9fdfcf690fe36733d3132e97a632144565",
+      "bytes": 445
+    },
+    "mq2_plan_r2/S64_mq2.config": {
+      "sha256": "e5536eadde978dc6608c0059dc1e294b0bbe21af95e5ee3ba0f62cafbbbeb8dd",
+      "bytes": 445
+    },
+    "mq2_plan_r2/B16_mq2.config": {
+      "sha256": "98b1f04d6bf6f238241a8afed53f42f5769fa5747102fd848c4b4213abb851fc",
+      "bytes": 445
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/service.config": {
+      "sha256": "00d636a84c33ac3e46cd27eb37d8b810ffb988492f03e009b2d53c557c188cd9",
+      "bytes": 38
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "mq2_plan_r2/configs/Unified_mq2_1/config-4.config": {
+      "sha256": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50",
+      "bytes": 123
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/service.config": {
+      "sha256": "4144ab93e368fbac478e7ee00018031ffe4c94b6a6a7b9cb8a6863ba242ea680",
+      "bytes": 38
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-6.config": {
+      "sha256": "ec32f330b25f127ff19479e7a2fa31a4af75323cedf654ff9d2a02f7a890012e",
+      "bytes": 109
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "mq2_plan_r2/configs/S64_mq2_0/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/service.config": {
+      "sha256": "4144ab93e368fbac478e7ee00018031ffe4c94b6a6a7b9cb8a6863ba242ea680",
+      "bytes": 38
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "mq2_plan_r2/configs/B16_mq2_0/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/service.config": {
+      "sha256": "4144ab93e368fbac478e7ee00018031ffe4c94b6a6a7b9cb8a6863ba242ea680",
+      "bytes": 38
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "mq2_plan_r2/configs/Unified_mq2_0/config-4.config": {
+      "sha256": "8947ff9fe126eb9cb0ae6677f07174e165fe45ed3791c9526befb352b42a0c50",
+      "bytes": 123
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/service.config": {
+      "sha256": "00d636a84c33ac3e46cd27eb37d8b810ffb988492f03e009b2d53c557c188cd9",
+      "bytes": 38
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-6.config": {
+      "sha256": "ec32f330b25f127ff19479e7a2fa31a4af75323cedf654ff9d2a02f7a890012e",
+      "bytes": 109
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "mq2_plan_r2/configs/S64_mq2_1/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/config-5.config": {
+      "sha256": "2b4f04935e33ff1b1f192b3add678af2b2da18a7dd8da3ab70b2ee24358d79f1",
+      "bytes": 162
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/config-1.config": {
+      "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+      "bytes": 672
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/config-3.config": {
+      "sha256": "24faa69de31f74080dc67da3a4e07b57bb9bc2a3fe42544e1bd08e244c486f42",
+      "bytes": 175
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/service.config": {
+      "sha256": "00d636a84c33ac3e46cd27eb37d8b810ffb988492f03e009b2d53c557c188cd9",
+      "bytes": 38
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/config-0.config": {
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/config-2.config": {
+      "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+      "bytes": 715
+    },
+    "mq2_plan_r2/configs/B16_mq2_1/config-4.config": {
+      "sha256": "74f90deca295710ddbe04c6599a4b5dea828acb6008efc69f3c919201978fd08",
+      "bytes": 127
+    }
+  },
+  "next_event": "REAL workspace recovery to50GiB with current binding/lease/source safety; then unique formal build and MQ2 first, publish before RG1. No repeat low-space request/no direct CMake/no new waiter."
+}
