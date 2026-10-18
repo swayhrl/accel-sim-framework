@@ -6,7 +6,7 @@ Caller must hold central admission lease. Never modifies the R1 fixture.
 """
 import argparse,json,hashlib,subprocess,gzip,re,importlib.util
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
+p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--resume',action='store_true');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=a.resume)
 repo=Path(__file__).resolve().parents[3];root=repo/'rtl/ep_l2';sp=root/'r2/LANE3_SHARED_STIMULI.json';rp=root/'r2/lane3_byte_reference.py';raw=sp.read_bytes();stim=json.loads(raw)
 assert hashlib.sha256(raw).hexdigest()=='297e1d9547e9cae1ae998ef4eff6361acd1a6f85d737d1390b58032ea868a921'
 assert hashlib.sha256(rp.read_bytes()).hexdigest()=='7000ec4892560dfcdc00e81b90a631a7446c552a7b6cb83db8e0e7de250a7a90'
@@ -34,8 +34,17 @@ for n,case in enumerate(stim['cases']):
 body+=['if(!module_drained || accepted!=replies+aborted || reference_count!=0)$fatal(1,"Lane3 byte adapter drain");','$display("LANE3_ACTUAL_RTL_10_VECTORS PASS mode%0d",MODE);','$finish;']
 tb=(root/'tb/ep_l2_slice_tb.sv').read_text().replace('    reg [127:0] mask;', '    reg [1023:0] lane3_snapshot[0:31];\n    reg [127:0] mask;')
 tb=tb.replace('        if(GEN_W<8)begin','\n'.join('        '+x for x in body)+'\n        if(GEN_W<8)begin',1);fixture=a.out/'lane3_actual_tb.sv';fixture.write_text(tb)
+rtl_identity={str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in (root/'rtl').glob('*.sv')}
 rows=[]
+if a.resume and (a.out/'LANE3_BYTE_RECEIPT.json').exists():
+ prior=json.loads((a.out/'LANE3_BYTE_RECEIPT.json').read_text());assert prior['RTL_sha256']==rtl_identity and prior['generated_fixture_sha256']==hashlib.sha256(fixture.read_bytes()).hexdigest();rows=prior['rows']
+ for row in rows:
+  with gzip.open(a.out/(row['mode']+'.vvp.gz'),'rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()==row['binary_sha256']
+def save_receipt():
+ receipt={'rows':rows,'stimulus_sha256':hashlib.sha256(raw).hexdigest(),'reference_sha256':hashlib.sha256(rp.read_bytes()).hexdigest(),'generated_fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest(),'RTL_sha256':rtl_identity,'scope':'non-atomic numeric RTL reads/snapshots only; protocol observe assertions separately covered by base fixture; no GPU numerical claim'}
+ (a.out/'LANE3_BYTE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
 for mode,label in enumerate(('B16','UNIFIED','S64')):
+ if any(row['mode']==label for row in rows):continue
  binary=a.out/(label+'.vvp');cmd=['iverilog','-g2012','-s','ep_l2_slice_tb','-P',f'ep_l2_slice_tb.MODE={mode}','-o',str(binary),'-DEP_L2_FULL_TOP','-f','rtl/ep_l2/flow/full_slice_filelist.f',str(fixture)]
  with (a.out/(label+'-compile.log')).open('w') as f:subprocess.run(cmd,cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
  with (a.out/(label+'-run.log')).open('w') as f:subprocess.run(['stdbuf','-oL','-eL','vvp',str(binary)],stdout=f,stderr=subprocess.STDOUT,timeout=600,check=True)
@@ -47,6 +56,8 @@ for mode,label in enumerate(('B16','UNIFIED','S64')):
  for case in stim['cases']:assert bytes.fromhex(final[case['case_id']])[::-1].hex()==case['final_line_hex']
  blob=binary.read_bytes();binary.with_suffix('.vvp.gz').write_bytes(gzip.compress(blob,6,mtime=0));binary.unlink()
  rows.append({'mode':label,'status':'ACTUAL_RTL_BYTE_COMPARISON_PASS','comparisons':len(observed),'full_line_final_comparisons':10,'binary_sha256':hashlib.sha256(blob).hexdigest(),'compile_command':cmd,'abstract_observe_events':'NOT_EXECUTED_BY_BYTE_ADAPTER; see base-suite lifecycle mapping'})
+ assert rtl_identity=={str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in (root/'rtl').glob('*.sv')},'RTL changed during compile/run'
+ save_receipt()
  print(label,'Lane3 actual10vectors PASS',flush=True)
 receipt={'rows':rows,'stimulus_sha256':hashlib.sha256(raw).hexdigest(),'reference_sha256':hashlib.sha256(rp.read_bytes()).hexdigest(),'generated_fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest(),'RTL_sha256':{str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in (root/'rtl').glob('*.sv')},'scope':'non-atomic numeric RTL reads/snapshots only; protocol observe assertions separately covered by base fixture; no GPU numerical claim'}
 (a.out/'LANE3_BYTE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
