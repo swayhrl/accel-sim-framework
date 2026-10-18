@@ -4,7 +4,7 @@ No old build reuse/mutation; original R0.1 production entry is unchanged.
 from pathlib import Path
 import sys
 sys.dont_write_bytecode=True
-import datetime,hashlib,importlib.util,json,os,resource,subprocess,sys
+import datetime,hashlib,importlib.util,json,os,resource,subprocess,sys,fcntl
 REPO=Path(__file__).resolve().parents[4]
 CORE=Path('/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1')
 FW=Path('/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1')
@@ -36,13 +36,23 @@ def main():
     except (FileNotFoundError,ProcessLookupError,PermissionError):pass
    r['own_process_group_max_rss_bytes']=max(r['own_process_group_max_rss_bytes'],rss)
   return live
- lease=None
+ lease=None;owned_lock=None
  try:
+  owned_lock=open('/workspace/ep_l2_ft20261016_shared/lane1/FINITE_SERVICE_MICROOPT_BUILD.lock','a+')
+  try:fcntl.flock(owned_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+  except BlockingIOError:r['status']='DUPLICATE_OWNER_LOCK_HOLD_NO_CMAKE';save();return
+  r['owned_lock_process']=process_identity(os.getpid())
+  with open('/workspace/ep_l2_ft20261016_shared/REGISTRY.lock') as reglock:
+   fcntl.flock(reglock,fcntl.LOCK_SH)
+   snapshot=json.loads(Path('/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json').read_text())
+  own_active=[x for x in snapshot['resource_leases'].values() if x['owner']=='lane1' and x['status']=='RESERVED']
+  if own_active:r['status']='EXISTING_LANE1_LEASE_HOLD_NO_CMAKE';r['other_own_leases']=own_active;save();return
   assert r['core_source_commit']==EXPECTED and r['framework_source_commit']==head(REPO)
   for p in [CORE,FW,FW/'gpu-simulator/extern/pybind11']:assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=p)
   assert head(FW/'gpu-simulator/extern/pybind11')=='f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
   assert not BUILD.exists();before=resources()
   r['resources_before']=before
+  r['filesystems']={str(p):{'realpath':str(p.resolve()),'st_dev':p.stat().st_dev} for p in [Path('/workspace'),OUT,Path('/root/share'),Path('/tmp'),Path('/root'),CORE,FW,FW/'gpu-simulator/extern/pybind11']}
   if before['disk_free_bytes']<50*2**30 or before['available_memory_bytes']-8*2**30<64*2**30:
    r['status']='FORMAL_BUILD_RESOURCE_HOLD_NO_CMAKE_NO_COMPILER';save();return
   r['resources_before']=before;r['initial_workspace_free_bytes']=before['disk_free_bytes'];r['filesystems']={str(p):{'realpath':str(p.resolve()),'st_dev':p.stat().st_dev} for p in [Path('/workspace'),OUT,Path('/root/share'),Path('/tmp'),Path('/root'),CORE,FW,FW/'gpu-simulator/extern/pybind11']}
@@ -59,6 +69,7 @@ def main():
  except BaseException as e:r['status']='FAILED_RETAIN_DIAGNOSTICS_NO_RELEASE';r['error']=repr(e);raise
  finally:
   if lease:Registry(cl['canonical_root']).release_build(lease,'lane1');r['lease_released']=True
+  if owned_lock:owned_lock.close();r['owned_lock_released']=True
   r['resources_after']=resources();r['finished_at_utc']=datetime.datetime.now(datetime.timezone.utc).isoformat();save()
  print(json.dumps({'status':r['status'],'binary':r.get('binary_sha256'),'lease_released':r.get('lease_released')}))
 if __name__=='__main__':main()
