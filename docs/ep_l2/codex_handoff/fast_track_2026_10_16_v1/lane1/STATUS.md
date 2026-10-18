@@ -1,6 +1,6 @@
 # Lane1 finite-service candidate — source ready, formal runtime build held
 
-New Goal EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1 ACTIVE, bounded2026-10-18T03:02:03Z–07:02:03Z; authority c8aa87bd sections0–3. Candidate Core 84359d4ba492acb639a2092fa271e9169038bf7d, Framework cd522aab0382d87f60233dbd1f5769e333bda4a5, branch hrl/ep-l2-finite-service-microopt-lane1-v1. Both pushed/fresh-fetched; all25 changed files byte-verified. Original release branches, binaries/raw/config/trace and accepted H0/four-mode evidence remain frozen.
+New Goal EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1 ACTIVE, bounded2026-10-18T03:02:03Z–07:02:03Z; authority c8aa87bd sections0–3. Candidate Core 84359d4ba492acb639a2092fa271e9169038bf7d, Framework 197741be9be9b8e390a557d639503b416d8e95f0, branch hrl/ep-l2-finite-service-microopt-lane1-v1. Both pushed/fresh-fetched; source and incremental tool file bytes verified in r2/r3. Original release branches, binaries/raw/config/trace and accepted H0/four-mode evidence remain frozen.
 
 MQ2 and RG1 opportunities are actually reproduced in B16/S64/Unified. Updated MQ2 baseline cases include same-line WAD refusal, partial byte mask/sector/UID preservation, real lower acceptance and complete drain. Updated RG1 cases use actual partition ReturnQ/one-entry ICNT FIFO and clean host-prefill, showing zero service while old response is explicitly unready and same-bank fill is ready. All six final baseline cases pass; they do NOT execute new candidate ON code. Intermediate evidence and failures are retained in r1 and raw paths.
 
