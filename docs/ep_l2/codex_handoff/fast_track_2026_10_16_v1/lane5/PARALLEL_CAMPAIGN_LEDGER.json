@@ -3,6 +3,110 @@
   "active_resource_leases": [],
   "active_runs": [
     {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "cell_id": "MOPT_CONV_B16_OFF_OFF_f0af8515057e",
+      "client_binding": {
+        "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+        "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+        "immutable_scientific_pointer": true
+      },
+      "cpu_units": 1,
+      "created_at": "2026-10-18T07:06:28.283498+00:00",
+      "deadline_unix": 1792323014.5007188,
+      "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+      "host": "huangrulin-174",
+      "identity": {
+        "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+        "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "bypass_capacity": 128,
+          "diagnostic_extra_payload_backing": false,
+          "finite_wbuf": true,
+          "ideal_meta": false,
+          "ideal_read_hit": false,
+          "ideal_wb": false,
+          "mq2": false,
+          "nominal_payload_capacity_per_slice": 1168,
+          "nominal_static_wb_anchor": 16,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "rg1": false,
+          "ro": false,
+          "static_s64": false,
+          "static_wb_capacity": 16,
+          "tvd": false,
+          "unified_wb": false,
+          "wb_data_capacity_non_binding": false,
+          "wb_local_cap": 0,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+        "ideal_vector": {
+          "mem_all_data": false,
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "5c7cd6fc9b29eed499d2b1b2df821273e02a73ac5fb166d55b95e3ceb1c63be8",
+        "termination_contract": {
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+          "normal_exit": true,
+          "timeout_seconds": 3600
+        },
+        "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+        "workload": "convolutionSeparable"
+      },
+      "lease_id": "4433860e67244db4b2f185c391e5a03d",
+      "memory_bytes": 4294967296,
+      "output_budget": {
+        "accounted_after_admission_bytes": 15121939490,
+        "actual_bytes": 12654773399,
+        "concurrent_unwritten_growth_bytes": 185464715,
+        "disk_growth_reservation_exception": null,
+        "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+        "predicted_growth_bytes": 2281701376,
+        "producer_workspace_reserved_bytes": 0,
+        "resources": {
+          "available_memory_bytes": 166898802688,
+          "disk_free_bytes": 57077776384,
+          "share_disk_free_bytes": 44345417728
+        },
+        "roots": {
+          "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+            "bytes": 7470274173,
+            "st_dev": 2431
+          },
+          "/workspace/ep_l2_potential20261017_lane5_results": {
+            "bytes": 5184499226,
+            "st_dev": 156
+          }
+        },
+        "same_binary_full_input_samples": [],
+        "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+        "workspace_st_dev": 156
+      },
+      "owner": "lane5",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 3839540,
+        "start_ticks": 905915995
+      },
+      "profile": "B16_OFF",
+      "regime": "SERVICE_OFF",
+      "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/980784787601dd9ba21d10bb1f2b3d2393f891019bf6eae8fdc7fb268e3da259",
+      "run_key": "980784787601dd9ba21d10bb1f2b3d2393f891019bf6eae8fdc7fb268e3da259",
+      "scan": false,
+      "status": "RUNNING",
+      "updated_at": "2026-10-18T07:06:28.621396+00:00"
+    },
+    {
       "attempt_history": [
         {
           "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -311,7 +415,7 @@
       "updated_at": "2026-10-18T06:52:09.149852+00:00"
     }
   ],
-  "aggregate_output_bytes": 12653728944,
+  "aggregate_output_bytes": 12736939899,
   "available_historical_anchor_cells": 7,
   "campaign_registration": {
     "authority_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
@@ -8888,7 +8992,7 @@
       "workload_alias": "FWT_7_21"
     }
   ],
-  "current_V2_generation": 48,
+  "current_V2_generation": 49,
   "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
   "extra_cells": [
     {
@@ -9380,17 +9484,360 @@
     }
   ],
   "failed": 7,
+  "finite_service_final_intake": {
+    "accepted_formal_endpoints": 0,
+    "charged_starts_including_necessary_native_OFF": 2,
+    "current_priority_policy": {
+      "approved_units": [
+        {
+          "id": "MOPT_CONV_B16_OFF_OFF",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_B16_OFF_OFF.json",
+              "sha256": "a12cec921530f08b17d4e980d8383319a72eb46c7bc62dc9a571ca11aaa27b9d"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_CONV_B16_OFF_MQ2",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_B16_OFF_MQ2.json",
+              "sha256": "4ba0e139f49c7dd6281f06287a89e4a98a3cddaa03c977a9bbcda175c2f7f827"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_CONV_S64_OFF",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_S64_OFF.json",
+              "sha256": "e5c7d63da17953ed05e0faa4bedc28f9a48edfb060e87ce9a6b4baa922698383"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_CONV_S64_MQ2",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_S64_MQ2.json",
+              "sha256": "333b100261d40623e563187b98a5f230ab7b606c2afcab312220de8c3baf0c63"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_CONV_U_OFF_OFF",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_U_OFF_OFF.json",
+              "sha256": "7c1178b9916c60a65b2daeece743b252ae2e9d505846df9b63951b9fbdac07b5"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_CONV_U_OFF_MQ2",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_U_OFF_MQ2.json",
+              "sha256": "3f5a36e777937e0b096479dda0f1f478b56dca4d4fa3588d22f4ffa2eb3e7938"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_FWT_B16_OFF_OFF",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_FWT_B16_OFF_OFF.json",
+              "sha256": "6dea1027ceef1030c402a12982078874b397223167e78e43bb88a166d04ae09e"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_FWT_B16_OFF_MQ2",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_FWT_B16_OFF_MQ2.json",
+              "sha256": "8a8cffa40a442dbdbd0ea56780e6b2cd71a7d156a77a601b2863f793050e28e6"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_FWT_S64_OFF",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_FWT_S64_OFF.json",
+              "sha256": "718460145097107cc2b4af23bdb58a51e6226b1ca7a08aa215073b4980caad88"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_FWT_S64_MQ2",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_FWT_S64_MQ2.json",
+              "sha256": "f0782b11b51646a62bfb4ab47fc5a5a2fdf9c9e211fcf96962aaf7341dba6f72"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_FWT_U_OFF_OFF",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_FWT_U_OFF_OFF.json",
+              "sha256": "103bfc32410530976f5d43f2b400bb3b88179e9d12391f388a6279ac0bbbd412"
+            }
+          ]
+        },
+        {
+          "id": "MOPT_FWT_U_OFF_MQ2",
+          "kind": "single",
+          "specs": [
+            {
+              "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_FWT_U_OFF_MQ2.json",
+              "sha256": "5c01bcb5442a559204cb38c515d3f7749e5e25656a5baa5cf56e044412cdf687"
+            }
+          ]
+        }
+      ],
+      "approved_units_publication": "6371dd10ad98b6f7195655e3c4c2057773d7212c",
+      "approved_units_sha256": "fbdf104829962639cd2ed80c2497c3fffbcfc99f968b4290d9a69d64bcb2bba6",
+      "at_utc": "2026-10-18T07:06:20.402408+00:00",
+      "authority_commit": "9a161b700ae2d17470fe7b08fc16725b3ef6317c",
+      "controller_source_publication": "70cfb593242c8c264d844b113e876a2d1bce8f18",
+      "max_lane5_simulators": 2,
+      "pause_old_starts": true,
+      "phase": "CURRENT_V2_QUALIFIED_MQ2_CONV_THEN_FWT_SAME_BINARY",
+      "producer_build_actual_released": true,
+      "producer_build_pending": false,
+      "producer_release": "d035f11e465f8acd9764a3055ae967e62bb5b47f",
+      "producer_workspace_reserve_bytes": 2147483648
+    },
+    "formal_endpoint_starts": 1,
+    "maximum_starts_within72": 24,
+    "qualification": "CURRENT_QUALIFIED_MQ2_F0AF",
+    "registered_endpoints": 12,
+    "runs": [
+      {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cell_id": "E_NATIVE_OFF_SERVICE_F0AF_R1",
+        "client_binding": {
+          "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+          "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+          "immutable_scientific_pointer": true
+        },
+        "cpu_units": 1,
+        "created_at": "2026-10-18T06:59:22.486156+00:00",
+        "deadline_unix": 1792323014.5007188,
+        "detail": "NativeOFF all64/metrics/sevenCSV equivalence",
+        "exit_code": 0,
+        "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+          "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "finite_wbuf": false,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1152,
+            "ro": false,
+            "tvd": false,
+            "unified_wb": false,
+            "wbuf_entries": 0
+          },
+          "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+          "ideal_vector": {
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "61c8dd236757b587526bf6dd718def32e9dc7f131b4a0f2f962887a8938e58a9",
+          "termination_contract": {
+            "hardware_drained": true,
+            "normal_exit": true,
+            "qualification": "OLD_STATIC_EQUIVALENCE_V1",
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+          "workload": "vectorAdd_4M"
+        },
+        "lease_id": "0db8849cd41e41b182d13e90f884bc64",
+        "memory_bytes": 4294967296,
+        "output_budget": {
+          "accounted_after_admission_bytes": 15037374626,
+          "actual_bytes": 12567897544,
+          "concurrent_unwritten_growth_bytes": 187775706,
+          "disk_growth_reservation_exception": null,
+          "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+          "predicted_growth_bytes": 2281701376,
+          "producer_workspace_reserved_bytes": 0,
+          "resources": {
+            "available_memory_bytes": 167195926528,
+            "disk_free_bytes": 57167233024,
+            "share_disk_free_bytes": 44346163200
+          },
+          "roots": {
+            "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+              "bytes": 7470274173,
+              "st_dev": 2431
+            },
+            "/workspace/ep_l2_potential20261017_lane5_results": {
+              "bytes": 5097623371,
+              "st_dev": 156
+            }
+          },
+          "same_binary_full_input_samples": [],
+          "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+          "workspace_st_dev": 156
+        },
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3834015,
+          "start_ticks": 905873400
+        },
+        "profile": "NATIVE_OFF_CONTROL",
+        "raw_log_sha256": "2400bc5029fac9239daccb64d2d505ba90929280aa2a3e768d82ddfe3b96b863",
+        "regime": "H0",
+        "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/749e731055a3ae0c07ab41bcecc1a54be65bdd89165add8d39491ff023340590",
+        "run_key": "749e731055a3ae0c07ab41bcecc1a54be65bdd89165add8d39491ff023340590",
+        "scan": false,
+        "status": "COMPLETE_VALID",
+        "updated_at": "2026-10-18T07:04:11.252840+00:00"
+      },
+      {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cell_id": "MOPT_CONV_B16_OFF_OFF_f0af8515057e",
+        "client_binding": {
+          "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+          "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+          "immutable_scientific_pointer": true
+        },
+        "cpu_units": 1,
+        "created_at": "2026-10-18T07:06:28.283498+00:00",
+        "deadline_unix": 1792323014.5007188,
+        "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+          "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "bypass_capacity": 128,
+            "diagnostic_extra_payload_backing": false,
+            "finite_wbuf": true,
+            "ideal_meta": false,
+            "ideal_read_hit": false,
+            "ideal_wb": false,
+            "mq2": false,
+            "nominal_payload_capacity_per_slice": 1168,
+            "nominal_static_wb_anchor": 16,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "rg1": false,
+            "ro": false,
+            "static_s64": false,
+            "static_wb_capacity": 16,
+            "tvd": false,
+            "unified_wb": false,
+            "wb_data_capacity_non_binding": false,
+            "wb_local_cap": 0,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+          "ideal_vector": {
+            "mem_all_data": false,
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "5c7cd6fc9b29eed499d2b1b2df821273e02a73ac5fb166d55b95e3ceb1c63be8",
+          "termination_contract": {
+            "hardware_drained": true,
+            "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+            "normal_exit": true,
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+          "workload": "convolutionSeparable"
+        },
+        "lease_id": "4433860e67244db4b2f185c391e5a03d",
+        "memory_bytes": 4294967296,
+        "output_budget": {
+          "accounted_after_admission_bytes": 15121939490,
+          "actual_bytes": 12654773399,
+          "concurrent_unwritten_growth_bytes": 185464715,
+          "disk_growth_reservation_exception": null,
+          "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+          "predicted_growth_bytes": 2281701376,
+          "producer_workspace_reserved_bytes": 0,
+          "resources": {
+            "available_memory_bytes": 166898802688,
+            "disk_free_bytes": 57077776384,
+            "share_disk_free_bytes": 44345417728
+          },
+          "roots": {
+            "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+              "bytes": 7470274173,
+              "st_dev": 2431
+            },
+            "/workspace/ep_l2_potential20261017_lane5_results": {
+              "bytes": 5184499226,
+              "st_dev": 156
+            }
+          },
+          "same_binary_full_input_samples": [],
+          "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+          "workspace_st_dev": 156
+        },
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3839540,
+          "start_ticks": 905915995
+        },
+        "profile": "B16_OFF",
+        "regime": "SERVICE_OFF",
+        "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/980784787601dd9ba21d10bb1f2b3d2393f891019bf6eae8fdc7fb268e3da259",
+        "run_key": "980784787601dd9ba21d10bb1f2b3d2393f891019bf6eae8fdc7fb268e3da259",
+        "scan": false,
+        "status": "RUNNING",
+        "updated_at": "2026-10-18T07:06:28.621396+00:00"
+      }
+    ]
+  },
   "max_result_bytes": 21474836480,
   "new_application_admission": "REQUIRES_NORMAL_FULL_PREFLIGHT",
-  "new_starts": 34,
+  "new_starts": 35,
   "output_tree_bytes": {
     "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": 7470274173,
-    "/workspace/ep_l2_potential20261017_lane5_results": 5183454771
+    "/workspace/ep_l2_potential20261017_lane5_results": 5266665726
   },
-  "remaining_start_budget": 38,
+  "remaining_start_budget": 37,
   "reused": 0,
-  "running": 1,
+  "running": 2,
   "schema": "EPL2_PARALLEL_CELL_LEDGER_V1",
-  "updated_at": "2026-10-18T07:04:52.262730+00:00",
+  "updated_at": "2026-10-18T07:06:48.546209+00:00",
   "validation_only_revisions": 3
 }

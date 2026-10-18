@@ -523,7 +523,9 @@ class Registry:
             if cell.get('stage') == MICROOPT_STAGE:
                 if stage['authority_commit'] != MICROOPT_AUTHORITY or stage['maximum_new_starts'] != 24:
                     raise ValueError('microopt stage authorization changed')
-                ids = {c['cell_id'] for c in service_cells}
+                # The necessary new-service-binary native OFF canary also
+                # consumes this finite extension, as well as the global72.
+                ids = {c['cell_id'] for c in service_cells} | {'E_NATIVE_OFF_SERVICE_F0AF_R1'}
                 if sum(attempt_count(r) for r in data['runs'].values()
                        if r.get('experiment_id') == PARALLEL and r.get('cell_id') in ids) >= 24:
                     raise ValueError('microopt24 start cap includes failed/reserved/retry attempts')

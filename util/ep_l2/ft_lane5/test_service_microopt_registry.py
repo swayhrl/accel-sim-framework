@@ -55,6 +55,11 @@ class ServiceStage(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'campaign.*cap'):rg.Registry.check_experiment(d,e,i,'lane5')
   d['runs'].pop('other')
   with patch('registry.time.time',return_value=e['deadline_unix']),self.assertRaisesRegex(ValueError,'deadline'):rg.Registry.check_experiment(d,e,i,'lane5')
+ def test_necessary_new_binary_off_canary_also_spends_stage24(self):
+  i,l,p,c=self.bind();d=self.snapshot();e=self.experiment(c)
+  d['runs']['canary']={'experiment_id':rg.PARALLEL,'cell_id':'E_NATIVE_OFF_SERVICE_F0AF_R1','status':'COMPLETE_VALID'}
+  d['runs']['stage']={'experiment_id':rg.PARALLEL,'cell_id':c['cell_id'],'status':'FAILED','attempt_history':[{}]*22}
+  with self.assertRaisesRegex(ValueError,'microopt24'):rg.Registry.check_experiment(d,e,i,'lane5',retry_key='stage')
  def test_logical_plan_is_not_launch_authorization(self):
   self.register();d=self.snapshot();i,l,p=self.candidate();e={'experiment_id':rg.PARALLEL,'cell_id':l,'profile':'B16_OFF','regime':'SERVICE_MQ2','deadline_unix':self.campaign['deadline_unix']}
   with self.assertRaisesRegex(ValueError,'unknown'):rg.Registry.check_experiment(d,e,i,'lane5')
