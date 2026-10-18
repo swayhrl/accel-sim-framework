@@ -1,5 +1,5 @@
 {
-  "status": "CORE_PUSHED_FETCHED_CLEAN_FRAMEWORK_PAYLOAD_PENDING",
+  "status": "PASS_BOTH_CORE_AND_FRAMEWORK_PAYLOAD_PUSH_FETCH_BACK_CLEAN_SCIENTIFIC_STOP",
   "core": {
     "head": "835417b37627e46eaaf215f3ff697263c94a18cc",
     "branch": "hrl/iscas2027-dtc-lane-ac2-compact-collect-core-174-v1",
@@ -39,5 +39,36 @@
   "framework_branch": "hrl/iscas2027-dtc-lane-ac2-compact-collect-174-v1",
   "framework_tools_source": "2a08aee8a5290603c83a0b4f805569762e5ab191",
   "result": "SCIENTIFIC_STOP_NO_COMPACT_IMPLEMENTATION",
-  "final_receipt_locator": "External own raw FINAL_FETCH_BACK.json and final chat; avoids self-reference"
+  "final_receipt_locator": "External own raw FINAL_FETCH_BACK.json and final chat; avoids self-reference",
+  "framework_payload": {
+    "head": "a7d9302648a1a9f9305c1605a735a9831b4ec7c1",
+    "branch": "hrl/iscas2027-dtc-lane-ac2-compact-collect-174-v1",
+    "tree": "749c7dfad8d691da1180d434e53d9e7db1ef31c0",
+    "fetch_back": "a7d9302648a1a9f9305c1605a735a9831b4ec7c1",
+    "clean": true,
+    "steps": [
+      {
+        "argv": [
+          "git",
+          "push",
+          "origin",
+          "HEAD:refs/heads/hrl/iscas2027-dtc-lane-ac2-compact-collect-174-v1"
+        ],
+        "exit": 0,
+        "log": "/workspace/dtc-lane-ac2-compact-collect-174-v1/framework-payload-push.log",
+        "sha256": "5671e3601c64512a3d4bc633100bbfef2e0ce062c1fd3b65647001f12860eafc"
+      },
+      {
+        "argv": [
+          "git",
+          "fetch",
+          "origin",
+          "refs/heads/hrl/iscas2027-dtc-lane-ac2-compact-collect-174-v1:refs/dtc-ac2-readback/framework-payload"
+        ],
+        "exit": 0,
+        "log": "/workspace/dtc-lane-ac2-compact-collect-174-v1/framework-payload-fetch.log",
+        "sha256": "7e486991b45792d3d14208d85aab739f0f00a9fa6f169d77a20af37170954faf"
+      }
+    ]
+  }
 }
