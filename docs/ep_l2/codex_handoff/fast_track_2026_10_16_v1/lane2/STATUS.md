@@ -1,44 +1,39 @@
-# Lane2 — R3 first checkpoint published; bounded Goal continues
+# Lane2 R3 — actual first results delivered; resource policy authorized
 
+User authorized shared20GiB, Lane2 OWN12GiB (independent assets), with further
+increases if insufficient. See R3_RESOURCE_AUTHORIZATION_20G_OWN12G_r1.json.
+48/40GiB disk,64GiB availableRAM,8CPU/32GiB shared reservations unchanged.
+Original R1/R2 source worktrees and accepted manifests remain read-only.
 
-First bounded R3 checkpoint; unfinished modes/suites are not complete TVD or
-accepted application evidence. Read RECEIPT.json for exact status/identities.
+R3A source ac607192957cfd2d69d76bfbc73531b5dbe57523:
+- Real three-mode same-library/SDC/effort mappings and two-period STA complete.
+- B16/S64/U area1437416.652/1478834.714/1847603.016; FF88685/90833/121550
+  unchanged from R2. WNS−1.370226/−1.393728/−1.447954ns;2ns also unclosed.
+- U/B1.28536358 vsR2 1.52175140; U/S641.24936411. Partial standard-cell cut
+  only; SRAM/nativeTag/MSHR/NoC costs UNKNOWN; no app-performance pairing.
+- Base4+Lane3three+GEN overlapthree and scoped logical proofs PASS. Highest
+  Unified physical-slot test was RESOURCE_INTERRUPTED, NOT PASS. It must finish
+  before a complete new qualified release is claimed.
 
-R3A shares full-width payload GEN arithmetic across two independently writable
-frontend/lower events, with actual group data routing and a phase-shared
-transaction read. No GEN bits, physical capacity or service cycles were cut.
-Actual B16 mapped reference area1437416.652 (R2−10.0804%); FF88685 unchanged.
-WNS0.883392226ns−1.370226, WNS2ns−0.253619: both remain unclosed.
-Same Nangate1.1V25C/library/SDC/effort/loads/full1024/1168/128/GEN32/P1 as R2.
+First checkpoint b4d825b4e2cd7808fc5db2bd907d65fb3e1e9676 was pushed/read back:
+all136 pack blobs plus source/table/receipt bytes match. It is immutable.
 
-Actual per-word GEN32 induction and two-writer GEN3/GEN32 all-index SAT passed.
-All three full production GEN overlap fixtures passed (reservation/commit/
-rollback each with lower release, independent GEN FF targets, real byte WB,
-preserved victim and exact drain). Actual controller control/metadata four-
-cycle small-model miters passed all modes; constant data and excluded byte-
-datapath outputs are explicit, not a whole-controller or numerical proof.
-Production base suite partial complete rows and accepted binaries are included;
-Lane3 and full-bank3 boundary are still in the active qualification pipeline.
+R3B0 d74b38fc: all3 owner stress + actual GEN overlap and bounded control
+checks passed; base main interrupted by old aggregate guard. Its old results
+are retained at their exact source. No B0 PPA was run.
 
-R3B independently proves owner/live/forward-map preservation under stated legal
-FE/lower premises, then charges a real forward Tag-map read rather than reverse
-payload owner. Its bounded controller checks pass; full numerical qualification
-and synthesis remain pending. Tag-index resident/pin reorganization has explicit
-port/cost requirements; no free inverse lookup or1RW macro is assumed.
+Final R3B hardware e8d67d13b5205cdcda4c2c750a34f7cda6b0103b keeps the strongest
+proved B/S fixed owner path; Unified uses a charged forward map/live lookup.
+This new static specialization has NOT yet been compiled/qualified/mapped.
+It cannot inherit B0 binary PASS labels. Compact mapping IO and source-bound
+resume are prepared, syntax parsed only; actual runtime checks remain pending.
 
-All R1/R2 source worktrees/accepted manifests remain read-only. The16-payload
-miter counterexample was caused by invalid R2 helper BLOCK16/IW4 zero divisor;
-those results (including nominal PASS) are invalid and not accepted. Corrected
-model uses32payload/PIDW5; production1168/PIDW11 never changed. Large optional
-miter resource/timeout and declaration/proof-tool errors are retained, not PASS.
+The inherited global12GiB guard stopped own jobs after four Lane5 runs began.
+That conservative scope is superseded by the user's explicit shared20/OWN12
+clarification. Central policy/own inventory will be audited before resuming.
+No wait daemon; no official SIM edit/new application/foreign-process action.
+TVD three tests remain NOT_COMPILED_NOT_RUN. No complete TVD claim.
 
-No official SIM/app or Lane5 run changed. Existing readII4/writeII3/copy/return/
-arbitration/native-approval gaps remain. Native_gen outside native_commit is
-unconsumed and may differ; all valid data/control cycles are preserved targets.
-SRAM146KiB macro and native Tag/MSHR/NoC cost UNKNOWN. No whole-L2/net-benefit/
-current-SIM performance pairing. R3 DC entry ready but UNRUN; R2 entry untouched.
-This checkpoint does not end the six-hour bounded Goal.
-
-Review pack: docs/ep_l2/review_packs/RTL_R3_ROOT_CAUSE_R3A_CHECKPOINT_r1
-Canonical R3A hardware: ac607192957cfd2d69d76bfbc73531b5dbe57523
-Independent R3B hardware: d74b38fc25eeaba347bd81f18541aae1ec0cd5da
+DC scripts/filelist/SDC/real DB/PVT/unit entry exists for the candidates; DC
+UNRUN. Best fully qualified old source remains R2 until mandatory new tests
+finish. R2 DC entry unchanged. Bounded Goal continues to at most16:35:29 CST.
