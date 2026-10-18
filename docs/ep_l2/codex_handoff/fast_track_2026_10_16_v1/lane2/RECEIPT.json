@@ -1,8 +1,8 @@
 {
-  "schema": "LANE2_R3_RESOURCE_AUTHORIZATION_AND_PROGRESS",
+  "schema": "LANE2_R3_ACTUAL_RESOURCE_STOP_CHECKPOINT_R2",
   "Goal": "EPL2_RTL_R3_METADATA_AND_COST_OPT",
   "authority": "1e56ba6ee293f06557b46e1ac7d92e8eb77e00ac",
-  "status": "BOUNDED_GOAL_ACTIVE_RESOURCE_POLICY_CLARIFIED_NEW_QUALIFICATION_PENDING",
+  "status": "BOUNDED_GOAL_ACTIVE_ACTUAL48G_STOP_EXCEPTION_PROPOSAL_PENDING_NOT_ACTIVE",
   "resource_authorization": "R3_RESOURCE_AUTHORIZATION_20G_OWN12G_r1.json",
   "R3A_hardware": "ac607192957cfd2d69d76bfbc73531b5dbe57523",
   "R3B0_hardware": "d74b38fc25eeaba347bd81f18541aae1ec0cd5da",
@@ -16,8 +16,21 @@
   },
   "R3A_three_mode_actual_PPA": true,
   "R3A_mandatory_boundary": "RESOURCE_INTERRUPTED_NOT_PASS",
-  "R3B_final_actual_runtime_tests": "NOT_RUN",
-  "R3B_final_PPA": "NOT_RUN",
+  "R3B_final_actual_runtime_tests": {
+    "owner_stress": "ALL3_PASS_EXACT_FINAL_SOURCE",
+    "concurrent_GEN_updates": "ALL3_PASS_EXACT_FINAL_SOURCE",
+    "controller_control_cut": "ALL3_4CYCLE_SMALL32PAYLOAD_PASS_EXPLICIT_SCOPE",
+    "base": "B16_RESOURCE_INTERRUPTED_NO_PASS_OTHER_CASES_NOT_RUN",
+    "Lane3_bytes": "NOT_RUN",
+    "highest_physical": "NOT_RUN"
+  },
+  "R3B_final_PPA": {
+    "Unified": "ACTUAL_MAPPING_COMPLETE_STA_INTERRUPTED_NOT_COMPLETE_PPA",
+    "B16": "NOT_RUN",
+    "S64": "NOT_RUN",
+    "mapped_U_area_reference_units": 1765551.858003,
+    "mapped_U_FF": 109870
+  },
   "R1_R2_frozen": true,
   "formal_SIM_changed": false,
   "new_Lane5_apps_started": 0,
@@ -25,5 +38,21 @@
   "first_checkpoint_publication": "b4d825b4e2cd7808fc5db2bd907d65fb3e1e9676",
   "first_checkpoint_readback": "EXACT_TWO_HEADS_ALL136_BLOBS_SELECTED_BYTES_PASS",
   "large_new_raw": "central workspace; future remote packs lean with original/archive hashes and exact local paths",
-  "publication_identity": "enclosing Git commit"
+  "publication_identity": "enclosing Git commit",
+  "UTC": "2026-10-18T04:04:12.895773+00:00",
+  "review_pack": "docs/ep_l2/review_packs/RTL_R3_RESOURCE_STOP_AND_MAPPING_CHECKPOINT_r2",
+  "resource_authorization_applied": "RESOURCE_AUTHORIZATION_APPLIED_R3.json in pack",
+  "all_own_EDA_leases_released": true,
+  "resident_waiter": false,
+  "global_workspace_floor_GiB": 48,
+  "proposed_only_Lane2_EDA_floor_GiB": 47.5,
+  "exception_authorized": false,
+  "remaining_blockers": [
+    "actual workspace below48GiB",
+    "mandatory A boundary missing",
+    "B final base/Lane3/boundary and full3mode STA missing",
+    "DC absent",
+    "SRAM/native costs UNKNOWN",
+    "all A clocks unclosed"
+  ]
 }

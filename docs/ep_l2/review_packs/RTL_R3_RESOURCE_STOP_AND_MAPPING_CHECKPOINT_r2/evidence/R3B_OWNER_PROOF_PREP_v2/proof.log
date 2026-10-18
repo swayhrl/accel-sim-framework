@@ -1,0 +1,599 @@
+
+-- Executing script file `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/prove.ys' --
+
+1. Executing Verilog-2005 frontend: /workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv
+Parsing SystemVerilog input from `/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv' to AST representation.
+Generating RTLIL representation for module `\ep_l2_metadata_word'.
+Generating RTLIL representation for module `\ep_l2_tag_map_word'.
+Generating RTLIL representation for module `\ep_l2_first_one'.
+Generating RTLIL representation for module `\ep_l2_index_mux'.
+Generating RTLIL representation for module `\ep_l2_control_inverter'.
+Generating RTLIL representation for module `\ep_l2_control_buffer'.
+Generating RTLIL representation for module `\ep_l2_generation_step'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv
+Parsing SystemVerilog input from `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv' to AST representation.
+Generating RTLIL representation for module `\owner_invariant'.
+Successfully finished Verilog frontend.
+
+3. Executing PREP pass.
+
+3.1. Executing HIERARCHY pass (managing design hierarchy).
+
+3.1.1. Analyzing design hierarchy..
+Top module:  \owner_invariant
+Used module:     \ep_l2_metadata_word
+Used module:     \ep_l2_tag_map_word
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+
+3.1.2. Executing AST frontend in derive mode using pre-parsed AST for module `\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Generating RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \GEN_W = 3
+Parameter \TAG_W = 2
+Found cached RTLIL representation for module `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word'.
+Parameter \PID_W = 3
+
+3.1.3. Executing AST frontend in derive mode using pre-parsed AST for module `\ep_l2_tag_map_word'.
+Parameter \PID_W = 3
+Generating RTLIL representation for module `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011'.
+Parameter \PID_W = 3
+Found cached RTLIL representation for module `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011'.
+Parameter \PID_W = 3
+Found cached RTLIL representation for module `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011'.
+Parameter \PID_W = 3
+Found cached RTLIL representation for module `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011'.
+
+3.1.4. Analyzing design hierarchy..
+Top module:  \owner_invariant
+Used module:     $paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word
+Used module:     $paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011
+
+3.1.5. Analyzing design hierarchy..
+Top module:  \owner_invariant
+Used module:     $paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word
+Used module:     $paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011
+Removing unused module `\ep_l2_generation_step'.
+Removing unused module `\ep_l2_control_buffer'.
+Removing unused module `\ep_l2_control_inverter'.
+Removing unused module `\ep_l2_index_mux'.
+Removing unused module `\ep_l2_first_one'.
+Removing unused module `\ep_l2_tag_map_word'.
+Removing unused module `\ep_l2_metadata_word'.
+Removed 7 unused modules.
+
+3.2. Executing PROC pass (convert processes to netlists).
+
+3.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+Cleaned up 1 empty switch.
+
+3.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 2 switch rules as full_case in process $proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826 in module $paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.
+Marked 2 switch rules as full_case in process $proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510 in module owner_invariant.
+Marked 1 switch rules as full_case in process $proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:56$1844 in module $paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.
+Removed a total of 0 dead cases.
+
+3.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 4 assignments to connections.
+
+3.2.4. Executing PROC_INIT pass (extract init attributes).
+
+3.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~19 debug messages>
+
+3.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+     1/7: $0\dynamic_owner[1:0]
+     2/7: $0\dirty[3:0]
+     3/7: $0\sectors_pending[3:0]
+     4/7: $0\sectors_ready[3:0]
+     5/7: $0\pins[5:0]
+     6/7: $0\generation[2:0]
+     7/7: $0\role[2:0]
+Creating decoders for process `\owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+     1/4: $2$lookahead\live$1509[3:0]$1525
+     2/4: $1$bitselwrite$pos$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1454[1:0]$1524
+     3/4: $1$lookahead\live$1509[3:0]$1515
+     4/4: $1$bitselwrite$pos$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1453[1:0]$1514
+Creating decoders for process `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:56$1844'.
+     1/1: $0\payload[2:0]
+
+3.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+3.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\role' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1937' with positive edge clock.
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\generation' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1938' with positive edge clock.
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\pins' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1939' with positive edge clock.
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\sectors_ready' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1940' with positive edge clock.
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\sectors_pending' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1941' with positive edge clock.
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\dirty' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1942' with positive edge clock.
+Creating register for signal `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.\dynamic_owner' using process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+  created $dff cell `$procdff$1943' with positive edge clock.
+Creating register for signal `\owner_invariant.\live' using process `\owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+  created $dff cell `$procdff$1944' with positive edge clock.
+Creating register for signal `\owner_invariant.$bitselwrite$pos$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1453' using process `\owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+  created $dff cell `$procdff$1945' with positive edge clock.
+Creating register for signal `\owner_invariant.$bitselwrite$pos$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1454' using process `\owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+  created $dff cell `$procdff$1946' with positive edge clock.
+Creating register for signal `\owner_invariant.$lookahead\live$1509' using process `\owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+  created $dff cell `$procdff$1947' with positive edge clock.
+Creating register for signal `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.\payload' using process `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:56$1844'.
+  created $dff cell `$procdff$1948' with positive edge clock.
+
+3.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 15 empty switches in `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+Removing empty process `$paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:26$1826'.
+Found and cleaned up 2 empty switches in `\owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+Removing empty process `owner_invariant.$proc$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:12$1510'.
+Found and cleaned up 2 empty switches in `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:56$1844'.
+Removing empty process `$paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:56$1844'.
+Cleaned up 19 empty switches.
+
+3.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.
+<suppressed ~12 debug messages>
+Optimizing module owner_invariant.
+<suppressed ~11 debug messages>
+Optimizing module $paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.
+<suppressed ~1 debug messages>
+
+3.3. Executing FLATTEN pass (flatten design).
+Deleting now unused module $paramod$c935d7cc313a3c0b8afe3e4e7c99a9fd46ea847d\ep_l2_metadata_word.
+Deleting now unused module $paramod\ep_l2_tag_map_word\PID_W=s32'00000000000000000000000000000011.
+<suppressed ~12 debug messages>
+
+3.4. Executing FUTURE pass.
+
+3.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module owner_invariant.
+<suppressed ~200 debug messages>
+
+3.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \owner_invariant..
+Removed 141 unused cells and 789 unused wires.
+<suppressed ~190 debug messages>
+
+3.7. Executing CHECK pass (checking for obvious problems).
+Checking module owner_invariant...
+Found and reported 0 problems.
+
+3.8. Executing OPT pass (performing simple optimizations).
+
+3.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module owner_invariant.
+
+3.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\owner_invariant'.
+Computing hashes of 457 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Computing hashes of 392 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Computing hashes of 380 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Computing hashes of 369 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Computing hashes of 367 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+<suppressed ~270 debug messages>
+Removed a total of 90 cells.
+
+3.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \owner_invariant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~92 debug messages>
+
+3.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \owner_invariant.
+Performed a total of 0 changes.
+
+3.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\owner_invariant'.
+Computing hashes of 367 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Removed a total of 0 cells.
+
+3.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \owner_invariant..
+Removed 0 unused cells and 90 unused wires.
+<suppressed ~1 debug messages>
+
+3.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module owner_invariant.
+
+3.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+3.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \owner_invariant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~92 debug messages>
+
+3.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \owner_invariant.
+Performed a total of 0 changes.
+
+3.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\owner_invariant'.
+Computing hashes of 367 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Removed a total of 0 cells.
+
+3.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \owner_invariant..
+
+3.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module owner_invariant.
+
+3.8.14. Finished fast OPT passes. (There is nothing left to do.)
+
+3.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1455 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1455 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1456 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1456 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1456 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1457 ($shiftx).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:8$1470 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1483 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1483 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1484 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1484 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1484 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1485 ($shiftx).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1496 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1496 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1497 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1497 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1497 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1498 ($shiftx).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1499 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1503 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1503 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1504 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1504 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1504 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1505 ($shiftx).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1506 ($eq).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1522 ($or).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1522 ($or).
+Removed top 28 bits (of 32) from port B of cell owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1522 ($or).
+Converting cell owner_invariant.$neg$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1530 ($neg) from signed to unsigned.
+Removed top 1 bits (of 3) from port A of cell owner_invariant.$neg$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1530 ($neg).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1532 ($or).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1532 ($or).
+Removed top 28 bits (of 32) from port B of cell owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1532 ($or).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1540 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1540 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1541 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1541 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1541 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1542 ($shiftx).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1545 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1545 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1546 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1546 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1546 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1547 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1548 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1551 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1551 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1552 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1552 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1552 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1553 ($shiftx).
+Removed top 1 bits (of 2) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:18$1560 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:27$1597 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:28$1600 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:28$1602 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:27$1616 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:28$1619 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:28$1621 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:27$1635 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:28$1638 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:28$1640 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:22$1699 ($eq).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:24$1702 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1719 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1719 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1720 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1720 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1720 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1721 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1722 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1723 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1723 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1724 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1724 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1724 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1725 ($shiftx).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1730 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1730 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1731 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1731 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1731 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1732 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1733 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1734 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1734 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1735 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1735 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1735 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1736 ($shiftx).
+Removed top 1 bits (of 2) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1737 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1741 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1741 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1742 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1742 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1742 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1743 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1744 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1745 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1745 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1746 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1746 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1746 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1747 ($shiftx).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1752 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1752 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1753 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1753 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1753 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1754 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1755 ($eq).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1756 ($mul).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1756 ($mul).
+Removed top 27 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1757 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1757 ($add).
+Removed top 26 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1757 ($add).
+Removed top 25 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1758 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1762 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1764 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1764 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1765 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1765 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1765 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1766 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1770 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1772 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1772 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1773 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1773 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1773 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1774 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1775 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1778 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1780 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1780 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1781 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1781 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1781 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1782 ($shiftx).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1783 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1786 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1788 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1788 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1789 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1789 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1789 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1790 ($shiftx).
+Removed top 1 bits (of 3) from port B of cell owner_invariant.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1791 ($eq).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1794 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1796 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1796 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1797 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1797 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1797 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1798 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1802 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1804 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1804 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1805 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1805 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1805 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1806 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1810 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1812 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1812 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1813 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1813 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1813 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1814 ($shiftx).
+Removed top 2 bits (of 3) from port B of cell owner_invariant.$ne$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1818 ($ne).
+Removed top 30 bits (of 32) from port B of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1820 ($mul).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1820 ($mul).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1821 ($add).
+Removed top 31 bits (of 32) from port B of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1821 ($add).
+Removed top 27 bits (of 32) from port Y of cell owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1821 ($add).
+Removed top 26 bits (of 32) from port B of cell owner_invariant.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1822 ($shiftx).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$and$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1519 ($and).
+Removed top 28 bits (of 32) from port B of cell owner_invariant.$and$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1519 ($and).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$and$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1529 ($and).
+Removed top 28 bits (of 32) from port B of cell owner_invariant.$and$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1529 ($and).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$shift$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1531 ($shift).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$not$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1528 ($not).
+Removed top 28 bits (of 32) from port A of cell owner_invariant.$not$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1528 ($not).
+Removed top 28 bits (of 32) from port Y of cell owner_invariant.$shift$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1527 ($shift).
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1821_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1820_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1813_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1812_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1805_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1804_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1797_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1796_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1789_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1788_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1781_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1780_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1773_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1772_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1765_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:38$1764_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1757_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1756_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1753_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1752_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1746_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1745_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1742_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1741_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1735_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1734_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1731_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1730_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1724_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1723_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1720_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:34$1719_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1552_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:42$1551_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1541_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1540_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1537_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:41$1536_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1532_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$shift$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1531_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$and$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:14$1529_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$or$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1522_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$and$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1519_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$not$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1518_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$shift$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:13$1517_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1504_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:11$1503_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1497_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:10$1496_Y.
+Removed top 26 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1484_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:9$1483_Y.
+Removed top 27 bits (of 32) from wire owner_invariant.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1456_Y.
+Removed top 28 bits (of 32) from wire owner_invariant.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_OWNER_PROOF_PREP_v2/owner_invariant.sv:5$1455_Y.
+
+3.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \owner_invariant..
+Removed 0 unused cells and 53 unused wires.
+<suppressed ~1 debug messages>
+
+3.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+3.12. Executing OPT pass (performing simple optimizations).
+
+3.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module owner_invariant.
+
+3.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\owner_invariant'.
+Computing hashes of 367 cells of `\owner_invariant'.
+Finding duplicate cells in `\owner_invariant'.
+Removed a total of 0 cells.
+
+3.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \owner_invariant..
+
+3.12.4. Finished fast OPT passes.
+
+3.13. Executing SORT pass.
+
+3.14. Printing statistics.
+
+=== owner_invariant ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      541 wires
+     1992 wire bits
+      279 public wires
+      585 public wire bits
+       12 ports
+       22 port bits
+      367 cells
+       23   $add
+        2   $and
+       21   $dff
+       51   $eq
+       81   $logic_and
+       15   $logic_not
+       20   $logic_or
+       23   $mul
+       70   $mux
+        8   $ne
+        1   $neg
+        1   $not
+        2   $or
+        2   $reduce_and
+       12   $scopeinfo
+        2   $shift
+       33   $shiftx
+
+3.15. Executing CHECK pass (checking for obvious problems).
+Checking module owner_invariant...
+Found and reported 0 problems.
+
+4. Executing SAT pass (solving SAT problems in the circuit).
+Using SAT solver `minisat`.
+
+Setting up time step 1:
+Import set-constraint: \legal = 1'1
+Import set-constraint for this timestep: \invariant = 1'1
+Final constraint equation: { \invariant \legal } = 2'11
+Imported 367 cells to SAT database.
+No constraints for initial state found.
+
+
+Setting up time step 2:
+Import set-constraint: \legal = 1'1
+Final constraint equation: \legal = 1'1
+Imported 367 cells to SAT database.
+Import proof-constraint: \owner_property = 1'1
+Final proof equation: \owner_property = 1'1
+
+Solving problem with 31874 variables and 91118 clauses..
+SAT proof finished - no model found: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+

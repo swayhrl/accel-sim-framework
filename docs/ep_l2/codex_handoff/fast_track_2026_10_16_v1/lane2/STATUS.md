@@ -1,39 +1,15 @@
-# Lane2 R3 — actual first results delivered; resource policy authorized
+# Lane2 R3 — exact resource stop and second review checkpoint
 
-User authorized shared20GiB, Lane2 OWN12GiB (independent assets), with further
-increases if insufficient. See R3_RESOURCE_AUTHORIZATION_20G_OWN12G_r1.json.
-48/40GiB disk,64GiB availableRAM,8CPU/32GiB shared reservations unchanged.
-Original R1/R2 source worktrees and accepted manifests remain read-only.
+Goal EPL2_RTL_R3_METADATA_AND_COST_OPT remains active and bounded by2026-10-18 08:35:29Z (16:35:29CST). First checkpoint b4d825b4 was verified at03:14Z, within39min ofT0. R1/R2 source/worktrees/manifests and first checkpoint retained read-only.
 
-R3A source ac607192957cfd2d69d76bfbc73531b5dbe57523:
-- Real three-mode same-library/SDC/effort mappings and two-period STA complete.
-- B16/S64/U area1437416.652/1478834.714/1847603.016; FF88685/90833/121550
-  unchanged from R2. WNS−1.370226/−1.393728/−1.447954ns;2ns also unclosed.
-- U/B1.28536358 vsR2 1.52175140; U/S641.24936411. Partial standard-cell cut
-  only; SRAM/nativeTag/MSHR/NoC costs UNKNOWN; no app-performance pairing.
-- Base4+Lane3three+GEN overlapthree and scoped logical proofs PASS. Highest
-  Unified physical-slot test was RESOURCE_INTERRUPTED, NOT PASS. It must finish
-  before a complete new qualified release is claimed.
+Shared20GiB / independently-owned Lane2 assets12GiB authorization7a553bba569b02b36e1441a11bdf3407415c613f was pushed, exact two heads/document bytes read back, then applied ONLY to central current-host max_result_bytes. All scientific holds/acceptance/app identities/CPU/RAM quotas unchanged. Own inventory includes source/results/books and conservativeGit reserve; unrelated Lane5 data is not billed against own12GiB.
 
-First checkpoint b4d825b4e2cd7808fc5db2bd907d65fb3e1e9676 was pushed/read back:
-all136 pack blobs plus source/table/receipt bytes match. It is immutable.
+R3A ac607192957cfd2d69d76bfbc73531b5dbe57523 has actual three-mode same-Lib/SDC/effort mapping+two-period STA. B16/S64/U areas1437416.652/1478834.714/1847603.016 andWNS−1.370226/−1.393728/−1.447954ns;2ns also unclosed. Base4/Lane3three/concurrencythree/control-cutthree pass. Highest bank3/PID1167 run was resource-interrupted, including new retry: NOT PASS. Best fully qualified release remains oldR2; newA is measured but not fully qualified.
 
-R3B0 d74b38fc: all3 owner stress + actual GEN overlap and bounded control
-checks passed; base main interrupted by old aggregate guard. Its old results
-are retained at their exact source. No B0 PPA was run.
+FinalB e8d67d13b5205cdcda4c2c750a34f7cda6b0103b now has its OWN actual three-mode owner-stress, GEN-concurrency and scoped4cycle control proofs PASS. B0 results are not inherited. MainB16 interrupted, Lane3/highest unrun. Actual Unified mapping complete(area1765551.858003 referenceunits/109870FF), STA interrupted; B16/S64 mappings unrun. Do not form a completeB cost table or release claim.
 
-Final R3B hardware e8d67d13b5205cdcda4c2c750a34f7cda6b0103b keeps the strongest
-proved B/S fixed owner path; Unified uses a charged forward map/live lookup.
-This new static specialization has NOT yet been compiled/qualified/mapped.
-It cannot inherit B0 binary PASS labels. Compact mapping IO and source-bound
-resume are prepared, syntax parsed only; actual runtime checks remain pending.
+All own jobs stopped when actual workspace crossed48GiB; all leases released. Lossless own-new-R3 archival retained decoded hashes and recovered142366221+156390415 bytes. Actual space still below48GiB. No formal compile/STA active; no resident waiter. Proposed exactLane2-only47.5GiB temporary EDA exception is NOT authorized/active. Global48GiB,Share40GiB,RAM64GiB remain. Full reviewed budget in second pack; await explicit user boundary decision or legal ordinary admission.
 
-The inherited global12GiB guard stopped own jobs after four Lane5 runs began.
-That conservative scope is superseded by the user's explicit shared20/OWN12
-clarification. Central policy/own inventory will be audited before resuming.
-No wait daemon; no official SIM edit/new application/foreign-process action.
-TVD three tests remain NOT_COMPILED_NOT_RUN. No complete TVD claim.
+Corrected module grouping handles parameterizedYosys names; full total metrics unchanged. MeasuredTag-map/sharedGEN costs and actual critical-path hierarchy arc-delay attribution included. Source-level19→17 muxes is not two actualGENport savings; five functional reads remain. Tag-index pins/sector rewrite STOP due unpaid inverse/multiport requirements. No hidden memory/capacity/GEN narrowing or false paths.
 
-DC scripts/filelist/SDC/real DB/PVT/unit entry exists for the candidates; DC
-UNRUN. Best fully qualified old source remains R2 until mandatory new tests
-finish. R2 DC entry unchanged. Bounded Goal continues to at most16:35:29 CST.
+Second pack docs/ep_l2/review_packs/RTL_R3_RESOURCE_STOP_AND_MAPPING_CHECKPOINT_r2 contains actual reports, exact receipts, incomplete/invalid-model ledger, central raw-binary/netlist identity manifest, DC entry references and finite resume proposal. Old packs preserved. DC UNRUN; SRAM146KiB/nativeTag/MSHR/NoC costs UNKNOWN. ReadII4/writeII3/copy/return/RR/native-approval gaps remain; no officialSIM/newLane5 application changed/started. TVD three regressions remain NOT_COMPILED_NOT_RUN and no completeTVD claim.

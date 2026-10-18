@@ -1,0 +1,19 @@
+# R3 second checkpoint — actual resource stop, no qualification inflation
+
+The original2h checkpoint b4d825b4 was delivered and byte-verified at03:14Z,39min afterT0. This new checkpoint preserves it and allR1/R2 evidence.
+
+R3A actual five-source hardware ac607192957cfd2d69d76bfbc73531b5dbe57523: complete actual3mode Nangate fast-clean mapping and two-period STA; full base4, actualLane3 byte3, concurrency3 and bounded controller3 PASS. The mandatory full1024Tag/highestPID1167 test was interrupted twice by resource protection, including retry here; **NOT PASS; no complete new production-qualified release**.
+
+R3A partial standard-cell cut areas B16/S64/U1437416.652/1478834.714/1847603.016; WNS0.883392226ns −1.370226/−1.393728/−1.447954ns. All clocks, including2ns, remain unclosed. U/B1.2853636 versusR2 1.5217514. SRAM146KiB and traditionalTag/MSHR/NoC costs UNKNOWN; no app/PPA pairing. Actual report and cells/seq/comb module accounting are included.
+
+R3B final hardware e8d67d13b5205cdcda4c2c750a34f7cda6b0103b: final static PID==Tag specialization; actual3mode owner-stress,3mode GEN-concurrency and3mode4cycle control-cut PASS at exact new source. Functional base was interrupted duringB16, Lane3 and highest physical slot not yet run. Unified Yosys mapping completed (actual area1765551.858003 referenceunits,109870FF,1452456cells), but STA interrupted before report completion. B16/S64 mappings not run. This is a mapped-only observation, not a complete comparable B cost table or qualified release; B0 tests are not inherited.
+
+The original grouping parser missed single-parameter Yosys names and merged actualTag-map/sharedGEN/one staticfree search into top_or_other. Corrected MODULE_ATTRIBUTION inR3A_COMPARISON_r2 recognizes both naming forms; total area/FF/WNS unchanged. E.g.U Tag-map remains1024words,84439.040 area/11264FF; two GEN engines313.880 area/0FF. Old first-checkpoint/grouping tables preserved, corrected tables supersede only that grouping. CRITICAL_PATH_MODULE_ATTRIBUTION partitions measured cell arc delays in actual top10 paths by mapped hierarchy; these are path attributions, not independently additive module WNS.
+
+All three own jobs stopped at the unchanged actualworkspace48GiB floor, leases released. New outputs are losslessly archived with decoded-original and archiveSHA. No frozen original or other project was deleted. Shared20GiB / independent-own12GiB authorization is applied, documented and independently inventoried. Workspace remains below48GiB; no formal validation is active. Proposed exactLane2-only47.5GiB temporary EDA exception is **NOT AUTHORIZED/NOT ACTIVE** at this publication. Global48GiB,Share40GiB,RAM64GiB and CPU/RAM/application policies remain.
+
+The only proposed next operations are a new-directoryA boundary retry, finalB unfinished full suite plusLane3/boundary, resumeSTA of already mappedU with new phase, then first B16/S64 mappings. Do not rerun passed suites, reuseB0 PASS, overwrite old binary archives, or re-synthesize the already completed Unified mapping. All depend on legal resource admission or explicit approval of the reviewed exception. No resident watcher.
+
+DC R3 entry rtl/ep_l2/flow/run_dc_r3.sh/.tcl, common.sdc and actualfilelist are on this branch. ActualDB/PVT/operation-condition/time-unit/IO-drive/load inputs mandatory. DC absent: UNRUN. No formalSIM or official application was modified or started; readII4/writeII3/copy/return/RR/native-approval differences remain disclosed.
+
+Large raw mapped/normalized netlists and executed or unfinished binaries remain at the central workspace manifest paths. The original/archive SHA indexes give reversible exact-byte retrieval; presence is never a PASS marker. Sources, small raw reports/proofs, exact receipts and tooling are inGit. Failure/remaining-scope ledger below applies even where an early invalid toy proof printed PASS.

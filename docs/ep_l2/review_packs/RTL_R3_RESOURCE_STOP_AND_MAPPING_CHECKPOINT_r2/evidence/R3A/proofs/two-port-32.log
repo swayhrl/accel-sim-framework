@@ -1,0 +1,334 @@
+
+-- Executing script file `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.ys' --
+
+1. Executing Verilog-2005 frontend: /workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv
+Parsing SystemVerilog input from `/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv' to AST representation.
+Generating RTLIL representation for module `\ep_l2_metadata_word'.
+Generating RTLIL representation for module `\ep_l2_tag_map_word'.
+Generating RTLIL representation for module `\ep_l2_first_one'.
+Generating RTLIL representation for module `\ep_l2_index_mux'.
+Generating RTLIL representation for module `\ep_l2_control_inverter'.
+Generating RTLIL representation for module `\ep_l2_control_buffer'.
+Generating RTLIL representation for module `\ep_l2_generation_step'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv
+Parsing SystemVerilog input from `/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv' to AST representation.
+Generating RTLIL representation for module `\word_equiv'.
+Successfully finished Verilog frontend.
+
+3. Executing PREP pass.
+
+3.1. Executing HIERARCHY pass (managing design hierarchy).
+
+3.1.1. Analyzing design hierarchy..
+Top module:  \word_equiv
+Used module:     \ep_l2_generation_step
+Parameter \GEN_W = 32
+
+3.1.2. Executing AST frontend in derive mode using pre-parsed AST for module `\ep_l2_generation_step'.
+Parameter \GEN_W = 32
+Generating RTLIL representation for module `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000'.
+Parameter \GEN_W = 32
+Found cached RTLIL representation for module `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000'.
+
+3.1.3. Analyzing design hierarchy..
+Top module:  \word_equiv
+Used module:     $paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000
+
+3.1.4. Analyzing design hierarchy..
+Top module:  \word_equiv
+Used module:     $paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000
+Removing unused module `\ep_l2_generation_step'.
+Removing unused module `\ep_l2_control_buffer'.
+Removing unused module `\ep_l2_control_inverter'.
+Removing unused module `\ep_l2_index_mux'.
+Removing unused module `\ep_l2_first_one'.
+Removing unused module `\ep_l2_tag_map_word'.
+Removing unused module `\ep_l2_metadata_word'.
+Removed 7 unused modules.
+Mapping positional arguments of cell word_equiv.lo ($paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000).
+Mapping positional arguments of cell word_equiv.fe ($paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000).
+
+3.2. Executing PROC pass (convert processes to netlists).
+
+3.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+3.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+3.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 6 assignments to connections.
+
+3.2.4. Executing PROC_INIT pass (extract init attributes).
+
+3.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+
+3.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1559'.
+Creating decoders for process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1555'.
+Creating decoders for process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1551'.
+Creating decoders for process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1547'.
+Creating decoders for process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1543'.
+Creating decoders for process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:128$1541'.
+
+3.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.\prefix[5]' from process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1559'.
+No latch inferred for signal `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.\prefix[4]' from process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1555'.
+No latch inferred for signal `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.\prefix[3]' from process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1551'.
+No latch inferred for signal `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.\prefix[2]' from process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1547'.
+No latch inferred for signal `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.\prefix[1]' from process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1543'.
+No latch inferred for signal `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.\prefix[0]' from process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:128$1541'.
+
+3.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+
+3.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1559'.
+Removing empty process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1555'.
+Removing empty process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1551'.
+Removing empty process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1547'.
+Removing empty process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1543'.
+Removing empty process `$paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.$proc$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:128$1541'.
+Cleaned up 0 empty switches.
+
+3.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+<suppressed ~6 debug messages>
+Optimizing module $paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.
+<suppressed ~10 debug messages>
+
+3.3. Executing FLATTEN pass (flatten design).
+Deleting now unused module $paramod\ep_l2_generation_step\GEN_W=s32'00000000000000000000000000100000.
+<suppressed ~2 debug messages>
+
+3.4. Executing FUTURE pass.
+
+3.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+<suppressed ~2 debug messages>
+
+3.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+Removed 0 unused cells and 64 unused wires.
+<suppressed ~1 debug messages>
+
+3.7. Executing CHECK pass (checking for obvious problems).
+Checking module word_equiv...
+Found and reported 0 problems.
+
+3.8. Executing OPT pass (performing simple optimizations).
+
+3.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+3.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 102 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Computing hashes of 91 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Computing hashes of 84 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+<suppressed ~54 debug messages>
+Removed a total of 18 cells.
+
+3.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \word_equiv..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~32 debug messages>
+
+3.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \word_equiv.
+Performed a total of 0 changes.
+
+3.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 84 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Computing hashes of 81 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+<suppressed ~9 debug messages>
+Removed a total of 3 cells.
+
+3.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+Removed 0 unused cells and 21 unused wires.
+<suppressed ~1 debug messages>
+
+3.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+3.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+3.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \word_equiv..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~26 debug messages>
+
+3.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \word_equiv.
+Performed a total of 0 changes.
+
+3.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 81 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Removed a total of 0 cells.
+
+3.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+
+3.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+3.8.14. Finished fast OPT passes. (There is nothing left to do.)
+
+3.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 1 bits (of 2) from port B of cell word_equiv.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:2$1455 ($eq).
+Removed top 26 bits (of 32) from port B of cell word_equiv.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1464 ($mul).
+Removed top 24 bits (of 32) from port Y of cell word_equiv.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1464 ($mul).
+Removed top 24 bits (of 32) from port A of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1465 ($add).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1465 ($add).
+Removed top 23 bits (of 32) from port Y of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1465 ($add).
+Removed top 22 bits (of 32) from port B of cell word_equiv.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1466 ($shiftx).
+Removed top 26 bits (of 32) from port B of cell word_equiv.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1467 ($mul).
+Removed top 24 bits (of 32) from port Y of cell word_equiv.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1467 ($mul).
+Removed top 24 bits (of 32) from port A of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1468 ($add).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1468 ($add).
+Removed top 23 bits (of 32) from port Y of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1468 ($add).
+Removed top 22 bits (of 32) from port B of cell word_equiv.$shiftx$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1469 ($shiftx).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1473 ($add).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1490 ($add).
+Removed top 1 bits (of 2) from port B of cell word_equiv.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:10$1499 ($eq).
+Removed top 1 bits (of 2) from port B of cell word_equiv.$eq$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:10$1501 ($eq).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1507 ($add).
+Removed top 31 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1524 ($add).
+Removed top 30 bits (of 32) from mux cell word_equiv.$ternary$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1529 ($mux).
+Removed top 30 bits (of 32) from port B of cell word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1530 ($add).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1562 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1562 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1562 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1562 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1562 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1562 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1558 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1558 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1558 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1558 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1558 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1558 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1554 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1554 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1554 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1554 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1554 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1554 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1550 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1550 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1550 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1550 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1550 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1550 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1546 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1546 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\fe.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1546 ($and).
+Removed top 1 bits (of 32) from port Y of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1546 ($and).
+Removed top 1 bits (of 32) from port A of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1546 ($and).
+Removed top 1 bits (of 32) from port B of cell word_equiv.$flatten\lo.$and$/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1/rtl/ep_l2/rtl/ep_l2_metadata_word.sv:131$1546 ($and).
+Removed top 30 bits (of 32) from wire word_equiv.$ternary$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:9$1478_Y.
+Removed top 23 bits (of 32) from wire word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1468_Y.
+Removed top 24 bits (of 32) from wire word_equiv.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:5$1467_Y.
+Removed top 23 bits (of 32) from wire word_equiv.$add$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1465_Y.
+Removed top 24 bits (of 32) from wire word_equiv.$mul$/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3A/proofs/two-port-32.sv:4$1464_Y.
+
+3.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+Removed 0 unused cells and 5 unused wires.
+<suppressed ~1 debug messages>
+
+3.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+3.12. Executing OPT pass (performing simple optimizations).
+
+3.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module word_equiv.
+
+3.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\word_equiv'.
+Computing hashes of 81 cells of `\word_equiv'.
+Finding duplicate cells in `\word_equiv'.
+Removed a total of 0 cells.
+
+3.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \word_equiv..
+
+3.12.4. Finished fast OPT passes.
+
+3.13. Executing SORT pass.
+
+3.14. Printing statistics.
+
+=== word_equiv ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       92 wires
+     1825 wire bits
+       43 public wires
+     1171 public wire bits
+       10 ports
+      140 port bits
+       81 cells
+       10   $add
+       10   $and
+        8   $eq
+       17   $logic_and
+        5   $logic_not
+        2   $logic_or
+        2   $mul
+       17   $mux
+        3   $or
+        1   $reduce_bool
+        2   $scopeinfo
+        2   $shiftx
+        2   $xor
+
+3.15. Executing CHECK pass (checking for obvious problems).
+Checking module word_equiv...
+Found and reported 0 problems.
+
+4. Executing SAT pass (solving SAT problems in the circuit).
+Using SAT solver `minisat`.
+
+Setting up SAT problem:
+Final constraint equation: { } = { }
+Imported 81 cells to SAT database.
+Import proof-constraint: \equal = 1'1
+Final proof equation: \equal = 1'1
+
+Solving problem with 18068 variables and 50971 clauses..
+SAT proof finished - no model found: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+
