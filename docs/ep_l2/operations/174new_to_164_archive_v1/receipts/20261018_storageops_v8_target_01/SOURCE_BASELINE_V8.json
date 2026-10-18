@@ -1,0 +1,36 @@
+{
+  "schema": "OPS_OLD174_FAST_WORKSPACE_RECLAIM_V8_BASELINE",
+  "observed_at_utc": "2026-10-18T03:45:48Z",
+  "contract_commit": "80633cc24b37cb640652f4ff3492ee0242d48309",
+  "source_branch_start_head": "7aa1dec737a11524022531985ff3f71913e1ed9c",
+  "source_namespace": "mnt:[4026534768]",
+  "workspace": {"filesystem": "overlay", "device": 156, "inode": 32926662, "total_bytes": 3779302981632, "available_bytes": 51814326272},
+  "tmp": {"filesystem": "overlay", "device": 156, "same_filesystem_as_workspace": true},
+  "root_data": {"filesystem": "/dev/sdf[/huangrulin]", "device": 2128, "df_available_bytes": 51814326272, "same_underlying_free_count_as_workspace": true},
+  "root_share": {"filesystem": "/dev/md127", "device": 2431, "available_bytes": 44357967872, "separate_from_workspace": true},
+  "lane5_four_running_at_observation": [
+    {"cell": "F004", "pid": 3560838, "start_ticks": 904576762, "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/ab37352ffa136413a422d2a321d099ec156fe0ad4700e6e26236dd79ba2f606e"},
+    {"cell": "I005", "pid": 3561072, "start_ticks": 904577709, "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/30c48a23ee947be71d4d82f354374051c25d0b86b16ba62ef1d327ff7e54a0e8"},
+    {"cell": "F011", "pid": 3561141, "start_ticks": 904578313, "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/27f9f9e3c41a5115f5cfbe675704670988f8f24932847ff7a591165da7a66266"},
+    {"cell": "F012", "pid": 3561181, "start_ticks": 904578838, "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/42ecfe130041ef3986458421ed5aa714e1aa2cd37fe2d0d4eceb80a447b9817d"}
+  ],
+  "lane5_process_namespace_and_workspace_identity": "All four /proc/PID/ns/mnt equal source namespace; /proc/PID/root/workspace dev=156 inode=32926662; PID start_ticks match RUN_REGISTRY running rows.",
+  "lane5_registry_lease_observation": "Four RUNNING rows each have a lease_id, but none of those four IDs appears in the current RUN_REGISTRY.resource_leases map; all 297 present resource_leases are RELEASED. This is a read-only point-in-time discrepancy, not proof of idle resources or permission to alter the registry.",
+  "protected_active_root": "/workspace/ep_l2_potential20261017_lane5_results",
+  "48gib_floor_bytes": 51539607552,
+  "workspace_margin_above_48gib_floor_bytes": 274718720,
+  "candidate_allocated_bytes_metadata_only": {
+    "R1_clean_build": 4785803264,
+    "R1R_clean_build": 3594420224,
+    "R2_clean_build": 3459518464,
+    "C2P1_old_build": 424570880,
+    "C2P2_old_build": 424419328,
+    "M2D_old_build": 410275840,
+    "M5_gesu_tmp_copy_1": 993886208,
+    "M5_gesu_tmp_copy_2": 993886208
+  },
+  "candidate_measurement_method": "nice -n 19 ionice -c3 du -sB1 on eight exact named roots; no content rehash or global recursive search",
+  "candidate_current_source_action": "SOURCE_KEEP_PENDING_CURRENT_IDENTITY_ACTIVITY_RESTORE_AND_EXACT_AUTHORITY_GATES",
+  "actual_source_df_gain_bytes": 0,
+  "notes": "Old R13 PolyBench closeout directories already released and excluded. No Git object, raw, trace, signoff/PPA evidence or live Lane asset touched."
+}

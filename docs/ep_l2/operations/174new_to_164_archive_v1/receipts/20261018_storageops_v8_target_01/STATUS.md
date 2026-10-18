@@ -1,0 +1,5 @@
+# V8 target — genuine164 verified; exact source scope pending
+
+T0 2026-10-18T03:44:08Z; first recoverable delivery deadline 04:14:08Z. New increment root: /root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261018_fast_v8. Existing R13/V7 stays closed and its files unchanged. Fresh genuine164 SSHFS/probe PASS; Share ~41.31GiB, floor40GiB. R1/R1R/R2 full archive/restore receipts and manifests SHA-matched, no full data rehash or repeated upload. Source baseline ed20218658c9d1e56f298de6176e9d062f4c888d reports four live Lane5 tasks and only274718720B above48GiB; no V8 actual source gain is claimed. Source alone owns consumer checks and precise authorized release.
+
+Next: exact current M5 compressed artifact/member scope for one <=512MiB, <=30MiB/s flow; exact V8 V3/.vvp selectors can reuse verified archives after hash/path join. Scientific originals require source-side exact user approval. No target source deletion, Lane5 quota/PID/registry change or second worker. All R13, Git, accepted raw/logs/unique binaries retained.

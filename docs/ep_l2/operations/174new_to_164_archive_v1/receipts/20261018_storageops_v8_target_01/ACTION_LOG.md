@@ -1,0 +1,3 @@
+# V8 target actions
+
+Read full frozen contract; validated genuine164 mount, 15-byte write/close/reopen/SHA and only-own-probe cleanup. Fixed an initial Python escaping error before execution, and resolved V9 index actual location from immutable R13 closeout rather than its assumed project_receipts name. Existing source inventories and full target restoration proof hashes read without full source tree scan or re-upload. An import guard initially prevented control document generation; metadata-only bootstrap commit dd736792bc805cf1877dedee8379f47316991773 contains probes/contract/assets, not the receive-window artifacts despite its premature title. Import guard and prepublication artifact checks corrected; no payload or source action was restarted.
