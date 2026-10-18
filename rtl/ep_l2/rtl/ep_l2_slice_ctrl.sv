@@ -117,7 +117,7 @@ module ep_l2_slice_ctrl #(
     wire [GEN_W-1:0] generation_p_old;
     wire [GEN_W-1:0] generation_head_pid;
     wire [GEN_W-1:0] generation_active_pid;
-    wire [TAG_W-1:0] owner_tag_fill_pid;
+    wire [PID_W-1:0] fill_mapped_pid;
     wire [6-1:0] pins_old_pid;
     wire [6-1:0] pins_pin_pid;
     wire [4-1:0] sectors_ready_old_pid;
@@ -194,7 +194,7 @@ module ep_l2_slice_ctrl #(
     wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation_p_landing :
         frontend_generation_next;
     wire fill_identity=fill_pid<N_PAYLOAD && role_fill_pid==RESIDENT &&
-        generation_fill_pid==fill_gen && owner_tag_fill_pid==fill_tag &&
+        generation_fill_pid==fill_gen && fill_tag<N_TAG && tag_live[fill_tag] && fill_mapped_pid==fill_pid &&
         fill_sectors!=0 && (fill_sectors & ~sectors_pending_fill_pid)==0;
     wire [WAD_W-1:0] head_wad=wb_fifo[wb_head];
     wire [PID_W-1:0] head_pid=wad_payload[head_wad];
@@ -413,7 +413,8 @@ module ep_l2_slice_ctrl #(
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_pin_pid(generation_bits,pin_pid,generation_pin_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_head_pid(generation_bits,head_pid,generation_head_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_active_pid(generation_bits,active_pid,generation_active_pid);
-    ep_l2_index_mux #(.N(N_PAYLOAD),.W(TAG_W),.IW(PID_W)) select_owner_tag_fill_pid(owner_tag_bits,fill_pid,owner_tag_fill_pid);
+    // R3B proven role/live/forward-map invariant replaces reverse owner.
+    ep_l2_index_mux #(.N(N_TAG),.W(PID_W),.IW(TAG_W)) select_fill_tag_map(tag_map_bits,fill_tag,fill_mapped_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(6),.IW(PID_W)) select_pins_old_pid(pins_bits,old_pid,pins_old_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(6),.IW(PID_W)) select_pins_pin_pid(pins_bits,pin_pid,pins_pin_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(4),.IW(PID_W)) select_sectors_ready_old_pid(sectors_ready_bits,old_pid,sectors_ready_old_pid);
@@ -489,7 +490,7 @@ module ep_l2_slice_ctrl #(
         end else begin: active
             wire [TAG_W-1:0] word_owner;
             assign owner_tag_bits[m*TAG_W +:TAG_W]=(MODE!=1 && m<N_TAG)?TAG_W'(m):word_owner;
-            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(MODE==1),.STATIC_RESIDENT(MODE!=1 && m<N_TAG)) word_state(
+            ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(0),.STATIC_RESIDENT(MODE!=1 && m<N_TAG)) word_state(
                 .clk(clk),.rst_n(reset_leaf[m/4]),
                 .generation_write((fe_gen_write && frontend_generation_pid==m) || (lower_accept && active_pid==m)),
                 .generation_value(lower_accept && active_pid==m ? group_lower_gen[(m/META_GROUP)*GEN_W +:GEN_W] : group_frontend_gen[(m/META_GROUP)*GEN_W +:GEN_W]),
