@@ -1,8 +1,10 @@
 # Lane2 R3 final — finite RTL qualified, actual cost delivered, timing unclosed
 
 Goal EPL2_RTL_R3_METADATA_AND_COST_OPT required bounded source/finite verification/
-real-cost scope is complete; final commit/push/readback is the remaining release
-step. Selected five-RTL hardware e8d67d13b5205cdcda4c2c750a34f7cda6b0103b;
+real-cost scope is complete. Final data publication2d9676c009331407519b957f41bd408504453d10
+was pushed to both execution refs and read back: all429pack blobs and21selected
+source/table/receipt/DC-entry file bytes match. This enclosing metadata-only
+closeout records that exact readback, with no hardware/report change. Selected five-RTL hardware e8d67d13b5205cdcda4c2c750a34f7cda6b0103b;
 independent qualifiedA ac607 retained at frozenb4d825b4 source ref. First exact
 checkpoint was delivered at39min; final work is inside6h from02:35:29Z.
 
