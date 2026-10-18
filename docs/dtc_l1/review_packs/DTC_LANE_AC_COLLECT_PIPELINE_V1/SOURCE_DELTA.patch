@@ -1,0 +1,986 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4a436fb0..7ddb15ca 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -124,0 +125,12 @@ if(GPGPUSIM_BUILD_DTC_L1_TESTS)
++    add_executable(dtc_l1_collect_wb_pipeline_probe
++                   tests/dtc_l1_collect_wb_pipeline_probe.cc)
++    target_include_directories(dtc_l1_collect_wb_pipeline_probe PRIVATE
++        ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/libcuda
++        ${CUDAToolkit_INCLUDE_DIRS})
++    target_compile_options(dtc_l1_collect_wb_pipeline_probe PRIVATE -fno-access-control)
++    target_link_libraries(dtc_l1_collect_wb_pipeline_probe PRIVATE cudart ${CMAKE_DL_LIBS})
++    add_executable(dtc_l1_collect_wb_resource_test
++                   tests/dtc_l1_collect_wb_resource_test.cc)
++    target_include_directories(dtc_l1_collect_wb_resource_test PRIVATE
++                               ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgpu-sim)
++    add_test(NAME dtc_l1_collect_wb_resource_test COMMAND dtc_l1_collect_wb_resource_test)
+diff --git a/src/gpgpu-sim/dtc-l1-collect-wb.h b/src/gpgpu-sim/dtc-l1-collect-wb.h
+new file mode 100644
+index 00000000..0f6107c0
+--- /dev/null
++++ b/src/gpgpu-sim/dtc-l1-collect-wb.h
+@@ -0,0 +1,192 @@
++// OPT-COLLECT: two bounded result banks, with no data copy on stage transfer.
++// This is a timing/ownership model, like service_entry; it does not simulate
++// load values. Each bank is explicitly charged physical_lines * 128 data bytes.
++// The PIB continues to own instruction/reference descriptors, NEVER data space.
++#ifndef DTC_L1_COLLECT_WB_H
++#define DTC_L1_COLLECT_WB_H
++
++#include "dtc-l1-common.h"
++#include <cstdio>
++
++namespace dtc_l1 {
++
++struct collect_wb_pipeline {
++  bool collecting_valid = false;
++  bool result_valid = false;
++  uint64_t collecting_uid = 0;
++  uint64_t result_uid = 0;
++  unsigned collecting_sectors = 0;  // data actually read, retained in its bank
++  unsigned result_sectors = 0;
++  unsigned bank_capacity_sectors = 0;
++  unsigned collecting_bank = 0;
++  unsigned result_bank = 1;
++
++  uint64_t edge_cycle = UINT64_MAX;
++  uint64_t sampled_cycle = UINT64_MAX;
++  uint64_t first_sample_cycle = UINT64_MAX;
++  uint64_t last_wb_attempt_cycle = UINT64_MAX;
++  unsigned cycle_sectors = 0;
++  unsigned cycle_retires = 0;
++  bool cycle_cacheable_retire = false;
++  uint64_t samples = 0;
++  uint64_t eligible_ready_sum = 0;
++  uint64_t eligible_ready_cycles = 0;
++  uint64_t idle_despite_eligible = 0;
++  uint64_t overlap_cycles = 0;
++  uint64_t result_occupancy_samples = 0;
++  uint64_t collecting_occupancy_samples = 0;
++  uint64_t result_backpressure_cycles = 0;
++  uint64_t wb_arbitration_blocked_cycles = 0;
++  uint64_t wb_attempts = 0;
++  uint64_t wb_denied = 0;
++  uint64_t sectors = 0;
++  uint64_t retires = 0;
++  uint64_t cacheable_retires = 0;
++  uint64_t sidecar_retires = 0;
++  unsigned peak_buffered_sectors = 0;
++  std::array<uint64_t, 5> sector_hist{};
++  std::array<uint64_t, 2> retire_hist{};
++
++  void configure(unsigned physical_lines) {
++    assert(physical_lines && physical_lines <= UINT32_MAX / 4);
++    bank_capacity_sectors = physical_lines * 4;
++  }
++  void begin_edge(uint64_t cycle) {
++    if (edge_cycle == cycle) return;
++    assert(edge_cycle == UINT64_MAX || cycle > edge_cycle);
++    edge_cycle = cycle;
++    cycle_sectors = cycle_retires = 0;
++    cycle_cacheable_retire = false;
++  }
++  void claim(uint64_t uid, unsigned total_sectors) {
++    assert(!collecting_valid && total_sectors &&
++           total_sectors <= bank_capacity_sectors);
++    assert(!result_valid || uid != result_uid);
++    collecting_valid = true;
++    collecting_uid = uid;
++    collecting_sectors = 0;
++    check();
++  }
++  void consumed(uint64_t cycle, unsigned count) {
++    begin_edge(cycle);
++    assert(collecting_valid && count <= 4);
++    collecting_sectors += count;
++    cycle_sectors += count;
++    sectors += count;
++    assert(cycle_sectors <= 4);
++    check();
++  }
++  void promote() {
++    assert(collecting_valid && !result_valid && collecting_sectors);
++    result_valid = true;
++    result_uid = collecting_uid;
++    result_sectors = collecting_sectors;
++    // Swap bank roles, not their contents: no unmodeled bulk data transfer.
++    std::swap(result_bank, collecting_bank);
++    collecting_valid = false;
++    collecting_uid = collecting_sectors = 0;
++    check();
++  }
++  void attempted(uint64_t cycle, bool granted) {
++    begin_edge(cycle);
++    assert(result_valid && last_wb_attempt_cycle != cycle);
++    last_wb_attempt_cycle = cycle;
++    ++wb_attempts;
++    if (!granted) ++wb_denied;
++  }
++  void retired(uint64_t cycle, uint64_t uid, bool cacheable) {
++    begin_edge(cycle);
++    assert(!cycle_retires);
++    ++cycle_retires;
++    ++retires;
++    if (cacheable) {
++      assert(result_valid && result_uid == uid);
++      result_valid = false;
++      result_uid = result_sectors = 0;
++      cycle_cacheable_retire = true;
++      ++cacheable_retires;
++    } else {
++      ++sidecar_retires;
++    }
++    // LDST can be invoked more than once per absolute core cycle. Collection
++    // samples only once; a later same-cycle WB grant must still enter its bins.
++    if (sampled_cycle == cycle) {
++      assert(retire_hist[0]);
++      --retire_hist[0];
++      ++retire_hist[1];
++      overlap_cycles += cacheable && cycle_sectors;
++    }
++    check();
++  }
++  void sample(uint64_t cycle, unsigned eligible_ready,
++              unsigned eligible_collect, bool result_backpressure,
++              bool wb_arbitration_blocked) {
++    begin_edge(cycle);
++    assert(sampled_cycle != cycle);
++    sampled_cycle = cycle;
++    if (first_sample_cycle == UINT64_MAX) first_sample_cycle = cycle;
++    ++samples;
++    eligible_ready_sum += eligible_ready;
++    eligible_ready_cycles += eligible_ready != 0;
++    idle_despite_eligible += eligible_collect && !cycle_sectors;
++    overlap_cycles += cycle_cacheable_retire && cycle_sectors;
++    result_occupancy_samples += result_valid;
++    collecting_occupancy_samples += collecting_valid;
++    result_backpressure_cycles += result_backpressure;
++    wb_arbitration_blocked_cycles += wb_arbitration_blocked;
++    ++sector_hist.at(cycle_sectors);
++    ++retire_hist.at(cycle_retires);
++    check();
++  }
++  void check() {
++    assert(bank_capacity_sectors);
++    assert(collecting_bank != result_bank && collecting_bank < 2 && result_bank < 2);
++    assert(!collecting_valid || !result_valid || collecting_uid != result_uid);
++    assert(collecting_sectors <= bank_capacity_sectors &&
++           result_sectors <= bank_capacity_sectors);
++    assert(collecting_valid || !collecting_sectors);
++    assert(result_valid || !result_sectors);
++    peak_buffered_sectors = std::max(peak_buffered_sectors,
++                                   collecting_sectors + result_sectors);
++  }
++  void print(FILE *fp, unsigned sm) const {
++    fprintf(fp, "DTC_COLLECT_WB_V1_SUMMARY sm=%u", sm);
++#define DTC_CW_PRINT(name, value) \
++    fprintf(fp, " " name "=%llu", (unsigned long long)(value))
++    DTC_CW_PRINT("samples", samples);
++    DTC_CW_PRINT("first_cycle", first_sample_cycle);
++    DTC_CW_PRINT("last_cycle", sampled_cycle);
++    DTC_CW_PRINT("eligible_ready_sum", eligible_ready_sum);
++    DTC_CW_PRINT("eligible_ready_cycles", eligible_ready_cycles);
++    DTC_CW_PRINT("collect_idle_eligible_cycles", idle_despite_eligible);
++    DTC_CW_PRINT("overlap_cycles", overlap_cycles);
++    DTC_CW_PRINT("result_occupancy_samples", result_occupancy_samples);
++    DTC_CW_PRINT("collecting_occupancy_samples", collecting_occupancy_samples);
++    DTC_CW_PRINT("result_backpressure_cycles", result_backpressure_cycles);
++    DTC_CW_PRINT("wb_arbitration_blocked_cycles", wb_arbitration_blocked_cycles);
++    DTC_CW_PRINT("wb_attempts", wb_attempts);
++    DTC_CW_PRINT("wb_denied_attempts", wb_denied);
++    DTC_CW_PRINT("collected_sectors", sectors);
++    DTC_CW_PRINT("retires", retires);
++    DTC_CW_PRINT("cacheable_retires", cacheable_retires);
++    DTC_CW_PRINT("sidecar_retires", sidecar_retires);
++    DTC_CW_PRINT("collecting_valid", collecting_valid);
++    DTC_CW_PRINT("result_valid", result_valid);
++    DTC_CW_PRINT("collecting_uid", collecting_uid);
++    DTC_CW_PRINT("result_uid", result_uid);
++    DTC_CW_PRINT("buffered_sectors", collecting_sectors + result_sectors);
++    DTC_CW_PRINT("peak_buffered_sectors", peak_buffered_sectors);
++    DTC_CW_PRINT("bank_capacity_bytes", uint64_t(bank_capacity_sectors) * 32);
++    DTC_CW_PRINT("total_buffer_capacity_bytes", uint64_t(bank_capacity_sectors) * 64);
++    for (unsigned i = 0; i < sector_hist.size(); ++i)
++      fprintf(fp, " sector_cycles_%u=%llu", i, (unsigned long long)sector_hist[i]);
++    for (unsigned i = 0; i < retire_hist.size(); ++i)
++      fprintf(fp, " retire_cycles_%u=%llu", i, (unsigned long long)retire_hist[i]);
++    DTC_CW_PRINT("last_cycle_sectors", cycle_sectors);
++    DTC_CW_PRINT("last_cycle_retires", cycle_retires);
++#undef DTC_CW_PRINT
++    fputc('\n', fp);
++  }
++};
++} // namespace dtc_l1
++#endif
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index c9f46a06..fcfa7a43 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -412,0 +413,3 @@ void shader_core_config::reg_options(class OptionParser *opp) {
++  option_parser_register(opp, "-gpgpu_dtc_l1_collect_wb_pipeline", OPT_BOOL,
++                         &dtc_l1_collect_wb_pipeline,
++                         "Opt-in bounded collection/WB overlap: PAPER_OO + finite V1 only", "0");
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+index e7a05a87..f6a26c03 100644
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -3522,0 +3523,107 @@ void ldst_unit::dtc_l1_oo_complete_instruction(const warp_inst_t &inst,
++// The ON pipeline uses the original full-admission/readiness/fence predicates.
++// Stage ownership is additional to PIB ownership; no Ref moves at these edges.
++bool ldst_unit::dtc_l1_oo_pipeline_eligible(unsigned uid) const {
++  for (auto candidate = m_dtc_l1_oo_pib.begin();
++       candidate != m_dtc_l1_oo_pib.end(); ++candidate) {
++    if (candidate->inst.get_uid() != uid) continue;
++    if (candidate->operation == dtc_l1_m4_operation::CACHEABLE_LOAD &&
++        candidate->next_reference != candidate->references.size()) return false;
++    if (!m_dtc_l1_oo_frontend->entry_ready_for(uid)) return false;
++    for (auto older = m_dtc_l1_oo_pib.begin(); older != candidate; ++older)
++      if (older->inst.warp_id() == candidate->inst.warp_id() &&
++          older->operation == dtc_l1_m4_operation::PROXY_FENCE) return false;
++    return true;
++  }
++  return false;
++}
++
++bool ldst_unit::dtc_l1_oo_pipeline_wb_candidate(uint64_t *uid) const {
++  const uint64_t cycle = m_core->get_gpu()->global_cycle();
++  uint64_t first_uid = 0;
++  if (dtc_l1_oo_select_ready(&first_uid)) {
++    for (const auto &entry : m_dtc_l1_oo_pib)
++      if (entry.inst.get_uid() == first_uid &&
++          entry.operation != dtc_l1_m4_operation::CACHEABLE_LOAD) {
++        // Keep the original selector's sidecar priority. No data bank and no
++        // second architectural completion, even when a result is waiting.
++        *uid = first_uid;
++        return true;
++      }
++  }
++  if (m_dtc_collect_wb.result_valid) {
++    const unsigned owner = static_cast<unsigned>(m_dtc_collect_wb.result_uid);
++    assert(dtc_l1_oo_pipeline_eligible(owner));
++    if (m_dtc_collect_wb.last_wb_attempt_cycle == cycle) return false;
++    *uid = owner;
++    return true;
++  }
++  return false;
++}
++
++void ldst_unit::dtc_l1_oo_pipeline_collect() {
++  auto &pipe = m_dtc_collect_wb;
++  const uint64_t cycle = m_core->get_gpu()->global_cycle();
++  if (pipe.sampled_cycle == cycle) return; // absolute cycle, not LDST microstep
++  pipe.begin_edge(cycle);
++  assert(m_dtc_l1_oo_frontend && !m_dtc_l1_sector_frontend);
++  unsigned eligible_ready = 0, eligible_collect = 0;
++  dtc_l1_oo_pib_entry *next = nullptr;
++  for (auto &entry : m_dtc_l1_oo_pib) {
++    if (entry.operation != dtc_l1_m4_operation::CACHEABLE_LOAD ||
++        !dtc_l1_oo_pipeline_eligible(entry.inst.get_uid())) continue;
++    ++eligible_ready;
++    if (entry.service.ready_cycle != UINT64_MAX &&
++        cycle > entry.service.ready_cycle && entry.service.sectors_left)
++      ++eligible_collect;
++    if (!next && (!pipe.result_valid || pipe.result_uid != entry.inst.get_uid()) &&
++        (!pipe.collecting_valid || pipe.collecting_uid != entry.inst.get_uid()))
++      next = &entry;
++  }
++  auto promote = [&]() {
++    if (!pipe.collecting_valid || pipe.result_valid) return;
++    auto *owner = dtc_l1_oo_find_entry(static_cast<unsigned>(pipe.collecting_uid));
++    assert(owner && dtc_l1_oo_pipeline_eligible(owner->inst.get_uid()));
++    if (!owner->service.sectors_left &&
++        owner->service.collect_done_cycle != UINT64_MAX) pipe.promote();
++  };
++  promote();
++  if (!pipe.collecting_valid && next) {
++    unsigned sectors = 0;
++    for (const auto &reference : next->references)
++      sectors += __builtin_popcount(reference.sector_mask);
++    // Each admitted unique logical reference pins a distinct physical identity.
++    // Both finite data banks are charged the entire physical-pool byte bound.
++    if (!sectors || sectors > pipe.bank_capacity_sectors) {
++      fprintf(stderr, "DTC_COLLECT_WB_RESULT_CAPACITY_STOP sm=%u uid=%u "
++                      "sectors=%u capacity=%u\n", m_sid, next->inst.get_uid(),
++              sectors, pipe.bank_capacity_sectors);
++      abort();
++    }
++    assert(next->service.collect_start_cycle == UINT64_MAX);
++    pipe.claim(next->inst.get_uid(), sectors);
++  }
++  if (pipe.collecting_valid) {
++    auto *owner = dtc_l1_oo_find_entry(static_cast<unsigned>(pipe.collecting_uid));
++    assert(owner && dtc_l1_oo_pipeline_eligible(owner->inst.get_uid()));
++    const unsigned before = owner->service.sectors_left;
++    // observe_ready() already ran at the existing LDST service edge. Preserve
++    // that timestamp and the original strictly-later collection/WB limits.
++    assert(owner->service.ready_cycle != UINT64_MAX);
++    dtc_l1_service_collect(owner->service, owner->references);
++    pipe.consumed(cycle, before - owner->service.sectors_left);
++  }
++  promote();
++  bool backpressure = false;
++  if (pipe.collecting_valid && pipe.result_valid) {
++    const auto *owner = dtc_l1_oo_find_entry(static_cast<unsigned>(pipe.collecting_uid));
++    backpressure = owner->service.sectors_left == 0;
++  }
++  bool arbitration_blocked = false;
++  if (pipe.result_valid && pipe.last_wb_attempt_cycle != cycle) {
++    const auto *owner = dtc_l1_oo_find_entry(static_cast<unsigned>(pipe.result_uid));
++    arbitration_blocked = cycle > owner->service.collect_done_cycle;
++  }
++  pipe.sample(cycle, eligible_ready, eligible_collect, backpressure,
++              arbitration_blocked);
++}
++
+@@ -3529 +3636,3 @@ bool ldst_unit::dtc_l1_oo_writeback_ready() {
+-  const bool ready = dtc_l1_oo_select_ready(&uid);
++  const bool ready = m_config->dtc_l1_collect_wb_pipeline
++                         ? dtc_l1_oo_pipeline_wb_candidate(&uid)
++                         : dtc_l1_oo_select_ready(&uid);
+@@ -3549,0 +3659,2 @@ bool ldst_unit::dtc_l1_oo_writeback_ready() {
++    if (m_config->dtc_l1_collect_wb_pipeline)
++      m_dtc_collect_wb.retired(service_cycle, uid, false);
+@@ -3556 +3667,6 @@ bool ldst_unit::dtc_l1_oo_writeback_ready() {
+-  if (!dtc_l1_service_collect(entry->service, entry->references)) return false;
++  if (m_config->dtc_l1_collect_wb_pipeline) {
++    assert(m_dtc_collect_wb.result_valid && m_dtc_collect_wb.result_uid == uid);
++    assert(entry->service.collect_done_cycle != UINT64_MAX &&
++           !entry->service.sectors_left);
++    if (service_cycle <= entry->service.collect_done_cycle) return false;
++  } else if (!dtc_l1_service_collect(entry->service, entry->references)) return false;
+@@ -3558,0 +3675,2 @@ bool ldst_unit::dtc_l1_oo_writeback_ready() {
++    if (m_config->dtc_l1_collect_wb_pipeline)
++      m_dtc_collect_wb.attempted(service_cycle, false);
+@@ -3562,0 +3681,2 @@ bool ldst_unit::dtc_l1_oo_writeback_ready() {
++  if (m_config->dtc_l1_collect_wb_pipeline)
++    m_dtc_collect_wb.attempted(service_cycle, true);
+@@ -3578,0 +3699,2 @@ bool ldst_unit::dtc_l1_oo_writeback_ready() {
++  if (m_config->dtc_l1_collect_wb_pipeline)
++    m_dtc_collect_wb.retired(service_cycle, uid, true);
+@@ -3670,0 +3793,4 @@ void ldst_unit::print_dtc_l1_invalidation_summary(FILE *fp) const {
++void ldst_unit::print_dtc_l1_collect_wb_stats(FILE *fp) const {
++  if (m_config->dtc_l1_collect_wb_pipeline) m_dtc_collect_wb.print(fp, m_sid);
++}
++
+@@ -4276,0 +4403,8 @@ void ldst_unit::init(mem_fetch_interface *icnt,
++  if (config->dtc_l1_collect_wb_pipeline) {
++    if (config->dtc_l1_mode != static_cast<unsigned>(dtc_l1::mode::PAPER_OO) ||
++        !config->dtc_l1_finite_service || config->m_L1D_config.disabled()) {
++      fprintf(stderr, "DTC_COLLECT_WB_REQUIRES_PAPER_OO_FINITE_V1_L1D_STOP\n");
++      abort();
++    }
++    m_dtc_collect_wb.configure(config->dtc_l1_physical_lines);
++  }
+@@ -4407,0 +4542,4 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
++  if (config->dtc_l1_collect_wb_pipeline) {
++    fprintf(stderr, "DTC_COLLECT_WB_EXTERNAL_CACHE_CONSTRUCTOR_STOP\n");
++    abort();
++  }
+@@ -4950,0 +5089,3 @@ void ldst_unit::writeback() {
++  // Independent collection stage, including cycles where another client wins
++  // WB arbitration. Uses only the unchanged absolute-cycle 4-sector port.
++  if (m_config->dtc_l1_collect_wb_pipeline) dtc_l1_oo_pipeline_collect();
+@@ -5768,0 +5910,9 @@ void gpgpu_sim::shader_print_dtc_l1_stats(FILE *fout) const {
++  if (m_shader_config->dtc_l1_collect_wb_pipeline) {
++    fprintf(fout, "DTC_COLLECT_WB_V1_SNAPSHOT_BEGIN version=1 sms=%u cycle=%llu\n",
++            m_shader_config->num_shader(), (unsigned long long)global_cycle());
++    for (unsigned i = 0; i < m_shader_config->n_simt_clusters; ++i)
++      m_cluster[i]->print_dtc_l1_collect_wb_stats(fout);
++    fprintf(fout, "DTC_COLLECT_WB_V1_SNAPSHOT_END version=1 sms=%u cycle=%llu\n",
++            m_shader_config->num_shader(), (unsigned long long)global_cycle());
++  }
++
+@@ -7034,0 +7185,4 @@ void shader_core_ctx::print_dtc_l1_invalidation_summary(FILE *fp) const {
++void shader_core_ctx::print_dtc_l1_collect_wb_stats(FILE *fp) const {
++  m_ldst_unit->print_dtc_l1_collect_wb_stats(fp);
++}
++
+@@ -7881,0 +8036,5 @@ void simt_core_cluster::print_dtc_l1_invalidation_summary(FILE *fp) const {
++void simt_core_cluster::print_dtc_l1_collect_wb_stats(FILE *fp) const {
++  for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; ++i)
++    m_core[i]->print_dtc_l1_collect_wb_stats(fp);
++}
++
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+index ae9b4112..1abc88a7 100644
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -60,0 +61 @@
++#include "dtc-l1-collect-wb.h"
+@@ -1999,0 +2001 @@ class ldst_unit : public pipelined_simd_unit {
++  void print_dtc_l1_collect_wb_stats(FILE *fp) const;
+@@ -2108,0 +2111,3 @@ class ldst_unit : public pipelined_simd_unit {
++  bool dtc_l1_oo_pipeline_eligible(unsigned uid) const;
++  void dtc_l1_oo_pipeline_collect();
++  bool dtc_l1_oo_pipeline_wb_candidate(uint64_t *uid) const;
+@@ -2154,0 +2160 @@ class ldst_unit : public pipelined_simd_unit {
++  dtc_l1::collect_wb_pipeline m_dtc_collect_wb;
+@@ -2504,0 +2511 @@ class shader_core_config : public core_config {
++  bool dtc_l1_collect_wb_pipeline;
+@@ -3066,0 +3074 @@ class shader_core_ctx : public core_t {
++  void print_dtc_l1_collect_wb_stats(FILE *fp) const;
+@@ -3595,0 +3604 @@ class simt_core_cluster {
++  void print_dtc_l1_collect_wb_stats(FILE *fp) const;
+diff --git a/tests/dtc_l1_collect_wb_pipeline_probe.cc b/tests/dtc_l1_collect_wb_pipeline_probe.cc
+new file mode 100644
+index 00000000..c3d1d37a
+--- /dev/null
++++ b/tests/dtc_l1_collect_wb_pipeline_probe.cc
+@@ -0,0 +1,485 @@
++// CPU component fixture: real LDST issue/admission helpers, cycle(), WB
++// arbitration, RFU register-bank grants, completion ledger and normal printer.
++// Setup may call admission helpers between edges to align fully-ready inputs.
++// Lower responses are controlled CPU packets, not an ICNT/L2/DRAM simulation.
++// No kernel, GPU cycle(), trace replay, native GPU or simulation thread.
++#include "gpgpu-sim/gpu-sim.h"
++#include "gpgpu-sim/shader.h"
++#include "gpgpu-sim/icnt_wrapper.h"
++#include "gpgpu_context.h"
++#include "gpgpusim_entrypoint.h"
++#include "option_parser.h"
++#include <cstring>
++#include <ctime>
++#include <dlfcn.h>
++#include <fstream>
++#include <numeric>
++#include <sstream>
++#include <string>
++#include <sys/resource.h>
++#include <unistd.h>
++
++struct cpu_link : mem_fetch_interface {
++  std::deque<mem_fetch *> roots;
++  bool full(unsigned, bool) const override { return false; }
++  void push(mem_fetch *mf) override { roots.push_back(mf); }
++};
++
++struct fixture {
++  gpgpu_context ctx;
++  gpgpu_sim_config cfg{&ctx};
++  exec_gpgpu_sim *gpu;
++  shader_core_ctx *core;
++  ldst_unit *unit;
++  cpu_link link;
++  bool on = false;
++  uint64_t edge_start = 0;
++  uint64_t expected_sectors = 0;
++  unsigned loads = 0;
++  unsigned snapshots = 0;
++
++  fixture(const char *config, const char *flag, const char *mode,
++          const char *finite, const char *k1, const char *sms) {
++    auto parser = option_parser_create();
++    cfg.reg_options(parser);
++    icnt_reg_options(parser);
++    ctx.ptx_reg_options(parser);
++    ctx.func_sim->ptx_opcocde_latency_options(parser);
++    option_parser_cfgfile(parser, config);
++    const char *args[] = {"AC_CPU", "-gpgpu_n_clusters", sms,
++        "-gpgpu_n_cores_per_cluster", "1", "-gpgpu_n_mem", "32",
++        "-gpgpu_n_sub_partition_per_mchannel", "2",
++        "-gpgpu_shader_core_pipeline", "128:32", "-gpgpu_shader_cta", "2",
++        "-gpgpu_smem_latency", "2", "-network_mode", "2",
++        "-gpgpu_dtc_l1_mode", mode, "-gpgpu_dtc_l1_finite_service", finite,
++        "-gpgpu_l1_cache_write_ratio", "0", "-gpgpu_gmem_skip_L1D", "0",
++        "-enable_ptx_file_line_stats", "0", "-gpgpu_flush_l1_cache", "1",
++        "-gpgpu_runtime_stat", "500000", "-gpgpu_dtc_l1_debug_event_limit", "0",
++        "-gpgpu_dtc_l1_invalidate_on_source_event", k1,
++        "-power_simulation_enabled", "0", "-visualizer_enabled", "0",
++        "-gpgpu_clock_domains", "1410.0:1410.0:1410.0:850.0"};
++    option_parser_cmdline(parser, sizeof(args) / sizeof(args[0]), args);
++#ifndef DTC_COLLECT_WB_PROBE_BASELINE
++    assert(!cfg.m_shader_config.dtc_l1_collect_wb_pipeline);
++    if (std::strcmp(flag, "omitted")) {
++      const char *opt[] = {"AC_CPU", "-gpgpu_dtc_l1_collect_wb_pipeline", flag};
++      option_parser_cmdline(parser, 3, opt);
++    }
++    on = cfg.m_shader_config.dtc_l1_collect_wb_pipeline;
++#else
++    assert(!std::strcmp(flag, "omitted") || !std::strcmp(flag, "0"));
++#endif
++    cfg.init();
++    assert(cfg.gpu_runtime_stat_flag == 0 && cfg.gpu_stat_sample_freq == 500000);
++    ctx.the_gpgpusim->g_simulation_starttime = std::time(nullptr);
++    gpu = new exec_gpgpu_sim(cfg, &ctx);
++    gpu->init();
++    // The unchanged base dram_t constructor leaves n_ref uninitialized. This
++    // CPU fixture never clocks DRAM, so supply its explicit zero-event input
++    // in BOTH builds. Do not repair the production DRAM model in this Lane.
++    for (auto *partition : gpu->m_memory_partition_unit) partition->m_dram->n_ref = 0;
++    core = gpu->get_simt_core_clusters()[0]->get_shader_cores()[0];
++    unit = core->m_ldst_unit;
++    unit->m_icnt = &link;
++    assert(dynamic_cast<opndcoll_rfu_t *>(unit->m_operand_collector));
++  }
++  uint64_t now() const { return gpu->global_cycle(); }
++  dtc_l1::oo_frontend &front() { return *unit->m_dtc_l1_oo_frontend; }
++  void setup_advance() {
++    ++gpu->gpu_sim_cycle;
++    front().advance_service(now());
++  }
++  warp_inst_t instruction(unsigned warp = 0, unsigned reg = 1) {
++    warp_inst_t inst(&cfg.m_shader_config);
++    inst.op = LOAD_OP;
++    inst.memory_op = memory_load;
++    inst.op_pipe = MEM__OP;
++    inst.space.set_type(global_space);
++    inst.cache_op = CACHE_ALL;
++    inst.data_size = 4;
++    inst.pc = 0x100 + loads * 4;
++    inst.initiation_interval = inst.latency = 1;
++    std::fill(std::begin(inst.out), std::end(inst.out), 0);
++    std::fill(std::begin(inst.in), std::end(inst.in), 0);
++    for (auto &dst : inst.arch_reg.dst) dst = -1;
++    for (auto &src : inst.arch_reg.src) src = -1;
++    inst.out[0] = reg;
++    inst.arch_reg.dst[0] = reg;
++    active_mask_t active;
++    active.set();
++    inst.issue(active, warp, now(), warp, 0, 0);
++    return inst;
++  }
++  void prime(unsigned lines, uint64_t base) {
++    setup_advance();
++    const uint64_t seed = 1000000 + now();
++    assert(front().admit(seed));
++    std::vector<dtc_l1::physical_identity> identities;
++    for (unsigned i = 0; i < lines; ++i) {
++      setup_advance();
++      const auto result = front().access(now(), seed, base + i * 128);
++      assert(result.kind == dtc_l1::io_access_kind::NEW_MISS);
++      identities.push_back(result.physical);
++      front().complete(result.physical);
++    }
++    while (!front().entry_ready_for(seed)) setup_advance();
++    setup_advance();
++    assert(front().retire_ready_uid(now(), seed));
++  }
++  // Production issue() creates the ledger/pending writes. Its production
++  // admission helper creates the real PIB and full/partial physical ownership.
++  unsigned enqueue(unsigned lines, uint64_t base, unsigned warp = 0,
++                   int admit = -1, bool keep_dispatch = false,
++                   bool start_advance = true) {
++    if (start_advance) setup_advance();
++    warp_inst_t inst = instruction(warp, loads + 1);
++    for (unsigned i = 0; i < lines; ++i) {
++      mem_access_byte_mask_t bytes;
++      mem_access_sector_mask_t sectors;
++      bytes.set(); sectors.set();
++      inst.m_accessq.push_back(mem_access_t(GLOBAL_ACC_R, base + i * 128, 128,
++          false, inst.get_active_mask(), bytes, sectors, &ctx));
++    }
++    const unsigned uid = inst.get_uid();
++    register_set issue(1, "AC_CPU_ISSUE");
++    **issue.get_free() = inst;
++    core->m_warp[warp]->inc_inst_in_pipeline();
++    unit->m_scoreboard->reserveRegisters(&inst);
++    unit->issue(issue);
++    ++loads;
++    expected_sectors += lines * 4;
++    const unsigned target = admit < 0 ? lines : static_cast<unsigned>(admit);
++    unsigned attempts = 0;
++    do {
++      mem_stage_stall_type reason = NO_RC_FAIL;
++      mem_stage_access_type type = G_MEM_LD;
++      unit->dtc_l1_oo_memory_cycle(*unit->m_dispatch_reg, reason, type);
++      assert(++attempts < 5000);
++      if (unit->dtc_l1_oo_find_entry(uid)->next_reference >= target) break;
++      setup_advance();
++    } while (true);
++    if (!keep_dispatch) {
++      // Controlled setup seam substitutes for the identical dispatch-drain
++      // edge at the tail of LDST cycle(); no completion/Ref release here.
++      assert(target == lines);
++      core->dec_inst_in_pipeline(warp);
++      unit->m_dispatch_reg->clear();
++    }
++    return uid;
++  }
++  warp_inst_t sidecar(ldst_unit::dtc_l1_m4_operation operation, unsigned warp) {
++    setup_advance();
++    auto inst = instruction(warp, 0);
++    assert(unit->dtc_l1_m4_observe_admit(inst, operation));
++    return inst;
++  }
++  void respond() {
++    while (!link.roots.empty()) {
++      mem_fetch *root = link.roots.front(); link.roots.pop_front();
++      for (unsigned sector : {2U, 0U, 3U, 1U}) {
++        mem_access_byte_mask_t bytes;
++        mem_access_sector_mask_t mask;
++        for (unsigned i = sector * 32; i < (sector + 1) * 32; ++i) bytes.set(i);
++        mask.set(sector);
++        mem_access_t access(GLOBAL_ACC_R, root->get_addr() + sector * 32, 32,
++            false, root->get_inst().get_active_mask(), bytes, mask, &ctx);
++        auto *child = new mem_fetch(access, &root->get_inst(), 0, READ_PACKET_SIZE,
++            root->get_wid(), 0, 0, &cfg.m_memory_config, now(), root);
++        child->set_reply();
++        unit->fill(child);
++      }
++    }
++  }
++  void block_bank() {
++    assert(!unit->m_dtc_l1_oo_pib.empty());
++    auto inst = unit->m_dtc_l1_oo_pib.front().inst;
++    // Actual RFU request reserves the same bank; the production DTC attempt
++    // must now fail in opndcoll_rfu_t::writeback(), without a mock grant path.
++    assert(unit->m_operand_collector->writeback(inst));
++  }
++  void edge(bool deny = false, bool returns = true, unsigned microsteps = 1) {
++    ++gpu->gpu_sim_cycle;
++    if (!edge_start) edge_start = now();
++    unit->m_operand_collector->step();
++    if (returns) respond();
++    if (deny && !unit->m_dtc_l1_oo_pib.empty()) block_bank();
++    const uint64_t before_retire = front().retires();
++    const uint64_t before_sectors = unit->m_dtc_service_collected_sectors;
++    for (unsigned micro = 0; micro < microsteps; ++micro) unit->cycle();
++    assert(front().retires() - before_retire <= 1);
++    assert(unit->m_dtc_service_collected_sectors - before_sectors <= 4);
++    front().assert_shadow_refs();
++    uint64_t shadow = 0;
++    for (const auto &entry : front().m_entries) shadow += entry.references.size();
++    assert(shadow == front().active_refs());
++    assert(gpu->dtc_l1_lower_requests_acquired() ==
++           gpu->dtc_l1_lower_requests_released() + gpu->dtc_l1_lower_outstanding());
++    std::printf("AC_EDGE cycle=%llu pib=%zu refs=%llu allocated=%zu "
++                "sectors=%llu retires=%llu closed=%llu inflight=%zu fifo=%zu "
++                "create_used=%u inject_used=%u refill_used=%u retire_used=%u collect_used=%u\n",
++        (unsigned long long)now(), unit->m_dtc_l1_oo_pib.size(), (unsigned long long)front().active_refs(),
++        front().allocated_lines(),
++        (unsigned long long)(unit->m_dtc_service_collected_sectors - before_sectors),
++        (unsigned long long)(front().retires() - before_retire),
++        (unsigned long long)unit->m_dtc_l1_oo_completion_dependencies_closed,
++        unit->m_dtc_l1_oo_inflight.size(), unit->m_response_fifo.size(),
++        used(unit->m_dtc_service_create), used(unit->m_dtc_service_inject),
++        used(unit->m_dtc_service_refill), used(unit->m_dtc_service_retire),
++        used(unit->m_dtc_service_collect));
++    for (const auto &entry : unit->m_dtc_l1_oo_pib)
++      std::printf("AC_ENTRY cycle=%llu uid=%u admitted=%zu total=%zu "
++          "ready=%llu collect_start=%llu collect_done=%llu left=%u\n", (unsigned long long)now(),
++          entry.inst.get_uid(), entry.next_reference, entry.references.size(),
++          (unsigned long long)entry.service.ready_cycle,
++          (unsigned long long)entry.service.collect_start_cycle,
++          (unsigned long long)entry.service.collect_done_cycle, entry.service.sectors_left);
++    dump_state();
++#ifndef DTC_COLLECT_WB_PROBE_BASELINE
++    if (on) {
++      const auto &p = unit->m_dtc_collect_wb;
++      assert(p.sectors == unit->m_dtc_service_collected_sectors);
++      assert(p.cacheable_retires == unit->m_dtc_service_retired);
++      assert(p.retires == p.cacheable_retires + p.sidecar_retires);
++      assert(p.result_sectors + p.collecting_sectors <= p.bank_capacity_sectors * 2);
++      assert(p.cycle_sectors <= 4 && p.cycle_retires <= 1);
++      assert(std::accumulate(p.sector_hist.begin(), p.sector_hist.end(), uint64_t(0)) == p.samples);
++      assert(p.retire_hist[0] + p.retire_hist[1] == p.samples);
++      assert(p.retire_hist[1] == p.retires);
++    }
++#endif
++  }
++  unsigned used(const dtc_l1::service_quota &q) {
++    return q.m_cycle == now() ? q.m_used : 0;
++  }
++  void dump_state() {
++    // Typed fields, no padding/pointers/host addresses in the equality witness.
++    std::ostringstream out;
++    auto &f = front();
++    out << "AC_STATE cycle=" << now() << " physical=";
++    for (const auto &p : f.m_phys) {
++      out << p.allocated << ',' << p.ready << ',' << p.tag_valid << ','
++          << p.generation << ',' << p.ref_count << '[';
++      for (auto w : p.waiters) out << w.slot << ':' << w.slot_generation << ',';
++      out << "];";
++    }
++    out << " tags=";
++    for (const auto &t : f.m_tags)
++      out << t.valid << ',' << t.line << ',' << t.physical.id << ','
++          << t.physical.generation << ',' << t.lru << ';';
++    out << " slots=";
++    for (const auto &s : f.m_slots)
++      out << s.active << ',' << s.uid << ',' << s.generation << ';';
++    out << " owners=";
++    for (const auto &e : f.m_entries) {
++      out << e.uid << ',' << e.slot << ',' << e.slot_generation << ','
++          << e.pending_dependencies << ',' << e.external_dependencies << '[';
++      for (auto p : e.references) out << p.id << ':' << p.generation << ',';
++      out << "];";
++    }
++    out << " returns=";
++    for (auto r : f.m_service_returns)
++      out << r.physical.id << ':' << r.physical.generation << ':'
++          << r.ready_cycle << ':' << r.next_waiter << ';';
++    out << " map_loss=";
++    for (auto p : f.m_service_map_loss) out << p.first << ':' << p.second << ';';
++    out << " quotas=";
++    for (const auto *q : {&unit->m_dtc_service_collect, &unit->m_dtc_service_retire,
++                         &unit->m_dtc_service_refill, &unit->m_dtc_service_create,
++                         &unit->m_dtc_service_inject})
++      out << q->m_width << ':' << q->m_used << ':' << q->m_cycle << ';';
++    out << " service=" << unit->m_dtc_service_sample_cycle << ','
++        << unit->m_dtc_service_occupancy_sample_cycle << ','
++        << unit->m_dtc_service_samples << ',' << unit->m_dtc_service_pib_integral
++        << ',' << unit->m_dtc_service_physical_integral << ','
++        << unit->m_dtc_service_ready_to_complete_sum << ','
++        << unit->m_dtc_service_ready_to_collect_sum << ','
++        << unit->m_dtc_service_collection_cycles << ',' << unit->m_dtc_service_wb_wait
++        << ',' << unit->m_dtc_service_retired << ',' << unit->m_dtc_service_collected_sectors;
++    out << " frontend_control=" << f.m_cycle << ',' << f.m_retire_cycle << ','
++        << f.m_service_cycle << ',' << f.m_lru_clock << ',' << f.m_allocations_this_cycle
++        << ',' << f.m_rr_next << ',' << f.m_tag_cycle << ',' << f.m_total_tag_requests_this_cycle;
++    for (auto count : f.m_tag_requests_this_cycle) out << ',' << count;
++    out << " completion_ledger=";
++    std::map<unsigned, ldst_unit::dtc_l1_r4c0_entry> ledger(
++        unit->m_dtc_l1_r4c0_completion_trace.begin(), unit->m_dtc_l1_r4c0_completion_trace.end());
++    for (const auto &item : ledger) {
++      const auto &e = item.second;
++      out << item.first << ':' << unsigned(e.accounting.state()) << ':'
++          << e.accounting.registered() << ':' << e.accounting.pib_owned() << ':'
++          << e.accounting.closed() << ':' << e.completion_attempts << ';';
++    }
++    out << " pending=";
++    std::map<unsigned, std::map<unsigned, unsigned>> pending;
++    for (const auto &w : unit->m_pending_writes)
++      for (auto r : w.second) pending[w.first][r.first] = r.second;
++    for (const auto &w : pending)
++      for (auto r : w.second) out << w.first << ':' << r.first << ':' << r.second << ';';
++    const auto &k = unit->m_dtc_invalidation;
++    out << " k1=" << k.requests << ',' << k.ordinary_commits << ',' << k.order
++        << ',' << k.changed << ',' << k.retained << ',' << k.reclaimed << ','
++        << k.no_op_requests << ',' << k.first_request_cycle << ',' << k.last_request_cycle
++        << ',' << k.first_ordinary_commit_cycle << ',' << k.last_ordinary_commit_cycle
++        << ',' << k.pending_first_request << ',' << k.pending_last_request << ',' << k.events_omitted;
++    for (auto n : k.source_counts) out << ',' << n;
++    std::puts(out.str().c_str());
++  }
++  void drain(unsigned microsteps = 1) {
++    for (unsigned count = 0; !unit->m_dtc_l1_oo_pib.empty(); ++count) {
++      assert(count < 2000);
++      edge(false, true, microsteps);
++    }
++    assert(front().active_refs() == 0 && front().occupancy() == 0);
++    assert(unit->m_dtc_l1_oo_completion_dependencies == unit->m_dtc_l1_oo_completion_dependencies_closed);
++    assert(unit->m_dtc_l1_oo_lower_created == unit->m_dtc_l1_oo_lower_issued &&
++           unit->m_dtc_l1_oo_lower_created == unit->m_dtc_l1_oo_lower_responses);
++    assert(unit->m_dtc_service_collected_sectors == expected_sectors);
++    assert(unit->m_dtc_service_retired == loads);
++    assert(unit->m_dtc_service_ready_to_complete_sum ==
++           unit->m_dtc_service_ready_to_collect_sum +
++           unit->m_dtc_service_collection_cycles + unit->m_dtc_service_wb_wait);
++    assert(unit->m_response_fifo.empty() && link.roots.empty());
++    assert(gpu->dtc_l1_lower_outstanding() == 0);
++  }
++  void normal() {
++    std::array<unsigned char, sizeof(dtc_l1::source_invalidation_observer)> observer{};
++    std::memcpy(observer.data(), &unit->m_dtc_invalidation, observer.size());
++#ifndef DTC_COLLECT_WB_PROBE_BASELINE
++    std::array<unsigned char, sizeof(dtc_l1::collect_wb_pipeline)> pipeline{};
++    std::memcpy(pipeline.data(), &unit->m_dtc_collect_wb, pipeline.size());
++#endif
++    const auto clock = now();
++    std::printf("AC_NORMAL_BEGIN id=%u\n", snapshots);
++    gpu->gpu_print_stat(0);
++    std::printf("AC_NORMAL_END id=%u\n", snapshots++);
++    assert(now() == clock);
++    assert(!std::memcmp(observer.data(), &unit->m_dtc_invalidation, observer.size()));
++#ifndef DTC_COLLECT_WB_PROBE_BASELINE
++    assert(!std::memcmp(pipeline.data(), &unit->m_dtc_collect_wb, pipeline.size()));
++#endif
++  }
++};
++
++int main(int argc, const char **argv) {
++  if (argc != 9) return 64; // config flag scenario sectors mode finite K1 SMs
++  rlimit core_limit{0, 0}; setrlimit(RLIMIT_CORE, &core_limit);
++  Dl_info binding{};
++  assert(dladdr(dlsym(RTLD_DEFAULT, "_ZN9gpgpu_sim14gpu_print_statEy"), &binding));
++  std::printf("AC_LIBRARY %s\n", binding.dli_fname);
++  char self[4096]{};
++  assert(readlink("/proc/self/exe", self, sizeof(self) - 1) > 0);
++  std::printf("AC_ELF %s\n", self);
++  std::ifstream maps("/proc/self/maps");
++  std::string line;
++  while (std::getline(maps, line))
++    if (line.find(binding.dli_fname) != std::string::npos)
++      std::printf("AC_LIBRARY_MAP %s\n", line.c_str());
++  fixture f(argv[1], argv[2], argv[5], argv[6], argv[7], argv[8]);
++  const std::string scenario = argv[3];
++  const unsigned sectors = std::stoul(argv[4]);
++  assert(sectors && sectors % 4 == 0);
++  if (scenario == "mode_only") return 0;
++  f.normal(); // true no-event/no-sample baseline through the normal entrypoint
++  if (scenario == "empty") {
++    for (unsigned i = 0; i < 6; ++i) f.edge();
++  } else if (scenario == "sidecars") {
++    const auto before = f.gpu->gpu_sim_insn;
++    using op = ldst_unit::dtc_l1_m4_operation;
++    for (auto kind : {op::STORE, op::ATOMIC, op::BYPASS_LOAD, op::PROXY_FENCE}) {
++      auto inst = f.sidecar(kind, 0);
++      f.unit->dtc_l1_m4_observe_complete(inst);
++    }
++    f.drain();
++    assert(f.gpu->gpu_sim_insn == before); // no duplicated architecture effects
++    assert(f.unit->m_dtc_l1_m4_source_completions == 4 &&
++           f.unit->m_dtc_l1_m4_observation_retires == 4);
++  } else if (scenario == "late_waiter" || scenario == "generation") {
++    const unsigned count = scenario == "late_waiter" ? 12 : 1;
++    for (unsigned i = 0; i < count; ++i) f.enqueue(1, 0);
++    if (scenario == "generation") {
++      const auto old = f.front().m_entries.front().references.front();
++      f.edge(false, false); // issue the real lower root BEFORE mapping loss
++      assert(f.unit->m_dtc_l1_oo_inflight.size() == 1 && !f.link.roots.empty());
++      assert(f.gpu->dtc_l1_lower_outstanding() == 1);
++      f.unit->invalidate(dtc_l1::invalidation_source::IDLE_CLUSTER);
++      assert(!f.front().tag_visible(old) && f.front().ref_count(old) == 1);
++      f.enqueue(1, 0, 1);
++      const auto replacement = f.front().m_entries.back().references.front();
++      assert(old.id != replacement.id && f.front().fill_identity_matches(old));
++      f.unit->invalidate(dtc_l1::invalidation_source::CACHE_CONFIG_CHANGE);
++    }
++    bool late_added = false;
++    for (unsigned step = 0; !f.unit->m_dtc_l1_oo_pib.empty(); ++step) {
++      assert(step < 300);
++      f.edge(false, true, 3);
++      if (scenario == "late_waiter" && !late_added && f.front().wakeups() == 4) {
++        const auto id = f.front().m_entries.front().references.front();
++        assert(!f.front().m_phys[id.id].ready);
++        f.enqueue(1, 0, 1, -1, false, false);
++        late_added = true;
++      }
++    }
++    assert(scenario != "late_waiter" || (late_added && f.front().wakeups() == 13));
++    f.drain();
++  } else if (scenario == "fence") {
++    f.prime(1, 0); f.prime(1, 128);
++    auto fence = f.sidecar(ldst_unit::dtc_l1_m4_operation::PROXY_FENCE, 0);
++    const unsigned blocked = f.enqueue(1, 0, 0);
++    const unsigned independent = f.enqueue(1, 128, 1);
++    for (unsigned i = 0; i < 5; ++i) {
++      f.edge();
++      auto *entry = f.unit->dtc_l1_oo_find_entry(blocked);
++      assert(entry && entry->service.collect_start_cycle == UINT64_MAX);
++    }
++    assert(!f.unit->dtc_l1_oo_find_entry(independent));
++    f.unit->dtc_l1_m4_observe_complete(fence);
++    f.drain();
++  } else {
++    const unsigned count = scenario == "single" || scenario == "partial" ? 1 :
++                           scenario == "denied" ? 3 : 2;
++    for (unsigned i = 0; i < count; ++i) f.prime(sectors / 4, i * 4096);
++    for (unsigned i = 0; i < count; ++i) {
++      f.enqueue(sectors / 4, i * 4096, scenario == "same_warp" ? 0 : i % 2,
++                scenario == "partial" ? 1 : -1, scenario == "partial");
++      if (scenario == "same_warp" && i == 0) {
++        auto fence = f.sidecar(ldst_unit::dtc_l1_m4_operation::PROXY_FENCE, 0);
++        f.unit->dtc_l1_m4_observe_complete(fence);
++      }
++    }
++    if (scenario == "arbitration") {
++      f.edge(); f.edge();
++      // Controlled copy holds the ordinary phase-1 WB register. A real RFU
++      // bank reservation denies it; no completion occurs for this test copy.
++      f.unit->m_next_wb = f.unit->m_dtc_l1_oo_pib.front().inst;
++      const auto closed = f.unit->m_dtc_l1_oo_completion_dependencies_closed;
++      f.edge(true, true, 3);
++      assert(f.unit->m_dtc_l1_oo_completion_dependencies_closed == closed);
++      f.unit->m_next_wb.clear();
++    }
++    if (scenario == "partial") {
++      assert(sectors >= 8);
++      f.edge();
++      assert(f.unit->m_dtc_service_collected_sectors == 0);
++    }
++    if (scenario == "k1_refs") {
++      const uint64_t refs = f.front().active_refs();
++      f.unit->invalidate(dtc_l1::invalidation_source::IDLE_CLUSTER);
++      for (unsigned i = 0; i < sectors / 4 + 4; ++i) {
++        f.edge(true);
++        if (i == 2) f.unit->invalidate(dtc_l1::invalidation_source::MEMBAR);
++        assert(f.front().active_refs() == refs);
++      }
++    }
++    if (scenario == "denied")
++      for (unsigned i = 0; i < 8; ++i) f.edge(true, true, 3);
++    f.drain(3);
++    if (scenario == "k1_refs") assert(f.front().allocated_lines() == 0);
++  }
++  f.normal();
++  f.edge(); // distinct last full cumulative snapshot; never add the snapshots
++  f.normal();
++  std::printf("AC_RESULT status=PASS_CPU_LDST_COMPONENT scenario=%s on=%u "
++              "sectors=%llu loads=%u lower=%llu kernel_launches=0 gpu_cycles=0 "
++              "simulation_threads=0 value_correctness=UNPROVEN\n",
++      scenario.c_str(), f.on, (unsigned long long)f.expected_sectors, f.loads,
++      (unsigned long long)f.unit->m_dtc_l1_oo_lower_created);
++}
+diff --git a/tests/dtc_l1_collect_wb_resource_test.cc b/tests/dtc_l1_collect_wb_resource_test.cc
+new file mode 100644
+index 00000000..a0043bf8
+--- /dev/null
++++ b/tests/dtc_l1_collect_wb_resource_test.cc
+@@ -0,0 +1,65 @@
++#include "dtc-l1-collect-wb.h"
++#include <csignal>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++template<class Function> void must_abort(Function function) {
++  const pid_t child = fork();
++  assert(child >= 0);
++  if (!child) {
++    rlimit limit{0, 0}; setrlimit(RLIMIT_CORE, &limit);
++    function(); _exit(0);
++  }
++  int status = 0;
++  assert(waitpid(child, &status, 0) == child);
++  assert(WIFSIGNALED(status) && WTERMSIG(status) == SIGABRT);
++}
++
++int main() {
++  dtc_l1::collect_wb_pipeline pipe;
++  pipe.configure(640);
++  assert(pipe.bank_capacity_sectors * 32 == 80 * 1024);
++  pipe.claim(1, 2560);
++  for (unsigned cycle = 1; cycle <= 640; ++cycle) pipe.consumed(cycle, 4);
++  pipe.promote();
++  const unsigned old_result_bank = pipe.result_bank;
++  pipe.claim(2, 2560);
++  for (unsigned cycle = 641; cycle <= 1280; ++cycle) pipe.consumed(cycle, 4);
++  assert(pipe.collecting_valid && pipe.result_valid);
++  assert(pipe.collecting_sectors + pipe.result_sectors == 5120);
++  assert(pipe.peak_buffered_sectors * 32 == 160 * 1024);
++  pipe.attempted(1281, false);
++  assert(pipe.result_valid && pipe.result_uid == 1 && pipe.result_bank == old_result_bank);
++  pipe.attempted(1282, true);
++  pipe.retired(1282, 1, true);
++  pipe.promote();
++  assert(pipe.result_uid == 2 && pipe.result_bank != old_result_bank);
++  pipe.attempted(1283, true);
++  pipe.retired(1283, 2, true);
++  assert(!pipe.result_valid && !pipe.collecting_valid);
++  // Same absolute-cycle retirement after the collection sample stays in bins.
++  pipe.claim(3, 4);
++  pipe.consumed(1284, 4);
++  pipe.promote();
++  pipe.sample(1285, 1, 0, false, true);
++  pipe.attempted(1285, true);
++  pipe.retired(1285, 3, true);
++  assert(pipe.retire_hist[1] == 1 && pipe.retire_hist[0] == 0);
++  must_abort([] { dtc_l1::collect_wb_pipeline p; p.configure(640); p.claim(1, 2561); });
++  must_abort([] { dtc_l1::collect_wb_pipeline p; p.configure(640); p.claim(1, 4); p.claim(2, 4); });
++  must_abort([] { dtc_l1::collect_wb_pipeline p; p.configure(640); p.claim(1, 8); p.consumed(1, 4); p.consumed(1, 1); });
++  must_abort([] { dtc_l1::collect_wb_pipeline p; p.configure(640); p.retired(1, 1, false); p.retired(1, 2, false); });
++  must_abort([] { dtc_l1::collect_wb_pipeline p; p.configure(640); p.claim(1, 4); p.consumed(1, 4); p.promote(); p.attempted(2, false); p.attempted(2, true); });
++  // Existing physical generation guard remains hard, not relaxed for a slot.
++  must_abort([] {
++    dtc_l1::config cfg; cfg.logical_sets = cfg.logical_ways = cfg.physical_lines = 1;
++    dtc_l1::oo_frontend front(cfg);
++    assert(front.admit(1)); const auto old = front.access(1,1,0).physical;
++    front.complete(old); assert(front.retire_ready_uid(2,1));
++    assert(front.admit(2)); const auto next = front.access(3,2,128).physical;
++    assert(old.id == next.id && old.generation != next.generation);
++    assert(!front.fill_identity_matches(old)); front.complete(old);
++  });
++  puts("PASS_BOUNDED_TWO_BANK_160KiB_RESOURCE_MODEL_AND_6_HARD_NEGATIVES");
++}

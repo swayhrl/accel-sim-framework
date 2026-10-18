@@ -68,7 +68,14 @@ byte-extraction/routing and output-size contract; it is not silently substituted
 
 The bank assigned to the collector retains exactly the sectors already read,
 in the original PIB-reference order and ascending sector-bit order. A result
-bank holds all requested sectors for its one instruction. Descriptor addresses,
+bank holds all requested sectors for its one instruction. For one warp/instruction,
+collector bytes already saved =32*(total_sectors-sectors_left); WB bytes saved
+=32*total_sectors. Each is bounded by81,920B at P=640. The4/8/16-sector
+instruction fixtures correspond to128/256/512 raw data bytes, respectively.
+We store the conservative raw-sector image, not an assumed fixed128B warp
+output. Fanout/extraction into architectural destinations remains the original
+functional-path/routing domain; a compact warp-output maximum and physical
+bank-to-RFU implementation have not been proven here. Descriptor addresses,
 sector masks and output register routing stay in the existing referenced PIB;
 there is no new per-PIB payload array. With two unfinished/blocked owners, at
 most2*4P sectors are retained. Transfer is a swap of the two banks' roles and

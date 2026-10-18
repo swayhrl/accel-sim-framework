@@ -1,0 +1,52 @@
+{
+  "status": "PASS_SOURCE_AND_RUNTIME_CPU_CONTRACT",
+  "core": "83aca449135703c176cfab29ae43e1245d00a557",
+  "option": {
+    "name": "-gpgpu_dtc_l1_collect_wb_pipeline",
+    "type": "OPT_BOOL",
+    "default": "0",
+    "on_scope": "PAPER_OO(3) + finiteV1(1) + L1D, default constructor"
+  },
+  "config": {
+    "path": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ac-collect-pipeline-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+    "sha256": "81153771ccb44c8cab857e350be1db9c27bf5e32fcc70305b7ed96e068c98416",
+    "bytes": 9367
+  },
+  "fixture": {
+    "path": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ac-collect-pipeline-core-174-v1/tests/dtc_l1_collect_wb_pipeline_probe.cc",
+    "sha256": "1937f68cf1659705dd0c38136b4dc9194de5b92181107a543aae23983572bb02",
+    "bytes": 23066
+  },
+  "runtime_fixture_geometry": {
+    "physical_lines": 640,
+    "logical_tag_entries": 128,
+    "OO_PIB_entries": 128,
+    "collection_sectors_per_cycle": 4,
+    "sector_bytes": 32,
+    "retire_per_cycle": 1,
+    "source_of_actual_vectors": "AC_STATE in SHA-bound CPU receipts"
+  },
+  "CPU_fixture_overrides": "SM1/64, 128threads:32warp,32memorychannels/2subpartitions; original Volta address hash valid; clocks1410/1410/1410/850 identical in all arms; lower cap uses existing defaults; raw coalesced CPU inputs not traces",
+  "explicit_fixture_initialization": "dram_t::n_ref=0 on all unused CPU DRAM partitions in BOTH arms; unchanged production constructor leaves it uninitialized. No DRAM cycle is executed.",
+  "parser": {
+    "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ac-collect-pipeline-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AC_COLLECT_PIPELINE_V1/scripts/parse_collect_wb.py",
+    "sha256": "1cfee40df4316e0460d1323bb85ab63248d2537b7056f6faf8720192126ac9fa",
+    "bytes": 6418
+  },
+  "runner": {
+    "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ac-collect-pipeline-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AC_COLLECT_PIPELINE_V1/scripts/run_cpu_matrix.py",
+    "sha256": "1838401449284b6335a75b3ba4ef551e2205b920be7b8c3a5fa4c43c39dcc986",
+    "bytes": 10077
+  },
+  "unsupported_ON_configuration_rejections": [
+    "bad-mode-0",
+    "bad-mode-1",
+    "bad-mode-2",
+    "bad-mode-4",
+    "bad-finite-zero"
+  ],
+  "normal_public_comparison_exclusions": [
+    "gpu_total_sim_rate (existing host wall-time rate only)"
+  ],
+  "source_config_parser_delta": "SOURCE_DELTA.json / SOURCE_DELTA.patch"
+}
