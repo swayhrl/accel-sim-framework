@@ -1,0 +1,67 @@
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:850000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000117647058824
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+MQ2 opportunity real fill-bank/WB-head/independent-read mode=1 enabled=1 bypass=1 PASS
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=0|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=8
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=1|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=6
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=2|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=6
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=3|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=10
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=0|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=1|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=2|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=3|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=4|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=5|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=6|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|MQ2|slice=0|enabled=1|wb_bank_waits=1|bypasses=1|window=2|lower_enqueues_per_cycle=1
+EPL2STRUCTV1|BANK_PEAK|slice=0|ops_per_physical_cycle=1|bank0=1|bank1=1|bank2=1|bank3=1
+EPL2STRUCTV1|WB_QUOTA|slice=0|cap=0|reserved=0|live=0|reserved_peak=0|live_peak=0|total_peak=0|refusal_attempts=0|pending_retry_calls=0|rollback_releases=0|lower_accept_releases=0
+EPL2STRUCTV1|CONFIG|slice=0|static_s64=1|physical_slots=1168|resident_nominal=1024|bypass_capacity=80|wb_begin=1104|static_wb_capacity=64|legacy_wbuf=16|bank_count=4|bank_ops_per_physical_cycle=1|copy_latch_bytes=128
+EPL2FTV1|SUMMARY|slice=0|mode=1|wbuf=16|physical_slots=1168|accepted=22|wb_created=1|wb_completed=1|wb_lower_accept=1|wbuf_full=0|pool_full=0|pin_block=0|bank_block=1|issue_block=0|copy_lines=1|copy_bytes=128|staging_reads=1|staged_max=1|staging_lifetime=4|borrow_resident=0|borrow_bypass=0|rollback=0|version_checks=1|wb_live=0|wb_slots=0|reserved=0|read_refs=0|role_free=1147|role_resident=21|role_bypass=0|ownership_consistent=1|observed_cycles=35|wb_occupancy_sum=4|descriptor_responses=5
+MQ2 native exact-once/versions/lower-accept/WAD/head-priority/physical-P1/drain PASS
+	Command being timed: "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/ep_l2_micro_mq2 /workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config /workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_native_r2/S64_mq2.config 1 1 ordinary"
+	User time (seconds): 0.02
+	System time (seconds): 0.14
+	Percent of CPU this job got: 98%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.17
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 241664
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 60022
+	Voluntary context switches: 1
+	Involuntary context switches: 61
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 16
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

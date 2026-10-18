@@ -1,0 +1,189 @@
+{
+  "schema": "EPL2_LANE1_STRUCTURAL_BUILD_V1",
+  "status": "BUILT_NOT_TESTED_NOT_INDEPENDENTLY_QUALIFIED",
+  "authority": "c8aa87bdbe220853eb2d27d8babd448cff02a66e",
+  "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+  "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+  "driver_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+  "build": "/workspace/build/ep-l2-microopt20261018-lane1-v1",
+  "core": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1",
+  "framework": "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1",
+  "out": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1",
+  "compiler_started": true,
+  "jobs": 2,
+  "application_starts": 0,
+  "independent_qualification": false,
+  "disk_floor_bytes": 51539607552,
+  "memory_floor_bytes": 68719476736,
+  "commands": [
+    {
+      "command": [
+        "cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-microopt20261018-lane1-v1",
+        "-G",
+        "Unix Makefiles",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+      ],
+      "log": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1/configure.log",
+      "process": {
+        "pid": 3816265,
+        "start_ticks": 905808137,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d4f97f8b6b24a3f0ba4e5d0766e82c908f7e42bdfb7e9284e21df782eaf93923",
+      "wall_seconds": 1.8743989542126656
+    },
+    {
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/build/ep-l2-microopt20261018-lane1-v1",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_ft_memcpy_clock",
+        "ep_l2_ft_host_prefill",
+        "ep_l2_ft_directed",
+        "ep_l2_ft_partition",
+        "ep_l2_ft_a1",
+        "ep_l2_common_delta_r16",
+        "ep_l2_potential_p2",
+        "ep_l2_potential_s64",
+        "ep_l2_potential_ucap",
+        "ep_l2_micro_rg1_arbiter",
+        "ep_l2_micro_mq2",
+        "ep_l2_micro_rg1_partition",
+        "-j2"
+      ],
+      "log": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1/build.log",
+      "process": {
+        "pid": 3816487,
+        "start_ticks": 905808325,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "dec249cad147708da46760ab252ce25206e0b0451d4acb107c2f54aad42fe422",
+      "wall_seconds": 206.30976592376828
+    }
+  ],
+  "resource_samples": 1005,
+  "own_process_group_max_rss_bytes": 1002438656,
+  "own_process_group_rss_scope": "sampled sum of VmRSS in the owned CMake process group; shared pages may be counted more than once",
+  "peak_workspace_growth_bytes": 1682534400,
+  "registry_source_commit": "f817c3400c9e13f2ff60a4ed829606aec208d015",
+  "registry_sha256": "a99832041424b5e5bca9265085f36fef29c29a146e95915da319c521d5adebc9",
+  "owned_lock_process": {
+    "pid": 3816242,
+    "start_ticks": 905808117,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "min_available_memory_bytes": 168516759552,
+  "min_workspace_free_bytes": 58285674496,
+  "min_share_free_bytes": 44348547072,
+  "resources_before": {
+    "available_memory_bytes": 171196981248,
+    "disk_free_bytes": 59968208896,
+    "share_disk_free_bytes": 44349423616
+  },
+  "filesystems": {
+    "/workspace": {
+      "realpath": "/workspace",
+      "st_dev": 156
+    },
+    "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1": {
+      "realpath": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1",
+      "st_dev": 156
+    },
+    "/root/share": {
+      "realpath": "/root/share",
+      "st_dev": 2431
+    },
+    "/tmp": {
+      "realpath": "/tmp",
+      "st_dev": 156
+    },
+    "/root": {
+      "realpath": "/root",
+      "st_dev": 156
+    },
+    "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1": {
+      "realpath": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1",
+      "st_dev": 156
+    },
+    "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1": {
+      "realpath": "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1",
+      "st_dev": 156
+    },
+    "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1/gpu-simulator/extern/pybind11": {
+      "realpath": "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1/gpu-simulator/extern/pybind11",
+      "st_dev": 156
+    }
+  },
+  "initial_workspace_free_bytes": 59968208896,
+  "lease_id": "f819fb8d201f457b96949e16f54ccdc0",
+  "temporary_directory": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1/tmp",
+  "targets": [
+    "accel-sim.out",
+    "ep_l2_ft_memcpy_clock",
+    "ep_l2_ft_host_prefill",
+    "ep_l2_ft_directed",
+    "ep_l2_ft_partition",
+    "ep_l2_ft_a1",
+    "ep_l2_common_delta_r16",
+    "ep_l2_potential_p2",
+    "ep_l2_potential_s64",
+    "ep_l2_potential_ucap",
+    "ep_l2_micro_rg1_arbiter",
+    "ep_l2_micro_mq2",
+    "ep_l2_micro_rg1_partition"
+  ],
+  "assertion_flags_sha256": {
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/trace-driven/CMakeFiles/trace-driven.dir/flags.make": "b9a1bf263faf5183ead901cd7e8916907d376a05902d9f89715e612cb3a20c2e",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make": "1a9b4decb058fbebd2c53703793b2dccf3867e05cd80220c08bbd90651d49a8c",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/flags.make": "9c4928710fd30b58ebc0725d7d44d065620adefa9961eb99fafc3c646ef40c79",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/src/intersim2/CMakeFiles/intersim.dir/flags.make": "774ee79cd615512fb1419b64a1234e09baa575d70b61d47b3813f96ffc00150d",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/src/cuda-sim/CMakeFiles/ptxsim.dir/flags.make": "dedb8c59e252c0a73fa8e7d37035edd29cd428b1ba1656ac833705ca75a93686",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/flags.make": "59eff04cf0a18ed193380c34a66e9839cf7087138a9da39e0d0d35aa044c0342",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ideal_wb.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_micro_mq2.dir/flags.make": "da22f28ca658fd7c27b79f00f61d5d6eeaf39387a688764bdf516b583314754d",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ft_host_prefill.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ft_partition.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap_retry.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_micro_rg1_arbiter.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/cudart.dir/flags.make": "d8ac74cd802e30e8f6d696fe62e272eb8d5c77a19259f9a553bd71fe456ee105",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/entrypoint.dir/flags.make": "bf85c42aaed3c59061e7fbbae2db12328a0e7624c9ceb5e604b0ed5c28b38d9f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta_integrated.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ideal_read_hit.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ft_directed.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_all_data_reference.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ft_memcpy_clock.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_micro_rg1_partition.dir/flags.make": "da22f28ca658fd7c27b79f00f61d5d6eeaf39387a688764bdf516b583314754d",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_potential_a1.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_potential_s64.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_common_delta_r16.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_all_data_ldst.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_potential_p2.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_partition.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_reference.dir/flags.make": "83f4901c9c971665933a5e3c095bd97658927e7c0b94996a19cb48f0e7e5af5f",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/libcuda/CMakeFiles/cuda.dir/flags.make": "0271f7e13097a15f12e2facae96bc7e094db3f688db28d3c0d4c76f99ed46073",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/CMakeFiles/accel_sim.dir/flags.make": "0d35ac21cae908b8b1fcb9bec7385160808714c101cc02bb2945d79b0217a571",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/CMakeFiles/accel-sim.out.dir/flags.make": "c81f00e70ac0d478b5bc19934d2b837fd14d3af924dc336ed66f5c3011848962",
+    "/workspace/build/ep-l2-microopt20261018-lane1-v1/trace-parser/CMakeFiles/trace-parser.dir/flags.make": "b9a1bf263faf5183ead901cd7e8916907d376a05902d9f89715e612cb3a20c2e"
+  },
+  "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+  "binary": "/workspace/build/ep-l2-microopt20261018-lane1-v1/accel-sim.out",
+  "lease_released": true,
+  "owned_lock_released": true,
+  "resources_after": {
+    "available_memory_bytes": 169411489792,
+    "disk_free_bytes": 58285944832,
+    "share_disk_free_bytes": 44348575744
+  },
+  "finished_at_utc": "2026-10-18T06:51:58.406326+00:00"
+}

@@ -1,16 +1,16 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261017_LANE1_R19_L25_r1",
-  "status": "BLOCKED_WORKSPACE_BELOW50GiB_NO_NEW_RUNTIME_RELEASE",
-  "review_coordination_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
+  "task_id": "EPL2_MQ2_PRODUCER_RECOVERY_V1",
+  "status": "PRODUCER_MQ2_PASS_PENDING_LANE5",
+  "review_coordination_commit": "9a161b700ae2d17470fe7b08fc16725b3ef6317c",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
-  "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
-  "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-  "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+  "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+  "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+  "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
   "runtime_code_changed": true,
-  "new_full_simulator_builds": 3,
+  "new_full_simulator_builds": 4,
   "new_application_runs": 0,
   "headroom_conditions": {
     "D4": {
@@ -202,14 +202,14 @@
   },
   "headroom_independent_owner": "lane5",
   "new_headroom_independent_acceptance_claimed": false,
-  "current_directed_processes": 0,
+  "current_directed_processes": [],
   "current_lease_id": null,
   "current_lease_released": true,
-  "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_FINAL_DELIVERY_r1",
-  "goal_state": "LANE1_SCOPE_COMPLETE_FINAL_REMOTE_READBACK_PENDING",
+  "review_pack": "docs/ep_l2/review_packs/MQ2_RECOVERY_LANE1_PRODUCER_r1",
+  "goal_state": "ACTIVE_NEW_BOUNDED_CONTINUE_PLATFORM_OLD_GOAL_BLOCKED",
   "gate_waiter_started": false,
-  "recorded_at": "2026-10-17T12:10:38.524778+00:00",
-  "next_action": "Lane5 independently qualify ready runtime/profile scopes and complete campaigns; Lane6 receives accepted rows. Lane1 resumes on a concrete further ready module/fix event, without a new waiting daemon.",
+  "recorded_at": "2026-10-18T06:54:30.406086+00:00",
+  "next_action": "Independently verify exact binary/source, all directed and negative evidence, six effective profiles, trace/input and currentV2. Only then bind original parallel campaign MQ2 cells. No application launch or Lane5 PASS is claimed by producer.",
   "headroom_delivery": {
     "D4": {
       "publication": "3cc3660684cad09c5decf2684c62e2c7b26e6b25",
@@ -268,120 +268,16 @@
   "active_runs": {},
   "active_builds": {},
   "trace_identity": null,
-  "trace_identity_scope": "NO_LANE1_APPLICATION_OR_TRACE_REPLAY; synthetic40-request native production fixture pinned by35c6767c source and fixture binary/archive hashes. Lane5 retains full original Conv/FWT trace content and r17/non-atomic input proofs for applications.",
+  "trace_identity_scope": "native directed synthetic request and symbolic sector-version fixtures; no full application trace run",
   "runtime_candidate": {
-    "schema": "EPL2_LANE1_PARALLEL_RUNTIME_RELEASE_V1",
-    "release_id": "POTENTIAL_ALL_DATA_FINITE_LOCAL_R1",
-    "status": "PRODUCER61_NATIVE_AND11_CONFIG_PASS_LANE5_INDEPENDENT_SCOPE_PENDING",
-    "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
-    "authority": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
-    "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
-    "core_tree": "aae87630908a9eff06145034a2f798196e8f6c31",
-    "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-    "binary": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/binaries/accel-sim.out",
-    "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
-    "actual_build_core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-all-data-r1",
-    "actual_build_framework": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
-    "build_receipt": "/workspace/ep_l2_parallel_lane1/all_data_build_r2/BUILD_RECEIPT.json",
-    "build_receipt_sha256": "ec07462b3d69db261d7683269cf1b875d0bdb6cd636df0531f4301f59b449de1",
-    "tool_source_commit": "db1989c3006aa93f3b823805029cfc87d5688000",
-    "supplement_tool_source_commit": "b08db4f3234fdeb087d366dc572d9ea74477aff4",
-    "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/all_data_release_manifest_r1/RUNTIME_CONFIG_MANIFEST.json",
-    "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_ALL_DATA_CONFIG_MANIFEST_R1.json",
-    "producer_manifest_sha256": "2f4a1fd3648b60b19c9beb2b52adfd63f88244dade9bd9494b9494340c8f0d34",
-    "producer_receipt_path": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/INTAKE_RECEIPT.json",
-    "producer_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1/INTAKE_RECEIPT.json",
-    "producer_receipt_sha256": "6dbc814fd5d3274da69aaafbf0ff6408ce7a0a3112429dcb44c9e8de4d1a47ec",
-    "supplement_receipt_path": "/workspace/ep_l2_parallel_lane1/all_data_supplement_r1/SUPPLEMENT_RECEIPT.json",
-    "supplement_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1/SUPPLEMENT_SUPPLEMENT_RECEIPT.json",
-    "supplement_receipt_sha256": "c682334a14ec996a0fa2e8286893dd8d290168f352e3b4306a7219de0b3b385d",
-    "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1",
-    "supported_profiles": [
-      "B16_OFF",
-      "U_WB16_OFF",
-      "I_WB",
-      "I_META",
-      "I_WB_META",
-      "I_READ_HIT",
-      "S64",
-      "U_CAP16",
-      "P2_B16",
-      "P2_U_WB16",
-      "I_MEM_ALL_DATA"
-    ],
-    "unsupported_profiles": [
-      "I_BANK",
-      "I_L2_SERVICE",
-      "undeclared Ideal/finite structural combinations"
-    ],
-    "native_positive_cases": 61,
-    "expected_fail_closed_cases": 5,
-    "native_effective_profiles": 11,
-    "native_profile_config_hashes": {
-      "B16_OFF": "c15753a37b7a984fc5fd354f1155a58d6f2ce98e49923714bb88c6e012f383df",
-      "U_WB16_OFF": "169447c3069c9ea8c4d3fc5aad25766c4b6c3dc4df734a83af1bb3ef442c99f2",
-      "I_WB": "10141d03d113144dd92baa335525f9dbbc0568db1624482aa24316c9523395b6",
-      "I_META": "c97d810633ee95cc74705a1604d547ed1c97006ba55457cfadb32ffad055458a",
-      "I_WB_META": "e8209366238486990ae1795bf8e427c35df68d3534954ad14d4e0737a33302be",
-      "I_READ_HIT": "b80aef0e85245d09c7080dfc91f758fcfcf95d71522b9cb06beaa19646e2fcc2",
-      "S64": "46835f86e15e207f1fb177ab29d6f7d61f0c36c7daab2cf0a9f40ab72c086767",
-      "U_CAP16": "048c74de5195473c5fd061d8ab8b992ef22034052968df203a943ed019b98a9a",
-      "P2_B16": "baa510d19ff0d08b7665825ed80001fe0eda1e994ca7ea616c8fc93586c3731b",
-      "P2_U_WB16": "ac6bef9185424b610efe92876600428580f18facdbf4ad23eae034dd5073224d",
-      "I_MEM_ALL_DATA": "cafa95c4598940e4b65384872b63e372b71d6ded01fb8918123f2807dd22dd71"
-    },
-    "scientific_qualification_owner": "lane5",
-    "independent_qualification": false,
-    "new_full_applications_by_lane1": 0,
-    "frozen_R19_binary_replaced": false,
-    "prior_potential_releases_replaced": false,
-    "trace_identity": "No full application trace was consumed by these directed cases. Lane5 binds each exact existing complete input/body/host-payload manifest and new source/binary/config/run-key under current acceptance; non-atomic scope only. No synthetic full-app evidence.",
-    "same_binary_anchors_required": true,
-    "scope": {
-      "finite": "OFF/S64/U_CAP16/P2: native cache/sector/version/WB/lower-accept/WAD/bank/drain paths",
-      "local_ideals": "I_WB/META/WB_META/READ_HIT: explicitly scoped removals, retained native lifecycle; not ALL_DATA",
-      "all_data": {
-        "service": "END_TO_END_NATIVE_LDST_REFERENCE",
-        "reference_ready": "t_eligible+1 physical GPU cycle",
-        "eligibility": "real issue and required older producer visibility, no hidden finite memory admission",
-        "spaces": [
-          "global",
-          "local",
-          "param_local",
-          "shared",
-          "constant",
-          "param_kernel",
-          "texture"
-        ],
-        "preserved": [
-          "native instruction stream and issue resources",
-          "register dependencies and actual writeback/scoreboard completion",
-          "CTA and memory barriers",
-          "producer ordering and immutable byte/producer-version snapshots",
-          "native instruction-fetch hierarchy"
-        ],
-        "removed": [
-          "finite data-cache capacity and banks",
-          "data memory/NoC/LDST response FIFOs and admission",
-          "data link and per-tick return quotas"
-        ],
-        "residual": "actual SM register ports; ready-to-consume delay measured separately",
-        "data_cache_bank_WB_DRAM_statistics": "NOT_APPLICABLE; no energy-saving inference",
-        "unsupported": "atomic and LDGSTS fail closed; no numeric SASS output qualification"
-      }
-    },
-    "comparison_rules": [
-      "Old H0five/0.160% unchanged",
-      "Same finite h and same binary B/U yields S_EP; ALL_DATA opportunity ratio is separate, not EP-L2 speedup",
-      "Operational optimistic reference, not a strict mathematical upper bound for every schedule",
-      "All new starts/anchors/canaries count under72 and frozen new-campaign deadline; old R19 T0/cap/deadline remain separate"
-    ],
-    "next_action": "Lane5 independently qualify new runtime OFF/affected paths and each requested scope, then run ready campaign cells/anchors via existing registry/currentV2/full-input pipeline. ALL_DATA uses reference identity/store/snapshot/dependency/consume/drain acceptance, not fictitious physical64slice WB proof. Lane6 consumes only independently accepted rows."
+    "status": "PRODUCER_MQ2_PASS_PENDING_LANE5",
+    "release": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_release_r1/binaries/accel-sim.out"
   },
   "new_runtime_source": {
-    "core": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
-    "framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
-    "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7"
+    "core": "84359d4ba492acb639a2092fa271e9169038bf7d",
+    "framework": "197741be9be9b8e390a557d639503b416d8e95f0",
+    "branch": "hrl/ep-l2-finite-service-microopt-lane1-v1",
+    "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30"
   },
   "structural_metadata_revision": "r2",
   "measured_structural_build_resources": {
@@ -415,191 +311,238 @@
       "fixture_build_source_commit": "7c55da32254b7616e1964ee971b23cdcae283b0e"
     }
   },
-  "gate_waiter_state": "NONE_CREATED_OR_OWNED",
-  "build_execution_state": "FINISHED_OWN_NATIVE_WORKERS0_ALL_OWN_LEASES_RELEASED",
-  "scientific_qualification_state": "NEW_RUNTIMES_PRODUCER_ONLY_LANE5_INDEPENDENT_SCOPE_AND_FULL_APPS_REQUIRED",
-  "exact_author_full_build_reused": 1,
+  "gate_waiter_state": "NONE",
+  "build_execution_state": "SUCCESS_ONE_FORMAL_BINARY",
+  "scientific_qualification_state": "MQ2_PRODUCER_PASS_PENDING_LANE5",
+  "exact_author_full_build_reused": false,
   "current_runtime_independently_qualified": false,
-  "current_runtime_native_positive_checks": 61,
+  "current_runtime_native_positive_checks": 55,
   "current_runtime_expected_rejections": 5,
-  "current_runtime_effective_profiles": 11,
+  "current_runtime_effective_profiles": 6,
   "release_index": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_RUNTIME_RELEASE_INDEX_R1.json",
   "finite_service_microopt_current": {
-    "schema": "EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1",
-    "revision": "BLOCKED_AUDIT_r4",
-    "authority": "c8aa87bdbe220853eb2d27d8babd448cff02a66e",
-    "started_utc": "2026-10-18T03:02:03Z",
-    "maximum_deadline_utc": "2026-10-18T07:02:03Z",
-    "updated_utc": "2026-10-18T03:44:23.176732+00:00",
-    "goal_status": "BLOCKED",
-    "execution_status": "BLOCKED_AT_RESOURCE_BOUNDARY_NO_OWN_BACKGROUND_WORKER",
-    "candidate_branch": "hrl/ep-l2-finite-service-microopt-lane1-v1",
+    "schema": "EPL2_MQ2_PRODUCER_RECOVERY_V1",
+    "revision": "MQ2_PRODUCER_r1",
+    "authority": "9a161b700ae2d17470fe7b08fc16725b3ef6317c",
+    "status": "PRODUCER_MQ2_PASS_PENDING_LANE5",
+    "goal_execution_status": "ACTIVE_MQ2_DELIVERED_RG1_OPTIONAL_PENDING",
+    "platform_goal_status": "OLD_GOAL_BLOCKED_NEW_GOAL_CREATION_REJECTED_UNFINISHED_OLD_GOAL",
+    "bounded_start_utc": "2026-10-18T06:46:32Z",
+    "bounded_deadline_utc": "2026-10-18T08:46:32Z",
+    "recorded_utc": "2026-10-18T06:54:30.406086+00:00",
     "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
     "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
-    "candidate_simulator_binary": null,
-    "candidate_binary_sha256": null,
-    "new_production_tests_executed": 0,
-    "producer_runtime_release_ready": false,
-    "scientific_qualification": "NO_NEW_BINARY_NO_LANE5_QUALIFICATION_NO_PERFORMANCE_CLAIM",
-    "source_verification": {
-      "status": "PASS_SOURCE_SYNTAX_AND_STANDALONE_ARBITER",
-      "core_sha": "84359d4ba492acb639a2092fa271e9169038bf7d",
-      "actual_guarded_commands": 9,
-      "unit_test_binary_sha256": "d70845aab41d7ddfe757167365ef47b1803066f79780df89e22987e46b39aaf2",
-      "native_CXX_syntax_only": 7,
-      "standalone_arbiter_modes": 3,
-      "native_runtime_ON_validation": false,
-      "receipt": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_SOURCE_CANDIDATE_r2/final_source_checks_r2/RECEIPT.json"
-    },
-    "baseline_native_opportunities": {
-      "source": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
-      "MQ2_final_partial_mask_sector_UID_WAD_drain": {
-        "cases": 3,
-        "modes": [
-          "B16",
-          "S64",
-          "Unified"
-        ],
-        "status": "PASS_BASELINE_NOT_CANDIDATE_ON"
-      },
-      "RG1_final_actual_partition_full_FIFO_hostprefill_drain": {
-        "cases": 3,
-        "modes": [
-          "B16",
-          "S64",
-          "Unified"
-        ],
-        "status": "PASS_BASELINE_NOT_CANDIDATE_ON"
-      }
-    },
-    "formal_build": {
-      "status": "FORMAL_BUILD_RESOURCE_HOLD_NO_CMAKE_NO_COMPILER",
-      "compiler_started": false,
-      "CMake_started": false,
-      "resources_before": {
-        "available_memory_bytes": 163809923072,
-        "disk_free_bytes": 51838140416,
-        "share_disk_free_bytes": 44358529024
-      },
-      "minimum_preflight_bytes": 53687091200,
-      "own_lock_released": true,
-      "resource_peak": "NOT_APPLICABLE_NO_FORMAL_BUILD_PROCESS",
-      "last_preflight_framework_source": "cd522aab0382d87f60233dbd1f5769e333bda4a5",
-      "new_formal_build_attempt_this_continuation": false
-    },
-    "resource_checkpoint": {
-      "workspace_free_bytes": 51818283008,
-      "workspace_shortfall_to_formal_bytes": 1868808192,
-      "client_binding_matches": true,
-      "other_active_runs": [
-        {
-          "owner": "lane5",
-          "expected": {
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-            "pid": 3561141,
-            "start_ticks": 904578313
-          },
-          "actual": {
-            "state": "R",
-            "start_ticks": 904578313,
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
-          },
-          "identity_matches": true
-        },
-        {
-          "owner": "lane5",
-          "expected": {
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-            "pid": 3561072,
-            "start_ticks": 904577709
-          },
-          "actual": {
-            "state": "R",
-            "start_ticks": 904577709,
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
-          },
-          "identity_matches": true
-        },
-        {
-          "owner": "lane5",
-          "expected": {
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-            "pid": 3561181,
-            "start_ticks": 904578838
-          },
-          "actual": {
-            "state": "R",
-            "start_ticks": 904578838,
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
-          },
-          "identity_matches": true
-        },
-        {
-          "owner": "lane5",
-          "expected": {
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-            "pid": 3560838,
-            "start_ticks": 904576762
-          },
-          "actual": {
-            "state": "R",
-            "start_ticks": 904576762,
-            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
-          },
-          "identity_matches": true
-        }
-      ],
-      "own_reserved_leases": [],
-      "own_background_workers": [],
-      "legacy_waiter_1628339": "EXITED; central lock has no owner; no waiter resumed/created"
-    },
-    "prepared_not_executed": {
-      "MQ2_native_cases": 52,
-      "MQ2_effective_profiles": 6,
-      "RG1_new_cases_after_exact_OFF_reuse": 10,
-      "RG1_effective_profiles": 6,
-      "negative_guards_each_phase": 5
-    },
-    "capabilities": {
-      "default_OFF": [
-        "mq2",
-        "rg1"
-      ],
-      "supported_scientific_scope": "H0 finite P1 ordinary nonatomic B16/S64/Unified after actual producer and Lane5 checks",
-      "combined_11": "FAIL_CLOSED_UNQUALIFIED",
-      "Ideals_RO_TVD_atomic_P2_quota": "NO_INHERITED_QUALIFICATION",
-      "physical_bank_limit": 1,
-      "banks": 4,
-      "finite_payload_slots": 1168,
-      "pending_RG1_bound": 4,
-      "additional_Tag_probes": 0,
-      "queue_capacity_change": 0
-    },
-    "cost_delta_path": "https://github.com/swayhrl/accel-sim-framework/blob/cd522aab0382d87f60233dbd1f5769e333bda4a5/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/microopt/CONTROL_INTERFACE_DELTA_V1.md",
-    "resume_path": "https://github.com/swayhrl/accel-sim-framework/blob/cd522aab0382d87f60233dbd1f5769e333bda4a5/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/microopt/RESUME.md",
+    "candidate_branch": "hrl/ep-l2-finite-service-microopt-lane1-v1",
+    "publication_branch": "hrl/ep-l2-ft20261016-lane1-v1",
+    "binary": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_release_r1/binaries/accel-sim.out",
+    "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+    "build_receipt": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_formal_build_r1/BUILD_RECEIPT.json",
+    "producer_receipt": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_native_r3/RECEIPT.json",
+    "supplementary_OFF_receipt": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_off_anchors_r1/RECEIPT.json",
+    "config_manifest": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_release_r1/CONFIG_MANIFEST.json",
+    "config_manifest_sha256": "a1c5aa13f0411b02c6fe9ee32f12983e9a68aa532b27b822d1db064c00c0865c",
+    "native_positive_cases": 52,
+    "additional_same_binary_OFF_opportunity_cases": 3,
+    "effective_profiles": 6,
+    "expected_rejection_guards": 5,
+    "expected_rejection_exit": 134,
+    "test_scope": [
+      "B16/S64/Unified single-factor H0 ordinary nonatomic OFF/MQ2",
+      "original31 OFF host/physical-clock/A1/B1 checks",
+      "partial-sector masks, exact request UID, original WB priority, true lower accept, WAD set_done, physical P1 and complete drain"
+    ],
+    "independent_qualification": "PENDING_LANE5_NOT_INHERITED",
     "application_starts_by_lane1": 0,
-    "old_releases_and_results_modified": false,
-    "source_push_readback": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_RECEIPT_REUSE_r3/SOURCE_REMOTE_READBACK.json",
-    "review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_BLOCKED_AUDIT_r4",
-    "files": {
-      "BLOCKED_AUDIT.json": {
-        "sha256": "0de682f4d873e26fe834b6a1f9fb77e41c7c237652fc1c7d0cd5cdbd18cea4bb",
-        "bytes": 5738
+    "trace_identity": null,
+    "trace_scope": "native directed synthetic request and symbolic sector-version fixtures; no full application trace run",
+    "default_switches": {
+      "mq2": 0,
+      "rg1": 0
+    },
+    "excluded_qualification": [
+      "RG1_ON",
+      "combined_MQ2_RG1",
+      "Ideals",
+      "P2",
+      "quota",
+      "RO",
+      "TVD",
+      "atomic_ON",
+      "full_application_performance"
+    ],
+    "frozen_runtime_changed_since_requested_sources": false,
+    "test_only_correction": {
+      "reason": "Legacy physical-clock fixture assumed WB capacity equals configured C16; S64 fixed layout has64 WB slots",
+      "parent_source": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1/tests/ep_l2/test_ft_memcpy_clock.cc",
+      "corrected_source": "util/ep_l2/ft_lane1/mq2_recovery_fixtures/test_ft_memcpy_clock_s64.cc",
+      "fixture_sha256": "e3382b6fb8d39320be35e3a2f2a414601e18d60757cf362ad82b9e88b18b5e6d",
+      "driver": "util/ep_l2/ft_lane1/mq2_recovery_validate.py",
+      "driver_sha256": "0da4ed6fc4aad1c51dd2237628afeddde0bdf9bef0c3eb9cacba4a13c3a47885",
+      "binding": "linked only against exact source84359 native archives; main simulator unchanged",
+      "actual_S64_peak": 64,
+      "actual_S64_WAD": 66,
+      "physical_bank_max_grants": 1,
+      "failed_raw_retained": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_native_r2"
+    },
+    "engineering_history": [
+      {
+        "revision": "native_r1",
+        "status": "CLIENT_BINDING_HOLD_PRELEASE_NO_TESTS",
+        "cause": "Lane5 live client update raced published binding; retried only after fresh exact binding match"
+      },
+      {
+        "revision": "native_r2",
+        "status": "42_NATIVE_PASS_THEN_S64_CLOCK_FIXTURE_ASSERT",
+        "runtime_changes": 0
+      },
+      {
+        "revision": "native_r3",
+        "status": "52_NATIVE_PASS_6_CONFIG_PASS_5_EXPECTED_REJECTIONS"
       }
+    ],
+    "resources": {
+      "jobs": 2,
+      "resource_samples": 1005,
+      "own_process_group_max_rss_bytes": 1002438656,
+      "peak_workspace_growth_bytes": 1682534400,
+      "min_workspace_free_bytes": 58285674496,
+      "min_share_free_bytes": 44348547072,
+      "min_available_memory_bytes": 168516759552,
+      "lease_released": true,
+      "owned_lock_released": true
     },
-    "next_event": "REAL workspace recovery to50GiB with current binding/lease/source safety; then unique formal build and MQ2 first, publish before RG1. No repeat low-space request/no direct CMake/no new waiter.",
-    "prior_runtime_source_receipt": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/FINITE_SERVICE_MICROOPT_RECEIPT_r2.json",
-    "intake_tool_fix": {
-      "problem": "MQ2 successful native negative guards exit134 but RG1 OFF reuse wrongly required every exit0",
-      "change": "named expected negatives require exact returncode, exact guard error, unchanged log hash and correct native rejection proof; OFF case coverage required; resource/timeout/unexpected failures remain rejected",
-      "receipt": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_RECEIPT_REUSE_r3/RECEIPT.json",
-      "actual_tool_tests": 3,
-      "counts_as_simulator_production_PASS": false,
-      "status": "PASS_THREE_TOOL_INTEGRITY_TESTS_NO_SIMULATOR_CLAIM"
-    },
-    "prior_review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_RECEIPT_REUSE_r3",
-    "blocked_audit": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_BLOCKED_AUDIT_r4/BLOCKED_AUDIT.json",
-    "prior_source_receipt": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/FINITE_SERVICE_MICROOPT_RECEIPT_r3.json"
+    "workspace_growth_scope": "observed whole-filesystem net growth includes concurrent protected DTC work; not exclusively attributed to this build",
+    "build_seconds": 206.30976592376828,
+    "gate_waiter_state": "NONE_CREATED_OR_RESTARTED",
+    "old_releases_raw_and_R19": "PRESERVED_NO_RESTART_NO_OVERWRITE",
+    "Lane5_HEAD_observed_at_start": "00312b9c22bf0274807c4ad3fc6b353b03876e3e",
+    "Storage_Ops_HEAD_read_back": "7ed8a3d6f0af7a081d3a7a8d5755a448b7e312ad",
+    "review_pack": "docs/ep_l2/review_packs/MQ2_RECOVERY_LANE1_PRODUCER_r1",
+    "next_owner": "lane5",
+    "next_action": "Independently verify exact binary/source, all directed and negative evidence, six effective profiles, trace/input and currentV2. Only then bind original parallel campaign MQ2 cells. No application launch or Lane5 PASS is claimed by producer."
   },
-  "goal_status": "BLOCKED"
+  "goal_status": "ACTIVE_USER_AUTHORIZED_BOUND_CONTINUE_PLATFORM_OLD_GOAL_BLOCKED",
+  "pre_recovery_runtime_metadata": {
+    "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+    "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+    "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+    "current_runtime_independently_qualified": false,
+    "current_runtime_native_positive_checks": 61,
+    "current_runtime_expected_rejections": 5,
+    "current_runtime_effective_profiles": 11,
+    "runtime_candidate": {
+      "schema": "EPL2_LANE1_PARALLEL_RUNTIME_RELEASE_V1",
+      "release_id": "POTENTIAL_ALL_DATA_FINITE_LOCAL_R1",
+      "status": "PRODUCER61_NATIVE_AND11_CONFIG_PASS_LANE5_INDEPENDENT_SCOPE_PENDING",
+      "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+      "authority": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
+      "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+      "core_tree": "aae87630908a9eff06145034a2f798196e8f6c31",
+      "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+      "binary": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/binaries/accel-sim.out",
+      "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7",
+      "actual_build_core": "/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-all-data-r1",
+      "actual_build_framework": "/workspace/worktrees/accel-sim-ep-l2-potential20261017-lane1-local-r1",
+      "build_receipt": "/workspace/ep_l2_parallel_lane1/all_data_build_r2/BUILD_RECEIPT.json",
+      "build_receipt_sha256": "ec07462b3d69db261d7683269cf1b875d0bdb6cd636df0531f4301f59b449de1",
+      "tool_source_commit": "db1989c3006aa93f3b823805029cfc87d5688000",
+      "supplement_tool_source_commit": "b08db4f3234fdeb087d366dc572d9ea74477aff4",
+      "producer_manifest_path": "/workspace/ep_l2_parallel_lane1/all_data_release_manifest_r1/RUNTIME_CONFIG_MANIFEST.json",
+      "producer_manifest_repository_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_ALL_DATA_CONFIG_MANIFEST_R1.json",
+      "producer_manifest_sha256": "2f4a1fd3648b60b19c9beb2b52adfd63f88244dade9bd9494b9494340c8f0d34",
+      "producer_receipt_path": "/workspace/ep_l2_parallel_lane1/all_data_release_r1/INTAKE_RECEIPT.json",
+      "producer_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1/INTAKE_RECEIPT.json",
+      "producer_receipt_sha256": "6dbc814fd5d3274da69aaafbf0ff6408ce7a0a3112429dcb44c9e8de4d1a47ec",
+      "supplement_receipt_path": "/workspace/ep_l2_parallel_lane1/all_data_supplement_r1/SUPPLEMENT_RECEIPT.json",
+      "supplement_receipt_repository_path": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1/SUPPLEMENT_SUPPLEMENT_RECEIPT.json",
+      "supplement_receipt_sha256": "c682334a14ec996a0fa2e8286893dd8d290168f352e3b4306a7219de0b3b385d",
+      "review_pack": "docs/ep_l2/review_packs/POTENTIAL20261017_LANE1_ALL_DATA_RELEASE_r1",
+      "supported_profiles": [
+        "B16_OFF",
+        "U_WB16_OFF",
+        "I_WB",
+        "I_META",
+        "I_WB_META",
+        "I_READ_HIT",
+        "S64",
+        "U_CAP16",
+        "P2_B16",
+        "P2_U_WB16",
+        "I_MEM_ALL_DATA"
+      ],
+      "unsupported_profiles": [
+        "I_BANK",
+        "I_L2_SERVICE",
+        "undeclared Ideal/finite structural combinations"
+      ],
+      "native_positive_cases": 61,
+      "expected_fail_closed_cases": 5,
+      "native_effective_profiles": 11,
+      "native_profile_config_hashes": {
+        "B16_OFF": "c15753a37b7a984fc5fd354f1155a58d6f2ce98e49923714bb88c6e012f383df",
+        "U_WB16_OFF": "169447c3069c9ea8c4d3fc5aad25766c4b6c3dc4df734a83af1bb3ef442c99f2",
+        "I_WB": "10141d03d113144dd92baa335525f9dbbc0568db1624482aa24316c9523395b6",
+        "I_META": "c97d810633ee95cc74705a1604d547ed1c97006ba55457cfadb32ffad055458a",
+        "I_WB_META": "e8209366238486990ae1795bf8e427c35df68d3534954ad14d4e0737a33302be",
+        "I_READ_HIT": "b80aef0e85245d09c7080dfc91f758fcfcf95d71522b9cb06beaa19646e2fcc2",
+        "S64": "46835f86e15e207f1fb177ab29d6f7d61f0c36c7daab2cf0a9f40ab72c086767",
+        "U_CAP16": "048c74de5195473c5fd061d8ab8b992ef22034052968df203a943ed019b98a9a",
+        "P2_B16": "baa510d19ff0d08b7665825ed80001fe0eda1e994ca7ea616c8fc93586c3731b",
+        "P2_U_WB16": "ac6bef9185424b610efe92876600428580f18facdbf4ad23eae034dd5073224d",
+        "I_MEM_ALL_DATA": "cafa95c4598940e4b65384872b63e372b71d6ded01fb8918123f2807dd22dd71"
+      },
+      "scientific_qualification_owner": "lane5",
+      "independent_qualification": false,
+      "new_full_applications_by_lane1": 0,
+      "frozen_R19_binary_replaced": false,
+      "prior_potential_releases_replaced": false,
+      "trace_identity": "No full application trace was consumed by these directed cases. Lane5 binds each exact existing complete input/body/host-payload manifest and new source/binary/config/run-key under current acceptance; non-atomic scope only. No synthetic full-app evidence.",
+      "same_binary_anchors_required": true,
+      "scope": {
+        "finite": "OFF/S64/U_CAP16/P2: native cache/sector/version/WB/lower-accept/WAD/bank/drain paths",
+        "local_ideals": "I_WB/META/WB_META/READ_HIT: explicitly scoped removals, retained native lifecycle; not ALL_DATA",
+        "all_data": {
+          "service": "END_TO_END_NATIVE_LDST_REFERENCE",
+          "reference_ready": "t_eligible+1 physical GPU cycle",
+          "eligibility": "real issue and required older producer visibility, no hidden finite memory admission",
+          "spaces": [
+            "global",
+            "local",
+            "param_local",
+            "shared",
+            "constant",
+            "param_kernel",
+            "texture"
+          ],
+          "preserved": [
+            "native instruction stream and issue resources",
+            "register dependencies and actual writeback/scoreboard completion",
+            "CTA and memory barriers",
+            "producer ordering and immutable byte/producer-version snapshots",
+            "native instruction-fetch hierarchy"
+          ],
+          "removed": [
+            "finite data-cache capacity and banks",
+            "data memory/NoC/LDST response FIFOs and admission",
+            "data link and per-tick return quotas"
+          ],
+          "residual": "actual SM register ports; ready-to-consume delay measured separately",
+          "data_cache_bank_WB_DRAM_statistics": "NOT_APPLICABLE; no energy-saving inference",
+          "unsupported": "atomic and LDGSTS fail closed; no numeric SASS output qualification"
+        }
+      },
+      "comparison_rules": [
+        "Old H0five/0.160% unchanged",
+        "Same finite h and same binary B/U yields S_EP; ALL_DATA opportunity ratio is separate, not EP-L2 speedup",
+        "Operational optimistic reference, not a strict mathematical upper bound for every schedule",
+        "All new starts/anchors/canaries count under72 and frozen new-campaign deadline; old R19 T0/cap/deadline remain separate"
+      ],
+      "next_action": "Lane5 independently qualify new runtime OFF/affected paths and each requested scope, then run ready campaign cells/anchors via existing registry/currentV2/full-input pipeline. ALL_DATA uses reference identity/store/snapshot/dependency/consume/drain acceptance, not fictitious physical64slice WB proof. Lane6 consumes only independently accepted rows."
+    },
+    "new_runtime_source": {
+      "core": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
+      "framework": "8ab6013ea90755fdc74819e92090c2de50f4f199",
+      "binary_sha256": "fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7"
+    }
+  }
 }

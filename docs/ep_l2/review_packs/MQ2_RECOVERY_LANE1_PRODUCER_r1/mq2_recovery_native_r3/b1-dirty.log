@@ -1,0 +1,54 @@
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:850000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000117647058824
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+FILL1|order=read-first|dirty=8|callbacks=0
+FILL2|dirty=9|dirty_bytes=36
+VERSION|atomic_uid=2|got=3|expected=3|ordinary=200
+WB|sector_mask=9|dirty_bytes=36|versions=3,200,0,2
+PASS B1 real MSHR/Tag mixed sector fill/response/WB
+	Command being timed: "/workspace/build/ep-l2-microopt20261018-lane1-v1/gpgpu-sim/ep_l2_common_delta_r16 /workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config /workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1/tests/ep_l2/ft_wbuf.config b1-dirty"
+	User time (seconds): 0.03
+	System time (seconds): 0.13
+	Percent of CPU this job got: 98%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.16
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 241664
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 59713
+	Voluntary context switches: 1
+	Involuntary context switches: 62
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
