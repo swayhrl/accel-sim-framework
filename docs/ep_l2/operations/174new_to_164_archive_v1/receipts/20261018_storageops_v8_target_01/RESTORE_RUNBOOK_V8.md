@@ -1,0 +1,10 @@
+# V8 exact restoration handoff
++
++Genuine mount on174-new is admin-wcx@10.208.130.164:/home/shared at /root/share/mnt164. Old174's same-named directory is not this mount. SOURCE_TO_164_RESTORE_INDEX_V8_R2.json identifies exact R1/R1R/R2 original and164 paths, full inventories, numerical metadata and full historical restore proofs. Match file SHA/source identity and path, never project-name similarity.
++
++Fresh .vvp samples were recovered into independent164 and native shared paths with exact SHA256, UID/GID/mode/mtime_ns and ancestor directory metadata, using tools/restore_verified_selection_v8.py. Each R1/R1R/R2_FRESH_RECOVERY_PLAN_V8.json has a NAS plan path and exact SHA in EXISTING_VVP_FRESH_RECOVERY_DRILLS.json. Dry-run the tool with --plan <NAS-plan> --expected-plan-sha256 <pinned> --destination <new-absent-path-under-V8/recovery_drills>. Only --execute writes; --native-metadata is permitted only on verified native shared storage. It refuses existing paths and never writes original source roots. Native ctime is provenance only.
++
++For future old174 original-path recovery, target supplies the exact <=512MiB verified subset via the existing shared bridge under the one receiver lease, preserving numerical metadata. Source owner independently verifies hashes and imports into a new absent recovery directory on the real old174 namespace with sufficient free reserve, applies native ownership/mode/mtime and directory metadata bottom-up, then rehashes before any owner-reviewed promotion to a project path. Never overwrite active originals, bypass one-stream protocol or confuse the local old174 mnt164 directory with164. Prior actual native B001 and full NAS proofs remain available in R13, but do not grant new source release authority.
++
++Current515 candidate binaries remain SOURCE_KEEP. Target first receipt proves exactly its three fresh samples plus the linked historical full project evidence; it does not claim a new full515 payload rehash or native full515 restore. M5 new compressed copy and independent18-file recovery are being prepared on the sole data stream. No new source bytes are claimed released.
++
