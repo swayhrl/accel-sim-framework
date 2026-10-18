@@ -3,6 +3,7 @@
 Caller holds central lease. Testbench helpers/reference are frozen R2 fixture.
 """
 from pathlib import Path
+from artifact_attempt_r3 import attempt_directory, verify_binary_archive
 import subprocess,json,hashlib,gzip,argparse
 p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--resume',action='store_true');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=a.resume);repo=Path(__file__).resolve().parents[3];original=(repo/'rtl/ep_l2/tb/ep_l2_slice_tb.sv').read_text();prefix=original.split('    reg [127:0] mask;')[0].replace('module ep_l2_slice_tb;','module ep_l2_owner_r3_tb;');extra='''
     integer previous,steps,drops=0,same_tag,fpair,lpair;reg [GEN_W-1:0] fgpair,lgpair;reg [PW-1:0] saved_pid;reg [GEN_W-1:0] saved_gen;
@@ -77,13 +78,17 @@ endmodule
 ''';tb=a.out/'owner_stress_tb.sv'
 if tb.exists():assert tb.read_text()==prefix+extra,'accepted fixture differs; use a new output revision'
 else:tb.write_text(prefix+extra)
-fl=repo/'rtl/ep_l2/flow/full_slice_filelist.f';rows=[]
+fl=repo/'rtl/ep_l2/flow/full_slice_filelist.f';rows=[];captured_source={x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x};captured_fixture=hashlib.sha256(tb.read_bytes()).hexdigest()
 if a.resume:
  prior=json.loads((a.out/'OWNER_STRESS_RECEIPT.json').read_text());assert prior['fixture_sha256']==hashlib.sha256(tb.read_bytes()).hexdigest();assert prior['source_RTL_sha256']=={x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x};rows=prior['rows']
+ for row in rows:
+  assert row['status']=='ACTUAL_RTL_OWNER_REBIND_LATE_FILL_PIN_SNAPSHOT_BYTES_DRAIN_PASS'
+  verify_binary_archive(row)
 for mode,label in ((0,'B16'),(1,'UNIFIED'),(2,'S64')):
  if any(row['mode']==label for row in rows):continue
- vvp=a.out/(label+'.vvp');cmd=['iverilog','-g2012','-s','ep_l2_owner_r3_tb','-P','ep_l2_owner_r3_tb.MODE='+str(mode),'-DEP_L2_FULL_TOP','-f',str(fl),'-o',str(vvp),str(tb)]
- with (a.out/(label+'-compile.log')).open('w') as f:subprocess.run(cmd,cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
- with (a.out/(label+'-run.log')).open('w') as f:subprocess.run(['vvp',str(vvp)],cwd=repo,stdout=f,stderr=subprocess.STDOUT,timeout=900,check=True)
- text=(a.out/(label+'-run.log')).read_text();assert 'R3_ACTUAL_OWNER_STRESS' in text and 'full-drain PASS' in text
- blob=vvp.read_bytes();archive=vvp.with_suffix('.vvp.gz');archive.write_bytes(gzip.compress(blob,6,mtime=0));assert gzip.decompress(archive.read_bytes())==blob;vvp.unlink();rows.append({'mode':label,'status':'ACTUAL_RTL_OWNER_REBIND_LATE_FILL_PIN_SNAPSHOT_BYTES_DRAIN_PASS','binary_sha256':hashlib.sha256(blob).hexdigest(),'archive':str(archive),'compile_command':cmd});(a.out/'OWNER_STRESS_RECEIPT.json').write_text(json.dumps({'rows':rows,'fixture_sha256':hashlib.sha256(tb.read_bytes()).hexdigest(),'source_RTL_sha256':{x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x},'scope':'full production data/banks: live wrong Tag with current GEN, held snapshot+descriptor pin+other-sector fill, pin prevents rebind, stale GEN, WB role, cross-Tag Unified PID reuse, forged current GEN wrong owner, byte WB and full drain'},indent=2)+'\n');print(label,'actual owner stress PASS',flush=True)
+ attempt=attempt_directory(a.out,label);vvp=attempt/(label+'.vvp');cmd=['iverilog','-g2012','-s','ep_l2_owner_r3_tb','-P','ep_l2_owner_r3_tb.MODE='+str(mode),'-DEP_L2_FULL_TOP','-f',str(fl),'-o',str(vvp),str(tb)]
+ with (attempt/(label+'-compile.log')).open('w') as f:subprocess.run(cmd,cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
+ with (attempt/(label+'-run.log')).open('w') as f:subprocess.run(['vvp',str(vvp)],cwd=repo,stdout=f,stderr=subprocess.STDOUT,timeout=900,check=True)
+ text=(attempt/(label+'-run.log')).read_text();assert 'R3_ACTUAL_OWNER_STRESS' in text and 'full-drain PASS' in text
+ assert captured_source=={x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x} and captured_fixture==hashlib.sha256(tb.read_bytes()).hexdigest(),'RTL/fixture changed during compile/run'
+ blob=vvp.read_bytes();archive=vvp.with_suffix('.vvp.gz');archive.write_bytes(gzip.compress(blob,6,mtime=0));assert gzip.decompress(archive.read_bytes())==blob;vvp.unlink();rows.append({'attempt_directory':str(attempt),'compile_log':str(attempt/(label+'-compile.log')),'run_log':str(attempt/(label+'-run.log')),'mode':label,'status':'ACTUAL_RTL_OWNER_REBIND_LATE_FILL_PIN_SNAPSHOT_BYTES_DRAIN_PASS','binary_sha256':hashlib.sha256(blob).hexdigest(),'archive':str(archive),'compile_command':cmd});(a.out/'OWNER_STRESS_RECEIPT.json').write_text(json.dumps({'rows':rows,'fixture_sha256':hashlib.sha256(tb.read_bytes()).hexdigest(),'source_RTL_sha256':{x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x},'scope':'full production data/banks: live wrong Tag with current GEN, held snapshot+descriptor pin+other-sector fill, pin prevents rebind, stale GEN, WB role, cross-Tag Unified PID reuse, forged current GEN wrong owner, byte WB and full drain'},indent=2)+'\n');print(label,'actual owner stress PASS',flush=True)

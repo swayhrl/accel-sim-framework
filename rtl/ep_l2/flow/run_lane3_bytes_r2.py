@@ -6,6 +6,7 @@ Caller must hold central admission lease. Never modifies the R1 fixture.
 """
 import argparse,json,hashlib,subprocess,gzip,re,importlib.util
 from pathlib import Path
+from artifact_attempt_r3 import attempt_directory, verify_binary_archive
 p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--resume',action='store_true');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=a.resume)
 repo=Path(__file__).resolve().parents[3];root=repo/'rtl/ep_l2';sp=root/'r2/LANE3_SHARED_STIMULI.json';rp=root/'r2/lane3_byte_reference.py';raw=sp.read_bytes();stim=json.loads(raw)
 assert hashlib.sha256(raw).hexdigest()=='297e1d9547e9cae1ae998ef4eff6361acd1a6f85d737d1390b58032ea868a921'
@@ -41,23 +42,24 @@ rows=[]
 if a.resume and (a.out/'LANE3_BYTE_RECEIPT.json').exists():
  prior=json.loads((a.out/'LANE3_BYTE_RECEIPT.json').read_text());assert prior['RTL_sha256']==rtl_identity and prior['generated_fixture_sha256']==hashlib.sha256(fixture.read_bytes()).hexdigest();rows=prior['rows']
  for row in rows:
-  with gzip.open(a.out/(row['mode']+'.vvp.gz'),'rb') as f:assert hashlib.file_digest(f,'sha256').hexdigest()==row['binary_sha256']
+  assert row['status']=='ACTUAL_RTL_BYTE_COMPARISON_PASS'
+  verify_binary_archive(row,a.out/(row['mode']+'.vvp.gz'))
 def save_receipt():
  receipt={'rows':rows,'stimulus_sha256':hashlib.sha256(raw).hexdigest(),'reference_sha256':hashlib.sha256(rp.read_bytes()).hexdigest(),'generated_fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest(),'RTL_sha256':rtl_identity,'scope':'non-atomic numeric RTL reads/snapshots only; protocol observe assertions separately covered by base fixture; no GPU numerical claim'}
  (a.out/'LANE3_BYTE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
 for mode,label in enumerate(('B16','UNIFIED','S64')):
  if any(row['mode']==label for row in rows):continue
- binary=a.out/(label+'.vvp');cmd=['iverilog','-g2012','-s','ep_l2_slice_tb','-P',f'ep_l2_slice_tb.MODE={mode}','-o',str(binary),'-DEP_L2_FULL_TOP','-f','rtl/ep_l2/flow/full_slice_filelist.f',str(fixture)]
- with (a.out/(label+'-compile.log')).open('w') as f:subprocess.run(cmd,cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
- with (a.out/(label+'-run.log')).open('w') as f:subprocess.run(['stdbuf','-oL','-eL','vvp',str(binary)],stdout=f,stderr=subprocess.STDOUT,timeout=600,check=True)
- text=(a.out/(label+'-run.log')).read_text();observed={}
+ attempt=attempt_directory(a.out,label);binary=attempt/(label+'.vvp');cmd=['iverilog','-g2012','-s','ep_l2_slice_tb','-P',f'ep_l2_slice_tb.MODE={mode}','-o',str(binary),'-DEP_L2_FULL_TOP','-f','rtl/ep_l2/flow/full_slice_filelist.f',str(fixture)]
+ with (attempt/(label+'-compile.log')).open('w') as f:subprocess.run(cmd,cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
+ with (attempt/(label+'-run.log')).open('w') as f:subprocess.run(['stdbuf','-oL','-eL','vvp',str(binary)],stdout=f,stderr=subprocess.STDOUT,timeout=600,check=True)
+ text=(attempt/(label+'-run.log')).read_text();observed={}
  for cid,step,val in re.findall(r'LANE3_OBS (C\d+) (\d+) ([0-9a-fA-F]+)',text):observed[(cid,int(step))]=bytes.fromhex(val)[::-1]
  assert set(observed)==set(expect)
  for key,(offset,size,expected) in expect.items():assert observed[key][offset:offset+size].hex()==expected,(label,key)
  final=dict(re.findall(r'LANE3_FINAL (C\d+) ([0-9a-fA-F]+)',text));assert len(final)==10
  for case in stim['cases']:assert bytes.fromhex(final[case['case_id']])[::-1].hex()==case['final_line_hex']
  blob=binary.read_bytes();binary.with_suffix('.vvp.gz').write_bytes(gzip.compress(blob,6,mtime=0));binary.unlink()
- rows.append({'mode':label,'status':'ACTUAL_RTL_BYTE_COMPARISON_PASS','comparisons':len(observed),'full_line_final_comparisons':10,'binary_sha256':hashlib.sha256(blob).hexdigest(),'compile_command':cmd,'abstract_observe_events':'NOT_EXECUTED_BY_BYTE_ADAPTER; see base-suite lifecycle mapping'})
+ rows.append({'archive':str(binary.with_suffix('.vvp.gz')),'attempt_directory':str(attempt),'compile_log':str(attempt/(label+'-compile.log')),'run_log':str(attempt/(label+'-run.log')),'mode':label,'status':'ACTUAL_RTL_BYTE_COMPARISON_PASS','comparisons':len(observed),'full_line_final_comparisons':10,'binary_sha256':hashlib.sha256(blob).hexdigest(),'compile_command':cmd,'abstract_observe_events':'NOT_EXECUTED_BY_BYTE_ADAPTER; see base-suite lifecycle mapping'})
  assert rtl_identity=={str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in (root/'rtl').glob('*.sv')},'RTL changed during compile/run'
  save_receipt()
  print(label,'Lane3 actual10vectors PASS',flush=True)
