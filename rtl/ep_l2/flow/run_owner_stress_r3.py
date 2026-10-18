@@ -5,7 +5,7 @@ Caller holds central lease. Testbench helpers/reference are frozen R2 fixture.
 from pathlib import Path
 import subprocess,json,hashlib,gzip,argparse
 p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--resume',action='store_true');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=a.resume);repo=Path(__file__).resolve().parents[3];original=(repo/'rtl/ep_l2/tb/ep_l2_slice_tb.sv').read_text();prefix=original.split('    reg [127:0] mask;')[0].replace('module ep_l2_slice_tb;','module ep_l2_owner_r3_tb;');extra='''
-    integer previous,steps,drops=0;reg [PW-1:0] saved_pid;reg [GEN_W-1:0] saved_gen;
+    integer previous,steps,drops=0,same_tag,fpair,lpair;reg [GEN_W-1:0] fgpair,lgpair;reg [PW-1:0] saved_pid;reg [GEN_W-1:0] saved_gen;
     reg [1023:0] old_snapshot,merge_line;reg [127:0] bmask;
     task reject_fill(input integer tag,input [PW-1:0] pid,input [GEN_W-1:0] gen);begin
       @(negedge clk);fill_valid=1;fill_tag=tag;fill_pid=pid;fill_gen=gen;fill_sectors=15;
@@ -18,6 +18,7 @@ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.ad
       repeat(3)tick();rst_n=1;tick();
       install(1,64'h1000,pattern(1),{128{1'b1}},1,14,0);
       install(5,64'h5000,pattern(5),{128{1'b1}},15,0,0);
+      install(4,64'h4400,pattern(44),{128{1'b1}},15,0,0);
       // Resident5 is live in the same bank. Match PID1/current GEN, wrong Tag5.
       reject_fill(5,handle_pid[1],handle_gen[1]);
       // Hold a real read snapshot and an independent descriptor pin while fill
@@ -45,7 +46,20 @@ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.ad
       saved_pid=handle_pid[1];saved_gen=handle_gen[1];
       install(1,64'h1300,pattern(14),{128{1'b1}},15,0,0);
       reject_fill(1,saved_pid,saved_gen); // Unified old WB-role, static old GEN
-      force_wb_block=0;wait_lower();close_wads();
+      // Same bank, DIFFERENT rows: P1 DATA service does not serialize two
+      // GEN metadata writes (frontend clean replace + lower WB release).
+      steps=0;while(!wb_valid&&steps<1000)begin tick();steps=steps+1;end
+      if(!wb_valid)$fatal(1,"same-bank lower did not reach SEND");
+      same_tag=MODE==1?5:4;native_ready=0;previous=replies+aborted;
+      prepare(0,same_tag,64'h4500,pattern(45),{128{1'b1}},15,0,0);admit();
+      force_wb_block=0;@(negedge clk);#1;native_ready=1;#1;
+      fpair=`CTRL.frontend_generation_pid;lpair=`CTRL.active_pid;
+      fgpair=`CTRL.generation_bits[fpair*GEN_W +:GEN_W];lgpair=`CTRL.generation_bits[lpair*GEN_W +:GEN_W];
+      if(!`CTRL.fe_gen_write || !`CTRL.lower_accept || fpair==lpair || (fpair%4)!=(lpair%4))$fatal(1,"same-bank independent GEN pair absent");
+      tick();if(`CTRL.generation_bits[fpair*GEN_W +:GEN_W]!==fgpair+GEN_W'(2) || `CTRL.generation_bits[lpair*GEN_W +:GEN_W]!==lgpair+GEN_W'(1))$fatal(1,"same-bank GEN pair incorrect");
+      wait_replies(previous);reference[same_tag]=pattern(45);address[same_tag]=64'h4500;handle_pid[same_tag]=last_rsp_pid;handle_gen[same_tag]=last_rsp_gen;
+      $display("R3_SAME_BANK_INDEPENDENT_GEN frontendPID%0d lowerPID%0d bank%0d PASS",fpair,lpair,fpair%4);
+      wait_lower();close_wads();
       install(9,64'h9000,pattern(9),{128{1'b1}},0,15,0);
       if(MODE==1 && handle_pid[9]!=saved_pid)$fatal(1,"real cross-Tag physical reuse not reached");
       // Even a forged matching CURRENT GEN cannot make old Tag1 own Tag9's PID.
@@ -57,7 +71,7 @@ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.ad
       if(!fill_ready || fill_dropped)$fatal(1,"current forward-identity fill rejected");tick();fill_valid=0;reference[9]=pattern(10);
       read_check(9);read_check(1);read_check(5);
       if(drops!=6 || !module_drained || received_wbs!=1 || completed_wbs!=1 || reference_count!=0)$fatal(1,"owner stress exact drain failed");
-      $display("R3_ACTUAL_OWNER_STRESS mode%0d drops6 snapshot-pin-fill rebind byteWB1 full-drain PASS cycles%0d",MODE,cycles);$finish;
+      $display("R3_ACTUAL_OWNER_STRESS mode%0d drops6 snapshot-pin-fill rebind same-bank-double-GEN byteWB1 full-drain PASS cycles%0d",MODE,cycles);$finish;
     end
 endmodule
 ''';tb=a.out/'owner_stress_tb.sv';tb.write_text(prefix+extra);fl=repo/'rtl/ep_l2/flow/full_slice_filelist.f';rows=[]
