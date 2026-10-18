@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "status": "PASS_FRESH_SOURCE_ELF_LIBRARY_AND_NORMAL_CPU_LOAD_BINDING",
+  "recorded_at_shanghai": "2026-10-18T10:05:27.991412+08:00",
+  "host": "huangrulin-174",
+  "uid": 0,
+  "core": {
+    "commit": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+    "base_commit": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+    "branch": "hrl/iscas2027-dtc-lane-x2-terminal-export-core-174-v1",
+    "worktree": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1",
+    "build_dir": "/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1",
+    "embedded_build_string": "gpgpu-sim_git-commit-e32afdcf_modified_0.0.",
+    "clean": true,
+    "fresh_build": true
+  },
+  "framework": {
+    "build_source_commit": "ccc3e553b89c2cfe2578c2b70abe147cf98fee2a",
+    "branch": "hrl/iscas2027-dtc-lane-x2-export-review-174-v1",
+    "worktree": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-x2-export-review-174-v1",
+    "code_tree": "c99766f8783a48e20d5e2ebd28b365df0bbf6287",
+    "util_tree": "9da4db60f878a37d6f45d091ac9289f3e6367db4",
+    "review_commit_locator": "final publication receipt; later doc commits do not masquerade as this build source"
+  },
+  "libcudart": {
+    "path": "/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1/libcudart.so",
+    "sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a",
+    "bytes": 4990800,
+    "elf_build_id": "2e203bec74ad90608429784ff2914676df8193ae"
+  },
+  "normal_probe": {
+    "path": "/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1/dtc_l1_normal_export_probe",
+    "sha256": "29943164673b865eba8e718546c7f1db7b0d2b7210645eb353d04b4b2ec78d52",
+    "bytes": 99112,
+    "elf_build_id": "20884ba05db7527e758f51ec4990b4ac6c556ab4"
+  },
+  "trace_binary": {
+    "path": "/workspace/builds/dtc-lane-x2-trace-release-174-v1/accel-sim.out",
+    "sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d",
+    "bytes": 300952,
+    "elf_build_id": "7189b60ee1eb0e7d284bccfb2ee7375a93d9efe6"
+  },
+  "fresh_baseline": {
+    "source_commit": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+    "worktree": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1",
+    "build_dir": "/workspace/builds/dtc-lane-x2-baseline-fresh-174-v1",
+    "library": {
+      "path": "/workspace/builds/dtc-lane-x2-baseline-fresh-174-v1/libcudart.so",
+      "sha256": "e94c2e247a602ce019219593d2834ff68155e960abacd386e29e619b07aa2aa3",
+      "bytes": 4990496,
+      "elf_build_id": "24b8b0c6f7e9b9749313c550902cbc945578f364"
+    },
+    "probe": {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/baseline-normal-export-probe",
+      "sha256": "99f7151c4ddd5759df9504634cdbea8e928f0ec59c23d9f85842914d90b4b261",
+      "bytes": 98704,
+      "elf_build_id": "ed9a849436f0d6a39256d97c6845cb92c86e5af0"
+    },
+    "probe_compile": {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/libcuda",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1/src/intersim2/routers",
+        "-O3",
+        "-std=gnu++17",
+        "-fPIE",
+        "-fno-access-control",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/tests/dtc_l1_normal_export_probe.cc",
+        "-o",
+        "/workspace/dtc-lane-x2-terminal-export-174-v1/baseline-normal-export-probe",
+        "/workspace/builds/dtc-lane-x2-baseline-fresh-174-v1/libcudart.so",
+        "-Wl,-rpath,/workspace/builds/dtc-lane-x2-baseline-fresh-174-v1",
+        "-ldl"
+      ],
+      "returncode": 0,
+      "header_root": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-baseline-source-174-v1",
+      "source_test_fixture": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/tests/dtc_l1_normal_export_probe.cc",
+      "library": "/workspace/builds/dtc-lane-x2-baseline-fresh-174-v1/libcudart.so"
+    }
+  },
+  "normal_probe_compile_command": {
+    "directory": "/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1",
+    "command": "/usr/bin/c++ -DCUDART_VERSION=11080 -DDEBUG=0 -DTRACING_ON=1 -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/libcuda -I/usr/local/cuda-11.8/targets/x86_64-linux/include -I/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1/libcuda -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/gpgpu-sim -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/intersim2 -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/intersim2/allocators -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/intersim2/arbiters -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/intersim2/networks -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/intersim2/power -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/src/intersim2/routers -O3  -std=gnu++17 -fPIE -fno-access-control -o CMakeFiles/dtc_l1_normal_export_probe.dir/tests/dtc_l1_normal_export_probe.cc.o -c /workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/tests/dtc_l1_normal_export_probe.cc",
+    "file": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-x2-terminal-export-core-174-v1/tests/dtc_l1_normal_export_probe.cc",
+    "output": "CMakeFiles/dtc_l1_normal_export_probe.dir/tests/dtc_l1_normal_export_probe.cc.o"
+  },
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "cmake": "cmake version 3.31.7",
+  "ninja": "1.10.1",
+  "cuda_root": "/usr/local/cuda-11.8",
+  "configuration": "Release -O3, assertions retained; original seven DTC tests enabled; no option retune",
+  "core_compile_commands_sha256": "88bd4b703b6e571adb5f0faa80e215ee07b4a234e9e9df15fc66f199553d211a",
+  "trace_compile_commands_sha256": "fca039b4f22ccaba4eed83ba1e71481050374304e8c58ce7cb8d01c1f198f785",
+  "trace_build_recipe_sha256": "a4e7d3f9c37dbcd27e02d3ac2296fc77c3915047936481ad42d412f0a381e0bd",
+  "trace_link_command": ": && /usr/bin/c++ -O3  CMakeFiles/accel-sim.out.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-x2-export-review-174-v1/gpu-simulator/accel-sim.cc.o CMakeFiles/accel-sim.out.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-x2-export-review-174-v1/gpu-simulator/main.cc.o CMakeFiles/accel-sim.out.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-x2-export-review-174-v1/gpu-simulator/trace-driven/trace_driven.cc.o CMakeFiles/accel-sim.out.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-x2-export-review-174-v1/gpu-simulator/trace-parser/trace_parser.cc.o -o accel-sim.out  -Wl,-rpath,/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1  /workspace/builds/dtc-lane-x2-terminal-export-release-174-v1/libcudart.so  -lm  -lz  -lGL  -lzstd  -lpthread && :",
+  "trace_elf_interpreter": "/lib64/ld-linux-x86-64.so.2",
+  "trace_loader_list_only": {
+    "argv": [
+      "/lib64/ld-linux-x86-64.so.2",
+      "--list",
+      "/workspace/builds/dtc-lane-x2-trace-release-174-v1/accel-sim.out"
+    ],
+    "LD_LIBRARY_PATH": "/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1",
+    "log": "/workspace/dtc-lane-x2-terminal-export-174-v1/trace-loader-list-only.log",
+    "sha256": "940c2410588b0f51a8006fad2b3ba15f7700b0df4f4859a210ed0fd536fbf9b0",
+    "dependencies": [
+      {
+        "path": "/workspace/builds/dtc-lane-x2-terminal-export-release-174-v1/libcudart.so",
+        "sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a",
+        "bytes": 4990800
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.4.8",
+        "sha256": "5df4f4df42d76270bb6981fabc7c1fdccd8ad28a23d84d67f73203fb3f537667",
+        "bytes": 841808
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30",
+        "sha256": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128",
+        "bytes": 2260296
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "sha256": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a",
+        "bytes": 125488
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+        "sha256": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d",
+        "bytes": 2220400
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.2.11",
+        "sha256": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370",
+        "bytes": 108936
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "sha256": "00830df310aac5023e10bd7b715149ab8ddc682277fd8ae3539a7a44fcdd6c38",
+        "bytes": 940560
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "9eb34cb2da3ae2a9398cc09b3cd2d069563ec40d9858cb711af15cd23fa80abf",
+        "bytes": 240936
+      }
+    ],
+    "trace_main_executed": false,
+    "trace_runtime_process_maps": "UNAVAILABLE_NOT_RUN; no simulator process exists; actual loader resolution only"
+  },
+  "actual_CPU_process_loading": "dladdr(gpu_print_stat), /proc/self/exe and /proc/self/maps in every one of the 10 CPU process receipts; ELF/library hashes rechecked before and after",
+  "source_identity": {
+    "configure_core_sha_verified": true,
+    "before_after_trace_source_hashes_identical": true,
+    "core_files": 444,
+    "framework_files": 419,
+    "before_manifest_sha256": "f96b0cb4ca456dcd2500e9fc4b3db5488cceecc6ccee13ea22a97011442d98b4",
+    "after_manifest_sha256": "f96b0cb4ca456dcd2500e9fc4b3db5488cceecc6ccee13ea22a97011442d98b4"
+  },
+  "source_file_sha256": {
+    "CMakeLists.txt": "c4de59926fd221a00c470cb1392711aea119b86da85a57d1cfa4923033e4a5da",
+    "src/gpgpu-sim/shader.cc": "5e0aef0a105a2f071b752d1288ed100eba06216029e847dc27fc3b19cf113aa1",
+    "src/gpgpu-sim/shader.h": "16d8f610b95da7c6280336f19c06bb4f0f75fcb30fc98ee5e61753d6caacd708",
+    "src/gpgpu-sim/dtc-l1-invalidation.h": "85dbad1028354142c5f3ca9873fe612aca89d8d6cd666652bcbd28c8280ab2b9",
+    "tests/dtc_l1_normal_export_probe.cc": "7edf94d8b8e9407bbc2d979c0bca7f60227aa32024f589277d3d67324a7d2c33"
+  },
+  "raw_logs": [
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/configure-release.log",
+      "sha256": "95744d9a363e84246a5cdb47cdec633c34c70a32fb309f5ecd3bca56aa134cd5",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/build-release.log",
+      "sha256": "2ee09bee0cb24cd0adcc697c288ecfefe8b6841cd0eae23692de1ec9c58f150d",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/configure-baseline.log",
+      "sha256": "e1d53aecf5415efb14f3d9f54752ebe1c0a4d106ea7f675b76a77ac731cb0ae4",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/build-baseline.log",
+      "sha256": "0af57e451315426c213bf2ad59b7a3422714ad0ddc592f60ad7f2f50a3f3dd20",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/configure-trace.log",
+      "sha256": "2b0cc074084244f3a9b7f78157844a0c56d1b6462ccf5ed3fa4d4490e130dda2",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/build-trace.log",
+      "sha256": "8b7958419e1fdf0e10bd7e3e2cf217b788b06bda7575b6bb460136489aed9869",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/7-ctest.log",
+      "sha256": "ba32c47b5e2f0922ecf828ac62dcf3a27ebc728ed9d27b895d1a4e53042b3e88",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/7-ctest.xml",
+      "sha256": "4cb019d50cef7f3cc03437bc19fc7914a3b9afea35a2ca167e786b49ec280805",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/baseline-probe-build.json",
+      "sha256": "fc9aa0ab330c5a014b5b245c0ef4a1c9fa46a4c28a1caca78d426a5a1ff03cc5",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/baseline-probe-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/SOURCE_BEFORE_TRACE_BUILD.json",
+      "sha256": "f96b0cb4ca456dcd2500e9fc4b3db5488cceecc6ccee13ea22a97011442d98b4",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/SOURCE_AFTER_TRACE_BUILD.json",
+      "sha256": "f96b0cb4ca456dcd2500e9fc4b3db5488cceecc6ccee13ea22a97011442d98b4",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/trace-loader-list-only.log",
+      "sha256": "940c2410588b0f51a8006fad2b3ba15f7700b0df4f4859a210ed0fd536fbf9b0",
+      "committed": false
+    },
+    {
+      "path": "/workspace/dtc-lane-x2-terminal-export-174-v1/trace-link-command.txt",
+      "sha256": "68ec26d58fab2f69d570bce5ab50640e6c80b086c6d39f34d4ad36dc59195634",
+      "committed": false
+    }
+  ],
+  "configure_exit_code": 0,
+  "build_exit_code": 0,
+  "trace_build_exit_code": 0,
+  "ctest_exit_code": 0,
+  "full_simulators_started": 0,
+  "canary_simulators_started": 0,
+  "old_products_reused_or_modified": false,
+  "old_locks_acquired": false
+}
