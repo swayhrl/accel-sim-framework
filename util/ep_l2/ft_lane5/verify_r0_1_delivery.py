@@ -19,7 +19,7 @@ def git(*args):return subprocess.check_output(['git',*args],cwd=REPO)
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--since-publication',required=True);ap.add_argument('--workload');ap.add_argument('--regime',choices=('D4','Q4','D2','D8','L25','ROP40_H0','ICNT2_H0','WAD256_Q4','LOCAL_IDEALS_ORDINARY','LOCAL_IDEALS_LEGACY','UNIFIED_ORDINARY','UNIFIED_LEGACY','P2'));ap.add_argument('--qualification-pack',type=Path);ap.add_argument('--qualification-only',action='store_true');ap.add_argument('--single-pack',type=Path);ap.add_argument('--single-acceptance-pack',type=Path);a=ap.parse_args()
-    if a.single_pack and a.regime is None:a.regime='H0'
+    if a.single_pack and a.regime is None:a.regime=json.loads((a.single_pack/'SCIENTIFIC_REVIEW.json').read_text()).get('regime','H0')
     ref='refs/remotes/origin/'+BRANCH
     subprocess.run(['git','-c','gc.auto=0','-c','url.https://github.com/.insteadOf=git@github.com:','-c','credential.helper=!gh auth git-credential','fetch','--no-tags','origin','refs/heads/'+BRANCH+':'+ref],cwd=REPO,check=True)
     head=git('rev-parse','HEAD').decode().strip();require(head==git('rev-parse',ref).decode().strip(),'Remote own branch SHA differs')

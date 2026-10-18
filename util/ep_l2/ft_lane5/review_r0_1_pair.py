@@ -53,8 +53,11 @@ def review(spec,registry,native_proof=None):
     raw=directory/'raw.log';require(digest(raw)==result['raw_log_sha256'],'Raw log changed')
     if spec.get('experiment_id') in ('EPL2_DOWNSTREAM_HEADROOM_R19','EPL2_PARALLEL_POTENTIAL_20261017_V1'):
         from headroom_config import validate_runtime_dump
-        if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1'):
-            from unified_scope import runtime_dump
+        if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1'):
+            if spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
+                from service_scope import runtime_dump
+            else:
+                from unified_scope import runtime_dump
             actual=runtime_dump(raw,spec)
         elif spec.get('scientific_scope')=='LOCAL_IDEAL_NATIVE_V1':
             from local_ideal_scope import runtime_dump

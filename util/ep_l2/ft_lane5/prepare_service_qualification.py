@@ -1,0 +1,58 @@
+"""Close exact candidate eleven gates and prepare twelve endpoints, no launch."""
+import copy,json,shutil,subprocess
+from pathlib import Path
+from registry import Registry,write_json,PARALLEL,MICROOPT_AUTHORITY
+from run import digest,require,asset_manifest,content_hash,GATES
+from service_scope import IDENTITY,expected,features,PROFILES,AUTHORITY,SCOPE
+from independent_microopt import audit,PUB,CORE,FW
+from package_r0 import freeze_checksums
+
+REPO=Path(__file__).resolve().parents[3]
+H=REPO/'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5'
+OUT=Path('/workspace/ep_l2_potential20261017_lane5_results')
+ORIGINAL=Path('/workspace/results/ep_l2_ft20261016/lane5_a1_b1_formal_preparation_r1/specs')
+PACK=REPO/'docs/ep_l2/review_packs/FT20261018_LANE5_MQ2_ELEVEN_GATES_r1'
+def git(root,*args):return subprocess.check_output(['git',*args],cwd=root)
+def input_scope(ind):
+ old=json.loads((REPO/'docs/ep_l2/review_packs/FT20261017_LANE5_UNIFIED_INPUT_SCOPE_REUSE_r1/RETAINED_INPUT_SCOPE.json').read_text());report=copy.deepcopy(old);oldfw='8ab6013ea90755fdc74819e92090c2de50f4f199';oldcore='9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f'
+ report.update(new_source_identity=IDENTITY,new_host_prefill_and_read_reference_tests_passed=True,actual55_receipt={'path':str(OUT/'independent_mq2_runtime_r3/RECEIPT.json'),'sha256':digest(OUT/'independent_mq2_runtime_r3/RECEIPT.json')});trees=[]
+ for row in old['source_trees']:
+  if row['path']=='gpu-simulator/trace-driven':continue
+  root=FW if row['path'].startswith('gpu-simulator/') else CORE;commit=IDENTITY['framework_source_commit'] if root==FW else IDENTITY['core_source_commit'];new=git(root,'rev-parse',commit+':'+row['path']).decode().strip();require(new==row['old'],'Retained input/parser/address tree changed '+row['path']);trees.append({**row,'new':new,'repository':str(root)})
+ report['source_trees']=trees
+ trace_old=git(FW,'show',oldfw+':gpu-simulator/trace-driven/trace_driven.cc');trace_new=git(FW,'show',IDENTITY['framework_source_commit']+':gpu-simulator/trace-driven/trace_driven.cc');addition=b'  ep_l2_mq2_ordinary_read = inst_t::ep_l2_plain_ldg(opcode_tokens);\n';require(trace_new.count(addition)==1 and trace_new.replace(addition,b'')==trace_old,'Trace input change exceeds one fail-closed classification annotation');require(git(FW,'diff','--name-only',oldfw,IDENTITY['framework_source_commit'],'--','gpu-simulator/trace-driven').decode().splitlines()==['gpu-simulator/trace-driven/trace_driven.cc'],'Other native trace loader source changed')
+ oldh=git(CORE,'show',oldcore+':src/abstract_hardware_model.h');newh=git(CORE,'show',IDENTITY['core_source_commit']+':src/abstract_hardware_model.h');a=newh.index(b'  // Fail-closed ordering proof carried');b=newh.index(b'  bool is_store()',a);require(newh[:a]+newh[b:]==oldh,'Header change exceeds reviewed fail-closed classifier');block=newh[a:b];require(b'bool ep_l2_mq2_ordinary_read = false;' in block and b'return i==tokens.size();' in block,'Unsafe default/unknown-modifier classifier')
+ for path in ['src/gpgpu-sim/shader.cc','src/gpgpu-sim/shader.h']:require(git(CORE,'show',oldcore+':'+path)==git(CORE,'show',IDENTITY['core_source_commit']+':'+path),'Native instruction/SM/memory generation changed')
+ write_json(PACK/'RETAINED_INPUT_SCOPE.json',{**report,'incremental_classifier_review':{'trace_one_line_annotation_removed_equals_old_complete_file':True,'header_only_default_false_strict_LDG_token_classifier_added':True,'no_address_byte_mask_sector_decode_or_request_identity_changes':True,'native_unknown_and_lowerfull_failclosed_replayed':True,'retained_prior_scope':{'path':str(REPO/'docs/ep_l2/review_packs/FT20261017_LANE5_UNIFIED_INPUT_SCOPE_REUSE_r1/RETAINED_INPUT_SCOPE.json'),'sha256':digest(REPO/'docs/ep_l2/review_packs/FT20261017_LANE5_UNIFIED_INPUT_SCOPE_REUSE_r1/RETAINED_INPUT_SCOPE.json')},'scope':'Retain immutable complete input byte/address/nonatomic proofs only; candidate runtime gets all eleven fresh gates, not old binary qualification.'}})
+
+def main():
+ h,p,off=audit();ind=json.loads((OUT/'independent_mq2_runtime_r3/RECEIPT.json').read_text());native=json.loads((OUT/'MICROOPT_F0AF_NATIVE_OFF_RESULT_r1.json').read_text());require(ind['status']=='INDEPENDENT55_NATIVE_6_CONFIG_5_GUARDS_PASS_ELEVEN_REVIEW_PENDING' and len(ind['tests'])==55 and len(ind['constructors'])==6 and len(ind['guards'])==5,'Candidate independent positives/guards incomplete');require(native['status']=='COMPLETE_VALID' and native['off_equivalence']=='PASS' and native['identity']['binary_sha256']==IDENTITY['binary_sha256'],'Candidate all-OFF canary incomplete')
+ require(Registry().snapshot()['runs'][native['run_key']]['status']=='COMPLETE_VALID','No canonical completed new-source canary')
+ for row in ind['tests']+ind['constructors']+ind['guards']:require(digest(row['log'])==row['sha256'] and digest(row['command'][0])==row['executable_sha256'],'Changed independent native evidence')
+ require(not PACK.exists(),'Preserve qualification revisions');PACK.mkdir();write_json(PACK/'INDEPENDENT_NATIVE_RECEIPT.json',ind);write_json(PACK/'NATIVE_OFF_RESULT.json',native);write_json(PACK/'PRODUCER_HANDOFF.json',h);input_scope(ind)
+ for name in ['service_scope.py','unified_scope.py','parse_unified_terminal.py']:shutil.copyfile(REPO/'util/ep_l2/ft_lane5'/name,PACK/name)
+ cases=[r['case'] for r in ind['tests']];gate_map={
+ 'old_all_off_equivalence':['NATIVE_OFF_RESULT.json'],
+ 'mode_legality':['six actual B16/S64/Unified OFF/MQ2 constructors','five actual combined/P2/Ideal/quota/legacy constructor rejections'],
+ 'finite_wbuf':['ft_directed','partition_1_16','partition_2_16','MQ2_S64_ft_memcpy_clock_0','MQ2_S64_ft_memcpy_clock_4096'],
+ 'requester_exact_once':['ft_directed','a1_1_16','a1_2_16']+[x for x in cases if x.startswith('MQ2_') and x.endswith('ordinary')],
+ 'sector_reference_data':['ft_directed','b1-read-first','b1-atomic-first','b1-version-only']+[x for x in cases if x.startswith('MQ2_') and any(x.endswith(v) for v in ['ordinary','unknown','lower-full'])],
+ 'stale_fill':[x for x in cases if 'host_prefill' in x or 'a1' in x],
+ 'resource_closure':cases,
+ 'wb_lifecycle':['ft_directed','partition_1_16','partition_2_16']+[x for x in cases if 'ordinary' in x or 'lower-full' in x],
+ 'bank_service':[x for x in cases if 'clock' in x or x.endswith('ordinary')],
+ 'physical_bank_clock':[x for x in cases if 'clock' in x],
+ 'memcpy_payload_identity':[x for x in cases if 'host_prefill' in x]}
+ require(set(gate_map)==GATES,'Incomplete eleven-gate mapping');write_json(PACK/'ELEVEN_GATE_REVIEW.json',{'status':'ALL11_NEW_SERVICE_SOURCE_GATES_PASS','source_identity':IDENTITY,'producer_publication':PUB,'independent_native_receipt_sha256':digest(PACK/'INDEPENDENT_NATIVE_RECEIPT.json'),'gates':{g:{'status':'PASS','production_driven':True,'actual_evidence':v} for g,v in gate_map.items()},'scope':'Exact finite H0 P1 B16/S64/Unified OFF/MQ2 ordinary nonatomic. Real UID/sector-version/host-prefill/WAD/lower-accept/drain/bank-clock assertions, same-source all-OFF native equivalence. No RG1/combined/Ideal/P2/RO/TVD or numerical SASS qualification.'})
+ manifest=json.loads(Path(h['config_manifest']).read_text());profiles={};original=json.loads((ORIGINAL/'FWT_7_21_B16_BANKED.json').read_text());environment=original['environment'];specdir=H/'service_mq2_specs_r1';specdir.mkdir(exist_ok=False);qpath=H/'SERVICE_MQ2_F0AF_INDEPENDENTLY_QUALIFIED_r1.json';files=[];units=[]
+ for name,row in manifest['profiles'].items():
+  f,i=expected(name);configs=asset_manifest(row['configs'],ordered=True);require(configs==row['ordered_config_manifest'],'Producer configs changed');profiles[name]={'ordered_configs':configs,'auxiliary_assets':[],'environment':environment,'runtime_config_sha256':content_hash({'ordered_configs':configs,'auxiliary_assets':[],'environment':environment}),'effective_options':__import__('headroom_config').options([v['path'] for v in row['configs']]),'feature_vector':f,'ideal_vector':i}
+ for short,workload in [('CONV','convolutionSeparable'),('FWT','FWT_7_21')]:
+  # Mode pairs are adjacent; all six Convolution endpoints precede FWT.
+  for prefix,base in [('B16','B16_OFF'),('S64','S64'),('Unified','U_OFF')]:
+   for on in [0,1]:
+    profile=f'{prefix}_mq2_{on}';row=manifest['profiles'][profile];qualified=profiles[profile];mode='U_WB16' if base=='U_OFF' else 'B16_BANKED';spec=copy.deepcopy(json.loads((ORIGINAL/(workload+'_'+mode+'.json')).read_text()));logical=f'MOPT_{short}_{base}_{"MQ2" if on else "OFF"}';cell=logical+'_'+IDENTITY['binary_sha256'][:12];spec.update(binary=h['binary'],qualified_release=str(qpath),scientific_scope=SCOPE,scope_tool={'path':str(PACK/'service_scope.py'),'sha256':digest(PACK/'service_scope.py')},parser={'path':str(PACK/'parse_unified_terminal.py'),'sha256':digest(PACK/'parse_unified_terminal.py')},configs=[{'name':v['name'],'path':v['path']} for v in row['configs']],experiment_id=PARALLEL,regime='SERVICE_MQ2' if on else 'SERVICE_OFF',profile=base,producer_profile=profile,cell_id=cell,result_root=str(OUT),memory_reservation_bytes=4*2**30,runner_tooling_source_commit=git(REPO,'rev-parse','HEAD').decode().strip());spec['identity'].update(IDENTITY,feature_vector=qualified['feature_vector'],ideal_vector=qualified['ideal_vector'],runtime_config_sha256=qualified['runtime_config_sha256']);spec['native_legacy_semantic_proof']=original['native_legacy_semantic_proof'];features(spec['identity'],profile);path=specdir/(logical+'.json');write_json(path,spec);files.append(str(path));units.append({'kind':'single','id':logical,'specs':[{'path':str(path),'sha256':digest(path)}]})
+ evidence=[{'path':str(v),'sha256':digest(v)} for v in sorted(PACK.iterdir()) if v.is_file()];q=copy.deepcopy(json.loads((H/'R0_1_A1_B1_LEGACY_TRACE_INDEPENDENTLY_QUALIFIED_r2.json').read_text()));q.update(IDENTITY,release_name='SERVICE_MQ2_F0AF_LEGACY_r1',producer_publication_commit=PUB,coordination_commit=AUTHORITY,qualified_feature_vectors=[v['feature_vector'] for v in profiles.values()],qualified_modes=[{'profile':k,'feature_vector':v['feature_vector'],'ideal_vector':v['ideal_vector']} for k,v in profiles.items()],retained_input_scope={'path':str(PACK/'RETAINED_INPUT_SCOPE.json'),'sha256':digest(PACK/'RETAINED_INPUT_SCOPE.json')},excluded_qualification=['RG1_ON','combined','Ideal','P2','RO','TVD','atomic_ON','numeric_SASS']);q['gates']={g:{'status':'PASS','production_driven':True,'evidence_path':str(PACK/'ELEVEN_GATE_REVIEW.json'),'evidence_sha256':digest(PACK/'ELEVEN_GATE_REVIEW.json')} for g in GATES};q['input_adapter_revision'].update(runtime_gates_source_binary_config_unchanged=False,new_runtime_all_eleven_gates_requalified=True,retained_input_scope_sha256=q['retained_input_scope']['sha256'])
+ cfg={'status':'INDEPENDENT_CONFIG_PASS','qualification_kind':SCOPE,'coordination_commit':AUTHORITY,'experiment_id':PARALLEL,'regime':'SERVICE_MQ2','identity':IDENTITY,'profiles':profiles,'evidence':evidence,'spec_paths':files,'producer_publication':PUB,'producer_publication_verified':True,'independent_affected_production_pass':True,'all_eleven_gates_passed':True,'native_all_off_equivalence':'PASS','independent_mode_semantics_passed':True};review=PACK/'INDEPENDENT_CONFIG_REVIEW.json';write_json(review,cfg);q['downstream_config_qualification']={'path':str(review),'sha256':digest(review)};write_json(qpath,q);write_json(PACK/'SPEC_INDEX.json',{'spec_paths':files,'units':units,'qualified_release':str(qpath),'microopt_authority':MICROOPT_AUTHORITY,'source_identity':IDENTITY,'starts_by_this_tool':0});freeze_checksums(PACK);print('ELEVEN_GATES_QUALIFIED_PENDING_CURRENT_V2_AND_CELL_REGISTRATION')
+
+if __name__=='__main__':main()

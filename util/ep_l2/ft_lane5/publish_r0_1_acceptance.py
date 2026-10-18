@@ -83,7 +83,7 @@ def main():
     currentness=recheck_review_currentness(review,a.pair_pack,state)
     require_publication_boundary(Registry())
     rows=review['scientific_acceptance_rows_proposed'];single=review.get('diagnostic_kind') in ('LOCAL_IDEAL_SINGLE','SCOPED_SINGLE')
-    require((single and review['experiment_id']=='EPL2_PARALLEL_POTENTIAL_20261017_V1' and len(rows)==1 and rows[0]['scientific_scope'] in ('LOCAL_IDEAL_NATIVE_V1','UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1')) or (not single and len(rows)==2 and {r['mode'] for r in rows}=={'B16_BANKED','U_WB16'}),'Incomplete or incorrectly scoped result')
+    require((single and review['experiment_id']=='EPL2_PARALLEL_POTENTIAL_20261017_V1' and len(rows)==1 and rows[0]['scientific_scope'] in ('LOCAL_IDEAL_NATIVE_V1','UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1')) or (not single and len(rows)==2 and {r['mode'] for r in rows}=={'B16_BANKED','U_WB16'}),'Incomplete or incorrectly scoped result')
     require(all(r['scientific_acceptance']=='CURRENT_ACCEPTED' and r['original_terminal_status']=='COMPLETE_VALID' for r in rows),'Nonvalid accepted proposal')
     require(not ({r['run_key'] for r in rows}&{r['run_key'] for r in ledger['rows']}),'Existing result cannot be overwritten')
     proof={'path':str(review_path.relative_to(REPO)),'sha256':digest(review_path)}
