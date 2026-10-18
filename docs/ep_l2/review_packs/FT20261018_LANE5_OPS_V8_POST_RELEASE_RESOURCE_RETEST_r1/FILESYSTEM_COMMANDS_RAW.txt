@@ -1,0 +1,29 @@
+$ hostname
+huangrulin-174
+[exit=0]
+$ readlink /proc/self/ns/mnt
+mnt:[4026534768]
+[exit=0]
+$ df -B1 -P /workspace
+Filesystem          1-blocks          Used   Available Capacity Mounted on
+overlay        3779302981632 3526959939584 60288466944      99% /
+[exit=0]
+$ findmnt -T /workspace -o TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT
+TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT
+/      overlay overlay   0:156 /
+[exit=0]
+$ stat -c %d %i %n /workspace
+156 32926662 /workspace
+[exit=0]
+$ df -B1 -P /tmp /root/share
+Filesystem          1-blocks          Used   Available Capacity Mounted on
+overlay        3779302981632 3526959939584 60288466944      99% /
+/dev/md127     7143083376640 6738665369600 44350091264     100% /root/share
+[exit=0]
+$ findmnt -T /root/share
+TARGET      SOURCE     FSTYPE OPTIONS
+/root/share /dev/md127 ext4   rw,relatime,stripe=384
+[exit=0]
+$ cat /proc/sys/kernel/random/boot_id
+59e1e1a4-84b6-431f-ac2d-03e340207019
+[exit=0]

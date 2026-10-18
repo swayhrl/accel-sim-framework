@@ -1,0 +1,56 @@
+{
+  "schema": "OPS_OLD174_FAST_WORKSPACE_RECLAIM_V8_FINAL_SOURCE_STATUS",
+  "status": "FIRST_ROUND_SPACE_TARGET_MET_SOURCE_RELEASES_CLOSED",
+  "observed_at_utc": "2026-10-18T04:31:12Z",
+  "contract_commit": "80633cc24b37cb640652f4ff3492ee0242d48309",
+  "source_branch": "hrl/ops-174-source-audit-exec-v1",
+  "starting_root_df_available_bytes": 51814326272,
+  "current_root_df_available_bytes": 60264386560,
+  "current_share_df_available_bytes": 44353458176,
+  "root_device": 156,
+  "share_device": 2431,
+  "actual_release_receipts": [
+    {
+      "scope": "two exact M5 gesu unpack-check temporary duplicate roots",
+      "source_receipt": "M5_TEMP_SOURCE_RELEASE_RECEIPT_V8.json",
+      "released_files": 36,
+      "released_empty_directories": 8,
+      "measured_root_df_net_gain_bytes": 1987743744
+    },
+    {
+      "scope": "R1 exact frozen 197 historical .vvp files only",
+      "source_receipt": "R1_VVP_SOURCE_RELEASE_RECEIPT_V8.json",
+      "released_files": 197,
+      "released_empty_directories": 0,
+      "measured_root_df_net_gain_bytes": 4464603136
+    },
+    {
+      "scope": "R1R exact frozen 127 historical .vvp files only",
+      "source_receipt": "R1R_VVP_SOURCE_RELEASE_RECEIPT_V8.json",
+      "released_files": 127,
+      "released_empty_directories": 0,
+      "measured_root_df_net_gain_bytes": 2994524160
+    }
+  ],
+  "cumulative_actual_per_release_measured_root_df_gain_bytes": 9446871040,
+  "cumulative_actual_per_release_measured_root_df_gain_gib_approx": 8.798,
+  "baseline_to_current_available_difference_bytes": 8450060288,
+  "difference_explanation": "Concurrent unrelated writers consumed root space; baseline-to-current free-space delta is not the sum of isolated release measurements. Share bridge copy/cleanup was never counted as old174 root gain.",
+  "goal_recovery_target_gib": "8-10",
+  "target_met": true,
+  "lane5_independent_retest_requests": [
+    "/workspace/ep_l2_ft20261016_shared/coordination_requests/OPS_V8_LANE5_INDEPENDENT_DF_RETEST_AFTER_R1_RELEASE.json",
+    "/workspace/ep_l2_ft20261016_shared/coordination_requests/OPS_V8_LANE5_INDEPENDENT_DF_RETEST_TARGET_MET.json"
+  ],
+  "lane5_independent_retest_response_at_final_source_snapshot": "NOT_YET_OBSERVED; Lane5 owns its own PID/registry/lease/space-gate check",
+  "r2_191_original_vvp": "SOURCE_KEEP_TARGET_MET; no R2 target exact-selector current recovery receipt yet",
+  "other_unreleased_candidates": "C2P/M2D old builds and all non-listed R1/R1R/R2 build files remain SOURCE_KEEP pending separate recovery and authorization; see SOURCE_COLD_PRIORITY_V8.csv and EXACT_RELEASE_APPROVAL_PROPOSAL_V8.md",
+  "protected": "Git objects and tmp_pack, raw/trace, RTL/PPA, canonical M5, other scientific assets, and all active EP-L2/DTC-L1/C16 research remained untouched",
+  "target_receipts": "M5 genuine164 full 18-member restore and R1/R1R exact selector complete current archive plus independent restore SHA receipts were GH/bridge-pinned before release",
+  "source_recovery_index": "The three named release receipts, exact TSV manifests, journals, bounded reverse plans and native sample proofs in this review pack; genuine164 archive paths and restore locations are in each release receipt.",
+  "target_release_publications": [
+    "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/V8_R1_SOURCE_RELEASE_PUBLICATION.json",
+    "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/V8_R1R_SOURCE_RELEASE_PUBLICATION.json"
+  ],
+  "next_owner_action": "Lane5 independently retests present df, PID/registry/lease and admission; target 174-new acknowledges release and retains 164 archives. Storage-Ops does not start experiments or perform unnecessary R2 release."
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "STORAGE_OPS_V8_EXTERNAL_BLOCKED_AUDIT",
+  "status": "BLOCKED_PENDING_LANE5_INDEPENDENT_POST_RELEASE_RESOURCE_CONFIRMATION",
+  "checked_at_utc": "2026-10-18T05:05:42.390199+00:00",
+  "blocking_condition": "Required Lane5 own post-release df/PID/registry/lease/budget preflight is absent; Ops cannot issue it or resume Lane5.",
+  "same_condition_consecutive_goal_turns": 3,
+  "turns": [
+    "Original V8 execution: all target data work/published proof finished; Lane5 post-release confirmation absent",
+    "First automatic continuation: fetched same pre-release owner head and read-only shared request recheck; no response",
+    "Second automatic continuation: fetched same owner head and shared request recheck again; no response"
+  ],
+  "owner_branch": "hrl/ep-l2-ft20261016-lane5-v1",
+  "latest_owner_commit": "c1433f8eec0835f32da7b4c7bbce46e999cc2c80",
+  "owner_publication_utc": "2026-10-18T03:50:23.253871+00:00",
+  "owner_phase": "STOP_NEW_ACTIONS_SCOPED_OPERATOR_REVIEW_REQUIRED",
+  "latest_shared_observation": {
+    "time_utc": "2026-10-18T05:05:42.390199+00:00",
+    "lane5_checkpoint": {
+      "at_utc": "2026-10-18T03:47:31.778683+00:00",
+      "status": "ROLLING_PARALLEL_CURRENT_ACCEPTED",
+      "verified_publication": "6e0a07eff0543690cd290fce4aae7c20bbe5a7d7"
+    },
+    "v8_coordination_files": [
+      "OPS_V8_LANE5_INDEPENDENT_DF_RETEST_AFTER_R1_RELEASE.json",
+      "OPS_V8_OLD174_BASELINE_ALERT.json",
+      "OPS_V8_LANE5_INDEPENDENT_DF_RETEST_TARGET_MET.json"
+    ],
+    "readonly": true
+  },
+  "target_last_verified_delivery_commit": "3b424f82750e67c5aca80383ff4909004b25196d",
+  "remaining_target_data_operations": [],
+  "active_target_transfer_or_hash_jobs": [],
+  "first30min_delivery_requirement": "PASS",
+  "source_measured_per_release_df_gain_sum_bytes": 9446871040,
+  "source_endpoint_available_difference_bytes": 8450060288,
+  "source_operators_completed_their_release_scope": true,
+  "minimum_external_information_needed": "Existing Lane5 window publishes its own post-V8-release read-only resource/PID/registry/lease/budget preflight and supplies exact Git SHA plus receipt path. No new experiment, budget change, restart or PID control is requested.",
+  "no_progress_classification": "Previous continuation had no authoritative state change; this continuation revalidated identical genuine external blocker.",
+  "goal_complete": false,
+  "source_deleted_by_target": 0,
+  "lane5_modified_by_target": false
+}

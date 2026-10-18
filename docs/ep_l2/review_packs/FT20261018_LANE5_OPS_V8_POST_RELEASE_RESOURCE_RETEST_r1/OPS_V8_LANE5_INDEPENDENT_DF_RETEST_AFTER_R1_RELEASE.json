@@ -1,0 +1,21 @@
+{
+  "schema": "OPS_OLD174_V8_LANE5_INDEPENDENT_SPACE_RETEST_REQUEST",
+  "published_at_utc": "2026-10-18T04:23:16Z",
+  "source_owner": "old174 Storage-Ops source window",
+  "source_branch": "hrl/ops-174-source-audit-exec-v1",
+  "mount_to_retest": "/workspace",
+  "source_mount_device": 156,
+  "request": "Lane5 independently measure old174 /workspace df (B1), verify its own current registry/PID/lease and space gate without modifying Storage-Ops files or inferring available space from archive transfer. Report observation and downstream build authorization to Lane1 under Lane5's own contract.",
+  "trigger": "Actual precise old174 source releases now exceed 2 GiB",
+  "m5_exact_temp_release_net_root_df_gain_bytes": 1987743744,
+  "r1_exact_197_vvp_release_net_root_df_gain_bytes": 4464603136,
+  "cumulative_actual_v8_release_net_df_gain_bytes": 6452346880,
+  "r1_df_available_before_bytes": 52920459264,
+  "r1_df_available_after_bytes": 57385062400,
+  "source_followup_df_available_bytes_at_notice": 57382039552,
+  "root_hard_floor_bytes": 51539607552,
+  "r1_source_release_journal_sha256": "347b4cad008cfb36284cf570dbe0a1e5faabe4fa7c08e8bb9f75db7f9fac5678",
+  "r1_other_build_logs_postcheck_and_native_restore_sibling": "PROTECTED",
+  "r1r_r2_vvp_and_all_scientific_data": "SOURCE_KEEP",
+  "note": "Cumulative measured release is not equal to change from the V8 baseline because concurrent workloads continue to write to the same filesystem. This request does not grant or start a Lane1 build."
+}
