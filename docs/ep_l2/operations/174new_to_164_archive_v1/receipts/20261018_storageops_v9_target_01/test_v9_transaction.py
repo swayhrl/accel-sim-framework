@@ -68,6 +68,25 @@ class ProtocolTests(unittest.TestCase):
         self.accept(self.transaction()); result = self.transaction().finalize()
         self.assertEqual(v.hash_file(result / 'tree/tiny.bin'), v.hash_file(self.file))
 
+    def test_multiple_offsets_resume_preserves_prior_verified_chunk(self):
+        data=self.file.read_bytes();a=self.root/'chunk_a';b=self.root/'chunk_b'
+        a.write_bytes(data[:100]);b.write_bytes(data[100:]);tx=self.transaction()
+        with self.assertRaises(v.Hold):tx.accept_chunk('tiny.bin',0,a,v.hash_file(a),txid=tx.txid,crash='after_chunk_record')
+        first=next(p for p in (tx.work/'chunks').iterdir() if p.suffix!='.json');before=v.identity(first.stat())
+        resumed=self.transaction();resumed.accept_chunk('tiny.bin',100,b,v.hash_file(b),txid=resumed.txid)
+        self.assertEqual(v.identity(first.stat()),before)
+        final=resumed.finalize();self.assertEqual((final/'tree/tiny.bin').read_bytes(),data)
+
+    def test_multiple_offsets_gap_and_overlap_hold_before_commit(self):
+        data=self.file.read_bytes();a=self.root/'chunk_a';b=self.root/'chunk_b';a.write_bytes(data[:100])
+        for case,offset,payload in [('overlap',99,data[100:]),('gap',101,data[101:])]:
+            base=self.root/case;base.mkdir();m=copy.deepcopy(self.manifest);m['genuine164_destination_root']=str(base)
+            tx=v.Transaction(base,m,fixture=True);b.write_bytes(payload)
+            tx.accept_chunk('tiny.bin',0,a,v.hash_file(a),txid=tx.txid)
+            tx.accept_chunk('tiny.bin',offset,b,v.hash_file(b),txid=tx.txid)
+            with self.assertRaises(v.Hold):tx.finalize()
+            self.assertFalse(tx.final.exists())
+
     def test_mismatched_txid(self):
         tx = self.transaction()
         with self.assertRaises(v.Hold): tx.accept_chunk('tiny.bin', 0, self.file, v.hash_file(self.file), txid='b'*64)
