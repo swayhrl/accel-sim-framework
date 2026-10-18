@@ -1,0 +1,148 @@
+{
+  "status": "M5_COMPRESSED_ARTIFACT_DEST_VERIFIED_RECOVERY_PENDING",
+  "receipt": {
+    "schema": "STORAGE_OPS_V6_DEST_VERIFIED",
+    "status": "DEST_VERIFIED",
+    "batch_id": "V8_M5_GESU_B001",
+    "project": "M5",
+    "verified_at_utc": "2026-10-18T04:02:17.844758+00:00",
+    "destination_archive_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261018_fast_v8",
+    "source_ready_sha256": "00e9270feb05952cb720d72a06999abbb493a210e4038d50651005fcd6f96313",
+    "source_inventory_sha256": "7ca380bd947db03384b35849d138110134d18571d1815286c7cf9d0b20fc9bcd",
+    "project_manifest_sha256": "bf38691fdf619ba2bea0aacf3fc65e74a74415aea5d0b2e93c0fb8aeb7dc3b0d",
+    "owner_scope_receipt_sha256": "7ca380bd947db03384b35849d138110134d18571d1815286c7cf9d0b20fc9bcd",
+    "source_receipt_commit": "fd74cc2f82ed4e389f6cc5827830aff86d50c987",
+    "file_count": 1,
+    "total_size_bytes": 59339020,
+    "archived_bytes": 59339020,
+    "source_allocated_bytes": 59346944,
+    "files": [
+      {
+        "relative_path": "gesu.tar.zst",
+        "source_path": "/workspace/m5-trace-immutable/gesu/gesu.tar.zst",
+        "bridge_path": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/V8_M5_GESU_B001/files/gesu.tar.zst",
+        "destination_relative_path": "M5/old174/workspace/m5-trace-immutable/gesu/gesu.tar.zst",
+        "size_bytes": 59339020,
+        "source_allocated_bytes": 59346944,
+        "source_dev": 156,
+        "source_inode": 33084966,
+        "source_nlink": 1,
+        "source_mtime_ns": 1788657625252186133,
+        "source_ctime_ns": 1788657809643851625,
+        "source_uid": 0,
+        "source_gid": 0,
+        "source_mode": 420,
+        "readers_and_inflight_references": [],
+        "source_sha256": "0d2ba5d069a88e331c1575dd8c2f5a8defe4d36d255464f998245454d86d7c03",
+        "bridge_sha256": "0d2ba5d069a88e331c1575dd8c2f5a8defe4d36d255464f998245454d86d7c03",
+        "destination_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261018_fast_v8/M5/old174/workspace/m5-trace-immutable/gesu/gesu.tar.zst",
+        "destination_sha256": "0d2ba5d069a88e331c1575dd8c2f5a8defe4d36d255464f998245454d86d7c03",
+        "bridge_identity_before_after": {
+          "dev": 2431,
+          "inode": 103547362,
+          "nlink": 1,
+          "size": 59339020,
+          "mtime_ns": 1788657625252186133,
+          "ctime_ns": 1792295827468454768
+        },
+        "destination_stat": {
+          "dev": 39,
+          "inode": 76199816,
+          "nlink": 1,
+          "size": 59339020,
+          "mtime_ns": 1788657625000000000,
+          "ctime_ns": 1788657625000000000
+        }
+      }
+    ],
+    "verification_level": "SSHFS_READBACK_VERIFIED",
+    "server_side_native_verified": false,
+    "source_action": "SOURCE_KEEP_PENDING_INDEPENDENT_SOURCE_RELEASE_RECHECK",
+    "source_release_authorized_by_target": false,
+    "source_confirmed_released_allocated_bytes": 0,
+    "source_df_free_before_after": null,
+    "restore": {
+      "status": "NOT_RUN",
+      "verified_restore_bytes": 0
+    },
+    "resources_before": {
+      "mount": {
+        "target": "/root/share/mnt164",
+        "source": "admin-wcx@10.208.130.164:/home/shared",
+        "fstype": "fuse.sshfs"
+      },
+      "bridge_mount": {
+        "target": "/root/share",
+        "source": "/dev/md127",
+        "fstype": "ext4"
+      },
+      "share_available_bytes": 44297654272,
+      "archive_available_bytes": 53422698831872
+    },
+    "resources_after": {
+      "mount": {
+        "target": "/root/share/mnt164",
+        "source": "admin-wcx@10.208.130.164:/home/shared",
+        "fstype": "fuse.sshfs"
+      },
+      "bridge_mount": {
+        "target": "/root/share",
+        "source": "/dev/md127",
+        "fstype": "ext4"
+      },
+      "share_available_bytes": 44297654272,
+      "archive_available_bytes": 53422637850624
+    },
+    "bridge_stage_cleanup": "AWAIT_SOURCE_ACTION_RECEIPT",
+    "new_archived_bytes": 59339020,
+    "resumed_from_owned_journal": false,
+    "rsync": {
+      "dry_run_exit": 0,
+      "copy_exit": 0,
+      "argv": [
+        "nice",
+        "-n",
+        "19",
+        "ionice",
+        "-c",
+        "3",
+        "rsync",
+        "-aH",
+        "--no-owner",
+        "--no-group",
+        "--partial",
+        "--fsync",
+        "--bwlimit=30m",
+        "--from0",
+        "--files-from=-",
+        "--",
+        "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/V8_M5_GESU_B001/files/",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261018_fast_v8/M5/old174/workspace/m5-trace-immutable/gesu/"
+      ],
+      "exact_files_from": [
+        "gesu.tar.zst"
+      ]
+    }
+  },
+  "source_raw_ready_unchanged_sha256": "00e9270feb05952cb720d72a06999abbb493a210e4038d50651005fcd6f96313",
+  "receiver_existing_module_reused": true,
+  "archive_root_override": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261018_fast_v8",
+  "field_alias_adapter": {
+    "owner_authorization": [
+      "COLD_COPY_OK_ONLY",
+      "COLD_COPY_OK"
+    ],
+    "source_action": [
+      "COPY_OK_ONLY_SOURCE_KEEP",
+      "COPY_OK_ONLY"
+    ],
+    "asset_state": [
+      "HISTORICAL_SCIENCE_ARCHIVE_SOURCE_KEEP",
+      "COLD"
+    ],
+    "source_commit": "Pinned source scope commit",
+    "dependencies": "Pinned exact18-member tar/set+source compare proof",
+    "no_consumers": "All current file-level readers_and_inflight_references empty"
+  },
+  "source_release_authorized": false
+}
