@@ -3,6 +3,8 @@ Keeps runtime48GiB/Share40GiB/RAM64GiB guards, reserves256MiB for this
 single small link. Formal candidate simulator retains50GiB preflight.
 """
 from pathlib import Path
+import sys
+sys.dont_write_bytecode=True
 import datetime,hashlib,importlib.util,json,os,resource,shlex,subprocess,sys
 REPO=Path(__file__).resolve().parents[4]
 CORE=Path('/workspace/worktrees/gpgpu-sim-ep-l2-potential20261017-lane1-all-data-r1')

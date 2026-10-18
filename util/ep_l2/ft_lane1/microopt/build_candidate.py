@@ -2,6 +2,8 @@
 No old build reuse/mutation; original R0.1 production entry is unchanged.
 """
 from pathlib import Path
+import sys
+sys.dont_write_bytecode=True
 import datetime,hashlib,importlib.util,json,os,resource,subprocess,sys
 REPO=Path(__file__).resolve().parents[4]
 CORE=Path('/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1')
@@ -43,12 +45,13 @@ def main():
   r['resources_before']=before
   if before['disk_free_bytes']<50*2**30 or before['available_memory_bytes']-8*2**30<64*2**30:
    r['status']='FORMAL_BUILD_RESOURCE_HOLD_NO_CMAKE_NO_COMPILER';save();return
-  r['resources_before']=before;r['initial_workspace_free_bytes']=before['disk_free_bytes'];r['filesystems']={str(p):{'realpath':str(p.resolve()),'st_dev':p.stat().st_dev} for p in [Path('/workspace'),OUT,Path('/root/share')]}
+  r['resources_before']=before;r['initial_workspace_free_bytes']=before['disk_free_bytes'];r['filesystems']={str(p):{'realpath':str(p.resolve()),'st_dev':p.stat().st_dev} for p in [Path('/workspace'),OUT,Path('/root/share'),Path('/tmp'),Path('/root'),CORE,FW,FW/'gpu-simulator/extern/pybind11']}
   lease=Registry(cl['canonical_root']).build_lease('lane1',cpu=2,memory=8*2**30);r['lease_id']=lease;save()
-  env=dict(os.environ,GPGPUSIM_ROOT=str(CORE),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',ACCELSIM_CONFIG='release',PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+  (OUT/'tmp').mkdir();r['temporary_directory']=str(OUT/'tmp');save()
+  env=dict(os.environ,TMPDIR=str(OUT/'tmp'),PYTHONDONTWRITEBYTECODE='1',GPGPUSIM_ROOT=str(CORE),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',ACCELSIM_CONFIG='release',PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
   def run(cmd,name):return guard.run_owned(cmd,name,OUT,env,r,save,resources,process_identity,1200)
   r['status']='CONFIGURING';r['compiler_started']=True;save();run(['cmake','-S',str(FW/'gpu-simulator'),'-B',str(BUILD),'-G','Unix Makefiles','-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'],'configure')
-  targets=['accel-sim.out','ep_l2_ft_memcpy_clock','ep_l2_ft_host_prefill','ep_l2_ft_directed','ep_l2_ft_partition','ep_l2_ft_a1','ep_l2_common_delta_r16','ep_l2_potential_p2','ep_l2_potential_s64','ep_l2_micro_mq2','ep_l2_micro_rg1_partition']
+  targets=['accel-sim.out','ep_l2_ft_memcpy_clock','ep_l2_ft_host_prefill','ep_l2_ft_directed','ep_l2_ft_partition','ep_l2_ft_a1','ep_l2_common_delta_r16','ep_l2_potential_p2','ep_l2_potential_s64','ep_l2_potential_ucap','ep_l2_micro_rg1_arbiter','ep_l2_micro_mq2','ep_l2_micro_rg1_partition']
   r['targets']=targets;r['status']='BUILDING';save();run(['cmake','--build',str(BUILD),'--target',*targets,'-j2'],'build')
   assert head(CORE)==EXPECTED and head(FW)==r['framework_source_commit']
   for p in [CORE,FW]:assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=p)
