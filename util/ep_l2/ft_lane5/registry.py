@@ -27,6 +27,7 @@ R19 = 'EPL2_DOWNSTREAM_HEADROOM_R19'
 PARALLEL = 'EPL2_PARALLEL_POTENTIAL_20261017_V1'
 MICROOPT_AUTHORITY = 'c8aa87bdbe220853eb2d27d8babd448cff02a66e'
 MICROOPT_STAGE = 'FINITE_SERVICE_MICROOPT_V1'
+FINAL_INTAKE_AUTHORITY = '9a161b700ae2d17470fe7b08fc16725b3ef6317c'
 R19_DEADLINE = 1792256956
 PARALLEL_ABSOLUTE_DEADLINE = 1792332000  # 2026-10-18 14:00:00 UTC
 PARALLEL_PROFILES = {'B16_BANKED','U_WB16','B16_OFF','U_OFF','I_WB','I_META','I_WB_META','I_READ_HIT',
@@ -146,6 +147,25 @@ def live_result_output(result_directory):
             'resources':local_resources(),'workspace_root':str(root),'workspace_st_dev':root.stat().st_dev}
 
 
+def final_intake_policy(data):
+    intake = data.get('final_intake_policy')
+    if intake is None:
+        return None
+    if (intake.get('authority_commit') != FINAL_INTAKE_AUTHORITY
+            or type(intake.get('max_lane5_simulators')) is not int
+            or not 1 <= intake['max_lane5_simulators'] <= 3
+            or type(intake.get('producer_build_pending')) is not bool
+            or intake.get('producer_workspace_reserve_bytes') != 2 * 2**30):
+        raise ValueError('invalid bounded final-intake priority policy')
+    return intake
+
+
+def unwritten_simulation_growth(data, policy):
+    return sum(max(0, policy['default_run_output_limit_bytes'] + 128*2**20
+                   - retained_tree_bytes(Path(row['result_directory'])))
+               for row in data['runs'].values() if row['status'] in ACTIVE)
+
+
 def four_start_forecast_exception(data, identity, policy):
     """Direct user exception for four exact fresh keys; never lower a live hard floor."""
     token = data.get('four_start_forecast_exception')
@@ -192,10 +212,12 @@ def admit_result_output(data, host, identity, result_directory):
     if state['actual_bytes']+pending+growth>policy['max_result_bytes']:
         raise ValueError('aggregate output ceiling plus concurrent predicted growth')
     resources=state['resources']
-    pending_physical=sum(max(0,policy['default_run_output_limit_bytes']+128*2**20-retained_tree_bytes(Path(row['result_directory']))) for row in data['runs'].values() if row['status'] in ACTIVE)
+    pending_physical = unwritten_simulation_growth(data, policy)
+    intake = final_intake_policy(data)
+    producer_reserve = intake['producer_workspace_reserve_bytes'] if intake and intake['producer_build_pending'] else 0
     exception = None
-    if resources['disk_free_bytes']-pending_physical-(policy['default_run_output_limit_bytes']+128*2**20)<policy['min_disk_free_bytes']:
-        exception = four_start_forecast_exception(data, identity, policy)
+    if resources['disk_free_bytes']-pending_physical-producer_reserve-(policy['default_run_output_limit_bytes']+128*2**20)<policy['min_disk_free_bytes']:
+        exception = None if intake else four_start_forecast_exception(data, identity, policy)
         if exception is None:
             raise ValueError('workspace floor after conservative concurrent output growth')
         if resources['disk_free_bytes'] < policy['min_disk_free_bytes']:
@@ -205,6 +227,7 @@ def admit_result_output(data, host, identity, result_directory):
     return {**state,'predicted_growth_bytes':growth,'concurrent_unwritten_growth_bytes':pending,
             'accounted_after_admission_bytes':state['actual_bytes']+pending+growth,'same_binary_full_input_samples':samples,
             'forecast_policy':'unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged',
+            'producer_workspace_reserved_bytes':producer_reserve,
             'disk_growth_reservation_exception':exception}
 
 def process_identity(pid):
@@ -240,6 +263,7 @@ class Registry:
     @staticmethod
     def admission(data, host, cpu, memory, scan, kind, resources):
         policy = data['hosts'][host]
+        intake = final_intake_policy(data)
         live = [r for r in data['runs'].values() if r['host'] == host and r['status'] in ACTIVE]
         leases = [r for r in data.get('resource_leases', {}).values()
                   if r['host'] == host and r['status'] in ACTIVE]
@@ -247,6 +271,8 @@ class Registry:
         if any(r.get('kind') == 'ENGINEERING_PILOT' for r in leases):
             raise ValueError('exclusive engineering pilot active; ordinary heavy admission blocked')
         if kind == 'simulation':
+            if intake and len(live) >= intake['max_lane5_simulators']:
+                raise ValueError('final-intake producer-priority simulator quota full')
             if len(live) >= policy['max_simulators']:
                 raise ValueError('shared simulator quota full')
             if policy['scan_exclusive'] and (scan and live or any(r['scan'] for r in live)):
@@ -263,6 +289,9 @@ class Registry:
             raise ValueError('Share free-space safety floor')
         if kind == 'build' and cpu > policy['max_build_jobs']:
             raise ValueError('build jobs exceed shared policy')
+        if kind == 'build' and intake and intake['producer_build_pending']:
+            if resources['disk_free_bytes'] - unwritten_simulation_growth(data, policy) - intake['producer_workspace_reserve_bytes'] < policy['min_disk_free_bytes']:
+                raise ValueError('producer50GiB gate plus existing simulation growth cannot fit')
 
     def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None, client_binding=None, retry_checkpoint=None):
         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:

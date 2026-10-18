@@ -1,0 +1,79 @@
+{
+  "R19_remains_completed": true,
+  "active_leases": [
+    {
+      "cpu_units": 2,
+      "created_at": "2026-10-18T06:48:30.015162+00:00",
+      "host": "huangrulin-174",
+      "memory_bytes": 8589934592,
+      "owner": "lane1",
+      "status": "RESERVED"
+    }
+  ],
+  "active_simulators": [],
+  "at_utc": "2026-10-18T06:51:39.671161+00:00",
+  "authority_commit": "9a161b700ae2d17470fe7b08fc16725b3ef6317c",
+  "campaign_starts": 32,
+  "candidate_status": "No official MQ2/RG1 producer at checked Lane1a5a36d5db; source candidates not qualification. Existing runtime fallback first.",
+  "controller_queue_sha256": "983a769407b9aaf2ab7c34d2673c1b316c2ceb97aa7308ca2d3b2a3e4b10fa24",
+  "current_V2": {
+    "generation": 48,
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
+    "publication_commit": "6e0a07eff0543690cd290fce4aae7c20bbe5a7d7",
+    "revision": "FT20261017_LANE5_PARALLEL_H0_I_MEM_ALL_DATA_CONVOLUTIONSEPARABLE_ACCEPTED_r1",
+    "sha256": "93413b0b76bd10918a76ed069e368f204b35377a2388649e3fc09092ff1165b3",
+    "snapshot_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_H0_CONVOLUTIONSEPARABLE_I_MEM_ALL_DATA_ACCEPTANCE_r1/SCIENTIFIC_ACCEPTANCE_V2.json"
+  },
+  "current_policy": {
+    "huangrulin-174": {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "default_run_memory_bytes": 8589934592,
+      "default_run_output_limit_bytes": 2147483648,
+      "max_build_jobs": 4,
+      "max_cpu_units": 8,
+      "max_reserved_memory_bytes": 34359738368,
+      "max_result_bytes": 21474836480,
+      "max_simulators": 4,
+      "min_available_memory_bytes": 68719476736,
+      "min_disk_free_bytes": 51539607552,
+      "scan_exclusive": true
+    }
+  },
+  "deadline_semantics": "Original cutoff controls every new claim. Already admitted runs retain3600s timeout; metadata acceptance may drain afterward, bounded to cutoff+timeout+600s, without changing campaign deadline or starting applications after cutoff.",
+  "initial_priority": {
+    "basis": "Documented Lane1 formal50GiB gate minus unchanged48GiB hardfloor; this is admission reserve, not a measured build peak. Larger owner requirements must be supplied before more concurrency.",
+    "max_lane5_simulators": 1,
+    "producer_build_pending": true,
+    "producer_workspace_reserve_bytes": 2147483648
+  },
+  "new_accepted": 22,
+  "new_goal": "EPL2_PARALLEL_AND_MICROOPT_FINAL_INTAKE_V1",
+  "no_other_project_or_worktree_modified": true,
+  "old_R5_process_exists": false,
+  "parallel_max_starts": 72,
+  "parallel_original_T0": 1792236614.5007188,
+  "parallel_original_deadline": 1792323014.5007188,
+  "resources": {
+    "actual_bytes": 12405316810,
+    "resources": {
+      "available_memory_bytes": 169234067456,
+      "disk_free_bytes": 58535178240,
+      "share_disk_free_bytes": 44348727296
+    },
+    "roots": {
+      "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+        "bytes": 7470274173,
+        "st_dev": 2431
+      },
+      "/workspace/ep_l2_potential20261017_lane5_results": {
+        "bytes": 4935042637,
+        "st_dev": 156
+      }
+    },
+    "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+    "workspace_st_dev": 156
+  },
+  "status": "R6_SOURCE_TESTED_PENDING_REMOTE_BINDING_NO_NEW_RUN_YET",
+  "tests": "32 PASS:20GiB positive;16/21GiB andlower48 negative; locks; producer/sim growth; exact explicit audited recovery; bounded incremental intake. No scientific qualification rerun.",
+  "three_archived_failed_attempts": "Preserved; queue has published exact new same-key recovery decisions, each charged to original72 when actually claimed. No implicit replay; expired first-four token disabled in final intake."
+}

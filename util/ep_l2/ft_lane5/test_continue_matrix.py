@@ -18,7 +18,7 @@ KEY = run_key(SPEC['identity'])
 CAMPAIGN = {'experiment_id': PARALLEL, 't0_unix': 1792236614.5007188,
             'deadline_unix': 1792323014.5007188, 'maximum_starts': 72}
 POLICY = {'max_simulators': 4, 'max_cpu_units': 8, 'max_reserved_memory_bytes': 32*2**30,
-          'max_result_bytes': 16*2**30, 'min_disk_free_bytes': 48*2**30,
+          'max_result_bytes': 20*2**30, 'min_disk_free_bytes': 48*2**30,
           'min_available_memory_bytes': 64*2**30, 'default_run_output_limit_bytes': 2*2**30}
 
 
@@ -85,9 +85,9 @@ class Safety(unittest.TestCase):
             rows.append(bad)
         self.assertEqual(p2_h0_candidates(rows, spec, 'B16_BANKED'), [good])
 
-    def controller_case(self, runs, accepted, expected, expired=False):
+    def controller_case(self, runs, accepted, expected, expired=False, policy_override=None, return_code=0):
         registry = {'campaigns': {PARALLEL: CAMPAIGN}, 'runs': runs, 'resource_leases': {},
-                    'hosts': {socket.gethostname(): POLICY}}
+                    'hosts': {socket.gethostname(): {**POLICY, **(policy_override or {})}}}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             queue = {**CAMPAIGN, 'revision': 'TEST_FIXTURE', 'units': [{'id': 'fixture', 'kind': 'single',
@@ -103,13 +103,19 @@ class Safety(unittest.TestCase):
                      patch.object(cm.subprocess, 'check_output', return_value='test-fixture-source'), \
                      patch.object(cm.subprocess, 'Popen') as spawn, \
                      patch.object(cm.time, 'time', return_value=CAMPAIGN['deadline_unix'] + (1 if expired else -10)):
-                    self.assertEqual(cm.main(path), 0)
+                    self.assertEqual(cm.main(path), return_code)
                     spawn.assert_not_called()
                     checkpoint.assert_called_once()
                 result = json.loads((root / 'TEST_FIXTURE_PROGRESS.json').read_text())
                 self.assertEqual(result['status'], expected)
             finally:
                 signal.signal(signal.SIGTERM, old_handler)
+
+    def test_old16_unknown21_and_reduced_disk_floor_fail_closed(self):
+        for override in [{'max_result_bytes':16*2**30}, {'max_result_bytes':21*2**30},
+                         {'min_disk_free_bytes':47*2**30}]:
+            self.controller_case({}, set(), 'STOP_NEW_ACTIONS_SCOPED_OPERATOR_REVIEW_REQUIRED',
+                                 policy_override=override, return_code=1)
 
     def test_controller_skips_accepted_without_subprocess_or_lease(self):
         row = {'identity': SPEC['identity'], 'status': 'COMPLETE_VALID', 'experiment_id': PARALLEL}

@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 
 from acceptance import authorize_launch, current_manifest, load_current_authority
 from registry import ACTIVE, PARALLEL, Registry, admit_result_output, attempt_count, local_resources, process_identity, run_key, write_json
@@ -50,11 +51,36 @@ def validate_adopted_retry(spec, snapshot):
     if retry is None:
         return
     row = snapshot['runs'].get(run_key(spec['identity']))
+    if pending_audited_retry(spec, snapshot, verify_integrity=True):
+        return
     if (not row or row['identity'] != spec['identity'] or
             row['status'] not in ACTIVE | {'COMPLETE_VALID'} or
             row.get('retry_checkpoint') != retry or not row.get('attempt_history') or
             digest(retry['path']) != retry['sha256']):
         raise ValueError('Queue may only adopt an existing exact audited retry')
+
+
+def pending_audited_retry(spec, snapshot, verify_integrity=False):
+    retry = spec.get('retry_checkpoint')
+    if not retry:
+        return False
+    row = snapshot['runs'].get(run_key(spec['identity']))
+    if (not row or row['status'] not in {'FAILED','RESOURCE_LIMIT','INCOMPLETE','TIMEOUT'}
+            or not row.get('result_directory') or row.get('owner') != 'lane5'):
+        return False
+    if digest(retry['path']) != retry['sha256']:
+        raise ValueError('Audited retry proof changed')
+    proof = json.loads(Path(retry['path']).read_text())
+    old = Path(row['result_directory'])
+    return (row['identity'] == spec['identity'] and row.get('owner') == 'lane5'
+            and proof.get('run_key') == row['run_key']
+            and proof.get('previous_lease_id') == row['lease_id']
+            and bool(proof.get('engineering_reason'))
+            and (not verify_integrity or proof.get('old_terminal_sha256') == digest(old/'run_status.json'))
+            and (not verify_integrity or proof.get('old_raw_sha256') == digest(old/'raw.log'))
+            and Path(proof['new_result_directory']).parent == OUT
+            and Path(proof['new_result_directory']) != old
+            and not Path(proof['new_result_directory']).exists())
 
 
 def disposition(spec, registry, accepted):
@@ -67,7 +93,27 @@ def disposition(spec, registry, accepted):
         if not row or row['status'] != 'COMPLETE_VALID':
             raise ValueError('Accepted key lacks valid canonical terminal')
         return 'ACCEPTED'
+    if pending_audited_retry(spec, registry):
+        return 'AUDITED_RETRY_READY'
     return row['status'] if row else 'UNSTARTED'
+
+
+@contextmanager
+def controller_guard(path):
+    with Path(path).open('a+') as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise ValueError('Another final-intake controller owns the unique scheduler lock')
+        yield
+
+
+def main(queue_path):
+    queue = json.loads(Path(queue_path).read_text())
+    if queue.get('unique_controller_lock'):
+        with controller_guard(Registry().root/'LANE5_FINAL_INTAKE_CONTROLLER.lock'):
+            return run_queue(queue_path)
+    return run_queue(queue_path)
 
 
 def command(args, log):
@@ -79,6 +125,40 @@ def command(args, log):
 
 def python(tool, *args):
     return [sys.executable, '-B', str(TOOLS / tool), *map(str, args)]
+
+
+def approved_intake_units(prepared, snapshot):
+    """Append exact published/qualified units without replacing a live queue or key."""
+    import hashlib
+    intake = snapshot.get('final_intake_policy', {})
+    units = intake.get('approved_units', [])
+    if not units:
+        return prepared
+    payload = json.dumps(units, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+    if (hashlib.sha256(payload).hexdigest() != intake.get('approved_units_sha256')
+            or len(intake.get('approved_units_publication', '')) != 40 or len(units)>24):
+        raise ValueError('Unbound/budget-exceeding incremental producer intake')
+    existing = {unit['id']: unit for unit, _ in prepared}
+    additions = []
+    for unit in units:
+        if unit['id'] in existing:
+            if existing[unit['id']] != unit:
+                raise ValueError('Cannot replace an existing prepared unit')
+            continue
+        if unit['kind'] not in {'single','pair'} or len(unit['specs']) != (1 if unit['kind']=='single' else 2):
+            raise ValueError('Invalid incremental unit')
+        specs = []
+        for item in unit['specs']:
+            path = Path(item['path']).resolve()
+            if not path.is_relative_to(H) or digest(path) != item['sha256']:
+                raise ValueError('Incremental frozen spec changed/outside worktree')
+            spec = json.loads(path.read_text())
+            if spec.get('experiment_id') != PARALLEL:
+                raise ValueError('Incremental unit cannot alter campaign')
+            validate_adopted_retry(spec, snapshot)
+            specs.append(spec)
+        additions.append((unit, specs))
+    return additions + prepared  # Newly qualified microopt endpoints take priority.
 
 
 def deliver_checkpoint(queue, tag, phase, publish_remote=True):
@@ -178,7 +258,7 @@ def publish(unit, specs, tag, deadline, controller):
                       'point': str(point), 'sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip()}), flush=True)
 
 
-def main(queue_path):
+def run_queue(queue_path):
     def stop_driver(signum, frame):
         raise KeyboardInterrupt('Campaign controller stopped; existing simulator runners remain untouched')
     signal.signal(signal.SIGTERM, stop_driver)
@@ -217,6 +297,8 @@ def main(queue_path):
     children = {}
     denied = set()
     fingerprint = None
+    last_resource_probe = time.time()
+    last_resources = local_resources()
     status = 'RUNNING'
     error = None
     delivered_groups=set(queue.get('previously_delivered_fourway_groups', []))
@@ -225,8 +307,9 @@ def main(queue_path):
             if digest(queue_path) != queue_sha:
                 raise ValueError('Queue changed while running; current simulations remain untouched')
             snapshot = read_registry(registry)
+            prepared = approved_intake_units(prepared, snapshot)
             expected_policy = {'max_simulators':4,'max_cpu_units':8,'max_reserved_memory_bytes':32*2**30,
-                               'max_result_bytes':16*2**30,'min_disk_free_bytes':48*2**30,
+                               'max_result_bytes':20*2**30,'min_disk_free_bytes':48*2**30,
                                'min_available_memory_bytes':64*2**30,'default_run_output_limit_bytes':2*2**30}
             if any(snapshot['hosts'][socket.gethostname()][k] != v for k,v in expected_policy.items()):
                 raise ValueError('Central policy changed outside frozen authorization')
@@ -248,10 +331,18 @@ def main(queue_path):
                     elif snapshot['runs'][key]['status'] != 'COMPLETE_VALID':
                         raise RuntimeError('Preserved non-valid terminal requires scoped engineering/science review: ' + key)
             current = (tuple(sorted((k, v['status']) for k, v in snapshot['runs'].items())),
-                       tuple(sorted((k, v['status']) for k, v in snapshot['resource_leases'].items())))
+                       tuple(sorted((k, v['status']) for k, v in snapshot['resource_leases'].items())),
+                       json.dumps(snapshot.get('final_intake_policy', {}), sort_keys=True))
             if current != fingerprint:
                 denied.clear()
                 fingerprint = current
+            if time.time() - last_resource_probe >= 600:
+                actual = local_resources()
+                if (actual['disk_free_bytes'] >= last_resources['disk_free_bytes'] + 128*2**20
+                        or actual.get('share_disk_free_bytes',0) >= last_resources.get('share_disk_free_bytes',0) + 128*2**20
+                        or actual['available_memory_bytes'] >= last_resources['available_memory_bytes'] + 8*2**30):
+                    denied.clear()
+                last_resources, last_resource_probe = actual, time.time()
             active = [v for v in snapshot['runs'].values() if v['status'] in ACTIVE]
             starts = sum(attempt_count(v) for v in snapshot['runs'].values() if v.get('experiment_id') == PARALLEL)
             write_json(receipt, {'status': status, 'at_unix': time.time(), 'runner': process_identity(os.getpid()),
@@ -259,7 +350,8 @@ def main(queue_path):
                                 'deadline_unix': campaign['deadline_unix'], 'current_V2': state['binding'],
                                 'active_runs': active, 'child_runner_pids': [p.pid for p, _ in children.values()],
                                 'denied_without_start': sorted(denied)})
-            if time.time() >= campaign['deadline_unix']:
+            start_deadline_reached = time.time() >= campaign['deadline_unix']
+            if start_deadline_reached and not queue.get('drain_admitted_after_start_deadline', False):
                 status = 'DEADLINE_NO_NEW_ACTION_EXISTING_RUNNERS_LEFT_NATURAL'
                 break
             # Independently accept each completed point or complete pair before further launches.
@@ -268,7 +360,7 @@ def main(queue_path):
                 dispositions = [disposition(s, snapshot, accepted) for s in specs]
                 if all(d == 'ACCEPTED' for d in dispositions):
                     continue
-                if any(d not in ('ACCEPTED', 'UNSTARTED', 'COMPLETE_VALID', *ACTIVE) for d in dispositions):
+                if any(d not in ('ACCEPTED', 'UNSTARTED', 'AUDITED_RETRY_READY', 'COMPLETE_VALID', *ACTIVE) for d in dispositions):
                     raise RuntimeError('Historical failed key requires explicit audited recovery; never automatic retry: ' + unit['id'])
                 if all(d == 'COMPLETE_VALID' for d in dispositions):
                     if specs[0]['regime']=='P2':
@@ -278,7 +370,11 @@ def main(queue_path):
                     for item in unit['specs']:
                         if digest(item['path']) != item['sha256']:
                             raise ValueError('Frozen execution spec changed')
-                    publish(unit, specs, queue['revision'] + '_' + unit['id'], campaign['deadline_unix'],controller)
+                    review_deadline = campaign['deadline_unix']
+                    if queue.get('drain_admitted_after_start_deadline', False):
+                        # Review only. Registry/check_experiment retains the original immutable start cutoff.
+                        review_deadline += max(s['timeout_seconds'] for s in specs) + 600
+                    publish(unit, specs, queue['revision'] + '_' + unit['id'], review_deadline,controller)
                     published = True
                     break
             if published:
@@ -287,14 +383,20 @@ def main(queue_path):
                 status = 'SELECTED_READY_MATRIX_CURRENT_ACCEPTED'
                 break
             launched = False
-            if starts < campaign['maximum_starts'] and not any(k not in snapshot['runs'] for k in children):
+            if not start_deadline_reached and starts < campaign['maximum_starts'] and not any(k not in snapshot['runs'] for k in children):
                 for unit, specs in prepared:
                     for item, spec in zip(unit['specs'], specs):
                         key = run_key(spec['identity'])
-                        if disposition(spec, snapshot, accepted) != 'UNSTARTED' or key in denied or key in children:
+                        if disposition(spec, snapshot, accepted) not in {'UNSTARTED','AUDITED_RETRY_READY'} or key in denied or key in children:
+                            continue
+                        intake = snapshot.get('final_intake_policy', {})
+                        stage = snapshot['campaigns'][PARALLEL].get('incremental_stages', {}).get('FINITE_SERVICE_MICROOPT_V1', {})
+                        microopt_ids = {v['cell_id'] for v in stage.get('registered_cells', [])}
+                        if intake.get('pause_old_starts', False) and spec.get('cell_id') not in microopt_ids:
                             continue
                         if digest(item['path']) != item['sha256']:
                             raise ValueError('Prepared execution spec changed')
+                        validate_adopted_retry(spec, snapshot)
                         authorize_launch(spec['identity'], digest(spec['qualified_release']), state)
                         try:
                             registry.admission(snapshot, socket.gethostname(), 1, memory_reservation(spec,snapshot['hosts'][socket.gethostname()]), False, 'simulation', local_resources())
@@ -312,6 +414,9 @@ def main(queue_path):
                         break
                     if launched:
                         break
+            if start_deadline_reached and not active and not children:
+                status = 'ORIGINAL_START_DEADLINE_NO_NEW_RUNS_ADMITTED_WORK_DRAINED'
+                break
             if not launched and not active and not children and not any(v['status'] in ACTIVE for v in snapshot['resource_leases'].values()):
                 status = 'START_CAP_BOUNDARY' if starts >= campaign['maximum_starts'] else 'NO_CURRENT_SAFE_ENVELOPE_FOR_REMAINING_READY_CELLS'
                 break
