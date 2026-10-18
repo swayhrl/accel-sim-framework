@@ -1,0 +1,29 @@
+# Codex Goal — 174-new TLS-V10 real164 archive and restore owner
+
+**Target environment only:** 174-new, SSH port 2239, `mnt:[4026535153]`. V9 target branch `swayhrl/accel-sim-framework:hrl/ops-174new-164-archive-exec-v1` closed at `c870ca77456d4d4d70a110411fa5c60934976666`. Start a distinct V10 execution branch/worktree. Do not restart/reset V9 or rearchive V9 C2P/M2D.
+
+**Mandatory initial reads:** sibling `TLS_V10_MASTER_CONTRACT.md` at coordinating immutable commit; official V9 `V9_RECOVERY_POINTER.md` at `c870ca7`; exact V9 transaction/recovery implementation. Old174 is the only source/DELETE owner. Target may copy, archive, independently restore, and clean exact verified bridge stages only; **never** delete anything in old174 `/workspace`.
+
+## Target preflight
+
+- Confirm genuine164 mount, server and FS identity of `admin-wcx@10.208.130.164:/home/shared` through 174-new's verified `/root/share/mnt164`. Genuine native storage paths begin `/home/shared`. The analogous pathname on old174 does **not** imply it is the same filesystem.
+- Select a NEW ABSENT unique archive root under e.g. `/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_<frozen-selector-id>/`, excluding V9 existing destinations. Bind genuine absolute target root and old174 native FS/source identities into a canonical txid.
+- Use the existing V9 proven sender/recovery code and fault-case knowledge, changing only what is needed for TLS explicit selectors and optionally lossless compression with both digests. The new V10 implementation does not automatically gain source unlink authority. No second uploader, no source-side deletion or persistent daemon.
+- Source will conduct bounded read-only inventory first. Don't start staging until source publishes immutable `COPY_READY` for an eligible TLS-only cold batch and passes workspace>=48GiB, Share>=40GiB, free RAM>=64GiB and active Lane5 leases. No bulk I/O before the original 2026-10-18 19:30:14.500719 CST last start cutoff; later start requires fresh resource PASS, not time alone.
+
+## One-wave TLS non-code transfer (phased inside one V10 execution)
+
+- Independently audit source selectors, source path normalization/no traversal, source relative paths, types, SHA256, size, link/metadata policy, frozen commit, bridge SHA and transaction identity; refuse mismatched or moved source. Never infer file identities from approximate sizes or path patterns.
+- Prioritize cold P9 public matrix and historical matrix-v3/v4 only if P9 poller and staging are not using them; next V5 generated outputs/build; Dynamic-way generated data; all remaining TLS-exclusive cold non-code assets. Keep code/working trees and mixed active TLS/C2P and ~6.8GiB shared trace inputs untouched. For P9 matrix-v2, active staging or paused mixed offload, record a precise SKIP/HOLD; don't try to make the scope appear 100% complete by deleting active data.
+- Stage bounded one-stream batches; <=256MiB actual bridge staging allocated at a time, <=30MiB/s. Verify source+bridge+target SHA for every file, use chunk SHA, durable `.partial`/resume, fsync/close/reopen, atomic no-clobber finalize into an absent native164 path. Compress only if it helps and format/restore are independently supported; record original file SHA and stored compression SHA/bytes separately.
+- After full project copy and true164 acceptance, restore **all files**, not samples, to a NEW ABSENT real native restore tree. Check full SHA, sizes and native UID/GID/mode/mtime for regular files and directory metadata; source ctime is provenance only and cannot be restored. Distinguish any symlink/hardlink projection from native source stat; unknown types HOLD. A valid compressed archive must reproduce **original** byte streams, not only archive checksum.
+- Publish per-batch `DEST_VERIFIED`, `RESTORE_VERIFIED`, proper `SOURCE_KEEP` ack request, and exact target bridge cleanup receipt. On conflict or interrupted transfer follow V9 bounded resume but never select one of two mismatching txids as a convenience. No stale bridge index accepted over final archive index. Bridge cleanup is by exact verified list only, and does not contribute to old174 `df` gain.
+
+## Source cleanup ownership / close
+
+- Provide a source-linked full selector and independent recovery guide to old174; old174 alone may later use an **exact approved** selector to release safe files. A successful target archive is NOT source release. Do not edit/remove active original paths, code, scripts or their untracked modifications. Keep the restore mechanism usable without an active network daemon.
+- Publish real164 and GitHub complete `TLS_V10_SOURCE_TO_164_INDEX.json`, `TLS_V10_ARCHIVE_RECEIPT.json`, `TLS_V10_RESTORE_RECEIPT.json`, `TLS_V10_OPERATOR_RECOVERY.md`, per-batch transaction and fault/HOLD ledger, SHA256 manifests, `TLS_V10_SPACE_BEFORE_AFTER.json`, `TLS_V10_TARGET_FINAL_RECEIPT.json`; include original, compressed, logical and allocated sizes and explicit `SOURCE_KEEP` until separate exact release approval.
+- Independently join original source manifests with real164 restored-tree manifests; retain exact all-file identities and original project/experiment provenance. Cross-check count of TLS-exclusive assets with source inventory without double counting nested directories and unknown shared traces. Full success may say `ARCHIVE_AND_RESTORE_DONE_SOURCE_KEEP` while active/poller-dependent paths remain precise HOLD/KEEP; do not claim all TLS data removed from original174.
+- Push to an isolated new target branch, fetch exact final HEAD and remote raw receipt SHA; don't overwrite V9 history or current scientific result/registry/quotas. Free bridge staging only after both sides' exact immutable ACK.
+
+Solve ordinary tooling and file packaging issues within the contract; stop on crossing scientific/owner/provenance/format/reader/resource/unlink authority boundaries. No unrelated project changes.
