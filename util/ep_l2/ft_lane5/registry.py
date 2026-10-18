@@ -370,7 +370,7 @@ class Registry:
 
     def register_native_off_control(self, identity, checkpoint, cell_id="E_NATIVE_OFF_LOCAL_R1"):
         """One explicit new-source all-OFF canary, charged to the new72 budget."""
-        if cell_id not in {'E_NATIVE_OFF_LOCAL_R1','E_NATIVE_OFF_UNIFIED_FB_R1'}:
+        if cell_id not in {'E_NATIVE_OFF_LOCAL_R1','E_NATIVE_OFF_UNIFIED_FB_R1','E_NATIVE_OFF_SERVICE_F0AF_R1'}:
             raise ValueError('unknown explicitly predeclared native canary')
         if cell_id == 'E_NATIVE_OFF_UNIFIED_FB_R1' and identity['binary_sha256'] != 'fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7':
             raise ValueError('new unified canary requires exact official runtime')
@@ -378,6 +378,18 @@ class Registry:
         proof = Path(checkpoint['path'])
         if hashlib.sha256(proof.read_bytes()).hexdigest() != checkpoint['sha256']:
             raise ValueError('canary selection checkpoint changed')
+        if cell_id == 'E_NATIVE_OFF_SERVICE_F0AF_R1':
+            expected = {'core_source_commit':'84359d4ba492acb639a2092fa271e9169038bf7d',
+                        'framework_source_commit':'197741be9be9b8e390a557d639503b416d8e95f0',
+                        'binary_sha256':'f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30'}
+            evidence=json.loads(proof.read_text())
+            if (any(identity[k]!=v for k,v in expected.items())
+                    or evidence.get('identity')!=identity
+                    or evidence.get('status')!='PREDECLARED_NECESSARY_SERVICE_RUNTIME_NATIVE_OFF_CANARY'
+                    or evidence.get('official_release')!='d035f11e465f8acd9764a3055ae967e62bb5b47f'
+                    or identity['feature_vector'].get('finite_wbuf') is not False
+                    or any(identity['ideal_vector'].values())):
+                raise ValueError('service canary requires exact published runtime and all-OFF checkpoint')
         with self.locked() as data:
             campaign = data.get('campaigns', {}).get(PARALLEL)
             if not campaign or time.time() >= campaign['deadline_unix']:
