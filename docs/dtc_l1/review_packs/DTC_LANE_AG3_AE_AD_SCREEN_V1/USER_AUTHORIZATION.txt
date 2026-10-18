@@ -1,0 +1,59 @@
+Goal: DTC_LANE_AG3_AE_AD_DISCOVERY_CONVERGENCE_174_V1
+
+位置：原174账户/容器，不是174-new。
+本Goal是用户已经明确批准的、与历史AA/AG完全独立的新优化发现集：**最多6个全量模拟器实际启动**。可在单一Codex窗口内按“CPU资格→预注册→BASE校准→AE/AD实验→严格收口”solve-and-continue。不要把准备、运行、最终收口自动拆成新的Goal；工程细节可自行修复，科学合同或实际运行权不闭合时STOP。没有新的后续自动派发授权。
+
+【0. 基本边界和不可变输入】
+在开始前fetch/read-back以下精确Git对象，不依赖移动HEAD或旧README：
+- Framework AG2 loader CPU资格：swayhrl/accel-sim-framework @ 8e43c75a5e2eb60a8466084602b7df8117111e89；读 `docs/dtc_l1/review_packs/DTC_LANE_AG2_LOADER_MANIFEST_V1/` 的 LATEST_REPORT、MAPPING_ROLE_CONTRACT、NEW_COHORT_PRE_REG_PREREQUISITES、真实loader早期映射/负测、工具源码与SHA。
+- Core生产共同祖先 X2：swayhrl/gpgpu-sim @ e32afdcf44be3374ff36d22568ed01a075459b6f（K1正常统计导出修复）；保留其普通L1、K0和全部旧DTC模型边界。
+- AE Core：swayhrl/gpgpu-sim @ ae83cc510f301cfe7937ad77318e332b2ab324e8；Framework证据 @ 3b7c8bca8186add520987f864dd2f67abde87ef3。
+- AD Core最终：swayhrl/gpgpu-sim @ 2af61a3efae8ab7994a81c81feff8e9e717dab53；Framework最终证据 @ f383ba8337356278343bba3fd9f8d62bfd74c9eb。9/9 CTests，是有限CPU组件资格，非应用性能PASS。注意AD早期CPU产物嵌入旧731be854构建字符串；此轮必须从最终已核提交全新构建，禁止直接混用AD旧库。
+- 历史AG失败 Framework @ cc5f51ea068e5a234811d2fbe79a5ccdbab21769、Core @ 965dffe04366e665626de4afeb7ffebca8622b5f；只读其ROOT_CAUSE_AND_FOLLOWUP、真实失败与R2资源合同。历史AG集成含AC的160KiB/SM银行；**不得以这个旧集成Core为本轮父版**。
+- AA5历史 Framework @ 2d740ece2f5dbb6d99040a64f421e940687a48fa；AA5 Gaussian K0_32×4仅67/510 kernel、因host换页中止，其性能不可用。
+- T1-C历史Tag64×8完整已接受的GEMM 1,071,405 cycles、Gaussian 3,278,356 cycles；仅作本轮BASE新Core完整回放的精确校准标准，不得充当本轮BASE数据。
+
+新建且独占：
+Framework分支 `hrl/iscas2027-dtc-lane-ag3-aead-screen-174-v1`，从固定AG2 Framework提交派生，只新增本AG3审查与工具目录；Core分支 `hrl/iscas2027-dtc-lane-ag3-aead-core-174-v1`，从固定X2 Core提交派生。独立新worktrees、新build、新raw根 `/workspace/dtc-lane-ag3-aead-screen-174-v1`；正式review pack为 `docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/`。不得覆写AG2、AG、AA5、AC/AC2、AD、AE、AF或A/M/T/U及原44行/GM12任何源码、收据或raw。旧AG实际启动1/8、0完整PASS；旧AA5实际启动1/4、0完整PASS，保持历史原始事实，不共享本轮预算、不复用旧UUID。
+
+【1. Core集成，仅AE和AD】
+将AE固定的bank-preserving Tag row hash和AD固定的渐进消费者唤醒，以受控patch/独立差分合入X2的新分支；审读每个源文件重叠并逐字验证原语义，不机械“拼接即通过”。不合入旧AG中的AC（160KiB/SM）及AF，也不合入尚未实现的AC2 compact。AE与AD均保留原OPT_BOOL名称及**省略/0为OFF**；AE仅OO whole-line finite service、4bank及支持的Tag几何，bank号保持原样，hash函数原样；AD仅OO finite服务，保留每周期4 waiter更新的真实quota、数据已ready与广播done的区别、各消费者自己的依赖和same-warp fence。K1 source-request逻辑和正常K1专属telemetry不动，但六点均K0 OFF。
+
+资源/服务不可偷改：640×128B physical数据池、16KiB ordinary cache、PIB128、Tag64×8、4个Tag bank、固定有限服务（Tag/allocate/create/inject/refill/waiter/collect/retire）、lower global cap32768、64SM、1410MHz核心及原clock域、shared96KiB、既定flush_l1/L2/memcpy/L2预载规则、既定下游架构/队列不变。AE增加的XOR成本及AD新元数据成本必须另列硬件假设，仍然不是等面积/同频综合证明。不可通过放松cycle>collect_done_cycle、response/sector/Ref/generation、WB授权或统计断言来争取性能。
+
+从干净不可变源码重新编译新Core共享库和Framework SASS trace可执行文件，assertions enabled、工具/compile_commands/全源SHA/ELF build-id、实际动态加载库及所有依赖SHA可复核。至少独立运行原有7个CTest、AE/AD各自CPU测试、生产parser、K0 omitted/explicit0、正常统计出口、LDST/sector/Ref/PIB/partial admission/WB/fence/K1不触碰、不同开关组合的有界正负控。用新组合库运行OFF差分，严格对照冻结X2在共同可比事件/计数上的行为；开启单项时无另项副作用。硬件/值/ISA/完整GPU正确性不得由CPU检查伪称PASS。发现机制冲突或无法保护原source合同则STOP交审；普通测试脚手架/链接问题在本分支自行修复并留失败原始收据。
+
+【2. AG2 CPU映射资格→实际生产runner资格】
+AG2只通过Linux x86-64固定C CPU probe的映射协议，不是生产模拟器运行资格。将其按精确源码/角色合同集成到独立AG3正式runner，不能直接复用旧AG会漏掉/etc/ld.so.cache的冻结脚本，也不能以AG2模拟器启动=0的报告冒充完整资格。
+
+在**不启动accel-sim.out、不创建任何GPU/trace完整attempt**的CPU-only阶段，对本轮实际上线的runner完整执行路径进行正/负控：
+- 使用和实际生产一致的系统PT_INTERP和真实动态C/C++/可选libcudart的独立无GPU CPU fixture，覆盖早期mmap与munmap，确保系统loader cache在**fork/exec之前**按canonical路径、角色、SHA、dev/inode、stat属性登记。真实运行时出现时核验，不能只在晚期maps采样缺失时当作无须审计。
+- 在可负担的早期真实系统loader事件捕获期核完整maps，并保证清单与checker实际接受的文件范围一致。若采用ptrace，仅限本Lane自己fork的子进程，不ptrace其它项目、不得在执行器未被授权时启动真实GPU模拟器。严格区分短暂loader data和ELF executable/interpreter/dependency；不按目录通配或跳过全部non-ELF；未知/变更/可写数据/ELF身份错配 fail-closed。
+- 对真实最终AG3私有trace可执行文件用静态ELF/PT_INTERP/DT_NEEDED检查和实际构建文件SHA预闭合；如有运行期动态插件、线程或子进程早期文件映射，则制定有边界、可审查的在线身份闭合规则和监测scope。CPU fixture不能覆盖的模型情况明确UNQUALIFIED；不能因为host跑过C probe就推导整个accel-sim.out启动/全生命周期自动PASS。正式首个模拟attempt必须验证其完整实际maps与进程生命周期；一旦真实身份冲突，就按原真实failure/attempt预算STOP。
+- 复用AG2 9/9旧反事实、34/34正负控；对本轮runner另做生产wrapper CPU-only闭环（所有异常分支、manifest固定、防重复启动、自然/强制退场、未识别文件、cache前置SHA变化、后续cache unmap、已出现映射不可静默删除、无cache合法主机保留UNQUALIFIED）。支持CPU fixture模拟一个“真实启动记录”但绝不Popen实际sim；检查不许自认真实sim启动PASS。
+- AG2旧历史失败状态保持，禁止事后给旧AG首次BASE补登记/etc/ld.so.cache。任何用于未来run的新lib/loader/cache SHA在run前冻结并在run后复查；可能环境更新导致旧manifest失效，须在新性能前重新冻结并正式发布，不得run后补白名单。
+
+【3. 新六点发现集：完整预注册】
+在任何真实模拟器首次Popen/RUN_START以前固定且commit/push/fetch-back一个**可执行**预注册：
+- 六个新唯一UUID，由标准UUIDv4产生，在AG3中按次序冻结，不与AA1–AA5、AG及其它DTC已知记录重复；各点一个UUID、一个真实启动上限，整个AG3累计最多6个actual Popen/RUN_START，CPU fixture不算GPU attempt，但真实accel-sim.out即便在loader错误时退出也计1；旧AG/AA5预算完全不重置。
+- 固定输入：原已接受、同一SASS replay与全部trace command/成员SHA的GEMM与Gaussian；Gaussian原510 kernel、513 commands/65790 CTA/283685120 active-thread instructions必须全部闭合，GEMM完整身份/规模以T冻结权威为准，不推断数量。两输入是**发现集**，不是独立holdout。
+- 固定参数：PAPER_OO PIB128，Tag64×8，physical640×128B，ordinary16KiB，shared96KiB，4 Tag banks，原finite服务与端口、lower cap32768，K1开关0，原NVIDIA/Accel-Sim配置、L2 memcpy预载、同clock/配置/外部队列，不得更换为其它输入或模型。仅AE或AD开关按对应arm打开，其它新技巧AC/AF等都为OFF。
+- 六格全部注册，不得看到先跑结果后删换优化arm或改名。固定严格顺序：BASE_GEMM、BASE_Gaussian，二者均完整strict PASS并与T1-C旧同Tag完整结果严格校准，然后AE_GEMM、AE_Gaussian、AD_GEMM、AD_Gaussian。只有性能负收益时仍继续预注册点；任何strict/identity/resource硬门槛失败按合同停止。
+- 仅在同一新Core、同一Framework、同一编译与加载身份和完全匹配的共同有效选项下比较。保存规范化effective echo/全部已注册配置项、二进制/库/loader/helper/cache文件角色和SHA、trace list/member SHA、真实资源、runner和strict脚本SHA、超时与退出规则、统计字段/denominator/condition、BASE对照公式及未打印字段的availability。
+- 每点执行最长7200s（若与冻结T同输入原界限冲突，必须首个真实启动前核对并声明，不暗改）；自然exit0和full command list、全部instruction/CTA/Ref/PIB/physical/credit/sector、finite/outstanding、正常统计最后完整快照和测试断言才能称strict PASS。不得将GPU host运行时长当模拟周期。旧T1-C GEMM 1,071,405、Gaussian 3,278,356 cycles是BASE校准参考，要求新BASE同输入 cycles以及同定义流量/机制计数严格匹配；任何无法解释的不等价即STOP、不重跑、不调参、不补格。
+
+【4. 执行权和资源规则】
+本轮使用独立AG3版本化资源合同（来自用户已批准的AG discovery R2思想，但不是追溯修改AA5）：
+- 每次启动前现场核当前DTC自动派发器/monitor与所有fdinfo FLOCK合法执行权；只允许AG3独占自己的执行权，不复活旧AA/AG。其它项目包括EP-L2完全计入CPU、RSS、cgroup、I/O、PSI与swap；不可终止其它项目或删除别人的锁。
+- 至少两次相隔>=10s的独立准入：MemAvailable>=32GiB，cgroup headroom>=32GiB，disk free>=10GiB，memory full PSI avg10<=1%，I/O full PSI avg10<=25%；未达到则不启动，有界复测/等待须事前规定，不能为了发射性能点修改门槛。
+- 运行期新增cgroup OOM/oom_kill立即终止自己的child并STOP；cgroup headroom<8GiB或diskfree<2GiB为紧急STOP；持续内存/IO PSI阈值按正式R2源审出完整数值及连续样本数并首发前冻结；cgroup swap.current较运行起点增长>=16MiB且连续3个相隔>=10s样本不回落则STOP。主机pswpin/pswpout的孤立单页增长记录为WARN并加密采样，不单凭这1页杀掉本轮child；如果伴随资源压力/本进程majorfault需按预注册阈值认真裁决。新规则只作用AG3，不重写AG/AA5历史。
+- 默认1个AG3新sim并发。如果要并行两个BASE或并行两个已准入arm，必须在首个actual START之前独立完成双worker资源/IO资格，预注册明确2的上限和实际CPU/磁盘布局；此前没有资格则始终单worker。任何时点最多2、且不得与其它未授权DTC工作抢资源；BASE门禁未过，AE/AD一律不启动。
+- 每点最多一次真实Popen；失败、超时、校验错配均消耗该点UUID且保留原始收据，不“试一下”/重试/偷偷重启/新增canary/补充第七个。若新runner、manifest或统计打印有科学协议无法独立闭合，则STOP且保持零模拟启动。
+
+【5. 结果收口和论文化解释】
+按同输入的新AG3 BASE计算AE/AD速度比：新BASE cycles / 新单项ON cycles。记录全部整数cycles、原始完整输入身份、实际GPU统计输出、下行create/inject、L2 sector/DRAM bytes、Tag bank/set分布、OO ready与post-ready、waiter通知分布、collection/WB/物理/PIB积分与全部反向证据。绝不从未输出的诊断字段推断0；若ON-only字段不存在于OFF，标UNAVAILABLE且不计算直接差分。两个输入是已有Tag研究发现集，不算独立holdout、不修改原GM12/原44行。
+AE仅一个固定bank-preserving hash；新增XOR索引与假设的零额外模拟Tag周期要在讨论中披露。AD更改own-ready条件，原post-ready的条件人群不同，不能简单拿均值差推因果；其新增状态成本未做RTL综合。即使ON更快也不宣称同面积/同功耗/全ISA/coherence/数值load通过。若有收益，建议独立BICG/DWT2D验证与C+公平hash控制作为后续用户单独裁决，不能本Goal自增。
+
+交付统一的：README/LATEST_REPORT、source merge review和新Core完整SHA、全量CPU tests与负例、production-runner early-loader身份/负例和映射role冻结、完整执行前预注册发布收据、6UUID表、全输入strict&终态收据、资源/FLOCK时间线、FULL_MATRIX、per-arm比较与typed机理、负结果、缺失项、成本边界、论文v0.14-R1最小修改建议和下一阶段实验优先级。所有可审报告/代码在独立Git review pack；大raw/日志/binaries留在独立raw根。commit/push/fetch-back HEAD/tree/blobs SHA和worktree clean；结束Goal，绝不留自动后台续发。
+
+不授权：AA5 K1四格续跑、旧AG第一个失败UUID恢复、AC/AC2/AF性能、组合AE+AD、任何第七个真实模拟、BICG/DWT2D性能、T2新Tag/IO K1/modern/K2、主动修改v0.14-R1论文或历史数据。超过上述范围或遇真正科学/运行身份边界变化时，STOP交用户审。

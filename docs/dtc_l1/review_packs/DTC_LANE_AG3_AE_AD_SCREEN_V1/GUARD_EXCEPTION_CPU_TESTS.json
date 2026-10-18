@@ -1,0 +1,107 @@
+{
+  "status": "PASS_FIVE_PARENT_FAULT_AND_FORCE_STOP_CASES",
+  "cases": [
+    {
+      "case": "fork_failure",
+      "result": {
+        "utc": "2026-10-18T08:08:44.278759+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": null,
+        "returncode": null,
+        "forced_reason": "FORK_FAILED:OSError('CPU_INJECTED_FORK_FAILURE')",
+        "identity_pass": false,
+        "owned_children_live": 0,
+        "simulator_starts": 0,
+        "actual_fork_children": 0
+      }
+    },
+    {
+      "case": "maps_read_failure",
+      "result": {
+        "utc": "2026-10-18T08:08:44.313453+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 3916784,
+        "returncode": null,
+        "forced_reason": "CPU_INJECTED_MAP_READ_FAILURE",
+        "exception": "OSError('CPU_INJECTED_MAP_READ_FAILURE')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "3916784": -9
+        },
+        "owned_children_live": 0,
+        "unconfirmed_wait_pids": [],
+        "snapshots": 0,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.017559310421347618
+      }
+    },
+    {
+      "case": "observer_exception",
+      "result": {
+        "utc": "2026-10-18T08:08:44.348352+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 3916786,
+        "returncode": null,
+        "forced_reason": "CPU_INJECTED_OBSERVER_FAILURE",
+        "exception": "OSError('CPU_INJECTED_OBSERVER_FAILURE')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "3916786": -9
+        },
+        "owned_children_live": 0,
+        "unconfirmed_wait_pids": [],
+        "snapshots": 1,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.01779003255069256
+      }
+    },
+    {
+      "case": "forced_resource_stop",
+      "result": {
+        "utc": "2026-10-18T08:08:44.383353+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 3916788,
+        "returncode": null,
+        "forced_reason": "CPU_TEST_FORCED_RESOURCE_STOP",
+        "exception": "Reject('CPU_TEST_FORCED_RESOURCE_STOP')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "3916788": -9
+        },
+        "owned_children_live": 0,
+        "unconfirmed_wait_pids": [],
+        "snapshots": 1,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.017957480624318123
+      }
+    },
+    {
+      "case": "confirmed_ELF_disappearance",
+      "result": {
+        "utc": "2026-10-18T08:08:45.244604+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 3916790,
+        "returncode": null,
+        "forced_reason": "REGISTERED_ELF_DISAPPEARED_AFTER_STARTUP",
+        "exception": "Reject('REGISTERED_ELF_DISAPPEARED_AFTER_STARTUP')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "3916790": -9
+        },
+        "owned_children_live": 0,
+        "unconfirmed_wait_pids": [],
+        "snapshots": 89,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.8441041596233845
+      }
+    }
+  ],
+  "guard_sha256": "f7a5eed7e1224f6c4d5c149790260e403df2a9b6f1e3925d02cfc7ce09128778",
+  "real_simulator_starts": 0,
+  "disappearance_case": "controlled parent validator fault, not an actual library unmap claim"
+}

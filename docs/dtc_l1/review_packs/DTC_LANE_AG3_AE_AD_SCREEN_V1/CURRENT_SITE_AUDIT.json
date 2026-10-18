@@ -1,0 +1,1455 @@
+{
+  "utc": "2026-10-18T07:52:45.202907+00:00",
+  "checks": {
+    "first_original174": true,
+    "first_host_MemAvailable_ge32GiB": true,
+    "first_cgroup_headroom_ge32GiB": true,
+    "first_disk_free_ge10GiB": true,
+    "first_memory_full_PSI_le1": true,
+    "first_io_full_PSI_le25": true,
+    "second_original174": true,
+    "second_host_MemAvailable_ge32GiB": true,
+    "second_cgroup_headroom_ge32GiB": true,
+    "second_disk_free_ge10GiB": true,
+    "second_memory_full_PSI_le1": true,
+    "second_io_full_PSI_le25": true,
+    "two_samples_gap_ge10s": true,
+    "no_new_cgroup_oom": true
+  },
+  "all_resource_checks_pass": true,
+  "host_global_swap_deltas": {
+    "pswpin": 0,
+    "pswpout": 0
+  },
+  "host_global_swap_is_not_process_attribution": true,
+  "actual_AG_sim_starts": 0,
+  "source": "CURRENT_ALL_PROJECTS_TWO_SAMPLES_GE10S",
+  "authority": {
+    "classification": "READONLY_REVIEW_NOT_AUTHORITY_ACQUISITION",
+    "rows": [
+      {
+        "pid": 64782,
+        "start_ticks": 577779446,
+        "role": "OLD_OUTPUT_MONITOR_REQUIRES_SOURCE_HASH_REVIEW",
+        "argv": [
+          "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+          "--inhibit-cache",
+          "--inhibit-rpath",
+          "--library-path",
+          "/scratch/root/oss-eda/oss-cad-suite/lib",
+          "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+          "util/dtc_l1/monitor_fast64_3_dynamic_base_evidence_v1.py",
+          "--log",
+          "/workspace/fast64-runs/fast64_3_dynamic_base_evidence_v1.log",
+          "--poll-seconds",
+          "120"
+        ],
+        "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 240006,
+        "start_ticks": 578775007,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/bash",
+          "-c",
+          "\n  repo=$1\n  log=$2\n  while true; do\n    date -u +\"FAST64_REPAIRED_RAMP_SUPERVISOR utc=%FT%TZ\" >> \"$log\"\n    \"$repo/util/dtc_l1/collect_fast64_repaired_ramp_v1.sh\" --collect >> \"$log\" 2>&1 || printf \"RAMP1_COLLECT_NONZERO=%s\\n\" \"$?\" >> \"$log\"\n    \"$repo/util/dtc_l1/collect_fast64_repaired_ramp2_v1.sh\" --collect >> \"$log\" 2>&1 || printf \"RAMP2_COLLECT_NONZERO=%s\\n\" \"$?\" >> \"$log\"\n    sleep 120\n  done\n",
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/fast64-repaired-ramp-closeout-supervisor.log"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 280466,
+        "start_ticks": 597941679,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+          "--inhibit-cache",
+          "--inhibit-rpath",
+          "--library-path",
+          "/scratch/root/oss-eda/oss-cad-suite/lib",
+          "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+          "/workspace/worktrees/accel-sim-vm-c16-a/util/vm_tlb/c16/lane_a/c16_background_asset_supervisor.py",
+          "--watch-seconds",
+          "60"
+        ],
+        "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 310308,
+        "start_ticks": 579072291,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "-c",
+          "\n  set -euo pipefail\n  fw=$1; gen=$2; log=$3\n  summary=\"$gen/fast64_3_dynamic_base_v1/fast64_3_2DConvolution_base_cap8192_a1_v2.json\"\n  structural=\"$gen/fast64_3_dynamic_base_v1/FAST64_3_2DCONVOLUTION_BASE_STRUCTURAL_METRICS_V1.json\"\n  while ! { test -f \"$summary\" && test -f \"$structural\"; }; do\n    printf \"FAST64_3_V2_AGGREGATION_WAIT utc=%s summary=%s structural=%s\\n\" \"$(date -u +%FT%TZ)\" \"$(test -f \"$summary\" && echo yes || echo no)\" \"$(test -f \"$structural\" && echo yes || echo no)\" >> \"$log\"\n    sleep 120\n  done\n  for f in fast64_3_base_rows.tsv fast64_3_structural_pressure.tsv fast64_3_live_misses.tsv fast64_3_host_runtime.tsv fast64_3_identity_manifest.tsv; do test ! -e \"$gen/$f\"; done\n  python3 \"$fw/util/dtc_l1/collect_fast64_3_base_matrix_v2.py\" --output-dir \"$gen\" >> \"$log\" 2>&1\n  printf \"FAST64_3_V2_AGGREGATION_PASS utc=%s\\n\" \"$(date -u +%FT%TZ)\" >> \"$log\"\n",
+          "fast64-3-v2-terminal-aggregation-supervisor",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated",
+          "/workspace/fast64-3-v2-terminal-aggregation-supervisor.log"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 368264,
+        "start_ticks": 338182729,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-monitor/archive_status_monitor.sh"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 525567,
+        "start_ticks": 580172178,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/bash",
+          "-c",
+          "repo=\"$1\"; log=\"$2\"; while true; do date -u +\"FAST64_6_COLLECTOR utc=%FT%TZ\" >> \"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v1.sh\" --collect >> \"$log\" 2>&1 || printf \"FAST64_6_COLLECT_NONZERO=%s\\\\n\" \"$?\" >> \"$log\"; sleep 120; done",
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v1.log"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 534802,
+        "start_ticks": 580212651,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/bash",
+          "-c",
+          "repo=\"$1\"; log=\"$2\"; while true; do date -u +\"FAST64_6_V2_COLLECTOR utc=%FT%TZ\" >> \"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v2.sh\" --collect >> \"$log\" 2>&1 || printf \"FAST64_6_V2_COLLECT_NONZERO=%s\\\\n\" \"$?\" >> \"$log\"; sleep 120; done",
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v2.log"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 815446,
+        "start_ticks": 581848422,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/bash",
+          "-c",
+          "repo=$1; log=$2; while true; do date -u +\"FAST64_6_V3_COLLECTOR utc=%FT%TZ\" >> \"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v3.sh\" --collect >> \"$log\" 2>&1 || printf \"FAST64_6_V3_COLLECT_NONZERO=%s\\n\" \"$?\" >> \"$log\"; sleep 120; done",
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v3.log"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 949578,
+        "start_ticks": 582417279,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/bash",
+          "-c",
+          "repo=$1; log=$2; while :; do date -u +%FT%TZ >>\"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v10.sh\" --collect >>\"$log\" 2>&1 || printf \"collector_nonterminal_or_failure\\n\" >>\"$log\"; sleep 120; done",
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v10.log"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 1201946,
+        "start_ticks": 583777956,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+          "--inhibit-cache",
+          "--inhibit-rpath",
+          "--library-path",
+          "/scratch/root/oss-eda/oss-cad-suite/lib",
+          "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/validate_fast64_trace_row_alias_v3.py",
+          "--run-dir",
+          "/workspace/fast64-repaired-ramp2/fast64_bicg_base_core95ccdb7a_a1_r1",
+          "--workload-id",
+          "BICG",
+          "--mode",
+          "BASE",
+          "--config-id",
+          "FAST64_BASE_A1",
+          "--config-file",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/configs/dtc_l1/fast64/FAST64_BASE.config",
+          "--core-sha",
+          "95ccdb7a056f2d53f740d90869785cac6d4ee0f5",
+          "--framework-sha",
+          "037f008b330eb230353b60edf126d6be9f45afdc",
+          "--observer-sha",
+          "2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e",
+          "--runtime-sha",
+          "462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9",
+          "--payload-manifest",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv",
+          "--classification",
+          "PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE",
+          "--require-immutable-attempt",
+          "--output",
+          "/dev/stdout"
+        ],
+        "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 1201947,
+        "start_ticks": 583777957,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "jq",
+          "-c",
+          "{mode:.metrics.DTC_L1_mode,cycles:.metrics.gpu_tot_sim_cycle,instructions:.metrics.gpu_tot_sim_insn,lower_acquired:(.metrics.DTC_L1_lower_credit_acquired // .metrics.DTC_L1_lower_requests_acquired),lower_released:(.metrics.DTC_L1_lower_credit_released // .metrics.DTC_L1_lower_requests_released),lower_final:.metrics.DTC_L1_lower_outstanding,pib_final:(.metrics.DTC_L1_pib_occupancy // .metrics.DTC_L1_io_pib_occupancy // .metrics.DTC_L1_oo_pib_occupancy),inflight_final:(.metrics.DTC_L1_io_inflight_current // .metrics.DTC_L1_oo_inflight_current // 0),refs_final:(.metrics.DTC_L1_oo_active_refs // 0)}"
+        ],
+        "exe": "/usr/bin/jq"
+      },
+      {
+        "pid": 1482676,
+        "start_ticks": 585007227,
+        "role": "OLD_OUTPUT_COLLECTOR_REQUIRES_CALLEE_REVIEW",
+        "argv": [
+          "bash",
+          "-c",
+          "\n  set -euo pipefail\n  repo=$1; summary=$2; structural=$3; registry=$4; outdir=$5; log=$6; lock=$7\n  exec 9>\"$lock\"; flock -n 9 || exit 1\n  while ! { test -f \"$summary\" && test -f \"$structural\"; }; do\n    printf \"FAST64_3_CORE41_CANDIDATE_WAIT utc=%s summary=%s structural=%s\\n\" \"$(date -u +%FT%TZ)\" \"$(test -f \"$summary\" && echo yes || echo no)\" \"$(test -f \"$structural\" && echo yes || echo no)\" >>\"$log\"\n    sleep 120\n  done\n  test ! -e \"$registry\"; test ! -e \"$outdir\"\n  \"$repo/util/dtc_l1/prepare_fast64_3_core41_registry_v1.py\" --output \"$registry\" >>\"$log\" 2>&1\n  \"$repo/util/dtc_l1/collect_fast64_3_base_matrix_v2.py\" --registry \"$registry\" --output-dir \"$outdir\" >>\"$log\" 2>&1\n  printf \"FAST64_3_CORE41_CANDIDATE_COLLECTOR_PASS utc=%s registry=%s outdir=%s\\n\" \"$(date -u +%FT%TZ)\" \"$registry\" \"$outdir\" >>\"$log\"\n",
+          "fast64-3-core41-candidate-closeout",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/fast64_3_repair_v1/fast64_3_2DConvolution_base_core41d740e8_a1_v1.json",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/fast64_3_repair_v1/FAST64_3_2DCONVOLUTION_BASE_STRUCTURAL_METRICS_V1.json",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/FAST64_3_BASE_SOURCE_REGISTRY_V3_CORE41.tsv",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/fast64_3_core41_candidate_v1",
+          "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.log",
+          "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 1693353,
+        "start_ticks": 421153399,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "-lc",
+          "while tmux has-session -t c2p-v3-priority5 2>/dev/null; do sleep 30; done; python3 \"/workspace/worktrees/accel-sim-c2p-addr-observe/scripts/analyze_c2p_confirmation_policy_matrix.py\" --root \"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-confirmation-policy-v3-cap4-20260823\" --case atax,bicg,3mm,c2p-pannotia-pagerank,c2p-pannotia-color-max --csv \"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-confirmation-policy-v3-cap4-20260823/priority5_policy_matrix.csv\" --markdown \"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-confirmation-policy-v3-cap4-20260823/priority5_policy_matrix.md\" >\"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-confirmation-policy-v3-cap4-20260823/priority5.audit.log\" 2>&1"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 1742735,
+        "start_ticks": 407963872,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "tmux",
+          "new-session",
+          "-d",
+          "-s",
+          "tls-p9-fdtd-baseline-frozen_hash",
+          "cd /workspace/worktrees/accel-sim-tls-cache && env TLS_P9_APPS=polybench_fdtd2d TLS_P9_MODES=baseline TLS_P9_PLACEMENTS=frozen_hash bash experiments/tls_cache/run_p9_matrix.sh hw_run/tls-cache-p9/fdtd-shards/baseline.frozen_hash > hw_run/tls-cache-p9/fdtd-shards/baseline.frozen_hash/driver.out 2>&1"
+        ],
+        "exe": "/usr/bin/tmux"
+      },
+      {
+        "pid": 1789920,
+        "start_ticks": 408049837,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "-c",
+          "cd /workspace/worktrees/accel-sim-tls-cache && bash experiments/tls_cache/finalize_p9_matrix.sh hw_run/tls-cache-p9/matrix-v2 > hw_run/tls-cache-p9/finalizer.out 2>&1"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 1920891,
+        "start_ticks": 408369842,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/experiments/v100_trace_campaign/scripts/offload_archives.sh",
+          "--remote",
+          "region-46.seetacloud.com",
+          "--port",
+          "27577",
+          "--identity",
+          "/tmp/accelsim_autodl_v100_ed25519",
+          "--remote-work-root",
+          "/root/autodl-tmp/tls-c2p-v100",
+          "--local-root",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/tls-c2p-v100-20260822",
+          "--minimum-local-free-gib",
+          "80",
+          "--interval-seconds",
+          "30",
+          "--prune-remote"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3015752,
+        "start_ticks": 329476679,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3030083,
+        "start_ticks": 329734719,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3030085,
+        "start_ticks": 329734719,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3030086,
+        "start_ticks": 329734719,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3030141,
+        "start_ticks": 329734722,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3030145,
+        "start_ticks": 329734722,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3030146,
+        "start_ticks": 329734722,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh",
+          "--archive",
+          "hw_run/decoupled-l2-pretraces/polybench.tgz",
+          "--suite",
+          "polybench",
+          "--case-list",
+          "hw_run/decoupled-l2-plans/polybench/large_remainder.csv",
+          "--trusted-size-plan",
+          "--staged-traces",
+          "hw_run/decoupled-l2-extract/polybench.stage",
+          "--run-root",
+          "hw_run/decoupled-l2-archive-batch/polybench_large_parallel4",
+          "--min-free-gib",
+          "20",
+          "--jobs",
+          "4",
+          "--pair-parallel",
+          "--max-memory-percent",
+          "95"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3096424,
+        "start_ticks": 330640180,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-monitor/polybench_syr2k_replay/run_after_current_polybench_batches.sh"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3261725,
+        "start_ticks": 550392315,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_1_qualification.sh",
+          "--framework-sha",
+          "c02ea2259e4bc6ee0ee026734aa60e561ea79724",
+          "--runs-root",
+          "/workspace/fast64-runs"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3287591,
+        "start_ticks": 333273154,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "-c",
+          "while true; do \"$1\" --source-root \"$2\" --dest-root \"$3\"; sleep 60; done",
+          "_",
+          "/workspace/worktrees/accel-sim-decoupled-l2/scripts/rehome_decoupled_l2_completed_pairs.sh",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-archive-batch/polybench_lowmem_followup_serial/polybench/11.0",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-archive-batch/polybench_lowmem_followup_serial/polybench/polybench/11.0"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3327786,
+        "start_ticks": 431733695,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "-lc",
+          "set -euo pipefail; while tmux has-session -t c2p-l1-16k-rs 2>/dev/null || tmux has-session -t c2p-rs-classification 2>/dev/null; do sleep 60; done; PYTHONDONTWRITEBYTECODE=1 python3 \"/workspace/worktrees/accel-sim-c2p-addr-observe/scripts/analyze_c2p_l1_capacity_rs.py\" --l1-16-root \"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-paper-table-l1-16k-rs-v1-20260824\" --l1-64-paper16-csv /workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-paper16-analysis-final-v7-20260821/paper16_modes.csv --l1-64-extension-csv \"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-v100-rs-classification-v1-20260824/extension_rs.csv\" --csv \"/workspace/worktrees/accel-sim-c2p-addr-observe/hw_run/c2p-paper-table-l1-16k-rs-v1-20260824/l1_capacity_rs_compare.csv\" --markdown \"/workspace/worktrees/accel-sim-c2p-addr-observe/docs/c2p-cache/c2p_table1_l1_capacity_rs_crosscheck_20260824.md\"; echo FINALIZED $(date --iso-8601=seconds)"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3855551,
+        "start_ticks": 905994765,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+          "--inhibit-cache",
+          "--inhibit-rpath",
+          "--library-path",
+          "/scratch/root/oss-eda/oss-cad-suite/lib",
+          "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+          "-B",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+          "--spec",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_B16_OFF_MQ2.json"
+        ],
+        "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 3855921,
+        "start_ticks": 905995421,
+        "role": "LIVE_SIMULATOR_REQUIRES_PROJECT_CLASSIFICATION",
+        "argv": [
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/accel-sim.out",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-0.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-1.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-2.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-3.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-4.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-5.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/config-6.config",
+          "-trace",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g"
+        ],
+        "exe": "/workspace/ep_l2_potential20261017_lane5_results/65f65134bacf3a731ba6c7ff0737dbd0129e43eb61e4670222c4200af9a2b867/accel-sim.out"
+      },
+      {
+        "pid": 3871464,
+        "start_ticks": 906075070,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+          "--inhibit-cache",
+          "--inhibit-rpath",
+          "--library-path",
+          "/scratch/root/oss-eda/oss-cad-suite/lib",
+          "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+          "-B",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+          "--spec",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_S64_OFF.json"
+        ],
+        "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 3871604,
+        "start_ticks": 906075722,
+        "role": "LIVE_SIMULATOR_REQUIRES_PROJECT_CLASSIFICATION",
+        "argv": [
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/accel-sim.out",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-0.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-1.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-2.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-3.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-4.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-5.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-6.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/config-7.config",
+          "-trace",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g"
+        ],
+        "exe": "/workspace/ep_l2_potential20261017_lane5_results/012f4d7a940a56f89b94585dba2518c4a1fb2f691829e526a9324fbb5cd13c3a/accel-sim.out"
+      },
+      {
+        "pid": 3876411,
+        "start_ticks": 906101578,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "sh",
+          "-c",
+          "cat /workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3876412,
+        "start_ticks": 906101578,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "cat",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg"
+        ],
+        "exe": "/usr/bin/cat"
+      },
+      {
+        "pid": 3880559,
+        "start_ticks": 906125170,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+          "--inhibit-cache",
+          "--inhibit-rpath",
+          "--library-path",
+          "/scratch/root/oss-eda/oss-cad-suite/lib",
+          "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+          "-B",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+          "--spec",
+          "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/service_mq2_specs_r1/MOPT_CONV_S64_MQ2.json"
+        ],
+        "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 3880696,
+        "start_ticks": 906125827,
+        "role": "LIVE_SIMULATOR_REQUIRES_PROJECT_CLASSIFICATION",
+        "argv": [
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/accel-sim.out",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-0.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-1.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-2.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-3.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-4.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-5.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-6.config",
+          "-config",
+          "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/config-7.config",
+          "-trace",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g"
+        ],
+        "exe": "/workspace/ep_l2_potential20261017_lane5_results/7eefcb511449b32fa1d2ad4bc895dd398765e0cd60af0b2d24c93de93b8f165f/accel-sim.out"
+      },
+      {
+        "pid": 3881561,
+        "start_ticks": 906131401,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "sh",
+          "-c",
+          "cat /workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3881562,
+        "start_ticks": 906131401,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "cat",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg"
+        ],
+        "exe": "/usr/bin/cat"
+      },
+      {
+        "pid": 3891231,
+        "start_ticks": 906179974,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "sh",
+          "-c",
+          "cat /workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3891232,
+        "start_ticks": 906179974,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "cat",
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg"
+        ],
+        "exe": "/usr/bin/cat"
+      },
+      {
+        "pid": 3892799,
+        "start_ticks": 906189788,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/raw/build_cpu_sources.py",
+          "combined"
+        ],
+        "exe": "/usr/bin/python3.10"
+      },
+      {
+        "pid": 3892901,
+        "start_ticks": 906189898,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "cmake",
+          "--build",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined",
+          "-j2"
+        ],
+        "exe": "/root/.local/opt/cmake-3.31.7/bin/cmake"
+      },
+      {
+        "pid": 3892926,
+        "start_ticks": 906189905,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/raw/build_cpu_sources.py",
+          "x2-reference"
+        ],
+        "exe": "/usr/bin/python3.10"
+      },
+      {
+        "pid": 3893053,
+        "start_ticks": 906190009,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "cmake",
+          "--build",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference",
+          "-j2"
+        ],
+        "exe": "/root/.local/opt/cmake-3.31.7/bin/cmake"
+      },
+      {
+        "pid": 3894242,
+        "start_ticks": 906192611,
+        "role": "OWN_CPU_AUDIT",
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools/audit_site.py",
+          "--label",
+          "CPU_PREPARATION"
+        ],
+        "exe": "/usr/bin/python3.10"
+      },
+      {
+        "pid": 3894425,
+        "start_ticks": 906193440,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/sh",
+          "-c",
+          "cd /workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference/src/gpgpu-sim && /usr/bin/c++ -DCUDART_VERSION=11080 -DDEBUG=0 -DGPGPUSIM_POWER_MODEL -DTRACING_ON=1 -I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/gpgpu-sim -I/usr/local/cuda-11.8/targets/x86_64-linux/include -I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch -O3 -std=gnu++17 -fPIC -MD -MT src/gpgpu-sim/CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o -MF CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o.d -o CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o -c /workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/gpgpu-sim/mem_latency_stat.cc"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3894426,
+        "start_ticks": 906193440,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/bin/c++",
+          "-DCUDART_VERSION=11080",
+          "-DDEBUG=0",
+          "-DGPGPUSIM_POWER_MODEL",
+          "-DTRACING_ON=1",
+          "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/gpgpu-sim",
+          "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+          "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch",
+          "-O3",
+          "-std=gnu++17",
+          "-fPIC",
+          "-MD",
+          "-MT",
+          "src/gpgpu-sim/CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o",
+          "-MF",
+          "CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o.d",
+          "-o",
+          "CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o",
+          "-c",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/gpgpu-sim/mem_latency_stat.cc"
+        ],
+        "exe": "/usr/bin/x86_64-linux-gnu-g++-11"
+      },
+      {
+        "pid": 3894427,
+        "start_ticks": 906193441,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus",
+          "-quiet",
+          "-I",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/gpgpu-sim",
+          "-I",
+          "/usr/local/cuda-11.8/targets/x86_64-linux/include",
+          "-I",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch",
+          "-imultiarch",
+          "x86_64-linux-gnu",
+          "-MD",
+          "CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.d",
+          "-MF",
+          "CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o.d",
+          "-MT",
+          "src/gpgpu-sim/CMakeFiles/gpgpusim.dir/mem_latency_stat.cc.o",
+          "-D_GNU_SOURCE",
+          "-D",
+          "CUDART_VERSION=11080",
+          "-D",
+          "DEBUG=0",
+          "-D",
+          "GPGPUSIM_POWER_MODEL",
+          "-D",
+          "TRACING_ON=1",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/gpgpu-sim/mem_latency_stat.cc",
+          "-quiet",
+          "-dumpdir",
+          "CMakeFiles/gpgpusim.dir/",
+          "-dumpbase",
+          "mem_latency_stat.cc.cc",
+          "-dumpbase-ext",
+          ".cc",
+          "-mtune=generic",
+          "-march=x86-64",
+          "-O3",
+          "-std=gnu++17",
+          "-fPIC",
+          "-fasynchronous-unwind-tables",
+          "-fstack-protector-strong",
+          "-Wformat",
+          "-Wformat-security",
+          "-fstack-clash-protection",
+          "-fcf-protection",
+          "-o",
+          "/tmp/cc6oObiE.s"
+        ],
+        "exe": "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus"
+      },
+      {
+        "pid": 3894443,
+        "start_ticks": 906193586,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/sh",
+          "-c",
+          "cd /workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference/src/accelwattch && /usr/bin/c++ -DCUDART_VERSION=11080 -DDEBUG=0 -DNTHREADS=4 -DTRACING_ON=1 -I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch -I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch/cacti -O3 -std=gnu++17 -fPIC -Wno-unknown-pragmas -msse2 -mfpmath=sse -MD -MT src/accelwattch/CMakeFiles/accelwattch.dir/cacti/nuca.cc.o -MF CMakeFiles/accelwattch.dir/cacti/nuca.cc.o.d -o CMakeFiles/accelwattch.dir/cacti/nuca.cc.o -c /workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch/cacti/nuca.cc"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3894444,
+        "start_ticks": 906193586,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/bin/c++",
+          "-DCUDART_VERSION=11080",
+          "-DDEBUG=0",
+          "-DNTHREADS=4",
+          "-DTRACING_ON=1",
+          "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch",
+          "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch/cacti",
+          "-O3",
+          "-std=gnu++17",
+          "-fPIC",
+          "-Wno-unknown-pragmas",
+          "-msse2",
+          "-mfpmath=sse",
+          "-MD",
+          "-MT",
+          "src/accelwattch/CMakeFiles/accelwattch.dir/cacti/nuca.cc.o",
+          "-MF",
+          "CMakeFiles/accelwattch.dir/cacti/nuca.cc.o.d",
+          "-o",
+          "CMakeFiles/accelwattch.dir/cacti/nuca.cc.o",
+          "-c",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch/cacti/nuca.cc"
+        ],
+        "exe": "/usr/bin/x86_64-linux-gnu-g++-11"
+      },
+      {
+        "pid": 3894445,
+        "start_ticks": 906193586,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus",
+          "-quiet",
+          "-I",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch",
+          "-I",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch/cacti",
+          "-imultiarch",
+          "x86_64-linux-gnu",
+          "-MD",
+          "CMakeFiles/accelwattch.dir/cacti/nuca.cc.d",
+          "-MF",
+          "CMakeFiles/accelwattch.dir/cacti/nuca.cc.o.d",
+          "-MT",
+          "src/accelwattch/CMakeFiles/accelwattch.dir/cacti/nuca.cc.o",
+          "-D_GNU_SOURCE",
+          "-D",
+          "CUDART_VERSION=11080",
+          "-D",
+          "DEBUG=0",
+          "-D",
+          "NTHREADS=4",
+          "-D",
+          "TRACING_ON=1",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src/accelwattch/cacti/nuca.cc",
+          "-quiet",
+          "-dumpdir",
+          "CMakeFiles/accelwattch.dir/cacti/",
+          "-dumpbase",
+          "nuca.cc.cc",
+          "-dumpbase-ext",
+          ".cc",
+          "-msse2",
+          "-mfpmath=sse",
+          "-mtune=generic",
+          "-march=x86-64",
+          "-O3",
+          "-Wno-unknown-pragmas",
+          "-std=gnu++17",
+          "-fPIC",
+          "-fasynchronous-unwind-tables",
+          "-fstack-protector-strong",
+          "-Wformat",
+          "-Wformat-security",
+          "-fstack-clash-protection",
+          "-fcf-protection",
+          "-o",
+          "/tmp/ccgRTcex.s"
+        ],
+        "exe": "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus"
+      },
+      {
+        "pid": 3894449,
+        "start_ticks": 906193627,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/sh",
+          "-c",
+          "cd /workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined/src/accelwattch && /usr/bin/c++ -DCUDART_VERSION=11080 -DDEBUG=0 -DNTHREADS=4 -DTRACING_ON=1 -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch/cacti -O3 -std=gnu++17 -fPIC -Wno-unknown-pragmas -msse2 -mfpmath=sse -MD -MT src/accelwattch/CMakeFiles/accelwattch.dir/processor.cc.o -MF CMakeFiles/accelwattch.dir/processor.cc.o.d -o CMakeFiles/accelwattch.dir/processor.cc.o -c /workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch/processor.cc"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3894450,
+        "start_ticks": 906193627,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/bin/c++",
+          "-DCUDART_VERSION=11080",
+          "-DDEBUG=0",
+          "-DNTHREADS=4",
+          "-DTRACING_ON=1",
+          "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch",
+          "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch/cacti",
+          "-O3",
+          "-std=gnu++17",
+          "-fPIC",
+          "-Wno-unknown-pragmas",
+          "-msse2",
+          "-mfpmath=sse",
+          "-MD",
+          "-MT",
+          "src/accelwattch/CMakeFiles/accelwattch.dir/processor.cc.o",
+          "-MF",
+          "CMakeFiles/accelwattch.dir/processor.cc.o.d",
+          "-o",
+          "CMakeFiles/accelwattch.dir/processor.cc.o",
+          "-c",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch/processor.cc"
+        ],
+        "exe": "/usr/bin/x86_64-linux-gnu-g++-11"
+      },
+      {
+        "pid": 3894451,
+        "start_ticks": 906193628,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus",
+          "-quiet",
+          "-I",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch",
+          "-I",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch/cacti",
+          "-imultiarch",
+          "x86_64-linux-gnu",
+          "-MD",
+          "CMakeFiles/accelwattch.dir/processor.cc.d",
+          "-MF",
+          "CMakeFiles/accelwattch.dir/processor.cc.o.d",
+          "-MT",
+          "src/accelwattch/CMakeFiles/accelwattch.dir/processor.cc.o",
+          "-D_GNU_SOURCE",
+          "-D",
+          "CUDART_VERSION=11080",
+          "-D",
+          "DEBUG=0",
+          "-D",
+          "NTHREADS=4",
+          "-D",
+          "TRACING_ON=1",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch/processor.cc",
+          "-quiet",
+          "-dumpdir",
+          "CMakeFiles/accelwattch.dir/",
+          "-dumpbase",
+          "processor.cc.cc",
+          "-dumpbase-ext",
+          ".cc",
+          "-msse2",
+          "-mfpmath=sse",
+          "-mtune=generic",
+          "-march=x86-64",
+          "-O3",
+          "-Wno-unknown-pragmas",
+          "-std=gnu++17",
+          "-fPIC",
+          "-fasynchronous-unwind-tables",
+          "-fstack-protector-strong",
+          "-Wformat",
+          "-Wformat-security",
+          "-fstack-clash-protection",
+          "-fcf-protection",
+          "-o",
+          "/tmp/ccVF5wTf.s"
+        ],
+        "exe": "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus"
+      },
+      {
+        "pid": 3894464,
+        "start_ticks": 906193642,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/bin/sh",
+          "-c",
+          "cd /workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined/src/gpgpu-sim && /usr/bin/c++ -DCUDART_VERSION=11080 -DDEBUG=0 -DGPGPUSIM_POWER_MODEL -DTRACING_ON=1 -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/gpgpu-sim -I/usr/local/cuda-11.8/targets/x86_64-linux/include -I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch -O3 -std=gnu++17 -fPIC -MD -MT src/gpgpu-sim/CMakeFiles/gpgpusim.dir/power_interface.cc.o -MF CMakeFiles/gpgpusim.dir/power_interface.cc.o.d -o CMakeFiles/gpgpusim.dir/power_interface.cc.o -c /workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/gpgpu-sim/power_interface.cc"
+        ],
+        "exe": "/usr/bin/dash"
+      },
+      {
+        "pid": 3894465,
+        "start_ticks": 906193642,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/bin/c++",
+          "-DCUDART_VERSION=11080",
+          "-DDEBUG=0",
+          "-DGPGPUSIM_POWER_MODEL",
+          "-DTRACING_ON=1",
+          "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/gpgpu-sim",
+          "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+          "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch",
+          "-O3",
+          "-std=gnu++17",
+          "-fPIC",
+          "-MD",
+          "-MT",
+          "src/gpgpu-sim/CMakeFiles/gpgpusim.dir/power_interface.cc.o",
+          "-MF",
+          "CMakeFiles/gpgpusim.dir/power_interface.cc.o.d",
+          "-o",
+          "CMakeFiles/gpgpusim.dir/power_interface.cc.o",
+          "-c",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/gpgpu-sim/power_interface.cc"
+        ],
+        "exe": "/usr/bin/x86_64-linux-gnu-g++-11"
+      },
+      {
+        "pid": 3894466,
+        "start_ticks": 906193643,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus",
+          "-quiet",
+          "-I",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/gpgpu-sim",
+          "-I",
+          "/usr/local/cuda-11.8/targets/x86_64-linux/include",
+          "-I",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/accelwattch",
+          "-imultiarch",
+          "x86_64-linux-gnu",
+          "-MD",
+          "CMakeFiles/gpgpusim.dir/power_interface.cc.d",
+          "-MF",
+          "CMakeFiles/gpgpusim.dir/power_interface.cc.o.d",
+          "-MT",
+          "src/gpgpu-sim/CMakeFiles/gpgpusim.dir/power_interface.cc.o",
+          "-D_GNU_SOURCE",
+          "-D",
+          "CUDART_VERSION=11080",
+          "-D",
+          "DEBUG=0",
+          "-D",
+          "GPGPUSIM_POWER_MODEL",
+          "-D",
+          "TRACING_ON=1",
+          "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src/gpgpu-sim/power_interface.cc",
+          "-quiet",
+          "-dumpdir",
+          "CMakeFiles/gpgpusim.dir/",
+          "-dumpbase",
+          "power_interface.cc.cc",
+          "-dumpbase-ext",
+          ".cc",
+          "-mtune=generic",
+          "-march=x86-64",
+          "-O3",
+          "-std=gnu++17",
+          "-fPIC",
+          "-fasynchronous-unwind-tables",
+          "-fstack-protector-strong",
+          "-Wformat",
+          "-Wformat-security",
+          "-fstack-clash-protection",
+          "-fcf-protection",
+          "-o",
+          "/tmp/ccSGyqhD.s"
+        ],
+        "exe": "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus"
+      },
+      {
+        "pid": 3965052,
+        "start_ticks": 413630770,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-c2p-cache/scripts/run_c2p_v100_extension_repair.sh"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3965053,
+        "start_ticks": 413630770,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-c2p-cache/scripts/run_c2p_v100_extension_repair.sh"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3965056,
+        "start_ticks": 413630771,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-c2p-cache/scripts/run_c2p_cache_cases.sh",
+          "--trace",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage/c2p-pannotia-mis/c2p-pannotia-mis/traces/kernelslist.g",
+          "--config",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/configs/c2p-cache/paper-table.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/configs/c2p-cache/paper-table-l2-50.config",
+          "--strip-mem-addr-mapping",
+          "--skip-complete",
+          "--modes",
+          "baseline,oracle,ideal,c2p,ata,ccd,ring",
+          "--out-dir",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-l2-50-matrix-repair-v1-20260822/c2p-pannotia-mis"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3965057,
+        "start_ticks": 413630771,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-c2p-cache/scripts/run_c2p_cache_cases.sh",
+          "--trace",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage/c2p-pannotia-mis/c2p-pannotia-mis/traces/kernelslist.g",
+          "--config",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/configs/c2p-cache/paper-table.config",
+          "--strip-mem-addr-mapping",
+          "--skip-complete",
+          "--modes",
+          "baseline,oracle,ideal,c2p,ata,ccd,ring",
+          "--out-dir",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-main-matrix-repair-v1-20260822/c2p-pannotia-mis"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3965131,
+        "start_ticks": 413630807,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-c2p-cache/scripts/run_c2p_cache_cases.sh",
+          "--trace",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage/c2p-pannotia-mis/c2p-pannotia-mis/traces/kernelslist.g",
+          "--config",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/configs/c2p-cache/paper-table.config",
+          "--strip-mem-addr-mapping",
+          "--skip-complete",
+          "--modes",
+          "baseline,oracle,ideal,c2p,ata,ccd,ring",
+          "--out-dir",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-main-matrix-repair-v1-20260822/c2p-pannotia-mis"
+        ],
+        "exe": "/usr/bin/bash"
+      },
+      {
+        "pid": 3965135,
+        "start_ticks": 413630808,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "bash",
+          "/workspace/worktrees/accel-sim-c2p-cache/scripts/run_c2p_cache_cases.sh",
+          "--trace",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage/c2p-pannotia-mis/c2p-pannotia-mis/traces/kernelslist.g",
+          "--config",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/configs/c2p-cache/paper-table.config",
+          "--config-extra",
+          "/workspace/worktrees/accel-sim-c2p-cache/configs/c2p-cache/paper-table-l2-50.config",
+          "--strip-mem-addr-mapping",
+          "--skip-complete",
+          "--modes",
+          "baseline,oracle,ideal,c2p,ata,ccd,ring",
+          "--out-dir",
+          "/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-l2-50-matrix-repair-v1-20260822/c2p-pannotia-mis"
+        ],
+        "exe": "/usr/bin/bash"
+      }
+    ],
+    "unresolved_dispatcher_pids": [],
+    "all_FLOCKs": [
+      {
+        "pid": 64782,
+        "start_ticks": 577779446,
+        "fd": "3",
+        "path": "/workspace/fast64-runs/.fast64_3_dynamic_base_evidence_v1.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100001\nmnt_id:\t4461\nino:\t36438639\nlock:\t1: FLOCK  ADVISORY  WRITE 64782 00:9c:36438639 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "3",
+        "path": "/root/.codex/tmp/arg0/codex-arg0RJVv8Z/.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t34485105\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:34485105 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "21",
+        "path": "/root/.codex/thread-writer-locks/01a143f1-0db3-7e61-86ab-1aa642bee273.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35817650\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35817650 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "46",
+        "path": "/root/.codex/thread-writer-locks/01a143f1-e37b-7eb3-828e-15bfbc32d7d7.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35817519\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35817519 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "49",
+        "path": "/root/.codex/.sqlite-maintenance.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t34524034\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:34524034 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "54",
+        "path": "/root/.codex/thread-writer-locks/01a14a91-1fcb-7201-94c2-6ca688d5922b.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35817653\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35817653 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "58",
+        "path": "/root/.codex/thread-writer-locks/01a14827-37a3-7642-b101-44d384ebe4be.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35818213\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35818213 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "70",
+        "path": "/root/.codex/thread-writer-locks/01a143f0-98fa-7343-8e01-cd3060d0372a.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35818484\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35818484 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "75",
+        "path": "/root/.codex/thread-writer-locks/01a14a90-6011-7fc0-9be3-1abee6675762.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35817652\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35817652 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "95",
+        "path": "/root/.codex/thread-writer-locks/019fea6c-6a51-7293-bca6-b166c064f101.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35818487\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35818487 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "132",
+        "path": "/root/.codex/thread-writer-locks/01a14a91-5a52-7201-b88d-6404aacbb2b7.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35818486\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35818486 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "147",
+        "path": "/root/.codex/thread-writer-locks/01a14a91-922b-7673-85f9-a1032d17b58c.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35818488\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35818488 0 EOF\n"
+      },
+      {
+        "pid": 375900,
+        "start_ticks": 888880816,
+        "fd": "165",
+        "path": "/root/.codex/thread-writer-locks/01a14a90-d96c-70a3-bc8f-b42febc75664.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100002\nmnt_id:\t4461\nino:\t35818489\nlock:\t1: FLOCK  ADVISORY  WRITE 375900 00:9c:35818489 0 EOF\n"
+      },
+      {
+        "pid": 1482676,
+        "start_ticks": 585007227,
+        "fd": "9",
+        "path": "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock",
+        "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37664862\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37664862 0 EOF\n"
+      },
+      {
+        "pid": 3823517,
+        "start_ticks": 905829776,
+        "fd": "3",
+        "path": "/workspace/ep_l2_ft20261016_shared/LANE5_FINAL_INTAKE_CONTROLLER.lock",
+        "fdinfo": "pos:\t0\nflags:\t02102002\nmnt_id:\t4461\nino:\t42362043\nlock:\t1: FLOCK  ADVISORY  WRITE 3823517 00:9c:42362043 0 EOF\n"
+      },
+      {
+        "pid": 3893052,
+        "start_ticks": 906190001,
+        "fd": "9",
+        "path": "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock",
+        "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37664862\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37664862 0 EOF\n"
+      }
+    ],
+    "known_identity_checks": [
+      {
+        "role": "AA5",
+        "pid": 3507265,
+        "expected_start_ticks": 904463811,
+        "current": null,
+        "same_instance_live": false
+      },
+      {
+        "role": "AA5",
+        "pid": 3507648,
+        "expected_start_ticks": 904464900,
+        "current": null,
+        "same_instance_live": false
+      },
+      {
+        "role": "OLD_AUTODISPATCHER",
+        "pid": 1425986,
+        "expected_start_ticks": 584741606,
+        "current": null,
+        "same_instance_live": false
+      }
+    ],
+    "foreign_signals_or_lock_changes": 0,
+    "performance_launch_permission": false
+  },
+  "raw_audit_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/raw/site-audits/CPU_PREPARATION",
+  "resource": {
+    "first_memory": 342970535936,
+    "second_memory": 342411448320,
+    "first_io_full": "17.15",
+    "second_io_full": "12.00",
+    "first_disk": 58686365696,
+    "second_disk": 58684133376,
+    "cgroup_current": "110546112512",
+    "cgroup_max": "274877906944",
+    "cgroup_swap": "115695616",
+    "cgroup_events": {
+      "low": 0,
+      "high": 0,
+      "max": 7298,
+      "oom": 0,
+      "oom_kill": 17,
+      "oom_group_kill": 0
+    }
+  }
+}

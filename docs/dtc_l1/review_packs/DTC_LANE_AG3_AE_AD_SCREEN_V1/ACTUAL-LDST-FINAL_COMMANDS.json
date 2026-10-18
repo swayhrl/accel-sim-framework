@@ -1,0 +1,156 @@
+[
+  {
+    "label": "compile_x2",
+    "argv": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O1",
+      "-fno-access-control",
+      "-UNDEBUG",
+      "-DY2_HAS_K1=1",
+      "-DCUDART_VERSION=11080",
+      "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src",
+      "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/libcuda",
+      "-I/usr/local/cuda-11.8/include",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools/ldst_cpu_fixture.cc",
+      "-L/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference",
+      "-Wl,-rpath,/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference",
+      "-lcudart",
+      "-ldl",
+      "-o",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-x2"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "x2_K0_AEx2",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-x2",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "0"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "cefdace007b83f950d481d048b2deb28e3830a66ce1c909318c667335d1452ce",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "x2_K1_AEx2",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-x2",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "a176af0477523b06f7a1b912a4d88b7121b8c2a4928f93ad75798e8fa97c330a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "compile_ag",
+    "argv": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O1",
+      "-fno-access-control",
+      "-UNDEBUG",
+      "-DY2_HAS_K1=1",
+      "-DCUDART_VERSION=11080",
+      "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src",
+      "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/libcuda",
+      "-I/usr/local/cuda-11.8/include",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools/ldst_cpu_fixture.cc",
+      "-L/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+      "-Wl,-rpath,/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+      "-lcudart",
+      "-ldl",
+      "-o",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ag_K0_AEomitted",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "0"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f2ae8cf4b1aac0bcf495c2aa94b3a1d3e7f0634910e2d7c8301638552cf36459",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ag_K0_AE0",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "0",
+      "-gpgpu_dtc_l1_tag_hash_bankrow",
+      "0"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f2ae8cf4b1aac0bcf495c2aa94b3a1d3e7f0634910e2d7c8301638552cf36459",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ag_K0_AE1",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "0",
+      "-gpgpu_dtc_l1_tag_hash_bankrow",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "74078c23639497114a9da71e0f2a41da722875f441954aa57dc72ba0620caf98",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ag_K1_AEomitted",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "2cc220b70a7eb3933afc29e6c53d02f7b924df460c9e8150f9d2510066f2639d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ag_K1_AE0",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "1",
+      "-gpgpu_dtc_l1_tag_hash_bankrow",
+      "0"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "2cc220b70a7eb3933afc29e6c53d02f7b924df460c9e8150f9d2510066f2639d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ag_K1_AE1",
+    "argv": [
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-final-ag",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/inputs/AA5/inputs/CPU_EXPORT_FIXTURE_BASE.config",
+      "-gpgpu_dtc_l1_invalidate_on_source_event",
+      "1",
+      "-gpgpu_dtc_l1_tag_hash_bankrow",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "04af8ebcfc7a09829b6b2d59a3f862f98beeef31523623852b126d353991fde5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

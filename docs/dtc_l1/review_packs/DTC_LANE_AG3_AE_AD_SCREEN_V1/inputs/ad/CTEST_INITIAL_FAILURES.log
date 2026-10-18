@@ -1,0 +1,49 @@
+Internal ctest changing into directory: /workspace/dtc-lane-ad-progressive-wakeup-174-v1/build
+Test project /workspace/dtc-lane-ad-progressive-wakeup-174-v1/build
+    Start 1: dtc_l1_m1_common_test
+1/9 Test #1: dtc_l1_m1_common_test .........................   Passed    0.00 sec
+    Start 2: dtc_l1_bad_generation_test
+2/9 Test #2: dtc_l1_bad_generation_test ....................   Passed    0.09 sec
+    Start 3: dtc_l1_completion_accounting_test
+3/9 Test #3: dtc_l1_completion_accounting_test .............   Passed    0.09 sec
+    Start 4: dtc_l1_finite_service_test
+4/9 Test #4: dtc_l1_finite_service_test ....................   Passed    0.00 sec
+    Start 5: dtc_l1_source_invalidation_test
+5/9 Test #5: dtc_l1_source_invalidation_test ...............   Passed    0.50 sec
+    Start 6: dtc_l1_source_invalidation_integration_test
+6/9 Test #6: dtc_l1_source_invalidation_integration_test ...   Passed    0.01 sec
+    Start 7: dtc_l1_k0_equivalence_test
+7/9 Test #7: dtc_l1_k0_equivalence_test ....................   Passed    0.00 sec
+    Start 8: dtc_l1_progressive_wakeup_test
+8/9 Test #8: dtc_l1_progressive_wakeup_test ................Subprocess aborted***Exception:   0.17 sec
+dtc_l1_progressive_wakeup_test: /workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ad-progressive-wakeup-core-174-v1/src/gpgpu-sim/dtc-l1-common.h:701: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) && "OO fill must match the original physical generation"' failed.
+dtc_l1_progressive_wakeup_test: /workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ad-progressive-wakeup-core-174-v1/src/gpgpu-sim/dtc-l1-common.h:1123: void dtc_l1::oo_frontend::release(dtc_l1::physical_identity, uint64_t): Assertion `now >= lost->second' failed.
+
+    Start 9: dtc_l1_progressive_ldst_test
+9/9 Test #9: dtc_l1_progressive_ldst_test ..................***Failed    0.01 sec
+
+=== CRASH: SIGABRT (signal 6) ===
+Backtrace:
+/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/libcudart.so(+0x171fa6)[0x76d1a9421fa6]
+/lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x76d1a8e71520]
+/lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x76d1a8ec59fc]
+/lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x76d1a8e71476]
+/lib/x86_64-linux-gnu/libc.so.6(abort+0xd3)[0x76d1a8e577f3]
+/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/libcudart.so(_ZN10Scoreboard15reserveRegisterEjj+0x181)[0x76d1a94bdc31]
+/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/libcudart.so(_ZN10Scoreboard16reserveRegistersEPK11warp_inst_t+0x53)[0x76d1a94bddd3]
+/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_progressive_ldst_test(+0xa8cd)[0x5dd16a61e8cd]
+/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_progressive_ldst_test(+0x658b)[0x5dd16a61a58b]
+/lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x76d1a8e58d90]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x76d1a8e58e40]
+/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_progressive_ldst_test(+0x7b05)[0x5dd16a61bb05]
+=== END BACKTRACE ===
+
+
+78% tests passed, 2 tests failed out of 9
+
+Total Test time (real) =   0.88 sec
+
+The following tests FAILED:
+	  8 - dtc_l1_progressive_wakeup_test (Subprocess aborted)
+	  9 - dtc_l1_progressive_ldst_test (Failed)
+Errors while running CTest

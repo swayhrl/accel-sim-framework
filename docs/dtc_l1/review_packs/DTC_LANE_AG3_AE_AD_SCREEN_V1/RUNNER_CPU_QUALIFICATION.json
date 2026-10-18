@@ -1,0 +1,106 @@
+{
+  "status": "PASS_PRODUCTION_RUNNER_CPU_CLOSURE_WITH_DECLARED_ADAPTERS",
+  "cases": [
+    {
+      "case": "empty_and_one_start_prefix",
+      "status": "PASS_CPU_SYNTHETIC_RECORDS_ONLY"
+    },
+    {
+      "case": "duplicate_start",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('BUDGET_CAP_OR_DUPLICATE_START')"
+    },
+    {
+      "case": "out_of_order",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('START_PREFIX_ORDER')"
+    },
+    {
+      "case": "foreign_UUID",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('FOREIGN_UUID_IN_AG3_RAW')"
+    },
+    {
+      "case": "seventh_start",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('BUDGET_CAP_OR_DUPLICATE_START')"
+    },
+    {
+      "case": "explicit_dispatch_required",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('EXPLICIT_DISPATCH_REQUIRED')"
+    },
+    {
+      "case": "publication_receipt_absent",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "FileNotFoundError(2, 'No such file or directory')"
+    },
+    {
+      "case": "ON_without_two_calibrated_BASEs",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('BOTH_COMPLETE_BASE_STRICT_RECEIPTS_REQUIRED')"
+    },
+    {
+      "case": "manifest_changed",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('IMMUTABLE_REGISTRATION_FILE_CHANGED:tools/mapping_roles.py')"
+    },
+    {
+      "case": "CPU_phase_rejects_real_simulator",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "Reject('CPU_PHASE_CANNOT_START_SIMULATOR')"
+    },
+    {
+      "case": "no_capability_no_simulation",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "Reject('SIMULATION_CAPABILITY_REQUIRED')"
+    },
+    {
+      "case": "cache_changed_before_fork",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "Reject('FROZEN_FILE_SHA_MISMATCH:/etc/ld.so.cache')"
+    },
+    {
+      "case": "same_reservation_cannot_run_again",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "ValueError('NO_UUID_RESTART')"
+    },
+    {
+      "case": "production_run_one_CPU_closed",
+      "status": "PASS_CPU_NOT_SIMULATION",
+      "result": {
+        "arm": "BASE",
+        "status": "PASS_CPU_WRAPPER_NOT_GPU_STRICT",
+        "performance_accepted": false,
+        "cycles": "UNAVAILABLE_CPU_ONLY",
+        "real_simulator": false
+      },
+      "explicit_mocks": [
+        "publication/admission scientific adapters",
+        "GPU strict adapter records UNAVAILABLE/false"
+      ],
+      "real_paths_exercised": [
+        "input/stat gate",
+        "config copy/SHA",
+        "final resource/authority sample",
+        "exclusive start receipt/budget prefix",
+        "capability exact args",
+        "real production owned-process guard",
+        "all early maps/threads/helpers",
+        "final resource",
+        "lifecycle receipt",
+        "output/strict adapter",
+        "file SHA index",
+        "cleanup/signal restoration"
+      ]
+    }
+  ],
+  "runner_sha256": "955e0db0cdadfcca9be0ee3a6031ab9a6b530bd4e56904d343a5fabf08bcbe81",
+  "guard_sha256": "f7a5eed7e1224f6c4d5c149790260e403df2a9b6f1e3925d02cfc7ce09128778",
+  "real_simulator_starts": 0,
+  "performance_accepted": false,
+  "unqualified": [
+    "actual simulator initialization/runtime still checked in its first budgeted attempt",
+    "no-cache host positive qualification"
+  ]
+}

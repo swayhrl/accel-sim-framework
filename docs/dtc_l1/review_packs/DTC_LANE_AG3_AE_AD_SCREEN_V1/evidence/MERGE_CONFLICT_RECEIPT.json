@@ -1,0 +1,38 @@
+[
+  {
+    "file": "src/gpgpu-sim/dtc-l1-common.h",
+    "AE": "    check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,\n                           cfg.logical_sets, cfg.tag_banks);\n",
+    "AD": "    check_progressive_wakeup_mode(cfg.progressive_wakeup,\n        static_cast<unsigned>(mode::PAPER_IO), cfg.finite_service);\n",
+    "resolution": "retain both original independent declarations/configuration/validation in AE then AD order"
+  },
+  {
+    "file": "src/gpgpu-sim/dtc-l1-common.h",
+    "AE": "    check_tag_hash_bankrow(cfg.tag_hash_bankrow,\n                           cfg.selected_mode == mode::PAPER_OO,\n                           cfg.finite_service, cfg.logical_sets, cfg.tag_banks);\n",
+    "AD": "    check_progressive_wakeup_mode(cfg.progressive_wakeup,\n        static_cast<unsigned>(cfg.selected_mode), cfg.finite_service);\n",
+    "resolution": "retain both original independent declarations/configuration/validation in AE then AD order"
+  },
+  {
+    "file": "src/gpgpu-sim/dtc-l1-common.h",
+    "AE": "    check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,\n                           cfg.logical_sets, cfg.tag_banks);\n",
+    "AD": "    check_progressive_wakeup_mode(cfg.progressive_wakeup,\n        static_cast<unsigned>(mode::MODERN_OO_SECTOR), cfg.finite_service);\n",
+    "resolution": "retain both original independent declarations/configuration/validation in AE then AD order"
+  },
+  {
+    "file": "src/gpgpu-sim/dtc-l1-common.h",
+    "AE": "    check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,\n                           cfg.logical_sets, cfg.tag_banks);\n",
+    "AD": "    check_progressive_wakeup_mode(cfg.progressive_wakeup,\n        static_cast<unsigned>(mode::PAPER_BASE), cfg.finite_service);\n",
+    "resolution": "retain both original independent declarations/configuration/validation in AE then AD order"
+  },
+  {
+    "file": "src/gpgpu-sim/shader.cc",
+    "AE": "    dtc_config.tag_hash_bankrow = m_config->dtc_l1_tag_hash_bankrow;\n",
+    "AD": "    dtc_config.progressive_wakeup = m_config->dtc_l1_progressive_wakeup;\n",
+    "resolution": "retain both original independent declarations/configuration/validation in AE then AD order"
+  },
+  {
+    "file": "src/gpgpu-sim/shader.h",
+    "AE": "  bool dtc_l1_tag_hash_bankrow;\n",
+    "AD": "  bool dtc_l1_progressive_wakeup;\n",
+    "resolution": "retain both original independent declarations/configuration/validation in AE then AD order"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "label": "configure",
+    "argv": [
+      "cmake",
+      "-S",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1",
+      "-B",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DGPGPUSIM_BUILD_DTC_L1_TESTS=ON",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+    ],
+    "returncode": 0,
+    "time_ns": 1792310088228374701
+  },
+  {
+    "label": "build",
+    "argv": [
+      "nice",
+      "-n",
+      "19",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "cmake",
+      "--build",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+      "-j2"
+    ],
+    "returncode": 0,
+    "time_ns": 1792310195547597746
+  }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "variant": "x2-trace-reference",
+    "stage": "configure",
+    "argv": [
+      "cmake",
+      "-S",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-recipe",
+      "-B",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-trace-reference",
+      "-DCORE_ROOT=/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source",
+      "-DCORE_BUILD=/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference",
+      "-DCORE_SHA=e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "-DFRAMEWORK_ROOT=/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1",
+      "-DFRAMEWORK_SHA=8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "-DAG_SCRIPTS=/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools"
+    ],
+    "returncode": 0,
+    "time_ns": 1792310182536247970
+  },
+  {
+    "variant": "x2-trace-reference",
+    "stage": "build",
+    "argv": [
+      "nice",
+      "-n",
+      "19",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "cmake",
+      "--build",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-trace-reference",
+      "-j2"
+    ],
+    "returncode": 0,
+    "time_ns": 1792310192813043957
+  },
+  {
+    "variant": "trace-final",
+    "stage": "configure",
+    "argv": [
+      "cmake",
+      "-S",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-recipe",
+      "-B",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final",
+      "-DCORE_ROOT=/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1",
+      "-DCORE_BUILD=/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+      "-DCORE_SHA=c8090115bd57512b1b23fca7d925301fa620c751",
+      "-DFRAMEWORK_ROOT=/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1",
+      "-DFRAMEWORK_SHA=8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "-DAG_SCRIPTS=/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools"
+    ],
+    "returncode": 0,
+    "time_ns": 1792310193090903191
+  },
+  {
+    "variant": "trace-final",
+    "stage": "build",
+    "argv": [
+      "nice",
+      "-n",
+      "19",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "cmake",
+      "--build",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final",
+      "-j2"
+    ],
+    "returncode": 0,
+    "time_ns": 1792310203231499137
+  }
+]

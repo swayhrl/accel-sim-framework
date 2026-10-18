@@ -1,0 +1,107 @@
+{
+  "baseline": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+  "full_production_library_compile": "NOT_RUN <=2 compiler invocations budget",
+  "legacy_recovery": [
+    {
+      "ae_sha256": "730bbe748517bb036a909fdc416b40d121a40adfbeb78edbfe5c68d04e8a1dc0",
+      "baseline_sha256": "798b3b416ce3223799af870438273167f0d257f1f432a1f0aad9dced06f81510",
+      "legacy_bytes_recovered_exactly": true,
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "recovered_sha256": "798b3b416ce3223799af870438273167f0d257f1f432a1f0aad9dced06f81510"
+    },
+    {
+      "ae_sha256": "35f50e0e200ab0b9fe49b6ca92e15dbc7a6e367cacaec1cb7a860bedd6f35586",
+      "baseline_sha256": "b46c0e89b2539709edfb2c8b2c13073b7d1f415c7c43fa75a8f7838d94cc6d91",
+      "legacy_bytes_recovered_exactly": true,
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "recovered_sha256": "b46c0e89b2539709edfb2c8b2c13073b7d1f415c7c43fa75a8f7838d94cc6d91"
+    },
+    {
+      "ae_sha256": "a982860bf224eced47c43493fee6ff82895e87662bb58f71a9ebe2591c81d1e3",
+      "baseline_sha256": "5e0aef0a105a2f071b752d1288ed100eba06216029e847dc27fc3b19cf113aa1",
+      "legacy_bytes_recovered_exactly": true,
+      "path": "src/gpgpu-sim/shader.cc",
+      "recovered_sha256": "5e0aef0a105a2f071b752d1288ed100eba06216029e847dc27fc3b19cf113aa1"
+    },
+    {
+      "ae_sha256": "a5ced2709e84663193fd460d83ac2a403ee71e439e8924f643994f48791c562c",
+      "baseline_sha256": "16d8f610b95da7c6280336f19c06bb4f0f75fcb30fc98ee5e61753d6caacd708",
+      "legacy_bytes_recovered_exactly": true,
+      "path": "src/gpgpu-sim/shader.h",
+      "recovered_sha256": "16d8f610b95da7c6280336f19c06bb4f0f75fcb30fc98ee5e61753d6caacd708"
+    }
+  ],
+  "ordinary_cache_and_k1_observer_bytes_unchanged": true,
+  "points": [
+    {
+      "audit": "OO tag_set(address) -> set % banks; ON bank equals L&3; quotas unchanged",
+      "point": "try_serve_tag"
+    },
+    {
+      "audit": "OO tag_set(aligned line); full tag.line equality; existing hit LRU increment preserved",
+      "point": "find_tag"
+    },
+    {
+      "audit": "Same mutating find_tag call; no peek/new prelookup or recency cleanup",
+      "point": "will_new_miss / lower candidate precheck"
+    },
+    {
+      "audit": "Unchanged access body dispatches find_tag and select_victim with same aligned full line",
+      "point": "access / new miss / Tag eviction"
+    },
+    {
+      "audit": "Same centralized tag_set, exactly ways entries in that set, first invalid then minimum existing LRU; no cross-set victim",
+      "point": "select_victim / LRU"
+    },
+    {
+      "audit": "Unchanged; reaches same OO try_serve_tag; grant latches cycle only",
+      "point": "service_entry::prefetch_next_tag"
+    },
+    {
+      "audit": "Entire method identical to X2; full m_tags vector sweep, hence covers every hashed entry without re-indexing",
+      "point": "K1 invalidate_lookup"
+    },
+    {
+      "audit": "Existing index code recovered byte-for-byte; ON rejected outside OO; ordinary cache files unchanged",
+      "point": "IO / BASE / MODERN / ordinary C+"
+    },
+    {
+      "audit": "Same production bool registration helper tested with real parser; init checks mode/finite/geometry; flag copied ONLY into selected whole-line OO config; external-cache constructor rejects ON",
+      "point": "LDST constructor / config"
+    }
+  ],
+  "replacement_semantics_cleanup": "NONE: old mutating precheck retained for both policies",
+  "source_files": [
+    {
+      "blob": "4304c01fc58466ccc1faf036043132d0dbc3a7b9",
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "sha256": "730bbe748517bb036a909fdc416b40d121a40adfbeb78edbfe5c68d04e8a1dc0"
+    },
+    {
+      "blob": "4a8c0f845d36094b9f7b5d05498f4ab63346bc80",
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "35f50e0e200ab0b9fe49b6ca92e15dbc7a6e367cacaec1cb7a860bedd6f35586"
+    },
+    {
+      "blob": "7a0433503ad4d48c8920b6e517e550f46a274337",
+      "path": "src/gpgpu-sim/shader.cc",
+      "sha256": "a982860bf224eced47c43493fee6ff82895e87662bb58f71a9ebe2591c81d1e3"
+    },
+    {
+      "blob": "08df962cc868c1aa7f7fdc61961688e986acacae",
+      "path": "src/gpgpu-sim/shader.h",
+      "sha256": "a5ced2709e84663193fd460d83ac2a403ee71e439e8924f643994f48791c562c"
+    },
+    {
+      "blob": "19a1f10d65ce6a86771e420f40d7f0572885512d",
+      "path": "src/gpgpu-sim/dtc-l1-tag-index.h",
+      "sha256": "184aab90b35330c96899133b0e6dc6ed1faa789275c128309bb481666fdeda26"
+    },
+    {
+      "blob": "067a062adfebec34a728b5f7e0a01872dbef29bd",
+      "path": "tests/dtc_l1_tag_hash_bankrow_test.cc",
+      "sha256": "8a8519ca35d5159bc0267dbdfbc93b823a1eb1b7f7fbbe5aa2890ebb85a45652"
+    }
+  ],
+  "status": "PASS_STATIC_DELTA_AND_CPU_FRONTEND"
+}

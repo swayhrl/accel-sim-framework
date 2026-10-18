@@ -1,0 +1,12 @@
+from pathlib import Path
+import subprocess,json,sys,time
+root=Path('/workspace/dtc-lane-ag3-aead-screen-174-v1');variant=sys.argv[1]
+source=root/'build/x2-source' if variant=='x2-reference' else Path('/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1');dest=root/'build'/variant
+args=['cmake','-S',str(source),'-B',str(dest),'-DCMAKE_BUILD_TYPE=Release','-DCMAKE_CXX_FLAGS_RELEASE=-O3','-DCMAKE_EXPORT_COMPILE_COMMANDS=ON','-DGPGPUSIM_BUILD_DTC_L1_TESTS=ON','-DCUDAToolkit_ROOT=/usr/local/cuda-11.8']
+receipts=[]
+for label,cmd in [('configure',args),('build',['nice','-n','19','ionice','-c','2','-n','7','cmake','--build',str(dest),'-j2'])]:
+ with (root/'raw'/(variant+'-'+label+'.log')).open('xb') as f:r=subprocess.run(cmd,stdout=f,stderr=subprocess.STDOUT)
+ receipts.append(dict(label=label,argv=cmd,returncode=r.returncode,time_ns=time.time_ns()))
+ (root/'raw'/(variant+'-BUILD_COMMANDS.json')).write_text(json.dumps(receipts,indent=2)+'\n')
+ print(variant,label,r.returncode,flush=True)
+ if r.returncode:sys.exit(r.returncode)

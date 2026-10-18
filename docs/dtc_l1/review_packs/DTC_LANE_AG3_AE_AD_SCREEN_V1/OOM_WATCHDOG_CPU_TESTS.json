@@ -1,0 +1,53 @@
+{
+  "status": "PASS_CPU_OWNED_PIDFD_STOP_AND_READER_FAILURE",
+  "cases": [
+    {
+      "case": "new_oom_kill",
+      "injected_private_reader_not_actual_cgroup": true,
+      "result": {
+        "utc": "2026-10-18T08:11:53.701081+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 3920304,
+        "returncode": null,
+        "forced_reason": "NEW_CGROUP_OOM_OR_OOM_KILL",
+        "exception": "Reject('NEW_CGROUP_OOM_OR_OOM_KILL')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "3920304": -9
+        },
+        "owned_children_live": 0,
+        "unconfirmed_wait_pids": [],
+        "snapshots": 36,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.26424185186624527
+      }
+    },
+    {
+      "case": "reader_failure",
+      "injected_private_reader_not_actual_cgroup": true,
+      "result": {
+        "utc": "2026-10-18T08:11:53.980171+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 3920307,
+        "returncode": null,
+        "forced_reason": "OOM_WATCHDOG_FAILURE:FileNotFoundError(2, 'No such file or directory')",
+        "exception": "Reject(\"OOM_WATCHDOG_FAILURE:FileNotFoundError(2, 'No such file or directory')\")",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "3920307": -9
+        },
+        "owned_children_live": 0,
+        "unconfirmed_wait_pids": [],
+        "snapshots": 36,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.26090729981660843
+      }
+    }
+  ],
+  "watchdog_sha256": "ba7bf26eb7f352c80a15133c82142be977a1ba3ca2cf50ca6083ac188a00d8ce",
+  "real_simulator_starts": 0,
+  "real_cgroup_writes": 0,
+  "foreign_signals": 0
+}

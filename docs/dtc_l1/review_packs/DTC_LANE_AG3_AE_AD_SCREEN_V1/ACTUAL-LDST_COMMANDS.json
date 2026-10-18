@@ -1,0 +1,27 @@
+[
+  {
+    "label": "compile_x2",
+    "argv": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O1",
+      "-fno-access-control",
+      "-UNDEBUG",
+      "-DY2_HAS_K1=1",
+      "-DCUDART_VERSION=11080",
+      "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src",
+      "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/libcuda",
+      "-I/usr/local/cuda-11.8/include",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/scripts/ldst_cpu_fixture.cc",
+      "-L/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference",
+      "-Wl,-rpath,/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-reference",
+      "-lcudart",
+      "-ldl",
+      "-o",
+      "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/actual-ldst-x2"
+    ],
+    "returncode": 1,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "023772d28c4cf469d04bf7ca926b11b0bd223aad5f1aa02eac93c9cc65168186"
+  }
+]

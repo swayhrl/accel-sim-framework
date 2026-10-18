@@ -1,0 +1,161 @@
+{
+  "status": "PASS_EXISTING_CPU_NORMAL_ON_EXPORT_SPARSE_FRONTEND_SCOPE_ONLY",
+  "inputs": {
+    "probe": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_normal_export_probe",
+      "sha256": "d86e65a1819365ef3ed4e9cbaec59b47d31f46c2d211b64143074879fc590baf"
+    },
+    "library": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/libcudart.so",
+      "sha256": "4973fa934daa8dee09c72f8fe29aee123c6c98192205445147c3cb7363ee663e"
+    },
+    "base_config": {
+      "path": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ad-progressive-wakeup-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+    },
+    "ON_config": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/existing-normal-progressive-on-final/progressive_on.config",
+      "sha256": "1032c53921391a7b0645c70b056075145b5999e36d36717ec892bede4542a117"
+    }
+  },
+  "cases": [
+    {
+      "case": "no_event_1",
+      "argv": [
+        "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_normal_export_probe",
+        "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/existing-normal-progressive-on-final/progressive_on.config",
+        "1",
+        "no_event",
+        "1"
+      ],
+      "returncode": 0,
+      "snapshots": 3,
+      "sms_per_snapshot": 64,
+      "fanout_bins_per_SM": 33,
+      "stdout_sha256": "47e6befa984ec0b02657e0aecbc538de186d684175fa72d402052c3b1f503797",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_SM0_summary": {
+        "sm": 0,
+        "broadcasts": 0,
+        "first_notify_cycle_sum": 0,
+        "last_notify_cycle_sum": 0,
+        "span_sum": 0,
+        "own_dep0_linewide_blocked_entry_cycles": 0,
+        "notified_frontend_ready_entries": 0,
+        "notified_frontend_ready_entry_cycles": 0,
+        "late_merges": 0
+      },
+      "final_SM0_ldst": {
+        "sm": 0,
+        "admitted_notified_collectable": 0,
+        "admitted_returns_to_retire_sum": 0,
+        "retired": 0
+      }
+    },
+    {
+      "case": "events_1",
+      "argv": [
+        "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_normal_export_probe",
+        "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/existing-normal-progressive-on-final/progressive_on.config",
+        "1",
+        "events",
+        "1"
+      ],
+      "returncode": 0,
+      "snapshots": 3,
+      "sms_per_snapshot": 64,
+      "fanout_bins_per_SM": 33,
+      "stdout_sha256": "ee299137c073bea5922fbab0fa9d70e578ebdc3e2a6dd0c13db7e04518ba51c6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_SM0_summary": {
+        "sm": 0,
+        "broadcasts": 2,
+        "first_notify_cycle_sum": 6,
+        "last_notify_cycle_sum": 6,
+        "span_sum": 0,
+        "own_dep0_linewide_blocked_entry_cycles": 0,
+        "notified_frontend_ready_entries": 2,
+        "notified_frontend_ready_entry_cycles": 3,
+        "late_merges": 0
+      },
+      "final_SM0_ldst": {
+        "sm": 0,
+        "admitted_notified_collectable": 0,
+        "admitted_returns_to_retire_sum": 0,
+        "retired": 0
+      }
+    },
+    {
+      "case": "events_8",
+      "argv": [
+        "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_normal_export_probe",
+        "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/existing-normal-progressive-on-final/progressive_on.config",
+        "1",
+        "events",
+        "8"
+      ],
+      "returncode": 0,
+      "snapshots": 3,
+      "sms_per_snapshot": 64,
+      "fanout_bins_per_SM": 33,
+      "stdout_sha256": "1ffaa7aa3f9732a4af436eb45c37ee5d5e118d238444bc022235ce087b6450b8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_SM0_summary": {
+        "sm": 0,
+        "broadcasts": 2,
+        "first_notify_cycle_sum": 6,
+        "last_notify_cycle_sum": 6,
+        "span_sum": 0,
+        "own_dep0_linewide_blocked_entry_cycles": 0,
+        "notified_frontend_ready_entries": 2,
+        "notified_frontend_ready_entry_cycles": 3,
+        "late_merges": 0
+      },
+      "final_SM0_ldst": {
+        "sm": 0,
+        "admitted_notified_collectable": 0,
+        "admitted_returns_to_retire_sum": 0,
+        "retired": 0
+      }
+    }
+  ],
+  "parser_negative_checks": [
+    {
+      "case": "missing_SM",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "missing SM"
+    },
+    {
+      "case": "duplicate_SM",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "bad/duplicate SM"
+    },
+    {
+      "case": "truncated_frame",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "truncated/missing snapshot"
+    },
+    {
+      "case": "duplicate_field",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "missing/duplicate/unexpected/negative fields"
+    },
+    {
+      "case": "bad_histogram",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "fanout/broadcast conservation"
+    },
+    {
+      "case": "bad_sentinel",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "bad frame header"
+    }
+  ],
+  "compiler_invocations": 0,
+  "full_simulators_started": 0,
+  "GPU_cycle_calls": 0,
+  "kernels": 0,
+  "simulation_threads_started": 0,
+  "actual_entrypoint": "existing compiled gpgpu_sim::gpu_print_stat(0)",
+  "scope": "9 real normal-print boundaries at64 SM, zero and two one-waiter frontend API broadcasts, K1 ordinary pending/commit, topology1/8. No cacheable LDST PIB/value traffic, no progressive fanout>4 or WB/common-boundary validation. Original CTest failures remain failures; ON acceptance STOP remains."
+}

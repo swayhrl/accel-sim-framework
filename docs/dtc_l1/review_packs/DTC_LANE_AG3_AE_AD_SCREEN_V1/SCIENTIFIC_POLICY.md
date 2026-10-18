@@ -1,0 +1,11 @@
+# AG3 independent DISCOVERY_OPT_AE_AD_V1
+
+Single worker, six fixed points: BASE_GEMM, BASE_Gaussian, AE_GEMM, AE_Gaussian, AD_GEMM, AD_Gaussian. Each one unique UUIDv4/one real-start cap; total6, no retries/replacements/canaries. Both full strict calibrated new BASEs gate all ON points. Negative speed alone continues; any hard strict/identity/source/resource/authority/calibration failure stops remaining cohort. No old AG/AA5 budget/reset, raw, UUID or result reuse. Every actual accel-sim request counts even loader failure; RUN_START is a conservative consumed reservation, fork/exec and natural initialization are separately recorded.
+
+Fixed whole original inputs, commands, member SHA, CTA and active-thread instructions. Gaussian510 kernels/513 commands/65790 CTA/283685120 instructions; GEMM full totals come only from frozen T body proof and exact complete reference. No prefix/warmup selection. K1 flag0, PAPER_OO128, Tag64x8 stress configuration, physical640x128B, ordinary16KiB/shared96KiB,4 banks, original finite quotas/lower32768/64SM/1410 core and clock domains/L2 memcpy preload/flush/downstream unchanged. Performance at most one of AE/AD ON. No AC/AC2/AF or combined ON arm.
+
+Timeout adjudication before any start: authoritative T1-C RUN_START GEMM4c8355b5… permits28800s, Gaussian63f15c5a…7200s. User's new AG3 contract explicitly sets7200s per point, so AG3 uses7200s for both; this is a disclosed shorter independent GEMM cap, not an edit to T/AA5/AG, and does not permit retries if it expires. No host-wall GPU inference.
+
+BASE calibration requires full natural exit0 plus complete command/instruction/CTA, finite/Ref/credit/sector/drain invariants, all frozen common per-kernel metrics and traffic, exact cycles1071405 GEMM/3278356 Gaussian. Old T only calibration reference, never AG3 BASE. Primary speed ratio=current same-input AG3 BASE cycles / current single-ON cycles. Integer cycles and denominator identity always retained. Missing or ON-only fields are UNAVAILABLE in OFF, not0 or direct mean differences.
+
+Two known inputs are discovery, not independent validation or GM12. Tag64x8 is not paper main-config promotion. No paper/history edit; suggestions only. BICG/DWT2D/C+ fair-hash controls require later separate user review, frozen configuration, inputs and budget. No seventh actual start or automatic subsequent goal/dispatch.
