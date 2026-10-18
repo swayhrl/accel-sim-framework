@@ -414,7 +414,7 @@ module ep_l2_slice_ctrl #(
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_head_pid(generation_bits,head_pid,generation_head_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_active_pid(generation_bits,active_pid,generation_active_pid);
     // R3B proven role/live/forward-map invariant replaces reverse owner.
-    ep_l2_index_mux #(.N(N_TAG),.W(PID_W),.IW(TAG_W)) select_fill_tag_map(tag_map_bits,fill_tag,fill_mapped_pid);
+    assign fill_mapped_pid=tag_map_bits[fill_tag*PID_W +:PID_W];
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(6),.IW(PID_W)) select_pins_old_pid(pins_bits,old_pid,pins_old_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(6),.IW(PID_W)) select_pins_pin_pid(pins_bits,pin_pid,pins_pin_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(4),.IW(PID_W)) select_sectors_ready_old_pid(sectors_ready_bits,old_pid,sectors_ready_old_pid);

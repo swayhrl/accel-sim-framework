@@ -19,3 +19,8 @@ all simultaneous GEN cases, stale fill/rebind/pin/rollback and same-library
 three-mode mapping/two-period STA. An owner abstract proof is insufficient.
 Tag-index sector/pin organization remains an explicit separate port-ledger
 exploration; inverse external-pin lookup is not a free implementation.
+
+The added fill lookup uses the same actual variable Tag-map selection idiom
+as the existing frontend old_pid read. All1024x11 input bits and its mapped
+selection gates are real cost. It supports the small symbolic Tag count
+without the R2 helper BLOCK/IW limitation; full map capacity remains1024.
