@@ -19,3 +19,9 @@ Before real bindings exist, a source builder issue was found: the native `/home/
 The exact correction notice and native probe are on the existing shared bridge, with Git provenance `0728838c1dc459dcac04fbea2b699e35086d6f62`, SHA256 and close/reopen readback in `TLS_V10_TARGET_PROTOCOL_BRIDGE_PUBLICATION.json`. These are small control metadata only. No source resource PASS or COPY_READY has arrived.
 
 Next safe action: source resolves the unexecuted builder alias, independently publishes fresh Lane/resource PASS when permitted, freezes exact files/directories in Git, and requests the agreed absent destination reservation. Target then consumes one exact READY at a time. No scientific bulk activity while either prerequisite remains unresolved.
+
+## Canonical alignment resolved
+
+Source `e8b534184ab929e18e0b0f9486284cc304e07abd` applied the exact native-root/alias correction and independently matched the golden normalized rows, selector SHA, full manifest SHA and txid. Target checked the ACK's notice/vector hashes and published `TLS_V10_TARGET_PROTOCOL_AGREEMENT_RECEIPT.json`. The earlier engineering prerequisite is resolved.
+
+The remaining admission is the fresh independent source Lane/resource PASS, followed by its immutable frozen selector and COPY_READY. No source PASS or scientific payload is inferred from the protocol agreement. V10 remains started and copy-only, at zero scientific bytes archived/restored/reclaimed until those gates pass.
