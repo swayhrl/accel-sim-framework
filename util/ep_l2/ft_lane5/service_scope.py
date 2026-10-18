@@ -30,7 +30,10 @@ def validate(spec,release,configs,assets,review):
  require(review['all_eleven_gates_passed'] is True and review['native_all_off_equivalence']=='PASS' and review['independent_mode_semantics_passed'] is True,'Eleven service gates incomplete')
  return {'scientific_scope':SCOPE,'experiment_id':PARALLEL,'regime':spec['regime'],'profile':profile,'condition_qualification_sha256':release['downstream_config_qualification']['sha256'],'runtime_config_sha256':row['runtime_config_sha256']}
 def runtime_dump(raw,spec):
- features(spec['identity'],spec['producer_profile']);f=spec['identity']['feature_vector'];want={'-gpgpu_ep_l2_mq2':str(int(f['mq2'])),'-gpgpu_ep_l2_rg1':'0','-gpgpu_ep_l2_bank_ops':'1','-gpgpu_ep_l2_static_s64':str(int(f['static_s64'])),'-gpgpu_ep_l2_wb_local_cap':'0','-gpgpu_ep_l2_i_mem_all_data':'0','-gpgpu_ep_l2_ft_mode':'2' if f['unified_wb'] else '1','-gpgpu_ep_l2_wbuf_entries':'16','-gpgpu_ep_l2_wad_entries':'128','-gpgpu_ep_l2_payload_mode':'2','-gpgpu_ep_l2_descriptor_pool_size':'512','-gpgpu_ep_l2_descriptor_per_line_cap':'32','-gpgpu_clock_domains':'1132.0:1132.0:1132.0:850.0','-gpgpu_l2_rop_latency':'160','-dram_latency':'100','-gpgpu_simple_dram_model':'0','-gpgpu_dram_partition_queues':'64:128:64:64','-gpgpu_frfcfs_dram_sched_queue_size':'128','-gpgpu_dram_return_queue_size':'192',**{'-gpgpu_ep_l2_ideal_'+k:'0' for k in ['wb','meta','read_hit']}}
+ features(spec['identity'],spec['producer_profile']);return _runtime_dump(raw,spec)
+def _runtime_dump(raw,spec):
+ """Shared actual option reader; caller must validate its own exact scope first."""
+ f=spec['identity']['feature_vector'];want={'-gpgpu_ep_l2_mq2':str(int(f['mq2'])),'-gpgpu_ep_l2_rg1':str(int(f['rg1'])),'-gpgpu_ep_l2_bank_ops':'1','-gpgpu_ep_l2_static_s64':str(int(f['static_s64'])),'-gpgpu_ep_l2_wb_local_cap':'0','-gpgpu_ep_l2_i_mem_all_data':'0','-gpgpu_ep_l2_ft_mode':'2' if f['unified_wb'] else '1','-gpgpu_ep_l2_wbuf_entries':'16','-gpgpu_ep_l2_wad_entries':'128','-gpgpu_ep_l2_payload_mode':'2','-gpgpu_ep_l2_descriptor_pool_size':'512','-gpgpu_ep_l2_descriptor_per_line_cap':'32','-gpgpu_clock_domains':'1132.0:1132.0:1132.0:850.0','-gpgpu_l2_rop_latency':'160','-dram_latency':'100','-gpgpu_simple_dram_model':'0','-gpgpu_dram_partition_queues':'64:128:64:64','-gpgpu_frfcfs_dram_sched_queue_size':'128','-gpgpu_dram_return_queue_size':'192',**{'-gpgpu_ep_l2_ideal_'+k:'0' for k in ['wb','meta','read_hit']}}
  actual={};clocks=[]
  for line in Path(raw).open():
   if line.startswith('-'):
@@ -40,8 +43,11 @@ def runtime_dump(raw,spec):
  require(actual==want and clocks==[[1132e6,1132e6,1132e6,850e6]],'Actual finite service clocks/options differ');return {'status':'ACTUAL_FINITE_SERVICE_OPTIONS_CLOCKS_MATCH','options':actual,'clock_frequencies_Hz':clocks[0]}
 def terminal_services(raw,spec):
  """Cumulative instrumentation is associated with its native terminal clock."""
+ features(spec['identity'],spec['producer_profile']);return _terminal_services(raw,spec)
+def _terminal_services(raw,spec):
+ """Shared physical telemetry reader; never qualifies an unvalidated feature vector."""
  import re
- features(spec['identity'],spec['producer_profile']);frames={};clock=None
+ frames={};clock=None
  for line in Path(raw).open():
   match=re.fullmatch(r'gpu_tot_sim_cycle\s*=\s*(\d+)\s*',line)
   if match:clock=int(match[1])
@@ -50,5 +56,5 @@ def terminal_services(raw,spec):
  final={(kind,sid,sub):row for (cycle,kind,sid,sub),row in frames.items() if cycle==clock};require(set(final)=={(k,s,n) for s in range(64) for k,ns in [('MQ2',[-1]),('RG1_BANK',range(4)),('RG1_CLIENT',range(7))] for n in ns},'Missing exact64-slice cumulative service counters')
  for (kind,sid,sub),row in final.items():
   if kind=='MQ2':require(row['enabled']==int(spec['identity']['feature_vector']['mq2']) and row['window']==2 and row['lower_enqueues_per_cycle']==1 and row['bypasses']<=row['wb_bank_waits'] and (row['enabled'] or row['bypasses']==0),'MQ2 terminal counter/limit mismatch')
-  if kind=='RG1_BANK':require(row['enabled']==0 and row['recovered_grants']==0,'Unqualified RG1 activity')
+  if kind=='RG1_BANK':require(row['enabled']==int(spec['identity']['feature_vector']['rg1']) and row['recovered_grants']<=row['physical_services'] and (row['enabled'] or row['recovered_grants']==0),'Unqualified/invalid RG1 activity')
  return {kind:{str(sid)+(':'+str(sub) if sub>=0 else ''):row for (k,sid,sub),row in final.items() if k==kind} for kind in ['MQ2','RG1_BANK','RG1_CLIENT']}

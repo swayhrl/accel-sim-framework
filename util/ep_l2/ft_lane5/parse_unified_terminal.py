@@ -17,7 +17,9 @@ def parse(raw, spec):
     from pathlib import Path
     sys.path.insert(0,str(Path(spec['scope_tool']['path']).parent))
     if digest(spec['scope_tool']['path'])!=spec['scope_tool']['sha256']:raise ValueError('local scope tool changed')
-    if spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
+    if spec.get('scientific_scope')=='FINITE_SERVICE_RG1_NATIVE_V1':
+        from service_rg1_scope import features
+    elif spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
         from service_scope import features
     else:
         from unified_scope import features
@@ -81,8 +83,11 @@ def parse(raw, spec):
             and gate['production_driven'] is True and digest(gate['evidence_path'])==gate['evidence_sha256'])
     structure=parse_structure(raw,spec,final)
     services={}
-    if spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
-        from service_scope import terminal_services
+    if spec.get('scientific_scope') in ('FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1'):
+        if spec.get('scientific_scope')=='FINITE_SERVICE_RG1_NATIVE_V1':
+            from service_rg1_scope import terminal_services
+        else:
+            from service_scope import terminal_services
         services=terminal_services(raw,spec)
     return {'structural_observations':structure,'finite_service_observations':services,'cycles':native['cycle'],'instructions':native['insn'],'slices':64,
         'unique_requesters':total(terminals,'unique_requesters'),'responses':total(terminals,'responses'),

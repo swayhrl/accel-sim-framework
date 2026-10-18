@@ -60,6 +60,9 @@ def validate(spec,release,configs,assets):
         return None
     require(digest(binding['path'])==binding['sha256'],'Condition qualification changed')
     m=json.loads(Path(binding['path']).read_text())
+    if m.get('qualification_kind')=='FINITE_SERVICE_RG1_NATIVE_V1':
+        from service_rg1_scope import validate as validate_service_rg1
+        return validate_service_rg1(spec,release,configs,assets,m)
     if m.get('qualification_kind')=='FINITE_SERVICE_NATIVE_V1':
         from service_scope import validate as validate_service
         return validate_service(spec,release,configs,assets,m)

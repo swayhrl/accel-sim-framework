@@ -17,6 +17,15 @@ from run import inspect, digest, validate_summary, require, GATES
 REPO=Path(__file__).resolve().parents[3]
 ORDER=('sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21')
 
+def verify_snapshot_assets(directory,audit):
+    # run.py freezes every ordered config as config-{index}.config, including
+    # a producer's logically named service.config. Audit logical names stay
+    # in the canonical ordered manifest; verify the actual executed snapshots.
+    for index,item in enumerate(audit['configs']):
+        require(digest(directory/f'config-{index}.config')==item['sha256'],'Frozen ordered config changed')
+    for item in audit['auxiliary_assets']:
+        require(digest(directory/item['name'])==item['sha256'],'Frozen auxiliary asset changed')
+
 
 def p2_h0_candidates(rows, spec, mode):
     profile='B16_OFF' if mode=='B16_BANKED' else 'U_OFF'
@@ -48,13 +57,14 @@ def review(spec,registry,native_proof=None):
     audit['qualification_evidence']=original
     require(audit==result['audit']==json.loads((directory/'input_audit.json').read_text()),'Input/qualification/authority audit changed')
     require(digest(directory/'accel-sim.out')==spec['identity']['binary_sha256'],'Frozen runtime binary changed')
-    for item in audit['configs']+audit['auxiliary_assets']:
-        require(digest(directory/item['name'])==item['sha256'],'Frozen config/asset changed')
+    verify_snapshot_assets(directory,audit)
     raw=directory/'raw.log';require(digest(raw)==result['raw_log_sha256'],'Raw log changed')
     if spec.get('experiment_id') in ('EPL2_DOWNSTREAM_HEADROOM_R19','EPL2_PARALLEL_POTENTIAL_20261017_V1'):
         from headroom_config import validate_runtime_dump
-        if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1'):
-            if spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
+        if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1'):
+            if spec.get('scientific_scope')=='FINITE_SERVICE_RG1_NATIVE_V1':
+                from service_rg1_scope import runtime_dump
+            elif spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
                 from service_scope import runtime_dump
             else:
                 from unified_scope import runtime_dump

@@ -157,11 +157,13 @@ def inspect(spec):
     key = run_key(identity)
     authority = load_current_authority()
     reject_withdrawn(identity, current_manifest(authority))
-    unified_scope = spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1')
+    unified_scope = spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1')
     require(set(identity['ideal_vector']) == (IDEALS | {'mem_all_data'} if unified_scope else IDEALS), 'ideal vector must include every scoped ideal mode')
     feature = identity['feature_vector']
     if unified_scope:
-        if spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
+        if spec.get('scientific_scope')=='FINITE_SERVICE_RG1_NATIVE_V1':
+            from service_rg1_scope import features as unified_features
+        elif spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
             from service_scope import features as unified_features
         else:
             from unified_scope import features as unified_features
@@ -379,8 +381,10 @@ def run(spec, registry):
             require(normal and cycles is not None and instructions is not None, 'missing native terminal execution evidence')
             if experiment is not None:
                 from headroom_config import validate_runtime_dump
-                if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1'):
-                    if spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
+                if spec.get('scientific_scope') in ('UNIFIED_NATIVE_V1','ALL_DATA_REFERENCE_V1','FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1'):
+                    if spec.get('scientific_scope')=='FINITE_SERVICE_RG1_NATIVE_V1':
+                        from service_rg1_scope import runtime_dump
+                    elif spec.get('scientific_scope')=='FINITE_SERVICE_NATIVE_V1':
                         from service_scope import runtime_dump
                     else:
                         from unified_scope import runtime_dump
