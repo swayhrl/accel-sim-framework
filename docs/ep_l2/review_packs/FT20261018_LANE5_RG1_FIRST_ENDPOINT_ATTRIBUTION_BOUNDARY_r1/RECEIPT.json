@@ -1,0 +1,60 @@
+{
+  "OFF_physical_services": 9217033,
+  "RG1_physical_services": 9212809,
+  "accepted_endpoint_publication": "05c4f6583bb378412b05c15076b31ef3fad4c638",
+  "actual_RG1_counters": {
+    "MQ2": {
+      "bypasses": 0,
+      "wb_bank_waits": 0
+    },
+    "RG1": {
+      "another_ready_cycles": 0,
+      "held_not_ready_cycles": 0,
+      "physical_services": 9212809,
+      "recovered_grants": 0
+    },
+    "RG1_client_maxima": {
+      "max_attempt_to_consume": 4,
+      "max_attempt_to_first_ready": 0,
+      "max_first_ready_to_consume": 4
+    }
+  },
+  "actual_same_binary_measurement": {
+    "OFF_cycles": 292932,
+    "RG1_cycles": 292323,
+    "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+    "cycles_saved": 609,
+    "fraction_cycles_saved": 0.002078980787349965,
+    "instructions_each": 714547200
+  },
+  "at_utc": "2026-10-18T10:53:28.037097+00:00",
+  "comparison_asset": {
+    "path": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_RG1_CONVOLUTIONSEPARABLE_B16_rg1_1_POINT_r1/COMPARISON.json",
+    "sha256": "33888b36f0a0f046e2aa810e4505141dd0e3317c4d24bd5cac0360937beef554"
+  },
+  "counter_scope": "Zero applies to ON recorded firstapp; OFF wait/recovery counters are disabled observations. Bank/slice eventcount sums overlap and are not applicationcycles. Client first-ready lag0 and maxready-to-consume4 are observed bookkeeping intervals, not causalcriticalpath attribution.",
+  "exact_published_source_bindings": [
+    {
+      "core_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "0a1b4ede4e0437e17ab16aeaf21f8cd19fa80c481120a9366f80991f7e7b6507"
+    },
+    {
+      "core_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+      "path": "src/gpgpu-sim/ep-l2-rg1.inc",
+      "sha256": "be6d488c4a00c4f944cd6a82bd12257ebee8376116bea2cbe19e7929625e6eb9"
+    }
+  ],
+  "inference": "The measured cyclechange can be compatible with different ordering among ready operations or requestidentity/phase handling; the aggregate counters do not establish the exact causalpath. Do not assign609cycles to skippedunready ownership or recoveredgrants because all three target counters are0.",
+  "native_qualification_replayed": false,
+  "new_simulations_by_note": 0,
+  "ongoing_apps": "ConvS64RG1 and UnifiedRG1 remainnatural underoriginalR6/registry; results will be independentlyaccepted or explicitlyfailed/NOT_RUN atoriginalboundaries",
+  "paper_rule": "Keep matchedcycles and signedpositive effect as a scoped diagnostic. AwaitsameconditionB16/S64/Unified before EP/staticinteraction claims. Do not present commonB16 improvement as Unified-exclusive or as provenretainednot-ready service recovery. Keep oldH0fiveinputmean unchanged.",
+  "physical_service_count_difference": -4224,
+  "runtime_or_scientific_boundary_changed": false,
+  "scientific_acceptance_withdrawn": false,
+  "source_contract": "c8aa87bdbe220853eb2d27d8babd448cff02a66e FINITE_SERVICE_MICROOPT_CODE_AUDIT_AND_GOALS_V1.md section2 explicitly requires disclosure of collection/arbitration phase changes and boundedclienttokens; current11qualification and16readytests remain valid.",
+  "source_observation_OFF": "At physicalcycle transition, existing pending operations are selected into retainedgranted lists. Pending/granted matching uses role/id/write; free immediate service requires no selected or pending olderoperation.",
+  "source_observation_RG1": "request routes to request_rg1: operations bind client/transactiontoken/generation; all calls enter or reuse scoreboard identities; oldest-ready selection/reselection occurs during request calls, including older-ready resumption before consumption. P1 service cap and age are retained. This is a scheduling/interface path change even when all observed clients are ready.",
+  "status": "ACCEPTED_MEASUREMENT_RETAINED_TARGET_RECOVERY_CAUSAL_ATTRIBUTION_NOT_ESTABLISHED"
+}
