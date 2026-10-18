@@ -71,6 +71,22 @@ def stage_qualification(release_path,review_path,pack):
     print(json.dumps({'status':'STAGED_CONDITION_QUALIFICATION_REQUIRES_REMOTE_READBACK','generation':ledger['generation'],'regime':review['regime']}))
 
 
+def render_parallel_status(review, pair_pack, generation, campaign):
+    """Render actual Parallel identity/window without staging or accepting rows."""
+    pair_pack=pair_pack.resolve()
+    source=json.loads((pair_pack/'SOURCE_MANIFEST.json').read_text())
+    identity=source['runs'][0]['identity']
+    closed=datetime.now(timezone.utc).timestamp() >= campaign['deadline_unix']
+    return ('# Lane5 — Parallel result review staged; R19 closed\n\n'
+        +'Reviewed '+review['workload']+' '+review['regime']+'; proposed V2 generation '+str(generation)
+        +' awaits exact remote readback and current-pointer installation. Historical rows and withdrawals are retained.\n\n'
+        +'Runtime Core '+identity['core_source_commit']+', Framework '+identity['framework_source_commit']
+        +', binary '+identity['binary_sha256']+'. Full config/input/raw identity and closure: '+str(pair_pack.relative_to(REPO))+'/SOURCE_MANIFEST.json.\n\n'
+        +'Original application-start window '+('CLOSED; only already-admitted work may drain and be reviewed.' if closed else 'OPEN subject to all current qualifications and central resource gates.')
+        +' Frozen cutoff '+datetime.fromtimestamp(campaign['deadline_unix'],timezone.utc).isoformat()
+        +'. No campaign, start-count or deadline reset. R19 remains closed; original H0 five-workload mean remains separate.\n')
+
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--pair-pack',type=Path);ap.add_argument('--acceptance-pack',required=True,type=Path);ap.add_argument('--extra-release',type=Path);ap.add_argument('--extra-review',type=Path);ap.add_argument('--qualification-only',action='store_true');a=ap.parse_args()
     if a.qualification_only:
@@ -112,27 +128,15 @@ def main():
     if review.get('experiment_id'):
         receipt_path=HANDOFF/('R19_CONTINUE_RECEIPT.json' if review['experiment_id']=='EPL2_DOWNSTREAM_HEADROOM_R19' else 'PARALLEL_CONTINUE_RECEIPT.json');receipt=json.loads(receipt_path.read_text()) if receipt_path.exists() else {'experiment_id':review['experiment_id']};receipt.update(status=('ACTIVE_ROLLING_R19_CURRENT_ACCEPTED' if review['experiment_id']=='EPL2_DOWNSTREAM_HEADROOM_R19' else 'ACTIVE_ROLLING_PARALLEL_CURRENT_ACCEPTED'),latest_pair_delivery=delivery,r19_accepted_pairs=diagnostic_pairs,current_V2_generation=ledger['generation'],next_action='Push/readback and install current pointer; deliver this exact result to Lane6; next application requires real resource admission');receipt_path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
         main_path=HANDOFF/'RECEIPT.json';main=json.loads(main_path.read_text());main.update(status='ACTIVE_ROLLING_'+review['experiment_id'],**{('r19_continue' if review['experiment_id']=='EPL2_DOWNSTREAM_HEADROOM_R19' else 'parallel_continue'):receipt});main['artifacts']=list(dict.fromkeys(main['artifacts']+[str(a.pair_pack.relative_to(REPO)),str(a.acceptance_pack.relative_to(REPO))]));main_path.write_text(json.dumps(main,indent=2,sort_keys=True)+'\n')
-        (HANDOFF/'STATUS.md').write_text('# Lane5 — rolling R19 and parallel results\n\nH0 five pairs/mean1.0016002037656606 remain unchanged. R19 acceptedpairs'+str(diagnostic_pairs)+'; newcampaign acceptedrows'+str(parallel_rows)+'. Staged V2generation'+str(ledger['generation'])+' awaits exact remote readback/currentpointer install. Latest '+review['experiment_id']+'/'+review['regime']+'/'+review.get('profile',review['workload'])+'. Every immutable source/config/binary/input/closure record is in '+str(a.pair_pack.relative_to(REPO))+'. Concurrent compatible runs continue under the one registry and4sim/8CPU/32GiB; all original floors preserved.\n')
+        if review['experiment_id']=='EPL2_PARALLEL_POTENTIAL_20261017_V1':
+            (HANDOFF/'STATUS.md').write_text(render_parallel_status(review,a.pair_pack,ledger['generation'],Registry().snapshot()['campaigns'][review['experiment_id']]))
+        else:
+            (HANDOFF/'STATUS.md').write_text('# Lane5 — rolling R19 and parallel results\n\nH0 five pairs/mean1.0016002037656606 remain unchanged. R19 acceptedpairs'+str(diagnostic_pairs)+'; newcampaign acceptedrows'+str(parallel_rows)+'. Staged V2generation'+str(ledger['generation'])+' awaits exact remote readback/currentpointer install. Latest '+review['experiment_id']+'/'+review['regime']+'/'+review.get('profile',review['workload'])+'. Every immutable source/config/binary/input/closure record is in '+str(a.pair_pack.relative_to(REPO))+'. Concurrent compatible runs continue under the one registry and4sim/8CPU/32GiB; all original floors preserved.\n')
         print(json.dumps({'status':'STAGED_NEXT_V2_REQUIRES_REMOTE_READBACK_AND_POINTER','generation':ledger['generation'],'H0_pairs':pairs,'r19_pairs':diagnostic_pairs,'manifest_sha256':digest(path)}));return
     receipt_path=HANDOFF/'RECEIPT.json';receipt=json.loads(receipt_path.read_text());receipt.update(status=f'R0_1_A1_B1_{pairs}_CURRENT_ACCEPTED_PAIRS',updated_at=ledger['updated_at'],active_runs=[])
     receipt['artifacts']=list(dict.fromkeys(receipt['artifacts']+[str(a.pair_pack.relative_to(REPO)),str(a.acceptance_pack.relative_to(REPO))]));receipt['validation']['scientifically_accepted_R0_application_runs']=len(accepted);receipt['validation']['scientifically_accepted_R0_application_pairs']=pairs
     receipt['formal_R0_1_campaign']={'status':'ROLLING_CURRENT_ACCEPTED' if pairs<5 else 'ALL5_CURRENT_ACCEPTED','accepted_pairs':pairs,'accepted_rows':accepted,'remaining_workloads':[w for w in ('sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21') if w not in {r['workload'] for r in accepted}],'geomean_computed':False};receipt['bounded_continue']['latest_pair_delivery']=delivery;receipt['bounded_continue']['next_action']='Remote readback/pointer install and immediate Lane6 handoff; continue frozen remaining order';receipt_path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
-    if review.get('experiment_id') == 'EPL2_PARALLEL_POTENTIAL_20261017_V1':
-        status_source=json.loads((a.pair_pack/'SOURCE_MANIFEST.json').read_text())
-        identity=status_source['runs'][0]['identity']
-        campaign=Registry().snapshot()['campaigns'][review['experiment_id']]
-        window_closed=datetime.now(timezone.utc).timestamp() >= campaign['deadline_unix']
-        (HANDOFF/'STATUS.md').write_text(
-            '# Lane5 — Parallel result review staged; R19 closed\n\n'
-            +'Reviewed '+review['workload']+' '+review['regime']+'; proposed V2 generation '+str(ledger['generation'])
-            +' awaits exact remote readback and current-pointer installation. Historical rows and withdrawals are retained.\n\n'
-            +'Runtime Core '+identity['core_source_commit']+', Framework '+identity['framework_source_commit']
-            +', binary '+identity['binary_sha256']+'. Full config/input/raw identity and closure: '+str(a.pair_pack.relative_to(REPO))+'/SOURCE_MANIFEST.json.\n\n'
-            +'Original application-start window '+('CLOSED; only already-admitted work may drain and be reviewed.' if window_closed else 'OPEN subject to all current qualifications and central resource gates.')
-            +' Frozen cutoff '+datetime.fromtimestamp(campaign['deadline_unix'],timezone.utc).isoformat()
-            +'. No campaign, start-count or deadline reset. R19 remains closed; original H0 five-workload mean remains separate.\n')
-    else:
-        (HANDOFF/'STATUS.md').write_text('# Lane5 — '+str(pairs)+'/5 repaired official R0.1 pairs accepted\n\nLatest '+review['workload']+' pair passed independent raw reparse/full identity/current V2 review. Current generation'+str(ledger['generation'])+' preserves old withdrawals and adds both new CURRENT_ACCEPTED rows. Exact results/identities/closures in '+str(a.pair_pack.relative_to(REPO))+', delivery in '+str(a.acceptance_pack.relative_to(REPO))+'. No group geomean until5.\n\nGoal ACTIVE to original12:19:03UTC deadline. All11 actual source gates passed; five full native input sets non-atomic, ordinary symbolic32B sector/lifecycle scope only. Same Core7b8e6ac7/Framework9bd17f9d/vendorf90c430c/binary23094a9d. TVD/RO/Ideal excluded; C1 legacy headroom excluded from causal claims. No active long simulator at this publication boundary. Next remote readback/current pointer, handoff and next frozen pair under standard48GiB/64GiB/Share40GiB/max2long quota. No compiler, waiter, migration or cleanup by Lane5.\n')
+    (HANDOFF/'STATUS.md').write_text('# Lane5 — '+str(pairs)+'/5 repaired official R0.1 pairs accepted\n\nLatest '+review['workload']+' pair passed independent raw reparse/full identity/current V2 review. Current generation'+str(ledger['generation'])+' preserves old withdrawals and adds both new CURRENT_ACCEPTED rows. Exact results/identities/closures in '+str(a.pair_pack.relative_to(REPO))+', delivery in '+str(a.acceptance_pack.relative_to(REPO))+'. No group geomean until5.\n\nGoal ACTIVE to original12:19:03UTC deadline. All11 actual source gates passed; five full native input sets non-atomic, ordinary symbolic32B sector/lifecycle scope only. Same Core7b8e6ac7/Framework9bd17f9d/vendorf90c430c/binary23094a9d. TVD/RO/Ideal excluded; C1 legacy headroom excluded from causal claims. No active long simulator at this publication boundary. Next remote readback/current pointer, handoff and next frozen pair under standard48GiB/64GiB/Share40GiB/max2long quota. No compiler, waiter, migration or cleanup by Lane5.\n')
     print(json.dumps({'status':'STAGED_NEXT_V2_REQUIRES_REMOTE_READBACK_AND_POINTER','generation':ledger['generation'],'accepted_pairs':pairs,'manifest_sha256':digest(path)}))
 
 
