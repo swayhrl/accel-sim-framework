@@ -13,3 +13,5 @@ run_screen.py has no resume/retune/retry/selective-arm interface. It refuses abs
 The scientific registration is executable only after its exact commit has been pushed/fetched back, RAW/PUBLICATION_READBACK.json verifies it, all bound files match and fresh admission passes. A local CPU draft or publication of CPU tests alone cannot launch. FINAL_AUTHORITY_RELEASE.json and final publication read-back document termination when the cohort closes.
 
 AC_ON_DIAGNOSTICS.tsv contains ON-only noncomparative stage counters. OFF missing fields and K1-only exports are UNAVAILABLE. Full timing/ownership strict acceptance is bounded model evidence, not load-value/native correctness, independent validation or equal-area hardware proof. AC adds160KiB/SM charged finite result storage. MANUSCRIPT_RECOMMENDATIONS.md makes suggestions only; existing v0.14-R1, old44 and GM12 remain untouched.
+
+最终状态为STOP：1实际启动、0完整strict，执行器启动映射漏项，后续格未执行。ROOT_CAUSE_AND_FOLLOWUP.md与STOP_EVIDENCE.json保留责任/证据/边界；postmortem九项CPU重放原型没有修改冻结执行器或追认原结果。

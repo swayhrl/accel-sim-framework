@@ -1,12 +1,12 @@
 {
-  "utc": "2026-10-18T04:42:05.801599+00:00",
+  "utc": "2026-10-18T05:02:07.320366+00:00",
   "checks": {
     "first_original174": true,
     "first_host_MemAvailable_ge32GiB": true,
     "first_cgroup_headroom_ge32GiB": true,
     "first_disk_free_ge10GiB": true,
     "first_memory_full_PSI_le1": true,
-    "first_io_full_PSI_le25": true,
+    "first_io_full_PSI_le25": false,
     "second_original174": true,
     "second_host_MemAvailable_ge32GiB": true,
     "second_cgroup_headroom_ge32GiB": true,
@@ -16,13 +16,13 @@
     "two_samples_gap_ge10s": true,
     "no_new_cgroup_oom": true
   },
-  "all_resource_checks_pass": true,
+  "all_resource_checks_pass": false,
   "host_global_swap_deltas": {
     "pswpin": 0,
     "pswpout": 0
   },
   "host_global_swap_is_not_process_attribution": true,
-  "actual_AG_sim_starts": 0,
+  "actual_AG_sim_starts": 1,
   "source": "CURRENT_ALL_PROJECTS_TWO_SAMPLES_GE10S",
   "authority": {
     "classification": "READONLY_REVIEW_NOT_AUTHORITY_ACQUISITION",
@@ -536,8 +536,8 @@
         "exe": "/usr/bin/bash"
       },
       {
-        "pid": 3722235,
-        "start_ticks": 905048676,
+        "pid": 3742710,
+        "start_ticks": 905168820,
         "role": "OWN_CPU_AUDIT",
         "argv": [
           "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
@@ -548,9 +548,22 @@
           "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
           "docs/dtc_l1/review_packs/DTC_LANE_AG_OPT_SCREEN_V1/scripts/audit_site.py",
           "--label",
-          "PRE_REGISTRATION_FINAL_CPU"
+          "FINAL_STOP_READ_ONLY"
         ],
         "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2"
+      },
+      {
+        "pid": 3742886,
+        "start_ticks": 905169767,
+        "role": "DTC_RELATED_REVIEW_REQUIRED",
+        "argv": [
+          "awk",
+          "-F",
+          "=",
+          "\n      $1 ~ /^gpu_tot_sim_insn[[:space:]]*$/ { instructions = $2 }\n      END { gsub(/[[:space:]]/, \"\", instructions); exit !(instructions + 0 > 0) }\n    ",
+          "/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9/fdtd-staging-v2/polybench_fdtd2d.baseline.dynamic.out"
+        ],
+        "exe": "/usr/bin/gawk"
       },
       {
         "pid": 3965052,
@@ -788,8 +801,8 @@
         "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37664862\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37664862 0 EOF\n"
       },
       {
-        "pid": 3718579,
-        "start_ticks": 905037890,
+        "pid": 3741407,
+        "start_ticks": 905157901,
         "fd": "9",
         "path": "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock",
         "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37664862\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37664862 0 EOF\n"
@@ -821,15 +834,15 @@
     "foreign_signals_or_lock_changes": 0,
     "performance_launch_permission": false
   },
-  "raw_audit_path": "/workspace/dtc-lane-ag-opt-screen-174-v1/raw/site-audits/PRE_REGISTRATION_FINAL_CPU",
+  "raw_audit_path": "/workspace/dtc-lane-ag-opt-screen-174-v1/raw/site-audits/FINAL_STOP_READ_ONLY",
   "resource": {
-    "first_memory": 348612931584,
-    "second_memory": 348744785920,
-    "first_io_full": "18.25",
-    "second_io_full": "18.96",
-    "first_disk": 60321529856,
-    "second_disk": 60321406976,
-    "cgroup_current": "103535857664",
+    "first_memory": 348556140544,
+    "second_memory": 348714663936,
+    "first_io_full": "30.20",
+    "second_io_full": "23.06",
+    "first_disk": 60294094848,
+    "second_disk": 60293976064,
+    "cgroup_current": "103584968704",
     "cgroup_max": "274877906944",
     "cgroup_swap": "115703808",
     "cgroup_events": {
@@ -840,5 +853,18 @@
       "oom_kill": 17,
       "oom_group_kill": 0
     }
+  },
+  "counter_source": "IMMUTABLE_AG_LEDGER_AND_POPEN_CHILD",
+  "counter_correction": {
+    "utc": "2026-10-18T05:04:12.352881+00:00",
+    "role": "FINAL_AUDIT_METADATA_COUNTER_CORRECTION_ONLY",
+    "source_audit_sha256": "887b5ad9743081089047f8eb3d4b0e68eeb0885341eed804b1d237b295058c6f",
+    "source_helper_counter_field": 0,
+    "note": "Frozen audit_site.main is a CPU-preparation recorder and hardcodes0. Its resource/process/FLOCK observations remain unchanged. Actual launch count comes from the immutable AG ledger/Popen receipts.",
+    "actual_AG_sim_starts": 1,
+    "verified_Popen_children": 1,
+    "full_strict_passes": 0,
+    "matrix_terminal_sha256": "e4820e193d09e4ac82ca93bda0f9311ec9c42eaccf73c38d95913a17ff400ffd",
+    "original_raw_audit_not_rewritten": true
   }
 }
