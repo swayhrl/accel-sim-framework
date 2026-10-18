@@ -73,6 +73,12 @@ DISCOVERED -> SOURCE_FROZEN -> COPY_READY -> ARCHIVE_STAGED -> ARCHIVE_VERIFIED
 -> RESTORE_VERIFIED. Target cannot create RELEASE_ELIGIBLE/SOURCE_RELEASED.
 The source owns those separate transitions and all original-file eligibility.
 
+For an archive operation, use `with v9_hold_receipt.guard(transaction, step):`
+around chunk acceptance/finalization. A failure creates an immutable HOLD with
+the previous successful receipt SHA and re-raises. Repeating the same failure
+reuses that exact receipt. A damaged/unavailable evidence filesystem remains a
+failure to publish through the independent Git/local audit, never PASS.
+
 ## Restore without overwriting
 
 Get the exact project manifest and its SHA from SOURCE_TO_164_INDEX_V9.json.
@@ -103,6 +109,11 @@ needed for numeric chown. If source-side network visibility differs, use the
 same sole <=256MiB bridge in reverse with per-file hashes and an owner-approved
 new native root; do not bypass the transport contract. Promotion into an
 original path is a separate source-owner action and must fail on EEXIST.
+
+The frozen R2 six-batch <=512MiB plan remains historical proof only. Any future
+V9 reverse transport must repartition the same immutable191-file selector into
+<=256MiB batches without changing its paths, content hashes or source consent.
+Do not execute the old larger transport batches under the V9 cap.
 
 Full independent content restoration on 164 and a representative complete
 native selection are recorded separately. A native sample is not a claim that
