@@ -1,3 +1,14 @@
+# Current resolution: ordinary admission and real runs completed
+
+The preparation/hold note below is historical and retained for provenance.
+The exact format-only raw/normalized roundtrip matched the acceptedA SHA.
+FinalB all3 actual compact mappings and bothSTA periods then completed under
+restored ordinary48GiB admission, without a cell/constraint/pipeline change.
+A andB required finite RTL gates, including highest physical slot, now passed.
+Shared20GiB/independent-own12GiB authority applied. Scoped47.5GiB proposal was
+never authorized/activated. Exact complete reports/identities in final review
+pack RTL_R3_METADATA_AND_COST_OPT_FINAL_r1; old source/attempts remain preserved.
+
 # Resource hold and compact artifact flow (prepared, not yet executed)
 
 Four new Lane5 runs have priority. Their registered output forecasts now make

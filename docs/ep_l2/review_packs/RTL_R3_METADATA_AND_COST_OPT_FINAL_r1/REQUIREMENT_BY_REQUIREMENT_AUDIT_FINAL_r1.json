@@ -1,0 +1,127 @@
+{
+  "UTC": "2026-10-18T05:07:28.295575+00:00",
+  "authority": "1e56ba6ee293f06557b46e1ac7d92e8eb77e00ac",
+  "contract_blob_sha256": "d2e48d060dac51503b521aa798be6aba0267a2b03f1511123547409d00bc3b8b",
+  "T0_unix": 1792290929,
+  "elapsed_seconds_at_audit": 9119.295574903488,
+  "bounded_seconds": 21600,
+  "first_checkpoint_seconds_after_T0": 2333.5855190753937,
+  "scope_fidelity": "full referenced finite R3 objective retained; not narrowed to easy subtests; unknown/unbounded/DC/PNR/SRAM categories were expressly excluded or required as honest boundaries, not silently treated PASS",
+  "DC_available_now": null,
+  "DC_status": "UNRUN",
+  "rows": [
+    {
+      "contract_item": "0 exact frozen inputs / fixed capacity / unchanged official SIM specification",
+      "status": "COMPLETE_WITH_EXPLICIT_EXISTING_SCOPE",
+      "evidence": [
+        "COORDINATION_R3_GOAL.md",
+        "T0_FREEZE.json",
+        "SOURCE_AND_SELECTION.json",
+        "CORE_CANDIDATES_READ_ONLY_REVALIDATION_r1.json"
+      ],
+      "scope": "1024/1168/128/GEN32/4x292x1024/P1; old accepted sources and packs read-only; official SIM untouched"
+    },
+    {
+      "contract_item": "1 P0 true simultaneous writes and P1 state/ownership separation",
+      "status": "COMPLETE",
+      "evidence": [
+        "rtl/ep_l2/r3/R3_PORT_AND_STATE_CONTRACT.md",
+        "rtl/ep_l2/r3/R3B_STATE_REORGANIZATION_LEDGER.md"
+      ],
+      "scope": "actual FE reserve/commit/abort mutual exclusion, independent lower and SAMEbank metadata writes; no single-writer or1RW assumption"
+    },
+    {
+      "contract_item": "2.1 T0 <=45min / at least two structural alternatives",
+      "status": "COMPLETE",
+      "evidence": [
+        "T0_FREEZE.json",
+        "rtl/ep_l2/r3/R3_PORT_AND_STATE_CONTRACT.md"
+      ],
+      "scope": "P0 shared GEN and P1 forward owner; pin/sector Tag organization ledger rejects unpaid inverse/multiports"
+    },
+    {
+      "contract_item": "2.2 first2h R3A actual source/checkpoint / no new stage or II",
+      "status": "COMPLETE_FINITE_SCOPE",
+      "evidence": [
+        "CHECKPOINT_REMOTE_READBACK_R3A.json",
+        "R3A_FULL_FINITE_QUALIFICATION_r1",
+        "EXACT_R2_R3A_TRACE_COMPARISON_r1.json"
+      ],
+      "scope": "first exact checkpoint39min; sourceac607, full actual finite suites and control cut, invalid native_gen explicitly unconsumed"
+    },
+    {
+      "contract_item": "2.3 R3B implement P1 candidate after invariants",
+      "status": "COMPLETE_OWNER_CANDIDATE_TAG_PIN_REWRITE_STOP_JUSTIFIED",
+      "evidence": [
+        "R3B_OWNER_PROOF_PREP_v2/OWNER_INVARIANT_EQ_RECEIPT.json",
+        "SOURCE_AND_SELECTION.json",
+        "rtl/ep_l2/r3/R3B_STATE_REORGANIZATION_LEDGER.md"
+      ],
+      "scope": "reverse owner removed only after conditional legal-event invariant; actual forward read paid; no pin/sector storage hidden outside cut"
+    },
+    {
+      "contract_item": "2.4 EVERY finite production-directed validation gate / numeric bytes / SAT",
+      "status": "COMPLETE_EXPLICIT_FINITE_CONFIGURED_SCOPE",
+      "evidence": [
+        "ALL_REQUIRED_FINITE_QUALIFICATION_IDENTITIES_FINAL_r1.json",
+        "EXACT_R2_R3B_TRACE_COMPARISON_FINAL_r1.json"
+      ],
+      "scope": "both candidates all28real executed binaries; full dimensions/GEN32 plus GEN3 test; Lane3 numeric, WAD129, stale/late/pin/retry, same-bank/same-slot word priority, bank3highest/drain; proof premises and exclusions explicit"
+    },
+    {
+      "contract_item": "2.5 same library/SDC/effort full3mode actual PPA, module seq/comb and WNS/TNS attribution",
+      "status": "COMPLETE_REAL_MEASUREMENT_TIMING_UNCLOSED",
+      "evidence": [
+        "FINAL_PARETO_COMPARISON_r1",
+        "R3B_FINAL_SUMMARY",
+        "R3B_FINAL_PATH_ATTRIBUTION_r1",
+        "PRIMARY_PATH_SEMANTIC_ENDPOINTS_r1.json",
+        "ALL6_ACTUAL_NETLIST_ARCHIVE_IDENTITY_r1.json"
+      ],
+      "scope": "six real maps/two periods each; all clocks negative, static negative change vsA retained; partial standard-cell cut only"
+    },
+    {
+      "contract_item": "2.6 feasible macro/port accounting without fake SRAM",
+      "status": "COMPLETE_UNKNOWN_MACRO_QUANTITIES_EXPLICIT",
+      "evidence": [
+        "rtl/ep_l2/r3/R3B_STATE_REORGANIZATION_LEDGER.md",
+        "R3B_FINAL_SUMMARY/COST_SUMMARY.json"
+      ],
+      "scope": "true metadata read/write ports and retained FF area;146KiB data SRAM macro and nativeTag/MSHR unknown; optional macro exploration not substituted for real measured cost"
+    },
+    {
+      "contract_item": "2.7 precise DC entry / SIM-RTL timing boundaries",
+      "status": "ENTRY_COMPLETE_DC_UNRUN_AS_REQUIRED",
+      "evidence": [
+        "rtl/ep_l2/flow/run_dc_r3.sh",
+        "rtl/ep_l2/flow/run_dc_r3.tcl",
+        "rtl/ep_l2/flow/filelist.f",
+        "rtl/ep_l2/flow/common.sdc",
+        "rtl/ep_l2/r3/R3_SIM_RTL_DELTA.md"
+      ],
+      "scope": "same actual selected RTL, full MODE parameters, required real DB/PVT/unit/IO; no library fabrication or official SIM change"
+    },
+    {
+      "contract_item": "2.8 <=6h bounded / central resources / preserve all old evidence / commit-push-readback",
+      "status": "COMPLETE_LOCAL_DELIVERY_PENDING_FINAL_REMOTE_READBACK",
+      "evidence": [
+        "RESOURCE_AUTHORIZATION_APPLIED_R3.json",
+        "FINAL_FROZEN_INPUTS_READ_ONLY_VERIFICATION_r1.json",
+        "resources",
+        "final Git manifest/readback record"
+      ],
+      "scope": "ordinary48/40GiB/64GiB floor,20shared12own authority, no scoped47.5 token, all own leases released/no daemon; old failed/incomplete preserved. Final remote readback is checked AFTER commit/push before goal complete"
+    },
+    {
+      "contract_item": "3 paper scientific limits and best actual qualified RTL selection",
+      "status": "COMPLETE_WITH_NEGATIVE_RESULTS_AND_UNKNOWN_BOUNDARIES",
+      "evidence": [
+        "README.md",
+        "SOURCE_AND_SELECTION.json",
+        "FAILURES_AND_LIMITS.md"
+      ],
+      "scope": "selectede8 structurally lean owner/GEN; not best WNS for every mode; not fullL2/GPU/net benefit or irreducible lower bound; no old withdrawn SIM evidence"
+    }
+  ],
+  "final_remote_readback_must_pass_before_goal_complete": true
+}

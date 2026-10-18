@@ -1,33 +1,29 @@
-# R3B isolated forward-fill ownership candidate
+# Final R3B forward-fill ownership candidate — finite-qualified
 
-Inherited R3A two GEN ports and transaction phase sharing are unchanged.
-Invariant preparation passed using actual role/owner/map transition under the
-explicit legal event premises in R3_PORT_AND_STATE_CONTRACT. R3B replaces only
-fill ownership with roleRESIDENT + GEN + tag_live[fill_tag] + forward map PID
-+ unchanged nonzero/pending sector guards. The new full1024x11 map read is
-real standard-cell logic. Payload owner output no longer drives functional
-logic, so its10 FF/word are removed, not moved outside the cost cut.
+Canonical five-RTL hardware e8d67d13b5205cdcda4c2c750a34f7cda6b0103b.
+Inherited A two independent GEN engines and phase-shared transaction read
+unchanged. Under the documented legal-event resident ownership invariant,
+fill ownership is roleRESIDENT+GEN+Tag-live+forward map PID, plus unchanged
+nonzero/pending sector guards. Existing1024x11 mapping FF remain; new forward
+lookup and comparison are real charged standard-cell logic. StaticB16/S64 use
+proved residentPID==Tag and need no new live/map query. Reverse owner1168x10FF
+are removed only inUnified; pins/sector/GEN/role/WAD remain paid.
 
-All payload pins/ready/pending/dirty, roles/GEN32, WAD state and1024 Tag map
-remain. Static B16/S64 use the same identity rule with proved constant maps;
-all relevant lookup/live/compare gates are charged. No capacity, service,
-pipeline or II change. No effect is inferred for official SIM/Lane5 results.
+Both A and finalB passed ALL required finite configured RTL gates and actual
+source/fixture/binary identity audits (28executables total); each includes full
+base3+GEN3, Lane3actual10vector3, GENoverlap3, same-bank/held-pin/late-fill3,
+highestPID1167/bank3/row291 exhaustion/credit/drain. Counter/cycles equalR2;
+byte values validated by independent reference. Smallcontroller4cycle/32payload
+proof and conditional legal-event owner word/map invariant are not global or
+unbounded proofs. EarlierB0 d74 passes remain separate, not inherited.
 
-This source is NOT YET QUALIFIED. It requires actual bounded controller R2/B
-comparison, full production suites, ten Lane3 byte vectors, highest bank3 slot,
-all simultaneous GEN cases, stale fill/rebind/pin/rollback and same-library
-three-mode mapping/two-period STA. An owner abstract proof is insufficient.
-Tag-index sector/pin organization remains an explicit separate port-ledger
-exploration; inverse external-pin lookup is not a free implementation.
+All3 finalB actual sameLib/SDC/effort mappings and two-periodSTA complete:
+areas1414058.128/1455472.200/1765551.858; FF88685/90833/109870;
+WNS−1.400861/−1.393962/−1.363639ns and2ns all negative. U/B1.2485709 is a
+partial reference standard-cell cut, not wholeL2/net benefit or a lower bound.
+SRAM146KiB/nativeTag/MSHR/NoC unknown. No newpipeline/II or officialSIM/app.
 
-The added fill lookup uses the same actual variable Tag-map selection idiom
-as the existing frontend old_pid read. All1024x11 input bits and its mapped
-selection gates are real cost. It supports the small symbolic Tag count
-without the R2 helper BLOCK/IW limitation; full map capacity remains1024.
-
-Final static specialization: B16/S64 use the already-proved resident PID==Tag
-invariant directly. Their fill guard needs no new Tag-live read or dynamic
-Tag-map. Unified retains the charged forward map+live lookup. This is a fair
-common MODE specialization, not an intentionally weaker static baseline. B0
-partial production runs remain archived at their exact old source and are not
-claimed as validation of this new source; the final candidate gets new runs.
+Tag-index pins/sector reorganization is STOP with explicit port/inverse ledger;
+no free1RWmacro or hidden moved state. DC exact source entry prepared, UNRUN.
+See final review pack RTL_R3_METADATA_AND_COST_OPT_FINAL_r1 for real reports,
+coverage, hypotheses, failures, raw/archive identities and remaining risks.

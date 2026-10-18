@@ -16,3 +16,5 @@ No SIM source/application/result was changed or started. Unknown146KiB SRAM
 and native Tag/LRU/MSHR/dirty-byte/NoC implementation cost remain UNKNOWN.
 Any later candidate that changes cycle/II must be isolated and sent to Lane1;
 no current performance/area or targetGPU PPA pairing is authorized.
+
+Final qualification addendum: both A/ac607 and B/e8 passed the complete required finite full-size suites; all base/boundary counters and cycles match frozenR2. B only replaces fill-owner identity under the legal ownership invariant; static fixed mapping is hardwired, dynamic forward lookup paid. No new stage/II/order/ownership lifetime change. These finite observations and conditional proofs are not a global equivalence proof or a new officialSIM performance validation. All clocks remain unclosed; unknown macro/native costs remain.

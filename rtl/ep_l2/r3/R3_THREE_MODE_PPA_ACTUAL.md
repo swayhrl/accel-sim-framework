@@ -1,4 +1,4 @@
-# R3 actual three-mode PPA, finite qualification still running
+# R3 actual three-mode PPA, required finite qualification complete
 
 Canonical final five-RTL source e8d67d13b5205cdcda4c2c750a34f7cda6b0103b.
 Comparison baseline R2 hardwaref54d3c054 / publication1b011c6a5;
@@ -49,10 +49,11 @@ Actual source mechanism attribution:
 Proof/functional scope: conditional word/map owner invariant, commonGEN3/32
 SAT and actual three-mode small32payload4cycle controller cut; full-size base,
 Lane3 numeric bytes, concurrent GEN and same-bank/held-pin/late-fill tests.
-At this publication, B16+Unified base and allA/B directed overlaps/owner stress
-have passed; S64 base/Lane3/highest tests and A highest test remain RUNNING or
-PENDING. Do not call finalB or A a fully qualified new release until remaining
-actual receipts exist. Existing oldR2 remains the fully qualified fallback.
+Both A and finalB now have complete required FINITE configured qualification:
+all28 accepted executable/source/fixture identities verified, fullbase3+GEN3,
+Lane3three, concurrentGENthree, same-bank/held-pin/late-fillthree and bank3
+highestPID1167 each. Base and highest counter/cycle lines matchR2 exactly.
+This is not unbounded formal proof or officialSIM/application qualification.
 
 ReadII4/writeII3/copy/return/RR-vs-SIM-oldest/native-approval deltas remain.
 Only valid-qualified native handle data is compared; unconsumed native_gen

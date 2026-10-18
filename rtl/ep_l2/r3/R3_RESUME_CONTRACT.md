@@ -17,5 +17,5 @@ published packs and their original rows/files remain unchanged.
 IO-only artifact regression passed for compressed-only interruption, retained
 logs/raw VVP, repeated retries, first-use layout and archive digest rejection.
 No compiler/RTL regression/EDA tool ran for this helper change. R3 hardware
-source remains e8d67d13, and its incomplete mandatory real qualification stays
-INCOMPLETE. R3A ac607 tree is read-only. B0 d74 tests remain separate.
+source remains e8d67d13. Its previously incomplete mandatory real qualification
+has now completed under ordinary48GiB admission, with fresh actual receipts. R3A ac607 tree is read-only. B0 d74 tests remain separate.
