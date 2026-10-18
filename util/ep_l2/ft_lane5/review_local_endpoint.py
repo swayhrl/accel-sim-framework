@@ -35,6 +35,10 @@ def main():
     comparison.update(comparison_status='AWAITING_MATCHED_SAME_BINARY_OFF_NO_RATIO',input_instruction_count_check='Count only from immutable complete-input evidence; no cross-binary cycles or qualification reuse')
   if spec['scientific_scope'] in ('FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1'):
    comparison.update(kind='MATCHED_FINITE_SERVICE_SINGLE_FACTOR',condition=spec['regime'],static_mode=spec['profile'],service_counters=result['summary'].get('finite_service_observations',{}),EP_L2_speedup=None,scope='Same new binary and full input; compare this single-factor MQ2 or RG1 mode against its same mode OFF only. No cross-binary anchor or combined mechanisms.')
+   if comparison['same_binary_OFF'] is not None:
+    off_cycles=comparison['same_binary_OFF']['cycles'];comparison.update(absolute_cycles_saved=off_cycles-row['observed_cycles'],fractional_cycle_reduction=(off_cycles-row['observed_cycles'])/off_cycles,negative_results_preserved=True,same_mode_OFF=True)
+   counters=comparison['service_counters'];mq=list(counters.get('MQ2',{}).values());rg=list(counters.get('RG1_BANK',{}).values());clients=list(counters.get('RG1_CLIENT',{}).values())
+   comparison['service_totals']={'MQ2':{k:sum(v[k] for v in mq) for k in ['wb_bank_waits','bypasses']},'RG1':{k:sum(v[k] for v in rg) for k in ['held_not_ready_cycles','another_ready_cycles','recovered_grants','physical_services']},'RG1_client_maxima':{k:max((v[k] for v in clients),default=0) for k in ['max_attempt_to_first_ready','max_attempt_to_consume','max_first_ready_to_consume']}}
   write_json(a.pack/'COMPARISON.json',comparison)
   # Reuse the existing physical downstream observer; never rename it ALL_DATA.
   write_json(a.pack/'PRESSURE.json',analyze(directory) if spec['scientific_scope']!='ALL_DATA_REFERENCE_V1' else {'scope':'ALL_DATA_REFERENCE_V1','physical_data_WB_cache_DRAM':'NOT_APPLICABLE','reference':result['summary']['reference_terminal'],'instruction_fetch':'NATIVE_UNCHANGED'});write_json(a.pack/'RAW_LOG_INDEX.json',[{'path':str(directory/'raw.log'),'sha256':row['raw_log_sha256'],'run_key':row['run_key']}]);freeze_checksums(a.pack)
