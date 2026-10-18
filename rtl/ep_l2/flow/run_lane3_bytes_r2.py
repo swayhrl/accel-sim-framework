@@ -33,7 +33,9 @@ for n,case in enumerate(stim['cases']):
  body.extend([f'read_check({tag});',f'$display("LANE3_FINAL {cid} %h",last_rsp_data);'])
 body+=['if(!module_drained || accepted!=replies+aborted || reference_count!=0)$fatal(1,"Lane3 byte adapter drain");','$display("LANE3_ACTUAL_RTL_10_VECTORS PASS mode%0d",MODE);','$finish;']
 tb=(root/'tb/ep_l2_slice_tb.sv').read_text().replace('    reg [127:0] mask;', '    reg [1023:0] lane3_snapshot[0:31];\n    reg [127:0] mask;')
-tb=tb.replace('        if(GEN_W<8)begin','\n'.join('        '+x for x in body)+'\n        if(GEN_W<8)begin',1);fixture=a.out/'lane3_actual_tb.sv';fixture.write_text(tb)
+tb=tb.replace('        if(GEN_W<8)begin','\n'.join('        '+x for x in body)+'\n        if(GEN_W<8)begin',1);fixture=a.out/'lane3_actual_tb.sv'
+if fixture.exists():assert fixture.read_text()==tb,'accepted generated fixture differs; use a new output revision'
+else:fixture.write_text(tb)
 rtl_identity={str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in (root/'rtl').glob('*.sv')}
 rows=[]
 if a.resume and (a.out/'LANE3_BYTE_RECEIPT.json').exists():

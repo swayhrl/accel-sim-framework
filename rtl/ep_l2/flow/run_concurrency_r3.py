@@ -46,7 +46,10 @@ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.ad
         $display("R3_ACTUAL_GEN_CONCURRENCY_FULL_CAPACITY mode%0d 3pairs byteWB3 rollback2 drain PASS cycles%0d",MODE,cycles);$finish;
     end
 endmodule
-''';tb=a.out/'concurrent_tb.sv';tb.write_text(prefix+extra);fl=repo/'rtl/ep_l2/flow/full_slice_filelist.f';rows=[]
+''';tb=a.out/'concurrent_tb.sv'
+if tb.exists():assert tb.read_text()==prefix+extra,'accepted fixture differs; use a new output revision'
+else:tb.write_text(prefix+extra)
+fl=repo/'rtl/ep_l2/flow/full_slice_filelist.f';rows=[]
 if a.resume:
  prior=json.loads((a.out/'CONCURRENT_GEN_RECEIPT.json').read_text());assert prior['fixture_sha256']==hashlib.sha256(tb.read_bytes()).hexdigest();assert prior['source_RTL_sha256']=={x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x};rows=prior['rows']
 for mode,label in ((0,'B16'),(1,'UNIFIED'),(2,'S64')):
