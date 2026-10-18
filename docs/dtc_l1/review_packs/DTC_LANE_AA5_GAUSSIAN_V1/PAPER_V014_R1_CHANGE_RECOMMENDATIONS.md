@@ -1,13 +1,14 @@
-# Independent manuscript review recommendations; v0.14-R1 unchanged
+# Independent manuscript recommendations; original v0.14-R1 data unchanged
 
-No AA5 full Gaussian performance observation exists. Do not insert K1 speedup, null-effect, factorial estimates, new calibration/holdout, GM12 or main-configuration/figure replacements. Historical44 rows and A/M/T/U data remain unchanged. The new supported result is bounded normal-export qualification, not full Gaussian acceptance.
+There is one resource-aborted AA5 full attempt and **zero strict-accepted complete new Gaussian results**. Do not report a K1 speedup/null/degradation, a K0 full equivalence PASS, new GM12, a new holdout or a factorial estimate. Current four-cell quotient/effect denominators are unavailable.
 
-| Location | Recommendation | Evidence and limit |
+| Section | Evidence-supported recommendation | Limit |
 |---|---|---|
-| Methods: invalidate semantics | Describe eager originalsource-request query-mapping revocation, preserved Ref/generation/inflight/late responses, unchanged ordinary deferred Tag commit | FrozenV26abd496 and c0 mechanism preserved by reviewed print/test-only X2e32 delta; no broadcast/globaldrain/coherence claim |
-| Validation/artifact | Distinguish AA4 missing normal route from X2 normal-entry qualification PASS, independently published at5c3a40ff | Actual production64SM CPU fixtures and14 actual-output plus13 synthetic rejecting tests;8 old/new public boundary comparisons; not full input validation |
-| Metrics | State K1-only noncomparative diagnostics, K0absenceUNAVAILABLE, last same-boundary64SM frame, independently observed reclaimR, ordinary commit versus source-request distinction | CPU fixture totals259requests/258commits/2changed/1retained/1reclaimed are fixture outcomes, never Gaussian events |
-| Results | Leave all AA5 performance/interaction cells UNAVAILABLE |0/4 actual starts because current I/O full PSI32.42/28.98 exceeds25; no direction or significance is established |
-| Limitations | Retain W unavailable, numerical values/coherence/IO/PPA unproved, atomic zeroaddedGPUcycles only a model assumption | Structural/print strict cannot supply those proofs; no exact retained-mapping causal share; hostwall not GPUperformance |
+| Methods | Explain original source-request eager query-map revocation and unchanged delayed ordinary commit; retained physical/Ref/generation/inflight/late-response ownership | Frozen V/Y2/Z2 and print-only X2 delta; no global drain or perkernel broadcast substitution |
+| Artifact validation | Separate independently qualified normal production print reachability from fullGaussian acceptance | Normal export CPU qualification PASS remains valid; one actual full K0 attempt endedSIGTERM and cannot validate a full input |
+| Attempt accounting | Add an independent resource-abort receipt if an artifact appendix needs campaign completeness | Fresh admission passed;451.4s later hostglobal swapin+1page triggered frozen ownPID SIGTERM rule, exit-15; not simulator assertion/deadlock or demonstrated ownprocess swapping |
+| Control evidence | At most cite67 sameTag old/new matching completed prefixes as a diagnostic | Prefix657230cycles/60326860instructions/8516CTA is not completeGaussian3798174cycles/283685120instructions/65790CTA; no accepted cycle result |
+| Results | Keep newK1/Tag factorial entries UNAVAILABLE and all failed/unstarted cells visible | No K1 ran. Original44/GM12/A/M/T/U and historical results remain unchanged |
+| Limitations | W unavailable, numerical values/coherence/IO/PPA notproved; atomic zeroextraGPUcycle is a model assumption | No exact crosskernel retained-reuse share without sameSM line+generation linkage; hostwall not GPUperformance; K0eventabsenceUNAVAILABLE |
 
-If a separately authorized continuation ever produces four admitted strict points, report unrounded integer a/b/c/d and fixed Q32/Q64/T0/T1/I/logI/Delta with typed ready/pending/new, lower, Tag, finite residency/postready and traffic populations, including adverse signs. This Goal makes no manuscript edit and grants no extension.
+No manuscript, main-data table, main configuration or paper figure was edited. Any future complete new factorial would require separate scientific admission resolving the consumed start and one-start-per-UUID restrictions before performance, followed by exactK0 controls and complete strict receipts; no extension is authorized by this note.

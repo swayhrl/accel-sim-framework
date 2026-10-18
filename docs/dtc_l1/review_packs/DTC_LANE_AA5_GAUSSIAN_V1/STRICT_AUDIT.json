@@ -1,74 +1,159 @@
 {
-  "status": "STOP_RESOURCE_ZERO_FULL_ATTEMPTS",
-  "full_matrix_strict": "NOT_RUN_0_OF_4",
-  "normal_export_gate": "PASS_PUBLISHED_FETCHED",
-  "Y2": "PASS_BOUNDED_UNCHANGED_OO_SCOPE_NOT_FULL_GAUSSIAN_STRICT",
-  "resource": "FAIL_CURRENT_IO_FULL_PSI_BOTH_PROBES",
-  "authority": "PASS_READ_ONLY_NO_OTHER_DISPATCH",
-  "K0_equivalence": "NOT_RUN_0_OF_2;HISTORICAL_NUMBERS_NOT_SUBSTITUTED",
-  "K1_correctness": "NO_NEW_FULL_RUN;BOUNDED_Y2_AND_CPU_GATE_ONLY",
-  "run_receipts": [
+  "status": "STOP_OR_HOLD_INCOMPLETE_ACCEPTED_FACTORIAL",
+  "matrix_execution_terminal": {
+    "utc": "2026-10-18T03:12:09.059688+00:00",
+    "status": "STOP",
+    "reason": "RuntimeError('STOP_AFTER_FAILED_STRICT_OR_CONTROL:K0_32x4')",
+    "actual_starts": 1,
+    "completed_results": [
+      {
+        "point": "K0_32x4",
+        "status": "HOLD_STRICT_FAILED",
+        "cycles": null
+      }
+    ]
+  },
+  "actual_starts": 1,
+  "accepted_new_points": 0,
+  "accepted_integer_cycles": {},
+  "normal_export_gate": "PASS_PRIOR_INDEPENDENT_PRODUCTION_CPU_GATE",
+  "K0_equivalence": {
+    "K0_32x4": {},
+    "K0_64x8": {}
+  },
+  "strict_receipts": [
     {
       "point": "K0_32x4",
-      "attempt_uuid": "d0a29a82-c171-46e4-b077-d7ccfd2c4b7a",
-      "status": "HOLD_NOT_STARTED_RESOURCE_STOP",
-      "actual_start": false,
-      "RUN_START_receipt": "ABSENT_NO_ACTUAL_LAUNCH",
-      "run_identity": "UNAVAILABLE_NOT_RUN",
-      "strict": "NOT_RUN",
-      "new_performance": "UNAVAILABLE",
-      "raw_hashes": "NO_UUID_RAW_DIRECTORY_CREATED",
-      "spec_sha256": "ec3069f1d866c50652a8bd923d945a9f91018cde65b7dd0144e439c8062dde8b",
+      "UUID": "d0a29a82-c171-46e4-b077-d7ccfd2c4b7a",
+      "actual_start": true,
+      "status": "HOLD_STRICT_FAILED",
+      "performance_accepted": false,
+      "raw_directory": "/workspace/dtc-lane-aa5-gaussian-174-v1/attempts/K0_32x4_d0a29a82-c171-46e4-b077-d7ccfd2c4b7a",
+      "raw_public_cycles": 657230,
+      "accepted_cycles": "UNAVAILABLE",
+      "spec_sha256": "8d313b36e1b93436a2f518c8c1128329246a5f55445598025b139022b147bc0e",
       "Core": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d",
       "library_sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a",
-      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d"
+      "raw_strict_sha256": "e85dbadf1284995fe9e200a9c4f3a497e48c732917b8e3f33004988dbd09be87",
+      "strict_receipt": {
+        "utc": "2026-10-18T03:12:09.049411+00:00",
+        "point": "K0_32x4",
+        "uuid": "d0a29a82-c171-46e4-b077-d7ccfd2c4b7a",
+        "status": "HOLD_STRICT_FAILED",
+        "performance_accepted": false,
+        "failure": "ValueError('natural_exit0')"
+      },
+      "natural_terminal_receipt": {
+        "utc": "2026-10-18T03:12:09.015042+00:00",
+        "returncode": -15,
+        "forced_reason": "NEW_SYSTEM_SWAP_ACTIVITY",
+        "natural_exit": false,
+        "identity_pass": true,
+        "host_wall_seconds_noncomparative": 451.39670479111373,
+        "resource_usage": {
+          "ru_utime": 448.37946,
+          "ru_stime": 1.705257,
+          "ru_maxrss": 626688,
+          "ru_minflt": 300431,
+          "ru_majflt": 0,
+          "ru_inblock": 0,
+          "ru_oublock": 14480,
+          "ru_nvcsw": 58704,
+          "ru_nivcsw": 172630
+        },
+        "PID": {
+          "pid": 3507648,
+          "state": "R",
+          "start_ticks": 904464900,
+          "rss_bytes": 12582912,
+          "argv": [
+            "/workspace/dtc-lane-aa5-gaussian-174-v1/immutable-runtime/accel-sim.out",
+            "-trace",
+            "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/gaussian-rodinia-3.1/_s_256/traces/kernelslist.g",
+            "-config",
+            "/workspace/dtc-lane-aa5-gaussian-174-v1/attempts/K0_32x4_d0a29a82-c171-46e4-b077-d7ccfd2c4b7a/config-0.config",
+            "-config",
+            "/workspace/dtc-lane-aa5-gaussian-174-v1/attempts/K0_32x4_d0a29a82-c171-46e4-b077-d7ccfd2c4b7a/config-1.config",
+            "-config",
+            "/workspace/dtc-lane-aa5-gaussian-174-v1/attempts/K0_32x4_d0a29a82-c171-46e4-b077-d7ccfd2c4b7a/config-2.config",
+            "-config",
+            "/workspace/dtc-lane-aa5-gaussian-174-v1/attempts/K0_32x4_d0a29a82-c171-46e4-b077-d7ccfd2c4b7a/config-3.config"
+          ],
+          "exe": "/workspace/dtc-lane-aa5-gaussian-174-v1/immutable-runtime/accel-sim.out",
+          "exe_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d",
+          "library_path": "/workspace/dtc-lane-aa5-gaussian-174-v1/immutable-runtime/libcudart.so",
+          "library_sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a"
+        }
+      }
     },
     {
       "point": "K0_64x8",
-      "attempt_uuid": "aba7a8eb-e82c-4a18-b410-5d568f819f27",
-      "status": "HOLD_NOT_STARTED_RESOURCE_STOP",
+      "UUID": "aba7a8eb-e82c-4a18-b410-5d568f819f27",
       "actual_start": false,
-      "RUN_START_receipt": "ABSENT_NO_ACTUAL_LAUNCH",
-      "run_identity": "UNAVAILABLE_NOT_RUN",
-      "strict": "NOT_RUN",
-      "new_performance": "UNAVAILABLE",
-      "raw_hashes": "NO_UUID_RAW_DIRECTORY_CREATED",
-      "spec_sha256": "98cd5550e7ffb07beacac32296af128de81d3934726d003935a2c5c2b9910765",
+      "status": "HOLD_NOT_STARTED",
+      "performance_accepted": false,
+      "raw_directory": "NOT_CREATED",
+      "raw_public_cycles": "UNAVAILABLE",
+      "accepted_cycles": "UNAVAILABLE",
+      "spec_sha256": "c6b9fba8a1ace758b82d781b8673c5572c5fbfc3706bedc52fa71e14c094edef",
       "Core": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d",
       "library_sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a",
-      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d"
+      "raw_strict_sha256": "UNAVAILABLE",
+      "strict_receipt": {
+        "status": "HOLD_NOT_STARTED",
+        "performance_accepted": false
+      },
+      "natural_terminal_receipt": {}
     },
     {
       "point": "K1_32x4",
-      "attempt_uuid": "dd65b440-dc75-4632-9f7b-3e8a1062d5a1",
-      "status": "HOLD_NOT_STARTED_RESOURCE_STOP",
+      "UUID": "dd65b440-dc75-4632-9f7b-3e8a1062d5a1",
       "actual_start": false,
-      "RUN_START_receipt": "ABSENT_NO_ACTUAL_LAUNCH",
-      "run_identity": "UNAVAILABLE_NOT_RUN",
-      "strict": "NOT_RUN",
-      "new_performance": "UNAVAILABLE",
-      "raw_hashes": "NO_UUID_RAW_DIRECTORY_CREATED",
-      "spec_sha256": "b895b36730516971d9bae3418aef4ea9234c6fe7e3eeb41e282569a4c23b7b2a",
+      "status": "HOLD_NOT_STARTED",
+      "performance_accepted": false,
+      "raw_directory": "NOT_CREATED",
+      "raw_public_cycles": "UNAVAILABLE",
+      "accepted_cycles": "UNAVAILABLE",
+      "spec_sha256": "e53b1ce5bf0f3366f692e09d0f6524052769ae5e166db710a867322ba03e6a7c",
       "Core": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d",
       "library_sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a",
-      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d"
+      "raw_strict_sha256": "UNAVAILABLE",
+      "strict_receipt": {
+        "status": "HOLD_NOT_STARTED",
+        "performance_accepted": false
+      },
+      "natural_terminal_receipt": {}
     },
     {
       "point": "K1_64x8",
-      "attempt_uuid": "a9d64a6f-4fb5-4e3d-883c-ae75f1ac5f89",
-      "status": "HOLD_NOT_STARTED_RESOURCE_STOP",
+      "UUID": "a9d64a6f-4fb5-4e3d-883c-ae75f1ac5f89",
       "actual_start": false,
-      "RUN_START_receipt": "ABSENT_NO_ACTUAL_LAUNCH",
-      "run_identity": "UNAVAILABLE_NOT_RUN",
-      "strict": "NOT_RUN",
-      "new_performance": "UNAVAILABLE",
-      "raw_hashes": "NO_UUID_RAW_DIRECTORY_CREATED",
-      "spec_sha256": "dac597e0e7a35173715c2405ff4897a874c42acf5cbec7ff11c21bc692b36cc1",
+      "status": "HOLD_NOT_STARTED",
+      "performance_accepted": false,
+      "raw_directory": "NOT_CREATED",
+      "raw_public_cycles": "UNAVAILABLE",
+      "accepted_cycles": "UNAVAILABLE",
+      "spec_sha256": "fe8929505f8ece5fd970494103d87bc497c3c438f84420d469c68aa616f194d3",
       "Core": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d",
       "library_sha256": "24bc928529b9b9978907d40206aa13eb366541696a499216c1a2e9cd0960e23a",
-      "binary_sha256": "0899ac645329db289d2580df7d06ebcf553c476b606e32f1cde20edab0dab45d"
+      "raw_strict_sha256": "UNAVAILABLE",
+      "strict_receipt": {
+        "status": "HOLD_NOT_STARTED",
+        "performance_accepted": false
+      },
+      "natural_terminal_receipt": {}
     }
   ],
-  "private_counter_policy": "UNAVAILABLE_NOT_FAKE_PASS",
-  "failure_policy": "PRESERVE_STOP_NO_REPROBE_OR_RETRY_NO_AUTOMATIC_CONTINUATION"
+  "private_counter_policy": "Absent fields UNAVAILABLE, never fabricated measured PASS",
+  "limitations": [
+    "W fulladdressscan unavailable",
+    "Numerical loads not proved",
+    "CrossSM coherence not proved",
+    "IOK1/PPA/zero hardwarecost not proved",
+    "No precise crosskernel reuse share without direct line+generation linkage"
+  ]
 }

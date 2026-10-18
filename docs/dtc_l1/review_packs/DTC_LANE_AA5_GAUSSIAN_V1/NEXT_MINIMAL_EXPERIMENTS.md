@@ -1,10 +1,11 @@
-# Minimal next steps by scientific value; none automatically executed
+# Minimal next steps; no automatic experiment extension
 
-| Category | Action | Boundary |
+| Category | What can be done | Current boundary |
 |---|---|---|
-| Close with existing evidence | Use frozen source, Y2 bounded OO safety, AA4 failure, independent X2 diff/normal-route qualification and actual negative receipts to document export correctness and diagnostic scope | Complete here; no additional Core, input or simulation needed |
-| Already authorized four-cell question with paper value | Complete the same inherited four Gaussian cells only after a new instruction permits reopening the terminal resource STOP and fresh unchanged resource/authority admission passes | Shared budget remains at most4 actual starts, originalUUIDs unchanged;2 exact strictK0 before2K1; no autonomous resume, repetitions or extra scientific degrees |
-| Conditional attribution gap | First inspect existing direct sameSM line+generation linkage if available. Propose further observation only if four-cell results leave a paper-relevant retained-mapping question | W scan remains unavailable; no full address scan, extra experiment or precise causal share is authorized here |
-| No further branch needed for this Goal | Do not pursue alternateTag, T2, extraGEMM, BICG/DWT2D repeats, otherinputs, IO K1, modernDTC, K2 or a secondCore to force performance | Cannot cure resource failure or supply missing performance; no automatic research |
+| Close with existing evidence | Document the X2 print-only delta, actual normal-entry64SM CPU qualification, unchanged source/Y2 scope, and actual loaded runtime identities | Complete; no newCore or simulation needed |
+| Close with existing evidence | Preserve the67-prefix exact publiccounter agreement, global1page swap event, ownchildSIGTERM/exit-15, releaseofauthority and1/4attemptledger | Diagnostic only; cannot turn an interrupted attempt into fullperformance or prove a K1effect |
+| Scientifically valuable unresolved question | A complete matchedK0/K1×Tag factorial could answer the original policy/capacity interaction question | It is **not achievable as four valid cells within the remaining three starts**: K0_32x4UUID is consumed and rerun forbidden. Any future plan first needs explicit scientific/budget/identity review; no silent retry, UUID reset or newstarts |
+| Conditional attribution gap | First inspect existing sameSM line+generation evidence if available, only if needed for a paperclaim | W fulladdressscan remains unavailable; no newscan or precise causalshare is authorized here |
+| No research extension needed | Do not use alternativeTag,T2,newinput,extraGEMM,BICG/DWT2Dreruns,IO/modernDTC,K2,secondCore or manuscriptmain-data replacement to compensate for this abort | No dispatch or scopeexpansion |
 
-A resource failure is not scientific evidence of zero effect. No current four-cell denominator exists. Preserve the immutable qualification and executable registration; do not use old accepted cycles as new controls.
+Do not relax the runtime stopping rule after seeing this result, relabel the fullattempt ascanary/wrapperfailure, or replace unmeasuredK0 with historicalnumbers. This continuation is terminalSTOP.
