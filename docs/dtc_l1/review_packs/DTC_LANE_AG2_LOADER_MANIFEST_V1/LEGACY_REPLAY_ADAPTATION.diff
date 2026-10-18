@@ -1,0 +1,20 @@
+--- AG fixed original replay
++++ AG2 copied replay (only import/output rebinding)
+@@ -2,7 +2,7 @@
+ """Counterfactual CPU replay only; never alters or authorizes the stopped run."""
+ from pathlib import Path
+ import sys,copy
+-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
++sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'history/scripts'))
+ from common import *
+ 
+ def check(rows,registry):
+@@ -46,7 +46,7 @@
+  verify('cache_misdeclared_as_ELF_rejected',rows,bad,False)
+  changed=copy.deepcopy(rows);next(r for r in changed if r['path']=='/etc/ld.so.cache')['classification_current_file']='ELF'
+  verify('ELF_masquerading_as_cache_data_rejected',changed,future,False)
+- write(PACK/'MAPPING_ROLE_CPU_REPLAY_PROPOSAL.json',dict(status='PASS_9_COUNTERFACTUAL_CPU_REPLAY_CASES_ONLY',cases=cases,
++ write(Path('/workspace/dtc-lane-ag2-loader-manifest-174-v1/raw/LEGACY_NINE_REPLAY.json'),dict(status='PASS_9_COUNTERFACTUAL_CPU_REPLAY_CASES_ONLY',cases=cases,
+      script_sha256=sha(Path(__file__)),input_table_sha256=sha(PACK/'OBSERVED_MAPPING_IDENTITY.tsv'),
+      no_simulator_started=True,no_loader_invoked=True,no_trace_read=True,no_current_guard_changed=True,
+      original_attempt_status='FAILED_UNCHANGED',retroactive_acceptance=False,

@@ -1,0 +1,71 @@
+{
+  "scope": "tools/*.py only; history is inert source text",
+  "calls": [
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 76,
+      "function": "os.fork",
+      "source": "os.fork()",
+      "adjudication": "one direct owned C CPU child, after immutable preregistration; never simulator"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 70,
+      "function": "libc.ptrace",
+      "source": "libc.ptrace(request, pid, ctypes.c_void_p(0), data)",
+      "adjudication": "ptrace TRACEME or fixed pid returned by own fork; never attach"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 104,
+      "function": "trace",
+      "source": "trace(0x4200, pid, 0x1 | 0x100000)",
+      "adjudication": "ptrace TRACEME or fixed pid returned by own fork; never attach"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 83,
+      "function": "os.execve",
+      "source": "os.execve(str(PROBE), [str(PROBE)],\n                      {'PATH':'/usr/bin:/bin', 'LANG':'C', 'LC_ALL':'C', 'LD_BIND_NOW':'1'})",
+      "adjudication": "fixed PROBE constant only; pre-fork launch_gate binds CPU source/build receipt; no CLI target"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 125,
+      "function": "trace",
+      "source": "trace(24, pid, 0)",
+      "adjudication": "ptrace TRACEME or fixed pid returned by own fork; never attach"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 134,
+      "function": "trace",
+      "source": "trace(12, pid, ctypes.byref(regs))",
+      "adjudication": "ptrace TRACEME or fixed pid returned by own fork; never attach"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 146,
+      "function": "os.kill",
+      "source": "os.kill(pid, signal.SIGKILL)",
+      "adjudication": "cleanup only own unreaped fork child; no foreign PID interface"
+    },
+    {
+      "file": "early_system_loader_cpu.py",
+      "line": 81,
+      "function": "libc.ptrace",
+      "source": "libc.ptrace(0, 0, None, None)",
+      "adjudication": "ptrace TRACEME or fixed pid returned by own fork; never attach"
+    },
+    {
+      "file": "qualify_mapping_cpu.py",
+      "line": 14,
+      "function": "subprocess.run",
+      "source": "subprocess.run(argv, capture_output=True, text=True, timeout=15,\n                           env={'PATH':'/usr/bin:/bin', 'LANG':'C', 'LC_ALL':'C', 'PYTHONDONTWRITEBYTECODE':'1'})",
+      "adjudication": "fixed /usr/bin/python3 -B test_mapping_roles_cpu.py with finite CASES only"
+    }
+  ],
+  "simulator_starts": 0,
+  "simulation_dispatch_entrypoints": [],
+  "core_files_modified": []
+}

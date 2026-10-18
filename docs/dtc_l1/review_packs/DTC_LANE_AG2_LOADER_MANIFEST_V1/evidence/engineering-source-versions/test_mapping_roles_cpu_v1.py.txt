@@ -1,0 +1,169 @@
+"""Case-isolated CPU tests of the candidate parser; no target process launch.
+
+Exit 42 = expected fail-closed rejection (reason on stdout); 0 = positive.
+Parent qualification driver must compare the exact expected reason, not just rc.
+Only synthetic mutations of saved CPU maps/registries and private data fixtures.
+Never modifies /etc, shared libraries, old AG artifacts, or any simulator input.
+"""
+import copy
+import json
+from pathlib import Path
+import sys
+import time
+from unittest.mock import patch
+import mapping_roles as mr
+from early_system_loader_cpu import launch_gate, RAW, BUILD, PROBE
+
+CASES = {
+ 'matching_registered_cache': (0, 'PASS'),
+ 'early_then_unmap_full_sequence': (0, 'PASS'),
+ 'repeated_complete_snapshot': (0, 'PASS'),
+ 'omitted_cache_registration': (42, 'CACHE_REGISTRATION_MISSING'),
+ 'cache_hash_mismatch': (42, 'FROZEN_FILE_SHA_MISMATCH'),
+ 'cache_frozen_identity_mismatch': (42, 'FROZEN_FILE_IDENTITY_MISMATCH'),
+ 'cache_path_mismatch': (42, 'UNREGISTERED_FILE_MAPPING'),
+ 'cache_device_mismatch': (42, 'MAP_DEVICE_INODE_MISMATCH'),
+ 'cache_inode_mismatch': (42, 'MAP_DEVICE_INODE_MISMATCH'),
+ 'unregistered_ELF': (42, 'UNREGISTERED_FILE_MAPPING'),
+ 'unregistered_nonELF': (42, 'UNREGISTERED_FILE_MAPPING'),
+ 'missing_role': (42, 'MISSING_OR_UNKNOWN_ROLE'),
+ 'cache_wrong_ELF_role': (42, 'ROLE_REQUIRES_ELF'),
+ 'executable_wrong_shared_role': (42, 'EXECUTABLE_ROLE_REQUIRED'),
+ 'interpreter_wrong_shared_role': (42, 'INTERPRETER_ROLE_REQUIRED'),
+ 'ELF_as_loader_metadata': (42, 'ELF_MASQUERADING_AS_DATA'),
+ 'shared_library_SHA_mismatch': (42, 'FROZEN_FILE_SHA_MISMATCH'),
+ 'cache_writable_mapping': (42, 'DATA_MAPPING_NOT_READ_ONLY'),
+ 'cache_executable_mapping': (42, 'DATA_MAPPING_NOT_READ_ONLY'),
+ 'deleted_mapping': (42, 'DELETED_MAPPING_IDENTITY_UNCONFIRMABLE'),
+ 'cache_missed_at_late_snapshot': (42, 'EARLY_CACHE_NOT_OBSERVED_QUALIFICATION_PARTIAL'),
+ 'cache_unmap_unobserved': (42, 'CACHE_UNMAP_NOT_OBSERVED_QUALIFICATION_PARTIAL'),
+ 'wrong_proc_exe': (42, 'PROC_EXE_IDENTITY_MISMATCH'),
+ 'no_cache_host_unsupported': (42, 'NO_CACHE_MODE_NOT_QUALIFIED'),
+ 'unknown_pseudo_map': (42, 'UNKNOWN_NONFILE_MAPPING'),
+ 'malformed_maps': (42, 'MALFORMED_MAPS_LINE'),
+ 'private_data_hash_mismatch': (42, 'FROZEN_FILE_SHA_MISMATCH'),
+ 'private_content_change_after_freeze': (42, 'FROZEN_FILE_IDENTITY_MISMATCH'),
+ 'TOCTOU_content_during_hash': (42, 'TOCTOU_IDENTITY_CHANGED'),
+ 'TOCTOU_inode_replace_during_hash': (42, 'TOCTOU_IDENTITY_CHANGED'),
+ 'disappeared_before_confirmation': (42, 'FILE_IDENTITY_UNCONFIRMABLE'),
+ 'replaced_before_confirmation': (42, 'FROZEN_FILE_IDENTITY_MISMATCH'),
+ 'readonly_data_missing_purpose': (42, 'READ_ONLY_DATA_PURPOSE_REQUIRED'),
+ 'simulator_target_not_allowed': (42, 'ONLY_FIXED_CPU_PROBE_ALLOWED'),
+}
+
+def main(name):
+    mr.require(name in CASES, 'UNKNOWN_TEST_CASE')
+    manifest = json.loads((RAW / 'CPU_MAPPING_PREREGISTRATION.json').read_text())
+    registry = {e['path']: e for e in manifest['files']}
+    events = json.loads((RAW / 'CPU_MAP_EVENTS.json').read_text())
+    early = next(e for e in events if e['cache_present'] and len(e['validation']['files']) == 5)
+    late = events[-1]
+    text = (RAW / 'snapshots' / early['maps']).read_text()
+    cache = registry[mr.CACHE]
+    if name == 'matching_registered_cache':
+        mr.validate_manifest(manifest); mr.validate_snapshot(text, registry)
+    elif name == 'early_then_unmap_full_sequence':
+        sequence = mr.Sequence(manifest)
+        for e in events:
+            sequence.observe((RAW / 'snapshots' / e['maps']).read_text(), e['exe'])
+        sequence.close(True)
+    elif name == 'repeated_complete_snapshot':
+        sequence = mr.Sequence(manifest)
+        for _ in range(3): sequence.observe(text, str(PROBE))
+        sequence.observe((RAW / 'snapshots' / late['maps']).read_text(), str(PROBE))
+        sequence.close(True)
+    elif name == 'omitted_cache_registration':
+        manifest['files'].remove(cache); mr.validate_manifest(manifest)
+    elif name == 'cache_hash_mismatch':
+        cache['sha256'] = '0'*64; mr.validate_snapshot(text, registry)
+    elif name == 'cache_frozen_identity_mismatch':
+        cache['identity']['ctime_ns'] += 1; mr.validate_snapshot(text, registry)
+    elif name == 'cache_path_mismatch':
+        mr.validate_snapshot(text.replace(mr.CACHE, '/etc/AG2-not-registered-cache'), registry)
+    elif name in ('cache_device_mismatch', 'cache_inode_mismatch'):
+        lines = text.splitlines()
+        for i, line in enumerate(lines):
+            if mr.CACHE in line:
+                parts = line.split(None, 5)
+                if name == 'cache_device_mismatch': parts[3] = 'ff:ff'
+                else: parts[4] = str(int(parts[4])+1)
+                lines[i] = ' '.join(parts)
+        mr.validate_snapshot('\n'.join(lines), registry)
+    elif name in ('unregistered_ELF', 'unregistered_nonELF'):
+        path = next(e['path'] for e in manifest['files'] if e['role'] == 'ELF_SHARED_OBJECT') if name.endswith('ELF') and name != 'unregistered_nonELF' else mr.CACHE
+        del registry[path]; mr.validate_snapshot(text, registry)
+    elif name == 'missing_role':
+        del cache['role']; mr.validate_snapshot(text, registry)
+    elif name == 'cache_wrong_ELF_role':
+        cache['role'] = 'ELF_SHARED_OBJECT'; mr.validate_snapshot(text, registry)
+    elif name in ('executable_wrong_shared_role', 'interpreter_wrong_shared_role'):
+        registry[manifest['target'] if name.startswith('executable') else manifest['interpreter']]['role'] = 'ELF_SHARED_OBJECT'
+        mr.validate_manifest(manifest)
+    elif name == 'ELF_as_loader_metadata':
+        e = registry[manifest['interpreter']]; e['role'] = 'LOADER_DATA_CACHE'; mr.verify_file(e)
+    elif name == 'shared_library_SHA_mismatch':
+        e = next(e for e in manifest['files'] if e['role'] == 'ELF_SHARED_OBJECT')
+        e['sha256'] = '0'*64; mr.validate_snapshot(text, registry)
+    elif name in ('cache_writable_mapping', 'cache_executable_mapping'):
+        lines = [line.replace('r--p', 'rw-p' if name.startswith('cache_writable') else 'r-xp') if mr.CACHE in line else line for line in text.splitlines()]
+        mr.validate_snapshot('\n'.join(lines), registry)
+    elif name == 'deleted_mapping':
+        mr.validate_snapshot(text.replace(mr.CACHE, mr.CACHE+' (deleted)'), registry)
+    elif name in ('cache_missed_at_late_snapshot', 'cache_unmap_unobserved'):
+        sequence = mr.Sequence(manifest)
+        sequence.observe((RAW / 'snapshots' / late['maps']).read_text() if name.startswith('cache_missed') else text, str(PROBE))
+        sequence.close(True)
+    elif name == 'wrong_proc_exe':
+        mr.Sequence(manifest).observe(text, '/UNREGISTERED_EXECUTABLE')
+    elif name == 'no_cache_host_unsupported':
+        manifest['cache_mode'] = 'ABSENT'; mr.validate_manifest(manifest)
+    elif name == 'unknown_pseudo_map':
+        mr.validate_snapshot(text+'\n70000000-70001000 r--p 00000000 00:00 0 [UNKNOWN_AG2]\n', registry)
+    elif name == 'malformed_maps':
+        mr.validate_snapshot('not a maps line', registry)
+    elif name == 'simulator_target_not_allowed':
+        receipt = json.loads((RAW / 'CPU_BUILD_RECEIPT.json').read_text())
+        receipt['target'] = '/DO_NOT_EXECUTE/accel-sim.out'
+        launch_gate(receipt)  # No fork/exec possible on this test path.
+    else:
+        # All mutations occur on private AG2 data files; never mutate system cache.
+        d = RAW / 'negative-fixtures' / name
+        d.mkdir(parents=True, exist_ok=False)
+        path = d / 'readonly-data'
+        path.write_bytes(b'AG2 private readonly data: original\n')
+        e = dict(mr.file_record(str(path)), role='KNOWN_READ_ONLY_DATA',
+                 data_purpose='private CPU adversarial fixture', source='AG2 test',
+                 frozen_monotonic_ns=time.monotonic_ns(), presence='OPTIONAL', disappearance='CONFIRMED_ONLY')
+        if name == 'private_data_hash_mismatch':
+            e['sha256'] = '0'*64; mr.verify_file(e)
+        elif name == 'private_content_change_after_freeze':
+            path.write_bytes(b'AG2 private readonly data: changed!\n'); mr.verify_file(e)
+        elif name in ('TOCTOU_content_during_hash', 'TOCTOU_inode_replace_during_hash'):
+            original = mr.digest_fd
+            def mutate(fd):
+                digest = original(fd)
+                if name == 'TOCTOU_content_during_hash': path.write_bytes(b'changed during hash\n')
+                else:
+                    replacement = d / 'replacement'
+                    replacement.write_bytes(path.read_bytes())
+                    replacement.replace(path)
+                return digest
+            with patch.object(mr, 'digest_fd', mutate): mr.verify_file(e)
+        elif name == 'disappeared_before_confirmation':
+            path.unlink(); mr.verify_file(e)
+        elif name == 'replaced_before_confirmation':
+            replacement = d / 'replacement'; replacement.write_bytes(path.read_bytes())
+            replacement.replace(path); mr.verify_file(e)
+        elif name == 'readonly_data_missing_purpose':
+            del e['data_purpose']; mr.verify_file(e)
+        else:
+            raise AssertionError('UNIMPLEMENTED_CASE:'+name)
+    print(json.dumps(dict(case=name, outcome='PASS', exitcode=0)))
+    return 0
+
+if __name__ == '__main__':
+    try:
+        raise SystemExit(main(sys.argv[1]))
+    except mr.Reject as exc:
+        print(json.dumps(dict(case=sys.argv[1], outcome='REJECT', reason=str(exc), exitcode=42)))
+        raise SystemExit(42)

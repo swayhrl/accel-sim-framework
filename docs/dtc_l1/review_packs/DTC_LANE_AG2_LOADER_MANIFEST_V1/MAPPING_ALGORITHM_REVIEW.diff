@@ -1,0 +1,165 @@
+--- old AG read-only map collection+attestation
++++ AG2 candidate CPU mapping protocol; no launch glue
+@@ -1,23 +1,140 @@
+-def mapped_files(text):
+- return sorted({l.split(None,5)[5] for l in text.splitlines() if len(l.split(None,5))==6 and l.split(None,5)[5].startswith('/')})
++def file_record(path):
++    """Open canonical name without following a final symlink; hash under fstat checks."""
++    require(os.path.isabs(path) and str(Path(path).resolve()) == path,
++            'NON_CANONICAL_PATH:' + path)
++    try:
++        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
++        try:
++            before = identity(os.fstat(fd))
++            require(stat.S_ISREG(before['mode']), 'NOT_REGULAR_FILE:' + path)
++            header = os.pread(fd, 64, 0)
++            digest = digest_fd(fd)
++            after = identity(os.fstat(fd))
++            named = identity(os.stat(path, follow_symlinks=False))
++            require(before == after == named, 'TOCTOU_IDENTITY_CHANGED:' + path)
++            require(str(Path(path).resolve()) == path, 'TOCTOU_PATH_CHANGED:' + path)
++        finally:
++            os.close(fd)
++    except OSError as exc:
++        raise Reject('FILE_IDENTITY_UNCONFIRMABLE:' + path + ':' + str(exc.errno)) from exc
++    elf = header[:4] == b'\x7fELF'
++    elf_type = None
++    if elf:
++        require(len(header) == 64 and header[4:6] == b'\x02\x01', 'UNSUPPORTED_ELF')
++        elf_type = struct.unpack_from('<H', header, 16)[0]
++        require(struct.unpack_from('<H', header, 18)[0] == 62, 'UNSUPPORTED_ELF_MACHINE')
++    return dict(path=path, identity=before, sha256=digest,
++                kind='ELF' if elf else 'NON_ELF', elf_type=elf_type,
++                header_hex=header[:20].hex())
+ 
+-def attest_child(pid,spec,manifest,start_events=None):
+- p=None;maps=''
+- for _ in range(200):
+-  if start_events is not None:
+-   events=dict((k,int(v)) for k,v in (l.split() for l in Path('/sys/fs/cgroup/memory.events').read_text().splitlines()))
+-   require(not any(events[k]>start_events[k] for k in ['oom','oom_kill']),'NEW_CGROUP_OOM_OR_OOM_KILL_DURING_LOADER_ATTESTATION')
+-  p=proc(pid)
+-  try:maps=Path('/proc',str(pid),'maps').read_text()
+-  except OSError:pass
+-  if p and spec['runtime_library_path'] in maps:break
+-  time.sleep(.01)
+- require(p is not None,'own_child_identity_missing')
+- actual=[dict(path=x,sha256=sha(x)) for x in mapped_files(maps)]
+- expected={str(Path(x['path']).resolve()):x['sha256'] for x in manifest['runtime_files']}
+- bad=[x for x in actual if expected.get(str(Path(x['path']).resolve()))!=x['sha256']]
+- identity=(str(Path(p['exe']).resolve())==str(Path(spec['runtime_path']).resolve()) and
+-     sha('/proc/'+str(pid)+'/exe')==spec['runtime_sha256'] and spec['runtime_library_path'] in maps and
+-     any(str(Path(x['path']).resolve())==str(Path(manifest['loader']['path']).resolve()) for x in actual) and not bad)
+- return p,maps,actual,dict(status='PASS_EXACT_ACTUAL_ELF_LOADER_ALL_MAPPED_LIBRARIES' if identity else 'STOP_LOADED_IDENTITY',
+-     identity_pass=identity,unregistered_or_changed_mappings=bad)
++def check_role(entry, actual):
++    role = entry.get('role')
++    require(role in ROLES, 'MISSING_OR_UNKNOWN_ROLE:' + entry['path'])
++    if role.startswith('ELF_'):
++        require(actual['kind'] == 'ELF' and actual['elf_type'] in (2, 3),
++                'ROLE_REQUIRES_ELF:' + entry['path'])
++        if role in ('ELF_INTERPRETER', 'ELF_SHARED_OBJECT'):
++            require(actual['elf_type'] == 3, 'ROLE_REQUIRES_ET_DYN:' + entry['path'])
++    else:
++        require(actual['kind'] == 'NON_ELF', 'ELF_MASQUERADING_AS_DATA:' + entry['path'])
++        if role == 'LOADER_DATA_CACHE':
++            require(entry['path'] == CACHE, 'CACHE_ROLE_EXACT_PATH_REQUIRED')
++            require(bytes.fromhex(actual['header_hex']).startswith(b'glibc-ld.so.cache'),
++                    'UNSUPPORTED_CACHE_FORMAT')
++        else:
++            require(bool(entry.get('data_purpose')), 'READ_ONLY_DATA_PURPOSE_REQUIRED')
++
++def verify_file(entry):
++    require(entry.get('role') in ROLES, 'MISSING_OR_UNKNOWN_ROLE:' + entry['path'])
++    current = file_record(entry['path'])
++    check_role(entry, current)
++    require(current['identity'] == entry['identity'], 'FROZEN_FILE_IDENTITY_MISMATCH:' + entry['path'])
++    require(current['sha256'] == entry['sha256'], 'FROZEN_FILE_SHA_MISMATCH:' + entry['path'])
++    return current
++
++def freeze(specs, executable, interpreter):
++    entries = []
++    for path, role, source in specs:
++        canonical = str(Path(path).resolve(strict=True))
++        e = dict(file_record(canonical), role=role, source=source,
++                 frozen_monotonic_ns=time.monotonic_ns(), frozen_unix_ns=time.time_ns(),
++                 presence=('REQUIRED_EARLY_THEN_OPTIONAL_AFTER_VERIFIED_UNMAP'
++                           if role == 'LOADER_DATA_CACHE' else 'REGISTERED_EXACT_FILE'),
++                 disappearance='ONLY_AFTER_IDENTITY_CONFIRMED_IN_STOPPED_COMPLETE_SNAPSHOT')
++        check_role(e, e)
++        entries.append(e)
++    require(len({e['path'] for e in entries}) == len(entries), 'DUPLICATE_PATH')
++    manifest = dict(version='AG2_MAPPING_ROLE_V1', execution_authority=False,
++                    target=str(Path(executable).resolve()), interpreter=str(Path(interpreter).resolve()),
++                    cache_mode='PRESENT_REQUIRED_EARLY', no_cache_host_qualification='NOT_QUALIFIED_STOP',
++                    frozen_monotonic_ns=time.monotonic_ns(), files=entries)
++    validate_manifest(manifest)
++    return manifest
++
++def validate_manifest(m):
++    require(m['version'] == 'AG2_MAPPING_ROLE_V1' and m['execution_authority'] is False,
++            'MANIFEST_VERSION_OR_AUTHORITY')
++    files = m['files']
++    require(len({e['path'] for e in files}) == len(files), 'DUPLICATE_PATH')
++    registry = {e['path']: e for e in files}
++    require(m.get('cache_mode') == 'PRESENT_REQUIRED_EARLY', 'NO_CACHE_MODE_NOT_QUALIFIED')
++    require(CACHE in registry, 'CACHE_REGISTRATION_MISSING')
++    require(registry[CACHE]['role'] == 'LOADER_DATA_CACHE', 'CACHE_ROLE_REQUIRED')
++    require(registry.get(m['target'], {}).get('role') == 'ELF_EXECUTABLE', 'EXECUTABLE_ROLE_REQUIRED')
++    require(registry.get(m['interpreter'], {}).get('role') == 'ELF_INTERPRETER', 'INTERPRETER_ROLE_REQUIRED')
++    require(sum(e.get('role') == 'ELF_EXECUTABLE' for e in files) == 1, 'EXACTLY_ONE_EXECUTABLE')
++    require(sum(e.get('role') == 'ELF_INTERPRETER' for e in files) == 1, 'EXACTLY_ONE_INTERPRETER')
++    for e in files:
++        require(bool(e.get('source')) and bool(e.get('frozen_monotonic_ns'))
++                and bool(e.get('presence')) and bool(e.get('disappearance')), 'ROLE_PROVENANCE_REQUIRED')
++        verify_file(e)
++    return registry
++
++def parse_maps(text):
++    """Every line parsed; only named Linux anonymous/pseudo maps lack file roles."""
++    rows = []
++    for line in text.splitlines():
++        parts = line.split(None, 5)
++        require(len(parts) >= 5, 'MALFORMED_MAPS_LINE')
++        interval, perms, offset, dev, inode = parts[:5]
++        name = parts[5] if len(parts) == 6 else ''
++        require(re.fullmatch(r'[0-9a-f]+-[0-9a-f]+', interval) is not None, 'BAD_MAP_INTERVAL')
++        require(re.fullmatch(r'[r-][w-][x-][ps]', perms) is not None, 'BAD_MAP_PERMISSIONS')
++        require(re.fullmatch(r'[0-9a-f]+:[0-9a-f]+', dev) is not None, 'BAD_MAP_DEVICE')
++        a, b = (int(x, 16) for x in interval.split('-'))
++        major, minor = (int(x, 16) for x in dev.split(':'))
++        row = dict(start=a, end=b, permissions=perms, offset=int(offset, 16),
++                   major=major, minor=minor, inode=int(inode), path=name)
++        require(a < b, 'EMPTY_MAP')
++        if name.startswith('/'):
++            require(not name.endswith(' (deleted)'), 'DELETED_MAPPING_IDENTITY_UNCONFIRMABLE')
++            name = re.sub(r'\\([0-7]{3})', lambda m: chr(int(m[1], 8)), name)
++            row['path'] = name
++            require(row['inode'] != 0, 'FILE_MAPPING_ZERO_INODE')
++            row['file_backed'] = True
++        else:
++            require((not name or name in PSEUDO) and row['inode'] == 0,
++                    'UNKNOWN_NONFILE_MAPPING:' + name)
++            row['file_backed'] = False
++        rows.append(row)
++    require(bool(rows), 'EMPTY_MAPS_SNAPSHOT')
++    return rows
++
++def validate_snapshot(text, registry):
++    rows = parse_maps(text)
++    observed = {}
++    for r in rows:
++        if not r['file_backed']:
++            continue
++        path = r['path']
++        require(path in registry, 'UNREGISTERED_FILE_MAPPING:' + path)
++        e = registry[path]
++        require(e.get('role') in ROLES, 'MISSING_OR_UNKNOWN_ROLE:' + path)
++        s = e['identity']
++        require((r['major'], r['minor'], r['inode']) == (s['major'], s['minor'], s['inode']),
++                'MAP_DEVICE_INODE_MISMATCH:' + path)
++        if not e['role'].startswith('ELF_'):
++            require('w' not in r['permissions'] and 'x' not in r['permissions'], 'DATA_MAPPING_NOT_READ_ONLY:' + path)
++        if path not in observed:
++            observed[path] = verify_file(e)
++    return dict(status='PASS_COMPLETE_STOPPED_SNAPSHOT', rows=len(rows), files=observed)
