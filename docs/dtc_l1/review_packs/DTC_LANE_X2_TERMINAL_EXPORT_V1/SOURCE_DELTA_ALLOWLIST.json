@@ -1,0 +1,80 @@
+{
+  "status": "PASS_EXACT_PRINT_ONLY_SOURCE_ALLOWLIST",
+  "base_core": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "new_core": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+  "changed_files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "c4de59926fd221a00c470cb1392711aea119b86da85a57d1cfa4923033e4a5da",
+      "base_sha256": "cee3ea1480c8f40dbed7676ea95700484a4f4593a36cf48e40c01f9d5d8d5ab6",
+      "git_blob": "4a436fb0e02af7e75920d075dbf8760543db1634",
+      "allowance": "new test target only"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "sha256": "5e0aef0a105a2f071b752d1288ed100eba06216029e847dc27fc3b19cf113aa1",
+      "base_sha256": "8c9e02b57876c67324c2ec10114022e1b5cd16284ea327b8f222b46c3ff27d45",
+      "git_blob": "e7a05a873a7f217cfe61ddf37c80fb43dab377ae",
+      "allowance": "only exact const delegates/framed printing block"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.h",
+      "sha256": "16d8f610b95da7c6280336f19c06bb4f0f75fcb30fc98ee5e61753d6caacd708",
+      "base_sha256": "c3a47c09ad55bea2e169cc1f1989866ce3d8d2f86c3b277d62184f1a9983c447",
+      "git_blob": "ae9b4112a01630e2ea69b3a4f3bb87854b062934",
+      "allowance": "only three const method declarations"
+    },
+    {
+      "path": "tests/dtc_l1_normal_export_probe.cc",
+      "sha256": "7edf94d8b8e9407bbc2d979c0bca7f60227aa32024f589277d3d67324a7d2c33",
+      "base_sha256": null,
+      "git_blob": "d26a4ad2218abeb755537b1340a182c27371436c",
+      "allowance": "new CPU test"
+    }
+  ],
+  "production_added_lines": {
+    "shader.cc": 30,
+    "shader.h": 3
+  },
+  "exact_fragment_removal_recovers_base": true,
+  "all_other_tracked_paths_unchanged": true,
+  "protected_files": [
+    {
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "b46c0e89b2539709edfb2c8b2c13073b7d1f415c7c43fa75a8f7838d94cc6d91",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-sim.h",
+      "sha256": "1ac66c8016e1f5b4b57f392c298c54811b8dd93829a70439ee9c5bb58e7508e8",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "sha256": "798b3b416ce3223799af870438273167f0d257f1f432a1f0aad9dced06f81510",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-invalidation.h",
+      "sha256": "85dbad1028354142c5f3ca9873fe612aca89d8d6cd666652bcbd28c8280ab2b9",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "ea90f6b72af49fff343458b767521046b7b1b02ee9e78884cc9e6d796ea7e734",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "9551bdbcfb0d1e0cf8938481778c0d6a1fb0201fd6b755d76f1541a98664b9ff",
+      "byte_identical_to_base": true
+    }
+  ],
+  "gpu_print_stat_and_public_cache_L2_DRAM_code_unchanged": true,
+  "old_seven_CTest_targets_unchanged": true,
+  "new_observer_or_counter": false,
+  "mechanism_or_timing_changes": false,
+  "runtime_or_debug_option_changes": false,
+  "new_methods_const_and_read_only": true,
+  "scope": "only output path, declarations, CPU test and its build wiring; no state machine/performance repair"
+}
