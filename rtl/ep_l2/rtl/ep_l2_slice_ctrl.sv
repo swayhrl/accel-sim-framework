@@ -191,7 +191,7 @@ module ep_l2_slice_ctrl #(
     wire req_fire=req_valid && req_ready;
     wire abort_fire=native_abort && state!=IDLE && state!=RESPONSE && p_op!=1;
     wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation_p_landing :
-        generation_p_landing+(p_old_live ? 2 : 1);
+        frontend_generation_next;
     wire fill_identity=fill_pid<N_PAYLOAD && role_fill_pid==RESIDENT &&
         generation_fill_pid==fill_gen && owner_tag_fill_pid==fill_tag &&
         fill_sectors!=0 && (fill_sectors & ~sectors_pending_fill_pid)==0;
@@ -382,17 +382,35 @@ module ep_l2_slice_ctrl #(
     end
 
 
+    // R3: one frontend event and an independent lower release may coexist.
+    wire fe_gen_reserve=req_fire && req_op==0 &&
+        ((MODE==1 && (evict_dirty || !old_live)) || (MODE!=1 && evict_dirty));
+    wire fe_gen_commit=native_commit && ((p_op==0 && !p_new_reserved) || p_op==3);
+    wire fe_gen_abort=abort_fire && (p_new_reserved || (p_dirty && MODE!=1));
+    wire fe_gen_write=fe_gen_reserve || fe_gen_commit || fe_gen_abort;
+    wire [PID_W-1:0] frontend_generation_pid=state==IDLE ?
+        (MODE==1 ? free_landing : free_staging) :
+        (fe_gen_abort && MODE!=1 ? p_staging : p_landing);
+    wire [GEN_W-1:0] frontend_generation_old,frontend_generation_next,lower_generation_next;
+    wire frontend_generation_step_two=p_op==0 && p_old_live && !p_new_reserved && state!=IDLE && !fe_gen_abort;
+    ep_l2_generation_step #(.GEN_W(GEN_W)) frontend_generation_engine(
+        frontend_generation_old,frontend_generation_step_two,frontend_generation_next);
+    ep_l2_generation_step #(.GEN_W(GEN_W)) lower_generation_engine(
+        generation_active_pid,1'b0,lower_generation_next);
+    assign generation_p_landing=frontend_generation_old;
+    assign generation_p_old=frontend_generation_old; // op1 captures p_old==p_landing
+    assign generation_free_staging=frontend_generation_old; // static req allocation, IDLE
+    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_frontend(
+        generation_bits,frontend_generation_pid,frontend_generation_old);
+
     // R2 explicit local metadata read ports; same information/cycles as R1.
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_old_pid(role_bits,old_pid,role_old_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_fill_pid(role_bits,fill_pid,role_fill_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_pin_pid(role_bits,pin_pid,role_pin_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(3),.IW(PID_W)) select_role_head_pid(role_bits,head_pid,role_head_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_old_pid(generation_bits,old_pid,generation_old_pid);
-    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_p_landing(generation_bits,p_landing,generation_p_landing);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_fill_pid(generation_bits,fill_pid,generation_fill_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_pin_pid(generation_bits,pin_pid,generation_pin_pid);
-    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_free_staging(generation_bits,free_staging,generation_free_staging);
-    ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_p_old(generation_bits,p_old,generation_p_old);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_head_pid(generation_bits,head_pid,generation_head_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(GEN_W),.IW(PID_W)) select_generation_active_pid(generation_bits,active_pid,generation_active_pid);
     ep_l2_index_mux #(.N(N_PAYLOAD),.W(TAG_W),.IW(PID_W)) select_owner_tag_fill_pid(owner_tag_bits,fill_pid,owner_tag_fill_pid);
@@ -428,6 +446,13 @@ module ep_l2_slice_ctrl #(
         assign group_old_live[g]=p_old_live && group_landing[g];
         assign group_reserved[g]=p_new_reserved && group_landing[g];
         assign group_pin_increment[g]=pin_increment && group_pin[g];
+    end endgenerate
+    wire [META_GROUPS*GEN_W-1:0] group_frontend_gen,group_lower_gen;
+    generate for(genvar g=0;g<META_GROUPS;g=g+1)begin: generation_distribution
+        assign group_frontend_gen[g*GEN_W +:GEN_W]=frontend_generation_next &
+            {GEN_W{frontend_generation_pid/META_GROUP==g}};
+        assign group_lower_gen[g*GEN_W +:GEN_W]=lower_generation_next &
+            {GEN_W{active_pid/META_GROUP==g}};
     end endgenerate
     // Three real buffer levels, fanout<=16 between levels, four words/leaf.
     // All active metadata and Unified Tag-map resets use this network.
@@ -466,6 +491,8 @@ module ep_l2_slice_ctrl #(
             assign owner_tag_bits[m*TAG_W +:TAG_W]=(MODE!=1 && m<N_TAG)?TAG_W'(m):word_owner;
             ep_l2_metadata_word #(.GEN_W(GEN_W),.TAG_W(TAG_W),.SUPPORT_RES(MODE==1 || m<N_TAG),.DYNAMIC_OWNER(MODE==1),.STATIC_RESIDENT(MODE!=1 && m<N_TAG)) word_state(
                 .clk(clk),.rst_n(reset_leaf[m/4]),
+                .generation_write((fe_gen_write && frontend_generation_pid==m) || (lower_accept && active_pid==m)),
+                .generation_value(lower_accept && active_pid==m ? group_lower_gen[(m/META_GROUP)*GEN_W +:GEN_W] : group_frontend_gen[(m/META_GROUP)*GEN_W +:GEN_W]),
                 .reserve_resident(req_fire && req_op==0 && MODE==1 && (evict_dirty || !old_live) && free_landing==m),
                 .reserve_wb(req_fire && req_op==0 && evict_dirty && MODE!=1 && free_staging==m),
                 .new_owner(group_new_owner[(m/META_GROUP)*TAG_W +:TAG_W]),
