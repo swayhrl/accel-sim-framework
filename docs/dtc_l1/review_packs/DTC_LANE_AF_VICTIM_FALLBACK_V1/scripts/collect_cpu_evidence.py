@@ -91,7 +91,7 @@ for p in ['src/gpgpu-sim/dtc-l1-invalidation.h','tests/dtc_l1_source_invalidatio
  rows.append({'repository':'Core_unchanged_reference','commit':head,'path':p,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
 out=io.StringIO();w=csv.DictWriter(out,list(rows[0]),delimiter='\t',lineterminator='\n');w.writeheader();w.writerows(rows)
 (PACK/'SOURCE_SHA256.tsv').write_text(out.getvalue())
-(PACK/'CORE_DELTA.patch').write_bytes(g('diff',BASE,head,'--'))
+(PACK/'CORE_DELTA.patch').write_bytes(g('diff','--unified=0',BASE,head,'--'))
 source=CORE/'src/gpgpu-sim'
 def unchanged_block(path,marker,ending):
     a=g('show',BASE+':'+path).decode();b=(CORE/path).read_text()

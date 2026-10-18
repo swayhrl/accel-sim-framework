@@ -2,6 +2,8 @@
 
 Source anchors and exact per-file hashes are in `SOURCE_SHA256.tsv` / `CORE_FETCH_BACK.json`. Core is `19dafca6b5636ee26f4c35e566c24e17e645edaf`, derived from X2 `e32afdcf44be3374ff36d22568ed01a075459b6f`; use a fresh AF checkout and fresh build directory. Do not mix its object files or library with frozen/other-Lane builds.
 
+`CORE_DELTA.patch` is a zero-context source delta; apply only to the exact base with `git apply --unidiff-zero`. This representation avoids context-only blank lines being mistaken for trailing whitespace when the patch itself is versioned. No production source changed during that packaging correction.
+
 The following are build/CPU-test commands only, with at most2 compiler tasks and serial CTests. They do not run accel-sim, kernels, GPU or native workloads:
 
 ```bash

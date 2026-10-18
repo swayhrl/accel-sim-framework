@@ -2,10 +2,7 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 4a436fb0..d2f83d94 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -76,6 +76,22 @@ add_subdirectory(libopencl)
- 
- if(GPGPUSIM_BUILD_DTC_L1_TESTS)
-     enable_testing()
+@@ -78,0 +79,16 @@ if(GPGPUSIM_BUILD_DTC_L1_TESTS)
 +    add_executable(dtc_l1_reclaimable_victim_fallback_test
 +                   tests/dtc_l1_reclaimable_victim_fallback_test.cc)
 +    target_include_directories(dtc_l1_reclaimable_victim_fallback_test PRIVATE
@@ -22,35 +19,17 @@ index 4a436fb0..d2f83d94 100644
 +             COMMAND dtc_l1_reclaimable_victim_option_test)
 +    set_tests_properties(dtc_l1_reclaimable_victim_option_test PROPERTIES
 +        ENVIRONMENT "LD_LIBRARY_PATH=$<TARGET_FILE_DIR:cudart>")
-     add_executable(dtc_l1_m1_common_test tests/dtc_l1_m1_common_test.cc)
-     target_include_directories(dtc_l1_m1_common_test PRIVATE
-                                ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgpu-sim)
 diff --git a/src/gpgpu-sim/dtc-l1-common.h b/src/gpgpu-sim/dtc-l1-common.h
 index 6af1b6b1..a746cf2a 100644
 --- a/src/gpgpu-sim/dtc-l1-common.h
 +++ b/src/gpgpu-sim/dtc-l1-common.h
-@@ -26,6 +26,8 @@ enum class mode { LEGACY, PAPER_BASE, PAPER_IO, PAPER_OO, MODERN_OO_SECTOR };
- 
- struct config {
-   bool finite_service = false;
+@@ -28,0 +29,2 @@ struct config {
 +  // AF candidate model only; frozen models retain exact LRU when false.
 +  bool reclaimable_victim_fallback = false;
-   mode selected_mode = mode::LEGACY;
-   unsigned pib_entries = 8;
-   unsigned tag_banks = 4;
-@@ -506,6 +508,8 @@ class oo_frontend {
-     assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);
-     assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&
-            cfg.tag_requests_per_cycle);
+@@ -508,0 +511,2 @@ class oo_frontend {
 +    assert(!cfg.reclaimable_victim_fallback ||
 +           cfg.selected_mode == mode::PAPER_OO);
-   }
- 
-   void begin_cycle(uint64_t cycle) {
-@@ -627,6 +631,15 @@ class oo_frontend {
- 
-     tag_entry *victim = select_victim(line);
-     int free_id = find_free_physical();
+@@ -629,0 +634,9 @@ class oo_frontend {
 +    // Retry lookup above always wins, including after another consumer or K1
 +    // changed the directory. Only the no-free/live-LRU corner may deviate.
 +    if (m_cfg.reclaimable_victim_fallback && free_id < 0 && victim->valid &&
@@ -60,25 +39,13 @@ index 6af1b6b1..a746cf2a 100644
 +        ++m_reclaimable_victim_fallbacks;
 +      }
 +    }
-     const bool can_reclaim_victim =
-         victim->valid && m_phys[victim->physical.id].ref_count == 0;
-     if (free_id < 0 && !can_reclaim_victim) {
-@@ -818,6 +831,11 @@ class oo_frontend {
-   uint64_t allocation_width_limited_events() const {
-     return m_allocation_width_limited_events;
-   }
+@@ -820,0 +834,5 @@ class oo_frontend {
 +  // Candidate-local successful selection events, including retry attempts as
 +  // independent access calls. Reading this counter has no side effects.
 +  uint64_t reclaimable_victim_fallbacks() const {
 +    return m_reclaimable_victim_fallbacks;
 +  }
-   uint64_t tag_requests() const { return m_tag_requests; }
-   uint64_t tag_conflicts() const { return m_tag_conflicts; }
-   size_t allocated_lines() const {
-@@ -970,6 +988,31 @@ class oo_frontend {
-     }
-     return victim;
-   }
+@@ -972,0 +991,25 @@ class oo_frontend {
 +  bool safely_reclaimable(const tag_entry &tag) const {
 +    if (!tag.valid || !fill_identity_matches(tag.physical)) return false;
 +    const physical_line &physical = m_phys[tag.physical.id];
@@ -104,41 +71,23 @@ index 6af1b6b1..a746cf2a 100644
 +    }
 +    return oldest;
 +  }
-   int find_free_physical() {
-     for (unsigned offset = 0; offset < m_phys.size(); ++offset) {
-       const unsigned id = (m_rr_next + offset) % m_phys.size();
-@@ -1019,6 +1062,7 @@ class oo_frontend {
-            m_wakeups = 0, m_tag_evictions = 0, m_immediate_reclaims = 0,
-            m_deferred_reclaims = 0, m_final_ref_reclaims = 0,
-            m_no_free_physical_events = 0,
+@@ -1021,0 +1065 @@ class oo_frontend {
 +           m_reclaimable_victim_fallbacks = 0,
-            m_allocation_width_limited_events = 0, m_tag_cycle = UINT64_MAX,
-            m_tag_requests = 0, m_tag_conflicts = 0;
-   unsigned m_allocations_this_cycle = 0, m_rr_next = 0;
 diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
 index c9f46a06..0908422e 100644
 --- a/src/gpgpu-sim/gpu-sim.cc
 +++ b/src/gpgpu-sim/gpu-sim.cc
-@@ -410,6 +410,11 @@ void shader_core_config::reg_options(class OptionParser *opp) {
-   option_parser_register(opp, "-gpgpu_dtc_l1_finite_service", OPT_BOOL,
-                          &dtc_l1_finite_service,
-                          "Opt-in preregistered whole-line DTC finite service V1", "0");
+@@ -412,0 +413,5 @@ void shader_core_config::reg_options(class OptionParser *opp) {
 +  option_parser_register(
 +      opp, "-gpgpu_dtc_l1_reclaimable_victim_fallback", OPT_BOOL,
 +      &dtc_l1_reclaimable_victim_fallback,
 +      "AF candidate PAPER_OO only: oldest safe same-set victim when pool full "
 +      "and original LRU has live owners (default off)", "0");
-   option_parser_register(opp, "-gpgpu_dtc_l1_mshr_entries", OPT_UINT32,
-                          &dtc_l1_mshr_entries,
-                          "DTC-L1 Paper Base traditional MSHR entries", "32");
 diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
 index e7a05a87..27437332 100644
 --- a/src/gpgpu-sim/shader.cc
 +++ b/src/gpgpu-sim/shader.cc
-@@ -4352,6 +4352,13 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
-     abort();
-   }
-   dtc_l1::config dtc_config;
+@@ -4354,0 +4355,7 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
 +  if (m_config->dtc_l1_reclaimable_victim_fallback &&
 +      m_config->dtc_l1_mode != static_cast<unsigned>(dtc_l1::mode::PAPER_OO)) {
 +    fprintf(stderr, "Reclaimable victim fallback is scoped to PAPER_OO only\n");
@@ -146,21 +95,12 @@ index e7a05a87..27437332 100644
 +  }
 +  dtc_config.reclaimable_victim_fallback =
 +      m_config->dtc_l1_reclaimable_victim_fallback;
-   dtc_config.finite_service = dtc_l1_finite_service_active();
-   if (m_config->dtc_l1_finite_service && !dtc_config.finite_service) {
-     fprintf(stderr, "Finite service V1 is scoped to PAPER_IO/PAPER_OO only\n");
 diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
 index ae9b4112..4b2d61a7 100644
 --- a/src/gpgpu-sim/shader.h
 +++ b/src/gpgpu-sim/shader.h
-@@ -2502,6 +2502,7 @@ class shader_core_config : public core_config {
-   // reuse the conventional L1 bank/MSHR controls so LEGACY remains untouched.
-   unsigned dtc_l1_mode;
-   bool dtc_l1_finite_service;
+@@ -2504,0 +2505 @@ class shader_core_config : public core_config {
 +  bool dtc_l1_reclaimable_victim_fallback;
-   bool dtc_l1_invalidate_on_source_event;
-   unsigned dtc_l1_pib_entries;
-   unsigned dtc_l1_mshr_entries;
 diff --git a/tests/dtc_l1_reclaimable_victim_fallback_test.cc b/tests/dtc_l1_reclaimable_victim_fallback_test.cc
 new file mode 100644
 index 00000000..6379f555
