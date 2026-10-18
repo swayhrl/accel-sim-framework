@@ -25,3 +25,11 @@ as failed/incomplete attempts. No prior accepted R1/R2 test has been rerun.
 A separate complete checkpoint/review receipt will bind final source, config,
 binaries and actual reports after the active suites finish. No timing closure
 or net application benefit is implied by source changes or component proofs.
+
+Controller-miter counterexample diagnosis: the16-payload toy selected PID_W4.
+The frozen R2 helper casts BLOCK16 to IW bits before division/modulo, so IW4
+produces a zero divisor and X/undefined reads. All16-payload controller proofs
+(including a nominal B16 success) are INVALID_MODEL, not accepted evidence.
+The corrected symbolic controller uses32payload/PID_W5; production remains
+1168/PID_W11 and no production helper was changed to conceal this diagnosis.
+Word GEN32 and direct double-port proofs do not use that helper and remain valid.
