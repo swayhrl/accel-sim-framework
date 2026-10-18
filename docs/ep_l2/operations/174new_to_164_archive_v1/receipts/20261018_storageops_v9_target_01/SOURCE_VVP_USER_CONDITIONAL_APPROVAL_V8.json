@@ -1,0 +1,29 @@
+{
+  "schema": "OPS_OLD174_V8_VVP_USER_CONDITIONAL_APPROVAL",
+  "observed_at_utc": "2026-10-18T03:58:24Z",
+  "user_response": "有条件批准三组（推荐）",
+  "user_question_scope": "R1 197, R1R 127, R2 191 historical .vvp files in the exact listed manifests only; release only after genuine-164 exact restoration, fresh current activity references and full per-file payload SHA256, with source df measurement. Whole builds, logs, scientific results, and Git are excluded.",
+  "source_proposal_commit": "e8099571e39487044203ca80ee632c4c107e0046",
+  "source_proposal_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261018_fast_reclaim_v8/EXACT_RELEASE_APPROVAL_PROPOSAL_V8.md",
+  "combined_manifest_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261018_fast_reclaim_v8/VVP_EXACT_APPROVAL_MANIFEST_V8.tsv",
+  "combined_manifest_sha256": "2592a8cac6536b12b3250e9c7db4f374b52e530367a6c82830a9488b5f82d0c7",
+  "groups": [
+    {"id": "R1", "files": 197, "allocated_upper_bound_bytes": 4464783360, "manifest_sha256": "fd1fdc19f1277d2d70ab510f19ba49694612bfcfdc39a29a29c9f3d4a82af900"},
+    {"id": "R1R", "files": 127, "allocated_upper_bound_bytes": 2994749440, "manifest_sha256": "c2e8fb9d5bc22834722a4112c987664ed2cfa9c8e4e249ee7335cf322b5ebcc9"},
+    {"id": "R2", "files": 191, "allocated_upper_bound_bytes": 2690052096, "manifest_sha256": "b957dae3fe14560b268319301ee22441094a5daa8355f929e648553f17debaad"}
+  ],
+  "expected_allocated_upper_bound_bytes": 10149584896,
+  "release_mode": "CONDITIONAL_COMPARE_AND_ACT_PER_EXACT_FILE_ONLY",
+  "mandatory_gates": [
+    "target genuine164 exact 515 selected path/hash and no-overwrite complete-selector restore procedure plus old174 native drill validated",
+    "fresh source per-file full SHA256 and dev/inode/nlink/size/allocated/uid/gid/mode/mtime/ctime match",
+    "fresh source PID/FD/cwd/argv/registry and scheduled-reader exclusion",
+    "preserve every nonlisted file and parent build directory",
+    "source df before and after each actual release, report net bytes and notify Lane5 at >=2GiB actual gain"
+  ],
+  "current_target_exact_selector_full_rehash": "PENDING",
+  "current_source_full_payload_rehash": "PENDING",
+  "source_release_status": "SOURCE_KEEP_UNTIL_ALL_GATES_PASS",
+  "source_files_released": 0,
+  "actual_v8_source_df_gain_bytes": 0
+}
