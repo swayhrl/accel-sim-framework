@@ -1,0 +1,24 @@
+{
+  "schema": "OPS_OLD174_V8_M5_GESU_TARGET_CHECK_REQUEST",
+  "observed_at_utc": "2026-10-18T03:48:36Z",
+  "status": "CONTROL_ONLY_NO_PAYLOAD_STAGED_SOURCE_KEEP",
+  "contract_commit": "80633cc24b37cb640652f4ff3492ee0242d48309",
+  "purpose": "Check whether the small retained M5 GESU compressed archive already has a real 164 verified copy and independent 18-file restore; if not, select a sole compliant 59 MB archive batch after receiver/bridge ownership checks. This is preparation for separately gated exact release of two historical temporary unpack-check duplicates, not release authority.",
+  "retained_canonical_archive_old174": "/workspace/m5-trace-immutable/gesu/gesu.tar.zst",
+  "retained_archive_size_bytes": 59339020,
+  "retained_archive_sha256_fresh": "0d2ba5d069a88e331c1575dd8c2f5a8defe4d36d255464f998245454d86d7c03",
+  "retained_archive_identity_fresh": {"device": 156, "inode": 33084966, "nlink": 1, "allocated_bytes": 59346944},
+  "retained_canonical_extracted_root_old174": "/workspace/m5-trace-immutable/gesu/gesu",
+  "candidate_temporary_roots": [
+    {"path": "/tmp/m5-gesu-unpack-check.FGnex7", "device": 156, "inode": 34300265, "du_allocated_bytes": 993886208},
+    {"path": "/tmp/m5-gesu-unpack-check.F9XDGy", "device": 156, "inode": 34324838, "du_allocated_bytes": 993886208}
+  ],
+  "candidate_du_total_upper_bound_bytes": 1987772416,
+  "bounded_current_process_and_registry_path_refs": "No exact path in current process argv, /proc fd/cwd or RUN_REGISTRY at source snapshot; this does not replace a fresh release-time check.",
+  "current_duplicate_content_hash_status": "R10 full content checks passed historically; V8 fresh per-file checks still pending; do not inherit R10 PASS.",
+  "source_action": "SOURCE_KEEP",
+  "target_request": "174-new: authenticate actual 164 mount and prior index, publish whether this exact archive already exists with full hash and independent restore. If not, publish a fresh sole-window receiver/selection before old174 stages one <=512MiB batch; no second rsync or silent local Share substitute.",
+  "release_gate": "Only after target real-164 DEST_VERIFIED plus independent 18-file restore, fresh exact source/canonical content and identity checks, active reference exclusion and reconciliation of prior user conditional approval; never remove canonical archive or extracted source.",
+  "lane5_live_runs": "PROTECTED_DO_NOT_TOUCH",
+  "actual_source_df_gain_bytes": 0
+}
