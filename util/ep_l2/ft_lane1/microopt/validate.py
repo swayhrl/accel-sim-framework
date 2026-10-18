@@ -10,6 +10,21 @@ PUBLISH=Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane1-r1')
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def head(p):return subprocess.check_output(['git','rev-parse','HEAD'],cwd=p,text=True).strip()
 def mod(name,p):s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+NEGATIVE_CASES={'reject_'+n for n in ['combined','P2','Ideal','quota','legacy']}
+REJECTION_PROOF='EP-L2 service candidate supports single-factor'
+def verify_prior_command(row):
+ # A successful producer receipt includes deliberate native constructor
+ # rejections. Accept only the named, proven negative cases, never arbitrary
+ # nonzero exits or a resource/timeout stop masquerading as an expected fail.
+ assert sha(row['log'])==row['log_sha256']
+ assert 'resource_stop' not in row
+ name=row['case_name'];expected=row['expected_exit_code']
+ assert Path(row['log']).stem==name and row['exit_code']==expected
+ if expected:
+  assert name in NEGATIVE_CASES and expected==134 and row.get('expected_failure') is True
+  assert row.get('error')==repr(RuntimeError(f'{name} exited {expected}'))
+  assert REJECTION_PROOF in Path(row['log']).read_text()
+ else:assert name not in NEGATIVE_CASES and not row.get('expected_failure',False) and 'error' not in row
 
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--out',type=Path,required=True);p.add_argument('--phase',choices=['mq2','rg1'],default='mq2');p.add_argument('--execute',action='store_true');p.add_argument('--build-receipt',type=Path);p.add_argument('--reuse-off-receipt',type=Path);a=p.parse_args();o=a.out.resolve();o.mkdir(parents=True,exist_ok=False);resource.setrlimit(resource.RLIMIT_CORE,(0,0))
@@ -43,7 +58,9 @@ def main():
  assert sha(B/'accel-sim.out')==author['binary_sha256'];r['binary_sha256']=author['binary_sha256'];r['author_build_receipt_sha256']=sha(a.build_receipt)
  if a.reuse_off_receipt:
   reuse=json.loads(a.reuse_off_receipt.read_text());assert reuse['status']=='PRODUCER_MQ2_PASS_PENDING_LANE5' and reuse['binary_sha256']==r['binary_sha256'] and reuse['core_source_commit']==r['core_source_commit'] and reuse['framework_source_commit']==r['framework_source_commit']
-  for row in reuse['commands']:assert row['exit_code']==0 and sha(row['log'])==row['log_sha256']
+  for row in reuse['commands']:verify_prior_command(row)
+  assert {row['case_name'] for row in reuse['commands'] if row.get('expected_failure')}==NEGATIVE_CASES
+  assert {n for n,_ in original}<={row['case_name'] for row in reuse['commands'] if row['exit_code']==0}
   assert set(n for n,_ in original)<=set(reuse['tests']);r['reused_same_binary_OFF_receipt']={'path':str(a.reuse_off_receipt),'sha256':sha(a.reuse_off_receipt)}
  cl=json.loads(Path('/workspace/ep_l2_ft20261016_shared/CLIENT_CONTRACT.json').read_text());r['registry_client_sha256']=sha(cl['registry_client'])
  if r['registry_client_sha256']!=cl['registry_client_sha256']:r['status']='CLIENT_BINDING_HOLD_PRELEASE';save();return
@@ -62,7 +79,10 @@ def main():
    except RuntimeError:
     rec=r['commands'][-1]
     if not expected or rec.get('exit_code')!=expected:raise
-   assert rec['exit_code']==expected;return rec
+   assert rec['exit_code']==expected
+   rec.update(case_name=name,expected_exit_code=expected,expected_failure=bool(expected))
+   verify_prior_command(rec)
+   save();return rec
   r['status']='TESTING';save()
   for name,cmd in tests:run(cmd,name);r['tests'].append(name);save()
   # Native effective parser, compiled only against the exact candidate archives.
