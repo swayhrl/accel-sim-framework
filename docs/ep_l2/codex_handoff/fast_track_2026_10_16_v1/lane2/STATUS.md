@@ -1,3 +1,5 @@
+Three-mode finalB mapping/STA now COMPLETE, all clocks unclosed; exact table inrtl/ep_l2/r3/R3_THREE_MODE_PPA_ACTUAL.md. B16/Unified full base passed; S64/GEN3/Lane3/boundary outstanding. NewA same-bank actual3mode stress passed; A highest boundary running. No completed source is re-tested, no gate exception used.
+
 # Current continuation: ordinary48GiB admission restored
 
 First ordinary lease admitted 2026-10-18T04:15:13.494533+00:00: workspace actual free recovered above49GiB. Original48GiB+bounded phase-growth safety admission passed; scoped47.5GiB exception is NOT authorized/active. Three ordinary central leases now run only unfinished A highest physical test, finalB base/Lane3/highest, and resumeSTA of already-mapped Unified. Completed owner/concurrency/control/byte modes are not repeated. Exact lease/source/command/output identities in RECEIPT; original six-hour08:35:29Z deadline remains. Previous resource-stop reports below are immutable historical evidence.

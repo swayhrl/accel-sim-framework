@@ -15,22 +15,15 @@
     "rtl/ep_l2/rtl/ep_l2_slice.sv": "0888dfbec52fadad96918c03ba1a7f3669a604ed0fa2f48bdfd753255c0ead18"
   },
   "R3A_three_mode_actual_PPA": true,
-  "R3A_mandatory_boundary": "RESOURCE_INTERRUPTED_NOT_PASS",
+  "R3A_mandatory_boundary": "RUNNING_NOT_PASS",
   "R3B_final_actual_runtime_tests": {
-    "owner_stress": "ALL3_PASS_EXACT_FINAL_SOURCE",
-    "concurrent_GEN_updates": "ALL3_PASS_EXACT_FINAL_SOURCE",
-    "controller_control_cut": "ALL3_4CYCLE_SMALL32PAYLOAD_PASS_EXPLICIT_SCOPE",
-    "base": "B16_RESOURCE_INTERRUPTED_NO_PASS_OTHER_CASES_NOT_RUN",
-    "Lane3_bytes": "NOT_RUN",
-    "highest_physical": "NOT_RUN"
+    "base": "B16_AND_UNIFIED_PASS_S64_GEN3_PENDING_RUNNING",
+    "owner_stress": "ALL3_PASS",
+    "GEN_concurrency": "ALL3_PASS",
+    "Lane3_bytes": "PENDING",
+    "highest_physical": "PENDING"
   },
-  "R3B_final_PPA": {
-    "Unified": "ACTUAL_MAPPING_COMPLETE_STA_INTERRUPTED_NOT_COMPLETE_PPA",
-    "B16": "NOT_RUN",
-    "S64": "NOT_RUN",
-    "mapped_U_area_reference_units": 1765551.858003,
-    "mapped_U_FF": 109870
-  },
+  "R3B_final_PPA": "ALL3_ACTUAL_MAP_TWO_PERIOD_STA_COMPLETE_TIMING_UNCLOSED",
   "R1_R2_frozen": true,
   "formal_SIM_changed": false,
   "new_Lane5_apps_started": 0,
@@ -39,7 +32,7 @@
   "first_checkpoint_readback": "EXACT_TWO_HEADS_ALL136_BLOBS_SELECTED_BYTES_PASS",
   "large_new_raw": "central workspace; future remote packs lean with original/archive hashes and exact local paths",
   "publication_identity": "enclosing Git commit",
-  "UTC": "2026-10-18T04:17:00.837021+00:00",
+  "UTC": "2026-10-18T04:37:38.036726+00:00",
   "review_pack": "docs/ep_l2/review_packs/RTL_R3_RESOURCE_STOP_AND_MAPPING_CHECKPOINT_r2",
   "resource_authorization_applied": "RESOURCE_AUTHORIZATION_APPLIED_R3.json in pack",
   "all_own_EDA_leases_released": false,
@@ -58,7 +51,11 @@
   "resume_safety_review_pack": "docs/ep_l2/review_packs/RTL_R3_EVIDENCE_RESUME_SAFETY_r1",
   "resume_safety_validation": "EVIDENCE_IO_ONLY_REGRESSION_PASS_NO_RTL_TEST",
   "previous_checkpoint_exact_remote_readback": "87e18bd5bd59ed0fd5eae87672bc20f6263cfdbb two heads/all290 pack blobs/17 selected bytes PASS",
-  "active_ordinary_central_leases": [
+  "exception_active": false,
+  "source_five_RTL_unchanged": true,
+  "R3A_same_bank_owner_stress": "NEW_ALL3_ACTUAL_PASS",
+  "cost_table": "rtl/ep_l2/r3/actual_cost_r1/PARETO_COMPARISON.csv",
+  "ordinary_central_leases_at_resumption": [
     {
       "lease_id": "6e622b880d374774ab843c6c5bda969f",
       "registry_row": {
@@ -102,6 +99,19 @@
       }
     }
   ],
-  "exception_active": false,
-  "source_five_RTL_unchanged": true
+  "current_own_active_central_leases": [
+    {
+      "lease_id": "efb7c64d8b7b463aa10927f1fd7faa05",
+      "cpu_units": 1,
+      "created_at": "2026-10-18T04:15:14.664529+00:00",
+      "host": "huangrulin-174",
+      "memory_bytes": 2147483648,
+      "output_forecast_bytes": 134217728,
+      "output_phase_initial_bytes": 0,
+      "output_phase_root": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_FINAL_QUAL_RESUME_r2",
+      "owner": "lane2",
+      "status": "RESERVED"
+    }
+  ],
+  "current_observation_UTC": "2026-10-18T04:38:26.395788+00:00"
 }
