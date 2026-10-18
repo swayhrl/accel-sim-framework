@@ -1,0 +1,227 @@
+241:     def admission(data, host, cpu, memory, scan, kind, resources):
+242:         policy = data['hosts'][host]
+243:         live = [r for r in data['runs'].values() if r['host'] == host and r['status'] in ACTIVE]
+244:         leases = [r for r in data.get('resource_leases', {}).values()
+245:                   if r['host'] == host and r['status'] in ACTIVE]
+246:         all_live = live + leases
+247:         if any(r.get('kind') == 'ENGINEERING_PILOT' for r in leases):
+248:             raise ValueError('exclusive engineering pilot active; ordinary heavy admission blocked')
+249:         if kind == 'simulation':
+250:             if len(live) >= policy['max_simulators']:
+251:                 raise ValueError('shared simulator quota full')
+252:             if policy['scan_exclusive'] and (scan and live or any(r['scan'] for r in live)):
+253:                 raise ValueError('scan needs exclusive EP-L2 simulator slot')
+254:         if sum(r['cpu_units'] for r in all_live) + cpu > policy['max_cpu_units']:
+255:             raise ValueError('shared CPU quota full')
+256:         if sum(r['memory_bytes'] for r in all_live) + memory > policy['max_reserved_memory_bytes']:
+257:             raise ValueError('shared memory reservation quota full')
+258:         if resources['available_memory_bytes'] - memory < policy['min_available_memory_bytes']:
+259:             raise ValueError('available memory safety floor')
+260:         if resources['disk_free_bytes'] < policy['min_disk_free_bytes']:
+261:             raise ValueError('workspace free-space safety floor')
+262:         if resources.get('share_disk_free_bytes', 2**60) < 40 * 2**30:
+263:             raise ValueError('Share free-space safety floor')
+264:         if kind == 'build' and cpu > policy['max_build_jobs']:
+265:             raise ValueError('build jobs exceed shared policy')
+266: 
+267:     def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None, client_binding=None, retry_checkpoint=None):
+268:         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
+269:             raise ValueError('explicit lane owner required')
+270:         if type(cpu) is not int or cpu < 1:
+271:             raise ValueError('positive CPU allocation required')
+272:         key = run_key(identity)
+273:         host = socket.gethostname()
+274:         with self.locked() as data:
+275:             previous = data['runs'].get(key)
+276:             if previous is not None and retry_checkpoint is None:
+277:                 return False, previous
+278:             history = []
+279:             if retry_checkpoint is not None:
+280:                 path=Path(retry_checkpoint['path'])
+281:                 if hashlib.sha256(path.read_bytes()).hexdigest()!=retry_checkpoint['sha256']:
+282:                     raise ValueError('retry decision checkpoint changed')
+283:                 recovery=json.loads(path.read_text())
+284:                 if (previous is None or owner!='lane5' or previous['owner']!=owner
+285:                     or previous['status'] not in {'FAILED','TIMEOUT','RESOURCE_LIMIT','INCOMPLETE'}
+286:                     or previous['identity']!=identity or previous['lease_id']!=recovery.get('previous_lease_id')
+287:                     or recovery.get('run_key')!=key or not recovery.get('engineering_reason')
+288:                     or str(result_directory)!=recovery.get('new_result_directory')
+289:                     or str(result_directory)==previous['result_directory']):
+290:                     raise ValueError('retry requires exact failed terminal/owner/identity/new evidence directory')
+291:                 if (experiment is None and previous.get('experiment_id') is not None) or (experiment is not None and any(previous.get(k)!=v for k,v in experiment.items())):
+292:                     raise ValueError('retry cannot change campaign, condition, cell or deadline')
+293:                 history=previous.get('attempt_history',[])+[{k:v for k,v in previous.items() if k!='attempt_history'}]
+294:             if experiment is not None:
+295:                 self.check_experiment(data, experiment, identity, owner, retry_key=key if retry_checkpoint else None)
+296:             policy = data['hosts'][host]
+297:             if policy['boot_id'] != Path('/proc/sys/kernel/random/boot_id').read_text().strip():
+298:                 raise ValueError('host reboot: Lane 5 must reconcile preserved reservations')
+
+267:     def claim(self, identity, owner, result_directory, resources=None, cpu=1, memory=None, experiment=None, client_binding=None, retry_checkpoint=None):
+268:         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
+269:             raise ValueError('explicit lane owner required')
+270:         if type(cpu) is not int or cpu < 1:
+271:             raise ValueError('positive CPU allocation required')
+272:         key = run_key(identity)
+273:         host = socket.gethostname()
+274:         with self.locked() as data:
+275:             previous = data['runs'].get(key)
+276:             if previous is not None and retry_checkpoint is None:
+277:                 return False, previous
+278:             history = []
+279:             if retry_checkpoint is not None:
+280:                 path=Path(retry_checkpoint['path'])
+281:                 if hashlib.sha256(path.read_bytes()).hexdigest()!=retry_checkpoint['sha256']:
+282:                     raise ValueError('retry decision checkpoint changed')
+283:                 recovery=json.loads(path.read_text())
+284:                 if (previous is None or owner!='lane5' or previous['owner']!=owner
+285:                     or previous['status'] not in {'FAILED','TIMEOUT','RESOURCE_LIMIT','INCOMPLETE'}
+286:                     or previous['identity']!=identity or previous['lease_id']!=recovery.get('previous_lease_id')
+287:                     or recovery.get('run_key')!=key or not recovery.get('engineering_reason')
+288:                     or str(result_directory)!=recovery.get('new_result_directory')
+289:                     or str(result_directory)==previous['result_directory']):
+290:                     raise ValueError('retry requires exact failed terminal/owner/identity/new evidence directory')
+291:                 if (experiment is None and previous.get('experiment_id') is not None) or (experiment is not None and any(previous.get(k)!=v for k,v in experiment.items())):
+292:                     raise ValueError('retry cannot change campaign, condition, cell or deadline')
+293:                 history=previous.get('attempt_history',[])+[{k:v for k,v in previous.items() if k!='attempt_history'}]
+294:             if experiment is not None:
+295:                 self.check_experiment(data, experiment, identity, owner, retry_key=key if retry_checkpoint else None)
+296:             policy = data['hosts'][host]
+297:             if policy['boot_id'] != Path('/proc/sys/kernel/random/boot_id').read_text().strip():
+298:                 raise ValueError('host reboot: Lane 5 must reconcile preserved reservations')
+299:             memory = memory if memory is not None else policy['default_run_memory_bytes']
+300:             if type(memory) is not int or memory <= 0:
+301:                 raise ValueError('positive memory allocation required')
+302:             self.admission(data, host, cpu, memory, identity['workload'] == 'scan',
+303:                            'simulation', resources if resources is not None else local_resources())
+304:             output_budget = admit_result_output(data, host, identity, result_directory)
+305:             # Physical verification/floors and remaining full2GiB+128MiB growth
+306:             # were checked under this same lock above; existing bytes are already in statvfs.
+307:             row = {'run_key': key, 'identity': identity, 'owner': owner, 'host': host,
+308:                    'boot_id': policy['boot_id'], 'lease_id': uuid.uuid4().hex,
+309:                    'status': 'RESERVED', 'created_at': now(), 'cpu_units': cpu,
+310:                    'memory_bytes': memory, 'scan': identity['workload'] == 'scan',
+311:                    'result_directory': str(result_directory), 'process': None}
+312:             row['output_budget']=output_budget
+313:             if retry_checkpoint is not None:
+314:                 row['attempt_history']=history
+315:                 row['retry_checkpoint']=retry_checkpoint
+316:             if client_binding is not None: row['client_binding'] = json.loads(json.dumps(client_binding))
+317:             if experiment is not None: row.update(experiment)
+318:             data['runs'][key] = row
+319:             return True, row
+320: 
+321:     def register_parallel_campaign(self, cells, authority_commit):
+322:         """Exactly-once T0 under the existing lock. Never rewrite old runs/leases."""
+323:         validate_hash(authority_commit, 40)
+324:         if len(cells) != 50 or len({c['cell_id'] for c in cells}) != 50:
+
+524:     def update(self, key, lease_id, status, **fields):
+525:         if status not in TERMINAL | {'RUNNING'}:
+526:             raise ValueError('invalid status')
+527:         if set(fields) - {'process', 'exit_code', 'detail', 'raw_log_sha256', 'result_receipt_sha256'}:
+528:             raise ValueError('identity/owner/resource mutation prohibited')
+529:         with self.locked() as data:
+530:             row = data['runs'][key]
+531:             if row['lease_id'] != lease_id or row['status'] not in ACTIVE:
+532:                 raise ValueError('ownership mismatch or immutable terminal record')
+533:             if status == 'RUNNING' and (row['status'] != 'RESERVED' or not fields.get('process')):
+534:                 raise ValueError('running needs the real process identity')
+535:             row.update(fields)
+536:             row.update(status=status, updated_at=now())
+537: 
+538:     def build_lease(self, owner, cpu=4, memory=8 * 1024**3):
+539:         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
+540:             raise ValueError('explicit lane owner required')
+541:         if type(cpu) is not int or cpu < 1 or type(memory) is not int or memory < 1:
+542:             raise ValueError('positive resource allocation required')
+543:         host = socket.gethostname()
+544:         with self.locked() as data:
+545:             self.admission(data, host, cpu, memory, False, 'build', local_resources())
+546:             key = uuid.uuid4().hex
+547:             data['resource_leases'][key] = {'host': host, 'owner': owner, 'cpu_units': cpu,
+548:                 'memory_bytes': memory, 'status': 'RESERVED', 'created_at': now()}
+549:             return key
+550: 
+551:     def release_build(self, key, owner):
+552:         with self.locked() as data:
+553:             row = data['resource_leases'][key]
+554:             if row.get('kind') == 'ENGINEERING_PILOT':
+555:                 raise ValueError('engineering pilot requires its audited release path')
+556:             if row['owner'] != owner or row['status'] != 'RESERVED':
+557:                 raise ValueError('build lease ownership/state mismatch')
+558:             row.update(status='RELEASED', updated_at=now())
+559: 
+560: 
+561: def main():
+562:     parser = argparse.ArgumentParser(description=__doc__)
+563:     parser.add_argument('--root', type=Path, default=DEFAULT_ROOT)
+564:     sub = parser.add_subparsers(dest='action', required=True)
+565:     sub.add_parser('snapshot')
+566:     key = sub.add_parser('key')
+567:     key.add_argument('identity', type=Path)
+568:     build = sub.add_parser('build-claim')
+569:     build.add_argument('--owner', required=True)
+570:     build.add_argument('--jobs', type=int, default=4)
+571:     release = sub.add_parser('build-release')
+572:     release.add_argument('--owner', required=True)
+573:     release.add_argument('lease_id')
+574:     args = parser.parse_args()
+575:     registry = Registry(args.root)
+576:     if args.action == 'key':
+577:         print(run_key(json.loads(args.identity.read_text())))
+578:     elif args.action == 'build-claim':
+579:         print(registry.build_lease(args.owner, cpu=args.jobs))
+580:     elif args.action == 'build-release':
+581:         registry.release_build(args.lease_id, args.owner)
+
+538:     def build_lease(self, owner, cpu=4, memory=8 * 1024**3):
+539:         if owner not in {'lane1', 'lane2', 'lane3', 'lane4', 'lane5', 'lane6'}:
+540:             raise ValueError('explicit lane owner required')
+541:         if type(cpu) is not int or cpu < 1 or type(memory) is not int or memory < 1:
+542:             raise ValueError('positive resource allocation required')
+543:         host = socket.gethostname()
+544:         with self.locked() as data:
+545:             self.admission(data, host, cpu, memory, False, 'build', local_resources())
+546:             key = uuid.uuid4().hex
+547:             data['resource_leases'][key] = {'host': host, 'owner': owner, 'cpu_units': cpu,
+548:                 'memory_bytes': memory, 'status': 'RESERVED', 'created_at': now()}
+549:             return key
+550: 
+551:     def release_build(self, key, owner):
+552:         with self.locked() as data:
+553:             row = data['resource_leases'][key]
+554:             if row.get('kind') == 'ENGINEERING_PILOT':
+555:                 raise ValueError('engineering pilot requires its audited release path')
+556:             if row['owner'] != owner or row['status'] != 'RESERVED':
+557:                 raise ValueError('build lease ownership/state mismatch')
+558:             row.update(status='RELEASED', updated_at=now())
+559: 
+560: 
+561: def main():
+562:     parser = argparse.ArgumentParser(description=__doc__)
+563:     parser.add_argument('--root', type=Path, default=DEFAULT_ROOT)
+564:     sub = parser.add_subparsers(dest='action', required=True)
+565:     sub.add_parser('snapshot')
+566:     key = sub.add_parser('key')
+567:     key.add_argument('identity', type=Path)
+568:     build = sub.add_parser('build-claim')
+569:     build.add_argument('--owner', required=True)
+570:     build.add_argument('--jobs', type=int, default=4)
+571:     release = sub.add_parser('build-release')
+572:     release.add_argument('--owner', required=True)
+573:     release.add_argument('lease_id')
+574:     args = parser.parse_args()
+575:     registry = Registry(args.root)
+576:     if args.action == 'key':
+577:         print(run_key(json.loads(args.identity.read_text())))
+578:     elif args.action == 'build-claim':
+579:         print(registry.build_lease(args.owner, cpu=args.jobs))
+580:     elif args.action == 'build-release':
+581:         registry.release_build(args.lease_id, args.owner)
+582:     else:
+583:         print(json.dumps(registry.snapshot(), indent=2, sort_keys=True))
+584: 
+585: 
+586: if __name__ == '__main__':
+587:     main()

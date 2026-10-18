@@ -1,0 +1,92 @@
+[
+  {
+    "argv": [
+      "hostname"
+    ],
+    "at_utc": "2026-10-18T06:17:35.248338+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "huangrulin-174\n"
+  },
+  {
+    "argv": [
+      "readlink",
+      "/proc/self/ns/mnt"
+    ],
+    "at_utc": "2026-10-18T06:17:35.251594+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "mnt:[4026534768]\n"
+  },
+  {
+    "argv": [
+      "df",
+      "-B1",
+      "-P",
+      "/workspace"
+    ],
+    "at_utc": "2026-10-18T06:17:35.255448+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3526959939584 60288466944      99% /\n"
+  },
+  {
+    "argv": [
+      "findmnt",
+      "-T",
+      "/workspace",
+      "-o",
+      "TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT"
+    ],
+    "at_utc": "2026-10-18T06:17:35.259661+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT\n/      overlay overlay   0:156 /\n"
+  },
+  {
+    "argv": [
+      "stat",
+      "-c",
+      "%d %i %n",
+      "/workspace"
+    ],
+    "at_utc": "2026-10-18T06:17:35.264979+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "156 32926662 /workspace\n"
+  },
+  {
+    "argv": [
+      "df",
+      "-B1",
+      "-P",
+      "/tmp",
+      "/root/share"
+    ],
+    "at_utc": "2026-10-18T06:17:35.268897+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3526959939584 60288466944      99% /\n/dev/md127     7143083376640 6738665369600 44350091264     100% /root/share\n"
+  },
+  {
+    "argv": [
+      "findmnt",
+      "-T",
+      "/root/share"
+    ],
+    "at_utc": "2026-10-18T06:17:35.273126+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "TARGET      SOURCE     FSTYPE OPTIONS\n/root/share /dev/md127 ext4   rw,relatime,stripe=384\n"
+  },
+  {
+    "argv": [
+      "cat",
+      "/proc/sys/kernel/random/boot_id"
+    ],
+    "at_utc": "2026-10-18T06:17:35.278220+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "59e1e1a4-84b6-431f-ac2d-03e340207019\n"
+  }
+]
