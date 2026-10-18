@@ -1,0 +1,906 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4a436fb0..d7cbde61 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -116,6 +116,40 @@ if(GPGPUSIM_BUILD_DTC_L1_TESTS)
+     target_include_directories(dtc_l1_k0_equivalence_test PRIVATE
+                                ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgpu-sim)
+     add_test(NAME dtc_l1_k0_equivalence_test COMMAND dtc_l1_k0_equivalence_test)
++    add_executable(dtc_l1_progressive_wakeup_test tests/dtc_l1_progressive_wakeup_test.cc)
++    target_include_directories(dtc_l1_progressive_wakeup_test PRIVATE
++        ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgpu-sim)
++    add_test(NAME dtc_l1_progressive_wakeup_test COMMAND dtc_l1_progressive_wakeup_test)
++    add_executable(dtc_l1_progressive_ldst_test tests/dtc_l1_progressive_ldst_test.cc)
++    target_include_directories(dtc_l1_progressive_ldst_test PRIVATE
++        ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/libcuda
++        ${CUDAToolkit_INCLUDE_DIRS})
++    target_compile_options(dtc_l1_progressive_ldst_test PRIVATE -fno-access-control)
++    target_link_libraries(dtc_l1_progressive_ldst_test PRIVATE cudart)
++    add_test(NAME dtc_l1_progressive_ldst_test COMMAND dtc_l1_progressive_ldst_test
++        ${CMAKE_CURRENT_SOURCE_DIR}/configs/tested-cfgs/SM7_QV100/gpgpusim.config)
++    set_tests_properties(dtc_l1_progressive_ldst_test PROPERTIES
++        ENVIRONMENT "LD_LIBRARY_PATH=$<TARGET_FILE_DIR:cudart>;CUDA_VISIBLE_DEVICES=")
++    # Pinned, read-only X2 header for same-build OFF differential CPU traces.
++    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/ad_x2_header")
++    execute_process(COMMAND git show e32afdcf44be3374ff36d22568ed01a075459b6f:src/gpgpu-sim/dtc-l1-common.h
++        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
++        OUTPUT_FILE "${CMAKE_BINARY_DIR}/ad_x2_header/dtc-l1-common.h"
++        RESULT_VARIABLE ad_x2_status)
++    if(NOT ad_x2_status EQUAL 0)
++        message(FATAL_ERROR "AD OFF comparison requires the fixed X2 header")
++    endif()
++    foreach(ad_variant IN ITEMS candidate x2)
++        add_executable(dtc_l1_ad_off_${ad_variant} tests/dtc_l1_ad_off_trace.cc)
++        add_executable(dtc_l1_ad_modes_${ad_variant} tests/dtc_l1_k0_equivalence_test.cc)
++        if(ad_variant STREQUAL "x2")
++            set(ad_header_dir "${CMAKE_BINARY_DIR}/ad_x2_header")
++        else()
++            set(ad_header_dir "${CMAKE_CURRENT_SOURCE_DIR}/src/gpgpu-sim")
++        endif()
++        target_include_directories(dtc_l1_ad_off_${ad_variant} PRIVATE ${ad_header_dir})
++        target_include_directories(dtc_l1_ad_modes_${ad_variant} PRIVATE ${ad_header_dir})
++    endforeach()
+     add_executable(dtc_l1_normal_export_probe tests/dtc_l1_normal_export_probe.cc)
+     target_include_directories(dtc_l1_normal_export_probe PRIVATE
+         ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/libcuda
+diff --git a/src/gpgpu-sim/dtc-l1-common.h b/src/gpgpu-sim/dtc-l1-common.h
+index 6af1b6b1..4dda53eb 100644
+--- a/src/gpgpu-sim/dtc-l1-common.h
++++ b/src/gpgpu-sim/dtc-l1-common.h
+@@ -11,6 +11,8 @@
+ #include <array>
+ #include <cassert>
+ #include <cstdint>
++#include <cstdio>
++#include <cstdlib>
+ #include <map>
+ #include <deque>
+ #include <list>
+@@ -26,6 +28,7 @@ enum class mode { LEGACY, PAPER_BASE, PAPER_IO, PAPER_OO, MODERN_OO_SECTOR };
+ 
+ struct config {
+   bool finite_service = false;
++  bool progressive_wakeup = false;
+   mode selected_mode = mode::LEGACY;
+   unsigned pib_entries = 8;
+   unsigned tag_banks = 4;
+@@ -41,6 +44,15 @@ struct config {
+   unsigned ref_count_bits = 13;
+ };
+ 
++// AD is an opt-in timing optimization of the finite whole-line OO model only.
++inline void check_progressive_wakeup_mode(bool enabled, unsigned selected,
++                                          bool finite) {
++  if (enabled && (!finite || selected != static_cast<unsigned>(mode::PAPER_OO))) {
++    std::fprintf(stderr, "DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP\n");
++    std::abort();
++  }
++}
++
+ // Absolute core-cycle quota; checking availability never consumes a grant.
+ // Commit only after the owning operation actually succeeds.
+ class service_quota {
+@@ -61,6 +73,9 @@ class service_quota {
+ };
+ 
+ struct service_entry {
++  // AD common boundary: first LDST observation with admission complete and
++  // all real whole-line returns accepted. Independent of notification gating.
++  uint64_t admitted_returns_cycle = UINT64_MAX;
+   uint64_t tag_grant_cycle = UINT64_MAX;
+   uint64_t ready_cycle = UINT64_MAX;
+   uint64_t collect_done_cycle = UINT64_MAX;
+@@ -171,6 +186,8 @@ struct lookup_invalidation_result {
+ class io_frontend {
+  public:
+   explicit io_frontend(config cfg) : m_cfg(cfg), m_tags(cfg.logical_sets * cfg.logical_ways), m_phys(cfg.physical_lines) {
++    check_progressive_wakeup_mode(cfg.progressive_wakeup,
++        static_cast<unsigned>(mode::PAPER_IO), cfg.finite_service);
+     assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);
+     assert(cfg.allocation_width && cfg.io_pib_entries);
+     assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&
+@@ -501,6 +518,8 @@ class oo_frontend {
+         m_tags(cfg.logical_sets * cfg.logical_ways),
+         m_phys(cfg.physical_lines),
+         m_slots(cfg.oo_pib_entries) {
++    check_progressive_wakeup_mode(cfg.progressive_wakeup,
++        static_cast<unsigned>(cfg.selected_mode), cfg.finite_service);
+     assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);
+     assert(cfg.allocation_width && cfg.oo_pib_entries);
+     assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);
+@@ -651,6 +670,12 @@ class oo_frontend {
+     physical_line &physical = m_phys[free_id];
+     physical.allocated = true;
+     physical.ready = false;
++    if (m_cfg.progressive_wakeup) {
++      physical.data_ready = false;
++      physical.return_cycle = UINT64_MAX;
++      physical.first_notify_cycle = physical.last_notify_cycle = UINT64_MAX;
++      physical.notified = physical.late_merges = 0;
++    }
+     physical.tag_valid = true;
+     physical.ref_count = 0;
+     physical.waiters.clear();
+@@ -682,6 +707,7 @@ class oo_frontend {
+       for (const auto &pending : m_service_returns)
+         assert(pending.physical.id != identity.id ||
+                pending.physical.generation != identity.generation);
++      if (m_cfg.progressive_wakeup) physical.return_cycle = m_service_cycle;
+       m_service_returns.push_back({identity, m_service_cycle + 1, 0});
+       return;
+     }
+@@ -698,9 +724,9 @@ class oo_frontend {
+     assert_shadow_refs();
+   }
+ 
+-  // The physical allocation remains Pending until its finite metadata work
+-  // finishes. Late merges append to the same generation's waiter vector;
+-  // entries with a zero count still cannot retire while physical.ready=false.
++  // ready retains its X2 meaning: broadcast finished. AD's data_ready is
++  // exposed only at this unchanged +1 metadata edge. Unnotified consumers
++  // still own a pending dependency even when the data itself is available.
+   void advance_service(uint64_t cycle) {
+     if (!m_cfg.finite_service || cycle == m_service_cycle) return;
+     m_service_cycle = cycle;
+@@ -710,20 +736,56 @@ class oo_frontend {
+       auto &pending = m_service_returns.front();
+       assert(fill_identity_matches(pending.physical));
+       auto &physical = m_phys[pending.physical.id];
++      if (m_cfg.progressive_wakeup) physical.data_ready = true;
+       while (budget && pending.next_waiter < physical.waiters.size()) {
+         const auto &waiting = physical.waiters[pending.next_waiter++];
+         entry *owner = find_entry_by_slot(waiting.slot, waiting.slot_generation);
+         assert(owner && has_reference(*owner, pending.physical));
+         assert(owner->pending_dependencies);
+         --owner->pending_dependencies;
++        if (m_cfg.progressive_wakeup) {
++          if (!physical.notified) physical.first_notify_cycle = cycle;
++          physical.last_notify_cycle = cycle;
++          ++physical.notified;
++        }
+         ++m_wakeups;
+         --budget;
+       }
+-      if (pending.next_waiter != physical.waiters.size()) break;
++      if (pending.next_waiter != physical.waiters.size()) {
++        if (m_cfg.progressive_wakeup && pending.next_waiter) {
++          // Early retirement allows slot reuse and arbitrarily long merge
++          // streams. Discard only the consumed prefix; the live cursor still
++          // names the same physical generation and unnotified slot suffix.
++          physical.waiters.erase(physical.waiters.begin(),
++                                physical.waiters.begin() + pending.next_waiter);
++          pending.next_waiter = 0;
++        }
++        break;
++      }
++      if (m_cfg.progressive_wakeup) {
++        ++m_broadcasts_finished;
++        ++m_fanout_hist[std::min<uint64_t>(32, physical.notified)];
++        m_first_notify_sum += physical.first_notify_cycle;
++        m_last_notify_sum += physical.last_notify_cycle;
++        m_broadcast_span_sum += physical.last_notify_cycle - physical.first_notify_cycle;
++      }
+       physical.ready = true;
+       physical.waiters.clear();
+       m_service_returns.pop_front();
+     }
++    if (m_cfg.progressive_wakeup) {
++      for (auto &owner : m_entries) {
++        if (owner.references.empty() || !entry_ready(owner)) continue;
++        bool old_gate_blocked = false;
++        for (const auto id : owner.references) old_gate_blocked |= !m_phys[id.id].ready;
++        m_own_dep0_linewide_blocked_observations += old_gate_blocked;
++        ++m_notified_ready_entry_cycles;
++        if (!owner.ready_observed) {
++          owner.ready_observed = true;
++          ++m_notified_ready_entries;
++        }
++      }
++    }
+     assert_shadow_refs();
+   }
+ 
+@@ -845,6 +907,45 @@ class oo_frontend {
+     const entry *owner = find_entry_const(uid);
+     return owner && entry_ready(*owner);
+   }
++  bool entry_returns_complete_for(uint64_t uid) const {
++    assert(m_cfg.progressive_wakeup);
++    const entry *owner = find_entry_const(uid);
++    if (!owner || owner->references.empty()) return false;
++    for (const auto id : owner->references)
++      if (!fill_identity_matches(id) || m_phys[id.id].return_cycle == UINT64_MAX)
++        return false;
++    return true;
++  }
++  void print_progressive_summary(FILE *fp, unsigned sm) const {
++    assert(m_cfg.progressive_wakeup);
++    std::fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1 sm=%u broadcasts=%llu "
++        "first_notify_cycle_sum=%llu last_notify_cycle_sum=%llu span_sum=%llu "
++        "own_dep0_linewide_blocked_entry_cycles=%llu "
++        "notified_frontend_ready_entries=%llu notified_frontend_ready_entry_cycles=%llu "
++        "late_merges=%llu\n", sm,
++        (unsigned long long)m_broadcasts_finished,
++        (unsigned long long)m_first_notify_sum, (unsigned long long)m_last_notify_sum,
++        (unsigned long long)m_broadcast_span_sum,
++        (unsigned long long)m_own_dep0_linewide_blocked_observations,
++        (unsigned long long)m_notified_ready_entries,
++        (unsigned long long)m_notified_ready_entry_cycles,
++        (unsigned long long)m_late_merges);
++    for (unsigned bin = 0; bin < m_fanout_hist.size(); ++bin)
++      std::fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1_FANOUT sm=%u bin=%u count=%llu\n",
++          sm, bin, (unsigned long long)m_fanout_hist[bin]);
++    // Bounded by the configured physical pool, no unbounded event log.
++    for (unsigned id = 0; id < m_phys.size(); ++id) {
++      const auto &p = m_phys[id];
++      if (!p.allocated) continue;
++      std::fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1_LINE sm=%u physical=%u generation=%llu "
++          "data_ready=%u broadcast_done=%u notified=%llu first_cycle=%llu "
++          "last_cycle=%llu late_merges=%llu refs=%llu\n", sm, id,
++          (unsigned long long)p.generation, p.data_ready, p.ready,
++          (unsigned long long)p.notified, (unsigned long long)p.first_notify_cycle,
++          (unsigned long long)p.last_notify_cycle, (unsigned long long)p.late_merges,
++          (unsigned long long)p.ref_count);
++    }
++  }
+   uint64_t entry_slot_generation(uint64_t uid) const {
+     const entry *owner = find_entry_const(uid);
+     assert(owner);
+@@ -858,6 +959,7 @@ class oo_frontend {
+ 
+   void assert_shadow_refs() const {
+     std::vector<uint64_t> shadow(m_phys.size(), 0);
++    std::map<uint64_t, unsigned> pending_shadow;
+     for (const entry &owner : m_entries)
+       for (const physical_identity identity : owner.references) {
+         assert(identity.id < m_phys.size());
+@@ -871,7 +973,25 @@ class oo_frontend {
+       if (!physical.allocated) {
+         assert(!physical.ready && !physical.tag_valid && !physical.ref_count);
+       }
++      if (m_cfg.progressive_wakeup) {
++        assert(!physical.data_ready ||
++               (physical.allocated && physical.return_cycle != UINT64_MAX));
++        assert(!physical.ready || (physical.data_ready && physical.waiters.empty()));
++        assert(physical.waiters.size() <= m_cfg.oo_pib_entries);
++        for (const auto &waiting : physical.waiters) {
++          assert(waiting.slot < m_slots.size());
++          const auto &slot = m_slots[waiting.slot];
++          assert(slot.active && slot.generation == waiting.slot_generation);
++          const auto *owner = find_entry_const(slot.uid);
++          assert(owner && has_reference(*owner,
++              {static_cast<unsigned>(id), physical.generation}));
++          ++pending_shadow[owner->uid];
++        }
++      }
+     }
++    if (m_cfg.progressive_wakeup)
++      for (const auto &owner : m_entries)
++        assert(pending_shadow[owner.uid] == owner.pending_dependencies);
+     for (const tag_entry &tag : m_tags)
+       if (tag.valid) {
+         assert(fill_identity_matches(tag.physical));
+@@ -883,7 +1003,11 @@ class oo_frontend {
+   struct waiter { unsigned slot; uint64_t slot_generation; };
+   struct physical_line {
+     bool allocated = false;
+-    bool ready = false;
++    bool ready = false; // all waiter notifications done (X2 meaning)
++    bool data_ready = false; // AD only: real full return + metadata edge
++    uint64_t return_cycle = UINT64_MAX;
++    uint64_t first_notify_cycle = UINT64_MAX, last_notify_cycle = UINT64_MAX;
++    uint64_t notified = 0, late_merges = 0;
+     bool tag_valid = false;
+     uint64_t generation = 0;
+     uint64_t ref_count = 0;
+@@ -902,6 +1026,7 @@ class oo_frontend {
+     std::vector<physical_identity> references;
+     unsigned pending_dependencies;
+     unsigned external_dependencies = 0;
++    bool ready_observed = false;
+   };
+   struct slot_state { bool active = false; uint64_t uid = 0; uint64_t generation = 0; };
+ 
+@@ -936,6 +1061,10 @@ class oo_frontend {
+     ++physical.ref_count;
+     owner.references.push_back(identity);
+     if (!physical.ready) {
++      if (m_cfg.progressive_wakeup && physical.data_ready) {
++        ++physical.late_merges;
++        ++m_late_merges;
++      }
+       physical.waiters.push_back({owner.slot, owner.slot_generation});
+       ++owner.pending_dependencies;
+     }
+@@ -943,7 +1072,9 @@ class oo_frontend {
+   bool entry_ready(const entry &owner) const {
+     if (owner.pending_dependencies || owner.external_dependencies) return false;
+     for (const physical_identity identity : owner.references)
+-      if (!fill_identity_matches(identity) || !m_phys[identity.id].ready)
++      if (!fill_identity_matches(identity) ||
++          !(m_cfg.progressive_wakeup ? m_phys[identity.id].data_ready
++                                    : m_phys[identity.id].ready))
+         return false;
+     return true;
+   }
+@@ -994,11 +1125,25 @@ class oo_frontend {
+       ++m_service_map_loss_count;
+       m_service_map_loss.erase(lost);
+     }
++    if (m_cfg.progressive_wakeup) {
++      assert(physical.ready && physical.data_ready && physical.waiters.empty());
++      for (const auto &pending : m_service_returns)
++        assert(pending.physical.id != identity.id ||
++               pending.physical.generation != identity.generation);
++      physical.data_ready = false;
++    }
+     physical.allocated = false;
+     physical.ready = false;
+     physical.waiters.clear();
+   }
+ 
++  uint64_t m_broadcasts_finished = 0, m_first_notify_sum = 0,
++           m_last_notify_sum = 0, m_broadcast_span_sum = 0,
++           m_own_dep0_linewide_blocked_observations = 0,
++           m_notified_ready_entries = 0, m_notified_ready_entry_cycles = 0,
++           m_late_merges = 0;
++  // Exact 0..31; final bin >=32. Counters are cumulative uint64_t.
++  std::array<uint64_t, 33> m_fanout_hist{};
+   config m_cfg;
+   struct service_return {
+     physical_identity physical;
+@@ -1048,6 +1193,8 @@ class sector_oo_frontend {
+         m_tags(cfg.logical_sets * cfg.logical_ways),
+         m_phys(cfg.physical_lines),
+         m_slots(cfg.oo_pib_entries) {
++    check_progressive_wakeup_mode(cfg.progressive_wakeup,
++        static_cast<unsigned>(mode::MODERN_OO_SECTOR), cfg.finite_service);
+     assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);
+     assert(cfg.allocation_width && cfg.oo_pib_entries);
+     assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);
+@@ -1818,6 +1965,8 @@ inline std::vector<line_reference> group_128b_references(
+ class paper_frontend {
+  public:
+   explicit paper_frontend(config cfg) : m_cfg(cfg) {
++    check_progressive_wakeup_mode(cfg.progressive_wakeup,
++        static_cast<unsigned>(mode::PAPER_BASE), cfg.finite_service);
+     assert(m_cfg.pib_entries > 0);
+     assert(m_cfg.tag_banks > 0);
+     assert(m_cfg.tag_requests_per_bank_per_cycle > 0);
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index c9f46a06..24523543 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -407,6 +407,10 @@ void shader_core_config::reg_options(class OptionParser *opp) {
+                          "DTC-L1 pending-instruction entries", "8");
+   dtc_l1::register_source_invalidation_option(
+       opp, &dtc_l1_invalidate_on_source_event);
++  option_parser_register(opp, "-gpgpu_dtc_l1_progressive_wakeup", OPT_BOOL,
++                         &dtc_l1_progressive_wakeup,
++                         "Progressive own-waiter wakeup (finite PAPER_OO only)",
++                         "0");
+   option_parser_register(opp, "-gpgpu_dtc_l1_finite_service", OPT_BOOL,
+                          &dtc_l1_finite_service,
+                          "Opt-in preregistered whole-line DTC finite service V1", "0");
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+index e7a05a87..389bd50e 100644
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -2968,6 +2968,7 @@ bool ldst_unit::dtc_l1_service_collect(
+     for (const auto &reference : references)
+       sectors += __builtin_popcount(reference.sector_mask);
+     service.observe_ready(cycle, sectors);
++    if (m_config->dtc_l1_progressive_wakeup) ++m_dtc_progressive_collectable_entries;
+   }
+   const unsigned before = service.sectors_left;
+   const bool collected = service.collect(cycle, m_dtc_service_collect);
+@@ -2985,6 +2986,11 @@ void ldst_unit::dtc_l1_service_retired(const dtc_l1::service_entry &service) {
+   m_dtc_service_ready_to_collect_sum += service.collect_start_cycle - service.ready_cycle;
+   m_dtc_service_collection_cycles += service.collect_done_cycle - service.collect_start_cycle + 1;
+   m_dtc_service_wb_wait += cycle - service.collect_done_cycle - 1;
++  if (m_config->dtc_l1_progressive_wakeup) {
++    assert(service.admitted_returns_cycle != UINT64_MAX &&
++           service.admitted_returns_cycle <= service.ready_cycle);
++    m_dtc_progressive_returns_to_retire_sum += cycle - service.admitted_returns_cycle;
++  }
+   ++m_dtc_service_retired;
+ }
+ 
+@@ -3663,6 +3669,16 @@ void ldst_unit::dtc_l1_io_identity_event(const char *event,
+ }
+ 
+ // Normal-statistics delegation only; reuse the original cumulative observer.
++void ldst_unit::print_dtc_l1_progressive_wakeup_summary(FILE *fp) const {
++  assert(m_config->dtc_l1_progressive_wakeup && m_dtc_l1_oo_frontend);
++  m_dtc_l1_oo_frontend->print_progressive_summary(fp, m_sid);
++  fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1_LDST sm=%u admitted_notified_collectable=%llu "
++              "admitted_returns_to_retire_sum=%llu retired=%llu\n", m_sid,
++          (unsigned long long)m_dtc_progressive_collectable_entries,
++          (unsigned long long)m_dtc_progressive_returns_to_retire_sum,
++          (unsigned long long)m_dtc_service_retired);
++}
++
+ void ldst_unit::print_dtc_l1_invalidation_summary(FILE *fp) const {
+   if (m_config->dtc_l1_invalidate_on_source_event)
+     m_dtc_invalidation.print(fp);
+@@ -4319,6 +4335,8 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
+        mem_config, stats, sid, tpc);
+   dtc_l1::check_source_invalidation_mode(
+       m_config->dtc_l1_invalidate_on_source_event, m_config->dtc_l1_mode);
++  dtc_l1::check_progressive_wakeup_mode(m_config->dtc_l1_progressive_wakeup,
++      m_config->dtc_l1_mode, m_config->dtc_l1_finite_service);
+   if (m_config->dtc_l1_invalidate_on_source_event &&
+       m_config->m_L1D_config.disabled()) {
+     fprintf(stderr, "OO_K1_REQUIRES_ORDINARY_L1D_STOP\n");
+@@ -4381,6 +4399,7 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
+     m_dtc_l1_io_frontend = std::make_unique<dtc_l1::io_frontend>(dtc_config);
+   if (m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_OO)) {
+     dtc_config.selected_mode = dtc_l1::mode::PAPER_OO;
++    dtc_config.progressive_wakeup = m_config->dtc_l1_progressive_wakeup;
+     m_dtc_l1_oo_frontend = std::make_unique<dtc_l1::oo_frontend>(dtc_config);
+   }
+   if (m_config->dtc_l1_mode ==
+@@ -4405,6 +4424,10 @@ ldst_unit::ldst_unit(mem_fetch_interface *icnt,
+     : pipelined_simd_unit(NULL, config, 3, core, 0),
+       m_L1D(new_l1d_cache),
+       m_next_wb(config) {
++  if (config->dtc_l1_progressive_wakeup) {
++    fprintf(stderr, "DTC_PROGRESSIVE_WAKE_EXTERNAL_CACHE_CONSTRUCTOR_STOP\n");
++    abort();
++  }
+   if (config->dtc_l1_invalidate_on_source_event) {
+     fprintf(stderr, "OO_K1_EXTERNAL_CACHE_CONSTRUCTOR_UNSUPPORTED_STOP\n");
+     abort();
+@@ -5010,12 +5033,14 @@ void ldst_unit::cycle() {
+       } else {
+         m_dtc_l1_oo_frontend->advance_service(cycle);
+       }
+-      auto observe_ready = [cycle](auto &entry) {
++      auto observe_ready = [this, cycle](auto &entry) {
+         if (entry.service.ready_cycle != UINT64_MAX) return;
+         unsigned sectors = 0;
+         for (const auto &reference : entry.references)
+           sectors += __builtin_popcount(reference.sector_mask);
+         entry.service.observe_ready(cycle, sectors);
++        if (m_config->dtc_l1_progressive_wakeup)
++          ++m_dtc_progressive_collectable_entries;
+       };
+       if (dtc_l1_paper_io_active()) {
+         for (auto &entry : m_dtc_l1_io_pib)
+@@ -5024,11 +5049,18 @@ void ldst_unit::cycle() {
+               m_dtc_l1_io_frontend->entry_ready_for(entry.inst.get_uid()))
+             observe_ready(entry);
+       } else {
+-        for (auto &entry : m_dtc_l1_oo_pib)
++        for (auto &entry : m_dtc_l1_oo_pib) {
++          if (m_config->dtc_l1_progressive_wakeup &&
++              entry.operation == dtc_l1_m4_operation::CACHEABLE_LOAD &&
++              entry.next_reference == entry.references.size() &&
++              entry.service.admitted_returns_cycle == UINT64_MAX &&
++              m_dtc_l1_oo_frontend->entry_returns_complete_for(entry.inst.get_uid()))
++            entry.service.admitted_returns_cycle = cycle;
+           if (entry.operation == dtc_l1_m4_operation::CACHEABLE_LOAD &&
+               entry.next_reference == entry.references.size() &&
+               m_dtc_l1_oo_frontend->entry_ready_for(entry.inst.get_uid()))
+             observe_ready(entry);
++        }
+       }
+     }
+   }
+@@ -5766,6 +5798,16 @@ void gpgpu_sim::shader_print_dtc_l1_stats(FILE *fout) const {
+             (unsigned long long)global_cycle());
+   }
+ 
++  if (m_shader_config->dtc_l1_progressive_wakeup) {
++    fprintf(fout, "DTC_PROGRESSIVE_WAKE_V1_SNAPSHOT_BEGIN version=1 sms=%u "
++                  "cycle=%llu no_event_cycle_sentinel=%llu\n",
++            m_shader_config->num_shader(), (unsigned long long)global_cycle(),
++            (unsigned long long)UINT64_MAX);
++    for (unsigned i = 0; i < m_shader_config->n_simt_clusters; ++i)
++      m_cluster[i]->print_dtc_l1_progressive_wakeup_summary(fout);
++    fprintf(fout, "DTC_PROGRESSIVE_WAKE_V1_SNAPSHOT_END version=1\n");
++  }
++
+   dtc_l1::paper_frontend_stats total;
+   cache_stats l1d_stats;
+   for (unsigned i = 0; i < m_shader_config->n_simt_clusters; ++i) {
+@@ -7028,6 +7070,10 @@ void shader_core_ctx::print_cache_stats(FILE *fp, unsigned &dl1_accesses,
+   m_ldst_unit->print_cache_stats(fp, dl1_accesses, dl1_misses);
+ }
+ 
++void shader_core_ctx::print_dtc_l1_progressive_wakeup_summary(FILE *fp) const {
++  m_ldst_unit->print_dtc_l1_progressive_wakeup_summary(fp);
++}
++
+ void shader_core_ctx::print_dtc_l1_invalidation_summary(FILE *fp) const {
+   m_ldst_unit->print_dtc_l1_invalidation_summary(fp);
+ }
+@@ -7874,6 +7920,11 @@ void simt_core_cluster::print_cache_stats(FILE *fp, unsigned &dl1_accesses,
+   }
+ }
+ 
++void simt_core_cluster::print_dtc_l1_progressive_wakeup_summary(FILE *fp) const {
++  for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; ++i)
++    m_core[i]->print_dtc_l1_progressive_wakeup_summary(fp);
++}
++
+ void simt_core_cluster::print_dtc_l1_invalidation_summary(FILE *fp) const {
+   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; ++i)
+     m_core[i]->print_dtc_l1_invalidation_summary(fp);
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+index ae9b4112..c42d960a 100644
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -1997,6 +1997,7 @@ class ldst_unit : public pipelined_simd_unit {
+   void display_l1d_deadlock_state(FILE *fp) const;
+   void get_dtc_l1_stats(dtc_l1::paper_frontend_stats &stats) const;
+   void print_dtc_l1_invalidation_summary(FILE *fp) const;
++  void print_dtc_l1_progressive_wakeup_summary(FILE *fp) const;
+   void print_dtc_l1_io_deadlock(FILE *fp) const;
+   void get_l1d_cache_stats(cache_stats &cs) const;
+   void get_cache_stats(unsigned &read_accesses, unsigned &write_accesses,
+@@ -2162,6 +2163,8 @@ class ldst_unit : public pipelined_simd_unit {
+   uint64_t m_dtc_service_collection_cycles = 0;
+   uint64_t m_dtc_service_wb_wait = 0;
+   uint64_t m_dtc_service_retired = 0;
++  uint64_t m_dtc_progressive_collectable_entries = 0;
++  uint64_t m_dtc_progressive_returns_to_retire_sum = 0;
+   uint64_t m_dtc_service_collected_sectors = 0;
+   warp_inst_t m_next_wb;
+   unsigned m_writeback_arb;  // round-robin arbiter for writeback contention
+@@ -2502,6 +2505,7 @@ class shader_core_config : public core_config {
+   // reuse the conventional L1 bank/MSHR controls so LEGACY remains untouched.
+   unsigned dtc_l1_mode;
+   bool dtc_l1_finite_service;
++  bool dtc_l1_progressive_wakeup;
+   bool dtc_l1_invalidate_on_source_event;
+   unsigned dtc_l1_pib_entries;
+   unsigned dtc_l1_mshr_entries;
+@@ -3064,6 +3068,7 @@ class shader_core_ctx : public core_t {
+                          unsigned &dl1_misses);
+   void get_dtc_l1_stats(dtc_l1::paper_frontend_stats &stats) const;
+   void print_dtc_l1_invalidation_summary(FILE *fp) const;
++  void print_dtc_l1_progressive_wakeup_summary(FILE *fp) const;
+   void print_dtc_l1_io_deadlock(FILE *fp) const;
+   void get_l1d_cache_stats(cache_stats &cs) const;
+ 
+@@ -3593,6 +3598,7 @@ class simt_core_cluster {
+                          unsigned &dl1_misses) const;
+   void get_dtc_l1_stats(dtc_l1::paper_frontend_stats &stats) const;
+   void print_dtc_l1_invalidation_summary(FILE *fp) const;
++  void print_dtc_l1_progressive_wakeup_summary(FILE *fp) const;
+   void print_dtc_l1_io_deadlock(FILE *fp) const;
+   void get_l1d_cache_stats(cache_stats &cs) const;
+ 
+diff --git a/tests/dtc_l1_ad_off_trace.cc b/tests/dtc_l1_ad_off_trace.cc
+new file mode 100644
+index 00000000..379ee744
+--- /dev/null
++++ b/tests/dtc_l1_ad_off_trace.cc
+@@ -0,0 +1,32 @@
++// Built against both fixed X2 and candidate production headers in one build.
++#include "dtc-l1-common.h"
++#include <cstdio>
++int main() {
++  for (bool finite : {false, true}) {
++    dtc_l1::config c; c.finite_service=finite; c.logical_sets=c.logical_ways=1;
++    c.physical_lines=2; c.oo_pib_entries=16;
++    dtc_l1::oo_frontend f(c); f.advance_service(1);
++    dtc_l1::physical_identity a{};
++    for (unsigned uid=1;uid<=9;++uid) { assert(f.admit(uid)); a=f.access(1,uid,0).physical; }
++    f.complete(a);
++    for (unsigned cycle=1;cycle<=4;++cycle) {
++      f.advance_service(cycle);
++      std::printf("finite=%u cycle=%u wakes=%llu refs=%llu ready=",finite,cycle,
++          (unsigned long long)f.wakeups(),(unsigned long long)f.ref_count(a));
++      for(unsigned uid=1;uid<=9;++uid) std::printf("%u",f.entry_ready_for(uid));
++      std::puts("");
++    }
++    f.add_external_dependency(1); assert(!f.entry_ready_for(1));
++    f.complete_external_dependency(1);
++    auto lost=f.invalidate_lookup(5); assert(lost.retained==1);
++    assert(f.admit(10)); auto b=f.access(5,10,0).physical; f.complete(b);
++    f.advance_service(6);
++    for(unsigned uid=1;uid<=10;++uid) assert(f.retire_ready_uid(10+uid,uid));
++    f.invalidate_lookup(25);
++    std::printf("end finite=%u allocated=%zu refs=%llu wakes=%llu retires=%llu reclaims=%llu sum=%llu count=%llu\n",
++        finite,f.allocated_lines(),(unsigned long long)f.active_refs(),
++        (unsigned long long)f.wakeups(),(unsigned long long)f.retires(),
++        (unsigned long long)f.final_ref_reclaims(),(unsigned long long)f.map_loss_to_free_sum(),
++        (unsigned long long)f.map_loss_to_free_count());
++  }
++}
+diff --git a/tests/dtc_l1_progressive_ldst_test.cc b/tests/dtc_l1_progressive_ldst_test.cc
+new file mode 100644
+index 00000000..f8e06081
+--- /dev/null
++++ b/tests/dtc_l1_progressive_ldst_test.cc
+@@ -0,0 +1,151 @@
++// CPU component fixture for actual production LDST response/selection/collection/
++// RF WB/ledger retirement/K1/normal-print paths. -fno-access-control is a setup
++// seam only. No kernel, trace body, GPU cycle(), native run or runtime thread.
++#include "gpgpu-sim/gpu-sim.h"
++#include "gpgpu-sim/shader.h"
++#include "gpgpu-sim/icnt_wrapper.h"
++#include "gpgpu-sim/scoreboard.h"
++#include "gpgpu_context.h"
++#include "gpgpusim_entrypoint.h"
++#include "option_parser.h"
++#include <csignal>
++#include <functional>
++#include <ctime>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include <unistd.h>
++static void rejects(const std::function<void()> &f) {
++  auto pid=fork(); assert(pid>=0);
++  if(!pid) { std::signal(SIGABRT,SIG_DFL); f(); _exit(0); }
++  int status; assert(waitpid(pid,&status,0)==pid);
++  assert(WIFSIGNALED(status) && WTERMSIG(status)==SIGABRT);
++}
++int main(int argc, const char **argv) {
++  assert(argc==2); rlimit limit{0,0}; setrlimit(RLIMIT_CORE,&limit);
++  gpgpu_context ctx; gpgpu_sim_config cfg(&ctx);
++  auto parser=option_parser_create(); cfg.reg_options(parser); icnt_reg_options(parser);
++  ctx.ptx_reg_options(parser); ctx.func_sim->ptx_opcocde_latency_options(parser);
++  assert(!cfg.m_shader_config.dtc_l1_progressive_wakeup);
++  option_parser_cfgfile(parser,argv[1]);
++  const char *opts[]={"AD_CPU", "-gpgpu_n_clusters","1", "-gpgpu_n_cores_per_cluster","1",
++    "-gpgpu_n_mem","1", "-gpgpu_n_sub_partition_per_mchannel","1",
++    "-gpgpu_shader_core_pipeline","64:32", "-gpgpu_shader_cta","2",
++    "-gpgpu_smem_latency","2", "-network_mode","2", "-gpgpu_dtc_l1_mode","3",
++    "-gpgpu_dtc_l1_finite_service","1", "-gpgpu_dtc_l1_progressive_wakeup","1",
++    "-gpgpu_dtc_l1_invalidate_on_source_event","1",
++    "-gpgpu_l1_cache_write_ratio","0", "-gpgpu_gmem_skip_L1D","0",
++    "-enable_ptx_file_line_stats","0", "-gpgpu_dtc_l1_debug_event_limit","0",
++    "-power_simulation_enabled","0", "-visualizer_enabled","0",
++    "-gpgpu_clock_domains","1410.0:1410.0:1410.0:850.0"};
++  option_parser_cmdline(parser,sizeof(opts)/sizeof(opts[0]),opts); cfg.init();
++  ctx.the_gpgpusim->g_simulation_starttime=std::time(nullptr);
++  auto *gpu=new exec_gpgpu_sim(cfg,&ctx); gpu->init();
++  auto *core=gpu->get_simt_core_clusters()[0]->get_shader_cores()[0];
++  auto *ld=core->m_ldst_unit; auto &f=*ld->m_dtc_l1_oo_frontend;
++  auto *rf=dynamic_cast<opndcoll_rfu_t *>(ld->m_operand_collector); assert(rf);
++  const auto *sc=gpu->getShaderCoreConfig();
++  auto inst=[&](unsigned uid, bool reg=false) {
++    warp_inst_t i(sc);
++    // Real decoders initialize every output slot; inst_t's constructor only
++    // zeros sizeof(unsigned) bytes. Synthetic instructions must do the rest.
++    std::fill(std::begin(i.out),std::end(i.out),0U);
++    active_mask_t active; active.set(0);
++    i.issue(active,0,1,0,0,0); i.m_uid=uid; i.pc=0; i.op=LOAD_OP; i.op_pipe=MEM__OP;
++    i.space=memory_space_t(global_space); i.cache_op=CACHE_ALL;
++    if(reg) { i.out[0]=1; i.arch_reg.dst[0]=1; }
++    return i;
++  };
++  auto fence=inst(90); fence.m_is_proxy_fence=true;
++  assert(ld->dtc_l1_m4_observe_admit(fence,ldst_unit::dtc_l1_m4_operation::PROXY_FENCE));
++  auto admit=[&](unsigned uid) {
++    auto i=inst(uid,uid==100); assert(f.admit(uid));
++    if(uid==100) { ld->m_pending_writes[0][1]=1; ld->m_scoreboard->reserveRegisters(&i); }
++    const std::vector<dtc_l1::line_reference> refs{{0,1}};
++    ld->dtc_l1_r4c0_record_issue(i,refs,1);
++    // Source issue accounting for these explicitly injected CPU instructions.
++    ++ld->m_dtc_l1_oo_completion_dependencies;
++    ld->m_dtc_l1_oo_pib.push_back({i,refs,1});
++    ld->dtc_l1_r4c0_record_pib(i,refs,"OO");
++    return f.access(gpu->global_cycle(),uid,0).physical;
++  };
++  gpu->gpu_sim_cycle=10; f.advance_service(10);
++  dtc_l1::physical_identity id{};
++  for(unsigned uid=100;uid<109;++uid) id=admit(uid);
++  auto root=[&](dtc_l1::physical_identity identity) {
++    mem_access_t access(GLOBAL_ACC_R,0,128,false,&ctx);
++    auto *r=new mem_fetch(access,(const warp_inst_t *)nullptr,0,8,0,0,0,&cfg.m_memory_config,gpu->global_cycle());
++    assert(gpu->dtc_l1_try_acquire_lower_request());
++    // This CPU fixture injects the already-created, already-issued root.
++    ++ld->m_dtc_l1_oo_lower_created; ++ld->m_dtc_l1_oo_lower_issued;
++    assert(ld->m_dtc_l1_oo_inflight.emplace(r->get_request_uid(),
++        ldst_unit::dtc_l1_oo_inflight{identity,0,100,15,0}).second);
++    return r;
++  };
++  auto sector=[&](mem_fetch *r,unsigned n,bool write=false) {
++    mem_access_t access(write?GLOBAL_ACC_W:GLOBAL_ACC_R,n*32,32,write,&ctx);
++    auto *s=new mem_fetch(access,(const warp_inst_t *)nullptr,0,8,0,0,0,&cfg.m_memory_config,gpu->global_cycle(),r);
++    s->set_reply(); assert(ld->dtc_l1_oo_consume_response(s));
++  };
++  auto *r=root(id);
++  sector(r,0); assert(f.wakeups()==0 && !f.entry_returns_complete_for(100));
++  rejects([&]{sector(r,0);}); // duplicate sector reaches real consume assertion
++  rejects([&]{sector(r,4);}); // out-of-line sector
++  rejects([&]{sector(r,1,true);}); // write reply is not a load fill
++  sector(r,2); sector(r,1);
++  assert(!f.entry_ready_for(100) && !f.entry_returns_complete_for(100));
++  sector(r,3); assert(f.entry_returns_complete_for(100) && f.wakeups()==0);
++  f.advance_service(10); assert(!f.entry_ready_for(100));
++  gpu->gpu_sim_cycle=11; f.advance_service(11);
++  assert(f.entry_ready_for(100) && !f.entry_ready_for(104));
++  uint64_t selected=0;
++  assert(!ld->dtc_l1_oo_select_ready(&selected)); // same-warp fence still gates
++  ld->dtc_l1_m4_observe_complete(fence);
++  assert(ld->dtc_l1_oo_writeback_ready()); // fence sidecar, no data WB/Ref
++  assert(!ld->dtc_l1_oo_writeback_ready()); // one retirement per cycle
++  auto *first=ld->dtc_l1_oo_find_entry(100); first->next_reference=0;
++  assert(ld->dtc_l1_oo_select_ready(&selected) && selected==101); // partial admission excluded
++  first->next_reference=1;
++  assert(ld->dtc_l1_oo_select_ready(&selected) && selected==100);
++  assert(admit(109).id==id.id && !f.entry_ready_for(109)); // late merge consumes future quota
++  f.advance_service(11); assert(f.wakeups()==4 && !f.entry_ready_for(109));
++  // Hold ordinary pending-commit; K1 hides lookup NOW, preserves return/Ref.
++  ld->m_L1D->m_extra_mf_fields.emplace(nullptr,baseline_cache::extra_mf_fields());
++  ld->invalidate(dtc_l1::invalidation_source::IDLE_CLUSTER);
++  assert(!f.tag_visible(id) && f.ref_count(id)==10 && ld->m_L1D->m_invalidate_pending);
++  ld->cycle(); // actual LDST sample observes own-ready at 11; no collection at ready edge
++  assert(first->service.ready_cycle==11 && first->service.admitted_returns_cycle==11);
++  assert(first->service.collect_done_cycle==UINT64_MAX && f.ref_count(id)==10);
++  gpu->gpu_sim_cycle=12; rf->process_banks(); ld->cycle();
++  assert(f.wakeups()==8 && !f.entry_ready_for(108) && !f.entry_ready_for(109));
++  assert(first->service.collect_done_cycle==12 && f.ref_count(id)==10);
++  gpu->gpu_sim_cycle=13; rf->process_banks();
++  auto competing=inst(999,true); assert(rf->writeback(competing)); // real RF bank reservation
++  ld->cycle();
++  assert(f.wakeups()==10 && f.entry_ready_for(109));
++  assert(ld->m_dtc_l1_oo_ready_but_wb_blocked_cycles==1 && f.ref_count(id)==10);
++  assert(ld->m_pending_writes[0][1]==1 && ld->m_dtc_l1_r4c0_completion_trace.count(100)==1);
++  assert(ld->m_L1D->m_extra_mf_fields.erase(nullptr)==1);
++  gpu->gpu_sim_cycle=14; rf->process_banks(); ld->cycle();
++  assert(!ld->dtc_l1_oo_find_entry(100) && f.ref_count(id)==9);
++  assert(ld->m_pending_writes[0].count(1)==0 && ld->m_dtc_l1_r4c1_retired_history.at(100).closed_dependencies==1);
++  for(unsigned cycle=15;!ld->m_dtc_l1_oo_pib.empty();++cycle) {
++    assert(cycle<50); gpu->gpu_sim_cycle=cycle; rf->process_banks(); ld->cycle();
++  }
++  assert(!f.is_allocated(id) && f.active_refs()==0 && f.final_ref_reclaims()==1);
++  assert(gpu->dtc_l1_lower_outstanding()==0 && ld->m_dtc_service_retired==10);
++  assert(ld->m_dtc_progressive_collectable_entries==10);
++  // Stale physical/generation via actual LDST complete after four legal sectors.
++  rejects([&]{auto *stale=root(id); for(unsigned s=0;s<4;++s) sector(stale,s);});
++  f.assert_shadow_refs();
++  auto *stream=tmpfile(); assert(stream);
++  auto print=[&] { gpu->shader_print_dtc_l1_stats(stream); fflush(stream); };
++  print(); auto size=ftell(stream); auto counters=ld->m_dtc_progressive_returns_to_retire_sum;
++  print(); assert(ftell(stream)==size*2 && counters==ld->m_dtc_progressive_returns_to_retire_sum);
++  rewind(stream); char buffer[4096]; while(auto n=fread(buffer,1,sizeof(buffer),stream)) fwrite(buffer,1,n,stdout);
++  fclose(stream);
++  gpu->gpu_print_stat(0); // actual normal entrypoint, no GPU cycle()/kernel
++  std::printf("AD_HOST_LAYOUT physical_line=%zu entry=%zu config=%zu service=%zu frontend=%zu ldst=%zu\n",
++      sizeof(dtc_l1::oo_frontend::physical_line), sizeof(dtc_l1::oo_frontend::entry),
++      sizeof(dtc_l1::config), sizeof(dtc_l1::service_entry), sizeof(dtc_l1::oo_frontend), sizeof(ldst_unit));
++  std::puts("PASS real_LDST legal_4x32 sectors duplicate illegal stale_generation plus1 own_ready late_merge partial_admission collection RF_WB_backpressure ledger_retire K1 final_ref fence_sidecar normal_export_repeat_readonly kernels=0 gpu_cycle_calls=0 threads_started=0 payload_values=UNPROVEN");
++}
+diff --git a/tests/dtc_l1_progressive_wakeup_test.cc b/tests/dtc_l1_progressive_wakeup_test.cc
+new file mode 100644
+index 00000000..d36398ac
+--- /dev/null
++++ b/tests/dtc_l1_progressive_wakeup_test.cc
+@@ -0,0 +1,131 @@
++// CPU-only production-header state machine checks; no payload/value oracle.
++#include "dtc-l1-common.h"
++#include <csignal>
++#include <functional>
++#include <sys/resource.h>
++#include <sys/wait.h>
++#include <unistd.h>
++using namespace dtc_l1;
++static config settings(bool enabled = true) {
++  config c;
++  c.selected_mode = mode::PAPER_OO;
++  c.finite_service = true;
++  c.progressive_wakeup = enabled;
++  c.oo_pib_entries = 16;
++  c.physical_lines = 2;
++  c.logical_sets = c.logical_ways = 1;
++  return c;
++}
++static void rejects(const std::function<void()> &f) {
++  const pid_t pid = fork(); assert(pid >= 0);
++  if (!pid) { f(); _exit(0); }
++  int status; assert(waitpid(pid, &status, 0) == pid);
++  assert(WIFSIGNALED(status) && WTERMSIG(status) == SIGABRT);
++}
++static void fanout(unsigned n, bool on) {
++  oo_frontend f(settings(on));
++  f.advance_service(10);
++  physical_identity id{};
++  for (unsigned uid = 1; uid <= n; ++uid) {
++    assert(f.admit(uid)); id = f.access(10, uid, 0).physical;
++  }
++  f.complete(id);
++  assert(!f.entry_ready_for(1));
++  f.advance_service(10); // complete->advance cannot collapse the +1 boundary
++  assert(!f.entry_ready_for(1) && f.wakeups() == 0);
++  for (unsigned edge = 1; edge <= (n + 3) / 4; ++edge) {
++    f.advance_service(10 + edge);
++    const unsigned notified = std::min(n, edge * 4);
++    assert(f.wakeups() == notified && f.ref_count(id) == n);
++    for (unsigned uid = 1; uid <= n; ++uid)
++      assert(f.entry_ready_for(uid) == (on ? uid <= notified : notified == n));
++    f.advance_service(10 + edge);
++    assert(f.wakeups() == notified); // no same-cycle quota reuse
++  }
++  for (unsigned uid = 1; uid <= n; ++uid) {
++    assert(f.retire_ready_uid(20 + uid, uid));
++    if (uid != n) assert(!f.retire_ready_uid(20 + uid, uid + 1));
++  }
++  assert(f.ref_count(id) == 0 && f.is_allocated(id));
++  assert(f.invalidate_lookup(50).reclaimed == 1 && !f.is_allocated(id));
++  std::printf("PASS fanout=%u progressive=%u quota=4 plus1=preserved\n", n, on);
++}
++static void lifecycle() {
++  oo_frontend f(settings());
++  f.advance_service(1);
++  physical_identity old{};
++  for (unsigned uid = 1; uid <= 9; ++uid) {
++    assert(f.admit(uid)); old = f.access(1, uid, 0).physical;
++  }
++  f.complete(old); f.advance_service(2);
++  const auto slot = f.entry_slot(1); const auto gen = f.entry_slot_generation(1);
++  assert(f.retire_ready_uid(2, 1)); // leaves processed stale waiter slot behind
++  assert(f.admit(10) && f.entry_slot(10) == slot && f.entry_slot_generation(10) > gen);
++  assert(f.access(2, 10, 0).kind == io_access_kind::PENDING_HIT);
++  // Repeated same-ref admission is not a second waiter/Ref.
++  f.access(2, 10, 0);
++  assert(!f.entry_ready_for(10) && f.ref_count(old) == 9);
++  f.advance_service(2); assert(f.wakeups() == 4 && !f.entry_ready_for(10));
++  const auto lost = f.invalidate_lookup(2);
++  assert(lost.changed == 1 && lost.retained == 1 && !f.tag_visible(old));
++  assert(f.admit(11));
++  const auto newer = f.access(3, 11, 0).physical;
++  assert(newer.id != old.id && f.is_allocated(old));
++  f.complete(newer);
++  f.advance_service(3); assert(f.wakeups() == 8 && !f.entry_ready_for(9) && !f.entry_ready_for(10));
++  f.advance_service(4); assert(f.wakeups() == 11 && f.entry_ready_for(10) && f.entry_ready_for(11));
++  for (unsigned uid = 2; uid <= 10; ++uid) assert(f.retire_ready_uid(10 + uid, uid));
++  assert(!f.is_allocated(old) && f.is_allocated(newer));
++  assert(f.retire_ready_uid(21, 11));
++  assert(f.admit(12));
++  assert(f.access(22, 12, 0).kind == io_access_kind::VALID_HIT);
++  assert(f.entry_ready_for(12) && f.wakeups() == 11); // after end: no new broadcast
++  f.add_external_dependency(12); assert(!f.entry_ready_for(12));
++  f.complete_external_dependency(12); assert(f.entry_ready_for(12));
++  f.invalidate_lookup(23); f.advance_service(24); assert(f.retire_ready_uid(24, 12));
++  assert(f.allocated_lines() == 0 && f.active_refs() == 0);
++  // Recycle the physical slot. An old return must fail, never wake new owners.
++  assert(f.admit(13)); f.access(25, 13, 128);
++  assert(f.admit(14)); f.access(26, 14, 256);
++  assert(!f.fill_identity_matches(old));
++  rejects([&]{ f.complete(old); });
++  f.print_progressive_summary(stdout, 0);
++  std::puts("PASS late_merge slot_reuse generation K1 old_return final_ref external_dependency");
++}
++static void multi_reference_and_replacement() {
++  oo_frontend f(settings()); f.advance_service(1);
++  assert(f.admit(1)); auto a = f.access(1, 1, 0).physical;
++  auto b = f.access(1, 1, 128).physical; // tag victim retains old physical Ref
++  assert(!f.tag_visible(a) && f.ref_count(a) == 1);
++  assert(f.admit(2));
++  assert(f.access(1, 2, 256).kind == io_access_kind::NO_FREE_LINE); // partial admission: no rollback
++  assert(f.ref_count(a) == 1 && f.ref_count(b) == 1);
++  f.complete(a); f.advance_service(2); assert(!f.entry_ready_for(1));
++  f.complete(b); f.advance_service(3); assert(f.entry_ready_for(1));
++  // Successful retirement is the only ref decrement; readiness did not free a.
++  assert(f.ref_count(a) == 1 && f.is_allocated(a));
++  f.advance_service(4);
++  assert(f.retire_ready_uid(4, 1) && !f.is_allocated(a));
++  assert(f.access(4, 2, 256).kind == io_access_kind::NEW_MISS);
++  f.assert_shadow_refs();
++  std::puts("PASS multiple_allocations partial_allocation tag_victim last_ref");
++}
++int main() {
++  rlimit limit{0, 0}; setrlimit(RLIMIT_CORE, &limit);
++  for (unsigned n : {4, 5, 8, 9}) for (bool on : {false, true}) fanout(n, on);
++  lifecycle(); multi_reference_and_replacement();
++  for (unsigned selected = 0; selected <= 4; ++selected)
++    for (bool finite : {false, true}) {
++      if (selected == 3 && finite) continue;
++      rejects([=]{ check_progressive_wakeup_mode(true, selected, finite); });
++    }
++  rejects([]{ config c=settings(); io_frontend wrong(c); });
++  rejects([]{ config c=settings(); sector_oo_frontend wrong(c); });
++  rejects([]{ config c=settings(); paper_frontend wrong(c); });
++  rejects([]{ oo_frontend f(settings()); f.advance_service(1); f.admit(1);
++    auto id=f.access(1,1,0).physical; f.complete(id); f.complete(id); });
++  assert(!response_sector_is_new(15, 1, 0));
++  assert(!response_sector_is_new(15, 0, 4));
++  std::printf("PASS fail_closed sizeof_config=%zu sizeof_service_entry=%zu sizeof_oo=%zu\n",
++      sizeof(config), sizeof(service_entry), sizeof(oo_frontend));
++}

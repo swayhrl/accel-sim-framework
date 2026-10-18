@@ -1,0 +1,55 @@
+{
+  "failures": [
+    {
+      "stage": "preperformance_strict_positive_control_JSON_roundtrip",
+      "cause": "DRAM controller keys were int in freshly parsed data and str after JSON reference serialization, causing a false identity mismatch.",
+      "source_sha256_before_fix": "a4587c4a5eaa89ebc7929183bdabbd0cf71edb9330c786ba92961b79a372f355",
+      "fix": "Canonical decimal-string controller keys at parse construction.",
+      "scientific_threshold_or_reference_values_changed": false,
+      "new_simulation_attempts": 0,
+      "old_raw_modified": false
+    },
+    {
+      "stage": "preperformance_strict_negative_fixture",
+      "cause": "Fixture used a non-exported bank counter name.",
+      "fix": "Perturb the guaranteed exported oo_new_misses field in the already parsed control for calibration rejection.",
+      "scientific_contract_changed": false,
+      "new_simulation_attempts": 0
+    },
+    {
+      "stage": "AC_AE_merge_helper",
+      "cause": "Unanchored marker assertion counted equal signs in a source comment; diff --check caught remaining markers before compilation.",
+      "fix": "Anchor to complete conflict-marker lines and retain both exact additions; exact-union source audit passes.",
+      "scientific_contract_changed": false,
+      "new_simulation_attempts": 0
+    },
+    {
+      "stage": "AC_normal_common_CPU_join",
+      "cause": "Pair fixture prime() adds direct frontend seed retirements outside LDST; its population cannot equal pipeline retirements.",
+      "fix": "Retain strict full-input population equality. Actual64SM two-generation fixture without synthetic prime passes; primed pair is now a rejecting negative.",
+      "scientific_contract_changed": false,
+      "new_simulation_attempts": 0
+    },
+    {
+      "stage": "freeze_CPU_build_metadata",
+      "cause": "Core CMake export of compile_commands was not enabled; subsequent metadata assumed a C compiler although project enables only CXX.",
+      "fix": "Enable compile-command metadata without changing flags/binaries; record actual enabled CXX compiler; frozen private ELF bytes must remain identical on metadata reentry.",
+      "scientific_contract_changed": false,
+      "new_simulation_attempts": 0
+    },
+    {
+      "stage": "preview_CTest_receipt_metadata",
+      "cause": "Adapted reference qualifier labelled preview CTests with core=X2 although the receipt was for an uncommitted reviewed delta.",
+      "fix": "Use core_base=X2 and explicit uncommitted AE or AC/AE union source identity. Raw logs and all test results preserved.",
+      "scientific_contract_changed": false,
+      "new_simulation_attempts": 0
+    },
+    {
+      "stage": "prepublication_resource_sampling_review",
+      "cause": "Draft implementation anchored first PSI qualification to the admission timestamp, which could defer the first runtime observation.",
+      "fix": "Make the first runtime observation immediately qualified, then retain three observations >=30s apart, exactly matching the retained rule. Added directed1/31/61s CPU tests. No threshold changes.",
+      "scientific_thresholds_changed": false,
+      "new_simulation_attempts": 0
+    }
+  ]
+}

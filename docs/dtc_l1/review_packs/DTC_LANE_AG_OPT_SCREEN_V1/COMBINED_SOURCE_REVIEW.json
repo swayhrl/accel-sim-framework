@@ -1,0 +1,142 @@
+{
+  "status": "PASS_EXACT_AC_AE_UNION_NO_MECHANISM_CONFLICT",
+  "base": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+  "AC": "83aca449135703c176cfab29ae43e1245d00a557",
+  "AE": "ae83cc510f301cfe7937ad77318e332b2ab324e8",
+  "AD": "NOT_MERGED_HOLD_UNQUALIFIED",
+  "AF": "NOT_MERGED",
+  "shared_conflicts": [
+    "CMakeLists.txt",
+    "shader.h bool declarations",
+    "shader.cc independent initialization guards"
+  ],
+  "conflict_resolution": "BOTH EXACT ADDITIONS_RETAINED; NO PRODUCER_SCIENTIFIC_CONTRACT_CHANGE",
+  "files": [
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "sha256": "5deb41e493a385c907bbd0ceaa52f9c33be8290c9f8af030c0c8b786500d0114",
+      "comparison": "EXACT_FIXED_AC_PLUS_THREE_UNCHANGED_AE_ADDITIONS"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.h",
+      "sha256": "9a4bc5a1a40226f033eed68d46f6ae5ccbe0f29dec0cf4b919a711b71b260f30",
+      "comparison": "EXACT_FIXED_AC_PLUS_AE_BOOL"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "c116821cfb33b3bebb4d60ea5aa626b0f2a0e384bc6af78009bfe0a302abcf65",
+      "comparison": "EXACT_FIXED_AC_PLUS_AE_REGISTRATION"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "b215a94bf685d5484ef4b320124a0ee60d3ca28887f8253f3b02ce2217efc1bb",
+      "comparison": "FIXED_AC_AND_PREVIOUSLY_CPU_QUALIFIED_AE_TEST_REGISTRATIONS"
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-collect-wb.h",
+      "sha256": "26d10d9acfb3ed5e064a33887ce4b207a2710b933252ba95e7034abcf4776269",
+      "comparison": "BYTE_IDENTICAL_PUBLISHED_83aca449135703c176cfab29ae43e1245d00a557"
+    },
+    {
+      "path": "tests/dtc_l1_collect_wb_pipeline_probe.cc",
+      "sha256": "1937f68cf1659705dd0c38136b4dc9194de5b92181107a543aae23983572bb02",
+      "comparison": "BYTE_IDENTICAL_PUBLISHED_83aca449135703c176cfab29ae43e1245d00a557"
+    },
+    {
+      "path": "tests/dtc_l1_collect_wb_resource_test.cc",
+      "sha256": "7ca6718497a3a75556b5db124833965ecea7c3bf96137c03a743dcddfa08830f",
+      "comparison": "BYTE_IDENTICAL_PUBLISHED_83aca449135703c176cfab29ae43e1245d00a557"
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "sha256": "730bbe748517bb036a909fdc416b40d121a40adfbeb78edbfe5c68d04e8a1dc0",
+      "comparison": "BYTE_IDENTICAL_PUBLISHED_ae83cc510f301cfe7937ad77318e332b2ab324e8"
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-tag-index.h",
+      "sha256": "184aab90b35330c96899133b0e6dc6ed1faa789275c128309bb481666fdeda26",
+      "comparison": "BYTE_IDENTICAL_PUBLISHED_ae83cc510f301cfe7937ad77318e332b2ab324e8"
+    },
+    {
+      "path": "tests/dtc_l1_tag_hash_bankrow_test.cc",
+      "sha256": "8a8519ca35d5159bc0267dbdfbc93b823a1eb1b7f7fbbe5aa2890ebb85a45652",
+      "comparison": "BYTE_IDENTICAL_PUBLISHED_ae83cc510f301cfe7937ad77318e332b2ab324e8"
+    }
+  ],
+  "protected": [
+    {
+      "signature": "bool ldst_unit::dtc_l1_oo_select_ready(",
+      "sha256": "bdc1efbd5e2ca9bc519c1e603b63d50df6a2cf873553743473ae9db9a8e04786",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "bool ldst_unit::dtc_l1_finite_service_active(",
+      "sha256": "497aa7b57e13be224fa244136fbeaec1a97a6dd7b8bf33cb5a5c015f1511ac27",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "bool ldst_unit::dtc_l1_service_collect(",
+      "sha256": "b05eb2dd1b506e9fca5f92a3f34432892fc7e53230c8a722bc6e0d2ae11c0193",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::dtc_l1_service_retired(",
+      "sha256": "9f663218b21ad13e4e150a61ff831e036f788bdc15f99d341cc7b25e217e028e",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::cycle(",
+      "sha256": "9d2396f24a5e34b6e1cd4a345d3ac09977fb6a9ae2b85549d3eb2ea1525058bb",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::invalidate(",
+      "sha256": "784a9c3f4852af6bdffb7988a05e677a43c70710648799a1fa8549587828fb87",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "bool ldst_unit::dtc_l1_oo_memory_cycle(",
+      "sha256": "2f685e1ddedfaa0acdb02780bdb60449b08a19d375ffaac7d05ba1b2c7e40b25",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::dtc_l1_oo_issue_lower_requests(",
+      "sha256": "096b7ab765258a0145e2e706aad0340b797f15740ea4a1155e45e5d77008e97f",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "bool ldst_unit::dtc_l1_oo_consume_response(",
+      "sha256": "e883683c36df40309d8cb111c6e9b5e6c13041baa670a1992731090a10a20357",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::dtc_l1_oo_complete_instruction(",
+      "sha256": "bb09b9c7d91388be734ed7480782af78d8683f3cc784780eab813bbb41bd5263",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "bool ldst_unit::dtc_l1_io_writeback_head(",
+      "sha256": "3bd99f8ea2163cf9c05c5dae88d220b0e38196605920b84ecb5e770b740dea42",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::issue(",
+      "sha256": "eeedcc589702cdfdb6502dbef64265841a9eda62cf7e5ff0658cc1157dfdbbe4",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "bool opndcoll_rfu_t::writeback(",
+      "sha256": "fb60c1c5aa806c29d2abeaf4e7ef4b9c9496de63dc1abf3245dd45e27d4c26c5",
+      "status": "BYTE_IDENTICAL_X2"
+    },
+    {
+      "signature": "void ldst_unit::print_dtc_l1_invalidation_summary(",
+      "sha256": "5696c013e125c2dfbdfc9a329cecc522db271303222f9b5b209f9f020b702273",
+      "status": "BYTE_IDENTICAL_X2"
+    }
+  ],
+  "additional_data_bytes_per_SM_AC_ON": 163840,
+  "additional_data_bytes_per_SM_AC_OFF": 0,
+  "new_collection_ports": 0,
+  "all_other_paths_unchanged": true
+}

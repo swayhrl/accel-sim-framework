@@ -1,0 +1,67 @@
+{
+  "version": "AG_DISCOVERY_RESOURCE_R2_V1",
+  "scope": "ONLY_NEW_AG_DISCOVERY_OPT_8_RESERVED_UUIDS",
+  "immutable_AA5_contract_modified": false,
+  "max_new_sim_concurrency": 1,
+  "dual_worker_audit_done": false,
+  "admission": {
+    "samples": 2,
+    "min_sample_gap_seconds": 10,
+    "host_MemAvailable_min_bytes": 34359738368,
+    "cgroup_headroom_min_bytes": 34359738368,
+    "disk_free_min_bytes": 10737418240,
+    "memory_full_PSI_avg10_max": 1,
+    "io_full_PSI_avg10_max": 25,
+    "no_new_cgroup_oom_or_oom_kill": true,
+    "host_global_single_page_delta_is_veto": false,
+    "all_external_projects_counted": true
+  },
+  "runtime": {
+    "full_sample_seconds": 10,
+    "WARN_full_sample_seconds": 5,
+    "OOM_light_poll_max_seconds": 1,
+    "new_cgroup_oom_or_oom_kill": "STOP_ON_FIRST_OBSERVATION",
+    "host_or_cgroup_headroom_below_bytes": 8589934592,
+    "disk_free_below_bytes": 2147483648,
+    "memory_full_PSI_stop": {
+      "comparator": ">",
+      "threshold": 10,
+      "consecutive_samples": 3,
+      "min_gap_seconds": 30
+    },
+    "io_full_PSI_stop": {
+      "comparator": ">",
+      "threshold": 25,
+      "consecutive_samples": 3,
+      "min_gap_seconds": 30,
+      "provenance": "AG_EXPLICIT_PROTECTIVE_EXTENSION_AA5_HAS_NO_RUNTIME_IO_FIELD"
+    },
+    "swap_current_growth_stop": {
+      "comparator": ">=",
+      "bytes": 16777216,
+      "relative_to": "RUN_START_CGROUP_SWAP_CURRENT",
+      "consecutive_samples": 3,
+      "min_gap_seconds": 10,
+      "reset_when": "growth below16MiB"
+    },
+    "host_global_pswpin_pswpout": "RECORD_EACH_SAMPLE_WARN_INCREASE_SAMPLING_NO_ISOLATED_PAGE_SIGTERM",
+    "correlated_pressure_and_own_majorfaults": "REPORT_REASON_DECISION_TIMES_CONTEXT_AND_ESCALATE_SAMPLING",
+    "first_full_sample": "IMMEDIATE_AFTER_CHILD_ATTESTATION",
+    "first_PSI_qualified_sample": "FIRST_RUNTIME_OBSERVATION_THEN_GE30S_NO_INITIAL_DELAY"
+  },
+  "stop_signal": {
+    "target": "ONLY_OWN_REGISTERED_CHILD_PID_START_TICKS_PIDFD",
+    "signal": "SIGTERM",
+    "SIGKILL": false,
+    "process_group_or_session_signals": false,
+    "foreign_signals": false
+  },
+  "timeout_seconds": 7200,
+  "retries_per_UUID": 0,
+  "failed_attempt_consumes_budget": true,
+  "stop_after_resource_identity_model_or_BASE_calibration_failure": true,
+  "policy_source": "scripts/resource_policy.py",
+  "ruling": "RESOURCE_CONTRACT_DIFF_AND_RULING.md",
+  "publication_state": "COMPLETE_LOCAL_EXECUTABLE_REGISTRATION_REQUIRES_PUSH_FETCH_BACK",
+  "OOM_watchdog_implementation": "independent owned-child pidfd watchdog every0.25s, also active during hashes and full audits"
+}

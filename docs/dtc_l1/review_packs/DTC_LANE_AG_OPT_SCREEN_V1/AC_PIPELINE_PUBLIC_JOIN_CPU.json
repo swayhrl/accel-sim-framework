@@ -1,0 +1,40 @@
+{
+  "status": "PASS_REAL64SM_ON_FRAME_AND_THREE_JOIN_NEGATIVES",
+  "argv": [
+    "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+    "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+    "1",
+    "generation",
+    "4",
+    "3",
+    "1",
+    "1",
+    "64"
+  ],
+  "stdout_sha256": "a8dc9891267bb58c1338bbc28b56446071525d1b6d11258134cf1bb93525d7ac",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "strict_sha256": "3b7150cb901034b6dd030686efb1f5c1a355e7bb6522254af9d8e348efbc53cf",
+  "parser_sha256": "1cfee40df4316e0460d1323bb85ab63248d2537b7056f6faf8720192126ac9fa",
+  "rows": 64,
+  "actual_return_generations": 2,
+  "negative_cases": [
+    {
+      "case": "wrong_common_sectors",
+      "rejected": true,
+      "reason": "AC_normal_common_population_join:collected_sectors"
+    },
+    {
+      "case": "OFF_export",
+      "rejected": true,
+      "reason": "OFF exported pipeline telemetry"
+    },
+    {
+      "case": "CPU_pair_prime_frontend_retirements_are_a_different_population",
+      "rejected": true,
+      "reason": "AC_normal_common_population_join:retires"
+    }
+  ],
+  "raw": "/workspace/dtc-lane-ag-opt-screen-174-v1/raw/cpu-qualification/pipeline-join64-3b7150cb9010",
+  "fixture_population_finding": "pair fixture prime() retires synthetic frontend seeds outside LDST; full-input strict equality is retained, not relaxed",
+  "full_simulations_started": 0
+}

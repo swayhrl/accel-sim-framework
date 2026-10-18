@@ -1,0 +1,1234 @@
+[
+  {
+    "label": "compile_ag-ac-baseline-probe",
+    "argv": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O1",
+      "-UNDEBUG",
+      "-fno-access-control",
+      "-DCUDART_VERSION=11080",
+      "-DDTC_COLLECT_WB_PROBE_BASELINE=1",
+      "-I/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-source/src",
+      "-I/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-source/libcuda",
+      "-I/usr/local/cuda-11.8/include",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/tests/dtc_l1_collect_wb_pipeline_probe.cc",
+      "-L/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-reference",
+      "-Wl,-rpath,/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-reference",
+      "-lcudart",
+      "-ldl",
+      "-lz",
+      "-lGL",
+      "-pthread",
+      "-o",
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-reference/ag-ac-baseline-probe"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "fixed_AC_independent_matrix",
+    "argv": [
+      "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag-opt-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG_OPT_SCREEN_V1/inputs/AC/scripts/run_cpu_matrix.py",
+      "--probe",
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/dtc_l1_collect_wb_pipeline_probe",
+      "--baseline-probe",
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-reference/ag-ac-baseline-probe",
+      "--core",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1",
+      "--baseline-library",
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/x2-reference/libcudart.so",
+      "--output",
+      "/workspace/dtc-lane-ag-opt-screen-174-v1/raw/cpu-qualification/ac-ae-independent-and-composite/independent-80"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "c33f856f901c53e8a0a1ab606bd0e78513068a0953873879541a04cdb9b7b801",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "compile_ag-ac-ae-composite-probe",
+    "argv": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O1",
+      "-UNDEBUG",
+      "-fno-access-control",
+      "-DCUDART_VERSION=11080",
+      "-DAG_COMPOSITE_AE=1",
+      "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/src",
+      "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/libcuda",
+      "-I/usr/local/cuda-11.8/include",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag-opt-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG_OPT_SCREEN_V1/scripts/ac_ae_composite_cpu_probe.cc",
+      "-L/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview",
+      "-Wl,-rpath,/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview",
+      "-lcudart",
+      "-ldl",
+      "-lz",
+      "-lGL",
+      "-pthread",
+      "-o",
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_pair_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "pair",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "3d1ea23af55047865f2c595f2a30676f8342911f533c673aeeebe01113196b1b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_pair_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "pair",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "8c1f3af63e6ed1f9e3e8c5ca2c0ef53dc02ccad9824de7b3caf4a13a796aba74",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_pair_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "pair",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "70e1378a9098cbc4d6f85ffd547e3f7b2f455f82e67d81c54827e1fa17a160ce",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_single_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "single",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "c42e6d6c57f221d51dd3527927b7cff1c7a62dd59565d760ae5c13933fb26189",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_single_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "single",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "3c0b5e8f830ee92771481f446fcdeb8f4768b806d458dee843a57efcf041414c",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_empty_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "empty",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "d7a66d9ce888b237be2def7435b6f637cd2e25d37a8e12f00273e4e0a7ff37c6",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_denied_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "denied",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "6122cdc9d41aaaed9fc06fd579e060d16e50260b198a2a97c3017dd921a570a4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_denied_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "denied",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "9073887840bba138540dc43620be6d17ecba11a3a8d7248df69b93fbcffa809e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_arbitration_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "arbitration",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "3d3ba8c58e5bebbe04838c9911b43774fdd7d60a68d8156e6ac51e7302a67b05",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_fence_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "fence",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "bf08d98b4269482a34c08bd1014356174eb414e06e9bbcbb25fdb5a280fdf373",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_same_warp_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "same_warp",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "ee834372d489c433cde4857f38f26ad82eccafa858debfe7e37eb4398b392e1b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_partial_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "partial",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "b07be1b09823a375ad634ea9cc02bb8b4e8f4de4b03c8d9e685ec0276a12b8a3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_partial_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "partial",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "aa119ddd616f49d3db7a07c98c8a38432e4946961017bb0d420abe524bcdc57a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_late_waiter_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "late_waiter",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "b322d2bfb6dc550a1c94b83f6280d1e732ceeba8bd086fbf631abda1262105bf",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_generation_4_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "generation",
+      "4",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "eabbc9f01950f84ba136364bbe5e923a8874aed27be726941aa568ba2ce6758c",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_k1_refs_8_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "k1_refs",
+      "8",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "5b6be76f853ec3b74b4533796c90fc5a1b91833a98c70d2a26e8e157f08fddf7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE0_sidecars_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "sidecars",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "4f721740753695582a29bb86e1908103ede1d4cbab451f2a2f8331c52345b96a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_pair_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "pair",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "5805dfba71e246158d331ceff3fba6f1b180a487a0351b118631b111d97c52b2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_pair_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "pair",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "75c100d879262efe378023b119b9867f0b385f88202ccf72533e07fa8ad97f99",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_pair_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "pair",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "ea9c19e8498d374c37a5dbb322b7a655cd3f12f66c1b25cd7459a86aebeba021",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_single_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "single",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "65c17bdcaf10951add65e72623eae07758c175f0adc14416f11d8e65e8647506",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_single_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "single",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "418c35e8ab2774b409db2f60290230532c50d5754a82368643a5b04d4df17e7d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_empty_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "empty",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "b5922c3fc96456133f44f5d035e889756716af8e4fa9488ae72585d0a3711d5e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_denied_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "denied",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "694696c5f626e43043f7bbae5902dce4d7f9e76f0b6daa6a55dcfbfe50545319",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_denied_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "denied",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "7edaaa310a3044b507faf120d3db10b654c16d07a2418510c8935343667e88f9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_arbitration_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "arbitration",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "763d88e59e6ce6ac0b067dd6bd9bb6468ad1685c613489eaacb9a57da8fa3414",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_fence_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "fence",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "066f58a121f0185afe657763c8ec4ebfbfa00085dfce082bf719ac465b9fcffd",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_same_warp_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "same_warp",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "eba27da9ec8b36f52403dcbd27ec97d3af65890f7e33d3317688a76937788f4e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_partial_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "partial",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f808e7354f68590e554b4547b133829d4829f85231bccb4682bbf84b0b8c4db5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_partial_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "partial",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "5162bc35c6b2bb46e84c1c657cafda475b6f4f34eae78c5bf2f11a88fed778ad",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_late_waiter_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "late_waiter",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "aa75676bc609851f64682f47c84b41c45d63632c2504690f3b5a662e32d6baa3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_generation_4_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "generation",
+      "4",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "c988c15da72ea53b5c7ba19d5561c5caead81b150b057ed6847ef8159421d07b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_k1_refs_8_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "k1_refs",
+      "8",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "507c375f98c0d519867748ff4397c02c508962d0282f5f0bb41e1cf6f092c9c9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC0_AE1_sidecars_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "0",
+      "sidecars",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "22138d74b79e5430ee38ce1a6702c1e8e3824eef3ff9b4fdcdb294a988d73f78",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_pair_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "pair",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "18f11af1e491740be56809c36f2c876c6aac6843b30ce65f64a37f1e516ba519",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_pair_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "pair",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "28af45d0830621196fd636066ad9c5ef7781f0c0678d23488582a7c770b354eb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_pair_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "pair",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "eff6fc6af766129580aed82704de30510faa52da585a744c58001c16214c8162",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_single_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "single",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "39c50743b2746273266b94a626431b17f54b502628e7965bd0f3c3b6e720dece",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_single_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "single",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "0b90f1cb6e44e78a9792cc7a931ce08c55c35cc7f70db5a0cc2298b307aa1c76",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_empty_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "empty",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "d0eb0a70206c15654bcecd68719ea19c729f96bc66733868e9c0712474a4bb73",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_denied_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "denied",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "b1679543223179e2b4303503c340dbaa7cd38edded6a51a890b5b9c966c2fab4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_denied_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "denied",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "45141ac026ef22d615c45d1bd8d0f005c46f57141bba53e29115183999de296b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_arbitration_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "arbitration",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "5601084119e29127c3d16eea4f5038ed83ca70d21e7f3e67246b29de4b898b39",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_fence_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "fence",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "6e1b22644fa394954911f0acd7a9628a1579d5e592df97a3cf2029f9f891a3a8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_same_warp_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "same_warp",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "3f3d28a52f83b6385b18ddedf559ec53e119ed200aa9f73077529df6706bd2f5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_partial_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "partial",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "1c848f9f5d41de74ea483ae29dd61e362d870aa27b45848cdf7dc33058a783b6",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_partial_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "partial",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "4580809cb63c009b074de6cfafade47209e1f90e005ea10ce444da2be962da0c",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_late_waiter_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "late_waiter",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "b0bb59379c75a2df3ac45498b35f1c4492db197e364fc0687dc3d80230bad127",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_generation_4_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "generation",
+      "4",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "bc8d523e41163b010580c4f9b4184b14861e2af3320f29193c776aa24278b7ef",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_k1_refs_8_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "k1_refs",
+      "8",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "2e6ec2e452a8353d0dc1e9bbb222a9e594ec3d7ae02cf74d697d9ec06028d5e7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE0_sidecars_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "sidecars",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "c8ece52d28986cd1a22aeed0d445c63e4997db3cc8cdca3ea1a6d0072e6ac67d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_pair_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "pair",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "df0fa0572d77bca1e2c9982e8b54bde850d61d0a2a03f69303b225e319081694",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_pair_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "pair",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "297459940f6481155756decb528a8f074130b8e4d0cd6e4ade25a4e5e0a7c0b0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_pair_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "pair",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "6a1b020335edfa0add9cb8fcd66beb5bacc480b8d2d6409a4371f89df03f48f7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_single_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "single",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "525759e01092a8a2dec4230eb9a3d32f671cc54cbcb1fe1039ece9bb8590a179",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_single_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "single",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "94f1a32fb57501ae496cf2e7dd5174eee821f6404defacb3497fdc7f2d96d465",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_empty_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "empty",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f4ab49a0cd8e9e1d8117aad77184ba64b2d0316951c72781545430a214b4386e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_denied_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "denied",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "c4bbb4371be11619763a81fdf0ad1724eb2a60b71531a0bc1f38246cd2182a5a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_denied_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "denied",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "5e33a1eb58bbfcaec7d574f3dcd08079efe35a78ae2cdf410bdabedce29371ce",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_arbitration_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "arbitration",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "70b8047c00f5cef3a4c449991ffd6ada25e885d3d7603f084bdbca05deae19a5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_fence_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "fence",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "6d0a0ab6e0c768133120b59eb7a2260e3bfd3ce57ed0de1f8fde0aad2fed45eb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_same_warp_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "same_warp",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "143cc7942fc471de594b0460d01f42e3c11a6e4a32331a751a9fbdad180eacac",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_partial_8_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "partial",
+      "8",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f2c5257f6f87c0876856fdfa87feb4f7ad865a486349d4dea6f3c4fb1d53f22e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_partial_16_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "partial",
+      "16",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f193fdee9fcfc91cec3cc6696aff7e6d96817b4aa3d30df2ba1d5074d9e3e701",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_late_waiter_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "late_waiter",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "8ddff5ca3248d2c93d8c310b2b1d0b92baab31a70ea5bef64542e6c4b9d1f81b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_generation_4_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "generation",
+      "4",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f81638b79167b4b989df9400bbbd62304fcca0f52d9e9b7828915d010e89f8e2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_k1_refs_8_K1",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "k1_refs",
+      "8",
+      "3",
+      "1",
+      "1",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "7dc88cd5f32b83334072eb919a40f1a793c15513911c193b5becf0e27907dcbe",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "composite_AC1_AE1_sidecars_4_K0",
+    "argv": [
+      "/workspace/builds/dtc-lane-ag-opt-screen-174-v1/combined-preview/ag-ac-ae-composite-probe",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag-combined-core-174-v1/configs/tested-cfgs/SM7_GV100/gpgpusim.config",
+      "1",
+      "sidecars",
+      "4",
+      "3",
+      "1",
+      "0",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "0fc69d0dfe8148fac7c217a039f15bb85c9d7b1cb75f600051b9fee18a5701f8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
