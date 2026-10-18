@@ -28,6 +28,8 @@ def main():
         require(spec['event_decoder_source_sha256']==sha(PACK/'scripts/event_snapshots.py'),'decoderSHA')
         require(len(spec['expected_full_default_and_config_echo'])==267,'267_effective_options')
         require(not spec['launch_admitted'],'terminal_not_admitted')
+        nested=json.loads((PACK/'run_receipts'/u/'STRICT.json').read_text());require(nested['status']=='HOLD_NOT_STARTED_RESOURCE_STOP' and not nested['actual_start'],'UUID_nested_current_STOP')
+        flat=json.loads((PACK/'run_receipts'/(u+'.json')).read_text());require(flat['spec_sha256']==sha(PACK/'specs'/(n+'.json')),'UUID_spec_SHA')
         input_check(spec);spec_list.append(spec)
     varied={key for key in spec_list[0]['expected_full_default_and_config_echo'] if len({tuple(s['expected_full_default_and_config_echo'][key]) for s in spec_list})>1}
     require(varied=={K_OPTION,'-gpgpu_dtc_l1_logical_sets','-gpgpu_dtc_l1_logical_ways'},'controlled_delta_only_K_Tag')
