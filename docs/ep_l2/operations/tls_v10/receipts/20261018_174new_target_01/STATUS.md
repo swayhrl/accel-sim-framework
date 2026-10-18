@@ -35,3 +35,13 @@ The Git-only metadata coverage audit independently reconciles all 7,821 prelimin
 At 11:51:30 UTC, the genuine164 mount still matched exactly, Share available was 44,303,798,272 B, native verification space was 25,769,783,296 B, RAM available was 346,857,783,296 B, and the sole receiver was idle. The bridge held protocol controls and the old source HOLD, not a new COPY_READY. No fresh source admission has been inferred from these target measurements. Scientific archive/restore/source-release totals remain zero.
 
 Source `98d62557fa8cf1fd024fe2297c1f48556227ae54` independently published the same 25-group preliminary partition. Target compared every root, file/directory count, logical byte total and allocated byte total against its own metadata audit: all match, including the single ungrouped library and its individual-review policy. `TLS_V10_TARGET_SOURCE_PRELIM_PLAN_JOIN_RECEIPT.json` records this cross-check. It grants no content acceptance, source resource admission or release.
+
+## External source admission blocker ? third-turn audit
+
+At 12:00:25 UTC (20:00:25 CST), target revalidated the exact genuine164 mount and bridge. The sole receiver was idle. Source Git HEAD was `8f34463c4f2a1960d8f9c0b3bd5010cd78af2cf1`; none of the 25 expected frozen file inventories existed, and no source COPY_READY control appeared on the bridge. The last published source resource decision is the 11:32:05 UTC HOLD at `8501782a7f7f23224bd825835f66923757d1ac2c`. Target does not infer current process liveness from that older snapshot.
+
+Source `8f34463` supplied an exact HOLD for the Dynamic-way library and all 18 aliases. Target checked its file identity and all names against the independent inventory. Its provenance/link-bundle issue is retained without transfer or deletion; source explicitly says it does not block the other 25 groups.
+
+The missing independent source admission and frozen COPY_READY have persisted through the original startup turn and two automatic continuations. Both earlier turns made concrete preparation progress; this audit is not a claim of a live transfer wait. All presently independent target preparation is complete, and no scientific operation is legal without the source-owned prerequisites. `TLS_V10_TARGET_SOURCE_ADMISSION_REQUEST.json` records the exact source and target continuation steps. The Goal is not complete; its full scope remains unchanged.
+
+This checkpoint is blocked on external source evidence. It requests no new approval or source deletion and changes no Lane process, lease, registry, quota or budget. Genuine scientific archived/restored bytes and old174 recovered bytes remain **0**. Continue this same Goal, branch and protocol when source admission is published.
