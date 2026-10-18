@@ -219,7 +219,7 @@ def main(queue_path):
     fingerprint = None
     status = 'RUNNING'
     error = None
-    delivered_groups=set()
+    delivered_groups=set(queue.get('previously_delivered_fourway_groups', []))
     try:
         while True:
             if digest(queue_path) != queue_sha:

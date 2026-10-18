@@ -146,6 +146,29 @@ def live_result_output(result_directory):
             'resources':local_resources(),'workspace_root':str(root),'workspace_st_dev':root.stat().st_dev}
 
 
+def four_start_forecast_exception(data, identity, policy):
+    """Direct user exception for four exact fresh keys; never lower a live hard floor."""
+    token = data.get('four_start_forecast_exception')
+    key = run_key(identity)
+    if not token or key not in token.get('run_keys', []):
+        return None
+    if (token.get('schema') != 'USER_AUTHORIZED_FOUR_START_FORECAST_EXCEPTION_V1'
+            or token.get('status') != 'ACTIVE' or token.get('maximum_fresh_starts') != 4
+            or len(set(token['run_keys'])) != 4 or len(token['run_keys']) != 4
+            or token.get('host') != socket.gethostname()
+            or token.get('boot_id') != policy['boot_id']
+            or token.get('hard_min_disk_free_bytes') != policy['min_disk_free_bytes']
+            or token.get('max_result_bytes') != policy['max_result_bytes']
+            or time.time() >= token['start_before_unix'] or key in data['runs']):
+        return None
+    proof = token['authorization_file']
+    if hashlib.sha256(Path(proof['path']).read_bytes()).hexdigest() != proof['sha256']:
+        raise ValueError('four-start user authorization changed')
+    return {'authorization_file': proof, 'run_key': key,
+            'scope': 'Only conservative workspace growth reservation waived for this fresh key; actual48GiB hard stop and aggregate16GiB unchanged',
+            'start_before_unix': token['start_before_unix']}
+
+
 def admit_result_output(data, host, identity, result_directory):
     """Shared retained total plus concurrent predicted growth, independent of campaign."""
     policy=data['hosts'][host];state=live_result_output(result_directory)
@@ -170,13 +193,19 @@ def admit_result_output(data, host, identity, result_directory):
         raise ValueError('aggregate output ceiling plus concurrent predicted growth')
     resources=state['resources']
     pending_physical=sum(max(0,policy['default_run_output_limit_bytes']+128*2**20-retained_tree_bytes(Path(row['result_directory']))) for row in data['runs'].values() if row['status'] in ACTIVE)
+    exception = None
     if resources['disk_free_bytes']-pending_physical-(policy['default_run_output_limit_bytes']+128*2**20)<policy['min_disk_free_bytes']:
-        raise ValueError('workspace floor after conservative concurrent output growth')
+        exception = four_start_forecast_exception(data, identity, policy)
+        if exception is None:
+            raise ValueError('workspace floor after conservative concurrent output growth')
+        if resources['disk_free_bytes'] < policy['min_disk_free_bytes']:
+            raise ValueError('actual workspace hard floor cannot be waived')
     if resources['share_disk_free_bytes']<40*2**30:
         raise ValueError('Share free-space safety floor under output lock')
     return {**state,'predicted_growth_bytes':growth,'concurrent_unwritten_growth_bytes':pending,
             'accounted_after_admission_bytes':state['actual_bytes']+pending+growth,'same_binary_full_input_samples':samples,
-            'forecast_policy':'unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged'}
+            'forecast_policy':'unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged',
+            'disk_growth_reservation_exception':exception}
 
 def process_identity(pid):
     # /proc stat field 22 survives pid reuse; commands can contain spaces/parentheses.
