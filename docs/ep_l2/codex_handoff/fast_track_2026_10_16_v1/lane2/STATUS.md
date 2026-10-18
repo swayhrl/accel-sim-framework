@@ -1,3 +1,7 @@
+# Current continuation: ordinary48GiB admission restored
+
+First ordinary lease admitted 2026-10-18T04:15:13.494533+00:00: workspace actual free recovered above49GiB. Original48GiB+bounded phase-growth safety admission passed; scoped47.5GiB exception is NOT authorized/active. Three ordinary central leases now run only unfinished A highest physical test, finalB base/Lane3/highest, and resumeSTA of already-mapped Unified. Completed owner/concurrency/control/byte modes are not repeated. Exact lease/source/command/output identities in RECEIPT; original six-hour08:35:29Z deadline remains. Previous resource-stop reports below are immutable historical evidence.
+
 # Lane2 R3 — exact resource stop and second review checkpoint
 
 Goal EPL2_RTL_R3_METADATA_AND_COST_OPT remains active and bounded by2026-10-18 08:35:29Z (16:35:29CST). First checkpoint b4d825b4 was verified at03:14Z, within39min ofT0. R1/R2 source/worktrees/manifests and first checkpoint retained read-only.
