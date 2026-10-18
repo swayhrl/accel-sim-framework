@@ -2,7 +2,7 @@
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
   "task_id": "FT20261017_LANE1_R19_L25_r1",
-  "status": "NEW_SOURCE_CANDIDATE_RUNTIME_BUILD_HELD_FROZEN_RELEASE_UNCHANGED",
+  "status": "BLOCKED_WORKSPACE_BELOW50GiB_NO_NEW_RUNTIME_RELEASE",
   "review_coordination_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
@@ -426,13 +426,13 @@
   "release_index": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/PARALLEL_RUNTIME_RELEASE_INDEX_R1.json",
   "finite_service_microopt_current": {
     "schema": "EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1",
-    "revision": "SOURCE_CANDIDATE_r3_RECEIPT_REUSE_FIX",
+    "revision": "BLOCKED_AUDIT_r4",
     "authority": "c8aa87bdbe220853eb2d27d8babd448cff02a66e",
     "started_utc": "2026-10-18T03:02:03Z",
     "maximum_deadline_utc": "2026-10-18T07:02:03Z",
-    "updated_utc": "2026-10-18T03:41:23.090486+00:00",
-    "goal_status": "ACTIVE",
-    "execution_status": "CHECKPOINT_AT_UNCHANGED_RESOURCE_BOUNDARY_NO_OWN_BACKGROUND_WORKER",
+    "updated_utc": "2026-10-18T03:44:23.176732+00:00",
+    "goal_status": "BLOCKED",
+    "execution_status": "BLOCKED_AT_RESOURCE_BOUNDARY_NO_OWN_BACKGROUND_WORKER",
     "candidate_branch": "hrl/ep-l2-finite-service-microopt-lane1-v1",
     "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
     "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
@@ -488,45 +488,65 @@
       "new_formal_build_attempt_this_continuation": false
     },
     "resource_checkpoint": {
-      "workspace_free_bytes": 51824844800,
-      "workspace_shortfall_to_formal_bytes": 1862246400,
+      "workspace_free_bytes": 51818283008,
+      "workspace_shortfall_to_formal_bytes": 1868808192,
       "client_binding_matches": true,
       "other_active_runs": [
         {
           "owner": "lane5",
-          "process": {
+          "expected": {
             "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
             "pid": 3561141,
             "start_ticks": 904578313
           },
-          "run_key": "27f9f9e3c41a5115f5cfbe675704670988f8f24932847ff7a591165da7a66266"
+          "actual": {
+            "state": "R",
+            "start_ticks": 904578313,
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+          },
+          "identity_matches": true
         },
         {
           "owner": "lane5",
-          "process": {
+          "expected": {
             "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
             "pid": 3561072,
             "start_ticks": 904577709
           },
-          "run_key": "30c48a23ee947be71d4d82f354374051c25d0b86b16ba62ef1d327ff7e54a0e8"
+          "actual": {
+            "state": "R",
+            "start_ticks": 904577709,
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+          },
+          "identity_matches": true
         },
         {
           "owner": "lane5",
-          "process": {
+          "expected": {
             "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
             "pid": 3561181,
             "start_ticks": 904578838
           },
-          "run_key": "42ecfe130041ef3986458421ed5aa714e1aa2cd37fe2d0d4eceb80a447b9817d"
+          "actual": {
+            "state": "R",
+            "start_ticks": 904578838,
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+          },
+          "identity_matches": true
         },
         {
           "owner": "lane5",
-          "process": {
+          "expected": {
             "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
             "pid": 3560838,
             "start_ticks": 904576762
           },
-          "run_key": "ab37352ffa136413a422d2a321d099ec156fe0ad4700e6e26236dd79ba2f606e"
+          "actual": {
+            "state": "R",
+            "start_ticks": 904576762,
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+          },
+          "identity_matches": true
         }
       ],
       "own_reserved_leases": [],
@@ -560,19 +580,11 @@
     "application_starts_by_lane1": 0,
     "old_releases_and_results_modified": false,
     "source_push_readback": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_RECEIPT_REUSE_r3/SOURCE_REMOTE_READBACK.json",
-    "review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_RECEIPT_REUSE_r3",
+    "review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_BLOCKED_AUDIT_r4",
     "files": {
-      "RECEIPT.json": {
-        "sha256": "6baa55bf292223b332f604dd09b72f51f82df2640b1ed8f463baa3df94d0a6c8",
-        "bytes": 1516
-      },
-      "tool_integrity.log": {
-        "sha256": "ae8b57efe26f63f865a141c8eb8477105bd4e8bb7f8f9f628064de1cfa38fed3",
-        "bytes": 546
-      },
-      "SOURCE_REMOTE_READBACK.json": {
-        "sha256": "37d39e33697542bdca1932a2eca178e6556577ef865575b321fde1e61c2e62c0",
-        "bytes": 529
+      "BLOCKED_AUDIT.json": {
+        "sha256": "0de682f4d873e26fe834b6a1f9fb77e41c7c237652fc1c7d0cd5cdbd18cea4bb",
+        "bytes": 5738
       }
     },
     "next_event": "REAL workspace recovery to50GiB with current binding/lease/source safety; then unique formal build and MQ2 first, publish before RG1. No repeat low-space request/no direct CMake/no new waiter.",
@@ -585,7 +597,9 @@
       "counts_as_simulator_production_PASS": false,
       "status": "PASS_THREE_TOOL_INTEGRITY_TESTS_NO_SIMULATOR_CLAIM"
     },
-    "prior_review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_SOURCE_CANDIDATE_r2"
+    "prior_review_pack": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_RECEIPT_REUSE_r3",
+    "blocked_audit": "docs/ep_l2/review_packs/FINITE_SERVICE_MICROOPT_LANE1_BLOCKED_AUDIT_r4/BLOCKED_AUDIT.json",
+    "prior_source_receipt": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/FINITE_SERVICE_MICROOPT_RECEIPT_r3.json"
   },
-  "goal_status": "ACTIVE"
+  "goal_status": "BLOCKED"
 }
