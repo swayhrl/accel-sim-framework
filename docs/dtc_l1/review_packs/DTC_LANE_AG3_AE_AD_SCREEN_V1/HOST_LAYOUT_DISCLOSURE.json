@@ -1,0 +1,80 @@
+{
+  "status": "PASS_CPU_SIZEOF_ONLY_NO_MODEL_OR_TRACE",
+  "rows": [
+    {
+      "label": "X2",
+      "core": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "header_sha256": "798b3b416ce3223799af870438273167f0d257f1f432a1f0aad9dced06f81510",
+      "compile_argv": [
+        "nice",
+        "-n",
+        "19",
+        "/usr/bin/g++",
+        "-std=gnu++17",
+        "-fno-access-control",
+        "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/x2-source/src",
+        "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools/host_layout_probe.cc",
+        "-o",
+        "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/ag3-cpu-host-layout-x2"
+      ],
+      "executable": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/ag3-cpu-host-layout-x2",
+      "executable_sha256": "7295d037b05abb29d9bbc11b1f00bbcc9dd31ccd4fb2c11d959fc05f0c833b9e",
+      "values": {
+        "physical_line": 48,
+        "entry": 56,
+        "config": 56,
+        "service": 40,
+        "frontend": 488
+      }
+    },
+    {
+      "label": "AG3",
+      "core": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "header_sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+      "compile_argv": [
+        "nice",
+        "-n",
+        "19",
+        "/usr/bin/g++",
+        "-std=gnu++17",
+        "-fno-access-control",
+        "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src",
+        "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/tools/host_layout_probe.cc",
+        "-o",
+        "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/ag3-cpu-host-layout-ag3"
+      ],
+      "executable": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/ag3-cpu-host-layout-ag3",
+      "executable_sha256": "ce459cd2ef2d30e4ab4af2f1d4dbeee1fc7d0dabdc7cf5d53b802b31f27d3f25",
+      "values": {
+        "physical_line": 96,
+        "entry": 64,
+        "config": 60,
+        "service": 48,
+        "frontend": 824
+      }
+    }
+  ],
+  "delta_bytes": {
+    "physical_line": 48,
+    "entry": 8,
+    "config": 4,
+    "service": 8,
+    "frontend": 336
+  },
+  "header_persistent_delta_formula": "640*delta_physical_line+128*delta_entry+delta_frontend",
+  "configured640physical128PIB_header_object_size_delta_at_full_occupancy_bytes_per_SM": 32080,
+  "excludes": [
+    "allocator/list/vector dynamic storage",
+    "LDST object delta not remeasured by this header-only probe",
+    "temporary assertion structures",
+    "payload banks",
+    "RTL area/timing/power"
+  ],
+  "source_sha256": "0d43a9455f283a2171475a58004af3199789263223cb36b8bfb2e3fde756d9e5",
+  "actual_simulator_starts_by_this_probe": 0,
+  "engineering_failure": {
+    "reason": "initial sizeof probe incorrectly requested C++11; production compile_commands uses gnu++17; no production source change",
+    "stderr": "/workspace/dtc-lane-ag3-aead-screen-174-v1/raw/host-layout-X2.compile.stderr",
+    "stderr_sha256": "6958f62f2699e8aed5c24ef2907b8c670627124c12a75aebce2eca3d19555f75"
+  }
+}
