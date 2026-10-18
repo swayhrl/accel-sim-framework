@@ -25,6 +25,8 @@ ACTIVE = {'RESERVED', 'RUNNING'}
 TERMINAL = {'COMPLETE_VALID', 'FAILED', 'TIMEOUT', 'RESOURCE_LIMIT', 'INCOMPLETE'}
 R19 = 'EPL2_DOWNSTREAM_HEADROOM_R19'
 PARALLEL = 'EPL2_PARALLEL_POTENTIAL_20261017_V1'
+MICROOPT_AUTHORITY = 'c8aa87bdbe220853eb2d27d8babd448cff02a66e'
+MICROOPT_STAGE = 'FINITE_SERVICE_MICROOPT_V1'
 R19_DEADLINE = 1792256956
 PARALLEL_ABSOLUTE_DEADLINE = 1792332000  # 2026-10-18 14:00:00 UTC
 PARALLEL_PROFILES = {'B16_BANKED','U_WB16','B16_OFF','U_OFF','I_WB','I_META','I_WB_META','I_READ_HIT',
@@ -34,6 +36,16 @@ PARALLEL_PROFILES = {'B16_BANKED','U_WB16','B16_OFF','U_OFF','I_WB','I_META','I_
 
 def attempt_count(row):
     return 1 + len(row.get('attempt_history', []))
+
+
+def microopt_logical_cells():
+    return [{'logical_cell_id': f'MOPT_{short}_{profile}_{condition}',
+             'workload_alias': workload, 'mode': profile,
+             'condition': 'SERVICE_' + condition,
+             'state': 'NOT_RUN_AWAITING_NEW_PRODUCER_AND_INDEPENDENT_QUALIFICATION'}
+            for short, workload in [('CONV', 'convolutionSeparable'), ('FWT', 'FWT_7_21')]
+            for condition in ['OFF', 'MQ2', 'RG1']
+            for profile in ['B16_OFF', 'S64', 'U_OFF']]
 
 
 def now():
@@ -345,6 +357,71 @@ class Registry:
             campaign['extra_cells'].append(cell)
             return cell
 
+    def register_service_microopt_stage(self, authority_commit):
+        """Metadata-only amendment of the existing campaign; no lease or start."""
+        if authority_commit != MICROOPT_AUTHORITY:
+            raise ValueError('wrong service microopt authority')
+        with self.locked() as data:
+            campaign = data.get('campaigns', {}).get(PARALLEL)
+            if not campaign or time.time() >= campaign['deadline_unix']:
+                raise ValueError('missing/expired original campaign')
+            stages = campaign.setdefault('incremental_stages', {})
+            old = stages.get(MICROOPT_STAGE)
+            if old is not None:
+                if (old['authority_commit'] != authority_commit or old['maximum_new_starts'] != 24
+                        or old['logical_cells'] != microopt_logical_cells()):
+                    raise ValueError('service stage cannot be reset or rebound')
+                return old
+            stage = {'authority_commit': authority_commit, 'maximum_new_starts': 24,
+                     'baseline_total_starts': sum(attempt_count(r) for r in data['runs'].values()
+                                                  if r.get('experiment_id') == PARALLEL),
+                     'logical_cells': microopt_logical_cells(), 'registered_cells': [],
+                     'registered_at': now(), 'scope': 'Original campaign, T0/deadline/72 and all resource policies unchanged'}
+            stages[MICROOPT_STAGE] = stage
+            return stage
+
+    def register_service_microopt_cell(self, identity, logical_cell_id, checkpoint):
+        """Bind a new candidate cell only after exact independent/current qualification."""
+        proof_path = Path(checkpoint['path'])
+        if hashlib.sha256(proof_path.read_bytes()).hexdigest() != checkpoint['sha256']:
+            raise ValueError('microopt qualification checkpoint changed')
+        proof = json.loads(proof_path.read_text())
+        logical = next((c for c in microopt_logical_cells()
+                        if c['logical_cell_id'] == logical_cell_id), None)
+        if (not logical or identity['workload'] != logical['workload_alias']
+                or proof.get('status') != 'INDEPENDENTLY_QUALIFIED_FOR_SERVICE_MICROOPT'
+                or proof.get('identity') != identity or proof.get('logical_cell_id') != logical_cell_id
+                or proof.get('authority_commit') != MICROOPT_AUTHORITY
+                or identity['epoch_range'].get('scope') != 'full_application'
+                or any(identity['ideal_vector'].values())
+                or identity['binary_sha256'] == 'fb67448d08818bc8cbe72961580e8340f0e6f337a4df95e7c8ee9468472953f7'):
+            raise ValueError('unqualified/old-source/unsupported microopt endpoint')
+        release = proof['qualified_release']
+        if hashlib.sha256(Path(release['path']).read_bytes()).hexdigest() != release['sha256']:
+            raise ValueError('microopt qualified release changed')
+        # Use the same current V2 authority as the runner; a producer receipt alone is insufficient.
+        from acceptance import authorize_launch, load_current_authority
+        authorize_launch(identity, release['sha256'], load_current_authority())
+        with self.locked() as data:
+            campaign = data.get('campaigns', {}).get(PARALLEL)
+            stage = (campaign or {}).get('incremental_stages', {}).get(MICROOPT_STAGE)
+            if not stage or time.time() >= campaign['deadline_unix']:
+                raise ValueError('missing/expired original microopt stage')
+            cell = {k: logical[k] for k in ['workload_alias', 'mode', 'condition']}
+            cell.update(cell_id=logical_cell_id + '_' + identity['binary_sha256'][:12],
+                        logical_cell_id=logical_cell_id, expected_run_key=run_key(identity),
+                        experiment_id=PARALLEL, stage=MICROOPT_STAGE,
+                        qualification_checkpoint=checkpoint)
+            old = next((c for c in stage['registered_cells'] if c['cell_id'] == cell['cell_id']), None)
+            if old is not None:
+                if old != cell:
+                    raise ValueError('microopt cell identity cannot be rebound')
+                return old
+            if len(stage['registered_cells']) >= 24:
+                raise ValueError('microopt additional cell ceiling24')
+            stage['registered_cells'].append(cell)
+            return cell
+
     @staticmethod
     def check_experiment(data, experiment, identity, owner, retry_key=None):
         base = {'experiment_id', 'regime', 'deadline_unix'}
@@ -362,7 +439,9 @@ class Registry:
             campaign = data.get('campaigns', {}).get(PARALLEL)
             if not campaign or experiment['deadline_unix'] != campaign['deadline_unix']:
                 raise ValueError('unregistered campaign or altered deadline')
-            cell = next((c for c in campaign['seed_cells'] + campaign['extra_cells']
+            stage = campaign.get('incremental_stages', {}).get(MICROOPT_STAGE)
+            service_cells = stage['registered_cells'] if stage else []
+            cell = next((c for c in campaign['seed_cells'] + campaign['extra_cells'] + service_cells
                 if c['cell_id'] == experiment['cell_id']), None)
             if (not cell or experiment['profile'] not in PARALLEL_PROFILES
                     or cell['workload_alias'] != identity['workload']
@@ -371,6 +450,13 @@ class Registry:
                 raise ValueError('unknown or mismatched positive campaign cell')
             if cell.get('expected_run_key',run_key(identity)) != run_key(identity):
                 raise ValueError('extra cell exact runtime identity differs')
+            if cell.get('stage') == MICROOPT_STAGE:
+                if stage['authority_commit'] != MICROOPT_AUTHORITY or stage['maximum_new_starts'] != 24:
+                    raise ValueError('microopt stage authorization changed')
+                ids = {c['cell_id'] for c in service_cells}
+                if sum(attempt_count(r) for r in data['runs'].values()
+                       if r.get('experiment_id') == PARALLEL and r.get('cell_id') in ids) >= 24:
+                    raise ValueError('microopt24 start cap includes failed/reserved/retry attempts')
             if any(r.get('experiment_id') == PARALLEL and r.get('cell_id') == experiment['cell_id'] and r.get('run_key') != retry_key
                     for r in data['runs'].values()):
                 raise ValueError('cell already attempted; audited retry required')
