@@ -1,0 +1,96 @@
+{
+  "actual49_receipt": {
+    "path": "/workspace/ep_l2_potential20261017_lane5_results/independent_unified_fb_runtime_r1/RECEIPT.json",
+    "sha256": "8fbee1781b5f1f7b8c75be54968673040cedd2c08d744b9a8115c4445cbb7953"
+  },
+  "actual55_receipt": {
+    "path": "/workspace/ep_l2_potential20261017_lane5_results/independent_mq2_runtime_r3/RECEIPT.json",
+    "sha256": "6c79895360d018720c82d3b6b61f5573789dca7144b8a0bd30842a05cbcaa9ac"
+  },
+  "changed_input_interface_review": {
+    "exact_delta": "Adds read-only reference_access_uid getter; removing that exact single line restores the complete old header bytes. No address/mask/decode/data type/enum generation changed.",
+    "new_sha256": "4135800f7e2253705e0657b4b6518057bc90f484fabeff986be2317d2da00521",
+    "old_sha256": "ad014e48553657441de7d0091ccacf2104846589fc2eec837ddcdebc042d4a88",
+    "path": "src/abstract_hardware_model.h",
+    "verified": true
+  },
+  "changed_shader_scope_review": {
+    "diff_sha256": "bd7a7a7f8a9d6c81f814cde21069dbacc8c4405e15c266d0d07e7e06a2895425",
+    "files": [
+      "src/gpgpu-sim/shader.h",
+      "src/gpgpu-sim/shader.cc"
+    ],
+    "review": "ALL_DATA opt-in hooks, retained SM/store/barrier/reference issue/consume paths and reference-only getters; not an input-parser equivalence claim for the runtime. Full byte/address memory generator and trace decode trees remain identical. New reference behavior separately checked with actual ALL_DATA/native/barrier/store/UID/clock fixtures; pending full qualification."
+  },
+  "incremental_classifier_review": {
+    "header_only_default_false_strict_LDG_token_classifier_added": true,
+    "native_unknown_and_lowerfull_failclosed_replayed": true,
+    "no_address_byte_mask_sector_decode_or_request_identity_changes": true,
+    "retained_prior_scope": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_UNIFIED_INPUT_SCOPE_REUSE_r1/RETAINED_INPUT_SCOPE.json",
+      "sha256": "26c065507da186da45f342cd2e2c47cf83f8549847d5b1989dc538bb40100584"
+    },
+    "scope": "Retain immutable complete input byte/address/nonatomic proofs only; candidate runtime gets all eleven fresh gates, not old binary qualification.",
+    "trace_one_line_annotation_removed_equals_old_complete_file": true
+  },
+  "new_host_prefill_and_read_reference_tests_passed": true,
+  "new_source_identity": {
+    "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+    "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+    "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0"
+  },
+  "original_producer_publication": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+  "original_source_identity": {
+    "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
+    "core_source_commit": "7b8e6ac70b8fe0f1bd37efca11acb5284938825d",
+    "framework_source_commit": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5"
+  },
+  "retained_atomic_report_sha256": [
+    "770cc3198915d404a526aebf311eef0da9e82b78675dbf7079fe7d13583f974f",
+    "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad",
+    "b88519d2f9b6c0c39bf90b6d1ceeb4c8eb2f4467f64dcc168907255c0b3d762f",
+    "1bd27463147567a278765837bd05c46c9f59d2fb4741667c46d833a6a39a4950",
+    "6d9e114c6520d8e9e51e54f5b1668302da2e9cc963ff55f604f69a6408341d3a"
+  ],
+  "retained_native_byte_proof_sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2",
+  "scope": "Retain content/nativeopcode/byte-address audits only: 7 exact unchanged parser/opcode/address/mem_fetch tree/blob identities; abstract_hardware_model.h adds only one read-only UID getter proven by whole-header subtraction; shader runtime changes explicitly reviewed and independently replayed, never claimed byte-identical. Original full input proof bytes stay immutable; full application rehash before/after remains. Newruntime gate qualification not inherited.",
+  "source_trees": [
+    {
+      "new": "103e7749b129ccb62061d16ad3384ddbae5554a6",
+      "old": "103e7749b129ccb62061d16ad3384ddbae5554a6",
+      "path": "gpu-simulator/trace-parser",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1"
+    },
+    {
+      "new": "f5622a1e67599c505891f6305b1d7c6bc2ab068b",
+      "old": "f5622a1e67599c505891f6305b1d7c6bc2ab068b",
+      "path": "gpu-simulator/ISA_Def",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1"
+    },
+    {
+      "new": "64312e52f232ca2a8c7e8a33f33c561dbe60d142",
+      "old": "64312e52f232ca2a8c7e8a33f33c561dbe60d142",
+      "path": "src/cuda-sim",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1"
+    },
+    {
+      "new": "e8ddf95ab5fe91dcd489fe422e40a062ded66f47",
+      "old": "e8ddf95ab5fe91dcd489fe422e40a062ded66f47",
+      "path": "src/abstract_hardware_model.cc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1"
+    },
+    {
+      "new": "cd7813b0ea383519b985fd5f4ec4fe29752bf377",
+      "old": "cd7813b0ea383519b985fd5f4ec4fe29752bf377",
+      "path": "src/gpgpu-sim/mem_fetch.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1"
+    },
+    {
+      "new": "14db8b0ebebc05c31c508cc49893b6653e37bdb1",
+      "old": "14db8b0ebebc05c31c508cc49893b6653e37bdb1",
+      "path": "src/gpgpu-sim/mem_fetch.cc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1"
+    }
+  ],
+  "status": "UNCHANGED_COMPLETE_INPUT_PARSER_AND_CONTENT_SCOPE"
+}
