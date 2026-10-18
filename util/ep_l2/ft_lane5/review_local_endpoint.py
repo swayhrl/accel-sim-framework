@@ -16,6 +16,9 @@ def main():
  state=load_current_authority();ledger=current_manifest(state);r=Registry();lease=r.build_lease('lane5',cpu=1,memory=2*2**30)
  try:
   snapshot=r.snapshot();result,directory=review(spec,snapshot);require(not any(x['run_key']==result['run_key'] for x in ledger['rows']),'Previously accepted endpoint')
+  if spec['scientific_scope'] in ('FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1'):
+   retained_counts={v['instructions'] for v in ledger['rows'] if v['scientific_acceptance']=='CURRENT_ACCEPTED' and v['identity']['workload']==spec['identity']['workload'] and v['identity']['trace_content_sha256']==spec['identity']['trace_content_sha256'] and v['identity']['epoch_range']==spec['identity']['epoch_range']}
+   require(retained_counts=={result['summary']['instructions']},'Complete unchanged-input native instruction total differs; no acceptance')
   a.pack.mkdir();arm=a.pack/spec['mode'];arm.mkdir()
   for name in ['input_spec.json','input_audit.json','run_status.json','terminal_summary.json','raw.log']:shutil.copyfile(directory/name,arm/name)
   identity=spec['identity'];row={'run_key':result['run_key'],'identity':identity,**{k:identity[k] for k in ['core_source_commit','framework_source_commit','binary_sha256','runtime_config_sha256','trace_content_sha256','workload']},'mode':spec['mode'],'experiment_id':PARALLEL,'regime':spec['regime'],'profile':spec['profile'],'cell_id':spec['cell_id'],'scientific_scope':spec['scientific_scope'],'scientific_acceptance':'CURRENT_ACCEPTED','original_terminal_status':'COMPLETE_VALID','raw_log_sha256':result['raw_log_sha256'],'observed_cycles':result['summary']['cycles'],'instructions':result['summary']['instructions']}
@@ -35,6 +38,7 @@ def main():
     comparison.update(comparison_status='AWAITING_MATCHED_SAME_BINARY_OFF_NO_RATIO',input_instruction_count_check='Count only from immutable complete-input evidence; no cross-binary cycles or qualification reuse')
   if spec['scientific_scope'] in ('FINITE_SERVICE_NATIVE_V1','FINITE_SERVICE_RG1_NATIVE_V1'):
    comparison.update(kind='MATCHED_FINITE_SERVICE_SINGLE_FACTOR',condition=spec['regime'],static_mode=spec['profile'],service_counters=result['summary'].get('finite_service_observations',{}),EP_L2_speedup=None,scope='Same new binary and full input; compare this single-factor MQ2 or RG1 mode against its same mode OFF only. No cross-binary anchor or combined mechanisms.')
+   comparison['complete_input_instruction_count']='Matches immutable full-input instruction total only; no historical cycles or qualification inherited'
    if comparison['same_binary_OFF'] is not None:
     off_cycles=comparison['same_binary_OFF']['cycles'];comparison.update(absolute_cycles_saved=off_cycles-row['observed_cycles'],fractional_cycle_reduction=(off_cycles-row['observed_cycles'])/off_cycles,negative_results_preserved=True,same_mode_OFF=True)
    counters=comparison['service_counters'];mq=list(counters.get('MQ2',{}).values());rg=list(counters.get('RG1_BANK',{}).values());clients=list(counters.get('RG1_CLIENT',{}).values())
