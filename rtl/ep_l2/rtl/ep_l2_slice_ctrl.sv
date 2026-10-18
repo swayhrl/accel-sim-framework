@@ -193,8 +193,15 @@ module ep_l2_slice_ctrl #(
     wire abort_fire=native_abort && state!=IDLE && state!=RESPONSE && p_op!=1;
     wire [GEN_W-1:0] landing_generation = p_new_reserved ? generation_p_landing :
         frontend_generation_next;
+    wire fill_owner_match;
+    generate if(MODE==1)begin: dynamic_fill_owner
+        assign fill_owner_match=fill_tag<N_TAG && tag_live[fill_tag] && fill_mapped_pid==fill_pid;
+    end else begin: fixed_fill_owner
+        // Static live resident ownership is PID==Tag; no new Tag-live read.
+        assign fill_owner_match=fill_pid<N_TAG && fill_pid==fill_tag;
+    end endgenerate
     wire fill_identity=fill_pid<N_PAYLOAD && role_fill_pid==RESIDENT &&
-        generation_fill_pid==fill_gen && fill_tag<N_TAG && tag_live[fill_tag] && fill_mapped_pid==fill_pid &&
+        generation_fill_pid==fill_gen && fill_owner_match &&
         fill_sectors!=0 && (fill_sectors & ~sectors_pending_fill_pid)==0;
     wire [WAD_W-1:0] head_wad=wb_fifo[wb_head];
     wire [PID_W-1:0] head_pid=wad_payload[head_wad];
