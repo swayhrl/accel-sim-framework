@@ -23,18 +23,18 @@ for token in header.split(','):
   assert re.fullmatch(r'\w+',token),token
   name=token
  ports.append((kind,width,name))
-inputs=[(w,n) for k,w,n in ports if k=='input'];outputs=[(w,n) for k,w,n in ports if k=='output'];params='MODE=0,N_TAG=8,N_PAYLOAD=32,STATIC_WB=4,N_WAD=4,GEN_W=3,ADDR_W=64,TAG_W=3,PID_W=5,WAD_W=2,ROW_W=3';connections=','.join('.'+x+'('+x+')' for _,x in inputs)
+inputs=[(w,n) for k,w,n in ports if k=='input'];outputs=[(w,n) for k,w,n in ports if k=='output'];params='MODE=0,N_TAG=8,N_PAYLOAD=32,STATIC_WB=4,N_WAD=4,GEN_W=3,ADDR_W=8,TAG_W=3,PID_W=5,WAD_W=2,ROW_W=3';connections=','.join('.'+x+'('+('4096\'b0' if x=='ram_rdata' else '1024\'b0' if x in ('req_data','fill_data') else x)+')' for _,x in inputs)
 for mode in (0,1,2):
  wrapper='module word_equiv #('+params.replace('MODE=0','MODE='+str(mode))+')('+','.join('input wire '+w+' '+n for w,n in inputs)+',output wire equal);\n'
  for q in ('a','b'):
   wrapper+=''.join('wire '+w+' '+n+'_'+q+';\n' for w,n in outputs)
-  wrapper+=('ep_l2_slice_ctrl_r2' if q=='a' else 'ep_l2_slice_ctrl')+' #('+','.join('.'+k+'('+k+')' for k in ('MODE','N_TAG','N_PAYLOAD','STATIC_WB','N_WAD','GEN_W'))+') '+q+'('+connections+','+','.join('.'+n+'('+n+'_'+q+')' for _,n in outputs)+');\n'
+  wrapper+=('ep_l2_slice_ctrl_r2' if q=='a' else 'ep_l2_slice_ctrl')+' #('+','.join('.'+k+'('+k+')' for k in ('MODE','N_TAG','N_PAYLOAD','STATIC_WB','N_WAD','GEN_W','ADDR_W'))+') '+q+'('+connections+','+','.join('.'+n+'('+n+'_'+q+')' for _,n in outputs)+');\n'
  checks=[]
  for w,n in outputs:
   eq=n+'_a=='+n+'_b'
   qualifier='native_commit_a' if n in ('native_tag','native_pid','native_gen') else 'rsp_valid_a' if n.startswith('rsp_') and n!='rsp_valid' else 'wb_valid_a' if n in ('wb_data','wb_be','wb_addr','wb_ticket','wb_ticket_gen') else None
   checks.append('(!'+qualifier+' || ('+eq+'))' if qualifier else '('+eq+')')
- wrapper+='assign equal='+' && '.join(checks)+';endmodule\n';path=a.out/f'wrapper-{mode}.sv';path.write_text(wrapper);ys=a.out/f'proof-{mode}.ys';files=[base/'ep_l2_bank_arbiter.sv',a.out/'r3_meta.sv',a.out/'r3_ctrl.sv',a.out/'r2_meta.sv',a.out/'r2_ctrl.sv',path];ys.write_text('read_verilog -sv -D SYNTHESIS '+' '.join('"'+str(f)+'"' for f in files)+'\nprep -top word_equiv -flatten\nmemory_map\nopt_clean\n'+f'sat -seq {a.depth} -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120\n');log=a.out/f'proof-{mode}.log'
+ wrapper+='assign equal='+' && '.join(checks)+';endmodule\n';path=a.out/f'wrapper-{mode}.sv';path.write_text(wrapper);ys=a.out/f'proof-{mode}.ys';files=[base/'ep_l2_bank_arbiter.sv',a.out/'r3_meta.sv',a.out/'r3_ctrl.sv',a.out/'r2_meta.sv',a.out/'r2_ctrl.sv',path];ys.write_text('read_verilog -sv -D SYNTHESIS '+' '.join('"'+str(f)+'"' for f in files)+'\nprep -top word_equiv -flatten\nmemory_map\nopt -full\nwreduce\nopt_clean\n'+f'sat -seq {a.depth} -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120\n');log=a.out/f'proof-{mode}.log'
  with log.open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(ys)],stdout=f,stderr=subprocess.STDOUT,check=True)
  assert 'SUCCESS!' in log.read_text();rows.append({'mode':mode,'status':'BOUNDED_ACTUAL_CONTROLLER_EQ_PASS','depth':a.depth});print('actual R2/R3 controller',mode,'PASS',flush=True)
-(a.out/'CONTROLLER_EQ_RECEIPT.json').write_text(json.dumps({'rows':rows,'scope':'actual controller cut incl all metadata/tag mapping state and valid-qualified IO; proof-only state output ports/keep removal for flattening (production cells retained); small8Tags/32payload/4WAD/GEN3; no whole-controller unbounded proof or full-size cost claim','R2':ref,'captured_RTL_sha256':captured_RTL_sha256},indent=2)+'\n')
+(a.out/'CONTROLLER_EQ_RECEIPT.json').write_text(json.dumps({'rows':rows,'scope':'actual controller cut incl all metadata/tag mapping state and valid-qualified IO; proof-only state output ports/keep removal for flattening (production cells retained); small8Tags/32payload/4WAD/GEN3; data values tied0 (numeric bytes separately tested), address width8; all masks/handshakes/identities unconstrained; no whole-controller unbounded proof or full-size cost claim','R2':ref,'captured_RTL_sha256':captured_RTL_sha256},indent=2)+'\n')
