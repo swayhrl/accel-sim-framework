@@ -1,3 +1,15 @@
+# User closure and current DC candidate
+
+Lane2 has ended by direct user instruction. No R4, new Goal, EDA run or
+resident waiter is started. Current candidate for subsequent DC synthesis is
+`e8d67d13b5205cdcda4c2c750a34f7cda6b0103b`. Further optimization will be assessed only after
+new-process-library DC results provide real critical-path evidence. DC remains
+UNRUN; all R3 qualification and timing limits below remain in force.
+
+Decision record: `DC_CURRENT_CANDIDATE_AND_STOP_DECISION_r1.json`. This update changes administrative
+metadata only; the final RTL, reports and prior review packs are preserved.
+The historical 47.5GiB proposal was never authorized or activated.
+
 # Lane2 R3 final — finite RTL qualified, actual cost delivered, timing unclosed
 
 Goal EPL2_RTL_R3_METADATA_AND_COST_OPT required bounded source/finite verification/
