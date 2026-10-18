@@ -109,6 +109,7 @@ module ep_l2_slice_ctrl #(
     wire [3-1:0] role_pin_pid;
     wire [3-1:0] role_head_pid;
     wire [GEN_W-1:0] generation_old_pid;
+    wire [GEN_W-1:0] frontend_generation_old,frontend_generation_next,lower_generation_next;
     wire [GEN_W-1:0] generation_p_landing;
     wire [GEN_W-1:0] generation_fill_pid;
     wire [GEN_W-1:0] generation_pin_pid;
@@ -391,7 +392,6 @@ module ep_l2_slice_ctrl #(
     wire [PID_W-1:0] frontend_generation_pid=state==IDLE ?
         (MODE==1 ? free_landing : free_staging) :
         (fe_gen_abort && MODE!=1 ? p_staging : p_landing);
-    wire [GEN_W-1:0] frontend_generation_old,frontend_generation_next,lower_generation_next;
     wire frontend_generation_step_two=p_op==0 && p_old_live && !p_new_reserved && state!=IDLE && !fe_gen_abort;
     ep_l2_generation_step #(.GEN_W(GEN_W)) frontend_generation_engine(
         frontend_generation_old,frontend_generation_step_two,frontend_generation_next);
