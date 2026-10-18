@@ -4,7 +4,7 @@ Caller holds central lease. Testbench helpers/reference are frozen R2 fixture.
 """
 from pathlib import Path
 import subprocess,json,hashlib,gzip,argparse
-p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[3];original=(repo/'rtl/ep_l2/tb/ep_l2_slice_tb.sv').read_text();prefix=original.split('    reg [127:0] mask;')[0].replace('module ep_l2_slice_tb;','module ep_l2_concurrency_r3_tb;');extra='''
+p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--resume',action='store_true');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=a.resume);repo=Path(__file__).resolve().parents[3];original=(repo/'rtl/ep_l2/tb/ep_l2_slice_tb.sv').read_text();prefix=original.split('    reg [127:0] mask;')[0].replace('module ep_l2_slice_tb;','module ep_l2_concurrency_r3_tb;');extra='''
     integer previous,pairs=0,fp,lp,steps;reg [GEN_W-1:0] fg,lg;
     task wait_send;begin steps=0;while(!wb_valid&&steps<10000)begin tick();steps=steps+1;end if(!wb_valid)$fatal(1,"WB send did not arrive");end endtask
     task pair_check(input integer which,input integer delta);begin
@@ -47,7 +47,10 @@ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);a=p.
     end
 endmodule
 ''';tb=a.out/'concurrent_tb.sv';tb.write_text(prefix+extra);fl=repo/'rtl/ep_l2/flow/full_slice_filelist.f';rows=[]
+if a.resume:
+ prior=json.loads((a.out/'CONCURRENT_GEN_RECEIPT.json').read_text());assert prior['fixture_sha256']==hashlib.sha256(tb.read_bytes()).hexdigest();assert prior['source_RTL_sha256']=={x:hashlib.sha256((repo/x).read_bytes()).hexdigest() for x in fl.read_text().splitlines() if x};rows=prior['rows']
 for mode,label in ((0,'B16'),(1,'UNIFIED'),(2,'S64')):
+ if any(row['mode']==label for row in rows):continue
  vvp=a.out/(label+'.vvp');cmd=['iverilog','-g2012','-s','ep_l2_concurrency_r3_tb','-P','ep_l2_concurrency_r3_tb.MODE='+str(mode),'-DEP_L2_FULL_TOP','-f',str(fl),'-o',str(vvp),str(tb)]
  with (a.out/(label+'-compile.log')).open('w') as f:subprocess.run(cmd,cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
  with (a.out/(label+'-run.log')).open('w') as f:subprocess.run(['vvp',str(vvp)],cwd=repo,stdout=f,stderr=subprocess.STDOUT,timeout=900,check=True)
