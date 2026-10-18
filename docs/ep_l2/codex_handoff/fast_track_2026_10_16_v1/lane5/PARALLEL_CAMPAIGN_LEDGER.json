@@ -311,7 +311,7 @@
       "updated_at": "2026-10-18T06:52:09.149852+00:00"
     }
   ],
-  "aggregate_output_bytes": 12464303911,
+  "aggregate_output_bytes": 12653728944,
   "available_historical_anchor_cells": 7,
   "campaign_registration": {
     "authority_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
@@ -9269,20 +9269,128 @@
         "sha256": "ea555d424862b0582ccc73fdb3864e353258ca8fc2dc2993a7aaf5a45eeca1ae"
       },
       "workload_alias": "vectorAdd_4M"
+    },
+    {
+      "cell_id": "E_NATIVE_OFF_SERVICE_F0AF_R1",
+      "condition": "H0",
+      "expected_run_key": "749e731055a3ae0c07ab41bcecc1a54be65bdd89165add8d39491ff023340590",
+      "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+      "mode": "NATIVE_OFF_CONTROL",
+      "paper_acceptance": "NOT_CURRENT_ACCEPTED",
+      "runs": [
+        {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "cell_id": "E_NATIVE_OFF_SERVICE_F0AF_R1",
+          "client_binding": {
+            "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+            "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+            "immutable_scientific_pointer": true
+          },
+          "cpu_units": 1,
+          "created_at": "2026-10-18T06:59:22.486156+00:00",
+          "deadline_unix": 1792323014.5007188,
+          "detail": "NativeOFF all64/metrics/sevenCSV equivalence",
+          "exit_code": 0,
+          "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+          "host": "huangrulin-174",
+          "identity": {
+            "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+            "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+            "epoch_range": {
+              "epochs": "all",
+              "scope": "full_application"
+            },
+            "feature_vector": {
+              "adaptive_policy": false,
+              "bank_count": 4,
+              "finite_wbuf": false,
+              "ops_per_bank_cycle": 1,
+              "payload_capacity_per_slice": 1152,
+              "ro": false,
+              "tvd": false,
+              "unified_wb": false,
+              "wbuf_entries": 0
+            },
+            "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+            "ideal_vector": {
+              "meta": false,
+              "read_hit": false,
+              "wb": false
+            },
+            "runtime_config_sha256": "61c8dd236757b587526bf6dd718def32e9dc7f131b4a0f2f962887a8938e58a9",
+            "termination_contract": {
+              "hardware_drained": true,
+              "normal_exit": true,
+              "qualification": "OLD_STATIC_EQUIVALENCE_V1",
+              "timeout_seconds": 3600
+            },
+            "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+            "workload": "vectorAdd_4M"
+          },
+          "lease_id": "0db8849cd41e41b182d13e90f884bc64",
+          "memory_bytes": 4294967296,
+          "output_budget": {
+            "accounted_after_admission_bytes": 15037374626,
+            "actual_bytes": 12567897544,
+            "concurrent_unwritten_growth_bytes": 187775706,
+            "disk_growth_reservation_exception": null,
+            "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+            "predicted_growth_bytes": 2281701376,
+            "producer_workspace_reserved_bytes": 0,
+            "resources": {
+              "available_memory_bytes": 167195926528,
+              "disk_free_bytes": 57167233024,
+              "share_disk_free_bytes": 44346163200
+            },
+            "roots": {
+              "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+                "bytes": 7470274173,
+                "st_dev": 2431
+              },
+              "/workspace/ep_l2_potential20261017_lane5_results": {
+                "bytes": 5097623371,
+                "st_dev": 156
+              }
+            },
+            "same_binary_full_input_samples": [],
+            "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+            "workspace_st_dev": 156
+          },
+          "owner": "lane5",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 3834015,
+            "start_ticks": 905873400
+          },
+          "profile": "NATIVE_OFF_CONTROL",
+          "raw_log_sha256": "2400bc5029fac9239daccb64d2d505ba90929280aa2a3e768d82ddfe3b96b863",
+          "regime": "H0",
+          "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/749e731055a3ae0c07ab41bcecc1a54be65bdd89165add8d39491ff023340590",
+          "run_key": "749e731055a3ae0c07ab41bcecc1a54be65bdd89165add8d39491ff023340590",
+          "scan": false,
+          "status": "COMPLETE_VALID",
+          "updated_at": "2026-10-18T07:04:11.252840+00:00"
+        }
+      ],
+      "selection_checkpoint": {
+        "path": "/workspace/ep_l2_potential20261017_lane5_results/MICROOPT_F0AF_NATIVE_OFF_CHECKPOINT_r1.json",
+        "sha256": "f489b66961f2024bda921e9092c3e27f4bc40e2e63817bf568035a52da5a854e"
+      },
+      "workload_alias": "vectorAdd_4M"
     }
   ],
   "failed": 7,
   "max_result_bytes": 21474836480,
   "new_application_admission": "REQUIRES_NORMAL_FULL_PREFLIGHT",
-  "new_starts": 33,
+  "new_starts": 34,
   "output_tree_bytes": {
     "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": 7470274173,
-    "/workspace/ep_l2_potential20261017_lane5_results": 4994029738
+    "/workspace/ep_l2_potential20261017_lane5_results": 5183454771
   },
-  "remaining_start_budget": 39,
+  "remaining_start_budget": 38,
   "reused": 0,
   "running": 1,
   "schema": "EPL2_PARALLEL_CELL_LEDGER_V1",
-  "updated_at": "2026-10-18T06:53:13.161119+00:00",
+  "updated_at": "2026-10-18T07:04:52.262730+00:00",
   "validation_only_revisions": 3
 }
