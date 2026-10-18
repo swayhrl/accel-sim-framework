@@ -2,7 +2,7 @@
 """Resume actual STA from an already successful full-size mapped netlist.
 Caller holds central lease. Never re-synthesize or accept incomplete mapping.
 """
-import argparse,os,subprocess,json,hashlib,time,re
+import argparse,os,subprocess,json,hashlib,time,re,gzip
 from pathlib import Path
 from sta_netlist import portable_netlist
 
@@ -13,10 +13,11 @@ def main():
     assert f'-chparam MODE {mode} -chparam STATIC_WB {wb} -chparam N_TAG 1024 -chparam N_PAYLOAD 1168 -chparam N_WAD 128 -chparam GEN_W 32' in script
     assert source['RTL_files']==[{'path':r['path'],'sha256':hashlib.sha256((repo/r['path']).read_bytes()).hexdigest()} for r in source['RTL_files']],'hardware changed'
     assert source['flow_files']['rtl/ep_l2/flow/common.sdc']==hashlib.sha256((root/'flow/common.sdc').read_bytes()).hexdigest(),'physical constraints changed'
-    assert 'Found and reported 0 problems.' in (run/'yosys.log').read_text()[-2000:],'final mapping check absent'
+    mapping_log=(run/'yosys.log').read_text() if (run/'yosys.log').exists() else gzip.decompress((run/'yosys.log.gz').read_bytes()).decode()
+    assert 'Found and reported 0 problems.' in mapping_log[-2000:],'final mapping check absent'
     stats=json.loads((run/'stat.json').read_text());assert stats['design']['num_cells']>10000
     assert all(x.get('num_memories',0)==0 and x.get('num_processes',0)==0 for x in stats['modules'].values()),'memory/process must not leak into standard-cell cut'
-    start=time.time();portable=out/'STA_netlist.v';conversion=portable_netlist(run/'mapped.v',portable);(out/'NETLIST_FORMAT_RECEIPT.json').write_text(json.dumps(conversion,indent=2)+'\n')
+    start=time.time();portable=out/'STA_netlist.v';mapped=run/'mapped.v' if (run/'mapped.v').exists() else run/'mapped.v.gz';conversion=portable_netlist(mapped,portable);(out/'NETLIST_FORMAT_RECEIPT.json').write_text(json.dumps(conversion,indent=2)+'\n')
     env=os.environ.copy();env.update(LIBERTY=str(lib),NETLIST=str(portable),RTL_ROOT=str(root),IO_DRIVE_CELL=a.drive_cell,OUTPUT_LOAD_LIB_UNITS=str(a.load),LIB_TIME_UNIT_NS='1.0')
     phase_identity={'git_HEAD':subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(),'files':{str(f.relative_to(repo)):hashlib.sha256(f.read_bytes()).hexdigest() for f in [root/'flow/run_sta.py',root/'flow/sta_netlist.py',root/'flow/opensta.tcl',root/'flow/common.sdc']},'OpenSTA_threads':1,'time_unit_ns':1.0,'library_sha256':hashlib.sha256(lib.read_bytes()).hexdigest()}
     (out/'STA_PHASE_IDENTITY.json').write_text(json.dumps(phase_identity,indent=2)+'\n')

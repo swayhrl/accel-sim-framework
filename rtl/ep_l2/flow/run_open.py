@@ -4,7 +4,7 @@ No SRAM technology mapping: the controller top exposes its RAM timing cut.
 """
 import argparse,os,subprocess,json,hashlib,time
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--mapping',choices=['standard','fast','fast-clean'],default='standard',help='Yosys ABC effort; use one identical effort for compared modes');p.add_argument('--mode',choices=['B16','UNIFIED','S64'],required=True);p.add_argument('--liberty',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);p.add_argument('--drive-cell',default='BUF_X1');p.add_argument('--load',type=float,default=5.0);a=p.parse_args();lib=a.liberty.resolve(strict=True);out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);root=a.root.resolve();repo=root.parents[1]
+p=argparse.ArgumentParser();p.add_argument('--compact-artifacts',action='store_true',help='losslessly archive completed mapping/log before normalization; identical gates/constraints');p.add_argument('--mapping',choices=['standard','fast','fast-clean'],default='standard',help='Yosys ABC effort; use one identical effort for compared modes');p.add_argument('--mode',choices=['B16','UNIFIED','S64'],required=True);p.add_argument('--liberty',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);p.add_argument('--drive-cell',default='BUF_X1');p.add_argument('--load',type=float,default=5.0);a=p.parse_args();lib=a.liberty.resolve(strict=True);out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);root=a.root.resolve();repo=root.parents[1]
 # No implicit library download or substitution.
 assert 'cell (' in lib.read_text() or 'cell(' in lib.read_text()
 mode={'B16':0,'UNIFIED':1,'S64':2}[a.mode];wb=64 if mode==2 else 16
@@ -28,6 +28,17 @@ start=time.time()
 tool_tmp=out/'tool_tmp';tool_tmp.mkdir();tool_env=os.environ.copy();tool_env['TMPDIR']=str(tool_tmp)
 with (out/'yosys.log').open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(script)],stdout=f,stderr=subprocess.STDOUT,env=tool_env,check=True)
 assert (out/'mapped.v').stat().st_size>10000,'meaningful connected design absent'
+# Optional serialization only: completed mapped gates/log are archived before
+# normalization. This reduces peak disk; it changes no synthesis/STA command.
+if a.compact_artifacts:
+    import gzip
+    archived=[]
+    for path in (out/'mapped.v',out/'yosys.log'):
+        raw=path.read_bytes();packed=gzip.compress(raw,6,mtime=0);dst=path.with_name(path.name+'.gz');assert not dst.exists();dst.write_bytes(packed)
+        assert gzip.decompress(dst.read_bytes())==raw
+        archived.append({'original':path.name,'original_bytes':len(raw),'original_sha256':hashlib.sha256(raw).hexdigest(),'archive':dst.name,'archive_bytes':len(packed),'archive_sha256':hashlib.sha256(packed).hexdigest(),'decoded_exact':True})
+        path.unlink()
+    (out/'PRE_STA_ARCHIVE_RECEIPT.json').write_text(json.dumps(archived,indent=2)+'\n')
 # Mapping is immutable. STA can resume independently after format/tool fixes.
 subprocess.run(['python3',str(root/'flow/run_sta.py'),'--mapped-run',str(out),
     '--mode',a.mode,'--liberty',str(lib),'--drive-cell',a.drive_cell,'--load',str(a.load)],check=True)
