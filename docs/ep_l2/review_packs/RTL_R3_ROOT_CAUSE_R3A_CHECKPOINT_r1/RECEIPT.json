@@ -1,0 +1,92 @@
+{
+  "schema": "ROOT_CAUSE_AND_R3A_CHECKPOINT",
+  "Goal": "EPL2_RTL_R3_METADATA_AND_COST_OPT",
+  "status": "ACTUAL_B16_MAP_TWO_PERIOD_STA_SCOPED_PROOFS_AND_PARTIAL_FULL_SIZE_FUNCTIONAL",
+  "authority": "1e56ba6ee293f06557b46e1ac7d92e8eb77e00ac",
+  "UTC": "2026-10-18T03:09:05.370411+00:00",
+  "T0_UTC": "2026-10-18T02:35:29Z",
+  "checkpoint_due_UTC": "2026-10-18T04:35:29Z",
+  "hard_stop_UTC": "2026-10-18T08:35:29Z",
+  "review_pack": "docs/ep_l2/review_packs/RTL_R3_ROOT_CAUSE_R3A_CHECKPOINT_r1",
+  "canonical_R3A_hardware": "ac607192957cfd2d69d76bfbc73531b5dbe57523",
+  "R3A_RTL_files": [
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_bank_arbiter.sv",
+      "sha256": "f61e66390382aae2e84bffb00b8e46f260257c17dc82d339db13dc3b58417afb"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_metadata_word.sv",
+      "sha256": "e98ac72ca52bf3aacd9fcbd83279840c4b4f08763fcdce9fcaca753bae9c8d57"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv",
+      "sha256": "0f35537179b28a23b03860e5af7df9374654066eaa6bd8128c2feb926f4ff333"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_payload_sram.sv",
+      "sha256": "6cef629e73ee696dedcb9133c661fd64425b7390af5cd9fcf4ef592ddb903453"
+    },
+    {
+      "path": "rtl/ep_l2/rtl/ep_l2_slice.sv",
+      "sha256": "0888dfbec52fadad96918c03ba1a7f3669a604ed0fa2f48bdfd753255c0ead18"
+    }
+  ],
+  "same_full_parameters": {
+    "MODE": 0,
+    "STATIC_WB": 16,
+    "N_TAG": 1024,
+    "N_PAYLOAD": 1168,
+    "N_WAD": 128,
+    "GEN_W": 32,
+    "data_bits": 1024,
+    "banks": 4,
+    "rows_per_bank": 292,
+    "P": 1
+  },
+  "library_sha256": "2efd0b32eb580e4e60e72fc0575bb3bc69aac907c91d908442e4ae6d7fe55895",
+  "SDC_sha256": "de89d1bdbeaefbbeeb316bfa00525e18e0c9fc013555796f75cc158a1641cbb2",
+  "mapping_effort": "fast-clean",
+  "B16": {
+    "area": 1437416.6519999998,
+    "FF": 88685,
+    "change_from_R2_percent": -10.080366239889338,
+    "WNS": -1.370226,
+    "TNS": -89682.976562,
+    "WNS2ns": -0.253619,
+    "timing_closed": false
+  },
+  "three_mode_PPA_complete": false,
+  "accepted_full_size_function_rows": [
+    {
+      "mode": 0,
+      "GEN_W": 32,
+      "binary_sha256": "b6d1947524e8effbe9fbb46e340a35552b04b4a11ef5c40404d0dd6844f596a5",
+      "stimulus_sha256": "a0cfb7516eac15a2b2fe72c2c19a51340d0ac0567d21ed0e09c3f85323372b61"
+    },
+    {
+      "mode": 1,
+      "GEN_W": 32,
+      "binary_sha256": "a061c21167aa82ec01763e6c2a3eb4af65e82b0f2042403aab6734e523c2c02d",
+      "stimulus_sha256": "a0cfb7516eac15a2b2fe72c2c19a51340d0ac0567d21ed0e09c3f85323372b61"
+    }
+  ],
+  "all_mandatory_functional_complete": false,
+  "R3A_controller_proof": "all3 modes; corrected32payload4Tags2WADGEN3; four cycles; data tied0 and byte datapath outputs excluded; masks and handshakes arbitrary; actual numerical bytes separate",
+  "GEN_word_port_proofs": "GEN32 word induction3classes; exhaustive GEN3/GEN32 dual port all indices and same-slot lower priority",
+  "production_GEN_concurrency": "3real overlapping FE/lower update pairs per mode; all3 modes PASS, exact byte WB/rollback drain",
+  "R3B": "owner/map invariant preparation and all3 bounded controller proofs PASS under stated premises; actual full qualification and PPA NOT_RUN at checkpoint",
+  "R1_R2_preserved_read_only": true,
+  "SIM_changed": false,
+  "new_Lane5_apps": 0,
+  "pipeline_or_II_change": false,
+  "unqualified_native_gen": "may differ when !native_commit due phase-sharing; valid qualified IO/control cycle equivalence target",
+  "SRAM_macro_area": null,
+  "SRAM_macro_delay": null,
+  "external_Tag_MSHR_NoC_cost": null,
+  "DC": "UNRUN_SAME_SOURCE_PRECISE_R3_ENTRY_DELIVERED_OLD_R2_ENTRY_UNCHANGED",
+  "whole_L2_PPA": false,
+  "app_performance_pairing": false,
+  "TVD_tests": "NOT_COMPILED_NOT_RUN",
+  "ongoing": "R3A remaining mapped modes/production suites; R3B independent full validation before synthesis",
+  "raw_attempts": "source declaration compile failure; proof hierarchy/tool errors; memory/solver/own stops; invalid16payload toy zero-divisor counterexamples all preserved and NOT_PASS"
+}
