@@ -50,6 +50,13 @@
       "fix": "Make the first runtime observation immediately qualified, then retain three observations >=30s apart, exactly matching the retained rule. Added directed1/31/61s CPU tests. No threshold changes.",
       "scientific_thresholds_changed": false,
       "new_simulation_attempts": 0
+    },
+    {
+      "stage": "preexecution_wrapper_final_resource_observation",
+      "cause": "Final resource snapshot was recorded but not adjudicated by the frozen policy.",
+      "fix": "Apply the unchanged policy to the final observation before terminal acceptance. Requalify wrapper and republish full registration before any scientific start; initial unexecuted publication retained.",
+      "scientific_thresholds_changed": false,
+      "actual_starts": 0
     }
   ]
 }

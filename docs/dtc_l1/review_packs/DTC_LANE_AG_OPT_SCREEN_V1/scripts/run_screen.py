@@ -222,9 +222,13 @@ def run_one(spec,specs,owner,publication,manifest):
   if pidfd is not None:os.close(pidfd)
   for s,h in old_handlers.items():signal.signal(s,h)
   owner.pop('child_pid',None);owner.pop('child_start_ticks',None)
+ final_resource=snapshot()
+ final_decision=policy.observe(final_resource,usage['ru_majflt'] if usage else previous_faults,previous_faults)
+ if final_decision['decision']=='STOP' and forced is None:
+  forced='FINAL_RESOURCE_STOP:'+';'.join(final_decision['stop_reasons'])
+ write(run/'RESOURCE_FINAL.json',dict(snapshot=final_resource,decision=final_decision),exclusive=True)
  write(run/'RUN_TERMINAL.json',dict(utc=now(),returncode=rc,forced_reason=forced,identity_pass=identity_pass,
      host_wall_seconds_noncomparative=time.monotonic()-started,resource_usage=usage,PID=pidrecord),exclusive=True)
- write(run/'RESOURCE_FINAL.json',snapshot(),exclusive=True)
  result=collect(run,spec)
  table(run/'FILES_SHA256.tsv',[dict(path=str(p.relative_to(run)),sha256=sha(p),bytes=p.stat().st_size)
      for p in sorted(run.rglob('*')) if p.is_file() and p.name!='FILES_SHA256.tsv'])

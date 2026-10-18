@@ -6,6 +6,7 @@ import copy
 import signal
 import sys
 import time
+from test_resource_policy import sample as resource_sample
 
 def main():
  root=RAW/'cpu-qualification'/('runner-guards-'+sha(PACK/'scripts/run_screen.py')[:12]);root.mkdir(parents=True,exist_ok=False)
@@ -47,7 +48,7 @@ def main():
   runner.RAW=root/'fixture-namespace';runner.RAW.mkdir()
   dummy=dict(point='CPU_NEGATIVE_NOT_A_SIMULATION',attempt_uuid='CPU_WRAPPER_ONLY_NOT_SCIENTIFIC_UUID',arm='BASE',workload='GEMM',
       configs=[],runtime_path='/NONEXISTENT_AG_CPU_NEGATIVE_DO_NOT_REPLACE',trace_list='/CPU_ONLY_NO_TRACE_OPEN',runtime_environment={'PATH':'/usr/bin:/bin'})
-  fake=dict(monotonic_ns=0,cgroup={'events':dict(oom=0,oom_kill=0),'memory.swap.current':'0'})
+  fake=resource_sample()
   runner.publication_check=lambda:({}, {})
   runner.input_identity=lambda s:dict(status='CPU_MOCK_NO_TRACE_OPEN')
   runner.admission=lambda *args:({},fake)
