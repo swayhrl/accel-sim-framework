@@ -1,3 +1,5 @@
+R3A now has complete required FINITE RTL qualification, including highestPID1167/bank3/row291 at3379cycles and NEW same-bank double-GEN3modes; all14actualbinary decodedSHA/source/fixture identities verified. Timing still unclosed, not officialSIM or unbounded proof. New pack RTL_R3A_FULL_FINITE_QUALIFICATION_r1. FinalB full base4 passed, remaining bytes/highest gate continues. All3B actualPPA complete.
+
 Three-mode finalB mapping/STA now COMPLETE, all clocks unclosed; exact table inrtl/ep_l2/r3/R3_THREE_MODE_PPA_ACTUAL.md. B16/Unified full base passed; S64/GEN3/Lane3/boundary outstanding. NewA same-bank actual3mode stress passed; A highest boundary running. No completed source is re-tested, no gate exception used.
 
 # Current continuation: ordinary48GiB admission restored
