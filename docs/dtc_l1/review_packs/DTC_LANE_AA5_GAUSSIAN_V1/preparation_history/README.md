@@ -1,0 +1,1 @@
+Earlier AA5 CPU preparation records, retained as historical stages. Missing-X2 and syntax-only statuses here were superseded by independently published Gate PASS5c3a40ff81b366bc6fe362518ae4adc23f0597cc. No historical draft was represented as an actual Gate PASS or a full run. Complete unpublished initial draft remains in raw pre_X2_unpublished_draft/.

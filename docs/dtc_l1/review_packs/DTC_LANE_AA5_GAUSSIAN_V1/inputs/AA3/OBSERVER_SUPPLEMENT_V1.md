@@ -1,0 +1,15 @@
+# AA3 observer supplement V1
+
+Contract ID: AA3_OBSERVER_SUPPLEMENT_V1. User acceptance: **K1_ONLY_EVENT_TELEMETRY_ACCEPTED_AS_NONCOMPARATIVE_DIAGNOSTIC**. This is a new AA3 supplement; AA/AA2 observer-HOLD reports remain unchanged. Publication by commit/push/fetch-back precedes any new full performance; AA3 actual starts are zero.
+
+All four cells bind the single Core c0a5e2c31e407c57e3a4af3ce529c921e8059a05, trace executable SHA 2cd45b1b91985b19255ff5c9db3b49a3ee46b5a479272eacd2a42fb2bf9ac9ae and libcudart SHA 06957c897f8248fa2b08a5c18823207db8dda954c218337ba399ba70e7f97b56. No second Core or option retune is allowed. Shared cycles, finite, lower, occupancy and traffic fields may be compared only under the same definitions, paths and populations, after strict acceptance and both K0 calibrations.
+
+The source observer is guarded by K=1. Its request, origin, mapping-change, retained/reclaimed and ordinary-commit summaries are **K1-only noncomparative diagnostics**. K0 absence is UNAVAILABLE, never measured zero; no K1-minus-K0 event delta, event main effect or event interaction is permitted. Both K1 cells retain their actual values, without using event count differences as a controlled cause or normalizing away repeated idle calls.
+
+Hook: source_invalidation_observer::request at ldst_unit::invalidate(source), before ordinary.invalidate request. Preserve original idle-cluster/config/MEMBAR predicates, selected SMs and repeated requests. Print each SM lifetime cumulative DTC_INVALIDATE_V1_SUMMARY at existing statistics boundaries. Use the last corresponding snapshot for each of 64 SMs, never sum kernel snapshots. Detailed request AND ordinary-commit records share -gpgpu_dtc_l1_debug_event_limit; fixed default=0 suppresses detail, not summary counters. First/last UINT64_MAX means UNDEFINED_NO_EVENT. pending_first/last are request sequence IDs, not cycles. Ordinary commits can coalesce requests and do not count actual changed ordinary tags.
+
+K1 atomically revokes lookup mappings at the existing source request with zero added **simulated** cycles. This is a model assumption, not proof of zero hardware cost, bandwidth, lookup ports, area or timing. Host wall time is solely an execution-resource measure and must not be presented as GPU speed. K1-specific printing does not justify altering public metrics, K0 equivalence or strict conservation requirements.
+
+Physical conservation uses new_misses = physical_allocated + immediate_reclaims + final_ref_reclaims + R, where K1 R is same-boundary sum of reclaimed_at_event. K0 R=0 is a structural OFF semantic term, not an invented observation of an absent counter. Event-retained allocations that later lose their final Ref are counted only through final_ref_reclaims; do not subtract retained again.
+
+This supplement resolves the observer scientific clause only. It does not release an execution authority, replace full executable pre-registration, waive Y2's bounded scope or turn W's unavailable address scan into evidence.

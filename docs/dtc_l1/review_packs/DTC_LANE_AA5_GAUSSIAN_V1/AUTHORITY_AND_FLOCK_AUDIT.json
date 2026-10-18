@@ -1,0 +1,507 @@
+{
+  "utc": "2026-10-18T02:23:55.092825+00:00",
+  "status": "READ_ONLY_REVIEW_PASS_NO_OTHER_DISPATCH_AUTHORITY_OBSERVED",
+  "checks": {
+    "retired_Core41_parent_absent": true,
+    "retired_deferred_parent_absent": true,
+    "no_unknown_DTC_controls_or_sims": true,
+    "all_remaining_DTC_FLOCKs_output_only": true,
+    "no_retired_Core41_FLOCK": true
+  },
+  "reviewed_other_controls": [
+    {
+      "pid": 64782,
+      "state": "S",
+      "start_ticks": 577779446,
+      "rss_bytes": 171966464,
+      "argv": [
+        "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--inhibit-rpath",
+        "--library-path",
+        "/scratch/root/oss-eda/oss-cad-suite/lib",
+        "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+        "util/dtc_l1/monitor_fast64_3_dynamic_base_evidence_v1.py",
+        "--log",
+        "/workspace/fast64-runs/fast64_3_dynamic_base_evidence_v1.log",
+        "--poll-seconds",
+        "120"
+      ],
+      "ppid": 1,
+      "pgrp": 64782,
+      "session": 64782,
+      "cwd": "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+      "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+      "io": "rchar: 13364259\nwchar: 14742893\nsyscr: 2177\nsyscw: 109018\nread_bytes: 834732032\nwrite_bytes: 118800384\ncancelled_write_bytes: 0\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 240006,
+      "state": "S",
+      "start_ticks": 578775007,
+      "rss_bytes": 25165824,
+      "argv": [
+        "/bin/bash",
+        "-c",
+        "\n  repo=$1\n  log=$2\n  while true; do\n    date -u +\"FAST64_REPAIRED_RAMP_SUPERVISOR utc=%FT%TZ\" >> \"$log\"\n    \"$repo/util/dtc_l1/collect_fast64_repaired_ramp_v1.sh\" --collect >> \"$log\" 2>&1 || printf \"RAMP1_COLLECT_NONZERO=%s\\n\" \"$?\" >> \"$log\"\n    \"$repo/util/dtc_l1/collect_fast64_repaired_ramp2_v1.sh\" --collect >> \"$log\" 2>&1 || printf \"RAMP2_COLLECT_NONZERO=%s\\n\" \"$?\" >> \"$log\"\n    sleep 120\n  done\n",
+        "bash",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/fast64-repaired-ramp-closeout-supervisor.log"
+      ],
+      "ppid": 1,
+      "pgrp": 240006,
+      "session": 240006,
+      "cwd": "/workspace",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 2573896672\nwchar: 112885779\nsyscr: 52613447\nsyscw: 893706\nread_bytes: 414019584\nwrite_bytes: 169943040\ncancelled_write_bytes: 57344\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 310308,
+      "state": "S",
+      "start_ticks": 579072291,
+      "rss_bytes": 0,
+      "argv": [
+        "bash",
+        "-c",
+        "\n  set -euo pipefail\n  fw=$1; gen=$2; log=$3\n  summary=\"$gen/fast64_3_dynamic_base_v1/fast64_3_2DConvolution_base_cap8192_a1_v2.json\"\n  structural=\"$gen/fast64_3_dynamic_base_v1/FAST64_3_2DCONVOLUTION_BASE_STRUCTURAL_METRICS_V1.json\"\n  while ! { test -f \"$summary\" && test -f \"$structural\"; }; do\n    printf \"FAST64_3_V2_AGGREGATION_WAIT utc=%s summary=%s structural=%s\\n\" \"$(date -u +%FT%TZ)\" \"$(test -f \"$summary\" && echo yes || echo no)\" \"$(test -f \"$structural\" && echo yes || echo no)\" >> \"$log\"\n    sleep 120\n  done\n  for f in fast64_3_base_rows.tsv fast64_3_structural_pressure.tsv fast64_3_live_misses.tsv fast64_3_host_runtime.tsv fast64_3_identity_manifest.tsv; do test ! -e \"$gen/$f\"; done\n  python3 \"$fw/util/dtc_l1/collect_fast64_3_base_matrix_v2.py\" --output-dir \"$gen\" >> \"$log\" 2>&1\n  printf \"FAST64_3_V2_AGGREGATION_PASS utc=%s\\n\" \"$(date -u +%FT%TZ)\" >> \"$log\"\n",
+        "fast64-3-v2-terminal-aggregation-supervisor",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated",
+        "/workspace/fast64-3-v2-terminal-aggregation-supervisor.log"
+      ],
+      "ppid": 1,
+      "pgrp": 310308,
+      "session": 310308,
+      "cwd": "/workspace",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 390591854\nwchar: 2868042\nsyscr: 811738\nsyscw: 108228\nread_bytes: 232374272\nwrite_bytes: 112934912\ncancelled_write_bytes: 0\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 525567,
+      "state": "S",
+      "start_ticks": 580172178,
+      "rss_bytes": 33554432,
+      "argv": [
+        "/bin/bash",
+        "-c",
+        "repo=\"$1\"; log=\"$2\"; while true; do date -u +\"FAST64_6_COLLECTOR utc=%FT%TZ\" >> \"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v1.sh\" --collect >> \"$log\" 2>&1 || printf \"FAST64_6_COLLECT_NONZERO=%s\\\\n\" \"$?\" >> \"$log\"; sleep 120; done",
+        "bash",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v1.log"
+      ],
+      "ppid": 1,
+      "pgrp": 525567,
+      "session": 525567,
+      "cwd": "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 9430911649\nwchar: 134592943\nsyscr: 57232309\nsyscw: 1102900\nread_bytes: 1066418176\nwrite_bytes: 161501184\ncancelled_write_bytes: 32768\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 534802,
+      "state": "S",
+      "start_ticks": 580212651,
+      "rss_bytes": 33554432,
+      "argv": [
+        "/bin/bash",
+        "-c",
+        "repo=\"$1\"; log=\"$2\"; while true; do date -u +\"FAST64_6_V2_COLLECTOR utc=%FT%TZ\" >> \"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v2.sh\" --collect >> \"$log\" 2>&1 || printf \"FAST64_6_V2_COLLECT_NONZERO=%s\\\\n\" \"$?\" >> \"$log\"; sleep 120; done",
+        "bash",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v2.log"
+      ],
+      "ppid": 1,
+      "pgrp": 534802,
+      "session": 534802,
+      "cwd": "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 1156102037\nwchar: 6300814\nsyscr: 1861184\nsyscw: 107869\nread_bytes: 312291328\nwrite_bytes: 113930240\ncancelled_write_bytes: 8192\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 815446,
+      "state": "S",
+      "start_ticks": 581848422,
+      "rss_bytes": 20971520,
+      "argv": [
+        "/bin/bash",
+        "-c",
+        "repo=$1; log=$2; while true; do date -u +\"FAST64_6_V3_COLLECTOR utc=%FT%TZ\" >> \"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v3.sh\" --collect >> \"$log\" 2>&1 || printf \"FAST64_6_V3_COLLECT_NONZERO=%s\\n\" \"$?\" >> \"$log\"; sleep 120; done",
+        "bash",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v3.log"
+      ],
+      "ppid": 1,
+      "pgrp": 815446,
+      "session": 815446,
+      "cwd": "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 1268112513\nwchar: 42513459\nsyscr: 28406046\nsyscw: 402759\nread_bytes: 155299840\nwrite_bytes: 123289600\ncancelled_write_bytes: 36864\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 949578,
+      "state": "S",
+      "start_ticks": 582417279,
+      "rss_bytes": 20971520,
+      "argv": [
+        "/bin/bash",
+        "-c",
+        "repo=$1; log=$2; while :; do date -u +%FT%TZ >>\"$log\"; \"$repo/util/dtc_l1/collect_fast64_6_precompute_v10.sh\" --collect >>\"$log\" 2>&1 || printf \"collector_nonterminal_or_failure\\n\" >>\"$log\"; sleep 120; done",
+        "bash",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/fast64-sensitivity-v1/fast64_6_precompute_closeout_v10.log"
+      ],
+      "ppid": 1,
+      "pgrp": 949578,
+      "session": 949578,
+      "cwd": "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 1159414211\nwchar: 5848184\nsyscr: 1877287\nsyscw: 134023\nread_bytes: 170352640\nwrite_bytes: 112918528\ncancelled_write_bytes: 12288\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 1201946,
+      "state": "S",
+      "start_ticks": 583777956,
+      "rss_bytes": 12582912,
+      "argv": [
+        "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--inhibit-rpath",
+        "--library-path",
+        "/scratch/root/oss-eda/oss-cad-suite/lib",
+        "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/validate_fast64_trace_row_alias_v3.py",
+        "--run-dir",
+        "/workspace/fast64-repaired-ramp2/fast64_bicg_base_core95ccdb7a_a1_r1",
+        "--workload-id",
+        "BICG",
+        "--mode",
+        "BASE",
+        "--config-id",
+        "FAST64_BASE_A1",
+        "--config-file",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/configs/dtc_l1/fast64/FAST64_BASE.config",
+        "--core-sha",
+        "95ccdb7a056f2d53f740d90869785cac6d4ee0f5",
+        "--framework-sha",
+        "037f008b330eb230353b60edf126d6be9f45afdc",
+        "--observer-sha",
+        "2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e",
+        "--runtime-sha",
+        "462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9",
+        "--payload-manifest",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv",
+        "--classification",
+        "PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE",
+        "--require-immutable-attempt",
+        "--output",
+        "/dev/stdout"
+      ],
+      "ppid": 1,
+      "pgrp": 1201936,
+      "session": 1201936,
+      "cwd": "/workspace",
+      "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+      "io": "rchar: 3662786\nwchar: 3404\nsyscr: 505\nsyscw: 7\nread_bytes: 20480\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 1482676,
+      "state": "S",
+      "start_ticks": 585007227,
+      "rss_bytes": 0,
+      "argv": [
+        "bash",
+        "-c",
+        "\n  set -euo pipefail\n  repo=$1; summary=$2; structural=$3; registry=$4; outdir=$5; log=$6; lock=$7\n  exec 9>\"$lock\"; flock -n 9 || exit 1\n  while ! { test -f \"$summary\" && test -f \"$structural\"; }; do\n    printf \"FAST64_3_CORE41_CANDIDATE_WAIT utc=%s summary=%s structural=%s\\n\" \"$(date -u +%FT%TZ)\" \"$(test -f \"$summary\" && echo yes || echo no)\" \"$(test -f \"$structural\" && echo yes || echo no)\" >>\"$log\"\n    sleep 120\n  done\n  test ! -e \"$registry\"; test ! -e \"$outdir\"\n  \"$repo/util/dtc_l1/prepare_fast64_3_core41_registry_v1.py\" --output \"$registry\" >>\"$log\" 2>&1\n  \"$repo/util/dtc_l1/collect_fast64_3_base_matrix_v2.py\" --registry \"$registry\" --output-dir \"$outdir\" >>\"$log\" 2>&1\n  printf \"FAST64_3_CORE41_CANDIDATE_COLLECTOR_PASS utc=%s registry=%s outdir=%s\\n\" \"$(date -u +%FT%TZ)\" \"$registry\" \"$outdir\" >>\"$log\"\n",
+        "fast64-3-core41-candidate-closeout",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/fast64_3_repair_v1/fast64_3_2DConvolution_base_core41d740e8_a1_v1.json",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/fast64_3_repair_v1/FAST64_3_2DCONVOLUTION_BASE_STRUCTURAL_METRICS_V1.json",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/FAST64_3_BASE_SOURCE_REGISTRY_V3_CORE41.tsv",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/docs/dtc_l1/fast64/generated/fast64_3_core41_candidate_v1",
+        "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.log",
+        "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock"
+      ],
+      "ppid": 1,
+      "pgrp": 1482676,
+      "session": 1482676,
+      "cwd": "/workspace",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 383776946\nwchar: 2871288\nsyscr: 797593\nsyscw: 106344\nread_bytes: 137830400\nwrite_bytes: 111022080\ncancelled_write_bytes: 0\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    },
+    {
+      "pid": 3261725,
+      "state": "S",
+      "start_ticks": 550392315,
+      "rss_bytes": 58720256,
+      "argv": [
+        "bash",
+        "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_1_qualification.sh",
+        "--framework-sha",
+        "c02ea2259e4bc6ee0ee026734aa60e561ea79724",
+        "--runs-root",
+        "/workspace/fast64-runs"
+      ],
+      "ppid": 1,
+      "pgrp": 3261725,
+      "session": 3261725,
+      "cwd": "/workspace",
+      "exe": "/usr/bin/bash",
+      "io": "rchar: 4502784128\nwchar: 8709248\nsyscr: 14593746\nsyscw: 117693\nread_bytes: 811798528\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+      "classification": "SOURCE_REVIEWED_OUTPUT_ONLY_CONTROLLER",
+      "future_simulator_dispatch": false
+    }
+  ],
+  "unknown_controls": [],
+  "remaining_FLOCKs": [
+    {
+      "pid": 64782,
+      "start_ticks": 577779446,
+      "fd": "3",
+      "path": "/workspace/fast64-runs/.fast64_3_dynamic_base_evidence_v1.lock",
+      "fdinfo": "pos:\t0\nflags:\t02100001\nmnt_id:\t4461\nino:\t36438639\nlock:\t1: FLOCK  ADVISORY  WRITE 64782 00:9c:36438639 0 EOF\n",
+      "output_only_collector_lock": true,
+      "own_AA5_execution_lock": false
+    },
+    {
+      "pid": 1482676,
+      "start_ticks": 585007227,
+      "fd": "9",
+      "path": "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock",
+      "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37664862\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37664862 0 EOF\n",
+      "output_only_collector_lock": true,
+      "own_AA5_execution_lock": false
+    },
+    {
+      "pid": 3456978,
+      "start_ticks": 904209809,
+      "fd": "9",
+      "path": "/workspace/fast64-stage3-repair/fast64_3_core41_candidate_closeout_v1.lock",
+      "fdinfo": "pos:\t0\nflags:\t0100001\nmnt_id:\t4461\nino:\t37664862\nlock:\t1: FLOCK  ADVISORY  WRITE 0 00:9c:37664862 0 EOF\n",
+      "output_only_collector_lock": true,
+      "own_AA5_execution_lock": false
+    }
+  ],
+  "source_review": [
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/monitor_fast64_3_dynamic_base_evidence_v1.py",
+      "sha256": "3d437ff5b8470ab0eee0ec1de576b6a7e6b601320e986d59c64df32a52ef7dd5",
+      "bytes": 8449,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 142,
+          "text": "            subprocess.run([str(EXTRACTOR), \"--summary\", str(output_json), \"--perf\", str(perf[0]), \"--output\", str(structural)], check=True)"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_repaired_ramp_v1.sh",
+      "sha256": "f2a67831b147623d380d7b0494cbc61aee70b52ea9ba0a340d438ab13f561607",
+      "bytes": 2825,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 28,
+          "text": "test -x \"$collector\" && test -d \"$root\""
+        },
+        {
+          "line": 62,
+          "text": "  \"$collector\" --run-dir \"$run\" --workload-id \"$workload\" --mode \"$mode\" \\"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_repaired_ramp2_v1.sh",
+      "sha256": "9fae0d718b3a173bc913fcebaa7db0c360b8a13181a3b2d6e833da5130f6c112",
+      "bytes": 2226,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 19,
+          "text": "test -x \"$collector\" && test -d \"$root\""
+        },
+        {
+          "line": 44,
+          "text": "  \"$collector\" --run-dir \"$run\" --workload-id \"$workload\" --mode \"$mode\" \\"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_3_base_matrix_v2.py",
+      "sha256": "e15feafa99864e58c45385174cb1d636c82bba2958c6e3c6ce4b13a161f4b656",
+      "bytes": 7661,
+      "same_as_frozen_AA3": true,
+      "execution_review": [],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_6_precompute_v1.sh",
+      "sha256": "46f85cbc47ce819716993b91245c6071f5837cf9a8e35bb5ff533c71ea3e3e23",
+      "bytes": 5448,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 90,
+          "text": "  if python3 \"$validator\" --run-dir \"$run\" --workload-id \"$workload\" --mode \"$mode\" \\"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_6_precompute_v2.sh",
+      "sha256": "45d1474ad59ae01bdc0a0f7ef2f7b5feecbd8a505db7440c1950ff45ec1bfecf",
+      "bytes": 2918,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 60,
+          "text": "python3 \"$validator\" --run-dir \"$run\" --workload-id \"$workload\" --mode \"$mode\" \\"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_6_precompute_v3.sh",
+      "sha256": "9bbc56be742bf88467fc01afdb60869804f24ccf32451c44ded8aa4a4ad41426",
+      "bytes": 4158,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 69,
+          "text": "  python3 \"$validator\" --run-dir \"$run\" --workload-id \"$workload\" --mode \"$mode\" \\"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_6_precompute_v10.sh",
+      "sha256": "dd7988bf652aa45227f6bd9b35839ad27f2bd82f6070f04f4e5347732550fbbc",
+      "bytes": 3003,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 29,
+          "text": "  python3 \"$validator\" --run-dir \"$run\" --workload-id GESUMMV --mode \"$mode\" --config-id \"FAST64_SENS_PHYSICAL_40KB_${mode}\" --config-file \"$config\" --core-sha 95ccdb7a056f2d53f740d90869785cac6d4ee0f5 --framework-sha 037f008b330eb230353b60edf126d6be9f45afdc --observer-sha 2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e --runtime-sha 462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9 --payload-manifest \"$payload\" --classification PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE --require-immutable-attempt --output \"$tmp\""
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/validate_fast64_trace_row_alias_v3.py",
+      "sha256": "6a5bc7e47c1067fd9e4280cb64fb216a44b989d3816cb5e9d2440f5aac8cff86",
+      "bytes": 3981,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 52,
+          "text": "spec.loader.exec_module(frozen)"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/prepare_fast64_3_core41_registry_v1.py",
+      "sha256": "2add6fee8b34482b99277204798ae60833ac830945e1efc42cdbf8758c4c2baa",
+      "bytes": 7261,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 102,
+          "text": "    spec.loader.exec_module(module)"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/collect_fast64_1_qualification.sh",
+      "sha256": "b1c1ad41716c79964a6073ce12c682318d6aa5ca8a8f588badf381b455c72b91",
+      "bytes": 5201,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 82,
+          "text": "  python3 \"$repo_root/util/dtc_l1/parse_dtc_l1_summary.py\" \"$log\" \\"
+        },
+        {
+          "line": 108,
+          "text": "python3 - \"$output_dir\" <<'PY'"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/monitor_fast64_repaired_core_row_v2.sh",
+      "sha256": "266a489c246512d5d321d77c2ef6e10794b0b0deb4e6aa7bb9bd2ee3f37b67ff",
+      "bytes": 3418,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 52,
+          "text": "python3 \"$validator\" --run-dir \"$run\" --workload-id \"$workload\" --mode \"$mode\" --config-id \"$config_id\" \\"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/validate_fast64_trace_row.py",
+      "sha256": "125c32256846949f2b93e7e71687017229ba3435c0d66206ab3d28af59f7af6c",
+      "bytes": 12252,
+      "same_as_frozen_AA3": true,
+      "execution_review": [
+        {
+          "line": 217,
+          "text": "    subprocess.run(command, check=True)"
+        }
+      ],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/extract_fast64_3_base_structural_metrics_v1.py",
+      "sha256": "00c61999541b07c5304e6f0501c0a51ac8b5c2131f84f15d50a0cd7e7519bf24",
+      "bytes": 5583,
+      "same_as_frozen_AA3": true,
+      "execution_review": [],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/parse_dtc_l1_summary.py",
+      "sha256": "7145b7f98d9138d1e49f662ea91e2a3e86644e7d6e853c80dffb053cc5253bc8",
+      "bytes": 15183,
+      "same_as_frozen_AA3": true,
+      "execution_review": [],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l1-fast64/util/dtc_l1/compare_fast64_nonbinding_cap.py",
+      "sha256": "13359ca46402ebcf5b5a0e30c091178a45068cbbf32267564c8f7f91343ccc5f",
+      "bytes": 1765,
+      "same_as_frozen_AA3": true,
+      "execution_review": [],
+      "classification": "EXISTING_TERMINAL_INPUT_READER_OUTPUT_PARSER_OR_COLLECTOR: may write its own closeout log/output; no simulator dispatch or signal"
+    }
+  ],
+  "visible_simulators": [],
+  "AA5_exclusive_execution_lock_acquired": false,
+  "why_no_AA5_lock": "Read-only function; coordinator owns only its independent AA5 lock; this audit never acquires old locks",
+  "old_locks_deleted_or_acquired": false,
+  "other_projects_signaled": false
+}

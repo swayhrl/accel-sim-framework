@@ -1,0 +1,91 @@
+{
+  "findings": "No production defect established by executed CPU tests; scope gaps remain explicit.",
+  "frozen": "6fba0136f8465b59fe5858a950fa39efb265f654",
+  "full_diff_sha256": "22e035e108dc9d0e1ee4ecf37b2f0f6ca5aa3b3a505836a6f4704605f56b460c",
+  "numstat": "20\t0\tCMakeLists.txt\n57\t0\tdocs/dtc_l1/LANE_X_OPTIN_INVALIDATION_V1_SCIENTIFIC_STOP.md\n47\t2\tsrc/gpgpu-sim/dtc-l1-common.h\n150\t0\tsrc/gpgpu-sim/dtc-l1-invalidation.h\n6\t2\tsrc/gpgpu-sim/gpu-sim.cc\n70\t19\tsrc/gpgpu-sim/shader.cc\n11\t3\tsrc/gpgpu-sim/shader.h\n56\t0\ttests/dtc_l1_k0_equivalence_test.cc\n76\t0\ttests/dtc_l1_source_invalidation_integration_test.cc\n255\t0\ttests/dtc_l1_source_invalidation_test.cc\n",
+  "paths": [
+    {
+      "content_sha256": "cee3ea1480c8f40dbed7676ea95700484a4f4593a36cf48e40c01f9d5d8d5ab6",
+      "diff_sha256": "9b0ffa826ad99a9c7a58e1649c6da663f4444b2476f641f8d37fdbcdf58276f2",
+      "new_blob": "f44f57b3f1d70bb58a5135c5794f6472a8cf7291",
+      "old_blob": "dcbf9c520398558a64e2d1821423ea7282e6ef70",
+      "path": "CMakeLists.txt",
+      "review": "Adds three CPU tests only; production build target and flags unchanged."
+    },
+    {
+      "content_sha256": "7ce46d94d62fdde9e9893d37c2bdccce1199c3ae1a3d0d97a0d3e368e478c25f",
+      "diff_sha256": "c0121851666708b1f0ebb51eb4991a4c5e8885d82bff273b77146083cc6cacd1",
+      "new_blob": "8c1843f701b5f17303ea3a54c51226ecd0b237d2",
+      "old_blob": null,
+      "path": "docs/dtc_l1/LANE_X_OPTIN_INVALIDATION_V1_SCIENTIFIC_STOP.md",
+      "review": "Historical STOP explicitly superseded by source-request ruling; not executable evidence."
+    },
+    {
+      "content_sha256": "798b3b416ce3223799af870438273167f0d257f1f432a1f0aad9dced06f81510",
+      "diff_sha256": "177a3916c6e980b1711e8c7d901a60fa6e0ff38b849378f6f3b97b66b68ca265",
+      "new_blob": "6af1b6b169cfb251814e9fc03f223197adbabf90",
+      "old_blob": "ab9831ad1946e287f96eac368cd3d342ff9038f2",
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "review": "OO lookup sweep clears logical/physical tag-valid, preserves generations and live Ref/queues. Ref0 release asserts ready/no waiter/no return. release event timestamp avoids gated-interval map-loss underflow. K0 default call retains old service-cycle timestamp."
+    },
+    {
+      "content_sha256": "85dbad1028354142c5f3ca9873fe612aca89d8d6cd666652bcbd28c8280ab2b9",
+      "diff_sha256": "8a96e6657bc4964c102bbb907474f4ac2ecf55fe57d2413faf84cbeaff121cc9",
+      "new_blob": "0555e81385f7f3ba9d6b63fe072ff24ad4725c99",
+      "old_blob": null,
+      "path": "src/gpgpu-sim/dtc-l1-invalidation.h",
+      "review": "Known bool option defaults OFF; OO-only mode guard. Observer counts request/ordinary pending-to-clear commit without adding a service port. Ordinary inherited algorithms unchanged."
+    },
+    {
+      "content_sha256": "b46c0e89b2539709edfb2c8b2c13073b7d1f415c7c43fa75a8f7838d94cc6d91",
+      "diff_sha256": "d2a05beecbd0c1f2142c0952a9953af73ffcf6923c2ee31a6bfe7875e12d0a98",
+      "new_blob": "c9f46a06a2536c9db7241240240ad3502a5e3022",
+      "old_blob": "d39e5d3e4905ac9ef7b1429a65a5ea521b57a5f3",
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "review": "Registers bool; adds enum labels to existing config and per-CORE idle callers only. No kernel-done callback or new caller/guard."
+    },
+    {
+      "content_sha256": "8c9e02b57876c67324c2ec10114022e1b5cd16284ea327b8f222b46c3ff27d45",
+      "diff_sha256": "38d601eb62fd8f53a7b1cef7285b036f2e70c51623ac6b0ed648fbcebf13225e",
+      "new_blob": "27af3be092c36414f929059fa62a1b06d70f59cb",
+      "old_blob": "f74ff38310608a93b8a186c598c145164d839c3c",
+      "path": "src/gpgpu-sim/shader.cc",
+      "review": "K1-only observed ordinary constructor and request hook; occupancy-only edge sampled before source mutation; service advance/quotas separate. OFF ordinary constructor/invalidate/cycle retained. MEMBAR and cluster forwarding add source enum."
+    },
+    {
+      "content_sha256": "c3a47c09ad55bea2e169cc1f1989866ce3d8d2f86c3b277d62184f1a9983c447",
+      "diff_sha256": "db99297a3bb1344828a8ca51c48e0cfa634142a5e1762a6393760ae8ac003f9d",
+      "new_blob": "cc0cc8002c321c62ca07bf9034922a649da16180",
+      "old_blob": "a051024a7adfb8b4a97afc46390d63a60d83ef6f",
+      "path": "src/gpgpu-sim/shader.h",
+      "review": "New enum-default API signatures, observer and occupancy sample edge, config bool. Layout differs, requiring all clients rebuilt with matching headers; independent binaries rebuilt for each library."
+    },
+    {
+      "content_sha256": "d75b84477050861c821ab6c4ec6bc11ac84ade265a4793ca91337ef49654fdeb",
+      "diff_sha256": "8ec8c40505f397e652f82c7f0cbefa1e3b65d2e44bfe330b79db8f74b3648820",
+      "new_blob": "7af0608864cf705b492b1e1da6c768c3166714b7",
+      "old_blob": null,
+      "path": "tests/dtc_l1_k0_equivalence_test.cc",
+      "review": "Producer header-only mechanism regression; not an actual LDST equivalence proof."
+    },
+    {
+      "content_sha256": "f9e86aa2a4a076a16574f026dc090085915dbc69b5f323b53c752db2521c08de",
+      "diff_sha256": "60af076677097e10621ccccb99df636dbaaef1cfdd2752206f8189dfaa8addc0",
+      "new_blob": "5c299d43924c4de5c1dce3f4cde1f23ccbc32aa9",
+      "old_blob": null,
+      "path": "tests/dtc_l1_source_invalidation_integration_test.cc",
+      "review": "Producer parser and ordinary cache test with controlled fill-owner fixture; supplementary, not independent-author evidence."
+    },
+    {
+      "content_sha256": "06ffaa34a4b9f64b5a5ab8dd448f1f38ca83335e64d38e6187b5e089cd874e62",
+      "diff_sha256": "00a023074b50c88600b850da22c9b8cb11f3ca51f10945fc119f2110ab2dec33",
+      "new_blob": "76ed9c923d539c07d256148fa47d6ed0ffa0cb91",
+      "old_blob": null,
+      "path": "tests/dtc_l1_source_invalidation_test.cc",
+      "review": "Producer OO CPU tests cover read lifetime/negative scope and service; supplementary, not independent-author evidence."
+    }
+  ],
+  "paths_reviewed": 10,
+  "production_sources_modified": false,
+  "target": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05"
+}
