@@ -109,7 +109,7 @@ def main():
     run('one-empty64',args.probe,'1','empty',4,0,64)
     run('zero-empty64',args.probe,'0','empty',4,0,64)
     for mode in [0,1,2,4]:
-        run(f'bad-mode-{mode}',args.probe,'1','mode_only',4,0,1,mode,0,False)
+        run(f'bad-mode-{mode}',args.probe,'1','mode_only',4,0,1,mode,1,False)
         run(f'off-mode-{mode}',args.probe,'0','mode_only',4,0,1,mode,0,True)
     run('bad-finite-zero',args.probe,'1','mode_only',4,0,1,3,0,False)
     # Corrupt only the last frame, leaving older valid frames to test no fallback.
