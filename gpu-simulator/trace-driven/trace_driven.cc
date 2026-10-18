@@ -192,6 +192,7 @@ bool trace_warp_inst_t::parse_from_trace_struct(
   // get the opcode
   std::vector<std::string> opcode_tokens = trace.get_opcode_tokens();
   std::string opcode1 = opcode_tokens[0];
+  ep_l2_mq2_ordinary_read = inst_t::ep_l2_plain_ldg(opcode_tokens);
 
   std::unordered_map<std::string, OpcodeChar>::const_iterator it =
       OpcodeMap->find(opcode1);
