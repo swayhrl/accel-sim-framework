@@ -5,7 +5,7 @@ Not a whole-controller reachability proof. Explicit environment below.
 from pathlib import Path
 import argparse,subprocess,json,hashlib
 p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[3];meta=repo/'rtl/ep_l2/rtl/ep_l2_metadata_word.sv'
-text='''module owner_invariant(input clk,input [2:0] op,input [1:0] tag,input [2:0] landing,lower_pid,fill_pid,input [1:0] fill_tag,input dirty,lower,output legal,invariant,property);
+text='''module owner_invariant(input clk,input [2:0] op,input [1:0] tag,input [2:0] landing,lower_pid,fill_pid,input [1:0] fill_tag,input dirty,lower,output legal,invariant,owner_property);
  localparam NT=4,NP=8;
  wire [NP*3-1:0] roles;wire [NP*2-1:0] owners;wire [NT*3-1:0] maps;
  reg [NT-1:0] live;
@@ -47,8 +47,8 @@ text='''module owner_invariant(input clk,input [2:0] op,input [1:0] tag,input [2
  assign invariant=(&tag_ok)&&(&payload_ok);
  wire a=roles[fill_pid*3 +:3]==1 && owners[fill_pid*2 +:2]==fill_tag;
  wire b=roles[fill_pid*3 +:3]==1 && live[fill_tag] && maps[fill_tag*3 +:3]==fill_pid;
- assign property=invariant&&(a==b);
+ assign owner_property=invariant&&(a==b);
 endmodule
-''';sv=a.out/'owner_invariant.sv';sv.write_text(text);ys=a.out/'prove.ys';ys.write_text('read_verilog -sv "'+str(meta)+'" "'+str(sv)+'"\nprep -top owner_invariant -flatten\n'+ 'sat -seq 2 -set legal 1 -set-at 1 invariant 1 -prove-skip 1 -prove property 1 -verify -timeout 120\n');log=a.out/'proof.log'
+''';sv=a.out/'owner_invariant.sv';sv.write_text(text);ys=a.out/'prove.ys';ys.write_text('read_verilog -sv "'+str(meta)+'" "'+str(sv)+'"\nprep -top owner_invariant -flatten\n'+ 'sat -seq 2 -set legal 1 -set-at 1 invariant 1 -prove-skip 1 -prove owner_property 1 -verify -timeout 120\n');log=a.out/'proof.log'
 with log.open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(ys)],stdout=f,stderr=subprocess.STDOUT,check=True)
 assert 'SUCCESS!' in log.read_text();receipt={'status':'ACTUAL_WORD_MAP_LEGAL_EVENT_INVARIANT_PRESERVATION_AND_FILL_IDENTITY_EQ_PASS','actual_metadata_source_sha256':hashlib.sha256(meta.read_bytes()).hexdigest(),'model':'four Tags/eight payloads, actual word role/owner and map FF transition, abstract frontend event decoder','premises':'initial role/map/live invariant; one legal frontend event + independent lower WB release; commit landing reserved by same Tag or existing clean resident, unique mapped live ownership; all arbitrary fills at both steps','not_proved':'whole-controller reachability, generation lifetime or physical timing; those retain separate production tests/GEN32 proof','generation_and_masks':'common unchanged fill GEN/role/sector guards factored out; byte reference remains actual full production RTL','proof_script_sha256':hashlib.sha256(ys.read_bytes()).hexdigest()};(a.out/'OWNER_INVARIANT_EQ_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n');print(receipt['status'],flush=True)

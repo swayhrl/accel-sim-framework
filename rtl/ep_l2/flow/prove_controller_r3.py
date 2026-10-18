@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import argparse,subprocess,re,json,hashlib
-p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--depth',type=int,default=8);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[3];ref='1b011c6a51900462db9ae169d33bca742999abdb';base=repo/'rtl/ep_l2/rtl';names=['ep_l2_slice_ctrl','ep_l2_metadata_word','ep_l2_tag_map_word','ep_l2_first_one','ep_l2_index_mux','ep_l2_control_buffer','ep_l2_control_inverter'];rows=[];captured_RTL_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (base/'ep_l2_slice_ctrl.sv',base/'ep_l2_metadata_word.sv')}
+p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--depth',type=int,default=8);p.add_argument('--modes',default='0,1,2');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False);repo=Path(__file__).resolve().parents[3];ref='1b011c6a51900462db9ae169d33bca742999abdb';base=repo/'rtl/ep_l2/rtl';names=['ep_l2_slice_ctrl','ep_l2_metadata_word','ep_l2_tag_map_word','ep_l2_first_one','ep_l2_index_mux','ep_l2_control_buffer','ep_l2_control_inverter'];rows=[];captured_RTL_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (base/'ep_l2_slice_ctrl.sv',base/'ep_l2_metadata_word.sv')}
 oldmeta=subprocess.check_output(['git','show',ref+':rtl/ep_l2/rtl/ep_l2_metadata_word.sv'],cwd=repo,text=True)
 oldctrl=subprocess.check_output(['git','show',ref+':rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv'],cwd=repo,text=True)
 # Proof-only observable state ports; exact production procedural bodies retained.
@@ -24,8 +24,8 @@ for token in header.split(','):
   name=token
  ports.append((kind,width,name))
 inputs=[(w,n) for k,w,n in ports if k=='input'];outputs=[(w,n) for k,w,n in ports if k=='output'];params='MODE=0,N_TAG=4,N_PAYLOAD=16,STATIC_WB=2,N_WAD=2,GEN_W=3,ADDR_W=8,TAG_W=2,PID_W=4,WAD_W=1,ROW_W=2';connections=','.join('.'+x+'('+('4096\'b0' if x=='ram_rdata' else '1024\'b0' if x in ('req_data','fill_data') else x)+')' for _,x in inputs)
-for mode in (0,1,2):
- wrapper='module word_equiv #('+params.replace('MODE=0','MODE='+str(mode))+')('+','.join('input wire '+w+' '+n for w,n in inputs)+',output wire equal);\n'
+for mode in map(int,a.modes.split(',')):
+ wrapper='module word_equiv #('+params.replace('MODE=0','MODE='+str(mode))+')('+','.join('input wire '+w+' '+n for w,n in inputs)+',output wire equal,output wire ['+str(len(outputs)-1)+':0] mismatch);\n'
  for q in ('a','b'):
   wrapper+=''.join('wire '+w+' '+n+'_'+q+';\n' for w,n in outputs)
   wrapper+=('ep_l2_slice_ctrl_r2' if q=='a' else 'ep_l2_slice_ctrl')+' #('+','.join('.'+k+'('+k+')' for k in ('MODE','N_TAG','N_PAYLOAD','STATIC_WB','N_WAD','GEN_W','ADDR_W'))+') '+q+'('+connections+','+','.join('.'+n+'('+n+'_'+q+')' for _,n in outputs)+');\n'
@@ -34,7 +34,7 @@ for mode in (0,1,2):
   eq=n+'_a=='+n+'_b'
   qualifier='native_commit_a' if n in ('native_tag','native_pid','native_gen') else 'rsp_valid_a' if n.startswith('rsp_') and n!='rsp_valid' else 'wb_valid_a' if n in ('wb_data','wb_be','wb_addr','wb_ticket','wb_ticket_gen') else None
   checks.append('(!'+qualifier+' || ('+eq+'))' if qualifier else '('+eq+')')
- wrapper+='assign equal='+' && '.join(checks)+';endmodule\n';path=a.out/f'wrapper-{mode}.sv';path.write_text(wrapper);ys=a.out/f'proof-{mode}.ys';files=[base/'ep_l2_bank_arbiter.sv',a.out/'r3_meta.sv',a.out/'r3_ctrl.sv',a.out/'r2_meta.sv',a.out/'r2_ctrl.sv',path];ys.write_text('read_verilog -sv -D SYNTHESIS '+' '.join('"'+str(f)+'"' for f in files)+'\nprep -top word_equiv -flatten\nmemory_map\nopt -full\nwreduce\nopt_clean\n'+f'sat -seq {a.depth} -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120\n');log=a.out/f'proof-{mode}.log'
+ wrapper+='assign equal='+' && '.join(checks)+';\n'+''.join('assign mismatch['+str(i)+']=!('+check+');\n' for i,check in enumerate(checks))+'endmodule\n';path=a.out/f'wrapper-{mode}.sv';path.write_text(wrapper);ys=a.out/f'proof-{mode}.ys';files=[base/'ep_l2_bank_arbiter.sv',a.out/'r3_meta.sv',a.out/'r3_ctrl.sv',a.out/'r2_meta.sv',a.out/'r2_ctrl.sv',path];ys.write_text('read_verilog -sv -D SYNTHESIS '+' '.join('"'+str(f)+'"' for f in files)+'\nprep -top word_equiv -flatten\nmemory_map\nopt -full\nwreduce\nopt_clean\n'+f'sat -seq {a.depth} -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120 -dump_vcd \"{a.out}/counterexample-{mode}.vcd\" -show-inputs -show mismatch -show a.state -show b.state -show proof_gen_a -show proof_gen_b -show b.fe_gen_write -show b.frontend_generation_pid -show b.frontend_generation_old -show b.frontend_generation_next -show b.frontend_generation_step_two\n');log=a.out/f'proof-{mode}.log'
  with log.open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(ys)],stdout=f,stderr=subprocess.STDOUT,check=True)
  assert 'SUCCESS!' in log.read_text();rows.append({'mode':mode,'status':'BOUNDED_ACTUAL_CONTROLLER_EQ_PASS','depth':a.depth});print('actual R2/R3 controller',mode,'PASS',flush=True)
 (a.out/'CONTROLLER_EQ_RECEIPT.json').write_text(json.dumps({'rows':rows,'scope':'actual controller cut incl all metadata/tag mapping state and valid-qualified IO; proof-only state output ports/keep removal for flattening (production cells retained); small4Tags/16payload/2WAD/GEN3; data values tied0 (numeric bytes separately tested), address width8; all masks/handshakes/identities unconstrained; no whole-controller unbounded proof or full-size cost claim','R2':ref,'captured_RTL_sha256':captured_RTL_sha256},indent=2)+'\n')
