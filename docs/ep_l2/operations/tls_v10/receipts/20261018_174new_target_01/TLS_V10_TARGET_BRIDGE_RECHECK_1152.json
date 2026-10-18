@@ -1,0 +1,299 @@
+{
+  "schema": "TLS_V10_TARGET_BRIDGE_RECHECK_V1",
+  "utc": "2026-10-18T11:51:30.788561+00:00",
+  "genuine164_mount": {
+    "target": "/root/share/mnt164",
+    "source": "admin-wcx@10.208.130.164:/home/shared",
+    "fstype": "fuse.sshfs"
+  },
+  "bridge_controls": [
+    {
+      "name": "TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547502,
+      "size": 1864,
+      "allocated": 4096,
+      "sha256": "1c660c0c94c88ad11097f75025bd620f9fadd1d997effb2d4527cb3393c2c08d",
+      "control": {
+        "schema": "TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE_V1",
+        "utc": "2026-10-18T11:40:14.745671+00:00",
+        "status": "PRE_READY_BUILDER_ALIAS_CORRECTION_REQUIRED_NO_DATA_TRANSFER",
+        "source_builder_commit": "b0e29601b22e6deec9e4ebb8af5d9e475334f9f8",
+        "source_builder_path": "docs/ep_l2/operations/tls_v10_174_to_164_source/build_tls_v10_binding.py",
+        "problem": "Source builder uses mounted_base in manifest.genuine164_destination_root; accepted target proposal binds canonical native /home/shared path there. These encode different five-field txids even though they map to the same NAS path.",
+        "required_bounded_fix": {
+          "genuine164_destination_root": "native_base",
+          "destination_path_on_174new": "mounted_base"
+        },
+        "minimal_manifest_reference": "tools/tls_v10_selector.py",
+        "manifest_format": "Keep source minimal V9 manifest fields and add destination_path_on_174new; no other additional fields required. Preserve frozen file order and exact source filesystem identity string.",
+        "independent_rows": "Reviewed source normalize matches target normalize byte-for-byte for synthetic files/directories. New 8-test adapter receipt and golden canonical vector are in this revision.",
+        "existing_real_manifest_conflict": false,
+        "existing_COPY_READY": false,
+        "source_resource_status": "HOLD from source 8501782 until fresh independent PASS",
+        "native_restore_probe": {
+          "file": "TLS_V10_TARGET_NATIVE_RESTORE_PROBE.json",
+          "sha256": "b3d019a7c1b7ec4f3f22301b6b001cb25f2ddeac20b4c662627f59d8a2f5c697"
+        },
+        "next_action": "Source correct unexecuted builder before any real selector/txid publication and explicitly ACK matching native-root encoding. Target will verify exact same manifest SHA and txid; no silent alias selection.",
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false,
+        "source_recovered_bytes": 0
+      }
+    },
+    {
+      "name": "TLS_V10_OLD174_CANONICAL_ROOT_ALIGNMENT_ACK.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547505,
+      "size": 1087,
+      "allocated": 4096,
+      "sha256": "1ca201fc9ecb96cc12b34e2df6b9c7639c3d63d3e15cf1c4420674cd99668121",
+      "control": {
+        "schema": "TLS_V10_OLD174_CANONICAL_ROOT_ALIGNMENT_ACK_V1",
+        "status": "PRE_READY_BUILDER_CORRECTED_SYNTHETIC_VECTOR_PASS_NO_DATA_TRANSFER",
+        "target_notice_commit": "0728838c1dc459dcac04fbea2b699e35086d6f62",
+        "target_notice_sha256": "1c660c0c94c88ad11097f75025bd620f9fadd1d997effb2d4527cb3393c2c08d",
+        "target_synthetic_vector_sha256": "eb1b21019e6138cfda42b0af29684c4c86041825f5438fee700bade696e3a254",
+        "source_builder": "docs/ep_l2/operations/tls_v10_174_to_164_source/build_tls_v10_binding.py",
+        "canonical_five_field_destination": "native /home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_<GROUP>_<SELECTOR_SHA256>",
+        "separate_target_alias_field": "destination_path_on_174new = /root/share/mnt164/...",
+        "synthetic_file_and_directory_rows_match": true,
+        "synthetic_selector_sha256_match": true,
+        "synthetic_manifest_sha256_match": true,
+        "synthetic_txid_match": true,
+        "real_source_frozen_manifest_exists": false,
+        "copy_ready": false,
+        "bridge_payload_staged": false,
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false
+      }
+    },
+    {
+      "name": "TLS_V10_OLD174_POSTCUTOFF_LANE5_HOLD.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547500,
+      "size": 1094,
+      "allocated": 4096,
+      "sha256": "0c849ee5799b898dbd87ecaf4dcf9e4d16aec705edbc6994656146a460e406da",
+      "control": {
+        "schema": "TLS_V10_OLD174_POSTCUTOFF_GATE_HOLD_V1",
+        "at_utc": "2026-10-18T11:32:05Z",
+        "status": "POST_CUTOFF_LANE5_ACTIVE_NO_BULK_IO",
+        "source_namespace": "mnt:[4026534768]",
+        "cutoff_utc": "2026-10-18T11:30:14.500719Z",
+        "workspace_available_bytes": 56403574784,
+        "share_available_bytes": 44304162816,
+        "memory_available_bytes": 346971779072,
+        "lane_registry_updated_at": "2026-10-18T11:27:45.853226+00:00",
+        "lane5_running_registry_ids": [
+          "15ebad2dde922309b47f31e71deac51f8f22c1f2e72aff85ae3b6217e661bab6",
+          "b4b4081f7c38ed09a72738fbaafe988da135c0c9e05ff1a97df82805b3a0bcdb"
+        ],
+        "observed_lane5_sim_pids": [
+          4076674,
+          4083611
+        ],
+        "freeze_p9_public_attempt_at_utc": "2026-10-18T11:30:26Z",
+        "freeze_result": "FAIL_CLOSED_ACTIVE_LANE_RUNS_NO_MANIFEST_WRITTEN",
+        "hash_started": false,
+        "copy_ready": false,
+        "bridge_payload_staged": false,
+        "source_originals": "SOURCE_KEEP",
+        "source_deleted_files": 0,
+        "source_df_gain_bytes": 0,
+        "next_trigger": "Fresh Lane5 registry/process/lease PASS and resource floors, then immutable source SHA and exact COPY_READY"
+      }
+    },
+    {
+      "name": "TLS_V10_OLD174_PRELIM_PUBLICATION.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547498,
+      "size": 1415,
+      "allocated": 4096,
+      "sha256": "833008d46f0dad4636814575d2196bd4a4663db4c5799eced0e0f3786b0ea27f",
+      "control": {
+        "schema": "TLS_V10_OLD174_PRELIM_PUBLICATION_V1",
+        "status": "METADATA_ONLY_NO_COPY_READY",
+        "coordinating_commit": "cb955076bde74fcab6c29f7f524c649c57e79015",
+        "source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+        "source_checkpoint_commit": "d51e8ae2eab8bdcec174329e990f666c7c891deb",
+        "source_status_path": "docs/ep_l2/operations/tls_v10_174_to_164_source/TLS_V10_SOURCE_STATUS.md",
+        "source_status_sha256": "eee8df75c81a8367e2ca0d68119feb833d5fd071a7c63decfbf4780f65d9f920",
+        "source_namespace": "mnt:[4026534768]",
+        "source_workspace_device": 156,
+        "shared_bridge_root": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02",
+        "shared_bridge_device": 2431,
+        "preferred_first_groups": [
+          "/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9-public-v1",
+          "/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9/matrix-v3",
+          "/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9/matrix-v4"
+        ],
+        "first_group_preliminary_allocated_bytes": 5678641152,
+        "first_group_preliminary_regular_files": 283,
+        "first_group_max_file_size_bytes": 285915764,
+        "protocol_note": "Some source files exceed 256 MiB; target should agree on bounded content chunking or verified lossless compression before COPY_READY. No staging while Lane5 gate fails.",
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false,
+        "bridge_payload_staged": false
+      }
+    },
+    {
+      "name": "TLS_V10_OLD174_PROTOCOL_CONDITIONAL_ACCEPT.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547501,
+      "size": 1792,
+      "allocated": 4096,
+      "sha256": "130aa77736c6af1a1bd037177c12d6c21505164a1c5da4cc5d51737e7b6c7092",
+      "control": {
+        "schema": "TLS_V10_OLD174_PROTOCOL_CONDITIONAL_ACCEPT_V1",
+        "status": "ENGINEERING_PROTOCOL_ACCEPTED_NO_COPY_READY",
+        "target_proposal_commit": "85fe04e41b339d1584084194080fc12109a7dbb0",
+        "target_proposal_sha256": "ba842914183264f363df1ca8c307b6677ab91ce9631416cfd7a391d3e5ddf71a",
+        "source_filesystem_identity": "old174|mnt:[4026534768]|dev156|workspace-overlay",
+        "agreed_data_chunk_cap_bytes": 134217728,
+        "agreed_physical_bridge_cap_bytes": 268435456,
+        "agreed_transfer_rate_cap_bytes_per_second": 31457280,
+        "agreed_chunk_policy": "One raw sequential range per READY; exact bridge SHA/identity, Git-backed DEST_VERIFIED and CHUNK_RANGE_ONLY RESTORE_VERIFIED, exact source SOURCE_KEEP, then exact bridge cleanup before next READY.",
+        "agreed_complete_policy": "Only after every original range is covered and its full SHA matches, independently restore all original files plus numeric metadata into an absent native tree and join complete source-to-164-to-restore proof.",
+        "source_frozen_commit_policy": "For canonical five-field V9 txid use exact Git publication commit containing frozen original manifests; original source worktree commit stays per-row provenance.",
+        "not_yet_satisfied": [
+          "Current old174 Lane5 active runs and real simulation PIDs must clear with fresh registry/process/lease and resource PASS.",
+          "Target must publish actual genuine164 absent destination binding and native tmpfs mount/metadata/capacity PASS; proposal alone is not a restore proof.",
+          "Source must freeze exact original SHA/manifests, publish canonical selector/txid and independently recheck every source chunk before READY."
+        ],
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false,
+        "bridge_payload_staged": false,
+        "source_reclaimed_bytes": 0
+      }
+    },
+    {
+      "name": "TLS_V10_OLD174_TARGET_PRECHECK_ACK.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547499,
+      "size": 1162,
+      "allocated": 4096,
+      "sha256": "ca24e5e4af76012b334368f662755991bbd815b40c41eab87473b9769093e76e",
+      "control": {
+        "schema": "TLS_V10_OLD174_TARGET_PRECHECK_ACK_V1",
+        "source_status": "TARGET_READONLY_PREFLIGHT_SEEN_SOURCE_KEEP_NO_COPY_READY",
+        "target_branch": "hrl/tls-v10-174new-target-exec-v1",
+        "target_precheck_commit": "0ed56e745dfe44ff4c3547d3b560c1e1eb988008",
+        "target_precheck_notice_sha256": "567e867ee98926e438cb1a9b0558c424170d057957f4776eaaaa5302e27a5a0f",
+        "target_genuine164_mount_observed_from_receipt": "admin-wcx@10.208.130.164:/home/shared fuse.sshfs",
+        "source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+        "source_latest_readonly_status_commit": "b340274b3efbd0cd508e2948d9b0cea20fbebf29",
+        "source_bridge_device": 2431,
+        "source_first_groups": "P9 public, matrix-v3, matrix-v4, subject to post-cutoff Lane5/resource/activity PASS",
+        "source_max_preliminary_file_bytes": 285915764,
+        "source_protocol_request": "Agree exact <=256MiB physical bridge batch plan for large files (offset/chunk SHA or verified lossless compression), canonical native164 absent root, selector/txid binding, per-batch ACK sequence; one sender only.",
+        "bridge_payload_staged": false,
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false
+      }
+    },
+    {
+      "name": "TLS_V10_TARGET_NATIVE_RESTORE_PROBE.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547503,
+      "size": 1612,
+      "allocated": 4096,
+      "sha256": "b3d019a7c1b7ec4f3f22301b6b001cb25f2ddeac20b4c662627f59d8a2f5c697",
+      "control": {
+        "schema": "TLS_V10_TARGET_NATIVE_RESTORE_PROBE_V1",
+        "utc": "2026-10-18T11:33:37.473351+00:00",
+        "status": "NATIVE_TMPFS_UID_GID_MODE_MTIME_AND_REOPEN_SHA_PASS_NO_SCIENTIFIC_IO",
+        "mount": {
+          "target": "/root/tls-v10-native-restore-20261018-target01",
+          "source": "tls-v10-target-native-proof",
+          "fstype": "tmpfs",
+          "options": "rw,nosuid,nodev,noexec,relatime,size=25165824k,nr_inodes=100000,mode=700,inode64"
+        },
+        "mount_namespace": "mnt:[4026535153]",
+        "root_dev": 95,
+        "capacity_bytes": 25769803776,
+        "available_bytes": 25769799680,
+        "MemAvailable_before": 346510135296,
+        "cgroup_current_before": 44396503040,
+        "cgroup_max": 274877906944,
+        "full_cap_reserved_in_capacity_gate": 25769803776,
+        "mem_after_full_cap_projection": 320740331520,
+        "cgroup_after_full_cap_projection": 70166306816,
+        "probe_path": "/root/tls-v10-native-restore-20261018-target01/NATIVE_METADATA_PROBE/native_metadata.bin",
+        "probe_sha256": "f8afadeb2bf410067d353907259f62b963a41b0963a9a1066dbef868de03144d",
+        "probe_size": 33,
+        "file_metadata": {
+          "uid": 12345,
+          "gid": 23456,
+          "mode": 416,
+          "mtime_ns": 1770000000123456789
+        },
+        "directory_metadata": {
+          "uid": 12345,
+          "gid": 23456,
+          "mode": 488,
+          "mtime_ns": 1770000000123456789
+        },
+        "retention": "Keep native proof copies; no automatic cleanup. tmpfs is volatile verification storage, never a durable archive.",
+        "source_resource_admission": "Not granted by this synthetic probe; require independent source PASS before scientific hash/copy/restore.",
+        "source_original_mutations": 0,
+        "scientific_data_transferred": 0
+      }
+    },
+    {
+      "name": "TLS_V10_TARGET_PROTOCOL_READY_0728838c1dc4.json",
+      "type": "file",
+      "dev": 2431,
+      "inode": 103547504,
+      "size": 1509,
+      "allocated": 4096,
+      "sha256": "ec5ca62a31783f2bb93513298e914ac470f8261a6bd04cdf3b621d6570deef53",
+      "control": {
+        "schema": "TLS_V10_TARGET_PROTOCOL_BRIDGE_PUBLICATION_V1",
+        "utc": "2026-10-18T11:41:41.680076+00:00",
+        "status": "CONTROL_METADATA_ONLY_NOT_COPY_READY",
+        "Git": {
+          "schema": "TLS_V10_TARGET_GIT_PUBLICATION",
+          "commit": "0728838c1dc459dcac04fbea2b699e35086d6f62",
+          "branch": "hrl/tls-v10-174new-target-exec-v1",
+          "receipt_directory": "docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01",
+          "exact_remote_Git_readback": true
+        },
+        "records": [
+          {
+            "name": "TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE.json",
+            "sha256": "1c660c0c94c88ad11097f75025bd620f9fadd1d997effb2d4527cb3393c2c08d",
+            "Git_path": "docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE.json",
+            "bridge_path": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE.json",
+            "bridge_device": 2431
+          },
+          {
+            "name": "TLS_V10_TARGET_NATIVE_RESTORE_PROBE.json",
+            "sha256": "b3d019a7c1b7ec4f3f22301b6b001cb25f2ddeac20b4c662627f59d8a2f5c697",
+            "Git_path": "docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/TLS_V10_TARGET_NATIVE_RESTORE_PROBE.json",
+            "bridge_path": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/TLS_V10_TARGET_NATIVE_RESTORE_PROBE.json",
+            "bridge_device": 2431
+          }
+        ],
+        "receiver_lock": true,
+        "scientific_payload_bytes": 0,
+        "source_originals": "SOURCE_KEEP",
+        "source_original_mutations": 0
+      }
+    }
+  ],
+  "receiver_idle": true,
+  "share_available_bytes": 44303798272,
+  "native_restore_available_bytes": 25769783296,
+  "MemAvailable_bytes": 346857783296,
+  "scientific_payload_read_or_hashed": false,
+  "source_original_files_touched": 0,
+  "local_resources_do_not_grant_source_admission": true
+}
