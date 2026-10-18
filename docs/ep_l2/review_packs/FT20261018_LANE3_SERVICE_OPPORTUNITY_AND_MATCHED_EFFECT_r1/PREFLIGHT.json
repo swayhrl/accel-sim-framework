@@ -1,0 +1,75 @@
+{
+  "observed_at": "2026-10-18T03:03:55.239321+00:00",
+  "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+  "scientific_acceptance": {
+    "generation": 47,
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
+    "publication_commit": "a86aa6589316680d7ce051c7a85232b90c6ba24e",
+    "revision": "FT20261017_LANE5_PARALLEL_H0_U_OFF_FWT_7_21_ACCEPTED_r1",
+    "sha256": "017e36b6e2ca94625681d151fe5efe8289efa8e40e8d35dc6a34ed49dc4d4b9a",
+    "snapshot_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_H0_FWT_7_21_U_OFF_ACCEPTANCE_r1/SCIENTIFIC_ACCEPTANCE_V2.json"
+  },
+  "active_runs": {},
+  "active_leases": {
+    "40ca76f35a544914a58f05285f1b9a3b": {
+      "cpu_units": 1,
+      "created_at": "2026-10-18T03:00:56.820681+00:00",
+      "host": "huangrulin-174",
+      "memory_bytes": 8589934592,
+      "owner": "lane2",
+      "status": "RESERVED"
+    },
+    "5842882714c146c1912279e21a3c43ab": {
+      "cpu_units": 1,
+      "created_at": "2026-10-18T02:45:06.695246+00:00",
+      "host": "huangrulin-174",
+      "memory_bytes": 2147483648,
+      "owner": "lane2",
+      "status": "RESERVED"
+    }
+  },
+  "campaign_summary": {
+    "EPL2_PARALLEL_POTENTIAL_20261017_V1": {
+      "t0_unix": 1792236614.5007188,
+      "deadline_unix": 1792323014.5007188,
+      "maximum_starts": 72
+    }
+  },
+  "resources": {
+    "available_memory_bytes": 165573488640,
+    "disk_free_bytes": 52378783744,
+    "share_disk_free_bytes": 44403908608
+  },
+  "actual_processes": [
+    {
+      "pid": 3471589,
+      "cmdline": "/bin/bash -lc python3 - <<'PY'\nfrom pathlib import Path\nimport os,signal\npid=3470873\ntry:\n cmd=Path('/proc')/str(pid)/'cmdline';args=cmd.read_bytes();assert b'R3A_CONTROLLER_PROOF/proof-0.ys' in args;os.kill(pid,signal.SIGTERM);print('Stopped own not-yet-qualified controller proof child for declaration-order fix; parent guard releases lease.')\nexcept FileNotFoundError:print('Controller proof child already exited; inspect receipt before any acceptance.')\np=Path('rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv');s=p.read_text();decl='    wire [GEN_W-1:0] frontend_generation_old,frontend_generation_next,lower_generation_next;\\n';assert s.count(decl)==1;s=s.replace(decl,'');needle='    wire [GEN_W-1:0] generation_old_pid;\\n';s=s.replace(needle,needle+decl);p.write_text(s)\np=Path('rtl/ep_l2/flow/prove_controller_r3.py');s=p.read_text();s=s.replace(\"rows=[]\\n\",\"rows=[];captured_RTL_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (base/'ep_l2_slice_ctrl.sv',base/'ep_l2_metadata_word.sv')}\\n\");s=s.replace(\"'current_RTL_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (base/'ep_l2_slice_ctrl.sv',base/'ep_l2_metadata_word.sv')}\",\"'captured_RTL_sha256':captured_RTL_sha256\");p.write_text(s)\nPY\ngit diff --check\ngit add rtl/ep_l2/rtl/ep_l2_slice_ctrl.sv rtl/ep_l2/flow/prove_controller_r3.py\ngit -c gc.auto=0 commit -q -m 'lane2 R3A: declare shared result before use and freeze proof input identities'\npython3 - <<'PY'\nfrom pathlib import Path\np=Path('/workspace/ep_l2_rtl_r3_metadata_cost/run_qualification_A.sh');s=p.read_text().replace('/R3A\\n','/R3A_QUAL\\n');p.write_text(s)\nPY\nexport LANE2_LEASE_FILE=/workspace/ep_l2_rtl_r3_metadata_cost/lease-qualification-A-v2.txt\nexport LANE2_ARTIFACT_ROOT=/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2\nexport LANE2_MONITOR_ROOT=$LANE2_ARTIFACT_ROOT/R3A_QUAL\npython3 /workspace/ep_l2_rtl_r3_metadata_cost/guard_unique.py --memory-gib 2 --output-mib 128 --timeout 7200 bash /workspace/ep_l2_rtl_r3_metadata_cost/run_qualification_A.sh > /workspace/ep_l2_rtl_r3_metadata_cost/qualification-A-v2-guard.log 2>&1 ",
+      "exe": "/usr/bin/bash",
+      "start_ticks": 904347761,
+      "cwd": "/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1"
+    },
+    {
+      "pid": 3471619,
+      "cmdline": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2 --inhibit-cache --inhibit-rpath  --library-path /scratch/root/oss-eda/oss-cad-suite/lib /scratch/root/oss-eda/oss-cad-suite/libexec/python3.11 /workspace/ep_l2_rtl_r3_metadata_cost/guard_unique.py --memory-gib 2 --output-mib 128 --timeout 7200 bash /workspace/ep_l2_rtl_r3_metadata_cost/run_qualification_A.sh ",
+      "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+      "start_ticks": 904347779,
+      "cwd": "/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1"
+    },
+    {
+      "pid": 3488744,
+      "cmdline": "/bin/bash -lc export LANE2_LEASE_FILE=/workspace/ep_l2_rtl_r3_metadata_cost/lease-cost-A.txt\nexport LANE2_ARTIFACT_ROOT=/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2\nexport LANE2_MONITOR_ROOT=$LANE2_ARTIFACT_ROOT/R3A_COST\npython3 /workspace/ep_l2_rtl_r3_metadata_cost/guard_unique.py --memory-gib 8 --output-mib 224 --timeout 5400 bash /workspace/ep_l2_rtl_r3_metadata_cost/run_cost_A.sh > /workspace/ep_l2_rtl_r3_metadata_cost/cost-A-guard.log 2>&1 ",
+      "exe": "/usr/bin/bash",
+      "start_ticks": 904442787,
+      "cwd": "/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1"
+    },
+    {
+      "pid": 3488754,
+      "cmdline": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2 --inhibit-cache --inhibit-rpath  --library-path /scratch/root/oss-eda/oss-cad-suite/lib /scratch/root/oss-eda/oss-cad-suite/libexec/python3.11 /workspace/ep_l2_rtl_r3_metadata_cost/guard_unique.py --memory-gib 8 --output-mib 224 --timeout 5400 bash /workspace/ep_l2_rtl_r3_metadata_cost/run_cost_A.sh ",
+      "exe": "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+      "start_ticks": 904442791,
+      "cwd": "/workspace/worktrees/accel-sim-ep-l2-rtl-r3-metadata-cost-v1"
+    }
+  ],
+  "registry_client_sha256": "f1b346c413f250e2a448ef94a32e07d7177c5289d2f11d98cf7c5d8c4c664e02",
+  "registry_client_source": "28302d3dc0084290af68a7cb5bb90a9abd25efe6"
+}
