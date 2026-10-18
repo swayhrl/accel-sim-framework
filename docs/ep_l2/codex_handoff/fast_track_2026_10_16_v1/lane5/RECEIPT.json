@@ -56,14 +56,14 @@
   "active_runs": [
     {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-      "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
+      "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
       "client_binding": {
         "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
         "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
         "immutable_scientific_pointer": true
       },
       "cpu_units": 1,
-      "created_at": "2026-10-18T08:43:11.047769+00:00",
+      "created_at": "2026-10-18T08:56:01.419210+00:00",
       "deadline_unix": 1792323014.5007188,
       "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
       "host": "huangrulin-174",
@@ -77,21 +77,21 @@
         "feature_vector": {
           "adaptive_policy": false,
           "bank_count": 4,
-          "bypass_capacity": 128,
+          "bypass_capacity": 80,
           "diagnostic_extra_payload_backing": false,
           "finite_wbuf": true,
           "ideal_meta": false,
           "ideal_read_hit": false,
           "ideal_wb": false,
-          "mq2": true,
+          "mq2": false,
           "nominal_payload_capacity_per_slice": 1168,
           "nominal_static_wb_anchor": 16,
           "ops_per_bank_cycle": 1,
           "payload_capacity_per_slice": 1168,
           "rg1": false,
           "ro": false,
-          "static_s64": false,
-          "static_wb_capacity": 16,
+          "static_s64": true,
+          "static_wb_capacity": 64,
           "tvd": false,
           "unified_wb": false,
           "wb_data_capacity_non_binding": false,
@@ -105,7 +105,7 @@
           "read_hit": false,
           "wb": false
         },
-        "runtime_config_sha256": "2098746da6b5d98fd0b1d9fa8465b00d35d7051d5658d054f435aaaf682d4722",
+        "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
         "termination_contract": {
           "hardware_drained": true,
           "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
@@ -115,20 +115,20 @@
         "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
         "workload": "FWT_7_21"
       },
-      "lease_id": "fb46fc376189424ca26ed30ad85b1130",
+      "lease_id": "c5f9f32b31374525bd06809714787b77",
       "memory_bytes": 4294967296,
       "output_budget": {
-        "accounted_after_admission_bytes": 17761850479,
-        "actual_bytes": 13295684717,
-        "concurrent_unwritten_growth_bytes": 2184464386,
+        "accounted_after_admission_bytes": 15854313175,
+        "actual_bytes": 13393254195,
+        "concurrent_unwritten_growth_bytes": 2192623524,
         "disk_growth_reservation_exception": null,
         "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
-        "predicted_growth_bytes": 2281701376,
+        "predicted_growth_bytes": 268435456,
         "producer_workspace_reserved_bytes": 0,
         "resources": {
-          "available_memory_bytes": 161214275584,
-          "disk_free_bytes": 57958334464,
-          "share_disk_free_bytes": 44327309312
+          "available_memory_bytes": 161098444800,
+          "disk_free_bytes": 57824362496,
+          "share_disk_free_bytes": 44323176448
         },
         "roots": {
           "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
@@ -136,27 +136,33 @@
             "st_dev": 2431
           },
           "/workspace/ep_l2_potential20261017_lane5_results": {
-            "bytes": 5825410544,
+            "bytes": 5922977247,
             "st_dev": 156
           }
         },
-        "same_binary_full_input_samples": [],
+        "same_binary_full_input_samples": [
+          {
+            "bytes": 105334344,
+            "receipt_sha256": "c80f35dd73927eced464f5345ed5eb3f25dacdb2e6989384b44e6c87cbe609d9",
+            "run_key": "931f4639fc92fa89225ec4764d5b72a4b051fba044b17de14f0439ae6d15fcb5"
+          }
+        ],
         "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
         "workspace_st_dev": 156
       },
       "owner": "lane5",
       "process": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 3967640,
-        "start_ticks": 906496272
+        "pid": 3978775,
+        "start_ticks": 906573310
       },
-      "profile": "B16_OFF",
-      "regime": "SERVICE_MQ2",
-      "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
-      "run_key": "3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
+      "profile": "S64",
+      "regime": "SERVICE_OFF",
+      "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+      "run_key": "32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
       "scan": false,
       "status": "RUNNING",
-      "updated_at": "2026-10-18T08:43:11.389908+00:00"
+      "updated_at": "2026-10-18T08:56:01.765588+00:00"
     }
   ],
   "artifacts": [
@@ -306,7 +312,9 @@
     "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_B16_mq2_0_POINT_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_B16_mq2_0_ACCEPTANCE_r1",
     "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_POINT_r1",
-    "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_ACCEPTANCE_r1"
+    "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_ACCEPTANCE_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_S64_mq2_0_POINT_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_S64_mq2_0_ACCEPTANCE_r1"
   ],
   "audit_framework_source": "205782b9745a7189b9bf858486648930b08b8a81",
   "binary_sha256": "23094a9d6d6bc5edc4afae4dfc1c5ef0fb3b5d45fbfe56ffb4a33db46c597dee",
@@ -1039,12 +1047,12 @@
     "original_raw_and_failures_retained": true
   },
   "current_V2": {
-    "generation": 58,
+    "generation": 59,
     "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
-    "publication_commit": "461417a87ace2f43b29f8d796581983ac45ebd1e",
-    "revision": "FT20261017_LANE5_PARALLEL_SERVICE_OFF_B16_OFF_FWT_7_21_ACCEPTED_r1",
-    "sha256": "c6dab8ad347b46478c79d1ec10bc40d32348b32940b9becfd36cb47a00dfa8fa",
-    "snapshot_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_B16_mq2_0_ACCEPTANCE_r1/SCIENTIFIC_ACCEPTANCE_V2.json"
+    "publication_commit": "73840109b99323cff07c33b5ea4131469d329820",
+    "revision": "FT20261017_LANE5_PARALLEL_SERVICE_MQ2_B16_OFF_FWT_7_21_ACCEPTED_r1",
+    "sha256": "69ff3d7e05b884cd5bf8180b83bc642dc997c29279686c657607fae7fdb82ff7",
+    "snapshot_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_ACCEPTANCE_r1/SCIENTIFIC_ACCEPTANCE_V2.json"
   },
   "dependency_receipts": [
     {
@@ -2842,14 +2850,14 @@
     "active_runs": [
       {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
+        "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
         "client_binding": {
           "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
           "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
           "immutable_scientific_pointer": true
         },
         "cpu_units": 1,
-        "created_at": "2026-10-18T08:43:11.047769+00:00",
+        "created_at": "2026-10-18T08:56:01.419210+00:00",
         "deadline_unix": 1792323014.5007188,
         "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
         "host": "huangrulin-174",
@@ -2863,21 +2871,21 @@
           "feature_vector": {
             "adaptive_policy": false,
             "bank_count": 4,
-            "bypass_capacity": 128,
+            "bypass_capacity": 80,
             "diagnostic_extra_payload_backing": false,
             "finite_wbuf": true,
             "ideal_meta": false,
             "ideal_read_hit": false,
             "ideal_wb": false,
-            "mq2": true,
+            "mq2": false,
             "nominal_payload_capacity_per_slice": 1168,
             "nominal_static_wb_anchor": 16,
             "ops_per_bank_cycle": 1,
             "payload_capacity_per_slice": 1168,
             "rg1": false,
             "ro": false,
-            "static_s64": false,
-            "static_wb_capacity": 16,
+            "static_s64": true,
+            "static_wb_capacity": 64,
             "tvd": false,
             "unified_wb": false,
             "wb_data_capacity_non_binding": false,
@@ -2891,7 +2899,7 @@
             "read_hit": false,
             "wb": false
           },
-          "runtime_config_sha256": "2098746da6b5d98fd0b1d9fa8465b00d35d7051d5658d054f435aaaf682d4722",
+          "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
           "termination_contract": {
             "hardware_drained": true,
             "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
@@ -2901,20 +2909,20 @@
           "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
           "workload": "FWT_7_21"
         },
-        "lease_id": "fb46fc376189424ca26ed30ad85b1130",
+        "lease_id": "c5f9f32b31374525bd06809714787b77",
         "memory_bytes": 4294967296,
         "output_budget": {
-          "accounted_after_admission_bytes": 17761850479,
-          "actual_bytes": 13295684717,
-          "concurrent_unwritten_growth_bytes": 2184464386,
+          "accounted_after_admission_bytes": 15854313175,
+          "actual_bytes": 13393254195,
+          "concurrent_unwritten_growth_bytes": 2192623524,
           "disk_growth_reservation_exception": null,
           "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
-          "predicted_growth_bytes": 2281701376,
+          "predicted_growth_bytes": 268435456,
           "producer_workspace_reserved_bytes": 0,
           "resources": {
-            "available_memory_bytes": 161214275584,
-            "disk_free_bytes": 57958334464,
-            "share_disk_free_bytes": 44327309312
+            "available_memory_bytes": 161098444800,
+            "disk_free_bytes": 57824362496,
+            "share_disk_free_bytes": 44323176448
           },
           "roots": {
             "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
@@ -2922,41 +2930,47 @@
               "st_dev": 2431
             },
             "/workspace/ep_l2_potential20261017_lane5_results": {
-              "bytes": 5825410544,
+              "bytes": 5922977247,
               "st_dev": 156
             }
           },
-          "same_binary_full_input_samples": [],
+          "same_binary_full_input_samples": [
+            {
+              "bytes": 105334344,
+              "receipt_sha256": "c80f35dd73927eced464f5345ed5eb3f25dacdb2e6989384b44e6c87cbe609d9",
+              "run_key": "931f4639fc92fa89225ec4764d5b72a4b051fba044b17de14f0439ae6d15fcb5"
+            }
+          ],
           "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
           "workspace_st_dev": 156
         },
         "owner": "lane5",
         "process": {
           "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 3967640,
-          "start_ticks": 906496272
+          "pid": 3978775,
+          "start_ticks": 906573310
         },
-        "profile": "B16_OFF",
-        "regime": "SERVICE_MQ2",
-        "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
-        "run_key": "3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
+        "profile": "S64",
+        "regime": "SERVICE_OFF",
+        "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+        "run_key": "32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
         "scan": false,
         "status": "RUNNING",
-        "updated_at": "2026-10-18T08:43:11.389908+00:00"
+        "updated_at": "2026-10-18T08:56:01.765588+00:00"
       }
     ],
-    "at": "2026-10-18T08:55:59.020601+00:00",
+    "at": "2026-10-18T09:23:08.535868+00:00",
     "current_scientific_pointer": {
-      "generation": 58,
+      "generation": 59,
       "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/APPLICATION_ACCEPTANCE.json",
-      "publication_commit": "461417a87ace2f43b29f8d796581983ac45ebd1e",
-      "revision": "FT20261017_LANE5_PARALLEL_SERVICE_OFF_B16_OFF_FWT_7_21_ACCEPTED_r1",
-      "sha256": "c6dab8ad347b46478c79d1ec10bc40d32348b32940b9becfd36cb47a00dfa8fa",
-      "snapshot_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_B16_mq2_0_ACCEPTANCE_r1/SCIENTIFIC_ACCEPTANCE_V2.json"
+      "publication_commit": "73840109b99323cff07c33b5ea4131469d329820",
+      "revision": "FT20261017_LANE5_PARALLEL_SERVICE_MQ2_B16_OFF_FWT_7_21_ACCEPTED_r1",
+      "sha256": "69ff3d7e05b884cd5bf8180b83bc642dc997c29279686c657607fae7fdb82ff7",
+      "snapshot_path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_ACCEPTANCE_r1/SCIENTIFIC_ACCEPTANCE_V2.json"
     },
     "finite_service_final_intake": {
-      "accepted_formal_endpoints": 7,
-      "charged_starts_including_necessary_native_OFF": 9,
+      "accepted_formal_endpoints": 8,
+      "charged_starts_including_necessary_native_OFF": 10,
       "current_priority_policy": {
         "approved_units": [
           {
@@ -3150,7 +3164,7 @@
           "status": "PASS_THIRD_ROLLING_SLOT_CURRENT_MATERIAL_HEADROOM"
         }
       },
-      "formal_endpoint_starts": 8,
+      "formal_endpoint_starts": 9,
       "maximum_starts_within72": 24,
       "qualification": "CURRENT_QUALIFIED_MQ2_F0AF",
       "registered_endpoints": 18,
@@ -3264,6 +3278,116 @@
         },
         {
           "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
+          "client_binding": {
+            "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+            "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+            "immutable_scientific_pointer": true
+          },
+          "cpu_units": 1,
+          "created_at": "2026-10-18T08:56:01.419210+00:00",
+          "deadline_unix": 1792323014.5007188,
+          "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+          "host": "huangrulin-174",
+          "identity": {
+            "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+            "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+            "epoch_range": {
+              "epochs": "all",
+              "scope": "full_application"
+            },
+            "feature_vector": {
+              "adaptive_policy": false,
+              "bank_count": 4,
+              "bypass_capacity": 80,
+              "diagnostic_extra_payload_backing": false,
+              "finite_wbuf": true,
+              "ideal_meta": false,
+              "ideal_read_hit": false,
+              "ideal_wb": false,
+              "mq2": false,
+              "nominal_payload_capacity_per_slice": 1168,
+              "nominal_static_wb_anchor": 16,
+              "ops_per_bank_cycle": 1,
+              "payload_capacity_per_slice": 1168,
+              "rg1": false,
+              "ro": false,
+              "static_s64": true,
+              "static_wb_capacity": 64,
+              "tvd": false,
+              "unified_wb": false,
+              "wb_data_capacity_non_binding": false,
+              "wb_local_cap": 0,
+              "wbuf_entries": 16
+            },
+            "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+            "ideal_vector": {
+              "mem_all_data": false,
+              "meta": false,
+              "read_hit": false,
+              "wb": false
+            },
+            "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
+            "termination_contract": {
+              "hardware_drained": true,
+              "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+              "normal_exit": true,
+              "timeout_seconds": 3600
+            },
+            "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+            "workload": "FWT_7_21"
+          },
+          "lease_id": "c5f9f32b31374525bd06809714787b77",
+          "memory_bytes": 4294967296,
+          "output_budget": {
+            "accounted_after_admission_bytes": 15854313175,
+            "actual_bytes": 13393254195,
+            "concurrent_unwritten_growth_bytes": 2192623524,
+            "disk_growth_reservation_exception": null,
+            "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+            "predicted_growth_bytes": 268435456,
+            "producer_workspace_reserved_bytes": 0,
+            "resources": {
+              "available_memory_bytes": 161098444800,
+              "disk_free_bytes": 57824362496,
+              "share_disk_free_bytes": 44323176448
+            },
+            "roots": {
+              "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+                "bytes": 7470274173,
+                "st_dev": 2431
+              },
+              "/workspace/ep_l2_potential20261017_lane5_results": {
+                "bytes": 5922977247,
+                "st_dev": 156
+              }
+            },
+            "same_binary_full_input_samples": [
+              {
+                "bytes": 105334344,
+                "receipt_sha256": "c80f35dd73927eced464f5345ed5eb3f25dacdb2e6989384b44e6c87cbe609d9",
+                "run_key": "931f4639fc92fa89225ec4764d5b72a4b051fba044b17de14f0439ae6d15fcb5"
+              }
+            ],
+            "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+            "workspace_st_dev": 156
+          },
+          "owner": "lane5",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 3978775,
+            "start_ticks": 906573310
+          },
+          "profile": "S64",
+          "regime": "SERVICE_OFF",
+          "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+          "run_key": "32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+          "scan": false,
+          "status": "RUNNING",
+          "updated_at": "2026-10-18T08:56:01.765588+00:00"
+        },
+        {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
           "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
           "client_binding": {
             "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
@@ -3273,6 +3397,8 @@
           "cpu_units": 1,
           "created_at": "2026-10-18T08:43:11.047769+00:00",
           "deadline_unix": 1792323014.5007188,
+          "detail": "qualified binary, exact inputs, legal hardware terminal and closure",
+          "exit_code": 0,
           "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
           "host": "huangrulin-174",
           "identity": {
@@ -3359,12 +3485,13 @@
             "start_ticks": 906496272
           },
           "profile": "B16_OFF",
+          "raw_log_sha256": "dcdce7da26059a2e39b9c2c2ed3d2c5d1ea6d77518064ee7c51e4ad4985567cc",
           "regime": "SERVICE_MQ2",
           "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
           "run_key": "3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
           "scan": false,
-          "status": "RUNNING",
-          "updated_at": "2026-10-18T08:43:11.389908+00:00"
+          "status": "COMPLETE_VALID",
+          "updated_at": "2026-10-18T09:22:52.420000+00:00"
         },
         {
           "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -4143,13 +4270,13 @@
     ],
     "incremental_priority_authority": "f1980a84c8e637ff2050048bd11b3c1fa5362583",
     "new_campaign": {
-      "accepted_new": 31,
-      "aggregate_output_bytes": 13393093874,
+      "accepted_new": 32,
+      "aggregate_output_bytes": 13507032214,
       "available_historical_anchor_cells": 7,
       "failed": 7,
       "max_result_bytes": 21474836480,
-      "new_starts": 42,
-      "remaining_start_budget": 30,
+      "new_starts": 43,
+      "remaining_start_budget": 29,
       "reused": 0,
       "running": 1,
       "validation_only_revisions": 3
@@ -5516,9 +5643,9 @@
       "starts": 21
     },
     "resources": {
-      "available_memory_bytes": 161108459520,
-      "disk_free_bytes": 57824620544,
-      "share_disk_free_bytes": 44323418112
+      "available_memory_bytes": 161033871360,
+      "disk_free_bytes": 57636667392,
+      "share_disk_free_bytes": 44320694272
     },
     "resume_entry": "Read this checkpoint, original deadlines and central registry; require output-budget authorization/resource recovery before any new/retry app; use same-key audited recovery, never reset attempts.",
     "status": "REQUIRES_NORMAL_FULL_PREFLIGHT"
@@ -6606,33 +6733,25 @@
     "workspace_growth_reserve_per_new_run": 2147483648
   },
   "parallel_continue": {
-    "current_V2_generation": 59,
+    "current_V2_generation": 60,
     "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
     "latest_pair_delivery": {
       "H0_accepted_pairs": 5,
-      "acceptance_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_ACCEPTANCE_r1",
+      "acceptance_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_S64_mq2_0_ACCEPTANCE_r1",
       "all5_required_before_geomean": false,
-      "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
+      "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
       "comparison": {
         "EP_L2_speedup": null,
-        "OFF_over_endpoint": 1.0,
-        "absolute_cycles_saved": 0,
-        "comparison_status": "MATCHED_CURRENT_SAME_BINARY_OFF",
+        "OFF_over_endpoint": null,
         "complete_input_instruction_count": "Matches immutable full-input instruction total only; no historical cycles or qualification inherited",
-        "condition": "SERVICE_MQ2",
-        "cycles": 493189,
+        "condition": "SERVICE_OFF",
+        "cycles": 494627,
         "diagnostic_only": true,
-        "fractional_cycle_reduction": 0.0,
         "geomean": null,
         "instructions": 791609344,
         "kind": "MATCHED_FINITE_SERVICE_SINGLE_FACTOR",
-        "negative_results_preserved": true,
-        "profile": "B16_OFF",
-        "same_binary_OFF": {
-          "cycles": 493189,
-          "run_key": "931f4639fc92fa89225ec4764d5b72a4b051fba044b17de14f0439ae6d15fcb5"
-        },
-        "same_mode_OFF": true,
+        "profile": "S64",
+        "same_binary_OFF": null,
         "scope": "Same new binary and full input; compare this single-factor MQ2 or RG1 mode against its same mode OFF only. No cross-binary anchor or combined mechanisms.",
         "service_counter_semantics": {
           "MQ2_bypasses": "Actual safe second-entry lower enqueues; not application cycles saved.",
@@ -6647,514 +6766,514 @@
           "MQ2": {
             "0": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 0,
-              "wb_bank_waits": 317,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "1": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 1,
-              "wb_bank_waits": 329,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "10": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 10,
-              "wb_bank_waits": 328,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "11": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 11,
-              "wb_bank_waits": 338,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "12": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 12,
-              "wb_bank_waits": 357,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "13": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 13,
-              "wb_bank_waits": 309,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "14": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 14,
-              "wb_bank_waits": 326,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "15": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 15,
-              "wb_bank_waits": 344,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "16": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 16,
-              "wb_bank_waits": 329,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "17": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 17,
-              "wb_bank_waits": 315,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "18": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 18,
-              "wb_bank_waits": 322,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "19": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 19,
-              "wb_bank_waits": 349,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "2": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 2,
-              "wb_bank_waits": 349,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "20": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 20,
-              "wb_bank_waits": 331,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "21": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 21,
-              "wb_bank_waits": 333,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "22": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 22,
-              "wb_bank_waits": 306,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "23": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 23,
-              "wb_bank_waits": 295,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "24": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 24,
-              "wb_bank_waits": 333,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "25": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 25,
-              "wb_bank_waits": 326,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "26": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 26,
-              "wb_bank_waits": 314,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "27": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 27,
-              "wb_bank_waits": 319,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "28": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 28,
-              "wb_bank_waits": 326,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "29": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 29,
-              "wb_bank_waits": 314,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "3": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 3,
-              "wb_bank_waits": 323,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "30": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 30,
-              "wb_bank_waits": 380,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "31": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 31,
-              "wb_bank_waits": 312,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "32": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 32,
-              "wb_bank_waits": 331,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "33": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 33,
-              "wb_bank_waits": 335,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "34": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 34,
-              "wb_bank_waits": 317,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "35": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 35,
-              "wb_bank_waits": 333,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "36": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 36,
-              "wb_bank_waits": 351,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "37": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 37,
-              "wb_bank_waits": 317,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "38": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 38,
-              "wb_bank_waits": 343,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "39": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 39,
-              "wb_bank_waits": 316,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "4": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 4,
-              "wb_bank_waits": 328,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "40": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 40,
-              "wb_bank_waits": 343,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "41": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 41,
-              "wb_bank_waits": 332,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "42": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 42,
-              "wb_bank_waits": 296,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "43": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 43,
-              "wb_bank_waits": 330,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "44": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 44,
-              "wb_bank_waits": 309,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "45": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 45,
-              "wb_bank_waits": 330,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "46": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 46,
-              "wb_bank_waits": 377,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "47": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 47,
-              "wb_bank_waits": 340,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "48": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 48,
-              "wb_bank_waits": 313,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "49": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 49,
-              "wb_bank_waits": 347,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "5": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 5,
-              "wb_bank_waits": 304,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "50": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 50,
-              "wb_bank_waits": 341,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "51": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 51,
-              "wb_bank_waits": 316,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "52": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 52,
-              "wb_bank_waits": 308,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "53": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 53,
-              "wb_bank_waits": 321,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "54": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 54,
-              "wb_bank_waits": 375,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "55": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 55,
-              "wb_bank_waits": 334,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "56": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 56,
-              "wb_bank_waits": 318,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "57": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 57,
-              "wb_bank_waits": 324,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "58": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 58,
-              "wb_bank_waits": 354,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "59": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 59,
-              "wb_bank_waits": 332,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "6": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 6,
-              "wb_bank_waits": 343,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "60": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 60,
-              "wb_bank_waits": 360,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "61": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 61,
-              "wb_bank_waits": 339,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "62": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 62,
-              "wb_bank_waits": 342,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "63": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 63,
-              "wb_bank_waits": 324,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "7": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 7,
-              "wb_bank_waits": 297,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "8": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 8,
-              "wb_bank_waits": 349,
+              "wb_bank_waits": 0,
               "window": 2
             },
             "9": {
               "bypasses": 0,
-              "enabled": 1,
+              "enabled": 0,
               "lower_enqueues_per_cycle": 1,
               "slice": 9,
-              "wb_bank_waits": 314,
+              "wb_bank_waits": 0,
               "window": 2
             }
           },
@@ -7164,7 +7283,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48429,
+              "physical_services": 48380,
               "recovered_grants": 0,
               "slice": 0
             },
@@ -7173,7 +7292,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45024,
+              "physical_services": 45025,
               "recovered_grants": 0,
               "slice": 0
             },
@@ -7182,7 +7301,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44768,
+              "physical_services": 44776,
               "recovered_grants": 0,
               "slice": 0
             },
@@ -7191,7 +7310,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44688,
+              "physical_services": 44870,
               "recovered_grants": 0,
               "slice": 0
             },
@@ -7200,7 +7319,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48409,
+              "physical_services": 48470,
               "recovered_grants": 0,
               "slice": 10
             },
@@ -7209,7 +7328,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45069,
+              "physical_services": 45044,
               "recovered_grants": 0,
               "slice": 10
             },
@@ -7218,7 +7337,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44740,
+              "physical_services": 44775,
               "recovered_grants": 0,
               "slice": 10
             },
@@ -7227,7 +7346,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44848,
+              "physical_services": 44720,
               "recovered_grants": 0,
               "slice": 10
             },
@@ -7236,7 +7355,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48350,
+              "physical_services": 48322,
               "recovered_grants": 0,
               "slice": 11
             },
@@ -7245,7 +7364,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45032,
+              "physical_services": 45113,
               "recovered_grants": 0,
               "slice": 11
             },
@@ -7254,7 +7373,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44690,
+              "physical_services": 44793,
               "recovered_grants": 0,
               "slice": 11
             },
@@ -7263,7 +7382,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44905,
+              "physical_services": 44782,
               "recovered_grants": 0,
               "slice": 11
             },
@@ -7272,7 +7391,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48379,
+              "physical_services": 48350,
               "recovered_grants": 0,
               "slice": 12
             },
@@ -7281,7 +7400,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45022,
+              "physical_services": 45073,
               "recovered_grants": 0,
               "slice": 12
             },
@@ -7290,7 +7409,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44874,
+              "physical_services": 44805,
               "recovered_grants": 0,
               "slice": 12
             },
@@ -7299,7 +7418,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44753,
+              "physical_services": 44760,
               "recovered_grants": 0,
               "slice": 12
             },
@@ -7308,7 +7427,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48312,
+              "physical_services": 48425,
               "recovered_grants": 0,
               "slice": 13
             },
@@ -7317,7 +7436,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45127,
+              "physical_services": 45152,
               "recovered_grants": 0,
               "slice": 13
             },
@@ -7326,7 +7445,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44802,
+              "physical_services": 44692,
               "recovered_grants": 0,
               "slice": 13
             },
@@ -7335,7 +7454,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44780,
+              "physical_services": 44712,
               "recovered_grants": 0,
               "slice": 13
             },
@@ -7344,7 +7463,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48283,
+              "physical_services": 48477,
               "recovered_grants": 0,
               "slice": 14
             },
@@ -7353,7 +7472,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45090,
+              "physical_services": 44969,
               "recovered_grants": 0,
               "slice": 14
             },
@@ -7362,7 +7481,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44754,
+              "physical_services": 44777,
               "recovered_grants": 0,
               "slice": 14
             },
@@ -7371,7 +7490,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44827,
+              "physical_services": 44772,
               "recovered_grants": 0,
               "slice": 14
             },
@@ -7380,7 +7499,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48467,
+              "physical_services": 48274,
               "recovered_grants": 0,
               "slice": 15
             },
@@ -7389,7 +7508,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45023,
+              "physical_services": 45083,
               "recovered_grants": 0,
               "slice": 15
             },
@@ -7398,7 +7517,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44776,
+              "physical_services": 44858,
               "recovered_grants": 0,
               "slice": 15
             },
@@ -7407,7 +7526,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44769,
+              "physical_services": 44710,
               "recovered_grants": 0,
               "slice": 15
             },
@@ -7416,7 +7535,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48295,
+              "physical_services": 48344,
               "recovered_grants": 0,
               "slice": 16
             },
@@ -7425,7 +7544,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45136,
+              "physical_services": 45134,
               "recovered_grants": 0,
               "slice": 16
             },
@@ -7434,7 +7553,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44715,
+              "physical_services": 44820,
               "recovered_grants": 0,
               "slice": 16
             },
@@ -7443,7 +7562,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44847,
+              "physical_services": 44675,
               "recovered_grants": 0,
               "slice": 16
             },
@@ -7452,7 +7571,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48301,
+              "physical_services": 48309,
               "recovered_grants": 0,
               "slice": 17
             },
@@ -7461,7 +7580,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45165,
+              "physical_services": 45192,
               "recovered_grants": 0,
               "slice": 17
             },
@@ -7470,7 +7589,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44765,
+              "physical_services": 44798,
               "recovered_grants": 0,
               "slice": 17
             },
@@ -7479,7 +7598,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44873,
+              "physical_services": 44739,
               "recovered_grants": 0,
               "slice": 17
             },
@@ -7488,7 +7607,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48311,
+              "physical_services": 48402,
               "recovered_grants": 0,
               "slice": 18
             },
@@ -7497,7 +7616,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45131,
+              "physical_services": 45041,
               "recovered_grants": 0,
               "slice": 18
             },
@@ -7506,7 +7625,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44739,
+              "physical_services": 44833,
               "recovered_grants": 0,
               "slice": 18
             },
@@ -7515,7 +7634,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44767,
+              "physical_services": 44663,
               "recovered_grants": 0,
               "slice": 18
             },
@@ -7524,7 +7643,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48269,
+              "physical_services": 48457,
               "recovered_grants": 0,
               "slice": 19
             },
@@ -7533,7 +7652,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45016,
+              "physical_services": 45024,
               "recovered_grants": 0,
               "slice": 19
             },
@@ -7542,7 +7661,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44728,
+              "physical_services": 44744,
               "recovered_grants": 0,
               "slice": 19
             },
@@ -7551,7 +7670,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44914,
+              "physical_services": 44651,
               "recovered_grants": 0,
               "slice": 19
             },
@@ -7560,7 +7679,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48386,
+              "physical_services": 48406,
               "recovered_grants": 0,
               "slice": 1
             },
@@ -7569,7 +7688,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45043,
+              "physical_services": 45117,
               "recovered_grants": 0,
               "slice": 1
             },
@@ -7578,7 +7697,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44785,
+              "physical_services": 44725,
               "recovered_grants": 0,
               "slice": 1
             },
@@ -7587,7 +7706,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44710,
+              "physical_services": 44769,
               "recovered_grants": 0,
               "slice": 1
             },
@@ -7596,7 +7715,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48402,
+              "physical_services": 48481,
               "recovered_grants": 0,
               "slice": 20
             },
@@ -7605,7 +7724,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45070,
+              "physical_services": 45140,
               "recovered_grants": 0,
               "slice": 20
             },
@@ -7614,7 +7733,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44728,
+              "physical_services": 44751,
               "recovered_grants": 0,
               "slice": 20
             },
@@ -7623,7 +7742,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44895,
+              "physical_services": 44693,
               "recovered_grants": 0,
               "slice": 20
             },
@@ -7632,7 +7751,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48385,
+              "physical_services": 48369,
               "recovered_grants": 0,
               "slice": 21
             },
@@ -7641,7 +7760,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45169,
+              "physical_services": 45158,
               "recovered_grants": 0,
               "slice": 21
             },
@@ -7650,7 +7769,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44677,
+              "physical_services": 44730,
               "recovered_grants": 0,
               "slice": 21
             },
@@ -7659,7 +7778,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44856,
+              "physical_services": 44789,
               "recovered_grants": 0,
               "slice": 21
             },
@@ -7668,7 +7787,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48277,
+              "physical_services": 48435,
               "recovered_grants": 0,
               "slice": 22
             },
@@ -7677,7 +7796,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45109,
+              "physical_services": 45023,
               "recovered_grants": 0,
               "slice": 22
             },
@@ -7686,7 +7805,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44737,
+              "physical_services": 44866,
               "recovered_grants": 0,
               "slice": 22
             },
@@ -7695,7 +7814,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44871,
+              "physical_services": 44712,
               "recovered_grants": 0,
               "slice": 22
             },
@@ -7704,7 +7823,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48318,
+              "physical_services": 48427,
               "recovered_grants": 0,
               "slice": 23
             },
@@ -7713,7 +7832,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45023,
+              "physical_services": 45103,
               "recovered_grants": 0,
               "slice": 23
             },
@@ -7722,7 +7841,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44748,
+              "physical_services": 44828,
               "recovered_grants": 0,
               "slice": 23
             },
@@ -7731,7 +7850,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44918,
+              "physical_services": 44693,
               "recovered_grants": 0,
               "slice": 23
             },
@@ -7740,7 +7859,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48504,
+              "physical_services": 48318,
               "recovered_grants": 0,
               "slice": 24
             },
@@ -7749,7 +7868,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44968,
+              "physical_services": 45117,
               "recovered_grants": 0,
               "slice": 24
             },
@@ -7758,7 +7877,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44684,
+              "physical_services": 44838,
               "recovered_grants": 0,
               "slice": 24
             },
@@ -7767,7 +7886,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44761,
+              "physical_services": 44693,
               "recovered_grants": 0,
               "slice": 24
             },
@@ -7776,7 +7895,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48395,
+              "physical_services": 48278,
               "recovered_grants": 0,
               "slice": 25
             },
@@ -7785,7 +7904,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45089,
+              "physical_services": 45093,
               "recovered_grants": 0,
               "slice": 25
             },
@@ -7794,7 +7913,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44788,
+              "physical_services": 44799,
               "recovered_grants": 0,
               "slice": 25
             },
@@ -7803,7 +7922,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44692,
+              "physical_services": 44726,
               "recovered_grants": 0,
               "slice": 25
             },
@@ -7812,7 +7931,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48451,
+              "physical_services": 48433,
               "recovered_grants": 0,
               "slice": 26
             },
@@ -7821,7 +7940,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45096,
+              "physical_services": 44992,
               "recovered_grants": 0,
               "slice": 26
             },
@@ -7830,7 +7949,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44724,
+              "physical_services": 44739,
               "recovered_grants": 0,
               "slice": 26
             },
@@ -7839,7 +7958,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44758,
+              "physical_services": 44821,
               "recovered_grants": 0,
               "slice": 26
             },
@@ -7848,7 +7967,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48325,
+              "physical_services": 48234,
               "recovered_grants": 0,
               "slice": 27
             },
@@ -7857,7 +7976,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45033,
+              "physical_services": 45034,
               "recovered_grants": 0,
               "slice": 27
             },
@@ -7866,7 +7985,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44803,
+              "physical_services": 44832,
               "recovered_grants": 0,
               "slice": 27
             },
@@ -7875,7 +7994,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44714,
+              "physical_services": 44810,
               "recovered_grants": 0,
               "slice": 27
             },
@@ -7884,7 +8003,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48343,
+              "physical_services": 48420,
               "recovered_grants": 0,
               "slice": 28
             },
@@ -7893,7 +8012,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45174,
+              "physical_services": 45105,
               "recovered_grants": 0,
               "slice": 28
             },
@@ -7902,7 +8021,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44738,
+              "physical_services": 44728,
               "recovered_grants": 0,
               "slice": 28
             },
@@ -7911,7 +8030,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44795,
+              "physical_services": 44802,
               "recovered_grants": 0,
               "slice": 28
             },
@@ -7920,7 +8039,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48351,
+              "physical_services": 48290,
               "recovered_grants": 0,
               "slice": 29
             },
@@ -7929,7 +8048,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45014,
+              "physical_services": 45191,
               "recovered_grants": 0,
               "slice": 29
             },
@@ -7938,7 +8057,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44812,
+              "physical_services": 44756,
               "recovered_grants": 0,
               "slice": 29
             },
@@ -7947,7 +8066,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44766,
+              "physical_services": 44791,
               "recovered_grants": 0,
               "slice": 29
             },
@@ -7956,7 +8075,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48363,
+              "physical_services": 48376,
               "recovered_grants": 0,
               "slice": 2
             },
@@ -7965,7 +8084,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45033,
+              "physical_services": 45017,
               "recovered_grants": 0,
               "slice": 2
             },
@@ -7974,7 +8093,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44861,
+              "physical_services": 44766,
               "recovered_grants": 0,
               "slice": 2
             },
@@ -7983,7 +8102,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44769,
+              "physical_services": 44898,
               "recovered_grants": 0,
               "slice": 2
             },
@@ -7992,7 +8111,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48288,
+              "physical_services": 48506,
               "recovered_grants": 0,
               "slice": 30
             },
@@ -8001,7 +8120,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45121,
+              "physical_services": 44988,
               "recovered_grants": 0,
               "slice": 30
             },
@@ -8010,7 +8129,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44862,
+              "physical_services": 44794,
               "recovered_grants": 0,
               "slice": 30
             },
@@ -8019,7 +8138,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44760,
+              "physical_services": 44706,
               "recovered_grants": 0,
               "slice": 30
             },
@@ -8028,7 +8147,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48297,
+              "physical_services": 48305,
               "recovered_grants": 0,
               "slice": 31
             },
@@ -8037,7 +8156,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45103,
+              "physical_services": 45063,
               "recovered_grants": 0,
               "slice": 31
             },
@@ -8046,7 +8165,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44831,
+              "physical_services": 44725,
               "recovered_grants": 0,
               "slice": 31
             },
@@ -8055,7 +8174,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44729,
+              "physical_services": 44805,
               "recovered_grants": 0,
               "slice": 31
             },
@@ -8064,7 +8183,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48335,
+              "physical_services": 48449,
               "recovered_grants": 0,
               "slice": 32
             },
@@ -8073,7 +8192,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45102,
+              "physical_services": 45077,
               "recovered_grants": 0,
               "slice": 32
             },
@@ -8082,7 +8201,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44746,
+              "physical_services": 44737,
               "recovered_grants": 0,
               "slice": 32
             },
@@ -8091,7 +8210,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44857,
+              "physical_services": 44760,
               "recovered_grants": 0,
               "slice": 32
             },
@@ -8100,7 +8219,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48442,
+              "physical_services": 48370,
               "recovered_grants": 0,
               "slice": 33
             },
@@ -8109,7 +8228,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45147,
+              "physical_services": 45083,
               "recovered_grants": 0,
               "slice": 33
             },
@@ -8118,7 +8237,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44698,
+              "physical_services": 44872,
               "recovered_grants": 0,
               "slice": 33
             },
@@ -8127,7 +8246,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44783,
+              "physical_services": 44759,
               "recovered_grants": 0,
               "slice": 33
             },
@@ -8136,7 +8255,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48504,
+              "physical_services": 48392,
               "recovered_grants": 0,
               "slice": 34
             },
@@ -8145,7 +8264,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45065,
+              "physical_services": 45029,
               "recovered_grants": 0,
               "slice": 34
             },
@@ -8154,7 +8273,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44697,
+              "physical_services": 44823,
               "recovered_grants": 0,
               "slice": 34
             },
@@ -8163,7 +8282,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44741,
+              "physical_services": 44823,
               "recovered_grants": 0,
               "slice": 34
             },
@@ -8172,7 +8291,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48342,
+              "physical_services": 48381,
               "recovered_grants": 0,
               "slice": 35
             },
@@ -8181,7 +8300,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45078,
+              "physical_services": 44986,
               "recovered_grants": 0,
               "slice": 35
             },
@@ -8190,7 +8309,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44768,
+              "physical_services": 44777,
               "recovered_grants": 0,
               "slice": 35
             },
@@ -8199,7 +8318,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44830,
+              "physical_services": 44820,
               "recovered_grants": 0,
               "slice": 35
             },
@@ -8208,7 +8327,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48442,
+              "physical_services": 48409,
               "recovered_grants": 0,
               "slice": 36
             },
@@ -8217,7 +8336,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45134,
+              "physical_services": 45144,
               "recovered_grants": 0,
               "slice": 36
             },
@@ -8226,7 +8345,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44727,
+              "physical_services": 44774,
               "recovered_grants": 0,
               "slice": 36
             },
@@ -8235,7 +8354,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44750,
+              "physical_services": 44815,
               "recovered_grants": 0,
               "slice": 36
             },
@@ -8253,7 +8372,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45176,
+              "physical_services": 45098,
               "recovered_grants": 0,
               "slice": 37
             },
@@ -8262,7 +8381,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44670,
+              "physical_services": 44740,
               "recovered_grants": 0,
               "slice": 37
             },
@@ -8271,7 +8390,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44879,
+              "physical_services": 44884,
               "recovered_grants": 0,
               "slice": 37
             },
@@ -8280,7 +8399,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48479,
+              "physical_services": 48503,
               "recovered_grants": 0,
               "slice": 38
             },
@@ -8289,7 +8408,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44913,
+              "physical_services": 44995,
               "recovered_grants": 0,
               "slice": 38
             },
@@ -8298,7 +8417,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44771,
+              "physical_services": 44925,
               "recovered_grants": 0,
               "slice": 38
             },
@@ -8307,7 +8426,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44854,
+              "physical_services": 44675,
               "recovered_grants": 0,
               "slice": 38
             },
@@ -8316,7 +8435,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48408,
+              "physical_services": 48328,
               "recovered_grants": 0,
               "slice": 39
             },
@@ -8325,7 +8444,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45128,
+              "physical_services": 45069,
               "recovered_grants": 0,
               "slice": 39
             },
@@ -8334,7 +8453,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44707,
+              "physical_services": 44858,
               "recovered_grants": 0,
               "slice": 39
             },
@@ -8343,7 +8462,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44794,
+              "physical_services": 44763,
               "recovered_grants": 0,
               "slice": 39
             },
@@ -8352,7 +8471,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48415,
+              "physical_services": 48427,
               "recovered_grants": 0,
               "slice": 3
             },
@@ -8361,7 +8480,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45043,
+              "physical_services": 45054,
               "recovered_grants": 0,
               "slice": 3
             },
@@ -8370,7 +8489,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44752,
+              "physical_services": 44756,
               "recovered_grants": 0,
               "slice": 3
             },
@@ -8379,7 +8498,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44742,
+              "physical_services": 44778,
               "recovered_grants": 0,
               "slice": 3
             },
@@ -8388,7 +8507,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48382,
+              "physical_services": 48386,
               "recovered_grants": 0,
               "slice": 40
             },
@@ -8397,7 +8516,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45146,
+              "physical_services": 45086,
               "recovered_grants": 0,
               "slice": 40
             },
@@ -8406,7 +8525,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44765,
+              "physical_services": 44848,
               "recovered_grants": 0,
               "slice": 40
             },
@@ -8415,7 +8534,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44700,
+              "physical_services": 44728,
               "recovered_grants": 0,
               "slice": 40
             },
@@ -8424,7 +8543,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48389,
+              "physical_services": 48351,
               "recovered_grants": 0,
               "slice": 41
             },
@@ -8433,7 +8552,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45033,
+              "physical_services": 45153,
               "recovered_grants": 0,
               "slice": 41
             },
@@ -8442,7 +8561,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44675,
+              "physical_services": 44858,
               "recovered_grants": 0,
               "slice": 41
             },
@@ -8451,7 +8570,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44816,
+              "physical_services": 44655,
               "recovered_grants": 0,
               "slice": 41
             },
@@ -8460,7 +8579,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48413,
+              "physical_services": 48381,
               "recovered_grants": 0,
               "slice": 42
             },
@@ -8469,7 +8588,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45039,
+              "physical_services": 45076,
               "recovered_grants": 0,
               "slice": 42
             },
@@ -8478,7 +8597,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44801,
+              "physical_services": 44867,
               "recovered_grants": 0,
               "slice": 42
             },
@@ -8487,7 +8606,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44813,
+              "physical_services": 44723,
               "recovered_grants": 0,
               "slice": 42
             },
@@ -8496,7 +8615,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48355,
+              "physical_services": 48389,
               "recovered_grants": 0,
               "slice": 43
             },
@@ -8505,7 +8624,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45068,
+              "physical_services": 44997,
               "recovered_grants": 0,
               "slice": 43
             },
@@ -8514,7 +8633,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44702,
+              "physical_services": 44805,
               "recovered_grants": 0,
               "slice": 43
             },
@@ -8523,7 +8642,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44808,
+              "physical_services": 44835,
               "recovered_grants": 0,
               "slice": 43
             },
@@ -8532,7 +8651,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48435,
+              "physical_services": 48313,
               "recovered_grants": 0,
               "slice": 44
             },
@@ -8541,7 +8660,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45139,
+              "physical_services": 45241,
               "recovered_grants": 0,
               "slice": 44
             },
@@ -8550,7 +8669,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44767,
+              "physical_services": 44819,
               "recovered_grants": 0,
               "slice": 44
             },
@@ -8559,7 +8678,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44810,
+              "physical_services": 44708,
               "recovered_grants": 0,
               "slice": 44
             },
@@ -8568,7 +8687,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48387,
+              "physical_services": 48394,
               "recovered_grants": 0,
               "slice": 45
             },
@@ -8577,7 +8696,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45092,
+              "physical_services": 45179,
               "recovered_grants": 0,
               "slice": 45
             },
@@ -8586,7 +8705,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44731,
+              "physical_services": 44809,
               "recovered_grants": 0,
               "slice": 45
             },
@@ -8595,7 +8714,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44797,
+              "physical_services": 44793,
               "recovered_grants": 0,
               "slice": 45
             },
@@ -8604,7 +8723,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48489,
+              "physical_services": 48421,
               "recovered_grants": 0,
               "slice": 46
             },
@@ -8613,7 +8732,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45012,
+              "physical_services": 45023,
               "recovered_grants": 0,
               "slice": 46
             },
@@ -8622,7 +8741,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44824,
+              "physical_services": 44878,
               "recovered_grants": 0,
               "slice": 46
             },
@@ -8631,7 +8750,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44786,
+              "physical_services": 44703,
               "recovered_grants": 0,
               "slice": 46
             },
@@ -8640,7 +8759,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48417,
+              "physical_services": 48413,
               "recovered_grants": 0,
               "slice": 47
             },
@@ -8649,7 +8768,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45028,
+              "physical_services": 45036,
               "recovered_grants": 0,
               "slice": 47
             },
@@ -8658,7 +8777,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44806,
+              "physical_services": 44828,
               "recovered_grants": 0,
               "slice": 47
             },
@@ -8667,7 +8786,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44745,
+              "physical_services": 44760,
               "recovered_grants": 0,
               "slice": 47
             },
@@ -8676,7 +8795,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48492,
+              "physical_services": 48439,
               "recovered_grants": 0,
               "slice": 48
             },
@@ -8685,7 +8804,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45032,
+              "physical_services": 45050,
               "recovered_grants": 0,
               "slice": 48
             },
@@ -8694,7 +8813,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44670,
+              "physical_services": 44792,
               "recovered_grants": 0,
               "slice": 48
             },
@@ -8703,7 +8822,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44784,
+              "physical_services": 44785,
               "recovered_grants": 0,
               "slice": 48
             },
@@ -8712,7 +8831,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48408,
+              "physical_services": 48517,
               "recovered_grants": 0,
               "slice": 49
             },
@@ -8721,7 +8840,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45147,
+              "physical_services": 45132,
               "recovered_grants": 0,
               "slice": 49
             },
@@ -8730,7 +8849,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44750,
+              "physical_services": 44809,
               "recovered_grants": 0,
               "slice": 49
             },
@@ -8739,7 +8858,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44734,
+              "physical_services": 44694,
               "recovered_grants": 0,
               "slice": 49
             },
@@ -8748,7 +8867,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48395,
+              "physical_services": 48342,
               "recovered_grants": 0,
               "slice": 4
             },
@@ -8757,7 +8876,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45090,
+              "physical_services": 45112,
               "recovered_grants": 0,
               "slice": 4
             },
@@ -8766,7 +8885,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44824,
+              "physical_services": 44814,
               "recovered_grants": 0,
               "slice": 4
             },
@@ -8775,7 +8894,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44715,
+              "physical_services": 44709,
               "recovered_grants": 0,
               "slice": 4
             },
@@ -8784,7 +8903,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48502,
+              "physical_services": 48439,
               "recovered_grants": 0,
               "slice": 50
             },
@@ -8793,7 +8912,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45063,
+              "physical_services": 44953,
               "recovered_grants": 0,
               "slice": 50
             },
@@ -8802,7 +8921,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44683,
+              "physical_services": 44861,
               "recovered_grants": 0,
               "slice": 50
             },
@@ -8811,7 +8930,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44775,
+              "physical_services": 44864,
               "recovered_grants": 0,
               "slice": 50
             },
@@ -8820,7 +8939,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48482,
+              "physical_services": 48386,
               "recovered_grants": 0,
               "slice": 51
             },
@@ -8829,7 +8948,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45133,
+              "physical_services": 45104,
               "recovered_grants": 0,
               "slice": 51
             },
@@ -8838,7 +8957,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44701,
+              "physical_services": 44803,
               "recovered_grants": 0,
               "slice": 51
             },
@@ -8847,7 +8966,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44757,
+              "physical_services": 44767,
               "recovered_grants": 0,
               "slice": 51
             },
@@ -8856,7 +8975,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48478,
+              "physical_services": 48445,
               "recovered_grants": 0,
               "slice": 52
             },
@@ -8865,7 +8984,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45058,
+              "physical_services": 44969,
               "recovered_grants": 0,
               "slice": 52
             },
@@ -8874,7 +8993,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44765,
+              "physical_services": 44811,
               "recovered_grants": 0,
               "slice": 52
             },
@@ -8883,7 +9002,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44744,
+              "physical_services": 44716,
               "recovered_grants": 0,
               "slice": 52
             },
@@ -8892,7 +9011,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48398,
+              "physical_services": 48411,
               "recovered_grants": 0,
               "slice": 53
             },
@@ -8901,7 +9020,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45114,
+              "physical_services": 45179,
               "recovered_grants": 0,
               "slice": 53
             },
@@ -8910,7 +9029,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44792,
+              "physical_services": 44680,
               "recovered_grants": 0,
               "slice": 53
             },
@@ -8919,7 +9038,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44768,
+              "physical_services": 44766,
               "recovered_grants": 0,
               "slice": 53
             },
@@ -8928,7 +9047,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48433,
+              "physical_services": 48421,
               "recovered_grants": 0,
               "slice": 54
             },
@@ -8937,7 +9056,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45094,
+              "physical_services": 45089,
               "recovered_grants": 0,
               "slice": 54
             },
@@ -8946,7 +9065,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44742,
+              "physical_services": 44839,
               "recovered_grants": 0,
               "slice": 54
             },
@@ -8955,7 +9074,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44776,
+              "physical_services": 44714,
               "recovered_grants": 0,
               "slice": 54
             },
@@ -8964,7 +9083,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48465,
+              "physical_services": 48382,
               "recovered_grants": 0,
               "slice": 55
             },
@@ -8973,7 +9092,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45142,
+              "physical_services": 45108,
               "recovered_grants": 0,
               "slice": 55
             },
@@ -8982,7 +9101,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44699,
+              "physical_services": 44844,
               "recovered_grants": 0,
               "slice": 55
             },
@@ -8991,7 +9110,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44725,
+              "physical_services": 44690,
               "recovered_grants": 0,
               "slice": 55
             },
@@ -9000,7 +9119,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48373,
+              "physical_services": 48366,
               "recovered_grants": 0,
               "slice": 56
             },
@@ -9009,7 +9128,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45157,
+              "physical_services": 45070,
               "recovered_grants": 0,
               "slice": 56
             },
@@ -9018,7 +9137,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44747,
+              "physical_services": 44900,
               "recovered_grants": 0,
               "slice": 56
             },
@@ -9027,7 +9146,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44776,
+              "physical_services": 44784,
               "recovered_grants": 0,
               "slice": 56
             },
@@ -9036,7 +9155,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48459,
+              "physical_services": 48512,
               "recovered_grants": 0,
               "slice": 57
             },
@@ -9045,7 +9164,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45090,
+              "physical_services": 45079,
               "recovered_grants": 0,
               "slice": 57
             },
@@ -9054,7 +9173,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44761,
+              "physical_services": 44829,
               "recovered_grants": 0,
               "slice": 57
             },
@@ -9063,7 +9182,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44750,
+              "physical_services": 44732,
               "recovered_grants": 0,
               "slice": 57
             },
@@ -9072,7 +9191,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48445,
+              "physical_services": 48463,
               "recovered_grants": 0,
               "slice": 58
             },
@@ -9081,7 +9200,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45179,
+              "physical_services": 45088,
               "recovered_grants": 0,
               "slice": 58
             },
@@ -9090,7 +9209,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44747,
+              "physical_services": 44893,
               "recovered_grants": 0,
               "slice": 58
             },
@@ -9099,7 +9218,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44731,
+              "physical_services": 44645,
               "recovered_grants": 0,
               "slice": 58
             },
@@ -9108,7 +9227,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48402,
+              "physical_services": 48432,
               "recovered_grants": 0,
               "slice": 59
             },
@@ -9117,7 +9236,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45069,
+              "physical_services": 45076,
               "recovered_grants": 0,
               "slice": 59
             },
@@ -9126,7 +9245,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44753,
+              "physical_services": 44696,
               "recovered_grants": 0,
               "slice": 59
             },
@@ -9135,7 +9254,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44817,
+              "physical_services": 44751,
               "recovered_grants": 0,
               "slice": 59
             },
@@ -9144,7 +9263,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48406,
+              "physical_services": 48320,
               "recovered_grants": 0,
               "slice": 5
             },
@@ -9153,7 +9272,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45064,
+              "physical_services": 45126,
               "recovered_grants": 0,
               "slice": 5
             },
@@ -9162,7 +9281,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44796,
+              "physical_services": 44799,
               "recovered_grants": 0,
               "slice": 5
             },
@@ -9171,7 +9290,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44760,
+              "physical_services": 44769,
               "recovered_grants": 0,
               "slice": 5
             },
@@ -9180,7 +9299,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48442,
+              "physical_services": 48504,
               "recovered_grants": 0,
               "slice": 60
             },
@@ -9189,7 +9308,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45108,
+              "physical_services": 44976,
               "recovered_grants": 0,
               "slice": 60
             },
@@ -9198,7 +9317,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44722,
+              "physical_services": 44855,
               "recovered_grants": 0,
               "slice": 60
             },
@@ -9207,7 +9326,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44825,
+              "physical_services": 44785,
               "recovered_grants": 0,
               "slice": 60
             },
@@ -9216,7 +9335,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48575,
+              "physical_services": 48397,
               "recovered_grants": 0,
               "slice": 61
             },
@@ -9225,7 +9344,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45047,
+              "physical_services": 45190,
               "recovered_grants": 0,
               "slice": 61
             },
@@ -9234,7 +9353,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44703,
+              "physical_services": 44798,
               "recovered_grants": 0,
               "slice": 61
             },
@@ -9243,7 +9362,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44747,
+              "physical_services": 44645,
               "recovered_grants": 0,
               "slice": 61
             },
@@ -9252,7 +9371,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48428,
+              "physical_services": 48328,
               "recovered_grants": 0,
               "slice": 62
             },
@@ -9261,7 +9380,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45104,
+              "physical_services": 45074,
               "recovered_grants": 0,
               "slice": 62
             },
@@ -9270,7 +9389,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44760,
+              "physical_services": 44895,
               "recovered_grants": 0,
               "slice": 62
             },
@@ -9279,7 +9398,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44693,
+              "physical_services": 44734,
               "recovered_grants": 0,
               "slice": 62
             },
@@ -9288,7 +9407,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48515,
+              "physical_services": 48411,
               "recovered_grants": 0,
               "slice": 63
             },
@@ -9297,7 +9416,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45063,
+              "physical_services": 45132,
               "recovered_grants": 0,
               "slice": 63
             },
@@ -9306,7 +9425,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44802,
+              "physical_services": 44746,
               "recovered_grants": 0,
               "slice": 63
             },
@@ -9315,7 +9434,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44776,
+              "physical_services": 44750,
               "recovered_grants": 0,
               "slice": 63
             },
@@ -9324,7 +9443,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48351,
+              "physical_services": 48328,
               "recovered_grants": 0,
               "slice": 6
             },
@@ -9333,7 +9452,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 45062,
+              "physical_services": 45006,
               "recovered_grants": 0,
               "slice": 6
             },
@@ -9342,7 +9461,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44821,
+              "physical_services": 44816,
               "recovered_grants": 0,
               "slice": 6
             },
@@ -9351,7 +9470,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44816,
+              "physical_services": 44834,
               "recovered_grants": 0,
               "slice": 6
             },
@@ -9360,7 +9479,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48350,
+              "physical_services": 48345,
               "recovered_grants": 0,
               "slice": 7
             },
@@ -9378,7 +9497,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44818,
+              "physical_services": 44719,
               "recovered_grants": 0,
               "slice": 7
             },
@@ -9387,7 +9506,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44686,
+              "physical_services": 44719,
               "recovered_grants": 0,
               "slice": 7
             },
@@ -9396,7 +9515,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48336,
+              "physical_services": 48396,
               "recovered_grants": 0,
               "slice": 8
             },
@@ -9405,7 +9524,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44987,
+              "physical_services": 44993,
               "recovered_grants": 0,
               "slice": 8
             },
@@ -9414,7 +9533,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44911,
+              "physical_services": 44955,
               "recovered_grants": 0,
               "slice": 8
             },
@@ -9423,7 +9542,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44836,
+              "physical_services": 44705,
               "recovered_grants": 0,
               "slice": 8
             },
@@ -9432,7 +9551,7 @@
               "bank": 0,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 48423,
+              "physical_services": 48539,
               "recovered_grants": 0,
               "slice": 9
             },
@@ -9441,7 +9560,7 @@
               "bank": 1,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44970,
+              "physical_services": 45121,
               "recovered_grants": 0,
               "slice": 9
             },
@@ -9450,7 +9569,7 @@
               "bank": 2,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44739,
+              "physical_services": 44708,
               "recovered_grants": 0,
               "slice": 9
             },
@@ -9459,7 +9578,7 @@
               "bank": 3,
               "enabled": 0,
               "held_not_ready_cycles": 0,
-              "physical_services": 44836,
+              "physical_services": 44690,
               "recovered_grants": 0,
               "slice": 9
             }
@@ -13502,12 +13621,12 @@
         "service_totals": {
           "MQ2": {
             "bypasses": 0,
-            "wb_bank_waits": 21107
+            "wb_bank_waits": 0
           },
           "RG1": {
             "another_ready_cycles": 0,
             "held_not_ready_cycles": 0,
-            "physical_services": 11713359,
+            "physical_services": 11713780,
             "recovered_grants": 0
           },
           "RG1_client_maxima": {
@@ -13516,22 +13635,22 @@
             "max_first_ready_to_consume": 0
           }
         },
-        "static_mode": "B16_OFF"
+        "static_mode": "S64"
       },
       "current_accepted_pairs": 5,
       "diagnostic_kind": "SCOPED_SINGLE",
       "diagnostic_only": true,
       "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
-      "ledger_generation": 59,
-      "ledger_sha256": "69ff3d7e05b884cd5bf8180b83bc642dc997c29279686c657607fae7fdb82ff7",
-      "pair_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_MQ2_FWT_7_21_B16_mq2_1_POINT_r1",
-      "profile": "B16_OFF",
+      "ledger_generation": 60,
+      "ledger_sha256": "ad8cf6c0010df13f0e9577339e5e7b8a85e5c7fae09a3ad8037cbfd7a6cdbcde",
+      "pair_pack": "docs/ep_l2/review_packs/FT20261017_LANE5_PARALLEL_SERVICE_OFF_FWT_7_21_S64_mq2_0_POINT_r1",
+      "profile": "S64",
       "r19_accepted_pairs": 10,
-      "regime": "SERVICE_MQ2",
+      "regime": "SERVICE_OFF",
       "rows": [
         {
           "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
-          "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
+          "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
           "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
           "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
           "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
@@ -13545,21 +13664,21 @@
             "feature_vector": {
               "adaptive_policy": false,
               "bank_count": 4,
-              "bypass_capacity": 128,
+              "bypass_capacity": 80,
               "diagnostic_extra_payload_backing": false,
               "finite_wbuf": true,
               "ideal_meta": false,
               "ideal_read_hit": false,
               "ideal_wb": false,
-              "mq2": true,
+              "mq2": false,
               "nominal_payload_capacity_per_slice": 1168,
               "nominal_static_wb_anchor": 16,
               "ops_per_bank_cycle": 1,
               "payload_capacity_per_slice": 1168,
               "rg1": false,
               "ro": false,
-              "static_s64": false,
-              "static_wb_capacity": 16,
+              "static_s64": true,
+              "static_wb_capacity": 64,
               "tvd": false,
               "unified_wb": false,
               "wb_data_capacity_non_binding": false,
@@ -13573,7 +13692,7 @@
               "read_hit": false,
               "wb": false
             },
-            "runtime_config_sha256": "2098746da6b5d98fd0b1d9fa8465b00d35d7051d5658d054f435aaaf682d4722",
+            "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
             "termination_contract": {
               "hardware_drained": true,
               "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
@@ -13585,13 +13704,13 @@
           },
           "instructions": 791609344,
           "mode": "B16_BANKED",
-          "observed_cycles": 493189,
+          "observed_cycles": 494627,
           "original_terminal_status": "COMPLETE_VALID",
-          "profile": "B16_OFF",
-          "raw_log_sha256": "dcdce7da26059a2e39b9c2c2ed3d2c5d1ea6d77518064ee7c51e4ad4985567cc",
-          "regime": "SERVICE_MQ2",
-          "run_key": "3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
-          "runtime_config_sha256": "2098746da6b5d98fd0b1d9fa8465b00d35d7051d5658d054f435aaaf682d4722",
+          "profile": "S64",
+          "raw_log_sha256": "aa96c477fe52d21a682c6500ef086af23743f471b6cc953faa80c14fd82b1e0f",
+          "regime": "SERVICE_OFF",
+          "run_key": "32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+          "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
           "scientific_acceptance": "CURRENT_ACCEPTED",
           "scientific_scope": "FINITE_SERVICE_NATIVE_V1",
           "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
@@ -13600,7 +13719,7 @@
       ],
       "schema_version": "EPL2_LANE5_TO_LANE6_CURRENT_ACCEPTED_SCOPED_ENDPOINT_V1",
       "scientific_scope": "FINITE_SERVICE_NATIVE_V1",
-      "source_manifest_sha256": "51daac85a5be12cc1792f6a283bd64964bbd11a57855c679d0032712e4425e28",
+      "source_manifest_sha256": "9d9bf49fc2b705bf50788d90f3a179a91a3c0bdb95d6113b0a161f120914c6ad",
       "status": "CURRENT_ACCEPTED_PENDING_REMOTE_POINTER_INSTALL",
       "workload": "FWT_7_21"
     },

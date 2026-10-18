@@ -1,17 +1,17 @@
 {
-  "accepted_new": 31,
+  "accepted_new": 32,
   "active_resource_leases": [],
   "active_runs": [
     {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-      "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
+      "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
       "client_binding": {
         "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
         "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
         "immutable_scientific_pointer": true
       },
       "cpu_units": 1,
-      "created_at": "2026-10-18T08:43:11.047769+00:00",
+      "created_at": "2026-10-18T08:56:01.419210+00:00",
       "deadline_unix": 1792323014.5007188,
       "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
       "host": "huangrulin-174",
@@ -25,21 +25,21 @@
         "feature_vector": {
           "adaptive_policy": false,
           "bank_count": 4,
-          "bypass_capacity": 128,
+          "bypass_capacity": 80,
           "diagnostic_extra_payload_backing": false,
           "finite_wbuf": true,
           "ideal_meta": false,
           "ideal_read_hit": false,
           "ideal_wb": false,
-          "mq2": true,
+          "mq2": false,
           "nominal_payload_capacity_per_slice": 1168,
           "nominal_static_wb_anchor": 16,
           "ops_per_bank_cycle": 1,
           "payload_capacity_per_slice": 1168,
           "rg1": false,
           "ro": false,
-          "static_s64": false,
-          "static_wb_capacity": 16,
+          "static_s64": true,
+          "static_wb_capacity": 64,
           "tvd": false,
           "unified_wb": false,
           "wb_data_capacity_non_binding": false,
@@ -53,7 +53,7 @@
           "read_hit": false,
           "wb": false
         },
-        "runtime_config_sha256": "2098746da6b5d98fd0b1d9fa8465b00d35d7051d5658d054f435aaaf682d4722",
+        "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
         "termination_contract": {
           "hardware_drained": true,
           "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
@@ -63,20 +63,20 @@
         "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
         "workload": "FWT_7_21"
       },
-      "lease_id": "fb46fc376189424ca26ed30ad85b1130",
+      "lease_id": "c5f9f32b31374525bd06809714787b77",
       "memory_bytes": 4294967296,
       "output_budget": {
-        "accounted_after_admission_bytes": 17761850479,
-        "actual_bytes": 13295684717,
-        "concurrent_unwritten_growth_bytes": 2184464386,
+        "accounted_after_admission_bytes": 15854313175,
+        "actual_bytes": 13393254195,
+        "concurrent_unwritten_growth_bytes": 2192623524,
         "disk_growth_reservation_exception": null,
         "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
-        "predicted_growth_bytes": 2281701376,
+        "predicted_growth_bytes": 268435456,
         "producer_workspace_reserved_bytes": 0,
         "resources": {
-          "available_memory_bytes": 161214275584,
-          "disk_free_bytes": 57958334464,
-          "share_disk_free_bytes": 44327309312
+          "available_memory_bytes": 161098444800,
+          "disk_free_bytes": 57824362496,
+          "share_disk_free_bytes": 44323176448
         },
         "roots": {
           "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
@@ -84,30 +84,36 @@
             "st_dev": 2431
           },
           "/workspace/ep_l2_potential20261017_lane5_results": {
-            "bytes": 5825410544,
+            "bytes": 5922977247,
             "st_dev": 156
           }
         },
-        "same_binary_full_input_samples": [],
+        "same_binary_full_input_samples": [
+          {
+            "bytes": 105334344,
+            "receipt_sha256": "c80f35dd73927eced464f5345ed5eb3f25dacdb2e6989384b44e6c87cbe609d9",
+            "run_key": "931f4639fc92fa89225ec4764d5b72a4b051fba044b17de14f0439ae6d15fcb5"
+          }
+        ],
         "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
         "workspace_st_dev": 156
       },
       "owner": "lane5",
       "process": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 3967640,
-        "start_ticks": 906496272
+        "pid": 3978775,
+        "start_ticks": 906573310
       },
-      "profile": "B16_OFF",
-      "regime": "SERVICE_MQ2",
-      "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
-      "run_key": "3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
+      "profile": "S64",
+      "regime": "SERVICE_OFF",
+      "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+      "run_key": "32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
       "scan": false,
       "status": "RUNNING",
-      "updated_at": "2026-10-18T08:43:11.389908+00:00"
+      "updated_at": "2026-10-18T08:56:01.765588+00:00"
     }
   ],
-  "aggregate_output_bytes": 13393093874,
+  "aggregate_output_bytes": 13507032214,
   "available_historical_anchor_cells": 7,
   "campaign_registration": {
     "authority_commit": "a9ab796f0c905d99eb1ffa3d02ea9305ce0bc900",
@@ -8687,7 +8693,7 @@
       "workload_alias": "FWT_7_21"
     }
   ],
-  "current_V2_generation": 58,
+  "current_V2_generation": 59,
   "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
   "extra_cells": [
     {
@@ -9180,8 +9186,8 @@
   ],
   "failed": 7,
   "finite_service_final_intake": {
-    "accepted_formal_endpoints": 7,
-    "charged_starts_including_necessary_native_OFF": 9,
+    "accepted_formal_endpoints": 8,
+    "charged_starts_including_necessary_native_OFF": 10,
     "current_priority_policy": {
       "approved_units": [
         {
@@ -9375,7 +9381,7 @@
         "status": "PASS_THIRD_ROLLING_SLOT_CURRENT_MATERIAL_HEADROOM"
       }
     },
-    "formal_endpoint_starts": 8,
+    "formal_endpoint_starts": 9,
     "maximum_starts_within72": 24,
     "qualification": "CURRENT_QUALIFIED_MQ2_F0AF",
     "registered_endpoints": 18,
@@ -9489,6 +9495,116 @@
       },
       {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "cell_id": "MOPT_FWT_S64_OFF_f0af8515057e",
+        "client_binding": {
+          "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
+          "acceptance_source_commit": "dcfcc5303c70c0b92f8998338c458360c95dde32",
+          "immutable_scientific_pointer": true
+        },
+        "cpu_units": 1,
+        "created_at": "2026-10-18T08:56:01.419210+00:00",
+        "deadline_unix": 1792323014.5007188,
+        "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
+        "host": "huangrulin-174",
+        "identity": {
+          "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+          "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "feature_vector": {
+            "adaptive_policy": false,
+            "bank_count": 4,
+            "bypass_capacity": 80,
+            "diagnostic_extra_payload_backing": false,
+            "finite_wbuf": true,
+            "ideal_meta": false,
+            "ideal_read_hit": false,
+            "ideal_wb": false,
+            "mq2": false,
+            "nominal_payload_capacity_per_slice": 1168,
+            "nominal_static_wb_anchor": 16,
+            "ops_per_bank_cycle": 1,
+            "payload_capacity_per_slice": 1168,
+            "rg1": false,
+            "ro": false,
+            "static_s64": true,
+            "static_wb_capacity": 64,
+            "tvd": false,
+            "unified_wb": false,
+            "wb_data_capacity_non_binding": false,
+            "wb_local_cap": 0,
+            "wbuf_entries": 16
+          },
+          "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+          "ideal_vector": {
+            "mem_all_data": false,
+            "meta": false,
+            "read_hit": false,
+            "wb": false
+          },
+          "runtime_config_sha256": "1cdb9277d4870bca38a9a7062b83824a62c8e924cab8dcece8c21a94f539dbf6",
+          "termination_contract": {
+            "hardware_drained": true,
+            "kind": "FULL_APPLICATION_R0_PRIMARY_V1",
+            "normal_exit": true,
+            "timeout_seconds": 3600
+          },
+          "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+          "workload": "FWT_7_21"
+        },
+        "lease_id": "c5f9f32b31374525bd06809714787b77",
+        "memory_bytes": 4294967296,
+        "output_budget": {
+          "accounted_after_admission_bytes": 15854313175,
+          "actual_bytes": 13393254195,
+          "concurrent_unwritten_growth_bytes": 2192623524,
+          "disk_growth_reservation_exception": null,
+          "forecast_policy": "unknown=old2GiB raw cap+128MiB snapshot overhead; same-binary/input=max256MiB,2x observed whole-directory; all hard guards unchanged",
+          "predicted_growth_bytes": 268435456,
+          "producer_workspace_reserved_bytes": 0,
+          "resources": {
+            "available_memory_bytes": 161098444800,
+            "disk_free_bytes": 57824362496,
+            "share_disk_free_bytes": 44323176448
+          },
+          "roots": {
+            "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": {
+              "bytes": 7470274173,
+              "st_dev": 2431
+            },
+            "/workspace/ep_l2_potential20261017_lane5_results": {
+              "bytes": 5922977247,
+              "st_dev": 156
+            }
+          },
+          "same_binary_full_input_samples": [
+            {
+              "bytes": 105334344,
+              "receipt_sha256": "c80f35dd73927eced464f5345ed5eb3f25dacdb2e6989384b44e6c87cbe609d9",
+              "run_key": "931f4639fc92fa89225ec4764d5b72a4b051fba044b17de14f0439ae6d15fcb5"
+            }
+          ],
+          "workspace_root": "/workspace/ep_l2_potential20261017_lane5_results",
+          "workspace_st_dev": 156
+        },
+        "owner": "lane5",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3978775,
+          "start_ticks": 906573310
+        },
+        "profile": "S64",
+        "regime": "SERVICE_OFF",
+        "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+        "run_key": "32dacdcda1d7fe2be21ba949947d04f05bab4a932997c6cb51dae2a34d949f7a",
+        "scan": false,
+        "status": "RUNNING",
+        "updated_at": "2026-10-18T08:56:01.765588+00:00"
+      },
+      {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
         "cell_id": "MOPT_FWT_B16_OFF_MQ2_f0af8515057e",
         "client_binding": {
           "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75",
@@ -9498,6 +9614,8 @@
         "cpu_units": 1,
         "created_at": "2026-10-18T08:43:11.047769+00:00",
         "deadline_unix": 1792323014.5007188,
+        "detail": "qualified binary, exact inputs, legal hardware terminal and closure",
+        "exit_code": 0,
         "experiment_id": "EPL2_PARALLEL_POTENTIAL_20261017_V1",
         "host": "huangrulin-174",
         "identity": {
@@ -9584,12 +9702,13 @@
           "start_ticks": 906496272
         },
         "profile": "B16_OFF",
+        "raw_log_sha256": "dcdce7da26059a2e39b9c2c2ed3d2c5d1ea6d77518064ee7c51e4ad4985567cc",
         "regime": "SERVICE_MQ2",
         "result_directory": "/workspace/ep_l2_potential20261017_lane5_results/3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
         "run_key": "3fd0447522fcfc3118a4d2b2514fd5a68c33292f626a1fb08a5d223715bd515a",
         "scan": false,
-        "status": "RUNNING",
-        "updated_at": "2026-10-18T08:43:11.389908+00:00"
+        "status": "COMPLETE_VALID",
+        "updated_at": "2026-10-18T09:22:52.420000+00:00"
       },
       {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -10363,15 +10482,15 @@
   },
   "max_result_bytes": 21474836480,
   "new_application_admission": "REQUIRES_NORMAL_FULL_PREFLIGHT",
-  "new_starts": 42,
+  "new_starts": 43,
   "output_tree_bytes": {
     "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016": 7470274173,
-    "/workspace/ep_l2_potential20261017_lane5_results": 5922819701
+    "/workspace/ep_l2_potential20261017_lane5_results": 6036758041
   },
-  "remaining_start_budget": 30,
+  "remaining_start_budget": 29,
   "reused": 0,
   "running": 1,
   "schema": "EPL2_PARALLEL_CELL_LEDGER_V1",
-  "updated_at": "2026-10-18T08:55:59.020601+00:00",
+  "updated_at": "2026-10-18T09:23:08.535868+00:00",
   "validation_only_revisions": 3
 }
