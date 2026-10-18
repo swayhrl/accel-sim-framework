@@ -2,7 +2,7 @@
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
   "task_id": "EPL2_MQ2_PRODUCER_RECOVERY_V1",
-  "status": "MQ2_AND_RG1_PRODUCER_PASS_PENDING_LANE5",
+  "status": "MQ2_AND_RG1_SINGLE_FACTOR_PRODUCER_PASS_PENDING_LANE5",
   "review_coordination_commit": "9a161b700ae2d17470fe7b08fc16725b3ef6317c",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
@@ -205,10 +205,10 @@
   "current_directed_processes": [],
   "current_lease_id": null,
   "current_lease_released": true,
-  "review_pack": "docs/ep_l2/review_packs/RG1_RECOVERY_LANE1_PRODUCER_r1",
-  "goal_state": "RECOVERY_WORK_COMPLETE_FINAL_REMOTE_READBACK_PENDING",
+  "review_pack": "docs/ep_l2/review_packs/MQ2_RECOVERY_LANE1_FINAL_CHECKPOINT_r1",
+  "goal_state": "COMPLETE_AUTHORIZED_PRODUCER_WORK",
   "gate_waiter_started": false,
-  "recorded_at": "2026-10-18T06:56:22.700357+00:00",
+  "recorded_at": "2026-10-18T06:57:24.516908+00:00",
   "next_action": "Independent qualification for RG1 separately from MQ2; retain original campaign/input/currentV2/start deadline and budgets. MQ2 already delivered, do not wait for RG1 qualification to consume MQ2.",
   "headroom_delivery": {
     "D4": {
@@ -421,7 +421,7 @@
     "next_owner": "lane5",
     "next_action": "Independently verify exact binary/source, all directed and negative evidence, six effective profiles, trace/input and currentV2. Only then bind original parallel campaign MQ2 cells. No application launch or Lane5 PASS is claimed by producer."
   },
-  "goal_status": "RECOVERY_WORK_COMPLETE_FINAL_REMOTE_READBACK_PENDING",
+  "goal_status": "COMPLETE_AUTHORIZED_PRODUCER_WORK",
   "pre_recovery_runtime_metadata": {
     "core_source_commit": "9bd30ed913c5058b5d952fbeb2e67cb5e4644b3f",
     "framework_source_commit": "8ab6013ea90755fdc74819e92090c2de50f4f199",
@@ -697,5 +697,88 @@
     "publication_branch": "hrl/ep-l2-ft20261016-lane1-v1",
     "next_owner": "lane5",
     "next_action": "Independent qualification for RG1 separately from MQ2; retain original campaign/input/currentV2/start deadline and budgets. MQ2 already delivered, do not wait for RG1 qualification to consume MQ2."
+  },
+  "mq2_recovery_final": {
+    "schema": "EPL2_MQ2_PRODUCER_RECOVERY_FINAL_V1",
+    "goal": "EPL2_MQ2_PRODUCER_RECOVERY_V1",
+    "execution_status": "COMPLETE_AUTHORIZED_PRODUCER_WORK",
+    "scientific_status": "MQ2_AND_RG1_SINGLE_FACTOR_PRODUCER_PASS_PENDING_LANE5",
+    "authority": "9a161b700ae2d17470fe7b08fc16725b3ef6317c",
+    "start_utc": "2026-10-18T06:46:32+00:00",
+    "bounded_deadline_utc": "2026-10-18T08:46:32Z",
+    "checkpoint_utc": "2026-10-18T06:57:24.516908+00:00",
+    "elapsed_seconds_to_checkpoint": 652.516908,
+    "goal_tool_history": {
+      "new_goal_initial_creation": "REJECTED_UNFINISHED_OLD_GOAL",
+      "old_goal": "Marked complete only after both original producer objectives were actually achieved and independently published in this recovery; never restarted or claimed running while BLOCKED",
+      "new_goal": "Explicit EPL2_MQ2_PRODUCER_RECOVERY_V1 registered active at06:56:42Z for final metadata/readback after old objective was achieved; final completion follows remote readback",
+      "actual_recovery_start": "06:46:32Z, independent of late platform registration"
+    },
+    "core_source_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+    "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+    "binary": "/workspace/ep_l2_potential20261017_lane5_results/EPL2_FINITE_SERVICE_MICROOPT_PRODUCER_V1_lane1/mq2_recovery_release_r1/binaries/accel-sim.out",
+    "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30",
+    "formal_simulator_builds": 1,
+    "runtime_source_modifications_this_recovery": 0,
+    "MQ2": {
+      "publication": "d035f11e465f8acd9764a3055ae967e62bb5b47f",
+      "producer_receipt": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/MQ2_RECOVERY_PRODUCER_RECEIPT_r1.json",
+      "native_positive": 52,
+      "additional_same_binary_OFF": 3,
+      "effective_profiles": 6,
+      "expected_negative": 5,
+      "shared_handoff": "/workspace/ep_l2_ft20261016_shared/lane1/MQ2_PRODUCER_RELEASE_r1.json",
+      "remote_readback": "PASS_EXACT_REMOTE_SHA_AND_ALL_CHANGED_FILE_BYTES"
+    },
+    "RG1": {
+      "publication": "4e920696bde91618b44faab769ff490b6cddd51e",
+      "producer_receipt": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RG1_RECOVERY_PRODUCER_RECEIPT_r1.json",
+      "new_native_positive": 10,
+      "additional_OFF_ready_witnesses": 6,
+      "effective_profiles": 6,
+      "expected_negative": 5,
+      "shared_handoff": "/workspace/ep_l2_ft20261016_shared/lane1/RG1_PRODUCER_RELEASE_r1.json",
+      "remote_readback": "PASS_EXACT_REMOTE_SHA_AND_ALL_CHANGED_FILE_BYTES"
+    },
+    "own_reserved_leases": [],
+    "own_gate_waiters": [],
+    "own_controllers": [],
+    "own_running_build_or_test": "NONE_AFTER_SUCCESSFUL_EXIT; all owned command process groups exited and leases released",
+    "no_background_Codex_claim": true,
+    "registry_other_active_runs": [
+      {
+        "run_key": "ab37352ffa136413a422d2a321d099ec156fe0ad4700e6e26236dd79ba2f606e",
+        "owner": "lane5",
+        "status": "RUNNING",
+        "process": {
+          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+          "pid": 3823551,
+          "start_ticks": 905830048
+        }
+      }
+    ],
+    "actual_workspace_free_bytes": 57171697664,
+    "actual_Share_free_bytes": 44346966016,
+    "registry_client_matches_published": true,
+    "current_client_source": "70cfb593242c8c264d844b113e876a2d1bce8f18",
+    "source_identity_verified": {
+      "/workspace/worktrees/gpgpu-sim-ep-l2-microopt20261018-lane1-v1": {
+        "HEAD": "84359d4ba492acb639a2092fa271e9169038bf7d",
+        "tracked_status": ""
+      },
+      "/workspace/worktrees/accel-sim-ep-l2-microopt20261018-lane1-v1": {
+        "HEAD": "197741be9be9b8e390a557d639503b416d8e95f0",
+        "tracked_status": ""
+      }
+    },
+    "archives_unchanged": true,
+    "application_starts": 0,
+    "trace_identity": null,
+    "trace_scope": "native directed only, synthetic requests and symbolic sector versions",
+    "blocking_conditions_for_this_producer_scope": [],
+    "remaining_independent_owner": "Lane5 source/binary/profile/eleven-gate qualification and full-application campaign; producer does not certify PASS or launch apps",
+    "old_R19_H0_raw_source_config_trace_binary": "PRESERVED; no restart/reset/cleanup",
+    "DTC_C16_Storage_Ops": "NO_PROCESS_SIGNAL_OR_ASSET_QUOTA_CHANGE",
+    "final_publication_identity": "Enclosing commit; exact fresh remote readback additionally published to shared lane1/MQ2_RECOVERY_FINAL_READBACK_r1.json"
   }
 }
