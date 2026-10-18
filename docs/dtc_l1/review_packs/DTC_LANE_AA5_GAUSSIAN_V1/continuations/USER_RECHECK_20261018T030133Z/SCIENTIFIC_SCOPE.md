@@ -1,0 +1,7 @@
+# User-authorized resource recheck and continuation
+
+User request: 重新试试. Preserve original AA5 STOP at16febca8b and all previous raw/registered files. A new10.13885s two-probe review passes unchanged resource thresholds and read-only authority/FLOCK review. Host IO full PSI11.18/11.09; no new swap or OOM across this probe. Historical pswpin increased32 pages since the prior STOP; this inter-window history remains preserved and is not relabeled as zero. Current zero-swap criterion is the fresh admission interval.
+
+No scientific factor, input, Core, binary, library, timeout, public metric, observer or conservation acceptance is changed. Only versioned orchestration records the new explicit user authorization and immutable publication; the old STOP is NOT deleted. Same original fourUUIDs and shared total4 actual launches. Default/max1 simulator, twoK0 exact controls3798174/3278356 before K1, one start perUUID, no retry. New authority/resources must pass again immediately before every start, including current other-project memory/swap/IO/CPU/disk and reviewed oldcollector locks.
+
+Real Gaussian remains510members/513commands/65790CTA/283685120activeinstructions. K1-only diagnostics remain noncomparative; K0absenceUNAVAILABLE; final normal64SM samepubliccycle frame and independent reclaimedR required. Existing frozen strict/Y2/V/Z2/model/W/values/coherence/PPA limitations apply unchanged. No newCore,Tag,input,T2,K2,IO/modern experiment or mainpaper-data edit is authorized.
