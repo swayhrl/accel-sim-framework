@@ -1,0 +1,128 @@
+{
+  "schema": "TLS_V10_TARGET_NATIVE_RESTORE_CAPACITY_V1",
+  "utc": "2026-10-18T11:31:14.492358+00:00",
+  "hostname": "huangrulin-sshfs-174",
+  "mount_namespace": "mnt:[4026535153]",
+  "capabilities": [
+    "CapInh:\t0000000000000000",
+    "CapPrm:\t000001ffffffffff",
+    "CapEff:\t000001ffffffffff",
+    "CapBnd:\t000001ffffffffff",
+    "CapAmb:\t0000000000000000",
+    "NoNewPrivs:\t0"
+  ],
+  "mounts": {
+    "filesystems": [
+      {
+        "target": "/",
+        "source": "overlay",
+        "fstype": "overlay",
+        "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/ECMGIZJTL26ANEVHWCIMZHD3CW:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/2e2b9d14d1f001d0c68725fb255142c9cd99cddcc38ca119613993b3367f2cfd/diff,workdir=/mnt/data/docker/overlay2/2e2b9d14d1f001d0c68725fb255142c9cd99cddcc38ca119613993b3367f2cfd/work,nouserxattr",
+        "children": [
+          {
+            "target": "/proc",
+            "source": "proc",
+            "fstype": "proc",
+            "options": "rw,nosuid,nodev,noexec,relatime"
+          },
+          {
+            "target": "/dev",
+            "source": "tmpfs",
+            "fstype": "tmpfs",
+            "options": "rw,nosuid,size=65536k,mode=755,inode64",
+            "children": [
+              {
+                "target": "/dev/console",
+                "source": "devpts[/0]",
+                "fstype": "devpts",
+                "options": "rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666"
+              },
+              {
+                "target": "/dev/pts",
+                "source": "devpts",
+                "fstype": "devpts",
+                "options": "rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666"
+              },
+              {
+                "target": "/dev/mqueue",
+                "source": "mqueue",
+                "fstype": "mqueue",
+                "options": "rw,nosuid,nodev,noexec,relatime"
+              },
+              {
+                "target": "/dev/shm",
+                "source": "shm",
+                "fstype": "tmpfs",
+                "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64"
+              }
+            ]
+          },
+          {
+            "target": "/sys",
+            "source": "sysfs",
+            "fstype": "sysfs",
+            "options": "rw,nosuid,nodev,noexec,relatime",
+            "children": [
+              {
+                "target": "/sys/fs/cgroup",
+                "source": "cgroup",
+                "fstype": "cgroup2",
+                "options": "rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot"
+              }
+            ]
+          },
+          {
+            "target": "/root/data",
+            "source": "/dev/sdf[/huangrulin]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          },
+          {
+            "target": "/root/share",
+            "source": "/dev/md127",
+            "fstype": "ext4",
+            "options": "rw,relatime,stripe=384",
+            "children": [
+              {
+                "target": "/root/share/liuziyang/mnt165",
+                "source": "liuziyang@10.208.130.165:/data2/tmp/liuziyang",
+                "fstype": "fuse.sshfs",
+                "options": "rw,nosuid,nodev,relatime,user_id=1005,group_id=1005,default_permissions,allow_other"
+              },
+              {
+                "target": "/root/share/mnt164",
+                "source": "admin-wcx@10.208.130.164:/home/shared",
+                "fstype": "fuse.sshfs",
+                "options": "rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other"
+              }
+            ]
+          },
+          {
+            "target": "/etc/resolv.conf",
+            "source": "/dev/sdf[/docker/containers/e6c264952230b93e8eb673920b2b892b2f24d5262b80d835980172672afa7236/resolv.conf]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          },
+          {
+            "target": "/etc/hostname",
+            "source": "/dev/sdf[/docker/containers/e6c264952230b93e8eb673920b2b892b2f24d5262b80d835980172672afa7236/hostname]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          },
+          {
+            "target": "/etc/hosts",
+            "source": "/dev/sdf[/docker/containers/e6c264952230b93e8eb673920b2b892b2f24d5262b80d835980172672afa7236/hosts]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          }
+        ]
+      }
+    ]
+  },
+  "MemAvailable": 347036815360,
+  "cgroup_current": "44396367872",
+  "cgroup_max": "274877906944",
+  "scientific_data_read": false,
+  "created_files": 0,
+  "source_original_mutations": 0
+}

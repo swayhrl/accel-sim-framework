@@ -1,0 +1,59 @@
+{
+  "schema": "TLS_V10_TARGET_BATCH_PROTOCOL_PROPOSAL_V1",
+  "utc": "2026-10-18T11:32:52.419123+00:00",
+  "status": "PROPOSED_AWAIT_SOURCE_AGREEMENT_NO_COPY_AUTHORITY",
+  "contract_commit": "cb955076bde74fcab6c29f7f524c649c57e79015",
+  "source_precheck_ack_commit": "bbb226b380d26c01f4101d44a47483a6a1349855",
+  "target_preflight_commit": "0ed56e745dfe44ff4c3547d3b560c1e1eb988008",
+  "source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+  "target_branch": "hrl/tls-v10-174new-target-exec-v1",
+  "implementation": "Reuse byte-pinned V9 Transaction.accept_chunk/finalize/native_restore and canonical identity; only explicit TLS manifest/control adapters.",
+  "manifest": {
+    "file_rows": "Normalize frozen rows to V9 keys: relative_path,type,sha256,size=size_bytes,allocated=allocated_bytes,dev,inode,nlink,uid,gid,mode=int(mode_octal,8)&0o7777,mtime_ns,ctime_ns; source_path/root/commit retained in original sidecar. Preserve full directory metadata including root dot.",
+    "selector": "V9 canonical JSON of normalized files array in explicitly frozen order; source_file_inventory_sha256 is SHA256 of original frozen JSONL; separate directory inventory SHA and full manifest SHA bind metadata.",
+    "source_frozen_commit": "Source chooses exact 40-character Git publication containing frozen original file/directory manifests; row source code commits remain independent provenance.",
+    "source_filesystem_identity": "Source publishes exact canonical object; target must consume byte-equivalent object, not independently invent a string encoding.",
+    "native164_root_template": "/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_<GROUP>_<FULL_SELECTOR_SHA256>",
+    "target_mount_mapping": "Replace exact /home/shared prefix with /root/share/mnt164; new group root must be ABSENT, exclusively reserved, never overwrite V9.",
+    "txid": "Existing V9 SHA256(canonical JSON of source_filesystem_identity,source_root,selector_sha256,source_frozen_commit,genuine164_destination_root). No second txid spelling or alternate root accepted."
+  },
+  "payload": {
+    "sender": "Only original old174 Source",
+    "receiver": "Only this original 174-new Target; existing unique bridge receiver lock",
+    "bridge_root": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02",
+    "max_data_bytes_per_READY": 134217728,
+    "physical_bridge_allocated_cap_bytes": 268435456,
+    "rate_bytes_per_second": 31457280,
+    "one_data_file_per_READY": true,
+    "chunk_ranges": "[offset,offset+length), sequential nonoverlapping contiguous ranges per original file; zero length original has no chunk; full ordered range coverage and original full SHA checked at finalization.",
+    "bridge_path": "Source publishes exact no-symlink path within dedicated TLS V10 payload subtree and exact stat dev/inode/nlink/size/st_blocks plus SHA; original source manifest/path identity independently retained.",
+    "compression": "No compression initially; original raw-byte chunks use proven V9 range support."
+  },
+  "handshake": [
+    "Source publishes canonical manifest/txid, resource/activity PASS, exact chunk READY and its Git SHA. No payload before exact agreement.",
+    "Target validates current source PASS and local gates, bridge identity/full chunk SHA; V9 fsync/close/reopen real164 chunk. Independently native-restore EACH chunk and reopen SHA. Publish DEST_VERIFIED and RESTORE_VERIFIED with proof_scope=CHUNK_RANGE_ONLY and immutable manifest/txid/range/bridge identity; these are not full-file or project restoration claims.",
+    "Source independently acknowledges exact target receipt Git SHA and emits SOURCE_KEEP for that chunk. Target verifies exact ACK and exact still-matching owned bridge payload before unlinking ONLY that listed bridge stage, measuring remaining allocated staging and publishing cleanup. Next READY only after closure.",
+    "After full group receipt coverage, V9 finalize reconstructs original full files and checks every original full SHA. Then V9 native_restore into a NEW ABSENT native group tree verifies ALL files and directories with numeric UID/GID/mode/mtime, ctime provenance only. Publish independent complete SOURCE->164->RESTORE join, no sample substitution."
+  ],
+  "native_restore": {
+    "plan": "New private tmpfs native POSIX mount inside target namespace, outside bridge, capped at 24GiB; retains independent per-chunk native proofs and full per-group restored trees. Avoid exhausting shared workspace or Share; no scientific original data is stored only here.",
+    "proposed_mountpoint": "/root/tls-v10-native-restore-20261018-target01",
+    "filesystem": "tmpfs; native chown/chmod/mtime supported; volatile proof workspace only, not durable archive; durable data and recovery tooling remain genuine164.",
+    "capacity_bytes": 25769803776,
+    "preflight": "Mount namespace identity, empty/absent owned mountpoint, current MemAvailable and cgroup available minus full declared restore budget, active Lane reservations and >=64GiB system floor; no scientific restore until source independent PASS. Recheck actual cgroup/memory per batch.",
+    "retention": "No automatic deletion of native restore trees or scientific files; preserve verification copies until disposition. Exact bridge payload cleanup only after both ACKs.",
+    "required_before_COPY_READY": "Target must publish actual native mount/small synthetic metadata probe PASS and confirm projected full scope fits both chunk proof copies plus full original restoration, with headroom. If unsupported or resource PASS unavailable, HOLD; no disk fallback over 48GiB floor."
+  },
+  "gates": {
+    "cutoff_utc": "2026-10-18T11:30:14.500719+00:00",
+    "workspace_bytes": 51539607552,
+    "share_bytes": 42949672960,
+    "mem_available_bytes": 68719476736,
+    "source_independent_lane_audit": "Required post-cutoff before full source hash/staging. Cutoff or target local df alone is not admission; do not stop running sims or alter leases.",
+    "per_batch": "Fresh source identity/activity/resource PASS plus target genuine164, Share allocated cap, RAM/cgroup; source original identity remains frozen and KEEP. HOLD on stale/disagreeing evidence."
+  },
+  "source_originals": "SOURCE_KEEP",
+  "source_release_authorized": false,
+  "scientific_data_transferred_bytes": 0,
+  "source_reclaimed_bytes": 0
+}
