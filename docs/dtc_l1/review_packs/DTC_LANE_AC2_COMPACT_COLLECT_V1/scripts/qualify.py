@@ -1,12 +1,14 @@
 """AC2 CPU-only source-capacity audit. No simulator entrypoint is executed."""
 import hashlib,json,os,shlex,subprocess,sys
 from pathlib import Path
-ROOT=Path('/workspace/dtc-lane-ac2-compact-collect-174-v1')
+ROOT=Path('/workspace/dtc-lane-ac2-compact-collect-174-v1/final-cpu')
+ROOT.mkdir(parents=True,exist_ok=False)
 CORE=Path('/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ac2-compact-collect-core-174-v1')
 FRAME=Path(__file__).resolve().parents[5]
 PARENT=Path('/workspace/worktrees/gpgpu-sim-dtc-lane-ac2-parent-source-174-v1')
 X2=Path('/workspace/worktrees/gpgpu-sim-dtc-lane-ac2-x2-source-174-v1')
 BUILDS={key:Path('/workspace/builds/dtc-lane-ac2-'+key+'-174-v1') for key in ['candidate','parent','x2']}
+BUILDS['candidate']=Path('/workspace/builds/dtc-lane-ac2-final-release-174-v1')
 AC=Path(__file__).resolve().parents[2]/'DTC_LANE_AC_COLLECT_PIPELINE_V1/scripts'
 sys.path.insert(0,str(AC))
 from run_cpu_matrix import CASES,common,normal
