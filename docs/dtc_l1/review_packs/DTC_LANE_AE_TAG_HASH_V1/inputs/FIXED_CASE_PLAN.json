@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "fixed_before_compilation": true,
+  "formula": "L=address>>7; bank=L&3; row=((L>>2)^(L>>s))&((S/4)-1); set=4*row+bank; S=2^s",
+  "geometries": [[32,4],[32,8],[64,4],[64,8]],
+  "unchanged_resources": {"physical_lines":640,"physical_bytes":81920,"oo_pib":128,"banks":4,"per_bank_grants":1,"tag_global_quota":4,"production_whole_line_reference_commit_per_ldst_cycle":1,"allocation_width":4,"finite":1},
+  "address_sets": {
+    "mapping": "lines0..4095, offsets0/1/127; and 64 fixed xorshift64 values seed0x123456789abcdef0 masked to 57 line bits",
+    "stride4096": "k*4096 + bank*128; k=0..31; bank=0..3",
+    "neutral_contiguous": "line0..31 repeated3 passes",
+    "fixed_hash_adversary": "line k*4 + k*S, k=0..ways, repeated3 passes; cancels row XOR for tested k, preserves bank0; retained even if hash loses",
+    "lru": "first ways+1 colliders from fixed finite line0..65535 scan under each fixed map; touch first by will_new_miss before insertion",
+    "late_merge_k1": "line0, six initial waiters, lower complete, advance one metadata edge, seventh late waiter, invalidate, same-address new allocation, drain old/new"
+  },
+  "rejections": ["sets0","sets1","sets2","sets6","sets12","banks1","banks2","banks8","finite0","LEGACY","PAPER_BASE","PAPER_IO","MODERN_OO_SECTOR"],
+  "budget": {"compiler_invocations_max":2,"full_simulations":0,"native_applications":0,"GPU_runs":0,"real_application_trace_reads":0,"hash_candidates":1},
+  "off_lru_policy": "Preserve old will_new_miss -> mutating find_tag in both ON and OFF. No global cleanup or extra recency changes."
+}
