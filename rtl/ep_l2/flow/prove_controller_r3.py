@@ -8,7 +8,10 @@ oldctrl=subprocess.check_output(['git','show',ref+':rtl/ep_l2/rtl/ep_l2_slice_ct
 debugs={'proof_gen':'N_PAYLOAD*GEN_W','proof_role':'N_PAYLOAD*3','proof_pins':'N_PAYLOAD*6','proof_ready':'N_PAYLOAD*4','proof_pending':'N_PAYLOAD*4','proof_dirty':'N_PAYLOAD*4','proof_live':'N_TAG','proof_map':'N_TAG*PID_W'};signals=['generation_bits','role_bits','pins_bits','sectors_ready_bits','sectors_pending_bits','dirty_bits','tag_live','tag_map_bits']
 def instrument(s):
  s=s.replace('    input wire [4095:0] ram_rdata',''.join('    output wire ['+w+'-1:0] '+n+',\n' for n,w in debugs.items())+'    input wire [4095:0] ram_rdata');idx=s.rfind('endmodule');s=s[:idx]+''.join('    assign '+n+'='+v+';\n' for n,v in zip(debugs,signals))+s[idx:];return s
-ctrl=instrument((base/'ep_l2_slice_ctrl.sv').read_text());oldctrl=instrument(oldctrl)
+# Proof-only flattening removes physical keep attributes, never production gates/SDC.
+strip_keep=lambda x:re.sub(r'\(\*[^*]*\bkeep(?:_hierarchy)?\s*=[^*]*\*\)','',x)
+ctrl=strip_keep(instrument((base/'ep_l2_slice_ctrl.sv').read_text()));oldctrl=strip_keep(instrument(oldctrl));oldmeta=strip_keep(oldmeta)
+(a.out/'r3_meta.sv').write_text(strip_keep((base/'ep_l2_metadata_word.sv').read_text()))
 for n in names:
  oldmeta=re.sub(r'\b'+n+r'\b',n+'_r2',oldmeta);oldctrl=re.sub(r'\b'+n+r'\b',n+'_r2',oldctrl)
 (a.out/'r2_meta.sv').write_text(oldmeta);(a.out/'r2_ctrl.sv').write_text(oldctrl);(a.out/'r3_ctrl.sv').write_text(ctrl)
@@ -31,7 +34,7 @@ for mode in (0,1,2):
   eq=n+'_a=='+n+'_b'
   qualifier='native_commit_a' if n in ('native_tag','native_pid','native_gen') else 'rsp_valid_a' if n.startswith('rsp_') and n!='rsp_valid' else 'wb_valid_a' if n in ('wb_data','wb_be','wb_addr','wb_ticket','wb_ticket_gen') else None
   checks.append('(!'+qualifier+' || ('+eq+'))' if qualifier else '('+eq+')')
- wrapper+='assign equal='+' && '.join(checks)+';endmodule\n';path=a.out/f'wrapper-{mode}.sv';path.write_text(wrapper);ys=a.out/f'proof-{mode}.ys';files=[base/'ep_l2_bank_arbiter.sv',base/'ep_l2_metadata_word.sv',a.out/'r3_ctrl.sv',a.out/'r2_meta.sv',a.out/'r2_ctrl.sv',path];ys.write_text('read_verilog -sv -D SYNTHESIS '+' '.join('"'+str(f)+'"' for f in files)+'\nprep -top word_equiv -flatten\nmemory_map\nopt_clean\n'+f'sat -seq {a.depth} -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120\n');log=a.out/f'proof-{mode}.log'
+ wrapper+='assign equal='+' && '.join(checks)+';endmodule\n';path=a.out/f'wrapper-{mode}.sv';path.write_text(wrapper);ys=a.out/f'proof-{mode}.ys';files=[base/'ep_l2_bank_arbiter.sv',a.out/'r3_meta.sv',a.out/'r3_ctrl.sv',a.out/'r2_meta.sv',a.out/'r2_ctrl.sv',path];ys.write_text('read_verilog -sv -D SYNTHESIS '+' '.join('"'+str(f)+'"' for f in files)+'\nprep -top word_equiv -flatten\nmemory_map\nopt_clean\n'+f'sat -seq {a.depth} -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120\n');log=a.out/f'proof-{mode}.log'
  with log.open('w') as f:subprocess.run(['yosys','-Q','-T','-s',str(ys)],stdout=f,stderr=subprocess.STDOUT,check=True)
  assert 'SUCCESS!' in log.read_text();rows.append({'mode':mode,'status':'BOUNDED_ACTUAL_CONTROLLER_EQ_PASS','depth':a.depth});print('actual R2/R3 controller',mode,'PASS',flush=True)
-(a.out/'CONTROLLER_EQ_RECEIPT.json').write_text(json.dumps({'rows':rows,'scope':'actual controller cut incl all metadata/tag mapping state and valid-qualified IO; proof-only state output ports; small8Tags/32payload/4WAD/GEN3; no whole-controller unbounded proof or full-size cost claim','R2':ref,'captured_RTL_sha256':captured_RTL_sha256},indent=2)+'\n')
+(a.out/'CONTROLLER_EQ_RECEIPT.json').write_text(json.dumps({'rows':rows,'scope':'actual controller cut incl all metadata/tag mapping state and valid-qualified IO; proof-only state output ports/keep removal for flattening (production cells retained); small8Tags/32payload/4WAD/GEN3; no whole-controller unbounded proof or full-size cost claim','R2':ref,'captured_RTL_sha256':captured_RTL_sha256},indent=2)+'\n')
