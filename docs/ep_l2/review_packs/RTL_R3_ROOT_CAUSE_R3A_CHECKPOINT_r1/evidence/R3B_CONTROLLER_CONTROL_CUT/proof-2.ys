@@ -1,0 +1,7 @@
+read_verilog -sv -D SYNTHESIS "/workspace/worktrees/accel-sim-ep-l2-rtl-r3b-owner-cost-v1/rtl/ep_l2/rtl/ep_l2_bank_arbiter.sv" "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_CONTROLLER_CONTROL_CUT/r3_meta.sv" "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_CONTROLLER_CONTROL_CUT/r3_ctrl.sv" "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_CONTROLLER_CONTROL_CUT/r2_meta.sv" "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_CONTROLLER_CONTROL_CUT/r2_ctrl.sv" "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_CONTROLLER_CONTROL_CUT/wrapper-2.sv"
+prep -top word_equiv -flatten
+memory_map
+opt -full
+wreduce
+opt_clean
+sat -seq 4 -set-init-zero -set rst_n 1 -set-at 1 rst_n 0 -prove-skip 1 -prove equal 1 -verify -timeout 120 -dump_vcd "/workspace/ep_l2_potential20261017_lane5_results/EPL2_RTL_R3_METADATA_AND_COST_OPT_lane2/R3B_CONTROLLER_CONTROL_CUT/counterexample-2.vcd" -show-inputs -show mismatch -show a.state -show b.state -show proof_gen_a -show proof_gen_b -show b.fe_gen_write -show b.frontend_generation_pid -show b.frontend_generation_old -show b.frontend_generation_next
