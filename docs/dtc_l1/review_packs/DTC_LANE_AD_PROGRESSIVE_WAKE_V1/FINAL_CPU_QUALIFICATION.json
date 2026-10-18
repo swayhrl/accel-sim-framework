@@ -1,0 +1,160 @@
+{
+  "status": "PASS_CPU_COMPONENT_QUALIFICATION_WITH_SCOPE_LIMITS",
+  "core_head": "2af61a3efae8ab7994a81c81feff8e9e717dab53",
+  "fixed_base": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+  "built_Cpp_source_commit": "731be8548ad0fcc167ebfc49d5f1867f22034b4c",
+  "embedded_build_string": "gpgpu-sim_git-commit-731be854_modified_0.0.",
+  "final_vs_built_delta": "CMake CPU test runtime config only; all production and test C++ files byte-identical",
+  "Cpp_source_identity_verified": true,
+  "ctest_passed": 9,
+  "ctest_total": 9,
+  "total_object_build_attempts": 3,
+  "user_authorized_original_attempts": 2,
+  "user_authorized_additional_CPU_builds": 1,
+  "authorized_incremental_object_compilations": [
+    "CMakeFiles/dtc_l1_progressive_wakeup_test.dir/tests/dtc_l1_progressive_wakeup_test.cc.o",
+    "src/cuda-sim/CMakeFiles/ptxsim.dir/cuda-sim.cc.o",
+    "CMakeFiles/dtc_l1_progressive_ldst_test.dir/tests/dtc_l1_progressive_ldst_test.cc.o"
+  ],
+  "dependency_refresh": "CMake ptxsim depends on gen_build_string: unchanged cuda-sim.cc rebuilt for new version string, libptxsim/libcudart relinked. No production mechanism source changed.",
+  "postbuild_configure": "Generated supported one-channel linear CPU config; no object compilation/link/build. CUDA metadata/preprocessor/version probes executed, explicitly recorded.",
+  "postbuild_configure_compiler_metadata_probes": [
+    "3792249 execve(\"/usr/local/cuda-11.8/bin/nvcc\", [\"/usr/local/cuda-11.8/bin/nvcc\", \"-v\", \"__cmake_determine_cuda\"], 0x7fff8b73ac08 /* 68 vars */) = 0",
+    "3792250 execve(\"/usr/bin/gcc\", [\"gcc\", \"-E\", \"/tmp/tmpxft_0039dd79_00000000-2.\"...], 0x7fffefdc55d8 /* 68 vars */) = 0",
+    "3792251 execve(\"/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus\", [\"/usr/lib/gcc/x86_64-linux-gnu/11\"..., \"-E\", \"-quiet\", \"-imultiarch\", \"x86_64-linux-gnu\", \"-D_GNU_SOURCE\", \"/tmp/tmpxft_0039dd79_00000000-2.\"..., \"-mtune=generic\", \"-march=x86-64\", \"-fasynchronous-unwind-tables\", \"-fstack-protector-strong\", \"-Wformat\", \"-Wformat-security\", \"-fstack-clash-protection\", \"-fcf-protection\", \"-dumpbase\", \"tmpxft_0039dd79_00000000-2.cpp\", \"-dumpbase-ext\", \".cpp\"], 0x190e520 /* 72 vars */) = 0",
+    "3792252 execve(\"/usr/local/cuda-11.8/bin/nvcc\", [\"/usr/local/cuda-11.8/bin/nvcc\", \"--version\"], 0x7fff8b73ac08 /* 68 vars */) = 0"
+  ],
+  "initial_attempt_after_authorized_build": "8/9 because inherited IPOLY mapping invalid for fixture1 channel; failure retained; final CTest uses generated linear config and is9/9",
+  "actual_metrics": {
+    "sm": 0,
+    "broadcasts": 1,
+    "first_notify_cycle_sum": 11,
+    "last_notify_cycle_sum": 13,
+    "span_sum": 2,
+    "own_dep0_linewide_blocked_entry_cycles": 12,
+    "notified_frontend_ready_entries": 10,
+    "notified_frontend_ready_entry_cycles": 122,
+    "late_merges": 1
+  },
+  "actual_ldst": {
+    "sm": 0,
+    "admitted_notified_collectable": 10,
+    "admitted_returns_to_retire_sum": 120,
+    "retired": 10
+  },
+  "actual_service": {
+    "samples": 32,
+    "pib_integral": 230,
+    "physical_integral": 32,
+    "collected_sectors": 10,
+    "fully_ready_to_complete_sum": 112,
+    "retired": 10,
+    "ready_to_collect_sum": 101,
+    "collection_cycles": 10,
+    "wb_wait": 1,
+    "map_loss_to_free_sum": 21,
+    "map_loss_to_free_count": 1
+  },
+  "actual_invalidation": {
+    "sm": 0,
+    "requests": 1,
+    "idle": 1,
+    "membar": 0,
+    "config": 0,
+    "unspecified": 0,
+    "ordinary_commits": 1,
+    "changed": 1,
+    "retained_at_event": 1,
+    "reclaimed_at_event": 0,
+    "no_op_requests": 0,
+    "first_request_cycle": 11,
+    "last_request_cycle": 11,
+    "first_ordinary_commit_cycle": 14,
+    "last_ordinary_commit_cycle": 14,
+    "pending_first_request": 0,
+    "pending_last_request": 0,
+    "event_records_omitted": 2
+  },
+  "actual_host_layout": {
+    "physical_line": 96,
+    "entry": 64,
+    "config": 56,
+    "service": 48,
+    "frontend": 816,
+    "ldst": 3392
+  },
+  "metric_scope": "Three identical snapshots: twice production aggregate printer then actual gpu_print_stat. All10 cacheable consumers actually retired in CPU fixture; common boundary120 vs ready boundary112 are different intervals, not performance.",
+  "resources": {
+    "derived_default_OO_incremental_persistent_host_bytes_per_SM": 33112,
+    "excludes": "allocator/list overhead and temporary assertion maps; no payload capacity increase"
+  },
+  "artifacts": {
+    "build-pass-3-authorized-cpu-only.log": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build-pass-3-authorized-cpu-only.log",
+      "sha256": "1c756d768caf697a6ab3351d3876d9b52687826ebf6649e40d38083d5a2ef91f",
+      "bytes": 1036
+    },
+    "ctest-authorized-final.log": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/ctest-authorized-final.log",
+      "sha256": "afbf6463188b3082d3f5cd2b68adacae6d36a8c7cf7c3fbeceb9ebf3bec7b380",
+      "bytes": 14608
+    },
+    "ctest-authorized-qualified.log": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/ctest-authorized-qualified.log",
+      "sha256": "2b105b7cc855251c55561485f51c8f146e0b259f3e684898a1e5515f5f1340f7",
+      "bytes": 37764
+    },
+    "ldst-authorized-linear.log": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/ldst-authorized-linear.log",
+      "sha256": "3bd7b199cd46ff0abdd7a84dedc0503202baed8be25effe061bc75bc5a064eb8",
+      "bytes": 23764
+    },
+    "configure-only-after-mapping.log": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/configure-only-after-mapping.log",
+      "sha256": "48c5a782b2f0b4fa0dd0d84c0b547e20b9434231e81f0d5c5a424a773ae6ce15",
+      "bytes": 1426
+    },
+    "configure-only-after-mapping.exec.log": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/configure-only-after-mapping.exec.log",
+      "sha256": "b693f84cd1875aea656aac92c5700ea5353051b6c814d9abf7dfb690d76cd305",
+      "bytes": 71213
+    },
+    "build/dtc_l1_ad_cpu.config": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_ad_cpu.config",
+      "sha256": "791f76bf66262b60590446f97bc5a70e78e0a8b05606a1434275799bb1bc2db3",
+      "bytes": 9449
+    },
+    "cpu-component-linear.config": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/cpu-component-linear.config",
+      "sha256": "3fd29faabc054a7aa525627cd3dce5be98dfd147fed57baf66ead76ab460693a",
+      "bytes": 9470
+    }
+  },
+  "binaries": {
+    "libcudart.so": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/libcudart.so",
+      "sha256": "17632c312e563c97aa3965ff27fa346d5e1954bc0449a6c2d1836e5ba205e302",
+      "bytes": 4999816
+    },
+    "dtc_l1_progressive_wakeup_test": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_progressive_wakeup_test",
+      "sha256": "814538b0ed3985a354095e50f5775502f1201f8c2d2a397441937bad7fde5645",
+      "bytes": 76512
+    },
+    "dtc_l1_progressive_ldst_test": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_progressive_ldst_test",
+      "sha256": "9b162d5e65531a2e02bd05a4e970655d4695aa6bb62948156374d9a258f1d7fc",
+      "bytes": 130520
+    },
+    "dtc_l1_normal_export_probe": {
+      "path": "/workspace/dtc-lane-ad-progressive-wakeup-174-v1/build/dtc_l1_normal_export_probe",
+      "sha256": "d86e65a1819365ef3ed4e9cbaec59b47d31f46c2d211b64143074879fc590baf",
+      "bytes": 99472
+    }
+  },
+  "full_simulators_started": 0,
+  "GPU_cycle_calls": 0,
+  "simulation_threads_started": 0,
+  "native_benchmarks": 0,
+  "scope_limit": "Real production header and actual LDST component methods with prepared metadata/PIB/sector/RF state. Full SASS issue/coalescer/interconnect/hardware workload and payload/value ISA correctness not established; no performance claim."
+}

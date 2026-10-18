@@ -1,5 +1,7 @@
 # Supplemental CPU evidence without compilation
 
+Historical stage: this document records the earlier build-blocked snapshot. The later explicitly authorized CPU build and final9/9 qualification supersede its STOP/remaining-gap status; see LATEST_REPORT.md and FINAL_CPU_QUALIFICATION.json.
+
 The continuation re-read Core `731be8548ad0fcc167ebfc49d5f1867f22034b4c`, Framework `6367c045e9d274f66ff949a8f8371e283dce81d6`, their read-back refs and clean worktrees. The original two build attempts are exhausted. No permission for another build has arrived. **ON acceptance remains STOP.** The two failed CTests are not relabelled PASS.
 
 The existing library `4973fa934daa8dee09c72f8fe29aee123c6c98192205445147c3cb7363ee663e` exports the production `dtc_l1::oo_frontend(config)` constructor. Python ctypes called that symbol in isolated CPU children with the explicit verified x86-64 LP64 config ABI (56 bytes, finite/progressive/mode/ref_bits offsets0/1/4/52), aligned opaque object storage, and actual mapped-library path/SHA read-back. It did not inspect/edit internal C++ state. Supported cases returned. Unsupported cases produced exactly `DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP` and SIGABRT, rather than accepting arbitrary crashes as success. The child restores default SIGABRT handling so a library crash reporter cannot substitute exit1; production assertions are intact.

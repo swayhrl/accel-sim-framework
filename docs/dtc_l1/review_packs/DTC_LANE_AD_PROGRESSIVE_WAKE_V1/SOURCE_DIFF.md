@@ -1,6 +1,6 @@
 # AD source difference / allowlist
 
-Parent Core: `e32afdcf44be3374ff36d22568ed01a075459b6f` (fixed X2, independently fetched/read back). Framework review parent: `631eb6418f6e7f1f548afd33351cbc0d98d27145`. Authoritative final IDs and artifact hashes are in publication/identity receipts. Source trees are isolated AD worktrees on huangrulin-174, uid0.
+Parent Core: `e32afdcf44be3374ff36d22568ed01a075459b6f` (fixed X2, independently fetched/read back). Framework review parent: `631eb6418f6e7f1f548afd33351cbc0d98d27145`. Final Core is `2af61a3efae8ab7994a81c81feff8e9e717dab53`; authoritative artifact identity is FINAL_CPU_QUALIFICATION.json and final publication/read-back receipts. Source trees are isolated AD worktrees on huangrulin-174, uid0.
 
 Allowed changes only:
 
@@ -8,7 +8,7 @@ Allowed changes only:
 - `src/gpgpu-sim/gpu-sim.cc`: register exactly `-gpgpu_dtc_l1_progressive_wakeup`, default0.
 - `src/gpgpu-sim/shader.h`: config field, observer delegation declarations, two LDST counters.
 - `src/gpgpu-sim/shader.cc`: constructor guards and OO-only config transfer; common-boundary/ready observation and retired sum; normal-statistics delegation guarded ON.
-- `CMakeLists.txt`, three new CPU test sources: directed header/LDST tests and fixed-X2 differential targets. The baseline header is read from the pinned Git object into the AD build directory, never written into another source tree.
+- `CMakeLists.txt`, three new CPU test sources: directed header/LDST tests and fixed-X2 differential targets; build-local CPU config generation overrides inherited IPOLY with supported linear indexing for the explicitly1-channel fixture, without editing the production config. The baseline header is read from the pinned Git object into the AD build directory, never written into another source tree.
 
 No edits to response acceptance, lower candidate/create/inject routing, memory-cycle admission, LDST ready selection, LDST WB-retire/ledger closure, source invalidate, ordinary flush or K1 observer logic. `SOURCE_ALLOWLIST.json` verifies unchanged critical function bodies and exact changed paths. Full review delta is `SOURCE_DIFF.patch`.
 
@@ -17,3 +17,5 @@ Unchanged simulated capacities and ports: 128B logical line / four legal 32B res
 OFF preserves old state transitions, public counter meanings and output lines. New host fields, guards and type layout exist even OFF; this is source/ABI growth, not a claim of byte-identical objects or host instruction execution. Deterministic header traces across ordinary paper Base/IO/OO and modern, plus real normal-print boundaries with K1 off/on, were compared against fixed X2. This is targeted equivalence evidence, not exhaustive workload equivalence. See OFF_DIFFERENTIAL.json.
 
 Resource cost: bounded added bookkeeping, host vector prefix moves (only ON), an ON per-service-edge observer over live entries, and ON shadow waiter assertions. These CPU operations do not consume modeled GPU cycles/ports; their host cost is not a measured hardware/performance result. Exact/derived host layout costs are recorded with the test results. No new payload storage, coherence protocol, refill source, L1 MSHR, simulator campaign or workload-specific branch was added.
+
+Final qualification: CTest9/9 and current-library OFF/ON checks pass after the explicitly approved third CPU build. The CMake-only runtime-input fix was configured/tested without another object build. Built C++ source731be854 equals final2af61a3e in src/tests; the library embeds731be854. Its build-string dependency refresh compiled unchanged cuda-sim.cc and relinked existing libraries; no production mechanism source changed. See FINAL_CPU_QUALIFICATION.json for all compile objects, configure metadata/preprocessor probes and raw hashes.
