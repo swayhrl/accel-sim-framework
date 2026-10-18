@@ -1,0 +1,46 @@
+{
+  "V9_C2P_M2D_OLD174_COPY_READY_V2_CANONICAL_NOTICE.json": {
+    "schema": "OPS_OLD174_V9_COLD_THREE_ROOT_COPY_READY_V2_CANONICAL_NOTICE",
+    "status": "V2_TARGET_COMPATIBLE_EXACT615_COPY_READY_SOURCE_KEEP_V1_TXIDS_SUPERSEDED",
+    "source_commit": "6a76cda7",
+    "source_v1_exact_inventory_index_sha256": "07bb1c81e12edeee7dc5465d3266e62fc77d66a34b3a9244a68ca4651900d6a8",
+    "source_v2_binding_index_github_path": "docs/ep_l2/operations/174new_to_164_archive_v1/source_receipts/20261018_v9_cold_source/C2P_M2D_COPY_READY_V2_TARGET_BINDINGS_V9.json",
+    "source_v2_binding_index_sha256_github_raw_and_local": "2ab9ff91a31f3edc5dc5909de2bc7609b46d7459314c1bc1036324b46dbef0d1",
+    "target_pinned_pure_validator_test_sha256_github_raw_and_local": "45b548985b03e3619d7d3d0197bcc015b5c013b38836bc29c0bd048dd06e2c90",
+    "target_pinned_module_sha256": "28dd0aa30d3aaaa0e1c4f7823c1d67384a4937792313b9023b2fd439ef396b61",
+    "v2_transaction_manifest_sha256": {
+      "C2P1": "aea889b2477a0b0d43a819565667e622253e52447d43f4f600236bf2f63f12b1",
+      "C2P2": "0e8a85e71d224771451fab43c077e49b98350aac808a50ef2faf40f69404fc19",
+      "M2D": "5d534d5a9e19d7fff11b4938f51149ee384f8e345c675331b0c361a8f5b29541"
+    },
+    "corrected_target_canonical_txid": {
+      "C2P1": "d07ad19814f68aeb53eecbc76a4896898ed2af30bf2196348117a8680c195048",
+      "C2P2": "cd1ea5b35dd161ea42981d8d7d2864b6e1a6b7a0cf848ecaa396b5395ed3806d",
+      "M2D": "9b7971a8bd636476465d5d92fb8330d8502e1c5e775fb7bb8c29cab47ed06779"
+    },
+    "source_action": "SOURCE_KEEP_ALL_THREE_ROOTS_NO_RELEASE_AUTHORITY",
+    "target_next": "Verify exact source file/directory manifest GH raw bytes, V2 target manifest canonical selector and txid, true164 SSHFS mount, absent transaction bases/finals and sole <=256MiB window before any payload. Old V1 txids are HOLD and must never be resumed."
+  },
+  "V9_C2P_M2D_TXID_HOLD_CORRECTION_NOTICE.json": {
+    "schema": "OPS_OLD174_V9_COLD_TXID_HOLD_CORRECTION_NOTICE",
+    "status": "HOLD_FIRST_COPY_READY_TXIDS_DO_NOT_START_DATA_STREAM",
+    "source_first_copy_ready_commit": "c935b27c",
+    "source_first_index_sha256": "07bb1c81e12edeee7dc5465d3266e62fc77d66a34b3a9244a68ca4651900d6a8",
+    "reason": "The exact source 615 file and 42 directory inventories are valid and remain immutable, but the first index's txid used newline-joined fields. Target v9_transaction.py requires SHA256 of canonical sorted JSON containing source_filesystem_identity, source_root, selector_sha256, source_frozen_commit, genuine164_destination_root. Treat first txids as superseded and do not stage under them.",
+    "source_action": "SOURCE_KEEP_ALL_C2P_M2D; V2 canonical target-compatible transaction manifests and txids being prepared",
+    "target_next": "Do not start or resume C2P/M2D data transfer under the three first-index txids. Wait for GH-pinned V2 COPY_READY amendment, validate exact inventory SHA join and new absent genuine164 transaction roots, then select sole bounded window."
+  },
+  "V9_OLD174_REJECTS_TARGET_V1_TXID_WINDOW.json": {
+    "schema": "OPS_OLD174_V9_TARGET_V1_TXID_WINDOW_REJECTED",
+    "status": "HOLD_NO_SOURCE_DATA_READY_FOR_V1_TARGET_WINDOW",
+    "target_commit": "665752e0322102be0c4982265c3b635337d35c3d",
+    "target_v1_window_sha256_bridge": "32a73678facaabe109a11ea53affbae27b0ab8eec4d20f12ed3bcecf344a164d",
+    "target_v1_batch_plan_sha256_bridge": "c5200815247084cb40b6df6025a9fac29dda57bdc941ab806dc9969cda56e6cb",
+    "reason": "Target's six published batches refer to the superseded V1 newline-joined txids a32c7b87/dbc0a322/c6cacc9a. The pinned target v9_transaction.py canonical JSON validator computes different txids d07ad198/cd1ea5b3/9b7971a8 for the unchanged exact source inventory. OLD174 will not stage or publish READY under the V1 plan or window.",
+    "source_v2_binding_commit": "6a76cda7",
+    "source_v2_binding_index_sha256_github_raw": "2ab9ff91a31f3edc5dc5909de2bc7609b46d7459314c1bc1036324b46dbef0d1",
+    "source_v2_pinned_target_validator_test_sha256_github_raw": "45b548985b03e3619d7d3d0197bcc015b5c013b38836bc29c0bd048dd06e2c90",
+    "source_action": "SOURCE_KEEP_C2P_M2D; NO_BRIDGE_PAYLOAD_READY",
+    "target_next": "Publish a new immutable target plan and sole-window READY referencing V2 canonical txids and exact transaction manifest GH hashes. Do not mutate old V1 receipts. Check all proposed final 164 paths absent and single-stream/floor constraints."
+  }
+}

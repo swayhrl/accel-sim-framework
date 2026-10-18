@@ -1,0 +1,35 @@
+{
+  "cases": [
+    {
+      "altered_field": "exact_group_manifest_sha256",
+      "case": "altered_group_manifest",
+      "expected_failure": "target/user release gate incomplete",
+      "status": "FAIL_CLOSED_AS_EXPECTED"
+    },
+    {
+      "altered_field": "user_approval_sha256",
+      "case": "altered_user_approval",
+      "expected_failure": "target/user release gate incomplete",
+      "status": "FAIL_CLOSED_AS_EXPECTED"
+    },
+    {
+      "altered_field": "target_receipt_sha256",
+      "case": "altered_bridge_receipt_sha",
+      "expected_failure": "target bridge exact selector receipt SHA mismatch",
+      "status": "FAIL_CLOSED_AS_EXPECTED"
+    },
+    {
+      "altered_field": "native_sample_proof_sha256",
+      "case": "altered_native_proof_sha",
+      "expected_failure": "old174 native/recovery procedure proof SHA mismatch",
+      "status": "FAIL_CLOSED_AS_EXPECTED"
+    }
+  ],
+  "executor_sha256": "f2e81a0e275f635c89c165c6b518223a2198e9471fdbc8bf96b0608a0b2642c9",
+  "gate_sha256": "0cbc79297db6a4abe7d406842c9f8d90bf5a43a24d1ed6c367aa6b3f5dee1b1f",
+  "note": "Every invocation used --check-gate only with a synthetic temporary mutated gate. No --release was issued; temporary fixtures were removed automatically.",
+  "observed_at_utc": "2026-10-18T07:15:48.653341+00:00",
+  "schema": "OPS_OLD174_V9_R2_EXISTING_EXECUTOR_NEGATIVE_GATE_TESTS",
+  "source_files_released": 0,
+  "status": "FOUR_READ_ONLY_CHECK_GATE_NEGATIVES_FAIL_CLOSED"
+}

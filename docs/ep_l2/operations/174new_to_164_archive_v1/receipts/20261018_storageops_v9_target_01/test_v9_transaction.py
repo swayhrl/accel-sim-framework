@@ -91,6 +91,10 @@ class ProtocolTests(unittest.TestCase):
         m = copy.deepcopy(self.manifest); m['files'][0]['sha256'] = 'b'*64
         with self.assertRaises(v.Hold): self.transaction(m)
 
+    def test_corrupt_commit_marker(self):
+        tx=self.transaction();self.accept(tx);final=tx.finalize();(final/'COMMIT.json').write_bytes(b'{}')
+        with self.assertRaises(v.Hold):self.transaction()
+
     def test_source_inode_drift(self):
         identity = v.identity(self.file.stat()); content = self.file.read_bytes(); self.file.rename(self.file.with_suffix('.old')); self.file.write_bytes(content)
         with self.assertRaises(v.Hold): v.hash_file(self.file, identity)
@@ -140,6 +144,10 @@ class ProtocolTests(unittest.TestCase):
     def test_target_cannot_authorize_source_release(self):
         tx=self.transaction()
         with self.assertRaises(v.Hold):tx.transition('RELEASE_ELIGIBLE',{})
+
+    def test_idempotent_prior_state_reference(self):
+        tx=self.transaction();first=tx.transition('DISCOVERED',{});tx.transition('SOURCE_FROZEN',{})
+        self.assertEqual(tx.transition('DISCOVERED',{}),first)
 
     def test_exclusive_create_fallback_and_resume(self):
         tx=self.transaction();self.accept(tx)

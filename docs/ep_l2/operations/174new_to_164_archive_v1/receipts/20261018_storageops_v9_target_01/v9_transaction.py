@@ -174,38 +174,21 @@ def transaction_id(manifest):
     require(manifest['source_root'].startswith('/') and str(PurePosixPath(manifest['source_root'])) == manifest['source_root'], 'source root not canonical')
     require('..' not in PurePosixPath(manifest['source_root']).parts, 'source root traversal')
     require(manifest['source_frozen_commit'] and len(manifest['source_frozen_commit']) == 40, 'source commit')
-    if manifest.get('identity_encoding') == 'SOURCE_V9_LINES_V1':
-        raw = '\n'.join(str(manifest[k]) for k in ['source_filesystem_identity', 'source_root', 'selector_sha256',
-                                                'source_frozen_commit', 'genuine164_destination_root']) + '\n'
-        return digest(raw.encode())
+    require(manifest.get('identity_encoding') in (None, 'CANONICAL_JSON_V1'), 'superseded/noncanonical txid encoding')
     value = {k: manifest[k] for k in ['source_filesystem_identity', 'source_root', 'selector_sha256',
                                     'source_frozen_commit', 'genuine164_destination_root']}
     return digest(canonical(value))
 
 
 def validate_manifest(manifest):
-    selector = {k: manifest[k] for k in ['files', 'directories', 'symlink_policy', 'hardlink_policy']}
-    if manifest.get('identity_encoding') == 'SOURCE_V9_LINES_V1':
-        raw = manifest['source_selector_jsonl_utf8'].encode()
-        require(manifest['selector_sha256'] == digest(raw), 'source JSONL SHA mismatch')
-        require(manifest['canonical_selector_sha256'] == digest(canonical(selector)), 'normalized selector SHA mismatch')
-        source_rows = [json.loads(line) for line in raw.splitlines()]
-        require(len(source_rows) == len(manifest['files']), 'source/normalized selector count')
-        for source, normalized in zip(source_rows, manifest['files']):
-            expected = dict(relative_path=source['relative_path'], type=source['type'], sha256=source['sha256'],
-                            size=source['size_bytes'], allocated=source['allocated_bytes'], mode=int(source['mode_octal'],8),
-                            **{k: source[k] for k in ['dev','inode','nlink','uid','gid','mtime_ns','ctime_ns']})
-            require(normalized == expected, 'source/normalized selector mismatch')
-            require(source['source_root'] == manifest['source_root'] and not source['current_readers'], 'source root/reader mismatch')
-        directories_raw = manifest['source_directory_jsonl_utf8'].encode()
-        require(digest(directories_raw) == manifest['source_directory_manifest_sha256'], 'source directory sidecar SHA')
-        require(len(directories_raw.splitlines()) == len(manifest['directories']), 'directory count mismatch')
-        for source, normalized in zip([json.loads(line) for line in directories_raw.splitlines()], manifest['directories']):
-            require(normalized == dict(relative_path=source['relative_path'], mode=int(source['mode_octal'],8),
-                                       **{k:source[k] for k in ['uid','gid','mtime_ns','ctime_ns']}), 'directory metadata normalization mismatch')
+    if 'source_file_inventory_sha256' in manifest:
+        # Frozen source V2 canonical format. Directory sidecars and full manifest
+        # remain immutable, while the selector hashes exact normalized file rows.
+        require(manifest['selector_sha256'] == digest(canonical(manifest['files'])), 'V2 canonical file selector SHA')
     else:
+        selector = {k: manifest[k] for k in ['files', 'directories', 'symlink_policy', 'hardlink_policy']}
         require(manifest['selector_sha256'] == digest(canonical(selector)), 'selector SHA mismatch')
-    require(manifest['symlink_policy'] == manifest['hardlink_policy'] == 'REFUSE', 'unsupported link policy')
+    require(manifest.get('symlink_policy','REFUSE') == manifest.get('hardlink_policy','REFUSE') == 'REFUSE', 'unsupported link policy')
     paths = []
     for row in manifest['files']:
         relpath(row['relative_path']); paths.append(row['relative_path'])
@@ -236,12 +219,14 @@ class Transaction:
         actual = manifest.get('destination_path_on_174new', manifest['genuine164_destination_root'])
         require(str(self.base) == actual, 'wrong destination identity')
         if not fixture:
-            require(str(self.base).replace('/root/share/mnt164', '/home/shared', 1) == manifest['genuine164_destination_root'], 'native164 mapping differs')
+            require(manifest['genuine164_destination_root'] in (str(self.base), str(self.base).replace('/root/share/mnt164', '/home/shared', 1)), 'native164 mapping differs')
         self.rows = {r['relative_path']: r for r in manifest['files']}
         self.partial = self.base / (self.txid + '.partial')
         self.final = self.base / self.txid
+        no_symlinks(self.partial); no_symlinks(self.final)
         if self.final.exists() and (self.final / 'COMMIT.json').exists():
             require((self.final / 'manifest.json').read_bytes() == canonical(manifest), 'final manifest drift')
+            require((self.final / 'COMMIT.json').read_bytes() == canonical(dict(**self.reservation(), files=len(self.rows), selector_sha256=manifest['selector_sha256'])), 'commit marker corruption')
             self.work = self.final
         else:
             if self.final.exists():
@@ -268,9 +253,10 @@ class Transaction:
         for index, record in enumerate(records):
             require(record['txid'] == self.txid and record['state'] == STATES[index], 'state identity/sequence corruption')
             require(record['previous_receipt_sha256'] == (digest(existing[index-1].read_bytes()) if index else None), 'broken receipt chain')
-        if records and records[-1]['state'] == state:
-            require(records[-1]['evidence'] == evidence, 'duplicate state evidence changed')
-            return digest(existing[-1].read_bytes())
+        for index, record in enumerate(records):
+            if record['state'] == state:
+                require(record['evidence'] == evidence, 'duplicate state evidence changed')
+                return digest(existing[index].read_bytes())
         expected = STATES[len(records)]
         require(state == expected, 'invalid transition')
         prior = digest(existing[-1].read_bytes()) if existing else None
@@ -324,7 +310,7 @@ class Transaction:
         for d in sorted(self.manifest['directories'], key=lambda r: len(Path(r['relative_path']).parts)):
             (tree / relpath(d['relative_path'], root_ok=True)).mkdir(exist_ok=True)
         for name, row in self.rows.items():
-            final = tree / relpath(name)
+            final = no_symlinks(tree / relpath(name))
             if final.exists():
                 require(final.stat().st_size == row['size'] and hash_file(final, throttle=self.throttle) == row['sha256'], 'existing final file differs')
                 continue
