@@ -214,6 +214,17 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(result['immediate_batch_gain_bytes'],50)
         self.assertEqual(result['long_window_endpoint_change_bytes'],30)
 
+    def test_durable_hold_has_previous_sha_and_duplicate_reuses_record(self):
+        from v9_hold_receipt import guard, record_hold
+        tx=self.transaction();previous=tx.transition('DISCOVERED',{})
+        for _ in range(2):
+            with self.assertRaises(v.Hold):
+                with guard(tx,'ARCHIVE_STAGED'):
+                    tx.accept_chunk('tiny.bin',0,self.file,v.hash_file(self.file),txid='b'*64)
+        paths=list((tx.work/'holds').glob('*.json'));self.assertEqual(len(paths),1)
+        receipt=json.loads(paths[0].read_bytes());self.assertEqual(receipt['previous_receipt_sha256'],previous)
+        self.assertEqual(receipt['status'],'HOLD');self.assertFalse(receipt['source_release_authorized'])
+
 
 def run():
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(ProtocolTests)
