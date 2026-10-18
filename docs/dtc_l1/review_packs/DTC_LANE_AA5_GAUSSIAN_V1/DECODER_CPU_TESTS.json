@@ -1,0 +1,89 @@
+{
+  "status": "PASS_SYNTHETIC_DECODER_ONLY_NOT_NORMAL_TERMINAL_EXPORT_GATE",
+  "cases": [
+    {
+      "case": "missing_SM",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "SM_COUNT_MISSING_TRUNCATED_OR_DUPLICATE"
+    },
+    {
+      "case": "duplicate_SM",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "SM_COUNT_MISSING_TRUNCATED_OR_DUPLICATE"
+    },
+    {
+      "case": "same_length_duplicate_SM",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "SM_ID_DUPLICATE_OR_OUT_OF_RANGE"
+    },
+    {
+      "case": "truncated_field",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "SUMMARY_FIELDS_MISSING_OR_UNKNOWN"
+    },
+    {
+      "case": "wrong_cycle_boundary",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "PUBLIC_CYCLE_WRONG_BOUNDARY"
+    },
+    {
+      "case": "missing_normal_frame",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "NORMAL_FRAME_MISSING_DUPLICATE_OR_TRUNCATED"
+    },
+    {
+      "case": "truncated_normal_frame",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "NORMAL_FRAME_MISSING_DUPLICATE_OR_TRUNCATED"
+    },
+    {
+      "case": "wrong_frame_boundary",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "FRAME_POPULATION_CYCLE_OR_SENTINEL"
+    },
+    {
+      "case": "event_after_public_cycle",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "EVENT_TIMESTAMP_OUTSIDE_SNAPSHOT"
+    },
+    {
+      "case": "missing_no_event_sentinel",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "NO_EVENT_SENTINEL"
+    },
+    {
+      "case": "mapping_balance_wrong",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "MAPPING_BALANCE"
+    },
+    {
+      "case": "origin_balance_wrong",
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "reason": "ORIGIN_BALANCE"
+    },
+    {
+      "case": "truncated_last_snapshot_not_silently_use_previous",
+      "expected": "REJECT",
+      "observed": "REJECT"
+    }
+  ],
+  "sentinel_case": "PASS",
+  "last_snapshot_case": "PASS_FINAL4_NOT_SUM8",
+  "K0_missing": "UNAVAILABLE_NOT_ZERO",
+  "real_production_objects_executed": false,
+  "X2_qualified": false,
+  "simulator_starts": 0,
+  "decoder_sha256": "36a00f608e2ad15970737262e605b684609faa84d1c667f6d9ba9a509f50b84f"
+}

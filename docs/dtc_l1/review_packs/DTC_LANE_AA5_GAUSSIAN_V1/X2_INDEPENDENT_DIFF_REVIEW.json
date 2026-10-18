@@ -1,0 +1,47 @@
+{
+  "status": "PASS_ONLY_PRINT_REACHABILITY_AND_TESTS",
+  "reviewer_lane": "AA5",
+  "Core_old": "c0a5e2c31e407c57e3a4af3ce529c921e8059a05",
+  "Core_new": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+  "changed_paths": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/shader.cc",
+    "src/gpgpu-sim/shader.h",
+    "tests/dtc_l1_normal_export_probe.cc"
+  ],
+  "production_and_build_review": [
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "added_lines": 30,
+      "removed_existing_lines": 0,
+      "base_recovered_byte_identical": true,
+      "base_sha256": "8c9e02b57876c67324c2ec10114022e1b5cd16284ea327b8f222b46c3ff27d45",
+      "new_sha256": "5e0aef0a105a2f071b752d1288ed100eba06216029e847dc27fc3b19cf113aa1",
+      "review": "shader: const read-only delegations and K1 conditional complete normal-boundary frame; header: three nonvirtual const declarations; CMake: test target only"
+    },
+    {
+      "path": "src/gpgpu-sim/shader.h",
+      "added_lines": 3,
+      "removed_existing_lines": 0,
+      "base_recovered_byte_identical": true,
+      "base_sha256": "c3a47c09ad55bea2e169cc1f1989866ce3d8d2f86c3b277d62184f1a9983c447",
+      "new_sha256": "16d8f610b95da7c6280336f19c06bb4f0f75fcb30fc98ee5e61753d6caacd708",
+      "review": "shader: const read-only delegations and K1 conditional complete normal-boundary frame; header: three nonvirtual const declarations; CMake: test target only"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "added_lines": 6,
+      "removed_existing_lines": 0,
+      "base_recovered_byte_identical": true,
+      "base_sha256": "cee3ea1480c8f40dbed7676ea95700484a4f4593a36cf48e40c01f9d5d8d5ab6",
+      "new_sha256": "c4de59926fd221a00c470cb1392711aea119b86da85a57d1cfa4923033e4a5da",
+      "review": "shader: const read-only delegations and K1 conditional complete normal-boundary frame; header: three nonvirtual const declarations; CMake: test target only"
+    }
+  ],
+  "test_file_sha256": "7edf94d8b8e9407bbc2d979c0bca7f60227aa32024f589277d3d67324a7d2c33",
+  "test_review": "CPU fixture only, actual GPU stats entry, real production objects, no kernels/trace/GPU cycle or private observer print; read-only state assertions, no execution admission conferred",
+  "all_other_tracked_paths_identical": true,
+  "observer_source_byte_identical": true,
+  "no_counter_or_event_predicate_service_timing_ownership_change": true,
+  "Y2_structural_scope": "UNCHANGED_BOUNDED_OO_SCOPE_APPLIES_NO_NEW_ISA_VALUE_COHERENCE_PPA_CLAIM"
+}
