@@ -233,3 +233,5 @@ LD/ST fixture, model or simulator mode. Existing controller source and cleanup
 are unchanged. A missed short COV observation stays INCOMPLETE, with no repeat.
 This finite source registration does not itself qualify the observer or dispatcher.
 Guard/shared CPU tests remain closed pending their separate later fresh release.
+
+Actual CPU role manager attempt4: SEM build, ROB configure/build, COV same-process ACK/four tests each passed fresh5GiB paired R2, live observation and exit0/reap. All3 roles observed separately; changed release binding rejected on the actual live SEM controller. No joint3-role or dual-simulator qualification; simulation starts0. Exact receipts: execution/cpu_real_roles_v2_actual_intake_attempt4. AG6 adapter interfaces now registered for a finite CPU-only check; no AG6 fork released.
