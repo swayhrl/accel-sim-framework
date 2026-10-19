@@ -18,7 +18,9 @@ EXPECTED_CORE = '1fcf5113c08a27b64ccca872c4a8fba4c12c1ece'
 MAX_BYTES = 512 * 1024**2
 MAX_SINGLE_FILE = 128 * 1024**2
 MAX_LOG_BYTES = 16 * 1024**2
-FREE_FLOOR = 2 * 1024**3
+FREE_FLOOR = 5 * 1024**3
+# Actual OUTPUT mount must stay strictly above5GiB. Admission also budgets the
+# existing512MiB output ceiling and128MiB single-file reserve; no10GiB floor.
 START_FLOOR = FREE_FLOOR + MAX_BYTES + MAX_SINGLE_FILE
 # No inherited PYTHON*, LD_*, CMAKE*, MAKEFLAGS, compiler or Git environment.
 CLEAN_ENV = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C',
@@ -157,8 +159,8 @@ def main():
                 current = output_bytes(); peak = max(peak, current)
                 if current > MAX_BYTES:
                     reason = 'BLOCKED_BUILD_RESOURCE_OUTPUT_512MiB'
-                elif free_bytes() < FREE_FLOOR + MAX_SINGLE_FILE:
-                    reason = 'BLOCKED_BUILD_RESOURCE_FREE_RESERVE'
+                elif free_bytes() <= FREE_FLOOR:
+                    reason = 'BLOCKED_BUILD_RESOURCE_FREE_NOT_ABOVE_5GiB'
                 elif log.stat().st_size > MAX_LOG_BYTES:
                     reason = 'BLOCKED_BUILD_RESOURCE_LOG_16MiB'
                 elif time.monotonic() - started > budget:
@@ -196,7 +198,7 @@ def main():
                 reason = 'CLEANUP_UNRESOLVED_GROUP_INSTANCES'
     final_bytes = output_bytes(); peak = max(peak, final_bytes)
     if reason is None and (final_bytes > MAX_BYTES or
-            free_bytes() < FREE_FLOOR + MAX_SINGLE_FILE or
+            free_bytes() <= FREE_FLOOR or
             log.stat().st_size > MAX_LOG_BYTES):
         reason = 'BLOCKED_BUILD_RESOURCE_FINAL_BOUNDARY'
     receipt = dict(phase=phase, argv=COMMANDS[phase], env=CLEAN_ENV, core=actual,
@@ -207,6 +209,8 @@ def main():
         exit=code, reason=reason, elapsed=time.monotonic()-started,
         peak_sampled_output_bytes=peak, final_output_bytes=final_bytes,
         final_free_bytes=free_bytes(), samples_not_filesystem_quota=True,
+        output_disk_hard_floor_bytes=FREE_FLOOR, output_disk_start_reserve_bytes=START_FLOOR,
+        output_disk_rule='ACTUAL_OUTPUT_MOUNT_FREE_STRICTLY_GREATER_THAN_5GiB',
         simulator_starts=0, tests_started=0)
     (OUTPUT/(phase+'.receipt.json')).write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(receipt))
