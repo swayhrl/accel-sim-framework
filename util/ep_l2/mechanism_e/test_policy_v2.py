@@ -197,6 +197,19 @@ class V2Tests(unittest.TestCase):
         row['V']=1
         with self.assertRaisesRegex(ValueError,'matrix mode mismatch'):p.validate_matrix(matrix)
 
+    def test_d_v2_utc_registration_keeps_original_bytes(self):
+        path=Path(__file__).resolve().parents[3]/'docs/ep_l2/review_packs/MS20261019_E_FULL_SYSTEM_V2_r1/D_publication/input_registrations/sad.json'
+        original=path.read_bytes();row=self.coord.register_selection(path)
+        self.assertEqual(row['sha256'],hashlib.sha256(original).hexdigest())
+        self.assertNotIn('selection_unix',row['selection'])
+        self.assertEqual(row['selection']['selection_id'],'D_V2_sad')
+
+    def test_d_utc_requires_timezone(self):
+        selection=json.loads(Path(self.ledger['input_selections']['fixture']['path']).read_text())
+        del selection['selection_unix'];selection['selection_utc']='2026-10-19T20:54:24'
+        path=self.root/'utc-invalid.json';path.write_text(json.dumps(selection))
+        with self.assertRaisesRegex(ValueError,'timezone'):self.coord.register_selection(path)
+
     def test_new_total_cannot_reuse_tls_output_exception(self):
         self.adopt();self.ledger['additional_results_max_bytes']=16*c.GIB;self.save()
         with self.assertRaisesRegex(ValueError,'output budget'):self.coord.snapshot()

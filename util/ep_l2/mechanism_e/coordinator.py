@@ -6,6 +6,7 @@ its canonical state is the new field in the original central JSON.
 """
 from __future__ import annotations
 import argparse
+import datetime
 from contextlib import contextmanager
 import fcntl
 import hashlib
@@ -262,7 +263,12 @@ class Coordinator:
     def register_selection(self, selection_path):
         raw=Path(selection_path).read_bytes();selection=json.loads(raw)
         require(selection['campaign_id']==CAMPAIGN and selection['selected_by']=='D', 'D input preregistration required')
-        require(selection['selection_unix']<START_DEADLINE,'selection after start deadline')
+        selected_unix=selection.get('selection_unix')
+        if selected_unix is None:
+            stamp=datetime.datetime.fromisoformat(selection['selection_utc'].replace('Z','+00:00'))
+            require(stamp.tzinfo is not None,'D selection UTC needs explicit timezone')
+            selected_unix=stamp.timestamp()
+        require(selected_unix<START_DEADLINE,'selection after start deadline')
         require(bool(selection['rationale']) and bool(selection['full_input_identity']), 'complete input selection required')
         for field in ('trace_content_sha256','runtime_independent_input_source','expected_full_instructions','comparison_groups'):
             require(selection['full_input_identity'].get(field) is not None,'missing input field: '+field)
@@ -271,7 +277,7 @@ class Coordinator:
             row={'path':str(Path(selection_path).resolve()),'sha256':hashlib.sha256(raw).hexdigest(),'selection':selection}
             old=item['input_selections'].get(name)
             require(old is None or old==row,'input selection cannot be rebound')
-            require(not item['attempts'] or old is not None or selection['selection_unix']<=min(a['reserved_unix'] for a in item['attempts']),
+            require(not item['attempts'] or old is not None or selected_unix<=min(a['reserved_unix'] for a in item['attempts']),
                     'new selection must precede candidate results; explicit D scope review needed')
             item['input_selections'][name]=row
             return row
