@@ -1,35 +1,35 @@
-# B — r4 incremental candidate on A integrated CLEAN_ONLY
+# B — native execution blocked; full Goal not complete
 
-Exact current B Core/remote proof is in RECEIPT.json. A's new reply consumed
-clean-first89a75b24 into separate CLEAN_ONLY94996ec5, while primary R1 remains
-17e7e224. Both A candidates are uncompiled and unqualified. This is a new
-external dependency event and actual source adaptation, not a wait or runtime PASS.
+Source remains r4 Core126bde88baadf3a6628e5f5de620825b06a5215f, based on A
+CLEAN_ONLY94996ec5 with incremental dirty/fixed modules. Framework source
+checkpoint d7acb37a44eb008a2c1a929305946bdb5923a389 and all r1–r4 review packs
+are frozen. This control-only audit makes no source/config/test-plan change.
 
-B now adopts exact A949 directory UID binding/native-owner checks, cached WAD
-query and indexed install/promotion ticket interfaces, preserving its dirty
-pending client+UID+generation keys, pin-held role, both-role last-unpin state
-and fixed64 reciprocal quota/promotion. Public proposal is an incremental patch
-on94996ec5: five cache/config files and CMake opt-in finite native targets. No
-public working source/CMake was edited/applied. Exact-A949 separate-index patch
-check passes; actual six B public files remain84359d4-identical. All prior
-r1–r3 source commits, patches, plans and review packs are preserved.
+Authoritative registry read: campaign is registered, status
+DEPENDENCY_CHECKPOINT_CONTROL_PREPARATION_COMPLETE_NO_NATIVE_ADMISSION,
+actual starts0, no qualifications/accepted results, scheduler STOPPED. Its
+recorded process identity no longer matches a live process; no A/B mechanism
+compiler/simulator/build process is live. This is an execution impasse, not a
+verified live wait or a claim that a worker is running in the background.
 
-WB packet UID and row/incarnation, indexed accept/rollback and completion UID
-check remain A's protocol. One frontend CAM, one completion CAM, three indexed
-control views/update lanes and new UID/ticket metadata costs are explicit,
-not qualified PPA or free ports. The finite fixture verifies WB UID and advances
-one native cycle between completions. This changed stimulus is new source,
-not reuse of an old result. The21 B process inputs are still NOT_RUN; A/E must
-also retain affected55 default/diagnostic and11 clean gates on final ABI.
+Same legal native admission dependency persisted through the three consecutive
+r2/r3/r4 Goal turns, whose exact receipts are cited in the audit. Those turns
+made source progress; that did not supply an E lease/admission or A matching
+native build. Source adaptation is now delivered. Repeating static checks,
+creating equivalent source revisions or using an old incompatible binary cannot
+prove the requested real behavior. B cannot apply A public code, start another
+producer, lower resource floors, migrate scientific execution, delete other
+projects/results or launch complete apps to bypass this condition.
 
-The authoritative central registry DOES have this campaign: at bounded read it
-reported NO_NATIVE_ADMISSION, controller STOPPED, actual starts0 and no accepted
-results or qualifications. Missing HANDOFF_E is not missing central registry;
-DEPENDENCY_EVIDENCE.json corrects that earlier inference. No repeated disk survey,
-resource reservation or watcher was started. No B compiler/native/simulator/
-full application has run. Actual hits/returned-version match/DRAM delta UNKNOWN.
+Completion audit: reuse inventory and module/test/cost/adapter delivery are
+present; real clean/fixed functionality, dirty lifecycle execution, actual
+returned-version agreement and native DRAM read change remain unverified.
+All21 finite process inputs remain NOT_COMPILED_NOT_RUN, actual hits/DRAM delta
+UNKNOWN, binary/effective dump absent. Goal is NOT achieved. No new native test,
+compiler, simulator, lease, resource survey or permanent poller is created.
 
-Goal remains active and incomplete. Need A's review/integration and exact native
-objects, E fresh legal admission under unchanged resource floors, actual finite
-cases and independent acceptance. Clean-only and primary R1 may proceed without
-waiting for this dirty/fixed proposal. Read R4_A949_INTEGRATION.md and receipt.
+Execution state is BLOCKED pending external A/E dependency change. Resume on
+legal E finite-native admission plus exact A integrated source/objects, or an
+A review finding requiring a concrete B source correction. Full original scope
+is retained; clean qualification first, full dirty/fixed separately, E alone
+accepts/schedules any apps. See NATIVE_DEPENDENCY_AUDIT_r1 review pack/receipt.
