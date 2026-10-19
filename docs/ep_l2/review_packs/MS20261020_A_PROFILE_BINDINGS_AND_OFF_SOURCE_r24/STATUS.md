@@ -1,0 +1,11 @@
+# A r24: exact application binding and original OFF-gate source reply
+
+The official producer75707624/RELEASE and runtime67fd remain frozen. This revision adds no C++/native/application execution and no policy/registry modification. The read-only preparation binds32 fixed D condition IDs to7 exact registered input/commandlist/oracle reviews and the current runtime tuple:29 existing overlays,3 explicitly unsupported conditions. All input IDs and trace-content metadata match the original E registry; no full trace body was rehashed and no input or overlay bytes changed.
+
+Canonical labels are explicit: A STATIC_WB64 maps to D S_WB64; WV_T_ONLY/M_ONLY map to WV_T/M; completeF_FIXED_V64 stays unsupported. E's current6c69 policy already shares comparison familyV2_MAIN_workload across separate budget groups: all25 frozen D anchor edges are compatible, including18 cross-budget-group edges. A made no central pairing patch.
+
+The handoff highlights two existing E preparation obligations: per-input oracle paths/hashes belong to the exact qualified profile effective-options whitelist, and each same-input pair should use the same reviewed oracle auxiliary asset bundle to preserve E comparison invariants. The artifact does not invent a complete runtime_config digest or substitute native fixture configs for the original H0 hardware/base configuration. E alone computes that full ordered config/assets/environment identity, qualifies and admits each run.
+
+The requested original all-OFF reply verifies the exact historical raw/status hashes,73873cycles/56000000instructions, all7CSV hashes and all4 byte-identical canary configs. Source anchors identify default-false diagnostics/observer/RO/TVD, null RO context, ordinary MF ro_lower_packet=false, observer no-op and conditional runtime epoch hooks. This is supporting source evidence, not an exact-cycle PASS. Historical raw is only a regression oracle and is not reaccepted oldR0/R1 performance.
+
+At snapshot, E control E001_185ad0f6 is RUNNING and its actual PID/start/boot match=True. It uses the original contingency bucket: total starts1/40, T0 unchanged. The mode0legacy1152 gate is separate from formal S/F1168. E alone completes the real full control and resolves the held all-OFF science gate; A does not duplicate or restart it.
