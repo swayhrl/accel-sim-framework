@@ -1,7 +1,7 @@
 {
   "schema": "EPL2_MS_A_RELEASE_V1",
   "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
-  "UTC": "2026-10-19T13:16:08.568749+00:00",
+  "UTC": "2026-10-19T13:43:32.715174+00:00",
   "stage": "SOURCE_CANDIDATE_PUBLISHED_NOT_COMPILED_NOT_RUN",
   "control_commit": "d9263fa2431592b33e900d9b48c6f20029d8b544",
   "core_parent": "84359d4ba492acb639a2092fa271e9169038bf7d",
@@ -17,8 +17,8 @@
   "old_plus_new_limit_GiB": 20,
   "TVD_RO_status": "not integrated; legacy rejection preserved",
   "publication_identity": "enclosing Framework commit; Core interface exact commit above",
-  "release_id": "A_R1_LOCAL_DIAGNOSTICS_SOURCE_r2",
-  "core_source_commit": "44c940b748fceaec8f21fa2b443907d5afd2756b",
+  "release_id": "A_R1_LOCAL_DIAGNOSTICS_SOURCE_r3",
+  "core_source_commit": "17e7e224954e44a968a0447bcdfea91e3b2e5a96",
   "runtime_framework_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-runtime-v1",
   "runtime_framework_changed": false,
   "vendor_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-runtime-v1/gpu-simulator/extern/pybind11",
@@ -31,10 +31,11 @@
     "src/gpgpu-sim/gpu-sim.cc": "4cccdac9c7a8c3fa8443d9f267c74b8dc7baf9ffd520f1447691a5766d08a932",
     "src/gpgpu-sim/l2cache.cc": "83e819ed076efe2e8ea67c13001827cfe7f29c9fd4be0565b1d042dbb964a72c",
     "tests/ep_l2/MECHANISM_STUDY_A_R1_SCOPE.md": "e5295897c95ecd074c66a5c91e1ef1796b3fd921b7e15d6132e70731787f81fc",
+    "tests/ep_l2/micro_partition_fixture.h": "e2e6232c99b3b69686107a7278abefae897f251b03c29d4a9d0a2f0bd5cb2fd9",
     "tests/ep_l2/test_ms_local_service.cc": "f6780603d80b4e3a8eaf375238e2158dd1ede2c61850184bcf334f8512a8e83a",
     "tests/ep_l2/test_ms_mode_guard.cc": "fbb3f7cf7d91b77269fbb129ee89881062646d3bc9ca0b1457a5758a807bf028",
     "tests/ep_l2/test_ms_observer.cc": "19570f9cdf93955f02c0309c2c17a00ab866bedbbf7064da2bf774ab644e7ba2",
-    "tests/ep_l2/test_ms_partition.cc": "afd41754d8dc3047c9746ea0cd9878c0a2fc0410f167d6e9a967aa11544f8f1e"
+    "tests/ep_l2/test_ms_partition.cc": "729555b429dfcb0af6a65ed830303b68dbb5c94961cfd27f8fe44d31051ccfe6"
   },
   "new_native_tests_executed": 0,
   "prepared_native_processes": 55,
@@ -47,5 +48,5 @@
   "lease_compatibility_owner": "lane2 for this original Lane2 window; new A campaign and source identities; old Goal not restarted",
   "physical_service": "normal P1 counters remain actual bank grants; exempt logical operations separately recorded",
   "new_source_correctness_claim": "NONE until real affected producer and independent E qualification",
-  "source_revision_note": "r2 only labels observer-disabled fields DISABLED_NOT_OBSERVED instead of emitting unobserved zeros; all C++ still uncompiled/unrun."
+  "source_revision_note": "r3 corrects new finite pressure fixture to explicit one-entry lower FIFO, preserving old micro fixture default; production src subtree equals r2 exactly; no C++ executed."
 }

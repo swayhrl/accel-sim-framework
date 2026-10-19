@@ -1,6 +1,6 @@
 # Mechanism study A — first diagnostic source checkpoint
 
-New independent Goal active on original174. Core candidate `44c940b748fceaec8f21fa2b443907d5afd2756b`
+New independent Goal active on original174. Core candidate `17e7e224954e44a968a0447bcdfea91e3b2e5a96`
 implements default-OFF COPY_FREE, L2_DATA_FREE, bounded request-UID observer and
 four opt-in directed targets. Public interface revision1 was already pushed and
 read back before this implementation; B/C can adapt independently.
@@ -28,3 +28,16 @@ was deleted. See INTERFACE, PROFILE_INDEX, SOURCE_REVIEW and qualification scope
 Next: E fresh resource admission, A unique formal -j2 build and affected finite
 suite, then E independent checks and its own24-start matched application ledger.
 B/C integration is separate from first diagnostic release and does not block it.
+
+R1 source r3 corrects only the NEW directed FIFO setup: MS tests explicitly use
+one lower FIFO entry; existing micro defaults stay32. Production src tree is
+byte-identical to r2. Source audit finding only, no executed red/green claim.
+
+A also integrated frozen B89a75b24 modules/adapter in a SEPARATE R2 worktree
+at `4d399f790cf15e118d900225fe9b1bee8d8538c0`. CLEAN_ONLY only; dirty/RO/diagnostic combinations
+remain rejected. R2 uses cached lookup + local row tickets for lower acceptance
+and rollback, existing WB UID + an explicit completion CAM for set_done, no
+new packet bits, and scoped real bypass FIFO backpressure. It has11 further
+native processes PREPARED,0 EXECUTED. Metadata2 CAM /3 indexed control views and
+update paths have explicit cost/clock limits and UNKNOWN PPA. R2 has no runtime
+release and does not replace or delay the independent R1 build/55-case request.

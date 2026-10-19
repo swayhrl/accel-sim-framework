@@ -56,3 +56,9 @@ PPA is claimed. B/C module adapters remain separate upcoming source candidates.
 Source r2 only corrects disabled-observer output to DISABLED_NOT_OBSERVED; no
 pressure zeros are fabricated. Driver/55-case definitions are unchanged; old
 source/preparation readback is preserved and no C++ test was rerun or claimed.
+
+R1 source r3 fixes the finite pressure witness: original micro fixture lower
+FIFO was32, so its new16-local-WB +one-lower-packet witness required explicit1.
+Constructor default remains unchanged; only MS test opts in. This was found by
+source inspection; no old-red/new-green execution is claimed. Production src
+subtree is identical to r2; all C++ cases remain NOT_COMPILED_NOT_RUN.
