@@ -1,0 +1,69 @@
+{
+  "schema": "A_READONLY_FORMAL_E_WORKSPACE5G_CONSUMPTION_AUDIT",
+  "UTC": "2026-10-19T17:14:26.504828+00:00",
+  "resource_authority": "E_ONLY",
+  "formal_E_publication": "e222ed94717077580ec5341ab627ddcf83f28e19",
+  "CLIENT_path": "/workspace/ep_l2_ft20261016_shared/mechanism_study_20261019_v1/CLIENT_CONTRACT.json",
+  "CLIENT_sha256": "8fef08014085a62bef45864a905c7b57d77b2f727db2ce304d9cc466c805390d",
+  "formal_policy": {
+    "authority": "EXPLICIT_USER_20261020_WORKSPACE_FLOOR_5G",
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "disk_floor_bytes": 5368709120,
+    "existing_leases_unchanged": true,
+    "host": "huangrulin-174",
+    "monitor_interval_seconds": 0.2,
+    "monitor_reserve_bytes": 2147483648,
+    "other_projects_unchanged": true,
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "termination_grace_seconds": 3,
+    "write_scope": "PHYSICAL_WORKSPACE_ALL_TMP_BUILD_LOG_RESULT"
+  },
+  "admission_formula": "actual workspacefree - allhostpendinggrowthandmonitors - ownconservativepeak - ownmonitor >=5GiB",
+  "source_checks": {
+    "reserve_work": "E coordinator.py255 freezes lease policy at266/319; old records untouched",
+    "resource_gate": "E coordinator.py130-162 all pendinggrowth +ownpeak+monitor; scoped deep registryview at154; physical5floor",
+    "Registry.admission": "Original unchanged Registry source called on validatedcampaignonly scopedcopy; real globalhost remains48GiB",
+    "runner": "E runner.py140-156 uses attemptfrozen stop_detail and retains RESOURCE_LIMIT with finalexit/rawsha; ownonlytermination",
+    "A_actual_supervisor": "A commonentry consumes Coordinator.work_disk_policy; run_owned only, historicalmain/admission_hold48 notcalled; reportstopfloor5+2GiB,0.2spoll/3sownedgrace",
+    "A_retained_native": "FreshEtestlease,1CPU8GiB128MiB, noCPP. Alltemp/cache/native raw logs in admitted resultfilesystem."
+  },
+  "all_runtime_source_SHA256": {
+    "util/ep_l2/mechanism_e/controller.py": "b66427c0a6a43026cad36b9af53be01be7d17a7fe0ea80a762766e4ecd09ba0d",
+    "util/ep_l2/mechanism_e/coordinator.py": "bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b",
+    "util/ep_l2/mechanism_e/disk_policy.py": "53a2e9ccfe96407a04396292e245d7eb3932ac2529206190cca0384857a43479",
+    "util/ep_l2/mechanism_e/parse_terminal.py": "be9958909adb7cb7b28c610e982a2ee1d6394d25b4318b7302e52071b3eeff05",
+    "util/ep_l2/mechanism_e/policy_v2.py": "f4a5da376bc5af0ed10dcfb7696d28ced9e0869c849f1db7bd8ed3e46d8a4440",
+    "util/ep_l2/mechanism_e/review_ro_input.py": "3403706ec3a15e7e7cd8506ac4f12c1ff2d64abfba0a0b5a375474a48cb8a155",
+    "util/ep_l2/mechanism_e/runner.py": "26ee59eb23506a4ed98685008ca880bc6acc71df46b248315343482837b91d38"
+  },
+  "policy_control_tests_report": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_WORKSPACE5G_POLICY_r2/CONTROL_TESTS.txt",
+  "policy_control_report_sha256": "76351135c66e1c36ae22718f2f0cd7cc15914a66224358b6d5401311326a555a",
+  "E_control_test_count": 150,
+  "controls_are_not_native_or_performance": true,
+  "source_remote_readback": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_WORKSPACE5G_POLICY_r2/SOURCE_REMOTE_READBACK.json",
+  "source_remote_readback_sha256": "bce855c9e9bb68c66ae0faeab977aa6d139bfc9c431441b4b1abfbff8457f92a",
+  "global_host_floor_bytes": 51539607552,
+  "same_T0_preserved": 1792414193,
+  "actual_full_starts": 0,
+  "maximum_actual_starts": 40,
+  "new_results_cap_bytes": 6442450944,
+  "old_new_results_cap_bytes": 21474836480,
+  "historical_tokens": [
+    {
+      "id": "E_USER_COMMON_WVTM_COMPILE_20261019_P01",
+      "status": "CONSUMED",
+      "expiry": 1792428837.293227,
+      "outcome": "FAILED_FIXTURE_COMPILE_RETAINED_NO_REPLAY"
+    },
+    {
+      "id": "E_USER_COMMON_WVTM_COMPILE_20261019_P01_REPAIR_R2",
+      "status": "CONSUMED",
+      "expiry": 1792428837.293227,
+      "outcome": "FAILED_TEST_CONSTNESS_RETAINED_NO_REPLAY"
+    }
+  ],
+  "A_central_policy_mutations": 0,
+  "old_results_deleted": 0,
+  "other_project_processes_stopped": 0
+}
