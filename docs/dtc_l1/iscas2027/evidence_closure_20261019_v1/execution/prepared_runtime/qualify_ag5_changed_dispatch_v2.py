@@ -166,12 +166,25 @@ def run_real_changed_interfaces(dest, manifests, env):
  original_deadline=ownmod.Ownership.check_deadlines
  for label,missing,force in [('real_child_stop_before_parent_observer',False,False),('real_missing_event_finite_timeout',True,False),('real_stop_pending_event_cleanup',False,True)]:
   held=[];injected=[False];release=[False];seen=[]
+  reorder_target=[None];reorder_deadline=[None]
+  child_stop_delivered=[False];parent_event_delivered=[False]
   def deadline(o):
    try:return original_deadline(o)
    except Reject:release[0]=True;raise
   def reordered_wait(pid,flags):
    if held:
     if missing and not release[0]:return (0,0)
+    if not missing and not force and not release[0] and not child_stop_delivered[0]:
+     if time.monotonic()>=reorder_deadline[0]:
+      release[0]=True
+      raise Reject('CPU_REAL_CHILD_STOP_REORDER_BOUND_EXCEEDED')
+     other=original(reorder_target[0],flags)
+     if other[0]:
+      try:require(other[0]==reorder_target[0] and os.WIFSTOPPED(other[1]),'ACTUAL_REORDER_CHILD_STOP_REQUIRED')
+      except BaseException:release[0]=True;raise
+      child_stop_delivered[0]=True
+     return other
+    parent_event_delivered[0]=True
     return held.pop(0)
    child,status=original(pid,flags)
    if child and status>>16 in (1,2,3) and not injected[0]:
@@ -183,13 +196,15 @@ def run_real_changed_interfaces(dest, manifests, env):
     require(verdict['status']=='PENDING_QUARANTINED_NO_AUTHORITY_PASS','PENDING_GOT_AUTHORITY')
     if force:raise Reject('CPU_STOP_WITH_PENDING_EVENT')
     if missing:return (0,0)
-    other=original(int(new.value),flags)
-    return other if other[0] else (0,0)
+    reorder_target[0]=int(new.value);reorder_deadline[0]=time.monotonic()+1.0
+    return (0,0)
    return child,status
   with patch.object(fixed.os,'waitpid',reordered_wait),patch.object(ownmod.Ownership,'check_deadlines',deadline):
    run(label,expected=not(missing or force),needle='PARENT_EVENT_CONFIRMATION_TIMEOUT' if missing else ('CPU_STOP_WITH_PENDING_EVENT' if force else None))
   require(injected[0] and bool(seen),'ACTUAL_PENDING_ORDER_NOT_EXERCISED')
-  write(dest/(label+'_REORDER.json'),dict(real_parent_event_held=True,synthetic_ptrace_proof=False,observations=seen))
+  if not missing and not force:
+   require(child_stop_delivered[0] and parent_event_delivered[0] and not held,'ACTUAL_CHILD_STOP_BEFORE_PARENT_EVENT_NOT_DELIVERED')
+  write(dest/(label+'_REORDER.json'),dict(real_parent_event_held=True,synthetic_ptrace_proof=False,observations=seen,actual_child_stop_delivered_before_parent_event=child_stop_delivered[0],actual_parent_event_delivered=parent_event_delivered[0],normal_reorder_wait_bound_seconds=1.0))
  run('real_observer_exception',expected=False,observer=lambda *a:(_ for _ in ()).throw(OSError('CPU_OBSERVER_EXCEPTION')),needle='CPU_OBSERVER_EXCEPTION')
  run('real_owned_timeout_cleanup','hang',expected=False,timeout=.8,needle='TIMEOUT_')
  # AG5 same() tracer/Tgid rejection is exercised on the actual imported owner.

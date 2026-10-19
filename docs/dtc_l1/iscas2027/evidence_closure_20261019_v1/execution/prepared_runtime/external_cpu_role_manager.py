@@ -38,7 +38,7 @@ PHASES = (
     ("rob_build", ROB_ROLE, "build", _ROB,
      _ROB + "/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/bounded_cpu_build.py", 1230),
     ("cov_observe_once", COV_ROLE, "test", _COV,
-     _COV + "/docs/dtc_l1/review_packs/DTC_COV1_INPUTS_V1/reference/test_reference_algorithms.py", 60),
+     _COV + "/docs/dtc_l1/review_packs/DTC_COV1_INPUTS_V1/reference/observe_reference_once.py", 60),
 )
 RECEIPTS = {
     "sem_configure": RAW / "sem1/implementation-r1/configure.receipt.json",
@@ -159,8 +159,9 @@ def _run_exact_cpu_roles(registration_path, expected_registration_sha256, *,
 
     phase_roles = {}
     for key, role_name, phase, cwd, script, seconds in PHASES:
-        argv = [PYTHON, "-E" if role_name == COV_ROLE else "-I", "-B", script,
-                "-v" if role_name == COV_ROLE else phase]
+        argv = [PYTHON, "-E" if role_name == COV_ROLE else "-I", "-B", script]
+        if role_name != COV_ROLE:
+            argv.append(phase)
         role = roles[role_name]
         require(argv in role["argvs"] and role["cwd"] == cwd and
                 role["executable"] == PYTHON, "EXACT_PHASE_COMMAND_NOT_REGISTERED:" + key)
@@ -262,13 +263,26 @@ def _run_exact_cpu_roles(registration_path, expected_registration_sha256, *,
         row = None
         reason = None
         observed = False
+        ack_read = ack_write = None
         stopped = {"signal_sent": False, "reaped": False}
         with (dest / "stdout").open("xb") as stdout, (dest / "stderr").open("xb") as stderr:
             try:
+                inherited = ()
+                if role_name == COV_ROLE:
+                    # One own private pipe, no second process or test replay.
+                    # The source-bound COV controller waits at most 5 seconds
+                    # before running its unchanged tests in this same PID.
+                    ack_read, ack_write = os.pipe()
+                    inherited = (ack_read,)
+                    env['DTC_COV1_REFERENCE_ACK_FD'] = str(ack_read)
                 require(0 <= time.monotonic_ns() - last_sample["monotonic_ns"] <= 5 * 10**9,
                         "ADMISSION_STALE_AFTER_HASH_NO_START")
                 proc = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
-                                        stdout=stdout, stderr=stderr, close_fds=True)
+                                        stdout=stdout, stderr=stderr, close_fds=True,
+                                        pass_fds=inherited)
+                if ack_read is not None:
+                    os.close(ack_read)
+                    ack_read = None
                 instance = current_identity(proc.pid)  # before any wait/poll can reap
                 pidfd = os.pidfd_open(proc.pid)
                 row = {"role_name": role_name, "phase": phase, "instance": instance,
@@ -319,11 +333,23 @@ def _run_exact_cpu_roles(registration_path, expected_registration_sha256, *,
                         write_new(dest / "ACTUAL_BINDING_REJECTION.json", binding_probe)
                     else:
                         raise ManagerStop("ADMISSION_BINDING_MISMATCH_ACCEPTED")
+                if role_name == COV_ROLE:
+                    require(observed, 'COV_ACTUAL_LIVE_OBSERVATION_REQUIRED_BEFORE_TESTS')
+                    require(os.write(ack_write, b'A') == 1, 'COV_OWN_PIPE_ACK_WRITE_FAILED')
+                    os.close(ack_write)
+                    ack_write = None
+                    write_new(dest / 'COV_SAME_PROCESS_ACK.json', dict(
+                        actual_instance=instance, actual_callback_observed=True,
+                        unchanged_four_tests_released_once=True, new_process=False))
                 proc.wait(timeout=max(.001, (deadline - time.monotonic_ns()) / 10**9))
                 stopped = {"signal_sent": False, "reaped": True}
             except BaseException as error:
                 reason = repr(error)
             finally:
+                # EOF fails the bounded controller closed if observation failed.
+                for fd in (ack_read, ack_write):
+                    if fd is not None:
+                        os.close(fd)
                 if proc is not None and proc.returncode is None:
                     if instance is not None:
                         stopped = cleanup(proc, pidfd, instance, argv, cwd)
