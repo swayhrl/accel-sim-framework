@@ -13,3 +13,7 @@ E actualstarts3/40; originalT0/32+8/deadlines/6GiBnew/20GiBtotal/Share40GiB/RAM6
 Remote r28 producer publication is91f2eacf07476c69f47dd43a75055f355415bd3d (all78Frameworkfiles plus3Coreblobs verified). E_NATIVE_REPLAY_r29.json binds24 runnable finitecommands and exactELFs to thisrelease; no applicationauthorization or newAcompute.
 
 R30 corrects only inherited policy-publication metadata: actual Esource atbothnewleases was6c69b3e69c6acdd84c2e63a9ce03efdd8983f8e4, as sealedreceipts alreadyrecorded. Core/main/config/raw/nativeevidence and originalr28/r29reviewpacks remain unchanged. Currentversioned release/bindings/replay use _r30 files.
+
+## R35 extra shared-control reachability finding
+
+One previouslyunrun B/Ccontrolledpartition fixture had a typingcompileerror, repaired only ontestCore8027ec55. It then actually aborts; GDBproves A0stillattached/reuse_seen withfivewaiters and20ROpackets. The duplicate merges andneedsnonewlowerpacket; originalnewhandle/22packet/704B completion expectation is unqualified. Parent-sector UID/18descriptor assumptions also needB/Creview; laterassertions notexecuted. ProductionCore27 andmain773 were not rebuilt/changed. Prior20+4producerpasses retain exactscope; Ereview/acceptance remainspending. AllfournewE leasesreleased, A directnativecount80 plusoneGDBinferiorreplay; no A fullapp, actualtotal3/40. SeeVRW_REACHABILITY_REVIEW_r35.json. No scientificgatewaiver or nativeDRAM/SASS/performanceclaim.
