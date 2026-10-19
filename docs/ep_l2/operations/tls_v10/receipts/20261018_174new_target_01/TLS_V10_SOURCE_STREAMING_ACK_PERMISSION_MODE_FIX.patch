@@ -1,0 +1,11 @@
+--- a/docs/ep_l2/operations/tls_v10_174_to_164_source/tls_v10_p9_streaming_ack_core.py
++++ b/docs/ep_l2/operations/tls_v10_174_to_164_source/tls_v10_p9_streaming_ack_core.py
+@@ -72,7 +72,7 @@
+ def _identity(info):
+     return {"dev": info.st_dev, "inode": info.st_ino,
+             "nlink": info.st_nlink, "uid": info.st_uid, "gid": info.st_gid,
+-            "mode": info.st_mode, "size": info.st_size,
++            "mode": stat.S_IMODE(info.st_mode), "size": info.st_size,
+             "mtime_ns": info.st_mtime_ns, "ctime_ns": info.st_ctime_ns,
+             "allocated": info.st_blocks * 512}
+ 

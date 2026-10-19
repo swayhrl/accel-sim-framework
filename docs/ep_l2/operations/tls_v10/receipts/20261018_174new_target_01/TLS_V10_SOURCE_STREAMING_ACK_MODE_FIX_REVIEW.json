@@ -1,0 +1,25 @@
+{
+  "schema": "TLS_V10_TARGET_SOURCE_ACK_MODE_COMPATIBILITY_FIX_V1",
+  "utc": "2026-10-19T09:18:54.682236+00:00",
+  "source_commit": "cf5fcd2d514d381bd47a23f8b6a63a53a711195e",
+  "source_file": "docs/ep_l2/operations/tls_v10_174_to_164_source/tls_v10_p9_streaming_ack_core.py",
+  "problem": "Source core._identity returns full st_mode incl S_IFREG but real frozen Source and bridge receipt identities encode numeric permission bits. Its synthetic fixtures derive both sides from same helper, masking mismatch.",
+  "real_frozen_P9_mode_example": 420,
+  "synthetic_stat_full_regular_mode": 33188,
+  "original_helper_observed": 33188,
+  "patched_helper_observed": 420,
+  "pure_synthetic_identity_regression_modes_passed": [
+    "0600",
+    "0644",
+    "0640",
+    "04755"
+  ],
+  "patch": "TLS_V10_SOURCE_STREAMING_ACK_PERMISSION_MODE_FIX.patch",
+  "patch_sha256": "57ee4fc70172a26125a56285d88c69333caede6e703064c375ababd28d9047e5",
+  "fix": "stat.S_IMODE(info.st_mode), preserving special permission bits and matching unchanged V9/frozen canonical identities.",
+  "source_branch_edited_or_pushed_by_target": false,
+  "source_owner_action": "Apply minimal patch in original Source branch and qualify a real-style permission-bit manifest regression before using generic ACK core on production. Do not regenerate frozen manifests/receipts or change source/target permissions.",
+  "old_B0003_ACK_uses_separate_correct_permission_fingerprint_and_remains_valid": true,
+  "no_scientific_source_files_opened_or_modified": true,
+  "no_permission_or_resource_gate_relaxed": true
+}
