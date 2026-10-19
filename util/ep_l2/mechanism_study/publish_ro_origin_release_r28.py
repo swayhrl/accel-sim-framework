@@ -163,6 +163,7 @@ def main():
         fixture_archive_sha256=archives,compiled_fixture_sha256=fixtures,
         producing_build_receipt=dict(path=str(r26p),sha256=sha(r26p)),
         producer_test_manifest=dict(path=str(manifest_path),sha256=sha(manifest_path)),
+        E_policy_publication=r26['E_source_publication'],
         producer_finite_main55_and_diag9_predicates=True,
         predicate_scope='INCREMENTAL:20new affected+44exact unchanged; threeoriginalR14 reused; fournew detailedDRAM modes. NOT all64fresh currentarchive.',
         independent_E_qualification=False,producer_runtime_ready=True,
