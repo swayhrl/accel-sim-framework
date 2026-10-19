@@ -1,0 +1,750 @@
+{
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "control_source_commit": "55aa6f902e521d4148d2eac89f088bd48acb607d",
+  "driver_sha256": "beb6de991ed2e7d199f73699e700f3519d972399f16af33e108622a9560064f0",
+  "spec_sha256": "32e40b86e51970f83241b8f9727e3ed5e3219ce5de1ff057b234c828e74555cd",
+  "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+  "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "vendor": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+  "retained_runtime_core": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+  "retained_main_sha256": "67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de",
+  "build_directory": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26",
+  "output_directory": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26",
+  "schema": "EP_L2_A_RO_ORIGIN_REPAIR_RECEIPT_V1",
+  "status": "OLD_RED_NEW_GREEN_MAIN_COMPILED_PENDING_AFFECTED_QUALIFICATION",
+  "compiler_started": true,
+  "application_starts": 0,
+  "independent_qualification": false,
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/libcuda",
+        "-I/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/gpgpu-sim",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/intersim2",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/intersim2/allocators",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/intersim2/arbiters",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/intersim2/networks",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/intersim2/power",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/intersim2/routers",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src",
+        "-Wall",
+        "-O3",
+        "-g3",
+        "-fPIC",
+        "-std=gnu++17",
+        "-c",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/test_ro_detailed_origin.cc",
+        "-o",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/origin_fixture.o"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/fixture_compile.log",
+      "process": {
+        "pid": 1193122,
+        "start_ticks": 918780585,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "459da6fa39f73228fa9713cd1d00b928a85a36c97aed43f15a77dcf91b3cd09b",
+      "wall_seconds": 4.1568210311234
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-Wall",
+        "-O3",
+        "-g3",
+        "-fPIC",
+        "-Wl,--version-script=/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/linux-so-version.txt",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-pthread",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/origin_fixture.o",
+        "-o",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_old",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "-Wl,--end-group",
+        "/usr/lib/x86_64-linux-gnu/libz.so",
+        "-ldl",
+        "-lpthread",
+        "/usr/lib/x86_64-linux-gnu/libGLX.so",
+        "/usr/lib/x86_64-linux-gnu/libOpenGL.so"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_link.log",
+      "process": {
+        "pid": 1193139,
+        "start_ticks": 918781001,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 1.7091329880058765
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_ro_origin_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "RO detailed DRAM origin T0 M0 exact-once=4",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_native_T0M0.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_old",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_native_T0M0.log",
+      "process": {
+        "pid": 1193155,
+        "start_ticks": 918781173,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "b81fc8553d125f1f65a2e7facde8982baeba12fa44d117eddd070618536eaf29",
+      "wall_seconds": 0.7046418152749538
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_ro_origin_case.py",
+        "--expected-exit",
+        "-11",
+        "--required-terminal",
+        "sid=4294967295",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_RO_T1M1_SIGSEGV.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_old",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_RO_T1M1_SIGSEGV.log",
+      "process": {
+        "pid": 1193174,
+        "start_ticks": 918781255,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "6f643a24af75f5009163845c53abb671cb17e4f90bfe340e469007741c996e31",
+      "wall_seconds": 0.7076183240860701
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=11080",
+        "-DDEBUG=0",
+        "-DGPGPUSIM_POWER_MODEL",
+        "-DTRACING_ON=1",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/gpgpu-sim",
+        "-I/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/accelwattch",
+        "-Wall",
+        "-O3",
+        "-g3",
+        "-fPIC",
+        "-std=gnu++17",
+        "-c",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/gpgpu-sim/gpu-cache.cc",
+        "-o",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/gpu-cache.cc.o"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/changed_gpu_cache_compile.log",
+      "process": {
+        "pid": 1193268,
+        "start_ticks": 918781337,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "8729118f395c464ae0e3b40aa863dd66ebe4613beea357626463b9b807fc2da9",
+      "wall_seconds": 13.052652327343822
+    },
+    {
+      "command": [
+        "/usr/bin/ar",
+        "r",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/libgpgpusim.a",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/gpu-cache.cc.o"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/one_member_archive.log",
+      "process": {
+        "pid": 1193422,
+        "start_ticks": 918782651,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 0.7056876607239246
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-Wall",
+        "-O3",
+        "-g3",
+        "-fPIC",
+        "-Wl,--version-script=/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/linux-so-version.txt",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-pthread",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/origin_fixture.o",
+        "-o",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "-Wl,--start-group",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libentrypoint.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/libgpgpusim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "-Wl,--end-group",
+        "/usr/lib/x86_64-linux-gnu/libz.so",
+        "-ldl",
+        "-lpthread",
+        "/usr/lib/x86_64-linux-gnu/libGLX.so",
+        "/usr/lib/x86_64-linux-gnu/libOpenGL.so"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_link.log",
+      "process": {
+        "pid": 1193476,
+        "start_ticks": 918782772,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 1.7171500362455845
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_ro_origin_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "RO detailed DRAM origin T0 M0 exact-once=4",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M0.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M0.log",
+      "process": {
+        "pid": 1193616,
+        "start_ticks": 918782944,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "b81fc8553d125f1f65a2e7facde8982baeba12fa44d117eddd070618536eaf29",
+      "wall_seconds": 0.5104306358844042
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_ro_origin_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "RO detailed DRAM origin T0 M1 exact-once=4",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M1.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M1.log",
+      "process": {
+        "pid": 1193632,
+        "start_ticks": 918783007,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a2fe37ab49c031285c81eeb14240f8acb88db38acc548832a853a624e0726970",
+      "wall_seconds": 0.7026638630777597
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_ro_origin_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "RO detailed DRAM origin T1 M0 exact-once=4",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M0.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "0"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M0.log",
+      "process": {
+        "pid": 1193647,
+        "start_ticks": 918783089,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "54df105d3ca1073ccc6c64fb444b5dace2d95d656b9ad2f6f0ef9fd9bfc40d4a",
+      "wall_seconds": 0.708800008520484
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_ro_origin_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "RO detailed DRAM origin T1 M1 exact-once=4",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M1.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M1.log",
+      "process": {
+        "pid": 1193668,
+        "start_ticks": 918783171,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "20c6fd531ea4c45783ca325bc42f7044acf42633f49df21940a03ae42a355786",
+      "wall_seconds": 0.7065909672528505
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-O3",
+        "-g3",
+        "-fPIC",
+        "-Wall",
+        "-Wl,--version-script=/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/linux-so-version.txt",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-pthread",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/CMakeFiles/accel-sim.out.dir/accel-sim.cc.o",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/CMakeFiles/accel-sim.out.dir/main.cc.o",
+        "-o",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/accel-sim.out",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/libgpgpusim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libentrypoint.a",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-pthread",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/trace-driven/libtrace-driven.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/trace-parser/libtrace-parser.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda/libcuda.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/libgpgpusim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/intersim2/libintersim.a",
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_main_link.log",
+      "process": {
+        "pid": 1193680,
+        "start_ticks": 918783254,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 1.9280520100146532
+    }
+  ],
+  "tests": [
+    {
+      "case": "old_native_T0M0",
+      "evidence": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_native_T0M0.native.json",
+      "sha256": "6eb98b4ff2598872b3c7ee97bba24b30c03c22b6b064dd11d57f68524ad7932b",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_old",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "0"
+      ],
+      "native_pid": 1193168,
+      "native_started_unix": 1792435840.5794373,
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "expectation_verified": true,
+      "required_terminal": "RO detailed DRAM origin T0 M0 exact-once=4",
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_native_T0M0.native.native.log",
+      "raw_log_sha256": "56e7c361b3b12e380922788e733e43630dd6c8a95d18d54345c193b8b71dc635",
+      "binary_sha256": "2886ffba8547722083be915fa6b7f2dc43d8def72a1ed935b4e45c033dd7a009",
+      "scientific_scope": "FINITE_REAL_DETAILED_DRAM_NOT_APPLICATION_ACCEPTANCE",
+      "old_source_binary_is_real": false
+    },
+    {
+      "case": "old_RO_T1M1_SIGSEGV",
+      "evidence": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_RO_T1M1_SIGSEGV.native.json",
+      "sha256": "3ed92f5a896912ee5a9b08066418304bf25506e4763054e20560e34f44406512",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_old",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1"
+      ],
+      "native_pid": 1193185,
+      "native_started_unix": 1792435841.4002206,
+      "expected_exit": -11,
+      "actual_exit": -11,
+      "expectation_verified": true,
+      "required_terminal": "sid=4294967295",
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/old_RO_T1M1_SIGSEGV.native.native.log",
+      "raw_log_sha256": "9ad052354ee36061601a50327c1f2d873a032d1a65d45d80365fb38d8c130e5e",
+      "binary_sha256": "2886ffba8547722083be915fa6b7f2dc43d8def72a1ed935b4e45c033dd7a009",
+      "scientific_scope": "FINITE_REAL_DETAILED_DRAM_NOT_APPLICATION_ACCEPTANCE",
+      "old_source_binary_is_real": true
+    },
+    {
+      "case": "new_T0M0",
+      "evidence": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M0.native.json",
+      "sha256": "8c562c62f5b3881c2401ebf94887e9ee3e4663efb7b826f686bcc2b662f8d1c3",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "0"
+      ],
+      "native_pid": 1193627,
+      "native_started_unix": 1792435858.2988122,
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "expectation_verified": true,
+      "required_terminal": "RO detailed DRAM origin T0 M0 exact-once=4",
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M0.native.native.log",
+      "raw_log_sha256": "56e7c361b3b12e380922788e733e43630dd6c8a95d18d54345c193b8b71dc635",
+      "binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "scientific_scope": "FINITE_REAL_DETAILED_DRAM_NOT_APPLICATION_ACCEPTANCE",
+      "old_source_binary_is_real": false
+    },
+    {
+      "case": "new_T0M1",
+      "evidence": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M1.native.json",
+      "sha256": "051476129702e922482304a67746483253d6f1a95b64753d757fc073668f7a22",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "1"
+      ],
+      "native_pid": 1193646,
+      "native_started_unix": 1792435858.9256341,
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "expectation_verified": true,
+      "required_terminal": "RO detailed DRAM origin T0 M1 exact-once=4",
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T0M1.native.native.log",
+      "raw_log_sha256": "310e651640a8faf5b0982f920d3c25e76acfc1f2eccb9a786881070a8e9608e6",
+      "binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "scientific_scope": "FINITE_REAL_DETAILED_DRAM_NOT_APPLICATION_ACCEPTANCE",
+      "old_source_binary_is_real": false
+    },
+    {
+      "case": "new_T1M0",
+      "evidence": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M0.native.json",
+      "sha256": "64f2b985e887d9653c4f308115b331fb104f930a1d3011c6ea4edb421cbfd138",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "0"
+      ],
+      "native_pid": 1193667,
+      "native_started_unix": 1792435859.744977,
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "expectation_verified": true,
+      "required_terminal": "RO detailed DRAM origin T1 M0 exact-once=4",
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M0.native.native.log",
+      "raw_log_sha256": "498493ba0df41a730d0e47484107258e391b976ff443912d9a743f19e408225b",
+      "binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "scientific_scope": "FINITE_REAL_DETAILED_DRAM_NOT_APPLICATION_ACCEPTANCE",
+      "old_source_binary_is_real": false
+    },
+    {
+      "case": "new_T1M1",
+      "evidence": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M1.native.json",
+      "sha256": "22b6228169bd2775b6f78817408f4a30988de7e7f694402aa37566b34e65c3fc",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1"
+      ],
+      "native_pid": 1193679,
+      "native_started_unix": 1792435860.570806,
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "expectation_verified": true,
+      "required_terminal": "RO detailed DRAM origin T1 M1 exact-once=4",
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/new_T1M1.native.native.log",
+      "raw_log_sha256": "7847241e0ddec10a6da5bd5b5af1c5e808c9ddc1fb1b9979d1e2d5d92c6247e1",
+      "binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "scientific_scope": "FINITE_REAL_DETAILED_DRAM_NOT_APPLICATION_ACCEPTANCE",
+      "old_source_binary_is_real": false
+    }
+  ],
+  "retained_assets_unchanged": true,
+  "requested_E_resources": {
+    "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+    "control_source_commit": "55aa6f902e521d4148d2eac89f088bd48acb607d",
+    "driver_sha256": "beb6de991ed2e7d199f73699e700f3519d972399f16af33e108622a9560064f0",
+    "spec_sha256": "32e40b86e51970f83241b8f9727e3ed5e3219ce5de1ff057b234c828e74555cd",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "retained_runtime_core": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+    "retained_main_sha256": "67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de",
+    "build_directory": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26",
+    "output_directory": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26",
+    "owner": "A",
+    "phase": "A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN",
+    "approved": true,
+    "full_applications_permitted": false,
+    "execution_host": "huangrulin-174",
+    "reserved_cpu_units": 1,
+    "reserved_memory_bytes": 8589934592,
+    "reserved_build_growth_bytes": 1342177280,
+    "reserved_result_bytes": 134217728,
+    "workspace_disk_policy": {
+      "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+      "disk_floor_bytes": 5368709120,
+      "monitor_reserve_bytes": 2147483648,
+      "monitor_interval_seconds": 0.2,
+      "termination_grace_seconds": 3
+    }
+  },
+  "admission_method": "PUBLISHED_E_RESERVE_WORK_API",
+  "admission_sha256": null,
+  "memory_floor_bytes": 68719476736,
+  "E_source_publication": "6c69b3e69c6acdd84c2e63a9ce03efdd8983f8e4",
+  "E_resource_api_sha256": "bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b",
+  "E_workspace_disk_policy": {
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "disk_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "monitor_interval_seconds": 0.2,
+    "termination_grace_seconds": 3
+  },
+  "authorized_task_floor_bytes": 5368709120,
+  "monitor_reserve_bytes": 2147483648,
+  "disk_floor_bytes": 7516192768,
+  "own_build_bytes_peak": 346583864,
+  "own_result_bytes_peak": 80355,
+  "lease_id": "263b4a796b96478486f5a65d929bf643",
+  "resource_allocation": {
+    "lease_id": "263b4a796b96478486f5a65d929bf643",
+    "host": "huangrulin-174",
+    "owner": "mechanism_A",
+    "role": "A",
+    "kind": "MECHANISM_BUILD",
+    "execution_host_identity": {
+      "hostname": "huangrulin-174",
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+    },
+    "central_dispatcher_host": "huangrulin-174",
+    "execution_environment": "original174",
+    "source_authority_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+    "build_owner": "A",
+    "executor_role": "A",
+    "experiment_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "cpu_units": 1,
+    "memory_bytes": 8589934592,
+    "disk_growth_bytes": 1476395008,
+    "result_growth_bytes": 134217728,
+    "status": "RESERVED",
+    "created_at": 1792435834.4656484,
+    "owner_process": {
+      "pid": 1193072,
+      "start_ticks": 918780303,
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+    },
+    "output_directory": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26",
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "disk_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "monitor_interval_seconds": 0.2,
+    "termination_grace_seconds": 3
+  },
+  "E_central_admission": "GRANTED_BY_PUBLISHED_RESERVE_WORK",
+  "E_results_and_shared_resource_gate": "PASS_AT_ATOMIC_RESERVATION",
+  "environment_write_roots": {
+    "TMPDIR": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/tmp",
+    "TMP": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/tmp",
+    "TEMP": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/tmp",
+    "XDG_CACHE_HOME": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/cache",
+    "PYTHONPYCACHEPREFIX": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/cache/python",
+    "CCACHE_DIR": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/cache/ccache",
+    "CUDA_CACHE_PATH": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/cache/cuda"
+  },
+  "archive_members": {
+    "addrdec.cc.o": {
+      "old_sha256": "e59be66bff2b4dc7282f2d77de47e083f89521414938371b6002c3d8b0611f39",
+      "new_sha256": "e59be66bff2b4dc7282f2d77de47e083f89521414938371b6002c3d8b0611f39"
+    },
+    "dram.cc.o": {
+      "old_sha256": "b7444cd9320376f011e4d50a074aec513dd0a7384dcc71486ff80dd9da57e6b0",
+      "new_sha256": "b7444cd9320376f011e4d50a074aec513dd0a7384dcc71486ff80dd9da57e6b0"
+    },
+    "dram_sched.cc.o": {
+      "old_sha256": "0652ec65d7ac28d327a8b136614044ab47e2fb0bad12250c207f98cb41619bc4",
+      "new_sha256": "0652ec65d7ac28d327a8b136614044ab47e2fb0bad12250c207f98cb41619bc4"
+    },
+    "gpu-cache.cc.o": {
+      "old_sha256": "0635d6218ea23749a38bf995a254be22ad8b2afeac3d2a098d5d39e8ddbec62c",
+      "new_sha256": "a641b54193ae13bd33a4359e4af7203f477e234c0c4a90646ce7734b7e8df32a"
+    },
+    "gpu-misc.cc.o": {
+      "old_sha256": "2e53cc9cad0af2b9e4fb9e7da4aec9a7b63df1bf742cdfd7de19926f7ac470cd",
+      "new_sha256": "2e53cc9cad0af2b9e4fb9e7da4aec9a7b63df1bf742cdfd7de19926f7ac470cd"
+    },
+    "gpu-sim.cc.o": {
+      "old_sha256": "a810f9a158949fe72775223ef58d534a36b90bb56ef7d61b1b3f4e43b290e1c5",
+      "new_sha256": "a810f9a158949fe72775223ef58d534a36b90bb56ef7d61b1b3f4e43b290e1c5"
+    },
+    "hashing.cc.o": {
+      "old_sha256": "ccdeecc57371e7cbc0f41d305e8d775f6510570446235cc74e449e967697e137",
+      "new_sha256": "ccdeecc57371e7cbc0f41d305e8d775f6510570446235cc74e449e967697e137"
+    },
+    "histogram.cc.o": {
+      "old_sha256": "865b0e1512da535e3720aa8c3ae2347ef635a1723aa34d3ef1711672b1b978f1",
+      "new_sha256": "865b0e1512da535e3720aa8c3ae2347ef635a1723aa34d3ef1711672b1b978f1"
+    },
+    "icnt_wrapper.cc.o": {
+      "old_sha256": "c86af917acf2d4f155197f2a36f23e1bd5146e61dfdae3d979e0d4dc445651f3",
+      "new_sha256": "c86af917acf2d4f155197f2a36f23e1bd5146e61dfdae3d979e0d4dc445651f3"
+    },
+    "l2cache.cc.o": {
+      "old_sha256": "8ecc266cec631f6b54f180a9d4a4732a85631b2398b1e725a0b0fa82feb96cfc",
+      "new_sha256": "8ecc266cec631f6b54f180a9d4a4732a85631b2398b1e725a0b0fa82feb96cfc"
+    },
+    "l2-char-stats.cc.o": {
+      "old_sha256": "69e10e5fc2f2d4c0e164b89651acb5839d05ac72fc658e76076357020edfa985",
+      "new_sha256": "69e10e5fc2f2d4c0e164b89651acb5839d05ac72fc658e76076357020edfa985"
+    },
+    "local_interconnect.cc.o": {
+      "old_sha256": "f5f4355692997c10d028a57c1700d0309620846e4164d484eef435a0d4fb556c",
+      "new_sha256": "f5f4355692997c10d028a57c1700d0309620846e4164d484eef435a0d4fb556c"
+    },
+    "mem_fetch.cc.o": {
+      "old_sha256": "ce455ac7733c44666521b0f4c9da7fea9d9988b47c7e6c1d6654485cccc740aa",
+      "new_sha256": "ce455ac7733c44666521b0f4c9da7fea9d9988b47c7e6c1d6654485cccc740aa"
+    },
+    "mem_latency_stat.cc.o": {
+      "old_sha256": "fe91e97423b07a7bb26659d7bcbcdb5b199f933dd93c9993f67a3cd4a1d67809",
+      "new_sha256": "fe91e97423b07a7bb26659d7bcbcdb5b199f933dd93c9993f67a3cd4a1d67809"
+    },
+    "power_interface.cc.o": {
+      "old_sha256": "9c36b2ce5498cf24b70a65bd767eb667fbfa51b009b36ca5fee459089c492ec7",
+      "new_sha256": "9c36b2ce5498cf24b70a65bd767eb667fbfa51b009b36ca5fee459089c492ec7"
+    },
+    "power_stat.cc.o": {
+      "old_sha256": "7bd3a7932c61e3a1179e08e74b28ec322672d0f00c20e201a91fd05824620814",
+      "new_sha256": "7bd3a7932c61e3a1179e08e74b28ec322672d0f00c20e201a91fd05824620814"
+    },
+    "scoreboard.cc.o": {
+      "old_sha256": "1a3bc78dab36e24c8421c0e4e89fd401dfa97df91bd1dba9ef29be44349db584",
+      "new_sha256": "1a3bc78dab36e24c8421c0e4e89fd401dfa97df91bd1dba9ef29be44349db584"
+    },
+    "shader.cc.o": {
+      "old_sha256": "2a56cc509059bd178023d0c3cdf871253f2a0b2d83376a18370772891b1cec0c",
+      "new_sha256": "2a56cc509059bd178023d0c3cdf871253f2a0b2d83376a18370772891b1cec0c"
+    },
+    "stack.cc.o": {
+      "old_sha256": "5e529b25b517044ff28d635862a761966fcf422634b419afd5ca694e9550f08d",
+      "new_sha256": "5e529b25b517044ff28d635862a761966fcf422634b419afd5ca694e9550f08d"
+    },
+    "stat-tool.cc.o": {
+      "old_sha256": "8bf49f7fdde779531b8f4d0d1fa94e83bb226f35ede3c95cc68a3df9eec6bd62",
+      "new_sha256": "8bf49f7fdde779531b8f4d0d1fa94e83bb226f35ede3c95cc68a3df9eec6bd62"
+    },
+    "traffic_breakdown.cc.o": {
+      "old_sha256": "9e8042696d1e38295d27e2dfe31363a30e3459ccb2f72a137ba0e3b1a133d165",
+      "new_sha256": "9e8042696d1e38295d27e2dfe31363a30e3459ccb2f72a137ba0e3b1a133d165"
+    },
+    "visualizer.cc.o": {
+      "old_sha256": "30922da02dbc1d23f0bdaf868fefe7f9efb40d4ac52c23deb083cc40880dc475",
+      "new_sha256": "30922da02dbc1d23f0bdaf868fefe7f9efb40d4ac52c23deb083cc40880dc475"
+    }
+  },
+  "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+  "binary": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/accel-sim.out",
+  "old_native_sha256": "2886ffba8547722083be915fa6b7f2dc43d8def72a1ed935b4e45c033dd7a009",
+  "new_native_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+  "new_archive_sha256": "6633d0c5f4330a0895a9094652a0031a9c76d3d383066f22da6f0495c85ab05e",
+  "native_passes": 6,
+  "changed_archive_members": [
+    "gpu-cache.cc.o"
+  ],
+  "generated_build_string_unchanged": true,
+  "original_banner_is_not_new_producer_identity": true,
+  "lease_released": true,
+  "finished_UTC": "2026-10-19T18:51:05.853569+00:00"
+}

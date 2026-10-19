@@ -1,0 +1,37 @@
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:850000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000117647058824
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+*** Initializing Memory Statistics ***
+EPL2ROV1|SUMMARY|slice=0|detach=1|bypass=1|accepted_global_reads=2|accepted_oracle_candidates=1|accepted_ro=1|transactions=1|merges=0|detached=0|lower_sectors=1|concurrent_duplicate_sectors=0|responses=1|ro_bank_fill_ops=1|ro_bank_response_ops=1|live=0|manifest=0e87ecba4854953aea5ff9a671d7a73bec647c72f84bae6374a056de64993ca9|scope=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|CLOSURE|slice=0|native_descriptor_responses=0|ro_descriptor_responses=1|shared_descriptor_used=0|shared_line_used=0|ro_live=0|epoch_closed=1|scope=NATIVE_AND_RO_DISTINCT_SUBCOUNTERS_NOT_ALL_FRONTEND_REQUESTS
+EPL2ROC1|RESOURCE|slice=0|normal_line_allocations=0|avoided_line_allocations=1|peak_transactions=1|peak_shared_descriptors=1|peak_shared_lines=0|lower_read_bytes=32|concurrent_duplicate_read_bytes=0|query_count=1|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=1|query_port_wait_attempts=0|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|LOWER_CONCURRENCY|slice=0|peak_lower_transactions=1|peak_independent_lower_lines=1|epoch_begin_gpu_cycle=1|epoch_end_gpu_cycle=137|last_response_gpu_cycle=118|completed_ro_requesters=1|scope=RO_ISSUED_NOT_RETURNED_PER_SLICE|measurement=OBSERVER_ONLY_NO_ADMISSION_LOOKUP
+EPL2ROC1|WAIT|slice=0|reason=TAG_SET_ALL_PENDING|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=LINE_MSHR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=SHARED_DESCRIPTOR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=PER_ADDRESS_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+A_COMMON_FIXTURE|SEMANTIC|cycles=137|replies=37|lower_reads=1|lower_bytes=32|drained=1
+C_FULL_V2|case=pinned_wb_done_with_ro_landing|status=PASS|contender=PUBLIC_ARBITER
