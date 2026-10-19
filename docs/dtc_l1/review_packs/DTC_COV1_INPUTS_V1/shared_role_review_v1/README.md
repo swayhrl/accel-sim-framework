@@ -49,3 +49,15 @@ extra negative suite was executed. Natural exit/absence returns explicit
 NOT_CURRENT/TERMINAL with no live acceptance; contract/instance mismatches
 reject. Actual Popen provenance still requires the parent's source-bound sole
 manager provider. The module exports no cleanup or ownership capability.
+
+Actual manager source continuation (parent dada67f2a):
+`external_cpu_role_manager.py` now prepares the fixed sequential direct-Popen
+SEM build / ROB configure / ROB build / optional one COV entry. See
+`CPU_ROLE_MANAGER_INTEGRATION.md` and the deliberately unreleased
+`CPU_ROLE_MANAGER_PREREG_TEMPLATE.json`. It uses one persistent external view
+binding for every fresh full-R2 admission, preserves exact completed receipts,
+and exports only copied launch data. Private cleanup is limited to one TERM
+through its own unreaped exact controller's pidfd and a bounded own-handle wait.
+This source was not imported, syntax-compiled, tested or executed. Parent's
+CPUAdmission provider-parameter patch, immutable source freeze and explicit
+runtime release remain required; no current resource/authority claim follows.
