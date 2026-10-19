@@ -1,19 +1,33 @@
 # Execution coordination state
 
-Updated: 2026-10-19 20:27 Asia/Shanghai. Plan anchor: `46df82670a56a4498b6d6e23ad57859eb7c36945`. Maintained only on `hrl/iscas2027-dtc-closure-exec-174-v1`; planning branch unchanged.
+Updated: 2026-10-19 20:37:34 Asia/Shanghai. Status: **SAFE_PREPARATION_JOINED_WAIT_AG4_TERMINAL_AUTHORITY**. Plan anchor: `46df82670a56a4498b6d6e23ad57859eb7c36945`. Maintained only on `hrl/iscas2027-dtc-closure-exec-174-v1`; planning branch unchanged. This is a preparation checkpoint, not final evidence-closure completion.
 
 |Role|Actual state|Immutable evidence / branch|
 |---|---|---|
-|Existing AG4|Live runner/simulator and execution lock observed once; no terminal publication; untouched|`9ece18f6fdb6de16ee95f35caa6fad1fec765fc9` is preregistration only|
+|Existing AG4|Live runner/simulator and execution lock observed at20:27:02; remote checked20:37:34 still has no terminal publication; untouched|`9ece18f6fdb6de16ee95f35caa6fad1fec765fc9` is preregistration only; current launch count/results not inferred|
 |Coordinator `/root`|STARTED_SAFE_PREPARATION_ONLY; sole designated later simulation coordinator, not admitted to dispatch|`execution/START_RECEIPT.json`|
-|COV1 `/root/cov1`|ACK received; parallel preparation; tests NOT_STARTED|ACK `c328acaa38c84ab27a1b5fbe8a8e15e9a2fd26df`; `hrl/iscas2027-dtc-cov1-inputs-174-v1`|
-|SEM1 `/root/sem1`|ACK received; parallel preparation; tests NOT_STARTED|ACK `5e6c13b733c08470061bb0f953389c1c2ebc8a90`; `hrl/iscas2027-dtc-sem1-values-174-v1`|
-|ROB1 `/root/rob1`|ACK received; parallel preparation; tests NOT_STARTED|ACK `a8a0fc962ea65f612db5a442e27157cf228dd1ae`; `hrl/iscas2027-dtc-rob1-controls-174-v1`|
+|COV1 `/root/cov1`|Safe preparation finished/published/read back; agent idle; CPU work NOT_STARTED|Final prep `8f76a8a50ec5e56dd49f93224a64b253383b0420`; `hrl/iscas2027-dtc-cov1-inputs-174-v1`|
+|SEM1 `/root/sem1`|Safe preparation finished/published/read back; agent idle; CPU work NOT_STARTED|Final prep `e2eea8b8b406a227592e19638ae542c12dd1ecf9`; `hrl/iscas2027-dtc-sem1-values-174-v1`|
+|ROB1 `/root/rob1`|Safe preparation finished/published/read back; agent idle; CPU work NOT_STARTED|Final prep `e37b0920b957c162c6640230ee7ce3a9c391e556`; `hrl/iscas2027-dtc-rob1-controls-174-v1`|
 |New CPU tests / compiles / trace scans|NOT_STARTED; WAIT_AG4_TERMINAL_AUTHORITY|No CPU PASS claimed|
 |New full simulations|0/32 actual starts, no executable family frozen, no execution lock|`execution/BUDGET_LEDGER.json`|
 |Final F|NOT_FROZEN; no AE/AD result inferred|`execution/SELECTION.json`|
 |Paper / DC|EN-v0.17 retained; DC user-owned|No paper modification or EDA execution|
 
-Worker worktrees start at the pinned plan commit and have separate output roots below `/workspace/dtc-evidence-closure-20261019-v1/`. Workers cannot launch full simulators. Unexecuted code is PREPARED_NOT_TESTED. Authoritative deliveries will be exact GitHub commits recorded here, not chat summaries. ACK commits are start evidence, not final workpackage completion.
+All three immutable deliveries were read and joined once at `4ec3cd4da579280b9fc85ed9b47e7c4dfcc0cc09`. Only disjoint worker pack paths changed; no production source conflict or Core integration occurred. `execution/WORKER_DELIVERIES.json` independently binds61 exact pack blobs, trees and dedicated remote readbacks, and verifies clean worker worktrees. SEM1's consumed COV1 source/access index blob is unchanged in COV1's final delivery. No worker tool/header/patch is applied, imported or executed by this join.
 
-Next gate: consume AG4's independently published immutable terminal evidence and verify completion, identities, child exits and lock release. No disappearance-only takeover, restart, contract change, active raw polling, or automatic deferred dispatch. See `execution/AUTHORITY_COMPATIBILITY.md`. Independent preparation continues while the gate is closed.
+Worker worktrees start at the pinned plan commit and use separate output roots below `/workspace/dtc-evidence-closure-20261019-v1/`. Workers cannot launch full simulators. Code remains PREPARED_NOT_TESTED. ACK and final safe-preparation commits are not CPU/full workpackage completion receipts.
+
+|Preparation finding|Remaining gate|
+|---|---|
+|Eight C+ and four O historical controls catalogued|Per-point reuse/source/effective-option/initial-state/scope qualification; zero imported controls yet|
+|N1 BICG4096x65281 fixed;256 CTA in first kernel,16 in second|BLOCKED_CAPTURE|
+|N2 naive FP32 GEMM2290cube fixed; single B exceeds20MiB|BLOCKED_SOURCE_BINDING_AND_CAPTURE; no silent main-GEMM substitution|
+|N3 existing SM70 bcsstk18 JDS indexed-gather capture fixed|Current decoder, full50-kernel identity and index/domain qualification; no SM89 alias|
+|SEM1 source/ABI gaps and12 falsifiable plans delivered|All eight primary production-value/native rows UNPROVEN; zero new executed value tests; unresolved RAW is not observed wrong value|
+|ROB1 shared sector quota and exact fair hash/AD metric definitions delivered|Diagnostic patch/CPU tests unapplied and unexecuted; C+ implementation only if AE selected|
+|Runner lifecycle reuse and two-isolated-guard plan prepared|Post-release exact role registration, multi-root/helper qualification and resource admission|
+
+At20:37:34 a lightweight process/lock check found no new-plan worker/dispatcher process or execution FLOCK (only the check's transient rg). No own background continuation remains. The planning remote is still the pinned46df8267 commit. AG4 has not been reset, signalled, restarted, modified or read through active raw/maps. This checkpoint has no new performance, native correctness or PPA claim. `execution/SCIENTIFIC_SCOPE_AT_PREPARATION.md` gives the evidence-axis limits and provisional English scope guidance without editing v0.17.
+
+Next gate: consume AG4's independently published immutable terminal evidence and verify completion, identities, child exits and lock release. Only then freeze F/provisional-O decision, admit focused CPU work and build exact executable families. No disappearance-only takeover, restart, contract change, active raw polling, or automatic deferred dispatch. See `execution/AUTHORITY_COMPATIBILITY.md`. The goal remains incomplete while this external gate is closed; no user approval is requested for the already-authorized next work.
