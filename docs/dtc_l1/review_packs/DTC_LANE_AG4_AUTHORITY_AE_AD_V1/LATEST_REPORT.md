@@ -1,0 +1,3 @@
+# AG4 CPU-qualified; performance registration pending
+
+CPU authority repair passed12 real lifecycle cases and4 ancestry/external negatives, with4 real full periodic samples in the long reader fixture. Mapping8/resource10/strict18 and production runner14 checks passed. All511 original input member SHAs match. All91 prior-measurement/source/publication identity checks passed. Independently qualified prior AG3 GEMM1071405cycles is an imported control, not an AG4 new measurement. No real AG4 simulator starts or performance UUIDs yet. Core/binaries/models are unchanged. Five new points require immutable registration, GitHub read-back and fresh admission before execution.

@@ -1,0 +1,388 @@
+--- AG3/tools/guarded_process.py
++++ AG4/tools/guarded_process.py
+@@ -10,8 +10,9 @@
+ from mapping_roles import Sequence,validate_manifest,verify_file,require,Reject,sha
+ from common import write,now
+ import oom_watchdog
+-
+-ROOT=Path('/workspace/dtc-lane-ag3-aead-screen-174-v1')
++from ownership import Ownership,identity,CONFIRM_SECONDS
++
++ROOT=Path('/workspace/dtc-lane-ag4-authority-aead-174-v1')
+ MAP_SYSCALLS=(9,10,11,25,30,67,329) # mmap,mprotect,munmap,mremap,shmat,shmdt,pkey_mprotect
+ OPTIONS=1|2|4|8|16|64|128|0x100000
+ class Regs(ctypes.Structure):
+@@ -32,7 +33,7 @@
+  require(platform.machine()=='x86_64','UNQUALIFIED_ARCHITECTURE')
+  target=str(Path(argv[0]).resolve());require(target in manifests,'TARGET_NOT_REGISTERED')
+  if purpose=='CPU_FIXTURE':
+-  require(Path(target).name.startswith('ag3-cpu-') and str(ROOT/'build')+'/' in target,'CPU_PHASE_CANNOT_START_SIMULATOR')
++  require(Path(target).name.startswith('ag4-cpu-') and str(ROOT/'build')+'/' in target,'CPU_PHASE_CANNOT_START_SIMULATOR')
+  else:
+   require(purpose=='SIMULATION' and capability is not None,'SIMULATION_CAPABILITY_REQUIRED')
+   capability(target,argv,env) # immutable publication/spec/UUID check, before any fork
+@@ -65,7 +66,7 @@
+   except BaseException:os._exit(126)
+  os.close(out);os.close(err)
+  alive={pid};states={};exits={};owned={pid};main_rc=None;forced=None;frames=0;started=time.monotonic();last_sample=started-10;last_oom=started-.25
+- error=None;main_identity=False;quarantined=[];watch=None
++ error=None;main_identity=False;quarantined=[];watch=None;ownership=None;parents={};events_since_observer=0
+  # No foreign process can enter owned; additions come only from our ptrace fork/clone events.
+  def image(tid,exe=None):
+   exe=exe or os.readlink(f'/proc/{tid}/exe');require(exe in manifests,'UNKNOWN_EXEC_IMAGE:'+exe)
+@@ -85,6 +86,14 @@
+   name=f'{frames:06d}_pid{tid}.maps';(mapsdir/name).write_text(text)
+   eventlog.write(json.dumps(dict(utc=now(),monotonic_ns=time.monotonic_ns(),pid=tid,exe=exe,stage=stage,mapping_syscall=st['mapping_nr'],maps=name,maps_sha256=sha(mapsdir/name),cache_present='/etc/ld.so.cache' in paths,removed_files=removed,startup_closed=st['closed'],validated_files=sorted(paths)))+'\n');eventlog.flush();frames+=1
+  def resume(tid,syscall_exit=False,signum=0):ptr(24 if syscall_exit else 7,tid,signum)
++ def periodic():
++  nonlocal last_oom,last_sample
++  instant=time.monotonic()
++  if observer and instant-last_oom>=.25:
++   reason=observer(pid,instant-last_sample>=10,ownership)
++   last_oom=instant
++   if instant-last_sample>=10:last_sample=instant
++   if reason:raise Reject(reason)
+  try:
+   write(dest/'FORK_CHILD.json',dict(pid=pid,fork_monotonic_ns=fork_ns,requested_executable=target,purpose=purpose,real_simulator=purpose=='SIMULATION'),exclusive=True)
+   child,status=os.waitpid(pid,0)
+@@ -94,28 +103,32 @@
+   require(os.WIFSTOPPED(status) and os.WSTOPSIG(status)==signal.SIGTRAP,'INITIAL_EXEC_TRAP_REQUIRED')
+   ticks=int(Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()[19])
+   write(dest/'CHILD.json',dict(pid=pid,start_ticks=ticks,fork_monotonic_ns=fork_ns,purpose=purpose,actual_fork=True,real_simulator=purpose=='SIMULATION'),exclusive=True)
++  ownership=Ownership(pid)
+   watch=oom_watchdog.start(pid,dest/'OOM_MONITOR.jsonl',baseline=oom_baseline)
+   ptr(0x4200,pid,OPTIONS);image(pid);capture(pid,'INITIAL_EXEC');resume(pid)
+   while alive:
+    if watch[2]['reason']:raise Reject(watch[2]['reason'])
+    instant=time.monotonic()
+    if instant-started>timeout:raise Reject('TIMEOUT_'+str(timeout))
+-   if observer and instant-last_oom>=.25:
+-    reason=observer(pid,instant-last_sample>=10)
+-    last_oom=instant
+-    if instant-last_sample>=10:last_sample=instant
+-    if reason:raise Reject(reason)
++   ownership.check_deadlines()
++   # Finite drain batch bounds observer latency without forgetting a consumed event.
++   if events_since_observer>=256:
++    periodic();events_since_observer=0
+    ready=next((i for i,(qpid,_) in enumerate(quarantined) if qpid in owned),None)
+    if ready is None:child,status=os.waitpid(-1,os.WNOHANG|0x40000000)
+    else:child,status=quarantined.pop(ready)
+-   if child==0:time.sleep(.001);continue
++   if child==0:
++    periodic();events_since_observer=0;time.sleep(.001);continue
++   events_since_observer+=1
+    if child not in owned:
+     require(os.WIFSTOPPED(status),'UNCONFIRMED_NONSTOP_WAIT_STATUS')
++    ownership.quarantine(child,'ACTUAL_WAIT_STOP_BEFORE_PARENT_EVENT')
+     quarantined.append((child,status))
+     eventlog.write(json.dumps(dict(utc=now(),quarantined_wait_pid=child,status=status,reason='kernel child stop may precede parent fork event; no resume/signal before ownership confirmation'))+'\n');eventlog.flush()
+     continue
+    if os.WIFEXITED(status) or os.WIFSIGNALED(status):
+     rc=os.waitstatus_to_exitcode(status);alive.discard(child);exits[child]=rc
++    ownership.confirmed.pop(child,None)
+     st=states.get(child)
+     if child==pid:main_rc=rc
+     require(rc==0,'NONZERO_OWNED_PROCESS_EXIT:'+str(child)+':'+str(rc))
+@@ -126,9 +139,10 @@
+    if child not in states:
+     # New fork/clone begins with inherited confirmed image; an exec creates its own sequence.
+     exe=os.readlink(f'/proc/{child}/exe');image(child,exe)
+-    parent_state=next((v for tid,v in states.items() if tid!=child and v['exe']==exe and v['closed']),None)
++    parent_state=states.get(parents.get(child))
++    require(parent_state and parent_state['exe']==exe,'INHERITED_IMAGE_PARENT_MISMATCH')
+     if parent_state:
+-     states[child]['closed']=True;states[child]['sequence'].ever=set(parent_state['sequence'].ever);states[child]['sequence'].cache_disappearances=parent_state['sequence'].cache_disappearances
++     states[child]['closed']=parent_state['closed'];states[child]['sequence'].ever=set(parent_state['sequence'].ever);states[child]['sequence'].cache_disappearances=parent_state['sequence'].cache_disappearances
+     ptr(0x4200,child,OPTIONS);capture(child,'INHERITED_FORK_CLONE_STOP')
+    st=states[child]
+    if sig==(signal.SIGTRAP|0x80):
+@@ -137,8 +151,8 @@
+     regs=Regs();ptr(12,child,ctypes.byref(regs));nr=int(regs.orig_rax);require(nr in MAP_SYSCALLS,'SECCOMP_RULE_MISMATCH')
+     st['mapping_nr']=nr;capture(child,'MAPPING_SYSCALL_ENTRY');st['pending_exit']=True;resume(child,True)
+    elif sig==signal.SIGTRAP and event in (1,2,3):
+-    new=ctypes.c_ulonglong();ptr(0x4201,child,ctypes.byref(new));newpid=int(new.value);require(newpid not in owned,'DUPLICATE_FORK_EVENT');owned.add(newpid);alive.add(newpid)
+-    eventlog.write(json.dumps(dict(utc=now(),parent_pid=child,new_owned_pid=newpid,event=event))+'\n');eventlog.flush();resume(child)
++    new=ctypes.c_ulonglong();ptr(0x4201,child,ctypes.byref(new));newpid=int(new.value);proof=ownership.confirm(child,newpid,event);owned.add(newpid);alive.add(newpid);parents[newpid]=child
++    eventlog.write(json.dumps(dict(utc=now(),**proof))+'\n');eventlog.flush();resume(child)
+    elif sig==signal.SIGTRAP and event==4:
+     image(child);capture(child,'EXEC_EVENT');resume(child)
+    elif sig==signal.SIGTRAP and event==6:
+@@ -153,23 +167,46 @@
+  except BaseException as exc:
+   error=repr(exc);forced=str(exc)
+  finally:
+-  # Exact unreaped descendants only; no name matching, process groups or foreign PIDs.
+-  for child in list(alive):
+-   try:os.kill(child,signal.SIGKILL)
+-   except ProcessLookupError:pass
+-  while alive:
+-   try:
+-    child,status=os.waitpid(-1,0x40000000)
+-    if os.WIFEXITED(status) or os.WIFSIGNALED(status):alive.discard(child);exits[child]=os.waitstatus_to_exitcode(status)
+-    elif os.WIFSTOPPED(status):
+-     try:ptr(7,child,signal.SIGKILL)
++  # Drain parent-event proof even on STOP, before signalling any new PID.
++  # Every signal targets an unreaped, exact, event-confirmed process instance.
++  cleanup_deadline=time.monotonic()+CONFIRM_SECONDS
++  signalled=set()
++  while alive or quarantined or (ownership and ownership.pending):
++   try:child,status=os.waitpid(-1,os.WNOHANG|0x40000000)
++   except ChildProcessError:
++    alive.clear();break
++   if child==0:
++    for current in list(alive):
++     if current in signalled:continue
++     try:
++      if ownership:ownership.same(current)
++      os.kill(current,signal.SIGKILL);signalled.add(current)
+      except ProcessLookupError:pass
+-   except ChildProcessError:alive.clear()
++    if time.monotonic()>cleanup_deadline:
++     error=error or 'CLEANUP_PENDING_PARENT_EVENT_UNRESOLVED';forced=forced or error;break
++    time.sleep(.001);continue
++   if os.WIFSTOPPED(status):
++    event=status>>16
++    if child in owned and event in (1,2,3):
++     new=ctypes.c_ulonglong();ptr(0x4201,child,ctypes.byref(new));newpid=int(new.value)
++     proof=ownership.confirm(child,newpid,event);owned.add(newpid);alive.add(newpid);parents[newpid]=child
++     quarantined=[q for q in quarantined if q[0]!=newpid]
++     eventlog.write(json.dumps(dict(utc=now(),stage='STOP_CLEANUP_PARENT_EVENT',**proof))+'\n');eventlog.flush()
++    if child in owned:
++     if ownership:ownership.same(child)
++     ptr(7,child,signal.SIGKILL)
++    else:
++     ownership.quarantine(child,'CLEANUP_WAIT_STOP');quarantined.append((child,status))
++   elif os.WIFEXITED(status) or os.WIFSIGNALED(status):
++    require(child in owned,'CLEANUP_UNCONFIRMED_EXIT')
++    alive.discard(child);exits[child]=os.waitstatus_to_exitcode(status)
++    quarantined=[q for q in quarantined if q[0]!=child]
++    if ownership:ownership.confirmed.pop(child,None);ownership.pending.pop(child,None)
+   if watch is not None:
+    oom_watchdog.finish(watch)
+    if watch[2]['reason']:
+     error=error or watch[2]['reason'];forced=watch[2]['reason']
+   eventlog.close()
+-  terminal=dict(utc=now(),status='PASS_GUARDED_NATURAL_EXIT0' if error is None else 'STOP_GUARDED_PROCESS',purpose=purpose,root_pid=pid,returncode=main_rc,forced_reason=forced,exception=error,identity_pass=main_identity and error is None,owned_process_exits=exits,owned_children_live=0,unconfirmed_wait_pids=[v[0] for v in quarantined],snapshots=frames,simulator_starts=int(purpose=='SIMULATION'),wall_seconds_nonperformance=time.monotonic()-started)
++  terminal=dict(utc=now(),status='PASS_GUARDED_NATURAL_EXIT0' if error is None else 'STOP_GUARDED_PROCESS',purpose=purpose,root_pid=pid,returncode=main_rc,forced_reason=forced,exception=error,identity_pass=main_identity and error is None,owned_process_exits=exits,owned_children_live=len(alive),ownership=ownership.snapshot() if ownership else None,unconfirmed_wait_pids=[v[0] for v in quarantined],snapshots=frames,simulator_starts=int(purpose=='SIMULATION'),wall_seconds_nonperformance=time.monotonic()-started)
+   write(dest/'TERMINAL.json',terminal,exclusive=True)
+  return terminal
+--- AG3/tools/review_authority.py
++++ AG4/tools/review_authority.py
+@@ -8,7 +8,7 @@
+ CONT='continuations/USER_RECHECK_20261018T030133Z/AUTHORITY_AND_FLOCK_AUDIT.json'
+ 
+ 
+-def review(snapshot_data,own_owner=None):
++def review(snapshot_data,own_owner=None,ownership=None):
+     historic=json.loads(blob(FW_REPO,AA5,AA5_PACK+'/'+CONT))
+     known={p['pid']:p for p in historic['reviewed_other_controls']}
+     sources=[]
+@@ -21,11 +21,16 @@
+         sources.append(dict(path=str(path),expected_sha256=h['sha256'],actual_sha256=actual,
+             classification='PUBLISHED_AA5_REVIEW_PLUS_CURRENT_SHA_MATCH_OUTPUT_ONLY_CALLEES',
+             source_review_commit=AA5,execution_review=h['execution_review']))
+-    controls=[];unknown=[];foreign=[];own=[]
++    controls=[];unknown=[];foreign=[];own=[];pending=[]
+     processes=snapshot_data['processes']
+     for p in processes:
+         args=p.get('argv',[])
+         if p['is_simulator']:
++            classification=ownership.classify(p) if ownership else 'UNKNOWN'
++            if classification=='CONFIRMED':
++                own.append(dict(pid=p['pid'],start_ticks=p['start_ticks'],classification='OWN_PTRACE_EVENT_CONFIRMED_INSTANCE'));continue
++            if classification=='PENDING':
++                pending.append(dict(pid=p['pid'],start_ticks=p['start_ticks'],classification='PENDING_QUARANTINED_NO_AUTHORITY_PASS'));continue
+             if own_owner and p['pid']==own_owner.get('child_pid') and p['start_ticks']==own_owner.get('child_start_ticks'):
+                 own.append(dict(pid=p['pid'],classification='OWN_REGISTERED_AG_SIMULATOR'));continue
+             # External EP-L2 is an independently authorized project; its actual
+@@ -77,7 +82,8 @@
+         no_unknown_DTC_dispatch_authority_or_simulator=not unknown,
+         all_DTC_FLOCK_holders_source_reviewed_or_own_AG=all(r['output_only_collector'] or r['own_AG_execution'] or r['external_EP_L2_resource_counted'] for r in locks),
+         no_retired_Core41_auto_dispatch_FLOCK=not any('autodispatch_v1.lock' in r['path'] for r in locks))
+-    return dict(status='PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY' if all(checks.values()) else 'STOP_AUTHORITY_NOT_CLOSED',
++    return dict(status=('PENDING_QUARANTINED_NO_AUTHORITY_PASS' if pending or (ownership and ownership.pending) else 'PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY') if all(checks.values()) else 'STOP_AUTHORITY_NOT_CLOSED',
++        pending_quarantined=pending,
+         utc=now(),checks=checks,reviewed_controls=controls,unknown_controls=unknown,foreign_projects=foreign,
+         own_AG_processes=own,remaining_DTC_FLOCKs=locks,source_review=sources,
+         AA5_published_commit=AA5,AA5_actual_starts=1,AA5_complete_strict_passes=0,
+--- AG3/tools/run_screen.py
++++ AG4/tools/run_screen.py
+@@ -1,4 +1,4 @@
+-"""AG3 six reservations, sequential, fail-stop. Only --dispatch can run sims.
++"""AG4 five reservations, sequential, fail-stop. Only --dispatch can run sims.
+ CPU-only tests import pure gates / the exact guarded_process engine instead.
+ """
+ from common import *
+@@ -10,16 +10,16 @@
+ from mapping_roles import validate_manifest,verify_file
+ import fcntl,signal,time,shutil,argparse,uuid
+ 
+-ORDER=['BASE_GEMM','BASE_Gaussian','AE_GEMM','AE_Gaussian','AD_GEMM','AD_Gaussian']
++ORDER=['BASE_Gaussian','AE_GEMM','AE_Gaussian','AD_GEMM','AD_Gaussian']
+ 
+ def validate_records(records,specs):
+  reservations={s['attempt_uuid'] for s in specs}
+- require(len(specs)==len(reservations)==6,'SIX_UNIQUE_UUID_RESERVATIONS')
+- require([s['point'] for s in specs]==ORDER,'FIXED_SIX_POINT_ORDER')
++ require(len(specs)==len(reservations)==5,'FIVE_UNIQUE_UUID_RESERVATIONS')
++ require([s['point'] for s in specs]==ORDER,'FIXED_FIVE_POINT_ORDER')
+  require(all(uuid.UUID(v).version==4 for v in reservations),'STANDARD_UUID4_REQUIRED')
+  starts=[r['attempt_uuid'] for r in records]
+- require(len(starts)==len(set(starts)) and len(starts)<=6,'BUDGET_CAP_OR_DUPLICATE_START')
+- require(set(starts)<=reservations,'FOREIGN_UUID_IN_AG3_RAW')
++ require(len(starts)==len(set(starts)) and len(starts)<=5,'BUDGET_CAP_OR_DUPLICATE_START')
++ require(set(starts)<=reservations,'FOREIGN_UUID_IN_AG4_RAW')
+  require(starts==[s['attempt_uuid'] for s in specs[:len(starts)]],'START_PREFIX_ORDER')
+  return starts
+ 
+@@ -33,15 +33,16 @@
+  for m in json.loads((PACK/'RUNTIME_MAPPING_MANIFESTS.json').read_text()).values():validate_manifest(m)
+ 
+ def publication_check():
++ require(not git(FW,'status','--porcelain'),'FRAMEWORK_WORKTREE_NOT_CLEAN')
+  receipt=json.loads((RAW/'PREREG_PUBLICATION_READBACK.json').read_text());head=receipt['head']
+- require(receipt['fetched_head']==head==git(FW,'rev-parse','refs/ag3-publication/preregistered'),'PUSH_FETCH_BACK_REQUIRED')
++ require(receipt['fetched_head']==head==git(FW,'rev-parse','refs/ag4-publication/preregistered'),'PUSH_FETCH_BACK_REQUIRED')
+  require(git(FW,'merge-base','--is-ancestor',head,'HEAD')=='','REGISTERED_HEAD_ANCESTRY')
+  path=PACK/'EXECUTABLE_PREREGISTRATION.json';require(sha(path)==receipt['manifest_sha256'],'REGISTERED_MANIFEST_SHA')
+  manifest=json.loads(path.read_text());require(manifest['status']=='EXECUTABLE_PREREGISTERED_NOT_YET_STARTED','EXECUTABLE_REGISTRATION_REQUIRED')
+  check_files(manifest)
+  for name,digest in manifest['files'].items():require(hashlib.sha256(blob(FW,head,str((PACK/name).relative_to(FW)))).hexdigest()==digest,'PUBLISHED_BLOB_CHANGED:'+name)
+  require(git(CORE,'rev-parse','HEAD')==manifest['core_commit'] and not git(CORE,'status','--porcelain'),'CORE_IDENTITY_NOT_CLOSED')
+- require(git(CORE,'rev-parse','refs/ag3-publication/core-final')==manifest['core_commit'],'CORE_PUBLICATION_REQUIRED')
++ require(git(CORE,'rev-parse','refs/ag4-source/core-final')==manifest['core_commit'],'CORE_PUBLICATION_REQUIRED')
+  return manifest,head
+ 
+ def admission(label,owner):
+@@ -54,12 +55,14 @@
+  return b
+ 
+ def require_BASE_gate(spec,specs):
++ reuse=json.loads((PACK/'AG3_GEMM_BASE_REUSE_QUALIFICATION.json').read_text())
++ require(reuse['status']=='PASS_REUSE_AG3_GEMM_BASE_FOR_AG4_DISCOVERY','IMPORTED_GEMM_BASE_REUSE_NOT_QUALIFIED')
+  if spec['arm']=='BASE':return
+- for base in specs[:2]:
+-  path=RAW/'attempts'/(base['point']+'_'+base['attempt_uuid'])/'STRICT.json'
+-  require(path.is_file(),'BOTH_COMPLETE_BASE_STRICT_RECEIPTS_REQUIRED')
+-  row=json.loads(path.read_text())
+-  require(row.get('performance_accepted') is True and row.get('calibration',{}).get('status')=='PASS_FULL_INPUT_CYCLES_AND_ALL_FROZEN_COMMON_METRICS','BASE_STRICT_CALIBRATION_NOT_CLOSED')
++ base=specs[0]
++ path=RAW/'attempts'/(base['point']+'_'+base['attempt_uuid'])/'STRICT.json'
++ require(path.is_file(),'NEW_FULL_GAUSSIAN_BASE_STRICT_RECEIPT_REQUIRED')
++ row=json.loads(path.read_text())
++ require(row.get('performance_accepted') is True and row.get('calibration',{}).get('status')=='PASS_FULL_INPUT_CYCLES_AND_ALL_FROZEN_COMMON_METRICS','BASE_STRICT_CALIBRATION_NOT_CLOSED')
+ 
+ def run_one(spec,specs,owner):
+  publication_check();require_BASE_gate(spec,specs);require(spec['attempt_uuid'] not in budget(specs),'NO_UUID_RESTART')
+@@ -78,7 +81,7 @@
+  write(run/'FINAL_PRE_FORK.json',dict(snapshot=fresh,authority=authority,resource_checks=checks))
+  policy=RuntimePolicy(fresh);next_full=[0.];last_fault=[0];last_progress=[0.];interrupted=[]
+  old={s:signal.signal(s,lambda signum,frame:interrupted.append(signum)) for s in [signal.SIGTERM,signal.SIGINT,signal.SIGHUP]}
+- def observe(pid,full_hint):
++ def observe(pid,full_hint,ownership):
+   if interrupted:return 'COORDINATOR_SIGNAL_'+str(interrupted[0])
+   cg={k:int(v) for k,v in (l.split() for l in Path('/sys/fs/cgroup/memory.events').read_text().splitlines())}
+   if any(cg[k]>fresh['cgroup']['events'][k] for k in ['oom','oom_kill']):return 'NEW_CGROUP_OOM_OR_OOM_KILL'
+@@ -86,7 +89,7 @@
+   current=snapshot();own=proc(pid)
+   if own:owner['child_pid']=pid;owner['child_start_ticks']=own['start_ticks']
+   fault=own['majflt'] if own else last_fault[0];decision=policy.observe(current,fault,last_fault[0]);last_fault[0]=fault
+-  auth=review(current,owner);next_full[0]=time.monotonic()+decision['next_full_sample_seconds']
++  auth=review(current,owner,ownership);next_full[0]=time.monotonic()+decision['next_full_sample_seconds']
+   with (run/'RESOURCE_MONITOR.jsonl').open('a') as log:log.write(json.dumps(dict(snapshot=current,own=own,decision=decision,authority=auth))+'\n')
+   if time.monotonic()-last_progress[0]>=60 or decision['decision']!='CONTINUE':
+    print(json.dumps(dict(point=spec['point'],pid=pid,resource=decision['decision'],sampled_RSS_bytes=own['rss_bytes'] if own else None,io_full=current['pressure']['io']['full']['avg10'],elapsed_seconds=int((current['monotonic_ns']-fresh['monotonic_ns'])/1e9))),flush=True);last_progress[0]=time.monotonic()
+@@ -104,7 +107,8 @@
+    require(not (run/'ENGINE/FORK_CHILD.json').exists(),'NO_SECOND_REAL_CHILD')
+   manifests=json.loads((PACK/'RUNTIME_MAPPING_MANIFESTS.json').read_text())
+   engine=run_guarded(args,spec['runtime_environment'],manifests,run/'ENGINE','SIMULATION',7200,capability,observe)
+-  final=snapshot();decision=policy.observe(final,last_fault[0],last_fault[0]);write(run/'RESOURCE_FINAL.json',dict(snapshot=final,decision=decision))
++  final=snapshot();decision=policy.observe(final,last_fault[0],last_fault[0]);final_auth=review(final,owner);write(run/'RESOURCE_FINAL.json',dict(snapshot=final,decision=decision,authority=final_auth))
++  require(final_auth['status']=='PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY','FINAL_AUTHORITY_NOT_CLOSED')
+   write(run/'RUN_TERMINAL.json',dict(returncode=engine['returncode'],forced_reason=engine['forced_reason'] or ('FINAL_RESOURCE_STOP' if decision['decision']=='STOP' else None),identity_pass=engine['identity_pass'],engine=engine),exclusive=True)
+   os.link(run/'ENGINE/stdout',run/'simulator.stdout');os.link(run/'ENGINE/stderr',run/'simulator.stderr')
+   result=collect(run,spec)
+@@ -130,12 +134,12 @@
+   write(RAW/'AUTHORITY_ACTIVE.json',dict(owner=owner,publication=head,max_concurrency=1),exclusive=True)
+   try:
+    for spec in specs:
+-    if spec['arm']!='BASE':require(len([r for r in results if r['arm']=='BASE' and r['performance_accepted']])==2,'BOTH_BASES_FULL_CALIBRATED_REQUIRED')
++    require_BASE_gate(spec,specs)
+     result=run_one(spec,specs,owner);results.append(result);print('TERMINAL',spec['point'],result['status'],result.get('cycles'),flush=True)
+     require(result['performance_accepted'],'STRICT_IDENTITY_RESOURCE_OR_CALIBRATION_STOP:'+spec['point'])
+   except BaseException as exc:failure=repr(exc);print('COHORT_STOP',failure,flush=True)
+   finally:
+-   write(RAW/'COHORT_TERMINAL.json',dict(utc=now(),status='STOP' if failure else 'COMPLETE_SIX_POINT_DISCOVERY',reason=failure,reserved_starts=len(budget(specs)),actual_fork_children=len(list((RAW/'attempts').glob('*/ENGINE/FORK_CHILD.json'))),results=results,no_automatic_dispatch=True),exclusive=True)
++   write(RAW/'COHORT_TERMINAL.json',dict(utc=now(),status='STOP' if failure else 'COMPLETE_FIVE_POINT_DISCOVERY_WITH_IMPORTED_GEMM_CONTROL',reason=failure,reserved_starts=len(budget(specs)),actual_fork_children=len(list((RAW/'attempts').glob('*/ENGINE/FORK_CHILD.json'))),results=results,no_automatic_dispatch=True),exclusive=True)
+  write(RAW/'AUTHORITY_RELEASE.json',dict(utc=now(),own_lock_closed=True,owner=owner,no_automatic_dispatch=True,foreign_signals=0),exclusive=True)
+ 
+ if __name__=='__main__':
+--- AG3/tools/common.py
++++ AG4/tools/common.py
+@@ -12,8 +12,8 @@
+ CORE=Path('/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1')
+ FW_REPO=Path('/workspace/repos/accel-sim-framework')
+ CORE_REPO=Path('/workspace/repos/gpgpu-sim_distribution')
+-RAW=Path('/workspace/dtc-lane-ag3-aead-screen-174-v1/raw')
+-BUILD=Path('/workspace/dtc-lane-ag3-aead-screen-174-v1/build')
++RAW=Path('/workspace/dtc-lane-ag4-authority-aead-174-v1/raw')
++BUILD=Path('/workspace/dtc-lane-ag4-authority-aead-174-v1/build')
+ X2='e32afdcf44be3374ff36d22568ed01a075459b6f'
+ FRAMEWORK_BUILD='8e43c75a5e2eb60a8466084602b7df8117111e89'
+ AA5='2d740ece2f5dbb6d99040a64f421e940687a48fa'
+--- AG3/tools/ownership.py
++++ AG4/tools/ownership.py
+@@ -0,0 +1,52 @@
++"""Finite, event-proven ownership. PPID/tracer evidence alone only quarantines."""
++import os,time
++from pathlib import Path
++from mapping_roles import require
++CONFIRM_SECONDS=2.0
++
++def identity(pid):
++ q=Path('/proc')/str(pid)
++ s=(q/'stat').read_text().rsplit(')',1)[1].split()
++ status=dict(l.split(':',1) for l in (q/'status').read_text().splitlines() if ':' in l)
++ return dict(pid=int(pid),start_ticks=int(s[19]),ppid=int(s[1]),state=s[0],tgid=int(status['Tgid']),tracer_pid=int(status['TracerPid']))
++
++class Ownership:
++ def __init__(self,root):
++  self.tracer=os.getpid();self.root=root;self.confirmed={root:identity(root)};self.pending={};self.events=[]
++ def same(self,pid):
++  live=identity(pid); require(live['start_ticks']==self.confirmed[pid]['start_ticks'],'OWN_PID_REUSED');return live
++ def quarantine(self,pid,source):
++  live=identity(pid)
++  require(live['tracer_pid']==self.tracer and live['state'] in ('t','T'),'PENDING_NOT_OWN_TRACEE_STOP')
++  if pid in self.confirmed:self.same(pid);return
++  prior=self.pending.get(pid)
++  if prior:require(prior['identity']['start_ticks']==live['start_ticks'],'PENDING_PID_REUSED')
++  else:self.pending[pid]=dict(identity=live,first_monotonic=time.monotonic(),source=source)
++ def confirm(self,parent,child,event):
++  require(event in (1,2,3),'NOT_PTRACE_PARENT_EVENT')
++  require(parent in self.confirmed,'WRONG_UNCONFIRMED_PARENT')
++  par=self.same(parent);new=identity(child)
++  require(new['tracer_pid']==self.tracer,'CHILD_WRONG_TRACER')
++  require(new['ppid']==parent or (new['tgid']==par['tgid'] and new['ppid']==par['ppid']),'PARENT_EVENT_ANCESTRY_CONTRADICTION')
++  require(child not in self.confirmed,'DUPLICATE_FORK_EVENT')
++  prior=self.pending.get(child)
++  if prior:require(prior['identity']['start_ticks']==new['start_ticks'],'PENDING_PID_REUSED')
++  self.confirmed[child]=new;self.pending.pop(child,None)
++  row=dict(parent_pid=parent,parent_start_ticks=par['start_ticks'],new_owned_pid=child,child_start_ticks=new['start_ticks'],child_ppid=new['ppid'],child_tgid=new['tgid'],event=event,proof='PTRACE_GETEVENTMSG_FROM_CONFIRMED_PARENT')
++  self.events.append(row);return row
++ def classify(self,p):
++  pid=p['pid']
++  if pid in self.confirmed:
++   require(p['start_ticks']==self.confirmed[pid]['start_ticks'],'AUTHORITY_OWN_PID_REUSED')
++   self.same(pid);return 'CONFIRMED'
++  try:live=identity(pid)
++  except (OSError,ValueError):return 'UNKNOWN'
++  if live['start_ticks']!=p['start_ticks']:return 'UNKNOWN'
++  # This admits no ownership: pending makes the whole authority verdict non-PASS.
++  if live['tracer_pid']==self.tracer and live['state'] in ('t','T'):
++   self.quarantine(pid,'PERIODIC_OBSERVER_BEFORE_PARENT_EVENT');return 'PENDING'
++  return 'UNKNOWN'
++ def check_deadlines(self):
++  for pid,p in self.pending.items():
++   require(time.monotonic()-p['first_monotonic']<=CONFIRM_SECONDS,'PARENT_EVENT_CONFIRMATION_TIMEOUT:'+str(pid))
++ def snapshot(self):return dict(confirmed=list(self.confirmed.values()),pending=list(self.pending.values()),confirmation_seconds=CONFIRM_SECONDS,proof_events=len(self.events))

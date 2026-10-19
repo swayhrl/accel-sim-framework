@@ -1,0 +1,364 @@
+# Goal: DTC_LANE_AG4_AUTHORITY_REPAIR_AND_AE_AD_CONVERGENCE_174_V1
+
+执行位置：**原174账户/容器，不是174-new。**
+
+本Goal已获得用户授权，按“CPU-only定点修复 → BASE复用资格 → 新批次预注册 → 最多5次真实模拟 → 完整strict与科学收口”的顺序连续执行。普通工程问题在本Goal内自行修复并继续；只有科学合同、身份、模型正确性、执行权或预算无法闭合时才STOP。
+
+不另开准备Goal，不重复发送启动指令，不修改、重启或恢复旧AG3。
+
+## 0. 固定来源和不可变边界
+
+首先fetch并read-back下列不可变提交：
+
+**Framework AG3终态**
+
+- 仓库：`swayhrl/accel-sim-framework`
+- Commit：`2f3a8c4b27780e2bf3818949a6e5356d9fd62327`
+- Review pack：`docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/`
+
+重点读取：
+
+- `LATEST_REPORT.md`
+- `ROOT_CAUSE_AND_FOLLOWUP.md`
+- `STOP_EVIDENCE.json`
+- `COMPLETION_AUDIT.md`
+- `FULL_MATRIX.tsv`
+- `PRODUCTION_RUNNER_CONTRACT.md`
+- `EXECUTABLE_PREREGISTRATION.json`
+- `NEW_BUILD_IDENTITY.json`
+- `ACTUAL_LOADER_LIFECYCLE_EVIDENCE.json`
+- `ACTUAL_OPTIONS_IDENTITY_REVIEW.json`
+- `execution_receipts/`
+- `tools/guarded_process.py`
+- `tools/review_authority.py`
+- `tools/run_screen.py`
+
+**固定Core**
+
+- 仓库：`swayhrl/gpgpu-sim`
+- AG3 Core：`c8090115bd57512b1b23fca7d925301fa620c751`
+- X2祖先：`e32afdcf44be3374ff36d22568ed01a075459b6f`
+
+AG3 Core只包含AE固定Tag hash与最终AD progressive wakeup，未集成AC、AC2或AF。
+
+**旧GEMM BASE资格**
+
+AG3已接受：
+
+- `BASE_GEMM = 1,071,405 cycles`
+- `1 kernel`
+- `1,024 CTA`
+- `739,246,080 active-thread instructions`
+- 完整strict PASS
+- 与历史T1-C全部冻结公共指标精确一致
+
+旧AG3实际运行产物身份：
+
+- `accel-sim.out` SHA256：`38158d03dcaecd847d0d6098603c7bc4bfd2a165c4e46f657930e5dedbd291bd`
+- `libcudart.so` SHA256：`aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2`
+- 编译使用的Framework源码：`8e43c75a5e2eb60a8466084602b7df8117111e89`
+- Core：`c8090115bd57512b1b23fca7d925301fa620c751`
+
+以上仅为已发布身份锚点，实际仍须重新核对完整源SHA、ELF build-id、动态依赖和运行文件。
+
+AG3原2次实际启动、1次完整PASS及Gaussian失败记录永久保留。旧UUID不得复用，旧AG3 raw、分支、锁和收据不得覆写。
+
+## 1. 建立独立AG4工作空间
+
+新Framework分支：
+
+`hrl/iscas2027-dtc-lane-ag4-authority-aead-174-v1`
+
+从固定AG3终态Framework commit派生。
+
+新review pack：
+
+`docs/dtc_l1/review_packs/DTC_LANE_AG4_AUTHORITY_AE_AD_V1/`
+
+新raw根：
+
+`/workspace/dtc-lane-ag4-authority-aead-174-v1`
+
+使用独立worktree和输出目录。
+
+原则：
+
+1. 原AG3 Framework/Core和全部raw只读。
+2. 本轮优先仅修改外部runner、guard、authority observer及必要的CPU测试。
+3. 不修改模拟器微架构、有限服务额度、统计定义、Core或真实模拟二进制。
+4. 保持AE/AD开关名称、默认OFF和原有语义。
+5. 不恢复AA5、旧AG或AG3的运行和预算。
+6. 不修改原44行、GM12、T/U结果或当前英文v0.17稿件。
+
+## 2. CPU-only修复真正的fork/observer竞态
+
+AG3在Gaussian的209/510 kernel附近停止。
+
+异常进程：
+
+- 已注册root PID：`4035496`
+- 未分类PID：`4042390`
+- PPID：`4035496`
+- trace-stop
+- 继承root的可执行文件和argv
+- CPU与I/O计数为0
+
+冻结代码中的关键问题：
+
+1. `guarded_process.py`可能在消费待处理的ptrace fork/clone事件前调用周期性observer。
+2. `review_authority.py`只接受已注册root PID作为自身模拟器。
+3. 尚未完成fork归属登记的子进程因此可能被误判为外部模拟器。
+
+当前最可能是pre-exec reader-helper竞态，但未捕获的父级fork事件和预期exec不能由推测补成事实。
+
+### 修复要求
+
+允许进行最小范围的事件消费、状态传递及authority分类修复。
+
+必须做到：
+
+- 使用真实ptrace fork/vfork/clone事件确认父子归属。
+- 同时校验PID、start_ticks和父进程身份。
+- 向周期性observer传递已经确认的自身进程集合。
+- 对尚未确认归属的trace-stopped子进程维持独立`PENDING/QUARANTINED`状态；未证实前不得判PASS、resume为可信进程或默默忽略。
+- 优先消费可取得的待处理ptrace事件，在事前固定的有限确认窗口内完成分类。
+- 不能完成确认、超时或出现矛盾时继续fail-closed STOP。
+- 每个确认后的exec必须重新验证冻结的可执行文件、loader和mapping角色。
+- 保留未知文件、真实外部模拟器和未知执行权的拒绝。
+- 清理时正确处理仍有pending fork事件的自身子进程，不遗漏进程，也不向外部进程发送信号。
+
+**严禁**通过以下方法绕过：
+
+- 仅按PPID相等就放行。
+- 仅按同路径、相同argv或相同可执行文件就放行。
+- 对整个子进程树设置永久白名单。
+- 关闭authority检查。
+- 忽略未知进程或所有non-ELF映射。
+- 放宽已有的文件身份和映射检查。
+- 延后补充冻结文件白名单。
+
+不要求建立通用Linux进程安全框架，只解决本次实际生产runner的受控进程生命周期。
+
+### CPU-only验证
+
+使用与生产相同的guard、observer和事件处理入口，运行不启动GPU模拟器的长时间辅助进程fixture。
+
+至少覆盖：
+
+1. 正常fork → exec → exit。
+2. 子进程先进入trace-stop、observer先于父级fork事件观察。
+3. 多轮真实周期性observer采样与多次reader helper启动。
+4. fork事件与authority检查交错。
+5. PID复用、错误父进程、未知exec及未知映射的负例。
+6. 外部模拟器身份负例（允许CPU模拟审计快照，不真实启动模拟器）。
+7. 缺失父级事件与有限确认超时。
+8. STOP发生时仍有pending事件的清理。
+9. 原`/etc/ld.so.cache`角色、SHA、映射及unmap规则。
+10. 正常完成、强制退出、异常清理和自身FLOCK释放。
+
+CPU阶段不得Popen实际`accel-sim.out`，不得生成真实模拟UUID。
+
+通过后保存原失败的复现收据、修复diff、正负例结果及明确覆盖边界。
+
+已完成的AG3 AE137项、AD最终CPU资格与11/11联合CTest不需要无目的地全部重跑；仅执行受本轮代码变化影响的最小回归和必要的接口等价验证。
+
+如发现必须修改Core、正式模拟器二进制或科学模型才能解决，停止并提交审查。
+
+## 3. 严格判定旧GEMM BASE能否复用
+
+这是进入五次新模拟的**硬门槛**，不得自动假定成立。
+
+从AG3不可变发布收据及现场原始产物重新独立核对：
+
+- Core commit及源文件身份；
+- 实际加载的`accel-sim.out`完整SHA、build-id；
+- `libcudart.so`及全部已注册动态依赖；
+- 原始输入、trace list、成员SHA和完整ROI；
+- 全部effective options，包括270项echo；
+- 64SM、64×8 Tag、OO128、640×128B物理池、ordinary16KiB、shared96KiB；
+- 4 Tag banks、lower cap32768及原finite服务；
+- K0、AE OFF、AD OFF及其他新机制OFF；
+- L2/DRAM/ICNT、clock、memcpy预载、flush/init和统计边界；
+- 已接受GEMM完整strict及T1-C校准；
+- 本轮唯一实质运行差异确实是外部进程归属observer修复。
+
+新批次优先复用字节完全一致的已冻结实际模拟器产物；允许在独立目录内使用已核验的相同字节副本，但不得因为重新编译得到“功能相似”的库就擅自认定等价。
+
+需要形成机器可读的：
+
+`AG3_GEMM_BASE_REUSE_QUALIFICATION.json`
+
+逐项列出旧AG3权威、新AG4预期、差异、SHA及PASS/STOP裁决。
+
+只有完整通过才能得出：
+
+`PASS_REUSE_AG3_GEMM_BASE_FOR_AG4_DISCOVERY`
+
+复用时必须明确标识该BASE为**AG3先前完整测量、经独立资格确认后导入的新批次比较控制**，而非AG4新启动。不得复制旧raw并伪造一个AG4 GEMM运行。
+
+若任一关键身份或比较条件不能闭合，则：
+
+`STOP_GEMM_BASE_REUSE_NOT_QUALIFIED`
+
+**此时不得启动任何新的完整模拟，也不得自行扩大预算到六次。**
+
+保存差异和所需六点重新配对建议，交用户决定。
+
+## 4. 新五点实验预注册
+
+只有第2、3节全部PASS后，才能进入本阶段。
+
+新批次最多**5次实际模拟器启动**，每点仅一次。
+
+固定顺序：
+
+| Order | Point | AE | AD |
+|---|---|---|---|
+| 0 | BASE_Gaussian | OFF | OFF |
+| 1 | AE_GEMM | ON | OFF |
+| 2 | AE_Gaussian | ON | OFF |
+| 3 | AD_GEMM | OFF | ON |
+| 4 | AD_Gaussian | OFF | ON |
+
+共同设置：
+
+- K0；
+- PAPER_OO；
+- 64×8 Tag；
+- PIB128；
+- 原80KiB物理池与16KiB ordinary缓存；
+- 原全部finite服务率；
+- 原完整GEMM/Gaussian输入；
+- 相同Core、实际二进制、环境和模型配置；
+- 仅每组注明的AE或AD开关不同。
+
+**不允许AE+AD组合，不允许K1、AC、AC2、AF或新参数扫描。**
+
+冻结5个全新UUID，每点一次真实fork/exec。原AG3六个UUID全部不再用于新批次。
+
+在首次真实启动前，必须完成：
+
+- 修复代码与CPU资格提交；
+- GEMM BASE复用裁决；
+- 五点UUID和完整身份预注册；
+- runner/guard/strict、资源规则和超时；
+- 比较公式、计量单位、字段可用性；
+- 当前环境全部ELF、loader、cache及依赖身份；
+- commit/push/fetch-back、HEAD/tree/blob和worktree clean核验。
+
+任何真实模拟器启动，即使因loader、identity或资源原因提前失败，也消耗该点的一次机会。
+
+### BASE校准门槛
+
+第一个新点Gaussian BASE必须完整自然退出且strict PASS，并精确校准历史T1-C：
+
+- `3,278,356 cycles`
+- `510 kernels`
+- `513 commands`
+- `65,790 CTA`
+- `283,685,120 active-thread instructions`
+- 全部已冻结公共统计与流量指标一致。
+
+209/510的旧Gaussian前缀不能用于本轮。
+
+若Gaussian BASE未通过，立即STOP，其他四个优化点不得启动。
+
+## 5. 资源与执行权合同
+
+继承AG3已经批准的资源R2规则，不回退到AA5的单页swap即STOP规则。
+
+至少保留：
+
+- 两次相隔≥10秒的启动准入；
+- MemAvailable≥32GiB；
+- cgroup headroom≥32GiB；
+- diskfree≥10GiB；
+- memory full PSI avg10≤1%；
+- I/O full PSI avg10≤25%；
+- 原持续压力和cgroup swap阈值；
+- cgroup OOM/oom_kill及紧急最低线；
+- 每点最长7200秒；
+- 默认单模拟器worker。
+
+任何新资源阈值必须在首次真实启动前审明来源并冻结，不根据运行表现后验修改。
+
+其他项目（包括EP-L2）计入资源压力，但不因此被归类为未经授权的DTC执行。
+
+所有DTC执行权、FLOCK及真实子进程身份仍应严格核查；不得杀死、暂停或抢占其他项目进程，不得删除旧锁或恢复旧dispatcher。
+
+执行器普通问题允许在首次模拟前solve-and-continue；模拟开始后的科学身份、模型、资源或strict硬失败则立即STOP，不重试。
+
+## 6. 性能与机理评估
+
+两BASE资格全部成立后，依固定顺序执行四个单项优化点。
+
+即使某个优化性能为负，只要完整strict PASS，仍按预注册顺序继续。
+
+加速比只采用：
+
+`speedup = accepted same-input BASE cycles / accepted ON cycles`
+
+GEMM分母为资格通过的旧AG3新Core BASE；Gaussian分母为AG4新完成的完整BASE。
+
+不得以历史T1-C的数值填补任何缺少资格的AG4实验格。
+
+逐点报告：
+
+- integer cycles与完整strict身份；
+- new misses、valid/pending hits；
+- lower create/inject及完整流量；
+- L2 sector、实际DRAM bytes；
+- Tag冲突及已实际输出的bank/set统计；
+- physical/PIB占用积分；
+- waiter通知、ready、collect、WB与退休；
+- 全部负向计数和性能回退；
+- 未输出的指标与条件性统计。
+
+AE：
+
+- 保留固定bank-preserving XOR；
+- bank号和服务端口不变；
+- 不后验改hash；
+- 新XOR路径的面积、频率、时序尚未综合；
+- aggregate conflicts不能代替真实bank/set分布。
+
+AD：
+
+- 保留4 waiter/cycle；
+- data-ready、own notification和broadcast-done分别统计；
+- 不能用ON/OFF post-ready条件均值直接作同人群因果差分；
+- 优先采用共同的admitted/all-return→retire边界；
+- ON-only统计与OFF不可用字段分开；
+- 不把host对象字节数当硬件面积；
+- 不把collection和WB的累计时间直接称为实际重叠。
+
+未测量的K1、数值load正确性、coherence、native/ISA、RTL面积和真实时序继续标注为未验证。
+
+## 7. 终态与科学收口
+
+最终交付统一review pack，至少包含：
+
+- `LATEST_REPORT.md`
+- `ROOT_CAUSE_AND_FIX.md`
+- CPU竞态复现及修复的完整正负控
+- 外部进程和错误归属拒绝证据
+- 修复前后源码diff与SHA
+- `AG3_GEMM_BASE_REUSE_QUALIFICATION.json`
+- 新五点不可变预注册与发布回读
+- `FULL_MATRIX.tsv`（独立标识旧AG3导入BASE与5个新attempt）
+- 各点完整strict、输入、配置、Core/binary/loader身份
+- `PER_ARM_METRICS.tsv`
+- `TYPED_MECHANISM_RESULTS.json`
+- 资源、执行权、FLOCK和退出时间线
+- 所有失败、UNAVAILABLE和反向证据
+- 论文最小修改建议
+- 下一组必要验证建议
+- 最终GitHub HEAD/tree/blob、clean与终态进程/锁收据
+
+真实raw、二进制和大型日志保留原174新raw根；GitHub发布审查所需的小型文件、索引和哈希。失败原始记录不得覆盖或事后修饰。
+
+不要直接修改当前英文v0.17论文，也不要自动申请BICG/DWT2D、C+公平hash、AE+AD组合或K1实验。
+
+全部五点完成或任何预注册STOP触发后，完成审查报告、commit/push/fetch-back，核对所有自身进程退出和FLOCK释放，终止Goal，不保留后台自动续发。
+
+**本Goal的成功目标是：以最小、可证实的执行器修复，得到AE和AD在两个固定发现输入上的完整单项性能与机理结果，而不是扩展实验平台的通用审计能力。**
