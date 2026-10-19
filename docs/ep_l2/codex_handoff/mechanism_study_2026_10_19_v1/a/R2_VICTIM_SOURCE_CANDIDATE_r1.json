@@ -2,7 +2,7 @@
   "schema": "EPL2_MS_A_R2_CLEAN_SOURCE_INTEGRATION_V1",
   "UTC": "2026-10-19T13:43:32.715174+00:00",
   "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
-  "Core_candidate": "4d399f790cf15e118d900225fe9b1bee8d8538c0",
+  "Core_candidate": "94996ec59b4a0264b64146932977bfe6ea4f195b",
   "Core_branch": "hrl/ep-l2-ms20261019-a-r2-victim-v1",
   "Core_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r2-victim-v1",
   "A_parent": "17e7e224954e44a968a0447bcdfea91e3b2e5a96",
@@ -45,7 +45,7 @@
   },
   "source_manifest_SHA256": {
     "CMakeLists.txt": "7ea513a5a010c0cedd2750f7a3d0cc2bbada004909601273885b19644ab60944",
-    "docs/ep_l2/ms_victim/A_INTEGRATED_CLEAN_SOURCE_r1.md": "19406d67a68d80210482b65332045c67ef540b67bd85553864a21d106cce7fc1",
+    "docs/ep_l2/ms_victim/A_INTEGRATED_CLEAN_SOURCE_r1.md": "62d09c9c6c0d7ff9985dcd7196d14b7da2e9da181b525d43be4eabfe5ee56923",
     "docs/ep_l2/ms_victim/README.md": "f40332d9f1ecb5e4e5dc5ebfb6e769e7a56cb6b6c5f5109f2c0ba7e869e062fe",
     "docs/ep_l2/ms_victim/RELEASE_CANDIDATE.json": "0d074d3d486f6f3a2220b6005658214e37a2429c0650a5a86d5f26726c6a7bad",
     "docs/ep_l2/ms_victim/RESOURCES_AND_TEST_SCOPE.md": "cf445942ab0602531837959012d459975f4adba64b9dfcb8f93923b3d46262d4",
@@ -62,7 +62,7 @@
     "src/gpgpu-sim/gpu-cache.cc": "e1a5eafc237fecbc7e2c06a621e1e69976e91db9073707c62100060e5cae7546",
     "src/gpgpu-sim/gpu-cache.h": "c3c94bc89ec967a78971cbd2be3e11b0298bbd151ab7b77e0edd947f50f3d1ea",
     "src/gpgpu-sim/gpu-sim.cc": "129fc5db44fc865a48918859fa6c83f3ec28af028f6f8c682634e2c22f56564b",
-    "src/gpgpu-sim/l2cache.cc": "a090c8371f0d4bd01079995479a2f81a8e57193a68237ef52f95ccb4af16c52d",
+    "src/gpgpu-sim/l2cache.cc": "33b5cdd65f5e29ca58962fd10d6055707c263d78908a2c552e8f61a29f30d140",
     "tests/ep_l2/ms_victim/clean.config": "7038419c76bdcb5a5b70a3f7f4d9a57146fab4bb6621b7207c5f4f0d979019ae",
     "tests/ep_l2/ms_victim/dirty_inflight.config": "41980425ae9c8bcfa7433e57c7b83a5d5505365bd12d71c90fc60e098b9d717b",
     "tests/ep_l2/ms_victim/native_fixture.h": "c7019e140ca841845d0d7ba22d1b56969c93387d6805788a874f46c26010925b",
@@ -79,5 +79,11 @@
   "first_R1_entry_modified_for_R2": false,
   "all_full_applications_owner": "E",
   "actual_new_native_tests": 0,
-  "actual_applications_by_A": 0
+  "actual_applications_by_A": 0,
+  "initial_integrated_source_preserved": "4d399f790cf15e118d900225fe9b1bee8d8538c0",
+  "source_review_findings": [
+    "B address rescans in WB accept/completion/rollback adapted to indexed local ticket and one explicit completion CAM plus existing packet UID.",
+    "Bypass to full lower FIFO now holds head; successful bypass enqueue also allocates the existing FT exact-once audit token.",
+    "First R1 test FIFO witness corrected separately; no executed red/green claims."
+  ]
 }
