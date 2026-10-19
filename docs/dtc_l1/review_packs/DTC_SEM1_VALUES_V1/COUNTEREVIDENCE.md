@@ -1,0 +1,11 @@
+# Counterevidence and unresolved semantics
+
+**New observed production value counterexamples: 0. New production value passes: 0.** Neither count is a claim that K0 is correct. The authority gate prevented execution, and the uninstrumented timing path has no general output bytes to compare.
+
+V2@59db64ce retained a precise conditional countermodel: cacheable L establishes a mapping; a store uses ordinary/bypass+sidecar, while no selected source E occurs; another L may hit the same DTC identity. An external fresh-memory assertion can disagree with old injected bytes. This is a source-backed risk and synthetic witness; it is **not** a newly observed real application wrong value or an application-wide failure proof. S07 retains that failure predicate without automatically refreshing the bridge from reference memory. S06 and S11 distinguish selected E from ordinary C, true kernel D and other SMs.
+
+The production c8090115 source still has no ordinary-byte payload in mem_fetch, no physical data array and no consumer value commit. AD's `data_ready` is a metadata condition. A source generation distinguishes allocation lifetime, not memory value version. Production wrong bytes could therefore remain invisible to the existing timing strict checker. Conversely, a later return alone does not establish which write it sampled.
+
+Published A audit detects ordinary stores in all eight primary inputs. Mixed load/store counts cannot prove byte alias or absence of alias. No captured input is promoted to READ_ONLY_OR_PROVEN_NONALIAS from its name, one kernel, mathematical specification or an unbound local source recipe. All eight retain UNRESOLVED_READ_AFTER_WRITE until source/capture/access and publication evidence close the relevant predicate. This conservative class is an unproven risk classification, not eight observed counterexamples.
+
+K1 is diagnostic only: selected SM source-request E can revoke lookup while retaining older consumers. It neither writes bytes nor broadcasts publication to other SMs. Ordinary store local ACKs and WB policy, sidecar completion, fence retirement and kernel completion do not independently fill that gap. This pack implements no K2, per-store invalidation, coherence, functional ISA or main-K-policy change.
