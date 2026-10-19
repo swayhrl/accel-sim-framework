@@ -1,5 +1,37 @@
 # Execution coordination state
 
+Updated: 2026-10-19T23:25:59.953619+08:00.
+Status: **V2_SOURCE_CONVERGENCE_BASE_INDEPENDENT_REVIEW_RESOURCE_GATED**.
+Same Goal continued in original `huangrulin-174`; no reset/restart. `/root` is
+sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
+`46df8267`; AG4/AG5 frozen contracts and old UUIDs remain sealed.
+
+| Item | Current actual state | Evidence |
+|---|---|---|
+| AG5 canonical integration | AG5 owner/reviewer exact bytes; post-fork guard exact apart from actual-start metadata; shared callback current-role/peer checks source integrated | AG5_INTEGRATION_STATIC_EQUIVALENCE_V2.json |
+| CPU fixture | New16,616-byte ELF compiled + static libs/loader frozen after full paired R2; target executions0 | ag5_v2_build_receipts_attempt2/ |
+| Changed observer/guard qualification |14-case runner first admission refused at hostIO28.88; tests0; changed guard/shared real-root0 | ag5_v2_negative_admission_attempt1/ |
+| Actual COV/SEM/ROB roles | Pure admitted-direct-launch view integrated; actual source-bound Popen manager preparing; three-role production qualification incomplete | COV_EXTERNAL_VIEW_SOURCE_INTAKE_V2.json |
+| SEM1 | Configure1 exit0, own group reaped/empty; build0, linked runtime0; preserve config, extra Doxygen metadata reviewed and future hashes fixed | SEM1 5a54351b + f1174810; sem1_v2_configure_intake/ |
+| ROB1 | Configure/build/actual LDST runtime0; prior small helper PASS retained; latest paired hostIO22.15/26.52 refused | ROB1 a49911d4 |
+| AG final preparation | Fixed review13c08ad3, notificationf8cbc9d2;56 review blobs +48 original Git receipt hashes verified; four-arm270-option/input consistency checked | ag6_final_prep_intake/ |
+| BASE eligibility | Both exact-tuple imports accepted by BA after independent SEM1/ROB1 reviews and parent closed-event proof join; old executor gaps retained | AG6_BUDGET_LEDGER.json |
+| Resource window | Output free44,312,408,064B (~41.27GiB) at15:20Z; fresh authorityPASS; hostIO28.88>25 blocks further CPU start at that gate | ag5_v2_negative_admission_attempt1/ |
+| AG6 new starts |0/4; four new identity/science rows registered, dispatch held; separate from BA32, no replacement/fifth/sixth | AG6_BUDGET_LEDGER.json |
+| BA full simulations / F |0/32; provisionalO, old selection preserved; P8 F not launched; dual fullsim unqualified, default1 | BUDGET_LEDGER.json; SELECTION.json |
+| Paper / evidence scope | v0.18/DC untouched; conditional/numeric/native/ISA/coherence claims stay separate; original44/GM12 preserved | SCIENTIFIC_SCOPE_CURRENT.md |
+
+No resource failure authorizes a retry or old-goal restart. Existing ELF/config
+work is reused; future runtime release needs the converged source closure and
+fresh per-entry full host+cgroup R2. No model canary or simulation start occurred.
+
+## Historical chronological record
+
+The following preserved earlier snapshots and progress notes are historical.
+The current table above controls current status and grants no launch permission.
+
+# Execution coordination state
+
 Updated:2026-10-19 21:52 Asia/Shanghai. Status:
 **USER_RESUMED_V2_AG5_INTEGRATION_AND_AG6_PREPARATION**. The full goal remains incomplete.
 Execution is original `huangrulin-174`, under this account/container. Pinned plan
@@ -166,3 +198,23 @@ are in ag5_v2_build_receipts_attempt2. V2 CPU entries are now source/ELF/manifes
 bound and conditionally released once each, with a fresh finite full R2 gate
 inside every actual entry. This permits no simulator or external worker build.
 Three-role actual launch manager and production dual-root permission remain open.
+
+
+### Independent BASE reuse and four fresh identities (current V2 update)
+
+BASE_REUSE_DECISION_V2 accepts only the exact c809/byte-runtime/full-input tuple
+for AG6 comparisons. It consumes SEM1 independent1b8ade32 and ROB1 independent
+f25b8b9e (the latter corrects only physical-line units from810d68db), plus parent
+single-stream closed event/index/proof verification. The original AG4 STOP,
+synthetic counterexample limits and absent per-resume generation measurements
+remain unchanged. Source/strict identity consistency supports these specific
+comparators; this does not recertify either old executor or establish native values.
+
+Four fresh UUID4 identities and unchanged270-option/input/metric/selection rules
+are registered in AG6_FOUR_POINT_IDENTITY_PREREGISTRATION_V2. This is not the
+executable dispatcher manifest: actual guard/shared/role qualification, source
+capability/publication and fresh fullsim R2 still hold dispatch. AG6 actual0/4,
+BA actual0/32. No old UUID reused, no canary or model started. COV prepares the
+finite source-bound actual CPU-role manager; CPU source registrations are closed
+while that caller converges. The compiled new fixture and SEM configuration stay
+preserved; neither will be rebuilt/reconfigured merely to obtain observation.

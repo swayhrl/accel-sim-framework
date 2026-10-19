@@ -17,10 +17,11 @@ class NoOwnedChildren:
     tracer=os.getpid()
     def classify(self,row):return 'UNKNOWN'
 class CPUAdmission:
-    def __init__(self,registration,roles):
+    def __init__(self,registration,roles,external_launch_view_provider=None):
         self.registration=registration
         self.review=bind_current_review(NoOwnedChildren(),identity,lambda:[],
-                         exact_controller_roles_provider=lambda:roles)
+                         exact_controller_roles_provider=lambda:roles,
+                         external_launch_view_provider=external_launch_view_provider)
     def sample(self):
         pressure = {scope: {kind: Path(path, kind).read_text() for kind in ['memory','io']}
                     for scope,path in [('host','/proc/pressure')]}

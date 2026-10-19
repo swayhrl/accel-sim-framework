@@ -1,0 +1,4621 @@
+{
+  "status": "IDENTITY_AND_SCIENCE_PREREGISTERED_NOT_EXECUTABLE_DISPATCH",
+  "authorization_commit": "f81ca1c5054a78ed2c09f316bac0501c3bbc9322",
+  "producer_review_commit": "13c08ad37445ba8bc1dc32862a18861a091bd12e",
+  "ordered_points": [
+    {
+      "point": "AE_GEMM",
+      "arm": "AE",
+      "workload": "GEMM",
+      "core_commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "source_base": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "framework_source": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "trace_list": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces/kernelslist.g",
+      "trace_list_sha256": "fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057",
+      "expected_kernels": 1,
+      "expected_commands": [
+        "MemcpyHtoD,0x00007f6d95700000,1048576",
+        "MemcpyHtoD,0x00007f6d7b200000,1048576",
+        "MemcpyHtoD,0x00007f6d7b300000,1048576",
+        "kernel-1.traceg"
+      ],
+      "expected_instructions": 739246080,
+      "expected_CTA": 1024,
+      "full_processing_window": "ALL_COMMANDS_ALL_KERNELS_ALL_CTA_NO_PREFIX_NATURAL_EXIT0",
+      "runtime_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/accel-sim.out",
+      "runtime_sha256": "38158d03dcaecd847d0d6098603c7bc4bfd2a165c4e46f657930e5dedbd291bd",
+      "runtime_library_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so",
+      "runtime_library_sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2",
+      "runtime_environment": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "LD_LIBRARY_PATH": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+        "CUDA_VISIBLE_DEVICES": ""
+      },
+      "expected_embedded_core_version": "gpgpu-sim_git-commit-c8090115_modified_0.0.",
+      "expected_embedded_framework_version": "accelsim-AG-framework-8e43c75a5e2eb60a8466084602b7df8117111e89-core-c8090115bd57512b1b23fca7d925301fa620c751",
+      "expected_full_effective_options": {
+        "-save_embedded_ptx": [
+          "0"
+        ],
+        "-keep": [
+          "0"
+        ],
+        "-gpgpu_ptx_save_converted_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_occupancy_sm_number": [
+          "64"
+        ],
+        "-ptx_opcode_latency_int": [
+          "4,13,4,5,145,21"
+        ],
+        "-ptx_opcode_latency_fp": [
+          "4,13,4,5,39"
+        ],
+        "-ptx_opcode_latency_dp": [
+          "8,19,8,8,330"
+        ],
+        "-ptx_opcode_latency_sfu": [
+          "100"
+        ],
+        "-ptx_opcode_latency_tesnor": [
+          "64"
+        ],
+        "-ptx_opcode_initiation_int": [
+          "2,2,2,2,8,4"
+        ],
+        "-ptx_opcode_initiation_fp": [
+          "2,2,2,2,4"
+        ],
+        "-ptx_opcode_initiation_dp": [
+          "4,4,4,4,130"
+        ],
+        "-ptx_opcode_initiation_sfu": [
+          "8"
+        ],
+        "-ptx_opcode_initiation_tensor": [
+          "64"
+        ],
+        "-cdp_latency": [
+          "7200,8000,100,12000,1600"
+        ],
+        "-network_mode": [
+          "2"
+        ],
+        "-inter_config_file": [
+          "mesh"
+        ],
+        "-icnt_in_buffer_limit": [
+          "512"
+        ],
+        "-icnt_out_buffer_limit": [
+          "512"
+        ],
+        "-icnt_subnets": [
+          "2"
+        ],
+        "-icnt_arbiter_algo": [
+          "1"
+        ],
+        "-icnt_verbose": [
+          "0"
+        ],
+        "-icnt_grant_cycles": [
+          "1"
+        ],
+        "-gpgpu_ptx_use_cuobjdump": [
+          "1"
+        ],
+        "-gpgpu_experimental_lib_support": [
+          "0"
+        ],
+        "-checkpoint_option": [
+          "0"
+        ],
+        "-checkpoint_kernel": [
+          "1"
+        ],
+        "-checkpoint_CTA": [
+          "0"
+        ],
+        "-resume_option": [
+          "0"
+        ],
+        "-resume_kernel": [
+          "0"
+        ],
+        "-resume_CTA": [
+          "0"
+        ],
+        "-checkpoint_CTA_t": [
+          "0"
+        ],
+        "-checkpoint_insn_Y": [
+          "0"
+        ],
+        "-gpgpu_ptx_convert_to_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_ptx_force_max_capability": [
+          "70"
+        ],
+        "-gpgpu_ptx_inst_debug_to_file": [
+          "0"
+        ],
+        "-gpgpu_ptx_inst_debug_file": [
+          "inst_debug.txt"
+        ],
+        "-gpgpu_ptx_inst_debug_thread_uid": [
+          "1"
+        ],
+        "-gpgpu_simd_model": [
+          "1"
+        ],
+        "-gpgpu_shader_core_pipeline": [
+          "2048:32"
+        ],
+        "-gpgpu_tex_cache:l1": [
+          "N:4:128:256,L:R:m:N:L,T:512:8,128:2"
+        ],
+        "-gpgpu_const_cache:l1": [
+          "N:128:64:8,L:R:f:N:L,S:2:64,4"
+        ],
+        "-gpgpu_cache:il1": [
+          "N:64:128:16,L:R:f:N:L,S:2:48,4"
+        ],
+        "-gpgpu_cache:dl1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_l1_cache_write_ratio": [
+          "0"
+        ],
+        "-gpgpu_l1_banks": [
+          "4"
+        ],
+        "-gpgpu_l1_banks_byte_interleaving": [
+          "32"
+        ],
+        "-gpgpu_l1_banks_hashing_function": [
+          "0"
+        ],
+        "-gpgpu_l1_latency": [
+          "20"
+        ],
+        "-gpgpu_dtc_l1_mode": [
+          "3"
+        ],
+        "-gpgpu_dtc_l1_pib_entries": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_tag_hash_bankrow": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_invalidate_on_source_event": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_progressive_wakeup": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_finite_service": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_mshr_entries": [
+          "32"
+        ],
+        "-gpgpu_dtc_l1_debug_event_limit": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_lower_outstanding_cap": [
+          "32768"
+        ],
+        "-gpgpu_dtc_l1_tag_banks": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_bank": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_cycle": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_logical_sets": [
+          "64"
+        ],
+        "-gpgpu_dtc_l1_logical_ways": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_physical_lines": [
+          "640"
+        ],
+        "-gpgpu_dtc_l1_allocation_width": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_io_pib_entries": [
+          "256"
+        ],
+        "-gpgpu_dtc_l1_oo_pib_entries": [
+          "128"
+        ],
+        "-gpgpu_dtc_l1_ref_count_bits": [
+          "13"
+        ],
+        "-gpgpu_smem_latency": [
+          "20"
+        ],
+        "-gpgpu_cache:dl1PrefL1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_cache:dl1PrefShared": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_gmem_skip_L1D": [
+          "0"
+        ],
+        "-gpgpu_perfect_mem": [
+          "0"
+        ],
+        "-n_regfile_gating_group": [
+          "4"
+        ],
+        "-gpgpu_clock_gated_reg_file": [
+          "0"
+        ],
+        "-gpgpu_clock_gated_lanes": [
+          "1"
+        ],
+        "-gpgpu_shader_registers": [
+          "65536"
+        ],
+        "-gpgpu_registers_per_block": [
+          "65536"
+        ],
+        "-gpgpu_ignore_resources_limitation": [
+          "0"
+        ],
+        "-gpgpu_shader_cta": [
+          "32"
+        ],
+        "-gpgpu_num_cta_barriers": [
+          "16"
+        ],
+        "-gpgpu_n_clusters": [
+          "64"
+        ],
+        "-gpgpu_n_cores_per_cluster": [
+          "1"
+        ],
+        "-gpgpu_n_cluster_ejection_buffer_size": [
+          "32"
+        ],
+        "-gpgpu_n_ldst_response_buffer_size": [
+          "2"
+        ],
+        "-gpgpu_shmem_per_block": [
+          "65536"
+        ],
+        "-gpgpu_shmem_size": [
+          "98304"
+        ],
+        "-gpgpu_shmem_option": [
+          "0,8,16,32,64,96"
+        ],
+        "-gpgpu_unified_l1d_size": [
+          "128"
+        ],
+        "-gpgpu_adaptive_cache_config": [
+          "0"
+        ],
+        "-gpgpu_shmem_sizeDefault": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefL1": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefShared": [
+          "98304"
+        ],
+        "-gpgpu_shmem_num_banks": [
+          "32"
+        ],
+        "-gpgpu_shmem_limited_broadcast": [
+          "0"
+        ],
+        "-gpgpu_shmem_warp_parts": [
+          "1"
+        ],
+        "-gpgpu_mem_unit_ports": [
+          "1"
+        ],
+        "-gpgpu_warpdistro_shader": [
+          "-1"
+        ],
+        "-gpgpu_warp_issue_shader": [
+          "0"
+        ],
+        "-gpgpu_local_mem_map": [
+          "1"
+        ],
+        "-gpgpu_num_reg_banks": [
+          "16"
+        ],
+        "-gpgpu_reg_bank_use_warp_id": [
+          "0"
+        ],
+        "-gpgpu_sub_core_model": [
+          "1"
+        ],
+        "-gpgpu_enable_specialized_operand_collector": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sp": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sfu": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_tensor_core": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_mem": [
+          "2"
+        ],
+        "-gpgpu_operand_collector_num_units_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_coalesce_arch": [
+          "70"
+        ],
+        "-gpgpu_num_sched_per_core": [
+          "4"
+        ],
+        "-gpgpu_max_insn_issue_per_warp": [
+          "1"
+        ],
+        "-gpgpu_dual_issue_diff_exec_units": [
+          "1"
+        ],
+        "-gpgpu_simt_core_sim_order": [
+          "1"
+        ],
+        "-gpgpu_pipeline_widths": [
+          "4,4,4,4,4,4,4,4,4,4,8,4,4"
+        ],
+        "-gpgpu_tensor_core_avail": [
+          "1"
+        ],
+        "-gpgpu_num_sp_units": [
+          "4"
+        ],
+        "-gpgpu_num_dp_units": [
+          "4"
+        ],
+        "-gpgpu_num_int_units": [
+          "4"
+        ],
+        "-gpgpu_num_sfu_units": [
+          "4"
+        ],
+        "-gpgpu_num_tensor_core_units": [
+          "4"
+        ],
+        "-gpgpu_num_mem_units": [
+          "1"
+        ],
+        "-gpgpu_scheduler": [
+          "gto"
+        ],
+        "-gpgpu_concurrent_kernel_sm": [
+          "0"
+        ],
+        "-gpgpu_perfect_inst_const_cache": [
+          "1"
+        ],
+        "-gpgpu_inst_fetch_throughput": [
+          "4"
+        ],
+        "-gpgpu_reg_file_port_throughput": [
+          "2"
+        ],
+        "-specialized_unit_1": [
+          "1,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_2": [
+          "1,4,200,4,4,TEX"
+        ],
+        "-specialized_unit_3": [
+          "1,4,8,4,4,TENSOR"
+        ],
+        "-specialized_unit_4": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_5": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_6": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_7": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_8": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-gpgpu_opndcoll_model": [
+          "0"
+        ],
+        "-gpgpu_trywait_max_retries": [
+          "5"
+        ],
+        "-gpgpu_trywait_retry_cycles": [
+          "200"
+        ],
+        "-gpgpu_n_chiplet_partition": [
+          "1"
+        ],
+        "-gpgpu_chiplet_interleave": [
+          "0"
+        ],
+        "-chiplet_mem_stride": [
+          "8192"
+        ],
+        "-gpgpu_perf_sim_memcpy": [
+          "1"
+        ],
+        "-gpgpu_simple_dram_model": [
+          "0"
+        ],
+        "-gpgpu_simple_dram_clock_multiplier": [
+          "1"
+        ],
+        "-gpgpu_dram_scheduler": [
+          "1"
+        ],
+        "-gpgpu_dram_partition_queues": [
+          "64:64:64:64"
+        ],
+        "-l2_ideal": [
+          "0"
+        ],
+        "-gpgpu_cache:dl2": [
+          "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"
+        ],
+        "-gpgpu_cache:dl2_texture_only": [
+          "0"
+        ],
+        "-gpgpu_n_mem": [
+          "20"
+        ],
+        "-gpgpu_n_sub_partition_per_mchannel": [
+          "2"
+        ],
+        "-chiplet_partition_stride": [
+          "8192"
+        ],
+        "-inter_chiplet_queue_size": [
+          "128"
+        ],
+        "-inter_chiplet_queue_latency": [
+          "100"
+        ],
+        "-gpgpu_n_mem_per_ctrlr": [
+          "1"
+        ],
+        "-gpgpu_memlatency_stat": [
+          "14"
+        ],
+        "-gpgpu_frfcfs_dram_sched_queue_size": [
+          "64"
+        ],
+        "-gpgpu_dram_return_queue_size": [
+          "192"
+        ],
+        "-gpgpu_dram_buswidth": [
+          "16"
+        ],
+        "-gpgpu_dram_burst_length": [
+          "2"
+        ],
+        "-dram_data_command_freq_ratio": [
+          "2"
+        ],
+        "-gpgpu_dram_timing_opt": [
+          "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:",
+          "CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3"
+        ],
+        "-gpgpu_l2_rop_latency": [
+          "200"
+        ],
+        "-dram_latency": [
+          "100"
+        ],
+        "-dram_dual_bus_interface": [
+          "1"
+        ],
+        "-dram_bnk_indexing_policy": [
+          "0"
+        ],
+        "-dram_bnkgrp_indexing_policy": [
+          "1"
+        ],
+        "-dram_seperate_write_queue_enable": [
+          "0"
+        ],
+        "-dram_write_queue_size": [
+          "32:28:16"
+        ],
+        "-dram_elimnate_rw_turnaround": [
+          "0"
+        ],
+        "-icnt_flit_size": [
+          "40"
+        ],
+        "-SST_mode": [
+          "0"
+        ],
+        "-gpgpu_lrc_enabled": [
+          "0"
+        ],
+        "-gpgpu_lrc_max_entries": [
+          "256"
+        ],
+        "-gpgpu_lrc_max_merged": [
+          "32"
+        ],
+        "-gpgpu_mem_addr_mapping": [
+          "NULL"
+        ],
+        "-gpgpu_mem_addr_test": [
+          "0"
+        ],
+        "-gpgpu_mem_address_mask": [
+          "1"
+        ],
+        "-gpgpu_memory_partition_indexing": [
+          "0"
+        ],
+        "-accelwattch_xml_file": [
+          "accelwattch_sass_sim.xml"
+        ],
+        "-power_simulation_enabled": [
+          "0"
+        ],
+        "-power_per_cycle_dump": [
+          "0"
+        ],
+        "-hw_perf_file_name": [
+          "hw_perf.csv"
+        ],
+        "-hw_perf_bench_name": [],
+        "-power_simulation_mode": [
+          "0"
+        ],
+        "-dvfs_enabled": [
+          "0"
+        ],
+        "-aggregate_power_stats": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CC_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_SHARED_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_RD": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_WR": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NOC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_PIPE_DUTY": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NUM_SM_IDLE": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CYCLES": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_VOLTAGE": [
+          "0"
+        ],
+        "-power_trace_enabled": [
+          "0"
+        ],
+        "-power_trace_zlevel": [
+          "6"
+        ],
+        "-steady_power_levels_enabled": [
+          "0"
+        ],
+        "-steady_state_definition": [
+          "8:4"
+        ],
+        "-gpgpu_max_cycle": [
+          "0"
+        ],
+        "-gpgpu_max_insn": [
+          "0"
+        ],
+        "-gpgpu_max_cta": [
+          "0"
+        ],
+        "-gpgpu_max_completed_cta": [
+          "0"
+        ],
+        "-gpgpu_runtime_stat": [
+          "500000"
+        ],
+        "-liveness_message_freq": [
+          "1"
+        ],
+        "-gpgpu_compute_capability_major": [
+          "7"
+        ],
+        "-gpgpu_compute_capability_minor": [
+          "0"
+        ],
+        "-gpgpu_flush_l1_cache": [
+          "1"
+        ],
+        "-gpgpu_flush_l2_cache": [
+          "0"
+        ],
+        "-gpgpu_deadlock_detect": [
+          "1"
+        ],
+        "-gpgpu_ptx_instruction_classification": [
+          "0"
+        ],
+        "-gpgpu_ptx_sim_mode": [
+          "0"
+        ],
+        "-gpgpu_clock_domains": [
+          "1410.0:1410.0:1410.0:850.0"
+        ],
+        "-gpgpu_max_concurrent_kernel": [
+          "128"
+        ],
+        "-gpgpu_cflog_interval": [
+          "0"
+        ],
+        "-visualizer_enabled": [
+          "0"
+        ],
+        "-visualizer_outputfile": [
+          "NULL"
+        ],
+        "-visualizer_zlevel": [
+          "6"
+        ],
+        "-gpgpu_stack_size_limit": [
+          "1024"
+        ],
+        "-gpgpu_heap_size_limit": [
+          "8388608"
+        ],
+        "-gpgpu_runtime_sync_depth_limit": [
+          "2"
+        ],
+        "-gpgpu_runtime_pending_launch_count_limit": [
+          "2048"
+        ],
+        "-trace_enabled": [
+          "0"
+        ],
+        "-trace_components": [
+          "none"
+        ],
+        "-trace_sampling_core": [
+          "0"
+        ],
+        "-trace_sampling_memory_partition": [
+          "-1"
+        ],
+        "-enable_ptx_file_line_stats": [
+          "1"
+        ],
+        "-ptx_line_stats_filename": [
+          "gpgpu_inst_stats.txt"
+        ],
+        "-gpgpu_kernel_launch_latency": [
+          "5000"
+        ],
+        "-gpgpu_cdp_enabled": [
+          "0"
+        ],
+        "-gpgpu_TB_launch_latency": [
+          "0"
+        ],
+        "-trace": [
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces/kernelslist.g"
+        ],
+        "-trace_opcode_latency_initiation_int": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_sp": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_dp": [
+          "8,4"
+        ],
+        "-trace_opcode_latency_initiation_sfu": [
+          "20,8"
+        ],
+        "-trace_opcode_latency_initiation_tensor": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_1": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_2": [
+          "200,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_3": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_4": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_5": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_6": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_7": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_8": [
+          "4,4"
+        ]
+      },
+      "configs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FAST64_OO.config",
+          "sha256": "546c68f96d47f4650703ccfbc925bd789f923501d5607a77e79ca4845f234caa"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FINITE_PRIMARY_COMMON.config",
+          "sha256": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/trace.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/AE.config",
+          "sha256": "1bc8028ca1675f226868ac21dd491c2909464e42d3194accf3f4dbfb402726fd"
+        }
+      ],
+      "timeout_seconds": 7200,
+      "retries": 0,
+      "max_new_sim_concurrency": 1,
+      "resource_policy_version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+      "order": 0,
+      "new_attempt_uuid": "77cbc367-150c-418d-85e0-3be23d952498",
+      "cohort": "AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY",
+      "imported_BASE_dossier": "BASE_REUSE_GEMM.json",
+      "imported_BASE_UUID": "8b6006aa-610e-41cf-82f0-135f80e449cf",
+      "imported_BASE_cycles": 1071405,
+      "option_deltas_from_same_input_BASE": {
+        "-gpgpu_dtc_l1_tag_hash_bankrow": {
+          "BASE": [
+            "0"
+          ],
+          "ON": [
+            "1"
+          ]
+        }
+      },
+      "config_copy_policy": "BA own freeze/materialization only; preserve exact source config byte SHA; never write these old paths",
+      "primary_ratio": "qualified exact same-input imported BASE integer cycles / new accepted ON integer cycles",
+      "attempt_uuid": "77cbc367-150c-418d-85e0-3be23d952498",
+      "status": "IDENTITY_AND_SCIENCE_REGISTERED_DISPATCH_HELD",
+      "destination": "/workspace/dtc-evidence-closure-20261019-v1/coordinator/ag6-v2/attempts/AE_GEMM_77cbc367-150c-418d-85e0-3be23d952498",
+      "BASE_eligibility_decision_sha256": "a8e834093bc3da494190798cc87eee6c39edbe34efa04d38a5ab6771cea37f9a"
+    },
+    {
+      "point": "AE_Gaussian",
+      "arm": "AE",
+      "workload": "Gaussian",
+      "core_commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "source_base": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "framework_source": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "trace_list": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/gaussian-rodinia-3.1/_s_256/traces/kernelslist.g",
+      "trace_list_sha256": "6dc7caba6733657293e8c517467bac28890ae4eb97c732ffd245d7fd1c479fb9",
+      "expected_kernels": 510,
+      "expected_commands": [
+        "MemcpyHtoD,0x00007f8133500000,262144",
+        "MemcpyHtoD,0x00007f8133540000,262144",
+        "MemcpyHtoD,0x00007f8133580000,1024",
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg",
+        "kernel-17.traceg",
+        "kernel-18.traceg",
+        "kernel-19.traceg",
+        "kernel-20.traceg",
+        "kernel-21.traceg",
+        "kernel-22.traceg",
+        "kernel-23.traceg",
+        "kernel-24.traceg",
+        "kernel-25.traceg",
+        "kernel-26.traceg",
+        "kernel-27.traceg",
+        "kernel-28.traceg",
+        "kernel-29.traceg",
+        "kernel-30.traceg",
+        "kernel-31.traceg",
+        "kernel-32.traceg",
+        "kernel-33.traceg",
+        "kernel-34.traceg",
+        "kernel-35.traceg",
+        "kernel-36.traceg",
+        "kernel-37.traceg",
+        "kernel-38.traceg",
+        "kernel-39.traceg",
+        "kernel-40.traceg",
+        "kernel-41.traceg",
+        "kernel-42.traceg",
+        "kernel-43.traceg",
+        "kernel-44.traceg",
+        "kernel-45.traceg",
+        "kernel-46.traceg",
+        "kernel-47.traceg",
+        "kernel-48.traceg",
+        "kernel-49.traceg",
+        "kernel-50.traceg",
+        "kernel-51.traceg",
+        "kernel-52.traceg",
+        "kernel-53.traceg",
+        "kernel-54.traceg",
+        "kernel-55.traceg",
+        "kernel-56.traceg",
+        "kernel-57.traceg",
+        "kernel-58.traceg",
+        "kernel-59.traceg",
+        "kernel-60.traceg",
+        "kernel-61.traceg",
+        "kernel-62.traceg",
+        "kernel-63.traceg",
+        "kernel-64.traceg",
+        "kernel-65.traceg",
+        "kernel-66.traceg",
+        "kernel-67.traceg",
+        "kernel-68.traceg",
+        "kernel-69.traceg",
+        "kernel-70.traceg",
+        "kernel-71.traceg",
+        "kernel-72.traceg",
+        "kernel-73.traceg",
+        "kernel-74.traceg",
+        "kernel-75.traceg",
+        "kernel-76.traceg",
+        "kernel-77.traceg",
+        "kernel-78.traceg",
+        "kernel-79.traceg",
+        "kernel-80.traceg",
+        "kernel-81.traceg",
+        "kernel-82.traceg",
+        "kernel-83.traceg",
+        "kernel-84.traceg",
+        "kernel-85.traceg",
+        "kernel-86.traceg",
+        "kernel-87.traceg",
+        "kernel-88.traceg",
+        "kernel-89.traceg",
+        "kernel-90.traceg",
+        "kernel-91.traceg",
+        "kernel-92.traceg",
+        "kernel-93.traceg",
+        "kernel-94.traceg",
+        "kernel-95.traceg",
+        "kernel-96.traceg",
+        "kernel-97.traceg",
+        "kernel-98.traceg",
+        "kernel-99.traceg",
+        "kernel-100.traceg",
+        "kernel-101.traceg",
+        "kernel-102.traceg",
+        "kernel-103.traceg",
+        "kernel-104.traceg",
+        "kernel-105.traceg",
+        "kernel-106.traceg",
+        "kernel-107.traceg",
+        "kernel-108.traceg",
+        "kernel-109.traceg",
+        "kernel-110.traceg",
+        "kernel-111.traceg",
+        "kernel-112.traceg",
+        "kernel-113.traceg",
+        "kernel-114.traceg",
+        "kernel-115.traceg",
+        "kernel-116.traceg",
+        "kernel-117.traceg",
+        "kernel-118.traceg",
+        "kernel-119.traceg",
+        "kernel-120.traceg",
+        "kernel-121.traceg",
+        "kernel-122.traceg",
+        "kernel-123.traceg",
+        "kernel-124.traceg",
+        "kernel-125.traceg",
+        "kernel-126.traceg",
+        "kernel-127.traceg",
+        "kernel-128.traceg",
+        "kernel-129.traceg",
+        "kernel-130.traceg",
+        "kernel-131.traceg",
+        "kernel-132.traceg",
+        "kernel-133.traceg",
+        "kernel-134.traceg",
+        "kernel-135.traceg",
+        "kernel-136.traceg",
+        "kernel-137.traceg",
+        "kernel-138.traceg",
+        "kernel-139.traceg",
+        "kernel-140.traceg",
+        "kernel-141.traceg",
+        "kernel-142.traceg",
+        "kernel-143.traceg",
+        "kernel-144.traceg",
+        "kernel-145.traceg",
+        "kernel-146.traceg",
+        "kernel-147.traceg",
+        "kernel-148.traceg",
+        "kernel-149.traceg",
+        "kernel-150.traceg",
+        "kernel-151.traceg",
+        "kernel-152.traceg",
+        "kernel-153.traceg",
+        "kernel-154.traceg",
+        "kernel-155.traceg",
+        "kernel-156.traceg",
+        "kernel-157.traceg",
+        "kernel-158.traceg",
+        "kernel-159.traceg",
+        "kernel-160.traceg",
+        "kernel-161.traceg",
+        "kernel-162.traceg",
+        "kernel-163.traceg",
+        "kernel-164.traceg",
+        "kernel-165.traceg",
+        "kernel-166.traceg",
+        "kernel-167.traceg",
+        "kernel-168.traceg",
+        "kernel-169.traceg",
+        "kernel-170.traceg",
+        "kernel-171.traceg",
+        "kernel-172.traceg",
+        "kernel-173.traceg",
+        "kernel-174.traceg",
+        "kernel-175.traceg",
+        "kernel-176.traceg",
+        "kernel-177.traceg",
+        "kernel-178.traceg",
+        "kernel-179.traceg",
+        "kernel-180.traceg",
+        "kernel-181.traceg",
+        "kernel-182.traceg",
+        "kernel-183.traceg",
+        "kernel-184.traceg",
+        "kernel-185.traceg",
+        "kernel-186.traceg",
+        "kernel-187.traceg",
+        "kernel-188.traceg",
+        "kernel-189.traceg",
+        "kernel-190.traceg",
+        "kernel-191.traceg",
+        "kernel-192.traceg",
+        "kernel-193.traceg",
+        "kernel-194.traceg",
+        "kernel-195.traceg",
+        "kernel-196.traceg",
+        "kernel-197.traceg",
+        "kernel-198.traceg",
+        "kernel-199.traceg",
+        "kernel-200.traceg",
+        "kernel-201.traceg",
+        "kernel-202.traceg",
+        "kernel-203.traceg",
+        "kernel-204.traceg",
+        "kernel-205.traceg",
+        "kernel-206.traceg",
+        "kernel-207.traceg",
+        "kernel-208.traceg",
+        "kernel-209.traceg",
+        "kernel-210.traceg",
+        "kernel-211.traceg",
+        "kernel-212.traceg",
+        "kernel-213.traceg",
+        "kernel-214.traceg",
+        "kernel-215.traceg",
+        "kernel-216.traceg",
+        "kernel-217.traceg",
+        "kernel-218.traceg",
+        "kernel-219.traceg",
+        "kernel-220.traceg",
+        "kernel-221.traceg",
+        "kernel-222.traceg",
+        "kernel-223.traceg",
+        "kernel-224.traceg",
+        "kernel-225.traceg",
+        "kernel-226.traceg",
+        "kernel-227.traceg",
+        "kernel-228.traceg",
+        "kernel-229.traceg",
+        "kernel-230.traceg",
+        "kernel-231.traceg",
+        "kernel-232.traceg",
+        "kernel-233.traceg",
+        "kernel-234.traceg",
+        "kernel-235.traceg",
+        "kernel-236.traceg",
+        "kernel-237.traceg",
+        "kernel-238.traceg",
+        "kernel-239.traceg",
+        "kernel-240.traceg",
+        "kernel-241.traceg",
+        "kernel-242.traceg",
+        "kernel-243.traceg",
+        "kernel-244.traceg",
+        "kernel-245.traceg",
+        "kernel-246.traceg",
+        "kernel-247.traceg",
+        "kernel-248.traceg",
+        "kernel-249.traceg",
+        "kernel-250.traceg",
+        "kernel-251.traceg",
+        "kernel-252.traceg",
+        "kernel-253.traceg",
+        "kernel-254.traceg",
+        "kernel-255.traceg",
+        "kernel-256.traceg",
+        "kernel-257.traceg",
+        "kernel-258.traceg",
+        "kernel-259.traceg",
+        "kernel-260.traceg",
+        "kernel-261.traceg",
+        "kernel-262.traceg",
+        "kernel-263.traceg",
+        "kernel-264.traceg",
+        "kernel-265.traceg",
+        "kernel-266.traceg",
+        "kernel-267.traceg",
+        "kernel-268.traceg",
+        "kernel-269.traceg",
+        "kernel-270.traceg",
+        "kernel-271.traceg",
+        "kernel-272.traceg",
+        "kernel-273.traceg",
+        "kernel-274.traceg",
+        "kernel-275.traceg",
+        "kernel-276.traceg",
+        "kernel-277.traceg",
+        "kernel-278.traceg",
+        "kernel-279.traceg",
+        "kernel-280.traceg",
+        "kernel-281.traceg",
+        "kernel-282.traceg",
+        "kernel-283.traceg",
+        "kernel-284.traceg",
+        "kernel-285.traceg",
+        "kernel-286.traceg",
+        "kernel-287.traceg",
+        "kernel-288.traceg",
+        "kernel-289.traceg",
+        "kernel-290.traceg",
+        "kernel-291.traceg",
+        "kernel-292.traceg",
+        "kernel-293.traceg",
+        "kernel-294.traceg",
+        "kernel-295.traceg",
+        "kernel-296.traceg",
+        "kernel-297.traceg",
+        "kernel-298.traceg",
+        "kernel-299.traceg",
+        "kernel-300.traceg",
+        "kernel-301.traceg",
+        "kernel-302.traceg",
+        "kernel-303.traceg",
+        "kernel-304.traceg",
+        "kernel-305.traceg",
+        "kernel-306.traceg",
+        "kernel-307.traceg",
+        "kernel-308.traceg",
+        "kernel-309.traceg",
+        "kernel-310.traceg",
+        "kernel-311.traceg",
+        "kernel-312.traceg",
+        "kernel-313.traceg",
+        "kernel-314.traceg",
+        "kernel-315.traceg",
+        "kernel-316.traceg",
+        "kernel-317.traceg",
+        "kernel-318.traceg",
+        "kernel-319.traceg",
+        "kernel-320.traceg",
+        "kernel-321.traceg",
+        "kernel-322.traceg",
+        "kernel-323.traceg",
+        "kernel-324.traceg",
+        "kernel-325.traceg",
+        "kernel-326.traceg",
+        "kernel-327.traceg",
+        "kernel-328.traceg",
+        "kernel-329.traceg",
+        "kernel-330.traceg",
+        "kernel-331.traceg",
+        "kernel-332.traceg",
+        "kernel-333.traceg",
+        "kernel-334.traceg",
+        "kernel-335.traceg",
+        "kernel-336.traceg",
+        "kernel-337.traceg",
+        "kernel-338.traceg",
+        "kernel-339.traceg",
+        "kernel-340.traceg",
+        "kernel-341.traceg",
+        "kernel-342.traceg",
+        "kernel-343.traceg",
+        "kernel-344.traceg",
+        "kernel-345.traceg",
+        "kernel-346.traceg",
+        "kernel-347.traceg",
+        "kernel-348.traceg",
+        "kernel-349.traceg",
+        "kernel-350.traceg",
+        "kernel-351.traceg",
+        "kernel-352.traceg",
+        "kernel-353.traceg",
+        "kernel-354.traceg",
+        "kernel-355.traceg",
+        "kernel-356.traceg",
+        "kernel-357.traceg",
+        "kernel-358.traceg",
+        "kernel-359.traceg",
+        "kernel-360.traceg",
+        "kernel-361.traceg",
+        "kernel-362.traceg",
+        "kernel-363.traceg",
+        "kernel-364.traceg",
+        "kernel-365.traceg",
+        "kernel-366.traceg",
+        "kernel-367.traceg",
+        "kernel-368.traceg",
+        "kernel-369.traceg",
+        "kernel-370.traceg",
+        "kernel-371.traceg",
+        "kernel-372.traceg",
+        "kernel-373.traceg",
+        "kernel-374.traceg",
+        "kernel-375.traceg",
+        "kernel-376.traceg",
+        "kernel-377.traceg",
+        "kernel-378.traceg",
+        "kernel-379.traceg",
+        "kernel-380.traceg",
+        "kernel-381.traceg",
+        "kernel-382.traceg",
+        "kernel-383.traceg",
+        "kernel-384.traceg",
+        "kernel-385.traceg",
+        "kernel-386.traceg",
+        "kernel-387.traceg",
+        "kernel-388.traceg",
+        "kernel-389.traceg",
+        "kernel-390.traceg",
+        "kernel-391.traceg",
+        "kernel-392.traceg",
+        "kernel-393.traceg",
+        "kernel-394.traceg",
+        "kernel-395.traceg",
+        "kernel-396.traceg",
+        "kernel-397.traceg",
+        "kernel-398.traceg",
+        "kernel-399.traceg",
+        "kernel-400.traceg",
+        "kernel-401.traceg",
+        "kernel-402.traceg",
+        "kernel-403.traceg",
+        "kernel-404.traceg",
+        "kernel-405.traceg",
+        "kernel-406.traceg",
+        "kernel-407.traceg",
+        "kernel-408.traceg",
+        "kernel-409.traceg",
+        "kernel-410.traceg",
+        "kernel-411.traceg",
+        "kernel-412.traceg",
+        "kernel-413.traceg",
+        "kernel-414.traceg",
+        "kernel-415.traceg",
+        "kernel-416.traceg",
+        "kernel-417.traceg",
+        "kernel-418.traceg",
+        "kernel-419.traceg",
+        "kernel-420.traceg",
+        "kernel-421.traceg",
+        "kernel-422.traceg",
+        "kernel-423.traceg",
+        "kernel-424.traceg",
+        "kernel-425.traceg",
+        "kernel-426.traceg",
+        "kernel-427.traceg",
+        "kernel-428.traceg",
+        "kernel-429.traceg",
+        "kernel-430.traceg",
+        "kernel-431.traceg",
+        "kernel-432.traceg",
+        "kernel-433.traceg",
+        "kernel-434.traceg",
+        "kernel-435.traceg",
+        "kernel-436.traceg",
+        "kernel-437.traceg",
+        "kernel-438.traceg",
+        "kernel-439.traceg",
+        "kernel-440.traceg",
+        "kernel-441.traceg",
+        "kernel-442.traceg",
+        "kernel-443.traceg",
+        "kernel-444.traceg",
+        "kernel-445.traceg",
+        "kernel-446.traceg",
+        "kernel-447.traceg",
+        "kernel-448.traceg",
+        "kernel-449.traceg",
+        "kernel-450.traceg",
+        "kernel-451.traceg",
+        "kernel-452.traceg",
+        "kernel-453.traceg",
+        "kernel-454.traceg",
+        "kernel-455.traceg",
+        "kernel-456.traceg",
+        "kernel-457.traceg",
+        "kernel-458.traceg",
+        "kernel-459.traceg",
+        "kernel-460.traceg",
+        "kernel-461.traceg",
+        "kernel-462.traceg",
+        "kernel-463.traceg",
+        "kernel-464.traceg",
+        "kernel-465.traceg",
+        "kernel-466.traceg",
+        "kernel-467.traceg",
+        "kernel-468.traceg",
+        "kernel-469.traceg",
+        "kernel-470.traceg",
+        "kernel-471.traceg",
+        "kernel-472.traceg",
+        "kernel-473.traceg",
+        "kernel-474.traceg",
+        "kernel-475.traceg",
+        "kernel-476.traceg",
+        "kernel-477.traceg",
+        "kernel-478.traceg",
+        "kernel-479.traceg",
+        "kernel-480.traceg",
+        "kernel-481.traceg",
+        "kernel-482.traceg",
+        "kernel-483.traceg",
+        "kernel-484.traceg",
+        "kernel-485.traceg",
+        "kernel-486.traceg",
+        "kernel-487.traceg",
+        "kernel-488.traceg",
+        "kernel-489.traceg",
+        "kernel-490.traceg",
+        "kernel-491.traceg",
+        "kernel-492.traceg",
+        "kernel-493.traceg",
+        "kernel-494.traceg",
+        "kernel-495.traceg",
+        "kernel-496.traceg",
+        "kernel-497.traceg",
+        "kernel-498.traceg",
+        "kernel-499.traceg",
+        "kernel-500.traceg",
+        "kernel-501.traceg",
+        "kernel-502.traceg",
+        "kernel-503.traceg",
+        "kernel-504.traceg",
+        "kernel-505.traceg",
+        "kernel-506.traceg",
+        "kernel-507.traceg",
+        "kernel-508.traceg",
+        "kernel-509.traceg",
+        "kernel-510.traceg"
+      ],
+      "expected_instructions": 283685120,
+      "expected_CTA": 65790,
+      "full_processing_window": "ALL_COMMANDS_ALL_KERNELS_ALL_CTA_NO_PREFIX_NATURAL_EXIT0",
+      "runtime_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/accel-sim.out",
+      "runtime_sha256": "38158d03dcaecd847d0d6098603c7bc4bfd2a165c4e46f657930e5dedbd291bd",
+      "runtime_library_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so",
+      "runtime_library_sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2",
+      "runtime_environment": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "LD_LIBRARY_PATH": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+        "CUDA_VISIBLE_DEVICES": ""
+      },
+      "expected_embedded_core_version": "gpgpu-sim_git-commit-c8090115_modified_0.0.",
+      "expected_embedded_framework_version": "accelsim-AG-framework-8e43c75a5e2eb60a8466084602b7df8117111e89-core-c8090115bd57512b1b23fca7d925301fa620c751",
+      "expected_full_effective_options": {
+        "-save_embedded_ptx": [
+          "0"
+        ],
+        "-keep": [
+          "0"
+        ],
+        "-gpgpu_ptx_save_converted_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_occupancy_sm_number": [
+          "64"
+        ],
+        "-ptx_opcode_latency_int": [
+          "4,13,4,5,145,21"
+        ],
+        "-ptx_opcode_latency_fp": [
+          "4,13,4,5,39"
+        ],
+        "-ptx_opcode_latency_dp": [
+          "8,19,8,8,330"
+        ],
+        "-ptx_opcode_latency_sfu": [
+          "100"
+        ],
+        "-ptx_opcode_latency_tesnor": [
+          "64"
+        ],
+        "-ptx_opcode_initiation_int": [
+          "2,2,2,2,8,4"
+        ],
+        "-ptx_opcode_initiation_fp": [
+          "2,2,2,2,4"
+        ],
+        "-ptx_opcode_initiation_dp": [
+          "4,4,4,4,130"
+        ],
+        "-ptx_opcode_initiation_sfu": [
+          "8"
+        ],
+        "-ptx_opcode_initiation_tensor": [
+          "64"
+        ],
+        "-cdp_latency": [
+          "7200,8000,100,12000,1600"
+        ],
+        "-network_mode": [
+          "2"
+        ],
+        "-inter_config_file": [
+          "mesh"
+        ],
+        "-icnt_in_buffer_limit": [
+          "512"
+        ],
+        "-icnt_out_buffer_limit": [
+          "512"
+        ],
+        "-icnt_subnets": [
+          "2"
+        ],
+        "-icnt_arbiter_algo": [
+          "1"
+        ],
+        "-icnt_verbose": [
+          "0"
+        ],
+        "-icnt_grant_cycles": [
+          "1"
+        ],
+        "-gpgpu_ptx_use_cuobjdump": [
+          "1"
+        ],
+        "-gpgpu_experimental_lib_support": [
+          "0"
+        ],
+        "-checkpoint_option": [
+          "0"
+        ],
+        "-checkpoint_kernel": [
+          "1"
+        ],
+        "-checkpoint_CTA": [
+          "0"
+        ],
+        "-resume_option": [
+          "0"
+        ],
+        "-resume_kernel": [
+          "0"
+        ],
+        "-resume_CTA": [
+          "0"
+        ],
+        "-checkpoint_CTA_t": [
+          "0"
+        ],
+        "-checkpoint_insn_Y": [
+          "0"
+        ],
+        "-gpgpu_ptx_convert_to_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_ptx_force_max_capability": [
+          "70"
+        ],
+        "-gpgpu_ptx_inst_debug_to_file": [
+          "0"
+        ],
+        "-gpgpu_ptx_inst_debug_file": [
+          "inst_debug.txt"
+        ],
+        "-gpgpu_ptx_inst_debug_thread_uid": [
+          "1"
+        ],
+        "-gpgpu_simd_model": [
+          "1"
+        ],
+        "-gpgpu_shader_core_pipeline": [
+          "2048:32"
+        ],
+        "-gpgpu_tex_cache:l1": [
+          "N:4:128:256,L:R:m:N:L,T:512:8,128:2"
+        ],
+        "-gpgpu_const_cache:l1": [
+          "N:128:64:8,L:R:f:N:L,S:2:64,4"
+        ],
+        "-gpgpu_cache:il1": [
+          "N:64:128:16,L:R:f:N:L,S:2:48,4"
+        ],
+        "-gpgpu_cache:dl1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_l1_cache_write_ratio": [
+          "0"
+        ],
+        "-gpgpu_l1_banks": [
+          "4"
+        ],
+        "-gpgpu_l1_banks_byte_interleaving": [
+          "32"
+        ],
+        "-gpgpu_l1_banks_hashing_function": [
+          "0"
+        ],
+        "-gpgpu_l1_latency": [
+          "20"
+        ],
+        "-gpgpu_dtc_l1_mode": [
+          "3"
+        ],
+        "-gpgpu_dtc_l1_pib_entries": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_tag_hash_bankrow": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_invalidate_on_source_event": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_progressive_wakeup": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_finite_service": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_mshr_entries": [
+          "32"
+        ],
+        "-gpgpu_dtc_l1_debug_event_limit": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_lower_outstanding_cap": [
+          "32768"
+        ],
+        "-gpgpu_dtc_l1_tag_banks": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_bank": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_cycle": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_logical_sets": [
+          "64"
+        ],
+        "-gpgpu_dtc_l1_logical_ways": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_physical_lines": [
+          "640"
+        ],
+        "-gpgpu_dtc_l1_allocation_width": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_io_pib_entries": [
+          "256"
+        ],
+        "-gpgpu_dtc_l1_oo_pib_entries": [
+          "128"
+        ],
+        "-gpgpu_dtc_l1_ref_count_bits": [
+          "13"
+        ],
+        "-gpgpu_smem_latency": [
+          "20"
+        ],
+        "-gpgpu_cache:dl1PrefL1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_cache:dl1PrefShared": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_gmem_skip_L1D": [
+          "0"
+        ],
+        "-gpgpu_perfect_mem": [
+          "0"
+        ],
+        "-n_regfile_gating_group": [
+          "4"
+        ],
+        "-gpgpu_clock_gated_reg_file": [
+          "0"
+        ],
+        "-gpgpu_clock_gated_lanes": [
+          "1"
+        ],
+        "-gpgpu_shader_registers": [
+          "65536"
+        ],
+        "-gpgpu_registers_per_block": [
+          "65536"
+        ],
+        "-gpgpu_ignore_resources_limitation": [
+          "0"
+        ],
+        "-gpgpu_shader_cta": [
+          "32"
+        ],
+        "-gpgpu_num_cta_barriers": [
+          "16"
+        ],
+        "-gpgpu_n_clusters": [
+          "64"
+        ],
+        "-gpgpu_n_cores_per_cluster": [
+          "1"
+        ],
+        "-gpgpu_n_cluster_ejection_buffer_size": [
+          "32"
+        ],
+        "-gpgpu_n_ldst_response_buffer_size": [
+          "2"
+        ],
+        "-gpgpu_shmem_per_block": [
+          "65536"
+        ],
+        "-gpgpu_shmem_size": [
+          "98304"
+        ],
+        "-gpgpu_shmem_option": [
+          "0,8,16,32,64,96"
+        ],
+        "-gpgpu_unified_l1d_size": [
+          "128"
+        ],
+        "-gpgpu_adaptive_cache_config": [
+          "0"
+        ],
+        "-gpgpu_shmem_sizeDefault": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefL1": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefShared": [
+          "98304"
+        ],
+        "-gpgpu_shmem_num_banks": [
+          "32"
+        ],
+        "-gpgpu_shmem_limited_broadcast": [
+          "0"
+        ],
+        "-gpgpu_shmem_warp_parts": [
+          "1"
+        ],
+        "-gpgpu_mem_unit_ports": [
+          "1"
+        ],
+        "-gpgpu_warpdistro_shader": [
+          "-1"
+        ],
+        "-gpgpu_warp_issue_shader": [
+          "0"
+        ],
+        "-gpgpu_local_mem_map": [
+          "1"
+        ],
+        "-gpgpu_num_reg_banks": [
+          "16"
+        ],
+        "-gpgpu_reg_bank_use_warp_id": [
+          "0"
+        ],
+        "-gpgpu_sub_core_model": [
+          "1"
+        ],
+        "-gpgpu_enable_specialized_operand_collector": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sp": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sfu": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_tensor_core": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_mem": [
+          "2"
+        ],
+        "-gpgpu_operand_collector_num_units_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_coalesce_arch": [
+          "70"
+        ],
+        "-gpgpu_num_sched_per_core": [
+          "4"
+        ],
+        "-gpgpu_max_insn_issue_per_warp": [
+          "1"
+        ],
+        "-gpgpu_dual_issue_diff_exec_units": [
+          "1"
+        ],
+        "-gpgpu_simt_core_sim_order": [
+          "1"
+        ],
+        "-gpgpu_pipeline_widths": [
+          "4,4,4,4,4,4,4,4,4,4,8,4,4"
+        ],
+        "-gpgpu_tensor_core_avail": [
+          "1"
+        ],
+        "-gpgpu_num_sp_units": [
+          "4"
+        ],
+        "-gpgpu_num_dp_units": [
+          "4"
+        ],
+        "-gpgpu_num_int_units": [
+          "4"
+        ],
+        "-gpgpu_num_sfu_units": [
+          "4"
+        ],
+        "-gpgpu_num_tensor_core_units": [
+          "4"
+        ],
+        "-gpgpu_num_mem_units": [
+          "1"
+        ],
+        "-gpgpu_scheduler": [
+          "gto"
+        ],
+        "-gpgpu_concurrent_kernel_sm": [
+          "0"
+        ],
+        "-gpgpu_perfect_inst_const_cache": [
+          "1"
+        ],
+        "-gpgpu_inst_fetch_throughput": [
+          "4"
+        ],
+        "-gpgpu_reg_file_port_throughput": [
+          "2"
+        ],
+        "-specialized_unit_1": [
+          "1,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_2": [
+          "1,4,200,4,4,TEX"
+        ],
+        "-specialized_unit_3": [
+          "1,4,8,4,4,TENSOR"
+        ],
+        "-specialized_unit_4": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_5": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_6": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_7": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_8": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-gpgpu_opndcoll_model": [
+          "0"
+        ],
+        "-gpgpu_trywait_max_retries": [
+          "5"
+        ],
+        "-gpgpu_trywait_retry_cycles": [
+          "200"
+        ],
+        "-gpgpu_n_chiplet_partition": [
+          "1"
+        ],
+        "-gpgpu_chiplet_interleave": [
+          "0"
+        ],
+        "-chiplet_mem_stride": [
+          "8192"
+        ],
+        "-gpgpu_perf_sim_memcpy": [
+          "1"
+        ],
+        "-gpgpu_simple_dram_model": [
+          "0"
+        ],
+        "-gpgpu_simple_dram_clock_multiplier": [
+          "1"
+        ],
+        "-gpgpu_dram_scheduler": [
+          "1"
+        ],
+        "-gpgpu_dram_partition_queues": [
+          "64:64:64:64"
+        ],
+        "-l2_ideal": [
+          "0"
+        ],
+        "-gpgpu_cache:dl2": [
+          "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"
+        ],
+        "-gpgpu_cache:dl2_texture_only": [
+          "0"
+        ],
+        "-gpgpu_n_mem": [
+          "20"
+        ],
+        "-gpgpu_n_sub_partition_per_mchannel": [
+          "2"
+        ],
+        "-chiplet_partition_stride": [
+          "8192"
+        ],
+        "-inter_chiplet_queue_size": [
+          "128"
+        ],
+        "-inter_chiplet_queue_latency": [
+          "100"
+        ],
+        "-gpgpu_n_mem_per_ctrlr": [
+          "1"
+        ],
+        "-gpgpu_memlatency_stat": [
+          "14"
+        ],
+        "-gpgpu_frfcfs_dram_sched_queue_size": [
+          "64"
+        ],
+        "-gpgpu_dram_return_queue_size": [
+          "192"
+        ],
+        "-gpgpu_dram_buswidth": [
+          "16"
+        ],
+        "-gpgpu_dram_burst_length": [
+          "2"
+        ],
+        "-dram_data_command_freq_ratio": [
+          "2"
+        ],
+        "-gpgpu_dram_timing_opt": [
+          "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:",
+          "CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3"
+        ],
+        "-gpgpu_l2_rop_latency": [
+          "200"
+        ],
+        "-dram_latency": [
+          "100"
+        ],
+        "-dram_dual_bus_interface": [
+          "1"
+        ],
+        "-dram_bnk_indexing_policy": [
+          "0"
+        ],
+        "-dram_bnkgrp_indexing_policy": [
+          "1"
+        ],
+        "-dram_seperate_write_queue_enable": [
+          "0"
+        ],
+        "-dram_write_queue_size": [
+          "32:28:16"
+        ],
+        "-dram_elimnate_rw_turnaround": [
+          "0"
+        ],
+        "-icnt_flit_size": [
+          "40"
+        ],
+        "-SST_mode": [
+          "0"
+        ],
+        "-gpgpu_lrc_enabled": [
+          "0"
+        ],
+        "-gpgpu_lrc_max_entries": [
+          "256"
+        ],
+        "-gpgpu_lrc_max_merged": [
+          "32"
+        ],
+        "-gpgpu_mem_addr_mapping": [
+          "NULL"
+        ],
+        "-gpgpu_mem_addr_test": [
+          "0"
+        ],
+        "-gpgpu_mem_address_mask": [
+          "1"
+        ],
+        "-gpgpu_memory_partition_indexing": [
+          "0"
+        ],
+        "-accelwattch_xml_file": [
+          "accelwattch_sass_sim.xml"
+        ],
+        "-power_simulation_enabled": [
+          "0"
+        ],
+        "-power_per_cycle_dump": [
+          "0"
+        ],
+        "-hw_perf_file_name": [
+          "hw_perf.csv"
+        ],
+        "-hw_perf_bench_name": [],
+        "-power_simulation_mode": [
+          "0"
+        ],
+        "-dvfs_enabled": [
+          "0"
+        ],
+        "-aggregate_power_stats": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CC_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_SHARED_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_RD": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_WR": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NOC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_PIPE_DUTY": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NUM_SM_IDLE": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CYCLES": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_VOLTAGE": [
+          "0"
+        ],
+        "-power_trace_enabled": [
+          "0"
+        ],
+        "-power_trace_zlevel": [
+          "6"
+        ],
+        "-steady_power_levels_enabled": [
+          "0"
+        ],
+        "-steady_state_definition": [
+          "8:4"
+        ],
+        "-gpgpu_max_cycle": [
+          "0"
+        ],
+        "-gpgpu_max_insn": [
+          "0"
+        ],
+        "-gpgpu_max_cta": [
+          "0"
+        ],
+        "-gpgpu_max_completed_cta": [
+          "0"
+        ],
+        "-gpgpu_runtime_stat": [
+          "500000"
+        ],
+        "-liveness_message_freq": [
+          "1"
+        ],
+        "-gpgpu_compute_capability_major": [
+          "7"
+        ],
+        "-gpgpu_compute_capability_minor": [
+          "0"
+        ],
+        "-gpgpu_flush_l1_cache": [
+          "1"
+        ],
+        "-gpgpu_flush_l2_cache": [
+          "0"
+        ],
+        "-gpgpu_deadlock_detect": [
+          "1"
+        ],
+        "-gpgpu_ptx_instruction_classification": [
+          "0"
+        ],
+        "-gpgpu_ptx_sim_mode": [
+          "0"
+        ],
+        "-gpgpu_clock_domains": [
+          "1410.0:1410.0:1410.0:850.0"
+        ],
+        "-gpgpu_max_concurrent_kernel": [
+          "128"
+        ],
+        "-gpgpu_cflog_interval": [
+          "0"
+        ],
+        "-visualizer_enabled": [
+          "0"
+        ],
+        "-visualizer_outputfile": [
+          "NULL"
+        ],
+        "-visualizer_zlevel": [
+          "6"
+        ],
+        "-gpgpu_stack_size_limit": [
+          "1024"
+        ],
+        "-gpgpu_heap_size_limit": [
+          "8388608"
+        ],
+        "-gpgpu_runtime_sync_depth_limit": [
+          "2"
+        ],
+        "-gpgpu_runtime_pending_launch_count_limit": [
+          "2048"
+        ],
+        "-trace_enabled": [
+          "0"
+        ],
+        "-trace_components": [
+          "none"
+        ],
+        "-trace_sampling_core": [
+          "0"
+        ],
+        "-trace_sampling_memory_partition": [
+          "-1"
+        ],
+        "-enable_ptx_file_line_stats": [
+          "1"
+        ],
+        "-ptx_line_stats_filename": [
+          "gpgpu_inst_stats.txt"
+        ],
+        "-gpgpu_kernel_launch_latency": [
+          "5000"
+        ],
+        "-gpgpu_cdp_enabled": [
+          "0"
+        ],
+        "-gpgpu_TB_launch_latency": [
+          "0"
+        ],
+        "-trace": [
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/gaussian-rodinia-3.1/_s_256/traces/kernelslist.g"
+        ],
+        "-trace_opcode_latency_initiation_int": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_sp": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_dp": [
+          "8,4"
+        ],
+        "-trace_opcode_latency_initiation_sfu": [
+          "20,8"
+        ],
+        "-trace_opcode_latency_initiation_tensor": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_1": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_2": [
+          "200,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_3": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_4": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_5": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_6": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_7": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_8": [
+          "4,4"
+        ]
+      },
+      "configs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FAST64_OO.config",
+          "sha256": "546c68f96d47f4650703ccfbc925bd789f923501d5607a77e79ca4845f234caa"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FINITE_PRIMARY_COMMON.config",
+          "sha256": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/trace.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/AE.config",
+          "sha256": "1bc8028ca1675f226868ac21dd491c2909464e42d3194accf3f4dbfb402726fd"
+        }
+      ],
+      "timeout_seconds": 7200,
+      "retries": 0,
+      "max_new_sim_concurrency": 1,
+      "resource_policy_version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+      "order": 1,
+      "new_attempt_uuid": "f9295c5b-29b9-4e6c-9b9c-531c21acfc99",
+      "cohort": "AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY",
+      "imported_BASE_dossier": "BASE_REUSE_GAUSSIAN.json",
+      "imported_BASE_UUID": "87daf914-1730-4012-8053-7cb3c9536636",
+      "imported_BASE_cycles": 3278356,
+      "option_deltas_from_same_input_BASE": {
+        "-gpgpu_dtc_l1_tag_hash_bankrow": {
+          "BASE": [
+            "0"
+          ],
+          "ON": [
+            "1"
+          ]
+        }
+      },
+      "config_copy_policy": "BA own freeze/materialization only; preserve exact source config byte SHA; never write these old paths",
+      "primary_ratio": "qualified exact same-input imported BASE integer cycles / new accepted ON integer cycles",
+      "attempt_uuid": "f9295c5b-29b9-4e6c-9b9c-531c21acfc99",
+      "status": "IDENTITY_AND_SCIENCE_REGISTERED_DISPATCH_HELD",
+      "destination": "/workspace/dtc-evidence-closure-20261019-v1/coordinator/ag6-v2/attempts/AE_Gaussian_f9295c5b-29b9-4e6c-9b9c-531c21acfc99",
+      "BASE_eligibility_decision_sha256": "a8e834093bc3da494190798cc87eee6c39edbe34efa04d38a5ab6771cea37f9a"
+    },
+    {
+      "point": "AD_GEMM",
+      "arm": "AD",
+      "workload": "GEMM",
+      "core_commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "source_base": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "framework_source": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "trace_list": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces/kernelslist.g",
+      "trace_list_sha256": "fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057",
+      "expected_kernels": 1,
+      "expected_commands": [
+        "MemcpyHtoD,0x00007f6d95700000,1048576",
+        "MemcpyHtoD,0x00007f6d7b200000,1048576",
+        "MemcpyHtoD,0x00007f6d7b300000,1048576",
+        "kernel-1.traceg"
+      ],
+      "expected_instructions": 739246080,
+      "expected_CTA": 1024,
+      "full_processing_window": "ALL_COMMANDS_ALL_KERNELS_ALL_CTA_NO_PREFIX_NATURAL_EXIT0",
+      "runtime_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/accel-sim.out",
+      "runtime_sha256": "38158d03dcaecd847d0d6098603c7bc4bfd2a165c4e46f657930e5dedbd291bd",
+      "runtime_library_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so",
+      "runtime_library_sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2",
+      "runtime_environment": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "LD_LIBRARY_PATH": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+        "CUDA_VISIBLE_DEVICES": ""
+      },
+      "expected_embedded_core_version": "gpgpu-sim_git-commit-c8090115_modified_0.0.",
+      "expected_embedded_framework_version": "accelsim-AG-framework-8e43c75a5e2eb60a8466084602b7df8117111e89-core-c8090115bd57512b1b23fca7d925301fa620c751",
+      "expected_full_effective_options": {
+        "-save_embedded_ptx": [
+          "0"
+        ],
+        "-keep": [
+          "0"
+        ],
+        "-gpgpu_ptx_save_converted_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_occupancy_sm_number": [
+          "64"
+        ],
+        "-ptx_opcode_latency_int": [
+          "4,13,4,5,145,21"
+        ],
+        "-ptx_opcode_latency_fp": [
+          "4,13,4,5,39"
+        ],
+        "-ptx_opcode_latency_dp": [
+          "8,19,8,8,330"
+        ],
+        "-ptx_opcode_latency_sfu": [
+          "100"
+        ],
+        "-ptx_opcode_latency_tesnor": [
+          "64"
+        ],
+        "-ptx_opcode_initiation_int": [
+          "2,2,2,2,8,4"
+        ],
+        "-ptx_opcode_initiation_fp": [
+          "2,2,2,2,4"
+        ],
+        "-ptx_opcode_initiation_dp": [
+          "4,4,4,4,130"
+        ],
+        "-ptx_opcode_initiation_sfu": [
+          "8"
+        ],
+        "-ptx_opcode_initiation_tensor": [
+          "64"
+        ],
+        "-cdp_latency": [
+          "7200,8000,100,12000,1600"
+        ],
+        "-network_mode": [
+          "2"
+        ],
+        "-inter_config_file": [
+          "mesh"
+        ],
+        "-icnt_in_buffer_limit": [
+          "512"
+        ],
+        "-icnt_out_buffer_limit": [
+          "512"
+        ],
+        "-icnt_subnets": [
+          "2"
+        ],
+        "-icnt_arbiter_algo": [
+          "1"
+        ],
+        "-icnt_verbose": [
+          "0"
+        ],
+        "-icnt_grant_cycles": [
+          "1"
+        ],
+        "-gpgpu_ptx_use_cuobjdump": [
+          "1"
+        ],
+        "-gpgpu_experimental_lib_support": [
+          "0"
+        ],
+        "-checkpoint_option": [
+          "0"
+        ],
+        "-checkpoint_kernel": [
+          "1"
+        ],
+        "-checkpoint_CTA": [
+          "0"
+        ],
+        "-resume_option": [
+          "0"
+        ],
+        "-resume_kernel": [
+          "0"
+        ],
+        "-resume_CTA": [
+          "0"
+        ],
+        "-checkpoint_CTA_t": [
+          "0"
+        ],
+        "-checkpoint_insn_Y": [
+          "0"
+        ],
+        "-gpgpu_ptx_convert_to_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_ptx_force_max_capability": [
+          "70"
+        ],
+        "-gpgpu_ptx_inst_debug_to_file": [
+          "0"
+        ],
+        "-gpgpu_ptx_inst_debug_file": [
+          "inst_debug.txt"
+        ],
+        "-gpgpu_ptx_inst_debug_thread_uid": [
+          "1"
+        ],
+        "-gpgpu_simd_model": [
+          "1"
+        ],
+        "-gpgpu_shader_core_pipeline": [
+          "2048:32"
+        ],
+        "-gpgpu_tex_cache:l1": [
+          "N:4:128:256,L:R:m:N:L,T:512:8,128:2"
+        ],
+        "-gpgpu_const_cache:l1": [
+          "N:128:64:8,L:R:f:N:L,S:2:64,4"
+        ],
+        "-gpgpu_cache:il1": [
+          "N:64:128:16,L:R:f:N:L,S:2:48,4"
+        ],
+        "-gpgpu_cache:dl1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_l1_cache_write_ratio": [
+          "0"
+        ],
+        "-gpgpu_l1_banks": [
+          "4"
+        ],
+        "-gpgpu_l1_banks_byte_interleaving": [
+          "32"
+        ],
+        "-gpgpu_l1_banks_hashing_function": [
+          "0"
+        ],
+        "-gpgpu_l1_latency": [
+          "20"
+        ],
+        "-gpgpu_dtc_l1_mode": [
+          "3"
+        ],
+        "-gpgpu_dtc_l1_pib_entries": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_tag_hash_bankrow": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_invalidate_on_source_event": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_progressive_wakeup": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_finite_service": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_mshr_entries": [
+          "32"
+        ],
+        "-gpgpu_dtc_l1_debug_event_limit": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_lower_outstanding_cap": [
+          "32768"
+        ],
+        "-gpgpu_dtc_l1_tag_banks": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_bank": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_cycle": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_logical_sets": [
+          "64"
+        ],
+        "-gpgpu_dtc_l1_logical_ways": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_physical_lines": [
+          "640"
+        ],
+        "-gpgpu_dtc_l1_allocation_width": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_io_pib_entries": [
+          "256"
+        ],
+        "-gpgpu_dtc_l1_oo_pib_entries": [
+          "128"
+        ],
+        "-gpgpu_dtc_l1_ref_count_bits": [
+          "13"
+        ],
+        "-gpgpu_smem_latency": [
+          "20"
+        ],
+        "-gpgpu_cache:dl1PrefL1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_cache:dl1PrefShared": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_gmem_skip_L1D": [
+          "0"
+        ],
+        "-gpgpu_perfect_mem": [
+          "0"
+        ],
+        "-n_regfile_gating_group": [
+          "4"
+        ],
+        "-gpgpu_clock_gated_reg_file": [
+          "0"
+        ],
+        "-gpgpu_clock_gated_lanes": [
+          "1"
+        ],
+        "-gpgpu_shader_registers": [
+          "65536"
+        ],
+        "-gpgpu_registers_per_block": [
+          "65536"
+        ],
+        "-gpgpu_ignore_resources_limitation": [
+          "0"
+        ],
+        "-gpgpu_shader_cta": [
+          "32"
+        ],
+        "-gpgpu_num_cta_barriers": [
+          "16"
+        ],
+        "-gpgpu_n_clusters": [
+          "64"
+        ],
+        "-gpgpu_n_cores_per_cluster": [
+          "1"
+        ],
+        "-gpgpu_n_cluster_ejection_buffer_size": [
+          "32"
+        ],
+        "-gpgpu_n_ldst_response_buffer_size": [
+          "2"
+        ],
+        "-gpgpu_shmem_per_block": [
+          "65536"
+        ],
+        "-gpgpu_shmem_size": [
+          "98304"
+        ],
+        "-gpgpu_shmem_option": [
+          "0,8,16,32,64,96"
+        ],
+        "-gpgpu_unified_l1d_size": [
+          "128"
+        ],
+        "-gpgpu_adaptive_cache_config": [
+          "0"
+        ],
+        "-gpgpu_shmem_sizeDefault": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefL1": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefShared": [
+          "98304"
+        ],
+        "-gpgpu_shmem_num_banks": [
+          "32"
+        ],
+        "-gpgpu_shmem_limited_broadcast": [
+          "0"
+        ],
+        "-gpgpu_shmem_warp_parts": [
+          "1"
+        ],
+        "-gpgpu_mem_unit_ports": [
+          "1"
+        ],
+        "-gpgpu_warpdistro_shader": [
+          "-1"
+        ],
+        "-gpgpu_warp_issue_shader": [
+          "0"
+        ],
+        "-gpgpu_local_mem_map": [
+          "1"
+        ],
+        "-gpgpu_num_reg_banks": [
+          "16"
+        ],
+        "-gpgpu_reg_bank_use_warp_id": [
+          "0"
+        ],
+        "-gpgpu_sub_core_model": [
+          "1"
+        ],
+        "-gpgpu_enable_specialized_operand_collector": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sp": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sfu": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_tensor_core": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_mem": [
+          "2"
+        ],
+        "-gpgpu_operand_collector_num_units_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_coalesce_arch": [
+          "70"
+        ],
+        "-gpgpu_num_sched_per_core": [
+          "4"
+        ],
+        "-gpgpu_max_insn_issue_per_warp": [
+          "1"
+        ],
+        "-gpgpu_dual_issue_diff_exec_units": [
+          "1"
+        ],
+        "-gpgpu_simt_core_sim_order": [
+          "1"
+        ],
+        "-gpgpu_pipeline_widths": [
+          "4,4,4,4,4,4,4,4,4,4,8,4,4"
+        ],
+        "-gpgpu_tensor_core_avail": [
+          "1"
+        ],
+        "-gpgpu_num_sp_units": [
+          "4"
+        ],
+        "-gpgpu_num_dp_units": [
+          "4"
+        ],
+        "-gpgpu_num_int_units": [
+          "4"
+        ],
+        "-gpgpu_num_sfu_units": [
+          "4"
+        ],
+        "-gpgpu_num_tensor_core_units": [
+          "4"
+        ],
+        "-gpgpu_num_mem_units": [
+          "1"
+        ],
+        "-gpgpu_scheduler": [
+          "gto"
+        ],
+        "-gpgpu_concurrent_kernel_sm": [
+          "0"
+        ],
+        "-gpgpu_perfect_inst_const_cache": [
+          "1"
+        ],
+        "-gpgpu_inst_fetch_throughput": [
+          "4"
+        ],
+        "-gpgpu_reg_file_port_throughput": [
+          "2"
+        ],
+        "-specialized_unit_1": [
+          "1,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_2": [
+          "1,4,200,4,4,TEX"
+        ],
+        "-specialized_unit_3": [
+          "1,4,8,4,4,TENSOR"
+        ],
+        "-specialized_unit_4": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_5": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_6": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_7": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_8": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-gpgpu_opndcoll_model": [
+          "0"
+        ],
+        "-gpgpu_trywait_max_retries": [
+          "5"
+        ],
+        "-gpgpu_trywait_retry_cycles": [
+          "200"
+        ],
+        "-gpgpu_n_chiplet_partition": [
+          "1"
+        ],
+        "-gpgpu_chiplet_interleave": [
+          "0"
+        ],
+        "-chiplet_mem_stride": [
+          "8192"
+        ],
+        "-gpgpu_perf_sim_memcpy": [
+          "1"
+        ],
+        "-gpgpu_simple_dram_model": [
+          "0"
+        ],
+        "-gpgpu_simple_dram_clock_multiplier": [
+          "1"
+        ],
+        "-gpgpu_dram_scheduler": [
+          "1"
+        ],
+        "-gpgpu_dram_partition_queues": [
+          "64:64:64:64"
+        ],
+        "-l2_ideal": [
+          "0"
+        ],
+        "-gpgpu_cache:dl2": [
+          "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"
+        ],
+        "-gpgpu_cache:dl2_texture_only": [
+          "0"
+        ],
+        "-gpgpu_n_mem": [
+          "20"
+        ],
+        "-gpgpu_n_sub_partition_per_mchannel": [
+          "2"
+        ],
+        "-chiplet_partition_stride": [
+          "8192"
+        ],
+        "-inter_chiplet_queue_size": [
+          "128"
+        ],
+        "-inter_chiplet_queue_latency": [
+          "100"
+        ],
+        "-gpgpu_n_mem_per_ctrlr": [
+          "1"
+        ],
+        "-gpgpu_memlatency_stat": [
+          "14"
+        ],
+        "-gpgpu_frfcfs_dram_sched_queue_size": [
+          "64"
+        ],
+        "-gpgpu_dram_return_queue_size": [
+          "192"
+        ],
+        "-gpgpu_dram_buswidth": [
+          "16"
+        ],
+        "-gpgpu_dram_burst_length": [
+          "2"
+        ],
+        "-dram_data_command_freq_ratio": [
+          "2"
+        ],
+        "-gpgpu_dram_timing_opt": [
+          "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:",
+          "CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3"
+        ],
+        "-gpgpu_l2_rop_latency": [
+          "200"
+        ],
+        "-dram_latency": [
+          "100"
+        ],
+        "-dram_dual_bus_interface": [
+          "1"
+        ],
+        "-dram_bnk_indexing_policy": [
+          "0"
+        ],
+        "-dram_bnkgrp_indexing_policy": [
+          "1"
+        ],
+        "-dram_seperate_write_queue_enable": [
+          "0"
+        ],
+        "-dram_write_queue_size": [
+          "32:28:16"
+        ],
+        "-dram_elimnate_rw_turnaround": [
+          "0"
+        ],
+        "-icnt_flit_size": [
+          "40"
+        ],
+        "-SST_mode": [
+          "0"
+        ],
+        "-gpgpu_lrc_enabled": [
+          "0"
+        ],
+        "-gpgpu_lrc_max_entries": [
+          "256"
+        ],
+        "-gpgpu_lrc_max_merged": [
+          "32"
+        ],
+        "-gpgpu_mem_addr_mapping": [
+          "NULL"
+        ],
+        "-gpgpu_mem_addr_test": [
+          "0"
+        ],
+        "-gpgpu_mem_address_mask": [
+          "1"
+        ],
+        "-gpgpu_memory_partition_indexing": [
+          "0"
+        ],
+        "-accelwattch_xml_file": [
+          "accelwattch_sass_sim.xml"
+        ],
+        "-power_simulation_enabled": [
+          "0"
+        ],
+        "-power_per_cycle_dump": [
+          "0"
+        ],
+        "-hw_perf_file_name": [
+          "hw_perf.csv"
+        ],
+        "-hw_perf_bench_name": [],
+        "-power_simulation_mode": [
+          "0"
+        ],
+        "-dvfs_enabled": [
+          "0"
+        ],
+        "-aggregate_power_stats": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CC_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_SHARED_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_RD": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_WR": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NOC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_PIPE_DUTY": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NUM_SM_IDLE": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CYCLES": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_VOLTAGE": [
+          "0"
+        ],
+        "-power_trace_enabled": [
+          "0"
+        ],
+        "-power_trace_zlevel": [
+          "6"
+        ],
+        "-steady_power_levels_enabled": [
+          "0"
+        ],
+        "-steady_state_definition": [
+          "8:4"
+        ],
+        "-gpgpu_max_cycle": [
+          "0"
+        ],
+        "-gpgpu_max_insn": [
+          "0"
+        ],
+        "-gpgpu_max_cta": [
+          "0"
+        ],
+        "-gpgpu_max_completed_cta": [
+          "0"
+        ],
+        "-gpgpu_runtime_stat": [
+          "500000"
+        ],
+        "-liveness_message_freq": [
+          "1"
+        ],
+        "-gpgpu_compute_capability_major": [
+          "7"
+        ],
+        "-gpgpu_compute_capability_minor": [
+          "0"
+        ],
+        "-gpgpu_flush_l1_cache": [
+          "1"
+        ],
+        "-gpgpu_flush_l2_cache": [
+          "0"
+        ],
+        "-gpgpu_deadlock_detect": [
+          "1"
+        ],
+        "-gpgpu_ptx_instruction_classification": [
+          "0"
+        ],
+        "-gpgpu_ptx_sim_mode": [
+          "0"
+        ],
+        "-gpgpu_clock_domains": [
+          "1410.0:1410.0:1410.0:850.0"
+        ],
+        "-gpgpu_max_concurrent_kernel": [
+          "128"
+        ],
+        "-gpgpu_cflog_interval": [
+          "0"
+        ],
+        "-visualizer_enabled": [
+          "0"
+        ],
+        "-visualizer_outputfile": [
+          "NULL"
+        ],
+        "-visualizer_zlevel": [
+          "6"
+        ],
+        "-gpgpu_stack_size_limit": [
+          "1024"
+        ],
+        "-gpgpu_heap_size_limit": [
+          "8388608"
+        ],
+        "-gpgpu_runtime_sync_depth_limit": [
+          "2"
+        ],
+        "-gpgpu_runtime_pending_launch_count_limit": [
+          "2048"
+        ],
+        "-trace_enabled": [
+          "0"
+        ],
+        "-trace_components": [
+          "none"
+        ],
+        "-trace_sampling_core": [
+          "0"
+        ],
+        "-trace_sampling_memory_partition": [
+          "-1"
+        ],
+        "-enable_ptx_file_line_stats": [
+          "1"
+        ],
+        "-ptx_line_stats_filename": [
+          "gpgpu_inst_stats.txt"
+        ],
+        "-gpgpu_kernel_launch_latency": [
+          "5000"
+        ],
+        "-gpgpu_cdp_enabled": [
+          "0"
+        ],
+        "-gpgpu_TB_launch_latency": [
+          "0"
+        ],
+        "-trace": [
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces/kernelslist.g"
+        ],
+        "-trace_opcode_latency_initiation_int": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_sp": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_dp": [
+          "8,4"
+        ],
+        "-trace_opcode_latency_initiation_sfu": [
+          "20,8"
+        ],
+        "-trace_opcode_latency_initiation_tensor": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_1": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_2": [
+          "200,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_3": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_4": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_5": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_6": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_7": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_8": [
+          "4,4"
+        ]
+      },
+      "configs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FAST64_OO.config",
+          "sha256": "546c68f96d47f4650703ccfbc925bd789f923501d5607a77e79ca4845f234caa"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FINITE_PRIMARY_COMMON.config",
+          "sha256": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/trace.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/AD.config",
+          "sha256": "10cd1ea413745d1d5d5cdc5205e6670a9313a00bf678353fb94e70ae506ccb62"
+        }
+      ],
+      "timeout_seconds": 7200,
+      "retries": 0,
+      "max_new_sim_concurrency": 1,
+      "resource_policy_version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+      "order": 2,
+      "new_attempt_uuid": "fe022881-b5b2-4d99-9229-d7940761fc66",
+      "cohort": "AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY",
+      "imported_BASE_dossier": "BASE_REUSE_GEMM.json",
+      "imported_BASE_UUID": "8b6006aa-610e-41cf-82f0-135f80e449cf",
+      "imported_BASE_cycles": 1071405,
+      "option_deltas_from_same_input_BASE": {
+        "-gpgpu_dtc_l1_progressive_wakeup": {
+          "BASE": [
+            "0"
+          ],
+          "ON": [
+            "1"
+          ]
+        }
+      },
+      "config_copy_policy": "BA own freeze/materialization only; preserve exact source config byte SHA; never write these old paths",
+      "primary_ratio": "qualified exact same-input imported BASE integer cycles / new accepted ON integer cycles",
+      "attempt_uuid": "fe022881-b5b2-4d99-9229-d7940761fc66",
+      "status": "IDENTITY_AND_SCIENCE_REGISTERED_DISPATCH_HELD",
+      "destination": "/workspace/dtc-evidence-closure-20261019-v1/coordinator/ag6-v2/attempts/AD_GEMM_fe022881-b5b2-4d99-9229-d7940761fc66",
+      "BASE_eligibility_decision_sha256": "a8e834093bc3da494190798cc87eee6c39edbe34efa04d38a5ab6771cea37f9a"
+    },
+    {
+      "point": "AD_Gaussian",
+      "arm": "AD",
+      "workload": "Gaussian",
+      "core_commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "source_base": "e32afdcf44be3374ff36d22568ed01a075459b6f",
+      "framework_source": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "trace_list": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/gaussian-rodinia-3.1/_s_256/traces/kernelslist.g",
+      "trace_list_sha256": "6dc7caba6733657293e8c517467bac28890ae4eb97c732ffd245d7fd1c479fb9",
+      "expected_kernels": 510,
+      "expected_commands": [
+        "MemcpyHtoD,0x00007f8133500000,262144",
+        "MemcpyHtoD,0x00007f8133540000,262144",
+        "MemcpyHtoD,0x00007f8133580000,1024",
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg",
+        "kernel-17.traceg",
+        "kernel-18.traceg",
+        "kernel-19.traceg",
+        "kernel-20.traceg",
+        "kernel-21.traceg",
+        "kernel-22.traceg",
+        "kernel-23.traceg",
+        "kernel-24.traceg",
+        "kernel-25.traceg",
+        "kernel-26.traceg",
+        "kernel-27.traceg",
+        "kernel-28.traceg",
+        "kernel-29.traceg",
+        "kernel-30.traceg",
+        "kernel-31.traceg",
+        "kernel-32.traceg",
+        "kernel-33.traceg",
+        "kernel-34.traceg",
+        "kernel-35.traceg",
+        "kernel-36.traceg",
+        "kernel-37.traceg",
+        "kernel-38.traceg",
+        "kernel-39.traceg",
+        "kernel-40.traceg",
+        "kernel-41.traceg",
+        "kernel-42.traceg",
+        "kernel-43.traceg",
+        "kernel-44.traceg",
+        "kernel-45.traceg",
+        "kernel-46.traceg",
+        "kernel-47.traceg",
+        "kernel-48.traceg",
+        "kernel-49.traceg",
+        "kernel-50.traceg",
+        "kernel-51.traceg",
+        "kernel-52.traceg",
+        "kernel-53.traceg",
+        "kernel-54.traceg",
+        "kernel-55.traceg",
+        "kernel-56.traceg",
+        "kernel-57.traceg",
+        "kernel-58.traceg",
+        "kernel-59.traceg",
+        "kernel-60.traceg",
+        "kernel-61.traceg",
+        "kernel-62.traceg",
+        "kernel-63.traceg",
+        "kernel-64.traceg",
+        "kernel-65.traceg",
+        "kernel-66.traceg",
+        "kernel-67.traceg",
+        "kernel-68.traceg",
+        "kernel-69.traceg",
+        "kernel-70.traceg",
+        "kernel-71.traceg",
+        "kernel-72.traceg",
+        "kernel-73.traceg",
+        "kernel-74.traceg",
+        "kernel-75.traceg",
+        "kernel-76.traceg",
+        "kernel-77.traceg",
+        "kernel-78.traceg",
+        "kernel-79.traceg",
+        "kernel-80.traceg",
+        "kernel-81.traceg",
+        "kernel-82.traceg",
+        "kernel-83.traceg",
+        "kernel-84.traceg",
+        "kernel-85.traceg",
+        "kernel-86.traceg",
+        "kernel-87.traceg",
+        "kernel-88.traceg",
+        "kernel-89.traceg",
+        "kernel-90.traceg",
+        "kernel-91.traceg",
+        "kernel-92.traceg",
+        "kernel-93.traceg",
+        "kernel-94.traceg",
+        "kernel-95.traceg",
+        "kernel-96.traceg",
+        "kernel-97.traceg",
+        "kernel-98.traceg",
+        "kernel-99.traceg",
+        "kernel-100.traceg",
+        "kernel-101.traceg",
+        "kernel-102.traceg",
+        "kernel-103.traceg",
+        "kernel-104.traceg",
+        "kernel-105.traceg",
+        "kernel-106.traceg",
+        "kernel-107.traceg",
+        "kernel-108.traceg",
+        "kernel-109.traceg",
+        "kernel-110.traceg",
+        "kernel-111.traceg",
+        "kernel-112.traceg",
+        "kernel-113.traceg",
+        "kernel-114.traceg",
+        "kernel-115.traceg",
+        "kernel-116.traceg",
+        "kernel-117.traceg",
+        "kernel-118.traceg",
+        "kernel-119.traceg",
+        "kernel-120.traceg",
+        "kernel-121.traceg",
+        "kernel-122.traceg",
+        "kernel-123.traceg",
+        "kernel-124.traceg",
+        "kernel-125.traceg",
+        "kernel-126.traceg",
+        "kernel-127.traceg",
+        "kernel-128.traceg",
+        "kernel-129.traceg",
+        "kernel-130.traceg",
+        "kernel-131.traceg",
+        "kernel-132.traceg",
+        "kernel-133.traceg",
+        "kernel-134.traceg",
+        "kernel-135.traceg",
+        "kernel-136.traceg",
+        "kernel-137.traceg",
+        "kernel-138.traceg",
+        "kernel-139.traceg",
+        "kernel-140.traceg",
+        "kernel-141.traceg",
+        "kernel-142.traceg",
+        "kernel-143.traceg",
+        "kernel-144.traceg",
+        "kernel-145.traceg",
+        "kernel-146.traceg",
+        "kernel-147.traceg",
+        "kernel-148.traceg",
+        "kernel-149.traceg",
+        "kernel-150.traceg",
+        "kernel-151.traceg",
+        "kernel-152.traceg",
+        "kernel-153.traceg",
+        "kernel-154.traceg",
+        "kernel-155.traceg",
+        "kernel-156.traceg",
+        "kernel-157.traceg",
+        "kernel-158.traceg",
+        "kernel-159.traceg",
+        "kernel-160.traceg",
+        "kernel-161.traceg",
+        "kernel-162.traceg",
+        "kernel-163.traceg",
+        "kernel-164.traceg",
+        "kernel-165.traceg",
+        "kernel-166.traceg",
+        "kernel-167.traceg",
+        "kernel-168.traceg",
+        "kernel-169.traceg",
+        "kernel-170.traceg",
+        "kernel-171.traceg",
+        "kernel-172.traceg",
+        "kernel-173.traceg",
+        "kernel-174.traceg",
+        "kernel-175.traceg",
+        "kernel-176.traceg",
+        "kernel-177.traceg",
+        "kernel-178.traceg",
+        "kernel-179.traceg",
+        "kernel-180.traceg",
+        "kernel-181.traceg",
+        "kernel-182.traceg",
+        "kernel-183.traceg",
+        "kernel-184.traceg",
+        "kernel-185.traceg",
+        "kernel-186.traceg",
+        "kernel-187.traceg",
+        "kernel-188.traceg",
+        "kernel-189.traceg",
+        "kernel-190.traceg",
+        "kernel-191.traceg",
+        "kernel-192.traceg",
+        "kernel-193.traceg",
+        "kernel-194.traceg",
+        "kernel-195.traceg",
+        "kernel-196.traceg",
+        "kernel-197.traceg",
+        "kernel-198.traceg",
+        "kernel-199.traceg",
+        "kernel-200.traceg",
+        "kernel-201.traceg",
+        "kernel-202.traceg",
+        "kernel-203.traceg",
+        "kernel-204.traceg",
+        "kernel-205.traceg",
+        "kernel-206.traceg",
+        "kernel-207.traceg",
+        "kernel-208.traceg",
+        "kernel-209.traceg",
+        "kernel-210.traceg",
+        "kernel-211.traceg",
+        "kernel-212.traceg",
+        "kernel-213.traceg",
+        "kernel-214.traceg",
+        "kernel-215.traceg",
+        "kernel-216.traceg",
+        "kernel-217.traceg",
+        "kernel-218.traceg",
+        "kernel-219.traceg",
+        "kernel-220.traceg",
+        "kernel-221.traceg",
+        "kernel-222.traceg",
+        "kernel-223.traceg",
+        "kernel-224.traceg",
+        "kernel-225.traceg",
+        "kernel-226.traceg",
+        "kernel-227.traceg",
+        "kernel-228.traceg",
+        "kernel-229.traceg",
+        "kernel-230.traceg",
+        "kernel-231.traceg",
+        "kernel-232.traceg",
+        "kernel-233.traceg",
+        "kernel-234.traceg",
+        "kernel-235.traceg",
+        "kernel-236.traceg",
+        "kernel-237.traceg",
+        "kernel-238.traceg",
+        "kernel-239.traceg",
+        "kernel-240.traceg",
+        "kernel-241.traceg",
+        "kernel-242.traceg",
+        "kernel-243.traceg",
+        "kernel-244.traceg",
+        "kernel-245.traceg",
+        "kernel-246.traceg",
+        "kernel-247.traceg",
+        "kernel-248.traceg",
+        "kernel-249.traceg",
+        "kernel-250.traceg",
+        "kernel-251.traceg",
+        "kernel-252.traceg",
+        "kernel-253.traceg",
+        "kernel-254.traceg",
+        "kernel-255.traceg",
+        "kernel-256.traceg",
+        "kernel-257.traceg",
+        "kernel-258.traceg",
+        "kernel-259.traceg",
+        "kernel-260.traceg",
+        "kernel-261.traceg",
+        "kernel-262.traceg",
+        "kernel-263.traceg",
+        "kernel-264.traceg",
+        "kernel-265.traceg",
+        "kernel-266.traceg",
+        "kernel-267.traceg",
+        "kernel-268.traceg",
+        "kernel-269.traceg",
+        "kernel-270.traceg",
+        "kernel-271.traceg",
+        "kernel-272.traceg",
+        "kernel-273.traceg",
+        "kernel-274.traceg",
+        "kernel-275.traceg",
+        "kernel-276.traceg",
+        "kernel-277.traceg",
+        "kernel-278.traceg",
+        "kernel-279.traceg",
+        "kernel-280.traceg",
+        "kernel-281.traceg",
+        "kernel-282.traceg",
+        "kernel-283.traceg",
+        "kernel-284.traceg",
+        "kernel-285.traceg",
+        "kernel-286.traceg",
+        "kernel-287.traceg",
+        "kernel-288.traceg",
+        "kernel-289.traceg",
+        "kernel-290.traceg",
+        "kernel-291.traceg",
+        "kernel-292.traceg",
+        "kernel-293.traceg",
+        "kernel-294.traceg",
+        "kernel-295.traceg",
+        "kernel-296.traceg",
+        "kernel-297.traceg",
+        "kernel-298.traceg",
+        "kernel-299.traceg",
+        "kernel-300.traceg",
+        "kernel-301.traceg",
+        "kernel-302.traceg",
+        "kernel-303.traceg",
+        "kernel-304.traceg",
+        "kernel-305.traceg",
+        "kernel-306.traceg",
+        "kernel-307.traceg",
+        "kernel-308.traceg",
+        "kernel-309.traceg",
+        "kernel-310.traceg",
+        "kernel-311.traceg",
+        "kernel-312.traceg",
+        "kernel-313.traceg",
+        "kernel-314.traceg",
+        "kernel-315.traceg",
+        "kernel-316.traceg",
+        "kernel-317.traceg",
+        "kernel-318.traceg",
+        "kernel-319.traceg",
+        "kernel-320.traceg",
+        "kernel-321.traceg",
+        "kernel-322.traceg",
+        "kernel-323.traceg",
+        "kernel-324.traceg",
+        "kernel-325.traceg",
+        "kernel-326.traceg",
+        "kernel-327.traceg",
+        "kernel-328.traceg",
+        "kernel-329.traceg",
+        "kernel-330.traceg",
+        "kernel-331.traceg",
+        "kernel-332.traceg",
+        "kernel-333.traceg",
+        "kernel-334.traceg",
+        "kernel-335.traceg",
+        "kernel-336.traceg",
+        "kernel-337.traceg",
+        "kernel-338.traceg",
+        "kernel-339.traceg",
+        "kernel-340.traceg",
+        "kernel-341.traceg",
+        "kernel-342.traceg",
+        "kernel-343.traceg",
+        "kernel-344.traceg",
+        "kernel-345.traceg",
+        "kernel-346.traceg",
+        "kernel-347.traceg",
+        "kernel-348.traceg",
+        "kernel-349.traceg",
+        "kernel-350.traceg",
+        "kernel-351.traceg",
+        "kernel-352.traceg",
+        "kernel-353.traceg",
+        "kernel-354.traceg",
+        "kernel-355.traceg",
+        "kernel-356.traceg",
+        "kernel-357.traceg",
+        "kernel-358.traceg",
+        "kernel-359.traceg",
+        "kernel-360.traceg",
+        "kernel-361.traceg",
+        "kernel-362.traceg",
+        "kernel-363.traceg",
+        "kernel-364.traceg",
+        "kernel-365.traceg",
+        "kernel-366.traceg",
+        "kernel-367.traceg",
+        "kernel-368.traceg",
+        "kernel-369.traceg",
+        "kernel-370.traceg",
+        "kernel-371.traceg",
+        "kernel-372.traceg",
+        "kernel-373.traceg",
+        "kernel-374.traceg",
+        "kernel-375.traceg",
+        "kernel-376.traceg",
+        "kernel-377.traceg",
+        "kernel-378.traceg",
+        "kernel-379.traceg",
+        "kernel-380.traceg",
+        "kernel-381.traceg",
+        "kernel-382.traceg",
+        "kernel-383.traceg",
+        "kernel-384.traceg",
+        "kernel-385.traceg",
+        "kernel-386.traceg",
+        "kernel-387.traceg",
+        "kernel-388.traceg",
+        "kernel-389.traceg",
+        "kernel-390.traceg",
+        "kernel-391.traceg",
+        "kernel-392.traceg",
+        "kernel-393.traceg",
+        "kernel-394.traceg",
+        "kernel-395.traceg",
+        "kernel-396.traceg",
+        "kernel-397.traceg",
+        "kernel-398.traceg",
+        "kernel-399.traceg",
+        "kernel-400.traceg",
+        "kernel-401.traceg",
+        "kernel-402.traceg",
+        "kernel-403.traceg",
+        "kernel-404.traceg",
+        "kernel-405.traceg",
+        "kernel-406.traceg",
+        "kernel-407.traceg",
+        "kernel-408.traceg",
+        "kernel-409.traceg",
+        "kernel-410.traceg",
+        "kernel-411.traceg",
+        "kernel-412.traceg",
+        "kernel-413.traceg",
+        "kernel-414.traceg",
+        "kernel-415.traceg",
+        "kernel-416.traceg",
+        "kernel-417.traceg",
+        "kernel-418.traceg",
+        "kernel-419.traceg",
+        "kernel-420.traceg",
+        "kernel-421.traceg",
+        "kernel-422.traceg",
+        "kernel-423.traceg",
+        "kernel-424.traceg",
+        "kernel-425.traceg",
+        "kernel-426.traceg",
+        "kernel-427.traceg",
+        "kernel-428.traceg",
+        "kernel-429.traceg",
+        "kernel-430.traceg",
+        "kernel-431.traceg",
+        "kernel-432.traceg",
+        "kernel-433.traceg",
+        "kernel-434.traceg",
+        "kernel-435.traceg",
+        "kernel-436.traceg",
+        "kernel-437.traceg",
+        "kernel-438.traceg",
+        "kernel-439.traceg",
+        "kernel-440.traceg",
+        "kernel-441.traceg",
+        "kernel-442.traceg",
+        "kernel-443.traceg",
+        "kernel-444.traceg",
+        "kernel-445.traceg",
+        "kernel-446.traceg",
+        "kernel-447.traceg",
+        "kernel-448.traceg",
+        "kernel-449.traceg",
+        "kernel-450.traceg",
+        "kernel-451.traceg",
+        "kernel-452.traceg",
+        "kernel-453.traceg",
+        "kernel-454.traceg",
+        "kernel-455.traceg",
+        "kernel-456.traceg",
+        "kernel-457.traceg",
+        "kernel-458.traceg",
+        "kernel-459.traceg",
+        "kernel-460.traceg",
+        "kernel-461.traceg",
+        "kernel-462.traceg",
+        "kernel-463.traceg",
+        "kernel-464.traceg",
+        "kernel-465.traceg",
+        "kernel-466.traceg",
+        "kernel-467.traceg",
+        "kernel-468.traceg",
+        "kernel-469.traceg",
+        "kernel-470.traceg",
+        "kernel-471.traceg",
+        "kernel-472.traceg",
+        "kernel-473.traceg",
+        "kernel-474.traceg",
+        "kernel-475.traceg",
+        "kernel-476.traceg",
+        "kernel-477.traceg",
+        "kernel-478.traceg",
+        "kernel-479.traceg",
+        "kernel-480.traceg",
+        "kernel-481.traceg",
+        "kernel-482.traceg",
+        "kernel-483.traceg",
+        "kernel-484.traceg",
+        "kernel-485.traceg",
+        "kernel-486.traceg",
+        "kernel-487.traceg",
+        "kernel-488.traceg",
+        "kernel-489.traceg",
+        "kernel-490.traceg",
+        "kernel-491.traceg",
+        "kernel-492.traceg",
+        "kernel-493.traceg",
+        "kernel-494.traceg",
+        "kernel-495.traceg",
+        "kernel-496.traceg",
+        "kernel-497.traceg",
+        "kernel-498.traceg",
+        "kernel-499.traceg",
+        "kernel-500.traceg",
+        "kernel-501.traceg",
+        "kernel-502.traceg",
+        "kernel-503.traceg",
+        "kernel-504.traceg",
+        "kernel-505.traceg",
+        "kernel-506.traceg",
+        "kernel-507.traceg",
+        "kernel-508.traceg",
+        "kernel-509.traceg",
+        "kernel-510.traceg"
+      ],
+      "expected_instructions": 283685120,
+      "expected_CTA": 65790,
+      "full_processing_window": "ALL_COMMANDS_ALL_KERNELS_ALL_CTA_NO_PREFIX_NATURAL_EXIT0",
+      "runtime_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/accel-sim.out",
+      "runtime_sha256": "38158d03dcaecd847d0d6098603c7bc4bfd2a165c4e46f657930e5dedbd291bd",
+      "runtime_library_path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so",
+      "runtime_library_sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2",
+      "runtime_environment": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "LD_LIBRARY_PATH": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+        "CUDA_VISIBLE_DEVICES": ""
+      },
+      "expected_embedded_core_version": "gpgpu-sim_git-commit-c8090115_modified_0.0.",
+      "expected_embedded_framework_version": "accelsim-AG-framework-8e43c75a5e2eb60a8466084602b7df8117111e89-core-c8090115bd57512b1b23fca7d925301fa620c751",
+      "expected_full_effective_options": {
+        "-save_embedded_ptx": [
+          "0"
+        ],
+        "-keep": [
+          "0"
+        ],
+        "-gpgpu_ptx_save_converted_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_occupancy_sm_number": [
+          "64"
+        ],
+        "-ptx_opcode_latency_int": [
+          "4,13,4,5,145,21"
+        ],
+        "-ptx_opcode_latency_fp": [
+          "4,13,4,5,39"
+        ],
+        "-ptx_opcode_latency_dp": [
+          "8,19,8,8,330"
+        ],
+        "-ptx_opcode_latency_sfu": [
+          "100"
+        ],
+        "-ptx_opcode_latency_tesnor": [
+          "64"
+        ],
+        "-ptx_opcode_initiation_int": [
+          "2,2,2,2,8,4"
+        ],
+        "-ptx_opcode_initiation_fp": [
+          "2,2,2,2,4"
+        ],
+        "-ptx_opcode_initiation_dp": [
+          "4,4,4,4,130"
+        ],
+        "-ptx_opcode_initiation_sfu": [
+          "8"
+        ],
+        "-ptx_opcode_initiation_tensor": [
+          "64"
+        ],
+        "-cdp_latency": [
+          "7200,8000,100,12000,1600"
+        ],
+        "-network_mode": [
+          "2"
+        ],
+        "-inter_config_file": [
+          "mesh"
+        ],
+        "-icnt_in_buffer_limit": [
+          "512"
+        ],
+        "-icnt_out_buffer_limit": [
+          "512"
+        ],
+        "-icnt_subnets": [
+          "2"
+        ],
+        "-icnt_arbiter_algo": [
+          "1"
+        ],
+        "-icnt_verbose": [
+          "0"
+        ],
+        "-icnt_grant_cycles": [
+          "1"
+        ],
+        "-gpgpu_ptx_use_cuobjdump": [
+          "1"
+        ],
+        "-gpgpu_experimental_lib_support": [
+          "0"
+        ],
+        "-checkpoint_option": [
+          "0"
+        ],
+        "-checkpoint_kernel": [
+          "1"
+        ],
+        "-checkpoint_CTA": [
+          "0"
+        ],
+        "-resume_option": [
+          "0"
+        ],
+        "-resume_kernel": [
+          "0"
+        ],
+        "-resume_CTA": [
+          "0"
+        ],
+        "-checkpoint_CTA_t": [
+          "0"
+        ],
+        "-checkpoint_insn_Y": [
+          "0"
+        ],
+        "-gpgpu_ptx_convert_to_ptxplus": [
+          "0"
+        ],
+        "-gpgpu_ptx_force_max_capability": [
+          "70"
+        ],
+        "-gpgpu_ptx_inst_debug_to_file": [
+          "0"
+        ],
+        "-gpgpu_ptx_inst_debug_file": [
+          "inst_debug.txt"
+        ],
+        "-gpgpu_ptx_inst_debug_thread_uid": [
+          "1"
+        ],
+        "-gpgpu_simd_model": [
+          "1"
+        ],
+        "-gpgpu_shader_core_pipeline": [
+          "2048:32"
+        ],
+        "-gpgpu_tex_cache:l1": [
+          "N:4:128:256,L:R:m:N:L,T:512:8,128:2"
+        ],
+        "-gpgpu_const_cache:l1": [
+          "N:128:64:8,L:R:f:N:L,S:2:64,4"
+        ],
+        "-gpgpu_cache:il1": [
+          "N:64:128:16,L:R:f:N:L,S:2:48,4"
+        ],
+        "-gpgpu_cache:dl1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_l1_cache_write_ratio": [
+          "0"
+        ],
+        "-gpgpu_l1_banks": [
+          "4"
+        ],
+        "-gpgpu_l1_banks_byte_interleaving": [
+          "32"
+        ],
+        "-gpgpu_l1_banks_hashing_function": [
+          "0"
+        ],
+        "-gpgpu_l1_latency": [
+          "20"
+        ],
+        "-gpgpu_dtc_l1_mode": [
+          "3"
+        ],
+        "-gpgpu_dtc_l1_pib_entries": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_tag_hash_bankrow": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_invalidate_on_source_event": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_progressive_wakeup": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_finite_service": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_mshr_entries": [
+          "32"
+        ],
+        "-gpgpu_dtc_l1_debug_event_limit": [
+          "0"
+        ],
+        "-gpgpu_dtc_l1_lower_outstanding_cap": [
+          "32768"
+        ],
+        "-gpgpu_dtc_l1_tag_banks": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_bank": [
+          "1"
+        ],
+        "-gpgpu_dtc_l1_tag_req_per_cycle": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_logical_sets": [
+          "64"
+        ],
+        "-gpgpu_dtc_l1_logical_ways": [
+          "8"
+        ],
+        "-gpgpu_dtc_l1_physical_lines": [
+          "640"
+        ],
+        "-gpgpu_dtc_l1_allocation_width": [
+          "4"
+        ],
+        "-gpgpu_dtc_l1_io_pib_entries": [
+          "256"
+        ],
+        "-gpgpu_dtc_l1_oo_pib_entries": [
+          "128"
+        ],
+        "-gpgpu_dtc_l1_ref_count_bits": [
+          "13"
+        ],
+        "-gpgpu_smem_latency": [
+          "20"
+        ],
+        "-gpgpu_cache:dl1PrefL1": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_cache:dl1PrefShared": [
+          "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+        ],
+        "-gpgpu_gmem_skip_L1D": [
+          "0"
+        ],
+        "-gpgpu_perfect_mem": [
+          "0"
+        ],
+        "-n_regfile_gating_group": [
+          "4"
+        ],
+        "-gpgpu_clock_gated_reg_file": [
+          "0"
+        ],
+        "-gpgpu_clock_gated_lanes": [
+          "1"
+        ],
+        "-gpgpu_shader_registers": [
+          "65536"
+        ],
+        "-gpgpu_registers_per_block": [
+          "65536"
+        ],
+        "-gpgpu_ignore_resources_limitation": [
+          "0"
+        ],
+        "-gpgpu_shader_cta": [
+          "32"
+        ],
+        "-gpgpu_num_cta_barriers": [
+          "16"
+        ],
+        "-gpgpu_n_clusters": [
+          "64"
+        ],
+        "-gpgpu_n_cores_per_cluster": [
+          "1"
+        ],
+        "-gpgpu_n_cluster_ejection_buffer_size": [
+          "32"
+        ],
+        "-gpgpu_n_ldst_response_buffer_size": [
+          "2"
+        ],
+        "-gpgpu_shmem_per_block": [
+          "65536"
+        ],
+        "-gpgpu_shmem_size": [
+          "98304"
+        ],
+        "-gpgpu_shmem_option": [
+          "0,8,16,32,64,96"
+        ],
+        "-gpgpu_unified_l1d_size": [
+          "128"
+        ],
+        "-gpgpu_adaptive_cache_config": [
+          "0"
+        ],
+        "-gpgpu_shmem_sizeDefault": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefL1": [
+          "98304"
+        ],
+        "-gpgpu_shmem_size_PrefShared": [
+          "98304"
+        ],
+        "-gpgpu_shmem_num_banks": [
+          "32"
+        ],
+        "-gpgpu_shmem_limited_broadcast": [
+          "0"
+        ],
+        "-gpgpu_shmem_warp_parts": [
+          "1"
+        ],
+        "-gpgpu_mem_unit_ports": [
+          "1"
+        ],
+        "-gpgpu_warpdistro_shader": [
+          "-1"
+        ],
+        "-gpgpu_warp_issue_shader": [
+          "0"
+        ],
+        "-gpgpu_local_mem_map": [
+          "1"
+        ],
+        "-gpgpu_num_reg_banks": [
+          "16"
+        ],
+        "-gpgpu_reg_bank_use_warp_id": [
+          "0"
+        ],
+        "-gpgpu_sub_core_model": [
+          "1"
+        ],
+        "-gpgpu_enable_specialized_operand_collector": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sp": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_sfu": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_units_tensor_core": [
+          "4"
+        ],
+        "-gpgpu_operand_collector_num_units_mem": [
+          "2"
+        ],
+        "-gpgpu_operand_collector_num_units_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_in_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sp": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_dp": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_sfu": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_int": [
+          "0"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_tensor_core": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_mem": [
+          "1"
+        ],
+        "-gpgpu_operand_collector_num_out_ports_gen": [
+          "8"
+        ],
+        "-gpgpu_coalesce_arch": [
+          "70"
+        ],
+        "-gpgpu_num_sched_per_core": [
+          "4"
+        ],
+        "-gpgpu_max_insn_issue_per_warp": [
+          "1"
+        ],
+        "-gpgpu_dual_issue_diff_exec_units": [
+          "1"
+        ],
+        "-gpgpu_simt_core_sim_order": [
+          "1"
+        ],
+        "-gpgpu_pipeline_widths": [
+          "4,4,4,4,4,4,4,4,4,4,8,4,4"
+        ],
+        "-gpgpu_tensor_core_avail": [
+          "1"
+        ],
+        "-gpgpu_num_sp_units": [
+          "4"
+        ],
+        "-gpgpu_num_dp_units": [
+          "4"
+        ],
+        "-gpgpu_num_int_units": [
+          "4"
+        ],
+        "-gpgpu_num_sfu_units": [
+          "4"
+        ],
+        "-gpgpu_num_tensor_core_units": [
+          "4"
+        ],
+        "-gpgpu_num_mem_units": [
+          "1"
+        ],
+        "-gpgpu_scheduler": [
+          "gto"
+        ],
+        "-gpgpu_concurrent_kernel_sm": [
+          "0"
+        ],
+        "-gpgpu_perfect_inst_const_cache": [
+          "1"
+        ],
+        "-gpgpu_inst_fetch_throughput": [
+          "4"
+        ],
+        "-gpgpu_reg_file_port_throughput": [
+          "2"
+        ],
+        "-specialized_unit_1": [
+          "1,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_2": [
+          "1,4,200,4,4,TEX"
+        ],
+        "-specialized_unit_3": [
+          "1,4,8,4,4,TENSOR"
+        ],
+        "-specialized_unit_4": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_5": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_6": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_7": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-specialized_unit_8": [
+          "0,4,4,4,4,BRA"
+        ],
+        "-gpgpu_opndcoll_model": [
+          "0"
+        ],
+        "-gpgpu_trywait_max_retries": [
+          "5"
+        ],
+        "-gpgpu_trywait_retry_cycles": [
+          "200"
+        ],
+        "-gpgpu_n_chiplet_partition": [
+          "1"
+        ],
+        "-gpgpu_chiplet_interleave": [
+          "0"
+        ],
+        "-chiplet_mem_stride": [
+          "8192"
+        ],
+        "-gpgpu_perf_sim_memcpy": [
+          "1"
+        ],
+        "-gpgpu_simple_dram_model": [
+          "0"
+        ],
+        "-gpgpu_simple_dram_clock_multiplier": [
+          "1"
+        ],
+        "-gpgpu_dram_scheduler": [
+          "1"
+        ],
+        "-gpgpu_dram_partition_queues": [
+          "64:64:64:64"
+        ],
+        "-l2_ideal": [
+          "0"
+        ],
+        "-gpgpu_cache:dl2": [
+          "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"
+        ],
+        "-gpgpu_cache:dl2_texture_only": [
+          "0"
+        ],
+        "-gpgpu_n_mem": [
+          "20"
+        ],
+        "-gpgpu_n_sub_partition_per_mchannel": [
+          "2"
+        ],
+        "-chiplet_partition_stride": [
+          "8192"
+        ],
+        "-inter_chiplet_queue_size": [
+          "128"
+        ],
+        "-inter_chiplet_queue_latency": [
+          "100"
+        ],
+        "-gpgpu_n_mem_per_ctrlr": [
+          "1"
+        ],
+        "-gpgpu_memlatency_stat": [
+          "14"
+        ],
+        "-gpgpu_frfcfs_dram_sched_queue_size": [
+          "64"
+        ],
+        "-gpgpu_dram_return_queue_size": [
+          "192"
+        ],
+        "-gpgpu_dram_buswidth": [
+          "16"
+        ],
+        "-gpgpu_dram_burst_length": [
+          "2"
+        ],
+        "-dram_data_command_freq_ratio": [
+          "2"
+        ],
+        "-gpgpu_dram_timing_opt": [
+          "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:",
+          "CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3"
+        ],
+        "-gpgpu_l2_rop_latency": [
+          "200"
+        ],
+        "-dram_latency": [
+          "100"
+        ],
+        "-dram_dual_bus_interface": [
+          "1"
+        ],
+        "-dram_bnk_indexing_policy": [
+          "0"
+        ],
+        "-dram_bnkgrp_indexing_policy": [
+          "1"
+        ],
+        "-dram_seperate_write_queue_enable": [
+          "0"
+        ],
+        "-dram_write_queue_size": [
+          "32:28:16"
+        ],
+        "-dram_elimnate_rw_turnaround": [
+          "0"
+        ],
+        "-icnt_flit_size": [
+          "40"
+        ],
+        "-SST_mode": [
+          "0"
+        ],
+        "-gpgpu_lrc_enabled": [
+          "0"
+        ],
+        "-gpgpu_lrc_max_entries": [
+          "256"
+        ],
+        "-gpgpu_lrc_max_merged": [
+          "32"
+        ],
+        "-gpgpu_mem_addr_mapping": [
+          "NULL"
+        ],
+        "-gpgpu_mem_addr_test": [
+          "0"
+        ],
+        "-gpgpu_mem_address_mask": [
+          "1"
+        ],
+        "-gpgpu_memory_partition_indexing": [
+          "0"
+        ],
+        "-accelwattch_xml_file": [
+          "accelwattch_sass_sim.xml"
+        ],
+        "-power_simulation_enabled": [
+          "0"
+        ],
+        "-power_per_cycle_dump": [
+          "0"
+        ],
+        "-hw_perf_file_name": [
+          "hw_perf.csv"
+        ],
+        "-hw_perf_bench_name": [],
+        "-power_simulation_mode": [
+          "0"
+        ],
+        "-dvfs_enabled": [
+          "0"
+        ],
+        "-aggregate_power_stats": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L1_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_RM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WH": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_L2_WM": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CC_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_SHARED_ACC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_RD": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_DRAM_WR": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NOC": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_PIPE_DUTY": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_NUM_SM_IDLE": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_CYCLES": [
+          "0"
+        ],
+        "-accelwattch_hybrid_perfsim_VOLTAGE": [
+          "0"
+        ],
+        "-power_trace_enabled": [
+          "0"
+        ],
+        "-power_trace_zlevel": [
+          "6"
+        ],
+        "-steady_power_levels_enabled": [
+          "0"
+        ],
+        "-steady_state_definition": [
+          "8:4"
+        ],
+        "-gpgpu_max_cycle": [
+          "0"
+        ],
+        "-gpgpu_max_insn": [
+          "0"
+        ],
+        "-gpgpu_max_cta": [
+          "0"
+        ],
+        "-gpgpu_max_completed_cta": [
+          "0"
+        ],
+        "-gpgpu_runtime_stat": [
+          "500000"
+        ],
+        "-liveness_message_freq": [
+          "1"
+        ],
+        "-gpgpu_compute_capability_major": [
+          "7"
+        ],
+        "-gpgpu_compute_capability_minor": [
+          "0"
+        ],
+        "-gpgpu_flush_l1_cache": [
+          "1"
+        ],
+        "-gpgpu_flush_l2_cache": [
+          "0"
+        ],
+        "-gpgpu_deadlock_detect": [
+          "1"
+        ],
+        "-gpgpu_ptx_instruction_classification": [
+          "0"
+        ],
+        "-gpgpu_ptx_sim_mode": [
+          "0"
+        ],
+        "-gpgpu_clock_domains": [
+          "1410.0:1410.0:1410.0:850.0"
+        ],
+        "-gpgpu_max_concurrent_kernel": [
+          "128"
+        ],
+        "-gpgpu_cflog_interval": [
+          "0"
+        ],
+        "-visualizer_enabled": [
+          "0"
+        ],
+        "-visualizer_outputfile": [
+          "NULL"
+        ],
+        "-visualizer_zlevel": [
+          "6"
+        ],
+        "-gpgpu_stack_size_limit": [
+          "1024"
+        ],
+        "-gpgpu_heap_size_limit": [
+          "8388608"
+        ],
+        "-gpgpu_runtime_sync_depth_limit": [
+          "2"
+        ],
+        "-gpgpu_runtime_pending_launch_count_limit": [
+          "2048"
+        ],
+        "-trace_enabled": [
+          "0"
+        ],
+        "-trace_components": [
+          "none"
+        ],
+        "-trace_sampling_core": [
+          "0"
+        ],
+        "-trace_sampling_memory_partition": [
+          "-1"
+        ],
+        "-enable_ptx_file_line_stats": [
+          "1"
+        ],
+        "-ptx_line_stats_filename": [
+          "gpgpu_inst_stats.txt"
+        ],
+        "-gpgpu_kernel_launch_latency": [
+          "5000"
+        ],
+        "-gpgpu_cdp_enabled": [
+          "0"
+        ],
+        "-gpgpu_TB_launch_latency": [
+          "0"
+        ],
+        "-trace": [
+          "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/gaussian-rodinia-3.1/_s_256/traces/kernelslist.g"
+        ],
+        "-trace_opcode_latency_initiation_int": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_sp": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_dp": [
+          "8,4"
+        ],
+        "-trace_opcode_latency_initiation_sfu": [
+          "20,8"
+        ],
+        "-trace_opcode_latency_initiation_tensor": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_1": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_2": [
+          "200,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_3": [
+          "2,2"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_4": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_5": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_6": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_7": [
+          "4,4"
+        ],
+        "-trace_opcode_latency_initiation_spec_op_8": [
+          "4,4"
+        ]
+      },
+      "configs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FAST64_OO.config",
+          "sha256": "546c68f96d47f4650703ccfbc925bd789f923501d5607a77e79ca4845f234caa"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/FINITE_PRIMARY_COMMON.config",
+          "sha256": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/trace.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG3_AE_AD_SCREEN_V1/config/AD.config",
+          "sha256": "10cd1ea413745d1d5d5cdc5205e6670a9313a00bf678353fb94e70ae506ccb62"
+        }
+      ],
+      "timeout_seconds": 7200,
+      "retries": 0,
+      "max_new_sim_concurrency": 1,
+      "resource_policy_version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+      "order": 3,
+      "new_attempt_uuid": "182cfb53-32c3-428d-a964-44e4f47d9727",
+      "cohort": "AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY",
+      "imported_BASE_dossier": "BASE_REUSE_GAUSSIAN.json",
+      "imported_BASE_UUID": "87daf914-1730-4012-8053-7cb3c9536636",
+      "imported_BASE_cycles": 3278356,
+      "option_deltas_from_same_input_BASE": {
+        "-gpgpu_dtc_l1_progressive_wakeup": {
+          "BASE": [
+            "0"
+          ],
+          "ON": [
+            "1"
+          ]
+        }
+      },
+      "config_copy_policy": "BA own freeze/materialization only; preserve exact source config byte SHA; never write these old paths",
+      "primary_ratio": "qualified exact same-input imported BASE integer cycles / new accepted ON integer cycles",
+      "attempt_uuid": "182cfb53-32c3-428d-a964-44e4f47d9727",
+      "status": "IDENTITY_AND_SCIENCE_REGISTERED_DISPATCH_HELD",
+      "destination": "/workspace/dtc-evidence-closure-20261019-v1/coordinator/ag6-v2/attempts/AD_Gaussian_182cfb53-32c3-428d-a964-44e4f47d9727",
+      "BASE_eligibility_decision_sha256": "a8e834093bc3da494190798cc87eee6c39edbe34efa04d38a5ab6771cea37f9a"
+    }
+  ],
+  "new_start_cap": 4,
+  "actual_starts": 0,
+  "BA32_budget_transfer": false,
+  "canary_or_replacement_or_fifth_start": false,
+  "single_worker_default": true,
+  "maximum_two_only_after_separate_production_dual_root_qualification": true,
+  "BASE_decision_file": "BASE_REUSE_DECISION_V2.json",
+  "typed_metrics": {
+    "common_integer_GPU_cycles": "PERFORMANCE_ONLY_AFTER_FULL_STRICT",
+    "ready_pending_new": "COMMON_PRINTED_POPULATIONS_ONLY",
+    "PIB_physical_integrals": "LAST_CUMULATIVE_64SM_SNAPSHOT_DO_NOT_SUM_KERNEL_SNAPSHOTS",
+    "collection_WB_stage_sums": "COMMON_BOUNDARIES_ONLY_NOT_ACTUAL_OVERLAP",
+    "actual_collection_WB_overlap": "UNAVAILABLE_UNLESS_DIRECT_COUNTER",
+    "waiter_notification_populations": "AD_ON_ONLY_DIAGNOSTIC_DISTINCT_FROM_BASE_BROADCAST_DONE",
+    "hash_set_bank_conflicts": "ONLY_ACTUALLY_EXPORTED_COMMON_DISTRIBUTIONS_AGGREGATE_IS_NOT_BANK_DISTRIBUTION",
+    "lower_create_inject": "COMMON_PUBLIC_CONSERVATION_FIELDS",
+    "L2_reads": "32B_ACCEPTED_SECTORS_WITH_FROZEN_BUCKET_DEFINITION",
+    "DRAM_issued": "ACTUAL_ISSUED_ATOMS_TIMES_32B_SEPARATE_READ_WRITE",
+    "K1_only": "UNAVAILABLE_K0_NOT_PRINTED",
+    "OFF_missing_ON_stat": "UNAVAILABLE_NOT_ZERO",
+    "numeric_value_native_ISA_coherence_RTL_area_frequency": "UNAVAILABLE"
+  },
+  "stat_dictionary_source": {
+    "commit": "d8d0401dab0a1d9cb949302bcc05148328421cc2",
+    "path": "docs/dtc_l1/review_packs/DTC_LANE_AG4_AUTHORITY_AE_AD_V1/METRIC_DICTIONARY.tsv",
+    "sha256": "5d24ac7aa85ca30eb9defd51c420876f4a4a4f2475ffe65346e1c355e38f47ec"
+  },
+  "selection": {
+    "per_input_minimum": 0.98,
+    "discovery_geomean_minimum": 1.02,
+    "global_max_geomean": true,
+    "tie_within_relative": 0.005,
+    "tie_priority": "AE then AD",
+    "if_no_qualified_arm": "F=O",
+    "if_incomplete": "KEEP_PROVISIONAL_O_NO_PROMOTION"
+  },
+  "old_selection_sha256": "d4c9011017f6720b4740c80f6abaeb435fbbc30c702a1c60913ad8bb8c796bf3",
+  "dispatch_holds": [
+    "finish current exact changed guard/shared observer and actual CPU role qualification",
+    "publish source-bound production dispatcher/capability/lease, exact loader/runtime/input recheck and strict/timeout/fail-stop registration",
+    "fresh fullsim paired host+cgroup R2 and >=10GiB target filesystem immediately before any fork",
+    "final executable manifest plus immutable remote HEAD/tree/blob/clean readback"
+  ],
+  "no_model_Popen_from_this_file": true
+}
