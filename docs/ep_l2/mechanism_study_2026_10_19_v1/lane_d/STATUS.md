@@ -8,6 +8,8 @@
 
 A最小统计需求一次性交付于efdcc170cd85cec7e7e5902d8926c2dbe39a50ee，已远端回读并发布共享request；输入主交付0330d9ac2b3108244502704b8f6a4a37b9e7c11f已回读24个变更文件，E收到inbox。旧四模式、R19十完整pair、MQ2/RG1 17/18端点与未运行/负结果均单独保留。六MQ2 bypass0；五已接受RG1 ON target recovery0，因此不把cycles正负变化冒称已证明目标恢复因果。
 
-D单次intake工具读取E canonical accepted_pairs/results及原receipt SHA，拒绝跨binary/旧campaign/片段，缺项UNKNOWN、负结果保留、撤回保留history；6项工具完整性测试PASS（非应用结果）。有新E接受事件立即单次增量分析；若E最终使用等价字段包装则从正式来源适配，不建立第二资格系统。
+D单次intake工具读取E canonical accepted_pairs/results及原receipt SHA，拒绝跨binary/旧campaign/片段，缺项UNKNOWN、负结果保留、撤回保留history；8项工具完整性测试PASS（非应用结果）。有新E接受事件立即单次增量分析；若E最终使用等价字段包装则从正式来源适配，不建立第二资格系统。
 
 E当前报告workspace保护线短缺44659048448B，本轮科学构建/运行未准入；D未重复调查df、降低门槛、改其他项目或清理资产。无本Lane lease、simulator、GateWaiter或驻留poller。EN-v17未覆盖。当前窗口可在此安全交接，不能理解为Codex仍在后台运行；整轮D分析依赖E后续接受事件，内部截止仍10/21 18:00停止新启动、22:00结果冻结。
+
+本轮续行是实际工具边界改进：保留逐端点profile/diagnostic/subset/oracle/vendor及E接受身份，并验证内嵌endpoint不被静默改绑。8个D工具测试及1个冻结E真实消费者互操作测试通过。E当前仍0启动/0接受pair，controller明确STOPPED；未将状态文件当存活进程，也不标为verified wait。A现有发布只有接口、无正式新binary，本轮未重跑完整审计、未重发A统计需求、未重查df或启动任何模拟。Goal仍在等待外部合格结果，未宣称完成。

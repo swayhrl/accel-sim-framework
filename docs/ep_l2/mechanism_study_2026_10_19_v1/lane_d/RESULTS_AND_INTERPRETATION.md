@@ -32,4 +32,6 @@ HISTORICAL_MICROOPT_MATRIX_18.csv保留f0同binary17/18接受端点及FWT Unifie
 
 单次读取E canonical registry中本campaign accepted_pairs/accepted_results，保留E路径、SHA、完整身份和接受状态；同source/binary/input与E确认非研究配置一致后计算带符号B/V及绝对cycles差。缺项UNKNOWN，未运行不填0；旧/片段/合成结果不进入新应用表。撤回从当前效果表移出但保留分析history，不覆盖原raw。
 
-运行 util/ep_l2/mechanism_study_lane_d/sync_intake.py 即消费当前事件；无新pair不建后台循环。E若采用不同字段包装，只对原接受来源作确定性适配，不另建资格系统。当前0个新接受pair。D分析工具6项完整性测试通过，仅为工具测试，不是生产或应用结果。
+运行 util/ep_l2/mechanism_study_lane_d/sync_intake.py 即消费当前事件；无新pair不建后台循环。E若采用不同字段包装，只对原接受来源作确定性适配，不另建资格系统。当前0个新接受pair。D分析工具8项完整性测试通过，仅为工具测试，不是生产或应用结果。
+
+续行接收边界：每pair还保留两端原profile/labels，特别是diagnostic/subset/oracle；复制vendor和E qualification/selection/invariant引用。真实目标计数与成本字典原样保留，即使当前字段名尚未映射四层，缺少映射也为UNKNOWN而非0。E内嵌冻结端点与当前accepted_results引用若不一致则只hold该pair；不能借新指针改写旧配对。E7434cbf09的实际配对构造测试已在临时目录与新版D消费者互操作PASS，未触及中央台账。

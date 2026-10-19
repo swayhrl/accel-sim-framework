@@ -70,5 +70,29 @@ class AnalysisIntegrity(unittest.TestCase):
         self.b['identity']['epoch_range']['scope'] = 'SCREEN_ONLY'
         with self.assertRaisesRegex(ValueError, 'screen/synthetic'):
             intake.analyze_pair('p', self.pair, self.refs())
+    def test_exact_E_source_profiles_and_scope_are_retained(self):
+        for r, profile in [(self.a, 'U'), (self.b, 'U_VICTIM_CLEAN_ONLY')]:
+            r.update(profile=profile, source_identity=dict(core_source_commit='core',
+                     framework_source_commit='fw', vendor_pybind11_commit='vendor', binary_sha256='binary'),
+                     selection_id='D_V1_fixture', comparison_invariants_sha256='same',
+                     qualification_id='q', labels={'diagnostic':False, 'subset':'CLEAN_ONLY', 'oracle':False})
+        self.b['mechanism_metrics']={'actual_victim_hits':0, 'lower_read_bytes':32}
+        row = intake.analyze_pair('p', self.pair, self.refs())
+        self.assertEqual(row['vendor'], 'vendor')
+        self.assertEqual(row['variant_profile'], 'U_VICTIM_CLEAN_ONLY')
+        self.assertEqual(json.loads(row['variant_labels'])['subset'], 'CLEAN_ONLY')
+        self.assertEqual(json.loads(row['variant_mechanism_metrics'])['actual_victim_hits'], 0)
+        self.assertEqual(row['trigger'], 'UNKNOWN')  # No invented mapping from flat fields.
+        self.b['source_identity']['vendor_pybind11_commit']='different'
+        with self.assertRaisesRegex(ValueError, 'comparison boundary'):
+            intake.analyze_pair('p', self.pair, self.refs())
+    def test_embedded_E_pair_endpoint_cannot_silently_rebind(self):
+        refs = self.refs()
+        self.pair['endpoints']={side:dict(refs[key], attempt_id=key)
+                              for side,key in [('left','a'),('right','b')]}
+        intake.analyze_pair('p', self.pair, refs)
+        self.b['cycles']=110
+        with self.assertRaisesRegex(ValueError, 'endpoint pointer changed'):
+            intake.analyze_pair('p', self.pair, self.refs())
 
 if __name__ == '__main__': unittest.main()
