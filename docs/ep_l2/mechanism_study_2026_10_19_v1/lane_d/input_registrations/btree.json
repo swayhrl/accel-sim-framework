@@ -1,0 +1,56 @@
+{
+  "schema": "EPL2_MECHANISM_D_INPUT_PREREGISTRATION_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "selected_by": "D",
+  "authority_commit": "d9263fa2431592b33e900d9b48c6f20029d8b544",
+  "selection_id": "D_V1_btree",
+  "selection_unix": 1792414464.303578,
+  "selection_utc": "2026-10-19T12:54:24.303578+00:00",
+  "rationale": "Contract-priority complete2-kernel query input; old per-address cap674, no measured tag/MSHR-full. A read-heavy negative-pressure control; no promised RO/victim hit.",
+  "full_input_identity": {
+    "workload": "btree",
+    "trace_content_sha256": "b3e132f184918f30485a2296d606cc833a6b0edf264f6c6f2489077053f65ea7",
+    "trace_hash_evidence": "Lane5 run.py asset_manifest/content_hash formula, derived from committed per-body hashes plus fresh commandlist hash; current full bodies NOT rehashed by D; E independent rebind required",
+    "runtime_independent_input_source": {
+      "entry_trace_name": "kernelslist.g",
+      "entry_trace_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist.g",
+      "command_list": "MemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,48000\nMemcpyHtoD,0x00007f8eed50bc00,48000\nMemcpyHtoD,0x00007f8eed517800,48000\nMemcpyHtoD,0x00007f8eed523400,48000\nMemcpyHtoD,0x00007f8eed52f000,24000\nMemcpyHtoD,0x00007f8eed534e00,24000\nMemcpyHtoD,0x00007f8eed53ac00,24000\nMemcpyHtoD,0x00007f8eed540a00,24000\nkernel-1.traceg\nMemcpyHtoD,0x00007f8eed800000,4000000\nMemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,80000\nMemcpyHtoD,0x00007f8eed513a00,80000\nMemcpyHtoD,0x00007f8eed527400,40000\nMemcpyHtoD,0x00007f8eed531200,40000\nkernel-2.traceg\n",
+      "trace_files": [
+        {
+          "name": "kernelslist.g",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist.g"
+        },
+        {
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-1.traceg"
+        },
+        {
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-2.traceg"
+        }
+      ],
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/b+tree-rodinia-3.1 file ./data/mil.txt command ./data/command.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/*.trace ",
+      "source_revision": "UNKNOWN",
+      "epoch_range": {
+        "epochs": "all",
+        "scope": "full_application"
+      }
+    },
+    "expected_full_instructions": 444467849,
+    "comparison_groups": [
+      "NEW_INPUT_btree",
+      "VICTIM_btree",
+      "RO_btree"
+    ],
+    "mechanism_group_conditions": {
+      "DIAG_or_NEW_INPUT": "DIAG S/U/S_COPY_FREE/S_L2_DATA_FREE/U_L2_DATA_FREE if core else new S/U only",
+      "VICTIM": "requires actual L2-order opportunity and A/B/E qualification; same-binary U, dynamic, fixed when possible; within original3 reservation",
+      "RO": "not a readonly certificate; C full epoch oracle and A/E production qualification required; T/M00/10/01/11 within original4 reservation"
+    }
+  },
+  "not_a_launch_authorization": true,
+  "readonly_certificate": "UNKNOWN_NOT_GRANTED",
+  "producer_binary": "UNASSIGNED_A_OWNER",
+  "expected_exit": "full command list; exact expected instructions; normal termination/hardware closure; no favorable cycles requirement",
+  "preserve_budget": 24
+}
