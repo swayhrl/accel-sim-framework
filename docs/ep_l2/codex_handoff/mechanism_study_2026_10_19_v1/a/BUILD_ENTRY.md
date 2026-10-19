@@ -14,7 +14,7 @@ exact current resource approval is:
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 util/ep_l2/mechanism_study/build_a.py \
-  --out /workspace/ep_l2_ms20261019_a_common_v1/A_BUILD_AND_DIRECTED_r1 \
+  --out /workspace/ep_l2_ms20261019_e_results/A_BUILD_AND_DIRECTED_r1 \
   --build /workspace/build/ep-l2-ms20261019-a-r1 \
   --admission /workspace/ep_l2_ms20261019_shared/E_ADMISSION_A_BUILD_r1.json \
   --execute
@@ -31,9 +31,10 @@ The entry rechecks48GiB workspace +2GiB build reserve, Share40GiB, canonical
 MemAvailable64GiB with8GiB reservation and central2CPU lease. All stages are
 serial except CMake-j2; output is bounded128MiB for logs/control, original build
 entry uses a2GiB growth reserve and continuously enforces48GiB. E must also
-account remaining new6GiB/old+new20GiB allocations before authorizing. The legacy
-registry only accepts lane1..6, so this original Lane2 window uses resource owner
-lane2 for the NEW A campaign, not a restarted old Goal. A_BUILD.lock is unique
+account remaining new6GiB/old+new20GiB allocations before authorizing. The published E coordinator API reserves build growth and new result
+growth atomically in the original registry with owner mechanism_A. There is
+no separate legacy lane2 lease. Both source/output paths and current E API
+SHA256 are bound by the admission. A_BUILD.lock is unique
 and no resident wait/automatic retry is created. Floor/expiry changes stop only
 the owned process group. Neither frozen results nor other projects are removed.
 
@@ -56,3 +57,21 @@ missing-E-file rejection. That rejection created0 leases,0 native commands and
 no build directory; the central registry bytes were unchanged. This is a TOOL
 control result, not simulator/native qualification. No optional syntax-only
 C++ compilation was used to bypass the resource gate.
+
+E compatibility: published1b93f33b2169b88f50eec49033e259966c153ea3
+A_BUILD_ENTRY_SHARED_RESOURCE_COMPAT.patch applied and AST parsed. The new
+E API digest must match CLIENT_CONTRACT and admission; no integrity bypass.
+Child PID/start_ticks/boot_id is rebound to the ONE lease for every serial
+phase and may be released only after all owned children exit. Actual process
+RSS<=8GiB, owned build<2GiB and owned result<128MiB are monitored.
+
+Bounded readonly build-budget evidence: existing microopt source84359d4 build
+allocated1,611,059,200 bytes; earlier7-target producer allocated1,080,152,064
+bytes (`du -s --block-size=1` on only those two known retained build roots).
+Our10-target first release excludes three larger old candidates and adds a
+small observer unit. Reserve2,147,483,648 build bytes leaves536,424,448 above
+the larger measured final tree, plus134,217,728 separately reserved log bytes.
+This is a conservative finite budget, not a measured new peak; crossing it
+stops and preserves the attempt. E's atomic admission must cover48GiB floor
++2GiB build+128MiB logs+all pending reservations (at least50.125GiB before
+other reservations). No build was attempted from these budget observations.
