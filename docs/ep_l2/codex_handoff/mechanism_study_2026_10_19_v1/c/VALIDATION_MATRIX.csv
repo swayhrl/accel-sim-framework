@@ -1,0 +1,11 @@
+case,source_entry,required_evidence,state,new_executions
+FOUR_MODE_TAG_PRESSURE,test_ro_runtime.cc/modes,Different same-set misses; T-only retains normal line records; M-only still blocked by Tag; actual lower packets1/2/3 distinguish duplicate traffic,PREPARED_NOT_COMPILED_NOT_RUN,0
+LINE128_SEPARATION,test_ro_runtime.cc/line_pressure,00/10 refuse129th unique miss at native128;01/11 admit129 with no native line records; D512 still bounded,PREPARED_NOT_COMPILED_NOT_RUN,0
+LATE_A_NEW_B_TAG,test_ro_runtime.cc/late_tag,"Old A response leaves B HIT_RESERVED and B payload pending, not VALID; generation/binding unchanged",PREPARED_NOT_COMPILED_NOT_RUN,0
+FOUR_SECTOR_LIFETIME,test_ro_runtime.cc/four_sector_lifetime,3/1/2/0 return order; old landing persists through all four sectors and final actual response acceptance,PREPARED_NOT_COMPILED_NOT_RUN,0
+D512_MIXED,test_ro_runtime.cc/capacity,"384RO +128native exhaust exactly shared512; next refuses, all512 complete once",PREPARED_NOT_COMPILED_NOT_RUN,0
+NATIVE_FALLBACK,test_ro_runtime.cc/classifier/native_pin_guard,Synthetic read and foreign native ownership stay native; certified writer invalidates oracle and refuses,PREPARED_NOT_COMPILED_NOT_RUN,0
+HOST_PREFILL,test_ro_runtime.cc/warmup_scope,Certified overlap/pending refuses; later uncovered clean/quiescent host prefill permitted; dirty/pinned guards unchanged,PREPARED_NOT_COMPILED_NOT_RUN,0
+PRODUCTION_PARTITION,test_ro_partition.cc,True subpartition lower/DRAM/return/ICNT; four modes; physical offset4096; response backpressure; P1<=1 per bank/cycle,PREPARED_NOT_COMPILED_NOT_RUN,0
+BANK_LIVENESS,test_ro_bank_progress.cc,A2 role stability and A3 retained denied response; reused generations and backwards physical-clock refusal,PREPARED_NOT_COMPILED_NOT_RUN,0
+ORACLE_COMPLETE_SCOPE,test_ro_oracle.py,"Complete grid/warp/instruction/commandlist; cross-kernel writes/atomics, aliases, host partial/cross-line updates and unknown agent exclusion",PREPARED_NOT_COMPILED_NOT_RUN,0
