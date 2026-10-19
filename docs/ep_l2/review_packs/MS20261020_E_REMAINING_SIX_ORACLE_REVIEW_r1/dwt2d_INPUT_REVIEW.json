@@ -1,0 +1,75 @@
+{
+  "application_performance_evidence": false,
+  "artifacts": {
+    "certified_lines.txt": {
+      "bytes": 417792,
+      "sha256": "b1e1372d7bf3243de691fac3d3725d7b5a0c357ff86e35e79529ba6f46eb4d4a"
+    },
+    "certified_ranges.csv": {
+      "bytes": 67,
+      "sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679"
+    },
+    "coverage.csv": {
+      "bytes": 117,
+      "sha256": "e60e3c830289d98cb5c2e015c82dafd44414f017f71f68c117a16cbf432d83d4"
+    },
+    "exclusion.csv": {
+      "bytes": 90,
+      "sha256": "da351206fe6905fffd449220fb99eba97ce7b55c5c3eb68a8d4e70ada1c5e7d1"
+    },
+    "oracle.sqlite3": {
+      "bytes": 12992512,
+      "sha256": "719d80ae281a6f7f4977af9f572919ccebf0352ba34cd234a76e10cee4f4c387"
+    }
+  },
+  "assumptions_not_measured": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "candidate_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/CANDIDATE.json",
+  "candidate_sha256": "74353eaa222fdffd79d1dc2642a6c944f5c36319a9a04b009494b86c5d685a10",
+  "certified_first_line": "0x7f6d35400000",
+  "certified_last_line": "0x7f6d356fff80",
+  "counts": {
+    "CERTIFIED_RO": {
+      "lines": 24576,
+      "read_lane_references": 786432
+    },
+    "NO_GLOBAL_READ": {
+      "lines": 98304,
+      "read_lane_references": 0
+    },
+    "SAME_LINE_STORE": {
+      "lines": 98304,
+      "read_lane_references": 5066286
+    }
+  },
+  "current_common_native_zero_mask_source": "41af4ddc2714a68a477e6698baa6528bb0f7ccf7",
+  "data_version_or_runtime_qualification_granted": false,
+  "database_rows_independently_checked": 221184,
+  "epoch_boundary_clarification": "all selected kernels and intervening commands; initial HtoD prefix completes/drains before oracle activation; every later HtoD line excluded",
+  "fresh_trace_bytes_required_at_runtime_admission": true,
+  "full_trace_bodies_rescanned_by_E": false,
+  "initial_HtoD_prefix": [
+    {
+      "address": 140107021549568,
+      "bytes": 3145728
+    }
+  ],
+  "interpretation_limit": "trace-model oracle and active-lane read references; not actual L2 misses, retained victims, useful in-flight requests or DRAM transactions",
+  "manifest_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+  "manifest_sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+  "model_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "native_zero_mask_generator_sha256": "2e615f14980efd7a960a0a41075989a3d000a7cd08f584f5e868f8181cc0ff38",
+  "post_activation_host_updates_excluded": [],
+  "producer_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "producer_sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+  "selection_id": "D_V1_dwt2d",
+  "status": "INPUT_ORACLE_ARTIFACT_AND_SCOPE_REVIEW_PASS_PENDING_C_RUNTIME_AND_E_NATIVE_QUALIFICATION",
+  "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+  "wall_seconds": 0.7521557807922363
+}

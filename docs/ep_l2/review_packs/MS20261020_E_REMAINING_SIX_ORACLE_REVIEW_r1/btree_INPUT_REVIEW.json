@@ -1,0 +1,132 @@
+{
+  "application_performance_evidence": false,
+  "artifacts": {
+    "certified_lines.txt": {
+      "bytes": 51,
+      "sha256": "78737f8df04ca551c51befdf5e856664d71e65dce899236d80b0c7766079511e"
+    },
+    "certified_ranges.csv": {
+      "bytes": 67,
+      "sha256": "39122351c8fae4eb8c0bb76e112e656ef84bd672ab4b9b98c8979f20808c4641"
+    },
+    "coverage.csv": {
+      "bytes": 111,
+      "sha256": "8a7e173d5c026ede13d2a1d1e96235fb21991a9ed5d43d0e0c2b390fd7b2449c"
+    },
+    "exclusion.csv": {
+      "bytes": 89,
+      "sha256": "c5c1913e7e94665f6b8ec468cc7d90a45cd93aadda9941207caaa112f381ab0e"
+    },
+    "oracle.sqlite3": {
+      "bytes": 5513216,
+      "sha256": "ac24a036028f865ac03030bd3d5bf68ffc37aefc57590689cfbab8a59f4fe23c"
+    }
+  },
+  "assumptions_not_measured": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "candidate_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/btree_v2_r1/CANDIDATE.json",
+  "candidate_sha256": "acb1b6a6eedd4b3d5cceb300bec06ca81a336b510e29c3840fc17a3db2d47a09",
+  "certified_first_line": "0x7f8eed531080",
+  "certified_last_line": "0x7f8eed531180",
+  "counts": {
+    "CERTIFIED_RO": {
+      "lines": 3,
+      "read_lane_references": 73728
+    },
+    "NO_GLOBAL_READ": {
+      "lines": 188,
+      "read_lane_references": 0
+    },
+    "SAME_LINE_STORE": {
+      "lines": 88901,
+      "read_lane_references": 52865549
+    }
+  },
+  "current_common_native_zero_mask_source": "41af4ddc2714a68a477e6698baa6528bb0f7ccf7",
+  "data_version_or_runtime_qualification_granted": false,
+  "database_rows_independently_checked": 89092,
+  "epoch_boundary_clarification": "all selected kernels and intervening commands; initial HtoD prefix completes/drains before oracle activation; every later HtoD line excluded",
+  "fresh_trace_bytes_required_at_runtime_admission": true,
+  "full_trace_bodies_rescanned_by_E": false,
+  "initial_HtoD_prefix": [
+    {
+      "address": 140251888615424,
+      "bytes": 16283432
+    },
+    {
+      "address": 140251843526656,
+      "bytes": 48000
+    },
+    {
+      "address": 140251843574784,
+      "bytes": 48000
+    },
+    {
+      "address": 140251843622912,
+      "bytes": 48000
+    },
+    {
+      "address": 140251843671040,
+      "bytes": 48000
+    },
+    {
+      "address": 140251843719168,
+      "bytes": 24000
+    },
+    {
+      "address": 140251843743232,
+      "bytes": 24000
+    },
+    {
+      "address": 140251843767296,
+      "bytes": 24000
+    },
+    {
+      "address": 140251843791360,
+      "bytes": 24000
+    }
+  ],
+  "interpretation_limit": "trace-model oracle and active-lane read references; not actual L2 misses, retained victims, useful in-flight requests or DRAM transactions",
+  "manifest_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/btree_v2_r1/oracle/manifest.json",
+  "manifest_sha256": "c9c9a9db0f7ca8acf59e21aaab78fb68c2929b4954afcd5f3470fb50d3c56ca9",
+  "model_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "native_zero_mask_generator_sha256": "2e615f14980efd7a960a0a41075989a3d000a7cd08f584f5e868f8181cc0ff38",
+  "post_activation_host_updates_excluded": [
+    [
+      140251846672384,
+      140251850672256
+    ],
+    [
+      140251888615424,
+      140251904898816
+    ],
+    [
+      140251843526656,
+      140251843606528
+    ],
+    [
+      140251843607040,
+      140251843686912
+    ],
+    [
+      140251843687424,
+      140251843727360
+    ],
+    [
+      140251843727872,
+      140251843767808
+    ]
+  ],
+  "producer_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "producer_sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+  "selection_id": "D_V1_btree",
+  "status": "INPUT_ORACLE_ARTIFACT_AND_SCOPE_REVIEW_PASS_PENDING_C_RUNTIME_AND_E_NATIVE_QUALIFICATION",
+  "trace_content_sha256": "b3e132f184918f30485a2296d606cc833a6b0edf264f6c6f2489077053f65ea7",
+  "wall_seconds": 0.31171727180480957
+}
