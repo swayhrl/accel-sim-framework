@@ -74,3 +74,33 @@ AG4 terminal intake is now available and its own authority is released. The
 prior local inherited copy was never executed. The frozen-source dispatch counterexample was reproduced, and the repaired
 actual AST rejects it. The real helper/multi-root lifecycle has now passed under the fixed source.
 Production global role/observer qualification remains required. Source review alone does not open new simulation authority.
+
+## Current shared observer integration (not executed)
+
+Current caller sources add an optional shared_cpu_registry path. The existing
+successful2root result is bound to earlier caller hashes in its receipts; it is
+not a PASS for this changed caller. The vendor ownership/map/OOM modules and
+retired-PID guarded-process repair remain unchanged.
+
+shared_authority.py adds only exact CPU role binding, fresh instance-bound peer
+views and a delegate to the frozen AG4 reviewer. legacy_authority_runtime.py
+loads SHA-bound read-only procedures/data from immutable Git publication; it
+never invokes their CLI or writes old paths. The retired pack-prefix exception
+and historic child-PID fallback cannot create new authority; legacy output
+helpers additionally require exact full source path, not only basename.
+shared_cpu_context.py binds records to the sole current direct-Popen manager,
+its exact argv/ELF/source, private request bytes and fresh peer observations.
+Missing event proof is finite PENDING, never PASS or local signal/resume rights.
+
+The same all-project snapshot remains the resource population. Declared CPU
+candidate projection exercises the unchanged simulator-candidate review branch
+using actual live PID/start_ticks/tracer identities, as in the accepted AG4 CPU
+fixture. It confers no simulator permission. Exact3worker contracts use fixed
+source/executable/argv/cwd; no new directory or basename whitelist is added.
+
+CPU_SHARED_AUTHORITY_REGISTRATION.json fixes the changed source closure,12
+declared-synthetic-row negative tests, real2root scope, commands and resources.
+These tests have NOT executed. The negative phase must pass before any real
+root is created. Live3external-role observation and production integration are
+still separate unfinished requirements. Host IO currently fails admission;
+no new CPU test, model run, dispatcher or auto-poller is created.

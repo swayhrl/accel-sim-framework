@@ -23,7 +23,8 @@ they do not silently fill current-F cells.
 |Reserve|Calibration/diagnostic OFF; <=2 ordinary replacements within4|No exact reservation; no old AG4/AG3/AA5 repair entitlement|
 
 The current source repair passes six actual-dispatch AST cases and two real
-thread/dash/cat root lifecycles. Those results do not close production shared
+thread/dash/cat root lifecycles. Their vendor/previous-caller hashes are preserved. Current shared-observer
+callers and12negative tests are prepared but unexecuted; they do not close production shared
 cross-root observer/three exact external-role integration. CPU-only role release
 does not permit any full simulator. Full R2 admission, including>=10GiB disk,
 remains closed independently. All projects and CPU workers count against it.

@@ -60,6 +60,18 @@ def run_two_registered_cpu_roots(requests, output):
     previous = {s: signal.signal(s, lambda number, frame: interrupted.append(number))
                 for s in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP)}
     failure = None
+    shared = any('shared_cpu_registry' in request for request in requests)
+    registry_path = output / 'GUARDS.json'
+    registry = {'purpose': 'EXACT_TWO_CPU_ROOTS_NOT_SIMULATION',
+                'manager': identity(os.getpid()), 'guards': []}
+    def publish_registry():
+        temp = registry_path.with_suffix('.tmp')
+        temp.write_text(json.dumps(registry, indent=2) + '\n')
+        os.replace(temp, registry_path)
+    if shared:
+        if not all(Path(r['shared_cpu_registry']).resolve() == registry_path for r in requests):
+            raise ValueError('CPU_REGISTRY_DESTINATION_MISMATCH')
+        publish_registry()
     try:
         for index, request in enumerate(requests):
             path = output / ('request-' + str(index) + '.json')
@@ -83,6 +95,13 @@ def run_two_registered_cpu_roots(requests, output):
             children.append(row)
             row['identity'] = identity(proc.pid)
             row['pidfd'] = os.pidfd_open(proc.pid)
+            if shared:
+                dest = Path(request['destination'])
+                registry['guards'].append(dict(row['identity'],
+                    request_path=str(path), request_sha256=digest,
+                    argv=[sys.executable, '-I', '-B', str(HERE / 'cpu_guard_entry.py'), str(path), digest],
+                    active_path=str(dest.parent / (dest.name + '.active.json'))))
+                publish_registry()
         deadline = time.monotonic() + 75
         while any(row['proc'].poll() is None for row in children):
             if interrupted or time.monotonic() > deadline:

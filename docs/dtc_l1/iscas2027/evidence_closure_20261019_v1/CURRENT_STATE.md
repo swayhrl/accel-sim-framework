@@ -1,6 +1,6 @@
 # Execution coordination state
 
-Updated:2026-10-19 21:33 Asia/Shanghai. Status:
+Updated:2026-10-19 21:52 Asia/Shanghai. Status:
 **PARTIAL_WAIT_RESOURCE_HOST_IO_AND_SIM_DISK**. The full goal remains incomplete.
 Execution is original `huangrulin-174`, under this account/container. Pinned plan
 46df82670a56a4498b6d6e23ad57859eb7c36945 and its branch remain unchanged.
@@ -12,11 +12,11 @@ Sole later full-simulation coordinator:/root; execution branch
 |AG4|Terminal STOP consumed;2/5 actual starts,0 optimization results; all1267 published owned instances absent, own lock released; no restart or contract change|d8d0401dab0a1d9cb949302bcc05148328421cc2; execution/AG4_TERMINAL_INTAKE.json|
 |Candidate|One fixed global provisional O:K0/OO128/Tag64x8/AE0/AD0; no AE/AD promotion|execution/SELECTION.json and AG4_SCIENTIFIC_REVIEW.md|
 |COV1|Tiny reference4/4PASS executed once; primary identities and N3 source review published; full new-input/native/decoder qualification incomplete|d986ba4db47b296c27b68541b2b867e294a652e6|
-|SEM1|Actual-object conditional byte route prepared in isolated Core1fcf; configure/build/test0; stopped before configure on host IO28.29/28.78>25|187a2f6dd06bca6fa8b04da0c46201e2a1ba1f23; build role ec9251073|
-|ROB1|Isolated Coreb107 quota patch; small helper compiled once/run once exit0 with7 expected rejection children; actual linked LDST build/test0|5ef4d3ff88483ae1c553314b19bc854b1e39ece7; helper receipt included|
-|Worker join|All121 current pack blobs preserved exactly, no Core source merged into selected F|f5a606f55dfd4cdfaac320543297842ed45aaad6; execution/WORKER_CONTINUATION_DELIVERIES.json|
+|SEM1|Actual-object conditional byte route prepared in isolated Core1fcf; configure/build/test0; stopped before configure on host IO28.29/28.78>25|21f4135a74f778340f91e23adadfbb6bbdd49d45; cohort2/3 first samples25.74/26.65>25|
+|ROB1|Isolated Coreb107 quota patch; small helper compiled once/run once exit0 with7 expected rejection children; actual linked LDST build/test0|1a0cf4d38ed00b1eb57b27274fe7b1425f4eb41a; cohort2 hostIO28.57/35.15; cohort3 first25.81|
+|Worker join|Current worker packs preserved exactly; no Core source merged into selected F|43a1aaeb5c4d37785d126cad3d3951bfbf49d9e1; execution/WORKER_RESOURCE_HOLD_DELIVERIES.json|
 |Parent executor repair|Frozen defect reproduced; repaired actual-dispatch AST6PASS;2 simultaneous real root/thread/dash/cat lifecycles pass with exact-instance exits|execution/cpu_ast_receipts/attempt2/ and cpu_real_lifecycle_receipts/attempt1/|
-|Global execution authority|Shared cross-root observer/3 external-role integration NOT_QUALIFIED; no full-sim dispatcher installed|execution/CPU_QUALIFICATION_STATE.json|
+|Global execution authority|Shared observer CPU caller and12 negative tests prepared/registered, unexecuted;3 live external-role/global production qualification incomplete|execution/CPU_QUALIFICATION_STATE.json|
 |CPU resource evidence limit|Parent CPU samples retained cgroup PSI only; host PSI unavailable then; no retrospective global-R2 PASS|execution/RESOURCE_SCOPE_CORRECTION.json|
 |Historical imports|8 C+ and4 legacy-source O IMPORTED_VERIFIED; current-F comparison admission still false|execution/cplus_reuse/ and o_reuse/|
 |New full simulations|0/32 starts; no UUID reservation, executable MASTER_MATRIX, RUN_START or execution lock|execution/BUDGET_LEDGER.json; COVERAGE_AND_MISSING.tsv is non-executable|
@@ -53,7 +53,18 @@ numerical evidence, and the planned no-E case executes no store.
 SEM1 configure/build is registered but held by measured host IO; ROB1 linked
 build is registered NOT_RELEASED under that same gate. Both preserve matching
 fresh ABI/512MiB bounds and require separately frozen binaries before runtime.
+Cohort2 and3 preflights have all returned without controller/configure/build starts.
 No current build or test is left running. Next steps are exact in
 execution/NEXT_RESUME.md. The user has been asked for the existing disk expansion
 or specifically authorized cleanup arrangement; no other-project data is deleted.
 No auto-resume, poller or background matrix dispatcher exists.
+
+Current shared CPU caller changes are **PREPARED_NOT_TESTED**, not covered by the
+earlier successful caller hashes. The new glue reuses frozen AG4 history/FLOCK
+procedures, exact current external roles, source-bound own-manager Popen records
+and fresh peer PID/start_ticks; missing proof remains finite PENDING. It gives
+no signal/adoption/simulator rights. CPU_SHARED_AUTHORITY_REGISTRATION.json fixes
+12 targeted declared-synthetic-row tests followed by real2root shared review,
+all blocked until fresh global CPU admission. Live3external-role observation
+and full production/family integration remain distinct unfinished requirements.
+See CONTINUATION_GLOBAL_RESOURCE_CURRENT.json for the newest single snapshot.

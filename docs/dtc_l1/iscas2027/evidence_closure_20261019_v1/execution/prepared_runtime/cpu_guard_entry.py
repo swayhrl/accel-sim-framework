@@ -60,6 +60,15 @@ def main():
                 for s in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP)}
     active = destination.parent / (destination.name + '.active.json')
     last = [0.0]
+    shared = [None]
+    if 'shared_cpu_registry' in request:
+        sys.path.insert(0, str(HERE))
+        from legacy_authority_runtime import bind_frozen_procedures
+        from shared_cpu_context import CPUContext
+        from shared_authority import bind_current_review
+        proc, _, _ = bind_frozen_procedures()
+        context = CPUContext(request, identity, proc)
+        shared[0] = context
 
     def observe(pid, full, ownership):
         if interrupted:
@@ -91,6 +100,18 @@ def main():
             write(temp, row)
             os.replace(temp, active)
             last[0] = time.monotonic()
+        if shared[0] is not None and full:
+            from shared_authority import bind_current_review
+            if not hasattr(observe, 'shared_review'):
+                context = shared[0]
+                observe.shared_review = bind_current_review(
+                    ownership, identity, context.peers, project_CPU_tracees=True,
+                    exact_controller_roles_provider=context.controller_roles)
+            snapshot, verdict = observe.shared_review(identity(os.getpid()))
+            with (destination / 'SHARED_AUTHORITY.jsonl').open('a') as stream:
+                stream.write(json.dumps(verdict) + '\n')
+            if verdict['status'] == 'STOP_AUTHORITY_NOT_CLOSED':
+                return 'CPU_SHARED_AUTHORITY_NOT_CLOSED'
         return None
 
     try:
