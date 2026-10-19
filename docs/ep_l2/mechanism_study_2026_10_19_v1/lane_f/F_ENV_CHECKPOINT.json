@@ -1,194 +1,29 @@
 {
-  "schema": "EPL2_LANE_F_ENV_CHECKPOINT_V1",
+  "schema": "EPL2_LANE_F_ENV_CHECKPOINT_V2",
   "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
-  "role": "F",
-  "at_beijing": "2026-10-19T22:37:26.192460+08:00",
   "authority_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
-  "execution_branch": "hrl/ep-l2-ms20261019-f-env-v1",
-  "checkpoint_base_framework_head": "b2e5328aca825d6e9ebfe09e46fa208957834636",
-  "status": "ACCESS_BLOCKED_ENVIRONMENT_UNMEASURED",
+  "at_beijing": "2026-10-19T22:50:25.727072+08:00",
+  "status": "BOUNDED_PREPARATION_FINISHED_NO_QUALIFIED_PATH",
+  "access_status": "RESOLVED",
+  "goal_thread_id": "01a15495-d32c-7c03-a67c-0ae815e30fed",
+  "previous_access_checkpoint_publication": "228c0bf4f190cb3ea2372c30641688ca04c6f588",
+  "assessment_path": "SCIENCE_ENV_ASSESSMENT_r2.json",
+  "assessment_sha256": "ffc10ca25b5e47907aa8eda183fc4acbad86ec78596d175de8f56b6083cf5c6b",
   "science_env_candidate_issued": false,
+  "E_admission_or_A_named_build_triggered": false,
+  "science_builds": 0,
   "native_tests": 0,
   "full_application_starts_by_F": 0,
-  "heavy_writes_bytes": 0,
-  "read_complete": [
-    "MASTER_FULL_SYSTEM_V2.md",
-    "MATRIX_AND_ACCEPTANCE_V2.md",
-    "RESOURCE_AND_STORAGE_V2.md",
-    "CAMPAIGN_FULL_V2.json",
-    "LANE_CONTINUATIONS_V2.md (full file including F)"
-  ],
-  "goal_thread_id": "01a15495-d32c-7c03-a67c-0ae815e30fed",
-  "goal_scope": "One bounded 174-new environment preparation; no new E or application budget. Incomplete because remote access failed.",
-  "actual_terminal": {
-    "host": "huangrulin-174",
-    "uid": 0,
-    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-    "identity": "original174_not_174new"
-  },
-  "target_access": {
-    "endpoint": "root@10.208.130.174:2239",
-    "endpoint_source": "existing CODEX_174NEW_REPO_AND_SHARED_INVENTORY.md",
-    "transport_reachable": true,
-    "authentication": "DENIED",
-    "existing_identity_files_tried": [
-      "/root/.ssh/id_ed25519",
-      "/root/.ssh/id_ed25519_c16_109"
+  "resume_trigger": {
+    "first_need": "An existing authorized independent local writable scientific scratch, with effective quota and inode evidence, preserving48GiB after all existing and planned peak writes. Container/overlay alias is insufficient.",
+    "capacity_now": "Local38.43GiB is9.57GiB below floor before growth; adding historical2GiB build and full6GiB output reference makes illustrative deficit17.57GiB, with remaining peaks still to be bounded. Share41.32GiB is also below48GiB and is shared original storage.",
+    "other_needs": [
+      "E-approved readonly input/config/oracle route and content identities",
+      "A exact source/vendor/named build and conservative peak declaration after E environment acceptance",
+      "E current hash-pinned host-aware common lease/API and preserved40 cumulative campaign policy",
+      "E/T IO scheduling and actual quota confirmation"
     ],
-    "result": "Permission denied (publickey,password).",
-    "initial_host_key_check": "Strict checking first refused unknown key; subsequent accept-new recorded ED25519 public host key (TOFU), not independently attested. No credential or server authorization change.",
-    "new_credentials_obtained": false,
-    "remote_commands_executed": false
+    "no_rental_mount_privilege_or_model_repurposing": true
   },
-  "unmeasured_target_checks": [
-    "actual hostname/boot/account and current repository HEAD/dirty state",
-    "visible authorized local scratch paths; realpath/mount/underlying block device vs original174 physical filesystem",
-    "quota and remaining project/user/container limits; f_bavail/inodes/readonly state and tiny controlled write/fsync only on allowed scratch",
-    "TMPDIR/TMP/TEMP, compiler/linker temp, build/object/vendor, results/logs, core dumps, XDG/ccache/sccache/pip/python/CUDA cache final destinations",
-    "CPU affinity/quota and cgroup RAM/current/max; MemAvailable after global existing/proposed reservations",
-    "IO pressure at relevant actual devices, existing work and T IO coordination; no bulk IO benchmark",
-    "existing compiler/linker/make/cmake/python/CUDA/pybind11/library availability and versions; no installation",
-    "original seven full input/config/command/oracle paths read-only reachability and content identity closure; no full trace copy or shared-disk scan"
-  ],
-  "E_readonly_observation": {
-    "client_contract_path": "/workspace/ep_l2_ft20261016_shared/mechanism_study_20261019_v1/CLIENT_CONTRACT.json",
-    "client_contract_sha256": "3b501482138bc0955d129c1b3797137d317bbdfa38b61bda1feda5e29e246802",
-    "api_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
-    "api_expected_sha256": "4dcc410ed2dc5c579efb493f06bf6f0745c73f617bcaa8b7a06ba5cc75989741",
-    "api_actual_sha256": "4dcc410ed2dc5c579efb493f06bf6f0745c73f617bcaa8b7a06ba5cc75989741",
-    "api_pin_matches": true,
-    "canonical_registry": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
-    "canonical_field": "mechanism_study_20261019_v1",
-    "published_authority_commit": "d9263fa2431592b33e900d9b48c6f20029d8b544",
-    "current_maximum_actual_starts": 24,
-    "actual_starts_recount": 0,
-    "attempts": 0,
-    "uncertain_start_intents": 0,
-    "v2_adoption_by_E_pending": true,
-    "api_support_note": "Current source binds original host/boot and role A/B/C/E; F does not bypass or patch. E must publish host-aware support and policy adoption normally. Read-only preparation used no build/test lease."
-  },
-  "budget_policy": {
-    "authorized_cumulative_max": 40,
-    "not_24_plus_40": true,
-    "preserve_T0_and_all_actual_attempts": true,
-    "E_only_writes_registry": true,
-    "old_Lane5_R19_untouched": true
-  },
-  "resource_contract": {
-    "science_fs_floor_bytes_after_all_pending_and_proposed_writes": 51539607552,
-    "share_floor_bytes": 42949672960,
-    "available_RAM_floor_bytes_after_reservations": 68719476736,
-    "global_max_simulators": 4,
-    "campaign_default_simulators": 2,
-    "campaign_max_simulators": 3,
-    "global_max_CPU_units": 8,
-    "global_reserved_RAM_max_bytes": 34359738368,
-    "build_jobs_max": 2,
-    "new_result_max_bytes": 6442450944,
-    "old_plus_new_result_max_bytes": 21474836480,
-    "required_initial_free": "48GiB + all existing outstanding growth + A/E approved build/link/tmp/cache/core/result peak on each actual filesystem; do not add free bytes across filesystems. Historical ~2GiB build is not a measured bound.",
-    "planned_paths_status": "UNASSIGNED_PENDING_REAL_TARGET_ACCESS",
-    "candidate_minimum_resource_need": "First: an existing authorized remote execution entry usable from this session or continuation inside174-new. Then: a proven independent writable local scratch satisfying48GiB after complete peak reservations and existing quota; adequate Share/CPU/RAM/IO and readonly inputs. No storage-capacity failure on174-new has been measured."
-  },
-  "old174_comparison_only": [
-    {
-      "path": "/workspace",
-      "realpath": "/workspace",
-      "st_dev": 156,
-      "available_bytes": 24477564928,
-      "free_inodes": 216562052,
-      "mount": {
-        "filesystems": [
-          {
-            "target": "/",
-            "source": "overlay",
-            "fstype": "overlay",
-            "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/CQC6CAMIBRHDS2QYMQOADSACPY:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff,workdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/work,nouserxattr",
-            "maj:min": "0:156"
-          }
-        ]
-      }
-    },
-    {
-      "path": "/root/share",
-      "realpath": "/root/share",
-      "st_dev": 2431,
-      "available_bytes": 44365627392,
-      "free_inodes": 213099064,
-      "mount": {
-        "filesystems": [
-          {
-            "target": "/root/share",
-            "source": "/dev/md127",
-            "fstype": "ext4",
-            "options": "rw,relatime,stripe=384",
-            "maj:min": "9:127"
-          }
-        ]
-      }
-    },
-    {
-      "path": "/tmp",
-      "realpath": "/tmp",
-      "st_dev": 156,
-      "available_bytes": 24477564928,
-      "free_inodes": 216562052,
-      "mount": {
-        "filesystems": [
-          {
-            "target": "/",
-            "source": "overlay",
-            "fstype": "overlay",
-            "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/CQC6CAMIBRHDS2QYMQOADSACPY:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff,workdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/work,nouserxattr",
-            "maj:min": "0:156"
-          }
-        ]
-      }
-    },
-    {
-      "path": "/var/tmp",
-      "realpath": "/var/tmp",
-      "st_dev": 156,
-      "available_bytes": 24477564928,
-      "free_inodes": 216562052,
-      "mount": {
-        "filesystems": [
-          {
-            "target": "/",
-            "source": "overlay",
-            "fstype": "overlay",
-            "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/CQC6CAMIBRHDS2QYMQOADSACPY:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff,workdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/work,nouserxattr",
-            "maj:min": "0:156"
-          }
-        ]
-      }
-    },
-    {
-      "path": "/dev/shm",
-      "realpath": "/dev/shm",
-      "st_dev": 197,
-      "available_bytes": 67108864,
-      "free_inodes": 49441500,
-      "mount": {
-        "filesystems": [
-          {
-            "target": "/dev/shm",
-            "source": "shm",
-            "fstype": "tmpfs",
-            "options": "rw,nosuid,nodev,noexec,relatime,size=65536k,inode64",
-            "maj:min": "0:197"
-          }
-        ]
-      }
-    }
-  ],
-  "scope_limits": [
-    "No qualified path absence claim: target is unmeasured, not failed capacity.",
-    "No SCIENCE_ENV_CANDIDATE.json published while evidence is missing.",
-    "No model-authority tree writes, full clone/trace copy, rental, mount/privilege changes, install, simulator/build/native tests or background retry.",
-    "Local original174 free space changed since frozen4.5GiB snapshot; these local numbers cannot establish174-new admission."
-  ],
-  "resume_trigger": "Existing authorized174-new execution entry becomes usable. Finish the one bounded probe, provide candidate only if all physical/path/peak requirements pass; otherwise one exact resource-gap report. E accepts, A releases named build command, E issues common host-aware lease before any build/test deployment.",
-  "E_action": "Record F access dependency. Adopt V2 cumulative40 without resetting actual count and publish normal pinned host-aware resource API; no source/control/native PASS upgrade.",
-  "no_automatic_watcher": true
+  "goal_scope": "Bounded environment preparation; explicit no-qualified-path fallback delivered. No scientific readiness or native result claim."
 }

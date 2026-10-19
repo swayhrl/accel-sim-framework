@@ -1,0 +1,567 @@
+{
+  "schema": "EPL2_SCIENCE_ENV_ASSESSMENT_V2",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "role": "F",
+  "at_beijing": "2026-10-19T22:50:25.727072+08:00",
+  "authority_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "status": "NO_QUALIFIED_PATH_IN_BOUNDED_AUTHORIZED_INVENTORY",
+  "science_env_candidate_issued": false,
+  "E_admission_requested": false,
+  "access": {
+    "status": "RESOLVED",
+    "endpoint": "root@10.208.130.174:2239",
+    "authentication": "existing original174 key; user explicitly installed its public key",
+    "remote_hostname": "huangrulin-sshfs-174",
+    "uid": 0,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "same_kernel_boot_as_original174": true,
+    "key_or_privilege_changes_by_F": "none"
+  },
+  "decisive_storage_findings": [
+    {
+      "paths": [
+        "/root/workspace",
+        "/root",
+        "/tmp",
+        "/var/tmp",
+        "/cache",
+        "/toolchain",
+        "/mnt",
+        "/media",
+        "/opt"
+      ],
+      "filesystem": "174-new overlay",
+      "mount": {
+        "target": "/",
+        "source": "overlay",
+        "fstype": "overlay",
+        "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/ECMGIZJTL26ANEVHWCIMZHD3CW:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/2e2b9d14d1f001d0c68725fb255142c9cd99cddcc38ca119613993b3367f2cfd/diff,workdir=/mnt/data/docker/overlay2/2e2b9d14d1f001d0c68725fb255142c9cd99cddcc38ca119613993b3367f2cfd/work,nouserxattr",
+        "maj:min": "0:258"
+      },
+      "available_bytes": 41260462080,
+      "available_GiB": 38.42679977416992,
+      "shortfall_to_48GiB_before_any_growth_bytes": 10279145472,
+      "shortfall_GiB": 9.573200225830078,
+      "decision": "REJECT: below48GiB even for zero new output. Different overlay ID is not independent backing storage."
+    },
+    {
+      "paths": [
+        "/root/data"
+      ],
+      "mount": {
+        "target": "/root/data",
+        "source": "/dev/sdf[/huangrulin]",
+        "fstype": "ext4",
+        "options": "rw,relatime",
+        "maj:min": "8:80"
+      },
+      "same_st_dev_and_fsid_as_original174_root_data": true,
+      "available_bytes": 41260462080,
+      "decision": "REJECT: same /dev/sdf-backed user directory visible in original174, and below48GiB. Not a new independent scratch."
+    },
+    {
+      "paths": [
+        "/root/share",
+        "/root/share/huangrulin"
+      ],
+      "mount": {
+        "target": "/root/share",
+        "source": "/dev/md127",
+        "fstype": "ext4",
+        "options": "rw,relatime,stripe=384",
+        "maj:min": "9:127"
+      },
+      "same_st_dev_and_fsid_as_original174_share": true,
+      "available_bytes": 44364947456,
+      "available_GiB": 41.318077087402344,
+      "share_40GiB_margin_bytes": 1415274496,
+      "shortfall_to_science48GiB_bytes": 7174660096,
+      "decision": "REJECT as science root: same original174 /dev/md127 shared array, below48GiB; passing separate40GiB Share floor grants no science exception."
+    },
+    {
+      "paths": [
+        "/root/share/mnt164"
+      ],
+      "mount": {
+        "target": "/root/share/mnt164",
+        "source": "admin-wcx@10.208.130.164:/home/shared",
+        "fstype": "fuse.sshfs",
+        "options": "rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other",
+        "maj:min": "0:39"
+      },
+      "available_bytes": 52857896153088,
+      "decision": "NOT A CANDIDATE: existing SSHFS authority/archive mount, not independent local scratch; no output writes or content scan performed."
+    },
+    {
+      "paths": [
+        "/dev/shm"
+      ],
+      "available_bytes": 67108864,
+      "decision": "REJECT:64MiB tmpfs, cannot satisfy durable science storage. Existing other-project restore tmpfs was not used."
+    }
+  ],
+  "physical_backing_evidence": {
+    "original_overlay": {
+      "target": "/",
+      "source": "overlay",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/CQC6CAMIBRHDS2QYMQOADSACPY:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff,workdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/work,nouserxattr",
+      "maj:min": "0:156"
+    },
+    "new_overlay": {
+      "target": "/",
+      "source": "overlay",
+      "fstype": "overlay",
+      "options": "rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/ECMGIZJTL26ANEVHWCIMZHD3CW:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/2e2b9d14d1f001d0c68725fb255142c9cd99cddcc38ca119613993b3367f2cfd/diff,workdir=/mnt/data/docker/overlay2/2e2b9d14d1f001d0c68725fb255142c9cd99cddcc38ca119613993b3367f2cfd/work,nouserxattr",
+      "maj:min": "0:258"
+    },
+    "interpretation": "Both overlay upper/work paths share /mnt/data/docker/overlay2 on the same running kernel. Direct /root/data has identical /dev/sdf major/minor and filesystem ID in both environments; root/data and overlays report matching capacity/free bytes within ongoing writes. No independent disk is established by distinct overlay IDs. Share identity is directly identical. No capacities are added across paths.",
+    "root_data_fsid": 11181641814567142162,
+    "share_fsid": 2757854780513707398
+  },
+  "writability_quota_inodes": {
+    "write_probes": [
+      {
+        "parent": "/root/workspace",
+        "maximum_payload_bytes": 4096,
+        "purpose": "filesystem_write_fsync_readback_only_not_scientific_native_test",
+        "readback_matches": true,
+        "status": "PASS",
+        "own_probe_file_removed": true
+      },
+      {
+        "parent": "/root/data",
+        "maximum_payload_bytes": 4096,
+        "purpose": "filesystem_write_fsync_readback_only_not_scientific_native_test",
+        "readback_matches": true,
+        "status": "PASS",
+        "own_probe_file_removed": true
+      },
+      {
+        "parent": "/root/share/huangrulin",
+        "maximum_payload_bytes": 4096,
+        "purpose": "filesystem_write_fsync_readback_only_not_scientific_native_test",
+        "readback_matches": true,
+        "status": "PASS",
+        "own_probe_file_removed": true
+      }
+    ],
+    "total_probe_payload_bytes": 12288,
+    "probe_files_remaining": 0,
+    "quota_status": {
+      "status": "tool_unavailable_no_quota_assertion"
+    },
+    "quota_effective_limit_verified": false,
+    "quota_note": "No quota tool present; mount options do not provide effective user/project/container quota evidence. No installation, raw-device modification or assumed unlimited quota. Actual free-space failure independently rejects these paths.",
+    "inode_availability": {
+      "/root/workspace": 216559302,
+      "/root/data": 216559302,
+      "/root/share": 213098917
+    },
+    "readonly_flags": {
+      "/root/workspace": false,
+      "/root/data": false,
+      "/root/share": false
+    }
+  },
+  "CPU_RAM_IO": {
+    "cpu_affinity_count": 512,
+    "cpu_max": "38400000 100000",
+    "cgroup_memory_limit_bytes": 274877906944,
+    "cgroup_memory_current_bytes": 13434445824,
+    "host_MemAvailable_bytes": 339625377792,
+    "effective_memory_available_before_reservations_bytes": 261443461120,
+    "global_policy_unchanged": {
+      "simulators": 4,
+      "CPU_units": 8,
+      "reserved_RAM_bytes": 34359738368,
+      "campaign_default_simulators": 2,
+      "campaign_max_simulators": 3,
+      "build_jobs": 2
+    },
+    "admission": "capacity snapshot only; E global reservations still required, no lease requested",
+    "host_io_pressure": "some avg10=21.60 avg60=21.27 avg300=21.62 total=172008546064\nfull avg10=21.52 avg60=21.21 avg300=21.58 total=151649937882",
+    "diskstats_approximately_one_second_deltas": {
+      "sdf": {
+        "read_sectors": 0,
+        "write_sectors": 560,
+        "io_ms": 1,
+        "weighted_io_ms": 4
+      },
+      "md127": {
+        "read_sectors": 0,
+        "write_sectors": 488,
+        "io_ms": 236,
+        "weighted_io_ms": 7571
+      }
+    },
+    "io_note": "Only bounded proc/sysfs snapshots and three4KiB probes. Host IO pressure is present; no throughput benchmark, trace hash, compile or threshold relaxation. T existing threshold10 is unchanged and is not reinterpreted here."
+  },
+  "write_path_contract": {
+    "current_environment": {
+      "TMPDIR": null,
+      "TMP": null,
+      "TEMP": null,
+      "XDG_CACHE_HOME": null,
+      "CCACHE_DIR": null,
+      "CCACHE_TEMPDIR": null,
+      "SCCACHE_DIR": null,
+      "PIP_CACHE_DIR": null,
+      "PYTHONPYCACHEPREFIX": null,
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "CUDA_CACHE_PATH": null,
+      "CUDA_CACHE_DISABLE": null,
+      "HOME": "/root",
+      "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "CUDA_HOME": null,
+      "CUDA_PATH": null
+    },
+    "current_defaults": [
+      {
+        "uses": [
+          "TMPDIR unset",
+          "TMP unset",
+          "TEMP unset",
+          "compiler/linker temporary files"
+        ],
+        "path": "/tmp",
+        "filesystem": "rejected new overlay, same physical pool"
+      },
+      {
+        "uses": [
+          "XDG_CACHE_HOME unset",
+          "pip cache default"
+        ],
+        "paths": [
+          "/root/.cache",
+          "/root/.cache/pip"
+        ],
+        "filesystem": "rejected new overlay"
+      },
+      {
+        "uses": [
+          "ccache queried cache_dir",
+          "ccache queried temporary_dir"
+        ],
+        "paths": [
+          "/root/.cache/ccache",
+          "/root/.cache/ccache/tmp"
+        ],
+        "filesystem": "rejected new overlay"
+      },
+      {
+        "uses": [
+          "sccache default if later installed",
+          "CUDA JIT cache default if enabled"
+        ],
+        "paths": [
+          "/root/.cache/sccache",
+          "/root/.nv/ComputeCache"
+        ],
+        "status": "not enabled/validated, must explicitly bind or disable at approved deployment"
+      },
+      {
+        "uses": [
+          "Python bytecode"
+        ],
+        "path": "__pycache__ beside imported source unless disabled",
+        "this_probe": "python3 -B and PYTHONDONTWRITEBYTECODE=1"
+      },
+      {
+        "uses": [
+          "core dump"
+        ],
+        "core_pattern": "|/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -- %E",
+        "core_rlimit": [
+          -1,
+          -1
+        ],
+        "status": "unbounded/pipe handler in current environment; approved A/E wrapper must define bounded diagnostic handling before admission, no system setting changed"
+      },
+      {
+        "uses": [
+          "build objects",
+          "link outputs",
+          "vendor staging",
+          "results",
+          "logs",
+          "application cwd"
+        ],
+        "path": "NO_DEPLOYMENT_ROOT_ASSIGNED",
+        "reason": "No compliant filesystem; existing C16 trees and model authority not repurposed."
+      }
+    ],
+    "future_required_binding": [
+      "code/source snapshot or read-only source reference",
+      "separate per-Core object/build directories",
+      "TMPDIR/TMP/TEMP and linker temporary files",
+      "ccache/SCCACHE/XDG/pip/CUDA caches or explicit disablement",
+      "Python bytecode policy",
+      "bounded diagnostic/core handling",
+      "result/log/working directories"
+    ],
+    "peak_budget": {
+      "initial_free_must_be_at_least": "48GiB + outstanding reserved writes + A/E-approved maximum simultaneous source/build/link/tmp/cache/core/result writes on each actual filesystem",
+      "historical_build_reference_bytes": 2147483648,
+      "historical_build_is_not_worst_case": true,
+      "new_result_ceiling_bytes": 6442450944,
+      "old_plus_new_result_ceiling_bytes": 21474836480,
+      "illustrative_48_plus_historical2_plus_full6_GiB": 56,
+      "illustrative_shortfall_from_current_local_bytes": 18869080064,
+      "illustration_excludes_unmeasured_peaks_and_is_not_admission": true,
+      "exact_build_peak": "PENDING A named release; deliberately not invented"
+    },
+    "directories_created_for_science": []
+  },
+  "toolchain": {
+    "versions": {
+      "gcc": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+      "g++": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+      "ld": "GNU ld (GNU Binutils for Ubuntu) 2.38",
+      "make": "GNU Make 4.3",
+      "cmake": "cmake version 3.22.1",
+      "python3": "Python 3.10.12",
+      "bison": "bison (GNU Bison) 3.8.2",
+      "flex": "flex 2.6.4",
+      "nvcc": "[Errno 2] No such file or directory: 'nvcc'",
+      "ccache": "ccache version 4.5.1",
+      "sccache": "[Errno 2] No such file or directory: 'sccache'"
+    },
+    "CUDA_driver_query": {
+      "/toolchain/cuda-12.4/bin/nvcc": {
+        "command": [
+          "/toolchain/cuda-12.4/bin/nvcc",
+          "--version"
+        ],
+        "rc": 0,
+        "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Thu_Mar_28_02:18:24_PDT_2024\nCuda compilation tools, release 12.4, V12.4.131\nBuild cuda_12.4.r12.4/compiler.34097967_0\n",
+        "stderr": ""
+      },
+      "/toolchain/bison-3.8.2/bin/bison": {
+        "command": [
+          "/toolchain/bison-3.8.2/bin/bison",
+          "--version"
+        ],
+        "rc": 0,
+        "stdout": "bison (GNU Bison) 3.8.2\nWritten by Robert Corbett and Richard Stallman.\n\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",
+        "stderr": ""
+      },
+      "/toolchain/flex-2.6.4/bin/flex": {
+        "command": [
+          "/toolchain/flex-2.6.4/bin/flex",
+          "--version"
+        ],
+        "rc": 0,
+        "stdout": "flex 2.6.4\n",
+        "stderr": ""
+      }
+    },
+    "CUDA_PATH_not_preconfigured": true,
+    "additional_observations": {
+      "ccache_cache_dir": "/root/.cache/ccache",
+      "ccache_temporary_dir": "/root/.cache/ccache/tmp",
+      "glibc": "2.35-0ubuntu3.10",
+      "zlib_header_present": true,
+      "boost_headers_present": true
+    },
+    "existing_framework_HEADs": [
+      {
+        "path": "/root/workspace/accel-sim-framework",
+        "HEAD": {
+          "rc": 0,
+          "stdout": "5a8bcd63638847c0f2a0951046ec9cb2ba1994a2\n",
+          "stderr": ""
+        },
+        "branch": {
+          "rc": 0,
+          "stdout": "hrl/c16-ada-w4-decode-utilization-multiview-screen-174new-v1\n",
+          "stderr": ""
+        },
+        "tracked_status": {
+          "rc": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "path": "/root/workspace/accel-sim-framework-174new",
+        "HEAD": {
+          "rc": 0,
+          "stdout": "0cc24b1d0d7829a95f9122937bf88dde8d403992\n",
+          "stderr": ""
+        },
+        "branch": {
+          "rc": 0,
+          "stdout": "hrl/c12-c15-174new-repo-shared-inventory-v1\n",
+          "stderr": ""
+        },
+        "tracked_status": {
+          "rc": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "path": "/root/workspace/accel-sim-framework-174new-c12c15-v2",
+        "HEAD": {
+          "rc": 0,
+          "stdout": "7b6f2b88c36b4ed1bbdcd72761063f881c7b6c96\n",
+          "stderr": ""
+        },
+        "branch": {
+          "rc": 0,
+          "stdout": "hrl/c12-c15-174new-canonical-inheritance-v2\n",
+          "stderr": ""
+        },
+        "tracked_status": {
+          "rc": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      }
+    ],
+    "qualification": "Compiler version queries only. No source compile/link/native test, vendor identity closure or A production release exists here."
+  },
+  "input_readonly_reachability": {
+    "D_input_index": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/full_system_v2/SEVEN_INPUTS.json",
+    "D_input_index_sha256": "1c4fa2b14c321ce6e83597b92d5403550f921995bd206fc0ce669d7e6ef8d55c",
+    "workload_results": [
+      {
+        "workload": "sad",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      },
+      {
+        "workload": "vectorAdd_4M",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      },
+      {
+        "workload": "cfd_097k",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      },
+      {
+        "workload": "convolutionSeparable",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      },
+      {
+        "workload": "FWT_7_21",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      },
+      {
+        "workload": "btree",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      },
+      {
+        "workload": "dwt2d",
+        "command_paths_found": 0,
+        "oracle_paths_found": 0
+      }
+    ],
+    "checked_roots": [
+      "/workspace",
+      "/root/workspace",
+      "/root/share/workspace_migrated_20260905",
+      "/root/share/container-workspaces/huangrulin-174"
+    ],
+    "conclusion": "All7 registered commandlists and supplied oracle manifest paths are absent at these exact original/mapped roots. No target-side body identity can be bound there. This is not a claim that no archive anywhere contains them.",
+    "large_body_reads": 0,
+    "trace_copies": 0,
+    "whole_shared_disk_scans": 0,
+    "needed": "E-approved read-only route to exact original7 input/config/command/oracle assets plus per-file identity closure before actual science; no automatic full trace copy.",
+    "D_input_index_snapshot": "probe_r2/D_SEVEN_INPUTS_snapshot.json",
+    "incremental_D_oracle_note": "D added dwt2d oracle during inspection. Exact three mapped oracle paths checked once in dwt2d_oracle_delta.json; all absent. No repeated disk/trace scan."
+  },
+  "E_control_observation": {
+    "evidence": "probe_r2/E_readonly_observation.json",
+    "at_utc": "2026-10-19T14:48:44.987570+00:00",
+    "ledger": {
+      "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+      "authority_commit": "d9263fa2431592b33e900d9b48c6f20029d8b544",
+      "maximum_actual_starts": 24,
+      "actual_starts": 0,
+      "uncertain_start_intents": 0,
+      "remaining_start_capacity": 24
+    },
+    "actual_starts_recount": 0,
+    "api_pin_matches_at_snapshot": false,
+    "API_actual_sha256": "0001aac877b02723b4a744886b79b8e2b0a6012c610636f615d34f160def7277",
+    "action": "E finishes normal source/client pin publication and V2 policy adoption on same campaign; F does not execute unbound helper or alter registry. This is separate from decisive storage rejection."
+  },
+  "minimum_external_resource_delivery": {
+    "first_need": "An existing authorized independent local writable scientific scratch, with effective quota and inode evidence, preserving48GiB after all existing and planned peak writes. Container/overlay alias is insufficient.",
+    "capacity_now": "Local38.43GiB is9.57GiB below floor before growth; adding historical2GiB build and full6GiB output reference makes illustrative deficit17.57GiB, with remaining peaks still to be bounded. Share41.32GiB is also below48GiB and is shared original storage.",
+    "other_needs": [
+      "E-approved readonly input/config/oracle route and content identities",
+      "A exact source/vendor/named build and conservative peak declaration after E environment acceptance",
+      "E current hash-pinned host-aware common lease/API and preserved40 cumulative campaign policy",
+      "E/T IO scheduling and actual quota confirmation"
+    ],
+    "no_rental_mount_privilege_or_model_repurposing": true
+  },
+  "resume_only_on_material_resource_delivery": true,
+  "background_watcher_created": false,
+  "science_builds": 0,
+  "native_tests": 0,
+  "full_application_starts_by_F": 0,
+  "scientific_Core_changes": 0,
+  "model_authority_output_writes": 0,
+  "candidate_not_published": true,
+  "bounded_goal_outcome": "Preparation audit finished with explicit negative result under authorized no-qualified-path branch. Scientific execution remains unadmitted. A/E deployment condition was not triggered.",
+  "evidence": [
+    {
+      "path": "probe_r2/174new_environment.json",
+      "bytes": 43465,
+      "sha256": "7756ce9b004471249519fda1ce2bfdc124a6a81b96d37520f4335d8c02c867a6"
+    },
+    {
+      "path": "probe_r2/174new_paths_and_write_probe.json",
+      "bytes": 23731,
+      "sha256": "92b436e4f39b34ef15b803fc59c3900e301f521d7e7b88bbedaa37ac6cb4bcf8"
+    },
+    {
+      "path": "probe_r2/174new_transport.json",
+      "bytes": 100,
+      "sha256": "1edd2efe39b7dfda27aef85f1ad02383196daac9aa6bd9898c4aebeedf309b4c"
+    },
+    {
+      "path": "probe_r2/D_SEVEN_INPUTS_snapshot.json",
+      "bytes": 43575,
+      "sha256": "1c4fa2b14c321ce6e83597b92d5403550f921995bd206fc0ce669d7e6ef8d55c"
+    },
+    {
+      "path": "probe_r2/E_readonly_observation.json",
+      "bytes": 4118,
+      "sha256": "eaf54b6c183c04ef7ef6912961af975f137499d42e2655c3d04e57ec97b29fce"
+    },
+    {
+      "path": "probe_r2/dwt2d_oracle_delta.json",
+      "bytes": 1187,
+      "sha256": "0f99d853d8ec11330cd53412319410561af22221a94b5d729cf446da8b1fd10e"
+    },
+    {
+      "path": "probe_r2/input_paths.json",
+      "bytes": 22876,
+      "sha256": "90b35b27495d526d0ae8080e8ac5110b181073b5e1b9901c9c148d9caccca845"
+    },
+    {
+      "path": "probe_r2/original174_environment.json",
+      "bytes": 41239,
+      "sha256": "c2c435bd197e9c22038d71c997a0ee464d97ce15e02c889560d16d637b1da8c8"
+    },
+    {
+      "path": "probe_r2/read_environment.py",
+      "bytes": 3538,
+      "sha256": "b6c75267280ce02c8cc9db72a66f3f8a3fbaf227013ead9368bdb405ed92d107"
+    },
+    {
+      "path": "probe_r2/read_paths_and_write_probe.py",
+      "bytes": 23474,
+      "sha256": "4391ec665949fa511e3b6fecbc931d27b8fb9e9ff0be56d0e3eb7ad3657b9f86"
+    }
+  ]
+}
