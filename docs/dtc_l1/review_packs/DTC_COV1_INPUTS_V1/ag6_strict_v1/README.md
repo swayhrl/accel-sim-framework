@@ -21,8 +21,10 @@ the old runner or the old strict CLI.
 four data inputs are caller-provided **exact bytes**, checked against constants
 inside the module, not against their own declarations. No audit/body scan or
 trace payload hashing is performed. All scientific fields from the reviewed
-proposal are joined to the actual preregistration; only its placeholder
-`new_attempt_uuid` is replaced by the fixed actual UUID. The parser accepts
+proposal are joined to the actual preregistration; its placeholder
+`new_attempt_uuid` is replaced by the fixed actual UUID, and its proposal
+cohort label is explicitly joined to the fixed actual cohort label (see the
+source-only schema correction below). The parser accepts
 only AE_GEMM / AE_Gaussian / AD_GEMM / AD_Gaussian, not BASE, AC, AF or a fifth.
 
 `echo`, `numeric`, `traffic`, `parse_full` and `pipeline_contract` preserve the
@@ -118,3 +120,26 @@ Remaining: parent static review/freeze, explicitly admitted import/parser
 qualification and actual four-point integration are unexecuted. There is no
 new self-test source or execution proposal in this delivery. Parent may retain
 all failure reports and existing selection/budget without a new run.
+
+## Source-only schema correction after first actual adapter call
+
+Parent `2a88ddd600848a794b8bb5322b01f042eaeb5c0b` reported that actual admission
+passed but the first frozen-contract case rejected with
+PREREG_SCIENCE_FIELD_MISMATCH; identity/map calls and simulations remained0.
+Static comparison of all four actual preregistration/science JSON rows found
+only two differing proposal fields: new_attempt_uuid's expected assignment and
+the cohort label. The original parser handled only the former; treating the
+valid label transition as scientific equality was an implementation error.
+
+The corrected source explicitly requires proposal cohort
+AG6_V2_FOUR_ARM_DISCOVERY_WITH_TWO_QUALIFIED_IMPORTED_BASES and actual cohort
+AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY, plus the original UNASSIGNED_BA_ONLY
+proposal UUID. Only those two known fields leave the generic equality loop;
+every other proposal field still compares exactly. The four immutable metadata
+hashes, actual UUIDs and all scientific checks are unchanged. The existing
+first targeted case now asserts the fixed label pair, with no extra case.
+Current parser SHA256 is
+`9039c1d0df66210ad9c8fba325bc5e6d9ae10bd67981d7668c18a4576b81b3e4`.
+This worker did not import, run or qualify the correction. The failed actual
+attempt remains preserved; a new exact outer path/source release/admission is
+owned by parent, with no UUID, data or science change.
