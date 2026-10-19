@@ -1,35 +1,38 @@
-# B — native execution blocked; full Goal not complete
+# B — full-system V2 incremental source/input delivery
 
-Source remains r4 Core126bde88baadf3a6628e5f5de620825b06a5215f, based on A
-CLEAN_ONLY94996ec5 with incremental dirty/fixed modules. Framework source
-checkpoint d7acb37a44eb008a2c1a929305946bdb5923a389 and all r1–r4 review packs
-are frozen. This control-only audit makes no source/config/test-plan change.
+Continued the original Goal, branch and T0 under coordination b2e5328; no reset.
+Core d1c570369da8295b01cc02cf157ed816a158d5ad is pushed and exact remote ref/tree/all74 B file bytes read back.
+Previous Core126bde88 and Frameworkcc76b471, all older RO/parameter candidates,
+review packs and scientific results remain preserved.
 
-Authoritative registry read: campaign is registered, status
-DEPENDENCY_CHECKPOINT_CONTROL_PREPARATION_COMPLETE_NO_NATIVE_ADMISSION,
-actual starts0, no qualifications/accepted results, scheduler STOPPED. Its
-recorded process identity no longer matches a live process; no A/B mechanism
-compiler/simulator/build process is live. This is an execution impasse, not a
-verified live wait or a claim that a worker is running in the background.
+A6452b74d's directory/identity/fixed helper match B126. Its consumer still omits
+the previously delivered both-WB-and-TVD-role last-unpin state completion.
+The exact-preimage small patch passes isolated-index applicability. B has
+not applied A public changes or merged public Core. A/C also receive one real
+partition V/R/W test/input reusing B's fixture: V-before-R, shared WAD128/RAM,
+RO detach+duplicate+partial late fill, host refusal, pinned WB done with ICNT
+backpressure, writer conflict/promotion and exact-once/common-pool drain.
+Whole synthetic epoch footprint and hashes are frozen; C review is pending.
+Expected22 lower packets/704 bytes are assertions only, not observed benefits.
 
-Same legal native admission dependency persisted through the three consecutive
-r2/r3/r4 Goal turns, whose exact receipts are cited in the audit. Those turns
-made source progress; that did not supply an E lease/admission or A matching
-native build. Source adaptation is now delivered. Repeating static checks,
-creating equivalent source revisions or using an old incompatible binary cannot
-prove the requested real behavior. B cannot apply A public code, start another
-producer, lower resource floors, migrate scientific execution, delete other
-projects/results or launch complete apps to bypass this condition.
+Dirty pending/inflight, accept/done, clean retention/reclaim and promotion
+semantics are set out in the V2 state table. Existing fixed64 clean control
+retains64/1104 reciprocal four-bank quotas and128 shared rows. Fixed+dirty is
+still guarded: WB-role retained owners need persistent victim-budget accounting
+before this can be the final V2 fixed+RO control. One precise A/C/E request
+records this public integration requirement and the RO/common bank retry mux.
 
-Completion audit: reuse inventory and module/test/cost/adapter delivery are
-present; real clean/fixed functionality, dirty lifecycle execution, actual
-returned-version agreement and native DRAM read change remain unverified.
-All21 finite process inputs remain NOT_COMPILED_NOT_RUN, actual hits/DRAM delta
-UNKNOWN, binary/effective dump absent. Goal is NOT achieved. No new native test,
-compiler, simulator, lease, resource survey or permanent poller is created.
+Actual native compiles/tests0, application starts by B0; hit/value/lower/native
+DRAM improvements remain UNKNOWN. No new binary or runtime effective dump.
+Only patch/text/hash/prepare checks were performed. Old21 prepared cases were
+not re-run or relabeled. No application, lease, storage mutation or watcher.
 
-Execution state is BLOCKED pending external A/E dependency change. Resume on
-legal E finite-native admission plus exact A integrated source/objects, or an
-A review finding requiring a concrete B source correction. Full original scope
-is retained; clean qualification first, full dirty/fixed separately, E alone
-accepts/schedules any apps. See NATIVE_DEPENDENCY_AUDIT_r1 review pack/receipt.
+E has now adopted the cumulative40-start policy in the same campaign, actual
+used count0, accepted results0; this is not40 more starts.
+B only read the ledger. Its final combined source identity is absent; A release,
+C scope/interaction review and fresh E native admission/acceptance remain the
+next concrete events. B supplies source/input and continues on their actual
+response, without repeated empty waiting audits. Full Goal remains incomplete.
+
+Review pack: MS20261019_B_FULL_SYSTEM_V2_r1; exact requirements in
+REQUEST_TO_A_C_E.json and RECEIPT.json.
