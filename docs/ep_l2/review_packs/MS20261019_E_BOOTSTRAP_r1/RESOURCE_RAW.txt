@@ -1,0 +1,29 @@
+huangrulin-174
+mnt:[4026534768]
+Filesystem          1-blocks          Used   Available Capacity Mounted on
+overlay        3779302981632 3580367863808  6880542720     100% /
+/dev/md127     7143083376640 6738642558976 44372901888     100% /root/share
+TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT
+/      overlay overlay   0:156 /
+               total        used        free      shared  buff/cache   available
+Mem:     405024821248 232833687552 62656278528   738840576 109534855168 168755634176
+Swap:     2147479552  2147364864      114688
+$ hostname
+$ readlink /proc/self/ns/mnt
+$ df -B1 -P /workspace /root/share
+$ findmnt -T /workspace -o TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT
+$ free -b
+{
+  "old_result_bytes": 14309576384,
+  "aggregate_available_bytes": 7165260096,
+  "resources": {
+    "available_memory_bytes": 168750116864,
+    "disk_free_bytes": 6880559104,
+    "share_disk_free_bytes": 44372901888
+  },
+  "workspace_floor_deficit_bytes": 44659048448,
+  "share_floor_deficit_bytes": 0,
+  "memory_floor_deficit_bytes": 0,
+  "workspace_floor_plus_two_unknown_run_reserves_deficit_bytes": 49222451200
+}
+active leases 0 active runs 0 relevant processes 3
