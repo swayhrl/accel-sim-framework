@@ -39,8 +39,12 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--admission', type=Path)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--retained-native', action='store_true',
+        help='validate the exact already-compiled repair; no C++/CMake invocation')
     a = parser.parse_args()
-    spec = json.loads(SPEC.read_text())
+    native_only=a.retained_native
+    spec_path=HANDOFF/'full_system_v2/COMMON_FIXTURE_RETAINED_NATIVE_SPEC_r1.json' if native_only else SPEC
+    spec = json.loads(spec_path.read_text())
     out = a.out.resolve()
     build, core, runtime = (Path(spec[k]) for k in ['build','core','framework'])
     assert out.parent == Path('/workspace/ep_l2_ms20261019_e_results') and not out.exists()
@@ -53,11 +57,23 @@ def main():
     assert prior['core_source_commit']==spec['runtime_producer_core']
     assert prior['binary_sha256']==spec['runtime_binary_sha256']==sha(build/'accel-sim.out')
     for path, digest in prior['test_binary_sha256'].items():
-        assert sha(path)==digest, 'retained test changed before repair: '+path
+        expected_digest=spec['retained_test_binary_sha256'][path] if native_only else digest
+        assert sha(path)==expected_digest, 'retained test changed before repair: '+path
+        if native_only and Path(path).name not in spec['targets']:assert expected_digest==digest
     for path, digest in prior['dynamic_library_sha256'].items():
         assert sha(path)==digest, 'retained dynamic library changed: '+path
     flags = {str(f):sha(f) for f in build.rglob('flags.make')}
     archives = {str(f):sha(f) for f in build.rglob('*.a') if f.is_file()}
+    if native_only:
+        assert archives==spec['retained_production_archive_sha256']
+        failed=Path(spec['retained_compile_receipt'])
+        assert sha(failed)==spec['retained_compile_receipt_sha256']
+        attempt=json.loads(failed.read_text())
+        assert attempt['lease_released'] and attempt['compiler_started']
+        assert attempt['error']=="AssertionError('production archive changed')"
+        assert attempt['commands'][0]['exit_code']==0 and attempt['native_invocations_attempted']==0
+        assert sha(spec['generated_version'])==spec['generated_version_sha256']
+        assert sha(HANDOFF/spec['metadata_source_audit'])==spec['metadata_source_audit_sha256']
     assert flags==prior['assertion_flags_sha256']
     assert all('-DNDEBUG' not in Path(f).read_text() for f in flags)
     native_path = Path(spec['previous_native_receipt'])
@@ -74,19 +90,23 @@ def main():
     for rel,digest in spec['fixture_file_sha256'].items(): assert sha(core/rel)==digest
     from build_common_a import SPEC_PATH
     assert sha(SPEC_PATH)==spec['previous_spec_sha256']
-    bindings = {str(p):sha(p) for p in [Path(__file__),SPEC,HERE/'build_common_a.py',
+    bindings = {str(p):sha(p) for p in [Path(__file__),spec_path,HERE/'build_common_a.py',
         HERE/'common_resource_guard.py',HERE/'check_native_case.py',SPEC_PATH]}
     bindings.update(inputs)
     bindings.update({str(core/p):h for p,h in spec['fixture_file_sha256'].items()})
+    if native_only:
+        bindings.update({spec['retained_compile_receipt']:spec['retained_compile_receipt_sha256'],
+            str(HANDOFF/spec['metadata_source_audit']):spec['metadata_source_audit_sha256']})
     identity = dict(campaign_id=CAMPAIGN, authority=AUTHORITY,
         control_source_commit=git(REPO,'rev-parse','HEAD'), driver_sha256=sha(__file__),
-        spec_sha256=sha(SPEC), runtime_producer_core=spec['runtime_producer_core'],
+        spec_sha256=sha(spec_path), runtime_producer_core=spec['runtime_producer_core'],
         fixture_source_core=spec['fixture_source_core'], runtime_binary_sha256=prior['binary_sha256'],
         framework_source_commit=spec['framework_source_commit'],vendor=spec['vendor'],
         build_directory=str(build),output_directory=str(out))
-    expected = dict(identity,owner='A',phase='A_FIXTURE_REPAIR',approved=True,
+    cpu=1 if native_only else 2
+    expected = dict(identity,owner='A',phase='A_RETAINED_FIXTURE_NATIVE' if native_only else 'A_FIXTURE_REPAIR',approved=True,
         full_applications_permitted=False,execution_host=spec['execution_host'],
-        reserved_cpu_units=2,reserved_memory_bytes=8*GIB,
+        reserved_cpu_units=cpu,reserved_memory_bytes=8*GIB,
         reserved_build_growth_bytes=spec['build_growth_bytes'],
         reserved_result_bytes=spec['result_growth_bytes'],workspace_disk_policy=spec['expected_E_workspace_policy'])
     if not a.execute:
@@ -110,6 +130,12 @@ def main():
         native_invocations_attempted=0,native_invocations_completed=0,commands=[],tests=[],
         old_passes_reused=0,planned_tests=cases,input_sha256=inputs,
         memory_floor_bytes=64*GIB,E_admission=dict(path=str(a.admission),sha256=sha(a.admission)))
+    if native_only:
+        report.update(phase='RETAINED_NATIVE_ONLY_NO_CPP',production_archive_byte_identity_to_original_runtime=False,
+            generated_build_string_difference_explicit=True,retained_compile_receipt=spec['retained_compile_receipt'],
+            retained_compile_receipt_sha256=spec['retained_compile_receipt_sha256'],
+            generated_version_sha256=spec['generated_version_sha256'],
+            metadata_source_audit=spec['metadata_source_audit'],metadata_source_audit_sha256=spec['metadata_source_audit_sha256'])
     save=lambda:put(out/'RECEIPT.json',report)
     lease=registry=lock=None
     active=dict(pid=None,ever_started=False)
@@ -125,6 +151,7 @@ def main():
         assert policy['disk_floor_bytes']==5*GIB and policy['monitor_reserve_bytes']==2*GIB
         assert policy['monitor_interval_seconds']==.2 and policy['termination_grace_seconds']==3
         bindings.update({str(Path(client['execution_worktree'])/p):h for p,h in client['source_files'].items()})
+        if native_only:bindings[spec['generated_version']]=spec['generated_version_sha256']
         supervisor=runtime/spec['supervisor'];assert sha(supervisor)==spec['supervisor_SHA256']
         bindings[str(supervisor)]=spec['supervisor_SHA256']
         module=importlib.util.spec_from_file_location('fixture_repair_supervisor',supervisor)
@@ -140,27 +167,28 @@ def main():
             assert time.time()<approval['valid_until_unix'] and a.admission.read_bytes()==approval_bytes
             for path,digest in bindings.items():assert sha(path)==digest,'bound source/input changed: '+path
             live=local_resources();share=os.statvfs('/root/share')
-            written,built=retained_tree_bytes(out),retained_tree_bytes(build)
+            written,built=retained_tree_bytes(out),None if native_only else retained_tree_bytes(build)
             rss=process_tree_rss(active['pid']) if active['pid'] else 0
             check_runtime(report,out,live,share.f_bavail*share.f_frsize,written,built,rss,
                 spec['result_growth_bytes'],spec['build_growth_bytes'],spec['build_total_capacity_bytes'],
                 baseline_build=baseline,memory_limit=8*GIB)
-            report['own_build_bytes_peak']=max(built,report.get('own_build_bytes_peak',0))
+            if built is not None:report['own_build_bytes_peak']=max(built,report.get('own_build_bytes_peak',0))
             report['own_result_bytes_peak']=max(written,report.get('own_result_bytes_peak',0))
             return live
         assert resources()['disk_free_bytes']>=7*GIB+growth
-        allocation=registry.reserve_work('A','build',2,8*GIB,growth,build,
+        allocation=registry.reserve_work('A','test' if native_only else 'build',cpu,8*GIB,growth,out if native_only else build,
             result_growth_bytes=spec['result_growth_bytes'])
         lease=allocation['lease_id'];report.update(lease_id=lease,resource_allocation=allocation)
         assert all(allocation[k]==v for k,v in policy.items())
         assert resources()['disk_free_bytes']>=7*GIB+growth
-        temp=build/'tmp';temp.mkdir(exist_ok=True)
+        temp_root=out if native_only else build
+        temp=temp_root/'tmp';temp.mkdir(exist_ok=True)
         env=dict(os.environ,GPGPUSIM_ROOT=str(core),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',
             PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],ACCELSIM_CONFIG='release')
-        env.update(TMPDIR=str(temp),TMP=str(temp),TEMP=str(temp),XDG_CACHE_HOME=str(build/'cache'),
-            PYTHONDONTWRITEBYTECODE='1',PYTHONPYCACHEPREFIX=str(build/'cache/python'),
-            CCACHE_DISABLE='1',CCACHE_DIR=str(build/'cache/ccache'),CUDA_CACHE_DISABLE='1',
-            CUDA_CACHE_PATH=str(build/'cache/cuda'),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+        env.update(TMPDIR=str(temp),TMP=str(temp),TEMP=str(temp),XDG_CACHE_HOME=str(temp_root/'cache'),
+            PYTHONDONTWRITEBYTECODE='1',PYTHONPYCACHEPREFIX=str(temp_root/'cache/python'),
+            CCACHE_DISABLE='1',CCACHE_DIR=str(temp_root/'cache/ccache'),CUDA_CACHE_DISABLE='1',
+            CUDA_CACHE_PATH=str(temp_root/'cache/cuda'),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
         report['environment_write_roots']={k:env[k] for k in ['TMPDIR','TMP','TEMP','XDG_CACHE_HOME',
             'PYTHONPYCACHEPREFIX','CCACHE_DIR','CUDA_CACHE_PATH']}
         def bind(pid):
@@ -170,8 +198,9 @@ def main():
                 resources();row=guard.run_owned(command,name,out,env,report,save,resources,bind,timeout)
                 resources();return row
             finally:active['pid']=None
-        report.update(status='FIXTURE_ONLY_COMPILING',compiler_started=True);save()
-        run(['cmake','--build',str(build),'--target',*spec['targets'],'-j2','--','-k'],'two_fixture_build',1200)
+        if not native_only:
+            report.update(status='FIXTURE_ONLY_COMPILING',compiler_started=True);save()
+            run(['cmake','--build',str(build),'--target',*spec['targets'],'-j2','--','-k'],'two_fixture_build',1200)
         verify_source(spec)
         assert sha(build/'accel-sim.out')==prior['binary_sha256']
         for path,digest in prior['test_binary_sha256'].items():
@@ -183,7 +212,7 @@ def main():
             test_binary_sha256={p:sha(p) for p in prior['test_binary_sha256']},
             assertion_flags_sha256=flags,dynamic_library_sha256=prior['dynamic_library_sha256'],
             production_archive_sha256=archives,unaffected_binaries_byte_identical=True)
-        put(out/'FIXTURE_BUILD_RECEIPT.json',dict(report));save()
+        put(out/('RETAINED_FIXTURE_IDENTITY_RECEIPT.json' if native_only else 'FIXTURE_BUILD_RECEIPT.json'),dict(report));save()
         for case in cases:
             detail=out/(case['id']+'.native.json')
             command=[sys.executable,str(HERE/'check_native_case.py'),'--expected-exit',str(case['expected_exit']),
@@ -204,6 +233,7 @@ def main():
                 additional_terminals_verified=extra_ok,error=error))
             report['native_invocations_completed']+=1;save()
         verify_source(spec);assert sha(build/'accel-sim.out')==prior['binary_sha256']
+        assert {str(f):sha(f) for f in build.rglob('*.a') if f.is_file()}==archives
         report['status']='AFFECTED_FIXTURES_PASS_PENDING_AGGREGATE_AND_E' if all(
             row['expectation_verified'] for row in report['tests']) else 'AFFECTED_FIXTURES_FAILED_NO_QUALIFICATION'
     except BaseException as error:

@@ -1,0 +1,11 @@
+# A r19: real fixture compile and explicit build metadata identity
+
+The r18 E-admitted command compiled both repaired native targets successfully and released its lease. No native case ran because the strict production-archive identity gate stopped on the automatic `gen_build_string` dependency. The failed receipt/raw log and original artifacts remain unchanged. Four C++ attempts now exist: three common attempts (one successful whole build) and one successful two-target scoped compile stopped before native.
+
+CMake regenerated `detailed_version` for fixture Core `97fd7a3d872f572818afee1f99343368f89b7ed9`; this rebuilt `cuda-sim.cc.o`/`libptxsim.a`, with the build string referenced by `print_splash`. Actual log shows no other production object compilation. Seven other archives match the earlier frozen recovery manifest. Original R3 archive hashes were compared in-memory but were not persisted before that stop; complete original R3 archive byte identity is therefore not claimed. Source `src`, `libcuda`, CMake, generator and version template are unchanged. New exact archive and ELF hashes are frozen in the retained-native spec.
+
+Main `67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de` still belongs to producing Core `c994c893e69a1214ee1a96a045d02cdc54eaebcf` /runtime Framework `9dd1ee57a83d83b56b7874bc7c716185ab52c8f7`. It is not retagged as fixture Core97fd. The17 unaffected fixture ELF hashes remain identical.
+
+The updated entry's `--retained-native` mode invokes no compiler/CMake. It requires a NEW exact E1CPU/8GiB/128MiB test admission, binds the already compiled2ELFs/current archives/generated version/inputs, keeps the5GiB+2GiB runtime guard and budgets all temp/cache/raw output under the new result root. Its scope is29 changed-binary cases plus one invocation of3 previously unrun r14 gates. All35 unchanged old evidence records and S/U observer signatures were read-only verified without rerun.
+
+Native repairs and r14 gates remain UNRUN. No native aggregate, independent qualification, accepted application correctness or performance is claimed. Actual full starts remain0/40; the original T0/32+8/deadlines/budgets and old named grants remain unchanged. E alone may independently qualify and start full applications.
