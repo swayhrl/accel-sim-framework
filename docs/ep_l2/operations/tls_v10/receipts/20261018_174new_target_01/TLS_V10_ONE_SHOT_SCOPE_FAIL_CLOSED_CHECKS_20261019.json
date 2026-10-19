@@ -1,0 +1,21 @@
+{
+  "schema": "TLS_V10_ONE_SHOT_SCOPE_FAIL_CLOSED_CHECKS_V1",
+  "checks": [
+    {
+      "script": "receive_exact_window.py",
+      "status": "FAIL_CLOSED_BEFORE_REMOTE_IO_OR_ACK_ACCESS",
+      "returncode": 1,
+      "stderr": "RuntimeError: ONE_SHOT_NATIVE164_RESTORE_SCOPE_HOLD: no new receive/accept/cleanup until admitted native164 execution or explicit protocol amendment is reviewed. Preserve existing archive and bridge payload."
+    },
+    {
+      "script": "clean_exact_window.py",
+      "status": "FAIL_CLOSED_BEFORE_REMOTE_IO_OR_ACK_ACCESS",
+      "returncode": 1,
+      "stderr": "RuntimeError: ONE_SHOT_NATIVE164_RESTORE_SCOPE_HOLD: no new receive/accept/cleanup until admitted native164 execution or explicit protocol amendment is reviewed. Preserve existing archive and bridge payload."
+    }
+  ],
+  "source_originals": "SOURCE_KEEP",
+  "payload_writes": 0,
+  "source_or_bridge_unlinks": 0,
+  "scope_resolution": "Explicit existing-native164 execution or user/coordinator contract change requires new reviewed code evidence; no automatic bypass"
+}
