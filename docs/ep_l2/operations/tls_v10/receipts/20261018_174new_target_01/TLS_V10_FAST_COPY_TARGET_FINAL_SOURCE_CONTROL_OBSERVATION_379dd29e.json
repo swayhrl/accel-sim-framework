@@ -1,0 +1,214 @@
+{
+  "schema": "TLS_V10_FAST_COPY_TARGET_FINAL_SOURCE_CONTROL_OBSERVATION_V1",
+  "utc": "2026-10-19T06:46:42.811286+00:00",
+  "source_controls": [
+    {
+      "name": "TLS_V10_COPY_ONLY_20G_SOURCE_POLICY_HOLD_NOTICE.json",
+      "sha256": "612f1ec935cb0da1b455816eb923d9b426c3ec72a2886ab770dee4c71c9ea7f1",
+      "control": {
+        "schema": "TLS_V10_OLD174_COPY_ONLY_20G_SOURCE_POLICY_HOLD_NOTICE_V1",
+        "status": "POLICY_ADOPTED_SOURCE_RESOURCE_HOLD_NO_COPY_READY",
+        "source_goal": "EXISTING_TLS_V10_OLD174_SOURCE_GOAL",
+        "source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+        "source_commit": "019cceb0",
+        "policy_id": "TLS_V10_COPY_ONLY_20G_20261019",
+        "amendment_sha256": "bfbab6aa88a974c3f2b0708534f8738ac23186e4f9e64556379ec3491d45715a",
+        "policy_adoption_receipt": "docs/ep_l2/operations/tls_v10_174_to_164_source/TLS_V10_COPY_ONLY_20G_POLICY_ADOPTION_RECEIPT.json",
+        "policy_adoption_receipt_sha256": "a4c8259148192e956ba1de27e32cad1790136fd776aba58a08ab17de822a0d45",
+        "policy_test_receipt_sha256": "1fcc02398eecdc6e5a875d1c3b4912447fa7e85d59863e5753f5743450c4cefd",
+        "source_resource_hold_receipt_sha256": "e36cc4d4c4a36e3e1af03757b9f334804e062971743bbb76ff002ab153e48259",
+        "source_snapshot_at_utc": "2026-10-19T05:09:43.713690+00:00",
+        "source_workspace_f_bavail_bytes": 18902507520,
+        "source_copy_only_floor_bytes": 21474836480,
+        "window_id": "TLS_V10_P9_PUBLIC_B0001",
+        "txid": "574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b",
+        "selector_sha256": "315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a",
+        "source_ready": false,
+        "scientific_payload_transferred_bytes": 0,
+        "source_originals": "SOURCE_KEEP",
+        "target_action": "Keep the existing native164 reservation and B0001 window; do not start receiver or create a new transaction without a future fresh Git-backed source COPY_READY."
+      }
+    },
+    {
+      "name": "TLS_V10_OLD174_RESUME_RESOURCE_HOLD_20261019.json",
+      "sha256": "aa764bf2f204e9e9a844657acf0d7ee436eb068838abdc18fdc6be17221cc878",
+      "control": {
+        "schema": "TLS_V10_OLD174_RESUME_RESOURCE_HOLD_V1",
+        "at_utc": "2026-10-19T02:37:20.576872+00:00",
+        "status": "HOLD_WORKSPACE_BELOW_48_GIB_AND_TARGET_RESERVATION_ABSENT",
+        "source_mount_namespace": "mnt:[4026534768]",
+        "workspace_available_bytes": 19704250368,
+        "workspace_required_floor_bytes": 51539607552,
+        "workspace_deficit_to_floor_bytes": 31835357184,
+        "share_available_bytes": 44297297920,
+        "share_required_floor_bytes": 42949672960,
+        "memory_available_bytes": 196804915200,
+        "memory_required_floor_bytes": 68719476736,
+        "underlying_capacity_observation": "The overlay /workspace and the /root/data /dev/sdf mount report the same filesystem capacity/used/free; this does not identify which user or project caused the decrease.",
+        "lane_registry_updated_at": "2026-10-18T12:06:48.630337+00:00",
+        "lane_registry_running_entries": 0,
+        "lane_registry_active_leases": 0,
+        "lane_registry_is_stale_terminal_snapshot": true,
+        "target_branch_last_observed_commit": "188f0e31da8aa45f19745000144ac0b20129bed4",
+        "target_first_group_absent_native164_reservation_receipt_present": false,
+        "old174_source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+        "old174_frozen_group_count": 25,
+        "old174_prearchive_index_commit": "e30252876caaec54a70650d23015679a17abbcdb",
+        "source_action": "SOURCE_KEEP; do not stage any scientific payload until independent fresh resource/activity PASS and exact target reservation/window receipt both exist.",
+        "target_action": "Resume existing target Goal and independently consume the prior P9_PUBLIC frozen publication and source current-admission history, but do not treat this stale or now-failed source gate as COPY_READY.",
+        "archive_payload_staged_bytes": 0,
+        "source_reclaimed_bytes": 0,
+        "source_release_authorized": false
+      }
+    },
+    {
+      "name": "TLS_V10_P9_PUBLIC_SOURCE_CURRENT_ADMISSION_122344.json",
+      "sha256": "fc267d12bf101de38301db4f045b8ac948deda1acfa1a645d405ab05d0785b40",
+      "control": {
+        "schema": "TLS_V10_OLD174_P9_PUBLIC_CURRENT_ADMISSION_V1",
+        "status": "SOURCE_CURRENT_RESOURCE_ACTIVITY_AND_IDENTITY_PASS_NO_PAYLOAD_READY",
+        "at_utc": "2026-10-18T12:23:44.401286+00:00",
+        "group": "P9_PUBLIC",
+        "source_root": "/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9-public-v1",
+        "source_mount_namespace": "mnt:[4026534768]",
+        "frozen_source_commit": "ecb24975c9daed9c42687849e8a2c6b350b470ff",
+        "binding_commit": "9651ab64566c1f9539a60f10973267257e543414",
+        "selector_sha256": "315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a",
+        "txid": "574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b",
+        "files_identity_match": 141,
+        "directories_identity_match": 4,
+        "path_set_exact": true,
+        "full_content_rehash_performed": false,
+        "lane_registry_updated_at": "2026-10-18T12:06:48.630337+00:00",
+        "lane_registry_age_seconds": 1015.770949,
+        "terminal_registry_fallback_used": true,
+        "lane_running": [],
+        "lane_active_leases": [],
+        "lane_controller_refs": [],
+        "candidate_root_process_refs": [],
+        "workspace_available_bytes": 56241840128,
+        "share_available_bytes": 44297412608,
+        "memory_available_bytes": 348532678656,
+        "target_next": "Independently verify exact pinned source Git selector/binding and current namespace/bridge evidence, then reserve agreed ABSENT real164 destination and publish sole-window receipt; source will refresh activity/resource and file identity again before each stage.",
+        "bridge_payload_staged": false,
+        "copy_ready": false,
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false,
+        "source_reclaimed_bytes": 0
+      }
+    },
+    {
+      "name": "TLS_V10_P9_PUBLIC_SOURCE_FROZEN_PUBLICATION.json",
+      "sha256": "f37a9d8abc4711d3fe67c7e32816828c04cb539ab80b1be906af4ee6d6b108cb",
+      "control": {
+        "schema": "TLS_V10_OLD174_P9_PUBLIC_SOURCE_FROZEN_PUBLICATION_V1",
+        "status": "GIT_FROZEN_SELECTOR_BOUND_TARGET_ABSENT_RESERVATION_PENDING_NO_PAYLOAD_READY",
+        "group": "P9_PUBLIC",
+        "source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+        "frozen_source_commit": "ecb24975c9daed9c42687849e8a2c6b350b470ff",
+        "binding_commit": "9651ab64566c1f9539a60f10973267257e543414",
+        "frozen_files_sha256": "38e5d71dae3d92c8728d511f7d648eb9eca12e99443c2072b4eb531e022072f4",
+        "frozen_directories_sha256": "43589244defa70615b43b031c1df8edd1213e7f967cf93834ff229e4095c918b",
+        "source_freeze_gate_sha256": "f2bf29353e848c629f88e93b6bf7eedd57fdfdc0e4a5f57eb9676d2b44f8f1f3",
+        "canonical_target_manifest_sha256": "ad7e45a12d486ea3a62ff8452df321fb9ad093ca582eb23a3c05ac716267c597",
+        "source_selector_binding_sha256": "f8e0a13f54d47a03e580364e6541d1fc34934823e66ca97bb8642713f84780fd",
+        "selector_sha256": "315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a",
+        "txid": "574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b",
+        "genuine164_destination_base_native164": "/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a",
+        "files": 141,
+        "directories": 4,
+        "logical_regular_bytes": 2897196811,
+        "allocated_regular_bytes": 2897674240,
+        "resource_gate_before_after_utc": [
+          "2026-10-18T12:07:31.161758+00:00",
+          "2026-10-18T12:07:39.039069+00:00"
+        ],
+        "source_resource_and_activity_status": "PASS_AT_FREEZE; refresh before each chunk",
+        "source_next": "Wait for target independent exact manifest SHA/txid match, absent genuine164 reservation and one-window request; no stage before that.",
+        "target_next": "Consume exact Git blobs from the two pinned commits, independently validate canonical selector/txid and reserve new absent native164 root; publish exact target window receipt.",
+        "bridge_payload_staged": false,
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false,
+        "source_reclaimed_bytes": 0
+      }
+    },
+    {
+      "name": "TLS_V10_SOURCE_SCRATCH_PRIOR_ARCHIVE_METADATA_JOIN_20261019.json",
+      "sha256": "6e5e177ae52422dcb527b6f053bb98f1df57acf22006bf89d4a74eb78422b7e1",
+      "control": {
+        "schema": "TLS_V10_TARGET_SCRATCH_PRIOR_ARCHIVE_METADATA_JOIN_V1",
+        "utc": "2026-10-19T03:48:09.521206+00:00",
+        "source_selector_Git_commit": "6b1f76bea8786f4b82a074a18fd4dc71f27ee39a",
+        "source_selector_sha256": "ec0de2036063ed2c8c1c10656b9fb458e7a08d36136e812a23a41e4c030747bf",
+        "source_rows": 763,
+        "prior_receipts_scanned": [
+          {
+            "receipt": "20261018_storageops_v8_target_01\\R1_EXACT_SELECTOR_RESTORE_VERIFIED_V8.json",
+            "receipt_sha256": "3dffecdf75250ae7a6581556d2c2d405d6a156d00394ee6122cae4b2cf6a20ac",
+            "rows": 197
+          },
+          {
+            "receipt": "20261018_storageops_v8_target_01\\R1R_EXACT_SELECTOR_RESTORE_VERIFIED_V8.json",
+            "receipt_sha256": "248e98fa80eb723d971a2c929c57795616ce01cb72be96b8e9d544593b14abd5",
+            "rows": 127
+          },
+          {
+            "receipt": "20261018_storageops_v9_target_01\\R2_EXACT_SELECTOR_RESTORE_VERIFIED_V9.json",
+            "receipt_sha256": "4261b486bc3cf3cda2aa092d3cc4dc86f2fa45ef70e1760dd438af5b8470320f",
+            "rows": 191
+          },
+          {
+            "receipt": "20261018_storageops_v9_target_01\\C2P1_V9_TRANSACTION_MANIFEST.json",
+            "receipt_sha256": "aea889b2477a0b0d43a819565667e622253e52447d43f4f600236bf2f63f12b1",
+            "rows": 205
+          },
+          {
+            "receipt": "20261018_storageops_v9_target_01\\C2P2_V9_TRANSACTION_MANIFEST.json",
+            "receipt_sha256": "0e8a85e71d224771451fab43c077e49b98350aac808a50ef2faf40f69404fc19",
+            "rows": 205
+          },
+          {
+            "receipt": "20261018_storageops_v9_target_01\\M2D_V9_TRANSACTION_MANIFEST.json",
+            "receipt_sha256": "5d534d5a9e19d7fff11b4938f51149ee384f8e345c675331b0c361a8f5b29541",
+            "rows": 205
+          }
+        ],
+        "exact_SHA_matches": [],
+        "match_count": 0,
+        "scope_limit": "Only the six named existing immutable receipt/manifest files; this is not an all-NAS search or current data rehash. No prior backup/recovery proof is inferred for unmatched artifacts.",
+        "scientific_data_rehash_or_copy_bytes": 0,
+        "source_deletion_authorized_by_target": false
+      }
+    },
+    {
+      "name": "TLS_V10_SOURCE_TRANSFER_EFFICIENCY_ADVISORY.json",
+      "sha256": "a013a31a3a96a5cc47b4015fb65682caf8fd2a64f82faba9390df31a48c65ef8",
+      "control": {
+        "schema": "TLS_V10_OLD174_TRANSFER_EFFICIENCY_ADVISORY_V1",
+        "status": "NON_BINDING_ADVISORY_NO_PROTOCOL_CHANGE_NO_PAYLOAD_READY",
+        "source_frozen_group_count": 25,
+        "source_frozen_regular_files": 2328,
+        "source_frozen_allocated_regular_bytes": 9206239232,
+        "zero_length_files_no_raw_chunk": 78,
+        "single_file_raw_range_ready_minimum_at_128_mib": 2272,
+        "files_at_most_1_mib_including_empty": 1979,
+        "bytes_in_files_at_most_1_mib": 250886989,
+        "p9_public_single_file_range_ready_minimum": 156,
+        "p9_matrix_v3_single_file_range_ready_minimum": 41,
+        "p9_matrix_v4_single_file_range_ready_minimum": 57,
+        "primary_build_single_file_range_ready_minimum": 1060,
+        "v5_build_single_file_range_ready_minimum": 520,
+        "derivation": "Sum ceil(size_bytes/134217728) for each frozen regular file; a zero-length file contributes zero raw data chunks. Counts come from the 25 Git-frozen file manifests, not from preliminary estimates.",
+        "possible_later_engineering_review": "After first agreed P9_PUBLIC window is running, both owners may evaluate packing multiple small regular files into one bounded READY using the existing V9 multi-file transaction path, provided exact file SHA/metadata, single stream, <=128MiB raw payload per READY, <=256MiB physical bridge staging, true164 full restore, per-window dual ACK and SOURCE_KEEP remain intact. This requires a new explicit bilateral protocol receipt before use.",
+        "current_protocol": "Unchanged: one raw original-file range per READY, one stream, <=128MiB data and <=256MiB physical bridge staging.",
+        "first_group_action": "Do not delay P9_PUBLIC target reservation or change its present protocol to optimize later small-file groups.",
+        "source_originals": "SOURCE_KEEP",
+        "source_release_authorized": false,
+        "source_reclaimed_bytes": 0
+      }
+    }
+  ],
+  "first_payload_exists": false,
+  "source_current_gate_pass_seen": false,
+  "copy_ready_seen": false
+}
