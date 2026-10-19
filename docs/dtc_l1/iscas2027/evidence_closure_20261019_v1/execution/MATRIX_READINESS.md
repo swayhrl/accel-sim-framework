@@ -1,18 +1,40 @@
 # Exact matrix readiness
 
-Status: WAIT_AG4_TERMINAL_AND_WORKER_DELIVERIES. There is no executable MASTER_MATRIX.tsv yet and no reserved new UUID. The pinned plan is an upper-bound policy, not a run registration. Do not populate unknown identity fields with zero, an application name, or a historical launch receipt.
+Status: PROVISIONAL_O_FIXED_NO_EXECUTABLE_FAMILY. Updated after AG4 terminal
+intake and bounded CPU qualifications. There is no executable MASTER_MATRIX.tsv,
+new UUID, simulator process or execution lock. `COVERAGE_AND_MISSING.tsv` is a
+coverage/missing-evidence table, expressly not executable preregistration.
 
-The sole later matrix will carry these fields per attempt: research_question, role, complete input SHA and per-kernel boundaries, Framework/source/Core and actual binary/runtime identity, effective options, candidate, BASE/control source, family and fixed denominator, support scope, timeout, UUID, budget source, strict definition and statistics definition. Imported controls will have IMPORTED_VERIFIED only after their exact dossier passes; they receive no new RUN_START.
+The global candidate is fixed provisional O (K0/OO128/Tag64x8/AE0/AD0). AG4's
+incomplete optimization screen cannot select a single arm or be restarted with
+this budget. Eight historical C+ and four legacy-source O results are imported
+with their original strict/source identities; none is yet admitted as a current
+c809 family comparison. Four old O records remain in o_reuse/O_IMPORTS.json;
+they do not silently fill current-F cells.
 
-|Family|Frozen policy membership|Readiness at preparation start|
+|Family|Fixed membership|Current gate|
 |---|---|---|
-|P|ATAX, BICG, GESUMMV, GEMM, DWT2D, Gaussian, NN, MRI-Q; each F and C+|F not selected; input/reuse identities and per-input SEM1 scope pending|
-|N1|Source-backed larger BICG, then ATAX; minimum available geometry reaching >=256 CTA or equivalent multiple occupancy rounds|Bounded source/asset inventory assigned to COV1; no performance-based choice|
-|N2|Same-source/precision/implementation GEMM with effective reuse footprint >=2x 10MiB L2|Actual reuse footprint and capture/decoder qualification pending|
-|N3|Source-backed compatible CSR SpMV or gather; fixed matrix/index/seed|Bounded existing capture inventory assigned to COV1; no SM89 alias|
-|R-SERVICE|GEMM and BICG, F collector 4 to 1 sectors/cycle only|Actual-source quota patch and OFF-equivalence qualification pending ROB1 and authority release|
-|R-AE|If AE selected: complete bank-preserving hash DTC/C+ OFF/ON comparisons for GEMM/BICG, reuse qualified controls|Conditional on fixed F; source/control compatibility pending|
-|R-AD|If AD selected: necessary O/AD BICG/DWT2D pairs, typed common-boundary mechanism evidence|Conditional on fixed F; unavailable OFF fields stay UNAVAILABLE|
-|Reserve|Necessary calibration/OFF equivalence; <=2 ordinary executor replacements within reserve4|No reservation or model-change/AG4-repair entitlement|
+|P|ATAX, BICG, GESUMMV, GEMM, DWT2D, Gaussian, NN, MRI-Q; F/C+|Complete primary input vectors and8 C+ imports available; current F source/runtime/common options, global role observer and exact family pending|
+|N1|BICG4096x65281, kernel1=256CTA, unchangedblock256|BLOCKED_CAPTURE; no fabricated CTA replication|
+|N2|Same-source naiveFP32 GEMM2290cube; reused B20,976,400B|BLOCKED_SOURCE_BINDING_AND_CAPTURE|
+|N3|Fixed SM70 bcsstk18 JDS gather,50 kernels each374CTA|Inherited capture/source available; current ABI/full-body/index-domain qualification blocked by resource gate|
+|R-SERVICE|GEMM and BICG only, collector4 to1 sectors/cycle|b107 diagnostic patch/helper prepared and helperPASS; actual linked parser/constructor/RF-WB and OFF source/binary applicability pending|
+|R-AE / R-AD|Not activated for provisional O|No C+ hash/AD fullsim implementation or extra sweep requested|
+|Reserve|Calibration/diagnostic OFF; <=2 ordinary replacements within4|No exact reservation; no old AG4/AG3/AA5 repair entitlement|
 
-Negative performance does not remove an admitted family member or change the denominator. Missing capture blocks only the corresponding input. Unsupported values limit correctness claims rather than become an implicit application PASS. Main eight, new inputs and historical GM12 remain distinct statistical cohorts.
+The current source repair passes six actual-dispatch AST cases and two real
+thread/dash/cat root lifecycles. Those results do not close production shared
+cross-root observer/three exact external-role integration. CPU-only role release
+does not permit any full simulator. Full R2 admission, including>=10GiB disk,
+remains closed independently. All projects and CPU workers count against it.
+
+The eventual sole executable matrix must bind question, role, whole input/member
+SHA and kernel/command/CTA/instruction boundaries, source/Core/Framework/actual
+binary and effective options, provisional candidate, comparator and fixed family
+denominator, per-input semantic scope, common pair timeout, fresh UUID/budget,
+strict definition and statistics. Each complete family must be published and
+fetched back before its first member; unknown fields cannot be filled with0.
+
+The fixed denominator is eight for a complete primary cohort. No favorable
+subset GM, size retuning, missing-arm zero, ROI or prefix completion is allowed.
+New inputs remain separate; historical44/GM12 and all old HOLDs are preserved.

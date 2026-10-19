@@ -1,6 +1,7 @@
 # Minimal runner integration after AG4 release
 
-Status: PREPARED_NOT_TESTED. This is a source-reviewed integration plan, not executable admission or a new dispatcher. No code here is invoked against active AG4.
+Historical preparation status: PREPARED_NOT_TESTED. Current facts are in
+CPU_QUALIFICATION_STATE.json and CURRENT_STATE.md. This is a source-reviewed integration plan, not executable admission or a new dispatcher. No code here is invoked against active AG4.
 
 ## Reuse the accepted lifecycle engine
 
@@ -42,3 +43,15 @@ authority. The source-binding manifest identifies the three unchanged engine
 modules and the CPU-path-only adaptations. See its README for remaining real
 CPU/helper/cross-root/worker-role checks. No fixture binary, request JSON,
 execution lock, deferred scheduler or accepted test result exists yet.
+
+## Post-AG4 checkpoint
+
+AG4 terminal d8d0401 was consumed; fixed provisional O selected. The isolated
+retired-PID dispatch repair passes6 declared AST cases and2 actual root/thread/
+dash/cat lifecycles, with fresh same-instance absence. Fixture compilation and
+static ELF manifests are published. Parent cgroup-only PSI evidence is limited
+by RESOURCE_SCOPE_CORRECTION.json; no global-R2 admission is inferred.
+COV1 tiny4tests and ROB1 standalone helper pass; SEM1 diagnostic route is source
+connected but build0 after host IO admission failure. Global shared observer/
+external-role integration remains required. No performance matrix, simulator
+capability/UUID or dispatcher is installed. The inherited AG4 files are frozen.

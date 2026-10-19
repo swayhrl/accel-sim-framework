@@ -1,0 +1,25 @@
+{
+  "schema": "DTC_CLOSURE_PARENT_CPU_RESOURCE_SCOPE_REVIEW_V1",
+  "utc": "2026-10-19T13:31:35.531922+00:00",
+  "finding": "Parent bounded-CPU snapshots recorded cgroup PSI, not host PSI. Host PSI prelaunch coverage is unavailable for those parent attempts; no retrospective global-R2 PASS is asserted.",
+  "affected_parent_receipts": [
+    "cpu_ast_receipts/attempt2",
+    "cpu_fixture_compile_receipts/attempt1",
+    "cpu_static_freeze_receipts/attempt1",
+    "cpu_real_lifecycle_receipts/attempt1"
+  ],
+  "functional_observations_retained": [
+    "6 actual dispatch AST cases",
+    "2 actual root/thread/dash/cat lifecycles",
+    "binary compilation and static ELF freeze"
+  ],
+  "qualification_limits": [
+    "CPU functional/identity observations are not performance results",
+    "No whole dispatcher/global shared-role qualification",
+    "No complete global-R2 resource admission claimed from these receipts",
+    "No simulator started"
+  ],
+  "future_admission": "Two fresh >=10s samples must retain BOTH host /proc/pressure and cgroup pressure, require each memory-full<=1 and IO-full<=25,host memory/cgroup headroom>=32GiB,no new OOM and relevant unchanged disk threshold.",
+  "workers": "COV1/ROB1 preserve host+cgroup samples; SEM1 correctly stopped before configure on host IO28.29/28.78 despite low cgroup IO.",
+  "no_retroactive_receipt_or_registration_edit": true
+}

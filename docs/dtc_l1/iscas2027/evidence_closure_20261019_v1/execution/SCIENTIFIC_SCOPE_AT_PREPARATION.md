@@ -1,4 +1,7 @@
-# Scientific scope at the preparation join
+# Historical scientific scope at the preparation join
+
+Current post-AG4 state is in `SCIENTIFIC_SCOPE_CURRENT.md`; the text below
+records the earlier preparation-only checkpoint and is not a live status.
 
 This document records source/evidence findings, not new simulation outcomes. The primary eight remain ATAX, BICG, GESUMMV, GEMM, DWT2D, Gaussian, NN and MRI-Q. They are not replaced because value/source qualification is unresolved. F is not selected before AG4 terminal intake.
 
