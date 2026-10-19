@@ -1,3 +1,9 @@
+# A r38: external dependency boundary; Goal incomplete
+
+Three consecutive goal turns confirm the same blocker: E has not adopted the parser proposal or independently accepted current773; B/C have not reviewed the failed extra joint scenario. E controller is STOPPED, its exact process is absent, campaign leases and current/old main processes are zero. Actual starts remain3/40, accepted points/pairs0. No further A execution can legally satisfy E-only acceptance or the outstanding scientific review.
+
+The blocked audit threshold is satisfied. All producer artifacts, originalGoal/T0, native results, failed cases and r37 continuation entry remain intact. No waiters, reruns, newapplication or centralpolicy edits. Resume from full_system_v2/E_CONTINUE_MESSAGE_r37.txt when E/B/C deliver the named external event; do not reset or rebuild unchanged code. This checkpoint records the boundary and is not new scientific progress.
+
 # A r37: 5GiB policy consumed; producer frozen; E parser handoff ready
 
 The formal E 5GiB policy remains active for new campaign leases only. A has actually used the published E API for the incremental repair, affected native checks and this parser control; no central policy code was edited by A. Current source Core27/main773, its 24 real affected/detailed native passes and r30 release are unchanged. No new simulator or full application was started for this parser work.
