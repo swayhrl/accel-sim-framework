@@ -4,7 +4,9 @@ Current verified state as of 2026-10-19T10:29:04.435434+00:00: B0001 through B00
 
 Current range lookup: `TLS_V10_P9_PUBLIC_CLOSED_RANGE_RECOVERY_INDEX.json` maps each exact Source relative path/offset/length/SHA to the native164 archive pathname and volatile native range proof, with Git proof and Source ACK lineage. This is a range index, not a complete project recovery certificate.
 
-B0010 conditional request is unchanged. Exact Source HOLD commit `24ae23ef366209c9decdcd6b2ca69f6c28f11c2b` reports NO_STAGE/NO_READY and workspace 16510775296B at 2026-10-19T10:26:06Z, below the 16GiB COPY_ONLY floor by 669093888B before control budget. See `TLS_V10_P9_PUBLIC_B0010_SOURCE_RESOURCE_HOLD.json`. Only fresh Source legal PASS and exact READY may resume staging; Target does not infer current Source eligibility from this historical report.
+B0010 conditional request is unchanged. One-shot3a7ea422 continuation target preflight10263bcc is current at15:20:35UTC: use `TLS_V10_P9_PUBLIC_B0010_TARGET_METADATA_PREFLIGHT_COPY16_ONE_SHOT_20261019.json`, exact raw SHA `a220032309caad16fc9e55634be742368ec9b073b4a84da98861da8cb96ad134`. Its binding keeps original request3bb823e3 /938c536b731e9584ea91840cfb1062191025019ec2b85fd5244b5f955e696991. Source handshakef262012 has no READY. Later source unrelated cleanup e191656 reports46,748,647,424B at15:21:29UTC, not a current scoped admission. Historical24ae23ef resource HOLD is superseded only as a disk observation; receiving still requires fresh Source gates and exact READY. No B0010 payload or new range acceptance at this checkpoint.
+
+The independent native proof filesystem described below runs on174-new tmpfs, not on the164 server. Native164 pathname is the NAS archive locator. Current access offers SSHFS only, not an authorized164 command entry. Do not label target tmpfs proofs as native164 execution or claim the one-shot literal native164-path requirement met. Exact scope is exposed in the new preflight.
 
 ## Immutable authority and identity
 
