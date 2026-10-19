@@ -30,7 +30,7 @@ def main():
     prerequisite = json.loads(Path(registration['negative_receipt_path']).read_text())
     if (prerequisite['returncode'] != 0 or prerequisite['cases'] != 12 or
             prerequisite['test_source_sha256'] != sha(HERE / 'test_shared_authority.py') or
-            prerequisite['scope'] != 'DECLARED_SYNTHETIC_ROWS_NO_LIVE_ROLE_CLAIM'):
+            prerequisite['scope'] != 'ACTUAL_FROZEN_REVIEW_AND_ADAPTER_DECLARED_SYNTHETIC_PROCESS_ROWS'):
         raise ValueError('TARGETED_ADAPTER_NEGATIVES_REQUIRED_BEFORE_REAL_ROOTS')
     sys.path.insert(0, str(HERE))
     from multi_root_cpu import run_two_registered_cpu_roots
