@@ -1,0 +1,21 @@
+{
+  "schema": "ROB1_EXACT_HELPER_RUN_REQUEST_V1",
+  "status": "REQUESTED_NOT_ADMITTED_NOT_EXECUTED",
+  "role": "ROB1_TINY_COLLECTOR_HELPER_RUNTIME",
+  "core_commit": "b1077667f7a2bcc72260733f88f5798f167346d1",
+  "binary_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/collector_quota_test",
+  "binary_sha256": "9c021f11fe5d17e942e94678f810cb793d1b5d68fc8ad55a8671610ed3a41212",
+  "binary_bytes": 21704,
+  "cwd": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu",
+  "argv": ["/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/collector_quota_test"],
+  "wrappers_requested": ["/usr/bin/timeout --signal=TERM --kill-after=5s 15s", "/usr/bin/env -i"],
+  "environment": {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "CUDA_VISIBLE_DEVICES": "", "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/tmp"},
+  "timeout_seconds": 15,
+  "stdout_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/test.stdout",
+  "stderr_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/test.stderr",
+  "expected_parent_exit": 0,
+  "expected_negative_children": "7 fork children intentionally SIGABRT; each is synchronously waitpid-checked; core files disabled",
+  "resources": {"max_active_root_helpers": 1, "max_one_synchronous_negative_child": 1, "max_output_bytes": 1048576, "no_GPU": true, "no_threads": true, "no_background": true, "no_locks": true},
+  "prerequisites": ["Coordinator immutable runtime role registration and publication readback", "Fresh resource/identity recheck per registration", "Bind static closure in HELPER_STATIC_ELF_CLOSURE.json"],
+  "qualification_limit": "Actual quota/service_entry helper only. Synthetic retry after denial in helper does not qualify actual parser, constructor or RF WB integration; linked LDST fixture remains unbuilt and unrun. No simulator start."
+}
