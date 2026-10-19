@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import sys
 import time
 
@@ -63,6 +64,19 @@ def main():
     def observe(pid, full, ownership):
         if interrupted:
             return 'CPU_COORDINATOR_SIGNAL:' + str(interrupted[0])
+        if shutil.disk_usage(RAW).free < 2 * 1024**3:
+            return 'CPU_RUNTIME_DISK_BELOW_2GiB'
+        used = sum(p.stat().st_size for p in destination.rglob('*') if p.is_file())
+        if used > request['output_bound_bytes']:
+            return 'CPU_REGISTERED_OUTPUT_BOUND_EXCEEDED'
+        available = next(int(line.split()[1]) * 1024
+                         for line in Path('/proc/meminfo').read_text().splitlines()
+                         if line.startswith('MemAvailable:'))
+        maximum = Path('/sys/fs/cgroup/memory.max').read_text().strip()
+        current = int(Path('/sys/fs/cgroup/memory.current').read_text())
+        headroom = int(maximum) - current if maximum != 'max' else available
+        if min(available, headroom) < 8 * 1024**3:
+            return 'CPU_RUNTIME_MEMORY_BELOW_8GiB'
         if pid not in ownership.confirmed:
             # A reaped root can have still-traced descendants. Let the inherited
             # engine finish their lifecycle; never recreate the old root record.
