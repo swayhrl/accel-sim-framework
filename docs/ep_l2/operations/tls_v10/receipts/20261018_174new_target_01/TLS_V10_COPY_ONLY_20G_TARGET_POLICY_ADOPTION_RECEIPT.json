@@ -1,0 +1,93 @@
+{
+  "schema": "TLS_V10_COPY_ONLY_20G_TARGET_POLICY_ADOPTION_RECEIPT_V1",
+  "utc": "2026-10-19T05:11:00.612572+00:00",
+  "status": "POLICY_ACKNOWLEDGED_COPY_ONLY_EXCEPTION_RESOURCE_HOLD_NO_READY",
+  "policy_id": "TLS_V10_COPY_ONLY_20G_20261019",
+  "authorised_coordination_branch": "hrl/tls-v10-copy-only20g-amendment-20261019-v1",
+  "authorised_frozen_Git_commit": "fdfcdd87054df1342299663a4439013dd906d735",
+  "original_amendment_Git_commit": "c3b024d4d4325c7e52d19f3c8728530f250601c6",
+  "original_and_user_pinned_resource_text_byte_identical": true,
+  "complete_frozen_reads": {
+    "TLS_V10_COPY_ONLY_20G_RESOURCE_AMENDMENT_20261019.md": {
+      "Git_path": "docs/ep_l2/chatgpt_handoff/storage_ops_2026_10_18_tls_v10/TLS_V10_COPY_ONLY_20G_RESOURCE_AMENDMENT_20261019.md",
+      "sha256": "bfbab6aa88a974c3f2b0708534f8738ac23186e4f9e64556379ec3491d45715a",
+      "frozen_copy": "FROZEN_TLS_V10_COPY_ONLY_20G_RESOURCE_AMENDMENT_20261019.md"
+    },
+    "TLS_V10_COPY_ONLY_20G_174NEW_CONTINUATION.md": {
+      "Git_path": "docs/ep_l2/chatgpt_handoff/storage_ops_2026_10_18_tls_v10/TLS_V10_COPY_ONLY_20G_174NEW_CONTINUATION.md",
+      "sha256": "23449039abe813326a1afaa0503aab1782fe4484d1814150b29270ecf17317a6",
+      "frozen_copy": "FROZEN_TLS_V10_COPY_ONLY_20G_174NEW_CONTINUATION.md"
+    },
+    "TLS_V10_COPY_ONLY_20G_GATE_TEST_MATRIX.md": {
+      "Git_path": "docs/ep_l2/chatgpt_handoff/storage_ops_2026_10_18_tls_v10/TLS_V10_COPY_ONLY_20G_GATE_TEST_MATRIX.md",
+      "sha256": "ad60a0f73eb0cfc188c615220b785c862898a919d180de4438bc51ff5fd3a97d",
+      "frozen_copy": "FROZEN_TLS_V10_COPY_ONLY_20G_GATE_TEST_MATRIX.md"
+    }
+  },
+  "accepted_exception": {
+    "operation": "TLS_V10_SOURCE_COPY_ONLY_STAGING_STREAMING_AND_ASSOCIATED_TARGET_TRUE164_RECEIVE_NATIVE_RESTORE_ONLY",
+    "source_workspace_floor_bytes": 21474836480,
+    "source_metric": "ACTUAL_OLD174_WORKSPACE_f_bavail_times_f_frsize",
+    "per_batch_overlay_control_write_budget": "Explicit bounded upper bound, normally <=32MiB; projected source f_bavail after writes must remain >=20GiB; no local bulk scratch",
+    "required_identity": {
+      "source_repo": "swayhrl/gpu-l2-cache-verilog",
+      "source_branch": "hrl/ops-174-tls-v10-source-exec-v1",
+      "original_TLS_contract_commit": "cb955076bde74fcab6c29f7f524c649c57e79015",
+      "source_role": "ORIGINAL_OLD174_TLS_V10_SOURCE_ONLY",
+      "source_namespace": "mnt:[4026534768]",
+      "source_workspace_dev": 156,
+      "group": "P9_PUBLIC",
+      "txid": "574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b",
+      "selector_sha256": "315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a",
+      "canonical_manifest_sha256": "ad7e45a12d486ea3a62ff8452df321fb9ad093ca582eb23a3c05ac716267c597",
+      "source_frozen_publication_commit": "ecb24975c9daed9c42687849e8a2c6b350b470ff",
+      "source_binding_commit": "9651ab64566c1f9539a60f10973267257e543414",
+      "window_id": "TLS_V10_P9_PUBLIC_B0001",
+      "immutable_window_raw_sha256": "4e45132897553b758cd073292492ffe5ea317d91c0ff85265fd77c8efa3dfe06",
+      "reservation_sha256": "5142123058ce449336e93893b912b31f91b488de7383b30829bae2b329be9b93",
+      "genuine164_native_root": "/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a"
+    }
+  },
+  "excluded_from_exception": [
+    "simulation",
+    "compilation/build",
+    "test/research data generation",
+    "scientific result storage",
+    "V9",
+    "other projects",
+    "unrelated cleanup",
+    "reverse restore to old174",
+    "source original unlink/deletion",
+    "previous 903 VVP scratch releases"
+  ],
+  "unchanged_default_policy": "Original admission/permission rules remain; 48GiB unchanged outside the exact opt-in COPY_ONLY scope. No global threshold/environment override or shared resource registry/code edits.",
+  "unchanged_target_core_sha256": "6fd13ab5a9df4b2f6cdddcc4c1e09bb34619571efdf3a7578372dc4b776603fe",
+  "target_independent_source_acceptance_requirements": [
+    "Explicit opt-in policy ID and exact approved amendment text SHA, original TLS-V10 source Goal/role and immutable group identity; COPY_ONLY operation only.",
+    "Exact original174 namespace/dev and f_bavail*frsize metric, fresh source-signed actual availability, explicit per-batch minimal overlay-write upper bound and projected remaining >=20GiB. Normally <=32MiB control writes; no bulk overlay scratch/build/copy/compression.",
+    "Fresh Source boot_id/PID/start_ticks/FD/cwd/argv, registry age, leases/cgroup/reservations and known/scheduled P9/C2P readers; stale terminal registry alone is not PASS.",
+    "Share>=40GiB including proposed physical staging; MemAvailable>=64GiB plus cgroup/reservations; <=256MiB physical concurrent bridge and <=30MiB/s; one sender/one receiver.",
+    "Original source current per-range full identity/SHA; exact existing request/txid/selector/root and bridge source+chunk hashes; preserve active/shared/mixed/code/link HOLDs.",
+    "Git-backed Source TLS_V10_COPY_ONLY_20G_POLICY_TEST_RECEIPT.json with exact code SHA, actual staging caller and every required finite case expected/observed decision; review unchanged default gates for all other operations.",
+    "Fresh Source COPY_ONLY_20G_GATE_PASS plus formal exact COPY_READY, not policy test eligibility or historical admission.",
+    "Close/reopen true164 SHA, independent native CHUNK_RANGE_ONLY proof and dual ACK/exact bridge closure; all-file+directory native restore only after complete group coverage. No source-original unlink authority."
+  ],
+  "source_new_policy_validation": {
+    "latest_independently_fetched_source_Git_commit": "a8fcfe6cad21877722e064ca0a7097ddddad3f4a",
+    "new_scoped_policy_code_and_source_test_receipt_present": false,
+    "source_policy_validation": "PENDING_SOURCE_PUBLICATION_NOT_CLAIMED_PASS",
+    "source_actual_gate_run_by_target": false,
+    "target_default_threshold_changed": false,
+    "no_actual_source_READY_present": true
+  },
+  "immutable_first_request_precedence": "Preserve original B0001 bytes including historical48GiB limit field. This exact opt-in amendment/receipt is the narrow source COPY_ONLY floor sidecar; do not rewrite/re-sign the old request or create a new target. All other bindings/limits stay exact.",
+  "superseded_investigation_requests": "Previous VS Code/npm/cache/ext4/host read-only proposals are historical only, no longer pursued under this continuation; no host information/action is needed for the current scope.",
+  "host_filesystem_parameter_changes_authorized": false,
+  "goal_restarted": false,
+  "V9_restarted": false,
+  "new_root_nonce_or_receiver_created": false,
+  "scientific_payload_transferred_bytes": 0,
+  "source_reclaim_bytes": 0,
+  "source_originals": "SOURCE_KEEP",
+  "source_original_deletion_authorized": false
+}
