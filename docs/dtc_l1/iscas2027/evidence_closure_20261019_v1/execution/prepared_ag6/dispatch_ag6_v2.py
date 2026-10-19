@@ -121,6 +121,7 @@ def main():
     sys.path.insert(0, str(ENGINE_SOURCE))
     sys.path.insert(0, str(HERE))
     from guarded_process import run_guarded
+    from mapping_roles import validate_manifest
     from ownership import identity
     from shared_authority import bind_current_review
     from cpu_admission_v2 import NoOwnedChildren
@@ -181,6 +182,7 @@ def main():
                     publication()
                     identity_receipt = validate_identity(manifest['identity_contract'], point['point'])
                     admitted = admit(point['point'])
+                    require(not interrupted, 'COORDINATOR_SIGNAL_NO_NEW_DISPATCH')
                     require(admitted is not None, 'WAIT_RESOURCE_OR_AUTHORITY_NO_NEW_START')
                     publication()
                     run = Path(point['destination'])
@@ -188,6 +190,12 @@ def main():
                     run.mkdir(parents=True, exist_ok=False)
                     argv = identity_receipt['validated_argv']
                     copies = identity_receipt['config_copies']
+                    mapping_path = Path(manifest['mapping_manifest_path'])
+                    require(sha(mapping_path) == manifest['mapping_manifest_sha256'],
+                            'AG6_MAPPING_MANIFEST_CHANGED')
+                    mappings = json.loads(mapping_path.read_text())
+                    for mapping in mappings.values():
+                        validate_manifest(mapping)
                     require(identity_receipt['validated_environment'] == point['runtime_environment'],
                             'EXACT_IDENTITY_VALIDATED_ENVIRONMENT_REQUIRED')
                     write(run / 'INPUT_RUNTIME_IDENTITY.json', identity_receipt)
@@ -203,18 +211,34 @@ def main():
                     runtime = Runtime(baseline, COHORT)
                     next_sample = [0.0]
                     last_fault = [0]
+                    event_offset = [0]
+                    def check_exec_roots(root_pid):
+                        # Forked popen helpers inherit the simulator image before
+                        # exec. Only an actual nonroot exec of the simulator is
+                        # a second model. Guard-written EXEC_EVENT rows follow
+                        # kernel exec events and precede resumption.
+                        with (run / 'ENGINE/MAP_EVENTS.jsonl').open() as stream:
+                            stream.seek(event_offset[0])
+                            for line in stream:
+                                row = json.loads(line)
+                                if (row.get('stage') == 'EXEC_EVENT' and
+                                        row.get('exe') == point['runtime_path'] and
+                                        row['pid'] != root_pid):
+                                    return 'UNREGISTERED_SECOND_OWN_SIMULATOR_EXEC'
+                            event_offset[0] = stream.tell()
+                        return None
                     def observer(pid, full_hint, ownership):
                         if interrupted:
                             return 'COORDINATOR_SIGNAL:' + str(interrupted[0])
+                        extra_root = check_exec_roots(pid)
+                        if extra_root:
+                            return extra_root
                         quick = runtime.quick_stop()
                         if quick:
                             return quick
                         if time.monotonic() < next_sample[0]:
                             return None
                         current, auth = sample(ownership)
-                        if any(p['is_simulator'] and p['pid'] in ownership.confirmed and
-                               p['pid'] != pid for p in current['processes']):
-                            return 'UNREGISTERED_SECOND_OWN_SIMULATOR_PROCESS'
                         owned = proc_reader(pid) if pid in ownership.confirmed else None
                         fault = owned['majflt'] if owned else last_fault[0]
                         decision = runtime.observe(current, fault, last_fault[0])
@@ -235,13 +259,16 @@ def main():
                         # Conservative exclusive consumption immediately before
                         # the single guarded fork; even a failed fork consumes
                         # this reservation and can never be replaced.
+                        require(not interrupted, 'COORDINATOR_SIGNAL_BEFORE_RESERVATION')
                         write(run / 'RUN_START.json', dict(utc=now(), order=point['order'],
                             point=point['point'], attempt_uuid=point['attempt_uuid'], argv=argv,
                             input_identity=identity_receipt, config_copies=copies,
                             source_core=point['core_commit'], timeout_seconds=7200, retries=0,
                             publication_head=published['head'], conservative_start_consumed=True))
                         def capability(target, actual_argv, environment):
-                            publication()
+                            require(not interrupted, 'COORDINATOR_SIGNAL_NO_FORK')
+                            require(manifest['released_publication_reference'] == 'refs/dtc-closure-readback/ag6-v2-executable',
+                                    'EXACT_ALREADY_VERIFIED_RELEASE_REQUIRED')
                             require(budget(points)[-1]['attempt_uuid'] == point['attempt_uuid'],
                                     'EXACT_CURRENT_CONSERVATIVE_START_REQUIRED')
                             require(target == point['runtime_path'] and actual_argv == argv and
@@ -249,10 +276,6 @@ def main():
                             require(not (run / 'ENGINE/FORK_CHILD.json').exists(), 'NO_SECOND_CHILD')
                             require(time.monotonic_ns() - baseline['monotonic_ns'] <= 5 * 10**9,
                                     'FINAL_R2_SAMPLE_STALE_NO_FORK')
-                        mapping_path = Path(manifest['mapping_manifest_path'])
-                        require(sha(mapping_path) == manifest['mapping_manifest_sha256'],
-                                'AG6_MAPPING_MANIFEST_CHANGED')
-                        mappings = json.loads(mapping_path.read_text())
                         engine = run_guarded(argv, point['runtime_environment'], mappings,
                             run / 'ENGINE', 'SIMULATION', 7200, capability, observer)
                         final, auth = sample(empty)

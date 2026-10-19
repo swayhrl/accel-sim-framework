@@ -61,7 +61,7 @@ def close_mapping(engine, mappings, *, purpose='SIMULATION'):
             if row.get('proof') == 'PTRACE_GETEVENTMSG_FROM_CONFIRMED_PARENT':
                 parent = (row['parent_pid'], row['parent_start_ticks'])
                 child = (row['new_owned_pid'], row['child_start_ticks'])
-                require(parent in proven and row['event'] in (1, 2, 3),
+                require(parent in proven and current.get(parent[0]) == parent and row['event'] in (1, 2, 3),
                         'CURRENT_EVENT_CONFIRMED_PARENT_ANCESTRY')
                 require(child not in proven, 'DUPLICATE_CHILD_INSTANCE_PROOF')
                 proven.add(child)
@@ -84,6 +84,8 @@ def close_mapping(engine, mappings, *, purpose='SIMULATION'):
                     removed_files=row['removed_files'], startup_closed=row['startup_closed']))
                 if row['startup_closed']:
                     last_closed_image[current[row['pid']]] = row['exe']
+    require({tuple(row['instance']) for row in image_rows} == proven,
+            'EACH_PROVEN_INSTANCE_ACTUAL_IMAGE_OBSERVED')
     exits = terminal['owned_process_exit_instances']
     exit_keys = {(row['pid'], row['start_ticks']) for row in exits}
     retired = {(row['pid'], row['start_ticks']) for row in terminal['ownership']['retired']}

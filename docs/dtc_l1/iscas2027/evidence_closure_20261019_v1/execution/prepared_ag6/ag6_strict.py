@@ -117,9 +117,15 @@ def frozen_inputs(point, preregistration, science_manifest, kernel_audit, metric
     require(point in dict(POINTS), "FOREIGN_OR_BASE_POINT")
     spec = next(row for row in prereg["ordered_points"] if row["point"] == point)
     proposal = next(row for row in science["ordered_arms"] if row["point"] == point)
-    # Proposal leaves new_attempt_uuid unassigned; compare every other science
-    # field with the actual preregistration, including exact270 effective options.
-    require(all(spec[key] == value for key, value in proposal.items() if key != "new_attempt_uuid"),
+    # The producer's nonexecutable proposal has an unassigned UUID and its own
+    # cohort label. Bind exactly that published label -> actual registration
+    # label transition, then compare every remaining science field unchanged.
+    require(proposal["new_attempt_uuid"] == "UNASSIGNED_BA_ONLY" and
+            proposal["cohort"] == "AG6_V2_FOUR_ARM_DISCOVERY_WITH_TWO_QUALIFIED_IMPORTED_BASES" and
+            spec["cohort"] == "AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY",
+            "FIXED_PROPOSAL_ACTUAL_REGISTRATION_LABEL_JOIN")
+    require(all(spec[key] == value for key, value in proposal.items()
+                if key not in ("new_attempt_uuid", "cohort")),
             "PREREG_SCIENCE_FIELD_MISMATCH")
     require(spec["attempt_uuid"] == spec["new_attempt_uuid"] == dict(POINTS)[point],
             "POINT_UUID_CHANGED")

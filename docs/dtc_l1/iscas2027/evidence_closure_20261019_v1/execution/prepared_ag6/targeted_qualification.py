@@ -10,7 +10,7 @@ import hashlib
 import json
 
 
-PARSER_SHA256 = "8816e02aa50c74a53de94db810f7e44241cd84fb6fc9e34eec5c6928a1686521"
+PARSER_SHA256 = "9039c1d0df66210ad9c8fba325bc5e6d9ae10bd67981d7668c18a4576b81b3e4"
 FIXED_POINTS = (
     ("AE_GEMM", "77cbc367-150c-418d-85e0-3be23d952498"),
     ("AE_Gaussian", "f9295c5b-29b9-4e6c-9b9c-531c21acfc99"),
@@ -126,6 +126,11 @@ def case_frozen_contract(parser, frozen):
     spec, rows, _ = parser.frozen_inputs("AE_GEMM", **frozen)
     check(spec["attempt_uuid"] == FIXED_POINTS[0][1] and len(rows) == 1,
           "EXPECTED_FROZEN_GEMM_METADATA")
+    proposal = parser.json_bytes(frozen["science_manifest"])["ordered_arms"][0]
+    check(spec["cohort"] == "AG6_DISCOVERY_V2_ORIGINAL174_FOUR_START_ONLY" and
+          proposal["cohort"] == "AG6_V2_FOUR_ARM_DISCOVERY_WITH_TWO_QUALIFIED_IMPORTED_BASES" and
+          proposal["new_attempt_uuid"] == "UNASSIGNED_BA_ONLY",
+          "FIXED_PROPOSAL_TO_ACTUAL_REGISTRATION_LABEL_JOIN")
     changed = dict(frozen)
     changed["preregistration"] = frozen["preregistration"].replace(
         FIXED_POINTS[0][1].encode(), b"00000000-0000-4000-8000-000000000000", 1)
