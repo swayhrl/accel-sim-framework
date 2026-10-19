@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SOURCE PREPARED NOT TESTED: future parent SEM1 fixture registration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "total_seconds",
+    "concurrency",
+    "modes",
+    "admission",
+    "source_sha256",
+    "artifact_sha256",
+    "abi_freeze_sha256",
+    "release_path",
+    "policy_path",
+    "roles_path",
+    "abi_freeze_path",
+    "build_receipt_path",
+    "classifier_path",
+    "output"
+  ],
+  "properties": {
+    "status": {
+      "const": "RELEASED_EXACT_SEM1_FIXTURE_RUNTIME_ONLY"
+    },
+    "total_seconds": {
+      "const": 900
+    },
+    "concurrency": {
+      "const": 1
+    },
+    "modes": {
+      "const": [
+        "shared",
+        "masked",
+        "with-e",
+        "ae",
+        "ad",
+        "no-e",
+        "wrong-byte",
+        "missing-sector",
+        "wrong-generation",
+        "early-release"
+      ]
+    },
+    "admission": {
+      "type": "object",
+      "required": [
+        "disk_floor_exclusive_bytes"
+      ],
+      "properties": {
+        "disk_floor_exclusive_bytes": {
+          "const": 5368709120
+        }
+      },
+      "additionalProperties": true
+    },
+    "source_sha256": {
+      "$ref": "#/$defs/absolute_hash_map"
+    },
+    "artifact_sha256": {
+      "$ref": "#/$defs/absolute_hash_map"
+    },
+    "abi_freeze_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "release_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "policy_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "roles_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "abi_freeze_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "build_receipt_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "classifier_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "output": {
+      "$ref": "#/$defs/absolute_path"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "absolute_path": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "absolute_hash_map": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^/"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "fixture_case_role": {
+      "type": "object",
+      "required": [
+        "name",
+        "mode",
+        "executable",
+        "executable_sha256",
+        "argvs",
+        "cwd",
+        "source_sha256"
+      ],
+      "properties": {
+        "name": {
+          "const": "SEM1_ACTUAL_OBJECT_FIXTURE_RUNTIME_V1"
+        },
+        "mode": {
+          "enum": [
+            "shared",
+            "masked",
+            "with-e",
+            "ae",
+            "ad",
+            "no-e",
+            "wrong-byte",
+            "missing-sector",
+            "wrong-generation",
+            "early-release"
+          ]
+        },
+        "executable": {
+          "const": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst"
+        },
+        "executable_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "argvs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "cwd": {
+          "$ref": "#/$defs/absolute_path"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/absolute_hash_map"
+        }
+      },
+      "additionalProperties": false
+    },
+    "roles_file": {
+      "type": "object",
+      "required": [
+        "roles"
+      ],
+      "properties": {
+        "roles": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/fixture_case_role"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "abi_freeze": {
+      "type": "object",
+      "required": [
+        "core_commit",
+        "build_exit",
+        "matching_fresh_ABI",
+        "assertions_enabled",
+        "diagnostic_macro",
+        "elf",
+        "library",
+        "elf_sha256",
+        "library_sha256",
+        "artifact_sha256",
+        "loader_and_DT_NEEDED_closure_complete",
+        "static_ELF_only_no_ldd",
+        "compiler_flags"
+      ],
+      "properties": {
+        "core_commit": {
+          "const": "1fcf5113c08a27b64ccca872c4a8fba4c12c1ece"
+        },
+        "build_exit": {
+          "const": 0
+        },
+        "matching_fresh_ABI": {
+          "const": true
+        },
+        "assertions_enabled": {
+          "const": true
+        },
+        "diagnostic_macro": {
+          "const": "DTC_SEM1_CONDITIONAL_VALUES=1"
+        },
+        "elf": {
+          "$ref": "#/$defs/absolute_path"
+        },
+        "library": {
+          "$ref": "#/$defs/absolute_path"
+        },
+        "elf_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "library_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/absolute_hash_map"
+        },
+        "loader_and_DT_NEEDED_closure_complete": {
+          "const": true
+        },
+        "static_ELF_only_no_ldd": {
+          "const": true
+        },
+        "compiler_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$comment": "Schema is documentation, not executed validation or release. Runtime code additionally checks exact argv/cwd/hash/ABI/admission/owner relationships. Parent independently pins registration hash, policy/release/roles hashes and canonical manager_role hash in its published standalone entry."
+}
