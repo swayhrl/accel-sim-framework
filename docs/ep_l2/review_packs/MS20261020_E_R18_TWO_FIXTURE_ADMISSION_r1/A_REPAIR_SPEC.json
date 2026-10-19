@@ -1,0 +1,80 @@
+{
+  "E_engineering_tail_receipt": "/workspace/ep_l2_ms20261019_e_results/E_REMAINING_NATIVE_DIAGNOSTICS_r1/RECEIPT.json",
+  "E_engineering_tail_receipt_sha256": "9d4a42002d707fa024fc7d759c3b2b76a1ab74b94a11fbba9597d50b0a909fd9",
+  "additional_cases": [
+    {
+      "additional_terminals": [
+        "PASS r14_clean_retention_physical_slot_cycles_no_memcpy_offset_cost",
+        "PASS r14_shared128_clean_to_mandatory_dirty_promotion_same_slot_same_payload"
+      ],
+      "expected_exit": 0,
+      "id": "r14_integration_gates",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_victim_production",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "--r14-integration-gates"
+      ],
+      "required_terminal": "PASS r14_texture_only_global_bypass_exact_once_then_texture_TVD_service",
+      "scope": "3 previously unrun r14 real native gates",
+      "suite": "main_extra",
+      "target": "ep_l2_ms_victim_production",
+      "timeout_seconds": 120
+    }
+  ],
+  "allowed_changed_paths": [
+    "tests/ep_l2/ms_ro_combined/test_combined.cc",
+    "tests/ep_l2/ms_victim/test_native.cc"
+  ],
+  "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "baseline_build_bytes": 2091665422,
+  "build": "/workspace/build/ep-l2-ms20261019-a-common-native-r1",
+  "build_growth_bytes": 504815757,
+  "build_total_capacity_bytes": 2596481179,
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1",
+  "execution_host": "huangrulin-174",
+  "expected_E_workspace_policy": {
+    "disk_floor_bytes": 5368709120,
+    "monitor_interval_seconds": 0.2,
+    "monitor_reserve_bytes": 2147483648,
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "termination_grace_seconds": 3
+  },
+  "fixture_file_sha256": {
+    "tests/ep_l2/ms_ro_combined/test_combined.cc": "6052e83f9689dc77fff5e15293daffac6f302076eb122da0241463d990575e24",
+    "tests/ep_l2/ms_victim/test_native.cc": "0e117aee4f72f89e73b120b69e6925b7482dc34fa13d3b83cd016adaabbe08a0"
+  },
+  "fixture_source_core": "97fd7a3d872f572818afee1f99343368f89b7ed9",
+  "framework": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-r2-ro-runtime-v1",
+  "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "no_application_starts": true,
+  "no_named_authorization_replay": true,
+  "old_raw_and_ELF_retention": "/workspace/ep_l2_ms20261019_e_results/E_REMAINING_NATIVE_DIAGNOSTICS_r1/retained_elf",
+  "previous_native_receipt": "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/RECEIPT.json",
+  "previous_native_receipt_sha256": "2b363de7d5cd53205667229cf6dd9e5afccc1d5c73acba257a167eee58a52c63",
+  "previous_spec_sha256": "2e526ed3a3fdb22440db1b5c321906980e49c0dadc6db35ec6750fb765c72c5b",
+  "producing_build_receipt": "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_BUILD_r3/BUILD_ONLY_RECEIPT.json",
+  "producing_build_receipt_sha256": "71b784f6961829b710028cf3d9a73e1545638b01cce0ce2d070f2c637f60c921",
+  "production_tree_ids": {
+    "CMakeLists.txt": "07608154a764fdfc00816604aad9767a92deb91c",
+    "libcuda": "13a8694a10b82f80dde24d0281fd69825faf5237",
+    "src": "b9a8ad63ab479c399a3c263523eabac37e779d1a"
+  },
+  "result_growth_bytes": 134217728,
+  "runtime_binary_sha256": "67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de",
+  "runtime_producer_core": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+  "schema": "EP_L2_A_TWO_FIXTURE_REPAIR_SPEC_V1",
+  "supervisor": "util/ep_l2/ft_lane1/build_r0_1.py",
+  "supervisor_SHA256": "95816c1ab1ea70873d845eeb7c252a4b49109cea29045ff80309a220fc84bc1e",
+  "targets": [
+    "ep_l2_ro_tvd_combined",
+    "ep_l2_ms_victim_native"
+  ],
+  "terminal_corrections": {
+    "full_victim_cycle": "NATIVE_VICTIM|case=cycle17_in_16way_set|enabled=1|response_version_checks=51|actual_lower_read_packets=17|actual_lower_read_bytes=544",
+    "full_victim_stream": "NATIVE_VICTIM|case=stream17_no_reuse|enabled=1|response_version_checks=17|actual_lower_read_packets=17|actual_lower_read_bytes=544",
+    "native_cycle": "NATIVE_VICTIM|case=cycle17_in_16way_set|enabled=0|response_version_checks=51|actual_lower_read_packets=51|actual_lower_read_bytes=1632"
+  },
+  "vendor": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+}
