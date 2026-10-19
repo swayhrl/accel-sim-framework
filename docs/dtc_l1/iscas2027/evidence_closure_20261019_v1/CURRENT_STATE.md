@@ -1,6 +1,6 @@
 # Execution coordination state
 
-Updated: 2026-10-20T01:24:57.992938+08:00.
+Updated: 2026-10-20T01:30:41.677299+08:00.
 Status: **AG6_TERMINAL_RUNTIME_CGROUP_IO_STOP_1_OF4_CONTINUE_INDEPENDENT_CPU_EVIDENCE**.
 Same Goal continued in original `huangrulin-174`; no reset/restart. `/root` is
 sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
@@ -21,12 +21,13 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 | User disk update | Strictly>5GiB on actual output mount; <=5GiB holds new builds/sims and protects own tasks; expected writes assessed, no hidden10GiB reserve | USER_DISK_AUTHORIZATION_20261020.json |
 | AG6 new starts |1/4 consumed,1 actual fork,0 accepted performance; AE_GEMM stopped by runtime cgroupIO rule;3unused UUIDs sealed by frozen cohortSTOP, no replacement/resume/BA transfer; own3 instances absent, lock released | execution/AG6_BUDGET_LEDGER.json; execution/ag6_actual_cohort_stop_v2/ |
 | BA full simulations / F |0/32; provisionalO (not finalF=O), new SELECTION_V2 records incomplete screen, old selection unchanged; no P8F launch; independent O/SEM/ROB preparation can continue | execution/SELECTION_V2.json |
-| Independent component review | ROB1 closed-inner62file review supports limited6case PASS; COV1 independent SEM closed-receipt review pending publication; no target reruns | execution/rob1_fixture_runtime_independent_review_attempt2/ |
+| Independent component review | ROB1 closed-inner62file review supports limited6case PASS; COV1 independently accepted narrow SEM10 closed conditional evidence with65publication/94closedfiles verified. No rerun requested; actual SEM own-Z race projection0, not live-qualified | execution/rob1_fixture_runtime_independent_review_attempt2/; execution/sem1_fixture_runtime_independent_review_v2/ |
 | Paper / evidence scope | v0.18/DC untouched; conditional/numeric/native/ISA/coherence claims stay separate; original44/GM12 preserved | SCIENTIFIC_SCOPE_CURRENT.md |
 
 User disk update applies to future entries only; all earlier refused admissions remain refused. No resource failure authorizes an old-goal restart. Existing ELF/config
 work is reused; future runtime release needs the converged source closure and
 fresh per-entry full host+cgroup R2. No additional model canary or simulation start is authorized by this CPU release.
+
 
 
 
