@@ -1,3 +1,7 @@
+# One-shot current override: B0010 required native164 restore HOLD
+
+Source5ced0b050b4a scope correction and TLS_V10_P9_PUBLIC_B0010_ONE_SHOT_ACCEPTANCE_HOLD_20261019.json supersede any newer-than-B9 contract-acceptance implication. B0010 adds a physically closed/reopened SHA-matching128MiB true164 chunk and actual174-new tmpfs range proof only. It has no required native164 restore, no Source KEEP ACK, no bridge cleanup and no next-window request. Original source KEEP; full141/4 certificate absent. Previous9closed ranges remain valid historical proofs. Unified index separates705,152,417B previous closed protocol bytes from839,370,145B present physical bytes. No Source release authority is implied. Need existing admitted native164 restore execution path or explicit coordinator/user location amendment; no guessed authentication.
+
 # TLS-V10 P9_PUBLIC recovery pointer ? INCOMPLETE GROUP, Goal ACTIVE
 
 Current verified state as of 2026-10-19T10:29:04.435434+00:00: B0001 through B0009 all CLOSED after Source KEEP ACK and exact journaled bridge cleanup. Real archive/native range proofs cover 48 ranges, 705,152,417 original bytes of 2,897,196,811. There are 43 nonempty originals with complete verified range coverage; full-original reassembly and SHA verification remain pending. Full 141-file/4-directory committed archive and absent-path all-file native restoration certificate are NOT available. One empty file also remains for finalization. Source retains all 141 originals; Source science release is 0B.
