@@ -1,0 +1,47 @@
+import pathlib,sys,json,hashlib,datetime,os,subprocess
+S=pathlib.Path('/workspace/worktrees/gpu-l2-cache-verilog-tls-v10-source')
+H=S/'docs/ep_l2/operations/tls_v10_174_to_164_source'
+sys.path.insert(0,str(H))
+import tls_v10_p9_exact_window_runner as run
+import tls_v10_copy_only20g_gate as old
+def sha(b):return hashlib.sha256(b).hexdigest()
+window='TLS_V10_P9_PUBLIC_B0010'
+reqname=window+'_TARGET_SOLE_WINDOW_REQUEST_COPY16.json';raw=(old.BRIDGE/reqname).read_bytes();req=json.loads(raw)
+freshname=window+'_TARGET_METADATA_PREFLIGHT_COPY16_ONE_SHOT_20261019.json'
+targetcommit='10263bccb2257f14209c1a0fc1f67dcd2b293d67'
+freshraw=(old.BRIDGE/freshname).read_bytes()
+targetprefix=run.TARGET_RECEIPTS
+for name,body in [(freshname,freshraw),('TLS_V10_ONE_SHOT_TARGET_RESUME_ACCEPT_20261019.json',(old.BRIDGE/'TLS_V10_ONE_SHOT_TARGET_RESUME_ACCEPT_20261019.json').read_bytes())]:
+ assert subprocess.check_output(['git','-C','/workspace/repos/accel-sim-framework','show',targetcommit+':'+targetprefix+name])==body
+binding=dict(schema='TLS_V10_P9_EXACT_SOURCE_WINDOW_BINDING_V1',window_id=window,plan_batch_index=9,txid=old.TXID,selector_sha256=old.SELECTOR,canonical_manifest_sha256=old.MANIFEST_SHA256,source_root=old.SOURCE_ROOT,target_root_native164=old.TARGET_ROOT,policy_id='TLS_V10_FROZEN_EXCLUSIVE_COPY_ONLY_16G_20261019',plan_sha256=req['plan_sha256'],target_request_name=reqname,target_request_sha256=sha(raw),target_request_git_commit='3bb823e362c3ae96a25e70cb762398355fbd1c3b',prior_cleanup_name=req['prior_window_cleanup_name'],prior_cleanup_sha256=req['prior_window_cleanup_sha256'],prior_cleanup_git_commit=req['prior_window_cleanup_commit'],target_receiver_preflight_name=freshname,target_receiver_preflight_sha256=sha(freshraw),target_receiver_preflight_git_commit=targetcommit,one_shot_coordination_commit='3a7ea422d3f4301688bd3cb7bcf4431b97f08e90')
+bp=H/(window+'_EXACT_SOURCE_WINDOW_BINDING.json')
+if not bp.exists():run._no_clobber_json(bp,binding)
+assert json.loads(bp.read_text())==binding
+ctx=run.production_context(S,'/workspace/repos/accel-sim-framework')
+def evidence():
+    original=run.real.physical_refs
+    def capture():
+        result=original()
+        rows=[]
+        for row in result[3]:
+            args=row.get('args','')
+            rows.append({'pid':row['pid'],'start_ticks':row['start_ticks'],'cwd':row['cwd'],
+                         'argv_sha256':sha(args.encode()),'script_basenames_only':[pathlib.Path(a).name for a in args.split() if a.endswith(('.py','.sh'))]})
+        print(json.dumps({'gate_transfer_matches':rows,'gate_lane_pids':[r['pid'] for r in result[2]],'unknown':result[1]}),flush=True)
+        return result
+    run.real.physical_refs=capture
+    try:return run.production_evidence(bp)
+    finally:run.real.physical_refs=original
+controller=run.ExactWindowRunner(ctx,bp,evidence)
+op=sys.argv[1]
+if op=='stage':
+ print(json.dumps(controller.prepare()),flush=True)
+ print(json.dumps(controller.stage()),flush=True)
+elif op=='stage-only':
+    print(json.dumps(controller.stage()),flush=True)
+elif op=='recover':
+    import tls_v10_one_shot_stage_recovery as recovery
+    print(json.dumps(recovery.finish(controller)),flush=True)
+elif op=='publish':
+ result=controller.publish(sys.argv[2]);print(json.dumps(result),flush=True)
+else:raise ValueError('unknown operation')

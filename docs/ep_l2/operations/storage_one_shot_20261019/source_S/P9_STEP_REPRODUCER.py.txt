@@ -1,0 +1,30 @@
+"""One explicit P9 queue operation. No watcher, no payload cleanup or unlink."""
+import pathlib,sys,json,hashlib,subprocess
+S=pathlib.Path('/workspace/worktrees/gpu-l2-cache-verilog-tls-v10-source');H=S/'docs/ep_l2/operations/tls_v10_174_to_164_source'
+T=pathlib.Path('/workspace/repos/accel-sim-framework');sys.path.insert(0,str(H))
+import tls_v10_p9_exact_window_runner as r
+import tls_v10_p9_exact_ack_cli as ack
+def git(repo,*args):return subprocess.check_output(['git','-C',str(repo),*args],text=True).strip()
+def sha(b):return hashlib.sha256(b).hexdigest()
+op,window=sys.argv[1:3]
+if op in ['prepare-stage','stage-only','publish']:
+    reqname=window+'_TARGET_SOLE_WINDOW_REQUEST_COPY16.json';reqraw=(r.old.BRIDGE/reqname).read_bytes();q=json.loads(reqraw)
+    reqcommit=git(T,'log','origin/hrl/tls-v10-174new-target-exec-v1','-1','--format=%H','--',r.TARGET_RECEIPTS+reqname)
+    assert subprocess.check_output(['git','-C',str(T),'show',reqcommit+':'+r.TARGET_RECEIPTS+reqname])==reqraw
+    prefname=window+'_TARGET_METADATA_PREFLIGHT_COPY16.json';prefraw=(r.old.BRIDGE/prefname).read_bytes()
+    prefcommit=git(T,'log','origin/hrl/tls-v10-174new-target-exec-v1','-1','--format=%H','--',r.TARGET_RECEIPTS+prefname)
+    binding=dict(schema='TLS_V10_P9_EXACT_SOURCE_WINDOW_BINDING_V1',window_id=window,plan_batch_index=q['plan_batch_index'],txid=r.old.TXID,selector_sha256=r.old.SELECTOR,canonical_manifest_sha256=r.old.MANIFEST_SHA256,source_root=r.old.SOURCE_ROOT,target_root_native164=r.old.TARGET_ROOT,policy_id=r.policy.POLICY_ID,plan_sha256=q['plan_sha256'],target_request_name=reqname,target_request_sha256=sha(reqraw),target_request_git_commit=reqcommit,prior_cleanup_name=q['prior_window_cleanup_name'],prior_cleanup_sha256=q['prior_window_cleanup_sha256'],prior_cleanup_git_commit=q['prior_window_cleanup_commit'],target_receiver_preflight_name=prefname,target_receiver_preflight_sha256=sha(prefraw),target_receiver_preflight_git_commit=prefcommit)
+    bp=H/(window+'_EXACT_SOURCE_WINDOW_BINDING.json')
+    if not bp.exists():r._no_clobber_json(bp,binding)
+    assert json.loads(bp.read_text())==binding
+    c=r.ExactWindowRunner(r.production_context(S,T),bp,lambda:r.production_evidence(bp))
+    if op=='prepare-stage':print(json.dumps(c.prepare()),flush=True);print(json.dumps(c.stage()),flush=True)
+    elif op=='stage-only':print(json.dumps(c.stage()),flush=True)
+    else:print(json.dumps(c.publish(sys.argv[3])),flush=True)
+elif op in ['ack-prepare','ack-publish']:
+    # All three commits are exact explicit arguments. Remote ancestry and
+    # original archive/proof/schema/scope joins remain in the qualified CLI.
+    source,request,receipt=sys.argv[3:6]
+    extra={} if op=='ack-prepare' else {'source_ack_commit':sys.argv[6]}
+    print(json.dumps(ack.execute('prepare' if op=='ack-prepare' else 'publish-bridge',window,source,request,receipt,**extra)),flush=True)
+else:raise ValueError('unsupported operation')

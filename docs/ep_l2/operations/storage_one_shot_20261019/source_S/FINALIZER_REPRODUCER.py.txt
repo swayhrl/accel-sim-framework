@@ -1,0 +1,60 @@
+import pathlib,json,hashlib,subprocess,os,fcntl,datetime
+P=pathlib.Path('docs/ep_l2/operations/storage_one_shot_20261019/source_S')
+S=pathlib.Path('/workspace/worktrees/gpu-l2-cache-verilog-tls-v10-source');H=S/'docs/ep_l2/operations/tls_v10_174_to_164_source'
+T=pathlib.Path('/workspace/repos/accel-sim-framework');B=pathlib.Path('/root/share/host174_storage_recovery_bridge/20261016_storageops_02')
+PREFIX='docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/'
+def git(repo,*args):return subprocess.check_output(['git','-C',str(repo),*args],text=True).strip()
+def put(p,r):p.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+def sha(b):return hashlib.sha256(b).hexdigest()
+now=datetime.datetime.now(datetime.timezone.utc).isoformat();target=git(T,'rev-parse','origin/hrl/tls-v10-174new-target-exec-v1')
+peer={}
+for n in ['TLS_V10_ONE_SHOT_TARGET_RESUME_ACCEPT_20261019.json','TLS_V10_P9_PUBLIC_B0010_TARGET_METADATA_PREFLIGHT_COPY16_ONE_SHOT_20261019.json','TLS_V10_ONE_SHOT_C16_STATUS_TO_SOURCE_20261019.json','TLS_V10_ONE_SHOT_PRIOR9_AVAILABILITY_20261019.json','ONE_SHOT_TRUE164_RECOVERY_INDEX.json','TLS_V10_P9_PUBLIC_B0010_DEST_VERIFIED.json','TLS_V10_P9_PUBLIC_B0010_RESTORE_VERIFIED.json','TLS_V10_P9_PUBLIC_B0010_TARGET_RECEIVING_RECEIPT_COPY16.json']:
+ raw=subprocess.check_output(['git','-C',str(T),'show',target+':'+PREFIX+n]);bridge_raw=(B/n).read_bytes()
+ matched=raw==bridge_raw
+ assert matched or n=='ONE_SHOT_TRUE164_RECOVERY_INDEX.json'
+ (P/('TARGET_'+n)).write_bytes(raw);peer[n]={'target_commit':target,'sha256':sha(raw),'Git_bridge_match':matched}
+ if not matched:
+  (P/('TARGET_BRIDGE_PENDING_'+n)).write_bytes(bridge_raw)
+  peer[n].update(bridge_sha256=sha(bridge_raw),status='Mutable recovery index bridge update not yet published at pinned remote HEAD; both snapshots retained. Immutable B0010 proofs independently match Git/bridge; index not used as a release certificate.')
+ready=json.loads((H/'TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_COPY16.json').read_text());entry=ready['entries'][0]
+st=os.lstat(entry['bridge_path']);idnow={'dev':st.st_dev,'inode':st.st_ino,'nlink':st.st_nlink,'size':st.st_size,'uid':st.st_uid,'gid':st.st_gid,'mode':st.st_mode&0o777,'mtime_ns':st.st_mtime_ns,'ctime_ns':st.st_ctime_ns,'allocated':st.st_blocks*512}
+assert idnow==entry['bridge_identity'];assert (B/'TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_COPY16.json').read_bytes()==(H/'TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_COPY16.json').read_bytes()
+assert json.loads((B/'TLS_V10_P9_PUBLIC_B0010_DEST_VERIFIED.json').read_text())['raw_bytes']==134217728
+assert not (H/'TLS_V10_P9_PUBLIC_B0010_SOURCE_KEEP_ACK.json').exists()
+fd=os.open(B/'.TLS_V10_SOURCE_SENDER.lock',os.O_RDWR|os.O_NOFOLLOW);fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);fcntl.flock(fd,fcntl.LOCK_UN);os.close(fd)
+spaces={}
+for path in ['/workspace','/root/share']:
+ v=os.statvfs(path);spaces[path]={'f_bavail_bytes':v.f_bavail*v.f_frsize,'available_GiB':v.f_bavail*v.f_frsize/2**30,'device':os.stat(path).st_dev}
+mem=next(int(x.split()[1])*1024 for x in pathlib.Path('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:'))
+old=pathlib.Path('docs/ep_l2/operations/storage_c16_model_dualcopy_20261019_v1/old174_owner_second_shortlist')
+selectors=[]
+for n in ['PROPOSED_SELECTOR_OUTBOUND_SIX_UNAPPROVED.json','PROPOSED_SELECTOR_LOCAL_MODEL_SIX_UNAPPROVED.json']:
+ raw=(old/n).read_bytes();fixed=subprocess.check_output(['git','show','8c238970e26c172a1c8e1baefb219fcd4405823b:'+str(old/n)]);assert raw==fixed
+ selectors.append({'path':str(old/n),'sha256':sha(raw),'unchanged_from_8c238970':True})
+production={}
+for role,path,expected in [('G_transfer','/workspace/worktrees/accel-sim-vm-c16-g-runtime/util/vm_tlb/c16/lane_g/runtime_package_transfer.py','728b1bbbd266f08b6bb6eb3b89e2ff2d8de8e056ace0b10827349604c5726d91'),('A_supervisor','/workspace/worktrees/accel-sim-vm-c16-a/util/vm_tlb/c16/lane_a/c16_background_asset_supervisor.py','2edd5beb80f2b743fdc382785811c7f2a1678641604eaf2e6cc5fbaa77c80363'),('A_packager','/workspace/worktrees/accel-sim-vm-c16-a/util/vm_tlb/c16/lane_a/c16_local_prep.py','d2f57d5fb80a0251c430b62c2c417972837dcb567a48804cce2de4b4b1ed6f54')]:
+ actual=sha(pathlib.Path(path).read_bytes());assert actual==expected;production[role]={'path':path,'sha256':actual,'unchanged':True}
+c16=json.loads((B/'TLS_V10_ONE_SHOT_C16_STATUS_TO_SOURCE_20261019.json').read_text())
+r={'schema':'ONE_SHOT_S_ACTUAL_TERMINAL_CHECKPOINT_V1','utc':now,'coordination_commit':'3a7ea422d3f4301688bd3cb7bcf4431b97f08e90','source_namespace':os.readlink('/proc/self/ns/mnt'),'source_branch':'hrl/ops-174-tls-v10-source-exec-v1','source_current_head_before_summary':git(S,'rev-parse','HEAD'),'source_READY_commit':'8f7e2ef7c487abd1c1656239259e95d06aa09065','source_READY_sha256':sha((H/'TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_COPY16.json').read_bytes()),'target_current_head':target,'peer_Git_bridge_readbacks':peer,'status':'TLS_P9_ARCHIVED_SOURCE_KEEP_HOLD:REQUIRED_NATIVE164_RESTORE_EXECUTION_NOT_AVAILABLE','archive_scope_is_partial_not_full_P9':True,'completed_full_migration':False,'space':spaces,'MemAvailable_bytes':mem,
+'TLS':{'previous_B0001_B0009_closed_windows':9,'previous_proven_ranges':48,'previous_true164_archived_and_independent174new_native_range_bytes':705152417,'previous_native164_server_restore_claim':False,'completed_batches_retransferred_or_rehashed':0,'resumed_window':'TLS_V10_P9_PUBLIC_B0010','plan_batch_index':9,'txid':'574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b','selector_sha256':'315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a','new_bridge_bytes_staged':134217728,'bridge_allocated_bytes_retained':idnow['allocated'],'recovery_bytes_rewritten':0,'current_bridge_identity_matches_published_READY':True,'new_true164_archive_bytes_target_receipt_Git_bridge_verified':134217728,'total_true164_range_archived_bytes':839370145,'new_independent174new_tmpfs_range_restore_bytes_reported':134217728,'new_native164_server_range_restore_bytes':0,'source_KEEP_ACK_issued':False,'next_window_or_bridge_cleanup_authorized':False,'P9_frozen_whole_files':141,'P9_frozen_directories':4,'P9_full_original_archive_completed_count':0,'P9_full_original_native_restore_completed_count':0,'P9_native164_full_restore_completed_count':0,'P9_exact_source_release_count':0,'P9_exact_source_release_bytes':0,'TLS_release_immediate_df_gain_bytes':0,'P9_frozen_total_logical_bytes':2897196811,'P9_full_archive_missing_logical_bytes':2057826666,'P9_SOURCE_KEEP':True,'all_other24_SOURCE_KEEP':True,'other24_files':2187,'other24_logical_bytes':6303088913,'other24_new_archive_bytes':0,'other24_new_full_native_restore_files':0,'other24_source_released_files':0,'next_operation':'Preserve existing B0010 true164 archive, independent174new tmpfs proof and bridge payload. Target supplies required native164 restore proof or coordinator/user issues explicit scope clarification; source then independently validates the exact existing B0010 proofs and signs KEEP ACK. Only target cleans ACK-listed bridge; then original next P9 windows/other24 resume. No resend, newtxid or source unlink.','no_automatic_restage_or_cleanup':True,'source_sender_lock_currently_free':True,'source_sender_or_waiter_daemon_installed':False,'P9_source_release_gate':'HOLD whole141: all-file archive/restoration, true native164 path/scope, current full source SHA and qualified exact release execution join are not closed. Existing conditional permission retained; no new per-batch approval needed.'},
+'C16':{'status':'C16_OUTBOUND_RETIRE_NOT_APPROVED','outbound6':'SOURCE_KEEP_FUTURE_SUPPLY_NOT_CLEARED','local6':'ACTIVE_KEEP','source_unlinks':0,'model_bytes_read_or_transferred_by_S':0,'outbound_selector_and_local_selector':selectors,'production_controls':production,'proposal':'C16_G_OUTBOUND_FIRST_UNAPPLIED.patch','proposal_unit_tests':16,'proposal_integration_checks':4,'proposal_applied':False,'policy_activated':False,'actual_owner_signoff':None,'actual_launcher_queue_identity':None,'109_replica_binding':None,'T_reported_canonical_full_SHA_matches':c16['full_current_SHA_matches'],'T_remaining_SHA_files':c16['pending_SHA'],'T_current_status':c16['status'],'T_IO_pressure_samples':c16['io_pressure_samples_some_full_avg10'],'T_IO_guard':10,'T_remaining_bytes':9127207432,'T_current_publication':c16['c16_publication']},
+'stop_reasons':[{'class':'SCIENTIFIC_PROOF','scope':'TLS new native164 range/full-file acceptance and P9 release; other24 full native restore','missing':'Required actual native164 restoration path/command and evidence. T currently has only174new tmpfs native proof, with no native164 command entry. No substitute or invented access.'},{'class':'RESOURCE','scope':'C16 pending3 target SHA','missing':'Actual path IO some/full avg10 <= unchanged10; T observed27.09/30.26.'},{'class':'EXTERNAL_PERMISSION','scope':'C16 outbound-only live retirement','missing':'Explicit exact outbound retirement approval, actual G owner signed acceptance, launcher/queue drain, future164/109 binding and rollback receipts.'}],
+'scope_correction':'TLS_V10_ONE_SHOT_NATIVE164_RANGE_SCOPE_CORRECTION_20261019.json supersedes earlier narrower source note allowing tmpfs range continuation; frozen per-range native164 requirement is preserved.',
+'space_provenance':'Reported current f_bavail contains concurrent other-owner compiled/PCH releases and writers, not TLS recovery. This S wave performed zero VVP cleanup and zero source release; do not add historical R6 gains again.',
+'protected_tasks':'No EP-L2/DTC-L1 tasks or scientific code/config/counters/leases modified. E/F retains sole science admission; current48GiB alone does not include planned peak writes.',
+'E_F_notice':'ONE_SHOT_S_E_F_ACTUAL_RESOURCE_NOTICE_20261019.json published to existing Share/Git; no E/F acceptance/read acknowledgement claimed.',
+'goal_checkpoint':'Continuous migration objective remains incomplete at precise native164 proof HOLD. No background waiter; original transaction and bridge retained.'}
+put(P/'ONE_SHOT_S_SUMMARY.json',r);put(H/'TLS_V10_ONE_SHOT_SOURCE_FINAL_20261019.json',r)
+name='TLS_V10_ONE_SHOT_SOURCE_FINAL_20261019.json'
+with (B/name).open('xb') as f:f.write((H/name).read_bytes());f.flush();os.fsync(f.fileno())
+cursor=json.loads((P/'TLS_FROZEN_25_GROUP_CURSOR.json').read_text())
+for row in cursor['groups']:
+ row['status']='B0010_READY_STAGED_SOURCE_KEEP_HOLD_NATIVE164_RESTORE_SCOPE' if row['group']=='P9_PUBLIC' else 'SOURCE_KEEP_HOLD_REQUIRED_NATIVE164_RESTORE_PATH_AND_GROUP_ADMISSION_PENDING'
+ row['hold_class']='SCIENTIFIC_PROOF';row['new_bridge_bytes_staged']=134217728 if row['group']=='P9_PUBLIC' else 0
+ row['new_archived_bytes']=134217728 if row['group']=='P9_PUBLIC' else 0
+ row['new_independent174new_native_range_restore_bytes']=134217728 if row['group']=='P9_PUBLIC' else 0
+ row['new_native164_server_restore_bytes']=0
+put(P/'TLS_FROZEN_25_GROUP_CURSOR.json',cursor)
+for n in ['TLS_V10_ONE_SHOT_RUNNER_QUALIFICATION_20261019.json','TLS_V10_ONE_SHOT_STAGE_RECOVERY_QUALIFICATION_20261019.json','TLS_V10_P9_PUBLIC_B0010_SOURCE_GATE_PASS_COPY16.json','TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_COPY16.json','TLS_V10_P9_PUBLIC_B0010_EXACT_SOURCE_WINDOW_BINDING.json','TLS_V10_ONE_SHOT_NATIVE164_RANGE_SCOPE_CORRECTION_20261019.json','TLS_V10_P9_PUBLIC_B0010_SOURCE_NATIVE164_SCOPE_ACK_HOLD_20261019.json']:(P/n).write_bytes((H/n).read_bytes())
+(P/'P9_STEP_REPRODUCER.py.txt').write_bytes(pathlib.Path('audit_runtime/p9_queue_step.py').read_bytes())
+print(json.dumps({'status':r['status'],'workspace':spaces['/workspace'],'share':spaces['/root/share'],'new_staged_bytes':134217728,'new_true164_archive_bytes':134217728,'source_release_bytes':0,'target':target,'peer_blobs_verified':len(peer)},indent=2))
