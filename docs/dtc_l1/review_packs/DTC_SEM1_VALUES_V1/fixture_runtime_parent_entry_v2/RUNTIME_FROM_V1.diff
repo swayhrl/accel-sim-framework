@@ -1,0 +1,15 @@
+--- published_v1/bounded_fixture_runtime.py
++++ prepared_v2/bounded_fixture_runtime.py
+@@ -185,0 +186,2 @@
++    from fixture_terminal_view import FixtureTerminalView
++    import fixture_terminal_view
+@@ -187 +189 @@
+-                 "external_cpu_launch_view"):
++                 "external_cpu_launch_view", "fixture_terminal_view"):
+@@ -336,0 +339,6 @@
++        def __init__(self, registration, roles):
++            super().__init__(registration, roles)
++            self._own_terminal_view = FixtureTerminalView(
++                roles, current_launch=lambda: active["launch"],
++                owner=own, identity_reader=ident)
++            self.review = self._own_terminal_view.review
