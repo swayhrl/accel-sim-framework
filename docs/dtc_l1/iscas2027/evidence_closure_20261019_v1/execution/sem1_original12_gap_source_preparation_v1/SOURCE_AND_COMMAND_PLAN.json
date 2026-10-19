@@ -1,0 +1,1014 @@
+{
+  "schema": "DTC_SEM1_LITMUS12_COMPONENT_SOURCE_PREPARATION_V1",
+  "status": "PREPARED_NOT_TESTED_NOT_A_BUILD_OR_RUNTIME_RELEASE",
+  "core_repository": "swayhrl/gpgpu-sim",
+  "core_branch": "hrl/iscas2027-dtc-sem1-litmus12-core-174-v1",
+  "core_commit": "d0bb92a2cd03ca0b0a736dddda13febf8b60ca0c",
+  "core_tree": "d2800b2d6cbd6862bfc38a31ecbe19f0dafcaf92",
+  "parent_core_unchanged": "1fcf5113c08a27b64ccca872c4a8fba4c12c1ece",
+  "production_core_unchanged": "c8090115bd57512b1b23fca7d925301fa620c751",
+  "framework_parent": "b8437e90cab1858f0c89ad9c6a9720779fc1e243",
+  "source_changes": [
+    {
+      "path": "CMakeLists.txt",
+      "blob": "509a2f4ef0519153997b132f7e1365b1c9fb0df5",
+      "sha256": "b6e4e5507eddea1e23e68c9abb42c4a255ed9b63b82fcd82763ee7f8f3c49da1"
+    },
+    {
+      "path": "tests/dtc_l1_sem1_litmus12_ldst.cc",
+      "blob": "24f347b16df3ff63fad45b3514d5c5cf453a424f",
+      "sha256": "cd0bf615ed31afbe020d2055ca3616ffafd02d4943b1dba6c94c82f7f022d316"
+    }
+  ],
+  "unchanged_hook_blobs": {
+    "src/gpgpu-sim/dtc-l1-common.h": "d966d651f8a0c0f73fc7ae489fd9c913dcb29ab0",
+    "src/gpgpu-sim/dtc-sem1-values.h": "8b129b24df412c5de6ec18932c769816664a36bf",
+    "src/gpgpu-sim/shader.cc": "c890ecfbc703838f40ba28f356add14227822aac",
+    "src/gpgpu-sim/shader.h": "e10e27f435ede1243cda3c06f02b8bc61e16c44c",
+    "src/gpgpu-sim/gpu-sim.cc": "c03efe92e303c1e557319bdc0a9b0c3f8961085e"
+  },
+  "config": {
+    "path": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+    "blob": "a14ae75677e3fabb260493341665f29962bfd311",
+    "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+  },
+  "new_build_directory": "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build",
+  "prepared_configure_argv": [
+    "/usr/bin/cmake",
+    "-S",
+    "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1",
+    "-B",
+    "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_FLAGS_RELEASE=-O1 -g0 -UNDEBUG",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DGPGPUSIM_BUILD_DTC_L1_TESTS=OFF",
+    "-DGPGPUSIM_SEM1_CONDITIONAL_VALUES=ON",
+    "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+  ],
+  "prepared_build_argv": [
+    "/usr/bin/nice",
+    "-n",
+    "19",
+    "/usr/bin/ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "/usr/bin/cmake",
+    "--build",
+    "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build",
+    "--target",
+    "dtc_l1_sem1_litmus12_ldst",
+    "-j1"
+  ],
+  "required_new_authority": [
+    "separate finite source/tool/resource-registered configure/build admission",
+    "fresh dependency-closed matching ABI library and ELF; no old objects/header/library reuse",
+    "new actual build receipt and static ELF/dependency/compiler-flag freeze",
+    "new runtime role/schema/classifier and per-case paired R2 admission; old 10-mode release does not cover this program"
+  ],
+  "future_limits_require_parent_registration": {
+    "build_jobs": 1,
+    "build_timeout_seconds": 1200,
+    "build_output_budget_bytes": 536870912,
+    "runtime_case_timeout_seconds": 60,
+    "runtime_case_log_bytes": 524288,
+    "runtime_AS_bytes": 2147483648,
+    "core_dump_bytes": 0,
+    "disk_floor_exclusive_bytes": 5368709120,
+    "all_host_cgroup_R2_conditions": "UNCHANGED",
+    "current_permission": "SOURCE_ONLY"
+  },
+  "s12": {
+    "seed": "0x53454d31",
+    "schedule_indices": [
+      0,
+      63
+    ],
+    "prepared_schedule_count": 64,
+    "max_consumers_per_schedule": 10,
+    "max_counted_fixture_events_per_schedule": 128,
+    "max_passive_LDST_ticks_per_schedule": 96,
+    "counted_events": "one per LDST tick, issued load, actual sector fill offer, external publication, selected E, RF-bank interference",
+    "worst_case_budget": "96+10+16+1+1+4=128",
+    "unproven": "all internal microevent census, 128-event interleaving completeness, runtime coverage and successful drain within fixed bound",
+    "no_contract_upgrade": true,
+    "expected_classes": {
+      "conditional_positive": 58,
+      "conditional_countermodel": 1,
+      "targeted_rejections": 5
+    }
+  },
+  "current_new_work_counts": {
+    "configure": 0,
+    "compile": 0,
+    "import": 0,
+    "test": 0,
+    "fixture_processes": 0,
+    "simulator_dispatch": 0,
+    "GPU_cycle_calls": 0,
+    "native_tests": 0
+  },
+  "artifacts": {
+    "ELF_sha256": null,
+    "library_sha256": null,
+    "compile_commands_sha256": null,
+    "static_ELF_audit": null
+  },
+  "cases": [
+    {
+      "id": "S02",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S02"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S02",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S02-swap",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S02-swap"
+      ],
+      "scope": "TARGETED_VALUE_REJECTION",
+      "expected_exit": 1,
+      "expected_marker": "SEM1_L12_REJECT A_B_PAYLOAD_SWAP",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S08",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S08"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S08",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S08-stale-waiter",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S08-stale-waiter"
+      ],
+      "scope": "TARGETED_STRUCTURAL_REJECTION",
+      "expected_exit": -6,
+      "expected_marker": "SEM1_L12_FAULT stale-waiter; actual advance_service assert owner && has_reference",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S11",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S11"
+      ],
+      "scope": "CONDITIONAL_SCOPE_ONLY",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S11",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-00",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "0"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=0",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-01",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "1"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=1",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-02",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "2"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=2",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-03",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "3"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=3",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-04",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "4"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=4",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-05",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "5"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=5",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-06",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "6"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=6",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-07",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "7"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=7",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-08",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "8"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=8",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-09",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "9"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=9",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-10",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "10"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=10",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-11",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "11"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=11",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-12",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "12"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=12",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-13",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "13"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=13",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-14",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "14"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=14",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-15",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "15"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=15",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-16",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "16"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=16",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-17",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "17"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=17",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-18",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "18"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=18",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-19",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "19"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=19",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-20",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "20"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=20",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-21",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "21"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=21",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-22",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "22"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=22",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-23",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "23"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=23",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-24",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "24"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=24",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-25",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "25"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=25",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-26",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "26"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=26",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-27",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "27"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=27",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-28",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "28"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=28",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-29",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "29"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=29",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-30",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "30"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=30",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-31",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "31"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=31",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-32",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "32"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=32",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-33",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "33"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=33",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-34",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "34"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=34",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-35",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "35"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=35",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-36",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "36"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=36",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-37",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "37"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=37",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-38",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "38"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=38",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-39",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "39"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=39",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-40",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "40"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=40",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-41",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "41"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=41",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-42",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "42"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=42",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-43",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "43"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=43",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-44",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "44"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=44",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-45",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "45"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=45",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-46",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "46"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=46",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-47",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "47"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=47",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-48",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "48"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=48",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-49",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "49"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=49",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-50",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "50"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=50",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-51",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "51"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=51",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-52",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "52"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=52",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-53",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "53"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=53",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-54",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "54"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=54",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-55",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "55"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=55",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-56",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "56"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=56",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-57",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "57"
+      ],
+      "scope": "CONDITIONAL_ROUTING",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=57",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-58",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "58"
+      ],
+      "scope": "CONDITIONAL_COUNTERMODEL",
+      "expected_exit": 0,
+      "expected_marker": "SEM1_L12_RESULT id=S12 index=58",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-59",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "59"
+      ],
+      "scope": "TARGETED_VALUE_REJECTION",
+      "expected_exit": 1,
+      "expected_marker": "SEM1_L12_REJECT bad-byte",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-60",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "60"
+      ],
+      "scope": "TARGETED_VALUE_REJECTION",
+      "expected_exit": 2,
+      "expected_marker": "SEM1_L12_REJECT missing-sector",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-61",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "61"
+      ],
+      "scope": "TARGETED_STRUCTURAL_REJECTION",
+      "expected_exit": -6,
+      "expected_marker": "SEM1_L12_FAULT wrong-generation; sem1_accept_sector fill_identity_matches assert",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-62",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "62"
+      ],
+      "scope": "TARGETED_STRUCTURAL_REJECTION",
+      "expected_exit": -6,
+      "expected_marker": "SEM1_L12_FAULT early-release; oo_frontend::release live Ref assertion",
+      "actual_result": "NOT_EXECUTED"
+    },
+    {
+      "id": "S12-63",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/litmus12-component-preparation-v1/build/dtc_l1_sem1_litmus12_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-litmus12-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "S12",
+        "63"
+      ],
+      "scope": "TARGETED_PUBLICATION_CONTRACT_REJECTION",
+      "expected_exit": 1,
+      "expected_marker": "SEM1_L12_REJECT false-publication",
+      "actual_result": "NOT_EXECUTED"
+    }
+  ]
+}
