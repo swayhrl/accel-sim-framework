@@ -1,0 +1,132 @@
+{
+  "schema": "EP_L2_A_COMMON_SOURCE_COST_LEDGER_V2_R3",
+  "UTC": "2026-10-19T15:26:53.768545+00:00",
+  "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "common_preimage": "eb6739b03883fecee155ba6b12a3a9f92c00d444",
+  "isolated_RO_reference": "9702f2f68a098583b760f7f2dc892040f4fd3f66",
+  "recipient": "B/C/D/E",
+  "status": "SOURCE_FIELDS_AND_ACCESS_CONTRACT_NOT_PPA_OR_COMMON_NATIVE_PROOF",
+  "rows": [
+    {
+      "unit": "payload array",
+      "bound": 1168,
+      "existing": "128B/slot, existing sole data store; GEN32 ownership, bank and pin machinery",
+      "new": "distinct TVD and RO role/state values;3role/4state bits are logical encoding needs, not synthesized gate count",
+      "ports": "all native/TVD/RO real operations use same fourP1 services",
+      "evidence": "common eb6739 gpu-cache.h::ep_l2_payload_store; isolatedRO9702 reference",
+      "status": "DATA_BUDGET_FROZEN; ENCODING_MERGE_PENDING"
+    },
+    {
+      "unit": "shared WAD/TVD directory",
+      "bound": 128,
+      "existing": "finite WAD budget, mandatory WB lifecycle",
+      "new": "TVD state, line/handle, sector masks, reader count, retained incarnation/age; WB UID32+bound flag for before-mutation completion validation; do not omit source fields when estimating",
+      "ports": "1frontendCAM/cycle +1completionCAM/cycle;3indexed control views/update lanes; free/age/bank-compatible selection",
+      "evidence": "eb6739 ep-l2-tvd-directory.h::entry, ticket and ep-l2-tvd-cache.inc; ft-cache indexed hooks",
+      "status": "SOURCE_INTEGRATED_NOT_TIMING_CLOSED"
+    },
+    {
+      "unit": "transaction tickets",
+      "bound": "bounded held replacement + existingWB records + onefrontend ticket",
+      "existing": "existingWB packet UID32 and payload ID/GEN32",
+      "new": "local directory ticket index and incarnation64 in producer/control records; no extra WB packet identity field",
+      "ports": "indexed lower_accept/rollback; paid completionCAM and UID match before any mutation",
+      "evidence": "eb6739 gpu-cache.h ft_replacement/ft_wb_record; ep-l2-ft-cache.inc",
+      "status": "SOURCE_ONLY"
+    },
+    {
+      "unit": "shared request descriptors",
+      "bound": 512,
+      "existing": "same D512 freelist, request pointer and sector mask",
+      "new": "RO external flag + canonical line +descriptorGEN64; no duplicated requester/sector record in RO waiter chain",
+      "ports": "per-address32 compares native+RO descriptors; declare parallel finite comparison/control cost, not free O(1) lookup",
+      "evidence": "CommonCore147823221c00d50199f6839caa3c6642e9227caf; isolatedRO9702 gpu-cache.h::ep_l2_descriptor and ep-l2-ro-mshr.inc",
+      "status": "COMMON_SOURCE_INTEGRATED_NOT_COMPILED_NOT_RUN"
+    },
+    {
+      "unit": "native LineMSHR",
+      "bound": 128,
+      "existing": "native128line/address32 retained whenMoff",
+      "new": "RO-line-owner flag and retained payload handle when using native line record",
+      "ports": "common descriptor/line decisions; never an independent128line RO table",
+      "evidence": "CommonCore147823221c00d50199f6839caa3c6642e9227caf; isolatedRO9702 gpu-cache.h::mshr_entry, ep-l2-ro-mshr.inc",
+      "status": "COMMON_SOURCE_INTEGRATED_NOT_COMPILED_NOT_RUN"
+    },
+    {
+      "unit": "Tag incarnation",
+      "bound": 1024,
+      "existing": "nativeTag data/mapping budget unchanged",
+      "new": "perTagGEN64 (8192 logical bytes at full1024Tags, before physical layout/ECC/ports); payloadGEN32 unchanged",
+      "ports": "Tag reuse/detach/late-response matching; not inferred from Tag index alone",
+      "evidence": "CommonCore147823221c00d50199f6839caa3c6642e9227caf; isolatedRO9702 ep-l2-ro-runtime.inc::generations/tag_changed",
+      "status": "COMMON_SOURCE_INTEGRATED_NOT_COMPILED_NOT_RUN"
+    },
+    {
+      "unit": "RO completion control",
+      "bound": 1168,
+      "existing": "indexed by physical landing; no new data array",
+      "new": "live/attached/reuse/prepared flags;3sector masks; h and Tag binding; ownerline/epoch/prepared-cycle; chain of shared descriptor identities with at most512 members total; C response_chosen1bit/entry retains actual shared waiter index before denial",
+      "ports": "finite entry/chain ready selection and Tag/GEN checks; multi-view/control realization not claimed single-portSRAM",
+      "evidence": "CommonCore147823221c00d50199f6839caa3c6642e9227caf; isolatedRO9702 ep-l2-ro-transactions.h::entry/waiter/m_slots",
+      "status": "COMMON_SOURCE_INTEGRATED_NOT_COMPILED_NOT_RUN"
+    },
+    {
+      "unit": "physical bank pending heads",
+      "bound": "existing4active response/fill/lower/frontend heads in U/P1",
+      "existing": "client/UID/generation scoreboard fields already in source forRG1; P1 policy remains",
+      "new": "Native/RO one shared RESPONSE choice retained before bank denial; A adds1percache muxbit, no pointer/data/head. C binds FILL/RESPONSE original UID32+GEN32 and holds RO waiter before denial.",
+      "ports": "no fifth queue entry/hidden response value buffer; test maxpending and all perbank grants",
+      "evidence": "eb6739 gpu-cache.h::request; isolatedRO9702 ep-l2-ro-store-port.h requires incremental adaptation",
+      "status": "COMMON_SOURCE_INTEGRATED_NEW_PRODUCTION_MUX_TEST_UNRUN"
+    },
+    {
+      "unit": "lookup latency",
+      "bound": "one actual frontend head per slice",
+      "existing": "paid1cycle TVD lookup on actual nativeTag miss; max1 frontendquery/cycle",
+      "new": "RO descriptor/Tag query paid1cycle after absent/unservedTVD path under A V2 contract; potentially2 serial lookup cycles, not fabricated free parallel query",
+      "ports": "WB completion separate paid CAM; descriptor/Tag comparison paths remain additional explicit cost",
+      "evidence": "A COMMON_INTERACTION_CONTRACT_r1 +eb6739 tvd_frontend +isolatedROfrontend_cycle",
+      "status": "COMMON_SOURCE_SERIAL_PAID_QUERIES_INTEGRATED_UNRUN"
+    },
+    {
+      "unit": "packet metadata",
+      "bound": "actualrequest/returnpackets",
+      "existing": "existing payloadID/GEN32 and WB snapshot versions",
+      "new": "RO-lower discriminator1logicalbit in isolatedRO; exact ABI/NoC packing not measured; no extra TVD packetID",
+      "ports": "completion revalidates original handle/UID; do not assume in-host bool adds exactly1 physical NoC bit",
+      "evidence": "CommonCore147823221c00d50199f6839caa3c6642e9227caf; isolatedRO9702 mem_fetch.h; eb6739 WB identity hooks",
+      "status": "COMMON_SOURCE_INTEGRATED_NOT_COMPILED_NOT_RUN"
+    },
+    {
+      "unit": "fixed victim control",
+      "bound": "64victim/1104other,16/276 perbank, total1168",
+      "existing": "same pointer-mapped sole physical pool",
+      "new": "role-count reductions/comparators and oneexistinghandle reservationcredit; no idle lending; complete dirty+RO control not implemented yet",
+      "ports": "samepaid directoryquery/data costs; must budget fallback whenmandatory WB cannot occupy victimquota",
+      "evidence": "eb6739 ep-l2-tvd-fixed-pool.inc +currentFIXED64 guard",
+      "status": "CLEAN_ONLY_REFERENCE_NOT_FULL_F_FIXED_CONTROL"
+    },
+    {
+      "unit": "observer versus mechanism state",
+      "bound": "finite perhead UID/counter/histogram observer",
+      "existing": "R1 observer lowerbytes/occupancy/unique waits, disabled printsunobserved",
+      "new": "CommonTVD/RO observed query15/16 and actual TVD enqueue admission; V1 row0..13/aggregate14 preserved. Bounded observer state is not controller SRAM capacity.",
+      "ports": "cannot infer frontend wait0 from disabled or unobserved TVD bypass; no statistics changes controller decisions",
+      "evidence": "eb6739 ep-l2-mechanism-observer.h, l2cache.cc TVD branch currentlybypassesmsobserve",
+      "status": "COMMON_SOURCE_INTEGRATED_NATIVE_UNRUN"
+    }
+  ],
+  "totals": {
+    "extra_payload_bytes": 0,
+    "extra_request_pool_entries": 0,
+    "area": null,
+    "WNS": null,
+    "full_combined_storage_cost": null,
+    "hardware_replication_and_ports": "UNKNOWN_NOT_HIDDEN",
+    "old_R3_RTL_applicability": "WB_PROTOTYPE_ONLY_NOT_FULL_F_PPA"
+  },
+  "no_new_RTL_or_EDA": true,
+  "common_current_source": "147823221c00d50199f6839caa3c6642e9227caf",
+  "C_module": "ead4441680e56b5c7a669598ba1cbd5abf89e94f",
+  "C_Framework": "547cc5d204e84ae725d4d36e293079630779d1dc"
+}

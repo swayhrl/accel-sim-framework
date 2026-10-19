@@ -1,59 +1,50 @@
-# A — full-system V2 adoption, source checkpoint r6
+# A full-system V2 — common source r10, NOT COMPILED
 
-Continue the SAME active A Goal and existing public integration branch. Authority
-Framework b2e5328aca825d6e9ebfe09e46fa208957834636. Final target is one binary
-with fixed W+V+T+M policy F, traditional S and qualified ablations. It is not
-four unrelated final mechanisms or a best-per-input selection.
+Same active A Goal and public branch; authorityb2e5328aca825d6e9ebfe09e46fa208957834636.
+Common Core **147823221c00d50199f6839caa3c6642e9227caf**, runtime Framework9dd1ee57a83d83b56b7874bc7c716185ab52c8f7,
+vendorf90c430c3a1ce8f08c09942a5a1c3a797bb2295b. This Framework control publication
+is not runtime identity. Actual A compiler0/native0/binary0/full-app0. No native
+PASS, speedup, old-red/new-green or new PPA is claimed.
 
-Current common Core preimage is **eb6739b03883fecee155ba6b12a3a9f92c00d444**,
-branch hrl/ep-l2-ms20261019-a-r3-victim-full-v1. B126bde88 exact A949
-incremental dirty/fixed module is incorporated. Last-unpin after WB completion
-now handles both WB-role and already-TVD-role pins. A tickets, existing WB UID
-checks BEFORE mutation and paid directory/indexed port costs remain. This is
-SOURCE ONLY, not an observed native old-red/new-green result.
+C moduleead4441680e56b5c7a669598ba1cbd5abf89e94f/Framework547cc5d204e84ae725d4d36e293079630779d1dc exacteb6739 adapter is now integrated on A01d7ff49.
+CMake was the only merge conflict; both opt-in fixture families remain. B dirty
+last-unpin/tickets/WB UID/paid directory and A observer/DATA_FREE source remain.
+No public peer files were edited, no whole historical branch was merged.
 
-R1 diagnostics17e7e224 and CLEAN94996ec5 are preserved. Isolated RO production
-source aa2a92cc is preserved; its auxiliary source-bound opt-in bank fixture
-CMake is now9702f2f6. RO runtime Framework9dd1ee57 is a reference, not a final
-common runtime release. The older dirty6452 and all review packs remain.
+Source now contains fixed-policy full dynamic W+V(clean+dirty pending/inflight)+T+M,
+same-source S/W-only/F-minus-V/F-minus-R and WV T-only/M-only. Empty coverage
+keeps T/M ON with hash-bound native fallback; Conv oracle scope is unchanged.
+Same1024Tags/1168payload/D512/address32/128nativeLineMSHR/128WAD-TVD/fourP1.
+RO/TVD labels differ; physical lower/response UID+GEN ownership and paid serial
+queries are explicit. No new data, descriptor, address CAM or response pool.
 
-C's concrete V2 request is answered with exact eb6739 preimage and an
-incremental adapter contract in full_system_v2/A_TO_C_FULL_V2_PREIMAGE_r1.json.
-A is the sole public Core writer; C prepares modules/tests/a small patch,
-B supplies full victim state/combined inputs and fixed-control completion.
-The common allocator, directory, descriptor, bank, lifetime and oracle rules
-are frozen in COMMON_INTERACTION_CONTRACT_r1.json. Full combination is still
-PENDING; constructor guards have not simply been removed.
+A found a shared RESPONSE mux gap: after native bank denial and ICNT hold, a
+new ready RO waiter could replace the native choice while its older bank token
+stayed selected. One per-cache native-choice bit now retains the existing
+baseline response identity until real commit. New real-partition native_ro_mux
+source covers the ordering with a paid constructed RAM contender. NO compiled
+failure/success was run. C's held RO waiter fix is also preserved.
 
-Remaining specific integration work: distinct TVD/RO role/state values;
-pre-TVD RO writer validation and exactly-once accepted-read accounting; shared
-bank client/UID/generation identities; safe no-certificate fallback with T/M
-fixed ON; same-pool and same-address joint native cases. Current fixed-victim
-control is CLEAN_ONLY, not the complete F fixed comparator. F-minus-W is
-DEPENDENT_CONTROL_UNSUPPORTED until fixed WB can retain common V/R mapping.
-F_DATA_FREE also needs actual common implementation and native qualification.
+F_L2_DATA_FREE now has actual source support through the common paid API for
+native/WB/TVD/RO; fixed pipelines, lookup costs, data/identity, finite capacity,
+backpressure and lower memory remain. New data_free source asserts sharedD512,
+mandatoryWB/RO/native values+drain and zero physical grants with nonzero logical
+operations. All native fixtures are UNRUN. Observer V1 reasons0..13/aggregate14
+stay stable; V2 victim15/readonly16 cover paid query waiting.
 
-Actual A compilers0, native executions0, binaries0, full applications0. No
-control test is native correctness. No build lease, permanent waiter, repeated
-resource scan or storage cleanup has been started. E remains sole resource,
-full-application and acceptance owner; F can only execute A's exact named build
-after E accepts real independent adequate storage and a host-aware lease.
+Remaining work is NOT C public adaptation: it has arrived. A must prepare the
+one exact common build/finite native entry, then E legal source/API/host/output
+admission permits actual compilation/affected production tests and independent
+qualification. E is still no-heavy-admission; alternate F execution is disabled.
+No waiter, new resource scan, storage cleanup or simulator launch was started.
+B's complete17RO/144write synthetic input still needs its C scope acceptance;
+C's own combined cases are a separate source/input. Full fixed64+dirtyRO needs
+bounded quota/rollback accounting. F-minus-W remains DEPENDENT_CONTROL_UNSUPPORTED;
+clean64 or S is not a replacement. These controls must not delay mainF source
+qualification. Common source/build/config/binary identities must be frozen anew.
 
-V2 revises the SAME campaign's cumulative upper bound24->40, never24+40.
-At adoption the actual registry remains actual_starts0 / maximum24 / controller
-STOPPED / qualifications empty. E must amend its own ledger without resetting
-T0 or history. A has only published an inbox event, not edited the registry.
-The old14 queue is prepared history and must not drain automatically. Next
-admitted compute priority is the final common source's affected native suite;
-small R1 native is allowed but does not take priority over the final main pairs.
-Old Lane5/R19, EN-v17, RTL/DC evidence and other projects remain untouched.
-
-Subsequent material event (not a new resource poll): E source111bc9334fbf6f10ab7e0e0d76872164dcd19b77 has published/hash-pinned its V2 coordinator and policy helper. The SAME registry now shows cumulative0/40, unchangedT0, no qualifications/admission. F target access remains blocked/unmeasured and remote execution disabled. E reported111 control checks are not new A executions or native proof. Exact observation is E_V2_PUBLICATION_INTAKE_r1.json. No old SHA gate was bypassed.
-
-FINITE_AFFECTED_NATIVE_SCOPE_r1.json merges10 assertion groups and identifies which shared fixture sources are still needed; no final invocation count or PASS is invented. SOURCE_COST_LEDGER_r1.json gives actual source fields/ports/lookup costs and explicit unresolved combined costs for D. Full observer currently misses the TVD shortcut and RO/TVD mode enabling needs actual hook work; do not report those absent waits as zero.
-
-A-owned source follow-up r8: common current Core **01d7ff491dea64663f9dde01a6c80c8c217c872c**, observer delta3ad4ba9b. C's adapter base remains exacteb6739; C need not chase A's later heads, A resolves public merge conflicts. TVD shortcut query/WB/pin/response/bank waits and real enqueue admission now feed the UID observer. Native fallthrough marks its query complete; masked later predicates remain UNKNOWN. MSV1 rows0..13/aggregate14 stay stable; new MSV2 reason15 names the victim query. WV+observer and WV_DATA_FREE are SOURCE SUPPORTED ONLY. Four new finite invocations, zero actual executions, no fullF_DATA_FREE claim.
-
-B d1c57036 / Framework67ebe2f2 shared VRW source has been integrated with preserved fixture defaults and checks for ALL requested response sectors. The exactA645 last-unpin patch was already covered byeb6739 and is retained only as provenance. EP_L2_BUILD_VRW_FIXTURE defaultsOFF and deliberately rejects missing commonRO source; no configure ran. The synthetic17RO/144write footprint and expected22packets/704bytes await C scope/native qualification; they are not measured traffic benefit. Native/RO same-response-head selection and complete fixed64 dirty/RO accounting remain real integration obligations.
-
-R1 entry selection repair r9: top-level RELEASE now describes V2 and lacks the old R1 core_source_commit key. The real old Python lookup raised KeyError; the entry now selects the preserved r5 R1 manifest by exact SHA256 and verifies17e7e224/runtime197741be/vendorf90. Actual helper selection succeeded and a changed archive was rejected. This is Python control evidence only: main never called, compiler/native/lease/builddir0. Current R1-only driver SHA256 is b4c2d64560b7bbde12448a847ffba90ad0a258577a54a78ce8eb11dc1f765aeb; old4d9 approvals cannot authorize it. E must freshly bind the changed entry. The four-source/combined Core candidate remains01d7ff49; no simulator/fixture source changed in r9. C's exacteb adapter base remains unchanged; full apps are still E-only within40 and old14 is superseded.
+E alone preserves sameT0 and cumulative40 (actual0 at latest published intake),
+never24+40. The old14 full queue is superseded. R1 native entry was repaired in
+bb411672 with new exact driverb4c2d645; it remains R1-only and cannot build commonF.
+R1 diagnostics17e7e224, CLEAN94996ec5, isolatedRO9702f2f6 and every old review pack,
+old Lane5/R19, EN-v17, RTL/DC and other projects remain preserved.
