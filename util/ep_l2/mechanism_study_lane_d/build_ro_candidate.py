@@ -38,7 +38,7 @@ def identity(pid):
     stat=(Path('/proc')/str(pid)/'stat').read_text().rsplit(')',1)[1].split()
     return {'pid':pid,'start_ticks':int(stat[19]),'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip()}
 
-def worker(out, registration):
+def worker(out, registration, reuse_test_receipt=None):
     os.nice(10)
     allowed=os.sched_getaffinity(0); os.sched_setaffinity(0,{max(allowed)})
     resource.setrlimit(resource.RLIMIT_AS,(MEMORY,MEMORY))
@@ -47,11 +47,23 @@ def worker(out, registration):
     sys.dont_write_bytecode=True
     sys.path.insert(0,str(out/'producer'))
     # Both files were copied from exact immutable C Git blobs, never live edits.
-    import test_ro_oracle
-    tests=unittest.defaultTestLoader.loadTestsFromModule(test_ro_oracle)
-    with (out/'ORACLE_TOOL_TESTS.txt').open('x') as log:
-        result=unittest.TextTestRunner(stream=log,verbosity=2).run(tests)
-    if not result.wasSuccessful(): raise RuntimeError('frozen C offline oracle unit tests failed')
+    if reuse_test_receipt:
+        prior=json.loads(reuse_test_receipt.read_text())
+        if (prior.get('worker_exit_code')!=0 or
+            prior['candidate']['tool_source_commit']!=C_COMMIT or
+            prior['candidate']['tool_unit_tests']!=21 or
+            prior['frozen_source_sha256']!={p.name:sha(p) for p in (out/'producer').iterdir()}):
+            raise RuntimeError('cannot reuse tests for different/unverified frozen oracle')
+        tested_count=21
+        save(out/'REUSED_TOOL_TESTS.json',{'receipt':str(reuse_test_receipt),'sha256':sha(reuse_test_receipt),
+             'same_frozen_tool_tests_reused':21,'new_unit_test_executions':0})
+    else:
+        import test_ro_oracle
+        tests=unittest.defaultTestLoader.loadTestsFromModule(test_ro_oracle)
+        with (out/'ORACLE_TOOL_TESTS.txt').open('x') as log:
+            result=unittest.TextTestRunner(stream=log,verbosity=2).run(tests)
+        if not result.wasSuccessful(): raise RuntimeError('frozen C offline oracle unit tests failed')
+        tested_count=result.testsRun
     spec=importlib.util.spec_from_file_location('frozen_C_oracle',out/'producer/ro_oracle.py')
     oracle=importlib.util.module_from_spec(spec); spec.loader.exec_module(oracle)
     entry=registration['full_input_identity']['runtime_independent_input_source']['entry_trace_path']
@@ -70,24 +82,29 @@ def worker(out, registration):
             'tool_source_commit':C_COMMIT,'tool_source_path':C_PATH,
             'tool_source_sha256':sha(out/'producer/ro_oracle.py'),
             'closed_world_assumptions':manifest['assumptions'],'counts':manifest['counts'],
-            'unresolved_opcodes':manifest['unresolved_opcodes'],'tool_unit_tests':result.testsRun,
+            'unresolved_opcodes':manifest['unresolved_opcodes'],'tool_unit_tests':tested_count,
+            'new_tool_unit_tests':0 if reuse_test_receipt else tested_count,
             'new_simulations':0,'runtime_qualification':False,'application_performance_evidence':False,
             'trace_reuse_order_inference':False}
     save(out/'CANDIDATE.json',report)
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--workload',choices=['convolutionSeparable','FWT_7_21','btree','dwt2d'],default='convolutionSeparable')
+    p.add_argument('--workload',choices=['sad','vectorAdd_4M','cfd_097k','convolutionSeparable','FWT_7_21','btree','dwt2d'],default='convolutionSeparable')
     p.add_argument('--revision',default='r1');p.add_argument('--execute',action='store_true')
     p.add_argument('--worker',type=Path)
+    p.add_argument('--registration',type=Path)
+    p.add_argument('--reuse-tested-tool-receipt',type=Path)
     a=p.parse_args()
-    registration=json.loads((DOC/'input_registrations'/f'{a.workload}.json').read_text())
-    if a.worker:worker(a.worker,registration);return
+    registration_path=a.registration or DOC/'input_registrations'/f'{a.workload}.json'
+    registration=json.loads(registration_path.read_text())
+    if registration['full_input_identity']['workload']!=a.workload:raise ValueError('registration/workload mismatch')
+    if a.worker:worker(a.worker,registration,a.reuse_tested_tool_receipt);return
     out=OUTPUT_ROOT/(a.workload+'_'+a.revision)
     plan={'operation':'OFFLINE_FULL_TRACE_RO_INPUT_ANALYSIS_NOT_SIMULATION',
           'campaign_id':'EPL2_MECHANISM_STUDY_20261019_V1','workload':a.workload,
           'C_producer_commit':C_COMMIT,'C_producer_path':C_PATH,'model_scope':'TRACE_MODEL_CLOSED_WORLD',
-          'registration_sha256':sha(DOC/'input_registrations'/f'{a.workload}.json'),
+          'registration_sha256':sha(registration_path),
           'input_expected':registration['full_input_identity']['trace_content_sha256'],
           'output':str(out),'output_cap_bytes':OUTPUT_CAP,'worker_address_space_cap_bytes':MEMORY,
           'worker_CPUs':1,'maximum_seconds':TIMEOUT,'new_simulations':0,
@@ -112,10 +129,13 @@ def main():
     try:
         with (out/'worker.log').open('x') as log:
             env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(out/'tmp'),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
-            child=subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--worker',str(out),'--workload',a.workload],
+            cmd=[sys.executable,str(Path(__file__).resolve()),'--worker',str(out),'--workload',a.workload,'--registration',str(registration_path)]
+            if a.reuse_tested_tool_receipt:cmd+=['--reuse-tested-tool-receipt',str(a.reuse_tested_tool_receipt)]
+            child=subprocess.Popen(cmd,
                                    cwd=REPO,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
             report.update(status='RUNNING_OFFLINE_ONLY',worker_process=identity(child.pid));save(out/'RECEIPT.json',report)
-            save(SHARED/'OFFLINE_RO_ACTIVITY_r1.json',report)
+            activity=SHARED/f'OFFLINE_RO_ACTIVITY_{a.workload}_{a.revision}.json'
+            save(activity,report)
             while child.poll() is None:
                 rss=0
                 try:
@@ -144,7 +164,8 @@ def main():
         report['elapsed_seconds']=time.monotonic()-start
         report['finished_utc']=dt.datetime.now(dt.timezone.utc).isoformat()
         report['worker_log_sha256']=sha(out/'worker.log') if (out/'worker.log').exists() else None
-        save(out/'RECEIPT.json',report);save(SHARED/'OFFLINE_RO_ACTIVITY_r1.json',report)
+        save(out/'RECEIPT.json',report)
+        save(SHARED/f'OFFLINE_RO_ACTIVITY_{a.workload}_{a.revision}.json',report)
         lock.close()
     print(json.dumps({'status':report['status'],'receipt':str(out/'RECEIPT.json')}))
 
