@@ -16,3 +16,8 @@ Producer RELEASE is ready for E independent11base+7combination qualification. A 
 ## Supplemental r23 qualification evidence index
 
 E independent40 native executions are terminal, all40 execution expectations satisfied (including the intentional bank_identity_legacy exit21 negative, not an old-source binary failure), lease d8f3e5c released and actual owner/lastchild gone. This remains pending E scientific/source review and central qualification. The supplemental SOURCE/evidence index and OFF-gate clarification are in the r23 pack. No new A compiler/native/application invocation occurred; runtime binary, fixture ELFs, RELEASE and official producer publication75707624 remain frozen.
+
+
+## Supplemental r24 handoff and original OFF closure
+
+32 canonical D conditions now have exact current runtime/profile/input bindings:29unchangedoverlays,3unsupported,7registeredinput/oracle identities. A STATIC_WB64 maps to D S_WB64; no binary/config or research switches changed. The source reply independently checks the legacy all-OFF golden raw,4configs and7CSVs, while reserving actual cycle/CSV closure to E. E001_185ad0f6 has started under original contingency1/40; formal S/F endpoints remainunaccepted while all-OFF qualificationholds are active. E is the sole launcher. Source/runtime/RELEASE stay frozen; A starts no new compute.
