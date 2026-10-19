@@ -1,0 +1,117 @@
+{
+  "schema": "TLS_V10_COPY_ONLY_20G_TARGET_SOURCE_POLICY_VERIFICATION_V1",
+  "utc": "2026-10-19T05:18:59.210870+00:00",
+  "status": "STATIC_SCOPE_AND_SIGNED_SYNTHETIC_MATRIX_VERIFIED_ACTUAL_SOURCE_RESOURCE_HOLD",
+  "source_Git_commit": "019cceb04ff343dad43a116c18f43b68f6ef6676",
+  "authorised_amendment_commit": "fdfcdd87054df1342299663a4439013dd906d735",
+  "amendment_text_sha256": "bfbab6aa88a974c3f2b0708534f8738ac23186e4f9e64556379ec3491d45715a",
+  "policy_id": "TLS_V10_COPY_ONLY_20G_20261019",
+  "source_policy_code_sha256": "fef8710a57e46148dd4e5188de67a46616dbed56f2346c82286c56f6c1e0b8d4",
+  "source_test_code_sha256": "0cf9473ecdc98b53d7e5ded7389520d0bc04948466375f063ae0c0a532ff31df",
+  "source_test_receipt_sha256": "1fcc02398eecdc6e5a875d1c3b4912447fa7e85d59863e5753f5743450c4cefd",
+  "source_HOLD_receipt_sha256": "e36cc4d4c4a36e3e1af03757b9f334804e062971743bbb76ff002ab153e48259",
+  "source_reported_synthetic_cases": 47,
+  "independently_checked_receipt_case_identity_and_expected_observed_pairs": 47,
+  "mandatory_matrix_case_coverage": {
+    "1": [
+      "P01_exact_copy_only_21g",
+      "P02_exact20_zero_overlay_all_other_gates"
+    ],
+    "2": [
+      "N01_previous_actual_17_93g",
+      "N02_exact20_with32m_writes"
+    ],
+    "3": [
+      "N03_simulation_default48",
+      "N04_build_default48",
+      "N05_release_default48",
+      "N06_reverse_restore_default48"
+    ],
+    "4": [
+      "N07_missing_policy_id",
+      "N08_wrong_amendment_sha",
+      "N09_wrong_txid",
+      "N10_wrong_selector",
+      "N11_wrong_target_root",
+      "N12_wrong_manifest",
+      "N13_wrong_window",
+      "N14_wrong_namespace",
+      "N15_wrong_source_dev",
+      "N18_f_bfree_not_substitute",
+      "N43_stale_source_snapshot"
+    ],
+    "5": [
+      "N19_share_under40",
+      "N20_ram_under64",
+      "N21_cgroup_short",
+      "N22_registry_stale",
+      "N24_active_lease",
+      "N25_scan_incomplete",
+      "N26_candidate_active",
+      "N27_scheduled_reader",
+      "N31_bridge_over256m",
+      "N32_rate_over30mps",
+      "N33_second_sender",
+      "N34_second_receiver",
+      "N44_copy_lease_not_authorized"
+    ],
+    "6": [
+      "N38_p9_matrix_v2",
+      "N39_mixed_c2p",
+      "N40_shared_trace",
+      "N41_modified_code",
+      "N42_symlink_ambiguous"
+    ],
+    "7": [
+      "N45_target_waits_without_signed_ready"
+    ],
+    "8": [
+      "N36_unlink_attempt",
+      "N05_release_default48"
+    ]
+  },
+  "source_gate_or_test_executed_by_target": false,
+  "reviewed_entrypoints": [
+    "evaluate(GateInput): pure opt-in evaluator, no staging/READY/unlink API",
+    "real_snapshot(): bounded read-only HOLD evidence collector; defaults do not substitute for actual source evidence",
+    "target_can_receive(): synthetic boolean helper only; never replaces actual target READY validation"
+  ],
+  "scope_isolation": {
+    "exact_policy_id_amendment_SHA_and_TLS_V10_COPY_ONLY_operation": true,
+    "exact_repo_branch_namespace_dev_bridge_group_window_txid_selector_manifest_root_and_request_binding": true,
+    "original_default_floor_bytes": 51539607552,
+    "scoped_copy_only_floor_bytes": 21474836480,
+    "original_freeze_gate_blob_before_and_after": "e68ebd263adaa53bbd523fde760e9bc4fab4773e",
+    "original_freeze_gate_unchanged": true,
+    "central_registry_or_other_project_code_changed": false,
+    "source_unlink_or_stage_implementation_added": false
+  },
+  "qualifications": "Only static evaluator isolation and Source-owned synthetic receipt/code were reviewed. No production Source staging caller/lease/source-signature/READY is thereby qualified. The current helper is narrowly pinned to P9_PUBLIC B0001; future windows/groups need matching reviewed immutable bindings.",
+  "actual_snapshot": {
+    "utc": "2026-10-19T05:09:43.713690+00:00",
+    "available_bytes": 18902507520,
+    "planned_overlay_bytes": 1048576,
+    "projected_available_bytes": 18901458944,
+    "deficit_after_planned_writes": 2573377536,
+    "decision": "RESOURCE_HOLD",
+    "reasons": [
+      "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR",
+      "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR",
+      "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR",
+      "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH",
+      "RATE_OR_SINGLE_STREAM_LIMIT"
+    ]
+  },
+  "source_additional_not_cleared": [
+    "Stale registry; copy lease not authorized",
+    "Known/scheduled readers not independently proven clear",
+    "First per-range Source SHA deferred while HOLD",
+    "Sole source sender/target receiver not currently qualified"
+  ],
+  "before_any_future_receive": "Require fresh actual Source COPY_ONLY_20G_GATE_PASS plus immutable formal COPY_READY, all activity/identity/lease checks, physical allocated bridge budget (not merely logical 144B), bound request/source/bridge SHA and one receiver. Synthetic green cases and target_can_receive boolean are never sufficient.",
+  "unchanged_B0001_raw_SHA256": "4e45132897553b758cd073292492ffe5ea317d91c0ff85265fd77c8efa3dfe06",
+  "new_source_COPY_READY": false,
+  "TLS_transferred_bytes": 0,
+  "source_reclaim_bytes": 0,
+  "SOURCE_KEEP": true
+}

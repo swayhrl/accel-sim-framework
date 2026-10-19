@@ -1,0 +1,717 @@
+{
+  "actual_policy_caller": "tls_v10_copy_only20g_gate.evaluate(GateInput)",
+  "amendment_sha256": "bfbab6aa88a974c3f2b0708534f8738ac23186e4f9e64556379ec3491d45715a",
+  "at_utc": "2026-10-19T05:09:43.635466+00:00",
+  "cases": [
+    {
+      "case": "P01_exact_copy_only_21g",
+      "expected_decision": "POLICY_ELIGIBLE_NOT_READY",
+      "expected_reason": null,
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "POLICY_ELIGIBLE_NOT_READY",
+      "observed_reasons": [],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {}
+    },
+    {
+      "case": "N01_previous_actual_17_93g",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "workspace_available_bytes": 19253473280
+      }
+    },
+    {
+      "case": "N02_exact20_with32m_writes",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "planned_overlay_write_bytes": 33554432,
+        "workspace_available_bytes": 21474836480
+      }
+    },
+    {
+      "case": "P02_exact20_zero_overlay_all_other_gates",
+      "expected_decision": "POLICY_ELIGIBLE_NOT_READY",
+      "expected_reason": null,
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "POLICY_ELIGIBLE_NOT_READY",
+      "observed_reasons": [],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "planned_overlay_write_bytes": 0,
+        "workspace_available_bytes": 21474836480
+      }
+    },
+    {
+      "case": "N03_simulation_default48",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+      "expected_workspace_floor_bytes": 51539607552,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 51539607552,
+      "pass": true,
+      "synthetic_overrides": {
+        "operation": "SIMULATION"
+      }
+    },
+    {
+      "case": "N04_build_default48",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+      "expected_workspace_floor_bytes": 51539607552,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 51539607552,
+      "pass": true,
+      "synthetic_overrides": {
+        "operation": "BUILD"
+      }
+    },
+    {
+      "case": "N05_release_default48",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+      "expected_workspace_floor_bytes": 51539607552,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 51539607552,
+      "pass": true,
+      "synthetic_overrides": {
+        "operation": "SOURCE_RELEASE"
+      }
+    },
+    {
+      "case": "N06_reverse_restore_default48",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+      "expected_workspace_floor_bytes": 51539607552,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 51539607552,
+      "pass": true,
+      "synthetic_overrides": {
+        "operation": "REVERSE_RESTORE"
+      }
+    },
+    {
+      "case": "N07_missing_policy_id",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+      "expected_workspace_floor_bytes": 51539607552,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 51539607552,
+      "pass": true,
+      "synthetic_overrides": {
+        "policy_id": ""
+      }
+    },
+    {
+      "case": "N08_wrong_amendment_sha",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+      "expected_workspace_floor_bytes": 51539607552,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "NOT_EXACT_COPY_ONLY_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 51539607552,
+      "pass": true,
+      "synthetic_overrides": {
+        "amendment_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "case": "N09_wrong_txid",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "txid": "wrong"
+      }
+    },
+    {
+      "case": "N10_wrong_selector",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "selector_sha256": "wrong"
+      }
+    },
+    {
+      "case": "N11_wrong_target_root",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "target_root_native164": "/tmp/wrong"
+      }
+    },
+    {
+      "case": "N12_wrong_manifest",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "manifest_sha256": "wrong"
+      }
+    },
+    {
+      "case": "N13_wrong_window",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "window_id": "B0002"
+      }
+    },
+    {
+      "case": "N14_wrong_namespace",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_namespace": "mnt:[1]"
+      }
+    },
+    {
+      "case": "N15_wrong_source_dev",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_dev": 2128
+      }
+    },
+    {
+      "case": "N16_wrong_bridge_dev",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "bridge_dev": 156
+      }
+    },
+    {
+      "case": "N17_wrong_source_branch",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_branch": "hrl/ops-174-source-audit-exec-v1"
+      }
+    },
+    {
+      "case": "N18_f_bfree_not_substitute",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "workspace_available_bytes": 19253473280,
+        "workspace_total_free_bytes_non_gate": 214748364800
+      }
+    },
+    {
+      "case": "N19_share_under40",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SHARE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SHARE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "share_available_bytes": 42949672959
+      }
+    },
+    {
+      "case": "N20_ram_under64",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "RAM_OR_CGROUP_HEADROOM",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "RAM_OR_CGROUP_HEADROOM"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "memory_available_bytes": 68719476735
+      }
+    },
+    {
+      "case": "N21_cgroup_short",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "RAM_OR_CGROUP_HEADROOM",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "RAM_OR_CGROUP_HEADROOM"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "cgroup_headroom_bytes": 1048576
+      }
+    },
+    {
+      "case": "N22_registry_stale",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "lane_registry_fresh": false
+      }
+    },
+    {
+      "case": "N23_active_run",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "lane_runs_clear": false
+      }
+    },
+    {
+      "case": "N24_active_lease",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "lane_leases_clear": false
+      }
+    },
+    {
+      "case": "N25_scan_incomplete",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "physical_scan_complete": false
+      }
+    },
+    {
+      "case": "N26_candidate_active",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "candidate_root_idle": false
+      }
+    },
+    {
+      "case": "N27_scheduled_reader",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "scheduled_readers_clear": false
+      }
+    },
+    {
+      "case": "N28_identity_changed",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "first_source_identity_ok": false
+      }
+    },
+    {
+      "case": "N29_sha_not_refreshed",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "first_source_sha_refreshed": false
+      }
+    },
+    {
+      "case": "N30_target_request_missing",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "PINNED_TARGET_WINDOW_REQUEST_NOT_EXACT",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "PINNED_TARGET_WINDOW_REQUEST_NOT_EXACT"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "target_request_present_and_exact": false
+      }
+    },
+    {
+      "case": "N31_bridge_over256m",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "BRIDGE_STAGING_LIMIT",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "BRIDGE_STAGING_LIMIT"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "planned_bridge_staged_bytes": 268435457
+      }
+    },
+    {
+      "case": "N32_rate_over30mps",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "RATE_OR_SINGLE_STREAM_LIMIT",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "RATE_OR_SINGLE_STREAM_LIMIT"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "planned_rate_bytes_per_second": 31457281
+      }
+    },
+    {
+      "case": "N33_second_sender",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "RATE_OR_SINGLE_STREAM_LIMIT",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "RATE_OR_SINGLE_STREAM_LIMIT"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "sole_source_sender": false
+      }
+    },
+    {
+      "case": "N34_second_receiver",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "RATE_OR_SINGLE_STREAM_LIMIT",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "RATE_OR_SINGLE_STREAM_LIMIT"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "sole_target_receiver": false
+      }
+    },
+    {
+      "case": "N35_overlay_over32m",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "OVERLAY_CONTROL_WRITE_BUDGET_INVALID",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "OVERLAY_CONTROL_WRITE_BUDGET_INVALID"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "planned_overlay_write_bytes": 33554433
+      }
+    },
+    {
+      "case": "N36_unlink_attempt",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_UNLINK_OUTSIDE_COPY_ONLY_POLICY",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_UNLINK_OUTSIDE_COPY_ONLY_POLICY"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_unlink_requested": true
+      }
+    },
+    {
+      "case": "N37_source_ready_claim_in_evaluator",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "EVALUATOR_CANNOT_ACCEPT_OR_ISSUE_SOURCE_READY",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "EVALUATOR_CANNOT_ACCEPT_OR_ISSUE_SOURCE_READY"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_signed_ready": true
+      }
+    },
+    {
+      "case": "N38_p9_matrix_v2",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "group": "P9_MATRIX_V2"
+      }
+    },
+    {
+      "case": "N39_mixed_c2p",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_asset_class": "MIXED_TLS_C2P"
+      }
+    },
+    {
+      "case": "N40_shared_trace",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_asset_class": "SHARED_TRACE"
+      }
+    },
+    {
+      "case": "N41_modified_code",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_asset_class": "CODE_KEEP"
+      }
+    },
+    {
+      "case": "N42_symlink_ambiguous",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "source_asset_class": "SYMLINK_AMBIGUOUS"
+      }
+    },
+    {
+      "case": "N43_stale_source_snapshot",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "SOURCE_RESOURCE_SNAPSHOT_STALE",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "SOURCE_RESOURCE_SNAPSHOT_STALE"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "snapshot_age_seconds": 31
+      }
+    },
+    {
+      "case": "N44_copy_lease_not_authorized",
+      "expected_decision": "RESOURCE_HOLD",
+      "expected_reason": "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR",
+      "expected_workspace_floor_bytes": 21474836480,
+      "observed_decision": "RESOURCE_HOLD",
+      "observed_reasons": [
+        "LANE_REGISTRY_OR_LEASE_NOT_FRESH_CLEAR"
+      ],
+      "observed_workspace_floor_bytes": 21474836480,
+      "pass": true,
+      "synthetic_overrides": {
+        "copy_lease_authorized": false
+      }
+    },
+    {
+      "case": "N45_target_waits_without_signed_ready",
+      "expected_decision": "WAITING",
+      "observed_decision": "WAITING",
+      "pass": true
+    }
+  ],
+  "failed": 0,
+  "original_default_workspace_floor_bytes_unchanged": 51539607552,
+  "passed": 47,
+  "policy_id": "TLS_V10_COPY_ONLY_20G_20261019",
+  "schema": "TLS_V10_COPY_ONLY_20G_POLICY_TEST_RECEIPT_V1",
+  "science_files_read_or_hashed": 0,
+  "scientific_payload_transferred_bytes": 0,
+  "scoped_copy_only_workspace_floor_bytes": 21474836480,
+  "source_ready_published": false,
+  "source_unlink_count": 0,
+  "synthetic_only": true
+}
