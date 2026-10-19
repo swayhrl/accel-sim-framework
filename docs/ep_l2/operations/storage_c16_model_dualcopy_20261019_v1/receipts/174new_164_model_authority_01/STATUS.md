@@ -1,3 +1,7 @@
+# Latest pending-only continuation check
+
+2026-10-19T13:37:45.987694+00:00: host IO some/fullavg10=20.48/20.45 at13:35:14UTC remains above the unchanged checksum guard10. No model read worker was started. Plan-only check proves3completed hashes reused and exactly RAW4+AWQ1+AWQ2 pending,9,127,207,432B, next read cap8MiB/s. Original3successful SHA proofs remain unchanged. This is the second consecutive Goal turn with the same external IO blocker.
+
 # C16 true164 authority check - partial current SHA, IO HOLD
 
 Contract fd40f2a8c195a44c1aed020f891654d9327d9d19. New isolated Target Goal and branch; the closed global164review and blocked TLS/B0010 are not resumed.
