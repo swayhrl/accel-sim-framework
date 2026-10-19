@@ -1,0 +1,79 @@
+{
+  "operation": "OFFLINE_FULL_TRACE_RO_INPUT_ANALYSIS_NOT_SIMULATION",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "workload": "FWT_7_21",
+  "C_producer_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "C_producer_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+  "model_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "registration_sha256": "3f4dcbb839dc3b1d38cec7f9c5ec4156608e2b307960988c7937f7720dd547c4",
+  "input_expected": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+  "output": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/FWT_7_21_v2_r1",
+  "output_cap_bytes": 268435456,
+  "worker_address_space_cap_bytes": 268435456,
+  "worker_CPUs": 1,
+  "maximum_seconds": 1800,
+  "new_simulations": 0,
+  "production_resource_floors": "UNCHANGED; this is the expressly allowed bounded offline old-input analysis",
+  "oracle_scope_change": false,
+  "scientific_RO_qualification": "NOT_GRANTED_BY_D",
+  "hashing_scope": "producer integrity before/after the necessary full-epoch address scan; no repository/body-wide repeated audit",
+  "output_accounting": "D namespace inside E new-result root, visible to canonical6GiB/20GiB accounting; all failures retained",
+  "status": "OFFLINE_CANDIDATE_READY_PENDING_C_E_REVIEW",
+  "driver_sha256": "b18f76b5d4b09a01c4af4f5679d3315d27b69be197afd18c1cb85c2e6b852fcd",
+  "driver_framework_commit": "e58b75fd7573f5d4d19b92c273c040ea79bc20d0",
+  "controller_process": {
+    "pid": 945671,
+    "start_ticks": 917283059,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "started_utc": "2026-10-19T14:40:59.355962+00:00",
+  "peak_worker_RSS_bytes": 29360128,
+  "peak_output_bytes": 12096143,
+  "observations": 110,
+  "frozen_source_sha256": {
+    "test_ro_oracle.py": "3bca364c3640e99c18cca466d20c3ba94dedb681e98472cf5e6d18609ca6dbc2",
+    "ro_oracle.py": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225"
+  },
+  "worker_process": {
+    "pid": 945689,
+    "start_ticks": 917283070,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "candidate": {
+    "status": "OFFLINE_ORACLE_CANDIDATE_COMPLETE_PENDING_C_E_REVIEW",
+    "oracle_status": "CERTIFIED_WITH_MODEL_SCOPE",
+    "scope": "TRACE_MODEL_CLOSED_WORLD",
+    "oracle": true,
+    "complete_epoch": "whole_commandlist",
+    "kernel_count": 19,
+    "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+    "expected_trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+    "manifest": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/FWT_7_21_v2_r1/oracle/manifest.json",
+    "manifest_sha256": "647c03607b77e7c5da8daf58f4e61c58b11f0a475be2763d99960482d3643502",
+    "tool_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+    "tool_source_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+    "tool_source_sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+    "closed_world_assumptions": [
+      "All listed kernels/all traced lanes are visible agents",
+      "No external/CPU/DMA/device-side concurrent writers during epoch",
+      "Pre-epoch writes/writebacks are drained before oracle activation",
+      "No virtual aliases to different canonical addresses; no MMIO",
+      "Memcpy commands occur at drained command boundaries"
+    ],
+    "counts": {
+      "SAME_LINE_STORE_lines": 131072,
+      "SAME_LINE_STORE_read_lane_references": 41943040
+    },
+    "unresolved_opcodes": {},
+    "tool_unit_tests": 21,
+    "new_tool_unit_tests": 0,
+    "new_simulations": 0,
+    "runtime_qualification": false,
+    "application_performance_evidence": false,
+    "trace_reuse_order_inference": false
+  },
+  "worker_exit_code": 0,
+  "elapsed_seconds": 220.2325374353677,
+  "finished_utc": "2026-10-19T14:44:39.589322+00:00",
+  "worker_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

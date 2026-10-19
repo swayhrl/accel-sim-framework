@@ -27,7 +27,7 @@ def dump(name, obj):
     path.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'\n')
 def table(name, rows):
     with (OUT/name).open('w',newline='') as f:
-        w=csv.DictWriter(f,fieldnames=list(dict.fromkeys(k for r in rows for k in r)))
+        w=csv.DictWriter(f,fieldnames=list(dict.fromkeys(k for r in rows for k in r)),lineterminator='\n')
         w.writeheader();w.writerows(rows)
 def git(ref, path): return subprocess.check_output(['git','show',ref+':'+path],cwd=REPO)
 
@@ -151,7 +151,7 @@ def main():
     with (SHARED/'REGISTRY.lock').open() as lock:
         fcntl.flock(lock,fcntl.LOCK_SH)
         raw=(SHARED/'RUN_REGISTRY.json').read_bytes();allreg=json.loads(raw);r=allreg['mechanism_study_20261019_v1']
-    snapshot={k:r.get(k) for k in ['campaign_id','authority_commit','owner','status','actual_starts','max_starts','controller']}
+    snapshot={k:r.get(k) for k in ['campaign_id','authority_commit','owner','status','actual_starts','maximum_actual_starts','controller']}
     snapshot.update(accepted_pairs=len(r.get('accepted_pairs',{})),accepted_results=len(r.get('accepted_results',{})),
       qualifications=len(r.get('qualifications',{})),registry_sha256_at_read=sha(raw),at_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
       V2_authorized_max=40,V2_adoption_owner='E_ONLY_NO_D_LEDGER_MUTATION',counter_reset=False,

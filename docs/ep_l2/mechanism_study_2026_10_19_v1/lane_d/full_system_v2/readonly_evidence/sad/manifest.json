@@ -1,0 +1,64 @@
+{
+  "schema": "EP_L2_RO_ORACLE_V1",
+  "status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "framework_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "host_updates_excluded": [],
+  "kernel_count": 3,
+  "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernelslist.g",
+  "commandlist_sha256": "36c0931b5a7cd780dc16fd5466cba2ed31d4a2c1dbf062721f55bbcef1d7a2a8",
+  "kernels": [
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-1.traceg",
+      "sha256": "2c72707e45bb3504809e8a16e46522a20c9a94f9c1b4dba53aacee223d2bb64a",
+      "opcodes": {
+        "LDG": 1584,
+        "STS": 58608,
+        "LDS": 64944,
+        "STG": 14256
+      }
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-2.traceg",
+      "sha256": "bd6b2c58766bc64951fc499866e0563b79a0f1503989162f10306a0267d61e86",
+      "opcodes": {
+        "LDG": 28512,
+        "STG": 35640
+      }
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-3.traceg",
+      "sha256": "c1ae7a29728dc8341b6488510ccab9d95bb322621ca10240edb0f98d5f536c84",
+      "opcodes": {
+        "LDG": 7128,
+        "STG": 8910
+      }
+    }
+  ],
+  "unresolved_opcodes": {},
+  "counts": {
+    "NO_GLOBAL_READ_lines": 35601,
+    "NO_GLOBAL_READ_read_lane_references": 0,
+    "SAME_LINE_STORE_lines": 33910,
+    "SAME_LINE_STORE_read_lane_references": 1079100,
+    "CERTIFIED_RO_lines": 396,
+    "CERTIFIED_RO_read_lane_references": 25344
+  },
+  "oracle_cost": "offline SQLite O(unique lines), 16 MiB SQLite page cache; runtime oracle idealized input, not free hardware",
+  "artifacts": {
+    "oracle.sqlite3": "4816b035affa061a6a71757d71633af8882825581ffb412306a2934d0a8f7258",
+    "coverage.csv": "bba0ff228b708957ed2dd1ec1eb99cffbc6dd7b3202f625519e2700012d71435",
+    "exclusion.csv": "db7c8d6f73f8c33c503e31a5b0602414ce5e9d7ed36b82975ed88129c16fbfe0",
+    "certified_lines.txt": "5836dbef032ce276e2b3d61e0b137b02c09f1b151b4aef4fd9a3d0b58c8c8fd1",
+    "certified_ranges.csv": "d92560b3fbf1396b5a386a1739931dd2a05774b3c1f8d63f192e5473a5b19f4d"
+  }
+}

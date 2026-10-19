@@ -1,0 +1,83 @@
+{
+  "operation": "OFFLINE_FULL_TRACE_RO_INPUT_ANALYSIS_NOT_SIMULATION",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "workload": "sad",
+  "C_producer_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "C_producer_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+  "model_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "registration_sha256": "91a8d4748ddd5769db8b9572c754ddf4df9265a9b4ec757613dbfdbaaf8bafa1",
+  "input_expected": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+  "output": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/sad_v2_r1",
+  "output_cap_bytes": 268435456,
+  "worker_address_space_cap_bytes": 268435456,
+  "worker_CPUs": 1,
+  "maximum_seconds": 1800,
+  "new_simulations": 0,
+  "production_resource_floors": "UNCHANGED; this is the expressly allowed bounded offline old-input analysis",
+  "oracle_scope_change": false,
+  "scientific_RO_qualification": "NOT_GRANTED_BY_D",
+  "hashing_scope": "producer integrity before/after the necessary full-epoch address scan; no repository/body-wide repeated audit",
+  "output_accounting": "D namespace inside E new-result root, visible to canonical6GiB/20GiB accounting; all failures retained",
+  "status": "OFFLINE_CANDIDATE_READY_PENDING_C_E_REVIEW",
+  "driver_sha256": "b18f76b5d4b09a01c4af4f5679d3315d27b69be197afd18c1cb85c2e6b852fcd",
+  "driver_framework_commit": "e58b75fd7573f5d4d19b92c273c040ea79bc20d0",
+  "controller_process": {
+    "pid": 944408,
+    "start_ticks": 917275811,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "started_utc": "2026-10-19T14:39:46.870235+00:00",
+  "peak_worker_RSS_bytes": 25165824,
+  "peak_output_bytes": 3884827,
+  "observations": 10,
+  "frozen_source_sha256": {
+    "test_ro_oracle.py": "3bca364c3640e99c18cca466d20c3ba94dedb681e98472cf5e6d18609ca6dbc2",
+    "ro_oracle.py": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225"
+  },
+  "worker_process": {
+    "pid": 944481,
+    "start_ticks": 917275821,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "candidate": {
+    "status": "OFFLINE_ORACLE_CANDIDATE_COMPLETE_PENDING_C_E_REVIEW",
+    "oracle_status": "CERTIFIED_WITH_MODEL_SCOPE",
+    "scope": "TRACE_MODEL_CLOSED_WORLD",
+    "oracle": true,
+    "complete_epoch": "whole_commandlist",
+    "kernel_count": 3,
+    "trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+    "expected_trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+    "manifest": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/sad_v2_r1/oracle/manifest.json",
+    "manifest_sha256": "139ad48f03af9ef2d48260c52d81b2cef9d9179a37ae4f8215f6aa0b89bd9f0b",
+    "tool_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+    "tool_source_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+    "tool_source_sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+    "closed_world_assumptions": [
+      "All listed kernels/all traced lanes are visible agents",
+      "No external/CPU/DMA/device-side concurrent writers during epoch",
+      "Pre-epoch writes/writebacks are drained before oracle activation",
+      "No virtual aliases to different canonical addresses; no MMIO",
+      "Memcpy commands occur at drained command boundaries"
+    ],
+    "counts": {
+      "NO_GLOBAL_READ_lines": 35601,
+      "NO_GLOBAL_READ_read_lane_references": 0,
+      "SAME_LINE_STORE_lines": 33910,
+      "SAME_LINE_STORE_read_lane_references": 1079100,
+      "CERTIFIED_RO_lines": 396,
+      "CERTIFIED_RO_read_lane_references": 25344
+    },
+    "unresolved_opcodes": {},
+    "tool_unit_tests": 21,
+    "new_tool_unit_tests": 0,
+    "new_simulations": 0,
+    "runtime_qualification": false,
+    "application_performance_evidence": false,
+    "trace_reuse_order_inference": false
+  },
+  "worker_exit_code": 0,
+  "elapsed_seconds": 20.023978486657143,
+  "finished_utc": "2026-10-19T14:40:06.894977+00:00",
+  "worker_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

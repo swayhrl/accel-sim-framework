@@ -1,0 +1,35 @@
+{
+  "status": "OFFLINE_ORACLE_CANDIDATE_COMPLETE_PENDING_C_E_REVIEW",
+  "oracle_status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "oracle": true,
+  "complete_epoch": "whole_commandlist",
+  "kernel_count": 1,
+  "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "expected_trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "manifest": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json",
+  "manifest_sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+  "tool_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "tool_source_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+  "tool_source_sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+  "closed_world_assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "counts": {
+    "CERTIFIED_RO_lines": 250000,
+    "CERTIFIED_RO_read_lane_references": 8000000,
+    "NO_GLOBAL_READ_lines": 125000,
+    "NO_GLOBAL_READ_read_lane_references": 0
+  },
+  "unresolved_opcodes": {},
+  "tool_unit_tests": 21,
+  "new_tool_unit_tests": 0,
+  "new_simulations": 0,
+  "runtime_qualification": false,
+  "application_performance_evidence": false,
+  "trace_reuse_order_inference": false
+}

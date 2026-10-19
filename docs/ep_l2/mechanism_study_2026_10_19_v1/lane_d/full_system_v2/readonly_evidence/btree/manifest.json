@@ -1,0 +1,79 @@
+{
+  "schema": "EP_L2_RO_ORACLE_V1",
+  "status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "framework_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "host_updates_excluded": [
+    [
+      140251846672384,
+      140251850672256
+    ],
+    [
+      140251888615424,
+      140251904898816
+    ],
+    [
+      140251843526656,
+      140251843606528
+    ],
+    [
+      140251843607040,
+      140251843686912
+    ],
+    [
+      140251843687424,
+      140251843727360
+    ],
+    [
+      140251843727872,
+      140251843767808
+    ]
+  ],
+  "kernel_count": 2,
+  "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist.g",
+  "commandlist_sha256": "26315d4ae044e91094d54134ec94e25d70fd4eda8c0fe01767bc2a9437d73467",
+  "kernels": [
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-1.traceg",
+      "sha256": "80c00c479a79c4a0c470de34c0b5b4421eb8e737e6cbb3a4046304b1f555395e",
+      "opcodes": {
+        "LDG": 977958,
+        "STG": 60000
+      }
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-2.traceg",
+      "sha256": "3c67f85abf952be8a0d109497baabaf97a53d15d4f40e9d1ba2d74ddb1fdc481",
+      "opcodes": {
+        "LDG": 839593,
+        "STG": 50000
+      }
+    }
+  ],
+  "unresolved_opcodes": {},
+  "counts": {
+    "SAME_LINE_STORE_lines": 88901,
+    "SAME_LINE_STORE_read_lane_references": 52865549,
+    "CERTIFIED_RO_lines": 3,
+    "CERTIFIED_RO_read_lane_references": 73728,
+    "NO_GLOBAL_READ_lines": 188,
+    "NO_GLOBAL_READ_read_lane_references": 0
+  },
+  "oracle_cost": "offline SQLite O(unique lines), 16 MiB SQLite page cache; runtime oracle idealized input, not free hardware",
+  "artifacts": {
+    "oracle.sqlite3": "ac24a036028f865ac03030bd3d5bf68ffc37aefc57590689cfbab8a59f4fe23c",
+    "coverage.csv": "8a7e173d5c026ede13d2a1d1e96235fb21991a9ed5d43d0e0c2b390fd7b2449c",
+    "exclusion.csv": "c5c1913e7e94665f6b8ec468cc7d90a45cd93aadda9941207caaa112f381ab0e",
+    "certified_lines.txt": "78737f8df04ca551c51befdf5e856664d71e65dce899236d80b0c7766079511e",
+    "certified_ranges.csv": "39122351c8fae4eb8c0bb76e112e656ef84bd672ab4b9b98c8979f20808c4641"
+  }
+}
