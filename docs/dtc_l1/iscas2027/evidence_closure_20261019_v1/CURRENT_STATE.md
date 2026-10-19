@@ -1,6 +1,6 @@
 # Execution coordination state
 
-Updated: 2026-10-19 20:37:34 Asia/Shanghai. Status: **SAFE_PREPARATION_JOINED_WAIT_AG4_TERMINAL_AUTHORITY**. Plan anchor: `46df82670a56a4498b6d6e23ad57859eb7c36945`. Maintained only on `hrl/iscas2027-dtc-closure-exec-174-v1`; planning branch unchanged. This is a preparation checkpoint, not final evidence-closure completion.
+Updated: 2026-10-19 20:44:29 Asia/Shanghai. Status: **SAFE_PREPARATION_JOINED_WAIT_AG4_TERMINAL_AUTHORITY**. Plan anchor: `46df82670a56a4498b6d6e23ad57859eb7c36945`. Maintained only on `hrl/iscas2027-dtc-closure-exec-174-v1`; planning branch unchanged. This is a preparation checkpoint, not final evidence-closure completion.
 
 |Role|Actual state|Immutable evidence / branch|
 |---|---|---|
@@ -26,8 +26,31 @@ Worker worktrees start at the pinned plan commit and use separate output roots b
 |N3 existing SM70 bcsstk18 JDS indexed-gather capture fixed|Current decoder, full50-kernel identity and index/domain qualification; no SM89 alias|
 |SEM1 source/ABI gaps and12 falsifiable plans delivered|All eight primary production-value/native rows UNPROVEN; zero new executed value tests; unresolved RAW is not observed wrong value|
 |ROB1 shared sector quota and exact fair hash/AD metric definitions delivered|Diagnostic patch/CPU tests unapplied and unexecuted; C+ implementation only if AE selected|
-|Runner lifecycle reuse and two-isolated-guard plan prepared|Post-release exact role registration, multi-root/helper qualification and resource admission|
+|Runner lifecycle engine and two-isolated-CPU-guard code prepared; zero execution|Post-release exact role registration, actual multi-root/helper/negative qualification and resource admission; see execution/prepared_runtime/|
 
 At20:37:34 a lightweight process/lock check found no new-plan worker/dispatcher process or execution FLOCK (only the check's transient rg). No own background continuation remains. The planning remote is still the pinned46df8267 commit. AG4 has not been reset, signalled, restarted, modified or read through active raw/maps. This checkpoint has no new performance, native correctness or PPA claim. `execution/SCIENTIFIC_SCOPE_AT_PREPARATION.md` gives the evidence-axis limits and provisional English scope guidance without editing v0.17.
 
 Next gate: consume AG4's independently published immutable terminal evidence and verify completion, identities, child exits and lock release. Only then freeze F/provisional-O decision, admit focused CPU work and build exact executable families. No disappearance-only takeover, restart, contract change, active raw polling, or automatic deferred dispatch. See `execution/AUTHORITY_COMPATIBILITY.md`. The goal remains incomplete while this external gate is closed; no user approval is requested for the already-authorized next work.
+
+## Continuation1: verified wait and concrete runtime preparation
+
+At20:44:29 both original AG4 instances were verified live from `/proc/stat`,
+`exe` and `cmdline`: runner779009/start_ticks916291532 and its simulator
+795912/start_ticks916442037. The published AG4 branch remains9ece18f6 and
+has no terminal intake. `execution/WAIT_OBSERVATION_20261019_CONTINUATION1.json`
+binds this foreground observation. No active stdout/maps/raw was read and no
+signal, new lock, compiler, worker script or simulator was invoked. The previous
+turn was progress (three immutable deliveries joined); this continuation also
+adds concrete required runtime source, rather than only restating the wait.
+
+`execution/prepared_runtime/` now contains the inherited AG4 guard source,
+exact upstream Git-blob/SHA provenance, an isolated output helper, one CPU-only
+guard entry and a bounded two-root CPU library. Mapping-role/ownership/OOM
+modules are byte-identical; engine changes are limited to the isolated CPU
+build path and CPU fixture prefix. The reused C++ fixture changes only its
+data paths. Source hashes are fixed in PREPARED_SOURCE_SHA256.json, which is
+explicitly not an executable registration. Nothing was imported, compiled or
+executed; no new scientific test PASS or production authority qualification
+is claimed. There is no full-simulation CLI, matrix scheduler or auto-resume
+entry. Real cross-root/helper negatives, exact external-worker role admission,
+resource closure and full dispatcher/ledger registration remain required.

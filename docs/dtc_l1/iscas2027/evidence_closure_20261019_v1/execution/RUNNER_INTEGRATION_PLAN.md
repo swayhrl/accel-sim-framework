@@ -32,3 +32,13 @@ Whole-input natural exit and all kernel/command/CTA/instruction boundaries remai
 4. The unique executable MASTER_MATRIX.tsv, family publication/readback and fresh resource/authority admission.
 
 All remain prerequisites, not completed tests. No automated waiting dispatcher is created during preparation.
+
+## Concrete preparation checkpoint
+
+Continuation1 provides `prepared_runtime/` with exact inherited engine source
+bindings and separate CPU guard processes. This implements the proposed wait
+queue separation as unexecuted code; it does not qualify multi-root production
+authority. The source-binding manifest identifies the three unchanged engine
+modules and the CPU-path-only adaptations. See its README for remaining real
+CPU/helper/cross-root/worker-role checks. No fixture binary, request JSON,
+execution lock, deferred scheduler or accepted test result exists yet.
