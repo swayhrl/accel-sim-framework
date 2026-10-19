@@ -1,0 +1,721 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 08d0dc06d86d7159622ec39bdf31480c3607e6fa..fcc85d5ccd7f661cf47a60e3068adc9041ec04d2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -261,3 +261,49 @@
+       entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
+       ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+ endforeach()
++
++# C bounded production fixtures integrated by A. Bank facade needs source
++# extraction, not a direct production target; see prepare_ro_bank_progress.py.
++foreach(ro_test ro_runtime ro_partition ro_transactions ro_store_port ro_oracle_certificate ro_epoch_entry)
++  add_executable(ep_l2_${ro_test} EXCLUDE_FROM_ALL tests/ep_l2/test_${ro_test}.cc)
++  target_include_directories(ep_l2_${ro_test} PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++  target_link_libraries(ep_l2_${ro_test} PRIVATE -Wl,--start-group
++      entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++      ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++endforeach()
++
++# Explicit source-bound facade only. Never configured/run by default.
++option(EP_L2_BUILD_RO_BANK_FIXTURE "Build source-bound RO bank facade" OFF)
++set(EP_L2_RO_BANK_SOURCE_COMMIT "" CACHE STRING "Exact immutable RO Core source")
++if(EP_L2_BUILD_RO_BANK_FIXTURE)
++  string(LENGTH "${EP_L2_RO_BANK_SOURCE_COMMIT}" ro_source_length)
++  if(NOT ro_source_length EQUAL 40 OR NOT EP_L2_RO_BANK_SOURCE_COMMIT MATCHES "^[0-9a-f]+$")
++    message(FATAL_ERROR "RO bank fixture requires exact40-hex source commit")
++  endif()
++  find_package(Python3 COMPONENTS Interpreter REQUIRED)
++  set(ro_bank_generated "${CMAKE_CURRENT_BINARY_DIR}/ro_bank_bound")
++  add_custom_command(OUTPUT "${ro_bank_generated}/SOURCE_BINDING.json"
++    COMMAND "${Python3_EXECUTABLE}"
++      "${CMAKE_CURRENT_SOURCE_DIR}/tests/ep_l2/prepare_ro_bank_progress.py"
++      --source "${EP_L2_RO_BANK_SOURCE_COMMIT}" --output "${ro_bank_generated}"
++    DEPENDS tests/ep_l2/prepare_ro_bank_progress.py tests/ep_l2/test_ro_bank_progress.cc
++      src/gpgpu-sim/gpu-cache.h src/gpgpu-sim/gpu-cache.cc
++      src/gpgpu-sim/ep-l2-ro-mshr.inc src/gpgpu-sim/ep-l2-ro-runtime.inc
++      src/gpgpu-sim/ep-l2-ro-transactions.h src/gpgpu-sim/ep-l2-ro-store-port.h
++      src/gpgpu-sim/ep-l2-ro-oracle.h src/gpgpu-sim/ep-l2-ft-cache.inc
++    COMMENT "Bind finite bank facade to exact RO source; no native execution"
++    VERBATIM)
++  add_custom_target(ep_l2_ro_bank_bind DEPENDS "${ro_bank_generated}/SOURCE_BINDING.json")
++  add_executable(ep_l2_ro_bank_progress EXCLUDE_FROM_ALL tests/ep_l2/test_ro_bank_progress.cc)
++  add_dependencies(ep_l2_ro_bank_progress ep_l2_ro_bank_bind)
++  target_include_directories(ep_l2_ro_bank_progress PRIVATE "${ro_bank_generated}"
++    "${CMAKE_CURRENT_SOURCE_DIR}/src/gpgpu-sim" "${CMAKE_CURRENT_SOURCE_DIR}/src"
++    "${CMAKE_CURRENT_SOURCE_DIR}/libcuda" ${CUDAToolkit_INCLUDE_DIRS})
++  # Actual source methods are included once in this standalone facade.
++  # Linking gpu-cache.o as well would redefine those methods.
++  target_compile_options(ep_l2_ro_bank_progress PRIVATE -O2 -g0)
++endif()
++
++add_executable(ep_l2_ro_tvd_combined EXCLUDE_FROM_ALL tests/ep_l2/ms_ro_combined/test_combined.cc)
++target_include_directories(ep_l2_ro_tvd_combined PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_ro_tvd_combined PRIVATE -Wl,--start-group entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index f5ac50b1938134dc05636e874ae0c9136e2ce0c3..8bccec053a294f2d792b326c422b3da480c2de87 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -7,6 +7,7 @@
+ void l2_cache::force_tag_access(new_addr_type addr, unsigned time,
+                                 mem_access_sector_mask_t mask) {
+   if (!ft_enabled()) { baseline_cache::force_tag_access(addr, time, mask); return; }
++  if(m_ro)m_ro->prefill_begin(m_config.block_addr(addr));
+   if (!ft_try_force_tag_access(addr, time, mask)) {
+     fprintf(stderr, "EP-L2 host prefill requires quiescent clean ownership; no pending/dirty victim may be discarded\n");
+     abort();
+@@ -15,6 +16,7 @@
+ 
+ bool l2_cache::ft_try_force_tag_access(new_addr_type addr, unsigned time,
+                                       mem_access_sector_mask_t mask) {
++  if(m_ro && !m_ro->prefill_allowed(m_config.block_addr(addr)))return false;
+   // This is untimed host initialization, not a source of GPU bank grants or
+   // free WB service. Fail BEFORE changing Tag, generation, owner or offset.
+   if (!ft_enabled() || m_config.m_cache_type != SECTOR || mask.count() != 1 ||
+@@ -110,6 +112,7 @@
+     if (mask.test(sector)) slot.versions[sector] = 0;
+   slot.status = m_tag_array->block_is_modified(index) ?
+       ep_l2_payload_store::RESIDENT_DIRTY : ep_l2_payload_store::RESIDENT_VALID;
++  if(m_ro)m_ro->prefill_complete(index,handle,owner,mask);
+   assert(m_ep_l2_payload.ownership_consistent());
+   return true;
+ }
+@@ -132,6 +135,7 @@
+ }
+ 
+ mem_fetch *l2_cache::peek_next_access() const {
++  if(m_ro && m_ro->selected)return m_ro->reply.request;
+   mem_fetch *mf = baseline_cache::peek_next_access();
+   if (ft_enabled()) {
+     std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
+@@ -142,6 +146,7 @@
+ }
+ 
+ bool l2_cache::ft_response_ready(unsigned long long cycle) {
++  if(m_ro && m_ro->has_response() && (m_ro->reply.transaction.valid() || m_ro->prefer_ro || !baseline_cache::access_ready()))return m_ro->prepare(cycle);
+   if (!ft_enabled()) return true;
+   mem_fetch *mf = baseline_cache::peek_next_access();
+   std::map<mem_fetch *,ep_l2::PayloadHandle>::const_iterator it = m_ft_read_refs.find(mf);
+@@ -178,7 +183,7 @@
+         m_ep_l2_payload.handle_live(h);
+   }
+   m_ms_observer.sample(m_ep_l2_payload.wb_used(), ep_l2_wad_occupancy(),
+-      mshr_targets_used(), m_ep_l2_payload.resident_used(), bound,
++      m_mshrs.descriptor_count_used(), m_ep_l2_payload.resident_used(), bound,
+       m_ep_l2_payload.pending_resident_landings());
+ }
+ 
+@@ -238,6 +243,7 @@
+ }
+ 
+ void l2_cache::commit_next_access() {
++  if(m_ro && m_ro->selected){m_ro->commit(ft_physical_cycle());return;}
+   if (!ft_enabled()) { baseline_cache::commit_next_access(); return; }
+   // A synthetic write-allocate response may already have been deleted by the
+   // frontend. Use its pointer only as an identity key, never dereference it.
+@@ -248,6 +254,7 @@
+   baseline_cache::commit_next_access();
+   m_ep_l2_payload.unpin(h);
+   m_ft_read_refs.erase(it);
++  if(m_ro)m_ro->prefer_ro=true;
+   ++m_ft_stats.descriptor_responses;
+ }
+ 
+@@ -289,12 +296,27 @@
+   const unsigned long long physical_cycle = ft_physical_cycle();
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   const new_addr_type owner = m_config.block_addr(addr);
++  if(m_ro) {
++    if(m_ro->native_owner_conflict(mf))return RESERVATION_FAIL;
++    cache_request_status merged;
++    if(m_ro->merge_existing(mf,time,events,merged)){
++      if(merged!=RESERVATION_FAIL){++m_ft_stats.accepted;
++        m_stats.inc_stats(mf->get_access_type(),MSHR_HIT,mf->get_streamID());
++        m_stats.inc_stats_pw(mf->get_access_type(),MSHR_HIT,mf->get_streamID());
++      }
++      return merged;
++    }
++  }
++  const bool ro_new=m_ro && m_ro->new_request(mf);
++  if(ro_new && !m_ro->directory_ready(mf))return RESERVATION_FAIL;
+   if (tvd_write_candidate(mf) && !tvd_promote(mf,time,events)) return RESERVATION_FAIL;
+   unsigned index = (unsigned)-1;
+   cache_request_status probe = m_tag_array->probe(owner, index, mf, mf->is_write(), true);
++  if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);}
+   if (probe == RESERVATION_FAIL) return RESERVATION_FAIL;
+   if (m_tvd && probe == MISS &&
+       !(m_tvd_lookup == mf && m_tvd_lookup_done)) return RESERVATION_FAIL;
++  if(ro_new && (!m_ro->capacity(mf,false) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return RESERVATION_FAIL;
+   if (m_ft_pending.request && m_ft_pending.request != mf) return RESERVATION_FAIL;
+   if (m_tvd ? tvd_cached_wad_contains(mf,owner) : ep_l2_wad_contains(owner)) {
+     ++m_ep_l2_wad_same_address_wait_count; return RESERVATION_FAIL;
+@@ -324,7 +346,8 @@
+     const bool read = !mf->get_is_write();
+     const new_addr_type key = m_config.mshr_addr(addr);
+     unsigned slots = dirty ? 1 : 0;
+-    if (read) {
++    if(ro_new) {slots+=mf->get_access_sector_mask().count();}
++    else if (read) {
+       if (m_mshrs.full(key)) return RESERVATION_FAIL;
+       if (m_mshrs.needs_lower_read(key, mf->get_access_sector_mask())) ++slots;
+     } else if (m_config.m_write_alloc_policy == WRITE_ALLOCATE) {
+@@ -486,7 +509,7 @@
+   }
+   const ep_l2::PayloadHandle handle = tag_payload_handle(index);
+   mf->set_ep_l2_payload_identity(handle.payload_id, handle.generation);
+-  const cache_request_status result = data_cache::access(addr, mf, time, events);
++  const cache_request_status result = ro_new ? m_ro->accept_new(mf,index,probe,time,events) : data_cache::access(addr, mf, time, events);
+   if (result == RESERVATION_FAIL) {
+     if (replacement) ft_rollback();
+     return result;
+@@ -506,7 +529,7 @@
+       slot.ready_sector_mask |= mf->get_access_sector_mask();
+   }
+   if (m_tag_array->block_is_modified(index)) slot.status = ep_l2_payload_store::RESIDENT_DIRTY;
+-  else if (slot.pending_sector_mask.none()) slot.status = ep_l2_payload_store::RESIDENT_VALID;
++  else if (slot.pending_sector_mask.none() && slot.allocation_role!=ep_l2_payload_store::RO) slot.status = ep_l2_payload_store::RESIDENT_VALID;
+   if (!mf->get_is_write()) mf->set_ft_wb_data(slot.versions);
+   if (replacement) m_ft_pending = ft_replacement();
+   if (m_tvd_lookup==mf) m_tvd_lookup=NULL;
+@@ -591,6 +614,7 @@
+   if (ft_enabled() && !mf->get_is_write()) {
+     ++m_ft_stats.lower_read_packets; m_ft_stats.lower_read_bytes+=mf->get_data_size();
+   }
++  if(mf->ro_lower_packet()) {if(!m_ro)throw std::logic_error("RO packet without runtime");m_ro->tx->lower_accepted(ep_l2::PayloadHandle(mf->get_ep_l2_payload_id(),mf->get_ep_l2_payload_generation()),mf->get_access_sector_mask().to_ulong());return;}
+   if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return;
+   std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);
+   assert(it != m_ft_wb.end());
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index 995b16ea6b5119429b58130e8bf25cbd91c247a0..d2cf99d0a9f016af36602f591c568b65dc03a858 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -60,6 +60,11 @@
+ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+     unsigned long long now, bool response_space) {
+   if (!m_tvd) return TVD_NORMAL;
++  // Guard the path that can complete before l2_cache::access. A certificate
++  // contradiction must fail before lookup, promotion, pin or enqueue mutation.
++  if(m_ro) {
++    m_ro->check_access(mf);
++  }
+   unsigned index = (unsigned)-1;
+   const auto address = m_config.block_addr(mf->get_addr());
+   const auto tag = m_tag_array->probe(address, index, mf, mf->is_write(), true);
+@@ -130,6 +135,7 @@
+         e.status==tvd_directory::WB_COMPLETE?ep_l2_payload_store::TVD_VALID:ep_l2_payload_store::TVD_INFLIGHT);
+   }
+   m_tvd_read.reset(); m_tvd_lookup = NULL;
++  if(m_ro)m_ro->record_accepted(mf);
+   ++m_ft_stats.accepted;
+ }
+ 
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index e2d91090992d316b37f0875a1ff95f8f19b18a3b..7e2425f7e7ac58fe2f93370f9c30be51c3bf4ec1 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -686,6 +686,7 @@
+   // RAW/WAR/atomic handling and response retirement remain the ordinary path.
+   if (m_ideal_meta) return EP_L2_BLOCK_NONE;
+   table::const_iterator i = m_data.find(block_addr);
++  if (m_descriptor_pool_size && ro_targets_on_line(block_addr)+(i==m_data.end()?0:i->second.m_list.size())>=m_descriptor_per_line_cap) return EP_L2_BLOCK_PER_ADDRESS_CAP;
+   if (i != m_data.end()) {
+     const unsigned per_line_limit =
+         m_descriptor_pool_size ? m_descriptor_per_line_cap : m_max_merged;
+@@ -699,6 +700,8 @@
+     return EP_L2_BLOCK_DESCRIPTOR_POOL_FULL;
+   return EP_L2_BLOCK_NONE;
+ }
++
++#include "ep-l2-ro-mshr.inc"
+ 
+ void mshr_table::ensure_descriptor_available() {
+   if (!m_free_descriptor_ids.empty()) return;
+@@ -927,10 +930,11 @@
+     assert(mf != entry->second.m_list.end());
+     entry->second.m_descriptor_ids.erase(id);
+     entry->second.m_list.erase(mf);
+-    descriptor = ep_l2_descriptor();
++    const auto generation=descriptor.m_ro_generation;
++    descriptor = ep_l2_descriptor();descriptor.m_ro_generation=generation;
+     m_free_descriptor_ids.push_back(ready.m_descriptor_id);
+     m_current_descriptor_response.pop_front();
+-    if (entry->second.m_list.empty()) m_data.erase(entry);
++    if (entry->second.m_list.empty() && !entry->second.m_ro_line_owner) m_data.erase(entry);
+     return;
+   }
+ 
+@@ -2491,10 +2495,14 @@
+ // The l2 cache access function calls the base data_cache access
+ // implementation.  When the L2 needs to diverge from L1, L2 specific
+ // changes should be made here.
++// Runtime type must be complete before production access/preview use it.
++#include "ep-l2-ro-runtime.inc"
++
+ enum cache_request_status l2_cache::access(new_addr_type addr, mem_fetch *mf,
+                                            unsigned time,
+                                            std::list<cache_event> &events) {
+-  if (ft_enabled()) return ft_access(addr, mf, time, events);
++  if(m_ro)m_ro->check_access(mf);
++  if(ft_enabled()) {if(m_ro && !m_ro->query_admissible(mf))return RESERVATION_FAIL;auto result=ft_access(addr,mf,time,events);if(m_ro && result!=RESERVATION_FAIL)m_ro->record_accepted(mf);return result;}
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   unsigned payload_index = (unsigned)-1;
+   bool payload_reserved = false;
+@@ -2712,6 +2720,7 @@
+ void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,
+                               l2_access_plan &plan) const {
+   plan = l2_access_plan();
++  if(m_ro && m_ro->preview(mf,plan))return;
+   if (!exact_l2_admission()) return;
+ 
+   plan.exact = true;
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 7e9f688636283ac8160022d317ac9639c868004f..9097541e0aac355990ceb5993d8640a4e4dd753a 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -571,6 +571,7 @@
+ #define MAX_WARP_PER_SHADER 64
+ 
+ class cache_config {
++  friend class ep_l2_ro_runtime;
+  public:
+   cache_config() {
+     m_valid = false;
+@@ -598,6 +599,8 @@
+     m_ep_l2_ms_observer = false;
+     m_ep_l2_payload_policy = 0;
+     m_ep_l2_feature_unified_payload = false;
++    m_ro_tag_detach=m_ro_line_mshr_bypass=false;
++    m_ro_ranges=m_ro_ranges_sha256=m_ro_manifest_sha256=m_ro_scope=m_ro_manifest=nullptr;
+     m_ep_l2_feature_ro_pending_state = false;
+     m_ep_l2_feature_tvd = false;
+     m_ep_l2_tvd_clean = m_ep_l2_tvd_dirty = false;
+@@ -873,6 +876,7 @@
+   }
+   bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }
+   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }
++  bool ro_requested() const { return m_ro_tag_detach||m_ro_line_mshr_bypass; }
+   unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }
+   // ALL_DATA is an independent reference scope on the B16 OFF background.
+   // Expose a read-only compatibility query, never protected mutable fields.
+@@ -883,7 +887,7 @@
+         !m_ep_l2_ideal_wb && !m_ep_l2_ideal_meta && !m_ep_l2_ideal_read_hit &&
+         !m_ep_l2_mq2 && !m_ep_l2_rg1 && !m_ep_l2_diag_copy_free &&
+         !m_ep_l2_diag_l2_data_free && !m_ep_l2_ms_observer &&
+-        !m_ep_l2_tvd_clean && !m_ep_l2_tvd_dirty && !m_ep_l2_tvd_fixed_entries;
++        !m_ep_l2_tvd_clean && !m_ep_l2_tvd_dirty && !m_ep_l2_tvd_fixed_entries && !ro_requested();
+   }
+   enum mshr_config_t get_mshr_type() const { return m_mshr_type; }
+   void set_assoc(unsigned n) {
+@@ -984,6 +988,8 @@
+   // Policy 0 is the only currently supported static policy.
+   unsigned m_ep_l2_payload_policy;
+   bool m_ep_l2_feature_unified_payload;
++  bool m_ro_tag_detach,m_ro_line_mshr_bypass;
++  char *m_ro_ranges,*m_ro_ranges_sha256,*m_ro_manifest_sha256,*m_ro_scope,*m_ro_manifest;
+   bool m_ep_l2_feature_ro_pending_state;
+   bool m_ep_l2_feature_tvd;
+   bool m_ep_l2_tvd_clean, m_ep_l2_tvd_dirty;
+@@ -1194,7 +1200,7 @@
+         m_max_merged(max_merged),
+         m_descriptor_pool_size(descriptor_pool_size),
+         m_descriptor_per_line_cap(descriptor_per_line_cap),
+-        m_ideal_meta(ideal_meta)
++        m_ideal_meta(ideal_meta), m_ro_descriptor_count(0)
+ #if (tr1_hash_map_ismap == 0)
+         ,
+         m_data(2 * num_entries)
+@@ -1264,6 +1270,30 @@
+                : m_descriptor_pool.size() - m_free_descriptor_ids.size();
+   }
+   unsigned descriptor_pool_capacity() const { return m_descriptor_pool.size(); }
++  // Lane 3's completion objects borrow the SAME fixed descriptor free-list.
++  // No second requester pool, line-MSHR entry, or address-indexed RO entry.
++  struct ro_descriptor_handle {
++    unsigned id;
++    unsigned long long generation;
++    ro_descriptor_handle(unsigned i = (unsigned)-1,
++                         unsigned long long g = 0) : id(i), generation(g) {}
++    bool valid() const { return id != (unsigned)-1; }
++  };
++  bool reserve_ro_descriptor(new_addr_type line, mem_fetch *mf,
++                             const mem_access_sector_mask_t &sectors,
++                             ro_descriptor_handle &result);
++  bool ro_descriptor_live(const ro_descriptor_handle &handle) const;
++  void release_ro_descriptor(const ro_descriptor_handle &handle);
++  unsigned ro_targets_on_line(new_addr_type line) const;
++  unsigned targets_on_line(new_addr_type line) const;
++  bool reserve_ro_line(new_addr_type line);
++  void bind_ro_line(new_addr_type line, ep_l2::PayloadHandle h);
++  bool lookup_ro_line(new_addr_type line, ep_l2::PayloadHandle &h) const;
++  void release_ro_line(new_addr_type line);
++  void ro_line_issue(new_addr_type line, const mem_access_sector_mask_t &mask);
++  void ro_line_ready(new_addr_type line, const mem_access_sector_mask_t &mask);
++  mem_fetch *ro_descriptor_request(const ro_descriptor_handle &) const;
++  mem_access_sector_mask_t ro_descriptor_sectors(const ro_descriptor_handle &) const;
+   void sector_masks(new_addr_type block_addr, mem_access_sector_mask_t &pending,
+                     mem_access_sector_mask_t &issued,
+                     mem_access_sector_mask_t &ready) const;
+@@ -1298,13 +1328,17 @@
+   const unsigned m_descriptor_pool_size;
+   const unsigned m_descriptor_per_line_cap;
+   const bool m_ideal_meta;
++  unsigned m_ro_descriptor_count;
+   void ensure_descriptor_available();
+ 
+   struct ep_l2_descriptor {
+     mem_fetch *m_mf;
+     mem_access_sector_mask_t m_sectors;
+     bool m_response_queued;
+-    ep_l2_descriptor() : m_mf(NULL), m_response_queued(false) {
++    bool m_ro_external;
++    new_addr_type m_ro_line;
++    unsigned long long m_ro_generation;
++    ep_l2_descriptor() : m_mf(NULL), m_response_queued(false), m_ro_external(false), m_ro_line(0), m_ro_generation(0) {
+       m_sectors.reset();
+     }
+   };
+@@ -1313,10 +1347,12 @@
+     std::list<mem_fetch *> m_list;
+     std::list<unsigned> m_descriptor_ids;
+     bool m_has_atomic;
++    bool m_ro_line_owner;
++    ep_l2::PayloadHandle m_ro_handle;
+     mem_access_sector_mask_t m_pending_sectors;
+     mem_access_sector_mask_t m_issued_sectors;
+     mem_access_sector_mask_t m_ready_sectors;
+-    mshr_entry() : m_has_atomic(false) {
++    mshr_entry() : m_has_atomic(false), m_ro_line_owner(false) {
+       m_pending_sectors.reset();
+       m_issued_sectors.reset();
+       m_ready_sectors.reset();
+@@ -2157,6 +2193,7 @@
+   mshr_table::ep_l2_block_reason ep_l2_mshr_block_reason;
+   bool ep_l2_needs_lower_read;
+   bool ep_l2_tvd_candidate;
++  bool ep_l2_ro_lookup_wait=false;
+ };
+ 
+ // C5/C6 metadata-only payload model. mem_fetch remains the functional data
+@@ -2166,7 +2203,7 @@
+   static const unsigned k_physical_slots = 1152;
+   static const unsigned k_resident_slots = 1024;
+   static const unsigned k_bypass_slots = 128;
+-  enum role { RESIDENT, BYPASS, WB, IDEAL_REFERENCE, TVD };
++  enum role { RESIDENT, BYPASS, WB, IDEAL_REFERENCE, TVD, RO };
+   // A boolean cannot distinguish an ordinary target-payload retry from a
+   // physical same-bank denial.  C6c needs that distinction both for correct
+   // same-cycle admission and for meaningful B0-Banked telemetry.
+@@ -2179,7 +2216,7 @@
+     FILL_WRITE,
+     WB_READOUT,
+     BYPASS_FILL,
+-    BYPASS_READ, TVD_READ
++    BYPASS_READ, TVD_READ, RO_FILL_WRITE, RO_RESPONSE_READ
+   };
+   enum state {
+     FREE,
+@@ -2187,7 +2224,7 @@
+     RESIDENT_VALID,
+     RESIDENT_DIRTY,
+     BYPASS_FILL_PENDING,
+-    BYPASS_READY, WB_RESERVED, WB_STAGED, TVD_VALID, TVD_INFLIGHT
++    BYPASS_READY, WB_RESERVED, WB_STAGED, TVD_VALID, TVD_INFLIGHT, RO_FILL_ATTACHED, RO_FILL_DETACHED
+   };
+   // This is the sole physical-payload identity.  mem_fetch already carries
+   // the same pair across the lower request/response path.
+@@ -2277,6 +2314,7 @@
+   }
+   bool enabled() const { return m_mode != 0; }
+   bool banked() const { return m_mode == 2; }
++  unsigned ft_mode() const {return m_ft_mode;}
+   unsigned resident_used() const { return used(RESIDENT); }
+   unsigned bypass_used() const { return used(BYPASS); }
+   unsigned resident_free() const { return k_resident_slots - resident_used(); }
+@@ -2426,6 +2464,10 @@
+     return m_slots.size() - (k_physical_slots + m_wbuf);
+   }
+   unsigned wb_used() const { return used(WB); }
++  unsigned ro_used() const {return used(RO);}
++  unsigned long long bank_ro_fill_write() const {return m_bank_ro_fill_write;}
++  unsigned long long bank_ro_response_read() const {return m_bank_ro_response_read;}
++  unsigned long long m_bank_ro_fill_write=0,m_bank_ro_response_read=0;
+   unsigned pending_sector_count() const { unsigned n=0;
+     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+   unsigned pending_resident_landings() const {
+@@ -2436,10 +2478,11 @@
+     return n;
+   }
+   unsigned tvd_used() const { return used(TVD); }
+-  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB) - used(TVD); }
++  unsigned free_slots() const { return physical_slots() - used(RESIDENT) - used(BYPASS) - used(WB) - used(TVD) - used(RO); }
+   const slot &inspect(const payload_handle &h) const { assert(handle_live(h)); return m_slots[h.payload_id]; }
+   slot &inspect_mutable(const payload_handle &h) { assert(handle_live(h)); return m_slots[h.payload_id]; }
+   payload_handle preview_free(role r, unsigned bank = (unsigned)-1) const {
++    if(r==RO && m_ft_mode!=2)return payload_handle();
+     for (unsigned id = 0; id < m_slots.size(); ++id) {
+       if (m_slots[id].occupied() || (bank != (unsigned)-1 && id % 4 != bank)) continue;
+       if (!fixed_role_room(r,id%4)) continue;
+@@ -2714,6 +2757,8 @@
+       } else if (s.allocation_role == TVD) {
+         if (!m_ft_mode || (s.status != TVD_VALID && s.status != TVD_INFLIGHT) ||
+             !owners.insert(s.owner).second) return false;
++      } else if (s.allocation_role == RO) {
++        if(m_ft_mode!=2 || (s.status!=RO_FILL_ATTACHED && s.status!=RO_FILL_DETACHED)) return false;
+       } else if (s.allocation_role == WB) {
+         if (!m_ft_mode || (s.status != WB_RESERVED && s.status != WB_STAGED)) return false;
+       } else {
+@@ -2772,6 +2817,8 @@
+       case BYPASS_FILL: ++m_bank_bypass_fill; break;
+       case BYPASS_READ: ++m_bank_bypass_read; break;
+       case TVD_READ: ++m_bank_tvd_read; break;
++      case RO_FILL_WRITE: ++m_bank_ro_fill_write;break;
++      case RO_RESPONSE_READ: ++m_bank_ro_response_read;break;
+     }
+   }
+   struct pending_op {
+@@ -2810,7 +2857,9 @@
+ 
+ /// Models second level shared cache with global write-back
+ /// and write-allocate policies
++class ep_l2_ro_runtime;
+ class l2_cache : public data_cache {
++  friend class ep_l2_ro_runtime;
+  public:
+   l2_cache(const char *name, cache_config &config, int core_id, int type_id,
+            mem_fetch_interface *memport, mem_fetch_allocator *mfcreator,
+@@ -2828,14 +2877,15 @@
+         m_ep_l2_last_payload_request_result(ep_l2_payload_store::GRANTED),
+         m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
+     validate_ep_l2_mode_config();
++    ro_init();
+     m_ep_l2_payload.set_rg1_enabled(config.m_ep_l2_rg1);
+-    m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty);
++    m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());
+     m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);
+     m_ep_l2_payload.set_local_diagnostic(config.m_ep_l2_diag_copy_free ?
+         ep_l2::mechanism_v1::COPY_FREE : config.m_ep_l2_diag_l2_data_free ?
+         ep_l2::mechanism_v1::L2_DATA_FREE : ep_l2::mechanism_v1::NORMAL);
+     m_ms_observer.enabled = config.m_ep_l2_ms_observer;
+-    m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty);
++    m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());
+     m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);
+     m_ft_last_wb_versions.fill(0);
+     m_tvd_lookup = NULL; m_tvd_lookup_cycle = 0;
+@@ -2862,7 +2912,7 @@
+       return !m_ft_pending.dirty || m_config.m_ep_l2_ft_mode==2 || m_ft_pending.phase>=2;
+     return true;
+   }
+-  virtual ~l2_cache() {}
++  virtual ~l2_cache();
+ 
+   virtual enum cache_request_status access(new_addr_type addr, mem_fetch *mf,
+                                            unsigned time,
+@@ -2943,7 +2993,8 @@
+       if ((!m_config.m_ep_l2_ft_mode && handle.payload_id != i) ||
+           !m_ep_l2_payload.handle_live(handle) ||
+           m_ep_l2_payload.resident(handle.payload_id).allocation_role !=
+-              ep_l2_payload_store::RESIDENT)
++              ep_l2_payload_store::RESIDENT &&
++          !(m_ep_l2_payload.resident(handle.payload_id).allocation_role==ep_l2_payload_store::RO && m_ep_l2_payload.resident(handle.payload_id).status==ep_l2_payload_store::RO_FILL_ATTACHED))
+         return false;
+     }
+     return true;
+@@ -2967,6 +3018,15 @@
+   unsigned long long tvd_actual_lower_read_bytes() const { return m_ft_stats.lower_read_bytes; }
+   unsigned long long tvd_lookup_queries_for_test() const { return m_tvd_lookup_queries; }
+   bool tvd_lookup_started_for_test(const mem_fetch *mf) const { return m_tvd_lookup==mf; }
++  bool ro_enabled() const {return m_ro!=nullptr;}
++  bool access_ready() const;
++  void ro_frontend_cycle(mem_fetch *);
++  void ro_bind_commandlist(const char *);
++  void ro_begin_epoch();
++  void ro_end_epoch();
++  bool ro_drained() const;
++  bool ro_return(mem_fetch *,unsigned long long);
++  void ro_print(FILE *,unsigned) const;
+   bool ft_enabled() const { return m_config.m_ep_l2_ft_mode != 0; }
+   void commit_next_access();
+   mem_fetch *peek_next_access() const;
+@@ -3041,10 +3101,10 @@
+     return n;
+   }
+ 
+-  bool ft_drained() const { return !ft_enabled() || (!m_ft_pending.request &&
++  bool ft_drained() const { return ro_drained() && (!ft_enabled() || (!m_ft_pending.request &&
+       m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used() &&
+       !m_ft_quota.reserved && !m_ft_quota.live &&
+-      (!m_tvd || (m_tvd->epoch_ready() && !m_tvd_read))); }
++      (!m_tvd || (m_tvd->epoch_ready() && !m_tvd_read)))); }
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+   bool lower_mq2_safe(mem_fetch *head, mem_fetch *next) override;
+   void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
+@@ -3186,6 +3246,8 @@
+   std::map<mem_fetch *,ft_wb_record> m_ft_wb;
+   std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
+   std::array<unsigned long long,4> m_ft_last_wb_versions;
++  ep_l2_ro_runtime *m_ro;
++  void ro_init();
+   void validate_ep_l2_mode_config() const {
+     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+         (m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free ||
+@@ -3197,6 +3259,8 @@
+       fprintf(stderr,"A R3 TVD is separate from diagnostics/observer; original finite native cache policy required\n");
+       abort();
+     }
++    if(m_config.ro_requested() && (m_config.m_ep_l2_ft_mode!=2 || m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_payload_mode!=2 || m_config.m_ep_l2_descriptor_pool_size!=512 || m_config.m_ep_l2_descriptor_per_line_cap!=32 || m_config.m_mshr_entries!=128 || m_config.m_ep_l2_wad_entries!=128 || m_config.m_ep_l2_bank_ops!=1 || m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free)) {fprintf(stderr,"RO requires standalone U16 P1 D512/line128/WAD128\n");abort();}
++
+     const bool local_diag = m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free;
+     if ((m_config.m_ep_l2_diag_copy_free && m_config.m_ep_l2_diag_l2_data_free) ||
+         ((local_diag || m_config.m_ep_l2_ms_observer) &&
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index c0fd29bb1d700ad7e9fdd03ce99b4ec7c9a68559..3b8da4e62b04a9122aca2bcffd58635c387c9b24 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -297,6 +297,27 @@
+   option_parser_register(opp, "-gpgpu_ep_l2_rg1", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_rg1,
+                          "Explicit-ready bank selection (not yet qualified)", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_tag_detach", OPT_BOOL,
++                         &m_L2_config.m_ro_tag_detach,
++                         "Certified whole-commandlist RO pending Tag detach", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_line_mshr_bypass", OPT_BOOL,
++                         &m_L2_config.m_ro_line_mshr_bypass,
++                         "Certified RO completions use shared D512 without native line records", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_ranges", OPT_CSTR,
++                         &m_L2_config.m_ro_ranges,
++                         "RO certificate ranges; required when either RO mechanism is enabled", NULL);
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_ranges_sha256", OPT_CSTR,
++                         &m_L2_config.m_ro_ranges_sha256,
++                         "RO certificate ranges_sha256; required when either RO mechanism is enabled", NULL);
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_manifest", OPT_CSTR,
++                         &m_L2_config.m_ro_manifest,
++                         "RO certificate manifest; required when either RO mechanism is enabled", NULL);
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_manifest_sha256", OPT_CSTR,
++                         &m_L2_config.m_ro_manifest_sha256,
++                         "RO certificate manifest_sha256; required when either RO mechanism is enabled", NULL);
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_scope", OPT_CSTR,
++                         &m_L2_config.m_ro_scope,
++                         "RO certificate scope; required when either RO mechanism is enabled", NULL);
+   option_parser_register(opp, "-gpgpu_ep_l2_diag_copy_free", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_diag_copy_free,
+                          "L2-local S copy-service diagnostic; preserve copy values/placement, charge lower WB read", "0");
+@@ -2372,6 +2393,25 @@
+     m_warp[w]->print(fout);
+ }
+ 
++bool gpgpu_sim::ro_enabled() const {
++  return m_memory_config->m_L2_config.ro_requested();
++}
++void gpgpu_sim::ro_bind_commandlist(const char *path) {
++  if (!ro_enabled()) return;
++  for (unsigned i=0;i<m_memory_config->m_n_mem_sub_partition;++i)
++    m_memory_sub_partition[i]->ro_bind_commandlist(path);
++}
++void gpgpu_sim::ro_begin_epoch() {
++  if (!ro_enabled()) return;
++  for (unsigned i=0;i<m_memory_config->m_n_mem_sub_partition;++i)
++    m_memory_sub_partition[i]->ro_begin_epoch();
++}
++void gpgpu_sim::ro_end_epoch() {
++  if (!ro_enabled()) return;
++  for (unsigned i=0;i<m_memory_config->m_n_mem_sub_partition;++i)
++    m_memory_sub_partition[i]->ro_end_epoch();
++}
++
+ void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {
+   if (m_shader_config->ep_l2_mem_all_data) {
+     assert(m_all_data_reference.host_prefill(dst_start_addr,count) &&
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index baf7c1f301b0285b0370d6edce412998039cd783..86ba806154491cda2f3f7b00e16fb0a1e8e19bd9 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -645,6 +645,10 @@
+   void gpu_print_stat(unsigned long long streamID);
+   void dump_pipeline(int mask, int s, int m) const;
+ 
++  bool ro_enabled() const;
++  void ro_bind_commandlist(const char *path);
++  void ro_begin_epoch();
++  void ro_end_epoch();
+   void perf_memcpy_to_gpu(size_t dst_start_addr, size_t count);
+ 
+   // The next three functions added to be used by the functional simulation
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index c4adeb8cc91f0813ab1d19d5220c621b5bc6a5c2..cb020dc283535f739b65ed7f480a9f8f1d9baef6 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -958,6 +958,10 @@
+                                            class memory_stats_t *stats,
+                                            class gpgpu_sim *gpu) {
+   m_id = sub_partition_id;
++  if (config->m_L2_config.ro_requested() &&
++      (config->m_L2_config.disabled() || config->m_L2_texure_only))
++    throw std::invalid_argument("RO requires enabled L2 for all access types");
++
+   m_config = config;
+   m_stats = stats;
+   m_gpu = gpu;
+@@ -1252,7 +1256,8 @@
+     --m_l2_char_returnq_hold_remaining;
+   } else if (!m_dram_L2_queue->empty()) {
+     mem_fetch *mf = m_dram_L2_queue->top();
+-    if (!m_config->m_L2_config.disabled() && m_L2cache->waiting_for_fill(mf)) {
++    if(mf->ro_lower_packet()) {if(m_L2cache->ro_return(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle)){m_dram_L2_queue->pop();delete mf;}}
++    else if (!m_config->m_L2_config.disabled() && m_L2cache->waiting_for_fill(mf)) {
+       // Target payload modes replace the legacy FillPort with the resident
+       // payload RAM write port. The returned transaction's landing identity
+       // selects the physical target slot; no hard-coded slot may be used.
+@@ -1325,6 +1330,7 @@
+         ((m_config->m_L2_texure_only && mf->istexture()) ||
+          (!m_config->m_L2_texure_only))) {
+       // L2 is enabled and access is for L2
++      m_L2cache->ro_frontend_cycle(mf);
+       if (!ep_l2_ideal_serve_read(
+               mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+       l2_access_plan plan;
+@@ -2432,6 +2438,7 @@
+           uid == (unsigned long long)-1 ? 1 : 0);
+   if (uid == (unsigned long long)-1 && m_L2cache->ft_enabled()) {
+     m_L2cache->ft_print(fp, m_id);
++    m_L2cache->ro_print(fp, m_id);
+     fprintf(fp, "EPL2FTV1|TERMINAL|slice=%u|unique_requesters=%llu|responses=%llu|"
+         "absorbed_writebacks=%llu|requester_live=%u|requester_exact_once=%u|"
+         "hardware_drained=%u|pending_lower_reads=%u|pending_returns=%u|pending_responses=%u\n",
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 11541267eebe751bb3dbc959bce858ec93cf3d40..d37f5c08e590e64310813516ae9c8ca6215ca3e8 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -303,6 +303,12 @@
+   unsigned get_id() const { return m_id; }
+ 
+   bool busy() const;
++
++  // One epoch for the entire trace commandlist, never per-kernel.
++  void ro_bind_commandlist(const char *path) { if (m_config->m_L2_config.ro_requested()) m_L2cache->ro_bind_commandlist(path); }
++  void ro_begin_epoch() { if (m_config->m_L2_config.ro_requested()) m_L2cache->ro_begin_epoch(); }
++  void ro_end_epoch() { if (m_config->m_L2_config.ro_requested()) m_L2cache->ro_end_epoch(); }
++  l2_cache *ro_cache_for_test() const { return m_L2cache; }
+ 
+   void cache_cycle(unsigned cycle);
+ 
+diff --git a/src/gpgpu-sim/mem_fetch.h b/src/gpgpu-sim/mem_fetch.h
+index cd7813b0ea383519b985fd5f4ec4fe29752bf377..af7c518aeb36f29a55399e1ce52901310d535831 100644
+--- a/src/gpgpu-sim/mem_fetch.h
++++ b/src/gpgpu-sim/mem_fetch.h
+@@ -132,6 +132,8 @@
+   mem_fetch *get_original_wr_mf() { return original_wr_mf; }
+ 
+   void set_ft_wb_data(const std::array<unsigned long long,4> &v) { m_ft_wb_data = v; m_ft_wb_data_valid = true; }
++  bool ro_lower_packet() const {return m_ro_lower_packet;}
++  void set_ro_lower_packet(){m_ro_lower_packet=true;}
+   bool has_ft_wb_data() const { return m_ft_wb_data_valid; }
+   const std::array<unsigned long long,4> &get_ft_wb_data() const { assert(m_ft_wb_data_valid); return m_ft_wb_data; }
+ 
+@@ -152,6 +154,7 @@
+  private:
+   std::array<unsigned long long,4> m_ft_wb_data;
+   bool m_ft_wb_data_valid;
++  bool m_ro_lower_packet=false;
+   // request source information
+   unsigned m_request_uid;
+   unsigned m_sid;
