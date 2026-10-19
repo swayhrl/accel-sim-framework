@@ -1,6 +1,6 @@
 # Execution coordination state
 
-Updated: 2026-10-19 21:14 Asia/Shanghai. Status:
+Updated: 2026-10-19 21:24 Asia/Shanghai. Status:
 **AG4_TERMINAL_STOP_CONSUMED_PROVISIONAL_O_CPU_REPAIR_REQUIRED**. The full
 evidence-closure goal remains incomplete. Execution location is original
 `huangrulin-174`; pinned plan46df82670a56a4498b6d6e23ad57859eb7c36945 and planning
@@ -11,15 +11,15 @@ execution branch `hrl/iscas2027-dtc-closure-exec-174-v1`.
 |---|---|---|
 |AG4|Terminal STOP published; actual2/5 starts; optimization results0; own process instances absent and lock released|`d8d0401dab0a1d9cb949302bcc05148328421cc2`; execution/AG4_TERMINAL_INTAKE.json|
 |AG4 reason|Retired-PID real wait-dispatch qualification gap; actual PID reuse NOT_ESTABLISHED|FINAL_CPU_QUALIFICATION_DECISION and terminal supplement at AG4 commit|
-|COV1|Safe prep published; exact tiny CPU role registered, actual input qualification not started|`8f76a8a50ec5e56dd49f93224a64b253383b0420`|
+|COV1|Exact tiny reference4/4PASS published; actual full-input/decoder/native qualification still not started|`d986ba4db47b296c27b68541b2b867e294a652e6`|
 |SEM1|Source/ABI scope and12 litmus plans published; actual production/native tests0|`e2eea8b8b406a227592e19638ae542c12dd1ecf9`|
 |ROB1|Quota/hash/typed-metric preparation published; isolated Core source patch published; no compiler/test run|`e37b0920b957c162c6640230ee7ce3a9c391e556`|
 |Research candidate|One global fixed provisional O: K0/OO128/Tag64x8/AE0/AD0; no arm promotion|execution/SELECTION.json and AG4_SCIENTIFIC_REVIEW.md|
 |Historical imports|Eight C+ and four T/U O records IMPORTED_VERIFIED; current-F family admission still false|execution/cplus_reuse/ and o_reuse/; budget ledger|
-|New coordinator engine|Retired membership/image/parent removal and fresh instance check before resume prepared only in isolated copy|execution/prepared_runtime/; actual-dispatch AST regression6PASS; real helper/multiroot qualifications pending|
+|New coordinator engine|Retired membership/image/parent removal and fresh instance check before resume prepared only in isolated copy|execution/prepared_runtime/; actual-dispatch AST6PASS and two actual root/thread/dash/cat lifecycles PASS; global shared observer/external role integration pending|
 |CPU AST role|Actual-dispatch AST6PASS; pre-entry environment failure preserved; COV1 tiny4-test role registered|execution/CPU_AST_ROLE_REGISTRATION.json|
 |Full simulations|New starts0/32, no executable matrix/UUIDs, no execution lock|execution/BUDGET_LEDGER.json|
-|Disk|About5.8GB free, below unchanged10GiB R2 minimum for new simulations|execution/CPU_AST_RESOURCE_FIRST.json; user informed, no other-project cleanup|
+|Disk|About4.7GB free, below unchanged10GiB R2 minimum for new simulations|execution/CPU_AST_RESOURCE_FIRST.json; user informed, no other-project cleanup|
 |Paper / DC|No v0.17, old44/GM12, history, Core or PPA change|DC remains user-owned|
 
 AG4 terminal intake checks81 unchanged registration hashes, exact actual
@@ -33,8 +33,8 @@ modified or attempt restarted by this coordinator. The process disappearance
 at20:48 was not treated as scientific completion before GitHub terminal intake.
 
 The former WAIT_AG4_TERMINAL gate is resolved. No blocked goal update was
-issued: the remote state changed during the audit. New actual work requires
-the isolated executor defect repair/qualification and exact CPU role admission;
+issued: the remote state changed during the audit. The isolated repair passes AST6 and two real helper/root lifecycles.
+New work still requires exact CPU role admission and global observer integration;
 new simulator dispatch additionally requires full resource and family/source/
 input/runtime publication gates. A tiny bounded no-child AST regression is
 registered separately from full-simulation R2 admission; its result cannot

@@ -1,10 +1,12 @@
 # Reused lifecycle engine and isolated CPU roots
 
-**DISPATCH_AST_6_PASS; REAL_LIFECYCLE_AND_GLOBAL_AUTHORITY_PENDING.**
+**DISPATCH_AST_6_PASS; TWO_REAL_CPU_ROOT_HELPERS_PASS; GLOBAL_AUTHORITY_PENDING.**
 
 This is concrete post-gate runtime preparation, not a passing qualification,
 performance runner, scheduler or deferred dispatcher. The bounded registered dispatch-AST test has executed six cases successfully.
-The real guard, CPU fixture, and multiroot wrapper have not been invoked or compiled. The coordinator's
+The repaired guard and multiroot wrapper have now run two real CPU roots, each
+with a real thread and28 dash/cat helper lifecycles. Both naturally exited0;
+event-confirmed instance absence, helper maps, cache unmap and actual overlap passed. The coordinator's
 published source/authority contract governs execution; a JSON status string is
 not evidence that the real gate has opened.
 
@@ -15,7 +17,8 @@ retired-PID wait-dispatch gap reported by AG4 terminal d8d0401. Retired owned,
 image and parent memberships are removed in normal and cleanup exit branches;
 every resume requires a currently confirmed instance and fresh start_ticks.
 The actual dispatch/resume AST passes six declared synthetic-event cases;
-this does not qualify the real lifecycle. AG4 files remain unchanged.
+the two real helper lifecycles also pass. This does not qualify the global
+shared observer or a simulator. AG4 files remain unchanged.
 `authority_cpu.cc` changes only its two project data paths and retains the
 original CPU-only stdout markers. No AG4 path is written or executed. The
 minimal local `common.py` exports only output and timestamp helpers used by
@@ -69,5 +72,5 @@ introduced.
 
 AG4 terminal intake is now available and its own authority is released. The
 prior local inherited copy was never executed. The frozen-source dispatch counterexample was reproduced, and the repaired
-actual AST rejects it. Qualification through real helper/multi-root lifecycles
-remains required. Source review alone does not open new simulation authority.
+actual AST rejects it. The real helper/multi-root lifecycle has now passed under the fixed source.
+Production global role/observer qualification remains required. Source review alone does not open new simulation authority.
