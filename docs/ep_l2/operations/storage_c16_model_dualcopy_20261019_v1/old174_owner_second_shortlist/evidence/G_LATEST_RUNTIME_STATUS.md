@@ -1,0 +1,298 @@
+# C16-G Wave-1 runtime status
+
+Status: `C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF`
+Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
+`9938b59ab80e6d1c77cc1efa6f6980e4cdfac5bc`.
+
+## Bounded NVBit compatibility diagnostic (non-scientific)
+
+`NVBIT_COMPATIBILITY_DIAGNOSTIC_COMPLETE` is recorded separately at
+[`nvbit_compatibility_diagnostic`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/nvbit_compatibility_diagnostic/).
+It did not run a C target or modify the frozen target authority.  On the frozen
+RTX3090 / driver 595.58.03 environment, no-NVBit PyTorch elementwise and GEMM
+controls passed, while both NVBit's official `instr_count` tool and the C16
+tracer timed out before the first workload kernel after the `nvdisasm` PATH
+precondition was corrected.  The evidence supports only
+`NVBIT_PYTORCH_RUNTIME_OR_DRIVER_COMPATIBILITY_SUSPECTED`; it does not assign
+root cause to the driver or custom tracer and it is not scientific capture.
+All compact evidence is dual-endpoint hash-closed; trace count and
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT` are zero.  The formal terminal status
+above is unchanged.  Retry only on:
+`PROFILING_ENABLED_SM86_NODE_WITH_NVBIT_SUPPORTED_DRIVER`.
+
+## Fixed C G2/G3 target execution
+
+Lane C has now formally published the fixed target authority at
+`d55075b7752380d6bd22328547db21a5e24eeed2`
+(`C16_C_FIXED_G2_G3_TARGET_READY`).  G independently verified every one of
+the 48 C manifest payloads by existence, byte count, and SHA256, with zero
+failures and zero duplicate paths.  The immutable consumption record is
+[C16_G_FIXED_TARGET_CONSUMPTION_RECEIPT.json](C16_G_FIXED_TARGET_CONSUMPTION_RECEIPT.json):
+it binds the exact C publish manifest, selector-source freeze, G target policy,
+and separate NCU/NVBit B48 target-plan digests.  It confirms only P3 AWQ S1/S2
+are admitted; P3 S3/S4 and P2 raw remain excluded without substitution.
+
+G2 is now closed as `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`.  The RTX3090
+has Nsight Compute 2024.1.1 and the committed five-metric compact set, but the
+sole C-plan first-row canary executed as root and received
+`ERR_NVGPUCTRPERM`.  It produced no `.ncu-rep`, so it cannot prove a unique
+structural/ordinal reproduction; the target is conservatively
+`TARGET_IDENTITY_NOT_REPRODUCIBLE`, not substituted.  The exact three-session
+ledger/transfer closure is in
+[G2_NCU_CAPABILITY_LIMITED_RECEIPT.json](G2_NCU_CAPABILITY_LIMITED_RECEIPT.json).
+The actual canary is retained as attempted/no-report; each remaining 287
+C-fixed NCU rows is `NOT_EXECUTED_CAPABILITY_LIMITED`, with no second NCU row.
+
+G3 is now closed as `G3_CAPABILITY_LIMITED`.  NVBit 1.7.6 was hash-closed and
+passed the tiny direct CUDA fixture (injection, terminal state, active mask,
+4-byte global load/store, postprocess, and bounded raw window).  The first
+file-order C AWQ target was then uniquely bound by the full P composite key,
+global ordinal 79554, implementation family, exact source kernel text, and
+7x1x1 / 128x1x1 geometry—not a kernel-name-only match.  The model process
+aborted with `SIGABRT` before child preflight or raw trace emission.  Its
+parent/child single lease and diagnostic ledger closed correctly, but no actual
+trace can prove identity.  The attempted row is
+`ATTEMPTED_CAPABILITY_LIMITED_NO_MODEL_NVBIT_TRACE`; the other 287 rows are
+`NOT_EXECUTED_CAPABILITY_LIMITED`, with no ordinal, target, shape, backend,
+dtype, package, or deployment substitution.  See
+[`g3_nvbit`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/fixed_target_execution/g3_nvbit/).
+There is no real model NVBit canary for Lane H; the fixture raw is explicitly
+not a model trace.
+
+## Runtime anchors
+
+| Field | Value |
+|---|---|
+| Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
+| Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
+| Current G publication head before this checkpoint | `ae560163ff0462077e766bb737536b4a0f57339c` |
+| Current G2 NCU runtime source commit | `ea80c2042093d97728e7c4646e7eb1dae90f1186` |
+| G2 NCU disposition | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; the 287 remaining C rows are `NOT_EXECUTED_CAPABILITY_LIMITED`. |
+| G3 NVBit runtime source commit | `f7d2142c6f2a6a8ef37a13b65e14911ded75c856` |
+| G3 NVBit disposition | `G3_CAPABILITY_LIMITED`; fixture PASS is diagnostic-only, and the sole fixed AWQ model canary terminated `SIGABRT` with zero raw files. |
+| Native-event publication implementation anchor | `307ad12335745153e8b320ba3ef131d0f451cf06` |
+| P3 AWQ native runtime source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
+| Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, Accelerate-compatible explicit root device map `{"": 0}`, no offload, exact frozen sequence length.  CUDA OOM has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
+| P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `ae560163…` on `c16-runtime-ae560163`; hash-verified source bundle SHA256 is `d3711c21d7fa406f734ac252b1bd1513b64a21c5ec92e388cf7f2a0f2ab14689`.  All 16 remote no-GPU focused tests passed before P3 S2 G1.  The target builder permits a preceding baseline from `a54e25ab…` only after proving that its four profiled execution paths are byte-identical to `ae560163…`; it does not waive source identity for the G1 run. |
+| P3 AWQ direct-semantic source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
+| Meaning of direct-semantic source commit | The separate non-timing semantic runner uses the same explicit AWQ loader/residency contract.  It remains deferred until P3 clean baseline/G1 close. |
+| Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
+
+`3f02eef6` is the immutable source anchor for the completed P0/P1 formal runs.  A
+future source or contract change that affects a scientific run must pass focused
+tests, be committed and pushed, and be named in that run's receipt before use.
+
+## Direct semantic evidence (non-timing)
+
+Llama S2 run `cd3e40be-a7d5-43e5-9030-d84dc158f406` passed direct module-NVTX
+instrumentation and stable kernel/correlation/stream join qualification under
+runtime source `b241fecf…`.  Its only status is
+`SEMANTIC_DIAGNOSTIC_ONLY` / `NOT_FOR_NATIVE_TIMING`; both native runtime and
+Nsight receipts set scientific eligibility false.  It has 20,669 direct,
+unambiguous mappings, 24,611 conservative `UNKNOWN` rows, and zero ambiguous
+direct-range ties.  The full map remains outside Git; the consumer-facing small
+coverage table, receipt, and exact external artifact hashes are in
+[`direct_semantic_s2`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/direct_semantic_s2/).
+
+The initial direct-semantic run `7c9d0ba8-2376-46f9-9791-2c3b8c8fb260` remains
+in the ledger as `NON_SCIENTIFIC_DIAGNOSTIC` after an NVTX hook-return bug.  The
+corrected source was focused-test-passed and pushed before the successful new
+run.  Neither diagnostic changes G0/G1 or the standalone scientific path.
+
+Qwen2.5-0.5B S2 run `1a748d40-8144-47f3-93f6-4b8e75be4e65` also passed
+direct-semantic qualification: 33,184 direct/unambiguous rows, 37,040
+conservative `UNKNOWN` rows, and zero direct-range ties.  It is a separate
+non-timing diagnostic.  Its map never joins absolute timestamps to a different
+run's clean census; Lane P alone may reconcile runs through its
+`EVENT_INPUT_CONTRACT`.  Its semantic publish-manifest SHA256 is
+`b9a0a3aea01887f58877ecadd4d119582e09387702122be0ff4564b918d3d5fb`;
+consumer-facing coverage/receipt/hash index is in
+[`direct_semantic_qwen05_s2`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/direct_semantic_qwen05_s2/).
+
+Qwen2.5-7B AWQ S2/TEXT run `950a89bb-f862-4d7b-b638-8bc4f0ca65ec` passed
+direct module-NVTX qualification under `ae560163…`: 46,079 direct/unambiguous
+rows, 50,073 conservative `UNKNOWN` rows, zero ambiguous direct-range ties,
+and a full 96,152-row kernel/correlation/stream population.  This remains
+`SEMANTIC_DIAGNOSTIC_ONLY` / `NOT_FOR_NATIVE_TIMING`; it cannot overwrite a
+clean P3 baseline/census, and it does not cross-run join timestamps.  Its
+consumer coverage, receipt, and external hash index are in
+[`direct_semantic_p3_awq_s2`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/direct_semantic_p3_awq_s2/).
+
+## Consumed package checkpoints
+
+| Package | Fixed A commit | Manifest SHA256 | Consumption state |
+|---|---|---|---|
+| `C16_GPU_PACKAGE_P0` (Llama 3.2-1B) | `20fb38e6ca629f1a93db7939248bd1a03790724c` | `ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f` | Previously hash-closed and used for the formal Llama standalone set. |
+| `C16_GPU_PACKAGE_P1` (Qwen2.5-0.5B) | `4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63` | `d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84` | Hash-closed before execution.  Transfer receipt SHA256: `bfa4e7a625fef437c7a2c131681c14f3c0e182cb403be23c6938ff3d11bfacf1`. |
+| `C16_GPU_PACKAGE_P3` Qwen2.5-7B AWQ | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c` | **CONSUMED_TRANSFER_HASH_CLOSED**: all 58 remote payloads passed independent size/SHA verification.  Local and returned remote receipt SHA256 are both `15e405730af5b76b6f25db6fd126a214d2345ea15bbdb9d9fa0950a3d7ead92c`; see [P3_PACKAGE_CONSUMPTION_RECEIPT.json](P3_PACKAGE_CONSUMPTION_RECEIPT.json).  No P3 GPU work preceded closure. |
+| `C16_GPU_PACKAGE_P2` Qwen2.5-7B raw | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26` | **CONSUMED_TRANSFER_HASH_CLOSED**: all 62 payloads passed independent remote size/SHA verification after the P3 AWQ native group closed.  Local materialization receipt SHA256: `dd84c0dd0908959035a9379943c3e8f856458393ef07f580716be3ecb11cc959`; returned remote receipt SHA256: `44a23f213080ad6925217bbe67dca0af75f1a1da1d35e031724ef9ac635c3563`; see [P2_PACKAGE_CONSUMPTION_RECEIPT.json](P2_PACKAGE_CONSUMPTION_RECEIPT.json).  No P2 GPU work preceded closure. |
+
+## Qualified execution state
+
+| Deployment / group | G0 | G1 | G2 | G3 | Latest completed formal group |
+|---|---|---|---|---|---|
+| Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Not in C fixed NCU plan | Not in C fixed NVBit plan | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
+| Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1, S2, S3/TEXT (`a67d9a5e-049a-401f-bdbe-6281e89b7351`), and S4/STRUCTURED (`bf2bf219-1836-4a4c-8d9d-c6acc2b940f1`) | Not in C fixed NCU plan | Not in C fixed NVBit plan | S3/S4 standalone baselines and full-range G1 passed independent CUDA/correlation/NVTX export validation; both raw `.nsys-rep` artifacts are hash-closed in `RAW_ARTIFACT_INDEX.tsv`. |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`), S2/STRUCTURED (`0db40447-a201-452d-a48d-be8116d71aee`); S3/TEXT and S4/STRUCTURED `SKIPPED_RESOURCE` | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; 287 remaining rows `NOT_EXECUTED_CAPABILITY_LIMITED`, no target substitution | `G3_CAPABILITY_LIMITED`; fixed first AWQ model canary `c19ada55-25e7-4917-abd6-0e0a2e3f618f` aborted pre-trace, remaining 287 rows `NOT_EXECUTED_CAPABILITY_LIMITED` | S2 direct-semantic diagnostics passed separately.  Both dense-Qwen S3 `B1/T8192/D16` and S4 `B4/T2048/D16` are explicit CUDA-OOM resource results with no CPU/offload/shape substitution; see [P3_AWQ_S3_RESOURCE_ADMISSION.json](P3_AWQ_S3_RESOURCE_ADMISSION.json) and [P3_AWQ_S4_RESOURCE_ADMISSION.json](P3_AWQ_S4_RESOURCE_ADMISSION.json). |
+| Qwen2.5-7B raw P2 | `SKIPPED_RESOURCE`: S0/TEXT (`4c4a6f27-c5db-4145-972c-3c1b52647a48`) | Not admitted: no baseline/census after S0 CUDA OOM | Not in C fixed NCU plan | Not in C fixed NVBit plan | Exact frozen S0 raw standalone load reached CUDA resource admission and failed closed without CPU offload or shape substitution; see [P2_RAW_S0_RESOURCE_ADMISSION.json](P2_RAW_S0_RESOURCE_ADMISSION.json). |
+
+The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
+has a retained ledger entry marked `NON_SCIENTIFIC_DIAGNOSTIC`; it has no raw
+profile and is excluded from baseline/census.  Parent/child lease proof remains
+mandatory, so neither that diagnostic nor a child invocation can bypass or
+double-count the budget.
+
+## Resident decision
+
+`RESIDENT_MODEL_NO_GO_WITH_EVIDENCE` remains in force.  Q1 failed its strict
+scenario-cleanup envelope check and all associated historical ledger rows remain
+`NON_SCIENTIFIC_DIAGNOSTIC`.  Record additionally:
+
+`RESIDENT_REQUALIFICATION_DEFERRED`
+
+There will be no Q2 or other resident GPU work in this window.  Resident mode is
+not an alternative scientific path and does not alter the qualified standalone
+baseline, census, profiler, NCU, or NVBit methods.
+
+## Raw-artifact index and next queue
+
+## C-train clean native event publication for Lane P
+
+The fixed P1-event release is
+[`native_events_c_train/PUBLISH_MANIFEST.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/native_events_c_train/PUBLISH_MANIFEST.json),
+whose SHA256 is `ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc`.
+It covers eight clean C-train candidate reports: Llama S1/S2/S3/S4 and
+Qwen0.5 S1/S2/S3/S4. Its machine-readable
+[`C16_G_NATIVE_EVENT_MANIFEST.tsv`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/native_events_c_train/C16_G_NATIVE_EVENT_MANIFEST.tsv)
+binds each event to its actual profile-run source commit, package commit and
+manifest hash, identity, profile command/config digest, remote/local report
+paths, size/SHA256, unique transfer receipt, fixed remote Nsight-version
+receipt, terminal status, and G1/export-validation evidence.
+
+The event publisher implementation is anchored at `307ad123…`; this is a
+publication-only implementation anchor, not a replacement for a profile's
+`producer_full_commit`. Each event retains its actual runtime source commit
+(`12e9f16d…`, `3f02eef6…`, or `ae560163…`) in the table and event JSON. The
+final handoff HEAD is the commit that publishes this status and manifest, not
+any of those historic producer commits.
+
+Four reports have an existing independent G export-validation receipt (Llama
+S1/S2 and Qwen0.5 S3/S4). The earlier Llama S3/S4 and Qwen0.5 S1/S2 captures
+remain clean `COMPLETE`/hash-closed native reports, but their historical G
+directories did not retain a separate independent export-validation receipt.
+Their per-event validation-binding receipt states
+`G1_EXPORT_VALIDATION_NOT_MATERIALIZED_BY_G` and explicitly requires P's
+already-qualified local Nsight export before formal postprocess; this closeout
+does not invent an export PASS or regenerate any raw artifact.
+
+The four still-retained remote reports were read only for size/SHA confirmation
+at closeout. The other four had already been reclaimed after prior local SHA
+closure; their transfer receipts preserve that historical state and do not
+pretend a new remote hash was possible.
+
+## AutoDL power-off gate
+
+`C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF` is now published in
+[AUTODL_POWER_OFF_GATE_RECEIPT.json](AUTODL_POWER_OFF_GATE_RECEIPT.json).
+All 16 scientifically required or diagnostically retained raw artifacts have
+local size/SHA closure; all 10 still-present remote `.nsys-rep` copies also
+match those local SHA-closed identities. `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT`
+is `0`, `GPU_PENDING_AUTHORIZED_WORK` is `0`, and
+`ACTIVE_GPU_PROCESS_COUNT` is `0`. The eight remote SQLite exports are
+explicitly non-required, reproducible validation derivatives, not unique raw
+inputs.
+
+The event publish checkpoint `e3d49cea…` (manifest SHA256
+`ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc`)
+is confirmed pushed. It includes all event, transfer, validation and fixed
+remote-Nsight-version receipts.
+
+The earlier watch-only C recheck is superseded by C fixed authority
+`d55075b7752380d6bd22328547db21a5e24eeed2`.  G2 and G3 were both processed
+under that authority and are now capability-limited without target expansion.
+The final handoff HEAD is the commit that publishes this completed gate; it is
+distinct from both the event publisher implementation anchor and historic
+runtime producer commits.
+
+The returned `.nsys-rep` artifacts, including the retained semantic diagnostic
+raw, are indexed by immutable
+path/size/SHA in [RAW_ARTIFACT_INDEX.tsv](RAW_ARTIFACT_INDEX.tsv).  They are not
+Git payloads.  Each listed local copy has an independently verified SHA256; the
+remote copies were still present at this checkpoint and may be reclaimed only
+after the published index is available and the corresponding local digest is
+reconfirmed.
+
+Llama's direct-semantic `.nsys-rep` and temporary remote SQLite were reclaimed
+from AutoDL only after their published local SHA256 confirmations.  Qwen0.5's
+matching raw remains remote at this checkpoint; both entries give the local
+hash-closed retained copy, and their small remote receipts remain available.
+
+P3 S1/CODE is now closed: its G1 export-validation receipt independently proves
+119,980 nonzero named CUDA kernels on one stream, 119,980 CUDA-runtime
+correlation joins, and NVTX full/prefill/decode overlap under the exact frozen
+P3 identity.  The only SQLite materialized on AutoDL was the minimal
+validation input; no remote launch TSV or catalog was generated.  The
+hash-closed `.nsys-rep` is local and indexed; its raw-free local postprocess
+does not gate the queue.
+
+P3 S2/TEXT is now closed: its G1 export-validation receipt independently proves
+240,380 nonzero named CUDA kernels, one profiled stream, 240,380 CUDA-runtime
+correlation joins, and NVTX full/prefill/decode overlap under the exact frozen
+P3 identity.  Its preceding baseline was source `a54e25ab…`; the G1 target/run
+are source `ae560163…`, with committed blob-SHA proof that every profiled
+runtime execution path was unchanged.  The validation-only SQLite is retained
+remotely with an immutable hash; no remote launch TSV or catalog was generated.
+The hash-closed `.nsys-rep` is local and indexed, so any P-side postprocess
+cannot gate the GPU queue.
+
+P3 S2/CODE is also closed under the same fixed runtime source: its independent
+G1 validation proves 240,380 nonzero named CUDA kernels, 240,380 runtime
+correlation joins, one stream, and full/prefill/decode NVTX linkage.  Its 35.0
+MB `.nsys-rep` has matching remote/local SHA256 and is indexed outside Git; the
+SQLite is validation-only and no remote launch TSV/catalog was generated.
+
+P3 S2/STRUCTURED is now closed with the third required S2 input class.  Its
+independent G1 validation proves 240,380 named CUDA kernels/correlation joins,
+one stream, and full/prefill/decode NVTX linkage.  The 34.9 MB report has
+matching remote/local SHA256 and remains an external raw artifact; no timing
+data is changed by subsequent semantic diagnostics.
+
+P3's frozen main native group is closed: S1/CODE and all S2 input classes have
+resource-admitted standalone/G1 evidence; S3/TEXT and S4/STRUCTURED are
+truthful `SKIPPED_RESOURCE` outcomes.  Neither skip was substituted, profiled,
+or used to infer a performance row.
+
+P2 raw package transfer and full size/SHA closure are complete.  Its exact
+frozen S0/TEXT G0 is `SKIPPED_RESOURCE` on CUDA OOM; no P2 baseline or G1 is
+admitted without changing the frozen scenario, which is prohibited.  Lane P's
+local semantic merge is not a prerequisite for other independently admitted work.
+
+P1's remaining frozen S3/TEXT and S4/STRUCTURED groups are closed through
+standalone baseline plus validated G1.  There is no next authorized GPU task:
+G2 is closed on direct counter-permission evidence and G3 is closed on the
+fixed-model NVBit runtime-tool abort after its fixture qualification.
+
+## Known capability / analysis boundaries
+
+- `C16_GPU_PACKAGE_P2` raw remains `SKIPPED_RESOURCE`: its fixed S0 CUDA OOM
+  has no shape, context, batch, CPU-offload, or fallback substitution.
+- G2 is `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`: the only C
+  first-row canary had no NCU output after `ERR_NVGPUCTRPERM`; the remaining
+  287 rows are `NOT_EXECUTED_CAPABILITY_LIMITED`, without a replacement
+  target.  G3 is `G3_CAPABILITY_LIMITED`: the fixed first P3 AWQ target
+  emitted no model trace after an NVBit/PyTorch-AWQ `SIGABRT`; all remaining
+  rows are `NOT_EXECUTED_CAPABILITY_LIMITED`.
+- Existing nsys raw is retained losslessly outside Git.  Remote export is not the
+  default catalog path; raw -> remote SHA -> local transfer -> local SHA -> local
+  export is the policy path.
+- Direct runtime semantic evidence is a separately marked diagnostic effort.  It
+  may not overwrite any qualified timing row or alter the meaning of the clean
+  P0/P1 census.  Local nsys 2022.4.2 cannot parse remote nsys 2024.1 reports;
+  the S2 semantic SQLite was a one-time remote-export fallback, never a remote
+  launch TSV/catalog.
+- P3 AWQ standalone G0/S1 and S2 baseline execution is bound to `a54e25ab…`.
+  Subsequent P3 G1 runs are bound to `ae560163…`, which adds a no-GPU frozen
+  G1 target builder and proves blob identity for the actual runner, adapter,
+  budget, and profiler paths before allowing a preceding `a54e25ab…` baseline.
+  Both commits are focused-test-passed, immutable, and deployed by
+  hash-verified bundle before their named scientific run.

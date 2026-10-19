@@ -1,0 +1,60 @@
+{
+  "at_utc": "2026-10-19T13:11:19.362514+00:00",
+  "probes": [
+    {
+      "command": [
+        "crontab",
+        "-l"
+      ],
+      "status": "FileNotFoundError"
+    },
+    {
+      "command": [
+        "systemctl",
+        "list-timers",
+        "--all",
+        "--no-pager"
+      ],
+      "returncode": 1,
+      "stdout_bytes": 0,
+      "sha256": "5aa1f455d5a9163b8ecbad00f3a5e89a62b2d5414d6150d481692269cbf53caa",
+      "path_references": [],
+      "error_category": null
+    },
+    {
+      "command": [
+        "tmux",
+        "list-panes",
+        "-a",
+        "-F",
+        "#{pane_pid}\t#{pane_current_path}"
+      ],
+      "returncode": 0,
+      "stdout_bytes": 442,
+      "sha256": "94846252a8253d0c3876a5f43967a0924b86f3a2e21878f8e724ae791deba70d",
+      "path_references": [
+        "/workspace/.model_cache_migration_backup_20260905/model-cache",
+        "/workspace/.model_cache_migration_backup_20260905/model-cache/GLM-4-9B-0414",
+        "/workspace/repos/gpu-l2-cache-verilog",
+        "/workspace/worktrees/accel-sim-c2p-addr-observe",
+        "/workspace/worktrees/accel-sim-decoupled-l2",
+        "/workspace/worktrees/accel-sim-tls-cache"
+      ],
+      "error_category": null
+    },
+    {
+      "path": "/etc/cron.d/e2scrub_all",
+      "sha256": "d4df081b982b23e66cac7102f9d91032f296caf13031991d90af44ee6cbf6e3b",
+      "c16_marker": false,
+      "paths": []
+    },
+    {
+      "path": "/etc/cron.d/sysstat",
+      "sha256": "47a67deba0d029d43209e6e512399543a945172f2a640021a6c21422a66adb1a",
+      "c16_marker": false,
+      "paths": []
+    }
+  ],
+  "scope": "Original174 local scheduler metadata only; remote 109/164, user UI goals and untracked plans not cleared",
+  "no_commands_started_or_changed": true
+}

@@ -1,0 +1,32 @@
+{
+  "decision": "OLD174_HANDOVER_COMPLETE",
+  "scope": "V0 source audit and control-plane handover only",
+  "old174_role_after_acceptance": "HISTORICAL_SOURCE_ONLY",
+  "next_topology": {
+    "producer": "node109 RTX4080",
+    "ingest_catalog": "new174/2239 CPU",
+    "long_term_storage": "node164 candidate root /root/share/mnt164/huangrulin/c16_ai_workload_2239",
+    "control_plane": "Git"
+  },
+  "frozen_authority": {
+    "rtx3090_closeout_commit": "649af1b9d65a774d4aa8c32a15f9b6f4da0dd4d9",
+    "rtx4080_clean_r5_commit": "b75f26674a09705659e770ab2134351414aa3c93",
+    "rtx4080_status": "READY_FOR_MULTIMODEL_REVIEW",
+    "v2a_historical_input": "HISTORICAL_FROZEN_INPUT_NOT_RECOVERED",
+    "v2c_adopted_input": "ADOPTED_INPUT_AUTHORITY_V1_PASS"
+  },
+  "non_authorizations": [
+    "no GPU/CUDA/Llama/NVBit/NCU/NSYS execution",
+    "no 109 to new174 to 164 implementation",
+    "no model or raw bulk transfer",
+    "no Route-B representative selection, canary, formal capture, or CUTLASS repair",
+    "no scientific authority reinterpretation"
+  ],
+  "blockers": [],
+  "open_gates": [
+    "new Qwen3-8B and DeepSeek input bindings",
+    "Qwen3-30B-A3B separately scoped manifest and binding",
+    "node109 reconciliation of RTX4080 R5 artifact paths",
+    "future copy-not-move SHA closure for node164 archive"
+  ]
+}

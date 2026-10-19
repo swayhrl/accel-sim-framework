@@ -1,0 +1,12 @@
+# Conditional next authority proposal — NOT APPROVED
+
+This source audit grants no archive, restore or release operation.
+
+1. **Owner clearance first:** obtain separate fixed C16 A/source and G/package/remote provisioning records for the two original sets. Confirm exact pending uploads,109 replica lifecycle, source-master recovery role, restore-on-demand requirements and supervisor path semantics. No observer/process/script change in this Goal.
+2. **ZERO-TRANSFER proof first:** ask native164 owner to inspect only the exact RAW/AWQ canonical paths and two archive-receipt identities in C16_164_AUTHORITY_SHA_MATCH.json; verify six existing current unique contents once with full SHA/size/native metadata under active-owner/I/O guards. Historical receipt/hash text is insufficient.
+3. **Independent reconstruction is a later operation:** after separate explicit authority, reconstruct BOTH original layouts in absent native destinations, including every required numeric metadata field; no second20GiB tree merely for census, no overwrites, no silent symlink substitution. Preserve all code/manifests/tokenizers/receipts.
+4. **ONE-TRANSFER fallback only if needed:** if genuine164 authoritative matching content is actually absent, choose one freshly validated original six-stream source; preserve both original path metadata manifests. New separately user-approved C16-only COPY_ONLY low-workspace policy, ordinary48GiB floor or a narrowly scoped new exception, one sender/receiver, no overlay staging, <=256MiB physical Share bridge, <=30MiB/s, resumable close/reopen size/SHA and independent native restore. TLS16GiB and P9 selector policies are inapplicable.
+5. **Separate source release:** after all proof/reader gates, submit the two independent exact six-file selector hashes for approval; qualified crash-safe source-owner exact-file journal, fresh activity/resource check and immediate before/after f_bavail. No directory/glob release and no model metadata/code/Git deletion.
+6. **Second groups:** no18–22GiB high-confidence scope is claimed. The three bounded groups have individual owner/raw-authority/recovery gaps. Do not enlarge into protected traces, V2/V3 signoff or whole worktrees to meet a byte target. Candidate3 requires protected-lineage resolution before any archive proposal.
+
+Current archive bytes, restored bytes, source-released bytes, guaranteed reclaim and new task changes are all0. The completed global census and blocked TLS Goals remain untouched.
