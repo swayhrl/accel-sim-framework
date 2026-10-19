@@ -1,4 +1,6 @@
 set pagination off
+maintenance set worker-threads 1
+set debuginfod enabled off
 set confirm off
 set print elements 6
 set print repeats 4
