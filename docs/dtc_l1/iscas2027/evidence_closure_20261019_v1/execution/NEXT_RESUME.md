@@ -1,6 +1,6 @@
 # Concrete continuation from this checkpoint
 
-Goal remains incomplete. No auto-resume, background observer, simulator,
+Goal remains incomplete and resource-blocked after three consecutive goal turns. No auto-resume, background observer, simulator,
 execution lock or matrix dispatcher has been installed. Parent /root remains
 the sole later full-simulation coordinator in original huangrulin-174.
 
@@ -19,10 +19,12 @@ the sole later full-simulation coordinator in original huangrulin-174.
    After explicit coordinator release/fresh resources, build matching library
    and fixture1job within512MiB guard, then freeze binaries before6mode runtime.
    Original c809 baseline, if used, must use its own unchanged headers/library.
-5. Shared CPU observer glue and12 negative tests are now registered in
-   CPU_SHARED_AUTHORITY_REGISTRATION.json, PREPARED_NOT_TESTED. After fresh
-   global admission run the exact negative phase before any new real CPU root;
-   publish actual source-bound12case receipt, then real2root shared qualification.
+5. Shared CPU observer glue and12 negative tests are registered in
+   CPU_SHARED_AUTHORITY_REGISTRATION.json. The exact12negative tests now PASS
+   (shared_authority_negative_receipts/attempt1). Preserve this exact source
+   receipt; do not rerun unchanged tests merely for resumption. Immediate
+   pre-target hostIO26.58 refused the sharedroot stage. After fresh global
+   admission continue the registered real2root shared qualification.
    Earlier caller PASS does not cover these changed callers. Integrate/observe
    the exact three external roles with this same frozen review callback.
    Reuse accepted frozen authority/history/role evidence; adapt only necessary

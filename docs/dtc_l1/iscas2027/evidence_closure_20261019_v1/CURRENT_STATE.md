@@ -1,7 +1,7 @@
 # Execution coordination state
 
 Updated:2026-10-19 21:52 Asia/Shanghai. Status:
-**PARTIAL_WAIT_RESOURCE_HOST_IO_AND_SIM_DISK**. The full goal remains incomplete.
+**BLOCKED_RESOURCE_HOST_IO_AND_SIM_DISK**. The full goal remains incomplete.
 Execution is original `huangrulin-174`, under this account/container. Pinned plan
 46df82670a56a4498b6d6e23ad57859eb7c36945 and its branch remain unchanged.
 Sole later full-simulation coordinator:/root; execution branch
@@ -16,7 +16,7 @@ Sole later full-simulation coordinator:/root; execution branch
 |ROB1|Isolated Coreb107 quota patch; small helper compiled once/run once exit0 with7 expected rejection children; actual linked LDST build/test0|1a0cf4d38ed00b1eb57b27274fe7b1425f4eb41a; cohort2 hostIO28.57/35.15; cohort3 first25.81|
 |Worker join|Current worker packs preserved exactly; no Core source merged into selected F|43a1aaeb5c4d37785d126cad3d3951bfbf49d9e1; execution/WORKER_RESOURCE_HOLD_DELIVERIES.json|
 |Parent executor repair|Frozen defect reproduced; repaired actual-dispatch AST6PASS;2 simultaneous real root/thread/dash/cat lifecycles pass with exact-instance exits|execution/cpu_ast_receipts/attempt2/ and cpu_real_lifecycle_receipts/attempt1/|
-|Global execution authority|Shared observer CPU caller and12 negative tests prepared/registered, unexecuted;3 live external-role/global production qualification incomplete|execution/CPU_QUALIFICATION_STATE.json|
+|Global execution authority|Shared observer12 targeted negative tests PASS; new shared realroot start refused on hostIO26.58;3 live external-role/global production qualification incomplete|execution/CPU_QUALIFICATION_STATE.json|
 |CPU resource evidence limit|Parent CPU samples retained cgroup PSI only; host PSI unavailable then; no retrospective global-R2 PASS|execution/RESOURCE_SCOPE_CORRECTION.json|
 |Historical imports|8 C+ and4 legacy-source O IMPORTED_VERIFIED; current-F comparison admission still false|execution/cplus_reuse/ and o_reuse/|
 |New full simulations|0/32 starts; no UUID reservation, executable MASTER_MATRIX, RUN_START or execution lock|execution/BUDGET_LEDGER.json; COVERAGE_AND_MISSING.tsv is non-executable|
@@ -64,7 +64,15 @@ earlier successful caller hashes. The new glue reuses frozen AG4 history/FLOCK
 procedures, exact current external roles, source-bound own-manager Popen records
 and fresh peer PID/start_ticks; missing proof remains finite PENDING. It gives
 no signal/adoption/simulator rights. CPU_SHARED_AUTHORITY_REGISTRATION.json fixes
-12 targeted declared-synthetic-row tests followed by real2root shared review,
-all blocked until fresh global CPU admission. Live3external-role observation
+12 targeted declared-synthetic-row tests followed by real2root shared review;
+12 targeted tests now pass under paired global CPU admission; immediate
+pre-target hostIO26.58 then prevented any new realroot. Live3external-role observation
 and full production/family integration remain distinct unfinished requirements.
 See CONTINUATION_GLOBAL_RESOURCE_CURRENT.json for the newest single snapshot.
+
+The same genuine resource blocker has now recurred over three consecutive goal
+turns. BLOCKED_AUDIT_RESOURCE_THREE_TURNS.json audits the full objective without
+shrinking it. Necessary independent preparation is published; actual remaining
+CPU/build/runtime/trace/fullsim evidence requires external resource recovery.
+No current own handle is live, so this is not a verified job wait. The goal is
+not complete; blocked status is recorded after immutable publication/readback.
