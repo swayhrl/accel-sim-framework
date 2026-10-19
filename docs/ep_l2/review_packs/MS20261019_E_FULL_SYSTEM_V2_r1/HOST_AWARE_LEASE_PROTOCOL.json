@@ -1,0 +1,46 @@
+{
+  "authority_host": "huangrulin-174",
+  "central_lock": "/workspace/ep_l2_ft20261016_shared/REGISTRY.lock",
+  "central_registry": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
+  "cross_host_accounting": "policy_v2.global_gate counts ALL active host runs/build/test leases; original Registry.locked rejects foreign-host copied registry",
+  "global_caps": {
+    "A_build_jobs": 2,
+    "CPU": 8,
+    "campaign_default_simulators": 2,
+    "campaign_max": 3,
+    "reserved_RAM_bytes": 34359738368,
+    "simulators": 4
+  },
+  "lease_fields": [
+    "host",
+    "execution_host_identity.hostname",
+    "execution_host_identity.boot_id",
+    "central_dispatcher_host",
+    "execution_environment",
+    "source_authority_commit",
+    "build_owner",
+    "executor_role",
+    "owner_process",
+    "process",
+    "process_history",
+    "cpu_units",
+    "memory_bytes",
+    "disk_growth_bytes",
+    "result_growth_bytes"
+  ],
+  "local_work_api": "Coordinator.reserve_work / bind_work_process / release_work; exact published helper pins enforced on imported calls too",
+  "no_lease_issued": true,
+  "no_remote_or_native_execution": true,
+  "one_campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "remote_execution_status": "NOT_ENABLED: no authorized usable target transport, no candidate or independently monitored target process",
+  "remote_preparation_api": "Coordinator.review_environment: independent E evidence, <=300sec expiry, distinct physical backing proof, quotas/peaks perFS, closed output/temp/cache/core paths, input/compiler/vendor/libraries and IO review",
+  "required_before_remote_lease": [
+    "F candidate plus E independently fresh matching observation and dispatch entry",
+    "E binds central request/response transport and actual remote PID/start_ticks/boot_id monitor; no local PID lookup for foreign PID",
+    "A freezes exact named build command/source/vendor/outputs; global and perFS current resource reservations fit",
+    "remote build owner A executor F; one central lease; retain unresolved remote launch intent/lease across transport loss until explicit PID evidence reconciliation",
+    "all later remote apps launched by original E sole scheduler; same ledger40, no remote receiver copy treated as a lock"
+  ],
+  "same_T0": 1792414193,
+  "schema": "EPL2_E_SINGLE_CENTRAL_HOST_AWARE_LEASE_V2"
+}
