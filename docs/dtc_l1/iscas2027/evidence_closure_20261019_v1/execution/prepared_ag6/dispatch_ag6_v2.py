@@ -57,7 +57,7 @@ def git(*args):
 
 
 def publication():
-    receipt = json.loads((COHORT / 'preregistration/EXECUTABLE_PUBLICATION_READBACK.json').read_text())
+    receipt = json.loads((COHORT / 'preregistration-v2/EXECUTABLE_PUBLICATION_READBACK.json').read_text())
     head = receipt['head']
     require(receipt['tree'] == receipt['fetched_tree'] == git('rev-parse', 'HEAD^{tree}'),
             'EXACT_EXECUTABLE_TREE_READBACK_REQUIRED')
@@ -85,7 +85,11 @@ def publication():
         data = json.loads(Path(row['path']).read_text())
         require(data['status'] == row['required_status'], 'MISSING_ACTUAL_QUALIFICATION')
         for source, digest in data.get('prepared_source_sha256', {}).items():
-            require(manifest['source_sha256'].get(source) == digest,
+            source_path = Path(source)
+            if not source_path.is_absolute():
+                source_path = (ENGINE_SOURCE / source_path).resolve()
+                require(source_path.is_relative_to(ENGINE_SOURCE), 'QUALIFIED_ENGINE_PATH_ESCAPE')
+            require(manifest['source_sha256'].get(str(source_path)) == digest,
                     'QUALIFIED_SOURCE_DIFFERS_FROM_PRODUCTION:' + source)
         # Each receipt is admitted separately and bound to the exact qualified
         # source/registration; a status string is never enough.
