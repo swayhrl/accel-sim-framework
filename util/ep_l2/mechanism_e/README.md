@@ -1,12 +1,13 @@
 # Mechanism study E execution entry
 
-Authority: Framework `d9263fa2431592b33e900d9b48c6f20029d8b544`.
+Current authority: Framework `b2e5328aca825d6e9ebfe09e46fa208957834636` (V2 incremental amendment).
+Original authority/T0 and all attempts remain historical, without reinitialization.
 Campaign: `EPL2_MECHANISM_STUDY_20261019_V1`.
 New branch/worktree: `hrl/ep-l2-ms20261019-e-eval-v1`,
 `/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1`.
 
 The original Lane5 branch and scientific acceptance pointer remain read-only.
-The old51/72 and R19 are closed. This study owns a new24 actual full starts,
+The old51/72 and R19 are closed. This existing study now has40 cumulative actual full starts (32 planned +8 contingency),
 including full canaries, failures and retries. No accepted point exists yet.
 
 ## One resource authority
@@ -100,7 +101,8 @@ until explicit process/evidence reconciliation. No unknown launch is replayed.
 Failed OS spawn is retained but is not an actual application start. Every actual
 failed/resource-limited simulation remains charged. Same-key retries need a named
 old failed attempt, engineering reason, a fresh directory and remaining budget.
-The10+4+3+4+3 bucket reservations protect necessary controls. Explicit reallocation
+The V2 14+6+2+2+1+6+1 scientific buckets plus8 contingency protect necessary controls.
+Historical charged attempts retain their rows and consume the total and contingency, never an additional40. Explicit reallocation
 requires a pre-result scientific reason, not favorable-speedup selection.
 
 New starts stop2026-10-21 18:00 Asia/Shanghai. Each run's timeout is fixed before
@@ -164,3 +166,43 @@ activation; every selected kernel and intervening command remains in scope. Mode
 assumptions remain explicit. An input-artifact review does not grant runtime T/M,
 data-value, performance or resource qualification. Actual input bytes must be
 rebound before an eventual qualified RO application.
+
+
+## Full-system V2 increment
+
+`policy_v2.py` amends the canonical field in place, validates the D32-condition
+matrix, and requires E production-driven combination gates in addition to the
+original11. It checks full dirty victim scope, finite common resources and real
+F-minus-W semantics. F_DATA_FREE and fixed-victim require their own native gates.
+These Python checks are intake controls, not proof of native implementation.
+The initial terminal parser still rejects full F until an actual A combined
+producer format and native qualification are available; do not relax it blindly.
+
+Queue priority is Conv/FWT S/F, the other five S/F, then leave-one-out and
+W-only, RO factorization/fixed-victim, local diagnostics/static64. The immutable
+old FIRST14 file remains PREPARED_SUPERSEDED_ORDER through a separate annotation;
+it is not installed as READY_QUEUE. A final source/binary identity must be
+explicitly frozen in the ledger before V2 full conditions can reserve a start.
+Current new starts and accepted points remain zero.
+
+The E CLIENT_CONTRACT binds every runtime Python helper by SHA256 to one exact
+published Git source commit. A caller cannot fix an edited helper by merely
+replacing its checksum: published blob bytes must also agree. Publication is
+source commit/push/readback first, then exact client update and receipt publish.
+The original old CLIENT_CONTRACT and scientific pointer remain unchanged.
+
+All active host leases count toward one global4sim/8CPU/32GiB. Local build/test
+leases now explicitly record execution host/boot, central dispatcher, environment,
+A build ownership and actual executor. Foreign hosts cannot lock a copied
+registry. `review_environment` accepts only an E-independent, content-bound,
+fresh observation including actual physical backing, all write filesystem
+quotas/peaks, input/compiler/vendor/libraries, relevant I/O and an authorized
+execution entry. Its result is ENVIRONMENT_REVIEW_PASS_NOT_A_LEASE.
+
+Remote deployment is currently disabled: F228c0bf4 reports authentication denied,
+not an inadequate target disk. No target candidate or remote lease is admitted.
+Once that entry works, E independently measures it, binds the real central
+remote execution/monitor/retirement transport and its affected compatibility
+checks, then A publishes the exact named build. A file/Git receipt is never a
+cross-host lock or an automatically usable remote dispatcher. No password, mount,
+new credentials, native command or watcher is created by these controls.

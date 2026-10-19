@@ -19,6 +19,7 @@ import run as legacy
 from headroom_config import options
 from validate import validate_summary
 from acceptance import load_current_authority,reject_withdrawn,current_manifest
+import policy_v2
 
 
 def inspect(spec,coord,launch_check=True):
@@ -50,7 +51,7 @@ def inspect(spec,coord,launch_check=True):
     require(digest(selection['path'])==selection['sha256'],'D preregistration changed')
     chosen=selection['selection']['full_input_identity']
     require(chosen['trace_content_sha256']==identity['trace_content_sha256'],'different D input')
-    require(spec['comparison_group'] in chosen['comparison_groups'],'different D comparison')
+    require(policy_v2.comparison_allowed(item,chosen,spec,digest),'different D comparison')
     effective=options([x['path'] for x in spec['configs']])
     require(effective==p['effective_options'],'actual final options differ from independent config whitelist')
     # Fixed comparison invariant includes all options except explicitly researched

@@ -155,7 +155,7 @@ class IntakeTests(unittest.TestCase):
         queue={'campaign_id':c.CAMPAIGN,'prepared_by':'E','authority_commit':c.AUTHORITY,
                'input_and_profile_freeze_unix':1792410000,'specs':[{'path':str(path),'sha256':c.digest(path)}],'pairs':[]}
         qp=self.root/'queue.json';qp.write_text(json.dumps(queue))
-        with patch.object(controller,'execute') as execute:
+        with patch.object(controller,'execute') as execute, patch.object(controller,'tooling_binding'):
             result=controller.step(self.coord,qp);execute.assert_not_called()
         self.assertEqual(result['status'],'SCOPED_HOLDS_PENDING')
         self.assertEqual(result['held_run_keys'],[c.run_key(self.identity)])

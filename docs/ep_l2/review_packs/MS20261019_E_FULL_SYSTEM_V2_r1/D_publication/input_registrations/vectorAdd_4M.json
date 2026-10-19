@@ -1,0 +1,45 @@
+{
+  "schema": "EPL2_MECHANISM_D_INPUT_PREREGISTRATION_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "authority_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "selected_by": "D",
+  "selection_id": "D_V2_vectorAdd_4M",
+  "selection_utc": "2026-10-19T12:54:24.303578+00:00",
+  "selection_time_note": "V2 mandated original five; time above refers to prior original-five selection, V2 adoption recorded separately",
+  "full_input_identity": {
+    "workload": "vectorAdd_4M",
+    "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+    "trace_hash_evidence": "existing accepted complete input; E freshly rebinds current bytes",
+    "runtime_independent_input_source": {
+      "entry_trace_name": "kernelslist.g",
+      "entry_trace_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+      "command_list": "MemcpyHtoD,0x00007f5f38000000,16000000\nMemcpyHtoD,0x00007f5f39000000,16000000\nkernel-1.traceg\n",
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/vectorAdd --size 4000000 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/*.trace ",
+      "source_revision": "UNKNOWN",
+      "epoch_range": {
+        "epochs": "all",
+        "scope": "full_application"
+      },
+      "trace_files": [
+        {
+          "name": "kernelslist.g",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+        },
+        {
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg"
+        }
+      ]
+    },
+    "expected_full_instructions": 56000000,
+    "comparison_groups": [
+      "V2_MAIN_vectorAdd_4M"
+    ]
+  },
+  "not_a_launch_authorization": true,
+  "readonly_certificate": "UNKNOWN_NOT_GRANTED",
+  "producer_binary": "UNASSIGNED_A_OWNER",
+  "preserve_budget": 40,
+  "rationale": "V2 common original-five roster; no candidate speedup selection",
+  "expected_exit": "full command list; expected instructions; normal exit and actual complete drain"
+}

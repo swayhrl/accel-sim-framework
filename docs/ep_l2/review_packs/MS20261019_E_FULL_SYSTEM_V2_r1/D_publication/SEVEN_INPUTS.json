@@ -1,0 +1,497 @@
+{
+  "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "workloads": [
+    {
+      "workload": "sad",
+      "display": "SAD",
+      "input_scale": "reference.bin/frame.bin frozen3-kernel commandlist",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f81cb700000,50688\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\n",
+      "commandlist_sha256": "36c0931b5a7cd780dc16fd5466cba2ed31d4a2c1dbf062721f55bbcef1d7a2a8",
+      "full_trace_content_sha256": "c0a36352a791331237f6c293c39bbf4017c930ae3871860618a92685381d6b01",
+      "kernel_count": 3,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-1.traceg",
+          "bytes": 209423472,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-2.traceg",
+          "bytes": 11636313,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-3.traceg",
+          "bytes": 2782077,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 223841862,
+      "expected_full_instructions": 157583646,
+      "capture_provenance": "NOT_DISCLOSED_IN_LOCATED_CAPTURE_MATERIAL",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "sha256": "770cc3198915d404a526aebf311eef0da9e82b78675dbf7079fe7d13583f974f"
+      },
+      "readonly_evidence": "UNCERTIFIED_FULL_EPOCH_UNKNOWN",
+      "model_certified_lines": "UNKNOWN",
+      "model_certified_read_lane_references": "UNKNOWN",
+      "model_line_coverage": "UNKNOWN",
+      "model_read_reference_coverage": "UNKNOWN",
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": false,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": null,
+      "new_registration": "input_registrations/sad.json"
+    },
+    {
+      "workload": "vectorAdd_4M",
+      "display": "向量加法",
+      "input_scale": "4000000 elements",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f5f38000000,16000000\nMemcpyHtoD,0x00007f5f39000000,16000000\nkernel-1.traceg\n",
+      "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "full_trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+      "kernel_count": 1,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg",
+          "bytes": 103535866,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 103535866,
+      "expected_full_instructions": 56000000,
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/vectorAdd --size 4000000 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/*.trace ",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+      },
+      "readonly_evidence": "UNCERTIFIED_FULL_EPOCH_UNKNOWN",
+      "model_certified_lines": "UNKNOWN",
+      "model_certified_read_lane_references": "UNKNOWN",
+      "model_line_coverage": "UNKNOWN",
+      "model_read_reference_coverage": "UNKNOWN",
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": false,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": null,
+      "new_registration": "input_registrations/vectorAdd_4M.json"
+    },
+    {
+      "workload": "cfd_097k",
+      "display": "CFD",
+      "input_scale": "fvcorr.domn.097K",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernelslist.g",
+      "commandlist_literal": "kernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\n",
+      "commandlist_sha256": "ce71e70525c6299a6be1bae3790b0eeb0417e1f4608cbd10e706c0a14fdd6b46",
+      "full_trace_content_sha256": "6d5eb92fbe5391b3811dc08fcaaacb891ec8a69639512b99f68d224b6a921e66",
+      "kernel_count": 5,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-1.traceg",
+          "bytes": 4733420,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-2.traceg",
+          "bytes": 4733420,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-3.traceg",
+          "bytes": 4733420,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-4.traceg",
+          "bytes": 32722175,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-5.traceg",
+          "bytes": 224822136,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 271744571,
+      "expected_full_instructions": 143129372,
+      "capture_provenance": "\nexport CUDA_VERSION=\"10.1\"; export CUDA_VISIBLE_DEVICES=\"1\" ; LD_PRELOAD=/local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/cfd-rodinia-3.1 ./data/fvcorr.domn.097K ; /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../../nvbit/traces-processing/post-traces-processing /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../run_hw/device-1/10.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernelslist ; rm /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../run_hw/device-1/10.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/*.trace ",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "sha256": "b88519d2f9b6c0c39bf90b6d1ceeb4c8eb2f4467f64dcc168907255c0b3d762f"
+      },
+      "readonly_evidence": "UNCERTIFIED_FULL_EPOCH_UNKNOWN",
+      "model_certified_lines": "UNKNOWN",
+      "model_certified_read_lane_references": "UNKNOWN",
+      "model_line_coverage": "UNKNOWN",
+      "model_read_reference_coverage": "UNKNOWN",
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": false,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": null,
+      "new_registration": "input_registrations/cfd_097k.json"
+    },
+    {
+      "workload": "convolutionSeparable",
+      "display": "可分离卷积",
+      "input_scale": "3072x3072",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f759fa00900,68\nMemcpyHtoD,0x00007f7590000000,37748736\nkernel-1.traceg\nkernel-2.traceg\n",
+      "commandlist_sha256": "ab2290810368438cabf35a3c0fcb9686473aaa2235607a6e2bc0347f651ff484",
+      "full_trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+      "kernel_count": 2,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg",
+          "bytes": 4072647057,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg",
+          "bytes": 2772248484,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 6844895541,
+      "expected_full_instructions": 714547200,
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/convolutionSeparable --size 3072 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/convolutionSeparable/__size_3072/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/convolutionSeparable/__size_3072/traces/*.trace ",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "sha256": "1bd27463147567a278765837bd05c46c9f59d2fb4741667c46d833a6a39a4950"
+      },
+      "readonly_evidence": "CONV_MODEL_SCOPE_REVIEW_ACCEPTED_NATIVE_NOT_QUALIFIED",
+      "model_certified_lines": 294912,
+      "model_certified_read_lane_references": 11698176,
+      "model_line_coverage": 0.3333333333333333,
+      "model_read_reference_coverage": 0.4989517819706499,
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": false,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": {
+        "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/convolutionSeparable.json",
+        "sha256": "ce335feee38aeb4e40e1b0b37b45766fe6c7026cb6566c8fd91062a6dfeb02a3",
+        "selection_id": "D_V1_convolutionSeparable"
+      },
+      "new_registration": null
+    },
+    {
+      "workload": "FWT_7_21",
+      "display": "快速Walsh变换",
+      "input_scale": "logK7 logD21",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f50e3600000,512\nMemcpyHtoD,0x00007f50e6000000,8388608\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\nkernel-17.traceg\nkernel-18.traceg\nkernel-19.traceg\n",
+      "commandlist_sha256": "9dfd2639f6660bef2feac69405597380835d4d08f1e0bdb9dd9b2022ed1a0f26",
+      "full_trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+      "kernel_count": 19,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-1.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-2.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-3.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-4.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-5.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-6.traceg",
+          "bytes": 387379204,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-7.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-8.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-9.traceg",
+          "bytes": 38800369,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-10.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-11.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-12.traceg",
+          "bytes": 387379205,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-13.traceg",
+          "bytes": 41606232,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-14.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-15.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-16.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-17.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-18.traceg",
+          "bytes": 38800370,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-19.traceg",
+          "bytes": 387379205,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 1785749388,
+      "expected_full_instructions": 791609344,
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/fastWalshTransform -logK 7 -logD 21 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_7__logD_21/traces/*.trace ",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "sha256": "6d9e114c6520d8e9e51e54f5b1668302da2e9cc963ff55f604f69a6408341d3a"
+      },
+      "readonly_evidence": "UNCERTIFIED_FULL_EPOCH_UNKNOWN",
+      "model_certified_lines": "UNKNOWN",
+      "model_certified_read_lane_references": "UNKNOWN",
+      "model_line_coverage": "UNKNOWN",
+      "model_read_reference_coverage": "UNKNOWN",
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": false,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": {
+        "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/FWT_7_21.json",
+        "sha256": "3f4dcbb839dc3b1d38cec7f9c5ec4156608e2b307960988c7937f7720dd547c4",
+        "selection_id": "D_V1_FWT_7_21"
+      },
+      "new_registration": null
+    },
+    {
+      "workload": "btree",
+      "display": "B树",
+      "input_scale": "mil.txt + command.txt",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,48000\nMemcpyHtoD,0x00007f8eed50bc00,48000\nMemcpyHtoD,0x00007f8eed517800,48000\nMemcpyHtoD,0x00007f8eed523400,48000\nMemcpyHtoD,0x00007f8eed52f000,24000\nMemcpyHtoD,0x00007f8eed534e00,24000\nMemcpyHtoD,0x00007f8eed53ac00,24000\nMemcpyHtoD,0x00007f8eed540a00,24000\nkernel-1.traceg\nMemcpyHtoD,0x00007f8eed800000,4000000\nMemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,80000\nMemcpyHtoD,0x00007f8eed513a00,80000\nMemcpyHtoD,0x00007f8eed527400,40000\nMemcpyHtoD,0x00007f8eed531200,40000\nkernel-2.traceg\n",
+      "commandlist_sha256": "26315d4ae044e91094d54134ec94e25d70fd4eda8c0fe01767bc2a9437d73467",
+      "full_trace_content_sha256": "b3e132f184918f30485a2296d606cc833a6b0edf264f6c6f2489077053f65ea7",
+      "kernel_count": 2,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-1.traceg",
+          "bytes": 408700748,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-2.traceg",
+          "bytes": 401008691,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 809709439,
+      "expected_full_instructions": 444467849,
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/b+tree-rodinia-3.1 file ./data/mil.txt command ./data/command.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/*.trace ",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "UNKNOWN_REQUIRES_E_COMPLETE_INPUT_CHECK"
+      },
+      "readonly_evidence": "UNCERTIFIED_FULL_EPOCH_UNKNOWN",
+      "model_certified_lines": "UNKNOWN",
+      "model_certified_read_lane_references": "UNKNOWN",
+      "model_line_coverage": "UNKNOWN",
+      "model_read_reference_coverage": "UNKNOWN",
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": true,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": {
+        "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/btree.json",
+        "sha256": "8321fa8e870a8d641cdca5334e20776409548e4c2ae97a1f03a69d922d9f0931",
+        "selection_id": "D_V1_btree"
+      },
+      "new_registration": null
+    },
+    {
+      "workload": "dwt2d",
+      "display": "二维小波",
+      "input_scale": "rgb.bmp 1024x1024 f=-5 l=3",
+      "commandlist_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f6d35400000,3145728\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\n",
+      "commandlist_sha256": "337087fedad435cd92cbd7e0f962f90d567ec9e77038fd8150977b7c6beb7164",
+      "full_trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+      "kernel_count": 10,
+      "body_files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-1.traceg",
+          "bytes": 58212412,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-2.traceg",
+          "bytes": 95059024,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-3.traceg",
+          "bytes": 20665498,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-4.traceg",
+          "bytes": 5941338,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-5.traceg",
+          "bytes": 95059611,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-6.traceg",
+          "bytes": 20665498,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-7.traceg",
+          "bytes": 5941338,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-8.traceg",
+          "bytes": 95063133,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-9.traceg",
+          "bytes": 20665498,
+          "exists": true
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-10.traceg",
+          "bytes": 5941339,
+          "exists": true
+        }
+      ],
+      "total_body_bytes": 423214689,
+      "expected_full_instructions": 148684429,
+      "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/dwt2d-rodinia-3.1 ./data/rgb.bmp -d 1024x1024 -f -5 -l 3 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/*.trace ",
+      "application_source_revision": "UNKNOWN",
+      "input_availability": "COMMANDLIST_AND_ALL_BODIES_PRESENT_NOT_FRESH_E_QUALIFICATION",
+      "non_atomic_scope": {
+        "scope": "UNKNOWN_REQUIRES_E_COMPLETE_INPUT_CHECK"
+      },
+      "readonly_evidence": "UNCERTIFIED_FULL_EPOCH_UNKNOWN",
+      "model_certified_lines": "UNKNOWN",
+      "model_certified_read_lane_references": "UNKNOWN",
+      "model_line_coverage": "UNKNOWN",
+      "model_read_reference_coverage": "UNKNOWN",
+      "model_coverage_denominator": "all distinct global lines including write-only; read references count lane-line touches",
+      "active_runtime_certified_lines": 0,
+      "active_runtime_coverage": 0,
+      "active_runtime_coverage_note": "No qualified final runtime/oracle binding yet; operational enabled coverage0 is NOT proof of zero read-only opportunity",
+      "fallback": "Every uncertified line normal native path; no other-input certificate reuse; fail closed on certified-line writer/host-overlap; all scopes require E runtime acceptance",
+      "host_updates_after_kernel": false,
+      "final_qualification": "PENDING_A_COMBINED_RELEASE_E_NATIVE_AND_INPUT_ACCEPTANCE",
+      "original_registration": {
+        "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/dwt2d.json",
+        "sha256": "9eec7210191688dc82829dfe12fa0a65d234d394bab9d582f49389c9b806358e",
+        "selection_id": "D_V1_dwt2d"
+      },
+      "new_registration": null
+    }
+  ],
+  "immutable_prior_registrations": {
+    "convolutionSeparable": {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/convolutionSeparable.json",
+      "sha256": "ce335feee38aeb4e40e1b0b37b45766fe6c7026cb6566c8fd91062a6dfeb02a3",
+      "selection_id": "D_V1_convolutionSeparable"
+    },
+    "FWT_7_21": {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/FWT_7_21.json",
+      "sha256": "3f4dcbb839dc3b1d38cec7f9c5ec4156608e2b307960988c7937f7720dd547c4",
+      "selection_id": "D_V1_FWT_7_21"
+    },
+    "btree": {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/btree.json",
+      "sha256": "8321fa8e870a8d641cdca5334e20776409548e4c2ae97a1f03a69d922d9f0931",
+      "selection_id": "D_V1_btree"
+    },
+    "dwt2d": {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_registrations/dwt2d.json",
+      "sha256": "9eec7210191688dc82829dfe12fa0a65d234d394bab9d582f49389c9b806358e",
+      "selection_id": "D_V1_dwt2d"
+    }
+  }
+}

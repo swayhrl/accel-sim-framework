@@ -16,13 +16,15 @@ import socket
 import sys
 import time
 import uuid
+import subprocess
+import policy_v2
 
 OLD_TOOLS = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5')
 sys.path.insert(0, str(OLD_TOOLS))
 from registry import (Registry, ACTIVE, canonical, local_resources, retained_tree_bytes,
                       write_json, process_identity, run_key, validate_hash)
 
-AUTHORITY = 'd9263fa2431592b33e900d9b48c6f20029d8b544'
+AUTHORITY = policy_v2.AUTHORITY
 CAMPAIGN = 'EPL2_MECHANISM_STUDY_20261019_V1'
 FIELD = 'mechanism_study_20261019_v1'
 SHARED = Path('/workspace/ep_l2_ft20261016_shared')
@@ -57,14 +59,34 @@ def tooling_binding():
     client=json.loads((SHARED/'CLIENT_CONTRACT.json').read_text())
     for name in ('registry_client','runner','acceptance_module'):
         require(digest(client[name])==client[name+'_sha256'], 'original tooling changed: '+name)
+    verify_extension_binding(HANDOFF/'CLIENT_CONTRACT.json')
     return {k:client[k] for k in ('registry_client_sha256','registry_source_commit',
                                 'runner_sha256','runner_source_commit','acceptance_module_sha256')}
 
 
+def verify_extension_binding(path):
+    client=json.loads(Path(path).read_text())
+    require(client['authority_commit']==AUTHORITY,'E client authority not yet published')
+    require(client['resource_lease_api_sha256']==digest(__file__),'E resource API checksum mismatch')
+    source_commit=client['source_publication_commit'];validate_hash(source_commit,40)
+    root=Path(client['execution_worktree'])
+    require(bool(client['source_files']),'E source publication manifest missing')
+    expected={p.relative_to(root).as_posix() for p in Path(__file__).parent.glob('*.py')
+              if not p.name.startswith('test_')}
+    require(set(client['source_files'])==expected,'E runtime source manifest incomplete')
+    for name,sha in client['source_files'].items():
+        require(digest(root/name)==sha,'E runtime checksum mismatch: '+name)
+        blob=subprocess.check_output(['git','show',source_commit+':'+name],cwd=root)
+        require(hashlib.sha256(blob).hexdigest()==sha,'E source publication mismatch: '+name)
+    return source_commit
+
+
 def ledger(data):
     item=data[FIELD]
-    require(item['campaign_id']==CAMPAIGN and item['authority_commit']==AUTHORITY, 'campaign authority mismatch')
-    require(item['maximum_actual_starts']==24 and item['start_deadline_unix']==START_DEADLINE,
+    require(item['campaign_id']==CAMPAIGN and item['authority_commit'] in
+            (AUTHORITY,policy_v2.PRIOR_AUTHORITY), 'campaign authority mismatch')
+    expected=40 if item['authority_commit']==AUTHORITY else 24
+    require(item['maximum_actual_starts']==expected and item['start_deadline_unix']==START_DEADLINE,
             'budget/deadline changed')
     require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
             'output budget changed')
@@ -78,8 +100,8 @@ def counts(item):
     uncertain=sum(a['state']=='START_INTENT_UNRECONCILED' for a in item['attempts'])
     pending=sum(a['state']=='RESERVED' for a in item['attempts'])
     item.update(actual_starts=actual,uncertain_start_intents=uncertain,
-                remaining_start_capacity=24-actual-uncertain-pending)
-    require(item['remaining_start_capacity']>=0,'24 actual-start budget exhausted')
+                remaining_start_capacity=item['maximum_actual_starts']-actual-uncertain-pending)
+    require(item['remaining_start_capacity']>=0,str(item['maximum_actual_starts'])+' actual-start budget exhausted')
     return actual,uncertain,pending
 
 
@@ -91,13 +113,13 @@ def output_usage():
 
 
 def pending_growth(data):
-    rows=[r for r in data['runs'].values() if r['status'] in ACTIVE]
+    rows=[r for r in data['runs'].values() if r['status'] in ACTIVE and r['host']==socket.gethostname()]
     result=0
     for r in rows:
         reserve=r.get('disk_growth_bytes',FULL_GROWTH)
         result+=max(0,reserve-retained_tree_bytes(Path(r['result_directory'])))
     for r in data['resource_leases'].values():
-        if r['status'] in ACTIVE:
+        if r['status'] in ACTIVE and r['host']==socket.gethostname():
             # Build/test output outside result directories still consumes workspace.
             result+=r.get('disk_growth_bytes',0)
     return result
@@ -110,6 +132,7 @@ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=F
     require(type(growth) is int and growth>0,'conservative positive output-growth reserve required')
     require(kind in ('build','test','simulation','screen'),'unknown resource class')
     if kind=='build':require(cpu<=2,'A build max -j2')
+    policy_v2.global_gate(data,kind,cpu,memory)
     # Reuse the production global CPU/RAM/scan/disk guards and permanent lock.
     Registry.admission(data,socket.gethostname(),cpu,memory,scan,
                        'simulation' if kind in ('simulation','screen') else 'build',resources)
@@ -143,6 +166,9 @@ class Coordinator:
 
     @contextmanager
     def locked(self):
+        # Imported A/B/C clients must enforce helper publication too; checking
+        # only the CLI entry would leave their direct reserve_work calls open.
+        if self.registry.root.resolve()==SHARED.resolve():tooling_binding()
         with self.registry.locked() as data:
             item=ledger(data)
             yield data,item
@@ -151,8 +177,34 @@ class Coordinator:
 
     def snapshot(self):
         # Truly read-only: no updated_at rewrite and no implicit second authority.
+        if self.registry.root.resolve()==SHARED.resolve():tooling_binding()
         data=json.loads((self.registry.root/'RUN_REGISTRY.json').read_text())
         return ledger(data)
+
+    def adopt_v2(self):
+        with self.locked() as (data,item):
+            counts(item)
+            changed=policy_v2.amend(item,time.time())
+            counts(item)
+            return {'changed':changed,'actual_starts':item['actual_starts'],
+                    'maximum_actual_starts':item['maximum_actual_starts'],
+                    'remaining_start_capacity':item['remaining_start_capacity'],'t0_unix':item['t0_unix']}
+
+    def review_environment(self,candidate_path,review_path,original_physical_storage_identity):
+        candidate=json.loads(Path(candidate_path).read_text());review=json.loads(Path(review_path).read_text())
+        result=policy_v2.environment_review(candidate,review,original_physical_storage_identity,time.time(),digest)
+        with self.locked() as (data,item):
+            require(item['authority_commit']==AUTHORITY,'adopt V2 before environment intake')
+            key=digest(candidate_path)
+            item.setdefault('environment_reviews',{})[key]={**result,
+                'candidate_path':str(Path(candidate_path).resolve()),'candidate_sha256':key,
+                'review_path':str(Path(review_path).resolve()),'review_sha256':digest(review_path),
+                'central_dispatcher_host':data['authority_host'],'resource_lease_granted':False,
+                'remote_execution_enabled':False}
+            # Actual dispatcher transport/process monitor must be bound after a
+            # usable target entry is delivered. No copied registry or implicit
+            # remote client is activated by accepting an environment report.
+            return item['environment_reviews'][key]
 
     def reserve_work(self, role, kind, cpu, memory, growth, output_directory, result_growth_bytes=None):
         require(role in ('A','B','C','E') and kind in ('build','test'),'only bounded build/test leases here')
@@ -167,6 +219,10 @@ class Coordinator:
             resource_gate(data,kind,cpu,memory,growth,local_resources(),output_usage(),result_growth_bytes=result_growth)
             key=uuid.uuid4().hex
             row={'host':socket.gethostname(),'owner':'mechanism_'+role,'role':role,'kind':'MECHANISM_'+kind.upper(),
+                 'execution_host_identity':{'hostname':socket.gethostname(),
+                     'boot_id':item['boot_id']},'central_dispatcher_host':data['authority_host'],
+                 'execution_environment':'original174','source_authority_commit':item['authority_commit'],
+                 'build_owner':'A' if kind=='build' else None,'executor_role':role,
                  'experiment_id':CAMPAIGN,'cpu_units':cpu,'memory_bytes':memory,'disk_growth_bytes':growth,
                  'result_growth_bytes':result_growth,'status':'RESERVED','created_at':time.time(),
                  'owner_process':process_identity(os.getpid()),'output_directory':str(directory)}
@@ -232,10 +288,12 @@ class Coordinator:
             require(g['status']=='PASS' and g['production_driven'] is True,'failed/missing gate: '+name)
             require(digest(g['evidence_path'])==g['evidence_sha256'],'gate evidence changed: '+name)
         require(bool(q['supported_profiles']),'independently qualified profiles required')
+        policy_v2.combination_qualification(q,digest)
         producer=q['producer_release'];validate_hash(producer['publication_commit'],40)
         require(producer['source_identity']==q['source_identity'],'A release identity mismatch')
         require(digest(producer['path'])==producer['sha256'],'A published release artifact changed')
-        require(q['source_identity']['framework_source_commit']!=AUTHORITY,'control HEAD is not runtime Framework')
+        require(q['source_identity']['framework_source_commit'] not in
+                (AUTHORITY,policy_v2.PRIOR_AUTHORITY),'control HEAD is not runtime Framework')
         for evidence_name in ('build_log','producer_test_manifest'):
             evidence=q[evidence_name]
             require(Path(evidence['path']).stat().st_size>0 and digest(evidence['path'])==evidence['sha256'],
@@ -312,7 +370,7 @@ class Coordinator:
         with self.locked() as (data,item):
             counts(item)
             require(item['uncertain_start_intents']==0,'ambiguous previous start requires explicit reconciliation')
-            require(item['remaining_start_capacity']>0,'24 actual-start budget exhausted')
+            require(item['remaining_start_capacity']>0,str(item['maximum_actual_starts'])+' actual-start budget exhausted')
             # No legacy key is overwritten or silently adopted as this campaign's result.
             previous=data['runs'].get(key)
             if previous is not None and previous.get('experiment_id')!=CAMPAIGN:
@@ -326,7 +384,7 @@ class Coordinator:
             require(digest(selected['path'])==selected['sha256'],'D preregistration changed')
             chosen=selected['selection']['full_input_identity']
             require(chosen['trace_content_sha256']==identity['trace_content_sha256'],'D input mismatch')
-            require(spec['comparison_group'] in chosen['comparison_groups'],'unregistered comparison group')
+            require(policy_v2.comparison_allowed(item,chosen,spec,digest),'unregistered comparison group')
             self.require_no_hold(item,spec['qualification_id'])
             qualified=item['qualifications'][spec['qualification_id']]
             require(digest(qualified['path'])==qualified['sha256'],'independent qualification changed')
@@ -337,7 +395,8 @@ class Coordinator:
             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
             bucket=spec['budget_bucket'];require(bucket in item['reservations'],'unknown reserved budget bucket')
-            used=sum(a['budget_bucket']==bucket and (a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')) for a in item['attempts'])
+            used=sum(policy_v2.charged_bucket(a,item['reservations'])==bucket and
+                     (a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')) for a in item['attempts'])
             require(used<item['reservations'][bucket],'reserved matrix budget exhausted; preserve other controls')
             require(digest(spec['binary'])==identity['binary_sha256'],'binary changed before reservation')
             # Full asset hashing/config closure is performed by the reused runner inspector,

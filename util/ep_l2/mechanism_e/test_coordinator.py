@@ -22,7 +22,7 @@ class ControlTests(unittest.TestCase):
           'runtime_config_sha256':'4'*64,'trace_content_sha256':'5'*64,'workload':'fixture',
           'epoch_range':{'scope':'full_application'},'feature_vector':{'finite_wbuf':True},
           'ideal_vector':{'copy_free':False},'termination_contract':{'full':True}}
-        self.ledger={'campaign_id':c.CAMPAIGN,'authority_commit':c.AUTHORITY,'maximum_actual_starts':24,
+        self.ledger={'campaign_id':c.CAMPAIGN,'authority_commit':c.policy_v2.PRIOR_AUTHORITY,'maximum_actual_starts':24,
           'start_deadline_unix':c.START_DEADLINE,'additional_results_max_bytes':6*c.GIB,'old_plus_new_results_max_bytes':20*c.GIB,
           'host':c.socket.gethostname(),'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
           'attempts':[],'reservations':{'local_diagnostics':10,'new_input_controls':4,'victim':3,'readonly':4,'contingency':3},
