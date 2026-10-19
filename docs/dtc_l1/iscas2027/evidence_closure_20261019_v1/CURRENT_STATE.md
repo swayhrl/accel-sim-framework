@@ -10,13 +10,13 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 |---|---|---|
 | AG5 canonical integration | AG5 owner/reviewer exact bytes; post-fork guard exact apart from actual-start metadata; shared callback current-role/peer checks source integrated | AG5_INTEGRATION_STATIC_EQUIVALENCE_V2.json |
 | CPU fixture | New16,616-byte ELF compiled + static libs/loader frozen after full paired R2; target executions0 | ag5_v2_build_receipts_attempt2/ |
-| Changed observer/guard qualification |14-case runner first admission refused at hostIO28.88; tests0; changed guard/shared real-root0 | ag5_v2_negative_admission_attempt1/ |
-| Actual COV/SEM/ROB roles | Actual source-bound CPU manager published f724; first admission hostIO30.00 refused before child; three-role qualification incomplete | COV_EXTERNAL_VIEW_SOURCE_INTAKE_V2.json |
+| Changed observer/guard qualification |14-case runner first admission refused at hostIO28.88; tests0; real wait-order coverage repair now source-integrated; one fresh 14→changed→shared cohort released conditionally | ag5_v2_negative_admission_attempt1/ |
+| Actual COV/SEM/ROB roles | Actual source-bound CPU manager published f724; two finite admissions hostIO30.00/26.85 refused before child; three-role qualification incomplete | COV_EXTERNAL_VIEW_SOURCE_INTAKE_V2.json |
 | SEM1 | Configure1 exit0, own group reaped/empty; build0, linked runtime0; preserve config, extra Doxygen metadata reviewed and future hashes fixed | SEM1 5a54351b + f1174810; sem1_v2_configure_intake/ |
 | ROB1 | Configure/build/actual LDST runtime0; prior small helper PASS retained; latest paired hostIO22.15/26.52 refused | ROB1 a49911d4 |
 | AG final preparation | Fixed review13c08ad3, notificationf8cbc9d2;56 review blobs +48 original Git receipt hashes verified; four-arm270-option/input consistency checked | ag6_final_prep_intake/ |
 | BASE eligibility | Both exact-tuple imports accepted by BA after independent SEM1/ROB1 reviews and parent closed-event proof join; old executor gaps retained | AG6_BUDGET_LEDGER.json |
-| Resource window | Output free51,687,407,616B (~48.14GiB) at15:49Z; authorityPASS; hostIO30.00>25 refused first CPU-manager sample | cpu_real_roles_v2_admission_attempt1/ |
+| Resource window | Output free50,148,298,752B (~46.70GiB) at16:01Z; authorityPASS; hostIO26.85>25 refused second CPU-manager first sample | cpu_real_roles_v2_admission_attempt2/ |
 | AG6 new starts |0/4; four new identity/science rows registered, dispatch held; separate from BA32, no replacement/fifth/sixth | AG6_BUDGET_LEDGER.json |
 | BA full simulations / F |0/32; provisionalO, old selection preserved; P8 F not launched; dual fullsim unqualified, default1 | BUDGET_LEDGER.json; SELECTION.json |
 | Paper / evidence scope | v0.18/DC untouched; conditional/numeric/native/ISA/coherence claims stay separate; original44/GM12 preserved | SCIENTIFIC_SCOPE_CURRENT.md |
