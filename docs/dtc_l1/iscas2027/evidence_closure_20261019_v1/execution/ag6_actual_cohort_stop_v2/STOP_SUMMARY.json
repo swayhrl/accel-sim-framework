@@ -1,0 +1,130 @@
+{
+  "status": "AG6_STOP_RUNTIME_CGROUP_IO_PSI_NO_ACCEPTED_PERFORMANCE",
+  "as_of_utc": "2026-10-19T17:00:31.526082+00:00",
+  "first_arm": "AE_GEMM",
+  "attempt_uuid": "77cbc367-150c-418d-85e0-3be23d952498",
+  "AG6_cap": 4,
+  "consumed_starts": 1,
+  "actual_simulator_forks": 1,
+  "accepted_performance_results": 0,
+  "unstarted_fixed_UUIDs": [
+    "f9295c5b-29b9-4e6c-9b9c-531c21acfc99",
+    "fe022881-b5b2-4d99-9229-d7940761fc66",
+    "182cfb53-32c3-428d-a964-44e4f47d9727"
+  ],
+  "unstarted_status": "SEALED_BY_FROZEN_COHORT_STOP_NO_AUTOMATIC_CONTINUATION",
+  "BA_original32_unchanged": true,
+  "BA_actual_starts": 0,
+  "primary_failure": "cgroup:IO_FULL_PSI_GT25_THREE_GE30S_SAMPLES_AG_EXPLICIT_EXTENSION",
+  "secondary_postclose_failure": "PROVEN_INSTANCE_EXIT_RETIREMENT_JOIN because controlled STOP killed3 own instances; not natural full-input exit0",
+  "qualified_IO_samples": [
+    {
+      "utc": "2026-10-19T16:57:13.230020+00:00",
+      "monotonic_ns": 9181004572906534,
+      "host_io_full_avg10": "3.87",
+      "cgroup_io_full_avg10": "26.50",
+      "qualified_io_sample_count": 1,
+      "decision": "CONTINUE"
+    },
+    {
+      "utc": "2026-10-19T16:57:44.032941+00:00",
+      "monotonic_ns": 9181035375833876,
+      "host_io_full_avg10": "6.27",
+      "cgroup_io_full_avg10": "60.09",
+      "qualified_io_sample_count": 2,
+      "decision": "CONTINUE"
+    },
+    {
+      "utc": "2026-10-19T16:58:14.835502+00:00",
+      "monotonic_ns": 9181066178389102,
+      "host_io_full_avg10": "6.23",
+      "cgroup_io_full_avg10": "56.22",
+      "qualified_io_sample_count": 3,
+      "decision": "STOP"
+    }
+  ],
+  "actual_guard_exit_instances": [
+    {
+      "pid": 1087103,
+      "start_ticks": 918079123,
+      "returncode": -9,
+      "readonly_current_status": "ABSENT_RECORDED_INSTANCE"
+    },
+    {
+      "pid": 1087102,
+      "start_ticks": 918079106,
+      "returncode": -9,
+      "readonly_current_status": "ABSENT_RECORDED_INSTANCE"
+    },
+    {
+      "pid": 1087098,
+      "start_ticks": 918078939,
+      "returncode": -9,
+      "readonly_current_status": "ABSENT_RECORDED_INSTANCE"
+    }
+  ],
+  "guard_cleanup": "Frozen canonical exact-current-instance SIGKILL cleanup only; no foreign/process-group adoption",
+  "current_own_live": 0,
+  "lock_released": true,
+  "foreign_signals": 0,
+  "MAP_EVENTS_sha256": "a8b94dbb2bd871f4e920f3a85df5d25d6d62f6ee91c2ddf005fd6568b95a7a63",
+  "MAP_event_rows": 8372,
+  "map_frames": 8369,
+  "parent_event_proofs": [
+    {
+      "utc": "2026-10-19T16:53:39.720249+00:00",
+      "parent_pid": 1087098,
+      "parent_start_ticks": 918078939,
+      "new_owned_pid": 1087102,
+      "child_start_ticks": 918079106,
+      "child_ppid": 1087098,
+      "child_tgid": 1087102,
+      "event": 2,
+      "proof": "PTRACE_GETEVENTMSG_FROM_CONFIRMED_PARENT"
+    },
+    {
+      "utc": "2026-10-19T16:53:39.890590+00:00",
+      "parent_pid": 1087102,
+      "parent_start_ticks": 918079106,
+      "new_owned_pid": 1087103,
+      "child_start_ticks": 918079123,
+      "child_ppid": 1087102,
+      "child_tgid": 1087103,
+      "event": 2,
+      "proof": "PTRACE_GETEVENTMSG_FROM_CONFIRMED_PARENT"
+    }
+  ],
+  "raw_evidence": {
+    "path": "/workspace/dtc-evidence-closure-20261019-v1/coordinator/ag6-v2/attempts/AE_GEMM_77cbc367-150c-418d-85e0-3be23d952498",
+    "files": [
+      {
+        "path": "ENGINE/MAP_EVENTS.jsonl",
+        "bytes": 7579689,
+        "sha256": "a8b94dbb2bd871f4e920f3a85df5d25d6d62f6ee91c2ddf005fd6568b95a7a63"
+      },
+      {
+        "path": "ENGINE/stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "ENGINE/OOM_MONITOR.jsonl",
+        "bytes": 159552,
+        "sha256": "e8e62c9c3a223fcdf8e86a06fa2c4cc576e90ddc4a434a73131901da4a65d76b"
+      },
+      {
+        "path": "ENGINE/stdout",
+        "bytes": 48235,
+        "sha256": "762bc2683456ad6badabcb7ffeed770d1a37ead4dd2471b2ee00cf8fbd6182a1"
+      }
+    ]
+  },
+  "numeric_values": "UNAVAILABLE_NOT_COMPLETED",
+  "cycles": "UNAVAILABLE",
+  "selected_F": "PROVISIONAL_O_WITH_INCOMPLETE_OPT_SCREEN",
+  "disk_floor_exclusive_bytes": 5368709120,
+  "raw_map_payloads_committed": false,
+  "raw_trace_payloads_read": false,
+  "no_refund_replacement_fifth_or_BA_transfer": true,
+  "old_SELECTION_unchanged": true
+}

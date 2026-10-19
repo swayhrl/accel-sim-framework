@@ -1,7 +1,7 @@
 # Execution coordination state
 
-Updated: 2026-10-20T00:46:45.193412+08:00.
-Status: **V2_SHARED_OBSERVER_ROLES_AND_AG6_ADAPTERS_QUALIFIED_SINGLE_WORKER_RELEASE_PREPARING**.
+Updated: 2026-10-20T01:01:31.986177+08:00.
+Status: **AG6_TERMINAL_RUNTIME_CGROUP_IO_STOP_1_OF4_CONTINUE_INDEPENDENT_CPU_EVIDENCE**.
 Same Goal continued in original `huangrulin-174`; no reset/restart. `/root` is
 sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 `46df8267`; AG4/AG5 frozen contracts and old UUIDs remain sealed.
@@ -16,15 +16,16 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 | ROB1 | Configure1/build1 exit0/reaped; actual LDST ELF and whole library9-file static ABI closure frozen; six-mode runtime source prepared, runtime0 | execution/rob1_fixture_static_intake_v1/ |
 | AG final preparation | Fixed review13c08ad3, notificationf8cbc9d2;56 review blobs +48 original Git receipt hashes verified; four-arm270-option/input consistency checked | ag6_final_prep_intake/ |
 | BASE eligibility | Both exact-tuple imports accepted by BA after independent SEM1/ROB1 reviews and parent closed-event proof join; old executor gaps retained | AG6_BUDGET_LEDGER.json |
-| Resource window | Latest actual adapter complete paired R2 PASS under strict>5GiB policy; actual mount about46GiB available. Every future start still requires its own fresh complete R2 and expected-write assessment | execution/ag6_cpu_adapter_actual_attempt3/admission/ |
+| Resource window | Initial fullsim complete paired R2 PASS; then cgroup IO full26.50/60.09/56.22 at16:57:13/16:57:44/16:58:14Z triggered frozen runtimeSTOP. Disk~41.95GiB, not cause. Future independent CPU activities need new full R2 | execution/ag6_actual_cohort_stop_v2/ |
 | User disk update | Strictly>5GiB on actual output mount; <=5GiB holds new builds/sims and protects own tasks; expected writes assessed, no hidden10GiB reserve | USER_DISK_AUTHORIZATION_20261020.json |
-| AG6 new starts |0/4; both BASEs accepted; exact4 UUIDs frozen;4 parser groups+actual prelaunch identity+2 closedCPU map joins PASS. Default1 executable release being completed | execution/ag6_cpu_adapter_actual_attempt3/; execution/AG6_BUDGET_LEDGER.json |
-| BA full simulations / F |0/32; provisionalO, old selection preserved; P8 F not launched; dual fullsim unqualified, default1 | BUDGET_LEDGER.json; SELECTION.json |
+| AG6 new starts |1/4 consumed,1 actual fork,0 accepted performance; AE_GEMM stopped by runtime cgroupIO rule;3unused UUIDs sealed by frozen cohortSTOP, no replacement/resume/BA transfer; own3 instances absent, lock released | execution/AG6_BUDGET_LEDGER.json; execution/ag6_actual_cohort_stop_v2/ |
+| BA full simulations / F |0/32; provisionalO (not finalF=O), new SELECTION_V2 records incomplete screen, old selection unchanged; no P8F launch; independent O/SEM/ROB preparation can continue | execution/SELECTION_V2.json |
 | Paper / evidence scope | v0.18/DC untouched; conditional/numeric/native/ISA/coherence claims stay separate; original44/GM12 preserved | SCIENTIFIC_SCOPE_CURRENT.md |
 
 User disk update applies to future entries only; all earlier refused admissions remain refused. No resource failure authorizes an old-goal restart. Existing ELF/config
 work is reused; future runtime release needs the converged source closure and
 fresh per-entry full host+cgroup R2. No model canary or simulation start occurred.
+
 
 
 ## Historical chronological record

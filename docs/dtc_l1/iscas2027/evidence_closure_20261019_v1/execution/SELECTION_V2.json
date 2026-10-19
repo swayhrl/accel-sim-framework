@@ -1,0 +1,103 @@
+{
+  "status": "PROVISIONAL_O_WITH_INCOMPLETE_OPT_SCREEN",
+  "final_F": null,
+  "nominated_arm": null,
+  "working_design": "O",
+  "complete_four_point_screen": false,
+  "preserved_old_selection_sha256": "d4c9011017f6720b4740c80f6abaeb435fbbc30c702a1c60913ad8bb8c796bf3",
+  "old_selection_write_performed": false,
+  "evidence": [
+    {
+      "point": "AE_GEMM",
+      "expected_UUID": "77cbc367-150c-418d-85e0-3be23d952498",
+      "accepted": false,
+      "STRICT_sha256": "cd779833ab364a766e5a8f36607a6e796fa7725ec515969f1a1120b73bb948f6",
+      "failure": "KeyError:'point'"
+    }
+  ],
+  "issues": [
+    "MISSING_REGISTERED_STRICT_RECEIPT_SLOTS",
+    "AE_GEMM:KeyError:'point'"
+  ],
+  "arm_evaluations": null,
+  "actual_provenance_requires_parent_immutable_join": true,
+  "dispatch_permission": false,
+  "no_per_input_cherry_pick": true,
+  "no_AE_AD_combination": true,
+  "rule": {
+    "minimum_speedup": {
+      "numerator": 49,
+      "denominator": 50
+    },
+    "minimum_geomean": {
+      "numerator": 51,
+      "denominator": 50
+    },
+    "tie_rule": "MAX_GM_OVER_MIN_GM_STRICTLY_LESS_THAN_201_OVER_200",
+    "tie_priority": "AE",
+    "screen_inputs": [
+      "GEMM",
+      "Gaussian"
+    ]
+  },
+  "input_sha256": {
+    "preregistration": "844591f608ff99203b22f7f7cb958e1c7633726c3e351da7b7407dd53edee38e",
+    "BASE_decision": "a8e834093bc3da494190798cc87eee6c39edbe34efa04d38a5ab6771cea37f9a",
+    "old_selection": "d4c9011017f6720b4740c80f6abaeb435fbbc30c702a1c60913ad8bb8c796bf3"
+  },
+  "BASE_comparators": {
+    "GEMM": {
+      "cycles": 1071405,
+      "UUID": "8b6006aa-610e-41cf-82f0-135f80e449cf",
+      "producer_dossier_sha256": "0f3f54354a7a31f37f49f786a5f3597b59f47d4cba93f4f24eab8ab4d7f80fe8",
+      "scope": "Only unchanged complete original input/ROI, c809 Core, original exact runtime/library/loader/cache and270 options; only intended single AE or AD flag differs. No automatic transfer to BA32, diagnostic builds, changed models or input.",
+      "old_executor_scope": {
+        "decision": "BOUNDED_AG3_SCOPE_NOT_AG5_OR_BA_QUALIFICATION",
+        "source_commit": "2f3a8c4b27780e2bf3818949a6e5356d9fd62327",
+        "known_gap": "AG3 observer did not expose event-confirmed descendants; same-exe inheritance selection and historic PID state are weaker than AG5.",
+        "root_start_ticks": 906380659,
+        "parent_events": 2,
+        "instances": 3,
+        "real_execs": 3,
+        "per_child_start_ticks": "UNAVAILABLE_AG3_NOT_RETROCONSTRUCTED",
+        "recorded_parent_event_edges": "ROOT -> dash -> cat; two actual GETEVENTMSG events, unique PIDs, three natural exit0 identities and complete per-exec loader closure",
+        "specific_reuse_argument": "Observed event graph has no PID repetition and only the actual matching parent image at each inherited stop. Frozen AG3 rejects any duplicate fork PID; its natural-exit acceptance is inconsistent with a recorded recycled-PID fork. This source/run consistency argument supports this bounded comparator; it is not a complete per-resume PID-generation measurement.",
+        "later_Gaussian_observer_failure": "PRESERVED_DIFFERENT_RUN_NOT_A_PREFIX_CONTROL",
+        "whole_old_executor_recertified": false
+      }
+    },
+    "Gaussian": {
+      "cycles": 3278356,
+      "UUID": "87daf914-1730-4012-8053-7cb3c9536636",
+      "producer_dossier_sha256": "a489d264e6a36b9d1eb6820224caab37e478eb3c0e982e0ea7521789baed5f60",
+      "scope": "Only unchanged complete original input/ROI, c809 Core, original exact runtime/library/loader/cache and270 options; only intended single AE or AD flag differs. No automatic transfer to BA32, diagnostic builds, changed models or input.",
+      "old_executor_scope": {
+        "decision": "INCOMPLETE_PRELAUNCH_EXECUTOR_QUALIFICATION_STOP_PRESERVED",
+        "source_commit": "d8d0401dab0a1d9cb949302bcc05148328421cc2",
+        "original_final_decision": "STOP_PRELAUNCH_CPU_QUALIFICATION_INCOMPLETE",
+        "synthetic_AST_negative": "DECLARED_SYNTHETIC_WAIT_PID_AND_STATUS_NO_FORCED_KERNEL_REUSE",
+        "actual_runtime_PID_reuse": "NOT_ESTABLISHED",
+        "root_start_ticks": 916292894,
+        "parent_events": 1020,
+        "instances": 1021,
+        "real_execs": 1021,
+        "per_child_start_ticks": "AVAILABLE_AND_PARENT_MATCHED_IN_RECORDED_FORK_GRAPH",
+        "pending_quarantine_records": 510,
+        "final_confirmed_and_pending_empty": true,
+        "specific_reuse_argument": "The exact immutable event log has 1020 unique child PID/start_ticks proofs, matched current parent ticks, 1021 natural-exit instances and 1021 actual exec loader closures, without repeated root/child PID or ancestry mismatch. The known stale-owned counterexample requires PID reuse; the complete accepted-run proof graph plus source fail-stop ordering supplies run-specific consistency evidence that it did not affect this measurement. Absence of a repeated record is not a claim of a newly instrumented kernel PID-reuse test.",
+        "historical_cohort_performance_claims_eligible": false,
+        "historical_AG4_optimization_results": 0,
+        "whole_old_executor_recertified": false
+      }
+    }
+  },
+  "primary_stop_reason": "cgroup:IO_FULL_PSI_GT25_THREE_GE30S_SAMPLES_AG_EXPLICIT_EXTENSION",
+  "actual_consumed_starts": 1,
+  "actual_accepted_performance_results": 0,
+  "actual_failed_STRICT_sha256": "cd779833ab364a766e5a8f36607a6e796fa7725ec515969f1a1120b73bb948f6",
+  "cohort_stop_evidence": "ag6_actual_cohort_stop_v2/STOP_SUMMARY.json",
+  "cohort_continuation_allowed": false,
+  "original_BA32_unchanged": true,
+  "publication_scope": "INCOMPLETE_DISCOVERY_NO_FINAL_F_NO_ARM_PROMOTION",
+  "runtime_science_rejection": "Controlled resource STOP, no full-input natural exit0; parser was not used to extract partial metrics."
+}
