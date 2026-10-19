@@ -1,0 +1,46 @@
+{
+  "schema": "C16_MODEL_AUTHORITY_THREE_TURN_BLOCKED_AUDIT_V1",
+  "utc": "2026-10-19T13:47:02.542426+00:00",
+  "status": "BLOCKED_EXTERNAL_IO_PRESSURE_CURRENT_COMPLETE6_SHA_NOT_PROVEN",
+  "same_external_blocker_observed_consecutive_goal_turns": 3,
+  "latest_IO_snapshot": {
+    "utc": "2026-10-19T13:45:35.187533+00:00",
+    "io_pressure": "some avg10=28.60 avg60=28.55 avg300=28.43 total=171065402929\nfull avg10=28.60 avg60=28.55 avg300=28.42 total=150707826210\n",
+    "io_some_avg10": 28.6,
+    "io_full_avg10": 28.6,
+    "cgroup_io_pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=10820245115\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=10482582164\n",
+    "share_available_bytes": 44367118336,
+    "MemAvailable_bytes": 340139266048,
+    "checksum_IO_gate_pass": false,
+    "payload_read_bytes": 0
+  },
+  "latest_IO_snapshot_sha256": "677237912b3e5cf04ee25b10807ea380639152a343bc8c8ac8592bda9dd60967",
+  "previous_observations": [
+    "POST_HASH_IO_HOLD_SNAPSHOT.JSON",
+    "IO_PRESSURE_RECHECK_AFTER_TERMINAL_HOLD.JSON",
+    "IO_HELD_AFTER_REPORT_BUILD.JSON",
+    "IO_CONTINUATION_02.json"
+  ],
+  "completed_current_full_model_SHA_count": 3,
+  "pending_current_full_model_SHA_count": 3,
+  "pending_exact_model_files": [
+    "RAW model-00004-of-00004.safetensors",
+    "AWQ model-00001-of-00002.safetensors",
+    "AWQ model-00002-of-00002.safetensors"
+  ],
+  "published_initial_SHA_evidence_commit": "70d0f166ba6143ab1ea4889bc50075f4b0fdd037",
+  "pending_only_resume_plan_commit": "2d981ab72c8fd890dd218c01bfb25848cb87bf49",
+  "resume_read_rate_cap_bytes_per_second": 8388608,
+  "unchanged_checksum_IO_PSI_some_full_avg10_limit": 10,
+  "completed_model_reads_not_to_be_repeated": true,
+  "no_active_model_hash_worker_or_resident_watcher": true,
+  "no_further_safe_current_model_read_action_available": true,
+  "new_model_reads_this_goal_turn": 0,
+  "model_files_copied_restored_or_deleted": 0,
+  "source_reclaim_bytes": 0,
+  "source_owner_clearance": false,
+  "scientific_space_floor48GiB_unchanged": true,
+  "original_TLS_B0010_and_closed_global_review_unchanged": true,
+  "goal_complete": false,
+  "exact_resume_trigger": "External IO pressure falls below the unchanged guard; fresh central EP lease/controller and Target Share>=40GiB/RAM>=64GiB/current identity checks pass. Resume this same Goal with the existing pending-only helper; reuse RAW1-3 current SHA receipts, read RAW4 and AWQ1-2 only. No model upload, native restore or source release."
+}
