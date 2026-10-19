@@ -47,3 +47,7 @@ The old14 queue is prepared history and must not drain automatically. Next
 admitted compute priority is the final common source's affected native suite;
 small R1 native is allowed but does not take priority over the final main pairs.
 Old Lane5/R19, EN-v17, RTL/DC evidence and other projects remain untouched.
+
+Subsequent material event (not a new resource poll): E source111bc9334fbf6f10ab7e0e0d76872164dcd19b77 has published/hash-pinned its V2 coordinator and policy helper. The SAME registry now shows cumulative0/40, unchangedT0, no qualifications/admission. F target access remains blocked/unmeasured and remote execution disabled. E reported111 control checks are not new A executions or native proof. Exact observation is E_V2_PUBLICATION_INTAKE_r1.json. No old SHA gate was bypassed.
+
+FINITE_AFFECTED_NATIVE_SCOPE_r1.json merges10 assertion groups and identifies which shared fixture sources are still needed; no final invocation count or PASS is invented. SOURCE_COST_LEDGER_r1.json gives actual source fields/ports/lookup costs and explicit unresolved combined costs for D. Full observer currently misses the TVD shortcut and RO/TVD mode enabling needs actual hook work; do not report those absent waits as zero.
