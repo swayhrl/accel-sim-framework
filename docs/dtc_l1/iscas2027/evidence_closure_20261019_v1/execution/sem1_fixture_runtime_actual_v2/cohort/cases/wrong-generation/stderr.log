@@ -1,0 +1,18 @@
+dtc_l1_sem1_values_ldst: /workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/src/gpgpu-sim/dtc-l1-common.h:716: void dtc_l1::oo_frontend::sem1_accept_sector(dtc_l1::physical_identity, unsigned int, const bytes32&): Assertion `fill_identity_matches(identity) && sector < 4' failed.
+
+=== CRASH: SIGABRT (signal 6) ===
+Backtrace:
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/libcudart.so(+0x158129)[0x777f6332a129]
+/lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x777f62d93520]
+/lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x777f62de79fc]
+/lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x777f62d93476]
+/lib/x86_64-linux-gnu/libc.so.6(abort+0xd3)[0x777f62d797f3]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2871b)[0x777f62d7971b]
+/lib/x86_64-linux-gnu/libc.so.6(+0x39e96)[0x777f62d8ae96]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/libcudart.so(_ZN9ldst_unit26dtc_l1_oo_consume_responseEP9mem_fetch+0x26c)[0x777f63370b66]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/libcudart.so(_ZN9ldst_unit5cycleEv+0xdd4)[0x777f6337fe92]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst(+0x8c10)[0x63f3a681ec10]
+/lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x777f62d7ad90]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x777f62d7ae40]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst(+0x6d05)[0x63f3a681cd05]
+=== END BACKTRACE ===

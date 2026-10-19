@@ -1,0 +1,17 @@
+dtc_l1_sem1_values_ldst: /workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/src/gpgpu-sim/dtc-l1-common.h:1155: void dtc_l1::oo_frontend::release(dtc_l1::physical_identity, uint64_t): Assertion `physical.allocated && physical.generation == identity.generation && !physical.tag_valid && !physical.ref_count' failed.
+
+=== CRASH: SIGABRT (signal 6) ===
+Backtrace:
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/libcudart.so(+0x158129)[0x790d6ed07129]
+/lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x790d6e770520]
+/lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x790d6e7c49fc]
+/lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x790d6e770476]
+/lib/x86_64-linux-gnu/libc.so.6(abort+0xd3)[0x790d6e7567f3]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2871b)[0x790d6e75671b]
+/lib/x86_64-linux-gnu/libc.so.6(+0x39e96)[0x790d6e767e96]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst(_ZN6dtc_l111oo_frontend7releaseENS_17physical_identityEm+0xd9)[0x5a5789c94405]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst(+0x83ce)[0x5a5789c923ce]
+/lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x790d6e757d90]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x790d6e757e40]
+/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst(+0x6d05)[0x5a5789c90d05]
+=== END BACKTRACE ===

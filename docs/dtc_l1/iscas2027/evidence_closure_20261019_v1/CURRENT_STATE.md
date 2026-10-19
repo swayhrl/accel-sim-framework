@@ -1,6 +1,6 @@
 # Execution coordination state
 
-Updated: 2026-10-20T01:18:55.853182+08:00.
+Updated: 2026-10-20T01:22:01.275099+08:00.
 Status: **AG6_TERMINAL_RUNTIME_CGROUP_IO_STOP_1_OF4_CONTINUE_INDEPENDENT_CPU_EVIDENCE**.
 Same Goal continued in original `huangrulin-174`; no reset/restart. `/root` is
 sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
@@ -12,8 +12,8 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 | CPU fixture | New16,616-byte ELF compiled/frozen; actual targeted CPU fixtures now executed in bounded qualification, no model | ag5_v2_build_receipts_attempt2/ |
 | Changed observer/guard qualification |14+5+first root-order actual passes preserved; remaining5real guard cases PASS after repair;2real CPU roots shared callback/helper/cache/exit PASS under new5GiB policy; all event-proven instances absent | ag5_v2_current_cpu_qualification_r2/ |
 | Actual COV/SEM/ROB roles | All3 actually observed separately; SEMbuild/ROBconfigure+build/COV same-process ACK4tests exit0/reaped; actual changed-release binding rejected; no joint or continuous3-role claim | execution/cpu_real_roles_v2_actual_intake_attempt4/ |
-| SEM1 | Configure1/build1 exit0/reaped; actual fixture ELF and whole library9-file static ABI closure frozen; four declared pure terminal-view mock groups actual PASS; corrected ten-mode CPU-only exact release published before entry, fixture0/nativeUNPROVEN | execution/sem1_fixture_static_intake_v1/ |
-| ROB1 | Configure1/build1 exit0/reaped; matching LDST ELF/wholelib9-file static ABI frozen. Actual six-case runtime entry first R2 refused on cgroupIO;0/6 fixture starts, no CPU test result | execution/rob1_fixture_runtime_actual_attempt1/ |
+| SEM1 | Configure1/build1 exit0/reaped; actual fixture ELF and whole library9-file static ABI closure frozen; ten actual component diagnostics complete:5conditional positives/1no-E countermodel/4expected rejections;40 resource receipts independently rechecked;10own roots reaped/absent/no signals.0live image captures UNAVAILABLE, no native or original12 closure | execution/sem1_fixture_runtime_actual_v2/ |
+| ROB1 | Configure1/build1 exit0/reaped; matching LDST ELF/wholelib9-file static ABI frozen. First six-case entry R2 refused cgroupIO;0/6starts retained. New namespace epoch releases the six unexecuted cases with unchanged inner/classifier/parent39 after recovered SEM gates; fresh R2 per case still required | execution/rob1_fixture_runtime_actual_attempt1/ |
 | AG final preparation | Fixed review13c08ad3, notificationf8cbc9d2;56 review blobs +48 original Git receipt hashes verified; four-arm270-option/input consistency checked | ag6_final_prep_intake/ |
 | BASE eligibility | Both exact-tuple imports accepted by BA after independent SEM1/ROB1 reviews and parent closed-event proof join; old executor gaps retained | AG6_BUDGET_LEDGER.json |
 | Resource window | Initial fullsim complete paired R2 PASS; then cgroup IO full26.50/60.09/56.22 at16:57:13/16:57:44/16:58:14Z triggered frozen runtimeSTOP. Disk~41.95GiB, not cause. Future independent CPU activities need new full R2 | execution/ag6_actual_cohort_stop_v2/ |
@@ -25,6 +25,7 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 User disk update applies to future entries only; all earlier refused admissions remain refused. No resource failure authorizes an old-goal restart. Existing ELF/config
 work is reused; future runtime release needs the converged source closure and
 fresh per-entry full host+cgroup R2. No additional model canary or simulation start is authorized by this CPU release.
+
 
 
 
