@@ -21,7 +21,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 HANDOFF = REPO / 'docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a'
-SPEC_PATH = HANDOFF / 'full_system_v2/COMMON_NATIVE_BUILD_SPEC_r1.json'
+SPEC_PATH = HANDOFF / 'full_system_v2/COMMON_NATIVE_BUILD_SPEC_r2.json'
 CAMPAIGN = 'EPL2_MECHANISM_STUDY_20261019_V1'
 AUTHORITY = 'b2e5328aca825d6e9ebfe09e46fa208957834636'
 SHARED = Path('/workspace/ep_l2_ft20261016_shared')
@@ -49,6 +49,8 @@ def main():
     p.add_argument('--suite', choices=['main', 'all', 'diagnostics'], default='main')
     p.add_argument('--phase', choices=['combined', 'build', 'native'], default='combined')
     p.add_argument('--build-receipt', type=Path)
+    p.add_argument('--resume-failed-build', action='store_true',
+                   help='only the exact failed test-only build frozen in this spec; fresh E lease required')
     p.add_argument('--disk-authorization-id')
     p.add_argument('--admission', type=Path)
     p.add_argument('--execute', action='store_true')
@@ -57,10 +59,11 @@ def main():
     assert out.is_relative_to('/workspace') and build.is_relative_to('/workspace')
     assert not out.is_relative_to(build) and not build.is_relative_to(out)
     assert a.suite != 'diagnostics' or a.phase == 'native'
+    assert not a.resume_failed_build or a.phase == 'build'
     assert not a.disk_authorization_id or a.phase == 'build', 'disk exception is COMPILE ONLY; native uses ordinary48GiB'
     if a.phase == 'native':
         assert a.build_receipt and a.build_receipt.is_file() and build.is_dir(), 'exact retained build receipt required'
-    else:
+    elif not a.resume_failed_build:
         assert not build.exists(), 'fresh build required; preserve old builds'
     out.mkdir(parents=True, exist_ok=False)
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
@@ -73,6 +76,8 @@ def main():
     core, runtime = Path(spec['core']), Path(spec['framework'])
     vendor = runtime / 'gpu-simulator/extern/pybind11'
     native_only = a.phase == 'native'
+    assert not a.execute or not spec.get('failed_build_recovery_manifest') or native_only or a.resume_failed_build, \
+        'this recovery spec executes only its exact incremental build or retained native stage'
     cpu, memory = (1, spec['native_memory_bytes']) if native_only else (2, spec['memory_bytes'])
     growth = spec['result_growth_bytes'] + (0 if native_only else spec['build_growth_bytes'])
     bindings = {str(f): sha(f) for f in [Path(__file__), SPEC_PATH,
@@ -95,6 +100,47 @@ def main():
         'framework_source_commit','vendor_commit','driver_source_commit','driver_sha256',
         'spec_sha256','planner_sha256','checker_sha256','suite','phase']}
     identity.update(build_directory=str(build), output_directory=str(out))
+    recovery = None
+    baseline_bytes = 0
+    if a.resume_failed_build:
+        recovery = json.loads((HANDOFF / spec['failed_build_recovery_manifest']).read_text())
+        assert recovery['build_directory'] == str(build) and build.is_dir()
+        assert sha(HANDOFF / spec['failed_build_recovery_manifest']) == spec['failed_build_recovery_manifest_sha256']
+        failed = json.loads(Path(recovery['failed_receipt']).read_text())
+        assert sha(recovery['failed_receipt']) == recovery['failed_receipt_sha256']
+        assert failed['status'] == 'STOPPED_OR_FAILED_NO_RUNTIME_RELEASE' and failed['lease_released']
+        assert failed['error'] == "RuntimeError('build exited 2')" and failed['compiler_started']
+        assert failed['native_invocations_attempted'] == failed['application_starts'] == 0
+        assert failed['build'] == str(build) and failed['suite'] == a.suite == 'all'
+        assert failed['core_source_commit'] == recovery['failed_core_source_commit']
+        for k in ['framework_source_commit', 'vendor_commit']:
+            assert failed[k] == report[k]
+        delta = subprocess.check_output(['git', 'diff', '--binary',
+            recovery['failed_core_source_commit'], spec['core_source_commit']], cwd=core)
+        assert hashlib.sha256(delta).hexdigest() == recovery['allowed_core_diff_sha256']
+        assert git(core,'diff','--name-only',recovery['failed_core_source_commit'],
+                   spec['core_source_commit']).splitlines() == recovery['allowed_changed_paths']
+        # Input snapshots cover every retained object, executable, generated
+        # file, cache and makefile. They are checked before central admission;
+        # the consumed old lease/token is never reused.
+        actual_files = {f.relative_to(build).as_posix(): f for f in build.rglob('*')
+                        if f.is_file() and not f.is_symlink()}
+        assert set(actual_files) == set(recovery['build_files'])
+        actual_links = {f.relative_to(build).as_posix(): os.readlink(f)
+                        for f in build.rglob('*') if f.is_symlink()}
+        assert actual_links == recovery['build_symlinks']
+        for name, f in actual_files.items():
+            row = recovery['build_files'][name]
+            assert f.stat().st_size == row['bytes'] and sha(f) == row['sha256'], name
+            baseline_bytes += row['bytes']
+        assert baseline_bytes == recovery['baseline_build_bytes']
+        assert baseline_bytes + spec['build_growth_bytes'] == spec['build_total_capacity_bytes']
+        identity.update(failed_build_receipt_sha256=recovery['failed_receipt_sha256'],
+                        retained_build_manifest_sha256=spec['failed_build_recovery_manifest_sha256'],
+                        incremental_build_only=True)
+        report.update(failed_build_recovery=spec['failed_build_recovery_manifest'],
+                      baseline_build_bytes=baseline_bytes,
+                      build_total_capacity_bytes=spec['build_total_capacity_bytes'])
     report['build_identity'] = identity
     save = lambda: put(out/'RECEIPT.json',report)
     lease = registry = lock = None
@@ -216,7 +262,8 @@ def main():
             report['own_result_bytes_peak'] = max(written,report.get('own_result_bytes_peak',0))
             if not native_only:
                 built = retained_tree_bytes(build) if build.exists() else 0
-                assert built<spec['build_growth_bytes'],'owned build growth reservation crossed'
+                assert built<spec.get('build_total_capacity_bytes',spec['build_growth_bytes']), 'owned total build capacity crossed'
+                assert max(0,built-baseline_bytes)<spec['build_growth_bytes'], 'owned build growth reservation crossed'
                 report['own_build_bytes_peak'] = max(built,report.get('own_build_bytes_peak',0))
             if active['pid'] is not None:
                 rss = process_tree_rss(active['pid']);assert rss<=memory,'owned process-tree RAM lease crossed'
@@ -231,7 +278,7 @@ def main():
         lease = allocation['lease_id'];report.update(lease_id=lease,resource_owner='mechanism_A',resource_allocation=allocation)
         assert resources()['disk_free_bytes']>=stop_floor+growth+monitor
         temp_root = out if native_only else build
-        (temp_root/'tmp').mkdir(parents=True)
+        (temp_root/'tmp').mkdir(parents=True,exist_ok=bool(recovery))
         env = dict(os.environ,GPGPUSIM_ROOT=str(core),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',
             ACCELSIM_CONFIG='release',PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],
             TMPDIR=str(temp_root/'tmp'),XDG_CACHE_HOME=str(temp_root/'cache'),PYTHONDONTWRITEBYTECODE='1',
@@ -257,9 +304,10 @@ def main():
                         libs[str(Path(token).resolve())] = sha(token)
             return libs
         if not native_only:
-            report.update(status='CONFIGURING',compiler_started=True);save()
-            run(['cmake','-S',str(runtime/'gpu-simulator'),'-B',str(build),'-G','Unix Makefiles',
-                 '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'],'configure',600)
+            report.update(status='INCREMENTAL_BUILD_PREPARING' if recovery else 'CONFIGURING',compiler_started=True);save()
+            if not recovery:
+                run(['cmake','-S',str(runtime/'gpu-simulator'),'-B',str(build),'-G','Unix Makefiles',
+                     '-DCUDAToolkit_ROOT=/usr/local/cuda-11.8'],'configure',600)
             run(['c++','--version'],'compiler_version',20);run(['cmake','--version'],'cmake_version',20)
             targets = sorted({c['target'] for c in cases})
             report['status']='BUILDING';save()
