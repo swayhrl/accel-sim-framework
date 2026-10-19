@@ -36,13 +36,16 @@ def main():
  require(REG['status']=='REGISTERED_CHANGED_DISPATCH_CPU_ONLY','EXACT_CHANGED_CPU_RELEASE_REQUIRED')
  for rel,digest in REG['prepared_source_sha256'].items():
   require(sha(HERE/rel)==digest,'QUALIFIER_SOURCE_CHANGED:'+rel)
+ from cpu_admission_v2 import CPUAdmission, execution_binding
+ if not CPUAdmission(REG,[REG['self_role']]).admit(Path(REG['admission_output'])):
+  print('WAIT_RESOURCE_OR_AUTHORITY_NO_CPU_FIXTURE_STARTED',flush=True);return 3
  dest=Path(REG['output']);dest.mkdir(parents=True,exist_ok=False)
  manifest_path=Path(REG['manifests_path'])
  require(sha(manifest_path)==REG['manifests_sha256'],'MAPPING_MANIFEST_CHANGED')
  manifests=json.loads(manifest_path.read_text())
  target=RAW/'build/closure-cpu-ag5-v2'
  env=dict(PATH='/usr/bin:/bin',LANG='C',LC_ALL='C',CUDA_VISIBLE_DEVICES='')
- write(dest/'START.json',dict(utc=now(),registration_sha256=sha(REGISTRATION),purpose='TARGETED_CHANGED_AG5_BA_CPU_INTERFACES',kernel_PID_reuse_forced=False,simulator_starts=0),exclusive=True)
+ write(dest/'START.json',dict(utc=now(),**execution_binding(REGISTRATION,REG),purpose='TARGETED_CHANGED_AG5_BA_CPU_INTERFACES',kernel_PID_reuse_forced=False,simulator_starts=0),exclusive=True)
  rows=[]
  for label,engine,kind in [('fixed_retired_helper',fixed,'retired'),('fixed_retired_thread',fixed,'thread_retired'),('fixed_retired_root',fixed,'root_retired'),('fixed_current_instance_changed',fixed,'current_changed'),('fixed_stale_image_generation',fixed,'stale_image')]:
   original_wait=os.waitpid;original_identity=ownmod.identity;original_cdll=ctypes.CDLL;original_kill=os.kill
@@ -122,7 +125,7 @@ def main():
   row=dict(case=label,status='PASS_EXPECTED_RESULT' if ok else 'FAIL',records=records,terminal=r,synthetic_identity=token,kernel_PID_reuse_forced=False,synthetic_pending_is_not_a_real_live_process=kind in ('retired','thread_retired','root_retired'),simulator_starts=0)
   rows.append(row);write(dest/'RESULTS_IN_PROGRESS.json',rows)
   assert ok,row
- write(dest/'PRODUCTION_DISPATCH_GENERATION_TESTS.json',dict(status='PASS_BOUNDED_FULL_GUARD_DISPATCH',raw=str(dest),cases=rows,coverage='Actual run_guarded entry, real CPU loader/fork/exec/exit plus declared synthetic generation inputs; no forced kernel PID reuse; fixed integrated guard only; old AG5 counterexample receipt preserved without rerun',simulator_starts=0))
+ write(dest/'PRODUCTION_DISPATCH_GENERATION_TESTS.json',dict(status='PASS_BOUNDED_FULL_GUARD_DISPATCH',**execution_binding(REGISTRATION,REG),raw=str(dest),cases=rows,coverage='Actual run_guarded entry, real CPU loader/fork/exec/exit plus declared synthetic generation inputs; no forced kernel PID reuse; fixed integrated guard only; old AG5 counterexample receipt preserved without rerun',simulator_starts=0))
  run_real_changed_interfaces(dest, manifests, env)
  print('PASS_CHANGED_DISPATCH_AND_REAL_INTERFACES',len(rows),flush=True)
 
@@ -196,6 +199,6 @@ def run_real_changed_interfaces(dest, manifests, env):
    try:o.same(os.getpid())
    except Reject as exc:require(needle in str(exc),'WRONG_INSTANCE_REJECTION')
    else:raise Reject('INSTANCE_NEGATIVE_ACCEPTED:'+label)
- write(dest/'REAL_CHANGED_RESULTS.json',dict(status='PASS_TARGETED_CHANGED_REAL_CPU_INTERFACES',cases=rows,declared_wait_order_adapters=True,kernel_PID_reuse_forced=False,simulator_starts=0,performance_qualification=False))
+ write(dest/'REAL_CHANGED_RESULTS.json',dict(status='PASS_TARGETED_CHANGED_REAL_CPU_INTERFACES',**__import__('cpu_admission_v2').execution_binding(REGISTRATION,REG),generation_receipt_sha256=sha(dest/'PRODUCTION_DISPATCH_GENERATION_TESTS.json'),cases=rows,declared_wait_order_adapters=True,kernel_PID_reuse_forced=False,simulator_starts=0,performance_qualification=False))
 
-if __name__=='__main__':main()
+if __name__=='__main__':sys.exit(main() or 0)

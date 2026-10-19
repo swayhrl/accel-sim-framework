@@ -138,7 +138,8 @@ class SharedOwnership:
 
 def review_with_exact_roles(snapshot, legacy_review, own_owner, ownership,
                             roles, identity_reader, legacy_pack, legacy_output_sources=None,
-                            process_reader=None):
+                            process_reader=None, external_launch_view=None,
+                            require_external_launch_binding=False, callback_sample_id=None):
     """Delegate unchanged history/FLOCK checks after exact current-role binding.
 
     legacy_review must be the published source-bound AG4 review function. Reject
@@ -147,14 +148,43 @@ def review_with_exact_roles(snapshot, legacy_review, own_owner, ownership,
     """
     ownership.close_absent_pending()
     accepted = []
+    terminal_external = []
     retained = []
     retired = Path(legacy_pack).resolve()
     legacy_sources = legacy_output_sources or {}
     legacy_names = {Path(p).name for p in legacy_sources}
     for process in snapshot['processes']:
-        role = exact_cpu_role(process, roles, identity_reader, process_reader)
+        try:
+            role = exact_cpu_role(process, roles, identity_reader, process_reader)
+        except (FileNotFoundError, ProcessLookupError):
+            # A vanished snapshot row confers no live observation. Current
+            # processes/resources remain in the untouched original snapshot.
+            try:
+                fresh = identity_reader(process['pid'])
+            except (FileNotFoundError, ProcessLookupError):
+                continue
+            require(fresh['start_ticks'] == process['start_ticks'], 'CPU_ROLE_PID_REUSED')
+            require(fresh['state'] == 'Z', 'CPU_ROLE_DISAPPEARED_BUT_STILL_LIVE')
+            continue
         if role:
             require(not process['is_simulator'], 'CPU_ROLE_CANNOT_BE_SIMULATOR')
+            from external_cpu_launch_view import ROLE_NAMES
+            if require_external_launch_binding and role in ROLE_NAMES:
+                require(external_launch_view is not None, 'EXTERNAL_CPU_ROLE_WITHOUT_ADMITTED_DIRECT_LAUNCH')
+                observation = dict(external_launch_view.observe(role, process,
+                                      callback_sample_id=callback_sample_id))
+                if observation['live_observation']:
+                    accepted.append(observation)
+                else:
+                    # A missing manager cannot make a still-live worker vanish.
+                    try:
+                        current = identity_reader(process['pid'])
+                    except (FileNotFoundError, ProcessLookupError):
+                        current = None
+                    require(current is None or current['state'] == 'Z',
+                            'EXTERNAL_MANAGER_NOT_CURRENT_WITH_LIVE_CPU_ROLE')
+                    terminal_external.append(observation)
+                continue
             accepted.append({'role': role, 'pid': process['pid'],
                              'start_ticks': process['start_ticks'],
                              'classification': 'EXACT_REGISTERED_CPU_CONTROL_ONLY'})
@@ -177,6 +207,7 @@ def review_with_exact_roles(snapshot, legacy_review, own_owner, ownership,
     result = legacy_review(classified, owner_for_lock, ownership)
     # No filtered resource snapshot is returned to the resource policy.
     return dict(result, exact_external_CPU_controls=accepted,
+                terminal_external_CPU_controls=terminal_external,
                 all_project_resource_population_unchanged=True,
                 original_process_count=len(snapshot['processes']),
                 classification_process_count=len(retained),
@@ -222,7 +253,7 @@ def verified_peer_view(launch, active_path, expected_request_sha256,
 
 
 def bind_current_review(local, identity_reader, peer_provider, project_CPU_tracees=False,
-                        exact_controller_roles_provider=None):
+                        exact_controller_roles_provider=None, external_launch_view_provider=None):
     """Create the exact frozen-review callback; no dispatch permission.
 
     peer_provider supplies verified_peer_view outputs from the sole manager's
@@ -261,6 +292,9 @@ def bind_current_review(local, identity_reader, peer_provider, project_CPU_trace
         controls = contracts['roles'] + (exact_controller_roles_provider() if exact_controller_roles_provider else [])
         result = review_with_exact_roles(classification, legacy_review, own_owner, shared,
                                          controls, identity_reader, DATA,
-                                         legacy_sources)
+                                         legacy_sources,
+                                         external_launch_view=(external_launch_view_provider() if external_launch_view_provider else None),
+                                         require_external_launch_binding=True,
+                                         callback_sample_id=str(time.monotonic_ns()))
         return current, result
     return review_now

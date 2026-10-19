@@ -27,15 +27,40 @@ def main():
     for path, digest in registration['runtime_sha256'].items():
         if sha(path) != digest:
             raise ValueError('RUNTIME_CHANGED:' + path)
-    prerequisite = json.loads(Path(registration['negative_receipt_path']).read_text())
-    if (prerequisite['returncode'] != 0 or prerequisite['cases'] != 14 or
-            prerequisite['test_source_sha256'] != sha(HERE / 'test_shared_authority.py') or
-            prerequisite['scope'] != 'ACTUAL_FROZEN_REVIEW_AND_ADAPTER_DECLARED_SYNTHETIC_PROCESS_ROWS'):
-        raise ValueError('CHANGED_AG5_ADAPTER_NEGATIVES_REQUIRED_BEFORE_REAL_ROOTS')
-    changed = json.loads(Path(registration['changed_dispatch_receipt']).read_text())
-    if changed['status'] != 'PASS_TARGETED_CHANGED_REAL_CPU_INTERFACES':
+    sys.path.insert(0,str(HERE))
+    sys.path.insert(0,str(HERE/'vendor'))
+    from cpu_admission_v2 import CPUAdmission, execution_binding, require_execution_binding
+    prerequisite=json.loads(Path(registration['negative_receipt_path']).read_text())
+    require_execution_binding(prerequisite,execution_binding(HERE.parent/'CPU_SHARED_AUTHORITY_REGISTRATION_V2.json',registration))
+    if (prerequisite['returncode']!=0 or prerequisite['cases']!=14 or
+            prerequisite['scope']!='ACTUAL_FROZEN_REVIEW_AND_ADAPTER_DECLARED_SYNTHETIC_PROCESS_ROWS'):
+        raise ValueError('CHANGED_ADAPTER_NEGATIVES_REQUIRED')
+    for name in ['stdout','stderr']:
+        if sha(Path(prerequisite['output'])/name)!=prerequisite[name+'_sha256']:
+            raise ValueError('NEGATIVE_OUTPUT_CHANGED:'+name)
+    changed_registration_path=HERE.parent/'CPU_AG5_CHANGED_DISPATCH_REGISTRATION_V2.json'
+    if sha(changed_registration_path)!=registration['changed_dispatch_registration_sha256']:
+        raise ValueError('CHANGED_DISPATCH_REGISTRATION_CHANGED')
+    changed_registration=json.loads(changed_registration_path.read_text())
+    changed=json.loads(Path(registration['changed_dispatch_receipt']).read_text())
+    require_execution_binding(changed,execution_binding(changed_registration_path,changed_registration))
+    if (changed['status']!='PASS_TARGETED_CHANGED_REAL_CPU_INTERFACES' or
+            changed['prepared_source_sha256']!=registration['prepared_source_sha256'] or
+            len(changed['cases'])!=6 or not all(row['passed'] for row in changed['cases'])):
         raise ValueError('CHANGED_GUARD_CPU_INTERFACES_REQUIRED')
+    generation_path=Path(registration['changed_dispatch_receipt']).parent/'PRODUCTION_DISPATCH_GENERATION_TESTS.json'
+    if sha(generation_path)!=changed['generation_receipt_sha256']:
+        raise ValueError('GENERATION_RECEIPT_CHANGED')
+    generation=json.loads(generation_path.read_text())
+    require_execution_binding(generation,execution_binding(changed_registration_path,changed_registration))
+    if len(generation['cases'])!=5 or not all(row['status']=='PASS_EXPECTED_RESULT' for row in generation['cases']):
+        raise ValueError('CHANGED_GENERATION_CASES_REQUIRED')
     sys.path.insert(0, str(HERE))
+    sys.path.insert(0,str(HERE/'vendor'))
+    from cpu_admission_v2 import CPUAdmission
+    if not CPUAdmission(registration,registration['gate_roles']).admit(Path(registration['admission_output'])):
+        print('WAIT_RESOURCE_OR_AUTHORITY_NO_SHARED_ROOTS_STARTED',flush=True)
+        return 3
     from multi_root_cpu import run_two_registered_cpu_roots
     report = run_two_registered_cpu_roots(registration['requests'], registration['manager_output'])
     checks = {'two_roots': report['status'] == 'PASS_CPU_TWO_ROOT_LIFECYCLE_ONLY'}
@@ -91,6 +116,7 @@ def main():
     result['remaining'] = ['targeted wrong argv/source/PID/stale/pending/unknown-role negative qualification',
                            'actual three external CPU roles observed by same callback',
                            'full family/ledger/source/resource admission']
+    result.update(execution_binding(HERE.parent/'CPU_SHARED_AUTHORITY_REGISTRATION_V2.json',registration))
     output = Path(registration['manager_output']) / 'SHARED_AUTHORITY_SCOPE_RESULT.json'
     with output.open('x') as stream:
         stream.write(json.dumps(result, indent=2) + '\n')

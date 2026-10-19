@@ -143,10 +143,40 @@ class SharedAuthorityCases(unittest.TestCase):
             self.verdict([self.process()])
 
 if __name__ == '__main__':
-    suite = unittest.defaultTestLoader.loadTestsFromTestCase(SharedAuthorityCases)
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    print(json.dumps({'cases': result.testsRun, 'successful': result.wasSuccessful(),
-                      'scope': 'ACTUAL_FROZEN_REVIEW_AND_ADAPTER_DECLARED_SYNTHETIC_PROCESS_ROWS',
-                      'real_role_observation': False, 'global_authority_qualified': False,
-                      'processes_created': 0, 'signals': 0, 'simulation_starts': 0}))
-    sys.exit(0 if result.wasSuccessful() else 1)
+    import hashlib
+    import io
+    sys.path.insert(0,str(HERE/'vendor'))
+    from cpu_admission_v2 import CPUAdmission, execution_binding
+    registration_path=HERE.parent/'CPU_SHARED_AUTHORITY_REGISTRATION_V2.json'
+    registration=json.loads(registration_path.read_text())
+    if registration['status']!='REGISTERED_FOR_SHARED_OBSERVER_CPU_QUALIFICATION_ONLY':
+        raise ValueError('EXACT_NEGATIVE_CPU_RELEASE_REQUIRED')
+    for rel,digest in registration['prepared_source_sha256'].items():
+        if hashlib.sha256((HERE/rel).read_bytes()).hexdigest()!=digest:
+            raise ValueError('NEGATIVE_SOURCE_CHANGED:'+rel)
+    for path,digest in registration['runtime_sha256'].items():
+        if hashlib.sha256(Path(path).read_bytes()).hexdigest()!=digest:
+            raise ValueError('NEGATIVE_RUNTIME_CHANGED:'+path)
+    if not CPUAdmission(registration,registration['negative_gate_roles']).admit(Path(registration['negative_admission_output'])):
+        print('WAIT_RESOURCE_OR_AUTHORITY_NO_TESTS_STARTED',flush=True)
+        sys.exit(3)
+    output=Path(registration['negative_receipt_path']).parent/'negative'
+    output.mkdir(parents=True,exist_ok=False)
+    suite=unittest.defaultTestLoader.loadTestsFromTestCase(SharedAuthorityCases)
+    stderr=io.StringIO()
+    result=unittest.TextTestRunner(stream=stderr,verbosity=2).run(suite)
+    summary={'cases':result.testsRun,'successful':result.wasSuccessful(),
+             'scope':'ACTUAL_FROZEN_REVIEW_AND_ADAPTER_DECLARED_SYNTHETIC_PROCESS_ROWS',
+             'real_role_observation':False,'global_authority_qualified':False,
+             'processes_created':0,'signals':0,'simulation_starts':0}
+    stdout=json.dumps(summary)+'\n'
+    (output/'stdout').write_text(stdout);(output/'stderr').write_text(stderr.getvalue())
+    receipt=dict(summary,returncode=0 if result.wasSuccessful() else 1,
+                 **execution_binding(registration_path,registration),
+                 test_source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                 stdout_sha256=hashlib.sha256((output/'stdout').read_bytes()).hexdigest(),
+                 stderr_sha256=hashlib.sha256((output/'stderr').read_bytes()).hexdigest(),output=str(output))
+    target=Path(registration['negative_receipt_path'])
+    with target.open('x') as stream:stream.write(json.dumps(receipt,indent=2)+'\n')
+    sys.stdout.write(stdout);sys.stderr.write(stderr.getvalue())
+    sys.exit(receipt['returncode'])

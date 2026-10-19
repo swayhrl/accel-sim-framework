@@ -134,3 +134,22 @@ COV now prepares that pure module in parallel. No new test loop or helper progra
 was launched. SEM configure remains preserved and is not rerun for observation;
 actual remaining builds stay gated. AG6 BASE dossiers remain absent at the latest
 29b1eb54 remote publication check. No UUID or new fullsim was created.
+
+
+### Current source convergence and one finite next build gate
+
+COV ab1f7fc18 pure external CPU launch view is copied byte-for-byte and connected
+to the same production callback. COV/SEM/ROB role names now require the current
+admitted direct-Popen view, beyond matching their exact source/argv/cwd/exe.
+No view means fail-closed; terminal manager cannot hide a still-live role. This
+is source convergence, not three-role production qualification: the actual sole
+launch manager/provider and useful pending build observations remain to execute.
+
+ROB's small source-only engineering review found and fixed fresh-R2 entry and
+receipt-binding gaps. All changed/shared/negative entrypoints now have their own
+finite full paired host+cgroup gate; each consumes only matching registration,
+whole source closure and manifest receipts. Existing AG5 53 passes stay preserved.
+Actual V2 tests are still zero; source syntax/static byte review is not runtime
+PASS. The source registration for one next CPU fixture build/static freeze is
+published separately; it admits no test/model and stops at the first gate failure.
+SEM source-only f1174810 next-build tool/cache bindings have been consumed.

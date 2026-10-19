@@ -90,6 +90,60 @@
           "passed": true,
           "expected_success": false
         }
+      ],
+      "case_names": [
+        "normal_fork_exec_exit",
+        "natural_parent_exit_live_child",
+        "child_first_stop_after_parent_reaped",
+        "long_periodic_repeated_readers",
+        "unknown_exec",
+        "unknown_actual_mapping",
+        "writable_cache",
+        "nonzero_exit",
+        "timeout",
+        "observer_exception",
+        "forced_stop",
+        "child_stop_before_parent_observer",
+        "missing_event_finite_timeout",
+        "stop_pending_event_cleanup"
+      ],
+      "negative_controls": [
+        {
+          "case": "PID_reuse",
+          "status": "EXPECTED_REJECT",
+          "reason": "AUTHORITY_OWN_PID_REUSED"
+        },
+        {
+          "case": "wrong_parent",
+          "status": "EXPECTED_REJECT",
+          "reason": "WRONG_UNCONFIRMED_PARENT"
+        },
+        {
+          "case": "parent_identity_changed",
+          "status": "EXPECTED_REJECT",
+          "reason": "PARENT_EVENT_ANCESTRY_CONTRADICTION"
+        },
+        {
+          "case": "external_simulator_synthetic_snapshot_no_sim_start",
+          "status": "EXPECTED_REJECT",
+          "reason": [
+            {
+              "pid": 99999998,
+              "start_ticks": 1,
+              "argv": [
+                "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+                "--inhibit-cache",
+                "--inhibit-rpath",
+                "--library-path",
+                "/scratch/root/oss-eda/oss-cad-suite/lib",
+                "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+                "-B",
+                "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag5-retired-pid-repair-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/qualify_authority_cpu.py"
+              ],
+              "classification": "UNCLASSIFIED_OR_DTC_SIMULATOR_STOP"
+            }
+          ]
+        }
       ]
     },
     "PRODUCTION_DISPATCH_GENERATION_TESTS.json": {
@@ -129,6 +183,22 @@
           "case": "fixed_stale_image_generation",
           "status": "PASS_EXPECTED_RESULT"
         }
+      ],
+      "case_names": [
+        "old_retired_helper",
+        "fixed_retired_helper",
+        "fixed_retired_thread",
+        "fixed_retired_root",
+        "fixed_current_instance_changed",
+        "fixed_stale_image_generation"
+      ],
+      "all_row_statuses": [
+        "PASS_EXPECTED_RESULT",
+        "PASS_EXPECTED_RESULT",
+        "PASS_EXPECTED_RESULT",
+        "PASS_EXPECTED_RESULT",
+        "PASS_EXPECTED_RESULT",
+        "PASS_EXPECTED_RESULT"
       ]
     },
     "MAPPING_ROLE_REGRESSION.json": {
@@ -175,6 +245,26 @@
           "case": "unknown_pseudo",
           "status": "PASS"
         }
+      ],
+      "case_names": [
+        "positive_sequence",
+        "missing_cache",
+        "cache_SHA",
+        "cache_inode",
+        "unknown_file",
+        "wrong_role",
+        "ELF_as_data",
+        "unknown_pseudo"
+      ],
+      "all_row_statuses": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
       ]
     },
     "RESOURCE_POLICY_CPU_TESTS.json": {
@@ -203,6 +293,18 @@
         {},
         {},
         {}
+      ],
+      "case_names": [
+        "single_global_page_is_not_admission_veto",
+        "single_global_page_warns_increases_sampling_never_stops",
+        "new_oom_kill_stops_immediately_on_observation",
+        "original_memory_and_disk_emergency_lines_retained",
+        "16MiB_swap_requires_three_ge10s_observations_not_fast_warn_samples",
+        "swap_below_threshold_resets_persistence",
+        "faster_WARN_sample_recovery_also_resets_swap_persistence",
+        "memory_and_IO_emergency_exact_comparator_and_three_ge30s_samples",
+        "first_runtime_PSI_observation_is_immediate_no_extra_initial30s_delay",
+        "own_majorfault_context_is_reported_without_false_swap_attribution"
       ]
     },
     "NO_SIMULATOR_DISPATCH_TESTS.json": {
@@ -226,6 +328,16 @@
         {
           "status": "EXPECTED_REJECT"
         }
+      ],
+      "case_names": [
+        "SIMULATION",
+        "CPU_FIXTURE",
+        "CPU_FIXTURE"
+      ],
+      "all_row_statuses": [
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT"
       ]
     },
     "EXTERNAL_BINDING_TESTS.json": {
@@ -272,6 +384,26 @@
           "case": "wrong_lock_ticks",
           "status": "EXPECTED_REJECT"
         }
+      ],
+      "case_names": [
+        "exact_current_binding",
+        "wrong_ticks",
+        "wrong_cwd",
+        "wrong_argv",
+        "wrong_source_sha",
+        "wrong_lock_path",
+        "wrong_lock_pid",
+        "wrong_lock_ticks"
+      ],
+      "all_row_statuses": [
+        "PASS",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT",
+        "EXPECTED_REJECT"
       ]
     },
     "FINAL_CPU_QUALIFICATION_DECISION.json": {
@@ -307,5 +439,15 @@
   "total_published_bounded_CPU_passes": 53,
   "unchanged_suite_will_not_be_rerun": true,
   "not_BA_production_or_performance_qualification": true,
-  "kernel_PID_reuse_forced": false
+  "kernel_PID_reuse_forced": false,
+  "verified_actual_receipt_case_counts": {
+    "CPU_AUTHORITY_QUALIFICATION.json": 14,
+    "original_ancestry_external_negatives": 4,
+    "PRODUCTION_DISPATCH_GENERATION_TESTS.json": 6,
+    "MAPPING_ROLE_REGRESSION.json": 8,
+    "RESOURCE_POLICY_CPU_TESTS.json": 10,
+    "NO_SIMULATOR_DISPATCH_TESTS.json": 3,
+    "EXTERNAL_BINDING_TESTS.json": 8
+  },
+  "verified_total_from_individual_receipts": 53
 }
