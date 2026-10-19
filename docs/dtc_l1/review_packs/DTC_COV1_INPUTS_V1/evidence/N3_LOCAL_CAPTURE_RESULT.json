@@ -1,0 +1,62 @@
+{
+  "build_command": "/root/autodl-tmp/m5-trace-v100/m5-paper10-traces/attempts/spmv/attempt-1788679523/build/spmv -i /root/autodl-tmp/m5-trace-v100/inputs/spmv-medium/bcsstk18.mtx,/root/autodl-tmp/m5-trace-v100/inputs/spmv-medium/vector.bin -o result.bin",
+  "build_script": "util/dtc_l1/build_m5_parboil_spmv_trace_sm70.sh",
+  "build_script_sha": "069a17502d9258317c5cb6cb27764313d8606dfa8e38076af9e53f3c2fd7cbe3",
+  "canonical_id": "parboil_spmv_medium_bcsstk18",
+  "checker_kind": "spmv",
+  "checker_reference_sha": "69314cf6c1796cf8e0f93fe143e1dd5a96685ec6eaead46eeaf03f6c00c4c4f1",
+  "gpu_uuid_model_cc": "0\tTesla V100-PCIE-32GB\tGPU-058aa9e4e6ecbb6d3cc9f46202658ad0\t7.0\t34072559616",
+  "grouped_trace_count": 50,
+  "input_hashes": {
+    "matrix_sha256": "abbe1909f57d6fc17fc800446bac326bd0c5343305cf193b3aa1bc8f40c82ec9",
+    "reference_sha256": "69314cf6c1796cf8e0f93fe143e1dd5a96685ec6eaead46eeaf03f6c00c4c4f1",
+    "vector_sha256": "d155de2b9615cae3c2bb8b60a9e82a7d26be7e80de772a5f1c0cb830d2e49061"
+  },
+  "input_identity_kind": "FILE_BACKED_CANONICAL_INPUT",
+  "kernel_geometry_manifest_sha": "f5a88e119c1dbed9caf3dc369b5d0feadfdc6b2e9eb502de45a87a8d0d2b6f4d",
+  "kernel_invocation_count": 50,
+  "kernel_invocation_manifest_sha": "5d6ef43e2da29e3c0477d5d11d891d37530332c3baf4daf7d0466632abab8880",
+  "kernelslist_g_sha": "a3ef80aa8180a94947e449c1bd35acabfa485a2511fa034f06f9971fd5817fbf",
+  "kernelslist_sha": "4296fff334428112618dfe3b032a8808d27c40c032dc0ffc6fd3c92a63888fda",
+  "nvbit_archive_sha": "72a2b827f9531dcb86b6be13844f267640fb440929d92944177029da6da2b9e1",
+  "postprocess_sha": "eaba72818c7007a139ba101663d0fb23146a3dd949ee9cc024d149f971ee3b05",
+  "raw_trace_count": 50,
+  "raw_trace_set_sha256": "fe53f0d220b6fca6930402b36d30eb01c68bd0b6fbaabb540bdc395644f2fe7a",
+  "source_commit": "de9cf4293f418877aa9cdb6a2395338ca06674a6",
+  "source_dependencies": {
+    "parboil": {
+      "commit": "4e0fc54866546efa44fe93af57c9cef62f6c8eb9",
+      "files": {
+        "common/include/parboil.h": "349140bd93fc6f5f58feb05c66affda0d262831dad187acdaa75419fda0fdc4f",
+        "common/src/parboil_cuda.c": "bab1bac0b29831e71cde8541de7e458b728254698aa03a00a7187122386bbf66"
+      },
+      "tree": "e24e8a1ce3fba78bf8a0a5e88f19ec691405042458b95be30c1086d0ee6814b7"
+    },
+    "spmv_wrapper": {
+      "commit": "de9cf4293f418877aa9cdb6a2395338ca06674a6",
+      "files": {
+        "convert_dataset.c": "694ebbc0ba6b21dc62db1c055201274c10782ff9eb3efbdfb0683c77d1dbd57d",
+        "file.cc": "4bd48c6f42a41c2c87e06158c0cc5f9427bb104b59ccee7cbed81ffb42ea11f4",
+        "gpu_info.cc": "d224cb15ff7d1119b48fc5376d9baa832606025ffdd399d7315357122069eac9",
+        "jds_kernels.cu": "d2134af555f157631d73457242d3a91e69712203fa35ce0a21e6c5d5449a7226",
+        "main.cu": "ca30b9fd7aa252f936cef2405c444b6491fd7f61d11abec953348c37e9faad3b",
+        "mmio.c": "645cf3d0152e7323d2ffdbc552fbad7c87d82d3c021cb015337a10be0632a588"
+      },
+      "tree": "5ff073c349bd3f5080b2fac64c473e18d3852732d8a24c0cbd6d87c1d94f48f5"
+    }
+  },
+  "source_file": "main.cu",
+  "source_file_sha": "ca30b9fd7aa252f936cef2405c444b6491fd7f61d11abec953348c37e9faad3b",
+  "source_kind": "spmv",
+  "source_repair": {
+    "kind": "NONE"
+  },
+  "source_tree_sha": "5ff073c349bd3f5080b2fac64c473e18d3852732d8a24c0cbd6d87c1d94f48f5",
+  "trace_bundle_id": "d8790ea7279aa79345650ffaafc61835187d8b1e6c4b10a6e6e2cc24891db270",
+  "trace_capture_binary_sha": "a9234adef157bb6dbd4a9fa1b2a79534a54e48f649d58e33b7645c6b2cfeed36",
+  "trace_format": "NVBit-v1.8",
+  "traceg_set_sha256": "7ff88da2a6c8e2119e218f668203bcd581cc5d230a35cc2c19e374bfe736cb28",
+  "tracer_source_tree_sha": "56a3dda534bd33fa14839bf67173e8055d816a719511c997b906ec05973fb3f6",
+  "tracer_tool_sha": "3796da14afa46fb39fa2f3bdf4dd997dbca7298c916146e607573b1d0b2d85ae",
+  "workload": "spmv"
+}
