@@ -153,3 +153,16 @@ Actual V2 tests are still zero; source syntax/static byte review is not runtime
 PASS. The source registration for one next CPU fixture build/static freeze is
 published separately; it admits no test/model and stops at the first gate failure.
 SEM source-only f1174810 next-build tool/cache bindings have been consumed.
+
+
+### CPU fixture built/frozen; targeted entries conditionally released
+
+New registered paired admission at15:18:50Z passed all separate host/cgroup
+memory-headroom, memory/IO PSI, disk, OOM and authority checks. The new16,616-byte
+fixture ELF SHA9ce5747e... was compiled, reaped with empty owned group, and frozen
+statically with dash/cat/libs (manifest185843e1...). Target executions remain0 at
+this publication. Old CPU ELF and old manifests were preserved. Full receipts
+are in ag5_v2_build_receipts_attempt2. V2 CPU entries are now source/ELF/manifest
+bound and conditionally released once each, with a fresh finite full R2 gate
+inside every actual entry. This permits no simulator or external worker build.
+Three-role actual launch manager and production dual-root permission remain open.
