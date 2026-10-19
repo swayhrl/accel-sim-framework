@@ -1,0 +1,21 @@
+{
+  "schema": "TLS_V10_ONE_SHOT_NATIVE164_RANGE_SCOPE_CORRECTION_V1",
+  "utc": "2026-10-19T15:34:44.045621+00:00",
+  "coordination_commit": "3a7ea422d3f4301688bd3cb7bcf4431b97f08e90",
+  "supersedes_instructions_in": [
+    "TLS_V10_ONE_SHOT_SOURCE_NATIVE_RESTORE_SCOPE_HOLD_20261019.json",
+    "TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_ONE_SHOT_HANDOFF.json"
+  ],
+  "reason": "Full ONE_SHOT_T_174NEW_TARGET_GOAL PhaseA2 explicitly requires each new range independently restored on a new absent native164 path. Earlier source note held only full141 release while proposing continued old174-new tmpfs range acceptance; that scope was insufficient and must not be used to relax the frozen contract.",
+  "target_action": "Do not substitute174-new tmpfs for required native164 range/full-file proof. Preserve exact B0010 staged payload and published source READY. Do not claim DEST+RESTORE acceptance or clean bridge without all required real proofs and source KEEP ACK. Resume receiving/acceptance only when the required existing authorized native164 restoration path is available, or a coordinator/user publishes explicit exact protocol clarification. No new credentials, root guessing, mount changes or pressure relaxation.",
+  "affected_scope": [
+    "B0010 target acceptance/full restore",
+    "subsequent TLS ranges/groups dependent on this required native164 restore path",
+    "P9 exact141 source release"
+  ],
+  "still_independent": "C16 outbound-only unapplied proposal/tests are complete; source and C16 originals remainKEEP, all25 frozen txids/selectors stay unchanged.",
+  "science_proof_HOLD": "NATIVE164_RESTORE_EXECUTION_PATH_NOT_AVAILABLE_AND_174NEW_TMPFS_NOT_SUBSTITUTABLE",
+  "source_ready_is_not_target_proof": true,
+  "B0010_bridge_bytes_retained": 134217728,
+  "source_released_files": 0
+}
