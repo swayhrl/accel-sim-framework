@@ -1,0 +1,16 @@
+# A full-system V2 — r14: original-budget incremental recovery ready
+
+Same active A Goal and sole public Core/release owner; authorityb2e5328aca825d6e9ebfe09e46fa208957834636.
+Current corrected Core **41af4ddc2714a68a477e6698baa6528bb0f7ccf7**, runtime Framework **9dd1ee57a83d83b56b7874bc7c716185ab52c8f7**, vendor **f90c430c3a1ce8f08c09942a5a1c3a797bb2295b**. The correction changes one regression line to use an existing public diagnostic API; production sources are byte-identical to failed Corecd4f8951.
+
+E triggered the exact A-owned guarded entry02a28d6f under its user-named P01 authorization. One real compile attempt configured successfully and produced partial binaries, then failed on protected test-field access. The lease is released and recorded processes ended. **Native0, full-app0, qualified profiles0.** Partial binaries are not a release, correctness PASS or performance evidence. Failed raw/configure/build and receipt remain unchanged at `/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_BUILD_r1/`.
+
+A prepared an exact incremental repair entry/spec. It binds the failed receipt, sole test-path delta, all957 retained build-file hashes and baseline1388521627bytes. Remaining growth is1832703845bytes build +267980905bytes fresh results under a NEW E child lease. Retained454551bytes failed results count toward the original256MiB total; build cap remains3GiB. No fresh large rebuild, token reuse, cleanup, native run or private floor change occurs. E alone reviews actual resources and its published1e012809 parent-budget API before continuation.
+
+The full common W+V(clean+complete dirty)+T+M source, same-source S, F-minus-V/R, WV T/M controls and F_DATA_FREE remain integrated. Shared1024Tags/1168payload/128WAD-TVD/D512/address32/nativeLine128/fourP1, finite lifecycle, bank identities, whole-commandlist oracle and empty-coverage native fallback remain. Cead4441680/Framework547cc5d2 was consumed on exacteb6739 base; B dirty lifecycle and A observer/native-held RESPONSE selection remain. No C public adapter dependency remains.
+
+The finite native plan remains55 required main +9 diagnostics, all currentlyUNRUN. Main producer checkpoint precedes optional diagnostics; independent E qualification still required. F-minus-W remains DEPENDENT_CONTROL_UNSUPPORTED. Full fixed64 dirtyRO quota/rollback and B synthetic input scope remain optional unresolved controls and cannot delay mainF. Neither clean64 nor S substitutes for them.
+
+E alone starts full applications, sameT0 and cumulative40 total with actual0 at the latest accepted intake; old14 auto-queue is superseded. R1, CLEAN94996ec5, isolatedRO, old review packs, Lane5/R19, EN-v17, RTL/DC and all other projects remain preserved. No waiting supervisor or duplicate compiler was started by A. See full_system_v2/COMMON_PARENT_BOUND_BUILD_RECOVERY_r14.json for exact evidence.
+
+R14 enforces consumed parent/released lease, same build/new results, fixed original draw/floor, inherited artifact identities and unextended original expiry. Every original result file remains hashed and unchanged. R13 spec/recovery/control and its pack retain their exact prior bytes; new recoveryr2/specr3/controlr2 are separate artifacts.

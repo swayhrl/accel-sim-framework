@@ -21,7 +21,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 HANDOFF = REPO / 'docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a'
-SPEC_PATH = HANDOFF / 'full_system_v2/COMMON_NATIVE_BUILD_SPEC_r2.json'
+SPEC_PATH = HANDOFF / 'full_system_v2/COMMON_NATIVE_BUILD_SPEC_r3.json'
 CAMPAIGN = 'EPL2_MECHANISM_STUDY_20261019_V1'
 AUTHORITY = 'b2e5328aca825d6e9ebfe09e46fa208957834636'
 SHARED = Path('/workspace/ep_l2_ft20261016_shared')
@@ -102,6 +102,7 @@ def main():
     identity.update(build_directory=str(build), output_directory=str(out))
     recovery = None
     baseline_bytes = 0
+    baseline_result_bytes = 0
     if a.resume_failed_build:
         recovery = json.loads((HANDOFF / spec['failed_build_recovery_manifest']).read_text())
         assert recovery['build_directory'] == str(build) and build.is_dir()
@@ -112,6 +113,7 @@ def main():
         assert failed['error'] == "RuntimeError('build exited 2')" and failed['compiler_started']
         assert failed['native_invocations_attempted'] == failed['application_starts'] == 0
         assert failed['build'] == str(build) and failed['suite'] == a.suite == 'all'
+        assert failed['output'] == recovery['failed_result_directory']
         assert failed['core_source_commit'] == recovery['failed_core_source_commit']
         for k in ['framework_source_commit', 'vendor_commit']:
             assert failed[k] == report[k]
@@ -135,11 +137,24 @@ def main():
             baseline_bytes += row['bytes']
         assert baseline_bytes == recovery['baseline_build_bytes']
         assert baseline_bytes + spec['build_growth_bytes'] == spec['build_total_capacity_bytes']
+        result_root = Path(recovery['failed_result_directory'])
+        result_files = {f.relative_to(result_root).as_posix(): f
+                        for f in result_root.rglob('*') if f.is_file() and not f.is_symlink()}
+        assert set(result_files) == set(recovery['failed_result_files'])
+        assert not any(f.is_symlink() for f in result_root.rglob('*'))
+        for name, f in result_files.items():
+            row = recovery['failed_result_files'][name]
+            assert f.stat().st_size == row['bytes'] and sha(f) == row['sha256']
+            bindings[str(f)] = row['sha256']
+            baseline_result_bytes += row['bytes']
+        assert baseline_result_bytes == recovery['baseline_result_bytes']
+        assert baseline_result_bytes + spec['result_growth_bytes'] == spec['result_total_capacity_bytes']
         identity.update(failed_build_receipt_sha256=recovery['failed_receipt_sha256'],
                         retained_build_manifest_sha256=spec['failed_build_recovery_manifest_sha256'],
                         incremental_build_only=True)
         report.update(failed_build_recovery=spec['failed_build_recovery_manifest'],
                       baseline_build_bytes=baseline_bytes,
+                      baseline_result_bytes=baseline_result_bytes,
                       build_total_capacity_bytes=spec['build_total_capacity_bytes'])
     report['build_identity'] = identity
     save = lambda: put(out/'RECEIPT.json',report)
@@ -194,6 +209,18 @@ def main():
             assert named['output_directory']==str(build) and named['cpu_units']==cpu
             assert named['memory_bytes']==memory and named['growth_bytes']==growth
             assert named['result_growth_bytes']==spec['result_growth_bytes']
+            if recovery:
+                assert named['parent_authorization_id'] == recovery['parent_authorization_id']
+                parent = grants[recovery['parent_authorization_id']]
+                assert parent['status'] == 'CONSUMED' and data['resource_leases'][parent['lease_id']]['status'] == 'RELEASED'
+                assert named['repair_scope'] == 'TEST_OR_ENTRY_ONLY_PRODUCTION_UNCHANGED'
+                assert named['disk_draw_bytes'] == recovery['original_disk_draw_bytes'] == parent['growth_bytes']
+                assert named['disk_floor_bytes'] == recovery['original_disk_floor_bytes'] == parent['disk_floor_bytes']
+                assert named['expires_unix'] <= recovery['original_expiry'] == parent['expires_unix']
+                assert named['result_directory'] == str(out) and parent['result_directory'] == recovery['failed_result_directory']
+                assert named['inherited_artifacts']
+                for asset in named['inherited_artifacts']:
+                    assert sha(asset['path']) == asset['sha256'], 'inherited artifact changed'
             stop_floor,monitor = named['disk_floor_bytes'],named['monitor_reserve_bytes']
             assert 48*GIB-7*GIB//2<=stop_floor<=48*GIB and monitor>=128*2**20
             valid_until = named['expires_unix']
@@ -259,6 +286,7 @@ def main():
             assert live['available_memory_bytes']>=64*GIB,'ordinary memory floor crossed'
             written = retained_tree_bytes(out)
             assert written<spec['result_growth_bytes'],'owned results reservation crossed'
+            assert written+baseline_result_bytes<spec.get('result_total_capacity_bytes',spec['result_growth_bytes']), 'total owned compile result capacity crossed'
             report['own_result_bytes_peak'] = max(written,report.get('own_result_bytes_peak',0))
             if not native_only:
                 built = retained_tree_bytes(build) if build.exists() else 0
