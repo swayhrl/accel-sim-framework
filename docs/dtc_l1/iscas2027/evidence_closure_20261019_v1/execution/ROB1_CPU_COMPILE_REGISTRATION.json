@@ -1,0 +1,67 @@
+{
+  "schema": "DTC_CLOSURE_BOUNDED_EXTERNAL_CPU_COMPILE_V1",
+  "role": "ROB1_TINY_COLLECTOR_HELPER_COMPILE_ONLY",
+  "owner": "/root/rob1",
+  "status": "REGISTERED_FOR_POST_PUBLICATION_COMPILE_ONLY",
+  "worker_framework_commit": "ec024c914b2198b97c0b9bce0b73931d63ca5017",
+  "core_commit": "b1077667f7a2bcc72260733f88f5798f167346d1",
+  "core_tree": "0a462efb9a48409064259735108b88dad127a53c",
+  "source_sha256": {
+    "tests/dtc_l1_rob1_collector_quota_test.cc": "7bb114bb72b5d974f58c1d3815636c1f57685ffe97aef8a3e02bbf5a5a538a01",
+    "src/gpgpu-sim/dtc-l1-common.h": "f90497eed3b627365299e82c25cd055604c0bef0642b9297a572165fcc69754d",
+    "src/gpgpu-sim/dtc-l1-tag-index.h": "184aab90b35330c96899133b0e6dc6ed1faa789275c128309bb481666fdeda26",
+    "src/option_parser.h": "a83f04aeba130d3300239222f34e485df53511ea3ba4131ad5dfcbb6a98fb632"
+  },
+  "compiler": {
+    "path": "/usr/bin/x86_64-linux-gnu-g++-11",
+    "sha256": "2360901d864cf10bfd6296e261cb2c14053552a80377761ab07146ec9ec9a2c0"
+  },
+  "compile": {
+    "cwd": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1",
+    "argv": [
+      "/usr/bin/x86_64-linux-gnu-g++-11",
+      "-std=c++17",
+      "-O0",
+      "-g0",
+      "-UNDEBUG",
+      "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1/src/gpgpu-sim",
+      "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1/tests/dtc_l1_rob1_collector_quota_test.cc",
+      "-o",
+      "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/collector_quota_test"
+    ],
+    "source_sha256": "7bb114bb72b5d974f58c1d3815636c1f57685ffe97aef8a3e02bbf5a5a538a01",
+    "timeout_seconds": 120,
+    "stdout_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/compile.stdout",
+    "stderr_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/compile.stderr"
+  },
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "CUDA_VISIBLE_DEVICES": "",
+    "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/tmp"
+  },
+  "compile_jobs": 1,
+  "max_output_and_tmp_bytes": 67108864,
+  "admission": {
+    "two_fresh_samples_min_separation_seconds": 10,
+    "host_available_and_cgroup_headroom_min_bytes": 34359738368,
+    "memory_full_avg10_max": 1,
+    "io_full_avg10_max": 25,
+    "no_new_oom": true,
+    "CPU_only_disk_floor_bytes": 2147483648,
+    "full_simulation_disk_minimum_unchanged_bytes": 10737418240,
+    "clean_worker_and_core_identity_recheck": true
+  },
+  "run_permission": false,
+  "next_required": "Publish actual compiler stdout/stderr/start/terminal, binary SHA/stat/ELF dependency closure, fresh bound source identities; coordinator must register immutable executable identity before any run.",
+  "forbidden": [
+    "Core full/diagnostic-library build",
+    "helper execution before separate registration",
+    "fullsim",
+    "large input scans",
+    "AG4 modifications",
+    "background dispatch"
+  ],
+  "scope": "Compilation of small production-header helper only; no production parser/LDST/WB qualification."
+}
