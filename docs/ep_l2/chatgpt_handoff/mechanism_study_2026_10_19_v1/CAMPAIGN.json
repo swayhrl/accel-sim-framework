@@ -1,0 +1,75 @@
+{
+  "schema": "EPL2_MECHANISM_STUDY_CAMPAIGN_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "status": "PLANNED_NOT_STARTED",
+  "authorization": "User approved mechanism-first parallel pipelined supplemental study; preserve previous experiments and EN-v17",
+  "authoritative_documents": ["MASTER_PLAN.md", "EXPERIMENTS.md", "FIVE_LANE_GOALS.md"],
+  "old_lane5_head": "94fd48b69b37adb692e6152301b317f5f2e6a1e9",
+  "old_runtime_identity": {
+    "core_commit": "84359d4ba492acb639a2092fa271e9169038bf7d",
+    "framework_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "f0af8515057e315af708a0e3c2fde4a3098b0c0fb3f7014471d8d8c9426f1f30"
+  },
+  "new_runtime_identity": null,
+  "paper_mother": "EP_L2_EN_v17_SUBMISSION_REVIEW_SOURCE.zip in current conversation; not remote Lane6 EN-v8",
+  "execution": {
+    "default_environment": "original174 existing scientific account/container; validate live identity before use",
+    "alternate_execution_auto_authorized": false,
+    "restart_old_goals": false,
+    "core_public_file_and_release_owner": "A",
+    "full_application_launch_owner": "E",
+    "new_acceptance_ledger_owner": "E",
+    "input_selection_and_scientific_analysis_owner": "D",
+    "preferred_simulators": 2,
+    "campaign_max_simulators": 3,
+    "global_max_simulators": 4,
+    "global_max_cpu_units": 8,
+    "global_max_reserved_memory_bytes": 34359738368,
+    "max_build_jobs": 2,
+    "workspace_free_min_bytes": 51539607552,
+    "share_free_min_bytes": 42949672960,
+    "memavailable_min_bytes": 68719476736,
+    "additional_results_max_bytes": 6442450944,
+    "old_plus_new_results_max_bytes": 21474836480,
+    "migration_16GiB_exception_applies": false
+  },
+  "full_application_budget": {
+    "maximum_actual_starts_including_failures_and_full_canaries": 24,
+    "initial_starts": 0,
+    "local_diagnostic_reservation": 10,
+    "new_input_pair_reservation": 4,
+    "victim_reservation_including_matching_parent_and_fixed_partition": 3,
+    "ro_two_factor_reservation_including_matching_parent": 4,
+    "contingency_including_needed_new_binary_anchors_and_retries": 3,
+    "same_binary_required_for_comparison": true,
+    "missing_is_not_zero": true
+  },
+  "screen_only_budget": {
+    "prefer_existing_logs": true,
+    "max_fragments": 6,
+    "per_fragment_wall_seconds_max": 120,
+    "per_fragment_retired_instructions_max": 2000000,
+    "application_results_eligible": false,
+    "full_epoch_readonly_certificate_from_fragment_allowed": false
+  },
+  "internal_deadlines": {
+    "timezone": "Asia/Shanghai",
+    "no_new_full_application_after": "2026-10-21T18:00:00+08:00",
+    "result_intake_freeze": "2026-10-21T22:00:00+08:00",
+    "paper_work_day": "2026-10-22",
+    "conference_submission_deadline_reconfirmed_by_this_file": false,
+    "resource_wait_resets_T0_or_deadline": false
+  },
+  "start_immediately_as_control_work": ["A source and interface audit", "B victim candidate audit and isolated module work", "C readonly/tag candidate audit and isolated module work", "D existing-log/input analysis", "E resource assessment and runner/acceptance preparation"],
+  "require_scientific_resource_pass": ["formal builds", "leased native tests", "screen-only simulator fragments", "full applications"],
+  "dependencies": {
+    "A_initial_release": ["shared interface frozen", "local diagnosis semantics and affected tests"],
+    "B_victim_release": ["A interface", "victim production path and bounded budget tests"],
+    "C_ro_release": ["A interface", "whole-epoch readonly evidence", "T/M separate production tests"],
+    "E_start": ["D preregistered input and comparison", "A exact supported runtime release", "E independent affected qualification", "fresh resource and budget pass"],
+    "D_result_intake": ["E accepted complete matched pair"],
+    "paper_intake": ["D evidence-scoped interpretation", "ChatGPT scientific review"]
+  },
+  "prohibited": ["overwrite old raw or acceptance", "cross-binary fair comparison inferred from equal cycles", "new hidden payload or request pool", "bypass L2 and call it L2-local ideal", "silently treat CLEAN_ONLY as full victim mechanism", "treat opcode load as whole-epoch read-only", "combine counter sums as disjoint GPU stall cycles", "selection by favorable speedup", "reuse old unspent launches", "claim unexecuted work ran in background"]
+}
