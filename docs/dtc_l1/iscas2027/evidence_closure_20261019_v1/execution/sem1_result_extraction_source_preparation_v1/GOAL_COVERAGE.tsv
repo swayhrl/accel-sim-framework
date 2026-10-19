@@ -1,0 +1,13 @@
+original_plan	current_modes	current_evidence_state	implemented_scope	remaining_gap
+S01	shared;wrong-byte	PARTIAL_SOURCE_PREPARED	real shared pending/packet order; three consumers	one address/one selected mask; not arbitrary full-byte/lane coverage
+S02	none	NOT_IMPLEMENTED	none	forced Tag eviction with old live consumer and second line absent
+S03	wrong-generation	PARTIAL_SOURCE_PREPARED	corrupt accepted inflight generation before reply	not old-generation late reply after retired physical-slot reuse
+S04	all complete modes	PARTIAL_SOURCE_PREPARED	actual RF bank WB conflict; source asserts drain/blocked cycles	no dedicated injected release-on-rejected-WB negative or standalone event census
+S05	masked	PARTIAL_SOURCE_PREPARED	real collected sectors for explicit bytes31/32	not bytes64..71, upstream coalescing or architectural lane gather
+S06	with-e	PARTIAL_SOURCE_PREPARED	external byte0 publication and selected source E/refill	not partial bytes31/32 or old live consumer retained over E; no store C/D proof
+S07	no-e	SOURCE_PREPARED_NOT_OBSERVED	conditional external byte0 stale-cache countermodel	no modeled store or capture-bound application failure
+S08	none	NOT_IMPLEMENTED	ad consumer arrivals precede fill, not late merge	mid-notification late merge and PIB/physical slot reuse absent
+S09	ad	PARTIAL_SOURCE_PREPARED	ten consumers under actual progressive ready path	no independent forced-unnotified collection attempt/timing assertion
+S10	ae	PARTIAL_SOURCE_PREPARED	one-address hash-mode1 real byte route	not off/on two-line collision/interleaved identity differential
+S11	none	NOT_IMPLEMENTED	oneSM fixture only	cross-SM external-publication support domain untested; no coherence claim
+S12	none	NOT_IMPLEMENTED	ten deterministic mode programs only	fixed-seed64schedules128events bounded combinations not implemented
