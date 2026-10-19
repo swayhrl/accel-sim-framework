@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -112,6 +113,9 @@ def preflight(s):
 
 
 def execute():
+    def interrupted(signum, frame):
+        raise KeyboardInterrupt('owned qualification control interrupted')
+    signal.signal(signal.SIGTERM, interrupted)
     s = json.loads(CHECKPOINT.read_text()); preflight(s)
     disable_owned_core_dumps(); coord = c.Coordinator(); proc = None
     with coord.unique_controller():
