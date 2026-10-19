@@ -39,3 +39,13 @@ publication are now source-fixed. The plan consumes those fixes and requests
 only the remaining actual-role/release/admission/launch/observer/resource
 interfaces. V2 remains unreleased pending new ELF/manifests; no new runtime
 qualification is claimed. See SOURCE_REVIEW's current-update section.
+
+Implementation continuation, parent context25cf0ab03d6cc68f964eeb03f42347452ac23abb:
+`external_cpu_launch_view.py` now provides the minimal data-only current launch
+validator; `EXTERNAL_CPU_LAUNCH_VIEW_USAGE.md` gives its actual schema and parent
+call site. `test_external_cpu_launch_view.py` contains only three small declared-
+data source cases and has NOT been imported or run. No actual-role query or
+extra negative suite was executed. Natural exit/absence returns explicit
+NOT_CURRENT/TERMINAL with no live acceptance; contract/instance mismatches
+reject. Actual Popen provenance still requires the parent's source-bound sole
+manager provider. The module exports no cleanup or ownership capability.

@@ -99,3 +99,16 @@ than being reconstructed from its terminal receipt. The optional2s in-entry
 rendezvous is a proposal requiring new exact source registration, not an
 implemented or released hook. Original tiny4PASS, full-input gaps and all
 scientific/budget boundaries remain as previously recorded.
+
+Latest source implementation: parent context25cf0ab03d6cc68f964eeb03f42347452ac23abb.
+The COV pack now contains `shared_role_review_v1/external_cpu_launch_view.py`,
+its small integration/schema guide and three UNEXECUTED declared-data examples.
+The module intersects trusted fixed release/role/admission hashes, a registered
+sole-manager actual-Popen view, phase/ACTIVE bounds and fresh complete manager/
+role process identity/source. It returns immutable read-only observations;
+natural terminal/absence never becomes live acceptance and mismatches reject.
+No process creation, cleanup, ownership, signal, wait or ptrace API is present.
+This continuation ran0 tests/imports/compiles/process/resource polls/simulations.
+It is source preparation only; the parent must pin provider source, real runtime
+and exact role/admission closure before any actual query. No completed phase
+is restarted by this delivery.
