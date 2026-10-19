@@ -1,6 +1,6 @@
 # Execution coordination state
 
-Updated: 2026-10-20T01:01:31.986177+08:00.
+Updated: 2026-10-20T01:18:55.853182+08:00.
 Status: **AG6_TERMINAL_RUNTIME_CGROUP_IO_STOP_1_OF4_CONTINUE_INDEPENDENT_CPU_EVIDENCE**.
 Same Goal continued in original `huangrulin-174`; no reset/restart. `/root` is
 sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
@@ -12,7 +12,7 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 | CPU fixture | New16,616-byte ELF compiled/frozen; actual targeted CPU fixtures now executed in bounded qualification, no model | ag5_v2_build_receipts_attempt2/ |
 | Changed observer/guard qualification |14+5+first root-order actual passes preserved; remaining5real guard cases PASS after repair;2real CPU roots shared callback/helper/cache/exit PASS under new5GiB policy; all event-proven instances absent | ag5_v2_current_cpu_qualification_r2/ |
 | Actual COV/SEM/ROB roles | All3 actually observed separately; SEMbuild/ROBconfigure+build/COV same-process ACK4tests exit0/reaped; actual changed-release binding rejected; no joint or continuous3-role claim | execution/cpu_real_roles_v2_actual_intake_attempt4/ |
-| SEM1 | Configure1/build1 exit0/reaped; actual fixture ELF and whole library9-file static ABI closure frozen; ten-mode runtime source prepared, runtime0/nativeUNPROVEN | execution/sem1_fixture_static_intake_v1/ |
+| SEM1 | Configure1/build1 exit0/reaped; actual fixture ELF and whole library9-file static ABI closure frozen; four declared pure terminal-view mock groups actual PASS; corrected ten-mode CPU-only exact release published before entry, fixture0/nativeUNPROVEN | execution/sem1_fixture_static_intake_v1/ |
 | ROB1 | Configure1/build1 exit0/reaped; matching LDST ELF/wholelib9-file static ABI frozen. Actual six-case runtime entry first R2 refused on cgroupIO;0/6 fixture starts, no CPU test result | execution/rob1_fixture_runtime_actual_attempt1/ |
 | AG final preparation | Fixed review13c08ad3, notificationf8cbc9d2;56 review blobs +48 original Git receipt hashes verified; four-arm270-option/input consistency checked | ag6_final_prep_intake/ |
 | BASE eligibility | Both exact-tuple imports accepted by BA after independent SEM1/ROB1 reviews and parent closed-event proof join; old executor gaps retained | AG6_BUDGET_LEDGER.json |
@@ -24,7 +24,8 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 
 User disk update applies to future entries only; all earlier refused admissions remain refused. No resource failure authorizes an old-goal restart. Existing ELF/config
 work is reused; future runtime release needs the converged source closure and
-fresh per-entry full host+cgroup R2. No model canary or simulation start occurred.
+fresh per-entry full host+cgroup R2. No additional model canary or simulation start is authorized by this CPU release.
+
 
 
 
