@@ -1,0 +1,1 @@
+Fresh ordinary5GiB A compile admission passed; 974 retained objects independently checked, same production source tree, final A source35f94612/Corec994. Existing named authorizations remain consumed and unchanged. No simulator/native execution permitted by this build approval. Same T0 and0/40starts. A sole build owner; E triggers exact guarded frozen entry next.
