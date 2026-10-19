@@ -28,3 +28,8 @@ R=json.loads((D/(wid+'_SOURCE_READY_COPY16.json')).read_bytes())
 print(json.dumps(dict(window_id=wid,source_ready_commit=commit,cache=folder,
     READY_sha256=t.sha(D/(wid+'_SOURCE_READY_COPY16.json')),range_count=R['range_count'],
     raw_bytes=R['raw_bytes'],runner_sha256=t.sha(D/'tls_v10_p9_exact_window_runner.py'))))
+
+if 'post_stage_recovery_code_sha256' in R and R['post_stage_recovery_code_sha256']=='408e83ac9d468b80e47364dbc115cf85ab62b0bce9504bcfcbb1b103e2b30ebb':
+ for n in ['tls_v10_one_shot_stage_recovery.py','test_tls_v10_one_shot_stage_recovery.py','TLS_V10_FOLLOWUP_PRESERVED_STAGE_RECOVERY_QUALIFICATION_20261020.json']:
+  raw=subprocess.check_output(['git','--git-dir='+bare,'show',commit+':'+P+n]);(D/n).write_bytes(raw)
+ assert t.sha(D/'tls_v10_one_shot_stage_recovery.py')==R['post_stage_recovery_code_sha256']

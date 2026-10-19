@@ -44,11 +44,22 @@ assert t.sha(D/'test_tls_v10_p9_exact_window_runner.py')==testsha
 assert R['source_sender_code_sha256']==G['runner_code_sha256']==approved
 
 if 'post_stage_recovery_code_sha256' in R:
- assert wid=='TLS_V10_P9_PUBLIC_B0010' and approved=='aec00530c34b15a9b974b69ee756a1435d3a8c202977cce1ceff465983b5b0f5'
- assert R['post_stage_recovery_code_sha256']==t.sha(D/'tls_v10_one_shot_stage_recovery.py')=='3d3dcbc92964f111506f08b8dd6350af614327b294d7329ed27cf94654a28cb8'
+ assert approved=='aec00530c34b15a9b974b69ee756a1435d3a8c202977cce1ceff465983b5b0f5'
  assert R['recovery_payload_bytes_rewritten']==0
- assert B['one_shot_coordination_commit']=='3a7ea422d3f4301688bd3cb7bcf4431b97f08e90'
- assert B['target_receiver_preflight_sha256']=='a220032309caad16fc9e55634be742368ec9b073b4a84da98861da8cb96ad134'
+ recovery_pin=R['post_stage_recovery_code_sha256']
+ assert recovery_pin==t.sha(D/'tls_v10_one_shot_stage_recovery.py')
+ if recovery_pin=='3d3dcbc92964f111506f08b8dd6350af614327b294d7329ed27cf94654a28cb8':
+  assert wid=='TLS_V10_P9_PUBLIC_B0010'
+  assert B['one_shot_coordination_commit']=='3a7ea422d3f4301688bd3cb7bcf4431b97f08e90'
+  assert B['target_receiver_preflight_sha256']=='a220032309caad16fc9e55634be742368ec9b073b4a84da98861da8cb96ad134'
+ elif recovery_pin=='408e83ac9d468b80e47364dbc115cf85ab62b0bce9504bcfcbb1b103e2b30ebb':
+  assert 11<=int(wid.rsplit('B',1)[1])<=33
+  t.require_tls_restore_location(wid)
+  qual=json.loads((D/'TLS_V10_FOLLOWUP_PRESERVED_STAGE_RECOVERY_QUALIFICATION_20261020.json').read_bytes())
+  assert qual['canonical_approval_commit']=='9f1a21a909e437f1e34233b22595d0f7359f3dd3' and qual['tests']==11 and qual['result']=='PASS'
+  assert qual['files']['tls_v10_one_shot_stage_recovery.py']==recovery_pin
+  assert t.sha(D/'test_tls_v10_one_shot_stage_recovery.py')==qual['files']['test_tls_v10_one_shot_stage_recovery.py']=='e55e47f4f49341df8e21ac6135484edc26ad3fe7521e79ab662c0f86ed09747b'
+ else:raise AssertionError('Unreviewed preserved-stage recovery; no receive')
 
 if adopt_name==wid+'_SOURCE_PROTOCOL_ADOPTION_COPY16.json':
  assert A['qualified_source_runner_sha256']==approved
