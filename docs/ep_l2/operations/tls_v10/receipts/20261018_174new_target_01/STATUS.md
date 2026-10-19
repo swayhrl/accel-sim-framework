@@ -1,47 +1,17 @@
-# TLS-V10 target: started, protocol preparation ready; source resource HOLD
+# TLS-V10 target ? P9_PUBLIC real164 reserved; first window requested
 
-New independent target branch: `hrl/tls-v10-174new-target-exec-v1`. Initial remote-readback commit is `0ed56e745dfe44ff4c3547d3b560c1e1eb988008`. Closed V9 remains at `c870ca77456d4d4d70a110411fa5c60934976666`; no C2P/M2D rearchive.
+2026-10-19 10:41 CST: continued the original Goal and `hrl/tls-v10-174new-target-exec-v1` from prior target `188f0e31`, consuming source `e30252876caaec54a70650d23015679a17abbcdb`. No new Goal, nonce, V9 restart or C2P/M2D rearchive. Historical audit/checkpoint receipts remain versioned.
 
-Real164 identity and byte-pinned V9 tooling passed. A new target-only native tmpfs verification environment (24 GiB ceiling, no scientific contents) passed a 33-byte reopen SHA, UID/GID/mode/mtime and directory metadata probe. It does not allocate 24 GiB upfront, consume Share staging, or certify source resource admission. It is volatile proof storage; genuine164 remains the durable archive.
+Source now has 25 SHA-frozen groups / 2,328 regular files. For P9_PUBLIC, target fetched the exact original inventories at `ecb24975c9daed9c42687849e8a2c6b350b470ff` and canonical binding at `9651ab64566c1f9539a60f10973267257e543414`. All original raw SHA, 141 file rows, four directories, canonical manifest bytes, selector and txid independently match. The group's logical bytes are 2,897,196,811 and original allocated bytes 2,897,674,240.
 
-The 128 MiB raw-chunk / 256 MiB allocated bridge proposal is published at `85fe04e41b339d1584084194080fc12109a7dbb0`. Each chunk has an explicitly scoped proof and SOURCE_KEEP ACK; full group acceptance is followed by independent native restoration of **all original files and directories**. Source agreement is required before any COPY_READY is consumed. No new transfer system or second stream.
+`TLS_V10_P9_PUBLIC_TARGET_ROOT_RESERVED.json` proves the previously ABSENT real164 destination was exclusively created, the reservation and manifest were fsynced/closed/reopened and hashed, and the existing V9 transaction entered DISCOVERED and SOURCE_FROZEN. Native root:
 
-Source commit `8501782a7f7f23224bd825835f66923757d1ac2c`, checked after the cutoff, reports two live Lane5 sims and failed-closed source freeze with no manifest, hash or bridge payload. Target acknowledges this HOLD and will not bypass it. The cutoff alone is not admission. Source must publish fresh independent Lane/resource PASS and exact frozen selector/COPY_READY.
+`/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a`
 
-Current scientific archived/restored bytes: **0**. Target source deletions: **0**. Source recovered bytes: **0**. No Lane PID, registry, lease, quota, budget or scientific result changes. No TLS real164 data root has been created before selector binding.
+Txid: `574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b`. Canonical manifest SHA256: `ad7e45a12d486ea3a62ff8452df321fb9ad093ca582eb23a3c05ac716267c597`. Reservation SHA256: `5142123058ce449336e93893b912b31f91b488de7383b30829bae2b329be9b93`.
 
-## Protocol checkpoint
+`TLS_V10_P9_PUBLIC_TARGET_SOLE_WINDOW_READY.json` requests exactly first window `TLS_V10_P9_PUBLIC_B0001`: the 144-byte complete range of `matrix-d10fe92/cfd_097k.baseline.dynamic.driver.out`, original/chunk SHA256 `bc85cb82388094a4cc5f7b9bb58893bd2982ad79e66a29e4fd20fa35d5ac58e6`. It binds the exact bridge path and required source READY fields. No payload was staged by target. Source may continue its existing Goal and recheck current resources/identities before publishing this READY.
 
-Source conditional agreement is at `205b1ff04cb0e9bde110c9210e7dad3e8187737f`; source HEAD last read is `b0e29601b22e6deec9e4ebb8af5d9e475334f9f8`. The source normalizer matches target normalized synthetic rows exactly. Eight selector tests passed. The small target adapter introduces no second receiver, SSH session, source mutation or unlink API.
+The 2026-10-18 source admission is historical, not current transfer permission. Today's target namespace, genuine164 mount and existing native tmpfs were verified. Share available at reservation was 44,297,293,824 B and RAM 193,267,167,232 B. Target overlay available was 19,783,168,000 B at preflight; that is not substituted for a fresh independent old174 `/workspace` reading. Target scientific writes use real164 and the capped native verification tmpfs, not workspace scratch. The 48/40/64 GiB floors and active Lane reservations remain unchanged; source must pass them freshly before any stage.
 
-Before real bindings exist, a source builder issue was found: the native `/home/shared` identity was encoded using its mounted `/root/share/mnt164` alias. `TLS_V10_CANONICAL_ROOT_ALIGNMENT_NOTICE.json` gives the two-field correction required to honor the agreed canonical native root. Source must confirm it before actual txid/manifest agreement; target will not silently accept a different txid. No conflicting real transaction exists.
-
-The exact correction notice and native probe are on the existing shared bridge, with Git provenance `0728838c1dc459dcac04fbea2b699e35086d6f62`, SHA256 and close/reopen readback in `TLS_V10_TARGET_PROTOCOL_BRIDGE_PUBLICATION.json`. These are small control metadata only. No source resource PASS or COPY_READY has arrived.
-
-Next safe action: source resolves the unexecuted builder alias, independently publishes fresh Lane/resource PASS when permitted, freezes exact files/directories in Git, and requests the agreed absent destination reservation. Target then consumes one exact READY at a time. No scientific bulk activity while either prerequisite remains unresolved.
-
-## Canonical alignment resolved
-
-Source `e8b534184ab929e18e0b0f9486284cc304e07abd` applied the exact native-root/alias correction and independently matched the golden normalized rows, selector SHA, full manifest SHA and txid. Target checked the ACK's notice/vector hashes and published `TLS_V10_TARGET_PROTOCOL_AGREEMENT_RECEIPT.json`. The earlier engineering prerequisite is resolved.
-
-The remaining admission is the fresh independent source Lane/resource PASS, followed by its immutable frozen selector and COPY_READY. No source PASS or scientific payload is inferred from the protocol agreement. V10 remains started and copy-only, at zero scientific bytes archived/restored/reclaimed until those gates pass.
-
-## Native chunk proof and full-scope preparation
-
-`TLS_V10_NATIVE_CHUNK_PROOF_TEST_RECEIPT.json` records 9 passing small native fault tests, each with a 753-byte synthetic original on the isolated target tmpfs. The thin adapter reuses V9 hashing/exclusive finalize primitives and has no uploader, cleanup, source action or daemon. It proves CHUNK_RANGE_ONLY; complete original restoration still requires unchanged V9 all-file native_restore after genuine164 group acceptance.
-
-The Git-only metadata coverage audit independently reconciles all 7,821 preliminary source rows. The current 25 freeze groups cover 2,328 of 2,329 cold regular-file candidates, with no classified CODE_KEEP/ACTIVE/HOLD entry beneath those roots in that snapshot. One 67,119,832-byte logical / 67,121,152-byte allocated Dynamic-way libcudart.so is outside them. Its 18 sibling links remain HOLD. The exact source-owner notice requests an explicit file selector or reasoned HOLD, without delaying admitted P9 transfers or expanding scope automatically. This is metadata planning, not scientific content verification.
-
-At 11:51:30 UTC, the genuine164 mount still matched exactly, Share available was 44,303,798,272 B, native verification space was 25,769,783,296 B, RAM available was 346,857,783,296 B, and the sole receiver was idle. The bridge held protocol controls and the old source HOLD, not a new COPY_READY. No fresh source admission has been inferred from these target measurements. Scientific archive/restore/source-release totals remain zero.
-
-Source `98d62557fa8cf1fd024fe2297c1f48556227ae54` independently published the same 25-group preliminary partition. Target compared every root, file/directory count, logical byte total and allocated byte total against its own metadata audit: all match, including the single ungrouped library and its individual-review policy. `TLS_V10_TARGET_SOURCE_PRELIM_PLAN_JOIN_RECEIPT.json` records this cross-check. It grants no content acceptance, source resource admission or release.
-
-## External source admission blocker ? third-turn audit
-
-At 12:00:25 UTC (20:00:25 CST), target revalidated the exact genuine164 mount and bridge. The sole receiver was idle. Source Git HEAD was `8f34463c4f2a1960d8f9c0b3bd5010cd78af2cf1`; none of the 25 expected frozen file inventories existed, and no source COPY_READY control appeared on the bridge. The last published source resource decision is the 11:32:05 UTC HOLD at `8501782a7f7f23224bd825835f66923757d1ac2c`. Target does not infer current process liveness from that older snapshot.
-
-Source `8f34463` supplied an exact HOLD for the Dynamic-way library and all 18 aliases. Target checked its file identity and all names against the independent inventory. Its provenance/link-bundle issue is retained without transfer or deletion; source explicitly says it does not block the other 25 groups.
-
-The missing independent source admission and frozen COPY_READY have persisted through the original startup turn and two automatic continuations. Both earlier turns made concrete preparation progress; this audit is not a claim of a live transfer wait. All presently independent target preparation is complete, and no scientific operation is legal without the source-owned prerequisites. `TLS_V10_TARGET_SOURCE_ADMISSION_REQUEST.json` records the exact source and target continuation steps. The Goal is not complete; its full scope remains unchanged.
-
-This checkpoint is blocked on external source evidence. It requests no new approval or source deletion and changes no Lane process, lease, registry, quota or budget. Genuine scientific archived/restored bytes and old174 recovered bytes remain **0**. Continue this same Goal, branch and protocol when source admission is published.
+Scientific payload received: **0 B**. Full scientific files restored: **0**. Source files deleted by target: **0**. Source disk recovery: **0 B**. All originals remain SOURCE_KEEP. Library/link bundle, active/mixed data, shared traces, code/Git and dirty scientific artifacts remain protected. The original complete archive/restore objective is still pending; this is the concrete target reservation and receiving-window handoff.
