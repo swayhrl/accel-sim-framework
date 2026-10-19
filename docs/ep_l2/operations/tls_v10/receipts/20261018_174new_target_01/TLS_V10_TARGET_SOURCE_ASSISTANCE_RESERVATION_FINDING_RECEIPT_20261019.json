@@ -1,0 +1,53 @@
+{
+  "schema": "TLS_V10_TARGET_SOURCE_ASSISTANCE_RESERVATION_FINDING_RECEIPT_V1",
+  "utc": "2026-10-19T04:11:07.699422+00:00",
+  "status": "READONLY_FINDING_AND_HOST_INFORMATION_REQUEST_DELIVERED_NO_POLICY_CHANGE",
+  "target_branch": "hrl/tls-v10-174new-target-exec-v1",
+  "source_assistance_delivery_Git_commit": "c98d2c6cc14a9fa2c0e9820c742f351a48c404cd",
+  "filesystem_diagnostic_Git_commit": "253ac0b31d1579d087ad7d7aae160427d6d066e0",
+  "NAS_bridge_verified_controls": {
+    "TLS_V10_TARGET_HOST_READONLY_RESERVATION_REVIEW_REQUEST_20261019.json": {
+      "path": "docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/TLS_V10_TARGET_HOST_READONLY_RESERVATION_REVIEW_REQUEST_20261019.json",
+      "sha256": "e77f7fc509b0e8005eab1a3662b80e4d439f2ca3cb65d7ed12d5176f6a0a9cae",
+      "control_filename": "TLS_V10_TARGET_HOST_READONLY_RESERVATION_REVIEW_REQUEST_20261019.json"
+    },
+    "TLS_V10_TARGET_READONLY_SOURCE_FILESYSTEM_CAPACITY_DIAGNOSTIC_20261019.json": {
+      "path": "docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/TLS_V10_TARGET_READONLY_SOURCE_FILESYSTEM_CAPACITY_DIAGNOSTIC_20261019.json",
+      "sha256": "648700f0def49b8602a1fbb31493425cd1807cb3f9e8015938bea1d086e9321d",
+      "control_filename": "TLS_V10_TARGET_READONLY_SOURCE_FILESYSTEM_CAPACITY_DIAGNOSTIC_20261019.json"
+    },
+    "TLS_V10_TARGET_SOURCE_EXT4_RESERVATION_READONLY_DIAGNOSTIC_20261019.json": {
+      "path": "docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/TLS_V10_TARGET_SOURCE_EXT4_RESERVATION_READONLY_DIAGNOSTIC_20261019.json",
+      "sha256": "cc1016a4aff297ae66982d17f1f12d2fed55d081c8d865f84a8176e87720acb3",
+      "control_filename": "TLS_V10_TARGET_SOURCE_EXT4_RESERVATION_READONLY_DIAGNOSTIC_20261019.json"
+    }
+  },
+  "source_host_boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+  "observed_source_workspace": {
+    "dev": 156,
+    "inode": 32926662,
+    "fsid": 1349835467748716946,
+    "available_bytes": 22796185600,
+    "total_free_bytes": 214850760704,
+    "free_minus_available_bytes": 192054575104
+  },
+  "matching_source_ext4_bind": {
+    "path": "/root/data",
+    "dev": 2128,
+    "major": 8,
+    "minor": 80,
+    "fsid": 11181641814567142162,
+    "mount_source": "/dev/sdf[/huangrulin]"
+  },
+  "cause": "Plausible reserved-block accounting; not superblock-confirmed. Container lacks the device node.",
+  "needed_external_information": "Authorized real174 host read-only access or independently matched administrator findmnt/tune2fs -l fields. User has been asked for read-only evidence only.",
+  "no_filesystem_policy_change_authorization_requested_or_assumed": true,
+  "no_host_device_node_or_namespace_created_or_entered": true,
+  "no_superblock_parameters_changed": true,
+  "existing_gate_metric_and_floor": "actual source /workspace f_bavail*frsize >=48GiB with existing reservations; f_bfree is NOT substituted",
+  "first_window_preserved": "TLS_V10_P9_PUBLIC_B0001",
+  "source_keep_scientific_originals": true,
+  "source_files_deleted_by_target": 0,
+  "TLS_scientific_payload_transferred_bytes": 0,
+  "TLS_archive_restore_Goal_complete": false
+}
