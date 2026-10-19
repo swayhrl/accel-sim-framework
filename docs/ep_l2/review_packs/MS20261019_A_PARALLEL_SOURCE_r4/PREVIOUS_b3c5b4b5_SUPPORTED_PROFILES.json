@@ -1,0 +1,35 @@
+{
+  "schema": "EPL2_MS_A_SUPPORTED_PROFILES_V1",
+  "stage": "SOURCE_IMPLEMENTED_NOT_COMPILED_NOT_RUN",
+  "default_new_options": {
+    "gpgpu_ep_l2_diag_copy_free": 0,
+    "gpgpu_ep_l2_diag_l2_data_free": 0,
+    "gpgpu_ep_l2_ms_observer": 0
+  },
+  "planned_first_release_profiles": [
+    "S",
+    "U",
+    "S_COPY_FREE",
+    "S_L2_DATA_FREE",
+    "U_L2_DATA_FREE"
+  ],
+  "new_profiles_qualified": [],
+  "rejected_first_release_combinations": [
+    "COPY_FREE with U",
+    "both diagnostic flags",
+    "new diagnostics with S64/U_CAP16/P2/MQ2/RG1/old ideals",
+    "any unqualified RO or victim feature"
+  ],
+  "unchanged_legacy_profiles": "retain existing constructor guards; parent evidence is historical only",
+  "source_implemented_profiles": [
+    "S",
+    "U",
+    "S_COPY_FREE",
+    "S_L2_DATA_FREE",
+    "U_L2_DATA_FREE"
+  ],
+  "qualified_runtime_profiles": [],
+  "all_native_qualification": "NOT_COMPILED_NOT_RUN",
+  "profile_index": "PROFILE_INDEX.json",
+  "DATA_FREE_fixed_latency": "keeps one-cycle copy latch, native ROP/return pipeline; COPY_FREE alone collapses copy staging delay"
+}

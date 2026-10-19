@@ -1,0 +1,50 @@
+{
+  "schema": "A_RO_FINITE_DIRECTED_PLAN_V1",
+  "core": "aa2a92cc11ef0f22f9f2a6f3418ce31bdee33278",
+  "runtime": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "all_status": "PREPARED_NOT_COMPILED_NOT_RUN",
+  "additional_native_processes": 25,
+  "producer_runner": {
+    "source": "tests/ep_l2/run_ro_runtime.py",
+    "source_sha256": "de5d6ff5106940e3fb059a591482b3620db16dc059f2057de93293414394d61e",
+    "child_processes": 22,
+    "arguments": "--source <exact Core above> --build <new root>/gpgpu-sim --output <E bound result>/ro_native",
+    "requires_E_lease_first": true
+  },
+  "source_extracted_bank": {
+    "prepare_source": "tests/ep_l2/prepare_ro_bank_progress.py",
+    "source_sha256": "d6f730034e4c76324dcf5d004148f495a6bcb6e6ab0f57367a6b5d7509ba2a56",
+    "processes": [
+      {
+        "arguments": [
+          "a2",
+          "16"
+        ],
+        "status": "NOT_COMPILED_NOT_RUN"
+      },
+      {
+        "arguments": [
+          "a3",
+          "16"
+        ],
+        "status": "NOT_COMPILED_NOT_RUN"
+      },
+      {
+        "arguments": [
+          "controls",
+          "16"
+        ],
+        "status": "NOT_COMPILED_NOT_RUN"
+      }
+    ],
+    "scope": "actual source methods + explicit facades, not production partition",
+    "preparation_once": "/workspace/ep_l2_ms20261019_a_common_v1/RO_BANK_PREPARATION_r1/SOURCE_BINDING.json",
+    "preparation_source": "1b76f9c2; production src unchanged at aa2a92cc11ef0f22f9f2a6f3418ce31bdee33278",
+    "new_native_evidence": false
+  },
+  "affected_R1_common_processes": 55,
+  "native_OFF_owner": "affected R1 suite; duplicate C runner OFF removed",
+  "same_binary_E_full_canary_required": true,
+  "Framework_whole_epoch_entry_runtime_validation": "PENDING_ADMITTED_CPP_BUILD_AND_E_CANARY",
+  "scientific_claims": "NONE"
+}
