@@ -48,7 +48,7 @@ def main():
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     assert not (a.joint_vrw and a.affected_native)
-    spec_path = (HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r31.json' if a.joint_vrw else
+    spec_path = (HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r32.json' if a.joint_vrw else
         HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC)
     spec = json.loads(spec_path.read_text())
     build, old, core, runtime = (Path(spec[k]) for k in ('build', 'retained_build', 'core', 'framework'))
@@ -57,8 +57,12 @@ def main():
     assert not out.exists() and not build.exists()
     assert spec['campaign_id'] == CAMPAIGN and spec['authority'] == AUTHORITY
     assert not git(core, 'status', '--porcelain', '--untracked-files=no')
-    assert git(core, 'rev-parse', 'HEAD') == spec['core_source_commit']
-    assert git(core, 'diff', '--name-only', spec['old_fixture_core'], spec['core_source_commit']).splitlines() == spec['allowed_changed_paths']
+    fixture_core = spec.get('fixture_source_core_commit', spec['core_source_commit'])
+    assert git(core, 'rev-parse', 'HEAD') == fixture_core
+    assert git(core, 'diff', '--name-only', spec['old_fixture_core'], fixture_core).splitlines() == spec['allowed_changed_paths']
+    if fixture_core != spec['core_source_commit']:
+        for tree in ('src','libcuda','CMakeLists.txt'):
+            assert git(core,'rev-parse',fixture_core+':'+tree)==git(core,'rev-parse',spec['core_source_commit']+':'+tree)
     assert git(core, 'diff', '--name-only', spec['runtime_producer_core'], spec['old_fixture_core'], '--', 'src', 'libcuda') == ''
     assert git(runtime, 'rev-parse', 'HEAD') == spec['framework_source_commit']
     assert git(runtime/'gpu-simulator/extern/pybind11', 'rev-parse', 'HEAD') == spec['vendor']
@@ -87,6 +91,7 @@ def main():
     identity = dict(campaign_id=CAMPAIGN, authority=AUTHORITY,
         control_source_commit=git(REPO, 'rev-parse', 'HEAD'), driver_sha256=sha(__file__),
         spec_sha256=sha(spec_path), core_source_commit=spec['core_source_commit'],
+        fixture_source_core_commit=fixture_core,
         framework_source_commit=spec['framework_source_commit'], vendor=spec['vendor'],
         retained_runtime_core=spec['runtime_producer_core'],
         retained_main_sha256=spec['retained_main_sha256'],
