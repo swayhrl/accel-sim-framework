@@ -1,0 +1,26 @@
+diff --git a/tests/ep_l2/ms_ro_combined/test_combined.cc b/tests/ep_l2/ms_ro_combined/test_combined.cc
+index 2e0e53de..a059692c 100644
+--- a/tests/ep_l2/ms_ro_combined/test_combined.cc
++++ b/tests/ep_l2/ms_ro_combined/test_combined.cc
+@@ -87,7 +87,7 @@ static void common_descriptor_pool_and_mandatory_wb(char **argv,bool data_free=f
+   f.finish();
+   if(data_free) {
+     const auto &ram=f.cache->ep_l2_payload_for_test();
+-    assert(f.gpu->getMemoryConfig()->m_L2_config.m_ep_l2_diag_l2_data_free &&
++    assert(ram.diagnostic_exempts(ep_l2_payload_store::FRONTEND) &&
+            !ram.bank_grants() && !ram.pending_operations());
+     assert(ram.diagnostic_services(ep_l2_payload_store::FILL)>0 &&
+            ram.diagnostic_services(ep_l2_payload_store::RESPONSE)>0 &&
+diff --git a/tests/ep_l2/ms_victim/test_native.cc b/tests/ep_l2/ms_victim/test_native.cc
+index bd79175a..f5728edd 100644
+--- a/tests/ep_l2/ms_victim/test_native.cc
++++ b/tests/ep_l2/ms_victim/test_native.cc
+@@ -324,7 +324,7 @@ static void observer_data_free(char **argv) {
+   assert(o.any_to_admission.requests==o.any_to_admission.resolved &&
+          !o.head_changes_without_admission && o.sampled_cycles>0);
+   const auto &ram=f.cache->ep_l2_payload_for_test();
+-  const bool data_free=f.gpu->getMemoryConfig()->m_L2_config.m_ep_l2_diag_l2_data_free;
++  const bool data_free=ram.diagnostic_exempts(ep_l2_payload_store::FRONTEND);
+   if (data_free) {
+     assert(!ram.bank_grants() && !ram.pending_operations());
+     assert(ram.diagnostic_services(ep_l2_payload_store::FILL)>0 &&
