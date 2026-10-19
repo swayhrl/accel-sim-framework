@@ -1,0 +1,103 @@
+{
+  "a_actual_build_receipt": {
+    "model_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "path": "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_BUILD_r3/RECEIPT.json",
+    "sha256": "a82cce85ee18dbb1a2fe635ea06b934aa813e9e9a44c0368134a72bccded8ccb",
+    "status": "COMPILED_BUILD_ONLY_PENDING_NATIVE",
+    "supervisor_stop_at_bytes": 7516192768
+  },
+  "a_independent_supervisor_control": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_A_WORKSPACE5G_REPAIR_INTAKE_r1/A_FINAL_SUPERVISOR_CONTROL_FROZEN.json",
+    "sha256": "93c29791affab8147a1f51333b2f683e3bfcb88cbfdf4bd928ff21c46491575d"
+  },
+  "active_registry_rows": [
+    {
+      "disk_floor_bytes": 5368709120,
+      "disk_growth_bytes": 402653184,
+      "experiment_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+      "key": "3f3a4ab8353c5cbeecffb211de156bad7eacca7264a056adedc1da19499cdebd",
+      "kind": "runs",
+      "monitor_reserve_bytes": 2147483648,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1160370,
+        "start_ticks": 918509347
+      },
+      "status": "RUNNING"
+    }
+  ],
+  "actual_full_application_starts": 1,
+  "admission_formula": "workspace actual available minus all active/pending remaining writes minus proposed conservative peak minus monitor reserve >=5GiB",
+  "all_write_destinations": "A/E tmp,cache,build,ELF,logs andresults on physicalworkspace; perlease growth includes its destinations. No ownShare writes. Share40 unchanged.",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "client_sha256": "b518b1f1e9657c6ba560621f62af64f4889a91b0e170929c4cf9aa32163fe27f",
+  "contingency": 8,
+  "coverage": [
+    "coordinator.reserve_work",
+    "coordinator.resource_gate",
+    "campaign-only Registry.admission scoped view",
+    "E runner live guard plus final RESOURCE_LIMIT sealing",
+    "A frozen actual run_owned supervisor consumes E policy stop threshold and monitor margin"
+  ],
+  "global_other_project_floor_bytes": 51539607552,
+  "helper_source_publication": "6c69b3e69c6acdd84c2e63a9ce03efdd8983f8e4",
+  "historical_policies_tokens_raw_failures_preserved": true,
+  "intake_deadline_unix": 1792591200,
+  "maximum_actual_starts": 40,
+  "next": "Complete already-running counted native allOFFcanary, close original11 gates, new exact qualificationrevision then Conv/FWT S/F. No oldR0/R1 qualification/performance inheritance.",
+  "observed_unix": 1792433219.1160743,
+  "original_t0_unix": 1792414193,
+  "other_project_policy_or_process_modifications": false,
+  "output_usage": {
+    "new_bytes": 1681520692,
+    "old_bytes": 14309576384,
+    "total_bytes": 15991097076
+  },
+  "planned_science": 32,
+  "policy": {
+    "disk_floor_bytes": 5368709120,
+    "monitor_interval_seconds": 0.2,
+    "monitor_reserve_bytes": 2147483648,
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "termination_grace_seconds": 3
+  },
+  "resource_api_sha256": "bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b",
+  "resources": {
+    "available_memory_bytes": 167314980864,
+    "disk_free_bytes": 43191955456,
+    "share_disk_free_bytes": 44262834176
+  },
+  "retained_caps": {
+    "e_default_sim": 2,
+    "e_max_sim": 3,
+    "global_cpu": 8,
+    "global_reserved_ram_bytes": 34359738368,
+    "global_sim_max": 4,
+    "new_results_bytes": 6442450944,
+    "ram_floor_bytes": 68719476736,
+    "share_floor_bytes": 42949672960,
+    "total_results_bytes": 21474836480
+  },
+  "reused_legacy_registry_sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d",
+  "running_guard": "stop own controlled process group at<=7GiB with0.2sec sampling and3sec bounded TERM/KILL;5GiB floor and2GiB detection/termination reserve. External projects never stopped; sampling is not an OS quota guarantee.",
+  "source_files": {
+    "util/ep_l2/mechanism_e/controller.py": "b66427c0a6a43026cad36b9af53be01be7d17a7fe0ea80a762766e4ecd09ba0d",
+    "util/ep_l2/mechanism_e/coordinator.py": "bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b",
+    "util/ep_l2/mechanism_e/disk_policy.py": "53a2e9ccfe96407a04396292e245d7eb3932ac2529206190cca0384857a43479",
+    "util/ep_l2/mechanism_e/parse_terminal.py": "be9958909adb7cb7b28c610e982a2ee1d6394d25b4318b7302e52071b3eeff05",
+    "util/ep_l2/mechanism_e/policy_v2.py": "a080049fddeaa6ef99b5972728946643437a6247d2c53d376199c4f2eec9f1a1",
+    "util/ep_l2/mechanism_e/review_ro_input.py": "3403706ec3a15e7e7cd8506ac4f12c1ff2d64abfba0a0b5a375474a48cb8a155",
+    "util/ep_l2/mechanism_e/runner.py": "2826ccaede8adf3939a1d3c5d70413b16d618cffa648e21e653606c3ae2f88e5"
+  },
+  "start_deadline_unix": 1792576800,
+  "status": "USER5G_SCOPED_POLICY_FULLY_PUBLISHED_CONSUMED_BY_A_BUILD_AND_E_NATIVE_APPLICATION_CONTROL",
+  "tests": {
+    "counted_native_control_tests": 8,
+    "later_affected_controls": 3,
+    "original_controls_reused": 132,
+    "scientific_qualification_granted_by_controls": false,
+    "total_helper_controls": 153,
+    "workspace5G_added": 18
+  }
+}
