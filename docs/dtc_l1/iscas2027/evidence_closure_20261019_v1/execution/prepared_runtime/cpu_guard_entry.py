@@ -73,8 +73,8 @@ def main():
     def observe(pid, full, ownership):
         if interrupted:
             return 'CPU_COORDINATOR_SIGNAL:' + str(interrupted[0])
-        if shutil.disk_usage(RAW).free < 2 * 1024**3:
-            return 'CPU_RUNTIME_DISK_BELOW_2GiB'
+        if shutil.disk_usage(destination).free <= 5 * 1024**3:
+            return 'USER_DISK_FLOOR_AT_OR_BELOW_5GiB'
         used = sum(p.stat().st_size for p in destination.rglob('*') if p.is_file())
         if used > request['output_bound_bytes']:
             return 'CPU_REGISTERED_OUTPUT_BOUND_EXCEEDED'

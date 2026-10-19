@@ -30,8 +30,13 @@ def main():
     sys.path.insert(0,str(HERE))
     sys.path.insert(0,str(HERE/'vendor'))
     from cpu_admission_v2 import CPUAdmission, execution_binding, require_execution_binding
-    prerequisite=json.loads(Path(registration['negative_receipt_path']).read_text())
-    require_execution_binding(prerequisite,execution_binding(HERE.parent/'CPU_SHARED_AUTHORITY_REGISTRATION_V2.json',registration))
+    if registration.get('qualified_source_reuse'):
+        from qualification_reuse_v2 import negative
+        prerequisite,negative_reuse=negative(registration)
+    else:
+        prerequisite=json.loads(Path(registration['negative_receipt_path']).read_text())
+        require_execution_binding(prerequisite,execution_binding(HERE.parent/'CPU_SHARED_AUTHORITY_REGISTRATION_V2.json',registration))
+        negative_reuse=None
     if (prerequisite['returncode']!=0 or prerequisite['cases']!=14 or
             prerequisite['scope']!='ACTUAL_FROZEN_REVIEW_AND_ADAPTER_DECLARED_SYNTHETIC_PROCESS_ROWS'):
         raise ValueError('CHANGED_ADAPTER_NEGATIVES_REQUIRED')
@@ -53,6 +58,11 @@ def main():
         raise ValueError('GENERATION_RECEIPT_CHANGED')
     generation=json.loads(generation_path.read_text())
     require_execution_binding(generation,execution_binding(changed_registration_path,changed_registration))
+    if generation.get('new_generation_cases_executed') == 0:
+        from qualification_reuse_v2 import witness
+        proof,digest=witness(changed_registration)
+        if generation['source_reuse_witness_sha256'] != digest:
+            raise ValueError('REUSED_GENERATION_SOURCE_WITNESS_CHANGED')
     if len(generation['cases'])!=5 or not all(row['status']=='PASS_EXPECTED_RESULT' for row in generation['cases']):
         raise ValueError('CHANGED_GENERATION_CASES_REQUIRED')
     sys.path.insert(0, str(HERE))
@@ -117,6 +127,7 @@ def main():
                            'actual three external CPU roles observed by same callback',
                            'full family/ledger/source/resource admission']
     result.update(execution_binding(HERE.parent/'CPU_SHARED_AUTHORITY_REGISTRATION_V2.json',registration))
+    result['negative_source_reuse']=negative_reuse
     output = Path(registration['manager_output']) / 'SHARED_AUTHORITY_SCOPE_RESULT.json'
     with output.open('x') as stream:
         stream.write(json.dumps(result, indent=2) + '\n')

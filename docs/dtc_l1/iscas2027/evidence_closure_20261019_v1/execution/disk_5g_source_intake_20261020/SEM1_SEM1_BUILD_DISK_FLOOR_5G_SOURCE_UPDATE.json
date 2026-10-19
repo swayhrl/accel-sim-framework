@@ -1,0 +1,51 @@
+{
+  "schema": "DTC_SEM1_BUILD_OUTPUT_DISK_FLOOR_5G_SOURCE_UPDATE_V1",
+  "status": "SOURCE_PREPARED_NOT_EXECUTED_REQUIRES_PARENT_ROLE_REFREEZE",
+  "user_authorization": "User changed global disk hard floor from10GiB to5GiB; actual output mount must remain strictly above5GiB; <=5GiB stops new build/sim and protects own work. No retrospective admission.",
+  "controller_path": "implementation_r1/bounded_cpu_build.py",
+  "old_controller_sha256": "90be68c1738f247db86239d2cc6a95929c73ed0a5753f6083493bc212617caf8",
+  "new_controller_sha256": "5b397968b6e1596c161091baa8faa38827dddb0acd0148325731253537d720f9",
+  "controller_previous_CPU_floor_bytes": 2147483648,
+  "new_hard_floor_bytes": 5368709120,
+  "runtime_and_final_failure_operator": "free_bytes() <= FREE_FLOOR",
+  "measurement": "Existing os.statvfs(OUTPUT): f_bavail * f_frsize, on actual isolated output mount.",
+  "start_expected_output_budget_bytes": 536870912,
+  "start_single_file_safety_bytes": 134217728,
+  "start_minimum_free_bytes": 6039797760,
+  "start_minimum_GiB": 5.625,
+  "start_rule": "Existing free_bytes() < START_FLOOR rejection retained; START_FLOOR=5GiB+512MiB existing sampled aggregate output ceiling+128MiB existing file/safety reserve.5.625GiB is bounded task writing reserve, not a10GiB floor.",
+  "runtime_disk_failure_reason": "BLOCKED_BUILD_RESOURCE_FREE_NOT_ABOVE_5GiB",
+  "runtime_response": "Existing reason/own unreaped child cleanup path, no new signal mechanism; after reap inspect/report only. Final <=5GiB fails existing final-boundary receipt.",
+  "receipt_additions": [
+    "output_disk_hard_floor_bytes",
+    "output_disk_start_reserve_bytes",
+    "output_disk_rule"
+  ],
+  "unchanged": [
+    "completed configure evidence (do not repeat)",
+    "Core1fcf5113 and fixture",
+    "command argv and compiler flags",
+    "512MiB sampled output ceiling,128MiB per-file hard limit,16MiB log limit",
+    "timeouts and CPU/address-space limits",
+    "clean environment and owner/cleanup logic",
+    "host+cgroup IO,memory,OOM/admission policy",
+    "science/semantic boundaries and no simulation dispatcher"
+  ],
+  "parent_integration_required": "Old manager/roles bind90be68 controller; this publication invalidates that source closure for new starts until parent explicitly freezes the new hash and corresponding role/release. Worker must not launch independently.",
+  "execution_this_change": {
+    "resource_samples": 0,
+    "controller_import_or_invocation": 0,
+    "configure": 0,
+    "build": 0,
+    "fixture": 0,
+    "tests": 0,
+    "simulations": 0
+  },
+  "preserved_counts": {
+    "configure": 1,
+    "build": 0,
+    "fixture": 0,
+    "native_or_architectural_values": "UNPROVEN"
+  },
+  "read_only_comparison": "ROB1 source-only2b91e1b6523de7069911b36f937aa663a72a8b0f: same disk constant/runtime/final/receipt changes; no repeat test."
+}

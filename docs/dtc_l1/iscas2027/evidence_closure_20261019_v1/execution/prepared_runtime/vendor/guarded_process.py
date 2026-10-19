@@ -5,7 +5,7 @@ stops mapping-changing syscalls for complete before/after maps; fork/exec/
 clone/exit events keep every owned descendant in scope. Unknown maps reject.
 CPU entrypoints remain CPU-only. Simulation requires a separately published capability. No performance dispatcher is installed by this module.
 """
-import ctypes,os,signal,time,json,platform
+import ctypes,os,signal,time,json,platform,shutil
 from pathlib import Path
 from mapping_roles import Sequence,validate_manifest,verify_file,require,Reject,sha
 from common import write,now
@@ -102,6 +102,8 @@ def run_guarded(argv,env,manifests,destination,purpose,timeout,capability=None,o
  def periodic():
   nonlocal last_oom,last_sample
   instant=time.monotonic()
+  if instant-last_oom>=.25 and shutil.disk_usage(dest).free<=5*1024**3:
+   raise Reject('USER_DISK_FLOOR_AT_OR_BELOW_5GiB')
   if observer and instant-last_oom>=.25:
    reason=observer(pid,instant-last_sample>=10,ownership)
    last_oom=instant

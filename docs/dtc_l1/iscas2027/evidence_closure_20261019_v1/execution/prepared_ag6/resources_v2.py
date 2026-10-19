@@ -2,7 +2,7 @@
 
 No fork, signal, lock or retry. The caller supplies the untouched all-project
 snapshot from the same current-authority callback. Old R2 runtime persistence
-intervals stay intact; V2 adds both PSI domains, host OOM and the 10 GiB floor.
+intervals stay intact; the user disk update sets an exclusive 5 GiB floor.
 """
 import hashlib
 from pathlib import Path
@@ -54,7 +54,7 @@ def checks(sample):
         'original174': sample['host'] == 'huangrulin-174' and sample['uid'] == 0,
         'host_memory_headroom_ge32GiB': sample['host_MemAvailable_bytes'] >= 32 * GIB,
         'cgroup_memory_headroom_ge32GiB': old['headroom'](sample) >= 32 * GIB,
-        'actual_output_filesystem_ge10GiB': sample['disk_free_bytes'] >= 10 * GIB,
+        'actual_output_filesystem_gt5GiB': sample['disk_free_bytes'] > 5 * GIB,
     }
     for domain, pressure in [('host', sample['pressure']),
                              ('cgroup', sample['cgroup_pressure_parsed'])]:
@@ -91,8 +91,8 @@ class Runtime:
     def quick_stop(self):
         """Call only while an own guard is active; returns a reason, never signals."""
         import shutil
-        if shutil.disk_usage(self.output).free < 10 * GIB:
-            return 'V2_ACTUAL_OUTPUT_FILESYSTEM_BELOW_10GiB'
+        if shutil.disk_usage(self.output).free <= 5 * GIB:
+            return 'USER_OUTPUT_FILESYSTEM_AT_OR_BELOW_5GiB'
         events = dict(line.split() for line in
                       Path('/sys/fs/cgroup/memory.events').read_text().splitlines())
         if any(int(events[k]) != self.first['cgroup']['events'][k]
@@ -109,8 +109,8 @@ class Runtime:
         cgroup = self.cgroup.observe(self._project(sample), own_faults, previous_faults)
         reasons = [domain + ':' + reason for domain, decision in
             [('host', host), ('cgroup', cgroup)] for reason in decision['stop_reasons']]
-        if sample['disk_free_bytes'] < 10 * GIB:
-            reasons.append('V2_ACTUAL_OUTPUT_FILESYSTEM_BELOW_10GiB')
+        if sample['disk_free_bytes'] <= 5 * GIB:
+            reasons.append('USER_OUTPUT_FILESYSTEM_AT_OR_BELOW_5GiB')
         if sample['output_filesystem_device'] != self.first['output_filesystem_device']:
             reasons.append('V2_OUTPUT_FILESYSTEM_CHANGED')
         if sample['host_oom_kill'] != self.first['host_oom_kill']:

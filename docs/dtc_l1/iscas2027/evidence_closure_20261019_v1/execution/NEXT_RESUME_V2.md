@@ -17,11 +17,10 @@ zero cases. All refusal evidence is preserved. No live own child is left.
 Next foreground entries are separately and conditionally registered, each
 requires its own complete current R2 and exact authority; first failure returns:
 
-1. test_shared_authority.py: negative-admission-attempt3,14changed adapter cases.
-2. qualify_ag5_changed_dispatch_v2.py:5generation +6actual guard cases +2pure
-   tracer/Tgid assertions. Do not run unless step1 passed current receipt bindings.
-3. qualify_shared_cpu_authority_v2.py:2real CPU roots/helpers and shared observer.
-4. qualify_real_cpu_roles_v2.py:attempt3, SEMbuild only, ROBconfigure/build, one
+1. Preserve actual14case PASS at d5bd65b9 and reuse under QUALIFIED_SOURCE_REUSE_V2; do not rerun.
+2. qualify_ag5_changed_dispatch_v2.py:changed-dispatch-attempt2; preserve5generation+first root-order actualPASS, run remaining5real cases+2pure tracer/Tgid checks under new full fresh5GiB-policy R2.
+3. qualify_shared_cpu_authority_v2.py:2real CPU roots/helpers and shared observer after current remaining-case result.
+4. qualify_real_cpu_roles_v2.py:attempt4, SEMbuild only, ROBconfigure/build, one
    same-process COV role; preserve SEM's completed configure. New immutable
    CPU-manager HEAD/tree/blob/clean readback must exist before calling step4.
 
@@ -33,6 +32,6 @@ LDST runtime and original-core differential remain pending.
 After actual shared/role qualifications, finish source-bound AG6 production
 capability/manifest/qualification and publish/fetch exact HEAD/tree/blobs/clean.
 Use only existing four UUIDs with frozen inputs/options/source/runtime/timeout,
-full paired host+cgroup R2, 10GiB actual output floor before/during, no retry.
+full paired host+cgroup R2, strictly>5GiB actual output floor before/during, no retry.
 Do not launch P8F before four-point selection. Preserve old SELECTION.json;
 validfour arms alone feed unchanged0.98/1.02/GM/tieAE rule into SELECTION_V2.

@@ -46,6 +46,13 @@ def main():
  target=RAW/'build/closure-cpu-ag5-v2'
  env=dict(PATH='/usr/bin:/bin',LANG='C',LC_ALL='C',CUDA_VISIBLE_DEVICES='')
  write(dest/'START.json',dict(utc=now(),**execution_binding(REGISTRATION,REG),purpose='TARGETED_CHANGED_AG5_BA_CPU_INTERFACES',kernel_PID_reuse_forced=False,simulator_starts=0),exclusive=True)
+ if REG.get('reuse_completed_generation_and_first_root_order'):
+  from qualification_reuse_v2 import generation
+  reused=generation(REG)
+  write(dest/'PRODUCTION_DISPATCH_GENERATION_TESTS.json',reused,exclusive=True)
+  run_real_changed_interfaces(dest, manifests, env)
+  print('PASS_REMAINING_CHANGED_INTERFACES_PRESERVED_FIVE_GENERATION_AND_FIRST_ROOT_ORDER',flush=True)
+  return
  rows=[]
  for label,engine,kind in [('fixed_retired_helper',fixed,'retired'),('fixed_retired_thread',fixed,'thread_retired'),('fixed_retired_root',fixed,'root_retired'),('fixed_current_instance_changed',fixed,'current_changed'),('fixed_stale_image_generation',fixed,'stale_image')]:
   original_wait=os.waitpid;original_identity=ownmod.identity;original_cdll=ctypes.CDLL;original_kill=os.kill
@@ -160,51 +167,70 @@ def run_real_changed_interfaces(dest, manifests, env):
      did_hold[0]=True;held.append((child,status));return (0,0)
     if child==f.f_locals['pid'] and (os.WIFEXITED(status) or os.WIFSIGNALED(status)):root_reaped[0]=True
   return child,status
- with patch.object(fixed.os,'waitpid',parent_first_wait):run('real_child_first_stop_after_parent_reaped','root_exit_child')
- require(did_hold[0] and root_reaped[0] and not held,'REAL_PARENT_REAP_ORDER_NOT_OBSERVED')
+ if REG.get('reuse_completed_generation_and_first_root_order'):
+  from qualification_reuse_v2 import root_order
+  rows.append(root_order(REG))
+ else:
+  with patch.object(fixed.os,'waitpid',parent_first_wait):run('real_child_first_stop_after_parent_reaped','root_exit_child')
+  require(did_hold[0] and root_reaped[0] and not held,'REAL_PARENT_REAP_ORDER_NOT_OBSERVED')
  # Exact AG5 real event-reordering adapters for changed BA caller only.
  original_deadline=ownmod.Ownership.check_deadlines
  for label,missing,force in [('real_child_stop_before_parent_observer',False,False),('real_missing_event_finite_timeout',True,False),('real_stop_pending_event_cleanup',False,True)]:
   held=[];injected=[False];release=[False];seen=[]
   reorder_target=[None];reorder_deadline=[None]
   child_stop_delivered=[False];parent_event_delivered=[False]
+  saved_child_wait=[];parent_event=[None];child_stop=[None]
   def deadline(o):
    try:return original_deadline(o)
    except Reject:release[0]=True;raise
   def reordered_wait(pid,flags):
-   if held:
-    if missing and not release[0]:return (0,0)
-    if not missing and not force and not release[0] and not child_stop_delivered[0]:
-     if time.monotonic()>=reorder_deadline[0]:
-      release[0]=True
-      raise Reject('CPU_REAL_CHILD_STOP_REORDER_BOUND_EXCEEDED')
-     other=original(reorder_target[0],flags)
-     if other[0]:
-      try:require(other[0]==reorder_target[0] and os.WIFSTOPPED(other[1]),'ACTUAL_REORDER_CHILD_STOP_REQUIRED')
-      except BaseException:release[0]=True;raise
-      child_stop_delivered[0]=True
-     return other
-    parent_event_delivered[0]=True
-    return held.pop(0)
-   child,status=original(pid,flags)
-   if child and status>>16 in (1,2,3) and not injected[0]:
-    injected[0]=True;new=ctypes.c_ulonglong();lib=ctypes.CDLL(None,use_errno=True)
-    require(lib.ptrace(0x4201,child,None,ctypes.byref(new))==0,'ACTUAL_GETEVENTMSG_FAILED')
-    f=sys._getframe(1);o=f.f_locals['ownership']
-    o.quarantine(int(new.value),'DECLARED_REAL_KERNEL_EVENT_REORDER')
-    verdict=review(None,controller,o);seen.append(verdict);held.append((child,status))
-    require(verdict['status']=='PENDING_QUARANTINED_NO_AUTHORITY_PASS','PENDING_GOT_AUTHORITY')
-    if force:raise Reject('CPU_STOP_WITH_PENDING_EVENT')
-    if missing:return (0,0)
-    reorder_target[0]=int(new.value);reorder_deadline[0]=time.monotonic()+1.0
-    return (0,0)
-   return child,status
+   try:
+    if held:
+     if release[0]:
+      parent_event_delivered[0]=True
+      return held.pop(0)
+     if not child_stop_delivered[0]:
+      require(time.monotonic()<reorder_deadline[0],'CPU_REAL_CHILD_STOP_REORDER_BOUND_EXCEEDED')
+      other=original(reorder_target[0],flags)
+      if other[0]:
+       # Preserve every consumed status before validation can raise. On failure,
+       # cleanup receives the saved parent event first, then this child status.
+       saved_child_wait.append(other)
+       require(other[0]==reorder_target[0] and os.WIFSTOPPED(other[1]),'ACTUAL_REORDER_CHILD_STOP_REQUIRED')
+       child_stop[0]=other;child_stop_delivered[0]=True
+       return saved_child_wait.pop(0)
+      return (0,0)
+     # The previous returned real child STOP has now passed through production
+     # run_guarded, which alone calls Ownership.quarantine. Observe it only now.
+     if not seen:
+      f=sys._getframe(1);o=f.f_locals['ownership']
+      require(reorder_target[0] in o.pending and reorder_target[0] not in o.confirmed,'PRODUCTION_CHILD_STOP_NOT_PENDING')
+      verdict=review(None,controller,o);seen.append(verdict)
+      require(verdict['status']=='PENDING_QUARANTINED_NO_AUTHORITY_PASS','PENDING_GOT_AUTHORITY')
+     if force:raise Reject('CPU_STOP_WITH_PENDING_EVENT')
+     if missing:return (0,0)
+     parent_event_delivered[0]=True
+     return held.pop(0)
+    if saved_child_wait:return saved_child_wait.pop(0)
+    child,status=original(pid,flags)
+    if child and status>>16 in (1,2,3) and not injected[0]:
+     # Own the real parent wait status before GETEVENTMSG/review can fail.
+     held.append((child,status));parent_event[0]=(child,status);injected[0]=True
+     new=ctypes.c_ulonglong();lib=ctypes.CDLL(None,use_errno=True)
+     require(lib.ptrace(0x4201,child,None,ctypes.byref(new))==0,'ACTUAL_GETEVENTMSG_FAILED')
+     reorder_target[0]=int(new.value)
+     require(reorder_target[0]>0,'ACTUAL_GETEVENTMSG_CHILD_REQUIRED')
+     reorder_deadline[0]=time.monotonic()+1.0
+     return (0,0)
+    return child,status
+   except BaseException:
+    release[0]=True
+    raise
   with patch.object(fixed.os,'waitpid',reordered_wait),patch.object(ownmod.Ownership,'check_deadlines',deadline):
    run(label,expected=not(missing or force),needle='PARENT_EVENT_CONFIRMATION_TIMEOUT' if missing else ('CPU_STOP_WITH_PENDING_EVENT' if force else None))
   require(injected[0] and bool(seen),'ACTUAL_PENDING_ORDER_NOT_EXERCISED')
-  if not missing and not force:
-   require(child_stop_delivered[0] and parent_event_delivered[0] and not held,'ACTUAL_CHILD_STOP_BEFORE_PARENT_EVENT_NOT_DELIVERED')
-  write(dest/(label+'_REORDER.json'),dict(real_parent_event_held=True,synthetic_ptrace_proof=False,observations=seen,actual_child_stop_delivered_before_parent_event=child_stop_delivered[0],actual_parent_event_delivered=parent_event_delivered[0],normal_reorder_wait_bound_seconds=1.0))
+  require(child_stop_delivered[0] and parent_event_delivered[0] and not held and not saved_child_wait,'ACTUAL_CHILD_STOP_BEFORE_PARENT_EVENT_NOT_DELIVERED')
+  write(dest/(label+'_REORDER.json'),dict(real_parent_event_held=True,synthetic_ptrace_proof=False,observations=seen,held_parent_event=parent_event[0],delivered_child_stop=child_stop[0],actual_child_stop_delivered_before_parent_event=child_stop_delivered[0],actual_parent_event_delivered=parent_event_delivered[0],reorder_wait_bound_seconds=1.0,quarantine_by_production_guard_only=True))
  run('real_observer_exception',expected=False,observer=lambda *a:(_ for _ in ()).throw(OSError('CPU_OBSERVER_EXCEPTION')),needle='CPU_OBSERVER_EXCEPTION')
  run('real_owned_timeout_cleanup','hang',expected=False,timeout=.8,needle='TIMEOUT_')
  # AG5 same() tracer/Tgid rejection is exercised on the actual imported owner.

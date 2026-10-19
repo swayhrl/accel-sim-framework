@@ -7,5 +7,5 @@ The four previously published UUIDs and scientific inputs stay fixed.
 
 The resource adapter retains the exact frozen AG4 R2 persistence policy, adds
 both host and cgroup PSI domains and host OOM, and enforces the user-approved
-10GiB actual output filesystem floor during simulation. No extra canary or
+strictly>5GiB actual output filesystem floor under user20261020 authorization during simulation. No extra canary or
 production dual-simulator qualification is introduced; concurrency remains1.
