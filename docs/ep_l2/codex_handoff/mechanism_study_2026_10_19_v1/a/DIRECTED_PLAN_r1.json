@@ -1,0 +1,772 @@
+{
+  "schema": "EPL2_MS_A_BUILD_AND_DIRECTED_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "status": "PLAN_ONLY_NOT_COMPILED_NOT_RUN",
+  "compiler_started": false,
+  "application_starts": 0,
+  "independent_qualification": false,
+  "core_source_commit": "066c60b1f0165625ee3d5cbdb16cf59e481a6900",
+  "framework_source_commit": "197741be9be9b8e390a557d639503b416d8e95f0",
+  "driver_source_commit": "dbcd8a5674e3fc2c6a8f46f736176d12d0a13db3",
+  "driver_sha256": "2ae4b05c89f419da935a68929771625b4442b62577b8fef4207b38fe812716d8",
+  "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1",
+  "framework": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-runtime-v1",
+  "build": "/workspace/build/ep-l2-ms20261019-a-r1",
+  "jobs": 2,
+  "disk_floor_bytes": 51539607552,
+  "memory_floor_bytes": 68719476736,
+  "commands": [],
+  "tests": [],
+  "planned_tests": [
+    {
+      "case": "S_observer0_local",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer0.config",
+        "1",
+        "0"
+      ],
+      "required_terminal": "EPL2MS_TEST|LOCAL|"
+    },
+    {
+      "case": "S_observer0_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_observer0_fixed_latency",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer0_ROP7.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "latency7"
+      ],
+      "required_terminal": "EPL2MS_TEST|LATENCY|rop=7|cold_lower_reads=1|later_response_cycle=1|"
+    },
+    {
+      "case": "S_observer0_capacity",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "capacity"
+      ],
+      "required_terminal": "MS_PARTITION_CAPACITY_NATIVE_PASS"
+    },
+    {
+      "case": "S_observer1_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer1.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_observer1_capacity",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer1.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "capacity"
+      ],
+      "required_terminal": "MS_PARTITION_CAPACITY_NATIVE_PASS"
+    },
+    {
+      "case": "U_observer0_local",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer0.config",
+        "2",
+        "0"
+      ],
+      "required_terminal": "EPL2MS_TEST|LOCAL|"
+    },
+    {
+      "case": "U_observer0_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer0.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "U_observer0_fixed_latency",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer0_ROP7.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "latency7"
+      ],
+      "required_terminal": "EPL2MS_TEST|LATENCY|rop=7|cold_lower_reads=1|later_response_cycle=1|"
+    },
+    {
+      "case": "U_observer1_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_COPY_FREE_observer0_local",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0.config",
+        "1",
+        "1"
+      ],
+      "required_terminal": "EPL2MS_TEST|LOCAL|"
+    },
+    {
+      "case": "S_COPY_FREE_observer0_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "1",
+        "0",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_COPY_FREE_observer0_fixed_latency",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0_ROP7.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "1",
+        "0",
+        "latency7"
+      ],
+      "required_terminal": "EPL2MS_TEST|LATENCY|rop=7|cold_lower_reads=1|later_response_cycle=1|"
+    },
+    {
+      "case": "S_COPY_FREE_observer0_capacity",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "1",
+        "0",
+        "capacity"
+      ],
+      "required_terminal": "MS_PARTITION_CAPACITY_NATIVE_PASS"
+    },
+    {
+      "case": "S_COPY_FREE_observer1_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer1.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "1",
+        "1",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_COPY_FREE_observer1_capacity",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer1.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "1",
+        "1",
+        "capacity"
+      ],
+      "required_terminal": "MS_PARTITION_CAPACITY_NATIVE_PASS"
+    },
+    {
+      "case": "S_L2_DATA_FREE_observer0_local",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0.config",
+        "1",
+        "2"
+      ],
+      "required_terminal": "EPL2MS_TEST|LOCAL|"
+    },
+    {
+      "case": "S_L2_DATA_FREE_observer0_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "0",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_L2_DATA_FREE_observer0_fixed_latency",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0_ROP7.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "0",
+        "latency7"
+      ],
+      "required_terminal": "EPL2MS_TEST|LATENCY|rop=7|cold_lower_reads=1|later_response_cycle=1|"
+    },
+    {
+      "case": "S_L2_DATA_FREE_observer0_capacity",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "0",
+        "capacity"
+      ],
+      "required_terminal": "MS_PARTITION_CAPACITY_NATIVE_PASS"
+    },
+    {
+      "case": "S_L2_DATA_FREE_observer1_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer1.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "1",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "S_L2_DATA_FREE_observer1_capacity",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer1.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "1",
+        "capacity"
+      ],
+      "required_terminal": "MS_PARTITION_CAPACITY_NATIVE_PASS"
+    },
+    {
+      "case": "U_L2_DATA_FREE_observer0_local",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config",
+        "2",
+        "2"
+      ],
+      "required_terminal": "EPL2MS_TEST|LOCAL|"
+    },
+    {
+      "case": "U_L2_DATA_FREE_observer0_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "0",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "U_L2_DATA_FREE_observer0_fixed_latency",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0_ROP7.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "0",
+        "latency7"
+      ],
+      "required_terminal": "EPL2MS_TEST|LATENCY|rop=7|cold_lower_reads=1|later_response_cycle=1|"
+    },
+    {
+      "case": "U_L2_DATA_FREE_observer1_partition",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "1",
+        "service"
+      ],
+      "required_terminal": "MS_PARTITION_REAL_FIFOS_BANK_INTERVENTION_FIXED_PIPELINE_NATIVE_PASS"
+    },
+    {
+      "case": "bounded_observer",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_observer"
+      ],
+      "required_terminal": "MS_OBSERVER_BOUNDED_IDENTITY_FIRST_WAIT_AND_DISABLED_NATIVE_PASS"
+    },
+    {
+      "case": "affected_default_OFF",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_directed",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config"
+      ],
+      "required_terminal": "PASS"
+    },
+    {
+      "case": "host_prefill_1",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "required_terminal": "PASS"
+    },
+    {
+      "case": "physical_clock_1_0",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0"
+      ],
+      "required_terminal": "violations=0|max_grants_per_physical_bank_cycle=1"
+    },
+    {
+      "case": "physical_clock_1_4096",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "required_terminal": "violations=0|max_grants_per_physical_bank_cycle=1"
+    },
+    {
+      "case": "stale_return_1",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "required_terminal": "PASS"
+    },
+    {
+      "case": "host_prefill_2",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_host_prefill",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "required_terminal": "PASS"
+    },
+    {
+      "case": "physical_clock_2_0",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0"
+      ],
+      "required_terminal": "violations=0|max_grants_per_physical_bank_cycle=1"
+    },
+    {
+      "case": "physical_clock_2_4096",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "required_terminal": "violations=0|max_grants_per_physical_bank_cycle=1"
+    },
+    {
+      "case": "stale_return_2",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16"
+      ],
+      "required_terminal": "PASS"
+    },
+    {
+      "case": "b1-read-first",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-read-first"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "b1-atomic-first",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-atomic-first"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "b1-multi",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-multi"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "b1-b16",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-b16"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "b1-dirty",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-dirty"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "b1-version-only",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-version-only"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "S_COPY_FREE_b1-b16",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0.config",
+        "b1-b16"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "S_L2_DATA_FREE_b1-b16",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0.config",
+        "b1-b16"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "U_L2_DATA_FREE_b1-read-first",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config",
+        "b1-read-first"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "U_L2_DATA_FREE_b1-atomic-first",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config",
+        "b1-atomic-first"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "U_L2_DATA_FREE_b1-dirty",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config",
+        "b1-dirty"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "U_L2_DATA_FREE_b1-version-only",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config",
+        "b1-version-only"
+      ],
+      "required_terminal": "PASS B1"
+    },
+    {
+      "case": "reject_both_diagnostics",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_both_diagnostics.config",
+        "1",
+        "both_diagnostics",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=both_diagnostics"
+    },
+    {
+      "case": "reject_U_copy",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_U_copy.config",
+        "2",
+        "U_copy",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=U_copy"
+    },
+    {
+      "case": "reject_legacy_observer",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_legacy_observer.config",
+        "0",
+        "legacy_observer",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=legacy_observer"
+    },
+    {
+      "case": "reject_P2_observer",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_P2_observer.config",
+        "1",
+        "P2_observer",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=P2_observer"
+    },
+    {
+      "case": "reject_S64_observer",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_S64_observer.config",
+        "1",
+        "S64_observer",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=S64_observer"
+    },
+    {
+      "case": "reject_MQ2_observer",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_MQ2_observer.config",
+        "1",
+        "MQ2_observer",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=MQ2_observer"
+    },
+    {
+      "case": "reject_old_ideal_observer",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_old_ideal_observer.config",
+        "1",
+        "old_ideal_observer",
+        "EP-L2 mechanism study supports finite P1 S/U"
+      ],
+      "required_terminal": "MS_NATIVE_GUARD_PASS|case=old_ideal_observer"
+    }
+  ],
+  "finished_UTC": "2026-10-19T13:12:04.895517+00:00",
+  "scope": "PREPARED_FINITE_COMMANDS_ONLY_NO_NATIVE_EXECUTION; inputs under preparation root are deterministic test-only overlays, not application configs",
+  "test_input_files_SHA256": {
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_S64_observer.config": "7ab0ae9fa3b8c3ffcd067b57c4af6285d29ed9adc73e034ef4feab4acfb06f40",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer1.config": "32faf8af0bb8af4f7873c7917378e7d3083ecf5558a3d1c272155efb67f261d1",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer0.config": "49ffdc2d1babb5183dd6def792a807536cd6c2139ec8f74aa2b5ef884edc7a39",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0.config": "7019d4c3147f4a15f1c59bcc383f5a4448c0cce43712b5b2fbe0f1a51333cdb8",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0_ROP7.config": "359d6c9f85f2c0bce94683730ace1454adf57017adb65edc237ad46b5964f004",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_both_diagnostics.config": "c9bdcd0ef650233f271b5163c086edf5a132faded8a95ee93b7bf49c6147a924",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_observer0_ROP7.config": "4ce9921e7b38d2b02706578a3f42a96c9402f2aaa2cb155fdbfeede37f145777",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer1.config": "d8d12261b6225aa7bd97ead99f73d3cfd2ba82fbfe5a71eb55443e011e243f45",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer1.config": "698924ab3087563f1d0a0b917d4e2253c66a19184b006cfbc3e24d62cdc3633d",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer0.config": "494134e4f541d6a2c18e6660d646298fd7d383c54cb58ff9ebd5290ff6a1e3e7",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/U_L2_DATA_FREE_observer0.config": "758cafd072b1d00ca0cfe17be0776857d4bba1414b11f5ca1b01c1aff505ea43",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0.config": "c4ce14a6c980ec7dccab2f21d81355403179600c194ef40265baa3f263a8e863",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_U_copy.config": "450d029635e1384a60ba7a5218ab05f377f93469c3c453d51bba1f1d4bd402e0",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer1.config": "c929c7e6ed38c0397ba377ad72edb9558902bad9814f59d152c02c8778af2ed5",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer1.config": "0e2fd55d560ce1ad9e52526b48d92a3561a26e718262f82906d8ae99136dc564",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_COPY_FREE_observer0_ROP7.config": "59295b068ea0ae9981f8b7a2c6a48c0bef7761f5a574bab1112e446ec7ef84f6",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_observer0_ROP7.config": "0320eb886c66121debfaaa295d88d78ce3e9d7be502c749dc116593d6c8e4c55",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_MQ2_observer.config": "4d65e6adb42eaa2c746339ae3fe2e30e1e738a115b94033125388f6307aaa58f",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_legacy_observer.config": "698924ab3087563f1d0a0b917d4e2253c66a19184b006cfbc3e24d62cdc3633d",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_old_ideal_observer.config": "88c8263aad2d54eb3ff8abbff85b8f75c877509229146174f134f39a73b480d2",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/S_L2_DATA_FREE_observer0_ROP7.config": "eaa41a75727939215a0ca4d940c26ac8abd08a390179ebc11eee83a7077b62ea",
+    "/workspace/ep_l2_ms20261019_a_common_v1/DIRECTED_PREPARATION_r2/inputs/REJECT_P2_observer.config": "2cc8509c05678c7ff06f9576ff24868a8d929978532b931128ae4c2b82f96ee6"
+  }
+}
