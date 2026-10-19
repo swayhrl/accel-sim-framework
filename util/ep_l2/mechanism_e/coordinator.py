@@ -19,6 +19,7 @@ import time
 import uuid
 import subprocess
 import policy_v2
+import disk_policy
 
 OLD_TOOLS = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5')
 sys.path.insert(0, str(OLD_TOOLS))
@@ -118,36 +119,39 @@ def pending_growth(data):
     result=0
     for r in rows:
         reserve=r.get('disk_growth_bytes',FULL_GROWTH)
-        result+=max(0,reserve-retained_tree_bytes(Path(r['result_directory'])))
+        result+=max(0,reserve-retained_tree_bytes(Path(r['result_directory'])))+r.get('monitor_reserve_bytes',0)
     for r in data['resource_leases'].values():
         if r['status'] in ACTIVE and r['host']==socket.gethostname():
             # Build/test output outside result directories still consumes workspace.
-            result+=r.get('disk_growth_bytes',0)
+            result+=r.get('disk_growth_bytes',0)+r.get('monitor_reserve_bytes',0)
     return result
 
 
 def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
-                  disk_floor_bytes=48*GIB, monitor_reserve_bytes=0,disk_draw_bytes=None):
+                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None):
     item=ledger(data)
     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
             'positive integer CPU/RAM required')
     require(type(growth) is int and growth>0,'conservative positive output-growth reserve required')
     require(kind in ('build','test','simulation','screen'),'unknown resource class')
     if kind=='build':require(cpu<=2,'A build max -j2')
-    require((48*GIB-7*GIB//2)<=disk_floor_bytes<=48*GIB and type(monitor_reserve_bytes) is int
-            and monitor_reserve_bytes>=0,'bounded task disk floor/monitor reserve required')
-    require(disk_floor_bytes==48*GIB or kind=='build','slight-under48 exception only selected A build')
-    if disk_floor_bytes!=48*GIB:
+    current=disk_policy.policy(item)
+    if disk_floor_bytes is None:disk_floor_bytes=current['disk_floor_bytes']
+    if monitor_reserve_bytes is None:monitor_reserve_bytes=current['monitor_reserve_bytes']
+    ordinary=disk_floor_bytes==current['disk_floor_bytes']
+    require(type(monitor_reserve_bytes) is int and monitor_reserve_bytes>=0,'bounded monitor reserve required')
+    if ordinary:
+        require(monitor_reserve_bytes>=current['monitor_reserve_bytes'],'campaign monitor reserve cannot be waived')
+    else:
+        require((48*GIB-7*GIB//2)<=disk_floor_bytes<=48*GIB,'bounded historical task disk floor required')
+        require(kind=='build','slight-under48 exception only selected A build')
         draw=growth if disk_draw_bytes is None else disk_draw_bytes
         require(type(draw) is int and growth<=draw<=7*GIB//2 and disk_floor_bytes==48*GIB-draw,
                 'task floor must derive from exact one-build growth, max3.5GiB; no arbitrary lower floor')
     policy_v2.global_gate(data,kind,cpu,memory)
-    # Reuse the production global CPU/RAM/scan/disk guards and permanent lock.
-    # Override only this reviewed transaction's policy view. Actual resources
-    # stay untouched; ordinary Registry.build_lease and global host policy stay48.
-    view=data
-    if disk_floor_bytes!=48*GIB:
-        view=json.loads(json.dumps(data));view['hosts'][socket.gethostname()]['min_disk_free_bytes']=disk_floor_bytes
+    # This transaction belongs to the validated campaign. Keep the real global
+    # host policy and legacy Registry source untouched for every other client.
+    view=data if disk_floor_bytes==48*GIB else disk_policy.scoped_registry_view(data,socket.gethostname(),disk_floor_bytes)
     Registry.admission(view,socket.gethostname(),cpu,memory,scan,
                        'simulation' if kind in ('simulation','screen') else 'build',resources)
     active=[r for r in data['runs'].values() if r['status'] in ACTIVE]
@@ -155,7 +159,7 @@ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=F
     require(resources['available_memory_bytes']-memory-sum(r['memory_bytes'] for r in active+leases)>=64*GIB,
             '64GiB memory floor after existing and proposed reservations')
     require(resources['disk_free_bytes']-pending_growth(data)-growth-monitor_reserve_bytes>=disk_floor_bytes,
-            '48GiB workspace floor or exact authorized task floor plus existing/proposed output growth and monitor reserve')
+            'workspace floor plus existing/proposed output growth and monitor reserve')
     if kind in ('simulation','screen'):
         ours=[r for r in active if r.get('experiment_id')==CAMPAIGN]
         target=item.get('target_simulators',2)
@@ -204,6 +208,34 @@ class Coordinator:
                     'maximum_actual_starts':item['maximum_actual_starts'],
                     'remaining_start_capacity':item['remaining_start_capacity'],'t0_unix':item['t0_unix']}
 
+    def work_disk_policy(self):
+        """Frozen resource policy for A's new entry; not a lease or build grant."""
+        return disk_policy.lease_policy(self.snapshot())
+
+    def adopt_workspace_5g(self, user_instruction):
+        require(user_instruction and '5GiB' in user_instruction,'exact explicit user amendment required')
+        with self.locked() as (data,item):
+            counts(item)
+            if 'workspace_disk_policy' in item:
+                disk_policy.policy(item)
+                return {'changed':False,**self._disk_policy_receipt(item)}
+            require(not any(row.get('experiment_id')==CAMPAIGN and row['status'] in ACTIVE
+                    for group in ('runs','resource_leases') for row in data[group].values()),
+                    'apply at safe boundary; do not mutate in-flight policy')
+            record=disk_policy.amendment(item['host'],item['boot_id'])
+            item.setdefault('resource_user_amendments',[]).append(dict(
+                at_unix=time.time(),user_instruction=user_instruction,
+                previous_policy=disk_policy.policy(item),new_policy=record,
+                actual_starts_at_adoption=item['actual_starts'],t0_unix=item['t0_unix']))
+            item['workspace_disk_policy']=record
+            return {'changed':True,**self._disk_policy_receipt(item)}
+
+    @staticmethod
+    def _disk_policy_receipt(item):
+        return dict(policy=disk_policy.policy(item),actual_starts=item['actual_starts'],
+                    maximum_actual_starts=item['maximum_actual_starts'],t0_unix=item['t0_unix'],
+                    start_deadline_unix=item['start_deadline_unix'])
+
     def review_environment(self,candidate_path,review_path,original_physical_storage_identity):
         candidate=json.loads(Path(candidate_path).read_text());review=json.loads(Path(review_path).read_text())
         result=policy_v2.environment_review(candidate,review,original_physical_storage_identity,time.time(),digest)
@@ -231,7 +263,7 @@ class Coordinator:
         with self.locked() as (data,item):
             result_growth=(growth if kind=='test' else 0) if result_growth_bytes is None else result_growth_bytes
             require(kind!='test' or result_growth==growth,'all native test output must count toward new results')
-            authorization=None;floor=48*GIB;monitor=0;draw=None
+            authorization=None;frozen_policy=disk_policy.lease_policy(item);floor=frozen_policy['disk_floor_bytes'];monitor=frozen_policy['monitor_reserve_bytes'];draw=None
             if disk_authorization_id is not None:
                 require(role=='A' and kind=='build','disk exception only named A build')
                 authorization=item['disk_authorizations'][disk_authorization_id]
@@ -280,8 +312,11 @@ class Coordinator:
                  'experiment_id':CAMPAIGN,'cpu_units':cpu,'memory_bytes':memory,'disk_growth_bytes':growth,
                  'result_growth_bytes':result_growth,'status':'RESERVED','created_at':time.time(),
                  'owner_process':process_identity(os.getpid()),'output_directory':str(directory)}
+            row.update(frozen_policy)
             if authorization is not None:
-                row.update(disk_authorization_id=disk_authorization_id,disk_floor_bytes=floor,
+                row.update(policy_id='HISTORICAL_NAMED_BUILD_'+disk_authorization_id,
+                           monitor_interval_seconds=.2,
+                           disk_authorization_id=disk_authorization_id,disk_floor_bytes=floor,
                            monitor_reserve_bytes=monitor,build_identity=build_identity,
                            disk_draw_bytes=growth if draw is None else draw)
                 authorization.update(status='CONSUMED',lease_id=key,consumed_unix=time.time())
@@ -473,12 +508,14 @@ class Coordinator:
                  'qualification_id':spec['qualification_id'],'profile':spec['profile'],'comparison_group':spec['comparison_group'],
                  'budget_bucket':bucket,'labels':spec['labels'],'state':'RESERVED','actual_start':False,
                  'reserved_unix':time.time(),'result_directory':str(directory),'retry_reason':spec.get('retry_reason'),
-                 'prior_attempts':[a['attempt_id'] for a in history],'maximum_result_bytes':growth}
+                 'prior_attempts':[a['attempt_id'] for a in history],'maximum_result_bytes':growth,
+                 **disk_policy.lease_policy(item)}
             item['attempts'].append(row)
             data['runs'][key]={'run_key':key,'identity':identity,'owner':'mechanism_E','host':socket.gethostname(),
                 'boot_id':item['boot_id'],'lease_id':attempt_id,'status':'RESERVED','created_at':time.time(),
                 'cpu_units':1,'memory_bytes':spec.get('memory_bytes',8*GIB),'scan':identity['workload']=='scan',
-                'result_directory':str(directory),'disk_growth_bytes':growth,'experiment_id':CAMPAIGN,'process':None}
+                'result_directory':str(directory),'disk_growth_bytes':growth,'experiment_id':CAMPAIGN,'process':None,
+                **disk_policy.lease_policy(item)}
             return row
 
     def start_application(self, attempt_id, command, cwd, environment, log_stream, popen):
@@ -505,7 +542,8 @@ class Coordinator:
             view=json.loads(json.dumps(data));view['runs'].pop(attempt['run_key'])
             row=data['runs'][attempt['run_key']]
             resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
-                          local_resources(),output_usage(),row['scan'])
+                          local_resources(),output_usage(),row['scan'],disk_floor_bytes=row['disk_floor_bytes'],
+                          monitor_reserve_bytes=row['monitor_reserve_bytes'])
             require(item.get('controller',{}).get('process')==process_identity(os.getpid()) and
                     item['controller']['state']=='ACTIVE','only singleton E controller may start')
             attempt.update(state='START_INTENT_UNRECONCILED',start_intent_unix=time.time())

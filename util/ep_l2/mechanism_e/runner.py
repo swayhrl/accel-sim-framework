@@ -20,6 +20,7 @@ from headroom_config import options
 from validate import validate_summary
 from acceptance import load_current_authority,reject_withdrawn,current_manifest
 import policy_v2
+import disk_policy
 
 
 def inspect(spec,coord,launch_check=True):
@@ -69,6 +70,7 @@ def inspect(spec,coord,launch_check=True):
     require(type(spec['timeout_seconds']) is int and 0<spec['timeout_seconds']<=86400,'bounded explicit timeout required')
     if launch_check:require(time.time()+spec['timeout_seconds']<=INTAKE_DEADLINE,'run could exceed declared result-intake freeze')
     require(all(isinstance(k,str) and isinstance(v,str) for k,v in spec['environment'].items()),'explicit string environment required')
+    require(not set(spec['environment']) & {'TMPDIR','TMP','TEMP','XDG_CACHE_HOME'},'temporary/cache destinations are owned workspace output only')
     require(not any(k in spec['environment'] and spec['environment'][k]!='1' for k in
         ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS')),'one CPU must remain one thread')
     return {'identity':identity,'run_key':key,'configs':configs,'auxiliary_assets':assets,'traces':traces,
@@ -122,8 +124,8 @@ def execute(spec,coord):
             require(digest(target)==next(v['sha256'] for v in audit['auxiliary_assets'] if v['name']==asset['name']),'aux snapshot changed')
         entry=next(a['path'] for a in spec['trace_files'] if a['name']==spec['entry_trace_name'])
         command+=['-trace',str(Path(entry).resolve())]
-        tmp=directory/'tmp';tmp.mkdir()
-        environment=os.environ.copy();environment.update(TMPDIR=str(tmp),TMP=str(tmp),TEMP=str(tmp),
+        tmp=directory/'tmp';tmp.mkdir();cache=directory/'cache';cache.mkdir()
+        environment=os.environ.copy();environment.update(TMPDIR=str(tmp),TMP=str(tmp),TEMP=str(tmp),XDG_CACHE_HOME=str(cache),
            OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1');environment.update(spec['environment'])
         # Every actual launch remains in this single controller process. The
         # journal and real process identity are written while holding original lock.
@@ -134,14 +136,17 @@ def execute(spec,coord):
             result['execution_stage']='NATIVE_EXECUTION'
             while process.poll() is None:
                 peak=max(peak,legacy.process_tree_rss(process.pid));resources=local_resources();usage=output_usage()
+                disk_stop=disk_policy.stop_detail(resources,attempt)
                 if time.monotonic()-started>spec['timeout_seconds'] or time.time()>=INTAKE_DEADLINE:
                     status,detail='TIMEOUT','predeclared timeout/intake freeze';legacy.terminate_owned(process);break
-                if (resources['disk_free_bytes']<48*GIB or resources['share_disk_free_bytes']<40*GIB
+                if (disk_stop is not None or resources['share_disk_free_bytes']<40*GIB
                     or resources['available_memory_bytes']<64*GIB or peak>spec.get('memory_bytes',8*GIB)
                     or retained_tree_bytes(directory)>=attempt['maximum_result_bytes']
                     or usage['new_bytes']>=6*GIB or usage['total_bytes']>=20*GIB):
-                    status,detail='RESOURCE_LIMIT','own run stopped at unchanged physical/RAM/output guard';legacy.terminate_owned(process);break
-                time.sleep(2)
+                    status,detail='RESOURCE_LIMIT','own run stopped at physical/RAM/output guard';
+                    result['resource_limit']=disk_stop or dict(status='RESOURCE_LIMIT',reason='RAM_SHARE_OR_RESULT_LIMIT',resources=resources)
+                    write_json(directory/'RESOURCE_LIMIT.json',result['resource_limit']);legacy.terminate_owned(process);break
+                time.sleep(attempt.get('monitor_interval_seconds',2))
         result.update(exit_code=process.returncode,peak_process_tree_rss_bytes=peak)
         if status not in ('TIMEOUT','RESOURCE_LIMIT'):
             require(process.returncode==0,'nonzero actual simulator exit')

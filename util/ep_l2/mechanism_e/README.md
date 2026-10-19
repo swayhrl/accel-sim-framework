@@ -222,3 +222,33 @@ lease may start until release. The actual producer supervisor must enforce
 that exact floor and growth cap. Ordinary leases/apps, Share40GiB, RAM64GiB,
 6/20GiB output budgets and40 actual starts are unchanged. No authorization
 is created merely by installing this code.
+
+
+User workspace amendment 2026-10-20 (new original174 campaign leases only)
+---------------------------------------------------------------------------
+`Coordinator.adopt_workspace_5g(exact_user_instruction)` applies the explicit user
+5GiB amendment to the existing ledger at a retired-own-process boundary. It does
+not reset T0, the 40 cumulative starts, 32+8 allocation, deadlines, 6/20GiB result
+limits or the global lock. Other projects still consume their unchanged global
+48GiB host policy and the old registry source remains byte-identical.
+
+`Coordinator.work_disk_policy()` is the published A consumer API. It returns
+`policy_id`, `disk_floor_bytes`, `monitor_reserve_bytes`,
+`monitor_interval_seconds`, `termination_grace_seconds`. New work/application
+leases freeze these exact fields. The floor is 5GiB, monitor reserve 2GiB,
+polling 0.2s and owned-process SIGTERM grace 3s. Admission subtracts all active
+host write/monitor reservations, proposed conservative build/tmp/log/result peak
+and this task's monitor reserve from actual free space. The remaining amount
+must be >=5GiB. The runtime stop threshold is 7GiB inclusive; only the owned
+process group is terminated, and RESOURCE_LIMIT plus raw files are retained.
+The monitor reserve is an explicit engineering allowance, not an OS quota or a
+guarantee against unbounded instantaneous writes from unrelated projects.
+
+A must read the pinned policy, bind identical policy fields from its actual
+`reserve_work` return, account every filesystem destination and pass
+floor+monitor to its actual frozen `run_owned(report.disk_floor_bytes)` supervisor.
+The old module's main/admission48 entry is not used. A native tests and E native
+replay use the same ordinary policy; old once-only named build token identities,
+floors, expiry and failure receipts remain historical and cannot be replayed.
+All CPU, RAM64GiB, Share40GiB, global/campaign concurrency and output limits stay
+unchanged. No filesystem cleanup or other-project process action is authorized.
