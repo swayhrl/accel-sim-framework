@@ -1,6 +1,6 @@
 # Mechanism study A — first diagnostic source checkpoint
 
-New independent Goal active on original174. Core candidate `066c60b1f0165625ee3d5cbdb16cf59e481a6900`
+New independent Goal active on original174. Core candidate `44c940b748fceaec8f21fa2b443907d5afd2756b`
 implements default-OFF COPY_FREE, L2_DATA_FREE, bounded request-UID observer and
 four opt-in directed targets. Public interface revision1 was already pushed and
 read back before this implementation; B/C can adapt independently.

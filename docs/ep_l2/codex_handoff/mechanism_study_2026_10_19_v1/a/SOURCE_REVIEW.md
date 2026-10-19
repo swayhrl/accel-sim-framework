@@ -52,3 +52,7 @@ results/independent qualification, real new binary OFF canary, actual new input
 identity/selection and complete application pairs. No measured diagnostic effect,
 speedup, numerical SASS value proof, RO certificate, victim qualification or new
 PPA is claimed. B/C module adapters remain separate upcoming source candidates.
+
+Source r2 only corrects disabled-observer output to DISABLED_NOT_OBSERVED; no
+pressure zeros are fabricated. Driver/55-case definitions are unchanged; old
+source/preparation readback is preserved and no C++ test was rerun or claimed.

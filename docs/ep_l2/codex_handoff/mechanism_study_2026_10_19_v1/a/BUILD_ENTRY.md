@@ -1,7 +1,7 @@
 # A first source candidate: single finite execution entry
 
 Current state: source and55 finite commands prepared; C++ NOT_COMPILED_NOT_RUN.
-No executable runtime is released. Public source is Core066c60b1f0165625ee3d5cbdb16cf59e481a6900.
+No executable runtime is released. Public source is Core44c940b748fceaec8f21fa2b443907d5afd2756b.
 
 Runtime Framework197741be9be9b8e390a557d639503b416d8e95f0 is in the NEW isolated
 `/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-runtime-v1` worktree. Its exact
