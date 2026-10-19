@@ -50,7 +50,7 @@ def main():
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     assert sum((a.joint_gdb,a.joint_vrw,a.affected_native)) <= 1
-    spec_path = (HANDOFF/'full_system_v2/VRW_FAILED_FIXTURE_GDB_SPEC_r33.json' if a.joint_gdb else
+    spec_path = (HANDOFF/'full_system_v2/VRW_FAILED_FIXTURE_GDB_SPEC_r34.json' if a.joint_gdb else
         HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r32.json' if a.joint_vrw else
         HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC)
     spec = json.loads(spec_path.read_text())
@@ -220,6 +220,9 @@ def main():
             PYTHONDONTWRITEBYTECODE='1', PYTHONPYCACHEPREFIX=str(temp_root/'cache/python'),
             CCACHE_DISABLE='1', CCACHE_DIR=str(temp_root/'cache/ccache'), CUDA_CACHE_DISABLE='1',
             CUDA_CACHE_PATH=str(temp_root/'cache/cuda'), OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+        if a.joint_gdb:
+            report['GDB_child_only_environment_removed'] = {
+                key:env.pop(key) for key in ('PYTHONHOME','PYTHONPATH') if key in env}
         report['environment_write_roots'] = {key: env[key] for key in ('TMPDIR','TMP','TEMP',
             'XDG_CACHE_HOME','PYTHONPYCACHEPREFIX','CCACHE_DIR','CUDA_CACHE_PATH')}
 
