@@ -20,6 +20,13 @@ class WorkspacePolicyTests(unittest.TestCase):
         self.save();return self.coord.adopt_workspace_5g('User explicitly changes 48GiB to5GiB for existing EP-L2 campaign.')
     def gate(self,kind='build',growth=c.GIB):
         return c.resource_gate(self.read(),kind,1,c.GIB,growth,self.live,self.usage)
+    def test_new_owned_children_cannot_write_unbudgeted_core_dumps(self):
+        import subprocess,sys,os
+        script="import resource,runner; runner.disable_owned_core_dumps(); print(resource.getrlimit(resource.RLIMIT_CORE))"
+        result=subprocess.run([sys.executable,'-B','-c',script],env=dict(os.environ,PYTHONPATH=str(Path(c.__file__).parent)),
+                              check=True,text=True,stdout=subprocess.PIPE)
+        self.assertEqual(result.stdout.strip(),'(0, 0)')
+
     def test_exact_forecast_boundary_pass(self):
         self.amend();self.live['disk_free_bytes']=8*c.GIB;self.gate()
     def test_one_byte_below_forecast_rejected(self):

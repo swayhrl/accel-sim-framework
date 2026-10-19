@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+import resource
 import shutil
 import subprocess
 import sys
@@ -95,7 +96,13 @@ def runtime_metrics(raw,expected_options):
     return metrics
 
 
+def disable_owned_core_dumps():
+    """Bound crash writes of this controller and its children, never other projects."""
+    resource.setrlimit(resource.RLIMIT_CORE,(0,0))
+
+
 def execute(spec,coord):
+    disable_owned_core_dumps()
     # Called only by the one live E controller after an explicit ready event.
     require(time.time()<START_DEADLINE,'no new complete applications after cutoff')
     audit=inspect(spec,coord);spec=dict(spec,input_audit=audit)
