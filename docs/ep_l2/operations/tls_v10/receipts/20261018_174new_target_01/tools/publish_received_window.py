@@ -10,10 +10,24 @@ D=t.get(wid+'_DEST_VERIFIED.json');R=t.get(wid+'_RESTORE_VERIFIED.json')
 for n in ['fetch_exact_window_controls.py','receive_exact_window.py','record_received_window.py',
           'publish_received_window.py','prepare_next_p9_window.py','finalize_closed_metadata.py']:
     (t.BASE/'tools'/n).write_bytes((t.META/n).read_bytes())
-p=t.BASE/'STATUS.md';s=p.read_text(encoding='utf-8');line=s.index('\n')
-s='# TLS-V10 Target: '+wid.rsplit('_',1)[-1]+' real164/native range verification PASS; KEEP ACK pending; Goal active'+s[line:]
-s+='\nCurrent'+D['utc']+': '+wid+' actual '+str(D['range_count'])+' ranges/'+str(D['raw_bytes'])+' originalB verified on genuine164 and independent native range restore with Source numeric metadata. Source READY '+D['source_ready_git_commit']+' rawSHA '+D['source_ready_sha256']+', exact frozen request/plan/manifest/prior cleanup and reviewed unchanged runner/test bindings confirmed; fresh Source actual16G/Share40/RAM64/cgroup/lease/readers gate decisions reviewed, current Target mount/lock/resources/physical staging independently checked. DEST rawSHA '+t.sha(t.BASE/(wid+'_DEST_VERIFIED.json'))+'; RESTORE rawSHA '+t.sha(t.BASE/(wid+'_RESTORE_VERIFIED.json'))+'. Cumulative unique real accepted/native ranges '+str(summary['total_real_accepted_ranges'])+', original bytes '+str(summary['total_effective_unique_original_payload_bytes'])+', complete nonempty raw-file coverage '+str(summary['nonempty_originals_with_complete_verified_range_coverage'])+'. Complete141/4 archive+new absent all-file native restoration/certificate still pending; Source originalsKEEP, science/workspace release0. Await exact Source KEEP ACK before precise journaled bridge cleanup; next frozen window only after closure. Data-only control reused, no repeated unchanged code/test development, one flow. Goalactive.\n'
-p.write_bytes(s.encode())
+p=t.BASE/'STATUS.md'
+status=('TLS-V10 Target: '+wid+' real164/native range verification PASS; exact KEEP ACK pending\n\n'
+ 'Canonical user-approved execution location: Framework9f1a21a909e437f1e34233b22595d0f7359f3dd3, jointly adopted with Source. '
+ 'Native proofs run on qualified174-new private tmpfs, volatile validation only; durable archive is genuine164. '
+ 'Old native164-only and historical build HOLD receipts are historical, not current admission.\n\n'
+ 'Current window: '+str(D['range_count'])+' ranges/'+str(D['raw_bytes'])+'B. Source READY '+D['source_ready_git_commit']+
+ ' rawSHA '+D['source_ready_sha256']+'. Fresh Source scoped16G/Share40/RAM64/cgroup/readers/identity gates and frozen request/plan/manifest binding verified. '
+ 'Current Target mount, exclusive receiver, Share/RAM/headroom and physical bridge cap verified. DEST SHA '+t.sha(t.BASE/(wid+'_DEST_VERIFIED.json'))+
+ '; native range RESTORE SHA '+t.sha(t.BASE/(wid+'_RESTORE_VERIFIED.json'))+'.\n\n'
+ 'Cumulative original verified range bytes '+str(summary['total_effective_unique_original_payload_bytes'])+
+ ', ranges '+str(summary['total_real_accepted_ranges'])+', nonempty originals fully range-covered '+str(summary['nonempty_originals_with_complete_verified_range_coverage'])+'. '
+ 'This is range-only proof. Full141-file committed archive, complete independent native whole-file restoration and4 directory metadata certificate remain pending. '
+ 'No Source originals deleted by Target; actual TLS Source workspace release0.\n\n'
+ 'Next: independent Source exact KEEP ACK with matching Git AND bridge publication; only then exact fsynced bridge cleanup and next frozen window. '
+ 'No data retransfer, new transaction, second stream or user approval per batch. P9 source-only exact141 release remains conditional on full original recovery and all original Source gates/journals; other24 SOURCE_KEEP. '
+ 'C16 approvals/IO10/supply/source retention unchanged; no model IO during TLS.\n')
+p.write_bytes(status.encode())
+
 names=[wid+'_DEST_VERIFIED.json',wid+'_RESTORE_VERIFIED.json',
        wid+'_TARGET_RECEIVING_RECEIPT_COPY16.json',wid+'_TARGET_SOURCE_RUNNER_REVIEW_COPY16.json']
 subprocess.run([sys.executable,str(t.META/'publish.py'),
