@@ -89,9 +89,13 @@ class WorkspacePolicyTests(unittest.TestCase):
         spec=dict(self.spec,configs=[],auxiliary_assets=[],trace_files=[dict(name='entry',path=str(self.bin))],entry_trace_name='entry',environment={},timeout_seconds=60)
         audit={'identity':self.identity,'comparison_invariants_sha256':'same','configs':[]}
         live=dict(self.live,disk_free_bytes=7*c.GIB)
-        with patch.object(runner,'inspect',return_value=audit),patch.object(runner,'local_resources',return_value=live),patch.object(runner,'output_usage',return_value=self.usage),patch.object(runner.legacy,'process_tree_rss',return_value=1),patch.object(runner.legacy,'terminate_owned') as stop:
+        with patch.object(runner,'process_identity',return_value={'pid':123,'start_ticks':77,'boot_id':'controlled-test'}),patch.object(runner,'inspect',return_value=audit),patch.object(runner,'local_resources',return_value=live),patch.object(runner,'output_usage',return_value=self.usage),patch.object(runner.legacy,'process_tree_rss',return_value=1),patch.object(runner.legacy,'terminate_owned') as stop:
             result=runner.execute(spec,fake)
         self.assertEqual(result['status'],'RESOURCE_LIMIT');stop.assert_called_once_with(proc)
+        incident=json.loads((directory/'RESOURCE_LIMIT.json').read_text())
+        self.assertEqual(incident['process']['start_ticks'],77);self.assertEqual(incident['lease_id'],'CONTROL')
+        self.assertEqual(incident['run_key'],'key');self.assertEqual(incident['source_identity'],q['q']['qualification']['source_identity'])
+        self.assertEqual(incident['raw_log_sha256'],c.digest(directory/'raw.log'));self.assertEqual(incident['exit_code'],-15)
         self.assertTrue((directory/'raw.log').exists());self.assertTrue((directory/'RESOURCE_LIMIT.json').exists())
         self.assertEqual(json.loads((directory/'run_status.json').read_text())['independent_acceptance'],'NOT_ACCEPTED')
         self.assertEqual(self.coord.snapshot()['actual_starts'],0)

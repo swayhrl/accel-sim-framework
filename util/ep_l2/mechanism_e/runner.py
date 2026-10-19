@@ -14,7 +14,7 @@ import time
 
 from coordinator import (Coordinator,CAMPAIGN,OUTPUT,START_DEADLINE,INTAKE_DEADLINE,
  require,digest,run_key,canonical,write_json,local_resources,output_usage,
- retained_tree_bytes,tooling_binding,GIB,SHARED,FIELD)
+ retained_tree_bytes,tooling_binding,GIB,SHARED,FIELD,process_identity)
 import run as legacy
 from headroom_config import options
 from validate import validate_summary
@@ -134,6 +134,7 @@ def execute(spec,coord):
             require(process is not None,'OS refused simulator spawn; failed attempt retained, not charged')
             status='RUNNING';peak=0
             result['execution_stage']='NATIVE_EXECUTION'
+            result['process']=process_identity(process.pid)
             while process.poll() is None:
                 peak=max(peak,legacy.process_tree_rss(process.pid));resources=local_resources();usage=output_usage()
                 disk_stop=disk_policy.stop_detail(resources,attempt)
@@ -145,7 +146,14 @@ def execute(spec,coord):
                     or usage['new_bytes']>=6*GIB or usage['total_bytes']>=20*GIB):
                     status,detail='RESOURCE_LIMIT','own run stopped at physical/RAM/output guard';
                     result['resource_limit']=disk_stop or dict(status='RESOURCE_LIMIT',reason='RAM_SHARE_OR_RESULT_LIMIT',resources=resources)
-                    write_json(directory/'RESOURCE_LIMIT.json',result['resource_limit']);legacy.terminate_owned(process);break
+                    result['resource_limit'].update(attempt_id=attempt['attempt_id'],lease_id=attempt['attempt_id'],
+                        run_key=attempt['run_key'],process=result['process'],source_identity=result['source_identity'],
+                        resources=resources,output_usage=usage,stop_scope='OWNED_PROCESS_GROUP_ONLY',
+                        native_scientific_acceptance=False)
+                    write_json(directory/'RESOURCE_LIMIT.json',result['resource_limit']);legacy.terminate_owned(process)
+                    result['resource_limit'].update(exit_code=process.returncode,owned_process_retired=process.poll() is not None,
+                        raw_log_sha256=digest(directory/'raw.log'),terminated_unix=time.time())
+                    write_json(directory/'RESOURCE_LIMIT.json',result['resource_limit']);break
                 time.sleep(attempt.get('monitor_interval_seconds',2))
         result.update(exit_code=process.returncode,peak_process_tree_rss_bytes=peak)
         if status not in ('TIMEOUT','RESOURCE_LIMIT'):
