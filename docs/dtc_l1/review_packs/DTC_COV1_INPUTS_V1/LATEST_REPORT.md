@@ -17,3 +17,22 @@ The bounded N selections were made from source, geometry and actual reused opera
 Details and full immutable input/reference hashes are in `NEW_INPUT_SELECTION.md` and per-input manifests. Tiny independent CPU references plus meaningful fixture/invalid-index cases are prepared in `reference/`, all PREPARED_NOT_TESTED; no full new numeric output was invented. `BLOCKED_ITEMS.md` lists the finite remaining work. Missing capture does not block the eight-input ledger or independent other lanes.
 
 Validation performed only Git metadata/publication inspection and `git diff --check`; no scientific test was run. Publication uses a dedicated readback ref because FETCH_HEAD is shared across worktrees; the external final receipt under `/workspace/dtc-evidence-closure-20261019-v1/cov1/FINAL_FETCH_BACK.json` binds final commit/tree/blob and clean state without self-reference. No manuscript, old input, old44-row/GM12 or historical HOLD was modified.
+
+## Post-terminal static continuation, before tiny CPU release
+
+Superseding the earlier AG4-wait status above: consumed coordinator publication
+66f7fb04e966c3f4eb526b091e22b708c2e10ae9. AG4 terminald8d0401 is STOP,2/5 actual
+starts,0 completed optimization results, and its release evidence is consumed
+by the coordinator. Global research remains fixed provisionalO, without AG4
+restart or single-arm promotion. Eight C+ and four historicalO controls are
+IMPORTED_VERIFIED; current-family admission remains false. Four missing full
+command counts are now filled in per-input manifests from that publication.
+
+New static documents `COORDINATOR_INTAKE_AFTER_AG4.md` and
+`N3_SOURCE_ONLY_DECODER_REVIEW.md` record this transition, source-bound decoder
+reasoning and N3's exact remaining ABI/index-domain/full50-kernel gaps. No N3
+header/body scan or fresh payload hashing was performed. Tiny CPU tests are
+still NOT_EXECUTED pending coordinator publication and exact role admission;
+large input scans/native generation/captures/simulations remain blocked by
+unchanged R2 disk and family gates. Reference module/entry hashes are unchanged
+from8f76a8a5. This source-only continuation is published clean before execution.

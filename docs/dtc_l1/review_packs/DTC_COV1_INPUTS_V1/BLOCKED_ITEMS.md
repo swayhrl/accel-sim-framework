@@ -10,3 +10,12 @@
 - All new small reference code in reference/ is PREPARED_NOT_TESTED. No result output or PASS receipt was generated.
 
 No new performance, native numerical claim, UUID reservation, executable family manifest, payload reconstruction, EDA, hardware-area result or manuscript change is delivered. Full COV1 completion awaits the explicit gates above; this is a complete gate-safe preparation handoff, not completion of CPU execution.
+
+Post-terminal update at immutable coordinator66f7fb04e966c3f4eb526b091e22b708c2e10ae9:
+AG4-terminal authority wait above is resolved, global provisionalO is frozen,
+and historical8C+/4O imports are verified. Current-family qualification remains
+pending. New immediate gate is exact tinyCPU role publication/readback and
+explicit admission; large scans/full native generation/capture/simulation
+still require unchanged resources (disk>=10GiB) and complete family gates.
+This update does not remove source/native/value or N1/N2/N3 capture/decoder
+limits. No COV1 CPU test has run in this static continuation.
