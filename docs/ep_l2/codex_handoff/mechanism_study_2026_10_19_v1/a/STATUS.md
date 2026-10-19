@@ -1,4 +1,4 @@
-# Mechanism study A — source checkpoint r4
+# Mechanism study A — source checkpoint r5
 
 Original174, new independent Goal active. All candidates below are SOURCE ONLY:
 0 C++ compilations,0 native executions,0 new binaries and0 full applications.
@@ -8,6 +8,7 @@ No runtime qualification, speedup, old-red/new-green or new PPA is claimed.
 |---|---|---|---|
 | R1 local diagnostics | `17e7e224954e44a968a0447bcdfea91e3b2e5a96` | `197741be9be9b8e390a557d639503b416d8e95f0` |55 processes, all UNRUN|
 | R2 CLEAN_ONLY | `94996ec59b4a0264b64146932977bfe6ea4f195b` | same197741be |11 additional, all UNRUN|
+| R3 dirty/fixed source | `6452b74d92c2cf72f80e5f5e102941d6cf9adf7a` | same197741be |21 processes, all UNRUN|
 | R2 RO T/M four cells | `aa2a92cc11ef0f22f9f2a6f3418ce31bdee33278` | `9dd1ee57a83d83b56b7874bc7c716185ab52c8f7` |25 additional, all UNRUN|
 
 All have separate worktrees. Vendor is exactf90c430; each runtime has its own
@@ -49,8 +50,12 @@ resident waiter, exception, migration or other-project interference occurred.
 Next necessary event is E fresh48/40/64GiB plus quota/output admission for A's
 unique R1 j2 build and55 directeds, followed by independent E checks. R2 tests
 and their exact build/output reservations are separate; RO's conservative3GiB
-build+128MiB result proposal is not an admission or measured peak. B full
-b90ed7c1 dirty/fixed adapter needs a new port to A's current ticket/WB UID and
-metadata accounting before exposure; see B_R2_INTAKE_REVIEW. Full applications
+build+128MiB result proposal is not an admission or measured peak. B full b90ed7c1
+dirty/fixed source is now ported in isolated R36452b74d. Current A row
+tickets, WB UID-before-mutation and metadata costs were retained; queued dirty
+readers hold WB role until response. Fixed control is64/1104 capacity with
+16/276 bank quotas, not fixed physical IDs. All21 processes remain uncompiled/
+unrun; this is not a qualified complete TVD. The old B_R2_INTAKE_REVIEW and r4
+pack are preserved as pre-port records. Full applications
 and24-start acceptance ledger belong exclusively to E. No old Goal, experiment,
 raw result, R3/DC candidate or EN-v17 has been changed.
