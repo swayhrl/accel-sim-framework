@@ -24,6 +24,7 @@ from acceptance import load_current_authority,reject_withdrawn,current_manifest
 def inspect(spec,coord,launch_check=True):
     tooling_binding()
     item=coord.snapshot();identity=spec['identity'];key=run_key(identity)
+    coord.require_no_hold(item,spec['qualification_id'])
     qrow=item['qualifications'][spec['qualification_id']]
     require(digest(qrow['path'])==qrow['sha256'],'E qualification changed')
     q=qrow['qualification'];source=q['source_identity']
@@ -129,6 +130,7 @@ def execute(spec,coord):
             process=coord.start_application(attempt['attempt_id'],command,directory,environment,log,subprocess.Popen)
             require(process is not None,'OS refused simulator spawn; failed attempt retained, not charged')
             status='RUNNING';peak=0
+            result['execution_stage']='NATIVE_EXECUTION'
             while process.poll() is None:
                 peak=max(peak,legacy.process_tree_rss(process.pid));resources=local_resources();usage=output_usage()
                 if time.monotonic()-started>spec['timeout_seconds'] or time.time()>=INTAKE_DEADLINE:
@@ -142,6 +144,7 @@ def execute(spec,coord):
         result.update(exit_code=process.returncode,peak_process_tree_rss_bytes=peak)
         if status not in ('TIMEOUT','RESOURCE_LIMIT'):
             require(process.returncode==0,'nonzero actual simulator exit')
+            result['execution_stage']='TERMINAL_VALIDATION'
             native=runtime_metrics(directory/'raw.log',audit['effective_options'])
             with (directory/'parser.log').open('xb') as log:
                 parsed=subprocess.run([sys.executable,spec['parser']['path'],'--raw',str(directory/'raw.log'),
@@ -166,7 +169,14 @@ def execute(spec,coord):
         # A failed prelaunch snapshot frees only its own reservation. It is not an
         # actual start and is never silently deleted or overwritten on retry.
         current=next(a for a in coord.snapshot()['attempts'] if a['attempt_id']==attempt['attempt_id'])
-        if current['state']=='RUNNING':coord.finish_application(attempt['attempt_id'],status,directory/'run_status.json')
+        if current['state']=='RUNNING':
+            coord.finish_application(attempt['attempt_id'],status,directory/'run_status.json')
+            if status=='FAILED':
+                # Treat a real native/terminal failure as review-required for
+                # that exact version, never as evidence that all science failed.
+                # E may subsequently classify an ordinary parser/tool issue and
+                # clear this with explicit evidence, without replaying valid raw.
+                coord.place_scientific_hold(spec['qualification_id'],attempt['attempt_id'],detail,directory/'run_status.json')
         elif current['state']=='RESERVED':
             with coord.locked() as (data,item):
                 row=next(a for a in item['attempts'] if a['attempt_id']==attempt['attempt_id'])
@@ -184,6 +194,7 @@ def accept_pair(coord,left_id,right_id,pair_id,mechanism="UNSPECIFIED"):
             require(digest(entry['path'])==entry['sha256'],'accepted endpoint changed')
             record=json.loads(Path(entry['path']).read_text())
             require(record['status']=='COMPLETE_VALID' and record['independent_acceptance']=='PASS','endpoint not accepted')
+            coord.require_no_hold(item,record['qualification_id'])
             qualified=item['qualifications'][record['qualification_id']]
             require(digest(qualified['path'])==qualified['sha256'],'current qualification withdrawn/changed')
             records.append(record)

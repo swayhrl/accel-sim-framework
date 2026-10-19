@@ -29,7 +29,7 @@ def step(coord,queue_path):
     tooling_binding();queue_path=Path(queue_path)
     with coord.unique_controller():
         report={'campaign_id':CAMPAIGN,'authority_commit':AUTHORITY,'at_unix':time.time(),
-                'applications_started_by_this_step':0,'outcomes':[],'pairs':[]}
+                'applications_started_by_this_step':0,'outcomes':[],'pairs':[],'held_run_keys':[]}
         if not queue_path.exists():
             report.update(status='WAITING_EXACT_A_RELEASE_AND_D_INPUTS',background_process=False)
             write_json(coord.handoff/'CONTROLLER_STEP.json',report);return report
@@ -44,6 +44,8 @@ def step(coord,queue_path):
             existing=[a for a in snapshot['attempts'] if a['run_key']==key]
             if existing and not spec.get('retry_previous_attempt'):continue
             if existing and existing[-1]['state'] in ('RESERVED','START_INTENT_UNRECONCILED','RUNNING','COMPLETE_VALID'):continue
+            if 'qualification:'+spec['qualification_id'] in snapshot.get('scientific_holds',{}):
+                report['held_run_keys'].append(key);continue
             pending.append(spec)
         report['pairs']+=roll_pairs(coord,queue.get('pairs',[]))
         target=snapshot.get('target_simulators',2);require(1<=target<=3,'invalid E simultaneous target')
@@ -52,7 +54,12 @@ def step(coord,queue_path):
             running={}
             while pending or running:
                 while pending and len(running)<target and not blocked and time.time()<START_DEADLINE:
-                    spec=pending.pop(0);running[pool.submit(execute,spec,coord)]=spec
+                    spec=pending.pop(0)
+                    if 'qualification:'+spec['qualification_id'] in coord.snapshot().get('scientific_holds',{}):
+                        report['held_run_keys'].append(run_key(spec['identity']))
+                        report['outcomes'].append({'run_key':run_key(spec['identity']),'status':'NOT_RUN_SCIENTIFIC_REVIEW_HOLD'})
+                        continue
+                    running[pool.submit(execute,spec,coord)]=spec
                 if not running:break
                 done,_=wait(running,return_when=FIRST_COMPLETED)
                 for future in done:
@@ -71,7 +78,7 @@ def step(coord,queue_path):
                 if queue_path.read_bytes()!=raw:
                     blocked=True;report['queue_change_note']='Queue changed: admitted work drained, further admissions stopped; intake new revision explicitly.'
         after=coord.snapshot();report['applications_started_by_this_step']=after['actual_starts']-before
-        report.update(status='BLOCKED_EVENT_REQUIRED' if blocked else 'READY_QUEUE_DRAINED_OR_START_CUTOFF',
+        report.update(status='BLOCKED_EVENT_REQUIRED' if blocked else ('SCOPED_HOLDS_PENDING' if report['held_run_keys'] else 'READY_QUEUE_DRAINED_OR_START_CUTOFF'),
            ledger_actual_starts=after['actual_starts'],ledger_remaining_start_capacity=after['remaining_start_capacity'],
            queue_remaining_count=len(pending),queue_sha256=digest(queue_path),background_process=False)
         write_json(coord.handoff/'CONTROLLER_STEP.json',report)

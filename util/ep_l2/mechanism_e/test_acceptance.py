@@ -124,6 +124,42 @@ class IntakeTests(unittest.TestCase):
         q,path=self.qualification_fixture();q['source_identity']['framework_source_commit']=c.AUTHORITY
         q['producer_release']['source_identity']=q['source_identity'];path.write_text(json.dumps(q))
         with self.assertRaisesRegex(ValueError,'control HEAD'):self.coord.register_qualification(path)
+    def test_failure_hold_blocks_new_pair_and_informs_D(self):
+        self.endpoints();runner.accept_pair(self.coord,'0','1','p','W')
+        self.coord.place_scientific_hold('q','failed','fixture actual terminal violation','fixture-evidence-path')
+        item=self.coord.snapshot();self.assertEqual(item['accepted_pairs']['p']['status'],'WITHDRAWN_SCIENTIFIC_HOLD')
+        self.assertEqual(len(item['pair_status_history']),1)
+        self.assertEqual(len(item['accepted_results']),2) # immutable raw pointers retained
+        with self.assertRaisesRegex(ValueError,'scientific review hold'):runner.accept_pair(self.coord,'0','1','p2','W')
+        self.assertTrue((self.root/c.FIELD/'events/E_TO_D_PAIR_p_HOLD.json').exists())
+    def test_hold_stops_only_named_qualification(self):
+        self.endpoints();self.coord.place_scientific_hold('q','failed','fixture terminal violation','fixture-evidence')
+        with self.assertRaisesRegex(ValueError,'scientific review hold'):self.coord.reserve_application(self.spec)
+        c.Coordinator.require_no_hold(self.coord.snapshot(),'independent_other_qualified_version')
+        self.assertEqual(self.coord.snapshot()['actual_starts'],0)
+    def test_clear_hold_requires_current_evidence_and_does_not_restore_old_pair(self):
+        self.endpoints();runner.accept_pair(self.coord,'0','1','p','W')
+        hold=self.coord.place_scientific_hold('q','failed','fixture parser review','fixture-evidence')
+        e=Path(self.ledger['qualifications']['q']['path']);review={
+          'reviewed_by':'E','qualification_id':'q','status':'RESOLVED_WITH_EXPLICIT_EVIDENCE',
+          'hold_at_unix':hold['at_unix'],'reason':'fixture engineering correction independently reviewed',
+          'evidence':[{'path':str(e),'sha256':c.digest(e)}]}
+        path=self.root/'resolution.json';path.write_text(json.dumps(review));self.coord.resolve_scientific_hold('q',path)
+        self.assertFalse(self.coord.snapshot()['scientific_holds'])
+        self.assertEqual(self.coord.snapshot()['accepted_pairs']['p']['status'],'WITHDRAWN_SCIENTIFIC_HOLD')
+        self.assertEqual(self.coord.snapshot()['actual_starts'],0)
+    def test_controller_does_not_rehash_or_execute_held_ready_spec(self):
+        import controller
+        self.endpoints();self.coord.place_scientific_hold('q','failed','fixture terminal hold','fixture-evidence')
+        path=self.root/'spec.json';path.write_text(json.dumps(self.spec))
+        queue={'campaign_id':c.CAMPAIGN,'prepared_by':'E','authority_commit':c.AUTHORITY,
+               'input_and_profile_freeze_unix':1792410000,'specs':[{'path':str(path),'sha256':c.digest(path)}],'pairs':[]}
+        qp=self.root/'queue.json';qp.write_text(json.dumps(queue))
+        with patch.object(controller,'execute') as execute:
+            result=controller.step(self.coord,qp);execute.assert_not_called()
+        self.assertEqual(result['status'],'SCOPED_HOLDS_PENDING')
+        self.assertEqual(result['held_run_keys'],[c.run_key(self.identity)])
+        self.assertEqual(result['applications_started_by_this_step'],0)
     def test_no_inherited_old_release_qualification(self):
         q={'campaign_id':'OLD_LANE5','qualified_by':'lane5','status':'INDEPENDENTLY_QUALIFIED'}
         path=self.root/'old-q.json';path.write_text(json.dumps(q))

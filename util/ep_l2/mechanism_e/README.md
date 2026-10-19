@@ -121,3 +121,20 @@ Control-only tests:
 PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover \
   -s util/ep_l2/mechanism_e -p 'test_*.py' -v
 ```
+
+## Scoped correctness failures and later review
+
+A real native/terminal validation failure retains its attempt and places a
+REVIEW_REQUIRED hold on that exact E qualification. New starts and new pair
+acceptance for that version stop; independent other qualified versions remain
+eligible. Already admitted siblings finish under their original safety/timeout
+rules. Previously accepted affected pair declarations become
+WITHDRAWN_SCIENTIFIC_HOLD with their prior status preserved in history, and D
+receives a hold event. This never edits an old raw log or historical campaign.
+
+Resource-limit termination alone does not revoke scientific qualification. A
+parser or tool compatibility problem can be reviewed as engineering: E records
+content-pinned resolution evidence tied to the exact active hold. Clearing that
+hold does not silently restore a withdrawn pair; explicit endpoint/pair review
+is still required. No real failure/withdrawal has occurred in this new campaign;
+these paths have only isolated control-fixture coverage so far.

@@ -240,6 +240,59 @@ class Coordinator:
             item['qualifications'][key]=row
             return key
 
+    def place_scientific_hold(self, qualification_id, attempt_id, reason, evidence):
+        """Pause affected new-version work; retain all raw and acceptance history."""
+        require(bool(reason) and bool(evidence),'hold needs a concrete reason/evidence path')
+        with self.locked() as (data,item):
+            require(qualification_id in item['qualifications'],'unknown qualification scope')
+            key='qualification:'+qualification_id
+            entry={'scope':'qualification','qualification_id':qualification_id,'attempt_id':attempt_id,
+                'reason':reason,'evidence':str(evidence),'at_unix':time.time(),'status':'REVIEW_REQUIRED',
+                'effect':'no new starts or new pair acceptance for this exact qualification; other versions independent'}
+            item.setdefault('scientific_hold_history',[]).append(entry)
+            item.setdefault('scientific_holds',{})[key]=entry
+            affected=[]
+            for pair_id,pair in item['accepted_pairs'].items():
+                endpoints=[item['accepted_results'][pair[n]] for n in ('baseline_attempt_id','variant_attempt_id')]
+                source=item['qualifications'][qualification_id]['qualification']['source_identity']
+                matches=[]
+                for endpoint in endpoints:
+                    if 'qualification_id' in endpoint:matches.append(endpoint['qualification_id']==qualification_id)
+                    else:
+                        try:matches.append(json.loads(Path(endpoint['path']).read_text())['qualification_id']==qualification_id)
+                        except (OSError,KeyError,ValueError):
+                            matches.append(all(endpoint['identity'].get(n)==source[n] for n in ('core_source_commit','framework_source_commit','binary_sha256')))
+                if any(matches):
+                    item.setdefault('pair_status_history',[]).append({'pair_id':pair_id,'previous':pair,'hold':entry})
+                    replacement=dict(pair,status='WITHDRAWN_SCIENTIFIC_HOLD',hold=entry)
+                    item['accepted_pairs'][pair_id]=replacement;affected.append(pair_id)
+                    write_json(self.handoff/'events'/('E_TO_D_PAIR_'+pair_id+'_HOLD.json'),replacement)
+            write_json(self.handoff/'events'/('E_TO_A_D_QUALIFICATION_HOLD_'+qualification_id+'.json'),
+                       dict(entry,affected_pairs=affected))
+            return entry
+
+    def resolve_scientific_hold(self,qualification_id,review_path):
+        review=json.loads(Path(review_path).read_text())
+        require(review['reviewed_by']=='E' and review['qualification_id']==qualification_id and
+                review['status']=='RESOLVED_WITH_EXPLICIT_EVIDENCE','explicit E resolution required')
+        require(review['reason'] and review['evidence'],'resolution evidence required')
+        for artifact in review['evidence']:
+            require(digest(artifact['path'])==artifact['sha256'],'resolution evidence changed')
+        with self.locked() as (data,item):
+            key='qualification:'+qualification_id
+            require(key in item.get('scientific_holds',{}),'no matching active hold')
+            require(review['hold_at_unix']==item['scientific_holds'][key]['at_unix'],'resolution targets a stale hold')
+            item.setdefault('scientific_hold_resolution_history',[]).append({
+               'qualification_id':qualification_id,'review_path':str(Path(review_path).resolve()),
+               'review_sha256':digest(review_path),'at_unix':time.time()})
+            del item['scientific_holds'][key]
+            # Old failed/withdrawn results never become accepted from this alone.
+
+    @staticmethod
+    def require_no_hold(item,qualification_id):
+        require('qualification:'+qualification_id not in item.get('scientific_holds',{}),
+                'scientific review hold on this exact qualification')
+
     def reserve_application(self, spec):
         identity=spec['identity'];key=run_key(identity)
         growth=spec.get('maximum_result_bytes',FULL_GROWTH)
@@ -265,6 +318,7 @@ class Coordinator:
             chosen=selected['selection']['full_input_identity']
             require(chosen['trace_content_sha256']==identity['trace_content_sha256'],'D input mismatch')
             require(spec['comparison_group'] in chosen['comparison_groups'],'unregistered comparison group')
+            self.require_no_hold(item,spec['qualification_id'])
             qualified=item['qualifications'][spec['qualification_id']]
             require(digest(qualified['path'])==qualified['sha256'],'independent qualification changed')
             q=qualified['qualification'];source=q['source_identity']
@@ -306,6 +360,7 @@ class Coordinator:
         require(time.time()<START_DEADLINE,'full-application start deadline closed')
         with self.locked() as (data,item):
             attempt=next(a for a in item['attempts'] if a['attempt_id']==attempt_id)
+            self.require_no_hold(item,attempt['qualification_id'])
             require(attempt['state']=='RESERVED','attempt is already started or terminal')
             require(not any(a['state']=='START_INTENT_UNRECONCILED' for a in item['attempts']),
                     'ambiguous previous start requires explicit reconciliation')
@@ -356,7 +411,7 @@ class Coordinator:
                         'terminal is not independently accepted')
                 require(receipt['validation']['status']=='PASS','summary closure failed')
                 item['accepted_results'][attempt_id]={'path':str(Path(receipt_path).resolve()),'sha256':digest(receipt_path),
-                    'run_key':attempt['run_key'],'identity':attempt['identity']}
+                    'run_key':attempt['run_key'],'identity':attempt['identity'],'qualification_id':attempt['qualification_id']}
             attempt.update(state=status,finished_unix=time.time(),receipt_path=str(Path(receipt_path).resolve()),
                            receipt_sha256=digest(receipt_path))
             row=data['runs'][attempt['run_key']]
