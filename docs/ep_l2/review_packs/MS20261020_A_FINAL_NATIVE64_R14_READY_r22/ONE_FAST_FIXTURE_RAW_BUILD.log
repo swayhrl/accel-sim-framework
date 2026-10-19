@@ -1,0 +1,43 @@
+Building CXX object gpgpu-sim/CMakeFiles/ep_l2_ms_victim_production.dir/tests/ep_l2/test_tvd_production.cc.o
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/test_tvd_production.cc:7:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1885:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1885 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1798:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1798 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1595:3: warning:   when initialized here [-Wreorder]
+ 1595 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/test_tvd_production.cc:7:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘unsigned int ep_l2_payload_store::pending_sector_count() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2472:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+ 2472 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |     ^~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2472:71: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+ 2472 |     for (const slot &s : m_slots) n += s.pending_sector_mask.count(); return n; }
+      |                                                                       ^~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/gpgpu_context.h:3,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/test_tvd_production.cc:7:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘bool l2_cache::ep_l2_tag_payload_consistent() const’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2996:45: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+ 2995 |           m_ep_l2_payload.resident(handle.payload_id).allocation_role !=
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2996 |               ep_l2_payload_store::RESIDENT &&
+      |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+ 2997 |           !(m_ep_l2_payload.resident(handle.payload_id).allocation_role==ep_l2_payload_store::RO && m_ep_l2_payload.resident(handle.payload_id).status==ep_l2_payload_store::RO_FILL_ATTACHED))
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/test_tvd_production.cc: In destructor ‘scenario::~scenario()’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/test_tvd_production.cc:74:17: warning: deleting object of polymorphic class type ‘partition_mf_allocator’ which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
+   74 |   ~scenario() { delete alloc; delete part; delete stats; delete gpu; }
+      |                 ^~~~~~~~~~~~
+Linking CXX executable ep_l2_ms_victim_production
