@@ -1,0 +1,55 @@
+{
+  "schema": "DTC_SEM1_SOURCE_PREPARATION_COMMANDS_R1",
+  "status": "PREPARED_NOT_TESTED",
+  "gate": "WAIT_COORDINATOR_CPU_ROLE_RESOURCE_RELEASE",
+  "core_commit": "1fcf5113c08a27b64ccca872c4a8fba4c12c1ece",
+  "core_worktree": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1",
+  "build_dir": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+  "binary_identity": "NOT_BUILT_NO_ELF_SHA_OR_LOADED_LIBRARY_RECEIPT",
+  "resource_request": {
+    "concurrent_build_workers": 1,
+    "simulator_processes": 0,
+    "GPU_access": false,
+    "trace_reads": false,
+    "background_or_dispatcher": false,
+    "build_wall_timeout_seconds": 1200,
+    "foreground_build_controller": "implementation_r1/bounded_cpu_build.py",
+    "aggregate_output_abort_bytes": 536870912,
+    "single_file_hard_limit_bytes": 134217728,
+    "phase_log_abort_bytes": 16777216,
+    "cpu_free_space_floor_bytes": 2147483648,
+    "configure_build_start_free_bytes_required": 2818572288,
+    "fixture_output_budget_bytes_each": 1048576,
+    "fixture_wall_timeout_seconds_each": 60,
+    "fixture_max_LDST_component_cycles_each": 140,
+    "fresh_build_disk_estimate": "UNMEASURED; parent must admit small fresh Release O1/g0 build under current headroom and monitor disk; no heavy build is authorized by this file",
+    "current_5GB_below_10GiB_R2": "NO_FULL_SIM_OR_LARGE_SCAN"
+  },
+  "configure_argv": [
+    "/usr/bin/timeout", "60s", "/usr/bin/cmake", "-S", "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1",
+    "-B", "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++", "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_CXX_FLAGS_RELEASE=-O1 -g0",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON", "-DGPGPUSIM_BUILD_DTC_L1_TESTS=OFF",
+    "-DGPGPUSIM_SEM1_CONDITIONAL_VALUES=ON", "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+  ],
+  "build_argv": [
+    "/usr/bin/timeout", "1200s", "/usr/bin/nice", "-n", "19", "/usr/bin/ionice", "-c", "2", "-n", "7",
+    "/usr/bin/cmake", "--build", "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+    "--target", "dtc_l1_sem1_values_ldst", "-j1"
+  ],
+  "runtime_argv_template": [
+    "/usr/bin/timeout", "60s", "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+    "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config", "MODE_FROM_MODE_MATRIX"
+  ],
+  "runtime_environment": {"CUDA_VISIBLE_DEVICES": "", "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build"},
+  "roles_to_register_before_execution": [
+    {"role": "SEM1_CPU_BUILD_RESOURCE_CONTROLLER", "executable": "/usr/bin/python3", "script": "implementation_r1/bounded_cpu_build.py", "source": "fixed Framework commit/blob; foreground configure/build only, no fixture/sim invocation"},
+    {"role": "SEM1_CPU_CONFIGURE", "executable": "/usr/bin/cmake", "source": "Core pinned tree; no simulator target launch"},
+    {"role": "SEM1_CPU_BUILD", "executables": ["/usr/bin/cmake", "/usr/bin/make", "/usr/bin/x86_64-linux-gnu-g++-11", "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus", "/usr/bin/as", "/usr/lib/gcc/x86_64-linux-gnu/11/collect2", "/usr/bin/ld", "/usr/bin/ar", "/usr/bin/ranlib"], "note": "resolved compiler helper paths; hashes in HOST_COMPILER_IDENTITIES.sha256; only exact fresh diagnostic build descendants, no directory whitelist"},
+    {"role": "SEM1_CPU_ACTUAL_LDST_FIXTURE", "executable": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst", "source": "tests/dtc_l1_sem1_values_ldst.cc at fixed Core commit", "actual_binary_SHA": "REQUIRED_AFTER_BUILD_BEFORE_EXECUTION", "actual_library_SHA": "REQUIRED_AFTER_BUILD_BEFORE_EXECUTION"}
+  ],
+  "required_after_build_before_fixture": ["freeze compiler/flags/compile_commands", "readelf ELF build IDs and SHA256 of actual fixture/library", "verify rpath/LD_LIBRARY_PATH", "parent exact CPU role/resource release"],
+  "required_each_fixture": ["record exact argv/env/exit and output", "dladdr actual ldst_unit::cycle loaded library identity", "compare expected result from MODE_MATRIX.tsv; wrong-byte/illegal cases must fail", "keep architectural/native UNPROVEN"],
+  "no_simulation_dispatcher_created": true,
+  "foreground_build_controller_prepared_not_executed": true
+}
