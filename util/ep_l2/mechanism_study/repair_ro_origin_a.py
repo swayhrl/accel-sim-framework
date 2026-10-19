@@ -23,7 +23,7 @@ sys.dont_write_bytecode = True
 from build_common_a import sha, git, put, HERE, REPO, HANDOFF, SHARED, CAMPAIGN, AUTHORITY, GIB
 from common_resource_guard import check_runtime, finalize_limit
 
-SPEC = HANDOFF/'full_system_v2/RO_ORIGIN_INCREMENTAL_SPEC_r25.json'
+SPEC = HANDOFF/'full_system_v2/RO_ORIGIN_INCREMENTAL_SPEC_r26.json'
 
 
 def flags(path):
@@ -39,6 +39,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--admission', type=Path)
+    p.add_argument('--via-e-api', action='store_true',
+        help='ordinary new lease granted directly by E published reserve_work; no manual approval file')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     spec = json.loads(SPEC.read_text())
@@ -82,19 +84,25 @@ def main():
             expected_E_admission=expected, planned_native_cases=spec['cases'],
             command_scope='one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link'), indent=2))
         return
-    assert a.admission and a.admission.is_file()
-    admission_bytes = a.admission.read_bytes()
-    admission = json.loads(admission_bytes)
-    for key, value in expected.items():
-        assert admission.get(key) == value, 'E admission mismatch: '+key
-    assert admission['results_budget_status'] == 'PASS'
+    assert a.via_e_api != bool(a.admission), 'choose published E API or exact E file, never an implicit grant'
+    admission_bytes = None
+    admission = None
+    if a.admission:
+        assert a.admission.is_file()
+        admission_bytes = a.admission.read_bytes()
+        admission = json.loads(admission_bytes)
+        for key, value in expected.items():
+            assert admission.get(key) == value, 'E admission mismatch: '+key
+        assert admission['results_budget_status'] == 'PASS'
     assert not git(REPO, 'status', '--porcelain', '--untracked-files=no')
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     out.mkdir()
     report = dict(identity, schema='EP_L2_A_RO_ORIGIN_REPAIR_RECEIPT_V1', status='PREFLIGHT',
         compiler_started=False, application_starts=0, independent_qualification=False,
         commands=[], tests=[], retained_assets_unchanged=False,
-        expected_E_admission=expected, admission_sha256=sha(a.admission),
+        requested_E_resources=expected,
+        admission_method='PUBLISHED_E_RESERVE_WORK_API' if a.via_e_api else 'E_FILE_AND_PUBLISHED_API',
+        admission_sha256=sha(a.admission) if a.admission else None,
         memory_floor_bytes=64*GIB)
     save = lambda: put(out/'RECEIPT.json', report)
     registry = lease = lock = None
@@ -102,7 +110,9 @@ def main():
     try:
         client = json.loads((SHARED/'mechanism_study_20261019_v1/CLIENT_CONTRACT.json').read_text())
         api = Path(client['resource_lease_api'])
-        assert sha(api) == client['resource_lease_api_sha256'] == admission['resource_client_sha256']
+        assert sha(api) == client['resource_lease_api_sha256']
+        if admission:
+            assert sha(api) == admission['resource_client_sha256']
         sys.path.insert(0, str(api.parent))
         from coordinator import Coordinator, tooling_binding, retained_tree_bytes, local_resources
         from run import process_tree_rss
@@ -126,8 +136,12 @@ def main():
         lock = open('/workspace/ep_l2_ms20261019_shared/A_BUILD.lock', 'a+')
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
+        bounded_deadline = time.monotonic()+1800
+
         def resources():
-            assert time.time() < admission['valid_until_unix'] and a.admission.read_bytes() == admission_bytes
+            assert time.monotonic() < bounded_deadline, 'bounded incremental build/native lifetime exceeded'
+            if admission:
+                assert time.time() < admission['valid_until_unix'] and a.admission.read_bytes() == admission_bytes
             for path, digest in bindings.items():
                 assert sha(path) == digest, 'bound source/input changed: '+path
             live = local_resources()
@@ -147,7 +161,14 @@ def main():
         allocation = registry.reserve_work('A', 'build', 1, 8*GIB, growth, build,
             result_growth_bytes=spec['result_growth_bytes'])
         lease = allocation['lease_id']
-        report.update(lease_id=lease, resource_allocation=allocation)
+        report.update(lease_id=lease, resource_allocation=allocation,
+            E_central_admission='GRANTED_BY_PUBLISHED_RESERVE_WORK',
+            E_results_and_shared_resource_gate='PASS_AT_ATOMIC_RESERVATION')
+        assert allocation['role'] == 'A' and allocation['kind'] == 'MECHANISM_BUILD'
+        assert allocation['experiment_id'] == CAMPAIGN
+        assert allocation['cpu_units'] == 1 and allocation['memory_bytes'] == 8*GIB
+        assert allocation['disk_growth_bytes'] == growth
+        assert allocation['result_growth_bytes'] == spec['result_growth_bytes']
         assert all(allocation[k] == value for k, value in policy.items())
         resources()
         build.mkdir()
