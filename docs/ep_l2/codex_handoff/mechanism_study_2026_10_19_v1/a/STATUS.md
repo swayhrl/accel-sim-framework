@@ -1,7 +1,7 @@
 # A full-system V2 — common source r10, NOT COMPILED
 
 Same active A Goal and public branch; authorityb2e5328aca825d6e9ebfe09e46fa208957834636.
-Common Core **147823221c00d50199f6839caa3c6642e9227caf**, runtime Framework9dd1ee57a83d83b56b7874bc7c716185ab52c8f7,
+Common Core **6eebd3d322116f345016c3f00bb3239fcec15034**, runtime Framework9dd1ee57a83d83b56b7874bc7c716185ab52c8f7,
 vendorf90c430c3a1ce8f08c09942a5a1c3a797bb2295b. This Framework control publication
 is not runtime identity. Actual A compiler0/native0/binary0/full-app0. No native
 PASS, speedup, old-red/new-green or new PPA is claimed.
@@ -48,3 +48,5 @@ never24+40. The old14 full queue is superseded. R1 native entry was repaired in
 bb411672 with new exact driverb4c2d645; it remains R1-only and cannot build commonF.
 R1 diagnostics17e7e224, CLEAN94996ec5, isolatedRO9702f2f6 and every old review pack,
 old Lane5/R19, EN-v17, RTL/DC and other projects remain preserved.
+
+Follow-up r11: the ordinary RO frontend now checks certified writer/atomic validity before preview, covering R with V disabled as well as the TVD shortcut. same_address includes actual atomic-MF classification, both hook refusals, unchanged query/directory and zero callback execution. These are UNRUN negative assertions, not atomic application support or numerical evidence. Current common Core is the exact HEAD above; next actual A work is a guarded common native build entry, not another C public adapter.
