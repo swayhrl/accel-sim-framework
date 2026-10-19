@@ -41,9 +41,15 @@ def main():
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--retained-native', action='store_true',
         help='validate the exact already-compiled repair; no C++/CMake invocation')
+    parser.add_argument('--r14-fast', action='store_true',
+        help='one frozen fixture /fast target plus its four finite cases')
     a = parser.parse_args()
+    assert not (a.r14_fast and a.retained_native)
     native_only=a.retained_native
-    spec_path=HANDOFF/'full_system_v2/COMMON_FIXTURE_RETAINED_NATIVE_SPEC_r1.json' if native_only else SPEC
+    fast=a.r14_fast
+    retained_input=native_only or fast
+    spec_path=(HANDOFF/'full_system_v2/COMMON_R14_FAST_FIXTURE_SPEC_r1.json' if fast else
+        HANDOFF/'full_system_v2/COMMON_FIXTURE_RETAINED_NATIVE_SPEC_r1.json' if native_only else SPEC)
     spec = json.loads(spec_path.read_text())
     out = a.out.resolve()
     build, core, runtime = (Path(spec[k]) for k in ['build','core','framework'])
@@ -57,14 +63,14 @@ def main():
     assert prior['core_source_commit']==spec['runtime_producer_core']
     assert prior['binary_sha256']==spec['runtime_binary_sha256']==sha(build/'accel-sim.out')
     for path, digest in prior['test_binary_sha256'].items():
-        expected_digest=spec['retained_test_binary_sha256'][path] if native_only else digest
+        expected_digest=spec['retained_test_binary_sha256'][path] if retained_input else digest
         assert sha(path)==expected_digest, 'retained test changed before repair: '+path
         if native_only and Path(path).name not in spec['targets']:assert expected_digest==digest
     for path, digest in prior['dynamic_library_sha256'].items():
         assert sha(path)==digest, 'retained dynamic library changed: '+path
     flags = {str(f):sha(f) for f in build.rglob('flags.make')}
     archives = {str(f):sha(f) for f in build.rglob('*.a') if f.is_file()}
-    if native_only:
+    if retained_input:
         assert archives==spec['retained_production_archive_sha256']
         failed=Path(spec['retained_compile_receipt'])
         assert sha(failed)==spec['retained_compile_receipt_sha256']
@@ -74,6 +80,15 @@ def main():
         assert attempt['commands'][0]['exit_code']==0 and attempt['native_invocations_attempted']==0
         assert sha(spec['generated_version'])==spec['generated_version_sha256']
         assert sha(HANDOFF/spec['metadata_source_audit'])==spec['metadata_source_audit_sha256']
+    if fast:
+        baseline_receipt=Path(spec['retained_native_receipt'])
+        assert sha(baseline_receipt)==spec['retained_native_receipt_sha256']
+        baseline=json.loads(baseline_receipt.read_text())
+        assert baseline['lease_released'] and not baseline['compiler_started']
+        assert baseline['test_binary_sha256']==spec['retained_test_binary_sha256']
+        assert len(baseline['tests'])==30 and sum(t['expectation_verified'] for t in baseline['tests'])==29
+        assert git(core,'diff','--name-only',spec['previous_fixture_core'],spec['fixture_source_core']).splitlines()==[
+            'tests/ep_l2/test_tvd_production.cc']
     assert flags==prior['assertion_flags_sha256']
     assert all('-DNDEBUG' not in Path(f).read_text() for f in flags)
     native_path = Path(spec['previous_native_receipt'])
@@ -86,7 +101,8 @@ def main():
         if case['id'] in spec['terminal_corrections']:
             case['required_terminal']=spec['terminal_corrections'][case['id']]
     cases += spec['additional_cases']
-    assert len(cases)==30 and len({c['id'] for c in cases})==30
+    count=spec.get('planned_case_count',30)
+    assert len(cases)==count and len({c['id'] for c in cases})==count
     for rel,digest in spec['fixture_file_sha256'].items(): assert sha(core/rel)==digest
     from build_common_a import SPEC_PATH
     assert sha(SPEC_PATH)==spec['previous_spec_sha256']
@@ -94,17 +110,19 @@ def main():
         HERE/'common_resource_guard.py',HERE/'check_native_case.py',SPEC_PATH]}
     bindings.update(inputs)
     bindings.update({str(core/p):h for p,h in spec['fixture_file_sha256'].items()})
-    if native_only:
+    if retained_input:
         bindings.update({spec['retained_compile_receipt']:spec['retained_compile_receipt_sha256'],
             str(HANDOFF/spec['metadata_source_audit']):spec['metadata_source_audit_sha256']})
+    if fast:bindings[spec['retained_native_receipt']]=spec['retained_native_receipt_sha256']
     identity = dict(campaign_id=CAMPAIGN, authority=AUTHORITY,
         control_source_commit=git(REPO,'rev-parse','HEAD'), driver_sha256=sha(__file__),
         spec_sha256=sha(spec_path), runtime_producer_core=spec['runtime_producer_core'],
         fixture_source_core=spec['fixture_source_core'], runtime_binary_sha256=prior['binary_sha256'],
         framework_source_commit=spec['framework_source_commit'],vendor=spec['vendor'],
         build_directory=str(build),output_directory=str(out))
-    cpu=1 if native_only else 2
-    expected = dict(identity,owner='A',phase='A_RETAINED_FIXTURE_NATIVE' if native_only else 'A_FIXTURE_REPAIR',approved=True,
+    cpu=1 if retained_input else 2
+    phase='A_R14_FAST_FIXTURE_REPAIR' if fast else 'A_RETAINED_FIXTURE_NATIVE' if native_only else 'A_FIXTURE_REPAIR'
+    expected = dict(identity,owner='A',phase=phase,approved=True,
         full_applications_permitted=False,execution_host=spec['execution_host'],
         reserved_cpu_units=cpu,reserved_memory_bytes=8*GIB,
         reserved_build_growth_bytes=spec['build_growth_bytes'],
@@ -130,8 +148,8 @@ def main():
         native_invocations_attempted=0,native_invocations_completed=0,commands=[],tests=[],
         old_passes_reused=0,planned_tests=cases,input_sha256=inputs,
         memory_floor_bytes=64*GIB,E_admission=dict(path=str(a.admission),sha256=sha(a.admission)))
-    if native_only:
-        report.update(phase='RETAINED_NATIVE_ONLY_NO_CPP',production_archive_byte_identity_to_original_runtime=False,
+    if retained_input:
+        report.update(phase=phase,production_archive_byte_identity_to_original_runtime=False,
             generated_build_string_difference_explicit=True,retained_compile_receipt=spec['retained_compile_receipt'],
             retained_compile_receipt_sha256=spec['retained_compile_receipt_sha256'],
             generated_version_sha256=spec['generated_version_sha256'],
@@ -151,7 +169,7 @@ def main():
         assert policy['disk_floor_bytes']==5*GIB and policy['monitor_reserve_bytes']==2*GIB
         assert policy['monitor_interval_seconds']==.2 and policy['termination_grace_seconds']==3
         bindings.update({str(Path(client['execution_worktree'])/p):h for p,h in client['source_files'].items()})
-        if native_only:bindings[spec['generated_version']]=spec['generated_version_sha256']
+        if retained_input:bindings[spec['generated_version']]=spec['generated_version_sha256']
         supervisor=runtime/spec['supervisor'];assert sha(supervisor)==spec['supervisor_SHA256']
         bindings[str(supervisor)]=spec['supervisor_SHA256']
         module=importlib.util.spec_from_file_location('fixture_repair_supervisor',supervisor)
@@ -200,11 +218,14 @@ def main():
             finally:active['pid']=None
         if not native_only:
             report.update(status='FIXTURE_ONLY_COMPILING',compiler_started=True);save()
-            run(['cmake','--build',str(build),'--target',*spec['targets'],'-j2','--','-k'],'two_fixture_build',1200)
+            targets=[spec['targets'][0]+'/fast'] if fast else spec['targets']
+            run(['cmake','--build',str(build),'--target',*targets,'-j'+str(cpu),'--','-k'],
+                'one_r14_fast_fixture_build' if fast else 'two_fixture_build',1200)
         verify_source(spec)
         assert sha(build/'accel-sim.out')==prior['binary_sha256']
         for path,digest in prior['test_binary_sha256'].items():
-            if Path(path).name not in spec['targets']:assert sha(path)==digest,'unaffected executable changed'
+            expected_digest=spec['retained_test_binary_sha256'][path] if retained_input else digest
+            if Path(path).name not in spec['targets']:assert sha(path)==expected_digest,'unaffected executable changed'
         assert {str(f):sha(f) for f in build.rglob('flags.make')}==flags
         assert {str(f):sha(f) for f in build.rglob('*.a') if f.is_file()}==archives, 'production archive changed'
         for path,digest in prior['dynamic_library_sha256'].items():assert sha(path)==digest
