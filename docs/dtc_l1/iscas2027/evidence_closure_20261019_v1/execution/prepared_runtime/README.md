@@ -10,8 +10,11 @@ not evidence that the real gate has opened.
 
 `ENGINE_SOURCE_BINDING.json` binds the upstream AG4 source commit and exact
 Git blobs. `mapping_roles.py`, `ownership.py` and `oom_watchdog.py` are copied
-byte-for-byte. `guarded_process.py` changes only the allowed CPU fixture build
-root and CPU basename prefix; the ptrace/event/map/cleanup algorithm is retained.
+byte-for-byte. `guarded_process.py` changes the CPU fixture path/prefix and now repairs the
+retired-PID wait-dispatch gap reported by AG4 terminal d8d0401. Retired owned,
+image and parent memberships are removed in normal and cleanup exit branches;
+every resume requires a currently confirmed instance and fresh start_ticks.
+These local changes are PREPARED_NOT_TESTED; AG4 files remain unchanged.
 `authority_cpu.cc` changes only its two project data paths and retains the
 original CPU-only stdout markers. No AG4 path is written or executed. The
 minimal local `common.py` exports only output and timestamp helpers used by
@@ -62,3 +65,9 @@ The global resource/authority observer and matrix/ledger publication gates are
 still prerequisites for the sole full-simulation coordinator. No existing
 AG4 checker is changed, and no directory wildcard or filename exemption is
 introduced.
+
+AG4 terminal intake is now available and its own authority is released. The
+prior local inherited copy was never executed. Its newly identified production
+dispatch gap must be reproduced on the frozen source and rejected on the
+repaired actual dispatch AST, then qualified through real helper/multi-root
+lifecycles. Source review alone does not open new simulation authority.

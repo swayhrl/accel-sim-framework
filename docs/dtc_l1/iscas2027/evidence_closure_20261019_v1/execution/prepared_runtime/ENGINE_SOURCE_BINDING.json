@@ -1,6 +1,6 @@
 {
   "schema": "DTC_CLOSURE_PREPARED_ENGINE_SOURCE_BINDING_V1",
-  "status": "PREPARED_NOT_TESTED",
+  "status": "PREPARED_RETIRED_PID_REPAIR_NOT_TESTED",
   "files": [
     {
       "path": "vendor/mapping_roles.py",
@@ -38,11 +38,13 @@
       "upstream_path": "docs/dtc_l1/review_packs/DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/guarded_process.py",
       "upstream_blob": "1ba7c68d43133082dead1b914dbbf99579f6ee91",
       "upstream_sha256": "2d6ed8f846bb4a83530695d8b0eace4d5c548ec6aa5156d0c63ec7ebe699d3a0",
-      "prepared_sha256": "70bff8c8ed6d4f507ecf9c4838aae6ac97c8a9482a7d962e1cdbf70c3a1703b4",
+      "prepared_sha256": "ac4cb7d91fd3f183ca91b79b70ed4db6aaf00dd5309983c09b0226a6eb371487",
       "byte_identical_to_upstream": false,
       "changes": [
         "isolated closure CPU build root",
-        "closure CPU fixture basename prefix only"
+        "closure CPU fixture basename prefix only",
+        "retire PID membership/image/parent state in real normal and cleanup wait-dispatch exit branches",
+        "every resume rechecks current event-confirmed PID/start_ticks; historic owned membership is insufficient"
       ]
     },
     {
@@ -60,5 +62,6 @@
   ],
   "cpu_tests_executed": 0,
   "simulation_starts": 0,
-  "production_authority_qualification": false
+  "production_authority_qualification": false,
+  "known_upstream_gap": "AG4 terminal d8d0401 retired-PID production dispatch counterexample; prior local copy unexecuted; repair not qualified yet"
 }

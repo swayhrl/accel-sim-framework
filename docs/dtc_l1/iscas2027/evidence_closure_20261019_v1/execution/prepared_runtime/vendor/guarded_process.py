@@ -85,7 +85,10 @@ def run_guarded(argv,env,manifests,destination,purpose,timeout,capability=None,o
   st['last_paths']=paths
   name=f'{frames:06d}_pid{tid}.maps';(mapsdir/name).write_text(text)
   eventlog.write(json.dumps(dict(utc=now(),monotonic_ns=time.monotonic_ns(),pid=tid,exe=exe,stage=stage,mapping_syscall=st['mapping_nr'],maps=name,maps_sha256=sha(mapsdir/name),cache_present='/etc/ld.so.cache' in paths,removed_files=removed,startup_closed=st['closed'],validated_files=sorted(paths)))+'\n');eventlog.flush();frames+=1
- def resume(tid,syscall_exit=False,signum=0):ptr(24 if syscall_exit else 7,tid,signum)
+ def resume(tid,syscall_exit=False,signum=0):
+  require(ownership is not None and tid in ownership.confirmed,'RESUME_WITHOUT_CURRENT_EVENT_CONFIRMED_INSTANCE')
+  ownership.same(tid)
+  ptr(24 if syscall_exit else 7,tid,signum)
  def periodic():
   nonlocal last_oom,last_sample
   instant=time.monotonic()
@@ -129,7 +132,7 @@ def run_guarded(argv,env,manifests,destination,purpose,timeout,capability=None,o
    if os.WIFEXITED(status) or os.WIFSIGNALED(status):
     rc=os.waitstatus_to_exitcode(status);alive.discard(child);exits[child]=rc
     ownership.confirmed.pop(child,None)
-    st=states.get(child)
+    st=states.pop(child,None);owned.discard(child);parents.pop(child,None)
     if child==pid:main_rc=rc
     require(rc==0,'NONZERO_OWNED_PROCESS_EXIT:'+str(child)+':'+str(rc))
     require(st and st['closed'],'PROCESS_EXIT_WITHOUT_EARLY_IDENTITY_CLOSURE')
@@ -200,6 +203,7 @@ def run_guarded(argv,env,manifests,destination,purpose,timeout,capability=None,o
    elif os.WIFEXITED(status) or os.WIFSIGNALED(status):
     require(child in owned,'CLEANUP_UNCONFIRMED_EXIT')
     alive.discard(child);exits[child]=os.waitstatus_to_exitcode(status)
+    owned.discard(child);states.pop(child,None);parents.pop(child,None)
     quarantined=[q for q in quarantined if q[0]!=child]
     if ownership:ownership.confirmed.pop(child,None);ownership.pending.pop(child,None)
   if watch is not None:

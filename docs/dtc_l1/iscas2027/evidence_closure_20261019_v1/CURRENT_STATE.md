@@ -1,56 +1,61 @@
 # Execution coordination state
 
-Updated: 2026-10-19 20:44:29 Asia/Shanghai. Status: **SAFE_PREPARATION_JOINED_WAIT_AG4_TERMINAL_AUTHORITY**. Plan anchor: `46df82670a56a4498b6d6e23ad57859eb7c36945`. Maintained only on `hrl/iscas2027-dtc-closure-exec-174-v1`; planning branch unchanged. This is a preparation checkpoint, not final evidence-closure completion.
+Updated: 2026-10-19 21:05 Asia/Shanghai. Status:
+**AG4_TERMINAL_STOP_CONSUMED_PROVISIONAL_O_CPU_REPAIR_REQUIRED**. The full
+evidence-closure goal remains incomplete. Execution location is original
+`huangrulin-174`; pinned plan46df82670a56a4498b6d6e23ad57859eb7c36945 and planning
+branch remain unchanged. Sole later full-simulation coordinator: `/root`,
+execution branch `hrl/iscas2027-dtc-closure-exec-174-v1`.
 
-|Role|Actual state|Immutable evidence / branch|
+|Role / item|Authoritative state|Evidence|
 |---|---|---|
-|Existing AG4|Live runner/simulator and execution lock observed at20:27:02; remote checked20:37:34 still has no terminal publication; untouched|`9ece18f6fdb6de16ee95f35caa6fad1fec765fc9` is preregistration only; current launch count/results not inferred|
-|Coordinator `/root`|STARTED_SAFE_PREPARATION_ONLY; sole designated later simulation coordinator, not admitted to dispatch|`execution/START_RECEIPT.json`|
-|COV1 `/root/cov1`|Safe preparation finished/published/read back; agent idle; CPU work NOT_STARTED|Final prep `8f76a8a50ec5e56dd49f93224a64b253383b0420`; `hrl/iscas2027-dtc-cov1-inputs-174-v1`|
-|SEM1 `/root/sem1`|Safe preparation finished/published/read back; agent idle; CPU work NOT_STARTED|Final prep `e2eea8b8b406a227592e19638ae542c12dd1ecf9`; `hrl/iscas2027-dtc-sem1-values-174-v1`|
-|ROB1 `/root/rob1`|Safe preparation finished/published/read back; agent idle; CPU work NOT_STARTED|Final prep `e37b0920b957c162c6640230ee7ce3a9c391e556`; `hrl/iscas2027-dtc-rob1-controls-174-v1`|
-|New CPU tests / compiles / trace scans|NOT_STARTED; WAIT_AG4_TERMINAL_AUTHORITY|No CPU PASS claimed|
-|New full simulations|0/32 actual starts, no executable family frozen, no execution lock|`execution/BUDGET_LEDGER.json`|
-|Final F|NOT_FROZEN; no AE/AD result inferred|`execution/SELECTION.json`|
-|Paper / DC|EN-v0.17 retained; DC user-owned|No paper modification or EDA execution|
+|AG4|Terminal STOP published; actual2/5 starts; optimization results0; own process instances absent and lock released|`d8d0401dab0a1d9cb949302bcc05148328421cc2`; execution/AG4_TERMINAL_INTAKE.json|
+|AG4 reason|Retired-PID real wait-dispatch qualification gap; actual PID reuse NOT_ESTABLISHED|FINAL_CPU_QUALIFICATION_DECISION and terminal supplement at AG4 commit|
+|COV1|Safe prep published; CPU input qualification not started|`8f76a8a50ec5e56dd49f93224a64b253383b0420`|
+|SEM1|Source/ABI scope and12 litmus plans published; actual production/native tests0|`e2eea8b8b406a227592e19638ae542c12dd1ecf9`|
+|ROB1|Quota/hash/typed-metric preparation published; no patch applied to Core or CPU test run|`e37b0920b957c162c6640230ee7ce3a9c391e556`|
+|Research candidate|One global fixed provisional O: K0/OO128/Tag64x8/AE0/AD0; no arm promotion|execution/SELECTION.json and AG4_SCIENTIFIC_REVIEW.md|
+|Historical imports|Eight C+ and four T/U O records IMPORTED_VERIFIED; current-F family admission still false|execution/cplus_reuse/ and o_reuse/; budget ledger|
+|New coordinator engine|Retired membership/image/parent removal and fresh instance check before resume prepared only in isolated copy|execution/prepared_runtime/; actual-dispatch AST test prepared, not yet executed|
+|CPU AST role|Exact source/interpreter/command registered; publication/readback and bounded CPU admission required before run|execution/CPU_AST_ROLE_REGISTRATION.json|
+|Full simulations|New starts0/32, no executable matrix/UUIDs, no execution lock|execution/BUDGET_LEDGER.json|
+|Disk|About5.8GB free, below unchanged10GiB R2 minimum for new simulations|execution/CPU_AST_RESOURCE_FIRST.json; user informed, no other-project cleanup|
+|Paper / DC|No v0.17, old44/GM12, history, Core or PPA change|DC remains user-owned|
 
-All three immutable deliveries were read and joined once at `4ec3cd4da579280b9fc85ed9b47e7c4dfcc0cc09`. Only disjoint worker pack paths changed; no production source conflict or Core integration occurred. `execution/WORKER_DELIVERIES.json` independently binds61 exact pack blobs, trees and dedicated remote readbacks, and verifies clean worker worktrees. SEM1's consumed COV1 source/access index blob is unchanged in COV1's final delivery. No worker tool/header/patch is applied, imported or executed by this join.
+AG4 terminal intake checks81 unchanged registration hashes, exact actual
+input/config/runtime evidence, Gaussian full strict/calibration, AE stopped
+strict, all1267 published owned process instances plus fresh PID/start_ticks
+absence, cohort STOP, own lock release and final authority. Gaussian3278356
+cycles remains a recorded calibration observation under the failed executor
+qualification, not a qualified optimization result. Three unused reservations
+are not resumable. No AG4 raw stdout/maps was read, signal sent, old file
+modified or attempt restarted by this coordinator. The process disappearance
+at20:48 was not treated as scientific completion before GitHub terminal intake.
 
-Worker worktrees start at the pinned plan commit and use separate output roots below `/workspace/dtc-evidence-closure-20261019-v1/`. Workers cannot launch full simulators. Code remains PREPARED_NOT_TESTED. ACK and final safe-preparation commits are not CPU/full workpackage completion receipts.
+The former WAIT_AG4_TERMINAL gate is resolved. No blocked goal update was
+issued: the remote state changed during the audit. New actual work requires
+the isolated executor defect repair/qualification and exact CPU role admission;
+new simulator dispatch additionally requires full resource and family/source/
+input/runtime publication gates. A tiny bounded no-child AST regression is
+registered separately from full-simulation R2 admission; its result cannot
+qualify the whole guard or relax the10GiB simulation threshold.
 
-|Preparation finding|Remaining gate|
-|---|---|
-|Eight C+ and four O historical controls catalogued|Per-point reuse/source/effective-option/initial-state/scope qualification; zero imported controls yet|
-|N1 BICG4096x65281 fixed;256 CTA in first kernel,16 in second|BLOCKED_CAPTURE|
-|N2 naive FP32 GEMM2290cube fixed; single B exceeds20MiB|BLOCKED_SOURCE_BINDING_AND_CAPTURE; no silent main-GEMM substitution|
-|N3 existing SM70 bcsstk18 JDS indexed-gather capture fixed|Current decoder, full50-kernel identity and index/domain qualification; no SM89 alias|
-|SEM1 source/ABI gaps and12 falsifiable plans delivered|All eight primary production-value/native rows UNPROVEN; zero new executed value tests; unresolved RAW is not observed wrong value|
-|ROB1 shared sector quota and exact fair hash/AD metric definitions delivered|Diagnostic patch/CPU tests unapplied and unexecuted; C+ implementation only if AE selected|
-|Runner lifecycle engine and two-isolated-CPU-guard code prepared; zero execution|Post-release exact role registration, actual multi-root/helper/negative qualification and resource admission; see execution/prepared_runtime/|
+Historical C+ inspection matched old registered specs, terminal/strict hashes,
+config/runner/resource receipts and complete input vectors. All265 non-trace
+options agree; each input has its own trace path. Command counts now include
+ATAX6/GESUMMV6/NN2/MRI-Q12. Four old-source O controls match the same complete
+inputs but are not relabelled as current c8090115 observations. No new RUN_START
+is created for an import, and no favorable-subset GM or new speedup is computed.
 
-At20:37:34 a lightweight process/lock check found no new-plan worker/dispatcher process or execution FLOCK (only the check's transient rg). No own background continuation remains. The planning remote is still the pinned46df8267 commit. AG4 has not been reset, signalled, restarted, modified or read through active raw/maps. This checkpoint has no new performance, native correctness or PPA claim. `execution/SCIENTIFIC_SCOPE_AT_PREPARATION.md` gives the evidence-axis limits and provisional English scope guidance without editing v0.17.
+N1 BICG4096x65281 remains BLOCKED_CAPTURE; N2 GEMM2290cube remains
+BLOCKED_SOURCE_BINDING_AND_CAPTURE; N3 SM70 bcsstk18 JDS gather capture still
+needs current decoder/full50-kernel and index-domain qualification. All eight
+primary production-value/native rows remain UNPROVEN; unresolved RAW is not an
+observed application failure. No model/K0/source-event semantics are changed.
 
-Next gate: consume AG4's independently published immutable terminal evidence and verify completion, identities, child exits and lock release. Only then freeze F/provisional-O decision, admit focused CPU work and build exact executable families. No disappearance-only takeover, restart, contract change, active raw polling, or automatic deferred dispatch. See `execution/AUTHORITY_COMPATIBILITY.md`. The goal remains incomplete while this external gate is closed; no user approval is requested for the already-authorized next work.
-
-## Continuation1: verified wait and concrete runtime preparation
-
-At20:44:29 both original AG4 instances were verified live from `/proc/stat`,
-`exe` and `cmdline`: runner779009/start_ticks916291532 and its simulator
-795912/start_ticks916442037. The published AG4 branch remains9ece18f6 and
-has no terminal intake. `execution/WAIT_OBSERVATION_20261019_CONTINUATION1.json`
-binds this foreground observation. No active stdout/maps/raw was read and no
-signal, new lock, compiler, worker script or simulator was invoked. The previous
-turn was progress (three immutable deliveries joined); this continuation also
-adds concrete required runtime source, rather than only restating the wait.
-
-`execution/prepared_runtime/` now contains the inherited AG4 guard source,
-exact upstream Git-blob/SHA provenance, an isolated output helper, one CPU-only
-guard entry and a bounded two-root CPU library. Mapping-role/ownership/OOM
-modules are byte-identical; engine changes are limited to the isolated CPU
-build path and CPU fixture prefix. The reused C++ fixture changes only its
-data paths. Source hashes are fixed in PREPARED_SOURCE_SHA256.json, which is
-explicitly not an executable registration. Nothing was imported, compiled or
-executed; no new scientific test PASS or production authority qualification
-is claimed. There is no full-simulation CLI, matrix scheduler or auto-resume
-entry. Real cross-root/helper negatives, exact external-worker role admission,
-resource closure and full dispatcher/ledger registration remain required.
+Next: publish/read back the new CPU repair sources and AST role, execute the
+bounded actual-dispatch negative after CPU admission, then qualify real
+helper/multiroot/three-external-role paths and source/control applicability.
+Prepare exact families for fixed provisional O; do not run a simulator with
+insufficient disk, missing runtime qualification or an incomplete registration.
+No auto-resume, poller or background matrix dispatcher exists.
