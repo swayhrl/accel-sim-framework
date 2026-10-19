@@ -1,61 +1,49 @@
-# Mechanism study A — source checkpoint r5
+# A — full-system V2 adoption, source checkpoint r6
 
-Original174, new independent Goal active. All candidates below are SOURCE ONLY:
-0 C++ compilations,0 native executions,0 new binaries and0 full applications.
-No runtime qualification, speedup, old-red/new-green or new PPA is claimed.
+Continue the SAME active A Goal and existing public integration branch. Authority
+Framework b2e5328aca825d6e9ebfe09e46fa208957834636. Final target is one binary
+with fixed W+V+T+M policy F, traditional S and qualified ablations. It is not
+four unrelated final mechanisms or a best-per-input selection.
 
-| Independent candidate | Exact Core | Runtime Framework | Finite native preparation |
-|---|---|---|---|
-| R1 local diagnostics | `17e7e224954e44a968a0447bcdfea91e3b2e5a96` | `197741be9be9b8e390a557d639503b416d8e95f0` |55 processes, all UNRUN|
-| R2 CLEAN_ONLY | `94996ec59b4a0264b64146932977bfe6ea4f195b` | same197741be |11 additional, all UNRUN|
-| R3 dirty/fixed source | `6452b74d92c2cf72f80e5f5e102941d6cf9adf7a` | same197741be |21 processes, all UNRUN|
-| R2 RO T/M four cells | `aa2a92cc11ef0f22f9f2a6f3418ce31bdee33278` | `9dd1ee57a83d83b56b7874bc7c716185ab52c8f7` |25 additional, all UNRUN|
+Current common Core preimage is **eb6739b03883fecee155ba6b12a3a9f92c00d444**,
+branch hrl/ep-l2-ms20261019-a-r3-victim-full-v1. B126bde88 exact A949
+incremental dirty/fixed module is incorporated. Last-unpin after WB completion
+now handles both WB-role and already-TVD-role pins. A tickets, existing WB UID
+checks BEFORE mutation and paid directory/indexed port costs remain. This is
+SOURCE ONLY, not an observed native old-red/new-green result.
 
-All have separate worktrees. Vendor is exactf90c430; each runtime has its own
-checkout. Control d9263fa ancestry is not runtime Framework. Public interface
-980072bb was published/read back first. R1 production src is unchanged by its
-one-entry directed FIFO setup correction. Its entry remains R1-only and cannot
-silently compile either R2. B/C do not delay its independent qualification.
+R1 diagnostics17e7e224 and CLEAN94996ec5 are preserved. Isolated RO production
+source aa2a92cc is preserved; its auxiliary source-bound opt-in bank fixture
+CMake is now9702f2f6. RO runtime Framework9dd1ee57 is a reference, not a final
+common runtime release. The older dirty6452 and all review packs remain.
 
-R1 default-OFF COPY_FREE preserves actual copy values/placement and charges
-lower WB read, while removing copy bank/staging service. L2_DATA_FREE removes
-payload-bank contention but preserves fixed one-cycle copy latch, native ROP,
-return pipelines, finite capacity/order/backpressure and lower memory. Bounded
-UID observation distinguishes unmeasured disabled fields from zero. Profiles,
-whitelist, residual waits and55 cases are frozen in the R1 receipt and plan.
+C's concrete V2 request is answered with exact eb6739 preimage and an
+incremental adapter contract in full_system_v2/A_TO_C_FULL_V2_PREIMAGE_r1.json.
+A is the sole public Core writer; C prepares modules/tests/a small patch,
+B supplies full victim state/combined inputs and fixed-control completion.
+The common allocator, directory, descriptor, bank, lifetime and oracle rules
+are frozen in COMMON_INTERACTION_CONTRACT_r1.json. Full combination is still
+PENDING; constructor guards have not simply been removed.
 
-CLEAN_ONLY reuses B89a75b24 with A-owned row/incarnation tickets for lower
-accept/rollback, existing WB UID guard and explicit completion CAM, no packet
-extension. Shared128 WAD/TVD and1168 payload remain. Metadata2 CAM read paths,
-3 indexed control views/update paths and UNKNOWN PPA are explicit. Actual bypass
-FIFO backpressure/admission fixes are scoped to bypass, not a global hit gate.
-Dirty and combinations remain rejected; clean subset is not full TVD.
+Remaining specific integration work: distinct TVD/RO role/state values;
+pre-TVD RO writer validation and exactly-once accepted-read accounting; shared
+bank client/UID/generation identities; safe no-certificate fallback with T/M
+fixed ON; same-pool and same-address joint native cases. Current fixed-victim
+control is CLEAN_ONLY, not the complete F fixed comparator. F-minus-W is
+DEPENDENT_CONTROL_UNSUPPORTED until fixed WB can retain common V/R mapping.
+F_DATA_FREE also needs actual common implementation and native qualification.
 
-RO integrates Cb1d42152 into a separate source: T/M00/10/01/11, native D512
-free-list/line128/address32, one paid query, actual P1 fill/write+response/read,
-no second data/request pool. Additional metadata and discriminator cost are
-declared. Whole-commandlist binding starts after host prefix and closes only
-at full uncapped backend drain; memcpy boundaries drain when RO is enabled.
-Duplicate destructor/incomplete type integration, disabled-L2 wrapper safety,
-CLI and lower-byte observation were corrected in actual source. Native-only
-counters retain their meaning; RO global closure is an added qualification,
-not a waiver. D/C/E input-only certificate reviews do not qualify runtime.
+Actual A compilers0, native executions0, binaries0, full applications0. No
+control test is native correctness. No build lease, permanent waiter, repeated
+resource scan or storage cleanup has been started. E remains sole resource,
+full-application and acceptance owner; F can only execute A's exact named build
+after E accepts real independent adequate storage and a host-aware lease.
 
-E canonical API still reports BLOCKED_WORKSPACE_FLOOR, controller STOPPED,
-actual starts0, no heavy admission. Current E-compatible R1 guard was actually
-exercised without admission: expected rejection,0 compiler/native/leases,
-registry bytes unchanged. This is control-tool evidence only. No periodic df,
-resident waiter, exception, migration or other-project interference occurred.
-
-Next necessary event is E fresh48/40/64GiB plus quota/output admission for A's
-unique R1 j2 build and55 directeds, followed by independent E checks. R2 tests
-and their exact build/output reservations are separate; RO's conservative3GiB
-build+128MiB result proposal is not an admission or measured peak. B full b90ed7c1
-dirty/fixed source is now ported in isolated R36452b74d. Current A row
-tickets, WB UID-before-mutation and metadata costs were retained; queued dirty
-readers hold WB role until response. Fixed control is64/1104 capacity with
-16/276 bank quotas, not fixed physical IDs. All21 processes remain uncompiled/
-unrun; this is not a qualified complete TVD. The old B_R2_INTAKE_REVIEW and r4
-pack are preserved as pre-port records. Full applications
-and24-start acceptance ledger belong exclusively to E. No old Goal, experiment,
-raw result, R3/DC candidate or EN-v17 has been changed.
+V2 revises the SAME campaign's cumulative upper bound24->40, never24+40.
+At adoption the actual registry remains actual_starts0 / maximum24 / controller
+STOPPED / qualifications empty. E must amend its own ledger without resetting
+T0 or history. A has only published an inbox event, not edited the registry.
+The old14 queue is prepared history and must not drain automatically. Next
+admitted compute priority is the final common source's affected native suite;
+small R1 native is allowed but does not take priority over the final main pairs.
+Old Lane5/R19, EN-v17, RTL/DC evidence and other projects remain untouched.
