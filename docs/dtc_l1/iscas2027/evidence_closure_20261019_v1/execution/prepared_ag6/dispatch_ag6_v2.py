@@ -11,7 +11,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import shutil
 import signal
 import subprocess
 import sys
@@ -127,8 +126,8 @@ def main():
     from cpu_admission_v2 import NoOwnedChildren
     from legacy_authority_runtime import bind_frozen_procedures
     from resources_v2 import enrich, checks, paired, Runtime
-    from ag6_input_runtime_identity import verify_identity
-    from ag6_strict_v2 import collect
+    from ag6_input_runtime_identity import validate_identity
+    from close_attempt_v2 import collect
     owner = identity(os.getpid())
     proc_reader, _, _ = bind_frozen_procedures()
     manager_role = manifest['coordinator_role']
@@ -180,22 +179,18 @@ def main():
                 for point in points:
                     require(not interrupted, 'COORDINATOR_SIGNAL_NO_NEW_DISPATCH')
                     publication()
-                    identity_receipt = verify_identity(manifest['identity_contract'], point)
+                    identity_receipt = validate_identity(manifest['identity_contract'], point['point'])
                     admitted = admit(point['point'])
                     require(admitted is not None, 'WAIT_RESOURCE_OR_AUTHORITY_NO_NEW_START')
                     publication()
                     run = Path(point['destination'])
                     require(run.parent == COHORT / 'attempts', 'EXACT_AG6_ATTEMPT_PATH')
                     run.mkdir(parents=True, exist_ok=False)
-                    argv = [point['runtime_path'], '-trace', point['trace_list']]
-                    copies = []
-                    for index, entry in enumerate(point['configs']):
-                        require(sha(entry['path']) == entry['sha256'], 'CONFIG_CHANGED')
-                        path = run / ('config-' + str(index) + '.config')
-                        shutil.copyfile(entry['path'], path)
-                        path.chmod(0o444)
-                        copies.append(dict(path=str(path), sha256=sha(path)))
-                        argv.extend(['-config', str(path)])
+                    argv = identity_receipt['validated_argv']
+                    copies = identity_receipt['config_copies']
+                    require(identity_receipt['validated_environment'] == point['runtime_environment'],
+                            'EXACT_IDENTITY_VALIDATED_ENVIRONMENT_REQUIRED')
+                    write(run / 'INPUT_RUNTIME_IDENTITY.json', identity_receipt)
                     baseline, authority = sample(empty)
                     final_checks = checks(baseline)
                     final_checks['authority'] = authority['status'] == 'PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY'
@@ -217,6 +212,9 @@ def main():
                         if time.monotonic() < next_sample[0]:
                             return None
                         current, auth = sample(ownership)
+                        if any(p['is_simulator'] and p['pid'] in ownership.confirmed and
+                               p['pid'] != pid for p in current['processes']):
+                            return 'UNREGISTERED_SECOND_OWN_SIMULATOR_PROCESS'
                         owned = proc_reader(pid) if pid in ownership.confirmed else None
                         fault = owned['majflt'] if owned else last_fault[0]
                         decision = runtime.observe(current, fault, last_fault[0])
@@ -267,7 +265,8 @@ def main():
                             forced_reason=engine['forced_reason'] or ('FINAL_RESOURCE_STOP'
                                 if decision['decision'] == 'STOP' else None),
                             identity_pass=engine['identity_pass'], engine=engine))
-                        result = collect(run, point)
+                        result = collect(run, point, manifest=manifest,
+                            publication_head=published['head'], identity_receipt=identity_receipt)
                         write(run / 'STRICT.json', result)
                         results.append(result)
                         print(json.dumps(dict(point=point['point'], status=result['status'],

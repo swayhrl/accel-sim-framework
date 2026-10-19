@@ -1,25 +1,38 @@
-# Same Goal V2 next steps
+# Same Goal continuation: current executable CPU work and held AG6
 
-Do not reset/restart the Goal. Space is recovered on actual output filesystem;
-IO remains variable. Preserve all old WAIT/STOP receipts without relabelling.
+Original174 /root remains sole simulation dispatcher. Never reset/restart Goal.
+Coordination f81ca1c5, original plan46df8267 and frozen AG4/AG5 are preserved.
 
-1. Fresh paired host+cgroup full R2 and exact authority before one preregistered
-   fixture build/static freeze. Publish exact ELF/libs/manifests. Preserve the old
-   closure-cpu-authority and manifest. No model/canary start.
-2. Complete post-build V2 registration; actual14 changed adapter/reviewer tests,
-   five generation inputs plus six real changed guard cases and two pure tracer/
-   Tgid negatives; real shared two-root test only after separate fresh gates.
-   Reuse old AG5 53 tests. V2 source-only runtime registrations are not releases.
-3. Complete actual same-callback COV/SEM/ROB role observation. SEM is configured:
-   execute only remaining original build when a foreground paired admission
-   passes. ROB configure/build still pending. Do not substitute synthetic role
-   rows or old helper PASS for actual production-role observation.
-4. Independently audit AG two actual published BASE dossiers; disclose AG4
-   Gaussian's executor gap. Both must qualify before any AG6 ON point.
-5. Publish/push/fetch exact four fresh AG6-only rows, source/ELF/libs/input/options/
-   timeout/stats/UUID and cap4 failure ledger before first fork. Default one worker
-   until production dual-root/failure/resource qualification passes. AG6 starts0;
-   BA32 unchanged starts0. No refill, fifth/sixth start or AG4 UUID resumption.
-6. Four strict valid arms plus both BASEs permit unchanged automatic SELECTION_V2;
-   preserve old selection. Incomplete means provisionalO. Avoid duplicate P8 F
-   runs; repair ordinary engineering problems within the same Goal.
+Both BASE reuse decisions and four new AG6 UUIDs are published at90a1ab47.
+The actual AG6 count remains0/4, BA0/32, F provisionalO. New four-point source
+adapters/config materialization are prepared; no executable AG6 manifest exists.
+Default fullsim ceiling1; dual production execution remains unqualified.
+
+Current prepared_runtime source includes canonical AG5 guard, exact direct
+CPU-role view and real wait-order coverage repair, plus COV <=5s pipe ACK.
+Two CPU-manager attempts refused FIRST(host IO30.00/26.85), zero children.
+14-case admission attempt2 took host IO21.50/26.84 separated10.21s, pair refused,
+zero cases. All refusal evidence is preserved. No live own child is left.
+
+Next foreground entries are separately and conditionally registered, each
+requires its own complete current R2 and exact authority; first failure returns:
+
+1. test_shared_authority.py: negative-admission-attempt3,14changed adapter cases.
+2. qualify_ag5_changed_dispatch_v2.py:5generation +6actual guard cases +2pure
+   tracer/Tgid assertions. Do not run unless step1 passed current receipt bindings.
+3. qualify_shared_cpu_authority_v2.py:2real CPU roots/helpers and shared observer.
+4. qualify_real_cpu_roles_v2.py:attempt3, SEMbuild only, ROBconfigure/build, one
+   same-process COV role; preserve SEM's completed configure. New immutable
+   CPU-manager HEAD/tree/blob/clean readback must exist before calling step4.
+
+No runtime fixture or new simulator is released by these CPU entries.
+SEM10-case runtime source contract has been received; build/actual ELFs and
+matching ABI freeze still precede a distinct fixture role/release. ROB linked
+LDST runtime and original-core differential remain pending.
+
+After actual shared/role qualifications, finish source-bound AG6 production
+capability/manifest/qualification and publish/fetch exact HEAD/tree/blobs/clean.
+Use only existing four UUIDs with frozen inputs/options/source/runtime/timeout,
+full paired host+cgroup R2, 10GiB actual output floor before/during, no retry.
+Do not launch P8F before four-point selection. Preserve old SELECTION.json;
+validfour arms alone feed unchanged0.98/1.02/GM/tieAE rule into SELECTION_V2.
