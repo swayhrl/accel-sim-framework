@@ -1,0 +1,29 @@
+{
+  "schema": "TLS_V10_TARGET_BATCH_PLANNING_TEST_RECEIPT_V1",
+  "utc": "2026-10-19T06:43:51.117216+00:00",
+  "test_count": 13,
+  "tests": [
+    "test_small_files_share_window_without_combining_identity",
+    "test_large_original_exact_ordered_nonoverlapping_coverage",
+    "test_raw_and_batch_boundaries",
+    "test_empty_files_have_no_zero_length_payload",
+    "test_all_empty_and_no_files",
+    "test_deterministic_reexecution_does_not_issue_new_window",
+    "test_existing_144_byte_canary_remains_separate",
+    "test_invalid_canary_option_refused",
+    "test_wrong_txid_and_changed_selector_refused",
+    "test_invalid_caps_and_types_refused",
+    "test_fractional_or_boolean_file_size_refused",
+    "test_wrong_empty_hash_refused",
+    "test_distinct_group_txids_cannot_be_merged"
+  ],
+  "result": "PASS",
+  "command": "python -B -m unittest -v test_tls_v10_batch_plan",
+  "exit_code": 0,
+  "planner_sha256": "ac9029ede88e8f1f53b7dee11ce1c7c79fe933400643cd67b077397544fdf7b1",
+  "test_sha256": "bd77f082d920b36141c67a657c5dd23133180cca3474991c53d73730e124cc1f",
+  "transcript_sha256": "f91a0d31018a054f1ff9e64b6767b0011931d7e4f5cbbea01fe2a69478ded170",
+  "tested_scope": "PURE_SYNTHETIC_PLANNING_ONLY_NOT_SOURCE_SENDER_OR_PRODUCTION_GATE",
+  "source_files_read": 0,
+  "payload_bytes_transferred": 0
+}
