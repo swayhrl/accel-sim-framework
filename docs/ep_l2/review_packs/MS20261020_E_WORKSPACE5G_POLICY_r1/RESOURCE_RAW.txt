@@ -1,0 +1,14 @@
+$ hostname
+huangrulin-174
+$ readlink /proc/self/ns/mnt
+mnt:[4026534768]
+$ df -B1 -P /workspace /root/share
+Filesystem          1-blocks          Used   Available Capacity Mounted on
+overlay        3779302981632 3538366517248 48881889280      99% /
+/dev/md127     7143083376640 6738674180096 44341280768     100% /root/share
+$ findmnt -T /workspace -o TARGET,SOURCE,FSTYPE,MAJ:MIN,FSROOT
+TARGET SOURCE  FSTYPE  MAJ:MIN FSROOT
+/      overlay overlay   0:156 /
+$ stat -c '%d %i %n' /workspace /root/share
+156 32926662 /workspace
+2431 2 /root/share
