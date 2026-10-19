@@ -2,7 +2,7 @@
 
 Producer branch: `hrl/iscas2027-dtc-ag6-v2-prep-gate-174-v1`.
 
-早期源码通知HEAD为`29b1eb5428c42c692e031c65b540b132e208c0f5`；BA新提交已引用该通知。最终独立review HEAD及完整回读将在本文件的publication follow-up中固定。BA消费时只取明确SHA，不将移动branch tip作为Core/机制基底。
+已发布、回读的完整审查HEAD为`13c08ad37445ba8bc1dc32862a18861a091bd12e`，tree为`4eba1bfe5de72471b03f67f212947bfb90c57090`，56个review blob逐一核对且clean。精确收据为`PUBLICATION_READBACK.json`。本publication follow-up仅增加该收据、HEAD通知与索引，不改变BASE/源码/提案裁决。早期源码HEAD `29b1eb5428c42c692e031c65b540b132e208c0f5`已被BA引用。BA按此明确review SHA消费，不将移动branch tip作为Core/机制基底。
 
 | Anchor | Exact commit / verdict |
 |---|---|
