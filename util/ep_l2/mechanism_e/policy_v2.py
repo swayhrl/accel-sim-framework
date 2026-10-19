@@ -106,7 +106,9 @@ def condition_check(item,spec,digest):
     check(cell is not None,'explicit V2 planned condition required; contingency needs E review')
     check(cell['workload']==spec['identity']['workload'] and cell['profile']==spec['profile'],
           'different V2 condition/input/profile')
-    check(spec['comparison_group']=='V2_'+cell['group']+'_'+cell['workload'], 'different V2 comparison group')
+    # A main F/S anchor participates in several ablations/diagnostics on the
+    # same input. Budget/cell groups stay separate; comparison family is shared.
+    check(spec['comparison_group']=='V2_MAIN_'+cell['workload'], 'different V2 comparison group')
     bucket=spec['budget_bucket']
     if bucket=='contingency':
         check(bool(spec.get('contingency_review')), 'canary/repair/retry needs explicit E reason')

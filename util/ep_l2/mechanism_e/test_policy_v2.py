@@ -21,6 +21,31 @@ class V2Tests(unittest.TestCase):
         p.amend(self.ledger,1792420000)
         self.save()
 
+    def comparison_fixture(self):
+        matrix=json.loads((Path(__file__).parent/'fixtures/full_system_v2_matrix.json').read_text())
+        path=self.root/'matrix.json';path.write_text(json.dumps(matrix))
+        item=self.ledger
+        item['full_system_matrix']={'path':str(path),'sha256':c.digest(path),'matrix':matrix}
+        item['final_source_identity']=item['qualifications']['q']['qualification']['source_identity']
+        return item,matrix['conditions']
+
+    def test_one_main_anchor_family_reusable_for_every_same_input_condition(self):
+        item,cells=self.comparison_fixture()
+        for cell in cells:
+            spec=dict(self.spec,identity=dict(self.identity,workload=cell['workload']),
+                condition_id=cell['condition_id'],profile=cell['profile'],
+                comparison_group='V2_MAIN_'+cell['workload'],budget_bucket=p.GROUP_BUCKET[cell['group']])
+            self.assertEqual(p.condition_check(item,spec,c.digest),cell)
+
+    def test_anchor_reuse_never_changes_condition_budget_or_input_family(self):
+        item,cells=self.comparison_fixture();cell=next(x for x in cells if x['group']=='REMOVE_ONE')
+        spec=dict(self.spec,identity=dict(self.identity,workload=cell['workload']),
+            condition_id=cell['condition_id'],profile=cell['profile'],comparison_group='V2_MAIN_'+cell['workload'],
+            budget_bucket=p.GROUP_BUCKET['MAIN'])
+        with self.assertRaisesRegex(ValueError,'budget bucket'):p.condition_check(item,spec,c.digest)
+        spec.update(budget_bucket=p.GROUP_BUCKET[cell['group']],comparison_group='V2_MAIN_OTHER_INPUT')
+        with self.assertRaisesRegex(ValueError,'comparison group'):p.condition_check(item,spec,c.digest)
+
     def test_amend_preserves_t0_and_every_attempt(self):
         self.ledger.update(t0_unix=1792414193,actual_starts=1,screen_maximum=6)
         self.ledger['attempts']=[{'actual_start':True,'state':'FAILED','budget_bucket':'victim'}]
