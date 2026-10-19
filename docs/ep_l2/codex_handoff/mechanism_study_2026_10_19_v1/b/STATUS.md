@@ -1,48 +1,51 @@
-# B — victim implementation source checkpoint
+# B — source r2; native correctness still pending
 
-New Goal/campaign EPL2_MECHANISM_STUDY_20261019_V1 on original174. Branch
-hrl/ep-l2-ms20261019-b-victim-v1 in Framework and Core; Framework control parent
-d9263fa2431592b33e900d9b48c6f20029d8b544, Core parent84359d4. MASTER_PLAN,
-EXPERIMENTS, CAMPAIGN and B responsibilities read; A interface980072bb read.
-No old Goal/branch/acceptance/raw was reset or overwritten.
+Authority d9263fa2431592b33e900d9b48c6f20029d8b544 and original174 retained.
+Core b90ed7c14e7b00ec4c68a26af224be3d2620f647 is pushed and exact remote
+SHA/tree/all38 B-file bytes verified. Branch hrl/ep-l2-ms20261019-b-victim-v1.
+Old clean-first Core89a75b24, Framework ebfb5371, review pack r1, RO/parameter
+candidates and all old raw/ledgers remain intact. R1 source was not qualified.
 
-Historical be5dcbe1 finite128 directory, cache consumers and native test sources
-are selectively ported. Old c197 engineering results and uncompiled r14 source
-do not confer new qualification. Current parent atomic masks/labels, Tag pending
-victim binding, quota, RG1 and bypass corrections are preserved. Five A-owned
-public source files remain byte-identical to84359d4; a narrow TEXTUAL hook patch
-is provided for A, never applied by B.
+R2 adds two independent SOURCE candidates after the clean checkpoint:
 
-CLEAN_ONLY source keeps exact payloads in the paid1168-slot pool, uses one
-shared128 WAD/TVD directory, charges the extra1-cycle victim query and P1 data
-read, preserves pins/versions through real response enqueue, supports missing-
-sector fallback and same-handle clean promotion. Query tickets are cached
-through retries instead of repeatedly scanning the victim directory. A must
-close final WAD/metadata-port integration before qualification.
+- Dirty pending/inflight: distinct client+UID+generation keys in the existing
+  non-RG1 bank scoreboard; hold WB role while a reader pin protects a queued
+  operation, defer role transfer across lower acceptance/set_done until actual
+  enqueue/unpin. Preserve P1, independent packet snapshot, writer/atomic wait,
+  partial unknown-sector fallback, UID cancellation and token drain.
+- Fixed capacity64: reciprocal bank quotas16 victim/276 other, total64/1104 of
+  original1168. Unused64 is withheld from all non-victim roles even with zero
+  victims. One exact-handle replacement credit supports real landing/rollback;
+  promotion cannot exceed non-victim quota. This is a fixed bank-capacity
+  partition with identical pointer mapping, NOT fixed physical IDs or a new
+  victim SRAM. Other-role headroom at1024 residents is80 instead of144.
 
-Eleven finite native process inputs are prepared: component modules; primary
-1024Tag/1168/D512 cache/partition nonzero version reference, cyclic17 versus
-streaming negative, sector3/1/0/2, missing-sector retirement, dirty snapshot;
-native simple-DRAM matching and backpressure/promotion/lifecycle groups.
-Expected51/17 lower reads and2/1 native simple-DRAM issues are assertions in
-unexecuted test source, NOT observed results. Actual hits and DRAM delta UNKNOWN.
+Six A-owned public files remain identical to84359d4. B only generated a textual
+adapter; A alone integrates it with newer diagnostic/observer interfaces and
+reviews WAD metadata query/update/completion ports and control costs. No whole
+historical branch merge. R2 consumers require r2 adapter, never r1 hooks.
+Do not delay A's independent diagnostic release on B. RO/diagnostic/RG1/MQ2/
+P2/C8 combinations and fixed+dirty are unqualified.
 
-DIRTY_INFLIGHT_ONLY remains a separate draft; pending dirty forwarding and
-same-budget fixed physical victim partition are NOT_IMPLEMENTED. Fixed cannot
-be faked with a dynamic count cap. Full pending forwarding requires explicit
-same-handle WB/read logical bank identity plus delayed role change while a read
-is pinned; public delta belongs to A. No subset is called full TVD.
+18 finite process inputs are prepared, zero compiled/executed: source-bound old
+bank alias failure (expected21, NOT observed), independent logical drain/P1/
+UID cancel/generation reuse; fixed quota/credit/rollback; actual primary cache
+nonzero returned-sector reference with OFF/ON lower requests; negative stream;
+partial/out-of-order fill; dirty inflight and pending completion while reader
+bank-denied; dynamic/fixed96-line contrast; native simple-DRAM issue groups and
+host-prefill exact alias gates. Numerical expectations are unexecuted assertions,
+not actual hits or saved reads. No runtime effective dump or binary exists.
 
-Initial live workspace10277838848B was41261768704B short of48GiB. No native
-compiler/test/runtime build, full application, lease or permanent waiter was
-started by B. Source generation, Python TEXT parsing, git patch check and hash
-checks passed; these are not native functional validation. E admission and an
-A-integrated exact source/ABI are required for actual execution. Goal is not
-complete; this is a reviewable source checkpoint with explicit remaining work.
+One bounded current resource/process read at13:34UTC found workspace5600256000B,
+below51539607552B. Two simulator processes belonging outside B were observed
+and left untouched. New shared registry still lacks E admission/handoff; no
+shadow registry or watcher was created. B started zero compiler, native tests,
+simulators, leases or full apps. Text/Python AST/hash/patch checks passed ONLY.
 
-Core artifacts: docs/ep_l2/ms_victim/{README.md,RELEASE_CANDIDATE.json,
-RESOURCES_AND_TEST_SCOPE.md,adapter_r1/A_PUBLIC_HOOKS.patch,
-test_plan_r1/NATIVE_TEST_PLAN.json}. Exact Core source and remote readback are
-bound by RECEIPT.json/review pack MS20261019_B_VICTIM_SOURCE_r1. A/E receive one
-handoff after publication; no full applications by B and no old performance
-number relabelled as new mechanism evidence.
+Actual clean responses and DRAM-read change remain UNKNOWN; full dirty/fixed
+qualification is also pending. Need A's exact integrated objects and metadata
+review, E admission under unchanged resource floors, actual finite execution
+including remaining ICNT/pin/rollback/generation/epoch boundaries, then E's
+independent qualification. Goal is active and incomplete; source progress must
+not be labelled completed functionality. Continue on the exact A/E dependency
+event without a resident poller. Review pack: MS20261019_B_VICTIM_SOURCE_r2.
