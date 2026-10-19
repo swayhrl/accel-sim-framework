@@ -11,8 +11,14 @@ names=[wid+'_EXACT_SOURCE_WINDOW_BINDING.json',wid+'_SOURCE_GATE_PASS_COPY16.jso
        wid+'_SOURCE_READY_COPY16.json','TLS_V10_P9_EXACT_WINDOW_PROTOCOL_ADOPTION_COPY16.json',
        'tls_v10_p9_exact_window_runner.py','test_tls_v10_p9_exact_window_runner.py']
 bare='D:/repo/storage-ops-174new-164-exec-v1/.git/source-evidence.git'
-result=subprocess.run(['git','--git-dir='+bare,'cat-file','--batch'],
-    input=''.join(commit+':'+P+n+'\n' for n in names).encode(),capture_output=True,check=True).stdout
+def read_source_git(args,input=None):
+ import time
+ for attempt in range(3):
+  r=subprocess.run(['git','--git-dir='+bare,'-c','http.lowSpeedLimit=1','-c','http.lowSpeedTime=30',*args],input=input,capture_output=True,timeout=120)
+  if r.returncode==0:return r.stdout
+  if attempt==2:raise RuntimeError(r.stderr.decode(errors='replace')[-1600:])
+  print('Bounded immutable Source control-blob transport retry',attempt+1,flush=True);time.sleep(2*(attempt+1))
+result=read_source_git(['cat-file','--batch'],input=''.join(commit+':'+P+n+chr(10) for n in names).encode())
 folder='source_'+commit[:7];D=t.META/folder;D.mkdir(exist_ok=True)
 pos=0
 for n in names:
@@ -31,5 +37,5 @@ print(json.dumps(dict(window_id=wid,source_ready_commit=commit,cache=folder,
 
 if 'post_stage_recovery_code_sha256' in R and R['post_stage_recovery_code_sha256']=='408e83ac9d468b80e47364dbc115cf85ab62b0bce9504bcfcbb1b103e2b30ebb':
  for n in ['tls_v10_one_shot_stage_recovery.py','test_tls_v10_one_shot_stage_recovery.py','TLS_V10_FOLLOWUP_PRESERVED_STAGE_RECOVERY_QUALIFICATION_20261020.json']:
-  raw=subprocess.check_output(['git','--git-dir='+bare,'show',commit+':'+P+n]);(D/n).write_bytes(raw)
+  raw=read_source_git(['show',commit+':'+P+n]);(D/n).write_bytes(raw)
  assert t.sha(D/'tls_v10_one_shot_stage_recovery.py')==R['post_stage_recovery_code_sha256']
