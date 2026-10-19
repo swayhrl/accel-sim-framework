@@ -1,0 +1,15 @@
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ms_victim/../../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:2996:45: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+ 2995 |           m_ep_l2_payload.resident(handle.payload_id).allocation_role !=
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2996 |               ep_l2_payload_store::RESIDENT &&
+      |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+ 2997 |           !(m_ep_l2_payload.resident(handle.payload_id).allocation_role==ep_l2_payload_store::RO && m_ep_l2_payload.resident(handle.payload_id).status==ep_l2_payload_store::RO_FILL_ATTACHED))
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ms_victim/native_fixture.h:6,
+                 from /workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ms_victim/test_native.cc:2:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ms_victim/../potential_fixture.h: In destructor ‘fixture::~fixture()’:
+/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ms_victim/../potential_fixture.h:53:14: warning: deleting object of polymorphic class type ‘partition_mf_allocator’ which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
+   53 |   ~fixture(){delete alloc;delete part;delete stats;delete gpu;}
+      |              ^~~~~~~~~~~~
+[100%] Linking CXX executable ep_l2_ms_victim_native
+[100%] Built target ep_l2_ms_victim_native
