@@ -2,6 +2,11 @@
   "schema": "DTC_SEM1_SOURCE_PREPARATION_COMMANDS_R1",
   "status": "PREPARED_NOT_TESTED",
   "gate": "WAIT_COORDINATOR_CPU_ROLE_RESOURCE_RELEASE",
+  "controller_argv_template": ["/usr/bin/env", "-i", "PATH=/usr/bin:/bin", "LANG=C", "LC_ALL=C", "/usr/bin/python3", "-I", "-B", "FIXED_FRAMEWORK_PACK/implementation_r1/bounded_cpu_build.py", "configure_OR_build"],
+  "controller_clean_environment": {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"},
+  "child_clean_environment": {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/tmp", "CUDA_VISIBLE_DEVICES": ""},
+  "post_reap_group_signals_allowed": false,
+  "identity_receipts": ["boot_id", "start_pid_start_ticks_pgrp_session", "Popen_terminal_exit_and_reap", "current_instances_after_reap", "CLEANUP_UNRESOLVED_if_leftovers"],
   "core_commit": "1fcf5113c08a27b64ccca872c4a8fba4c12c1ece",
   "core_worktree": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1",
   "build_dir": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
@@ -43,7 +48,7 @@
   ],
   "runtime_environment": {"CUDA_VISIBLE_DEVICES": "", "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build"},
   "roles_to_register_before_execution": [
-    {"role": "SEM1_CPU_BUILD_RESOURCE_CONTROLLER", "executable": "/usr/bin/python3", "script": "implementation_r1/bounded_cpu_build.py", "source": "fixed Framework commit/blob; foreground configure/build only, no fixture/sim invocation"},
+    {"role": "SEM1_CPU_BUILD_RESOURCE_CONTROLLER", "executable": "/usr/bin/python3", "interpreter_flags": ["-I", "-B"], "clean_environment_required": true, "script": "implementation_r1/bounded_cpu_build.py", "source": "fixed Framework commit/blob; foreground configure/build only, no fixture/sim invocation"},
     {"role": "SEM1_CPU_CONFIGURE", "executable": "/usr/bin/cmake", "source": "Core pinned tree; no simulator target launch"},
     {"role": "SEM1_CPU_BUILD", "executables": ["/usr/bin/cmake", "/usr/bin/make", "/usr/bin/x86_64-linux-gnu-g++-11", "/usr/lib/gcc/x86_64-linux-gnu/11/cc1plus", "/usr/bin/as", "/usr/lib/gcc/x86_64-linux-gnu/11/collect2", "/usr/bin/ld", "/usr/bin/ar", "/usr/bin/ranlib"], "note": "resolved compiler helper paths; hashes in HOST_COMPILER_IDENTITIES.sha256; only exact fresh diagnostic build descendants, no directory whitelist"},
     {"role": "SEM1_CPU_ACTUAL_LDST_FIXTURE", "executable": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst", "source": "tests/dtc_l1_sem1_values_ldst.cc at fixed Core commit", "actual_binary_SHA": "REQUIRED_AFTER_BUILD_BEFORE_EXECUTION", "actual_library_SHA": "REQUIRED_AFTER_BUILD_BEFORE_EXECUTION"}
