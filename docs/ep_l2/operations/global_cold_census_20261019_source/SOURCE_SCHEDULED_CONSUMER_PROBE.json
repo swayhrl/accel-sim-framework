@@ -1,0 +1,64 @@
+{
+  "at_epoch": 1792409627.5450256,
+  "probes": [
+    {
+      "command": [
+        "crontab",
+        "-l"
+      ],
+      "error": "FileNotFoundError"
+    },
+    {
+      "command": [
+        "systemctl",
+        "list-timers",
+        "--all",
+        "--no-pager"
+      ],
+      "returncode": 1,
+      "sha256": "5aa1f455d5a9163b8ecbad00f3a5e89a62b2d5414d6150d481692269cbf53caa",
+      "bytes": 118,
+      "local_paths": [],
+      "empty_stdout": true
+    },
+    {
+      "command": [
+        "tmux",
+        "list-sessions",
+        "-F",
+        "#{session_id} #{session_name} #{session_windows}"
+      ],
+      "returncode": 0,
+      "sha256": "91da2171d2e9d1d30a5b31d50cf802d767a5d459c69797f05b8fb0c8db3f42ca",
+      "bytes": 199,
+      "local_paths": [],
+      "empty_stdout": false
+    },
+    {
+      "path": "/etc/cron.d/e2scrub_all",
+      "sha256": "d4df081b982b23e66cac7102f9d91032f296caf13031991d90af44ee6cbf6e3b",
+      "local_paths": []
+    },
+    {
+      "path": "/etc/cron.d/sysstat",
+      "sha256": "47a67deba0d029d43209e6e512399543a945172f2a640021a6c21422a66adb1a",
+      "local_paths": []
+    },
+    {
+      "path": "/etc/cron.daily/apt-compat",
+      "sha256": "1983c659b042b1ec26127e7874954d83cd97eb8dcfd03238a7d2031ea0182fbe",
+      "local_paths": []
+    },
+    {
+      "path": "/etc/cron.daily/dpkg",
+      "sha256": "9f2fdd4b4e7706dda74e8e443e1e1da0fbbb19c62a58e230e90d648b69177c35",
+      "local_paths": []
+    },
+    {
+      "path": "/etc/cron.daily/sysstat",
+      "sha256": "bf4e40f5cbe6a073dbd2b7148a8f4c574e33729426d44b0ef852d78f12c8a0c9",
+      "local_paths": []
+    }
+  ],
+  "coverage": "Bounded local scheduler discovery; absence is not proof of no remote/planned consumers"
+}
