@@ -1,0 +1,41 @@
+{
+  "acceptable_next": "NEW native-only testadmission on exactretainednew2ELFs/current8archives/generatedversion/flags/libs; preservefailedarchiveguardrevision andold20ELFs. Runtime67fd/C994 and17unaffectedELFs remainbyte-identical. Exactsource/artifact identities are explicit, banners are hostmetadata; any additional productioncode/config change needs separate affected review.",
+  "actual_relinked_archive_lines": [
+    "[ 89%] Linking CXX static library libptxsim.a"
+  ],
+  "all_current_archive_sha256": {
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda/libcuda.a": "f54931e77993276b0edd9f553f055e404ae7b183b03d17b3e3c3bc59504578b5",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libentrypoint.a": "2362e2c81e2b1e2ee4938464fa0b250b959deaf5aaec556ed55f15d7d081f961",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a": "27c9ea1f9ce4c3fc0a03bd0a2d9c3016b5c3d84432a373d5479efe6b6014cd73",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/cuda-sim/libptxsim.a": "d0247d71122b10b7941c32d3cd7ec1eacfbc40155635e1539882d3cfdba305d8",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a": "09ce85c1a8e7ba79e8a82493e29187a50d2bcd7a530dd5c46405aa37c81532e4",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/intersim2/libintersim.a": "b31921aee2ab7bfe46f04bb77d3aa099b679421de52d6aaf90afda7cf9086bab",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/trace-driven/libtrace-driven.a": "a7eb2ead505aba72397074b557de35cc3f3bdd8bdbd607f6e9d28f3f418fcfca",
+    "/workspace/build/ep-l2-ms20261019-a-common-native-r1/trace-parser/libtrace-parser.a": "6935b6700f62adf4726f5db0634417f4de8f147a9eea1055ecdc3144aab342b3"
+  },
+  "at_unix": 1792429862.6683836,
+  "changed_fixture_ELFs": [
+    "ep_l2_ms_victim_native",
+    "ep_l2_ro_tvd_combined"
+  ],
+  "claims_not_made": [
+    "No claim old andnewlibptxsim archive byteidentical",
+    "No claim oldR3archiveprehash was sealed whenitwasnot",
+    "No runtimeCore retagging",
+    "No qualificationPASS beforeactualnativeconditions"
+  ],
+  "fixture_Core": "97fd7a3d872f572818afee1f99343368f89b7ed9",
+  "full_app_starts": 0,
+  "generated_version_sha256": "8bc6f3591e499398a9ae50b0444ab5611c205d6478161726d2d721cfb0144768",
+  "generated_version_text": "const char *g_gpgpusim_build_string=\"gpgpu-sim_git-commit-97fd7a3d_modified_0.0.\";\n",
+  "generator_source_sha256": "c9ee0e1c647fdbfc7a37f6ec14e136d8fb5b196bc32b977ac6e61e4bbb62ba42",
+  "only_source_reference": "src/cuda-sim/cuda-sim.cc2258 in print_splash() host fprintf; no simulatedclock/memory/data control reads this generated value",
+  "production_tree_equal": true,
+  "reviewer": "E",
+  "runtime_main_sha256": "67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de",
+  "runtime_producer_Core": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+  "scientific_acceptance": false,
+  "source_reference_function": "void print_splash() {\n  static int splash_printed = 0;\n  if (!splash_printed) {\n    fprintf(stdout, \"\\n\\n        *** %s [build %s] ***\\n\\n\\n\",\n            g_gpgpusim_version_string, g_gpgpusim_build_string);\n    splash_printed = 1;\n  }\n}\n\n",
+  "status": "E_GENERATED_BANNER_CHANGE_CLASSIFIED_TEST_NATIVE_ONLY_REVIEW_ALLOWED_NOT_QUALIFIED",
+  "unaffected_fixture_ELFs_byte_identical": 17
+}
