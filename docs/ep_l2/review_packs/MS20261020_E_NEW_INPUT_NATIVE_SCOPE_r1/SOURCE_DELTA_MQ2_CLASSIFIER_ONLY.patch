@@ -1,0 +1,12 @@
+diff --git a/gpu-simulator/trace-driven/trace_driven.cc b/gpu-simulator/trace-driven/trace_driven.cc
+index f27901c3e..dbe1c55ae 100644
+--- a/gpu-simulator/trace-driven/trace_driven.cc
++++ b/gpu-simulator/trace-driven/trace_driven.cc
+@@ -192,6 +192,7 @@ bool trace_warp_inst_t::parse_from_trace_struct(
+   // get the opcode
+   std::vector<std::string> opcode_tokens = trace.get_opcode_tokens();
+   std::string opcode1 = opcode_tokens[0];
++  ep_l2_mq2_ordinary_read = inst_t::ep_l2_plain_ldg(opcode_tokens);
+ 
+   std::unordered_map<std::string, OpcodeChar>::const_iterator it =
+       OpcodeMap->find(opcode1);
