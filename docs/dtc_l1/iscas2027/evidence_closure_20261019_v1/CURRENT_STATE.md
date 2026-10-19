@@ -1,7 +1,7 @@
 # Execution coordination state
 
-Updated: 2026-10-20T00:14:51.803183+08:00.
-Status: **V2_SOURCE_CONVERGENCE_BASE_INDEPENDENT_REVIEW_RESOURCE_GATED**.
+Updated: 2026-10-20T00:46:45.193412+08:00.
+Status: **V2_SHARED_OBSERVER_ROLES_AND_AG6_ADAPTERS_QUALIFIED_SINGLE_WORKER_RELEASE_PREPARING**.
 Same Goal continued in original `huangrulin-174`; no reset/restart. `/root` is
 sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 `46df8267`; AG4/AG5 frozen contracts and old UUIDs remain sealed.
@@ -11,20 +11,21 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 | AG5 canonical integration | AG5 owner/reviewer exact bytes; post-fork guard exact apart from actual-start metadata; shared callback current-role/peer checks source integrated | AG5_INTEGRATION_STATIC_EQUIVALENCE_V2.json |
 | CPU fixture | New16,616-byte ELF compiled/frozen; actual targeted CPU fixtures now executed in bounded qualification, no model | ag5_v2_build_receipts_attempt2/ |
 | Changed observer/guard qualification |14+5+first root-order actual passes preserved; remaining5real guard cases PASS after repair;2real CPU roots shared callback/helper/cache/exit PASS under new5GiB policy; all event-proven instances absent | ag5_v2_current_cpu_qualification_r2/ |
-| Actual COV/SEM/ROB roles | Actual source-bound CPU manager published f724; two finite admissions hostIO30.00/26.85 refused before child; three-role qualification incomplete | COV_EXTERNAL_VIEW_SOURCE_INTAKE_V2.json |
-| SEM1 | Configure1 exit0, own group reaped/empty; build0, linked runtime0; preserve config, extra Doxygen metadata reviewed and future hashes fixed | SEM1 5a54351b + f1174810; sem1_v2_configure_intake/ |
-| ROB1 | Configure/build/actual LDST runtime0; prior small helper PASS retained; latest paired hostIO22.15/26.52 refused | ROB1 a49911d4 |
+| Actual COV/SEM/ROB roles | All3 actually observed separately; SEMbuild/ROBconfigure+build/COV same-process ACK4tests exit0/reaped; actual changed-release binding rejected; no joint or continuous3-role claim | execution/cpu_real_roles_v2_actual_intake_attempt4/ |
+| SEM1 | Configure1/build1 exit0/reaped; actual fixture ELF and whole library9-file static ABI closure frozen; ten-mode runtime source prepared, runtime0/nativeUNPROVEN | execution/sem1_fixture_static_intake_v1/ |
+| ROB1 | Configure1/build1 exit0/reaped; actual LDST ELF and whole library9-file static ABI closure frozen; six-mode runtime source prepared, runtime0 | execution/rob1_fixture_static_intake_v1/ |
 | AG final preparation | Fixed review13c08ad3, notificationf8cbc9d2;56 review blobs +48 original Git receipt hashes verified; four-arm270-option/input consistency checked | ag6_final_prep_intake/ |
 | BASE eligibility | Both exact-tuple imports accepted by BA after independent SEM1/ROB1 reviews and parent closed-event proof join; old executor gaps retained | AG6_BUDGET_LEDGER.json |
-| Resource window | Last actual paired hostIO0.30/0.11 PASS at16:09Z; ~49.90GB free. User now authorizes >5GiB disk floor; implementation/readback before next new start, other gates unchanged | cpu_real_roles_v2_admission_attempt2/ |
+| Resource window | Latest actual adapter complete paired R2 PASS under strict>5GiB policy; actual mount about46GiB available. Every future start still requires its own fresh complete R2 and expected-write assessment | execution/ag6_cpu_adapter_actual_attempt3/admission/ |
 | User disk update | Strictly>5GiB on actual output mount; <=5GiB holds new builds/sims and protects own tasks; expected writes assessed, no hidden10GiB reserve | USER_DISK_AUTHORIZATION_20261020.json |
-| AG6 new starts |0/4; four new identity/science rows registered, dispatch held; separate from BA32, no replacement/fifth/sixth | AG6_BUDGET_LEDGER.json |
+| AG6 new starts |0/4; both BASEs accepted; exact4 UUIDs frozen;4 parser groups+actual prelaunch identity+2 closedCPU map joins PASS. Default1 executable release being completed | execution/ag6_cpu_adapter_actual_attempt3/; execution/AG6_BUDGET_LEDGER.json |
 | BA full simulations / F |0/32; provisionalO, old selection preserved; P8 F not launched; dual fullsim unqualified, default1 | BUDGET_LEDGER.json; SELECTION.json |
 | Paper / evidence scope | v0.18/DC untouched; conditional/numeric/native/ISA/coherence claims stay separate; original44/GM12 preserved | SCIENTIFIC_SCOPE_CURRENT.md |
 
 User disk update applies to future entries only; all earlier refused admissions remain refused. No resource failure authorizes an old-goal restart. Existing ELF/config
 work is reused; future runtime release needs the converged source closure and
 fresh per-entry full host+cgroup R2. No model canary or simulation start occurred.
+
 
 ## Historical chronological record
 
@@ -235,3 +236,5 @@ This finite source registration does not itself qualify the observer or dispatch
 Guard/shared CPU tests remain closed pending their separate later fresh release.
 
 Actual CPU role manager attempt4: SEM build, ROB configure/build, COV same-process ACK/four tests each passed fresh5GiB paired R2, live observation and exit0/reap. All3 roles observed separately; changed release binding rejected on the actual live SEM controller. No joint3-role or dual-simulator qualification; simulation starts0. Exact receipts: execution/cpu_real_roles_v2_actual_intake_attempt4. AG6 adapter interfaces now registered for a finite CPU-only check; no AG6 fork released.
+
+AG6 adapter actual attempt3 PASS_AG6_CPU_ADAPTER_INTERFACES_ONLY:4 declared-synthetic parser interface groups,1 actual prelaunch identity call (511 trace-member stat checks,702 source SHA checks,12 runtime files,0 trace-body bytes),2 already-closed CPU mapping postclose joins, no new roots/simulations. First schema mismatch and second registration-path refusal remain failed and separately preserved. Actual matching SEM/ROB fixture ABI/static dependency closures are published; fixture runtime source prepared, values still unexecuted/nativeUNPROVEN. AG6 starts0/4, single-worker executable publication still required.

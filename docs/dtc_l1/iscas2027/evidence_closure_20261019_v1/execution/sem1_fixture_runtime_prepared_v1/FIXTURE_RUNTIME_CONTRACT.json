@@ -1,0 +1,422 @@
+{
+  "schema": "DTC_SEM1_ACTUAL_OBJECT_FIXTURE_RUNTIME_PREPARATION_V1",
+  "status": "PREPARED_NOT_TESTED_NOT_A_RUNTIME_RELEASE",
+  "coordinator_manager_reviewed": "f7246c5d8a2401c23c4b50be051af1585a49cf42",
+  "current_execution_counts": {
+    "configure": 1,
+    "fresh_ABI_build": 0,
+    "fixture": 0,
+    "simulator_dispatch": 0
+  },
+  "core_repository": "swayhrl/gpgpu-sim",
+  "core_commit": "1fcf5113c08a27b64ccca872c4a8fba4c12c1ece",
+  "core_tree": "90c7da851edf5c6c815a3821ff135d299b3f5ba2",
+  "production_anchor": "c8090115bd57512b1b23fca7d925301fa620c751",
+  "core_source_identity": [
+    {
+      "path": "CMakeLists.txt",
+      "blob": "4e2c939d76241af5b2c884df696b44cb3ba31096",
+      "sha256": "a8cd6242380f832f7546a5aadbf5871989260383c9133e1c492fc5b6c3f08ac4",
+      "bytes": 15051
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-l1-common.h",
+      "blob": "d966d651f8a0c0f73fc7ae489fd9c913dcb29ab0",
+      "sha256": "d62fee163599ca283aa04f93af9b5cd4b9ff4a97dd15f11547225a3aaaeca334",
+      "bytes": 87663
+    },
+    {
+      "path": "src/gpgpu-sim/dtc-sem1-values.h",
+      "blob": "8b129b24df412c5de6ec18932c769816664a36bf",
+      "sha256": "dd542b4416bd097ca38df0f713359bd35d84b0c49f831239c12d8458530fb841",
+      "bytes": 3191
+    },
+    {
+      "path": "src/gpgpu-sim/shader.cc",
+      "blob": "c890ecfbc703838f40ba28f356add14227822aac",
+      "sha256": "08c82a639ec6ff441b3d5353cce716fb42ec6e58d93aa9d631f22431959c473c",
+      "bytes": 344624
+    },
+    {
+      "path": "src/gpgpu-sim/shader.h",
+      "blob": "e10e27f435ede1243cda3c06f02b8bc61e16c44c",
+      "sha256": "a1ef9529c7e389e77df98337e8b1532e92262166b097f9d9e6d7ceda6a05913b",
+      "bytes": 137547
+    },
+    {
+      "path": "tests/dtc_l1_sem1_values_ldst.cc",
+      "blob": "da96de48006d1335d8747bef961bd10bb742d6a7",
+      "sha256": "6904aa940ff16f0e89900ec208fa1f7bef0cf220e6070c2d82486a3a93b2e087",
+      "bytes": 9497
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "blob": "c03efe92e303c1e557319bdc0a9b0c3f8961085e",
+      "sha256": "aeccfeff3c80bd414b0f6dcd53a00e6dd13d426578a9e41d108e45f7b03ce75f",
+      "bytes": 125951
+    },
+    {
+      "path": "configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+      "blob": "a14ae75677e3fabb260493341665f29962bfd311",
+      "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+      "bytes": 9367
+    }
+  ],
+  "postbuild_artifacts_required": [
+    {
+      "path": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+      "sha256": null,
+      "state": "NOT_BUILT_FREEZE_STATIC_ELF_BEFORE_RELEASE"
+    },
+    {
+      "path": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/libcudart.so",
+      "sha256": null,
+      "state": "NOT_BUILT_FREEZE_MATCHING_ABI_LIBRARY_BEFORE_RELEASE"
+    },
+    {
+      "path": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/CMakeFiles/dtc_l1_sem1_values_ldst.dir/link.txt",
+      "sha256": "940993b07dc91bf42d6e6274d163b23db8916641c519d94b7d957e9901f9c831",
+      "state": "CONFIGURED_LINK_RECIPE_SOURCE_ONLY_RECOMPUTE_BEFORE_PUBLICATION"
+    }
+  ],
+  "retained_configure_commit": "5a54351b874f68422f6d9e12dd04ab7e89e6febd",
+  "retained_configuration": {
+    "CMakeCache.txt_sha256": "377506f67664b8e4cf7bd414f8ef8e5acdbb451773e6e0d3e957e3af2cc66682",
+    "compile_commands.json_sha256": "bacb8a4d41ffe5662e02f661eaf18488d0c6e12dc60ffb0bad96f08ef15ecabb",
+    "required_flags": [
+      "-O1",
+      "-g0",
+      "-DDTC_SEM1_CONDITIONAL_VALUES=1"
+    ],
+    "forbidden_flags": [
+      "-DNDEBUG"
+    ],
+    "required_options": {
+      "GPGPUSIM_SEM1_CONDITIONAL_VALUES": "ON",
+      "GPGPUSIM_BUILD_DTC_L1_TESTS": "OFF"
+    },
+    "do_not_reconfigure": true
+  },
+  "entry_requirement": {
+    "parent_only": true,
+    "one_finite_cohort": true,
+    "direct_Popen_executable": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+    "mode_sequence": [
+      "shared",
+      "masked",
+      "with-e",
+      "ae",
+      "ad",
+      "no-e",
+      "wrong-byte",
+      "missing-sector",
+      "wrong-generation",
+      "early-release"
+    ],
+    "concurrency": 1,
+    "maximum_launches": 10,
+    "retry_count": 0,
+    "shell": false,
+    "stdin": "DEVNULL",
+    "start_new_session": true,
+    "actual_source_bound_runtime_launcher": "NOT_IMPLEMENTED_BY_THIS_PREPARATION",
+    "existing_f724_manager_supports_fixture_runtime": false,
+    "existing_build_controller_must_not_be_repurposed": true,
+    "no_test_run_or_import_of_prepared_classifier": true
+  },
+  "proposed_bounds_for_parent_preregistration_not_admission": {
+    "total_monotonic_seconds_including_admission_and_cleanup": 900,
+    "case_wall_seconds": 60,
+    "case_cleanup_seconds": 5,
+    "RLIMIT_CPU_soft_hard_seconds": [
+      30,
+      31
+    ],
+    "RLIMIT_AS_bytes": 2147483648,
+    "sampled_RSS_stop_bytes": 1073741824,
+    "RLIMIT_CORE_bytes": 0,
+    "RLIMIT_FSIZE_bytes": 524288,
+    "stdout_max_bytes": 524288,
+    "stderr_max_bytes": 524288,
+    "case_combined_log_max_bytes": 1048576,
+    "cohort_combined_log_max_bytes": 10485760,
+    "cohort_own_output_max_bytes": 33554432,
+    "own_output_bound_is_filesystem_quota": false,
+    "disk_floor_bytes": 2147483648,
+    "disk_start_min_bytes": 2315255808,
+    "max_descendant_processes": 0,
+    "max_tasks_in_root": 4,
+    "fresh_global_and_cgroup_R2_policy": "unchanged parent-published policy; full paired admission before first launch, validity/freshness recheck before every subsequent launch; host+cgroup memory PSI<=1 and IO-full<=25,32GiB memory headroom,no new host/cgroup OOM; no automatic polling",
+    "monitoring": "parent manager must monitor all-project resources, own live handle, own output growth and elapsed wall time throughout; every resource violation overrides expected negative exit"
+  },
+  "ownership_cleanup_required": [
+    "Parent launches each exact ELF argv with its direct Popen and retained pidfd; record boot_id,pid,start_ticks,tgid,pgid,sid,exe,cwd,argv,source hashes and monotonic start plus actual terminal wait status.",
+    "No root discovery/adoption, simulator dispatch, FLOCK execution authority, old AG4/AG5 process access or broad numeric-PID signalling.",
+    "Before reap only matching unreaped direct child permits own stop; pidfd signal or exact still-reserved own group/session according to parent frozen cleanup source.",
+    "After root reap never signal a remembered numeric PID/PGID; inspect/report exact group/session leftovers only. Any unknown descendant or leftover is CLEANUP_UNRESOLVED and stops the cohort; do not discover-and-kill or launch the next case.",
+    "Normal or expected-negative completion requires wait/reap and empty own group/session. Keep start/terminal/current-instance receipts for every case; do not overwrite prior output.",
+    "If a short-lived root exits before the readonly live observer can sample it, preserve actual Popen/wait proof and mark live process attributes UNAVAILABLE; parent must explicitly bind its observation policy. Do not invent live observations or retry to prolong execution."
+  ],
+  "output_verifier": {
+    "file": "evaluate_fixture_output.py",
+    "sha256": "e58caa464124703d65e8d2bd88c6108a2376ef8a01c48b6db8e49273be5a0b61",
+    "state": "SOURCE_PREPARED_NOT_IMPORTED_NOT_TESTED",
+    "function": "classify(mode,returncode,stdout_bytes,stderr_bytes,expected_library_path=absolute_frozen_library_path,execution_failure_reason=...)",
+    "authority_scope": "pure protocol checking only; parent must separately join authenticated Popen/resource/ABI/cleanup receipts",
+    "normally_returning_library_path": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/libcudart.so",
+    "assert_abort_library_stdout": "may be unavailable because inherited SIGABRT handler uses _exit(1) before buffered stdout flush; do not claim per-case dladdr observation when absent"
+  },
+  "cases": [
+    {
+      "mode": "shared",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "shared"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/shared",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/shared/tmp"
+      },
+      "expected_returncode": 0,
+      "expected_classification": "CONDITIONAL_SECTOR_VALUES",
+      "expected_assertions": "three consumers, requested bytes 0..3 all match; one physical refill with four accepted packets",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/shared/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/shared/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/shared/receipt.json"
+    },
+    {
+      "mode": "masked",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "masked"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/masked",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/masked/tmp"
+      },
+      "expected_returncode": 0,
+      "expected_classification": "CONDITIONAL_SECTOR_VALUES",
+      "expected_assertions": "three consumers, synthetic pre-coalesced byte mask {31,32} crosses sectors 0/1; values match",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/masked/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/masked/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/masked/receipt.json"
+    },
+    {
+      "mode": "with-e",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "with-e"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/with-e",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/with-e/tmp"
+      },
+      "expected_returncode": 0,
+      "expected_classification": "CONDITIONAL_SECTOR_VALUES",
+      "expected_assertions": "four consumers; external publication at component cycle80 plus selected source-E invalidation; later UID byte0=153; eight accepted packets",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/with-e/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/with-e/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/with-e/receipt.json"
+    },
+    {
+      "mode": "ae",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "ae"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ae",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ae/tmp"
+      },
+      "expected_returncode": 0,
+      "expected_classification": "CONDITIONAL_SECTOR_VALUES",
+      "expected_assertions": "three consumers match with hash-bankrow mode1; no conflict-spectrum or performance inference",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ae/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ae/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ae/receipt.json"
+    },
+    {
+      "mode": "ad",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "ad"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ad",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ad/tmp"
+      },
+      "expected_returncode": 0,
+      "expected_classification": "CONDITIONAL_SECTOR_VALUES",
+      "expected_assertions": "ten consumers match with progressive-wakeup mode1; no independent per-notification timing proof",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ad/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ad/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/ad/receipt.json"
+    },
+    {
+      "mode": "no-e",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "no-e"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/no-e",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/no-e/tmp"
+      },
+      "expected_returncode": 0,
+      "expected_classification": "CONDITIONAL_COUNTERMODEL",
+      "expected_assertions": "external publication without modeled store or E; exactly later UID byte0 got0 expected153, one refill; conditional countermodel",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/no-e/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/no-e/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/no-e/receipt.json"
+    },
+    {
+      "mode": "wrong-byte",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "wrong-byte"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-byte",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-byte/tmp"
+      },
+      "expected_returncode": 1,
+      "expected_classification": "EXPECTED_TARGETED_REJECTION",
+      "expected_assertions": "three consumers each show byte0 got1 expected0; all other requested bytes match; actual runtime completion assertions precede exit1",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-byte/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-byte/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-byte/receipt.json"
+    },
+    {
+      "mode": "missing-sector",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "missing-sector"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/missing-sector",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/missing-sector/tmp"
+      },
+      "expected_returncode": 2,
+      "expected_classification": "EXPECTED_TARGETED_REJECTION",
+      "expected_assertions": "fourth response withheld, active Ref assertion holds; exit2 rejection and no final SEM1_BYTE/RESULT output",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/missing-sector/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/missing-sector/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/missing-sector/receipt.json"
+    },
+    {
+      "mode": "wrong-generation",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "wrong-generation"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-generation",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-generation/tmp"
+      },
+      "expected_returncode": 1,
+      "expected_classification": "EXPECTED_TARGETED_REJECTION",
+      "expected_assertions": "accepted inflight physical generation corrupted; actual sem1_accept_sector generation/sector assertion aborts",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-generation/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-generation/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/wrong-generation/receipt.json"
+    },
+    {
+      "mode": "early-release",
+      "argv": [
+        "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build/dtc_l1_sem1_values_ldst",
+        "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-sem1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "early-release"
+      ],
+      "cwd": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/early-release",
+      "env": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "CUDA_VISIBLE_DEVICES": "",
+        "LD_LIBRARY_PATH": "/workspace/dtc-evidence-closure-20261019-v1/sem1/implementation-r1/build",
+        "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/early-release/tmp"
+      },
+      "expected_returncode": 1,
+      "expected_classification": "EXPECTED_TARGETED_REJECTION",
+      "expected_assertions": "actual physical release attempted with live Ref/Tag; combined allocation/generation/Tag/Ref assertion aborts; not isolated Ref predicate",
+      "stdout": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/early-release/stdout.log",
+      "stderr": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/early-release/stderr.log",
+      "receipt": "/workspace/dtc-evidence-closure-20261019-v1/sem1/fixture-runtime-v1/attempt1/cases/early-release/receipt.json"
+    }
+  ],
+  "positive_assertions_shared": [
+    "All issued consumers retire through real LDST collect/WB; diagnostic collected sector count equals requested count; retire follows last collection by >=1 component cycle.",
+    "Diagnostic packet queue empty; oo_active_refs=0,oo_inflight_current=0,oo_retire_count=issued; genuine RF bank blocked cycles>0; scoreboard has no pending writes.",
+    "Final source output protocol reports actual_ldst=1,kernels=0,GPU_cycle_calls=0,architectural_values=UNPROVEN,native=UNPROVEN.",
+    "wrong-byte also reaches the complete-runtime assertions before deliberately returning1; assertion negatives do not reach these final completion checks."
+  ],
+  "semantic_boundaries": [
+    "Explicit fixture producer bytes enter real reply UID map, accepted generation-scoped physical storage and actual collection quota/WB hooks; expected/reference arrays are outside Core hooks.",
+    "Five conditional positive cases, one conditional countermodel, four targeted rejection cases are separate result classes; no aggregate ten-value-tests PASS.",
+    "Synthetic instructions and pre-coalesced masks; no functional ISA, architectural register values, modeled store, input-bound application object or native equivalence.",
+    "with-e chooses an already-defined source E directly; does not establish application publication-to-E proof or add coherence.",
+    "ad exercises progressive mode but no independent per-notification schedule assertion; masked does not prove upstream coalescer/lane gather; early-release tests a compound guard.",
+    "No GPU, trace/body scan, kernel, full simulator runtime thread, gpgpu_sim::cycle dispatch, new performance, K0/candidate policy edit or AG4 retry."
+  ],
+  "blocking_before_runtime": [
+    "Complete and publish matching ABI build under separate existing parent release.",
+    "Freeze actual ELF/library/loader/DT_NEEDED/RPATH and complete loaded dependency hashes, compiler flags/assertions/config/source identities; no ldd/ELF execution discovery.",
+    "Parent publishes a new exact CPU fixture role/source-bound manager entry, expected-exit classifier integration and output/admission/ownership policy; existing f724 manager and observer role sets exclude fixture execution.",
+    "Parent reviews prepared untested classifier and source semantics, binds expected library path, finite10mode order and actual launch receipt schema.",
+    "Parent publishes separate runtime release and admits fresh full R2; this contract creates no execution rights."
+  ]
+}
