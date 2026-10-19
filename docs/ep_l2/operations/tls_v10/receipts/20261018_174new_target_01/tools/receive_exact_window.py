@@ -27,15 +27,25 @@ approved=R['source_sender_code_sha256']
 reviewed_runners={
  '20a424d9f27a918bb3546a152c58e910ef9c8c214fc277868d8c3052b8c74618':'26b7343cb42da5635d0ff12796b749315779f16b',
  '89efd25b043129d474dafb783bb1a7bd0840607d8693310aab6d525032c99194':'0f029002439a17688c8415f941b4db75710d2ef7',
+ 'aec00530c34b15a9b974b69ee756a1435d3a8c202977cce1ceff465983b5b0f5':'8f7e2ef7c487abd1c1656239259e95d06aa09065',
 }
 assert approved in reviewed_runners,'Changed Source runner requires bounded diff review'
 testsha={
  '20a424d9f27a918bb3546a152c58e910ef9c8c214fc277868d8c3052b8c74618':'3869e30195a3a589ced5fadbff655e4cf50e6400c1ad2bb8f986b706901439a9',
  '89efd25b043129d474dafb783bb1a7bd0840607d8693310aab6d525032c99194':'95f6034ec54598e8add5201fc8835f2b4b0b9f38337b68588e02ce8c643b99d3',
+ 'aec00530c34b15a9b974b69ee756a1435d3a8c202977cce1ceff465983b5b0f5':'95f6034ec54598e8add5201fc8835f2b4b0b9f38337b68588e02ce8c643b99d3',
 }[approved]
 assert t.sha(D/'tls_v10_p9_exact_window_runner.py')==approved
 assert t.sha(D/'test_tls_v10_p9_exact_window_runner.py')==testsha
 assert R['source_sender_code_sha256']==G['runner_code_sha256']==approved
+
+if 'post_stage_recovery_code_sha256' in R:
+ assert wid=='TLS_V10_P9_PUBLIC_B0010' and approved=='aec00530c34b15a9b974b69ee756a1435d3a8c202977cce1ceff465983b5b0f5'
+ assert R['post_stage_recovery_code_sha256']==t.sha(D/'tls_v10_one_shot_stage_recovery.py')=='3d3dcbc92964f111506f08b8dd6350af614327b294d7329ed27cf94654a28cb8'
+ assert R['recovery_payload_bytes_rewritten']==0
+ assert B['one_shot_coordination_commit']=='3a7ea422d3f4301688bd3cb7bcf4431b97f08e90'
+ assert B['target_receiver_preflight_sha256']=='a220032309caad16fc9e55634be742368ec9b073b4a84da98861da8cb96ad134'
+
 if adopt_name==wid+'_SOURCE_PROTOCOL_ADOPTION_COPY16.json':
  assert A['qualified_source_runner_sha256']==approved
  assert A['qualified_source_test_sha256']==testsha and A['source_fixture_tests_passed']==16
