@@ -1,6 +1,10 @@
 # TLS-V10 P9_PUBLIC recovery pointer ? INCOMPLETE GROUP, Goal ACTIVE
 
-Current verified state as of2026-10-19 09:35:03UTC: B0001?B0004 all CLOSED after Source KEEP ACK and precise journaled bridge cleanup. Real archive/native proofs37 ranges of156;276,096,473 original bytes of2,897,196,811;35 nonempty originals fully byte-covered. The281,758,582B PolyBench fdtd2d output has its first two128MiB ranges verified, with its tail/full-original SHA still pending. Full141-file/4-directory committed archive and absent-path all-file native restoration certificate are NOT available. One empty file must also be materialized/verified at complete finalization. Source retains all141 originals and remains the authoritative COMPLETE group copy; Source science release0B.
+Current verified state as of 2026-10-19T10:29:04.435434+00:00: B0001 through B0009 all CLOSED after Source KEEP ACK and exact journaled bridge cleanup. Real archive/native range proofs cover 48 ranges, 705,152,417 original bytes of 2,897,196,811. There are 43 nonempty originals with complete verified range coverage; full-original reassembly and SHA verification remain pending. Full 141-file/4-directory committed archive and absent-path all-file native restoration certificate are NOT available. One empty file also remains for finalization. Source retains all 141 originals; Source science release is 0B.
+
+Current range lookup: `TLS_V10_P9_PUBLIC_CLOSED_RANGE_RECOVERY_INDEX.json` maps each exact Source relative path/offset/length/SHA to the native164 archive pathname and volatile native range proof, with Git proof and Source ACK lineage. This is a range index, not a complete project recovery certificate.
+
+B0010 conditional request is unchanged. Source commit `5897eaf3546e3918805f74edeecd9232c70d7e4c` reports workspace 16908652544B at 2026-10-19T10:24:25Z, below the 16GiB COPY_ONLY floor by 271216640B before control budget. See `TLS_V10_P9_PUBLIC_B0010_SOURCE_RESOURCE_HOLD.json`. Only a fresh Source legal PASS and exact READY may resume staging; the Target does not infer current Source resource eligibility from this historical report.
 
 ## Immutable authority and identity
 

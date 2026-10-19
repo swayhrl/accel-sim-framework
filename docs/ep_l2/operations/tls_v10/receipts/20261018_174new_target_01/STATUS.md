@@ -1,3 +1,7 @@
+# Current 2026-10-19T10:29:04.439441+00:00 - B0010 RESOURCE_HOLD
+
+B0001-B0009 closed. Source reports workspace 16908652544B below COPY_ONLY16 floor; no B0010 READY. Published closed-range recovery index covers 48 ranges / 705,152,417B. Full P9 group incomplete; Source originals KEEP, source science release 0. Current request, txid, selector and NAS reservation unchanged.
+
 # TLS-V10 Target: B0009 closed; next frozen window pending; Goal active
 
 At2026-10-19 07:54:59UTC, the original existing P9_PUBLIC B0001 144B was accepted onto genuine164 through the existing V9 transaction and independently restored as CHUNK_RANGE_ONLY on the existing native tmpfs. No repeat Source upload, new root, nonce, request, selector, txid or second flow. Source-original deletion by Target=0; source scientific release=0. Full141-file group proof is NOT complete.
