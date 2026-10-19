@@ -1,57 +1,65 @@
-# TLS-V10 P9_PUBLIC recovery pointer ? B0001_CLOSED, not a completed group archive
+# TLS-V10 P9_PUBLIC recovery pointer ? INCOMPLETE GROUP, Goal ACTIVE
 
-Current state: the original B0001 passed Source16G admission and exact READY; at07:54:59UTC the same Target receiver accepted144B onto true164, closed/reopened its SHA, and independently restored that range on native tmpfs with frozen numeric metadata. Source READY `e6199c059b52d8ad08eed90c6f0438e42250b431`, raw SHA `ad665c055ad2210bab1df5e9ead075d0fec6344bfa4414db6f0dbe7263101575`. Range content SHA `bc85cb82388094a4cc5f7b9bb58893bd2982ad79e66a29e4fd20fa35d5ac58e6`. Accepted/archive ranges1; native range proofs1; whole-group validated files0/141; full-group native restored files0/141; Source release0. Source KEEP ACK f09ca59 was verified; at08:06:14UTC only that exact bridge payload and two empty staging directories were removed, with durable INTENT/DONE. The164/native proof copies remain intact. Source originals are retained and remain the authoritative COMPLETE group copy. Do not treat a range proof, reserved root or synthetic tests as a complete archive or release prerequisite PASS.
+Current verified state as of2026-10-19 08:36:38UTC: B0001 closed after Source KEEP ACK/precise bridge cleanup; B0002 real164 and native RANGE verification complete, Source KEEP ACK/cleanup pending. Real archive/native proofs35 ranges of156;7,661,017 original bytes of2,897,196,811;35 nonempty originals fully byte-covered. Full141-file/4-directory committed archive and absent-path all-file native restoration certificate are NOT available. One original empty file must also be materialized/verified at complete finalization. Source retains all141 originals and remains the authoritative COMPLETE group copy; scientific source release0B. No full-archive/release PASS can be inferred from these range proofs or synthetic tests.
 
-Authority: Framework `f8baa3acfdbd2f420c108d4d4baff0432ef38822`, authority text SHA256 `745fb24b603627b63bc43a1cb130a9e61038d23adee618e2850e3d80755c7bf1`, authorization JSON SHA256 `789528e6dd4e7b51c3a437e14f8a9b3df1045bfa5e1eefc71974b3324ce9b61d`. Source-only exact141 release has conditional user approval, but all full-proof and fresh Source gate/journal prerequisites must pass. Target has no Source unlink authority.
+## Immutable authority and identity
 
-## Exact retained mappings
+Framework authority `f8baa3acfdbd2f420c108d4d4baff0432ef38822`; authority text SHA256 `745fb24b603627b63bc43a1cb130a9e61038d23adee618e2850e3d80755c7bf1`; exact authorization JSON SHA256 `789528e6dd4e7b51c3a437e14f8a9b3df1045bfa5e1eefc71974b3324ce9b61d`. Source-only exact141 post-full-restoration release is CONDITIONALLY approved if ALL listed Source/Target/resource/reader/journal prerequisites pass; Target has no Source unlink right. Other24 groups remain SOURCE_KEEP.
 
-- Original root: `/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9-public-v1`.
-- Original frozen Source publication: `swayhrl/gpu-l2-cache-verilog@ecb24975c9daed9c42687849e8a2c6b350b470ff`; canonical binding `9651ab64566c1f9539a60f10973267257e543414`.
-- Full141-file inventory: `SOURCE_TLS_V10_P9_PUBLIC_FROZEN_FILES.jsonl`, SHA256 `38e5d71dae3d92c8728d511f7d648eb9eca12e99443c2072b4eb531e022072f4`.
-- Full4-directory inventory: `SOURCE_TLS_V10_P9_PUBLIC_FROZEN_DIRECTORIES.jsonl`, SHA256 `43589244defa70615b43b031c1df8edd1213e7f967cf93834ff229e4095c918b`.
-- Canonical manifest: `SOURCE_TLS_V10_P9_PUBLIC_TARGET_TRANSACTION_MANIFEST.json`, canonical SHA256 `ad7e45a12d486ea3a62ff8452df321fb9ad093ca582eb23a3c05ac716267c597`.
-- Selector: `315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a`; existing txid `574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b`.
-- True164 native reserved base: `/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a`.
-- Same base on174-new: `/root/share/mnt164/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a` via ONLY `admin-wcx@10.208.130.164:/home/shared` fuse.sshfs. The old174 path `/root/share/mnt164` is not a genuine164 view.
-- Existing partial transaction manifest: `/root/share/mnt164/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b.partial/manifest.json`. This is metadata, not a full data archive.
-- Future committed tree, CURRENTLY NOT COMPLETE: `/root/share/mnt164/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b/tree`; same suffix under native164 base. It is usable only after its matching canonical `COMMIT.json`, complete file/dir hash index and full restoration certificate exist and reverify.
-- Future full-group independent proof tree, CURRENTLY ABSENT: `/root/tls-v10-native-restore-20261018-target01/full_groups/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b/tree` on the Target's native private tmpfs. Tmpfs proofs are volatile; original bytes and frozen metadata must be retained durably on164, with proof indexes in Git/NAS.
+Source root `/workspace/worktrees/accel-sim-tls-cache/hw_run/tls-cache-p9-public-v1`, old174 namespace mnt:[4026534768], source dev156. Frozen Source publication `ecb24975c9daed9c42687849e8a2c6b350b470ff`; canonical binding `9651ab64566c1f9539a60f10973267257e543414`. Selector `315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a`; txid `574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b`; canonical manifest SHA `ad7e45a12d486ea3a62ff8452df321fb9ad093ca582eb23a3c05ac716267c597`. Existing B0001 request SHA `4e45132897553b758cd073292492ffe5ea317d91c0ff85265fd77c8efa3dfe06` and original reservation remain unchanged.
 
-All relative file names map unchanged between original root, committed164 tree and full native proof tree. No concatenated/compressed reinterpretation of original bytes is proposed. Frozen original logical bytes2,897,196,811 and allocated bytes2,897,674,240 are distinct from actual NAS use and measured source df gain.
+Full metadata inventories in this Git receipt directory:
+- `SOURCE_TLS_V10_P9_PUBLIC_FROZEN_FILES.jsonl` SHA `38e5d71dae3d92c8728d511f7d648eb9eca12e99443c2072b4eb531e022072f4`,141 regular files.
+- `SOURCE_TLS_V10_P9_PUBLIC_FROZEN_DIRECTORIES.jsonl` SHA `43589244defa70615b43b031c1df8edd1213e7f967cf93834ff229e4095c918b`,4 directories.
+- `SOURCE_TLS_V10_P9_PUBLIC_TARGET_TRANSACTION_MANIFEST.json` retains normalized original identity, full SHA and numeric UID/GID/mode/mtime for EVERY original. ctime/dev/inode/allocated remain provenance; native restoration does not claim original ctime/inode.
 
-## Recovery only after full archive acceptance
+## Exact present and future paths
 
-Future owner must locate and hash the exact manifest/COMMIT/full-file metadata index and `TLS_V10_P9_PUBLIC_ALL141_ARCHIVE_AND_NATIVE_RESTORE_PASS.json` in this receipt lineage and durable164 base. If any is absent or inconsistent, HOLD recovery/deletion claims. Today's first-range state still lacks that full141 certificate.
+Native164 reserved base: `/home/shared/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a`.
+174-new alias to SAME base: `/root/share/mnt164/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a` via ONLY `/root/share/mnt164` source `admin-wcx@10.208.130.164:/home/shared`, fstype fuse.sshfs. Old174's same-looking mnt164 pathname is not a genuine164 view.
 
-Use the byte-pinned unchanged `tools/v9_transaction.py` (SHA256 `6fd13ab5a9df4b2f6cdddcc4c1e09bb34619571efdf3a7578372dc4b776603fe`) from this Target execution branch. On a qualified native filesystem, select a NEW ABSENT directory with sufficient resource budget and root privileges for original numeric UID/GID. Verify original content SHA before and after copying; never restore over an existing worktree. Core API:
+Present accepted raw chunks: `/root/share/mnt164/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b.partial/chunks/`.
+Key for each original range: SHA256(UTF8 relative_path) + `.` + zero-padded16-digit decimal offset. Each immutable sibling `.json` records exact txid/path/offset/size/SHA. These chunks are durably verified ranges, not yet a complete original-file tree. Original per-file paths stay unchanged in the final mapping.
+
+Present independent native range proofs: `/root/tls-v10-native-restore-20261018-target01/chunk_proofs/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b/<key>/payload`, each with exact `RESERVATION.json` and `RESTORE_RECEIPT.json`. They are actual native private tmpfs copies, volatile across restart. Durable archive bytes/provenance and receipt indexes must remain on164/Git.
+
+Future committed whole-file tree, CURRENTLY NOT COMPLETE: `/root/share/mnt164/huangrulin/host174_storage_recovery/tls_v10/20261018_P9_PUBLIC_315c008ee1757637b4f68172f93e58c4916cda061936dc4d0125762e6aa9ba0a/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b/tree`. Same suffix under native164 base. Valid only with matching canonical `manifest.json` and COMMIT seal, full exact141/4 coverage, all whole-file SHA and new absent-path independent native all-file/directory restoration certificate. If partial directory gets atomically renamed at finalization, historical chunk receipts pointing to`.partial` are superseded by the final tree/index mapping; no re-upload just to change a path. SSHFS fallback may retain original partial chunks alongside final committed files; count copies separately.
+
+Future all-file native proof, CURRENTLY NOT COMPLETE: `/root/tls-v10-native-restore-20261018-target01/full_groups/574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b/tree`. Requires prior immutable absent-destination ownership reservation. Its volatile proof copy is not the permanent archive.
+
+## Receipt anchors
+
+B0001 Source READY `e6199c059b52d8ad08eed90c6f0438e42250b431`; Target dual proof `97b1d4f15e8f79e5dae3c6a253ef5f65029c25ee`; Source ACK `f09ca59c17527c21f08b97e07e704e4d4dd07750`; Target precise bridge closure `2255db854621d9473ac87bc9b53376b75bd8ee33`. Only the144B bridge payload and two empty staging directories were cleaned, originalsKEEP.
+
+B0002 request `38a773b06b7dcc3c1000cba04be1ca2f7a22be6e`, raw SHA `72083570bbdccee9ef02d1760f1d2adcb15de4f273a76ec9e28bb98fa5eccb2b`. Source READY `2e3d391d9e3982e76c31ba521a708e6e3dbb8308`, raw SHA `ae2a0a44b48c685e5f2533ee24619893bd84145650a077893c0f9a70341f2529`.34 exact ranges/7,660,873B.
+
+Target B0002 dual proof commit `eb92658fa38cdd4aa83a092ea41feda93fde684a`:
+- `TLS_V10_P9_PUBLIC_B0002_DEST_VERIFIED.json` SHA `76b2ae157424d682e6fffd3118b74d4a1575e2a76f726d6e7a47f6fb5efe34d0`.
+- `TLS_V10_P9_PUBLIC_B0002_RESTORE_VERIFIED.json` SHA `d640613a0697efb9a41279bbac5e2d768f2b0d0b959be81a4e14ddaf8a813b03`.
+- `TLS_V10_P9_PUBLIC_B0002_TARGET_RECEIVING_RECEIPT_COPY16.json` SHA `73f859c7b9c5acc53a8f83feb33de0e73063be0ed90de6305e0180878942c8d9`.
+These Git raw bytes were read back and mirrored/closed/reopened with matching SHA on genuine164 and the Source-visible original bridge. Native numeric metadata is checked against originals; SSHFS UID/GID/mode projection is only an archive observation.
+
+## Recovery after COMPLETE group acceptance only
+
+Future owner must locate and hash the matching full manifest/COMMIT/three-way all-file index and `TLS_V10_P9_PUBLIC_ALL141_ARCHIVE_AND_NATIVE_RESTORE_PASS.json`. That certificate DOES NOT EXIST at this state. Missing/inconsistent or chunk-only proof means HOLD recovery/release claims.
+
+Use unchanged `tools/v9_transaction.py` SHA `6fd13ab5a9df4b2f6cdddcc4c1e09bb34619571efdf3a7578372dc4b776603fe`, available in this Target Git lineage and durable V9 tools. Select a NEW ABSENT NATIVE destination with sufficient resources and root privileges to restore numeric UID/GID. Never overwrite an existing tree. Core example (only after independently verifying full certificate/index and resource gates):
 
 ```python
-# Run ONLY after full committed archive is independently verified and resource gates pass.
-# archive_tree is the committed genuine164 tree above; destination MUST be new and absent.
 import json
 from pathlib import Path
 import v9_transaction as tx
-manifest = json.loads((Path(archive_tree).parent / 'manifest.json').read_bytes())
-assert tx.validate_manifest(manifest) == '574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b'
-assert (Path(archive_tree).parent / 'COMMIT.json').is_file()
+m = json.loads((Path(archive_tree).parent / 'manifest.json').read_bytes())
+assert tx.validate_manifest(m) == '574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b'
+seal = dict(txid=tx.validate_manifest(m), manifest_sha256=tx.digest(tx.canonical(m)),
+            policy='EXCLUSIVE_CREATE_COMMIT_MARKER_LAST', files=len(m['files']),
+            selector_sha256=m['selector_sha256'])
+assert (Path(archive_tree).parent / 'COMMIT.json').read_bytes() == tx.canonical(seal)
 assert not Path(destination).exists() and not Path(destination).is_symlink()
-proof = tx.native_restore(archive_tree, manifest, destination)
+proof = tx.native_restore(archive_tree, m, destination)
 assert proof['status'] == 'RESTORE_VERIFIED'
 ```
 
-The implementation copies every original file, including empty files; checks full SHA; restores numeric UID/GID/mode/mtime_ns; then restores directory metadata in deepest-first order. It refuses an existing destination or SSHFS as native proof. ctime is preserved in provenance only. Actual native identity/metadata must be reread independently, not inferred from SSHFS's UID/GID projection. The new read-only all-file index helper `tools/tls_v10_full_restore_index.py` checks exact finalized archive/native file+directory inventories, full SHA and every numeric metadata field and requires the prior absent-destination ownership reservation. Its13 native synthetic tests do not certify P9 science.
+The core copies every original including empty files, verifies full SHA before/after, restores file UID/GID/mode/mtime_ns and deepest-first directory metadata, and refuses existing/SSHFS native destination. Source ctime is provenance only. The read-only all-file index helper `tools/tls_v10_full_restore_index.py` independently audits finalized archive/native inventories, every full SHA and numeric field plus absent-path reservation. Its13 synthetic tests and the14 grouped receiver/Source primitive fixture tests or384B paired test do not certify real P9 full restoration.
 
-The16GiB exception is for frozen TLS COPY_ONLY and separately qualified Source-only exact P9 release. Reverse restoration into old174, builds/sims and other operations retain their original resource/authorization policy (normally48GiB). No Source deletion command is provided here.
-
-## Next exact closure
-
-1. DONE for existing B0001: Source16G45-case policy/test review, Source fresh-at-stage actual resource/activity/identity PASS and exact144B READY.
-2. DONE real164 close/reopen SHA + native range proof. Publish/read back both exact receipt SHAs; await independent Source KEEP ACK, then exact unchanged bridge cleanup. See `TLS_V10_P9_PUBLIC_B0001_TARGET_RECEIVING_RECEIPT_COPY16.json`.
-3. Qualify small grouped sender/receiver fixtures, then serial bounded frozen ranges and actual allocated bridge costs. Reuse verified owned duplicates; no duplicate upload or second stream.
-4. Full141+4 original metadata/content coverage, committed durable archive, NEW absent full native restoration, immutable three-way all-file index and certificate. Publish source-readable exact release prerequisites.
-5. Only Source can evaluate the already-approved separate release policy and execute its qualified exact141 fsync INTENT/DONE journal. Target records a release only after Source immutable journal and actual measured df evidence. All other24 groups remain SOURCE_KEEP.
-
-B0001 closure evidence: `TLS_V10_P9_PUBLIC_B0001_BRIDGE_CLEANUP_COPY16.json`, Source ACK `f09ca59c17527c21f08b97e07e704e4d4dd07750`, ACK SHA `3ae9f8bf807b0d9e99d9a55f2077b7e1bca887f7fe1970514c359002a0124a65`. All old ACK/cleanup-pending instructions describe the prior phase. The first range is closed; qualification/adoption for the next grouped window is pending. No source scientific bytes have been released.
-
-B0002 update08:36:38UTC:34 new exact raw ranges/7,660,873B independently archived on genuine164 and restored as native ranges; Source READY2e3d391 raw SHAae2a0a44b48c685e5f2533ee24619893bd84145650a077893c0f9a70341f2529. Total real range coverage35/156,7,661,017 original bytes;35 nonempty originals fully byte-covered. Both vector receipts are `TLS_V10_P9_PUBLIC_B0002_DEST_VERIFIED.json` (SHA76b2ae157424d682e6fffd3118b74d4a1575e2a76f726d6e7a47f6fb5efe34d0) and `TLS_V10_P9_PUBLIC_B0002_RESTORE_VERIFIED.json` (SHAd640613a0697efb9a41279bbac5e2d768f2b0d0b959be81a4e14ddaf8a813b03). B0002 Source KEEP ACK/bridge cleanup pending. NO full141+4 certificate yet;Source originals retained and release0.
+Reverse restoration into old174, builds/sims and other operations retain original policy (normally48GiB);16GiB is only approved COPY_ONLY and separately qualified Source-only exact141 release. No Source deletion command is supplied. Target remains unable to unlink scientific originals. Pending steps: independent Source B0002 KEEP ACK, exact bridge cleanup, one next qualified window; all original156 ranges plus empty file and4 directories, final archive/native tree+certificate, then Source independently evaluates its approved exact141 release with current full identities/readers/resources and qualified durable INTENT/DONE journal.
