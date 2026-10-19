@@ -1,0 +1,33 @@
+# Initial immutable source comparison
+
+| Source | Commit | SHA256 |
+|---|---|---|
+| AG5_guard | 9793e998d60cb5a7f064a46ecd6be242eda61b7c | 1fe872da366be94e40f8dc365a84f68216002a593d8029bd05e1b9e52bddef98 |
+| AG5_ownership | 9793e998d60cb5a7f064a46ecd6be242eda61b7c | 3e0ac68448398a805e33ffaa688f659c3d00a13e5507ade590f04b2c798785de |
+| AG5_reviewer | 9793e998d60cb5a7f064a46ecd6be242eda61b7c | 723df314d22d984d71228a98de167c62200c5190ece4ebeabe7528916ac79d8e |
+| AG4_guard | d8d0401dab0a1d9cb949302bcc05148328421cc2 | 2d6ed8f846bb4a83530695d8b0eace4d5c548ec6aa5156d0c63ec7ebe699d3a0 |
+| AG4_ownership | d8d0401dab0a1d9cb949302bcc05148328421cc2 | e16f2a09dd8e69d7b37155678d4119620527da9fff22ce1929dc982bf0a139a1 |
+| AG4_reviewer | d8d0401dab0a1d9cb949302bcc05148328421cc2 | d971cee3ce53d1a79588618f61a720608c5ba2e4d9dbe563a308e2a698def3ff |
+| BA_guard | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | ac4cb7d91fd3f183ca91b79b70ed4db6aaf00dd5309983c09b0226a6eb371487 |
+| BA_ownership | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | e16f2a09dd8e69d7b37155678d4119620527da9fff22ce1929dc982bf0a139a1 |
+| BA_shared_authority | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | b1d192058ab967ce790a8dcd1b0dbcde18372914cb783bf6d789811203c406aa |
+| BA_cpu_context | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | ba2dd11c681a502cad4f71a13b0174326a87d9d54fe9e769043bc0edb5b9c260 |
+| BA_cpu_guard_entry | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | 442041083d310d7ff473f9bc095b4cd24f1059b7c4fb4696c3200439bf0bbd8d |
+| BA_external_roles | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | c6c1a990fbf9ac859b5f86d609c9794723968585086f5d0415a125c45ad46762 |
+| BA_frozen_authority_binding | 7cdc27a7f4d7f13e11f942d6afdc5529121e6c3c | 1a85f7e02a39bfada5a3b327a4a8a881cc28a92c73f69a01af38b5f854a12f1f |
+
+# Latest BA integrated source — 25cf0ab03d6cc68f964eeb03f42347452ac23abb
+
+| Source | Commit | SHA256 |
+|---|---|---|
+| prepared_runtime/vendor/guarded_process.py | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | 4b5ec2a5a72055b25393d066276fc1b111f8757a16bce5f0fc1ad0250e5309e5 |
+| prepared_runtime/vendor/ownership.py | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | 3e0ac68448398a805e33ffaa688f659c3d00a13e5507ade590f04b2c798785de |
+| prepared_runtime/shared_authority.py | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | fa3c844f6d0a0d8443e3e4378d40c3e2abd766d50c1f32187e490ea34b794ac7 |
+| prepared_runtime/cpu_guard_entry.py | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | b6ab962f8c8d4649e718db3af784ad9166aa8f6546a08dd9fc73ea3ea60c80c0 |
+| prepared_runtime/shared_cpu_context.py | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | ba2dd11c681a502cad4f71a13b0174326a87d9d54fe9e769043bc0edb5b9c260 |
+| prepared_runtime/legacy_authority_runtime.py | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | c8ed095959d0f228c6db786c792d672f126a653713ccf7cedf4719f03d172cd9 |
+| prepared_runtime/FROZEN_AUTHORITY_ADAPTER_BINDING.json | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | 8dce0f51f5e8b5d2b6dd583f37153834222a309ba50ec732e2001b8781ddf090 |
+| prepared_runtime/legacy_authority_evidence/frozen_review_authority.py.txt | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | 723df314d22d984d71228a98de167c62200c5190ece4ebeabe7528916ac79d8e |
+| AG5_INTEGRATION_SOURCE_V2.json | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | 9373403a8061c616f0c72d33b02f069b140c56a6e79a78f5e476d805ba1e4083 |
+| CPU_AG5_CHANGED_DISPATCH_REGISTRATION_V2.json | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | af97ceff6a7dc0dfcc8304d3c040aee6089114ccefc7a4ee544c5bd3f0dd3525 |
+| CPU_SHARED_AUTHORITY_REGISTRATION_V2.json | 25cf0ab03d6cc68f964eeb03f42347452ac23abb | 09e4abf1868440c99f590fb13dd873a7ce4c046d93165878d2ae1ddbad380959 |

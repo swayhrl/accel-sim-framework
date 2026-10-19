@@ -1,0 +1,45 @@
+--- AG5_guard
++++ BA_V2_guard
+@@ -1,9 +1,9 @@
+-"""AG5 CPU-only owned-process guard; no simulator invocation capability.
++"""BA owned-process guard integrating the frozen AG5 instance lifecycle.
+ 
+ No CLI. PTRACE_TRACEME only, never attach. A pre-exec seccomp TRACE filter
+ stops mapping-changing syscalls for complete before/after maps; fork/exec/
+ clone/exit events keep every owned descendant in scope. Unknown maps reject.
+-This repair publishes no performance dispatcher or simulator start path.
++CPU entrypoints remain CPU-only. Simulation requires a separately published capability. No performance dispatcher is installed by this module.
+ """
+ import ctypes,os,signal,time,json,platform
+ from pathlib import Path
+@@ -12,7 +12,7 @@
+ import oom_watchdog
+ from ownership import Ownership,identity,CONFIRM_SECONDS
+ 
+-ROOT=Path('/workspace/dtc-lane-ag5-retired-pid-repair-174-v1')
++ROOT=Path('/workspace/dtc-evidence-closure-20261019-v1/coordinator')
+ MAP_SYSCALLS=(9,10,11,25,30,67,329) # mmap,mprotect,munmap,mremap,shmat,shmdt,pkey_mprotect
+ OPTIONS=1|2|4|8|16|64|128|0x100000
+ class Regs(ctypes.Structure):
+@@ -32,8 +32,11 @@
+ def run_guarded(argv,env,manifests,destination,purpose,timeout,capability=None,observer=None):
+  require(platform.machine()=='x86_64','UNQUALIFIED_ARCHITECTURE')
+  target=str(Path(argv[0]).resolve());require(target in manifests,'TARGET_NOT_REGISTERED')
+- require(purpose=='CPU_FIXTURE','CPU_ONLY_NO_SIMULATION_DISPATCH')
+- require(target==str(ROOT/'build/ag5-cpu-authority'),'CPU_TARGET_NOT_FIXED_FIXTURE')
++ if purpose=='CPU_FIXTURE':
++  require(target==str(ROOT/'build/closure-cpu-ag5-v2'),'CPU_TARGET_NOT_FIXED_FIXTURE')
++ else:
++  require(purpose=='SIMULATION' and capability is not None,'SIMULATION_CAPABILITY_REQUIRED')
++  capability(target,argv,env) # exact published family/UUID/source capability before fork
+  registry={path:validate_manifest(m) for path,m in manifests.items()}
+  dest=Path(destination);dest.mkdir(parents=True,exist_ok=False)
+  for m in manifests.values():require(m['frozen_monotonic_ns']<time.monotonic_ns(),'MANIFEST_NOT_PRE_FORK')
+@@ -222,6 +225,6 @@
+    if watch[2]['reason']:
+     error=error or watch[2]['reason'];forced=watch[2]['reason']
+   eventlog.close()
+-  terminal=dict(utc=now(),status='PASS_GUARDED_NATURAL_EXIT0' if error is None else 'STOP_GUARDED_PROCESS',purpose=purpose,root_pid=pid,returncode=main_rc,forced_reason=forced,exception=error,identity_pass=main_identity and error is None,owned_process_exits=exits,owned_process_exit_instances=exit_instances,owned_children_live=len(alive),ownership=ownership.snapshot() if ownership else None,unconfirmed_wait_pids=[v[0] for v in quarantined],snapshots=frames,simulator_starts=0,wall_seconds_nonperformance=time.monotonic()-started)
++  terminal=dict(utc=now(),status='PASS_GUARDED_NATURAL_EXIT0' if error is None else 'STOP_GUARDED_PROCESS',purpose=purpose,root_pid=pid,returncode=main_rc,forced_reason=forced,exception=error,identity_pass=main_identity and error is None,owned_process_exits=exits,owned_process_exit_instances=exit_instances,owned_children_live=len(alive),ownership=ownership.snapshot() if ownership else None,unconfirmed_wait_pids=[v[0] for v in quarantined],snapshots=frames,simulator_starts=int(purpose=='SIMULATION'),wall_seconds_nonperformance=time.monotonic()-started)
+   write(dest/'TERMINAL.json',terminal,exclusive=True)
+  return terminal
