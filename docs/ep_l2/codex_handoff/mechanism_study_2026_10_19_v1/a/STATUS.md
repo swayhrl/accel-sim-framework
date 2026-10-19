@@ -1,3 +1,15 @@
+# A r37: 5GiB policy consumed; producer frozen; E parser handoff ready
+
+The formal E 5GiB policy remains active for new campaign leases only. A has actually used the published E API for the incremental repair, affected native checks and this parser control; no central policy code was edited by A. Current source Core27/main773, its 24 real affected/detailed native passes and r30 release are unchanged. No new simulator or full application was started for this parser work.
+
+The old S E002 has now terminated: native exit0, but terminal validation FAILED because E runtime_metrics captured option descriptions as values. It is NOT_ACCEPTED. The old E controller is STOPPED, active campaign leases are zero, actual starts remain3/40, accepted points/pairs zero. All old logs/status/holds are unchanged; old67fd is not a current773 anchor.
+
+A prepared an isolated function-only proposal on exact E6c69 preimage and ran13 controls under E lease d016832e776d4917a036c0f83131cfd7 (RELEASED): retained S old-red/new-green, crashed F rejected, exact options/geometry/duplicates checked. This is control evidence, not scientific or complete-input acceptance. Only E may adopt and publish its parser/CLIENT source and independently qualify current773 before samebinary S/F. Read full_system_v2/E_TERMINAL_PARSER_REVIEW_r37.json and E_CONTINUE_MESSAGE_r37.txt. The inbox does not imply E-window activation.
+
+The extra B/C V/R/W fixture remains unqualified as reported in r35; persistent reuse_seen and all production semantics remain intact. Its reachable-input/UID/descriptor scientific review is still pending B/C/E. No old native successes were rerun.
+
+Earlier snapshots below describe their original observation times; r37 supersedes the old-S-inflight snapshot.
+
 # A r28: repaired production main and affected native evidence ready for E
 
 Actual source repair is Core `27ec10bda848e4929181c60a7cbb40d6b007945c`; runtime Framework `9dd1ee57a83d83b56b7874bc7c716185ab52c8f7`, vendor `f90c430c3a1ce8f08c09942a5a1c3a797bb2295b`. New main `773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5` lives at `/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/accel-sim.out`. Old main67fd and all oldELFs/archives/raw/config/input files remain byte-identical. Frozen priorRELEASE75707624 is copied with its exactSHA under full_system_v2/frozen_producer_75707624 and preserved in Git.
