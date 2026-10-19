@@ -1,7 +1,7 @@
 # Execution coordination state
 
 Updated:2026-10-19 21:52 Asia/Shanghai. Status:
-**BLOCKED_RESOURCE_HOST_IO_AND_SIM_DISK**. The full goal remains incomplete.
+**USER_RESUMED_V2_AG5_INTEGRATION_AND_AG6_PREPARATION**. The full goal remains incomplete.
 Execution is original `huangrulin-174`, under this account/container. Pinned plan
 46df82670a56a4498b6d6e23ad57859eb7c36945 and its branch remain unchanged.
 Sole later full-simulation coordinator:/root; execution branch
@@ -76,3 +76,15 @@ shrinking it. Necessary independent preparation is published; actual remaining
 CPU/build/runtime/trace/fullsim evidence requires external resource recovery.
 No current own handle is live, so this is not a verified job wait. The goal is
 not complete; blocked status is recorded after immutable publication/readback.
+
+V2 user update f81ca1c5054a78ed2c09f316bac0501c3bbc9322 is consumed in full.
+Continue this exact Goal/worktree, no reset/restart. AG6 has a separate4-start
+user ceiling, BASE reuse and all admission still pending; BA32 unchanged.
+AG6_BUDGET_LEDGER.json starts0/4, no UUID/model fork. AG preparation remains
+non-dispatching. Actual output mount~41GB now passes disk; paired full resource
+result is in ag6_v2_resume_resources, current authority remains separate.
+Integrate canonical AG5 ownership/guard with BA exact shared roles before new
+shared production qualification. SEM1/ROB1 have a fresh conditional build release.
+Previous12adapter checks and53AG5 results are preserved, not blindly rerun.
+AG6 discovery precedes substantial P8 F simulations; preserve old selection and
+write SELECTION_V2 only under the unchanged rule after valid discovery evidence.
