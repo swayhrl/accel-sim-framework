@@ -116,3 +116,21 @@ its build. ROB1 paired IO22.15/26.52 held before configure/build. Neither has ne
 linked/fixture/native value qualification. See WORKER_V2_RESUME_PROGRESS.json.
 AG preparation remains at 29b1eb54; both BASE dossiers await actual publication
 and BA independent review. No AG6 ON point can start before both are admitted.
+
+
+### Latest finite admission and pending work
+
+Published25cf0ab0 exact prepare controller was observed by the actual AG5/BA
+callback with source/current argv/cwd/exe/ticks match; its initial resource sample
+at15:03:13Z had authorityPASS but hostIO39.35>25. This is one read-only gate
+observation, not full paired admission or live COV/SEM/ROB qualification. It
+started zero compilers/freezers/fixtures/models. See ag5_v2_build_admission_attempt1.
+A headroom-vs-PSI check-key collision was found and repaired before any successful
+admission; both must remain distinct required checks. The old refused registration
+is historical and a new source-only next registration is explicitly unreleased.
+
+COV source review6f68c945 is accepted as a minimal readonly current-launch design;
+COV now prepares that pure module in parallel. No new test loop or helper program
+was launched. SEM configure remains preserved and is not rerun for observation;
+actual remaining builds stay gated. AG6 BASE dossiers remain absent at the latest
+29b1eb54 remote publication check. No UUID or new fullsim was created.

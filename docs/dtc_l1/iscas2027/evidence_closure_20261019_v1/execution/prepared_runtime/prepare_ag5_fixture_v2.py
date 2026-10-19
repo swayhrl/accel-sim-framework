@@ -58,7 +58,7 @@ def main():
                     authority=authority)
     def checks(s):
         values = dict(original174=s['host']=='huangrulin-174' and s['uid']==0,
-                      host_memory=s['host_available']>=32*1024**3,cgroup_memory=s['cgroup_headroom']>=32*1024**3,
+                      host_memory_headroom=s['host_available']>=32*1024**3,cgroup_memory_headroom=s['cgroup_headroom']>=32*1024**3,
                       disk=s['disk_free']>=registration['admission']['CPU_disk_floor_plus_output_bytes'],
                       authority=s['authority']['status']=='PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY')
         for scope,kinds in s['pressure'].items():
