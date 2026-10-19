@@ -1,0 +1,32 @@
+{
+  "schema": "TLS_V10_TARGET_PEER_SCRATCH_RELEASE_REVIEW_V1",
+  "utc": "2026-10-19T03:48:09.605006+00:00",
+  "status": "EVIDENCE_LIMITATIONS_FOR_SOURCE_OWNER_REVIEW_NOT_A_RELEASE_APPROVAL",
+  "reviewed_source_Git_commit": "6b1f76bea8786f4b82a074a18fd4dc71f27ee39a",
+  "reviewed_path": "docs/ep_l2/operations/tls_v10_174_to_164_source/reclaim_tmp_toplevel_vvp.py",
+  "reviewed_code_sha256": "fb3ceca6b4fb8595a9cecf0b7cd2dd224d3c55d099019563ed0336dd83955293",
+  "findings": [
+    {
+      "priority": "HIGH",
+      "location": "source_witness / audit",
+      "fact": "Witness is git log --all --max-count=1 for each filename. The selected artifact records no common compilation source snapshot/blobs, dirty-source snapshot, compiler/options/include/define recipe, or preserved backup reference.",
+      "implication": "A historical filename witness alone does not independently prove reconstruction of the exact historical compiled artifact. It does not establish that unique dirty-source behavior or inputs were preserved.",
+      "source_owner_next": "For further releases, retain or supply the existing qualifying rebuild/backup evidence required by the scratch contract; keep ambiguous/unique artifacts HOLD. Existing history/path witnesses remain useful inventory evidence."
+    },
+    {
+      "priority": "MEDIUM",
+      "location": "release unlink loop",
+      "fact": "The live-path os.unlink occurs before the UNLINKED journal entry; no per-file INTENT is fsynced first and no containing directory fsync is performed.",
+      "implication": "A crash between unlink and journal append can leave a released path without a per-file intent/outcome record.",
+      "source_owner_next": "Reuse the proven V9 intent-before-unlink, parent identity/fsync and DONE journaling sequence with a read-only reconcile path; do not blindly retry an interrupted real selector."
+    }
+  ],
+  "positive_controls": [
+    "Exact immutable manifest hashes and identity/full SHA checks",
+    "Nonregular/hardlink/namespace/root scope guard",
+    "Separate audit/release and existing-journal fail closed",
+    "51 unresolved originals held; no target source mutation"
+  ],
+  "review_scope": "Pinned helper and published artifacts only. Source owner retains deletion classification/authority and any additional qualifying evidence. This review does not allege that unpublished evidence does not exist or issue scientific/source release approval.",
+  "source_release_executed_by_target": false
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "TLS_V10_TARGET_SOURCE_RECLAIM_ASSISTANCE_V1",
+  "utc": "2026-10-19T03:48:09.581468+00:00",
+  "status": "TARGET_RESERVATION_ACCEPTED_SOURCE_WORKSPACE_FLOOR_STILL_FAILS",
+  "source_latest_receipt_Git_commit": "58fe6bf115caf15b3d43a89ea30738bfc997a1d6",
+  "source_scratch_cleanup_reported": {
+    "released_files": 903,
+    "allocated_upper_bound_bytes": 7948591104,
+    "sum_immediate_source_reported_df_gains": 7946182656,
+    "last_source_reported_df_after_bytes": 24408338432,
+    "accounting": "Source-owned releases; immediate action-window deltas are not summed into the current endpoint or attributed to target. Target has not independently certified exact rebuild provenance for these new scratch binaries."
+  },
+  "independent_readonly_source_workspace_snapshot": {
+    "utc": "2026-10-19T03:45:34.721798+00:00",
+    "namespace": "mnt:[4026534768]",
+    "workspace_dev": 156,
+    "available_bytes": 23005519872,
+    "floor_bytes": 51539607552,
+    "deficit_bytes": 28534087680
+  },
+  "additional_candidates_for_SOURCE_OWNER_review": [
+    {
+      "path": "/root/.npm/_cacache",
+      "allocated_bytes": 1384968192,
+      "filesystem_dev": 156,
+      "kind": "CONVENTIONAL_CACHE_METADATA_ONLY",
+      "eligible_to_delete": false,
+      "requirements": "Source owner must establish package-cache ownership, redownload/rebuild provenance and no active dependency before its own authorized cleanup."
+    },
+    {
+      "path": "/var/cache/apt/archives",
+      "allocated_bytes": 36864,
+      "filesystem_dev": 156,
+      "kind": "CONVENTIONAL_CACHE_METADATA_ONLY",
+      "eligible_to_delete": false,
+      "requirements": "Source owner must establish package-cache ownership, redownload/rebuild provenance and no active dependency before its own authorized cleanup."
+    },
+    {
+      "path": "/workspace/repos/gpu-l2-cache-verilog-v3r1-clean/build.restore.r1_197",
+      "allocated_bytes": 470269952,
+      "filesystem_dev": 156,
+      "kind": "OLD_STORAGE_OPS_NATIVE_DRILL_COPY",
+      "eligible_to_delete": false,
+      "requirements": "Source owner must validate exact drill inventory and retention closure, original/archive SHA mapping and current readers before any drill-only disposition."
+    },
+    {
+      "path": "/workspace/ops_v8_native_drill_20261018.svg3wy4f",
+      "allocated_bytes": 126976,
+      "filesystem_dev": 156,
+      "kind": "OLD_STORAGE_OPS_NATIVE_DRILL_COPY",
+      "eligible_to_delete": false,
+      "requirements": "Source owner must validate exact drill inventory and retention closure, original/archive SHA mapping and current readers before any drill-only disposition."
+    }
+  ],
+  "candidate_upper_bounds": {
+    "cache_bytes": 1385005056,
+    "known_drill_bytes": 470396928,
+    "remaining_deficit_even_if_all_these_candidates_were_authorized_and_freed": 26678685696
+  },
+  "target_own_survey": "TLS_V10_TARGET_BOUNDED_OWN_CACHE_SURVEY_20261019.json; small and not asserted to be source-workspace recovery",
+  "prior_archive_lookup": {
+    "receipt": "TLS_V10_SOURCE_SCRATCH_PRIOR_ARCHIVE_METADATA_JOIN_20261019.json",
+    "scanned_rows": 1130,
+    "exact_matches": 0
+  },
+  "next_source_action": "Retain the already accepted P9_PUBLIC root and B0001 request. Continue source-owned audit of genuinely rebuildable unused scratch; do not lower 48GiB or use protected scientific inputs/logs/review packs/unique binaries/Git/active data as automatic cleanup. After floor+reservations truly pass, refresh all gates and emit exact existing B0001 READY.",
+  "target_scientific_archive_payload_bytes": 0,
+  "target_full_scientific_restored_files": 0,
+  "source_TLS_originals": "SOURCE_KEEP",
+  "source_files_deleted_by_target": 0,
+  "new_transfer_streams_started": 0,
+  "first_window": "TLS_V10_P9_PUBLIC_B0001",
+  "target_control_Git_commit": "40930eab2e1ba462437ab5de7c469f8eece92f8e",
+  "target_handoff_Git_commit": "8e6384788b7daaae3605b34ed5575db6db747f5f"
+}

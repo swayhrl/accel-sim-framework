@@ -1,3 +1,15 @@
+# Current source assistance ? 2026-10-19
+
+Old174 has accepted the exact P9_PUBLIC root and B0001 request in source `af3de18cf1057de28e7820543b7ec117a9caaeba`. The target reservation is not a remaining blocker. Source `58fe6bf115caf15b3d43a89ea30738bfc997a1d6` reports two source-owned scratch cleanups: 903 compiled files, 7,946,182,656 B summed immediate df gains. These are source-reported action-window gains, not target release or TLS scientific-data recovery.
+
+Target performed bounded read-only assistance in the exact old174 namespace: fixed cache names, and three known old Storage-Ops native-drill paths only. At 03:45:34 UTC, actual source `/workspace` dev156 had 23,005,519,872 B available, a 28,534,087,680-B deficit to the unchanged 48 GiB floor. npm cache was 1,384,968,192 B; apt cache 36,864 B. Existing known native drill copies total 470,396,928 B. Cache/drill names alone grant no cleanup eligibility; source owner must qualify retention, backup/rebuild and current reader gates. Even if all these candidates became eligible, the snapshot still lacks 26,678,685,696 B. Target-owned caches are small and are not asserted to release source-workspace space.
+
+The peer metadata join checked 1,130 records from six pinned historical archive/restore manifests against the exact 763-file top-level scratch selector and found no exact SHA match in that limited set. This is not an all-NAS absence claim. No prior archive/restore proof is fabricated for these newly released files. `TLS_V10_TARGET_PEER_SCRATCH_RELEASE_REVIEW_20261019.json` documents two future-release evidence/hardening points for the source owner: historical filename witnesses do not alone establish an exact rebuild snapshot/recipe, and per-file durable intent should precede unlink. It is a review, not source-release approval or an execution of source cleanup.
+
+The exact existing B0001 reservation/request and one-stream protocol remain ready for a new source Git-backed READY after fresh actual resource/activity/identity PASS. No scientific receiver has started while source fails the floor. Target deleted no old174 file, changed no Lane state/resources, restarted no Goal/nonce/transport, and transferred zero TLS scientific payload bytes.
+
+Earlier reservation checkpoint follows.
+
 # TLS-V10 target ? P9_PUBLIC real164 reserved; first window requested
 
 2026-10-19 10:41 CST: continued the original Goal and `hrl/tls-v10-174new-target-exec-v1` from prior target `188f0e31`, consuming source `e30252876caaec54a70650d23015679a17abbcdb`. No new Goal, nonce, V9 restart or C2P/M2D rearchive. Historical audit/checkpoint receipts remain versioned.
