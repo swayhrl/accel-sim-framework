@@ -226,6 +226,29 @@ class ControlTests(unittest.TestCase):
         self.coord.release_work(claimed['lease_id'],'A','fixture no child created',True)
         self.assertEqual(self.read()['resource_leases'][claimed['lease_id']]['status'],'RELEASED')
         self.assertEqual(self.coord.snapshot()['actual_starts'],0)
+    def test_build_logs_reserve_new_campaign_output_quota(self):
+        self.usage.update(new_bytes=6*c.GIB-64*2**20,total_bytes=19*c.GIB)
+        with self.assertRaisesRegex(ValueError,'6GiB'):
+            self.coord.reserve_work('A','build',2,8*c.GIB,2*c.GIB+128*2**20,self.root/'build',128*2**20)
+    def test_build_lease_records_separate_compile_growth_and_log_growth(self):
+        claimed=self.coord.reserve_work('A','build',2,8*c.GIB,2*c.GIB+128*2**20,self.root/'build',128*2**20)
+        self.assertEqual(claimed['disk_growth_bytes'],2*c.GIB+128*2**20)
+        self.assertEqual(claimed['result_growth_bytes'],128*2**20)
+    def test_native_phases_rebind_only_after_previous_child_exit(self):
+        claimed=self.coord.reserve_work('A','build',2,8*c.GIB,c.GIB,self.root/'build')
+        key=claimed['lease_id'];self.coord.bind_work_process(key,'A',os.getpid())
+        with self.assertRaisesRegex(ValueError,'previous work child still alive'):
+            self.coord.bind_work_process(key,'A',os.getpid())
+        original=c.process_identity
+        def identity(pid):
+            if pid==os.getpid():raise FileNotFoundError('fixture previous child exited')
+            return {'pid':pid,'start_ticks':1,'boot_id':self.ledger['boot_id']}
+        with patch.object(c,'process_identity',side_effect=identity):self.coord.bind_work_process(key,'A',99999999)
+        row=self.read()['resource_leases'][key]
+        self.assertEqual(row['process']['pid'],99999999);self.assertEqual(len(row['process_history']),1)
+    def test_native_test_cannot_hide_its_output_reservation(self):
+        with self.assertRaisesRegex(ValueError,'all native test output'):
+            self.coord.reserve_work('B','test',1,c.GIB,c.GIB,self.output/'test',result_growth_bytes=0)
     def test_build_owner_is_A(self):
         with self.assertRaisesRegex(ValueError,'sole formal build'):self.coord.reserve_work('B','build',2,8*c.GIB,c.GIB,self.root/'build')
 

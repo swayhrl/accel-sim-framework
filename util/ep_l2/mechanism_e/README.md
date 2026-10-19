@@ -31,7 +31,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 -B util/ep_l2/mechanism_e/coordinator.py statu
 # Actual request only after a material resource recovery event; no empty retry loop:
 PYTHONDONTWRITEBYTECODE=1 python3 -B util/ep_l2/mechanism_e/coordinator.py reserve-work \
   --role A --kind build --cpu 2 --memory-bytes 8589934592 \
-  --growth-bytes DECLARED_CONSERVATIVE_BYTES --output-directory /workspace/build/EXACT_NEW_OUTPUT
+  --growth-bytes DECLARED_CONSERVATIVE_BYTES --result-growth-bytes DECLARED_LOG_BYTES \
+  --output-directory /workspace/build/EXACT_NEW_OUTPUT
 # Bind actual child identity immediately; keep lease until its full tree exits:
 PYTHONDONTWRITEBYTECODE=1 python3 -B util/ep_l2/mechanism_e/coordinator.py bind-work-process \
   --role A --lease EXACT_LEASE --pid ACTUAL_CHILD_PID
@@ -45,6 +46,10 @@ The CLI refuses the current low-space environment; it never starts a compiler.
 Native test outputs use `/workspace/ep_l2_ms20261019_e_results/` and count toward
 new6GiB. A must specify the build reserve; it is not a guessed lower disk floor.
 The caller owns process execution/monitoring and must not release a live child.
+One A build lease can span configure/build/directed phases: rebind the next child
+only after the previous child exits; prior PID/start_ticks/boot_id stays in history.
+Build growth and new log growth are separate fields in the same atomic reservation.
+A native-test lease cannot hide any of its reserved output from the new6GiB total.
 The actual build/test owner retains its existing monitored execution entry;
 a resource lease alone is not production qualification.
 

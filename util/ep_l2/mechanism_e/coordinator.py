@@ -103,7 +103,7 @@ def pending_growth(data):
     return result
 
 
-def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False):
+def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None):
     item=ledger(data)
     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
             'positive integer CPU/RAM required')
@@ -130,7 +130,8 @@ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=F
         pending=sum(max(0,r.get('disk_growth_bytes',FULL_GROWTH)-retained_tree_bytes(Path(r['result_directory'])))
                     for r in active if r.get('experiment_id')==CAMPAIGN)
         pending+=sum(r.get('result_growth_bytes',0) for r in leases if r.get('experiment_id')==CAMPAIGN)
-        addition=0 if kind=='build' else growth
+        addition=(0 if kind=='build' else growth) if result_growth_bytes is None else result_growth_bytes
+        require(type(addition) is int and 0<=addition<=growth,'result growth must fit physical reservation')
         require(usage['new_bytes']+pending+addition<=6*GIB,'new-study 6GiB result ceiling')
         require(usage['total_bytes']+pending+addition<=20*GIB,'old+new 20GiB result ceiling')
 
@@ -153,7 +154,7 @@ class Coordinator:
         data=json.loads((self.registry.root/'RUN_REGISTRY.json').read_text())
         return ledger(data)
 
-    def reserve_work(self, role, kind, cpu, memory, growth, output_directory):
+    def reserve_work(self, role, kind, cpu, memory, growth, output_directory, result_growth_bytes=None):
         require(role in ('A','B','C','E') and kind in ('build','test'),'only bounded build/test leases here')
         require(kind!='build' or role=='A','A is sole formal build owner')
         directory=Path(output_directory).resolve()
@@ -161,11 +162,13 @@ class Coordinator:
         require(directory.parent.stat().st_dev==Path('/workspace').stat().st_dev,'output must be physical workspace')
         if kind=='test':require(directory.is_relative_to(OUTPUT),'new test results must be accounted in new result root')
         with self.locked() as (data,item):
-            resource_gate(data,kind,cpu,memory,growth,local_resources(),output_usage())
+            result_growth=(growth if kind=='test' else 0) if result_growth_bytes is None else result_growth_bytes
+            require(kind!='test' or result_growth==growth,'all native test output must count toward new results')
+            resource_gate(data,kind,cpu,memory,growth,local_resources(),output_usage(),result_growth_bytes=result_growth)
             key=uuid.uuid4().hex
             row={'host':socket.gethostname(),'owner':'mechanism_'+role,'role':role,'kind':'MECHANISM_'+kind.upper(),
                  'experiment_id':CAMPAIGN,'cpu_units':cpu,'memory_bytes':memory,'disk_growth_bytes':growth,
-                 'result_growth_bytes':growth if kind=='test' else 0,'status':'RESERVED','created_at':time.time(),
+                 'result_growth_bytes':result_growth,'status':'RESERVED','created_at':time.time(),
                  'owner_process':process_identity(os.getpid()),'output_directory':str(directory)}
             data['resource_leases'][key]=row
             return {'lease_id':key,**row}
@@ -175,7 +178,13 @@ class Coordinator:
         with self.locked() as (data,item):
             row=data['resource_leases'][key]
             require(row.get('experiment_id')==CAMPAIGN and row['owner']=='mechanism_'+role
-                    and row['status']=='RESERVED' and not row.get('process'),'lease already bound or wrong owner')
+                    and row['status']=='RESERVED','wrong lease owner/state')
+            previous=row.get('process')
+            if previous is not None:
+                try:still_same=process_identity(previous['pid'])==previous
+                except (FileNotFoundError,ProcessLookupError):still_same=False
+                require(not still_same,'previous work child still alive; do not rebind')
+                row.setdefault('process_history',[]).append(previous)
             row.update(process=identity,process_bound_unix=time.time())
             return identity
 
@@ -441,12 +450,12 @@ def main():
     c=sub.add_parser('reserve-work');c.add_argument('--role',choices=['A','B','C','E'],required=True)
     c.add_argument('--kind',choices=['build','test'],required=True);c.add_argument('--cpu',type=int,required=True)
     c.add_argument('--memory-bytes',type=int,required=True);c.add_argument('--growth-bytes',type=int,required=True)
-    c.add_argument('--output-directory',required=True)
+    c.add_argument('--output-directory',required=True);c.add_argument('--result-growth-bytes',type=int)
     b=sub.add_parser('bind-work-process');b.add_argument('--role',required=True);b.add_argument('--lease',required=True);b.add_argument('--pid',type=int,required=True)
     r=sub.add_parser('release-work');r.add_argument('--role',required=True);r.add_argument('--lease',required=True);r.add_argument('--detail',required=True);r.add_argument('--no-child-started',action='store_true')
     args=p.parse_args();tooling_binding();coord=Coordinator()
     if args.action=='status':result=coord.snapshot()
-    elif args.action=='reserve-work':result=coord.reserve_work(args.role,args.kind,args.cpu,args.memory_bytes,args.growth_bytes,args.output_directory)
+    elif args.action=='reserve-work':result=coord.reserve_work(args.role,args.kind,args.cpu,args.memory_bytes,args.growth_bytes,args.output_directory,args.result_growth_bytes)
     elif args.action=='bind-work-process':result=coord.bind_work_process(args.lease,args.role,args.pid)
     else:coord.release_work(args.lease,args.role,args.detail,args.no_child_started);result={'released':args.lease}
     print(json.dumps(result,indent=2))

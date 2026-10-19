@@ -1,0 +1,11 @@
+# E A-R1 source intake checkpoint
+
+New source event consumed: A Framework dbcd8a5674e3fc2c6a8f46f736176d12d0a13db3, Core066c60b1f0165625ee3d5cbdb16cf59e481a6900. Exact remote source objects,12Core hashes, runtime Framework197741 and vendorf90c tracked identity/cleanliness were checked. A explicitly has no compiled binary or production PASS. E native qualification remains NOT_RUN.
+
+The frozen A plan function rebuilt55 bounded directed command definitions without executing them. The first14 logical full-application cells and12 rolling comparisons are fixed from D's four preregistrations: core S/U anchors, remaining local diagnostics, new btree/dwt2d S/U. No run-key is fabricated before a binary/config/trace/qualification exists, and no READY queue is installed. Remaining3victim+4RO+3contingency reservations remain protected. Actual starts0/24.
+
+A's build entry still used legacy build_lease(lane2), omitting this campaign's output-growth reservation. E prepared a complete A-owned control patch using one new Coordinator lease in the original registry,2GiB build+128MiB log reservations, exact per-phase PID/start_ticks/boot_id and own growth/RSS guards. E did not edit A source or compile. Admission is explicitly false; there is no one-time pilot token or resource exception. A can apply/adapt and publish the final control entry without changing runtime source.
+
+70 control tests pass, including separate build/log output budgeting, sequential native child binding, no hidden test-output budget and current D consumer interoperability. The D consumer was fetched and bound atdce77c078dcfaf966138b0bd99e8846c11111f1c; the four input registrations remain byte-identical. B's CLEAN_ONLY source checkpoint was received as uncompiled/unintegrated metadata, not a qualified runtime.
+
+No resource-release event has arrived, so the initial physical resource evidence is retained without another df survey. No current-space claim is inferred from source publication. No lease, simulator, native test, compiler or permanent watcher is active. A fresh real resource review is required after a material release event; source/control readiness does not waive48GiB workspace,40GiB Share,64GiB RAM or6/20GiB output ceilings. Goal is incomplete and needs external space plus official A runtime. Old Goal/ledger/raw/config/trace/other projects are preserved.
