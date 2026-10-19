@@ -1,0 +1,37 @@
+# 其他24组：原V9事务的Source控制入口
+
+本入口继续既有25组清单中的其他24组，复用原txid、selector、manifest及真164路径。P9继续使用原33窗口实现，不能进入此类；C16、C2P、EP-L2、DTC-L1、PRIMARY_P2和任意新根均不在白名单。本文件没有创建事务、复制准入、Source READY、恢复证书或源删除许可。
+
+统一恢复位置修订仍为Framework `9f1a21a909e437f1e34233b22595d0f7359f3dd3`。tmpfs只作恢复验证，真164持久归档不变。所有其他24组始终SOURCE_KEEP。Source类没有unlink/迁移原件或桥接清理操作；Target只在精确ACK及其Git/Share回读后清理ACK列出的桥载荷。
+
+实现：`tls_v10_other24_source_controller.Other24Sender(group, number, qualification_commit)`。生产路径固定在原S文件系统、namespace、Source分支和共享桥，不接受自选根；每次动作重新检查。代码资格由原Source远端分支上的 `TLS_V10_OTHER24_SOURCE_CONTROLLER_QUALIFICATION_20261020.json` 绑定全部依赖摘要，控制测试及微型fixture不能充当原生正确性或实际归档/恢复证据。
+
+原目录及事务来自Source `602af5f4af01cc4fb7401144c1439b895d91007b` 的精确catalogue，SHA `ce337b32b0ae8adacefc3df6d0206d25a6446745f0587f70549f9cfc41a85e24`。原始字节范围使用已发布的元数据计划，文件 `TLS_V10_OTHER24_ORIGINAL_TRANSACTION_BOUNDED_PLANS_20261020.json`，SHA `ea8312dc44e3b2cfad46969dd0fd71f3984194df5da36c2e4a31795a8b6b76a3`：24组、75窗口、2116范围、6,303,088,913字节，不读取载荷生成计划，不生成新txid。
+
+Target须先沿原分支/Share发布真实的本组reservation、sole-window请求及新鲜receiver预检。请求仍用 `TLS_V10_TARGET_GROUPED_RAW_WINDOW_V1` 和 `TLS_V10_<GROUP>_Bnnnn`，精确匹配原manifest与本组计划批次。不得由S虚构Target预检或reservation。Source读取的Target reservation名字为 `TLS_V10_<GROUP>_TARGET_ROOT_RESERVED.json`，字段沿既有P9格式，包括原txid、根、manifest摘要、真实164 mount、reservation文件摘要与关闭重开核对。首次本组窗口须衔接已闭合的前组末窗口，后续窗口须严格衔接本组前一窗口的规范cleanup回执。
+
+Source绑定名为 `TLS_V10_<GROUP>_Bnnnn_EXACT_SOURCE_WINDOW_BINDING.json`，包含以下字段；SHA均为对应原始文件字节SHA，commit均为原Target分支中可回读的完整40位提交。
+
+```text
+schema = TLS_V10_OTHER24_EXACT_SOURCE_WINDOW_BINDING_V1
+group, window_id
+target_request_git_commit, target_request_sha256
+target_receiver_preflight_git_commit, target_receiver_preflight_sha256
+target_reservation_git_commit, target_reservation_receipt_sha256
+prior_cleanup_name, prior_cleanup_git_commit, prior_cleanup_sha256
+```
+
+P9完整141文件/4目录证据必须已在真164、原Target Git及Share闭合，才能占用桥接进入下一组；这项检查不推导P9源释放已完成。每个真实复制动作依次验证原Source身份、实际资源/登记/读取者/已知计划脚本、当前精确源元数据和本窗口范围SHA。资源不通过时先停在元数据检查，不读取科学载荷。Source16GiB、Share40GiB、RAM64GiB、cgroup/峰值预算、128MiB原始窗口、256MiB暂存、30MiB/s总限速及1MiB缓冲不变。
+
+实际动作只有显式的一次调用，无循环/daemon：
+
+1. `prepare()` 写不可变本地PASS；`stage()`持有原唯一Source锁，原路径不存在才暂存，关闭重开核对后写本地READY。任何不确定/部分暂存都保留，不自动覆盖或重试。
+2. 将精确binding、PASS、READY提交原Source分支并push。`publish(source_commit)`核对三者及资格文件的远端原字节、当前源和桥范围SHA，再发布既有READY及publication格式。不得仅把本地PASS当传输许可。
+3. Target沿原V9事务真实归档及原生分片恢复，发布同一提交的DEST、RESTORE、RECEIVING三份证明。`prepare_ack(ready_commit, receipt_commit)`重核真实Source门禁、所有冻结成员元数据、当前源/桥范围SHA及严格顺序原生证明，生成Source ACK和门禁侧证。初始receiver预检只在首次发送要求900秒新鲜；ACK阶段必须有已完成的三份真实证明，并继续执行当前Source门禁，不能用过时预检代替当前通过。
+4. 将精确ACK及侧证提交原Source分支并push。`publish_ack(ready_commit, receipt_commit, ack_commit)`再次完整核对当前证据与范围，原字节发布ACK及publication，许可仍仅为Target精确桥清理。Source ACK schema为 `TLS_V10_OTHER24_EXACT_RANGE_SOURCE_KEEP_ACK_V1`，publication为 `TLS_V10_OTHER24_EXACT_ACK_GITHUB_BRIDGE_READBACK_V1`；Target需资格覆盖这些schema，不能默认拿P9专用正则改常量运行。
+
+保留既有 `TLS_V10_OLD174_GROUPED_RAW_READY_V1`。READY的 `source_protocol_adoption_sha256` 绑定本实现的Source资格JSON，`qualification_commit`指明其远端提交，`source_sender_code_sha256`绑定本模块；Target应按原Git/Share字节核对，不把合成测试当真实原生恢复。精确ACK沿现有字段提供Target-only cleanup路径/SHA/身份向量，源科学文件删除数及df收益始终为0。
+
+本资格未提供完整暂存失败后的自动重试入口。若实际发生保留stage，应先根据原PASS、计划、当前范围SHA、完整桥成员/身份、当前资源及Target控制做一次精确恢复资格闭合；不得重发、覆盖、丢弃不确定stage。此前P9 B0013/B0023的专用finisher没有扩大到其他根。
+
+分片ACK不代表整组恢复完成。Target仍须从真164已提交完整归档向新的ABSENT合格原生目录恢复全文件，逐文件完整SHA、大小、uid/gid/mode/mtime_ns及全部本组目录元数据核对，将证据/清单持久发布真164和Git。最终报告只有在实际证据通过后才计该组归档/恢复完成；所有源原件继续SOURCE_KEEP。
