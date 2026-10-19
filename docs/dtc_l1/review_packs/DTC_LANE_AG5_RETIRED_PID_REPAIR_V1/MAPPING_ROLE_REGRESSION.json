@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "positive_sequence",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "expected_reason": "PASS",
+      "actual_reason": "PASS",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "missing_cache",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "CACHE_REGISTRATION_MISSING",
+      "actual_reason": "CACHE_REGISTRATION_MISSING",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "cache_SHA",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "FROZEN_FILE_SHA_MISMATCH",
+      "actual_reason": "FROZEN_FILE_SHA_MISMATCH:/etc/ld.so.cache",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "cache_inode",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "MAP_DEVICE_INODE_MISMATCH",
+      "actual_reason": "MAP_DEVICE_INODE_MISMATCH:/etc/ld.so.cache",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "unknown_file",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "UNREGISTERED_FILE_MAPPING",
+      "actual_reason": "UNREGISTERED_FILE_MAPPING:/etc/UNREGISTERED_AG4",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "wrong_role",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "ROLE_REQUIRES_ELF",
+      "actual_reason": "ROLE_REQUIRES_ELF:/etc/ld.so.cache",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "ELF_as_data",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "ELF_MASQUERADING_AS_DATA",
+      "actual_reason": "ELF_MASQUERADING_AS_DATA:/workspace/dtc-lane-ag5-retired-pid-repair-174-v1/build/ag5-cpu-authority",
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "case": "unknown_pseudo",
+      "expected_exit": 42,
+      "actual_exit": 42,
+      "expected_reason": "UNKNOWN_NONFILE_MAPPING",
+      "actual_reason": "UNKNOWN_NONFILE_MAPPING:[UNKNOWN_AG4]",
+      "status": "PASS",
+      "stderr": ""
+    }
+  ],
+  "parser_sha256": "1409539bad1d173c4bf48463c5465f54e8aba89db736e27bae745fd7a7f07155",
+  "simulator_starts": 0
+}
