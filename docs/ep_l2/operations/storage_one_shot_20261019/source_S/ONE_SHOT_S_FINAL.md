@@ -1,3 +1,21 @@
+# 2026-10-20 S continuation: user amendment adopted; B0010 exact KEEP ACK published
+
+Current authority is Framework `9f1a21a909e437f1e34233b22595d0f7359f3dd3`, with exact UTF-8 user text and acceptance JSON. T independently adopted the SAME commit at `12461d1c26cd4310f63b136e60c5315a318fbc8a`. The native164-only restore execution restriction is superseded for TLS; genuine164 durable archive and all other gates remain unchanged. Existing qualified174-new tmpfs may validate recovery only.
+
+Source exact B0010 KEEP ACK is published on the original source branch at `7daa8d05bbf01334588961d65428da504313871d`, SHA256 `4372816c425dbea62efd3fbc0681dc74c228218cbca1ba79a222f71c524122ef`. Exact ACK and publication bytes are on Share; source lock, current reader/identity/range SHA and16/40/64 resource gates passed before/after publication. The temporary A build lease hold was cleared; historical7cd9819 is superseded, explicit source notice `00d8282798d7d7642471b45b7f0e971a692abaec`. No B0001–B0010 retransmission.
+
+Actual durable archive/range evidence remains49ranges839,370,145B; full141-file/4-directory recovery is still pending, source release0files/0B. Other24 source originals remainSOURCE_KEEP. The next bounded source operation requires Target's original exact B0010 cleanup receipt and B0011 request/fresh receiver preflight; S must not stage B0011 in advance. Current T remote903035a9 still cites the earlier local-only ACK/build hold; T needs to fetch the current original Source branch and consume the now-published exact ACK, not request a new user permission or restart the transaction.
+
+Source full-index metadata/SHA/path join validator added at `73662722c2af6e84a1e89203a81fd9b361be94e2`:4fixture test methods with20negative mutation subcases PASS. This is a source proof checker, not actual native restoration or production source-release execution qualification. After Target finishes full141 restoration from genuine164 and publishes durable full index, source still must qualify the actual production release wrapper with existing crash-safe primitive, all-source current SHA/identity and current/future-reader gates before approved exact141 unlink.
+
+Source `/workspace` at16:00:43UTC was50,149,728,256B=46.705574GiB; Share44,224,790,528B=41.187546GiB. These are actual snapshots affected by other project writers, not TLS gains. C16 source supply and all12model files unchanged; existing outbound retirement proposal/tests remain unapplied and unapproved. No simulator launched. See `TLS_NATIVE_AMENDMENT_S_PROGRESS_20261020.json` and `TLS_NATIVE_AMENDMENT_S_REMOTE_READBACK_20261020.json` for the six canonical/Git/bridge checks.
+
+Goal remains active and the full migration objective is not complete. No resident waiter created.
+
+---
+
+The following is the historical one-shot report BEFORE the explicit location amendment. Its native164-only location HOLD and local-only ACK status are no longer current.
+
 # ONE_SHOT S：B0010新增128MiB真实归档，native164恢复范围HOLD
 
 协调冻结：`3a7ea422d3f4301688bd3cb7bcf4431b97f08e90`。本次在原174 `mnt:[4026534768]` 续行原事务，**全部TLS迁移尚未完成**。状态为 `TLS_P9_ARCHIVED_SOURCE_KEEP_HOLD:REQUIRED_NATIVE164_RESTORE_EXECUTION_NOT_AVAILABLE`；这里的归档是分片级部分归档，不能读成P9全组完成。
