@@ -1,7 +1,7 @@
 # A full-system V2 — common source r10, NOT COMPILED
 
 Same active A Goal and public branch; authorityb2e5328aca825d6e9ebfe09e46fa208957834636.
-Common Core **6eebd3d322116f345016c3f00bb3239fcec15034**, runtime Framework9dd1ee57a83d83b56b7874bc7c716185ab52c8f7,
+Common Core **cd4f8951ed327741c06377827148312ad5d5c284**, runtime Framework9dd1ee57a83d83b56b7874bc7c716185ab52c8f7,
 vendorf90c430c3a1ce8f08c09942a5a1c3a797bb2295b. This Framework control publication
 is not runtime identity. Actual A compiler0/native0/binary0/full-app0. No native
 PASS, speedup, old-red/new-green or new PPA is claimed.
@@ -50,3 +50,7 @@ R1 diagnostics17e7e224, CLEAN94996ec5, isolatedRO9702f2f6 and every old review p
 old Lane5/R19, EN-v17, RTL/DC and other projects remain preserved.
 
 Follow-up r11: the ordinary RO frontend now checks certified writer/atomic validity before preview, covering R with V disabled as well as the TVD shortcut. same_address includes actual atomic-MF classification, both hook refusals, unchanged query/directory and zero callback execution. These are UNRUN negative assertions, not atomic application support or numerical evidence. Current common Core is the exact HEAD above; next actual A work is a guarded common native build entry, not another C public adapter.
+
+R12: the common guarded entry now exists, with source-hashed spec55 required main +9 diagnostics. Plan and missing/unavailable/scope rejection controls actually ran with0compiler/native/lease, unchanged registry and no build root. This is not native correctness. The new closed-epoch prefill regression matches V2, and a semantic signature supports actual observer equivalence when compiled. Common Core changed only regression source after6eebd3d3.
+
+E has newly published user-named disk support at4e4efcb7; A supports its exact canonical single-use ID for COMPILE ONLY, with a bounded supervised floor and128MiB monitor reserve. Native tests cannot use the exception. A retained build receipt permits later ordinary48GiB native resume without duplicate C++ build. No named authorization exists yet and A created none. E owns the precise floor review (algebra in A_TO_E_NAMED_BUILD_FLOOR_REVIEW_r1.json), including any normal published helper correction; A does not lower ordinary floors, forge permission or start a waiter.
