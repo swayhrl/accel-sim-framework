@@ -1,0 +1,68 @@
+{
+  "status": "PREPARED_FIXED_POLICY_NOT_AN_EXECUTION_RELEASE",
+  "admission": {
+    "two_fresh_samples_separation_seconds": 10,
+    "pressure_scope": "BOTH host and cgroup memory/IO PSI",
+    "memory_full_avg10_max_each": 1,
+    "IO_full_avg10_max_each": 25,
+    "host_available_and_cgroup_headroom_min_bytes": 34359738368,
+    "no_new_host_or_cgroup_oom": true,
+    "disk_floor_exclusive_bytes": 5368709120,
+    "fullsim_permission": false,
+    "registered_own_output_bound_bytes": 33554432,
+    "startup_writing_reserve_bytes": 167772160,
+    "write_assessment": "Actual output free must be strictly>5GiB; startup budgets32MiB maximum own output+128MiB safety, total5.15625GiB, no10GiB gate."
+  },
+  "total_seconds": 900,
+  "work_alarm_seconds": 895,
+  "cleanup_reserved_seconds": 5,
+  "concurrency": 1,
+  "maximum_fixture_roots": 10,
+  "modes": [
+    "shared",
+    "masked",
+    "with-e",
+    "ae",
+    "ad",
+    "no-e",
+    "wrong-byte",
+    "missing-sector",
+    "wrong-generation",
+    "early-release"
+  ],
+  "retry_count": 0,
+  "case_wall_seconds": 60,
+  "RLIMIT_CPU_soft_hard_seconds": [
+    30,
+    31
+  ],
+  "RLIMIT_AS_bytes": 2147483648,
+  "RLIMIT_CORE_bytes": 0,
+  "RLIMIT_FSIZE_bytes": 524288,
+  "stdout_and_stderr_limit_each_bytes": 524288,
+  "sampled_RSS_stop_bytes": 1073741824,
+  "max_descendants": 0,
+  "max_tasks": 4,
+  "cleanup": "Retained own Popen+pidfd only; no numeric/group/foreign signals; no postreap signal; readonly session/group leftovers=>STOP; no discovery adoption.",
+  "result_classes": {
+    "conditional_positive_modes": [
+      "shared",
+      "masked",
+      "with-e",
+      "ae",
+      "ad"
+    ],
+    "countermodel_modes": [
+      "no-e"
+    ],
+    "targeted_rejection_modes": [
+      "wrong-byte",
+      "missing-sector",
+      "wrong-generation",
+      "early-release"
+    ]
+  },
+  "no_new_guard_or_supervisor": true,
+  "outer_bootstrap": "Only fixed read-only Git and local metadata before one cohort call;60s checkpoints/per-command<=15s for tooling, no external timeout command or second timer.",
+  "science": "Diagnostic fixture bytes only; no native/application/architectural values or simulation/performance authorization."
+}
