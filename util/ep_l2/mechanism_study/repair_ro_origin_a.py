@@ -47,10 +47,14 @@ def main():
         help='compile the previously unrun shared V/RO/W controlled partition fixture; no main/library rebuild')
     p.add_argument('--joint-gdb', action='store_true',
         help='one bounded GDB replay of the already failed controlled fixture; no compilation or application')
+    p.add_argument('--terminal-control', action='store_true',
+        help='read frozen logs and test E-only runtime-dump parser proposal; no simulation/acceptance')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
-    assert sum((a.joint_gdb,a.joint_vrw,a.affected_native)) <= 1
-    spec_path = (HANDOFF/'full_system_v2/VRW_FAILED_FIXTURE_GDB_SPEC_r34.json' if a.joint_gdb else
+    assert sum((a.terminal_control,a.joint_gdb,a.joint_vrw,a.affected_native)) <= 1
+    readonly_test = a.joint_gdb or a.terminal_control
+    spec_path = (HANDOFF/'full_system_v2/E_RUNTIME_DUMP_CONTROL_SPEC_r36.json' if a.terminal_control else
+        HANDOFF/'full_system_v2/VRW_FAILED_FIXTURE_GDB_SPEC_r34.json' if a.joint_gdb else
         HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r32.json' if a.joint_vrw else
         HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC)
     spec = json.loads(spec_path.read_text())
@@ -75,7 +79,7 @@ def main():
     bindings = {str(spec_path): sha(spec_path), str(Path(__file__)): sha(__file__),
         str(HERE/'common_resource_guard.py'): sha(HERE/'common_resource_guard.py'),
         str(HERE/'check_ro_origin_case.py'): sha(HERE/'check_ro_origin_case.py')}
-    if a.affected_native or a.joint_vrw or a.joint_gdb:
+    if a.affected_native or a.joint_vrw or readonly_test:
         bindings[str(HERE/'check_native_case.py')] = sha(HERE/'check_native_case.py')
         parent_path = Path(spec['parent_receipt'])
         assert sha(parent_path) == spec['parent_receipt_sha256']
@@ -86,6 +90,9 @@ def main():
         assert parent['binary_sha256'] == sha(parent['binary']) == spec['new_main_sha256']
         assert parent['new_archive_sha256'] == sha(spec['new_archive'])
         assert len(parent['tests']) == 6 and all(t['expectation_verified'] for t in parent['tests'])
+    if a.terminal_control:
+        bindings.update(spec['control_bindings'])
+        bindings[str(HERE/'replay_runtime_metrics_proposal.py')] = sha(HERE/'replay_runtime_metrics_proposal.py')
     if a.joint_gdb:
         bindings[str(HERE/'capture_vrw_abort.gdb')] = sha(HERE/'capture_vrw_abort.gdb')
         failed = json.loads(Path(spec['failed_native_receipt']).read_text())
@@ -105,7 +112,8 @@ def main():
         retained_runtime_core=spec['runtime_producer_core'],
         retained_main_sha256=spec['retained_main_sha256'],
         build_directory=str(build), output_directory=str(out))
-    expected = dict(identity, owner='A', phase='A_FAILED_SHARED_VRW_GDB' if a.joint_gdb else
+    expected = dict(identity, owner='A', phase='A_RETAINED_LOG_E_PARSER_CONTROL' if a.terminal_control else
+        'A_FAILED_SHARED_VRW_GDB' if a.joint_gdb else
         'A_SHARED_VRW_CONTROLLED_PARTITION' if a.joint_vrw else
         'A_RO_ORIGIN_AFFECTED20' if a.affected_native else 'A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
         approved=True, full_applications_permitted=False, execution_host=socket.gethostname(),
@@ -116,7 +124,8 @@ def main():
     if not a.execute:
         print(json.dumps(dict(status='REQUEST_ONLY_NO_COMPILE_NATIVE_OR_LEASE',
             expected_E_admission=expected, planned_native_cases=spec['cases'],
-            command_scope='oneGDB replay ofexactfailedfinitefixture; no compilation/main/application' if a.joint_gdb else
+            command_scope='one bounded retained-log parsercontrol, no simulator/CPP/acceptance' if a.terminal_control else
+                'oneGDB replay ofexactfailedfinitefixture; no compilation/main/application' if a.joint_gdb else
                 'one previouslyunrun V/R/W controlledfixture compile/link/case; no production/main rebuild' if a.joint_vrw else
                 'three links+20 affected native; no C++ compilation/main relink' if a.affected_native else
                 'one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link'), indent=2))
@@ -184,7 +193,7 @@ def main():
             live = local_resources()
             share = os.statvfs('/root/share')
             written = retained_tree_bytes(out)
-            built = None if a.joint_gdb else retained_tree_bytes(build) if build.exists() else 0
+            built = None if readonly_test else retained_tree_bytes(build) if build.exists() else 0
             rss = process_tree_rss(active['pid']) if active['pid'] else 0
             check_runtime(report, out, live, share.f_bavail*share.f_frsize, written, built, rss,
                 spec['result_growth_bytes'], spec['build_growth_bytes'], spec['build_growth_bytes'],
@@ -196,23 +205,23 @@ def main():
 
         resources()
         growth = spec['build_growth_bytes']+spec['result_growth_bytes']
-        allocation = registry.reserve_work('A', 'test' if a.joint_gdb else 'build', 1, 8*GIB, growth,
-            out if a.joint_gdb else build,
+        allocation = registry.reserve_work('A', 'test' if readonly_test else 'build', 1, 8*GIB, growth,
+            out if readonly_test else build,
             result_growth_bytes=spec['result_growth_bytes'])
         lease = allocation['lease_id']
         report.update(lease_id=lease, resource_allocation=allocation,
             E_central_admission='GRANTED_BY_PUBLISHED_RESERVE_WORK',
             E_results_and_shared_resource_gate='PASS_AT_ATOMIC_RESERVATION')
-        assert allocation['role'] == 'A' and allocation['kind'] == ('MECHANISM_TEST' if a.joint_gdb else 'MECHANISM_BUILD')
+        assert allocation['role'] == 'A' and allocation['kind'] == ('MECHANISM_TEST' if readonly_test else 'MECHANISM_BUILD')
         assert allocation['experiment_id'] == CAMPAIGN
         assert allocation['cpu_units'] == 1 and allocation['memory_bytes'] == 8*GIB
         assert allocation['disk_growth_bytes'] == growth
         assert allocation['result_growth_bytes'] == spec['result_growth_bytes']
         assert all(allocation[k] == value for k, value in policy.items())
         resources()
-        if not a.joint_gdb:
+        if not readonly_test:
             build.mkdir()
-        temp_root = out if a.joint_gdb else build
+        temp_root = out if readonly_test else build
         temp = temp_root/'tmp'
         temp.mkdir()
         env = dict(os.environ, GPGPUSIM_ROOT=str(core), CUDA_INSTALL_PATH='/usr/local/cuda-11.8',
@@ -238,6 +247,21 @@ def main():
                 return row
             finally:
                 active['pid'] = None
+
+        if a.terminal_control:
+            report.update(status='BOUNDED_E_PARSER_PROPOSAL_CONTROL',compiler_started=False,
+                application_correctness=False,scope='READ_ONLY_RETAINED_LOG_NO_SIMULATOR_OR_E_ACCEPTANCE')
+            save()
+            detail=out/'PARSER_CONTROL.json'
+            run([sys.executable,'-B',str(HERE/'replay_runtime_metrics_proposal.py'),
+                '--spec',str(spec_path),'--out',str(detail)],'retained_log_parser_control',120)
+            result=json.loads(detail.read_text())
+            assert result['status']=='PROPOSED_E_PARSER_CONTROLS_PASS_NOT_APPLICATION_ACCEPTANCE'
+            for path,digest in retained.items():assert sha(path)==digest
+            report.update(status=result['status'],control_result=str(detail),control_result_sha256=sha(detail),
+                controls=result['controls'],retained_assets_unchanged=True,accepted_application_result=False,
+                central_science_ledger_edited=False,live_E_source_edited=False)
+            return
 
         if a.joint_gdb:
             report.update(status='DIAGNOSING_EXACT_FAILED_CONTROLLED_FIXTURE', compiler_started=False,
