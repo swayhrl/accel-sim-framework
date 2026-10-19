@@ -5,7 +5,8 @@ fixture execution, input-body read, resource observation, import or simulation
 is introduced by this delivery. Only this ROB1 pack is changed.
 
 The coordinator reports that AG6 AE_GEMM started, then stopped at
-2026-10-20T16:58:14Z on sustained cgroup IO PSI >25. It reports one consumed
+16:58:14Z on sustained cgroup IO PSI >25 (UTC date was not independently
+established by this source-only intake). It reports one consumed
 start, zero accepted points, three unstarted points frozen, and no live or
 pending owned instances after cleanup. These are parent-reported observations,
 not independently sampled here. The stopped cohort cannot resume or replace
