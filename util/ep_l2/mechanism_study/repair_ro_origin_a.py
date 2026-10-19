@@ -1,0 +1,274 @@
+"""E-admitted isolated incremental RO origin repair. No CMake/replay/application.
+
+Compile one new finite fixture and one changed gpu-cache.cc translation unit.
+All old objects, archives, binaries, raw results and generated banners are read-only.
+The new archive replaces precisely one member; all other members are verified.
+"""
+import argparse
+import datetime
+import fcntl
+import importlib.util
+import json
+import os
+from pathlib import Path
+import resource
+import shlex
+import shutil
+import socket
+import subprocess
+import sys
+import time
+
+sys.dont_write_bytecode = True
+from build_common_a import sha, git, put, HERE, REPO, HANDOFF, SHARED, CAMPAIGN, AUTHORITY, GIB
+from common_resource_guard import check_runtime, finalize_limit
+
+SPEC = HANDOFF/'full_system_v2/RO_ORIGIN_INCREMENTAL_SPEC_r25.json'
+
+
+def flags(path):
+    lines = Path(path).read_text().splitlines()
+    values = {line.split(' = ', 1)[0]: line.split(' = ', 1)[1]
+              for line in lines if ' = ' in line}
+    result = shlex.split(' '.join(values[k] for k in ('CXX_DEFINES', 'CXX_INCLUDES', 'CXX_FLAGS')))
+    assert '-O3' in result and '-g3' in result and '-DNDEBUG' not in result
+    return result
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--admission', type=Path)
+    p.add_argument('--execute', action='store_true')
+    a = p.parse_args()
+    spec = json.loads(SPEC.read_text())
+    build, old, core, runtime = (Path(spec[k]) for k in ('build', 'retained_build', 'core', 'framework'))
+    out = a.out.resolve()
+    assert out.parent == Path('/workspace/ep_l2_ms20261019_e_results')
+    assert not out.exists() and not build.exists()
+    assert spec['campaign_id'] == CAMPAIGN and spec['authority'] == AUTHORITY
+    assert not git(core, 'status', '--porcelain', '--untracked-files=no')
+    assert git(core, 'rev-parse', 'HEAD') == spec['core_source_commit']
+    assert git(core, 'diff', '--name-only', spec['old_fixture_core'], spec['core_source_commit']).splitlines() == spec['allowed_changed_paths']
+    assert git(core, 'diff', '--name-only', spec['runtime_producer_core'], spec['old_fixture_core'], '--', 'src', 'libcuda') == ''
+    assert git(runtime, 'rev-parse', 'HEAD') == spec['framework_source_commit']
+    assert git(runtime/'gpu-simulator/extern/pybind11', 'rev-parse', 'HEAD') == spec['vendor']
+    retained = spec['retained_files_sha256']
+    for path, digest in retained.items():
+        assert sha(path) == digest, 'retained asset changed: '+path
+    bindings = {str(SPEC): sha(SPEC), str(Path(__file__)): sha(__file__),
+        str(HERE/'common_resource_guard.py'): sha(HERE/'common_resource_guard.py'),
+        str(HERE/'check_ro_origin_case.py'): sha(HERE/'check_ro_origin_case.py')}
+    bindings.update(spec['input_sha256'])
+    for name in spec['allowed_changed_paths']:
+        bindings[str(core/name)] = sha(core/name)
+    for path, digest in bindings.items():
+        assert sha(path) == digest
+    identity = dict(campaign_id=CAMPAIGN, authority=AUTHORITY,
+        control_source_commit=git(REPO, 'rev-parse', 'HEAD'), driver_sha256=sha(__file__),
+        spec_sha256=sha(SPEC), core_source_commit=spec['core_source_commit'],
+        framework_source_commit=spec['framework_source_commit'], vendor=spec['vendor'],
+        retained_runtime_core=spec['runtime_producer_core'],
+        retained_main_sha256=spec['retained_main_sha256'],
+        build_directory=str(build), output_directory=str(out))
+    expected = dict(identity, owner='A', phase='A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
+        approved=True, full_applications_permitted=False, execution_host=socket.gethostname(),
+        reserved_cpu_units=1, reserved_memory_bytes=8*GIB,
+        reserved_build_growth_bytes=spec['build_growth_bytes'],
+        reserved_result_bytes=spec['result_growth_bytes'],
+        workspace_disk_policy=spec['expected_E_workspace_policy'])
+    if not a.execute:
+        print(json.dumps(dict(status='REQUEST_ONLY_NO_COMPILE_NATIVE_OR_LEASE',
+            expected_E_admission=expected, planned_native_cases=spec['cases'],
+            command_scope='one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link'), indent=2))
+        return
+    assert a.admission and a.admission.is_file()
+    admission_bytes = a.admission.read_bytes()
+    admission = json.loads(admission_bytes)
+    for key, value in expected.items():
+        assert admission.get(key) == value, 'E admission mismatch: '+key
+    assert admission['results_budget_status'] == 'PASS'
+    assert not git(REPO, 'status', '--porcelain', '--untracked-files=no')
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+    out.mkdir()
+    report = dict(identity, schema='EP_L2_A_RO_ORIGIN_REPAIR_RECEIPT_V1', status='PREFLIGHT',
+        compiler_started=False, application_starts=0, independent_qualification=False,
+        commands=[], tests=[], retained_assets_unchanged=False,
+        expected_E_admission=expected, admission_sha256=sha(a.admission),
+        memory_floor_bytes=64*GIB)
+    save = lambda: put(out/'RECEIPT.json', report)
+    registry = lease = lock = None
+    active = dict(pid=None, ever_started=False)
+    try:
+        client = json.loads((SHARED/'mechanism_study_20261019_v1/CLIENT_CONTRACT.json').read_text())
+        api = Path(client['resource_lease_api'])
+        assert sha(api) == client['resource_lease_api_sha256'] == admission['resource_client_sha256']
+        sys.path.insert(0, str(api.parent))
+        from coordinator import Coordinator, tooling_binding, retained_tree_bytes, local_resources
+        from run import process_tree_rss
+        tooling_binding()
+        registry = Coordinator()
+        policy = registry.work_disk_policy()
+        assert policy == spec['expected_E_workspace_policy']
+        bindings.update({str(Path(client['execution_worktree'])/name): digest
+                         for name, digest in client['source_files'].items()})
+        supervisor = runtime/spec['supervisor']
+        assert sha(supervisor) == spec['supervisor_sha256']
+        bindings[str(supervisor)] = spec['supervisor_sha256']
+        module = importlib.util.spec_from_file_location('origin_owned_supervisor', supervisor)
+        guard = importlib.util.module_from_spec(module)
+        module.loader.exec_module(guard)
+        report.update(E_source_publication=client['source_publication_commit'],
+            E_resource_api_sha256=sha(api), E_workspace_disk_policy=policy,
+            authorized_task_floor_bytes=policy['disk_floor_bytes'],
+            monitor_reserve_bytes=policy['monitor_reserve_bytes'],
+            disk_floor_bytes=policy['disk_floor_bytes']+policy['monitor_reserve_bytes'])
+        lock = open('/workspace/ep_l2_ms20261019_shared/A_BUILD.lock', 'a+')
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+        def resources():
+            assert time.time() < admission['valid_until_unix'] and a.admission.read_bytes() == admission_bytes
+            for path, digest in bindings.items():
+                assert sha(path) == digest, 'bound source/input changed: '+path
+            live = local_resources()
+            share = os.statvfs('/root/share')
+            written = retained_tree_bytes(out)
+            built = retained_tree_bytes(build) if build.exists() else 0
+            rss = process_tree_rss(active['pid']) if active['pid'] else 0
+            check_runtime(report, out, live, share.f_bavail*share.f_frsize, written, built, rss,
+                spec['result_growth_bytes'], spec['build_growth_bytes'], spec['build_growth_bytes'],
+                memory_limit=8*GIB)
+            report['own_build_bytes_peak'] = max(built, report.get('own_build_bytes_peak', 0))
+            report['own_result_bytes_peak'] = max(written, report.get('own_result_bytes_peak', 0))
+            return live
+
+        resources()
+        growth = spec['build_growth_bytes']+spec['result_growth_bytes']
+        allocation = registry.reserve_work('A', 'build', 1, 8*GIB, growth, build,
+            result_growth_bytes=spec['result_growth_bytes'])
+        lease = allocation['lease_id']
+        report.update(lease_id=lease, resource_allocation=allocation)
+        assert all(allocation[k] == value for k, value in policy.items())
+        resources()
+        build.mkdir()
+        temp = build/'tmp'
+        temp.mkdir()
+        env = dict(os.environ, GPGPUSIM_ROOT=str(core), CUDA_INSTALL_PATH='/usr/local/cuda-11.8',
+            TMPDIR=str(temp), TMP=str(temp), TEMP=str(temp), XDG_CACHE_HOME=str(build/'cache'),
+            PYTHONDONTWRITEBYTECODE='1', PYTHONPYCACHEPREFIX=str(build/'cache/python'),
+            CCACHE_DISABLE='1', CCACHE_DIR=str(build/'cache/ccache'), CUDA_CACHE_DISABLE='1',
+            CUDA_CACHE_PATH=str(build/'cache/cuda'), OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+        report['environment_write_roots'] = {key: env[key] for key in ('TMPDIR','TMP','TEMP',
+            'XDG_CACHE_HOME','PYTHONPYCACHEPREFIX','CCACHE_DIR','CUDA_CACHE_PATH')}
+
+        def bind(pid):
+            active.update(pid=pid, ever_started=True)
+            return registry.bind_work_process(lease, 'A', pid)
+
+        def run(command, name, timeout=600):
+            try:
+                resources()
+                row = guard.run_owned(command, name, out, env, report, save, resources, bind, timeout)
+                resources()
+                return row
+            finally:
+                active['pid'] = None
+
+        def compile_flags(path):
+            return [s.replace(spec['retained_core'], str(core)) for s in flags(path)]
+
+        def link_command(target, new_archive=False):
+            ref = old/'gpgpu-sim/CMakeFiles/ep_l2_ro_partition.dir/link.txt'
+            args = shlex.split(ref.read_text())
+            result = []
+            for i, word in enumerate(args):
+                if word.endswith('test_ro_partition.cc.o'):
+                    word = str(build/'origin_fixture.o')
+                elif i and args[i-1] == '-o':
+                    word = str(build/target)
+                elif word.endswith('.a') and not word.startswith('/'):
+                    word = str(old/'gpgpu-sim'/word)
+                    if new_archive and word.endswith('/src/gpgpu-sim/libgpgpusim.a'):
+                        word = str(build/'libgpgpusim.a')
+                result.append(word)
+            return result
+
+        report.update(status='COMPILING_ONE_NATIVE_FIXTURE', compiler_started=True)
+        save()
+        run(['/usr/bin/c++', *compile_flags(old/'gpgpu-sim/CMakeFiles/ep_l2_ro_partition.dir/flags.make'),
+            '-c', str(core/'tests/ep_l2/test_ro_detailed_origin.cc'), '-o', str(build/'origin_fixture.o')], 'fixture_compile')
+        run(link_command('ep_l2_ro_detailed_origin_old'), 'old_link')
+        old_exe = build/'ep_l2_ro_detailed_origin_old'
+
+        def native(case, exe):
+            detail = out/(case['id']+'.native.json')
+            command = [str(exe), *spec['native_input_arguments'], str(case['T']), str(case['M'])]
+            report['status'] = 'NATIVE_'+case['id']
+            save()
+            run([sys.executable, str(HERE/'check_ro_origin_case.py'), '--expected-exit', str(case['exit']),
+                '--required-terminal', case['terminal'], '--receipt', str(detail), '--', *command], case['id'], 120)
+            row = json.loads(detail.read_text())
+            assert row['expectation_verified'] and row['binary_sha256'] == sha(exe)
+            report['tests'].append(dict(case=case['id'], evidence=str(detail), sha256=sha(detail), **row))
+            save()
+
+        for case in spec['cases'][:2]:
+            native(case, old_exe)
+        run(['/usr/bin/c++', *compile_flags(old/'gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make'),
+            '-c', str(core/'src/gpgpu-sim/gpu-cache.cc'), '-o', str(build/'gpu-cache.cc.o')], 'changed_gpu_cache_compile')
+        old_archive = old/'gpgpu-sim/src/gpgpu-sim/libgpgpusim.a'
+        new_archive = build/'libgpgpusim.a'
+        shutil.copy2(old_archive, new_archive)
+        run(['/usr/bin/ar', 'r', str(new_archive), str(build/'gpu-cache.cc.o')], 'one_member_archive')
+        # All original archive members other than the recompiled translation unit
+        # must remain byte-identical, without extracting another large data tree.
+        old_names = subprocess.check_output(['/usr/bin/ar', 't', str(old_archive)], text=True).splitlines()
+        new_names = subprocess.check_output(['/usr/bin/ar', 't', str(new_archive)], text=True).splitlines()
+        assert old_names == new_names and old_names.count('gpu-cache.cc.o') == 1
+        import hashlib
+        archive_members = {}
+        for name in old_names:
+            hashes = [hashlib.sha256(subprocess.check_output(['/usr/bin/ar','p',str(f),name])).hexdigest()
+                      for f in (old_archive,new_archive)]
+            assert (hashes[0] != hashes[1]) == (name == 'gpu-cache.cc.o')
+            archive_members[name] = dict(old_sha256=hashes[0], new_sha256=hashes[1])
+        report['archive_members'] = archive_members
+        run(link_command('ep_l2_ro_detailed_origin_new', True), 'new_link')
+        for case in spec['cases'][2:]:
+            native(case, build/'ep_l2_ro_detailed_origin_new')
+        # Same retained actual frontend objects and unchanged archives; only the
+        # reviewed gpu-cache member is replaced. No configure or version update.
+        command = shlex.split((old/'CMakeFiles/accel-sim.out.dir/link.txt').read_text())
+        for i, word in enumerate(command):
+            if i and command[i-1] == '-o':
+                command[i] = str(build/'accel-sim.out')
+            elif word.endswith('.o') or (word.endswith('.a') and not word.startswith('/')):
+                command[i] = str(new_archive) if word.endswith('/libgpgpusim.a') else str(old/word)
+        run(command, 'new_main_link')
+        for path, digest in retained.items():
+            assert sha(path) == digest, 'retained asset changed: '+path
+        report.update(status='OLD_RED_NEW_GREEN_MAIN_COMPILED_PENDING_AFFECTED_QUALIFICATION',
+            retained_assets_unchanged=True, binary_sha256=sha(build/'accel-sim.out'),
+            binary=str(build/'accel-sim.out'), old_native_sha256=sha(old_exe),
+            new_native_sha256=sha(build/'ep_l2_ro_detailed_origin_new'),
+            new_archive_sha256=sha(new_archive), native_passes=len(report['tests']),
+            changed_archive_members=['gpu-cache.cc.o'],
+            generated_build_string_unchanged=True, original_banner_is_not_new_producer_identity=True)
+    except BaseException as error:
+        report.update(status='RESOURCE_LIMIT' if report.get('resource_limit') else 'STOPPED_OR_FAILED_REPAIR_NOT_RELEASED', error=repr(error))
+        raise
+    finally:
+        if lease:
+            registry.release_work(lease, 'A', 'A RO origin repair exited; '+str(out/'RECEIPT.json'),
+                no_child_started=not active['ever_started'])
+            report['lease_released'] = True
+        if lock:
+            lock.close()
+        report['finished_UTC'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        finalize_limit(report, out)
+        save()
+        print(report['status'])
+
+
+if __name__ == '__main__':
+    main()
