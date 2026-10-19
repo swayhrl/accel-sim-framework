@@ -1,0 +1,105 @@
+{
+  "actual_cases": [
+    {
+      "case": "b1-multi",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_common_delta_r16",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "b1-multi"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "e8919eff43858e3cc78d599214cec52ce85444ae244b0e7ebfced650411a2dfc",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1134594,
+        "start_ticks": 918353556
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/b1-multi.log",
+      "raw_log_sha256": "404f90fc431a0db8647d0d4c08f1131043a042c19b2ffa499fc866e3adc5fe9e",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.5057625006884336
+    },
+    {
+      "case": "combined_same_address",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "same_address"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "5f23459b417d6a12bb5a90508bf0836671e3237287eaeef7c589e7c59751b962",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1134749,
+        "start_ticks": 918354280
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/combined_same_address.log",
+      "raw_log_sha256": "33859dd165669f54c71230965f7d7ac25230a107e175c7da5ca6ece06b3a031c",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.4985772408545017
+    },
+    {
+      "case": "combined_shared_pool",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "shared_pool"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "5f23459b417d6a12bb5a90508bf0836671e3237287eaeef7c589e7c59751b962",
+      "peak_rss_bytes": 247463936,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1134878,
+        "start_ticks": 918354330
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/combined_shared_pool.log",
+      "raw_log_sha256": "29a4ec5449d63ce2f4249ac1eb4e3af88b55a0623353f69400c77c7c6564ca3b",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.49408312514424324
+    }
+  ],
+  "gate": "requester_exact_once",
+  "native_execution_receipt": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/RECEIPT.json",
+  "native_execution_sha256": "f031cfb6d81e7e43354f2ef024be1023796903868c217b92aab9a969f49ea66c",
+  "producer_publication": "75707624b980df5e3bbb809c76a31cf1b34501a1",
+  "production_driven": true,
+  "reference_review": "Actual asserted nonzero sector versions, exact request UID/generation, finite pool/queue closure, real partition/GPU bank clocks and negative-mode rejection; applicable case assertions reviewed. Assertions enabled in exact producer ELF, not synthetic control fixtures.",
+  "reviewed_by": "E",
+  "reviewed_unix": 1792432534.4949064,
+  "source_identity": {
+    "binary_sha256": "67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de",
+    "core_source_commit": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "PASS",
+  "test_source_scope": {
+    "current_test_source_core": "0e4fd51e62a3e295f3c7f97b92828f243aa71d51",
+    "generated_banner_core": "97fd7a3d872f572818afee1f99343368f89b7ed9",
+    "main_producing_core": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+    "production_tree_equal": true,
+    "two_target_test_source_core": "97fd7a3d872f572818afee1f99343368f89b7ed9"
+  },
+  "trace_scope": "FINITE_PRODUCTION_MEMORY_FIXTURES_NOT_FULL_APPLICATION_OR_NUMERIC_SASS_OUTPUT"
+}
