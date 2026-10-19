@@ -81,14 +81,16 @@ lists tested versus unsupported combinations. No whole-branch historical merge.
 
 New independent options (both default0):
 `-gpgpu_ep_l2_diag_copy_free`, `-gpgpu_ep_l2_diag_l2_data_free`.
-Observer option `-gpgpu_ep_l2_ms_observer`, default0. Options are reserved here;
-the initial interface-only checkpoint has not installed them in a runtime.
+Observer option `-gpgpu_ep_l2_ms_observer`, default0. The interface checkpoint reserved these names; the next source candidate
+installs them, but remains NOT_COMPILED_NOT_RUN until actual qualification.
 
 COPY_FREE supports S only: execute original copy snapshot and target write in
 order, retaining placement/capacity/lifecycle, but exempt COPY_READ/COPY_WRITE
 from bank grants and their copy-phase delay. LOWER_WB send read remains charged.
 L2_DATA_FREE supports S/U: exempt actual L2 payload clients from bank/port
-contention and copy-only serialization. It does not bypass cache lookup/misses,
+contention. The existing one-cycle copy-latch transfer is a fixed pipeline
+latency and remains in DATA_FREE; only COPY_FREE collapses that copy phase.
+It does not bypass cache lookup/misses,
 fixed ROP/return latency, queues, response consumption, capacity, same-address
 WAD, pins, replacement frontend or lower-memory model. No ALL_DATA/READ_HIT use.
 Both diagnostics together, P2/MQ2/RG1/old ideals/quota/S64 and unqualified B/C
