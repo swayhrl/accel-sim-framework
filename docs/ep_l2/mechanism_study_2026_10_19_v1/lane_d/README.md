@@ -2,7 +2,7 @@
 
 Authority：d9263fa2431592b33e900d9b48c6f20029d8b544；分支hrl/ep-l2-ms20261019-d-analysis-v1。原174。控制HEAD不是runtime源码。
 
-- OPPORTUNITY_TABLE.csv：10个旧H0当前接受B/U端点，YES/NO/UNKNOWN；NO是此观测scope实测0，缺失不填0。
+- OPPORTUNITY_TABLE.csv：10个旧H0当前接受B/U端点＋5个旧C7e候选上下文，YES/NO/UNKNOWN；NO是此观测scope实测0，缺失不填0。
 - INPUT_SELECTION.json / INPUT_REGISTRATION_INDEX.json：四个预登记完整输入、五候选及理由；input_registrations为E接口需要的不可变小包装，不是另一套runner。E唯一登记/启动owner，D只交inbox。仅核原件路径/command hash/尺寸并复用已提交body hash，不大复制、不重复全量hash。
 - STATISTICS_REQUEST_TO_A.md：一次性最小统计需求，已以efdcc170cd85cec7e7e5902d8926c2dbe39a50ee推送/回读并交共享request。
 - RESULTS_AND_INTERPRETATION.md：W/V/R四层解释及历史边界；同名CSV只接本轮E接受新配对。历史H0/R19、四模式、microopt三个source组独立，表间重叠不重复计数。

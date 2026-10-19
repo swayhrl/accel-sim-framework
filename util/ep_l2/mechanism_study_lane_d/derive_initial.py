@@ -30,7 +30,7 @@ def write_csv(name, rows):
     if not rows: return
     fields = list(dict.fromkeys(k for row in rows for k in row))
     with (OUT / name).open('w', newline='') as stream:
-        w = csv.DictWriter(stream, fieldnames=fields); w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(stream, fieldnames=fields, restval=UNKNOWN); w.writeheader(); w.writerows(rows)
 def presence(value):
     return UNKNOWN if value in [None, '', UNKNOWN] else 'YES' if int(value) else 'NO'
 
@@ -90,6 +90,8 @@ def main():
                  W_WB_space_refusal=presence(row['wbuf_full']), W_refusal_retry_events=row['wbuf_full'],
                  W_distinct_blocked_requests=UNKNOWN, W_wait_distribution=UNKNOWN,
                  W_copy_lines=row['copy_lines'], W_WB_record_peak=row['staged_record_peak'],
+                 W_WAD_control_refusal=presence(row['c7d_wad_full_events']),
+                 W_WAD_control_retry_events=row['c7d_wad_full_events'],
                  W_physical_WB_role_mean=row['physical_WB_role_mean'], V_post_eviction_reuse=UNKNOWN,
                  R_tag_all_pending=presence(tag), R_tag_retry_events=tag,
                  R_line_MSHR_refusal=presence(row['c7d_line_mshr_full_block']),
@@ -161,6 +163,27 @@ def main():
             'scan': 'Not selected:5.329GB/33kernels and much larger historical cycles; real old tag/descriptor pressure noted, but greater input/runtime cost. Not a zero-pressure claim.',
             'sgemm': 'Not selected:2.216GB,1.659B instructions; old per-address-cap1409 but no measured tag/MSHR-full; literal capture script absent. Can rebuild wrapper from provenance if needed, no blanket halt.'}
         candidate['selection_reason'] = reasons[name]; candidates.append(candidate)
+        opportunities.append({
+            'workload': name, 'baseline_profile': 'B0-Legacy',
+            'evidence_group': 'HISTORICAL_C7E_CANDIDATE_CONTEXT_NOT_CURRENT_FT',
+            'cycles': old['terminal_cycles'], 'instructions': old['terminal_instructions'],
+            'core': old['runtime_core_sha'], 'framework': old['runtime_framework_sha'],
+            'binary': UNKNOWN, 'trace': m['trace_tree_sha256'],
+            'trace_hash_scope': 'published ROUND1 tree hash, not Lane5 composite content hash',
+            'raw_log': old['raw_log_path'], 'raw_sha256': old['raw_log_uncompressed_sha256'],
+            'W_WB_space_refusal': UNKNOWN, 'W_refusal_retry_events': UNKNOWN,
+            'W_distinct_blocked_requests': UNKNOWN, 'W_wait_distribution': UNKNOWN,
+            'W_copy_lines': UNKNOWN, 'W_WB_record_peak': UNKNOWN, 'W_physical_WB_role_mean': UNKNOWN,
+            'W_WAD_control_refusal': presence(b['wad_full']), 'W_WAD_control_retry_events': b['wad_full'],
+            'V_post_eviction_reuse': UNKNOWN, 'R_tag_all_pending': presence(b['tag_set_block']),
+            'R_tag_retry_events': b['tag_set_block'], 'R_line_MSHR_refusal': presence(b['line_mshr_full_block']),
+            'R_line_MSHR_retry_events': b['line_mshr_full_block'],
+            'R_descriptor_refusal': presence(b['descriptor_pool_full_block']),
+            'R_distinct_blocked_requests': UNKNOWN,
+            'DRAM_scheduler_pressure': presence(b['scheduler_causal_block']),
+            'DRAM_scheduler_refusal_events': b['scheduler_causal_block'],
+            'limitations': 'old B0 context/budget only; no WBUF16 counter or current runtime qualification. tag/MSHR/descriptor/per-address-cap are distinct. V and RO eligibility unknown.'})
+    write_csv('OPPORTUNITY_TABLE.csv', opportunities)
     # Never redate the preregistration on rerun.
     selection_path = OUT / 'INPUT_SELECTION.json'
     prior = json.loads(selection_path.read_text()) if selection_path.exists() else {}
@@ -237,11 +260,19 @@ def main():
                      'scope': 'HISTORICAL_FOUR_MODE_SAME_FB_BINARY_NOT_PURE_COPY_ABLATION'})
     assert len(four) == 8
     write_csv('HISTORICAL_FOUR_MODE.csv', four)
+    refs = {}
+    frozen = [('f3d89e77de0fbac16a05df42bd84f02f54dbc890', 'docs/ep_l2/mechanism_analysis/EPL2_MECHANISM_ANALYSIS_AND_MINIMAL_VALIDATION_V1/r1/CASE_ANALYSIS.md')]
+    frozen += [(AUTHORITY, 'docs/ep_l2/chatgpt_handoff/mechanism_study_2026_10_19_v1/' + name)
+               for name in ['MASTER_PLAN.md', 'EXPERIMENTS.md', 'CAMPAIGN.json', 'FIVE_LANE_GOALS.md']]
+    for commit, path in frozen:
+        raw = subprocess.check_output(['git', 'show', commit + ':' + path], cwd=REPO)
+        refs[path] = {'commit': commit, 'sha256': sha_bytes(raw)}
     write_json('SOURCE_MANIFEST.json', {'authority': AUTHORITY, 'old_Lane5_frozen_HEAD': '94fd48b69b37adb692e6152301b317f5f2e6a1e9',
                                       'old_Lane5_acceptance_generation': acceptance['generation'], 'sources': SOURCES,
+                                      'immutable_references_read': refs,
                                       'analysis_source_sha256': sha_bytes(Path(__file__).read_bytes()),
                                       'large_input_body_hashing': 'NOT_REPEATED', 'application_starts_by_D': 0})
-    print(json.dumps({'H0_rows': len(opportunities), 'candidates': len(candidates), 'same_binary_historical_pairs': len(historical),
+    print(json.dumps({'H0_rows': len(h0), 'candidate_context_rows': len(candidates), 'same_binary_historical_pairs': len(historical),
                       'historical_microopt_rows': len(grid), 'four_mode_rows': len(four), 'new_study_applications_started': 0}))
 
 if __name__ == '__main__': main()
