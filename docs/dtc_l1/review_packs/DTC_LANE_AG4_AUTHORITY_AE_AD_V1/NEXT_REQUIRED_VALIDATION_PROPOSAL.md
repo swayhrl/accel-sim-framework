@@ -1,0 +1,7 @@
+# Non-executable proposals; no new budget or dispatch
+
+After reviewing every fixed discovery row, separately freeze configuration and request user review for an independent BICG+DWT2D validation pair. Do not select inputs or retune hash/Tag after seeing performance. New paired controls, resource authority, source/runtime/input identities, failure rules and fresh UUID/budget require separate explicit authorization.
+
+If GEMM reuse or a registered attempt fails, retain its evidence and propose a newly reviewed fully paired cohort when necessary; no sixth/replacement/start resumes this cohort. AE+AD combination, AC/AC2/AF, K1/IO/modern/K2, other inputs and Tag scans are not authorized here. Hardware XOR timing/area and AD implementation costs need their own validation before hardware claims. No paper edits or automatic next experiment.
+
+Before any future performance authorization, first close the retired-PID temporal membership case in a separate CPU-only repair/qualification: retiring identities must leave dispatch trust/state or every dispatched stop must revalidate exact current generation and real parent-event proof. Cover retire→same-PID fresh stop→observer/parent-event ordering and pending cleanup at the production wait entry. Do not patch/restart AG4 or spend its remaining three reservations. Any later fully paired performance cohort, control reuse decision and fresh budget require explicit user review.

@@ -1,3 +1,3 @@
-# AG4 authority repair and AE/AD discovery
+# AG4 terminal STOP — executor unqualified
 
-Read LATEST_REPORT.md, ROOT_CAUSE_AND_FIX.md, CPU_COVERAGE_BOUNDARY.md, AG3_GEMM_BASE_REUSE_QUALIFICATION.json and EXECUTABLE_PREREGISTRATION.json. All large new raw evidence remains under /workspace/dtc-lane-ag4-authority-aead-174-v1/raw. Original AG3 and earlier cohorts are read-only; imported GEMM is explicitly prior evidence.
+Do not dispatch this frozen executor. The cohort is permanently terminal after2/5starts. Read LATEST_REPORT.md, FINAL_CPU_QUALIFICATION_DECISION.json and ROOT_CAUSE_AND_FIX_TERMINAL_SUPPLEMENT.md. Prelaunch bounded CPU passes are preserved but do not close the required retired-PID production-dispatch case. No AE/AD performance result or new budget. Original run receipts are unchanged; all large raw remains local.

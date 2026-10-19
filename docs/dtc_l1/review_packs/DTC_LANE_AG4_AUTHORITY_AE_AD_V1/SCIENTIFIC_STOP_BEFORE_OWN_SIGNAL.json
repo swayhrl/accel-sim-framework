@@ -1,0 +1,115 @@
+{
+  "status": "SCIENTIFIC_STOP_AUTHORITY_RETIREMENT_COVERAGE_GAP",
+  "utc": "2026-10-19T12:46:54.929183+00:00",
+  "source_sha256": "2d6ed8f846bb4a83530695d8b0eace4d5c548ec6aa5156d0c63ec7ebe699d3a0",
+  "source_lines": [
+    {
+      "line": 68,
+      "text": " alive={pid};states={};exits={};owned={pid};main_rc=None;forced=None;frames=0;started=time.monotonic();last_sample=started-10;last_oom=started-.25"
+    },
+    {
+      "line": 123,
+      "text": "   if child not in owned:"
+    },
+    {
+      "line": 131,
+      "text": "    ownership.confirmed.pop(child,None)"
+    },
+    {
+      "line": 139,
+      "text": "   if child not in states:"
+    },
+    {
+      "line": 160,
+      "text": "   elif sig==signal.SIGSTOP:resume(child)"
+    },
+    {
+      "line": 204,
+      "text": "    if ownership:ownership.confirmed.pop(child,None);ownership.pending.pop(child,None)"
+    }
+  ],
+  "counterexample": {
+    "case": "RETIRED_PID_REUSE_AT_PRODUCTION_WAIT_DISPATCH",
+    "retired_pid_still_in_owned": true,
+    "retired_pid_not_in_confirmed": true,
+    "production_child_not_in_owned_branch": false,
+    "production_child_not_in_states_branch": false,
+    "SIGSTOP_branch": "resume(child) without ownership.same(child) or parent-event proof",
+    "kernel_PID_reuse_forced": false,
+    "actual_PID_reuse_observed": "NOT_ESTABLISHED",
+    "real_simulator_starts_in_counterexample": 0
+  },
+  "reason": "Retired IDs remain in owned/states; real wait dispatch trusts owned membership before confirming fresh PID/start_ticks. Existing direct Ownership.classify PID-negative does not cover this production dispatch path. Required fail-closed ancestry qualification is incomplete.",
+  "action": "SIGTERM exact own coordinator via pidfd; frozen signal handler stops current guard and whole cohort; no patch/retry/replacement",
+  "coordinator_expected": {
+    "pid": 779009,
+    "state": "R",
+    "ppid": 778999,
+    "start_ticks": 916291532,
+    "rss_bytes": 16777216,
+    "utime_ticks": 15,
+    "stime_ticks": 5,
+    "minflt": 4372,
+    "majflt": 0,
+    "comm": "python3",
+    "cgroup": "0::/",
+    "exe": "/usr/bin/python3.10",
+    "cwd": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag4-authority-aead-174-v1",
+    "io": {
+      "rchar": 34080065,
+      "wchar": 5608558,
+      "syscr": 6445,
+      "syscw": 400,
+      "read_bytes": 0,
+      "write_bytes": 0,
+      "cancelled_write_bytes": 0
+    },
+    "VmSwap_bytes": 0,
+    "argv": [
+      "/usr/bin/python3",
+      "-u",
+      "docs/dtc_l1/review_packs/DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/run_screen.py",
+      "--dispatch"
+    ],
+    "dtc_or_fast64_command": true,
+    "is_simulator": false,
+    "lock": "/workspace/dtc-lane-ag4-authority-aead-174-v1/raw/AG_execution.lock"
+  },
+  "coordinator_current": {
+    "pid": 779009,
+    "state": "S",
+    "ppid": 778999,
+    "start_ticks": 916291532,
+    "rss_bytes": 91963392,
+    "utime_ticks": 24262,
+    "stime_ticks": 9995,
+    "minflt": 160159,
+    "majflt": 1,
+    "comm": "python3",
+    "cgroup": "0::/",
+    "exe": "/usr/bin/python3.10",
+    "cwd": "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag4-authority-aead-174-v1",
+    "io": {
+      "rchar": 211313924591,
+      "wchar": 1164598384,
+      "syscr": 5317301,
+      "syscw": 195496,
+      "read_bytes": 83124224,
+      "write_bytes": 338305024,
+      "cancelled_write_bytes": 0
+    },
+    "VmSwap_bytes": 0,
+    "argv": [
+      "/usr/bin/python3",
+      "-u",
+      "docs/dtc_l1/review_packs/DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/run_screen.py",
+      "--dispatch"
+    ],
+    "dtc_or_fast64_command": true,
+    "is_simulator": false
+  },
+  "new_actual_main_starts_before_STOP": 2,
+  "prior_BASE_Gaussian_full_strict_preserved": true,
+  "foreign_signals": 0,
+  "Core_binary_or_frozen_runner_modified": false
+}

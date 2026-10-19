@@ -1,7 +1,24 @@
-# AG4 preregistered locally; publication read-back pending
+# AG4 — STOP_PRELAUNCH_CPU_QUALIFICATION_INCOMPLETE
 
-CPU authority repair12 lifecycle/4 negative controls, mapping8/resource10/strict18, production runner14 and all511 original input member SHAs passed. The prior AG3 GEMM1071405cycles passed91 independent reuse/publication/source/runtime/strict-condition checks and is imported as a clearly labelled prior control, not a new AG4 measurement.
+Actual new starts2/5; new full strict observations1; completed optimization results0. Three remaining reservations were never started. No retry, replacement, patch-and-resume or old UUID reuse.
 
-CPU repair commit cbde7120c44976fe9eac678547eb2da4ade355f9 was pushed/fetched; all74 pack blobs/tree/clean passed. Five fresh UUIDs/specs are now frozen with81 operative file hashes, exact actual AG3 ELF/library/environment, K0, Tag64x8, original quotas/inputs and unchanged R2/7200s/one worker. Order: BASE_Gaussian,AE_GEMM,AE_Gaussian,AD_GEMM,AD_Gaussian. Only full Gaussian3278356cycle/all-common calibration opens ON arms.
+The prelaunch CPU gate was incomplete: the PID-reuse negative tested direct classification but missed the production retired-PID wait-dispatch path. Frozen owned/states retain retired IDs, allowing an unconfirmed reused-ID stop to reach resume before fresh parent-event proof. A source-level execution of the unchanged dispatch AST demonstrates this gap; actual PID reuse in either performance run is NOT_ESTABLISHED. See FINAL_CPU_QUALIFICATION_DECISION.json and ROOT_CAUSE_AND_FIX_TERMINAL_SUPPLEMENT.md.
 
-Actual AG4 main starts0/5. No actual performance claim yet. Before dispatch the five-point registration must be pushed/fetched and each blob/clean verified, followed by fresh per-point resource and authority admission. Any actual hard failure STOPs without retry. No Core/binary/model/paper/old-run change or old UUID reuse.
+|Point|Recorded outcome|Integer cycles|Comparison eligibility|
+|---|---|---:|---|
+|Imported prior AG3 GEMM|Original full strict;91 reuse identity checks|1071405|Recorded prior control only|
+|New BASE_Gaussian|Full strict and all frozen T1-C common/traffic calibration|3278356|Recorded calibration only; executor gate incomplete|
+|AE_GEMM|Stopped via verified own coordinator signal; strict failed|UNAVAILABLE|No performance result|
+|AE_Gaussian|Never started|UNAVAILABLE|No performance result|
+|AD_GEMM|Never started|UNAVAILABLE|No performance result|
+|AD_Gaussian|Never started|UNAVAILABLE|No performance result|
+
+Gaussian completed510kernels/513commands/65790CTA/283685120active-thread instructions,33778actual map snapshots and1020parent-event proofs. Its original strict receipt is preserved. No AE/AD speedup, native correctness or full discovery convergence is claimed. All ratios are withheld.
+
+This STOP was a newly identified execution-authority qualification gap, not the earlier transient I/O window or isolated host swap pages. Runtime resources were CONTINUE at the own-signal decision; no actual mapping SHA mismatch or external DTC simulator was observed. The stopped AE_GEMM raw/strict/signal receipts remain unchanged.
+
+CPU repair publication cbde7120c44976fe9eac678547eb2da4ade355f9 preceded new UUID generation. Preregistration9ece18f6fdb6de16ee95f35caa6fad1fec765fc9/tree57209f5898f2b7443e1a560ef64c470a8a429842,manifest65c8f58fcce618f0de5a80a89085386841e6050cc618fe58d7cbca40f8a6b79e was pushed/fetched and84blobs/clean verified before first start. All81 registered files remain unchanged; Core c8090115 and exact old actual ELF/library are untouched.
+
+POST_TERMINAL_IDENTITY_AND_PROCESS_LOCK.json verifies1267current/historical AG4 CPU/model/helper/coordinator instances absent and own FLOCK0. HISTORY_FINAL_PRESERVATION.json verifies old AG3 2/6actual1full, old AG1/8actual0full, AA5 1/4actual0full and original failures unchanged; five new UUIDs are disjoint from347fixed-history UUIDs. No Englishv0.17/old44/GM12 edit or future automatic dispatch.
+
+Large raw stays in /workspace/dtc-lane-ag4-authority-aead-174-v1/raw. Final GitHub HEAD/tree/allblob/clean receipt follows publication in raw/FINAL_PUBLICATION_READBACK.json. The Goal closes only after publication/index/process verification.

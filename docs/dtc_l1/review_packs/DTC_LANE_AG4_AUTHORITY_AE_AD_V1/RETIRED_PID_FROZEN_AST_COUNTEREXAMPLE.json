@@ -1,0 +1,36 @@
+{
+  "status": "FAIL_REQUIRED_FAIL_CLOSED_RETIRED_PID_DISPATCH",
+  "source_sha256": "2d6ed8f846bb4a83530695d8b0eace4d5c548ec6aa5156d0c63ec7ebe699d3a0",
+  "source_start_line": 123,
+  "source_end_line": 162,
+  "fragment_is_unchanged_frozen_AST": true,
+  "synthetic_waits": "exit0 retirement then fresh-generation SIGSTOP before parent event",
+  "PID_and_status_synthetic": true,
+  "kernel_PID_reuse_forced": false,
+  "whole_guard_qualification": false,
+  "process_creation_ptrace_or_signal_calls": 0,
+  "simulator_starts": 0,
+  "owned_retains_retired_PID": true,
+  "states_retains_retired_PID": true,
+  "confirmed_no_longer_contains_retired_PID": true,
+  "unexpected_unconfirmed_resume_calls": [
+    {
+      "call": "resume",
+      "args": [
+        12345
+      ],
+      "kwargs": {}
+    }
+  ],
+  "all_stub_calls": [
+    {
+      "call": "resume",
+      "args": [
+        12345
+      ],
+      "kwargs": {}
+    }
+  ],
+  "actual_PID_reuse_in_performance": "NOT_ESTABLISHED",
+  "finding": "The real frozen retire/dispatch control-flow resumes this synthetic fresh stop without fresh parent-event/PID-start_ticks confirmation. Direct classify() negative was insufficient."
+}
