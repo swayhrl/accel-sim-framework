@@ -1,0 +1,72 @@
+{
+  "schema": "COV1_PROPOSED_MINIMAL_EXTERNAL_CPU_LAUNCH_VIEW_V1",
+  "status": "DESIGN_ONLY_NOT_EXECUTABLE_REGISTRATION_OR_RELEASE",
+  "current_parent_source": "7e7bd82423f0f5807e2d89bb7fe779d21be13148",
+  "baseline_review_source": "69f22e88dae0157acd9345aa84a933e1dbe9cf49",
+  "permissions": {
+    "process_read_and_classification_only": true,
+    "grant_signal_resume_adoption_wait_rights": false,
+    "grant_simulator_start_permission": false,
+    "add_to_local_confirmed": false
+  },
+  "minimal_parent_changes": [
+    "inject external_launch_provider beside immutable exact role contracts",
+    "require a current admitted direct-launch instance in addition to the existing fresh exact-role match",
+    "emit full role/phase/instance/release/admission/callback observations in existing shared callback output",
+    "extend the existing V2 shared qualifier with actual-role observation assertions; keep helper/lifecycle result separate"
+  ],
+  "external_launch_provider_contract": {
+    "writer": "one preregistered source-bound actual launch owner per phase; record from own Popen return, not ps discovery or a bare self-assertion",
+    "publish": "atomic immutable launch record plus atomic current ACTIVE/TERMINAL view",
+    "instance_key_fields": ["boot_id", "pid", "start_ticks", "tgid"],
+    "required_binding_fields": [
+      "role_name", "phase", "role_contract_sha256", "release_commit",
+      "admission_receipt_path", "admission_receipt_sha256", "admission_scope",
+      "actual_launch_id", "launch_owner_instance", "launch_owner_role_sha256",
+      "argv", "cwd", "executable", "executable_sha256", "source_sha256",
+      "launched_monotonic_ns", "deadline_monotonic_ns", "output_bound_bytes",
+      "state"
+    ],
+    "live_acceptance": "one exact role AND one currently ACTIVE released/admitted launch AND coherent fresh process attributes, all the same process instance",
+    "ambiguous_or_duplicate_instance": "REJECT_SCOPE_INCOMPLETE",
+    "unbound_exact_source_process": "NO_AUTHORITY_PASS; finite PENDING only for an explicitly registered launch in progress, otherwise reject",
+    "on_terminal": "preserve/reap receipt and mark old instance TERMINAL_REAPED or RETIRED; never reuse its record",
+    "not_exported": ["Popen object", "pidfd", "signal selector", "resume method", "ownership adoption method"]
+  },
+  "accepted_external_observation_fields": [
+    "classification=EXACT_EXTERNAL_CPU_CONTROL_OBSERVED",
+    "role_name", "phase", "actual_launch_id", "release_commit",
+    "role_contract_sha256", "admission_receipt_sha256", "process_instance",
+    "actual_argv", "actual_cwd", "actual_executable", "observed_source_and_executable_hashes",
+    "fresh_read_monotonic_interval", "callback_sample_identity", "resource_sample_identity",
+    "peer_snapshot_generation_watermark", "ownership_granted=false"
+  ],
+  "observer_registration": {
+    "required": true,
+    "source_hashes": "REQUIRES_NEW_PUBLISHED_PARENT_CLOSURE",
+    "executable_argv_cwd_environment": "REQUIRES_EXACT_PUBLISHED_OBSERVER_ROLE",
+    "actual_launch_instance": "REQUIRES_DIRECT_LAUNCH_RECORD_AND_FRESH_READ",
+    "resource_population": "observer itself, all workers/compiler children, all guards and unrelated projects remain counted",
+    "lifetime_scope": "explicit observation window; if also waiting long build handles, publish a separate finite manager bound before release"
+  },
+  "canonical_AG5_peer_rules": {
+    "current_instance_and_tgid_tracer_required": true,
+    "retired_precedes_old_confirmed": true,
+    "pending_proof_never_confers_authority_PASS": true,
+    "shared_signal_rights": false,
+    "new_shadow_ownership_registry": false
+  },
+  "tiny_role_rendezvous_if_selected_before_launch": {
+    "implemented": false,
+    "requires_new_exact_entry_import_hashes": true,
+    "actual_entry_and_four_math_cases_retained": true,
+    "interface": "source-registered inherited ready/ack pipe with registration hash, launch nonce and current process tuple",
+    "maximum_ack_wait_seconds": 2,
+    "ack_issuer": "only the exact registered observer after its same real shared callback observed that instance",
+    "missing_ack": "preserved qualification failure, no false test PASS",
+    "no_synthetic_live_row_or_sleep_wrapper": true
+  },
+  "current_execution_permission": false,
+  "new_CPU_tests_executed_for_this_review": 0,
+  "new_compiles_ptrace_or_simulations_for_this_review": 0
+}

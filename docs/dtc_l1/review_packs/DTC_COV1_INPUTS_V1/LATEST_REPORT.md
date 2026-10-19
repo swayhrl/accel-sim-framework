@@ -77,3 +77,25 @@ blob equality and clean status, separate from the four scientific tiny tests.
 Final external readback receipt lives under
 `/workspace/dtc-evidence-closure-20261019-v1/cov1/` to avoid self-hashing. No old
 raw/control/input/HOLD, old44/GM12, scientific model, manuscript or DC changed.
+
+## Latest continuation: source-only actual external-role qualification plan
+
+Parent7e7bd82423f0f5807e2d89bb7fe779d21be13148 was consumed for this source-only
+review. `shared_role_review_v1/` proposes the minimum read-only release/
+admission/direct-launch-instance binding and actual three-role observation
+cohort. It includes exact reviewed source blobs, a non-executable data contract,
+actual-observation acceptance cases, short COV entry handling, observer-self
+identity, unfiltered resources and finite lifetime scope. Fresh argv/cwd/exe,
+peer tracer/Tgid/retired and post-root ownership publication are already fixed
+in the parent source; this review does not request repeating them or AG5/BASE/
+old12-negative audits. V2 remains unreleased pending the parent's new ELF/
+manifest/runtime qualification.
+
+This continuation ran0 additional tests,0 builds/ptrace,0 resource/process polls
+and0 simulations. Disk recovery and current IO are parent-reported context,
+not a new admission observation. Completed SEM configure is not repeated for
+observer coverage; a short actual role missed live stays INCOMPLETE rather
+than being reconstructed from its terminal receipt. The optional2s in-entry
+rendezvous is a proposal requiring new exact source registration, not an
+implemented or released hook. Original tiny4PASS, full-input gaps and all
+scientific/budget boundaries remain as previously recorded.
