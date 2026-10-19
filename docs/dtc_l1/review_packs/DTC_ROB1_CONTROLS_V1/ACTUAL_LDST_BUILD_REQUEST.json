@@ -1,0 +1,39 @@
+{
+  "schema": "ROB1_BOUNDED_ACTUAL_LDST_BUILD_REQUEST_V1",
+  "status": "PREPARED_NOT_EXECUTED_NOT_ADMITTED",
+  "role": "ROB1_MATCHING_ABI_LIBRARY_AND_ACTUAL_LDST_FIXTURE_BUILD_ONLY",
+  "source_core_commit": "b1077667f7a2bcc72260733f88f5798f167346d1",
+  "source_core_tree": "0a462efb9a48409064259735108b88dad127a53c",
+  "source_core_worktree": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1",
+  "fixture_source": "tests/dtc_l1_rob1_collector_ldst_test.cc",
+  "fixture_source_sha256": "0f5a6221f65c4474e8b90cf47c7c7c8c191643c4d46fbbfa72bc8f9faa169c40",
+  "controller": {
+    "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-rob1-controls-174-v1/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/bounded_cpu_build.py",
+    "sha256": "cee0d7dad737221d08b0ee9b8ff649aa5fdca5a2246a0761445cedf2386c0dae",
+    "origin_framework_commit": "fc73d4e8bc3c2655aefae0b99f8055e16f1497ed",
+    "origin_path": "docs/dtc_l1/review_packs/DTC_SEM1_VALUES_V1/implementation_r1/bounded_cpu_build.py",
+    "origin_sha256": "90be68c1738f247db86239d2cc6a95929c73ed0a5753f6083493bc212617caf8",
+    "changes": "Only SOURCE, OUTPUT, EXPECTED_CORE, target name, and target-specific CMake include option substituted. Lifecycle/resource/controller code unchanged. No post-reap group signals; leftovers reported CLEANUP_UNRESOLVED.",
+    "validation": "Source reviewed/copied only. Reused SEM1 controller repair remains subject to coordinator review and separate qualification; ROB1 did not execute or syntax-test this controller."
+  },
+  "fixture_CMake_hook": {
+    "path": "/workspace/worktrees/accel-sim-iscas2027-dtc-rob1-controls-174-v1/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/fixture_target.cmake",
+    "sha256": "8f7e9eacb4a3cae988ba122bc3d030c516a8f6efac7025be1b7bf28d3306e578",
+    "scope": "One fixture target added through CMAKE_PROJECT_GPGPU-Sim_INCLUDE. Core production source/CMake remain b107 exact clean tree; existing cudart/all dependency archive targets rebuilt fresh."
+  },
+  "controller_environment": {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"},
+  "controller_command_prefix": ["/usr/bin/env", "-i", "PATH=/usr/bin:/bin", "LANG=C", "LC_ALL=C", "/usr/bin/python3", "-I", "-B", "/workspace/worktrees/accel-sim-iscas2027-dtc-rob1-controls-174-v1/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/bounded_cpu_build.py"],
+  "controller_phase_arguments": ["configure", "build"],
+  "child_environment": {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "TMPDIR": "/workspace/dtc-evidence-closure-20261019-v1/rob1/ldst-qualification-r1/tmp", "CUDA_VISIBLE_DEVICES": ""},
+  "configure_argv": ["/usr/bin/cmake", "-S", "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1", "-B", "/workspace/dtc-evidence-closure-20261019-v1/rob1/ldst-qualification-r1/build", "-DCMAKE_CXX_COMPILER=/usr/bin/g++", "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_CXX_FLAGS_RELEASE=-O1 -g0", "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON", "-DGPGPUSIM_BUILD_DTC_L1_TESTS=OFF", "-DCMAKE_PROJECT_GPGPU-Sim_INCLUDE=/workspace/worktrees/accel-sim-iscas2027-dtc-rob1-controls-174-v1/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/fixture_target.cmake", "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"],
+  "build_argv": ["/usr/bin/nice", "-n", "19", "/usr/bin/ionice", "-c", "2", "-n", "7", "/usr/bin/cmake", "--build", "/workspace/dtc-evidence-closure-20261019-v1/rob1/ldst-qualification-r1/build", "--target", "dtc_l1_rob1_collector_ldst", "-j1"],
+  "timeouts_seconds": {"configure": 60, "build": 1200, "termination_grace": 5},
+  "limits": {"compiler_jobs": 1, "output_and_tmp_sampled_max_bytes": 536870912, "single_file_hard_max_bytes": 134217728, "phase_log_max_bytes": 16777216, "child_address_space_max_bytes": 4294967296, "core_file_bytes": 0, "CPU_disk_floor_bytes": 2147483648, "overshoot_reserve_bytes": 134217728, "start_free_minimum_bytes": 2818572288, "memory_admission_min_bytes": 34359738368},
+  "footprint_provenance": {"old_c809_AG3_complete_build_apparent_bytes": 29849847, "old_c809_library_bytes": 5003912, "new_O1_g0_footprint": "NOT_MEASURED; metadata suggests512MiB is plausible but controller limits/real resource admission must decide. No resource PASS inferred."},
+  "prepared_runtime_args_NOT_RELEASED": [["omitted", "3", "1"], ["0", "3", "1"], ["1", "3", "1"], ["2", "3", "1"], ["1", "2", "1"], ["1", "3", "0"]],
+  "runtime_config_path": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+  "runtime_config_sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+  "runtime_expectations": "Normal omitted/0 collect3 requested sectors at12,done12,realRFdenial13,retire14; quota1 collect12/13/14,denial15,retire16. All use actual4sector whole-line return, one preservedRef and ledger dependency. Invalidwidth/mode/nonfinite must abort in actual ctor, not merely helper. None executed.",
+  "runtime_permission": false,
+  "forbidden": ["simulator executable build or launch", "trace replay", "kernel or GPU cycle()", "runtime simulation threads", "Cplus hash", "AD implementation", "automatic linked-fixture runtime", "old-library/new-header ABI mixing", "wholebinary OFF-equivalence claim from component helper"]
+}

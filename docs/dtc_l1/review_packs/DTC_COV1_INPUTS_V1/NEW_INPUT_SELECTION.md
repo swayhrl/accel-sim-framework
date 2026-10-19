@@ -27,3 +27,10 @@ State CAPTURE_EXISTS_WAIT_AG4_TERMINAL_AUTHORITY_FOR_CURRENT_REPLAY_QUALIFICATIO
 After terminal authority and role registration, use one bounded two-hour COV1 CPU window for metadata/format qualification and reference checks. Reuse A's complete body audit; if an additional body scan is essential, one coordinator-owned stream per fixed input writes a shared address/type index with unknown alias preserved. No repeated hash of unchanged huge payload. Fix actual tools, executable identities, options, original initial state and producer resources before any input capture or simulator family. No N point can run before F, SEM1 support scope, executable preregistration, full-input qualification and coordinator budget admission are published.
 
 Bounded inventory accounting: the separately inspected `gpgpu-workloads@de9cf4293f418877aa9cdb6a2395338ca06674a6` tiny wrapper GEMM64 cube is N2's third source candidate and is rejected for insufficient single-B footprint and unbound wrapper/source equivalence. ATAX was inspected only as N1's third fallback source; it is not selected because the preferred rectangular BICG recipe meets the stated at-least-one-kernel target without changing its native block. No additional candidate search remains pending.
+
+Post-terminal execution update: only the tiny independent BICG/GEMM/sparse
+reference examples and expected invalid-index rejection ran once, under
+coordinator role d9750bd8fc4a3d4ee2bb620f03c44eb7a4a2277d;4/4 PASS. The fixed
+full source/native recipes above remain unexecuted, N1/N2 captures absent and
+N3 full-input/decoder qualification pending the unchanged10GiB heavy-input
+resource gate. No selected source, dimension, matrix, seed or scope changed.

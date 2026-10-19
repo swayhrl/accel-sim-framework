@@ -1,0 +1,31 @@
+{
+  "schema": "ROB1_EXACT_CPU_ROLE_REQUEST_V1",
+  "status": "PREPARED_NOT_EXECUTED_NOT_ADMITTED",
+  "requested_role": "ROB1_BOUNDED_COLLECTOR_HELPER_ONLY",
+  "core_commit": "b1077667f7a2bcc72260733f88f5798f167346d1",
+  "core_tree": "0a462efb9a48409064259735108b88dad127a53c",
+  "core_parent": "c8090115bd57512b1b23fca7d925301fa620c751",
+  "compiler": {"path": "/usr/bin/x86_64-linux-gnu-g++-11", "sha256": "2360901d864cf10bfd6296e261cb2c14053552a80377761ab07146ec9ec9a2c0"},
+  "compile": {
+    "cwd": "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1",
+    "argv": ["/usr/bin/x86_64-linux-gnu-g++-11", "-std=c++17", "-O0", "-g0", "-UNDEBUG", "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1/src/gpgpu-sim", "/workspace/worktrees/gpgpu-sim-iscas2027-dtc-rob1-core-174-v1/tests/dtc_l1_rob1_collector_quota_test.cc", "-o", "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/collector_quota_test"],
+    "source_sha256": "7bb114bb72b5d974f58c1d3815636c1f57685ffe97aef8a3e02bbf5a5a538a01",
+    "timeout_seconds": 120,
+    "stdout_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/compile.stdout",
+    "stderr_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/compile.stderr"
+  },
+  "run": {
+    "cwd": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu",
+    "argv": ["/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/collector_quota_test"],
+    "binary_sha256": "TO_REGISTER_AFTER_COMPILATION_BEFORE_EXECUTION",
+    "timeout_seconds": 15,
+    "stdout_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/test.stdout",
+    "stderr_path": "/workspace/dtc-evidence-closure-20261019-v1/rob1/cpu/test.stderr",
+    "expected_exit": 0,
+    "expected_negative_children": "7 SIGABRT children; core files disabled by setrlimit(RLIMIT_CORE,0)"
+  },
+  "planned_resource_bounds": {"compiler_jobs": 1, "helper_jobs": 1, "concurrent_jobs": 1, "output_disk_ceiling_MiB": 64, "logs_each_max_KiB": 512, "no_gpu": true, "no_threads_started_by_fixture": true},
+  "source_scope": ["tests/dtc_l1_rob1_collector_quota_test.cc", "src/gpgpu-sim/dtc-l1-common.h", "src/gpgpu-sim/dtc-l1-tag-index.h", "src/option_parser.h", "compiler_standard_headers_and_linked_host_runtime"],
+  "not_requested": ["heavy_Core_build", "actual_linked_LDST_fixture_execution", "full_simulation", "input_scan", "Cplus_hash", "AD_transfer", "execution_lock", "background_dispatch"],
+  "qualification_limit": "Helper directly exercises production quota/service_entry and override validation, but cannot establish actual parser/constructor/WB integration or binary OFF equivalence. Admit compile first, freeze output binary identity, then separately admit run."
+}

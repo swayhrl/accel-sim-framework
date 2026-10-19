@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <initializer_list>
 #include <sys/wait.h>
+#include <sys/resource.h>
 #include <unistd.h>
 #include "dtc-l1-common.h"
 
@@ -50,6 +51,7 @@ static void conservation(unsigned width) {
 }
 
 int main() {
+  rlimit limit{0,0}; assert(setrlimit(RLIMIT_CORE, &limit) == 0);
   constexpr auto oo = static_cast<unsigned>(dtc_l1::mode::PAPER_OO);
   assert(dtc_l1::diagnostic_collection_width(0, oo, true) == 4);
   assert(dtc_l1::diagnostic_collection_width(0, 0, false) == 4);

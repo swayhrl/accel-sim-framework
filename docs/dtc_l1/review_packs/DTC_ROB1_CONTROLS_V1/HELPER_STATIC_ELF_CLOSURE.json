@@ -1,0 +1,11 @@
+{
+  "status": "STATIC_READELF_INSPECTION_NOT_RUNTIME_MAPPING",
+  "helper_sha256": "9c021f11fe5d17e942e94678f810cb793d1b5d68fc8ad55a8671610ed3a41212",
+  "helper_NEEDED": ["libc.so.6"],
+  "helper_RPATH_RUNPATH": [],
+  "interpreter": {"path": "/lib64/ld-linux-x86-64.so.2", "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2", "sha256": "9eb34cb2da3ae2a9398cc09b3cd2d069563ec40d9858cb711af15cd23fa80abf", "NEEDED": []},
+  "libc": {"path": "/lib/x86_64-linux-gnu/libc.so.6", "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6", "bytes": 2220400, "sha256": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d", "NEEDED": ["ld-linux-x86-64.so.2"]},
+  "ld_so_cache_sha256": "026c6716eea796297e7da1e0f63c3439bfa47108cf8a22fae80c59b22e9ec1ff",
+  "inspection_method": "readelf -h -l -d -n helper and readelf -d libc/interpreter; no ldd, interpreter execution, helper execution or active AG4 mappings read",
+  "limit": "Library paths are prospective system resolution for requested clean env, not an observed runtime maps claim. Coordinator must bind exact executable/library identities before admitting execution."
+}

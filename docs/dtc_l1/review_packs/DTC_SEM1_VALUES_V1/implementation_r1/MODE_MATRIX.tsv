@@ -1,0 +1,11 @@
+mode	source_route	fixture_contract	expected_process_result_if_implementation_correct	claim_if_observed
+shared	3 actual issue loads pending-merge same line;out-of-order4sector replies;actual collect and genuine WB bank refusal	A[i]=i;all read requestedbytes0..3	0;3complete consumers;4packets;Ref0;WBblocked>0	CONDITIONAL_PRODUCTION_SECTOR_ROUTING_VALUE_TEST
+masked	actual two-sector request maskbytes31,32;whole-line return and collection	requestedbytes1f,20	0;2collected sectors per consumer;Ref0	CONDITIONAL_SECTOR_VALUES;NOT_ARCHITECTURAL_LANE_GATHER
+no-e	3 old loads;external producer/reference publishbyte0=99 at80;newcacheableload85;K0	freshness required externally while no selectedE;no store instruction executed	0 only if exactly1mismatch(old00 versus99)and1root;reported conditional countermodel	CONDITIONAL_K0_EXTERNAL_PUBLICATION_COUNTERMODEL;NOT_APPLICATION_COUNTEREXAMPLE
+with-e	same externalpublish;realLDST sourceE80;newload85;isolatedK1diagnostic	newroot fixturebytes99;old consumers retain originalbytes	0;all valuesmatch;new allocation/return;Ref0	CONDITIONAL_SELECTED_E_ROUTING;NO_NEW_E_OR_GLOBAL_PUBLICATION
+ae	AE1 sameaddresses/bytes;actualrootidentity andcollection;diagnostic only	identical expectedbytes as shared	0;allvaluesmatch;notperformance	CONDITIONAL_AE_RETURN_VALUE_IDENTITY
+ad	10pendingconsumers;actualfinite notify;own-readycheck;collectionquota andWB	all requestedbytesmatch;unnotified consumer cannot sample	0;10retired;4acceptedpackets;Ref0	CONDITIONAL_AD_OWN_READY_SECTOR_ROUTING
+wrong-byte	actualaccepted replypacketbyte0 XOR1;reference unchanged	first requestedbytemust mismatch	nonzero1;zero is failure of negativecontrol	EXPECTED_VALUE_REJECTION
+missing-sector	withhold4th sector;actualLDST never gets allreturns	no consumer result permitted;Ref stayslive	nonzero2;zero is failure of negativecontrol	EXPECTED_INCOMPLETE_RETURN_REJECTION
+wrong-generation	fixturecorrupts accepted inflightgeneration;thenrealreplyhandler	oldidentitymust not acquire or write returnedbytes	nonzero/assert;zero is failure of negativecontrol	EXPECTED_ACTUAL_GENERATION_REJECTION
+early-release	fixtureattempts actualfrontend.release whileproductionRef>0	productionlifetimeassertmust reject	nonzero/assert;zero is failure of negativecontrol	EXPECTED_ACTUAL_LIFETIME_REJECTION

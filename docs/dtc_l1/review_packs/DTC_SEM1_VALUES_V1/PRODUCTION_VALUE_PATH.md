@@ -1,5 +1,7 @@
 # SEM1 production value path and bounded bridge proposal
 
+Historical first handoff below describes the unbound proposal. Current **source-connected but uncompiled/untested** implementation is documented in `implementation_r1/ADAPTER_CONTRACT.md`; production c8090115 remains unchanged. AG4 terminal has since been consumed by the coordinator; current gate is WAIT_COORDINATOR_CPU_ROLE_RESOURCE_RELEASE.
+
 2026-10-19, original 174 account/container. **SOURCE_REVIEW_COMPLETE; PREPARED_NOT_TESTED; WAIT_AG4_TERMINAL_AUTHORITY.** This is a source and ABI finding, not a production value test result. No Core branch/library/binary is changed. The 90-minute source check began at 12:27 UTC; its bounded finding is published in this pack.
 
 Production source: Core `c8090115bd57512b1b23fca7d925301fa620c751`; Framework decoder/parser `46df82670a56a4498b6d6e23ad57859eb7c36945`. References below are Git-object lines at those commits, not live worktree assumptions. Fixed older V2/Y2/X2/AG3 evidence is indexed in INPUT_EVIDENCE.md and consumed without rerunning it.

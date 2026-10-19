@@ -1,12 +1,41 @@
-# Remaining gates and missing evidence
+# Remaining input and scientific gates
 
-- WAIT_AG4_TERMINAL_AUTHORITY: coordinator confirmed AG4 active at2026-10-19T12:27:02Z. No COV1 tests, native compiles/generation, CPU source checker, full payload/header audit, new execution lock, simulator or dispatcher is authorized. No authority bypass is prepared.
-- WAIT_GLOBAL_F: consume only immutable complete AG4 terminal screen/calibration and follow entry selection rule. O controls are candidates for reuse; they are not already final F. No AG4 rerun or missing-arm completion under this budget.
-- WAIT_REUSE_QUALIFICATION: eight A C+ UUIDs are complete historical TRAD96 controls; four O T/U controls exist. C+ uses its accepted independent whole-line binary. Per-family dossier must compare actual binary/Core source, all effective shared options,96KiB data budget, lower cap, complete input identity and cold/flush/memcpy initial state. Parent production Core c8090115 differs from A/T/U Core6fba0136; known old source equivalence is not new binary equivalence. Source differences must be disclosed and calibrated when needed. No old point is silently reclassified.
-- WAIT_SEM1: original eight native source/shape, object mapping, value/read-from and cross-kernel supported semantics are not established by structural complete replay. Preserve REGISTERED_BUT_SCOPE_LIMITED. No replacement by favorable apps.
-- N1 BLOCKED_CAPTURE:4096×65281 BICG is fixed source/native recipe only. No capture payload or numeric output exists for the new size. Its second kernel remains16 CTAs. GPU environment, memory/tracer storage and capture producer require coordinator qualification.
-- N2 BLOCKED_SOURCE_BINDING_AND_CAPTURE:2290-cube GEMM has a pinned naive reference and sufficient single-B footprint; exact source relation to original main GEMM remains unproven. Do not call a different wrapper the same-source scale experiment. No full payload/native output exists.
-- N3 current production replay qualification WAIT: SM70 capture and native reference exist with source-backed JDS indexed reads. COV1 has copied small immutable metadata, not revalidated bytes, decoded instructions or proved current parser compatibility. Verify input permutation, full50-kernel boundary, exact register/memory behavior and result reference under the authorized CPU window; do not use109 SM891138_bus.
-- All new small reference code in reference/ is PREPARED_NOT_TESTED. No result output or PASS receipt was generated.
+AG4 terminal authority is resolved by coordinator d9750bd8/66f7fb04e intake.
+Global research is fixed PROVISIONAL_O_WITH_INCOMPLETE_OPT_SCREEN; no AG4 retry
+or AE/AD promotion. Eight C+ and four old-source O controls are historical
+IMPORTED_VERIFIED, while current-family admission is false.
 
-No new performance, native numerical claim, UUID reservation, executable family manifest, payload reconstruction, EDA, hardware-area result or manuscript change is delivered. Full COV1 completion awaits the explicit gates above; this is a complete gate-safe preparation handoff, not completion of CPU execution.
+Four tiny COV1 CPU reference/rejection tests ran once and passed under the
+published exact role. This does not close any full-input/native/value/decoder
+or execution-authority qualification gate.
+
+- R2 RESOURCE: current disk about4.8GB is below unchanged10GiB heavy-input/
+  simulation floor. Tiny role's explicit2GiB disk allowance is not a global
+  waiver. No large/header/body scan, full trace hash, full native generation,
+  GPU capture, simulator, lock or background worker starts here.
+- PRIMARY SCOPE: all eight original native shape/source/object/alias/read-from
+  bindings remain unproven. Existing complete A body/strict evidence is reused,
+  not rerun. Preserve REGISTERED_BUT_SCOPE_LIMITED; no favorable replacements.
+- CURRENT FAMILY: actual production binary/Core/options, original complete
+  command/initial-state equivalence, fixed provisionalO scope, calibrated
+  source applicability and SEM1 support still require coordinator admission.
+  C+ remains the accepted independent conventional Core6582b9d1 binary, old O
+  remains Core6fba0136; neither is claimed to be production c8090115.
+- N1 BLOCKED_CAPTURE: fixed4096×65281 BICG recipe has no actual payload/native
+  output. First kernel has256 CTAs, second16. Exact compatible producer/GPU
+  environment and resource plan are unassigned; no109 task is launched.
+- N2 BLOCKED_SOURCE_BINDING_AND_CAPTURE: fixed2290-cube naive GEMM recipe has
+  sufficient single-B footprint but lacks original-main source equivalence,
+  actual capture and full native reference. Tiny math tests do not fill them.
+- N3 CURRENT INPUT QUALIFICATION: inherited SM70 bcsstk18 capture/source/native
+  checker identity exists. Source-only Volta/parser compatibility is plausible,
+  not actual decoder admission. Complete50-kernel ABI/grammar/opcode/CTA/
+  instruction/member identity, JDS converted index/depth/count/permutation
+  domain and captured initial state remain unqualified. No109 SM89 alias.
+
+The remaining work is a bounded input/source qualification window after
+resource and exact-role gates, plus genuine N1/N2 captures if compatible
+assets become authorized and available. Do not expand the fixed candidate
+inventory or tune sizes on speedup. No production-value or application-native
+PASS, full COV1 completion, final simulator dispatch, or manuscript/PPA claim
+is made by this handoff.
