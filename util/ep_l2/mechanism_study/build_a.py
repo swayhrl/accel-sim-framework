@@ -25,6 +25,8 @@ CORE = Path('/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-core-v1')
 RUNTIME = Path('/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-runtime-v1')
 FRAMEWORK = '197741be9be9b8e390a557d639503b416d8e95f0'
 VENDOR = 'f90c430c3a1ce8f08c09942a5a1c3a797bb2295b'
+R1_RELEASE = HANDOFF / 'full_system_v2/previous_r5/RELEASE.json'
+R1_RELEASE_SHA256 = '6a7a87e7c6f3f73d22622ba380d2c99bb8ef659b13e5ea6c8ed562d79ecdbc99'
 TARGETS = ['accel-sim.out', 'ep_l2_ms_local_service', 'ep_l2_ms_partition',
            'ep_l2_ms_mode_guard', 'ep_l2_ms_observer', 'ep_l2_ft_directed',
            'ep_l2_ft_host_prefill', 'ep_l2_ft_memcpy_clock', 'ep_l2_ft_a1',
@@ -43,6 +45,19 @@ def put(path, value):
     temp = path.with_suffix(path.suffix + '.tmp')
     temp.write_text(json.dumps(value, indent=2) + '\n')
     temp.replace(path)
+
+
+def frozen_r1_release(path=None):
+    # V2's top-level RELEASE describes the new common-source candidate. It
+    # cannot select this frozen R1-only entry. Bind its retained exact bytes
+    # instead; a missing/changed archive must fail, never fall back to V2.
+    path = R1_RELEASE if path is None else Path(path)
+    assert sha(path) == R1_RELEASE_SHA256, 'frozen R1 release bytes changed'
+    selected = json.loads(path.read_text())
+    assert selected['core_source_commit'] == '17e7e224954e44a968a0447bcdfea91e3b2e5a96'
+    assert selected['runtime_framework_commit'] == FRAMEWORK
+    assert selected['vendor_pybind11_commit'] == VENDOR
+    return selected
 
 
 def planned_tests(build, out):
@@ -158,7 +173,9 @@ def main():
         assert approval['reserved_result_bytes'] >= 128 * 2**20
         report['E_admission'] = {'path': str(args.admission), 'sha256': sha(args.admission)}
         assert socket.gethostname() == 'huangrulin-174', 'original174 only'
-        selected = json.loads((HANDOFF / 'RELEASE.json').read_text())
+        selected = frozen_r1_release()
+        report['R1_selection_release'] = {'path': str(R1_RELEASE),
+            'sha256': R1_RELEASE_SHA256, 'top_level_V2_release_is_not_R1_selection': True}
         assert selected['core_source_commit'] == report['core_source_commit']
         assert git(RUNTIME, 'rev-parse', 'HEAD') == FRAMEWORK
         vendor = RUNTIME / 'gpu-simulator/extern/pybind11'

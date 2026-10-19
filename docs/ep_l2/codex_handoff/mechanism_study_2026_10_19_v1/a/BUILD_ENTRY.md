@@ -1,3 +1,14 @@
+V2 current entry repair: this is the retained R1 SMALL NATIVE entry, not the
+final combined-F build entry or an instruction to execute the old14 full queue.
+Its selection uses exact archived R1 RELEASE bytes, never the current top-level
+common-source RELEASE. Archived manifest SHA256:
+`6a7a87e7c6f3f73d22622ba380d2c99bb8ef659b13e5ea6c8ed562d79ecdbc99`.
+Current driver SHA256: `b4c2d64560b7bbde12448a847ffba90ad0a258577a54a78ce8eb11dc1f765aeb`.
+An old4d9cdba1 driver approval is not valid for this changed entry. E must bind
+fresh exact driver/source/API/outputs and actual resources. Core17e7e224,
+runtime197741be and vendorf90c430 remain unchanged. No C++ or native command
+was run by the Python selection repair probe.
+
 # A first source candidate: single finite execution entry
 
 Current state: source and55 finite commands prepared; C++ NOT_COMPILED_NOT_RUN.
@@ -50,7 +61,7 @@ is a preparation record, not evidence of executable existence. Every actual
 attempt gets a fresh output directory; resource/compile/test failures remain
 frozen and do not count as PASS. E must independently validate an actual producer
 PASS, then alone run the full OFF canary and D-preregistered application groups.
-The canary counts toward24; old equal cycles never qualify a different binary.
+Any complete canary counts toward the SAME cumulative40 campaign; V2 finalS/F ordering supersedes old14. Old equal cycles never qualify a different binary.
 
 Control checks actually performed: Python parse/plan generation and deliberate
 missing-E-file rejection. That rejection created0 leases,0 native commands and
@@ -58,7 +69,7 @@ no build directory; the central registry bytes were unchanged. This is a TOOL
 control result, not simulator/native qualification. No optional syntax-only
 C++ compilation was used to bypass the resource gate.
 
-E compatibility: published1b93f33b2169b88f50eec49033e259966c153ea3
+Historical E compatibility: published1b93f33b2169b88f50eec49033e259966c153ea3
 A_BUILD_ENTRY_SHARED_RESOURCE_COMPAT.patch applied and AST parsed. The new
 E API digest must match CLIENT_CONTRACT and admission; no integrity bypass.
 Child PID/start_ticks/boot_id is rebound to the ONE lease for every serial
