@@ -1,0 +1,135 @@
+--- a/util/vm_tlb/c16/lane_g/runtime_package_transfer.py
++++ b/util/vm_tlb/c16/lane_g/runtime_package_transfer.py
+@@ -22,6 +22,7 @@
+ from typing import Any
+ 
+ from c16_native_common import ContractError, atomic_json, sha256_file
++from c16_outbound_supply_guard import RetirementHold, check_package, check_payload
+ 
+ 
+ PACKAGE_FIELDS = (
+@@ -79,6 +80,7 @@
+ 
+ 
+ def payload_bytes(row: dict[str, str], package_commit: str) -> bytes:
++    check_payload(row, package_commit)
+     source_ref = row["source_ref"]
+     local_path = row["local_path"]
+     if source_ref.startswith("git:"):
+@@ -148,6 +150,7 @@
+ 
+ def materialize(args: argparse.Namespace) -> dict[str, Any]:
+     identity, metadata, rows = validate_metadata(args.package_commit, args.package_dir, args.expected_package_manifest_sha256)
++    check_package(identity, args.package_commit, args.expected_package_manifest_sha256)
+     for row in rows:
+         destination = args.transfer_root / row["destination_relpath"]
+         atomic_bytes(destination, payload_bytes(row, args.package_commit))
+@@ -219,6 +222,6 @@
+ if __name__ == "__main__":
+     try:
+         main()
+-    except (ContractError, json.JSONDecodeError) as exc:
++    except (ContractError, RetirementHold, json.JSONDecodeError) as exc:
+         print(f"FAIL C16 immutable package transfer: {exc}", file=sys.stderr)
+         raise SystemExit(2)
+--- /dev/null
++++ b/util/vm_tlb/c16/lane_g/c16_outbound_supply_guard.py
+@@ -0,0 +1,98 @@
++"""Proposed G-only retirement gate. No production activation by this file.
++
++G must publish a reviewed release with TRUSTED_POLICY_SHA256 bound to the
++actually approved/signed policy. Reference syntax checks do not authenticate
++an owner: owner acceptance and queue-drain receipts require external review.
++The six A original model files and supervisor remain outside this change.
++"""
++import hashlib
++import json
++from pathlib import Path, PurePosixPath
++
++TRUSTED_POLICY_SHA256 = None  # UNAPPROVED: G release must bind an approved policy.
++POLICY_PATH = Path('/workspace/c16_exchange/autodl_wave1/control/OUTBOUND_SUPPLY_RETIREMENT.json')
++SELECTOR_SHA256 = '2c258b589bff3eb0e7154e775bc2973c932ec94144075edb5060b0a2d5205581'
++PRODUCER = '168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d'
++MANIFESTS = {
++    'C16_GPU_PACKAGE_P2': 'c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26',
++    'C16_GPU_PACKAGE_P3': '704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c',
++}
++DEPLOYMENTS = ('c16_qwen25_7b_raw_reference', 'c16_qwen25_7b_awq')
++BASE = '/workspace/c16_exchange/autodl_wave1/outbound/'
++OUTBOUND = tuple(
++    BASE + 'C16_GPU_PACKAGE_P2_168c9714/models/' + DEPLOYMENTS[0] + '/model-%05d-of-00004.safetensors' % i
++    for i in range(1, 5)
++) + tuple(
++    BASE + 'C16_GPU_PACKAGE_P3_168c9714/models/' + DEPLOYMENTS[1] + '/model-%05d-of-00002.safetensors' % i
++    for i in range(1, 3)
++)
++REQUIRED_REFS = ('user_or_owner_approval', 'G_owner_acceptance', 'queue_and_consumer_drain',
++                 'future164_109_supply_binding', 'rollback_plan')
++
++class RetirementHold(RuntimeError):
++    pass
++
++def _sha(value):
++    return isinstance(value, str) and len(value) == 64 and all(c in '0123456789abcdef' for c in value)
++
++def _old_path(value):
++    # Lexical normalization only: never open/stat a retired model to decide.
++    if not isinstance(value, str) or not value.startswith('/'):
++        return False
++    import posixpath
++    normalized = posixpath.normpath(value).rstrip('/') + '/'
++    return any(path == normalized[:-1] or path.startswith(normalized) for path in OUTBOUND)
++
++def _policy():
++    if TRUSTED_POLICY_SHA256 is None:
++        return None
++    if not _sha(TRUSTED_POLICY_SHA256):
++        raise RetirementHold('G trusted policy digest is invalid')
++    try:
++        raw = POLICY_PATH.read_bytes()
++        if hashlib.sha256(raw).hexdigest() != TRUSTED_POLICY_SHA256:
++            raise RetirementHold('G retirement policy digest mismatch')
++        p = json.loads(raw)
++        if (p.get('schema') != 'C16_G_OUTBOUND_SIX_RETIREMENT_V1' or
++                p.get('state') != 'ACTIVE_RETIRED' or
++                p.get('outbound_selector_sha256') != SELECTOR_SHA256 or
++                p.get('producer_commit') != PRODUCER or
++                p.get('outbound_paths') != list(OUTBOUND) or
++                p.get('local_model_six') != 'ACTIVE_KEEP' or
++                p.get('source_unlink_authorized') is not False):
++            raise RetirementHold('G retirement policy scope/state mismatch')
++        for key in REQUIRED_REFS:
++            ref = p.get(key)
++            if not isinstance(ref, dict) or not _sha(ref.get('receipt_sha256')):
++                raise RetirementHold('missing signed/reviewed evidence reference: ' + key)
++            commit, path = ref.get('commit', ''), ref.get('path', '')
++            if (len(commit) != 40 or any(c not in '0123456789abcdef' for c in commit) or
++                    not path or PurePosixPath(path).is_absolute() or '..' in PurePosixPath(path).parts):
++                raise RetirementHold('invalid immutable reference: ' + key)
++        return p
++    except (OSError, ValueError, TypeError) as exc:
++        raise RetirementHold('G policy unavailable/invalid; no payload access') from exc
++
++def check_package(identity, package_commit, manifest_sha256):
++    package_id = identity.get('package_id')
++    old = (package_id in MANIFESTS and
++           (package_commit == PRODUCER or manifest_sha256 == MANIFESTS[package_id]))
++    if old and _policy() is not None:
++        raise RetirementHold('historical P2/P3 source supply retired; request a versioned164/109 job')
++
++def check_payload(row, package_commit):
++    destination = row.get('destination_relpath', '')
++    old_component = package_commit == PRODUCER and any(
++        destination.startswith('models/' + deployment + '/') for deployment in DEPLOYMENTS)
++    if (_old_path(row.get('local_path')) or old_component) and _policy() is not None:
++        raise RetirementHold('retired historical payload refused before open/read/hash/write')
++
++def check_transfer_sources(source_paths):
++    """Actual G launcher must call before subprocess/rsync; not installed here.
++
++    Launcher also has to expand/validate its exact immutable manifest and
++    disallow old-code invocations and aliases. This gate alone cannot close
++    an unknown external scheduler or prevent a direct shell rsync bypass.
++    """
++    if any(_old_path(path) for path in source_paths) and _policy() is not None:
++        raise RetirementHold('outbound exact six source supply retired')

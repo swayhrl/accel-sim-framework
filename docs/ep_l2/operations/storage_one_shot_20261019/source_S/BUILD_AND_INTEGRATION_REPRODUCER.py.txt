@@ -1,0 +1,59 @@
+import pathlib,json,difflib,hashlib,subprocess,tempfile,importlib.util,sys,types,unittest
+from unittest.mock import patch
+from types import SimpleNamespace
+P=pathlib.Path('docs/ep_l2/operations/storage_one_shot_20261019/source_S')
+root=pathlib.Path('/workspace/worktrees/accel-sim-vm-c16-g-runtime')
+relative='util/vm_tlb/c16/lane_g/runtime_package_transfer.py'
+original=(root/relative).read_text()
+frozen=subprocess.check_output(['git','-C',str(root),'show','73850d93a4c97537976d799759b9440112eadea9:'+relative]).decode()
+assert original==frozen
+changed=original.replace('from c16_native_common import ContractError, atomic_json, sha256_file', 'from c16_native_common import ContractError, atomic_json, sha256_file\nfrom c16_outbound_supply_guard import RetirementHold, check_package, check_payload')
+changed=changed.replace('def payload_bytes(row: dict[str, str], package_commit: str) -> bytes:\n', 'def payload_bytes(row: dict[str, str], package_commit: str) -> bytes:\n    check_payload(row, package_commit)\n')
+anchor='    identity, metadata, rows = validate_metadata(args.package_commit, args.package_dir, args.expected_package_manifest_sha256)\n'
+assert changed.count(anchor)==1
+changed=changed.replace(anchor,anchor+'    check_package(identity, args.package_commit, args.expected_package_manifest_sha256)\n')
+changed=changed.replace('except (ContractError, json.JSONDecodeError) as exc:', 'except (ContractError, RetirementHold, json.JSONDecodeError) as exc:')
+guard=(P/'c16_outbound_supply_guard.py.proposed').read_text()
+relative2='util/vm_tlb/c16/lane_g/c16_outbound_supply_guard.py'
+diff=''.join(difflib.unified_diff(original.splitlines(True),changed.splitlines(True),fromfile='a/'+relative,tofile='b/'+relative))
+diff+=''.join(difflib.unified_diff([],guard.splitlines(True),fromfile='/dev/null',tofile='b/'+relative2))
+(P/'C16_G_OUTBOUND_FIRST_UNAPPLIED.patch').write_text(diff)
+policy={'schema':'C16_G_OUTBOUND_SIX_RETIREMENT_V1','state':'PENDING_APPROVAL','outbound_selector_sha256':'2c258b589bff3eb0e7154e775bc2973c932ec94144075edb5060b0a2d5205581','producer_commit':'168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d','local_model_six':'ACTIVE_KEEP','source_unlink_authorized':False}
+namespace={};exec(compile(guard,'proposal_guard','exec'),namespace)
+policy['outbound_paths']=list(namespace['OUTBOUND'])
+for k in namespace['REQUIRED_REFS']:policy[k]=None
+(P/'C16_G_OUTBOUND_POLICY_UNAPPROVED.json').write_text(json.dumps(policy,indent=2)+'\n')
+with tempfile.TemporaryDirectory(prefix='s-c16-control-fixture-') as tmp:
+ d=pathlib.Path(tmp);(d/relative).parent.mkdir(parents=True);(d/relative).write_text(original)
+ subprocess.run(['git','apply','--check','-'],cwd=d,input=diff,text=True,check=True,capture_output=True)
+ subprocess.run(['git','apply','-'],cwd=d,input=diff,text=True,check=True,capture_output=True)
+ assert (d/relative).read_text()==changed
+ (d/'c16_outbound_supply_guard.py').write_text(guard)
+ # Stub only the dependency-free receipt primitives; no native model imports.
+ stub=types.ModuleType('c16_native_common');stub.ContractError=RuntimeError;stub.atomic_json=lambda *args:None;stub.sha256_file=lambda *args:None
+ sys.modules['c16_native_common']=stub
+ sys.path.insert(0,str(d))
+ import c16_outbound_supply_guard as g
+ spec=importlib.util.spec_from_file_location('fixture_transfer',d/relative);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+ testpolicy=dict(policy,state='ACTIVE_RETIRED')
+ for k in g.REQUIRED_REFS:testpolicy[k]={'commit':'a'*40,'path':'fixture/approved.json','receipt_sha256':'b'*64}
+ pp=d/'fixture_policy.json';raw=json.dumps(testpolicy).encode();pp.write_bytes(raw);g.POLICY_PATH=pp;g.TRUSTED_POLICY_SHA256=hashlib.sha256(raw).hexdigest()
+ checks=[]
+ args=SimpleNamespace(package_commit=g.PRODUCER,package_dir='metadata-only',expected_package_manifest_sha256=g.MANIFESTS['C16_GPU_PACKAGE_P2'],transfer_root=d/'must_remain_absent')
+ with patch.object(module,'validate_metadata',return_value=({'package_id':'C16_GPU_PACKAGE_P2'},{},[{'local_path':g.OUTBOUND[0]}])),patch.object(module,'payload_bytes',side_effect=AssertionError('payload must not open')):
+  try:module.materialize(args);raise AssertionError('retired materialize accepted')
+  except g.RetirementHold:pass
+  assert not args.transfer_root.exists();checks.append('actual_patched_materialize_refuses_before_payload_and_destination_creation')
+ with patch.object(pathlib.Path,'read_bytes',side_effect=AssertionError('payload must not read')):
+  # Policy is necessarily read, so use direct scoped gate hook to isolate payload ordering.
+  with patch.object(module,'check_payload',side_effect=g.RetirementHold('fixture denied')):
+   try:module.payload_bytes({'local_path':g.OUTBOUND[0]},g.PRODUCER);raise AssertionError('payload accepted')
+   except g.RetirementHold:pass
+  checks.append('actual_patched_payload_entry_guard_precedes_any_file_or_Git_read')
+ # Verify path remains available to remote verification; supply guard does not touch verify().
+ assert changed[changed.index('def verify('):changed.index('def main(')]==original[original.index('def verify('):original.index('def main(')]
+ checks.append('remote_verify_function_byte_unchanged')
+ g.TRUSTED_POLICY_SHA256=None;g.check_transfer_sources([g.OUTBOUND[0]]);checks.append('control_deactivation_rollback_preserves_source_bytes')
+ result={'schema':'C16_G_OUTBOUND_FIRST_CONTROL_PROPOSAL_TESTS_V1','preimage_commit':'73850d93a4c97537976d799759b9440112eadea9','preimage_path':relative,'preimage_sha256':hashlib.sha256(original.encode()).hexdigest(),'patched_sha256':hashlib.sha256(changed.encode()).hexdigest(),'patch_sha256':hashlib.sha256(diff.encode()).hexdigest(),'guard_sha256':hashlib.sha256(guard.encode()).hexdigest(),'patch_check_and_application':'PASS_IN_NEW_TEMP_FIXTURE_ONLY','integration_checks':checks,'integration_passed':len(checks),'production_patch_applied':False,'production_policy_activated':False,'real_payload_bytes_read':0,'supervisor_or_A_local_model_files_changed':False,'limitation':'Policy-reference checks validate structure/digest, not actual approval authenticity. G must independently verify user/owner evidence and actual launcher/queue coverage. No scientific/native-model correctness claim.'}
+ (P/'C16_G_OUTBOUND_PATCH_TEST_RECEIPT.json').write_text(json.dumps(result,indent=2)+'\n')
+ print(json.dumps(result,indent=2))

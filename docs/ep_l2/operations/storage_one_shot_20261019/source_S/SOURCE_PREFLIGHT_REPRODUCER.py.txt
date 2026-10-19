@@ -1,0 +1,52 @@
+import os,sys,json,pathlib,hashlib,fcntl,datetime,subprocess
+SRC=pathlib.Path('/workspace/worktrees/gpu-l2-cache-verilog-tls-v10-source')
+HERE=SRC/'docs/ep_l2/operations/tls_v10_174_to_164_source'
+sys.path.insert(0,str(HERE))
+import tls_v10_copy_only20g_gate as old
+import tls_v10_copy16_real_preflight as real
+OUT=pathlib.Path('/workspace/worktrees/framework-s-owner-growth-20261019-v2/docs/ep_l2/operations/storage_one_shot_20261019/source_S')
+OUT.mkdir(parents=True,exist_ok=True)
+def digest(b):return hashlib.sha256(b).hexdigest()
+def write_new(p,r):
+ b=(json.dumps(r,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode();fd=os.open(p,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+ with os.fdopen(fd,'wb') as f:f.write(b);f.flush();os.fsync(f.fileno())
+ fd=os.open(p.parent,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd);return digest(b)
+lock=os.open(old.BRIDGE/'.TLS_V10_SOURCE_SENDER.lock',os.O_RDWR|os.O_NOFOLLOW)
+fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+snapshot=old.real_snapshot()
+hits,unknown,lane,transfers=real.physical_refs()
+def redacted(rows):
+ return [{k:v for k,v in r.items() if k not in ['args','matching_refs']}|({'args_sha256':digest(r['args'].encode())} if 'args' in r else {}) for r in rows]
+script_rows={str(p):digest(pathlib.Path(p).read_bytes()) for p in real.SCRIPT_SHA}
+scheduled=script_rows==real.SCRIPT_SHA and all(old.SOURCE_ROOT not in pathlib.Path(p).read_text() and 'tls-cache-p9-public-v1' not in pathlib.Path(p).read_text() for p in real.SCRIPT_SHA)
+target_lock={'path':str(old.BRIDGE/'.TARGET_RECEIVER.lock'),'checked':True,'held_by_other':None,'target_owner_not_inferred':True}
+fd=os.open(old.BRIDGE/'.TARGET_RECEIVER.lock',os.O_RDWR|os.O_NOFOLLOW)
+try:
+ try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);target_lock['held_by_other']=False;fcntl.flock(fd,fcntl.LOCK_UN)
+ except BlockingIOError:target_lock['held_by_other']=True
+finally:os.close(fd)
+reqname='TLS_V10_P9_PUBLIC_B0010_TARGET_SOLE_WINDOW_REQUEST_COPY16.json'
+reqraw=(old.BRIDGE/reqname).read_bytes();req=json.loads(reqraw)
+assert digest(reqraw)=='938c536b731e9584ea91840cfb1062191025019ec2b85fd5244b5f955e696991'
+assert req['txid']==old.TXID and req['selector_sha256']==old.SELECTOR
+assert req['target_root_native164']==old.TARGET_ROOT and req['plan_batch_index']==9
+targetdir='docs/ep_l2/operations/tls_v10/receipts/20261018_174new_target_01/'
+gitraw=subprocess.check_output(['git','-C','/workspace/repos/accel-sim-framework','show','3bb823e362c3ae96a25e70cb762398355fbd1c3b:'+targetdir+reqname]);assert gitraw==reqraw
+prior=[]
+for i in range(1,10):
+ name=f'TLS_V10_P9_PUBLIC_B{i:04d}_SOURCE_KEEP_ACK.json';p=HERE/name
+ if p.exists():
+  b=p.read_bytes();prior.append({'window_id':f'TLS_V10_P9_PUBLIC_B{i:04d}','source_ACK_file':name,'source_ACK_sha256':digest(b),'proof_reused_no_payload_hash':True})
+pre=json.loads((old.BRIDGE/'TLS_V10_P9_PUBLIC_B0010_TARGET_METADATA_PREFLIGHT_COPY16.json').read_text())
+now=datetime.datetime.now(datetime.timezone.utc);age=(now-datetime.datetime.fromisoformat(pre['utc'])).total_seconds()
+r={'schema':'TLS_V10_ONE_SHOT_SOURCE_PREFLIGHT_V1','utc':now.isoformat(),'coordination_commit':'3a7ea422d3f4301688bd3cb7bcf4431b97f08e90','source_head':subprocess.check_output(['git','-C',str(SRC),'rev-parse','HEAD'],text=True).strip(),'namespace':os.readlink('/proc/self/ns/mnt'),'source_sender_lock_acquired_for_this_preflight':True,'source_sender_lock_released_on_exit':True,'lease_state_after_preflight':'NO_LIVE_SOURCE_SENDER_WAITING_FOR_TARGET_FRESH_OWNER','preflight_snapshot':snapshot,'proc_P9_refs':redacted(hits),'proc_unreadable':unknown,'lane_pids':redacted(lane),'transfer_pids':redacted(transfers),'scheduled_reader_script_sha256':script_rows,'scheduled_P9_PUBLIC_reader_clear':scheduled,'receiver_lock_probe':target_lock,'B0010_request_sha256':digest(reqraw),'B0010_request_git_commit':'3bb823e362c3ae96a25e70cb762398355fbd1c3b','B0010_original_request_unchanged':True,'target_preflight_age_seconds':age,'target_preflight_current':0<=age<=900,'prior_source_ACKs':prior,'prior_range_durable_native_bytes':705152417,'source_originals':'SOURCE_KEEP','source_unlinks':0,'scientific_payload_staged_bytes':0,'control_write_budget_bytes':33554432,'science_admission':False,'R6_VVP_cleanup_repeated':False}
+for name in ['TLS_V10_P9_PUBLIC_B0010_SOURCE_READY_COPY16.json']:
+ assert not (HERE/name).exists() and not (old.BRIDGE/name).exists()
+assert not pathlib.Path(req['bridge_root']).parent.exists()
+prefname='TLS_V10_ONE_SHOT_SOURCE_PREFLIGHT_20261019.json'
+for p in [HERE/prefname,old.BRIDGE/prefname,OUT/prefname]:write_new(p,r)
+notice={'schema':'TLS_V10_ONE_SHOT_SOURCE_RESUME_REQUEST_V1','utc':now.isoformat(),'coordination_commit':r['coordination_commit'],'source_branch':old.SOURCE_BRANCH,'target_branch':'hrl/tls-v10-174new-target-exec-v1','window_id':req['window_id'],'txid':old.TXID,'selector_sha256':old.SELECTOR,'target_root_native164':old.TARGET_ROOT,'original_request_commit':r['B0010_request_git_commit'],'original_request_sha256':digest(reqraw),'plan_batch_index':9,'preflight_name':prefname,'preflight_sha256':digest((HERE/prefname).read_bytes()),'workspace_available_bytes':snapshot['input']['workspace_available_bytes'],'share_available_bytes':snapshot['input']['share_available_bytes'],'memory_available_bytes':snapshot['input']['memory_available_bytes'],'source_current_reader_refs':len(hits),'source_proc_unknown':len(unknown),'source_current_transfer_pids':redacted(transfers),'source_scheduled_P9_PUBLIC_clear':scheduled,'source_sender_lock_preflight_acquired':True,'no_source_sender_daemon_running_after_preflight':True,'no_READY_or_payload_created':True,'requested_target_action':'Adopt original B0010 under one live target owner/receiver lock; publish current true164 path/resources/receiver-idle lease evidence and an immutable refreshed metadata preflight bound to the unchanged B0010 request. Notify source via original Git/Share bridge. Preserve B0001-9, txid, selector, original cursor; no heavy C16 hash overlapping TLS. Do not treat this source preflight as READY. Existing runner requires a target preflight <=900s; agree exact append-only refreshed filename/binding if original is preserved.','bounded_wait':'One bounded refresh interval only; source continues independent C16 proposal work and does not install a watcher.','source_originals':'SOURCE_KEEP','source_release_count':0}
+name='TLS_V10_ONE_SHOT_SOURCE_RESUME_REQUEST_20261019.json'
+for p in [HERE/name,old.BRIDGE/name,OUT/name]:write_new(p,notice)
+fcntl.flock(lock,fcntl.LOCK_UN);os.close(lock)
+print(json.dumps({'preflight':prefname,'workspace_available_bytes':snapshot['input']['workspace_available_bytes'],'share_available_bytes':snapshot['input']['share_available_bytes'],'memory_available_bytes':snapshot['input']['memory_available_bytes'],'registry':snapshot['registry'],'P9_reader_count':len(hits),'unreadable_proc':len(unknown),'other_transfers':redacted(transfers),'scheduled_clear':scheduled,'target_preflight_age_seconds':age,'prior_ACKs':len(prior)},ensure_ascii=False))
