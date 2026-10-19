@@ -218,3 +218,17 @@ BA actual0/32. No old UUID reused, no canary or model started. COV prepares the
 finite source-bound actual CPU-role manager; CPU source registrations are closed
 while that caller converges. The compiled new fixture and SEM configuration stay
 preserved; neither will be rebuilt/reconfigured merely to obtain observation.
+
+
+### Actual CPU-role work manager registered (conditional finite start)
+
+COV2e99b635 manager is integrated with one same-live binding rejection query
+and explicit per-phase cache/tool SHA checks. A source-bound standalone entry
+verifies the exact clean Git publication and independent release/role/policy/
+registration blobs before calling it. Fixed order: SEM build (no reconfigure),
+ROB configure, ROB build, COV once. Each phase takes its own full paired R2
+and current authority gate. Default one CPU controller, total2800s; no runtime
+LD/ST fixture, model or simulator mode. Existing controller source and cleanup
+are unchanged. A missed short COV observation stays INCOMPLETE, with no repeat.
+This finite source registration does not itself qualify the observer or dispatcher.
+Guard/shared CPU tests remain closed pending their separate later fresh release.

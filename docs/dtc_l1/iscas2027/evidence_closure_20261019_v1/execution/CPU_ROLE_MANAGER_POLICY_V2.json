@@ -1,0 +1,21 @@
+{
+  "status": "FROZEN_EXISTING_R2_FOR_FINITE_SEQUENTIAL_CPU_ROLE_WORK_ONLY",
+  "admission": {
+    "two_fresh_samples_separation_seconds": 10,
+    "pressure_scope": "BOTH host and cgroup memory/IO PSI",
+    "memory_full_avg10_max_each": 1,
+    "IO_full_avg10_max_each": 25,
+    "host_available_and_cgroup_headroom_min_bytes": 34359738368,
+    "no_new_host_or_cgroup_oom": true,
+    "CPU_disk_floor_plus_output_bytes": 2852126720,
+    "fullsim_disk_minimum_unchanged_bytes": 10737418240
+  },
+  "concurrency": 1,
+  "controller_output_limit_each_bytes": 536870912,
+  "controller_single_file_limit_bytes": 134217728,
+  "manager_stdout_stderr_reserved_each_phase_total_bytes": 33554432,
+  "COV_output_bound_bytes": 1048576,
+  "first_failure": "Finite WAIT/STOP and return; no auto-retry or additional controller",
+  "no_fullsim_permission": true,
+  "runtime_note": "Initial complete paired admission per phase; existing controller retains finite output/disk/time/cleanup guards. This is not continuous global R2 or three-role joint qualification."
+}
