@@ -1,0 +1,82 @@
+{
+  "operation": "OFFLINE_FULL_TRACE_RO_INPUT_ANALYSIS_NOT_SIMULATION",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "workload": "convolutionSeparable",
+  "C_producer_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "C_producer_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+  "model_scope": "TRACE_MODEL_CLOSED_WORLD",
+  "registration_sha256": "ce335feee38aeb4e40e1b0b37b45766fe6c7026cb6566c8fd91062a6dfeb02a3",
+  "input_expected": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+  "output": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1",
+  "output_cap_bytes": 268435456,
+  "worker_address_space_cap_bytes": 268435456,
+  "worker_CPUs": 1,
+  "maximum_seconds": 1800,
+  "new_simulations": 0,
+  "production_resource_floors": "UNCHANGED; this is the expressly allowed bounded offline old-input analysis",
+  "oracle_scope_change": false,
+  "scientific_RO_qualification": "NOT_GRANTED_BY_D",
+  "hashing_scope": "producer integrity before/after the necessary full-epoch address scan; no repository/body-wide repeated audit",
+  "output_accounting": "D namespace inside E new-result root, visible to canonical6GiB/20GiB accounting; all failures retained",
+  "status": "OFFLINE_CANDIDATE_READY_PENDING_C_E_REVIEW",
+  "driver_sha256": "f35f3d3990769e7f927e01db095a6a45a737b87571362f0144d54260e2ae36d8",
+  "driver_framework_commit": "a3e9872e6eaedf84b6e0c9a60c911ab7bc0b58d1",
+  "controller_process": {
+    "pid": 857540,
+    "start_ticks": 916778483,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "started_utc": "2026-10-19T13:16:53.763561+00:00",
+  "peak_worker_RSS_bytes": 37748736,
+  "peak_output_bytes": 64421894,
+  "observations": 153,
+  "frozen_source_sha256": {
+    "test_ro_oracle.py": "3bca364c3640e99c18cca466d20c3ba94dedb681e98472cf5e6d18609ca6dbc2",
+    "ro_oracle.py": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225"
+  },
+  "worker_process": {
+    "pid": 857592,
+    "start_ticks": 916778510,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "candidate": {
+    "status": "OFFLINE_ORACLE_CANDIDATE_COMPLETE_PENDING_C_E_REVIEW",
+    "oracle_status": "CERTIFIED_WITH_MODEL_SCOPE",
+    "scope": "TRACE_MODEL_CLOSED_WORLD",
+    "oracle": true,
+    "complete_epoch": "whole_commandlist",
+    "kernel_count": 2,
+    "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+    "expected_trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+    "manifest": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/manifest.json",
+    "manifest_sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425",
+    "tool_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+    "tool_source_path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+    "tool_source_sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+    "closed_world_assumptions": [
+      "All listed kernels/all traced lanes are visible agents",
+      "No external/CPU/DMA/device-side concurrent writers during epoch",
+      "Pre-epoch writes/writebacks are drained before oracle activation",
+      "No virtual aliases to different canonical addresses; no MMIO",
+      "Memcpy commands occur at drained command boundaries"
+    ],
+    "counts": {
+      "CERTIFIED_RO_lines": 294912,
+      "CERTIFIED_RO_read_lane_references": 11698176,
+      "NO_GLOBAL_READ_lines": 294912,
+      "NO_GLOBAL_READ_read_lane_references": 0,
+      "SAME_LINE_STORE_lines": 294912,
+      "SAME_LINE_STORE_read_lane_references": 11747328
+    },
+    "unresolved_opcodes": {},
+    "tool_unit_tests": 21,
+    "new_simulations": 0,
+    "runtime_qualification": false,
+    "application_performance_evidence": false,
+    "trace_reuse_order_inference": false
+  },
+  "worker_exit_code": 0,
+  "elapsed_seconds": 306.29646006040275,
+  "finished_utc": "2026-10-19T13:22:00.060932+00:00",
+  "worker_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

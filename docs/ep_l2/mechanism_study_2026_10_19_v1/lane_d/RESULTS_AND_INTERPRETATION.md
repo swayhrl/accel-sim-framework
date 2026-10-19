@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | W 统一WB | source2309 B16：Conv845097、FWT890294、vectorAdd440161、CFD5、SAD0次WB-data拒绝重试；不同UID/等待分布UNKNOWN | 旧U取消copy，实际WB顺序record峰值Conv55/FWT37；record不是实际WB物理槽占用 | Conv逻辑RAM工作减少1092963；B的546865次copy对应1093730个操作，尚有其他流量差767。不能相减当纯copy反事实 | H0五输入B/U均值1.0016002037656606冻结；CFD为负；新的S_COPY_FREE与本地DATA_FREE尚未运行，不分解或相加成独占GPU周期 |
 | V 动态保留淘汰数据 | 全部五输入及新增候选的真实L2序淘汰后可捕获重用UNKNOWN | 本轮实际retained hit未运行，不能写0 | lower读/字节避免、查询成本与mandatory回收UNKNOWN | CLEAN_ONLY与完整dirty版本分开；shadow机会不是真hit；没有应用收益证据 |
-| R tag/MSHR | source2309十个H0 B/U端点的tag全pending拒绝均0；Conv line-MSHR B40088/U279404，其余原输入该拒绝0。不同UID/等待分布UNKNOWN | 新T/M detach/bypass未运行；全epoch RO资格尚无 | 有效在途、吞吐、重复同址读/lower字节UNKNOWN | Conv仅是有MSHR压力的候选，受阻请求是否属于可认证只读子集仍UNKNOWN；tag零计数只约束旧source/该输入，不能解释为所有工作负载无机会 |
+| R tag/MSHR | source2309十个H0 B/U端点的tag全pending拒绝均0；Conv line-MSHR B40088/U279404，其余原输入该拒绝0。不同UID/等待分布UNKNOWN | 新T/M detach/bypass未运行；Conv全epoch只读subset oracle候选已构造，C/E审阅与运行资格待定 | 有效在途、吞吐、重复同址读/lower字节UNKNOWN | Conv仅是有MSHR压力的候选，受阻请求是否属于可认证只读子集仍UNKNOWN；tag零计数只约束旧source/该输入，不能解释为所有工作负载无机会 |
 
 分类YES/NO/UNKNOWN见OPPORTUNITY_TABLE.csv。NO仅表示该完整观测scope的对应计数为0，不是机制普遍无效。重试、bank/slice累计等待、WAD lifetime、记录占用与全程序cycles为不同口径；重叠原因不求和，64slice时间不相加。
 
@@ -35,3 +35,9 @@ HISTORICAL_MICROOPT_MATRIX_18.csv保留f0同binary17/18接受端点及FWT Unifie
 运行 util/ep_l2/mechanism_study_lane_d/sync_intake.py 即消费当前事件；无新pair不建后台循环。E若采用不同字段包装，只对原接受来源作确定性适配，不另建资格系统。当前0个新接受pair。D分析工具8项完整性测试通过，仅为工具测试，不是生产或应用结果。
 
 续行接收边界：每pair还保留两端原profile/labels，特别是diagnostic/subset/oracle；复制vendor和E qualification/selection/invariant引用。真实目标计数与成本字典原样保留，即使当前字段名尚未映射四层，缺少映射也为UNKNOWN而非0。E内嵌冻结端点与当前accepted_results引用若不一致则只hold该pair；不能借新指针改写旧配对。E7434cbf09的实际配对构造测试已在临时目录与新版D消费者互操作PASS，未触及中央台账。
+
+## 增量离线输入证据：卷积全epoch oracle候选
+
+2026-10-19完成原选定完整commandlist的两kernel、全TB/warp/active-lane解析；实际完整input hash仍620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f。冻结C工具给出TRACE_MODEL_CLOSED_WORLD条件下294912条128B只读地址line（连续初始输入区间），11698176次read-lane引用。另294912条同line有store、11747328次read-lane引用被排除，294912条write-only/无global-read line不认证。unresolved opcode为空。闭世界/无外部并发写、canonical VA无别名/MMIO、初始化已排空、host命令在排空边界等假设完整列在manifest，若C/E不接受就不能启用。
+
+这些是完整trace的地址属性，不是缓存槽占用、native request数量、L2命中/阻塞率或机制触发。不得把11698176当受阻UID；其与Conv实际line-MSHR拒绝的交集仍UNKNOWN。旧tag全pending0及所有cycles/流量数据保持不变，V实际L2序再访问也仍UNKNOWN。非numeric SASS输出验证。运行资源：306.296s，峰值worker RSS36MiB、观测输出峰值约61.44MiB；一个worker退出0，无新模拟/编译/全应用开始。21个C离线工具测试PASS，不能充当C native正确性。RO输入候选交C/E，不改变四个既有预登记文件、不自动开启00/10/01/11，也不改变任何预算或截止。

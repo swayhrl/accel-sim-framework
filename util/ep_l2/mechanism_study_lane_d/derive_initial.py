@@ -272,6 +272,9 @@ def main():
                                       'immutable_references_read': refs,
                                       'analysis_source_sha256': sha_bytes(Path(__file__).read_bytes()),
                                       'large_input_body_hashing': 'NOT_REPEATED', 'application_starts_by_D': 0})
+    if (OUT/'RO_INPUT_EVIDENCE.json').exists():
+        from enrich_ro_evidence import main as enrich_input_property
+        enrich_input_property()
     print(json.dumps({'H0_rows': len(h0), 'candidate_context_rows': len(candidates), 'same_binary_historical_pairs': len(historical),
                       'historical_microopt_rows': len(grid), 'four_mode_rows': len(four), 'new_study_applications_started': 0}))
 

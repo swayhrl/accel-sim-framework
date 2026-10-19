@@ -13,3 +13,5 @@ D单次intake工具读取E canonical accepted_pairs/results及原receipt SHA，�
 E当前报告workspace保护线短缺44659048448B，本轮科学构建/运行未准入；D未重复调查df、降低门槛、改其他项目或清理资产。无本Lane lease、simulator、GateWaiter或驻留poller。EN-v17未覆盖。当前窗口可在此安全交接，不能理解为Codex仍在后台运行；整轮D分析依赖E后续接受事件，内部截止仍10/21 18:00停止新启动、22:00结果冻结。
 
 本轮续行是实际工具边界改进：保留逐端点profile/diagnostic/subset/oracle/vendor及E接受身份，并验证内嵌endpoint不被静默改绑。8个D工具测试及1个冻结E真实消费者互操作测试通过。E当前仍0启动/0接受pair，controller明确STOPPED；未将状态文件当存活进程，也不标为verified wait。A现有发布只有接口、无正式新binary，本轮未重跑完整审计、未重发A统计需求、未重查df或启动任何模拟。Goal仍在等待外部合格结果，未宣称完成。
+
+第三轮续行完成了实质输入证据：复用冻结C aabc7d80工具，对已选Conv完整两kernel全epoch分析，完整输入hash与预登记620f80f9一致；模型scope下294912只读地址line、11698176 read-lane引用，同line写区间已排除，无unresolved opcode。候选详见RO_INPUT_EVIDENCE.json，原native机会/cycles与四预登记完全不变，受阻UID与只读subset交集UNKNOWN。闭世界假设/非硬件证书、非runtime资格明确；21个C离线工具测试+完整实际输入处理，资源306.296s/worker RSS36MiB/输出峰约61.44MiB。worker退出0、源与输出已冻结；无模拟、无C++native测试或编译，未动生产门槛。C/E需审阅oracle候选并等待合法runtime/资源后才可运行。本轮不是verified wait或后台任务。

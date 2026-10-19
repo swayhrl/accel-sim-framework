@@ -1,0 +1,58 @@
+{
+  "schema": "EP_L2_RO_ORACLE_V1",
+  "status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "framework_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "host_updates_excluded": [],
+  "kernel_count": 2,
+  "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g",
+  "commandlist_sha256": "ab2290810368438cabf35a3c0fcb9686473aaa2235607a6e2bc0347f651ff484",
+  "kernels": [
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg",
+      "sha256": "9678e3146630e7c77bd4609cc2fc82a6651552e66a5513ea47dcd2d9eb270724",
+      "opcodes": {
+        "LDG": 365568,
+        "STS": 368640,
+        "LDS": 4755456,
+        "STG": 294912
+      }
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg",
+      "sha256": "1c4c91bd017adb4fedce9dc93b5edd8454dc28d969db095b78a6ea972c4ef28b",
+      "opcodes": {
+        "LDG": 367104,
+        "STS": 368640,
+        "LDS": 2691072,
+        "STG": 294912
+      }
+    }
+  ],
+  "unresolved_opcodes": {},
+  "counts": {
+    "CERTIFIED_RO_lines": 294912,
+    "CERTIFIED_RO_read_lane_references": 11698176,
+    "NO_GLOBAL_READ_lines": 294912,
+    "NO_GLOBAL_READ_read_lane_references": 0,
+    "SAME_LINE_STORE_lines": 294912,
+    "SAME_LINE_STORE_read_lane_references": 11747328
+  },
+  "oracle_cost": "offline SQLite O(unique lines), 16 MiB SQLite page cache; runtime oracle idealized input, not free hardware",
+  "artifacts": {
+    "oracle.sqlite3": "aecf1e2c5a0b85ea1db5e130d65c7ec97485ac50ca4ba29b6db763860dc0d59c",
+    "coverage.csv": "d59484ad5c6704692f1bc42054b76935c292e2bbdfdf3b391143d2f1f2ea4fd3",
+    "exclusion.csv": "66b4accbe56249eb41ad0b8f1ae820391f9f23266e3ed904f34a07a331a3a90c",
+    "certified_lines.txt": "de5608de1827cefefdc42e3e6973cc28742f9192c74ac3d5763543ec99b21b6f",
+    "certified_ranges.csv": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e"
+  }
+}

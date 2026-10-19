@@ -17,3 +17,7 @@ D接收约定：E ledger accepted_results引用原receipt path/SHA/identity；ac
 EN-v17、旧接受指针/日志/冻结发布和其他项目均未修改。无新接受事件时保留checkpoint，不宣称Codex/后台runner仍在工作。
 
 续行r2：派生表现在逐端点保留run-key、profile、diagnostic/subset/oracle原标签、vendor、E qualification/selection/invariant身份及完整compact mechanism_metrics。配对内嵌endpoint引用必须与当前E accepted_results指针一致，防止静默重绑定。缺失边界仍UNKNOWN，不从计数或profile名称推断。8项D工具测试＋1项冻结E7434cbf09的真实D消费者兼容测试PASS；都是临时synthetic receipts，原E62项既有测试不重复运行。A3f9c5bf仅接口发布、binary仍null，不能将活跃草稿统计当生产数据。
+
+全epoch只读输入候选：RO_INPUT_EVIDENCE.json与ro_input_evidence/convolutionSeparable_r1。D复用冻结C aabc7d80的原build API，先过21项离线工具测试，再完整处理Conv两kernel/all-warp/active-lane与host命令。原C CLI保留旧路径绑定，D只用外层wrapper绑定正确Git blob路径/字节，不改变C分析语义。输入前后完整hash与预登记620f80f9一致。候选明确TRACE_MODEL_CLOSED_WORLD假设，非硬件只读证明、非RO运行/性能资格。SQLite/完整line列表留在E结果根的D专用目录，Git只保存小manifest/范围/覆盖/资源回执及全artifact hash索引；均已冻结，计入原6GiB/20GiB结果核算。
+
+复现offline candidate用build_ro_candidate.py（默认plan，不自动执行；新revision防覆盖）。一次worker≤1CPU、AS≤256MiB、输出≤256MiB、时间≤1800s，仅拥有自己的进程组；不修改生产48GiB保护。增量表enrich_ro_evidence.py仅按正确input hash加入候选范围/line/lane-reference字段，不改变历史native计数/cycles，不由输入覆盖率推定L2受阻请求占比。derive_initial.py在已有索引时自动调用相同join。该join已加第9项工具测试，拒绝跨input和被改写candidate；E兼容用的intake代码未改，不重复跑既有互操作。

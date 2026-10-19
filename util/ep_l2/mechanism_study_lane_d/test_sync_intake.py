@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import sync_intake as intake
+import enrich_ro_evidence
 
 class AnalysisIntegrity(unittest.TestCase):
     def setUp(self):
@@ -94,5 +95,21 @@ class AnalysisIntegrity(unittest.TestCase):
         self.b['cycles']=110
         with self.assertRaisesRegex(ValueError, 'endpoint pointer changed'):
             intake.analyze_pair('p', self.pair, self.refs())
+    def test_RO_input_property_does_not_create_L2_pressure_or_cross_input(self):
+        candidate=self.root/'candidate.json';candidate.write_text('{}')
+        item={'workload':'fixture','matching_trace_hashes':['right-trace'],
+              'candidate_path':str(candidate),'candidate_sha256':intake.digest(candidate),
+              'scope':'TRACE_MODEL_CLOSED_WORLD','certified_lines':7,'certified_read_lane_references':11}
+        before={'workload':'fixture','trace':'right-trace','cycles':123,'R_tag_all_pending':'NO'}
+        wrong=dict(before,trace='other-input')
+        rows=enrich_ro_evidence.enrich([copy.deepcopy(before),wrong],{'inputs':[item]})
+        self.assertEqual(rows[0]['RO_certified_lines'],7)
+        self.assertEqual(rows[0]['RO_native_blocked_request_intersection'],'UNKNOWN')
+        self.assertEqual(rows[0]['cycles'],123)
+        self.assertEqual(rows[0]['R_tag_all_pending'],'NO')
+        self.assertEqual(rows[1]['RO_certified_lines'],'UNKNOWN')
+        candidate.write_text('{"changed":true}')
+        with self.assertRaisesRegex(ValueError,'changed full-input'):
+            enrich_ro_evidence.enrich([copy.deepcopy(before)],{'inputs':[item]})
 
 if __name__ == '__main__': unittest.main()
