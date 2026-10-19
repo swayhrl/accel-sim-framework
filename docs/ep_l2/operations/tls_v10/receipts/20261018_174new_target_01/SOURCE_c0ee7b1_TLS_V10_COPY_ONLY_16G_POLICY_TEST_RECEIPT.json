@@ -1,0 +1,428 @@
+{
+  "at_utc": "2026-10-19T07:35:53.058082+00:00",
+  "authority_sha256": "745fb24b603627b63bc43a1cb130a9e61038d23adee618e2850e3d80755c7bf1",
+  "copy_only_floor_bytes": 17179869184,
+  "failed": 0,
+  "gate_code_sha256": "9c88b0c9f3744f4997d1616b472b69be25d16ea21adb5a6ba1fdb7993c2e6cbf",
+  "historical_20g_gate_sha256_unchanged": "fef8710a57e46148dd4e5188de67a46616dbed56f2346c82286c56f6c1e0b8d4",
+  "original_default_floor_bytes_unchanged": 51539607552,
+  "passed": 45,
+  "policy_id": "TLS_V10_FROZEN_EXCLUSIVE_COPY_ONLY_16G_20261019",
+  "real_source_gate_pass": false,
+  "schema": "TLS_V10_COPY_ONLY_16G_POLICY_TEST_RECEIPT_V1",
+  "scientific_payload_transferred_bytes": 0,
+  "source_ready_published": false,
+  "source_unlink_count": 0,
+  "synthetic_cases": [
+    {
+      "case": "P_exact_17G",
+      "expected": "POLICY_ELIGIBLE_NOT_READY",
+      "observed": "POLICY_ELIGIBLE_NOT_READY",
+      "pass": true,
+      "reasons": []
+    },
+    {
+      "case": "P_exact16_zero_control",
+      "expected": "POLICY_ELIGIBLE_NOT_READY",
+      "observed": "POLICY_ELIGIBLE_NOT_READY",
+      "pass": true,
+      "reasons": []
+    },
+    {
+      "case": "N_exact16_one_control",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_16_minus_one",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_old_snapshot_not_real",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_old20_id",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_release_id",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_wrong_approval",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_wrong_authority",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_sim",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_build",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_restore",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "NOT_EXACT_COPY16_OPT_IN_DEFAULT_48G",
+        "WORKSPACE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_unlink",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "COPY_POLICY_NEVER_ALLOWS_UNLINK"
+      ]
+    },
+    {
+      "case": "N_other_group",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_shared_trace",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_unmanifested",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_txid",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_nonce",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_selector",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_manifest",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_target",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_namespace",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_dev",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_bridge",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_wrong_request",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_OR_TRANSACTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "case": "N_stale",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SOURCE_RESOURCE_SNAPSHOT_STALE"
+      ]
+    },
+    {
+      "case": "N_share",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "SHARE_F_BAVAIL_OR_PROJECTED_HEADROOM_BELOW_FLOOR"
+      ]
+    },
+    {
+      "case": "N_ram",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "RAM_OR_CGROUP_HEADROOM"
+      ]
+    },
+    {
+      "case": "N_cgroup",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "RAM_OR_CGROUP_HEADROOM"
+      ]
+    },
+    {
+      "case": "N_active_lane",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "LANE_FINAL_CLOSURE_OR_LEASE_NOT_PROVEN"
+      ]
+    },
+    {
+      "case": "N_lane_closure",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "LANE_FINAL_CLOSURE_OR_LEASE_NOT_PROVEN"
+      ]
+    },
+    {
+      "case": "N_lane_pid",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "LANE_FINAL_CLOSURE_OR_LEASE_NOT_PROVEN"
+      ]
+    },
+    {
+      "case": "N_lease",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "LANE_FINAL_CLOSURE_OR_LEASE_NOT_PROVEN"
+      ]
+    },
+    {
+      "case": "N_scan",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR"
+      ]
+    },
+    {
+      "case": "N_current_reader",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR"
+      ]
+    },
+    {
+      "case": "N_future_reader",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "PHYSICAL_OR_SCHEDULED_READER_NOT_PROVEN_CLEAR"
+      ]
+    },
+    {
+      "case": "N_changed_source",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH"
+      ]
+    },
+    {
+      "case": "N_missing_sha",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "FIRST_SOURCE_IDENTITY_OR_SHA_NOT_FRESH"
+      ]
+    },
+    {
+      "case": "N_target_request",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "PINNED_TARGET_WINDOW_REQUEST_NOT_EXACT"
+      ]
+    },
+    {
+      "case": "N_bridge_size",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "BRIDGE_STAGING_LIMIT"
+      ]
+    },
+    {
+      "case": "N_raw_range",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "RAW_RANGE_LIMIT"
+      ]
+    },
+    {
+      "case": "N_rate",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "RATE_OR_SINGLE_STREAM_LIMIT"
+      ]
+    },
+    {
+      "case": "N_second_sender",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "RATE_OR_SINGLE_STREAM_LIMIT"
+      ]
+    },
+    {
+      "case": "N_second_receiver",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "RATE_OR_SINGLE_STREAM_LIMIT"
+      ]
+    },
+    {
+      "case": "N_premature_ready",
+      "expected": "RESOURCE_HOLD",
+      "observed": "RESOURCE_HOLD",
+      "pass": true,
+      "reasons": [
+        "EVALUATOR_CANNOT_ACCEPT_OR_ISSUE_SOURCE_READY"
+      ]
+    }
+  ],
+  "test_code_sha256": "df3d88cee4ce58455ce72ae5e5a40dd1e16b6f705b630c53d3075026c04b0467",
+  "user_approval_sha256": "789528e6dd4e7b51c3a437e14f8a9b3df1045bfa5e1eefc71974b3324ce9b61d"
+}

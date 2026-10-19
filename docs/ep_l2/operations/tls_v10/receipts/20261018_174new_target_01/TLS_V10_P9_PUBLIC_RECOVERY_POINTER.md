@@ -1,6 +1,6 @@
-# TLS-V10 P9_PUBLIC recovery pointer ? ADMISSION_HOLD, not a completed archive
+# TLS-V10 P9_PUBLIC recovery pointer ? FIRST_RANGE_VERIFIED, not a completed group archive
 
-Current state: Source16G policy implementation/tests and fresh signed PASS+exact B0001 READY are pending. Full-file archive0/141, native full-file restore0/141, accepted ranges0, effective scientific payload0B, P9 source release0. Source originals are retained; they remain the authoritative complete data copy. Do not treat the reserved root, synthetic tests or this pointer as a recovered scientific archive or release prerequisite PASS.
+Current state: the original B0001 passed Source16G admission and exact READY; at07:54:59UTC the same Target receiver accepted144B onto true164, closed/reopened its SHA, and independently restored that range on native tmpfs with frozen numeric metadata. Source READY `e6199c059b52d8ad08eed90c6f0438e42250b431`, raw SHA `ad665c055ad2210bab1df5e9ead075d0fec6344bfa4414db6f0dbe7263101575`. Range content SHA `bc85cb82388094a4cc5f7b9bb58893bd2982ad79e66a29e4fd20fa35d5ac58e6`. Accepted/archive ranges1; native range proofs1; whole-group validated files0/141; full-group native restored files0/141; Source release0. The exact bridge payload remains until independent Source KEEP ACK and cleanup. Source originals are retained and remain the authoritative COMPLETE group copy. Do not treat a range proof, reserved root or synthetic tests as a complete archive or release prerequisite PASS.
 
 Authority: Framework `f8baa3acfdbd2f420c108d4d4baff0432ef38822`, authority text SHA256 `745fb24b603627b63bc43a1cb130a9e61038d23adee618e2850e3d80755c7bf1`, authorization JSON SHA256 `789528e6dd4e7b51c3a437e14f8a9b3df1045bfa5e1eefc71974b3324ce9b61d`. Source-only exact141 release has conditional user approval, but all full-proof and fresh Source gate/journal prerequisites must pass. Target has no Source unlink authority.
 
@@ -22,7 +22,7 @@ All relative file names map unchanged between original root, committed164 tree a
 
 ## Recovery only after full archive acceptance
 
-Future owner must locate and hash the exact manifest/COMMIT/full-file metadata index and `TLS_V10_P9_PUBLIC_ALL141_ARCHIVE_AND_NATIVE_RESTORE_PASS.json` in this receipt lineage and durable164 base. If any is absent or inconsistent, HOLD recovery/deletion claims. Today's state lacks that certificate.
+Future owner must locate and hash the exact manifest/COMMIT/full-file metadata index and `TLS_V10_P9_PUBLIC_ALL141_ARCHIVE_AND_NATIVE_RESTORE_PASS.json` in this receipt lineage and durable164 base. If any is absent or inconsistent, HOLD recovery/deletion claims. Today's first-range state still lacks that full141 certificate.
 
 Use the byte-pinned unchanged `tools/v9_transaction.py` (SHA256 `6fd13ab5a9df4b2f6cdddcc4c1e09bb34619571efdf3a7578372dc4b776603fe`) from this Target execution branch. On a qualified native filesystem, select a NEW ABSENT directory with sufficient resource budget and root privileges for original numeric UID/GID. Verify original content SHA before and after copying; never restore over an existing worktree. Core API:
 
@@ -46,8 +46,8 @@ The16GiB exception is for frozen TLS COPY_ONLY and separately qualified Source-o
 
 ## Next exact closure
 
-1. New Source16G policy/test readback, actual resource/activity/identity PASS and original144B B0001 signed READY.
-2. Same existing receiver: real164 close/reopen SHA + native range proof, Git/NAS/bridge DEST/RESTORE, independent Source KEEP ACK, exact unchanged bridge cleanup.
+1. DONE for existing B0001: Source16G45-case policy/test review, Source fresh-at-stage actual resource/activity/identity PASS and exact144B READY.
+2. DONE real164 close/reopen SHA + native range proof. Publish/read back both exact receipt SHAs; await independent Source KEEP ACK, then exact unchanged bridge cleanup. See `TLS_V10_P9_PUBLIC_B0001_TARGET_RECEIVING_RECEIPT_COPY16.json`.
 3. Qualify small grouped sender/receiver fixtures, then serial bounded frozen ranges and actual allocated bridge costs. Reuse verified owned duplicates; no duplicate upload or second stream.
 4. Full141+4 original metadata/content coverage, committed durable archive, NEW absent full native restoration, immutable three-way all-file index and certificate. Publish source-readable exact release prerequisites.
 5. Only Source can evaluate the already-approved separate release policy and execute its qualified exact141 fsync INTENT/DONE journal. Target records a release only after Source immutable journal and actual measured df evidence. All other24 groups remain SOURCE_KEEP.
