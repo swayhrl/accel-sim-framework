@@ -1,0 +1,65 @@
+{
+  "schema": "EP_L2_A_RO_READ_CHILD_SOURCE_AUDIT_V1",
+  "at_unix": 1792434956.390821,
+  "core_candidate": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+  "status": "SOURCE_ONLY_NO_NEW_NATIVE_PASS",
+  "reviewed_paths": [
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "function": "issue",
+      "classification": "GLOBAL_ACC_R READ",
+      "origin": "FIXED candidate inherits demand wid/sid/tpc; retains stream, ownnewUID, ownpayloadhandle/generation, original_mf NULL",
+      "production_delta": "only3 originfields"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "lines": [
+        2000,
+        2130
+      ],
+      "classification": "synthetic writeallocate READs",
+      "origin": "Both existingnewmem_fetch constructors inherit demand wid/sid/tpc/stream"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "lines": [
+        2577,
+        2600,
+        2616
+      ],
+      "classification": "128B/64B/masked sector child READs",
+      "origin": "All3 allocator sites inherit parent wid/sid/tpc/stream and parentoriginalpointer"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "function": "accept_new writeback",
+      "classification": "WRITEBACK WRITE",
+      "origin": "-1 retained consistentexistingWB; actualstatsWRITE branch checks sid<n_shader; not a readpacket"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "line": 220,
+      "classification": "victim WRITEBACK WRITE",
+      "origin": "-1 retained consistentexistingWB; no newreadallocator"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "line": 230,
+      "classification": "simpleallocator WRITE-only",
+      "origin": "assert(wr) excludesREAD; explicitmask allocatorinheritscaller suppliedIDs"
+    }
+  ],
+  "scope_limits": [
+    "Audit covers explicit common L2 childallocations, not a claim about every possible invalid caller in wholeGPU.",
+    "No change to mem_latency_stat, fullDRAM, H0config, returned ownership, MSHRdescriptors, bank service, payload capacity or originaltrace.",
+    "Defect source path is confirmed; actualoriginal Ffullapp crashbacktrace not available and relation awaits finiteold-red/new-green followedE newproduction qualification."
+  ],
+  "source_sha256": {
+    "src/gpgpu-sim/ep-l2-ro-runtime.inc": "4c868dff3806ced19381b4cf5013054203c7802514868d5e0e3557a96d238a23",
+    "src/gpgpu-sim/gpu-cache.cc": "49d0f465c98f45caaf15bf0cd35f3adea4ec56cc2abbfabcd4e44d0846632d12",
+    "src/gpgpu-sim/l2cache.cc": "471bfeff076f93e6ff48058804fe996c91147881bb3af6e79d332f618d1ffcff",
+    "src/gpgpu-sim/ep-l2-tvd-cache.inc": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+    "src/gpgpu-sim/mem_latency_stat.cc": "ec553ded0ece9bf544b3ab4409b75285da375c02ad5f6ce76278c35e8c7a8155",
+    "src/gpgpu-sim/dram.cc": "7cf2cabf7085dbf0463eeb6eb8fadf3f99c71b9ac0aa1b9254c4366ee800134d"
+  }
+}

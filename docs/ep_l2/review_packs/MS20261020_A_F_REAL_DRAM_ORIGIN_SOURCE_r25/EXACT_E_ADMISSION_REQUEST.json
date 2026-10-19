@@ -1,0 +1,98 @@
+{
+  "status": "REQUEST_ONLY_NO_COMPILE_NATIVE_OR_LEASE",
+  "expected_E_admission": {
+    "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+    "control_source_commit": "44aba5495701cb05519598867bd2951f1ead7867",
+    "driver_sha256": "04739ada4d18fb44f73c75be5992b365dd8bae59b9de263046fd599713f1994b",
+    "spec_sha256": "fa5643c3bce44c283611968f10dbc1422db41117e40e2cd865dce0de1c8bdf1b",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "retained_runtime_core": "c994c893e69a1214ee1a96a045d02cdc54eaebcf",
+    "retained_main_sha256": "67fd45faf9f9a4e776dfe11b651ce241623304f0d35c28a24ad3f157acb2e6de",
+    "build_directory": "/workspace/build/ep-l2-ms20261020-a-ro-origin-r25",
+    "output_directory": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r25",
+    "owner": "A",
+    "phase": "A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN",
+    "approved": true,
+    "full_applications_permitted": false,
+    "execution_host": "huangrulin-174",
+    "reserved_cpu_units": 1,
+    "reserved_memory_bytes": 8589934592,
+    "reserved_build_growth_bytes": 1342177280,
+    "reserved_result_bytes": 134217728,
+    "workspace_disk_policy": {
+      "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+      "disk_floor_bytes": 5368709120,
+      "monitor_reserve_bytes": 2147483648,
+      "monitor_interval_seconds": 0.2,
+      "termination_grace_seconds": 3
+    }
+  },
+  "planned_native_cases": [
+    {
+      "id": "old_native_T0M0",
+      "T": 0,
+      "M": 0,
+      "exit": 0,
+      "terminal": "RO detailed DRAM origin T0 M0 exact-once=4"
+    },
+    {
+      "id": "old_RO_T1M1_SIGSEGV",
+      "T": 1,
+      "M": 1,
+      "exit": -11,
+      "terminal": "sid=4294967295"
+    },
+    {
+      "id": "new_T0M0",
+      "T": 0,
+      "M": 0,
+      "exit": 0,
+      "terminal": "RO detailed DRAM origin T0 M0 exact-once=4"
+    },
+    {
+      "id": "new_T0M1",
+      "T": 0,
+      "M": 1,
+      "exit": 0,
+      "terminal": "RO detailed DRAM origin T0 M1 exact-once=4"
+    },
+    {
+      "id": "new_T1M0",
+      "T": 1,
+      "M": 0,
+      "exit": 0,
+      "terminal": "RO detailed DRAM origin T1 M0 exact-once=4"
+    },
+    {
+      "id": "new_T1M1",
+      "T": 1,
+      "M": 1,
+      "exit": 0,
+      "terminal": "RO detailed DRAM origin T1 M1 exact-once=4"
+    }
+  ],
+  "command_scope": "one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link",
+  "at_unix": 1792434862.6112761,
+  "framework_control_branch": "hrl/ep-l2-ms20261019-a-core-v1",
+  "framework_control_commit": "44aba5495701cb05519598867bd2951f1ead7867",
+  "candidate_core_branch": "hrl/ep-l2-ms20261020-a-r25-ro-origin-v1",
+  "candidate_core_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+  "entry": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/repair_ro_origin_a.py",
+  "entry_sha256": "04739ada4d18fb44f73c75be5992b365dd8bae59b9de263046fd599713f1994b",
+  "execute_command": [
+    "python3",
+    "-B",
+    "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/repair_ro_origin_a.py",
+    "--out",
+    "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r25",
+    "--admission",
+    "E_APPROVAL_PATH",
+    "--execute"
+  ],
+  "no_source_or_binary_overwrite": true,
+  "no_full_application": true,
+  "request": "E central admission and bounded launch of thisexact A entry; forecast1.25GiB build+128MiB result+published2GiB monitor above5GiB. Six finite native invocations, no fullapplication/start counter change. Old/new share exact same new fixture and actualstats14 detailedDRAM; onlyone production object changes. Main links only after all6 expectations pass; not release/qualified yet."
+}
