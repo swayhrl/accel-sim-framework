@@ -69,7 +69,7 @@ def run_two_registered_cpu_roots(requests, output):
             stderr = (output / ('guard-' + str(index) + '.stderr')).open('xb')
             try:
                 proc = subprocess.Popen(
-                    [sys.executable, '-I', str(HERE / 'cpu_guard_entry.py'),
+                    [sys.executable, '-I', '-B', str(HERE / 'cpu_guard_entry.py'),
                      str(path), digest], stdin=subprocess.DEVNULL,
                     stdout=stdout, stderr=stderr, close_fds=True,
                     env={'PATH': '/usr/bin:/bin', 'LANG': 'C', 'LC_ALL': 'C',

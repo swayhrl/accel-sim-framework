@@ -1,0 +1,44 @@
+{
+  "schema": "DTC_CLOSURE_STATIC_CPU_RUNTIME_FREEZE_ROLE_V1",
+  "role": "COORDINATOR_CPU_ELF_STATIC_MANIFEST_FREEZE",
+  "owner": "/root",
+  "status": "REGISTERED_FOR_POST_PUBLICATION_STATIC_FREEZE_ONLY",
+  "argv": [
+    "/usr/bin/python3.10",
+    "-I",
+    "-B",
+    "/workspace/worktrees/accel-sim-iscas2027-dtc-closure-exec-174-v1/docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_runtime/freeze_cpu_manifests.py"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "source_sha256": {
+    "freeze_cpu_manifests.py": "d3d4118f74f92d89c3f92934556540f29b83411462994fbc6081609efe0db92c",
+    "vendor/freeze_static.py": "4667b417d5011c32061361736627dce9efa307ef19064b57675c2b7f0d906362",
+    "vendor/mapping_roles.py": "1409539bad1d173c4bf48463c5465f54e8aba89db736e27bae745fd7a7f07155"
+  },
+  "tool_sha256": {
+    "/usr/bin/python3.10": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+    "/usr/bin/readelf": "04db0000749aff89e4af21429340b00b536fc6f80e811c872c006507881a5560",
+    "/sbin/ldconfig": "bfd5df90c7f070feab584435f106f254ffffaa268a04de5b5c3bd61d59c092f3"
+  },
+  "target_sha256": {
+    "/workspace/dtc-evidence-closure-20261019-v1/coordinator/build/closure-cpu-authority": "b592eb3c701ed621abda613a5d236ec0f7aef339bbeba3fa2dc9ad334acd8112",
+    "/usr/bin/dash": "4f291296e89b784cd35479fca606f228126e3641f5bcaee68dee36583d7c9483",
+    "/usr/bin/cat": "db5ae83d32ead608e67f0f5c0055f8b9fc944236bef81df3f0f234d5f14df23d"
+  },
+  "allowed_subprocesses": "Only /usr/bin/readelf -lW/-dW each recursively resolved ELF and /sbin/ldconfig -p. No target or loader execution.",
+  "output_root": "/workspace/dtc-evidence-closure-20261019-v1/coordinator/cpu-qualification/real-lifecycle-v1-prereg",
+  "write_data_files": [
+    "/workspace/dtc-evidence-closure-20261019-v1/coordinator/build/helper-data",
+    "/workspace/dtc-evidence-closure-20261019-v1/coordinator/build/unknown-data"
+  ],
+  "timeout_seconds": 30,
+  "output_bound_bytes": 1048576,
+  "target_execution_permission": false,
+  "simulation_start_permission": false,
+  "admission": "Fresh bounded CPU two samples>=10s; >=32GiB host/cgroup,memfull<=1,iofull<=25,no new OOM,disk>=2GiB+1MiB. Does not relax10GiB simulator admission."
+}
