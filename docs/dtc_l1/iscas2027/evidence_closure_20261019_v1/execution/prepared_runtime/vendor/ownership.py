@@ -12,9 +12,19 @@ def identity(pid):
 
 class Ownership:
  def __init__(self,root):
-  self.tracer=os.getpid();self.root=root;self.confirmed={root:identity(root)};self.pending={};self.events=[]
+  self.tracer=os.getpid();self.root=root;self.confirmed={root:identity(root)};self.pending={};self.events=[];self.retired=[]
  def same(self,pid):
-  live=identity(pid); require(live['start_ticks']==self.confirmed[pid]['start_ticks'],'OWN_PID_REUSED');return live
+  require(pid in self.confirmed,'UNCONFIRMED_PROCESS_INSTANCE')
+  live=identity(pid)
+  require(live['start_ticks']==self.confirmed[pid]['start_ticks'],'OWN_PID_REUSED')
+  require(live['tracer_pid']==self.tracer,'OWN_TRACER_CHANGED')
+  require(live['tgid']==self.confirmed[pid]['tgid'],'OWN_THREAD_GROUP_CHANGED')
+  return live
+ def retire(self,pid):
+  # Called only after consuming this current, unreaped child's terminal wait.
+  # /proc may already be gone: never infer a new instance from an exit status.
+  require(pid in self.confirmed,'UNCONFIRMED_TERMINAL_WAIT')
+  self.retired.append(self.confirmed.pop(pid));self.pending.pop(pid,None)
  def quarantine(self,pid,source):
   live=identity(pid)
   require(live['tracer_pid']==self.tracer and live['state'] in ('t','T'),'PENDING_NOT_OWN_TRACEE_STOP')
@@ -49,4 +59,4 @@ class Ownership:
  def check_deadlines(self):
   for pid,p in self.pending.items():
    require(time.monotonic()-p['first_monotonic']<=CONFIRM_SECONDS,'PARENT_EVENT_CONFIRMATION_TIMEOUT:'+str(pid))
- def snapshot(self):return dict(confirmed=list(self.confirmed.values()),pending=list(self.pending.values()),confirmation_seconds=CONFIRM_SECONDS,proof_events=len(self.events))
+ def snapshot(self):return dict(confirmed=list(self.confirmed.values()),pending=list(self.pending.values()),retired=self.retired,confirmation_seconds=CONFIRM_SECONDS,proof_events=len(self.events))

@@ -33,7 +33,7 @@ class SharedAuthorityCases(unittest.TestCase):
     def setUp(self):
         self.clock = [10.0]
         self.rows = {
-            20: dict(pid=20, start_ticks=200, state='t', tracer_pid=10),
+            20: dict(pid=20, start_ticks=200, state='t', tracer_pid=10, tgid=20),
             10: dict(pid=10, start_ticks=100, state='S', tracer_pid=0),
             30: dict(pid=30, start_ticks=300, state='R', tracer_pid=0)}
         self.view = SharedOwnership(LocalFixture(), lambda p: self.rows[p], lambda: self.clock[0])
@@ -49,7 +49,8 @@ class SharedAuthorityCases(unittest.TestCase):
     def verdict(self, processes, owner=None):
         snapshot = {'processes': processes, 'FLOCKs': [], 'known_identity_checks': []}
         return review_with_exact_roles(snapshot, self.legacy, owner, self.view,
-            self.roles, lambda p: self.rows[p], DATA, self.output_sources)
+            self.roles, lambda p: self.rows[p], DATA, self.output_sources,
+            process_reader=lambda pid: next(r for r in processes if r['pid'] == pid))
 
     def test_confirmed_peer_uses_frozen_review(self):
         self.assertEqual(self.verdict([self.process()])['status'],
@@ -98,7 +99,7 @@ class SharedAuthorityCases(unittest.TestCase):
             for argv in role['argvs']:
                 row = dict(self.process(30), is_simulator=False, argv=argv,
                            exe=role['executable'], cwd=role['cwd'])
-                result = exact_cpu_role(row, [role], lambda p: self.rows[p])
+                result = exact_cpu_role(row, [role], lambda p: self.rows[p], lambda pid: row)
                 self.assertEqual(result, role['name'])
                 verdict = self.verdict([row])
                 self.assertEqual(len(verdict['exact_external_CPU_controls']), 1)
@@ -110,7 +111,7 @@ class SharedAuthorityCases(unittest.TestCase):
         role = self.roles[0]
         row = dict(self.process(30), is_simulator=False, argv=role['argvs'][0]+['--start-simulation'],
                    exe=role['executable'], cwd=role['cwd'])
-        self.assertIsNone(exact_cpu_role(row, [role], lambda p: self.rows[p]))
+        self.assertIsNone(exact_cpu_role(row, [role], lambda p: self.rows[p], lambda pid: row))
         self.assertEqual(self.verdict([row])['status'], 'STOP_AUTHORITY_NOT_CLOSED')
 
     def test_changed_source_expected_hash_rejected(self):
@@ -119,7 +120,27 @@ class SharedAuthorityCases(unittest.TestCase):
         row = dict(self.process(30), is_simulator=False, argv=role['argvs'][0],
                    exe=role['executable'], cwd=role['cwd'])
         with self.assertRaisesRegex(AuthorityReject, 'SOURCE_CHANGED'):
-            exact_cpu_role(row, [role], lambda p: self.rows[p])
+            exact_cpu_role(row, [role], lambda p: self.rows[p], lambda pid: row)
+
+    def test_current_role_attributes_cannot_use_stale_snapshot(self):
+        role = self.roles[0]
+        row = dict(self.process(30), is_simulator=False, argv=role['argvs'][0],
+                   exe=role['executable'], cwd=role['cwd'])
+        for changed in [dict(row, argv=row['argv']+['--unexpected']),
+                        dict(row, cwd='/changed'), dict(row, exe='/changed')]:
+            with self.assertRaisesRegex(AuthorityReject, 'CURRENT_ATTRIBUTES_CHANGED'):
+                exact_cpu_role(row, [role], lambda p: self.rows[p], lambda pid: changed)
+
+    def test_peer_thread_group_and_retired_generation_rejected(self):
+        for changed, reason in [({'tgid': 999}, 'THREAD_GROUP_CHANGED'),
+                                ({'tracer_pid': 999}, 'TRACER_CHANGED')]:
+            self.peer['ownership']['confirmed'] = [dict(self.rows[20], **changed)]
+            with self.assertRaisesRegex(AuthorityReject, reason):
+                self.verdict([self.process()])
+        self.peer['ownership']['confirmed'] = [dict(self.rows[20])]
+        self.peer['ownership']['retired'] = [dict(self.rows[20])]
+        with self.assertRaisesRegex(AuthorityReject, 'RETIRED_INSTANCE'):
+            self.verdict([self.process()])
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(SharedAuthorityCases)

@@ -1,4 +1,4 @@
-"""PREPARED_NOT_TESTED. Exact frozen AG4 read-only authority procedures.
+"""PREPARED_NOT_TESTED. Exact frozen AG5 review with unchanged AG4 process snapshot procedures.
 
 Extract only named functions/constants from SHA-bound original source text.
 Original CLI/import side effects are never run. No foreign or old raw is read;

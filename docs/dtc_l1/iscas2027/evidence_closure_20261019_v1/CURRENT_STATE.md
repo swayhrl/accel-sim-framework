@@ -88,3 +88,31 @@ shared production qualification. SEM1/ROB1 have a fresh conditional build releas
 Previous12adapter checks and53AG5 results are preserved, not blindly rerun.
 AG6 discovery precedes substantial P8 F simulations; preserve old selection and
 write SELECTION_V2 only under the unchanged rule after valid discovery evidence.
+
+
+## V2 AG5 integration source update (current, 2026-10-19)
+
+AG5 ownership.py is adopted byte-for-byte from 9793e998; the post-fork guard
+uses current confirmed instances, tracer/Tgid validation, per-instance retirement,
+and inheritance copied at the actual parent fork event. The frozen AG5 reviewer
+and its additional exact external-lock bindings replace the old reviewer. BA's
+exact-role wrapper still disables historical prefix/basename/child-PID shortcuts.
+The shared view rejects peer Tgid/tracer changes and a retired current instance.
+Exact CPU controls are re-read for current argv/cwd/exe as well as ticks. A reaped
+root no longer suppresses descendant ownership observer publication.
+
+This is SOURCE_PREPARED, not a new production PASS. Old registrations and receipts
+remain preserved in Git, but their old hash closure cannot authorize changed
+files. Separate V2 CPU runtime registrations stay closed until the new fixture
+ELF/static manifests are frozen and published. Only one finite fixture build/
+static freeze is conditionally registered after fresh complete R2/authority.
+Unchanged AG5 53 CPU passes are consumed via AG5_53_RECEIPT_INTAKE_V2 rather than
+re-executed; tests target changed guard/observer/caller interfaces. No new model
+UUID, canary or simulator fork exists. BA0/32, AG6 0/4. Dual production remains
+unqualified; one fullsim worker is still the default.
+
+SEM1 configured exit0 under paired R2 hostIO21.94/21.99; prebuild IO26.38 held
+its build. ROB1 paired IO22.15/26.52 held before configure/build. Neither has new
+linked/fixture/native value qualification. See WORKER_V2_RESUME_PROGRESS.json.
+AG preparation remains at 29b1eb54; both BASE dossiers await actual publication
+and BA independent review. No AG6 ON point can start before both are admitted.

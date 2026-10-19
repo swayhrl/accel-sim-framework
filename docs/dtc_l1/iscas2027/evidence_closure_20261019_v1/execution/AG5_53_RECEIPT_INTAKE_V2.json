@@ -1,0 +1,311 @@
+{
+  "anchor": "9793e998d60cb5a7f064a46ecd6be242eda61b7c",
+  "source_pack": "docs/dtc_l1/review_packs/DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/",
+  "receipt_reads": {
+    "CPU_AUTHORITY_QUALIFICATION.json": {
+      "sha256": "5c09a26f2b28eb3ac729cc7fec5fc899b39a5534585824ab705fd951db336b12",
+      "blob": "35b92df597f64f5b5bc450cc01afcd05686795ae",
+      "status": "PASS_CPU_AUTHORITY_RACE_REPAIR",
+      "rows": 14,
+      "keys": [
+        "status",
+        "raw",
+        "cases",
+        "negative_controls",
+        "full_periodic_samples",
+        "long_fixture_full_samples",
+        "old_failure_reproduced",
+        "simulator_starts",
+        "real_simulation_UUIDs",
+        "scope"
+      ],
+      "observed_case_statuses": [
+        {
+          "case": "normal_fork_exec_exit",
+          "passed": true,
+          "expected_success": true
+        },
+        {
+          "case": "natural_parent_exit_live_child",
+          "passed": true,
+          "expected_success": true
+        },
+        {
+          "case": "child_first_stop_after_parent_reaped",
+          "passed": true,
+          "expected_success": true
+        },
+        {
+          "case": "long_periodic_repeated_readers",
+          "passed": true,
+          "expected_success": true
+        },
+        {
+          "case": "unknown_exec",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "unknown_actual_mapping",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "writable_cache",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "nonzero_exit",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "timeout",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "observer_exception",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "forced_stop",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "child_stop_before_parent_observer",
+          "passed": true,
+          "expected_success": true
+        },
+        {
+          "case": "missing_event_finite_timeout",
+          "passed": true,
+          "expected_success": false
+        },
+        {
+          "case": "stop_pending_event_cleanup",
+          "passed": true,
+          "expected_success": false
+        }
+      ]
+    },
+    "PRODUCTION_DISPATCH_GENERATION_TESTS.json": {
+      "sha256": "e706edee3f458fa81f56a3df79963a33743368d8ea859b1955e970c3a71e7c39",
+      "blob": "d237b761fca43d71ae488030c7dff45a4e68b232",
+      "status": "PASS_BOUNDED_FULL_GUARD_DISPATCH",
+      "rows": 6,
+      "keys": [
+        "status",
+        "raw",
+        "cases",
+        "coverage",
+        "simulator_starts"
+      ],
+      "observed_case_statuses": [
+        {
+          "case": "old_retired_helper",
+          "status": "PASS_EXPECTED_RESULT"
+        },
+        {
+          "case": "fixed_retired_helper",
+          "status": "PASS_EXPECTED_RESULT"
+        },
+        {
+          "case": "fixed_retired_thread",
+          "status": "PASS_EXPECTED_RESULT"
+        },
+        {
+          "case": "fixed_retired_root",
+          "status": "PASS_EXPECTED_RESULT"
+        },
+        {
+          "case": "fixed_current_instance_changed",
+          "status": "PASS_EXPECTED_RESULT"
+        },
+        {
+          "case": "fixed_stale_image_generation",
+          "status": "PASS_EXPECTED_RESULT"
+        }
+      ]
+    },
+    "MAPPING_ROLE_REGRESSION.json": {
+      "sha256": "e3da17e7aac32c4ff41e298fb70a218a43bc8cf9479139ace7d5436e04b404ab",
+      "blob": "3b41a6d7e1dc58541de0b277b655372994f3c67e",
+      "status": "PASS",
+      "rows": 8,
+      "keys": [
+        "status",
+        "cases",
+        "parser_sha256",
+        "simulator_starts"
+      ],
+      "observed_case_statuses": [
+        {
+          "case": "positive_sequence",
+          "status": "PASS"
+        },
+        {
+          "case": "missing_cache",
+          "status": "PASS"
+        },
+        {
+          "case": "cache_SHA",
+          "status": "PASS"
+        },
+        {
+          "case": "cache_inode",
+          "status": "PASS"
+        },
+        {
+          "case": "unknown_file",
+          "status": "PASS"
+        },
+        {
+          "case": "wrong_role",
+          "status": "PASS"
+        },
+        {
+          "case": "ELF_as_data",
+          "status": "PASS"
+        },
+        {
+          "case": "unknown_pseudo",
+          "status": "PASS"
+        }
+      ]
+    },
+    "RESOURCE_POLICY_CPU_TESTS.json": {
+      "sha256": "0d8f11c2841a2af067258eca6c4b728ca59f51eeb93cad3312ac2ff7be912ef3",
+      "blob": "79dc774fb003c899093e2d7365ab69604b364715",
+      "status": "PASS_PURE_CPU_AG_RESOURCE_POLICY",
+      "rows": 10,
+      "keys": [
+        "status",
+        "version",
+        "cases",
+        "policy_sha256",
+        "test_sha256",
+        "simulations_started",
+        "signals",
+        "foreign_state_changes"
+      ],
+      "observed_case_statuses": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    "NO_SIMULATOR_DISPATCH_TESTS.json": {
+      "sha256": "bf58e8f0d33b7d7c9873c64448a265fc494e66429ef818787005446649a7398f",
+      "blob": "726140aac2c68da05745a50b34cd8a36894888ea",
+      "status": "PASS",
+      "rows": 3,
+      "keys": [
+        "status",
+        "cases",
+        "simulator_starts",
+        "scope"
+      ],
+      "observed_case_statuses": [
+        {
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "status": "EXPECTED_REJECT"
+        }
+      ]
+    },
+    "EXTERNAL_BINDING_TESTS.json": {
+      "sha256": "712c207aee596b9364dece9ce8e2d929e1426a314e0e5e3d0fcbf343f5adaf03",
+      "blob": "34af762ad00c9d244db451aa8e199d85945b034d",
+      "status": "PASS",
+      "rows": 8,
+      "keys": [
+        "status",
+        "cases",
+        "simulator_starts",
+        "foreign_signals"
+      ],
+      "observed_case_statuses": [
+        {
+          "case": "exact_current_binding",
+          "status": "PASS"
+        },
+        {
+          "case": "wrong_ticks",
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "case": "wrong_cwd",
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "case": "wrong_argv",
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "case": "wrong_source_sha",
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "case": "wrong_lock_path",
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "case": "wrong_lock_pid",
+          "status": "EXPECTED_REJECT"
+        },
+        {
+          "case": "wrong_lock_ticks",
+          "status": "EXPECTED_REJECT"
+        }
+      ]
+    },
+    "FINAL_CPU_QUALIFICATION_DECISION.json": {
+      "sha256": "c3d68a02b492be68a8723922e20f1bfe3737050f09f0cd2638fa0b2fa2a149dc",
+      "blob": "ee048d089a044f96b336328a509bbfefb1558f6e",
+      "status": "PASS_BOUNDED_CPU_RETIRED_PID_REPAIR",
+      "rows": 0,
+      "keys": [
+        "status",
+        "coverage",
+        "kernel_PID_reuse_forced",
+        "whole_guard_dispatch_generation_input",
+        "long_fixture_full_periodic_samples",
+        "simulator_starts",
+        "performance_qualification",
+        "old_UUIDs_sealed",
+        "future_simulation_budget",
+        "future_simulation_current_authority",
+        "future_simulation_current_resource_gate"
+      ],
+      "observed_case_statuses": []
+    }
+  },
+  "coverage": {
+    "actual_CPU_lifecycle_cases": 14,
+    "pure_original_ancestry_external_negatives": 4,
+    "full_guard_generation_cases": 6,
+    "mapping_role_cases": 8,
+    "unchanged_R2_cases": 10,
+    "no_simulator_launch_policy_cases": 3,
+    "exact_external_binding_cases": 8
+  },
+  "total_published_bounded_CPU_passes": 53,
+  "unchanged_suite_will_not_be_rerun": true,
+  "not_BA_production_or_performance_qualification": true,
+  "kernel_PID_reuse_forced": false
+}

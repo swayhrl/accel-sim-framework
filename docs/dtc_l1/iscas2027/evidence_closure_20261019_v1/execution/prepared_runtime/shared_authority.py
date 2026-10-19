@@ -7,6 +7,7 @@ classification view NEVER removes it from the all-project resource snapshot.
 """
 import hashlib
 import json
+import os
 from pathlib import Path
 import time
 
@@ -22,24 +23,35 @@ def require(value, reason):
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
-def exact_cpu_role(process, roles, identity_reader):
-    """Return a role only for exact executable, argv, cwd and source closure.
+def fresh_process(pid, identity_reader):
+    """Read current control attributes between two instance identity checks."""
+    before = identity_reader(pid)
+    q = Path('/proc') / str(pid)
+    row = dict(before, argv=[v.decode(errors='surrogateescape') for v in
+                   (q / 'cmdline').read_bytes().split(b'\0') if v],
+               cwd=os.readlink(q / 'cwd'), exe=os.readlink(q / 'exe'))
+    after = identity_reader(pid)
+    require(before['start_ticks'] == after['start_ticks'] and after['state'] != 'Z',
+            'CPU_ROLE_INSTANCE_CHANGED_DURING_READ')
+    return row
 
-    Role contracts carry explicit argv alternatives for the configure/build
-    phases; a script prefix, basename, directory or extra arguments never match.
-    The identity reader must read fresh PID/start_ticks, not return a saved row.
+def exact_cpu_role(process, roles, identity_reader, process_reader=None):
+    """Match fresh executable, argv, cwd, source closure and current instance.
+
+    The saved snapshot is only a candidate. Re-read all mutable process fields
+    before accepting; matching a PID/start_ticks alone cannot freeze an exec.
+    process_reader is an explicit declared-fixture adapter in offline tests.
     """
     matches = []
     for role in roles:
-        if process.get('argv') not in role['argvs']:
+        if process.get('argv') not in role['argvs'] or process.get('cwd') != role['cwd'] or process.get('exe') != role['executable']:
             continue
-        if process.get('cwd') != role['cwd']:
-            continue
-        if process.get('exe') != role['executable']:
-            continue
-        fresh = identity_reader(process['pid'])
+        fresh = (process_reader(process['pid']) if process_reader else
+                 fresh_process(process['pid'], identity_reader))
         require(fresh['start_ticks'] == process['start_ticks'], 'CPU_ROLE_PID_REUSED')
         require(fresh['state'] != 'Z', 'CPU_ROLE_ALREADY_TERMINAL')
+        require(fresh.get('argv') in role['argvs'] and fresh.get('cwd') == role['cwd'] and
+                fresh.get('exe') == role['executable'], 'CPU_ROLE_CURRENT_ATTRIBUTES_CHANGED')
         require(sha(role['executable']) == role['executable_sha256'], 'CPU_ROLE_EXECUTABLE_CHANGED')
         for path, digest in role['source_sha256'].items():
             require(sha(path) == digest, 'CPU_ROLE_SOURCE_CHANGED:' + path)
@@ -96,6 +108,11 @@ class SharedOwnership:
             confirmed = next((r for r in peer['ownership']['confirmed'] if r['pid'] == pid), None)
             if confirmed:
                 require(confirmed['start_ticks'] == live['start_ticks'], 'PEER_CONFIRMED_PID_REUSED')
+                require(confirmed['tracer_pid'] == guard['pid'], 'PEER_CONFIRMED_TRACER_CHANGED')
+                require(confirmed['tgid'] == live['tgid'], 'PEER_CONFIRMED_THREAD_GROUP_CHANGED')
+                require(not any(r['pid'] == pid and r['start_ticks'] == live['start_ticks']
+                                for r in peer['ownership'].get('retired', [])),
+                        'PEER_RETIRED_INSTANCE_NOT_DISPATCHABLE')
                 self.waiting.pop(key, None)
                 return 'CONFIRMED'
             # Parent-event proof is absent. Merely knowing the tracer cannot
@@ -120,7 +137,8 @@ class SharedOwnership:
 
 
 def review_with_exact_roles(snapshot, legacy_review, own_owner, ownership,
-                            roles, identity_reader, legacy_pack, legacy_output_sources=None):
+                            roles, identity_reader, legacy_pack, legacy_output_sources=None,
+                            process_reader=None):
     """Delegate unchanged history/FLOCK checks after exact current-role binding.
 
     legacy_review must be the published source-bound AG4 review function. Reject
@@ -134,7 +152,7 @@ def review_with_exact_roles(snapshot, legacy_review, own_owner, ownership,
     legacy_sources = legacy_output_sources or {}
     legacy_names = {Path(p).name for p in legacy_sources}
     for process in snapshot['processes']:
-        role = exact_cpu_role(process, roles, identity_reader)
+        role = exact_cpu_role(process, roles, identity_reader, process_reader)
         if role:
             require(not process['is_simulator'], 'CPU_ROLE_CANNOT_BE_SIMULATOR')
             accepted.append({'role': role, 'pid': process['pid'],

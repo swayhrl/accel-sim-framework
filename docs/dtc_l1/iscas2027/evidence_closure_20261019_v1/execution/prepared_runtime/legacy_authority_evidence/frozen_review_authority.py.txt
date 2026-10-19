@@ -61,19 +61,25 @@ def review(snapshot_data,own_owner=None,ownership=None):
         else:
             unknown.append(dict(pid=p['pid'],start_ticks=p['start_ticks'],argv=args,scripts=list(map(str,scripts)),classification='UNKNOWN_DTC_CONTROL_STOP'))
     bypid={p['pid']:p for p in processes};reviewed={p['pid'] for p in controls}
-    external=json.loads((PACK/'EXTERNAL_PROJECT_LOCK_BINDING.json').read_text())
-    ext_live=proc(external['pid'])
-    ext_ok=bool(ext_live and ext_live['start_ticks']==external['start_ticks'] and
-        ext_live['cwd']==external['cwd'] and
-        [v for v in Path('/proc',str(external['pid']),'cmdline').read_bytes().split(b'\0') if v]==[v.encode() for v in external['argv']] and
-        sha(external['script'])==external['script_sha256'])
+    bindings=[json.loads((PACK/'EXTERNAL_PROJECT_LOCK_BINDING.json').read_text())]
+    bindings+=json.loads((PACK/'ADDITIONAL_EXTERNAL_PROJECT_LOCK_BINDINGS.json').read_text())
+    valid_external=[]
+    for external in bindings:
+        ext_live=proc(external['pid'])
+        try:
+            ext_ok=bool(ext_live and ext_live['start_ticks']==external['start_ticks'] and
+                ext_live['cwd']==external['cwd'] and
+                [v for v in Path('/proc',str(external['pid']),'cmdline').read_bytes().split(b'\0') if v]==[v.encode() for v in external['argv']] and
+                sha(external['script'])==external['script_sha256'])
+        except OSError:ext_ok=False
+        if ext_ok:valid_external.append(external)
     locks=[]
     for lock in snapshot_data['FLOCKs']:
         if not any(k in lock['path'].lower() for k in ['dtc','fast64','lane']):continue
         p=bypid.get(lock['pid']);output=lock['pid'] in reviewed
         if p and p['comm']=='sleep' and p['ppid'] in reviewed:output=True
         own_ok=bool(own_owner and lock['path']==str(RAW/'AG_execution.lock') and lock['pid']==own_owner.get('pid') and lock['start_ticks']==own_owner.get('start_ticks'))
-        external_ok=bool(ext_ok and lock['pid']==external['pid'] and lock['start_ticks']==external['start_ticks'] and lock['path']==external['lock'])
+        external_ok=any(lock['pid']==e['pid'] and lock['start_ticks']==e['start_ticks'] and lock['path']==e['lock'] for e in valid_external)
         locks.append(dict(**lock,output_only_collector=output,own_AG_execution=own_ok,external_EP_L2_resource_counted=external_ok))
     identities=snapshot_data['known_identity_checks']
     checks=dict(AA5_original_PID_instances_terminal=not any(r['same_instance_live'] for r in identities if r['role']=='AA5'),

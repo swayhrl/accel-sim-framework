@@ -86,12 +86,8 @@ def main():
         headroom = int(maximum) - current if maximum != 'max' else available
         if min(available, headroom) < 8 * 1024**3:
             return 'CPU_RUNTIME_MEMORY_BELOW_8GiB'
-        if pid not in ownership.confirmed:
-            # A reaped root can have still-traced descendants. Let the inherited
-            # engine finish their lifecycle; never recreate the old root record.
-            return None
         if time.monotonic() - last[0] >= .1:
-            own = ownership.same(pid)
+            own = ownership.same(pid) if pid in ownership.confirmed else None
             row = {'guard': identity(os.getpid()), 'root': own,
                    'ownership': ownership.snapshot(),
                    'monotonic_ns': time.monotonic_ns(),
