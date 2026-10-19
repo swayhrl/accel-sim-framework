@@ -43,9 +43,13 @@ def main():
         help='ordinary new lease granted directly by E published reserve_work; no manual approval file')
     p.add_argument('--affected-native', action='store_true',
         help='relink three unchanged fixture objects to the sealed repaired archive and run only the20 affected cases')
+    p.add_argument('--joint-vrw', action='store_true',
+        help='compile the previously unrun shared V/RO/W controlled partition fixture; no main/library rebuild')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
-    spec_path = HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC
+    assert not (a.joint_vrw and a.affected_native)
+    spec_path = (HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r31.json' if a.joint_vrw else
+        HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC)
     spec = json.loads(spec_path.read_text())
     build, old, core, runtime = (Path(spec[k]) for k in ('build', 'retained_build', 'core', 'framework'))
     out = a.out.resolve()
@@ -64,7 +68,7 @@ def main():
     bindings = {str(spec_path): sha(spec_path), str(Path(__file__)): sha(__file__),
         str(HERE/'common_resource_guard.py'): sha(HERE/'common_resource_guard.py'),
         str(HERE/'check_ro_origin_case.py'): sha(HERE/'check_ro_origin_case.py')}
-    if a.affected_native:
+    if a.affected_native or a.joint_vrw:
         bindings[str(HERE/'check_native_case.py')] = sha(HERE/'check_native_case.py')
         parent_path = Path(spec['parent_receipt'])
         assert sha(parent_path) == spec['parent_receipt_sha256']
@@ -87,7 +91,8 @@ def main():
         retained_runtime_core=spec['runtime_producer_core'],
         retained_main_sha256=spec['retained_main_sha256'],
         build_directory=str(build), output_directory=str(out))
-    expected = dict(identity, owner='A', phase='A_RO_ORIGIN_AFFECTED20' if a.affected_native else 'A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
+    expected = dict(identity, owner='A', phase='A_SHARED_VRW_CONTROLLED_PARTITION' if a.joint_vrw else
+        'A_RO_ORIGIN_AFFECTED20' if a.affected_native else 'A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
         approved=True, full_applications_permitted=False, execution_host=socket.gethostname(),
         reserved_cpu_units=1, reserved_memory_bytes=8*GIB,
         reserved_build_growth_bytes=spec['build_growth_bytes'],
@@ -96,7 +101,8 @@ def main():
     if not a.execute:
         print(json.dumps(dict(status='REQUEST_ONLY_NO_COMPILE_NATIVE_OR_LEASE',
             expected_E_admission=expected, planned_native_cases=spec['cases'],
-            command_scope='three links+20 affected native; no C++ compilation/main relink' if a.affected_native else
+            command_scope='one previouslyunrun V/R/W controlledfixture compile/link/case; no production/main rebuild' if a.joint_vrw else
+                'three links+20 affected native; no C++ compilation/main relink' if a.affected_native else
                 'one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link'), indent=2))
         return
     assert a.via_e_api != bool(a.admission), 'choose published E API or exact E file, never an implicit grant'
@@ -209,6 +215,45 @@ def main():
                 return row
             finally:
                 active['pid'] = None
+
+        if a.joint_vrw:
+            report.update(status='COMPILING_PREVIOUSLY_UNRUN_SHARED_VRW_FIXTURE', compiler_started=True,
+                binary=parent['binary'], binary_sha256=parent['binary_sha256'],
+                scope='CONTROLLED_PRODUCTION_PARTITION_EXTERNAL_VERSION_REFERENCE_NOT_NATIVE_DRAM_OR_APP',
+                independent_C_synthetic_scope_review='PENDING_NOT_WAIVED',
+                parent_receipt=str(parent_path), parent_receipt_sha256=sha(parent_path))
+            save()
+            compile_args = [s.replace(spec['retained_core'], str(core)) for s in
+                flags(old/'gpgpu-sim/CMakeFiles/ep_l2_ms_victim_native.dir/flags.make')]
+            run(['/usr/bin/c++', *compile_args, '-c', str(core/spec['fixture_source']),
+                '-o', str(build/'joint_fixture.o')], 'joint_fixture_compile')
+            args = shlex.split((old/'gpgpu-sim/CMakeFiles/ep_l2_ms_victim_native.dir/link.txt').read_text())
+            command = []
+            exe = build/'ep_l2_ms_vrw_interleave'
+            for i, word in enumerate(args):
+                if word.endswith('.o'):
+                    word = str(build/'joint_fixture.o')
+                elif i and args[i-1] == '-o':
+                    word = str(exe)
+                elif word.endswith('.a') and not word.startswith('/'):
+                    word = spec['new_archive'] if word.endswith('/libgpgpusim.a') else str(old/'gpgpu-sim'/word)
+                command.append(word)
+            run(command, 'joint_fixture_link')
+            case = spec['cases'][0]
+            detail = out/(case['id']+'.native.json')
+            run([sys.executable,str(HERE/'check_native_case.py'),'--expected-exit','0',
+                '--required-terminal',case['required_terminal'],'--receipt',str(detail),
+                '--',str(exe),*case['arguments']],case['id'],120)
+            row = json.loads(detail.read_text())
+            assert row['expectation_verified'] and sha(exe) == row['binary_sha256']
+            report['tests'].append(dict(case=case['id'],evidence=str(detail),sha256=sha(detail),**row))
+            for path,digest in retained.items():
+                assert sha(path)==digest, 'retained asset changed: '+path
+            report.update(status='SHARED_VRW_CONTROLLED_FIXTURE_PASS_PENDING_C_E_REVIEW',
+                retained_assets_unchanged=True,fixture_binary=str(exe),fixture_sha256=sha(exe),
+                production_recompiled=False,main_relinked=False,application_correctness=False,
+                native_DRAM_timing_or_bytes_claim=False)
+            return
 
         if a.affected_native:
             report.update(status='RELINKING_THREE_AFFECTED_FIXTURES', compiler_started=False,
