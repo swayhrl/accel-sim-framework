@@ -1,0 +1,73 @@
+{
+  "schema": "TLS_V10_TARGET_HOST_READONLY_RESERVATION_REVIEW_REQUEST_V1",
+  "utc": "2026-10-19T04:07:54.756626+00:00",
+  "status": "POTENTIALLY_SIGNIFICANT_AVAILABLE_VS_FREE_GAP_HOST_SUPERBLOCK_CONFIRMATION_REQUIRED",
+  "source_namespace": "mnt:[4026534768]",
+  "source_boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+  "source_workspace": {
+    "path": "/workspace",
+    "dev": 156,
+    "inode": 32926662,
+    "fsid": 1349835467748716946,
+    "fragment_size": 4096,
+    "total_bytes": 3779302981632,
+    "free_including_reserved_bytes": 214850760704,
+    "available_bytes": 22796185600,
+    "free_minus_available_bytes": 192054575104,
+    "free_inodes": 216721033,
+    "mount": {
+      "target": "/",
+      "source": "overlay",
+      "fstype": "overlay"
+    }
+  },
+  "source_ext4_bind_mount": {
+    "path": "/root/data",
+    "dev": 2128,
+    "inode": 61603841,
+    "fsid": 11181641814567142162,
+    "fragment_size": 4096,
+    "total_bytes": 3779302981632,
+    "free_including_reserved_bytes": 214850760704,
+    "available_bytes": 22796185600,
+    "free_minus_available_bytes": 192054575104,
+    "free_inodes": 216721033,
+    "mount": {
+      "target": "/root/data",
+      "source": "/dev/sdf[/huangrulin]",
+      "fstype": "ext4"
+    }
+  },
+  "observed_free_minus_available_bytes": 192054575104,
+  "possible_explanation": "Ext4 reserved-block accounting is plausible; exact superblock reserve count/UUID/uid/gid are not yet verified. Do not assert quota/reserve cause from statvfs alone.",
+  "container_device_node_exists": false,
+  "read_only_host_request": {
+    "authorised_host_SSH_entry_or_admin_output_required": true,
+    "expected_device_major": 8,
+    "expected_device_minor": 80,
+    "read_only_commands": [
+      "findmnt -S /dev/sdf -o TARGET,SOURCE,FSTYPE,UUID,MAJ:MIN",
+      "tune2fs -l /dev/sdf"
+    ],
+    "required_fields": [
+      "Filesystem UUID",
+      "Block count",
+      "Block size",
+      "Reserved block count",
+      "Reserved blocks uid",
+      "Reserved blocks gid"
+    ],
+    "identity": "First independently match actual host/kernel/8:80 ext4 filesystem to the pinned source /root/data and /workspace observations; do not assume a matching device name alone proves identity."
+  },
+  "documentation": {
+    "url": "https://man7.org/linux/man-pages/man8/tune2fs.8.html",
+    "supported_facts": "-l lists superblock settings; -m and -r change privileged reserved percentage/count. Reservation is a system-admin filesystem setting.",
+    "no_modify_command_issued": true
+  },
+  "boundary": "Request is READ_ONLY evidence only. No block node creation, host namespace entry, remount, tune2fs parameter change, threshold/metric reinterpretation or shared-resource policy change is authorized/executed here. Any future host-level proposal requires actual confirmed values, system owner review and explicit scope/authorization first.",
+  "unchanged_build_and_copy_gate": "Actual source /workspace f_bavail*frsize >=48GiB plus all existing Share/RAM/lease/activity gates; total free f_bfree is not substituted.",
+  "actual_source_data_released_by_this_diagnostic": 0,
+  "source_resource_gate_currently_pass": false,
+  "TLS_scientific_payload_transferred": 0,
+  "next": "Provide host read-only data/entry to confirm cause and allow a concrete reviewed proposal. Source window may continue qualifying safe scratch in parallel; keep the already accepted P9 B0001 reservation."
+}
