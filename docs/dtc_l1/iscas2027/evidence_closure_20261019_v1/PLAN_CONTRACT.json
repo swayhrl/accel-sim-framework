@@ -1,0 +1,65 @@
+{
+  "schema": "DTC_EVIDENCE_CLOSURE_PLAN_V1",
+  "date": "2026-10-19",
+  "status": "PUBLISHED_PLAN_NOT_EXECUTABLE_PREREGISTRATION",
+  "user_authorization": "Plan and efficiently parallelize non-DC experimental closure; preserve important scientific correctness and avoid unnecessary detail-driven rounds.",
+  "framework_parent": "2f3a8c4b27780e2bf3818949a6e5356d9fd62327",
+  "core_anchor": "c8090115bd57512b1b23fca7d925301fa620c751",
+  "ag4_readonly_snapshot": "9ece18f6fdb6de16ee95f35caa6fad1fec765fc9",
+  "ag4_live_runtime_state": "UNKNOWN_DO_NOT_INFER_FROM_PREREG_SNAPSHOT",
+  "ag4_contract_unchanged": true,
+  "manuscript": "EN-v0.17 conversation-delivered source, not an asserted repository branch",
+  "execution_node": "original174_account_and_container",
+  "new_simulation_caps": {
+    "primary": 16,
+    "new_inputs": 6,
+    "robustness_and_fair_controls": 6,
+    "calibration_or_engineering_replacements": 4,
+    "total": 32,
+    "engineering_replacements_within_reserve": 2,
+    "old_ag4_ag3_aa5_restarts": 0,
+    "failures_consume_starts": true,
+    "unused_slots_are_not_a_run_target": true
+  },
+  "concurrency": {
+    "prep_workers_max": 3,
+    "sim_workers_default": 2,
+    "sim_workers_max_if_preregistered_and_qualified": 4,
+    "full_sim_dispatch_owners": 1,
+    "ag4_active_same_namespace_unregistered_processes_allowed": false,
+    "rename_to_evade_authority_allowed": false,
+    "other_projects_resource_counted": true
+  },
+  "primary_inputs": ["ATAX", "BICG", "GESUMMV", "GEMM", "DWT2D", "Gaussian", "NN", "MRI-Q"],
+  "primary_designs": ["F_FIXED_GLOBAL_CANDIDATE", "C_PLUS"],
+  "new_inputs": [
+    {"id": "N1", "question": "greater SM concurrency", "priority": ["larger_BICG", "larger_ATAX"], "target_cta": 256, "source_status": "TO_QUALIFY"},
+    {"id": "N2", "question": "working set beyond L2 residency", "priority": ["same_source_larger_GEMM"], "target_reuse_footprint_over_L2": 2, "source_status": "TO_QUALIFY"},
+    {"id": "N3", "question": "irregular reads", "priority": ["compatible_captured_CSR_SpMV", "compatible_captured_gather"], "source_status": "TO_QUALIFY"}
+  ],
+  "candidate_selection": {
+    "base": "O_K0_OO128_TAG64x8_AE0_AD0",
+    "screen_inputs": ["GEMM", "Gaussian"],
+    "require_complete_calibrated_AE_and_AD_screen": true,
+    "minimum_speedup": 0.98,
+    "minimum_geomean": 1.02,
+    "maximize": "geomean",
+    "tie_relative_fraction": 0.005,
+    "tie_priority": ["AE", "AD"],
+    "none_qualified": "F_EQUALS_O",
+    "incomplete_screen": "PROVISIONAL_O_WITH_INCOMPLETE_OPT_SCREEN_NO_SINGLE_ARM_PROMOTION",
+    "per_workload_cherry_pick": false,
+    "AE_AD_combination": false
+  },
+  "robustness": {
+    "service_inputs": ["GEMM", "BICG"],
+    "service_change": "collector_32B_sectors_per_cycle_4_to_1_only",
+    "AE_fair_inputs": ["GEMM", "BICG"],
+    "AD_transfer_inputs": ["BICG", "DWT2D"]
+  },
+  "correctness_levels_separate": ["execution_identity", "full_replay", "production_values", "conditional_routing_witness", "native_equivalence", "hardware_implementation"],
+  "frozen_exclusions": ["EDA_DC", "old_Goal_restart", "old_44_or_GM12_rewrite", "K1_full_performance", "K2", "general_coherence", "AC", "AC2", "AF", "AE_plus_AD", "modern_DTC", "SM89_aliasing", "unapproved_node_migration"],
+  "required_before_each_family": ["AG4_terminal_and_authority_released", "worker_role_identity", "full_input_identity", "scope_and_comparison_qualification", "fixed_candidate", "source_and_actual_binary", "effective_options", "complete_family_manifest", "fresh_UUIDs_and_budget", "publication_readback", "resource_admission"],
+  "runtime_start_receipts_for_new_plan": [],
+  "note": "Every number above is a planning cap/rule, not an observed result. Exact executable registration and worker ACKs do not exist yet."
+}
