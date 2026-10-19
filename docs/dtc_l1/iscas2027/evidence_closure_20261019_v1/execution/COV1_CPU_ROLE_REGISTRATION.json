@@ -1,0 +1,62 @@
+{
+  "schema": "DTC_CLOSURE_BOUNDED_EXTERNAL_CPU_ROLE_V1",
+  "role": "COV1_TINY_MATH_REFERENCE_FOUR_TESTS",
+  "owner": "/root/cov1",
+  "status": "REGISTERED_FOR_POST_PUBLICATION_CPU_ONLY",
+  "AG4_terminal": "d8d0401dab0a1d9cb949302bcc05148328421cc2",
+  "source_commit": "8f76a8a50ec5e56dd49f93224a64b253383b0420",
+  "cwd": "/workspace/worktrees/accel-sim-iscas2027-dtc-cov1-inputs-174-v1",
+  "source_directory": "/workspace/worktrees/accel-sim-iscas2027-dtc-cov1-inputs-174-v1/docs/dtc_l1/review_packs/DTC_COV1_INPUTS_V1/reference",
+  "source_sha256": {
+    "test_reference_algorithms.py": "26feedbe5a6f519478668fc7f3795fa60d5cc912201763dd03f60a81ca55c607",
+    "reference_algorithms.py": "44a3775c0221ea71f035ed9d7402d562e64c28c495f9057290e2eb0d651386b0"
+  },
+  "binary_sha256": {
+    "/usr/bin/python3.10": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+    "/usr/bin/timeout": "23b2c581605efcef733be85e225020ac080a932ca5179a435fe659c6e61bac0b",
+    "/usr/bin/env": "854a8d7f147ff1bf3562edd1aa0b2f2ac28ef432811533f03c43dc9162fe3af3"
+  },
+  "argv": [
+    "/usr/bin/timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "/usr/bin/env",
+    "-i",
+    "PATH=/usr/bin:/bin",
+    "LANG=C",
+    "LC_ALL=C",
+    "CUDA_VISIBLE_DEVICES=",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/usr/bin/python3.10",
+    "-E",
+    "-B",
+    "/workspace/worktrees/accel-sim-iscas2027-dtc-cov1-inputs-174-v1/docs/dtc_l1/review_packs/DTC_COV1_INPUTS_V1/reference/test_reference_algorithms.py",
+    "-v"
+  ],
+  "output_root": "/workspace/dtc-evidence-closure-20261019-v1/cov1/cpu/tiny-reference-v1",
+  "output_bound_bytes": 1048576,
+  "max_test_allocations": "only published 1x1/2x2 and two-row sparse examples",
+  "forbidden": [
+    "full trace scan or hash",
+    "GPU/native full-size execution",
+    "simulator",
+    "AG4 paths",
+    "Core compiler/build",
+    "new execution lock"
+  ],
+  "admission": {
+    "two_fresh_samples_min_separation_seconds": 10,
+    "host_available_and_cgroup_headroom_min_bytes": 34359738368,
+    "memory_full_avg10_max": 1,
+    "io_full_avg10_max": 25,
+    "no_new_oom": true,
+    "CPU_only_disk_floor_bytes": 2147483648,
+    "full_simulation_disk_minimum_unchanged_bytes": 10737418240,
+    "source_binary_clean_git_identity_recheck": true,
+    "publish_start_terminal_stdout_stderr_resources": true
+  },
+  "qualification_scope": "Only independent tiny mathematical reference/rejection functions. No application/native, actual production, real-guard/global-role or simulation qualification.",
+  "simulation_start_permission": false,
+  "execution_release_requires": "Coordinator published/fetched immutable registration commit, exact SHA checks and fresh CPU admission; any mismatch STOP this role, report evidence."
+}

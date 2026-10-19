@@ -1,10 +1,10 @@
 # Reused lifecycle engine and isolated CPU roots
 
-**PREPARED_NOT_TESTED. DO NOT EXECUTE WHILE AG4 AUTHORITY GATE IS CLOSED.**
+**DISPATCH_AST_6_PASS; REAL_LIFECYCLE_AND_GLOBAL_AUTHORITY_PENDING.**
 
 This is concrete post-gate runtime preparation, not a passing qualification,
-performance runner, scheduler or deferred dispatcher. No file in this directory
-has been imported, compiled or invoked during preparation. The coordinator's
+performance runner, scheduler or deferred dispatcher. The bounded registered dispatch-AST test has executed six cases successfully.
+The real guard, CPU fixture, and multiroot wrapper have not been invoked or compiled. The coordinator's
 published source/authority contract governs execution; a JSON status string is
 not evidence that the real gate has opened.
 
@@ -14,7 +14,8 @@ byte-for-byte. `guarded_process.py` changes the CPU fixture path/prefix and now 
 retired-PID wait-dispatch gap reported by AG4 terminal d8d0401. Retired owned,
 image and parent memberships are removed in normal and cleanup exit branches;
 every resume requires a currently confirmed instance and fresh start_ticks.
-These local changes are PREPARED_NOT_TESTED; AG4 files remain unchanged.
+The actual dispatch/resume AST passes six declared synthetic-event cases;
+this does not qualify the real lifecycle. AG4 files remain unchanged.
 `authority_cpu.cc` changes only its two project data paths and retains the
 original CPU-only stdout markers. No AG4 path is written or executed. The
 minimal local `common.py` exports only output and timestamp helpers used by
@@ -51,8 +52,8 @@ Fix the two CPU request JSONs and all engine/source hashes before invoking the
 library. A request carries purpose, post-release role-registration state, exact
 argv and environment, timeout<=60s, distinct isolated destination, manifest
 path/SHA and prepared_source_sha256. Use the fixture's `long` mode for overlapping
-thread/fork/dash/cat lifecycles. There is no executable request or generated
-CPU result in this preparation publication.
+thread/fork/dash/cat lifecycles. There is no executable real-guard request in this publication. The bounded
+AST receipts are published separately under execution/cpu_ast_receipts/.
 
 This deliberately does **not** claim production multi-root authority PASS.
 The later qualification must connect the exact shared-role observer, reject
@@ -67,7 +68,6 @@ AG4 checker is changed, and no directory wildcard or filename exemption is
 introduced.
 
 AG4 terminal intake is now available and its own authority is released. The
-prior local inherited copy was never executed. Its newly identified production
-dispatch gap must be reproduced on the frozen source and rejected on the
-repaired actual dispatch AST, then qualified through real helper/multi-root
-lifecycles. Source review alone does not open new simulation authority.
+prior local inherited copy was never executed. The frozen-source dispatch counterexample was reproduced, and the repaired
+actual AST rejects it. Qualification through real helper/multi-root lifecycles
+remains required. Source review alone does not open new simulation authority.
