@@ -11,3 +11,8 @@ Actual cumulative work:5 compiler-command attempts (1 whole-build success,2 scop
 E's latest policy source `cf9f4279a205387db747158fb2414b11d9cb0c8e` is consumed read-only, API `bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b`; controls151 are resource controls, not native qualification. New5GiB floor+2GiB monitor, all tmp/cache/build/log/result budgets, originalT0/40/32+8/deadlines/new6GiB/old+new20GiB/Share40GiB/RAM64GiB/CPU policies are preserved. Other projects remain untouched.
 
 Producer RELEASE is ready for E independent11base+7combination qualification. A does not grant scientific acceptance or application starts. E alone accepts then dispatches same-binary S/F and valid mechanism cells. F-minus-W and full fixed64 dirtyRO remain unsupported, without relabeling smaller subsets. All old raw results/RTL/EN-v17/R19 remain preserved.
+
+
+## Supplemental r23 qualification evidence index
+
+E independent40 native executions are terminal, all40 execution expectations satisfied (including the intentional bank_identity_legacy exit21 negative, not an old-source binary failure), lease d8f3e5c released and actual owner/lastchild gone. This remains pending E scientific/source review and central qualification. The supplemental SOURCE/evidence index and OFF-gate clarification are in the r23 pack. No new A compiler/native/application invocation occurred; runtime binary, fixture ELFs, RELEASE and official producer publication75707624 remain frozen.
