@@ -11,10 +11,8 @@ import tls_target as t
 wid, source_commit, dirname = sys.argv[1:]
 assert wid.startswith('TLS_V10_P9_PUBLIC_B') and len(source_commit)==40
 
-# Frozen one-shot PhaseA2 requires native164 restoration, not target tmpfs.
-# Existing physical proofs remain reusable, but cannot close this protocol.
-if int(wid.rsplit('B',1)[1])>=10 and (t.BASE/'TLS_V10_P9_PUBLIC_B0010_ONE_SHOT_ACCEPTANCE_HOLD_20261019.json').exists():
- raise RuntimeError('ONE_SHOT_NATIVE164_RESTORE_SCOPE_HOLD: no new receive/accept/cleanup until admitted native164 execution or explicit protocol amendment is reviewed. Preserve existing archive and bridge payload.')
+# Explicit user amendment; both sides must adopt the same immutable Git commit.
+t.require_tls_restore_location(wid)
 
 D=t.META/dirname
 ready_name=wid+'_SOURCE_READY_COPY16.json'
