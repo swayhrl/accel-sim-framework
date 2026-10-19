@@ -1,7 +1,8 @@
 """A's sole common build/native entry. Default plan only, no applications/waiter.
 
-The single-use E named disk authorization can permit COMPILE ONLY. Native tests
-always use ordinary48GiB admission and can resume the exact retained build.
+New build/native leases consume E's formally published campaign-only5GiB
+policy plus its monitor reserve. Historical named authorizations remain intact;
+resuming the exact failed build or successful native producer needs a NEW lease.
 """
 import argparse
 import datetime
@@ -12,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import resource
+import shutil
 import socket
 import subprocess
 import sys
@@ -19,9 +21,10 @@ import time
 
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
+from common_resource_guard import check_runtime, finalize_limit
 REPO = HERE.parents[2]
 HANDOFF = REPO / 'docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a'
-SPEC_PATH = HANDOFF / 'full_system_v2/COMMON_NATIVE_BUILD_SPEC_r5.json'
+SPEC_PATH = HANDOFF / 'full_system_v2/COMMON_NATIVE_BUILD_SPEC_r6.json'
 CAMPAIGN = 'EPL2_MECHANISM_STUDY_20261019_V1'
 AUTHORITY = 'b2e5328aca825d6e9ebfe09e46fa208957834636'
 SHARED = Path('/workspace/ep_l2_ft20261016_shared')
@@ -60,7 +63,7 @@ def main():
     assert not out.is_relative_to(build) and not build.is_relative_to(out)
     assert a.suite != 'diagnostics' or a.phase == 'native'
     assert not a.resume_failed_build or a.phase == 'build'
-    assert not a.disk_authorization_id or a.phase == 'build', 'disk exception is COMPILE ONLY; native uses ordinary48GiB'
+    assert not a.disk_authorization_id, 'new ordinary5GiB leases require E admission; historical named authorizations are not replayed'
     if a.phase == 'native':
         assert a.build_receipt and a.build_receipt.is_file() and build.is_dir(), 'exact retained build receipt required'
     elif not a.resume_failed_build:
@@ -70,7 +73,7 @@ def main():
     spec = json.loads(SPEC_PATH.read_text())
     assert spec['campaign_id'] == CAMPAIGN and spec['authority'] == AUTHORITY
     assert spec['jobs'] == 2 and spec['memory_bytes'] == 8*GIB
-    assert spec['disk_floor_bytes'] == 48*GIB and spec['memory_floor_bytes'] == 64*GIB
+    assert spec['disk_floor_bytes'] == 5*GIB and spec['memory_floor_bytes'] == 64*GIB
     assert spec['Share_floor_bytes'] == 40*GIB and spec['remote_execution'] is False
     assert spec['build_growth_bytes'] + spec['result_growth_bytes'] <= 7*GIB//2
     core, runtime = Path(spec['core']), Path(spec['framework'])
@@ -81,16 +84,18 @@ def main():
     cpu, memory = (1, spec['native_memory_bytes']) if native_only else (2, spec['memory_bytes'])
     growth = spec['result_growth_bytes'] + (0 if native_only else spec['build_growth_bytes'])
     bindings = {str(f): sha(f) for f in [Path(__file__), SPEC_PATH,
-        HERE/'common_native_plan.py', HERE/'check_native_case.py']}
+        HERE/'common_native_plan.py', HERE/'check_native_case.py', HERE/'common_resource_guard.py']}
+    assert sha(HERE/'common_resource_guard.py') == spec['resource_guard_sha256']
     report = dict(schema='EP_L2_A_COMMON_BUILD_NATIVE_RECEIPT_V1', campaign_id=CAMPAIGN,
         authority=AUTHORITY, release_id=spec['release_id'], status='PLAN_ONLY_NOT_COMPILED_NOT_RUN',
         driver_source_commit=git(REPO,'rev-parse','HEAD'), driver_sha256=sha(__file__),
         spec_sha256=sha(SPEC_PATH), planner_sha256=sha(HERE/'common_native_plan.py'),
         checker_sha256=sha(HERE/'check_native_case.py'), core_source_commit=spec['core_source_commit'],
+        resource_guard_sha256=sha(HERE/'common_resource_guard.py'),
         framework_source_commit=spec['framework_source_commit'], vendor_commit=spec['vendor'],
         core=str(core), framework=str(runtime), build=str(build), output=str(out), suite=a.suite, phase=a.phase,
         jobs=1 if native_only else 2, reserved_cpu_units=cpu, reserved_memory_bytes=memory,
-        disk_floor_bytes=48*GIB, authorized_task_floor_bytes=48*GIB, memory_floor_bytes=64*GIB,
+        disk_floor_bytes=5*GIB, authorized_task_floor_bytes=5*GIB, memory_floor_bytes=64*GIB,
         reserved_build_growth_bytes=0 if native_only else spec['build_growth_bytes'],
         reserved_result_bytes=spec['result_growth_bytes'], compiler_started=False,
         native_invocations_attempted=0, native_invocations_completed=0, application_starts=0,
@@ -137,16 +142,20 @@ def main():
             baseline_bytes += row['bytes']
         assert baseline_bytes == recovery['baseline_build_bytes']
         assert baseline_bytes + spec['build_growth_bytes'] == spec['build_total_capacity_bytes']
-        result_root = Path(recovery['failed_result_directory'])
-        result_files = {f.relative_to(result_root).as_posix(): f
-                        for f in result_root.rglob('*') if f.is_file() and not f.is_symlink()}
-        assert set(result_files) == set(recovery['failed_result_files'])
-        assert not any(f.is_symlink() for f in result_root.rglob('*'))
-        for name, f in result_files.items():
-            row = recovery['failed_result_files'][name]
-            assert f.stat().st_size == row['bytes'] and sha(f) == row['sha256']
-            bindings[str(f)] = row['sha256']
-            baseline_result_bytes += row['bytes']
+        result_inventories = dict(recovery.get('earlier_result_inventories', {}))
+        assert recovery['failed_result_directory'] not in result_inventories
+        result_inventories[recovery['failed_result_directory']] = recovery['failed_result_files']
+        for root, inventory in result_inventories.items():
+            result_root = Path(root)
+            result_files = {f.relative_to(result_root).as_posix(): f
+                            for f in result_root.rglob('*') if f.is_file() and not f.is_symlink()}
+            assert set(result_files) == set(inventory)
+            assert not any(f.is_symlink() for f in result_root.rglob('*'))
+            for name, f in result_files.items():
+                row = inventory[name]
+                assert f.stat().st_size == row['bytes'] and sha(f) == row['sha256']
+                bindings[str(f)] = row['sha256']
+                baseline_result_bytes += row['bytes']
         assert baseline_result_bytes == recovery['baseline_result_bytes']
         assert baseline_result_bytes + spec['result_growth_bytes'] == spec['result_total_capacity_bytes']
         identity.update(failed_build_receipt_sha256=recovery['failed_receipt_sha256'],
@@ -186,57 +195,12 @@ def main():
         save()
         if not a.execute:
             return
-        approval_bytes = None
-        named = None
-        stop_floor, monitor = 48*GIB, 0
-        expected = dict(identity,owner='A',phase='A_COMMON_'+a.phase.upper(),approved=True,
-            full_applications_permitted=False,execution_host=spec['execution_host'],
-            control_source_commit=report['driver_source_commit'],reserved_cpu_units=cpu,
-            reserved_memory_bytes=memory,reserved_build_growth_bytes=report['reserved_build_growth_bytes'],
-            reserved_result_bytes=spec['result_growth_bytes'])
-        # Two existing E-authority paths: its exact ordinary admission file,
-        # or its independently reviewed canonical single-use named record.
-        if a.disk_authorization_id:
-            data = json.loads((SHARED/'RUN_REGISTRY.json').read_text())
-            item = data['mechanism_study_20261019_v1']
-            grants = item.get('disk_authorizations',{})
-            assert a.disk_authorization_id in grants, 'E named build authorization unavailable'
-            named = grants[a.disk_authorization_id]
-            assert named['status']=='READY' and time.time()<named['expires_unix']
-            assert named['campaign_id']==CAMPAIGN and named['host']==socket.gethostname()
-            assert named['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-            assert named['user_instruction'] and named['source_identity']==identity
-            assert named['output_directory']==str(build) and named['cpu_units']==cpu
-            assert named['memory_bytes']==memory and named['growth_bytes']==growth
-            assert named['result_growth_bytes']==spec['result_growth_bytes']
-            if recovery:
-                assert named['parent_authorization_id'] == recovery['parent_authorization_id']
-                parent = grants[recovery['parent_authorization_id']]
-                assert parent['status'] == 'CONSUMED' and data['resource_leases'][parent['lease_id']]['status'] == 'RELEASED'
-                assert named['repair_scope'] == 'TEST_OR_ENTRY_ONLY_PRODUCTION_UNCHANGED'
-                assert named['disk_draw_bytes'] == recovery['original_disk_draw_bytes'] == parent['growth_bytes']
-                assert named['disk_floor_bytes'] == recovery['original_disk_floor_bytes'] == parent['disk_floor_bytes']
-                assert named['expires_unix'] <= recovery['original_expiry'] == parent['expires_unix']
-                assert named['result_directory'] == str(out) and parent['result_directory'] == recovery['failed_result_directory']
-                assert named['inherited_artifacts']
-                for asset in named['inherited_artifacts']:
-                    assert sha(asset['path']) == asset['sha256'], 'inherited artifact changed'
-            stop_floor,monitor = named['disk_floor_bytes'],named['monitor_reserve_bytes']
-            assert 48*GIB-7*GIB//2<=stop_floor<=48*GIB and monitor>=128*2**20
-            valid_until = named['expires_unix']
-            report['E_named_disk_authorization'] = dict(id=a.disk_authorization_id,record_at_intake=named,
-                single_use=True,compile_only=True,native_floor_bytes=48*GIB)
-        else:
-            assert a.admission and a.admission.is_file(), 'fresh exact E admission required; no compiler/native'
-            approval_bytes = a.admission.read_bytes()
-            approval = json.loads(approval_bytes)
-            for k,value in expected.items():
-                assert approval.get(k)==value,'E admission identity mismatch: '+k
-            assert approval['results_budget_status']=='PASS'
-            if native_only:
-                assert approval['retained_build_receipt_sha256']==sha(a.build_receipt)
-            valid_until = approval['valid_until_unix']
-            report['E_admission'] = dict(path=str(a.admission),sha256=sha(a.admission))
+        # New leases consume E's formally published, campaign-only5GiB
+        # amendment. Historical named records are preserved, never replayed.
+        assert not a.disk_authorization_id, 'new ordinary policy requires fresh E admission; no historical token replay'
+        assert a.admission and a.admission.is_file(), 'fresh exact E admission required; no compiler/native'
+        approval_bytes = a.admission.read_bytes()
+        approval = json.loads(approval_bytes)
         assert socket.gethostname()==spec['execution_host'],'current E API is original174 only'
         assert out.is_relative_to('/workspace/ep_l2_ms20261019_e_results')
         assert build.parent.exists() and out.parent.stat().st_dev==Path('/workspace').stat().st_dev
@@ -255,13 +219,33 @@ def main():
         client = json.loads((SHARED/'mechanism_study_20261019_v1/CLIENT_CONTRACT.json').read_text())
         api = Path(client['resource_lease_api'])
         assert client['authority_commit']==AUTHORITY and sha(api)==client['resource_lease_api_sha256']
-        assert sha(api)==(named['api_sha256'] if named else approval['resource_client_sha256'])
+        assert sha(api)==approval['resource_client_sha256']
         sys.path.insert(0,str(api.parent))
         from coordinator import Coordinator,tooling_binding,retained_tree_bytes
-        tooling_binding()
-        report.update(E_source_publication=client['source_publication_commit'],E_resource_api_sha256=sha(api),
-            authorized_task_floor_bytes=stop_floor,monitor_reserve_bytes=monitor,
-            disk_floor_bytes=stop_floor+monitor)
+        tooling_binding() # Includes exact published E disk_policy.py bytes.
+        registry = Coordinator()
+        policy = registry.work_disk_policy() # Read-only; A never adopts/amends E state.
+        assert policy == spec['expected_E_workspace_policy'], 'E has not published/adopted this exact ordinary policy'
+        assert policy['disk_floor_bytes']==5*GIB
+        assert policy['monitor_reserve_bytes']>=128*2**20
+        # Actual imported run_owned uses these exact poll/termination intervals.
+        assert policy['monitor_interval_seconds']==.2 and policy['termination_grace_seconds']==3
+        stop_floor,monitor=policy['disk_floor_bytes'],policy['monitor_reserve_bytes']
+        expected = dict(identity,owner='A',phase='A_COMMON_'+a.phase.upper(),approved=True,
+            full_applications_permitted=False,execution_host=spec['execution_host'],
+            control_source_commit=report['driver_source_commit'],reserved_cpu_units=cpu,
+            reserved_memory_bytes=memory,reserved_build_growth_bytes=report['reserved_build_growth_bytes'],
+            reserved_result_bytes=spec['result_growth_bytes'],workspace_disk_policy=policy)
+        for k,value in expected.items():
+            assert approval.get(k)==value,'E admission identity mismatch: '+k
+        assert approval['results_budget_status']=='PASS'
+        if native_only:
+            assert approval['retained_build_receipt_sha256']==sha(a.build_receipt)
+        valid_until=approval['valid_until_unix']
+        report.update(E_admission=dict(path=str(a.admission),sha256=sha(a.admission)),
+            E_source_publication=client['source_publication_commit'],E_resource_api_sha256=sha(api),
+            E_workspace_disk_policy=policy,authorized_task_floor_bytes=stop_floor,
+            monitor_reserve_bytes=monitor,disk_floor_bytes=stop_floor+monitor)
         bindings.update({str(Path(client['execution_worktree'])/f):h for f,h in client['source_files'].items()})
         bindings.update({str(HANDOFF/f):h for f,h in spec['control_files_SHA256'].items()})
         bindings.update({str(core/f):h for f,h in spec['core_inputs_SHA256'].items()})
@@ -271,7 +255,6 @@ def main():
         bindings[str(guard_path)] = spec['supervisor_SHA256']
         module = importlib.util.spec_from_file_location('frozen_common_supervisor',guard_path)
         guard = importlib.util.module_from_spec(module);module.loader.exec_module(guard)
-        registry = Coordinator()
         lock = open('/workspace/ep_l2_ms20261019_shared/A_BUILD.lock','a+')
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         def resources():
@@ -281,20 +264,19 @@ def main():
             for f,h in bindings.items():
                 assert sha(f)==h,'bound source/config/tool changed: '+f
             live = local_resources();share = os.statvfs('/root/share')
-            assert share.f_bavail*share.f_frsize>=40*GIB,'Share floor crossed'
-            assert live['disk_free_bytes']>=report['disk_floor_bytes'],'task stop floor crossed'
-            assert live['available_memory_bytes']>=64*GIB,'ordinary memory floor crossed'
             written = retained_tree_bytes(out)
-            assert written<spec['result_growth_bytes'],'owned results reservation crossed'
-            assert written+baseline_result_bytes<spec.get('result_total_capacity_bytes',spec['result_growth_bytes']), 'total owned compile result capacity crossed'
+            built = None if native_only else (retained_tree_bytes(build) if build.exists() else 0)
+            rss = process_tree_rss(active['pid']) if active['pid'] is not None else 0
+            prior_results = sum(retained_tree_bytes(Path(root)) for root in result_inventories) if recovery else None
+            check_runtime(report,out,live,share.f_bavail*share.f_frsize,written,built,rss,
+                spec['result_growth_bytes'],spec['build_growth_bytes'],
+                spec.get('build_total_capacity_bytes',spec['build_growth_bytes']),
+                baseline_build=baseline_bytes,baseline_results=baseline_result_bytes,
+                prior_results=prior_results,memory_limit=memory)
             report['own_result_bytes_peak'] = max(written,report.get('own_result_bytes_peak',0))
-            if not native_only:
-                built = retained_tree_bytes(build) if build.exists() else 0
-                assert built<spec.get('build_total_capacity_bytes',spec['build_growth_bytes']), 'owned total build capacity crossed'
-                assert max(0,built-baseline_bytes)<spec['build_growth_bytes'], 'owned build growth reservation crossed'
+            if built is not None:
                 report['own_build_bytes_peak'] = max(built,report.get('own_build_bytes_peak',0))
             if active['pid'] is not None:
-                rss = process_tree_rss(active['pid']);assert rss<=memory,'owned process-tree RAM lease crossed'
                 report['own_process_tree_rss_peak'] = max(rss,report.get('own_process_tree_rss_peak',0))
             return live
         before = resources()
@@ -302,19 +284,21 @@ def main():
         assert before['available_memory_bytes']-memory>=64*GIB
         allocation = registry.reserve_work('A','test' if native_only else 'build',cpu,memory,growth,
             out if native_only else build,result_growth_bytes=spec['result_growth_bytes'],
-            disk_authorization_id=a.disk_authorization_id,build_identity=identity if named else None)
+            disk_authorization_id=None,build_identity=None)
         lease = allocation['lease_id'];report.update(lease_id=lease,resource_owner='mechanism_A',resource_allocation=allocation)
+        assert all(allocation[k]==v for k,v in policy.items()), 'new lease policy differs from frozen E ordinary policy'
         assert resources()['disk_free_bytes']>=stop_floor+growth+monitor
         temp_root = out if native_only else build
         (temp_root/'tmp').mkdir(parents=True,exist_ok=bool(recovery))
         env = dict(os.environ,GPGPUSIM_ROOT=str(core),CUDA_INSTALL_PATH='/usr/local/cuda-11.8',
             ACCELSIM_CONFIG='release',PATH='/usr/local/cuda-11.8/bin:'+os.environ['PATH'],
             TMPDIR=str(temp_root/'tmp'),XDG_CACHE_HOME=str(temp_root/'cache'),PYTHONDONTWRITEBYTECODE='1',
+            TMP=str(temp_root/'tmp'),TEMP=str(temp_root/'tmp'),
             PYTHONPYCACHEPREFIX=str(temp_root/'cache/python'),CCACHE_DISABLE='1',CCACHE_DIR=str(temp_root/'cache/ccache'),
             CUDA_CACHE_DISABLE='1',CUDA_CACHE_PATH=str(temp_root/'cache/cuda'),OMP_NUM_THREADS='1',
             OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
         report['build_environment'] = {k:env.get(k) for k in ['GPGPUSIM_ROOT','CUDA_INSTALL_PATH','PATH',
-            'CC','CXX','CFLAGS','CXXFLAGS','LDFLAGS','LD_LIBRARY_PATH','TMPDIR','XDG_CACHE_HOME']}
+            'CC','CXX','CFLAGS','CXXFLAGS','LDFLAGS','LD_LIBRARY_PATH','TMPDIR','TMP','TEMP','XDG_CACHE_HOME']}
         def bind(pid):
             active.update(pid=pid,ever_started=True);return registry.bind_work_process(lease,'A',pid)
         def run(command,name,timeout):
@@ -332,6 +316,20 @@ def main():
                         libs[str(Path(token).resolve())] = sha(token)
             return libs
         if not native_only:
+            if recovery:
+                # Incremental make may relink the embedded build version. Keep
+                # the prior unqualified main binary before any such overwrite;
+                # this copy counts against the already leased result ceiling.
+                resources()
+                original = build/'accel-sim.out'
+                preserved = out/'INHERITED_MAIN_PRE_COMPILE.elf'
+                previous_sha = recovery['build_files']['accel-sim.out']['sha256']
+                assert sha(original)==previous_sha
+                shutil.copyfile(original,preserved)
+                assert sha(preserved)==previous_sha
+                report['preserved_inherited_main'] = dict(path=str(preserved),sha256=previous_sha,
+                    bytes=preserved.stat().st_size,qualified=False,counted_in_result_growth=True)
+                resources();save()
             report.update(status='INCREMENTAL_BUILD_PREPARING' if recovery else 'CONFIGURING',compiler_started=True);save()
             if not recovery:
                 run(['cmake','-S',str(runtime/'gpu-simulator'),'-B',str(build),'-G','Unix Makefiles',
@@ -339,7 +337,11 @@ def main():
             run(['c++','--version'],'compiler_version',20);run(['cmake','--version'],'cmake_version',20)
             targets = sorted({c['target'] for c in cases})
             report['status']='BUILDING';save()
-            run(['cmake','--build',str(build),'--target','accel-sim.out',*targets,'-j2'],'build',2400)
+            command=['cmake','--build',str(build),'--target','accel-sim.out',*targets,'-j2']
+            if recovery:
+                command += ['--','-k'] # Collect remaining independent compile errors; nonzero never releases a binary.
+            report['build_keep_going']=bool(recovery);save()
+            run(command,'build',2400)
             flags = sorted(build.rglob('flags.make'))
             assert flags and all('-DNDEBUG' not in f.read_text() for f in flags),'native assertions disabled'
             report['assertion_flags_sha256'] = {str(f):sha(f) for f in flags}
@@ -354,9 +356,9 @@ def main():
         else:
             report['dynamic_library_sha256'] = linked_identity('native_linked_libraries')
             assert report['dynamic_library_sha256']==prior['dynamic_library_sha256'],'retained binary now links different libraries'
-        # A named exception NEVER reaches this branch. Combined ordinary work
-        # already had48GiB+growth admission; resumed tests obtain a new test lease.
-        assert not named and report['disk_floor_bytes']==48*GIB
+        # Build and native both use E's new ordinary5GiB policy, separately leased.
+        # Resumed native validates the exact retained successful producing build.
+        assert report['E_workspace_disk_policy']==policy and report['authorized_task_floor_bytes']==5*GIB
         completed=[];semantics={}
         for group in ['main','diagnostics']:
             selected = [c for c in cases if c['suite']==group]
@@ -389,7 +391,7 @@ def main():
         assert len(completed)==len(cases)
         report['status']='PRODUCER_FINITE_PASS_PENDING_E_INDEPENDENT_QUALIFICATION'
     except BaseException as error:
-        report['status']='STOPPED_OR_FAILED_NO_RUNTIME_RELEASE';report['error']=repr(error)
+        report['status']='RESOURCE_LIMIT' if report.get('resource_limit') else 'STOPPED_OR_FAILED_NO_RUNTIME_RELEASE';report['error']=repr(error)
         raise
     finally:
         if lease:
@@ -397,7 +399,9 @@ def main():
                                   no_child_started=not active['ever_started'])
             report['lease_released']=True
         if lock:lock.close();report['own_lock_released']=True
-        report['finished_UTC']=datetime.datetime.now(datetime.timezone.utc).isoformat();save();print(report['status'])
+        report['finished_UTC']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+        finalize_limit(report,out)
+        save();print(report['status'])
 
 
 if __name__=='__main__':

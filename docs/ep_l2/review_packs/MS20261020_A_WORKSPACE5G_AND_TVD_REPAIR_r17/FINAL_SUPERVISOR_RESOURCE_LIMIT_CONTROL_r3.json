@@ -1,0 +1,79 @@
+{
+  "schema": "EP_L2_A_RESOURCE_LIMIT_V1",
+  "status": "RESOURCE_LIMIT",
+  "observed_unix": 1792427620.2253098,
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "lease_id": null,
+  "disk_policy": {
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "disk_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "monitor_interval_seconds": 0.2,
+    "termination_grace_seconds": 3,
+    "control_injected": true
+  },
+  "E_source_publication": null,
+  "E_api_sha256": null,
+  "reasons": [
+    "WORKSPACE_MONITORED_STOP_MARGIN"
+  ],
+  "actual_resources": {
+    "disk_free_bytes": 7516192768,
+    "available_memory_bytes": 85899345920,
+    "source": "CONTROL_INJECTED_NOT_REAL_RESOURCE_SURVEY"
+  },
+  "share_free_bytes": 45097156608,
+  "physical_workspace_floor_bytes": 5368709120,
+  "monitored_stop_bytes": 7516192768,
+  "monitor_reserve_bytes": 2147483648,
+  "own_result_bytes": 0,
+  "result_growth_bytes": 1048576,
+  "own_build_bytes": 0,
+  "inherited_build_bytes": 0,
+  "build_growth_bytes": 1048576,
+  "build_total_cap_bytes": 1048576,
+  "own_process_tree_rss_bytes": 1024,
+  "memory_limit_bytes": 8589934592,
+  "retained_result_bytes": null,
+  "retained_result_expected_bytes": 0,
+  "commands": [
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "-B",
+        "-c",
+        "import time;print('A_CONTROL_CHILD_RAW_PRESERVED',flush=True);time.sleep(5)"
+      ],
+      "process": {
+        "pid": 1061233,
+        "start_ticks": 917959136,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "log": "/workspace/ep_l2_ms20261019_a_common_v1/A_WORKSPACE5G_GUARD_CONTROL_r3/owned_control.log"
+    }
+  ],
+  "scope": "STOP_ONLY_OWNED_PROCESS_GROUP; preserve all logs/receipts; no new task",
+  "native_or_application_qualification": false,
+  "final_commands": [
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "-B",
+        "-c",
+        "import time;print('A_CONTROL_CHILD_RAW_PRESERVED',flush=True);time.sleep(5)"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_a_common_v1/A_WORKSPACE5G_GUARD_CONTROL_r3/owned_control.log",
+      "process": {
+        "pid": 1061233,
+        "start_ticks": 917959136,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "error": "ResourceLimit('WORKSPACE_MONITORED_STOP_MARGIN')",
+      "exit_code": -15,
+      "log_sha256": "6e9dbf3915dc1b3966ecc0e43fec26be39da754768518e288969d17d137c9dc3",
+      "wall_seconds": 0.20675161480903625
+    }
+  ],
+  "lease_released": false,
+  "finished_UTC": "CONTROL_TERMINAL_NOT_SCIENCE"
+}

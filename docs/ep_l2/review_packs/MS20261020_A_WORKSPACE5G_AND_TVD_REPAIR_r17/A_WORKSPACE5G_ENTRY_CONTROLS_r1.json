@@ -1,0 +1,46 @@
+{
+  "UTC": "2026-10-19T16:30:31.448090+00:00",
+  "entry_sha256": "d4b4696397f6550088aab0f033cb0ee6ec5d803e2f55e389537b13441211ffcb",
+  "resource_guard_sha256": "abb8952ae75917c354f07580d5492769301822168d2d984d025b93f6bb602616",
+  "controls": [
+    {
+      "case": "plan_exact5G_inventory",
+      "actual_exit": 0,
+      "receipt_exists": true,
+      "status": "PLAN_ONLY_NOT_COMPILED_NOT_RUN",
+      "error": null,
+      "compiler_started": false,
+      "native": 0,
+      "raw_sha256": "8d56da759d9a597c148865619e2ac6e249027d6e3e37682889e3bffd6781de25"
+    },
+    {
+      "case": "reject_historical_token",
+      "actual_exit": 1,
+      "receipt_exists": false,
+      "status": null,
+      "error": "AssertionError: new ordinary5GiB leases require E admission; historical named authorizations are not replayed",
+      "compiler_started": false,
+      "native": 0,
+      "raw_sha256": "28e1ec162eba9c6067de2596831bae7f8707e7621d721f9cad8b18b9a0d1866c"
+    },
+    {
+      "case": "reject_no_ordinary_E_admission",
+      "actual_exit": 1,
+      "receipt_exists": true,
+      "status": "STOPPED_OR_FAILED_NO_RUNTIME_RELEASE",
+      "error": "AssertionError('fresh exact E admission required; no compiler/native')",
+      "compiler_started": false,
+      "native": 0,
+      "raw_sha256": "296382b14815360e57d17cf351ca04ac1640aeb37667320179b73db79ce7838d"
+    }
+  ],
+  "new_policy": 5368709120,
+  "actual_supervisor_control": "/workspace/ep_l2_ms20261019_a_common_v1/A_WORKSPACE5G_GUARD_CONTROL_r2/CONTROL_RESULT.json",
+  "central_API_calls": 0,
+  "central_registry_writes_by_A": 0,
+  "registry_bytes_observed_unchanged": true,
+  "compiler": 0,
+  "native": 0,
+  "real_E_policy_consumed": false,
+  "scope": "New5G entry/anti-replay/inventory plus actual owned guard controls only; waiting formalE publication."
+}
