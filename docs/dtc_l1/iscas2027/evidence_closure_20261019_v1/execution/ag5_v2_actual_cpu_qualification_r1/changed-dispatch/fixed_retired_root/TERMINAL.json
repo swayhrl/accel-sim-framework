@@ -1,0 +1,70 @@
+{
+  "utc": "2026-10-19T16:10:08.402046+00:00",
+  "status": "STOP_GUARDED_PROCESS",
+  "purpose": "CPU_FIXTURE",
+  "root_pid": 1034390,
+  "returncode": 0,
+  "forced_reason": "CPU_EXPECTED_RETIRED_PID_QUARANTINE",
+  "exception": "Reject('CPU_EXPECTED_RETIRED_PID_QUARANTINE')",
+  "identity_pass": false,
+  "owned_process_exits": {
+    "1034390": 0,
+    "1034392": -9
+  },
+  "owned_process_exit_instances": [
+    {
+      "pid": 1034390,
+      "start_ticks": 917817919,
+      "returncode": 0
+    },
+    {
+      "pid": 1034392,
+      "start_ticks": 917817935,
+      "returncode": -9
+    }
+  ],
+  "owned_children_live": 0,
+  "ownership": {
+    "confirmed": [],
+    "pending": [
+      {
+        "identity": {
+          "pid": 1034390,
+          "start_ticks": 918817919,
+          "ppid": 1034164,
+          "state": "t",
+          "tgid": 1034390,
+          "tracer_pid": 1034164
+        },
+        "first_monotonic": 9178179.370660124,
+        "source": "ACTUAL_WAIT_STOP_BEFORE_PARENT_EVENT"
+      }
+    ],
+    "retired": [
+      {
+        "pid": 1034390,
+        "start_ticks": 917817919,
+        "ppid": 1034164,
+        "state": "t",
+        "tgid": 1034390,
+        "tracer_pid": 1034164
+      },
+      {
+        "pid": 1034392,
+        "start_ticks": 917817935,
+        "ppid": 1034390,
+        "state": "t",
+        "tgid": 1034392,
+        "tracer_pid": 1034164
+      }
+    ],
+    "confirmation_seconds": 2.0,
+    "proof_events": 1
+  },
+  "unconfirmed_wait_pids": [
+    1034390
+  ],
+  "snapshots": 29,
+  "simulator_starts": 0,
+  "wall_seconds_nonperformance": 0.5541548784822226
+}

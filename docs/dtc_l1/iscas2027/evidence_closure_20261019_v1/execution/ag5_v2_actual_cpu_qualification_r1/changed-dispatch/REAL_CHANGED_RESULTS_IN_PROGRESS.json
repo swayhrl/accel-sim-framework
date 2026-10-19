@@ -1,0 +1,113 @@
+[
+  {
+    "case": "real_child_first_stop_after_parent_reaped",
+    "passed": true,
+    "terminal": {
+      "utc": "2026-10-19T16:10:09.792065+00:00",
+      "status": "PASS_GUARDED_NATURAL_EXIT0",
+      "purpose": "CPU_FIXTURE",
+      "root_pid": 1034401,
+      "returncode": 0,
+      "forced_reason": null,
+      "exception": null,
+      "identity_pass": true,
+      "owned_process_exits": {
+        "1034401": 0,
+        "1034403": 0
+      },
+      "owned_process_exit_instances": [
+        {
+          "pid": 1034401,
+          "start_ticks": 917818022,
+          "returncode": 0
+        },
+        {
+          "pid": 1034403,
+          "start_ticks": 917818059,
+          "returncode": 0
+        }
+      ],
+      "owned_children_live": 0,
+      "ownership": {
+        "confirmed": [],
+        "pending": [],
+        "retired": [
+          {
+            "pid": 1034401,
+            "start_ticks": 917818022,
+            "ppid": 1034164,
+            "state": "t",
+            "tgid": 1034401,
+            "tracer_pid": 1034164
+          },
+          {
+            "pid": 1034403,
+            "start_ticks": 917818059,
+            "ppid": 1034401,
+            "state": "t",
+            "tgid": 1034403,
+            "tracer_pid": 1034164
+          }
+        ],
+        "confirmation_seconds": 2.0,
+        "proof_events": 1
+      },
+      "unconfirmed_wait_pids": [],
+      "snapshots": 30,
+      "simulator_starts": 0,
+      "wall_seconds_nonperformance": 0.9136734902858734
+    }
+  },
+  {
+    "case": "real_child_stop_before_parent_observer",
+    "passed": false,
+    "terminal": {
+      "utc": "2026-10-19T16:10:12.155349+00:00",
+      "status": "STOP_GUARDED_PROCESS",
+      "purpose": "CPU_FIXTURE",
+      "root_pid": 1034404,
+      "returncode": null,
+      "forced_reason": "PENDING_NOT_OWN_TRACEE_STOP",
+      "exception": "Reject('PENDING_NOT_OWN_TRACEE_STOP')",
+      "identity_pass": false,
+      "owned_process_exits": {},
+      "owned_process_exit_instances": [],
+      "owned_children_live": 1,
+      "ownership": {
+        "confirmed": [
+          {
+            "pid": 1034404,
+            "start_ticks": 917818114,
+            "ppid": 1034164,
+            "state": "t",
+            "tgid": 1034404,
+            "tracer_pid": 1034164
+          }
+        ],
+        "pending": [
+          {
+            "identity": {
+              "pid": 1034406,
+              "start_ticks": 917818149,
+              "ppid": 1034164,
+              "state": "t",
+              "tgid": 1034404,
+              "tracer_pid": 1034164
+            },
+            "first_monotonic": 9178181.498794219,
+            "source": "CLEANUP_WAIT_STOP"
+          }
+        ],
+        "retired": [],
+        "confirmation_seconds": 2.0,
+        "proof_events": 0
+      },
+      "unconfirmed_wait_pids": [
+        1034406
+      ],
+      "snapshots": 31,
+      "simulator_starts": 0,
+      "wall_seconds_nonperformance": 2.353363549336791
+    }
+  }
+]
