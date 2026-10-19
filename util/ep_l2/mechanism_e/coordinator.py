@@ -34,7 +34,7 @@ GIB = 2**30
 FULL_GROWTH = 2*GIB + 128*2**20
 START_DEADLINE = 1792576800  # 2026-10-21 18:00 Asia/Shanghai
 INTAKE_DEADLINE = 1792591200
-REUSED_TOOL_PINS = {'registry.py': '81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d', 'run.py': '43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060', 'validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'acceptance.py': '459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75', 'headroom_config.py': '43e1b577a81b75863fa5821cd1da6d9a634f7ae0848adfa0f276922294582f69', 'feature_schema.py': '26353fa1724d69cc63ab0bc8ac0d13650210a6824b05b49ea44499e785aad6e7'}
+REUSED_TOOL_PINS = {'registry.py': '81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d', 'run.py': '43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060', 'validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'acceptance.py': '459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75', 'headroom_config.py': '43e1b577a81b75863fa5821cd1da6d9a634f7ae0848adfa0f276922294582f69', 'feature_schema.py': '26353fa1724d69cc63ab0bc8ac0d13650210a6824b05b49ea44499e785aad6e7', 'parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b'}
 NATIVE_GATES = {'old_all_off_equivalence', 'finite_wbuf', 'requester_exact_once',
  'sector_reference_data', 'stale_fill', 'resource_closure', 'wb_lifecycle',
  'bank_service', 'physical_bank_clock', 'memcpy_payload_identity', 'mode_legality'}

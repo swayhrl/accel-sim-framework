@@ -143,3 +143,24 @@ content-pinned resolution evidence tied to the exact active hold. Clearing that
 hold does not silently restore a withdrawn pair; explicit endpoint/pair review
 is still required. No real failure/withdrawal has occurred in this new campaign;
 these paths have only isolated control-fixture coverage so far.
+
+## Initial local-service terminal adapter and input-oracle review
+
+`parse_terminal.py` adapts the actual A066c60b1 output and the44c940b7 correction
+that prints disabled observations as DISABLED_NOT_OBSERVED. It reuses the original
+structure decoder and strict summary validator, requires exact64slice final
+native-clock scope, closed bank/descriptor/WAD state and independently bound
+production data gates. Five initial profiles are explicit; RO/victim/old ideals
+are not silently added. Copy exemptions, paid physical grants, lower packet bytes
+and overlapping request-wait histograms remain distinct. Synthetic decoder checks
+are control tests; this adapter has not yet passed new native production replay.
+
+`review_ro_input.py` reads a completed D/C oracle candidate and its SQLite/export
+artifacts without modifying them or rescanning large trace bodies. It independently
+checks read/no-write/no-atomic eligibility, exact line/range exports, full command
+order, post-activation host updates, artifact hashes and the preregistered trace
+identity of D's completed scan. The initial HtoD prefix is drained before oracle
+activation; every selected kernel and intervening command remains in scope. Model
+assumptions remain explicit. An input-artifact review does not grant runtime T/M,
+data-value, performance or resource qualification. Actual input bytes must be
+rebound before an eventual qualified RO application.
