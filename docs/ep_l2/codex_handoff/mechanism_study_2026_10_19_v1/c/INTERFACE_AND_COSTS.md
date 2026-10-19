@@ -24,16 +24,50 @@ T uses the historical conservative waiter-aware policy: only pending certified t
 |Observations|One current frontend-head UID and a reason bitset plus bounded histograms, not an unbounded per-access map. Count first blocked request/reason, first-to-accept duration and pending head. Reasons and slices overlap and cannot be summed into GPU stalls|
 |Duplicate traffic|Count actual accepted lower sectors and concurrently duplicated sectors/bytes, actual avoided line allocations, admitted/merged/completed requests and peaks. This is not a shadow hit estimate or an application speedup|
 
-Resource counters are EPL2ROC1 RESOURCE/WAIT plus EPL2ROV1. Actual distinct-address occupancy beyond a Tag/line lookup needs a measured opportunity observer; no unique-address count is fabricated from transaction count.
+Resource counters are EPL2ROC1 RESOURCE/WAIT/LOWER_CONCURRENCY plus EPL2ROV1.
+The r2 observer records two separate RO-only maxima: live transactions with at
+least one accepted lower sector not returned, and distinct canonical128B lines
+among those transactions. Sampling happens after actual lower acceptance;
+fills and retirement only reduce those populations. The bounded1168-address
+scratch is transient simulator instrumentation, never searched for admission,
+merging or data access. It is not a proposed extra hardware address directory.
+`peak_transactions` includes admitted/unissued or ready-but-held groups and
+must not substitute for either lower peak. Separate maxima need not occur at
+the same time; do not subtract or divide them as a duplicate rate.
+
+`concurrent_duplicate_sectors` counts an actual new lower sector if another
+live completion group for that canonical line has previously issued it,
+including returned data still held for a requester. It does not count every
+serial reread after retirement or estimate all avoidable DRAM traffic. Lower
+bytes are actual accepted sector count times32. Physical epoch begin/end and
+last accepted RO-response cycles are raw scope boundaries; absent boundaries
+print NA. Completion count divided by whole-epoch elapsed cycles, if reported,
+is an RO normalized rate over that epoch, not an exclusive service time or
+application speedup. These fields are source-prepared and have no new measured
+value until admitted native/application execution.
 
 ## Required A integration
 
-1. Apply new RO modules and ep-l2-ro-mshr.inc, then adapt CACHE_ALLOCATOR_ADAPTER.patch to the A-owned common cache files. Keep current atomic callbacks, quota/RG1/MQ2 fixes, bank clocks and default-OFF behavior. The patch preserves those source bodies and retains the old rejected legacy feature options.
-2. Register T/M and manifest/range/scope options defaultOFF. Require separate U16/P1 mode, D512/line128/address32/WAD128. Reject unqualified mixes with B victim, A diagnostics, S64, quota, P2, MQ2/RG1 and old Ideals. The source guard covers all options already present in84359d4; A adds its newly introduced options.
+1. Apply exact Core b1d42152805e22b6a12774f37351926b6fcbeaf5 RO modules/tests, then review adapter_a44c_r2/CACHE_ALLOCATOR_ADAPTER.patch against A44c940b748fceaec8f21fa2b443907d5afd2756b. The original adapter/ remains the historical84359d4 preimage patch. Keep current atomic callbacks, quota/RG1/MQ2 fixes, bank clocks and default-OFF behavior. The patch preserves those source bodies and retains the old rejected legacy feature options. A and C have separate Git object stores; the generator reads exact A preimages and historical C source separately. No public file was edited or compiled by C.
+2. Register T/M and manifest/range/scope options defaultOFF. Require separate U16/P1 mode, D512/line128/address32/WAD128. Reject unqualified mixes with B victim, A diagnostics, S64, quota, P2, MQ2/RG1 and old Ideals. The r2 source guard includes A's two newly introduced diagnostic flags. Any future victim flag still needs A's explicit rejection before that version is exposed.
 3. Bind the exact complete commandlist hash at GPU/partition entry, drain prior work, begin once before the first kernel, and end only after the whole commandlist and all native/RO queues drain. Never end/restart at a kernel boundary. The required hooks already exist in the historical30c2920a interface, but are not inherited into84359d4 by adding headers.
 4. ro_frontend_cycle(mf) is a timed hook before native preview, not a resource allocation in preview. The patch inserts it at the actual partition head. Direct native-cache fixtures call the same hook and wait only for ep_l2_ro_lookup_wait; they do not hide capacity refusals.
 5. Route flagged return packets by payload_id/generation before ordinary Tag fill; lower acceptance invokes the module only after real queue acceptance. Preserve actual response READ grant/same-cycle enqueue and pins. Include RO ownership in drain/consistency checks.
 6. Add CMake native targets for tests/ep_l2/test_ro_runtime.cc, test_ro_partition.cc, test_ro_transactions.cc, test_ro_store_port.cc, test_ro_oracle_certificate.cc and test_ro_bank_progress.cc; assertions enabled. Bind exact common compiler/headers/libraries and use E's admission. Print ro_print at final application terminal.
+
+The adapter also changes A's descriptor occupancy sample from ordinary native
+target lists to `m_mshrs.descriptor_count_used()`, the same D512 free-list's
+combined occupancy. Without that change RO would be missing from the sample.
+No capacity, arbitration or OFF service behavior is changed by this observer
+correction. Its integrated timing/semantic regression is still unrun.
+
+The r2 rollback witness uses the actual native line/D512 allocator with a
+deliberately refusing reference payload port: pin failure must release both
+reserved objects in T-only, just D512 in M, leave the caller landing/pin intact,
+and permit retry/drain. This is MODULE scope, not proof that the integrated
+cache's multi-resource rollback is qualified. Native D512-full/line-full,
+foreign native pins, WAD and lower/response backpressure fixtures remain
+required. All12 validation rows remain PREPARED_NOT_COMPILED_NOT_RUN.
 
 Host prefill is range-aware: initial initialization is allowed. During the active whole epoch, overlap with certified lines refuses; unrelated lines remain eligible only after native clean/quiescent checks. Pending/dirty/pinned ownership must refuse before mutation. Once the whole epoch ends, later clean/quiescent prefill is allowed. No initial-only blanket restriction, producer clock reset, dirty discard or synthetic bank cycle is introduced.
 

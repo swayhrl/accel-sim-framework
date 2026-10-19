@@ -4,16 +4,20 @@ from pathlib import Path
 BASE='84359d4ba492acb639a2092fa271e9169038bf7d'
 OLD='30c2920a3754bdaae09511f93d91873959c09f15'
 
-def prepare(core,out):
+def prepare(core,out,base=BASE,historical_core=None):
  def git(ref,file):return subprocess.check_output(['git','-C',str(core),'show',ref+':'+file],text=True)
  before={};after={}
  def load(file):
-  if file not in before:before[file]=git(BASE,file);after[file]=before[file]
+  if file not in before:before[file]=git(base,file);after[file]=before[file]
   return after[file]
  def replace(file,old,new):
   s=load(file);assert s.count(old)==1,(file,old,s.count(old));after[file]=s.replace(old,new,1)
  h='src/gpgpu-sim/gpu-cache.h';cc='src/gpgpu-sim/gpu-cache.cc';ft='src/gpgpu-sim/ep-l2-ft-cache.inc'
- oldh=git(OLD,h);oldft=git(OLD,ft)
+ # A and C can use different Git object stores. Read history from C while
+ # taking every current public-file preimage exclusively from A's exact SHA.
+ history=historical_core if historical_core is not None else core
+ def historical(file):return subprocess.check_output(['git','-C',str(history),'show',OLD+':'+file],text=True)
+ oldh=historical(h);oldft=historical(ft)
  # Same allocator, same line table, persistent generations. No new pool.
  decl=oldh[oldh.index('  // Lane 3\'s completion objects'):oldh.index('  void sector_masks(',oldh.index('  // Lane 3\'s completion objects'))]
  decl+='  mem_fetch *ro_descriptor_request(const ro_descriptor_handle &) const;\n  mem_access_sector_mask_t ro_descriptor_sectors(const ro_descriptor_handle &) const;\n'
@@ -37,7 +41,7 @@ def prepare(core,out):
  replace(h,'  unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }',
   '  bool ro_requested() const { return m_ro_tag_detach||m_ro_line_mshr_bypass; }\n  unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }')
  replace(h,'class cache_config {','class cache_config {\n  friend class ep_l2_ro_runtime;')
- replace(h,'class l2_cache : public data_cache {','class ep_l2_ro_runtime;\nclass l2_cache : public data_cache {\n  friend class ep_l2_ro_runtime;\n  friend struct ep_l2_ms_c_ro_probe;')
+ replace(h,'class l2_cache : public data_cache {','class ep_l2_ro_runtime;\nclass l2_cache : public data_cache {\n  friend class ep_l2_ro_runtime;')
  replace(h,'    validate_ep_l2_mode_config();','    validate_ep_l2_mode_config();\n    ro_init();')
  replace(h,'  bool ft_enabled() const {',
   '  ~l2_cache();\n  bool ro_enabled() const {return m_ro!=nullptr;}\n  bool access_ready() const;\n  void ro_frontend_cycle(mem_fetch *);\n  void ro_bind_commandlist(const char *);\n  void ro_begin_epoch();\n  void ro_end_epoch();\n  bool ro_drained() const;\n  bool ro_return(mem_fetch *,unsigned long long);\n  void ro_print(FILE *,unsigned) const;\n  bool ft_enabled() const {')
@@ -101,17 +105,25 @@ def prepare(core,out):
  replace(sub,'    if (!m_config->m_L2_config.disabled() && m_L2cache->waiting_for_fill(mf)) {',
   '    if(mf->ro_lower_packet()) {if(m_L2cache->ro_return(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle)){m_dram_L2_queue->pop();delete mf;}}\n    else if (!m_config->m_L2_config.disabled() && m_L2cache->waiting_for_fill(mf)) {')
  replace(sub,'    mem_fetch *mf = m_icnt_L2_queue->top();','    mem_fetch *mf = m_icnt_L2_queue->top();\n    if(!m_config->m_L2_config.disabled())m_L2cache->ro_frontend_cycle(mf);')
+ # Bind the reviewed newer A interface without dropping its diagnostic guard.
+ if 'm_ep_l2_diag_copy_free' in before[h]:
+  replace(h,'m_config.m_ep_l2_ideal_read_hit)) {fprintf(stderr,"RO requires',
+   'm_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free)) {fprintf(stderr,"RO requires')
+ if 'void l2_cache::ms_sample()' in before[ft]:
+  replace(ft,'      mshr_targets_used(), m_ep_l2_payload.resident_used(), bound,',
+   '      m_mshrs.descriptor_count_used(), m_ep_l2_payload.resident_used(), bound,')
  # Deliberately leave dispatch/options to A's published interface. This patch
  # is a scoped cache/allocator adapter, not a complete runnable release.
- out.mkdir(parents=True,exist_ok=True)
+ # Never overwrite a frozen adapter revision during regeneration.
+ out.mkdir(parents=True,exist_ok=False)
  patch=''
  for f in before:
-  bh=subprocess.check_output(['git','-C',str(core),'rev-parse',BASE+':'+f],text=True).strip()
+  bh=subprocess.check_output(['git','-C',str(core),'rev-parse',base+':'+f],text=True).strip()
   ah=subprocess.check_output(['git','-C',str(core),'hash-object','--stdin'],input=after[f],text=True).strip()
   patch+='diff --git a/'+f+' b/'+f+'\nindex '+bh+'..'+ah+' 100644\n'
   patch+=''.join(difflib.unified_diff(before[f].splitlines(True),after[f].splitlines(True),fromfile='a/'+f,tofile='b/'+f))
  (out/'CACHE_ALLOCATOR_ADAPTER.patch').write_text(patch)
- (out/'ADAPTER_PREIMAGES.json').write_text(json.dumps(dict(base=BASE,historical=OLD,
+ (out/'ADAPTER_PREIMAGES.json').write_text(json.dumps(dict(base=base,historical=OLD,
   status='SOURCE_ONLY_A_INTEGRATION_REQUIRED_NOT_COMPILED',files={f:dict(before=hashlib.sha256(before[f].encode()).hexdigest(),after=hashlib.sha256(after[f].encode()).hexdigest()) for f in before},
   remaining_A_owned_hooks=['Register new T/M/ranges/manifest options default0; never enable legacy rejected feature flags.',
    'Dispatch whole-commandlist bind/begin/end through GPU/partition from Framework exact commandlist; keep native host memcpy guards.',
@@ -120,4 +132,4 @@ def prepare(core,out):
  return after
 
 if __name__=='__main__':
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--core',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args();prepare(a.core,a.out)
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--core',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--base',default=BASE);p.add_argument('--historical-core',type=Path);a=p.parse_args();prepare(a.core,a.out,a.base,a.historical_core)
