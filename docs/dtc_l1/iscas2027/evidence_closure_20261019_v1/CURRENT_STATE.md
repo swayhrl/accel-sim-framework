@@ -9,8 +9,8 @@ sole full-simulation dispatcher. Coordination pin `f81ca1c5` updates original
 | Item | Current actual state | Evidence |
 |---|---|---|
 | AG5 canonical integration | AG5 owner/reviewer exact bytes; post-fork guard exact apart from actual-start metadata; shared callback current-role/peer checks source integrated | AG5_INTEGRATION_STATIC_EQUIVALENCE_V2.json |
-| CPU fixture | New16,616-byte ELF compiled + static libs/loader frozen after full paired R2; target executions0 | ag5_v2_build_receipts_attempt2/ |
-| Changed observer/guard qualification |14 cases PASS after hostIO0.30/0.11 pair;5generation+first real root-order PASS; next real adapter failed on premature quarantine, all22recordedinstances now absent; repair ongoing | ag5_v2_actual_cpu_qualification_r1/ |
+| CPU fixture | New16,616-byte ELF compiled/frozen; actual targeted CPU fixtures now executed in bounded qualification, no model | ag5_v2_build_receipts_attempt2/ |
+| Changed observer/guard qualification |14+5+first root-order actual passes preserved; remaining5real guard cases PASS after repair;2real CPU roots shared callback/helper/cache/exit PASS under new5GiB policy; all event-proven instances absent | ag5_v2_current_cpu_qualification_r2/ |
 | Actual COV/SEM/ROB roles | Actual source-bound CPU manager published f724; two finite admissions hostIO30.00/26.85 refused before child; three-role qualification incomplete | COV_EXTERNAL_VIEW_SOURCE_INTAKE_V2.json |
 | SEM1 | Configure1 exit0, own group reaped/empty; build0, linked runtime0; preserve config, extra Doxygen metadata reviewed and future hashes fixed | SEM1 5a54351b + f1174810; sem1_v2_configure_intake/ |
 | ROB1 | Configure/build/actual LDST runtime0; prior small helper PASS retained; latest paired hostIO22.15/26.52 refused | ROB1 a49911d4 |

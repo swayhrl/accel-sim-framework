@@ -29,18 +29,20 @@ def sha(path):
     return digest.hexdigest()
 
 
-def close_mapping(engine, mappings):
+def close_mapping(engine, mappings, *, purpose='SIMULATION'):
+    require(purpose in ('SIMULATION', 'CPU_FIXTURE'), 'EXPLICIT_MAPPING_RECEIPT_PURPOSE')
     root = json.loads((engine / 'CHILD.json').read_text())
     fork = json.loads((engine / 'FORK_CHILD.json').read_text())
     terminal = json.loads((engine / 'TERMINAL.json').read_text())
     start = json.loads((engine / 'START.json').read_text())
     require(fork['pid'] == root['pid'] == terminal['root_pid'] and
             fork['fork_monotonic_ns'] == root['fork_monotonic_ns'] and
-            root['actual_fork'] is True and root['real_simulator'] is True,
+            root['actual_fork'] is True and root['real_simulator'] is (purpose == 'SIMULATION'),
             'ACTUAL_DIRECT_FORK_ROOT_RECEIPT_JOIN')
     expected_manifests = {path: hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
                           for path, value in mappings.items()}
-    require(start['purpose'] == 'SIMULATION' and start['manifests_sha'] == expected_manifests,
+    require(start['purpose'] == purpose and terminal['purpose'] == purpose and
+            start['manifests_sha'] == expected_manifests,
             'ACTUAL_GUARD_MANIFEST_SOURCE_JOIN')
     root_key = (root['pid'], root['start_ticks'])
     proven = {root_key}
