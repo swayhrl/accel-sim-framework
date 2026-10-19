@@ -4,7 +4,7 @@ Current verified state as of 2026-10-19T10:29:04.435434+00:00: B0001 through B00
 
 Current range lookup: `TLS_V10_P9_PUBLIC_CLOSED_RANGE_RECOVERY_INDEX.json` maps each exact Source relative path/offset/length/SHA to the native164 archive pathname and volatile native range proof, with Git proof and Source ACK lineage. This is a range index, not a complete project recovery certificate.
 
-B0010 conditional request is unchanged. Source commit `5897eaf3546e3918805f74edeecd9232c70d7e4c` reports workspace 16908652544B at 2026-10-19T10:24:25Z, below the 16GiB COPY_ONLY floor by 271216640B before control budget. See `TLS_V10_P9_PUBLIC_B0010_SOURCE_RESOURCE_HOLD.json`. Only a fresh Source legal PASS and exact READY may resume staging; the Target does not infer current Source resource eligibility from this historical report.
+B0010 conditional request is unchanged. Exact Source HOLD commit `24ae23ef366209c9decdcd6b2ca69f6c28f11c2b` reports NO_STAGE/NO_READY and workspace 16510775296B at 2026-10-19T10:26:06Z, below the 16GiB COPY_ONLY floor by 669093888B before control budget. See `TLS_V10_P9_PUBLIC_B0010_SOURCE_RESOURCE_HOLD.json`. Only fresh Source legal PASS and exact READY may resume staging; Target does not infer current Source eligibility from this historical report.
 
 ## Immutable authority and identity
 

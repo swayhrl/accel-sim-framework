@@ -1,3 +1,7 @@
+# Current 2026-10-19T10:30:56.354202+00:00 - Source exact B0010 HOLD
+
+Source commit `24ae23ef366209c9decdcd6b2ca69f6c28f11c2b` explicitly reports NO_STAGE/NO_READY at 2026-10-19T10:26:06Z: workspace 16510775296B, deficit 669093888B to COPY_ONLY16 before control budget. B0010 request unchanged; only fresh Source gates and exact READY resume reception. Source science release remains 0. Closed range recovery index is on164/Git.
+
 # Current 2026-10-19T10:29:04.439441+00:00 - B0010 RESOURCE_HOLD
 
 B0001-B0009 closed. Source reports workspace 16908652544B below COPY_ONLY16 floor; no B0010 READY. Published closed-range recovery index covers 48 ranges / 705,152,417B. Full P9 group incomplete; Source originals KEEP, source science release 0. Current request, txid, selector and NAS reservation unchanged.
