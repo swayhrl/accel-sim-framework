@@ -1,0 +1,95 @@
+{
+  "schema": "DTC_CLOSURE_CPU_BUILD_CONDITIONAL_RELEASE_V2",
+  "utc": "2026-10-19T13:35:29.754380+00:00",
+  "status": "COORDINATED_NEW_PREFLIGHT_REQUIRED_NO_DISPATCH_UNTIL_ALL_CHECKS_PASS",
+  "previous_goal_turn": "PROGRESS: published00c0c9fa5 with actual AST/helper results, immutable worker join and resource hold; full objective incomplete",
+  "authority": "AG4 d8d0401 terminal previously verified; no contract change or old restart",
+  "owners": [
+    {
+      "owner": "/root/sem1",
+      "role": "SEM1",
+      "registration": "SEM1_CPU_BUILD_REGISTRATION.json",
+      "registration_sha256": "ee1cbcc63e13f45335ee838c638f90bd17c389cd31324302b456296565b830c5",
+      "source_worker_commit": "fc73d4e8bc3c2655aefae0b99f8055e16f1497ed",
+      "core_commit": "1fcf5113c08a27b64ccca872c4a8fba4c12c1ece",
+      "controller_sha256": "90be68c1738f247db86239d2cc6a95929c73ed0a5753f6083493bc212617caf8",
+      "argvs": [
+        [
+          "/usr/bin/python3.10",
+          "-I",
+          "-B",
+          "/workspace/worktrees/accel-sim-iscas2027-dtc-sem1-values-174-v1/docs/dtc_l1/review_packs/DTC_SEM1_VALUES_V1/implementation_r1/bounded_cpu_build.py",
+          "configure"
+        ],
+        [
+          "/usr/bin/python3.10",
+          "-I",
+          "-B",
+          "/workspace/worktrees/accel-sim-iscas2027-dtc-sem1-values-174-v1/docs/dtc_l1/review_packs/DTC_SEM1_VALUES_V1/implementation_r1/bounded_cpu_build.py",
+          "build"
+        ]
+      ],
+      "controller_environment": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "maximum_configure_attempts": 1,
+      "maximum_build_attempts": 1,
+      "fixture_execution_allowed": false,
+      "simulation_allowed": false
+    },
+    {
+      "owner": "/root/rob1",
+      "role": "ROB1",
+      "registration": "ROB1_LDST_BUILD_REGISTRATION.json",
+      "registration_sha256": "c7fba9bb8f45c761682c6495b1af4897b6f3a2b6bcc3b8fd6cec34c6c2787994",
+      "source_worker_commit": "5ef4d3ff88483ae1c553314b19bc854b1e39ece7",
+      "core_commit": "b1077667f7a2bcc72260733f88f5798f167346d1",
+      "controller_sha256": "cee0d7dad737221d08b0ee9b8ff649aa5fdca5a2246a0761445cedf2386c0dae",
+      "argvs": [
+        [
+          "/usr/bin/python3.10",
+          "-I",
+          "-B",
+          "/workspace/worktrees/accel-sim-iscas2027-dtc-rob1-controls-174-v1/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/bounded_cpu_build.py",
+          "configure"
+        ],
+        [
+          "/usr/bin/python3.10",
+          "-I",
+          "-B",
+          "/workspace/worktrees/accel-sim-iscas2027-dtc-rob1-controls-174-v1/docs/dtc_l1/review_packs/DTC_ROB1_CONTROLS_V1/implementation_r1/bounded_cpu_build.py",
+          "build"
+        ]
+      ],
+      "controller_environment": {
+        "PATH": "/usr/bin:/bin",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "maximum_configure_attempts": 1,
+      "maximum_build_attempts": 1,
+      "fixture_execution_allowed": false,
+      "simulation_allowed": false
+    }
+  ],
+  "two_fresh_samples_min_separation_seconds": 10,
+  "pressure_scope": "BOTH host /proc/pressure and cgroup; EACH memory full avg10<=1 and IO full avg10<=25",
+  "host_available_and_cgroup_headroom_min_bytes": 34359738368,
+  "no_new_host_or_cgroup_oom": true,
+  "CPU_start_free_disk_min_bytes": 2818572288,
+  "CPU_runtime_free_floor_bytes": 2147483648,
+  "maximum_compiler_jobs_per_role": 1,
+  "output_and_tmp_guard_bytes_per_role": 536870912,
+  "single_file_hard_limit_bytes": 134217728,
+  "configure_timeout_seconds": 60,
+  "build_timeout_seconds": 1200,
+  "fresh_scope_identity_checks_required": true,
+  "first_preflight_failure_action": "Publish finite WAIT_RESOURCE receipt and return; do not poll or start anything. Parent must coordinate subsequent retry.",
+  "execution_on_pass": "Only exact registered configure then fresh matching-ABI library/fixture build; preserve every actual error, stop affected role, publish binary/library identity before any runtime release",
+  "new_full_sim_disk_minimum_unchanged_bytes": 10737418240,
+  "simulation_starts_authorized": 0,
+  "old_AG4_AG3_AA5_restarts": 0,
+  "background_dispatcher_created": false
+}
