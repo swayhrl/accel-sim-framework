@@ -57,13 +57,14 @@ p=pathlib.Path('/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json');s=p.stat(
 b=p.read_bytes();assert p.stat().st_mtime_ns==s.st_mtime_ns;r=json.loads(b)
 active=[dict(id=k,**v) for k,v in r['resource_leases'].items() if v.get('status') not in ['RELEASED','CANCELLED','EXPIRED','CLOSED']]
 m=r['mechanism_study_20261019_v1'];reservations=m.get('reservations',{})
-# These five integer buckets partition the24-start scientific budget. They
-# are not physical leases; only resource_leases and the controller own work.
-assert set(reservations)=={'contingency','local_diagnostics','new_input_controls','readonly','victim'}
-assert all(type(v) is int and v>=0 for v in reservations.values()) and sum(reservations.values())==24
+# Logical scientific budgets are recorded, never used as a hash-read lease.
+# V2amends that existing campaign to40cumulative starts; Target cannot mutate
+# its counts and must not retain the obsolete24-only parser assertion.
+assert isinstance(reservations,dict)
+assert all(type(v) is int and v>=0 for v in reservations.values())
 controller=m.get('controller',{}).get('state')
 safe=not active and controller in [None,'STOPPED']
-print(json.dumps(dict(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),registry_sha256=hashlib.sha256(b).hexdigest(),active_resource_lease_count=len(active),mechanism_logical_start_budget_buckets=reservations,mechanism_controller_state=controller,hash_read_safe=safe,source_or_registry_writes=0)))
+print(json.dumps(dict(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),registry_sha256=hashlib.sha256(b).hexdigest(),active_resource_lease_count=len(active),mechanism_logical_start_budget_buckets=reservations,mechanism_maximum_actual_starts=m.get('maximum_actual_starts'),mechanism_actual_starts=m.get('actual_starts'),mechanism_controller_state=controller,hash_read_safe=safe,source_or_registry_writes=0)))
 '''
 gates=[]
 def source_gate():

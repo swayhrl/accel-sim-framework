@@ -1,3 +1,7 @@
+# V2current state - path review complete; hash remains3/6BLOCKED
+
+The actual174-new->SSHFS->164route and174hostPSIattribution are now established; current original-route pressure is unsafe and no existing native164command entry is admitted in current access scope. RAW1-3identities unchanged; their SHA proofs reused without reading. Need the existing legal native164entry/IOpermit, or an actual original-route IO change, before pending3checks. V2science40cumulative budget/counts are E-owned and untouched. New model reads/restores/deletions0. See V2_NEXT_EXACT_ACTION.md and V2_ADOPTION_AND_NATIVE164_PATH_REVIEW.json.
+
 # Current: Target model verification BLOCKED, not complete
 
 2026-10-19T13:47:02.542426+00:00: third consecutive Goal turn confirms the same external IO blocker; some/fullavg10=28.60, unchanged checksum guard10. Only RAW1-3 have current complete SHA proof. RAW4+AWQ1-2 remain unverified candidates. Existing6files/versions/sizes are located; no absence or mismatch is inferred. Read worker has terminated; no watcher or second read stream exists. Resume the SAME Goal and only the pending3after safe IO and all unchanged gates; no completed model rehash, upload, native restore or source release.
