@@ -206,3 +206,19 @@ remote execution/monitor/retirement transport and its affected compatibility
 checks, then A publishes the exact named build. A file/Git receipt is never a
 cross-host lock or an automatically usable remote dispatcher. No password, mount,
 new credentials, native command or watcher is created by these controls.
+
+
+## User continuation: one named-build disk draw
+
+The user subsequently authorized a monitored start near48GiB while cleanup
+continues. `reserve_work` accepts optional `disk_authorization_id` and
+`build_identity`. The E-reviewed single-use record must bind the exact A
+source/entry/vendor/output and live host/boot, CPU/RAM, growth and expiry.
+It permits only that named A build to draw its frozen growth below48, capped
+at3.5GiB. Its floor is derived as48GiB minus that growth, not a new ordinary
+policy. An extra128MiB monitor/termination reserve must fit current space.
+The record is consumed atomically with one central lease; no competing heavy
+lease may start until release. The actual producer supervisor must enforce
+that exact floor and growth cap. Ordinary leases/apps, Share40GiB, RAM64GiB,
+6/20GiB output budgets and40 actual starts are unchanged. No authorization
+is created merely by installing this code.

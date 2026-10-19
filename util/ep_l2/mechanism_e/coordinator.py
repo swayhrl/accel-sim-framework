@@ -126,23 +126,35 @@ def pending_growth(data):
     return result
 
 
-def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None):
+def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
+                  disk_floor_bytes=48*GIB, monitor_reserve_bytes=0):
     item=ledger(data)
     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
             'positive integer CPU/RAM required')
     require(type(growth) is int and growth>0,'conservative positive output-growth reserve required')
     require(kind in ('build','test','simulation','screen'),'unknown resource class')
     if kind=='build':require(cpu<=2,'A build max -j2')
+    require((48*GIB-7*GIB//2)<=disk_floor_bytes<=48*GIB and type(monitor_reserve_bytes) is int
+            and monitor_reserve_bytes>=0,'bounded task disk floor/monitor reserve required')
+    require(disk_floor_bytes==48*GIB or kind=='build','slight-under48 exception only selected A build')
+    if disk_floor_bytes!=48*GIB:
+        require(growth<=7*GIB//2 and disk_floor_bytes==48*GIB-growth,
+                'task floor must derive from exact one-build growth, max3.5GiB; no arbitrary lower floor')
     policy_v2.global_gate(data,kind,cpu,memory)
     # Reuse the production global CPU/RAM/scan/disk guards and permanent lock.
-    Registry.admission(data,socket.gethostname(),cpu,memory,scan,
+    # Override only this reviewed transaction's policy view. Actual resources
+    # stay untouched; ordinary Registry.build_lease and global host policy stay48.
+    view=data
+    if disk_floor_bytes!=48*GIB:
+        view=json.loads(json.dumps(data));view['hosts'][socket.gethostname()]['min_disk_free_bytes']=disk_floor_bytes
+    Registry.admission(view,socket.gethostname(),cpu,memory,scan,
                        'simulation' if kind in ('simulation','screen') else 'build',resources)
     active=[r for r in data['runs'].values() if r['status'] in ACTIVE]
     leases=[r for r in data['resource_leases'].values() if r['status'] in ACTIVE]
     require(resources['available_memory_bytes']-memory-sum(r['memory_bytes'] for r in active+leases)>=64*GIB,
             '64GiB memory floor after existing and proposed reservations')
-    require(resources['disk_free_bytes']-pending_growth(data)-growth>=48*GIB,
-            '48GiB workspace floor plus existing/proposed output growth')
+    require(resources['disk_free_bytes']-pending_growth(data)-growth-monitor_reserve_bytes>=disk_floor_bytes,
+            '48GiB workspace floor or exact authorized task floor plus existing/proposed output growth and monitor reserve')
     if kind in ('simulation','screen'):
         ours=[r for r in active if r.get('experiment_id')==CAMPAIGN]
         target=item.get('target_simulators',2)
@@ -207,7 +219,8 @@ class Coordinator:
             # remote client is activated by accepting an environment report.
             return item['environment_reviews'][key]
 
-    def reserve_work(self, role, kind, cpu, memory, growth, output_directory, result_growth_bytes=None):
+    def reserve_work(self, role, kind, cpu, memory, growth, output_directory, result_growth_bytes=None,
+                     disk_authorization_id=None,build_identity=None):
         require(role in ('A','B','C','E') and kind in ('build','test'),'only bounded build/test leases here')
         require(kind!='build' or role=='A','A is sole formal build owner')
         directory=Path(output_directory).resolve()
@@ -217,7 +230,26 @@ class Coordinator:
         with self.locked() as (data,item):
             result_growth=(growth if kind=='test' else 0) if result_growth_bytes is None else result_growth_bytes
             require(kind!='test' or result_growth==growth,'all native test output must count toward new results')
-            resource_gate(data,kind,cpu,memory,growth,local_resources(),output_usage(),result_growth_bytes=result_growth)
+            authorization=None;floor=48*GIB;monitor=0
+            if disk_authorization_id is not None:
+                require(role=='A' and kind=='build','disk exception only named A build')
+                authorization=item['disk_authorizations'][disk_authorization_id]
+                require(authorization['status']=='READY' and time.time()<authorization['expires_unix'],
+                        'disk authorization expired/used/not ready')
+                require(authorization['campaign_id']==CAMPAIGN and authorization['host']==socket.gethostname()
+                        and authorization['boot_id']==item['boot_id'],'wrong disk authorization campaign/host/boot')
+                require(authorization['user_instruction'] and authorization['source_identity']==build_identity,
+                        'wrong build source/entry identity for disk authorization')
+                require(authorization['api_sha256']==digest(__file__),'disk authorization uses stale E API')
+                require(authorization['output_directory']==str(directory) and authorization['cpu_units']==cpu
+                        and authorization['memory_bytes']==memory and authorization['growth_bytes']==growth
+                        and authorization['result_growth_bytes']==result_growth,'wrong disk authorization paths/resources')
+                require(not any(r['status'] in ACTIVE for group in ('runs','resource_leases') for r in data[group].values()),
+                        'task-scoped build exception requires no competing heavy lease')
+                floor=authorization['disk_floor_bytes'];monitor=authorization['monitor_reserve_bytes']
+                require(monitor>=128*2**20,'explicit128MiB minimum monitor/stop overshoot reserve')
+            resource_gate(data,kind,cpu,memory,growth,local_resources(),output_usage(),
+                          result_growth_bytes=result_growth,disk_floor_bytes=floor,monitor_reserve_bytes=monitor)
             key=uuid.uuid4().hex
             row={'host':socket.gethostname(),'owner':'mechanism_'+role,'role':role,'kind':'MECHANISM_'+kind.upper(),
                  'execution_host_identity':{'hostname':socket.gethostname(),
@@ -227,6 +259,10 @@ class Coordinator:
                  'experiment_id':CAMPAIGN,'cpu_units':cpu,'memory_bytes':memory,'disk_growth_bytes':growth,
                  'result_growth_bytes':result_growth,'status':'RESERVED','created_at':time.time(),
                  'owner_process':process_identity(os.getpid()),'output_directory':str(directory)}
+            if authorization is not None:
+                row.update(disk_authorization_id=disk_authorization_id,disk_floor_bytes=floor,
+                           monitor_reserve_bytes=monitor,build_identity=build_identity)
+                authorization.update(status='CONSUMED',lease_id=key,consumed_unix=time.time())
             data['resource_leases'][key]=row
             return {'lease_id':key,**row}
 

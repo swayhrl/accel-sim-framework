@@ -68,6 +68,8 @@ def charged_bucket(attempt, reservations):
 def global_gate(data, kind, cpu, memory):
     rows = [r for group in ('runs','resource_leases') for r in data[group].values()
             if r['status'] in ('RESERVED','RUNNING')]
+    check(not any(r.get('disk_authorization_id') for r in rows),
+          'exclusive task-scoped disk build active; no competing heavy lease')
     if kind in ('simulation','screen'):
         check(sum(r['status'] in ('RESERVED','RUNNING') for r in data['runs'].values()) < 4,
               'global shared simulator quota full')
