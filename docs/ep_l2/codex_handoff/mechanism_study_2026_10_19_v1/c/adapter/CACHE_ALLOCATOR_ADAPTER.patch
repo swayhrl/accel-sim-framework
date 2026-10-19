@@ -1,5 +1,5 @@
 diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
-index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a61579612305dc0ba8 100644
+index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e2e14d57b27b9b33ce7ad4118e54caaad4eeb86f 100644
 --- a/src/gpgpu-sim/gpu-cache.h
 +++ b/src/gpgpu-sim/gpu-cache.h
 @@ -567,6 +567,7 @@
@@ -45,7 +45,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
  #if (tr1_hash_map_ismap == 0)
          ,
          m_data(2 * num_entries)
-@@ -1237,6 +1243,28 @@
+@@ -1237,6 +1243,30 @@
                 : m_descriptor_pool.size() - m_free_descriptor_ids.size();
    }
    unsigned descriptor_pool_capacity() const { return m_descriptor_pool.size(); }
@@ -71,10 +71,12 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
 +  void release_ro_line(new_addr_type line);
 +  void ro_line_issue(new_addr_type line, const mem_access_sector_mask_t &mask);
 +  void ro_line_ready(new_addr_type line, const mem_access_sector_mask_t &mask);
++  mem_fetch *ro_descriptor_request(const ro_descriptor_handle &) const;
++  mem_access_sector_mask_t ro_descriptor_sectors(const ro_descriptor_handle &) const;
    void sector_masks(new_addr_type block_addr, mem_access_sector_mask_t &pending,
                      mem_access_sector_mask_t &issued,
                      mem_access_sector_mask_t &ready) const;
-@@ -1271,13 +1299,17 @@
+@@ -1271,13 +1301,17 @@
    const unsigned m_descriptor_pool_size;
    const unsigned m_descriptor_per_line_cap;
    const bool m_ideal_meta;
@@ -93,7 +95,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
        m_sectors.reset();
      }
    };
-@@ -1286,10 +1318,12 @@
+@@ -1286,10 +1320,12 @@
      std::list<mem_fetch *> m_list;
      std::list<unsigned> m_descriptor_ids;
      bool m_has_atomic;
@@ -107,7 +109,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
        m_pending_sectors.reset();
        m_issued_sectors.reset();
        m_ready_sectors.reset();
-@@ -2129,6 +2163,7 @@
+@@ -2129,6 +2165,7 @@
    // additional admission input.
    mshr_table::ep_l2_block_reason ep_l2_mshr_block_reason;
    bool ep_l2_needs_lower_read;
@@ -115,7 +117,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
  };
  
  // C5/C6 metadata-only payload model. mem_fetch remains the functional data
-@@ -2138,7 +2173,7 @@
+@@ -2138,7 +2175,7 @@
    static const unsigned k_physical_slots = 1152;
    static const unsigned k_resident_slots = 1024;
    static const unsigned k_bypass_slots = 128;
@@ -124,7 +126,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
    // A boolean cannot distinguish an ordinary target-payload retry from a
    // physical same-bank denial.  C6c needs that distinction both for correct
    // same-cycle admission and for meaningful B0-Banked telemetry.
-@@ -2151,7 +2186,7 @@
+@@ -2151,7 +2188,7 @@
      FILL_WRITE,
      WB_READOUT,
      BYPASS_FILL,
@@ -133,7 +135,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
    };
    enum state {
      FREE,
-@@ -2159,7 +2194,7 @@
+@@ -2159,7 +2196,7 @@
      RESIDENT_VALID,
      RESIDENT_DIRTY,
      BYPASS_FILL_PENDING,
@@ -142,7 +144,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
    };
    // This is the sole physical-payload identity.  mem_fetch already carries
    // the same pair across the lower request/response path.
-@@ -2221,6 +2256,7 @@
+@@ -2221,6 +2258,7 @@
    }
    bool enabled() const { return m_mode != 0; }
    bool banked() const { return m_mode == 2; }
@@ -150,7 +152,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
    unsigned resident_used() const { return used(RESIDENT); }
    unsigned bypass_used() const { return used(BYPASS); }
    unsigned resident_free() const { return k_resident_slots - resident_used(); }
-@@ -2363,12 +2399,17 @@
+@@ -2363,12 +2401,17 @@
      return m_slots.size() - (k_physical_slots + m_wbuf);
    }
    unsigned wb_used() const { return used(WB); }
@@ -169,7 +171,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
      for (unsigned id = 0; id < m_slots.size(); ++id) {
        if (m_slots[id].occupied() || (bank != (unsigned)-1 && id % 4 != bank)) continue;
        if (m_ft_mode == 1 && ((r == WB && id < wb_begin()) ||
-@@ -2612,6 +2653,8 @@
+@@ -2612,6 +2655,8 @@
              (s.status != RESIDENT_FILL_PENDING && s.status != RESIDENT_VALID &&
               s.status != RESIDENT_DIRTY)) return false;
          if (!owners.insert(s.owner).second) return false;
@@ -178,7 +180,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
        } else if (s.allocation_role == WB) {
          if (!m_ft_mode || (s.status != WB_RESERVED && s.status != WB_STAGED)) return false;
        } else {
-@@ -2666,6 +2709,8 @@
+@@ -2666,6 +2711,8 @@
        case WB_READOUT: ++m_bank_wb_readout; break;
        case BYPASS_FILL: ++m_bank_bypass_fill; break;
        case BYPASS_READ: ++m_bank_bypass_read; break;
@@ -187,7 +189,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
      }
    }
    struct pending_op {
-@@ -2700,7 +2745,10 @@
+@@ -2700,7 +2747,10 @@
  
  /// Models second level shared cache with global write-back
  /// and write-allocate policies
@@ -198,7 +200,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
   public:
    l2_cache(const char *name, cache_config &config, int core_id, int type_id,
             mem_fetch_interface *memport, mem_fetch_allocator *mfcreator,
-@@ -2718,6 +2766,7 @@
+@@ -2718,6 +2768,7 @@
          m_ep_l2_last_payload_request_result(ep_l2_payload_store::GRANTED),
          m_ep_l2_tag_payload(ep_l2_payload_store::k_resident_slots) {
      validate_ep_l2_mode_config();
@@ -206,7 +208,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
      m_ep_l2_payload.set_rg1_enabled(config.m_ep_l2_rg1);
      m_ft_last_wb_versions.fill(0);
      if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);
-@@ -2820,12 +2869,23 @@
+@@ -2820,12 +2871,23 @@
        if ((!m_config.m_ep_l2_ft_mode && handle.payload_id != i) ||
            !m_ep_l2_payload.handle_live(handle) ||
            m_ep_l2_payload.resident(handle.payload_id).allocation_role !=
@@ -231,7 +233,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
    bool ft_enabled() const { return m_config.m_ep_l2_ft_mode != 0; }
    void commit_next_access();
    mem_fetch *peek_next_access() const;
-@@ -2879,9 +2939,9 @@
+@@ -2879,9 +2941,9 @@
      return n;
    }
  
@@ -243,7 +245,7 @@ index fb29df1043ede30acfe63bc9b9e61725bc6ec0c3..e1a014c75d68b8e1691fa5a615796123
    bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
    bool lower_mq2_safe(mem_fetch *head, mem_fetch *next) override;
    void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
-@@ -3002,7 +3062,11 @@
+@@ -3002,7 +3064,11 @@
    std::map<mem_fetch *,ft_wb_record> m_ft_wb;
    std::map<mem_fetch *,ep_l2_payload_store::payload_handle> m_ft_read_refs;
    std::array<unsigned long long,4> m_ft_last_wb_versions;

@@ -16,6 +16,7 @@ def prepare(core,out):
  oldh=git(OLD,h);oldft=git(OLD,ft)
  # Same allocator, same line table, persistent generations. No new pool.
  decl=oldh[oldh.index('  // Lane 3\'s completion objects'):oldh.index('  void sector_masks(',oldh.index('  // Lane 3\'s completion objects'))]
+ decl+='  mem_fetch *ro_descriptor_request(const ro_descriptor_handle &) const;\n  mem_access_sector_mask_t ro_descriptor_sectors(const ro_descriptor_handle &) const;\n'
  replace(h,'  void sector_masks(new_addr_type block_addr,',decl+'  void sector_masks(new_addr_type block_addr,')
  replace(h,'        m_ideal_meta(ideal_meta)','        m_ideal_meta(ideal_meta), m_ro_descriptor_count(0)')
  replace(h,'  const bool m_ideal_meta;','  const bool m_ideal_meta;\n  unsigned m_ro_descriptor_count;')

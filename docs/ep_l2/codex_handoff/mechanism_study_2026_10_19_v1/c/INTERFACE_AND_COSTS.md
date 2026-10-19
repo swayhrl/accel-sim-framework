@@ -16,7 +16,7 @@ T uses the historical conservative waiter-aware policy: only pending certified t
 |Requests|Native D512 free-list only; every normal and RO descriptor shares it and holds ownership until accepted response; capacity test mixes384RO+128native|
 |Line records|Native128 table in00/10; skipped on a new certified transaction in01/11; attached Tag/Payload allows merging, T-only may find detached ownership through native line table|
 |Per-address cap|Same32 across normal and RO descriptors; bounded scan of the existing shared descriptors, no new address-indexed table|
-|Completion metadata|At most one control entry per physical landing; line/epoch, Tag binding+generation, required/issued/ready4-bit masks, waiter descriptor identities, prepared-cycle metadata. Software vectors mirror shared descriptors; they are not an independently admitted requester pool. Total live waiters remains bounded by D512|
+|Completion metadata|At most one control entry per physical landing; line/epoch, Tag binding+generation, required/issued/ready4-bit masks, waiter descriptor identities, prepared-cycle metadata. Waiter chains store descriptor handles only; request pointers and sector masks are retrieved directly from the original sharedD512 records. There is no second requester/mask record array or independent admission pool. Total live waiters remains bounded by D512|
 |Additional shared descriptor fields|RO-external flag, owner line and generation; generation is retained across native reuse. Software types are bool, new_addr_type and unsigned long long. Exact ABI sizeof and physical implementation/PPA are UNKNOWN until build/design; no old R3 area claim|
 |Tag safety|One uint64 generation per Tag plus existing payload handle. Old return writes only its checked payload generation; detached return never invokes Tag-ready callback|
 |RO lookup|A timed frontend hook launches one query per slice per physical GPUcycle; ready at query_issue+1. One cached frontend ticket only. Query covers the bounded shared descriptor/attached Tag lookup; parallel comparison/control cost is explicit, not a free extra address map. Preview is immutable; source observer scans do not grant data or change arbitration|
@@ -49,3 +49,18 @@ free-list count against combined occupancy, all RO live/sector/prepared state0,
 and the unchanged partition-level request-tracker/ICNT/DRAM queues drained. Do
 not mistake a native-only subcounter for the combined total or waive the global
 terminal checks. Native bank operations include the newly labelled RO clients.
+
+Literal source encoding adds RO as the fifth payload-role label and two states
+beyond the eight old states: uncompacted role/state labels therefore need at
+least3/4 bits respectively. This is a control-encoding requirement, not a new
+payload data array or a synthesized area number. Shared descriptors additionally
+hold the RO-external marker, owner line and generation; completion chains carry
+only descriptor identities. Request pointer/sector fields live exclusively in
+the original D512 records. C explicitly removed duplicate waiter pointer/mask
+storage. Full PPA and concrete ABI sizeof remain unmeasured.
+
+The whole-epoch parser follows runtime Framework197741b's trace_parser.cc:
+mem_width is only the memory-presence flag; actual width is decoded from opcode,
+as the native parser does because NVBit can report a wrong width. Address
+compression/mask and complete grid/warp coverage are checked; the parser does
+not rewrite a trace or its opcodes.

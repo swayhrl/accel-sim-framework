@@ -1,6 +1,6 @@
 # C source checkpoint: separate readonly Tag and request tracking
 
-Independent campaign EPL2_MECHANISM_STUDY_20261019_V1, original174, branchhrl/ep-l2-ms20261019-c-ro-v1. Core candidatecf255e0f375bf21c2bb0b8b582027b84ba598724 descends from84359d4; Framework control base d9263fa2 is not runtime source. A interface980072bb consumed. Historical candidates and old goals untouched.
+Independent campaign EPL2_MECHANISM_STUDY_20261019_V1, original174, branchhrl/ep-l2-ms20261019-c-ro-v1. Core candidatee841782282969fdd5d4c1f6130e528fb9931c009 descends from84359d4; Framework control base d9263fa2 is not runtime source. A interface980072bb consumed. Historical candidates and old goals untouched.
 
 Restored and adapted RO transaction/oracle/store-port/runtime modules, a native shared-allocator include, separate T/M four-mode preparation, bounded paid lookup/counters, range-aware host protection, and production-cache/partition regressions. T-only uses native128 line records; M-only keeps pending Tag; all modes share nativeD512 and paid1168 payloads. Query starts at real timed frontend, never during immutable preview. Old A3 response identity and A2 role stability retained. New native witnesses check old A cannot validate new B Tag, all four sectors and final response retain landing, line128 factor separation, mixed512 exhaustion and actual duplicate lower traffic. Code is not activated by deleting legacy guards.
 
