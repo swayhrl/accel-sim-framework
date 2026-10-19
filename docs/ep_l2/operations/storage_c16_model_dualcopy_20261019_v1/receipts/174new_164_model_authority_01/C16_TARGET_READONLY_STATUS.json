@@ -1,32 +1,65 @@
 {
-  "utc": "2026-10-19T13:37:45.987694+00:00",
-  "status": "PARTIAL_CURRENT_MATCH_IO_HOLD_COMPLETE_SIX_SET_NOT_YET_CERTIFIED",
+  "utc": "2026-10-19T15:22:20.993593+00:00",
+  "status": "BLOCKED_IO_PATH_THREE_OF_SIX_CURRENT_SHA_PASS",
   "current_full_SHA_matches": 3,
   "pending_current_SHA": 3,
   "all6candidate_sizes_match": true,
   "source_owner_clearance": false,
   "files_transferred_or_native_restored_or_deleted": 0,
   "source_df_reclaimed_bytes": 0,
-  "original_TLS_B0010": "UNCHANGED_BLOCKED",
+  "original_TLS_B0010": "CONTINUING_ON_ORIGINAL_TARGET_BRANCH_10263bcc_NO_MODEL_IO_OVERLAP",
   "prior_global_review": "UNCHANGED_CLOSED",
   "next_operation": "Pending-only3 at<=8MiB/s after unchanged IO/lease/RAM/Share guards pass; reuse3complete proofs",
-  "IO_hold_reobserved_on_consecutive_goal_turns": 3,
+  "IO_hold_reobserved_on_consecutive_goal_turns": "ONE_BOUNDED_CHECK_PERIOD_UNDER_ONE_SHOT_NO_RETRY_CYCLES",
   "read_worker_started_this_turn": false,
   "latest_IO_observation": {
-    "utc": "2026-10-19T13:45:35.187533+00:00",
-    "io_pressure": "some avg10=28.60 avg60=28.55 avg300=28.43 total=171065402929\nfull avg10=28.60 avg60=28.55 avg300=28.42 total=150707826210\n",
-    "io_some_avg10": 28.6,
-    "io_full_avg10": 28.6,
-    "cgroup_io_pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=10820245115\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=10482582164\n",
-    "share_available_bytes": 44367118336,
-    "MemAvailable_bytes": 340139266048,
-    "checksum_IO_gate_pass": false,
-    "payload_read_bytes": 0
+    "schema": "ONE_SHOT_C16_ACTUAL_PATH_BOUNDED_GATE_V1",
+    "samples": [
+      {
+        "utc": "2026-10-19T15:21:50.962993+00:00",
+        "pressure": "some avg10=27.09 avg60=26.43 avg300=26.55 total=172556178050\nfull avg10=27.09 avg60=26.42 avg300=26.53 total=152197195445\n",
+        "some": 27.09,
+        "full": 27.09
+      },
+      {
+        "utc": "2026-10-19T15:22:20.993593+00:00",
+        "pressure": "some avg10=30.26 avg60=27.64 avg300=26.83 total=172565110713\nfull avg10=30.26 avg60=27.63 avg300=26.81 total=152206127842\n",
+        "some": 30.26,
+        "full": 30.26
+      }
+    ],
+    "original_io_guard": 10,
+    "io_safe": false,
+    "io_attribution": "174_HOST_GLOBAL_NOT_164_NATIVE",
+    "Share_available_bytes": 44361633792,
+    "MemAvailable_bytes": 339758743552,
+    "reused_three": [
+      {
+        "path": "/root/share/mnt164/huangrulin/c16_ai_workload/assets/models/qwen2.5-7b-instruct-raw/a09a35458c702b33eeacc393d103063234e8bc28/model-00002-of-00004.safetensors",
+        "sha256_reused": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+        "metadata_unchanged": true
+      },
+      {
+        "path": "/root/share/mnt164/huangrulin/c16_ai_workload/assets/models/qwen2.5-7b-instruct-raw/a09a35458c702b33eeacc393d103063234e8bc28/model-00003-of-00004.safetensors",
+        "sha256_reused": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+        "metadata_unchanged": true
+      },
+      {
+        "path": "/root/share/mnt164/huangrulin/c16_ai_workload/assets/models/qwen2.5-7b-instruct-raw/a09a35458c702b33eeacc393d103063234e8bc28/model-00001-of-00004.safetensors",
+        "sha256_reused": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+        "metadata_unchanged": true
+      }
+    ],
+    "new_model_bytes_read": 0,
+    "native164_command_entry": "NONE_ALREADY_AUTHORIZED_OR_CONFIGURED",
+    "model_paths_stat_only": true
   },
   "large_read_worker_state": "TERMINAL_NO_WATCHER",
-  "goal_execution_status": "BLOCKED_NO_ADMITTED_SAFE_READ_EXECUTION_PATH",
+  "goal_execution_status": "BLOCKED_IO_PATH_NO_ADMITTED_NATIVE164_COMMAND_ENTRY",
   "goal_complete": false,
   "V2_coordination_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
   "V2_execution_path_review": "COMPLETE; ORIGINAL_ROUTE_UNSAFE_AND_NO_NATIVE164_EXEC_ENTRY_ADMITTED",
-  "retained3_identity_metadata_rechecked_without_payload_reads": true
+  "retained3_identity_metadata_rechecked_without_payload_reads": true,
+  "coordination_commit": "3a7ea422d3f4301688bd3cb7bcf4431b97f08e90",
+  "outbound_only_future_proposal": "ONE_SHOT_C16_OUTBOUND_ONLY_FUTURE_PROPOSAL.json"
 }
