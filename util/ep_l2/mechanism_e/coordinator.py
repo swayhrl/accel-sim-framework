@@ -127,7 +127,7 @@ def pending_growth(data):
 
 
 def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
-                  disk_floor_bytes=48*GIB, monitor_reserve_bytes=0):
+                  disk_floor_bytes=48*GIB, monitor_reserve_bytes=0,disk_draw_bytes=None):
     item=ledger(data)
     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
             'positive integer CPU/RAM required')
@@ -138,7 +138,8 @@ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=F
             and monitor_reserve_bytes>=0,'bounded task disk floor/monitor reserve required')
     require(disk_floor_bytes==48*GIB or kind=='build','slight-under48 exception only selected A build')
     if disk_floor_bytes!=48*GIB:
-        require(growth<=7*GIB//2 and disk_floor_bytes==48*GIB-growth,
+        draw=growth if disk_draw_bytes is None else disk_draw_bytes
+        require(type(draw) is int and growth<=draw<=7*GIB//2 and disk_floor_bytes==48*GIB-draw,
                 'task floor must derive from exact one-build growth, max3.5GiB; no arbitrary lower floor')
     policy_v2.global_gate(data,kind,cpu,memory)
     # Reuse the production global CPU/RAM/scan/disk guards and permanent lock.
@@ -230,7 +231,7 @@ class Coordinator:
         with self.locked() as (data,item):
             result_growth=(growth if kind=='test' else 0) if result_growth_bytes is None else result_growth_bytes
             require(kind!='test' or result_growth==growth,'all native test output must count toward new results')
-            authorization=None;floor=48*GIB;monitor=0
+            authorization=None;floor=48*GIB;monitor=0;draw=None
             if disk_authorization_id is not None:
                 require(role=='A' and kind=='build','disk exception only named A build')
                 authorization=item['disk_authorizations'][disk_authorization_id]
@@ -248,8 +249,28 @@ class Coordinator:
                         'task-scoped build exception requires no competing heavy lease')
                 floor=authorization['disk_floor_bytes'];monitor=authorization['monitor_reserve_bytes']
                 require(monitor>=128*2**20,'explicit128MiB minimum monitor/stop overshoot reserve')
+                parent_id=authorization.get('parent_authorization_id')
+                if parent_id:
+                    parent=item['disk_authorizations'][parent_id]
+                    require(parent['status']=='CONSUMED' and
+                            data['resource_leases'][parent['lease_id']]['status']=='RELEASED',
+                            'repair requires retired parent lease; never replay/overlap')
+                    require(parent['output_directory']==authorization['output_directory'] and
+                            parent['result_directory']!=authorization['result_directory'],
+                            'repair must retain same build and preserve old result attempt')
+                    draw=parent.get('disk_draw_bytes',parent['growth_bytes'])
+                    require(authorization['disk_draw_bytes']==draw and floor==parent['disk_floor_bytes'],
+                            'repair cannot enlarge original cumulative physical draw')
+                    require(authorization['expires_unix']<=parent['expires_unix'] and
+                            authorization['repair_scope']=='TEST_OR_ENTRY_ONLY_PRODUCTION_UNCHANGED',
+                            'repair cannot extend parent expiry or change production scope')
+                    require(bool(authorization['inherited_artifacts']),'repair inherited identity proof required')
+                    for asset in authorization['inherited_artifacts']:
+                        require(digest(asset['path'])==asset['sha256'],'retained repair artifact changed')
+                else:require('disk_draw_bytes' not in authorization,'initial draw must equal frozen growth')
             resource_gate(data,kind,cpu,memory,growth,local_resources(),output_usage(),
-                          result_growth_bytes=result_growth,disk_floor_bytes=floor,monitor_reserve_bytes=monitor)
+                          result_growth_bytes=result_growth,disk_floor_bytes=floor,monitor_reserve_bytes=monitor,
+                          disk_draw_bytes=draw)
             key=uuid.uuid4().hex
             row={'host':socket.gethostname(),'owner':'mechanism_'+role,'role':role,'kind':'MECHANISM_'+kind.upper(),
                  'execution_host_identity':{'hostname':socket.gethostname(),
@@ -261,7 +282,8 @@ class Coordinator:
                  'owner_process':process_identity(os.getpid()),'output_directory':str(directory)}
             if authorization is not None:
                 row.update(disk_authorization_id=disk_authorization_id,disk_floor_bytes=floor,
-                           monitor_reserve_bytes=monitor,build_identity=build_identity)
+                           monitor_reserve_bytes=monitor,build_identity=build_identity,
+                           disk_draw_bytes=growth if draw is None else draw)
                 authorization.update(status='CONSUMED',lease_id=key,consumed_unix=time.time())
             data['resource_leases'][key]=row
             return {'lease_id':key,**row}

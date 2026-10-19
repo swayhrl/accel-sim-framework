@@ -86,5 +86,38 @@ class NamedBuildDiskTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'only selected A build'):
             c.resource_gate(self.data,'simulation',1,c.GIB,c.GIB,self.live,self.usage,disk_floor_bytes=46*c.GIB)
 
+    def repair(self):
+        record=self.envelope();parent=copy.deepcopy(record)
+        parent.update(status='CONSUMED',growth_bytes=3*c.GIB,result_directory=str(self.root/'old_result'),
+                      disk_floor_bytes=45*c.GIB,lease_id='prior')
+        self.ledger['disk_authorizations']['parent']=parent
+        record.update(parent_authorization_id='parent',disk_draw_bytes=3*c.GIB,disk_floor_bytes=45*c.GIB,
+                      repair_scope='TEST_OR_ENTRY_ONLY_PRODUCTION_UNCHANGED',
+                      result_directory=str(self.root/'new_result'),
+                      inherited_artifacts=[{'path':str(self.bin),'sha256':c.digest(self.bin)}])
+        self.data['resource_leases']['prior']={'status':'RELEASED','host':c.socket.gethostname()}
+        self.live['disk_free_bytes']=47*c.GIB;self.save();return record,parent
+
+    def test_repair_reserves_only_new_growth_with_original_draw(self):
+        self.repair();row=self.reserve()
+        self.assertEqual(row['disk_growth_bytes'],c.GIB);self.assertEqual(row['disk_draw_bytes'],3*c.GIB)
+        self.assertEqual(self.read()['resource_leases']['prior']['status'],'RELEASED')
+
+    def test_repair_cannot_expand_original_draw(self):
+        record,parent=self.repair();record['disk_draw_bytes']+=1;self.save()
+        with self.assertRaisesRegex(ValueError,'enlarge original'):self.reserve()
+
+    def test_repair_requires_retired_parent(self):
+        self.repair();self.data['resource_leases']['prior'].update(status='RESERVED',cpu_units=2,memory_bytes=c.GIB);self.save()
+        with self.assertRaisesRegex(ValueError,'competing|retired parent'):self.reserve()
+
+    def test_repair_preserves_inherited_binary_identity(self):
+        self.repair();self.bin.write_text('retained artifact modified')
+        with self.assertRaisesRegex(ValueError,'retained repair artifact changed'):self.reserve()
+
+    def test_repair_cannot_extend_original_expiry(self):
+        record,parent=self.repair();record['expires_unix']=parent['expires_unix']+1;self.save()
+        with self.assertRaisesRegex(ValueError,'extend parent expiry'):self.reserve()
+
 
 if __name__=='__main__':unittest.main()
