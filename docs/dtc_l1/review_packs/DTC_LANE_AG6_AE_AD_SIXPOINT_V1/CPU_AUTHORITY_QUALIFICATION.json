@@ -1,0 +1,1716 @@
+{
+  "status": "PASS_CPU_AUTHORITY_RACE_REPAIR",
+  "raw": "/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/raw/cpu-qualification/authority-1792417862456389042",
+  "cases": [
+    {
+      "case": "normal_fork_exec_exit",
+      "expected_success": true,
+      "expected_reason": null,
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:03.494780+00:00",
+        "status": "PASS_GUARDED_NATURAL_EXIT0",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891490,
+        "returncode": 0,
+        "forced_reason": null,
+        "exception": null,
+        "identity_pass": true,
+        "owned_process_exits": {
+          "891493": 0,
+          "891495": 0,
+          "891494": 0,
+          "891497": 0,
+          "891496": 0,
+          "891490": 0
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891493,
+            "start_ticks": 916983426,
+            "returncode": 0
+          },
+          {
+            "pid": 891495,
+            "start_ticks": 916983440,
+            "returncode": 0
+          },
+          {
+            "pid": 891494,
+            "start_ticks": 916983428,
+            "returncode": 0
+          },
+          {
+            "pid": 891497,
+            "start_ticks": 916983467,
+            "returncode": 0
+          },
+          {
+            "pid": 891496,
+            "start_ticks": 916983456,
+            "returncode": 0
+          },
+          {
+            "pid": 891490,
+            "start_ticks": 916983402,
+            "returncode": 0
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891493,
+              "start_ticks": 916983426,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891490,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891495,
+              "start_ticks": 916983440,
+              "ppid": 891494,
+              "state": "t",
+              "tgid": 891495,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891494,
+              "start_ticks": 916983428,
+              "ppid": 891490,
+              "state": "t",
+              "tgid": 891494,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891497,
+              "start_ticks": 916983467,
+              "ppid": 891496,
+              "state": "t",
+              "tgid": 891497,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891496,
+              "start_ticks": 916983456,
+              "ppid": 891490,
+              "state": "t",
+              "tgid": 891496,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891490,
+              "start_ticks": 916983402,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891490,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 5
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 166,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.8099368587136269
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "natural_parent_exit_live_child",
+      "expected_success": true,
+      "expected_reason": null,
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:04.222995+00:00",
+        "status": "PASS_GUARDED_NATURAL_EXIT0",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891498,
+        "returncode": 0,
+        "forced_reason": null,
+        "exception": null,
+        "identity_pass": true,
+        "owned_process_exits": {
+          "891498": 0,
+          "891501": 0
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891498,
+            "start_ticks": 916983484,
+            "returncode": 0
+          },
+          {
+            "pid": 891501,
+            "start_ticks": 916983504,
+            "returncode": 0
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891498,
+              "start_ticks": 916983484,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891498,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891501,
+              "start_ticks": 916983504,
+              "ppid": 891498,
+              "state": "t",
+              "tgid": 891501,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 1
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 30,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.7176469396799803
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "child_first_stop_after_parent_reaped",
+      "expected_success": true,
+      "expected_reason": null,
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:04.997811+00:00",
+        "status": "PASS_GUARDED_NATURAL_EXIT0",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891502,
+        "returncode": 0,
+        "forced_reason": null,
+        "exception": null,
+        "identity_pass": true,
+        "owned_process_exits": {
+          "891502": 0,
+          "891507": 0
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891502,
+            "start_ticks": 916983557,
+            "returncode": 0
+          },
+          {
+            "pid": 891507,
+            "start_ticks": 916983580,
+            "returncode": 0
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891502,
+              "start_ticks": 916983557,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891502,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891507,
+              "start_ticks": 916983580,
+              "ppid": 891502,
+              "state": "t",
+              "tgid": 891507,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 1
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 30,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.7638488933444023
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "long_periodic_repeated_readers",
+      "expected_success": true,
+      "expected_reason": null,
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:36.990628+00:00",
+        "status": "PASS_GUARDED_NATURAL_EXIT0",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891508,
+        "returncode": 0,
+        "forced_reason": null,
+        "exception": null,
+        "identity_pass": true,
+        "owned_process_exits": {
+          "891511": 0,
+          "891513": 0,
+          "891512": 0,
+          "891515": 0,
+          "891514": 0,
+          "891517": 0,
+          "891516": 0,
+          "891519": 0,
+          "891518": 0,
+          "891640": 0,
+          "891619": 0,
+          "891642": 0,
+          "891641": 0,
+          "891644": 0,
+          "891643": 0,
+          "891646": 0,
+          "891645": 0,
+          "891648": 0,
+          "891647": 0,
+          "891651": 0,
+          "891650": 0,
+          "891653": 0,
+          "891652": 0,
+          "891655": 0,
+          "891654": 0,
+          "891657": 0,
+          "891656": 0,
+          "891659": 0,
+          "891658": 0,
+          "891661": 0,
+          "891660": 0,
+          "891672": 0,
+          "891671": 0,
+          "891677": 0,
+          "891676": 0,
+          "891679": 0,
+          "891678": 0,
+          "891835": 0,
+          "891821": 0,
+          "891837": 0,
+          "891836": 0,
+          "891853": 0,
+          "891852": 0,
+          "891855": 0,
+          "891854": 0,
+          "891857": 0,
+          "891856": 0,
+          "891859": 0,
+          "891858": 0,
+          "891872": 0,
+          "891871": 0,
+          "891874": 0,
+          "891873": 0,
+          "891891": 0,
+          "891890": 0,
+          "891903": 0,
+          "891902": 0,
+          "891508": 0
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891511,
+            "start_ticks": 916983656,
+            "returncode": 0
+          },
+          {
+            "pid": 891513,
+            "start_ticks": 916983671,
+            "returncode": 0
+          },
+          {
+            "pid": 891512,
+            "start_ticks": 916983658,
+            "returncode": 0
+          },
+          {
+            "pid": 891515,
+            "start_ticks": 916983785,
+            "returncode": 0
+          },
+          {
+            "pid": 891514,
+            "start_ticks": 916983772,
+            "returncode": 0
+          },
+          {
+            "pid": 891517,
+            "start_ticks": 916983898,
+            "returncode": 0
+          },
+          {
+            "pid": 891516,
+            "start_ticks": 916983886,
+            "returncode": 0
+          },
+          {
+            "pid": 891519,
+            "start_ticks": 916984011,
+            "returncode": 0
+          },
+          {
+            "pid": 891518,
+            "start_ticks": 916983999,
+            "returncode": 0
+          },
+          {
+            "pid": 891640,
+            "start_ticks": 916984124,
+            "returncode": 0
+          },
+          {
+            "pid": 891619,
+            "start_ticks": 916984112,
+            "returncode": 0
+          },
+          {
+            "pid": 891642,
+            "start_ticks": 916984237,
+            "returncode": 0
+          },
+          {
+            "pid": 891641,
+            "start_ticks": 916984225,
+            "returncode": 0
+          },
+          {
+            "pid": 891644,
+            "start_ticks": 916984351,
+            "returncode": 0
+          },
+          {
+            "pid": 891643,
+            "start_ticks": 916984338,
+            "returncode": 0
+          },
+          {
+            "pid": 891646,
+            "start_ticks": 916984465,
+            "returncode": 0
+          },
+          {
+            "pid": 891645,
+            "start_ticks": 916984453,
+            "returncode": 0
+          },
+          {
+            "pid": 891648,
+            "start_ticks": 916984578,
+            "returncode": 0
+          },
+          {
+            "pid": 891647,
+            "start_ticks": 916984566,
+            "returncode": 0
+          },
+          {
+            "pid": 891651,
+            "start_ticks": 916984691,
+            "returncode": 0
+          },
+          {
+            "pid": 891650,
+            "start_ticks": 916984678,
+            "returncode": 0
+          },
+          {
+            "pid": 891653,
+            "start_ticks": 916984804,
+            "returncode": 0
+          },
+          {
+            "pid": 891652,
+            "start_ticks": 916984792,
+            "returncode": 0
+          },
+          {
+            "pid": 891655,
+            "start_ticks": 916984917,
+            "returncode": 0
+          },
+          {
+            "pid": 891654,
+            "start_ticks": 916984905,
+            "returncode": 0
+          },
+          {
+            "pid": 891657,
+            "start_ticks": 916985031,
+            "returncode": 0
+          },
+          {
+            "pid": 891656,
+            "start_ticks": 916985018,
+            "returncode": 0
+          },
+          {
+            "pid": 891659,
+            "start_ticks": 916985144,
+            "returncode": 0
+          },
+          {
+            "pid": 891658,
+            "start_ticks": 916985132,
+            "returncode": 0
+          },
+          {
+            "pid": 891661,
+            "start_ticks": 916985257,
+            "returncode": 0
+          },
+          {
+            "pid": 891660,
+            "start_ticks": 916985244,
+            "returncode": 0
+          },
+          {
+            "pid": 891672,
+            "start_ticks": 916985370,
+            "returncode": 0
+          },
+          {
+            "pid": 891671,
+            "start_ticks": 916985358,
+            "returncode": 0
+          },
+          {
+            "pid": 891677,
+            "start_ticks": 916985483,
+            "returncode": 0
+          },
+          {
+            "pid": 891676,
+            "start_ticks": 916985471,
+            "returncode": 0
+          },
+          {
+            "pid": 891679,
+            "start_ticks": 916985596,
+            "returncode": 0
+          },
+          {
+            "pid": 891678,
+            "start_ticks": 916985584,
+            "returncode": 0
+          },
+          {
+            "pid": 891835,
+            "start_ticks": 916985710,
+            "returncode": 0
+          },
+          {
+            "pid": 891821,
+            "start_ticks": 916985697,
+            "returncode": 0
+          },
+          {
+            "pid": 891837,
+            "start_ticks": 916985824,
+            "returncode": 0
+          },
+          {
+            "pid": 891836,
+            "start_ticks": 916985811,
+            "returncode": 0
+          },
+          {
+            "pid": 891853,
+            "start_ticks": 916985937,
+            "returncode": 0
+          },
+          {
+            "pid": 891852,
+            "start_ticks": 916985925,
+            "returncode": 0
+          },
+          {
+            "pid": 891855,
+            "start_ticks": 916986050,
+            "returncode": 0
+          },
+          {
+            "pid": 891854,
+            "start_ticks": 916986038,
+            "returncode": 0
+          },
+          {
+            "pid": 891857,
+            "start_ticks": 916986163,
+            "returncode": 0
+          },
+          {
+            "pid": 891856,
+            "start_ticks": 916986151,
+            "returncode": 0
+          },
+          {
+            "pid": 891859,
+            "start_ticks": 916986276,
+            "returncode": 0
+          },
+          {
+            "pid": 891858,
+            "start_ticks": 916986265,
+            "returncode": 0
+          },
+          {
+            "pid": 891872,
+            "start_ticks": 916986391,
+            "returncode": 0
+          },
+          {
+            "pid": 891871,
+            "start_ticks": 916986378,
+            "returncode": 0
+          },
+          {
+            "pid": 891874,
+            "start_ticks": 916986503,
+            "returncode": 0
+          },
+          {
+            "pid": 891873,
+            "start_ticks": 916986491,
+            "returncode": 0
+          },
+          {
+            "pid": 891891,
+            "start_ticks": 916986617,
+            "returncode": 0
+          },
+          {
+            "pid": 891890,
+            "start_ticks": 916986604,
+            "returncode": 0
+          },
+          {
+            "pid": 891903,
+            "start_ticks": 916986730,
+            "returncode": 0
+          },
+          {
+            "pid": 891902,
+            "start_ticks": 916986718,
+            "returncode": 0
+          },
+          {
+            "pid": 891508,
+            "start_ticks": 916983635,
+            "returncode": 0
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891511,
+              "start_ticks": 916983656,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891508,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891513,
+              "start_ticks": 916983671,
+              "ppid": 891512,
+              "state": "t",
+              "tgid": 891513,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891512,
+              "start_ticks": 916983658,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891512,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891515,
+              "start_ticks": 916983785,
+              "ppid": 891514,
+              "state": "t",
+              "tgid": 891515,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891514,
+              "start_ticks": 916983772,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891514,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891517,
+              "start_ticks": 916983898,
+              "ppid": 891516,
+              "state": "t",
+              "tgid": 891517,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891516,
+              "start_ticks": 916983886,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891516,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891519,
+              "start_ticks": 916984011,
+              "ppid": 891518,
+              "state": "t",
+              "tgid": 891519,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891518,
+              "start_ticks": 916983999,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891518,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891640,
+              "start_ticks": 916984124,
+              "ppid": 891619,
+              "state": "t",
+              "tgid": 891640,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891619,
+              "start_ticks": 916984112,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891619,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891642,
+              "start_ticks": 916984237,
+              "ppid": 891641,
+              "state": "t",
+              "tgid": 891642,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891641,
+              "start_ticks": 916984225,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891641,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891644,
+              "start_ticks": 916984351,
+              "ppid": 891643,
+              "state": "t",
+              "tgid": 891644,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891643,
+              "start_ticks": 916984338,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891643,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891646,
+              "start_ticks": 916984465,
+              "ppid": 891645,
+              "state": "t",
+              "tgid": 891646,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891645,
+              "start_ticks": 916984453,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891645,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891648,
+              "start_ticks": 916984578,
+              "ppid": 891647,
+              "state": "t",
+              "tgid": 891648,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891647,
+              "start_ticks": 916984566,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891647,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891651,
+              "start_ticks": 916984691,
+              "ppid": 891650,
+              "state": "t",
+              "tgid": 891651,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891650,
+              "start_ticks": 916984678,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891650,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891653,
+              "start_ticks": 916984804,
+              "ppid": 891652,
+              "state": "t",
+              "tgid": 891653,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891652,
+              "start_ticks": 916984792,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891652,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891655,
+              "start_ticks": 916984917,
+              "ppid": 891654,
+              "state": "t",
+              "tgid": 891655,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891654,
+              "start_ticks": 916984905,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891654,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891657,
+              "start_ticks": 916985031,
+              "ppid": 891656,
+              "state": "t",
+              "tgid": 891657,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891656,
+              "start_ticks": 916985018,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891656,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891659,
+              "start_ticks": 916985144,
+              "ppid": 891658,
+              "state": "t",
+              "tgid": 891659,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891658,
+              "start_ticks": 916985132,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891658,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891661,
+              "start_ticks": 916985257,
+              "ppid": 891660,
+              "state": "t",
+              "tgid": 891661,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891660,
+              "start_ticks": 916985244,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891660,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891672,
+              "start_ticks": 916985370,
+              "ppid": 891671,
+              "state": "t",
+              "tgid": 891672,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891671,
+              "start_ticks": 916985358,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891671,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891677,
+              "start_ticks": 916985483,
+              "ppid": 891676,
+              "state": "t",
+              "tgid": 891677,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891676,
+              "start_ticks": 916985471,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891676,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891679,
+              "start_ticks": 916985596,
+              "ppid": 891678,
+              "state": "t",
+              "tgid": 891679,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891678,
+              "start_ticks": 916985584,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891678,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891835,
+              "start_ticks": 916985710,
+              "ppid": 891821,
+              "state": "t",
+              "tgid": 891835,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891821,
+              "start_ticks": 916985697,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891821,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891837,
+              "start_ticks": 916985824,
+              "ppid": 891836,
+              "state": "t",
+              "tgid": 891837,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891836,
+              "start_ticks": 916985811,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891836,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891853,
+              "start_ticks": 916985937,
+              "ppid": 891852,
+              "state": "t",
+              "tgid": 891853,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891852,
+              "start_ticks": 916985925,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891852,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891855,
+              "start_ticks": 916986050,
+              "ppid": 891854,
+              "state": "t",
+              "tgid": 891855,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891854,
+              "start_ticks": 916986038,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891854,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891857,
+              "start_ticks": 916986163,
+              "ppid": 891856,
+              "state": "t",
+              "tgid": 891857,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891856,
+              "start_ticks": 916986151,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891856,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891859,
+              "start_ticks": 916986276,
+              "ppid": 891858,
+              "state": "t",
+              "tgid": 891859,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891858,
+              "start_ticks": 916986265,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891858,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891872,
+              "start_ticks": 916986391,
+              "ppid": 891871,
+              "state": "t",
+              "tgid": 891872,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891871,
+              "start_ticks": 916986378,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891871,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891874,
+              "start_ticks": 916986503,
+              "ppid": 891873,
+              "state": "t",
+              "tgid": 891874,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891873,
+              "start_ticks": 916986491,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891873,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891891,
+              "start_ticks": 916986617,
+              "ppid": 891890,
+              "state": "t",
+              "tgid": 891891,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891890,
+              "start_ticks": 916986604,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891890,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891903,
+              "start_ticks": 916986730,
+              "ppid": 891902,
+              "state": "t",
+              "tgid": 891903,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891902,
+              "start_ticks": 916986718,
+              "ppid": 891508,
+              "state": "t",
+              "tgid": 891902,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891508,
+              "start_ticks": 916983635,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891508,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 57
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 1882,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 31.9818476382643
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "unknown_exec",
+      "expected_success": false,
+      "expected_reason": "UNKNOWN_EXEC_IMAGE",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:37.226051+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891904,
+        "returncode": null,
+        "forced_reason": "UNKNOWN_EXEC_IMAGE:/usr/bin/true",
+        "exception": "Reject('UNKNOWN_EXEC_IMAGE:/usr/bin/true')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891904": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891904,
+            "start_ticks": 916986834,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891904,
+              "start_ticks": 916986834,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891904,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 27,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.2230231612920761
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "unknown_actual_mapping",
+      "expected_success": false,
+      "expected_reason": "UNREGISTERED_FILE_MAPPING",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:37.465515+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891907,
+        "returncode": null,
+        "forced_reason": "UNREGISTERED_FILE_MAPPING:/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/build/unknown-data",
+        "exception": "Reject('UNREGISTERED_FILE_MAPPING:/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/build/unknown-data')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891907": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891907,
+            "start_ticks": 916986858,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891907,
+              "start_ticks": 916986858,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891907,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 28,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.2260871883481741
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "writable_cache",
+      "expected_success": false,
+      "expected_reason": "DATA_MAPPING_NOT_READ_ONLY",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:37.693817+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891910,
+        "returncode": null,
+        "forced_reason": "DATA_MAPPING_NOT_READ_ONLY:/etc/ld.so.cache",
+        "exception": "Reject('DATA_MAPPING_NOT_READ_ONLY:/etc/ld.so.cache')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891910": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891910,
+            "start_ticks": 916986882,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891910,
+              "start_ticks": 916986882,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891910,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 28,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.2147023919969797
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "nonzero_exit",
+      "expected_success": false,
+      "expected_reason": "NONZERO_OWNED_PROCESS_EXIT",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:37.922861+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891913,
+        "returncode": 3,
+        "forced_reason": "NONZERO_OWNED_PROCESS_EXIT:891913:3",
+        "exception": "Reject('NONZERO_OWNED_PROCESS_EXIT:891913:3')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891913": 3
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891913,
+            "start_ticks": 916986904,
+            "returncode": 3
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891913,
+              "start_ticks": 916986904,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891913,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 28,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.21718002296984196
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "timeout",
+      "expected_success": false,
+      "expected_reason": "TIMEOUT_",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:38.740722+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891916,
+        "returncode": null,
+        "forced_reason": "TIMEOUT_0.8",
+        "exception": "Reject('TIMEOUT_0.8')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891916": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891916,
+            "start_ticks": 916986927,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891916,
+              "start_ticks": 916986927,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891916,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 27,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.8038084749132395
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "observer_exception",
+      "expected_success": false,
+      "expected_reason": "CPU_OBSERVER_EXCEPTION",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:38.770115+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891919,
+        "returncode": null,
+        "forced_reason": "CPU_OBSERVER_EXCEPTION",
+        "exception": "OSError('CPU_OBSERVER_EXCEPTION')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891919": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891919,
+            "start_ticks": 916987009,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891919,
+              "start_ticks": 916987009,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891919,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 1,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.01605982705950737
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "forced_stop",
+      "expected_success": false,
+      "expected_reason": "CPU_FORCED_STOP",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:38.795616+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891921,
+        "returncode": null,
+        "forced_reason": "CPU_FORCED_STOP",
+        "exception": "Reject('CPU_FORCED_STOP')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891921": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891921,
+            "start_ticks": 916987012,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891921,
+              "start_ticks": 916987012,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891921,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 0
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 1,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.012587916105985641
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "child_stop_before_parent_observer",
+      "expected_success": true,
+      "expected_reason": null,
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:39.733655+00:00",
+        "status": "PASS_GUARDED_NATURAL_EXIT0",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891923,
+        "returncode": 0,
+        "forced_reason": null,
+        "exception": null,
+        "identity_pass": true,
+        "owned_process_exits": {
+          "891926": 0,
+          "891929": 0,
+          "891928": 0,
+          "891931": 0,
+          "891930": 0,
+          "891923": 0
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891926,
+            "start_ticks": 916987038,
+            "returncode": 0
+          },
+          {
+            "pid": 891929,
+            "start_ticks": 916987062,
+            "returncode": 0
+          },
+          {
+            "pid": 891928,
+            "start_ticks": 916987050,
+            "returncode": 0
+          },
+          {
+            "pid": 891931,
+            "start_ticks": 916987091,
+            "returncode": 0
+          },
+          {
+            "pid": 891930,
+            "start_ticks": 916987078,
+            "returncode": 0
+          },
+          {
+            "pid": 891923,
+            "start_ticks": 916987015,
+            "returncode": 0
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891926,
+              "start_ticks": 916987038,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891923,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891929,
+              "start_ticks": 916987062,
+              "ppid": 891928,
+              "state": "t",
+              "tgid": 891929,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891928,
+              "start_ticks": 916987050,
+              "ppid": 891923,
+              "state": "t",
+              "tgid": 891928,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891931,
+              "start_ticks": 916987091,
+              "ppid": 891930,
+              "state": "t",
+              "tgid": 891931,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891930,
+              "start_ticks": 916987078,
+              "ppid": 891923,
+              "state": "t",
+              "tgid": 891930,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891923,
+              "start_ticks": 916987015,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891923,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 5
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 166,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.9237029459327459
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "missing_event_finite_timeout",
+      "expected_success": false,
+      "expected_reason": "PARENT_EVENT_CONFIRMATION_TIMEOUT",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:41.979332+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 891933,
+        "returncode": null,
+        "forced_reason": "PARENT_EVENT_CONFIRMATION_TIMEOUT:891936",
+        "exception": "Reject('PARENT_EVENT_CONFIRMATION_TIMEOUT:891936')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "891936": -9,
+          "891933": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 891936,
+            "start_ticks": 916987131,
+            "returncode": -9
+          },
+          {
+            "pid": 891933,
+            "start_ticks": 916987108,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 891936,
+              "start_ticks": 916987131,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891933,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 891933,
+              "start_ticks": 916987108,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 891933,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 1
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 31,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 2.2328003384172916
+      },
+      "own_FLOCK_released": true
+    },
+    {
+      "case": "stop_pending_event_cleanup",
+      "expected_success": false,
+      "expected_reason": "CPU_STOP_WITH_PENDING_EVENT",
+      "passed": true,
+      "result": {
+        "utc": "2026-10-19T13:51:42.336626+00:00",
+        "status": "STOP_GUARDED_PROCESS",
+        "purpose": "CPU_FIXTURE",
+        "root_pid": 892056,
+        "returncode": null,
+        "forced_reason": "CPU_STOP_WITH_PENDING_EVENT",
+        "exception": "Reject('CPU_STOP_WITH_PENDING_EVENT')",
+        "identity_pass": false,
+        "owned_process_exits": {
+          "892059": -9,
+          "892056": -9
+        },
+        "owned_process_exit_instances": [
+          {
+            "pid": 892059,
+            "start_ticks": 916987356,
+            "returncode": -9
+          },
+          {
+            "pid": 892056,
+            "start_ticks": 916987333,
+            "returncode": -9
+          }
+        ],
+        "owned_children_live": 0,
+        "ownership": {
+          "confirmed": [],
+          "pending": [],
+          "retired": [
+            {
+              "pid": 892059,
+              "start_ticks": 916987356,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 892056,
+              "tracer_pid": 891470
+            },
+            {
+              "pid": 892056,
+              "start_ticks": 916987333,
+              "ppid": 891470,
+              "state": "t",
+              "tgid": 892056,
+              "tracer_pid": 891470
+            }
+          ],
+          "confirmation_seconds": 2.0,
+          "proof_events": 1
+        },
+        "unconfirmed_wait_pids": [],
+        "snapshots": 31,
+        "simulator_starts": 0,
+        "wall_seconds_nonperformance": 0.3434516675770283
+      },
+      "own_FLOCK_released": true
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "PID_reuse",
+      "status": "EXPECTED_REJECT",
+      "reason": "AUTHORITY_OWN_PID_REUSED"
+    },
+    {
+      "case": "wrong_parent",
+      "status": "EXPECTED_REJECT",
+      "reason": "WRONG_UNCONFIRMED_PARENT"
+    },
+    {
+      "case": "parent_identity_changed",
+      "status": "EXPECTED_REJECT",
+      "reason": "PARENT_EVENT_ANCESTRY_CONTRADICTION"
+    },
+    {
+      "case": "external_simulator_synthetic_snapshot_no_sim_start",
+      "status": "EXPECTED_REJECT",
+      "reason": [
+        {
+          "pid": 99999998,
+          "start_ticks": 1,
+          "argv": [
+            "/scratch/root/oss-eda/oss-cad-suite/lib/ld-linux-x86-64.so.2",
+            "--inhibit-cache",
+            "--inhibit-rpath",
+            "--library-path",
+            "/scratch/root/oss-eda/oss-cad-suite/lib",
+            "/scratch/root/oss-eda/oss-cad-suite/libexec/python3.11",
+            "-B",
+            "/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag6-aead-sixpoint-174-v1/docs/dtc_l1/review_packs/DTC_LANE_AG6_AE_AD_SIXPOINT_V1/tools/qualify_authority_cpu.py"
+          ],
+          "classification": "UNCLASSIFIED_OR_DTC_SIMULATOR_STOP"
+        }
+      ]
+    }
+  ],
+  "full_periodic_samples": 15,
+  "long_fixture_full_samples": 4,
+  "old_failure_reproduced": true,
+  "simulator_starts": 0,
+  "real_simulation_UUIDs": 0,
+  "scope": "Real CPU processes, kernel ptrace ancestry, loader and production observer; declared event-order adapters, synthetic external/PID negatives; no performance/model qualification"
+}

@@ -1,0 +1,102 @@
+{
+  "status": "PASS_FULL_CONTROL_POSITIVE_AND_CORRUPTION_NEGATIVES",
+  "cases": [
+    {
+      "case": "natural_exit_marker_missing",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "one_natural_exit_marker"
+    },
+    {
+      "case": "thread_exit_marker_missing",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "one_simulation_thread_exit_marker"
+    },
+    {
+      "case": "actual_member_path_changed",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "exact_original_member_paths"
+    },
+    {
+      "case": "missing_memcpy",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "all_original_commands_order_and_memcpy"
+    },
+    {
+      "case": "duplicate_kernel",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "full_ordered_kernel_count"
+    },
+    {
+      "case": "wrong_active_instructions",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "per_kernel_full_instructions_CTA:1"
+    },
+    {
+      "case": "wrong_CTA_total",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "per_kernel_full_instructions_CTA:1"
+    },
+    {
+      "case": "credit_imbalance",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "lower_create_inject_response_credit_conservation"
+    },
+    {
+      "case": "Ref_population_imbalance",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "Ref_dependency_closed_population"
+    },
+    {
+      "case": "finite_SM_population_mismatch",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "finite_population_64SM"
+    },
+    {
+      "case": "finite_scope_decomposition_mismatch",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "finite_postready_scope_decomposition"
+    },
+    {
+      "case": "duplicate_common_metric",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "duplicate_numeric_metric:DTC_SERVICE_V1_samples"
+    },
+    {
+      "case": "K1_export_under_K0",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "K0_has_no_K1_only_export"
+    },
+    {
+      "case": "noninteger_GPU_cycles",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "'gpu_tot_sim_cycle'"
+    },
+    {
+      "case": "calibration_cycles_only_insufficient",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "BASE_common_metric_or_traffic_calibration_mismatch:[{\"ordinal\": 1, \"common_metric_differences\": {\"DTC_L1_oo_new_misses\": [2091696, 2091697]}}]"
+    },
+    {
+      "case": "calibration_traffic_changed",
+      "status": "REJECTED_AS_REQUIRED",
+      "reason": "BASE_common_metric_or_traffic_calibration_mismatch:[{\"traffic_expected\": {\"L2_buckets\": {\"GLOBAL_ACC_R:HIT\": 8366784, \"GLOBAL_ACC_R:HIT_RESERVED\": 0, \"GLOBAL_ACC_R:MISS\": 0, \"GLOBAL_ACC_R:RESERVATION_FAIL\": 0, \"GLOBAL_ACC_R:SECTOR_MISS\": 0, \"GLOBAL_A"
+    },
+    {
+      "case": "conflicting_option_echo",
+      "status": "REJECTED_AS_REQUIRED"
+    },
+    {
+      "case": "67_of_510_prefix_never_full_control",
+      "status": "REJECTED_AS_REQUIRED"
+    }
+  ],
+  "positive_controls": [
+    "GEMM_full_1_kernel",
+    "Gaussian_full_510_kernel_reference_preparation"
+  ],
+  "strict_sha256": "9dbbca9c49836619f5ca5ce80d1cd2b9265d3d83d59a5f585510110bcc29aaa6",
+  "test_sha256": "af1ae6c9c226786381af0a0845b88d535ba7c186cfad6bdf0a4fa31bc234df2f",
+  "prior_raw_modified": false,
+  "new_simulations_started": 0,
+  "AA5_prefix_used_for_calibration": false
+}

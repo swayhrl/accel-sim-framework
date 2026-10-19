@@ -1,0 +1,57 @@
+{
+  "status": "PASS_NEW_SIX_POINT_BASE_AND_BUDGET_GATES",
+  "cases": [
+    {
+      "case": "first_BASE_has_no_imported_control_requirement",
+      "status": "PASS"
+    },
+    {
+      "case": "second_BASE_requires_first_new_BASE",
+      "status": "EXPECTED_REJECT",
+      "reason": "NEW_FULL_GEMM_BASE_STRICT_RECEIPT_REQUIRED"
+    },
+    {
+      "case": "failed_first_BASE_cannot_open_second",
+      "status": "EXPECTED_REJECT",
+      "reason": "SAME_COHORT_BASE_STRICT_CALIBRATION_NOT_CLOSED"
+    },
+    {
+      "case": "second_BASE_after_first_new_calibrated_BASE",
+      "status": "PASS"
+    },
+    {
+      "case": "ON_requires_second_BASE_too",
+      "status": "EXPECTED_REJECT",
+      "reason": "NEW_FULL_GAUSSIAN_BASE_STRICT_RECEIPT_REQUIRED"
+    },
+    {
+      "case": "BASE_receipt_UUID_must_match_new_reservation",
+      "status": "EXPECTED_REJECT",
+      "reason": "SAME_COHORT_BASE_STRICT_CALIBRATION_NOT_CLOSED"
+    },
+    {
+      "case": "four_ON_gates_after_both_new_BASEs",
+      "status": "PASS"
+    },
+    {
+      "case": "six_start_prefix_allowed",
+      "status": "PASS"
+    },
+    {
+      "case": "seventh_start_forbidden",
+      "status": "EXPECTED_REJECT",
+      "reason": "BUDGET_CAP_OR_DUPLICATE_START"
+    },
+    {
+      "case": "five_reservation_list_cannot_be_used",
+      "status": "EXPECTED_REJECT",
+      "reason": "SIX_UNIQUE_UUID_RESERVATIONS"
+    }
+  ],
+  "raw": "/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/raw/cpu-qualification/paired-gates-1792418060856756016",
+  "all_receipts_synthetic": true,
+  "performance_accepted": false,
+  "simulator_starts": 0,
+  "real_performance_UUIDs": 0,
+  "runner_sha256": "cc25e8a08f8094dfbb3aa78d97e5c27af42f5988e34722b766755a8a622d09db"
+}

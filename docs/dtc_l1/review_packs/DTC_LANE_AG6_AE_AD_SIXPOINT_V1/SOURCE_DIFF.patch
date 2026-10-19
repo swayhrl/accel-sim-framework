@@ -1,0 +1,347 @@
+--- DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/authority_cpu.cc
++++ tools/authority_cpu.cc
+@@ -19,7 +19,7 @@
+  if(!strcmp(mode,"nonzero"))return 3;
+  if(!strcmp(mode,"unknownexec")){execl("/usr/bin/true","true",nullptr);return 4;}
+  if(!strcmp(mode,"unknownmap")||!strcmp(mode,"writablecache")){
+-  const char* path=!strcmp(mode,"unknownmap")?"/workspace/dtc-lane-ag5-retired-pid-repair-174-v1/build/unknown-data":"/etc/ld.so.cache";
++  const char* path=!strcmp(mode,"unknownmap")?"/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/build/unknown-data":"/etc/ld.so.cache";
+   int fd=open(path,O_RDONLY);if(fd<0)return 5;
+   void* p=mmap(nullptr,4096,PROT_READ|(!strcmp(mode,"writablecache")?PROT_WRITE:0),MAP_PRIVATE,fd,0);
+   if(p==MAP_FAILED)return 6;munmap(p,4096);close(fd);return 0;
+@@ -27,10 +27,10 @@
+  pthread_t t;if(pthread_create(&t,nullptr,threadfn,nullptr)||pthread_join(t,nullptr))return 7;
+  int rounds=!strcmp(mode,"long")?28:2;
+  for(int i=0;i<rounds;i++){
+-  FILE* f=popen("/usr/bin/cat /workspace/dtc-lane-ag5-retired-pid-repair-174-v1/build/helper-data","r");
++  FILE* f=popen("/usr/bin/cat /workspace/dtc-lane-ag6-aead-sixpoint-174-v1/build/helper-data","r");
+   if(!f)return 8;char b[80]={};if(!fgets(b,sizeof(b),f))return 9;
+-  int s=pclose(f);if(!WIFEXITED(s)||WEXITSTATUS(s)||strcmp(b,"AG5_HELPER_OK\n"))return 10;
++  int s=pclose(f);if(!WIFEXITED(s)||WEXITSTATUS(s)||strcmp(b,"AG6_HELPER_OK\n"))return 10;
+   if(!strcmp(mode,"long"))usleep(850000);
+  }
+- puts("AG5_CPU_ONLY_OK");return 0;
++ puts("AG6_CPU_ONLY_OK");return 0;
+ }
+--- DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/common.py
++++ tools/common.py
+@@ -12,8 +12,8 @@
+ CORE=Path('/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1')
+ FW_REPO=Path('/workspace/repos/accel-sim-framework')
+ CORE_REPO=Path('/workspace/repos/gpgpu-sim_distribution')
+-RAW=Path('/workspace/dtc-lane-ag5-retired-pid-repair-174-v1/raw')
+-BUILD=Path('/workspace/dtc-lane-ag5-retired-pid-repair-174-v1/build')
++RAW=Path('/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/raw')
++BUILD=Path('/workspace/dtc-lane-ag6-aead-sixpoint-174-v1/build')
+ X2='e32afdcf44be3374ff36d22568ed01a075459b6f'
+ FRAMEWORK_BUILD='8e43c75a5e2eb60a8466084602b7df8117111e89'
+ AA5='2d740ece2f5dbb6d99040a64f421e940687a48fa'
+--- DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/guarded_process.py
++++ tools/guarded_process.py
+@@ -1,9 +1,9 @@
+-"""AG5 CPU-only owned-process guard; no simulator invocation capability.
++"""AG6 process-instance guard; simulation requires published exact capability.
+ 
+ No CLI. PTRACE_TRACEME only, never attach. A pre-exec seccomp TRACE filter
+ stops mapping-changing syscalls for complete before/after maps; fork/exec/
+ clone/exit events keep every owned descendant in scope. Unknown maps reject.
+-This repair publishes no performance dispatcher or simulator start path.
++CPU qualification and authorized execution share this dispatch implementation.
+ """
+ import ctypes,os,signal,time,json,platform
+ from pathlib import Path
+@@ -12,7 +12,7 @@
+ import oom_watchdog
+ from ownership import Ownership,identity,CONFIRM_SECONDS
+ 
+-ROOT=Path('/workspace/dtc-lane-ag5-retired-pid-repair-174-v1')
++ROOT=Path('/workspace/dtc-lane-ag6-aead-sixpoint-174-v1')
+ MAP_SYSCALLS=(9,10,11,25,30,67,329) # mmap,mprotect,munmap,mremap,shmat,shmdt,pkey_mprotect
+ OPTIONS=1|2|4|8|16|64|128|0x100000
+ class Regs(ctypes.Structure):
+@@ -32,8 +32,11 @@
+ def run_guarded(argv,env,manifests,destination,purpose,timeout,capability=None,observer=None):
+  require(platform.machine()=='x86_64','UNQUALIFIED_ARCHITECTURE')
+  target=str(Path(argv[0]).resolve());require(target in manifests,'TARGET_NOT_REGISTERED')
+- require(purpose=='CPU_FIXTURE','CPU_ONLY_NO_SIMULATION_DISPATCH')
+- require(target==str(ROOT/'build/ag5-cpu-authority'),'CPU_TARGET_NOT_FIXED_FIXTURE')
++ if purpose=='CPU_FIXTURE':
++  require(target==str(ROOT/'build/ag6-cpu-authority'),'CPU_TARGET_NOT_FIXED_FIXTURE')
++ else:
++  require(purpose=='SIMULATION' and capability is not None,'SIMULATION_CAPABILITY_REQUIRED')
++  capability(target,argv,env) # published cohort/spec/UUID and exact runtime; before fork
+  registry={path:validate_manifest(m) for path,m in manifests.items()}
+  dest=Path(destination);dest.mkdir(parents=True,exist_ok=False)
+  for m in manifests.values():require(m['frozen_monotonic_ns']<time.monotonic_ns(),'MANIFEST_NOT_PRE_FORK')
+@@ -222,6 +225,6 @@
+    if watch[2]['reason']:
+     error=error or watch[2]['reason'];forced=watch[2]['reason']
+   eventlog.close()
+-  terminal=dict(utc=now(),status='PASS_GUARDED_NATURAL_EXIT0' if error is None else 'STOP_GUARDED_PROCESS',purpose=purpose,root_pid=pid,returncode=main_rc,forced_reason=forced,exception=error,identity_pass=main_identity and error is None,owned_process_exits=exits,owned_process_exit_instances=exit_instances,owned_children_live=len(alive),ownership=ownership.snapshot() if ownership else None,unconfirmed_wait_pids=[v[0] for v in quarantined],snapshots=frames,simulator_starts=0,wall_seconds_nonperformance=time.monotonic()-started)
++  terminal=dict(utc=now(),status='PASS_GUARDED_NATURAL_EXIT0' if error is None else 'STOP_GUARDED_PROCESS',purpose=purpose,root_pid=pid,returncode=main_rc,forced_reason=forced,exception=error,identity_pass=main_identity and error is None,owned_process_exits=exits,owned_process_exit_instances=exit_instances,owned_children_live=len(alive),ownership=ownership.snapshot() if ownership else None,unconfirmed_wait_pids=[v[0] for v in quarantined],snapshots=frames,simulator_starts=int(purpose=='SIMULATION'),wall_seconds_nonperformance=time.monotonic()-started)
+   write(dest/'TERMINAL.json',terminal,exclusive=True)
+  return terminal
+--- DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/qualify_authority_cpu.py
++++ tools/qualify_authority_cpu.py
+@@ -11,7 +11,7 @@
+ 
+ def main():
+  dest=RAW/'cpu-qualification'/('authority-'+str(time.time_ns()));dest.mkdir(parents=True)
+- target=BUILD/'ag5-cpu-authority';manifests={}
++ target=BUILD/'ag6-cpu-authority';manifests={}
+  for exe in [target,Path('/usr/bin/dash'),Path('/usr/bin/cat')]:
+   m,_=freeze_executable(exe,BUILD);manifests[m['target']]=m
+  env=dict(PATH='/usr/bin:/bin',LANG='C',LC_ALL='C',CUDA_VISIBLE_DEVICES='')
+--- DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/register_screen.py
++++ tools/register_screen.py
+@@ -1,32 +1,42 @@
+-"""AG4 five fresh UUIDs only after CPU and independently-qualified prior control."""
++"""AG6 six fresh UUIDs only after source-bound CPU, runtime and full-input gates."""
+ from common import *
+ from strict_screen import input_identity
+ from mapping_roles import validate_manifest
+ import uuid,re
+ OLD=PACK.parent/'DTC_LANE_AG3_AE_AD_SCREEN_V1'
+-ORDER=['BASE_Gaussian','AE_GEMM','AE_Gaussian','AD_GEMM','AD_Gaussian']
++ORDER=['BASE_GEMM','BASE_Gaussian','AE_GEMM','AE_Gaussian','AD_GEMM','AD_Gaussian']
+ 
+ def main():
+  assert not list((RAW/'attempts').glob('*/RUN_START.json'))
+  assert not (PACK/'UUID_RESERVATIONS.json').exists(),'NO_REGENERATION_OR_REPLACEMENT'
+- required={'CPU_AUTHORITY_QUALIFICATION.json':'PASS_CPU_AUTHORITY_RACE_REPAIR','MAPPING_ROLE_REGRESSION.json':'PASS','RUNNER_CPU_QUALIFICATION.json':'PASS_PRODUCTION_RUNNER_CPU_CLOSURE_WITH_DECLARED_ADAPTERS','RESOURCE_POLICY_CPU_TESTS.json':'PASS_PURE_CPU_AG_RESOURCE_POLICY','STRICT_CPU_NEGATIVES.json':'PASS_FULL_CONTROL_POSITIVE_AND_CORRUPTION_NEGATIVES','INPUT_FULL_IDENTITY.json':'PASS_FRESH_ALL_511_MEMBER_SHA256','AG3_GEMM_BASE_REUSE_QUALIFICATION.json':'PASS_REUSE_AG3_GEMM_BASE_FOR_AG4_DISCOVERY'}
++ required={'CPU_AUTHORITY_QUALIFICATION.json':'PASS_CPU_AUTHORITY_RACE_REPAIR','MAPPING_ROLE_REGRESSION.json':'PASS','RUNNER_CPU_QUALIFICATION.json':'PASS_PRODUCTION_RUNNER_CPU_CLOSURE_WITH_DECLARED_ADAPTERS','RESOURCE_POLICY_CPU_TESTS.json':'PASS_PURE_CPU_AG_RESOURCE_POLICY','STRICT_CPU_NEGATIVES.json':'PASS_FULL_CONTROL_POSITIVE_AND_CORRUPTION_NEGATIVES','INPUT_FULL_IDENTITY.json':'PASS_FRESH_ALL_511_MEMBER_SHA256','PRODUCTION_DISPATCH_GENERATION_TESTS.json':'PASS_BOUNDED_FULL_GUARD_DISPATCH','RUNTIME_FREEZE_QUALIFICATION.json':'PASS_CURRENT_RUNTIME_IDENTITY','PAIRED_BASE_GATE_CPU_TESTS.json':'PASS_NEW_SIX_POINT_BASE_AND_BUDGET_GATES'}
+  for n,s in required.items():assert json.loads((PACK/n).read_text())['status']==s,(n,s)
+  runner_cpu=json.loads((PACK/'RUNNER_CPU_QUALIFICATION.json').read_text())
+  assert runner_cpu['runner_sha256']==sha(PACK/'tools/run_screen.py') and runner_cpu['guard_sha256']==sha(PACK/'tools/guarded_process.py')
+  for m in json.loads((PACK/'RUNTIME_MAPPING_MANIFESTS.json').read_text()).values():validate_manifest(m)
+- known=set(re.findall(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',(OLD/'UUID_RESERVATIONS.json').read_text()))
++ assert json.loads((PACK/'USER_AUTHORIZATION.json').read_text())['actual_start_budget']==6
++ cpu_receipt=json.loads((RAW/'CPU_PUBLICATION_READBACK.json').read_text())
++ assert cpu_receipt['head']==cpu_receipt['fetched_head']==git(FW,'rev-parse','refs/ag6-publication/cpu')
++ for row in cpu_receipt['blobs']:
++  path=FW/row['path']
++  if path.parent==PACK/'tools':assert sha(path)==row['sha256'],'CPU_TESTED_SOURCE_CHANGED'
++ known=set()
++ for directory in ['DTC_LANE_AG3_AE_AD_SCREEN_V1','DTC_LANE_AG4_AUTHORITY_AE_AD_V1','DTC_LANE_AG_OPT_SCREEN_V1','DTC_LANE_AA5_GAUSSIAN_V1']:
++  for previous in (PACK.parent/directory).glob('UUID*'):
++   known.update(re.findall(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',previous.read_text()))
+  rows=[];specnames=[]
+  for i,point in enumerate(ORDER):
+   value=str(uuid.uuid4());assert value not in known and value not in {r['attempt_uuid'] for r in rows}
+-  spec=json.loads((OLD/f'specs/{point}.json').read_text());spec.update(order=i,attempt_uuid=value,cohort='AG4_DISCOVERY_AE_AD_WITH_QUALIFIED_IMPORTED_GEMM_CONTROL_V1',primary_ratio='qualified same-input BASE cycles / accepted ON cycles')
++  spec=json.loads((OLD/f'specs/{point}.json').read_text());spec.update(order=i,attempt_uuid=value,cohort='AG6_PAIRED_DISCOVERY_AE_AD_V1',primary_ratio='same-cohort accepted same-input BASE cycles / accepted ON cycles')
+   # Reuse the exact actual ELF/library paths/environment, read-only. All outputs
+-  # go to AG4. Only config-copy paths move; option bytes and all270 values match.
++  # go to AG6. Only config-copy paths move; option bytes and all270 values match.
+   spec['configs']=[dict(path=str(PACK/'config'/Path(e['path']).name),sha256=e['sha256']) for e in spec['configs']]
+   for e in spec['configs']:assert sha(e['path'])==e['sha256']
++  spec['BASE_reference_sha256']=sha(PACK/('controls/'+spec['workload']+'_CALIBRATION_REFERENCE.json'))
+   input_identity(spec);name=f'specs/{point}.json';write(PACK/name,spec,exclusive=True);specnames.append(name)
+   rows.append({k:spec[k] for k in ['order','point','arm','workload','attempt_uuid']})
+- write(PACK/'UUID_RESERVATIONS.json',dict(cohort='AG4_DISCOVERY_AE_AD_WITH_QUALIFIED_IMPORTED_GEMM_CONTROL_V1',actual_start_cap=5,max_concurrency=1,rows=rows,known_AG3_UUIDs=sorted(known),no_replacement=True,UUID_method='uuid.uuid4',all_generated_after_CPU_and_reuse_PASS=True),exclusive=True)
++ write(PACK/'UUID_RESERVATIONS.json',dict(cohort='AG6_PAIRED_DISCOVERY_AE_AD_V1',actual_start_cap=6,max_concurrency=1,rows=rows,known_AG3_UUIDs=sorted(known),no_replacement=True,UUID_method='uuid.uuid4',all_generated_after_CPU_runtime_and_full_input_PASS=True),exclusive=True)
+  files={str(q.relative_to(PACK)):sha(q) for q in sorted(PACK.rglob('*')) if q.is_file() and '__pycache__' not in q.parts and q.name not in {'EXECUTABLE_PREREGISTRATION.json','FILES_SHA256.tsv','LATEST_REPORT.md'}}
+- write(PACK/'EXECUTABLE_PREREGISTRATION.json',dict(status='EXECUTABLE_PREREGISTERED_NOT_YET_STARTED',utc=now(),goal='DTC_LANE_AG4_AUTHORITY_REPAIR_AND_AE_AD_CONVERGENCE_174_V1',cohort='AG4_DISCOVERY_AE_AD_WITH_QUALIFIED_IMPORTED_GEMM_CONTROL_V1',core_commit='c8090115bd57512b1b23fca7d925301fa620c751',framework_compilation_source=FRAMEWORK_BUILD,ordered_specs=specnames,actual_start_cap=5,max_concurrency=1,files=files,resource_version='AG3_DISCOVERY_RESOURCE_R2_V1',timeout_seconds=7200,retries=0,real_attempts_before_registration=0,imported_GEMM_control='INDEPENDENTLY_QUALIFIED_AG3_1071405_NOT_AG4_START',first_actual_gate='GAUSSIAN_FULL_NATURAL_EXIT0_3278356_AND_ALL_COMMON_TRAFFIC_EXACT',hard_failure='STOP_NO_RETRY_NO_REPLACEMENT_NO_SIXTH_START',execution_gate='COMMIT_PUSH_FETCH_BACK_HEAD_TREE_ALL_BLOBS_CLEAN_PLUS_FRESH_RESOURCE_AUTHORITY_BEFORE_EACH_FORK_EXEC',no_paper_or_history_modifications=True),exclusive=True)
++ write(PACK/'EXECUTABLE_PREREGISTRATION.json',dict(status='EXECUTABLE_PREREGISTERED_NOT_YET_STARTED',utc=now(),goal='USER_AUTHORIZED_AG6_SIX_POINT_COMPLETE_PAIRING',cohort='AG6_PAIRED_DISCOVERY_AE_AD_V1',core_commit='c8090115bd57512b1b23fca7d925301fa620c751',framework_compilation_source=FRAMEWORK_BUILD,ordered_specs=specnames,actual_start_cap=6,max_concurrency=1,files=files,resource_version='AG3_DISCOVERY_RESOURCE_R2_V1',timeout_seconds=7200,retries=0,real_attempts_before_registration=0,imported_BASE_controls=False,first_actual_gate='GEMM_FULL_NATURAL_EXIT0_1071405_ALL_COMMON_TRAFFIC_EXACT_THEN_GAUSSIAN_3278356_ALL_COMMON_TRAFFIC_EXACT',hard_failure='STOP_NO_RETRY_NO_REPLACEMENT_NO_SEVENTH_START',execution_gate='COMMIT_PUSH_FETCH_BACK_HEAD_TREE_ALL_BLOBS_CLEAN_PLUS_FRESH_RESOURCE_AUTHORITY_BEFORE_EACH_FORK_EXEC',no_paper_or_history_modifications=True),exclusive=True)
+  print(json.dumps(dict(status='LOCAL_EXECUTABLE_PREREGISTRATION_REQUIRES_PUBLICATION',files=len(files),rows=rows)))
+ if __name__=='__main__':main()
+--- DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/run_screen.py
++++ tools/run_screen.py
+@@ -1,4 +1,4 @@
+-"""AG4 five reservations, sequential, fail-stop. Only --dispatch can run sims.
++"""AG6 six new points, paired BASEs, sequential fail-stop; --dispatch required.
+ CPU-only tests import pure gates / the exact guarded_process engine instead.
+ """
+ from common import *
+@@ -10,16 +10,16 @@
+ from mapping_roles import validate_manifest,verify_file
+ import fcntl,signal,time,shutil,argparse,uuid
+ 
+-ORDER=['BASE_Gaussian','AE_GEMM','AE_Gaussian','AD_GEMM','AD_Gaussian']
++ORDER=['BASE_GEMM','BASE_Gaussian','AE_GEMM','AE_Gaussian','AD_GEMM','AD_Gaussian']
+ 
+ def validate_records(records,specs):
+  reservations={s['attempt_uuid'] for s in specs}
+- require(len(specs)==len(reservations)==5,'FIVE_UNIQUE_UUID_RESERVATIONS')
+- require([s['point'] for s in specs]==ORDER,'FIXED_FIVE_POINT_ORDER')
++ require(len(specs)==len(reservations)==6,'SIX_UNIQUE_UUID_RESERVATIONS')
++ require([s['point'] for s in specs]==ORDER,'FIXED_SIX_POINT_ORDER')
+  require(all(uuid.UUID(v).version==4 for v in reservations),'STANDARD_UUID4_REQUIRED')
+  starts=[r['attempt_uuid'] for r in records]
+- require(len(starts)==len(set(starts)) and len(starts)<=5,'BUDGET_CAP_OR_DUPLICATE_START')
+- require(set(starts)<=reservations,'FOREIGN_UUID_IN_AG4_RAW')
++ require(len(starts)==len(set(starts)) and len(starts)<=6,'BUDGET_CAP_OR_DUPLICATE_START')
++ require(set(starts)<=reservations,'FOREIGN_UUID_IN_AG6_RAW')
+  require(starts==[s['attempt_uuid'] for s in specs[:len(starts)]],'START_PREFIX_ORDER')
+  return starts
+ 
+@@ -35,14 +35,14 @@
+ def publication_check():
+  require(not git(FW,'status','--porcelain'),'FRAMEWORK_WORKTREE_NOT_CLEAN')
+  receipt=json.loads((RAW/'PREREG_PUBLICATION_READBACK.json').read_text());head=receipt['head']
+- require(receipt['fetched_head']==head==git(FW,'rev-parse','refs/ag4-publication/preregistered'),'PUSH_FETCH_BACK_REQUIRED')
++ require(receipt['fetched_head']==head==git(FW,'rev-parse','refs/ag6-publication/preregistered'),'PUSH_FETCH_BACK_REQUIRED')
+  require(git(FW,'merge-base','--is-ancestor',head,'HEAD')=='','REGISTERED_HEAD_ANCESTRY')
+  path=PACK/'EXECUTABLE_PREREGISTRATION.json';require(sha(path)==receipt['manifest_sha256'],'REGISTERED_MANIFEST_SHA')
+  manifest=json.loads(path.read_text());require(manifest['status']=='EXECUTABLE_PREREGISTERED_NOT_YET_STARTED','EXECUTABLE_REGISTRATION_REQUIRED')
+  check_files(manifest)
+  for name,digest in manifest['files'].items():require(hashlib.sha256(blob(FW,head,str((PACK/name).relative_to(FW)))).hexdigest()==digest,'PUBLISHED_BLOB_CHANGED:'+name)
+  require(git(CORE,'rev-parse','HEAD')==manifest['core_commit'] and not git(CORE,'status','--porcelain'),'CORE_IDENTITY_NOT_CLOSED')
+- require(git(CORE,'rev-parse','refs/ag4-source/core-final')==manifest['core_commit'],'CORE_PUBLICATION_REQUIRED')
++ require(git(CORE,'rev-parse','refs/ag6-source/core-final')==manifest['core_commit'],'CORE_PUBLICATION_REQUIRED')
+  return manifest,head
+ 
+ def admission(label,owner):
+@@ -55,14 +55,13 @@
+  return b
+ 
+ def require_BASE_gate(spec,specs):
+- reuse=json.loads((PACK/'AG3_GEMM_BASE_REUSE_QUALIFICATION.json').read_text())
+- require(reuse['status']=='PASS_REUSE_AG3_GEMM_BASE_FOR_AG4_DISCOVERY','IMPORTED_GEMM_BASE_REUSE_NOT_QUALIFIED')
+- if spec['arm']=='BASE':return
+- base=specs[0]
+- path=RAW/'attempts'/(base['point']+'_'+base['attempt_uuid'])/'STRICT.json'
+- require(path.is_file(),'NEW_FULL_GAUSSIAN_BASE_STRICT_RECEIPT_REQUIRED')
+- row=json.loads(path.read_text())
+- require(row.get('performance_accepted') is True and row.get('calibration',{}).get('status')=='PASS_FULL_INPUT_CYCLES_AND_ALL_FROZEN_COMMON_METRICS','BASE_STRICT_CALIBRATION_NOT_CLOSED')
++ require([s['point'] for s in specs]==ORDER,'FIXED_SIX_POINT_ORDER')
++ needed=[] if spec['point']=='BASE_GEMM' else (specs[:1] if spec['point']=='BASE_Gaussian' else specs[:2])
++ for base in needed:
++  path=RAW/'attempts'/(base['point']+'_'+base['attempt_uuid'])/'STRICT.json'
++  require(path.is_file(),'NEW_FULL_'+base['workload'].upper()+'_BASE_STRICT_RECEIPT_REQUIRED')
++  row=json.loads(path.read_text())
++  require(row.get('attempt_uuid')==base['attempt_uuid'] and row.get('performance_accepted') is True and row.get('calibration',{}).get('status')=='PASS_FULL_INPUT_CYCLES_AND_ALL_FROZEN_COMMON_METRICS','SAME_COHORT_BASE_STRICT_CALIBRATION_NOT_CLOSED')
+ 
+ def run_one(spec,specs,owner):
+  publication_check();require_BASE_gate(spec,specs);require(spec['attempt_uuid'] not in budget(specs),'NO_UUID_RESTART')
+@@ -139,7 +138,7 @@
+     require(result['performance_accepted'],'STRICT_IDENTITY_RESOURCE_OR_CALIBRATION_STOP:'+spec['point'])
+   except BaseException as exc:failure=repr(exc);print('COHORT_STOP',failure,flush=True)
+   finally:
+-   write(RAW/'COHORT_TERMINAL.json',dict(utc=now(),status='STOP' if failure else 'COMPLETE_FIVE_POINT_DISCOVERY_WITH_IMPORTED_GEMM_CONTROL',reason=failure,reserved_starts=len(budget(specs)),actual_fork_children=len(list((RAW/'attempts').glob('*/ENGINE/FORK_CHILD.json'))),results=results,no_automatic_dispatch=True),exclusive=True)
++   write(RAW/'COHORT_TERMINAL.json',dict(utc=now(),status='STOP' if failure else 'COMPLETE_SIX_POINT_PAIRED_DISCOVERY',reason=failure,reserved_starts=len(budget(specs)),actual_fork_children=len(list((RAW/'attempts').glob('*/ENGINE/FORK_CHILD.json'))),results=results,no_automatic_dispatch=True),exclusive=True)
+  write(RAW/'AUTHORITY_RELEASE.json',dict(utc=now(),own_lock_closed=True,owner=owner,no_automatic_dispatch=True,foreign_signals=0),exclusive=True)
+ 
+ if __name__=='__main__':
+--- DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/test_dispatch_generation.py
++++ tools/test_dispatch_generation.py
+@@ -19,13 +19,13 @@
+ 
+ def main():
+  dest=RAW/'dispatch-generation'/str(time.time_ns());dest.mkdir(parents=True)
+- target=BUILD/'ag5-cpu-authority';manifests={}
++ target=BUILD/'ag6-cpu-authority';manifests={}
+  for exe in [target,Path('/usr/bin/dash'),Path('/usr/bin/cat')]:
+   m,_=freeze_executable(exe,BUILD);manifests[m['target']]=m
+  env=dict(PATH='/usr/bin:/bin',LANG='C',LC_ALL='C',CUDA_VISIBLE_DEVICES='')
+  oldpath=PACK.parent/'DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/guarded_process.py'
+  # Only CPU target/root namespace changes. Dispatch logic stays frozen.
+- oldtext=oldpath.read_text().replace('/workspace/dtc-lane-ag4-authority-aead-174-v1',str(RAW.parent)).replace('ag4-cpu-','ag5-cpu-')
++ oldtext=oldpath.read_text().replace('/workspace/dtc-lane-ag4-authority-aead-174-v1',str(RAW.parent)).replace('ag4-cpu-','ag6-cpu-')
+  old=types.ModuleType('frozen_ag4_guard_cpu_namespace_only')
+  exec(compile(oldtext,str(oldpath)+':CPU_NAMESPACE_ONLY','exec'),old.__dict__)
+  write(dest/'PREREGISTRATION.json',dict(utc=now(),manifests=manifests,old_source_sha=sha(oldpath),fixed_source_sha=sha(PACK/'tools/guarded_process.py'),old_change_scope='CPU root and basename only; no dispatch changes',kernel_PID_reuse_forced=False,synthetic_wait_status=True,simulator_starts=0),exclusive=True)
+--- DTC_LANE_AG5_RETIRED_PID_REPAIR_V1/tools/test_mapping_regression.py
++++ tools/test_mapping_regression.py
+@@ -3,7 +3,7 @@
+ import copy,sys
+ CASES={'positive_sequence':(0,'PASS'),'missing_cache':(42,'CACHE_REGISTRATION_MISSING'),'cache_SHA':(42,'FROZEN_FILE_SHA_MISMATCH'),'cache_inode':(42,'MAP_DEVICE_INODE_MISMATCH'),'unknown_file':(42,'UNREGISTERED_FILE_MAPPING'),'wrong_role':(42,'ROLE_REQUIRES_ELF'),'ELF_as_data':(42,'ELF_MASQUERADING_AS_DATA'),'unknown_pseudo':(42,'UNKNOWN_NONFILE_MAPPING')}
+ def case(name):
+- q=json.loads((PACK/'CPU_AUTHORITY_QUALIFICATION.json').read_text());root=Path(q['raw']);reg=json.loads((root/'PREREGISTRATION.json').read_text())['manifests'];target=str(BUILD/'ag5-cpu-authority');m=copy.deepcopy(reg[target]);events=[json.loads(l) for l in (root/'normal_fork_exec_exit/MAP_EVENTS.jsonl').read_text().splitlines()];events=[e for e in events if e.get('exe')==target and e.get('pid')==q['cases'][0]['result']['root_pid']]
++ q=json.loads((PACK/'CPU_AUTHORITY_QUALIFICATION.json').read_text());root=Path(q['raw']);reg=json.loads((root/'PREREGISTRATION.json').read_text())['manifests'];target=str(BUILD/'ag6-cpu-authority');m=copy.deepcopy(reg[target]);events=[json.loads(l) for l in (root/'normal_fork_exec_exit/MAP_EVENTS.jsonl').read_text().splitlines()];events=[e for e in events if e.get('exe')==target and e.get('pid')==q['cases'][0]['result']['root_pid']]
+  early=next(e for e in events if e.get('cache_present'));maps=root/'normal_fork_exec_exit/maps';text=(maps/early['maps']).read_text();r={e['path']:e for e in m['files']}
+  if name=='positive_sequence':
+   s=Sequence(m)
+--- DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/test_runner_cpu.py
++++ tools/test_runner_cpu.py
+@@ -8,6 +8,7 @@
+ import copy,uuid
+ from unittest.mock import patch
+ import run_screen as runner
++import strict_screen as strict_module
+ from guarded_process import run_guarded
+ from mapping_roles import Reject
+ from audit_site import snapshot,proc
+@@ -27,13 +28,13 @@
+  rejected('duplicate_start',lambda:runner.validate_records([dict(attempt_uuid=fake[0]['attempt_uuid'])]*2,fake))
+  rejected('out_of_order',lambda:runner.validate_records([dict(attempt_uuid=fake[1]['attempt_uuid'])],fake))
+  rejected('foreign_UUID',lambda:runner.validate_records([dict(attempt_uuid='ffffffff-1111-4111-8111-111111111111')],fake))
+- rejected('sixth_start',lambda:runner.validate_records([dict(attempt_uuid=s['attempt_uuid']) for s in fake]+[dict(attempt_uuid=fake[0]['attempt_uuid'])],fake))
++ rejected('seventh_start',lambda:runner.validate_records([dict(attempt_uuid=s['attempt_uuid']) for s in fake]+[dict(attempt_uuid=fake[0]['attempt_uuid'])],fake))
+  rejected('explicit_dispatch_required',lambda:runner.main(False))
+  rejected('publication_receipt_absent',runner.publication_check)
+- rejected('ON_without_two_calibrated_BASEs',lambda:runner.require_BASE_gate(dict(arm='AE'),fake))
++ rejected('ON_without_two_calibrated_BASEs',lambda:runner.require_BASE_gate(dict(point='AE_GEMM',arm='AE'),[dict(s,workload=('GEMM' if 'GEMM' in s['point'] else 'Gaussian')) for s in fake]))
+  rejected('manifest_changed',lambda:runner.check_files(dict(files={'tools/mapping_roles.py':'0'*64})))
+- target=BUILD/'ag4-cpu-authority';env=dict(PATH='/usr/bin:/bin',LANG='C',LC_ALL='C',CUDA_VISIBLE_DEVICES='')
+- cpu=json.loads((Path(json.loads((PACK/'CPU_AUTHORITY_QUALIFICATION.json').read_text())['raw'])/'PREREGISTRATION.json').read_text())['manifests'];real=json.loads((PACK/'RUNTIME_MAPPING_MANIFESTS.json').read_text())
++ target=BUILD/'ag6-cpu-authority';env=dict(PATH='/usr/bin:/bin',LANG='C',LC_ALL='C',CUDA_VISIBLE_DEVICES='')
++ cpu=json.loads((Path(json.loads((PACK/'CPU_AUTHORITY_QUALIFICATION.json').read_text())['raw'])/'PREREGISTRATION.json').read_text())['manifests'];real=json.loads((PACK/'historical/RUNTIME_MAPPING_MANIFESTS.json').read_text())
+  runtime=next(k for k in real if Path(k).name=='accel-sim.out')
+  rejected('CPU_phase_rejects_real_simulator',lambda:run_guarded([runtime],env,real,RAW/'NEVER_CREATED_CPU_TO_SIM','CPU_FIXTURE',1))
+  rejected('no_capability_no_simulation',lambda:run_guarded([str(target)],env,cpu,RAW/'NEVER_CREATED_NO_CAP','SIMULATION',1))
+@@ -43,8 +44,8 @@
+  rejected('cache_changed_before_fork',lambda:run_guarded([str(target)],env,bad,RAW/'NEVER_CREATED_BAD_CACHE','CPU_FIXTURE',1))
+  require_no=[RAW/n for n in ['NEVER_CREATED_CPU_TO_SIM','NEVER_CREATED_NO_CAP','NEVER_CREATED_BAD_CACHE']]
+  assert not any(q.exists() for q in require_no)
+- phase=RAW/'cpu-qualification/production-run-one-BASE-gated-final';phase.mkdir(parents=True,exist_ok=False)
+- fixturepack=phase/'fixture_pack';fixturepack.mkdir();write(fixturepack/'RUNTIME_MAPPING_MANIFESTS.json',cpu);write(fixturepack/'AG3_GEMM_BASE_REUSE_QUALIFICATION.json',dict(status='PASS_REUSE_AG3_GEMM_BASE_FOR_AG4_DISCOVERY',CPU_FIXTURE_ONLY_NOT_REAL_QUALIFICATION=True))
++ phase=RAW/('cpu-qualification/production-run-one-'+str(__import__('time').time_ns()));phase.mkdir(parents=True,exist_ok=False)
++ fixturepack=phase/'fixture_pack';fixturepack.mkdir();write(fixturepack/'RUNTIME_MAPPING_MANIFESTS.json',cpu);write(fixturepack/'CPU_ONLY_NOT_REAL_BASE.json',dict(status='CPU_FIXTURE_ONLY_NOT_REAL_QUALIFICATION'))
+  spec=dict(fake[0],arm='BASE',workload='GEMM',runtime_path=str(target),runtime_environment=env,core_commit='CPU_FIXTURE_RECORD_NOT_A_SIMULATION',configs=[dict(path=str(PACK/'config/BASE.config'),sha256=sha(PACK/'config/BASE.config'))])
+  original=json.loads((PACK/'inputs/T/inputs/GEMM_OO128_SPEC.json').read_text());spec.update(trace_list=original['trace_list'],trace_list_sha256=original['trace_list_sha256'],expected_kernels=1)
+  specs=[spec,*fake[1:]]
+@@ -53,14 +54,14 @@
+   capability(str(target),argv,environment)
+   return run_guarded(argv,environment,manifests,destination,'CPU_FIXTURE',30,observer=observer)
+  def cpu_collect(run,spec):
+-  text=(run/'simulator.stdout').read_text();assert 'AG4_CPU_ONLY_OK' in text
++  text=(run/'simulator.stdout').read_text();assert 'AG6_CPU_ONLY_OK' in text
+   term=json.loads((run/'RUN_TERMINAL.json').read_text());assert term['returncode']==0 and term['identity_pass']
+   return dict(arm='BASE',status='PASS_CPU_WRAPPER_NOT_GPU_STRICT',performance_accepted=False,cycles='UNAVAILABLE_CPU_ONLY',real_simulator=False)
+- with patch.object(runner,'RAW',phase),patch.object(runner,'PACK',fixturepack),patch.object(runner,'publication_check',lambda:(dict(cpu_fixture_only=True),'CPU_NOT_PUBLICATION')),patch.object(runner,'admission',lambda label,owner:snapshot()),patch.object(runner,'run_guarded',cpu_bridge),patch.object(runner,'collect',cpu_collect):
++ with patch.object(strict_module,'PACK',PACK.parent/'DTC_LANE_AG4_AUTHORITY_AE_AD_V1'),patch.object(runner,'RAW',phase),patch.object(runner,'PACK',fixturepack),patch.object(runner,'publication_check',lambda:(dict(cpu_fixture_only=True),'CPU_NOT_PUBLICATION')),patch.object(runner,'admission',lambda label,owner:snapshot()),patch.object(runner,'admission_checks',lambda *a:{'second_CPU_ONLY_NOT_PERFORMANCE_ADMISSION':True,'no_new_cgroup_oom':True}),patch.object(runner,'run_guarded',cpu_bridge),patch.object(runner,'collect',cpu_collect):
+   result=runner.run_one(spec,specs,proc(os.getpid()))
+   assert result['performance_accepted'] is False and result['cycles']=='UNAVAILABLE_CPU_ONLY'
+   rejected('same_reservation_cannot_run_again',lambda:runner.run_one(spec,specs,proc(os.getpid())))
+- evidence.append(dict(case='production_run_one_CPU_closed',status='PASS_CPU_NOT_SIMULATION',result=result,explicit_mocks=['publication/admission scientific adapters','GPU strict adapter records UNAVAILABLE/false'],real_paths_exercised=['input/stat gate','config copy/SHA','final resource/authority sample','exclusive start receipt/budget prefix','capability exact args','real production owned-process guard','all early maps/threads/helpers','final resource','lifecycle receipt','output/strict adapter','file SHA index','cleanup/signal restoration']))
++ evidence.append(dict(case='production_run_one_CPU_closed',status='PASS_CPU_NOT_SIMULATION',result=result,explicit_mocks=['publication and initial/final admission adapters explicitly CPU-only; real resources are separately sampled and not qualified by this mock','GPU strict adapter records UNAVAILABLE/false'],real_paths_exercised=['historical frozen input/stat gate (CPU adapter; not fresh AG6 qualification)','config copy/SHA','final resource/authority sample','exclusive start receipt/budget prefix','capability exact args','real production owned-process guard','all early maps/threads/helpers','final resource','lifecycle receipt','output/strict adapter','file SHA index','cleanup/signal restoration']))
+  assert not list((RAW/'attempts').glob('*/RUN_START.json'))
+  write(PACK/'RUNNER_CPU_QUALIFICATION.json',dict(status='PASS_PRODUCTION_RUNNER_CPU_CLOSURE_WITH_DECLARED_ADAPTERS',cases=evidence,runner_sha256=sha(PACK/'tools/run_screen.py'),guard_sha256=sha(PACK/'tools/guarded_process.py'),real_simulator_starts=0,performance_accepted=False,unqualified=['actual simulator initialization/runtime still checked in its first budgeted attempt','no-cache host positive qualification']))
+  print(json.dumps(dict(status='PASS_PRODUCTION_RUNNER_CPU_CLOSURE',cases=len(evidence),real_simulator_starts=0)))
+--- DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/verify_original_members.py
++++ tools/verify_original_members.py
+@@ -11,7 +11,7 @@
+ def main():
+     audit=json.loads((PACK/'CURRENT_SITE_AUDIT.json').read_text())
+     assert audit['all_resource_checks_pass']
+-    assert not audit['authority']['unresolved_dispatcher_pids']
++    assert audit['authority']['status']=='PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY'
+     os.nice(19)
+     dest=RAW/'input-member-sha';dest.mkdir(exist_ok=True)
+     body=list(csv.DictReader(io.StringIO((PACK/'inputs/T/inputs/KERNEL_BODY_AUDIT.tsv').read_text()),delimiter='\t'))
+--- DTC_LANE_AG4_AUTHORITY_AE_AD_V1/tools/verify_publication.py
++++ tools/verify_publication.py
+@@ -3,11 +3,11 @@
+ import argparse
+ 
+ def main(phase):
+- ref='refs/ag4-publication/'+phase
++ ref='refs/ag6-publication/'+phase
+  head=git(FW,'rev-parse','HEAD');fetched=git(FW,'rev-parse',ref);assert head==fetched
+  tree=git(FW,'rev-parse','HEAD^{tree}');assert tree==git(FW,'rev-parse',ref+'^{tree}')
+  assert not git(FW,'status','--porcelain')
+- prefix=str(PACK.relative_to(FW));names=git(FW,'diff','--name-only','2f3a8c4b27780e2bf3818949a6e5356d9fd62327','HEAD').splitlines();assert names and all(n.startswith(prefix+'/') for n in names)
++ prefix=str(PACK.relative_to(FW));names=git(FW,'diff','--name-only','9793e998d60cb5a7f064a46ecd6be242eda61b7c','HEAD').splitlines();assert names and all(n.startswith(prefix+'/') for n in names)
+  entries=subprocess.check_output(['git','-C',str(FW),'ls-tree','-rz','HEAD','--',prefix]).split(b'\0');entries=[e for e in entries if e]
+  parsed=[]
+  for e in entries:
+@@ -18,7 +18,7 @@
+   local=FW/name;assert local.read_bytes()==body,name
+   rows.append(dict(path=name,blob=oid,bytes=size,sha256=hashlib.sha256(body).hexdigest(),local_equals_fetched_blob=True))
+  assert git(CORE,'rev-parse','HEAD')=='c8090115bd57512b1b23fca7d925301fa620c751' and not git(CORE,'status','--porcelain')
+- receipt=dict(status='PASS_PUBLISHED_FETCH_BACK_HEAD_TREE_ALL_PACK_BLOBS_AND_CLEAN',utc=now(),phase=phase,head=head,fetched_head=fetched,tree=tree,reference=ref,blob_count=len(rows),blobs=rows,source_scope_only_AG4_pack=True,Framework_clean=True,Core_clean=True,Core_commit=git(CORE,'rev-parse','HEAD'))
++ receipt=dict(status='PASS_PUBLISHED_FETCH_BACK_HEAD_TREE_ALL_PACK_BLOBS_AND_CLEAN',utc=now(),phase=phase,head=head,fetched_head=fetched,tree=tree,reference=ref,blob_count=len(rows),blobs=rows,source_scope_only_AG6_pack=True,Framework_clean=True,Core_clean=True,Core_commit=git(CORE,'rev-parse','HEAD'))
+  if (PACK/'EXECUTABLE_PREREGISTRATION.json').exists():receipt['manifest_sha256']=sha(PACK/'EXECUTABLE_PREREGISTRATION.json')
+  name='PREREG_PUBLICATION_READBACK.json' if phase=='preregistered' else phase.upper()+'_PUBLICATION_READBACK.json'
+  write(RAW/name,receipt,exclusive=True)

@@ -1,0 +1,9 @@
+# Costs and typed interpretation
+
+AE S64 uses the producer's fixed four row-bit XORs and possible enable mux/control/wiring while preserving all4 banks, the unchanged low2 index bits and service ports. The simulator assumes no extra Tag cycle; no RTL timing, same frequency, area, power or equal-PPA proof exists. No alternate hash or post-result tuning.
+
+AD separates data-ready from broadcast-done and retains every unnotified consumer's own pending dependency and quota. Extra data-ready/state, timestamps/counters and bounded bookkeeping are present; there is no added modeled payload bank/PIB or port. New host layout is explicitly measured (config60/front824/physical96/etc.), not physical silicon area. Producer's33112B host estimate cannot be silently copied unchanged into this combined ABI. RTL area/critical path/power are UNAVAILABLE. No AC160KiB/SM result banks are included.
+
+Common per-input integer counts: ready(valid) hits/pending hits/new misses, create/inject/responses/credit, PIB and physical SM-cycle integrals, collected32B sectors and service intervals. L2 GLOBAL_ACC_R partition uses32B sectors, DRAM issued read/write atoms each32B; busy commands/cycles are not bytes. Existing raw uninitialized DRAM n_ref remains UNAVAILABLE. Aggregate tag conflicts can be compared; per-bank/set workload distribution is UNAVAILABLE because no public histogram is emitted.
+
+AD notification fanout (last bin32 means >=32), first/last/span, own-dep0 observations and returns→retire are ON-only diagnostics. OFF absence is UNAVAILABLE. AD changes ready's condition population, so post-ready mean differences cannot isolate causal benefit. Collection/WB actual simultaneous overlap is UNAVAILABLE without a measured overlap counter; collection_cycles and wb_wait sums do not establish overlap or0. K1-only statistics are UNAVAILABLE in these K0 runs. Cross-SM query reuse, numerical returned load values, coherence and native/ISA correctness are not established.
