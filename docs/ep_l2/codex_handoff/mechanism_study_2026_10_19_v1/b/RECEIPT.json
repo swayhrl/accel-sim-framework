@@ -1,17 +1,17 @@
 {
-  "schema": "MS20261019_B_VICTIM_CHECKPOINT_V2",
+  "schema": "MS20261019_B_VICTIM_CHECKPOINT_V3",
   "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
   "lane": "B",
   "authority": "d9263fa2431592b33e900d9b48c6f20029d8b544",
   "goal": "Dynamic eviction-data cache isolated implementation and genuine functional validation",
   "goal_complete": false,
   "status": "SOURCE_CHECKPOINT_PUBLISHED_NATIVE_VALIDATION_PENDING",
-  "at": "2026-10-19T13:36:36.439432+00:00",
+  "at": "2026-10-19T13:47:19.773676+00:00",
   "framework_branch": "hrl/ep-l2-ms20261019-b-victim-v1",
   "framework_base": "d9263fa2431592b33e900d9b48c6f20029d8b544",
   "core_branch": "hrl/ep-l2-ms20261019-b-victim-v1",
   "core_parent": "84359d4ba492acb639a2092fa271e9169038bf7d",
-  "core_commit": "b90ed7c14e7b00ec4c68a26af224be3d2620f647",
+  "core_commit": "3a6b85b2ffc2f4ee1af189b5ea627abb864bb1df",
   "A_interface": "980072bbbcbd4ad00cdf85650283931e94cad395",
   "runtime_Framework_parent": "197741be9be9b8e390a557d639503b416d8e95f0",
   "vendor_pybind11": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
@@ -20,7 +20,7 @@
   "input_scope": "FINITE_SYNTHETIC_NATIVE_CACHE_STIMULI_NOT_FULL_APPLICATION",
   "native_tests_executed": 0,
   "native_compile_attempts": 0,
-  "planned_finite_processes": 18,
+  "planned_finite_processes": 21,
   "observed_victim_hits": null,
   "observed_DRAM_read_delta": null,
   "public_A_files_edited": 0,
@@ -34,8 +34,8 @@
   "dirty": "PENDING_AND_INFLIGHT_SOURCE_READY_NOT_COMPILED_NOT_RUN_NOT_FULL_QUALIFICATION",
   "fixed_victim_partition": "RECIPROCAL_BANK_CAPACITY64_1104_NOT_FIXED_PHYSICAL_IDS_SOURCE_READY_NOT_RUN",
   "core_artifacts": "docs/ep_l2/ms_victim",
-  "public_hook_patch": "docs/ep_l2/ms_victim/adapter_r2_full/A_PUBLIC_HOOKS.patch",
-  "test_plan": "docs/ep_l2/ms_victim/test_plan_r2/NATIVE_TEST_PLAN.json",
+  "public_hook_patch": "docs/ep_l2/ms_victim/adapter_A44_r3/A_PUBLIC_HOOKS.patch",
+  "test_plan": "docs/ep_l2/ms_victim/test_plan_r3/NATIVE_TEST_PLAN.json",
   "old_candidates_preserved": true,
   "old_results_and_ledgers_untouched": true,
   "remote_readback_directory": "/workspace/ep_l2_ms20261019_b_victim",
@@ -44,18 +44,18 @@
     "E legal finite native admission",
     "Actual clean-cache responses plus independently counted lower/nativeDRAM issues first; full dirty/fixed qualify separately"
   ],
-  "Core_remote_readback": "EXACT_REMOTE_REF_FETCHED_SHA_TREE_AND38_B_FILE_BYTES_PASS",
-  "revision": "r2",
-  "core_root_tree": "4eb8521c345fdac10cebbf3c6782baf30abf74b3",
+  "Core_remote_readback": "EXACT_REMOTE_REF_FETCHED_SHA_TREE_AND48_B_FILE_BYTES_PASS",
+  "revision": "r3",
+  "core_root_tree": "940f81447b2979b85312f69df483744a3b72c16c",
   "current_workspace_free_bytes_at_publication": 5600256000,
   "preserved_clean_first_core": "89a75b2444e21229357631248f4e2043fd849ad0",
-  "previous_Framework_commit": "ebfb5371086241d90865f61b49baa54989c876a5",
+  "previous_Framework_commit": "3174a3287bab55c770ebb05d1bad5aa07a5b80cb",
   "A_latest_handoff_read": {
     "Core": "44c940b748fceaec8f21fa2b443907d5afd2756b",
     "Framework": "2a5f0f11fd10f2cb235f895ec1f84ce853a99b39",
     "status": "source diagnostics NOT_COMPILED_NOT_RUN; no E admission"
   },
-  "patch_base": "84359d4ba492acb639a2092fa271e9169038bf7d",
+  "patch_base": "44c940b748fceaec8f21fa2b443907d5afd2756b",
   "textual_public_delta_files": [
     "src/gpgpu-sim/gpu-cache.h",
     "src/gpgpu-sim/gpu-cache.cc",
@@ -77,7 +77,7 @@
     "new_data_array_bytes": 0,
     "fixed_plus_dirty": "REJECTED"
   },
-  "source_checks": "docs/ep_l2/review_packs/MS20261019_B_VICTIM_SOURCE_r2/TEXT_SOURCE_CHECKS.json",
+  "source_checks": "docs/ep_l2/review_packs/MS20261019_B_VICTIM_SOURCE_r3/TEXT_SOURCE_CHECKS.json",
   "runtime_effective_dump": null,
   "expected_old_bank_failure": {
     "exit": 21,
@@ -85,11 +85,21 @@
     "status": "NOT_COMPILED_NOT_RUN"
   },
   "remaining": [
-    "A integrate exact modules and SIX public textual hunks; preserve newer diagnostic/observer/RO guards and reject joint modes",
+    "A integrate exact modules plus six-file A44 textual patch; preserve independent diagnostics/observer; joint TVD combinations explicitly rejected",
     "A WAD/metadata port/control-cost and fixed bank-capacity baseline review",
     "E fresh legal admission; exact same-source native objects/executables/config effective dump",
-    "All18 prepared native processes including actual old-identity failure and nonzero cache responses/lower/nativeDRAM counters",
-    "Pending reader plus ICNT-full, real refusal rollback, old packet after generation/epoch reuse, mandatory/pin starvation boundaries",
+    "All21 prepared native processes including actual old-identity failure, nonzero responses/lower/nativeDRAM counters, dirty pinned ICNT and clean-only lateWB generation reuse",
+    "Real refusal rollback, late fill/epoch boundaries, metadata starvation and default-OFF equivalence still require exact integrated native evidence",
     "Independent E qualification; D frozen opportunity; full apps by E only"
-  ]
+  ],
+  "preserved_r2_core": "b90ed7c14e7b00ec4c68a26af224be3d2620f647",
+  "source_correction": "After completion while reader pinned, last response commit finalizes both existing TVD-role and WB-role ownership to exact state; no runtime claim",
+  "new_source_bound_regressions": {
+    "dirty_icnt_pinned": "alreadyTVD role; bank selected ICNT full; real done while pinned; last-unpin state; NOT_RUN",
+    "clean_wb_reuse": "actual local slot reuse by native fill; old packet completion must preserve new generation/data and same-address order; NOT_RUN",
+    "study_dirty_boundaries": "reused bank-local pool exhaustion and partial dirty promotion assertions; NOT_RUN"
+  },
+  "qualified_profiles": [],
+  "new_native_results": [],
+  "resource_observation_note": "No repeat disk survey this continuation; last13:34UTC observed5600256000B workspace. No E admission/new registry at continuation initial read. No native launch without fresh legal E gate."
 }
