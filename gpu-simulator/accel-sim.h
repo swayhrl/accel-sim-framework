@@ -28,6 +28,7 @@ class accel_sim_framework {
     sim_cycles = false;
     window_size = 0;
     commandlist_index = 0;
+    ro_epoch_started = false;
 
     assert(m_gpgpu_context);
     assert(m_gpgpu_sim);
@@ -39,6 +40,8 @@ class accel_sim_framework {
                       : 1;
     assert(window_size > 0);
     commandlist = tracer.parse_commandlist_file();
+    // Bind the actual whole commandlist bytes, before any RO epoch is opened.
+    m_gpgpu_sim->ro_bind_commandlist(tconfig.get_traces_filename());
 
     kernels_info.reserve(window_size);
   }
@@ -66,6 +69,7 @@ class accel_sim_framework {
   bool sim_cycles;
   unsigned window_size;
   unsigned commandlist_index;
+  bool ro_epoch_started;
 
   std::vector<unsigned long long> busy_streams;
   std::vector<trace_kernel_info_t *> kernels_info;

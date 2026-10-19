@@ -11,7 +11,7 @@ accel_sim_framework::accel_sim_framework(std::string config_file,
   const char *argv[] = {"accel-sim.out", "-config", config_file.c_str(),
                         "-trace", trace_file.c_str()};
 
-  gpgpu_sim *m_gpgpu_sim =
+  m_gpgpu_sim =
       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
   m_gpgpu_sim->init();
 
@@ -97,6 +97,11 @@ void accel_sim_framework::simulation_loop() {
   // cleanup() reports a completed kernel as soon as its CTA work retires.
   // Emit one final snapshot after the backend drain so closeout checks see
   // the actual terminal resource and credit state.
+  // A capped/aborted run never receives a completed-epoch marker.
+  if (ro_epoch_started && !m_gpgpu_sim->cycle_insn_cta_max_hit()) {
+    m_gpgpu_sim->ro_end_epoch();
+    printf("EPL2ROV1|COMMANDLIST_END|complete=1|commands=%zu\n", commandlist.size());
+  }
   if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit())
     m_gpgpu_sim->print_stats(~0ULL);
 }
@@ -108,6 +113,10 @@ void accel_sim_framework::parse_commandlist() {
   while (kernels_info.size() < window_size && commandlist_index < commandlist.size()) {
     trace_kernel_info_t *kernel_info = NULL;
     if (commandlist[commandlist_index].m_type == command_type::cpu_gpu_mem_copy) {
+      // The certificate assumes memcpy commands at drained boundaries.
+      // Keep native/OFF command processing exactly as in the frozen parent.
+      if (m_gpgpu_sim->ro_enabled() &&
+          (!kernels_info.empty() || m_gpgpu_sim->active())) break;
       size_t addre, Bcount;
       tracer.parse_memcpy_info(commandlist[commandlist_index].command_string, addre, Bcount);
       std::cout << "launching memcpy command : "
@@ -115,6 +124,13 @@ void accel_sim_framework::parse_commandlist() {
       m_gpgpu_sim->perf_memcpy_to_gpu(addre, Bcount);
       commandlist_index++;
     } else if (commandlist[commandlist_index].m_type == command_type::kernel_launch) {
+      // Initial HtoD prefill is now complete. One epoch spans every kernel
+      // in this exact commandlist, including concurrent launch windows.
+      if (m_gpgpu_sim->ro_enabled() && !ro_epoch_started) {
+        m_gpgpu_sim->ro_begin_epoch();
+        ro_epoch_started = true;
+        printf("EPL2ROV1|COMMANDLIST_BEGIN|commands=%zu\n", commandlist.size());
+      }
       // Read trace header info for window_size number of kernels
       kernel_trace_t *kernel_trace_info =
           tracer.parse_kernel_info(commandlist[commandlist_index].command_string);
