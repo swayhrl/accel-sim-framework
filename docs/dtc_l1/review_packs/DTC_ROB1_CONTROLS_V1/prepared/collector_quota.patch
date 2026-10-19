@@ -1,0 +1,73 @@
+diff --git a/src/gpgpu-sim/dtc-l1-common.h b/src/gpgpu-sim/dtc-l1-common.h
+--- a/src/gpgpu-sim/dtc-l1-common.h
++++ b/src/gpgpu-sim/dtc-l1-common.h
+@@ -59,3 +59,16 @@
++// ROB1 diagnostic: zero retains the original four-sector collector.
++// Only a one-sector finite PAPER_OO sensitivity point is authorized.
++inline unsigned diagnostic_collection_width(unsigned override_width,
++                                             unsigned selected, bool finite) {
++  if (!override_width) return 4;
++  if (override_width != 1 || !finite ||
++      selected != static_cast<unsigned>(mode::PAPER_OO)) {
++    std::fprintf(stderr, "DTC_COLLECTION_QUOTA_UNSUPPORTED_STOP\n");
++    std::abort();
++  }
++  return override_width;
++}
++
+ // Absolute core-cycle quota; checking availability never consumes a grant.
+ // Commit only after the owning operation actually succeeds.
+ class service_quota {
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -2505,6 +2505,7 @@
+   // reuse the conventional L1 bank/MSHR controls so LEGACY remains untouched.
+   unsigned dtc_l1_mode;
+   bool dtc_l1_finite_service;
++  unsigned dtc_l1_collection_quota = 0;
+   bool dtc_l1_tag_hash_bankrow;
+   bool dtc_l1_progressive_wakeup;
+   bool dtc_l1_invalidate_on_source_event;
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -415,6 +415,10 @@
+   option_parser_register(opp, "-gpgpu_dtc_l1_finite_service", OPT_BOOL,
+                          &dtc_l1_finite_service,
+                          "Opt-in preregistered whole-line DTC finite service V1", "0");
++  option_parser_register(opp, "-gpgpu_dtc_l1_collection_quota", OPT_UINT32,
++                         &dtc_l1_collection_quota,
++                         "ROB1 diagnostic: 0 keeps original4, 1 limits finite "
++                         "PAPER_OO collection to one32B sector/cycle", "0");
+   option_parser_register(opp, "-gpgpu_dtc_l1_mshr_entries", OPT_UINT32,
+                          &dtc_l1_mshr_entries,
+                          "DTC-L1 Paper Base traditional MSHR entries", "32");
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -4338,6 +4338,13 @@
+       m_next_wb(config),
+       m_gpu(gpu) {
+   assert(config->smem_latency > 1);
++  const unsigned collection_width = dtc_l1::diagnostic_collection_width(
++      config->dtc_l1_collection_quota, config->dtc_l1_mode,
++      config->dtc_l1_finite_service);
++  // Explicit0/default do not touch the existing default-initialized quota.
++  // No service operation has occurred before construction.
++  if (config->dtc_l1_collection_quota)
++    m_dtc_service_collect = dtc_l1::service_quota(collection_width);
+   init(icnt, mf_allocator, core, operand_collector, scoreboard, config,
+        mem_config, stats, sid, tpc);
+   dtc_l1::check_source_invalidation_mode(
+@@ -4429,6 +4436,10 @@
+     : pipelined_simd_unit(NULL, config, 3, core, 0),
+       m_L1D(new_l1d_cache),
+       m_next_wb(config) {
++  if (config->dtc_l1_collection_quota) {
++    fprintf(stderr, "DTC_COLLECTION_QUOTA_EXTERNAL_CACHE_CONSTRUCTOR_STOP\n");
++    abort();
++  }
+   if (config->dtc_l1_progressive_wakeup) {
+     fprintf(stderr, "DTC_PROGRESSIVE_WAKE_EXTERNAL_CACHE_CONSTRUCTOR_STOP\n");
+     abort();
