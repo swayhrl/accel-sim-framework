@@ -41,9 +41,12 @@ def main():
     p.add_argument('--admission', type=Path)
     p.add_argument('--via-e-api', action='store_true',
         help='ordinary new lease granted directly by E published reserve_work; no manual approval file')
+    p.add_argument('--affected-native', action='store_true',
+        help='relink three unchanged fixture objects to the sealed repaired archive and run only the20 affected cases')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
-    spec = json.loads(SPEC.read_text())
+    spec_path = HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC
+    spec = json.loads(spec_path.read_text())
     build, old, core, runtime = (Path(spec[k]) for k in ('build', 'retained_build', 'core', 'framework'))
     out = a.out.resolve()
     assert out.parent == Path('/workspace/ep_l2_ms20261019_e_results')
@@ -58,9 +61,20 @@ def main():
     retained = spec['retained_files_sha256']
     for path, digest in retained.items():
         assert sha(path) == digest, 'retained asset changed: '+path
-    bindings = {str(SPEC): sha(SPEC), str(Path(__file__)): sha(__file__),
+    bindings = {str(spec_path): sha(spec_path), str(Path(__file__)): sha(__file__),
         str(HERE/'common_resource_guard.py'): sha(HERE/'common_resource_guard.py'),
         str(HERE/'check_ro_origin_case.py'): sha(HERE/'check_ro_origin_case.py')}
+    if a.affected_native:
+        bindings[str(HERE/'check_native_case.py')] = sha(HERE/'check_native_case.py')
+        parent_path = Path(spec['parent_receipt'])
+        assert sha(parent_path) == spec['parent_receipt_sha256']
+        parent = json.loads(parent_path.read_text())
+        assert parent['status'] == 'OLD_RED_NEW_GREEN_MAIN_COMPILED_PENDING_AFFECTED_QUALIFICATION'
+        assert parent['lease_released'] and parent['retained_assets_unchanged']
+        assert parent['core_source_commit'] == spec['core_source_commit']
+        assert parent['binary_sha256'] == sha(parent['binary']) == spec['new_main_sha256']
+        assert parent['new_archive_sha256'] == sha(spec['new_archive'])
+        assert len(parent['tests']) == 6 and all(t['expectation_verified'] for t in parent['tests'])
     bindings.update(spec['input_sha256'])
     for name in spec['allowed_changed_paths']:
         bindings[str(core/name)] = sha(core/name)
@@ -68,12 +82,12 @@ def main():
         assert sha(path) == digest
     identity = dict(campaign_id=CAMPAIGN, authority=AUTHORITY,
         control_source_commit=git(REPO, 'rev-parse', 'HEAD'), driver_sha256=sha(__file__),
-        spec_sha256=sha(SPEC), core_source_commit=spec['core_source_commit'],
+        spec_sha256=sha(spec_path), core_source_commit=spec['core_source_commit'],
         framework_source_commit=spec['framework_source_commit'], vendor=spec['vendor'],
         retained_runtime_core=spec['runtime_producer_core'],
         retained_main_sha256=spec['retained_main_sha256'],
         build_directory=str(build), output_directory=str(out))
-    expected = dict(identity, owner='A', phase='A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
+    expected = dict(identity, owner='A', phase='A_RO_ORIGIN_AFFECTED20' if a.affected_native else 'A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
         approved=True, full_applications_permitted=False, execution_host=socket.gethostname(),
         reserved_cpu_units=1, reserved_memory_bytes=8*GIB,
         reserved_build_growth_bytes=spec['build_growth_bytes'],
@@ -82,7 +96,8 @@ def main():
     if not a.execute:
         print(json.dumps(dict(status='REQUEST_ONLY_NO_COMPILE_NATIVE_OR_LEASE',
             expected_E_admission=expected, planned_native_cases=spec['cases'],
-            command_scope='one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link'), indent=2))
+            command_scope='three links+20 affected native; no C++ compilation/main relink' if a.affected_native else
+                'one fixture object, old link, one gpu-cache object, copied single-member archive, new link, six native cases, new main link'), indent=2))
         return
     assert a.via_e_api != bool(a.admission), 'choose published E API or exact E file, never an implicit grant'
     admission_bytes = None
@@ -100,7 +115,7 @@ def main():
     report = dict(identity, schema='EP_L2_A_RO_ORIGIN_REPAIR_RECEIPT_V1', status='PREFLIGHT',
         compiler_started=False, application_starts=0, independent_qualification=False,
         commands=[], tests=[], retained_assets_unchanged=False,
-        requested_E_resources=expected,
+        requested_E_resources={k:v for k,v in expected.items() if k != 'approved'},
         admission_method='PUBLISHED_E_RESERVE_WORK_API' if a.via_e_api else 'E_FILE_AND_PUBLISHED_API',
         admission_sha256=sha(a.admission) if a.admission else None,
         memory_floor_bytes=64*GIB)
@@ -194,6 +209,51 @@ def main():
                 return row
             finally:
                 active['pid'] = None
+
+        if a.affected_native:
+            report.update(status='RELINKING_THREE_AFFECTED_FIXTURES', compiler_started=False,
+                link_only=True, binary=parent['binary'], binary_sha256=parent['binary_sha256'],
+                parent_receipt=str(parent_path), parent_receipt_sha256=sha(parent_path))
+            save()
+            for target in spec['targets']:
+                args = shlex.split((old/f'gpgpu-sim/CMakeFiles/{target}.dir/link.txt').read_text())
+                command = []
+                for i, word in enumerate(args):
+                    if i and args[i-1] == '-o':
+                        word = str(build/target)
+                    elif word.endswith('.o') or (word.endswith('.a') and not word.startswith('/')):
+                        word = spec['new_archive'] if word.endswith('/libgpgpusim.a') else str(old/'gpgpu-sim'/word)
+                    command.append(word)
+                run(command, 'link_'+target)
+            fixture_hashes = {target:sha(build/target) for target in spec['targets']}
+            signatures = []
+            for case in spec['cases']:
+                detail = out/(case['id']+'.native.json')
+                native_command = [str(build/case['target']), *case['native_command'][1:]]
+                report['status'] = 'AFFECTED_NATIVE_'+case['id']
+                save()
+                run([sys.executable, str(HERE/'check_native_case.py'), '--expected-exit', str(case['expected_exit']),
+                    '--required-terminal', case['required_terminal'], '--receipt', str(detail), '--', *native_command],
+                    case['id'], case['timeout_seconds'])
+                row = json.loads(detail.read_text())
+                assert row['expectation_verified'] and row['binary_sha256'] == fixture_hashes[case['target']]
+                report['tests'].append(dict(case=case['id'], target=case['target'], suite=case['suite'],
+                    evidence=str(detail), sha256=sha(detail), **row))
+                if case.get('compare_group') == 'F_observer':
+                    lines = [line for line in Path(row['raw_log']).read_text().splitlines()
+                             if line.startswith('A_COMMON_FIXTURE|SEMANTIC|')]
+                    assert len(lines) == 1
+                    signatures.append(dict(case=case['id'], line=lines[0]))
+                save()
+            assert len(signatures) == 2 and signatures[0]['line'] == signatures[1]['line']
+            for path, digest in retained.items():
+                assert sha(path) == digest, 'retained asset changed: '+path
+            report.update(status='AFFECTED_RO20_ACTUAL_PASS_PENDING_E_QUALIFICATION',
+                fixture_binary_sha256=fixture_hashes, observer_semantics=signatures,
+                retained_assets_unchanged=True, native_exit0_passes=len(report['tests']),
+                old_native_passes_not_relabelled=True, new_CPP_translation_units=0,
+                main_relinked=False, original64_all_fresh=False)
+            return
 
         def compile_flags(path):
             return [s.replace(spec['retained_core'], str(core)) for s in flags(path)]
