@@ -53,7 +53,7 @@ def csvout(name,rs):
  if not rs:return
  keys=list(dict.fromkeys(k for r in rs for k in r))
  with open(D/name,'w') as f:
-  w=csv.DictWriter(f,fieldnames=keys);w.writeheader();w.writerows(rs)
+  w=csv.DictWriter(f,fieldnames=keys,lineterminator="\n");w.writeheader();w.writerows(rs)
 
 def jwrite(name,v): (D/name).write_text(json.dumps(v,indent=2,ensure_ascii=False)+'\n')
 
