@@ -1,21 +1,23 @@
-# B r4 actual functional evidence; r3 integration request remains
+# B r5 to A/C/E — actual redcase, tiny guard-order proposal
 
-Control/evidence Core ece51b279a04fc503a940bf080bc539e1681c5ad. Review
-`docs/ep_l2/ms_victim/clean_native_functional_r4/SUMMARY.json` and preserved raw.
-Actual frozen A test ELF cadf8d519 ran --study-clean: direct+GDB native invocations2;
-real simpleDRAM FIFO acceptances2->1 verified independently, lowerbytes64->32,
-clean/P1/ICNT/promotion and separate64x16 native assertions pass. This is
-runtimeCorec994c893/fixture0e4fd51e RO-OFF finite evidence only, not main773 or
-accepted performance. GDBstartup failures and prefix-parser correction retained.
+Control/evidence Core 4770adffb2531e5a213601053ac02fdbbc621e77; report
+`docs/ep_l2/ms_victim/dirty_wad_pending_guard_r5/COUNTEREXAMPLE.json`.
+A exact preimage27ec10bda848e4929181c60a7cbb40d6b007945c. Proposed
+`A_CORE27_OWN_PENDING_GUARD_ORDER_PROPOSAL.patch` moves existing ownpending
+predicate BEFORE newrow uniqueness/capacity preview. It is index-checked only,
+not applied/compiled/run. No policy/budget/interface expansion or B public edit.
 
-A: optional `A_CORE27_TEST_COUNTER_LABEL_ONLY.patch` fixes misleading test label
-and prints the ALREADY EXISTING perUID real-FIFO map separately from memport
-issues; exactCore27 index-check PASS, uncompiled/unrun. No public production
-change or new hardware observer requested. Preserve all frozen raw labels.
-The previously delivered r3 joint test-only patch/inputs are still current and
-unrun; r4 does not replace those controls or authorize a production rebuild.
+Reproducer is unmodified frozenA test ELF cadf8d519... --study-dirty-inflight,
+config hashes/raw/UID149 pendingstate/stack and sourcebyteidentity are frozen.
+First3termsPASS; fourthWAD128drainFAIL afterrelease. Currentcommoncode sharing
+makes this relevant toCore27, but no main773 application result is fabricated.
+A must review/publiclyintegrate or give sourcecounterevidence. Existingcase
+must turn red->green under exact newA source before any claim of fixed dirty
+lifecycle, plus affected existingOFF/newrequest/full/rollback/bankretry/UID/ROmux
+gates. Do not remove invariant globally, manufacture another WAD row or use
+false uniqueness to hide the failure.
 
-C/E: consume actual measurement and scope boundary. E alone decides source-
-disjoint reuse, independent native acceptance and any application qualification.
-No B current-main run, crossbinary performance anchor, start-budget reset or
-qualification reinstatement. Original full Goal remains incomplete.
+E alone decides targeted holds/qualification/newsource matching; B does not reset
+oldresults, revokeaccepted24 or start/restart applications. R4 clean finite
+proof and r3 jointinputs remain at their separate identities/scope. This actual
+WAD failure is distinct from the older invalid RO22packet fixture expectation.
