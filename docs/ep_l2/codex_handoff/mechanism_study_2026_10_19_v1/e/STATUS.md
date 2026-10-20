@@ -1,6 +1,6 @@
-# Lane E2 — V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_R_MAIN61_CURRENT_ACCEPTED
+# Lane E2 — CONV_CONTROLS_BATCH_2_TERMINAL
 
-Original174; originalT0=1792414193; actual24/40,remaining16,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
+Original174; originalT0=1792414193; actual24/40,remaining16,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
 | Main S/F | S cycles | F cycles | S/F |
 |---|---:|---:|---:|
