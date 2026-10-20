@@ -1,4 +1,4 @@
-# Lane E2 — DWT_RAM_GUARD_AUDITED_CFD_RECOVERY_READY
+# Lane E2 — CFD_CONTINUATION_QUALIFIED_ADMISSION
 
 Original174; originalT0=1792414193; actual28/40,remaining12,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
