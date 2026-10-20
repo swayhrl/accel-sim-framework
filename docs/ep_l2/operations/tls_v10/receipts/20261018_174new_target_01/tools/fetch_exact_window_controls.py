@@ -39,3 +39,12 @@ if 'post_stage_recovery_code_sha256' in R and R['post_stage_recovery_code_sha256
  for n in ['tls_v10_one_shot_stage_recovery.py','test_tls_v10_one_shot_stage_recovery.py','TLS_V10_FOLLOWUP_PRESERVED_STAGE_RECOVERY_QUALIFICATION_20261020.json']:
   raw=read_source_git(['show',commit+':'+P+n]);(D/n).write_bytes(raw)
  assert t.sha(D/'tls_v10_one_shot_stage_recovery.py')==R['post_stage_recovery_code_sha256']
+
+G=json.loads((D/(wid+'_SOURCE_GATE_PASS_COPY16.json')).read_bytes())
+if any(s['decision']['effective_workspace_floor_bytes']==5*1024**3
+       for s in [G['gate'],R['gate_before_stage'],R['gate_after_stage']]):
+ for n in ['TLS_V10_P9_REMAINING_COPY5_USER_POLICY_20261020.json',
+           'TLS_V10_P9_REMAINING_COPY5_QUALIFICATION_20261020.json',
+           'tls_v10_p9_lowspace5_gate.py','test_tls_v10_p9_lowspace5_gate.py',
+           'tls_v10_p9_lowspace5_runner.py']:
+  (D/n).write_bytes(read_source_git(['show',commit+':'+P+n]))

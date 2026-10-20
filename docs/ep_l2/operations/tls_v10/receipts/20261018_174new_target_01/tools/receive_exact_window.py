@@ -108,13 +108,28 @@ for i,(r,w) in enumerate(zip(R['entries'],W['ranges'])):
  assert type(r['offset']) is int and type(r['length']) is int and 0<=r['offset']<row['size'] and 0<r['length']<=128*1024**2 and r['offset']+r['length']<=row['size']
  assert len(r['chunk_sha256'])==64 and r['chunk_sha256']==G['fresh_range_sha256'][i]
  if r['offset']==0 and r['length']==row['size']:assert r['chunk_sha256']==row['sha256']
-for stage in [G['gate'],R['gate_before_stage'],R['gate_after_stage']]:
- decision=stage['decision']
- assert decision['decision']=='POLICY_ELIGIBLE_NOT_READY' and not decision['reasons']
- assert decision['effective_workspace_floor_bytes']==16*1024**3
- assert decision['projected_workspace_available_bytes']>=16*1024**3
- assert stage['workspace_available_bytes']>=16*1024**3 and stage['share_available_bytes']>=40*1024**3
- assert 0<=stage['snapshot_age_seconds']<=30 and 0<=stage['staged_physical_bytes']<=256*1024**2
+from p9_source_stage_guard import verify_stage,POLICY_SHA
+stages=[G['gate'],R['gate_before_stage'],R['gate_after_stage']]
+copy5_pin=None
+if any(s['decision']['effective_workspace_floor_bytes']==5*1024**3 for s in stages):
+ assert 29<=int(wid.rsplit('B',1)[1])<=33
+ authority=t.get('TLS_V10_T_SCOPED_SOURCE_P9_COPY5_REVIEW_20261020.json')
+ assert authority['source_policy_sha256']==POLICY_SHA and authority['pure_tests_passed'] is True
+ policy_name='TLS_V10_P9_REMAINING_COPY5_USER_POLICY_20261020.json'
+ assert t.sha(D/policy_name)==POLICY_SHA
+ policy=json.loads((D/policy_name).read_bytes())
+ assert policy['scope']==['B0028_EXISTING_ACK_PUBLICATION','B0029_B0033_COPY_ONLY']
+ assert policy['txid']==W['txid'] and policy['selector_sha256']==W['selector_sha256']
+ assert policy['source_unlink_authorized_by_this_policy'] is False
+ assert policy['original_release_workspace_floor_bytes']==16*1024**3
+ assert policy['other24_policy']=='UNCHANGED_16G'
+ qual=json.loads((D/'TLS_V10_P9_REMAINING_COPY5_QUALIFICATION_20261020.json').read_bytes())
+ assert qual['policy_sha256']==POLICY_SHA and qual['failed']==0 and qual['passed_test_methods']==6
+ assert qual['code_sha256']==authority['source_policy_code_pins']
+ for name,pin in qual['code_sha256'].items():assert t.sha(D/name)==pin
+ copy5_pin=POLICY_SHA
+for stage in stages:
+ verify_stage(wid,stage,copy5_policy_sha=copy5_pin)
 assert R['gate_before_stage']['share_available_bytes']-W['raw_bytes']-1024**2>=40*1024**3
 assert R['gate_after_stage']['staged_physical_bytes']==R['bridge_payload_allocated_bytes']
 review=dict(schema='TLS_V10_TARGET_REVIEWED_EXACT_SOURCE_RUNNER_WINDOW_V1',utc=t.now(),status='SOURCE_EXACT_WINDOW_BINDING_GATE_READY_VERIFIED',window_id=wid,source_ready_git_commit=source_commit,source_ready_sha256=t.sha(D/ready_name),source_binding_sha256=t.sha(D/bind_name),source_runner_sha256=approved,source_test_sha256=testsha,source_fixture_methods=16,full_runner_tests_reviewed_once_at_source_commit='26b7343cb42da5635d0ff12796b749315779f16b',source_runner_revision_reviewed_at=reviewed_runners[approved],source_current_namespace_root_plan_previous_cleanup_and_request_binding=True,source_fresh_snapshots_signed_compact=True,source_production_evidence_code_takes_fresh_actual_RAM_cgroup_lease_current_planned_reader_inputs_each_gate=True,target_did_not_run_source_policy_or_sender=True,source_originals='SOURCE_KEEP',no_global16_or_release_permission=True,goal_mode='ACTIVE')
