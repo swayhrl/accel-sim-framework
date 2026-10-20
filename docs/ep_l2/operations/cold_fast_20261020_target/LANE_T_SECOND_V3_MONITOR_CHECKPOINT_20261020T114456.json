@@ -1,0 +1,81 @@
+{
+  "schema": "LANE_T_SECOND_V3_ORIGINAL_GATE_CHECKPOINT_V1",
+  "utc": "2026-10-20T11:44:56.432841+00:00",
+  "status": "RESOURCE_HOLD",
+  "transaction": "LANE_BA_COLD_V3_46BF3A69_POSTCHECK_20261020",
+  "cadence_seconds": 75,
+  "completed_lightweight_checks": 10,
+  "window_first_utc": "2026-10-20T11:32:00.249971+00:00",
+  "window_last_utc": "2026-10-20T11:43:56.872997+00:00",
+  "host_IO_observed_range": {
+    "some_min": 24.14,
+    "some_max": 32.29
+  },
+  "original_host_IO_limit": 10,
+  "latest_gate": {
+    "schema": "LANE_T_SECOND_LIGHTWEIGHT_ORIGINAL_GATES_V1",
+    "utc": "2026-10-20T11:43:56.872997+00:00",
+    "status": "RESOURCE_HOLD",
+    "reasons": [
+      "Source_HOST_IO_ABOVE10",
+      "Target_HOST_IO_ABOVE10"
+    ],
+    "source": {
+      "role": "Source",
+      "namespace": "mnt:[4026534768]",
+      "utc": "2026-10-20T11:43:58.113768+00:00",
+      "host_IO_avg10": {
+        "some": 28.07,
+        "full": 28.07
+      },
+      "MemAvailable_bytes": 332367327232,
+      "Share_available_bytes": 44302516224,
+      "cgroup_headroom_bytes": 210179203072,
+      "identity_pass": true,
+      "source_root_identity": [
+        156,
+        33145222,
+        3
+      ]
+    },
+    "target": {
+      "role": "Target",
+      "namespace": "mnt:[4026535153]",
+      "utc": "2026-10-20T11:43:58.093962+00:00",
+      "host_IO_avg10": {
+        "some": 28.07,
+        "full": 28.07
+      },
+      "MemAvailable_bytes": 332372979712,
+      "Share_available_bytes": 44302516224,
+      "cgroup_headroom_bytes": 272065732608,
+      "identity_pass": true,
+      "mount": {
+        "target": "/root/share/mnt164",
+        "source": "admin-wcx@10.208.130.164:/home/shared",
+        "fstype": "fuse.sshfs"
+      },
+      "locks": {
+        ".TARGET_RECEIVER.lock": "IDLE",
+        ".TLS_V10_SOURCE_SENDER.lock": "IDLE"
+      },
+      "active_bridge_windows": [],
+      "destination_exists": false,
+      "destination_entries": [],
+      "NAS_available_bytes": 52306056491008
+    },
+    "no_payload_read": true,
+    "no_full_tree_scan": true,
+    "no_model_or_ledger_changes": true,
+    "original_host_IO_limit": 10
+  },
+  "second_transfer_started": false,
+  "full_tree_scans_while_hold": 0,
+  "Source_payload_bytes_read": 0,
+  "first_archive_retransferred_bytes": 0,
+  "first_measured_Source_reclaimed_bytes": 3383369728,
+  "source_delete_by_target": false,
+  "C16_TLS_P9_E2": "UNCHANGED_HOLD_NO_ACTION",
+  "goal_status": "ACTIVE_CONTINUOUS_MONITOR_UNTIL_ORIGINAL_GATES_PASS",
+  "next": "Automatically continue same second transaction after all original gates pass; no user approval or new data stream. Existing destination/locks always checked before launch."
+}
