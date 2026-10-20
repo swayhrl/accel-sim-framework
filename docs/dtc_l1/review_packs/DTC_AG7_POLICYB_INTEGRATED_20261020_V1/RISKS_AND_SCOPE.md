@@ -1,11 +1,44 @@
-# AG7 Policy B scope and remaining risks
+# Risks and scope at final STOP
 
-The producer is default OFF. AG7 explicitly enables the same frozen observer and pilot policy for all four arms. The original Core library and parser/main objects remain unchanged. The independently reviewed state projection removes observer operations without changing modeled transitions; actual source, build and runtime binding support the narrowly scoped BASE reuse decision. This is not a formal compiler/libc verification, native numerical/ISA/coherence claim, hardware area result, or wall-clock performance comparison.
+Policy B remains experimental, default OFF and limited to the frozen four-arm
+pilot. The 10/30/600/1800/7200-second bounds are prior engineering safety choices,
+not empirically optimal production thresholds. The host/global I/O guard and
+bounded cgroup episode are the explicitly accepted conservative surrogate;
+retirement is not proof that unrelated shared-cgroup tasks were unharmed.
+Per-process I/O, PSI and device counters retain attribution limitations.
 
-Observation adds OS/socket/clock work and wall time. A single simulator thread supplies coherent completed active-lane instructions; there is no concurrent model reader or fabricated heartbeat. Parsing or a single model operation may exceed the 30-second freshness bound and cause an unrecoverable, consumed STOP. Phase changes cannot renew the 600-second no-retirement cap. First AE_GEMM is the paid end-to-end qualification; CPU fixtures cannot replace it.
+Only whole-input, exact-source/input/ROI/options and naturally closed strict
+accepted points may supply cycles or BASE/ON ratios. Any missing, stopped,
+contradictory or otherwise incomplete point prevents final four-arm selection.
+Historical AG3/AG4 executor limitations remain disclosed; their old PASS scope
+is not expanded. The new Framework-only observer bridge preserves original
+Core-library bytes and source/model transitions under reviewed build/runtime
+contracts; it is not formal compiler/libc verification or a native value proof.
 
-The shared root cgroup contains other projects. PSI and device io.stat cannot attribute latency or harm exclusively to this simulator. The adapter records real bounded membership/PID/start_ticks/process-I/O snapshots and device counters, and fails closed on unreadable live scope. It does not infer harmlessness from retirement or low host PSI. BA accepts the retained original host I/O persistence guard plus the finite 1800-second cgroup-high episode as a conservative surrogate only for this authorized pilot. These are ex ante engineering bounds, not validated optimal thresholds or proof of no harm to external tasks. Unverifiable scope, observed danger, unknown authority, ownership/image failure, output/disk/OOM/memory guard failure, unreliable telemetry or timeout stops the cohort.
+Protection covers identity/ownership/authority/mapper, stale or reversed
+telemetry, bounded no-retirement and I/O episodes, host/cgroup memory/swap/OOM,
+disk/device/output bounds, deadline and unnatural/late contradictory exits.
+One completed pilot does not establish general production qualification over
+all workloads, long parsing phases, hardware/ISA/coherence or numerical values.
+No new primary application GM, formal R/N results or DC hardware area claim.
 
-The original production protection source is preserved; the opt-in adapter filters only the exact old cgroup-I/O persistence reason. All original host/global and other protections remain. No broad PID discovery/adoption, foreign signal, process-group kill, old Goal restart or additional BASE/canary is authorized.
+Final evidence is compact hashes and local references; protected raw files stay
+in the independent output root. Remaining work requires scientific review of
+the recorded outcome and any explicitly requested further production scope or
+new simulation budget. No automatic continuation, restart or reuse of sealed
+AG6/AG7 identities is authorized. BA's original32 budget remains separate.
 
-Production qualification remains limited: there is no measured cross-task latency/fairness guarantee, optimal watchdog calibration, guaranteed parsing/cycle wall-time bound, or new native value-correctness result. A pilot success can qualify only its complete exact tuples. A protected or incomplete point has no accepted cycles, no partial speedup and no retry/refund. F remains null until complete qualified 4/4; old AG6 1/4 and its three sealed UUIDs, BA 0/32, original selections, 44-row/GM12 and T7/U2 boundaries remain separate.
+Actual pilot outcome: AE_GEMM and AE_Gaussian were fully accepted; AD_GEMM
+was force-stopped by the unchanged 7200-second deadline while semantic progress
+was still observable. Its cycles and speedup are unavailable, AD_Gaussian is
+sealed unstarted, and F remains null. Resource logs contain no cgroup I/O
+full avg10 >25 episode on any started point. Consequently the central real
+high-cgroup-pressure warning/fairness path has synthetic CPU qualification but
+no observed fullsim high-pressure episode in this pilot. The historical AG6
+shared-cgroup I/O attribution gap remains unresolved.
+
+Recommendation: retain default OFF and request a scientific decision before
+any further dispatch. A future completion attempt needs an explicit wall-time
+contract and fresh budget/identities, plus a decision about continued eligibility
+of this accepted AE pair and exact BASE/source/runtime bridge. No unaccepted
+progress prefix is used to size an optimal new timeout or infer AD performance.
