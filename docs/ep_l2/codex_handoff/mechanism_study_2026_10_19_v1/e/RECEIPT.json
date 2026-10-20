@@ -260,83 +260,10 @@
     }
   },
   "active_leases": {},
-  "active_runs": {
-    "cf05a3295ccd4d256037232e2c28f892f9cb48de1ef8594dfc7e628ab15be597": {
-      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-      "cpu_units": 1,
-      "created_at": 1792482276.7709382,
-      "disk_floor_bytes": 5368709120,
-      "disk_growth_bytes": 402653184,
-      "exit_collector_process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 1805740,
-        "start_ticks": 923424882
-      },
-      "experiment_id": "EPL2_MECHANISM_STUDY_20261019_V1",
-      "host": "huangrulin-174",
-      "identity": {
-        "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
-        "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
-        "epoch_range": {
-          "epochs": "all",
-          "scope": "full_application"
-        },
-        "feature_vector": {
-          "adaptive_policy": false,
-          "bank_count": 4,
-          "finite_wbuf": true,
-          "ops_per_bank_cycle": 1,
-          "payload_capacity_per_slice": 1168,
-          "ro_line_mshr_bypass": true,
-          "ro_tag_detach": true,
-          "static_s64": false,
-          "tvd": true,
-          "unified_wb": true,
-          "wb_local_cap": 0,
-          "wbuf_entries": 16
-        },
-        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
-        "ideal_vector": {
-          "copy_free": false,
-          "l2_data_free": false,
-          "mem_all_data": false,
-          "meta": false,
-          "read_hit": false,
-          "wb": false
-        },
-        "runtime_config_sha256": "8e6c0e2bb52d5ac835ffc92bb1f6471064f0fbe9a14fd73869675d906587cb95",
-        "termination_contract": {
-          "all_kernels": true,
-          "hardware_drained": true,
-          "kind": "FULL_APPLICATION_MECHANISM_V2",
-          "normal_exit": true,
-          "timeout_seconds": 10800
-        },
-        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
-        "workload": "vectorAdd_4M"
-      },
-      "lease_id": "E014_7a67cdcb",
-      "memory_bytes": 8589934592,
-      "monitor_interval_seconds": 0.2,
-      "monitor_reserve_bytes": 2147483648,
-      "owner": "mechanism_E",
-      "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 1805744,
-        "start_ticks": 923424888
-      },
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E014_7a67cdcb",
-      "run_key": "cf05a3295ccd4d256037232e2c28f892f9cb48de1ef8594dfc7e628ab15be597",
-      "scan": false,
-      "started_unix": 1792482277.5529478,
-      "status": "RUNNING",
-      "termination_grace_seconds": 3
-    }
-  },
-  "actual_new_root_growth_since_continuation": 208781262,
+  "active_runs": {},
+  "actual_new_root_growth_since_continuation": 210160027,
   "actual_starts": 14,
-  "at_unix": 1792482449.9550266,
+  "at_unix": 1792483025.16957,
   "budget_buckets": {
     "contingency": 8,
     "one_workload_T_only_M_only_on_WV": 0,
@@ -356,9 +283,10 @@
       "pid": 1797458,
       "start_ticks": 923353051
     },
-    "state": "ACTIVE"
+    "state": "STOPPED",
+    "stopped_unix": 1792483024.778454
   },
-  "event": "MAIN_VECTOR_S_ACCEPTED_F_RUNNING",
+  "event": "MAIN_vectorAdd_4M_EXACT_RESULT_NOT_ACCEPTED",
   "failures": [
     {
       "attempt_id": "E011_618407f0",
@@ -383,29 +311,67 @@
       },
       "raw_sha256": "04e74c2ac401f26152b1a8e0e8560bc59d59de50c022665782ba1bbece01df6e",
       "state": "INCOMPLETE"
+    },
+    {
+      "attempt_id": "E014_7a67cdcb",
+      "detail": "own run stopped at physical/RAM/output guard",
+      "execution_stage": "NATIVE_EXECUTION",
+      "exit_code": -15,
+      "original_receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E014_7a67cdcb/run_status.json",
+        "sha256": "d93b559afae548fe2b0e91399777fe31d0d46fa1c8e4ee4d59c551996735836f"
+      },
+      "raw_sha256": "8746ceeb6ef0506e474c2001e3327fdd577a5bf5b38b5cc0a7b27fed07831801",
+      "state": "RESOURCE_LIMIT"
     }
   ],
   "intake_deadline": 1792591200,
   "maximum_actual_starts": 40,
-  "next_conditions": {
-    "FWT": "Both original endpoints INCOMPLETE; proposal not adopted, no rerun",
-    "current": "Vector F independently awaits complete native exit0, expected56000000 instructions and full terminal closure; Vector S independently accepted",
-    "then": [
-      "cfd_097k S/F",
-      "dwt2d S/F",
-      "sad S/F"
-    ]
-  },
+  "next_conditions": [
+    {
+      "condition_ids": [
+        "V2_cfd_097k_S",
+        "V2_cfd_097k_F"
+      ],
+      "queue": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/QUEUE.json",
+        "sha256": "227ebbd69fb829b69b3acb921e04dad19338c0af83f2aba12584b783d32fb5a5"
+      },
+      "workload": "cfd_097k"
+    },
+    {
+      "condition_ids": [
+        "V2_dwt2d_S",
+        "V2_dwt2d_F"
+      ],
+      "queue": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/QUEUE.json",
+        "sha256": "af8de81c01b30e1c663042b2556c45ef5afce3671872d531513dc129af0ae1b9"
+      },
+      "workload": "dwt2d"
+    },
+    {
+      "condition_ids": [
+        "V2_sad_S",
+        "V2_sad_F"
+      ],
+      "queue": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/sad/QUEUE.json",
+        "sha256": "e72faab22aa718115e8866b0b702a012bca2a461bd838e18f8eb4c541dfe1c3b"
+      },
+      "workload": "sad"
+    }
+  ],
   "output_usage": {
-    "new_bytes": 3016258454,
+    "new_bytes": 3017637219,
     "old_bytes": 14309576384,
-    "total_bytes": 17325834838
+    "total_bytes": 17327213603
   },
   "remaining": 26,
   "resources": {
-    "available_memory_bytes": 213670875136,
-    "disk_free_bytes": 8292777984,
-    "share_disk_free_bytes": 44287655936
+    "available_memory_bytes": 215535419392,
+    "disk_free_bytes": 7512977408,
+    "share_disk_free_bytes": 44287533056
   },
   "retained_bytes_by_attempt": {
     "E001_185ad0f6": 87586158,
@@ -421,7 +387,7 @@
     "E011_618407f0": 123086971,
     "E012_63be0bb4": 126810799,
     "E013_33cffb17": 89900325,
-    "E014_7a67cdcb": 85683437
+    "E014_7a67cdcb": 87062202
   },
   "schema": "E2_ROLLING_MAIN_RESULT_CHECKPOINT_V1",
   "scientific_holds": {
