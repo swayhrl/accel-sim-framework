@@ -1,9 +1,7 @@
-# Lane E continuation — new773 independent intake
+# Lane E — new773 independent qualification complete
 
-Parser minimalfix published/readback a1a68b8ed1155950c0e81645133f7229667a1cab; E9 new +37affected controls PASS. CLIENT pins exact7files.
+Original11+7minimum gates PASS: E24 currentaffectednative plus explicitlyreviewed unchanged/disjoint originalreference cases; currentnewsourceOFF E004 actualPASS73873cycles/56000000instructions/64slice/allsevenCSV. Main773271ac/Core27ec10bd/Framework9dd1ee57/vendorf90c430c. Conv/FWT independentqualifications andsamebinary S/Fspecs registered; noformalperformanceappsstarted yet, acceptedpoints0/pairs0. Actualstarts4/40, remaining36; oldE001/E002/E003/raw/failedstatuses/holds immutable.
 
-Official Core27/main773 identity, archive members and64producer evidence hashes independently verified. E24 affected native cases actualPASS, including detailedDRAM memstats14 all4 T/M modes. E004_02c18112 newsource all-OFF qualification control actuallyRUNNING under the solecontroller and original central resource gate. Actualstarts4/40; oldE001/E002/E003, theirraw andqualificationholds unchanged. Acceptedperformancepoints0/pairs0.
+Parserminimalfix a1a68b8ed1155950c0e81645133f7229667a1cab exactCLIENT7runtimefiles; E9new+37affectedexistingcontrols PASS; per-newsourceOFFadapter10controls PASS. B/Cextra128BVRWfixture remainsFAILED/unqualified; no productionreuse_seen change andno22packet/704byte resultclaim. Required7minimumcombinationgates separatelyreviewed/currentarchiveexecuted. NoBtree launch/noDWTrescan.
 
-NoformalS/Frelease until originalOFF actualgate finishes and17othergate review is finalized. R35 extra V/R/W fixture remains failed/unqualified (B/C review pending); its packet/UID expectations are not productionPASS. Existing minimum combination cases independently replayed. Btree HOLD; noDWT/inputrescan.
-
-OriginalT0/cutoffs/40=32+8, workspace5GiB+2GiBmonitor, Share40GiB,RAM64GiB, CPU/concurrency and6/20GiBresults unchanged. No second controller, no otherproject policy edits.
+Next: afterGitHubexactreadback start solefinitecontroller, ConvS/Fdefault2parallel then FWTonlyifConvpaircurrentlyacceptedandpublished. NewbinaryConvS/Fspendoriginalcontingency to retain old2failedmainstarts. AlloriginalT0/40=32+8/deadlines/6+20GiBoutputs/workspace5GiB+2GiBmonitor/Share40GiB/RAM64GiB/CPU/concurrency remain.
