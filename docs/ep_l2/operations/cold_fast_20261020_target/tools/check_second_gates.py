@@ -41,14 +41,13 @@ reasons=[]
 for item in [source,target]:
  prefix=item['role']
  if not item['identity_pass']:reasons.append(prefix+'_IDENTITY_HOLD')
- if max(item['host_IO_avg10'].values())>=80:reasons.append(prefix+'_EXTREME_HOST_IO_AT_LEAST80')
  if item['MemAvailable_bytes']<64*1024**3:reasons.append(prefix+'_RAM_BELOW64GiB')
  if item['Share_available_bytes']<40*1024**3:reasons.append(prefix+'_SHARE_BELOW40GiB')
  if item['cgroup_headroom_bytes'] is not None and item['cgroup_headroom_bytes']<512*1024**2:reasons.append(prefix+'_CGROUP_HEADROOM')
 if any(v!='IDLE' for v in target['locks'].values()):reasons.append('EXISTING_FLOW_BUSY_DO_NOT_DUPLICATE')
 if target['active_bridge_windows']:reasons.append('EXISTING_BRIDGE_WINDOW_KEEP')
 if target['NAS_available_bytes']<1024**3:reasons.append('NAS_FREE_HOLD')
-result=dict(schema='LANE_T_SECOND_LIGHTWEIGHT_ORIGINAL_GATES_V1',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),status='ALL_ORIGINAL_LIGHTWEIGHT_GATES_PASS' if not reasons else 'RESOURCE_HOLD',reasons=reasons,source=source,target=target,no_payload_read=True,no_full_tree_scan=True,no_model_or_ledger_changes=True,former_host_IO10_removed_by_user=True,extreme_host_IO_circuit_breaker=80)
+result=dict(schema='LANE_T_SECOND_LIGHTWEIGHT_ORIGINAL_GATES_V1',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),status='ALL_ORIGINAL_LIGHTWEIGHT_GATES_PASS' if not reasons else 'RESOURCE_HOLD',reasons=reasons,source=source,target=target,no_payload_read=True,no_full_tree_scan=True,no_model_or_ledger_changes=True,host_PSI_observation_only_per_explicit_user=True)
 raw=(json.dumps(result,indent=2)+'\n').encode();(D/'LATEST_SECOND_LIGHTWEIGHT_GATE.json').write_bytes(raw)
 with (D/'SECOND_LIGHTWEIGHT_GATE_HISTORY.jsonl').open('ab') as f:f.write((json.dumps(result)+'\n').encode())
 print(json.dumps({'utc':result['utc'],'status':result['status'],'Source_host_IO':source['host_IO_avg10'],'Target_host_IO':target['host_IO_avg10'],'reasons':reasons,'existing_destination':target['destination_entries']}),flush=True)

@@ -6,7 +6,7 @@ import decimal,fcntl,gzip,hashlib,json,os,pathlib,stat,subprocess,sys,tarfile,ti
 
 config=json.loads(sys.argv[1]);base=pathlib.Path(config['target_root']);B=pathlib.Path('/root/share/host174_storage_recovery_bridge/20261016_storageops_02')
 N=pathlib.Path('/root/tls-v10-native-restore-20261018-target01');rate=30*1024**2
-io_limit=80 if config['tag']=='V3_46bf3a69' else 10
+io_limit=None if config['tag']=='V3_46bf3a69' else 10
 limited_existing=(config.get('validation_only') is True and
                   config.get('bounded_existing_small_V3_validation') is True)
 if limited_existing:
@@ -34,7 +34,7 @@ def guard():
     assert limit=='max' or int(limit)-int(c.with_name('memory.current').read_text())>=512*1024**2
     held=time.monotonic()
     pressure_file=pathlib.Path('/sys/fs/cgroup/io.pressure' if limited_existing else '/proc/pressure/io')
-    while float(pressure_file.read_text().splitlines()[0].split()[1].split('=')[1])>=io_limit:
+    while io_limit is not None and float(pressure_file.read_text().splitlines()[0].split()[1].split('=')[1])>=io_limit:
         assert time.monotonic()-held<=30,'extreme IO pressure persisted >30s; preserve verified input'
         time.sleep(5)
     assert os.statvfs(base).f_bavail*os.statvfs(base).f_frsize>=1024**3
@@ -122,7 +122,7 @@ result=dict(schema='COLD_TARGET_VERIFIED_PARTIAL_V1',status='VERIFIED_PARTIAL_PE
             all_BA_frozen_members_and_numeric_metadata_match=True,regular_files=files,directories_including_root=dirs,logical_bytes=logical,
             source_metadata_manifest_sha256=config['manifest_sha256'],member_manifest_sha256=digest(member_path),
             samples=samples,sample_native_filesystem='qualified174-new tmpfs; volatile verification only',
-            verification_IO_mode='EXISTING_SMALL_V3_ARCHIVE_MAX256MiB_NATIVE_CGROUP_IO10_8MiB_HASH_1MiB_BUFFER' if limited_existing else 'ORIGINAL_HOST_IO10',
+            verification_IO_mode=('USER_AUTHORIZED_HOST_PSI_OBSERVATION_ONLY' if io_limit is None else 'EXISTING_SMALL_V3_ARCHIVE_MAX256MiB_NATIVE_CGROUP_IO10_8MiB_HASH_1MiB_BUFFER' if limited_existing else 'ORIGINAL_HOST_IO10'),
             observed_host_IO_at_completion=pathlib.Path('/proc/pressure/io').read_text(),
             observed_target_cgroup_IO_at_completion=pathlib.Path('/sys/fs/cgroup/io.pressure').read_text(),
             persistent_archive_is_genuine164=True,source_originals='SOURCE_KEEP',source_files_deleted=0,source_released_bytes=0)
