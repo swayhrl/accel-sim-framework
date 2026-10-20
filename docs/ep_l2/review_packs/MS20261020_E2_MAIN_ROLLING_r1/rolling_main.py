@@ -26,7 +26,10 @@ def choose_slots(coord,row):
  return audit
 
 def adopt(plan,publication):
- coord=c.Coordinator();gate=read(P/'FWT_INDEPENDENT_TERMINAL_AUDIT.json');assert gate['may_continue_original_main'] is True
+ coord=c.Coordinator();gate=read(P/'ENGINEERING_CONTINUATION_DECISION.json');assert gate['may_start_never_executed_original_main'] is True
+ for name in ('control_validation','control_regressions'):
+  proof=gate[name];assert c.digest(proof['path'])==proof['sha256'] and read(proof['path'])['status']=='PASS'
+ assert gate['source_identity']==plan['source_identity'] and gate['FWT_rerun_authorized'] is False
  assert c.digest(plan['new_matrix']['path'])==plan['new_matrix']['sha256'];matrix=read(plan['new_matrix']['path']);c.policy_v2.validate_matrix(matrix)
  with coord.locked() as (data,item):
   assert item['controller']['state']=='STOPPED' and item['final_source_identity']==plan['source_identity'];assert item['actual_starts']<=40 and item['uncertain_start_intents']==0
@@ -52,7 +55,7 @@ def main():
   assert snap['final_source_identity']==plan['source_identity'];assert c.digest(row['queue']['path'])==row['queue']['sha256'];assert c.digest(row['qualification']['path'])==row['qualification']['sha256']
   queue=read(row['queue']['path']);audit=[]
   for e in queue['specs']:
-   assert c.digest(e['path'])==e['sha256'];spec=read(e['path']);fresh=runner.inspect(spec,coord);atomic=runner.legacy.validate_atomic_input_scope(spec,spec['input_scope_admission'],fresh['traces']);audit.append(dict(run_key=fresh['run_key'],source_binary_config_input_audit=fresh,atomic_scope=atomic))
+   assert c.digest(e['path'])==e['sha256'];spec=read(e['path']);fresh=runner.inspect(spec,coord);assert not any(a['run_key']==fresh['run_key'] for a in snap['attempts']),'existing endpoint requires explicit review, never automatic replay';atomic=runner.legacy.validate_atomic_input_scope(spec,spec['input_scope_admission'],fresh['traces']);audit.append(dict(run_key=fresh['run_key'],source_binary_config_input_audit=fresh,atomic_scope=atomic))
   try:admission=choose_slots(coord,row)
   except ValueError as error:
    c.write_json(P/(row['workload']+'_ADMISSION_BLOCK.json'),dict(status='NO_START_RESOURCE_EVENT_REQUIRED',reason=str(error),at_unix=time.time(),actual_starts=coord.snapshot()['actual_starts']))
@@ -63,7 +66,7 @@ def main():
   failures=[a for a in now['attempts'] if a['identity']['workload']==row['workload'] and a['identity']['binary_sha256']==plan['source_identity']['binary_sha256'] and a['state']=='FAILED']
   event='MAIN_'+row['workload']+('_PAIR_CURRENT_ACCEPTED' if accepted else '_EXACT_RESULT_NOT_ACCEPTED')
   checkpoint(event,conditions(rows[i+1:]),[pairid] if accepted else [],[rp])
-  if failures:
+  if failures or not accepted:
    print(json.dumps(dict(status='AFFECTED_SOURCE_OR_ENGINEERING_REVIEW_REQUIRED_NO_FURTHER_ADMISSION',workload=row['workload'],next=conditions(rows[i+1:]))),flush=True);return
   if not accepted and result.get('applications_started_by_this_step',0)==0:return
  print(json.dumps(dict(status='ORIGINAL_FOUR_AVAILABLE_MAIN_PAIRS_PROCESSED',actual_starts=coord.snapshot()['actual_starts'],remaining=coord.snapshot()['remaining_start_capacity'])),flush=True)

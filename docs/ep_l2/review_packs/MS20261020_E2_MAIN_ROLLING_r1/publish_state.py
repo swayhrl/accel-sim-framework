@@ -21,6 +21,11 @@ def checkpoint(event,next_conditions,pair_ids=(),extra_paths=()):
  for a in s['attempts'][10:]:
   if a.get('receipt_path'):
    rp=Path(a['receipt_path']);assert c.digest(rp)==a['receipt_sha256'];record=json.loads(rp.read_text());f=P/(a['attempt_id']+'_RUN_STATUS.json');c.write_json(f,record);paths.append(f)
+   for native_name in ('NATIVE_EXIT.json','NATIVE_EXECUTION_READY.json'):
+    native=Path(a['result_directory'])/native_name
+    if native.exists():
+     if native_name=='NATIVE_EXIT.json':assert c.digest(native)==record['native_exit_receipt_sha256']
+     nf=P/(a['attempt_id']+'_'+native_name);nf.write_bytes(native.read_bytes());paths.append(nf)
    if record['status']!='COMPLETE_VALID':
     evidence=dict(attempt_id=a['attempt_id'],state=a['state'],original_receipt=ref(rp),raw_sha256=record.get('raw_log_sha256'),detail=record.get('detail'),exit_code=record.get('exit_code'),execution_stage=record.get('execution_stage'))
     parser=Path(a['result_directory'])/'parser.log'

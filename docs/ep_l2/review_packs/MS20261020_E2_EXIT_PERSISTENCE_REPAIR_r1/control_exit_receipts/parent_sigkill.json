@@ -1,0 +1,59 @@
+{
+  "binding": {
+    "control_case": "parent_sigkill",
+    "full_application": false
+  },
+  "child_rusage": {
+    "maxrss_kib": 4760,
+    "system_seconds": 0.003681,
+    "user_seconds": 0.001227
+  },
+  "collected_unix": 1792481161.7635348,
+  "collection_method": "direct-parent os.wait4; child reaped before durable receipt",
+  "collector_signals": [
+    {
+      "at_unix": 1792481161.5423381,
+      "signal": 15
+    }
+  ],
+  "command": [
+    "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+    "-c",
+    "import os,signal,time; time.sleep(8)"
+  ],
+  "controller_process": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "pid": 1791331,
+    "start_ticks": 923313274
+  },
+  "core_dumped": false,
+  "exit_code": -15,
+  "exited_normally": false,
+  "guardian_process": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "pid": 1791335,
+    "start_ticks": 923313281
+  },
+  "native_ppid": 1791335,
+  "native_process": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "pid": 1791339,
+    "start_ticks": 923313286
+  },
+  "released_to_native": true,
+  "schema": "E2_NATIVE_WAITPID_DURABLE_EXIT_V1",
+  "scientific_acceptance": "NOT_EVALUATED",
+  "signal": 15,
+  "signaled": true,
+  "stop_reason": {
+    "kind": "SUPERVISION_INCOMPLETE",
+    "reason": "collector received termination or controller died",
+    "signals": [
+      {
+        "at_unix": 1792481161.5423381,
+        "signal": 15
+      }
+    ]
+  },
+  "wait_status": 15
+}
