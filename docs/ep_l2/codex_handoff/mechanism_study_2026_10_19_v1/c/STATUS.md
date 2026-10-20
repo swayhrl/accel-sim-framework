@@ -1,9 +1,9 @@
-# C VRW independent source audit delivered; runtime gate unresolved
+# C T/M real-opportunity first revision delivered
 
-PASS: attached A0 duplicate merging and exact sticky policy/identity source audit. FAIL: frozen fixture extra-lower expectation, inferred18descriptor and parent-response reference expectations. UNRESOLVED: two replacement native controls and E-only scientific scope.
+Current source is A2 Core d010911e/main61, with unchanged RO policy. Conv S E010 reaches line-MSHR128 and1824 heads/40088 wait observations, but maximum reserved Tags in one set7 and Tag-set refusal0. This supports an M opportunity hypothesis; it does not prove a T bottleneck or saved cycles.
 
-34 bounded source/log checks PASS, no simulator compile/run/application/lease. Original C Core ead44416 and all prior candidate/failure/withdrawal/certificate artifacts retained. A Core27 has not been changed. A integrates common tests; E admits and independently qualifies them. B two-case proposal agrees on counts subject to explicit admission/response/Tag-index conditions; no reciprocal acknowledgement is presumed.
+Profiles separate exact offline whole-epoch model coverage, native L2 eligibility, actual RO admission, successful detach, avoided line records and critical waits. RO-on workload counts remain UNKNOWN here; no F performance/counter result was used. Conv is primary for joint M/W/V review; FWT has zero-RO eligibility and SAD low-pressure nonzero coverage as negative controls. Btree/Scan/SpMV stay input-held; SGEMM has no RO certificate.
 
-LIVE_SNAPSHOT records current registry and hashed CLIENT/API, E affected24 and completed-valid E004 OFF control and STOPPED controller, superseding old starts0/starts3 descriptions only as current-state observations. C does not grant qualification or alter any holds. Full Goal remains incomplete; this finite review is ready for A/B/E.
+Bounded CPU analysis reads existing metadata/CSV and completed current S only, no trace/DB scan or capture. No new simulator/compiler/application/lease/waiter. R35 FAIL, C actual unrun combined fixtures and all Conv/host-update/fallback certification boundaries are preserved. D/B receive profiles; any new observer/test/qualification is A2/E2-owned. Old packs and original Goal remain intact/incomplete.
 
-Canonical revision: vrw_reachability_r1/REVIEW.md, RECEIPT.json, CONTROL_CHECKS.json, NEXT_CONTROL_SPEC.json and LIVE_SNAPSHOT.json. Prior full_system_v2_r1 source pack and its actual historical counts remain frozen.
+Canonical pack: tm_opportunity_r1/REVIEW.md, OBSERVATIONS.json, CANDIDATE_PROFILES.json/.csv, VALIDATION.json and WV_CROSSCHECK_AND_GAPS.json.
