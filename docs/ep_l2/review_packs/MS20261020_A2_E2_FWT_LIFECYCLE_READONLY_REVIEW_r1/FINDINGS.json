@@ -1,0 +1,200 @@
+{
+  "at_UTC": "2026-10-20T07:20:52.748484+00:00",
+  "boundaries": {
+    "actual_starts_observed": 12,
+    "builds": 0,
+    "central_registry_sha256_before": "e8dedd79332050c0a826e3738e47a6cb4d2f4cc064e1dcbd14f9cf1981fa3f00",
+    "experiments_replayed": 0,
+    "maximum_actual_starts": 40,
+    "new_application_starts": 0,
+    "new_native_tests": 0,
+    "no_E_runner_or_registry_mutations": true,
+    "no_production_main_change": true,
+    "production_main_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5"
+  },
+  "code_locations": {
+    "call_chain": [
+      "run_fwt_pair.py:15 -> controller.step:62 -> runner.execute:143 -> Coordinator.start_application:554 -> Popen(start_new_session=True)",
+      "runner.execute:148,168 -> process.poll()/returncode -> :170-183 native exit0 + terminal parser + closure validation",
+      "recover_fwt.main:96 asserts PPID=1 -> monitor:56-59 polls /proc -> missing process yields INCOMPLETE -> :73-80 validation skipped -> :83-85 finalizes INCOMPLETE"
+    ],
+    "not_an_off_by_one": "recover_fwt.proc:19 uses f[49], correctly corresponding to /proc stat field52; its zero in R state is not an exit status.",
+    "root_cause": "recover_fwt.py:32-34 assumes PID1 retains zombies; :56-68 requires observing Z before reap. Acquisition of CONTROLLER.lock does not confer waitpid ownership.",
+    "secondary_race": "recover_fwt.py:65 and :39 re-read zombie after stop/observation and assert it remains; non-child zombie may already be reaped."
+  },
+  "conclusion": "Missing durable OS-level native wait/exit receipt after original parent loss; formal full-input/hardware-drain validation consequently not reached. FWT stays INCOMPLETE.",
+  "minimal_recommendation": [
+    "Keep the existing E controller as the live direct parent through bounded graceful SIGTERM handling; stop new dispatch while original runner workers finish or use an explicitly chosen owned-stop/reap policy. Do not launch a second E controller.",
+    "Persist a per-attempt native direct-parent wait receipt before parser work, binding PID/start/boot, attempt/run key, wait owner, exact source and raw hash. It is execution evidence, not scientific acceptance.",
+    "Reconnect only to exact original process supervision; consume a valid already-persisted wait receipt if present. No receipt plus a reaped nonchild remains INCOMPLETE. Never synthesize E011/E012 receipt from raw or running field52.",
+    "If the execution service escalates to SIGKILL/tree teardown, graceful handler alone is insufficient: E must use a protected persistent execution session for the same singleton controller or a pre-established durable wait owner. No late recovery can restore an already discarded wait status."
+  ],
+  "not_proved": [
+    "Who terminated the original supervisor or whether 143 was the controller or outer shell status.",
+    "Actual OS exit code/signal of either FWT native process.",
+    "Formally validated full-input and all64slice hardware drain/closure; raw text remains unaccepted."
+  ],
+  "observations": [
+    {
+      "attempt_id": "E011_618407f0",
+      "complete_input_verified": false,
+      "durable_native_exit_receipt_exists": false,
+      "execution_stage": "NATIVE_EXECUTION",
+      "exit_code": null,
+      "final_status": "INCOMPLETE",
+      "independent_acceptance": "NOT_ACCEPTED",
+      "kernel_exit": null,
+      "parser_log_exists": false,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1665796,
+        "start_ticks": 922604427
+      },
+      "raw_bytes": 37742688,
+      "raw_claims_are_not_exit_or_validated_drain": true,
+      "raw_last_counter_claims": {
+        "cycle": "493189",
+        "insn": "791609344"
+      },
+      "raw_normal_exit_text_count": 1,
+      "raw_sha256": "fbaab34aa303369eb53aca6c19bde3553bfdbe6f2f3cd9987537da30a5f17347",
+      "receipt_sha256": "0f77f56a1bb402e0003014cc37e4ced034e7e8fc81c2fb2619bd71d6e80507e7",
+      "saved_heartbeat": {
+        "at_unix": 1792479103.0188892,
+        "field52_while_running": 0,
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/E011_618407f0_RECOVERY_HEARTBEAT.json",
+        "pgrp": 1665796,
+        "ppid": 1,
+        "running_field52_is_not_a_valid_exit_code": true,
+        "session": 1665796,
+        "sha256": "c84c6a00b7965f8f5ee27bdb1dd04d34a4035ab70727cdc9a54ffbd745b86062",
+        "state": "R"
+      },
+      "terminal_summary_exists": false
+    },
+    {
+      "attempt_id": "E012_63be0bb4",
+      "complete_input_verified": false,
+      "durable_native_exit_receipt_exists": false,
+      "execution_stage": "NATIVE_EXECUTION",
+      "exit_code": null,
+      "final_status": "INCOMPLETE",
+      "independent_acceptance": "NOT_ACCEPTED",
+      "kernel_exit": null,
+      "parser_log_exists": false,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1665810,
+        "start_ticks": 922604500
+      },
+      "raw_bytes": 41463715,
+      "raw_claims_are_not_exit_or_validated_drain": true,
+      "raw_last_counter_claims": {
+        "cycle": "490402",
+        "insn": "791609344"
+      },
+      "raw_normal_exit_text_count": 1,
+      "raw_sha256": "04e74c2ac401f26152b1a8e0e8560bc59d59de50c022665782ba1bbece01df6e",
+      "receipt_sha256": "18a929db3a4461baf50ef5cdc6c0dc7c01fec8b9e9cbc5ce28b181519e1755aa",
+      "saved_heartbeat": {
+        "at_unix": 1792479465.643932,
+        "field52_while_running": 0,
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/E012_63be0bb4_RECOVERY_HEARTBEAT.json",
+        "pgrp": 1665810,
+        "ppid": 1,
+        "running_field52_is_not_a_valid_exit_code": true,
+        "session": 1665810,
+        "sha256": "66cd6b1374be9f5be9602ff6c0e346f4d9ccd3a987418935e8bfd557e4457b90",
+        "state": "R"
+      },
+      "terminal_summary_exists": false
+    }
+  ],
+  "old_supervisor": {
+    "exec_session_exit": 143,
+    "pid": 1665599,
+    "signal_sender_and_exact_delivery_unproven": true
+  },
+  "patch_scope": "Review-only two-file graceful SIGTERM deferral + direct-parent exit-receipt illustration. AST syntax checked; not applied, not runtime tested. E owns implementation, signal/launch-race review, resource policy and tooling publication/hash rebind.",
+  "recovery_supervisor": {
+    "original_native_children_reparented_to": 1,
+    "pid": 1733310,
+    "wait_parenthood_not_recovered": true
+  },
+  "reviewed_E_HEAD": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+  "schema": "A2_READ_ONLY_E2_FWT_LIFECYCLE_REVIEW_V1",
+  "source_snapshots": [
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "util/ep_l2/mechanism_e/controller.py",
+      "sha256": "b66427c0a6a43026cad36b9af53be01be7d17a7fe0ea80a762766e4ecd09ba0d",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/controller.py"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "util/ep_l2/mechanism_e/coordinator.py",
+      "sha256": "bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/coordinator.py"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "util/ep_l2/mechanism_e/runner.py",
+      "sha256": "5728b14a5f03fca17946c291e0a51a74c99cc6754075e52e0bf38a3ced75b06e",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/runner.py"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "util/ep_l2/mechanism_e/parse_terminal.py",
+      "sha256": "be9958909adb7cb7b28c610e982a2ee1d6394d25b4318b7302e52071b3eeff05",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/parse_terminal.py"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/recover_fwt.py",
+      "sha256": "fe63f4f9e2f33a2976a3443b0f186c48ddb5db272a5365a678864bb6d96d1b43",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/recover_fwt.py"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN61_FWT_FIRST_PAIR_CONTINUATION_r1/run_fwt_pair.py",
+      "sha256": "b1f25d304d6da96923f2c98de5276661100fe9d676bf3d647e41561d9f2207c2",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/run_fwt_pair.py"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_SUPERVISOR_RECOVERY.json",
+      "sha256": "13d47d4d1402bc0a68ff4267243df9559c725bc3eaeefd036a79fda52eff395e",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/FWT_SUPERVISOR_RECOVERY.json"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_ORIGINAL_NATIVE_SUPERVISION_RECOVERED.json",
+      "sha256": "a72e01c49d16ac32edd1a8f4234da2a8765dc4160850f6ac73f443fc35c1fd9e",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/FWT_ORIGINAL_NATIVE_SUPERVISION_RECOVERED.json"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_EXACT_RESULT_NOT_ACCEPTED.json",
+      "sha256": "9698c650c6ba6c225cf3d987b5d43d7f7ca9fcf00952e49ef61001f0ef55fcf3",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/FWT_EXACT_RESULT_NOT_ACCEPTED.json"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_INDEPENDENT_TERMINAL_AUDIT.json",
+      "sha256": "06d6c8415a28f0ddec851518dbaa0a054e5d7423ef9566f5cf34f80f8db38848",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/FWT_INDEPENDENT_TERMINAL_AUDIT.json"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/E011_618407f0_RUN_STATUS.json",
+      "sha256": "0f77f56a1bb402e0003014cc37e4ced034e7e8fc81c2fb2619bd71d6e80507e7",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/E011_618407f0_RUN_STATUS.json"
+    },
+    {
+      "E_commit": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+      "E_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/E012_63be0bb4_RUN_STATUS.json",
+      "sha256": "18a929db3a4461baf50ef5cdc6c0dc7c01fec8b9e9cbc5ce28b181519e1755aa",
+      "snapshot": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_E2_FWT_LIFECYCLE_READONLY_REVIEW_r1/E_snapshots/E012_63be0bb4_RUN_STATUS.json"
+    }
+  ]
+}

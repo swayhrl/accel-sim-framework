@@ -1,0 +1,68 @@
+--- a/util/ep_l2/mechanism_e/controller.py
++++ b/util/ep_l2/mechanism_e/controller.py
+@@ -5,6 +5,9 @@
+ lease, simulator, or background child. Default 2 simultaneous applications.
+ """
+ import argparse
++from contextlib import contextmanager
++import signal
++from types import SimpleNamespace
+ from concurrent.futures import ThreadPoolExecutor,wait,FIRST_COMPLETED
+ import json
+ from pathlib import Path
+@@ -25,9 +28,24 @@
+     return pairs
+ 
+ 
++@contextmanager
++def defer_sigterm_until_owned_runs_retire():
++    """Main-thread only: stop new dispatch, retain original wait-owning parent.
++
++    SIGKILL/external tree teardown is outside this graceful-shutdown contract.
++    Original per-run timeout/resource guards remain active in runner.execute.
++    """
++    stopping = SimpleNamespace(requested=False)
++    previous = signal.signal(signal.SIGTERM, lambda _signum, _frame: setattr(stopping, "requested", True))
++    try:
++        yield stopping
++    finally:
++        signal.signal(signal.SIGTERM, previous)
++
++
+ def step(coord,queue_path):
+     tooling_binding();queue_path=Path(queue_path)
+-    with coord.unique_controller():
++    with defer_sigterm_until_owned_runs_retire() as stopping, coord.unique_controller():
+         report={'campaign_id':CAMPAIGN,'authority_commit':AUTHORITY,'at_unix':time.time(),
+                 'applications_started_by_this_step':0,'outcomes':[],'pairs':[],'held_run_keys':[]}
+         if not queue_path.exists():
+@@ -53,7 +71,8 @@
+         with ThreadPoolExecutor(max_workers=target) as pool:
+             running={}
+             while pending or running:
+-                while pending and len(running)<target and not blocked and time.time()<START_DEADLINE:
++                if stopping.requested:blocked=True
++                while pending and len(running)<target and not blocked and not stopping.requested and time.time()<START_DEADLINE:
+                     spec=pending.pop(0)
+                     if 'qualification:'+spec['qualification_id'] in coord.snapshot().get('scientific_holds',{}):
+                         report['held_run_keys'].append(run_key(spec['identity']))
+--- a/util/ep_l2/mechanism_e/runner.py
++++ b/util/ep_l2/mechanism_e/runner.py
+@@ -165,6 +165,17 @@
+                         raw_log_sha256=digest(directory/'raw.log'),terminated_unix=time.time())
+                     write_json(directory/'RESOURCE_LIMIT.json',result['resource_limit']);break
+                 time.sleep(attempt.get('monitor_interval_seconds',2))
++        require(process.returncode is not None,'native wait status not collected')
++        # Direct child's Popen.poll/wait status, persisted before terminal parsing.
++        # write_json is the existing atomic publication helper.
++        write_json(directory/'NATIVE_EXIT.json',dict(
++            schema='E_NATIVE_DIRECT_CHILD_WAIT_RECEIPT_V1',
++            attempt_id=attempt['attempt_id'],run_key=attempt['run_key'],
++            process=result['process'],wait_owner=process_identity(os.getpid()),
++            source_identity=result['source_identity'],exit_code=process.returncode,
++            exit_code_source='original direct-parent subprocess.Popen poll/wait',
++            observed_unix=time.time(),raw_log_sha256=digest(directory/'raw.log'),
++            scientific_acceptance=False))
+         result.update(exit_code=process.returncode,peak_process_tree_rss_bytes=peak)
+         if status not in ('TIMEOUT','RESOURCE_LIMIT'):
+             require(process.returncode==0,'nonzero actual simulator exit')
