@@ -1,0 +1,74 @@
+{
+  "schema": "LANE_T_SECOND_V3_CONTINUOUS_ORIGINAL_GATE_MONITOR_V1",
+  "utc": "2026-10-20T11:35:25.785151+00:00",
+  "transaction": "LANE_BA_COLD_V3_46BF3A69_POSTCHECK_20261020",
+  "status": "RESOURCE_HOLD",
+  "check_interval_seconds": 75,
+  "checkpoint_interval_target_seconds": 600,
+  "original_host_IO_limit": 10,
+  "cgroup_zero_never_substitutes_host_gate": true,
+  "lightweight_only_no_payload_or_full_tree_scan": true,
+  "last_gate": {
+    "schema": "LANE_T_SECOND_LIGHTWEIGHT_ORIGINAL_GATES_V1",
+    "utc": "2026-10-20T11:34:36.066405+00:00",
+    "status": "RESOURCE_HOLD",
+    "reasons": [
+      "Source_HOST_IO_ABOVE10",
+      "Target_HOST_IO_ABOVE10"
+    ],
+    "source": {
+      "role": "Source",
+      "namespace": "mnt:[4026534768]",
+      "utc": "2026-10-20T11:34:37.288452+00:00",
+      "host_IO_avg10": {
+        "some": 32.29,
+        "full": 32.29
+      },
+      "MemAvailable_bytes": 332140654592,
+      "Share_available_bytes": 44302688256,
+      "cgroup_headroom_bytes": 210148282368,
+      "identity_pass": true,
+      "source_root_identity": [
+        156,
+        33145222,
+        3
+      ]
+    },
+    "target": {
+      "role": "Target",
+      "namespace": "mnt:[4026535153]",
+      "utc": "2026-10-20T11:34:37.286310+00:00",
+      "host_IO_avg10": {
+        "some": 32.29,
+        "full": 32.29
+      },
+      "MemAvailable_bytes": 332141342720,
+      "Share_available_bytes": 44302688256,
+      "cgroup_headroom_bytes": 272064970752,
+      "identity_pass": true,
+      "mount": {
+        "target": "/root/share/mnt164",
+        "source": "admin-wcx@10.208.130.164:/home/shared",
+        "fstype": "fuse.sshfs"
+      },
+      "locks": {
+        ".TARGET_RECEIVER.lock": "IDLE",
+        ".TLS_V10_SOURCE_SENDER.lock": "IDLE"
+      },
+      "active_bridge_windows": [],
+      "destination_exists": false,
+      "destination_entries": [],
+      "NAS_available_bytes": 52306101563392
+    },
+    "no_payload_read": true,
+    "no_full_tree_scan": true,
+    "no_model_or_ledger_changes": true,
+    "original_host_IO_limit": 10
+  },
+  "when_all_pass": "Automatically use same frozen manifest and original single tar+zstd stream; fully verify all members and sample native restore under original host IO10, finalize persistent164 and publish exact DEST_VERIFIED plus recovery pointer to BA, no further user approval.",
+  "duplicate_flow_prevention": "Existing Source/Target shared locks plus existing second destination inspection. Never resubmit the completed first archive.",
+  "C16_TLS_P9_E2": "HOLD_OR_UNCHANGED_NO_ACTION",
+  "source_files_deleted_by_target": 0,
+  "second_payload_bytes_transferred": 0,
+  "monitoring_foreground": true
+}
