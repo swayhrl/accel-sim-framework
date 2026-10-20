@@ -5,3 +5,5 @@ Source original files remain KEEP pending BA exact release review; measured Sour
 Source large stream passed hostIO10. Validation-only retry reused existing85MB archive without Source retransmission, bounded existing-V3-only compressed input<=256MiB,1MiB buffers,8MiB/s archive hash,30MiB/s decoded CPU stream, target cgroupIO10, original locks/RAM/Share. Host IO is separately reported and this narrow metadata/content verification phase is never a C16 IO exception.
 
 C16 current RAW1-3 proofs remain valid; exact six-line reference map prepared; remaining3 current SHA and Source current six content hashes are pending original C16 IO10 and separate owner retirement decision. Source originals/supervisor and126 package controls untouched.
+
+Latest handoff correction: BA ec2d7196 is older than Target first-batch receipt5a65c8b5. Exact DEST_VERIFIED has now also been independently read through old174 shared bridge, SHA2eab7015... matching Git. No first-batch receive-window or source-visibility action remains. BA must resume Source-owned release review, not send again. Source actual reclaim remains unconfirmed0.
