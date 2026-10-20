@@ -1,0 +1,107 @@
+{
+  "schema": "LANE_T_SECOND_V3_ORIGINAL_RESOURCE_HOLD_V1",
+  "utc": "2026-10-20T11:18:01.473594+00:00",
+  "status": "RESOURCE_HOLD_NO_TRANSFER_STARTED",
+  "first_release_confirmed_net_bytes": 3383369728,
+  "first_source_release_commit": "f07265fb9daedb1b2469a9883d4bde54bf48d34c",
+  "transaction": "LANE_BA_COLD_V3_46BF3A69_POSTCHECK_20261020",
+  "source_root": "/workspace/worktrees/gpu-l2-v3-signoff-46bf3a69/build/postcheck",
+  "source_namespace": "mnt:[4026534768]",
+  "source_root_identity_observed": [
+    156,
+    33145222,
+    3
+  ],
+  "expected_source_root_identity": [
+    156,
+    33145222,
+    3
+  ],
+  "frozen_manifest_sha256": "19ff2122104d2b0ccd929e857870638f08614a0fbc7a1963765ba905dc8c3402",
+  "regular_files": 369459,
+  "directories_including_root": 38901,
+  "allocated_reclaim_ceiling_bytes": 5586272256,
+  "scientific_status": "2657 PASS; 1 TIMEOUT_CLASSIFIED; preserve original timeout/replay evidence unchanged",
+  "native164_target_root": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/cold_projects/20261020/V3_46BF3A69_POSTCHECK_7fad6fe01e554816",
+  "target_source_mount_verified": {
+    "target": "/root/share/mnt164",
+    "source": "admin-wcx@10.208.130.164:/home/shared",
+    "fstype": "fuse.sshfs"
+  },
+  "source_initial_preflight": {
+    "utc": "2026-10-20T11:15:25.457602+00:00",
+    "namespace": "mnt:[4026534768]",
+    "IO": "some avg10=27.75 avg60=28.83 avg300=28.18 total=177452755196\nfull avg10=27.68 avg60=28.74 avg300=28.11 total=156957228001\n",
+    "cgroup_IO": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22561530662\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22259182525\n",
+    "MemAvailable": "MemAvailable:   324143008 kB",
+    "locks": {
+      ".TARGET_RECEIVER.lock": "IDLE",
+      ".TLS_V10_SOURCE_SENDER.lock": "IDLE"
+    },
+    "active_bridge_payloads": [],
+    "Share_free": 44302860288,
+    "Source_root_exists": true,
+    "Source_root_identity": [
+      156,
+      33145222,
+      3
+    ],
+    "workspace_free": 7532249088,
+    "second_destination_exists": false
+  },
+  "target_initial_preflight": {
+    "utc": "2026-10-20T11:15:25.440159+00:00",
+    "namespace": "mnt:[4026535153]",
+    "IO": "some avg10=27.75 avg60=28.83 avg300=28.18 total=177452752400\nfull avg10=27.68 avg60=28.74 avg300=28.11 total=156957225204\n",
+    "cgroup_IO": "some avg10=0.00 avg60=0.00 avg300=0.00 total=10840300204\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=10502636730\n",
+    "MemAvailable": "MemAvailable:   324149248 kB",
+    "locks": {
+      ".TARGET_RECEIVER.lock": "IDLE",
+      ".TLS_V10_SOURCE_SENDER.lock": "IDLE"
+    },
+    "active_bridge_payloads": [],
+    "Share_free": 44302860288,
+    "Source_root_exists": false,
+    "second_destination_exists": false,
+    "mount": {
+      "target": "/root/share/mnt164",
+      "source": "admin-wcx@10.208.130.164:/home/shared",
+      "fstype": "fuse.sshfs"
+    }
+  },
+  "original_host_IO_recheck": {
+    "namespace": "mnt:[4026534768]",
+    "original_host_IO_limit": 10,
+    "samples": [
+      {
+        "utc": "2026-10-20T11:16:20.671174+00:00",
+        "raw": "some avg10=27.70 avg60=28.22 avg300=28.14 total=177468443004\nfull avg10=27.70 avg60=28.18 avg300=28.09 total=156972904462\n",
+        "some_avg10": 27.7,
+        "full_avg10": 27.7
+      },
+      {
+        "utc": "2026-10-20T11:16:50.701618+00:00",
+        "raw": "some avg10=28.75 avg60=28.27 avg300=28.15 total=177477346464\nfull avg10=28.75 avg60=28.25 avg300=28.11 total=156981797880\n",
+        "some_avg10": 28.75,
+        "full_avg10": 28.75
+      }
+    ],
+    "passed": false,
+    "no_threshold_or_path_change": true
+  },
+  "binding_and_manifest_reused": true,
+  "full_408360_member_identity_pass_not_run_while_IO_HOLD": true,
+  "second_archive_writer_or_sender_started": false,
+  "second_destination_directory_created": false,
+  "source_large_payload_read_bytes": 0,
+  "first_payload_transferred_again_bytes": 0,
+  "threshold_10_unchanged": true,
+  "did_not_replace_host_IO_gate_with_cgroup_zero": true,
+  "single_original_sender_receiver_locks_reused": true,
+  "new_txid_or_pipeline_created": false,
+  "next_exact_action": "When original host IO some/full avg10<=10 and original RAM/Share/cgroup/single-flow gates pass, run existing cold_archive three-input entry / run_cold_batch.py46bf3a69 once. It rechecks all frozen source identities/readers, streams tar+pax+zstd directly to true164 partial, fully verifies members/content and sample restore, finalizes no-replace, publishes DEST_VERIFIED immediately to BA. If any second live/partial/final is present, reconcile instead of starting another sender.",
+  "C16": "ALL_SIX_HOLD_NO_MODEL_IO_NO_DELETE",
+  "TLS_P9_E2_ledgers": "UNCHANGED",
+  "source_originals": "SOURCE_KEEP",
+  "goal_complete": false
+}
