@@ -1,9 +1,7 @@
-# Lane E — new773 Conv S/F actually running
+# Lane E — new773 formal result checkpoint
 
-E005_c0f70360 S (PID1409791/start_ticks920916417) and E006_789c1a95 F (PID1409794/start_ticks920916480) are actuallyRUNNING under solecontroller PID1409234/start_ticks920915682, boot59e1e1a4-84b6-431f-ac2d-03e340207019. NativeELFcopies match officialmain773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5. Cumulativeactualstarts6/40, remaining34; currentacceptedperformancepoints0/pairs0. OriginalT0 preserved.
+convolutionSeparable: READY_QUEUE_DRAINED_OR_START_CUTOFF. Actual starts 6/40, remaining 34; current accepted points 0, pairs 0.
 
-Core27ec10bd/Framework9dd1ee57/vendorf90c430c: E independentlyaccepted original11+7minimumgates from currentaffected24 actualnative plus source-disjoint retainedreference gates, and newsourceOFF E004 actualPASS73873/56000000/64slice/all7CSV. ParserEsource a1a68b8ed1155950c0e81645133f7229667a1cab exactCLIENT/remote verified. No oldfailedresult reinstated; oldE001/E002/E003raw/status/holds unchanged. R35 extra128Bjointfixture staysFAILED/unqualified pendingB/C; no reuse_seen waiver. Btree HOLD; noDWTrescan.
+Core27ec10bd / Framework9dd1ee57 / main773271ac. Parserfix exact E source a1a68b8ed1155950c0e81645133f7229667a1cab. Original11+7 gates independently accepted after current24 affectednative and newsourceOFF. R35 extra128B joint fixture remains failed/unqualified pendingB/C; no reuse_seen change.
 
-Frozenfiniteentry run_first_two_pairs.py rolls currentConvpair, emits acceptedpoint/pair events toD, commits/pushes resultcheckpoint andverifies remoteSHA/artifacts; FWT starts onlyaftervalidConvpairpublished. It has no automaticfailedretry or emptywatcher. ResourceLimit/scientificfailure freezes relevantintake and retains evidence. Same40=32+8/cutoffs/6GiBnew+20GiBtotal/workspace5GiB+2GiBmonitor/Share40GiB/RAM64GiB/CPU/default2max3sim bounds. No secondcontroller, nootherproject policy/data/processchanges.
-
-PlatformGoal readonlycheck: originalgoal backend stillmarkedBLOCKED (historical24objective), notreset/recreated; actualcanonicalcampaign is40 and solefinitecontrollerreallyACTIVE. AvailableGoalAPIhas noresume operation. This checkpoint doesnotclaim backendgoal isactive or that unpreparedlatermatrix willrunbeyond boundedConv/FWTentry. See ORIGINAL_GOAL_PLATFORM_STATE.json for safe continuation.
+OldE001/E002/E003 and raw/status/holds retained; oldbinary results not used as newbinary endpoints. Btree HOLD, no DWT rescan. SameT0/40=32+8/cutoffs/6+20GiBresults/workspace5GiB+2GiBmonitor/Share40GiB/RAM64GiB/CPU and default2sim constraints. This is a bounded sequential queue controller; next input only after currentpair is accepted and published.
