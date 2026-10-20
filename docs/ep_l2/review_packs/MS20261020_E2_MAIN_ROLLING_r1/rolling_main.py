@@ -15,7 +15,7 @@ def choose_slots(coord,row):
  data=read(c.SHARED/'RUN_REGISTRY.json');s=coord.snapshot();assert s['controller']['state']=='STOPPED';assert not any(r['status'] in c.ACTIVE and r.get('experiment_id')==c.CAMPAIGN for r in data['runs'].values())
  resources=c.local_resources();usage=c.output_usage();spec=read(read(row['queue']['path'])['specs'][0]['path']);growth=spec['maximum_result_bytes'];memory=spec['memory_bytes'];data[c.FIELD]['target_simulators']=2
  c.resource_gate(data,'simulation',1,memory,growth,resources,usage)
- shadow=copy.deepcopy(data);shadow['runs']['E2_READ_ONLY_FORECAST_NOT_A_LEASE']=dict(status='RESERVED',host=s['host'],experiment_id=c.CAMPAIGN,cpu_units=1,memory_bytes=memory,disk_growth_bytes=growth,monitor_reserve_bytes=c.disk_policy.lease_policy(s)['monitor_reserve_bytes'],result_directory=str(c.OUTPUT/'E2_FORECAST_NONEXISTENT'))
+ shadow=copy.deepcopy(data);shadow['runs']['E2_READ_ONLY_FORECAST_NOT_A_LEASE']=dict(status='RESERVED',scan=False,host=s['host'],experiment_id=c.CAMPAIGN,cpu_units=1,memory_bytes=memory,disk_growth_bytes=growth,monitor_reserve_bytes=c.disk_policy.lease_policy(s)['monitor_reserve_bytes'],result_directory=str(c.OUTPUT/'E2_FORECAST_NONEXISTENT'))
  slots=2;two_reason='original gate admits both conservative reservations'
  try:c.resource_gate(shadow,'simulation',1,memory,growth,resources,usage)
  except ValueError as error:slots=1;two_reason=str(error)
