@@ -1,0 +1,7 @@
+Inputs: source_root, target164_root, approved existing metadata manifest and owner binding. Current entry tools/cold_archive.py validates the exact BA binding before any action; --execute runs one finite Source tar+pax+zstd stream directly into genuine164 partial. Current admission is the two explicit BA V3 roots; protected TLS P9, E2 and C16 originals cannot use this tool. New cold ownership requires an explicit frozen binding; no new receiver service or Goal system.
+
+Outputs on persistent164: postcheck.tar.zst (or a validated existing-object reference), SOURCE_MANIFEST.jsonl.gz, MEMBER_SHA256_AND_METADATA.jsonl.gz, PATH_MAP.json, ARCHIVE_SHA256SUMS, RESTORE.sh, VERIFY_RESTORE.py, RECOVERY_POINTER.md and DONE.json. Git contains only indices/scripts/SHA and small receipts.
+
+On a full Source-complete stream with a failed Target verification, verify_existing_cold_partial.py only rereads existingNAS partial bound to Source full archive/tar hashes. It never resends Source assets. Incomplete owned verification manifests and sample attempts are retained; new small sample destinations are ABSENT. After all checks, finalize_cold_batch.py publishes final filenames using no-replace semantics.
+
+Source release is always separate and belongs to BA/Source. Archived logical bytes, compressed persistent bytes, temporary bridge bytes and measured Source df gains are distinct. C16 references are not validated retirement eligibility, and the original hostIO10 model gate is unchanged.

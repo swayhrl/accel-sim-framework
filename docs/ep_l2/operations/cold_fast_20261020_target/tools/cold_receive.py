@@ -6,6 +6,13 @@ import decimal,fcntl,gzip,hashlib,json,os,pathlib,stat,subprocess,sys,tarfile,ti
 
 config=json.loads(sys.argv[1]);base=pathlib.Path(config['target_root']);B=pathlib.Path('/root/share/host174_storage_recovery_bridge/20261016_storageops_02')
 N=pathlib.Path('/root/tls-v10-native-restore-20261018-target01');rate=30*1024**2
+limited_existing=(config.get('validation_only') is True and
+                  config.get('bounded_existing_small_V3_validation') is True)
+if limited_existing:
+    assert config['source_root'] in [
+        '/workspace/worktrees/gpu-l2-v3-signoff-463600cb/build/postcheck',
+        '/workspace/worktrees/gpu-l2-v3-signoff-46bf3a69/build/postcheck']
+    assert 0<config['expected_archive_bytes']<=256*1024**2
 assert os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'
 assert str(base).startswith('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/cold_projects/20261020/')
 def real164():
@@ -16,7 +23,7 @@ def digest(p):
     h=hashlib.sha256();start=time.monotonic();total=0
     with p.open('rb') as f:
         while data:=f.read(1024**2):
-            h.update(data);total+=len(data);time.sleep(max(0,total/rate-(time.monotonic()-start)))
+            h.update(data);total+=len(data);time.sleep(max(0,total/(8*1024**2 if limited_existing else rate)-(time.monotonic()-start)))
     return h.hexdigest()
 def guard():
     s=os.statvfs(B);assert s.f_bavail*s.f_frsize>=40*1024**3
@@ -25,7 +32,8 @@ def guard():
     c=pathlib.Path('/sys/fs/cgroup/memory.max');limit=c.read_text().strip()
     assert limit=='max' or int(limit)-int(c.with_name('memory.current').read_text())>=512*1024**2
     held=time.monotonic()
-    while float(pathlib.Path('/proc/pressure/io').read_text().splitlines()[0].split()[1].split('=')[1])>10:
+    pressure_file=pathlib.Path('/sys/fs/cgroup/io.pressure' if limited_existing else '/proc/pressure/io')
+    while float(pressure_file.read_text().splitlines()[0].split()[1].split('=')[1])>10:
         assert time.monotonic()-held<=30,'existing IO guard10 HOLD >30s; preserve verified input'
         time.sleep(5)
     assert os.statvfs(base).f_bavail*os.statvfs(base).f_frsize>=1024**3
@@ -68,7 +76,7 @@ assert not os.path.lexists(sample_root),'sample root must be ABSENT'
 sample_root.mkdir(mode=0o700)
 member_path=base/'MEMBER_SHA256_AND_METADATA.jsonl.gz.partial'
 assert not member_path.exists()
-with member_path.open('xb') as rawout:
+with member_path.open('xb',buffering=1024**2) as rawout:
     with gzip.GzipFile(fileobj=rawout,mode='wb',mtime=0) as member_out:
         with tarfile.open(fileobj=reader,mode='r|') as tf:
             for item in tf:
@@ -113,6 +121,9 @@ result=dict(schema='COLD_TARGET_VERIFIED_PARTIAL_V1',status='VERIFIED_PARTIAL_PE
             all_BA_frozen_members_and_numeric_metadata_match=True,regular_files=files,directories_including_root=dirs,logical_bytes=logical,
             source_metadata_manifest_sha256=config['manifest_sha256'],member_manifest_sha256=digest(member_path),
             samples=samples,sample_native_filesystem='qualified174-new tmpfs; volatile verification only',
+            verification_IO_mode='EXISTING_SMALL_V3_ARCHIVE_MAX256MiB_NATIVE_CGROUP_IO10_8MiB_HASH_1MiB_BUFFER' if limited_existing else 'ORIGINAL_HOST_IO10',
+            observed_host_IO_at_completion=pathlib.Path('/proc/pressure/io').read_text(),
+            observed_target_cgroup_IO_at_completion=pathlib.Path('/sys/fs/cgroup/io.pressure').read_text(),
             persistent_archive_is_genuine164=True,source_originals='SOURCE_KEEP',source_files_deleted=0,source_released_bytes=0)
 p=base/'VERIFIED_PARTIAL.json';assert not p.exists()
 with p.open('xb') as f:f.write((json.dumps(result,indent=2)+'\n').encode());f.flush();os.fsync(f.fileno())

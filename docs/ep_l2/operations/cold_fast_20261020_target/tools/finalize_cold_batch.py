@@ -59,7 +59,7 @@ for n in ['.TARGET_RECEIVER.lock','.TLS_V10_SOURCE_SENDER.lock']:
 assert proof['source_and_target_archive_and_decoded_tar_SHA_equal'] and proof['source']['frozen_metadata_before_after_exact']
 p=base/'postcheck.tar.zst.partial';target=proof['target']
 assert json.loads((base/'VERIFIED_PARTIAL.json').read_bytes())==target
-throttle=v9.Throttle();assert v9.hash_file(p,throttle=throttle)==proof['source']['archive_sha256']==target['archive_sha256']
+throttle=v9.Throttle(8*1024**2);assert v9.hash_file(p,throttle=throttle)==proof['source']['archive_sha256']==target['archive_sha256']
 assert p.stat().st_size==target['archive_bytes']
 for src,dst in [('postcheck.tar.zst.partial','postcheck.tar.zst'),('MEMBER_SHA256_AND_METADATA.jsonl.gz.partial','MEMBER_SHA256_AND_METADATA.jsonl.gz')]:
  a=base/src;b=base/dst;assert not b.exists();v9.rename_noreplace(a,b)

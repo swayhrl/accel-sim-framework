@@ -6,6 +6,7 @@ lines=(D/(tag+'_SOURCE_STDERR.log')).read_bytes().splitlines()
 source=[json.loads(x[len(b'COLD_SOURCE_DONE '):]) for x in lines if x.startswith(b'COLD_SOURCE_DONE ')]
 assert len(source)==1;source=source[0];assert source['status']=='SOURCE_READONLY_STREAM_COMPLETE' and source['frozen_metadata_before_after_exact']
 C=json.loads((D/(tag+'_CONFIG.json')).read_bytes());C.update(validation_only=True,expected_archive_sha256=source['archive_sha256'],expected_archive_bytes=source['compressed_bytes'],sample_run_tag=C['tag']+'_VERIFY_RETRY'+attempt)
+C['bounded_existing_small_V3_validation']=True
 code="""import pathlib,json,os
 p=pathlib.Path(__BASE__)/'MEMBER_SHA256_AND_METADATA.jsonl.gz.partial';q=p.with_name('MEMBER_SHA256_AND_METADATA.jsonl.gz.INCOMPLETE_RETAINED_'+__ATTEMPT__)
 if p.exists():

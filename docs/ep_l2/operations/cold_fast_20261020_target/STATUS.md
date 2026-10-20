@@ -1,3 +1,7 @@
-V3_463600cb complete Source stream received on true164; verification-only retry after an actual IO guard10 refusal. Source stream and frozen before/after identities PASS. No Source replay, no Source release, final DEST_VERIFIED pending.
+V3_463600cb DEST_VERIFIED on genuine164. Archive85,327,780B SHA256 b052839305f13c5a582796223fae44209f9d029bc69b92e7c39ba1450e302e9d. Complete223,087 files/23,546 directories and all numeric header metadata match BA frozen manifest; source/target compressed and decoded tar stream SHA match. Three representative small files actually restored with full SHA and original numeric metadata. Whole environment/tree not recreated.
 
-C16 RAW1-3 current full SHA receipts reused with exact unchanged identities. RAW4/AWQ1-2 pending large IO; no concurrent model reads. Owner retirement remains unapproved. TLS P9 and E2 untouched.
+Source original files remain KEEP pending BA exact release review; measured Source workspace reclaim0. Ready for BA to consume LANE_T_COLD_V3_463600CB_DEST_VERIFIED_20261020.json, recheck source identity/readers and approved scope, perform Source-owned release, record df. Second V3 remains unstarted pending first positive measured reclaim per handoff. No TLS/E2 transaction touched.
+
+Source large stream passed hostIO10. Validation-only retry reused existing85MB archive without Source retransmission, bounded existing-V3-only compressed input<=256MiB,1MiB buffers,8MiB/s archive hash,30MiB/s decoded CPU stream, target cgroupIO10, original locks/RAM/Share. Host IO is separately reported and this narrow metadata/content verification phase is never a C16 IO exception.
+
+C16 current RAW1-3 proofs remain valid; exact six-line reference map prepared; remaining3 current SHA and Source current six content hashes are pending original C16 IO10 and separate owner retirement decision. Source originals/supervisor and126 package controls untouched.
