@@ -1,0 +1,116 @@
+{
+  "actual_cases": [
+    {
+      "case": "S_observer0",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/PROFILES/S_observer0.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "service"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "ff65f4959f1464a484b9b152378d71a1c4a78d27e3c5cb64110bca1fb18a0ddf",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1134561,
+        "start_ticks": 918353353
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/S_observer0.log",
+      "raw_log_sha256": "517cc93c7742d8300992e961fc8c925209db99913e5e6cb94ad6587bcb74282c",
+      "reuse_classification": "RETAINED_E_EXECUTION_SOURCE_PATH_DISJOINT_FROM_RO_LOWER_ALLOCATOR",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.5024800542742014
+    },
+    {
+      "case": "U_observer0",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/PROFILES/U_observer0.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "service"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "ff65f4959f1464a484b9b152378d71a1c4a78d27e3c5cb64110bca1fb18a0ddf",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1134569,
+        "start_ticks": 918353404
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/U_observer0.log",
+      "raw_log_sha256": "13a919ee95b949afdf2aec17af2efc22f7ed1d06de9b3ed994cc03ae70742a3a",
+      "reuse_classification": "RETAINED_E_EXECUTION_SOURCE_PATH_DISJOINT_FROM_RO_LOWER_ALLOCATOR",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.5007392279803753
+    },
+    {
+      "case": "native_dirty_boundaries",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_victim_production",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/docs/ep_l2/ms_victim/test_plan_r2/off.config",
+        "--study-dirty-boundaries"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "cadf8d519abd1590f338b8cede0e8cf459b81cf16c0ec2bc81ef99b73caaa64b",
+      "peak_rss_bytes": 247463936,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1135118,
+        "start_ticks": 918355026
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/native_dirty_boundaries.log",
+      "raw_log_sha256": "5a44f88d8b25cb1d765e54ffb7da4ec83da8633315ed02d346ed2298eac522a7",
+      "reuse_classification": "RETAINED_E_EXECUTION_SOURCE_PATH_DISJOINT_FROM_RO_LOWER_ALLOCATOR",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.8459230735898018
+    }
+  ],
+  "current_native_receipt": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/RECEIPT.json",
+    "sha256": "d259373be0c9c0022de7b6fc9d6abb8cdce246473a8153e1da48393915fab431"
+  },
+  "gate": "finite_wbuf",
+  "prior_scope_reference": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/gates/finite_wbuf.json",
+    "sha256": "e21b57c86148966c582555d88b6db338bacaca288b07e2ca67c66121210b2259"
+  },
+  "production_driven": true,
+  "reference_review": "Review exact retained independent reference assertions and unchanged producerELFs for disjoint paths; replace every affected RO case with E currentarchive actual replay. New detailedDRAM regression asserts nonzero wid7/sid3/tpc3/stream17, four exact-once replies, zero origin mismatch, physicalbank<=1 and quiescence. Sameaddress/sharedpool/pinnedWB assert actual payload versions, UIDs/generations, dirty snapshots, exact response consumption and bounded resource drains. Does not validate numerical SASS application values.",
+  "retained_disjoint_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/PRODUCER_IDENTITY_REVIEW.json",
+    "sha256": "ab5948202ad6ac77cb2a95d28b7cea43cf2115cc435723fbb88d343e468d1715"
+  },
+  "reviewed_by": "E",
+  "reviewed_unix": 1792456752.0318308,
+  "schema": "E_INDEPENDENT_NEW773_GATE_REVIEW_V1",
+  "source_identity": {
+    "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "PASS",
+  "unqualified_extra_joint_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/VRW_SCOPE_REVIEW.json",
+    "sha256": "66ea9e5b78af129fea9d0e66c1fbbe82818266ac57cfe5a7302213304b865865"
+  }
+}

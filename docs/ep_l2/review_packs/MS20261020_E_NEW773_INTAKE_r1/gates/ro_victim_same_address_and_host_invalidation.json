@@ -1,0 +1,99 @@
+{
+  "actual_cases": [
+    {
+      "case": "combined_host_update",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r27-native/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "host_update"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399573,
+        "start_ticks": 920860319
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/combined_host_update.log",
+      "raw_log_sha256": "06cd15cebd9ff9ff12f6118ce0082be7cfd221d1773461bf57531ac2466b4594",
+      "required_terminal": "C_FULL_V2|case=certified_refusal_uncovered_host_victim_update|status=PASS",
+      "reuse_classification": "NEW_ARCHIVE_INDEPENDENT_E_EXECUTION",
+      "semantic_lines": [
+        "A_COMMON_FIXTURE|SEMANTIC|cycles=105|replies=18|lower_reads=17|lower_bytes=544|drained=1",
+        "C_FULL_V2|case=certified_refusal_uncovered_host_victim_update|status=PASS"
+      ],
+      "wall_seconds": 0.531340666115284
+    },
+    {
+      "case": "combined_same_address",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r27-native/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "same_address"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399557,
+        "start_ticks": 920860214
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/combined_same_address.log",
+      "raw_log_sha256": "33859dd165669f54c71230965f7d7ac25230a107e175c7da5ca6ece06b3a031c",
+      "required_terminal": "C_FULL_V2|case=late_ro_same_address_victim|status=PASS",
+      "reuse_classification": "NEW_ARCHIVE_INDEPENDENT_E_EXECUTION",
+      "semantic_lines": [
+        "A_COMMON_FIXTURE|SEMANTIC|cycles=123|replies=20|lower_reads=19|lower_bytes=608|drained=1",
+        "C_FULL_V2|case=late_ro_same_address_victim|status=PASS"
+      ],
+      "wall_seconds": 0.5269265044480562
+    }
+  ],
+  "current_native_receipt": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/RECEIPT.json",
+    "sha256": "d259373be0c9c0022de7b6fc9d6abb8cdce246473a8153e1da48393915fab431"
+  },
+  "gate": "ro_victim_same_address_and_host_invalidation",
+  "prior_scope_reference": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/gates/ro_victim_same_address_and_host_invalidation.json",
+    "sha256": "97b89932e2794a2d84535af923af849e8286f137cac4ce3206c82715a0d609fa"
+  },
+  "production_driven": true,
+  "reference_review": "Review exact retained independent reference assertions and unchanged producerELFs for disjoint paths; replace every affected RO case with E currentarchive actual replay. New detailedDRAM regression asserts nonzero wid7/sid3/tpc3/stream17, four exact-once replies, zero origin mismatch, physicalbank<=1 and quiescence. Sameaddress/sharedpool/pinnedWB assert actual payload versions, UIDs/generations, dirty snapshots, exact response consumption and bounded resource drains. Does not validate numerical SASS application values.",
+  "retained_disjoint_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/PRODUCER_IDENTITY_REVIEW.json",
+    "sha256": "ab5948202ad6ac77cb2a95d28b7cea43cf2115cc435723fbb88d343e468d1715"
+  },
+  "reviewed_by": "E",
+  "reviewed_unix": 1792456754.4535801,
+  "schema": "E_INDEPENDENT_NEW773_GATE_REVIEW_V1",
+  "source_identity": {
+    "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "PASS",
+  "unqualified_extra_joint_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/VRW_SCOPE_REVIEW.json",
+    "sha256": "66ea9e5b78af129fea9d0e66c1fbbe82818266ac57cfe5a7302213304b865865"
+  }
+}
