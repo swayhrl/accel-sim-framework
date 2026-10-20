@@ -1,0 +1,50 @@
+{
+  "scope": "BOUNDED_ORIGINAL_RECORD_READ_PLUS_EXACT_SOURCE_DERIVED_MAPPING_NOT_NATIVE_EXECUTION",
+  "at_utc": "2026-10-20T00:41:29.392024+00:00",
+  "E_authority": "69301fe9d336af4a9638099461f6823b0c1252ba",
+  "E_artifact_path": "docs/ep_l2/review_packs/MS20261020_E_NEW_INPUT_NATIVE_SCOPE_r1/BTREE_NONZERO_MASK_ADDRESS_SCOPE_FAILURE.json",
+  "E_artifact_sha256": "c4f416037b0afebe1cfb0b3b680dd9172d33f74bb57dc4a37f89120db5402d0c",
+  "original_trace": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-1.traceg",
+  "line_1_based": 691,
+  "original_record": "0 0 0 3 1c40 10000000 1 R11 LDG.E.SYS 1 R4 4 0 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8ef0d10f88 0x00007f8eed50bc04 0x00007f8eed50bc04 0x00007f8eed50bc04 ",
+  "original_record_bytes_sha256": "1a796138e666ecfb5b7ae812ad5a9f275b0c1225ed501d96c60d6976c51eedf8",
+  "active_mask_hex": "0x10000000",
+  "active_lanes": [
+    28
+  ],
+  "address_mode": 0,
+  "actual_address_field_count": 32,
+  "native_expected_address_count": 1,
+  "native_source": {
+    "commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "path": "gpu-simulator/trace-parser/trace_parser.cc",
+    "sha256": "9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28",
+    "lines": "192-199,223-227"
+  },
+  "source_derived_native_lane_addresses": {
+    "28": "0x00007f8eed50bc04"
+  },
+  "per_lane32_interpretation_lane28": "0x00007f8ef0d10f88",
+  "native_vs_32_column_interpretation_equal": false,
+  "unconsumed_address_fields_before_imm": 31,
+  "oracle_producer": {
+    "commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+    "path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+    "sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225"
+  },
+  "actual_frozen_oracle_instruction_result": {
+    "opcode": "LDG.E.SYS",
+    "width": 4,
+    "addresses": [
+      "0x7f8eed50bc04"
+    ]
+  },
+  "oracle_vs_native_consumed_address_equal_at_witness": true,
+  "oracle_grammar_gap": "mode0 reads first popcount fields and never checks full residual field count; no evidence it used lane-index28",
+  "interpretation": "Do not falsely report a decoded-address difference between this frozen oracle and current native at this witness. Both consume address0; both fail to establish full32 lane-index input intent. E strict nonzero-tail proof correctly rejects input. Same wrong/ambiguous consumption is not eligibility.",
+  "Btree_status": "HOLD_ORIGINAL_REGISTRATION_PRESERVED_NOT_ACTIVE_SCIENTIFIC_INPUT",
+  "previous_three_RO_line_candidate": "HISTORICAL_DERIVATION_PRESERVED_NOT_USABLE_AS_NATIVE_INPUT_CERTIFICATION",
+  "new_native_or_gpu_executions": 0,
+  "original_trace_modified": false,
+  "A_C_source_modified": false
+}

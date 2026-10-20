@@ -58,7 +58,7 @@ def qualification(ledger,binding):
         raise ValueError('clean-only is not the full scheme')
     return q
 
-def views(ledger,binding):
+def views(ledger,binding,input_holds=None):
     planned={r['condition_id']:r for r in matrix()}
     endpoints={};results=[];problem=None
     if binding:
@@ -71,7 +71,10 @@ def views(ledger,binding):
           binary=UNKNOWN,bottleneck=UNKNOWN,trigger=UNKNOWN,local_service=UNKNOWN,
           mechanism_causality='UNKNOWN_REQUIRES_RUNTIME_FOUR_LAYER_CHAIN')
         mapping=(binding or {}).get('pairs',{}).get(cmp['comparison_id'])
-        if problem:row['reason']=problem
+        hold=(input_holds or {}).get(cmp['workload'])
+        if hold and hold.get('status')=='HOLD':
+            row.update(status='HOLD_INPUT_SCIENTIFIC_SCOPE',reason=hold['reason'])
+        elif problem:row['reason']=problem
         elif not mapping:row['reason']='NO_E_ACCEPTED_PAIR_BINDING'
         else:
             try:
@@ -153,7 +156,9 @@ def render(result,out):
     for x,v in enumerate(vals):
         if math.isfinite(v):
             ax.bar(x,v,width=.58,color='#416d86');ax.text(x,v+.025,f'{v:.4f}',ha='center',fontsize=8)
-        else:ax.text(x,.48*upper,'待E接受',ha='center',fontproperties=font,fontsize=9,color='#777777')
+        else:
+            label='输入HOLD' if result['main'][x]['status']=='HOLD_INPUT_SCIENTIFIC_SCOPE' else '待E接受'
+            ax.text(x,.48*upper,label,ha='center',fontproperties=font,fontsize=9,color='#777777')
     ax.axhline(1,color='#777777',ls='--',lw=.8)
     ax.set_xticks(range(7),labels,fontproperties=font,fontsize=9)
     ax.set_ylabel('传统周期 / 完整方案周期',fontproperties=font)
@@ -180,7 +185,9 @@ def main():
     binding=intake.pointer(binding_ref) if binding_ref else None
     if binding and (binding.get('owner')!='E' or binding.get('authority')!=AUTH):
         raise ValueError('unreviewed/wrong-authority display map')
-    result=views(ledger,binding)
+    hold_path=OUT.parent/'input_suitability_20261020_r1/INPUT_APPLICABILITY.json'
+    holds=json.loads(hold_path.read_text()).get('holds',{}) if hold_path.exists() else {}
+    result=views(ledger,binding,holds)
     for name,key in [('MAIN_COVERAGE_14.csv','coverage'),('COMPARISONS_AND_INTERPRETATION.csv','comparisons')]:csvout(a.out/name,result[key])
     result['summary'].update(registry_sha256_at_read=hashlib.sha256(raw).hexdigest(),
       observed_utc=dt.datetime.now(dt.timezone.utc).isoformat(),authority=AUTH)

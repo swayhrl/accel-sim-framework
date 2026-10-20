@@ -77,6 +77,17 @@ class FullV2(unittest.TestCase):
     def test_current_qualification_hold_refuses_even_stale_current_pair(self):
         self.pair('sad');self.ledger['scientific_holds']={'q':{'status':'ACTIVE'}}
         self.assertEqual(a.views(self.ledger,self.binding)['summary']['current_accepted_main_pairs'],0)
+    def test_input_hold_keeps_seven_denominator_and_preserves_DWT(self):
+        for w in a.WORKLOADS:self.pair(w,cycles=(100,80))
+        r=a.views(self.ledger,self.binding,{'btree':{'status':'HOLD','reason':'NONZERO_MASK_FULL32'}})
+        self.assertEqual(r['summary']['current_accepted_main_pairs'],6)
+        self.assertEqual(r['summary']['required_main_pairs'],7)
+        self.assertEqual(r['summary']['seven_input_geomean_S_over_F'],'UNKNOWN')
+        btree=next(v for v in r['main'] if v['workload']=='btree')
+        dwt=next(v for v in r['main'] if v['workload']=='dwt2d')
+        self.assertEqual(btree['status'],'HOLD_INPUT_SCIENTIFIC_SCOPE')
+        self.assertEqual(btree['cycles_left'],'UNKNOWN')
+        self.assertEqual(dwt['status'],'E_ACCEPTED_D_ANALYZED')
     def test_reversed_mapping_not_favorable_reciprocal(self):
         pid=self.pair('sad');m=self.binding['pairs'][pid];m['left'],m['right']=m['right'],m['left']
         self.assertEqual(a.views(self.ledger,self.binding)['summary']['current_accepted_main_pairs'],0)
