@@ -349,9 +349,9 @@
       "termination_grace_seconds": 3
     }
   },
-  "actual_new_root_growth_since_continuation": 4530157,
+  "actual_new_root_growth_since_continuation": 6949847,
   "actual_starts": 12,
-  "at_unix": 1792477450.4116504,
+  "at_unix": 1792477756.1456332,
   "budget_buckets": {
     "contingency": 8,
     "one_workload_T_only_M_only_on_WV": 0,
@@ -368,55 +368,103 @@
   "controller": {
     "process": {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "pid": 1733310,
+      "start_ticks": 922970621
+    },
+    "recovered_from": {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
       "pid": 1665599,
       "start_ticks": 922604096
     },
     "state": "ACTIVE"
   },
-  "event": "CONTINUATION_FWT_LIVE_MAIN_READY",
+  "event": "FWT_ORIGINAL_NATIVE_SUPERVISION_RECOVERED",
   "failures": [],
   "intake_deadline": 1792591200,
   "maximum_actual_starts": 40,
-  "next_conditions": [
-    {
-      "condition_ids": [
-        "V2_vectorAdd_4M_S",
-        "V2_vectorAdd_4M_F"
-      ],
-      "workload": "vectorAdd_4M"
-    },
-    {
-      "condition_ids": [
-        "V2_cfd_097k_S",
-        "V2_cfd_097k_F"
-      ],
-      "workload": "cfd_097k"
-    },
-    {
-      "condition_ids": [
-        "V2_dwt2d_S",
-        "V2_dwt2d_F"
-      ],
-      "workload": "dwt2d"
-    },
-    {
-      "condition_ids": [
-        "V2_sad_S",
-        "V2_sad_F"
-      ],
-      "workload": "sad"
-    }
-  ],
+  "next_conditions": {
+    "current": "Original FWT S/F, unchanged PIDs, independently validate native full terminal before new admissions",
+    "then": [
+      {
+        "expected_full_instructions": 56000000,
+        "kernel_instances": 1,
+        "qualification": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/QUALIFICATION.json",
+          "sha256": "a66d44eed494cecab8cd6f41434c00adb2717883d49c5e83ee8bbe56e62e6543"
+        },
+        "qualification_id": "a66d44eed494cecab8cd6f41434c00adb2717883d49c5e83ee8bbe56e62e6543",
+        "queue": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/QUEUE.json",
+          "sha256": "340d23efa8f39ba00319b42a3aedff0b3398c5587d2628ebb2c1289dfbde51eb"
+        },
+        "runtime_result_cap_per_attempt": 402653184,
+        "selection_id": "D_V2_vectorAdd_4M",
+        "trace_bytes": 103535960,
+        "workload": "vectorAdd_4M"
+      },
+      {
+        "expected_full_instructions": 143129372,
+        "kernel_instances": 5,
+        "qualification": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/QUALIFICATION.json",
+          "sha256": "d8de6b365f4525d7d9d0550a24ae6d9aec87b8242c8f2e8c37c5ae3f50b35eae"
+        },
+        "qualification_id": "d8de6b365f4525d7d9d0550a24ae6d9aec87b8242c8f2e8c37c5ae3f50b35eae",
+        "queue": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/QUEUE.json",
+          "sha256": "227ebbd69fb829b69b3acb921e04dad19338c0af83f2aba12584b783d32fb5a5"
+        },
+        "runtime_result_cap_per_attempt": 402653184,
+        "selection_id": "D_V2_cfd_097k",
+        "trace_bytes": 271744651,
+        "workload": "cfd_097k"
+      },
+      {
+        "expected_full_instructions": 148684429,
+        "kernel_instances": 10,
+        "qualification": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/QUALIFICATION.json",
+          "sha256": "a7f4cd605d1e2d614fe10a03d0a0af63f179774167973e7263c11823bd5ecf2f"
+        },
+        "qualification_id": "a7f4cd605d1e2d614fe10a03d0a0af63f179774167973e7263c11823bd5ecf2f",
+        "queue": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/QUEUE.json",
+          "sha256": "af8de81c01b30e1c663042b2556c45ef5afce3671872d531513dc129af0ae1b9"
+        },
+        "runtime_result_cap_per_attempt": 402653184,
+        "selection_id": "D_V1_dwt2d",
+        "trace_bytes": 423214888,
+        "workload": "dwt2d"
+      },
+      {
+        "expected_full_instructions": 157583646,
+        "kernel_instances": 3,
+        "qualification": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/sad/QUALIFICATION.json",
+          "sha256": "2110c4f1ed71e1ecea0f1403eb70ec690a244ad34983d3d4cf895e300f9d7fbc"
+        },
+        "qualification_id": "2110c4f1ed71e1ecea0f1403eb70ec690a244ad34983d3d4cf895e300f9d7fbc",
+        "queue": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/sad/QUEUE.json",
+          "sha256": "e72faab22aa718115e8866b0b702a012bca2a461bd838e18f8eb4c541dfe1c3b"
+        },
+        "runtime_result_cap_per_attempt": 402653184,
+        "selection_id": "D_V2_sad",
+        "trace_bytes": 223841946,
+        "workload": "sad"
+      }
+    ]
+  },
   "output_usage": {
-    "new_bytes": 2812007349,
+    "new_bytes": 2814427039,
     "old_bytes": 14309576384,
-    "total_bytes": 17121583733
+    "total_bytes": 17124003423
   },
   "remaining": 28,
   "resources": {
-    "available_memory_bytes": 181054750720,
-    "disk_free_bytes": 11051425792,
-    "share_disk_free_bytes": 44289368064
+    "available_memory_bytes": 182241275904,
+    "disk_free_bytes": 10910740480,
+    "share_disk_free_bytes": 44288806912
   },
   "retained_bytes_by_attempt": {
     "E001_185ad0f6": 87586158,
@@ -429,8 +477,8 @@
     "E008_70a35cd3": 87586763,
     "E009_76e25c1e": 96090387,
     "E010_1108e4d2": 95802697,
-    "E011_618407f0": 110566919,
-    "E012_63be0bb4": 110703760
+    "E011_618407f0": 112511473,
+    "E012_63be0bb4": 111178896
   },
   "schema": "E2_ROLLING_MAIN_RESULT_CHECKPOINT_V1",
   "scientific_holds": {
