@@ -1,38 +1,42 @@
-# B — full-system V2 incremental source/input delivery
+# B — Core27 scientific review and reachable test-only revision
 
-Continued the original Goal, branch and T0 under coordination b2e5328; no reset.
-Core d1c570369da8295b01cc02cf157ed816a158d5ad is pushed and exact remote ref/tree/all74 B file bytes read back.
-Previous Core126bde88 and Frameworkcc76b471, all older RO/parameter candidates,
-review packs and scientific results remain preserved.
+Original Goal/worktree/branch/T0 preserved. Reviewed A latest remote HEAD
+156adbbb5ddcd49e8adb96939837372936ac451e and the complete r35 review;
+production Core27ec10bd/main773 identity is frozen and unchanged by B.
+B source review commit 34a933687319a76f088887798f9663c964d267d3 is pushed and exact remote SHA/tree/all101 B
+file bytes verified. Previous source candidates, RO/parameter work and every
+old review pack/input/failure are retained.
 
-A6452b74d's directory/identity/fixed helper match B126. Its consumer still omits
-the previously delivered both-WB-and-TVD-role last-unpin state completion.
-The exact-preimage small patch passes isolated-index applicability. B has
-not applied A public changes or merged public Core. A/C also receive one real
-partition V/R/W test/input reusing B's fixture: V-before-R, shared WAD128/RAM,
-RO detach+duplicate+partial late fill, host refusal, pinned WB done with ICNT
-backpressure, writer conflict/promotion and exact-once/common-pool drain.
-Whole synthetic epoch footprint and hashes are frozen; C review is pending.
-Expected22 lower packets/704 bytes are assertions only, not observed benefits.
+Conclusion: the old joint abort is a test expectation / unreachable-stimulus
+error; this failure does not demonstrate production data loss. A128B parent
+becomes4actual32B requesters/descriptors, and sibling merges set permanent
+reuse_seen. A0 stays attached; its duplicate merges with no newlower packet.
+GDB20/640 is RO-only, while old22/704 included initialnative1 and an assumed
+newRO1. Only21/672 is inferred for that partial prefix, not a finished result.
+Correct pending descriptor inference is21, not18. Later parentUID/18/final-count
+assertions were not reached. B withdraws those old test-oracle assumptions,
+without changing production policy or erasing the abort record.
 
-Dirty pending/inflight, accept/done, clean retention/reclaim and promotion
-semantics are set out in the V2 state table. Existing fixed64 clean control
-retains64/1104 reciprocal four-bank quotas and128 shared rows. Fixed+dirty is
-still guarded: WB-role retained owners need persistent victim-budget accounting
-before this can be the final V2 fixed+RO control. One precise A/C/E request
-records this public integration requirement and the RO/common bank retry mux.
+Core27 source retains pending/inflight WB snapshot, bound WB UID/incarnation,
+reader pin, costed completion and both-role last-unpin TVD_VALID. Verified5
+selected existing producer raw+receipt hashes, including fresh combined RO/WB
+cases and source-disjoint reused pending/ICNT cases; no old pass is rerun or
+silently promoted to E acceptance.
 
-Actual native compiles/tests0, application starts by B0; hit/value/lower/native
-DRAM improvements remain UNKNOWN. No new binary or runtime effective dump.
-Only patch/text/hash/prepare checks were performed. Old21 prepared cases were
-not re-run or relabeled. No application, lease, storage mutation or watcher.
+Two new input/cases: split128 expects4lower/128B,4child replies+1merged duplicate,
+5descriptors and no parent reply; joint32 expects18RO+1native=19lower/608B and
+18descriptors. It selects an actually detached singleton (not assumed A0), then
+covers oldlateRO return, dirty WB, paid bank denial, actualICNT backpressure,
+WBdone whilepinned, lastunpin, sameaddress writer and complete drain.
+Whole-synthetic-epoch footprints/hashes and exactCore27 test-only addition
+patch are supplied. No public source/CMake/resource/protocol change.
 
-E has now adopted the cumulative40-start policy in the same campaign, actual
-used count0, accepted results0; this is not40 more starts.
-B only read the ledger. Its final combined source identity is absent; A release,
-C scope/interaction review and fresh E native admission/acceptance remain the
-next concrete events. B supplies source/input and continues on their actual
-response, without repeated empty waiting audits. Full Goal remains incomplete.
+Final C++ -fsyntax-only PASS against Core27 headers;2compiler invocations total
+(first local indentation warnings then corrected final), E API leases released.
+No object build/link, newELF, simulator or application execution by B. No actual
+new hit/value/traffic benefit or native PASS is claimed. Existing40-start/T0
+count4 and qualifications/holds are not reset. C review is requested/pending;
+A integrates tests and E admits/accepts actual native execution. No wait audit,
+permanent polling or competing producer was started.
 
-Review pack: MS20261019_B_FULL_SYSTEM_V2_r1; exact requirements in
-REQUEST_TO_A_C_E.json and RECEIPT.json.
+See MS20261020_B_VRW_REACHABILITY_REVIEW_r2 review pack and canonical receipt.

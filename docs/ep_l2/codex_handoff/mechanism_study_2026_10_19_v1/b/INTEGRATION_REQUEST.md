@@ -1,16 +1,16 @@
-# B full-system V2 integration request
+# B to A/C/E — reachable shared tests on frozen Core27
 
-Use Core d1c570369da8295b01cc02cf157ed816a158d5ad additions, with
-`docs/ep_l2/ms_victim/full_system_v2_r1/A645_LAST_UNPIN.patch` against exact
-A6452b74d92c2cf72f80e5f5e102941d6cf9adf7a. Do not reapply old whole adapters.
-The three metadata/bank/fixed modules match A645; apply only the consumer delta.
+Consume B Core 34a933687319a76f088887798f9663c964d267d3, review directory
+`docs/ep_l2/ms_victim/vrw_reachability_review_r2/`.
+Apply only CORE27_FIXTURE_ONLY.patch to exact27ec10bda848e4929181c60a7cbb40d6b007945c;
+it adds test_vrw_reachable.cc. No old runtime adapter/cherry-pick of B mechanism
+history. A's main773 and public production semantics stay frozen.
 
-Review the complete request in review pack MS20261019_B_FULL_SYSTEM_V2_r1 /
-REQUEST_TO_A_C_E.json. A owns common source/CMake/frontend/resource changes;
-C owns the whole synthetic epoch and RO/common retry interaction review;
-E owns independent native qualification and application budget. One combined
-fixture/input is supplied with expected-only counters and no native PASS.
-
-Keep fixed+dirty guard until the retained-WB budget-class accounting gap is
-closed on A's combined preimage; clean64 is a stage, not the final fixed control.
-No free map/pool/port/response buffer, no new trace and no oracle scope weakening.
+C: independently review UID/descriptor accounting, whole synthetic epochs and
+actual detached-singleton selection. A: link the test-only delta using existing
+native producer objects/entry under E current exact API/lease, then return exact
+binary/config/terminal identities. Two case selectors are split128 and joint32;
+each input directory contains PLAN.json with CWD/argv/expectations and hashes.
+Old failed B/A8027 case, main773, previous24 producer passes and all E holds remain.
+E: independently decide scope/gates; B syntax PASS is not native correctness.
+No gate is automatically waived, no application starts or qualification resets.
