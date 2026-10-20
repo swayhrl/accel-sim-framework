@@ -33,7 +33,32 @@ static bool receive_packet(int fd, unsigned sequence, const char *terminal) {
       packet.find("\"pid\":" + std::to_string(getpid()) + ",") != std::string::npos;
 }
 
-int main() {
+int main(int argc, char **argv) {
+  if (argc == 2 && (std::strcmp(argv[1], "normal") == 0 ||
+                    std::strcmp(argv[1], "conflict") == 0)) {
+    // Actual inherited transport/process identity, DECLARED_SYNTHETIC counts.
+    // The admitted parent guard, not this child, owns stop/reap decisions.
+    dtc_ag7::ProgressProducer inherited;
+    if (!inherited.enabled()) return 20;
+    std::puts("DECLARED_SYNTHETIC CPU-only native lifecycle child; no model; completed=42..43 invented.");
+    std::fflush(stdout);
+    inherited.observe("INIT", 42, true, true);
+    usleep(1000);
+    inherited.observe("SIMULATE", 42, true, true);
+    usleep(1000);
+    inherited.observe("SIMULATE", 43, true, true);
+    usleep(1000);
+    inherited.observe("BOUNDARY", 43, true, true, "NATURAL");
+    if (!inherited.enabled()) return 21;
+    if (std::strcmp(argv[1], "conflict") == 0) {
+      // Finite window for exact owned-instance controlled STOP/reap. If the
+      // parent fails to STOP, nonzero exit still invalidates this candidate.
+      sleep(5);
+      return 3;
+    }
+    return 0;
+  }
+  if (argc != 1) return 2;
   unsetenv("DTC_AG7_POLICY_B_PROGRESS");
   errno = EDOM;
   dtc_ag7::ProgressProducer off;

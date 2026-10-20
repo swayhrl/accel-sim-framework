@@ -1,0 +1,68 @@
+{
+  "status": "CONDITIONAL_NOT_YET_ACCEPTED",
+  "independent_review_scope": "SOURCE_NONINTERFERENCE_AND_AUTHENTICATED_BUILD_RECEIPT_REVIEW_ONLY",
+  "BA_scoped_AG7_comparator_acceptance": false,
+  "pre_fork_science_gate_pass": false,
+  "dispatch_permission": false,
+  "extra_BASE_starts_authorized": 0,
+  "source_bridge": {
+    "verdict": "SUPPORT_SOURCE_LEVEL_PROJECTED_MODEL_NONINTERFERENCE",
+    "review": "PRODUCER_INDEPENDENT_SOURCE_REVIEW.md",
+    "intake_review": "W0_INDEPENDENT_COMPARATOR_REVIEW.md",
+    "core_commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+    "original_Framework_source": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+    "new_Framework_cc_sha256": "06fd9c2566060a2886ed5f4ecf46a49cfffafda42645b323f8aa69a9001a2516",
+    "new_producer_header_sha256": "9e51b117e535fcdbcf8c1bcd5aa94a82cea65ee78f4d32485f1c3a451f7158f1",
+    "proof": "Same-thread scalar completion observations; producer owns only fixed observer state; no model pointer, model write, RNG, queue pop, clock feedback, trace/options/ROI edit or model return-dependent branch; bounded nonblocking send; errno restored; removing observer operations retains original modeled transition order.",
+    "assumptions": "Bound compiler/libc contracts, exact unchanged Core and parser ABI/objects, source-to-build binding and runtime loader closure. Source proof does not guarantee real phase wall time or external I/O harmlessness.",
+    "source_diff_alone_is_not_acceptance": true
+  },
+  "actual_build_receipt": {
+    "path": "/workspace/dtc-ag7-policyb-integrated-174-v1/evidence/w2_build_admission_1/RESULT.json",
+    "sha256": "c1b070525d2ed264e70000c3e61f059b87a03d7b8b7d1ad17357abdde7ac25dd",
+    "status": "FRAMEWORK_ONLY_BUILD_PASS_NOT_EXECUTED",
+    "new_Framework_ELF": "/workspace/dtc-ag7-policyb-integrated-174-v1/build/accel-sim.out",
+    "new_Framework_ELF_sha256": "1004880fd7f01f815eb55d3e23fee451d95bb90eef7ecfb19ec8fd9531b9bd6c",
+    "original_Core_library_sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2",
+    "Core_compile_starts": 0,
+    "simulator_starts": 0,
+    "original_trace_main_parser_objects_reused": 3,
+    "new_generated_version_header_sha256": "3f40117a359734f88fb8d4ea7f657462af34606d7514c42e0b8fe3a7e8a90a04",
+    "version_echo_is_source_identity_proof": false,
+    "model_ELF_reread_by_independent_reviewer": false
+  },
+  "historical_comparators": {
+    "GEMM": {"cycles": 1071405, "original_scope": "EXACT_AG6_V2_TUPLE_ONLY", "AG7_reaccepted": false},
+    "Gaussian": {"cycles": 3278356, "original_scope": "EXACT_AG6_V2_TUPLE_ONLY", "AG7_reaccepted": false},
+    "BA_original_decision_sha256": "a8e834093bc3da494190798cc87eee6c39edbe34efa04d38a5ab6771cea37f9a",
+    "historical_AG3_AG4_executor_recertification": false
+  },
+  "science_identity_adapter": {
+    "path": "prepared_ag7/input_identity.py",
+    "status": "SOURCE_PREPARED_NOT_EXECUTED",
+    "API": ["science_identity_data(preregistration, base, point)", "runtime_bridge_data(original_manifests, new_manifests, build_receipt)"],
+    "scope": "Pure small-manifest joins; original Reader/current input/config/source/runtime checks remain external mandatory checks. No old UUID is returned as an AG7 identity.",
+    "input_body_read_by_adapter": false,
+    "options": 270,
+    "allowed_scientific_option_change": "ONE intended AE or AD bit from exact same-input OFF BASE; no combination",
+    "runtime_allowed_delta": "Replace only Framework root ELF path/content; preserve all eleven other runtime file identities, hashes, roles and kinds, including original Core, interpreter, loader cache and exact helpers. Revalidate all twelve current files and actual exec maps."
+  },
+  "remaining_mandatory_closure_before_BA_acceptance": [
+    "Exact new runtime/helper/loader/cache manifest frozen and all current file hashes/stat identities plus actual mapping/source closure checked",
+    "Original full 511-member input-stat/SHA provenance and command vectors checked with original strict helpers; no trace-body reread substituted or invented",
+    "Every original 270-option tuple and sole arm delta checked; four exact config copies in the independent AG7 output root authenticated",
+    "650 original Core source rows, unchanged Framework/parser sources and exact changed cc/header/generated-version/build/object closure authenticated",
+    "Actual W2 producer/receiver/guard lifecycle and controlled protection qualification, exact new opt-in role/fd/ownership handoff, current safety/fairness adapter accepted",
+    "BA explicitly records newly scoped acceptance for this exact build and common frozen pilot profile before any simulator fork"
+  ],
+  "preserved_boundaries": {
+    "old_AG6_consumed": 1,
+    "old_AG6_accepted": 0,
+    "old_AG6_three_UUIDs_sealed": true,
+    "BA_original_budget_consumed": 0,
+    "BA_original_budget_cap": 32,
+    "AG7_UUIDs_or_ledger_created_by_reviewer": false,
+    "F": null,
+    "provisional_O": "K0/OO128/Tag64x8/AE0/AD0"
+  }
+}
