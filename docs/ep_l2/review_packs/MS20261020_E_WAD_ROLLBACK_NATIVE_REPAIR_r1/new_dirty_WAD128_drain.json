@@ -1,0 +1,30 @@
+{
+  "case": "new_dirty_WAD128_drain",
+  "command": [
+    "/workspace/build/ep-l2-ms20261020-a-wad-pending-r41/ep_l2_ms_victim_production",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+    "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+    "--study-dirty-inflight"
+  ],
+  "native_process": {
+    "pid": 1544323,
+    "start_ticks": 921898341,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "started_unix": 1792467012.0758455,
+  "wall_seconds": 0.7175049781799316,
+  "expected_exit": 0,
+  "actual_exit": 0,
+  "expectation_verified": true,
+  "terminal_checks": {
+    "PASS production_dirty_forward_before_wad_write_wait_then_same_handle_promote": true,
+    "PASS production_dirty_forward_before_wad_atomic_wait_then_same_handle_promote": true,
+    "PASS production_dirty_missing_sector_wait_completion_then_real_lower_fallback": true,
+    "PASS production_WAD128_lower_full_no_partial_mutation_then_set_done_epoch_drain": true
+  },
+  "binary_sha256": "e76228627acf6ece5e0b85b273de795048b8cb45f789b034ff59e725d562ddf8",
+  "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_dirty_WAD128_drain.native.log",
+  "raw_log_sha256": "e83ccef08ae6c0c62eb902b0c0c4e7dc23d6aecf31fae22754c9d5b1b50ecf9b",
+  "scientific_scope": "FINITE_PRODUCTION_PATH_SYMBOLIC_VERSION_NOT_APPLICATION_ACCEPTANCE",
+  "expected_old_assert_is_not_PASS": false
+}
