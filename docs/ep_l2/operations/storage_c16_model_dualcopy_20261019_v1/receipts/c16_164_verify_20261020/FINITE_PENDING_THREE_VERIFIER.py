@@ -1,0 +1,179 @@
+"""Finite read-only six-content SHA audit, stdin-gated single stream.
+
+No payload writes, Source hashes, new receiver, or background watcher. Remote
+digest remains in memory; each64MiB read awaits a local control acknowledgment.
+"""
+import base64
+import csv
+import hashlib
+import json
+from pathlib import Path
+import shlex
+import subprocess
+import sys
+import time
+
+R=Path(__file__).resolve().parent
+P=json.loads((R/'six_exact_candidates.json').read_bytes())
+meta=json.loads((R/'candidate_metadata.json').read_bytes())
+assert len(P)==6 and len({x['expected_sha256'] for x in P})==6
+assert all(x['status']=='SIZE_MATCH_CANDIDATE_UNVERIFIED' for x in meta['files'])
+assert all(x['status']=='MATCH' for x in meta['authority_receipts'])
+for i in [0,1]:
+    receipt=json.loads((R/('MODEL_ARCHIVE_RECEIPT_'+str(i)+'.json')).read_bytes())
+    raw=(R/(str(i)+'_DESTINATION_INVENTORY.tsv')).read_bytes()
+    assert hashlib.sha256(raw).hexdigest()==receipt['destination_inventory_file_sha256']
+    inventory={r['relative_path']:r for r in csv.DictReader(raw.decode().splitlines(),delimiter='\t')}
+    for item in P:
+        if item['model_slug']==receipt['model_slug']:
+            row=inventory[Path(item['candidate_path']).name]
+            assert int(row['size'])==item['expected_size'] and row['sha256']==item['expected_sha256']
+
+# Never re-read a model whose complete current SHA proof is already retained.
+verified={}
+for path in R.glob('*_SHA_PASS.json'):
+    row=json.loads(path.read_bytes())
+    if row['kind']=='SCIENTIFIC_MODEL_SHARD':
+        verified[row['candidate_path']]=row
+pending=[]
+for item in P:
+    row=verified.get(item['candidate_path'])
+    if row is None:pending.append(item);continue
+    assert row['actual_sha256']==item['expected_sha256'] and row['bytes_hashed']==item['expected_size']
+    assert row['full_hash_pass_count']==1 and row['status']=='FULL_SHA256_MATCH'
+if '--plan-only' in sys.argv:
+    print(json.dumps(dict(reused_verified_models=len(verified),pending_models=len(pending),
+        pending_paths=[x['candidate_path'] for x in pending],pending_bytes=sum(x['expected_size'] for x in pending),
+        rate_cap_bytes_per_second=8*1024**2,remote_process_started=False),indent=2))
+    raise SystemExit(0)
+if not pending:
+    print('Already verified all six; no remote process or model read started.',flush=True)
+    raise SystemExit(0)
+
+SOURCE_PROBE=r'''
+import pathlib,json,os,hashlib,datetime
+assert os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]'
+p=pathlib.Path('/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json');s=p.stat();assert s.st_size<=8*1024**2
+b=p.read_bytes();assert p.stat().st_mtime_ns==s.st_mtime_ns;r=json.loads(b)
+active=[dict(id=k,**v) for k,v in r['resource_leases'].items() if v.get('status') not in ['RELEASED','CANCELLED','EXPIRED','CLOSED']]
+m=r['mechanism_study_20261019_v1'];reservations=m.get('reservations',{})
+# Logical scientific budgets are recorded, never used as a hash-read lease.
+# V2amends that existing campaign to40cumulative starts; Target cannot mutate
+# its counts and must not retain the obsolete24-only parser assertion.
+assert isinstance(reservations,dict)
+assert all(type(v) is int and v>=0 for v in reservations.values())
+controller=m.get('controller',{}).get('state')
+safe=not active  # Direct user permits ordinary IO coexistence with ACTIVE science; no lease/budget mutation.
+print(json.dumps(dict(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),registry_sha256=hashlib.sha256(b).hexdigest(),active_resource_lease_count=len(active),mechanism_logical_start_budget_buckets=reservations,mechanism_maximum_actual_starts=m.get('maximum_actual_starts'),mechanism_actual_starts=m.get('actual_starts'),mechanism_controller_state=controller,hash_read_safe=safe,source_or_registry_writes=0)))
+'''
+gates=[]
+def source_gate():
+    r=subprocess.run(['ssh','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=10','hrl',
+        'timeout 15s python3 -B -'],input=SOURCE_PROBE.encode(),capture_output=True,timeout=22,check=True)
+    x=json.loads(r.stdout);gates.append(x)
+    (R/'source_lease_checks_during_hash.json').write_bytes((json.dumps(gates,indent=2)+'\n').encode())
+    return x['hash_read_safe']
+
+# One tiny previously pinned metadata file checks the same digest/stdio path
+# before opening any model. It is not another model-content audit.
+fixture=dict(candidate_path=P[0]['receipt_path'],expected_size=1098,
+             expected_sha256=P[0]['expected_receipt_sha256'],kind='SMALL_EXISTING_METADATA_CONTROL_TEST')
+items=[dict(x,kind='SCIENTIFIC_MODEL_SHARD') for x in pending]
+# The existing1KiB metadata fixture qualified this transport before any model.
+# Reuse that proof too, instead of repeating it on a pending-only continuation.
+if not verified:items.insert(0,fixture)
+code=r'''
+import pathlib,os,sys,subprocess,json,hashlib,time,stat,datetime
+os.nice(19)
+subprocess.run(['ionice','-c','3','-p',str(os.getpid())],capture_output=True,check=True)
+P=__PLAN__;RATE=8*1024**2;CAP=64*1024**2
+assert os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'
+started=time.monotonic();total=0;done=[]
+def identity(s):return dict(dev=s.st_dev,inode=s.st_ino,nlink=s.st_nlink,size=s.st_size,uid=s.st_uid,gid=s.st_gid,mode=stat.S_IMODE(s.st_mode),mtime_ns=s.st_mtime_ns,ctime_ns=s.st_ctime_ns)
+def emit(x):print(json.dumps(x),flush=True)
+def check():
+ m=json.loads(subprocess.check_output(['findmnt','-J','-T','/root/share/mnt164','-o','TARGET,SOURCE,FSTYPE'],text=True))['filesystems'][0]
+ assert (m['target'],m['source'],m['fstype'])==('/root/share/mnt164','admin-wcx@10.208.130.164:/home/shared','fuse.sshfs')
+ sv=os.statvfs('/root/share');mem=int(next(l.split()[1] for l in pathlib.Path('/proc/meminfo').read_text().splitlines() if l.startswith('MemAvailable:')))*1024
+ cgmax=pathlib.Path('/sys/fs/cgroup/memory.max').read_text().strip();cgcur=int(pathlib.Path('/sys/fs/cgroup/memory.current').read_text())
+ io=pathlib.Path('/proc/pressure/io').read_text();some=float(io.splitlines()[0].split('avg10=')[1].split()[0])
+ full=float(io.splitlines()[1].split('avg10=')[1].split()[0]);assert mem>=64*1024**3 and sv.f_bavail*sv.f_frsize>=40*1024**3
+ assert cgmax=='max' or int(cgmax)-cgcur>=64*1024**2
+ # Explicit latest user amendment: PSI is recorded only; no fixed10 rejection.
+ return dict(MemAvailable_bytes=mem,Share_available_bytes=sv.f_bavail*sv.f_frsize,io_some_avg10=some,io_full_avg10=full)
+def guarded_chunk_resource():
+ # A bounded pause retains this open FD/digest instead of re-reading a prefix.
+ # It is part of this finite hash job, never a resident watcher. All thresholds
+ # stay unchanged, and Source leases are rechecked before resuming any read.
+ paused=False;pause_start=time.monotonic()
+ while True:
+  try:resource=check();break
+  except AssertionError as error:
+   if str(error)!='CURRENT_IO_PRESSURE_HOLD':raise
+   if not paused:emit(dict(event='IO_PAUSE',reason=str(error),max_pause_seconds=120,payload_read_during_pause=0));paused=True
+   assert time.monotonic()-pause_start<120,'CURRENT_IO_PRESSURE_HOLD_AFTER_BOUNDED_PAUSE'
+   time.sleep(5)
+ if paused:
+  emit(dict(event='RESOURCE_READY',resource=resource))
+  assert json.loads(sys.stdin.readline())['action']=='CONTINUE','SOURCE_RESOURCE_HOLD'
+ return resource
+try:
+ for item in P:
+  p=pathlib.Path(item['candidate_path']);assert all(not q.is_symlink() for q in [p,*p.parents])
+  s=p.lstat();before=identity(s);assert stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_size==item['expected_size']
+  assert before==item['pinned_current_projected_identity'],'PINNED_CURRENT_IDENTITY_DRIFT_HOLD'
+  resource_before=check()
+  emit(dict(event='FILE_READY',path=str(p),kind=item['kind'],identity=before,resource=resource_before,utc=datetime.datetime.now(datetime.timezone.utc).isoformat()))
+  command=json.loads(sys.stdin.readline());assert command['action']=='CONTINUE','SOURCE_RESOURCE_HOLD'
+  fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW);h=hashlib.sha256();offset=0
+  with os.fdopen(fd,'rb',buffering=0) as f:
+   assert identity(os.fstat(f.fileno()))==before
+   while offset<s.st_size:
+    resource=guarded_chunk_resource();remaining=min(CAP,s.st_size-offset);segment_start=time.monotonic();segment=0
+    while segment<remaining:
+     b=f.read(min(1024**2,remaining-segment));assert b,'UNEXPECTED_EOF';h.update(b);offset+=len(b);segment+=len(b);total+=len(b)
+     time.sleep(max(0,segment/RATE-(time.monotonic()-segment_start)))
+    assert identity(os.fstat(f.fileno()))==before and identity(p.lstat())==before,'MODEL_IDENTITY_DRIFT_HOLD'
+    emit(dict(event='PROGRESS',path=str(p),kind=item['kind'],offset=offset,total_read_bytes=total,resource=resource))
+    command=json.loads(sys.stdin.readline());assert command['action']=='CONTINUE','SOURCE_RESOURCE_HOLD'
+   assert f.read(1)==b''
+  digest=h.hexdigest();assert digest==item['expected_sha256'],'FULL_SHA_MISMATCH_HOLD'
+  row=dict(item,actual_sha256=digest,bytes_hashed=offset,read_range_start=0,read_range_end_exclusive=offset,resource_before=resource_before,resource_after=check(),status='FULL_SHA256_MATCH',full_hash_pass_count=1,observed_projected_stat_before=before,observed_projected_stat_after=identity(p.lstat()),native164_path=str(p).replace('/root/share/mnt164','/home/shared',1),uid_gid_mode_source='SSHFS_PROJECTED_NOT_REMOTE_NATIVE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
+  done.append(row);emit(dict(event='FILE_DONE',record=row))
+ emit(dict(event='COMPLETE',records=done,elapsed_seconds=time.monotonic()-started,all_payload_writes=0,source_files_modified_or_deleted=0,models_hashed=sum(x['kind']=='SCIENTIFIC_MODEL_SHARD' for x in done),rate_cap_bytes_per_second=RATE,single_file_stream=True))
+except Exception as e:
+ emit(dict(event='HOLD',reason=type(e).__name__+': '+str(e),completed_records=done,elapsed_seconds=time.monotonic()-started,partial_stream_may_exist=True,payload_writes=0))
+ raise
+'''.replace('__PLAN__',repr(items))
+(R/'readonly_hash_remote.py').write_bytes(code.encode())
+assert source_gate(),'Source active lease or controller HOLD before payload read'
+command='timeout -k 5s 1800s python3 -B -c '+shlex.quote("import base64;exec(base64.b64decode('"+base64.b64encode(code.encode()).decode()+"'))")
+p=subprocess.Popen(['ssh','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=15','hrl-174-new',command],
+    stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8',bufsize=1)
+last_gate=time.monotonic();last_print=0;complete=None;held=None
+event_log=R/('hash_events_pending_continuation.jsonl' if verified else 'hash_events.jsonl')
+with event_log.open('ab') as log:
+    for line in p.stdout:
+        e=json.loads(line);log.write((json.dumps(e)+'\n').encode());log.flush()
+        if e['event'] in ['FILE_READY','PROGRESS','RESOURCE_READY']:
+            safe=True
+            if e['event'] in ['FILE_READY','RESOURCE_READY'] or time.monotonic()-last_gate>=20:
+                try:safe=source_gate()
+                except Exception as exc:safe=False;print('Source gate observation failed; stopping own stream:',str(exc),flush=True)
+                last_gate=time.monotonic()
+            p.stdin.write(json.dumps(dict(action='CONTINUE' if safe else 'STOP'))+'\n');p.stdin.flush()
+            if e['event']=='PROGRESS' and time.monotonic()-last_print>=30:
+                print('PROGRESS',Path(e['path']).name,'offset',e['offset'],'total_read',e['total_read_bytes'],flush=True);last_print=time.monotonic()
+        elif e['event']=='FILE_DONE':
+            (R/(hashlib.sha256(e['record']['candidate_path'].encode()).hexdigest()[:16]+'_SHA_PASS.json')).write_bytes((json.dumps(e['record'],indent=2)+'\n').encode())
+            print('FILE_DONE',Path(e['record']['candidate_path']).name,e['record']['kind'],e['record']['actual_sha256'],flush=True)
+        elif e['event']=='IO_PAUSE':print('IO_PAUSE preserving current digest, bounded120seconds; no payload read',flush=True)
+        elif e['event']=='COMPLETE':complete=e
+        elif e['event']=='HOLD':held=e;print('READ_HOLD',e['reason'],flush=True)
+p.stdin.close();rc=p.wait();stderr=p.stderr.read();(R/'hash_stderr.txt').write_text(stderr,encoding='utf-8')
+if complete:
+    (R/'six_hash_complete.json').write_bytes((json.dumps(complete,indent=2)+'\n').encode());assert rc==0
+    print('COMPLETE',complete['models_hashed'],'model hashes',round(complete['elapsed_seconds'],2),'seconds',flush=True)
+else:
+    (R/'six_hash_hold.json').write_bytes((json.dumps(dict(returncode=rc,hold=held,stderr=stderr),indent=2)+'\n').encode())
+    raise SystemExit(rc or 2)

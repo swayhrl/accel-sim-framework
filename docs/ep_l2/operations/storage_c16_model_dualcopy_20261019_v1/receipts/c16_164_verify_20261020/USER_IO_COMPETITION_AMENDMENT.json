@@ -1,0 +1,24 @@
+{
+  "schema": "C16_164_VERIFY_DIRECT_USER_IO_COMPETITION_AMENDMENT_V1",
+  "utc": "2026-10-20T12:58:16.806715+00:00",
+  "user_instruction": "Higher than10 is acceptable; perform the work, remove this artificial restriction; IO competition is permitted.",
+  "scope": "Only the existing pending RAW4/AWQ1/AWQ2 read-only SHA check; RAW1-3 are not read again.",
+  "supersedes": "Prior C16 fixed host PSI10 admission and hash-read STOPPED-controller exclusion as it prevents the now explicitly authorized ordinary IO coexistence; no change to EP scientific admission or quotas.",
+  "interpretation": "User explicitly permits this read-only IO work and normal IO competition. Existing E2 ACTIVE controller and its two simulations remain running unchanged; this hash receives no simulation reservation or budget. Empty active physical leases do not claim E2 idle. Native164 executor is still unavailable; existing authorized SSHFS read path is used.",
+  "IO_PSI": "RECORD_OBSERVATION_ONLY_NO_FIXED10_REJECTION",
+  "unchanged": {
+    "single_file_stream": true,
+    "read_rate_max_bytes_per_second": 8388608,
+    "nice": 19,
+    "ionice_class": 3,
+    "Share_min_bytes": 42949672960,
+    "RAM_min_bytes": 68719476736,
+    "cgroup_headroom_min_bytes": 67108864,
+    "all_identity_mount_SHA_rules": true,
+    "existing_active_physical_resource_lease_guard": true,
+    "model_copy_restore_upload_delete": false,
+    "EP_or_C16_supervisor_or109_or_TLS_edits": false
+  },
+  "before_amendment_status": "f5f94e9e PARTIAL3/6 IO/lease HOLD is historical, not the current numeric gate",
+  "no_other_task_stopped_or_throttled": true
+}
