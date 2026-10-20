@@ -1,4 +1,4 @@
-> 本历史申请已由本轮用户项目级条件授权更新，见 [USER_CONDITIONAL_AUTHORITY.json](conditional_retirement/USER_CONDITIONAL_AUTHORITY.json) 与 [USER_IO_OVERRIDE.json](conditional_retirement/USER_IO_OVERRIDE.json)。无需重复逐文件审批；仍须闭合完整性、实际依赖接管及恢复条件。
+> 本历史申请已由本轮用户条件授权满足并执行：P3两片、P2四片独立完成，未要求旧A/G代签或重复逐文件审批。 详见 [最终退役回执](conditional_retirement/STATUS.md)。下文保留为历史审查。
 
 # 六条精确路径的条件释放申请 — 未获授权、未执行
 

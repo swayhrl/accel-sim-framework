@@ -1,4 +1,4 @@
-> 最新条件性退役状态见 [conditional_retirement/STATUS.md](conditional_retirement/STATUS.md)。原174源SHA已6/6 PASS；用户已授予条件退役并明确覆盖IO10。下文为上一轮只读审查历史，不再以缺少旧A/G签字单独阻塞。
+> 当前结果：六个外发分片已按用户条件授权全部退役；源/164完整SHA6/6匹配，126控制及模型原件保留。 详见 [最终退役回执](conditional_retirement/STATUS.md)。下文保留为历史审查。
 
 # C16-Storage-Audit — 原174外发六分片只读审查
 
