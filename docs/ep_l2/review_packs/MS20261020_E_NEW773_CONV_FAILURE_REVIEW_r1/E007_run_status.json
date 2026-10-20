@@ -1,0 +1,210 @@
+{
+  "attempt_id": "E007_6f906272",
+  "command": [
+    "/workspace/ep_l2_ms20261019_e_results/E007_6f906272/accel-sim.out",
+    "-config",
+    "/workspace/ep_l2_ms20261019_e_results/E007_6f906272/config-0.config",
+    "-config",
+    "/workspace/ep_l2_ms20261019_e_results/E007_6f906272/config-1.config",
+    "-config",
+    "/workspace/ep_l2_ms20261019_e_results/E007_6f906272/config-2.config",
+    "-config",
+    "/workspace/ep_l2_ms20261019_e_results/E007_6f906272/config-3.config",
+    "-trace",
+    "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g"
+  ],
+  "debugger_exit": 0,
+  "debugger_process": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "pid": 1473684,
+    "start_ticks": 921395996
+  },
+  "detail": "Actualsame773fullinputSIGABRTcaptured; GDBthenkillsownfailedinferior. Noperformance orcorrectnessPASS.",
+  "exit_code": -9,
+  "gdb_log_sha256": "9c1ea400a475e251c0a325d3db28f0ad38f1b2c333a4bf39651d89cc8755b76e",
+  "host_debug_scope": "PR_SET_PTRACER allows onlyexactownedGDBpid; no globalsysctl change/no simulatedoptionchange",
+  "identity": {
+    "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "epoch_range": {
+      "epochs": "all",
+      "scope": "full_application"
+    },
+    "feature_vector": {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 1168,
+      "ro_line_mshr_bypass": true,
+      "ro_tag_detach": true,
+      "static_s64": false,
+      "tvd": true,
+      "unified_wb": true,
+      "wb_local_cap": 0,
+      "wbuf_entries": 16
+    },
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "ideal_vector": {
+      "copy_free": false,
+      "l2_data_free": false,
+      "mem_all_data": false,
+      "meta": false,
+      "read_hit": false,
+      "wb": false
+    },
+    "runtime_config_sha256": "57f94fee29797b407eb2ffbe5a8a95238d1c70c10fe6a2b51c99f04b5bb3d114",
+    "termination_contract": {
+      "all_kernels_input_retained": true,
+      "diagnostic_only": true,
+      "kind": "BOUNDED_FORENSIC_CAPTURE_OF_ORIGINAL_FAILED_FULL_APPLICATION",
+      "no_performance_endpoint": true,
+      "normal_exit_required_for_performance": true,
+      "stop_after_observed_SIGABRT": true,
+      "timeout_seconds": 1800
+    },
+    "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+    "workload": "convolutionSeparable"
+  },
+  "independent_acceptance": "NOT_A_PERFORMANCE_RESULT",
+  "observed_abort": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "captured_sigabrt": true,
+    "current_mf": 108536845918864,
+    "current_uid": 3006216,
+    "frames": [
+      {
+        "line": 44,
+        "name": "__pthread_kill_implementation",
+        "source": "./nptl/./nptl/pthread_kill.c"
+      },
+      {
+        "line": 78,
+        "name": "__pthread_kill_internal",
+        "source": "./nptl/./nptl/pthread_kill.c"
+      },
+      {
+        "line": 89,
+        "name": "__GI___pthread_kill",
+        "source": "./nptl/./nptl/pthread_kill.c"
+      },
+      {
+        "line": 26,
+        "name": "__GI_raise",
+        "source": "./signal/../sysdeps/posix/raise.c"
+      },
+      {
+        "line": 79,
+        "name": "__GI_abort",
+        "source": "./stdlib/./stdlib/abort.c"
+      },
+      {
+        "line": 94,
+        "name": "__assert_fail_base",
+        "source": "./assert/./assert/assert.c"
+      },
+      {
+        "line": 103,
+        "name": "__GI___assert_fail",
+        "source": "./assert/./assert/assert.c"
+      },
+      {
+        "directory_error": "value has been optimized out",
+        "dirty_error": "value has been optimized out",
+        "line": 157,
+        "line_error": "value has been optimized out",
+        "name": "ep_l2_tvd_directory<ep_l2::PayloadHandle>::preview_install",
+        "native_owner_proven_unique": 1,
+        "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/gpgpu-sim/ep-l2-tvd-directory.h"
+      },
+      {
+        "line": 2754,
+        "name": "l2_cache::preview_access",
+        "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/src/gpgpu-sim/gpu-cache.cc"
+      },
+      {
+        "line": 835,
+        "name": "memory_sub_partition::cache_cycle",
+        "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/src/abstract_hardware_model.h"
+      },
+      {
+        "line": 2213,
+        "name": "gpgpu_sim::cycle",
+        "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/src/gpgpu-sim/gpu-sim.cc"
+      },
+      {
+        "line": 183,
+        "name": "accel_sim_framework::simulate",
+        "source": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-r2-ro-runtime-v1/gpu-simulator/accel-sim.cc"
+      },
+      {
+        "line": 75,
+        "name": "accel_sim_framework::simulation_loop",
+        "source": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-r2-ro-runtime-v1/gpu-simulator/accel-sim.cc"
+      },
+      {
+        "line": 30,
+        "name": "main",
+        "source": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-r2-ro-runtime-v1/gpu-simulator/main.cc"
+      }
+    ],
+    "inferior_pid": 1474212,
+    "matching_existing_rows": [],
+    "pending": {
+      "bound": 0,
+      "dirty": 1,
+      "phase": 0,
+      "request": 108536845918864,
+      "same_request": true,
+      "tag_index": 493,
+      "uid": 3006216,
+      "victim": {
+        "generation": 9,
+        "payload_id": 797
+      },
+      "victim_address": 140142980082048,
+      "wad": 1,
+      "wad_ticket": {
+        "incarnation": 8,
+        "index": 85
+      }
+    },
+    "request": {
+      "access": {
+        "m_addr": "140142983575808",
+        "m_req_size": "32",
+        "m_sector_mask": "std::bitset = {[0] = 1}",
+        "m_type": "GLOBAL_ACC_W",
+        "m_write": "true"
+      },
+      "m_request_uid": 3006216,
+      "m_sid": 76,
+      "m_tpc": 76,
+      "m_wid": 51
+    },
+    "schema": "E_ACTUAL_MAIN773_ABORT_REPLAY_STATE_V1",
+    "scope": "READ_ONLY_FAILED_FULL_INPUT_REPLAY_NO_INFERIOR_FUNCTION_CALLS",
+    "start_ticks": 921396042,
+    "stop_signal": 6
+  },
+  "original_failed_attempt": "E006_789c1a95",
+  "peak_combined_rss_bytes": 1245708288,
+  "process": {
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+    "pid": 1474212,
+    "start_ticks": 921396042
+  },
+  "profile": "F_ABORT_FORENSIC_REPLAY",
+  "purpose": "READ_ONLY_ABORT_STATE_NO_ACCEPTANCE",
+  "raw_log_sha256": "104b8ba050b68a8b53f77e4c6f93456f38e3c9714a8d82c8e9224d70fa267167",
+  "run_key": "9c3d9a5fb8d5b5aa8d92698a1eba0234c1de4e6c5952bbd1d9b4846ade9d04da",
+  "scientific_performance_endpoint": false,
+  "source_identity": {
+    "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "FAILED",
+  "wall_seconds": 300.01335073262453
+}
