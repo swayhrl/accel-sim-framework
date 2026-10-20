@@ -206,7 +206,7 @@ class NativeProcess:
 
 
 def popen_factory(spec, attempt, audit):
-    bounds = {k: attempt[k] for k in ('disk_floor_bytes','monitor_reserve_bytes','maximum_result_bytes',
+    bounds = {k: attempt[k] for k in ('policy_id','disk_floor_bytes','monitor_reserve_bytes','maximum_result_bytes',
                                     'monitor_interval_seconds','termination_grace_seconds')}
     bounds.update(memory_bytes=spec.get('memory_bytes',8*2**30), timeout_seconds=spec['timeout_seconds'])
     binding = dict(attempt_id=attempt['attempt_id'], run_key=attempt['run_key'], identity=spec['identity'],

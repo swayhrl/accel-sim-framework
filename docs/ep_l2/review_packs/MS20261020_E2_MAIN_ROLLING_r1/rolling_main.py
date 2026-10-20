@@ -49,9 +49,18 @@ def main():
   assert subprocess.check_output(['git','-C',str(ROOT),'show',pub+':'+f.relative_to(ROOT).as_posix()])==f.read_bytes()
  adopt(plan,pub)
  rows=plan['conditions']
+ gate=read(P/'ENGINEERING_CONTINUATION_DECISION.json')
  for i,row in enumerate(rows):
   snap=coord.snapshot();pairid='V2_MAIN_'+row['workload']+'_S_F_MAIN61'
   if snap['accepted_pairs'].get(pairid,{}).get('status')=='CURRENT_ACCEPTED':continue
+  skipped=gate.get('skip_charged_unaccepted_inputs',{}).get(row['workload'])
+  if skipped:
+   for evidence in skipped['attempts']:
+    current=next(a for a in snap['attempts'] if a['attempt_id']==evidence['attempt_id'])
+    assert current['state']==evidence['state'] and current['receipt_sha256']==evidence['receipt_sha256']
+    assert c.digest(current['receipt_path'])==evidence['receipt_sha256']
+   assert skipped['automatic_retry'] is False
+   continue
   assert snap['final_source_identity']==plan['source_identity'];assert c.digest(row['queue']['path'])==row['queue']['sha256'];assert c.digest(row['qualification']['path'])==row['qualification']['sha256']
   queue=read(row['queue']['path']);audit=[]
   for e in queue['specs']:
