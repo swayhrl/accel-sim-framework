@@ -1,0 +1,18 @@
+% Observation counts are not causal program-cycle contributions.
+\begin{table*}[t]
+\centering
+\caption{Mechanism activation and service changes. All four F runs enable Tag detachment, with zero successful detach events. Percentages compare F to its matched S endpoint.}
+\label{tab:epl2-four-mechanisms}
+\begin{tabular}{lrrrrrr}
+\hline
+Input & \shortstack{V read\\responses} & \shortstack{Line allocations\\avoided} & \shortstack{Detach\\events} & \shortstack{Bank-service\\reduction (\%)} & \shortstack{Lower-read\\reduction (\%)} & \shortstack{Speedup\\(\%)} \\
+\hline
+Conv & 36 & 371495 & 0 & 11.923 & 0.003 & +0.502 \\
+CFD & 49962 & 51678 & 0 & 4.126 & 2.754 & -0.081 \\
+DWT2D & 23305 & 9965 & 0 & 13.845 & 5.575 & -0.670 \\
+SAD & 0 & 0 & 0 & 1.646 & 0.000 & +0.928 \\
+\hline
+\end{tabular}
+
+{\footnotesize V responses and avoided allocations are activation counts, not avoided critical-path cycles. Lower-read bytes are measured at the L2 lower-accept boundary, not external DRAM bandwidth.}
+\end{table*}

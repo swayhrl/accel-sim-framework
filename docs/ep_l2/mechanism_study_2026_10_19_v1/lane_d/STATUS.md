@@ -1,9 +1,11 @@
-# Lane D：四对正式论文归因、图表及最小控制请求已交付
+# Lane D — current control analysis and paper closure
 
-消费E2准确13718839及CFD/DWT/SAD三份完整机制notice，保留Conv，同main61八端独立接受。Conv+0.501940%、CFD−0.080852%、DWT−0.670472%、SAD+0.928440%；临时四对GM1.001679474，原七GM UNKNOWN。累计20/40，原控制器STOPPED，无后台等待器。
+E2 latest remote HEAD `eb889b4077c43cca591afbc5c05eee6beffe5d73`; live22/40 starts,18 remaining. Four MAIN S/F pairs remain current, no control accepted. Conv W_ONLY/F_MINUS_V run under the original live controller (PID2078407/start_ticks925712542 verified). E published STATUS20/40 is stale; use current registry and exact receipts.
 
-新定位：CFD前4kernel多78、flux少14，净多64cycles。DWT多1124主要在K5/K8（+768/+599），98.9%landing等待增量在较快K1，主要退化段RO查询增量0。SAD主要989cycles改善发生在零copy prefix，不能归为动态copy消除全部收益。四组T开启但成功detach均0；M避免分配不等于关键等待收益，等待和不相加为程序stall。
+The analysis interface is delivered and uses existing full_v2_analysis/intake and snapshot parser. Ten exact E-prepared conditions are bound; DWT/CFD four-cell revision is approved but requires E stopped-boundary adoption and resource gates. DWT F_MINUS_R and SAD W_ONLY are not approved. Old D five-control request is historical, not an authorization.
 
-首版f96aca61已推送并远端回读；完整报告four_pairs_20261020_r2/PAPER_SCIENTIFIC_ATTRIBUTION.md，含阶段图/表、逐raw身份、source范围、单独英文措辞及LaTeX插入提案。27项分析完整性控制PASS，不是native资格。EN-v20未改，原四组/旧结果和七输入登记均保留，D模拟/native/trace扫描0。
+Current four-pair GM1.001679 is interim; original denominator remains7 and complete-seven GM UNKNOWN. DWT V/RO remain independently unidentifiable; CFD contrasts are conditional and nonadditive; all four F successful Tag-detach counts0; SAD zero-copy prefix unresolved.
 
-发E2/A2的最小请求5个唯一控制：SAD W_ONLY；DWT W_ONLY、WV；Conv原矩阵WV、WV_M。前三点超原32，需科学范围/内部预算决定，剩20不是自动授权；全部新profile仍未独立合格。A2先静态prefix/landing/query审查和准确overlay，E2独立资格/资源决定。D不启动控制或更改中央台账/main binary。本轮分析revision已交付，无Codex后台worker或GateWaiter；下一依赖是owner回复与正式接受控制数据。
+See [decision brief](controls_20261020_r1/DECISION_BRIEF.md), [event interface](controls_20261020_r1/INCREMENTAL_INTERFACE.md), [English candidates and figure map](controls_20261020_r1/EN_V20_RESULTS_CANDIDATES.md). Eight S/F observations reused;24 per-kernel/tail rows close exactly;38 tooling checks PASS, not native qualification. No simulator, compiler, raw/trace scan, registry mutation, mother edit, background watcher or extra controller by D.
+
+This Codex analysis revision is delivered; it does not claim an active background Goal. The next E acceptance notice can invoke the one-shot adapter into a new snapshot revision without waiting for all controls. Old frozen evidence is preserved.

@@ -189,6 +189,100 @@ def views(ledger,binding,input_holds=None):
         'RO_interpretation':'signed cycle interaction at same WV background; not an exclusive stall-time decomposition',
         'no_background_poller':True,'paper_EN_v17_modified':False,'paper_EN_v20_modified':False}}
 
+def control_views(ledger,binding,plan,input_holds=None):
+    """Project E's explicit control pairs onto current MAIN anchors.
+
+    Uses the same intake and qualification reader as views(). No point is
+    accepted here and no inferred pair is written to E. Removing a MAIN anchor
+    or qualification immediately removes all dependent conditional contrasts.
+    The hash-bound E preparation plan supplies exact profile/config identities.
+    """
+    main=views(ledger,binding,input_holds)
+    anchors={r['workload']:r for r in main['main'] if r['status']=='E_ACCEPTED_D_ANALYZED'}
+    points={};rows=[];details=[]
+    def point(row,side,profile):
+        return dict(profile=profile,workload=row['workload'],pair_id=row['pair_id'],
+          **{k:row[side+'_'+k] for k in ['attempt_id','run_key','config','qualification_id',
+             'receipt_sha256','cycles','instructions','mechanism_metrics']},
+          **{k:row[k] for k in ['core','framework','vendor','binary','trace']})
+    for w,r in anchors.items():
+        for side,p in [('baseline','S'),('variant','F')]:
+            points[(w,p)]=point(dict(r,baseline_cycles=r['cycles_left'],variant_cycles=r['cycles_right']),side,p)
+    for expected in plan['profiles']:
+        w=expected['workload'];profile=expected['profile'];pid=expected['control_pair_id']
+        r=dict(condition_id=expected['condition_id'],workload=w,profile=profile,pair_id=pid,
+          status='PENDING_E_ACCEPTANCE',anchor_profile=expected['anchor_profile'],
+          anchor_attempt_id=expected['anchor_attempt_id'],control_attempt_id=UNKNOWN,
+          anchor_cycles=UNKNOWN,control_cycles=UNKNOWN,control_minus_anchor_cycles=UNKNOWN,
+          anchor_over_control=UNKNOWN,qualification_id=expected['qualification_id'],
+          execution_authority=expected['execution_authority'])
+        try:
+            if not binding or binding['source_identity']!=plan['source_identity']:
+                raise ValueError('control plan outside current common source')
+            anchor=points.get((w,expected['anchor_profile']))
+            if not anchor:raise ValueError('current valid MAIN S/F anchor missing or withdrawn')
+            if any(anchor[k]!=expected['anchor_'+k] for k in ['attempt_id','receipt_sha256']):
+                raise ValueError('predeclared MAIN anchor identity changed')
+            if pid not in ledger.get('accepted_pairs',{}):
+                rows.append(r);continue
+            parsed=intake.analyze_pair(pid,ledger['accepted_pairs'][pid],ledger['accepted_results'])
+            if parsed['status']!='E_ACCEPTED_D_ANALYZED':raise ValueError(parsed['status'])
+            for k in ['attempt_id','receipt_sha256','cycles','config','qualification_id']:
+                if parsed['baseline_'+k]!=anchor[k]:raise ValueError('E control does not bind current MAIN anchor: '+k)
+            if parsed['workload']!=w or parsed['baseline_profile']!=expected['anchor_profile'] or parsed['variant_profile']!=profile:
+                raise ValueError('reversed or wrong control profile')
+            ref=ledger['accepted_results'][parsed['variant_attempt_id']]
+            if ref['identity']!=expected['identity']:raise ValueError('control differs from exact prepared identity/config/input')
+            if parsed['variant_qualification_id']!=expected['qualification_id']:
+                raise ValueError('control qualification differs from exact preparation')
+            for side in ['baseline','variant']:
+                q=qualification(ledger,binding,parsed[side+'_qualification_id'])
+                if parsed[side+'_profile'] not in q['supported_profiles']:
+                    raise ValueError('endpoint profile outside E qualification')
+            if parsed['selection_id']!=expected['selection_id'] or parsed['comparison_invariants_sha256']!=expected['comparison_invariants_sha256']:
+                raise ValueError('E input selection/comparison boundary changed')
+            points[(w,profile)]=point(parsed,'variant',profile);details.append(parsed)
+            r.update(status='E_ACCEPTED_D_ANALYZED',control_attempt_id=parsed['variant_attempt_id'],
+              anchor_cycles=anchor['cycles'],control_cycles=parsed['variant_cycles'],
+              control_minus_anchor_cycles=parsed['variant_cycles']-anchor['cycles'],
+              anchor_over_control=parsed['baseline_over_variant'])
+        except (ValueError,KeyError,FileNotFoundError,TypeError) as e:
+            r.update(status='D_DISPLAY_HOLD',reason=str(e))
+        rows.append(r)
+    contrasts=[]
+    def compare(w,left,right,meaning):
+        a=points.get((w,left));b=points.get((w,right))
+        row=dict(workload=w,left=left,right=right,interpretation=meaning,
+          status='UNKNOWN_MISSING_CURRENT_E_ENDPOINT',cycles_left=UNKNOWN,cycles_right=UNKNOWN,
+          cycles_right_minus_left=UNKNOWN,ratio_left_over_right=UNKNOWN,
+          evidence_class='DERIVED_CONTRAST_OF_E_ACCEPTED_ANCHOR_BOUND_ENDPOINTS_NOT_NEW_E_PAIR')
+        if a and b:
+            row.update(status='CURRENT_D_DERIVED_CONTRAST',cycles_left=a['cycles'],cycles_right=b['cycles'],
+              cycles_right_minus_left=b['cycles']-a['cycles'],ratio_left_over_right=a['cycles']/b['cycles'],
+              left_attempt=a['attempt_id'],right_attempt=b['attempt_id'],
+              left_receipt_sha256=a['receipt_sha256'],right_receipt_sha256=b['receipt_sha256'],
+              binary=a['binary'],trace=a['trace'])
+        contrasts.append(row)
+    for w in anchors:compare(w,'S','F','Original same-input complete scheme versus traditional baseline; main denominator unchanged')
+    for w in ['convolutionSeparable','dwt2d']:
+        compare(w,'S','W_ONLY','Net W organization/copy/finite allocation effect; not isolated copy cost')
+        compare(w,'S','S_COPY_FREE','Diagnostic removal of copy physical service; not realizable hardware speedup')
+        compare(w,'S_COPY_FREE','W_ONLY','W organization versus copy-free traditional diagnostic; interactions retained')
+        compare(w,'W_ONLY','F','Joint V+RO conditional net effect on W; independent V/RO contributions unidentified')
+    for w in ['convolutionSeparable','cfd_097k']:
+        compare(w,'F_MINUS_V','F','V conditional net effect with W+RO; includes state/query/traffic interactions')
+        compare(w,'F_MINUS_R','F','RO conditional net effect with W+V; different background from V contrast; not additive')
+    for left,right,label in [('F_MINUS_R','WV_T','T at M=0'),('WV_M','F','T at M=1'),
+                             ('F_MINUS_R','WV_M','M at T=0'),('WV_T','F','M at T=1')]:
+        compare('convolutionSeparable',left,right,label+'; same WV background, includes lookup/history effects')
+    grid={p:points.get(('convolutionSeparable',p)) for p in ['F_MINUS_R','WV_T','WV_M','F']}
+    interaction=UNKNOWN
+    if all(grid.values()):
+        interaction=grid['F']['cycles']-grid['WV_T']['cycles']-grid['WV_M']['cycles']+grid['F_MINUS_R']['cycles']
+    return dict(main=main,controls=rows,points=list(points.values()),details=details,contrasts=contrasts,
+      RO_grid={p:v['cycles'] if v else UNKNOWN for p,v in grid.items()},
+      RO_cycle_interaction_C11_minus_C10_minus_C01_plus_C00=interaction)
+
 def csvout(path,rows,empty_fields=None):
     with path.open('w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=list(dict.fromkeys(k for r in rows for k in r)) or empty_fields or [],lineterminator='\n')
