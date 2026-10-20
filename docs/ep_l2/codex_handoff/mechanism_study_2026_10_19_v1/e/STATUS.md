@@ -1,7 +1,13 @@
-# Lane E2 — FIRST_CONV_PAIR_ACCEPTED_ORIGINAL_FWT_S_F_RUNNING
+# Lane E2 — CONTINUATION_FWT_LIVE_MAIN_READY
 
-Original174 continuous campaign. A2 release44ebe138 independently accepted; Core d010911e, runtime Framework9dd1ee57, vendorf90c430c, main61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5. Original E17/26 affected native evidence reused with source/tree/archive delta review; no native replay or production build by E2.
+Original174, original T0 1792414193. Actual starts 12/40, remaining28, contingency8/8. Core d010911e / Framework9dd1ee57 / main61aad385. Controller ACTIVE; default maximum2, live source/config/input/lease/RAM/CPU/disk/result guards at every launch.
 
-Actual starts 12/40, remaining28; original contingency8/8, remaining0. Accepted endpoints2, pairs1. T0/cutoffs/32+8 and6/20GiB results/workspace5GiB+2GiBmonitor/Share40GiB/RAM64GiB/CPU/concurrency retained. Controller ACTIVE; see exact process/lease/state in RECEIPT.
+| Accepted pair | S cycles | F cycles | S/F |
+|---|---:|---:|---:|
+| V2_MAIN_convolutionSeparable_S_F_MAIN61 | 292932 | 291469 | 1.005019 |
 
-Old main773 failure logs/receipts and all historical qualification holds retained; no cross-binary endpoint or old OFF reuse. Extra B/C joint fixture remains failed/unqualified; Btree HOLD, SGEMM candidate only. First same-main61 Conv S/F pair is CURRENT_ACCEPTED. FWT continuation uses only its original planned S/F conditions after the published first-pair decision; no further main-matrix queue is installed.
+Real retained new results 2812007349 B, old+new 17121583733 B; new-root growth since this continuation 4530157 B. Per-attempt retained sizes and exact raw/receipt identities in RECEIPT.
+
+Next concrete conditions: [{"workload": "vectorAdd_4M", "condition_ids": ["V2_vectorAdd_4M_S", "V2_vectorAdd_4M_F"]}, {"workload": "cfd_097k", "condition_ids": ["V2_cfd_097k_S", "V2_cfd_097k_F"]}, {"workload": "dwt2d", "condition_ids": ["V2_dwt2d_S", "V2_dwt2d_F"]}, {"workload": "sad", "condition_ids": ["V2_sad_S", "V2_sad_F"]}].
+
+Old raw/failures/withdrawals/hold history retained. Btree HOLD, SGEMM separately exploratory and not launchable; extra B/C joint fixture unqualified. No valid endpoint replay, new Goal, reset or second scheduler.
