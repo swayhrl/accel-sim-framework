@@ -1,0 +1,333 @@
+{
+  "accepted_pairs": 0,
+  "accepted_points": 0,
+  "actual_observed_path": "l2_cache::access -> l2_cache::ft_access -> real RAM write denied at ep-l2-ft-cache.inc:485-486 -> RESERVATION_FAIL. data_cache::access and ft_rollback were not reached.",
+  "after_actual_call": {
+    "arbiter": {
+      "m_granted": [
+        [],
+        [],
+        [
+          {
+            "client": "1",
+            "generation": "1",
+            "id": "14",
+            "sequence": "1",
+            "token": "22",
+            "write": "false"
+          }
+        ],
+        []
+      ],
+      "m_pending": [
+        [],
+        [],
+        [
+          {
+            "client": "4",
+            "generation": "1",
+            "id": "22",
+            "sequence": "2",
+            "token": "22",
+            "write": "true"
+          }
+        ],
+        []
+      ]
+    },
+    "bank_block": 2,
+    "bank_services": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "gpu_cycle": 87,
+    "kind": "ACTUAL_FRONTDOOR_RETURN_ARBITER",
+    "landing_id": 22,
+    "last_payload_request_result": "ep_l2_payload_store::BANK_TRUE_CONTENTION",
+    "m_miss_queue_size": 0,
+    "m_ro": "0x0",
+    "payload_cycle": 87,
+    "pending": {
+      "bound": "false",
+      "dirty": "true",
+      "phase": "0",
+      "request": "0x5bf0707dcd50",
+      "tag_index": "2",
+      "wad": "true"
+    },
+    "request_uid": 22,
+    "rollback_count": 0,
+    "status_local": "RESERVATION_FAIL",
+    "total_cycle": 0,
+    "tvd_lookup": "0x5bf0707dcd50",
+    "tvd_lookup_done": true
+  },
+  "applications_started_this_diagnosis": 0,
+  "at_unix": 1792466738.3437371,
+  "before_actual_call": {
+    "arbiter": {
+      "m_granted": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "m_pending": [
+        [],
+        [],
+        [
+          {
+            "client": "1",
+            "generation": "1",
+            "id": "14",
+            "sequence": "1",
+            "token": "22",
+            "write": "false"
+          },
+          {
+            "client": "4",
+            "generation": "1",
+            "id": "22",
+            "sequence": "2",
+            "token": "22",
+            "write": "true"
+          }
+        ],
+        []
+      ]
+    },
+    "bank_block": 1,
+    "bank_services": [
+      0,
+      0,
+      1,
+      0
+    ],
+    "gpu_cycle": 87,
+    "kind": "ACTUAL_FRONTDOOR_ENTRY_ARBITER",
+    "landing_id": 22,
+    "last_payload_request_result": "ep_l2_payload_store::BANK_TRUE_CONTENTION",
+    "m_miss_queue_size": 0,
+    "m_ro": "0x0",
+    "payload_cycle": 86,
+    "pending": {
+      "bound": "false",
+      "dirty": "true",
+      "phase": "0",
+      "request": "0x5bf0707dcd50",
+      "tag_index": "2",
+      "wad": "true"
+    },
+    "request_uid": 22,
+    "rollback_count": 0,
+    "status_local": "<optimized out>",
+    "total_cycle": 0,
+    "tvd_lookup": "0x5bf0707dcd50",
+    "tvd_lookup_done": true
+  },
+  "captures": [
+    {
+      "actual_application_starts": 0,
+      "attempt": 1,
+      "commands": [
+        {
+          "command": [
+            "/usr/bin/gdb",
+            "-q",
+            "-nx",
+            "-batch",
+            "-x",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_R42_ROLLBACK_INDEPENDENT_DIAG_r1/capture_rollback.gdb",
+            "--args",
+            "/workspace/build/ep-l2-ms20261020-a-wad-pending-r42/ep_l2_potential_a1",
+            "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/full_system_v2/WAD_RETRY_TVD_ROLLBACK_r39.config",
+            "2",
+            "16",
+            "0",
+            "0",
+            "1",
+            "rollback-no-quota"
+          ],
+          "exit_code": 0,
+          "log": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r1/actual_gdb.log",
+          "log_sha256": "6ffc588cfc5bffce6c0ab8e9893d7473b13c5afa0efa901912c1f4d56424891b",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 1533263,
+            "start_ticks": 921847951
+          },
+          "wall_seconds": 3.334347829222679
+        }
+      ],
+      "directory": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r1",
+      "files": {
+        "OBSERVED_ROLLBACK.json": "4394c856509fe1027f661da59002303a4649e82a364d29a3b6ccd10149840583",
+        "RECEIPT.json": "be9a87ae33d82c366915f8ee3256d2fc0e4b63ee49338193142160c90fbd866f",
+        "actual_gdb.log": "6ffc588cfc5bffce6c0ab8e9893d7473b13c5afa0efa901912c1f4d56424891b"
+      },
+      "lease_id": "817f6941181e4146a35126e9c8092717",
+      "lease_released": true,
+      "status": "CAPTURED_NATIVE_FAILURE_NOT_PASS"
+    },
+    {
+      "actual_application_starts": 0,
+      "attempt": 2,
+      "commands": [
+        {
+          "command": [
+            "/usr/bin/gdb",
+            "-q",
+            "-nx",
+            "-batch",
+            "-x",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_R42_ROLLBACK_INDEPENDENT_DIAG_r1/capture_rollback_r2.gdb",
+            "--args",
+            "/workspace/build/ep-l2-ms20261020-a-wad-pending-r42/ep_l2_potential_a1",
+            "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/full_system_v2/WAD_RETRY_TVD_ROLLBACK_r39.config",
+            "2",
+            "16",
+            "0",
+            "0",
+            "1",
+            "rollback-no-quota"
+          ],
+          "exit_code": 0,
+          "log": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r2/actual_gdb.log",
+          "log_sha256": "633eaaa5d38c921df30410bfc63cfa9594d5ead9ab4baa061f73a1f604fbcf87",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 1534825,
+            "start_ticks": 921854077
+          },
+          "wall_seconds": 2.928059469908476
+        }
+      ],
+      "directory": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r2",
+      "files": {
+        "ACTUAL_SOURCE_STEPS.json": "466f28de47cfebe889ecfd24052ebdfcf8e2fcb661bedfd77923b22bf8116947",
+        "OBSERVED_ROLLBACK.json": "1b112e46206f771f50879a34dd0d613f57b49edfd80d044c6e06a2e436bb7519",
+        "RECEIPT.json": "a77e7f1355412752e561b3ae904059ed5e506afddcc24cf634fba7f18d2bbbe4",
+        "actual_gdb.log": "633eaaa5d38c921df30410bfc63cfa9594d5ead9ab4baa061f73a1f604fbcf87"
+      },
+      "lease_id": "981c6d3346a548da900da6d466800ee8",
+      "lease_released": true,
+      "status": "CAPTURED_NATIVE_FAILURE_NOT_PASS"
+    },
+    {
+      "actual_application_starts": 0,
+      "attempt": 3,
+      "commands": [
+        {
+          "command": [
+            "/usr/bin/gdb",
+            "-q",
+            "-nx",
+            "-batch",
+            "-x",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_R42_ROLLBACK_INDEPENDENT_DIAG_r1/capture_rollback_r3.gdb",
+            "--args",
+            "/workspace/build/ep-l2-ms20261020-a-wad-pending-r42/ep_l2_potential_a1",
+            "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/full_system_v2/WAD_RETRY_TVD_ROLLBACK_r39.config",
+            "2",
+            "16",
+            "0",
+            "0",
+            "1",
+            "rollback-no-quota"
+          ],
+          "exit_code": 0,
+          "log": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r3/actual_gdb.log",
+          "log_sha256": "acdd9ee6d7a6d28c82b33454b54fc3ce1883c885a0491dd51739e556fd31d455",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 1536225,
+            "start_ticks": 921858428
+          },
+          "wall_seconds": 3.334286278113723
+        }
+      ],
+      "directory": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r3",
+      "files": {
+        "ACTUAL_SOURCE_STEPS.json": "51ed158dd397f5e616de4357643b108d3dca5b229703dda4f446ab4483fe368b",
+        "OBSERVED_ROLLBACK.json": "2d00db8510fe8c748dd4c9ee688faedb5858c4f4322b472b8feacfd2dc78a701",
+        "RECEIPT.json": "d89296f4b92ca7b9c975aadc9e2423a1331cff1f594ef36cba94d8f6534f14e3",
+        "actual_gdb.log": "acdd9ee6d7a6d28c82b33454b54fc3ce1883c885a0491dd51739e556fd31d455"
+      },
+      "lease_id": "d47aa04714f64c3eaafad29807604b38",
+      "lease_released": true,
+      "status": "CAPTURED_NATIVE_FAILURE_NOT_PASS"
+    },
+    {
+      "actual_application_starts": 0,
+      "attempt": 4,
+      "commands": [
+        {
+          "command": [
+            "/usr/bin/gdb",
+            "-q",
+            "-nx",
+            "-batch",
+            "-x",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_R42_ROLLBACK_INDEPENDENT_DIAG_r1/capture_rollback_r4.gdb",
+            "--args",
+            "/workspace/build/ep-l2-ms20261020-a-wad-pending-r42/ep_l2_potential_a1",
+            "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+            "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/full_system_v2/WAD_RETRY_TVD_ROLLBACK_r39.config",
+            "2",
+            "16",
+            "0",
+            "0",
+            "1",
+            "rollback-no-quota"
+          ],
+          "exit_code": 0,
+          "log": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r4/actual_gdb.log",
+          "log_sha256": "951b1d8d59d098c50d1a85d8ada419922fb18563bfb0ed69cec11dff514af5a0",
+          "process": {
+            "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+            "pid": 1537796,
+            "start_ticks": 921864581
+          },
+          "wall_seconds": 3.3363983519375324
+        }
+      ],
+      "directory": "/workspace/ep_l2_ms20261019_e_results/E_R42_ROLLBACK_INDEPENDENT_DIAG_r4",
+      "files": {
+        "OBSERVED_ROLLBACK.json": "372b6f08fbb91adce8daa2790f602beff0f039254968178c5c2c5e4c0f6a44f8",
+        "RECEIPT.json": "81af3a8a58012d471d3cfa73bc35e3a88ad72cdb1fa064d58672dc16e8d1659d",
+        "actual_gdb.log": "951b1d8d59d098c50d1a85d8ada419922fb18563bfb0ed69cec11dff514af5a0"
+      },
+      "lease_id": "4d677ef430064f6a810a039ffed1a2b2",
+      "lease_released": true,
+      "status": "CAPTURED_NATIVE_FAILURE_NOT_PASS"
+    }
+  ],
+  "cumulative_actual_application_starts": 7,
+  "exact_cause": "The fixture injected a public RESPONSE read on payload14, bank2, client1, token22, sequence1 and left it unconsumed. At cycle87 it owns the retained selected grant. The real frontend write on landing22, same bank2, client4/token22/sequence2 remains queued behind it. Restoring queue capacity alone or merely advancing another clock cannot consume this earlier grant.",
+  "fixture_Core_HEAD": "f0b5606d92571f42839070e9d01de5e9df82bb23",
+  "fixture_path": "tests/ep_l2/test_potential_a1.cc",
+  "fixture_sha256": "8cba15b33f664c1b516d31bcf1e6fb85c211642f27e075e4893cf4325e9359bb",
+  "instrumentation_limits": [
+    "In r1/r2 the optimized source81 breakpoint mapped after the call at instruction309c7, so those captures established retained state only.",
+    "R3 corrected to the actual virtual front-door function entry with capacity0 and stepped real source. R4 read selected/queued arbiter owners at that exact entry/return.",
+    "GDB never wrote inferior state or called inferior functions; its own zero exit is not native correctness. All original failed fixtures and statuses retained."
+  ],
+  "native_ELF": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r42/ep_l2_potential_a1",
+  "native_ELF_sha256": "86bdf921ecf71eb3668a38a4fc847bcea3c062f76b2893a64594a194aea918f5",
+  "native_diagnostic_executions": 4,
+  "new_compilation_by_E": false,
+  "next_A": "As sole build owner compile only this affected fixture object and relink to the retained d010 production archive; keep main61aad bytes unchanged. Run real rollback to all original data/exact-once/drain endpoints and finish remaining supported checks, then publish the exact formal producer. E will independently execute affected qualification and new-source OFF before same-new-binary Conv S/F.",
+  "post_patch_native_PASS": false,
+  "proposal_patch": "docs/ep_l2/review_packs/MS20261020_E_R42_ROLLBACK_INDEPENDENT_DIAG_r1/A_TEST_ONLY_COMPLETE_INJECTED_READ_PROPOSAL.patch",
+  "proposal_patch_sha256": "e2faeaee6501dfc9ef723372dbc7622d2a59524504d1bfb1bbd972b58d0b9d0a",
+  "proposed_test_only_fix": "Before zeroing native credit capacity, retry the exact injected public RESPONSE read with the same handle/client/token until this known selected grant is consumed (for the observed fixture the first retry at87 must grant). Advance one physical cycle, then execute the original credit fault/public front-door access and all unchanged rollback/data/drain assertions. No production change, state cancellation, extra ports or assertion removal.",
+  "reviewed_A_HEAD": "cf8679faef667f0dc58cf3c2571d1cd4b4aa8fcd",
+  "schema": "E_INDEPENDENT_R42_ROLLBACK_CAUSE_AND_MINIMAL_FIX_REVIEW_V1",
+  "scientific_boundary": "The observed failing gate did not exercise rollback. This does not prove production rollback correctness or qualify main61aad; a compiled real native regression is still required.",
+  "status": "REAL_TEST_PRECONDITION_DEFECT_IDENTIFIED_PROPOSAL_NOT_COMPILED_OR_QUALIFIED"
+}

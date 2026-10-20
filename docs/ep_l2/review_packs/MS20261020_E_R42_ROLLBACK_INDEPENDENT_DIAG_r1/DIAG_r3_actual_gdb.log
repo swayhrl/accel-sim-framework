@@ -1,0 +1,112 @@
+Breakpoint 1 at 0xd9970: file /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc, line 2503.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:850000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000117647058824
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+*** Initializing Memory Statistics ***
+A1 armed mode=2 C=16 native16way=1 reserved=15 pending=2 phase=0 victim_id=14 generation=1
+
+Breakpoint 1, l2_cache::access (this=0x56aff534f3e0, addr=131072, mf=0x56aff5415d50, time=900001, events=empty std::__cxx11::list) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc:2503
+2503	                                           std::list<cache_event> &events) {
+E_ROLLBACK_DIAG|{"bank_block": 1, "gpu_cycle": 87, "kind": "ACTUAL_FRONTDOOR_ENTRY_BEFORE_CALL", "last_payload_request_result": "ep_l2_payload_store::BANK_TRUE_CONTENTION", "m_miss_queue_size": 0, "m_ro": "0x0", "pending": {"bound": "false", "dirty": "true", "phase": "0", "request": "0x56aff5415d50", "tag_index": "2", "wad": "true"}, "rollback_count": 0, "status_local": "<optimized out>", "total_cycle": 0, "tvd_lookup": "0x56aff5415d50", "tvd_lookup_done": true}
+E_ACTUAL_STEP|{"function": "l2_cache::access", "i": 0, "line": 2503, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc"}
+2504	  if(m_ro)m_ro->check_access(mf);
+E_ACTUAL_STEP|{"function": "l2_cache::access", "i": 1, "line": 2504, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc"}
+2505	  if(ft_enabled()) {if(m_ro && !m_ro->query_admissible(mf))return RESERVATION_FAIL;auto result=ft_access(addr,mf,time,events);if(m_ro && result!=RESERVATION_FAIL)m_ro->record_accepted(mf);return result;}
+E_ACTUAL_STEP|{"function": "l2_cache::access", "i": 2, "line": 2505, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc"}
+l2_cache::ft_enabled (this=0x56aff534f3e0) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.h:3030
+3030	  bool ft_enabled() const { return m_config.m_ep_l2_ft_mode != 0; }
+E_ACTUAL_STEP|{"function": "l2_cache::ft_enabled", "i": 3, "line": 3030, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.h"}
+l2_cache::access (this=0x56aff534f3e0, addr=131072, mf=0x56aff5415d50, time=900001, events=empty std::__cxx11::list) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc:2505
+2505	  if(ft_enabled()) {if(m_ro && !m_ro->query_admissible(mf))return RESERVATION_FAIL;auto result=ft_access(addr,mf,time,events);if(m_ro && result!=RESERVATION_FAIL)m_ro->record_accepted(mf);return result;}
+E_ACTUAL_STEP|{"function": "l2_cache::access", "i": 4, "line": 2505, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc"}
+l2_cache::ft_access (this=0x56aff534f3e0, addr=131072, mf=0x56aff5415d50, time=900001, events=empty std::__cxx11::list) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc:300
+300	    unsigned time, std::list<cache_event> &events) {
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 5, "line": 300, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+303	  ft_assert_quota();
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 6, "line": 303, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+304	  if (m_ft_pending.request == mf && m_ft_pending.quota_reserved) ++m_ft_quota.retries;
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 7, "line": 304, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+305	  const unsigned long long physical_cycle = ft_physical_cycle();
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 8, "line": 305, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+307	  const new_addr_type owner = m_config.block_addr(addr);
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 9, "line": 307, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+308	  if(m_ro) {
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 10, "line": 308, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+321	  if (tvd_write_candidate(mf) && !tvd_promote(mf,time,events)) return RESERVATION_FAIL;
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 11, "line": 321, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+322	  unsigned index = (unsigned)-1;
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 12, "line": 322, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+840	  bool is_write() const { return m_write; }
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 13, "line": 840, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/abstract_hardware_model.h"}
+324	  if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);}
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 14, "line": 324, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+173	      pointer    _M_ptr() const { return std::get<0>(_M_t); }
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 15, "line": 173, "source": "/usr/include/c++/11/bits/unique_ptr.h"}
+328	  if(ro_new && (!m_ro->capacity(mf,false) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return RESERVATION_FAIL;
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 16, "line": 328, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+329	  if (m_ft_pending.request && m_ft_pending.request != mf) return RESERVATION_FAIL;
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 17, "line": 329, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+173	      pointer    _M_ptr() const { return std::get<0>(_M_t); }
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 18, "line": 173, "source": "/usr/include/c++/11/bits/unique_ptr.h"}
+334	  if (probe == MISS && !m_ft_pending.request) {
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 19, "line": 334, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+447	  if (replacement) {
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 20, "line": 447, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+449	    assert(p.tag_index == index && probe == MISS);
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 21, "line": 449, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+450	    if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 22, "line": 450, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+840	  bool is_write() const { return m_write; }
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 23, "line": 840, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/abstract_hardware_model.h"}
+96	  unsigned get_request_uid() const { return m_request_uid; }
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 24, "line": 96, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/mem_fetch.h"}
+485	      if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 25, "line": 485, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+486	        ++m_ft_stats.bank_block; return RESERVATION_FAIL;
+E_ACTUAL_STEP|{"function": "l2_cache::ft_access", "i": 26, "line": 486, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc"}
+l2_cache::access (this=0x56aff534f3e0, addr=131072, mf=0x56aff5415d50, time=<optimized out>, events=empty std::__cxx11::list) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc:2505
+2505	  if(ft_enabled()) {if(m_ro && !m_ro->query_admissible(mf))return RESERVATION_FAIL;auto result=ft_access(addr,mf,time,events);if(m_ro && result!=RESERVATION_FAIL)m_ro->record_accepted(mf);return result;}
+E_ACTUAL_STEP|{"function": "l2_cache::access", "i": 27, "line": 2505, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.cc"}
+main (argc=<optimized out>, argv=0x7ffc215b9e48) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r42-wad-fixtures-v1/tests/ep_l2/test_potential_a1.cc:82
+82	    credit_fault::capacity(cc)=old;
+E_ACTUAL_STEP|{"function": "main", "i": 28, "line": 82, "source": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r42-wad-fixtures-v1/tests/ep_l2/test_potential_a1.cc"}
+E_ROLLBACK_DIAG|{"bank_block": 2, "gpu_cycle": 87, "kind": "AFTER_ACTUAL_FRONTDOOR_ACCESS", "last_payload_request_result": "ep_l2_payload_store::BANK_TRUE_CONTENTION", "m_miss_queue_size": 0, "m_ro": "0x0", "pending": {"bound": "false", "dirty": "true", "phase": "0", "request": "0x56aff5415d50", "tag_index": "2", "wad": "true"}, "rollback_count": 0, "status_local": "RESERVATION_FAIL", "total_cycle": 0, "tvd_lookup": "0x56aff5415d50", "tvd_lookup_done": true}
+ep_l2_potential_a1: /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r42-wad-fixtures-v1/tests/ep_l2/test_potential_a1.cc:83: int main(int, char**): Assertion `status==RESERVATION_FAIL && !f.cache->ft_reservation_active()' failed.
+
+Program received signal SIGABRT, Aborted.
+__pthread_kill_implementation (no_tid=0, signo=6, threadid=137609092192064) at ./nptl/pthread_kill.c:44
+44	./nptl/pthread_kill.c: No such file or directory.
+E_ROLLBACK_DIAG|{"bank_block": 2, "gpu_cycle": 87, "kind": "STOP_SIGNAL", "last_payload_request_result": "ep_l2_payload_store::BANK_TRUE_CONTENTION", "m_miss_queue_size": 256, "m_ro": "0x0", "pending": {"bound": "false", "dirty": "true", "phase": "0", "request": "0x56aff5415d50", "tag_index": "2", "wad": "true"}, "rollback_count": 0, "status_local": "<optimized out>", "total_cycle": 0, "tvd_lookup": "0x56aff5415d50", "tvd_lookup_done": true}
+#0  __pthread_kill_implementation (no_tid=0, signo=6, threadid=137609092192064) at ./nptl/pthread_kill.c:44
+#1  __pthread_kill_internal (signo=6, threadid=137609092192064) at ./nptl/pthread_kill.c:78
+#2  __GI___pthread_kill (threadid=137609092192064, signo=signo@entry=6) at ./nptl/pthread_kill.c:89
+#3  0x00007d279d134476 in __GI_raise (sig=sig@entry=6) at ../sysdeps/posix/raise.c:26
+#4  0x00007d279d11a7f3 in __GI_abort () at ./stdlib/abort.c:79
+#5  0x00007d279d11a71b in __assert_fail_base (fmt=0x7d279d2cf130 "%s%s%s:%"..., assertion=0x56afe5223a18 "status=="..., file=0x56afe5223598 "/workspa"..., line=83, function=<optimized out>) at ./assert/assert.c:94
+#6  0x00007d279d12be96 in __GI___assert_fail (assertion=0x56afe5223a18 "status=="..., file=0x56afe5223598 "/workspa"..., line=83, function=0x56afe522530e "int main"...) at ./assert/assert.c:103
+#7  0x000056afe4f33613 in main (argc=<optimized out>, argv=0x7ffc215b9e48) at /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r42-wad-fixtures-v1/tests/ep_l2/test_potential_a1.cc:83
