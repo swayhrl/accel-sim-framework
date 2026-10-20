@@ -306,14 +306,18 @@ def main():
                 report.update(status='COMPILING_ONLY_TWO_SUPPORTED_FIXTURE_SELECTORS',compiler_started=True);save()
                 for target in spec['missing_fixture_targets']:
                     destination=build/target;link_target(target,destination,new_archive);executables[target]=destination
-                report.update(status='LINKING_NEW_MAIN_BEFORE_REMAINING_FINITE_CHECKS');save()
-                command=shlex.split((old/'CMakeFiles/accel-sim.out.dir/link.txt').read_text())
-                for i,word in enumerate(command):
-                    if i and command[i-1]=='-o':command[i]=str(build/'accel-sim.out')
-                    elif word.endswith('.o') or (word.endswith('.a') and not word.startswith('/')):
-                        command[i]=str(new_archive) if word.endswith('/libgpgpusim.a') else str(old/word)
-                run(command,'new_main_link')
-                report.update(binary=str(build/'accel-sim.out'),binary_sha256=sha(build/'accel-sim.out'),new_archive=str(new_archive),new_archive_sha256=sha(new_archive))
+                if spec.get('retained_main'):
+                    main_binary=Path(spec['retained_main']);assert sha(main_binary)==spec['retained_main_sha256']
+                    report.update(binary=str(main_binary),binary_sha256=sha(main_binary),new_archive=str(new_archive),new_archive_sha256=sha(new_archive),main_relinked=False)
+                else:
+                    report.update(status='LINKING_NEW_MAIN_BEFORE_REMAINING_FINITE_CHECKS');save()
+                    command=shlex.split((old/'CMakeFiles/accel-sim.out.dir/link.txt').read_text())
+                    for i,word in enumerate(command):
+                        if i and command[i-1]=='-o':command[i]=str(build/'accel-sim.out')
+                        elif word.endswith('.o') or (word.endswith('.a') and not word.startswith('/')):
+                            command[i]=str(new_archive) if word.endswith('/libgpgpusim.a') else str(old/word)
+                    run(command,'new_main_link')
+                    report.update(binary=str(build/'accel-sim.out'),binary_sha256=sha(build/'accel-sim.out'),new_archive=str(new_archive),new_archive_sha256=sha(new_archive))
                 save()
                 for case in spec['cases'][1:]:
                     if case['id'] in spec['completed_new_cases']:
@@ -322,6 +326,15 @@ def main():
                         assert sha(row['raw_log'])==row['raw_log_sha256']
                         report['tests'].append(dict(evidence=str(detail),sha256=sha(detail),reused_verified_same_archive=True,**row));save()
                     else:case_run(case,executables[case['target']])
+                if spec.get('observer_pair_case_ids'):
+                    lines=[]
+                    for name in spec['observer_pair_case_ids']:
+                        record=next(row for row in report['tests'] if row['case']==name)
+                        raw=Path(record['raw_log']).read_text(errors='replace')
+                        values=[line for line in raw.splitlines() if line.startswith('A_COMMON_FIXTURE|SEMANTIC|')]
+                        assert len(values)==1;lines.append(values[0])
+                    assert len(lines)==2 and lines[0]==lines[1]
+                    report['observer_on_off_semantic_equal']=True;report['observer_semantic_fingerprint']=lines[0]
                 for path,digest in retained.items():assert sha(path)==digest
                 report.update(status='CORE27_OLD_RED_FIXED_NEW_GREEN_MAIN_COMPILED_PENDING_E',
                     retained_assets_unchanged=True,test_binaries={key:dict(path=str(value),sha256=sha(value)) for key,value in executables.items()},
