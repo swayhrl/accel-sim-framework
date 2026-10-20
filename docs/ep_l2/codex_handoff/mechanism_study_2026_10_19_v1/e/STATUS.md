@@ -1,6 +1,6 @@
 # Lane E2 — APPROVED_CONTROLS_BATCH_1_QUALIFIED_ADMISSION
 
-Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
+Original174; originalT0=1792414193; actual28/40,remaining12,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
 
 | Main S/F | S cycles | F cycles | S/F |
 |---|---:|---:|---:|
@@ -21,3 +21,5 @@ Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consu
 New results4185912887B, old+new18495489271B; growth since20-start control baseline578550303B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
 Remaining original qualified controls: . DWT/CFD four-cell revision is user-approved and independently qualified; exact matrix adoption retained with original history. Remaining approved controls: V2_dwt2d_S_COPY_FREE,V2_dwt2d_W_ONLY,V2_cfd_097k_F_MINUS_V,V2_cfd_097k_F_MINUS_R. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+
+Actual approved DWT start receipt: E027 S_COPY_FREE and E028 W_ONLY RUNNING;28/40,remaining12. All six Conv controls accepted and delivered; exact approved four-row matrix adopted with original history retained. COPY_FREE also exempts fixed copy-staging retry delay; never bank-port-only or hardware throughput.
