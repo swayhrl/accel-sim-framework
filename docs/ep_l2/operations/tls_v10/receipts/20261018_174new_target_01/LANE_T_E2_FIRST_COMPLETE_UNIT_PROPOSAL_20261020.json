@@ -1,0 +1,77 @@
+{
+  "schema": "LANE_T_E2_FIRST_RESTORABLE_UNIT_PROPOSAL_V1",
+  "utc": "2026-10-20T08:43:26.293619+00:00",
+  "status": "METADATA_PROPOSAL_NOT_COPY_READY_NO_SOURCE_RELEASE",
+  "E2_candidate_commit": "cfc49d6a095ad19c3c9032be4a80be6f40df4d24",
+  "E2_candidate_selector_sha256": "1605a1a5f34b6b87a05f311cac45861c7b088e70b8891554a32e4638114cfd6d",
+  "genuine164_area": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_cold_results/20261020_e2_01",
+  "native164_area": "/home/shared/huangrulin/host174_storage_recovery/ep_l2_cold_results/20261020_e2_01",
+  "suggested_first_complete_original": {
+    "active_readers": [],
+    "allocated_bytes": 76562432,
+    "classification": "COLD",
+    "ctime_ns": 1792237748029520197,
+    "current_direct_dependency_paths": [],
+    "device": 156,
+    "device_major": 0,
+    "device_minor": 156,
+    "inode": 45237165,
+    "mode": 33261,
+    "mtime_ns": 1792237748029520197,
+    "nlink": 1,
+    "original_sha256_records": [
+      {
+        "kind": "published_exact_path_field",
+        "sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
+        "source": "/workspace/ep_l2_parallel_lane1/p2_release_r1/AUTHOR_BUILD_RECEIPT.json"
+      },
+      {
+        "kind": "published_exact_path_field",
+        "sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
+        "source": "/workspace/ep_l2_parallel_lane1/p2_release_r1/AUTHOR_BUILD_RECEIPT.json"
+      },
+      {
+        "kind": "published_exact_path_field",
+        "sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
+        "source": "/workspace/ep_l2_parallel_lane1/p2_build_r1/BUILD_RECEIPT.json"
+      },
+      {
+        "kind": "published_exact_path_field",
+        "sha256": "493d3a64729a0d4e761fc6b36233b3de7ccca91ff5001cc5699629fdc89a5224",
+        "source": "/workspace/ep_l2_parallel_lane1/p2_build_r1/BUILD_RECEIPT.json"
+      }
+    ],
+    "original_sha256_status": "PUBLISHED_EXACT_PATH_NOT_REHASHED",
+    "owner_review": "E_SCIENTIFIC_CANDIDATE_REVIEW_ONLY_NO_SOURCE_RELEASE",
+    "path": "/workspace/build/ep-l2-potential20261017-lane1-p2-r1/accel-sim.out",
+    "restore_requirement": "Independent true164 complete file-content/tree restore verification against sealed transfer manifest; preserve path/link metadata and original SHA records; E rechecks canonical references before any source release. Rebuild from Git is not restore evidence.",
+    "scientific_project": "EP-L2 legacy20261017/18 Lane1 producer build; not current main61",
+    "size": 76555232,
+    "source_release_authorized": false,
+    "symlink_target": null
+  },
+  "first_original_logical_bytes": 76555232,
+  "first_original_allocated_upper_bound_bytes": 76562432,
+  "why_first": "One COLD original smaller than128MiB with published exact original SHA; can be independently finalized/restored and handed to S/E2 without waiting entire build tree. S/E2 may choose another exact unit.",
+  "following_same_root": {
+    "root": "/workspace/build/ep-l2-potential20261017-lane1-p2-r1",
+    "candidate_files": 724,
+    "logical_bytes": 1895190797,
+    "allocated_upper_bound_bytes": 1897136128,
+    "all_rows_reviewed_COLD_no_snapshot_reader_or_current_direct_dependency": true
+  },
+  "source_seal_required": [
+    "Fresh source SHA256 matching original published digest when known; cannot promote old digest as a current pass",
+    "Fresh source uid/gid and complete required directory uid/gid; E2 inventory does not include uid/gid",
+    "Convert E2 mode including stat file-type bits to original permission mode via stat.S_IMODE; preserve original full st_mode in provenance",
+    "Exact source file dev/inode/nlink/ctime/mtime and current/future readers, current Source resource gate, joint S/E2 approval of eligibility",
+    "Independent original V9 canonical txid, selector and manifest tied to unique archive base under supplied E2 area; no P9 identity reuse",
+    "Native full-original restore from genuine164; full file SHA,size,uid/gid/mode/mtime_ns and exact selected directory metadata; no existing destination overwrite"
+  ],
+  "transport_reuse": "Raw chunks <=128MiB through existing one-lock one-flow receiver and qualified immutable V9/grouped/native primitives. No compressed format adoption needed for first unit.",
+  "staging_budget": "Retained P9 B0028 allocated77,176,832B included with all other bridge files; no new payload until exact Source/Target single-window admission. A 128MiB E2 window plus retained P9 is <256MiB before controls, whose actual allocation must also be measured; path/identity isolation and negative tests mandatory before coexistence.",
+  "estimated_reclaim_is_not_df_gain": true,
+  "target_source_deletion_authority": false,
+  "source_release": "Requires S/E2 joint exact review after full durable restoration proof; original source release rules remain independent.",
+  "C16": "UNCHANGED"
+}
