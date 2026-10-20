@@ -1,0 +1,453 @@
+{
+  "schema": "A2_MAIN61_CONTROL_QUALIFICATION_GAPS_V1",
+  "profiles": [
+    {
+      "profile": "W_ONLY",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": false,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [
+          "new_A1_UID_Bank_mode2",
+          "new_bank_retry_one_token",
+          "new_legacy_credit_rollback"
+        ],
+        "historical_cases": [],
+        "minimum": "Review exact FT2/V0/T0M0 branch mapping of current d010 receipts; new E profile artifact required. No automatic replay of seventeen tests."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "F_MINUS_R",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [
+          "new_dirty_WAD128_drain",
+          "new_dirty_bank_capacity_and_partial",
+          "new_clean_matched_TVD_OFF_ON_UID",
+          "new_warm4096_WAD128_drain"
+        ],
+        "historical_cases": [
+          "combined_factor_tag_T0_M0",
+          "combined_factor_line_T0_M0"
+        ],
+        "minimum": "Review current full V/no-RO dirty/clean/partial/drain evidence and zero RO switches; publish exact profile."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "F_MINUS_V",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [
+          "new_A1_UID_Bank_mode2",
+          "new_combined_native_ro_mux"
+        ],
+        "historical_cases": [
+          "ro_native_dram_warm_R_without_V"
+        ],
+        "minimum": "Disposition of detailed DRAM R-without-V historical source evidence; if missing, relink only retained origin fixture against d010 archive and execute that one bounded native case. Exact input RO manifest retained."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "WV_T_ONLY",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [
+          "new_dirty_WAD128_drain",
+          "new_combined_shared_pool"
+        ],
+        "historical_cases": [
+          "combined_factor_tag_T1_M0",
+          "combined_factor_line_T1_M0"
+        ],
+        "minimum": "Review T1/M0 tag-pressure + finite native LineMSHR128 behavior; source-equivalence reuse first, else two existing d010 factor native calls. Use E profile alias WV_T."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "WV_M_ONLY",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [
+          "new_dirty_WAD128_drain",
+          "new_combined_shared_pool"
+        ],
+        "historical_cases": [
+          "combined_factor_tag_T0_M1",
+          "combined_factor_line_T0_M1"
+        ],
+        "minimum": "Review T0/M1 Tag retention + bypass with D512 and line-pressure behavior; source-equivalence reuse first, else two existing d010 factor native calls. Use E profile alias WV_M."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "S_COPY_FREE",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [],
+        "historical_cases": [
+          "S_COPY_FREE_local",
+          "S_COPY_FREE_ROP7"
+        ],
+        "minimum": "Source-equivalence review of static copy-only exemption/reference versions and ROP7 latency independence; otherwise relink two small retained fixture targets, no full simulator build. Verify no noncopy exemption and throughput_eligible=0."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "S_L2_DATA_FREE",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [],
+        "historical_cases": [
+          "S_L2_DATA_FREE_local",
+          "S_L2_DATA_FREE_ROP7"
+        ],
+        "minimum": "Source-equivalence review of all-data-service exemption, retained copy latch/fixed ROP/capacity/queues/reference versions; otherwise relink small fixture targets. Require physical_grants=0 and no throughput eligibility."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    },
+    {
+      "profile": "F_L2_DATA_FREE",
+      "source_supported": true,
+      "current_engineering_control": "PASS_STATIC_CONFIGURATION_ONLY",
+      "historical_engineering_native_PASS": true,
+      "historical_PASS_source": "Core27/main773 or Corec994/main67; see exact receipt catalog, not current-main qualification",
+      "E_exact_native_profile_qualification": false,
+      "minimum_qualification_gap": {
+        "current_reusable_cases": [
+          "new_combined_shared_pool",
+          "new_combined_native_ro_mux"
+        ],
+        "historical_cases": [
+          "F_data_free"
+        ],
+        "minimum": "E must publish profile-specific full_data_free_finite_residual_service PASS gate (policy_v2.py:151-156); reuse equivalent old F_data_free only after review, else one existing d010 data_free native. Keep D512/128 line/WAD/metadata lookup/latency queues finite."
+      },
+      "workload_scope": [
+        "convolutionSeparable",
+        "cfd_097k",
+        "dwt2d"
+      ]
+    }
+  ],
+  "current_native_manifest": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_FORMAL_WAD_PRODUCER_RELEASE_r1/NATIVE_EVIDENCE_MANIFEST.json",
+    "sha256": "2a2d0f0c148103ce0bedc10275fe4e0f284c25cd0a23a65ec5527937558ce1f1"
+  },
+  "historical_evidence": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_MAIN61_CONTROL_BATCH2_r1/HISTORICAL_ENGINEERING_EVIDENCE.json",
+    "sha256": "8498b30563df3ea3526a4b8f775e29a127294eaff06350b9fd04f99a47622157"
+  },
+  "optional_commands": [
+    {
+      "case": "combined_factor_tag_T1_M0",
+      "command_candidate_for_E": [
+        "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M0.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "factor_tag_T1_M0"
+      ],
+      "ELF": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "sha256": "e379f1335d7280ae8096c7770907d0420da2433ee73e749066220e216a535ce7"
+      },
+      "linked_d010_archive": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+        "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+      },
+      "historical_parent_source": {
+        "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+        "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "status": "OPTIONAL_MINIMAL_AFFECTED_NATIVE_IF_E_CANNOT_ACCEPT_SOURCE_EQUIVALENT_REUSE_NOT_EXECUTED",
+      "required_terminal": "C_FULL_V2|case=factor_tag16|T=1|M=0|status=PASS"
+    },
+    {
+      "case": "combined_factor_line_T1_M0",
+      "command_candidate_for_E": [
+        "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M0.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "factor_line_T1_M0"
+      ],
+      "ELF": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "sha256": "e379f1335d7280ae8096c7770907d0420da2433ee73e749066220e216a535ce7"
+      },
+      "linked_d010_archive": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+        "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+      },
+      "historical_parent_source": {
+        "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+        "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "status": "OPTIONAL_MINIMAL_AFFECTED_NATIVE_IF_E_CANNOT_ACCEPT_SOURCE_EQUIVALENT_REUSE_NOT_EXECUTED",
+      "required_terminal": "C_FULL_V2|case=factor_line128|T=1|M=0|status=PASS"
+    },
+    {
+      "case": "combined_factor_tag_T0_M1",
+      "command_candidate_for_E": [
+        "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T0M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "factor_tag_T0_M1"
+      ],
+      "ELF": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "sha256": "e379f1335d7280ae8096c7770907d0420da2433ee73e749066220e216a535ce7"
+      },
+      "linked_d010_archive": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+        "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+      },
+      "historical_parent_source": {
+        "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+        "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "status": "OPTIONAL_MINIMAL_AFFECTED_NATIVE_IF_E_CANNOT_ACCEPT_SOURCE_EQUIVALENT_REUSE_NOT_EXECUTED",
+      "required_terminal": "C_FULL_V2|case=factor_tag16|T=0|M=1|status=PASS"
+    },
+    {
+      "case": "combined_factor_line_T0_M1",
+      "command_candidate_for_E": [
+        "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T0M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "factor_line_T0_M1"
+      ],
+      "ELF": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "sha256": "e379f1335d7280ae8096c7770907d0420da2433ee73e749066220e216a535ce7"
+      },
+      "linked_d010_archive": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+        "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+      },
+      "historical_parent_source": {
+        "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+        "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "status": "OPTIONAL_MINIMAL_AFFECTED_NATIVE_IF_E_CANNOT_ACCEPT_SOURCE_EQUIVALENT_REUSE_NOT_EXECUTED",
+      "required_terminal": "C_FULL_V2|case=factor_line128|T=0|M=1|status=PASS"
+    },
+    {
+      "case": "F_data_free",
+      "command_candidate_for_E": [
+        "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/F_DATA_FREE.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "data_free"
+      ],
+      "ELF": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/ep_l2_ro_tvd_combined",
+        "sha256": "e379f1335d7280ae8096c7770907d0420da2433ee73e749066220e216a535ce7"
+      },
+      "linked_d010_archive": {
+        "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+        "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+      },
+      "historical_parent_source": {
+        "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+        "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "status": "OPTIONAL_MINIMAL_AFFECTED_NATIVE_IF_E_CANNOT_ACCEPT_SOURCE_EQUIVALENT_REUSE_NOT_EXECUTED",
+      "required_terminal": "C_FULL_V2|case=wb_victim_ro_native_D512|data_free=1|status=PASS"
+    },
+    {
+      "case": "S_COPY_FREE_local",
+      "historical_command_not_current_source": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/PROFILES/S_COPY_FREE_observer0.config",
+        "1",
+        "1"
+      ],
+      "status": "E_REUSE_REVIEW_FIRST_ELSE_RELINK_ONLY_TEST_WITH_D010_ARCHIVE",
+      "test_relink_recipe": {
+        "path": "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/CMakeFiles/ep_l2_ms_local_service.dir/link.txt",
+        "sha256": "bc419ef8b1627c6df962111dfc163c9f60e5f66105766f1a6296e3347b9e8ac2"
+      },
+      "no_full_simulator_build": true
+    },
+    {
+      "case": "S_L2_DATA_FREE_local",
+      "historical_command_not_current_source": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_local_service",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/PROFILES/S_L2_DATA_FREE_observer0.config",
+        "1",
+        "2"
+      ],
+      "status": "E_REUSE_REVIEW_FIRST_ELSE_RELINK_ONLY_TEST_WITH_D010_ARCHIVE",
+      "test_relink_recipe": {
+        "path": "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/CMakeFiles/ep_l2_ms_local_service.dir/link.txt",
+        "sha256": "bc419ef8b1627c6df962111dfc163c9f60e5f66105766f1a6296e3347b9e8ac2"
+      },
+      "no_full_simulator_build": true
+    },
+    {
+      "case": "S_COPY_FREE_ROP7",
+      "historical_command_not_current_source": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/PROFILES/S_COPY_FREE_ROP7.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "1",
+        "0",
+        "latency7"
+      ],
+      "status": "E_REUSE_REVIEW_FIRST_ELSE_RELINK_ONLY_TEST_WITH_D010_ARCHIVE",
+      "test_relink_recipe": {
+        "path": "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/CMakeFiles/ep_l2_ms_partition.dir/link.txt",
+        "sha256": "7c621939faa2a86770f9589b4f67711e50f7275c61005ab4cd48ae6614cd71b9"
+      },
+      "no_full_simulator_build": true
+    },
+    {
+      "case": "S_L2_DATA_FREE_ROP7",
+      "historical_command_not_current_source": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/PROFILES/S_L2_DATA_FREE_ROP7.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "2",
+        "0",
+        "latency7"
+      ],
+      "status": "E_REUSE_REVIEW_FIRST_ELSE_RELINK_ONLY_TEST_WITH_D010_ARCHIVE",
+      "test_relink_recipe": {
+        "path": "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/CMakeFiles/ep_l2_ms_partition.dir/link.txt",
+        "sha256": "7c621939faa2a86770f9589b4f67711e50f7275c61005ab4cd48ae6614cd71b9"
+      },
+      "no_full_simulator_build": true
+    },
+    {
+      "case": "ro_native_dram_warm_R_without_V",
+      "historical_command_not_current_source": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r27-native/ep_l2_ro_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/R_ONLY.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1",
+        "4096",
+        "16"
+      ],
+      "status": "E_REUSE_REVIEW_FIRST_ELSE_RELINK_ONLY_TEST_WITH_D010_ARCHIVE",
+      "test_relink_recipe": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/A_RO_ORIGIN_INCREMENTAL_r26/RECEIPT.json",
+        "sha256": "ac26d641f8742158aae014db205d029375e24b86ef07179bfc830c71d8db0999"
+      },
+      "no_full_simulator_build": true
+    }
+  ],
+  "E_executes_only_after_own_resource_lease": true,
+  "A2_new_native_tests": 0,
+  "not_a_ready_queue": true
+}

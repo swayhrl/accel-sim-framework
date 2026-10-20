@@ -1,0 +1,71 @@
+{
+  "source_identity": {
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "sources": {
+    "src/gpgpu-sim/gpu-cache.h": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "3e80f3a70854b165e5c1ad4b924097b6e5f9507fb039291390703393874bd2ff"
+    },
+    "src/gpgpu-sim/ep-l2-ro-runtime.inc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "4c868dff3806ced19381b4cf5013054203c7802514868d5e0e3557a96d238a23"
+    },
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "6d1c905b8c1a00db2a4f055a03678f5b3794a53a30ccb0d4983fc63011896333"
+    },
+    "src/gpgpu-sim/ep-l2-mechanism-interface.h": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-mechanism-interface.h",
+      "sha256": "0adcec7c3daf12cccac750edc4af7a6a14edef0fc825945ce6103a7f3092a576"
+    },
+    "src/gpgpu-sim/gpu-sim.cc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "b74624f63ca43e48862b7b04aa4c44b9aceb57bd6d6f33e00d58afa40c9a3482"
+    },
+    "guards": {
+      "copy_free_static_only": "gpu-cache.h:3263-3279",
+      "tvd_full_requires_W": "gpu-cache.h:3281-3296",
+      "RO_requires_finite_W_but_not_V": "gpu-cache.h:3261 and ep-l2-ro-runtime.inc:130-131",
+      "diagnostic_service_exemption": "gpu-cache.h:2250-2262",
+      "certificate_exact_whole_epoch": "ep-l2-ro-runtime.inc:35-71"
+    },
+    "util/ep_l2/mechanism_e/policy_v2.py": {
+      "E_commit": "13718839b515542f332eca6a845701a8dbb9a922",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_MAIN61_CONTROL_BATCH2_r1/source_snapshots/policy_v2.py",
+      "sha256": "a080049fddeaa6ef99b5972728946643437a6247d2c53d376199c4f2eec9f1a1"
+    },
+    "docs/ep_l2/review_packs/MS20261020_E2_MAIN61_TERMINAL_COMPAT_r1/parse_main_terminal.py": {
+      "E_commit": "13718839b515542f332eca6a845701a8dbb9a922",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_MAIN61_CONTROL_BATCH2_r1/source_snapshots/parse_main_terminal.py",
+      "sha256": "f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e"
+    }
+  },
+  "source_supported_profiles": [
+    "W_ONLY",
+    "F_MINUS_V",
+    "F_MINUS_R",
+    "WV_M_ONLY",
+    "WV_T_ONLY",
+    "S_COPY_FREE",
+    "S_L2_DATA_FREE",
+    "F_L2_DATA_FREE"
+  ],
+  "compatibility": {
+    "T_M_independent": true,
+    "RO_without_V_supported": true,
+    "V_without_W_supported": false,
+    "COPY_FREE_requires_static_S": true,
+    "COPY_FREE_and_DATA_FREE_mutually_exclusive": true,
+    "F_L2_DATA_FREE_allowed": true,
+    "stacking_multiple_ablation_profiles_is_not_qualified": true
+  },
+  "engineering_controls": "Static option/schema/fixed-budget/nonresearch/asset-hash checks only; no new native execution",
+  "unsupported": [
+    "F_MINUS_W",
+    "FULL_FIXED64_DIRTY_RO"
+  ]
+}

@@ -70,7 +70,7 @@ def main():
             templates[attempt['profile']]=template;qualifications[attempt['profile']]=q
         inputs[app]=dict(accepted_pair=pair,existing_qualifications={k:dict(artifact=ref(q['path']),profiles=list(q['qualification']['supported_profiles'])) for k,q in qualifications.items()},
             trace_content_sha256=templates['F']['identity']['trace_content_sha256'],
-            expected_full_instructions=qualifications['F']['qualification'].get('input_scope_admission'),
+            expected_full_instructions=read(pair['endpoints']['right']['path'])['summary']['instructions'],
             input_proof=qualifications['F']['qualification']['input_scope_admission'],
             trace_body_rehashed_by_A2=False,trace_note='Use exact E accepted full-input content manifest; E refreshes mandatory full trace rehash before admission. No trace rescanning or simulation here.')
         for profile in profiles:
@@ -105,12 +105,21 @@ def main():
             semantics['labels'].update(diagnostic=profile in ('S_COPY_FREE','S_L2_DATA_FREE','F_L2_DATA_FREE'),oracle=bool(bits['T'] or bits['M']),readonly_scope='TRACE_MODEL_CLOSED_WORLD' if bits['T'] or bits['M'] else 'OFF',victim_scope='CLEAN_DIRTY_PENDING_INFLIGHT' if bits['V'] else 'OFF')
             if not (bits['T'] or bits['M']): semantics.pop('readonly_input_review',None)
             template.update(profile=ALIASES.get(profile,profile),profile_semantics=semantics,labels=semantics['labels'],qualification_id='PENDING_E_INDEPENDENT_PROFILE_QUALIFICATION',parser=parent['qualification']['terminal_parser'])
+            for stale in ('input_audit','contingency_review','previous_failed_revision_retained'):
+                template.pop(stale,None)
+            template['preparation_status']='A2_STATIC_CONFIG_CANDIDATE_NOT_E_QUALIFIED'
+            template['condition_id']='V2_'+app+'_'+template['profile']
+            template['budget_bucket']=('two_workload_W_only' if profile=='W_ONLY' else
+                'two_workload_remove_W_V_R' if profile in ('F_MINUS_R','F_MINUS_V') else
+                'one_workload_T_only_M_only_on_WV' if profile.startswith('WV_') else
+                'two_workload_local_diagnostics')
             template['identity']['feature_vector']=semantics['feature_vector'];template['identity']['ideal_vector']=semantics['ideal_vector']
             ordered=[dict(name=x['name'],sha256=sha(x['path']),bytes=Path(x['path']).stat().st_size) for x in template['configs']]
             assets=sorted([dict(name=x['name'],sha256=sha(x['path']),bytes=Path(x['path']).stat().st_size) for x in template['auxiliary_assets']],key=lambda x:x['name'])
             template['identity']['runtime_config_sha256']=hashlib.sha256(canonical(dict(ordered_configs=ordered,auxiliary_assets=assets,environment=template['environment']))).hexdigest()
             invariant=dict(source=IDENTITY,trace=template['identity']['trace_content_sha256'],epoch=template['identity']['epoch_range'],termination=template['identity']['termination_contract'],environment=template['environment'],auxiliary_assets=assets,nonresearch_options={k:v for k,v in effective.items() if k not in semantics['comparison_variable_options']},comparison_variable_options=sorted(semantics['comparison_variable_options']))
             template['comparison_invariants_sha256']=hashlib.sha256(canonical(invariant)).hexdigest()
+            assert template['comparison_invariants_sha256']==templates['F']['comparison_invariants_sha256'],'candidate changed accepted nonresearch comparison invariant'
             template['A2_preparation_status']='DRAFT_NOT_E_QUALIFIED_NOT_QUEUED';template['application_start_authorization']=False
             save(directory/'SPEC_CANDIDATE.json',template)
             planned=any(c['workload']==app and c['profile']==ALIASES.get(profile,profile) for c in state['full_system_matrix']['matrix']['conditions'])
