@@ -1,0 +1,29 @@
+{
+  "schema": "D_TO_E2_A2_E024_ADVERSE_INCREMENTAL_FINDING_V1",
+  "at_utc": "2026-10-20T15:34:47.073895+00:00",
+  "accepted_attempt": "E024_e663f31f",
+  "accepted_cycles": 293671,
+  "S_anchor_cycles": 292932,
+  "delta": 739,
+  "Rows_delta": 1815,
+  "Columns_delta": -1076,
+  "W_ONLY_cycles": 291525,
+  "SCF_minus_W_ONLY": 2146,
+  "finding": "Accepted COPY_FREE is slower despite exempt copy services and fixed staging delay. Keep adverse diagnostic; W_ONLY96.17% recovery is not a copy benefit fraction.",
+  "source_boundary": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/controls_20261020_r3/COPY_FREE_SOURCE_BOUNDARY.json",
+  "source_rule": "gpu-cache.h2257-2260 exempts COPY_READ/WRITE; ep-l2-ft-cache.inc461-464 skips fixed copy-latch staging retry",
+  "counter_observations": {
+    "copy_pipeline_wait_sum_S": 546865,
+    "copy_pipeline_wait_sum_SCF": 0,
+    "WB_space_wait_S": 848913,
+    "WB_space_wait_SCF": 1016858,
+    "physical_bank_services_S": 9217033,
+    "physical_bank_services_SCF": 8120936
+  },
+  "causal_limit": "Wait aggregates are nonexclusive; added WB-space wait is not739critical cycles. Per-kernel WB-space wait was not captured in existing snapshot cache; keep stage-specific cause UNKNOWN.",
+  "new_simulations_requested": 0,
+  "trace_reads": 0,
+  "E023_not_interfered": true,
+  "full_F_main_and_seven_GM_preserved": true,
+  "accepted_analysis_event": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/controls_20261020_r3/accepted_event_1792510332520204611"
+}

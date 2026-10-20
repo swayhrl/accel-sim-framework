@@ -1,0 +1,22 @@
+{
+  "evidence_class": "FROZEN_SOURCE_DERIVATION_NOT_MEASURED_CYCLE_CONTRIBUTION",
+  "finding": "COPY_FREE exempts COPY_READ/WRITE physical services and bypasses the fixed staging retry; not only a no-port-contention experiment. Other resources/finite organization retained.",
+  "entries": [
+    {
+      "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "source_blob_sha256": "3e80f3a70854b165e5c1ad4b924097b6e5f9507fb039291390703393874bd2ff",
+      "first_line": 2250,
+      "last_line": 2261,
+      "numbered_excerpt": "2250   void set_local_diagnostic(ep_l2::mechanism_v1::LocalDiagnostic mode) {\n2251     assert(mode == ep_l2::mechanism_v1::NORMAL ||\n2252            (banked() && m_ft_mode && m_bank_ops == 1 && !m_rg1));\n2253     assert(mode != ep_l2::mechanism_v1::COPY_FREE || m_ft_mode == 1);\n2254     assert(!m_bank_attempts && !pending_operations());\n2255     m_local_diagnostic = mode;\n2256   }\n2257   bool diagnostic_exempts(unsigned client) const {\n2258     return m_local_diagnostic == ep_l2::mechanism_v1::L2_DATA_FREE ||\n2259         (m_local_diagnostic == ep_l2::mechanism_v1::COPY_FREE &&\n2260          (client == COPY_READ || client == COPY_WRITE));\n2261   }"
+    },
+    {
+      "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "source_blob_sha256": "6d1c905b8c1a00db2a4f055a03678f5b3794a53a30ccb0d4983fc63011896333",
+      "first_line": 446,
+      "last_line": 475,
+      "numbered_excerpt": "446   bool replacement = m_ft_pending.request == mf;\n447   if (replacement) {\n448     ft_replacement &p = m_ft_pending;\n449     assert(p.tag_index == index && probe == MISS);\n450     if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {\n451       // A shared, explicitly costed 128B copy-pipeline latch bridges same-bank\n452       // read and write cycles. Both compared organizations include this latch.\n453       if (p.phase == 0) {\n454         m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.victim,\n455             false, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT,ep_l2_payload_store::COPY_READ,mf->get_request_uid());\n456         if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n457           ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n458         }\n459         p.born = physical_cycle; // actual source readout starts data-staging lifetime\n460         p.copy_versions = m_ep_l2_payload.inspect(p.victim).versions;\n461         p.phase = 1;\n462         // COPY_FREE explicitly removes copy service and its staging delay.\n463         // DATA_FREE removes port contention but retains this fixed one-cycle\n464         // copy-latch transfer, even when source and target banks differ.\n465         if (!m_config.m_ep_l2_diag_copy_free) return RESERVATION_FAIL;\n466       }\n467       if (p.phase == 1) {\n468         m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.staging,\n469             true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE,ep_l2_payload_store::COPY_WRITE,mf->get_request_uid());\n470         if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {\n471           ++m_ft_stats.bank_block; return RESERVATION_FAIL;\n472         }\n473         m_ep_l2_payload.inspect_mutable(p.staging).versions = p.copy_versions;\n474         m_ep_l2_payload.transfer(p.staging, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);\n475         ++m_ft_stats.copy_lines; p.phase = 2;"
+    }
+  ]
+}
