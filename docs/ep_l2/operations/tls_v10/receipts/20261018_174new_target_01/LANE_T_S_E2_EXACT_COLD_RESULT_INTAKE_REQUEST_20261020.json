@@ -1,0 +1,73 @@
+{
+  "schema": "LANE_T_S_E2_EXACT_COLD_RESULT_INTAKE_REQUEST_V1",
+  "utc": "2026-10-20T08:35:41.940017+00:00",
+  "request_to": [
+    "Lane S",
+    "Lane E2"
+  ],
+  "status": "TARGET_READY_FOR_METADATA_JOIN_NOT_COPY_READY",
+  "original_branch": "hrl/tls-v10-174new-target-exec-v1",
+  "observed_source_head": "5d12eedb83d6fdef2cc7d451d940bed66649c156",
+  "observed_E2_head": "c9a3622eee6e73371fc1c4add2bae4bea6e123ee",
+  "P9": {
+    "window_id": "TLS_V10_P9_PUBLIC_B0028",
+    "txid": "574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b",
+    "verified_range_count": 130,
+    "verified_original_bytes": 2505862788,
+    "closed_windows": 27,
+    "bridge_payload_untouched": true,
+    "exact_ACK_and_publication_missing": true,
+    "next": "S independently recheck original resources, identities and readers. Publish existing exact B0028 ACK plus matching publication only if legitimate; T then exact cleanup and original B0029-B0033, not retransmission. T will not lower TLS16GiB or write Source controls."
+  },
+  "actual_readonly_source_snapshot": {
+    "utc": "2026-10-20T08:34:41.760856+00:00",
+    "namespace": "mnt:[4026534768]",
+    "read_only": true,
+    "space": {
+      "/workspace": {
+        "dev": 156,
+        "free_bytes": 7999324160
+      },
+      "/root/share": {
+        "dev": 2431,
+        "free_bytes": 44287094784
+      }
+    },
+    "registry_updated_at": "2026-10-20T08:03:30.413253+00:00",
+    "active_leases": [],
+    "source_gate_PASS_not_issued_by_target": true
+  },
+  "target_mount_and_locks_receipt": "TLS_V10_T_RESUME_B0028_MOUNT_LOCK_ACK_READONLY_20261020.json",
+  "independent_EP_L2_transaction": {
+    "archive_area_on_target": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_cold_results/20261020_e2_01",
+    "native164_area": "/home/shared/huangrulin/host174_storage_recovery/ep_l2_cold_results/20261020_e2_01",
+    "durable_area_owner_sha256": "9c5471da66283338e98d01c54376c1182fea0bc772157aa98b228754e862ed39",
+    "txid": null,
+    "selector_sha256": null,
+    "status": "AWAIT_E2_COLD_MANIFEST_AND_S_RESOURCE_IDENTITY_PASS",
+    "never_use_P9_txid_or_manifest": true,
+    "first_priority": "One smallest independently restorable COLD unit with useful actual reclaim; publish its complete proof immediately, do not wait all projects. Prefer terminal old results with closed current AND future readers; preserve accepted/failure provenance and original bytes. T does not assign eligibility.",
+    "requested_source_evidence": [
+      "E2 exact COLD file list, original absolute/relative paths, full SHA256, size, uid/gid/mode/mtime_ns, allocated blocks and frozen dev/inode/nlink/ctime provenance; explicit required directory records including empty dirs",
+      "E2 current/future reader-dependency closure and exact retained provenance/recovery references; exclude active and shared data",
+      "S original namespace/filesystem identity and independently signed resource/reader PASS with exact authority and projected workspace/share/RAM/cgroup use; E campaign5GiB is not by itself a TLS16GiB policy change",
+      "Source frozen canonical manifest + separate original txid/selector, original-source to genuine164 mapping, source Git SHA and byte-exact bridge publication",
+      "Exact single-window READY bound to current Target reservation/request and Source gate, chunk boundaries <=128MiB, whole-file digests, bridge paths and precise stage ownership/cleanup ACK"
+    ],
+    "transport": "Reuse existing single sender/receiver and existing lock. At most one data flow <=30MiB/s; raw chunks <=128MiB; all retained/current bridge payload together <=256MiB; Share>=40GiB and original RAM/cgroup gates. No second receiver or background daemon.",
+    "P9_inert_payload_coexistence": "P9 B0028 payload is HOLD until exact S ACK. E2 metadata prep allowed now. No E2 payload until exact serialized admission and tested accounting explicitly include retained P9 payload; otherwise wait P9 closure. No global count or lock bypass.",
+    "compression": "Optional only if qualified with full original SHA and metadata after independent complete decompression; raw chunk path preferred to reuse tested primitives. Compression ratio is not released original bytes.",
+    "recovery": "Read persistent genuine164 archived bytes into fresh ABSENT qualified Target native directory; check entire original file SHA,size,uid,gid,mode,mtime_ns and directory records. Persist complete restore index/certificate on true164 plus Git before S/E2 source release review.",
+    "release": "T never unlinks Source. S AND E2 must jointly review exact eligible source paths and full durable restore evidence; no automatic or blanket permission from this request."
+  },
+  "accounting": {
+    "old_P9_data_not_retransferred": true,
+    "E2_archived_files": 0,
+    "E2_restored_files": 0,
+    "source_actual_released_bytes": 0,
+    "NAS_persistent_bytes_not_counted_as_workspace_gain": true,
+    "bridge_is_temporary_not_persistent_copy": true,
+    "native_tmpfs_is_volatile_validation_only": true
+  },
+  "C16": "UNCHANGED_SOURCE_KEEP_NO_MODEL_IO_NO_RETIREMENT_CHANGE"
+}
