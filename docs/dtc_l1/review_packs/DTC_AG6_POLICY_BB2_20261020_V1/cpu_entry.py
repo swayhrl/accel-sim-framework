@@ -33,6 +33,7 @@ def write(name, value):
 def main():
     started = time.monotonic()
     RECEIPTS.mkdir(exist_ok=False)
+    assert Path(sys.argv[0]).is_absolute(), 'EXACT_REGISTERED_ABSOLUTE_ARGV_REQUIRED_BEFORE_GATE'
     reg = json.loads(REGISTRATION.read_text())
     assert reg['role']['argvs'] == [[sys.executable, '-I', '-B', str(PACK / 'cpu_entry.py')]]
     assert reg['role']['cwd'] == os.getcwd()
