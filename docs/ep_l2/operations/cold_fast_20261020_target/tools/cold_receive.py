@@ -6,6 +6,7 @@ import decimal,fcntl,gzip,hashlib,json,os,pathlib,stat,subprocess,sys,tarfile,ti
 
 config=json.loads(sys.argv[1]);base=pathlib.Path(config['target_root']);B=pathlib.Path('/root/share/host174_storage_recovery_bridge/20261016_storageops_02')
 N=pathlib.Path('/root/tls-v10-native-restore-20261018-target01');rate=30*1024**2
+io_limit=80 if config['tag']=='V3_46bf3a69' else 10
 limited_existing=(config.get('validation_only') is True and
                   config.get('bounded_existing_small_V3_validation') is True)
 if limited_existing:
@@ -33,8 +34,8 @@ def guard():
     assert limit=='max' or int(limit)-int(c.with_name('memory.current').read_text())>=512*1024**2
     held=time.monotonic()
     pressure_file=pathlib.Path('/sys/fs/cgroup/io.pressure' if limited_existing else '/proc/pressure/io')
-    while float(pressure_file.read_text().splitlines()[0].split()[1].split('=')[1])>10:
-        assert time.monotonic()-held<=30,'existing IO guard10 HOLD >30s; preserve verified input'
+    while float(pressure_file.read_text().splitlines()[0].split()[1].split('=')[1])>=io_limit:
+        assert time.monotonic()-held<=30,'extreme IO pressure persisted >30s; preserve verified input'
         time.sleep(5)
     assert os.statvfs(base).f_bavail*os.statvfs(base).f_frsize>=1024**3
 

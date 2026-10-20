@@ -1,5 +1,5 @@
-Second V3 continuous original-gate monitoring ACTIVE,75-second lightweight checks. Original host IO10 retained for Source,Target and verification-only resumes. Current gate RESOURCE_HOLD; Source IO{'some': 32.29, 'full': 32.29}. No second destination or data stream.
+Second V3_46bf3a69 original transaction STREAMING to genuine164. Current explicit user instruction removes prior fixed hostIO10 admission; extreme80 sustained30s protection only, original30MiB/s single-stream,mount/identity,Share40GiB,RAM64GiB,cgroup/readers/byte+metadata verification remain. No system setting or other-project gate changed.
 
-Upon all gates passing, original46bf3a69 transaction/frozen manifest/single stream continues automatically through full archive/member verification, native representative restore, persistent164 finalization, exact DEST_VERIFIED and BA handoff. RESOURCE_HOLD produces periodic checkpoints; no full-tree scans during hold, no C16/P9/E2 action, no other process changes.
+369,459files/38,901dirs, exact frozen gzipSHA19ff2122104d2b0ccd929e857870638f08614a0fbc7a1963765ba905dc8c3402. Source current identity/entire frozen manifest checked by original read-only producer. No overlay/bridge/Windows archive scratch. Dest partial is on genuine164; no final DEST_VERIFIED yet. Scientific2657PASS+1TIMEOUT_CLASSIFIED state preserved; no RTL/signoff rerun.
 
-First V3 actual Source net reclaim3,383,369,728B confirmed at f07265fb. First archive never retransmitted. Target does not delete Source files.
+First Source release already confirmed3,383,369,728B fromBAf07265fb. No first retransfers. C16 sixHOLD,TLS P9/E2 ledgers untouched; Target never deletes Source files.
