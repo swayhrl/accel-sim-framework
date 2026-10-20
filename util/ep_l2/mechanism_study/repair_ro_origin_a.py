@@ -49,11 +49,13 @@ def main():
         help='one bounded GDB replay of the already failed controlled fixture; no compilation or application')
     p.add_argument('--terminal-control', action='store_true',
         help='read frozen logs and test E-only runtime-dump parser proposal; no simulation/acceptance')
+    p.add_argument('--own-pending', action='store_true', help='Core27 single-member WAD own-pending guard repair, finite oldred/newgreen only')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
-    assert sum((a.terminal_control,a.joint_gdb,a.joint_vrw,a.affected_native)) <= 1
+    assert sum((a.own_pending,a.terminal_control,a.joint_gdb,a.joint_vrw,a.affected_native)) <= 1
     readonly_test = a.joint_gdb or a.terminal_control
-    spec_path = (HANDOFF/'full_system_v2/E_RUNTIME_DUMP_CONTROL_SPEC_r36.json' if a.terminal_control else
+    spec_path = (HANDOFF/'full_system_v2/WAD_PENDING_REPAIR_SPEC_r39.json' if a.own_pending else
+        HANDOFF/'full_system_v2/E_RUNTIME_DUMP_CONTROL_SPEC_r36.json' if a.terminal_control else
         HANDOFF/'full_system_v2/VRW_FAILED_FIXTURE_GDB_SPEC_r34.json' if a.joint_gdb else
         HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r32.json' if a.joint_vrw else
         HANDOFF/'full_system_v2/RO_ORIGIN_AFFECTED_SPEC_r27.json' if a.affected_native else SPEC)
@@ -79,17 +81,20 @@ def main():
     bindings = {str(spec_path): sha(spec_path), str(Path(__file__)): sha(__file__),
         str(HERE/'common_resource_guard.py'): sha(HERE/'common_resource_guard.py'),
         str(HERE/'check_ro_origin_case.py'): sha(HERE/'check_ro_origin_case.py')}
-    if a.affected_native or a.joint_vrw or readonly_test:
+    if a.own_pending or a.affected_native or a.joint_vrw or readonly_test:
         bindings[str(HERE/'check_native_case.py')] = sha(HERE/'check_native_case.py')
         parent_path = Path(spec['parent_receipt'])
         assert sha(parent_path) == spec['parent_receipt_sha256']
         parent = json.loads(parent_path.read_text())
         assert parent['status'] == 'OLD_RED_NEW_GREEN_MAIN_COMPILED_PENDING_AFFECTED_QUALIFICATION'
         assert parent['lease_released'] and parent['retained_assets_unchanged']
-        assert parent['core_source_commit'] == spec['core_source_commit']
+        assert parent['core_source_commit'] == spec.get('parent_core_source_commit',spec['core_source_commit'])
         assert parent['binary_sha256'] == sha(parent['binary']) == spec['new_main_sha256']
         assert parent['new_archive_sha256'] == sha(spec['new_archive'])
         assert len(parent['tests']) == 6 and all(t['expectation_verified'] for t in parent['tests'])
+    if a.own_pending:
+        bindings[str(HERE/'check_wad_guard_case.py')] = sha(HERE/'check_wad_guard_case.py')
+        for key,digest in spec['extra_bindings'].items(): bindings[key]=digest
     if a.terminal_control:
         bindings.update(spec['control_bindings'])
         bindings[str(HERE/'replay_runtime_metrics_proposal.py')] = sha(HERE/'replay_runtime_metrics_proposal.py')
@@ -112,7 +117,8 @@ def main():
         retained_runtime_core=spec['runtime_producer_core'],
         retained_main_sha256=spec['retained_main_sha256'],
         build_directory=str(build), output_directory=str(out))
-    expected = dict(identity, owner='A', phase='A_RETAINED_LOG_E_PARSER_CONTROL' if a.terminal_control else
+    expected = dict(identity, owner='A', phase='A_WAD_OWN_PENDING_INCREMENTAL' if a.own_pending else
+        'A_RETAINED_LOG_E_PARSER_CONTROL' if a.terminal_control else
         'A_FAILED_SHARED_VRW_GDB' if a.joint_gdb else
         'A_SHARED_VRW_CONTROLLED_PARTITION' if a.joint_vrw else
         'A_RO_ORIGIN_AFFECTED20' if a.affected_native else 'A_RO_ORIGIN_INCREMENTAL_OLD_RED_NEW_GREEN',
@@ -124,7 +130,8 @@ def main():
     if not a.execute:
         print(json.dumps(dict(status='REQUEST_ONLY_NO_COMPILE_NATIVE_OR_LEASE',
             expected_E_admission=expected, planned_native_cases=spec['cases'],
-            command_scope='one bounded retained-log parsercontrol, no simulator/CPP/acceptance' if a.terminal_control else
+            command_scope='one gpu-cache.cc compile, unchanged fixture links, Core27oldred/newgreen, finite affected checks, new mainlink; no fullapp' if a.own_pending else
+                'one bounded retained-log parsercontrol, no simulator/CPP/acceptance' if a.terminal_control else
                 'oneGDB replay ofexactfailedfinitefixture; no compilation/main/application' if a.joint_gdb else
                 'one previouslyunrun V/R/W controlledfixture compile/link/case; no production/main rebuild' if a.joint_vrw else
                 'three links+20 affected native; no C++ compilation/main relink' if a.affected_native else
@@ -155,6 +162,7 @@ def main():
     active = dict(pid=None, ever_started=False)
     try:
         client = json.loads((SHARED/'mechanism_study_20261019_v1/CLIENT_CONTRACT.json').read_text())
+        if a.own_pending: assert client['source_publication_commit']==spec['E_source_expected']
         api = Path(client['resource_lease_api'])
         assert sha(api) == client['resource_lease_api_sha256']
         if admission:
@@ -247,6 +255,72 @@ def main():
                 return row
             finally:
                 active['pid'] = None
+
+        if a.own_pending:
+            report.update(status='LINKING_CORE27_OLD_RED',parent_core_source_commit=spec['parent_core_source_commit'],
+                parent_main_sha256=spec['new_main_sha256'],scope='FINITE_NATIVE_REPAIR_NOT_APP_OR_E_ACCEPTANCE',
+                trace='NO_APPLICATION_TRACE_EXECUTED',old_assertions_preserved=True)
+            save()
+            archive=Path(spec['new_archive'])
+            fixture_objects={}
+            def link_target(target, destination, library):
+                command=shlex.split((old/'gpgpu-sim/CMakeFiles'/ (target+'.dir')/'link.txt').read_text())
+                if target in spec['missing_fixture_targets'] and target not in fixture_objects:
+                    source=spec['missing_fixture_targets'][target]['source']
+                    obj=build/(target+'.fixture.o')
+                    ccflags=[x.replace(spec['retained_core'],str(core)) for x in flags(old/'gpgpu-sim/CMakeFiles'/(target+'.dir')/'flags.make')]
+                    run(['/usr/bin/c++',*ccflags,'-c',str(core/source),'-o',str(obj)],target+'_fixture_compile')
+                    fixture_objects[target]=obj
+                for i,word in enumerate(command):
+                    if i and command[i-1]=='-o': command[i]=str(destination)
+                    elif word.endswith('.a') and not word.startswith('/'):
+                        command[i]=str(library) if word.endswith('/libgpgpusim.a') else str(old/'gpgpu-sim'/word)
+                    elif word.endswith('.o') and not word.startswith('/'):
+                        command[i]=str(fixture_objects[target]) if target in fixture_objects else str(old/'gpgpu-sim'/word)
+                run(command,destination.name+'_link')
+            def case_run(case, executable):
+                detail=out/(case['id']+'.native.json')
+                run([sys.executable,'-B',str(HERE/'check_wad_guard_case.py'),
+                    '--case-json',json.dumps(case),'--receipt',str(detail),'--',str(executable),*case['arguments']],case['id'],180)
+                row=json.loads(detail.read_text());assert row['expectation_verified'] and row['binary_sha256']==sha(executable)
+                report['tests'].append(dict(case=case['id'],evidence=str(detail),sha256=sha(detail),**row));save()
+            old_exe=build/'ep_l2_ms_victim_production_core27_old'
+            link_target('ep_l2_ms_victim_production',old_exe,archive)
+            case_run(spec['cases'][0],old_exe)
+            report.update(status='COMPILING_ONE_GPU_CACHE_MEMBER',compiler_started=True);save()
+            compile_flags=[x.replace(spec['retained_core'],str(core)) for x in flags(old/'gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make')]
+            run(['/usr/bin/c++',*compile_flags,'-c',str(core/'src/gpgpu-sim/gpu-cache.cc'),'-o',str(build/'gpu-cache.cc.o')],'changed_gpu_cache_compile')
+            new_archive=build/'libgpgpusim.a';shutil.copy2(archive,new_archive)
+            run(['/usr/bin/ar','r',str(new_archive),str(build/'gpu-cache.cc.o')],'one_member_archive')
+            names=subprocess.check_output(['/usr/bin/ar','t',str(archive)],text=True).splitlines()
+            assert names==subprocess.check_output(['/usr/bin/ar','t',str(new_archive)],text=True).splitlines()
+            import hashlib
+            report['archive_members']={}
+            for name in names:
+                hashes=[hashlib.sha256(subprocess.check_output(['/usr/bin/ar','p',str(f),name])).hexdigest() for f in (archive,new_archive)]
+                assert (hashes[0]!=hashes[1]) == (name=='gpu-cache.cc.o')
+                report['archive_members'][name]=dict(old_sha256=hashes[0],new_sha256=hashes[1])
+            executables={}
+            for target in sorted({case['target'] for case in spec['cases'][1:]}):
+                exe=build/target;link_target(target,exe,new_archive);executables[target]=exe
+            report.update(status='EXECUTING_AFFECTED_FINITE_NATIVE');save()
+            for case in spec['cases'][1:]:case_run(case,executables[case['target']])
+            command=shlex.split((old/'CMakeFiles/accel-sim.out.dir/link.txt').read_text())
+            for i,word in enumerate(command):
+                if i and command[i-1]=='-o': command[i]=str(build/'accel-sim.out')
+                elif word.endswith('.o') or (word.endswith('.a') and not word.startswith('/')):
+                    command[i]=str(new_archive) if word.endswith('/libgpgpusim.a') else str(old/word)
+            run(command,'new_main_link')
+            for path,digest in retained.items():assert sha(path)==digest,'retained changed: '+path
+            report.update(status='CORE27_OLD_RED_FIXED_NEW_GREEN_MAIN_COMPILED_PENDING_E',
+                retained_assets_unchanged=True,binary=str(build/'accel-sim.out'),binary_sha256=sha(build/'accel-sim.out'),
+                new_archive=str(new_archive),new_archive_sha256=sha(new_archive),old_red_binary=str(old_exe),old_red_binary_sha256=sha(old_exe),
+                test_binaries={key:dict(path=str(value),sha256=sha(value)) for key,value in executables.items()},
+                production_translation_units_compiled=1,fixture_translation_units_compiled=len(fixture_objects),
+                new_source_passes=len(spec['cases'])-1,old_source_expected_asserts=1,
+                generated_build_string_unchanged=True,original_banner_is_not_new_producer_identity=True,
+                E006_samecause='SAME_ASSERTION_ONLY_CAUSAL_STACK_PENDING_E_EXACT_DELIVERY',full_applications_by_A=0)
+            return
 
         if a.terminal_control:
             report.update(status='BOUNDED_E_PARSER_PROPOSAL_CONTROL',compiler_started=False,
