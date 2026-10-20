@@ -1,3 +1,5 @@
+> 本历史申请已由本轮用户项目级条件授权更新，见 [USER_CONDITIONAL_AUTHORITY.json](conditional_retirement/USER_CONDITIONAL_AUTHORITY.json) 与 [USER_IO_OVERRIDE.json](conditional_retirement/USER_IO_OVERRIDE.json)。无需重复逐文件审批；仍须闭合完整性、实际依赖接管及恢复条件。
+
 # 六条精确路径的条件释放申请 — 未获授权、未执行
 
 申请对象仅为下表六个 `c16_exchange` 外发权重副本。请A/G归属方分别确认：这六条路径是否已退出交付/补传、109 provisioning、未来恢复及原包保留职责；如仍有职责，请逐条标明用途与保留截止条件。用户本轮已授权审查及提交GitHub，没有授权源删除；本审查员不代表A/G批准。

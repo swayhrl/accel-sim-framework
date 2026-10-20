@@ -1,0 +1,173 @@
+{
+  "utc": "2026-10-20T12:56:14.316016+00:00",
+  "returncode": 0,
+  "files": [
+    {
+      "path": "/data/c16/qwen_decode_compiled_no_cudagraph_v1/prep/SOURCE_QUALIFICATION.json",
+      "sha256": "2a2cdddcf69e09da7d8a80abb652b89b91d2d8a6537120363b09568c852a96c5",
+      "data": {
+        "checks": {
+          "authority_commit_exact": true,
+          "authority_status_pass": true,
+          "compilation_config_field_exists": true,
+          "cudagraph_none_exists": true,
+          "installed_sdist_compilation_source_exact": true,
+          "llm_accepts_compilation_config": true,
+          "llm_constructs_compilation_config": true,
+          "mode_a_uses_default_config": true,
+          "mode_b_compilation_config_exact": true,
+          "mode_b_never_enforce_eager_true": true,
+          "vllm_version_exact": true
+        },
+        "cuda_initialized": false,
+        "entrypoint_sha256": "52de4ac99489e004ef6c61d0bedc84aa96020dd58b8bd1ae500814b548b2b83e",
+        "entrypoint_source": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/entrypoints/llm.py",
+        "gpu_lock_acquired": false,
+        "installed_compilation_sha256": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+        "installed_compilation_source": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/config/compilation.py",
+        "model_loaded": false,
+        "package_versions": {
+          "torch": "2.13.0",
+          "vllm": "0.30.0"
+        },
+        "runtime_environment": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+        "sdist_compilation_sha256": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+        "sdist_compilation_source": "/data/c16/runtime_environment_audit_v1/source/sdist/vllm-0.30.0/vllm/config/compilation.py",
+        "status": "PASS",
+        "vllm_authority_commit": "ced6857afa0ea7b2e3f0846a62e1394e90f15607"
+      }
+    },
+    {
+      "path": "/data/c16/qwen_decode_compiled_no_cudagraph_v1/prep/INPUT_RUNTIME_PREP.json",
+      "sha256": "bffe0a92e90b78b7a922e75af730e439cb72e20935045396ce0a2fb7d7369d79",
+      "data": {
+        "asset_file_checks": [
+          {
+            "pass": true,
+            "path": ".gitattributes"
+          },
+          {
+            "pass": true,
+            "path": "LICENSE"
+          },
+          {
+            "pass": true,
+            "path": "README.md"
+          },
+          {
+            "pass": true,
+            "path": "config.json"
+          },
+          {
+            "pass": true,
+            "path": "generation_config.json"
+          },
+          {
+            "pass": true,
+            "path": "merges.txt"
+          },
+          {
+            "pass": true,
+            "path": "model-00001-of-00002.safetensors"
+          },
+          {
+            "pass": true,
+            "path": "model-00002-of-00002.safetensors"
+          },
+          {
+            "pass": true,
+            "path": "model.safetensors.index.json"
+          },
+          {
+            "pass": true,
+            "path": "tokenizer.json"
+          },
+          {
+            "pass": true,
+            "path": "tokenizer_config.json"
+          },
+          {
+            "pass": true,
+            "path": "vocab.json"
+          }
+        ],
+        "checks": {
+          "all_token_inputs_exact": true,
+          "model_asset_exact": true,
+          "model_revision_exact": true,
+          "runtime_exact": true
+        },
+        "cuda_initialized": false,
+        "gpu_lock_acquired": false,
+        "model_loaded": false,
+        "model_path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "package_versions": {
+          "torch": "2.13.0",
+          "vllm": "0.30.0"
+        },
+        "points": {
+          "MP02": {
+            "batch_size": 1,
+            "input_jsons": [
+              "/home/huangrulin/workspace/worktrees/accel-sim-c16-qwen-decode-compiled-no-cudagraph-runtime-prep-109-v1/docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1/token_ids/QWEN_BF16/TRAIN_A_DISCOVERY_00.json"
+            ]
+          },
+          "MP03": {
+            "batch_size": 4,
+            "input_jsons": [
+              "/home/huangrulin/workspace/worktrees/accel-sim-c16-qwen-decode-compiled-no-cudagraph-runtime-prep-109-v1/docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1/token_ids/QWEN_BF16/TRAIN_A_DISCOVERY_00.json",
+              "/home/huangrulin/workspace/worktrees/accel-sim-c16-qwen-decode-compiled-no-cudagraph-runtime-prep-109-v1/docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1/token_ids/QWEN_BF16/TRAIN_A_DISCOVERY_01.json",
+              "/home/huangrulin/workspace/worktrees/accel-sim-c16-qwen-decode-compiled-no-cudagraph-runtime-prep-109-v1/docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1/token_ids/QWEN_BF16/TRAIN_A_DISCOVERY_02.json",
+              "/home/huangrulin/workspace/worktrees/accel-sim-c16-qwen-decode-compiled-no-cudagraph-runtime-prep-109-v1/docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1/token_ids/QWEN_BF16/TRAIN_A_DISCOVERY_03.json"
+            ]
+          }
+        },
+        "runtime_environment": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+        "status": "PASS"
+      }
+    },
+    {
+      "path": "/data/c16/qwen_decode_compiled_no_cudagraph_v1/prep/SYNTHETIC_TESTS.json",
+      "sha256": "9992e4fe773ef2be179ae6a04b97bddcc2da74a5f8638487d00b7814b798d38c",
+      "data": {
+        "comparator_logprob_mismatch_detected": true,
+        "comparator_token_mismatch_detected": true,
+        "cuda_initialized": false,
+        "enforce_eager_false_both_modes": true,
+        "mode_b_exact": true,
+        "model_loaded": false,
+        "status": "PASS"
+      }
+    },
+    {
+      "path": "/data/c16/qwen_decode_compiled_no_cudagraph_v1/prep/SOURCE_TESTS.json",
+      "sha256": "a4163809f5a0664c97aba8466802a24b160e06a4af53f785e7e785c8ec665237",
+      "data": {
+        "checks": {
+          "all_python_compile": true,
+          "both_modes_compiled": true,
+          "mode_b_exact": true,
+          "no_observer_or_nsys_in_runner": true,
+          "one_warmup_one_qualification": true,
+          "output_tsv_schemas_exact": true,
+          "point_order_exact": true,
+          "source_qualification_pass": true
+        },
+        "status": "PASS",
+        "tool_sha256": {
+          "campaign.py": "9ade8c98d0eac2e2b4ba3d95c11cf5d022e0fbb7f06ad946c0cd41cc77d50f47",
+          "contract_poll.py": "185cb4d50e813eb9aa2c1c2a5bf6cb3803f5a566e09f44decdacb644e67a2a7c",
+          "finalize.py": "a4ca86b3e4863dc89810bab80576d2ed41763133471e9cefd5affcc80de2cb00",
+          "input_preflight.py": "16f0ea2a11ab538864998dcab3691096ce03161ddf9075d20edc8a83296a8066",
+          "postprocess.py": "d45272fa1630cfaa5a982ff4625806b36a98bf7dd6106cc1c3bacc2bfaa8996a",
+          "runner.py": "dbe4e02f628a27b395d257aa292f8af1825410e23709b4df37d67542595172cc",
+          "source_audit.py": "b6dbc51d199ca8ca026df1fcc54f7c49fcb60ae5b0dd365bcfde0610679c4d58",
+          "test_synthetic.py": "6d9bcb98d2a5512ebc213b52eec320c09ec6e1004cda57658ac713c85bf07f18",
+          "validate_source.py": "62a8194f35479436578c3279f5e48ae12048702d439f899a70bf33da9b71b87c"
+        }
+      }
+    }
+  ],
+  "stderr": ""
+}
