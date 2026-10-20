@@ -1,0 +1,78 @@
+{
+  "D_HEAD_observed": "4f2498b5bc37b4ecb8bf03ff27bc7423dca46e20",
+  "E_runner_or_registry_writes": 0,
+  "at_UTC": "2026-10-20T14:30:58.921852+00:00",
+  "builds": 0,
+  "core_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+  "existing_evidence": [
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/four_pairs_20261020_r2/PAIRED_KERNEL_TIMING_AND_SNAPSHOT_DELTAS.csv",
+      "sha256": "b60b6b3316f1dd64433778ca46a19de3ac65428af9839738ef156c98f40917ca"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/four_pairs_20261020_r2/sad_SNAPSHOT_OBSERVATIONS.json",
+      "sha256": "3e2cf4ae664d6cdd794c2ad15c7aedcda592cbd1582deeacfc22d241d1a6b005"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/four_pairs_20261020_r2/dwt2d_SNAPSHOT_OBSERVATIONS.json",
+      "sha256": "64b214055e7a4b518b18e0012df543f032211a86d92f627fe1aab4bd26709da6"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/four_pairs_20261020_r2/FROZEN_SOURCE_PATH_AND_COUNTER_SCOPE.json",
+      "sha256": "d7205cd2b3e5de8a4a68a98b5750207be6e4134511c230e77f1936b3b72557a3"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/four_pairs_20261020_r2/ACCEPTED_OBSERVATION_IDENTITIES.json",
+      "sha256": "03600865e7f14bcfd7755546cd7b670755a0eada8cf305fc13d6414925e5d71b"
+    }
+  ],
+  "instrumentation_changes": 0,
+  "limits": "Static causal hypotheses only. Existing stage snapshots are adjacent cumulative deltas, not UID-level first-divergence/warp critical-path evidence. No active run monitored or modified.",
+  "main": {
+    "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r41/accel-sim.out",
+    "sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5"
+  },
+  "new_applications": 0,
+  "new_findings": [
+    "F extended bank retry identity is enabled at initialization by dirty V OR requested RO, independent of first WB/RO admission; S/W_ONLY keep role/id/write matching.",
+    "BANK_COMPATIBLE_LANDING is pre-reclaim free-slot observation, not bank-port service outcome; observer clears blockers on admitted requests, so false sole-cause attribution is possible on a refusal due to another cause.",
+    "WB_INFLIGHT contributes to retention_slot_cycles but cannot be reclaimed; clean retention has a separate counter."
+  ],
+  "new_native_tests": 0,
+  "no_new_configuration": true,
+  "no_new_goal": true,
+  "production_changes": 0,
+  "reviewed_E_HEAD": "bcff8aff7b204c597344456263b604c8a99c9615",
+  "schema": "A2_BOUNDED_SAD_DWT_TIMED_SOURCE_ATTRIBUTION_V1",
+  "source_files": [
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "6d1c905b8c1a00db2a4f055a03678f5b3794a53a30ccb0d4983fc63011896333"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-tvd-directory.h",
+      "sha256": "335e4968649ebdd1da15c12cf55b6da88cb76ae270d0916b7d031b56ea2bd738"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-tvd-bank-identity.h",
+      "sha256": "278efb42c6428ccc690439e96ee68aa5847aa4e1866901e0692aafb355370e79"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "3e80f3a70854b165e5c1ad4b924097b6e5f9507fb039291390703393874bd2ff"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/l2cache.cc",
+      "sha256": "471bfeff076f93e6ff48058804fe996c91147881bb3af6e79d332f618d1ffcff"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src/gpgpu-sim/ep-l2-mechanism-observer.h",
+      "sha256": "f6b85f7b398cef2f79a575645b2baf0a442b6490100ab577c5c48c25ece462a9"
+    }
+  ],
+  "status": "SOURCE_PATHS_IDENTIFIED_CAUSAL_MAGNITUDES_NOT_ESTABLISHED"
+}
