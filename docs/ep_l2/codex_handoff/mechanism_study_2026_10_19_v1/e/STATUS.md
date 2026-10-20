@@ -1,4 +1,4 @@
-# Lane E2 — POST_SPACE_INDEPENDENT_ADMISSION_PASS
+# Lane E2 — MAIN_cfd_097k_QUALIFIED_ADMISSION
 
 Original174, original T0 1792414193. Actual starts 14/40, remaining26, contingency8/8. Core d010911e / Framework9dd1ee57 / main61aad385. Controller STOPPED; default maximum2, live source/config/input/lease/RAM/CPU/disk/result guards at every launch.
 
@@ -8,6 +8,6 @@ Original174, original T0 1792414193. Actual starts 14/40, remaining26, contingen
 
 Real retained new results 3017637219 B, old+new 17327213603 B; new-root growth since this continuation 210160027 B. Per-attempt retained sizes and exact raw/receipt identities in RECEIPT.
 
-Next concrete conditions: {"status": "PASS_2_SLOTS", "next": ["CFD S/F", "DWT S/F", "SAD S/F"], "mode": "Existing finite rolling_main uses original unique controller and original per-launch gates. No FWT/Vector retry; no new migration.", "storage_reclaim_is_not_result_budget_extension": true}.
+Next concrete conditions: [{"workload": "cfd_097k", "condition_ids": ["V2_cfd_097k_S", "V2_cfd_097k_F"], "queue": {"path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/QUEUE.json", "sha256": "227ebbd69fb829b69b3acb921e04dad19338c0af83f2aba12584b783d32fb5a5"}}, {"workload": "dwt2d", "condition_ids": ["V2_dwt2d_S", "V2_dwt2d_F"], "queue": {"path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/QUEUE.json", "sha256": "af8de81c01b30e1c663042b2556c45ef5afce3671872d531513dc129af0ae1b9"}}, {"workload": "sad", "condition_ids": ["V2_sad_S", "V2_sad_F"], "queue": {"path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/sad/QUEUE.json", "sha256": "e72faab22aa718115e8866b0b702a012bca2a461bd838e18f8eb4c541dfe1c3b"}}].
 
 Old raw/failures/withdrawals/hold history retained. Btree HOLD, SGEMM separately exploratory and not launchable; extra B/C joint fixture unqualified. No valid endpoint replay, new Goal, reset or second scheduler.
