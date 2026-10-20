@@ -1,0 +1,5 @@
+{
+  "utc": "2026-10-20T13:01:27.500095+00:00",
+  "body": "恢复路由的具体闭合办法（不复制权重、不新建控制器）：\n\n原174和174-new的 /root/share 都是同一174物理Share /dev/md127 ext4，可利用现有Shared FS承载一个前台恢复管道，164→174-new现有SSHFS→Share FIFO→原174精确原路径；FIFO仅内核缓冲，不重复落19.37GiB。旧容器的/root/share/mnt164本身仍是假同名本地目录，不会作为数据源。\n\n我已在原174创建极小控制探针 `/root/share/c16_storage_audit_restore_20261020_v1/SOURCE_ROUTE_PROBE.json`，SHA256 `fc90155b7b4999d209733d5ea56bbbb35939b6ebbc0e493991971aff91e95959`，nonce `e097106c8c164b0b8f5dfb47ff43e205`，原174 dev/inode `2431/30408706`。请在174-new读此文件核对字节及nonce，并在同目录用排他新建方式写 TARGET_ROUTE_ACK.json，返回所见路径/dev/inode、174-new hostname/namespace以及真实164挂载source/fstype和该nonce。只写小控制回执，无模型复制/属性变更。若不可见则直接说明。\n\n这证明现有合法恢复桥的物理连接，不要求native164 shell或新认证。本窗口提供默认不覆盖的精确整包流恢复脚本；仅在未来显式恢复调用时启动两端前台命令，不安装watcher，也不改变未来C16任务配置。请不要为路由探针停止已运行pending3 SHA。",
+  "url": "https://github.com/swayhrl/accel-sim-framework/pull/1#issuecomment-6291450120"
+}

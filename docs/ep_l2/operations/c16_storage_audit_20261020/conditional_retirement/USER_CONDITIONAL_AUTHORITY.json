@@ -1,0 +1,43 @@
+{
+  "schema": "C16_OUTBOUND_CONDITIONAL_RETIREMENT_USER_AUTHORITY_V2",
+  "recorded_at_utc": "2026-10-20T12:51:25.344534+00:00",
+  "source": "Current user continuation in this conversation following audit HEAD766c59898554c56b41fdc59bb279673aa4635065",
+  "user_instruction": "用户本轮明确选择优先保留164权威副本、未来需要时从164按原路径恢复，而不是长期保留原174重复外发文件。只有当前源SHA、164完整SHA、恢复路径、当前/未来使用职责接管及本轮条件性释放范围全部闭合后才允许执行源释放。",
+  "historical_A_G_signature_claimed": false,
+  "old_unsigned_A_G_policy_is_not_a_separate_veto": true,
+  "execution_authority": "CONDITIONAL_NO_FURTHER_PER_FILE_APPROVAL_REQUIRED_WHEN_ALL_GATES_CLOSE",
+  "package_order": [
+    "P3",
+    "P2"
+  ],
+  "independent_complete_package_signoff": true,
+  "packages": {
+    "P3": [
+      "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P3_168c9714/models/c16_qwen25_7b_awq/model-00001-of-00002.safetensors",
+      "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P3_168c9714/models/c16_qwen25_7b_awq/model-00002-of-00002.safetensors"
+    ],
+    "P2": [
+      "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P2_168c9714/models/c16_qwen25_7b_raw_reference/model-00001-of-00004.safetensors",
+      "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P2_168c9714/models/c16_qwen25_7b_raw_reference/model-00002-of-00004.safetensors",
+      "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P2_168c9714/models/c16_qwen25_7b_raw_reference/model-00003-of-00004.safetensors",
+      "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P2_168c9714/models/c16_qwen25_7b_raw_reference/model-00004-of-00004.safetensors"
+    ]
+  },
+  "protected": [
+    "/workspace/c16_assets ACTIVE_KEEP",
+    "126 P2/P3 nonweight files KEEP",
+    "C16 supervisor and scientific work unchanged",
+    "109 other assets unchanged",
+    "E2 controller, TLS P9 and accepted results unchanged"
+  ],
+  "mandatory_gates": [
+    "no actual current reader / pending delivery / unmigrated automatic exact-path task",
+    "current source full SHA matches frozen SHA and target counterpart for every package shard",
+    "real164 current full SHA plus valid reused RAW1-3 identities",
+    "real164-to-original174 usable recovery route and script preserving exact path/bytes/uid/gid/mode/mtime",
+    "existing memory/Share safeguards plus latest explicit user IO exception; single low-priority stream",
+    "durable package/file INTENT-DONE journal and exact identity recheck; no unregistered half-package",
+    "per-package original174 df before/after measurement"
+  ],
+  "subsequent_IO_policy_override": "USER_IO_OVERRIDE.json: IO10 no longer blocks this C16 work; E2 concurrency explicitly allowed, no E2/registry policy change"
+}
