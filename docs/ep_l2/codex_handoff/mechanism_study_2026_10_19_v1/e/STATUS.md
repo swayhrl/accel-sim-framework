@@ -1,4 +1,4 @@
-# Lane E2 — CFD_CONTINUATION_TERMINAL
+# Lane E2 — TEN_AUTHORIZED_ATTEMPTS_FINAL_CLOSED
 
 Original174; originalT0=1792414193; actual30/40,remaining10,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
@@ -24,4 +24,6 @@ New results4558128282B, old+new18867704666B; growth since20-start control baseli
 
 Remaining original qualified controls: . DWT/CFD four-cell revision is user-approved and independently qualified; exact matrix adoption retained with original history. Remaining approved controls: . FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
 
-Attempted unsuccessful approved conditions remain charged and are excluded from the unstarted queue: E027_a4c2f04e:RESOURCE_LIMIT,E028_f9b6ca83:RESOURCE_LIMIT. DWT replay is NOT authorized. A resource block is not a production correctness PASS or failure. Resume only never-started CFD conditions after a new real resource event and fresh original gates; no background watcher.
+Attempted unsuccessful approved conditions remain charged and are excluded from the unstarted queue: E027_a4c2f04e:RESOURCE_LIMIT,E028_f9b6ca83:RESOURCE_LIMIT. Additional DWT retry requires a separate explicit user-approved allocation; none is inferred from resource recovery. A resource block is not a production correctness PASS or failure. No background watcher or automatic replay.
+
+Additional two-slot DWT recovery proposal: AWAIT_USER_APPROVAL_NOT_ADOPTED_NOT_RUN. It would forgo unstarted FWT S_L2_DATA_FREE/F_L2_DATA_FREE, charge two new LOCAL_DIAGNOSTIC starts (W_ONLY keeps physical P1), and yield32/40,remaining8 without refund or contingency expansion. Two unique planned configurations are forgone;32 bookkeeping rows do not imply32 distinct configurations. Exact proposal published at606351c2074c9ce340cec29cd518ce0c672ad5af. Approval request stays pending; no new matrix adoption or run occurs on silence.
