@@ -105,7 +105,7 @@
   330   if (m_tvd ? tvd_cached_wad_contains(mf,owner) : ep_l2_wad_contains(owner)) {
   331     ++m_ep_l2_wad_same_address_wait_count; return RESERVATION_FAIL;
   332   }
-  333 
+  333
   334   if (probe == MISS && !m_ft_pending.request) {
   335     // Retire completed invalidated tag identities (e.g. a kernel flush), never
   336     // a pinned response or a live pending sector. No address-wide RO cleanup.
@@ -430,7 +430,7 @@
  2657       if (ep_l2::tvd_bank_request_matches(m_pending[bank][i],r,id,write,
  2658           client,token,m_slots[global_id].generation,m_tvd_identity)) pending_index=i;
  2659     if (pending_index >= 0) ++m_bank_retry_attempts;
- 2660 
+ 2660
  2661     // No selected/queued older op: a ready operation may consume one of the
  2662     // finite remaining services of this bank in this physical cycle.
  2663     // There is no reason to stage it until N+1 merely to wait for hypothetical
@@ -442,7 +442,7 @@
  2669       consume_bank(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
  2670       return GRANTED;
  2671     }
- 2672 
+ 2672
  2673     if (pending_index < 0) {
  2674       record_logical_operation(bank, op_class, client);
  2675       m_pending[bank].push_back(pending_op(
@@ -474,7 +474,7 @@
  1307   l2_char_sample(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
  1308   if (!m_config->m_L2_config.disabled() && m_config->m_L2_config.m_ep_l2_ms_observer)
  1309     m_L2cache->ms_sample();
- 1310 
+ 1310
  1311   bool tvd_frontend_handled=false;
  1312   if (!m_config->m_L2_config.disabled() && m_L2cache->tvd_enabled() && !m_icnt_L2_queue->empty()) {
  1313     auto mf=m_icnt_L2_queue->top(); const auto now=m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle;
@@ -487,7 +487,7 @@
  1320       m_L2_icnt_queue->push(mf); m_L2cache->tvd_response_commit(mf,now); m_icnt_L2_queue->pop();
  1321     }
  1322   }
- 1323 
+ 1323
  1324   // New L2 texture accesses and/or non-texture accesses.  A full L2-to-DRAM
  1325   // FIFO is not a frontend prerequisite: hits, MSHR merges, and locally
  1326   // absorbed writes must only wait for resources they actually consume.
