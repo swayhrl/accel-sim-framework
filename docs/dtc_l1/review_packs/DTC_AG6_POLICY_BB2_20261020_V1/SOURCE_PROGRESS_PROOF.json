@@ -1,0 +1,75 @@
+{
+  "classification": "SOURCE_ONLY_NOT_PRODUCTION_QUALIFIED",
+  "source_read_method": "git show and git grep against exact pre-existing local commit objects; no fetch, build, test, simulation, model binary or trace content read by source reviewer",
+  "core": {
+    "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+    "existing_git_repository": "/workspace/repos/gpgpu-sim_distribution",
+    "files": [
+      {
+        "path": "src/gpgpu-sim/shader.cc",
+        "git_blob": "af741064700409363d06aa447d601aa740f6c57f",
+        "line_contracts": {
+          "completed_active_lane_instructions": [2352, 2371],
+          "last_CTA_thread_exit_increments_completed_CTA": [5581, 5588],
+          "conditional_Finished_CTA_output": [5593, 5597],
+          "natural_kernel_completion_path": [5613, 5624]
+        }
+      },
+      {
+        "path": "src/gpgpu-sim/gpu-sim.cc",
+        "git_blob": "c03efe92e303c1e557319bdc0a9b0c3f8961085e",
+        "line_contracts": {
+          "finished_kernel_queue_is_destructive": [1024, 1031],
+          "set_kernel_done_records_and_enqueues_UID": [1034, 1050],
+          "forced_stop_also_calls_set_kernel_done": [1053, 1059],
+          "perf_counter_registration_includes_CTA": [1223, 1227],
+          "init_resets_local_instruction_and_CTA_counts": [1506, 1512],
+          "update_stats_accumulates_then_resets_local_counts": [1553, 1571],
+          "stdout_instruction_stats": [1820, 1836],
+          "conditional_periodic_liveness_with_instructions": [2562, 2590],
+          "other_cycle_path_has_no_equivalent_liveness_print": [2874, 2888]
+        }
+      },
+      {
+        "path": "src/gpgpu-sim/gpu-sim.h",
+        "git_blob": "f4ebe35b887ad62d93491dd5493293c7ed8c88e7",
+        "line_contracts": {"completed_CTA_increment": [632, 632], "CTA_storage_and_queue": [770, 775]}
+      }
+    ]
+  },
+  "framework_and_executed_guard": {
+    "commit": "62323c40df0add726cae52a96ca946e589f00343",
+    "execution_binding": "BB EXECUTED_SOURCE_PROOF.json establishes RUN_START publication_head and registered source SHA256; no inference from current filename",
+    "files": [
+      {
+        "path": "gpu-simulator/accel-sim.cc",
+        "git_blob": "c709f4b5942aec7ce9b7f06e07ae76e3b042e1f6",
+        "line_contracts": {"cleanup_and_limits": [70, 85], "boundary_stats": [122, 147], "cycle_loop_and_finished_queue": [150, 171]}
+      },
+      {
+        "path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_ag6/dispatch_ag6_v2.py",
+        "git_blob": "9e47c98604faf1597830659aa75b1742b4edd4e5",
+        "line_contracts": {"paired_admission_and_estimated_writes": [245, 270], "observer_without_semantic_progress": [372, 395], "historic_timeout_7200_no_new_default": [414, 418]}
+      },
+      {
+        "path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_ag6/resources_v2.py",
+        "git_blob": "8679c52168aec3008d89541900410a6bb1b73c17",
+        "line_contracts": {"host_cgroup_preflight": [51, 76], "hard_quick_stop": [91, 105], "resource_only_runtime": [107, 122]}
+      },
+      {
+        "path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_runtime/vendor/mapping_roles.py",
+        "git_blob": "0884bade7ca384e4ef000e6e10233c70df8e437b",
+        "line_contracts": {"full_hash_fd": [41, 52], "identity_TOCTOU": [54, 79], "verify_file_hash": [100, 106], "every_snapshot_verification": [176, 193], "sequence_and_closure": [205, 226]}
+      },
+      {
+        "path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_runtime/vendor/guarded_process.py",
+        "git_blob": "930657c9e0b396d1aed5e4c2e5715328202678bb",
+        "line_contracts": {"capture_and_event_flush": [85, 97], "identity_before_resume": [98, 101], "periodic_resource_callback": [102, 111], "mapping_entry_exit_exec_preexit_events": [165, 176], "final_file_verification": [180, 183]}
+      }
+    ]
+  },
+  "historical_progress": "UNAVAILABLE",
+  "historical_completion_counterfactual": "UNDETERMINED_PROGRESS_NO_PRODUCTION_PROMOTION",
+  "mapping_optimization": "PROPOSED_ONLY_NO_IMPLEMENTATION_NO_MEASURED_SAVINGS",
+  "production_ready": false
+}
