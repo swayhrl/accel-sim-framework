@@ -49,12 +49,13 @@ def main():
         help='one bounded GDB replay of the already failed controlled fixture; no compilation or application')
     p.add_argument('--terminal-control', action='store_true',
         help='read frozen logs and test E-only runtime-dump parser proposal; no simulation/acceptance')
+    p.add_argument('--own-pending-spec', type=Path)
     p.add_argument('--own-pending', action='store_true', help='Core27 single-member WAD own-pending guard repair, finite oldred/newgreen only')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     assert sum((a.own_pending,a.terminal_control,a.joint_gdb,a.joint_vrw,a.affected_native)) <= 1
     readonly_test = a.joint_gdb or a.terminal_control
-    spec_path = (HANDOFF/'full_system_v2/WAD_PENDING_REPAIR_SPEC_r39.json' if a.own_pending else
+    spec_path = ((a.own_pending_spec or HANDOFF/'full_system_v2/WAD_PENDING_REPAIR_SPEC_r39.json') if a.own_pending else
         HANDOFF/'full_system_v2/E_RUNTIME_DUMP_CONTROL_SPEC_r36.json' if a.terminal_control else
         HANDOFF/'full_system_v2/VRW_FAILED_FIXTURE_GDB_SPEC_r34.json' if a.joint_gdb else
         HANDOFF/'full_system_v2/VRW_SHARED_FIXTURE_SPEC_r32.json' if a.joint_vrw else
@@ -283,10 +284,18 @@ def main():
                 run([sys.executable,'-B',str(HERE/'check_wad_guard_case.py'),
                     '--case-json',json.dumps(case),'--receipt',str(detail),'--',str(executable),*case['arguments']],case['id'],180)
                 row=json.loads(detail.read_text());assert row['expectation_verified'] and row['binary_sha256']==sha(executable)
-                report['tests'].append(dict(case=case['id'],evidence=str(detail),sha256=sha(detail),**row));save()
-            old_exe=build/'ep_l2_ms_victim_production_core27_old'
-            link_target('ep_l2_ms_victim_production',old_exe,archive)
-            case_run(spec['cases'][0],old_exe)
+                report['tests'].append(dict(evidence=str(detail),sha256=sha(detail),**row));save()
+            if spec.get('old_red_native_receipt'):
+                detail=Path(spec['old_red_native_receipt']);assert sha(detail)==spec['old_red_native_receipt_sha256']
+                row=json.loads(detail.read_text());old_exe=Path(row['command'][0])
+                assert row['actual_exit']==-6 and row['expectation_verified'] and all(row['terminal_checks'].values())
+                assert row['command'][1:]==spec['cases'][0]['arguments'] and row['case']==spec['cases'][0]['id']
+                assert sha(old_exe)==row['binary_sha256'] and sha(row['raw_log'])==row['raw_log_sha256']
+                report['tests'].append(dict(evidence=str(detail),sha256=sha(detail),reused_verified_old_red=True,**row));save()
+            else:
+                old_exe=build/'ep_l2_ms_victim_production_core27_old'
+                link_target('ep_l2_ms_victim_production',old_exe,archive)
+                case_run(spec['cases'][0],old_exe)
             report.update(status='COMPILING_ONE_GPU_CACHE_MEMBER',compiler_started=True);save()
             compile_flags=[x.replace(spec['retained_core'],str(core)) for x in flags(old/'gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make')]
             run(['/usr/bin/c++',*compile_flags,'-c',str(core/'src/gpgpu-sim/gpu-cache.cc'),'-o',str(build/'gpu-cache.cc.o')],'changed_gpu_cache_compile')
