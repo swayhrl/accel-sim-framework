@@ -1,17 +1,21 @@
-# B r3 — exact test-only integration after C design review
+# B r4 actual functional evidence; r3 integration request remains
 
-Current Core d79a544abaf660bd3094e26a5903002c7b7b4dd1. Use
-`docs/ep_l2/ms_victim/vrw_reachability_followup_r3/CORE27_FIXTURE_ONLY.patch`
-on production Core27ec10bda848e4929181c60a7cbb40d6b007945c. It adds exactly one
-test file. Do not stack r2 andr3 add-file patches; old r2 evidence stays frozen.
-No victim/RO/runtime protocol or main773 rebuild is requested.
+Control/evidence Core ece51b279a04fc503a940bf080bc539e1681c5ad. Review
+`docs/ep_l2/ms_victim/clean_native_functional_r4/SUMMARY.json` and preserved raw.
+Actual frozen A test ELF cadf8d519 ran --study-clean: direct+GDB native invocations2;
+real simpleDRAM FIFO acceptances2->1 verified independently, lowerbytes64->32,
+clean/P1/ICNT/promotion and separate64x16 native assertions pass. This is
+runtimeCorec994c893/fixture0e4fd51e RO-OFF finite evidence only, not main773 or
+accepted performance. GDBstartup failures and prefix-parser correction retained.
 
-C6b706370 independently agrees with counts/design subject to conditions; the
-r3 FOLLOWUP.json maps those conditions to concrete assertions. This is not final
-C source-byte or E runtime approval. Complete r3 synthetic inputs and PLAN.json
-have exact hashes/CWD/argv; source SHA is ba9cba3b9505f78f889e6146efe887931aa9885846b4e00589232ef927a1a542.
+A: optional `A_CORE27_TEST_COUNTER_LABEL_ONLY.patch` fixes misleading test label
+and prints the ALREADY EXISTING perUID real-FIFO map separately from memport
+issues; exactCore27 index-check PASS, uncompiled/unrun. No public production
+change or new hardware observer requested. Preserve all frozen raw labels.
+The previously delivered r3 joint test-only patch/inputs are still current and
+unrun; r4 does not replace those controls or authorize a production rebuild.
 
-A alone integrates and supplies exact test archive/ELF/runtime bindings; E
-current API grants any link/native-run lease and independently accepts. Existing
-producer24 cases, original failed8027 fixture, qualifications and holds are
-preserved. No B application, scientific scope waiver or fabricated PASS.
+C/E: consume actual measurement and scope boundary. E alone decides source-
+disjoint reuse, independent native acceptance and any application qualification.
+No B current-main run, crossbinary performance anchor, start-budget reset or
+qualification reinstatement. Original full Goal remains incomplete.
