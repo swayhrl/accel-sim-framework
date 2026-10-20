@@ -7,6 +7,8 @@ wid=sys.argv[1]
 subprocess.run([sys.executable,str(t.META/'record_received_window.py'),wid],cwd=t.REPO,check=True)
 summary=t.get(wid+'_TARGET_RECEIVING_RECEIPT_COPY16.json')
 D=t.get(wid+'_DEST_VERIFIED.json');R=t.get(wid+'_RESTORE_VERIFIED.json')
+review=t.get(wid+'_TARGET_SOURCE_RUNNER_REVIEW_COPY16.json')
+effective_policy=review.get('effective_source_copy_policy','ORIGINAL_COPY16')
 for n in ['fetch_exact_window_controls.py','receive_exact_window.py','record_received_window.py',
           'publish_received_window.py','prepare_next_p9_window.py','finalize_closed_metadata.py']:
     (t.BASE/'tools'/n).write_bytes((t.META/n).read_bytes())
@@ -16,7 +18,7 @@ status=('TLS-V10 Target: '+wid+' real164/native range verification PASS; exact K
  'Native proofs run on qualified174-new private tmpfs, volatile validation only; durable archive is genuine164. '
  'Old native164-only and historical build HOLD receipts are historical, not current admission.\n\n'
  'Current window: '+str(D['range_count'])+' ranges/'+str(D['raw_bytes'])+'B. Source READY '+D['source_ready_git_commit']+
- ' rawSHA '+D['source_ready_sha256']+'. Fresh Source scoped16G/Share40/RAM64/cgroup/readers/identity gates and frozen request/plan/manifest binding verified. '
+ ' rawSHA '+D['source_ready_sha256']+'. Fresh Source '+effective_policy+'/Share40/RAM64/cgroup/readers/identity gates and frozen request/plan/manifest binding verified. '
  'Current Target mount, exclusive receiver, Share/RAM/headroom and physical bridge cap verified. DEST SHA '+t.sha(t.BASE/(wid+'_DEST_VERIFIED.json'))+
  '; native range RESTORE SHA '+t.sha(t.BASE/(wid+'_RESTORE_VERIFIED.json'))+'.\n\n'
  'Cumulative original verified range bytes '+str(summary['total_effective_unique_original_payload_bytes'])+
@@ -30,5 +32,17 @@ p.write_bytes(status.encode())
 
 names=[wid+'_DEST_VERIFIED.json',wid+'_RESTORE_VERIFIED.json',
        wid+'_TARGET_RECEIVING_RECEIPT_COPY16.json',wid+'_TARGET_SOURCE_RUNNER_REVIEW_COPY16.json']
+# Metadata-only owner handoff joins the same publication; never a second flow.
+pending=t.META/'PENDING_E2_V2_JOIN_FOR_NEXT_PUBLICATION.json'
+if pending.exists():
+    import json
+    raw=pending.read_bytes();item=json.loads(raw)
+    assert item['schema']=='LANE_T_E2_V2_EXACT_SELECTOR_JOIN_V1'
+    assert item['E2_selector_raw_sha256']=='6db5105dcc9921d50812f26b76bef146ba585e2f99e9764f4befc7fc7f77b662'
+    name='LANE_T_E2_V2_SELECTOR_JOIN_20261020.json'
+    p=t.BASE/name
+    if p.exists():assert p.read_bytes()==raw
+    else:p.write_bytes(raw)
+    names.append(name)
 subprocess.run([sys.executable,str(t.META/'publish.py'),
     'ops(tls-v10): verify '+wid.rsplit('_',1)[-1]+' with same rolling range receiver',*names],cwd=t.REPO,check=True)

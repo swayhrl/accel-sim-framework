@@ -48,3 +48,6 @@ if any(s['decision']['effective_workspace_floor_bytes']==5*1024**3
            'tls_v10_p9_lowspace5_gate.py','test_tls_v10_p9_lowspace5_gate.py',
            'tls_v10_p9_lowspace5_runner.py']:
   (D/n).write_bytes(read_source_git(['show',commit+':'+P+n]))
+ if any('resource_provider_sha256' in s for s in [G['gate'],R['gate_before_stage'],R['gate_after_stage']]):
+  n='TLS_V10_P9_REMAINING_COPY5_TRANSFER_QUALIFICATION_20261020.json'
+  (D/n).write_bytes(read_source_git(['show',commit+':'+P+n]))

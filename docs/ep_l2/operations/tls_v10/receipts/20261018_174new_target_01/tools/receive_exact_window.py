@@ -123,9 +123,20 @@ if any(s['decision']['effective_workspace_floor_bytes']==5*1024**3 for s in stag
  assert policy['source_unlink_authorized_by_this_policy'] is False
  assert policy['original_release_workspace_floor_bytes']==16*1024**3
  assert policy['other24_policy']=='UNCHANGED_16G'
- qual=json.loads((D/'TLS_V10_P9_REMAINING_COPY5_QUALIFICATION_20261020.json').read_bytes())
+ if any('resource_provider_sha256' in s for s in stages):
+  authority=t.get('TLS_V10_T_P9_SOURCE_COPY5_TRANSFER_V2_REVIEW_20261020.json')
+  qual_path=D/'TLS_V10_P9_REMAINING_COPY5_TRANSFER_QUALIFICATION_20261020.json'
+  assert t.sha(qual_path)==authority['qualification_sha256']
+  qual=json.loads(qual_path.read_bytes())
+  assert qual['code_sha256']==authority['reviewed_code_sha256']
+  for stage in stages:
+   assert stage['resource_authority_sha256']==POLICY_SHA
+   assert stage['resource_authority_name']==policy_name
+   assert stage['resource_provider_sha256']=={name:pin for name,pin in qual['code_sha256'].items() if not name.startswith('test_')}
+ else:
+  qual=json.loads((D/'TLS_V10_P9_REMAINING_COPY5_QUALIFICATION_20261020.json').read_bytes())
+  assert qual['code_sha256']==authority['source_policy_code_pins']
  assert qual['policy_sha256']==POLICY_SHA and qual['failed']==0 and qual['passed_test_methods']==6
- assert qual['code_sha256']==authority['source_policy_code_pins']
  for name,pin in qual['code_sha256'].items():assert t.sha(D/name)==pin
  copy5_pin=POLICY_SHA
 for stage in stages:
@@ -133,6 +144,10 @@ for stage in stages:
 assert R['gate_before_stage']['share_available_bytes']-W['raw_bytes']-1024**2>=40*1024**3
 assert R['gate_after_stage']['staged_physical_bytes']==R['bridge_payload_allocated_bytes']
 review=dict(schema='TLS_V10_TARGET_REVIEWED_EXACT_SOURCE_RUNNER_WINDOW_V1',utc=t.now(),status='SOURCE_EXACT_WINDOW_BINDING_GATE_READY_VERIFIED',window_id=wid,source_ready_git_commit=source_commit,source_ready_sha256=t.sha(D/ready_name),source_binding_sha256=t.sha(D/bind_name),source_runner_sha256=approved,source_test_sha256=testsha,source_fixture_methods=16,full_runner_tests_reviewed_once_at_source_commit='26b7343cb42da5635d0ff12796b749315779f16b',source_runner_revision_reviewed_at=reviewed_runners[approved],source_current_namespace_root_plan_previous_cleanup_and_request_binding=True,source_fresh_snapshots_signed_compact=True,source_production_evidence_code_takes_fresh_actual_RAM_cgroup_lease_current_planned_reader_inputs_each_gate=True,target_did_not_run_source_policy_or_sender=True,source_originals='SOURCE_KEEP',no_global16_or_release_permission=True,goal_mode='ACTIVE')
+t.save(wid+'_TARGET_SOURCE_RUNNER_REVIEW_COPY16.json',review)
+review['effective_source_copy_policy']='SOURCE_AUTHORIZED_P9_REMAINING_COPY_ONLY_5GiB' if copy5_pin else 'ORIGINAL_COPY16'
+review['source_copy5_policy_sha256']=copy5_pin
+review['source_release_floor_not_lowered']=True
 t.save(wid+'_TARGET_SOURCE_RUNNER_REVIEW_COPY16.json',review)
 code=(t.META/'receive_grouped_remote_template.py').read_text(encoding='utf-8')
 # The reviewed data-driven Source runner publishes exact READY raw bytes after
