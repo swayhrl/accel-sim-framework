@@ -1,4 +1,4 @@
-# Lane E2 — APPROVED_CONTROLS_BATCH_1_TERMINAL
+# Lane E2 — DWT_RAM_GUARD_AUDITED_CFD_RECOVERY_READY
 
 Original174; originalT0=1792414193; actual28/40,remaining12,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
@@ -20,4 +20,6 @@ Original174; originalT0=1792414193; actual28/40,remaining12,contingency8/8 consu
 
 New results4366038368B, old+new18675614752B; growth since20-start control baseline758675784B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
-Remaining original qualified controls: . DWT/CFD four-cell revision is user-approved and independently qualified; exact matrix adoption retained with original history. Remaining approved controls: V2_dwt2d_S_COPY_FREE,V2_dwt2d_W_ONLY,V2_cfd_097k_F_MINUS_V,V2_cfd_097k_F_MINUS_R. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+Remaining original qualified controls: . DWT/CFD four-cell revision is user-approved and independently qualified; exact matrix adoption retained with original history. Remaining approved controls: V2_cfd_097k_F_MINUS_V,V2_cfd_097k_F_MINUS_R. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+
+Attempted unsuccessful approved conditions remain charged and are excluded from the unstarted queue: E027_a4c2f04e:RESOURCE_LIMIT,E028_f9b6ca83:RESOURCE_LIMIT. DWT replay is NOT authorized. A resource block is not a production correctness PASS or failure. Resume only never-started CFD conditions after a new real resource event and fresh original gates; no background watcher.

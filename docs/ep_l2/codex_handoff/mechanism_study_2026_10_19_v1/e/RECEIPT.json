@@ -1704,6 +1704,7 @@
       "sha256": "30dd195e60f8e61a5f840e64d51826785d14c8cde09742b22a5ce5bfe7d6fa41"
     }
   },
+  "DWT_replay_authorized": false,
   "FWT_Vector_Btree_retries": false,
   "T0": 1792414193,
   "accepted_controls": {
@@ -2853,7 +2854,7 @@
   "active_leases": {},
   "active_runs": {},
   "actual_starts": 28,
-  "at_unix": 1792515279.2009,
+  "at_unix": 1792515680.3027842,
   "budget_buckets": {
     "contingency": 8,
     "one_workload_T_only_M_only_on_WV": 2,
@@ -2874,12 +2875,10 @@
     "state": "STOPPED",
     "stopped_unix": 1792515278.6105607
   },
-  "event": "APPROVED_CONTROLS_BATCH_1_TERMINAL",
+  "event": "DWT_RAM_GUARD_AUDITED_CFD_RECOVERY_READY",
   "intake_deadline": 1792591200,
   "maximum": 40,
   "next_approved_controls": [
-    "V2_dwt2d_S_COPY_FREE",
-    "V2_dwt2d_W_ONLY",
     "V2_cfd_097k_F_MINUS_V",
     "V2_cfd_097k_F_MINUS_R"
   ],
@@ -2891,9 +2890,9 @@
   },
   "remaining": 12,
   "resources": {
-    "available_memory_bytes": 70123352064,
-    "disk_free_bytes": 31463657472,
-    "share_disk_free_bytes": 44212891648
+    "available_memory_bytes": 96707772416,
+    "disk_free_bytes": 30737182720,
+    "share_disk_free_bytes": 44212781056
   },
   "result_growth_since_control_baseline_bytes": 758675784,
   "schema": "E2_APPROVED_CONTROL_CHECKPOINT_V1",
@@ -2965,5 +2964,23 @@
     "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
     "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
   },
-  "start_deadline": 1792576800
+  "start_deadline": 1792576800,
+  "unsuccessful_approved_attempts": [
+    {
+      "attempt_id": "E027_a4c2f04e",
+      "profile": "S_COPY_FREE",
+      "receipt_path": "/workspace/ep_l2_ms20261019_e_results/E027_a4c2f04e/run_status.json",
+      "receipt_sha256": "6bfc255cf40cded5f5072c463d177c4e91913f693df6ea66b390ad2559a70871",
+      "state": "RESOURCE_LIMIT",
+      "workload": "dwt2d"
+    },
+    {
+      "attempt_id": "E028_f9b6ca83",
+      "profile": "W_ONLY",
+      "receipt_path": "/workspace/ep_l2_ms20261019_e_results/E028_f9b6ca83/run_status.json",
+      "receipt_sha256": "6dbf0250d65e0ca24d28cbd1ad0bf60e6a76ff048d3180b715be4d4e6d3604e0",
+      "state": "RESOURCE_LIMIT",
+      "workload": "dwt2d"
+    }
+  ]
 }

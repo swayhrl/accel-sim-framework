@@ -1,0 +1,159 @@
+{
+  "CFD_actual_starts": 0,
+  "CFD_queue": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_CONTROLS_QUALIFICATION_r1/APPROVED_CONTROLS/CFD_ONLY_CONTINUATION_QUEUE.json",
+    "sha256": "9d3ce2f4e289bdd1770bff200de8699b25700a66d8fd0b7d854236442921d78d"
+  },
+  "CFD_single_gate": "PASS",
+  "CFD_single_gate_reason": null,
+  "DWT_retry_authorized": false,
+  "T0": 1792414193,
+  "accepted_controls": 6,
+  "accepted_main_pairs": 4,
+  "actual_starts": 28,
+  "admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_CONTROLS_QUALIFICATION_r1/APPROVED_CONTROLS/BATCH_1_PRELAUNCH.json",
+    "sha256": "6a2ad9b07ea595ee5c2cc090681448f4dfaca615d39d647a5e0bd57d2b80f745"
+  },
+  "at_unix": 1792515564.1884205,
+  "cgroup_observation": {
+    "memory.current": "40848236544",
+    "memory.events": "low 0\nhigh 0\nmax 7298\noom 0\noom_kill 17\noom_group_kill 0",
+    "memory.max": "274877906944"
+  },
+  "classification": "HOST_AVAILABLE_RAM_FLOOR_RESOURCE_GUARD_NOT_SCIENTIFIC_PASS",
+  "contingency_consumed": 8,
+  "continuation": "Only never-started CFD F_MINUS_V/F_MINUS_R remain in approved queue. Invoke bounded continuation once on a real resource-recovery event; keep original gate/floor/source/lease/time/budget. No watcher or automatic DWT retry.",
+  "controller": {
+    "process": {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "pid": 2187944,
+      "start_ticks": 926668487
+    },
+    "state": "STOPPED",
+    "stopped_unix": 1792515278.6105607
+  },
+  "current_output_usage": {
+    "new_bytes": 4366038368,
+    "old_bytes": 14309576384,
+    "total_bytes": 18675614752
+  },
+  "current_resources": {
+    "available_memory_bytes": 82538307584,
+    "disk_free_bytes": 30980304896,
+    "share_disk_free_bytes": 44212781056
+  },
+  "host_memory_observation": {
+    "Buffers": "2720856 kB",
+    "Cached": "30868544 kB",
+    "MemAvailable": "80683404 kB",
+    "MemFree": "42491312 kB",
+    "MemTotal": "395532052 kB",
+    "SReclaimable": "9734220 kB",
+    "SwapFree": "72 kB",
+    "SwapTotal": "2097148 kB"
+  },
+  "memory_pressure_owner": "NOT_IDENTIFIED_FROM_CURRENT_PID_NAMESPACE; do not attribute to C16/TLS/DTC or modify their policies",
+  "old_plus_new_and_new_limits_unchanged": true,
+  "remaining": 12,
+  "resource_before_phase": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_CONTROLS_QUALIFICATION_r1/APPROVED_CONTROLS/POST_CONV_RESOURCE_ADMISSION.json",
+    "sha256": "0f49f49f7abba1d2ea83e4a139b9a425e78605fb7078643229efbfbe0164de11"
+  },
+  "root_cause": "Both original runner guards observed host MemAvailable below64GiB, recorded RESOURCE_LIMIT and terminated only the owned native groups. Native direct parents durably reaped real SIGTERM exits. No simulator SIGABRT/SIGSEGV, lost exit status or application PASS inferred.",
+  "rows": [
+    {
+      "RAM_floor_bytes": 68719476736,
+      "actual_start": true,
+      "attempt_id": "E027_a4c2f04e",
+      "controller_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2187944,
+        "start_ticks": 926668487
+      },
+      "exit_code": -15,
+      "exit_collected_by": "direct-parent os.wait4; child reaped before durable receipt",
+      "guard_available_memory_bytes": 68651229184,
+      "independent_acceptance": "NOT_ACCEPTED",
+      "maximum_own_memory_bytes": 8589934592,
+      "native_exit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E027_a4c2f04e/NATIVE_EXIT.json",
+        "sha256": "e828bd6d2d542475cd3bcdf038704aa7622a57be79ab9ea69e0ceb6b0cb4e4e2"
+      },
+      "native_maxrss_bytes": 641728512,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2188548,
+        "start_ticks": 926671271
+      },
+      "other_guard_resources": {
+        "available_memory_bytes": 68651229184,
+        "disk_free_bytes": 31466246144,
+        "share_disk_free_bytes": 44212891648
+      },
+      "profile": "S_COPY_FREE",
+      "raw_cycles_not_terminal_result": true,
+      "raw_log_sha256": "6f1ea7168e706d1982ad7d815a8c8e3b45c339b6aa052eab4008cdfc50444140",
+      "receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E027_a4c2f04e/run_status.json",
+        "sha256": "6bfc255cf40cded5f5072c463d177c4e91913f693df6ea66b390ad2559a70871"
+      },
+      "resource_limit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E027_a4c2f04e/RESOURCE_LIMIT.json",
+        "sha256": "c92fbd4a0fdbf4a00f7c6a379bd40047b1e95d76a177eb1c08ca9df841c0eb7e"
+      },
+      "retry_authorized": false,
+      "shortfall_below_floor_bytes": 68247552,
+      "state": "RESOURCE_LIMIT",
+      "wait_status": 15,
+      "workload": "dwt2d"
+    },
+    {
+      "RAM_floor_bytes": 68719476736,
+      "actual_start": true,
+      "attempt_id": "E028_f9b6ca83",
+      "controller_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2187944,
+        "start_ticks": 926668487
+      },
+      "exit_code": -15,
+      "exit_collected_by": "direct-parent os.wait4; child reaped before durable receipt",
+      "guard_available_memory_bytes": 68691316736,
+      "independent_acceptance": "NOT_ACCEPTED",
+      "maximum_own_memory_bytes": 8589934592,
+      "native_exit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E028_f9b6ca83/NATIVE_EXIT.json",
+        "sha256": "20d4a42d28e20f984e76dfec8f15fe500f7e77a0db2c0c70f7632f1b4a8c4516"
+      },
+      "native_maxrss_bytes": 645922816,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2188553,
+        "start_ticks": 926671408
+      },
+      "other_guard_resources": {
+        "available_memory_bytes": 68691316736,
+        "disk_free_bytes": 31466246144,
+        "share_disk_free_bytes": 44212891648
+      },
+      "profile": "W_ONLY",
+      "raw_cycles_not_terminal_result": true,
+      "raw_log_sha256": "1fad80ca89ca7f1617cae0536e15a284c960f7f0912f3888244695611b45609d",
+      "receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E028_f9b6ca83/run_status.json",
+        "sha256": "6dbf0250d65e0ca24d28cbd1ad0bf60e6a76ff048d3180b715be4d4e6d3604e0"
+      },
+      "resource_limit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E028_f9b6ca83/RESOURCE_LIMIT.json",
+        "sha256": "ff6ed8703fc17bcb835c39b31fdec15ed79f015f46448b04f3faede15a853ff1"
+      },
+      "retry_authorized": false,
+      "shortfall_below_floor_bytes": 28160000,
+      "state": "RESOURCE_LIMIT",
+      "wait_status": 15,
+      "workload": "dwt2d"
+    }
+  ],
+  "schema": "E2_DWT_RESOURCE_LIMIT_INDEPENDENT_TERMINAL_AUDIT_V1"
+}
