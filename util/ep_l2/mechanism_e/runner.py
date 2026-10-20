@@ -22,6 +22,7 @@ from validate import validate_summary
 from acceptance import load_current_authority,reject_withdrawn,current_manifest
 import policy_v2
 import disk_policy
+import durable_exit
 
 
 def inspect(spec,coord,launch_check=True):
@@ -140,12 +141,16 @@ def execute(spec,coord):
         # Every actual launch remains in this single controller process. The
         # journal and real process identity are written while holding original lock.
         with (directory/'raw.log').open('xb') as log:
-            process=coord.start_application(attempt['attempt_id'],command,directory,environment,log,subprocess.Popen)
+            process=coord.start_application(attempt['attempt_id'],command,directory,environment,log,
+                durable_exit.popen_factory(spec,attempt,audit))
             require(process is not None,'OS refused simulator spawn; failed attempt retained, not charged')
             status='RUNNING';peak=0
             result['execution_stage']='NATIVE_EXECUTION'
             result['process']=process_identity(process.pid)
             while process.poll() is None:
+                if durable_exit.STOP.is_set():
+                    status,detail='INCOMPLETE','controller termination requested; owned native stop with durable exit receipt'
+                    legacy.terminate_owned(process);break
                 peak=max(peak,legacy.process_tree_rss(process.pid));resources=local_resources();usage=output_usage()
                 disk_stop=disk_policy.stop_detail(resources,attempt)
                 if time.monotonic()-started>spec['timeout_seconds'] or time.time()>=INTAKE_DEADLINE:
@@ -166,7 +171,13 @@ def execute(spec,coord):
                     write_json(directory/'RESOURCE_LIMIT.json',result['resource_limit']);break
                 time.sleep(attempt.get('monitor_interval_seconds',2))
         result.update(exit_code=process.returncode,peak_process_tree_rss_bytes=peak)
-        if status not in ('TIMEOUT','RESOURCE_LIMIT'):
+        result['native_exit_evidence']=process.exit_evidence()
+        result['native_exit_receipt_sha256']=digest(directory/'NATIVE_EXIT.json')
+        native_stop=result['native_exit_evidence'].get('stop_reason')
+        if status=='RUNNING' and native_stop:
+            status=native_stop['kind'] if native_stop['kind'] in ('TIMEOUT','RESOURCE_LIMIT') else 'INCOMPLETE'
+            detail=native_stop['reason']
+        if status not in ('TIMEOUT','RESOURCE_LIMIT','INCOMPLETE'):
             require(process.returncode==0,'nonzero actual simulator exit')
             result['execution_stage']='TERMINAL_VALIDATION'
             native=runtime_metrics(directory/'raw.log',audit['effective_options'])
@@ -182,8 +193,11 @@ def execute(spec,coord):
             result.update(summary=summary,mechanism_metrics=summary.get('mechanism_metrics',{}),complete_input_verified=True,independent_acceptance='PASS')
             status,detail='COMPLETE_VALID','E accepted exact full input, qualified version and hardware closure'
     except BaseException as error:
-        if process is not None:legacy.terminate_owned(process)
-        if status not in ('RESOURCE_LIMIT','TIMEOUT'):status='FAILED'
+        if process is not None:
+            try:legacy.terminate_owned(process)
+            except Exception as cleanup:result['cleanup_error']=str(cleanup)
+        if status not in ('RESOURCE_LIMIT','TIMEOUT'):
+            status='INCOMPLETE' if isinstance(error,durable_exit.ExitEvidenceMissing) else 'FAILED'
         detail=f'{type(error).__name__}: {error}'
     finally:
         result.update(status=status,detail=detail,wall_seconds=time.monotonic()-started)

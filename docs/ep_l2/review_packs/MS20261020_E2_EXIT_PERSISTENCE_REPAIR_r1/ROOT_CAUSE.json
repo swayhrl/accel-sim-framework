@@ -1,0 +1,90 @@
+{
+  "schema": "E2_FWT_MISSING_EXIT_ROOT_CAUSE_V1",
+  "at_unix": 1792481074.5835085,
+  "status": "EXECUTION_ENGINEERING_CAUSE_CONFIRMED_TERMINATION_INITIATOR_UNRESOLVED",
+  "observed_E_HEAD": "7ca11b7b698fa7c7eeaf602101a31153c13125bd",
+  "original_controller": {
+    "pid": 1665599,
+    "start_ticks": 922604096,
+    "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+  },
+  "original_tool_session": 66845,
+  "original_tool_session_exit": 143,
+  "signal_interpretation": "143 is consistent with SIGTERM convention; no durable controller signal receipt or signal-sender audit exists. Exact termination initiator/time is not recoverable; do not assert idle eviction, user kill, OOM or resource stop.",
+  "latest_original_live_identity_observation": "2026-10-20T14:11:27+08:00",
+  "first_dead_session_observation": "2026-10-20T14:26:25+08:00",
+  "confirmed_defects": [
+    "Original native child exit status existed only in supervisor Popen/wait state; no independent durable native exit receipt before supervisor death.",
+    "Native start_new_session=True let native children outlive the original supervisor; recovery observed exact native PID/start/boot with PPID1.",
+    "Recovery process was not their parent and could not waitpid them. Polling /proc zombie exit status was transient, not a reliable exit collection protocol.",
+    "Earlier local fork/waitpid comparison validated field52 decoding only for owned children, not retention or collection of reparented child exit status. The previous validation did not cover the actual failure mode."
+  ],
+  "classification": {
+    "supervision_lifecycle": "CONFIRMED",
+    "external_termination_initiator": "UNKNOWN",
+    "resource_guard_stop": "NO_RECORDED_FWT_RESOURCE_LIMIT_OR_TIMEOUT_EVENT; current/last heartbeat guards above floors, cannot reconstruct unobserved history",
+    "native_simulator_error": "UNDETERMINED_WITHOUT_NATIVE_WAIT_STATUS; no actual native error verdict or PASS",
+    "oom": "Cgroup cumulative oom_kill17 without timestamps or PID mapping is not evidence for these processes"
+  },
+  "FWT_evidence": [
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_INDEPENDENT_TERMINAL_AUDIT.json",
+      "sha256": "06d6c8415a28f0ddec851518dbaa0a054e5d7423ef9566f5cf34f80f8db38848"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_SUPERVISOR_RECOVERY.json",
+      "sha256": "13d47d4d1402bc0a68ff4267243df9559c725bc3eaeefd036a79fda52eff395e"
+    }
+  ],
+  "endpoints": [
+    {
+      "attempt_id": "E011_618407f0",
+      "state": "INCOMPLETE",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1665796,
+        "start_ticks": 922604427
+      },
+      "receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E011_618407f0/run_status.json",
+        "sha256": "0f77f56a1bb402e0003014cc37e4ced034e7e8fc81c2fb2619bd71d6e80507e7"
+      },
+      "raw": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E011_618407f0/raw.log",
+        "sha256": "fbaab34aa303369eb53aca6c19bde3553bfdbe6f2f3cd9987537da30a5f17347"
+      },
+      "native_exit_code": null,
+      "normal_exit_log_and_full_counters": "diagnostic only; do not infer exit0 or accept performance"
+    },
+    {
+      "attempt_id": "E012_63be0bb4",
+      "state": "INCOMPLETE",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1665810,
+        "start_ticks": 922604500
+      },
+      "receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E012_63be0bb4/run_status.json",
+        "sha256": "18a929db3a4461baf50ef5cdc6c0dc7c01fec8b9e9cbc5ce28b181519e1755aa"
+      },
+      "raw": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E012_63be0bb4/raw.log",
+        "sha256": "04e74c2ac401f26152b1a8e0e8560bc59d59de50c022665782ba1bbece01df6e"
+      },
+      "native_exit_code": null,
+      "normal_exit_log_and_full_counters": "diagnostic only; do not infer exit0 or accept performance"
+    }
+  ],
+  "disposition": "Both original endpoints remain INCOMPLETE, no accepted FWT pair, no replay. Existing12 charged starts, original40/T0/contingency8 consumed unchanged. Other never-started registered main inputs may proceed after execution-control repair passes.",
+  "repair_contract": {
+    "single_controller": true,
+    "central_registry_and_lock_unchanged": true,
+    "no_detached_controller": true,
+    "direct_native_parent_wait4": true,
+    "atomic_fsync_exit_before_acceptance": true,
+    "parent_death_guarded_stop": true,
+    "missing_receipt_never_success": true,
+    "main61_and_production_protocol_unchanged": true
+  }
+}

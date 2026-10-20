@@ -559,9 +559,13 @@ class Coordinator:
             identity=process_identity(process.pid)
             attempt.update(state='RUNNING',actual_start=True,started_unix=time.time(),process=identity)
             row.update(status='RUNNING',process=identity,started_unix=attempt['started_unix'])
+            if hasattr(process,'guardian_identity'):
+                attempt['exit_collector_process']=process.guardian_identity
+                row['exit_collector_process']=process.guardian_identity
             counts(item)
             write_json(self.registry.root/'RUN_REGISTRY.json',data)
             write_json(self.handoff/'RUN_LEDGER.json',item)
+            if hasattr(process,'release'):process.release()
             return process
 
     def finish_application(self, attempt_id, status, receipt_path):

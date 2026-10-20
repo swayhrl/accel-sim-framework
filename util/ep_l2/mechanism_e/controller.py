@@ -13,6 +13,7 @@ import time
 
 from coordinator import Coordinator,CAMPAIGN,AUTHORITY,START_DEADLINE,require,digest,run_key,write_json,tooling_binding
 from runner import execute,accept_pair
+import durable_exit
 
 
 def roll_pairs(coord,requests):
@@ -27,7 +28,7 @@ def roll_pairs(coord,requests):
 
 def step(coord,queue_path):
     tooling_binding();queue_path=Path(queue_path)
-    with coord.unique_controller():
+    with coord.unique_controller(),durable_exit.controller_signals():
         report={'campaign_id':CAMPAIGN,'authority_commit':AUTHORITY,'at_unix':time.time(),
                 'applications_started_by_this_step':0,'outcomes':[],'pairs':[],'held_run_keys':[]}
         if not queue_path.exists():
@@ -53,6 +54,7 @@ def step(coord,queue_path):
         with ThreadPoolExecutor(max_workers=target) as pool:
             running={}
             while pending or running:
+                if durable_exit.STOP.is_set():blocked=True;pending.clear()
                 while pending and len(running)<target and not blocked and time.time()<START_DEADLINE:
                     spec=pending.pop(0)
                     if 'qualification:'+spec['qualification_id'] in coord.snapshot().get('scientific_holds',{}):
