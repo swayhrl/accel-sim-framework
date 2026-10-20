@@ -1,5 +1,10 @@
 #include "accel-sim.h"
 #include "accelsim_version.h"
+#include "ag7_policyb_progress.h"
+
+namespace {
+dtc_ag7::ProgressProducer ag7_progress;
+}
 
 accel_sim_framework::accel_sim_framework(std::string config_file,
                                           std::string trace_file) {
@@ -14,12 +19,16 @@ accel_sim_framework::accel_sim_framework(std::string config_file,
   gpgpu_sim *m_gpgpu_sim =
       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
   m_gpgpu_sim->init();
+  if (ag7_progress.enabled()) ag7_progress.observe("INIT",
+      m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
 
   tracer = trace_parser(tconfig.get_traces_filename());
 
   tconfig.parse_config();
 
   init();
+  if (ag7_progress.enabled()) ag7_progress.observe("BOUNDARY",
+      m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
 }
 
 accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
@@ -29,12 +38,16 @@ accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
   m_gpgpu_sim =
       gpgpu_trace_sim_init_perf_model(argc, argv, m_gpgpu_context, &tconfig);
   m_gpgpu_sim->init();
+  if (ag7_progress.enabled()) ag7_progress.observe("INIT",
+      m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
 
   tracer = trace_parser(tconfig.get_traces_filename());
 
   tconfig.parse_config();
 
   init();
+  if (ag7_progress.enabled()) ag7_progress.observe("BOUNDARY",
+      m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
 }
 
 void accel_sim_framework::simulation_loop() {
@@ -45,8 +58,13 @@ void accel_sim_framework::simulation_loop() {
   // while loop till the end of the end kernel execution
   // prints stats
 
+  bool ag7_limit_seen = false;  // Observer-only terminal classification.
   while (commandlist_index < commandlist.size() || !kernels_info.empty()) {
+    if (ag7_progress.enabled()) ag7_progress.observe("PARSE",
+        m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
     parse_commandlist();
+    if (ag7_progress.enabled()) ag7_progress.observe("BOUNDARY",
+        m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
 
     // Launch all kernels within window that are on a stream that isn't already
     // running
@@ -64,6 +82,9 @@ void accel_sim_framework::simulation_loop() {
         m_gpgpu_sim->launch(k);
         k->set_launched();
         busy_streams.push_back(k->get_cuda_stream_id());
+        if (ag7_progress.enabled()) ag7_progress.observe("BOUNDARY",
+            m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn,
+            true, true, "NONE", static_cast<int64_t>(k->get_cuda_stream_id()));
       }
     }
 
@@ -72,6 +93,8 @@ void accel_sim_framework::simulation_loop() {
     if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||
         !m_gpgpu_sim->active()) {
       cleanup(finished_kernel_uid);
+      if (ag7_progress.enabled()) ag7_progress.observe("BOUNDARY",
+          m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);
     }
 
     if (sim_cycles) {
@@ -80,12 +103,22 @@ void accel_sim_framework::simulation_loop() {
     }
 
     if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {
+      ag7_limit_seen = true;
       printf(
           "GPGPU-Sim: ** break due to reaching the maximum cycles (or "
           "instructions) **\n");
       fflush(stdout);
       break;
     }
+  }
+  if (ag7_progress.enabled()) {
+    const bool complete_candidate = !ag7_limit_seen &&
+        commandlist_index == commandlist.size() && kernels_info.empty() &&
+        !m_gpgpu_sim->cycle_insn_cta_max_hit();
+    ag7_progress.observe("BOUNDARY",
+        m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true,
+        ag7_limit_seen ? "LIMIT" :
+            (complete_candidate ? "NATURAL" : "ERROR"));
   }
 }
 
@@ -156,6 +189,12 @@ unsigned accel_sim_framework::simulate() {
     if (m_gpgpu_sim->active()) {
       m_gpgpu_sim->cycle();
       sim_cycles = true;
+      // Same-thread post-cycle observation; no queue pops, model writes or
+      // unsynchronized timer reads. Long blocking phases fail freshness upstream.
+      if (ag7_progress.enabled()) ag7_progress.observe("SIMULATE",
+          m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, false,
+          "NONE", busy_streams.size() == 1 ?
+              static_cast<int64_t>(busy_streams.front()) : -1);
       m_gpgpu_sim->deadlock_check();
     } else {
       if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {
