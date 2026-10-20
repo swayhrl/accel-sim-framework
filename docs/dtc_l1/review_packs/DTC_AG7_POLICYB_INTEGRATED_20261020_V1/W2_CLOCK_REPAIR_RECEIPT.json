@@ -1,0 +1,110 @@
+{
+  "status": "PASS_CLOCK_REPAIR_NINE_PROTOCOL_METHODS",
+  "checks": {
+    "0:original174": true,
+    "0:host_memory_headroom": true,
+    "0:cgroup_memory_headroom": true,
+    "0:disk": true,
+    "0:authority": true,
+    "0:host_memory": true,
+    "0:host_io": true,
+    "0:cgroup_memory": true,
+    "0:cgroup_io": true,
+    "0:self_instance": true,
+    "0:loaded_images": true,
+    "0:output_device": true,
+    "0:projected_writes": true,
+    "1:original174": true,
+    "1:host_memory_headroom": true,
+    "1:cgroup_memory_headroom": true,
+    "1:disk": true,
+    "1:authority": true,
+    "1:host_memory": true,
+    "1:host_io": true,
+    "1:cgroup_memory": true,
+    "1:cgroup_io": true,
+    "1:self_instance": true,
+    "1:loaded_images": true,
+    "1:output_device": true,
+    "1:projected_writes": true,
+    "gap_ge10s": true,
+    "host_oom_same": true,
+    "cg_oom_same": true
+  },
+  "tests_run": 9,
+  "failures": 0,
+  "errors": 0,
+  "transcript": "test_01_explicit_opt_in_and_bound_protocol (test_integration.IntegrationTests) ... ok\ntest_02_actual_unix_selfsender_credentials_and_progress (test_integration.IntegrationTests) ... ok\ntest_03_declared_synthetic_parent_to_root_binding (test_integration.IntegrationTests) ... ok\ntest_04_invalid_stale_reverse_lost_and_scope_fail_closed (test_integration.IntegrationTests) ... ok\ntest_05_cgroup_warning_progress_and_bounded_episode (test_integration.IntegrationTests) ... ok\ntest_06_original_host_three_qualified_samples_retained (test_integration.IntegrationTests) ... ok\ntest_07_no_retirement_nonrenewing_phase_and_freshness (test_integration.IntegrationTests) ... ok\ntest_08_hard_safety_memory_swap_disk_oom_authority_identity (test_integration.IntegrationTests) ... ok\ntest_09_terminal_candidate_never_overrides_late_conflict (test_integration.IntegrationTests) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.028s\n\nOK\n",
+  "elapsed_ns": 48349140,
+  "mapped_images_stable": true,
+  "strict_host_io_exception": false,
+  "simulator_starts": 0,
+  "fixtures": 0,
+  "provenance": "DECLARED_SYNTHETIC_TIMELINES_REAL_SELF_SOCKET_CREDENTIALS",
+  "reason": "Consumer monotonic clock sampled after receive; producer timestamp remains progress evidence",
+  "actual_result_sha256": "979b8361e4219e317e6644d727612f1125d3e128d242180e2c8e0e2a92f51f2a",
+  "source_sha256": {
+    "prepared_ag7/telemetry_receiver.py": "8c222aff00941a23958d2a076d6b792694c1bc746461e67bb132afa88224c6d5",
+    "prepared_ag7/test_integration.py": "28e572fbfc012b50dffbdd0b0ef95c9c2afa84c68c4e8a4bf8d67ee18f7a0388",
+    "w2_clock_repair_entry.py": "6f2f64897473e43f6f7e8549066cbedee4593abc15dcb814c869d6fea3e560ce"
+  },
+  "paired_samples": [
+    {
+      "utc": "2026-10-20T03:01:28.632988+00:00",
+      "monotonic_ns": 9217259975858188,
+      "pressure": {
+        "host": {
+          "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666423167\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294260471\n",
+          "io": "some avg10=2.68 avg60=2.06 avg300=0.93 total=175533008638\nfull avg10=2.10 avg60=1.38 avg300=0.54 total=155108772119\n"
+        },
+        "cgroup": {
+          "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634731122\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599395359\n",
+          "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539173984\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236870196\n"
+        }
+      },
+      "host_available": 246951198720,
+      "cgroup_headroom": 221587329024,
+      "disk_free": 15464927232,
+      "output_filesystem_device": 156,
+      "host_oom_kill": 366,
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 7298,
+        "oom": 0,
+        "oom_kill": 17,
+        "oom_group_kill": 0
+      },
+      "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+    },
+    {
+      "utc": "2026-10-20T03:01:38.886936+00:00",
+      "monotonic_ns": 9217270229806779,
+      "pressure": {
+        "host": {
+          "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666426678\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294263974\n",
+          "io": "some avg10=1.61 avg60=1.89 avg300=0.93 total=175533143140\nfull avg10=1.40 avg60=1.32 avg300=0.55 total=155108904501\n"
+        },
+        "cgroup": {
+          "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634731122\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599395359\n",
+          "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539173984\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236870196\n"
+        }
+      },
+      "host_available": 252418183168,
+      "cgroup_headroom": 221591879680,
+      "disk_free": 15448940544,
+      "output_filesystem_device": 156,
+      "host_oom_kill": 366,
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 7298,
+        "oom": 0,
+        "oom_kill": 17,
+        "oom_group_kill": 0
+      },
+      "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+    }
+  ],
+  "engineering_history": "Initial repair entry syntax error occurred before entry execution/receipt creation; fixed, source rebound and published before this one actual admitted run."
+}

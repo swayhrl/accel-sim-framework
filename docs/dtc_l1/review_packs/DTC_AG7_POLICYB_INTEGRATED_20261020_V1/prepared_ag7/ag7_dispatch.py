@@ -86,6 +86,8 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
     map_bytes = 0
     packet_count = 0
     root_binding = None
+    last_ownership = None
+    natural_exit_defer_ns = None
     tx_open = True
     record_bytes = 0
     try:
@@ -102,6 +104,8 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
         require(run.stat().st_dev == baseline['output_filesystem_device'], 'OUTPUT_FILESYSTEM_CHANGED')
         write_new(run / 'FINAL_PRE_FORK.json', baseline)
         start = dict(point=point['point'], attempt_uuid=point['attempt_uuid'],
+            order=point['order'], source_core=point['core_commit'], retries=0,
+            config_copies=point['config_copies'], publication_head=point['publication_head'],
             argv=point['validated_argv'], environment=env, timeout_seconds=7200,
             channel_kind='AF_UNIX_SOCK_DGRAM_NONBLOCKING_SCM_CREDENTIALS',
             conservative_start_consumed=True, automatic_retry=False,
@@ -112,6 +116,7 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
         require(isinstance(consumed, dict) and consumed.get('consumed') is True and
                 consumed.get('attempt_uuid') == point['attempt_uuid'], 'EXACT_AG7_CONSUMPTION_RECEIPT_REQUIRED')
         write_new(run / 'RUN_START.json', start)
+        write_new(run / 'INPUT_RUNTIME_IDENTITY.json', point['identity_receipt'])
 
         def stop(reason):
             stopped.append(reason)
@@ -155,7 +160,7 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
 
         def drain(now_ns):
             nonlocal packet_count, record_bytes
-            state = receiver.drain(now_ns)
+            state = receiver.drain(time.monotonic_ns)
             for row in state['records']:
                 encoded = json.dumps(row, sort_keys=True) + '\n'
                 record_bytes += len(encoded.encode())
@@ -167,9 +172,29 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
                 terminal.observe(producer_end=state['terminal'])
             return state
 
-        def observer(pid, full_hint, ownership):
-            nonlocal receiver, next_sample_ns, last_fault, root_binding, tx_open
+        def defer_proven_zombie(pid, ownership):
+            nonlocal natural_exit_defer_ns
+            if receiver is None or receiver.terminal != 'NATURAL' or pid not in ownership.confirmed:
+                return False
             try:
+                fields = Path('/proc/' + str(pid) + '/stat').read_text().rsplit(')', 1)[1].split()
+            except (FileNotFoundError, ProcessLookupError):
+                return False
+            if (fields[0] != 'Z' or int(fields[19]) != root_binding['start_ticks'] or
+                    ownership.confirmed[pid]['start_ticks'] != root_binding['start_ticks']):
+                return False
+            if natural_exit_defer_ns is None:
+                natural_exit_defer_ns = time.monotonic_ns()
+            require(time.monotonic_ns() - natural_exit_defer_ns <= 2 * 10**9,
+                    'NATURAL_ROOT_REAP_HANDOFF_EXCEEDED_2S')
+            return True
+
+        def observer(pid, full_hint, ownership):
+            nonlocal receiver, next_sample_ns, last_fault, root_binding, tx_open, last_ownership, natural_exit_defer_ns
+            try:
+                last_ownership = ownership
+                if callable(hooks.get('abort_requested')) and hooks['abort_requested']():
+                    return stop('EXPLICIT_CANONICAL_CONTROLLER_ABORT')
                 now_ns = time.monotonic_ns()
                 if receiver is None:
                     require(pid in ownership.confirmed, 'ACTUAL_ROOT_NOT_EVENT_CONFIRMED')
@@ -201,6 +226,16 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
                 current, authority = hooks['sample'](ownership)
                 require(authority['status'] in (AUTH_PASS, AUTH_PENDING), 'RUNTIME_GLOBAL_AUTHORITY_NOT_CLOSED')
                 own = deps['proc_reader'](pid)
+                # NATURAL is still only a producer candidate. A proven zombie
+                # can exit during all-project sampling; leave wait/reap to the
+                # original guard instead of inventing a new live /proc image.
+                # This one finite handoff never renews telemetry/retirement or
+                # resource clocks, and cannot hide a lingering helper forever.
+                if (receiver.terminal == 'NATURAL' and own is not None and
+                        own['state'] == 'Z' and own['start_ticks'] == root_binding['start_ticks']):
+                    if defer_proven_zombie(pid, ownership):
+                        return None
+                natural_exit_defer_ns = None
                 fault = own['majflt']
                 current_checks = hooks['guard_checks'](point, ownership, pid, current)
                 current_impact = hooks['io_impact'](point, ownership, pid, current)
@@ -215,6 +250,12 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
                     return stop(';'.join(decision['stop_reasons']))
                 return None
             except Exception as error:
+                if isinstance(error, (FileNotFoundError, ProcessLookupError)):
+                    try:
+                        if defer_proven_zombie(pid, ownership):
+                            return None
+                    except Exception:
+                        pass
                 return stop('POLICY_B_OBSERVER_FAIL_CLOSED:' + repr(error))
 
         engine = deps['run_guarded'](point['validated_argv'], env, mapping_manifests,
@@ -248,6 +289,10 @@ def run_one(point, *, baseline, mapping_manifests, deps, hooks):
             requires_controller_final_resource_authority_strict_join=True,
             consumed_start=consumed, automatic_retry=False)
         write_new(run / 'DISPATCH_JOIN_PENDING.json', result)
+        if callable(hooks.get('finalize')):
+            result['finalized'] = hooks['finalize'](point=point, run=run, engine=engine,
+                runtime=runtime, receiver=receiver, terminal=terminal,
+                last_fault=last_fault, ownership=last_ownership, dispatch=result)
         return result
     except BaseException as error:
         if run.exists() and not (run / 'DISPATCH_EXCEPTION.json').exists():
