@@ -1,0 +1,23 @@
+--- a/tests/ep_l2/test_potential_a1.cc
++++ b/tests/ep_l2/test_potential_a1.cc
+@@ -73,6 +73,20 @@
+       mode,c,f.cache->ft_pending_phase_for_test(),held.payload_id,held.generation);
+   if(rollback) {
+     assert(mode==2 && std::stoul(argv[6])==(no_quota_rollback?0u:16u));
++    if(no_quota_rollback) {
++      // Complete the RESPONSE read injected above through the public arbiter.
++      // Its older selected grant must not be left blocking the real frontend
++      // write. Advancing the clock alone does not retire that owned grant.
++      const auto physical=f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle;
++      const auto consumed=f.cache->ep_l2_payload_for_test().request(held,false,
++          physical,(unsigned long long)-1,ep_l2_payload_store::RESIDENT_HIT_READ,
++          ep_l2_payload_store::RESPONSE,request_uid);
++      assert(consumed==ep_l2_payload_store::GRANTED);
++      ++f.gpu->gpu_sim_cycle; // next physical P1 cycle for the queued write
++      assert(f.cache->ft_reservation_active() &&
++          f.cache->ft_pending_index_for_test()==2 &&
++          f.cache->ep_l2_wad_contains(victim));
++    }
+     auto &cc=const_cast<memory_config *>(f.gpu->getMemoryConfig())->m_L2_config;
+     unsigned old=credit_fault::capacity(cc);credit_fault::capacity(cc)=0;
+     // Skip the subpartition's predictive pre-admission for this injected loss:
