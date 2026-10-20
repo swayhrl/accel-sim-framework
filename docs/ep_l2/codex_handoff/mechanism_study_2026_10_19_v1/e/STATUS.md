@@ -1,4 +1,4 @@
-# Lane E2 — CONV_CONTROLS_BATCH_3_TERMINAL
+# Lane E2 — APPROVED_FOUR_MATRIX_ADOPTED_NO_NEW_START
 
 Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
@@ -20,4 +20,4 @@ Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consu
 
 New results4185912887B, old+new18495489271B; growth since20-start control baseline578550303B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
-Remaining original qualified controls: . DWT/CFD four-cell revision stays proposal-only until explicit user approval, distinct E qualification and live capacity checks. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+Remaining original qualified controls: . DWT/CFD four-cell revision is user-approved and independently qualified; exact matrix adoption retained with original history. Remaining approved controls: V2_dwt2d_S_COPY_FREE,V2_dwt2d_W_ONLY,V2_cfd_097k_F_MINUS_V,V2_cfd_097k_F_MINUS_R. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
