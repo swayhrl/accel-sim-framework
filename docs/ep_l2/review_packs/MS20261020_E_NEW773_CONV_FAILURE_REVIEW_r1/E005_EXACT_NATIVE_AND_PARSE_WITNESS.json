@@ -1,0 +1,82 @@
+{
+  "at_unix": 1792462251.3648899,
+  "disposition": "Native/structuralcompletion observed, no malformed terminalfield. CLI was intentionally blocked onqualification_id before parse(). No parsercodechange; currentqualificationheld; originalFAILED/NOT_ACCEPTED remains. AnyfixedproducerrequiresnewsamebinarySendpoint.",
+  "parser_log": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E005_c0f70360/parser.log",
+    "sha256": "f4acbf928c1c1bb539995926f2d221ae9d7d8cf918af85c538152ba03c76948c",
+    "text": "Traceback (most recent call last):\n  File \"/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/parse_main_terminal.py\", line 284, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/parse_main_terminal.py\", line 279, in main\n    item=coord.snapshot();coord.require_no_hold(item,spec['qualification_id'])\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py\", line 459, in require_no_hold\n    require('qualification:'+qualification_id not in item.get('scientific_holds',{}),\n  File \"/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py\", line 48, in require\n    if not condition: raise ValueError(message)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: scientific review hold on this exact qualification\n"
+  },
+  "raw_sha256": "7a2efeddf9a2ef9085ae76c7dff6e9ddf31f58b969ef0244b5fa193fdb7b5582",
+  "raw_witness": {
+    "INVARIANT_0": {
+      "line": 57602,
+      "text": "EPL2B0V1|INVARIANT|slice=0|kernel_uid=18446744073709551615|line_mshr_used=0|line_mshr_capacity=128|descriptor_used=0|descriptor_free=512|descriptor_capacity=512|wad_live=0|wad_capacity=128|resident_live=1024|resident_capacity=1024|resident_pending=0|bypass_live=0|bypass_capacity=128|bank_pending=0|resident_tag_payload_consistent=1|payload_double_owner=0|terminal_clean=1"
+    },
+    "INVARIANT_63": {
+      "line": 66259,
+      "text": "EPL2B0V1|INVARIANT|slice=63|kernel_uid=18446744073709551615|line_mshr_used=0|line_mshr_capacity=128|descriptor_used=0|descriptor_free=512|descriptor_capacity=512|wad_live=0|wad_capacity=128|resident_live=1024|resident_capacity=1024|resident_pending=0|bypass_live=0|bypass_capacity=128|bank_pending=0|resident_tag_payload_consistent=1|payload_double_owner=0|terminal_clean=1"
+    },
+    "TERMINAL_0": {
+      "line": 57601,
+      "text": "EPL2FTV1|TERMINAL|slice=0|unique_requesters=81600|responses=81600|absorbed_writebacks=0|requester_live=0|requester_exact_once=1|hardware_drained=1|pending_lower_reads=0|pending_returns=0|pending_responses=0"
+    },
+    "TERMINAL_63": {
+      "line": 66258,
+      "text": "EPL2FTV1|TERMINAL|slice=63|unique_requesters=81472|responses=81472|absorbed_writebacks=0|requester_live=0|requester_exact_once=1|hardware_drained=1|pending_lower_reads=0|pending_returns=0|pending_responses=0"
+    },
+    "cycle": {
+      "line": 56954,
+      "text": "gpu_tot_sim_cycle = 292932"
+    },
+    "insn": {
+      "line": 56955,
+      "text": "gpu_tot_sim_insn = 714547200"
+    },
+    "normalexit": {
+      "line": 66506,
+      "text": "GPGPU-Sim: *** exit detected ***"
+    }
+  },
+  "run_status_sha256": "4cc8572f0cf106ce54041876c72b513e29bab49bde17b3ad0993632769ae28aa",
+  "schema": "E005_NATIVE_TERMINAL_AND_GATE_PATH_EXACT_WITNESS_V1",
+  "scientific_acceptance": false,
+  "source_identity": {
+    "binary_sha256": "773271ac70f009dddcd4c522f66dcd37967e4f57ce1e5082d3fc5aea61f2f9f5",
+    "core_source_commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "source_path_witness": {
+    "docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/parse_main_terminal.py": {
+      "lines": [
+        {
+          "line": 279,
+          "text": "    item=coord.snapshot();coord.require_no_hold(item,spec['qualification_id'])"
+        }
+      ],
+      "sha256": "743f10fb4550527b1f7ab49900cf3b1a1f201831a3158216d8b6de5867977344"
+    },
+    "util/ep_l2/mechanism_e/coordinator.py": {
+      "lines": [
+        {
+          "line": 458,
+          "text": "    def require_no_hold(item,qualification_id):"
+        }
+      ],
+      "sha256": "bdd20f4572413a85ec28b3e81994ba97c3493e25e1828642e18f6f452de01e3b"
+    },
+    "util/ep_l2/mechanism_e/runner.py": {
+      "lines": [
+        {
+          "line": 30,
+          "text": "    coord.require_no_hold(item,spec['qualification_id'])"
+        },
+        {
+          "line": 176,
+          "text": "            require(parsed.returncode==0,'independent terminal parser failed')"
+        }
+      ],
+      "sha256": "5728b14a5f03fca17946c291e0a51a74c99cc6754075e52e0bf38a3ced75b06e"
+    }
+  }
+}
