@@ -127,6 +127,29 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(second['latest_semantic']['completed'], 40)
         self.assertFalse(second['scientific_acceptance'])
         self.assertIsNone(second['terminal'])
+        # DECLARED_SYNTHETIC race timeline: a producer packet arrives after an
+        # earlier resource snapshot. Validation must sample the live callable
+        # after recvmsg, retaining the producer timestamp as semantic evidence.
+        third = record(3, 20, 80, 'SIMULATE', 2)
+        tx.send(json.dumps(third).encode())
+        underlying = rx.channel
+        received = []
+        clock_calls = []
+        class MarkReceive:
+            def recvmsg(self, *args):
+                result = underlying.recvmsg(*args)
+                received.append(True)
+                return result
+        rx.channel = MarkReceive()
+        def live_clock():
+            self.assertTrue(received, 'Consumer clock must be sampled after receive')
+            clock_calls.append(True)
+            return START + 21 * NS
+        result = rx.drain(live_clock)
+        self.assertGreaterEqual(len(clock_calls), 2)
+        self.assertEqual(result['latest']['mono_ns'], third['mono_ns'])
+        self.assertNotEqual(result['latest']['mono_ns'], live_clock())
+        self.assertEqual(result['latest_semantic']['completed'], 80)
 
     def test_03_declared_synthetic_parent_to_root_binding(self):
         # A different numeric PID is a synthetic admission-parent mismatch.

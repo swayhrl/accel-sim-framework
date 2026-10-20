@@ -55,6 +55,7 @@ class TelemetryReceiver:
         self.last = None
         self.last_semantic = None
         self.last_sequence = 0
+        self.last_consumer_ns = started_ns
         self.failed = None
         self.terminal = None
 
@@ -127,11 +128,24 @@ class TelemetryReceiver:
         return dict(record)
 
     def drain(self, now_ns):
-        """Consume bounded queued records; no receive timestamp becomes progress."""
+        """Consume bounded records; pass a live monotonic callable in production.
+
+        Integer timestamps support declared synthetic tests. A live callable is
+        sampled after each recvmsg and once after draining, so a packet emitted
+        during receive cannot be mistaken for a future producer observation.
+        Consumer time is used only for validation, never stored as progress.
+        """
         if self.failed:
             raise TelemetryError(self.failed)
-        if not integer(now_ns, self.started_ns):
-            self._fail('INVALID_CONSUMER_CLOCK')
+        def consumer_now():
+            try:
+                current = now_ns() if callable(now_ns) else now_ns
+            except Exception:
+                self._fail('CONSUMER_CLOCK_ERROR')
+            if not integer(current, self.last_consumer_ns):
+                self._fail('INVALID_OR_REVERSED_CONSUMER_CLOCK')
+            self.last_consumer_ns = current
+            return current
         records = []
         for _ in range(self.MAX_RECORDS + 1):
             try:
@@ -142,11 +156,11 @@ class TelemetryReceiver:
                 break
             except OSError:
                 self._fail('TELEMETRY_CHANNEL_ERROR')
-            records.append(self._accept(data, ancillary, flags, now_ns))
+            records.append(self._accept(data, ancillary, flags, consumer_now()))
         else:
             self._fail('TELEMETRY_DRAIN_BOUND_EXCEEDED')
         last_time = self.started_ns if self.last is None else self.last['mono_ns']
-        if now_ns - last_time > self.MAX_FRESH_NS:
+        if consumer_now() - last_time > self.MAX_FRESH_NS:
             self._fail('MISSING_OR_STALE_PRODUCER')
         return {'records': records, 'latest': None if self.last is None else dict(self.last),
                 'latest_semantic': None if self.last_semantic is None else dict(self.last_semantic),
