@@ -16,6 +16,7 @@ import unittest
 
 PACK = Path(__file__).resolve().parent
 EVIDENCE = Path('/workspace/dtc-ag6-bb2-policy-174-v1/evidence')
+RECEIPTS = EVIDENCE / 'cpu_attempt2'
 GATE = EVIDENCE / 'frozen_admission'
 REGISTRATION = PACK / 'CPU_ENTRY_REGISTRATION.json'
 
@@ -25,12 +26,13 @@ def sha(path):
 
 
 def write(name, value):
-    with (EVIDENCE / name).open('x') as out:
+    with (RECEIPTS / name).open('x') as out:
         out.write(json.dumps(value, indent=2) + '\n')
 
 
 def main():
     started = time.monotonic()
+    RECEIPTS.mkdir(exist_ok=False)
     reg = json.loads(REGISTRATION.read_text())
     assert reg['role']['argvs'] == [[sys.executable, '-I', '-B', str(PACK / 'cpu_entry.py')]]
     assert reg['role']['cwd'] == os.getcwd()
@@ -101,6 +103,6 @@ if __name__ == '__main__':
     try:
         raise SystemExit(main())
     except Exception as exc:
-        write('CPU_ENTRY_EXCEPTION.json', dict(error=repr(exc), test_result_exists=(EVIDENCE/'CPU_TEST_RESULT.json').exists(),
+        write('CPU_ENTRY_EXCEPTION.json', dict(error=repr(exc), test_result_exists=(RECEIPTS/'CPU_TEST_RESULT.json').exists(),
               simulator_starts=0, action='FAIL_CLOSED_NO_AUTORETRY'))
         raise

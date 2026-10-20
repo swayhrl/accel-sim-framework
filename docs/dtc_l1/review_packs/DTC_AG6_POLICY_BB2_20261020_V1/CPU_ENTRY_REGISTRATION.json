@@ -17,7 +17,7 @@
     "source_sha256": {
       "/workspace/worktrees/accel-sim-iscas2027-dtc-ag6-bb2-policy-174-v1/docs/dtc_l1/review_packs/DTC_AG6_POLICY_BB2_20261020_V1/replay_closed.py": "6d46c6065f89e76ab9344781f6216909aef4f22d865ac0bf1b96632aafecf7e9",
       "/workspace/worktrees/accel-sim-iscas2027-dtc-ag6-bb2-policy-174-v1/docs/dtc_l1/review_packs/DTC_AG6_POLICY_BB2_20261020_V1/policy_b_offline.py": "feaf82b7caddc996303682fbccccfcc0453ea8d11aa4f4b3277588f4c9bbc504",
-      "/workspace/worktrees/accel-sim-iscas2027-dtc-ag6-bb2-policy-174-v1/docs/dtc_l1/review_packs/DTC_AG6_POLICY_BB2_20261020_V1/cpu_entry.py": "aec51174493e98163708463ab23bb7663b014a69de66458723495a6302e3f1cb",
+      "/workspace/worktrees/accel-sim-iscas2027-dtc-ag6-bb2-policy-174-v1/docs/dtc_l1/review_packs/DTC_AG6_POLICY_BB2_20261020_V1/cpu_entry.py": "5d79e225c9e2aa78cccb8829da9ca163b9f8d08affd6d690104c4d28e2ad79f7",
       "/workspace/worktrees/accel-sim-iscas2027-dtc-ag6-bb2-policy-174-v1/docs/dtc_l1/review_packs/DTC_AG6_POLICY_BB2_20261020_V1/test_policy_b_offline.py": "9073828e759f8f0c3c3e28488de7052aaab009665b1e3be9cded4d7917199687",
       "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/cpu_admission_v2.py": "24cf66c786ed7cb587d9c32a45d3b23d2432ded9ec264770dcff39cef60b91c9",
       "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/shared_authority.py": "103f5663c95dc3cfe4522a40e47043a5ff6fa8e38c16e5bb7f41c45585acfdbf",
@@ -30,7 +30,8 @@
       "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/legacy_authority_evidence/AA5_AUTHORITY_AND_FLOCK_AUDIT.json": "5635869eefec97334dcd72110bcd18657dc77d9c67a379071dfe2571ca4986e7",
       "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/legacy_authority_evidence/EXTERNAL_PROJECT_LOCK_BINDING.json": "6b67349de713ed52d5e1830e28e39a753b1a1b56c045f3766e36ac15df101c75",
       "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/legacy_authority_evidence/ADDITIONAL_EXTERNAL_PROJECT_LOCK_BINDINGS.json": "477ed3c1e6e6d12dd18caca817989ff2c9c40d9b80b8f51b7ddad0643c36b689",
-      "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/legacy_authority_evidence/SOURCE_BINDINGS.json": "1bee32c18369788eedf9354426362f2b451e7b0a7b50b2accba85bf4e9c90f5c"
+      "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/legacy_authority_evidence/SOURCE_BINDINGS.json": "1bee32c18369788eedf9354426362f2b451e7b0a7b50b2accba85bf4e9c90f5c",
+      "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/vendor/mapping_roles.py": "1409539bad1d173c4bf48463c5465f54e8aba89db736e27bae745fd7a7f07155"
     }
   },
   "admission": {
@@ -124,9 +125,17 @@
       "staged_path": "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/legacy_authority_evidence/SOURCE_BINDINGS.json",
       "sha256": "1bee32c18369788eedf9354426362f2b451e7b0a7b50b2accba85bf4e9c90f5c",
       "bytes": 1773
+    },
+    {
+      "source_commit": "d9c192544622579a93d3efad98f56f82536c2fbe",
+      "source_path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_runtime/vendor/mapping_roles.py",
+      "staged_path": "/workspace/dtc-ag6-bb2-policy-174-v1/evidence/frozen_admission/vendor/mapping_roles.py",
+      "sha256": "1409539bad1d173c4bf48463c5465f54e8aba89db736e27bae745fd7a7f07155",
+      "bytes": 10703
     }
   ],
   "production_activation": false,
   "simulator_budget": 0,
-  "new_UUID_allocation": false
+  "new_UUID_allocation": false,
+  "engineering_repair": "Attempt1 failed before OS admission or test entry: missing archived mapping_roles import dependency. Preserve root evidence; attempt2 has separate receipts. Actual test starts remain0; no resource retry."
 }
