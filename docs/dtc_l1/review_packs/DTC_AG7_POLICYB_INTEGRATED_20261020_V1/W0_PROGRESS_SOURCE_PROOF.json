@@ -1,0 +1,443 @@
+{
+  "status": "SOURCE_ONLY_NO_BUILD_TEST_OR_SIMULATOR",
+  "full_goal_read": true,
+  "unchanged_elf_existing_interface_verdict": "INSUFFICIENT_FOR_AG7_PROTOCOL",
+  "framework_only_new_elf": "SOURCE_FEASIBLE_NOT_EQUIVALENCE_QUALIFIED",
+  "sources": [
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/gpgpu-sim/shader.cc",
+      "blob": "af741064700409363d06aa447d601aa740f6c57f",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "line_ranges": [
+        [
+          2352,
+          2371
+        ],
+        [
+          5581,
+          5624
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 2352,
+          "end": 2371,
+          "text": "void shader_core_ctx::warp_inst_complete(const warp_inst_t &inst) {\n#if 0\n      printf(\"[warp_inst_complete] uid=%u core=%u warp=%u pc=%#x @ time=%llu \\n\",\n             inst.get_uid(), m_sid, inst.warp_id(), inst.pc,  m_gpu->gpu_tot_sim_cycle +  m_gpu->gpu_sim_cycle);\n#endif\n  if (inst.op_pipe == SP__OP)\n    m_stats->m_num_sp_committed[m_sid]++;\n  else if (inst.op_pipe == SFU__OP)\n    m_stats->m_num_sfu_committed[m_sid]++;\n  else if (inst.op_pipe == MEM__OP)\n    m_stats->m_num_mem_committed[m_sid]++;\n\n  if (m_config->gpgpu_clock_gated_lanes == false)\n    m_stats->m_num_sim_insn[m_sid] += m_config->warp_size;\n  else\n    m_stats->m_num_sim_insn[m_sid] += inst.active_count();\n\n  m_stats->m_num_sim_winsn[m_sid]++;\n  m_gpu->gpu_sim_insn += inst.active_count();\n  inst.completed(m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle);"
+        },
+        {
+          "start": 5581,
+          "end": 5624,
+          "text": "void shader_core_ctx::register_cta_thread_exit(unsigned cta_num,\n                                               kernel_info_t *kernel) {\n  assert(m_cta_status[cta_num] > 0);\n  m_cta_status[cta_num]--;\n  if (!m_cta_status[cta_num]) {\n    // Increment the completed CTAs\n    m_stats->ctas_completed++;\n    m_gpu->inc_completed_cta();\n    m_n_active_cta--;\n    m_barriers.deallocate_barrier(cta_num);\n    shader_CTA_count_unlog(m_sid, 1);\n\n    SHADER_DPRINTF(\n        LIVENESS,\n        \"GPGPU-Sim uArch: Finished CTA #%u (%lld,%lld), %u CTAs running\\n\",\n        cta_num, m_gpu->gpu_sim_cycle, m_gpu->gpu_tot_sim_cycle,\n        m_n_active_cta);\n\n    if (m_n_active_cta == 0) {\n      SHADER_DPRINTF(\n          LIVENESS,\n          \"GPGPU-Sim uArch: Empty (last released kernel %u \\'%s\\').\\n\",\n          kernel->get_uid(), kernel->name().c_str());\n      fflush(stdout);\n\n      // Shader can only be empty when no more cta are dispatched\n      if (kernel != m_kernel) {\n        assert(m_kernel == NULL || !m_gpu->kernel_more_cta_left(m_kernel));\n      }\n      m_kernel = NULL;\n    }\n\n    // Jin: for concurrent kernels on sm\n    release_shader_resource_1block(cta_num, *kernel);\n    kernel->dec_running();\n    if (!m_gpu->kernel_more_cta_left(kernel)) {\n      if (!kernel->running()) {\n        SHADER_DPRINTF(LIVENESS,\n                       \"GPGPU-Sim uArch: GPU detected kernel %u \\'%s\\' \"\n                       \"finished on shader %u.\\n\",\n                       kernel->get_uid(), kernel->name().c_str(), m_sid);\n\n        if (m_kernel == kernel) m_kernel = NULL;\n        m_gpu->set_kernel_done(kernel);"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "blob": "c03efe92e303c1e557319bdc0a9b0c3f8961085e",
+      "sha256": "aeccfeff3c80bd414b0f6dcd53a00e6dd13d426578a9e41d108e45f7b03ce75f",
+      "line_ranges": [
+        [
+          1024,
+          1059
+        ],
+        [
+          1222,
+          1227
+        ],
+        [
+          1506,
+          1512
+        ],
+        [
+          1553,
+          1572
+        ],
+        [
+          1820,
+          1836
+        ],
+        [
+          2562,
+          2590
+        ],
+        [
+          2611,
+          2616
+        ],
+        [
+          2874,
+          2888
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 1024,
+          "end": 1059,
+          "text": "unsigned gpgpu_sim::finished_kernel() {\n  if (m_finished_kernel.empty()) {\n    last_streamID = -1;\n    return 0;\n  }\n  unsigned result = m_finished_kernel.front();\n  m_finished_kernel.pop_front();\n  return result;\n}\n\nvoid gpgpu_sim::set_kernel_done(kernel_info_t *kernel) {\n  unsigned uid = kernel->get_uid();\n  last_uid = uid;\n  unsigned long long streamID = kernel->get_streamID();\n  last_streamID = streamID;\n  gpu_kernel_time.at(streamID).at(uid).end_cycle =\n      gpu_tot_sim_cycle + gpu_sim_cycle;\n  m_finished_kernel.push_back(uid);\n  std::vector<kernel_info_t *>::iterator k;\n  for (k = m_running_kernels.begin(); k != m_running_kernels.end(); k++) {\n    if (*k == kernel) {\n      kernel->end_cycle = gpu_sim_cycle + gpu_tot_sim_cycle;\n      *k = NULL;\n      break;\n    }\n  }\n  assert(k != m_running_kernels.end());\n}\n\nvoid gpgpu_sim::stop_all_running_kernels() {\n  std::vector<kernel_info_t *>::iterator k;\n  for (k = m_running_kernels.begin(); k != m_running_kernels.end(); ++k) {\n    if (*k != NULL) {       // If a kernel is active\n      set_kernel_done(*k);  // Stop the kernel\n      assert(*k == NULL);\n    }"
+        },
+        {
+          "start": 1222,
+          "end": 1227,
+          "text": "  perf_counters.add_absolute_counter(\"gpu_tot_sim_cycle\", gpu_tot_sim_cycle);\n  perf_counters.add_absolute_counter(\"gpu_sim_cycle\", gpu_sim_cycle);\n  perf_counters.add_absolute_counter(\"gpu_tot_sim_insn\", gpu_tot_sim_insn);\n  perf_counters.add_absolute_counter(\"gpu_sim_insn\", gpu_sim_insn);\n  perf_counters.add_absolute_counter(\"gpu_tot_issued_cta\", gpu_tot_issued_cta);\n  perf_counters.add_absolute_counter(\"gpu_completed_cta\", gpu_completed_cta);"
+        },
+        {
+          "start": 1506,
+          "end": 1512,
+          "text": "void gpgpu_sim::init() {\n  // run a CUDA grid on the GPU microarchitecture simulator\n  gpu_sim_cycle = 0;\n  gpu_sim_insn = 0;\n  last_gpu_sim_insn = 0;\n  m_total_cta_launched = 0;\n  gpu_completed_cta = 0;"
+        },
+        {
+          "start": 1553,
+          "end": 1572,
+          "text": "void gpgpu_sim::update_stats() {\n  m_memory_stats->memlatstat_lat_pw();\n  gpu_tot_sim_cycle += gpu_sim_cycle;\n  gpu_tot_sim_insn += gpu_sim_insn;\n  gpu_tot_issued_cta += m_total_cta_launched;\n  partiton_reqs_in_parallel_total += partiton_reqs_in_parallel;\n  partiton_replys_in_parallel_total += partiton_replys_in_parallel;\n  partiton_reqs_in_parallel_util_total += partiton_reqs_in_parallel_util;\n  gpu_tot_sim_cycle_parition_util += gpu_sim_cycle_parition_util;\n  gpu_tot_occupancy += gpu_occupancy;\n\n  gpu_sim_cycle = 0;\n  partiton_reqs_in_parallel = 0;\n  partiton_replys_in_parallel = 0;\n  partiton_reqs_in_parallel_util = 0;\n  gpu_sim_cycle_parition_util = 0;\n  gpu_sim_insn = 0;\n  m_total_cta_launched = 0;\n  gpu_completed_cta = 0;\n  gpu_occupancy = occupancy_stats();"
+        },
+        {
+          "start": 1820,
+          "end": 1836,
+          "text": "void gpgpu_sim::gpu_print_stat(unsigned long long streamID) {\n  FILE *statfout = stdout;\n\n  std::string kernel_info_str = executed_kernel_info_string();\n  fprintf(statfout, \"%s\", kernel_info_str.c_str());\n\n  printf(\"kernel_stream_id = %llu\\n\", streamID);\n\n  printf(\"gpu_sim_cycle = %lld\\n\", gpu_sim_cycle);\n  printf(\"gpu_sim_insn = %lld\\n\", gpu_sim_insn);\n  printf(\"gpu_ipc = %12.4f\\n\", (float)gpu_sim_insn / gpu_sim_cycle);\n  printf(\"gpu_tot_sim_cycle = %lld\\n\", gpu_tot_sim_cycle + gpu_sim_cycle);\n  printf(\"gpu_tot_sim_insn = %lld\\n\", gpu_tot_sim_insn + gpu_sim_insn);\n  printf(\"gpu_tot_ipc = %12.4f\\n\", (float)(gpu_tot_sim_insn + gpu_sim_insn) /\n                                       (gpu_tot_sim_cycle + gpu_sim_cycle));\n  printf(\"gpu_tot_issued_cta = %lld\\n\",\n         gpu_tot_issued_cta + m_total_cta_launched);"
+        },
+        {
+          "start": 2562,
+          "end": 2590,
+          "text": "    if (!(gpu_sim_cycle % m_config.gpu_stat_sample_freq)) {\n      time_t days, hrs, minutes, sec;\n      time_t curr_time;\n      time(&curr_time);\n      unsigned long long elapsed_time =\n          MAX(curr_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);\n      if ((elapsed_time - last_liveness_message_time) >=\n              m_config.liveness_message_freq &&\n          DTRACE(LIVENESS)) {\n        days = elapsed_time / (3600 * 24);\n        hrs = elapsed_time / 3600 - 24 * days;\n        minutes = elapsed_time / 60 - 60 * (hrs + 24 * days);\n        sec = elapsed_time - 60 * (minutes + 60 * (hrs + 24 * days));\n\n        unsigned long long active = 0, total = 0;\n        for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {\n          m_cluster[i]->get_current_occupancy(active, total);\n        }\n        DPRINTFG(LIVENESS,\n                 \"uArch: inst.: %lld (ipc=%4.1f, occ=%0.4f%% [%llu / %llu]) \"\n                 \"sim_rate=%u (inst/sec) elapsed = %u:%u:%02u:%02u / %s\",\n                 gpu_tot_sim_insn + gpu_sim_insn,\n                 (double)gpu_sim_insn / (double)gpu_sim_cycle,\n                 float(active) / float(total) * 100, active, total,\n                 (unsigned)((gpu_tot_sim_insn + gpu_sim_insn) / elapsed_time),\n                 (unsigned)days, (unsigned)hrs, (unsigned)minutes,\n                 (unsigned)sec, ctime(&curr_time));\n        fflush(stdout);\n        last_liveness_message_time = elapsed_time;"
+        },
+        {
+          "start": 2611,
+          "end": 2616,
+          "text": "    if (!((gpu_tot_sim_cycle + gpu_sim_cycle) %\n          m_config.gpu_stat_sample_freq)) {\n      // update the counters before printing\n      gpu_occupancy_ratio = gpu_occupancy.get_occ_fraction();\n      perf_counters.print_counters();\n    }"
+        },
+        {
+          "start": 2874,
+          "end": 2888,
+          "text": "  if (!(gpu_sim_cycle % m_config.gpu_stat_sample_freq)) {\n    time_t days, hrs, minutes, sec;\n    time_t curr_time;\n    time(&curr_time);\n    unsigned long long elapsed_time =\n        MAX(curr_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);\n    if ((elapsed_time - last_liveness_message_time) >=\n        m_config.liveness_message_freq) {\n      days = elapsed_time / (3600 * 24);\n      hrs = elapsed_time / 3600 - 24 * days;\n      minutes = elapsed_time / 60 - 60 * (hrs + 24 * days);\n      sec = elapsed_time - 60 * (minutes + 60 * (hrs + 24 * days));\n\n      last_liveness_message_time = elapsed_time;\n    }"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/gpgpu-sim/gpu-sim.h",
+      "blob": "f4ebe35b887ad62d93491dd5493293c7ed8c88e7",
+      "sha256": "1ac66c8016e1f5b4b57f392c298c54811b8dd93829a70439ee9c5bb58e7508e8",
+      "line_ranges": [
+        [
+          833,
+          847
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 833,
+          "end": 847,
+          "text": "\n  float gpu_occupancy_ratio;\n\n  typedef struct {\n    unsigned long long start_cycle;\n    unsigned long long end_cycle;\n  } kernel_time_t;\n  std::map<unsigned long long, std::map<unsigned, kernel_time_t>>\n      gpu_kernel_time;\n  unsigned long long last_streamID;\n  unsigned long long last_uid;\n  cache_stats aggregated_l1_stats;\n  cache_stats aggregated_l2_stats;\n\n  PerfCounter perf_counters;"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/abstract_hardware_model.cc",
+      "blob": "d2c0a3e9ab0262e2c7da5f940c916763d7ecfa72",
+      "sha256": "88f4af1a14cb64e87d20f220ec6533980afa42d52393e925c9710dcb169913b5",
+      "line_ranges": [
+        [
+          1280,
+          1291
+        ],
+        [
+          1330,
+          1358
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 1280,
+          "end": 1291,
+          "text": "inline void PerfCounter::open_for_write() {\n  output_csv = gzopen(output_csv_name.c_str(), \"w\");\n\n  // Create/update symlink \"perf_counter.csv.gz\" -> timestamped file\n  const char *symlink_name = \"perf_counter.csv.gz\";\n  unlink(symlink_name);  // Remove existing symlink if any\n  symlink(output_csv_name.c_str(), symlink_name);\n}\n\ninline void PerfCounter::open_for_append() {\n  output_csv = gzopen(output_csv_name.c_str(), \"a\");\n}"
+        },
+        {
+          "start": 1330,
+          "end": 1358,
+          "text": "void PerfCounter::print_counters() {\n  if (!header_printed) {\n    print_header();\n  }\n\n  open_for_append();\n\n  for (auto &counter : absolute_counters) {\n    gzprintf(output_csv, \"%llu,\", counter.get());\n  }\n  for (auto &counter : ratio_counters) {\n    gzprintf(output_csv, \"%f,\", counter.get());\n  }\n  for (auto &counter : statistics_counters) {\n    gzprintf(output_csv, \"%s,\", counter.get().csv_value_string().c_str());\n  }\n  auto now = std::chrono::steady_clock::now();\n  auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(\n                now.time_since_epoch())\n                .count();\n  gzprintf(output_csv, \"%lld,\", ms);\n  gzprintf(output_csv, \"\\n\");\n\n  close();\n}\ninline void PerfCounter::close() {\n  gzclose(output_csv);\n  output_csv = nullptr;\n}"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/abstract_hardware_model.h",
+      "blob": "7a97ed3df9f279b1066a4cdd1e5b0219caf3d8e2",
+      "sha256": "e4cab8e64aad9a331fc49e987fd4e9a7be4f067b814dd866aa5b461b300ce87c",
+      "line_ranges": [
+        [
+          2048,
+          2086
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 2048,
+          "end": 2086,
+          "text": "class PerfCounter {\n public:\n  PerfCounter() {\n    header_printed = false;\n    output_csv = nullptr;\n\n    // Generate timestamped filename\n    auto now = std::chrono::system_clock::now();\n    auto time_t_now = std::chrono::system_clock::to_time_t(now);\n    std::tm *tm_now = std::localtime(&time_t_now);\n    char timestamp[32];\n    std::strftime(timestamp, sizeof(timestamp), \"%Y-%m-%d_%H-%M-%S\", tm_now);\n    output_csv_name = std::string(\"perf_counter_\") + timestamp + \".csv.gz\";\n  }\n\n  inline void open_for_write();\n\n  inline void open_for_append();\n\n  void add_absolute_counter(std::string name, unsigned long long &counter);\n\n  void add_ratio_counter(std::string name, float &counter);\n\n  void add_statistics_counter(Statistics::AbstractStatsCounter &counter);\n\n  void print_header();\n\n  void print_counters();\n\n  inline void close();\n\n private:\n  std::vector<std::reference_wrapper<unsigned long long>> absolute_counters;\n  std::vector<std::string> absolute_counter_names;\n\n  // ratio counters\n  std::vector<std::string> ratio_counter_names;\n  std::vector<std::reference_wrapper<float>> ratio_counters;\n"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/trace.h",
+      "blob": "4ec27d807eb48b04e0231fcb3c82a0f0d2d0a22e",
+      "sha256": "644b2c1395ccb702217f49b1d8ee01647f11a04be85af5d3606112df5229ed3c",
+      "line_ranges": [
+        [
+          58,
+          93
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 58,
+          "end": 93,
+          "text": "#if TRACING_ON\n\n#define STRINGIFY(x) #x\n#define TOSTRING(x) STRINGIFY(x)\n#define SIM_PRINT_STR \\\n  \"GPGPU-Sim Cycle %llu: %s - \" __FILE__ \":\" TOSTRING(__LINE__) \" - \"\n#define DTRACE(x) ((Trace::trace_streams_enabled[Trace::x]) && Trace::enabled)\n#define DPRINTF(x, ...)                                                      \\\n  do {                                                                       \\\n    if (DTRACE(x)) {                                                         \\\n      printf(SIM_PRINT_STR, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle, \\\n             Trace::trace_streams_str[Trace::x]);                            \\\n      printf(__VA_ARGS__);                                                   \\\n    }                                                                        \\\n  } while (0)\n\n#define DPRINTFG(x, ...)                                       \\\n  do {                                                         \\\n    if (DTRACE(x)) {                                           \\\n      printf(SIM_PRINT_STR, gpu_sim_cycle + gpu_tot_sim_cycle, \\\n             Trace::trace_streams_str[Trace::x]);              \\\n      printf(__VA_ARGS__);                                     \\\n    }                                                          \\\n  } while (0)\n\n#else\n\n#define DTRACE(x) (false)\n#define DPRINTF(x, ...) \\\n  do {                  \\\n  } while (0)\n#define DPRINTFG(x, ...) \\\n  do {                   \\\n  } while (0)\n\n#endif"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/trace.cc",
+      "blob": "1c435b226252ea0a30ca154d01588c4afd967670",
+      "sha256": "573c73324435cb53d31c5bbf16510b071b707f841655454c6ebd139a46fcae9a",
+      "line_ranges": [
+        [
+          43,
+          61
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 43,
+          "end": 61,
+          "text": "\nbool enabled = false;\nint sampling_core = 0;\nint sampling_memory_partition = -1;\nbool trace_streams_enabled[NUM_TRACE_STREAMS] = {false};\nconst char* config_str;\n\nvoid init() {\n  for (unsigned i = 0; i < NUM_TRACE_STREAMS; ++i) {\n    if (strstr(config_str, trace_streams_str[i]) != NULL) {\n      trace_streams_enabled[i] = true;\n    }\n  }\n}\n}  // namespace Trace"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/repos/gpgpu-sim_distribution",
+      "commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "path": "src/gpgpu-sim/Makefile",
+      "blob": "25cf61c3ec88520fc14a678581673768edd93010",
+      "sha256": "b034ee62186f629579df809be627fb14bc5fba6dfca1e6b05bd56cefa21c7634",
+      "line_ranges": [
+        [
+          30,
+          42
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 30,
+          "end": 42,
+          "text": "\nDEBUG?=0\nTRACE?=0\n\nifeq ($(DEBUG),1)\n\tCXXFLAGS = -Wall -DDEBUG\nelse\n\tCXXFLAGS = -Wall\nendif\n\nifeq ($(TRACE),1)\n\tCXXFLAGS += -DTRACING_ON=1\nendif"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1",
+      "commit": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "path": "gpu-simulator/accel-sim.cc",
+      "blob": "c709f4b5942aec7ce9b7f06e07ae76e3b042e1f6",
+      "sha256": "f41db2d839c99f20d5cd1319a4166f4ac8801b10d16faa7ab84ad0ee065ecaa1",
+      "line_ranges": [
+        [
+          70,
+          85
+        ],
+        [
+          122,
+          147
+        ],
+        [
+          150,
+          171
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 70,
+          "end": 85,
+          "text": "    unsigned finished_kernel_uid = simulate();\n    // cleanup finished kernel\n    if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||\n        !m_gpgpu_sim->active()) {\n      cleanup(finished_kernel_uid);\n    }\n\n    if (sim_cycles) {\n      m_gpgpu_sim->update_stats();\n      m_gpgpu_context->print_simulation_time();\n    }\n\n    if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {\n      printf(\n          \"GPGPU-Sim: ** break due to reaching the maximum cycles (or \"\n          \"instructions) **\\n\");"
+        },
+        {
+          "start": 122,
+          "end": 147,
+          "text": "void accel_sim_framework::cleanup(unsigned finished_kernel) {\n  trace_kernel_info_t *k = NULL;\n  unsigned long long finished_kernel_cuda_stream_id = -1;\n  for (unsigned j = 0; j < kernels_info.size(); j++) {\n    k = kernels_info.at(j);\n    if (k->get_uid() == finished_kernel ||\n        m_gpgpu_sim->cycle_insn_cta_max_hit() || !m_gpgpu_sim->active()) {\n      for (unsigned int l = 0; l < busy_streams.size(); l++) {\n        if (busy_streams.at(l) == k->get_cuda_stream_id()) {\n          finished_kernel_cuda_stream_id = k->get_cuda_stream_id();\n          busy_streams.erase(busy_streams.begin() + l);\n          break;\n        }\n      }\n      tracer.kernel_finalizer(k->get_trace_info());\n      delete k->entry();\n      delete k;\n      kernels_info.erase(kernels_info.begin() + j);\n      if (!m_gpgpu_sim->cycle_insn_cta_max_hit() && m_gpgpu_sim->active())\n        break;\n    }\n  }\n  if (k) {\n    m_gpgpu_sim->print_stats(finished_kernel_cuda_stream_id);\n    m_gpgpu_sim->perf_counters.print_counters();\n  }"
+        },
+        {
+          "start": 150,
+          "end": 171,
+          "text": "unsigned accel_sim_framework::simulate() {\n  unsigned finished_kernel_uid = 0;\n  do {\n    if (!m_gpgpu_sim->active()) break;\n\n    // performance simulation\n    if (m_gpgpu_sim->active()) {\n      m_gpgpu_sim->cycle();\n      sim_cycles = true;\n      m_gpgpu_sim->deadlock_check();\n    } else {\n      if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {\n        m_gpgpu_context->the_gpgpusim->g_stream_manager\n            ->stop_all_running_kernels();\n        break;\n      }\n    }\n\n    active = m_gpgpu_sim->active();\n    finished_kernel_uid = m_gpgpu_sim->finished_kernel();\n  } while (active && !finished_kernel_uid);\n  return finished_kernel_uid;"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1",
+      "commit": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "path": "gpu-simulator/main.cc",
+      "blob": "37002a66fb09ca2745f2c901ced1ed7f48f942e7",
+      "sha256": "1e9c9658674528483b87404a59e2fed1e8ff116d0127bfcbb2c3c5e4188c5f23",
+      "line_ranges": [
+        [
+          29,
+          41
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 29,
+          "end": 41,
+          "text": "  accel_sim_framework accel_sim(argc, argv);\n  accel_sim.simulation_loop();\n\n  // we print this message to inform the gpgpu-simulation stats_collect script\n  // that we are done\n  printf(\"GPGPU-Sim: *** simulation thread exiting ***\\n\");\n  printf(\"GPGPU-Sim: *** exit detected ***\\n\");\n  fflush(stdout);\n\n  return 0;\n}"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1",
+      "commit": "62323c40df0add726cae52a96ca946e589f00343",
+      "path": "gpu-simulator/accel-sim.cc",
+      "blob": "c709f4b5942aec7ce9b7f06e07ae76e3b042e1f6",
+      "sha256": "f41db2d839c99f20d5cd1319a4166f4ac8801b10d16faa7ab84ad0ee065ecaa1",
+      "line_ranges": [
+        [
+          70,
+          85
+        ],
+        [
+          122,
+          147
+        ],
+        [
+          150,
+          171
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 70,
+          "end": 85,
+          "text": "    unsigned finished_kernel_uid = simulate();\n    // cleanup finished kernel\n    if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||\n        !m_gpgpu_sim->active()) {\n      cleanup(finished_kernel_uid);\n    }\n\n    if (sim_cycles) {\n      m_gpgpu_sim->update_stats();\n      m_gpgpu_context->print_simulation_time();\n    }\n\n    if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {\n      printf(\n          \"GPGPU-Sim: ** break due to reaching the maximum cycles (or \"\n          \"instructions) **\\n\");"
+        },
+        {
+          "start": 122,
+          "end": 147,
+          "text": "void accel_sim_framework::cleanup(unsigned finished_kernel) {\n  trace_kernel_info_t *k = NULL;\n  unsigned long long finished_kernel_cuda_stream_id = -1;\n  for (unsigned j = 0; j < kernels_info.size(); j++) {\n    k = kernels_info.at(j);\n    if (k->get_uid() == finished_kernel ||\n        m_gpgpu_sim->cycle_insn_cta_max_hit() || !m_gpgpu_sim->active()) {\n      for (unsigned int l = 0; l < busy_streams.size(); l++) {\n        if (busy_streams.at(l) == k->get_cuda_stream_id()) {\n          finished_kernel_cuda_stream_id = k->get_cuda_stream_id();\n          busy_streams.erase(busy_streams.begin() + l);\n          break;\n        }\n      }\n      tracer.kernel_finalizer(k->get_trace_info());\n      delete k->entry();\n      delete k;\n      kernels_info.erase(kernels_info.begin() + j);\n      if (!m_gpgpu_sim->cycle_insn_cta_max_hit() && m_gpgpu_sim->active())\n        break;\n    }\n  }\n  if (k) {\n    m_gpgpu_sim->print_stats(finished_kernel_cuda_stream_id);\n    m_gpgpu_sim->perf_counters.print_counters();\n  }"
+        },
+        {
+          "start": 150,
+          "end": 171,
+          "text": "unsigned accel_sim_framework::simulate() {\n  unsigned finished_kernel_uid = 0;\n  do {\n    if (!m_gpgpu_sim->active()) break;\n\n    // performance simulation\n    if (m_gpgpu_sim->active()) {\n      m_gpgpu_sim->cycle();\n      sim_cycles = true;\n      m_gpgpu_sim->deadlock_check();\n    } else {\n      if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {\n        m_gpgpu_context->the_gpgpusim->g_stream_manager\n            ->stop_all_running_kernels();\n        break;\n      }\n    }\n\n    active = m_gpgpu_sim->active();\n    finished_kernel_uid = m_gpgpu_sim->finished_kernel();\n  } while (active && !finished_kernel_uid);\n  return finished_kernel_uid;"
+        }
+      ]
+    },
+    {
+      "repository": "/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1",
+      "commit": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "path": "gpu-simulator/accel-sim.h",
+      "blob": "c249de1a09d673f5bd3885d1e2a2c11617c82f3a",
+      "sha256": "c3edf7a7ad2097817831472575630dc5906cfa176d9528222d898efbfaf8ea65",
+      "line_ranges": [
+        [
+          22,
+          28
+        ],
+        [
+          47,
+          64
+        ]
+      ],
+      "excerpts": [
+        {
+          "start": 22,
+          "end": 28,
+          "text": " public:\n  accel_sim_framework(int argc, const char **argv);\n  accel_sim_framework(std::string config_file, std::string trace_file);\n\n  gpgpu_sim *get_gpgpu_sim() { return m_gpgpu_sim; }\n\n  void init() {"
+        },
+        {
+          "start": 47,
+          "end": 64,
+          "text": "  void simulation_loop();\n  void parse_commandlist();\n  void cleanup(unsigned finished_kernel);\n  unsigned simulate();\n  trace_kernel_info_t *create_kernel_info(kernel_trace_t *kernel_trace_info,\n                                          gpgpu_context *m_gpgpu_context,\n                                          trace_config *config,\n                                          trace_parser *parser);\n  gpgpu_sim *gpgpu_trace_sim_init_perf_model(int argc, const char *argv[],\n                                  gpgpu_context *m_gpgpu_context,\n                                  trace_config *m_config);\n\n\n private:\n  gpgpu_context *m_gpgpu_context;\n  trace_config tconfig;\n  trace_parser tracer;\n  gpgpu_sim *m_gpgpu_sim;"
+        }
+      ]
+    }
+  ],
+  "frozen_base_option_facts": {
+    "BASE_GEMM_RECEIPT_FACTS.json": {
+      "source_path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_ag6/identity_metadata/BASE_GEMM_RECEIPT_FACTS.json",
+      "sha256": "1ace49e4e93e2251e04434dcf28761002dabeb8601c12c14f33be82a1c155c95",
+      "effective_options": {
+        "-gpgpu_runtime_stat": [
+          "500000"
+        ],
+        "-liveness_message_freq": [
+          "1"
+        ],
+        "-trace_enabled": [
+          "0"
+        ],
+        "-trace_components": [
+          "none"
+        ]
+      }
+    },
+    "BASE_GAUSSIAN_RECEIPT_FACTS.json": {
+      "source_path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_ag6/identity_metadata/BASE_GAUSSIAN_RECEIPT_FACTS.json",
+      "sha256": "9bbfad8fc70fb54b02dfc406e57bfed9d9373bf1143950e667f28a716fbf18d2",
+      "effective_options": {
+        "-gpgpu_runtime_stat": [
+          "500000"
+        ],
+        "-liveness_message_freq": [
+          "1"
+        ],
+        "-trace_enabled": [
+          "0"
+        ],
+        "-trace_components": [
+          "none"
+        ]
+      }
+    }
+  },
+  "model_binary_trace_read": false,
+  "production_source_modified": false,
+  "frozen_build_identity_source": {
+    "source_path": "docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution/prepared_ag6/identity_metadata/NEW_BUILD_IDENTITY.json",
+    "sha256": "0f66fb68264ac061b4800b7c134b82d7a73b10e96d3993dc59fdea552826142a",
+    "contents": {
+      "core_commit": "c8090115bd57512b1b23fca7d925301fa620c751",
+      "framework_source": "8e43c75a5e2eb60a8466084602b7df8117111e89",
+      "Core_version_text": "const char *g_gpgpusim_build_string=\"gpgpu-sim_git-commit-c8090115_modified_0.0.\";\n",
+      "Framework_version_text": "const char *g_accelsim_version=\"accelsim-AG-framework-8e43c75a5e2eb60a8466084602b7df8117111e89-core-c8090115bd57512b1b23fca7d925301fa620c751\";\n",
+      "ELFs": {
+        "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so": {
+          "sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2",
+          "readelf_notes": "\nDisplaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\t      Properties: x86 feature: IBT, SHSTK\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\t    Build ID: ab1ca2782871068e7fe333974561fcf75f2fe28c\n"
+        },
+        "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/accel-sim.out": {
+          "sha256": "38158d03dcaecd847d0d6098603c7bc4bfd2a165c4e46f657930e5dedbd291bd",
+          "readelf_notes": "\nDisplaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000020\tNT_GNU_PROPERTY_TYPE_0\t      Properties: x86 feature: IBT, SHSTK, x86 ISA needed: x86-64-baseline\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\t    Build ID: 6a0ceed9abbe0e26c66e375687dcb2439085969d\n\nDisplaying notes found in: .note.ABI-tag\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_ABI_TAG (ABI version tag)\t    OS: Linux, ABI: 3.2.0\n"
+        }
+      },
+      "compile_commands_sha": {
+        "combined-final": "b35bab3bfcdacb6d531bd74b42fb14bf44d6e4ae0a7e60883ba8160c4787a27f",
+        "x2-reference": "a1cc93fb767c20f69d9be27aa38e97c8132c1fd9fb840de5f1c1e3816940d7a4",
+        "trace-final": "d0b228c5dfa3e790097ed51451911d0e5eeae230eef9c792f8971a97e201c04e",
+        "x2-trace-reference": "62c13d8b19ac4165725be4d9629f0a8d4d0961be48de2586f57f46dd231a8f87"
+      },
+      "source_files_sha": "c238c7908f1769a148973019af51c255a0357df7ad9f1764f8ff4c18ef65d79b",
+      "assertions_enabled": true
+    },
+    "current_binary_reverified": false
+  }
+}
