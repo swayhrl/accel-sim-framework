@@ -1,4 +1,4 @@
-# Lane E2 — CONV_SIX_EXACT_CONTROLS_PRELAUNCH_READY
+# Lane E2 — CONV_CONTROLS_BATCH_1_QUALIFIED_ADMISSION
 
 Original174; originalT0=1792414193; actual20/40,remaining20,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
