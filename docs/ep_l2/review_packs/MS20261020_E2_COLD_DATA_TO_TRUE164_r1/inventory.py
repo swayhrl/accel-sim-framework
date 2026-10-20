@@ -5,6 +5,9 @@ ROOT=Path(__file__).resolve().parents[4];P=Path(__file__).resolve().parent
 START=time.monotonic();MAX_SECONDS=40;MAX_FILES=30000
 signal.alarm(MAX_SECONDS)
 BUILDS=[Path('/workspace/build')/n for n in ['ep-l2-potential20261017-lane1-all-data-r1','ep-l2-potential20261017-lane1-p2-r1','ep-l2-potential20261017-lane1-structure-r1','ep-l2-microopt20261018-lane1-v1']]
+if len(sys.argv)>1 and sys.argv[1]=='r2':
+ P=P/'r2';P.mkdir(exist_ok=True)
+ BUILDS += [Path('/workspace/build')/n for n in ['ep-l2-ft20261017-lane1-r0-1-buildfix-r1','ep-l2-ft20261017-lane1-r0-1-buildfix-r2']]
 RESULTS=[Path('/workspace/ep_l2_potential20261017_lane5_results'),Path('/workspace/results/ep_l2_ft20261016'),Path('/workspace/ep_l2_ms20261019_e_results')]
 REG=Path('/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json');data=json.loads(REG.read_text());campaign=data['mechanism_study_20261019_v1'];assert campaign['actual_starts']==14 and campaign['controller']['state']=='STOPPED'
 def write(name,value):
