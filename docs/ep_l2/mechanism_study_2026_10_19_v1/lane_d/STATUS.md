@@ -1,11 +1,9 @@
-# Lane D — current control analysis and paper closure
+# Lane D — Conv first two accepted controls
 
-E2 latest remote HEAD `eb889b4077c43cca591afbc5c05eee6beffe5d73`; live22/40 starts,18 remaining. Four MAIN S/F pairs remain current, no control accepted. Conv W_ONLY/F_MINUS_V run under the original live controller (PID2078407/start_ticks925712542 verified). E published STATUS20/40 is stale; use current registry and exact receipts.
+E2 a2c7b23ef (requested5d1c1d516 consumed), A2 source audit04f255e4.24/40 starts,16 remaining; four MAIN S/F pairs plus Conv W_ONLY(E021) and F_MINUS_V(E022) accepted. E023/E024 remain owned by E's active controller.
 
-The analysis interface is delivered and uses existing full_v2_analysis/intake and snapshot parser. Ten exact E-prepared conditions are bound; DWT/CFD four-cell revision is approved but requires E stopped-boundary adoption and resource gates. DWT F_MINUS_R and SAD W_ONLY are not approved. Old D five-control request is historical, not an authorization.
+W_ONLY saves1407 cycles (Rows392+Columns1015), reproducing96.172% of F's1463 net-cycle improvement; this is not a copy attribution share. F_MINUS_V costs1994 vs F (Rows1555+Columns439). F vs W_ONLY is +140 Rows/−196 Columns, net−56. S/W_ONLY weak retry matching; F_MINUS_V/F both strict client/UID/generation. All effects remain conditional and nonadditive.
 
-Current four-pair GM1.001679 is interim; original denominator remains7 and complete-seven GM UNKNOWN. DWT V/RO remain independently unidentifiable; CFD contrasts are conditional and nonadditive; all four F successful Tag-detach counts0; SAD zero-copy prefix unresolved.
+[Scientific brief](controls_20261020_r2/CONV_SCIENCE_BRIEF.md), [English candidates](controls_20261020_r2/EN_V20_CONV_RESULTS_CANDIDATES.md), [paper figure](controls_20261020_r2/CONV_CONTROL_KERNEL_EFFECTS.pdf). Current snapshot03 retains exact accepted identities and36 per-kernel/tail comparison rows;38 analysis checks PASS, not native qualification. Four main F results unchanged; original seven GM UNKNOWN.
 
-See [decision brief](controls_20261020_r1/DECISION_BRIEF.md), [event interface](controls_20261020_r1/INCREMENTAL_INTERFACE.md), [English candidates and figure map](controls_20261020_r1/EN_V20_RESULTS_CANDIDATES.md). Eight S/F observations reused;24 per-kernel/tail rows close exactly;38 tooling checks PASS, not native qualification. No simulator, compiler, raw/trace scan, registry mutation, mother edit, background watcher or extra controller by D.
-
-This Codex analysis revision is delivered; it does not claim an active background Goal. The next E acceptance notice can invoke the one-shot adapter into a new snapshot revision without waiting for all controls. Old frozen evidence is preserved.
+No simulator/native/trace execution, old-anchor raw rescan, E ledger/controller mutation or EN-v20 edit. A single locked D notification adapter waits up to2h for E023/E024 current acceptance and invokes the existing incremental tool into a NEW r3 directory. It reads only E's acceptance declarations every60s, is not an old Goal restart and does not grant execution authority. Its actual process/deadline is in STATUS.json/shared own-D state; this Codex turn is active, distinct from that adapter.

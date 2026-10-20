@@ -1,0 +1,24 @@
+{
+  "schema": "A2_TO_E2_SAD_DWT_BOUNDED_SOURCE_ATTRIBUTION_V1",
+  "status": "SOURCE_REVIEW_COMPLETE_NO_NEW_EXECUTION",
+  "review_publication_commit": "53f32c96aa6e287c02c50da76c0e618252c72792",
+  "reviewed_E_HEAD": "bcff8aff7b204c597344456263b604c8a99c9615",
+  "source_core": "d010911e3174a3764791183cd108fe4664ba8731",
+  "main_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+  "review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_SAD_DWT_TIMED_SOURCE_ATTRIBUTION_r1/REVIEW.md",
+    "sha256": "6f49ee6ddabad72c0bd0a1e2a754043f908d77b60210b180a5e09b4304f528f8"
+  },
+  "findings": [
+    "F enables strict client/UID/generation bank retry identity before any WB or RO admit; S/W_ONLY keep weak role/id/write matching.",
+    "V lookup has explicit GPU-cycle wait even if lookup misses; host function cost itself is not GPU time.",
+    "Landing preview precedes same-bank reclaim; a recorded landing wait is not automatically final lack-of-slot refusal or P1 bank contention.",
+    "WB_INFLIGHT retention is not reclaimable; only unpinned/readers0 CLEAN/WB_COMPLETE with matching payload bank can be reclaimed."
+  ],
+  "causal_limits": "No first-UID bank/admission divergence or warp critical-dependency mapping in existing snapshots. 989cycles and K5/K8 slowdowns not quantitatively attributed.",
+  "new_applications": 0,
+  "new_builds": 0,
+  "new_instrumentation": 0,
+  "no_configuration_or_matrix_regeneration": true,
+  "E_execution_untouched": true
+}

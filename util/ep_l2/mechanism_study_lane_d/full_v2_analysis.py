@@ -272,6 +272,8 @@ def control_views(ledger,binding,plan,input_holds=None):
     for w in ['convolutionSeparable','cfd_097k']:
         compare(w,'F_MINUS_V','F','V conditional net effect with W+RO; includes state/query/traffic interactions')
         compare(w,'F_MINUS_R','F','RO conditional net effect with W+V; different background from V contrast; not additive')
+    compare('convolutionSeparable','W_ONLY','F_MINUS_V',
+      'RO-enabled versus W-only background also switches weak to strict client/UID/generation retry identity; not isolated RO cost')
     for left,right,label in [('F_MINUS_R','WV_T','T at M=0'),('WV_M','F','T at M=1'),
                              ('F_MINUS_R','WV_M','M at T=0'),('WV_T','F','M at T=1')]:
         compare('convolutionSeparable',left,right,label+'; same WV background, includes lookup/history effects')

@@ -1,0 +1,562 @@
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:3-5 ---
+    3 unsigned long long l2_cache::ft_physical_cycle() const {
+    4   return m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
+    5 }
+
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:61-86 ---
+   61   unsigned landing = index;
+   62   if (status == MISS) {
+   63     if (live) {
+   64       // release and reserve each advance the generation; check both before
+   65       // mutating either visibility. Epoch exhaustion is a refusal, not reuse.
+   66       if (handle.generation >= std::numeric_limits<unsigned>::max() - 1)
+   67         return false;
+   68       landing = handle.payload_id;
+   69     } else if (m_config.m_ep_l2_ft_mode == 2) {
+   70       const ep_l2::PayloadHandle free = m_ep_l2_payload.preview_free(
+   71           ep_l2_payload_store::RESIDENT, index % 4);
+   72       if (free.valid()) {
+   73         if (!free.generation) return false; // preview must not wrap generation
+   74         landing = free.payload_id;
+   75       } else {
+   76         if (!alias_payload.valid() || alias_payload.payload_id % 4 != index % 4 ||
+   77             alias_payload.generation >= std::numeric_limits<unsigned>::max() - 1)
+   78           return false;
+   79         landing = alias_payload.payload_id;
+   80       }
+   81     } else {
+   82       const ep_l2_payload_store::slot &free = m_ep_l2_payload.resident(landing);
+   83       if (free.occupied() || free.generation == std::numeric_limits<unsigned>::max())
+   84         return false;
+   85     }
+   86     assert(landing % 4 == index % 4);
+
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:193-249 ---
+  193 unsigned long long l2_cache::ms_frontend_blockers(mem_fetch *mf,
+  194     const l2_access_plan &plan, bool response_full, unsigned long long &known) const {
+  195   known = 0;
+  196   if (!m_ms_observer.enabled) return 0;
+  197   namespace M = ep_l2::mechanism_v1;
+  198   unsigned long long blocked = 0;
+  199   // This native path is reached only after the TVD frontend has declined to
+  200   // handle the head. A previously observed paid victim lookup has completed;
+  201   // do not accidentally extend its measured wait through unrelated admission.
+  202   known |= 1ULL << M::VICTIM_LOOKUP;
+  203   known |= 1ULL << M::READONLY_LOOKUP;
+  204   if (plan.ep_l2_ro_lookup_wait) blocked |= 1ULL << M::READONLY_LOOKUP;
+  205   known |= (1ULL << M::SAME_ADDRESS_WB) | (1ULL << M::FRONTEND_TRANSACTION) |
+  206       (1ULL << M::COPY_PIPELINE);
+  207   if (!plan.ep_l2_wad_same_address_hazard) known |= 1ULL << M::TAG_SET_PENDING;
+  208   if (plan.ep_l2_wad_full || (plan.exact && plan.probe_status != RESERVATION_FAIL))
+  209     known |= 1ULL << M::WAD_FULL;
+  210   if (plan.exact && plan.probe_status != RESERVATION_FAIL)
+  211     known |= (1ULL << M::LINE_MSHR_FULL) | (1ULL << M::DESCRIPTOR_FULL) |
+  212         (1ULL << M::PER_LINE_CAP) | (1ULL << M::MISS_QUEUE_FULL) |
+  213         (1ULL << M::RESPONSE_QUEUE_FULL);
+  214   if (plan.ep_l2_tag_set_all_reserved) blocked |= 1ULL << M::TAG_SET_PENDING;
+  215   if (plan.ep_l2_wad_full) blocked |= 1ULL << M::WAD_FULL;
+  216   if (ep_l2_wad_contains(m_config.block_addr(mf->get_addr())))
+  217     blocked |= 1ULL << M::SAME_ADDRESS_WB;
+  218   if (plan.ep_l2_mshr_block_reason == mshr_table::EP_L2_BLOCK_LINE_MSHR_FULL)
+  219     blocked |= 1ULL << M::LINE_MSHR_FULL;
+  220   if (plan.ep_l2_mshr_block_reason == mshr_table::EP_L2_BLOCK_DESCRIPTOR_POOL_FULL)
+  221     blocked |= 1ULL << M::DESCRIPTOR_FULL;
+  222   if (plan.ep_l2_mshr_block_reason == mshr_table::EP_L2_BLOCK_PER_ADDRESS_CAP)
+  223     blocked |= 1ULL << M::PER_LINE_CAP;
+  224   if (!miss_queue_has_slots(plan.new_missq_entries))
+  225     blocked |= 1ULL << M::MISS_QUEUE_FULL;
+  226   if (plan.needs_immediate_response_slot && response_full)
+  227     blocked |= 1ULL << M::RESPONSE_QUEUE_FULL;
+  228   if (m_ft_pending.request && m_ft_pending.request != mf)
+  229     blocked |= 1ULL << M::FRONTEND_TRANSACTION;
+  230   if (plan.exact && plan.probe_status != RESERVATION_FAIL)
+  231     known |= (1ULL << M::WB_DATA_SPACE) | (1ULL << M::BANK_COMPATIBLE_LANDING);
+  232   if (plan.cache_index < m_config.get_num_lines()) {
+  233     known |= 1ULL << M::PINNED_PAYLOAD;
+  234     const ep_l2::PayloadHandle victim = tag_payload_handle(plan.cache_index);
+  235     const bool live = m_ep_l2_payload.handle_live(victim);
+  236     if (live && (plan.probe_status == MISS || mf->get_is_write() || mf->isatomic()) &&
+  237         (m_ep_l2_payload.inspect(victim).pins ||
+  238          (plan.probe_status == MISS && m_ep_l2_payload.inspect(victim).pending_sector_mask.any())))
+  239       blocked |= 1ULL << M::PINNED_PAYLOAD;
+  240     // A held transaction already owns its staging/landing. Its own
+  241     // reservation must not be misreported as a fresh capacity refusal.
+  242     if (plan.probe_status == MISS && !m_ft_pending.request) {
+  243       if (plan.victim_dirty && m_config.m_ep_l2_ft_mode == 1 &&
+  244           !m_ep_l2_payload.preview_free(ep_l2_payload_store::WB).valid())
+  245         blocked |= 1ULL << M::WB_DATA_SPACE;
+  246       if (m_config.m_ep_l2_ft_mode == 2 && (plan.victim_dirty || !live) &&
+  247           !m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, plan.cache_index % 4).valid())
+  248         blocked |= 1ULL << M::BANK_COMPATIBLE_LANDING;
+  249     }
+
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:319-351 ---
+  319   const bool ro_new=m_ro && m_ro->new_request(mf);
+  320   if(ro_new && !m_ro->directory_ready(mf))return RESERVATION_FAIL;
+  321   if (tvd_write_candidate(mf) && !tvd_promote(mf,time,events)) return RESERVATION_FAIL;
+  322   unsigned index = (unsigned)-1;
+  323   cache_request_status probe = m_tag_array->probe(owner, index, mf, mf->is_write(), true);
+  324   if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);}
+  325   if (probe == RESERVATION_FAIL) return RESERVATION_FAIL;
+  326   if (m_tvd && probe == MISS &&
+  327       !(m_tvd_lookup == mf && m_tvd_lookup_done)) return RESERVATION_FAIL;
+  328   if(ro_new && (!m_ro->capacity(mf,false) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return RESERVATION_FAIL;
+  329   if (m_ft_pending.request && m_ft_pending.request != mf) return RESERVATION_FAIL;
+  330   if (m_tvd ? tvd_cached_wad_contains(mf,owner) : ep_l2_wad_contains(owner)) {
+  331     ++m_ep_l2_wad_same_address_wait_count; return RESERVATION_FAIL;
+  332   }
+  333
+  334   if (probe == MISS && !m_ft_pending.request) {
+  335     // Retire completed invalidated tag identities (e.g. a kernel flush), never
+  336     // a pinned response or a live pending sector. No address-wide RO cleanup.
+  337     for (unsigned t = 0; t < m_config.get_num_lines(); ++t) {
+  338       const ep_l2::PayloadHandle h = tag_payload_handle(t);
+  339       if (!m_ep_l2_payload.handle_live(h)) continue;
+  340       const ep_l2_payload_store::slot &s = m_ep_l2_payload.inspect(h);
+  341       if (s.allocation_role == ep_l2_payload_store::RESIDENT &&
+  342           m_tag_array->get_block(t)->is_invalid_line() && !s.pins && s.pending_sector_mask.none()) {
+  343         m_ep_l2_payload.release(h); set_tag_payload_handle(t, ep_l2::PayloadHandle());
+  344       }
+  345     }
+  346     const ep_l2::PayloadHandle victim = tag_payload_handle(index);
+  347     const bool live = m_ep_l2_payload.handle_live(victim);
+  348     const bool dirty = m_tag_array->block_is_modified(index);
+  349     if (live && (m_ep_l2_payload.inspect(victim).pins ||
+  350                  m_ep_l2_payload.inspect(victim).pending_sector_mask.any())) {
+  351       ++m_ft_stats.pin_block; return RESERVATION_FAIL;
+
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:374-417 ---
+  374     ep_l2::PayloadHandle staging, landing;
+  375     if (dirty && m_config.m_ep_l2_ft_mode == 1) {
+  376       staging = m_ep_l2_payload.preview_free(ep_l2_payload_store::WB);
+  377       if (!staging.valid()) { ++m_ft_stats.wbuf_full; return RESERVATION_FAIL; }
+  378     }
+  379     bool retain_clean = false;
+  380     if (m_tvd && m_config.m_ep_l2_tvd_clean && live && !dirty &&
+  381         m_ep_l2_payload.inspect(victim).ready_sector_mask.any() &&
+  382         m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true).status==tvd_directory::OK) {
+  383       bool reserved=true;
+  384       if(m_ep_l2_payload.fixed_victim_entries()) {
+  385         reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+  386         if(!reserved && tvd_reclaim_one(index%4,physical_cycle))
+  387           reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+  388       }
+  389       if(reserved) {
+  390         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+  391         retain_clean=landing.valid();
+  392         if(!retain_clean && m_ep_l2_payload.fixed_victim_entries())
+  393           m_ep_l2_payload.cancel_fixed_retention(victim);
+  394       }
+  395     }
+  396     if (m_config.m_ep_l2_ft_mode == 2 && (dirty || !live)) {
+  397       landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);
+  398       if (!landing.valid() && m_tvd && tvd_reclaim_one(index%4,physical_cycle))
+  399         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+  400       if (!landing.valid()) { ++m_ft_stats.pool_full; return RESERVATION_FAIL; }
+  401       if (dirty) staging = victim;
+  402     }
+  403     // All issue/WAD/staging/landing prechecks passed. Reserve quota before
+  404     // exposing any cross-cycle transaction; retries keep this one token.
+  405     if (dirty && m_config.m_ep_l2_wb_local_cap &&
+  406         m_ft_quota.reserved + m_ft_quota.live >= m_config.m_ep_l2_wb_local_cap) {
+  407       ++m_ft_quota.refusals; return RESERVATION_FAIL;
+  408     }
+  409     // The only producer is the serialized frontend head. While this token is
+  410     // live no other frontend request can steal its prechecked issue slots;
+  411     // fills and lower drains cannot add entries to m_miss_queue.
+  412     ft_replacement &p = m_ft_pending;
+  413     p.request = mf; p.tag_index = index; p.dirty = dirty; p.retain_clean=retain_clean; p.victim = live ? victim : ep_l2::PayloadHandle();
+  414     p.born = physical_cycle;
+  415     p.landing_id = landing.valid() ? landing.payload_id :
+  416         (m_config.m_ep_l2_ft_mode == 2 && live ? victim.payload_id : index);
+  417     if (live) p.saved = m_ep_l2_payload.inspect(victim);
+
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:450-503 ---
+  450     if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {
+  451       // A shared, explicitly costed 128B copy-pipeline latch bridges same-bank
+  452       // read and write cycles. Both compared organizations include this latch.
+  453       if (p.phase == 0) {
+  454         m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.victim,
+  455             false, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT,ep_l2_payload_store::COPY_READ,mf->get_request_uid());
+  456         if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+  457           ++m_ft_stats.bank_block; return RESERVATION_FAIL;
+  458         }
+  459         p.born = physical_cycle; // actual source readout starts data-staging lifetime
+  460         p.copy_versions = m_ep_l2_payload.inspect(p.victim).versions;
+  461         p.phase = 1;
+  462         // COPY_FREE explicitly removes copy service and its staging delay.
+  463         // DATA_FREE removes port contention but retains this fixed one-cycle
+  464         // copy-latch transfer, even when source and target banks differ.
+  465         if (!m_config.m_ep_l2_diag_copy_free) return RESERVATION_FAIL;
+  466       }
+  467       if (p.phase == 1) {
+  468         m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.staging,
+  469             true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE,ep_l2_payload_store::COPY_WRITE,mf->get_request_uid());
+  470         if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+  471           ++m_ft_stats.bank_block; return RESERVATION_FAIL;
+  472         }
+  473         m_ep_l2_payload.inspect_mutable(p.staging).versions = p.copy_versions;
+  474         m_ep_l2_payload.transfer(p.staging, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
+  475         ++m_ft_stats.copy_lines; p.phase = 2;
+  476       }
+  477     }
+  478     // Locally absorbed writes consume an actual payload RAM write. Request
+  479     // the stable prospective ID before changing victim/tag ownership, so a
+  480     // same-bank denial cannot expose a partially installed new generation.
+  481     if (mf->get_is_write()) {
+  482       m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(
+  483           ep_l2_payload_store::RESIDENT, p.landing_id, true, physical_cycle,
+  484           (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE,ep_l2_payload_store::FRONTEND,mf->get_request_uid());
+  485       if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+  486         ++m_ft_stats.bank_block; return RESERVATION_FAIL;
+  487       }
+  488     }
+  489     if (p.dirty && m_config.m_ep_l2_ft_mode == 2) {
+  490       p.born = physical_cycle; // in-place WB role starts at actual producer commit
+  491       m_ep_l2_payload.transfer(p.victim, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
+  492       if (p.victim.payload_id < 1024) ++m_ft_stats.borrow_resident;
+  493       else if (p.victim.payload_id < 1152) ++m_ft_stats.borrow_bypass;
+  494     }
+  495     if (!p.landing_reserved) {
+  496       const unsigned id = p.landing_id;
+  497       if (m_ep_l2_payload.handle_live(p.victim)) m_ep_l2_payload.release(p.victim);
+  498       p.landing = m_ep_l2_payload.reserve(id, ep_l2_payload_store::RESIDENT,
+  499           owner, ep_l2_payload_store::RESIDENT_FILL_PENDING);
+  500       p.landing_reserved = true;
+  501     }
+  502     set_tag_payload_handle(index, p.landing);
+  503   } else {
+
+--- d010:src/gpgpu-sim/ep-l2-ft-cache.inc:519-544 ---
+  519   const ep_l2::PayloadHandle handle = tag_payload_handle(index);
+  520   mf->set_ep_l2_payload_identity(handle.payload_id, handle.generation);
+  521   const cache_request_status result = ro_new ? m_ro->accept_new(mf,index,probe,time,events) : data_cache::access(addr, mf, time, events);
+  522   if (result == RESERVATION_FAIL) {
+  523     if (replacement) ft_rollback();
+  524     return result;
+  525   }
+  526   if (replacement && m_ft_pending.dirty) assert(m_ft_pending.bound);
+  527   if (replacement && m_ft_pending.retain_clean) {
+  528     auto &p=m_ft_pending;
+  529     if (tvd_install_victim(p.saved.owner,p.victim,p.saved.ready_sector_mask.to_ulong(),0,false,physical_cycle))
+  530       m_ep_l2_payload.transfer(p.victim,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
+  531     else m_ep_l2_payload.release(p.victim);
+  532   }
+  533   ep_l2_payload_store::slot &slot = m_ep_l2_payload.inspect_mutable(handle);
+  534   if (mf->get_is_write() || (mf->isatomic() && probe == HIT)) {
+  535     for (unsigned s = 0; s < 4; ++s)
+  536       if (mf->get_access_sector_mask().test(s)) slot.versions[s] = (unsigned long long)mf->get_request_uid() + 1;
+  537     if (mf->get_access_byte_mask().count() == m_config.get_atom_sz() || probe == HIT)
+  538       slot.ready_sector_mask |= mf->get_access_sector_mask();
+  539   }
+  540   if (m_tag_array->block_is_modified(index)) slot.status = ep_l2_payload_store::RESIDENT_DIRTY;
+  541   else if (slot.pending_sector_mask.none() && slot.allocation_role!=ep_l2_payload_store::RO) slot.status = ep_l2_payload_store::RESIDENT_VALID;
+  542   if (!mf->get_is_write()) mf->set_ft_wb_data(slot.versions);
+  543   if (replacement) m_ft_pending = ft_replacement();
+  544   if (m_tvd_lookup==mf) m_tvd_lookup=NULL;
+
+--- d010:src/gpgpu-sim/ep-l2-tvd-cache.inc:39-57 ---
+   39 bool l2_cache::tvd_reclaim_one(unsigned bank, unsigned long long now) {
+   40   // Mandatory space first reclaims optional clean, then completed WB data.
+   41   // Pinned reads and pending/inflight WB are never eligible victims.
+   42   for (auto state : {tvd_directory::CLEAN, tvd_directory::WB_COMPLETE}) {
+   43     unsigned best=m_tvd->capacity();
+   44     for (unsigned i=0;i<m_tvd->capacity();++i) {
+   45       const auto &e=m_tvd->at(i);
+   46       if (e.status!=state || !e.reclaimable() || !e.payload.valid() ||
+   47           (bank!=(unsigned)-1 && e.payload.payload_id%4!=bank)) continue;
+   48       if (best==m_tvd->capacity() || e.age<m_tvd->at(best).age) best=i;
+   49     }
+   50     if (best==m_tvd->capacity()) continue;
+   51     const auto token=tvd_directory::ticket(best,m_tvd->at(best).incarnation);
+   52     ep_l2::PayloadHandle h;
+   53     assert(m_tvd->reclaim(token,h,now)==tvd_directory::OK);
+   54     assert(m_ep_l2_payload.inspect(h).pins==0);
+   55     m_ep_l2_payload.release(h);return true;
+   56   }
+   57   return false;
+
+--- d010:src/gpgpu-sim/ep-l2-tvd-cache.inc:68-95 ---
+   68   unsigned index = (unsigned)-1;
+   69   const auto address = m_config.block_addr(mf->get_addr());
+   70   const auto tag = m_tag_array->probe(address, index, mf, mf->is_write(), true);
+   71   if (tag == HIT || tag == SECTOR_MISS || tag == HIT_RESERVED) return TVD_NORMAL;
+   72   namespace M = ep_l2::mechanism_v1;
+   73   unsigned long long known = 1ULL << M::VICTIM_LOOKUP;
+   74   // Observation only: preserve all controller predicates, paid lookup cycles,
+   75   // response/lower backpressure and bank arbitration below. Unknown native
+   76   // resources are not reported as free while this shortcut owns the head.
+   77   auto wait = [&](M::WaitReason reason) {
+   78     ms_observe_frontend(mf, now, 1ULL << reason, false, known | (1ULL << reason));
+   79     return TVD_WAIT;
+   80   };
+   81   if (m_tvd_lookup != mf) {
+   82     assert(!m_tvd_read);
+   83     m_tvd_lookup = mf; m_tvd_lookup_cycle = now;
+   84     m_tvd_lookup_done = false;
+   85     ++m_tvd_lookup_wait; return wait(M::VICTIM_LOOKUP);
+   86   }
+   87   if (now <= m_tvd_lookup_cycle) return wait(M::VICTIM_LOOKUP);
+   88   if (!m_tvd_lookup_done) {
+   89     if (m_tvd_query_cycle == now) return wait(M::VICTIM_LOOKUP);
+   90     m_tvd_query_cycle = now; ++m_tvd_lookup_queries;
+   91     m_tvd_lookup_ticket = m_tvd->find(address);
+   92     m_tvd_lookup_done = true;
+   93   }
+   94   const auto ticket = m_tvd_lookup_ticket;
+   95   if (!m_tvd->live(ticket)) return TVD_NORMAL;
+
+--- d010:src/gpgpu-sim/ep-l2-tvd-directory.h:42-45 ---
+   42     bool mandatory() const { return status == WB_STAGED || status == WB_INFLIGHT; }
+   43     bool reclaimable() const {
+   44       return (status == CLEAN || status == WB_COMPLETE) && readers == 0;
+   45     }
+
+--- d010:src/gpgpu-sim/ep-l2-tvd-directory.h:350-363 ---
+  350   result lower_accept(ticket t, bool lower_has_independent_data, cycle_type now) {
+  351     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+  352     if (!lower_has_independent_data) return DATA_TRANSFER_UNPROVEN;
+  353     advance(now); entry &e = m_entries[t.index];
+  354     e.status = WB_INFLIGHT; e.lower_accepted = now;
+  355     ++m_revision; ++m_stats.lower_accepts; return OK;
+  356   }
+  357   result set_done(ticket t, cycle_type now) {
+  358     if (!live(t) || m_entries[t.index].status != WB_INFLIGHT) return STALE;
+  359     advance(now); entry &e = m_entries[t.index];
+  360     if (e.payload.valid()) {
+  361       e.status = WB_COMPLETE; e.dirty_sectors = 0; e.age = ++m_age; ++m_revision;
+  362     } else { assert(!e.readers); erase(e); }
+  363     ++m_stats.wb_completions; return OK;
+
+--- d010:src/gpgpu-sim/ep-l2-tvd-directory.h:372-383 ---
+  372   void advance(cycle_type now) {
+  373     if (now < m_clock) throw std::logic_error("nonmonotonic TVD cycle");
+  374     const cycle_type delta = now - m_clock;
+  375     for (unsigned i = 0; i < m_capacity; ++i) {
+  376       const entry &e = m_entries[i];
+  377       if (!e.payload.valid()) continue;
+  378       if (e.status == WB_STAGED) m_stats.wb_staging_slot_cycles += delta;
+  379       if (e.status == CLEAN) m_stats.clean_retention_slot_cycles += delta;
+  380       if (e.status == WB_INFLIGHT || e.status == WB_COMPLETE)
+  381         m_stats.tvd_extra_retention_slot_cycles += delta;
+  382     }
+  383     m_clock = now;
+
+--- d010:src/gpgpu-sim/ep-l2-tvd-bank-identity.h:8-16 ---
+    8 namespace ep_l2 {
+    9 template <class Pending, class Role>
+   10 inline bool tvd_bank_request_matches(const Pending &p, Role role, unsigned id,
+   11                                     bool write, unsigned client, unsigned token,
+   12                                     unsigned generation, bool enabled) {
+   13   return p.r == role && p.id == id && p.write == write &&
+   14          (!enabled || (p.client == client && p.token == token &&
+   15                        p.generation == generation));
+   16 }
+
+--- d010:src/gpgpu-sim/gpu-cache.h:2484-2493 ---
+ 2484   payload_handle preview_free(role r, unsigned bank = (unsigned)-1) const {
+ 2485     if(r==RO && m_ft_mode!=2)return payload_handle();
+ 2486     for (unsigned id = 0; id < m_slots.size(); ++id) {
+ 2487       if (m_slots[id].occupied() || (bank != (unsigned)-1 && id % 4 != bank)) continue;
+ 2488       if (!fixed_role_room(r,id%4)) continue;
+ 2489       if (m_ft_mode == 1 && ((r == WB && id < wb_begin()) ||
+ 2490           (r == RESIDENT && id >= k_resident_slots) ||
+ 2491           (r == BYPASS && (id < k_resident_slots || id >= wb_begin())))) continue;
+ 2492       return payload_handle(id, m_slots[id].generation + 1);
+ 2493     }
+
+--- d010:src/gpgpu-sim/gpu-cache.h:2516-2522 ---
+ 2516   void release(const payload_handle &h) {
+ 2517     slot &s = inspect_mutable(h); assert(!s.pins && s.pending_sector_mask.none());
+ 2518     assert(s.generation != std::numeric_limits<unsigned>::max());
+ 2519     if(m_rg1 || m_tvd_identity){cancel_request(h,false);cancel_request(h,true);}
+ 2520     if(m_fixed_retention==h)m_fixed_retention=payload_handle();
+ 2521     s.status = FREE; s.owner = 0; s.ready_sector_mask.reset(); ++s.generation;
+ 2522     assert(fixed_quota_consistent());
+
+--- d010:src/gpgpu-sim/gpu-cache.h:2584-2610 ---
+ 2584   request_result request(role r, unsigned id, bool write, unsigned long long cycle,
+ 2585                          unsigned long long sequence = (unsigned long long)-1,
+ 2586                          operation_class op_class = RESIDENT_HIT_READ,
+ 2587                          unsigned client = GENERIC, unsigned token = 0) {
+ 2588     if (!enabled()) return GRANTED;
+ 2589     if (m_ft_mode && m_cycle != (unsigned long long)-1)
+ 2590       assert(cycle >= m_cycle && "FT bank clock must be physical and monotonic");
+ 2591     if (m_cycle != cycle) {
+ 2592       m_cycle = cycle;
+ 2593       m_resident_reads = m_resident_writes = m_bypass_reads = m_bypass_writes = 0;
+ 2594       std::fill(m_bank_services, m_bank_services+4, 0);
+ 2595       if (banked() && !m_rg1) {
+ 2596         for (unsigned b = 0; b < 4; ++b) {
+ 2597           // A production retry need not return in the single cycle after it
+ 2598           // was selected.  Retain an unconsumed oldest grant until its owner
+ 2599           // actually retries; with P2 retain up to two identities, then fill
+ 2600           // unused selections from the oldest pending list. Clearing loses
+ 2601           // the request. Two
+ 2602           // interleaved same-bank retries would otherwise select-and-discard
+ 2603           // each other forever, eventually deadlocking the memory system.
+ 2604           while (m_granted[b].size() < m_bank_ops && !m_pending[b].empty()) {
+ 2605             unsigned best = 0;
+ 2606             for (unsigned i = 1; i < m_pending[b].size(); ++i)
+ 2607               if (m_pending[b][i].sequence < m_pending[b][best].sequence) best = i;
+ 2608             m_granted[b].push_back(m_pending[b][best]);
+ 2609             m_pending[b].erase(m_pending[b].begin() + best);
+ 2610           }
+
+--- d010:src/gpgpu-sim/gpu-cache.h:2634-2685 ---
+ 2634     ++m_bank_attempts;
+ 2635     if(m_rg1)return request_rg1(r,id,write,cycle,sequence,op_class,client,token,global_id,bank);
+ 2636     for (unsigned selected=0; selected<m_granted[bank].size(); ++selected) {
+ 2637       const pending_op op = m_granted[bank][selected];
+ 2638       if (ep_l2::tvd_bank_request_matches(op,r,id,write,client,token,
+ 2639           m_slots[global_id].generation,m_tvd_identity)) {
+ 2640         // Its first call was accounted as the logical operation.  This call
+ 2641         // is the retry that finally consumes an oldest-ready grant.
+ 2642         ++m_bank_retry_attempts;
+ 2643         m_granted[bank].erase(m_granted[bank].begin()+selected); consume_bank(bank); ++m_bank_grants;
+ 2644         ++m_bank_grants_by_bank[bank];
+ 2645         if (op.true_conflict) {
+ 2646           const unsigned long long waited = cycle - op.first_conflict_cycle;
+ 2647           m_bank_wait_cycles += waited;
+ 2648           m_bank_wait_cycles_by_bank[bank] += waited;
+ 2649         }
+ 2650         return GRANTED;
+ 2651       }
+ 2652     }
+ 2653     // A matching queued op is a retry. A new op is a new logical payload RAM
+ 2654     // operation, even if it must wait behind older work or this cycle's grant.
+ 2655     int pending_index = -1;
+ 2656     for (unsigned i = 0; i < m_pending[bank].size(); ++i)
+ 2657       if (ep_l2::tvd_bank_request_matches(m_pending[bank][i],r,id,write,
+ 2658           client,token,m_slots[global_id].generation,m_tvd_identity)) pending_index=i;
+ 2659     if (pending_index >= 0) ++m_bank_retry_attempts;
+ 2660
+ 2661     // No selected/queued older op: a ready operation may consume one of the
+ 2662     // finite remaining services of this bank in this physical cycle.
+ 2663     // There is no reason to stage it until N+1 merely to wait for hypothetical
+ 2664     // later arrivals in the same cycle.
+ 2665     if (m_granted[bank].empty() && m_pending[bank].empty() &&
+ 2666         m_bank_services[bank] < m_bank_ops) {
+ 2667       assert(pending_index < 0);
+ 2668       record_logical_operation(bank, op_class, client);
+ 2669       consume_bank(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
+ 2670       return GRANTED;
+ 2671     }
+ 2672
+ 2673     if (pending_index < 0) {
+ 2674       record_logical_operation(bank, op_class, client);
+ 2675       m_pending[bank].push_back(pending_op(
+ 2676           r, id, write,
+ 2677           sequence == (unsigned long long)-1 ? m_next_sequence++ : sequence,
+ 2678           cycle));
+ 2679       pending_index = m_pending[bank].size() - 1;
+ 2680       if (m_tvd_identity) {
+ 2681         auto &p=m_pending[bank][pending_index];
+ 2682         p.client=client; p.token=token; p.generation=m_slots[global_id].generation;
+ 2683         // Native response/fill/lower/frontend heads, no unbounded new queue.
+ 2684         assert(pending_operations()<=4);
+ 2685       }
+
+--- d010:src/gpgpu-sim/gpu-cache.h:2880-2888 ---
+ 2880     ro_init();
+ 2881     m_ep_l2_payload.set_rg1_enabled(config.m_ep_l2_rg1);
+ 2882     m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());
+ 2883     m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);
+ 2884     m_ep_l2_payload.set_local_diagnostic(config.m_ep_l2_diag_copy_free ?
+ 2885         ep_l2::mechanism_v1::COPY_FREE : config.m_ep_l2_diag_l2_data_free ?
+ 2886         ep_l2::mechanism_v1::L2_DATA_FREE : ep_l2::mechanism_v1::NORMAL);
+ 2887     m_ms_observer.enabled = config.m_ep_l2_ms_observer;
+ 2888     m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());
+
+--- d010:src/gpgpu-sim/l2cache.cc:1305-1337 ---
+ 1305   // This is the frozen sampling point: prior-cycle drains and fills have
+ 1306   // completed, but the current frontend head has not been admitted yet.
+ 1307   l2_char_sample(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+ 1308   if (!m_config->m_L2_config.disabled() && m_config->m_L2_config.m_ep_l2_ms_observer)
+ 1309     m_L2cache->ms_sample();
+ 1310
+ 1311   bool tvd_frontend_handled=false;
+ 1312   if (!m_config->m_L2_config.disabled() && m_L2cache->tvd_enabled() && !m_icnt_L2_queue->empty()) {
+ 1313     auto mf=m_icnt_L2_queue->top(); const auto now=m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle;
+ 1314     const bool eligible=!m_config->m_L2_texure_only || mf->istexture();
+ 1315     const auto result=eligible?m_L2cache->tvd_frontend(mf,now,!m_L2_icnt_queue->full()):l2_cache::TVD_NORMAL;
+ 1316     tvd_frontend_handled=result!=l2_cache::TVD_NORMAL;
+ 1317     if (result==l2_cache::TVD_RESPONSE) {
+ 1318       mf->set_reply(); mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE,now);
+ 1319       ft_record_admission(mf); ep_l2_m0a_record_response_enqueue(); ft_record_response(mf);
+ 1320       m_L2_icnt_queue->push(mf); m_L2cache->tvd_response_commit(mf,now); m_icnt_L2_queue->pop();
+ 1321     }
+ 1322   }
+ 1323
+ 1324   // New L2 texture accesses and/or non-texture accesses.  A full L2-to-DRAM
+ 1325   // FIFO is not a frontend prerequisite: hits, MSHR merges, and locally
+ 1326   // absorbed writes must only wait for resources they actually consume.
+ 1327   if (!tvd_frontend_handled && !m_icnt_L2_queue->empty()) {
+ 1328     mem_fetch *mf = m_icnt_L2_queue->top();
+ 1329     if (!m_config->m_L2_config.disabled() &&
+ 1330         ((m_config->m_L2_texure_only && mf->istexture()) ||
+ 1331          (!m_config->m_L2_texure_only))) {
+ 1332       // L2 is enabled and access is for L2
+ 1333       m_L2cache->ro_frontend_cycle(mf);
+ 1334       if (!ep_l2_ideal_serve_read(
+ 1335               mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+ 1336       l2_access_plan plan;
+ 1337       m_L2cache->preview_access(mf->get_addr(), mf, plan);
+
+--- d010:src/gpgpu-sim/l2cache.cc:1548-1562 ---
+ 1548         const auto ms_attempts_before = m_config->m_L2_config.m_ep_l2_ms_observer ?
+ 1549             m_L2cache->ms_service_attempts() : 0;
+ 1550         enum cache_request_status status =
+ 1551             m_L2cache->access(mf->get_addr(), mf,
+ 1552                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +
+ 1553                                   m_memcpy_cycle_offset,
+ 1554                               events);
+ 1555         if (m_config->m_L2_config.m_ep_l2_ms_observer) {
+ 1556           if (m_L2cache->ms_service_attempts() != ms_attempts_before)
+ 1557             ms_known |= 1ULL << ep_l2::mechanism_v1::DATA_SERVICE;
+ 1558           m_L2cache->ms_observe_frontend(mf,
+ 1559               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
+ 1560               ms_blockers | (status == RESERVATION_FAIL ?
+ 1561                   m_L2cache->ms_failed_access_blockers(mf) : 0),
+ 1562               status != RESERVATION_FAIL, ms_known);
+
+--- d010:src/gpgpu-sim/ep-l2-mechanism-observer.h:45-83 ---
+   45   void observe(unsigned uid, count cycle, count blocked, bool admitted,
+   46                count known = (1ULL << WAIT_REASONS) - 1) {
+   47     if (!enabled) return;
+   48     if (!active_ || uid_ != uid) {
+   49       if (active_) ++head_changes_without_admission;
+   50       active_ = true; uid_ = uid; seen_ = unresolved_ = 0;
+   51       any_blocked_ = false;
+   52     }
+   53     if (admitted) { blocked = 0; known = (1ULL << WAIT_REASONS) - 1; }
+   54     assert((blocked & ~known) == 0);
+   55     if (!admitted && !blocked) ++unclassified_refusal_observations;
+   56     if (blocked && !any_blocked_) {
+   57       any_blocked_ = true; first_any_ = cycle; ++any_to_admission.requests;
+   58     }
+   59     if (blocked) ++any_to_admission.observations;
+   60     for (unsigned r = 0; r < WAIT_REASONS; ++r) {
+   61       const count bit = 1ULL << r;
+   62       if (!(known & bit)) {
+   63         if (unresolved_ & bit) ++waits[r].unknown_while_unresolved;
+   64         continue;  // An earlier native guard can hide this resource check.
+   65       }
+   66       if (blocked & bit) {
+   67         ++waits[r].observations;
+   68         if (!(seen_ & bit)) {
+   69           seen_ |= bit; unresolved_ |= bit; first_[r] = cycle;
+   70           ++waits[r].requests;
+   71         }
+   72       } else if (unresolved_ & bit) {
+   73         assert(cycle >= first_[r]);
+   74         resolve(waits[r], cycle - first_[r]); unresolved_ &= ~bit;
+   75       }
+   76     }
+   77     if (admitted) {
+   78       if (any_blocked_) {
+   79         assert(cycle >= first_any_);
+   80         resolve(any_to_admission, cycle - first_any_);
+   81       }
+   82       active_ = false;
+   83     }
