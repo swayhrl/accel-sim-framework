@@ -1,0 +1,776 @@
+{
+  "status": "PASS_TARGETED_CPU_QUALIFICATION_NOT_FULLSIM_ACCEPTANCE",
+  "profile": {
+    "default": "OFF",
+    "opt_in_env": "DTC_AG7_POLICY_B_PROGRESS=1",
+    "nominal_sample_s": 10,
+    "max_sample_gap_s": 30,
+    "max_progress_age_s": 30,
+    "no_retirement_s": 600,
+    "max_cgroup_high_episode_s": 1800,
+    "wall_deadline_s": 7200,
+    "thresholds": "EX_ANTE_ENGINEERING_BOUNDS_NOT_EXPERIMENTALLY_OPTIMAL",
+    "original_host_io_and_non_io_guards": "RETAINED"
+  },
+  "build": {
+    "status": "FRAMEWORK_ONLY_BUILD_PASS_NOT_EXECUTED",
+    "commands": [
+      {
+        "argv": [
+          "/usr/bin/c++",
+          "-I/workspace/dtc-ag7-policyb-integrated-174-v1/build",
+          "-DDEBUG=0",
+          "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/src",
+          "-I/workspace/worktrees/gpgpu-sim-iscas2027-dtc-lane-ag3-aead-core-174-v1/libcuda",
+          "-I/usr/local/cuda-11.8/include",
+          "-I/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final",
+          "-I/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/ISA_Def",
+          "-I/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/trace-driven",
+          "-I/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/trace-parser",
+          "-I/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/util/tracer_nvbit/tracer_tool",
+          "-O3",
+          "-std=gnu++17",
+          "-o",
+          "/workspace/dtc-ag7-policyb-integrated-174-v1/build/accel-sim.cc.o",
+          "-c",
+          "/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1/gpu-simulator/accel-sim.cc"
+        ],
+        "returncode": 0,
+        "elapsed_s": 5.684889843687415
+      },
+      {
+        "argv": [
+          "/usr/bin/c++",
+          "-O3",
+          "/workspace/dtc-ag7-policyb-integrated-174-v1/build/accel-sim.cc.o",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/CMakeFiles/ag_trace_objects.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/trace-driven/trace_driven.cc.o",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/CMakeFiles/ag_trace_objects.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/trace-parser/trace_parser.cc.o",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/CMakeFiles/accel-sim.out.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/main.cc.o",
+          "-o",
+          "/workspace/dtc-ag7-policyb-integrated-174-v1/build/accel-sim.out",
+          "-Wl,-rpath,/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final",
+          "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so",
+          "-lm",
+          "-lz",
+          "-lGL",
+          "-lzstd",
+          "-lpthread",
+          "-ldl"
+        ],
+        "returncode": 0,
+        "elapsed_s": 0.16877645067870617
+      },
+      {
+        "argv": [
+          "/usr/bin/c++",
+          "-std=gnu++17",
+          "-O2",
+          "-I/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1/gpu-simulator",
+          "/workspace/worktrees/accel-sim-iscas2027-dtc-ag7-policyb-integrated-174-v1/docs/dtc_l1/review_packs/DTC_AG7_POLICYB_INTEGRATED_20261020_V1/producer_header_probe.cc",
+          "-o",
+          "/workspace/dtc-ag7-policyb-integrated-174-v1/build/ag7-progress-header-probe"
+        ],
+        "returncode": 0,
+        "elapsed_s": 0.5682876892387867
+      }
+    ],
+    "binaries": {
+      "accel-sim.out": {
+        "path": "/workspace/dtc-ag7-policyb-integrated-174-v1/build/accel-sim.out",
+        "sha256": "1004880fd7f01f815eb55d3e23fee451d95bb90eef7ecfb19ec8fd9531b9bd6c",
+        "bytes": 301656
+      },
+      "ag7-progress-header-probe": {
+        "path": "/workspace/dtc-ag7-policyb-integrated-174-v1/build/ag7-progress-header-probe",
+        "sha256": "4bdb8e732d0ad663d05836dda3c3b2cde9088df9822eeb4ca767c2603f60c323",
+        "bytes": 27384
+      }
+    },
+    "original_core_library_unchanged": {
+      "path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/combined-final/libcudart.so",
+      "sha256": "aee7c03cf30c2e9c2c9577165e019ce1dde929a668ca84882b5286415989cec2"
+    },
+    "reused_main_and_parser_objects": [
+      {
+        "path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/CMakeFiles/ag_trace_objects.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/trace-driven/trace_driven.cc.o",
+        "sha256": "33930df3149c2d6960c4f6f76a74582245a17a6a231b0d2ba7400e655e587363",
+        "bytes": 292192
+      },
+      {
+        "path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/CMakeFiles/ag_trace_objects.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/trace-parser/trace_parser.cc.o",
+        "sha256": "93ac7bafbeb3c85e397e86621c3fe8293fd2efafa8f5a0f53a2e4c2dcd6699a0",
+        "bytes": 108512
+      },
+      {
+        "path": "/workspace/dtc-lane-ag3-aead-screen-174-v1/build/trace-final/CMakeFiles/accel-sim.out.dir/workspace/worktrees/accel-sim-iscas2027-dtc-lane-ag3-aead-screen-174-v1/gpu-simulator/main.cc.o",
+        "sha256": "a6127dae5cf23e5348bb93dc82b0741a21c1eb6cae7537bc13a2047fcb2a06c8",
+        "bytes": 9640
+      }
+    ],
+    "Core_compile_starts": 0,
+    "simulator_starts": 0,
+    "probe_execution_starts": 0,
+    "host_io_warning_exception": false,
+    "utc": "2026-10-20T02:41:11.417718+00:00"
+  },
+  "actual_qualification": {
+    "status": "W2_TARGETED_CPU_PROTOCOL_AND_GUARD_PASS",
+    "pure_tests": 9,
+    "native_probe_exit": 0,
+    "guard_cases": [
+      {
+        "mode": "normal",
+        "guard_status": "PASS_GUARDED_NATURAL_EXIT0",
+        "root": {
+          "pid": 1508033,
+          "start_ticks": 921651813,
+          "fork_monotonic_ns": 9216518134168773,
+          "purpose": "CPU_FIXTURE",
+          "actual_fork": true,
+          "real_simulator": false
+        },
+        "bindings": [
+          {
+            "proven_actual_root": true,
+            "pid": 1508033,
+            "start_ticks": 921651813,
+            "generation": "DECLARED_SYNTHETIC_GUARD_normal",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        ],
+        "actual_records": [
+          {
+            "v": 1,
+            "pid": 1508033,
+            "start_ticks": 921651813,
+            "generation": "DECLARED_SYNTHETIC_GUARD_normal",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 1,
+            "mono_ns": 9216518638907493,
+            "epoch": 0,
+            "phase_epoch": 1,
+            "phase": "INIT",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 42,
+            "end": "NONE"
+          },
+          {
+            "v": 1,
+            "pid": 1508033,
+            "start_ticks": 921651813,
+            "generation": "DECLARED_SYNTHETIC_GUARD_normal",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 2,
+            "mono_ns": 9216518639992707,
+            "epoch": 0,
+            "phase_epoch": 2,
+            "phase": "SIMULATE",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 42,
+            "end": "NONE"
+          },
+          {
+            "v": 1,
+            "pid": 1508033,
+            "start_ticks": 921651813,
+            "generation": "DECLARED_SYNTHETIC_GUARD_normal",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 3,
+            "mono_ns": 9216518641007120,
+            "epoch": 0,
+            "phase_epoch": 2,
+            "phase": "SIMULATE",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 43,
+            "end": "NONE"
+          },
+          {
+            "v": 1,
+            "pid": 1508033,
+            "start_ticks": 921651813,
+            "generation": "DECLARED_SYNTHETIC_GUARD_normal",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 4,
+            "mono_ns": 9216518642069064,
+            "epoch": 0,
+            "phase_epoch": 3,
+            "phase": "BOUNDARY",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 43,
+            "end": "NATURAL"
+          }
+        ],
+        "terminal_packet": "NATURAL",
+        "actual_exit_instances": [
+          {
+            "pid": 1508033,
+            "start_ticks": 921651813,
+            "returncode": 0
+          }
+        ],
+        "controlled_root_SIGKILL": false,
+        "current_owned_live": 0,
+        "simulator_starts": 0,
+        "passed": true,
+        "scope": "DECLARED_SYNTHETIC_COUNTERS_REAL_NATIVE_PROCESS_CREDENTIALS_PTRACE_FORK_REAP"
+      },
+      {
+        "mode": "conflict",
+        "guard_status": "STOP_GUARDED_PROCESS",
+        "root": {
+          "pid": 1508174,
+          "start_ticks": 921652912,
+          "fork_monotonic_ns": 9216529119679518,
+          "purpose": "CPU_FIXTURE",
+          "actual_fork": true,
+          "real_simulator": false
+        },
+        "bindings": [
+          {
+            "proven_actual_root": true,
+            "pid": 1508174,
+            "start_ticks": 921652912,
+            "generation": "DECLARED_SYNTHETIC_GUARD_conflict",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        ],
+        "actual_records": [
+          {
+            "v": 1,
+            "pid": 1508174,
+            "start_ticks": 921652912,
+            "generation": "DECLARED_SYNTHETIC_GUARD_conflict",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 1,
+            "mono_ns": 9216529646383250,
+            "epoch": 0,
+            "phase_epoch": 1,
+            "phase": "INIT",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 42,
+            "end": "NONE"
+          },
+          {
+            "v": 1,
+            "pid": 1508174,
+            "start_ticks": 921652912,
+            "generation": "DECLARED_SYNTHETIC_GUARD_conflict",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 2,
+            "mono_ns": 9216529647481484,
+            "epoch": 0,
+            "phase_epoch": 2,
+            "phase": "SIMULATE",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 42,
+            "end": "NONE"
+          },
+          {
+            "v": 1,
+            "pid": 1508174,
+            "start_ticks": 921652912,
+            "generation": "DECLARED_SYNTHETIC_GUARD_conflict",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 3,
+            "mono_ns": 9216529648546188,
+            "epoch": 0,
+            "phase_epoch": 2,
+            "phase": "SIMULATE",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 43,
+            "end": "NONE"
+          },
+          {
+            "v": 1,
+            "pid": 1508174,
+            "start_ticks": 921652912,
+            "generation": "DECLARED_SYNTHETIC_GUARD_conflict",
+            "input": "0000000000000000000000000000000000000000000000000000000000000000",
+            "roi": "1111111111111111111111111111111111111111111111111111111111111111",
+            "seq": 4,
+            "mono_ns": 9216529649607131,
+            "epoch": 0,
+            "phase_epoch": 3,
+            "phase": "BOUNDARY",
+            "stream_id": -1,
+            "stream_scope": "whole_input",
+            "completed": 43,
+            "end": "NATURAL"
+          }
+        ],
+        "terminal_packet": "NATURAL",
+        "actual_exit_instances": [
+          {
+            "pid": 1508174,
+            "start_ticks": 921652912,
+            "returncode": -9
+          }
+        ],
+        "controlled_root_SIGKILL": true,
+        "current_owned_live": 0,
+        "simulator_starts": 0,
+        "passed": true,
+        "scope": "DECLARED_SYNTHETIC_COUNTERS_REAL_NATIVE_PROCESS_CREDENTIALS_PTRACE_FORK_REAP"
+      }
+    ],
+    "admissions": [
+      {
+        "name": "protocol_tests_admission",
+        "first_ns": 9216486100294499,
+        "second_ns": 9216496368350987
+      },
+      {
+        "name": "native_probe_admission",
+        "first_ns": 9216496600432082,
+        "second_ns": 9216506876158071
+      },
+      {
+        "name": "guard_normal_admission",
+        "first_ns": 9216507802108105,
+        "second_ns": 9216518091139417
+      },
+      {
+        "name": "guard_conflict_admission",
+        "first_ns": 9216518799991342,
+        "second_ns": 9216529074868653
+      }
+    ],
+    "simulator_starts": 0,
+    "Core_or_model_execution_starts": 0,
+    "foreign_signals": 0,
+    "controlled_own_CPU_SIGKILL": 1,
+    "old_guard_source_modified": false
+  },
+  "strict_heavy_admissions": [
+    {
+      "role": "protocol_tests_admission",
+      "admission": {
+        "status": "PASS_STRICT_HEAVY_R2",
+        "checks": {
+          "1_original174": true,
+          "1_host_memory_headroom": true,
+          "1_cgroup_memory_headroom": true,
+          "1_disk": true,
+          "1_authority": true,
+          "1_host_memory": true,
+          "1_host_io": true,
+          "1_cgroup_memory": true,
+          "1_cgroup_io": true,
+          "1_self_instance_unchanged": true,
+          "1_images_unchanged_before_entry": true,
+          "1_output_device": true,
+          "1_expected_writes": true,
+          "2_original174": true,
+          "2_host_memory_headroom": true,
+          "2_cgroup_memory_headroom": true,
+          "2_disk": true,
+          "2_authority": true,
+          "2_host_memory": true,
+          "2_host_io": true,
+          "2_cgroup_memory": true,
+          "2_cgroup_io": true,
+          "2_self_instance_unchanged": true,
+          "2_images_unchanged_before_entry": true,
+          "2_output_device": true,
+          "2_expected_writes": true,
+          "gap_ge10s": true,
+          "host_oom_same": true,
+          "cgroup_oom_same": true,
+          "output_device_same": true
+        }
+      },
+      "samples": [
+        {
+          "utc": "2026-10-20T02:48:34.757422+00:00",
+          "monotonic_ns": 9216486100294499,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666303601\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294175375\n",
+              "io": "some avg10=0.00 avg60=0.08 avg300=0.44 total=175528959357\nfull avg10=0.00 avg60=0.00 avg300=0.28 total=155106658380\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726877\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391114\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146180\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842590\n"
+            }
+          },
+          "host_available": 171832217600,
+          "cgroup_headroom": 214486663168,
+          "disk_free": 16179744768,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        },
+        {
+          "utc": "2026-10-20T02:48:45.025478+00:00",
+          "monotonic_ns": 9216496368350987,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666305040\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294175789\n",
+              "io": "some avg10=0.00 avg60=0.06 avg300=0.42 total=175528988594\nfull avg10=0.00 avg60=0.00 avg300=0.27 total=155106662827\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726877\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391114\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146180\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842590\n"
+            }
+          },
+          "host_available": 173174267904,
+          "cgroup_headroom": 214489341952,
+          "disk_free": 16164794368,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        }
+      ]
+    },
+    {
+      "role": "native_probe_admission",
+      "admission": {
+        "status": "PASS_STRICT_HEAVY_R2",
+        "checks": {
+          "1_original174": true,
+          "1_host_memory_headroom": true,
+          "1_cgroup_memory_headroom": true,
+          "1_disk": true,
+          "1_authority": true,
+          "1_host_memory": true,
+          "1_host_io": true,
+          "1_cgroup_memory": true,
+          "1_cgroup_io": true,
+          "1_self_instance_unchanged": true,
+          "1_images_unchanged_before_entry": true,
+          "1_output_device": true,
+          "1_expected_writes": true,
+          "2_original174": true,
+          "2_host_memory_headroom": true,
+          "2_cgroup_memory_headroom": true,
+          "2_disk": true,
+          "2_authority": true,
+          "2_host_memory": true,
+          "2_host_io": true,
+          "2_cgroup_memory": true,
+          "2_cgroup_io": true,
+          "2_self_instance_unchanged": true,
+          "2_images_unchanged_before_entry": true,
+          "2_output_device": true,
+          "2_expected_writes": true,
+          "gap_ge10s": true,
+          "host_oom_same": true,
+          "cgroup_oom_same": true,
+          "output_device_same": true
+        }
+      },
+      "samples": [
+        {
+          "utc": "2026-10-20T02:48:45.257559+00:00",
+          "monotonic_ns": 9216496600432082,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666305045\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294175793\n",
+              "io": "some avg10=0.00 avg60=0.06 avg300=0.42 total=175528989363\nfull avg10=0.00 avg60=0.00 avg300=0.27 total=155106662977\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726877\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391114\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146180\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842590\n"
+            }
+          },
+          "host_available": 172993155072,
+          "cgroup_headroom": 214488182784,
+          "disk_free": 16164356096,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        },
+        {
+          "utc": "2026-10-20T02:48:55.533284+00:00",
+          "monotonic_ns": 9216506876158071,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666306211\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294176206\n",
+              "io": "some avg10=0.00 avg60=0.05 avg300=0.41 total=175529018685\nfull avg10=0.00 avg60=0.00 avg300=0.26 total=155106668335\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726877\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391114\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146180\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842590\n"
+            }
+          },
+          "host_available": 171750350848,
+          "cgroup_headroom": 214486958080,
+          "disk_free": 16156430336,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        }
+      ]
+    },
+    {
+      "role": "guard_normal_admission",
+      "admission": {
+        "status": "PASS_STRICT_HEAVY_R2",
+        "checks": {
+          "1_original174": true,
+          "1_host_memory_headroom": true,
+          "1_cgroup_memory_headroom": true,
+          "1_disk": true,
+          "1_authority": true,
+          "1_host_memory": true,
+          "1_host_io": true,
+          "1_cgroup_memory": true,
+          "1_cgroup_io": true,
+          "1_self_instance_unchanged": true,
+          "1_images_unchanged_before_entry": true,
+          "1_output_device": true,
+          "1_expected_writes": true,
+          "2_original174": true,
+          "2_host_memory_headroom": true,
+          "2_cgroup_memory_headroom": true,
+          "2_disk": true,
+          "2_authority": true,
+          "2_host_memory": true,
+          "2_host_io": true,
+          "2_cgroup_memory": true,
+          "2_cgroup_io": true,
+          "2_self_instance_unchanged": true,
+          "2_images_unchanged_before_entry": true,
+          "2_output_device": true,
+          "2_expected_writes": true,
+          "gap_ge10s": true,
+          "host_oom_same": true,
+          "cgroup_oom_same": true,
+          "output_device_same": true
+        }
+      },
+      "samples": [
+        {
+          "utc": "2026-10-20T02:48:56.459235+00:00",
+          "monotonic_ns": 9216507802108105,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666306306\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294176228\n",
+              "io": "some avg10=0.00 avg60=0.05 avg300=0.40 total=175529021558\nfull avg10=0.00 avg60=0.00 avg300=0.26 total=155106668867\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726927\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391164\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146321\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842732\n"
+            }
+          },
+          "host_available": 171579826176,
+          "cgroup_headroom": 214487556096,
+          "disk_free": 16153993216,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        },
+        {
+          "utc": "2026-10-20T02:49:06.748267+00:00",
+          "monotonic_ns": 9216518091139417,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666307294\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294176802\n",
+              "io": "some avg10=0.00 avg60=0.04 avg300=0.39 total=175529049242\nfull avg10=0.00 avg60=0.00 avg300=0.25 total=155106673379\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726927\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391164\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146321\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842732\n"
+            }
+          },
+          "host_available": 171221082112,
+          "cgroup_headroom": 214487613440,
+          "disk_free": 16145608704,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        }
+      ]
+    },
+    {
+      "role": "guard_conflict_admission",
+      "admission": {
+        "status": "PASS_STRICT_HEAVY_R2",
+        "checks": {
+          "1_original174": true,
+          "1_host_memory_headroom": true,
+          "1_cgroup_memory_headroom": true,
+          "1_disk": true,
+          "1_authority": true,
+          "1_host_memory": true,
+          "1_host_io": true,
+          "1_cgroup_memory": true,
+          "1_cgroup_io": true,
+          "1_self_instance_unchanged": true,
+          "1_images_unchanged_before_entry": true,
+          "1_output_device": true,
+          "1_expected_writes": true,
+          "2_original174": true,
+          "2_host_memory_headroom": true,
+          "2_cgroup_memory_headroom": true,
+          "2_disk": true,
+          "2_authority": true,
+          "2_host_memory": true,
+          "2_host_io": true,
+          "2_cgroup_memory": true,
+          "2_cgroup_io": true,
+          "2_self_instance_unchanged": true,
+          "2_images_unchanged_before_entry": true,
+          "2_output_device": true,
+          "2_expected_writes": true,
+          "gap_ge10s": true,
+          "host_oom_same": true,
+          "cgroup_oom_same": true,
+          "output_device_same": true
+        }
+      },
+      "samples": [
+        {
+          "utc": "2026-10-20T02:49:07.457119+00:00",
+          "monotonic_ns": 9216518799991342,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666307339\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294176838\n",
+              "io": "some avg10=0.00 avg60=0.04 avg300=0.39 total=175529050974\nfull avg10=0.00 avg60=0.00 avg300=0.25 total=155106673581\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726927\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391164\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146334\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842745\n"
+            }
+          },
+          "host_available": 171135619072,
+          "cgroup_headroom": 214490722304,
+          "disk_free": 16145195008,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        },
+        {
+          "utc": "2026-10-20T02:49:17.731997+00:00",
+          "monotonic_ns": 9216529074868653,
+          "host": "huangrulin-174",
+          "uid": 0,
+          "pressure": {
+            "host": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=41666307930\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=41294177191\n",
+              "io": "some avg10=0.00 avg60=0.03 avg300=0.37 total=175529080058\nfull avg10=0.00 avg60=0.00 avg300=0.24 total=155106678860\n"
+            },
+            "cgroup": {
+              "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9634726927\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=9599391164\n",
+              "io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22539146334\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22236842745\n"
+            }
+          },
+          "host_available": 171527348224,
+          "cgroup_headroom": 214486437888,
+          "disk_free": 16137945088,
+          "output_filesystem_device": 156,
+          "host_oom_kill": 366,
+          "cgroup_events": {
+            "low": 0,
+            "high": 0,
+            "max": 7298,
+            "oom": 0,
+            "oom_kill": 17,
+            "oom_group_kill": 0
+          },
+          "authority_status": "PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY"
+        }
+      ]
+    }
+  ],
+  "actual_result_sha256": "aa0f5609eda218f4bffca4942ca88e3dd470dc9c547f3703cd52542dd39c8f54",
+  "test_source_sha256": {
+    "prepared_ag7/test_integration.py": "c8423e739d88815f8bda72e7768383c857ae4d1072fae25aea32d1af6868ef6b",
+    "prepared_ag7/telemetry_receiver.py": "deb0ff95dde6e354fa8d4ace8e1f925a1b839964751e6a645732ffc272d1bcd7",
+    "prepared_ag7/runtime_policy_b.py": "2cc0961a648ddc93679002e70fc129ab7fd909104024a4ad6589d486ec6249e5",
+    "producer_header_probe.cc": "920636b55ca7a44d40701fc0b03987ac253ec685b35d5e07ac2e7f0452ad0e3a",
+    "prepared_ag7/vendor/guarded_process.py": "8bc3ca6839f9d87b8d8cb506ad18fc3f383756c7bf883068ba133ee3761ff9c7"
+  },
+  "scope": "CPU counters/resources declared synthetic; process/fork/PID/startticks/SCM credentials/mapper/actualexit/reap real; no simulator or trace execution; no production rules modified",
+  "limitations": [
+    "Not a measured comparator",
+    "Not production I/O fairness qualification",
+    "First AG7 AE_GEMM remains its own real end-to-end qualification"
+  ]
+}
