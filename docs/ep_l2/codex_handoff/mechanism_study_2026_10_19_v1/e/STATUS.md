@@ -1,4 +1,4 @@
-# Lane E2 — CONV_CONTROLS_BATCH_2_TERMINAL
+# Lane E2 — CONV_CONTROLS_BATCH_3_QUALIFIED_ADMISSION
 
 Original174; originalT0=1792414193; actual24/40,remaining16,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
