@@ -179,6 +179,9 @@ def views(ledger,binding,input_holds=None):
         interaction=int(grid['F']['cycles'])-int(grid['WV_T']['cycles'])-int(grid['WV_M']['cycles'])+int(grid['F_MINUS_R']['cycles'])
     return {'main':main,'comparisons':results,'coverage':coverage,
       'summary':{'seven_input_geomean_S_over_F':mean,'current_accepted_main_pairs':len(accepted),
+        'current_accepted_subset_geomean_S_over_F':math.exp(sum(math.log(r['ratio_left_over_right']) for r in accepted)/len(accepted)) if accepted else UNKNOWN,
+        'current_accepted_subset_members':[r['workload'] for r in accepted],
+        'subset_mean_is_not_complete_seven_mean':len(accepted)!=7,
         'required_main_pairs':7,'actual_starts_from_E':ledger.get('actual_starts'),
         'authorized_cumulative_max':40,'counter_reset':False,'analysis_is_not_qualification':True,
         'final_binary':(binding or {}).get('source_identity',{}).get('binary_sha256',UNKNOWN),
@@ -359,6 +362,42 @@ def render(result,out):
     for ext in ['pdf','png']:fig.savefig(out/('MAIN_SEVEN_S_F.'+ext),dpi=180)
     plt.close(fig)
 
+def performance_table(result):
+    rows=[]
+    for row in result['main']:
+        if row['status']!='E_ACCEPTED_D_ANALYZED':continue
+        r={k:row[k] for k in ['workload','pair_id','cycles_left','cycles_right','ratio_left_over_right',
+          'cycles_left_minus_right','binary','core','framework','vendor','trace']}
+        r.update(speedup_percent=100*(row['ratio_left_over_right']-1),
+          F_cycle_change_percent_vs_S=100*(row['cycles_right']/row['cycles_left']-1),
+          evidence_scope='E_CURRENT_ACCEPTED_FULL_APPLICATION_SAME_MAIN61')
+        for side in ['baseline','variant']:
+            for k in ['attempt_id','run_key','config','qualification_id','receipt_sha256','instructions']:
+                r[side+'_'+k]=row[side+'_'+k]
+        rows.append(r)
+    return rows
+
+def render_accepted_performance(result,out):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    rows=performance_table(result)
+    if not rows:return
+    fig,ax=plt.subplots(figsize=(8,3.5));fig.subplots_adjust(bottom=.25,top=.82,left=.12,right=.97)
+    labels=[{'convolutionSeparable':'Conv','cfd_097k':'CFD','dwt2d':'DWT2D','sad':'SAD'}.get(r['workload'],r['workload']) for r in rows]
+    vals=[r['speedup_percent'] for r in rows]
+    ax.bar(labels,vals,color=['#416d86' if v>=0 else '#a65b50' for v in vals],width=.55)
+    ax.axhline(0,color='#777777',lw=.8);ax.set_ylim(min([-.2]+vals)-.25,max([.2]+vals)+.3)
+    for n,v in enumerate(vals):ax.text(n,v+(.035 if v>=0 else -.045),f'{v:+.3f}%',ha='center',va='bottom' if v>=0 else 'top',fontsize=9)
+    ax.set_ylabel('Speedup = (S cycles / F cycles - 1) %');ax.spines[['top','right']].set_visible(False)
+    ax.set_title(f'{len(rows)} E-accepted S/F pairs | same main61 | unfavorable results retained',fontsize=11)
+    gm=result['summary']['current_accepted_subset_geomean_S_over_F']
+    fig.text(.5,.045,f'Current {len(rows)}-pair subset GM = {gm:.6f} ({100*(gm-1):+.3f}%).\n'
+      'Original seven-workload denominator remains 7; complete seven-workload GM is UNKNOWN.'
+      if len(rows)!=7 else f'Complete seven-workload GM = {gm:.6f}',ha='center',fontsize=9)
+    for ext in ['pdf','png']:fig.savefig(out/('CURRENT_ACCEPTED_PERFORMANCE.'+ext),dpi=180)
+    plt.close(fig)
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--render',action='store_true');p.add_argument('--out',type=Path,default=OUT)
@@ -379,6 +418,7 @@ def main():
     hold_path=OUT.parent/'input_suitability_20261020_r1/INPUT_APPLICABILITY.json'
     holds=json.loads(hold_path.read_text()).get('holds',{}) if hold_path.exists() else {}
     result=views(ledger,binding,holds)
+    csvout(a.out/'CURRENT_ACCEPTED_PERFORMANCE.csv',performance_table(result))
     (a.out/'E_PAIR_DISPLAY_PROJECTION.json').write_text(json.dumps(binding,indent=2)+'\n')
     mechanism_rows=[]
     for row in result['main']:
@@ -401,7 +441,9 @@ def main():
     if not history or history[-1]['fingerprint']!=fingerprint:
         history.append({'fingerprint':fingerprint,'at_utc':result['summary']['observed_utc'],'comparisons':result['comparisons']})
         state_path.write_text(json.dumps(history,ensure_ascii=False,indent=2)+'\n')
-    if a.render:render(result,a.out)
+    if a.render:
+        render(result,a.out)
+        render_accepted_performance(result,a.out)
     (a.out/'CURRENT_ARTIFACTS.json').write_text(json.dumps({
       'current_pair_ids':[r['pair_id'] for r in result['main'] if r['status']=='E_ACCEPTED_D_ANALYZED'],
       'current_workloads':[r['workload'] for r in result['main'] if r['status']=='E_ACCEPTED_D_ANALYZED'],

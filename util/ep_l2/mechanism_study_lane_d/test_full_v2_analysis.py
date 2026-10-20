@@ -51,6 +51,9 @@ class FullV2(unittest.TestCase):
         self.assertEqual(r['main'][0]['cycles_left_minus_right'],-20)
         self.assertEqual(r['main'][0]['trigger'],'UNKNOWN')
         self.assertEqual(r['summary']['seven_input_geomean_S_over_F'],'UNKNOWN')
+        self.assertAlmostEqual(r['summary']['current_accepted_subset_geomean_S_over_F'],100/120)
+        self.assertEqual(r['summary']['current_accepted_subset_members'],['sad'])
+        self.assertTrue(r['summary']['subset_mean_is_not_complete_seven_mean'])
     def test_full_seven_common_release_geomean(self):
         for w in a.WORKLOADS:self.pair(w,cycles=(100,125))
         self.assertAlmostEqual(a.views(self.ledger,self.binding)['summary']['seven_input_geomean_S_over_F'],.8)
