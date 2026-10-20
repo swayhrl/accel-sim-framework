@@ -1,0 +1,21 @@
+{
+  "E2_remote_head_checked": "c9a3622eee6e73371fc1c4add2bae4bea6e123ee",
+  "code_or_registry_changes": false,
+  "manifest_plan": "Validate E2 Git/bridge raw identity; nofollow source dirs, exact bounded lstat only signed paths; reject symlink/hardlink/extra path; bind source namespace/dev and new transaction. Preserve protected data until actual owner permission.",
+  "new_txid": "NOT_ALLOCATED_UNTIL_EXACT_OWNER_SELECTOR_AND_TARGET_RESERVATION",
+  "not_P9_txid": "574747b05622a2a0f3ef1a58c11044ee724e5e585d0edd5f0fc32937eda12e6b",
+  "not_TLS_other24": true,
+  "owner_required_fields": [
+    "E2 signing owner and immutable published Git commit",
+    "exact absolute source root and normalized relative file/directory paths",
+    "current dev/inode/nlink/size/uid/gid/mode/mtime_ns/ctime_ns/allocated",
+    "known full SHA and provenance, or exact permission for bounded fresh SHA",
+    "explicit COLD status, current/future-reader retirement and required retention/recovery",
+    "owner consent distinguishes archive preparation from exact post-restore source release"
+  ],
+  "restore_plan": "True164 durable whole archive + fresh ABSENT qualified native restore, full per-file SHA/size/uid/gid/mode/mtime_ns and every directory; persist exact proofs to true164+Git; no tmpfs as durable archive.",
+  "schema": "EP_L2_COLD_INDEPENDENT_SOURCE_PREPARATION_V1",
+  "source_release": "SOURCE_KEEP. Requires exact NEW transaction complete restore proofs AND E2 explicit owner consent AND independently authorized release resources, current readers, qualified INTENT/DONE journal and measured df. Target receipt alone never authorizes source delete.",
+  "status": "AWAITING_EXACT_E2_OWNER_SIGNED_SELECTOR_NO_SOURCE_PAYLOAD_READ",
+  "transfer_plan": "Independent target reservation/lease after P9 releases bridge; no Source tar or full staging; <=1MiB buffer, <=30MiB/s aggregate, <=128MiB exact chunks, <=256MiB bridge; stream source to bridge/true164; each batch resource/identity and current/future readers; no admission under P9 COPY5 or other24 controller."
+}
