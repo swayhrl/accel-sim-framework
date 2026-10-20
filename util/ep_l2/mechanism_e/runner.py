@@ -232,6 +232,12 @@ def accept_pair(coord,left_id,right_id,pair_id,mechanism="UNSPECIFIED"):
             require(digest(entry['path'])==entry['sha256'],'accepted endpoint changed')
             record=json.loads(Path(entry['path']).read_text())
             require(record['status']=='COMPLETE_VALID' and record['independent_acceptance']=='PASS','endpoint not accepted')
+            if 'native_exit_evidence' in record:
+                native=record['native_exit_evidence'];path=Path(entry['path']).parent/'NATIVE_EXIT.json'
+                require(digest(path)==record['native_exit_receipt_sha256'] and
+                        json.loads(path.read_text())==native,'accepted native exit evidence changed')
+                require(native['exit_code']==0 and native['wait_status']==0 and native['stop_reason'] is None,
+                        'accepted native exit is not an unguarded normal exit0')
             coord.require_no_hold(item,record['qualification_id'])
             qualified=item['qualifications'][record['qualification_id']]
             require(digest(qualified['path'])==qualified['sha256'],'current qualification withdrawn/changed')

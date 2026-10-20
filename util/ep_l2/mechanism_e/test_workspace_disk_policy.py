@@ -91,7 +91,13 @@ class WorkspacePolicyTests(unittest.TestCase):
         self.amend();directory=self.output/'retained_failure'
         attempt=dict(attempt_id='CONTROL',run_key='key',result_directory=str(directory),maximum_result_bytes=c.GIB,**d.lease_policy(self.coord.snapshot()))
         proc=Mock();proc.poll.return_value=None;proc.returncode=-15;proc.pid=123
+        native_exit={'exit_code':-15,'wait_status':15,'stop_reason':None}
+        proc.exit_evidence.return_value=native_exit
         fake=Mock();fake.reserve_application.return_value=attempt;fake.start_application.return_value=proc
+        def started(*args,**kwargs):
+            c.write_json(directory/'NATIVE_EXIT.json',native_exit)
+            return proc
+        fake.start_application.side_effect=started
         q=self.coord.snapshot()['qualifications'];fake.snapshot.return_value={'qualifications':q,'attempts':[dict(attempt_id='CONTROL',state='RUNNING')]}
         spec=dict(self.spec,configs=[],auxiliary_assets=[],trace_files=[dict(name='entry',path=str(self.bin))],entry_trace_name='entry',environment={},timeout_seconds=60)
         audit={'identity':self.identity,'comparison_invariants_sha256':'same','configs':[]}

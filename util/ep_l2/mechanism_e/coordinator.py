@@ -584,6 +584,20 @@ class Coordinator:
                 require(receipt['independent_acceptance']=='PASS' and receipt['complete_input_verified'] is True,
                         'terminal is not independently accepted')
                 require(receipt['validation']['status']=='PASS','summary closure failed')
+                if 'exit_collector_process' in attempt:
+                    native=receipt.get('native_exit_evidence')
+                    require(isinstance(native,dict),'durable native exit receipt missing')
+                    path=Path(attempt['result_directory'])/'NATIVE_EXIT.json'
+                    require(digest(path)==receipt.get('native_exit_receipt_sha256') and
+                            json.loads(path.read_text())==native,'durable native exit changed')
+                    require(native['native_process']==attempt['process'] and
+                            native['guardian_process']==attempt['exit_collector_process'] and
+                            native['exit_code']==0 and native['wait_status']==0 and
+                            native['stop_reason'] is None and native['released_to_native'],
+                            'native exit/owner/start proof does not qualify')
+                    require(native['binding']['attempt_id']==attempt_id and
+                            native['binding']['run_key']==attempt['run_key'] and
+                            native['binding']['identity']==attempt['identity'],'native exit binding mismatch')
                 item['accepted_results'][attempt_id]={'path':str(Path(receipt_path).resolve()),'sha256':digest(receipt_path),
                     'run_key':attempt['run_key'],'identity':attempt['identity'],'qualification_id':attempt['qualification_id']}
             attempt.update(state=status,finished_unix=time.time(),receipt_path=str(Path(receipt_path).resolve()),
