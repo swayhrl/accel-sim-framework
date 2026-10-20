@@ -8,7 +8,7 @@ Preflight 仍须两次完整 host+cgroup R2，间隔≥10s：两范围 I/O full 
 
 | 冻结条件 | 保留方式与原阈值 | 原型责任边界 |
 |---|---|---|
-| 输出/预计增长 | free≤5GiB立即停止；预计增长后≤5GiB保守拒绝；旧64MiB expected、原stdout/stderr/evidence总量上界不隐式增加 | 原型独立检查free和expected数字，其余`disk_growth`由可信上游提供 |
+| 输出/预计增长 | free≤5GiB立即停止；预计增长后≤5GiB保守拒绝；旧64MiB expected、原stdout≤256MiB、stderr≤16MiB、maps+streams+monitor总证据≤2GiB不增加（冻结guard在超出上界时停止） | 原型独立检查free和expected数字，其余`disk_growth`由可信上游提供 |
 | OOM | host oom_kill、cgroup oom/oom_kill变化立即停止 | `oom`谓词，缺失不是通过 |
 | 内存/交换 | host或cg headroom<8GiB停止；cg swap相对baseline增长≥16MiB，三个≥10s资格点停止；host全局单页swap只作上下文 | `memory/swap`冻结状态机由上游保留，不由原型重新实现 |
 | 内存 PSI | host/cg full avg10>10%，三个≥30s资格点停止 | `memory_psi_persistence`；不可把它随I/O告警一起去掉 |
