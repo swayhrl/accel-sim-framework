@@ -1,6 +1,6 @@
 # Lane E2 — CONV_CONTROLS_BATCH_3_QUALIFIED_ADMISSION
 
-Original174; originalT0=1792414193; actual24/40,remaining16,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
+Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
 
 | Main S/F | S cycles | F cycles | S/F |
 |---|---:|---:|---:|
@@ -18,4 +18,6 @@ Original174; originalT0=1792414193; actual24/40,remaining16,contingency8/8 consu
 
 New results3991912982B, old+new18301489366B; growth since20-start control baseline384550398B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
-Remaining original qualified controls: WV_M,WV_T. DWT/CFD four-cell revision stays proposal-only until explicit user approval, distinct E qualification and live capacity checks. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+Remaining original qualified controls: WV_M,WV_T. DWT/CFD exact four-cell revision is USER APPROVED and separately E-qualified (58c54e0); NOT adopted or launched. It awaits all six Conv controls accepting, original controller STOPPED, exact matrix adoption and the full1.5GiB/live gates. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+
+Actual batch3 start checkpoint: WV_M and WV_T are RUNNING under original controller,26/40,remaining14. Accepted controls4, MAIN pairs4. Cumulative new results4162872048B,total18472448432B,baseline growth555509464B. All old results/HOLD and original budgets/cutoffs retained.
