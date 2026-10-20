@@ -1,0 +1,343 @@
+{
+  "current_affected_native": [
+    {
+      "actual_exit": 0,
+      "binary_sha256": "e76228627acf6ece5e0b85b273de795048b8cb45f789b034ff59e725d562ddf8",
+      "case": "new_warm4096_WAD128_drain",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-wad-pending-r41/ep_l2_ms_victim_production",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "--r39-pending-warm"
+      ],
+      "expectation_verified": true,
+      "expected_exit": 0,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1544361,
+        "start_ticks": 921898732
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_warm4096_WAD128_drain.native.log",
+      "raw_log_sha256": "82728cbd5d3213958a7f8aa5de4a1117e3d4053d9bec18d98d24f8362dd1e5bb",
+      "receipt_path": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_warm4096_WAD128_drain.json",
+      "receipt_sha256": "0b308e3e2bdcfefd7b90c8a8166767163a3ad539e605e4e6fb42978d1749c0dd",
+      "terminal_checks": {
+        "PASS production_WAD128_lower_full_no_partial_mutation_then_set_done_epoch_drain": true,
+        "max_grants_per_physical_bank_cycle=1": true
+      }
+    },
+    {
+      "actual_exit": 0,
+      "binary_sha256": "0eb67bb679e0c9777eac5d621a10eef531b916a7572c827f8ad339d150506e8f",
+      "case": "new_A1_UID_Bank_mode1",
+      "command": [
+        "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/ep_l2_potential_a1_injected_read",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "expectation_verified": true,
+      "expected_exit": 0,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1544415,
+        "start_ticks": 921898959
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_A1_UID_Bank_mode1.native.log",
+      "raw_log_sha256": "9e249e797aa0de08cab6e7ecb1000f84cde3d8c425210d13de3f974a65e245fc",
+      "receipt_path": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_A1_UID_Bank_mode1.json",
+      "receipt_sha256": "9b2b7d2b54cabac09aeebfd3b8c7cbb3eb60937559191dc10c5f51a4121daa26",
+      "terminal_checks": {
+        "A1 production 16way cross-cycle fill/exact-once/versions/lower-accept/set_done/bank/drain mode=1 C=16 PASS": true
+      }
+    },
+    {
+      "actual_exit": 0,
+      "binary_sha256": "0eb67bb679e0c9777eac5d621a10eef531b916a7572c827f8ad339d150506e8f",
+      "case": "new_A1_UID_Bank_mode2",
+      "command": [
+        "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/ep_l2_potential_a1_injected_read",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "expectation_verified": true,
+      "expected_exit": 0,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1544436,
+        "start_ticks": 921899011
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_A1_UID_Bank_mode2.native.log",
+      "raw_log_sha256": "ec67c8423ef1dc29f489e59de7ea57a6c7c745bbd242a424feac11458e8a8abf",
+      "receipt_path": "/workspace/ep_l2_ms20261019_e_results/E_WAD_ROLLBACK_NATIVE_REPAIR_r1/new_A1_UID_Bank_mode2.json",
+      "receipt_sha256": "dbfd21e01c61588ccc04df26dda3953956fc385657f46712a82fae77bd5f56f0",
+      "terminal_checks": {
+        "A1 production 16way cross-cycle fill/exact-once/versions/lower-accept/set_done/bank/drain mode=2 C=16 PASS": true
+      }
+    }
+  ],
+  "current_native_manifest": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_WAD_ROLLBACK_NATIVE_REPAIR_r1/INDEPENDENT_NATIVE_RESULT.json",
+    "sha256": "2e578de4314470298791e07eebe91bf36c3ca60cfb93084418fb3af65078dee0"
+  },
+  "delta_applicability_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/DELTA_APPLICABILITY_REVIEW.json",
+    "sha256": "4c4c5cbf3d2006f2c18034e1493b72af500c9d60281816ff6b34ee6ad79aa7ad"
+  },
+  "gate": "physical_bank_clock",
+  "prior_gate_reference": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/gates/physical_bank_clock.json",
+    "sha256": "1ed627ee65dff11d74150ad68766cb4bc1977bf9ff1cd0679c38989f010f9e83"
+  },
+  "production_driven": true,
+  "retained_unchanged_native_assertions": [
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "r14_clean_retention",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ms_victim_production",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "--r14-clean-retention-gate"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "cadf8d519abd1590f338b8cede0e8cf459b81cf16c0ec2bc81ef99b73caaa64b",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1135149,
+        "start_ticks": 918355212
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/r14_clean_retention.log",
+      "raw_log_sha256": "6269dfddbdb9b90aa283fe5edcec9977a22c3915a8fa6013979e525b6caed6dc",
+      "reuse_classification": "RETAINED_E_EXECUTION_SOURCE_PATH_DISJOINT_FROM_RO_LOWER_ALLOCATOR",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.5042984243482351
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "physical_clock_warm_1",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "d0affdcdf5b480a6a2847fce0bd296c02cfcbb8a915e14370e4aeeffeacebceb",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1135133,
+        "start_ticks": 918355111
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/physical_clock_warm_1.log",
+      "raw_log_sha256": "7d9efd5116b36ed7cbc4eb7f290f41e4c8fec9f89b37f89224d7b6e9f80b985d",
+      "reuse_classification": "RETAINED_E_EXECUTION_SOURCE_PATH_DISJOINT_FROM_RO_LOWER_ALLOCATOR",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.49531533755362034
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "physical_clock_warm_2",
+      "command": [
+        "/workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "2",
+        "16",
+        "4096"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "d0affdcdf5b480a6a2847fce0bd296c02cfcbb8a915e14370e4aeeffeacebceb",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1135141,
+        "start_ticks": 918355161
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_CURRENT67_NATIVE_r1/physical_clock_warm_2.log",
+      "raw_log_sha256": "74147fafe994b46c4f327fe836962c350ff269a545414dd9a10ac05a377586cd",
+      "reuse_classification": "RETAINED_E_EXECUTION_SOURCE_PATH_DISJOINT_FROM_RO_LOWER_ALLOCATOR",
+      "scientific_gate_status": "PENDING_E_REFERENCE_DATA_AND_SOURCE_REVIEW",
+      "wall_seconds": 0.5065749865025282
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "ro_native_dram_warm_full",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r27-native/ep_l2_ro_partition",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261019-a-r3-victim-full-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1",
+        "4096",
+        "16"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "0df39a236164f38d2b3cfcb89294621d6479ea5b7769c1d6c2868fc5c0c37543",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399796,
+        "start_ticks": 920861008
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/ro_native_dram_warm_full.log",
+      "raw_log_sha256": "a019502351243515a3c02ea0fafb72964fded119dae55446df92acb819714dea",
+      "required_terminal": "RO_PHYSICAL_CLOCK|offset=4096|violations=0",
+      "reuse_classification": "NEW_ARCHIVE_INDEPENDENT_E_EXECUTION",
+      "semantic_lines": [
+        "RO_PHYSICAL_CLOCK|offset=4096|violations=0|max_grants_per_physical_bank_cycle=1"
+      ],
+      "wall_seconds": 0.5336259752511978
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "new_T0M0",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "0"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399412,
+        "start_ticks": 920860005
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/new_T0M0.log",
+      "raw_log_sha256": "56e7c361b3b12e380922788e733e43630dd6c8a95d18d54345c193b8b71dc635",
+      "required_terminal": "RO detailed DRAM origin T0 M0 exact-once=4",
+      "reuse_classification": "NEW_DETAILED_DRAM_MEMSTATS14_REAL_ORIGIN_AND_BANK_CLOCK",
+      "semantic_lines": [
+        "RO detailed DRAM origin T0 M0 exact-once=4 lower=4 ro=0 origin_mismatches=0 max_bank_grants=1 PASS"
+      ],
+      "wall_seconds": 0.5192892588675022
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "new_T0M1",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "0",
+        "1"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399533,
+        "start_ticks": 920860057
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/new_T0M1.log",
+      "raw_log_sha256": "310e651640a8faf5b0982f920d3c25e76acfc1f2eccb9a786881070a8e9608e6",
+      "required_terminal": "RO detailed DRAM origin T0 M1 exact-once=4",
+      "reuse_classification": "NEW_DETAILED_DRAM_MEMSTATS14_REAL_ORIGIN_AND_BANK_CLOCK",
+      "semantic_lines": [
+        "RO detailed DRAM origin T0 M1 exact-once=4 lower=4 ro=4 origin_mismatches=0 max_bank_grants=1 PASS"
+      ],
+      "wall_seconds": 0.5205669831484556
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "new_T1M0",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "0"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399541,
+        "start_ticks": 920860109
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/new_T1M0.log",
+      "raw_log_sha256": "498493ba0df41a730d0e47484107258e391b976ff443912d9a743f19e408225b",
+      "required_terminal": "RO detailed DRAM origin T1 M0 exact-once=4",
+      "reuse_classification": "NEW_DETAILED_DRAM_MEMSTATS14_REAL_ORIGIN_AND_BANK_CLOCK",
+      "semantic_lines": [
+        "RO detailed DRAM origin T1 M0 exact-once=4 lower=4 ro=4 origin_mismatches=0 max_bank_grants=1 PASS"
+      ],
+      "wall_seconds": 0.5252671483904123
+    },
+    {
+      "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence",
+      "case": "new_T1M1",
+      "command": [
+        "/workspace/build/ep-l2-ms20261020-a-ro-origin-r26/ep_l2_ro_detailed_origin_new",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r25-ro-origin-v1/tests/ep_l2/ft_wbuf.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/T1M1.config",
+        "/workspace/ep_l2_ms20261019_e_results/A_COMMON_WVTM_NATIVE_r1/inputs/C_NATIVE/kernelslist.g",
+        "1",
+        "1"
+      ],
+      "execution_expectation": "PASS",
+      "exit_code": 0,
+      "native_binary_sha256": "6abc945d7089d597c131c37e04e61e22e96cdb6b2b415fc81bfb0e090937cae1",
+      "peak_rss_bytes": 0,
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 1399549,
+        "start_ticks": 920860162
+      },
+      "raw_log": "/workspace/ep_l2_ms20261019_e_results/E_INDEPENDENT_NEW773_AFFECTED_NATIVE_r1/new_T1M1.log",
+      "raw_log_sha256": "7847241e0ddec10a6da5bd5b5af1c5e808c9ddc1fb1b9979d1e2d5d92c6247e1",
+      "required_terminal": "RO detailed DRAM origin T1 M1 exact-once=4",
+      "reuse_classification": "NEW_DETAILED_DRAM_MEMSTATS14_REAL_ORIGIN_AND_BANK_CLOCK",
+      "semantic_lines": [
+        "RO detailed DRAM origin T1 M1 exact-once=4 lower=4 ro=4 origin_mismatches=0 max_bank_grants=1 PASS"
+      ],
+      "wall_seconds": 0.5143513679504395
+    }
+  ],
+  "reviewed_by": "E2",
+  "reviewed_unix": 1792469427.991248,
+  "schema": "E2_MAIN61_ORIGINAL_NATIVE_GATE_REVIEW_V1",
+  "scope": "Original frozen gate only; current WAD retry/rollback and bank/combined assertions supplement unchanged retained tests. No old main773 application or OFF qualification inherited. Additional B/C joint scenario not qualified.",
+  "source_identity": {
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "PASS"
+}
