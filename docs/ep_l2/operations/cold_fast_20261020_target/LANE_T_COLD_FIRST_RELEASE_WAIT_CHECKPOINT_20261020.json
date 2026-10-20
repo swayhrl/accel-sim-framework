@@ -1,0 +1,30 @@
+{
+  "schema": "LANE_T_COLD_FIRST_DONE_WAIT_SOURCE_RELEASE_V1",
+  "utc": "2026-10-20T10:33:52.246297+00:00",
+  "status": "FIRST_DEST_VERIFIED_WAIT_BA_SOURCE_POSITIVE_DF_ACK",
+  "first_target_receipt_git_commit": "5a65c8b5f5c81bcc1f09cfee368948c35b149791",
+  "first_target_receipt_bridge_name": "LANE_T_COLD_V3_463600CB_DEST_VERIFIED_20261020.json",
+  "first_target_receipt_sha256": "2eab7015b91679f04032ac36804a0ba34c498d171f55c0feff194c2717bcebd3",
+  "source_branch_last_observed_head": "ec2d7196dcbc00e1ce4aad9b09bab514a9aa115d",
+  "source_positive_release_receipt_observed": false,
+  "source_actual_reclaimed_bytes_confirmed": 0,
+  "source_endpoint_observation_is_not_reclamation_proof": {
+    "utc": "2026-10-20T10:33:53.414769+00:00",
+    "namespace": "mnt:[4026534768]",
+    "first_source_root_exists": true,
+    "first_source_status_sample_exists": true,
+    "workspace_available_bytes": 4154441728,
+    "host_IO": "some avg10=27.54 avg60=27.67 avg300=27.94 total=176756285125\nfull avg10=27.20 avg60=27.39 avg300=27.84 total=156262013157\n",
+    "source_IO": "some avg10=0.00 avg60=0.00 avg300=0.00 total=22552150369\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=22249803656\n",
+    "source_released_bytes_not_inferred_from_endpoint": true
+  },
+  "second_batch_started": false,
+  "why_second_waits": "BA ed5c1c48 frozen handoff explicitly requires positive measured first reclaim before second V3. T cannot replace BA source deletion.",
+  "next_required_source_action": "Consume first signed target DEST_VERIFIED, perform Source-owned exact authorized reader/identity/release checks and durable journal, return actual df before/after and precise released selector. Notify E2 for fresh formal admission only after actual gain.",
+  "C16_status": "3/6 unchanged-valid current SHA; pending3 originalIO10 HOLD and A/G retirement pending; no model transfer/delete",
+  "payload_pipeline_running": false,
+  "resident_poller_created": false,
+  "Target_goal_complete": false,
+  "minimum_5_to8GiB_actual_reclaim_achieved": false,
+  "TLS_P9_E2_and_other_projects": "UNMODIFIED"
+}
