@@ -97,4 +97,65 @@ class FullV2(unittest.TestCase):
         self.binding['condition_profiles']['V2_sad_F']='F';self.ledger['accepted_pairs'][pid].pop('nonresearch_config_equal')
         self.assertEqual(a.views(self.ledger,self.binding)['summary']['current_accepted_main_pairs'],0)
 
+    def direct(self):
+        for ref in self.ledger['qualifications'].values():
+            q=ref['qualification'];q['full_system_v2']={'authority_commit':a.AUTH,
+              'fixed_policy':True,'victim_scope':'CLEAN_DIRTY_PENDING_INFLIGHT'}
+            Path(ref['path']).write_text(json.dumps(q));ref['sha256']=i.digest(ref['path'])
+        return a.accepted_display_binding(self.ledger,'b')
+
+    def test_direct_E_profiles_support_distinct_endpoint_qualification_revisions(self):
+        self.pair('convolutionSeparable')
+        ref=copy.deepcopy(self.ledger['qualifications']['q']);p=self.root/'q2.json'
+        p.write_text(json.dumps(ref['qualification']));ref.update(path=str(p),sha256=i.digest(p))
+        self.ledger['qualifications']['q2']=ref
+        ep=self.ledger['accepted_results']['convolutionSeparable_F'];r=json.loads(Path(ep['path']).read_text())
+        r['qualification_id']='q2';Path(ep['path']).write_text(json.dumps(r));ep['sha256']=i.digest(ep['path'])
+        binding=self.direct();result=a.views(self.ledger,binding)
+        self.assertEqual(result['summary']['current_accepted_main_pairs'],1)
+        self.assertLess(result['main'][3]['ratio_left_over_right'],1) # unfavorable remains visible
+        self.ledger['scientific_holds']={'qualification:q2':{'status':'REVIEW_REQUIRED'}}
+        self.assertEqual(a.views(self.ledger,binding)['summary']['current_accepted_main_pairs'],0)
+
+    def test_direct_projection_withdrawal_and_missing_full_scope(self):
+        pid=self.pair('sad');binding=self.direct()
+        self.assertEqual(a.views(self.ledger,binding)['summary']['current_accepted_main_pairs'],1)
+        self.ledger['accepted_pairs'][pid]['status']='WITHDRAWN'
+        self.assertIsNone(a.accepted_display_binding(self.ledger,'b'))
+        self.assertEqual(a.views(self.ledger,binding)['summary']['current_accepted_main_pairs'],0)
+        self.ledger['accepted_pairs'][pid]['status']='CURRENT_ACCEPTED'
+        q=self.ledger['qualifications']['q'];q['qualification'].pop('full_system_v2')
+        Path(q['path']).write_text(json.dumps(q['qualification']));q['sha256']=i.digest(q['path'])
+        self.assertEqual(a.views(self.ledger,binding)['summary']['current_accepted_main_pairs'],0)
+
+    def test_mechanism_peaks_not_summed_and_missing_not_zero(self):
+        rows={str(n):{'resource':{'peak_transactions':n+1,'query_count':2}} for n in range(64)}
+        metric={'full_mechanism_records':{'readonly':rows}}
+        p={'pair_id':'x','workload':'x','baseline_mechanism_metrics':'UNKNOWN',
+           'variant_mechanism_metrics':json.dumps(metric)}
+        table={r['metric']:r for r in a.mechanism_table(p)}
+        self.assertEqual(table['peak_transactions_max_across_slices']['F'],64)
+        self.assertEqual(table['peak_transactions_min_across_slices']['F'],1)
+        self.assertEqual(table['query_count']['F'],128)
+        self.assertEqual(table['query_count']['S'],'UNKNOWN')
+
+    def test_cost_observation_uses_last_snapshot_and_exact_raw_hash(self):
+        pid=self.pair('sad');pair=self.ledger['accepted_pairs'][pid]
+        row={'pair_id':pid,'workload':'sad'}
+        for side,key in [('baseline',pair['baseline_attempt_id']),('variant',pair['variant_attempt_id'])]:
+            row[side+'_attempt_id']=key;root=self.root/key;root.mkdir()
+            log=root/'raw.log'
+            counters=['frontend_cam_queries','completion_cam_queries','indexed_wb_accept','indexed_rollback',
+                      'native_install_commits','native_promotion_commits']
+            log.write_text(''.join('EPL2TVDV3|METADATA_COST|slice='+str(n)+'|'+
+                '|'.join(k+'='+str(value) for k in counters)+'\n' for value in [5,7] for n in range(64)))
+            ref=self.ledger['accepted_results'][key];p=Path(ref['path']);r=json.loads(p.read_text())
+            r['raw_log_sha256']=i.digest(log);p.write_text(json.dumps(r));ref['sha256']=i.digest(p)
+        rows,proof=a.terminal_cost_observations(self.ledger,row,self.root)
+        self.assertEqual(rows[0]['F'],64*7)
+        self.assertEqual(len(proof['variant']['records']),64)
+        (self.root/pair['variant_attempt_id']/'raw.log').write_text('changed')
+        with self.assertRaisesRegex(ValueError,'changed accepted raw'):
+            a.terminal_cost_observations(self.ledger,row,self.root)
+
 if __name__=='__main__':unittest.main()
