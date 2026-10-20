@@ -3,7 +3,7 @@ import base64,hashlib,json,pathlib,subprocess,sys
 D=pathlib.Path(__file__).resolve().parent;sys.path.insert(0,str(D.parent));import tls_target as t
 R=t.REPO/'docs/ep_l2/operations/cold_fast_20261020_target';rel=R.relative_to(t.REPO).as_posix()
 assert t.git('branch','--show-current').decode().strip()==t.BRANCH
-for n in ['cold_stream_source.py','cold_receive.py','run_cold_batch.py','finalize_cold_batch.py','verify_existing_cold_partial.py','publish_cold.py']:
+for n in ['cold_stream_source.py','cold_receive.py','run_cold_batch.py','finalize_cold_batch.py','verify_existing_cold_partial.py','publish_cold.py','cold_archive.py']:
     (R/'tools'/n).write_bytes((D/n).read_bytes())
 files=sorted(p for p in R.rglob('*') if p.is_file() and p.name!='SHA256SUMS')
 (R/'SHA256SUMS').write_bytes(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(R).as_posix()+'\n' for p in files).encode())

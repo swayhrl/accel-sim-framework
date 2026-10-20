@@ -5,3 +5,5 @@ Outputs on persistent164: postcheck.tar.zst (or a validated existing-object refe
 On a full Source-complete stream with a failed Target verification, verify_existing_cold_partial.py only rereads existingNAS partial bound to Source full archive/tar hashes. It never resends Source assets. Incomplete owned verification manifests and sample attempts are retained; new small sample destinations are ABSENT. After all checks, finalize_cold_batch.py publishes final filenames using no-replace semantics.
 
 Source release is always separate and belongs to BA/Source. Archived logical bytes, compressed persistent bytes, temporary bridge bytes and measured Source df gains are distinct. C16 references are not validated retirement eligibility, and the original hostIO10 model gate is unchanged.
+
+CLI: python3 tools/cold_archive.py SOURCE_ROOT NATIVE164_ROOT EXISTING_MANIFEST --binding OWNER_SOURCE_HANDOFF.json [--execute]. For reuse, --reference-only --existing-receipt IMMUTABLE_GIT_READBACK_DEST_RECEIPT.json returns the existing archive reference after SHA validation; it never sends Source data. Existing partials refuse restreaming and require validation-only reconciliation.
