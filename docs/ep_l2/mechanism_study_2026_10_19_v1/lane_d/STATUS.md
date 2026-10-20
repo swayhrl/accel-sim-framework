@@ -1,13 +1,11 @@
-# D：原Goal续行，完整方案V2离线交付完成，真实配对待E
+# D：Btree保持HOLD，SGEMM完整输入候选待E决定
 
-用户按b2e5328aca825d6e9ebfe09e46fa208957834636恢复原D Goal；原174、原工作树与hrl/ep-l2-ms20261019-d-analysis-v1分支，未初始化新Goal、reset、覆盖旧发布或重启旧Lane1/R19。
+本轮按E69301fe9冻结输入失败证据续接原D Goal/工作树/分支；未初始化新Goal、reset、启动GPU/编译/模拟或修改E台账、A/C生产源码与EN-v18。
 
-已完成7×S/F共同主图覆盖表、可导出PDF/PNG待测主图、32个科学条件矩阵（另8机动、累计40）、27个复用锚点的比较视图、三项消融/T-M四格/固定victim/局部诊断图题、论文结构提纲、15项A/B/C源码增量成本汇总。原15行机会表与四不可变预登记逐字节校验保持，EN-v17未编辑。成本已单次交A/B/C并收现有准确源码/字段/端口/延迟声明，完整组合仲裁与PPA仍UNKNOWN，旧R3不冒称完整设计。
+Btree第691行只有lane28却有32个地址。准确冻结C oracle与native在此记录上均读取第0列，并非一个读列28、另一个读列0；二者一致仍不足以闭合32列输入语义，原Btree登记保留HOLD。旧3-line模型证据保留，不能用作native输入资格。需要A/E的源码/输入语义变化单列在独立报告，本轮不实施。
 
-复用Conv证据，另6输入完成全commandlist/所有kernel/所有lane有界RO分析，每份匹配独立输入hash，无unresolved opcode。模型候选line：SAD396、Vector250000、CFD51612、Conv294912、FWT0、btree3、dwt2d24576。FWT0来自完整模型scope；B树host更新同line已排除。不是硬件证书、运行资格、cache命中/请求数或性能。六新候选待C/E审阅；未知/不可认证line保持普通路径，所有blockedUID交集UNKNOWN。
+SpMV按原第一备选先审，原已发布34.5MB资产有缺源寄存器记录；Scan前6kernel通过检查后，第7kernel第64行出现lane31＋32地址同类冲突。两者不能直接替代。SGEMM完整2.216GB原文件hash匹配、528TB和1,658,916,864活跃线程指令闭合、全局/共享原子记录0，是唯一通过本轮静态输入步骤的候选，已形成SGEMM_PROPOSAL_TO_E，不等于E登记或S/F运行资格。原捕获脚本/源码revision仍UNKNOWN，可复现范围限定冻结trace replay；RO覆盖UNKNOWN，不借Conv证书。
 
-6次离线处理串行单CPU，合计464.487s，峰workerRSS36MiB，新增输出63163308B，7份总120643868B在E新结果树可见。全部worker退出0、独立新增产物冻结，无驻留poller/模拟器/lease/GateWaiter，无编译、native测试或完整应用。11项新增D工具测试PASS仅为控制完整性；C既有21项同版本工具测试复用，未重跑。
+原7输入、32条件和40累计启动上限不变；最新E台账实际6次、接受配对0，本轮D新增0。DWT10kernel既有输入证明保留，原五输入均未重扫。Btree主图位置HOLD，不改分母、不用0/1填缺值、七对均值UNKNOWN。12项分析控制测试PASS仅证明工具；无native PASS。所有旧矩阵、原始trace、日志、四预登记和结果保持，独立报告在input_suitability_20261020_r1/。
 
-E最新台账已将同一campaign上限改为40，actual_starts仍0，qualified versions0、接受pairs0，原计数/T0未重置。A新公共前像eb6739、Framework957321a0为源码而非runtime发布；共同查询可能TVD1周期再RO1周期，成本已补。当前F−W不支持，不用S冒名；fixed-clean不等于完整固定对照；主图所有真实值和均值保持UNKNOWN，不拼各应用最快子方案。
-
-阶段交付见full_system_v2/README.md与RECEIPT.json；完整研究目标未完成。原Goal API仍返回上轮blocked检查点且无active setter，本轮用户续行工作实际已执行，未虚构状态转换或后台工作。待A/C/E真实发布或接受事件，复用本工具单次增量分析，不重复旧审核/trace扫描/等待器。内部截止10/21 18:00停止新启动、22:00冻结不变；条件耗时估算与未测项在WINDOW_FEASIBILITY.json，不能因预算40而延长时间或降低资源线。
+有界静态审查已退出0，SGEMM在837.479s完成，没有执行额外恢复；无后台worker/等待器。原始ru_maxrss746463232B为全生命周期高水位，解析阶段256MiB AS限制与phase RSS不能混同；setup-only复核12MiB且未复现峰值，阶段归因UNKNOWN，不据此放行资源。完整资源与生产路径资格仍归E独立核准。后续由E决定新登记并交正式接受配对，D按事件单次增量分析，不声称仍在后台工作。

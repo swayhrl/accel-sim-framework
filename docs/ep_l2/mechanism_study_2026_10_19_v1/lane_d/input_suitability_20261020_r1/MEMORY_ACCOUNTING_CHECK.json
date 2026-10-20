@@ -1,0 +1,50 @@
+{
+  "operation": "SOURCE_SETUP_MEMORY_ACCOUNTING_ONLY_NOT_INPUT_RESCAN",
+  "observations": [
+    {
+      "phase": "fresh_helper_before_source_extraction",
+      "proc_self_status": {
+        "VmPeak": "24544 kB",
+        "VmSize": "24544 kB",
+        "VmHWM": "12288 kB",
+        "VmRSS": "12288 kB"
+      },
+      "getrusage_ru_maxrss_bytes": 12582912,
+      "rlimit_AS": [
+        -1,
+        -1
+      ]
+    },
+    {
+      "phase": "after_frozen_source_extraction_no_trace_reads",
+      "proc_self_status": {
+        "VmPeak": "26580 kB",
+        "VmSize": "25768 kB",
+        "VmHWM": "12288 kB",
+        "VmRSS": "12288 kB"
+      },
+      "getrusage_ru_maxrss_bytes": 12582912,
+      "rlimit_AS": [
+        -1,
+        -1
+      ]
+    },
+    {
+      "phase": "after_parser_AS_cap_no_trace_reads",
+      "proc_self_status": {
+        "VmPeak": "26580 kB",
+        "VmSize": "25768 kB",
+        "VmHWM": "12288 kB",
+        "VmRSS": "12288 kB"
+      },
+      "getrusage_ru_maxrss_bytes": 12582912,
+      "rlimit_AS": [
+        268435456,
+        268435456
+      ]
+    }
+  ],
+  "trace_body_reads": 0,
+  "new_native_or_app_starts": 0,
+  "explanation": "Compare cumulative resource usage high-water against current process mm VmHWM; do not label ru_maxrss as measured parser-phase RSS when launch/source phase is included."
+}

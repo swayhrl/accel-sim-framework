@@ -1,5 +1,7 @@
 # D线交付与复现
 
+最新输入科学适用性报告见[input_suitability_20261020_r1/INPUT_SUITABILITY_REPORT.md](input_suitability_20261020_r1/INPUT_SUITABILITY_REPORT.md)：Btree继续HOLD；SGEMM静态完整输入候选待E决定，原七输入登记/分母未更改。
+
 Authority：d9263fa2431592b33e900d9b48c6f20029d8b544；分支hrl/ep-l2-ms20261019-d-analysis-v1。原174。控制HEAD不是runtime源码。
 
 - OPPORTUNITY_TABLE.csv：10个旧H0当前接受B/U端点＋5个旧C7e候选上下文，YES/NO/UNKNOWN；NO是此观测scope实测0，缺失不填0。

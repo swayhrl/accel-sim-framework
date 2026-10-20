@@ -1,5 +1,7 @@
 # D完整方案V2交付
 
+2026-10-20输入适用性更新见[独立报告](../input_suitability_20261020_r1/INPUT_SUITABILITY_REPORT.md)。Btree旧模型证据保留但native输入HOLD；SGEMM候选尚未正式替代，原七输入矩阵不变。
+
 权威b2e5328aca825d6e9ebfe09e46fa208957834636；沿原Goal/分支续行，旧T0、计数、冻结结果保留。
 
 - MAIN_SEVEN_S_F.pdf/png与MAIN_COVERAGE_14.csv：7应用传统S/固定完整F，同最终binary；当前7对都待E，未测不画成0或1，也无部分均值。
