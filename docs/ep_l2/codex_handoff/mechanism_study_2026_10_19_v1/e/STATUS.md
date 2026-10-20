@@ -1,4 +1,4 @@
-# Lane E2 — MAIN_cfd_097k_PAIR_CURRENT_ACCEPTED
+# Lane E2 — MAIN_dwt2d_QUALIFIED_ADMISSION
 
 Original174, original T0 1792414193. Actual starts 16/40, remaining24, contingency8/8. Core d010911e / Framework9dd1ee57 / main61aad385. Controller STOPPED; default maximum2, live source/config/input/lease/RAM/CPU/disk/result guards at every launch.
 
