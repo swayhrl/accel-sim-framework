@@ -1,0 +1,133 @@
+{
+  "schema": "EPL2_D_TO_E2_A2_MINIMAL_CONTROL_REQUEST_V1",
+  "request_id": "D_FOUR_ACCEPTED_MAIN61_MECHANISM_CONTROLS_20261020_V1",
+  "recipients": [
+    "E2",
+    "A2"
+  ],
+  "requested_by": "D",
+  "at_utc": "2026-10-20T14:01:43.989528+00:00",
+  "status": "REVIEW_REQUEST_ONLY_NOT_LAUNCH_AUTHORIZATION",
+  "E_authority_commit": "13718839b515542f332eca6a845701a8dbb9a922",
+  "source_identity": {
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "fixed_budget": {
+    "cumulative_max_starts": 40,
+    "actual_starts_at_request": 20,
+    "remaining_capacity": 20,
+    "remaining_original_matrix_cells": 20,
+    "no_automatic_reallocation": true,
+    "banks": 4,
+    "ops_per_bank_physical_cycle": 1,
+    "payload_slots": 1168,
+    "shared_wad_tvd": 128,
+    "descriptors": 512,
+    "line_mshrs": 128,
+    "per_address_cap": 32
+  },
+  "constraints": [
+    "No new formal workload selected by observed F speedup; use only already registered inputs.",
+    "Parameter overlays on exact main61 preferred; no full rebuild for supported switches.",
+    "All requested profiles currently lack exact E independent profile qualification; S/F qualifications do not transfer.",
+    "New config hash/run-key/comparison group and E acceptance required; no overwrite of main pair endpoints.",
+    "Out-of-original-matrix controls require explicit scientific scope/internal allocation decision before launch; remaining20 is not automatic permission.",
+    "If runtime code changes are required, publish distinct source/binary and qualification plan; old main61 endpoint cannot be silently reused across binary.",
+    "No new trace scans, full runs or native execution by D."
+  ],
+  "A2_zero_start_source_checks": [
+    "Audit SAD first-kernel prefix: S/F copy counters and lower reads/WB are zero, V/RO direct service zero, but F is989cycles faster. Identify which timed state/actions differ before first copy; do not attribute to host C++ execution overhead.",
+    "Confirm landing is same-bank free-payload capacity/reclaim readiness (preview_free RESIDENT,index%4), distinct from paid P1 bank port service. No extra bank, port, payload or guard exemption.",
+    "Confirm frozen runtime supports exact W_ONLY, F_MINUS_R, WV_M overlays and produce hashes/profile-scoped existing native checks needed by E; no compile/start until appropriate resource entry."
+  ],
+  "minimal_unique_conditions": [
+    {
+      "control_id": "C03_SAD_W",
+      "information_priority": 1,
+      "workload": "sad",
+      "profile": "W_ONLY",
+      "W": 1,
+      "V": 0,
+      "T": 0,
+      "M": 0,
+      "matrix_scope": "OUTSIDE_ORIGINAL32_NEEDS_SCOPE_AND_ALLOCATION_APPROVAL",
+      "extra_starts": 1,
+      "question": "Does W organization without V/RO reproduce the no-copy-prefix timing improvement?",
+      "falsifier": "W_ONLY fails to reproduce first-kernel989-cycle improvement: simple W-only organization explanation is insufficient. If it does, still cannot call it dynamic-copy removal because prefix has zero copies.",
+      "comparison": "S vs W_ONLY; W_ONLY vs F; inspect all3kernel durations+residual and per-stage copy/grants/queries."
+    },
+    {
+      "control_id": "C04_DWT_W",
+      "information_priority": 2,
+      "workload": "dwt2d",
+      "profile": "W_ONLY",
+      "W": 1,
+      "V": 0,
+      "T": 0,
+      "M": 0,
+      "matrix_scope": "OUTSIDE_ORIGINAL32_NEEDS_SCOPE_AND_ALLOCATION_APPROVAL",
+      "extra_starts": 1,
+      "question": "Separate W organization/service effect from V and RO in full sequential epoch.",
+      "falsifier": "If kernels5/8 regress similarly without V/RO, V/RO direct query explanation cannot alone explain them.",
+      "comparison": "S vs W_ONLY, and W_ONLY vs C05; preserve all10kernel state/history."
+    },
+    {
+      "control_id": "C05_DWT_WV",
+      "information_priority": 2,
+      "workload": "dwt2d",
+      "profile": "F_MINUS_R",
+      "W": 1,
+      "V": 1,
+      "T": 0,
+      "M": 0,
+      "matrix_scope": "OUTSIDE_ORIGINAL32_NEEDS_SCOPE_AND_ALLOCATION_APPROVAL",
+      "extra_starts": 1,
+      "question": "With C04 isolate net V effect; relative F isolate net R effect including prior-state changes.",
+      "falsifier": "If WV remains slow in5/8 despite RO disabled, direct R query delay is not required. If difference vanishes, test indirect early RO state effect; do not claim direct late RO delay.",
+      "comparison": "S -> W_ONLY -> WV -> F are conditional marginal contrasts, not unique additive module attribution."
+    },
+    {
+      "control_id": "C01_CONV_WV",
+      "information_priority": 3,
+      "workload": "convolutionSeparable",
+      "profile": "F_MINUS_R",
+      "W": 1,
+      "V": 1,
+      "T": 0,
+      "M": 0,
+      "matrix_scope": "EXISTING_ORIGINAL32_PROFILE_NOT_QUALIFIED",
+      "extra_starts": 1,
+      "question": "WV anchor for original M factorial under actual baseline line-MSHR-full pressure.",
+      "falsifier": "MSHR allocations avoided without lower wait/program improvement supports noncritical-capacity or overhead hypothesis.",
+      "comparison": "C01 vs C02 isolates M at W/V fixed, T=0."
+    },
+    {
+      "control_id": "C02_CONV_WVM",
+      "information_priority": 3,
+      "workload": "convolutionSeparable",
+      "profile": "WV_M",
+      "W": 1,
+      "V": 1,
+      "T": 0,
+      "M": 1,
+      "matrix_scope": "EXISTING_ORIGINAL32_PROFILE_NOT_QUALIFIED",
+      "extra_starts": 1,
+      "question": "Measure M marginal effect while T is explicitly disabled, using exact Conv oracle.",
+      "falsifier": "If program time unchanged/worse despite avoided records, M activation is not sufficient evidence of critical-path benefit.",
+      "comparison": "C02 vs accepted F adds T at M=1; zero detach does not guarantee zero overhead."
+    }
+  ],
+  "optional_followup_not_in_minimum": {
+    "candidate": "CFD F_MINUS_R (WV T0M0)",
+    "purpose": "If CFD cancellation remains scientifically necessary, isolate R net cost/benefit while retaining W/V; no inference from hit totals or overlapping wait sums.",
+    "scope": "OUTSIDE_ORIGINAL32_REQUIRES_SEPARATE_DECISION",
+    "automatic_start": false
+  },
+  "minimum_full_start_count_if_all_approved": 5,
+  "current_qualified_requested_condition_count": 0,
+  "E2_reply_needed": "Publish exact legal subset/profile qualification and scope/allocation decision. Do not rerun valid endpoints or launch new profiles merely on receipt of this request.",
+  "A2_reply_needed": "Static prefix/landing/query audit plus exact supported profile/config identities and affected-check receipt; no production binary mutation."
+}
