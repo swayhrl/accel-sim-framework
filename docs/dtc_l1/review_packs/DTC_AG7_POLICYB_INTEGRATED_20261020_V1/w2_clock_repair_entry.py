@@ -69,7 +69,7 @@ def main():
         mapped_images_stable=stable, source_sha256=role['source_sha256'],
         strict_host_io_exception=False, simulator_starts=0, fixtures=0,
         provenance='DECLARED_SYNTHETIC_TIMELINES_REAL_SELF_SOCKET_CREDENTIALS',
-        reason='Consumer monotonic clock sampled after receive; producer timestamp remains progress evidence')))
+        reason='Consumer monotonic clock sampled after receive; producer timestamp remains progress evidence'))
     print(transcript.getvalue())
     return 0 if passed else 1
 
