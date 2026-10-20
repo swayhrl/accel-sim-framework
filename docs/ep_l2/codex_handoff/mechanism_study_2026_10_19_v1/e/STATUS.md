@@ -1,4 +1,4 @@
-# Lane E2 — CONV_CONTROLS_BATCH_3_QUALIFIED_ADMISSION
+# Lane E2 — V2_CONTROL_convolutionSeparable_F_VS_WV_M_MAIN61_CURRENT_ACCEPTED
 
 Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
 
@@ -13,11 +13,10 @@ Original174; originalT0=1792414193; actual26/40,remaining14,contingency8/8 consu
 |---|---:|---:|---:|
 | V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_R_MAIN61 | 291469 | 292432 | 0.996706927 |
 | V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_V_MAIN61 | 291469 | 293463 | 0.993205276 |
+| V2_CONTROL_convolutionSeparable_F_VS_WV_M_MAIN61 | 291469 | 291469 | 1.000000000 |
 | V2_CONTROL_convolutionSeparable_S_VS_S_COPY_FREE_MAIN61 | 292932 | 293671 | 0.997483579 |
 | V2_CONTROL_convolutionSeparable_S_VS_W_ONLY_MAIN61 | 292932 | 291525 | 1.004826344 |
 
-New results3991912982B, old+new18301489366B; growth since20-start control baseline384550398B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
+New results4181659336B, old+new18491235720B; growth since20-start control baseline574296752B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
-Remaining original qualified controls: WV_M,WV_T. DWT/CFD exact four-cell revision is USER APPROVED and separately E-qualified (58c54e0); NOT adopted or launched. It awaits all six Conv controls accepting, original controller STOPPED, exact matrix adoption and the full1.5GiB/live gates. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
-
-Actual batch3 start checkpoint: WV_M and WV_T are RUNNING under original controller,26/40,remaining14. Accepted controls4, MAIN pairs4. Cumulative new results4162872048B,total18472448432B,baseline growth555509464B. All old results/HOLD and original budgets/cutoffs retained.
+Remaining original qualified controls: WV_T. DWT/CFD four-cell revision stays proposal-only until explicit user approval, distinct E qualification and live capacity checks. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
