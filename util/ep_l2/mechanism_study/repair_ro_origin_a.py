@@ -296,6 +296,42 @@ def main():
                 old_exe=build/'ep_l2_ms_victim_production_core27_old'
                 link_target('ep_l2_ms_victim_production',old_exe,archive)
                 case_run(spec['cases'][0],old_exe)
+            if spec.get('retained_compiled_archive'):
+                new_archive=Path(spec['retained_compiled_archive'])
+                assert sha(new_archive)==spec['retained_compiled_archive_sha256']
+                partial=Path(spec['retained_partial_receipt']);assert sha(partial)==spec['retained_partial_receipt_sha256']
+                partial_report=json.loads(partial.read_text());assert partial_report['lease_released'] and len(partial_report['archive_members'])==22
+                report['archive_members']=partial_report['archive_members']
+                executables={key:Path(value) for key,value in spec['retained_test_executables'].items()}
+                report.update(status='COMPILING_ONLY_TWO_SUPPORTED_FIXTURE_SELECTORS',compiler_started=True);save()
+                for target in spec['missing_fixture_targets']:
+                    destination=build/target;link_target(target,destination,new_archive);executables[target]=destination
+                report.update(status='LINKING_NEW_MAIN_BEFORE_REMAINING_FINITE_CHECKS');save()
+                command=shlex.split((old/'CMakeFiles/accel-sim.out.dir/link.txt').read_text())
+                for i,word in enumerate(command):
+                    if i and command[i-1]=='-o':command[i]=str(build/'accel-sim.out')
+                    elif word.endswith('.o') or (word.endswith('.a') and not word.startswith('/')):
+                        command[i]=str(new_archive) if word.endswith('/libgpgpusim.a') else str(old/word)
+                run(command,'new_main_link')
+                report.update(binary=str(build/'accel-sim.out'),binary_sha256=sha(build/'accel-sim.out'),new_archive=str(new_archive),new_archive_sha256=sha(new_archive))
+                save()
+                for case in spec['cases'][1:]:
+                    if case['id'] in spec['completed_new_cases']:
+                        detail=Path(spec['completed_new_cases'][case['id']]);row=json.loads(detail.read_text())
+                        assert row['expectation_verified'] and row['actual_exit']==0 and all(row['terminal_checks'].values())
+                        assert sha(row['raw_log'])==row['raw_log_sha256']
+                        report['tests'].append(dict(evidence=str(detail),sha256=sha(detail),reused_verified_same_archive=True,**row));save()
+                    else:case_run(case,executables[case['target']])
+                for path,digest in retained.items():assert sha(path)==digest
+                report.update(status='CORE27_OLD_RED_FIXED_NEW_GREEN_MAIN_COMPILED_PENDING_E',
+                    retained_assets_unchanged=True,test_binaries={key:dict(path=str(value),sha256=sha(value)) for key,value in executables.items()},
+                    production_translation_units_compiled=0,prior_production_translation_units_reused=1,
+                    fixture_translation_units_compiled=len(fixture_objects),new_source_passes=len(spec['cases'])-1,
+                    reused_new_source_case_passes=len(spec['completed_new_cases']),fresh_new_source_case_passes=len(spec['cases'])-1-len(spec['completed_new_cases']),
+                    old_source_expected_asserts=1,generated_build_string_unchanged=True,original_banner_is_not_new_producer_identity=True,
+                    E006_samecause='SAME_ASSERTION_ONLY_PENDING_E_COUNTED_REPLAY_STACK',full_applications_by_A=0)
+                return
+
             report.update(status='COMPILING_ONE_GPU_CACHE_MEMBER',compiler_started=True);save()
             compile_flags=[x.replace(spec['retained_core'],str(core)) for x in flags(old/'gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make')]
             run(['/usr/bin/c++',*compile_flags,'-c',str(core/'src/gpgpu-sim/gpu-cache.cc'),'-o',str(build/'gpu-cache.cc.o')],'changed_gpu_cache_compile')
