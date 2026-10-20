@@ -30,6 +30,9 @@ def adopt(plan,publication):
  for name in ('control_validation','control_regressions'):
   proof=gate[name];assert c.digest(proof['path'])==proof['sha256'] and read(proof['path'])['status']=='PASS'
  assert gate['source_identity']==plan['source_identity'] and gate['FWT_rerun_authorized'] is False
+ if gate.get('policy_metadata_compatibility'):
+  proof=gate['policy_metadata_compatibility'];assert c.digest(proof['path'])==proof['sha256'];metadata=read(proof['path'])
+  assert metadata['status']=='PASS' and metadata['current_collector_sha256']==c.digest(Path(runner.durable_exit.__file__))
  assert c.digest(plan['new_matrix']['path'])==plan['new_matrix']['sha256'];matrix=read(plan['new_matrix']['path']);c.policy_v2.validate_matrix(matrix)
  with coord.locked() as (data,item):
   assert item['controller']['state']=='STOPPED' and item['final_source_identity']==plan['source_identity'];assert item['actual_starts']<=40 and item['uncertain_start_intents']==0

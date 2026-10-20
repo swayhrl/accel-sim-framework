@@ -1,0 +1,92 @@
+{
+  "FWT_rerun_authorized": false,
+  "FWT_terminal_audit_unchanged": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/FWT_INDEPENDENT_TERMINAL_AUDIT.json",
+    "sha256": "06d6c8415a28f0ddec851518dbaa0a054e5d7423ef9566f5cf34f80f8db38848"
+  },
+  "T0": 1792414193,
+  "actual_starts": 12,
+  "archive_sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8",
+  "at_unix": 1792481482.3294394,
+  "contingency_remaining": 0,
+  "control_regressions": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_EXIT_PERSISTENCE_REPAIR_r1/CONTROL_REGRESSIONS_R2.json",
+    "sha256": "96a5265b503128e69d394621e4f17cb8ec980437cc0389ece166125e77eb4ab1"
+  },
+  "control_validation": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_EXIT_PERSISTENCE_REPAIR_r1/CONTROL_VALIDATION.json",
+    "sha256": "705fcb05f51f1d8cb6e4a03e0c5488457f382785db93aa7c182fb0ec9acd4cef"
+  },
+  "main_archive_rebuilt": false,
+  "main_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+  "maximum_simulators": 2,
+  "may_start_never_executed_original_main": true,
+  "next_order": [
+    "vectorAdd_4M",
+    "cfd_097k",
+    "dwt2d",
+    "sad"
+  ],
+  "no_nohup_or_detached_controller": true,
+  "qualifications": [
+    {
+      "no_current_hold": true,
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/QUALIFICATION.json",
+        "sha256": "a66d44eed494cecab8cd6f41434c00adb2717883d49c5e83ee8bbe56e62e6543"
+      },
+      "workload": "vectorAdd_4M"
+    },
+    {
+      "no_current_hold": true,
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/QUALIFICATION.json",
+        "sha256": "d8de6b365f4525d7d9d0550a24ae6d9aec87b8242c8f2e8c37c5ae3f50b35eae"
+      },
+      "workload": "cfd_097k"
+    },
+    {
+      "no_current_hold": true,
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/QUALIFICATION.json",
+        "sha256": "a7f4cd605d1e2d614fe10a03d0a0af63f179774167973e7263c11823bd5ecf2f"
+      },
+      "workload": "dwt2d"
+    },
+    {
+      "no_current_hold": true,
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/sad/QUALIFICATION.json",
+        "sha256": "2110c4f1ed71e1ecea0f1403eb70ec690a244ad34983d3d4cf895e300f9d7fbc"
+      },
+      "workload": "sad"
+    }
+  ],
+  "reason": "FWT exit evidence loss classified as execution-supervision defect; direct-parent durable exit transport validated. No observed production/source correctness failure establishes a hold on these four previously registered and independently qualified never-started inputs. Latest explicit user instruction authorizes their continued rolling admission.",
+  "remaining": 28,
+  "resources": {
+    "available_memory_bytes": 214012850176,
+    "disk_free_bytes": 9416794112,
+    "share_disk_free_bytes": 44288217088
+  },
+  "result_usage": {
+    "new_bytes": 2840674692,
+    "old_bytes": 14309576384,
+    "total_bytes": 17150251076
+  },
+  "retained_native17_replayed": false,
+  "root_cause": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_EXIT_PERSISTENCE_REPAIR_r1/ROOT_CAUSE.json",
+    "sha256": "81a013d8fd985ba92f78b60c79ce27e36659a76754d79cc5349eba51e2dd1ec1"
+  },
+  "schema": "E2_EXECUTION_ENGINEERING_CONTINUATION_DECISION_V1",
+  "scope": "Only original never-started Vector/CFD/DWT/SAD MAIN S/F, original per-launch central gates. Full native exit0 + complete instructions + all terminal scientific checks + post-run identity still required; no PASS inferred from process disappearance/raw.",
+  "source_control_publication": "41182011d392630a602a5c0ad4412c1305685f34",
+  "source_identity": {
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "PASS"
+}

@@ -5,9 +5,9 @@
     "sha256": "06d6c8415a28f0ddec851518dbaa0a054e5d7423ef9566f5cf34f80f8db38848"
   },
   "T0": 1792414193,
-  "actual_starts": 12,
+  "actual_starts": 14,
   "archive_sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8",
-  "at_unix": 1792481482.3294394,
+  "at_unix": 1792483410.1559684,
   "contingency_remaining": 0,
   "control_regressions": {
     "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_EXIT_PERSISTENCE_REPAIR_r1/CONTROL_REGRESSIONS_R2.json",
@@ -22,12 +22,15 @@
   "maximum_simulators": 2,
   "may_start_never_executed_original_main": true,
   "next_order": [
-    "vectorAdd_4M",
     "cfd_097k",
     "dwt2d",
     "sad"
   ],
   "no_nohup_or_detached_controller": true,
+  "policy_metadata_compatibility": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_EXIT_PERSISTENCE_REPAIR_r1/CONTROL_SOURCE_METADATA_COMPATIBILITY.json",
+    "sha256": "f9b11665980e9af48eeb5b3cb238780222402115413df87a9bd20f0501df9596"
+  },
   "qualifications": [
     {
       "no_current_hold": true,
@@ -63,16 +66,16 @@
     }
   ],
   "reason": "FWT exit evidence loss classified as execution-supervision defect; direct-parent durable exit transport validated. No observed production/source correctness failure establishes a hold on these four previously registered and independently qualified never-started inputs. Latest explicit user instruction authorizes their continued rolling admission.",
-  "remaining": 28,
+  "remaining": 26,
   "resources": {
-    "available_memory_bytes": 214012850176,
-    "disk_free_bytes": 9416794112,
-    "share_disk_free_bytes": 44288217088
+    "available_memory_bytes": 215543906304,
+    "disk_free_bytes": 6916960256,
+    "share_disk_free_bytes": 44287385600
   },
   "result_usage": {
-    "new_bytes": 2840674692,
+    "new_bytes": 3017637219,
     "old_bytes": 14309576384,
-    "total_bytes": 17150251076
+    "total_bytes": 17327213603
   },
   "retained_native17_replayed": false,
   "root_cause": {
@@ -81,7 +84,25 @@
   },
   "schema": "E2_EXECUTION_ENGINEERING_CONTINUATION_DECISION_V1",
   "scope": "Only original never-started Vector/CFD/DWT/SAD MAIN S/F, original per-launch central gates. Full native exit0 + complete instructions + all terminal scientific checks + post-run identity still required; no PASS inferred from process disappearance/raw.",
-  "source_control_publication": "41182011d392630a602a5c0ad4412c1305685f34",
+  "skip_charged_unaccepted_inputs": {
+    "vectorAdd_4M": {
+      "attempts": [
+        {
+          "attempt_id": "E013_33cffb17",
+          "receipt_sha256": "f82710f6950804ad37a5c224b15cb920db6639c42fc8e8c15240d0000952e28f",
+          "state": "COMPLETE_VALID"
+        },
+        {
+          "attempt_id": "E014_7a67cdcb",
+          "receipt_sha256": "d93b559afae548fe2b0e91399777fe31d0d46fa1c8e4ee4d59c551996735836f",
+          "state": "RESOURCE_LIMIT"
+        }
+      ],
+      "automatic_retry": false,
+      "reason": "S accepted; F resource-stopped. Preserve both charged starts and all evidence. No current retry allocation or paired performance."
+    }
+  },
+  "source_control_publication": "6200ca8f5e3fd912525811e064fb128b18802641",
   "source_identity": {
     "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
     "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
