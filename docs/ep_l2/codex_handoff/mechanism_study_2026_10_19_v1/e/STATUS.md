@@ -1,4 +1,4 @@
-# Lane E2 — V2_CONTROL_convolutionSeparable_S_VS_W_ONLY_MAIN61_CURRENT_ACCEPTED
+# Lane E2 — V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_V_MAIN61_CURRENT_ACCEPTED
 
 Original174; originalT0=1792414193; actual22/40,remaining18,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
 
@@ -11,8 +11,9 @@ Original174; originalT0=1792414193; actual22/40,remaining18,contingency8/8 consu
 
 | Independently accepted control | Anchor cycles | Control cycles | Anchor/control |
 |---|---:|---:|---:|
+| V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_V_MAIN61 | 291469 | 293463 | 0.993205276 |
 | V2_CONTROL_convolutionSeparable_S_VS_W_ONLY_MAIN61 | 292932 | 291525 | 1.004826344 |
 
-New results3796129759B, old+new18105706143B; growth since20-start control baseline188767175B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
+New results3799934342B, old+new18109510726B; growth since20-start control baseline192571758B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
-Remaining original qualified controls: F_MINUS_V,F_MINUS_R,S_COPY_FREE,WV_M,WV_T. DWT/CFD four-cell revision stays proposal-only until explicit user approval, distinct E qualification and live capacity checks. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
+Remaining original qualified controls: F_MINUS_R,S_COPY_FREE,WV_M,WV_T. DWT/CFD four-cell revision stays proposal-only until explicit user approval, distinct E qualification and live capacity checks. FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
