@@ -1,0 +1,13 @@
+# C V2 combination source delivered; native qualification pending
+
+The original C checkpoint/branch continues under b2e5328aca825d6e9ebfe09e46fa208957834636. No new Goal/T0/budget was created. Prior d98ffab2 and Conv proof/four cells are preserved. This is substantive new combination work, not another HOLD audit.
+
+A explicitly supplied public preimage eb6739b03883fecee155ba6b12a3a9f92c00d444. C module/test source ead4441680e56b5c7a669598ba1cbd5abf89e94f now has reviewed TVD-before-RO paid lookup ordering, original FILL/RESPONSE UID/generation binding, a waiter identity held before denied grant, combined resource/lifetime hooks and explicit empty-coverage native fallback. The public37KiB hook patch and module/test patch apply to exact A preimage in an isolated index; C did not edit A public files. Only A publishes the official common runtime.
+
+Prepared native input/source:13 combined production processes (same-address old-RO/victim/new-Tag, shared mandatoryWB/RO/native D512, real ICNT backpressure, pinned WB completion alongside RO, host invalidation, empty fallback, and T/M four cells at Tag16 and line128 pressure), plus3 affected modules. All16 are NOT_COMPILED_NOT_RUN. Five new tiny Python input-binding control tests PASS; AST/apply checks PASS. Actual C++ builds0/tests0, binary absent, applications0, leases0, waiters0. No control result is native correctness.
+
+D receives a deterministic process for six remaining complete inputs and empty fallback. Conv manifest/ranges/generator remain unchanged. C did not scan those six inputs or copy traces. Unknown lines always use native paths; zero policy coverage is distinct from unknown opportunity. E must freshly verify complete identities and independently qualify the actual runtime.
+
+The canonical E registry has adopted cumulative40 with actual starts0; old Lane5/R19 and the earlier24-era records remain historical. At this observation the current E API hash matches its newly published contract, but heavy work is not admitted; C did not invoke it. No resource resurvey or repeated HOLD cycle was performed. New helper edits must go through normal publication/hash checks. A release -> E current admission -> actual C native tests -> E independent acceptance remains the required sequence.
+
+See full_system_v2_r1/README.md, RECEIPT.json, ADAPTER_PREIMAGES.json, NATIVE_TEST_PLAN.json, CONTROL_CHECKS.json, INCREMENTAL_COSTS.md and D_SIX_INPUT_CERTIFICATION_AND_FALLBACK.md. F-minus-W, full dirty+RO fixed control and F_DATA_FREE remain explicit A/B-owned unimplemented/unqualified controls; no reduced design is labelled the completed full scheme. Original full Goal remains incomplete.

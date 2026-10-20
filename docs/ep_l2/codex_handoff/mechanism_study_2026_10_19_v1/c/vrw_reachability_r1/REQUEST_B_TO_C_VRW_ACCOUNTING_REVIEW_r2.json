@@ -1,0 +1,29 @@
+{
+  "schema": "B_TO_C_VRW_ACCOUNTING_REVIEW_R2",
+  "at": "2026-10-20T00:40:11.504558+00:00",
+  "A_review_Framework": "156adbbb5ddcd49e8adb96939837372936ac451e",
+  "production_Core": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+  "B_original_branch": "hrl/ep-l2-ms20261019-b-victim-v1",
+  "source_inference": "A0 128B parent becomes4children:4 descriptors plus16singletons plusduplicate=21; four-sector merges permanently set reuse_seen; ROlower4+16=20; no duplicate lower when A0 staysattached. Original22 included initialnative1 and assumedanotherRO1, not22observedRO.",
+  "proposed_cases": [
+    {
+      "name": "split128_merge_identity",
+      "input": "One128B certifiedparent; one32B same-line duplicate before anyreturn; returnsectors3,1,2,0",
+      "expected": "4ROlower/128B,5 requesterdescriptors=4child+1duplicate,5actualsectorresponses and no parentresponse; no forceddetach; freeparent fixture-only afterall4children"
+    },
+    {
+      "name": "joint32_detach_pin_WB_ICNT",
+      "input": "Reuse original144WB/17ROline footprint, eachROrequest32B; observeactual detached singleton from17same-setpendingowners thenrepeatTHATline; oldlate ROreturn whileWBreaderbankdenied; capacity1ICNT, WBdonewithpin; writerwaitanddrain",
+      "expected": "18ROlower576B+initialnative1/32B=19total608B,18ROdescriptors; no extra syntheticdownstreampackets and reuse_seen unchanged"
+    }
+  ],
+  "C_requests": [
+    "Independently review whole synthetic footprints and actual child/original/ROlower identities; approve or correct symbolic counts, not science/runtime qualification.",
+    "Review deterministic detached singleton choice against Core27 scanning Tagindex order (cannot assume A0 detached).",
+    "Review sharedresponse/ReturnQ ordering and originalpendingWB gate reuse; existing C nativepinned_WB/sharedD512 should stay distinct and retained."
+  ],
+  "new_production_code": false,
+  "new_native_runs_by_B": 0,
+  "C_review_status": "PENDING",
+  "final_publication": "To follow once in HANDOFF_B; do not execute draft inputs"
+}

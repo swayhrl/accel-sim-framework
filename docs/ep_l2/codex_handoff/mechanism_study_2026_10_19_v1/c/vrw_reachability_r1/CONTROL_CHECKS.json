@@ -1,0 +1,346 @@
+{
+  "schema": "C_VRW_SOURCE_AND_RECORDED_FAILURE_CONSISTENCY_V1",
+  "scope": "STATIC_SOURCE_EXISTING_LOG_AND_EXACT_INTEGER_ACCOUNTING_NOT_NATIVE_TEST",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "exact_A_r35_review",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "exact_production_Core",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "test_only_Core_has_no_production_source_delta",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "new_admission_resets_entry",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "entry_constructor_clears_reuse",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "successful_merge_sets_sticky_reuse",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "can_detach_requires_no_reuse",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "detach_also_enforces_reuse",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "lower_needed_excludes_issued_and_ready",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "retirement_ends_lifetime_without_clearing_bit",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "response_returns_actual_descriptor_request",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "response_choice_is_held",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "only_reuse_assignment_is_successful_merge",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "single_entry_reset_site",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "sector_child_address",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "sector_children_preserve_parent_pointer_and_origin",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "partition_pop_does_not_assemble_parent",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "merge_missing_uses_scheduled_mask",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "merge_issues_only_missing_sectors",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "lower_packet_has_valid_origin_and_no_parent",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "lower_packet_binds_landing_generation",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "detachment_scans_eligible_tag_indices",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "response_uses_physical_GPU_cycle",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "new_mem_fetch_has_new_UID",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "fill_UID_and_response_UID_are_distinct_clients",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "exact_recorded_GDB_log",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "captured_A0_not_detachable",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "duplicate_has_no_missing_lower_sector",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "recorded_packets_did_not_grow",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "five_waiters_consistent_with_four_children_and_duplicate",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "original_wait_requires_new_packet",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "original_18_descriptor_expectation_is_unreached",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "original_reference_tracks_parent_instead_of_children",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    },
+    {
+      "name": "synthetic_whole_epoch_line_sets_disjoint",
+      "status": "PASS",
+      "scope": "SOURCE_LOG_CONSISTENCY_ONLY"
+    }
+  ],
+  "anchors": [
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 142,
+      "text": "e = entry(); e.live = e.attached = true;"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 335,
+      "text": "reuse_seen(false)"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 189,
+      "text": "e.required |= mask; e.reuse_seen = true;"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 197,
+      "text": "return m_features.tag_detach && e.attached && !e.reuse_seen && (e.required&~e.ready);"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 203,
+      "text": "if (!m_features.tag_detach || !e.attached || e.reuse_seen ||"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 214,
+      "text": "return e.required & ~(e.issued | e.ready);"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 362,
+      "text": "e.live = false;"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 273,
+      "text": "out.request = waiter_request(w);"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 257,
+      "text": "if (!e.response_chosen)"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "line": 2578,
+      "text": "mf->get_addr() + SECTOR_SIZE * i, mf->get_access_type(),"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "line": 2582,
+      "text": "mf->get_sid(), mf->get_tpc(), mf, mf->get_streamID());"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 291,
+      "text": "unsigned mask=m->get_access_sector_mask().to_ulong(),missing=needed(m,h);"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 300,
+      "text": "issue(m,h,missing,time,events);"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 281,
+      "text": "m->get_wid(),m->get_sid(),m->get_tpc(),NULL,m->get_streamID());"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 284,
+      "text": "packet->set_ro_lower_packet();packet->set_ep_l2_payload_identity(h.payload_id,h.generation);"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 225,
+      "text": "if(tx->live(h) && tx->can_detach(h)){index=i;return true;}"
+    },
+    {
+      "commit": "27ec10bda848e4929181c60a7cbb40d6b007945c",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 325,
+      "text": "if(cycle!=physical_cycle())"
+    },
+    {
+      "commit": "8027ec558b9704d41cb8268131e7e6aca3ae7775",
+      "path": "tests/ep_l2/ms_victim/test_vrw_interleave.cc",
+      "line": 134,
+      "text": "const H newer=g.submit_ro(0);"
+    },
+    {
+      "commit": "8027ec558b9704d41cb8268131e7e6aca3ae7775",
+      "path": "tests/ep_l2/ms_victim/test_vrw_interleave.cc",
+      "line": 137,
+      "text": "assert(f.cache->ep_l2_descriptor_count_used()==18);"
+    },
+    {
+      "commit": "8027ec558b9704d41cb8268131e7e6aca3ae7775",
+      "path": "tests/ep_l2/ms_victim/test_vrw_interleave.cc",
+      "line": 71,
+      "text": "f.expected[full_uid]=f.memory.at(ro_base);"
+    }
+  ],
+  "source_sha256": {
+    "156adbbb5ddcd49e8adb96939837372936ac451e:docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/full_system_v2/VRW_REACHABILITY_REVIEW_r35.json": "2904f7b6b8d63c74f1fa8601ed7da6abed08ac5f6276f83c4e81821985a84bbd",
+    "27ec10bda848e4929181c60a7cbb40d6b007945c:src/gpgpu-sim/ep-l2-ro-transactions.h": "3680b7da9c8fdb44f0418819eeb97cf0d6547b8c1e40625c910d31e6a45e1235",
+    "27ec10bda848e4929181c60a7cbb40d6b007945c:src/gpgpu-sim/l2cache.cc": "471bfeff076f93e6ff48058804fe996c91147881bb3af6e79d332f618d1ffcff",
+    "27ec10bda848e4929181c60a7cbb40d6b007945c:src/gpgpu-sim/ep-l2-ro-runtime.inc": "4c868dff3806ced19381b4cf5013054203c7802514868d5e0e3557a96d238a23",
+    "27ec10bda848e4929181c60a7cbb40d6b007945c:src/gpgpu-sim/mem_fetch.cc": "e6ab83ca4e14f6433ba4836bda9388b7a2f18724bee9ac266bcfdff8bb37f851",
+    "27ec10bda848e4929181c60a7cbb40d6b007945c:src/gpgpu-sim/ep-l2-ro-store-port.h": "dc454e18636d686705e7871c2a8704a240ff9faabab49def2f3f8723144ea90b",
+    "156adbbb5ddcd49e8adb96939837372936ac451e:docs/ep_l2/review_packs/MS20261020_A_VRW_REACHABILITY_AND_PEER_HANDOFF_r35/A_SHARED_VRW_GDB_r34_failed_fixture_gdb.log": "b8a3befea35c3b73adb9cd5df851bb312cfd55d93cf1fbec8465641da635a19f",
+    "8027ec558b9704d41cb8268131e7e6aca3ae7775:tests/ep_l2/ms_victim/test_vrw_interleave.cc": "05a0987935cd8a90dfa851c29a9ab4dd1277403c8490b5ad2df354046205ea43",
+    "8027ec558b9704d41cb8268131e7e6aca3ae7775:docs/ep_l2/ms_victim/full_system_v2_r1/vrw_input/STIMULUS.json": "f0a23a3be94a38982101a63945ead15cf0801bbebf2ef309321f4c9bc428b0bd"
+  },
+  "observed_GDB_state": {
+    "slot": 146,
+    "attached": 1,
+    "reuse_seen": 1,
+    "required": 15,
+    "issued": 15,
+    "ready": 0,
+    "waiters": 5
+  },
+  "original_failed_prefix": {
+    "RO_packets_observed": 20,
+    "RO_bytes_observed": 640,
+    "A0_waiters_observed": 5,
+    "RO_descriptors_inferred_if_no_returns": 21,
+    "extra_lower_needed_from_recorded_masks": 0
+  },
+  "proposed_split128": {
+    "lower_packets": 4,
+    "lower_bytes": 128,
+    "requester_descriptors": 5,
+    "child_responses": 4,
+    "singleton_responses": 1,
+    "parent_responses": 0,
+    "runtime_status": "NOT_COMPILED_NOT_RUN"
+  },
+  "proposed_joint32": {
+    "lower_RO_packets": 18,
+    "lower_RO_bytes": 576,
+    "total_lower_read_packets_before_final_hit_read": 19,
+    "total_lower_read_bytes_before_final_hit_read": 608,
+    "RO_descriptors_before_returns": 18,
+    "runtime_status": "NOT_COMPILED_NOT_RUN"
+  },
+  "simulator_builds": 0,
+  "simulator_runs": 0,
+  "application_starts": 0
+}
