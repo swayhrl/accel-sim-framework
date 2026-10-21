@@ -1,6 +1,6 @@
-# Lane E2 — PRIMARY FOUR / V2_CONTROL_convolutionSeparable_F_VS_F_L2_DATA_FREE_MAIN61_CURRENT_ACCEPTED
+# Lane E2 — PRIMARY FOUR / PRIMARY_FOUR_TERMINAL
 
-Original174;T0=1792414193;actual36/40,remaining4;contingency8/8 consumed. ControllerACTIVE. main61/Core d010/Framework9dd and original runtime/client source pin unchanged. Only PRIMARY FOUR approved; no WB64/FWT/Btree/sensitivity.
+Original174;T0=1792414193;actual36/40,remaining4;contingency8/8 consumed. ControllerSTOPPED. main61/Core d010/Framework9dd and original runtime/client source pin unchanged. Only PRIMARY FOUR approved; no WB64/FWT/Btree/sensitivity.
 
 | Authorized condition | Attempt | State | Pair accepted |
 |---|---|---|---|
