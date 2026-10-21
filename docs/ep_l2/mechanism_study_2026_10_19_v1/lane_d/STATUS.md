@@ -1,3 +1,5 @@
+> Collaboration v1: **IDLE**, onboarded by Lane D本人；[current self-status](../../lane_collaboration_v1/status/D.json) and [onboarding / previous delivery / dependencies](../../lane_collaboration_v1/evidence/D/JOIN_REPORT_r1.md). Research results below remain the prior delivery; no reanalysis or background worker.
+
 # Lane D — four capacity pairs CONSUMED; neutral input prefreeze delivered
 
 FirstCFD/Vector/SAD consumption publishedf93add1ef2e22e5f8b04e1dce7de5b7ddfd15a80. New E c6dfbecc9ffcd1eb661c6e61657f69326d8eec5c DWT166519/157034 was consumed incrementally while workload preparation continued. Four matched new-binary93a9 pairs:CFD−0.813875%,Vector+72.235206%,SAD+0.125639%,DWT+6.040093% OFF/ON speedup. ON classification staysUNKNOWN in allfour due to MissQ coverage; full-five diagnostic GMUNKNOWN, Conv still requires E accepted pair. [Latest science](../../review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/DWT_INCREMENTAL_SCIENCE.md), [CONSUMED](../../review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/CONSUMED.json). Original main61 five-MAIN GM0.997733 and original-sevenMAIN GMUNKNOWN stay unchanged; no diagnostic/hardware-bound claim or wait summation.
