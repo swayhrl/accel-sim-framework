@@ -34,3 +34,5 @@ E2已完成`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/`。原main6
 ## 下一轮合并准备
 
 E2已发布[batches/WORKLOAD_PREPARATION_BATCH_r2.md](batches/WORKLOAD_PREPARATION_BATCH_r2.md)：F补BFS来源包、C补SGEMM fallback/BFS host边界、A2补main61 SGEMM配置提案，D一次汇总，E2一次资格/成本审查。B复用旧结果不新派重复任务。全部仅准备，未批准新应用/native/build；本人未ACK前不标已接单。D Conv增量分析不等本批完成。
+
+本批实际接单核验：A2=WORKING（本人ACK/STATUS，dfe3f16f）, C=WORKING（本人ACK/STATUS，93f6db18）, D=WORKING（本人ACK/STATUS，592cb849）, F=WORKING（本人ACK/STATUS，ec653cd7）。这只是本人准备状态，未推断产物完成或进程/lease。来源见intake/E2/PREPARATION_BATCH_r2_ACKS.json。

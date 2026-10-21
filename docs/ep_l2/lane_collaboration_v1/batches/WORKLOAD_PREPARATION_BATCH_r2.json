@@ -1,12 +1,42 @@
 {
-  "schema": "EPL2_SINGLE_ROUND_WORKLOAD_PREPARATION_BATCH_V1",
-  "batch_id": "EPL2_WORKLOAD_PREPARATION_BATCH_r2",
-  "owner": "E2",
-  "created_at_utc": "2026-10-21T15:17:12.816099+00:00",
+  "actual_owner_intake_summary": {
+    "A2": {
+      "not_process_heartbeat": true,
+      "self_reported_activity": "WORKING",
+      "source_commit": "dfe3f16fddab71cb6eee6f29506d023406bc619a",
+      "status_event": "A2-00000011-5c8055c0eee7",
+      "task_ack_event": "A2-00000010-df7f3337f85a"
+    },
+    "C": {
+      "not_process_heartbeat": true,
+      "self_reported_activity": "WORKING",
+      "source_commit": "93f6db1881bb7bbb59f5e7f53196b7441ef3268b",
+      "status_event": "C-00000005-46edbc3afab5",
+      "task_ack_event": "C-00000004-0f7890e46492"
+    },
+    "D": {
+      "not_process_heartbeat": true,
+      "self_reported_activity": "WORKING",
+      "source_commit": "592cb8496fda208d0f9f77c8fffd6691bccc35a3",
+      "status_event": "D-00000015-80e0fa361c90",
+      "task_ack_event": "D-00000014-b7cf7c626083"
+    },
+    "F": {
+      "not_process_heartbeat": true,
+      "self_reported_activity": "WORKING",
+      "source_commit": "ec653cd7b473f34582719d80176a82299f97c420",
+      "status_event": "F-00000007-34ddef5858e0",
+      "task_ack_event": "F-00000006-c4959cda5ecc"
+    }
+  },
   "authority": "USER_REQUESTED_CONSOLIDATED_PREPARATION_AND_REVIEW_ONLY_NO_NEW_APPLICATION_STARTS",
-  "status": "PREPARATION_REQUEST_PENDING_ACTUAL_OWNER_ACK",
+  "batch_completion": "F/C/A2 each deliver one DONE-or-MISSING packet; D merges available evidence once without endless missing-asset wait; E2 prepares exact eligibility/approval proposal. B no new task, D Conv increment independent.",
+  "batch_id": "EPL2_WORKLOAD_PREPARATION_BATCH_r2",
+  "created_at_utc": "2026-10-21T15:17:12.816099+00:00",
+  "owner": "E2",
   "review_commit": "74f0721270010d12c40cc92aaf5c8f35e56f3ad6",
   "review_path": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/README.md",
+  "schema": "EPL2_SINGLE_ROUND_WORKLOAD_PREPARATION_BATCH_V1",
   "science_runtime_recommendation": "Prepare original main61 finite S/F proposals first: old FWT restoration uses exact original Q; SGEMM separate exploratory cohort. This is a recommendation, not adoption or execution approval. New93a9 remains current capacity diagnostic only unless separately qualified/approved for finite F.",
   "shared_constraints": [
     "Do not repeat completed candidate/static/epoch/WV reviews; link exact prior artifacts and fill only assigned new gaps.",
@@ -16,105 +46,133 @@
     "Each owner publishes own single small result packet with exact commit/path/SHA, DONE or specific MISSING plus owner and work_key; DELIVERY to E2/D and dependent lane, then actual owner STATUS and remote readback. No report copying by user required.",
     "Do not wait indefinitely for original capture assets; return precise MISSING once. Consumer only ACKs genuinely published artifacts. IDLE windows are not automatically awakened."
   ],
+  "status": "OWNERS_ACKNOWLEDGED_PREPARATION_PENDING_OUTPUTS",
   "tasks": [
     {
-      "id": "F-BFS-INPUT-PACKET-r1",
-      "owner": "F",
-      "state": "READY_FOR_OWNER_INTAKE",
-      "new_work": "Prepare exact Rodinia3.1 BFS graph65536 input provenance/metadata packet, beyond completed FWT/SGEMM package.",
-      "reuse": "D frozen BFS candidate/complete small commandlist/run.sh/header/stat index. Keep FWT/SGEMM prior packages linked unchanged.",
+      "actual_owner_intake": {
+        "not_process_heartbeat": true,
+        "self_reported_activity": "WORKING",
+        "source_commit": "ec653cd7b473f34582719d80176a82299f97c420",
+        "status_event": "F-00000007-34ddef5858e0",
+        "task_ack_event": "F-00000006-c4959cda5ecc"
+      },
       "deliver": [
         "Exact selected entry and commandlist SHA, all20 declared kernels and host updates; saved proof availability, not freshly claimed grammar/instruction totals.",
         "Actual graph/source-node/source/build/capture identities if present in known original EP-L2 assets; otherwise exact MISSING, no guessed GPU/toolkit/dimensions or upstream-source substitution.",
         "Bounded known-path reader/stat/source metadata scope and truthful lineage; no full trace scan, GPU capture, downloads of large trace bundles or unrelated project search."
       ],
+      "id": "F-BFS-INPUT-PACKET-r1",
+      "new_work": "Prepare exact Rodinia3.1 BFS graph65536 input provenance/metadata packet, beyond completed FWT/SGEMM package.",
+      "output": "One INPUT_PACKET.json plus short MISSING list; <=1MiB metadata. No duplication of 1.8/2.2GB inputs.",
+      "owner": "F",
       "recipients": [
         "D",
         "E2",
         "C"
       ],
-      "output": "One INPUT_PACKET.json plus short MISSING list; <=1MiB metadata. No duplication of 1.8/2.2GB inputs."
+      "reuse": "D frozen BFS candidate/complete small commandlist/run.sh/header/stat index. Keep FWT/SGEMM prior packages linked unchanged.",
+      "state": "OWNER_ACKNOWLEDGED_PREPARATION_IN_PROGRESS_SELF_REPORT_ONLY"
     },
     {
-      "id": "C-SGEMM-FALLBACK-BFS-HOST-r1",
-      "owner": "C",
-      "state": "READY_FOR_OWNER_INTAKE",
-      "new_work": "Prepare independent SGEMM empty-coverage ordinary-path fallback metadata proposal on exact existing frozen trace; review BFS complete host-update command boundaries.",
-      "reuse": "Already-completed whole-epoch/input-domain review and supported main61 safe-fallback mechanism; FWT exact zero-RO proof unchanged.",
+      "actual_owner_intake": {
+        "not_process_heartbeat": true,
+        "self_reported_activity": "WORKING",
+        "source_commit": "93f6db1881bb7bbb59f5e7f53196b7441ef3268b",
+        "status_event": "C-00000005-46edbc3afab5",
+        "task_ack_event": "C-00000004-0f7890e46492"
+      },
       "deliver": [
         "SGEMM proposed empty ranges + explicit SAFE_FALLBACK_NO_CERTIFIED_LINES / NO_READONLY_CERTIFICATION binding to own full commandlist and saved input identity; fixed F T/M remain ON, UNKNOWN RO is not measured0. Mark PREPARED_NOT_E_QUALIFIED_NOT_ADOPTED.",
         "BFS complete small-commandlist host update address/length/affected128B-line exclusions and unresolved domain/atomic/source constraints. No whole-body RO certificate without proof, no stripping stop-flag updates.",
         "Input-specific remaining gates and exact refs for A2/E2; no numeric output or native PASS claims."
       ],
+      "id": "C-SGEMM-FALLBACK-BFS-HOST-r1",
+      "new_work": "Prepare independent SGEMM empty-coverage ordinary-path fallback metadata proposal on exact existing frozen trace; review BFS complete host-update command boundaries.",
+      "output": "One small candidate metadata packet plus exact binding hashes, not an E qualification.",
+      "owner": "C",
       "recipients": [
         "A2",
         "D",
         "E2",
         "F"
       ],
-      "output": "One small candidate metadata packet plus exact binding hashes, not an E qualification."
+      "reuse": "Already-completed whole-epoch/input-domain review and supported main61 safe-fallback mechanism; FWT exact zero-RO proof unchanged.",
+      "state": "OWNER_ACKNOWLEDGED_PREPARATION_IN_PROGRESS_SELF_REPORT_ONLY"
     },
     {
-      "id": "A2-SGEMM-MAIN61-CONFIG-PROPOSAL-r1",
-      "owner": "A2",
-      "state": "READY_FOR_OWNER_INTAKE_C_ARTIFACT_CAN_BE_BOUND_WHEN_PUBLISHED",
-      "new_work": "Prepare exact finite main61 SGEMM S/F configuration proposal; prior static opcode/producer review is not repeated.",
-      "reuse": "Frozen main61 producer/release/SUPPORTED_PROFILES and existing general source-specific native evidence. FWT exact Q1d3af457 reused by reference only.",
+      "actual_owner_intake": {
+        "not_process_heartbeat": true,
+        "self_reported_activity": "WORKING",
+        "source_commit": "dfe3f16fddab71cb6eee6f29506d023406bc619a",
+        "status_event": "A2-00000011-5c8055c0eee7",
+        "task_ack_event": "A2-00000010-df7f3337f85a"
+      },
       "deliver": [
         "Proposed S/F option diff and invariant map on same main61 source/main/archive; finite payload1168, physicalP1, fixed F W/V/T/M, no data/copy-free or capacity master1.",
         "Bind C candidate fallback refs only when genuinely published; any unresolved input/certificate path remains clearly unsealed/non-launchable, never a placeholder READY.",
         "Minimal E qualification coverage mapping: exact same-source evidence reusable versus input-specific gaps; no automatic rerun of17tests/OFF and no production rebuild."
       ],
+      "id": "A2-SGEMM-MAIN61-CONFIG-PROPOSAL-r1",
+      "new_work": "Prepare exact finite main61 SGEMM S/F configuration proposal; prior static opcode/producer review is not repeated.",
+      "output": "One config proposal/option diff/coverage map. Producer/scientific execution identities stay frozen.",
+      "owner": "A2",
       "recipients": [
         "D",
         "E2",
         "C"
       ],
-      "output": "One config proposal/option diff/coverage map. Producer/scientific execution identities stay frozen."
+      "reuse": "Frozen main61 producer/release/SUPPORTED_PROFILES and existing general source-specific native evidence. FWT exact Q1d3af457 reused by reference only.",
+      "state": "OWNER_ACKNOWLEDGED_PREPARATION_IN_PROGRESS_SELF_REPORT_ONLY"
     },
     {
-      "id": "D-WORKLOAD-BATCH-DECISION-r2",
-      "owner": "D",
-      "state": "PARALLEL_SCIENCE_SUMMARY_THEN_SINGLE_UPSTREAM_MERGE",
-      "new_work": "Consolidate exact candidate/cohort/scientific-claim decisions once from existing neutral freeze plus this batch F/C/A2 packets.",
-      "reuse": "Existing four capacity pair CONSUMED analyses, neutral FWT/SGEMM/BFS/Hotspot freeze, B completed W/V review, C original pressure review.",
+      "actual_owner_intake": {
+        "not_process_heartbeat": true,
+        "self_reported_activity": "WORKING",
+        "source_commit": "592cb8496fda208d0f9f77c8fffd6691bccc35a3",
+        "status_event": "D-00000015-80e0fa361c90",
+        "task_ack_event": "D-00000014-b7cf7c626083"
+      },
       "deliver": [
         "One readiness table per input with READY_FOR_E_REVIEW or exact MISSING, producer/cohort, trace-model versus source/numeric scope, neutral reason and exclusion. SGEMM existing exploratory HOLD remains.",
         "FWT main61 restoration proposal separate from SGEMM exploratory control; BFS conditional, saved single-kernel Hotspot reserve. No target application count or selecting on new F speed.",
         "Only concrete unresolved W/V question needing new B work is routed to B; otherwise link B existing result and do not wait for another B review."
       ],
+      "id": "D-WORKLOAD-BATCH-DECISION-r2",
       "independent_mainline": "D-CAPACITY-FIVE-INCREMENT proceeds immediately after E2 formal Conv accepted delivery, without waiting for this preparation batch.",
+      "new_work": "Consolidate exact candidate/cohort/scientific-claim decisions once from existing neutral freeze plus this batch F/C/A2 packets.",
+      "output": "One DECISION_BUNDLE_r2 with exact source refs, no new run request treated as approval.",
+      "owner": "D",
       "recipients": [
         "E2",
         "A2",
         "C",
         "F"
       ],
-      "output": "One DECISION_BUNDLE_r2 with exact source refs, no new run request treated as approval."
+      "reuse": "Existing four capacity pair CONSUMED analyses, neutral FWT/SGEMM/BFS/Hotspot freeze, B completed W/V review, C original pressure review.",
+      "state": "OWNER_ACKNOWLEDGED_PREPARATION_IN_PROGRESS_SELF_REPORT_ONLY"
     },
     {
       "id": "B-EXISTING-WV-RESULT-REUSE",
-      "owner": "B",
-      "state": "NO_NEW_ASSIGNMENT_IDLE_RESULT_REUSED",
       "new_work": "None now; existing W/V review is already delivered. Respond only to a specific new input/mechanism question with concrete evidence not covered before.",
+      "output": "No repeated review or no-change status needed.",
+      "owner": "B",
       "recipients": [
         "D",
         "E2"
       ],
-      "output": "No repeated review or no-change status needed."
+      "state": "NO_NEW_ASSIGNMENT_IDLE_RESULT_REUSED"
     },
     {
-      "id": "E2-WORKLOAD-EXECUTION-PROPOSAL-r2",
-      "owner": "E2",
-      "state": "WAIT_EXACT_PREPARATION_DELIVERIES_MAINLINE_CONV_CONTINUES",
-      "new_work": "Review merged packet independently and propose only eligible exact conditions, runtime/cohort/count/cost/resources for user approval.",
       "deliver": [
         "First finish current Conv ON and five same-new-binary capacity pairs.",
         "Then one precise future FWT/SGEMM proposal if actual qualifications close; otherwise exact remaining gates. No automatic BFS/Hotspot or retry.",
         "Preserve T0/actual46 and cumulative result generation; account potential2starts/768MiB per pair plus native/collector/metadata reserve separately."
       ],
-      "output": "One approval-ready or precise-HOLD proposal; zero new app permission from this batch."
+      "id": "E2-WORKLOAD-EXECUTION-PROPOSAL-r2",
+      "new_work": "Review merged packet independently and propose only eligible exact conditions, runtime/cohort/count/cost/resources for user approval.",
+      "output": "One approval-ready or precise-HOLD proposal; zero new app permission from this batch.",
+      "owner": "E2",
+      "state": "WAIT_EXACT_PREPARATION_DELIVERIES_MAINLINE_CONV_CONTINUES"
     }
-  ],
-  "batch_completion": "F/C/A2 each deliver one DONE-or-MISSING packet; D merges available evidence once without endless missing-asset wait; E2 prepares exact eligibility/approval proposal. B no new task, D Conv increment independent."
+  ]
 }
