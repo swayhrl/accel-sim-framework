@@ -1,4 +1,4 @@
-# Lane E2 — capacity diagnostic / CAPACITY_DIAGNOSTIC_cfd_097k_OFF_ON_NEW_RUNTIME_CURRENT_ACCEPTED
+# Lane E2 — capacity diagnostic / CAPACITY_RESOURCE_ONLY_RESUME_READY
 
 Original174; T0 1792414193; actual 38/46, remaining 8; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 1/5. Original MAIN and control results unchanged.
 
