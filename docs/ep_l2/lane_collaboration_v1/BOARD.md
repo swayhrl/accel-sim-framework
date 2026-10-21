@@ -16,7 +16,7 @@
 1. E2：继续原控制器E046 Conv ON，取得真实退出和完整终验；已接受九端/四对不重跑。
 2. E2：发布第五对CURRENT_ACCEPTED后，按新事件+原通道交D；完成最终账目和远端回读。
 3. D：依赖正式Conv交付，复用已完成四组缓存，仅新增Conv与五组汇总，不提前消费活动raw。当前D本人仍IDLE，待办不等于已经开始工作。
-4. E2：汇合已交A2/B/C/D/F候选审查，登记来源/RO/runtime/独立资格缺口。SGEMM已有探索登记但HOLD，不能重复登记或当正式端点；FWT仍不自动重试。
+4. E2：已汇合A2/B/C/D/F候选审查，完成`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_readiness_consolidation_r1/`来源/RO/runtime/独立资格缺口清单；未运行任何新应用/native。SGEMM已有探索登记但HOLD，不能重复登记或当正式端点；FWT仍不自动重试。
 5. A2/B/C/F：已完成任务不重做；后续只接具体缺口请求，由本人ACK并执行既有授权范围内工作。
 
 ## 分工与唤醒边界
