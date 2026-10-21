@@ -1,10 +1,10 @@
-# Lane E2 — capacity diagnostic / CAPACITY_DIAGNOSTIC_sad_OFF_ON_NEW_RUNTIME_CURRENT_ACCEPTED
+# Lane E2 — capacity diagnostic / CAPACITY_SAD_ACCEPTED_AND_WORKLOAD_SURVEY_r1
 
 Original174; T0 1792414193; actual 45/46, remaining 1; old36 immutable and charged, contingency8/8 preserved. Controller ACTIVE. New diagnostic accepted pairs 3/5. Original MAIN and control results unchanged.
 
 Formal concurrency: RESOURCE_ONLY, APPLIED. Fixed E formal simulator-count limits removed by explicit user approval; existing CPU/RAM/disk and result/start budgets remain.
 
-Result generation: new 6782314419B/10737418240B; old+new 21091890803B/25769803776B; growth since36 1627759203B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
+Result generation: new 6787401556B/10737418240B; old+new 21096977940B/25769803776B; growth since36 1632846340B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
 | Condition | Attempt | State |
 |---|---|---|
@@ -16,7 +16,7 @@ Result generation: new 6782314419B/10737418240B; old+new 21091890803B/2576980377
 | V3_CAPACITY_vectorAdd_4M_S_ON | E042_307fac20 | COMPLETE_VALID |
 | V3_CAPACITY_dwt2d_S_OFF | E043_c96ede71 | COMPLETE_VALID |
 | V3_CAPACITY_dwt2d_S_ON | E044_4c4350db | RUNNING |
-| V3_CAPACITY_convolutionSeparable_S_OFF | E045_3c8a6cc8 | RUNNING |
+| V3_CAPACITY_convolutionSeparable_S_OFF | E045_3c8a6cc8 | COMPLETE_VALID |
 | V3_CAPACITY_convolutionSeparable_S_ON | None | NOT_STARTED |
 
 Next never-started authorized conditions: V3_CAPACITY_convolutionSeparable_S_ON. No automatic retry.
