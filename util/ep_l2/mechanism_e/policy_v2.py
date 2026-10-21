@@ -4,6 +4,7 @@ Environment review is not a lease. A remote worker must use the original E
 dispatcher, not a copied JSON/flock. No remote execution transport is implied.
 """
 import capacity_policy
+import concurrency_policy
 import copy
 import hashlib
 import json
@@ -74,7 +75,7 @@ def global_gate(data, kind, cpu, memory):
             if r['status'] in ('RESERVED','RUNNING')]
     check(not any(r.get('disk_authorization_id') for r in rows),
           'exclusive task-scoped disk build active; no competing heavy lease')
-    if kind in ('simulation','screen'):
+    if kind in ('simulation','screen') and not concurrency_policy.resource_only(data.get(concurrency_policy.FIELD),kind):
         check(sum(r['status'] in ('RESERVED','RUNNING') for r in data['runs'].values()) < 4,
               'global shared simulator quota full')
     check(sum(r['cpu_units'] for r in rows)+cpu <= 8, 'global shared CPU quota full')

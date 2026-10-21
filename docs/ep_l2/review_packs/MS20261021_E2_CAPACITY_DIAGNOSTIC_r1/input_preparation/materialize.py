@@ -76,7 +76,12 @@ def materialize(source_path,capacity_path,index_path,output):
     registry=read('/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json')['mechanism_study_20261019_v1']
     require(registry.get('capacity_diagnostic_amendment',{}).get('authority_commit')==AUTHORITY,'original central amendment not adopted')
     require(registry.get('capacity_diagnostic_matrix')==capacity_policy.matrix(),'central ten-condition matrix differs from published policy')
-    require(registry['actual_starts']==36,'materialize exactly once before this new batch starts; do not replace live specs')
+    require(36<=registry['actual_starts']<=46 and registry['controller']['state']=='STOPPED',
+            'materialization revision requires original controller safe STOPPED boundary')
+    require(not any(a['state'] in ('RESERVED','START_INTENT_UNRECONCILED','RUNNING') for a in registry['attempts']),
+            'do not revise specs with active or uncertain native applications')
+    require(registry.get('capacity_diagnostic_runtime',source)==source,
+            'parser-only revision cannot change frozen common runtime')
     output=Path(output).resolve()
     require(output.is_relative_to(P.resolve()) and output!=P.resolve(),'output must be a new child of input_preparation')
     require(not output.exists(),'refuse to overwrite any old materialization')
@@ -156,7 +161,13 @@ def materialize(source_path,capacity_path,index_path,output):
                 nonresearch_options={k:v for k,v in effective.items() if k!=MASTER},comparison_variable_options=[MASTER])
             spec['comparison_invariants_sha256']=runner.legacy.content_hash(invariant)
             key=runner.run_key(spec['identity'])
-            require(not any(a['run_key']==key for a in registry['attempts']),'existing charged/reserved endpoint; no duplicate or retry materialization')
+            existing=[a for a in registry['attempts'] if a['run_key']==key]
+            require(len(existing)<=1 and all(a['identity']==spec['identity'] and
+                    a['budget_bucket']==BUCKET and a['state'] not in
+                    ('RESERVED','START_INTENT_UNRECONCILED','RUNNING') for a in existing),
+                    'revision cannot alter or relaunch an existing exact endpoint')
+            # Started keys remain in the finite queue only for explicit dedup;
+            # no retry fields are added and the controller must skip them.
             for k in ('selection_id','profile','comparison_group','budget_bucket'):require(spec[k]==matrix[condition_id][k],'spec differs from adopted condition: '+k)
             sp=output/work/(suffix+'_SPEC.json')
             row=dict(condition_id=condition_id,workload=work,profile=profile,pair_id=pair_id,
@@ -193,7 +204,7 @@ def materialize(source_path,capacity_path,index_path,output):
         E_qualification_input_index=ref(index_path),conditions=conditions,pairs=pairs,queue=ref(output/'QUEUE.json'),
         maximum_new_starts=10,historical_charged_starts=36,maximum_campaign_starts=46,
         maximum_total_result_bytes=10*384*2**20,collector_and_metadata_planning_reserve_bytes=64*2**20,
-        timeout_seconds=10800,max_concurrency=2,T0=registry['t0_unix'],
+        timeout_seconds=10800,max_concurrency=(None if registry.get('formal_simulator_concurrency',{}).get('mode')=='RESOURCE_ONLY' else 2),T0=registry['t0_unix'],
         start_deadline=registry['start_deadline_unix'],intake_deadline=registry['intake_deadline_unix'],
         original_controller_only=True,no_registry_or_CLIENT_mutations=True,no_lease_or_application_started=True,
         main61_qualification_inherited=False,old_anchor_reused=False,no_automatic_retry=True,

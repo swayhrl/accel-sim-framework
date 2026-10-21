@@ -50,20 +50,15 @@ def main():
  client['capacity_diagnostic_runtime']=plan['source_identity'];client['capacity_diagnostic_status']='NEW_RUNTIME_INDEPENDENTLY_QUALIFIED_EXACT_FIVE_INPUTS'
  client['capacity_diagnostic_qualifications']=[row['qualification'] for row in plan['conditions'] if row['profile']==policy.OFF]
  c.write_json(cp,client);c.write_json(P/'CLIENT_EXECUTION_QUALIFIED.json',client)
- margin=plan['collector_and_metadata_planning_reserve_bytes'];used=c.output_usage();resources=c.local_resources();shadow=copy.deepcopy(data);shadow[c.FIELD]['target_simulators']=2
+ margin=plan['collector_and_metadata_planning_reserve_bytes'];used=c.output_usage();resources=c.local_resources()
+ import concurrency_policy
+ c.require(concurrency_policy.resource_only(s,'simulation'),'explicit resource-only concurrency approval not active')
  pending=sum(max(0,r.get('disk_growth_bytes',c.FULL_GROWTH)-c.retained_tree_bytes(Path(r['result_directory']))) for r in data['runs'].values() if r['status'] in c.ACTIVE and r.get('experiment_id')==c.CAMPAIGN)
  c.require(used['new_bytes']+pending+sum(x['maximum_result_bytes'] for x in specs)+margin<=limits['additional_results_max_bytes'] and used['total_bytes']+pending+sum(x['maximum_result_bytes'] for x in specs)+margin<=limits['old_plus_new_results_max_bytes'],'remaining batch plus collector exceeds cumulative generation budget')
- slots=1;why='No pending condition'
+ slots=None;why='User removed fixed formal-simulator counts. Original central resource gates admit each finite approved condition; CPU/RAM/disk/result limits remain.'
  if specs:
-  first=specs[0];c.resource_gate(shadow,'simulation',1,first['memory_bytes'],first['maximum_result_bytes'],resources,used)
-  slots=2;why='Current two-slot forecast passes; original per-launch transaction remains final'
-  forecast=copy.deepcopy(shadow);forecast['runs']['READONLY_FORECAST_NOT_LEASE']=dict(status='RESERVED',host=s['host'],experiment_id=c.CAMPAIGN,cpu_units=1,memory_bytes=first['memory_bytes'],disk_growth_bytes=first['maximum_result_bytes'],monitor_reserve_bytes=2*c.GIB,result_directory=str(c.OUTPUT/'CAPACITY_FORECAST_NO_WRITES'),scan=False)
-  try:c.resource_gate(forecast,'simulation',1,max(x['memory_bytes'] for x in specs),max(x['maximum_result_bytes'] for x in specs),resources,used)
-  except ValueError as e:slots=1;why=str(e)
- with coord.locked() as (data,item):
-  c.require(item['controller']['state']=='STOPPED','controller raced admission')
-  item['target_simulators']=slots
- c.write_json(P/'QUALIFIED_BATCH_ADMISSION.json',dict(status='PASS_NO_APPLICATION_STARTED_BY_ADMISSION',at_unix=time.time(),source_identity=plan['source_identity'],actual=s['actual_starts'],remaining=s['remaining_start_capacity'],slots=slots,two_slot_reason=why,resources=resources,output_usage=used,collector_margin_bytes=margin,qualification_ids=sorted(qids),pending_conditions=[x['condition_id'] for x in specs]))
+  first=specs[0];c.resource_gate(data,'simulation',1,first['memory_bytes'],first['maximum_result_bytes'],resources,used)
+ c.write_json(P/'QUALIFIED_BATCH_ADMISSION.json',dict(status='PASS_NO_APPLICATION_STARTED_BY_ADMISSION',at_unix=time.time(),source_identity=plan['source_identity'],actual=s['actual_starts'],remaining=s['remaining_start_capacity'],slots=slots,concurrency_mode='RESOURCE_ONLY',concurrency_reason=why,resources=resources,output_usage=used,collector_margin_bytes=margin,qualification_ids=sorted(qids),pending_conditions=[x['condition_id'] for x in specs]))
  checkpoint('CAPACITY_NEW_RUNTIME_QUALIFIED_BATCH_ADMISSION',extra=[P/'CLIENT_EXECUTION_QUALIFIED.json',P/'QUALIFIED_BATCH_ADMISSION.json'])
  original_roll=controller.roll_pairs
  def immediate(coord,requests):

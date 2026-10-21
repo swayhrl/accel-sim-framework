@@ -20,6 +20,7 @@ import uuid
 import subprocess
 import policy_v2
 import capacity_policy
+import concurrency_policy
 import disk_policy
 
 OLD_TOOLS = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5')
@@ -96,6 +97,7 @@ def ledger(data):
                 'budget/deadline changed')
         require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
                 'output budget changed')
+    concurrency_policy.active(item)  # exact optional user concurrency amendment
     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
             'different host/boot: explicit reconciliation required')
     return item
@@ -156,15 +158,18 @@ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=F
     # This transaction belongs to the validated campaign. Keep the real global
     # host policy and legacy Registry source untouched for every other client.
     view=data if disk_floor_bytes==48*GIB else disk_policy.scoped_registry_view(data,socket.gethostname(),disk_floor_bytes)
-    Registry.admission(view,socket.gethostname(),cpu,memory,scan,
-                       'simulation' if kind in ('simulation','screen') else 'build',resources)
+    if concurrency_policy.resource_only(item,kind):
+        concurrency_policy.admission(view,item,socket.gethostname(),cpu,memory,scan,'simulation',resources)
+    else:
+        Registry.admission(view,socket.gethostname(),cpu,memory,scan,
+                           'simulation' if kind in ('simulation','screen') else 'build',resources)
     active=[r for r in data['runs'].values() if r['status'] in ACTIVE]
     leases=[r for r in data['resource_leases'].values() if r['status'] in ACTIVE]
     require(resources['available_memory_bytes']-memory-sum(r['memory_bytes'] for r in active+leases)>=64*GIB,
             '64GiB memory floor after existing and proposed reservations')
     require(resources['disk_free_bytes']-pending_growth(data)-growth-monitor_reserve_bytes>=disk_floor_bytes,
             'workspace floor plus existing/proposed output growth and monitor reserve')
-    if kind in ('simulation','screen'):
+    if kind in ('simulation','screen') and not concurrency_policy.resource_only(item,kind):
         ours=[r for r in active if r.get('experiment_id')==CAMPAIGN]
         target=item.get('target_simulators',2)
         require(type(target) is int and 1<=target<=3,'E concurrency must be 1..3')
@@ -238,6 +243,20 @@ class Coordinator:
             require(old is None or old==source,'capacity common binary cannot be silently rebound')
             item['capacity_diagnostic_runtime']=source
             return source
+
+    def activate_resource_only_concurrency(self):
+        """Finalize the approved switch only after the old controller drains."""
+        with self.locked() as (data,item):
+            require(concurrency_policy.active(item),'resource-only concurrency approval not adopted')
+            row=item['formal_simulator_concurrency']
+            if row['status']=='APPLIED':return dict(changed=False,record=row.copy())
+            require(item.get('controller',{}).get('state')=='STOPPED',
+                    'old controller must naturally STOP before source switch')
+            require(not any(r.get('experiment_id')==CAMPAIGN and r['status'] in ACTIVE
+                    for group in ('runs','resource_leases') for r in data[group].values()),
+                    'old campaign applications/leases must retire before source switch')
+            row.update(status='APPLIED',source_switch_unix=time.time())
+            return dict(changed=True,record=row.copy())
 
     def work_disk_policy(self):
         """Frozen resource policy for A's new entry; not a lease or build grant."""
