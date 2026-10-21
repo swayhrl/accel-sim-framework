@@ -1,0 +1,361 @@
+{
+  "atomic_input_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+    "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+  },
+  "auxiliary_assets": [
+    {
+      "name": "readonly_manifest.json",
+      "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json"
+    },
+    {
+      "name": "readonly_ranges.csv",
+      "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/certified_ranges.csv"
+    },
+    {
+      "name": "atomic_scope.json",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json"
+    },
+    {
+      "name": "native_input_semantics.json",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/final_bindings/vectorAdd_4M/NATIVE_INPUT_SEMANTICS.json"
+    },
+    {
+      "name": "current_input_scope_binding.json",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/final_bindings/vectorAdd_4M/RETAINED_INPUT_SCOPE.json"
+    }
+  ],
+  "binary": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/accel-sim.out",
+  "budget_bucket": "five_input_capacity_diagnostic_user_approved_20261021",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "capacity_manifest": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/FROZEN_CAPACITY_VECTOR_FINAL.json",
+    "sha256": "d195aa13a0229a6fcae4db7f4ee50cdb2932f8785810f449b6d7a3bbace1357d"
+  },
+  "comparison_group": "CAPACITY_DIAGNOSTIC_vectorAdd_4M",
+  "comparison_invariants_sha256": "abf91c39313681b37f151b0275a2499b6e6c4f220e99d04725a651edbe940dd0",
+  "condition_id": "V3_CAPACITY_vectorAdd_4M_S_ON",
+  "configs": [
+    {
+      "name": "base-0.config",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-0.config"
+    },
+    {
+      "name": "base-1.config",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-1.config"
+    },
+    {
+      "name": "base-2.config",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-2.config"
+    },
+    {
+      "name": "profile.config",
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/vectorAdd_4M/S_ON.config"
+    }
+  ],
+  "entry_trace_name": "kernelslist.g",
+  "environment": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "expected_full_instructions": 56000000,
+  "expected_kernel_count": 1,
+  "full_input_scope_validation": "CURRENT_COMPLETE_CONTENT_AND_OLD_PROPERTY_PROOFS_REVIEWED_NO_RUNTIME_PASS_INHERITED",
+  "identity": {
+    "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "epoch_range": {
+      "epochs": "all",
+      "scope": "full_application"
+    },
+    "feature_vector": {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 74752,
+      "ro_line_mshr_bypass": false,
+      "ro_tag_detach": false,
+      "static_s64": false,
+      "tvd": false,
+      "unified_wb": false,
+      "wb_local_cap": 0,
+      "wbuf_entries": 1024
+    },
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "ideal_vector": {
+      "copy_free": false,
+      "l2_data_free": true,
+      "mem_all_data": false,
+      "meta": false,
+      "read_hit": false,
+      "wb": false
+    },
+    "runtime_config_sha256": "5abec1e82800e552e9545b448edde8c5f1acd0d4e7b6f853ce61621ad3a1629b",
+    "termination_contract": {
+      "all_kernels": true,
+      "hardware_drained": true,
+      "kind": "FULL_APPLICATION_MECHANISM_V2",
+      "normal_exit": true,
+      "timeout_seconds": 10800
+    },
+    "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+    "workload": "vectorAdd_4M"
+  },
+  "independent_new_input_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/final_bindings/vectorAdd_4M/NEW_INPUT_REVIEW.json",
+    "sha256": "048ca3b9eb1b888d5db45292ed21f5d6894ae3282a4f3225972a9db5083251c6"
+  },
+  "input_content_identity_only_reused": true,
+  "input_scope_admission": {
+    "application_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+    "atomic_input_auditor_sha256": "6ad289048168c83b1354ac73c63e9c9444fec75ac8963b3e99e4f0a8896962b8",
+    "complete_native_input_proof": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+      "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+    },
+    "producer_publication_commit": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+    "retained_input_scope": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/final_bindings/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+      "sha256": "263eea59604f4649369e85a58f1415bb22f4f5008ce1b2ff01886a8e7cc2d3db"
+    }
+  },
+  "labels": {
+    "diagnostic": true,
+    "oracle": false,
+    "readonly_scope": "NONE",
+    "subset": false,
+    "victim_scope": "TRADITIONAL_S_NATIVE"
+  },
+  "launch_owner": "E",
+  "main61_runtime_qualification_inherited": false,
+  "maximum_result_bytes": 402653184,
+  "memory_bytes": 8589934592,
+  "parser": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py",
+    "sha256": "7ed6be613653c5d48614e4bc701f9b0f8a2bdfaa46cf8d68e548ded608dbd9cb"
+  },
+  "preparation_status": "NEW_RUNTIME_E_QUALIFIED_AWAIT_ORIGINAL_DISPATCH",
+  "producer_release": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/RELEASE.json",
+    "sha256": "927c900172ff58ade12e57cb4fb09b38170a036091392de98177c03227535cc1"
+  },
+  "production_archive": {
+    "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "sha256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708"
+  },
+  "profile": "S_L2_DATA_FREE_LARGE_CAPACITY",
+  "profile_semantics": {
+    "comparison_variable_options": [
+      "-gpgpu_ep_l2_diag_l2_large_capacity"
+    ],
+    "effective_options": {
+      "-dram_bnk_indexing_policy": "0",
+      "-dram_bnkgrp_indexing_policy": "1",
+      "-dram_data_command_freq_ratio": "2",
+      "-dram_dual_bus_interface": "1",
+      "-dram_latency": "100",
+      "-enable_ptx_file_line_stats": "1",
+      "-gpgpu_TB_launch_latency": "0",
+      "-gpgpu_adaptive_cache_config": "0",
+      "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+      "-gpgpu_cache:dl2": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32",
+      "-gpgpu_cache:dl2_texture_only": "0",
+      "-gpgpu_cache:il1": "N:64:128:16,L:R:f:N:L,S:2:48,4",
+      "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:850.0",
+      "-gpgpu_clock_gated_lanes": "1",
+      "-gpgpu_coalesce_arch": "70",
+      "-gpgpu_compute_capability_major": "7",
+      "-gpgpu_compute_capability_minor": "0",
+      "-gpgpu_const_cache:l1": "N:128:64:8,L:R:f:N:L,S:2:64,4",
+      "-gpgpu_dram_burst_length": "2",
+      "-gpgpu_dram_buswidth": "16",
+      "-gpgpu_dram_partition_queues": "64:128:64:64",
+      "-gpgpu_dram_return_queue_size": "192",
+      "-gpgpu_dram_scheduler": "1",
+      "-gpgpu_dram_timing_opt": "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:\n                        CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3",
+      "-gpgpu_dual_issue_diff_exec_units": "1",
+      "-gpgpu_enable_specialized_operand_collector": "0",
+      "-gpgpu_ep_l2_assert_fixed_l1_assoc": "1",
+      "-gpgpu_ep_l2_b0_stats": "1",
+      "-gpgpu_ep_l2_bank_ops": "1",
+      "-gpgpu_ep_l2_descriptor_per_line_cap": "32",
+      "-gpgpu_ep_l2_descriptor_pool_size": "512",
+      "-gpgpu_ep_l2_diag_copy_free": "0",
+      "-gpgpu_ep_l2_diag_l2_data_free": "0",
+      "-gpgpu_ep_l2_diag_l2_large_capacity": "1",
+      "-gpgpu_ep_l2_feature_adaptive_policy": "0",
+      "-gpgpu_ep_l2_feature_ro_pending_state": "0",
+      "-gpgpu_ep_l2_feature_tvd": "0",
+      "-gpgpu_ep_l2_feature_unified_payload": "0",
+      "-gpgpu_ep_l2_ft_mode": "1",
+      "-gpgpu_ep_l2_i_mem_all_data": "0",
+      "-gpgpu_ep_l2_ideal_meta": "0",
+      "-gpgpu_ep_l2_ideal_read_hit": "0",
+      "-gpgpu_ep_l2_ideal_wb": "0",
+      "-gpgpu_ep_l2_m0a_stats": "1",
+      "-gpgpu_ep_l2_mq2": "0",
+      "-gpgpu_ep_l2_ms_observer": "1",
+      "-gpgpu_ep_l2_payload_mode": "2",
+      "-gpgpu_ep_l2_payload_policy": "0",
+      "-gpgpu_ep_l2_rg1": "0",
+      "-gpgpu_ep_l2_ro_line_mshr_bypass": "0",
+      "-gpgpu_ep_l2_ro_tag_detach": "0",
+      "-gpgpu_ep_l2_static_s64": "0",
+      "-gpgpu_ep_l2_tvd_clean": "0",
+      "-gpgpu_ep_l2_tvd_dirty": "0",
+      "-gpgpu_ep_l2_tvd_fixed_entries": "0",
+      "-gpgpu_ep_l2_wad_entries": "128",
+      "-gpgpu_ep_l2_wb_local_cap": "0",
+      "-gpgpu_ep_l2_wbuf_entries": "16",
+      "-gpgpu_flush_l1_cache": "1",
+      "-gpgpu_frfcfs_dram_sched_queue_size": "128",
+      "-gpgpu_gmem_skip_L1D": "0",
+      "-gpgpu_heap_size_limit": "8388608",
+      "-gpgpu_inst_fetch_throughput": "4",
+      "-gpgpu_kernel_launch_latency": "5000",
+      "-gpgpu_l1_banks": "4",
+      "-gpgpu_l1_cache_write_ratio": "25",
+      "-gpgpu_l1_latency": "20",
+      "-gpgpu_l2_rop_latency": "160",
+      "-gpgpu_max_concurrent_kernel": "128",
+      "-gpgpu_max_insn_issue_per_warp": "1",
+      "-gpgpu_mem_addr_mapping": "dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RBBBCCCB.CCCSSSSS",
+      "-gpgpu_mem_address_mask": "1",
+      "-gpgpu_memlatency_stat": "14",
+      "-gpgpu_memory_partition_indexing": "2",
+      "-gpgpu_n_cluster_ejection_buffer_size": "32",
+      "-gpgpu_n_clusters": "80",
+      "-gpgpu_n_cores_per_cluster": "1",
+      "-gpgpu_n_mem": "32",
+      "-gpgpu_n_mem_per_ctrlr": "1",
+      "-gpgpu_n_sub_partition_per_mchannel": "2",
+      "-gpgpu_num_dp_units": "4",
+      "-gpgpu_num_int_units": "4",
+      "-gpgpu_num_reg_banks": "16",
+      "-gpgpu_num_sched_per_core": "4",
+      "-gpgpu_num_sfu_units": "4",
+      "-gpgpu_num_sp_units": "4",
+      "-gpgpu_num_tensor_core_units": "4",
+      "-gpgpu_occupancy_sm_number": "70",
+      "-gpgpu_operand_collector_num_in_ports_gen": "8",
+      "-gpgpu_operand_collector_num_out_ports_gen": "8",
+      "-gpgpu_operand_collector_num_units_gen": "8",
+      "-gpgpu_perf_sim_memcpy": "1",
+      "-gpgpu_perfect_inst_const_cache": "1",
+      "-gpgpu_pipeline_widths": "4,4,4,4,4,4,4,4,4,4,8,4,4",
+      "-gpgpu_ptx_convert_to_ptxplus": "0",
+      "-gpgpu_ptx_force_max_capability": "70",
+      "-gpgpu_ptx_instruction_classification": "0",
+      "-gpgpu_ptx_save_converted_ptxplus": "0",
+      "-gpgpu_ptx_sim_mode": "0",
+      "-gpgpu_reg_file_port_throughput": "2",
+      "-gpgpu_registers_per_block": "65536",
+      "-gpgpu_runtime_pending_launch_count_limit": "2048",
+      "-gpgpu_runtime_stat": "500",
+      "-gpgpu_runtime_sync_depth_limit": "2",
+      "-gpgpu_scheduler": "lrr",
+      "-gpgpu_shader_core_pipeline": "2048:32",
+      "-gpgpu_shader_cta": "32",
+      "-gpgpu_shader_registers": "65536",
+      "-gpgpu_shmem_limited_broadcast": "0",
+      "-gpgpu_shmem_num_banks": "32",
+      "-gpgpu_shmem_option": "0,8,16,32,64,96",
+      "-gpgpu_shmem_per_block": "65536",
+      "-gpgpu_shmem_size": "98304",
+      "-gpgpu_shmem_sizeDefault": "98304",
+      "-gpgpu_shmem_warp_parts": "1",
+      "-gpgpu_simd_model": "1",
+      "-gpgpu_smem_latency": "20",
+      "-gpgpu_stack_size_limit": "1024",
+      "-gpgpu_sub_core_model": "1",
+      "-gpgpu_tensor_core_avail": "1",
+      "-gpgpu_tex_cache:l1": "N:4:128:256,L:R:m:N:L,T:512:8,128:2",
+      "-gpgpu_unified_l1d_size": "128",
+      "-icnt_arbiter_algo": "1",
+      "-icnt_flit_size": "40",
+      "-icnt_in_buffer_limit": "512",
+      "-icnt_out_buffer_limit": "512",
+      "-icnt_subnets": "2",
+      "-network_mode": "2",
+      "-ptx_opcode_initiation_dp": "4,4,4,4,130",
+      "-ptx_opcode_initiation_fp": "2,2,2,2,4",
+      "-ptx_opcode_initiation_int": "2,2,2,2,8,4",
+      "-ptx_opcode_initiation_sfu": "8",
+      "-ptx_opcode_initiation_tensor": "64",
+      "-ptx_opcode_latency_dp": "8,19,8,8,330",
+      "-ptx_opcode_latency_fp": "4,13,4,5,39",
+      "-ptx_opcode_latency_int": "4,13,4,5,145,21",
+      "-ptx_opcode_latency_sfu": "100",
+      "-ptx_opcode_latency_tesnor": "64",
+      "-specialized_unit_1": "1,4,4,4,4,BRA",
+      "-specialized_unit_2": "1,4,200,4,4,TEX",
+      "-specialized_unit_3": "1,4,8,4,4,TENSOR",
+      "-trace_opcode_latency_initiation_dp": "8,4",
+      "-trace_opcode_latency_initiation_int": "2,2",
+      "-trace_opcode_latency_initiation_sfu": "20,8",
+      "-trace_opcode_latency_initiation_sp": "2,2",
+      "-trace_opcode_latency_initiation_spec_op_1": "4,4",
+      "-trace_opcode_latency_initiation_spec_op_2": "200,4",
+      "-trace_opcode_latency_initiation_spec_op_3": "2,2",
+      "-trace_opcode_latency_initiation_tensor": "2,2",
+      "-visualizer_enabled": "0"
+    },
+    "feature_vector": {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 74752,
+      "ro_line_mshr_bypass": false,
+      "ro_tag_detach": false,
+      "static_s64": false,
+      "tvd": false,
+      "unified_wb": false,
+      "wb_local_cap": 0,
+      "wbuf_entries": 1024
+    },
+    "hardware_P1_throughput_eligible": 0,
+    "ideal_vector": {
+      "copy_free": false,
+      "l2_data_free": true,
+      "mem_all_data": false,
+      "meta": false,
+      "read_hit": false,
+      "wb": false
+    },
+    "labels": {
+      "diagnostic": true,
+      "oracle": false,
+      "readonly_scope": "NONE",
+      "subset": false,
+      "victim_scope": "TRADITIONAL_S_NATIVE"
+    },
+    "master_requested": 1,
+    "research_switches": {
+      "M": 0,
+      "T": 0,
+      "V": 0,
+      "W": 0
+    },
+    "scope": "Exact new-runtime traditional S; master derived effective dimensions and service scope bound separately from requested raw options"
+  },
+  "qualification_id": "5e5e0f53aec302e5c33bc2453196cbed906a1f25332c872f0b7311cc2f18dad2",
+  "runtime_new_binary_anchor_required": true,
+  "schema": "E2_CAPACITY_EXACT_SPEC_V1",
+  "selection_id": "D_V2_vectorAdd_4M",
+  "switch_requested": 1,
+  "timeout_seconds": 10800,
+  "trace_files": [
+    {
+      "name": "kernelslist.g",
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g"
+    },
+    {
+      "name": "kernel-1.traceg",
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg"
+    }
+  ],
+  "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+}

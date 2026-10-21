@@ -1,0 +1,1255 @@
+{
+  "affected_additional_gates": [
+    "capacity_bank_free_on_p1_off",
+    "capacity_effective_values_and_default_off",
+    "capacity_highwater_refusal_coverage",
+    "capacity_master_off_equivalence",
+    "capacity_real_copy_fixed_latch_and_data_identity",
+    "capacity_reject_contradictory_settings",
+    "capacity_requester_stale_sector_wad_wb_drain",
+    "capacity_scaled_geometry_role_bounds"
+  ],
+  "archive": {
+    "bytes": 79715582,
+    "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "sha256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708"
+  },
+  "binary_path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/accel-sim.out",
+  "build_log": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_BUILD_r6/build.log",
+    "sha256": "e8fedc8fa12364cbb5414b3b0acd020e20677de940ff5dc357ae9a93b33565f5"
+  },
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "capacity_diagnostic": {
+    "archive_sha256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708",
+    "authority_commit": "49343880865edb22a17523790fc32dd55975966c",
+    "capacity_manifest": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/FROZEN_CAPACITY_VECTOR_FINAL.json",
+      "sha256": "d195aa13a0229a6fcae4db7f4ee50cdb2932f8785810f449b6d7a3bbace1357d"
+    },
+    "capacity_manifest_sha256": "d195aa13a0229a6fcae4db7f4ee50cdb2932f8785810f449b6d7a3bbace1357d",
+    "common_capacity_vector": {
+      "Tag_nonbinding_strengthening": "Require zero timed clean/dirty and host-prefill valid-victim replacements in addition to zero denial checks and <=50% highwater. Binding never blocks valid large-finite execution.",
+      "applicability": "TRADITIONAL_S_ONLY",
+      "common_to_all_five": true,
+      "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+      "default": 0,
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "identity": {
+        "archive": {
+          "bytes": 79715582,
+          "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+          "sha256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708"
+        },
+        "core_branch": "hrl/ep-l2-ms20261021-a2-large-capacity-v1",
+        "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "main": {
+          "bytes": 85459688,
+          "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/accel-sim.out",
+          "sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb"
+        },
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "index_mapping": "For native P: exact original IPOLY64 low6 bits, next6 partition-line bits select high group. Linear is also supported. OFF unchanged.",
+      "lower_credit_scope": "Original memory-partition shared/private credit and DRAM scheduler/return/write queue limits unchanged; not part of enlarged L2 local capacity claim.",
+      "measured_native_64slice_maxrss_kib": 1429504,
+      "near_nonbinding": "PENDING_E_FULL_INPUT_EVIDENCE: finite native stress intentionally has3 Tag replacements and Tag near_nonbinding=0. No full input is claimed nonbinding.",
+      "per_slice": {
+        "DRAM_L2": 4096,
+        "ICNT_L2": 4096,
+        "L2_DRAM": 8192,
+        "L2_ICNT": 4096,
+        "MissQ": 8192,
+        "WAD": 8192,
+        "WB_slots": 1024,
+        "bypass_slots": 8192,
+        "descriptor": 32768,
+        "line_MSHR": 8192,
+        "per_address": 2048,
+        "ready_response_bound": 32768,
+        "resident_slots": 65536,
+        "result_fifo_config_field": 4096,
+        "sets": 4096,
+        "tag_slots": 65536,
+        "total_payload_slots": 74752,
+        "ways": 16
+      },
+      "schema": "A2_FROZEN_SINGLE_CAPACITY_VECTOR_V1",
+      "status": "FROZEN_PRODUCER_DELIVERED_PENDING_E_INDEPENDENT_QUALIFICATION",
+      "switch": "-gpgpu_ep_l2_diag_l2_large_capacity",
+      "unchanged": {
+        "DRAM_interconnect": "UNCHANGED",
+        "ROP_latency": "INHERITED_CONFIG",
+        "ROP_storage": "NATIVE_DYNAMIC",
+        "bank_count": 4,
+        "bank_ops_config": 1,
+        "copy_latch_cycles": 1,
+        "line_bytes": 128,
+        "sector_bytes": 32
+      },
+      "unused_field_scope": "result_fifo_config_field is not a separate active L2 ready queue; real ready responses share live descriptor capacity."
+    },
+    "counter_coverage_review": {
+      "bypass_payload_slots": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "S_NATIVE_NO_BYPASS_ALLOCATION",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "descriptor_entries": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALLOCATION_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "dram_to_l2_queue": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "FIFO_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "icnt_to_l2_queue": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "FIFO_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "l2_to_dram_queue": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "FIFO_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "l2_to_icnt_queue": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "FIFO_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "line_mshr_entries": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALLOCATION_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "miss_queue_entries": {
+        "capacity_refusal_coverage_complete": false,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ENQUEUE_EVENTS_AND_CAPACITY_CHECKS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "payload_slots_total": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "SUM_OF_ROLE_EVENT_PEAK_UPPER_BOUND",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "per_address_descriptors": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALLOCATION_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "ready_response_bound": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALL_LIVE_DESCRIPTORS_CONSERVATIVE_BOUND",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "resident_payload_slots": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALLOCATION_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "tag_slots": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "CONSERVATIVE_RESIDENT_IDENTITY_BOUND",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED",
+        "valid_victim_replacement_coverage_complete": true
+      },
+      "wad_entries": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALLOCATION_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      },
+      "wb_payload_slots": {
+        "capacity_refusal_coverage_complete": true,
+        "independent_E_native_field_evidence": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        "native_coverage": "ALLOCATION_EVENTS",
+        "source_field_review": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/COUNTER_COVERAGE_REVIEW_PROPOSAL.json",
+          "sha256": "74de946dd1b3d6ac93e913cb53fb9ec3c98a38911260d68730ba1bf34f4abd9f"
+        },
+        "status": "INDEPENDENTLY_REVIEWED"
+      }
+    },
+    "master_option": "-gpgpu_ep_l2_diag_l2_large_capacity",
+    "native_cache_geometry": {
+      "S": {
+        "native_line_bytes": 128,
+        "native_tag_sets": 64,
+        "native_tag_ways": 16
+      },
+      "S_L2_DATA_FREE_LARGE_CAPACITY": {
+        "native_line_bytes": 128,
+        "native_tag_sets": 4096,
+        "native_tag_ways": 16
+      }
+    },
+    "normalized_capacity_profiles": {
+      "S": {
+        "capacities": {
+          "bypass_payload_slots": 128,
+          "descriptor_entries": 512,
+          "dram_to_l2_queue": 64,
+          "icnt_to_l2_queue": 64,
+          "l2_to_dram_queue": 128,
+          "l2_to_icnt_queue": 64,
+          "line_mshr_entries": 128,
+          "miss_queue_entries": 128,
+          "payload_slots_total": 1168,
+          "per_address_descriptors": 32,
+          "ready_response_bound": 512,
+          "resident_payload_slots": 1024,
+          "tag_slots": 1024,
+          "wad_entries": 128,
+          "wb_payload_slots": 16
+        },
+        "configuration": {
+          "M": 0,
+          "T": 0,
+          "V": 0,
+          "W": 0,
+          "bank_count": 4,
+          "bank_ops_per_physical_cycle": 1,
+          "copy_free": 0,
+          "copy_latch_bytes": 128,
+          "copy_latch_cycles": 1,
+          "ft_mode": 1,
+          "hardware_P1_throughput_eligible": 1,
+          "index_extension": "NATIVE",
+          "index_function": 2,
+          "l2_data_free": 0,
+          "mq2": 0,
+          "native_line_bytes": 128,
+          "native_max_tag_storage": 4096,
+          "native_result_fifo_config_field": 0,
+          "native_tag_sets": 64,
+          "native_tag_ways": 16,
+          "result_fifo_used_by_L2": 0,
+          "rg1": 0
+        }
+      },
+      "S_L2_DATA_FREE_LARGE_CAPACITY": {
+        "capacities": {
+          "bypass_payload_slots": 8192,
+          "descriptor_entries": 32768,
+          "dram_to_l2_queue": 4096,
+          "icnt_to_l2_queue": 4096,
+          "l2_to_dram_queue": 8192,
+          "l2_to_icnt_queue": 4096,
+          "line_mshr_entries": 8192,
+          "miss_queue_entries": 8192,
+          "payload_slots_total": 74752,
+          "per_address_descriptors": 2048,
+          "ready_response_bound": 32768,
+          "resident_payload_slots": 65536,
+          "tag_slots": 65536,
+          "wad_entries": 8192,
+          "wb_payload_slots": 1024
+        },
+        "configuration": {
+          "M": 0,
+          "T": 0,
+          "V": 0,
+          "W": 0,
+          "bank_count": 4,
+          "bank_ops_per_physical_cycle": 1,
+          "copy_free": 0,
+          "copy_latch_bytes": 128,
+          "copy_latch_cycles": 1,
+          "ft_mode": 1,
+          "hardware_P1_throughput_eligible": 0,
+          "index_extension": "IPOLY64_LOW_X_LINEAR64_HIGH",
+          "index_function": 2,
+          "l2_data_free": 1,
+          "mq2": 0,
+          "native_line_bytes": 128,
+          "native_max_tag_storage": 65536,
+          "native_result_fifo_config_field": 4096,
+          "native_tag_sets": 4096,
+          "native_tag_ways": 16,
+          "result_fifo_used_by_L2": 0,
+          "rg1": 0
+        }
+      }
+    },
+    "off_fifo_capacity_review": {
+      "capacity_identity_basis": "EXACT_NATIVE_CONFIG_AND_QUALIFIED_SOURCE_CONSTRUCTOR",
+      "requested_native_queue_config": "64:128:64:64",
+      "source_constructor_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+      "source_constructor_review_evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/OFF_FIFO_CONSTRUCTOR_OWNER_REVIEW.json",
+        "sha256": "ce5ea761bef7881970f4ea6175ebdd8b9c3ed770b34738a963508aab7c6c8672"
+      },
+      "source_interpreted_application_capacities": {
+        "dram_to_l2_queue": 64,
+        "icnt_to_l2_queue": 64,
+        "l2_to_dram_queue": 128,
+        "l2_to_icnt_queue": 64
+      },
+      "status": "INDEPENDENTLY_REVIEWED"
+    },
+    "parser_seal": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+      "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+    },
+    "producer_release_commit": "0ae16a6c48bdffbdf38ced4da6c76dda4981a813",
+    "validation_scope": {
+      "authority_commit": "49343880865edb22a17523790fc32dd55975966c",
+      "capacity_manifest_sha256": "d195aa13a0229a6fcae4db7f4ee50cdb2932f8785810f449b6d7a3bbace1357d",
+      "expected_full_instructions": 714547200,
+      "input_selection_id": "D_V1_convolutionSeparable",
+      "profiles": {
+        "S": {
+          "capacities": {
+            "bypass_payload_slots": 128,
+            "descriptor_entries": 512,
+            "dram_to_l2_queue": 64,
+            "icnt_to_l2_queue": 64,
+            "l2_to_dram_queue": 128,
+            "l2_to_icnt_queue": 64,
+            "line_mshr_entries": 128,
+            "miss_queue_entries": 128,
+            "payload_slots_total": 1168,
+            "per_address_descriptors": 32,
+            "ready_response_bound": 512,
+            "resident_payload_slots": 1024,
+            "tag_slots": 1024,
+            "wad_entries": 128,
+            "wb_payload_slots": 16
+          },
+          "configuration": {
+            "M": 0,
+            "T": 0,
+            "V": 0,
+            "W": 0,
+            "bank_count": 4,
+            "bank_ops_per_physical_cycle": 1,
+            "copy_free": 0,
+            "copy_latch_bytes": 128,
+            "copy_latch_cycles": 1,
+            "ft_mode": 1,
+            "hardware_P1_throughput_eligible": 1,
+            "index_extension": "NATIVE",
+            "index_function": 2,
+            "l2_data_free": 0,
+            "mq2": 0,
+            "native_line_bytes": 128,
+            "native_max_tag_storage": 4096,
+            "native_result_fifo_config_field": 0,
+            "native_tag_sets": 64,
+            "native_tag_ways": 16,
+            "result_fifo_used_by_L2": 0,
+            "rg1": 0
+          },
+          "drained_resources": [
+            "wad_entries",
+            "line_mshr_entries",
+            "descriptor_entries",
+            "wb_payload_slots",
+            "per_address_descriptors",
+            "miss_queue_entries",
+            "ready_response_bound",
+            "icnt_to_l2_queue",
+            "l2_to_dram_queue",
+            "dram_to_l2_queue",
+            "l2_to_icnt_queue"
+          ],
+          "enlarged_resources": [],
+          "master": 0
+        },
+        "S_L2_DATA_FREE_LARGE_CAPACITY": {
+          "capacities": {
+            "bypass_payload_slots": 8192,
+            "descriptor_entries": 32768,
+            "dram_to_l2_queue": 4096,
+            "icnt_to_l2_queue": 4096,
+            "l2_to_dram_queue": 8192,
+            "l2_to_icnt_queue": 4096,
+            "line_mshr_entries": 8192,
+            "miss_queue_entries": 8192,
+            "payload_slots_total": 74752,
+            "per_address_descriptors": 2048,
+            "ready_response_bound": 32768,
+            "resident_payload_slots": 65536,
+            "tag_slots": 65536,
+            "wad_entries": 8192,
+            "wb_payload_slots": 1024
+          },
+          "configuration": {
+            "M": 0,
+            "T": 0,
+            "V": 0,
+            "W": 0,
+            "bank_count": 4,
+            "bank_ops_per_physical_cycle": 1,
+            "copy_free": 0,
+            "copy_latch_bytes": 128,
+            "copy_latch_cycles": 1,
+            "ft_mode": 1,
+            "hardware_P1_throughput_eligible": 0,
+            "index_extension": "IPOLY64_LOW_X_LINEAR64_HIGH",
+            "index_function": 2,
+            "l2_data_free": 1,
+            "mq2": 0,
+            "native_line_bytes": 128,
+            "native_max_tag_storage": 65536,
+            "native_result_fifo_config_field": 4096,
+            "native_tag_sets": 4096,
+            "native_tag_ways": 16,
+            "result_fifo_used_by_L2": 0,
+            "rg1": 0
+          },
+          "drained_resources": [
+            "wad_entries",
+            "line_mshr_entries",
+            "descriptor_entries",
+            "wb_payload_slots",
+            "per_address_descriptors",
+            "miss_queue_entries",
+            "ready_response_bound",
+            "icnt_to_l2_queue",
+            "l2_to_dram_queue",
+            "dram_to_l2_queue",
+            "l2_to_icnt_queue"
+          ],
+          "enlarged_resources": [
+            "descriptor_entries",
+            "dram_to_l2_queue",
+            "icnt_to_l2_queue",
+            "l2_to_dram_queue",
+            "l2_to_icnt_queue",
+            "line_mshr_entries",
+            "miss_queue_entries",
+            "payload_slots_total",
+            "per_address_descriptors",
+            "ready_response_bound",
+            "resident_payload_slots",
+            "tag_slots",
+            "wad_entries",
+            "wb_payload_slots"
+          ],
+          "master": 1,
+          "non_applicable_resources": {
+            "bypass_payload_slots": "TRADITIONAL_S_NO_BYPASS_ALLOCATION"
+          }
+        }
+      },
+      "schema": "E2_CAPACITY_VALIDATION_SCOPE_V1",
+      "source_identity": {
+        "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+        "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "termination_contract": {
+        "all_kernels": true,
+        "hardware_drained": true,
+        "kind": "FULL_APPLICATION_MECHANISM_V2",
+        "normal_exit": true,
+        "timeout_seconds": 10800
+      }
+    }
+  },
+  "default_off_equivalence": {
+    "gates": [
+      "old_all_off_equivalence",
+      "capacity_master_off_equivalence"
+    ],
+    "review": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b"
+    },
+    "status": "PASS"
+  },
+  "gates": {
+    "bank_service": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_default_OFF",
+        "new_explicit_OFF",
+        "affected_OFF_physical_clock"
+      ],
+      "scope_note": "New ON actualbankgrants0 and diagnostic COPY_READ/WRITE2each; newOFF positive grants with physical perbankcycle<=1.",
+      "status": "PASS"
+    },
+    "capacity_bank_free_on_p1_off": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "affected_OFF_physical_clock"
+      ],
+      "scope_note": "Actual ONbankgrants0 all realdata-service callbacks retained; OFFphysicalP1 grant auditing uses actualphysicalclock.",
+      "status": "PASS"
+    },
+    "capacity_effective_values_and_default_off": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_default_OFF",
+        "new_explicit_OFF",
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension"
+      ],
+      "scope_note": "Exact new output fieldmapping and constructor/configaudit; native fixturegeometry differs from formalOFF FIFO/MissQ/index and scope explicitly normalizes exact formal values.",
+      "status": "PASS"
+    },
+    "capacity_highwater_refusal_coverage": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension"
+      ],
+      "scope_note": "PASS establishes verified field/source schema and conservative coverage, not universalcounter completeness. MissQ knownpartial false. ActualnativeTag3 replacements validfinite. Full app labels determined independently.",
+      "status": "PASS"
+    },
+    "capacity_master_off_equivalence": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_default_OFF",
+        "new_explicit_OFF"
+      ],
+      "scope_note": "Master absent and explicit0 both newruntime74cycle semantic line equals retained exactold reference; source default0 and init branch reviewed.",
+      "status": "PASS"
+    },
+    "capacity_real_copy_fixed_latch_and_data_identity": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "E_host_prefill_and_bounded_clock_cost"
+      ],
+      "scope_note": "Production dirtyreplacement realCOPY_READ/WRITE2each with fixed128B single latch and same-address read reference versions, source copy pipeline unchanged; no COPY_FREE.",
+      "status": "PASS"
+    },
+    "capacity_reject_contradictory_settings": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "reject_copy",
+        "reject_RO",
+        "reject_value",
+        "reject_forced_hit"
+      ],
+      "scope_note": "Actual native legality negative cases and exactwhitelist source prevent unsupportedcombinations.",
+      "status": "PASS"
+    },
+    "capacity_requester_stale_sector_wad_wb_drain": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "affected_OFF_stale_sector",
+        "E_host_prefill_and_bounded_clock_cost"
+      ],
+      "scope_note": "Directed new archive exactonce600 realreturns + crosscycle sector versions + WAD/lowerWB/set_done/response/fill deepdrain.",
+      "status": "PASS"
+    },
+    "capacity_scaled_geometry_role_bounds": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_ON_64slice_geometry_cost"
+      ],
+      "scope_note": "Actualnative4096x16Tags,74752payload partitionroles,finite1024WBboundary and generation reuse; actualGPUconstruct64slices.",
+      "status": "PASS"
+    },
+    "finite_wbuf": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_default_OFF",
+        "new_explicit_OFF"
+      ],
+      "scope_note": "Production-directed role boundaries/generation tests reserve all1024 enlargedWB slots, prove actual next allocation fails and release; newOFF finite16 retained.",
+      "status": "PASS"
+    },
+    "memcpy_payload_identity": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "E_host_prefill_and_bounded_clock_cost",
+        "affected_OFF_physical_clock"
+      ],
+      "scope_note": "E new-archive real perf_memcpy toGPU full64bit/native scaledTag/payload, byte-sector rounding, repeated/epoch preserved handles, zero read versions and dirty/pending/response rejection.",
+      "status": "PASS"
+    },
+    "mode_legality": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "reject_copy",
+        "reject_RO",
+        "reject_value",
+        "reject_forced_hit"
+      ],
+      "scope_note": "Exact new config parser refuses unsupported COPY_FREE/RO/value2/forced-hit; traditionalS OFF/ON run actualnative.",
+      "status": "PASS"
+    },
+    "old_all_off_equivalence": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_default_OFF",
+        "new_explicit_OFF"
+      ],
+      "scope_note": "New default/explicitOFF share20 requesters/responses,2 real copies/lower-WB/set_done and74cycles, matching retained d010 producer reference; only bounded OFF equivalence, no old anchor.",
+      "status": "PASS"
+    },
+    "physical_bank_clock": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "affected_OFF_physical_clock"
+      ],
+      "scope_note": "New archive physical-cycle offset4096 audit actualviolations0/maxgrants1 and complete real-partition WB/drain.",
+      "status": "PASS"
+    },
+    "requester_exact_once": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "affected_OFF_stale_sector"
+      ],
+      "scope_note": "Actual600 held lineMSHR/descriptors,64same-line requesters, reverse real lower returns; source request/reply sets ensure684 exact-once and affectedOFF A1.",
+      "status": "PASS"
+    },
+    "resource_closure": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "E_host_prefill_and_bounded_clock_cost",
+        "affected_OFF_stale_sector"
+      ],
+      "scope_note": "Actual native pending/MSHR/descriptor/WAD/WB/queues drain, deep ownership consistency and exact sent/received closure.",
+      "status": "PASS"
+    },
+    "sector_reference_data": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "E_host_prefill_and_bounded_clock_cost",
+        "affected_OFF_stale_sector"
+      ],
+      "scope_note": "Actual read/write reference versions including zero host-prefill sectors, dirtyreplacement retained data and returned same-address versions.",
+      "status": "PASS"
+    },
+    "stale_fill": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "affected_OFF_stale_sector",
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension"
+      ],
+      "scope_note": "AffectedOFF real16way crosscycle fill reuses native pending transaction with version oracle; ON same-address dirtyWB/returns and deferred fill use new exact archive.",
+      "status": "PASS"
+    },
+    "wb_lifecycle": {
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+      "evidence_sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b",
+      "production_driven": true,
+      "reviewed_case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_default_OFF",
+        "new_explicit_OFF",
+        "affected_OFF_stale_sector"
+      ],
+      "scope_note": "Real dirty eviction copy, loweraccept and actual set_done complete twoWB; same-address waits until originalWB completed, not response-as-drain.",
+      "status": "PASS"
+    }
+  },
+  "independent_native_replay": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+    "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+  },
+  "input_selection_id": "D_V1_convolutionSeparable",
+  "input_semantics_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/final_bindings/convolutionSeparable/NEW_INPUT_REVIEW.json",
+    "sha256": "3ddf31a69a29fd5eb0fd9708f8ba6e91a5123871743437f952d9ea1201c033f1"
+  },
+  "native_gate_assertion_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_INPUT_ASSERTION_REVIEW_WITH_GATES.json",
+    "sha256": "d9b0eec80e2189ad6eb44c01d68e87ad8006820423eef8c8e36e60c0d2e5191b"
+  },
+  "parser_seal": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+    "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+  },
+  "producer_release": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/RELEASE.json",
+    "publication_commit": "0ae16a6c48bdffbdf38ced4da6c76dda4981a813",
+    "sha256": "927c900172ff58ade12e57cb4fb09b38170a036091392de98177c03227535cc1",
+    "source_identity": {
+      "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+      "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    }
+  },
+  "producer_test_manifest": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/NATIVE_EVIDENCE_INDEX.json",
+    "sha256": "4d4dbae624efecba806c9d937ee2d41a39c8e2102d054fc9336faefcd15053ee"
+  },
+  "qualified_by": "E",
+  "qualified_unix": 1792582002.606887,
+  "schema": "E2_CAPACITY_EXACT_INPUT_NEW_RUNTIME_QUALIFICATION_V1",
+  "scope_note": "Exact new runtime and convolutionSeparable full input OFF/ON only. Original11 plus affected8 gates are actual E production-native/source assertion evidence; no main61 runtime qualification or old application anchor inherited. Full application native exit, instruction/kernel64slice completion, input hashes and resources remain independently required. New diagnostic is separate from original MAIN; covered large-finite/UNKNOWN and unfavorable outcomes remain valid observations.",
+  "source_identity": {
+    "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "INDEPENDENTLY_QUALIFIED",
+  "supported_profiles": {
+    "S": {
+      "comparison_variable_options": [
+        "-gpgpu_ep_l2_diag_l2_large_capacity"
+      ],
+      "effective_options": {
+        "-dram_bnk_indexing_policy": "0",
+        "-dram_bnkgrp_indexing_policy": "1",
+        "-dram_data_command_freq_ratio": "2",
+        "-dram_dual_bus_interface": "1",
+        "-dram_latency": "100",
+        "-enable_ptx_file_line_stats": "1",
+        "-gpgpu_TB_launch_latency": "0",
+        "-gpgpu_adaptive_cache_config": "0",
+        "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+        "-gpgpu_cache:dl2": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32",
+        "-gpgpu_cache:dl2_texture_only": "0",
+        "-gpgpu_cache:il1": "N:64:128:16,L:R:f:N:L,S:2:48,4",
+        "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:850.0",
+        "-gpgpu_clock_gated_lanes": "1",
+        "-gpgpu_coalesce_arch": "70",
+        "-gpgpu_compute_capability_major": "7",
+        "-gpgpu_compute_capability_minor": "0",
+        "-gpgpu_const_cache:l1": "N:128:64:8,L:R:f:N:L,S:2:64,4",
+        "-gpgpu_dram_burst_length": "2",
+        "-gpgpu_dram_buswidth": "16",
+        "-gpgpu_dram_partition_queues": "64:128:64:64",
+        "-gpgpu_dram_return_queue_size": "192",
+        "-gpgpu_dram_scheduler": "1",
+        "-gpgpu_dram_timing_opt": "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:\n                        CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3",
+        "-gpgpu_dual_issue_diff_exec_units": "1",
+        "-gpgpu_enable_specialized_operand_collector": "0",
+        "-gpgpu_ep_l2_assert_fixed_l1_assoc": "1",
+        "-gpgpu_ep_l2_b0_stats": "1",
+        "-gpgpu_ep_l2_bank_ops": "1",
+        "-gpgpu_ep_l2_descriptor_per_line_cap": "32",
+        "-gpgpu_ep_l2_descriptor_pool_size": "512",
+        "-gpgpu_ep_l2_diag_copy_free": "0",
+        "-gpgpu_ep_l2_diag_l2_data_free": "0",
+        "-gpgpu_ep_l2_diag_l2_large_capacity": "0",
+        "-gpgpu_ep_l2_feature_adaptive_policy": "0",
+        "-gpgpu_ep_l2_feature_ro_pending_state": "0",
+        "-gpgpu_ep_l2_feature_tvd": "0",
+        "-gpgpu_ep_l2_feature_unified_payload": "0",
+        "-gpgpu_ep_l2_ft_mode": "1",
+        "-gpgpu_ep_l2_i_mem_all_data": "0",
+        "-gpgpu_ep_l2_ideal_meta": "0",
+        "-gpgpu_ep_l2_ideal_read_hit": "0",
+        "-gpgpu_ep_l2_ideal_wb": "0",
+        "-gpgpu_ep_l2_m0a_stats": "1",
+        "-gpgpu_ep_l2_mq2": "0",
+        "-gpgpu_ep_l2_ms_observer": "1",
+        "-gpgpu_ep_l2_payload_mode": "2",
+        "-gpgpu_ep_l2_payload_policy": "0",
+        "-gpgpu_ep_l2_rg1": "0",
+        "-gpgpu_ep_l2_ro_line_mshr_bypass": "0",
+        "-gpgpu_ep_l2_ro_tag_detach": "0",
+        "-gpgpu_ep_l2_static_s64": "0",
+        "-gpgpu_ep_l2_tvd_clean": "0",
+        "-gpgpu_ep_l2_tvd_dirty": "0",
+        "-gpgpu_ep_l2_tvd_fixed_entries": "0",
+        "-gpgpu_ep_l2_wad_entries": "128",
+        "-gpgpu_ep_l2_wb_local_cap": "0",
+        "-gpgpu_ep_l2_wbuf_entries": "16",
+        "-gpgpu_flush_l1_cache": "1",
+        "-gpgpu_frfcfs_dram_sched_queue_size": "128",
+        "-gpgpu_gmem_skip_L1D": "0",
+        "-gpgpu_heap_size_limit": "8388608",
+        "-gpgpu_inst_fetch_throughput": "4",
+        "-gpgpu_kernel_launch_latency": "5000",
+        "-gpgpu_l1_banks": "4",
+        "-gpgpu_l1_cache_write_ratio": "25",
+        "-gpgpu_l1_latency": "20",
+        "-gpgpu_l2_rop_latency": "160",
+        "-gpgpu_max_concurrent_kernel": "128",
+        "-gpgpu_max_insn_issue_per_warp": "1",
+        "-gpgpu_mem_addr_mapping": "dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RBBBCCCB.CCCSSSSS",
+        "-gpgpu_mem_address_mask": "1",
+        "-gpgpu_memlatency_stat": "14",
+        "-gpgpu_memory_partition_indexing": "2",
+        "-gpgpu_n_cluster_ejection_buffer_size": "32",
+        "-gpgpu_n_clusters": "80",
+        "-gpgpu_n_cores_per_cluster": "1",
+        "-gpgpu_n_mem": "32",
+        "-gpgpu_n_mem_per_ctrlr": "1",
+        "-gpgpu_n_sub_partition_per_mchannel": "2",
+        "-gpgpu_num_dp_units": "4",
+        "-gpgpu_num_int_units": "4",
+        "-gpgpu_num_reg_banks": "16",
+        "-gpgpu_num_sched_per_core": "4",
+        "-gpgpu_num_sfu_units": "4",
+        "-gpgpu_num_sp_units": "4",
+        "-gpgpu_num_tensor_core_units": "4",
+        "-gpgpu_occupancy_sm_number": "70",
+        "-gpgpu_operand_collector_num_in_ports_gen": "8",
+        "-gpgpu_operand_collector_num_out_ports_gen": "8",
+        "-gpgpu_operand_collector_num_units_gen": "8",
+        "-gpgpu_perf_sim_memcpy": "1",
+        "-gpgpu_perfect_inst_const_cache": "1",
+        "-gpgpu_pipeline_widths": "4,4,4,4,4,4,4,4,4,4,8,4,4",
+        "-gpgpu_ptx_convert_to_ptxplus": "0",
+        "-gpgpu_ptx_force_max_capability": "70",
+        "-gpgpu_ptx_instruction_classification": "0",
+        "-gpgpu_ptx_save_converted_ptxplus": "0",
+        "-gpgpu_ptx_sim_mode": "0",
+        "-gpgpu_reg_file_port_throughput": "2",
+        "-gpgpu_registers_per_block": "65536",
+        "-gpgpu_runtime_pending_launch_count_limit": "2048",
+        "-gpgpu_runtime_stat": "500",
+        "-gpgpu_runtime_sync_depth_limit": "2",
+        "-gpgpu_scheduler": "lrr",
+        "-gpgpu_shader_core_pipeline": "2048:32",
+        "-gpgpu_shader_cta": "32",
+        "-gpgpu_shader_registers": "65536",
+        "-gpgpu_shmem_limited_broadcast": "0",
+        "-gpgpu_shmem_num_banks": "32",
+        "-gpgpu_shmem_option": "0,8,16,32,64,96",
+        "-gpgpu_shmem_per_block": "65536",
+        "-gpgpu_shmem_size": "98304",
+        "-gpgpu_shmem_sizeDefault": "98304",
+        "-gpgpu_shmem_warp_parts": "1",
+        "-gpgpu_simd_model": "1",
+        "-gpgpu_smem_latency": "20",
+        "-gpgpu_stack_size_limit": "1024",
+        "-gpgpu_sub_core_model": "1",
+        "-gpgpu_tensor_core_avail": "1",
+        "-gpgpu_tex_cache:l1": "N:4:128:256,L:R:m:N:L,T:512:8,128:2",
+        "-gpgpu_unified_l1d_size": "128",
+        "-icnt_arbiter_algo": "1",
+        "-icnt_flit_size": "40",
+        "-icnt_in_buffer_limit": "512",
+        "-icnt_out_buffer_limit": "512",
+        "-icnt_subnets": "2",
+        "-network_mode": "2",
+        "-ptx_opcode_initiation_dp": "4,4,4,4,130",
+        "-ptx_opcode_initiation_fp": "2,2,2,2,4",
+        "-ptx_opcode_initiation_int": "2,2,2,2,8,4",
+        "-ptx_opcode_initiation_sfu": "8",
+        "-ptx_opcode_initiation_tensor": "64",
+        "-ptx_opcode_latency_dp": "8,19,8,8,330",
+        "-ptx_opcode_latency_fp": "4,13,4,5,39",
+        "-ptx_opcode_latency_int": "4,13,4,5,145,21",
+        "-ptx_opcode_latency_sfu": "100",
+        "-ptx_opcode_latency_tesnor": "64",
+        "-specialized_unit_1": "1,4,4,4,4,BRA",
+        "-specialized_unit_2": "1,4,200,4,4,TEX",
+        "-specialized_unit_3": "1,4,8,4,4,TENSOR",
+        "-trace_opcode_latency_initiation_dp": "8,4",
+        "-trace_opcode_latency_initiation_int": "2,2",
+        "-trace_opcode_latency_initiation_sfu": "20,8",
+        "-trace_opcode_latency_initiation_sp": "2,2",
+        "-trace_opcode_latency_initiation_spec_op_1": "4,4",
+        "-trace_opcode_latency_initiation_spec_op_2": "200,4",
+        "-trace_opcode_latency_initiation_spec_op_3": "2,2",
+        "-trace_opcode_latency_initiation_tensor": "2,2",
+        "-visualizer_enabled": "0"
+      },
+      "feature_vector": {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 1168,
+        "ro_line_mshr_bypass": false,
+        "ro_tag_detach": false,
+        "static_s64": false,
+        "tvd": false,
+        "unified_wb": false,
+        "wb_local_cap": 0,
+        "wbuf_entries": 16
+      },
+      "hardware_P1_throughput_eligible": 1,
+      "ideal_vector": {
+        "copy_free": false,
+        "l2_data_free": false,
+        "mem_all_data": false,
+        "meta": false,
+        "read_hit": false,
+        "wb": false
+      },
+      "labels": {
+        "diagnostic": false,
+        "oracle": false,
+        "readonly_scope": "NONE",
+        "subset": false,
+        "victim_scope": "TRADITIONAL_S_NATIVE"
+      },
+      "master_requested": 0,
+      "research_switches": {
+        "M": 0,
+        "T": 0,
+        "V": 0,
+        "W": 0
+      },
+      "scope": "Exact new-runtime traditional S; master derived effective dimensions and service scope bound separately from requested raw options"
+    },
+    "S_L2_DATA_FREE_LARGE_CAPACITY": {
+      "comparison_variable_options": [
+        "-gpgpu_ep_l2_diag_l2_large_capacity"
+      ],
+      "effective_options": {
+        "-dram_bnk_indexing_policy": "0",
+        "-dram_bnkgrp_indexing_policy": "1",
+        "-dram_data_command_freq_ratio": "2",
+        "-dram_dual_bus_interface": "1",
+        "-dram_latency": "100",
+        "-enable_ptx_file_line_stats": "1",
+        "-gpgpu_TB_launch_latency": "0",
+        "-gpgpu_adaptive_cache_config": "0",
+        "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+        "-gpgpu_cache:dl2": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32",
+        "-gpgpu_cache:dl2_texture_only": "0",
+        "-gpgpu_cache:il1": "N:64:128:16,L:R:f:N:L,S:2:48,4",
+        "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:850.0",
+        "-gpgpu_clock_gated_lanes": "1",
+        "-gpgpu_coalesce_arch": "70",
+        "-gpgpu_compute_capability_major": "7",
+        "-gpgpu_compute_capability_minor": "0",
+        "-gpgpu_const_cache:l1": "N:128:64:8,L:R:f:N:L,S:2:64,4",
+        "-gpgpu_dram_burst_length": "2",
+        "-gpgpu_dram_buswidth": "16",
+        "-gpgpu_dram_partition_queues": "64:128:64:64",
+        "-gpgpu_dram_return_queue_size": "192",
+        "-gpgpu_dram_scheduler": "1",
+        "-gpgpu_dram_timing_opt": "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:\n                        CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3",
+        "-gpgpu_dual_issue_diff_exec_units": "1",
+        "-gpgpu_enable_specialized_operand_collector": "0",
+        "-gpgpu_ep_l2_assert_fixed_l1_assoc": "1",
+        "-gpgpu_ep_l2_b0_stats": "1",
+        "-gpgpu_ep_l2_bank_ops": "1",
+        "-gpgpu_ep_l2_descriptor_per_line_cap": "32",
+        "-gpgpu_ep_l2_descriptor_pool_size": "512",
+        "-gpgpu_ep_l2_diag_copy_free": "0",
+        "-gpgpu_ep_l2_diag_l2_data_free": "0",
+        "-gpgpu_ep_l2_diag_l2_large_capacity": "1",
+        "-gpgpu_ep_l2_feature_adaptive_policy": "0",
+        "-gpgpu_ep_l2_feature_ro_pending_state": "0",
+        "-gpgpu_ep_l2_feature_tvd": "0",
+        "-gpgpu_ep_l2_feature_unified_payload": "0",
+        "-gpgpu_ep_l2_ft_mode": "1",
+        "-gpgpu_ep_l2_i_mem_all_data": "0",
+        "-gpgpu_ep_l2_ideal_meta": "0",
+        "-gpgpu_ep_l2_ideal_read_hit": "0",
+        "-gpgpu_ep_l2_ideal_wb": "0",
+        "-gpgpu_ep_l2_m0a_stats": "1",
+        "-gpgpu_ep_l2_mq2": "0",
+        "-gpgpu_ep_l2_ms_observer": "1",
+        "-gpgpu_ep_l2_payload_mode": "2",
+        "-gpgpu_ep_l2_payload_policy": "0",
+        "-gpgpu_ep_l2_rg1": "0",
+        "-gpgpu_ep_l2_ro_line_mshr_bypass": "0",
+        "-gpgpu_ep_l2_ro_tag_detach": "0",
+        "-gpgpu_ep_l2_static_s64": "0",
+        "-gpgpu_ep_l2_tvd_clean": "0",
+        "-gpgpu_ep_l2_tvd_dirty": "0",
+        "-gpgpu_ep_l2_tvd_fixed_entries": "0",
+        "-gpgpu_ep_l2_wad_entries": "128",
+        "-gpgpu_ep_l2_wb_local_cap": "0",
+        "-gpgpu_ep_l2_wbuf_entries": "16",
+        "-gpgpu_flush_l1_cache": "1",
+        "-gpgpu_frfcfs_dram_sched_queue_size": "128",
+        "-gpgpu_gmem_skip_L1D": "0",
+        "-gpgpu_heap_size_limit": "8388608",
+        "-gpgpu_inst_fetch_throughput": "4",
+        "-gpgpu_kernel_launch_latency": "5000",
+        "-gpgpu_l1_banks": "4",
+        "-gpgpu_l1_cache_write_ratio": "25",
+        "-gpgpu_l1_latency": "20",
+        "-gpgpu_l2_rop_latency": "160",
+        "-gpgpu_max_concurrent_kernel": "128",
+        "-gpgpu_max_insn_issue_per_warp": "1",
+        "-gpgpu_mem_addr_mapping": "dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RBBBCCCB.CCCSSSSS",
+        "-gpgpu_mem_address_mask": "1",
+        "-gpgpu_memlatency_stat": "14",
+        "-gpgpu_memory_partition_indexing": "2",
+        "-gpgpu_n_cluster_ejection_buffer_size": "32",
+        "-gpgpu_n_clusters": "80",
+        "-gpgpu_n_cores_per_cluster": "1",
+        "-gpgpu_n_mem": "32",
+        "-gpgpu_n_mem_per_ctrlr": "1",
+        "-gpgpu_n_sub_partition_per_mchannel": "2",
+        "-gpgpu_num_dp_units": "4",
+        "-gpgpu_num_int_units": "4",
+        "-gpgpu_num_reg_banks": "16",
+        "-gpgpu_num_sched_per_core": "4",
+        "-gpgpu_num_sfu_units": "4",
+        "-gpgpu_num_sp_units": "4",
+        "-gpgpu_num_tensor_core_units": "4",
+        "-gpgpu_occupancy_sm_number": "70",
+        "-gpgpu_operand_collector_num_in_ports_gen": "8",
+        "-gpgpu_operand_collector_num_out_ports_gen": "8",
+        "-gpgpu_operand_collector_num_units_gen": "8",
+        "-gpgpu_perf_sim_memcpy": "1",
+        "-gpgpu_perfect_inst_const_cache": "1",
+        "-gpgpu_pipeline_widths": "4,4,4,4,4,4,4,4,4,4,8,4,4",
+        "-gpgpu_ptx_convert_to_ptxplus": "0",
+        "-gpgpu_ptx_force_max_capability": "70",
+        "-gpgpu_ptx_instruction_classification": "0",
+        "-gpgpu_ptx_save_converted_ptxplus": "0",
+        "-gpgpu_ptx_sim_mode": "0",
+        "-gpgpu_reg_file_port_throughput": "2",
+        "-gpgpu_registers_per_block": "65536",
+        "-gpgpu_runtime_pending_launch_count_limit": "2048",
+        "-gpgpu_runtime_stat": "500",
+        "-gpgpu_runtime_sync_depth_limit": "2",
+        "-gpgpu_scheduler": "lrr",
+        "-gpgpu_shader_core_pipeline": "2048:32",
+        "-gpgpu_shader_cta": "32",
+        "-gpgpu_shader_registers": "65536",
+        "-gpgpu_shmem_limited_broadcast": "0",
+        "-gpgpu_shmem_num_banks": "32",
+        "-gpgpu_shmem_option": "0,8,16,32,64,96",
+        "-gpgpu_shmem_per_block": "65536",
+        "-gpgpu_shmem_size": "98304",
+        "-gpgpu_shmem_sizeDefault": "98304",
+        "-gpgpu_shmem_warp_parts": "1",
+        "-gpgpu_simd_model": "1",
+        "-gpgpu_smem_latency": "20",
+        "-gpgpu_stack_size_limit": "1024",
+        "-gpgpu_sub_core_model": "1",
+        "-gpgpu_tensor_core_avail": "1",
+        "-gpgpu_tex_cache:l1": "N:4:128:256,L:R:m:N:L,T:512:8,128:2",
+        "-gpgpu_unified_l1d_size": "128",
+        "-icnt_arbiter_algo": "1",
+        "-icnt_flit_size": "40",
+        "-icnt_in_buffer_limit": "512",
+        "-icnt_out_buffer_limit": "512",
+        "-icnt_subnets": "2",
+        "-network_mode": "2",
+        "-ptx_opcode_initiation_dp": "4,4,4,4,130",
+        "-ptx_opcode_initiation_fp": "2,2,2,2,4",
+        "-ptx_opcode_initiation_int": "2,2,2,2,8,4",
+        "-ptx_opcode_initiation_sfu": "8",
+        "-ptx_opcode_initiation_tensor": "64",
+        "-ptx_opcode_latency_dp": "8,19,8,8,330",
+        "-ptx_opcode_latency_fp": "4,13,4,5,39",
+        "-ptx_opcode_latency_int": "4,13,4,5,145,21",
+        "-ptx_opcode_latency_sfu": "100",
+        "-ptx_opcode_latency_tesnor": "64",
+        "-specialized_unit_1": "1,4,4,4,4,BRA",
+        "-specialized_unit_2": "1,4,200,4,4,TEX",
+        "-specialized_unit_3": "1,4,8,4,4,TENSOR",
+        "-trace_opcode_latency_initiation_dp": "8,4",
+        "-trace_opcode_latency_initiation_int": "2,2",
+        "-trace_opcode_latency_initiation_sfu": "20,8",
+        "-trace_opcode_latency_initiation_sp": "2,2",
+        "-trace_opcode_latency_initiation_spec_op_1": "4,4",
+        "-trace_opcode_latency_initiation_spec_op_2": "200,4",
+        "-trace_opcode_latency_initiation_spec_op_3": "2,2",
+        "-trace_opcode_latency_initiation_tensor": "2,2",
+        "-visualizer_enabled": "0"
+      },
+      "feature_vector": {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 74752,
+        "ro_line_mshr_bypass": false,
+        "ro_tag_detach": false,
+        "static_s64": false,
+        "tvd": false,
+        "unified_wb": false,
+        "wb_local_cap": 0,
+        "wbuf_entries": 1024
+      },
+      "hardware_P1_throughput_eligible": 0,
+      "ideal_vector": {
+        "copy_free": false,
+        "l2_data_free": true,
+        "mem_all_data": false,
+        "meta": false,
+        "read_hit": false,
+        "wb": false
+      },
+      "labels": {
+        "diagnostic": true,
+        "oracle": false,
+        "readonly_scope": "NONE",
+        "subset": false,
+        "victim_scope": "TRADITIONAL_S_NATIVE"
+      },
+      "master_requested": 1,
+      "research_switches": {
+        "M": 0,
+        "T": 0,
+        "V": 0,
+        "W": 0
+      },
+      "scope": "Exact new-runtime traditional S; master derived effective dimensions and service scope bound separately from requested raw options"
+    }
+  },
+  "terminal_parser": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py",
+    "sha256": "7ed6be613653c5d48614e4bc701f9b0f8a2bdfaa46cf8d68e548ded608dbd9cb"
+  }
+}

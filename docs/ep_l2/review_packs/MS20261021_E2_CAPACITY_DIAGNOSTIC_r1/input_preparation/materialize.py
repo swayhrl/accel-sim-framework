@@ -13,7 +13,10 @@ AUTHORITY='49343880865edb22a17523790fc32dd55975966c'
 MASTER='-gpgpu_ep_l2_diag_l2_large_capacity'
 BUCKET='five_input_capacity_diagnostic_user_approved_20261021'
 MAIN61='61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5'
-WORKLOADS=('convolutionSeparable','cfd_097k','dwt2d','sad','vectorAdd_4M')
+# Admission order only; the adopted five-input scientific matrix is unchanged.
+# Use short retained walltimes and new native64slice CPU-cost evidence to
+# deliver early complete pairs. No speedup/result filtering selects inputs.
+WORKLOADS=('cfd_097k','sad','vectorAdd_4M','dwt2d','convolutionSeparable')
 SOURCE_FIELDS=('core_source_commit','framework_source_commit','binary_sha256','vendor_pybind11_commit')
 
 def require(ok,message):
@@ -193,7 +196,9 @@ def materialize(source_path,capacity_path,index_path,output):
         timeout_seconds=10800,max_concurrency=2,T0=registry['t0_unix'],
         start_deadline=registry['start_deadline_unix'],intake_deadline=registry['intake_deadline_unix'],
         original_controller_only=True,no_registry_or_CLIENT_mutations=True,no_lease_or_application_started=True,
-        main61_qualification_inherited=False,old_anchor_reused=False,no_automatic_retry=True)
+        main61_qualification_inherited=False,old_anchor_reused=False,no_automatic_retry=True,
+        execution_order=list(WORKLOADS),
+        execution_order_reason='Shorter retained walltime pairs first, with measured new empty64slice host cost; same approved five inputs/common runtime, no result or speedup based selection')
     write(output/'PLAN.json',plan)
     return dict(status='TEN_NEW_RUNTIME_SPECS_MATERIALIZED_NO_REGISTRATION_OR_START',plan=ref(output/'PLAN.json'),conditions=10)
 
