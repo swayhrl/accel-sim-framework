@@ -1,0 +1,42 @@
+{
+  "schema": "E2_FINAL_INPUT_ASSERTION_REVIEW_V1",
+  "status": "PASS",
+  "reviewed_by": "E2",
+  "at_unix": 1792581683.2940922,
+  "source_identity": {
+    "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "native_replay_result": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+    "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+  },
+  "host_case_id": "E_host_prefill_and_bounded_clock_cost",
+  "off_case_ids": [
+    "new_default_OFF",
+    "new_explicit_OFF"
+  ],
+  "assertions": {
+    "new_default_and_explicit_OFF_equivalence": true,
+    "new_ON_full_address_sector_version_zero": true,
+    "new_ON_dirty_pending_response_refusal": true,
+    "new_ON_ownership_resource_drain": true,
+    "no_input_reader_opcode_change": true
+  },
+  "review_basis": [
+    "Actual direct-child normal exit0 and full literal source assertions for both new OFF cases and E production-archive host fixture",
+    "21 trace/opcode source objects unchanged on the exact new runtime; input content scope remains separate",
+    "Own host fixture executes actual perf_memcpy_to_gpu, >32bit/nonaligned sector read version0 and epoch/repeat identity, rejects dirty/pending/queued-response prefill preserving generations/versions/offset and real response exact-once drain"
+  ],
+  "source_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/FINAL_NEW_INPUT_SOURCE_PORTABILITY_PENDING_E_NATIVE.json",
+    "sha256": "31960ad3b67ef3454835337b6a4486c3cf478296f80d390ae17b3e63d768fbdc"
+  },
+  "fixture_source": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/test_capacity_host_prefill.cc",
+    "sha256": "beff3bdf3183e6fff20032e10ac7a935891fdd69ed608e1ca42086f167c31612"
+  },
+  "application_qualification": false
+}

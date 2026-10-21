@@ -1,0 +1,349 @@
+{
+  "E_native_executions": 0,
+  "application_starts": 0,
+  "at_unix": 1792580287.3925943,
+  "core_source_clean": true,
+  "coverage": [
+    {
+      "A2_static_coverage": "COVERED_BY_NEW_SOURCE_NOT_YET_EXECUTED_BY_E",
+      "actual_assertions": [
+        "17 same-set addresses accepted by actual production prefill",
+        "large_prefill_clean_victims==1",
+        "cache ft_drained"
+      ],
+      "actual_calls": [
+        "l2_cache::ft_try_force_tag_access"
+      ],
+      "obligation": "Real low-level ON host-prefill acceptance on native enlarged Tag/payload and actual same-set clean victim replacement",
+      "reuse": "Reuse this A2 fixture after exact final producer delivery and E direct-ELF replay. Do not add a second E17-line clean replacement test.",
+      "source_lines": "tests/ep_l2/test_large_capacity.cc:132-146"
+    },
+    {
+      "A2_static_coverage": "NOT_COVERED_BY_NEW_HOST_BLOCK",
+      "obligation": "Top-level host memcpy address/byte-range dispatch and partition-level hardware/reference guard",
+      "reason": "New block invokes f.cache directly. potential_fixture creates an extra memory_partition_unit separately from the GPU-owned partition; it does not drive gpgpu_sim::perf_memcpy_to_gpu or memory_sub_partition::ft_try_force_l2_tag_update.",
+      "retain_E_case": "full_address_and_version_zero"
+    },
+    {
+      "A2_static_coverage": "NOT_COVERED_BY_NEW_HOST_BLOCK",
+      "obligation": "Host pointer above32bits, unaligned32B boundary, repeated sectors and later GPU epoch, enlarged native Tag/payload index",
+      "reason": "Host stimulus starts at0x50000000 and supplies a one-sector mask per aligned line. No assertion tests64-bit truncation, byte-range splitting, repeated-sector owner reuse, later epoch, or host landing beyond original1024 slots.",
+      "retain_E_case": "full_address_and_version_zero"
+    },
+    {
+      "A2_static_coverage": "NOT_COVERED_BY_NEW_HOST_BLOCK",
+      "obligation": "Actual requester read following host-prefill returns the native symbolic version-zero value with no lower read",
+      "reason": "The appended host-prefill block issues no subsequent read requester and has no host-warmed version-zero assertion. Earlier request versions belong to earlier ordinary timed traffic.",
+      "retain_E_case": "full_address_and_version_zero"
+    },
+    {
+      "A2_static_coverage": "NOT_COVERED_BY_NEW_HOST_BLOCK",
+      "obligation": "Dirty host owner refusal preserves owner, generation, symbolic versions and memcpy offset",
+      "reason": "17 clean prefill addresses do not exercise failed host prefill on a dirty existing owner; normal dirty-WB tests are different entries and preconditions.",
+      "retain_E_case": "dirty_owner_refusal"
+    },
+    {
+      "A2_static_coverage": "NOT_COVERED_BY_NEW_HOST_BLOCK",
+      "obligation": "Frontend/lower-pending/queued-response host prefill rejection and accepted retry only after true consumption and drain",
+      "reason": "Host block starts only after earlier hardware-drain assertions. It never calls the guarded partition entry while a request or response is live.",
+      "retain_E_case": "pending_and_response_refusal"
+    },
+    {
+      "A2_static_coverage": "COVERED_BY_EXISTING_A2_DIRECTED_SOURCE_PENDING_FINAL_E_REPLAY",
+      "obligation": "New enlarged descriptors/line-MSHR/per-address capacity and real reversed returns; dirtyWB/fixedcopy latch/drain",
+      "reuse": "Reuse final A2 fixture; E host-input draft deliberately does not duplicate600-line/descriptor,64per-address, dirty replacement or lowerWB cases.",
+      "source_lines": "tests/ep_l2/test_large_capacity.cc:53-130"
+    }
+  ],
+  "fixture_helper_source": {
+    "git_blob": "a1bdcb60b8d9623315190c87990cf2952816e4eb",
+    "path": "tests/ep_l2/potential_fixture.h",
+    "sha256": "a807ef923a159cdca1ed1ecd984c41172c20c0560f7d0b7556de309d2ad88444"
+  },
+  "historical_reports_and_failures_preserved": true,
+  "host_prefill_source_delta": "Only an ON successful valid clean host-victim telemetry increment was added to the prior ft_try_force_tag_access body. This is not an E native success or proof of whole-call-chain equality.",
+  "minimum_extra_E_native": {
+    "cases_to_keep": [
+      "full_address_and_version_zero",
+      "dirty_owner_refusal",
+      "pending_and_response_refusal"
+    ],
+    "cases_to_omit_as_redundant": [
+      "Additional17-line clean-host-prefill conflict replay beyond the final A2 fixture",
+      "Additional600line/descriptor/64per-address and dirty-WB expansion fixtures",
+      "Old17-test full native suite"
+    ],
+    "compile_units": 1,
+    "may_drop_extra_E_fixture_only_if": "Final A2 native source includes the actual top-level GPU memcpy/partition guard, host-after-read version-zero, dirty/pending/queued-response refusal and full-drain assertions listed here, and E replays that exact final release; producer prose or a terminal label is insufficient.",
+    "native_invocations": 1,
+    "profile": "MASTER_ON_TRADITIONAL_S",
+    "required": true,
+    "scope": "Three small input-specific checks in one bounded independently linked E fixture; no full application; original testlease and directELF collector only",
+    "source_change_needed": false,
+    "test_ELFs": 1,
+    "test_source": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/test_capacity_host_prefill.cc",
+      "sha256": "10c0d1102d4a1e315602dcf05177984887e55b6ff83edc3772e2d6eea07ee41d"
+    }
+  },
+  "new_fixture_source": {
+    "git_blob": "2cbcc8a8bf9bd39790f6b2506b75bf2f8e847dad",
+    "path": "tests/ep_l2/test_large_capacity.cc",
+    "sha256": "d059bc7a31881fe3ba550216d6b5eecfc8760efaf6fb4946067fca8f7802774b"
+  },
+  "new_runtime_native_qualified": false,
+  "observed_core_HEAD": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+  "previous_reviewed_core": "697e2ade4b3db82f4a1183c40ac16126c3323a64",
+  "prior_static_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/NEW_INPUT_SOURCE_APPLICABILITY_REVIEW.json",
+    "sha256": "6566a4124cab835fe294bea471a93f612493765f3147a042b3bbf0424fd2f45e"
+  },
+  "production_delta_from_prior": [
+    "M\tsrc/gpgpu-sim/delayqueue.h",
+    "M\tsrc/gpgpu-sim/ep-l2-ft-cache.inc",
+    "M\tsrc/gpgpu-sim/gpu-cache.h",
+    "M\tsrc/gpgpu-sim/l2cache.cc",
+    "M\ttests/ep_l2/test_large_capacity.cc"
+  ],
+  "published_r4_receipt": {
+    "A_producer_status": "PRODUCER_FINITE_PASS_PENDING_E_INDEPENDENT_QUALIFICATION",
+    "E_independent_replay": false,
+    "case_ids": [
+      "old_exact_d010_archive_OFF",
+      "new_default_OFF",
+      "new_explicit_OFF",
+      "new_ON_linear",
+      "new_ON_native_IPOLY_extension",
+      "new_ON_64slice_geometry_cost",
+      "reject_copy",
+      "reject_RO",
+      "reject_value",
+      "affected_OFF_stale_sector",
+      "affected_OFF_physical_clock",
+      "reject_forced_hit"
+    ],
+    "core_source_commit": "57347614c53cdb4dedfae030858aec565ce97003",
+    "git_path": "docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/RETAINED_PRODUCER_PASS_r4_RECEIPT.json",
+    "independent_qualification": false,
+    "native_case_receipt_pins_inherited": false,
+    "native_invocations_completed": 12,
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/RETAINED_PRODUCER_PASS_r4_RECEIPT.json",
+    "publication_commit": "08529aea3476ff0e2005fc0502ff43de859913c1",
+    "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1",
+    "runtime_ready": false,
+    "sha256": "ba3990a0228b479a3527840d2094f2815c140f7679ba2435e08805eda8a44ffc",
+    "wrapper_exit_codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "r4_new_source_scope": "R4core57347614 precedes dea44e44 host-prefill addition and2aa0 source;12producer passes cannot qualify the newly added block or final pending runtime.",
+  "reviewed_by": "E2",
+  "reviewed_new_core": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+  "runtime_framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "schema": "E2_CAPACITY_NEW_INPUT_SOURCE_COVERAGE_DELTA_r2",
+  "source_binding_status": "PENDING_FINAL_MAIN_ARCHIVE_SOURCE_NATIVE_EVIDENCE",
+  "source_objects_equal": [
+    {
+      "equal": true,
+      "new": "64312e52f232ca2a8c7e8a33f33c561dbe60d142",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "64312e52f232ca2a8c7e8a33f33c561dbe60d142",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/cuda-sim",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "13a8694a10b82f80dde24d0281fd69825faf5237",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "13a8694a10b82f80dde24d0281fd69825faf5237",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "libcuda",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "e8ddf95ab5fe91dcd489fe422e40a062ded66f47",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "e8ddf95ab5fe91dcd489fe422e40a062ded66f47",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/abstract_hardware_model.cc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "d54a3aa26c24017b36e0ac653176b3c7cbae544b",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "d54a3aa26c24017b36e0ac653176b3c7cbae544b",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/abstract_hardware_model.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "1c435b226252ea0a30ca154d01588c4afd967670",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "1c435b226252ea0a30ca154d01588c4afd967670",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/trace.cc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "8d7415177c5d07ef7af47f93d119b640201c99ee",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "8d7415177c5d07ef7af47f93d119b640201c99ee",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/trace.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "c32c952d0df2298c5e66b72147ba8b8877cd83cc",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "c32c952d0df2298c5e66b72147ba8b8877cd83cc",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/option_parser.cc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "f69cdbb4006dc3918a6d4f26914b8dec5a367f88",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "f69cdbb4006dc3918a6d4f26914b8dec5a367f88",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/option_parser.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "db27c825bd99ce8b86f9de203c800752454bf7cd",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "db27c825bd99ce8b86f9de203c800752454bf7cd",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/addrdec.cc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "d8db416090a225de09e7fc29b42ccfa420f8399f",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "d8db416090a225de09e7fc29b42ccfa420f8399f",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/addrdec.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "6a098854b8921fd4651d4280107d62cd4307d472",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "6a098854b8921fd4651d4280107d62cd4307d472",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-ro-oracle.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "79d1b725721bdda08eb716a87e4a75962416b3a0",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "79d1b725721bdda08eb716a87e4a75962416b3a0",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "de0e5b504072158b100111f0f0aaa004e2cf1260",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "de0e5b504072158b100111f0f0aaa004e2cf1260",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-ro-mshr.inc",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "2a17e5f9967cea5a3225036132b405b1ef97954c",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "2a17e5f9967cea5a3225036132b405b1ef97954c",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "c57e36303e5794e1b78701dea661de40acfdb1e7",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "c57e36303e5794e1b78701dea661de40acfdb1e7",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-ideal-reference.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "bf2bf0d50d8370958dc5cc14928621b17d1673d9",
+      "new_commit": "2aa0ee802e2cdd79d79e352e74522f8b6ae96699",
+      "old": "bf2bf0d50d8370958dc5cc14928621b17d1673d9",
+      "old_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "path": "src/gpgpu-sim/ep-l2-all-data-reference.h",
+      "repository": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1"
+    },
+    {
+      "equal": true,
+      "new": "103e7749b129ccb62061d16ad3384ddbae5554a6",
+      "new_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "old": "103e7749b129ccb62061d16ad3384ddbae5554a6",
+      "old_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "path": "gpu-simulator/trace-parser",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1"
+    },
+    {
+      "equal": true,
+      "new": "a2501788a844c67edd5031ec5a5dc6be191388b9",
+      "new_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "old": "a2501788a844c67edd5031ec5a5dc6be191388b9",
+      "old_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "path": "gpu-simulator/trace-driven",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1"
+    },
+    {
+      "equal": true,
+      "new": "f5622a1e67599c505891f6305b1d7c6bc2ab068b",
+      "new_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "old": "f5622a1e67599c505891f6305b1d7c6bc2ab068b",
+      "old_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "path": "gpu-simulator/ISA_Def",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1"
+    },
+    {
+      "equal": true,
+      "new": "7a520f73d92bf3b3ee4d9c60ecd9c06b10e8aafe",
+      "new_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "old": "7a520f73d92bf3b3ee4d9c60ecd9c06b10e8aafe",
+      "old_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "path": "gpu-simulator/accel-sim.cc",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1"
+    },
+    {
+      "equal": true,
+      "new": "61b7e4eabbba623d0a4e3cc4b86a74a7ab8a017c",
+      "new_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "old": "61b7e4eabbba623d0a4e3cc4b86a74a7ab8a017c",
+      "old_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "path": "gpu-simulator/accel-sim.h",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1"
+    }
+  ],
+  "status": "STATIC_COVERAGE_REVIEW_COMPLETE_FINAL_PRODUCER_AND_E_NATIVE_PENDING",
+  "trace_body_reads": 0
+}

@@ -1,0 +1,283 @@
+{
+  "status": "PROPOSED_SOURCE_CONFIG_NORMALIZATION_NOT_Q_PASS_NOT_REGISTERED",
+  "source_identity": {
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb"
+  },
+  "archive": {
+    "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "sha256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708",
+    "bytes": 79715582
+  },
+  "capacity_manifest": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/FROZEN_CAPACITY_VECTOR_FINAL.json",
+    "sha256": "d195aa13a0229a6fcae4db7f4ee50cdb2932f8785810f449b6d7a3bbace1357d"
+  },
+  "profiles": {
+    "S": {
+      "master": 0,
+      "capacities": {
+        "tag_slots": 1024,
+        "resident_payload_slots": 1024,
+        "bypass_payload_slots": 128,
+        "wb_payload_slots": 16,
+        "payload_slots_total": 1168,
+        "wad_entries": 128,
+        "line_mshr_entries": 128,
+        "descriptor_entries": 512,
+        "per_address_descriptors": 32,
+        "miss_queue_entries": 128,
+        "ready_response_bound": 512,
+        "icnt_to_l2_queue": 64,
+        "l2_to_dram_queue": 128,
+        "dram_to_l2_queue": 64,
+        "l2_to_icnt_queue": 64
+      },
+      "configuration": {
+        "native_tag_sets": 64,
+        "native_tag_ways": 16,
+        "native_line_bytes": 128,
+        "copy_latch_bytes": 128,
+        "ft_mode": 1,
+        "W": 0,
+        "V": 0,
+        "T": 0,
+        "M": 0,
+        "mq2": 0,
+        "rg1": 0,
+        "copy_free": 0,
+        "l2_data_free": 0,
+        "hardware_P1_throughput_eligible": 1,
+        "bank_count": 4,
+        "bank_ops_per_physical_cycle": 1,
+        "native_max_tag_storage": 4096,
+        "copy_latch_cycles": 1,
+        "index_function": 2,
+        "index_extension": "NATIVE",
+        "result_fifo_used_by_L2": 0,
+        "native_result_fifo_config_field": 0
+      },
+      "enlarged_resources": [],
+      "drained_resources": [
+        "wad_entries",
+        "line_mshr_entries",
+        "descriptor_entries",
+        "wb_payload_slots",
+        "per_address_descriptors",
+        "miss_queue_entries",
+        "ready_response_bound",
+        "icnt_to_l2_queue",
+        "l2_to_dram_queue",
+        "dram_to_l2_queue",
+        "l2_to_icnt_queue"
+      ]
+    },
+    "S_L2_DATA_FREE_LARGE_CAPACITY": {
+      "master": 1,
+      "capacities": {
+        "tag_slots": 65536,
+        "resident_payload_slots": 65536,
+        "bypass_payload_slots": 8192,
+        "wb_payload_slots": 1024,
+        "payload_slots_total": 74752,
+        "wad_entries": 8192,
+        "line_mshr_entries": 8192,
+        "descriptor_entries": 32768,
+        "per_address_descriptors": 2048,
+        "miss_queue_entries": 8192,
+        "ready_response_bound": 32768,
+        "icnt_to_l2_queue": 4096,
+        "l2_to_dram_queue": 8192,
+        "dram_to_l2_queue": 4096,
+        "l2_to_icnt_queue": 4096
+      },
+      "configuration": {
+        "native_tag_sets": 4096,
+        "native_tag_ways": 16,
+        "native_line_bytes": 128,
+        "copy_latch_bytes": 128,
+        "ft_mode": 1,
+        "W": 0,
+        "V": 0,
+        "T": 0,
+        "M": 0,
+        "mq2": 0,
+        "rg1": 0,
+        "copy_free": 0,
+        "l2_data_free": 1,
+        "hardware_P1_throughput_eligible": 0,
+        "bank_count": 4,
+        "bank_ops_per_physical_cycle": 1,
+        "native_max_tag_storage": 65536,
+        "copy_latch_cycles": 1,
+        "index_function": 2,
+        "index_extension": "IPOLY64_LOW_X_LINEAR64_HIGH",
+        "result_fifo_used_by_L2": 0,
+        "native_result_fifo_config_field": 4096
+      },
+      "enlarged_resources": [
+        "descriptor_entries",
+        "dram_to_l2_queue",
+        "icnt_to_l2_queue",
+        "l2_to_dram_queue",
+        "l2_to_icnt_queue",
+        "line_mshr_entries",
+        "miss_queue_entries",
+        "payload_slots_total",
+        "per_address_descriptors",
+        "ready_response_bound",
+        "resident_payload_slots",
+        "tag_slots",
+        "wad_entries",
+        "wb_payload_slots"
+      ],
+      "drained_resources": [
+        "wad_entries",
+        "line_mshr_entries",
+        "descriptor_entries",
+        "wb_payload_slots",
+        "per_address_descriptors",
+        "miss_queue_entries",
+        "ready_response_bound",
+        "icnt_to_l2_queue",
+        "l2_to_dram_queue",
+        "dram_to_l2_queue",
+        "l2_to_icnt_queue"
+      ],
+      "non_applicable_resources": {
+        "bypass_payload_slots": "TRADITIONAL_S_NO_BYPASS_ALLOCATION"
+      }
+    }
+  },
+  "native_cache_geometry": {
+    "S": {
+      "native_tag_sets": 64,
+      "native_tag_ways": 16,
+      "native_line_bytes": 128
+    },
+    "S_L2_DATA_FREE_LARGE_CAPACITY": {
+      "native_tag_sets": 4096,
+      "native_tag_ways": 16,
+      "native_line_bytes": 128
+    }
+  },
+  "normalized_capacity_profiles": {
+    "S": {
+      "capacities": {
+        "tag_slots": 1024,
+        "resident_payload_slots": 1024,
+        "bypass_payload_slots": 128,
+        "wb_payload_slots": 16,
+        "payload_slots_total": 1168,
+        "wad_entries": 128,
+        "line_mshr_entries": 128,
+        "descriptor_entries": 512,
+        "per_address_descriptors": 32,
+        "miss_queue_entries": 128,
+        "ready_response_bound": 512,
+        "icnt_to_l2_queue": 64,
+        "l2_to_dram_queue": 128,
+        "dram_to_l2_queue": 64,
+        "l2_to_icnt_queue": 64
+      },
+      "configuration": {
+        "native_tag_sets": 64,
+        "native_tag_ways": 16,
+        "native_line_bytes": 128,
+        "copy_latch_bytes": 128,
+        "ft_mode": 1,
+        "W": 0,
+        "V": 0,
+        "T": 0,
+        "M": 0,
+        "mq2": 0,
+        "rg1": 0,
+        "copy_free": 0,
+        "l2_data_free": 0,
+        "hardware_P1_throughput_eligible": 1,
+        "bank_count": 4,
+        "bank_ops_per_physical_cycle": 1,
+        "native_max_tag_storage": 4096,
+        "copy_latch_cycles": 1,
+        "index_function": 2,
+        "index_extension": "NATIVE",
+        "result_fifo_used_by_L2": 0,
+        "native_result_fifo_config_field": 0
+      }
+    },
+    "S_L2_DATA_FREE_LARGE_CAPACITY": {
+      "capacities": {
+        "tag_slots": 65536,
+        "resident_payload_slots": 65536,
+        "bypass_payload_slots": 8192,
+        "wb_payload_slots": 1024,
+        "payload_slots_total": 74752,
+        "wad_entries": 8192,
+        "line_mshr_entries": 8192,
+        "descriptor_entries": 32768,
+        "per_address_descriptors": 2048,
+        "miss_queue_entries": 8192,
+        "ready_response_bound": 32768,
+        "icnt_to_l2_queue": 4096,
+        "l2_to_dram_queue": 8192,
+        "dram_to_l2_queue": 4096,
+        "l2_to_icnt_queue": 4096
+      },
+      "configuration": {
+        "native_tag_sets": 4096,
+        "native_tag_ways": 16,
+        "native_line_bytes": 128,
+        "copy_latch_bytes": 128,
+        "ft_mode": 1,
+        "W": 0,
+        "V": 0,
+        "T": 0,
+        "M": 0,
+        "mq2": 0,
+        "rg1": 0,
+        "copy_free": 0,
+        "l2_data_free": 1,
+        "hardware_P1_throughput_eligible": 0,
+        "bank_count": 4,
+        "bank_ops_per_physical_cycle": 1,
+        "native_max_tag_storage": 65536,
+        "copy_latch_cycles": 1,
+        "index_function": 2,
+        "index_extension": "IPOLY64_LOW_X_LINEAR64_HIGH",
+        "result_fifo_used_by_L2": 0,
+        "native_result_fifo_config_field": 4096
+      }
+    }
+  },
+  "OFF_fixture_vs_application": {
+    "fixture": "MissQ256/result_fifo0/LINEAR/FIFO512:2:64:64",
+    "application": "MissQ128/result_fifo0/IPOLY/FIFO64:128:64:64",
+    "result_fifo_note": "Native cache grammar final32 is data_port_width; result_fifo is middle token0; unused field not positive capacity resource"
+  },
+  "expected_full_instructions_by_input": {
+    "convolutionSeparable": {
+      "selection_id": "D_V1_convolutionSeparable",
+      "expected_full_instructions": 714547200
+    },
+    "cfd_097k": {
+      "selection_id": "D_V2_cfd_097k",
+      "expected_full_instructions": 143129372
+    },
+    "dwt2d": {
+      "selection_id": "D_V1_dwt2d",
+      "expected_full_instructions": 148684429
+    },
+    "sad": {
+      "selection_id": "D_V2_sad",
+      "expected_full_instructions": 157583646
+    },
+    "vectorAdd_4M": {
+      "selection_id": "D_V2_vectorAdd_4M",
+      "expected_full_instructions": 56000000
+    }
+  },
+  "scope_termination": "Use exact prepared full-input termination_contract, not fixture",
+  "result_fifo_config_field_in_capacity_vector": false
+}

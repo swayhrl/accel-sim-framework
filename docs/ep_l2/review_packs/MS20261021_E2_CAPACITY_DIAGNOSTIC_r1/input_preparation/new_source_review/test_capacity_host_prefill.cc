@@ -4,9 +4,12 @@
 // Real GPU host-memcpy -> real partition -> native Tag/payload; lower completion
 // is a bounded external fixture, using production FIFOs and response callbacks.
 #include <cassert>
+#include <chrono>
+#include <cstring>
 #include <cstdio>
 #include <map>
 #include <set>
+#include <sys/resource.h>
 #include "libcuda/gpgpu_context.h"
 #include "src/gpgpu-sim/gpu-sim.h"
 #include "src/gpgpu-sim/icnt_wrapper.h"
@@ -16,7 +19,7 @@
 struct capacity_test_gpu : exec_gpgpu_sim {
   capacity_test_gpu(const gpgpu_sim_config &c,gpgpu_context *ctx)
       : exec_gpgpu_sim(c,ctx) {}
-  memory_partition_unit *partition() { return m_memory_partition_unit[0]; }
+  memory_partition_unit *partition(unsigned id=0) { return m_memory_partition_unit[id]; }
 };
 
 struct capacity_host_fixture {
@@ -187,10 +190,60 @@ static void pending_and_response_refusal(const char *base,const char *overlay) {
   puts("E_CAPACITY_HOST_PREFILL_PENDING_RESPONSE_REFUSAL_REAL_RETURN_DRAIN_RETRY PASS");
 }
 
+static void empty_64slice_clock_cost(const char *base,const char *overlay) {
+  using host_clock=std::chrono::steady_clock;
+  const auto start=host_clock::now();
+  gpgpu_context ctx;gpgpu_sim_config cfg(&ctx);auto p=option_parser_create();
+  ctx.ptx_reg_options(p);ctx.func_sim->ptx_opcocde_latency_options(p);
+  icnt_reg_options(p);cfg.reg_options(p);
+  option_parser_cfgfile(p,base);option_parser_cfgfile(p,overlay);
+  const char *args[]={"E-empty-64slice-clock-cost",
+    "-gpgpu_n_mem","32","-gpgpu_n_sub_partition_per_mchannel","2",
+    "-gpgpu_simple_dram_model","0","-gpgpu_ep_l2_ft_mode","1",
+    "-gpgpu_ep_l2_wbuf_entries","16","-gpgpu_ep_l2_ms_observer","1",
+    "-gpgpu_ep_l2_b0_stats","1","-gpgpu_ep_l2_m0a_stats","1"};
+  option_parser_cmdline(p,sizeof(args)/sizeof(args[0]),args);
+  cfg.init();option_parser_destroy(p);
+  auto gpu=new capacity_test_gpu(cfg,&ctx);
+  assert(gpu->getMemoryConfig()->m_n_mem_sub_partition==64);
+  assert(gpu->getMemoryConfig()->m_L2_config.ep_l2_large_enabled());
+  assert(gpu->gpu_sim_insn==0 && gpu->gpu_tot_sim_insn==0);
+  for(unsigned part=0;part<32;++part)for(unsigned sub=0;sub<2;++sub) {
+    auto cache=gpu->partition(part)->get_sub_partition(sub)->ft_cache_for_test();
+    assert(cache->ep_l2_payload_for_test().physical_slots()==74752);
+    assert(cache->ep_l2_payload_for_test().resident_capacity()==65536);
+  }
+  const auto ready=host_clock::now();
+  constexpr unsigned ticks=64;
+  for(unsigned tick=0;tick<ticks;++tick) {
+    const auto cycle=gpu->gpu_sim_cycle+gpu->gpu_tot_sim_cycle;
+    // Every tick calls ALL32 real GPU-owned partitions, hence64 native L2s.
+    // No separately constructed fixture partition, shader cycle or trace.
+    for(unsigned part=0;part<32;++part)gpu->partition(part)->cache_cycle(cycle);
+    ++gpu->gpu_sim_cycle;
+  }
+  const auto done=host_clock::now();
+  assert(gpu->gpu_sim_insn==0 && gpu->gpu_tot_sim_insn==0);
+  rusage usage{};assert(getrusage(RUSAGE_SELF,&usage)==0);
+  const double init_seconds=std::chrono::duration<double>(ready-start).count();
+  const double tick_seconds=std::chrono::duration<double>(done-ready).count();
+  printf("E_CAPACITY_EMPTY_64SLICE_CLOCK_COST|scope=NON_APPLICATION_EMPTY_CACHE_HOST_COST_LOWER_BOUND|"
+    "partitions=32|slices=64|payload_slots_per_slice=74752|actual_cache_ticks=%u|"
+    "actual_partition_cache_cycle_calls=%u|shader_instructions=0|trace_commands=0|"
+    "init_host_monotonic_seconds=%.9f|tick_host_monotonic_seconds=%.9f|"
+    "host_seconds_per_64slice_tick=%.9f|maxrss_kib=%ld|sizeof_slot=%zu|"
+    "scientific_endpoint=0|qualification_granted=0\n",
+    ticks,ticks*32,init_seconds,tick_seconds,tick_seconds/ticks,
+    usage.ru_maxrss,sizeof(ep_l2_payload_store::slot));
+  delete gpu;
+}
+
 int main(int argc,char **argv) {
-  assert(argc==3);setvbuf(stdout,nullptr,_IOLBF,0);
+  assert(argc==3 || (argc==4 && std::strcmp(argv[3],"--clock-cost")==0));
+  setvbuf(stdout,nullptr,_IOLBF,0);
   full_address_and_version_zero(argv[1],argv[2]);
   dirty_owner_refusal(argv[1],argv[2]);
   pending_and_response_refusal(argv[1],argv[2]);
   puts("E_CAPACITY_HOST_PREFILL_PRODUCTION_SUITE PASS");
+  if(argc==4)empty_64slice_clock_cost(argv[1],argv[2]);
 }

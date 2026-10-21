@@ -56,7 +56,8 @@ def checkpoint(event,pair=None,extra=()):
  else:
   import capacity_policy
   for r in capacity_policy.matrix()['conditions']:
-   rows.append(dict(condition=r['condition_id'],profile=r['profile'],pair_id='CAPACITY_DIAGNOSTIC_'+r['workload']+'_OFF_ON_NEW_RUNTIME',qualification_id=None,state='PENDING_A2_FORMAL_PRODUCER_AND_NEW_E_QUALIFICATION',attempt_id=None,receipt_path=None))
+   stage='PENDING_NEW_RUNTIME_INDEPENDENT_QUALIFICATION' if (P/'PRODUCER_REMOTE_READBACK.json').exists() else 'PENDING_A2_FORMAL_PRODUCER_AND_NEW_E_QUALIFICATION'
+   rows.append(dict(condition=r['condition_id'],profile=r['profile'],pair_id='CAPACITY_DIAGNOSTIC_'+r['workload']+'_OFF_ON_NEW_RUNTIME',qualification_id=None,state=stage,attempt_id=None,receipt_path=None))
  report=dict(schema='E2_CAPACITY_DIAGNOSTIC_CHECKPOINT_V1',event=event,at_unix=time.time(),approval=ref(P/'USER_APPROVAL.json'),authority_commit='49343880865edb22a17523790fc32dd55975966c',T0=s['t0_unix'],actual_starts=s['actual_starts'],remaining=s['remaining_start_capacity'],maximum=s['maximum_actual_starts'],old_attempts_preserved=36,new_actual_starts=s['actual_starts']-36,new_actual_starts_limit=10,contingency_consumed=8,original_reservations=old['reservations'],controller=s['controller'],rows=rows,accepted_diagnostic_pairs=accepted,original_accepted_pairs_unchanged=True,output_usage=usage,result_growth_since36_bytes=usage['new_bytes']-read(P/'INDEPENDENT_INITIAL_ADMISSION.json')['result_usage']['new_bytes'],remaining_new_generation_bytes=s['additional_results_max_bytes']-usage['new_bytes'],remaining_total_generation_bytes=s['old_plus_new_results_max_bytes']-usage['total_bytes'],resources=c.local_resources(),active_runs=[r for r in data['runs'].values() if r['status'] in c.ACTIVE],active_leases=[r for r in data['resource_leases'].values() if r['status'] in c.ACTIVE],producer_pending=not bool(plan),central_amendment=s.get('capacity_diagnostic_amendment'),start_deadline=s['start_deadline_unix'],intake_deadline=s['result_intake_freeze'],intake_deadline_unix=s.get('intake_deadline_unix',c.INTAKE_DEADLINE),old_failed_incomplete_hold_preserved=True,no_automatic_retry_or_workload_replacement=True)
  ep=P/(event+'.json');c.write_json(ep,report);paths.append(ep)
  hand=ROOT/'docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/e';c.write_json(hand/'RECEIPT.json',report)
@@ -64,7 +65,12 @@ def checkpoint(event,pair=None,extra=()):
  status+=f"Result generation: new {usage['new_bytes']}B/{s['additional_results_max_bytes']}B; old+new {usage['total_bytes']}B/{s['old_plus_new_results_max_bytes']}B; growth since36 {report['result_growth_since36_bytes']}B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.\n\n"
  status+='| Condition | Attempt | State |\n|---|---|---|\n'
  for r in rows:status+=f"| {r['condition']} | {r['attempt_id']} | {r['state']} |\n"
- if not plan:status+='\nA2 formal producer pending; five complete-input pairs and independent new-runtime qualification are being prepared. No full application is authorized before exact new identities and gates pass.\n'
+ if not plan:
+  if (P/'PRODUCER_REMOTE_READBACK.json').exists():
+   status+='\nA2 formal producer independently remote-read back; exact new-runtime native/input/config qualification and execution publication are being completed. No full application starts before all gates pass.\n'
+   report['producer_pending']=False;report['independent_qualification_pending']=True
+   c.write_json(ep,report);c.write_json(hand/'RECEIPT.json',report)
+  else:status+='\nA2 formal producer pending; five complete-input pairs and independent new-runtime qualification are being prepared. No full application is authorized before exact new identities and gates pass.\n'
  else:status+='\nNext never-started authorized conditions: '+', '.join(r['condition'] for r in rows if r['state']=='NOT_STARTED')+'. No automatic retry.\n'
  (hand/'STATUS.md').write_text(status);(P/'STATUS.md').write_text(status);paths += [hand/'STATUS.md',hand/'RECEIPT.json',P/'STATUS.md',*extra]
  notice=None

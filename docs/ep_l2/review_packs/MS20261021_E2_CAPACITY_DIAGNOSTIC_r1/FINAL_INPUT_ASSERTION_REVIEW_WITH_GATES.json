@@ -1,0 +1,505 @@
+{
+  "application_qualification": false,
+  "assertions": {
+    "new_ON_dirty_pending_response_refusal": true,
+    "new_ON_full_address_sector_version_zero": true,
+    "new_ON_ownership_resource_drain": true,
+    "new_default_and_explicit_OFF_equivalence": true,
+    "no_input_reader_opcode_change": true
+  },
+  "at_unix": 1792581683.2940922,
+  "fixture_source": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/test_capacity_host_prefill.cc",
+    "sha256": "beff3bdf3183e6fff20032e10ac7a935891fdd69ed608e1ca42086f167c31612"
+  },
+  "gates": {
+    "bank_service": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_default_OFF",
+        "new_explicit_OFF",
+        "affected_OFF_physical_clock"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "New ON actualbankgrants0 and diagnostic COPY_READ/WRITE2each; newOFF positive grants with physical perbankcycle<=1.",
+      "status": "PASS"
+    },
+    "capacity_bank_free_on_p1_off": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "affected_OFF_physical_clock"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Actual ONbankgrants0 all realdata-service callbacks retained; OFFphysicalP1 grant auditing uses actualphysicalclock.",
+      "status": "PASS"
+    },
+    "capacity_effective_values_and_default_off": {
+      "case_ids": [
+        "new_default_OFF",
+        "new_explicit_OFF",
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Exact new output fieldmapping and constructor/configaudit; native fixturegeometry differs from formalOFF FIFO/MissQ/index and scope explicitly normalizes exact formal values.",
+      "status": "PASS"
+    },
+    "capacity_highwater_refusal_coverage": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "PASS establishes verified field/source schema and conservative coverage, not universalcounter completeness. MissQ knownpartial false. ActualnativeTag3 replacements validfinite. Full app labels determined independently.",
+      "status": "PASS"
+    },
+    "capacity_master_off_equivalence": {
+      "case_ids": [
+        "new_default_OFF",
+        "new_explicit_OFF"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Master absent and explicit0 both newruntime74cycle semantic line equals retained exactold reference; source default0 and init branch reviewed.",
+      "status": "PASS"
+    },
+    "capacity_real_copy_fixed_latch_and_data_identity": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "E_host_prefill_and_bounded_clock_cost"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Production dirtyreplacement realCOPY_READ/WRITE2each with fixed128B single latch and same-address read reference versions, source copy pipeline unchanged; no COPY_FREE.",
+      "status": "PASS"
+    },
+    "capacity_reject_contradictory_settings": {
+      "case_ids": [
+        "reject_copy",
+        "reject_RO",
+        "reject_value",
+        "reject_forced_hit"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Actual native legality negative cases and exactwhitelist source prevent unsupportedcombinations.",
+      "status": "PASS"
+    },
+    "capacity_requester_stale_sector_wad_wb_drain": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "affected_OFF_stale_sector",
+        "E_host_prefill_and_bounded_clock_cost"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Directed new archive exactonce600 realreturns + crosscycle sector versions + WAD/lowerWB/set_done/response/fill deepdrain.",
+      "status": "PASS"
+    },
+    "capacity_scaled_geometry_role_bounds": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_ON_64slice_geometry_cost"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Actualnative4096x16Tags,74752payload partitionroles,finite1024WBboundary and generation reuse; actualGPUconstruct64slices.",
+      "status": "PASS"
+    },
+    "finite_wbuf": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_default_OFF",
+        "new_explicit_OFF"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Production-directed role boundaries/generation tests reserve all1024 enlargedWB slots, prove actual next allocation fails and release; newOFF finite16 retained.",
+      "status": "PASS"
+    },
+    "memcpy_payload_identity": {
+      "case_ids": [
+        "E_host_prefill_and_bounded_clock_cost",
+        "affected_OFF_physical_clock"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "E new-archive real perf_memcpy toGPU full64bit/native scaledTag/payload, byte-sector rounding, repeated/epoch preserved handles, zero read versions and dirty/pending/response rejection.",
+      "status": "PASS"
+    },
+    "mode_legality": {
+      "case_ids": [
+        "reject_copy",
+        "reject_RO",
+        "reject_value",
+        "reject_forced_hit"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Exact new config parser refuses unsupported COPY_FREE/RO/value2/forced-hit; traditionalS OFF/ON run actualnative.",
+      "status": "PASS"
+    },
+    "old_all_off_equivalence": {
+      "case_ids": [
+        "new_default_OFF",
+        "new_explicit_OFF"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "New default/explicitOFF share20 requesters/responses,2 real copies/lower-WB/set_done and74cycles, matching retained d010 producer reference; only bounded OFF equivalence, no old anchor.",
+      "status": "PASS"
+    },
+    "physical_bank_clock": {
+      "case_ids": [
+        "affected_OFF_physical_clock"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "New archive physical-cycle offset4096 audit actualviolations0/maxgrants1 and complete real-partition WB/drain.",
+      "status": "PASS"
+    },
+    "requester_exact_once": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "affected_OFF_stale_sector"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Actual600 held lineMSHR/descriptors,64same-line requesters, reverse real lower returns; source request/reply sets ensure684 exact-once and affectedOFF A1.",
+      "status": "PASS"
+    },
+    "resource_closure": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "E_host_prefill_and_bounded_clock_cost",
+        "affected_OFF_stale_sector"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Actual native pending/MSHR/descriptor/WAD/WB/queues drain, deep ownership consistency and exact sent/received closure.",
+      "status": "PASS"
+    },
+    "sector_reference_data": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "E_host_prefill_and_bounded_clock_cost",
+        "affected_OFF_stale_sector"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Actual read/write reference versions including zero host-prefill sectors, dirtyreplacement retained data and returned same-address versions.",
+      "status": "PASS"
+    },
+    "stale_fill": {
+      "case_ids": [
+        "affected_OFF_stale_sector",
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "AffectedOFF real16way crosscycle fill reuses native pending transaction with version oracle; ON same-address dirtyWB/returns and deferred fill use new exact archive.",
+      "status": "PASS"
+    },
+    "wb_lifecycle": {
+      "case_ids": [
+        "new_ON_linear",
+        "new_ON_native_IPOLY_extension",
+        "new_default_OFF",
+        "new_explicit_OFF",
+        "affected_OFF_stale_sector"
+      ],
+      "evidence_refs": [
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+          "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/E_NATIVE_FIELD_DECODER_REVIEW.json",
+          "sha256": "d8441502621643a47b2e3ae9ba0dafc6486d80c995e54c90f4b0ac6186b9a83e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/PARSER_OWNER_SEAL.json",
+          "sha256": "dacc551f3ffc0c6150304611d424617290abf1c538f0d819732fac68011e0830"
+        }
+      ],
+      "production_driven": true,
+      "rationale": "Real dirty eviction copy, loweraccept and actual set_done complete twoWB; same-address waits until originalWB completed, not response-as-drain.",
+      "status": "PASS"
+    }
+  },
+  "host_case_id": "E_host_prefill_and_bounded_clock_cost",
+  "native_replay_result": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E2_CAPACITY_INDEPENDENT_NATIVE_r1/NATIVE_REPLAY_RESULT.json",
+    "sha256": "e2958d3576c230baaf3f12fe7bb294fdc6b83edbddde151a5d361ca5b54ca171"
+  },
+  "off_case_ids": [
+    "new_default_OFF",
+    "new_explicit_OFF"
+  ],
+  "review_basis": [
+    "Actual direct-child normal exit0 and full literal source assertions for both new OFF cases and E production-archive host fixture",
+    "21 trace/opcode source objects unchanged on the exact new runtime; input content scope remains separate",
+    "Own host fixture executes actual perf_memcpy_to_gpu, >32bit/nonaligned sector read version0 and epoch/repeat identity, rejects dirty/pending/queued-response prefill preserving generations/versions/offset and real response exact-once drain"
+  ],
+  "reviewed_by": "E2",
+  "schema": "E2_FINAL_INPUT_ASSERTION_REVIEW_V1",
+  "source_identity": {
+    "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "source_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/FINAL_NEW_INPUT_SOURCE_PORTABILITY_PENDING_E_NATIVE.json",
+    "sha256": "31960ad3b67ef3454835337b6a4486c3cf478296f80d390ae17b3e63d768fbdc"
+  },
+  "status": "PASS"
+}

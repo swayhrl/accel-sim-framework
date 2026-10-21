@@ -1,0 +1,10 @@
+{
+  "status": "E2_SMALL_HOST_COST_OPTIMIZATION_SUGGESTION_BEFORE_COMMON_RUNTIME_FREEZE",
+  "at_unix": 1792580778.1570652,
+  "source": "Core2aa currentcount_state unchanged sincee285; no new production edit by E",
+  "finding": "B0 cache_cycle calls count_state5times per slice. count_state still scans all74752 even empty, although used(role) and pending counts already have m_large indices. E tiny empty64-owned-slice clock benchmark is prepared for formal archive; no app started.",
+  "minimal_suggestion": "Consider m_large-only count_state iteration over existing m_large_live[wanted_role] (with same occupied/role/status predicates), preserve current dense loop OFF. This uses already-authoritative occupied-role index, changes no emulated timing/allocations/semantics. Keep deep ownership/index reconciliation and assertions. Empty bypass is then O(0), resident work scales with actual active slots rather than74752. A2 owns implementation/release; E does not modify production.",
+  "scope": "Ordinary equivalent host bookkeeping only; not permission for B0 sampling loss/period changes, native assertion removal, hardware clock, vector or bank changes",
+  "reference_pass": "r4case1407cycle:OFF.754s,ON1.260s,ON64allocation2.874s. This ticks fixturepartition only, so cannot estimate all64cachecycles as measured throughput.",
+  "E_full_application_starts": 0
+}
