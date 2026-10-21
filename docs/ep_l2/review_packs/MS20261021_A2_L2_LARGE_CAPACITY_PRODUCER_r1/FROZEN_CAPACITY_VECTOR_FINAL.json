@@ -1,0 +1,62 @@
+{
+  "schema": "A2_FROZEN_SINGLE_CAPACITY_VECTOR_V1",
+  "status": "FROZEN_PRODUCER_DELIVERED_PENDING_E_INDEPENDENT_QUALIFICATION",
+  "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+  "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "switch": "-gpgpu_ep_l2_diag_l2_large_capacity",
+  "default": 0,
+  "applicability": "TRADITIONAL_S_ONLY",
+  "common_to_all_five": true,
+  "per_slice": {
+    "sets": 4096,
+    "ways": 16,
+    "tag_slots": 65536,
+    "resident_slots": 65536,
+    "bypass_slots": 8192,
+    "WB_slots": 1024,
+    "total_payload_slots": 74752,
+    "WAD": 8192,
+    "line_MSHR": 8192,
+    "descriptor": 32768,
+    "per_address": 2048,
+    "MissQ": 8192,
+    "ICNT_L2": 4096,
+    "L2_DRAM": 8192,
+    "DRAM_L2": 4096,
+    "L2_ICNT": 4096,
+    "result_fifo_config_field": 4096,
+    "ready_response_bound": 32768
+  },
+  "unchanged": {
+    "sector_bytes": 32,
+    "line_bytes": 128,
+    "bank_count": 4,
+    "bank_ops_config": 1,
+    "copy_latch_cycles": 1,
+    "ROP_latency": "INHERITED_CONFIG",
+    "ROP_storage": "NATIVE_DYNAMIC",
+    "DRAM_interconnect": "UNCHANGED"
+  },
+  "index_mapping": "For native P: exact original IPOLY64 low6 bits, next6 partition-line bits select high group. Linear is also supported. OFF unchanged.",
+  "unused_field_scope": "result_fifo_config_field is not a separate active L2 ready queue; real ready responses share live descriptor capacity.",
+  "near_nonbinding": "PENDING_E_FULL_INPUT_EVIDENCE: finite native stress intentionally has3 Tag replacements and Tag near_nonbinding=0. No full input is claimed nonbinding.",
+  "identity": {
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "core_branch": "hrl/ep-l2-ms20261021-a2-large-capacity-v1",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "main": {
+      "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/accel-sim.out",
+      "sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+      "bytes": 85459688
+    },
+    "archive": {
+      "path": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "sha256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708",
+      "bytes": 79715582
+    }
+  },
+  "Tag_nonbinding_strengthening": "Require zero timed clean/dirty and host-prefill valid-victim replacements in addition to zero denial checks and <=50% highwater. Binding never blocks valid large-finite execution.",
+  "lower_credit_scope": "Original memory-partition shared/private credit and DRAM scheduler/return/write queue limits unchanged; not part of enlarged L2 local capacity claim.",
+  "measured_native_64slice_maxrss_kib": 1429504
+}

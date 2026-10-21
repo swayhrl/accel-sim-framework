@@ -1,0 +1,1149 @@
+{
+  "schema": "EP_L2_A_COMMON_BUILD_NATIVE_RECEIPT_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+  "release_id": "EPL2_L2_LARGE_CAPACITY_DIAGNOSTIC_PRODUCER_V1_r6",
+  "status": "PRODUCER_FINITE_PASS_PENDING_E_INDEPENDENT_QUALIFICATION",
+  "driver_source_commit": "acea1a5f35bbad443b04491493a84a2e657fcfa7",
+  "driver_sha256": "26982cae3484ede7dd13d86111efc31b3c0469b4bfac89218940dc79ccb235f0",
+  "spec_sha256": "d65efecf02164d3e54a9aded82fc64508519b445a13ab38d31f43b775fb031b3",
+  "planner_sha256": "009da58761c37823e9369543882c79d40b9c994f042333ba85d728e08b6ef18e",
+  "checker_sha256": "f86ccb0932b61991764b786ecb875cf1cfa974bbf9979951eb038d0c557bed17",
+  "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+  "resource_guard_sha256": "ad43b67727a8d6ae1a0509872131b904bb590c2c1fdde12397f01c131e96fd2d",
+  "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+  "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1",
+  "framework": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1",
+  "build": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1",
+  "output": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6",
+  "suite": "main",
+  "phase": "native",
+  "jobs": 1,
+  "reserved_cpu_units": 1,
+  "reserved_memory_bytes": 8589934592,
+  "disk_floor_bytes": 7516192768,
+  "authorized_task_floor_bytes": 5368709120,
+  "memory_floor_bytes": 68719476736,
+  "reserved_build_growth_bytes": 0,
+  "reserved_result_bytes": 268435456,
+  "compiler_started": false,
+  "native_invocations_attempted": 12,
+  "native_invocations_completed": 12,
+  "application_starts": 0,
+  "runtime_ready": false,
+  "independent_qualification": false,
+  "commands": [
+    {
+      "command": [
+        "ldd",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/accel-sim.out"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/native_linked_libraries.log",
+      "process": {
+        "pid": 2962843,
+        "start_ticks": 933232664,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "36ed520394def9c95a0cc295e25124c164d0547459006fdbab10d2c319396280",
+      "wall_seconds": 0.21009251289069653
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/old_exact_d010_archive_OFF.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_off_reference",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/old_exact_d010_archive_OFF.log",
+      "process": {
+        "pid": 2962863,
+        "start_ticks": 933232766,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "385e357b76a258ad508a3c4c7cb81e2e31e8a2e11d37fc9df72101b93d4963ac",
+      "wall_seconds": 0.7482656873762608
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_default_OFF.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_default_OFF.log",
+      "process": {
+        "pid": 2962883,
+        "start_ticks": 933232933,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d24f2e9c5a3d731ec1bc8f4c5a3bd978d28cd34d907209b49174f9cc915ecc9e",
+      "wall_seconds": 0.7568943034857512
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_explicit_OFF.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/OFF.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_explicit_OFF.log",
+      "process": {
+        "pid": 2962898,
+        "start_ticks": 933233102,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "6365ea28651b8494ae99b44b9dc419b9e5de18240ea643aae86a6f92e91e1ee5",
+      "wall_seconds": 0.7619857173413038
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_linear.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_linear.log",
+      "process": {
+        "pid": 2962987,
+        "start_ticks": 933233270,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1d87cd4d05151fdfcd65b56efad5265e06e9f781c199a758712ac10b8af540ea",
+      "wall_seconds": 1.3155833147466183
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_native_IPOLY_extension.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config",
+        "IPOLY"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_native_IPOLY_extension.log",
+      "process": {
+        "pid": 2963002,
+        "start_ticks": 933233494,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "6036f46eb0f72f3c4fffc0d5a0436e64e81d093a2e5c79dc6bbf452db7bed4da",
+      "wall_seconds": 1.3047157153487206
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_64slice_geometry_cost.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON64.config",
+        "IPOLY"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_64slice_geometry_cost.log",
+      "process": {
+        "pid": 2963018,
+        "start_ticks": 933233718,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e2929a825425eceb7cb6359eba473aa18d701453c12fd3bc995b70945a8133e0",
+      "wall_seconds": 3.4928135201334953
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_copy.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_COPY.config",
+        "1",
+        "copy",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_copy.log",
+      "process": {
+        "pid": 2963173,
+        "start_ticks": 933234159,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "dcc7f4939b5e4fc18da3f9d885b5438ff3c998b3d0159b94048bbcee5b4bebfd",
+      "wall_seconds": 0.7502246648073196
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_RO.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_RO.config",
+        "1",
+        "RO",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_RO.log",
+      "process": {
+        "pid": 2963193,
+        "start_ticks": 933234323,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "783023456397241824551f98474eb5cd64d0d38e47dc2440a34d79ba10eedcf2",
+      "wall_seconds": 0.7623018007725477
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_value.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_VALUE.config",
+        "1",
+        "value",
+        "L2_LARGE_CAPACITY expects 0 or 1"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_value.log",
+      "process": {
+        "pid": 2963209,
+        "start_ticks": 933234491,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "db08b520165ae36494ace2eb8df384ec727d41197af799226f5f38d6fdf77b58",
+      "wall_seconds": 0.7581434343010187
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_stale_sector.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_stale_sector.log",
+      "process": {
+        "pid": 2963225,
+        "start_ticks": 933234659,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "be0dfdf99761a448580865ae1d7e3278b69168e4d870b7aa94017e37106ff79e",
+      "wall_seconds": 0.765904126688838
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "violations=0",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_physical_clock.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_physical_clock.log",
+      "process": {
+        "pid": 2963241,
+        "start_ticks": 933234829,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "7ca6e1987af35ea64bbcb9cc9b30600d32d19e5d1c4bf36cf8c0a356d4b65e6c",
+      "wall_seconds": 0.7668036930263042
+    },
+    {
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_forced_hit.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_FORCE_HIT.config",
+        "1",
+        "forced_hit",
+        "L2_LARGE_CAPACITY rejects forced-hit"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_forced_hit.log",
+      "process": {
+        "pid": 2963256,
+        "start_ticks": 933234998,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d172d5416c06c884c54c961013901ef7d211279e492f2c19f60111c7bc2d111e",
+      "wall_seconds": 0.7680392451584339
+    }
+  ],
+  "tests": [
+    {
+      "case": "old_exact_d010_archive_OFF",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/old_exact_d010_archive_OFF.native.json",
+      "native_evidence_sha256": "f3a9a7ffa81ba39bc0f458bc4ccc924d96de8e40eea20d68bf46a494e3333a4b",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/old_exact_d010_archive_OFF.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_off_reference",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/old_exact_d010_archive_OFF.log",
+      "process": {
+        "pid": 2962863,
+        "start_ticks": 933232766,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "385e357b76a258ad508a3c4c7cb81e2e31e8a2e11d37fc9df72101b93d4963ac",
+      "wall_seconds": 0.7482656873762608
+    },
+    {
+      "case": "new_default_OFF",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_default_OFF.native.json",
+      "native_evidence_sha256": "9b62a1799f7a5dbf29bb8d78e0f7cbab4a45d211247489800304e6350aa36dec",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_default_OFF.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_default_OFF.log",
+      "process": {
+        "pid": 2962883,
+        "start_ticks": 933232933,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d24f2e9c5a3d731ec1bc8f4c5a3bd978d28cd34d907209b49174f9cc915ecc9e",
+      "wall_seconds": 0.7568943034857512
+    },
+    {
+      "case": "new_explicit_OFF",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_explicit_OFF.native.json",
+      "native_evidence_sha256": "0374d39ffd326d75fa0007d3a8ed2f3b11f5725be130e1944c9168e78609ee8a",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_explicit_OFF.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/OFF.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_explicit_OFF.log",
+      "process": {
+        "pid": 2962898,
+        "start_ticks": 933233102,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "6365ea28651b8494ae99b44b9dc419b9e5de18240ea643aae86a6f92e91e1ee5",
+      "wall_seconds": 0.7619857173413038
+    },
+    {
+      "case": "new_ON_linear",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_linear.native.json",
+      "native_evidence_sha256": "f8d0044b3f5d5836f8e839a229c296464a29b87ff2b7294c00666812d3368d43",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_linear.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_linear.log",
+      "process": {
+        "pid": 2962987,
+        "start_ticks": 933233270,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "1d87cd4d05151fdfcd65b56efad5265e06e9f781c199a758712ac10b8af540ea",
+      "wall_seconds": 1.3155833147466183
+    },
+    {
+      "case": "new_ON_native_IPOLY_extension",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_native_IPOLY_extension.native.json",
+      "native_evidence_sha256": "455a78d28ffccd913ab032fb9a55f08089cedf2a4bb1a26d5fe7170b1d72533c",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_native_IPOLY_extension.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config",
+        "IPOLY"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_native_IPOLY_extension.log",
+      "process": {
+        "pid": 2963002,
+        "start_ticks": 933233494,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "6036f46eb0f72f3c4fffc0d5a0436e64e81d093a2e5c79dc6bbf452db7bed4da",
+      "wall_seconds": 1.3047157153487206
+    },
+    {
+      "case": "new_ON_64slice_geometry_cost",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_64slice_geometry_cost.native.json",
+      "native_evidence_sha256": "2a18c79b3ae36ef26210dbb731c4b7e68540655b4a9cc1178023be208e2fb612",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "LARGE_PRODUCTION_NATIVE_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_64slice_geometry_cost.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON64.config",
+        "IPOLY"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/new_ON_64slice_geometry_cost.log",
+      "process": {
+        "pid": 2963018,
+        "start_ticks": 933233718,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "e2929a825425eceb7cb6359eba473aa18d701453c12fd3bc995b70945a8133e0",
+      "wall_seconds": 3.4928135201334953
+    },
+    {
+      "case": "reject_copy",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_copy.native.json",
+      "native_evidence_sha256": "6f0e8c6d1284ff9252bbb285207765e67e7ac8e6c92f380ce86036845d9b5e40",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_copy.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_COPY.config",
+        "1",
+        "copy",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_copy.log",
+      "process": {
+        "pid": 2963173,
+        "start_ticks": 933234159,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "dcc7f4939b5e4fc18da3f9d885b5438ff3c998b3d0159b94048bbcee5b4bebfd",
+      "wall_seconds": 0.7502246648073196
+    },
+    {
+      "case": "reject_RO",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_RO.native.json",
+      "native_evidence_sha256": "3e41f5e6331c43182e5349d995affce936e8f9cefe0fd48c6df9aa8c828f82c9",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_RO.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_RO.config",
+        "1",
+        "RO",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_RO.log",
+      "process": {
+        "pid": 2963193,
+        "start_ticks": 933234323,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "783023456397241824551f98474eb5cd64d0d38e47dc2440a34d79ba10eedcf2",
+      "wall_seconds": 0.7623018007725477
+    },
+    {
+      "case": "reject_value",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_value.native.json",
+      "native_evidence_sha256": "f1629d2e49fdbdcabf1d213e2b9bed7af98df456b11af601b9f0701e74c11ecf",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_value.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_VALUE.config",
+        "1",
+        "value",
+        "L2_LARGE_CAPACITY expects 0 or 1"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_value.log",
+      "process": {
+        "pid": 2963209,
+        "start_ticks": 933234491,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "db08b520165ae36494ace2eb8df384ec727d41197af799226f5f38d6fdf77b58",
+      "wall_seconds": 0.7581434343010187
+    },
+    {
+      "case": "affected_OFF_stale_sector",
+      "scope": "AFFECTED_PRODUCTION_OFF_NATIVE",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_stale_sector.native.json",
+      "native_evidence_sha256": "6584367090ee10039ce1a14ccf2ec1ac7958ed4cc2c3f9432fea19ac7ac89dca",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_stale_sector.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_stale_sector.log",
+      "process": {
+        "pid": 2963225,
+        "start_ticks": 933234659,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "be0dfdf99761a448580865ae1d7e3278b69168e4d870b7aa94017e37106ff79e",
+      "wall_seconds": 0.765904126688838
+    },
+    {
+      "case": "affected_OFF_physical_clock",
+      "scope": "AFFECTED_PRODUCTION_OFF_NATIVE",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_physical_clock.native.json",
+      "native_evidence_sha256": "8603234e5b5c8223b24a0f7e7e20869be5a8b0a57768a80256111f75184c9e3a",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "violations=0",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_physical_clock.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/affected_OFF_physical_clock.log",
+      "process": {
+        "pid": 2963241,
+        "start_ticks": 933234829,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "7ca6e1987af35ea64bbcb9cc9b30600d32d19e5d1c4bf36cf8c0a356d4b65e6c",
+      "wall_seconds": 0.7668036930263042
+    },
+    {
+      "case": "reject_forced_hit",
+      "scope": "UNSUPPORTED_NATIVE_CONFIG_REJECTION",
+      "suite": "main",
+      "expected_exit": 0,
+      "native_evidence": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_forced_hit.native.json",
+      "native_evidence_sha256": "d74336492cff3da2ed56b493e1acf32cd361daaa014cb5fabf97887b667ef798",
+      "command": [
+        "/scratch/root/oss-eda/oss-cad-suite/bin/tabbypy3",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/util/ep_l2/mechanism_study/check_native_case.py",
+        "--expected-exit",
+        "0",
+        "--required-terminal",
+        "MS_NATIVE_GUARD_PASS",
+        "--receipt",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_forced_hit.native.json",
+        "--",
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_FORCE_HIT.config",
+        "1",
+        "forced_hit",
+        "L2_LARGE_CAPACITY rejects forced-hit"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/reject_forced_hit.log",
+      "process": {
+        "pid": 2963256,
+        "start_ticks": 933234998,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d172d5416c06c884c54c961013901ef7d211279e492f2c19f60111c7bc2d111e",
+      "wall_seconds": 0.7680392451584339
+    }
+  ],
+  "trace_identity": "SYNTHETIC_DIRECTED_FIXTURES_NOT_APPLICATION_TRACE",
+  "main_producer_pass": true,
+  "build_identity": {
+    "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "authority": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+    "core_source_commit": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "driver_source_commit": "acea1a5f35bbad443b04491493a84a2e657fcfa7",
+    "driver_sha256": "26982cae3484ede7dd13d86111efc31b3c0469b4bfac89218940dc79ccb235f0",
+    "spec_sha256": "d65efecf02164d3e54a9aded82fc64508519b445a13ab38d31f43b775fb031b3",
+    "planner_sha256": "009da58761c37823e9369543882c79d40b9c994f042333ba85d728e08b6ef18e",
+    "checker_sha256": "f86ccb0932b61991764b786ecb875cf1cfa974bbf9979951eb038d0c557bed17",
+    "suite": "main",
+    "phase": "native",
+    "build_directory": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1",
+    "output_directory": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6"
+  },
+  "planned_tests": [
+    {
+      "id": "old_exact_d010_archive_OFF",
+      "target": "ep_l2_large_off_reference",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/DEFAULT.config"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "LARGE_PRODUCTION_NATIVE_PASS",
+      "compare_group": "old_exact_d010_S_vs_new_default_OFF",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_off_reference",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config"
+      ]
+    },
+    {
+      "id": "new_default_OFF",
+      "target": "ep_l2_large_capacity",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/DEFAULT.config"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "LARGE_PRODUCTION_NATIVE_PASS",
+      "compare_group": "old_exact_d010_S_vs_new_default_OFF",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config"
+      ]
+    },
+    {
+      "id": "new_explicit_OFF",
+      "target": "ep_l2_large_capacity",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/OFF.config"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "LARGE_PRODUCTION_NATIVE_PASS",
+      "compare_group": "old_exact_d010_S_vs_new_default_OFF",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/OFF.config"
+      ]
+    },
+    {
+      "id": "new_ON_linear",
+      "target": "ep_l2_large_capacity",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/ON.config"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "LARGE_PRODUCTION_NATIVE_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config"
+      ]
+    },
+    {
+      "id": "new_ON_native_IPOLY_extension",
+      "target": "ep_l2_large_capacity",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/ON.config",
+        "IPOLY"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "LARGE_PRODUCTION_NATIVE_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config",
+        "IPOLY"
+      ]
+    },
+    {
+      "id": "new_ON_64slice_geometry_cost",
+      "target": "ep_l2_large_capacity",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/ON64.config",
+        "IPOLY"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "LARGE_PRODUCTION_NATIVE_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_large_capacity",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON64.config",
+        "IPOLY"
+      ]
+    },
+    {
+      "id": "reject_copy",
+      "target": "ep_l2_ms_mode_guard",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/REJECT_COPY.config",
+        "1",
+        "copy",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "MS_NATIVE_GUARD_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_COPY.config",
+        "1",
+        "copy",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ]
+    },
+    {
+      "id": "reject_RO",
+      "target": "ep_l2_ms_mode_guard",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/REJECT_RO.config",
+        "1",
+        "RO",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "MS_NATIVE_GUARD_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_RO.config",
+        "1",
+        "RO",
+        "L2_LARGE_CAPACITY requires traditional S"
+      ]
+    },
+    {
+      "id": "reject_value",
+      "target": "ep_l2_ms_mode_guard",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/REJECT_VALUE.config",
+        "1",
+        "value",
+        "L2_LARGE_CAPACITY expects 0 or 1"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "BOUNDED_PRODUCTION_DIRECTED_NOT_FULL_APPLICATION",
+      "required_terminal": "MS_NATIVE_GUARD_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_VALUE.config",
+        "1",
+        "value",
+        "L2_LARGE_CAPACITY expects 0 or 1"
+      ]
+    },
+    {
+      "id": "affected_OFF_stale_sector",
+      "target": "ep_l2_ft_a1",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{CORE}/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "AFFECTED_PRODUCTION_OFF_NATIVE",
+      "required_terminal": "PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ft_a1",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16"
+      ]
+    },
+    {
+      "id": "affected_OFF_physical_clock",
+      "target": "ep_l2_ft_memcpy_clock",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{CORE}/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "AFFECTED_PRODUCTION_OFF_NATIVE",
+      "required_terminal": "violations=0",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ft_memcpy_clock",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/tests/ep_l2/ft_wbuf.config",
+        "1",
+        "16",
+        "4096"
+      ]
+    },
+    {
+      "id": "reject_forced_hit",
+      "target": "ep_l2_ms_mode_guard",
+      "args": [
+        "{CORE}/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "{INPUTS}/REJECT_FORCE_HIT.config",
+        "1",
+        "forced_hit",
+        "L2_LARGE_CAPACITY rejects forced-hit"
+      ],
+      "expected_exit": 0,
+      "timeout_seconds": 120,
+      "suite": "main",
+      "scope": "UNSUPPORTED_NATIVE_CONFIG_REJECTION",
+      "required_terminal": "MS_NATIVE_GUARD_PASS",
+      "native_command": [
+        "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/gpgpu-sim/ep_l2_ms_mode_guard",
+        "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/configs/tested-cfgs/SM7_QV100/gpgpusim.config",
+        "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_FORCE_HIT.config",
+        "1",
+        "forced_hit",
+        "L2_LARGE_CAPACITY rejects forced-hit"
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/DEFAULT.config": "e8e7a41bce4ad47afe1428c993b9258729c27732efd5814635943799407688de",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON64.config": "e6dd4ab73308bf49dd257257e6c4cab4864054d383c254dd0f479824db6f00b1",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_VALUE.config": "c324598aa57d6c666eea7e0859455a8afcfe3cbc274ca54f4e921b7d0c96aeff",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_FORCE_HIT.config": "a1a5ade038649566a72799f92fdb61f4693afe3e759785d93d86bc411bb428d1",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_RO.config": "effe4914a101fe976ac879307aa4517273418ea437302960e029d4bf79d11820",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/REJECT_COPY.config": "f7028bdd14d8e5f446ba2a35f6079bde4ed2337665e36319dafa7cb513d58a84",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/ON.config": "a1e28500d5794429813a77a728ef482227aad87700f47d28851398834963ba1b",
+    "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/inputs/OFF.config": "4dd3efd177a63393fd558b2e5342d5cb600c975be26cb042fd0009147845298e"
+  },
+  "planned_native_invocations": 12,
+  "planned_main_invocations": 12,
+  "planned_diagnostic_invocations": 0,
+  "binary": "/workspace/build/ep-l2-ms20261021-a2-large-capacity-r1/accel-sim.out",
+  "binary_sha256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+  "retained_build_receipt": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_BUILD_r6/BUILD_ONLY_RECEIPT.json",
+    "sha256": "c724c4abd95bedfaba1a6d4e0742e65867992d71d266c5a198b3febc722c5aa3"
+  },
+  "producing_build_control_commit": "acea1a5f35bbad443b04491493a84a2e657fcfa7",
+  "admission_mode": "EXPLICIT_USER_CAPACITY_BUILD_PLUS_ACTUAL_E_CENTRAL_RESOURCE_API",
+  "user_authority": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/USER_APPROVAL.json",
+    "sha256": "1eff2669e129328ef79710be077f273ce45318bbd015edfa207ba1fe3374b2e8"
+  },
+  "E_scientific_qualification_granted": false,
+  "E_admission": {
+    "status": "GRANTED_BY_ACTUAL_E_CENTRAL_API",
+    "lease_id": "5f49d822a4684976ad4649873ac2bc95",
+    "resource_api_sha256": "8d552b3657f505892e903f6da6e0fac96bb863f83d15f53fd468858ce406ca0d",
+    "scientific_qualification": false
+  },
+  "E_source_publication": "210b6eb3cb973022fad98f049deffea8353d7dc6",
+  "E_resource_api_sha256": "8d552b3657f505892e903f6da6e0fac96bb863f83d15f53fd468858ce406ca0d",
+  "E_workspace_disk_policy": {
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "disk_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "monitor_interval_seconds": 0.2,
+    "termination_grace_seconds": 3
+  },
+  "monitor_reserve_bytes": 2147483648,
+  "own_result_bytes_peak": 276723,
+  "lease_id": "5f49d822a4684976ad4649873ac2bc95",
+  "resource_owner": "mechanism_A",
+  "resource_allocation": {
+    "lease_id": "5f49d822a4684976ad4649873ac2bc95",
+    "host": "huangrulin-174",
+    "owner": "mechanism_A",
+    "role": "A",
+    "kind": "MECHANISM_TEST",
+    "execution_host_identity": {
+      "hostname": "huangrulin-174",
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+    },
+    "central_dispatcher_host": "huangrulin-174",
+    "execution_environment": "original174",
+    "source_authority_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+    "build_owner": null,
+    "executor_role": "A",
+    "experiment_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "cpu_units": 1,
+    "memory_bytes": 8589934592,
+    "disk_growth_bytes": 268435456,
+    "result_growth_bytes": 268435456,
+    "status": "RESERVED",
+    "created_at": 1792580354.4849415,
+    "owner_process": {
+      "pid": 2962658,
+      "start_ticks": 933232331,
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+    },
+    "output_directory": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6",
+    "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+    "disk_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "monitor_interval_seconds": 0.2,
+    "termination_grace_seconds": 3
+  },
+  "build_environment": {
+    "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1",
+    "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+    "PATH": "/usr/local/cuda-11.8/bin:/scratch/root/oss-eda/oss-cad-suite/py3bin:/root/.local/bin:/scratch/root/oss-eda/bin:/scratch/root/oss-eda/oss-cad-suite/bin:/scratch/root/oss-eda/oss-cad-suite/py3bin:/root/.cargo/bin:/root/.codex/tmp/arg0/codex-arg0RJVv8Z:/root/.vscode-server/cli/servers/Stable-7debcd0e2acdea1c52de81bf9ee1620444407dda/server/bin/remote-cli:/root/.local/bin:/scratch/root/oss-eda/bin:/scratch/root/oss-eda/oss-cad-suite/bin:/scratch/root/oss-eda/oss-cad-suite/py3bin:/root/.local/share/micromamba/condabin:/root/bin:/root/.local/bin:/workspace/tools:/usr/local/cuda-11.8/bin:/root/.nvm/versions/node/v22.22.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/root/.vscode-server/extensions/openai.chatgpt-26.51007.21434-linux-x64/bin/linux-x86_64",
+    "CC": null,
+    "CXX": null,
+    "CFLAGS": null,
+    "CXXFLAGS": null,
+    "LDFLAGS": null,
+    "LD_LIBRARY_PATH": "/usr/local/cuda-11.8/lib64:/usr/local/cuda-11.8/lib:",
+    "TMPDIR": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/tmp",
+    "TMP": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/tmp",
+    "TEMP": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/tmp",
+    "XDG_CACHE_HOME": "/workspace/ep_l2_ms20261019_e_results/A2_L2_LARGE_CAPACITY_NATIVE_r6/cache"
+  },
+  "own_process_tree_rss_peak": 1480589312,
+  "dynamic_library_sha256": {
+    "/usr/lib/x86_64-linux-gnu/libm.so.6": "00830df310aac5023e10bd7b715149ab8ddc682277fd8ae3539a7a44fcdd6c38",
+    "/usr/lib/x86_64-linux-gnu/libz.so.1.2.11": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370",
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128",
+    "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "9eb34cb2da3ae2a9398cc09b3cd2d069563ec40d9858cb711af15cd23fa80abf"
+  },
+  "main_checkpoint_sha256": "e5b280a32c6b186f3dcf893b373d7aba4f4234f5e88d6219de27db1cac28617b",
+  "lease_released": true,
+  "own_lock_released": true,
+  "finished_UTC": "2026-10-21T10:59:40.255189+00:00"
+}
