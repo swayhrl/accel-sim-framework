@@ -22,6 +22,7 @@ from validate import validate_summary
 from acceptance import load_current_authority,reject_withdrawn,current_manifest
 import policy_v2
 import capacity_policy
+import capacity_validation
 import disk_policy
 import durable_exit
 
@@ -100,6 +101,23 @@ def runtime_metrics(raw,expected_options):
     require(bool(scoped) and all(actual.get(k)==v for k,v in scoped.items()),'effective native L2 options mismatch/missing')
     return metrics
 
+
+
+def validate_terminal_summary(summary,spec,qrow,audit):
+    """Only a registered exact new-capacity Q may use the new scoped validator."""
+    q=qrow['qualification'];contract=q.get('capacity_diagnostic')
+    if contract is None:
+        require(not capacity_policy.is_capacity_spec(spec),'capacity spec has no exact new qualification')
+        require(summary.get('diagnostic_scope')!='CAPACITY_DIAGNOSTIC_V1','new capacity summary cannot use legacy validator')
+        return validate_summary(summary,spec['identity'])
+    require(capacity_policy.is_capacity_spec(spec),'capacity qualification requires dedicated diagnostic condition')
+    require(spec['qualification_id']==qrow['sha256']==audit['qualification_sha256'] and
+            digest(qrow['path'])==qrow['sha256'],'new capacity qualification identity changed')
+    capacity_policy.qualification(q,digest)
+    scope=contract['validation_scope']
+    require(scope['expected_full_instructions']==audit['expected_full_instructions'] and
+            scope['input_selection_id']==spec['selection_id'],'capacity exact full input differs')
+    return capacity_validation.validate_summary(summary,spec['identity'],scope)
 
 def disable_owned_core_dumps():
     """Bound crash writes of this controller and its children, never other projects."""
@@ -190,7 +208,8 @@ def execute(spec,coord):
             summary=json.loads((directory/'terminal_summary.json').read_text())
             require(summary['cycles']==native['cycle'] and summary['instructions']==native['insn'],'parser/native terminal mismatch')
             require(native['insn']==audit['expected_full_instructions'],'full input instruction closure mismatch')
-            result['validation']=validate_summary(summary,spec['identity'])
+            qrow=coord.snapshot()['qualifications'][spec['qualification_id']]
+            result['validation']=validate_terminal_summary(summary,spec,qrow,audit)
             require(inspect(spec,coord,launch_check=False)==audit,'runtime/source/trace/qualification changed while executing')
             result.update(summary=summary,mechanism_metrics=summary.get('mechanism_metrics',{}),complete_input_verified=True,independent_acceptance='PASS')
             status,detail='COMPLETE_VALID','E accepted exact full input, qualified version and hardware closure'

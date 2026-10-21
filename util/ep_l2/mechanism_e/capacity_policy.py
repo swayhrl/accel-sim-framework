@@ -4,6 +4,7 @@ Pure transformations/checks. Coordinator owns original REGISTRY.lock and writes.
 No qualification, source build, app launch, retry or resource waiver is granted.
 """
 import copy
+import capacity_validation
 import hashlib
 import json
 from pathlib import Path
@@ -109,6 +110,27 @@ def qualification(q,digest):
  check(set(q['supported_profiles'])=={OFF,ON},'exact two new-runtime OFF/ON profiles required')
  check(contract.get('common_capacity_vector') and contract.get('native_cache_geometry'),
        'A/E exact common finite vector/native geometry missing')
+ scope=contract.get('validation_scope')
+ capacity_validation.validate_scope(scope,q['source_identity'],q['supported_profiles'])
+ check(scope['input_selection_id']==q.get('input_selection_id'),'validation scope input selection differs')
+ selected=next((r for r in INPUTS.values() if r[0]==scope['input_selection_id']),None)
+ check(selected is not None and scope['expected_full_instructions']==selected[2],
+       'validation scope does not bind exact approved full instructions')
+ manifest=contract.get('capacity_manifest')
+ check(type(manifest) is dict and bool(manifest.get('path')) and
+       manifest.get('sha256')==scope['capacity_manifest_sha256'] and
+       digest(manifest['path'])==manifest['sha256'],'capacity validation manifest changed/missing')
+ check(json.loads(Path(manifest['path']).read_text())==contract['common_capacity_vector'],
+       'capacity validation vector differs from reviewed producer manifest')
+ geometry=contract['native_cache_geometry']
+ check(geometry=={name:{k:scope['profiles'][name]['configuration'][k] for k in
+       ('native_tag_sets','native_tag_ways','native_line_bytes')} for name in (OFF,ON)},
+       'reviewed native cache geometry differs from validation scope')
+ normalized=contract.get('normalized_capacity_profiles')
+ check(type(normalized) is dict and set(normalized)=={OFF,ON} and all(
+       normalized[name]=={k:scope['profiles'][name][k] for k in ('capacities','configuration')}
+       for name in (OFF,ON)), 'reviewed normalized native vector differs from validation scope')
+
  for name in GATES:
   gate=q['gates'][name]
   check(gate['status']=='PASS' and gate['production_driven'] is True and

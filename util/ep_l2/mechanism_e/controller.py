@@ -13,8 +13,8 @@ import time
 
 from coordinator import Coordinator,CAMPAIGN,AUTHORITY,START_DEADLINE,require,digest,run_key,write_json,tooling_binding
 from runner import execute,accept_pair
-import durable_exit
 import capacity_policy
+import durable_exit
 
 
 def roll_pairs(coord,requests):
@@ -74,6 +74,7 @@ def step(coord,queue_path):
                             write_json(coord.handoff/'events'/('E_ACCEPTED_POINT_'+result['attempt_id']+'.json'),result)
                             report['pairs']+=roll_pairs(coord,queue.get('pairs',[]))
                         elif result['status'] in ('RESOURCE_LIMIT','INCOMPLETE'):blocked=True
+                        elif result['status']=='FAILED' and capacity_policy.is_capacity_spec(spec):blocked=True
                     except Exception as error:
                         # No repeated admission retries in this controller step.
                         outcome={'run_key':run_key(spec['identity']),'status':'NOT_LAUNCHED_OR_NEEDS_RECONCILIATION',
