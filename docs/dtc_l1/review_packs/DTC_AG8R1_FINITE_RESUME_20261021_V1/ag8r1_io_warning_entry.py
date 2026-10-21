@@ -18,7 +18,7 @@ import time
 PACK = Path(__file__).resolve().parent
 REPO = PACK.parents[3]
 ROOT = Path('/workspace/dtc-ag8r1-finite-resume-174-v1')
-E = ROOT/'evidence/io_warning_amendment'
+E = ROOT/'evidence/io_warning_route_repair'
 G = ROOT/'evidence/w0_frozen_authority'
 REG = PACK/'IO_WARNING_AUTHORITY_REGISTRATION.json'
 MANIFEST = PACK/'IO_WARNING_RESERVATION_PROPOSAL.json'

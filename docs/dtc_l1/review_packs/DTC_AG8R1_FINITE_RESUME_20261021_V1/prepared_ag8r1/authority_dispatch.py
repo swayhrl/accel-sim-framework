@@ -21,7 +21,7 @@ HERE = Path(__file__).resolve().parent
 PACK = HERE.parent
 WORKTREE = PACK.parents[3]
 ROOT = Path('/workspace/dtc-ag8r1-finite-resume-174-v1')
-LOCK = ROOT / 'AG_execution_io_warning.lock'
+LOCK = ROOT / 'io_warning_dispatch/AG_execution.lock'
 FROZEN = ROOT / 'evidence/w0_frozen_authority'
 SOURCE_INDEX = ROOT / 'evidence/W0_SOURCE_BINDING.json'
 GOAL = 'AG8R1_FINITE_RESOURCE_CONTINUATION'
@@ -42,7 +42,7 @@ def sha(path):
 def _clone_raw_only(function):
     """Fresh function globals: original code and old users remain unchanged."""
     scope = dict(function.__globals__)
-    scope['RAW'] = ROOT
+    scope['RAW'] = LOCK.parent
     return types.FunctionType(function.__code__, scope, function.__name__,
                               function.__defaults__, function.__closure__)
 

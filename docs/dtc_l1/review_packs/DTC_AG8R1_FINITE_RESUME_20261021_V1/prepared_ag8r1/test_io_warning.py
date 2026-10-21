@@ -57,5 +57,5 @@ check(amended.PROFILE==prior.PROFILE and amended.TerminalClosure.observe.__code_
 c1=json.loads((E/'c1_cpu_once/RESULT.json').read_text())
 check(all(hashlib.sha256(Path(p).read_bytes()).hexdigest()==v for p,v in c1['actual_wall_result']['source_sha256'].items()),'original_C1_four_qualified_subjects_unchanged')
 result=dict(status='PASS_USER_IO_WARNING_TARGETED_TESTS',declared_synthetic=True,case_count=len(cases),cases=cases,synthetic_long_run_samples=2159,elapsed_s=time.monotonic()-t,simulator_starts=0,process_signals=0,historical_suites_reexecuted=False,source_sha256={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in [Path(__file__).resolve(),D/'runtime_io_warning.py',D/'controller_pipeline.py',D/'ag7_runner.py',D/'authority_dispatch.py',D/'ag7_strict.py',P/'ag8r1_io_warning_entry.py',P/'USER_IO_WARNING_AMENDMENT.json']})
-with (E/'io_warning_amendment/QUALIFICATION.json').open('x') as stream:json.dump(result,stream,indent=2);stream.write('\n')
+with (E/'io_warning_route_repair/QUALIFICATION.json').open('x') as stream:json.dump(result,stream,indent=2);stream.write('\n')
 print(json.dumps(result))
