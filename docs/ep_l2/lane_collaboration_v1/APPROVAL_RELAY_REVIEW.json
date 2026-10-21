@@ -1,0 +1,67 @@
+{
+  "schema": "EPL2_APPROVAL_RELAY_INDEPENDENT_REVIEW_V1",
+  "status": "PASS_BOUNDED_ENGINEERING_CONTROLS_ONLY_OWNER_REVIEW_BEFORE_REAL_DISPATCH",
+  "review_owner": "E2",
+  "files_sha256": {
+    "approval_relay.py": "8bdaefa67b16f5ddaf2b6379a81f3e9a57ba21fd97a288930626328b6ca826ef",
+    "APPROVAL_RELAY_USAGE.md": "a4eb04aa6e30079a8347e90b3f5181418fcd83ff5c305944fc3d21c0cd23f515",
+    "test_approval_relay.py": "a2bea7fb7ba44ce78f1e7fdcbc87252bafae037f217b12f607a0d154b2b5c8b6",
+    "coordination.py": "5c75173225ff002f2dcabc2f0b3b150d56d31d5bf1139ebf89baae2ab3eda34f",
+    "CONTRACT.json": "8ca295eab3e98d8f1da424d1acf1cb2759c7a4fe89fbba77a99278c6e2b39fa0",
+    "PROTOCOL.md": "96ffb41f3c4255e9c2ad9adf0f83fcc9d7b33d4fc3657d34dfd4205e8463ee54"
+  },
+  "controls": {
+    "total": 23,
+    "passed": 23,
+    "failed": 0,
+    "elapsed_seconds_observed": 0.237,
+    "fixture_scope": "Temporary directories and in-memory mocked Git commits, remote heads, publication and network; real immutable/atomic transport file helpers operate only under temporary roots",
+    "real_git_commits": 0,
+    "real_git_pushes": 0,
+    "real_dispatches": 0,
+    "real_ACKs": 0,
+    "native_invocations": 0,
+    "full_application_starts": 0,
+    "central_registry_client_production_active_output_mutations": false,
+    "frozen_coordination_contract_protocol_modified": false
+  },
+  "validated": [
+    "Published packet and approval each require full commit/path/SHA, regular bounded JSON blob, same Framework repository and actual E2 remote ancestry",
+    "Approval matches exact packet path/content SHA, recipients, task IDs and scope",
+    "Only actual E2 owner/root may prepare; dispatch re-prepares and exact-compares public API plans",
+    "Unpublished commit, altered SHA, foreign repository/root/owner, recipient/task/scope/path mutation rejected",
+    "Dry-run does not emit an event, create a journal/alias/receipt or publish",
+    "One stable owner REQUEST fanout, exact dispatch plan journal binding and no ACK",
+    "Precommit interruption recovers using same event",
+    "Event commit succeeded then push failed: recover without extra event commit",
+    "Partial local alias delivery: restore same byte-identical pointers",
+    "Receipt commit succeeded then push failed: resume exact committed receipt without extra commit",
+    "COMPLETE invocation verifies published receipt and restores a missing identical alias without new event/publication",
+    "Unrelated staged paths rejected; publication restricted to own collaboration metadata",
+    "Embedded commands and registry-like fields remain inert data; receipt states no peer ACK/execution/idle wakeup"
+  ],
+  "static_findings_closed_before_seal": [
+    "Public dispatch API now revalidates packet/approval plan instead of trusting caller mutation",
+    "Completed dispatch retry independently verifies remote receipt and can restore same immutable alias"
+  ],
+  "approval_binding_boundary": {
+    "record_matches_packet_path_and_SHA": true,
+    "packet_and_approval_source_commits_separately_pinned_and_proven_published": true,
+    "approval_record_does_not_claim_user_selected_a_particular_commit": true,
+    "same_path_same_content_in_another_published_commit_is_same_immutable_packet_content": true,
+    "same_dispatch_retry_changing_either_ref_is_rejected": true
+  },
+  "authority_limits": [
+    "This user authorization covers E2 forwarding mechanics only; it does not approve any future scientific input, experiment, build, retry, budget or scope change",
+    "Schema/SHA matching does not authenticate the human user or understand the meaning/authority of transcribed approval words; approval_kind is a record label, not a permission oracle",
+    "Recipient lanes must independently apply their existing task/scientific/resource permissions; REQUEST never invokes the E controller or embedded commands",
+    "No independent lane-session wakeup API exists here; publication and legacy pointer delivery are not recipient reading, ACK, task execution or scientific acceptance",
+    "No live publication or real packet human-permission determination was performed by these synthetic controls"
+  ],
+  "not_claimed": [
+    "Native/scientific qualification",
+    "Actual remote peer consumption",
+    "Any new full-application authority",
+    "Reconciliation or modification of current Conv ON execution"
+  ]
+}
