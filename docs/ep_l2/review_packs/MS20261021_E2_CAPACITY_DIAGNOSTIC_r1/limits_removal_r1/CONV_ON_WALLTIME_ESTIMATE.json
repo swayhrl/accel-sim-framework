@@ -1,0 +1,58 @@
+{
+  "schema": "E2_CONV_ON_COST_ESTIMATE_OPERATIONAL_ONLY_V1",
+  "status": "ESTIMATE_NOT_TERMINAL_OR_SCIENTIFIC_EVIDENCE",
+  "observed_unix": 1792586603.7841084,
+  "basis": [
+    {
+      "scope": "SAME_NEW_BINARY_CFD_ON_COMPLETED",
+      "attempt_id": "E038_d7ffe08b",
+      "observed_cycles": 79742,
+      "observed_full_instructions": 143129372,
+      "native_printed_simulation_wall_seconds": 2456,
+      "cycles_per_second": 32.46824104234528,
+      "source": "Retained raw gpu_tot/native simulation-time counters; root independent acceptance remains separate"
+    },
+    {
+      "scope": "OLD_BINARY_CONV_S_COST_PRIOR_ONLY_NOT_ANCHOR",
+      "attempt_id": "E010_1108e4d2",
+      "cycles": 292932,
+      "full_instructions": 714547200,
+      "warning": "New Conv ON cycles may differ; cannot reuse scientific baseline or claim equal cycles"
+    },
+    {
+      "scope": "NEW_E_BOUNDED_ZERO_SHADER_CLOCK_FIXTURE_COST_ONLY",
+      "full64slice_tick_milliseconds": 28.922585,
+      "warning": "Observed fixture cost is no rigorous application lower bound; dynamic occupancy, instruction execution, CPU/cache contention and I/O may change cost."
+    }
+  ],
+  "linear_cost_estimates_hours": {
+    "old_conv_cycles_divided_by_new_CFD_ON_cycle_rate": 2.506141305710918,
+    "old_conv_cycles_times_empty64slice_tick_cost": 2.3534307414500004
+  },
+  "recommended_after_actual_conv_on_start_hours": [
+    2.5,
+    4.0
+  ],
+  "planning_interval_not_hard_bound": true,
+  "additional_wait": "Add measured natural-drain and safe source/policy adoption time before the single never-started Conv ON launch. Four live endpoints have no reliable remaining walltime from their current trace-reader block prints.",
+  "invalid_progress_interpretation": "thread block log lines are input-reader traversal and cannot establish executed instruction fraction or acceptance.",
+  "current_actual_starts": 45,
+  "current_live_attempts": [
+    {
+      "attempt_id": "E040_b264d86f",
+      "profile": "S_L2_DATA_FREE_LARGE_CAPACITY",
+      "started_unix": 1792585001.6747475
+    },
+    {
+      "attempt_id": "E044_4c4350db",
+      "profile": "S_L2_DATA_FREE_LARGE_CAPACITY",
+      "started_unix": 1792585679.623262
+    },
+    {
+      "attempt_id": "E045_3c8a6cc8",
+      "profile": "S",
+      "started_unix": 1792586061.8686707
+    }
+  ],
+  "update_rule": "Update ETA from actual new Conv ON native cumulative completed-kernel cycles/instructions and host walltime; never infer native exit or PASS from raw progress."
+}

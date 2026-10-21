@@ -1,0 +1,185 @@
+--- a/util/ep_l2/mechanism_e/runner.py
++++ b/util/ep_l2/mechanism_e/runner.py
+@@ -23,6 +23,7 @@
+ import policy_v2
+ import capacity_policy
+ import capacity_validation
++import limits_policy
+ import disk_policy
+ import durable_exit
+ 
+@@ -71,8 +72,12 @@
+     require(invariant_hash==spec['comparison_invariants_sha256'],'wrong same-condition comparison identity')
+     require(spec['parser']==q['terminal_parser'] and digest(spec['parser']['path'])==spec['parser']['sha256'],
+             'parser not independently bound to this version')
+-    require(type(spec['timeout_seconds']) is int and 0<spec['timeout_seconds']<=86400,'bounded explicit timeout required')
+-    if launch_check:require(time.time()+spec['timeout_seconds']<=capacity_policy.effective_limits(item)['intake_deadline_unix'],'run could exceed declared result-intake freeze')
++    timeout=limits_policy.effective_timeout(item,spec)
++    require(timeout is None or (type(timeout) is int and 0<timeout<=86400),
++            'bounded explicit timeout or exact approved null operational override required')
++    intake=capacity_policy.effective_limits(item)['intake_deadline_unix']
++    if launch_check and intake is not None:
++        require(timeout is not None and time.time()+timeout<=intake,'run could exceed declared result-intake freeze')
+     require(all(isinstance(k,str) and isinstance(v,str) for k,v in spec['environment'].items()),'explicit string environment required')
+     require(not set(spec['environment']) & {'TMPDIR','TMP','TEMP','XDG_CACHE_HOME'},'temporary/cache destinations are owned workspace output only')
+     require(not any(k in spec['environment'] and spec['environment'][k]!='1' for k in
+@@ -81,7 +86,9 @@
+       'qualification_sha256':qrow['sha256'],'selection_sha256':selection['sha256'],
+       'comparison_invariants_sha256':invariant_hash,'comparison_invariants':invariant,
+       'effective_options':effective,'expected_full_instructions':chosen['expected_full_instructions'],
+-      'parser':spec['parser']}
++      'parser':spec['parser'],'operational_limits':{'effective_timeout_seconds':timeout,
++      'effective_intake_deadline_unix':intake,'override':spec.get('operational_limits_override'),
++      'frozen_identity_and_qualification_termination_preserved':True}}
+ 
+ 
+ def runtime_metrics(raw,expected_options):
+@@ -127,8 +134,9 @@
+ def execute(spec,coord):
+     disable_owned_core_dumps()
+     # Called only by the one live E controller after an explicit ready event.
+-    limits=capacity_policy.effective_limits(coord.snapshot())
+-    require(time.time()<limits['start_deadline_unix'],'no new complete applications after cutoff')
++    item=coord.snapshot();limits=capacity_policy.effective_limits(item)
++    require(limits_policy.deadline_open(limits['start_deadline_unix']),'no new complete applications after cutoff')
++    timeout=limits_policy.effective_timeout(item,spec)
+     audit=inspect(spec,coord);spec=dict(spec,input_audit=audit)
+     attempt=coord.reserve_application(spec);directory=Path(attempt['result_directory'])
+     created=False;process=None;status='INCOMPLETE';detail='prelaunch snapshot incomplete';result={
+@@ -173,7 +181,8 @@
+                     legacy.terminate_owned(process);break
+                 peak=max(peak,legacy.process_tree_rss(process.pid));resources=local_resources();usage=output_usage()
+                 disk_stop=disk_policy.stop_detail(resources,attempt)
+-                if time.monotonic()-started>spec['timeout_seconds'] or time.time()>=limits['intake_deadline_unix']:
++                if ((timeout is not None and time.monotonic()-started>timeout) or
++                    not limits_policy.deadline_open(limits['intake_deadline_unix'])):
+                     status,detail='TIMEOUT','predeclared timeout/intake freeze';legacy.terminate_owned(process);break
+                 if (disk_stop is not None or resources['share_disk_free_bytes']<40*GIB
+                     or resources['available_memory_bytes']<64*GIB or peak>spec.get('memory_bytes',8*GIB)
+--- a/util/ep_l2/mechanism_e/durable_exit.py
++++ b/util/ep_l2/mechanism_e/durable_exit.py
+@@ -1,4 +1,4 @@
+-"""One bounded native child collector; no admissions, queue or registry writer.
++"""One directly supervised native child; no admissions, queue or registry writer.
+ 
+ The controller remains foreground and owns the sole central controller lock.
+ The collector is the native child's real parent and persists waitpid status
+@@ -62,6 +62,18 @@
+         raise OSError(ctypes.get_errno(), 'PR_SET_PDEATHSIG failed')
+ 
+ 
++def time_limit_reached(bounds, elapsed, now):
++    """Pure check: JSON null removes only that formal application time bound.
++
++    popen_factory validates the exact operational approval before persisting
++    bounds. Readiness, central release and termination grace stay bounded.
++    """
++    timeout=bounds['timeout_seconds']
++    intake=bounds['intake_deadline_unix']
++    return ((timeout is not None and elapsed>=timeout) or
++            (intake is not None and now>=intake))
++
++
+ def resource_stop(request, native_pid, started):
+     # Same physical guards as runner.execute; independently enforced if its
+     # controller dies. These helpers do not admit work or mutate the registry.
+@@ -69,8 +81,8 @@
+     import disk_policy
+     import run as legacy
+     bounds = request['bounds']; resources = c.local_resources(); usage = c.output_usage()
+-    if time.monotonic() - started >= bounds['timeout_seconds'] or time.time() >= bounds.get('intake_deadline_unix',c.INTAKE_DEADLINE):
+-        return dict(kind='TIMEOUT', reason='original bounded native timeout/intake freeze')
++    if time_limit_reached(bounds,time.monotonic()-started,time.time()):
++        return dict(kind='TIMEOUT', reason='persisted explicit native timeout/intake freeze')
+     disk = disk_policy.stop_detail(resources, bounds)
+     if (disk or resources['share_disk_free_bytes'] < 40*c.GIB or
+         resources['available_memory_bytes'] < 64*c.GIB or
+@@ -198,9 +210,9 @@
+         return None
+ 
+     def wait(self, timeout=None):
+-        until = time.monotonic()+timeout if timeout is not None else float('inf')
++        until = time.monotonic()+timeout if timeout is not None else None
+         while self.poll() is None:
+-            if time.monotonic() >= until: raise subprocess.TimeoutExpired(self.command, timeout)
++            if until is not None and time.monotonic() >= until: raise subprocess.TimeoutExpired(self.command, timeout)
+             time.sleep(.01)
+         return self.returncode
+ 
+@@ -210,11 +222,17 @@
+                                     'monitor_interval_seconds','termination_grace_seconds')}
+     import coordinator as c
+     import capacity_policy
+-    limits=capacity_policy.effective_limits(c.Coordinator().snapshot())
++    import limits_policy
++    item=c.Coordinator().snapshot();limits=capacity_policy.effective_limits(item)
++    timeout=limits_policy.effective_timeout(item,spec)
+     bounds.update({k:limits[k] for k in ('intake_deadline_unix','additional_results_max_bytes','old_plus_new_results_max_bytes')})
+-    bounds.update(memory_bytes=spec.get('memory_bytes',8*2**30), timeout_seconds=spec['timeout_seconds'])
++    bounds.update(memory_bytes=spec.get('memory_bytes',8*2**30), timeout_seconds=timeout)
++    if timeout is None:
++        bounds['operational_limits_override']=spec['operational_limits_override']
++        bounds['frozen_identity_timeout_seconds']=spec['identity']['termination_contract']['timeout_seconds']
+     binding = dict(attempt_id=attempt['attempt_id'], run_key=attempt['run_key'], identity=spec['identity'],
+                    qualification_id=spec['qualification_id'], comparison_invariants_sha256=audit['comparison_invariants_sha256'])
++    if timeout is None:binding['operational_limits_override']=spec['operational_limits_override']
+     def spawn(command, cwd, stdout, stderr, env, start_new_session):
+         assert stderr == -2 and start_new_session is True
+         return NativeProcess(command,cwd,stdout,env,bounds,binding)
+--- a/util/ep_l2/mechanism_e/controller.py
++++ b/util/ep_l2/mechanism_e/controller.py
+@@ -16,6 +16,7 @@
+  resource_gate,local_resources,output_usage,FIELD,OUTPUT,FULL_GROWTH,GIB)
+ from runner import execute,accept_pair
+ import capacity_policy
++import limits_policy
+ import concurrency_policy
+ import durable_exit
+ 
+@@ -94,7 +95,8 @@
+         require(queue['campaign_id']==CAMPAIGN and queue['prepared_by']=='E','wrong dispatch authority')
+         require(queue['authority_commit']==AUTHORITY,'wrong frozen contract')
+         limits=capacity_policy.effective_limits(coord.snapshot())
+-        require(queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
++        require(limits['start_deadline_unix'] is None or
++                queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
+         pending=[];snapshot=coord.snapshot()
+         for entry in queue['specs']:
+             path=Path(entry['path']);require(digest(path)==entry['sha256'],'queued spec changed')
+@@ -124,7 +126,7 @@
+                     if not resource_only:pending.clear()
+                 if resource_only and queue_path.read_bytes()!=raw:
+                     blocked=True;report['queue_change_note']='Queue changed: admitted work drains; no new admissions until explicit revision intake.'
+-                while pending and len(running)<target and not blocked and time.time()<limits['start_deadline_unix']:
++                while pending and len(running)<target and not blocked and limits_policy.deadline_open(limits['start_deadline_unix']):
+                     # Process actual terminal outcomes before spending released
+                     # resources, so a capacity FAILED blocks further admissions.
+                     if resource_only and any(f.done() for f in running):break
+--- a/util/ep_l2/mechanism_e/capacity_validation.py
++++ b/util/ep_l2/mechanism_e/capacity_validation.py
+@@ -18,6 +18,16 @@
+     if not ok:raise ValueError(message)
+ 
+ def integer(value):return type(value) is int and value>=0
++
++def validate_termination_contract(summary_contract,identity_contract,scope_contract):
++    """Frozen scientific termination stays exact under operational time removal.
++
++    A request's effective timeout may be None only through the runner's exact
++    approval guard. That does not rewrite this qualification/identity contract
++    or allow a missing full-application drain/normal-exit requirement.
++    """
++    require(scope_contract is not None and
++            summary_contract==identity_contract==scope_contract,'termination contract changed')
+ 
+ def capacity_label(records,resources,master):
+     """Classify named applicable vector; preserve exact/bound/UNKNOWN basis."""
+@@ -152,7 +162,7 @@
+     require(type(summary['cycles']) is int and summary['cycles']>0,'invalid native cumulative cycles')
+     require(summary['instructions']==scope['expected_full_instructions'] and integer(summary['instructions']) and summary['instructions']>0,'incomplete full instructions')
+     require(summary['slices']==64 and summary['hardware_drained'] is True,'missing64slice hardware drain')
+-    require(summary['workload_termination']==identity['termination_contract']==scope['termination_contract'],'termination contract changed')
++    validate_termination_contract(summary['workload_termination'],identity['termination_contract'],scope['termination_contract'])
+     require(summary['requester_exact_once_audit'] is True and summary['data_correctness_qualification'] is True,'new source data/exact-once qualification missing')
+     for key in ZERO:require(summary[key]==0 and integer(summary[key]),'nonzero/invalid resource '+key)
+     require(summary['unique_requesters']==summary['responses'] and integer(summary['responses']),'requester/response mismatch')

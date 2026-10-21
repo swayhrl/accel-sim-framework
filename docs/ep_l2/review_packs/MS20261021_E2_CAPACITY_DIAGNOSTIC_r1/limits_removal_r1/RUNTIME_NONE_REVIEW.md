@@ -1,0 +1,10 @@
+The four runtime candidates implement the exact user-approved start/time removal with JSON null. They are review artifacts; actual util and active execution are unchanged.
+
+- runner retains complete source/config/input/trace/Q/parser checks. Only the exact limits_policy operational override permits null; it records effective operational limits separately from the original scientific identity.
+- durable_exit persists null in new execution requests and includes the exact override in READY/EXIT bindings. Existing bounded requests are preserved. Time checks explicitly distinguish null; no large sentinel substitutes for it. Readiness, release, termination grace and parser processing remain bounded.
+- controller accepts a null start cutoff, keeps the resource-only finite pending executor and resource forecast, and preserves the legacy finite-deadline path. Original queue change detection still drains admitted work before source replacement.
+- capacity_validation retains exact frozen scientific termination equality. A null operational timeout cannot replace the original10800 scientific provenance in summary/identity/Q. No qualification grant or decoder change is made.
+
+44 bounded engineering controls passed:29 runtime/negative checks and15 mocked scheduler checks. The scheduler creates no real pool threads and never calls execute. No native or complete application was started; no central/actual util source was changed. The first negative-test fixture used an allowed equality boundary; its input was corrected to the actual exceeding boundary and all controls then passed.
+
+Install only after the original controller/leases naturally drain and the approved limits_policy/coordinator/capacity_policy are adopted under the original lock. Only the still-unstarted Conv ON spec receives the exact override; no historical spec, Q, identity, runkey, input binding or result is rewritten. New operator metadata documents the effective-time exception while all acceptance gates remain in force.
