@@ -26,3 +26,7 @@ E2暂任协调owner，维护队列、交付/消费回执与依赖；D负责科�
 接入成功不代表IDLE窗口会被文件自动唤醒。当前无会话唤醒适配器/后台轮询器；活跃窗口在既定安全边界前台check。已结束或暂停的窗口要恢复时，用户只需说“继续原lane，读取公共面板和本人收件箱”，不再复制科研材料。
 
 入口：[README](README.md)；机器待办：[NEXT_ACTIONS](NEXT_ACTIONS.json)；真实来源：[E2 intake](intake/E2/PEER_ENROLLMENT_r1.json)。
+
+## Workload审查勘误
+
+E2已完成`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/`。原main61 FWT准确18门资格仍有效；如补原MAIN应同main61，新93a9 S/F应独立cohort。source复采/数值缺件与原冻结trace模型资格分开，不新增统一强制数值门。SGEMM已有探索HOLD登记。准备优先FWT原身份恢复提案、SGEMM独立对照、BFS条件准备，Hotspot备用；无新的启动授权。
