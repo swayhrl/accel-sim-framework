@@ -1,4 +1,4 @@
-> Collaboration v1: **IDLE**, onboarded by Lane D本人；[current self-status](../../lane_collaboration_v1/status/D.json) and [onboarding / previous delivery / dependencies](../../lane_collaboration_v1/evidence/D/JOIN_REPORT_r1.md). Research results below remain the prior delivery; no reanalysis or background worker.
+> Latest foreground resume: **IDLE**；9条正式消息已消费，C/F旧交付已核对；[本轮决定与依赖](../../lane_collaboration_v1/evidence/D/RESUME_DECISION_r1.md)。Conv正式接受尚未交付；SGEMM已登记探索HOLD，保留旧科学结果，不重复分析。
 
 # Lane D — four capacity pairs CONSUMED; neutral input prefreeze delivered
 

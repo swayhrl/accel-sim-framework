@@ -1,10 +1,12 @@
 {
   "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
-  "last_emitted_sequence": 5,
+  "last_emitted_sequence": 10,
   "last_sequence_by_sender": {
-    "A2": 3,
+    "A2": 5,
     "B": 3,
-    "E2": 2
+    "C": 3,
+    "E2": 9,
+    "F": 5
   },
   "outgoing_dedup": {
     "D:ACK:A2:A2-00000003-95ba5a3e7a41:VALIDATED": {
@@ -15,13 +17,33 @@
       "event_id": "D-00000002-61edaca88c5c",
       "payload_sha256": "e781d9f2ced7ed408cac56f70b3cd0026c3ad58c09bcbec52dcb88ec0d31fdf4"
     },
+    "D:ACK:C:C-00000003-7c2be04db559:VALIDATED": {
+      "event_id": "D-00000006-bf2f8d24330b",
+      "payload_sha256": "82edd8c9e91a05b751766c1f2263c0ebfea10ad9a78875e1f6932746b14b15f6"
+    },
     "D:ACK:E2:E2-00000002-ca1c31760483:RECEIVED": {
       "event_id": "D-00000001-a1f3f7dcb247",
       "payload_sha256": "7310311d6ca96117c9ee33dcb246005996fde510586618e2d35c01b1c61be93a"
     },
+    "D:ACK:E2:E2-00000008-1382cb29ba88:RECEIVED": {
+      "event_id": "D-00000007-750680ce76e5",
+      "payload_sha256": "43c95521abf92e4cfd41aa5f8387bc67763afb1c32d39c2e1cfced8e50e8ae12"
+    },
+    "D:ACK:E2:E2-00000009-af4423389e34:VALIDATED": {
+      "event_id": "D-00000008-e2998cb744a0",
+      "payload_sha256": "22b6efd26021955d3646bc675ea741e33f940a58a19c6b19c6e1276dec417f2e"
+    },
+    "D:ACK:F:F-00000003-872a38c678b4:VALIDATED": {
+      "event_id": "D-00000009-26d9e46565f6",
+      "payload_sha256": "a2e566a8d7c8fec2ec8330a6c38561792c011c21b2ce0c4d580fc2537ed6caee"
+    },
     "D:COLLABORATION_V1_PRIOR_CAPACITY_FOUR_AND_WORKLOAD_6825d1cd0": {
       "event_id": "D-00000004-18f5989a9dd2",
       "payload_sha256": "dfb867a721a05eb1d90424a4fb44285f56c92ea08723472bbd3ec5856aad16a2"
+    },
+    "D:STATUS:D-00000003-b46d0be62de1:c76da7f58beb522294bcc986e648ff96cb63586356d708bb653d31315ba8ba30": {
+      "event_id": "D-00000010-752c2a5188e2",
+      "payload_sha256": "096a672d24aaf3cd8bbf88f34de86eb9a6f125af6f183e549ab855f807c8e0dc"
     },
     "D:STATUS:INITIAL:34ae261966240f019fa41c42a4ce0ae34b714f38389b69bfc7168578fb550967": {
       "event_id": "D-00000003-b46d0be62de1",
@@ -30,6 +52,10 @@
   },
   "owner": "D",
   "seen_dedup_keys": {
+    "A2:ACK:D:D-00000004-18f5989a9dd2:RECEIVED": {
+      "event_id": "A2-00000005-5f1642a452f2",
+      "payload_sha256": "c25ead6f38f93f8ee468ed006f64b88b2228ab3e069948d17d31e066f7cd56a1"
+    },
     "A2:DF_CANDIDATE_COMPATIBILITY_r1:663fba57": {
       "event_id": "A2-00000003-95ba5a3e7a41",
       "payload_sha256": "2dabea76a1bcf38f18bd81aa195df2cd2d837cf24d4e3942ff21b610511b3eb7"
@@ -46,21 +72,62 @@
       "event_id": "B-00000003-95bce3da1bc3",
       "payload_sha256": "19a7d901c9ea941f1c6b32e28b2fe6d7ee9845aa314303fa748e1c59360062ec"
     },
+    "C:DELIVERY:EXISTING_EPOCH_PRESSURE_REVIEW_r1": {
+      "event_id": "C-00000003-7c2be04db559",
+      "payload_sha256": "a8cd7d527dc50174cbed47ee56c27e62e90885eabc755fde9ec965026bc42f19"
+    },
+    "C:STATUS:INITIAL:b5f8f03030b0f1553d161ad34b352e818165c47ad217ce825010590488b35837": {
+      "event_id": "C-00000002-9b161c2279e7",
+      "payload_sha256": "cce2572daadb9cac813cbffd463b3fa3ee5861af777c455486d6acdef95252bd"
+    },
+    "E2:ACK:D:D-00000004-18f5989a9dd2:RECEIVED": {
+      "event_id": "E2-00000006-417a1dc6b11a",
+      "payload_sha256": "8cdbf0157f8d17bf252ea8f0f72405b908e8272f30bf990e2e9406311621445e"
+    },
+    "E2:ALL_FIVE_JOINED_BOARD_V1": {
+      "event_id": "E2-00000009-af4423389e34",
+      "payload_sha256": "5363bc4176c1692943c61b5c5c02239a0cc931ef843cad7ec9697671b3fa8d79"
+    },
     "E2:COLLABORATION_SETUP_V1": {
       "event_id": "E2-00000002-ca1c31760483",
       "payload_sha256": "02e1ee4fc76ea7edc806c562a3102ba1483232b2fc57aa2f8b0d7602386b7b00"
     },
+    "E2:D_CAPACITY_FIVE_INCREMENT_AFTER_CONV_V1": {
+      "event_id": "E2-00000008-1382cb29ba88",
+      "payload_sha256": "c016a09671dd3c4f3453c79842c6c3ba0bcb01c54f384e4e243dfa3d9b7b169e"
+    },
     "E2:STATUS:INITIAL:414f90d6d8c6c4ae4bbd329fe93e78618753aca805f4a0eb9b541f0f1540ad58": {
       "event_id": "E2-00000001-7f5c7ddb4b3a",
       "payload_sha256": "edc969cbcb83e086aaa2bacfa61f0ccc129777bffc3a030eb5113d1b2ca002c1"
+    },
+    "F:ACK:D:D-00000004-18f5989a9dd2:RECEIVED": {
+      "event_id": "F-00000005-7bda42b1a4c4",
+      "payload_sha256": "d9b6717629be01738824533bb55c24914197e660d261c45fddf8909ffacd4fc7"
+    },
+    "F:INPUT_PREPARATION_FWT_SGEMM:20261021_r1:b81a259a7d3030208dcebbc7693c3ef793c2fde9": {
+      "event_id": "F-00000003-872a38c678b4",
+      "payload_sha256": "861d9d423fe6d7917b3c7b04658e6cc8125cc4071cbacb304ef5b11e5da3b6fa"
+    },
+    "F:STATUS:INITIAL:ccb7c59bb9412fb11f8cb3178fb6136200b63b1f0fd0fbfa7346f2973ea7c6f7": {
+      "event_id": "F-00000001-47abc8465d21",
+      "payload_sha256": "ecd2b27232e2a197fe71f8d37119c1ed474f35bd0cbce60701bc69fdf0266c8a"
     }
   },
   "seen_event_ids": {
     "A2/A2-00000001-070b72481b15": "d9c87f6936ef47b2440c733d9e3cc2147a242e3f815a5e3dcdd57a1cbfa1a448",
     "A2/A2-00000003-95ba5a3e7a41": "054bf6b0261c9241d66093e13b40e4fc9a8df4d78bd90563e891b28715a8a9b1",
+    "A2/A2-00000005-5f1642a452f2": "7a0322194483835cf5cf04740a1455574ce72cb9fa8d467fec80bd98d9280a24",
     "B/B-00000001-b621eea55723": "e6c5f95fe44a13965319d17184aafc8263aac5f9079bb66702e1d0d78ea72122",
     "B/B-00000003-95bce3da1bc3": "cd415c414cca5d5aa74a7ad96bf9f10a3bd2b33063eaea52543418527d5b7763",
+    "C/C-00000002-9b161c2279e7": "930ecca931236e270d143b1cedbb108f36b9e81cbae943386bece09d67192ca9",
+    "C/C-00000003-7c2be04db559": "d8703409c0c82282c898c530e56da805232912545b42fdbab017c58782344dd7",
     "E2/E2-00000001-7f5c7ddb4b3a": "be98ae67bd7622f1f09f0b3c382d90c945aa581c3a7e5a5c4a66d82a88adf445",
-    "E2/E2-00000002-ca1c31760483": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519"
+    "E2/E2-00000002-ca1c31760483": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+    "E2/E2-00000006-417a1dc6b11a": "6f8c971d378337e8a6917b3b70f6121667b8c996fb28ae20ab0f7b918ebb08dc",
+    "E2/E2-00000008-1382cb29ba88": "b4f7c86f84b16b49299ab26179dee7c7e2fe6e717ce0610da5f2af17bad3cf3b",
+    "E2/E2-00000009-af4423389e34": "7adfb903d2a683b8d770deae96d7c69bd5e62f6dd4bd3630cf10e76e862feefb",
+    "F/F-00000001-47abc8465d21": "e02e7d9dcd85e0f3976ead5dcc27081a651e740a8c444065036805e9388de104",
+    "F/F-00000003-872a38c678b4": "33fa45e1f591c72e80c9a6096b52fcef1b8e283463c01c199d58d07fec7346ad",
+    "F/F-00000005-7bda42b1a4c4": "3f11f1f5273325c5d4f5109c6374fcf7f418a1af4f5b6d420660e4ff6f436823"
   }
 }
