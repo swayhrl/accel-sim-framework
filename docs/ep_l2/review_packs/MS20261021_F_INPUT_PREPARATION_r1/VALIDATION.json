@@ -1,0 +1,30 @@
+{
+  "schema": "EPL2_F_INPUT_PACKET_CONTROL_VERIFICATION_V1",
+  "status": "PASS",
+  "scope": "Metadata identity, order/count/size, saved full-statistic sums, provenance binding and preserved HOLD checks only; no native/input-qualification PASS.",
+  "checks": [
+    "All20 dynamic kernel records and4 memcpy commands preserved in their original workload order",
+    "Rebuilt both native composite hashes from saved body SHA and fresh small commandlist hash",
+    "Verified all50 small source/metadata refs still match consumed bytes",
+    "Preserved explicit source-recapture/numeric/runtime missing items; SGEMM existing exploratory HOLD, FWT old INCOMPLETE",
+    "No original/failed trace edits or body rehashes"
+  ],
+  "workloads": [
+    {
+      "workload": "FWT_7_21",
+      "kernels": 19,
+      "instructions": 791609344,
+      "trace_composite": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+      "missing": 4
+    },
+    {
+      "workload": "SGEMM_medium",
+      "kernels": 1,
+      "instructions": 1658916864,
+      "trace_composite": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+      "missing": 5
+    }
+  ],
+  "full_trace_scans": 0,
+  "native_or_compile_or_full_application_starts": 0
+}

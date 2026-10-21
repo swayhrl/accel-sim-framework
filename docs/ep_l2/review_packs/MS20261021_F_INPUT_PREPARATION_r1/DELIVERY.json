@@ -1,0 +1,71 @@
+{
+  "schema": "EPL2_F_APPLICATION_INPUT_PREPARATION_DELIVERY_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "status": "MISSING",
+  "engineering_review_packet_status": "READY_FOR_E_REVIEW",
+  "not_launchable": true,
+  "scope": "FWT and SGEMM existing input preparation only; old environment Goal remains blocked and untouched.",
+  "manifests": [
+    {
+      "workload": "FWT_7_21",
+      "path": "FWT_7_21/MANIFEST.json",
+      "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+      "body_bytes": 1785749388,
+      "kernels": 19,
+      "expected_full_instructions": 791609344,
+      "missing_ids": [
+        "FWT-SOURCE",
+        "FWT-CAPTURE",
+        "FWT-NUMERIC-DATA",
+        "FWT-RESTART"
+      ]
+    },
+    {
+      "workload": "SGEMM_medium",
+      "path": "SGEMM_medium/MANIFEST.json",
+      "trace_content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+      "body_bytes": 2216170035,
+      "kernels": 1,
+      "expected_full_instructions": 1658916864,
+      "missing_ids": [
+        "SGEMM-SOURCE",
+        "SGEMM-CAPTURE",
+        "SGEMM-DATA-ORACLE",
+        "SGEMM-RO",
+        "SGEMM-EXECUTION"
+      ]
+    }
+  ],
+  "corrections": [
+    "SGEMM already has an E2 independent exploratory registration; it remains HOLD/not launchable, not a Btree replacement.",
+    "Available CUDA11 reference FWT is not compatible source for -logD21 capture; no invented original source commit.",
+    "SGEMM legacy tree SHA2074532f and native composite694ce08c have different definitions; full-body SHA agrees."
+  ],
+  "preserved": {
+    "FWT_E011_E012": "INCOMPLETE; no exit0 or acceptance inferred",
+    "Btree_SpMV_Scan": "HOLD unchanged",
+    "original_cohort_and_denominators": "unchanged",
+    "formal_execution_site": "original174",
+    "E2_unique_scheduler": "unchanged"
+  },
+  "operations": {
+    "full_trace_scans": 0,
+    "large_trace_rehashes": 0,
+    "prior_single_bounded_FWT_header_bytes_read": 2048,
+    "compiler_or_native_starts": 0,
+    "complete_application_starts": 0,
+    "GPU_capture": 0,
+    "large_transfers_or_downloads": 0,
+    "environment_surveys": 0,
+    "new_controller": false,
+    "old_Goal_resumed": false,
+    "central_state_modified": false
+  },
+  "next_owners": {
+    "F": "Recover exact capture/source/data artifacts from named original owners if supplied; no bulk retrieval/build without E admission.",
+    "D": "Confirm frozen restoration/exploratory scope; original statistical denominators unchanged.",
+    "C": "SGEMM certificate or reviewed ordinary fallback; FWT zero-RO address proof only.",
+    "A2": "Exact producer/input/opcode/profile compatibility review, no hot binary replacement.",
+    "E2": "Review identities and explicit missing provenance; independent qualification and separate scientific start approval before any run."
+  }
+}

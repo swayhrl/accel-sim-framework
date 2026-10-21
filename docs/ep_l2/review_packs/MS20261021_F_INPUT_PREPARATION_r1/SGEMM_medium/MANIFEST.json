@@ -1,0 +1,398 @@
+{
+  "schema": "EPL2_F_WORKLOAD_INPUT_PACKAGE_V1",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "workload": "SGEMM_medium",
+  "status": "MISSING",
+  "review_packet_status": "READY_FOR_E_REVIEW",
+  "ready_to_launch": false,
+  "source_recapture_ready": false,
+  "formal_execution_site": "original174; E2 only",
+  "trace_identity": {
+    "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+    "content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "hash_definition": "sha256 of canonical JSON list sorted lexicographically by name, each row{name,sha256,bytes}; reused complete body digests, small commandlist freshly checked",
+    "files": [
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernel-1.traceg",
+        "exists": true,
+        "bytes": 2216170035,
+        "mtime_ns": 1596985585000000000,
+        "device": 156,
+        "inode": 49427430,
+        "readable": true,
+        "name": "kernel-1.traceg",
+        "published_bytes": 2216170035,
+        "published_sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+        "current_full_content_rehashed": false,
+        "size_matches_published": true
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+        "exists": true,
+        "bytes": 92,
+        "mtime_ns": 1596985598000000000,
+        "device": 156,
+        "inode": 49427429,
+        "readable": true,
+        "name": "kernelslist.g",
+        "published_bytes": 92,
+        "published_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+        "current_full_content_rehashed": false,
+        "size_matches_published": true
+      }
+    ],
+    "trace_body_bytes": 2216170035,
+    "total_trace_and_commandlist_bytes": 2216170127,
+    "kernel_launch_count": 1,
+    "expected_full_active_lane_instructions": 1658916864,
+    "current_content_claim": "Saved complete SHA/statistics plus current stat sizes. No fresh full-body content equality assertion."
+  },
+  "complete_sequence": "COMMANDS.json",
+  "kernel_table": "KERNELS.csv",
+  "missing": [
+    {
+      "id": "SGEMM-SOURCE",
+      "owner": "F / original capture asset owner",
+      "scope": "source_recapture",
+      "required_evidence": "Application source commit/patch, actual executable SHA and original build/toolchain flags/log.",
+      "observed": "Pinned local cuda SGEMM reference exists with matching mysgemmNT kernel family, but no binding from its commit to captured binary. Directory11.0 is not compiler proof.",
+      "status": "MISSING"
+    },
+    {
+      "id": "SGEMM-CAPTURE",
+      "owner": "F / original capture asset owner",
+      "scope": "capture_provenance",
+      "required_evidence": "Original run.sh/capture command, GPU model/UUID/driver/toolkit, NVBit/tracer/postprocessor commits+hashes and original archive/session identity.",
+      "observed": "run.sh is absent beside frozen traces; YAML supplies a reference application invocation. Header records NVBit1.4/tracer3/binary70 only; exact source/GPU/CUDA build remain unknown.",
+      "status": "MISSING"
+    },
+    {
+      "id": "SGEMM-DATA-ORACLE",
+      "owner": "F / original capture asset owner",
+      "scope": "numeric_reproduction",
+      "required_evidence": "Exact matrix1.txt/matrix2t.txt content hashes and matrix dimensions; reference matrix3 output/hash or bound numeric generator/check.",
+      "observed": "Trace list records two HtoD addresses/byte lengths, not payload values. Dataset root/expected files absent at checked source/data paths. Dimensions remain UNKNOWN; not inferred from copy lengths or grid.",
+      "status": "MISSING"
+    },
+    {
+      "id": "SGEMM-RO",
+      "owner": "C / A2 / E2",
+      "scope": "runtime_input_qualification",
+      "required_evidence": "Own full-input RO certificate or explicit independently reviewed empty-coverage ordinary-path fallback for chosen fixed-policy F.",
+      "observed": "SGEMM RO certificate UNKNOWN; no Conv certificate reuse, no rewriting UNKNOWN as measured0.",
+      "status": "MISSING"
+    },
+    {
+      "id": "SGEMM-EXECUTION",
+      "owner": "A2 / E2",
+      "scope": "execution_authorization",
+      "required_evidence": "Exact supported producer/config/profile/full-input qualification and explicit new exploratory scientific scope/start approval.",
+      "observed": "E2_EXP_SGEMM_MEDIUM_20261020_r1 already exists, REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE; not missing registration and not an automatic Btree replacement.",
+      "status": "MISSING"
+    }
+  ],
+  "cost": {
+    "new_starts_if_later_separately_approved": 2,
+    "per_endpoint_hard_result_cap_bytes": 402653184,
+    "pair_hard_result_reservation_bytes": 805306368,
+    "cost_source": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_research_r1/DECISION_REPORT.json",
+      "bytes": 7056,
+      "sha256": "49fcca59819c882fedde9dd2346143dfd86ac3371882362e8da481583e42662d",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1",
+      "repository_HEAD": "c6dfbecc9ffcd1eb661c6e61657f69326d8eec5c",
+      "repository_path": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_research_r1/DECISION_REPORT.json",
+      "matches_tracked_HEAD": true
+    },
+    "no_resource_reservation_by_F": true,
+    "no_walltime_benchmark_executed": true,
+    "current_runtime_walltime": "UNKNOWN",
+    "prior_static_review_seconds": 837.4789109695703,
+    "prior_static_review_is_not_native_walltime": true
+  },
+  "scientific_scope": {
+    "input_static_grammar_is_not_runtime_qualification": true,
+    "numeric_SASS_or_algorithm_correctness_proven": false,
+    "readonly_certificate_is_not_numeric_output_oracle": true,
+    "no_Btree_SpMV_Scan_HOLD_change": true,
+    "no_original_denominator_change": true
+  },
+  "original_workload_key": "sgemm",
+  "exploratory_registration": {
+    "record": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/EXPLORATORY_SGEMM_REGISTRATION.json",
+      "bytes": 3053,
+      "sha256": "b3207c3591469ebbfe8589696f3df72fdcbe8aa36091b20a947b8b5602423fcb",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1",
+      "repository_HEAD": "c6dfbecc9ffcd1eb661c6e61657f69326d8eec5c",
+      "repository_path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/EXPLORATORY_SGEMM_REGISTRATION.json",
+      "matches_tracked_HEAD": true
+    },
+    "registration_id": "E2_EXP_SGEMM_MEDIUM_20261020_r1",
+    "status": "REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE",
+    "hold_reasons": [
+      "Original application revision and capture command UNKNOWN; provenance limits must stay explicit in any later input-scope approval.",
+      "Own RO certificate or explicitly reviewed zero-coverage fallback and E full runtime qualification still pending.",
+      "No original unstarted scientific condition has yet been reallocated to this separate exploratory set; no launch reservation."
+    ],
+    "supersession_note": "Earlier D proposal discussed replacement; actual E2 registration preserves Btree HOLD/original7 and places SGEMM in separate exploratory cohort."
+  },
+  "input_parameters": {
+    "literal_reference_arguments": "-i ./data/medium/input/matrix1.txt,./data/medium/input/matrix2t.txt,./data/medium/input/matrix2t.txt -o matrix3.txt",
+    "source": {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/util/job_launching/apps/define-all-apps.yml",
+      "bytes": 42931,
+      "sha256": "efdb9bdcd8268987a43c250ba716c602af653db99400a704d33b820faf900743",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-decoupled-l2",
+      "repository_HEAD": "ae3b433c2bc7e8715c8dcc595efcd5df0654375c",
+      "repository_path": "util/job_launching/apps/define-all-apps.yml",
+      "matches_tracked_HEAD": true
+    },
+    "repeated_matrix2t_argument_intent": "Preserved literally. Reference main requires3 filenames but reads A from arg0 and B-transpose from arg2.",
+    "logical_matrix_dimensions": "UNKNOWN; no inference from transfer sizes or launch geometry",
+    "recorded_HtoD_bytes": [
+      4063232,
+      4190208
+    ]
+  },
+  "source": {
+    "repository": "https://github.com/accel-sim/gpu-app-collection",
+    "local_path": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+    "commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "tracked_worktree_clean": true,
+    "role": "REFERENCE_SOURCE_ONLY_NOT_IDENTIFIED_AS_CAPTURE_SOURCE",
+    "capture_commit": null,
+    "source_files": [
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/DESCRIPTION",
+        "bytes": 330,
+        "sha256": "994b0fc6e4f548a9160196f8c5780f3efc1150bf074d345ac71965e5a4e368e4",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/DESCRIPTION",
+        "matches_tracked_HEAD": true
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/src/cuda/main.cu",
+        "bytes": 3236,
+        "sha256": "bb66dca183bbfd43fe00f8be6252ef3b25a7fbb471a5603ded4d0a4845b055d2",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/src/cuda/main.cu",
+        "matches_tracked_HEAD": true
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/src/cuda/sgemm_kernel.cu",
+        "bytes": 3342,
+        "sha256": "1e4d6f79765d118eaff0a23dbd4919042103faf3171a0cbfee1627059dc55287",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/src/cuda/sgemm_kernel.cu",
+        "matches_tracked_HEAD": true
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/src/cuda/io.cc",
+        "bytes": 1447,
+        "sha256": "8e334b7d9368f10f9ba2a53994817cb84a3e0c44d3e94ed524f12bffaac54224",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/src/cuda/io.cc",
+        "matches_tracked_HEAD": true
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/src/cuda/Makefile",
+        "bytes": 205,
+        "sha256": "8ed9b50df5d9b6853fc886cb3649aac6152a83599946b75d9601ad0f49ce1011",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/src/cuda/Makefile",
+        "matches_tracked_HEAD": true
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/tools/compare-output",
+        "bytes": 941,
+        "sha256": "de41c68ebdb826e3e10df4f06d177b6dcd6c46ccca0fbe95bdeed20cd15d677f",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/tools/compare-output",
+        "matches_tracked_HEAD": true
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/common/platform/cuda.default.mk",
+        "bytes": 539,
+        "sha256": "9fe4bf551cd3a16527e366450a44d1f018b399b5c6bbbb2208414673d4ffc75c",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/common/platform/cuda.default.mk",
+        "matches_tracked_HEAD": true
+      }
+    ]
+  },
+  "commands": {
+    "original_build_command": null,
+    "original_capture_command": null,
+    "reference_build_command_not_capture_reconstruction": "cd <admitted-reference-tree>/src/cuda/parboil && CUDA_INSTALL_PATH=<admitted-CUDA> python2 ./parboil compile sgemm cuda",
+    "reference_build_prerequisites": [
+      "legacy Parboil Python2 driver",
+      "admitted CUDA/host compiler/link libraries",
+      "reviewed common/Makefile.conf",
+      "E-approved output/tmp/cache paths and build peak"
+    ],
+    "reference_build_flags_from_files": [
+      "APP_CFLAGS/APP_CXXFLAGS=-ffast-math -g3",
+      "PLATFORM_CUDACFLAGS=-O3",
+      "APP_CUDALDFLAGS=-lm -lstdc++",
+      "PLATFORM_CUDALDFLAGS=-lm -lpthread plus NVCC_ADDITIONAL_ARGS; actual captured flags unknown"
+    ],
+    "reference_application_run": "<admitted-parboil-sgemm> -i ./data/medium/input/matrix1.txt,./data/medium/input/matrix2t.txt,./data/medium/input/matrix2t.txt -o matrix3.txt",
+    "reference_recipe_warning": "Do not source src/setup_environment blindly: it can download/install/build SDK4.2. make parboil invokes make data and all suite benchmarks. This packet runs neither.",
+    "replay_template": "<E-approved-binary> -config <E-bound-configs> -trace <absolute-entry-from-trace_identity>; template only, no qualified producer/profile selected"
+  },
+  "capture": {
+    "binary_target_version": 70,
+    "nvbit_version": "1.4",
+    "accelsim_tracer_version": 3,
+    "source": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/CANDIDATE_AUDIT.json",
+      "bytes": 17607,
+      "sha256": "be9074886c6a91a760d3df48e9fddf1b4b114728ea12cb1a1d44d573db906532",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1",
+      "repository_HEAD": "f93add1ef2e22e5f8b04e1dce7de5b7ddfd15a80",
+      "repository_path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/CANDIDATE_AUDIT.json",
+      "matches_tracked_HEAD": true
+    },
+    "GPU_model": null,
+    "GPU_UUID": null,
+    "driver_version": null,
+    "actual_cuda_compiler_build": null,
+    "nvbit_or_tracer_commit": null,
+    "capture_script": null,
+    "directory_label": "11.0 is a label, not compiler evidence",
+    "exact_archive_SHA_or_capture_session_manifest": null
+  },
+  "data_and_oracles": {
+    "reference_dataset_filenames": [
+      "matrix1.txt",
+      "matrix2t.txt"
+    ],
+    "original_dataset_content_SHA": null,
+    "matrix_dimensions": null,
+    "captured_matrix3_SHA": null,
+    "exact_paths_checked": [
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/data_dirs/parboil/parboil-sgemm/medium/input/matrix1.txt",
+        "exists": false
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/data_dirs/parboil/parboil-sgemm/medium/input/matrix2t.txt",
+        "exists": false
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/data_dirs/parboil/datasets/sgemm/medium/input/matrix1.txt",
+        "exists": false
+      },
+      {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/data_dirs/parboil/datasets/sgemm/medium/input/matrix2t.txt",
+        "exists": false
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/run.sh",
+        "exists": false
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/matrix3.txt",
+        "exists": false
+      }
+    ],
+    "dataset_symlink": {
+      "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/datasets",
+      "literal_target": "../../../data_dirs/parboil/datasets",
+      "target_exists": false
+    },
+    "reference_data_acquisition_script": {
+      "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/get_data.sh",
+      "bytes": 416,
+      "sha256": "282224b609dfb6f0055e4951b5bee2c9cadaa84445ca8dee832ca68250d9ac32",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+      "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "repository_path": "get_data.sh",
+      "matches_tracked_HEAD": true
+    },
+    "reference_archive_URL": "https://engineering.purdue.edu/tgrogers/gpgpu-sim/benchmark_data/all.gpgpu-sim-app-data.tgz",
+    "reference_archive_not_downloaded_or_availability_verified": true,
+    "numeric_oracle_reference": {
+      "compare_output": {
+        "path": "/workspace/worktrees/gpu-app-collection-decoupled-l2/src/cuda/parboil/benchmarks/sgemm/tools/compare-output",
+        "bytes": 941,
+        "sha256": "de41c68ebdb826e3e10df4f06d177b6dcd6c46ccca0fbe95bdeed20cd15d677f",
+        "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+        "repository": "/workspace/worktrees/gpu-app-collection-decoupled-l2",
+        "repository_HEAD": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+        "repository_path": "src/cuda/parboil/benchmarks/sgemm/tools/compare-output",
+        "matches_tracked_HEAD": true
+      },
+      "rule": "Same float count; each abs(r-c)<0.01 OR abs(r-c)<0.01*abs(r); then EOF.",
+      "exact_reference_file_missing": true,
+      "reference_main_does_not_execute_computeGold": "computeGold declared only; output needs external checker/reference. No CPU numerical PASS claimed."
+    },
+    "readonly_oracle": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "required_action": "C/A2/E2 own full-input certificate or explicitly qualified zero-coverage ordinary fallback; no Conv reuse."
+    }
+  },
+  "retained_qualification": {
+    "D_proposal": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/SGEMM_PROPOSAL_TO_E.json",
+      "bytes": 4145,
+      "sha256": "2d2902905605a93193c3129be8cf765e48fe71e8b205ac12028d179e41f99f26",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1",
+      "repository_HEAD": "f93add1ef2e22e5f8b04e1dce7de5b7ddfd15a80",
+      "repository_path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/SGEMM_PROPOSAL_TO_E.json",
+      "matches_tracked_HEAD": true
+    },
+    "D_complete_input_proof": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/CANDIDATE_AUDIT.json",
+      "bytes": 17607,
+      "sha256": "be9074886c6a91a760d3df48e9fddf1b4b114728ea12cb1a1d44d573db906532",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1",
+      "repository_HEAD": "f93add1ef2e22e5f8b04e1dce7de5b7ddfd15a80",
+      "repository_path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/CANDIDATE_AUDIT.json",
+      "matches_tracked_HEAD": true
+    },
+    "D_status": "D_COMPLETE_NATIVE_GRAMMAR_BYTES_NONATOMIC_CANDIDATE_PENDING_E",
+    "static_check_seconds_already_spent": 837.4789109695703,
+    "global_atomic_records": 0,
+    "shared_atomic_records": 0,
+    "native_or_numeric_acceptance_granted": false
+  },
+  "distinct_hash_scopes": {
+    "legacy_ROUND1_tree_sha256": "2074532f89af5eb14da3c6263ac993c880aaec5332c8196d5fd24d0f864627e1",
+    "native_trace_content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "legacy_manifest": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1/docs/l2_char_v1/ROUND1_WAVE1_TRACE_MANIFEST.json",
+      "bytes": 832106,
+      "sha256": "c7724e0db63dc5a99a5b9744cb83b4f9390ae5bd81a100ba9767d56c4168513f",
+      "read_scope": "SMALL_SOURCE_OR_SAVED_METADATA",
+      "repository": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1",
+      "repository_HEAD": "f93add1ef2e22e5f8b04e1dce7de5b7ddfd15a80",
+      "repository_path": "docs/l2_char_v1/ROUND1_WAVE1_TRACE_MANIFEST.json",
+      "matches_tracked_HEAD": true
+    },
+    "different_definitions_not_a_content_mismatch": true
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schema": "EPL2_F_INPUT_PREPARATION_MISSING_V1",
+  "status": "MISSING",
+  "packet_ready_for_E_review": true,
+  "items": [
+    {
+      "workload": "FWT_7_21",
+      "id": "FWT-SOURCE",
+      "owner": "F / original capture asset owner",
+      "scope": "source_recapture",
+      "required_evidence": "Exact scaled SDK4.2-family application source commit/patch, capture executable SHA and build flags/log.",
+      "observed": "run.sh has -logK7 -logD21 and SDK4.2-scaled YAML mapping. Local pinned CUDA11 reference hardcodes log2Data23 and does not parse logK/logD; it is not a reconstruction of this input.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "FWT_7_21",
+      "id": "FWT-CAPTURE",
+      "owner": "F / original capture asset owner",
+      "scope": "capture_provenance",
+      "required_evidence": "Capture GPU model/UUID, driver and actual toolkit build; original NVBit/tracer/postprocessor commits and executable hashes/session log.",
+      "observed": "CUDA_VERSION9.1 and CUDA_VISIBLE_DEVICES4 are literal script declarations; binary version70 is recorded. GPU device index is not model/UUID. FWT saved/kernel1 header does not report NVBit/tracer version.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "FWT_7_21",
+      "id": "FWT-NUMERIC-DATA",
+      "owner": "F / original capture asset owner",
+      "scope": "numeric_reproduction",
+      "required_evidence": "Original initialized HtoD payload or exact bound generator/seed, allocation/zeroing contract and captured numerical output/CPU check.",
+      "observed": "Recorded list has only2 HtoD+19kernels. No numeric HtoD payload, memset or DtoH record in that list. Current reference srand2007/CPU checker cannot be rebound to unknown capture source.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "FWT_7_21",
+      "id": "FWT-RESTART",
+      "owner": "E2",
+      "scope": "execution_authorization",
+      "required_evidence": "New explicit FWT restoration approval and E-selected source/binary/profile/input qualification with durable native exit/drain evidence for any future endpoints.",
+      "observed": "E011/E012 both INCOMPLETE. Old elapsed/log appearance cannot establish exit0; no rerun is authorized by this preparation. Old main61 scope does not qualify new capacity runtime.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "SGEMM_medium",
+      "id": "SGEMM-SOURCE",
+      "owner": "F / original capture asset owner",
+      "scope": "source_recapture",
+      "required_evidence": "Application source commit/patch, actual executable SHA and original build/toolchain flags/log.",
+      "observed": "Pinned local cuda SGEMM reference exists with matching mysgemmNT kernel family, but no binding from its commit to captured binary. Directory11.0 is not compiler proof.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "SGEMM_medium",
+      "id": "SGEMM-CAPTURE",
+      "owner": "F / original capture asset owner",
+      "scope": "capture_provenance",
+      "required_evidence": "Original run.sh/capture command, GPU model/UUID/driver/toolkit, NVBit/tracer/postprocessor commits+hashes and original archive/session identity.",
+      "observed": "run.sh is absent beside frozen traces; YAML supplies a reference application invocation. Header records NVBit1.4/tracer3/binary70 only; exact source/GPU/CUDA build remain unknown.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "SGEMM_medium",
+      "id": "SGEMM-DATA-ORACLE",
+      "owner": "F / original capture asset owner",
+      "scope": "numeric_reproduction",
+      "required_evidence": "Exact matrix1.txt/matrix2t.txt content hashes and matrix dimensions; reference matrix3 output/hash or bound numeric generator/check.",
+      "observed": "Trace list records two HtoD addresses/byte lengths, not payload values. Dataset root/expected files absent at checked source/data paths. Dimensions remain UNKNOWN; not inferred from copy lengths or grid.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "SGEMM_medium",
+      "id": "SGEMM-RO",
+      "owner": "C / A2 / E2",
+      "scope": "runtime_input_qualification",
+      "required_evidence": "Own full-input RO certificate or explicit independently reviewed empty-coverage ordinary-path fallback for chosen fixed-policy F.",
+      "observed": "SGEMM RO certificate UNKNOWN; no Conv certificate reuse, no rewriting UNKNOWN as measured0.",
+      "status": "MISSING"
+    },
+    {
+      "workload": "SGEMM_medium",
+      "id": "SGEMM-EXECUTION",
+      "owner": "A2 / E2",
+      "scope": "execution_authorization",
+      "required_evidence": "Exact supported producer/config/profile/full-input qualification and explicit new exploratory scientific scope/start approval.",
+      "observed": "E2_EXP_SGEMM_MEDIUM_20261020_r1 already exists, REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE; not missing registration and not an automatic Btree replacement.",
+      "status": "MISSING"
+    }
+  ],
+  "interpretation": "Source recapture/numeric reproduction/execution gaps are explicit. Full frozen trace replay metadata is prepared for E review; no status here is an input, runtime or launch waiver."
+}
