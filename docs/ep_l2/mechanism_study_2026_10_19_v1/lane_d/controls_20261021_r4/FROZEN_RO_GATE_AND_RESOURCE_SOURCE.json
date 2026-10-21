@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/gpgpu-sim/gpu-cache.h",
+    "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "source_blob_sha256": "3e80f3a70854b165e5c1ad4b924097b6e5f9507fb039291390703393874bd2ff",
+    "numbered_excerpt": "875     return m_ep_l2_descriptor_pool_size != 0;\n876   }\n877   bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }\n878   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }\n879   bool ro_requested() const { return m_ro_tag_detach||m_ro_line_mshr_bypass; }\n880   unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }"
+  },
+  {
+    "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+    "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "source_blob_sha256": "4c868dff3806ced19381b4cf5013054203c7802514868d5e0e3557a96d238a23",
+    "numbered_excerpt": "347 void l2_cache::ro_init() {\n348   m_ro=NULL;\n349   if(m_config.m_ro_tag_detach||m_config.m_ro_line_mshr_bypass)m_ro=new ep_l2_ro_runtime(*this);\n350 }"
+  },
+  {
+    "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+    "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "source_blob_sha256": "3680b7da9c8fdb44f0418819eeb97cf0d6547b8c1e40625c910d31e6a45e1235",
+    "numbered_excerpt": "115                   bool certified_line, request_kind kind,\n116                   unsigned initial_ready_sectors = 0) {\n117     check_mask(mask);\n118     if (initial_ready_sectors & ~15U)\n119       throw std::invalid_argument(\"invalid resident ready sectors\");\n120     if (!m_epoch_open || epoch != m_epoch || !certified_line ||\n121         !m_oracle.contains(line) || kind != GLOBAL_DEMAND_READ) {\n122       ++stats.rejected_oracle;\n123       return NORMAL_PATH;\n124     }\n125     if (!m_features.line_mshr_bypass && !m_features.tag_detach) return NORMAL_PATH;\n126     if (line % 128 || h.payload_id >= m_slots.size() || !m_port.live(h, line) ||\n127         !m_port.tag_matches(tag, h, line)) return TAG_BINDING_INVALID;\n128     entry &e = m_slots[h.payload_id];\n129     if (e.live) return TRANSACTION_SLOT_BUSY;\n130     if (!m_features.line_mshr_bypass && !m_shared.reserve_ro_line(line))\n131       return LINE_MSHR_FULL;\n132     mshr_table::ro_descriptor_handle d;\n133     if (!m_shared.reserve_ro_descriptor(line, mf, sector_mask(mask), d)) {\n134       if (!m_features.line_mshr_bypass) m_shared.release_ro_line(line);\n135       return DESCRIPTOR_OR_ADDRESS_FULL;\n136     }\n137     if (!m_port.pin(h)) {\n138       m_shared.release_ro_descriptor(d);\n139       if (!m_features.line_mshr_bypass) m_shared.release_ro_line(line);\n140       return TRANSACTION_SLOT_BUSY;\n141     }\n142     e = entry(); e.live = e.attached = true; e.h = h; e.tag = tag;\n143     e.line = line; e.epoch = epoch; e.required = mask;\n144     e.ready = initial_ready_sectors;\n145     e.waiters.push_back(waiter(d, mf, mask));\n146     if(!m_features.line_mshr_bypass)m_shared.bind_ro_line(line,h);\n147     ++stats.admits;\n148     if (m_features.line_mshr_bypass) ++stats.avoided_line_allocations;\n149     else ++stats.normal_line_allocations;\n150     observe_peaks();"
+  },
+  {
+    "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+    "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "source_blob_sha256": "3680b7da9c8fdb44f0418819eeb97cf0d6547b8c1e40625c910d31e6a45e1235",
+    "numbered_excerpt": "195   bool can_detach(identity h) const {\n196     const entry &e=get(h);\n197     return m_features.tag_detach && e.attached && !e.reuse_seen && (e.required&~e.ready);\n198   }\n199   bool detach(identity h) {\n200     entry &e = get(h);\n201     // Conservative waiter-aware protection persists after a merged waiter\n202     // retires. No future reuse oracle is consumed by this policy.\n203     if (!m_features.tag_detach || !e.attached || e.reuse_seen ||\n204         !(e.required & ~e.ready)) return false;\n205     if (!m_port.tag_matches(e.tag, h, e.line))\n206       throw std::logic_error(\"tag reuse without detach handshake\");\n207     m_port.tag_detach(e.tag, h); e.attached = false;\n208     ++stats.detached;\n209     return true;"
+  },
+  {
+    "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+    "source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "source_blob_sha256": "3680b7da9c8fdb44f0418819eeb97cf0d6547b8c1e40625c910d31e6a45e1235",
+    "numbered_excerpt": "312   void observe_peaks() {\n313     stats.peak_transactions=std::max(stats.peak_transactions,live_transactions());\n314     stats.peak_shared_descriptors=std::max(stats.peak_shared_descriptors,m_shared.descriptor_count_used());\n315     stats.peak_shared_lines=std::max(stats.peak_shared_lines,m_shared.num_entries_used());\n316   }"
+  }
+]

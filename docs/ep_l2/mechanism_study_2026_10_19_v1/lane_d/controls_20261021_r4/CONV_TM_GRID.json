@@ -1,0 +1,105 @@
+{
+  "corners": {
+    "C00": {
+      "workload": "convolutionSeparable",
+      "profile": "F_MINUS_R",
+      "cycles": 292432,
+      "kernel_cycles": [
+        160278,
+        132154
+      ],
+      "residual": 0,
+      "attempt_id": "E023_929cd79f"
+    },
+    "C10": {
+      "workload": "convolutionSeparable",
+      "profile": "WV_T",
+      "cycles": 291469,
+      "kernel_cycles": [
+        160984,
+        130485
+      ],
+      "residual": 0,
+      "attempt_id": "E026_547b309b"
+    },
+    "C01": {
+      "workload": "convolutionSeparable",
+      "profile": "WV_M",
+      "cycles": 291469,
+      "kernel_cycles": [
+        160984,
+        130485
+      ],
+      "residual": 0,
+      "attempt_id": "E025_8e51483e"
+    },
+    "C11": {
+      "workload": "convolutionSeparable",
+      "profile": "F",
+      "cycles": 291469,
+      "kernel_cycles": [
+        160984,
+        130485
+      ],
+      "residual": 0,
+      "attempt_id": "E009_76e25c1e"
+    }
+  },
+  "conditional_effects": [
+    {
+      "effect": "T at M0",
+      "left": "C00",
+      "right": "C10",
+      "Rows": 706,
+      "Columns": -1669,
+      "Total": -963,
+      "unit": "GPU cycles right minus left; negative favors right"
+    },
+    {
+      "effect": "T at M1",
+      "left": "C01",
+      "right": "C11",
+      "Rows": 0,
+      "Columns": 0,
+      "Total": 0,
+      "unit": "GPU cycles right minus left; negative favors right"
+    },
+    {
+      "effect": "M at T0",
+      "left": "C00",
+      "right": "C01",
+      "Rows": 706,
+      "Columns": -1669,
+      "Total": -963,
+      "unit": "GPU cycles right minus left; negative favors right"
+    },
+    {
+      "effect": "M at T1",
+      "left": "C10",
+      "right": "C11",
+      "Rows": 0,
+      "Columns": 0,
+      "Total": 0,
+      "unit": "GPU cycles right minus left; negative favors right"
+    },
+    {
+      "effect": "Joint T+M",
+      "left": "C00",
+      "right": "C11",
+      "Rows": 706,
+      "Columns": -1669,
+      "Total": -963,
+      "unit": "GPU cycles right minus left; negative favors right"
+    },
+    {
+      "effect": "C11-C10-C01+C00",
+      "left": "CONFIGURATION_FACTORIAL",
+      "right": "NOT_EXCLUSIVE_STALL_OR_TAG_DETACH_BENEFIT",
+      "Rows": -706,
+      "Columns": 1669,
+      "Total": 963,
+      "unit": "signed GPU cycle interaction"
+    }
+  ],
+  "interaction_sign": "Positive total: joint saving963 smaller than sum1926 of either-on effects; observed overlap, not additive independent mechanism benefits."
+}

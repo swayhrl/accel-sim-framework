@@ -1,0 +1,23 @@
+% Standalone EN-v20 proposal; no mother edit or partial-run performance.
+\begin{table*}[t]
+\centering
+\caption{Original ten authorized control attempts: eight complete accepted results and two RAM stops. Delta is control minus its original accepted anchor.}
+\label{tab:ten-controls}
+\begin{tabular}{llrlrr}
+\hline
+Input & Control & Attempt & Outcome & Cycles & $\Delta$ anchor \\
+\hline
+Conv & W\_ONLY & E021 & Accepted & 291525 & -1407 \\
+Conv & F\_MINUS\_V & E022 & Accepted & 293463 & +1994 \\
+Conv & F\_MINUS\_R & E023 & Accepted & 292432 & +963 \\
+Conv & S\_COPY\_FREE & E024 & Accepted & 293671 & +739 \\
+Conv & WV\_M & E025 & Accepted & 291469 & +0 \\
+Conv & WV\_T & E026 & Accepted & 291469 & +0 \\
+DWT & S\_COPY\_FREE & E027 & RAM stop & -- & -- \\
+DWT & W\_ONLY & E028 & RAM stop & -- & -- \\
+CFD & F\_MINUS\_V & E029 & Accepted & 80586 & +1429 \\
+CFD & F\_MINUS\_R & E030 & Accepted & 80812 & +1655 \\
+\hline
+\end{tabular}
+{\footnotesize W\_ONLY and S\_COPY\_FREE use S anchors; other controls use F anchors. COPY\_FREE is diagnostic. Original DWT partial cycles are excluded; later retries are separate.}
+\end{table*}
