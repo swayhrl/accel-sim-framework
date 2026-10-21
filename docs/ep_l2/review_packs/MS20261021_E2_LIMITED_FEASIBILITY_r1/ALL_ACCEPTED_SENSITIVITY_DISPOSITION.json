@@ -1,0 +1,28 @@
+{
+  "D_HEAD": "2789e3034493bb57a66948c77a67fdcb26bf6ef0",
+  "by_input": {
+    "CFD": "Control service-volume/cycle effects are nonmonotonic; no demonstrated downstream bandwidth cause.",
+    "Conv": "Local line-MSHR/MissQ/WB waits show queue pressure but are nonexclusive and do not select DRAM bandwidth vs latency vs L2capacity. Existing finite L2_DATA_FREE controls are a more direct first question.",
+    "DWT": "Accepted meanDRAM26.10/26.05/25.38% across S/W_ONLY/F and highmiss~71% alone do not choose a capacity/latency/BW setting.",
+    "SAD": "Main lower-read/WB bytes identical and most gain in a zero-lower-read/zero-copy first kernel; no selected downstream bottleneck evidence."
+  },
+  "evidence_refs": [
+    {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/controls_20261021_r4/SCIENCE_DECISION_BRIEF.md",
+      "sha256": "0e7f2d75747bf341cb4654cba64f54d588d60da635c6c7fadeb4be9354c821f4"
+    },
+    {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/controls_20261021_r4/accepted_snapshot_04/RAW_MECHANISM_COUNTS.csv",
+      "sha256": "e901454e6956f42bd76920015349877338927c95f78c75b7dc12d5b2b0fd3ab2"
+    },
+    {
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/four_pairs_20261020_r2/PAPER_SCIENTIFIC_ATTRIBUTION.md",
+      "sha256": "f044f52feff52873a579f1d6e3bd20b74c0a786ebf2e97d223ea423b41ade71b"
+    }
+  ],
+  "limits": "26% numerical DRAM evidence applies to DWT only. These observations do not prove absence of transient/latency/memory bottlenecks.",
+  "parameter_grid_created": false,
+  "recommended_starts": 0,
+  "review_method": "Reuse existing D four-pair and control attribution only; no new raw or trace scan",
+  "status": "DEFER_FIRST_BATCH_NO_DEFENSIBLE_ONE_PARAMETER_SELECTION"
+}

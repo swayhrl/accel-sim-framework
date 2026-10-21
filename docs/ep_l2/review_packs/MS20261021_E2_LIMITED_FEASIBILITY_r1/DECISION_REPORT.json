@@ -1,0 +1,445 @@
+{
+  "A2_HEAD": "04f255e4316d69eb773ca178b3349699958a1dde",
+  "D_HEAD": "2789e3034493bb57a66948c77a67fdcb26bf6ef0",
+  "D_kernel_result": {
+    "K5": 998,
+    "K8": 157,
+    "W_ONLY_to_F": 851,
+    "causality": "Joint V+RO/state contrast; no unique independent delay attribution.",
+    "final_residual": 0,
+    "head": "2789e3034493bb57a66948c77a67fdcb26bf6ef0",
+    "others": -304
+  },
+  "E_HEAD": "b8a1ddc5995456332ef4ac8e36d028ec8f77e097",
+  "T0": 1792414193,
+  "actual_starts": 32,
+  "all_accepted_sensitivity_disposition": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_LIMITED_FEASIBILITY_r1/ALL_ACCEPTED_SENSITIVITY_DISPOSITION.json",
+    "sha256": "7f65960a9d91c61d25d2952272483b6530af34ffd90e1cd8c69460793f1654ea"
+  },
+  "at_unix": 1792544713.9746811,
+  "bucket_usage": {
+    "contingency": {
+      "max": 8,
+      "used": 8
+    },
+    "one_workload_T_only_M_only_on_WV": {
+      "max": 2,
+      "used": 2
+    },
+    "one_workload_fixed_victim_on_WR": {
+      "max": 1,
+      "used": 0
+    },
+    "one_workload_static_WB64": {
+      "max": 1,
+      "used": 0
+    },
+    "seven_workload_common_S_F": {
+      "max": 14,
+      "used": 12
+    },
+    "two_workload_W_only": {
+      "max": 2,
+      "used": 2
+    },
+    "two_workload_local_diagnostics": {
+      "max": 6,
+      "used": 4
+    },
+    "two_workload_remove_W_V_R": {
+      "max": 6,
+      "used": 4
+    }
+  },
+  "candidates": [
+    {
+      "candidate": "DWT F_MINUS_R",
+      "current_matrix": false,
+      "expected_output_bytes": [
+        100000000,
+        130000000
+      ],
+      "gap": "Exact DWT input/profile Q and gate references; register only after approval. S/F Q does not substitute. R OFF needs no new RO certificate.",
+      "labels": {
+        "M": 0,
+        "T": 0,
+        "V": 1,
+        "W": 1,
+        "diagnostic": false,
+        "oracle": false,
+        "physical_P1": true
+      },
+      "maximum_result_bytes": 402653184,
+      "planning_wall_minutes": [
+        12,
+        25
+      ],
+      "priority": "P0",
+      "qualification_reuse": "Existing Conv/CFD R0 native+source equivalence and E17WAD delta; current DWT fullinput/accepted S/W_ONLY/F.",
+      "real_starts": 1,
+      "reallocation": {
+        "anchor": "V2_dwt2d_F",
+        "group": "REMOVE_ONE",
+        "new": "V2_dwt2d_F_MINUS_R",
+        "old": "V2_FWT_7_21_F_MINUS_W",
+        "profile": "F_MINUS_R",
+        "reason": "Forgo never-started unsupported dependent F_MINUS_W; fund DWT W1V1T0M0 contrast.",
+        "workload": "dwt2d"
+      }
+    },
+    {
+      "candidate": "Conv S_WB64",
+      "condition": "V2_convolutionSeparable_S_WB64",
+      "current_matrix": true,
+      "deferral_reason": "Concrete terminal/comparison qualification gap, not I/Opressure or simulator implementation.",
+      "expected_output_bytes": [
+        90000000,
+        120000000
+      ],
+      "gap": "Old observer1 overlay rejected bymain61. Need observer0 exactprofile/decoder extension preserving64slice and unmeasuredobserverUNKNOWN. Current parser lacks WB64 and hardcodesstatic_s64=0. Accepted observer1S has different comparison fingerprint: explicitly qualify observer timing-equivalence/normalization without rewriting oldreceipts; otherwise matched observer0S+WB64 costs2,90\u2013160min,180\u2013240MB,hard768MiB and newbaseline slot.",
+      "in_recommended_sets": false,
+      "matched_baseline_fallback_maximum_result_bytes": 805306368,
+      "matched_baseline_fallback_starts": 2,
+      "maximum_result_bytes": 402653184,
+      "planning_wall_minutes": [
+        45,
+        80
+      ],
+      "priority": "P0",
+      "qualification_reuse": "Source supported1168=1024resident+80landing+64WB; bank256/20/16,P1,D512/Line128/WAD128. Retained WB64 and S_observer0/1 finite evidence applicable.",
+      "real_starts": 1,
+      "reallocation": "None for WB64 itself; matched observer0S would need one extra funded slot."
+    },
+    {
+      "candidate": "Conv S_L2_DATA_FREE",
+      "condition": "V2_convolutionSeparable_S_L2_DATA_FREE",
+      "current_matrix": true,
+      "expected_output_bytes": [
+        100000000,
+        130000000
+      ],
+      "gap": "Distinct exactinput/profile Q, including S finite-residual service, retained copy latch/ROP/ownership/realresponse. No newnative needed after exactevidence disposition.",
+      "labels": {
+        "diagnostic": true,
+        "hardware_speedup_claim": false,
+        "l2_data_free": true,
+        "oracle": false
+      },
+      "maximum_result_bytes": 402653184,
+      "planning_wall_minutes": [
+        45,
+        80
+      ],
+      "priority": "P1",
+      "qualification_reuse": "Slocal+ROP7 actualpass evidence/sourceequivalence+currentE17; acceptedfullConv714547200instruction input/S.",
+      "real_starts": 1,
+      "reallocation": "None inprimary; originalLOCAL_DIAGNOSTIC."
+    },
+    {
+      "candidate": "Conv F_L2_DATA_FREE",
+      "condition": "V2_convolutionSeparable_F_L2_DATA_FREE",
+      "current_matrix": true,
+      "expected_output_bytes": [
+        100000000,
+        130000000
+      ],
+      "gap": "Publish named full_data_free_finite_residual_service gate and exactinput/profile Q; existingF Q lacksdedicatedgate. Existingparser supportsprofile; no newnative needed after exactevidence disposition.",
+      "labels": {
+        "diagnostic": true,
+        "hardware_speedup_claim": false,
+        "l2_data_free": true,
+        "oracle": true,
+        "readonly_scope": "TRACE_MODEL_CLOSED_WORLD"
+      },
+      "maximum_result_bytes": 402653184,
+      "planning_wall_minutes": [
+        45,
+        80
+      ],
+      "priority": "P1",
+      "qualification_reuse": "Retained F_data_free exit0 covers D512/Line128/ICNT64/dirtyWB, unchanged relevant source+currentE17; acceptedConvF input+oracle.",
+      "real_starts": 1,
+      "reallocation": "None inprimary; originalLOCAL_DIAGNOSTIC."
+    },
+    {
+      "candidate": "Vector F recovery",
+      "current_matrix": "Original condition chargedfailed; fundedretry row absent.",
+      "expected_output_bytes": [
+        90000000,
+        120000000
+      ],
+      "gap": "Approve priorE014 retry and donor; fresh original prelaunch identities/resources and full terminal. Oldtrueexit-15/wait15 was WORKSPACE_STOP_RESERVE, never PASS/refunded.",
+      "maximum_result_bytes": 402653184,
+      "planning_wall_minutes": [
+        12,
+        25
+      ],
+      "priority": "P1",
+      "qualification_reuse": "Exact current a66d44 q +56000000instruction fullinput + acceptedS E013. No S rerun.",
+      "real_starts": 1,
+      "reallocation": {
+        "anchor": "V2_vectorAdd_4M_S",
+        "group": "MAIN",
+        "new": "V2_vectorAdd_4M_F_RESOURCE_RETRY",
+        "old": "V2_btree_F",
+        "profile": "F",
+        "reason": "Forgo unstarted BtreeF HOLD row; fund one new VectorF retry, no old refund; BtreeS staysHOLD.",
+        "retry_previous_attempt": "E014_7a67cdcb",
+        "workload": "vectorAdd_4M"
+      }
+    },
+    {
+      "F_wall_minutes": [
+        85,
+        120
+      ],
+      "S_wall_minutes": [
+        80,
+        110
+      ],
+      "candidate": "FWT S/F recovery",
+      "current_matrix": "Original two endpoints chargedINCOMPLETE; retryfunding absent.",
+      "expected_output_bytes": [
+        246000000,
+        300000000
+      ],
+      "gap": "Two newdirectparentexit0/fullterminals; old143sender/causeUNKNOWN, rawtailcannotrecoverexit. Newprofilelabels remainphysicalS/F even whenbudgetroleLOCAL_DIAGNOSTIC.",
+      "maximum_result_bytes": 805306368,
+      "planning_wall_minutes": [
+        165,
+        230
+      ],
+      "priority": "P2",
+      "qualification_reuse": "Exact current1d3af457 q,19kernels/791609344instructions/1785749774inputB,zero-positive-RO testedfallback. Existing durable8case validation coversknownlifecycle.",
+      "real_starts": 2,
+      "reallocation": [
+        {
+          "anchor": "",
+          "group": "LOCAL_DIAGNOSTIC",
+          "new": "V2_FWT_7_21_S_EXIT_RECOVERY_DIAGNOSTIC_SLOT",
+          "old": "V2_convolutionSeparable_S_L2_DATA_FREE",
+          "profile": "S",
+          "reason": "Forgo unstarted Conv data-free condition to fund a physical FWT endpoint retry. LOCAL_DIAGNOSTIC is only study/budget role; all runtime diagnostic flags stayOFF. Old unknownexit/charge retained.",
+          "retry_previous_attempt": "E011_618407f0",
+          "workload": "FWT_7_21"
+        },
+        {
+          "anchor": "V2_FWT_7_21_S_EXIT_RECOVERY_DIAGNOSTIC_SLOT",
+          "group": "LOCAL_DIAGNOSTIC",
+          "new": "V2_FWT_7_21_F_EXIT_RECOVERY_DIAGNOSTIC_SLOT",
+          "old": "V2_convolutionSeparable_F_L2_DATA_FREE",
+          "profile": "F",
+          "reason": "Forgo unstarted Conv data-free condition to fund a physical FWT endpoint retry. LOCAL_DIAGNOSTIC is only study/budget role; all runtime diagnostic flags stayOFF. Old unknownexit/charge retained.",
+          "retry_previous_attempt": "E012_63be0bb4",
+          "workload": "FWT_7_21"
+        }
+      ],
+      "two_lane_pair_minutes": [
+        90,
+        125
+      ]
+    },
+    {
+      "candidate": "L2/DRAM sensitivity",
+      "current_matrix": false,
+      "if_later_justified": "One changedsetting S/F wouldcost2 newstarts and require fresh commonnonresearch config/invariants,qualification,donors and honest costreview. No arbitrarysetting/grid generated.",
+      "parameter_change_proposed": null,
+      "priority": "P2",
+      "proposed_result_reservation_bytes": 0,
+      "reason": "No accepted critical capacity/latency/bandwidth evidence selects one defensible perturbation; highL2miss alone insufficient. DWTmeanDRAM26.10/26.05/25.38%,max<26.2%; lowaverage doesnotruleout transient/latency constraints.",
+      "recommended_starts": 0
+    }
+  ],
+  "contingency_consumed": 8,
+  "deadline": {
+    "endpoint_timeout_seconds": 10800,
+    "intake_Beijing": "2026-10-21 22:00",
+    "intake_unix": 1792591200,
+    "no_extension": true,
+    "start_Beijing": "2026-10-21 18:00",
+    "start_unix": 1792576800
+  },
+  "execution_conditions": [
+    "Select exactlyone set; neither is approved and theirunion is not a proposal.",
+    "Register exactperprofile Q and approvedmatrix/CLIENT/spec only in laterauthorized execution; no stalequalinheritance.",
+    "Originaluniquecontroller,max2 actualgate;singlelane when onlyoneadmitted. I/Opressure alone isnotstop.",
+    "Perstart recheck source/main/archive/build/native/config/fullinput/lease,CPU/RAM/Share,5GiBfloor+2GiBmonitor,6/20GiB cumulativegeneration and deadlines. Fourfullcaps leave62.6MiB; reserve allcollector metadata, no otherconsumption silently tolerated.",
+    "No refunds,contingencyexpansion,main61rebuild,productionprotocolchange,validendpointrerun,HOLDpromotion orgoals.",
+    "Realexit0/fullinstructions/64slice/allscience terminal beforeCURRENT_ACCEPTED andimmediateDdelivery."
+  ],
+  "four_hard_caps_remaining_new_bytes": 65654515,
+  "new_application_starts": 0,
+  "new_builds": 0,
+  "new_native_invocations": 0,
+  "output_usage": {
+    "new_bytes": 4766183693,
+    "old_bytes": 14309576384,
+    "total_bytes": 19075760077
+  },
+  "primary": {
+    "after_actual": 36,
+    "after_remaining": 4,
+    "expected_result_bytes": [
+      390000000,
+      510000000
+    ],
+    "matrix_revision": {
+      "MAIN_unique_inputs": [
+        "FWT_7_21",
+        "btree",
+        "cfd_097k",
+        "convolutionSeparable",
+        "dwt2d",
+        "sad",
+        "vectorAdd_4M"
+      ],
+      "adopted": false,
+      "changes": [
+        {
+          "anchor": "V2_dwt2d_F",
+          "group": "REMOVE_ONE",
+          "new": "V2_dwt2d_F_MINUS_R",
+          "old": "V2_FWT_7_21_F_MINUS_W",
+          "profile": "F_MINUS_R",
+          "reason": "Forgo never-started unsupported dependent F_MINUS_W; fund DWT W1V1T0M0 contrast.",
+          "workload": "dwt2d"
+        },
+        {
+          "anchor": "V2_vectorAdd_4M_S",
+          "group": "MAIN",
+          "new": "V2_vectorAdd_4M_F_RESOURCE_RETRY",
+          "old": "V2_btree_F",
+          "profile": "F",
+          "reason": "Forgo unstarted BtreeF HOLD row; fund one new VectorF retry, no old refund; BtreeS staysHOLD.",
+          "retry_previous_attempt": "E014_7a67cdcb",
+          "workload": "vectorAdd_4M"
+        }
+      ],
+      "matrix": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_LIMITED_FEASIBILITY_r1/PRIMARY_PROPOSED_MATRIX_32_NOT_ADOPTED.json",
+        "sha256": "66c9308f9ac93772654f91f18e67690f7e4cd622e1a740d247a51e04cf9bfc61"
+      },
+      "original_group_caps_retained": true,
+      "rows": 32
+    },
+    "max2lane_minutes_with_terminal_publication": [
+      70,
+      115
+    ],
+    "maximum_result_bytes": 1610612736,
+    "order": [
+      "DWT F_MINUS_R",
+      "Vector F",
+      "Conv S_L2_DATA_FREE",
+      "Conv F_L2_DATA_FREE"
+    ],
+    "reason": "Resolve targeted DWT RO/state contrast; recover one MAIN pair cheaply; matched two-sided Conv finite data-service diagnostics.",
+    "serial_minutes": [
+      114,
+      210
+    ],
+    "starts": 4,
+    "status": "PROPOSED_NOT_APPROVED"
+  },
+  "registry_or_CLIENT_writes": 0,
+  "remaining": 8,
+  "resource_forecast": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_LIMITED_FEASIBILITY_r1/READ_ONLY_RESOURCE_FORECAST.json",
+    "sha256": "c05903588614dad9f70b4ebe97d7a6f29007b234542200a0d1a6692e47aaa32c"
+  },
+  "schema": "E2_LIMITED_FEASIBILITY_DECISION_V1",
+  "secondary": {
+    "after_actual": 36,
+    "after_remaining": 4,
+    "expected_result_bytes": [
+      436000000,
+      550000000
+    ],
+    "matrix_revision": {
+      "MAIN_unique_inputs": [
+        "FWT_7_21",
+        "btree",
+        "cfd_097k",
+        "convolutionSeparable",
+        "dwt2d",
+        "sad",
+        "vectorAdd_4M"
+      ],
+      "adopted": false,
+      "changes": [
+        {
+          "anchor": "V2_dwt2d_F",
+          "group": "REMOVE_ONE",
+          "new": "V2_dwt2d_F_MINUS_R",
+          "old": "V2_FWT_7_21_F_MINUS_W",
+          "profile": "F_MINUS_R",
+          "reason": "Forgo never-started unsupported dependent F_MINUS_W; fund DWT W1V1T0M0 contrast.",
+          "workload": "dwt2d"
+        },
+        {
+          "anchor": "V2_vectorAdd_4M_S",
+          "group": "MAIN",
+          "new": "V2_vectorAdd_4M_F_RESOURCE_RETRY",
+          "old": "V2_btree_F",
+          "profile": "F",
+          "reason": "Forgo unstarted BtreeF HOLD row; fund one new VectorF retry, no old refund; BtreeS staysHOLD.",
+          "retry_previous_attempt": "E014_7a67cdcb",
+          "workload": "vectorAdd_4M"
+        },
+        {
+          "anchor": "",
+          "group": "LOCAL_DIAGNOSTIC",
+          "new": "V2_FWT_7_21_S_EXIT_RECOVERY_DIAGNOSTIC_SLOT",
+          "old": "V2_convolutionSeparable_S_L2_DATA_FREE",
+          "profile": "S",
+          "reason": "Forgo unstarted Conv data-free condition to fund a physical FWT endpoint retry. LOCAL_DIAGNOSTIC is only study/budget role; all runtime diagnostic flags stayOFF. Old unknownexit/charge retained.",
+          "retry_previous_attempt": "E011_618407f0",
+          "workload": "FWT_7_21"
+        },
+        {
+          "anchor": "V2_FWT_7_21_S_EXIT_RECOVERY_DIAGNOSTIC_SLOT",
+          "group": "LOCAL_DIAGNOSTIC",
+          "new": "V2_FWT_7_21_F_EXIT_RECOVERY_DIAGNOSTIC_SLOT",
+          "old": "V2_convolutionSeparable_F_L2_DATA_FREE",
+          "profile": "F",
+          "reason": "Forgo unstarted Conv data-free condition to fund a physical FWT endpoint retry. LOCAL_DIAGNOSTIC is only study/budget role; all runtime diagnostic flags stayOFF. Old unknownexit/charge retained.",
+          "retry_previous_attempt": "E012_63be0bb4",
+          "workload": "FWT_7_21"
+        }
+      ],
+      "matrix": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_LIMITED_FEASIBILITY_r1/SECONDARY_PROPOSED_MATRIX_32_NOT_ADOPTED.json",
+        "sha256": "9dfed70481320e5fe01e80ce4126e07e1cf851ff880b7232f025f5c022341dae"
+      },
+      "original_group_caps_retained": true,
+      "rows": 32
+    },
+    "max2lane_minutes_with_terminal_publication": [
+      115,
+      160
+    ],
+    "maximum_result_bytes": 1610612736,
+    "order": [
+      "DWT F_MINUS_R",
+      "Vector F",
+      "FWT S",
+      "FWT F"
+    ],
+    "serial_minutes": [
+      189,
+      280
+    ],
+    "starts": 4,
+    "status": "MUTUALLY_EXCLUSIVE_PROPOSED_NOT_APPROVED",
+    "tradeoff": "Forgo two distinct unstarted Conv L2 diagnostics to fund physicalFWTpair. LOCAL_DIAGNOSTIC is fundingrole, not idealization; duplicate runtime/configuration retries mean32rows do not imply32distinct configurations. Retain BtreeS HOLD: removing bothBtree MAIN rows wouldbreak unchanged seven-input matrix validator."
+  },
+  "source_identity": {
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "REVIEW_ONLY_NO_EXTRA_APPLICATION_AUTHORIZATION",
+  "user_cited_prior_E_HEAD": "ac5b22afc27450d38d61a3b3208ca97dd5ae7b72"
+}
