@@ -4,6 +4,7 @@ Environment review is not a lease. A remote worker must use the original E
 dispatcher, not a copied JSON/flock. No remote execution transport is implied.
 """
 import capacity_policy
+import workload_policy
 import concurrency_policy
 import copy
 import hashlib
@@ -67,6 +68,8 @@ def charged_bucket(attempt, reservations):
     # Old charged attempts retain their exact original rows, consuming the
     # common contingency reserve and total40 instead of disappearing.
     bucket = attempt['budget_bucket']
+    if attempt.get('condition_id') in workload_policy.CONDITIONS and bucket==workload_policy.CONDITIONS[attempt['condition_id']][0] and attempt.get('workload_spec_sha256'):
+        return bucket  # approved independent batches never consume old contingency
     return bucket if bucket in reservations else 'contingency'
 
 
@@ -104,6 +107,8 @@ def validate_matrix(matrix):
 
 
 def condition_check(item,spec,digest):
+    if workload_policy.is_workload_spec(spec):
+        return workload_policy.condition_check(item,spec,digest)
     if capacity_policy.is_capacity_spec(spec):
         return capacity_policy.condition_check(item,spec,digest)
     record=item['full_system_matrix']

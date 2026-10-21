@@ -21,6 +21,7 @@ import subprocess
 import policy_v2
 import capacity_policy
 import limits_policy
+import workload_policy
 import concurrency_policy
 import disk_policy
 
@@ -98,6 +99,7 @@ def ledger(data):
                 'budget/deadline changed')
         require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
                 'output budget changed')
+    workload_policy.active(item)  # exact optional approved four-start workload batch
     concurrency_policy.active(item)  # exact optional user concurrency amendment
     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
             'different host/boot: explicit reconciliation required')
@@ -248,6 +250,29 @@ class Coordinator:
             return dict(changed=changed,actual_starts=item['actual_starts'],
                         remaining_start_capacity=item['remaining_start_capacity'],
                         t0_unix=item['t0_unix'],limits=capacity_policy.effective_limits(item))
+
+    def adopt_workload_pipeline(self, approval_path):
+        """Append the exact user-approved four-start scope under the original lock."""
+        with self.locked() as (data,item):
+            require(not any(r.get('experiment_id')==CAMPAIGN and r['status'] in ACTIVE
+                    for group in ('runs','resource_leases') for r in data[group].values()),
+                    'campaign work must retire before workload source adoption')
+            changed=workload_policy.amend(item,approval_path,time.time())
+            counts(item)
+            return dict(changed=changed,actual_starts=item['actual_starts'],
+                        t0_unix=item['t0_unix'],approval=workload_policy.approval_ref())
+
+    def bind_workload_condition(self, spec):
+        """Only append a sealed independent condition; never overwrite a binding."""
+        with self.locked() as (data,item):
+            self.require_no_hold(item,spec['qualification_id'])
+            return workload_policy.bind_condition(item,spec,digest)
+
+    def adopt_workload_selection(self, selection_path):
+        """Approved independent SGEMM adoption; preserve all original D selections."""
+        raw=Path(selection_path).read_bytes();selection=json.loads(raw)
+        with self.locked() as (data,item):
+            return workload_policy.adopt_selection(item,selection_path,raw,selection,digest)
 
     def bind_capacity_runtime(self, qualification_id):
         """Freeze exactly one formally delivered and E-qualified new runtime."""
@@ -562,13 +587,18 @@ class Coordinator:
             require(spec['profile'] in q['supported_profiles'],'profile not independently qualified')
             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
-            capacity_policy.bucket_guard(item,spec)
+            if workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
+            else:capacity_policy.bucket_guard(item,spec)
             require(limits_policy.deadline_open(item['start_deadline_unix']),'full-application start deadline closed under lock')
-            bucket=spec['budget_bucket'];require(bucket in item['reservations'],'unknown reserved budget bucket')
-            used=sum(policy_v2.charged_bucket(a,item['reservations'])==bucket and
-                     (a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')) for a in item['attempts'])
-            require(limits_policy.scope_allowed(item,spec) or used<item['reservations'][bucket],
-                    'reserved matrix budget exhausted; preserve other controls')
+            bucket=spec['budget_bucket']
+            if workload_policy.is_workload_spec(spec):
+                workload_policy.batch_guard(item,spec)
+            else:
+                require(bucket in item['reservations'],'unknown reserved budget bucket')
+                used=sum(policy_v2.charged_bucket(a,item['reservations'])==bucket and
+                         (a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')) for a in item['attempts'])
+                require(limits_policy.scope_allowed(item,spec) or used<item['reservations'][bucket],
+                        'reserved matrix budget exhausted; preserve other controls')
             require(digest(spec['binary'])==identity['binary_sha256'],'binary changed before reservation')
             # Full asset hashing/config closure is performed by the reused runner inspector,
             # before this transaction and again before real Popen; its audit must be attached.
@@ -582,6 +612,7 @@ class Coordinator:
                  'reserved_unix':time.time(),'result_directory':str(directory),'retry_reason':spec.get('retry_reason'),
                  'prior_attempts':[a['attempt_id'] for a in history],'maximum_result_bytes':growth,
                  **disk_policy.lease_policy(item)}
+            if workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
             item['attempts'].append(row)
             data['runs'][key]={'run_key':key,'identity':identity,'owner':'mechanism_E','host':socket.gethostname(),
                 'boot_id':item['boot_id'],'lease_id':attempt_id,'status':'RESERVED','created_at':time.time(),
