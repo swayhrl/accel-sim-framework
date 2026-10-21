@@ -1,12 +1,12 @@
-# B — W/V saved-evidence workload screen r1 delivered
+# B — D候选FWT/SGEMM W/V独立审查 r2
 
-原 Goal、worktree、分支及历史证据保留。新增仅为有界 CPU 分析；生产源码、main61、输入登记、E 资格/预算均未改，构建/模拟/GPU启动0，无等待器。
+原Goal/worktree/分支/候选及旧证据保留。仅新增保存统计/有界raw tail审查；无构建、GPU、native或完整应用启动，生产源码/binary/config、E登记/预算/资格均未改。
 
-优先接收正在运行的 FWT 既定 S/F；DWT、CFD 为后续未证实候选。Conv 是 main61 已接受的高复制压力、稀疏 V 锚点：1,046,538安装，36实际读响应/1,152B，dirty-forward0。整体 lower read 净少66不是 V 独立归因；lower WB 多39,232B。vectorAdd 为高写回但 GPU read/store line 交集0的 dirty-read 负对照；SAD低 W 压力。Btree HOLD，SGEMM未自动加入。
+FWT旧E011/E012仍INCOMPLETE/NOT_ACCEPTED。末次可见64slice累计快照确有184,660 victim读响应/5,909,120B，dirty-forward12,489；这是历史生产计数事件见证，不是接受的完整配对或V单因素收益。WB/copy压力与读写集合交集分开；不把交集当淘汰后短距离复用，不按F速度重新选样。
 
-本轮只读约2.21MB保存统计/元数据；完整64slice聚合，未读 trace正文、SQLite、raw 或 E2增长日志。没有证明“大量短距离淘汰后复用”，V独立GPU等待改善UNKNOWN。不以加速比排序，不把留存、安装、promotion、重试和请求等待和当成性能收益。
+SGEMM仍为D候选、未获E登记：旧B0-Banked有135,168 resident-write服务，每slice脏line峰528，但WB readout/DRAM写出/WAD观测0。global STG33,792条；不能叫只读。新copy/V/dirty-forward字段未提供，UNKNOWN而非0。读写地址及evict→read距离未知，保留低W压力对照。
 
-新 pack: docs/ep_l2/review_packs/MS20261020_B_WV_WORKLOAD_SCREEN_r1/REPORT.md。
-精确输入/生产身份、端点hash及资源范围见 RECEIPT.json 与 pack。旧r2–r5包和失败记录保留，旧B Core4770adff不变。本轮未重新处理生产协议；E最新main61接受状态与旧r5失败资格分开。
+E冻结额外联合fixture仍未接受；旧22包预期、20lower包与替代fixture源码界限保留，不借workload事件宣布联合正确性。观察到E启动上限为null，与D批准46需E2解释；B不改台账、不推断无限预算。
 
-下一阶段按 E 正式结果事件单次增量接收；不常驻轮询。诊断仅提出E审核草案，未登记、未启动。
+报告：docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/REVIEW.md。
+提取6,548,050B，额外边界读取单独记录。全部旧包保留。后续只按E正式结果事件增量接收，无后台轮询。

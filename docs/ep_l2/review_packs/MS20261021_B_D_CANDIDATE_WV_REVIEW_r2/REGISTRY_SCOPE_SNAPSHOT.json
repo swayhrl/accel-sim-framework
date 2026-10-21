@@ -1,0 +1,160 @@
+{
+  "at_unix": 1792590486.8013926,
+  "actual_starts": 45,
+  "controller": {
+    "process": {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "pid": 3017739,
+      "start_ticks": 933695072
+    },
+    "state": "STOPPED",
+    "stopped_unix": 1792590340.7737134
+  },
+  "FWT_acceptance": "INCOMPLETE_NOT_ACCEPTED",
+  "SGEMM_registered": false,
+  "FWT_input_registration": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261019_E_CONTROL_TOOLS_r1/input_registrations/FWT_7_21.json",
+    "selection": {
+      "authority_commit": "d9263fa2431592b33e900d9b48c6f20029d8b544",
+      "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+      "expected_exit": "full command list; exact expected instructions; normal termination/hardware closure; no favorable cycles requirement",
+      "full_input_identity": {
+        "comparison_groups": [
+          "DIAG_FWT_7_21",
+          "VICTIM_FWT_7_21",
+          "RO_FWT_7_21"
+        ],
+        "expected_full_instructions": 791609344,
+        "mechanism_group_conditions": {
+          "DIAG_or_NEW_INPUT": "DIAG S/U/S_COPY_FREE/S_L2_DATA_FREE/U_L2_DATA_FREE if core else new S/U only",
+          "RO": "not a readonly certificate; C full epoch oracle and A/E production qualification required; T/M00/10/01/11 within original4 reservation",
+          "VICTIM": "requires actual L2-order opportunity and A/B/E qualification; same-binary U, dynamic, fixed when possible; within original3 reservation"
+        },
+        "runtime_independent_input_source": {
+          "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/fastWalshTransform -logK 7 -logD 21 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_7__logD_21/traces/*.trace ",
+          "command_list": "MemcpyHtoD,0x00007f50e3600000,512\nMemcpyHtoD,0x00007f50e6000000,8388608\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\nkernel-17.traceg\nkernel-18.traceg\nkernel-19.traceg\n",
+          "entry_trace_name": "kernelslist.g",
+          "entry_trace_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist.g",
+          "epoch_range": {
+            "epochs": "all",
+            "scope": "full_application"
+          },
+          "source_revision": "UNKNOWN",
+          "trace_files": [
+            {
+              "name": "kernelslist.g",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist.g"
+            },
+            {
+              "name": "kernel-1.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-1.traceg"
+            },
+            {
+              "name": "kernel-10.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-10.traceg"
+            },
+            {
+              "name": "kernel-11.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-11.traceg"
+            },
+            {
+              "name": "kernel-12.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-12.traceg"
+            },
+            {
+              "name": "kernel-13.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-13.traceg"
+            },
+            {
+              "name": "kernel-14.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-14.traceg"
+            },
+            {
+              "name": "kernel-15.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-15.traceg"
+            },
+            {
+              "name": "kernel-16.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-16.traceg"
+            },
+            {
+              "name": "kernel-17.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-17.traceg"
+            },
+            {
+              "name": "kernel-18.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-18.traceg"
+            },
+            {
+              "name": "kernel-19.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-19.traceg"
+            },
+            {
+              "name": "kernel-2.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-2.traceg"
+            },
+            {
+              "name": "kernel-3.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-3.traceg"
+            },
+            {
+              "name": "kernel-4.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-4.traceg"
+            },
+            {
+              "name": "kernel-5.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-5.traceg"
+            },
+            {
+              "name": "kernel-6.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-6.traceg"
+            },
+            {
+              "name": "kernel-7.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-7.traceg"
+            },
+            {
+              "name": "kernel-8.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-8.traceg"
+            },
+            {
+              "name": "kernel-9.traceg",
+              "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-9.traceg"
+            }
+          ]
+        },
+        "trace_content_sha256": "f3695b85379fb762faaf9830bda449e0a5f1e4d3e351774cf33d90850059b460",
+        "trace_hash_evidence": "old Lane5 complete input identity; E must bind current exact bodies",
+        "workload": "FWT_7_21"
+      },
+      "not_a_launch_authorization": true,
+      "preserve_budget": 24,
+      "producer_binary": "UNASSIGNED_A_OWNER",
+      "rationale": "contract default plus traditional WB/copy pressure; Conv also line-MSHR refusal; no new mechanism performance selection",
+      "readonly_certificate": "UNKNOWN_NOT_GRANTED",
+      "schema": "EPL2_MECHANISM_D_INPUT_PREREGISTRATION_V1",
+      "selected_by": "D",
+      "selection_id": "D_V1_FWT_7_21",
+      "selection_unix": 1792414464.303578,
+      "selection_utc": "2026-10-19T12:54:24.303578+00:00"
+    },
+    "sha256": "3f4dcbb839dc3b1d38cec7f9c5ec4156608e2b307960988c7937f7720dd547c4"
+  },
+  "producer_reference": {
+    "E_independent_qualification": true,
+    "current_scientific_status": "MAIN61_CONV_S_F_INDEPENDENT_TERMINALS_VALID_AFTER_EXPLICIT_DECODER_REVALIDATION",
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261020_A2_FORMAL_WAD_PRODUCER_RELEASE_r1/RELEASE.json",
+    "publication": "44ebe13890c8e0402895e890cf2000d01513f836",
+    "sha256": "1633f63389156d6285f5865009ad33d197b656d9d807cc033b293c132db76f9e",
+    "source_identity": {
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    }
+  },
+  "evidence_scope": "metadata and unaccepted cumulative snapshots, not new E qualification",
+  "B_E_registry_writes": 0,
+  "maximum_actual_starts": null,
+  "maximum_value_scope": "Exact registry value preserved, including null; approved ceiling46 is separately documented by D4934388. B does not repair E state."
+}
