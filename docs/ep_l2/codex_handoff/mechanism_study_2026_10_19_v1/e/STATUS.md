@@ -1,12 +1,12 @@
-# Lane E2 — capacity diagnostic / CAPACITY_FIRST_CFD_OFF_ON_ACTUALLY_RUNNING
+# Lane E2 — capacity diagnostic / CAPACITY_USER_REMOVED_COUNT_LIMIT_SAFE_SWITCH_PENDING
 
 Original174; T0 1792414193; actual 38/46, remaining 8; old36 immutable and charged, contingency8/8 preserved. Controller ACTIVE. New diagnostic accepted pairs 0/5. Original MAIN and control results unchanged.
 
-Result generation: new 6089678793B/10737418240B; old+new 20399255177B/25769803776B; growth since36 935123577B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
+Result generation: new 6099625308B/10737418240B; old+new 20409201692B/25769803776B; growth since36 945070092B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
 | Condition | Attempt | State |
 |---|---|---|
-| V3_CAPACITY_cfd_097k_S_OFF | E037_a423c80f | RUNNING |
+| V3_CAPACITY_cfd_097k_S_OFF | E037_a423c80f | FAILED |
 | V3_CAPACITY_cfd_097k_S_ON | E038_d7ffe08b | RUNNING |
 | V3_CAPACITY_sad_S_OFF | None | NOT_STARTED |
 | V3_CAPACITY_sad_S_ON | None | NOT_STARTED |
