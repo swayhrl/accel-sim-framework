@@ -1,0 +1,72 @@
+{
+  "schema": "EPL2_LANE_COLLABORATION_DISCOVERY_REVIEW_V1",
+  "status": "DISCOVERY_COMPLETE_AND_BOUNDED_CLI_REVIEW_PASS",
+  "review_owner": "E2",
+  "scanned_directories": [
+    {
+      "path": "/workspace/ep_l2_ft20261016_shared/mechanism_study_20261019_v1/events",
+      "immediate_entries_observed": 150
+    },
+    {
+      "path": "/workspace/ep_l2_ft20261016_shared/mechanism_study_20261019_v1/inbox",
+      "immediate_entries_observed": 222
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_shared",
+      "immediate_entries_observed": 131
+    }
+  ],
+  "bounds": {
+    "recursive": false,
+    "max_immediate_entries_per_directory": 1500,
+    "metadata_json_max_file_bytes": 24576,
+    "selected_json_max_total_bytes": 98304,
+    "selected_json_files_read": 8,
+    "selected_json_bytes_read": 43034,
+    "trace_raw_or_large_result_payloads_read": 0
+  },
+  "observed_patterns": [
+    "E2_TO_A2_*",
+    "E2_TO_D_*",
+    "E_TO_D_PAIR_*",
+    "D_TO_E2_*CONSUMED*",
+    "HANDOFF_A2/B/C/F.json",
+    "TO_E2_*",
+    "REQUEST_*",
+    "REPLY_*"
+  ],
+  "critical_findings": [
+    "HANDOFF_A2 is stale historical main61/7starts; explicit new capacity notification is separate",
+    "mirrors across events/inbox/shared exist and require content deduplication",
+    "actual recipient-authored consumed receipt is separate from delivery",
+    "F may not share host; pinned Git metadata required",
+    "bootstrap discoverability is not automatic idle-window wakeup"
+  ],
+  "bootstrap_policy": {
+    "publisher": "E2",
+    "recipients": [
+      "A2",
+      "B",
+      "C",
+      "D",
+      "E2",
+      "F"
+    ],
+    "overwrite_old_handoffs": false,
+    "recipient_ack_forgery": false,
+    "cross_branch_merge_or_checkout": false,
+    "execute_message_commands": false,
+    "native_or_application_execution": false,
+    "resource_or_science_amendment_by_message": false,
+    "scientific_acceptance_waits_for_all_joins": false
+  },
+  "document": {
+    "path": "docs/ep_l2/lane_collaboration_v1/DISCOVERY_AND_BOUNDARIES.md",
+    "sha256": "dfd70f81b4858bc34873232af5ac1a81d4af4a39053da8adc0ff1954c1c2e5f3"
+  },
+  "no_central_source_or_git_mutations": true,
+  "cli_review": {
+    "path": "docs/ep_l2/lane_collaboration_v1/INDEPENDENT_CLI_REVIEW.json",
+    "sha256": "2f43205210138166c5d57160c5f88ac67b6c995f58d80358922b30ab7b1262d6"
+  }
+}
