@@ -1,0 +1,7 @@
+# Scope
+
+Only AG8R1's short source-pinned C1 role has the approved host-I/O-warning exception. It has no simulator, fixture, build, trace/GPU, process-signal or dispatch API. Its exception handler is never imported by heavy/runtime gates. All other CPU checks remain hard, two genuine samples are separated>=10s, and old refusals cannot be back-approved.
+
+C2 is a foreground finite recovery for AD_GEMM only: at most3 strict R2 opportunities, after CPU PASS, with>=600s between a failed opportunity and the next, last start within1800s of first. Retry only for sole hostIO pressure; all other safety/authority/science failures stop. Production execution lock is explicitly released during bounded waits. No daemon, busy resource polling or foreign process adoption/signals. AD_Gaussian receives one independent strict R2 after first full acceptance.
+
+No model/Framework build, input/ROI/270-option/service change, D0 redo or old CPU-suite/simulation rerun. Corec809 and exact AG7 observer ELF retained. Pilot defaultOFF, original hostIO/memory/OOM/swap/disk/device/ownership/mapper,10/30/600/1800s bounds remain fixed. Runtime wall21600 and output<=2GiB are identical for both new AD points. OldAG6/AG7/AG8 receipts/budgets/UUIDs and originalBA0/32 stay separate. All4 whole-input comparable strict/natural results are mandatory for F, using the frozen GEMM+Gaussian-only arithmetic. No native numerical/ISA/coherence, real sustained high-cgroup-PSI fairness,8-input GM/P/N/R/DC/PPA claim.
