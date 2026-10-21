@@ -3,7 +3,7 @@ from pathlib import Path
 import contextlib,copy,hashlib,importlib.util,io,json,sys,time
 P=Path(__file__).resolve().parent;ROOT=P.parents[3]
 sys.path.insert(0,str(ROOT/'util/ep_l2/mechanism_e'))
-import coordinator as c
+import coordinator as c,runner
 sp=importlib.util.spec_from_file_location('pub',P.parent/'MS20261020_E2_TAKEOVER_r1/publish.py');pub=importlib.util.module_from_spec(sp);sp.loader.exec_module(pub)
 def read(p):return json.loads(Path(p).read_text())
 def ref(p):return dict(path=str(Path(p).resolve()),sha256=c.digest(p))
@@ -37,6 +37,7 @@ def checkpoint(event,pair=None,extra=()):
    n=r['native_exit_evidence'];assert n['exit_code']==n['wait_status']==0 and n['stop_reason'] is None and n['native_process']==r['process']
    np=Path(e['path']).parent/'NATIVE_EXIT.json';assert c.digest(np)==r['native_exit_receipt_sha256'] and read(np)==n
    coord.require_no_hold(s,r['qualification_id']);q=s['qualifications'][r['qualification_id']];assert c.digest(q['path'])==q['sha256']
+   original_spec=read(Path(e['path']).parent/'input_spec.json');assert runner.validate_terminal_summary(r['summary'],original_spec,q,r['input_audit'])==r['validation'],'Independent pair-publication terminal revalidation differs'
    assert r['source_identity']==plan['source_identity'] and r['source_identity']['binary_sha256']!='61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5'
    endpoints[side]=dict(receipt=e,source_identity=r['source_identity'],profile=r['profile'],labels=r['labels'],cycles=r['summary']['cycles'],instructions=r['summary']['instructions'],slices=64,qualification_id=r['qualification_id'],native_exit=n,result_directory=str(Path(e['path']).parent),mechanism_metrics=r.get('mechanism_metrics',{}),capacity_diagnostic=r['summary'].get('capacity_diagnostic',{}))
   assert endpoints['left']['source_identity']==endpoints['right']['source_identity']
