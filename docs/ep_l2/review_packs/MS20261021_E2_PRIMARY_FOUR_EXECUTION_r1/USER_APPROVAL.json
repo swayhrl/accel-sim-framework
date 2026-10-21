@@ -1,0 +1,58 @@
+{
+  "approved": true,
+  "approved_matrix": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_LIMITED_FEASIBILITY_r1/PRIMARY_PROPOSED_MATRIX_32_NOT_ADOPTED.json",
+    "sha256": "66c9308f9ac93772654f91f18e67690f7e4cd622e1a740d247a51e04cf9bfc61"
+  },
+  "at_unix": 1792558738.0679677,
+  "exact_changes": [
+    {
+      "anchor": "V2_dwt2d_F",
+      "group": "REMOVE_ONE",
+      "new": "V2_dwt2d_F_MINUS_R",
+      "old": "V2_FWT_7_21_F_MINUS_W",
+      "profile": "F_MINUS_R",
+      "reason": "Forgo never-started unsupported dependent F_MINUS_W; fund DWT W1V1T0M0 contrast.",
+      "workload": "dwt2d"
+    },
+    {
+      "anchor": "V2_vectorAdd_4M_S",
+      "group": "MAIN",
+      "new": "V2_vectorAdd_4M_F_RESOURCE_RETRY",
+      "old": "V2_btree_F",
+      "profile": "F",
+      "reason": "Forgo unstarted BtreeF HOLD row; fund one new VectorF retry, no old refund; BtreeS staysHOLD.",
+      "retry_previous_attempt": "E014_7a67cdcb",
+      "workload": "vectorAdd_4M"
+    }
+  ],
+  "intake_deadline": 1792591200,
+  "maximum_actual_after": 36,
+  "maximum_concurrency": 2,
+  "maximum_four_result_bytes": 1610612736,
+  "maximum_new_actual_starts": 4,
+  "maximum_result_bytes_per_endpoint": 402653184,
+  "no_production_changes_or_builds": true,
+  "only_primary": true,
+  "ordered_conditions": [
+    "DWT F_MINUS_R",
+    "Vector F RESOURCE_RETRY",
+    "Conv S_L2_DATA_FREE",
+    "Conv F_L2_DATA_FREE"
+  ],
+  "original_T0": 1792414193,
+  "preserve_all_old_charged_failures": true,
+  "preserved_contingency_consumed": 8,
+  "qualification_and_original_resource_gates_required": true,
+  "remaining_after_all": 4,
+  "review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_LIMITED_FEASIBILITY_r1/DECISION_REPORT.json",
+    "sha256": "ab24915b0a579c3a4c326e04b41cbf6c266b2c9f74774cbc026c84c49cb63272"
+  },
+  "review_publication": "770a858705291bcbebbb28fa2182bc6ef31f029f",
+  "schema": "E2_PRIMARY_FOUR_EXPLICIT_USER_APPROVAL_V1",
+  "secondary_WB64_FWT_Btree_sensitivity_authorized": false,
+  "start_deadline": 1792576800,
+  "timeout_seconds": 10800,
+  "user_instruction": "\u6279\u51c6\u6267\u884c MS20261021_E2_LIMITED_FEASIBILITY_r1 \u7684 PRIMARY FOUR \u65b9\u6848\uff0c\u4ec5\u6b64\u4e00\u5957\u3002"
+}
