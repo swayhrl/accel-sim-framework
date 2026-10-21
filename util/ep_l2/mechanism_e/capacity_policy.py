@@ -5,6 +5,7 @@ No qualification, source build, app launch, retry or resource waiver is granted.
 """
 import copy
 import capacity_validation
+import limits_policy
 import hashlib
 import json
 from pathlib import Path
@@ -47,15 +48,23 @@ def effective_limits(item):
   result=ORIGINAL_LIMITS.copy();result['maximum_actual_starts']=item['maximum_actual_starts'];return result
  record=item['capacity_diagnostic_amendment']
  check(record['authority_commit']==AUTHORITY and record['approval_sha256']==APPROVAL_SHA,'invalid capacity authority')
- check(all(item[k]==v for k,v in LIMITS.items()),'capacity approved bounded limits changed')
+ unlimited=limits_policy.active(item)
+ check(all(item[k]==v for k,v in LIMITS.items() if not unlimited or k not in limits_policy.REMOVED),
+       'capacity approved resource limits changed')
  check({k:v for k,v in item['reservations'].items() if k!=BUCKET}==record['original_reservations'],
        'old allocation history changed')
  check(item['reservations'].get(BUCKET)==10,'capacity diagnostic bucket is exactly ten')
- check(item['no_new_full_application_after']=='2026-10-22T18:00:00+08:00' and
-       item['result_intake_freeze']=='2026-10-22T22:00:00+08:00','capacity deadline display differs from bounded Unix cutoff')
+ if not unlimited:
+  check(item['no_new_full_application_after']=='2026-10-22T18:00:00+08:00' and
+        item['result_intake_freeze']=='2026-10-22T22:00:00+08:00','capacity deadline display differs from bounded Unix cutoff')
  check(item['full_system_matrix']['sha256']==record['original_matrix_sha256'] and
        item.get('final_source_identity')==record['original_source_identity'],'legacy matrix/source identity changed')
- return LIMITS.copy()
+ result=LIMITS.copy()
+ if unlimited:
+  result.update({k:None for k in limits_policy.REMOVED})
+  result['per_end_timeout_seconds']=None
+  result['maximum_capacity_diagnostic_starts']=None
+ return result
 
 def matrix():
  return dict(authority_commit=AUTHORITY,campaign_id=CAMPAIGN,conditions=[
@@ -181,7 +190,11 @@ def condition_check(item,spec,digest):
  check(spec['profile_semantics']==q['supported_profiles'][spec['profile']],'capacity profile semantics changed')
  check(all(spec['identity'][k]==q['source_identity'][k] for k in
        ('core_source_commit','framework_source_commit','binary_sha256')),'wrong capacity runtime')
- check(spec['timeout_seconds']==10800,'capacity per-end timeout remains10800s')
+ if limits_policy.active(item):
+  check(limits_policy.scope_allowed(item,spec),'timeout removal is exact approved capacity scope')
+  check(spec['timeout_seconds'] in (10800,None),'unapproved operational timeout value')
+  limits_policy.effective_timeout(item,spec)
+ else:check(spec['timeout_seconds']==10800,'capacity per-end timeout remains10800s')
  check(0<spec['maximum_result_bytes']<=384*2**20,'capacity endpoint result cap exceeds384MiB')
  return row
 
@@ -193,7 +206,9 @@ def bucket_guard(item,spec):
  charged=lambda a:a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')
  capacity=sum(a.get('budget_bucket')==BUCKET and charged(a) for a in attempts)
  legacy=sum(a.get('budget_bucket')!=BUCKET and charged(a) for a in attempts)
- if is_capacity_spec(spec):check(capacity<10,'capacity ten actual-start allowance exhausted')
+ if is_capacity_spec(spec):
+  if limits_policy.active(item):check(limits_policy.scope_allowed(item,spec),'unapproved capacity allowance waiver')
+  else:check(capacity<10,'capacity ten actual-start allowance exhausted')
  else:
   check(legacy<40,'old campaign40 allowance cannot borrow new diagnostic slots')
   check(False,'old unstarted four frozen: approved batch authorizes capacity conditions only')

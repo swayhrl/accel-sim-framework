@@ -1,4 +1,4 @@
-"""One bounded native child collector; no admissions, queue or registry writer.
+"""One directly supervised native child; no admissions, queue or registry writer.
 
 The controller remains foreground and owns the sole central controller lock.
 The collector is the native child's real parent and persists waitpid status
@@ -62,6 +62,18 @@ def parent_death_signal(signum):
         raise OSError(ctypes.get_errno(), 'PR_SET_PDEATHSIG failed')
 
 
+def time_limit_reached(bounds, elapsed, now):
+    """Pure check: JSON null removes only that formal application time bound.
+
+    popen_factory validates the exact operational approval before persisting
+    bounds. Readiness, central release and termination grace stay bounded.
+    """
+    timeout=bounds['timeout_seconds']
+    intake=bounds['intake_deadline_unix']
+    return ((timeout is not None and elapsed>=timeout) or
+            (intake is not None and now>=intake))
+
+
 def resource_stop(request, native_pid, started):
     # Same physical guards as runner.execute; independently enforced if its
     # controller dies. These helpers do not admit work or mutate the registry.
@@ -69,8 +81,8 @@ def resource_stop(request, native_pid, started):
     import disk_policy
     import run as legacy
     bounds = request['bounds']; resources = c.local_resources(); usage = c.output_usage()
-    if time.monotonic() - started >= bounds['timeout_seconds'] or time.time() >= bounds.get('intake_deadline_unix',c.INTAKE_DEADLINE):
-        return dict(kind='TIMEOUT', reason='original bounded native timeout/intake freeze')
+    if time_limit_reached(bounds,time.monotonic()-started,time.time()):
+        return dict(kind='TIMEOUT', reason='persisted explicit native timeout/intake freeze')
     disk = disk_policy.stop_detail(resources, bounds)
     if (disk or resources['share_disk_free_bytes'] < 40*c.GIB or
         resources['available_memory_bytes'] < 64*c.GIB or
@@ -198,9 +210,9 @@ class NativeProcess:
         return None
 
     def wait(self, timeout=None):
-        until = time.monotonic()+timeout if timeout is not None else float('inf')
+        until = time.monotonic()+timeout if timeout is not None else None
         while self.poll() is None:
-            if time.monotonic() >= until: raise subprocess.TimeoutExpired(self.command, timeout)
+            if until is not None and time.monotonic() >= until: raise subprocess.TimeoutExpired(self.command, timeout)
             time.sleep(.01)
         return self.returncode
 
@@ -210,11 +222,17 @@ def popen_factory(spec, attempt, audit):
                                     'monitor_interval_seconds','termination_grace_seconds')}
     import coordinator as c
     import capacity_policy
-    limits=capacity_policy.effective_limits(c.Coordinator().snapshot())
+    import limits_policy
+    item=c.Coordinator().snapshot();limits=capacity_policy.effective_limits(item)
+    timeout=limits_policy.effective_timeout(item,spec)
     bounds.update({k:limits[k] for k in ('intake_deadline_unix','additional_results_max_bytes','old_plus_new_results_max_bytes')})
-    bounds.update(memory_bytes=spec.get('memory_bytes',8*2**30), timeout_seconds=spec['timeout_seconds'])
+    bounds.update(memory_bytes=spec.get('memory_bytes',8*2**30), timeout_seconds=timeout)
+    if timeout is None:
+        bounds['operational_limits_override']=spec['operational_limits_override']
+        bounds['frozen_identity_timeout_seconds']=spec['identity']['termination_contract']['timeout_seconds']
     binding = dict(attempt_id=attempt['attempt_id'], run_key=attempt['run_key'], identity=spec['identity'],
                    qualification_id=spec['qualification_id'], comparison_invariants_sha256=audit['comparison_invariants_sha256'])
+    if timeout is None:binding['operational_limits_override']=spec['operational_limits_override']
     def spawn(command, cwd, stdout, stderr, env, start_new_session):
         assert stderr == -2 and start_new_session is True
         return NativeProcess(command,cwd,stdout,env,bounds,binding)

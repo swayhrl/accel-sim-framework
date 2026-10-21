@@ -19,6 +19,16 @@ def require(ok,message):
 
 def integer(value):return type(value) is int and value>=0
 
+def validate_termination_contract(summary_contract,identity_contract,scope_contract):
+    """Frozen scientific termination stays exact under operational time removal.
+
+    A request's effective timeout may be None only through the runner's exact
+    approval guard. That does not rewrite this qualification/identity contract
+    or allow a missing full-application drain/normal-exit requirement.
+    """
+    require(scope_contract is not None and
+            summary_contract==identity_contract==scope_contract,'termination contract changed')
+
 def capacity_label(records,resources,master):
     """Classify named applicable vector; preserve exact/bound/UNKNOWN basis."""
     if master==0:return {'label':'FINITE_OFF_BASELINE','near_unbounded':False,
@@ -152,7 +162,7 @@ def validate_summary(summary,identity,scope):
     require(type(summary['cycles']) is int and summary['cycles']>0,'invalid native cumulative cycles')
     require(summary['instructions']==scope['expected_full_instructions'] and integer(summary['instructions']) and summary['instructions']>0,'incomplete full instructions')
     require(summary['slices']==64 and summary['hardware_drained'] is True,'missing64slice hardware drain')
-    require(summary['workload_termination']==identity['termination_contract']==scope['termination_contract'],'termination contract changed')
+    validate_termination_contract(summary['workload_termination'],identity['termination_contract'],scope['termination_contract'])
     require(summary['requester_exact_once_audit'] is True and summary['data_correctness_qualification'] is True,'new source data/exact-once qualification missing')
     for key in ZERO:require(summary[key]==0 and integer(summary[key]),'nonzero/invalid resource '+key)
     require(summary['unique_requesters']==summary['responses'] and integer(summary['responses']),'requester/response mismatch')

@@ -20,6 +20,7 @@ import uuid
 import subprocess
 import policy_v2
 import capacity_policy
+import limits_policy
 import concurrency_policy
 import disk_policy
 
@@ -107,9 +108,10 @@ def counts(item):
     actual=sum(a.get('actual_start') is True for a in item['attempts'])
     uncertain=sum(a['state']=='START_INTENT_UNRECONCILED' for a in item['attempts'])
     pending=sum(a['state']=='RESERVED' for a in item['attempts'])
+    unlimited=limits_policy.active(item)
     item.update(actual_starts=actual,uncertain_start_intents=uncertain,
-                remaining_start_capacity=item['maximum_actual_starts']-actual-uncertain-pending)
-    require(item['remaining_start_capacity']>=0,str(item['maximum_actual_starts'])+' actual-start budget exhausted')
+                remaining_start_capacity=None if unlimited else item['maximum_actual_starts']-actual-uncertain-pending)
+    require(unlimited or item['remaining_start_capacity']>=0,str(item['maximum_actual_starts'])+' actual-start budget exhausted')
     return actual,uncertain,pending
 
 
@@ -226,6 +228,22 @@ class Coordinator:
                         for group in ('runs','resource_leases') for r in data[group].values()),
                         'adopt only after existing E applications and leases retire')
             changed=capacity_policy.amend(item,approval_path,time.time())
+            counts(item)
+            return dict(changed=changed,actual_starts=item['actual_starts'],
+                        remaining_start_capacity=item['remaining_start_capacity'],
+                        t0_unix=item['t0_unix'],limits=capacity_policy.effective_limits(item))
+
+    def adopt_start_and_time_limit_removal(self, approval_path):
+        """Same original lock; apply only once all old-source applications/leases drain."""
+        with self.locked() as (data,item):
+            if not limits_policy.active(item):
+                capacity_policy.effective_limits(item)
+                require(item.get('controller',{}).get('state')=='STOPPED',
+                        'old controller must naturally stop before start/time source switch')
+                require(not any(r.get('experiment_id')==CAMPAIGN and r['status'] in ACTIVE
+                        for group in ('runs','resource_leases') for r in data[group].values()),
+                        'campaign applications and leases must retire before start/time switch')
+            changed=limits_policy.amend(item,approval_path,time.time())
             counts(item)
             return dict(changed=changed,actual_starts=item['actual_starts'],
                         remaining_start_capacity=item['remaining_start_capacity'],
@@ -515,11 +533,12 @@ class Coordinator:
         require(type(growth) is int and 128*2**20<=growth<=FULL_GROWTH,'bounded hard per-attempt result limit required')
         require(spec['campaign_id']==CAMPAIGN and spec['launch_owner']=='E','E is sole full-application owner')
         require(identity['epoch_range'].get('scope')=='full_application','full input only')
-        require(time.time()<self.snapshot()['start_deadline_unix'],'full-application start deadline closed')
+        require(limits_policy.deadline_open(self.snapshot()['start_deadline_unix']),'full-application start deadline closed')
         with self.locked() as (data,item):
             counts(item)
             require(item['uncertain_start_intents']==0,'ambiguous previous start requires explicit reconciliation')
-            require(item['remaining_start_capacity']>0,str(item['maximum_actual_starts'])+' actual-start budget exhausted')
+            require(limits_policy.has_start_capacity(item,spec),str(item['maximum_actual_starts'])+' actual-start budget exhausted')
+            limits_policy.assert_condition_unstarted(item,spec)
             # No legacy key is overwritten or silently adopted as this campaign's result.
             previous=data['runs'].get(key)
             if previous is not None and previous.get('experiment_id')!=CAMPAIGN:
@@ -544,11 +563,12 @@ class Coordinator:
             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
             capacity_policy.bucket_guard(item,spec)
-            require(time.time()<item['start_deadline_unix'],'full-application start deadline closed under lock')
+            require(limits_policy.deadline_open(item['start_deadline_unix']),'full-application start deadline closed under lock')
             bucket=spec['budget_bucket'];require(bucket in item['reservations'],'unknown reserved budget bucket')
             used=sum(policy_v2.charged_bucket(a,item['reservations'])==bucket and
                      (a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')) for a in item['attempts'])
-            require(used<item['reservations'][bucket],'reserved matrix budget exhausted; preserve other controls')
+            require(limits_policy.scope_allowed(item,spec) or used<item['reservations'][bucket],
+                    'reserved matrix budget exhausted; preserve other controls')
             require(digest(spec['binary'])==identity['binary_sha256'],'binary changed before reservation')
             # Full asset hashing/config closure is performed by the reused runner inspector,
             # before this transaction and again before real Popen; its audit must be attached.
@@ -578,10 +598,10 @@ class Coordinator:
         refund or replay an ambiguous start. OS-level spawn failure is not an
         actual simulator start, and retains its failed attempt directory.
         """
-        require(time.time()<self.snapshot()['start_deadline_unix'],'full-application start deadline closed')
+        require(limits_policy.deadline_open(self.snapshot()['start_deadline_unix']),'full-application start deadline closed')
         with self.locked() as (data,item):
             attempt=next(a for a in item['attempts'] if a['attempt_id']==attempt_id)
-            require(time.time()<item['start_deadline_unix'],'full-application start deadline closed under lock')
+            require(limits_policy.deadline_open(item['start_deadline_unix']),'full-application start deadline closed under lock')
             self.require_no_hold(item,attempt['qualification_id'])
             require(attempt['state']=='RESERVED','attempt is already started or terminal')
             require(not any(a['state']=='START_INTENT_UNRECONCILED' for a in item['attempts']),

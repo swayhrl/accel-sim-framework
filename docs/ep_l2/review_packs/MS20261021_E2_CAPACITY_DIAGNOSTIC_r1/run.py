@@ -21,12 +21,13 @@ def main():
  ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--execute-exact-approved-ten',action='store_true',required=True);ap.parse_args()
  coord=c.Coordinator();s=coord.snapshot();check_history(s);limits=policy.effective_limits(s)
  c.require(s['controller']['state']=='STOPPED' and s['uncertain_start_intents']==0,'original controller/intent not at safe boundary')
- c.require(policy.active(s) and 36<=s['actual_starts']<=46 and s['capacity_diagnostic_matrix']==policy.matrix(),'wrong approved phase')
+ c.require(policy.active(s) and s['actual_starts']>=36 and s['capacity_diagnostic_matrix']==policy.matrix(),'wrong approved phase')
  plan=read(P/'PLAN.json');ready=read(P/'EXECUTION_READY_REMOTE_READBACK.json');pub=ready['remote_commit']
  for path in [Path(__file__),P/'PLAN.json',P/'report.py',P/'USER_APPROVAL.json']:published(pub,path)
  c.require(plan['source_identity']['binary_sha256']!=policy.MAIN61 and len(plan['conditions'])==10 and len(plan['pairs'])==5,'five fresh-binary pairs required')
- c.require(plan['maximum_new_starts']==10 and plan['maximum_campaign_starts']==46 and plan['T0']==s['t0_unix'],'wrong campaign limits')
- c.require(time.time()<limits['start_deadline_unix'] and time.time()+10800<=limits['intake_deadline_unix'],'approved start/intake cutoff closed')
+ c.require(plan['maximum_new_starts'] is None and plan['maximum_campaign_starts'] is None and plan['authorized_condition_count']==10 and plan['T0']==s['t0_unix'],'wrong campaign limits')
+ c.require(limits['start_deadline_unix'] is None and limits['intake_deadline_unix'] is None,'explicit time-limit removal not adopted')
+ for path in [P/'limits_removal_r1/USER_APPROVAL.json']:published(pub,path)
  qids=set();specs=[];common=None
  for row in plan['conditions']:
   specpath=checked(row['spec']);qpath=checked(row['qualification']);published(pub,specpath);published(pub,qpath)
@@ -36,7 +37,7 @@ def main():
   c.require(policy.is_capacity_spec(spec) and not spec.get('retry_previous_attempt') and not spec.get('retry_reason'),'capacity only; no automatic retry')
   contract=policy.qualification(q,c.digest);vector=(contract['common_capacity_vector'],contract['native_cache_geometry'])
   c.require(common is None or common==vector,'per-workload capacity tuning forbidden');common=vector
-  c.require(spec['maximum_result_bytes']<=384*2**20 and spec['timeout_seconds']==10800,'endpoint bounds changed')
+  c.require(spec['maximum_result_bytes']<=384*2**20 and ((spec['timeout_seconds'] is None and spec['condition_id']=='V3_CAPACITY_convolutionSeparable_S_ON') or spec['timeout_seconds']==10800),'endpoint bounds changed')
   matches=[a for a in s['attempts'] if a['run_key']==row['run_key']];c.require(len(matches)<=1,'repeat condition attempt exists')
   if not matches:specs.append(spec)
   if qid not in qids:
@@ -69,7 +70,7 @@ def main():
  original_execute=controller.execute;preflight_lock=threading.Lock()
  def guarded_execute(spec,coord):
   with preflight_lock:
-   now=coord.snapshot();check_history(now);c.require(now['actual_starts']<46,'approved total46 exhausted');policy.bucket_guard(now,spec)
+   now=coord.snapshot();check_history(now);policy.bucket_guard(now,spec)
    current=read(c.SHARED/'RUN_REGISTRY.json');r=c.local_resources();u=c.output_usage();future=sum(max(0,v.get('disk_growth_bytes',c.FULL_GROWTH)-c.retained_tree_bytes(Path(v['result_directory']))) for v in current['runs'].values() if v['status'] in c.ACTIVE and v.get('experiment_id')==c.CAMPAIGN)
    future+=sum(v.get('result_growth_bytes',0) for v in current['resource_leases'].values() if v['status'] in c.ACTIVE and v.get('experiment_id')==c.CAMPAIGN)
    c.require(u['new_bytes']+future+spec['maximum_result_bytes']+margin<=limits['additional_results_max_bytes'] and u['total_bytes']+future+spec['maximum_result_bytes']+margin<=limits['old_plus_new_results_max_bytes'],'collector/metadata cumulative result reserve unavailable')

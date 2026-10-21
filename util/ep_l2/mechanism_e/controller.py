@@ -16,6 +16,7 @@ from coordinator import (Coordinator,CAMPAIGN,AUTHORITY,require,digest,run_key,w
  resource_gate,local_resources,output_usage,FIELD,OUTPUT,FULL_GROWTH,GIB)
 from runner import execute,accept_pair
 import capacity_policy
+import limits_policy
 import concurrency_policy
 import durable_exit
 
@@ -94,7 +95,8 @@ def step(coord,queue_path):
         require(queue['campaign_id']==CAMPAIGN and queue['prepared_by']=='E','wrong dispatch authority')
         require(queue['authority_commit']==AUTHORITY,'wrong frozen contract')
         limits=capacity_policy.effective_limits(coord.snapshot())
-        require(queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
+        require(limits['start_deadline_unix'] is None or
+                queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
         pending=[];snapshot=coord.snapshot()
         for entry in queue['specs']:
             path=Path(entry['path']);require(digest(path)==entry['sha256'],'queued spec changed')
@@ -124,7 +126,7 @@ def step(coord,queue_path):
                     if not resource_only:pending.clear()
                 if resource_only and queue_path.read_bytes()!=raw:
                     blocked=True;report['queue_change_note']='Queue changed: admitted work drains; no new admissions until explicit revision intake.'
-                while pending and len(running)<target and not blocked and time.time()<limits['start_deadline_unix']:
+                while pending and len(running)<target and not blocked and limits_policy.deadline_open(limits['start_deadline_unix']):
                     # Process actual terminal outcomes before spending released
                     # resources, so a capacity FAILED blocks further admissions.
                     if resource_only and any(f.done() for f in running):break
