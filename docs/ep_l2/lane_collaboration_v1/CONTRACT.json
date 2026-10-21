@@ -1,0 +1,270 @@
+{
+  "ack_statuses": [
+    "RECEIVED",
+    "VALIDATED",
+    "APPLIED",
+    "BLOCKED",
+    "REJECTED"
+  ],
+  "activity_values": [
+    "JOINED",
+    "WORKING",
+    "AT_SAFE_BOUNDARY",
+    "IDLE",
+    "BLOCKED",
+    "UNKNOWN"
+  ],
+  "authority": "MESSAGE_TRANSPORT_ONLY_NOT_EXECUTION_OR_SCIENTIFIC_ACCEPTANCE",
+  "bootstrap": {
+    "E2_may_publish_contract_and_request_join": true,
+    "F_cross_host": "Fetch owner branches on current host; use explicit real worktree with correct origin+owner branch. Historical174 reference path is not remote filesystem proof.",
+    "contract_is_not_registration_ACK": true,
+    "each_lane_must_emit_own_initial_STATUS_and_ACK": true,
+    "existing_handoff_and_AGENTS_unchanged": true,
+    "foreign_lane_status_must_not_be_fabricated": true,
+    "support_lanes_must_not_be_activated_implicitly": true,
+    "unacknowledged_panel_label": "UNENROLLED"
+  },
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "consumption": {
+    "active_native_protection": "No interruption/restart or in-flight source/registry change for message intake",
+    "bounded_checks": "Only new indexed event metadata and exact referenced small artifacts, bounded by configured limits; no raw/trace scan",
+    "out_of_order": "Return unseen lower-sequence events in late_unseen; do not consume them, mark them seen or change their sender cursor. Retain them for explicit reconciliation.",
+    "pending_consumer": "No ACK means UNACKNOWLEDGED, not failure, execution or scientific approval",
+    "stale_presence": "A declared status is not a process/lease heartbeat; report last observed time, never infer remote process state",
+    "triggers": [
+      "At start/resume of existing lane turn",
+      "After meaningful artifact publication or accepted-result delivery",
+      "Before dependent work or next safe execution boundary",
+      "At current task completion"
+    ],
+    "unchanged_state": "No repeat event or status rewrite solely to claim no change; keep current task moving"
+  },
+  "cursor_required": [
+    "owner",
+    "campaign_id",
+    "seen_event_ids",
+    "seen_dedup_keys",
+    "last_sequence_by_sender"
+  ],
+  "event_fields": {
+    "ack_for": "required for ACK: owner/event_id/event_sha256/source_commit",
+    "ack_status": "required for ACK: one ack_statuses",
+    "body": "bounded human-readable data; never executable command authority",
+    "campaign_id": "exact campaign_id",
+    "correlation_id": "optional <=240 character cross-channel conversation identifier; no execution authority",
+    "created_at_utc": "ISO8601 UTC, informational ordering only",
+    "dedup_key": "stable owner-qualified logical delivery key",
+    "event_id": "owner-prefixed unique immutable ID, safe filename",
+    "in_reply_to": "optional exact prior event reference",
+    "kind": "one of kinds",
+    "owner": "one active lane ID",
+    "recipients": "nonempty distinct active lane IDs, explicit fanout",
+    "refs": "array of exact immutable Git blob references; no local absolute path can stand in for cross-host reference",
+    "schema": "exact event_schema",
+    "sequence": "positive strictly increasing owner sequence; no reuse",
+    "subject": "short change-oriented summary",
+    "work_key": "optional <=240 character stable scientific-work/delivery key across old/new channels; does not merge conflicting terminal evidence"
+  },
+  "event_kind_requirements": {
+    "ACK": "ack_for and ack_status required; source_commit cannot be blank; author must be original recipient; VALIDATED/APPLIED require explicit --confirm-reference-review owner attestation, never scientific acceptance",
+    "DELIVERY": "At least one immutable trusted Git reference; scientific status can only be claimed by pointing to E accepted artifacts",
+    "REQUEST": "No execution or contract authority; refs may be empty for an initial coordination request",
+    "STATUS": "Own lane activity only; refs may be empty"
+  },
+  "event_optional": [
+    "in_reply_to",
+    "ack_for",
+    "ack_status",
+    "correlation_id",
+    "work_key"
+  ],
+  "event_required": [
+    "schema",
+    "event_id",
+    "owner",
+    "sequence",
+    "kind",
+    "created_at_utc",
+    "campaign_id",
+    "recipients",
+    "subject",
+    "body",
+    "refs",
+    "dedup_key"
+  ],
+  "event_schema": "EPL2_LANE_EVENT_V1",
+  "kinds": [
+    "REQUEST",
+    "DELIVERY",
+    "ACK",
+    "STATUS"
+  ],
+  "lanes": {
+    "A2": {
+      "branch": "hrl/ep-l2-ms20261019-a-core-v1",
+      "host_binding": "VERIFY_ACTUAL_CWD_GIT_ROOT_EXACT_OWNER_BRANCH_AND_ORIGIN_REPO",
+      "notification": "USER_REPORTS_ACTIVE_AND_NOTIFIED_NOT_PROTOCOL_ACK",
+      "participation": "UNENROLLED",
+      "reference_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1",
+      "role": "Producer/source/runtime/native evidence; no E acceptance authority",
+      "worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1"
+    },
+    "B": {
+      "branch": "hrl/ep-l2-ms20261019-b-victim-v1",
+      "host_binding": "VERIFY_ACTUAL_CWD_GIT_ROOT_EXACT_OWNER_BRANCH_AND_ORIGIN_REPO",
+      "notification": "USER_REPORTS_ACTIVE_AND_NOTIFIED_NOT_PROTOCOL_ACK",
+      "participation": "UNENROLLED",
+      "reference_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-b-victim-v1",
+      "role": "Victim/reuse evidence and candidate input semantics",
+      "worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-b-victim-v1"
+    },
+    "C": {
+      "branch": "hrl/ep-l2-ms20261019-c-ro-v1",
+      "host_binding": "VERIFY_ACTUAL_CWD_GIT_ROOT_EXACT_OWNER_BRANCH_AND_ORIGIN_REPO",
+      "notification": "USER_REPORTS_ACTIVE_AND_NOTIFIED_NOT_PROTOCOL_ACK",
+      "participation": "UNENROLLED",
+      "reference_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-c-ro-v1",
+      "role": "Readonly/oracle/input semantics and qualification evidence",
+      "worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-c-ro-v1"
+    },
+    "D": {
+      "branch": "hrl/ep-l2-ms20261019-d-analysis-v1",
+      "host_binding": "VERIFY_ACTUAL_CWD_GIT_ROOT_EXACT_OWNER_BRANCH_AND_ORIGIN_REPO",
+      "notification": "USER_REPORTS_ACTIVE_AND_NOTIFIED_NOT_PROTOCOL_ACK",
+      "participation": "UNENROLLED",
+      "reference_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1",
+      "role": "Incremental scientific analysis, figures and manuscript evidence",
+      "worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-d-analysis-v1"
+    },
+    "E2": {
+      "branch": "hrl/ep-l2-ms20261019-e-eval-v1",
+      "host_binding": "VERIFY_ACTUAL_CWD_GIT_ROOT_EXACT_OWNER_BRANCH_AND_ORIGIN_REPO",
+      "notification": "USER_REPORTS_ACTIVE_AND_NOTIFIED_NOT_PROTOCOL_ACK",
+      "participation": "UNENROLLED",
+      "reference_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1",
+      "role": "Sole formal application acceptance/execution owner; temporary collaboration protocol owner",
+      "worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1"
+    },
+    "F": {
+      "branch": "hrl/ep-l2-ms20261019-f-env-v1",
+      "host_binding": "VERIFY_ACTUAL_CWD_GIT_ROOT_EXACT_OWNER_BRANCH_AND_ORIGIN_REPO",
+      "notification": "USER_REPORTS_ACTIVE_AND_NOTIFIED_NOT_PROTOCOL_ACK",
+      "participation": "UNENROLLED",
+      "reference_worktree": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-f-env-v1",
+      "role": "Environment/cross-host resource/input feasibility and provenance",
+      "worktree": null
+    }
+  },
+  "limits": {
+    "max_body_characters": 8000,
+    "max_cursor_event_entries": 4096,
+    "max_cursor_state_bytes": 1048576,
+    "max_event_bytes": 65536,
+    "max_events_per_check": 128,
+    "max_referenced_metadata_bytes": 16777216,
+    "max_refs_per_event": 32,
+    "max_transport_files_scanned_per_check": 512
+  },
+  "local_mailbox_root": "/workspace/ep_l2_ms20261019_shared/LANE_COLLABORATION_V1",
+  "local_mailbox_scope": "Same physical original174 filesystem only; never presumed visible to remote F or any other host",
+  "paths": {
+    "cursor": "state/{owner}/cursor.json",
+    "events": "events/{owner}/{event_id}.json",
+    "local_import_cache": "{consumer}/inbox/{sender}/{event_id}.json",
+    "local_owner_events": "{owner}/events/{event_id}.json",
+    "local_owner_state": "{owner}/state",
+    "status": "status/{owner}.json"
+  },
+  "protocol_owner": "E2",
+  "protocol_path": "docs/ep_l2/lane_collaboration_v1",
+  "reference_fields": {
+    "commit": "full40hex published immutable Git commit",
+    "path": "repo-relative regular-file path, no traversal",
+    "repo": "repository full_name",
+    "role": "producer_release / accepted_pair / endpoint_receipt / analysis / request_context / other declared role",
+    "sha256": "64hex SHA256 of exact Git blob bytes"
+  },
+  "reference_required": [
+    "repo",
+    "commit",
+    "path",
+    "sha256",
+    "role"
+  ],
+  "reference_validation": {
+    "ACK_RECEIVED": "Only exact published event receipt; no artifact validation implied",
+    "recipient": "Before VALIDATED/APPLIED, actual owner reviews referenced artifacts using existing scientific readers or bounded Git blob checks and explicitly confirms reference review; this attestation is not scientific acceptance",
+    "transport": "check/import-event FORMAT_ONLY_NOT_CONTENT_VERIFIED; source event independently verified by actual owner remote branch/commit/SHA",
+    "validated_applied": "Explicit owner review confirmation plus exact regular Git blob SHA verification limited to same-Framework docs/ep_l2 allowlisted text metadata, <=16MiB total; APPLIED requires published output ref; never scientific acceptance"
+  },
+  "repository": {
+    "full_name": "swayhrl/accel-sim-framework",
+    "git_remote": "origin",
+    "url": "https://github.com/swayhrl/accel-sim-framework"
+  },
+  "schema": "EPL2_LANE_COLLABORATION_CONTRACT_V1",
+  "science_rules": {
+    "A2_release": "A2 producer artifact can be a dependency but never substitutes E independent qualification",
+    "D_ack": "Analysis intake/consumption only; cannot convert incomplete/failed/HOLD to accepted",
+    "E_authority_directory": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/",
+    "E_authority_discovery_url": "https://github.com/swayhrl/accel-sim-framework/blob/hrl/ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/STATUS.md",
+    "acceptance_owner": "E2",
+    "accepted_results_authority": "Existing E CURRENT_ACCEPTED pair/endpoint artifacts and original ledger; transport event is only a pointer",
+    "ack_grants_launch": false,
+    "approved_science_scope_unchanged": true,
+    "authority_reference_rule": "Discovery links are mutable pointers only; every scientific delivery must pin actual E accepted artifact commit/path/SHA. This transport contract does not specify or reset startup limits, time limits, quotas, result accounting or T0.",
+    "historical_results_immutable": true,
+    "message_grants_budget_or_deadline_change": false,
+    "other_projects_unchanged": true,
+    "request_grants_launch": false
+  },
+  "status_and_cursor_owner_only": true,
+  "status_required": [
+    "schema",
+    "owner",
+    "campaign_id",
+    "updated_at_utc",
+    "activity",
+    "last_emitted_event_id",
+    "last_sequence",
+    "current_task",
+    "blocking_dependencies"
+  ],
+  "status_schema": "EPL2_LANE_STATUS_V1",
+  "support_lanes": {
+    "BA": {
+      "auto_join": false,
+      "participation": "INACTIVE_SUPPORT"
+    },
+    "S": {
+      "auto_join": false,
+      "participation": "INACTIVE_SUPPORT"
+    },
+    "T": {
+      "auto_join": false,
+      "participation": "INACTIVE_SUPPORT"
+    }
+  },
+  "transport": {
+    "authoritative_cross_branch_host": "Published Git commit+blob+SHA, fetched and read with git show without checkout/merge/reset",
+    "does_not_wake_idle_codex": true,
+    "no_background_poller": true,
+    "no_new_goal": true,
+    "no_secondary_controller": true,
+    "remote_readback_required": true,
+    "remote_visibility_before_ack": "Consumer independently reads source commit/blob and validates SHA; recipient signs only own ACK event",
+    "same_host_fast_path": "Local immutable mailbox delivery with origin event bytes; unpublished refs explicitly preview-only"
+  },
+  "writer_rules": {
+    "authentication_scope": "Branch/root checks prevent accidental cross-lane writes under the shared Linux account; they are not cryptographic agent authentication.",
+    "duplicate_conflicting": "Reject/retain conflict evidence; do not overwrite either origin",
+    "duplicate_identical": "No-op plus existing ID; do not repeat downstream work",
+    "imported_bytes": "Byte-identical local cache is transport evidence, not origin publication or ACK",
+    "origin_events": "Only owner in its registered branch/worktree publishes original event; immutable O_EXCL/no overwrite",
+    "sequence_collision": "Reject conflict; one active writer per lane across hosts; no forced push",
+    "status_cursor": "Only own lane updates own status/cursor atomically under per-owner transport lock",
+    "transport_lock": "Local per-owner mailbox lock only; never a resource/controller lock",
+    "worktree_validation": "All lanes: actual cwd must equal canonical git worktree root; verify exact registered branch and normalized origin repository. Configured absolute paths are host references/defaults, not cross-host existence claims; F requires explicit current-host --worktree."
+  }
+}

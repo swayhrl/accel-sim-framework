@@ -1,0 +1,176 @@
+{
+  "body": {
+    "engineering_review_packet_status": "READY_FOR_E_REVIEW",
+    "final_delivery_commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+    "important_findings": [
+      "FWT localCUDA11 reference hardcodeslogD23 and cannot identify originalscaled-logD21 capture source.",
+      "SGEMM already has E2 independent exploratory registration, still HOLD/not launchable."
+    ],
+    "input_packet_status": "MISSING",
+    "legacy_channel_file": "F_TO_E2_D_FWT_SGEMM_INPUT_PREPARATION_r1.json",
+    "no_background_poller": true,
+    "no_pending_new_task": true,
+    "no_scientific_work_repeated": true,
+    "preserved": [
+      "FWT E011/E012 INCOMPLETE",
+      "Btree/SpMV/Scan HOLD",
+      "原Goal及历史结果/权限",
+      "原174正式执行地点与E2唯一调度"
+    ],
+    "remaining_dependencies": [
+      {
+        "id": "FWT-SOURCE",
+        "observed": "run.sh has -logK7 -logD21 and SDK4.2-scaled YAML mapping. Local pinned CUDA11 reference hardcodes log2Data23 and does not parse logK/logD; it is not a reconstruction of this input.",
+        "owner": "F / original capture asset owner",
+        "required_evidence": "Exact scaled SDK4.2-family application source commit/patch, capture executable SHA and build flags/log.",
+        "scope": "source_recapture",
+        "status": "MISSING",
+        "workload": "FWT_7_21"
+      },
+      {
+        "id": "FWT-CAPTURE",
+        "observed": "CUDA_VERSION9.1 and CUDA_VISIBLE_DEVICES4 are literal script declarations; binary version70 is recorded. GPU device index is not model/UUID. FWT saved/kernel1 header does not report NVBit/tracer version.",
+        "owner": "F / original capture asset owner",
+        "required_evidence": "Capture GPU model/UUID, driver and actual toolkit build; original NVBit/tracer/postprocessor commits and executable hashes/session log.",
+        "scope": "capture_provenance",
+        "status": "MISSING",
+        "workload": "FWT_7_21"
+      },
+      {
+        "id": "FWT-NUMERIC-DATA",
+        "observed": "Recorded list has only2 HtoD+19kernels. No numeric HtoD payload, memset or DtoH record in that list. Current reference srand2007/CPU checker cannot be rebound to unknown capture source.",
+        "owner": "F / original capture asset owner",
+        "required_evidence": "Original initialized HtoD payload or exact bound generator/seed, allocation/zeroing contract and captured numerical output/CPU check.",
+        "scope": "numeric_reproduction",
+        "status": "MISSING",
+        "workload": "FWT_7_21"
+      },
+      {
+        "id": "FWT-RESTART",
+        "observed": "E011/E012 both INCOMPLETE. Old elapsed/log appearance cannot establish exit0; no rerun is authorized by this preparation. Old main61 scope does not qualify new capacity runtime.",
+        "owner": "E2",
+        "required_evidence": "New explicit FWT restoration approval and E-selected source/binary/profile/input qualification with durable native exit/drain evidence for any future endpoints.",
+        "scope": "execution_authorization",
+        "status": "MISSING",
+        "workload": "FWT_7_21"
+      },
+      {
+        "id": "SGEMM-SOURCE",
+        "observed": "Pinned local cuda SGEMM reference exists with matching mysgemmNT kernel family, but no binding from its commit to captured binary. Directory11.0 is not compiler proof.",
+        "owner": "F / original capture asset owner",
+        "required_evidence": "Application source commit/patch, actual executable SHA and original build/toolchain flags/log.",
+        "scope": "source_recapture",
+        "status": "MISSING",
+        "workload": "SGEMM_medium"
+      },
+      {
+        "id": "SGEMM-CAPTURE",
+        "observed": "run.sh is absent beside frozen traces; YAML supplies a reference application invocation. Header records NVBit1.4/tracer3/binary70 only; exact source/GPU/CUDA build remain unknown.",
+        "owner": "F / original capture asset owner",
+        "required_evidence": "Original run.sh/capture command, GPU model/UUID/driver/toolkit, NVBit/tracer/postprocessor commits+hashes and original archive/session identity.",
+        "scope": "capture_provenance",
+        "status": "MISSING",
+        "workload": "SGEMM_medium"
+      },
+      {
+        "id": "SGEMM-DATA-ORACLE",
+        "observed": "Trace list records two HtoD addresses/byte lengths, not payload values. Dataset root/expected files absent at checked source/data paths. Dimensions remain UNKNOWN; not inferred from copy lengths or grid.",
+        "owner": "F / original capture asset owner",
+        "required_evidence": "Exact matrix1.txt/matrix2t.txt content hashes and matrix dimensions; reference matrix3 output/hash or bound numeric generator/check.",
+        "scope": "numeric_reproduction",
+        "status": "MISSING",
+        "workload": "SGEMM_medium"
+      },
+      {
+        "id": "SGEMM-RO",
+        "observed": "SGEMM RO certificate UNKNOWN; no Conv certificate reuse, no rewriting UNKNOWN as measured0.",
+        "owner": "C / A2 / E2",
+        "required_evidence": "Own full-input RO certificate or explicit independently reviewed empty-coverage ordinary-path fallback for chosen fixed-policy F.",
+        "scope": "runtime_input_qualification",
+        "status": "MISSING",
+        "workload": "SGEMM_medium"
+      },
+      {
+        "id": "SGEMM-EXECUTION",
+        "observed": "E2_EXP_SGEMM_MEDIUM_20261020_r1 already exists, REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE; not missing registration and not an automatic Btree replacement.",
+        "owner": "A2 / E2",
+        "required_evidence": "Exact supported producer/config/profile/full-input qualification and explicit new exploratory scientific scope/start approval.",
+        "scope": "execution_authorization",
+        "status": "MISSING",
+        "workload": "SGEMM_medium"
+      }
+    ],
+    "result_path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1",
+    "task_state": "COMPLETED_PRIOR_ROUND_REINDEX_ONLY",
+    "transport_change_only": true
+  },
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "correlation_id": "F_TO_E2_D_FWT_SGEMM_INPUT_PREPARATION_r1",
+  "created_at_utc": "2026-10-21T14:34:03.252396Z",
+  "dedup_key": "F:INPUT_PREPARATION_FWT_SGEMM:20261021_r1:b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+  "event_id": "F-00000003-872a38c678b4",
+  "kind": "DELIVERY",
+  "owner": "F",
+  "recipients": [
+    "E2",
+    "D",
+    "A2",
+    "B",
+    "C"
+  ],
+  "refs": [
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/README.md",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "input_preparation_report",
+      "sha256": "c2772b10c09037a66b9336f763fbd7a40ce0ffea7641b92acdc8bd4632fe78eb"
+    },
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/DELIVERY.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "input_preparation_delivery",
+      "sha256": "da89732119e97495cd8479e81cf1d3bfa8c0c9cb5621b3bf319923bd352b979a"
+    },
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/MISSING.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "input_provenance_dependencies",
+      "sha256": "c538aef0d5bd987a812f0fed0f383da07aed9bb1d8c135093d4dfe1dfd082594"
+    },
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/FWT_7_21/MANIFEST.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "input_manifest",
+      "sha256": "06282f6f316d5b53522435410724d58a5520f3d0259194fcbbbae5a592717890"
+    },
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/SGEMM_medium/MANIFEST.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "input_manifest",
+      "sha256": "56f7821dc096e3ff0a38e5fa626b93f33bd9173542a77f3838ae44057e308ae9"
+    },
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/REMOTE_READBACK.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "publication_readback",
+      "sha256": "861e49bffac5274546a678478be0ae3d25872c517fe3c46b556138fb7d8d795d"
+    },
+    {
+      "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/VALIDATION.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "metadata_control_checks_only",
+      "sha256": "616281dd40dc4aae5756c21c9ef3f6c4d8604c3d51e1a4c595b21dbbb7d18fcd"
+    }
+  ],
+  "schema": "EPL2_LANE_EVENT_V1",
+  "sequence": 3,
+  "subject": "FWT/SGEMM既有输入包交付索引及9项MISSING；F当前IDLE",
+  "work_key": "EPL2_INPUT_PREPARATION_FWT_SGEMM_20261021_r1"
+}
