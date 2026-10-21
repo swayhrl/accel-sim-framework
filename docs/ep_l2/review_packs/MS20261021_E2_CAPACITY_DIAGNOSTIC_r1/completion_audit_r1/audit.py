@@ -4,7 +4,7 @@ Uses exact registered receipts and the existing independent terminal validator.
 Does not reread large traces/raw logs or reconstruct missing native exit status.
 """
 from pathlib import Path
-import hashlib, importlib.util, json, sys, time
+import hashlib, importlib.util, json, subprocess, sys, time
 
 PACK = Path(__file__).resolve().parents[1]
 ROOT = PACK.parents[3]
@@ -29,6 +29,10 @@ def audit():
     module_spec.loader.exec_module(report)
     coord = c.Coordinator()
     state = coord.snapshot()
+    central = read(c.SHARED / 'RUN_REGISTRY.json')
+    active_owned = {group: [row for row in central[group].values()
+                            if row.get('experiment_id') == c.CAMPAIGN and row['status'] in c.ACTIVE]
+                    for group in ('runs', 'resource_leases')}
     old = report.check_history(state)
     plan = read(PACK / 'PLAN.json')
     assert plan['authority_commit'] == '49343880865edb22a17523790fc32dd55975966c'
@@ -81,6 +85,11 @@ def audit():
         assert native == receipt['native_exit_evidence']
         assert native['exit_code'] == native['wait_status'] == 0 and native['stop_reason'] is None
         assert native['native_process'] == receipt['process'] == attempt['process']
+        assert native['guardian_process'] == attempt['exit_collector_process']
+        assert native['released_to_native'] is True
+        assert native['binding']['attempt_id'] == attempt['attempt_id']
+        assert native['binding']['run_key'] == attempt['run_key']
+        assert native['binding']['identity'] == attempt['identity']
         spec = read(Path(pointer['path']).parent / 'input_spec.json')
         assert runner.validate_terminal_summary(receipt['summary'], spec, qrow, receipt['input_audit']) == receipt['validation']
         record.update(status='VERIFIED_ACCEPTED_ENDPOINT', receipt=pointer, native_exit_sha256=receipt['native_exit_receipt_sha256'], native_process=native['native_process'], cycles=receipt['summary']['cycles'], instructions=receipt['summary']['instructions'], slices=64, hardware_drained=True, capacity_classification=receipt['summary'].get('capacity_classification'), parser_only_recovered=pointer.get('parser_only_recovered', False))
@@ -98,13 +107,17 @@ def audit():
             delivery = read(PACK / (pair['pair_id'] + '_D_DELIVERY_RECEIPT.json'))
             assert delivery['status'] == 'DELIVERED_AFTER_REMOTE_READBACK_NOT_CONSUMPTION_CLAIM'
             assert len(delivery['channels']) == 3
+            published_path = (PACK / (pair['pair_id'] + '_ACCEPTED_PAIR.json')).relative_to(ROOT).as_posix()
+            published = subprocess.check_output(['git', '-C', str(ROOT), 'show', delivery['remote_publication'] + ':' + published_path], timeout=15)
+            assert json.loads(published) == artifact, 'D delivery must bind the exact published accepted pair'
+            subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', delivery['remote_publication'], 'HEAD'], check=True, timeout=15)
             row.update(status='VERIFIED_CURRENT_ACCEPTED_AND_D_DELIVERED', cycles_off=pair['cycles_left'], cycles_on=pair['cycles_right'], delivery=delivery)
         pairs.append(row)
     usage = c.output_usage()
     assert usage['new_bytes'] <= state['additional_results_max_bytes'] == 10 * 1024**3
     assert usage['total_bytes'] <= state['old_plus_new_results_max_bytes'] == 24 * 1024**3
-    complete = all(x['status'] == 'VERIFIED_ACCEPTED_ENDPOINT' for x in endpoints) and all(x['status'] == 'VERIFIED_CURRENT_ACCEPTED_AND_D_DELIVERED' for x in pairs) and state['controller']['state'] == 'STOPPED'
-    return dict(schema='E2_CAPACITY_REQUIREMENT_COMPLETION_AUDIT_V1', at_unix=time.time(), status='COMPLETE_PROVEN' if complete else 'INCOMPLETE_WAIT_FOR_ACTUAL_TERMINAL_EVIDENCE', actual_starts=46, new_actual_starts=10, original_36_history_unchanged=True, original_T0=state['t0_unix'], original_matrix_reservations_holds_accepted_results_preserved=True, producer_commit=plan['formal_producer']['commit'], frozen_source_identity=plan['source_identity'], qualifications=qualifications, endpoints=endpoints, pairs=pairs, controller=state['controller'], output_usage=usage, result_limits=dict(new_bytes=state['additional_results_max_bytes'], old_plus_new_bytes=state['old_plus_new_results_max_bytes']), no_additional_application_or_native_starts=True, no_raw_or_trace_body_read=True, no_registry_or_lease_mutation=True, peer_ACK_not_inferred=True)
+    complete = all(x['status'] == 'VERIFIED_ACCEPTED_ENDPOINT' for x in endpoints) and all(x['status'] == 'VERIFIED_CURRENT_ACCEPTED_AND_D_DELIVERED' for x in pairs) and state['controller']['state'] == 'STOPPED' and not any(active_owned.values())
+    return dict(schema='E2_CAPACITY_REQUIREMENT_COMPLETION_AUDIT_V1', at_unix=time.time(), status='COMPLETE_PROVEN' if complete else 'INCOMPLETE_WAIT_FOR_ACTUAL_TERMINAL_EVIDENCE', actual_starts=46, new_actual_starts=10, original_36_history_unchanged=True, original_T0=state['t0_unix'], original_matrix_reservations_holds_accepted_results_preserved=True, producer_commit=plan['formal_producer']['commit'], frozen_source_identity=plan['source_identity'], qualifications=qualifications, endpoints=endpoints, pairs=pairs, controller=state['controller'], active_owned_runs_and_leases=active_owned, output_usage=usage, result_limits=dict(new_bytes=state['additional_results_max_bytes'], old_plus_new_bytes=state['old_plus_new_results_max_bytes']), no_additional_application_or_native_starts=True, no_raw_or_trace_body_read=True, no_registry_or_lease_mutation=True, peer_ACK_not_inferred=True)
 
 
 if __name__ == '__main__':
