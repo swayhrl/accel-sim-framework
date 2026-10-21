@@ -21,6 +21,7 @@ from headroom_config import options
 from validate import validate_summary
 from acceptance import load_current_authority,reject_withdrawn,current_manifest
 import policy_v2
+import capacity_policy
 import disk_policy
 import durable_exit
 
@@ -70,7 +71,7 @@ def inspect(spec,coord,launch_check=True):
     require(spec['parser']==q['terminal_parser'] and digest(spec['parser']['path'])==spec['parser']['sha256'],
             'parser not independently bound to this version')
     require(type(spec['timeout_seconds']) is int and 0<spec['timeout_seconds']<=86400,'bounded explicit timeout required')
-    if launch_check:require(time.time()+spec['timeout_seconds']<=INTAKE_DEADLINE,'run could exceed declared result-intake freeze')
+    if launch_check:require(time.time()+spec['timeout_seconds']<=capacity_policy.effective_limits(item)['intake_deadline_unix'],'run could exceed declared result-intake freeze')
     require(all(isinstance(k,str) and isinstance(v,str) for k,v in spec['environment'].items()),'explicit string environment required')
     require(not set(spec['environment']) & {'TMPDIR','TMP','TEMP','XDG_CACHE_HOME'},'temporary/cache destinations are owned workspace output only')
     require(not any(k in spec['environment'] and spec['environment'][k]!='1' for k in
@@ -108,7 +109,8 @@ def disable_owned_core_dumps():
 def execute(spec,coord):
     disable_owned_core_dumps()
     # Called only by the one live E controller after an explicit ready event.
-    require(time.time()<START_DEADLINE,'no new complete applications after cutoff')
+    limits=capacity_policy.effective_limits(coord.snapshot())
+    require(time.time()<limits['start_deadline_unix'],'no new complete applications after cutoff')
     audit=inspect(spec,coord);spec=dict(spec,input_audit=audit)
     attempt=coord.reserve_application(spec);directory=Path(attempt['result_directory'])
     created=False;process=None;status='INCOMPLETE';detail='prelaunch snapshot incomplete';result={
@@ -153,12 +155,12 @@ def execute(spec,coord):
                     legacy.terminate_owned(process);break
                 peak=max(peak,legacy.process_tree_rss(process.pid));resources=local_resources();usage=output_usage()
                 disk_stop=disk_policy.stop_detail(resources,attempt)
-                if time.monotonic()-started>spec['timeout_seconds'] or time.time()>=INTAKE_DEADLINE:
+                if time.monotonic()-started>spec['timeout_seconds'] or time.time()>=limits['intake_deadline_unix']:
                     status,detail='TIMEOUT','predeclared timeout/intake freeze';legacy.terminate_owned(process);break
                 if (disk_stop is not None or resources['share_disk_free_bytes']<40*GIB
                     or resources['available_memory_bytes']<64*GIB or peak>spec.get('memory_bytes',8*GIB)
                     or retained_tree_bytes(directory)>=attempt['maximum_result_bytes']
-                    or usage['new_bytes']>=6*GIB or usage['total_bytes']>=20*GIB):
+                    or usage['new_bytes']>=limits['additional_results_max_bytes'] or usage['total_bytes']>=limits['old_plus_new_results_max_bytes']):
                     status,detail='RESOURCE_LIMIT','own run stopped at physical/RAM/output guard';
                     result['resource_limit']=disk_stop or dict(status='RESOURCE_LIMIT',reason='RAM_SHARE_OR_RESULT_LIMIT',resources=resources)
                     result['resource_limit'].update(attempt_id=attempt['attempt_id'],lease_id=attempt['attempt_id'],

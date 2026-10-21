@@ -19,6 +19,7 @@ import time
 import uuid
 import subprocess
 import policy_v2
+import capacity_policy
 import disk_policy
 
 OLD_TOOLS = Path('/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5')
@@ -87,11 +88,14 @@ def ledger(data):
     item=data[FIELD]
     require(item['campaign_id']==CAMPAIGN and item['authority_commit'] in
             (AUTHORITY,policy_v2.PRIOR_AUTHORITY), 'campaign authority mismatch')
-    expected=40 if item['authority_commit']==AUTHORITY else 24
-    require(item['maximum_actual_starts']==expected and item['start_deadline_unix']==START_DEADLINE,
-            'budget/deadline changed')
-    require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
-            'output budget changed')
+    if capacity_policy.active(item):
+        capacity_policy.effective_limits(item)
+    else:
+        expected=40 if item['authority_commit']==AUTHORITY else 24
+        require(item['maximum_actual_starts']==expected and item['start_deadline_unix']==START_DEADLINE,
+                'budget/deadline changed')
+        require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
+                'output budget changed')
     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
             'different host/boot: explicit reconciliation required')
     return item
@@ -173,8 +177,8 @@ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=F
         pending+=sum(r.get('result_growth_bytes',0) for r in leases if r.get('experiment_id')==CAMPAIGN)
         addition=(0 if kind=='build' else growth) if result_growth_bytes is None else result_growth_bytes
         require(type(addition) is int and 0<=addition<=growth,'result growth must fit physical reservation')
-        require(usage['new_bytes']+pending+addition<=6*GIB,'new-study 6GiB result ceiling')
-        require(usage['total_bytes']+pending+addition<=20*GIB,'old+new 20GiB result ceiling')
+        require(usage['new_bytes']+pending+addition<=item['additional_results_max_bytes'],'approved new-study result ceiling')
+        require(usage['total_bytes']+pending+addition<=item['old_plus_new_results_max_bytes'],'approved old+new result ceiling')
 
 
 class Coordinator:
@@ -207,6 +211,33 @@ class Coordinator:
             return {'changed':changed,'actual_starts':item['actual_starts'],
                     'maximum_actual_starts':item['maximum_actual_starts'],
                     'remaining_start_capacity':item['remaining_start_capacity'],'t0_unix':item['t0_unix']}
+
+    def adopt_capacity_diagnostic(self, approval_path):
+        """Original REGISTRY.lock; explicit user amendment, no new campaign/counter."""
+        with self.locked() as (data,item):
+            counts(item)
+            if not capacity_policy.active(item):
+                require(not any(r.get('experiment_id')==CAMPAIGN and r['status'] in ACTIVE
+                        for group in ('runs','resource_leases') for r in data[group].values()),
+                        'adopt only after existing E applications and leases retire')
+            changed=capacity_policy.amend(item,approval_path,time.time())
+            counts(item)
+            return dict(changed=changed,actual_starts=item['actual_starts'],
+                        remaining_start_capacity=item['remaining_start_capacity'],
+                        t0_unix=item['t0_unix'],limits=capacity_policy.effective_limits(item))
+
+    def bind_capacity_runtime(self, qualification_id):
+        """Freeze exactly one formally delivered and E-qualified new runtime."""
+        with self.locked() as (data,item):
+            require(capacity_policy.active(item),'adopt capacity authority first')
+            row=item['qualifications'][qualification_id]
+            require(digest(row['path'])==row['sha256'],'new runtime qualification changed')
+            capacity_policy.qualification(row['qualification'],digest)
+            source=row['qualification']['source_identity']
+            old=item.get('capacity_diagnostic_runtime')
+            require(old is None or old==source,'capacity common binary cannot be silently rebound')
+            item['capacity_diagnostic_runtime']=source
+            return source
 
     def work_disk_policy(self):
         """Frozen resource policy for A's new entry; not a lease or build grant."""
@@ -465,7 +496,7 @@ class Coordinator:
         require(type(growth) is int and 128*2**20<=growth<=FULL_GROWTH,'bounded hard per-attempt result limit required')
         require(spec['campaign_id']==CAMPAIGN and spec['launch_owner']=='E','E is sole full-application owner')
         require(identity['epoch_range'].get('scope')=='full_application','full input only')
-        require(time.time()<START_DEADLINE,'full-application start deadline closed')
+        require(time.time()<self.snapshot()['start_deadline_unix'],'full-application start deadline closed')
         with self.locked() as (data,item):
             counts(item)
             require(item['uncertain_start_intents']==0,'ambiguous previous start requires explicit reconciliation')
@@ -493,6 +524,8 @@ class Coordinator:
             require(spec['profile'] in q['supported_profiles'],'profile not independently qualified')
             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
+            capacity_policy.bucket_guard(item,spec)
+            require(time.time()<item['start_deadline_unix'],'full-application start deadline closed under lock')
             bucket=spec['budget_bucket'];require(bucket in item['reservations'],'unknown reserved budget bucket')
             used=sum(policy_v2.charged_bucket(a,item['reservations'])==bucket and
                      (a.get('actual_start') or a['state'] in ('RESERVED','START_INTENT_UNRECONCILED')) for a in item['attempts'])
@@ -526,9 +559,10 @@ class Coordinator:
         refund or replay an ambiguous start. OS-level spawn failure is not an
         actual simulator start, and retains its failed attempt directory.
         """
-        require(time.time()<START_DEADLINE,'full-application start deadline closed')
+        require(time.time()<self.snapshot()['start_deadline_unix'],'full-application start deadline closed')
         with self.locked() as (data,item):
             attempt=next(a for a in item['attempts'] if a['attempt_id']==attempt_id)
+            require(time.time()<item['start_deadline_unix'],'full-application start deadline closed under lock')
             self.require_no_hold(item,attempt['qualification_id'])
             require(attempt['state']=='RESERVED','attempt is already started or terminal')
             require(not any(a['state']=='START_INTENT_UNRECONCILED' for a in item['attempts']),

@@ -3,6 +3,7 @@
 Environment review is not a lease. A remote worker must use the original E
 dispatcher, not a copied JSON/flock. No remote execution transport is implied.
 """
+import capacity_policy
 import copy
 import hashlib
 import json
@@ -34,6 +35,9 @@ def check(condition, reason):
 
 def amend(item, at_unix):
     """Idempotently amend the same ledger; never rewrite an old attempt."""
+    if capacity_policy.active(item):
+        capacity_policy.effective_limits(item)
+        return False
     if item.get('authority_commit') == AUTHORITY:
         check(item['maximum_actual_starts'] == 40 and item['reservations'] == RESERVATIONS,
               'inconsistent V2 amendment')
@@ -99,6 +103,8 @@ def validate_matrix(matrix):
 
 
 def condition_check(item,spec,digest):
+    if capacity_policy.is_capacity_spec(spec):
+        return capacity_policy.condition_check(item,spec,digest)
     record=item['full_system_matrix']
     check(digest(record['path'])==record['sha256'], 'D matrix publication changed')
     cells=validate_matrix(record['matrix'])
@@ -126,6 +132,9 @@ def comparison_allowed(item,chosen,spec,digest):
 
 
 def combination_qualification(q, digest):
+    if q.get('capacity_diagnostic') is not None:
+        capacity_policy.qualification(q,digest)
+        return
     profiles = q['supported_profiles']
     full = q.get('full_system_v2')
     requested = set(profiles) & (set(SWITCHES)-{'S'})

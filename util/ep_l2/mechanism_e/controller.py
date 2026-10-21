@@ -14,6 +14,7 @@ import time
 from coordinator import Coordinator,CAMPAIGN,AUTHORITY,START_DEADLINE,require,digest,run_key,write_json,tooling_binding
 from runner import execute,accept_pair
 import durable_exit
+import capacity_policy
 
 
 def roll_pairs(coord,requests):
@@ -37,7 +38,8 @@ def step(coord,queue_path):
         raw=queue_path.read_bytes();queue=json.loads(raw)
         require(queue['campaign_id']==CAMPAIGN and queue['prepared_by']=='E','wrong dispatch authority')
         require(queue['authority_commit']==AUTHORITY,'wrong frozen contract')
-        require(queue['input_and_profile_freeze_unix']<START_DEADLINE,'late condition freeze')
+        limits=capacity_policy.effective_limits(coord.snapshot())
+        require(queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
         pending=[];snapshot=coord.snapshot()
         for entry in queue['specs']:
             path=Path(entry['path']);require(digest(path)==entry['sha256'],'queued spec changed')
@@ -55,7 +57,7 @@ def step(coord,queue_path):
             running={}
             while pending or running:
                 if durable_exit.STOP.is_set():blocked=True;pending.clear()
-                while pending and len(running)<target and not blocked and time.time()<START_DEADLINE:
+                while pending and len(running)<target and not blocked and time.time()<limits['start_deadline_unix']:
                     spec=pending.pop(0)
                     if 'qualification:'+spec['qualification_id'] in coord.snapshot().get('scientific_holds',{}):
                         report['held_run_keys'].append(run_key(spec['identity']))

@@ -1,0 +1,54 @@
+{
+  "schema": "E2_CAPACITY_PARSER_INTEGRATION_DRAFT_V1",
+  "status": "NO_UTIL_EDITS_NO_QUALIFICATION_GRANTED",
+  "existing_observed_constraints": [
+    {
+      "path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN61_TERMINAL_COMPAT_r1/parse_main_terminal.py",
+      "constraints": "Profile whitelist and fixed dimensions1168/16/128/512; uses old parse_structure and validate_summary. Intended for exact main61 qualifications, not new scaled geometry."
+    },
+    {
+      "path": "util/ep_l2/ft_lane5/parse_unified_terminal.py:parse_structure",
+      "constraints": "CONFIG expects resident1024/bypass128/WB16, fixed region boundaries and original quota fields. Do not modify pinned legacy decoder to relax old acceptance."
+    },
+    {
+      "path": "util/ep_l2/ft_lane5/validate.py:validate_summary",
+      "constraints": "Nonlocal diagnostic payload capacity in1168/1160; other existing special scopes also nominal1168. Legacy tool source pinned by coordinator. New geometry requires separate validator, not old-identity projection."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/runner.py:runtime_metrics",
+      "constraints": "Verifies requested option dump and full exit counters, not internally derived master effective flags/capacities. Keep requested options as emitted and separately parse effective runtime header."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/runner.py:inspect/execute/accept_pair",
+      "constraints": "Profile/config exact qualification, shared invariant, parser SHA and durable exit enforcement reusable. Summary validation and result publication need new explicit scope route; new pair cannot use legacy missing-native-exit exception."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/policy_v2.py:condition_check/comparison_allowed/combination_qualification",
+      "constraints": "Old32 frozen matrix/source checks and full-system budget fixed. Add explicit authorized capacity diagnostic handling or exact reviewed extension; do not overwrite old32 rows or claim full_system_v2 old budget for ON."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/coordinator.py:register_qualification",
+      "constraints": "Requires11 source-specific production gates, exact main identity, formal release/build/test evidence and parser binding. Must keep; new source cannot inherit main61 registered PASS."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/controller.py:roll_pairs",
+      "constraints": "Same-condition accepted pairing and unique controller reusable. Dedicated CAPACITY pair IDs must not start V2_MAIN; callback publishes each immediately."
+    }
+  ],
+  "minimum_scoped_extension": [
+    "New hashed review-pack parse_capacity_terminal.py based on native formats actually delivered; no fictional record generation. Exact CAPACITY_DIAGNOSTIC_V1 schema and source-qualification scope.",
+    "New standalone capacity_summary validator: preserve all closure/instruction/64slice proof; dimension values come only from hashed approved new capacity vector and actual effective records, never raw-derived unconstrained budget.",
+    "Original runner summary call dispatch only for exact new scope+matching authority/qualification; old behavior unchanged. Keep durable process checks and original registry locks/lease entry.",
+    "Authorized policy extension binds exact five input selections, two profiles perinput, common new runtime and vector, <=10 new starts, separate diagnostic partition, no old matrix cell overwrite.",
+    "Original CLIENT/runtime source manifest rebinding to actual published E tooling commit before using changed util; do not edit pinned legacy ft_lane5 files or sidestep tooling_binding.",
+    "Same comparison_variable_options=[masteroption] when configs truly differ only by that switch. Requested option dump and effective override records remain separate, so masterON does not require user setting data_free flag."
+  ],
+  "decoder_verification_before_binding": [
+    "One bounded native-produced OFF record and ON record parse on actual released output schema",
+    "Mutations missing one slice/effective capacity wrong/profile wrong/duplicate conflicting record/nonzero live/drain false/refusal missing/highwater missing must reject validity when structural identity missing or produce exact UNKNOWN label when only observational coverage absent",
+    "Copied old main61 S receipt, mismatched source/archive/input or one old anchor fails pair acceptance",
+    "ON capacity refusal>0 must remain scientifically valid large-finite when all closure/correctness checks pass; no parser exception simply to force idealization claim",
+    "Native refusal>0 targeted fixture validates counter measurement; app end zero must not be inferred from default-initialized fields"
+  ],
+  "label_helper": "capacity_label.py is preparation-only pure classification utility; no production parser/source mutation and no native/app launch."
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "E2_CAPACITY_DIAGNOSTIC_TO_D_V1_DRAFT",
+  "status": "PREPARATION_NOT_A_RESULT_NOT_DELIVERED",
+  "pair_id_pattern": "V3_CAPACITY_DIAGNOSTIC_{workload}_S_OFF_VS_S_ON_{runtime_short}",
+  "required_delivery_fields": [
+    "authority_commit",
+    "original_campaign_id",
+    "pair_id",
+    "diagnostic_partition=CAPACITY_DIAGNOSTIC",
+    "status=CURRENT_ACCEPTED only after strict pair validator",
+    "source_identity and archive/binary sha256",
+    "capacity_vector/effective-config/qualification/parser SHA256 for bothends",
+    "input selection, full trace SHA256, expected+actual instructions, command/kernel scope and termination",
+    "OFF/ON attempt IDs and runkeys; result_directory/run_status/nativeReady/nativeExit/terminalSummary paths and SHA256",
+    "actual normal exit/wait codes and PID/start_ticks/boot ID; 64slice closure",
+    "cycles_OFF,cycles_ON,ratio_OFF_over_ON with native-cumulative scope",
+    "perresource per-slice capacities/highwaters/refusals/coverage plus largest utilization and bottleneck classifications",
+    "native local_service/copy/lowerread/write/WB/refusal/wait metrics with explicit overlapping-wait limitations",
+    "actual starts/max46/remaining; per-group cumulative result bytes and resource ledger",
+    "remote publication commit and perfile exact byte readback evidence",
+    "D notification after remote readback; delivery channels and timestamp; consumed status only if D acknowledges"
+  ],
+  "same_new_binary_anchor_required": true,
+  "main61_anchor_reuse_allowed": false,
+  "paper_denominator": {
+    "old_MAIN_five_unchanged": true,
+    "old_seven_GM": "UNKNOWN",
+    "new_diagnostic_GM": "Only after all5 accepted; label as separate OFF/ON diagnostic aggregate; do not merge with MAIN or call hardware upper bound"
+  },
+  "per_pair_sequence": [
+    "Both new endpoints independently accepted",
+    "Original accept_pair under original lock with diagnostic IDs and samebinary invariants",
+    "Publish STATUS/RECEIPT/pair/endpoints/metrics/generation ledger",
+    "Remote byte-readback",
+    "Write D shared events/inbox/oldshared payloads; publish delivery receipt",
+    "Continue next qualified pair without waiting for D unrelated analysis"
+  ],
+  "failure_handling": [
+    "Retain actual native/resource/time/identity failure receipts and charged attempts",
+    "Near-unbounded failure does not discard valid large-finite or UNKNOWN data",
+    "No auto retry, spare workload, secondchoice union or frozen vector tuning",
+    "No D consumption claim from a file write alone"
+  ],
+  "old_report_reuse": "report.py checkpoint lifecycle/publication/IPC patterns reusable; remove historical-anchor no-native-exit fallback and all PRIMARY-FOUR/main61 bucket/32/36/matrix assumptions. No execution authority from this draft."
+}

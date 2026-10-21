@@ -69,14 +69,14 @@ def resource_stop(request, native_pid, started):
     import disk_policy
     import run as legacy
     bounds = request['bounds']; resources = c.local_resources(); usage = c.output_usage()
-    if time.monotonic() - started >= bounds['timeout_seconds'] or time.time() >= c.INTAKE_DEADLINE:
+    if time.monotonic() - started >= bounds['timeout_seconds'] or time.time() >= bounds.get('intake_deadline_unix',c.INTAKE_DEADLINE):
         return dict(kind='TIMEOUT', reason='original bounded native timeout/intake freeze')
     disk = disk_policy.stop_detail(resources, bounds)
     if (disk or resources['share_disk_free_bytes'] < 40*c.GIB or
         resources['available_memory_bytes'] < 64*c.GIB or
         legacy.process_tree_rss(native_pid) > bounds['memory_bytes'] or
         c.retained_tree_bytes(Path(request['directory'])) >= bounds['maximum_result_bytes'] or
-        usage['new_bytes'] >= 6*c.GIB or usage['total_bytes'] >= 20*c.GIB):
+        usage['new_bytes'] >= bounds.get('additional_results_max_bytes',6*c.GIB) or usage['total_bytes'] >= bounds.get('old_plus_new_results_max_bytes',20*c.GIB)):
         return dict(kind='RESOURCE_LIMIT', reason='unchanged physical/RAM/output guard',
                     disk=disk, resources=resources, output_usage=usage)
     return None
@@ -208,6 +208,10 @@ class NativeProcess:
 def popen_factory(spec, attempt, audit):
     bounds = {k: attempt[k] for k in ('policy_id','disk_floor_bytes','monitor_reserve_bytes','maximum_result_bytes',
                                     'monitor_interval_seconds','termination_grace_seconds')}
+    import coordinator as c
+    import capacity_policy
+    limits=capacity_policy.effective_limits(c.Coordinator().snapshot())
+    bounds.update({k:limits[k] for k in ('intake_deadline_unix','additional_results_max_bytes','old_plus_new_results_max_bytes')})
     bounds.update(memory_bytes=spec.get('memory_bytes',8*2**30), timeout_seconds=spec['timeout_seconds'])
     binding = dict(attempt_id=attempt['attempt_id'], run_key=attempt['run_key'], identity=spec['identity'],
                    qualification_id=spec['qualification_id'], comparison_invariants_sha256=audit['comparison_invariants_sha256'])
