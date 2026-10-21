@@ -1,44 +1,34 @@
 # EP-L2协作公共面板
 
-核验快照：2026-10-21T14:44:50.108894+00:00。维护者E2；每lane仍只写自己的STATUS/事件。这里是E2消费真实交付后的索引，不是进程心跳，也不授予实验权限。
+当前索引由E2维护；owner STATUS仍由各lane本人发布。此页不是进程心跳或实验授权。更新时间：2026-10-21T16:49:59.471221+00:00。
 
-| Lane | 本人状态 | 协议接入 | 远端核验HEAD |
-|---|---|---|---|
-| A2 | IDLE | 本人STATUS+ACK已核验 | `019cc67bb5d9383ffdd1529ad8f9e8c46c921f88` |
-| B | IDLE | 本人STATUS+ACK已核验 | `1af7a81629a90db4948f0842a4a9ca2659e6609d` |
-| C | IDLE | 本人STATUS+ACK已核验 | `06cf7fd7d5dd7d0f0815345d4c692ee01bc3e025` |
-| D | IDLE | 本人STATUS+ACK已核验 | `432f6933be22396533af1009a64a97ac604c4e3d` |
-| F | IDLE | 本人STATUS+ACK已核验 | `d808d1184d666390833169245cbca3a089da7183` |
-| E2 | WORKING | 本人已发布 | 原174 E分支 |
+## 已完成科学交付
 
-## 当前交接链
+五组新93a9 binary容量/data-service OFF/ON均CURRENT_ACCEPTED，最终独立审查COMPLETE_PROVEN，原controller STOPPED、历史actual46。准确最终证据：E2 `092b6396b5b1c628807572badb39ea8b82871de6`，`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_RECEIPT.json`。Conv292932/268117cycles；保留CFD负例，全部ON分类UNKNOWN，不作无限/硬件/容量单因果结论。原32矩阵/旧失败/HOLD/累计生成不变。
 
-1. E2：继续原控制器E046 Conv ON，取得真实退出和完整终验；已接受九端/四对不重跑。
-2. E2：发布第五对CURRENT_ACCEPTED后，按新事件+原通道交D；完成最终账目和远端回读。
-3. D：依赖正式Conv交付，复用已完成四组缓存，仅新增Conv与五组汇总，不提前消费活动raw。D本人已ACK并登记该待办（6204563a），仍自报IDLE等待正式Conv；待办不等于已开始分析。
-4. E2：已汇合A2/B/C/D/F候选审查，完成`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_readiness_consolidation_r1/`来源/RO/runtime/独立资格缺口清单；未运行任何新应用/native。SGEMM已有探索登记但HOLD，不能重复登记或当正式端点；FWT仍不自动重试。
-5. A2/B/C/F：已完成任务不重做；后续只接具体缺口请求，由本人ACK并执行既有授权范围内工作。
+D待办 `D-CAPACITY-FIVE-INCREMENT` 的正式Conv依赖已满足；E2-00000019已投递。用户本轮负责唤醒D。D应fetch E2并复用四对缓存，仅补Conv及五对图/汇总；E2未推断D已ACK或完成。
 
-## 分工与唤醒边界
+## 当前并行流水
 
-E2暂任协调owner，维护队列、交付/消费回执与依赖；D负责科学归因、图表和候选优先级；A2负责生产源码、支持范围与正式release。B/C/F保留机制、语义及输入来源职责。没有第二实验调度器。
+|Owner|当前具体工作/触发|已知本人状态来源|
+|---|---|---|
+|E2|FWT/SGEMM四条件资格成本提案已准备，等待用户批准；当前0新应用/native/build/Goal/中央写入|本轮E2本人STATUS|
+|D|已有Conv增量+五容量对汇总；未来每个接受配对立即增量消费，不等待所有workload|最后核对D `1acb29bd3e88eb6f96ce1140dabbee9e446e4d5d` 自报IDLE、旧Conv依赖待更新；不替本人改STATUS|
+|A2|main61 SGEMM配置与18门复用映射已完成，具体producer缺口才合并请求|最后核对 `d45d0a5532dfdd7489d0e5a76b99de432a27bfdd` 自报IDLE|
+|C|SGEMM空fallback/BFS host边界已完成，具体语义缺口才合并请求|最后核对 `52ed0e2f18774c12054b10cb21390f7b4a9768bb` 自报IDLE|
+|F|有界输入包已完成；BFS精确MISSING保留，不重复空搜/部署|最后核对 `ab8e04dce031aee26e9f92e1b9cebe88fd9f8c2f` 自报IDLE|
+|B|复用现有W/V结论，无新增任务|此前已核对本人IDLE，不要求重复无变化回执|
 
-接入成功不代表IDLE窗口会被文件自动唤醒。当前无会话唤醒适配器/后台轮询器；活跃窗口在既定安全边界前台check。已结束或暂停的窗口要恢复时，用户只需说“继续原lane，读取公共面板和本人收件箱”，不再复制科研材料。
+## 待批准准确下一批
 
-入口：[README](README.md)；机器待办：[NEXT_ACTIONS](NEXT_ACTIONS.json)；真实来源：[E2 intake](intake/E2/PEER_ENROLLMENT_r1.json)。
+[提案报告](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/README.md)及[机器提案](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/PROPOSAL.json)：FWT原main61 S/F恢复2次，SGEMM同main61独立探索S/F2次。当前未授权、未采用、未启动。FWT原Q有效；SGEMM仍需当前body身份和自己的E资格，不能冒充PASS。原32桶已满且现policy仅准旧10容量条件，因此提案包括新精确scope/独立batch计费和原中央受控接入，不扩大/借用旧桶。
 
-## Workload审查勘误
+整个提案最多4次、1.5GiB端结果+128MiB资格输出+32MiB外部metadata，守原10/24GiB累计生成及5GiB+2GiB监控、Share/CPU/RAM门。当前预测1–4路可容纳，实际每端事务准入；无固定两路cap、无旧时间截止，新四端操作timeout=null须准确批准。FWT约80–120分钟/端只是历史先验；SGEMM及整批ETA UNKNOWN。
 
-E2已完成`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/`。原main61 FWT准确18门资格仍有效；如补原MAIN应同main61，新93a9 S/F应独立cohort。source复采/数值缺件与原冻结trace模型资格分开，不新增统一强制数值门。SGEMM已有探索HOLD登记。准备优先FWT原身份恢复提案、SGEMM独立对照、BFS条件准备，Hotspot备用；无新的启动授权。
+批准后E2在唯一原中央接入/验证并逐条件运行；FWT门闭合可先行，SGEMM资格准备并行。每对独立接受立即交D；失败保留且计费，无自动retry/替换。BFS/Hotspot不在此批。原main61 MAIN、SGEMM探索、新93a9容量cohort分别统计。
 
-## 下一轮合并准备
+## 协调方式
 
-E2已发布[batches/WORKLOAD_PREPARATION_BATCH_r2.md](batches/WORKLOAD_PREPARATION_BATCH_r2.md)：F补BFS来源包、C补SGEMM fallback/BFS host边界、A2补main61 SGEMM配置提案，D一次汇总，E2一次资格/成本审查。B复用旧结果不新派重复任务。全部仅准备，未批准新应用/native/build；本人未ACK前不标已接单。D Conv增量分析不等本批完成。
+E2暂任协调owner；A2仍负责producer，D负责科学解释/图表。用户在E2窗口批准准确方案后，E2前台脚本转发给受影响lane并核对真实ACK/成果；已有授权工程不重复审批。各lane在安全边界读取队列，完成即发布成果/本人STATUS并接下一项依赖就绪且已授权的任务。没有后台poller、第二controller或自动唤醒IDLE窗口；用户无需再次复制科研材料。
 
-本批实际接单核验：A2=WORKING（本人ACK/STATUS，dfe3f16f）, C=WORKING（本人ACK/STATUS，93f6db18）, D=WORKING（本人ACK/STATUS，592cb849）, F=WORKING（本人ACK/STATUS，ec653cd7）。这只是本人准备状态，未推断产物完成或进程/lease。来源见intake/E2/PREPARATION_BATCH_r2_ACKS.json。
-
-合并批次产物已到齐并由E2核对Git身份：A2/C/D/F各一次DONE或精确MISSING包，D已完成一次汇总。E2已回RECEIVED，尚未授予SGEMM新资格/采用或新启动；BFS仍缺完整输入/domain证据，Hotspot备用。当前唯一完整应用仍E046 Conv ON。来源见intake/E2/PREPARATION_BATCH_r2_DELIVERIES.json。
-
-## 主线最终完成
-
-五组同新binary OFF/ON均CURRENT_ACCEPTED；Conv292932/268117cycles。十端真实exit/wait0、完整指令、64slice及硬件退尽，原控制器STOPPED、E active run/lease0。本批10次、历史累计46，旧失败/HOLD及原矩阵不变。最终独立审查COMPLETE_PROVEN，来源092b6396b5b1c628807572badb39ea8b82871de6。D的Conv增量依赖已满足并投递，待本人实际ACK/分析；未把投递当消费。所有ON仍UNKNOWN，不作硬件/无限上界。后续候选仍未获新启动授权。
+旧准备r2所有A2/C/D/F交付均已Git核验，来源见 `intake/E2/PREPARATION_BATCH_r2_DELIVERIES.json`；旧面板快照保留在Git历史。本页更新不重开任何旧Goal。

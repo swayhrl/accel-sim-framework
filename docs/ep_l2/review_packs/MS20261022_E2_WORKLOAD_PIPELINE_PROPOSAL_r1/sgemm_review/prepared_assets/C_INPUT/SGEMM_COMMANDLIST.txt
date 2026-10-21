@@ -1,0 +1,3 @@
+MemcpyHtoD,0x00007f34a3200000,4063232
+MemcpyHtoD,0x00007f34a3600000,4190208
+kernel-1.traceg
