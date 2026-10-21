@@ -1,8 +1,8 @@
-# Lane E2 — capacity diagnostic / CAPACITY_USER_REMOVED_COUNT_LIMIT_SAFE_SWITCH_PENDING
+# Lane E2 — capacity diagnostic / CAPACITY_E037_NATIVE_EXIT0_PARSER_FAILED_E038_RUNNING
 
 Original174; T0 1792414193; actual 38/46, remaining 8; old36 immutable and charged, contingency8/8 preserved. Controller ACTIVE. New diagnostic accepted pairs 0/5. Original MAIN and control results unchanged.
 
-Result generation: new 6099625308B/10737418240B; old+new 20409201692B/25769803776B; growth since36 945070092B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
+Result generation: new 6103084538B/10737418240B; old+new 20412660922B/25769803776B; growth since36 948529322B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
 | Condition | Attempt | State |
 |---|---|---|

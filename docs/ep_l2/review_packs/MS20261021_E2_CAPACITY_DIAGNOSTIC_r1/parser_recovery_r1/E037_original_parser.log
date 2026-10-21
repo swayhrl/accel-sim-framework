@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py", line 323, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py", line 321, in main
+    write_json(a.out,parse(a.raw,spec,q))
+                     ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py", line 196, in parse
+    state=decode(raw);actual=validate_requested(state,spec);native=state['native'];p=scope['profiles'][profile];master=p['master'];caps=p['capacities'];enabled=int(actual['-gpgpu_ep_l2_ms_observer'])
+          ^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py", line 116, in decode
+    require(clock is not None,'terminal record has no native clock');prefix,kind,*parts=line.strip().split('|');v=numbers(parts)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/capacity_validation.py", line 18, in require
+    if not ok:raise ValueError(message)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: terminal record has no native clock
