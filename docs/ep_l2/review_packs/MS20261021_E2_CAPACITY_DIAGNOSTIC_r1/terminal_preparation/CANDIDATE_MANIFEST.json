@@ -1,0 +1,77 @@
+{
+  "schema": "E2_CAPACITY_TERMINAL_ROUTE_CANDIDATE_MANIFEST_V1",
+  "status": "FINAL_FROZEN_FOR_ORIGINAL_E_OWNER_REVIEW_APPLY_PUBLISH_CLIENT_REBIND",
+  "patch": {
+    "path": "TERMINAL_ROUTE.patch",
+    "sha256": "1b47c7c958ac5327497733a790f0145497ecf995494ec08674ee76d75132c6ba"
+  },
+  "base": {
+    "base_HEAD": "fb4806f4eb57dc3aa425b4c8dffacc0fb39324f7",
+    "base_files": {
+      "runner.py": "d8259b73df40442dad7c0ff6c37f5f484d105518195f67ae5a8432e8b96d6f9f",
+      "capacity_policy.py": "48b83d0655e6ae7d7fac59d2ddaf8845294bc60f055f965197c1839af5f13976",
+      "controller.py": "c35df75022e74e03138e3410852077f69c8a04331e3141232a55c22e9d1b80ef"
+    },
+    "scope": "Patch only, no util/CLIENT/registry changes, no native/app starts",
+    "status": "DRAFT_WAITING_A2_ACTUAL_OUTPUT_SCHEMA"
+  },
+  "candidate_files": {
+    "util/ep_l2/mechanism_e/capacity_policy.py": {
+      "candidate_path": "candidate/capacity_policy.py",
+      "sha256": "49571dde950d2d7ae4dca7136c98a24cc02b253083157529fa4582d6c5983bc9",
+      "action": "SCOPED_MODIFY"
+    },
+    "util/ep_l2/mechanism_e/capacity_validation.py": {
+      "candidate_path": "candidate/capacity_validation.py",
+      "sha256": "0d69b0d2e1434003133c168b8c1bfb66a59f9cc9a00317187708751cd08caac7",
+      "action": "ADD"
+    },
+    "util/ep_l2/mechanism_e/controller.py": {
+      "candidate_path": "candidate/controller.py",
+      "sha256": "f66f5eb4c530487d0101a25ded6d50233f0b8afd573b286203a821e3550a1756",
+      "action": "SCOPED_MODIFY"
+    },
+    "util/ep_l2/mechanism_e/runner.py": {
+      "candidate_path": "candidate/runner.py",
+      "sha256": "253df0f1180d8a18ba3314bf72d23b158977f2f9a4a6bfd31832d87d40063abb",
+      "action": "SCOPED_MODIFY"
+    }
+  },
+  "public_interfaces": [
+    "capacity_validation.validate_scope(scope,source_identity,supported_profiles=None)",
+    "capacity_validation.validate_summary(summary,identity,scope)",
+    "runner.validate_terminal_summary(summary,spec,qrow,audit)"
+  ],
+  "controller_failure_policy": "Capacity FAILED stops new local admissions, drains active workers, no STOP signal/kill; legacy FAILED untouched",
+  "legacy_pinned_ft_lane5_sources_modified": false,
+  "runner_runtime_metrics_modified": false,
+  "qualification_inputs": "Per-input newQ, exact common newsource/capacity manifest and twoS/OFF-ON profiles; no main61 inheritance",
+  "production_decoder": "Pending formal A2 runtime/source/native raw; separate review-pack parser; source mapping draft only",
+  "engineering_validation": {
+    "bounded_synthetic_controls": 21,
+    "git_apply_check": "PASS_NOT_APPLIED",
+    "candidate_python_syntax": "PASS",
+    "AST_unique_definitions": "PASS",
+    "generator_idempotence": "PASS"
+  },
+  "actions_by_this_worker": {
+    "util_writes": 0,
+    "registry_writes": 0,
+    "CLIENT_writes": 0,
+    "native_starts": 0,
+    "full_app_starts": 0,
+    "commit_push": 0
+  },
+  "owner_next_steps": [
+    "Verify base file bytes and candidate hashes",
+    "Apply original owner tooling patch and re-run bounded engineering controls",
+    "Publish changed source and remote-readback then bind original CLIENT to actual source revision",
+    "Wait formal A2 producer event, independently review exact new native/effective/input scope and build native qualification",
+    "Create actual parser only from formal native output schema; no synthetic nativePASS"
+  ],
+  "withdrawn_prior_patch_hashes": [
+    "fa03ace99562e0c3181ac0466806fc4388d7c37fff910dbef95be12bbda2bc28",
+    "c28a9605105a48a9ac7d27d1a0940271299d1001452df346dee997466488cdc5"
+  ],
+  "repair_receipt": "DUPLICATE_SCOPE_REPAIR.json"
+}

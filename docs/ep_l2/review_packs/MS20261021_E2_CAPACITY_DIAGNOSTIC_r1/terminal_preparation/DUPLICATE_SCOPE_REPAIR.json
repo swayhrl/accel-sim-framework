@@ -1,0 +1,47 @@
+{
+  "schema": "E2_SCOPE_DUPLICATE_DEFINITION_REPAIR_V1",
+  "status": "REPAIRED_BEFORE_PRODUCTION_APPLICATION",
+  "problem": "Repeated preparation generator inserted3 scope functions/constants; later Python definition could replace reviewed branch",
+  "old_patch_sha256_withdrawn": "c28a9605105a48a9ac7d27d1a0940271299d1001452df346dee997466488cdc5",
+  "repair": "Keep first reviewed scope with exact N/A enums, remove2 later function/constants blocks; no semantic relaxation",
+  "function_counts": {
+    "controller.py": {
+      "roll_pairs": 1,
+      "step": 1,
+      "main": 1
+    },
+    "capacity_policy.py": {
+      "check": 1,
+      "active": 1,
+      "effective_limits": 1,
+      "matrix": 1,
+      "amend": 1,
+      "is_capacity_spec": 1,
+      "qualification": 1,
+      "condition_check": 1,
+      "bucket_guard": 1
+    },
+    "capacity_validation.py": {
+      "require": 1,
+      "integer": 1,
+      "capacity_label": 1,
+      "validate_scope": 1,
+      "validate_summary": 1
+    },
+    "runner.py": {
+      "inspect": 1,
+      "runtime_metrics": 1,
+      "validate_terminal_summary": 1,
+      "disable_owned_core_dumps": 1,
+      "execute": 1,
+      "accept_pair": 1
+    }
+  },
+  "N_A_actual_unique_function_retained": true,
+  "upper_bound_evidence_basis_retained": true,
+  "test_count": 21,
+  "git_apply_check": "PASS_NOT_APPLIED",
+  "generator_idempotence": "PASS",
+  "util_CLIENT_registry_native_application_actions": 0,
+  "new_patch_sha256": "1b47c7c958ac5327497733a790f0145497ecf995494ec08674ee76d75132c6ba"
+}

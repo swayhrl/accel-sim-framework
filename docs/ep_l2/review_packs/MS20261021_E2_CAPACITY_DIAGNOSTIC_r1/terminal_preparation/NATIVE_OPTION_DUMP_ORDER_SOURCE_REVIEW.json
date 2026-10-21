@@ -1,0 +1,18 @@
+{
+  "status": "SOURCE_CONFIRMED_REQUESTED_DUMP_PRECEDES_MASTER_EFFECTIVE_OVERRIDE_NOT_NATIVE_PASS",
+  "Framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "Core": "e2859cd4fcd7402e64f5ce26f96546643e0fd4e7",
+  "file": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator/accel-sim.cc",
+  "file_sha256": "9f20dcb6a0d2fb704197bd6b882b46cd1f2be43708e79b399dc7cf11ae2661a3",
+  "source_order": [
+    "accel-sim.cc239 option_parser_cmdline",
+    "accel-sim.cc241 option_parser_print",
+    "accel-sim.cc246 g_the_gpu_config->init",
+    "gpu-sim.h gpgpu_sim_config.init -> m_memory_config.init",
+    "gpu-sim.h memory_config.init -> m_L2_config.init",
+    "gpu-cache.cc l2_cache_config.init masterON overrides data_free/WBUF/WAD/descriptors/local capacities"
+  ],
+  "runner_runtime_metrics_change_required": false,
+  "required_behavior": "Keep original runtime_metrics strict against requested whitelist including master1 with requested data_free0/desc512/WAD128/WBUF16. Independently validate effective CONFIG with data_free1/scaled capacities. If later Framework source changes, re-review exact order before qualification.",
+  "native_or_application_starts": 0
+}

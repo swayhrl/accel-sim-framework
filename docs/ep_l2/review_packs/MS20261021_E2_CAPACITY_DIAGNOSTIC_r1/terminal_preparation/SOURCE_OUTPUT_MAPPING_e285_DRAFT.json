@@ -1,0 +1,132 @@
+{
+  "schema": "E2_NEW_SOURCE_CAPACITY_OUTPUT_MAPPING_DRAFT_V1",
+  "status": "SOURCE_REVIEW_ONLY_PENDING_FORMAL_PRODUCER_AND_REAL_NATIVE_RAW",
+  "Core": "e2859cd4fcd7402e64f5ce26f96546643e0fd4e7",
+  "Framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "A2_freeze_commit": "47a4f0c19",
+  "frozen_vector_path": "docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/FROZEN_CAPACITY_VECTOR_r1.json",
+  "prefix": "EPL2LARGEV1",
+  "CONFIG_fields": {
+    "switch_requested": "requested_master",
+    "switch_effective": "effective_master",
+    "diagnostic_profile": "MASTER_OFF or S_L2_DATA_FREE_LARGE_CAPACITY; map former to profileS",
+    "sets": "native_tag_sets",
+    "ways": "native_tag_ways",
+    "max_tag_storage": "allocated backing dimension, distinct from effective tag slots",
+    "line_bytes": "native_line_bytes",
+    "payload": "payload_slots_total",
+    "resident": "resident_payload_slots",
+    "bypass": "bypass_payload_slots",
+    "wb": "wb_payload_slots",
+    "wad": "wad_entries",
+    "line_mshr": "line_mshr_entries",
+    "descriptor": "descriptor_entries",
+    "per_address": "per_address_descriptors",
+    "missq": "miss_queue_entries",
+    "result_fifo_field": "NOT_ACTIVE_L2_QUEUE; printed result_fifo_used_by_L2=0",
+    "ready_response_bound": "shared descriptor-derived bound, not distinct allocated queue",
+    "index_function": "actual native scalar index enum",
+    "index_extension": "NATIVE or IPOLY64_LOW_X_LINEAR64_HIGH; preserve literal",
+    "data_free": "effective l2_data_free",
+    "copy_free": "effective copy_free; must0",
+    "copy_latch_cycles": "actual unchanged1",
+    "bank_count": "actual4",
+    "bank_ops": "actual1"
+  },
+  "ON_resource_fields": {
+    "Tag": {
+      "normalized_resource": "tag_slots",
+      "coverage_kind": "CONSERVATIVE_UPPER_BOUND",
+      "exact_native_coverage_literal": "CONSERVATIVE_RESIDENT_IDENTITY_BOUND"
+    },
+    "resident": {
+      "normalized_resource": "resident_payload_slots",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ALLOCATION_EVENTS"
+    },
+    "bypass": {
+      "normalized_resource": "bypass_payload_slots",
+      "coverage_kind": "SOURCE_PROVEN_NOT_APPLICABLE",
+      "exact_native_coverage_literal": "S_NATIVE_NO_BYPASS_ALLOCATION"
+    },
+    "WB": {
+      "normalized_resource": "wb_payload_slots",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ALLOCATION_EVENTS"
+    },
+    "payload": {
+      "normalized_resource": "payload_slots_total",
+      "coverage_kind": "CONSERVATIVE_UPPER_BOUND",
+      "exact_native_coverage_literal": "SUM_OF_ROLE_EVENT_PEAK_UPPER_BOUND"
+    },
+    "WAD": {
+      "normalized_resource": "wad_entries",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ALLOCATION_EVENTS"
+    },
+    "line_MSHR": {
+      "normalized_resource": "line_mshr_entries",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ALLOCATION_EVENTS"
+    },
+    "descriptor": {
+      "normalized_resource": "descriptor_entries",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ALLOCATION_EVENTS"
+    },
+    "per_address": {
+      "normalized_resource": "per_address_descriptors",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ALLOCATION_EVENTS"
+    },
+    "MissQ": {
+      "normalized_resource": "miss_queue_entries",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "ENQUEUE_EVENTS_AND_CAPACITY_CHECKS"
+    },
+    "ready_responses": {
+      "normalized_resource": "ready_response_bound",
+      "coverage_kind": "CONSERVATIVE_UPPER_BOUND",
+      "exact_native_coverage_literal": "ALL_LIVE_DESCRIPTORS_CONSERVATIVE_BOUND"
+    },
+    "ICNT_L2": {
+      "normalized_resource": "icnt_to_l2_queue",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "FIFO_EVENTS"
+    },
+    "L2_DRAM": {
+      "normalized_resource": "l2_to_dram_queue",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "FIFO_EVENTS"
+    },
+    "DRAM_L2": {
+      "normalized_resource": "dram_to_l2_queue",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "FIFO_EVENTS"
+    },
+    "L2_ICNT": {
+      "normalized_resource": "l2_to_icnt_queue",
+      "coverage_kind": "EXACT_EVENT_HIGHWATER",
+      "exact_native_coverage_literal": "FIFO_EVENTS"
+    }
+  },
+  "counter_semantics": {
+    "highwater": "Preserve exact event peak versus source-proven upper bound classification; never relabel upper bound exact measured occupancy",
+    "capacity_denial_checks": "Conservative capacity-full-check observations; not necessarily unique rejected admissions. Zero with complete counter coverage implies no observed capacity-full checks. Preserve raw field and source semantics even when normalized to capacity_refusals for zero criterion.",
+    "near_nonbinding": "Native convenience boolean only; E recalculates from actual coverage+counter+bound, never trusts it as qualification."
+  },
+  "counter_coverage_acceptance": "Only independently reviewed complete-source/native coverage sets counter_covered=true; coverage literal alone is insufficient. Missing coverage/counter means UNKNOWN, no fabricated zero. Conservative upper bound<=50% with complete zero full checks may prove named-resource nonbinding; >50% bound only fails this evidence criterion, not proof actual occupancy exceeded50%.",
+  "S_nonapplicable": {
+    "bypass_payload_slots": "Capacity role geometry still checked; no S bypass allocation, not a required dynamic observation",
+    "result_fifo_config_field": "Unused by actual L2; exclude from active-resource nonbinding denominator. Keep configured4096 as metadata."
+  },
+  "unchanged_finite": {
+    "ROP": "EPL2LARGEV1 UNCHANGED ROP_storage=NATIVE_DYNAMIC, exact frozen config latency",
+    "copy_latch": "capacity1/fixedcycles1; no removal; bank-free does not bypass copy-latch/readiness/version/order",
+    "DRAM_interconnect": "Unchanged timing/bandwidth, actual local FIFOs enlarged as disclosed"
+  },
+  "OFF_counter_policy": "e285 CONFIG prints all base cache geometry but no RESOURCE rows or4local FIFO getters. Record HWM/refusal UNKNOWN, never zero. Actual OFF active FIFO dimension evidence can use exact native requested config dump plus constructor source/new-native getter qualification; an eventual A telemetry-only getter addition requires fresh exact source/hash review. Missing dynamic OFF counters never implies unbounded.",
+  "full_parser_adapter": "Preserve existing FT SUMMARY/TERMINAL/B0 INVARIANT/MSV1+V2 WAIT/BANK_PEAK/WB_QUOTA exact64 final-snapshot checks; substitute only frozen new finite dimensions and parse new actual CONFIG/RESOURCE/UNCHANGED records. No TVD/RO stream expected. No real native raw available yet, so no native parserPASS claimed.",
+  "application_starts": 0,
+  "native_starts": 0
+}
