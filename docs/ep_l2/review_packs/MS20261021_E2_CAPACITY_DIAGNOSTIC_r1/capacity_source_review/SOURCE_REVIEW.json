@@ -1,0 +1,52 @@
+{
+  "status": "SOURCE_REVIEW_PENDING_FINAL_PRODUCER_NATIVE_AND_HOTLOOP_ENGINEERING",
+  "reviewed_by": "E",
+  "reviewed_core": "697e2ade4b3db82f4a1183c40ac16126c3323a64",
+  "initial_published_core": "e2859cd4fcd7402e64f5ce26f96546643e0fd4e7",
+  "observed_worktree_head": "697e2ade4b3db82f4a1183c40ac16126c3323a64",
+  "observed_worktree_dirty": [],
+  "readme_sha256": "e391436d55a60a52ef0fb2e833437720e093137b8f1429d31e5ca7d7b2ed72db",
+  "source_files_sha256": {
+    "src/gpgpu-sim/gpu-cache.h": "97efde97a0e1ba54ed29094d89ddd797cb2a4e98912248f31198b14fc6d18667",
+    "src/gpgpu-sim/gpu-cache.cc": "45678027071e02f361d275c5db3876e48af7b78ca6faeba0ddd4ab9f7f82e3d6",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": "92e63d3b6cf94d61e91e97b30fbf0dabfc87b044b35efdeb1c9ae72c55cb50a0",
+    "src/gpgpu-sim/l2cache.cc": "9909be99fa16e2108ac457819b8a307d4bb87e513dbbcdc89ad28eb158698bf9",
+    "src/gpgpu-sim/gpu-sim.h": "9167e735e5ee43c2534d0ca5e287fb61b12b865d7e4db38247e1dbaef44c46f3",
+    "src/gpgpu-sim/gpu-sim.cc": "79d5c93ca7ef0d243e14e8621a96e46ccbe51dc7055e8527bd34668a272ad831",
+    "src/gpgpu-sim/ep-l2-large-capacity.h": "b9d0acca878a4d19630b88cf1594cf1ad32ee163b743b393c13bb14ff8d1780c",
+    "src/gpgpu-sim/delayqueue.h": "656b30d62f18d14654e5362cf8e7f67306ccb4c8732265fd314615ff0d51c2f6",
+    "tests/ep_l2/test_large_capacity.cc": "8f906825696ab988abc7a2ab15b17b267221662754a8436522e96eef40668f91",
+    "tests/ep_l2/potential_fixture.h": "a807ef923a159cdca1ed1ecd984c41172c20c0560f7d0b7556de309d2ad88444"
+  },
+  "complete_applications": 0,
+  "native_invocations": 0,
+  "compiler_invocations": 0,
+  "registry_writes": 0,
+  "client_writes": 0,
+  "scientific_correctness_failure_established": false,
+  "new_runtime_qualified": false,
+  "performance_finding": {
+    "path": "src/gpgpu-sim/l2cache.cc",
+    "line": 2160,
+    "callee": "ep_l2_payload_store::count_state",
+    "per_slice_per_cache_cycle_full_capacity_passes": 5,
+    "on_payload_slots": 74752,
+    "slices": 64,
+    "example_cycles": 300000,
+    "source_derived_slot_visits": 7176192000000,
+    "measured_wall_seconds": null,
+    "remedy_owner": "A2",
+    "correctness_assertions_must_be_preserved": true
+  },
+  "capacity_unknown_is_zero": false,
+  "uncovered_capacity_evidence_may_remain": "UNKNOWN",
+  "invalid_near_nonbinding_label_does_not_invalidate_otherwise_qualified_large_finite_data": true,
+  "memory": {
+    "payload_slots_all_slices": 4784128,
+    "tag_slots_all_slices": 4194304,
+    "descriptors_all_slices": 2097152,
+    "source_derived_primary_metadata_order_GiB": 1.0,
+    "measured_64slice_native_maxrss": null,
+    "full_application_8GiB_maxrss_proven": false
+  }
+}
