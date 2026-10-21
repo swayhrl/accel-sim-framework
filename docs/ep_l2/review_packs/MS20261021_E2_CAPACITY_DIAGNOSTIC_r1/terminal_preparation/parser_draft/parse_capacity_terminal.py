@@ -12,7 +12,7 @@ TOOLS=Path('/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2
 sys.path.insert(0,str(TOOLS))
 import capacity_validation as cv
 from capacity_validation import require
-SOURCE_MAPPING_CORE='add7893153175ec4552ddc5bf0e373da7e83c823'
+SOURCE_MAPPING_CORE='2aa0ee802e2cdd79d79e352e74522f8b6ae96699'
 SOURCE_MAPPING_FRAMEWORK='9dd1ee57a83d83b56b7874bc7c716185ab52c8f7'
 LEGACY_DECODE_SOURCE_SHA256='f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e'
 
@@ -33,7 +33,7 @@ def numbers(parts):
         require(all(n>=0 for n in out[key]) if isinstance(out[key],list) else out[key]>=0,'negative source counter: '+key)
     return out
 
-STRINGS={'diagnostic_profile','index_extension','name','coverage','ROP_storage','DRAM_ICNT_timing'}
+STRINGS={'scope','diagnostic_profile','index_extension','name','coverage','ROP_storage','DRAM_ICNT_timing'}
 RESOURCE_MAP={
  'Tag':('tag_slots','CONSERVATIVE_UPPER_BOUND','CONSERVATIVE_RESIDENT_IDENTITY_BOUND'),
  'resident':('resident_payload_slots','EXACT_EVENT_HIGHWATER','ALLOCATION_EVENTS'),
@@ -67,13 +67,28 @@ def large_numbers(parts):
    out[key]=int(value)
  return out
 
+def validate_tag_replacement_record(row):
+ require(row.get('scope')=='SUCCESSFUL_VALID_VICTIM_REPLACEMENTS','unreviewed Tag replacement scope')
+ require(all(type(row.get(k)) is int and row[k]>=0 for k in ('timed_clean','timed_dirty','host_prefill_clean')),'invalid Tag replacement provenance counter')
+ return {k:row[k] for k in ('timed_clean','timed_dirty','host_prefill_clean')}
+
+def validate_resource_predicate(row):
+ required=('capacity','highwater','capacity_denial_checks')
+ if not all(type(row.get(k)) is int and row[k]>=0 for k in required):return None
+ if row.get('name')=='Tag' and 'valid_victim_replacements' not in row:return None
+ replacements=row.get('valid_victim_replacements',0)
+ require(type(replacements) is int and replacements>=0,'invalid successful native replacement count')
+ near=int(not row['capacity_denial_checks'] and not replacements and 2*row['highwater']<=row['capacity'])
+ if 'near_nonbinding' in row:require(row['near_nonbinding']==near,'native convenience threshold inconsistent')
+ return bool(near)
+
 def put(records,key,value):
  require(key not in records or records[key]==value,'conflicting same-clock native record')
  records[key]=value
 
 def decode(raw):
  """Decode all snapshots, retaining exactly final cumulative-clock records."""
- state={'native':{},'final':{},'mechanism':{},'structure':{},'large':{},'resources':{},'unchanged':{},
+ state={'native':{},'final':{},'mechanism':{},'structure':{},'large':{},'resources':{},'unchanged':{},'tag_replacements':{},
         'requested_options':{},'launched_uids':set(),'completed_uids':set(),'normal':False,'snapshots':0}
  clock=None
  with Path(raw).open(errors='replace') as stream:
@@ -86,7 +101,7 @@ def decode(raw):
     if m[1]=='cycle':
      new=int(m[2]);require(clock is None or new>=clock,'native cumulative clock regressed')
      if clock!=new:
-      for key in ('final','mechanism','structure','large','resources','unchanged'):state[key]={}
+      for key in ('final','mechanism','structure','large','resources','unchanged','tag_replacements'):state[key]={}
      clock=new;state['snapshots']+=1
    m=re.match(r'^\s*(-[A-Za-z0-9_:]+)\s+(.*?)\s*$',line)
    if m:
@@ -115,6 +130,8 @@ def decode(raw):
     elif kind=='RESOURCE':
      require(v['name'] in RESOURCE_MAP,'unreviewed native capacity resource');put(state['resources'],(v['slice'],v['name']),v)
     elif kind=='UNCHANGED':put(state['unchanged'],v['slice'],v)
+    elif kind=='TAG_REPLACEMENTS':
+     validate_tag_replacement_record(v);put(state['tag_replacements'],v['slice'],v)
     else:require(False,'unreviewed native capacity record kind')
    elif line.startswith(('EPL2TVDV2|','EPL2TVDV3|','EPL2ROV1|','EPL2ROC1|')):
     require(False,'V/RO records are outside traditional-S capacity scope')
@@ -226,7 +243,7 @@ def parse(raw,spec,qualification):
     raw_name=next(n for n,v in RESOURCE_MAP.items() if v[0]==name);_,declared_kind,literal=RESOURCE_MAP[raw_name]
     require(r.get('coverage') in (None,literal),'unreviewed native counter coverage literal')
     counters_present=type(r.get('highwater')) is int and type(r.get('capacity_denial_checks')) is int
-    if counters_present and 'near_nonbinding' in r:require(r['near_nonbinding']==int(not r['capacity_denial_checks'] and 2*r['highwater']<=r['capacity']),'native convenience threshold inconsistent')
+    validate_resource_predicate(r)
     # Raw literal is not scientific coverage. Exact source/native reviewed Q
     # must explicitly authorize the instrumented event/counter scope.
     if counters_present and r.get('coverage')==literal and review.get('status')=='INDEPENDENTLY_REVIEWED' and review.get('native_coverage')==literal:
@@ -236,6 +253,19 @@ def parse(raw,spec,qualification):
     'full_input_scope':True,'coverage_kind':kind,'terminal_used':used,
     'refusal_semantics':'CAPACITY_FULL_CHECK_OBSERVATIONS_NOT_UNIQUE_REJECTED_REQUESTERS',
     'native_coverage_literal':r.get('coverage','UNKNOWN_NOT_ASSUMED_COVERED') if r else 'NOT_EMITTED_NOT_ASSUMED_ZERO'}
+   if name=='tag_slots':
+    event=state['tag_replacements'].get(sid)
+    provenance=validate_tag_replacement_record(event) if event is not None else None
+    count=r.get('valid_victim_replacements') if r else None
+    if provenance is not None:
+     total_replacements=sum(provenance.values())
+     require(count is None or count==total_replacements,'native successful Tag replacement provenance mismatch')
+     count=total_replacements
+    resources[name].update(valid_victim_replacements=count,replacement_breakdown=provenance,
+     replacement_counter_covered=(review.get('status')=='INDEPENDENTLY_REVIEWED' and
+       review.get('valid_victim_replacement_coverage_complete') is True and provenance is not None),
+     replacement_scope='SUCCESSFUL_VALID_VICTIM_REPLACEMENTS' if provenance is not None else 'UNKNOWN',
+     replacement_interpretation='Successful timed Tag replacements or host-prefill capacity conflicts; host_prefill_clean is not a timed GPU stall')
   closure={k:s[k] for k in ('reserved','read_refs','wb_live','wb_slots','ownership_consistent')}
   closure.update({k:i[k] for k in ('bank_pending','descriptor_used','descriptor_free','line_mshr_used','wad_live','resident_pending','bypass_live','resident_tag_payload_consistent','payload_double_owner')})
   closure.update({k:t[k] for k in ('hardware_drained','requester_exact_once','unique_requesters','responses','pending_lower_reads','pending_returns','pending_responses')})
@@ -264,7 +294,7 @@ def parse(raw,spec,qualification):
   'requester_exact_once_audit':True,'data_correctness_qualification':True,'raw_log_sha256':hashlib.sha256(Path(raw).read_bytes()).hexdigest(),
   'mechanism_metrics':metric,'mechanism_slice_records':{'observer':observers,'local_diagnostic':locals_},
   'capacity_diagnostic':{'schema':'E2_CAPACITY_NORMALIZED_TERMINAL_V1','requested_master':master,'effective_master':master,'capacity_manifest_sha256':scope['capacity_manifest_sha256'],'complete_input_scope':True,'slices':rows},
-  'native_capacity_records':{'config':state['large'],'resources':[v for v in state['resources'].values()],'unchanged':state['unchanged']},
+  'native_capacity_records':{'config':state['large'],'resources':[v for v in state['resources'].values()],'unchanged':state['unchanged'],'tag_replacements':state['tag_replacements']},
   'structural_observations':{kind:{str(sid):state['structure'][kind,sid] for sid in range(64)} for kind in ('CONFIG','BANK_PEAK','WB_QUOTA')},
   'kernel_completion':{'expected':spec['expected_kernel_count'],'launched_uids':sorted(state['launched_uids']),'completed_uids':sorted(state['completed_uids'])},
   'source_map':{'raw_decoder_origin':LEGACY_DECODE_SOURCE_SHA256,'new_capacity_source':SOURCE_MAPPING_CORE,'numeric_SASS_output_validated':False,'native_exit':'Actual durable exit and exact runtime/input hashes remain runner responsibilities'}}

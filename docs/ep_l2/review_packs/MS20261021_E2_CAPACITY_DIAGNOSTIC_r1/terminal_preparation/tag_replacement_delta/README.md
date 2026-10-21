@@ -1,0 +1,11 @@
+# Valid Tag replacement classification delta
+
+Review patch only; not applied to util/CLIENT/registry, and no build/native/application or Git action. This responds to actual Core2aa telemetry and keeps every old MAIN result and scope unchanged.
+
+A successful conventional Tag replacement can occur at low global occupancy due to set conflicts. It is a scientifically valid finite-capacity result. The parser now preserves exact `TAG_REPLACEMENTS` scope `SUCCESSFUL_VALID_VICTIM_REPLACEMENTS`, separates timed clean/dirty from host-prefill clean events, and checks their sum against the native Tag RESOURCE aggregate. It checks the new native convenience predicate (zero full checks AND zero replacements AND highwater<=50%) without treating a normal replacement or false near predicate as a correctness failure.
+
+`TAG_REPLACEMENT_CLASSIFICATION.patch` adds pure-classifier handling: any observed valid Tag replacement makes the ON named-vector label `LARGE_FINITE`, even if other counter coverage is incomplete; no replacement count/complete coverage makes `UNKNOWN`; near classification additionally needs complete zero replacement evidence. Negative or conflicting aggregate/provenance/scope is invalid telemetry and remains review-required. Host-prefill replacements are not timed GPU stalls and no critical-cycle attribution follows from their sum.
+
+The patch is against the original E owner's currently bound pure validator bytes listed in PATCH_BASE. No source is edited while A's original build lease is active. Owner should apply/publish/remote-readback/CLIENT-rebind after safe quiescence, then use the new final-producer source/native qualification. The parser draft is separately updated to exact Core2aa and remains NOT_NATIVE_QUALIFIED. Counter coverage review must explicitly certify all timed-clean/timed-dirty/host-prefill paths; a raw zero alone never proves complete coverage.
+
+Eleven bounded synthetic full-summary classification controls and nineteen parser field/negative engineering controls passed. They include scientifically valid finite negatives for clean, dirty and host-prefill replacements with low global Tag highwater. No actual new native raw was independently parsed or accepted, so no native qualification is claimed.

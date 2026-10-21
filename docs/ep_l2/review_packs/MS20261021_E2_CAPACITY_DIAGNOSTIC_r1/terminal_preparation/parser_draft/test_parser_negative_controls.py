@@ -6,6 +6,16 @@ spec=importlib.util.spec_from_file_location('capacity_parser_draft',P/'parse_cap
 class NegativeControls(unittest.TestCase):
  def raw(self,text):
   f=tempfile.NamedTemporaryFile(mode='w',prefix='synthetic_negative_',dir=P,delete=False);f.write(text);f.close();self.addCleanup(pathlib.Path(f.name).unlink);return pathlib.Path(f.name)
+ def test_valid_replacement_negative_is_not_correctness_rejected(self):
+  row=m.large_numbers(['slice=0','name=Tag','capacity=65536','highwater=100','capacity_denial_checks=0','valid_victim_replacements=1','near_nonbinding=0','coverage=CONSERVATIVE_RESIDENT_IDENTITY_BOUND'])
+  self.assertFalse(m.validate_resource_predicate(row))
+ def test_replacement_scope_enum_exact(self):
+  row=m.large_numbers(['slice=0','timed_clean=0','timed_dirty=0','host_prefill_clean=1','scope=SUCCESSFUL_VALID_VICTIM_REPLACEMENTS'])
+  self.assertEqual(m.validate_tag_replacement_record(row)['host_prefill_clean'],1)
+  row['scope']='GLOBAL_OCCUPANCY_LOW'
+  with self.assertRaises(ValueError):m.validate_tag_replacement_record(row)
+ def test_replacement_cannot_keep_native_near_label(self):
+  with self.assertRaises(ValueError):m.validate_resource_predicate(dict(name='Tag',capacity=65536,highwater=100,capacity_denial_checks=0,valid_victim_replacements=1,near_nonbinding=1))
  def test_no_duplicate_definitions(self):
   t=ast.parse((P/'parse_capacity_terminal.py').read_text());names=[x.name for x in t.body if isinstance(x,ast.FunctionDef)];self.assertEqual(len(names),len(set(names)))
  def test_duplicate_native_field_rejected(self):

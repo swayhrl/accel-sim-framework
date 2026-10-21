@@ -1,0 +1,49 @@
+--- a/util/ep_l2/mechanism_e/capacity_validation.py
++++ b/util/ep_l2/mechanism_e/capacity_validation.py
+@@ -27,6 +27,20 @@
+     for sid,row in records.items():
+         for name in resources:
+             r=row['resources'][name];cap=r['capacity'];kind=r.get('coverage_kind','UNKNOWN')
++            # A normally successful valid-victim replacement is direct finite
++            # set-conflict evidence, even at low global Tag occupancy. It is a
++            # valid diagnostic observation, never a correctness failure.
++            if name=='tag_slots':
++                replacements=r.get('valid_victim_replacements')
++                if integer(replacements) and replacements>0:
++                    binding.append({'slice':int(sid),'resource':name,
++                      'cause':'SUCCESSFUL_VALID_VICTIM_REPLACEMENTS',
++                      'valid_victim_replacements':replacements,
++                      'replacement_breakdown':r.get('replacement_breakdown'),
++                      'interpretation':'Finite set pressure observed; host prefill count is not a timed GPU stall'})
++                if not integer(replacements) or r.get('replacement_counter_covered') is not True:
++                    missing.append({'slice':int(sid),'resource':name,
++                      'cause':'VALID_VICTIM_REPLACEMENT_COVERAGE_UNKNOWN'})
+             covered=(r.get('counter_covered') is True and r.get('full_input_scope') is True
+                      and kind in ('EXACT_EVENT_HIGHWATER','CONSERVATIVE_UPPER_BOUND'))
+             if not covered or not integer(r.get('highwater')) or not integer(r.get('capacity_refusals')):
+@@ -44,7 +58,7 @@
+       'binding_resources':binding,'unknown_coverage':missing,
+       'maximum_measured_highwater_or_conservative_bound_fraction':max(ratios) if ratios else None,
+       'scope':'Named applicable enlarged vector only; not infinite simulator or hardware upper bound',
+-      'criterion':'All named applicable enlarged capacities: covered refusal/full checks=0 AND exact event highwater OR source-proven conservative upper bound<=50%; full input scope required',
++      'criterion':'All named applicable enlarged capacities: covered refusal/full checks=0 AND exact event highwater OR source-proven conservative upper bound<=50%; Tag additionally requires complete timed-clean/timed-dirty/host-prefill valid-victim replacement coverage and zero replacements; full input scope required',
+       'interpretation':'A >50% conservative upper bound does not prove actual occupancy exceeded50%; it only fails this near-nonbinding evidence criterion. Full-check counters are not unique rejected requests.'}
+ 
+ OFF='S'
+@@ -161,6 +175,16 @@
+         r=row['resources'];require(set(r)==required_resources,'resource coverage names differ from frozen vector')
+         for name,cap in caps.items():
+             v=r[name];require(v['capacity']==cap,'actual per-slice capacity differs: '+name)
++            if name=='tag_slots':
++                count=v.get('valid_victim_replacements')
++                if count is not None:require(v.get('replacement_scope')=='SUCCESSFUL_VALID_VICTIM_REPLACEMENTS','unreviewed native Tag replacement scope')
++                require(count is None or integer(count),'invalid signed/noninteger successful Tag replacement count')
++                breakdown=v.get('replacement_breakdown')
++                if breakdown is not None:
++                    require(type(breakdown) is dict and
++                            set(breakdown)=={'timed_clean','timed_dirty','host_prefill_clean'} and
++                            all(integer(x) for x in breakdown.values()),'invalid native Tag replacement provenance')
++                    require(count==sum(breakdown.values()),'native Tag replacement aggregate/provenance mismatch')
+             for key in ('highwater','capacity_refusals'):
+                 require(v.get(key) is None or integer(v[key]),'invalid signed/noninteger capacity counter')
+             if integer(v.get('highwater')):require(v['highwater']<=cap,'native highwater exceeds capacity')
