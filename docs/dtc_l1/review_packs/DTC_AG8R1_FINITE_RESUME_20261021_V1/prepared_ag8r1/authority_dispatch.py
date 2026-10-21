@@ -163,7 +163,7 @@ class ExplicitAG7Authority:
 
     @contextlib.contextmanager
     def exclusive_self_lock(self):
-        """Create only this NEW path, once; never open/relock an existing lock."""
+        """Create this NEW path once; approved finite waits may unlock/reacquire only its own descriptor. Never open an old/foreign lock."""
         self._validate_registration()
         self._verify_self()
         require(self.fd is None and self.lock_record is None,
@@ -212,6 +212,29 @@ class ExplicitAG7Authority:
                 os.readlink('/proc/self/fd/' + str(self.fd)) == str(LOCK),
                 'AG7_OWN_EXCLUSIVE_KERNEL_FLOCK_NOT_HELD')
         return dict(self.lock_record)
+
+    def release_for_finite_wait(self):
+        """Unlock only this controller's own descriptor; retain immutable record."""
+        self.verify_lock()
+        fcntl.flock(self.fd, fcntl.LOCK_UN)
+        kernel=Path('/proc/self/fdinfo',str(self.fd)).read_text()
+        require('FLOCK' not in kernel,'PRODUCTION_FLOCK_NOT_RELEASED_FOR_WAIT')
+        self.finite_wait_unlocked=True
+        return dict(pid=self.owner['pid'],start_ticks=self.owner['start_ticks'],
+            monotonic_ns=time.monotonic_ns(),kernel_fdinfo=kernel,production_flock_held=False)
+
+    def reacquire_after_finite_wait(self):
+        require(getattr(self,'finite_wait_unlocked',False) is True and self.fd is not None,
+            'NOT_OWN_APPROVED_FINITE_WAIT')
+        self._validate_registration();self._verify_self()
+        fdstat,pathstat=os.fstat(self.fd),os.stat(LOCK,follow_symlinks=False)
+        require((fdstat.st_dev,fdstat.st_ino)==(pathstat.st_dev,pathstat.st_ino)==
+            (self.lock_record['lock_device'],self.lock_record['lock_inode']) and
+            json.loads(LOCK.read_text())==self.lock_record and
+            os.readlink('/proc/self/fd/'+str(self.fd))==str(LOCK),'OWN_WAIT_LOCK_INSTANCE_CHANGED')
+        fcntl.flock(self.fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        self.finite_wait_unlocked=False
+        return self.verify_lock()
 
     def bind_review(self, local_ownership, peer_provider=lambda: [],
                     external_launch_view_provider=None):

@@ -1,0 +1,104 @@
+{
+  "status": "SOURCE_REVIEW_PASS_REAL_C1_PASS_PENDING_CURRENT_CONTROLLER_IDENTITY_AND_STRICT_C2",
+  "unchanged_Core": "c8090115bd57512b1b23fca7d925301fa620c751",
+  "Framework_ELF_sha256": "1004880fd7f01f815eb55d3e23fee451d95bb90eef7ecfb19ec8fd9531b9bd6c",
+  "Core_Framework_builds": 0,
+  "D0_reexecuted": false,
+  "old_CPU_suites_reexecuted": 0,
+  "model_parameter_changes": 0,
+  "heavy_or_runtime_threshold_changes": 0,
+  "actual_C1_source_subjects_still_exact": true,
+  "changes": [
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/ag7_dispatch.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/ag7_dispatch.py",
+      "old_sha256": "87cebcc1ad278510b692e5cd819453537deeb3fd0987db53d34110f4061ac69c",
+      "new_sha256": "c031b900647926c2d8774d9a9f1a11bf0d3b807c99fd2a40a2fb99d53f2ceaf5",
+      "diff": "--- docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/ag7_dispatch.py\n+++ docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/ag7_dispatch.py\n@@ -11,7 +11,7 @@\n import socket\n import time\n \n-EVIDENCE = Path('/workspace/dtc-ag8-ad-convergence-174-v1')\n+EVIDENCE = Path('/workspace/dtc-ag8r1-finite-resume-174-v1')\n ORDER = ('AD_GEMM', 'AD_Gaussian')\n GIB = 1024 ** 3\n AUTH_PASS = 'PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY'\n"
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/ag7_runner.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/ag7_runner.py",
+      "old_sha256": "48050405876857bcde938bd46559729784309b156b919d6f3d455ce936e5ca03",
+      "new_sha256": "48050405876857bcde938bd46559729784309b156b919d6f3d455ce936e5ca03",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/ag7_strict.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/ag7_strict.py",
+      "old_sha256": "1d84a959eccdc8c6c7205bcdc286be99563b82e540d1f8d95d1f26ee0eed5e12",
+      "new_sha256": "5cb84f33840d3cb13b92ce534d98ad4d5d05d14252faa48e2cc5dece982c8752",
+      "diff": "--- docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/ag7_strict.py\n+++ docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/ag7_strict.py\n@@ -20,7 +20,7 @@\n     'runtime_path', 'runtime_sha256', 'runtime_environment', 'expected_embedded_framework_version',\n     'destination', 'resource_policy_version', 'status', 'BASE_eligibility_decision_sha256', 'order', 'timeout_seconds'))\n POLICY_VERSION = 'AD8_POLICY_B_PILOT_10S_FRESH30_NO_RETIRE600_CGROUP1800_WALL21600_V1'\n-REGISTRATION_STATUS = 'PREREGISTERED_AD8_ONLY_NOT_EXECUTION_PERMISSION'\n+REGISTRATION_STATUS = 'RESERVED_AG8R1_NOT_EXECUTABLE_WITHOUT_CURRENT_C2_R2'\n \n \n def frozen_inputs(legacy, point, *, registration, registration_sha256,\n@@ -44,8 +44,8 @@\n         legacy.require(str(uuid.UUID(attempt)) == attempt, 'INVALID_REGISTERED_UUID')\n     new = next(p for p in points if p['point'] == point)\n     legacy.require(new['new_attempt_uuid'] == new['attempt_uuid'] and\n-        new['cohort'] == 'AG8_AD_CONVERGENCE_V1', 'EXACT_NEW_AG7_POINT_IDENTITY')\n-    legacy.require(new['destination'] == '/workspace/dtc-ag8-ad-convergence-174-v1/attempts/' +\n+        new['cohort'] == 'AG8R1_FINITE_RESOURCE_CONTINUATION', 'EXACT_NEW_AG7_POINT_IDENTITY')\n+    legacy.require(new['destination'] == '/workspace/dtc-ag8r1-finite-resume-174-v1/attempts/' +\n         point + '_' + new['attempt_uuid'] and new['resource_policy_version'] == POLICY_VERSION and\n         new['status'] == REGISTRATION_STATUS and new['order'] == ORDER.index(point) and\n         new['timeout_seconds'] == 21600, 'EXACT_AD8_DESTINATION_PROFILE_WALL_REGISTRATION_STATE')\n"
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/authority_dispatch.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/authority_dispatch.py",
+      "old_sha256": "59e40a3e06ac2b0d5e24c9d2fa73307fd7edfbb0fdc5225f40df75a614aa3ce0",
+      "new_sha256": "860caef434fc4a99e9215dabeadb0acb3a5c412388b809cff9f5afed01820a01",
+      "diff": "--- docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/authority_dispatch.py\n+++ docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/authority_dispatch.py\n@@ -20,13 +20,13 @@\n HERE = Path(__file__).resolve().parent\n PACK = HERE.parent\n WORKTREE = PACK.parents[3]\n-ROOT = Path('/workspace/dtc-ag8-ad-convergence-174-v1')\n+ROOT = Path('/workspace/dtc-ag8r1-finite-resume-174-v1')\n LOCK = ROOT / 'AG_execution.lock'\n FROZEN = ROOT / 'evidence/w0_frozen_authority'\n SOURCE_INDEX = ROOT / 'evidence/W0_SOURCE_BINDING.json'\n-GOAL = 'AG8_AD_CONVERGENCE_V1'\n-GOAL_COMMIT = '1aa6aab1bf698ca5b5267318dbbceb2854a46131'\n-ROLE = 'AD8_SOLE_CANONICAL_BA_ROOT_DISPATCH_CONTROLLER'\n+GOAL = 'AG8R1_FINITE_RESOURCE_CONTINUATION'\n+GOAL_COMMIT = 'ae2e9c6f1ce7a0bb3e043c7a251f3f9dd1f86304'\n+ROLE = 'AG8R1_SOLE_CANONICAL_BA_ROOT_DISPATCH_CONTROLLER'\n PASS = 'PASS_CURRENT_NO_OTHER_DTC_DISPATCH_AUTHORITY'\n \n \n@@ -85,7 +85,7 @@\n                 self.path.is_relative_to(PACK), 'AG7_AUTHORITY_REGISTRATION_PATH')\n         require(sha(self.path) == self.digest, 'AG7_AUTHORITY_REGISTRATION_CHANGED')\n         registration = json.loads(self.path.read_text())\n-        require(registration['schema'] == 'DTC_AD8_BA_ROOT_AUTHORITY_V1' and\n+        require(registration['schema'] == 'DTC_AG8R1_BA_ROOT_AUTHORITY_V1' and\n                 registration['goal'] == GOAL and\n                 registration['goal_commit'] == GOAL_COMMIT and\n                 registration['canonical_task'] == '/root' and\n@@ -163,7 +163,7 @@\n \n     @contextlib.contextmanager\n     def exclusive_self_lock(self):\n-        \"\"\"Create only this NEW path, once; never open/relock an existing lock.\"\"\"\n+        \"\"\"Create this NEW path once; approved finite waits may unlock/reacquire only its own descriptor. Never open an old/foreign lock.\"\"\"\n         self._validate_registration()\n         self._verify_self()\n         require(self.fd is None and self.lock_record is None,\n@@ -213,6 +213,29 @@\n                 'AG7_OWN_EXCLUSIVE_KERNEL_FLOCK_NOT_HELD')\n         return dict(self.lock_record)\n \n+    def release_for_finite_wait(self):\n+        \"\"\"Unlock only this controller's own descriptor; retain immutable record.\"\"\"\n+        self.verify_lock()\n+        fcntl.flock(self.fd, fcntl.LOCK_UN)\n+        kernel=Path('/proc/self/fdinfo',str(self.fd)).read_text()\n+        require('FLOCK' not in kernel,'PRODUCTION_FLOCK_NOT_RELEASED_FOR_WAIT')\n+        self.finite_wait_unlocked=True\n+        return dict(pid=self.owner['pid'],start_ticks=self.owner['start_ticks'],\n+            monotonic_ns=time.monotonic_ns(),kernel_fdinfo=kernel,production_flock_held=False)\n+\n+    def reacquire_after_finite_wait(self):\n+        require(getattr(self,'finite_wait_unlocked',False) is True and self.fd is not None,\n+            'NOT_OWN_APPROVED_FINITE_WAIT')\n+        self._validate_registration();self._verify_self()\n+        fdstat,pathstat=os.fstat(self.fd),os.stat(LOCK,follow_symlinks=False)\n+        require((fdstat.st_dev,fdstat.st_ino)==(pathstat.st_dev,pathstat.st_ino)==\n+            (self.lock_record['lock_device'],self.lock_record['lock_inode']) and\n+            json.loads(LOCK.read_text())==self.lock_record and\n+            os.readlink('/proc/self/fd/'+str(self.fd))==str(LOCK),'OWN_WAIT_LOCK_INSTANCE_CHANGED')\n+        fcntl.flock(self.fd,fcntl.LOCK_EX|fcntl.LOCK_NB)\n+        self.finite_wait_unlocked=False\n+        return self.verify_lock()\n+\n     def bind_review(self, local_ownership, peer_provider=lambda: [],\n                     external_launch_view_provider=None):\n         \"\"\"Unchanged full-scope scan/history/unknowns plus exact own role/lock.\n"
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/controller_pipeline.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/controller_pipeline.py",
+      "old_sha256": "a512940a77c5ae379102c984f2ad2c9eee846b660a523f0240688938d4d759cf",
+      "new_sha256": "93062084f03aa6d4ecd8952e07442c863f06cb8d81d6dd4f2c10fa7344a55f1e",
+      "diff": "--- docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/controller_pipeline.py\n+++ docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/controller_pipeline.py\n@@ -26,7 +26,7 @@\n PACK = HERE.parent\n REPO = HERE.parents[4]\n OLD = REPO / 'docs/dtc_l1/iscas2027/evidence_closure_20261019_v1/execution'\n-ROOT = Path('/workspace/dtc-ag8-ad-convergence-174-v1')\n+ROOT = Path('/workspace/dtc-ag8r1-finite-resume-174-v1')\n STAT_KEYS = ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns', 'st_mode', 'st_uid', 'st_gid', 'st_nlink')\n \n \n@@ -165,7 +165,7 @@\n         expected_roi = canonical_sha({key: spec[key] for key in\n             ('full_processing_window', 'expected_kernels', 'expected_instructions', 'expected_CTA', 'expected_commands')})\n         env = dict(actual['validated_environment'], DTC_AG7_POLICY_B_PROGRESS='1',\n-            DTC_AG7_GENERATION='AD8_' + spec['attempt_uuid'],\n+            DTC_AG7_GENERATION='AG8R1_' + spec['attempt_uuid'],\n             DTC_AG7_INPUT_SHA=spec['trace_list_sha256'], DTC_AG7_ROI_SHA=expected_roi)\n         require(spec['runtime_environment'] == env, 'EXACT_REGISTERED_INPUT_ROI_GENERATION_FORMULAS_FAILED')\n         ag7_strict.frozen_inputs(self.legacy_strict, spec['point'],\n"
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/cross_cohort_selection.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/cross_cohort_selection.py",
+      "old_sha256": "6d6106321b3e0c7fd66a25beeb5c4605d68cbe97549932ad847f7e657f71f6bc",
+      "new_sha256": "6d6106321b3e0c7fd66a25beeb5c4605d68cbe97549932ad847f7e657f71f6bc",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/input_identity.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/input_identity.py",
+      "old_sha256": "e2da2072c9a18924ac3b6c473aeae38236746d8d3075da2853c6ced19f07bbda",
+      "new_sha256": "e2da2072c9a18924ac3b6c473aeae38236746d8d3075da2853c6ced19f07bbda",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/runtime_policy_b.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/runtime_policy_b.py",
+      "old_sha256": "234b792f5d35b0bc27668ddd711fd04c97b31445c6f470aa308aacd002765f8f",
+      "new_sha256": "234b792f5d35b0bc27668ddd711fd04c97b31445c6f470aa308aacd002765f8f",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/telemetry_receiver.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/telemetry_receiver.py",
+      "old_sha256": "8c222aff00941a23958d2a076d6b792694c1bc746461e67bb132afa88224c6d5",
+      "new_sha256": "8c222aff00941a23958d2a076d6b792694c1bc746461e67bb132afa88224c6d5",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/validate_identity.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/validate_identity.py",
+      "old_sha256": "cf58fdefcac2d1acf95098eb6a8ac6df74d74477863136faf0c0b6e849ba3369",
+      "new_sha256": "cf58fdefcac2d1acf95098eb6a8ac6df74d74477863136faf0c0b6e849ba3369",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/vendor/guarded_process.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/vendor/guarded_process.py",
+      "old_sha256": "8bc3ca6839f9d87b8d8cb506ad18fc3f383756c7bf883068ba133ee3761ff9c7",
+      "new_sha256": "8bc3ca6839f9d87b8d8cb506ad18fc3f383756c7bf883068ba133ee3761ff9c7",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/wall_contract_guard.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/wall_contract_guard.py",
+      "old_sha256": "d9b5a66b7cb70c3218091d3329be0bd44f6c28fc5a42da0bde1f9cb0533517c3",
+      "new_sha256": "d9b5a66b7cb70c3218091d3329be0bd44f6c28fc5a42da0bde1f9cb0533517c3",
+      "diff": ""
+    },
+    {
+      "old": "docs/dtc_l1/review_packs/DTC_AD8_CONVERGENCE_20261021_V1/prepared_ad8/wall_contract_qualification.py",
+      "new": "docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/wall_contract_qualification.py",
+      "old_sha256": "ff13fcfad52859af9e98651a8ce652a431a5eea163427db8f5c3813a1b5e5f61",
+      "new_sha256": "ff13fcfad52859af9e98651a8ce652a431a5eea163427db8f5c3813a1b5e5f61",
+      "diff": ""
+    }
+  ]
+}
