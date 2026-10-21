@@ -1,8 +1,8 @@
 # Lane E2 — approved main61 workload pipeline
 
-Event V4_SGEMM_MAIN61_EXPLORATORY_S_F_CURRENT_ACCEPTED; original T0 1792414193; actual 50; this batch 4/4; old46 retained. Original controller ACTIVE.
+Event SGEMM_EXACT_COUNTERS_READY_FOR_INCREMENTAL_D; original T0 1792414193; actual 50; this batch 4/4; old46 retained. Original controller ACTIVE.
 
-Generated new 7305683085B / 10737418240B; total 21615259469B / 25769803776B. No migration reset.
+Generated new 7306554958B / 10737418240B; total 21616131342B / 25769803776B. No migration reset.
 
 | Condition | Attempt | State |
 |---|---|---|
