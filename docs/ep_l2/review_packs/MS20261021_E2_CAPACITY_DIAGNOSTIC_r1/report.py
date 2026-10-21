@@ -54,7 +54,7 @@ def checkpoint(event,pair=None,extra=()):
    matches=[a for a in s['attempts'][len(old['attempts']):] if a['run_key']==r['run_key']];assert len(matches)<=1,'Automatic retry forbidden'
    a=matches[0] if matches else {};accepted_pointer=s['accepted_results'].get(a.get('attempt_id'),{})
    recovered=accepted_pointer.get('parser_only_recovered',False)
-   rows.append(dict(condition=r['condition_id'],profile=r['profile'],pair_id=r['pair_id'],qualification_id=r['qualification_id'],state='COMPLETE_VALID_PARSER_RECOVERY_ORIGINAL_FAILED_RETAINED' if recovered else a.get('state','NOT_STARTED'),original_terminal_state=a.get('state'),attempt_id=a.get('attempt_id'),receipt_path=accepted_pointer.get('path',a.get('receipt_path')),original_receipt_path=a.get('receipt_path'),parser_only_recovered=recovered))
+   rows.append(dict(condition=r['condition_id'],profile=r['profile'],pair_id=r['pair_id'],qualification_id=accepted_pointer.get('qualification_id',r['qualification_id']),original_planned_qualification_id=r['qualification_id'],state='COMPLETE_VALID_PARSER_RECOVERY_ORIGINAL_FAILED_RETAINED' if recovered else a.get('state','NOT_STARTED'),original_terminal_state=a.get('state'),attempt_id=a.get('attempt_id'),receipt_path=accepted_pointer.get('path',a.get('receipt_path')),original_receipt_path=a.get('receipt_path'),parser_only_recovered=recovered))
  else:
   import capacity_policy
   for r in capacity_policy.matrix()['conditions']:

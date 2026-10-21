@@ -1,6 +1,8 @@
-# Lane E2 — capacity diagnostic / CAPACITY_CONTROLLER_TERMINAL
+# Lane E2 — capacity diagnostic / CAPACITY_PARSER_REVISION_QUALIFICATIONS_REGISTERED
 
 Original174; T0 1792414193; actual 38/46, remaining 8; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 0/5. Original MAIN and control results unchanged.
+
+Formal concurrency: RESOURCE_ONLY, ADOPTED_PENDING_SAFE_CONTROLLER_SOURCE_SWITCH. Fixed E formal simulator-count limits removed by explicit user approval; existing CPU/RAM/disk and result/start budgets remain.
 
 Result generation: new 6106885555B/10737418240B; old+new 20416461939B/25769803776B; growth since36 952330339B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
