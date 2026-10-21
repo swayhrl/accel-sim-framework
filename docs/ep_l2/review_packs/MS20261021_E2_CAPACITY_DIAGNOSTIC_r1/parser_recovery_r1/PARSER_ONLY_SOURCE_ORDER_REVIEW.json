@@ -1,0 +1,106 @@
+{
+  "schema": "E2_CAPACITY_PARSER_ONLY_RECOVERY_SOURCE_REVIEW_V1",
+  "status": "ENGINEERING_CANDIDATE_NOT_SCIENTIFIC_ACCEPTANCE",
+  "source_identity": {
+    "core": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+    "framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7"
+  },
+  "source_order": [
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "79d5c93ca7ef0d243e14e8621a96e46ccbe51dc7055e8527bd34668a272ad831",
+      "lines": [
+        1075,
+        1085
+      ],
+      "meaning": "set_kernel_done emits end_ep_l2_b0_kernel before cleanup print_stats"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261021-a2-large-capacity-v1/src/gpgpu-sim/l2cache.cc",
+      "sha256": "7be822a42ca788892b98fa16f4209d07f5af9018603f8c0273cba47eeb0808be",
+      "lines": [
+        2250,
+        2268,
+        2300,
+        2338
+      ],
+      "meaning": "UID-local B0 kernel_shared_delta has actual start_cycle/completion_cycle; associated invariant is emitted before cumulative gpu_tot clock"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator/accel-sim.cc",
+      "sha256": "9f20dcb6a0d2fb704197bd6b882b46cd1f2be43708e79b399dc7cf11ae2661a3",
+      "lines": [
+        98,
+        106,
+        154,
+        173
+      ],
+      "meaning": "cleanup print_stats follows kernel finalization; final empty kernel snapshot may repeat the same cumulative clock"
+    }
+  ],
+  "raw_order_evidence": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E037_a423c80f/raw.log",
+    "sha256": "c5388f91f6614f26e54ff4914f6bccc1e9a3c98992a60e76978f3657400dc659",
+    "first_kernel": {
+      "B0_kernel_scope_line": 1077,
+      "B0_invariant_line": 1078,
+      "kernel_uid_header_line": 1271,
+      "cumulative_clock_line": 1276,
+      "source_completion_cycle": 7055,
+      "cumulative_clock": 7056
+    },
+    "last_kernel": {
+      "kernel_uid": 5,
+      "invariant_line": 44961,
+      "kernel_uid_header_line": 45154,
+      "cumulative_clock_line": 45159,
+      "cumulative_clock": 79093
+    },
+    "final_empty_snapshot": {
+      "empty_uid_header_line": 54780,
+      "clock_line": 54785,
+      "clock": 79093,
+      "summary_line": 55431,
+      "terminal_line": 55432,
+      "invariant_line": 55433
+    }
+  },
+  "root_cause": "Decoder required global native clock before classifying UID-local B0 invariant. First kernel terminal necessarily precedes the first cumulative gpu_tot clock; later local invariants also must not borrow the previous global clock.",
+  "minimal_fix": [
+    "Separate explicit kernel_shared_delta B0 records and associated UID-local invariants before global clock requirement.",
+    "Require each kernel invariant to match its actual preceding UID/slice B0 completion record.",
+    "Retain exact launched UID x 64-slice coverage, each source completion_cycle bounded by final cumulative native clock, and store all 320 original invariant fields with source start/completion clocks.",
+    "Keep original cumulative frame boundary, strict same-clock put(), final64slice checks, capacity/science checks, and final empty snapshot validation unchanged."
+  ],
+  "immutable_originals": {
+    "parser": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/terminal_preparation/formal_source_adaptation/parse_capacity_terminal.py",
+      "sha256": "7ed6be613653c5d48614e4bc701f9b0f8a2bdfaa46cf8d68e548ded608dbd9cb"
+    },
+    "qualification": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/input_preparation/new_source_review/final_qualifications/cfd_097k/QUALIFICATION.json",
+      "sha256": "48eb52cfe2a16a806af2468790bcd69b4f60e0899edf7af21b274dc07b8462fb"
+    },
+    "spec": {
+      "path": "/workspace/ep_l2_ms20261019_e_results/E037_a423c80f/input_spec.json",
+      "sha256": "747d83c36020c071e0adf3a90d0e66b56fe9235bb1ccd16eebec855304312621"
+    },
+    "raw": {
+      "path": "/workspace/ep_l2_ms20261019_e_results/E037_a423c80f/raw.log",
+      "sha256": "c5388f91f6614f26e54ff4914f6bccc1e9a3c98992a60e76978f3657400dc659"
+    }
+  },
+  "candidate": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/parser_recovery_r1/parse_capacity_terminal.py",
+    "sha256": "63cce0b814827a61b270b522b012f2620e55139dc24d61cbd29d74e48d69fb77"
+  },
+  "interface": {
+    "pure_parse": "import module; parse(raw_path, original_spec_object, original_qualification_object) -> normalized terminal dict; pure engineering exploration only",
+    "formal_recovery": "Root independently revises parser seal and Q/spec parser binding; original application/native binding/FAILED receipt immutable; original testlease runs parser plus full terminal validator; no new application launch."
+  },
+  "scope_limits": [
+    "No native test, compiler, full-application rerun, registry/CLIENT write, production source change or acceptance by this review.",
+    "No unclocked cumulative terminal is ignored. No conflicting same-clock record is overwritten. No kernel terminal or final empty snapshot is discarded.",
+    "Engineering parse output is not CURRENT_ACCEPTED; normal durable exit and input/native/source/resource closure remain root recovery validator responsibilities."
+  ]
+}

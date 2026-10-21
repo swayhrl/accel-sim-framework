@@ -1,0 +1,26 @@
+{
+  "schema": "E2_ORIGINAL_CONTROLLER_RESOURCE_ONLY_CANDIDATE_V1",
+  "status": "REVIEW_PATCH_ONLY_INSTALL_AFTER_OLD_CONTROLLER_STOPPED_AND_OWN_TASKS_DRAINED",
+  "base_source": {
+    "path": "util/ep_l2/mechanism_e/controller.py",
+    "sha256": "6bfc9128c631463fa5100587ed258c36da043df2d14ace4ae67707aa0f6909e2",
+    "HEAD": "7fa71b17462a49e6679d2e3012a0259aae1fb709"
+  },
+  "candidate_source": {
+    "path": "candidate/controller.py",
+    "sha256": "ccbad7e90774cfdad17720dc789c515c43c9e68e29d030e196421af62f985025"
+  },
+  "patch": {
+    "path": "RESOURCE_ONLY_CONTROLLER.patch",
+    "sha256": "f096847aa558cfa3f3bdd2eaf250fba4825371b012d7d1078059d58e499fc2a3"
+  },
+  "dependency_API": "concurrency_policy.resource_only(item,'simulation')",
+  "finite_executor_capacity": "number of exact unstarted pending queue entries at intake, not an imposed simulator count",
+  "virtual_reservations": "Deep-copy forecast of submitted futures still hashing before real original reservation; no lease/counter mutation",
+  "control_result": "CONTROLLER_BOUNDED_CONTROL_RESULT.json",
+  "source_apply_git_check": "PASS_NOT_APPLIED",
+  "actual_pool_threads_created": 0,
+  "native_or_application_starts": 0,
+  "registry_CLIENT_util_writes": 0,
+  "commit_pushes": 0
+}
