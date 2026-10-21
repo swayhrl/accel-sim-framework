@@ -1,3 +1,9 @@
+# 当前实测运行进展
+
+actual50（本轮批准4次已全部实际启动）。SGEMM E047/E048已CURRENT_ACCEPTED：343730/343442cycles，完整1658916864指令、64slice/nativewait0/drain，已交D及精确机制计数补包。FWT E049/E050仍在原唯一controller执行，无新增未启动条件或自动retry。D现可消费SGEMM独立探索对照，不等FWT；D本人是否已开始以真实ACK为准。旧五容量分析已完成，不重做。
+
+当前结果：[STATUS](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/STATUS.md)。以下为此前接续索引：
+
 # EP-L2当前流水状态
 
 用户已批准准确main61 FWT恢复S/F2次+SGEMM独立探索S/F2次；原中央scope已接入，四端资格与spec已绑定，实际启动前资源预测1–4路PASS。原controller仍STOPPED、actual46，下一步执行唯一原controller的sealed PRIMARY_FOUR queue。原32/8/10与旧46保持。
