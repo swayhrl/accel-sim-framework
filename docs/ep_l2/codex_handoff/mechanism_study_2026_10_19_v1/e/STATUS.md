@@ -1,6 +1,6 @@
-# Lane E2 — V2_CONTROL_dwt2d_S_VS_W_ONLY_RAM_RETRY_MAIN61_CURRENT_ACCEPTED
+# Lane E2 — DWT_APPROVED_TWO_RETRIES_TERMINAL
 
-Original174; originalT0=1792414193; actual32/40,remaining8,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
+Original174; originalT0=1792414193; actual32/40,remaining8,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller STOPPED; original unique registry/lock and maximum2.
 
 | Main S/F | S cycles | F cycles | S/F |
 |---|---:|---:|---:|
