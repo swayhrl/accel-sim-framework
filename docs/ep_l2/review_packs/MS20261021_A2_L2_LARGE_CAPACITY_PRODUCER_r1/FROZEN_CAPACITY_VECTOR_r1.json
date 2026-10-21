@@ -1,0 +1,43 @@
+{
+  "schema": "A2_FROZEN_SINGLE_CAPACITY_VECTOR_V1",
+  "status": "SOURCE_IMPLEMENTED_PENDING_BUILD_NATIVE_E_QUALIFICATION",
+  "core_source_commit": "e2859cd4fcd7402e64f5ce26f96546643e0fd4e7",
+  "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "switch": "-gpgpu_ep_l2_diag_l2_large_capacity",
+  "default": 0,
+  "applicability": "TRADITIONAL_S_ONLY",
+  "common_to_all_five": true,
+  "per_slice": {
+    "sets": 4096,
+    "ways": 16,
+    "tag_slots": 65536,
+    "resident_slots": 65536,
+    "bypass_slots": 8192,
+    "WB_slots": 1024,
+    "total_payload_slots": 74752,
+    "WAD": 8192,
+    "line_MSHR": 8192,
+    "descriptor": 32768,
+    "per_address": 2048,
+    "MissQ": 8192,
+    "ICNT_L2": 4096,
+    "L2_DRAM": 8192,
+    "DRAM_L2": 4096,
+    "L2_ICNT": 4096,
+    "result_fifo_config_field": 4096,
+    "ready_response_bound": 32768
+  },
+  "unchanged": {
+    "sector_bytes": 32,
+    "line_bytes": 128,
+    "bank_count": 4,
+    "bank_ops_config": 1,
+    "copy_latch_cycles": 1,
+    "ROP_latency": "INHERITED_CONFIG",
+    "ROP_storage": "NATIVE_DYNAMIC",
+    "DRAM_interconnect": "UNCHANGED"
+  },
+  "index_mapping": "For native P: exact original IPOLY64 low6 bits, next6 partition-line bits select high group. Linear is also supported. OFF unchanged.",
+  "unused_field_scope": "result_fifo_config_field is not a separate active L2 ready queue; real ready responses share live descriptor capacity.",
+  "near_nonbinding": "NOT_YET_MEASURED: all covered resource denial checks zero and conservative/event peak<=50% capacity required; otherwise large-finite, no automatic retry"
+}

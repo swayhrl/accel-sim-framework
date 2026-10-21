@@ -46,7 +46,9 @@ def put(path, value):
 
 
 def main():
+    global SPEC_PATH
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--spec', type=Path, default=SPEC_PATH, help='explicit versioned A spec; default historical r6 preserved')
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--build', type=Path, required=True)
     p.add_argument('--suite', choices=['main', 'all', 'diagnostics'], default='main')
@@ -56,8 +58,10 @@ def main():
                    help='only the exact failed test-only build frozen in this spec; fresh E lease required')
     p.add_argument('--disk-authorization-id')
     p.add_argument('--admission', type=Path)
+    p.add_argument('--user-authorized-capacity',action='store_true',help='this exact user-approved capacity producer only; actual E API resource admission still mandatory')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
+    SPEC_PATH = a.spec.resolve()
     out, build = a.out.resolve(), a.build.resolve()
     assert out.is_relative_to('/workspace') and build.is_relative_to('/workspace')
     assert not out.is_relative_to(build) and not build.is_relative_to(out)
@@ -198,9 +202,25 @@ def main():
         # New leases consume E's formally published, campaign-only5GiB
         # amendment. Historical named records are preserved, never replayed.
         assert not a.disk_authorization_id, 'new ordinary policy requires fresh E admission; no historical token replay'
-        assert a.admission and a.admission.is_file(), 'fresh exact E admission required; no compiler/native'
-        approval_bytes = a.admission.read_bytes()
-        approval = json.loads(approval_bytes)
+        direct_capacity=a.user_authorized_capacity
+        if direct_capacity:
+            assert spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC' and not recovery
+            user_authority=Path(spec['explicit_user_authority']['path'])
+            assert sha(user_authority)==spec['explicit_user_authority']['sha256']
+            user=json.loads(user_authority.read_text())
+            assert user['status']=='USER_APPROVED_FOR_A_E_IMPLEMENTATION_AND_EXECUTION_AFTER_QUALIFICATION'
+            assert user['implementation_owner']=='A' and user['one_switch_default_OFF']
+            assert spec['authority_user_commit']=='49343880865edb22a17523790fc32dd55975966c'
+            approval_bytes=None
+            approval={'valid_until_unix':min(time.time()+7200,user['intake_deadline_unix'])}
+            bindings[str(user_authority)]=spec['explicit_user_authority']['sha256']
+            report['admission_mode']='EXPLICIT_USER_CAPACITY_BUILD_PLUS_ACTUAL_E_CENTRAL_RESOURCE_API'
+            report['user_authority']=spec['explicit_user_authority']
+            report['E_scientific_qualification_granted']=False
+        else:
+            assert a.admission and a.admission.is_file(), 'fresh exact E admission required; no compiler/native'
+            approval_bytes = a.admission.read_bytes()
+            approval = json.loads(approval_bytes)
         assert socket.gethostname()==spec['execution_host'],'current E API is original174 only'
         assert out.is_relative_to('/workspace/ep_l2_ms20261019_e_results')
         assert build.parent.exists() and out.parent.stat().st_dev==Path('/workspace').stat().st_dev
@@ -219,7 +239,7 @@ def main():
         client = json.loads((SHARED/'mechanism_study_20261019_v1/CLIENT_CONTRACT.json').read_text())
         api = Path(client['resource_lease_api'])
         assert client['authority_commit']==AUTHORITY and sha(api)==client['resource_lease_api_sha256']
-        assert sha(api)==approval['resource_client_sha256']
+        if not direct_capacity: assert sha(api)==approval['resource_client_sha256']
         sys.path.insert(0,str(api.parent))
         from coordinator import Coordinator,tooling_binding,retained_tree_bytes
         tooling_binding() # Includes exact published E disk_policy.py bytes.
@@ -236,19 +256,21 @@ def main():
             control_source_commit=report['driver_source_commit'],reserved_cpu_units=cpu,
             reserved_memory_bytes=memory,reserved_build_growth_bytes=report['reserved_build_growth_bytes'],
             reserved_result_bytes=spec['result_growth_bytes'],workspace_disk_policy=policy)
-        for k,value in expected.items():
-            assert approval.get(k)==value,'E admission identity mismatch: '+k
-        assert approval['results_budget_status']=='PASS'
-        if native_only:
+        if not direct_capacity:
+            for k,value in expected.items():
+                assert approval.get(k)==value,'E admission identity mismatch: '+k
+            assert approval['results_budget_status']=='PASS'
+        if native_only and not direct_capacity:
             assert approval['retained_build_receipt_sha256']==sha(a.build_receipt)
         valid_until=approval['valid_until_unix']
-        report.update(E_admission=dict(path=str(a.admission),sha256=sha(a.admission)),
+        report.update(E_admission=(dict(path=str(a.admission),sha256=sha(a.admission)) if not direct_capacity else dict(status='PENDING_ACTUAL_CENTRAL_RESOURCE_ADMISSION_NO_SELF_ISSUED_E_APPROVAL')),
             E_source_publication=client['source_publication_commit'],E_resource_api_sha256=sha(api),
             E_workspace_disk_policy=policy,authorized_task_floor_bytes=stop_floor,
             monitor_reserve_bytes=monitor,disk_floor_bytes=stop_floor+monitor)
         bindings.update({str(Path(client['execution_worktree'])/f):h for f,h in client['source_files'].items()})
         bindings.update({str(HANDOFF/f):h for f,h in spec['control_files_SHA256'].items()})
         bindings.update({str(core/f):h for f,h in spec['core_inputs_SHA256'].items()})
+        bindings.update(spec.get('reference_artifacts_SHA256',{}))
         bindings.update(inputs)
         guard_path = runtime/spec['supervisor']
         assert sha(guard_path)==spec['supervisor_SHA256']
@@ -286,6 +308,7 @@ def main():
             out if native_only else build,result_growth_bytes=spec['result_growth_bytes'],
             disk_authorization_id=None,build_identity=None)
         lease = allocation['lease_id'];report.update(lease_id=lease,resource_owner='mechanism_A',resource_allocation=allocation)
+        if direct_capacity:report['E_admission']=dict(status='GRANTED_BY_ACTUAL_E_CENTRAL_API',lease_id=lease,resource_api_sha256=sha(api),scientific_qualification=False)
         assert all(allocation[k]==v for k,v in policy.items()), 'new lease policy differs from frozen E ordinary policy'
         assert resources()['disk_free_bytes']>=stop_floor+growth+monitor
         temp_root = out if native_only else build
@@ -384,7 +407,7 @@ def main():
             sources_exact();assert sha(build/'accel-sim.out')==report['binary_sha256']
             if group=='main':
                 for name,sigs in semantics.items():
-                    assert len(sigs)==2 and sigs[0]==sigs[1],'observer changed native cycles/semantics: '+name
+                    assert len(sigs)==spec.get('semantic_group_expected_counts',{}).get(name,2) and all(s==sigs[0] for s in sigs),'observer changed native cycles/semantics: '+name
                 report.update(main_producer_pass=True,status='MAIN_PRODUCER_PASS_PENDING_E_INDEPENDENT_QUALIFICATION');save()
                 put(out/'MAIN_NATIVE_RECEIPT.json',dict(report))
                 report['main_checkpoint_sha256']=sha(out/'MAIN_NATIVE_RECEIPT.json')

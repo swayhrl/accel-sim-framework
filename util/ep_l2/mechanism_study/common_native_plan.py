@@ -14,6 +14,30 @@ def prepare(spec, handoff, core, build, out, suite):
         assert sha(handoff / rel) == expected, 'changed frozen input: ' + rel
     for rel, expected in spec['core_inputs_SHA256'].items():
         assert sha(core / rel) == expected, 'changed Core input: ' + rel
+    if spec.get('release_kind') == 'L2_LARGE_CAPACITY_DIAGNOSTIC':
+        inputs=out/'inputs';inputs.mkdir()
+        common=(core/'tests/ep_l2/ft_wbuf.config').read_text()+"\n-gpgpu_simple_dram_model 0\n-gpgpu_ep_l2_ms_observer 1\n"
+        generated={
+          'DEFAULT.config':common,
+          'OFF.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 0\n',
+          'ON.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n',
+          'ON64.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-gpgpu_n_mem 32\n-gpgpu_n_sub_partition_per_mchannel 2\n',
+          'REJECT_COPY.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-gpgpu_ep_l2_diag_copy_free 1\n',
+          'REJECT_RO.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-gpgpu_ep_l2_ro_tag_detach 1\n',
+          'REJECT_VALUE.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 2\n',
+        }
+        for name,text in generated.items():(inputs/name).write_text(text)
+        replacements={'{CORE}':str(core),'{BUILD}':str(build),'{OUT}':str(out),'{INPUTS}':str(inputs)}
+        cases=[]
+        for row in spec['cases']:
+            assert re.fullmatch(r'ep_l2_[A-Za-z0-9_]+',row['target'])
+            assert row['expected_exit'] in (0,21) and 0<row['timeout_seconds']<=120
+            args=[]
+            for arg in row['args']:
+                for token,value in replacements.items():arg=arg.replace(token,value)
+                args.append(arg)
+            cases.append(dict(row,native_command=[str(build/'gpgpu-sim'/row['target']),*args]))
+        return cases,{str(f):sha(f) for f in inputs.iterdir()}
     inputs = out / 'inputs'
     inputs.mkdir()
     original = handoff / 'full_system_v2/C_FROZEN_INPUT_r1/native_inputs'
