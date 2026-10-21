@@ -1,0 +1,859 @@
+{
+  "at_utc": "2026-10-21T14:43:51.929078+00:00",
+  "coordinator": "E2_TEMPORARY_PROTOCOL_AND_DELIVERY_OWNER",
+  "idle_wakeup_available": false,
+  "kind": "BOUNDED_METADATA_RECEIPT_AND_PRIOR_DELIVERY_INDEX_NOT_SCIENTIFIC_ACCEPTANCE",
+  "new_native_or_application_starts": 0,
+  "owner": "E2",
+  "peer_self_reports": {
+    "A2": {
+      "blocking_dependencies": [],
+      "current_task": "上一轮D/F候选兼容性审查已完成并远端回读：663fba57b7dc6428d613db443d6ff2f3c99e33d5，docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/REPORT.md。容量producer交付0ae16a6c48bdffbdf38ced4da6c76dda4981a813保持冻结。当前无未完成A2任务；后续输入/新F资格依赖已登记交付事件，不重做旧工作、不启动应用。已接入协作v1，按安全边界前台check，无后台poller。",
+      "participation": "JOINED_REMOTE_STATUS_AND_ACK_VERIFIED",
+      "process_state_inferred": false,
+      "self_reported_activity": "IDLE",
+      "setup_ack_event": "A2-00000002-98c66228cc5c",
+      "source_commit": "019cc67bb5d9383ffdd1529ad8f9e8c46c921f88",
+      "status_path": "docs/ep_l2/lane_collaboration_v1/status/A2.json",
+      "status_sha256": "89be8ef3b24914040e4a5767e00597207e7e676fd271abab81666adea25c0aa4",
+      "updated_at_utc": "2026-10-21T14:32:53.359768Z"
+    },
+    "B": {
+      "blocking_dependencies": [],
+      "current_task": "协作v1已接入；上一轮W/V审查已完成，无新研究待办。最终交付c740421ef2c91ea1029cb1df037324de11c86caa，docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/REVIEW.md。仅接入与重索引，不重做科学审查；原Goal/Core/历史证据保留；无后台任务。",
+      "participation": "JOINED_REMOTE_STATUS_AND_ACK_VERIFIED",
+      "process_state_inferred": false,
+      "self_reported_activity": "IDLE",
+      "setup_ack_event": "B-00000002-eff82a0a1047",
+      "source_commit": "1af7a81629a90db4948f0842a4a9ca2659e6609d",
+      "status_path": "docs/ep_l2/lane_collaboration_v1/status/B.json",
+      "status_sha256": "ca8d5dd066f7ad8e3e770202941334b771015902114f45172c2261e7e76b8ab8",
+      "updated_at_utc": "2026-10-21T14:32:15.565283Z"
+    },
+    "C": {
+      "blocking_dependencies": [],
+      "current_task": "Collaboration v1 adopted; prior C epoch qualification/detach0 audit complete at 8a32cd0078b4aa602ccfce7c7320a09077a617d8. No new actionable research request; original Goal and unresolved research boundaries preserved.",
+      "participation": "JOINED_REMOTE_STATUS_AND_ACK_VERIFIED",
+      "process_state_inferred": false,
+      "self_reported_activity": "IDLE",
+      "setup_ack_event": "C-00000001-bd3b2323d563",
+      "source_commit": "06cf7fd7d5dd7d0f0815345d4c692ee01bc3e025",
+      "status_path": "docs/ep_l2/lane_collaboration_v1/status/C.json",
+      "status_sha256": "dec4782bd0b8415662153ec072d0bd29b2ec789d1fa78e5622156637e0cc34d8",
+      "updated_at_utc": "2026-10-21T14:35:47.423661Z"
+    },
+    "D": {
+      "blocking_dependencies": [
+        {
+          "need": "Conv capacity OFF/ON formal CURRENT_ACCEPTED pair; do not consume running E046 or infer from E045 alone",
+          "owner": "E2"
+        },
+        {
+          "need": "Future FWT/SGEMM input provenance, numeric/reference and exact whole-epoch RO or safe fallback review plus new-version independent E qualification/registration; preparation only, no new launch scope",
+          "owners": [
+            "F",
+            "C",
+            "A2",
+            "E2"
+          ]
+        }
+      ],
+      "current_task": "Lane D已接入协作v1；上一轮最终交付6825d1cd0c87d8b0122e03a9dff5253c873b747b：docs/ep_l2/review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/CONSUMED.json及DWT_INCREMENTAL_SCIENCE.md；docs/ep_l2/review_packs/MS20261021_D_WORKLOAD_PREFREEZE_r1/DECISION_REPORT.md。四组新binary容量OFF/ON已分析，当前E已接受身份与已有CONSUMED完全对应，本轮只链接、不重复分析。Conv仍待E2正式CURRENT_ACCEPTED；保留ON UNKNOWN、main61主结果和原七分母。无当前可执行离线新待办；按开始/恢复、交付、依赖切换、结束前台check；无后台poller/新Goal/控制器/应用启动。",
+      "participation": "JOINED_REMOTE_STATUS_AND_ACK_VERIFIED",
+      "process_state_inferred": false,
+      "self_reported_activity": "IDLE",
+      "setup_ack_event": "D-00000001-a1f3f7dcb247",
+      "source_commit": "432f6933be22396533af1009a64a97ac604c4e3d",
+      "status_path": "docs/ep_l2/lane_collaboration_v1/status/D.json",
+      "status_sha256": "c4203c68338d3ff2d80a2f17dee1324f66e742a913e11f9d25b687e049f4d60d",
+      "updated_at_utc": "2026-10-21T14:35:16.683206Z"
+    },
+    "F": {
+      "blocking_dependencies": [
+        {
+          "missing_ids": [
+            "FWT-SOURCE",
+            "FWT-CAPTURE",
+            "FWT-NUMERIC-DATA",
+            "SGEMM-SOURCE",
+            "SGEMM-CAPTURE",
+            "SGEMM-DATA-ORACLE"
+          ],
+          "owner": "原采集资产owner / F按后续明确任务整理",
+          "scope": "将来原源码/采集/数值复现所需补件；当前没有新获取任务"
+        },
+        {
+          "missing_ids": [
+            "FWT-RESTART",
+            "SGEMM-RO",
+            "SGEMM-EXECUTION"
+          ],
+          "owner": "A2/C/E2独立资格与明确科学授权",
+          "scope": "将来运行才需，不是当前已获授权任务"
+        }
+      ],
+      "current_task": "F本人接入协作v1；上一轮FWT/SGEMM输入准备已完成，最终交付b81a259a7d3030208dcebbc7693c3ef793c2fde9，结果docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/。当前无新增已指派待办；仅重新索引既有交付，不重做审查。原Goal及历史保留；正式执行仍原174/E2；无后台轮询。",
+      "participation": "JOINED_REMOTE_STATUS_AND_ACK_VERIFIED",
+      "process_state_inferred": false,
+      "self_reported_activity": "IDLE",
+      "setup_ack_event": "F-00000002-aa762365af9b",
+      "source_commit": "d808d1184d666390833169245cbca3a089da7183",
+      "status_path": "docs/ep_l2/lane_collaboration_v1/status/F.json",
+      "status_sha256": "f60d6db9c1a13e17dbdcf10a85829ec24f93a1019d50704bac783391956f6f0e",
+      "updated_at_utc": "2026-10-21T14:33:58.393837Z"
+    }
+  },
+  "pending_work": "E2 E046 true terminal and fifth pair; D subsequent incremental analysis after formal Conv delivery; candidate input gaps remain non-launchable",
+  "producer_owner": "A2",
+  "repeated_scientific_work": false,
+  "reviewed_events": [
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "activity": "IDLE",
+        "blocking_dependencies": [],
+        "current_task": "上一轮D/F候选兼容性审查已完成并远端回读：663fba57b7dc6428d613db443d6ff2f3c99e33d5，docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/REPORT.md。容量producer交付0ae16a6c48bdffbdf38ced4da6c76dda4981a813保持冻结。当前无未完成A2任务；后续输入/新F资格依赖已登记交付事件，不重做旧工作、不启动应用。已接入协作v1，按安全边界前台check，无后台poller。"
+      },
+      "event_id": "A2-00000001-070b72481b15",
+      "event_sha256": "d9c87f6936ef47b2440c733d9e3cc2147a242e3f815a5e3dcdd57a1cbfa1a448",
+      "kind": "STATUS",
+      "owner": "A2",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "019cc67bb5d9383ffdd1529ad8f9e8c46c921f88",
+      "subject": "Status: IDLE"
+    },
+    {
+      "ack_for": {
+        "event_id": "E2-00000002-ca1c31760483",
+        "event_sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "owner": "E2",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      "ack_status": "RECEIVED",
+      "body": {
+        "actual_host": "huangrulin-174",
+        "actual_owner": "A2",
+        "adopted_protocol_commit": "63566312c4dcf03f18c04c5d3db75ab2000a8aed",
+        "cadence": "Foreground check at start/resume, material delivery, dependency transitions and completion; no background watcher",
+        "current_activity": "IDLE",
+        "original_task_completed_not_repeated": true,
+        "scientific_or_launch_acceptance": false,
+        "verified_bootstrap_protocol_file_SHA": true
+      },
+      "event_id": "A2-00000002-98c66228cc5c",
+      "event_sha256": "0544f3caf077568b941e25f20c01c3b7d40828b53d3279b73efcda061e077e18",
+      "kind": "ACK",
+      "owner": "A2",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "019cc67bb5d9383ffdd1529ad8f9e8c46c921f88",
+      "subject": "ACK E2-00000002-ca1c31760483"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "A2_next": "IDLE; act only on concrete producer compatibility defects or an assigned qualification-gap task, using original process; no full apps.",
+        "deduplication": "Already-completed compatibility audit work is indexed, not re-executed under the new channel.",
+        "delivery_type": "INDEX_OF_ALREADY_COMPLETED_WORK_NOT_NEW_EXECUTION",
+        "frozen_Core": "fe7e1fc1e8f40b5c4c6d0f232a528483891389c5",
+        "frozen_archive_SHA256": "bed717ec2c4c5cd533c1a1fa15b79059907710885e61a61c1d70e0ace00be708",
+        "frozen_main_SHA256": "93a9f28ddb9c0c9ceb93409764a5664666589477778fe5d41d90a179704706eb",
+        "future_dependencies_not_current_assigned_blockers": [
+          {
+            "need": "Freeze exact neutral candidate/input selection and exclusions before new experiments",
+            "owner": "D"
+          },
+          {
+            "need": "Authentic complete input/source/data/capture package and explicit remaining provenance/numeric-oracle gaps",
+            "owner": "F"
+          },
+          {
+            "need": "Exact whole-epoch certificate or explicitly reviewed zero-coverage safe fallback",
+            "owner": "C"
+          },
+          {
+            "need": "Independent new source/main/input/profile/parser and finite-F qualification; any future scientific scope/execution authorization stays original E-controlled process",
+            "owner": "E2"
+          }
+        ],
+        "last_completed_delivery_commit": "663fba57b7dc6428d613db443d6ff2f3c99e33d5",
+        "outcome": "FWT37/SGEMM21 complete saved opcodes map to frozen Volta parser; input properties can be reviewed/rebound. No new opcode/build/mechanism needed for this research. Btree/SpMV/Scan HOLD and old FWT INCOMPLETE retained. Current capacity OFF/ON qualification never substitutes full F; main61 runtime PASS never crosses source.",
+        "producer_release_commit": "0ae16a6c48bdffbdf38ced4da6c76dda4981a813",
+        "results_directory": "docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/"
+      },
+      "event_id": "A2-00000003-95ba5a3e7a41",
+      "event_sha256": "054bf6b0261c9241d66093e13b40e4fc9a8df4d78bd90563e891b28715a8a9b1",
+      "kind": "DELIVERY",
+      "owner": "A2",
+      "reference_validation": {
+        "reference_count": 4,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 35636
+      },
+      "refs": [
+        {
+          "commit": "663fba57b7dc6428d613db443d6ff2f3c99e33d5",
+          "path": "docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/REPORT.md",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "analysis",
+          "sha256": "77f7d8e68979ed9e0cd2736c6d805c1a538279bb9011d7e9e034ff1e3053ed1a"
+        },
+        {
+          "commit": "663fba57b7dc6428d613db443d6ff2f3c99e33d5",
+          "path": "docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/SUPPORT_GAPS.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "qualification_gaps_not_E_qualification",
+          "sha256": "442e002f1bfb82581aecf4d722a9450846d26ae5c3c6d2afc92a0736e9975209"
+        },
+        {
+          "commit": "663fba57b7dc6428d613db443d6ff2f3c99e33d5",
+          "path": "docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/RECEIPT.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "producer_review_receipt",
+          "sha256": "8aecd6b3499c12fe08653b1113a5c50050d7a1bde60aca298c869e311af7a828"
+        },
+        {
+          "commit": "0ae16a6c48bdffbdf38ced4da6c76dda4981a813",
+          "path": "docs/ep_l2/review_packs/MS20261021_A2_L2_LARGE_CAPACITY_PRODUCER_r1/RELEASE.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "producer_release",
+          "sha256": "927c900172ff58ade12e57cb4fb09b38170a036091392de98177c03227535cc1"
+        }
+      ],
+      "source_commit": "019cc67bb5d9383ffdd1529ad8f9e8c46c921f88",
+      "subject": "A2 joined; completed candidate compatibility review and frozen producer index"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "activity": "IDLE",
+        "blocking_dependencies": [],
+        "current_task": "协作v1已接入；上一轮W/V审查已完成，无新研究待办。最终交付c740421ef2c91ea1029cb1df037324de11c86caa，docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/REVIEW.md。仅接入与重索引，不重做科学审查；原Goal/Core/历史证据保留；无后台任务。"
+      },
+      "event_id": "B-00000001-b621eea55723",
+      "event_sha256": "e6c5f95fe44a13965319d17184aafc8263aac5f9079bb66702e1d0d78ea72122",
+      "kind": "STATUS",
+      "owner": "B",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "1af7a81629a90db4948f0842a4a9ca2659e6609d",
+      "subject": "Status: IDLE"
+    },
+    {
+      "ack_for": {
+        "event_id": "E2-00000002-ca1c31760483",
+        "event_sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "owner": "E2",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      "ack_status": "RECEIVED",
+      "body": {
+        "activity": "IDLE",
+        "background_poller": false,
+        "foreground_checks_at": [
+          "start_or_resume",
+          "meaningful_delivery",
+          "dependency_switch_safe_boundary",
+          "completion"
+        ],
+        "message": "B本人已完整读取入口、BOOTSTRAP、PROTOCOL、CONTRACT及CLI_USAGE，核对固定协议blob SHA并从本人注册分支接入。RECEIVED是接收/采用消息流程，不是科学验收或运行授权。",
+        "new_complete_applications": 0,
+        "new_controller": false,
+        "new_research_task_pending": false,
+        "preserve_original_Goal_and_permissions": true
+      },
+      "event_id": "B-00000002-eff82a0a1047",
+      "event_sha256": "1ec649b20c4a3884191c29ee2456bb7230c737ea50513a10b7d149664fc53379",
+      "kind": "ACK",
+      "owner": "B",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "1af7a81629a90db4948f0842a4a9ca2659e6609d",
+      "subject": "ACK E2-00000002-ca1c31760483"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "existing_review_complete_no_reexecution": true,
+        "future_dependencies_not_active_tasks": [
+          "FWT accepted complete endpoint/controlled V background and independent E qualification if later authorized",
+          "SGEMM explicit E input registration and qualification before any native/application use",
+          "Extra B/C joint fixture remains unaccepted; no promotion from workload counters",
+          "Prior null-limit/D46 discrepancy remains a historical observation for E2 interpretation; not re-audited or repaired by B"
+        ],
+        "legacy_delivery_alias": "/workspace/ep_l2_ms20261019_shared/HANDOFF_B_D_CANDIDATE_WV_REVIEW_r2.json; explanatory only, immutable Git refs are authority",
+        "new_simulations_builds_GPU_or_pollers": 0,
+        "original_Goal_retained": true,
+        "previous_delivery_commit": "c740421ef2c91ea1029cb1df037324de11c86caa",
+        "previous_result": {
+          "FWT": "184660 V responses /12489 dirty-forward in historical INCOMPLETE/NOT_ACCEPTED64slice snapshot only",
+          "SGEMM": "old resident writes135168, WB readout/DRAMwrite0; new V/dirty-forward counters absent, not zero; candidate not E registered"
+        },
+        "science_or_execution_authority": false,
+        "selection": "Prior D S-only candidate selection unchanged; no F speed ranking; static overlap is not post-eviction short-distance reuse"
+      },
+      "event_id": "B-00000003-95bce3da1bc3",
+      "event_sha256": "cd415c414cca5d5aa74a7ad96bf9f10a3bd2b33063eaea52543418527d5b7763",
+      "kind": "DELIVERY",
+      "owner": "B",
+      "reference_validation": {
+        "reference_count": 4,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 15804
+      },
+      "refs": [
+        {
+          "commit": "c740421ef2c91ea1029cb1df037324de11c86caa",
+          "path": "docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/REVIEW.md",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "analysis",
+          "sha256": "6512aa606019f87137d6dc8b79238b0f4498297d12900cc2ecc183599b937249"
+        },
+        {
+          "commit": "c740421ef2c91ea1029cb1df037324de11c86caa",
+          "path": "docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/D_CANDIDATE_EVIDENCE_MATRIX.csv",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "mechanism_evidence",
+          "sha256": "a17f6dbf9e7cff71a3e32b1f0bed504ed48dbf7ff3cdd138de2d2f8326590692"
+        },
+        {
+          "commit": "c740421ef2c91ea1029cb1df037324de11c86caa",
+          "path": "docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/VALIDATION.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "analysis_validation",
+          "sha256": "284ea6508170ed5aa5564cf851a7439d8a0f389f978aa9fd7a12f32523d9acfe"
+        },
+        {
+          "commit": "c740421ef2c91ea1029cb1df037324de11c86caa",
+          "path": "docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/E_FROZEN_JOINT_SCOPE_REVIEW.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "historical_joint_fixture_scope",
+          "sha256": "66ea9e5b78af129fea9d0e66c1fbbe82818266ac57cfe5a7302213304b865865"
+        }
+      ],
+      "source_commit": "1af7a81629a90db4948f0842a4a9ca2659e6609d",
+      "subject": "B prior W/V candidate review r2: exact existing delivery, no reanalysis"
+    },
+    {
+      "ack_for": {
+        "event_id": "E2-00000002-ca1c31760483",
+        "event_sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "owner": "E2",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      "ack_status": "RECEIVED",
+      "body": {
+        "message": "C received and read the exact bootstrap protocol and verified all six referenced blob hashes. Continuing the original C branch/Goal. Transport adoption only; no new experiment or scientific acceptance. Prior final delivery 8a32cd0078b4aa602ccfce7c7320a09077a617d8 is preserved; no new actionable research request found."
+      },
+      "event_id": "C-00000001-bd3b2323d563",
+      "event_sha256": "c7a7dfc0ca561c8df4e6f1ffe80268a35020f0454d4d6671ef36fc2a530c656c",
+      "kind": "ACK",
+      "owner": "C",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "06cf7fd7d5dd7d0f0815345d4c692ee01bc3e025",
+      "subject": "ACK E2-00000002-ca1c31760483"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "activity": "IDLE",
+        "blocking_dependencies": [],
+        "current_task": "Collaboration v1 adopted; prior C epoch qualification/detach0 audit complete at 8a32cd0078b4aa602ccfce7c7320a09077a617d8. No new actionable research request; original Goal and unresolved research boundaries preserved."
+      },
+      "event_id": "C-00000002-9b161c2279e7",
+      "event_sha256": "930ecca931236e270d143b1cedbb108f36b9e81cbae943386bece09d67192ca9",
+      "kind": "STATUS",
+      "owner": "C",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "06cf7fd7d5dd7d0f0815345d4c692ee01bc3e025",
+      "subject": "Status: IDLE"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "current_state": "IDLE; no actionable new research task. D may reuse the existing candidate/pressure review; A2 owns public implementation and E2 owns acceptance/applications. No new poller/controller/compile/test/application or resource claim.",
+        "final_delivery_commit": "8a32cd0078b4aa602ccfce7c7320a09077a617d8",
+        "purpose": "Index already completed C delivery through collaboration v1; no reanalysis, rerun or new scientific acceptance.",
+        "remaining_research_dependencies": [
+          "Application parentUID sibling versus independent merge counts remain unknown.",
+          "Actual detach-relief attempts/protected-owner guard reasons and certified-read overlap with critical Tag/MSHR waits remain unknown.",
+          "Any new observation-only counters or bounded same-geometry controls require A2/E2 review; no production RO semantics/capacity/input change.",
+          "SGEMM lacks matching complete RO qualification; historical input HOLDs, frozen R35 FAIL and unrun full-joint replacements retained."
+        ],
+        "result_directory": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/epoch_pressure_review_r1/",
+        "review_pack": "docs/ep_l2/review_packs/MS20261021_C_EPOCH_QUALIFICATION_AND_DETACH0_r1/"
+      },
+      "event_id": "C-00000003-7c2be04db559",
+      "event_sha256": "d8703409c0c82282c898c530e56da805232912545b42fdbab017c58782344dd7",
+      "kind": "DELIVERY",
+      "owner": "C",
+      "reference_validation": {
+        "reference_count": 4,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 19379
+      },
+      "refs": [
+        {
+          "commit": "8a32cd0078b4aa602ccfce7c7320a09077a617d8",
+          "path": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/epoch_pressure_review_r1/REVIEW.md",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "prior_final_review",
+          "sha256": "4f6756d40e3ba6d40d0696f1179b81ae2a794a1c32c67e928363a6189e27ab2d"
+        },
+        {
+          "commit": "8a32cd0078b4aa602ccfce7c7320a09077a617d8",
+          "path": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/epoch_pressure_review_r1/RECEIPT.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "prior_final_receipt",
+          "sha256": "2447943054acfe279d30856b13e4920f53bdd7091a975a682147066cfc973d99"
+        },
+        {
+          "commit": "8a32cd0078b4aa602ccfce7c7320a09077a617d8",
+          "path": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/epoch_pressure_review_r1/MAIN_F_PRESSURE.csv",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "prior_pressure_results",
+          "sha256": "60269decd90119278c6310ca55611a67b345b5e95f7c48744180d8a81a9733aa"
+        },
+        {
+          "commit": "8a32cd0078b4aa602ccfce7c7320a09077a617d8",
+          "path": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/epoch_pressure_review_r1/PROTOCOL_AND_GAPS.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "remaining_research_dependencies",
+          "sha256": "1e8a535251a45dbe305da6873daafd54c9e4c335ea8b239caaeed56692de259c"
+        }
+      ],
+      "source_commit": "06cf7fd7d5dd7d0f0815345d4c692ee01bc3e025",
+      "subject": "C existing epoch qualification and detach0 delivery index; collaboration adoption"
+    },
+    {
+      "ack_for": {
+        "event_id": "E2-00000002-ca1c31760483",
+        "event_sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "owner": "E2",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      "ack_status": "RECEIVED",
+      "body": {
+        "no_new_controller_or_applications": true,
+        "original_lane_goal_history_preserved": true,
+        "protocol_refs_sha_verified": true
+      },
+      "event_id": "D-00000001-a1f3f7dcb247",
+      "event_sha256": "18eb0bd5aa3f70861cbd270f38e2f075e00487adc14b6091c4dc31c328a09204",
+      "kind": "ACK",
+      "owner": "D",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "432f6933be22396533af1009a64a97ac604c4e3d",
+      "subject": "ACK E2-00000002-ca1c31760483"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "activity": "IDLE",
+        "blocking_dependencies": [
+          {
+            "need": "Conv capacity OFF/ON formal CURRENT_ACCEPTED pair; do not consume running E046 or infer from E045 alone",
+            "owner": "E2"
+          },
+          {
+            "need": "Future FWT/SGEMM input provenance, numeric/reference and exact whole-epoch RO or safe fallback review plus new-version independent E qualification/registration; preparation only, no new launch scope",
+            "owners": [
+              "F",
+              "C",
+              "A2",
+              "E2"
+            ]
+          }
+        ],
+        "current_task": "Lane D已接入协作v1；上一轮最终交付6825d1cd0c87d8b0122e03a9dff5253c873b747b：docs/ep_l2/review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/CONSUMED.json及DWT_INCREMENTAL_SCIENCE.md；docs/ep_l2/review_packs/MS20261021_D_WORKLOAD_PREFREEZE_r1/DECISION_REPORT.md。四组新binary容量OFF/ON已分析，当前E已接受身份与已有CONSUMED完全对应，本轮只链接、不重复分析。Conv仍待E2正式CURRENT_ACCEPTED；保留ON UNKNOWN、main61主结果和原七分母。无当前可执行离线新待办；按开始/恢复、交付、依赖切换、结束前台check；无后台poller/新Goal/控制器/应用启动。"
+      },
+      "event_id": "D-00000003-b46d0be62de1",
+      "event_sha256": "48630bfdb3c1c34800766cb76096e9442f25e3ec37b12d73d16721713cc3de6c",
+      "kind": "STATUS",
+      "owner": "D",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "432f6933be22396533af1009a64a97ac604c4e3d",
+      "subject": "Status: IDLE"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "B_review": "B c740421ef2c91ea1029cb1df037324de11c86caa reviewed/indexed; FWT historical V service remains NOT_ACCEPTED performance evidence; SGEMM uninstrumented V counters UNKNOWN",
+        "EN_v22_and_old_results_unchanged": true,
+        "ON_classification": "UNKNOWN_ALL_FOUR",
+        "candidate_selection": "FWT original restoration; SGEMM medium independent control; BFS graph65536 conditional; Hotspot512_2_2 reserve; preparation not new registration or run authorization",
+        "current_D_activity": "IDLE",
+        "delivery_type": "INDEX_OF_PREVIOUS_COMPLETED_WORK_NOT_REANALYSIS",
+        "four_capacity_pairs": "CFD, Vector, SAD, DWT already CONSUMED; exact endpoints/config/source/binary unchanged at E 0a00ca2d0fc3a30972818172db258e461f3f1362",
+        "last_final_delivery_commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+        "new_Conv": "PENDING_E_CURRENT_ACCEPTED",
+        "new_simulations_builds_controllers_pollers": 0,
+        "remaining_dependencies": [
+          {
+            "need": "Conv capacity OFF/ON formal CURRENT_ACCEPTED pair; do not consume running E046 or infer from E045 alone",
+            "owner": "E2"
+          },
+          {
+            "need": "Future FWT/SGEMM input provenance, numeric/reference and exact whole-epoch RO or safe fallback review plus new-version independent E qualification/registration; preparation only, no new launch scope",
+            "owners": [
+              "F",
+              "C",
+              "A2",
+              "E2"
+            ]
+          }
+        ]
+      },
+      "event_id": "D-00000004-18f5989a9dd2",
+      "event_sha256": "e875bf47c4bf6387c9cbfa8be99773cf68c6d734c2b5ac97743366e904dd71be",
+      "kind": "DELIVERY",
+      "owner": "D",
+      "reference_validation": {
+        "reference_count": 5,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 88993
+      },
+      "refs": [
+        {
+          "commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+          "path": "docs/ep_l2/review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/CONSUMED.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "analysis_consumed_four_capacity_pairs",
+          "sha256": "18de4bb8aca436529f8cf03f4bdaea2d6fa9f761b5de9b53446b2ba00ff996b7"
+        },
+        {
+          "commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+          "path": "docs/ep_l2/review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/DWT_INCREMENTAL_SCIENCE.md",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "analysis",
+          "sha256": "e8b57f350814accfb717c453a8b32c387f4308956ec9180c4a0f54a9dadffad7"
+        },
+        {
+          "commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+          "path": "docs/ep_l2/review_packs/MS20261021_D_CAPACITY_CONSUMPTION_r2/accepted_snapshot_04/EXACT_ACCEPTED_IDENTITIES.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "accepted_identity_index_not_new_qualification",
+          "sha256": "e20f8f1127714580c37d80636581503b6e6b65f77d2d517b495e6699ffa00cf0"
+        },
+        {
+          "commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+          "path": "docs/ep_l2/review_packs/MS20261021_D_WORKLOAD_PREFREEZE_r1/DECISION_REPORT.md",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "neutral_workload_preparation",
+          "sha256": "835a04573c9a3a2b352a4ae5384c90b65ebeb9e37a4573ab72d56863b99cc40a"
+        },
+        {
+          "commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+          "path": "docs/ep_l2/review_packs/MS20261021_D_WORKLOAD_PREFREEZE_r1/INPUT_SELECTION_FROZEN.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "frozen_preselection_not_E_registration",
+          "sha256": "c7a5b02c950be931ce13daec95f95dacb630bc45583975af225686e79955c8c2"
+        }
+      ],
+      "source_commit": "432f6933be22396533af1009a64a97ac604c4e3d",
+      "subject": "D joined: four capacity pairs already consumed; prior analysis and neutral preselection index"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "activity": "IDLE",
+        "blocking_dependencies": [
+          {
+            "missing_ids": [
+              "FWT-SOURCE",
+              "FWT-CAPTURE",
+              "FWT-NUMERIC-DATA",
+              "SGEMM-SOURCE",
+              "SGEMM-CAPTURE",
+              "SGEMM-DATA-ORACLE"
+            ],
+            "owner": "原采集资产owner / F按后续明确任务整理",
+            "scope": "将来原源码/采集/数值复现所需补件；当前没有新获取任务"
+          },
+          {
+            "missing_ids": [
+              "FWT-RESTART",
+              "SGEMM-RO",
+              "SGEMM-EXECUTION"
+            ],
+            "owner": "A2/C/E2独立资格与明确科学授权",
+            "scope": "将来运行才需，不是当前已获授权任务"
+          }
+        ],
+        "current_task": "F本人接入协作v1；上一轮FWT/SGEMM输入准备已完成，最终交付b81a259a7d3030208dcebbc7693c3ef793c2fde9，结果docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/。当前无新增已指派待办；仅重新索引既有交付，不重做审查。原Goal及历史保留；正式执行仍原174/E2；无后台轮询。"
+      },
+      "event_id": "F-00000001-47abc8465d21",
+      "event_sha256": "e02e7d9dcd85e0f3976ead5dcc27081a651e740a8c444065036805e9388de104",
+      "kind": "STATUS",
+      "owner": "F",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "d808d1184d666390833169245cbca3a089da7183",
+      "subject": "Status: IDLE"
+    },
+    {
+      "ack_for": {
+        "event_id": "E2-00000002-ca1c31760483",
+        "event_sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "owner": "E2",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      "ack_status": "RECEIVED",
+      "body": {
+        "message": "F本人已在真实原分支/工作树核对并采用63566312协议及BOOTSTRAP五个SHA，按要求在开始/交付/依赖切换/结束时前台check。当前IDLE；上一轮输入包已完成，旧Goal不恢复。RECEIVED仅接入回执，不是科学验收或运行授权。",
+        "protocol_commit": "63566312c4dcf03f18c04c5d3db75ab2000a8aed"
+      },
+      "event_id": "F-00000002-aa762365af9b",
+      "event_sha256": "a3581d01323fd62fcb00097d567e48f1ddfa14a707eec29fca6221b9a6013e83",
+      "kind": "ACK",
+      "owner": "F",
+      "reference_validation": {
+        "reference_count": 0,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 0
+      },
+      "refs": [],
+      "source_commit": "d808d1184d666390833169245cbca3a089da7183",
+      "subject": "ACK E2-00000002-ca1c31760483"
+    },
+    {
+      "ack_for": null,
+      "ack_status": null,
+      "body": {
+        "engineering_review_packet_status": "READY_FOR_E_REVIEW",
+        "final_delivery_commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+        "important_findings": [
+          "FWT localCUDA11 reference hardcodeslogD23 and cannot identify originalscaled-logD21 capture source.",
+          "SGEMM already has E2 independent exploratory registration, still HOLD/not launchable."
+        ],
+        "input_packet_status": "MISSING",
+        "legacy_channel_file": "F_TO_E2_D_FWT_SGEMM_INPUT_PREPARATION_r1.json",
+        "no_background_poller": true,
+        "no_pending_new_task": true,
+        "no_scientific_work_repeated": true,
+        "preserved": [
+          "FWT E011/E012 INCOMPLETE",
+          "Btree/SpMV/Scan HOLD",
+          "原Goal及历史结果/权限",
+          "原174正式执行地点与E2唯一调度"
+        ],
+        "remaining_dependencies": [
+          {
+            "id": "FWT-SOURCE",
+            "observed": "run.sh has -logK7 -logD21 and SDK4.2-scaled YAML mapping. Local pinned CUDA11 reference hardcodes log2Data23 and does not parse logK/logD; it is not a reconstruction of this input.",
+            "owner": "F / original capture asset owner",
+            "required_evidence": "Exact scaled SDK4.2-family application source commit/patch, capture executable SHA and build flags/log.",
+            "scope": "source_recapture",
+            "status": "MISSING",
+            "workload": "FWT_7_21"
+          },
+          {
+            "id": "FWT-CAPTURE",
+            "observed": "CUDA_VERSION9.1 and CUDA_VISIBLE_DEVICES4 are literal script declarations; binary version70 is recorded. GPU device index is not model/UUID. FWT saved/kernel1 header does not report NVBit/tracer version.",
+            "owner": "F / original capture asset owner",
+            "required_evidence": "Capture GPU model/UUID, driver and actual toolkit build; original NVBit/tracer/postprocessor commits and executable hashes/session log.",
+            "scope": "capture_provenance",
+            "status": "MISSING",
+            "workload": "FWT_7_21"
+          },
+          {
+            "id": "FWT-NUMERIC-DATA",
+            "observed": "Recorded list has only2 HtoD+19kernels. No numeric HtoD payload, memset or DtoH record in that list. Current reference srand2007/CPU checker cannot be rebound to unknown capture source.",
+            "owner": "F / original capture asset owner",
+            "required_evidence": "Original initialized HtoD payload or exact bound generator/seed, allocation/zeroing contract and captured numerical output/CPU check.",
+            "scope": "numeric_reproduction",
+            "status": "MISSING",
+            "workload": "FWT_7_21"
+          },
+          {
+            "id": "FWT-RESTART",
+            "observed": "E011/E012 both INCOMPLETE. Old elapsed/log appearance cannot establish exit0; no rerun is authorized by this preparation. Old main61 scope does not qualify new capacity runtime.",
+            "owner": "E2",
+            "required_evidence": "New explicit FWT restoration approval and E-selected source/binary/profile/input qualification with durable native exit/drain evidence for any future endpoints.",
+            "scope": "execution_authorization",
+            "status": "MISSING",
+            "workload": "FWT_7_21"
+          },
+          {
+            "id": "SGEMM-SOURCE",
+            "observed": "Pinned local cuda SGEMM reference exists with matching mysgemmNT kernel family, but no binding from its commit to captured binary. Directory11.0 is not compiler proof.",
+            "owner": "F / original capture asset owner",
+            "required_evidence": "Application source commit/patch, actual executable SHA and original build/toolchain flags/log.",
+            "scope": "source_recapture",
+            "status": "MISSING",
+            "workload": "SGEMM_medium"
+          },
+          {
+            "id": "SGEMM-CAPTURE",
+            "observed": "run.sh is absent beside frozen traces; YAML supplies a reference application invocation. Header records NVBit1.4/tracer3/binary70 only; exact source/GPU/CUDA build remain unknown.",
+            "owner": "F / original capture asset owner",
+            "required_evidence": "Original run.sh/capture command, GPU model/UUID/driver/toolkit, NVBit/tracer/postprocessor commits+hashes and original archive/session identity.",
+            "scope": "capture_provenance",
+            "status": "MISSING",
+            "workload": "SGEMM_medium"
+          },
+          {
+            "id": "SGEMM-DATA-ORACLE",
+            "observed": "Trace list records two HtoD addresses/byte lengths, not payload values. Dataset root/expected files absent at checked source/data paths. Dimensions remain UNKNOWN; not inferred from copy lengths or grid.",
+            "owner": "F / original capture asset owner",
+            "required_evidence": "Exact matrix1.txt/matrix2t.txt content hashes and matrix dimensions; reference matrix3 output/hash or bound numeric generator/check.",
+            "scope": "numeric_reproduction",
+            "status": "MISSING",
+            "workload": "SGEMM_medium"
+          },
+          {
+            "id": "SGEMM-RO",
+            "observed": "SGEMM RO certificate UNKNOWN; no Conv certificate reuse, no rewriting UNKNOWN as measured0.",
+            "owner": "C / A2 / E2",
+            "required_evidence": "Own full-input RO certificate or explicit independently reviewed empty-coverage ordinary-path fallback for chosen fixed-policy F.",
+            "scope": "runtime_input_qualification",
+            "status": "MISSING",
+            "workload": "SGEMM_medium"
+          },
+          {
+            "id": "SGEMM-EXECUTION",
+            "observed": "E2_EXP_SGEMM_MEDIUM_20261020_r1 already exists, REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE; not missing registration and not an automatic Btree replacement.",
+            "owner": "A2 / E2",
+            "required_evidence": "Exact supported producer/config/profile/full-input qualification and explicit new exploratory scientific scope/start approval.",
+            "scope": "execution_authorization",
+            "status": "MISSING",
+            "workload": "SGEMM_medium"
+          }
+        ],
+        "result_path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1",
+        "task_state": "COMPLETED_PRIOR_ROUND_REINDEX_ONLY",
+        "transport_change_only": true
+      },
+      "event_id": "F-00000003-872a38c678b4",
+      "event_sha256": "33fa45e1f591c72e80c9a6096b52fcef1b8e283463c01c199d58d07fec7346ad",
+      "kind": "DELIVERY",
+      "owner": "F",
+      "reference_validation": {
+        "reference_count": 7,
+        "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+        "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+        "total_metadata_bytes": 75676
+      },
+      "refs": [
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/README.md",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "input_preparation_report",
+          "sha256": "c2772b10c09037a66b9336f763fbd7a40ce0ffea7641b92acdc8bd4632fe78eb"
+        },
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/DELIVERY.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "input_preparation_delivery",
+          "sha256": "da89732119e97495cd8479e81cf1d3bfa8c0c9cb5621b3bf319923bd352b979a"
+        },
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/MISSING.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "input_provenance_dependencies",
+          "sha256": "c538aef0d5bd987a812f0fed0f383da07aed9bb1d8c135093d4dfe1dfd082594"
+        },
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/FWT_7_21/MANIFEST.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "input_manifest",
+          "sha256": "06282f6f316d5b53522435410724d58a5520f3d0259194fcbbbae5a592717890"
+        },
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/SGEMM_medium/MANIFEST.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "input_manifest",
+          "sha256": "56f7821dc096e3ff0a38e5fa626b93f33bd9173542a77f3838ae44057e308ae9"
+        },
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/REMOTE_READBACK.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "publication_readback",
+          "sha256": "861e49bffac5274546a678478be0ae3d25872c517fe3c46b556138fb7d8d795d"
+        },
+        {
+          "commit": "b81a259a7d3030208dcebbc7693c3ef793c2fde9",
+          "path": "docs/ep_l2/review_packs/MS20261021_F_INPUT_PREPARATION_r1/VALIDATION.json",
+          "repo": "swayhrl/accel-sim-framework",
+          "role": "metadata_control_checks_only",
+          "sha256": "616281dd40dc4aae5756c21c9ef3f6c4d8604c3d51e1a4c595b21dbbb7d18fcd"
+        }
+      ],
+      "source_commit": "d808d1184d666390833169245cbca3a089da7183",
+      "subject": "FWT/SGEMM既有输入包交付索引及9项MISSING；F当前IDLE"
+    }
+  ],
+  "schema": "E2_PEER_ENROLLMENT_INTAKE_V1",
+  "scientific_analysis_owner": "D",
+  "source_registry_client_or_peer_worktree_modified": false
+}
