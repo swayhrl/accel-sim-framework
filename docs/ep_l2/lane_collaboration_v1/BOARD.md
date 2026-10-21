@@ -1,52 +1,20 @@
-# 当前实测运行进展
+# EP-L2当前协作面板
 
-actual50（本轮批准4次已全部实际启动）。SGEMM E047/E048已CURRENT_ACCEPTED：343730/343442cycles，完整1658916864指令、64slice/nativewait0/drain，已交D及精确机制计数补包。FWT E049/E050仍在原唯一controller执行，无新增未启动条件或自动retry。D现可消费SGEMM独立探索对照，不等FWT；D本人是否已开始以真实ACK为准。旧五容量分析已完成，不重做。
+E2有限四端已完成，原controller STOPPED、E运行/lease0、累计50（历史46+本轮4，未退款）。两对CURRENT_ACCEPTED且final_audit COMPLETE_PROVEN。精确当前证据：[最终报告](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/FINAL_REPORT.md)、[回执](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/FINAL_RECEIPT.json)。
 
-当前结果：[STATUS](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/STATUS.md)。以下为此前接续索引：
+|输入|S cycles|F cycles|分组|
+|---|---:|---:|---|
+|FWT_7_21|493189|490402|original_main61_MAIN_restoration|
+|sgemm|343730|343442|independent_frozen_trace_exploration|
 
-# EP-L2当前流水状态
+FWT补原MAIN第六对，SGEMM独立探索，合计7个独立workload；原七MAIN仍因Btree HOLD为UNKNOWN，新93a9五容量对另列，不重复计算应用。旧失败/INCOMPLETE/HOLD、T0、原32/8/10与10/24GiB累计生成政策均保留。
 
-用户已批准准确main61 FWT恢复S/F2次+SGEMM独立探索S/F2次；原中央scope已接入，四端资格与spec已绑定，实际启动前资源预测1–4路PASS。原controller仍STOPPED、actual46，下一步执行唯一原controller的sealed PRIMARY_FOUR queue。原32/8/10与旧46保持。
+## 下一步与流水依赖
 
-D已正式交付五容量对分析（95a3c3dd，D-00000029/30），E2核验CONSUMED并回RECEIVED，不再重复旧分析。D后续依赖是每个新main61配对的E2 CURRENT_ACCEPTED交付；不等全批。A2/C/F已收到批准流程通知，只有具体缺口时接新研究任务；无后台唤醒。
+- D：旧五容量增量已正式完成并被E2消费（D95a3c3dd/CONSUMED ce36f387）；现在增量消费新main61 FWT与SGEMM两对及精确计数，按cohort出逐kernel/机制和论文表图。不等全矩阵、不重做已完成缓存。新两对的实际本人ACK/分析完成仍以D原分支消息为准，E2只证明投递。
+- E2：本轮AT_SAFE_BOUNDARY，原唯一controller已自然STOPPED；无下一批未启动授权、无自动重试/Goal。维护真实交付/消费索引。
+- A2/C/F/B：此前producer/config/emptyfallback/input/WV准备已复用；没有重复无变化审查任务，具体新缺口才合并派发。BFS仍基础MISSING、Hotspot备用，本批未运行。
 
-当前权威运行状态：[STATUS](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/STATUS.md)。冻结PROPOSAL.json中的AWAITING字段是批准前快照，准确批准见USER_APPROVAL.json，采用见central_adoption/ADOPTION_RECEIPT.json。
+批准后E2前台脚本转发和去重；每个接受配对立即通知D。队列能投递但不能唤醒已结束的独立lane窗口，空闲时用户一句“继续读取共享任务队列”即可恢复，不需复制科研材料。无后台poller、第二controller或其他项目策略更改。
 
----
-
-以下为准备阶段历史索引，已被上述当前状态及STATUS接续：
-
-# EP-L2协作公共面板
-
-当前索引由E2维护；owner STATUS仍由各lane本人发布。此页不是进程心跳或实验授权。更新时间：2026-10-21T16:49:59.471221+00:00。
-
-## 已完成科学交付
-
-五组新93a9 binary容量/data-service OFF/ON均CURRENT_ACCEPTED，最终独立审查COMPLETE_PROVEN，原controller STOPPED、历史actual46。准确最终证据：E2 `092b6396b5b1c628807572badb39ea8b82871de6`，`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/FINAL_RECEIPT.json`。Conv292932/268117cycles；保留CFD负例，全部ON分类UNKNOWN，不作无限/硬件/容量单因果结论。原32矩阵/旧失败/HOLD/累计生成不变。
-
-D待办 `D-CAPACITY-FIVE-INCREMENT` 的正式Conv依赖已满足；E2-00000019已投递。用户本轮负责唤醒D。D应fetch E2并复用四对缓存，仅补Conv及五对图/汇总；E2未推断D已ACK或完成。
-
-## 当前并行流水
-
-|Owner|当前具体工作/触发|已知本人状态来源|
-|---|---|---|
-|E2|FWT/SGEMM四条件资格成本提案已准备，等待用户批准；当前0新应用/native/build/Goal/中央写入|本轮E2本人STATUS|
-|D|已有Conv增量+五容量对汇总；未来每个接受配对立即增量消费，不等待所有workload|最后核对D `1acb29bd3e88eb6f96ce1140dabbee9e446e4d5d` 自报IDLE、旧Conv依赖待更新；不替本人改STATUS|
-|A2|main61 SGEMM配置与18门复用映射已完成，具体producer缺口才合并请求|最后核对 `d45d0a5532dfdd7489d0e5a76b99de432a27bfdd` 自报IDLE|
-|C|SGEMM空fallback/BFS host边界已完成，具体语义缺口才合并请求|最后核对 `52ed0e2f18774c12054b10cb21390f7b4a9768bb` 自报IDLE|
-|F|有界输入包已完成；BFS精确MISSING保留，不重复空搜/部署|最后核对 `ab8e04dce031aee26e9f92e1b9cebe88fd9f8c2f` 自报IDLE|
-|B|复用现有W/V结论，无新增任务|此前已核对本人IDLE，不要求重复无变化回执|
-
-## 待批准准确下一批
-
-[提案报告](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/README.md)及[机器提案](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/PROPOSAL.json)：FWT原main61 S/F恢复2次，SGEMM同main61独立探索S/F2次。当前未授权、未采用、未启动。FWT原Q有效；SGEMM仍需当前body身份和自己的E资格，不能冒充PASS。原32桶已满且现policy仅准旧10容量条件，因此提案包括新精确scope/独立batch计费和原中央受控接入，不扩大/借用旧桶。
-
-整个提案最多4次、1.5GiB端结果+128MiB资格输出+32MiB外部metadata，守原10/24GiB累计生成及5GiB+2GiB监控、Share/CPU/RAM门。当前预测1–4路可容纳，实际每端事务准入；无固定两路cap、无旧时间截止，新四端操作timeout=null须准确批准。FWT约80–120分钟/端只是历史先验；SGEMM及整批ETA UNKNOWN。
-
-批准后E2在唯一原中央接入/验证并逐条件运行；FWT门闭合可先行，SGEMM资格准备并行。每对独立接受立即交D；失败保留且计费，无自动retry/替换。BFS/Hotspot不在此批。原main61 MAIN、SGEMM探索、新93a9容量cohort分别统计。
-
-## 协调方式
-
-E2暂任协调owner；A2仍负责producer，D负责科学解释/图表。用户在E2窗口批准准确方案后，E2前台脚本转发给受影响lane并核对真实ACK/成果；已有授权工程不重复审批。各lane在安全边界读取队列，完成即发布成果/本人STATUS并接下一项依赖就绪且已授权的任务。没有后台poller、第二controller或自动唤醒IDLE窗口；用户无需再次复制科研材料。
-
-旧准备r2所有A2/C/D/F交付均已Git核验，来源见 `intake/E2/PREPARATION_BATCH_r2_DELIVERIES.json`；旧面板快照保留在Git历史。本页更新不重开任何旧Goal。
+本页是E2维护的依赖索引，不替任何peer写本人STATUS，不从投递推断ACK。历史准备和运行快照保留在Git历史，当前machine待办见NEXT_ACTIONS.json。

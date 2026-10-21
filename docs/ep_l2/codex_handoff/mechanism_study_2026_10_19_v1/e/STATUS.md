@@ -1,6 +1,6 @@
 # Lane E2 — approved main61 workload pipeline
 
-Event PRIMARY_FOUR_PLAN_CONTROLLER_TERMINAL; original T0 1792414193; actual 50; this batch 4/4; old46 retained. Original controller STOPPED.
+Event PRIMARY_FOUR_FINAL_INDEPENDENT_COMPLETE_PROVEN; original T0 1792414193; actual 50; this batch 4/4; old46 retained. Original controller STOPPED.
 
 Generated new 7340450710B / 10737418240B; total 21650027094B / 25769803776B. No migration reset.
 
