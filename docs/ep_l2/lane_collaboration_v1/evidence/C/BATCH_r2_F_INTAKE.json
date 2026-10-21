@@ -1,0 +1,52 @@
+{
+  "schema": "C_BATCH_r2_F_METADATA_INTAKE_V1",
+  "source_event_commit": "eac204cd5652bc8d80737099ddf78c198902347c",
+  "source_event_id": "F-00000011-03e1cb7bfddb",
+  "source_event_sha256": "f17ad184f39681a6f270597e80835048b21677592fecd16fb637ca9ce48fa342",
+  "verified_metadata_refs": [
+    {
+      "commit": "ec653cd7b473f34582719d80176a82299f97c420",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_BFS_INPUT_PACKET_r1/INPUT_PACKET.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "bounded_input_packet_not_qualification",
+      "sha256": "e4e8c944a9a00525964bd74dc244a903923694c41a8bfe2f148abc38c00cd4b9"
+    },
+    {
+      "commit": "ec653cd7b473f34582719d80176a82299f97c420",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_BFS_INPUT_PACKET_r1/MISSING.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "scope_specific_missing_and_owners",
+      "sha256": "2d928fef5b97e2b36ecbd4c2b14cd3816bafc29346da4f1ba249d97ae6b53f16"
+    },
+    {
+      "commit": "ec653cd7b473f34582719d80176a82299f97c420",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_BFS_INPUT_PACKET_r1/README.md",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "preparation_summary",
+      "sha256": "a6f7a93081c7b3ea31f1fd638f5d21ef9317e98f1eebc0a961563f65c02f7e0e"
+    },
+    {
+      "commit": "ec653cd7b473f34582719d80176a82299f97c420",
+      "path": "docs/ep_l2/review_packs/MS20261021_F_BFS_INPUT_PACKET_r1/VALIDATION.json",
+      "repo": "swayhrl/accel-sim-framework",
+      "role": "metadata_consistency_not_native_or_science",
+      "sha256": "da9a4e0a01185b48bed2d0521f00adb751d0c926fa56dc2d8a393b9fcfbe0e54"
+    }
+  ],
+  "compared_selected_commands": 36,
+  "C_existing_output_ref": {
+    "repo": "swayhrl/accel-sim-framework",
+    "commit": "93f6db1881bb7bbb59f5e7f53196b7441ef3268b",
+    "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/BFS_HOST_BOUNDARIES.json",
+    "sha256": "cb332daaedb39f8b29bb9843ef74affd4cdf2d46d241f819ccf6d2ab104e396d",
+    "role": "C_complete_host_exclusion_boundaries_not_domain_or_native_PASS"
+  },
+  "disposition": {
+    "scope": "Received exact published F input packet; verified all four referenced metadata SHAs and compared all36 selected commands to C boundary packet. Metadata consistency only, no scientific/runtime qualification.",
+    "selected_input": "Keep original kernelslist.g c903c6a8...; alternate-address commandlist mapping UNRESOLVED, not selected/normalized or certified.",
+    "C_gap_disposition": "Complete host command/whole128B exclusion part DONE at93f6db188:9 postinitial+1initial flag writes retained, [0x00007fb5155f0000,0x00007fb5155f0080) excluded. Domain/alias/unseen-agent and DtoH/payload semantics remain UNRESOLVED, so F composite HOST-DOMAIN gap not wholly closed.",
+    "other_F_findings": "Missing graph/captured-source/build/session and unbound saved result remain precisely scoped; no source/numeric PASS inferred, no extra search/trace scan."
+  },
+  "activity": "IDLE",
+  "no_new_C_task": true
+}
