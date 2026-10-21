@@ -22,4 +22,4 @@ Candidate preparation: preserve FWT restoration, SGEMM medium control, condition
 
 Messages are checked at start/resume, after substantive delivery, dependency transitions and completion through the existing CLI. No idle poller, second controller, new complete application, source/binary/registry/budget edit, or EN-v22 edit. Peer ACKs are only recognized when actually published by those peers. This branch only writes D events/status/cursor and verified common protocol copies.
 
-At this boundary the F onboarding events visible in the same-host mailbox are unpublished previews, with no independently imported source commit. They remain unconsumed/unacknowledged pending actual Git publication. No wait worker is created.
+At the final foreground boundary, C and F each have a STATUS and DELIVERY visible as same-host mailbox previews, with no independently imported source commit at the fetched owner HEAD. All four remain unconsumed/unacknowledged pending actual Git publication; this does not imply either owner is offline or failed. See END_CHECK_r1.json. No wait worker is created.
