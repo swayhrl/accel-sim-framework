@@ -1,8 +1,8 @@
-# Lane E2 — capacity diagnostic / CAPACITY_CONTROLLER_TERMINAL
+# Lane E2 — capacity diagnostic / CAPACITY_NEW_RUNTIME_QUALIFIED_BATCH_ADMISSION
 
-Original174; T0 1792414193; actual 45/46, remaining 1; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 4/5. Original MAIN and control results unchanged.
+Original174; T0 1792414193; actual 45, remaining not numerically capped; exact ten-condition scientific scope, no automatic retries; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 4/5. Original MAIN and control results unchanged.
 
-Formal concurrency: RESOURCE_ONLY, APPLIED. Fixed E formal simulator-count limits removed by explicit user approval; existing CPU/RAM/disk and result/start budgets remain.
+Formal concurrency: RESOURCE_ONLY, APPLIED. Fixed E formal simulator-count limits removed by explicit user approval; CPU/RAM/disk and cumulative result budgets remain. Numeric launch/start/intake/per-application walltime caps removed; approved scientific scope and no automatic retry remain.
 
 Result generation: new 6800975653B/10737418240B; old+new 21110552037B/25769803776B; growth since36 1646420437B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
