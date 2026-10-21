@@ -1,4 +1,4 @@
-# Lane E2 — capacity diagnostic / CAPACITY_CONTROLLER_TERMINAL
+# Lane E2 — capacity diagnostic / CAPACITY_FINAL_INDEPENDENT_COMPLETION_PROVEN
 
 Original174; T0 1792414193; actual 46, remaining not numerically capped; exact ten-condition scientific scope, no automatic retries; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 5/5. Original MAIN and control results unchanged.
 
