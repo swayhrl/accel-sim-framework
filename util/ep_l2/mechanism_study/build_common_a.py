@@ -56,25 +56,28 @@ def main():
     p.add_argument('--build-receipt', type=Path)
     p.add_argument('--resume-failed-build', action='store_true',
                    help='only the exact failed test-only build frozen in this spec; fresh E lease required')
+    p.add_argument('--resume-authorized-capacity',action='store_true',help='exact inventoried unqualified capacity build; preserve prior PASS/failure evidence and acquire a new E lease')
     p.add_argument('--disk-authorization-id')
     p.add_argument('--admission', type=Path)
     p.add_argument('--user-authorized-capacity',action='store_true',help='this exact user-approved capacity producer only; actual E API resource admission still mandatory')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     SPEC_PATH = a.spec.resolve()
+    resume=a.resume_failed_build or a.resume_authorized_capacity
     out, build = a.out.resolve(), a.build.resolve()
     assert out.is_relative_to('/workspace') and build.is_relative_to('/workspace')
     assert not out.is_relative_to(build) and not build.is_relative_to(out)
     assert a.suite != 'diagnostics' or a.phase == 'native'
-    assert not a.resume_failed_build or a.phase == 'build'
+    assert not resume or a.phase == 'build'
     assert not a.disk_authorization_id, 'new ordinary5GiB leases require E admission; historical named authorizations are not replayed'
     if a.phase == 'native':
         assert a.build_receipt and a.build_receipt.is_file() and build.is_dir(), 'exact retained build receipt required'
-    elif not a.resume_failed_build:
+    elif not resume:
         assert not build.exists(), 'fresh build required; preserve old builds'
     out.mkdir(parents=True, exist_ok=False)
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     spec = json.loads(SPEC_PATH.read_text())
+    if a.resume_authorized_capacity:assert spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC' and a.user_authorized_capacity
     assert spec['campaign_id'] == CAMPAIGN and spec['authority'] == AUTHORITY
     assert spec['jobs'] == 2 and spec['memory_bytes'] == 8*GIB
     assert spec['disk_floor_bytes'] == 5*GIB and spec['memory_floor_bytes'] == 64*GIB
@@ -83,7 +86,7 @@ def main():
     core, runtime = Path(spec['core']), Path(spec['framework'])
     vendor = runtime / 'gpu-simulator/extern/pybind11'
     native_only = a.phase == 'native'
-    assert not a.execute or not spec.get('failed_build_recovery_manifest') or native_only or a.resume_failed_build, \
+    assert not a.execute or not spec.get('failed_build_recovery_manifest') or native_only or resume, \
         'this recovery spec executes only its exact incremental build or retained native stage'
     cpu, memory = (1, spec['native_memory_bytes']) if native_only else (2, spec['memory_bytes'])
     growth = spec['result_growth_bytes'] + (0 if native_only else spec['build_growth_bytes'])
@@ -112,15 +115,18 @@ def main():
     recovery = None
     baseline_bytes = 0
     baseline_result_bytes = 0
-    if a.resume_failed_build:
+    if resume:
         recovery = json.loads((HANDOFF / spec['failed_build_recovery_manifest']).read_text())
         assert recovery['build_directory'] == str(build) and build.is_dir()
         assert sha(HANDOFF / spec['failed_build_recovery_manifest']) == spec['failed_build_recovery_manifest_sha256']
         failed = json.loads(Path(recovery['failed_receipt']).read_text())
         assert sha(recovery['failed_receipt']) == recovery['failed_receipt_sha256']
-        assert failed['status'] == 'STOPPED_OR_FAILED_NO_RUNTIME_RELEASE' and failed['lease_released']
+        assert failed['lease_released']
+        if a.resume_authorized_capacity:assert failed['status']=='PRODUCER_FINITE_PASS_PENDING_E_INDEPENDENT_QUALIFICATION'
+        else:assert failed['status']=='STOPPED_OR_FAILED_NO_RUNTIME_RELEASE'
         if spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC':
-            assert failed['application_starts']==0 and failed.get('error')
+            assert failed['application_starts']==0
+            if not a.resume_authorized_capacity:assert failed.get('error')
             if recovery.get('retained_build_receipt'):
                 prior_build=Path(recovery['retained_build_receipt']['path'])
                 assert sha(prior_build)==recovery['retained_build_receipt']['sha256']
