@@ -1,0 +1,119 @@
+{
+  "actual_starts": 32,
+  "analysis_request": "Incrementally ingest these exact new pair IDs and E031/E032 receipts. Do not backfill old resource-stopped attempts or original failed-control pair IDs from a shared run_key. Both controls are adverse vs S: +36 and +273 cycles. COPY_FREE exempts copy service and fixed copy-staging retry delay and remains diagnostic. W_ONLY keeps physical P1; F versus W_ONLY is joint V+RO/state, not independent causal decomposition. Keep all four MAIN pairs and seven-input GM UNKNOWN.",
+  "at_unix": 1792543333.081486,
+  "audit": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_CONTROLS_QUALIFICATION_r1/APPROVED_DWT_RESOURCE_RETRY/INDEPENDENT_TERMINAL_AUDIT.json",
+    "sha256": "5c2014793d8195b41057bb0f6d83d2f01ea23d807e4ce885f102e82824d7f928"
+  },
+  "contingency_consumed": 8,
+  "four_main_pairs_unchanged": true,
+  "next_batch": "NONE_AUTOMATIC; two-condition approval drained. Remaining8 starts are capacity, not automatic qualification or retry authority.",
+  "old_attempts_preserved": [
+    "E027_a4c2f04e:RESOURCE_LIMIT:exit=-15:charged",
+    "E028_f9b6ca83:RESOURCE_LIMIT:exit=-15:charged"
+  ],
+  "output_usage": {
+    "new_bytes": 4766183693,
+    "old_bytes": 14309576384,
+    "total_bytes": 19075760077
+  },
+  "pair_publications": {
+    "S_COPY_FREE": "bd6521932c60edb8ddbeec5ba08f5fff86a30c5e",
+    "W_ONLY": "c248e9948ca2435ab7c8f2e53a864f91f0a2c298"
+  },
+  "remaining": 8,
+  "result_allocated_bytes": 208199680,
+  "result_growth_bytes": 208055411,
+  "rows": [
+    {
+      "accepted_pair_id": "V2_CONTROL_dwt2d_S_VS_S_COPY_FREE_RAM_RETRY_MAIN61",
+      "actual_start": true,
+      "anchor_cycles": 166519,
+      "anchor_over_control": 0.9997838551829726,
+      "attempt_id": "E031_b7073e01",
+      "condition_id": "V2_dwt2d_S_COPY_FREE_RAM_RETRY_DIAGNOSTIC",
+      "cycles": 166555,
+      "independent_terminal_audit": "PASS",
+      "instructions": 148684429,
+      "labels": {
+        "diagnostic": true,
+        "oracle": false,
+        "readonly_scope": "OFF",
+        "subset": "S_COPY_FREE",
+        "victim_scope": "OFF"
+      },
+      "native_exit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E031_b7073e01/NATIVE_EXIT.json",
+        "sha256": "e1344399dadb9efe3ab036de96557a8619320375f2581d54a781d52e84e34591"
+      },
+      "native_exit_code": 0,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2452600,
+        "start_ticks": 929390485
+      },
+      "native_wait_status": 0,
+      "previous_charged_attempt": "E027_a4c2f04e",
+      "profile": "S_COPY_FREE",
+      "qualification_id": "717c354b146638e68e14b24d76aa6ad890389c89127a504eb60b337ad80ea99b",
+      "receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E031_b7073e01/run_status.json",
+        "sha256": "a6f7c75032e98499ebbdc71f65afb364961ed282a337aa09f70707c30c555f2e"
+      },
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E031_b7073e01",
+      "slices": 64,
+      "state": "COMPLETE_VALID",
+      "wall_seconds": 653.75410592556
+    },
+    {
+      "accepted_pair_id": "V2_CONTROL_dwt2d_S_VS_W_ONLY_RAM_RETRY_MAIN61",
+      "actual_start": true,
+      "anchor_cycles": 166519,
+      "anchor_over_control": 0.9983632308504005,
+      "attempt_id": "E032_df1d16f2",
+      "condition_id": "V2_dwt2d_W_ONLY_RAM_RETRY_DIAGNOSTIC",
+      "cycles": 166792,
+      "independent_terminal_audit": "PASS",
+      "instructions": 148684429,
+      "labels": {
+        "diagnostic": false,
+        "oracle": false,
+        "readonly_scope": "OFF",
+        "subset": "W_ONLY",
+        "victim_scope": "OFF"
+      },
+      "native_exit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E032_df1d16f2/NATIVE_EXIT.json",
+        "sha256": "50b6d7659e1f6b2cc986c86a727666ec43be60038b64ffb59dcac5de73e4116b"
+      },
+      "native_exit_code": 0,
+      "native_process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 2460080,
+        "start_ticks": 929457058
+      },
+      "native_wait_status": 0,
+      "previous_charged_attempt": "E028_f9b6ca83",
+      "profile": "W_ONLY",
+      "qualification_id": "cd926e268989d5014134af3f673930cb3bc348cccf567ca541b527f12c7e4d07",
+      "receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E032_df1d16f2/run_status.json",
+        "sha256": "fed44db9db915fb126467850d64a79c4181dd3348eebfc87609064295815fa73"
+      },
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E032_df1d16f2",
+      "slices": 64,
+      "state": "COMPLETE_VALID",
+      "wall_seconds": 657.5580956805497
+    }
+  ],
+  "schema": "E2_TO_A2_D_APPROVED_DWT_RETRIES_CLOSED_V1",
+  "source_identity": {
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "BOTH_CURRENT_ACCEPTED",
+  "total_current_accepted_controls": 10
+}
