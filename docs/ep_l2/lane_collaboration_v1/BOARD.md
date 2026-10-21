@@ -1,3 +1,15 @@
+# EP-L2当前流水状态
+
+用户已批准准确main61 FWT恢复S/F2次+SGEMM独立探索S/F2次；原中央scope已接入，四端资格与spec已绑定，实际启动前资源预测1–4路PASS。原controller仍STOPPED、actual46，下一步执行唯一原controller的sealed PRIMARY_FOUR queue。原32/8/10与旧46保持。
+
+D已正式交付五容量对分析（95a3c3dd，D-00000029/30），E2核验CONSUMED并回RECEIVED，不再重复旧分析。D后续依赖是每个新main61配对的E2 CURRENT_ACCEPTED交付；不等全批。A2/C/F已收到批准流程通知，只有具体缺口时接新研究任务；无后台唤醒。
+
+当前权威运行状态：[STATUS](../review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/STATUS.md)。冻结PROPOSAL.json中的AWAITING字段是批准前快照，准确批准见USER_APPROVAL.json，采用见central_adoption/ADOPTION_RECEIPT.json。
+
+---
+
+以下为准备阶段历史索引，已被上述当前状态及STATUS接续：
+
 # EP-L2协作公共面板
 
 当前索引由E2维护；owner STATUS仍由各lane本人发布。此页不是进程心跳或实验授权。更新时间：2026-10-21T16:49:59.471221+00:00。
