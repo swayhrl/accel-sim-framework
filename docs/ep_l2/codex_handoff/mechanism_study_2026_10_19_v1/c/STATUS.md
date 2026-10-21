@@ -1,9 +1,9 @@
-# C T/M real-opportunity first revision delivered
+# C full-epoch boundaries and five MAIN F detach0 independently audited
 
-Current source is A2 Core d010911e/main61, with unchanged RO policy. Conv S E010 reaches line-MSHR128 and1824 heads/40088 wait observations, but maximum reserved Tags in one set7 and Tag-set refusal0. This supports an M opportunity hypothesis; it does not prove a T bottleneck or saved cycles.
+145 bounded metadata/source/accounting checks PASS. Whole-command/range/hash/cardinality and all laterHtoD line exclusions verified without trace/DB scan. Alias/no-unseen-writer conditions remain explicit assumptions; no static certificate promoted to native PASS. Btree/Scan/SpMV HOLD and SGEMM RO UNKNOWN/exploratory HOLD retained.
 
-Profiles separate exact offline whole-epoch model coverage, native L2 eligibility, actual RO admission, successful detach, avoided line records and critical waits. RO-on workload counts remain UNKNOWN here; no F performance/counter result was used. Conv is primary for joint M/W/V review; FWT has zero-RO eligibility and SAD low-pressure nonzero coverage as negative controls. Btree/Scan/SpMV stay input-held; SGEMM has no RO certificate.
+Five exact accepted MAIN61 F endpoints have detach0, with nonzero RO/M activity in Conv/CFD/DWT/Vector; SAD6272covered L2 candidates yield0new RO transactions. Per-slice independent pending RO line peaks74/59/54/0/70 and actual pending-set maxima7/4/4/1/3 are below16; no visible Tag-set-full request waits. Allocation avoidance is not critical line-MSHR relief. Source sibling protection remains unchanged, but application parent/guard causes remain unmeasured.
 
-Bounded CPU analysis reads existing metadata/CSV and completed current S only, no trace/DB scan or capture. No new simulator/compiler/application/lease/waiter. R35 FAIL, C actual unrun combined fixtures and all Conv/host-update/fallback certification boundaries are preserved. D/B receive profiles; any new observer/test/qualification is A2/E2-owned. Old packs and original Goal remain intact/incomplete.
+Reused E/A2 main61 native same-address/host-update/empty-fallback logs retain original bounded PASS. They prove fixed-capacity positive native reachability without new execution; no R35 full joint fixture or unrun replacement is upgraded. No capacity/production edit, build, test replay, application, trace scan, lease, waiter or registry mutation. D/A2/E2 receive exact profile tables and narrowly scoped unresolved observation/qualification requests.
 
-Canonical pack: tm_opportunity_r1/REVIEW.md, OBSERVATIONS.json, CANDIDATE_PROFILES.json/.csv, VALIDATION.json and WV_CROSSCHECK_AND_GAPS.json.
+Canonical revision: epoch_pressure_review_r1/REVIEW.md, EVIDENCE.json, MAIN_F_PRESSURE.csv, CANDIDATE_QUALIFICATION.csv, SOURCE_BINDINGS.json and PROTOCOL_AND_GAPS.json. Original Goal/old packs remain intact.
