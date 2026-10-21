@@ -275,13 +275,13 @@
     {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
       "cpu_units": 1,
-      "created_at": 1792585000.5500555,
+      "created_at": 1792585677.2798917,
       "disk_floor_bytes": 5368709120,
       "disk_growth_bytes": 402653184,
       "exit_collector_process": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 3018709,
-        "start_ticks": 933697568
+        "pid": 3027562,
+        "start_ticks": 933765089
       },
       "experiment_id": "EPL2_MECHANISM_STUDY_20261019_V1",
       "host": "huangrulin-174",
@@ -297,25 +297,25 @@
           "bank_count": 4,
           "finite_wbuf": true,
           "ops_per_bank_cycle": 1,
-          "payload_capacity_per_slice": 1168,
+          "payload_capacity_per_slice": 74752,
           "ro_line_mshr_bypass": false,
           "ro_tag_detach": false,
           "static_s64": false,
           "tvd": false,
           "unified_wb": false,
           "wb_local_cap": 0,
-          "wbuf_entries": 16
+          "wbuf_entries": 1024
         },
         "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
         "ideal_vector": {
           "copy_free": false,
-          "l2_data_free": false,
+          "l2_data_free": true,
           "mem_all_data": false,
           "meta": false,
           "read_hit": false,
           "wb": false
         },
-        "runtime_config_sha256": "13568ef45ae9a6aa4f067e7bcafb4c0319caf8907e33b484647ff6d784db92ca",
+        "runtime_config_sha256": "4e50a932022faedb55b9fa16bb98d4ba5b736d2ce0d4669f8db72180369791ac",
         "termination_contract": {
           "all_kernels": true,
           "hardware_drained": true,
@@ -323,10 +323,10 @@
           "normal_exit": true,
           "timeout_seconds": 10800
         },
-        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
-        "workload": "vectorAdd_4M"
+        "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+        "workload": "dwt2d"
       },
-      "lease_id": "E041_6412b85d",
+      "lease_id": "E044_4c4350db",
       "memory_bytes": 8589934592,
       "monitor_interval_seconds": 0.2,
       "monitor_reserve_bytes": 2147483648,
@@ -334,13 +334,13 @@
       "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
       "process": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 3018713,
-        "start_ticks": 933697574
+        "pid": 3027566,
+        "start_ticks": 933765095
       },
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E041_6412b85d",
-      "run_key": "988835e218e5fe691152c67a36b7f5f147d3c528596cc18788587c31dd7f8f5e",
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E044_4c4350db",
+      "run_key": "e66981cad5dd9b5b194bc7b415e370d8897beb11af1d2652044b66f83d9b41a8",
       "scan": false,
-      "started_unix": 1792585004.4192562,
+      "started_unix": 1792585679.623262,
       "status": "RUNNING",
       "termination_grace_seconds": 3
     },
@@ -417,12 +417,12 @@
       "termination_grace_seconds": 3
     }
   ],
-  "actual_starts": 43,
+  "actual_starts": 44,
   "approval": {
     "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/USER_APPROVAL.json",
     "sha256": "1eff2669e129328ef79710be077f273ce45318bbd015edfa207ba1fe3374b2e8"
   },
-  "at_unix": 1792585535.1053479,
+  "at_unix": 1792585721.8900905,
   "authority_commit": "49343880865edb22a17523790fc32dd55975966c",
   "central_amendment": {
     "actual_starts_at_adoption": 36,
@@ -481,7 +481,7 @@
     },
     "state": "ACTIVE"
   },
-  "event": "CAPACITY_SAD_OFF_ACCEPTED_DWT_OFF_ACTUALLY_RUNNING",
+  "event": "CAPACITY_CFD_ACCEPTED_PAIR_KERNEL_FACTS",
   "formal_simulator_concurrency": {
     "adopted_unix": 1792582642.5620458,
     "approval": {
@@ -500,7 +500,7 @@
   "intake_deadline": "2026-10-22T22:00:00+08:00",
   "intake_deadline_unix": 1792677600,
   "maximum": 46,
-  "new_actual_starts": 7,
+  "new_actual_starts": 8,
   "new_actual_starts_limit": 10,
   "no_automatic_retry_or_workload_replacement": true,
   "old_attempts_preserved": 36,
@@ -517,9 +517,9 @@
     "two_workload_remove_W_V_R": 6
   },
   "output_usage": {
-    "new_bytes": 6553446919,
+    "new_bytes": 6649379273,
     "old_bytes": 14309576384,
-    "total_bytes": 20863023303
+    "total_bytes": 20958955657
   },
   "parser_recovery_history": [
     {
@@ -752,15 +752,15 @@
     }
   ],
   "producer_pending": false,
-  "remaining": 3,
-  "remaining_new_generation_bytes": 4183971321,
-  "remaining_total_generation_bytes": 4906780473,
+  "remaining": 2,
+  "remaining_new_generation_bytes": 4088038967,
+  "remaining_total_generation_bytes": 4810848119,
   "resources": {
-    "available_memory_bytes": 216851771392,
-    "disk_free_bytes": 22796955648,
-    "share_disk_free_bytes": 44201984000
+    "available_memory_bytes": 215759278080,
+    "disk_free_bytes": 22627348480,
+    "share_disk_free_bytes": 44201869312
   },
-  "result_growth_since36_bytes": 1398891703,
+  "result_growth_since36_bytes": 1494824057,
   "rows": [
     {
       "attempt_id": "E037_a423c80f",
@@ -818,14 +818,14 @@
       "attempt_id": "E041_6412b85d",
       "condition": "V3_CAPACITY_vectorAdd_4M_S_OFF",
       "original_planned_qualification_id": "560fe69a6dc6f5803e61758ded5807936131114fe29b5b6c40cc5d7d8eafb895",
-      "original_receipt_path": null,
-      "original_terminal_state": "RUNNING",
+      "original_receipt_path": "/workspace/ep_l2_ms20261019_e_results/E041_6412b85d/run_status.json",
+      "original_terminal_state": "COMPLETE_VALID",
       "pair_id": "CAPACITY_DIAGNOSTIC_vectorAdd_4M_OFF_ON_NEW_RUNTIME",
       "parser_only_recovered": false,
       "profile": "S",
       "qualification_id": "560fe69a6dc6f5803e61758ded5807936131114fe29b5b6c40cc5d7d8eafb895",
-      "receipt_path": null,
-      "state": "RUNNING"
+      "receipt_path": "/workspace/ep_l2_ms20261019_e_results/E041_6412b85d/run_status.json",
+      "state": "COMPLETE_VALID"
     },
     {
       "attempt_id": "E042_307fac20",
@@ -854,17 +854,17 @@
       "state": "RUNNING"
     },
     {
-      "attempt_id": null,
+      "attempt_id": "E044_4c4350db",
       "condition": "V3_CAPACITY_dwt2d_S_ON",
       "original_planned_qualification_id": "1415fe6eff7d52f7a9e6979cea7648a3ca5334b9237c9d236b8b3e1ebdec8a46",
       "original_receipt_path": null,
-      "original_terminal_state": null,
+      "original_terminal_state": "RUNNING",
       "pair_id": "CAPACITY_DIAGNOSTIC_dwt2d_OFF_ON_NEW_RUNTIME",
       "parser_only_recovered": false,
       "profile": "S_L2_DATA_FREE_LARGE_CAPACITY",
       "qualification_id": "1415fe6eff7d52f7a9e6979cea7648a3ca5334b9237c9d236b8b3e1ebdec8a46",
       "receipt_path": null,
-      "state": "NOT_STARTED"
+      "state": "RUNNING"
     },
     {
       "attempt_id": null,

@@ -1,10 +1,10 @@
-# Lane E2 — capacity diagnostic / CAPACITY_SAD_OFF_ACCEPTED_DWT_OFF_ACTUALLY_RUNNING
+# Lane E2 — capacity diagnostic / CAPACITY_CFD_ACCEPTED_PAIR_KERNEL_FACTS
 
-Original174; T0 1792414193; actual 43/46, remaining 3; old36 immutable and charged, contingency8/8 preserved. Controller ACTIVE. New diagnostic accepted pairs 1/5. Original MAIN and control results unchanged.
+Original174; T0 1792414193; actual 44/46, remaining 2; old36 immutable and charged, contingency8/8 preserved. Controller ACTIVE. New diagnostic accepted pairs 1/5. Original MAIN and control results unchanged.
 
 Formal concurrency: RESOURCE_ONLY, APPLIED. Fixed E formal simulator-count limits removed by explicit user approval; existing CPU/RAM/disk and result/start budgets remain.
 
-Result generation: new 6553446919B/10737418240B; old+new 20863023303B/25769803776B; growth since36 1398891703B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
+Result generation: new 6649379273B/10737418240B; old+new 20958955657B/25769803776B; growth since36 1494824057B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
 | Condition | Attempt | State |
 |---|---|---|
@@ -12,11 +12,11 @@ Result generation: new 6553446919B/10737418240B; old+new 20863023303B/2576980377
 | V3_CAPACITY_cfd_097k_S_ON | E038_d7ffe08b | COMPLETE_VALID_PARSER_RECOVERY_ORIGINAL_FAILED_RETAINED |
 | V3_CAPACITY_sad_S_OFF | E039_0c426330 | COMPLETE_VALID |
 | V3_CAPACITY_sad_S_ON | E040_b264d86f | RUNNING |
-| V3_CAPACITY_vectorAdd_4M_S_OFF | E041_6412b85d | RUNNING |
+| V3_CAPACITY_vectorAdd_4M_S_OFF | E041_6412b85d | COMPLETE_VALID |
 | V3_CAPACITY_vectorAdd_4M_S_ON | E042_307fac20 | RUNNING |
 | V3_CAPACITY_dwt2d_S_OFF | E043_c96ede71 | RUNNING |
-| V3_CAPACITY_dwt2d_S_ON | None | NOT_STARTED |
+| V3_CAPACITY_dwt2d_S_ON | E044_4c4350db | RUNNING |
 | V3_CAPACITY_convolutionSeparable_S_OFF | None | NOT_STARTED |
 | V3_CAPACITY_convolutionSeparable_S_ON | None | NOT_STARTED |
 
-Next never-started authorized conditions: V3_CAPACITY_dwt2d_S_ON, V3_CAPACITY_convolutionSeparable_S_OFF, V3_CAPACITY_convolutionSeparable_S_ON. No automatic retry.
+Next never-started authorized conditions: V3_CAPACITY_convolutionSeparable_S_OFF, V3_CAPACITY_convolutionSeparable_S_ON. No automatic retry.
