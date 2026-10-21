@@ -1,0 +1,3 @@
+# E2 capacity diagnostic: preparation active
+
+User authority 49343880865edb22a17523790fc32dd55975966c independently read. Original174,36 actual charged starts, original T0 and historical results preserved. Original controller STOPPED and recorded PID absent; original registry/controller locks probed free, active runs/leases zero. Explicit amendment46 /10GiB new /24GiB total /Oct22 cutoffs is pending publication and original-central adoption. A2 formal new runtime and fresh independent qualification remain prerequisites; no application has started and no main61 qualification is inherited. Five complete-input OFF/ON pairs are prepared in parallel.
