@@ -1,0 +1,142 @@
+{
+  "schema": "A2_MAIN61_SGEMM_CONFIGURATION_PREPARATION_V1",
+  "batch_id": "EPL2_WORKLOAD_PREPARATION_BATCH_r2",
+  "task_id": "A2-SGEMM-MAIN61-CONFIG-PROPOSAL-r1",
+  "status": "PREPARED_NOT_E_QUALIFIED_NOT_ADOPTED",
+  "source_identity": {
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "binary": {
+    "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r41/accel-sim.out",
+    "sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5"
+  },
+  "archive": {
+    "bytes": 78987616,
+    "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+    "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+  },
+  "producer_release_ref": {
+    "repo": "swayhrl/accel-sim-framework",
+    "commit": "0ae16a6c48bdffbdf38ced4da6c76dda4981a813",
+    "path": "docs/ep_l2/review_packs/MS20261020_A2_FORMAL_WAD_PRODUCER_RELEASE_r1/RELEASE.json",
+    "sha256": "1633f63389156d6285f5865009ad33d197b656d9d807cc033b293c132db76f9e",
+    "role": "formal_main61_producer_release"
+  },
+  "registration_ref": {
+    "repo": "swayhrl/accel-sim-framework",
+    "commit": "0b608f2f9142d44e53d54a55679c1b00b504d6a6",
+    "path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/EXPLORATORY_SGEMM_REGISTRATION.json",
+    "sha256": "b3207c3591469ebbfe8589696f3df72fdcbe8aa36091b20a947b8b5602423fcb",
+    "role": "SGEMM_existing_frozen_trace_exploratory_HOLD"
+  },
+  "registration_id": "E2_EXP_SGEMM_MEDIUM_20261020_r1",
+  "cohort": "INDEPENDENT_EXPLORATORY_FROZEN_TRACE_MODEL_NOT_ORIGINAL_SEVEN_MAIN_OR_CAPACITY",
+  "input": {
+    "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+    "trace_content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "trace_manifest": [
+      {
+        "bytes": 2216170035,
+        "name": "kernel-1.traceg",
+        "sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06"
+      },
+      {
+        "bytes": 92,
+        "name": "kernelslist.g",
+        "sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913"
+      }
+    ],
+    "complete_commandlist": "MemcpyHtoD,0x00007f34a3200000,4063232\nMemcpyHtoD,0x00007f34a3600000,4190208\nkernel-1.traceg\n",
+    "expected_instructions": 1658916864,
+    "kernel_count": 1,
+    "epochs": "all",
+    "source_capture_numeric_scope": "EXISTING_FROZEN_TRACE_REPLAY_NOT_FROM_SOURCE_RECAPTURE_OR_NUMERIC_SASS_PROOF",
+    "large_trace_rehashed_or_scanned": false
+  },
+  "proposed_profiles": [
+    "S",
+    "F"
+  ],
+  "fixed_F_switches": {
+    "W": 1,
+    "V": 1,
+    "T": 1,
+    "M": 1
+  },
+  "finite_geometry": {
+    "payload_slots": 1168,
+    "resident_tags": 1024,
+    "line_MSHR": 128,
+    "descriptors": 512,
+    "per_address": 32,
+    "shared_WAD_TVD": 128,
+    "legacy_WB_parameter": 16,
+    "banks": 4,
+    "bank_ops_per_physical_cycle": 1,
+    "sector_bytes": 32,
+    "line_bytes": 128
+  },
+  "raw_options": "OPTION_DIFF_AND_INVARIANTS.json",
+  "C_fallback_binding": "C_CANDIDATE_BINDING.json",
+  "F_binding_file": "CONFIGS/F.config",
+  "complete_F_config_available": true,
+  "input_specific_qualification": "PENDING_E_ONLY",
+  "launch_spec_qualification_run_key_created": false,
+  "prior_static_review_ref": {
+    "repo": "swayhrl/accel-sim-framework",
+    "commit": "663fba57b7dc6428d613db443d6ff2f3c99e33d5",
+    "path": "docs/ep_l2/review_packs/MS20261021_A2_DF_CANDIDATE_COMPATIBILITY_r1/SUPPORT_GAPS.json",
+    "sha256": "442e002f1bfb82581aecf4d722a9450846d26ae5c3c6d2afc92a0736e9975209",
+    "role": "prior_completed_static_review_reuse_only"
+  },
+  "qual_coverage": "QUALIFICATION_COVERAGE_MAP.json",
+  "configuration_proposal_does_not_authorize_execution": true,
+  "no_capacity_flag": "Old main61 has no capacity master option; do not append either0 or1. All mechanism/local ideal flags fixed finite as original policies.",
+  "work_performed": {
+    "new_simulations": 0,
+    "new_native": 0,
+    "main_binary_rebuilds": 0,
+    "new_mechanisms": 0,
+    "E_registry_CLIENT_lease_changes": 0,
+    "large_trace_scan": 0
+  },
+  "proposed_future_cost_only": {
+    "starts_if_separately_approved": 2,
+    "endpoint_cap_bytes_each": 402653184,
+    "endpoint_pair_cap_bytes": 805306368,
+    "native_collector_metadata_overhead": "Separately compute during original E admission; not included or allocated here",
+    "walltime": "UNKNOWN_NOT_STATIC_SCAN_TIME"
+  },
+  "generated_at_utc": "2026-10-21T15:29:51.657255+00:00",
+  "assigned_preparation": "DONE",
+  "old_unsealed_mechanism_file": "Retained intermediate preparation only; authoritative proposed F is CONFIGS/F.config",
+  "shared_auxiliary_assets_for_both_S_and_F": [
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_SGEMM_MAIN61_CONFIG_PROPOSAL_r1/C_INPUT/manifest.candidate.json",
+      "sha256": "c0a758b2fc0552be62f827ecc31b7ce32c06353fe3dcab0a87cfbea4c7e5b104",
+      "bytes": 2234,
+      "source_ref": {
+        "repo": "swayhrl/accel-sim-framework",
+        "commit": "93f6db1881bb7bbb59f5e7f53196b7441ef3268b",
+        "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/manifest.candidate.json",
+        "sha256": "c0a758b2fc0552be62f827ecc31b7ce32c06353fe3dcab0a87cfbea4c7e5b104",
+        "role": "C_published_SGEMM_candidate_not_E_qualification"
+      }
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-a-core-v1/docs/ep_l2/review_packs/MS20261021_A2_SGEMM_MAIN61_CONFIG_PROPOSAL_r1/C_INPUT/certified_ranges.csv",
+      "sha256": "ce98b276a772d17869de61ee6aa6cf6f7d856354eb4062b7c0c0c762d6e71944",
+      "bytes": 31,
+      "source_ref": {
+        "repo": "swayhrl/accel-sim-framework",
+        "commit": "93f6db1881bb7bbb59f5e7f53196b7441ef3268b",
+        "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/certified_ranges.csv",
+        "sha256": "ce98b276a772d17869de61ee6aa6cf6f7d856354eb4062b7c0c0c762d6e71944",
+        "role": "C_published_SGEMM_candidate_not_E_qualification"
+      }
+    }
+  ]
+}
