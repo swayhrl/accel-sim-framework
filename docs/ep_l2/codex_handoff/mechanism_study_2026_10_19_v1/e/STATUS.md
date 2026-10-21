@@ -1,8 +1,8 @@
-# Lane E2 — capacity diagnostic / CAPACITY_PREPARATION_COMPLETE_A2_BUILD_ACTIVE_GOAL_CONTINUES
+# Lane E2 — capacity diagnostic / CAPACITY_SCOPED_TERMINAL_ROUTE_ADOPTED_NO_APPLICATION
 
 Original174; T0 1792414193; actual 36/46, remaining 10; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 0/5. Original MAIN and control results unchanged.
 
-Result generation: new 5322471142B/10737418240B; old+new 19632047526B/25769803776B; growth since36 167915926B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
+Result generation: new 5322537312B/10737418240B; old+new 19632113696B/25769803776B; growth since36 167982096B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
 | Condition | Attempt | State |
 |---|---|---|
