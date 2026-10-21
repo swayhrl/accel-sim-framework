@@ -1,0 +1,418 @@
+{
+  "at_utc": "2026-10-21T15:31:28.766876+00:00",
+  "batch_id": "EPL2_WORKLOAD_PREPARATION_BATCH_r2",
+  "reader": "F actual owner",
+  "events": {
+    "acknowledgement_emitted": false,
+    "consumer": "F",
+    "cursor_updated": true,
+    "events": [
+      {
+        "event": {
+          "body": {
+            "activity": "WORKING",
+            "blocking_dependencies": [],
+            "current_task": "EPL2_WORKLOAD_PREPARATION_BATCH_r2 / A2-SGEMM-MAIN61-CONFIG-PROPOSAL-r1：仅准备main61 SGEMM有限S/F准确配置、option diff/invariant map与同source资格覆盖映射；复用已完成静态审查/FWT旧Q；C候选发布后准确绑定。无新模拟/native、主binary构建、机制或中央修改。"
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T15:26:15.385963Z",
+          "dedup_key": "A2:STATUS:A2-00000001-070b72481b15:3ce985e52dd2cc0af48a96efe7ab19c01bde61243440a2d364bc98c861aa1010",
+          "event_id": "A2-00000011-5c8055c0eee7",
+          "kind": "STATUS",
+          "owner": "A2",
+          "recipients": [
+            "B",
+            "C",
+            "D",
+            "E2",
+            "F"
+          ],
+          "refs": [],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 11,
+          "subject": "Status: WORKING"
+        },
+        "sha256": "94466c36ddd1249fc36183fa38c6a7f867e2666a4118873d2f712a85e23be3c9",
+        "source_commit": null
+      },
+      {
+        "event": {
+          "body": {
+            "activity": "WORKING",
+            "blocking_dependencies": [],
+            "current_task": "C-SGEMM-FALLBACK-BFS-HOST-r1: prepare SGEMM own empty-coverage binding and BFS full-command host exclusions, reuse prior audit; no app/native/build."
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T15:25:19.605436Z",
+          "dedup_key": "C:STATUS:C-00000002-9b161c2279e7:173312b8a4f480f81b77af62bb5823c02a714ce31d52e548379c031b01f47ae1",
+          "event_id": "C-00000005-46edbc3afab5",
+          "kind": "STATUS",
+          "owner": "C",
+          "recipients": [
+            "A2",
+            "B",
+            "D",
+            "E2",
+            "F"
+          ],
+          "refs": [],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 5,
+          "subject": "Status: WORKING"
+        },
+        "sha256": "37dd58417a288e910bf8770ca506c4c66a7a8f5a5efc3499733f2b11aecc5db3",
+        "source_commit": null
+      },
+      {
+        "event": {
+          "ack_for": {
+            "event_id": "F-00000003-872a38c678b4",
+            "event_sha256": "33fa45e1f591c72e80c9a6096b52fcef1b8e283463c01c199d58d07fec7346ad",
+            "owner": "F",
+            "source_commit": "d808d1184d666390833169245cbca3a089da7183"
+          },
+          "ack_status": "VALIDATED",
+          "body": {
+            "ack_is_not_scientific_or_execution_acceptance": true,
+            "message": {
+              "FWT_11_reference_not_original_scaled_source": true,
+              "SGEMM_registered_exploratory_HOLD_not_unregistered": true,
+              "input_preparation_metadata_consumed": true,
+              "nine_MISSING_items_remain": true,
+              "no_rerun_or_new_source_input_qualification": true
+            },
+            "owner_declares_reference_review_complete": true,
+            "reference_validation": {
+              "reference_count": 7,
+              "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+              "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+              "total_metadata_bytes": 75676
+            }
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T14:48:34.364770Z",
+          "dedup_key": "D:ACK:F:F-00000003-872a38c678b4:VALIDATED",
+          "event_id": "D-00000009-26d9e46565f6",
+          "kind": "ACK",
+          "owner": "D",
+          "recipients": [
+            "F"
+          ],
+          "refs": [],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 9,
+          "subject": "ACK F-00000003-872a38c678b4"
+        },
+        "sha256": "03883a71a1bd83362604758fbccc4d4f610f6d95148291758de98d0f7c66cb82",
+        "source_commit": "6204563a390be31e49c3d81c53a410dcdf84d0da"
+      },
+      {
+        "event": {
+          "body": {
+            "activity": "IDLE",
+            "blocking_dependencies": [
+              {
+                "need": "正式Conv同新binary OFF/ON CURRENT_ACCEPTED配对及准确交付；最新E1ec61c800ffe857f6c522bbf76f0120896504e6b尚无该配对",
+                "owner": "E2",
+                "task_id": "D-CAPACITY-FIVE-INCREMENT"
+              },
+              {
+                "need": "FWT原scaled源码/采集/数值身份及恢复资格；SGEMM来源/数据oracle/自身RO或明确fallback、准确producer资格和独立执行授权；已有探索HOLD登记不重复创建",
+                "owner": "原采集资产owner/F/C/A2/E2",
+                "scope": "未来输入准备，非当前启动任务"
+              }
+            ],
+            "current_task": "本轮已读取E2公共面板及本人收件箱，消费9条已发布新消息；C/F旧交付与A2/E2/F真实ACK已索引，未重复科学分析。SGEMM已有E2_EXP_SGEMM_MEDIUM_20261020_r1探索HOLD登记，纠正旧未登记说法。D-CAPACITY-FIVE-INCREMENT已登记，正式Conv CURRENT_ACCEPTED依赖未满足；待交付后复用四组八端缓存，仅增量Conv及独立五组诊断汇总。上一轮科学最终提交6825d1cd0c87d8b0122e03a9dff5253c873b747b保持冻结。本轮记录docs/ep_l2/lane_collaboration_v1/evidence/D/RESUME_DECISION_r1.md。无新Goal/后台等待器/模拟器/构建/应用启动。"
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T14:49:01.677454Z",
+          "dedup_key": "D:STATUS:D-00000003-b46d0be62de1:c76da7f58beb522294bcc986e648ff96cb63586356d708bb653d31315ba8ba30",
+          "event_id": "D-00000010-752c2a5188e2",
+          "kind": "STATUS",
+          "owner": "D",
+          "recipients": [
+            "A2",
+            "B",
+            "C",
+            "E2",
+            "F"
+          ],
+          "refs": [],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 10,
+          "subject": "Status: IDLE"
+        },
+        "sha256": "700c56638626bcb5206192a0553af378c43b498769af696a5f6ca67646819a3a",
+        "source_commit": "6204563a390be31e49c3d81c53a410dcdf84d0da"
+      },
+      {
+        "event": {
+          "body": {
+            "activity": "WORKING",
+            "blocking_dependencies": [
+              {
+                "need": "本批新BFS输入小包、SGEMM空fallback+BFS host边界、main61 SGEMM配置提案；不无限等待原采集缺件",
+                "owner": "F/C/A2"
+              },
+              {
+                "need": "Conv正式CURRENT_ACCEPTED；不读取活动raw",
+                "owner": "E2",
+                "task_id": "D-CAPACITY-FIVE-INCREMENT"
+              }
+            ],
+            "current_task": "执行EPL2_WORKLOAD_PREPARATION_BATCH_r2的D-WORKLOAD-BATCH-DECISION-r2：复用中立选型、四组分析和B/C审查，明确main61 FWT恢复与独立SGEMM探索、93a9容量诊断分母；收可得F/C/A2新增小包后一次交DECISION_BUNDLE_r2。保留原FWT准确Q18门PASS；来源/数值缺件不自动撤回冻结trace模型资格。只准备，无新模拟/native/重建/trace正文扫描/控制器。Conv正式配对到达独立增量处理。"
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T15:25:40.361741Z",
+          "dedup_key": "D:STATUS:D-00000010-752c2a5188e2:a6729ab785c54cc2ab9d3a9dd3ce169a412fb626459b1aed1b0808a2822e9193",
+          "event_id": "D-00000015-80e0fa361c90",
+          "kind": "STATUS",
+          "owner": "D",
+          "recipients": [
+            "A2",
+            "B",
+            "C",
+            "E2",
+            "F"
+          ],
+          "refs": [],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 15,
+          "subject": "Status: WORKING"
+        },
+        "sha256": "3a60b1a4d61cdfceb3a3c320df26c395fdf6fe42a643dc9491491be393923f97",
+        "source_commit": null
+      },
+      {
+        "event": {
+          "ack_for": {
+            "event_id": "F-00000003-872a38c678b4",
+            "event_sha256": "33fa45e1f591c72e80c9a6096b52fcef1b8e283463c01c199d58d07fec7346ad",
+            "owner": "F",
+            "source_commit": "d808d1184d666390833169245cbca3a089da7183"
+          },
+          "ack_status": "RECEIVED",
+          "body": {
+            "intake_owner": "E2",
+            "message": "E2 independently imported exact published event, verified bounded referenced metadata SHA and indexed existing delivery/dependencies. No repeat analysis, native/application start or scientific acceptance.",
+            "transport_dedup_only": true
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T14:44:14.291713Z",
+          "dedup_key": "E2:ACK:F:F-00000003-872a38c678b4:RECEIVED",
+          "event_id": "E2-00000007-b3053a4a5dee",
+          "kind": "ACK",
+          "owner": "E2",
+          "recipients": [
+            "F"
+          ],
+          "refs": [],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 7,
+          "subject": "ACK F-00000003-872a38c678b4"
+        },
+        "sha256": "1e8d7341ce7046f5b59165365d0572435402eab5484081cc2746e8aecd95fe49",
+        "source_commit": "3c105497755fe7018f4f98b57dffab52a20f4b58"
+      },
+      {
+        "event": {
+          "body": {
+            "ack_scope": "E2 acknowledged each prior DELIVERY as RECEIVED and recorded exact metadata refs; this is not new scientific qualification or result acceptance.",
+            "coordinator": "E2 temporary",
+            "current_mainline": "E046 Conv ON original sole controller, four pairs already consumed by D",
+            "registration_correction": "SGEMM existing E2_EXP_SGEMM_MEDIUM_20261020_r1 is REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE; statements that registration is absent are stale. No automatic FWT restoration, retries, new apps or scientific scope change.",
+            "task_assignment": "Existing completed work stays indexed; A2/B/C/F idle until a specific tractable gap request. D future increment depends on formal Conv delivery. E2 consolidates candidate readiness within existing preparation scope.",
+            "verified_joins": 5
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T14:45:59.085377Z",
+          "dedup_key": "E2:ALL_FIVE_JOINED_BOARD_V1",
+          "event_id": "E2-00000009-af4423389e34",
+          "kind": "DELIVERY",
+          "owner": "E2",
+          "recipients": [
+            "A2",
+            "B",
+            "C",
+            "D",
+            "F"
+          ],
+          "refs": [
+            {
+              "commit": "9f86e4efbd5f0778d0cb5d278f0c75955277fc79",
+              "path": "docs/ep_l2/lane_collaboration_v1/BOARD.md",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "coordination_dependency_plan_not_execution_authority",
+              "sha256": "e97c0aff91e3ee6519267571eafbb67288e4b95ef9cc30bb9555bbbadbf483a8"
+            },
+            {
+              "commit": "9f86e4efbd5f0778d0cb5d278f0c75955277fc79",
+              "path": "docs/ep_l2/lane_collaboration_v1/NEXT_ACTIONS.json",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "coordination_dependency_plan_not_execution_authority",
+              "sha256": "27ebe13428a87d65d1552c865f5b05197d2bf258f041c21268fd138444d9144c"
+            }
+          ],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 9,
+          "subject": "All five joins verified; E2 coordination board and exact next dependencies published",
+          "work_key": "EPL2_ALL_FIVE_JOINED_BOARD_V1"
+        },
+        "sha256": "7adfb903d2a683b8d770deae96d7c69bd5e62f6dd4bd3630cf10e76e862feefb",
+        "source_commit": "3c105497755fe7018f4f98b57dffab52a20f4b58"
+      },
+      {
+        "event": {
+          "body": {
+            "new_application_or_native_starts": 0,
+            "next": "E2 closes current Conv ON first; A2/B/C/F no repeated completed reviews. Specific tractable gap requests only when new assets or a chosen exact scope exists.",
+            "operational_limit_note": "B historic null-cap discrepancy resolved by explicit user-approved limit removal+central adoption. Science scope still exact approved five pairs; no unlimited experimental scope.",
+            "registration": "SGEMM already E2_EXP_SGEMM_MEDIUM_20261020_r1 exploratory HOLD; no duplicate registration.",
+            "review": "Preserve D neutral FWT/SGEMM, conditional BFS, reserve Hotspot. Existing input properties reusable, not old-runtime PASS. New 93a9 finite F qualification remains missing.",
+            "scientific_scope": "Frozen trace model replay, source recapture and numerical validation are separate. Missing source/capture/numeric evidence not waived; any proposed scope change requires user review."
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T14:50:33.619996Z",
+          "dedup_key": "E2:WORKLOAD_READINESS_CONSOLIDATION_R1",
+          "event_id": "E2-00000010-43358a3d2297",
+          "kind": "DELIVERY",
+          "owner": "E2",
+          "recipients": [
+            "A2",
+            "B",
+            "C",
+            "D",
+            "F"
+          ],
+          "refs": [
+            {
+              "commit": "6e4d3720a47ae33c8e2f19f8f17a1241e5801471",
+              "path": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_readiness_consolidation_r1/README.md",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "candidate_readiness_review_not_launch_authority",
+              "sha256": "d2a44c70dc5a8f21de9a54cc3d92690bef907c4a71b28590660d37adebf73984"
+            },
+            {
+              "commit": "6e4d3720a47ae33c8e2f19f8f17a1241e5801471",
+              "path": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_readiness_consolidation_r1/READINESS.json",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "candidate_readiness_review_not_launch_authority",
+              "sha256": "ed60ffaeb92188546102a659723d848affc7036bcfc9a48781b56bd7029fa467"
+            }
+          ],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 10,
+          "subject": "E2 candidate readiness consolidated; no candidate launch authorized",
+          "work_key": "E2-WORKLOAD-READINESS-CONSOLIDATE"
+        },
+        "sha256": "30a089a49f6dfb6d1f75310adb6b2b5a8b3fb91d42528ee015865fa0ad27df54",
+        "source_commit": "3c105497755fe7018f4f98b57dffab52a20f4b58"
+      },
+      {
+        "event": {
+          "body": {
+            "action": "Index this correction and reuse completed work; no requested new run/test/build or repeated analysis. D Conv increment remains waiting for formal E acceptance.",
+            "new_application_or_native_starts": 0,
+            "old_FWT": "Main61 exact FWT S/F Q1d3af457 remains independently qualified,18 PASS, no current Q hold. For original MAIN restoration review reuse on same main61; future two starts still need explicit approval. New93a9 FWT S/F is separate cohort and additionally needs finite-F qualification.",
+            "priority": "Prepare original-identity FWT restoration proposal, SGEMM independent low-pressure control, BFS conditional input; Hotspot saved single-kernel reserve. No established detach-positive app candidate,8–10 not a hard target.",
+            "review_complete": true,
+            "scope_correction": "Existing frozen-trace model replay, from-source recapture and numerical-output validation are different scopes. Missing original GPU UUID/source/binary/payload does not by itself revoke existing old FWT Q. SGEMM existing frozen-trace exploratory HOLD is not missing registration. No new universal numeric gate and no automatic waiver.",
+            "static_support": "A2 static review found no known required opcode/mechanism/rebuild; not an unconditional runtime PASS guarantee."
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T15:13:22.809042Z",
+          "dedup_key": "E2:WORKLOAD_REVIEW_CORRECTIONS_R1",
+          "event_id": "E2-00000012-603a3a2f74a3",
+          "kind": "DELIVERY",
+          "owner": "E2",
+          "recipients": [
+            "A2",
+            "B",
+            "C",
+            "D",
+            "F"
+          ],
+          "refs": [
+            {
+              "commit": "74f0721270010d12c40cc92aaf5c8f35e56f3ad6",
+              "path": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/README.md",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "review_and_scope_correction_not_launch_authority",
+              "sha256": "58737fd325c3d16ccac5d895174ed24da0fc68a605d790cdb8bad9ccdf27e7f5"
+            },
+            {
+              "commit": "74f0721270010d12c40cc92aaf5c8f35e56f3ad6",
+              "path": "docs/ep_l2/review_packs/MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/DECISION_REVIEW.json",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "review_and_scope_correction_not_launch_authority",
+              "sha256": "6c3b12e48904cb73da0ad29d79b78c7ce6b35acadda39972fdfebb1f02c1fac0"
+            }
+          ],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 12,
+          "subject": "Workload review: preserve old FWT Q, separate runtime/cohort and numeric scopes",
+          "work_key": "E2-WORKLOAD-REVIEW-R1"
+        },
+        "sha256": "2583c438a57babcc142b54e5b54bb12934b251367509669433f7b8d63b689ac0",
+        "source_commit": "3c105497755fe7018f4f98b57dffab52a20f4b58"
+      },
+      {
+        "event": {
+          "body": {
+            "A2": "Main61 SGEMM finite S/F exact config proposal/option diff/coverage map; reuse frozen producer and prior static review, bind C actual artifacts when published. No code/rebuild/native and no placeholderREADY.",
+            "B": "No new task; existing W/V results directly reused, specific new issue only if evidence warrants.",
+            "C": "Own SGEMM explicit empty-coverage ordinary fallback candidate metadata; fixed T/M ON, UNKNOWN not measured0. BFS complete host-update boundaries. Prepared only, no E qualification/native.",
+            "D": "One merged readiness decision from existing neutral freeze and available F/C/A2 packets; original-main61 FWT restoration versus independent SGEMM cohort explicit. Do not wait indefinitely for missing assets. Conv increment proceeds immediately on actual E accepted delivery, independently of batch.",
+            "E2": "Finish current Conv first; independently audit prepared candidates and give user one exact future proposal or HOLD. This request itself grants zero new application starts/native/build.",
+            "F": "BFS exact provenance/graph/capture and20declared kernels+host commands small packet; reuse prior FWT/SGEMM work. Missing original assets => precise MISSING once, no repeated search/full trace scan.",
+            "batch_id": "EPL2_WORKLOAD_PREPARATION_BATCH_r2",
+            "delivery": "Each owner one bounded DONE-or-MISSING artifact packet, own STATUS+ACK, exactcommit/path/SHA, push/readback and DELIVERY toE2/D+dependentowner; existing scientific work not repeated.",
+            "idle_limit": "Owner window must actually resume/check; no background watcher/automatic wakeup claim."
+          },
+          "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+          "created_at_utc": "2026-10-21T15:18:18.822836Z",
+          "dedup_key": "E2:ONE_ROUND_WORKLOAD_PREPARATION_R2",
+          "event_id": "E2-00000013-aa0e8fb3c008",
+          "kind": "REQUEST",
+          "owner": "E2",
+          "recipients": [
+            "A2",
+            "C",
+            "D",
+            "F"
+          ],
+          "refs": [
+            {
+              "commit": "0b608f2f9142d44e53d54a55679c1b00b504d6a6",
+              "path": "docs/ep_l2/lane_collaboration_v1/batches/WORKLOAD_PREPARATION_BATCH_r2.json",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "single_round_preparation_task_not_execution_authority",
+              "sha256": "5412fe71b81c93ae559c8d90597a89a7b43f469ea4518129cfad7330ad412a32"
+            },
+            {
+              "commit": "0b608f2f9142d44e53d54a55679c1b00b504d6a6",
+              "path": "docs/ep_l2/lane_collaboration_v1/batches/WORKLOAD_PREPARATION_BATCH_r2.md",
+              "repo": "swayhrl/accel-sim-framework",
+              "role": "single_round_preparation_task_not_execution_authority",
+              "sha256": "2a10932a45d023940e8d6b398b6e9dec384002c9dd828b3ec70894b70e01ecd9"
+            }
+          ],
+          "schema": "EPL2_LANE_EVENT_V1",
+          "sequence": 13,
+          "subject": "One-round workload preparation: new gaps only, D single merge, no app/native/build",
+          "work_key": "EPL2_WORKLOAD_PREPARATION_BATCH_r2"
+        },
+        "sha256": "4a9f6238799358ca9707010d994cbdc135ec7f012fa8f24c0976aca55d375040",
+        "source_commit": "3c105497755fe7018f4f98b57dffab52a20f4b58"
+      }
+    ],
+    "late_unseen_preserved": [],
+    "late_unseen_remaining": 0,
+    "preview_warning": "source_commit null is local preview only; ACK requires exact published commit independently imported",
+    "refs_validation": "FORMAT_ONLY_NOT_CONTENT_VERIFIED",
+    "remaining_unconsumed": 0,
+    "status": "BOUNDED_CHECK"
+  },
+  "review": "All returned normal rows reviewed; A2/C/D status previews observed as declarations only, no execution inference; E2 prior correction indexes acknowledged; task13 personally accepted. No new task beyond F BFS.",
+  "preserve_original_goal": true
+}
