@@ -1,0 +1,115 @@
+{
+  "schema": "C_SGEMM_FALLBACK_BFS_HOST_PACKET_V1",
+  "task_id": "C-SGEMM-FALLBACK-BFS-HOST-r1",
+  "batch_id": "EPL2_WORKLOAD_PREPARATION_BATCH_r2",
+  "owner": "C",
+  "status": "PREPARED_NOT_E_QUALIFIED_NOT_ADOPTED",
+  "assigned_preparation": "DONE_BOTH_ASSIGNED_METADATA_GAPS",
+  "SGEMM": {
+    "candidate_manifest": {
+      "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/manifest.candidate.json",
+      "sha256": "c0a758b2fc0552be62f827ecc31b7ce32c06353fe3dcab0a87cfbea4c7e5b104",
+      "bytes": 2234
+    },
+    "trace_content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "saved_full_input_proof": {
+      "repo": "swayhrl/accel-sim-framework",
+      "commit": "6825d1cd0c87d8b0122e03a9dff5253c873b747b",
+      "path": "docs/ep_l2/mechanism_study_2026_10_19_v1/lane_d/input_suitability_20261020_r1/CANDIDATE_AUDIT.json",
+      "sha256": "be9074886c6a91a760d3df48e9fddf1b4b114728ea12cb1a1d44d573db906532"
+    },
+    "body_identity": "INHERITED_SAVED_FULL_BYTE_PROOF_NO_CURRENT_BODY_HASH",
+    "underlying_RO_opportunity": "UNKNOWN_NOT_MEASURED_ZERO",
+    "proposed_certified_lines": 0,
+    "registration": "E2_EXP_SGEMM_MEDIUM_20261020_r1 / REGISTERED_EXPLORATORY_HOLD_NOT_LAUNCHABLE",
+    "cohort": "SEPARATE_MAIN61_SGEMM_EXPLORATION_NOT_ORIGINAL_SEVEN_OR_BTREE_REPLACEMENT",
+    "proposed_runtime": {
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5"
+    },
+    "required_fixed_F_options": {
+      "-gpgpu_ep_l2_ro_tag_detach": "1",
+      "-gpgpu_ep_l2_ro_line_mshr_bypass": "1",
+      "-gpgpu_ep_l2_ro_scope": "NO_READONLY_CERTIFICATION"
+    },
+    "required_invariants": "W/V/T/M ON, finite1168 payload, physicalP1, original Tag/MSHR/D512/directory capacity and all ideal/data-free/copy-free/capacity shortcuts OFF. A2 owns full exact S/F option map; this is no launch spec.",
+    "oracle_binding_options": {
+      "-gpgpu_ep_l2_ro_manifest": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/manifest.candidate.json",
+      "-gpgpu_ep_l2_ro_manifest_sha256": "c0a758b2fc0552be62f827ecc31b7ce32c06353fe3dcab0a87cfbea4c7e5b104",
+      "-gpgpu_ep_l2_ro_ranges": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/certified_ranges.csv",
+      "-gpgpu_ep_l2_ro_ranges_sha256": "ce98b276a772d17869de61ee6aa6cf6f7d856354eb4062b7c0c0c762d6e71944"
+    },
+    "remaining_gates": [
+      "A2 exact common main61 S/F config and independently reviewable bindings, no placeholder READY.",
+      "E independently rechecks actual complete input identity/native grammar/non-atomic proof and source-specific finite-F input/profile acceptance; existing generic native evidence is only reusable within exact scope.",
+      "E independent explicit empty fallback review/adoption and manifest/range/hash/commandlist binding; missing/mismatch remains fatal, never silently fallback.",
+      "Original source/capture/numeric provenance UNKNOWN remains a separate recapture/numeric limitation, not an invented universal veto of trace-model scope.",
+      "Separate explicit execution/start/resource authorization and original registry entrypoint required after actual qualification."
+    ]
+  },
+  "BFS": {
+    "host_boundary_artifact": "BFS_HOST_BOUNDARIES.json",
+    "positive_RO_certificate": "MISSING_NOT_CREATED",
+    "underlying_RO_opportunity": "UNKNOWN",
+    "required_excluded_line": {
+      "first_line": "00007fb5155f0000",
+      "last_line_inclusive": "00007fb5155f0000",
+      "byte_begin": "00007fb5155f0000",
+      "byte_end_exclusive": "00007fb5155f0080",
+      "reason": "Nine post-initialization HtoD writes, every affected sector/neighbor byte on this128B line excluded for the entire epoch",
+      "command_lines": [
+        10,
+        13,
+        16,
+        19,
+        22,
+        25,
+        28,
+        31,
+        34
+      ]
+    },
+    "remaining_gates": [
+      "Complete20-kernel byte/native grammar/instruction and global-atomic evidence absent in reused D metadata; no fresh scan authorized.",
+      "Graph/source-node/source/build/capture identities and host numeric/payload/stop semantics require F packet or exact MISSING; upstream reference is not captured-source proof.",
+      "Canonical VA, no hidden aliases/external writers/MMIO and complete-visible-agent domain require explicit input contract; unresolved memory opcodes/agents prevent positive RO certification.",
+      "A full whole-epoch GPU read/write/atomic plus later-host exclusion proof is absent; all candidate RO opportunity UNKNOWN, no load-only/kernel-only inference.",
+      "Any new input/profile/runtime/execution eligibility remains independent E review; no native/application approval in this packet."
+    ]
+  },
+  "reused_unchanged": {
+    "prior_C_review_commit": "8a32cd0078b4aa602ccfce7c7320a09077a617d8",
+    "FWT": "Existing exact whole-epoch zero-RO proof/main61 Q retained; no Q revoked by missing recapture/numeric assets; old endpoints INCOMPLETE unchanged.",
+    "native": "Exact main61 existing empty-fallback/host-update/late-response controls referenced in prior C review, NOT rerun, no new native PASS.",
+    "R35": "FAIL_FROZEN; later full-joint replacements remain UNRUN; original Conv certificate and all HOLD/withdrawal boundaries unchanged."
+  },
+  "artifacts": [
+    {
+      "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/SGEMM_COMMANDLIST.txt",
+      "sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+      "bytes": 92
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/BFS_COMMANDLIST.txt",
+      "sha256": "c903c6a8876373a32f212e34a9026759076c1728a1629cded59555552c65940a",
+      "bytes": 871
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/certified_ranges.csv",
+      "sha256": "ce98b276a772d17869de61ee6aa6cf6f7d856354eb4062b7c0c0c762d6e71944",
+      "bytes": 31
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/sgemm_empty_fallback/manifest.candidate.json",
+      "sha256": "c0a758b2fc0552be62f827ecc31b7ce32c06353fe3dcab0a87cfbea4c7e5b104",
+      "bytes": 2234
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261021_C_SGEMM_FALLBACK_BFS_HOST_r1/BFS_HOST_BOUNDARIES.json",
+      "sha256": "cb332daaedb39f8b29bb9843ef74affd4cdf2d46d241f819ccf6d2ab104e396d",
+      "bytes": 12657
+    }
+  ],
+  "no_new_simulations_native_builds": true
+}
