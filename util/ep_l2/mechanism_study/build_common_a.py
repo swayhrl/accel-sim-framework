@@ -121,7 +121,8 @@ def main():
         assert failed['status'] == 'STOPPED_OR_FAILED_NO_RUNTIME_RELEASE' and failed['lease_released']
         assert failed['error'] == "RuntimeError('build exited 2')" and failed['compiler_started']
         assert failed['native_invocations_attempted'] == failed['application_starts'] == 0
-        assert failed['build'] == str(build) and failed['suite'] == a.suite == 'all'
+        assert failed['build'] == str(build) and failed['suite'] == a.suite
+        assert a.suite=='all' or spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC'
         assert failed['output'] == recovery['failed_result_directory']
         assert failed['core_source_commit'] == recovery['failed_core_source_commit']
         for k in ['framework_source_commit', 'vendor_commit']:
@@ -204,7 +205,7 @@ def main():
         assert not a.disk_authorization_id, 'new ordinary policy requires fresh E admission; no historical token replay'
         direct_capacity=a.user_authorized_capacity
         if direct_capacity:
-            assert spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC' and not recovery
+            assert spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC'
             user_authority=Path(spec['explicit_user_authority']['path'])
             assert sha(user_authority)==spec['explicit_user_authority']['sha256']
             user=json.loads(user_authority.read_text())
@@ -345,14 +346,18 @@ def main():
                 # this copy counts against the already leased result ceiling.
                 resources()
                 original = build/'accel-sim.out'
-                preserved = out/'INHERITED_MAIN_PRE_COMPILE.elf'
-                previous_sha = recovery['build_files']['accel-sim.out']['sha256']
-                assert sha(original)==previous_sha
-                shutil.copyfile(original,preserved)
-                assert sha(preserved)==previous_sha
-                report['preserved_inherited_main'] = dict(path=str(preserved),sha256=previous_sha,
-                    bytes=preserved.stat().st_size,qualified=False,counted_in_result_growth=True)
-                resources();save()
+                if original.exists():
+                    preserved = out/'INHERITED_MAIN_PRE_COMPILE.elf'
+                    previous_sha = recovery['build_files']['accel-sim.out']['sha256']
+                    assert sha(original)==previous_sha
+                    shutil.copyfile(original,preserved)
+                    assert sha(preserved)==previous_sha
+                    report['preserved_inherited_main'] = dict(path=str(preserved),sha256=previous_sha,
+                        bytes=preserved.stat().st_size,qualified=False,counted_in_result_growth=True)
+                    resources();save()
+                else:
+                    assert spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC' and 'accel-sim.out' not in recovery['build_files']
+                    report['inherited_main']='NOT_PRODUCED_IN_FAILED_COMPILE'
             report.update(status='INCREMENTAL_BUILD_PREPARING' if recovery else 'CONFIGURING',compiler_started=True);save()
             if not recovery:
                 run(['cmake','-S',str(runtime/'gpu-simulator'),'-B',str(build),'-G','Unix Makefiles',
