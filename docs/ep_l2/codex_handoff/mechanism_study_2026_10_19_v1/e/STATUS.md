@@ -1,4 +1,4 @@
-# Lane E2 — capacity diagnostic / CAPACITY_RESOURCE_ONLY_RESUME_READY
+# Lane E2 — capacity diagnostic / CAPACITY_NEW_RUNTIME_QUALIFIED_BATCH_ADMISSION
 
 Original174; T0 1792414193; actual 38/46, remaining 8; old36 immutable and charged, contingency8/8 preserved. Controller STOPPED. New diagnostic accepted pairs 1/5. Original MAIN and control results unchanged.
 
