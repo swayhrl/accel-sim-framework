@@ -1,4 +1,4 @@
-> Latest foreground resume: **IDLE**；9条正式消息已消费，C/F旧交付已核对；[本轮决定与依赖](../../lane_collaboration_v1/evidence/D/RESUME_DECISION_r1.md)。Conv正式接受尚未交付；SGEMM已登记探索HOLD，保留旧科学结果，不重复分析。
+> Latest batch r2: **IDLE / preparation DONE**；[单次合并决策](../../review_packs/MS20261021_D_WORKLOAD_DECISION_BUNDLE_r2/README.md)。F/C/A2新包已接收；FWT/SGEMM方案可交E审查，BFS仍MISSING，Hotspot备用。非资格/启动授权；原科学结果未重做。
 
 # Lane D — four capacity pairs CONSUMED; neutral input prefreeze delivered
 
