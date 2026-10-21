@@ -1,6 +1,6 @@
-# Lane E2 — V2_CONTROL_dwt2d_S_VS_S_COPY_FREE_RAM_RETRY_MAIN61_CURRENT_ACCEPTED
+# Lane E2 — V2_CONTROL_dwt2d_S_VS_W_ONLY_RAM_RETRY_MAIN61_CURRENT_ACCEPTED
 
-Original174; originalT0=1792414193; actual31/40,remaining9,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
+Original174; originalT0=1792414193; actual32/40,remaining8,contingency8/8 consumed. main61/Core d010/Framework9dd unchanged. Controller ACTIVE; original unique registry/lock and maximum2.
 
 | Main S/F | S cycles | F cycles | S/F |
 |---|---:|---:|---:|
@@ -20,8 +20,9 @@ Original174; originalT0=1792414193; actual31/40,remaining9,contingency8/8 consum
 | V2_CONTROL_convolutionSeparable_S_VS_S_COPY_FREE_MAIN61 | 292932 | 293671 | 0.997483579 |
 | V2_CONTROL_convolutionSeparable_S_VS_W_ONLY_MAIN61 | 292932 | 291525 | 1.004826344 |
 | V2_CONTROL_dwt2d_S_VS_S_COPY_FREE_RAM_RETRY_MAIN61 | 166519 | 166555 | 0.999783855 |
+| V2_CONTROL_dwt2d_S_VS_W_ONLY_RAM_RETRY_MAIN61 | 166519 | 166792 | 0.998363231 |
 
-New results4662154054B, old+new18971730438B; growth since20-start control baseline1054791470B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
+New results4766183693B, old+new19075760077B; growth since20-start control baseline1158821109B.6/20GiB and5GiB+2GiB monitoring reserves unchanged.
 
 Remaining original qualified controls: . DWT/CFD four-cell revision is user-approved and independently qualified; exact matrix adoption retained with original history. Remaining approved controls: . FWT INCOMPLETE,Vector F RESOURCE_LIMIT/exit-15,Btree HOLD and all old receipts remain; no refunds,replay,newGoal,second controller or new migration. COPY_FREE remains diagnostic.
 
