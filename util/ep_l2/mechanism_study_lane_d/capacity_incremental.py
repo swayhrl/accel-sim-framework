@@ -1,5 +1,5 @@
 """D-only projection of E-accepted capacity pairs. No new acceptor or execution."""
-import argparse,datetime,hashlib,json,math,subprocess
+import argparse,datetime,fcntl,hashlib,json,math,subprocess
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import sync_intake as intake
@@ -18,17 +18,30 @@ def aggregate(rows,key,operation):
  values=[r.get(key) for r in rows]
  if not values or not all(type(x) in (int,float) for x in values):return 'UNKNOWN'
  return {'min':min,'max':max,'sum':sum}[operation](values)
+def current_pair_matches(pair,current,accepted_results):
+ if not current or current.get('status')!='CURRENT_ACCEPTED':return False
+ for field in ['baseline_attempt_id','variant_attempt_id']:
+  if current.get(field)!=pair.get(field):return False
+ for side in ['left','right']:
+  pub=pair['endpoints'][side];now=accepted_results.get(pub['attempt_id'],{})
+  if any(pub.get(k)!=now.get(k) for k in ['path','sha256','identity']):return False
+ return True
 def git(commit,name):return subprocess.check_output(['git','show',commit+':'+EP+name],cwd=ROOT)
 def analyze(commit,out,caches):
  if out.exists() and any(out.iterdir()):raise ValueError('Use a new revision; preserve old evidence')
  out.mkdir(parents=True,exist_ok=True)
  names=subprocess.check_output(['git','ls-tree','-r','--name-only',commit,EP],cwd=ROOT,text=True).splitlines()
  paths=[p for p in names if Path(p).name.startswith('CAPACITY_DIAGNOSTIC_') and p.endswith('_ACCEPTED_PAIR.json')]
- pairs={};frozen=[];refs={}
+ with (intake.SHARED/'REGISTRY.lock').open() as lock:
+  fcntl.flock(lock,fcntl.LOCK_SH);registry_raw=(intake.SHARED/'RUN_REGISTRY.json').read_bytes();current_ledger=json.loads(registry_raw)[intake.FIELD]
+ assert current_ledger['owner']=='E' and current_ledger['campaign_id']==intake.CAMPAIGN
+ pairs={};frozen=[];refs={};pointer_holds=[]
  for path in paths:
   name=Path(path).name;raw=git(commit,name);p=json.loads(raw)['accepted_pair']
   if p['status']!='CURRENT_ACCEPTED':continue
   assert p['pair_id']+'_ACCEPTED_PAIR.json'==name and p['accepted_by']=='E'
+  if not current_pair_matches(p,current_ledger.get('accepted_pairs',{}).get(p['pair_id']),current_ledger.get('accepted_results',{})):
+   pointer_holds.append(dict(pair_id=p['pair_id'],status='NOT_CURRENT_OR_REPOINTED_IN_E_CANONICAL_LEDGER',old_publication_preserved=True));continue
   (out/('E_'+name)).write_bytes(raw)
   frozen.append(dict(source_commit=commit,source_path=EP+name,local='E_'+name,sha256=hashlib.sha256(raw).hexdigest()))
   dn=p['pair_id']+'_D_DELIVERY_RECEIPT.json';dr=git(commit,dn);(out/('E_'+dn)).write_bytes(dr)
@@ -73,7 +86,7 @@ def analyze(commit,out,caches):
  save(out,'EXACT_ACCEPTED_IDENTITIES.json',identities);save(out,'E_CAPACITY_CLASSIFICATIONS.json',classes);save(out,'SUPPLEMENTAL_FINAL_COUNTS.json',supp);save(out,'FROZEN_E_INDEX.json',frozen)
  gm=math.exp(sum(math.log(x['ratio_OFF_over_ON']) for x in perf)/len(perf)) if perf else 'UNKNOWN'
  summary=dict(observed_BJT=datetime.datetime.now(ZoneInfo('Asia/Shanghai')).isoformat(),E_commit=commit,consumed_pairs=len(perf),diagnostic_subset_members=[x['workload'] for x in perf],diagnostic_subset_GM=gm,complete_five_diagnostic_GM=gm if len(perf)==5 else 'UNKNOWN',main61_five_MAIN_GM_unchanged=0.9977331348587999,original_seven_MAIN_GM='UNKNOWN',classification_authority='E',snapshot_provenance=obs_prov,application_starts=0,native_runs=0,builds=0,trace_reads=0,active_raw_reads=0,registry_writes=0,controller_actions=0,background_poller=False,scope='Joint capacity/data-service diagnostic only; no hardware performance upper bound or additive stall attribution')
- save(out,'SUMMARY.json',summary);save(out,'CONSUMED.json',dict(status='CONSUMED',E_commit=commit,pairs=consumed,main61_unchanged=True,pending_missing_pairs=[w for w in ['convolutionSeparable','cfd_097k','dwt2d','sad','vectorAdd_4M'] if w not in summary['diagnostic_subset_members']],new_acceptor=False,read_only_E_evidence=True))
+ summary.update(canonical_registry_sha256=hashlib.sha256(registry_raw).hexdigest(),canonical_registry_reads=1,current_pointer_holds=pointer_holds);save(out,'E_CURRENT_POINTER_HOLDS.json',pointer_holds);save(out,'SUMMARY.json',summary);save(out,'CONSUMED.json',dict(status='CONSUMED',E_commit=commit,pairs=consumed,main61_unchanged=True,pending_missing_pairs=[w for w in ['convolutionSeparable','cfd_097k','dwt2d','sad','vectorAdd_4M'] if w not in summary['diagnostic_subset_members']],new_acceptor=False,read_only_E_evidence=True))
  save(out,'FILES_SHA256.json',{p.name:intake.digest(p) for p in out.iterdir() if p.is_file() and p.name!='FILES_SHA256.json'})
  print(json.dumps(dict(consumed=summary['consumed_pairs'],performance=perf,timing=[{k:r[k] for k in ['workload','kernel_ordinal','OFF_gpu_sim_cycle','ON_gpu_sim_cycle','ON_minus_OFF_cycles']} for r in timing]),indent=2))
 def main():

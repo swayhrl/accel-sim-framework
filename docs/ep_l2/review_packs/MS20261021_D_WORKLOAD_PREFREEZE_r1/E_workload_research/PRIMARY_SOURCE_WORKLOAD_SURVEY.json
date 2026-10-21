@@ -1,0 +1,208 @@
+{
+  "schema": "E2_PRIMARY_SOURCE_WORKLOAD_SURVEY_V1",
+  "review_date": "2026-10-21",
+  "status": "RESEARCH_ONLY_NO_EXECUTION_AUTHORIZATION",
+  "report_sha256": "54e774603a71bffda2ed35ac7619172a500e7475205f3343814c0cc10c19ea7f",
+  "operations": {
+    "web_primary_source_metadata_and_small_source_reads": true,
+    "large_trace_downloads": 0,
+    "builds": 0,
+    "native_starts": 0,
+    "application_starts": 0,
+    "registry_source_git_mutations": false
+  },
+  "facts": [
+    {
+      "source_url": "https://github.com/accel-sim/accel-sim-framework/releases/tag/v2.0.1",
+      "fact": "2026-10-20v2.0.1移除旧FTP/pre2.0列表，首批H200 tracez，部分不完成kernel剔除",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://github.com/accel-sim/gpu-app-collection#readme",
+      "fact": "源码集中维护；数据不存于Git，需单独获取",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/Makefile",
+      "fact": "Rodinia/Parboil/PolyBenchGPU构建目标存在；不证明trace与全部依赖可用",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://rodinia.cs.virginia.edu/",
+      "fact": "BFS graph traversal、Hotspot structured grid",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://www.cs.virginia.edu/~skadron/lava/rodinia/downloads.html",
+      "fact": "列出3.1版本；部分旧版本不再提供",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://cavazos-lab.github.io/PolyBench-ACC/",
+      "fact": "CUDA等实现及参数化初始化/输出支持",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/parboil/benchmarks/spmv/src/cuda/main.cu",
+      "fact": "矩阵及向量输入、JDS转换、主程序50次kernel调用",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/rodinia/3.1/cuda/bfs/kernel.cu",
+      "fact": "通过edge间接读visited、写cost/mask",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/rodinia/3.1/cuda/hotspot/hotspot.cu",
+      "fact": "温度双buffer交换；grid/pyramid/迭代/temp/power输入",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/polybench-gpu-1.0/CUDA/GEMM/gemm.cu",
+      "fact": "当前公开GPU1.0源512立方、float与CPU误差对照；本地输入未核实",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    },
+    {
+      "source_url": "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/parboil/benchmarks/histo/src/cuda/histo_main.cu",
+      "fact": "global/shared atomicAdd与overflow路径",
+      "evidence_kind": "OFFICIAL_PROJECT_OR_AUTHOR"
+    }
+  ],
+  "dynamic_availability": {
+    "legacy_complete_trace_repository_today": "NOT_PROVEN",
+    "new_release_trace_omits_some_kernels": true,
+    "current_frozen_binary_compatibility": "NOT_ESTABLISHED_BY_UPSTREAM_2_0_SUPPORT",
+    "old_script_url_inconsistent_with_release": "https://raw.githubusercontent.com/accel-sim/accel-sim-framework/dev/get-accel-sim-traces.py",
+    "author_parboil_home_and_report_fetch": "TIMEOUT_THIS_REVIEW_NOT_PROOF_UNAVAILABLE",
+    "large_files_not_fetched": true
+  },
+  "candidate_classes": [
+    {
+      "class": "irregular_gather",
+      "representatives": [
+        "Parboil SpMV",
+        "Rodinia BFS"
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/parboil/benchmarks/spmv/src/cuda/main.cu",
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/rodinia/3.1/cuda/bfs/kernel.cu"
+      ],
+      "scientific_value_hypothesis": "补不规则地址和并发占用",
+      "priority": "CONDITIONAL_INPUT_AND_HOLD_CLOSURE",
+      "first_batch_eligible_now": false,
+      "specific_checks": [
+        "完整矩阵/向量或图/起点",
+        "全部kernel及迭代",
+        "旧HOLD不得复用",
+        "BFS新输入待验证"
+      ],
+      "full_trace_available": "NOT_VERIFIED",
+      "walltime_seconds": null,
+      "expected_instructions": null,
+      "trace_bytes": null,
+      "resource_cost": null,
+      "qualification_status": "NOT_GRANTED",
+      "selection_basis": "MECHANISM_COVERAGE_AND_PROVENANCE_NOT_F_SPEEDUP"
+    },
+    {
+      "class": "iterative_dirty_writeback",
+      "representatives": [
+        "Rodinia Hotspot",
+        "Parboil stencil"
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/rodinia/3.1/cuda/hotspot/hotspot.cu",
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/Makefile"
+      ],
+      "scientific_value_hypothesis": "补跨kernel温度buffer复用和写回生命周期",
+      "priority": "PREFER_IF_COMPLETE_NONATOMIC_LOW_COST_INPUT",
+      "first_batch_eligible_now": false,
+      "specific_checks": [
+        "grid/pyramid/迭代",
+        "温度与power文件",
+        "完整trace与oracle",
+        "dirty压力仅为待验证假设"
+      ],
+      "full_trace_available": "NOT_VERIFIED",
+      "walltime_seconds": null,
+      "expected_instructions": null,
+      "trace_bytes": null,
+      "resource_cost": null,
+      "qualification_status": "NOT_GRANTED",
+      "selection_basis": "MECHANISM_COVERAGE_AND_PROVENANCE_NOT_F_SPEEDUP"
+    },
+    {
+      "class": "dense_reuse_arithmetic_negative_control",
+      "representatives": [
+        "PolyBench/GPU GEMM",
+        "Parboil SGEMM"
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/polybench-gpu-1.0/CUDA/GEMM/gemm.cu",
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/Makefile"
+      ],
+      "scientific_value_hypothesis": "补密集复用和可能较低诊断收益的负例",
+      "priority": "PREFER_IF_EXISTING_COMPLETE_PROVENANCE",
+      "first_batch_eligible_now": false,
+      "specific_checks": [
+        "精确实现/编译维度",
+        "input及CPU oracle",
+        "不得混用WMMA/SGEMM变体"
+      ],
+      "full_trace_available": "NOT_VERIFIED",
+      "walltime_seconds": null,
+      "expected_instructions": null,
+      "trace_bytes": null,
+      "resource_cost": null,
+      "qualification_status": "NOT_GRANTED",
+      "selection_basis": "MECHANISM_COVERAGE_AND_PROVENANCE_NOT_F_SPEEDUP"
+    },
+    {
+      "class": "atomic_aggregation",
+      "representatives": [
+        "Parboil histo",
+        "CUDA SDK histogram"
+      ],
+      "sources": [
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/cuda/parboil/benchmarks/histo/src/cuda/histo_main.cu",
+        "https://raw.githubusercontent.com/accel-sim/gpu-app-collection/dev/src/Makefile"
+      ],
+      "scientific_value_hypothesis": "补集中更新及ATOMIC/RED语义边界",
+      "priority": "P2_HIGH_SCIENTIFIC_SEMANTIC_RISK_NOT_FIRST_BATCH",
+      "first_batch_eligible_now": false,
+      "specific_checks": [
+        "A2/E新增ATOMIC/RED审查",
+        "完整data/oracle可能仅非原子认证不得继承",
+        "区分shared/global原子",
+        "数据分布/overflow范围"
+      ],
+      "full_trace_available": "NOT_VERIFIED",
+      "walltime_seconds": null,
+      "expected_instructions": null,
+      "trace_bytes": null,
+      "resource_cost": null,
+      "qualification_status": "NOT_GRANTED",
+      "selection_basis": "MECHANISM_COVERAGE_AND_PROVENANCE_NOT_F_SPEEDUP"
+    }
+  ],
+  "selection_recommendation": {
+    "new_representatives_first_intake": 2,
+    "eligibility_order": [
+      "complete_existing_provenance",
+      "non_atomic_qualified_path",
+      "incremental_mechanism_coverage",
+      "bounded_cost"
+    ],
+    "streaming": "Vector already occupies class; do not add transpose solely for count",
+    "number_is_not_conference_requirement": true,
+    "no_known_f_speedup_selection": true,
+    "no_old_hold_upgrade": true
+  },
+  "claim_scope": {
+    "five_distinct_workloads": "five exact inputs/configurations only, subject to independent pair acceptance",
+    "kernels_profiles_inputs_not_independent_workloads": true,
+    "no_universal_minimum_count_asserted": true,
+    "no_population_representativeness_claim": true,
+    "main_and_capacity_diagnostic_denominators_separate": true
+  }
+}
