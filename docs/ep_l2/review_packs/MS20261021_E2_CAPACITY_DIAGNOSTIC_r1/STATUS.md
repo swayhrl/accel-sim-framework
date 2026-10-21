@@ -1,10 +1,10 @@
-# Lane E2 — capacity diagnostic / CAPACITY_SAD_ACCEPTED_AND_WORKLOAD_SURVEY_r1
+# Lane E2 — capacity diagnostic / CAPACITY_CONV_OFF_INDEPENDENT_VALID_ANCHOR_ON_PENDING
 
 Original174; T0 1792414193; actual 45/46, remaining 1; old36 immutable and charged, contingency8/8 preserved. Controller ACTIVE. New diagnostic accepted pairs 3/5. Original MAIN and control results unchanged.
 
 Formal concurrency: RESOURCE_ONLY, APPLIED. Fixed E formal simulator-count limits removed by explicit user approval; existing CPU/RAM/disk and result/start budgets remain.
 
-Result generation: new 6787401556B/10737418240B; old+new 21096977940B/25769803776B; growth since36 1632846340B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
+Result generation: new 6789082006B/10737418240B; old+new 21098658390B/25769803776B; growth since36 1634526790B. Workspace5GiB floor+2GiB monitor and Share/CPU/RAM controls unchanged. Authority4934388; no old-main61 eligibility or anchor reuse.
 
 | Condition | Attempt | State |
 |---|---|---|
