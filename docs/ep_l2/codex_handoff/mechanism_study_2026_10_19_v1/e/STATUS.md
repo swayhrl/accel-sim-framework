@@ -1,12 +1,12 @@
 # Lane E2 — approved main61 workload pipeline
 
-Event FWT_S_COMPLETE_VALID_F_CONTINUES; original T0 1792414193; actual 50; this batch 4/4; old46 retained. Original controller ACTIVE.
+Event V4_FWT_MAIN61_RESTORE_S_F_CURRENT_ACCEPTED; original T0 1792414193; actual 50; this batch 4/4; old46 retained. Original controller ACTIVE.
 
-Generated new 7333969331B / 10737418240B; total 21643545715B / 25769803776B. No migration reset.
+Generated new 7340450710B / 10737418240B; total 21650027094B / 25769803776B. No migration reset.
 
 | Condition | Attempt | State |
 |---|---|---|
 |V4_FWT_MAIN61_RESTORE_S|E049_cd97e882|COMPLETE_VALID|
-|V4_FWT_MAIN61_RESTORE_F|E050_9e15df41|RUNNING|
+|V4_FWT_MAIN61_RESTORE_F|E050_9e15df41|COMPLETE_VALID|
 |V4_SGEMM_MAIN61_EXPLORATORY_S|E047_98c6624c|COMPLETE_VALID|
 |V4_SGEMM_MAIN61_EXPLORATORY_F|E048_bf0b5338|COMPLETE_VALID|
