@@ -1,0 +1,111 @@
+[
+  {
+    "operation": "import_E2_status_snapshot",
+    "status": "IMPORTED",
+    "provenance": {
+      "consumer": "B",
+      "event_id": "E2-00000001-7f5c7ddb4b3a",
+      "event_sha256": "be98ae67bd7622f1f09f0b3c382d90c945aa581c3a7e5a5c4a66d82a88adf445",
+      "owner": "E2",
+      "repo": "swayhrl/accel-sim-framework",
+      "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+    }
+  },
+  {
+    "operation": "import_E2_setup_request",
+    "status": "IMPORTED",
+    "provenance": {
+      "consumer": "B",
+      "event_id": "E2-00000002-ca1c31760483",
+      "event_sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+      "owner": "E2",
+      "repo": "swayhrl/accel-sim-framework",
+      "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+    }
+  },
+  {
+    "operation": "own_IDELE_status",
+    "status": "OWN_STATUS_RECORDED_NOT_REMOTE_PROCESS_PROOF",
+    "projection": {
+      "activity": "IDLE",
+      "blocking_dependencies": [],
+      "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+      "current_task": "协作v1已接入；上一轮W/V审查已完成，无新研究待办。最终交付c740421ef2c91ea1029cb1df037324de11c86caa，docs/ep_l2/review_packs/MS20261021_B_D_CANDIDATE_WV_REVIEW_r2/REVIEW.md。仅接入与重索引，不重做科学审查；原Goal/Core/历史证据保留；无后台任务。",
+      "last_emitted_event_id": "B-00000001-b621eea55723",
+      "last_sequence": 1,
+      "owner": "B",
+      "schema": "EPL2_LANE_STATUS_V1",
+      "updated_at_utc": "2026-10-21T14:32:15.565283Z"
+    }
+  },
+  {
+    "operation": "own_ACK_RECEIVED",
+    "status": "EMITTED_LOCAL_PREVIEW_PENDING_EXPLICIT_GIT_PUBLICATION",
+    "event_sha256": "1ec649b20c4a3884191c29ee2456bb7230c737ea50513a10b7d149664fc53379",
+    "own_event": {
+      "owner": "B",
+      "event_id": "B-00000002-eff82a0a1047",
+      "sequence": 2,
+      "kind": "ACK",
+      "dedup_key": "B:ACK:E2:E2-00000002-ca1c31760483:RECEIVED"
+    }
+  },
+  {
+    "operation": "reindex_existing_final_delivery",
+    "status": "EMITTED_LOCAL_PREVIEW_PENDING_EXPLICIT_GIT_PUBLICATION",
+    "event_sha256": "cd415c414cca5d5aa74a7ad96bf9f10a3bd2b33063eaea52543418527d5b7763",
+    "own_event": {
+      "owner": "B",
+      "event_id": "B-00000003-95bce3da1bc3",
+      "sequence": 3,
+      "kind": "DELIVERY",
+      "dedup_key": "B:WV_D_CANDIDATE_REVIEW_R2"
+    }
+  },
+  {
+    "operation": "after_local_delivery_check",
+    "status": "BOUNDED_CHECK",
+    "cursor_updated": false,
+    "acknowledgement_emitted": false,
+    "remaining_unconsumed": 0,
+    "late_unseen_remaining": 0,
+    "refs_validation": "FORMAT_ONLY_NOT_CONTENT_VERIFIED",
+    "checked_events": [
+      {
+        "owner": "E2",
+        "event_id": "E2-00000001-7f5c7ddb4b3a",
+        "sha256": "be98ae67bd7622f1f09f0b3c382d90c945aa581c3a7e5a5c4a66d82a88adf445",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      {
+        "owner": "E2",
+        "event_id": "E2-00000002-ca1c31760483",
+        "sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      }
+    ]
+  },
+  {
+    "operation": "consume_only_reviewed_setup_and_status",
+    "status": "BOUNDED_CHECK",
+    "cursor_updated": true,
+    "acknowledgement_emitted": false,
+    "remaining_unconsumed": 0,
+    "late_unseen_remaining": 0,
+    "refs_validation": "FORMAT_ONLY_NOT_CONTENT_VERIFIED",
+    "checked_events": [
+      {
+        "owner": "E2",
+        "event_id": "E2-00000001-7f5c7ddb4b3a",
+        "sha256": "be98ae67bd7622f1f09f0b3c382d90c945aa581c3a7e5a5c4a66d82a88adf445",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      },
+      {
+        "owner": "E2",
+        "event_id": "E2-00000002-ca1c31760483",
+        "sha256": "13bcfecf2834755ad12e0eb22c177d3ee15795a3733db5a3d24a22e587a4d519",
+        "source_commit": "f54f9b40cccf11258b5cf5209466889070384a84"
+      }
+    ]
+  }
+]

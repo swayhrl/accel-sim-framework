@@ -1,3 +1,9 @@
+# B — IDLE，已接入公共协作 v1
+
+上一轮W/V审查已完成并冻结于c740421ef2c91ea1029cb1df037324de11c86caa；本轮不重做。本人已发E2接入RECEIVED ACK及IDLE状态，以固定work_key将旧结果索引交D/A2/E2。当前无新研究待办；将来资格/输入/联合fixture依赖见docs/ep_l2/lane_collaboration_v1/onboarding/B/ONBOARDING_RECEIPT.json。仅在规定安全边界前台检查消息，不建poller/Goal/controller，不增加完整应用。
+
+下面保留上一轮科学交付状态，属于已完成历史，非当前活动任务：
+
 # B — D候选FWT/SGEMM W/V独立审查 r2
 
 原Goal/worktree/分支/候选及旧证据保留。仅新增保存统计/有界raw tail审查；无构建、GPU、native或完整应用启动，生产源码/binary/config、E登记/预算/资格均未改。

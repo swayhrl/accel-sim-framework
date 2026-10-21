@@ -1,0 +1,76 @@
+{
+  "schema": "EPL2_LANE_COLLABORATION_INDEPENDENT_CLI_REVIEW_V1",
+  "status": "PASS_BOUNDED_ENGINEERING_ONLY",
+  "review_owner": "E2",
+  "files_sha256": {
+    "coordination.py": "5c75173225ff002f2dcabc2f0b3b150d56d31d5bf1139ebf89baae2ab3eda34f",
+    "CONTRACT.json": "8ca295eab3e98d8f1da424d1acf1cb2759c7a4fe89fbba77a99278c6e2b39fa0",
+    "PROTOCOL.md": "96ffb41f3c4255e9c2ad9adf0f83fcc9d7b33d4fc3657d34dfd4205e8463ee54",
+    "CLI_USAGE.md": "516f6c216830b851f9cdc341f013bbc9393f263f2595dc6df07d2207abbd6438",
+    "test_independent_boundaries.py": "b15290bdaa92f2e88f6647b2b3bb3610d0a16c801dc1275cb51d804e070f6db2",
+    "DISCOVERY_AND_BOUNDARIES.md": "dfd70f81b4858bc34873232af5ac1a81d4af4a39053da8adc0ff1954c1c2e5f3"
+  },
+  "controls": {
+    "total": 24,
+    "passed": 24,
+    "failed": 0,
+    "elapsed_seconds_observed": 0.106,
+    "method": "Temporary directories, mocked read-only Git/network, bounded synthetic metadata; no real owner messages or ACKs",
+    "native_starts": 0,
+    "application_starts": 0,
+    "actual_registry_client_util_production_or_active_output_mutations": false,
+    "actual_git_mutations": false
+  },
+  "initial_review": {
+    "controls_passed": 18,
+    "controls_failed": 6,
+    "resolved_failures": [
+      "local-only unpublished commit incorrectly accepted as published ACK source",
+      "emit extra could override required owner/event envelope",
+      "FIFO/device not rejected before read",
+      "intermediate reader-path symlink could escape root",
+      "changed logical dedup within same fresh batch not rejected",
+      "identical logical dedup within same fresh batch delivered twice"
+    ],
+    "failures_were_engineering_controls_not_scientific_runs": true
+  },
+  "static_review_followups": [
+    "collect checks remaining aggregate byte budget before read",
+    "Git blob regular mode checked before size/show; symlink/tree/gitlink rejected",
+    "VALIDATED/APPLIED need explicit owner review; same-repo EP-L2 text refs bounded and SHA checked; APPLIED needs output ref",
+    "status CAS checked before emit; repeated unchanged status does not emit",
+    "contract location restricted to adjacent reviewed file, not arbitrary mapping",
+    "Normal plus late-unseen response entries share max-events budget; undisplayed late entries retain remaining count and do not advance cursor"
+  ],
+  "verified_boundaries": [
+    "mirror/event/logical dedup",
+    "own branch/root and inactive-owner rejection",
+    "foreign required envelope cannot override owner",
+    "recipient-only own ACK with exact source hash",
+    "no automatic ACK from check/consume",
+    "message shell/registry-like payloads remain inert",
+    "size-before-decode/show",
+    "symlink/nonregular/path escape rejection",
+    "no resource/scientific authority delegated by metadata"
+  ],
+  "scope_limits": [
+    "No claim that remote lanes have joined or acknowledged",
+    "No ability to wake an idle window",
+    "Existing E singleton native/app acceptance is independent",
+    "Shared-account branch/root guard is workflow isolation, not cryptographic authentication",
+    "Input/ref semantic correctness still requires owner scientific review; metadata SHA verification alone is not qualification"
+  ],
+  "prior_passed_cli_versions": [
+    {
+      "coordination_sha256": "04327f676fd899fea838f3470395bb56b63b862b8073a2569e9805bf6561bf1e",
+      "controls_passed": 24,
+      "status": "PREVIOUS_REVIEWED_VERSION_PRESERVED"
+    }
+  ],
+  "owner_documentation_alignment": {
+    "reviewer": "E2 root",
+    "change": "Corrected format-only default check/import versus explicitly confirmed VALIDATED/APPLIED bounded metadata SHA checks; combined normal/late return bound",
+    "runtime_source_changed": false,
+    "controls_rerun_not_required": "Documentation wording only; current source matches 24 PASS seal"
+  }
+}
