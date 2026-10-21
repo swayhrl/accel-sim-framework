@@ -119,8 +119,17 @@ def main():
         failed = json.loads(Path(recovery['failed_receipt']).read_text())
         assert sha(recovery['failed_receipt']) == recovery['failed_receipt_sha256']
         assert failed['status'] == 'STOPPED_OR_FAILED_NO_RUNTIME_RELEASE' and failed['lease_released']
-        assert failed['error'] == "RuntimeError('build exited 2')" and failed['compiler_started']
-        assert failed['native_invocations_attempted'] == failed['application_starts'] == 0
+        if spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC':
+            assert failed['application_starts']==0 and failed.get('error')
+            if recovery.get('retained_build_receipt'):
+                prior_build=Path(recovery['retained_build_receipt']['path'])
+                assert sha(prior_build)==recovery['retained_build_receipt']['sha256']
+                assert json.loads(prior_build.read_text())['status']=='COMPILED_BUILD_ONLY_PENDING_NATIVE'
+            else:
+                assert failed['compiler_started'] and failed['native_invocations_attempted']==0 and failed['error']=="RuntimeError('build exited 2')"
+        else:
+            assert failed['error'] == "RuntimeError('build exited 2')" and failed['compiler_started']
+            assert failed['native_invocations_attempted'] == failed['application_starts'] == 0
         assert failed['build'] == str(build) and failed['suite'] == a.suite
         assert a.suite=='all' or spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC'
         assert failed['output'] == recovery['failed_result_directory']
@@ -345,6 +354,11 @@ def main():
                 # the prior unqualified main binary before any such overwrite;
                 # this copy counts against the already leased result ceiling.
                 resources()
+                for asset in recovery.get('retain_unqualified_artifacts',[]):
+                    assert sha(asset['path'])==asset['sha256']
+                    target=out/asset['output_name'];shutil.copyfile(asset['path'],target)
+                    assert sha(target)==asset['sha256']
+                    report.setdefault('retained_unqualified_artifacts',[]).append(dict(path=str(target),sha256=asset['sha256'],qualified=False))
                 original = build/'accel-sim.out'
                 if original.exists():
                     preserved = out/'INHERITED_MAIN_PRE_COMPILE.elf'

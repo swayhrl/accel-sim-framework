@@ -24,6 +24,7 @@ def prepare(spec, handoff, core, build, out, suite):
           'ON64.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-gpgpu_n_mem 32\n-gpgpu_n_sub_partition_per_mchannel 2\n',
           'REJECT_COPY.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-gpgpu_ep_l2_diag_copy_free 1\n',
           'REJECT_RO.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-gpgpu_ep_l2_ro_tag_detach 1\n',
+          'REJECT_FORCE_HIT.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 1\n-l2_ideal 1\n',
           'REJECT_VALUE.config':common+'-gpgpu_ep_l2_diag_l2_large_capacity 2\n',
         }
         for name,text in generated.items():(inputs/name).write_text(text)
