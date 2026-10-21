@@ -30,3 +30,7 @@ E2暂任协调owner，维护队列、交付/消费回执与依赖；D负责科�
 ## Workload审查勘误
 
 E2已完成`MS20261021_E2_CAPACITY_DIAGNOSTIC_r1/workload_review_r1/`。原main61 FWT准确18门资格仍有效；如补原MAIN应同main61，新93a9 S/F应独立cohort。source复采/数值缺件与原冻结trace模型资格分开，不新增统一强制数值门。SGEMM已有探索HOLD登记。准备优先FWT原身份恢复提案、SGEMM独立对照、BFS条件准备，Hotspot备用；无新的启动授权。
+
+## 下一轮合并准备
+
+E2已发布[batches/WORKLOAD_PREPARATION_BATCH_r2.md](batches/WORKLOAD_PREPARATION_BATCH_r2.md)：F补BFS来源包、C补SGEMM fallback/BFS host边界、A2补main61 SGEMM配置提案，D一次汇总，E2一次资格/成本审查。B复用旧结果不新派重复任务。全部仅准备，未批准新应用/native/build；本人未ACK前不标已接单。D Conv增量分析不等本批完成。
