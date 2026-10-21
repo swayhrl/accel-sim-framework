@@ -38,3 +38,7 @@ E2已发布[batches/WORKLOAD_PREPARATION_BATCH_r2.md](batches/WORKLOAD_PREPARATI
 本批实际接单核验：A2=WORKING（本人ACK/STATUS，dfe3f16f）, C=WORKING（本人ACK/STATUS，93f6db18）, D=WORKING（本人ACK/STATUS，592cb849）, F=WORKING（本人ACK/STATUS，ec653cd7）。这只是本人准备状态，未推断产物完成或进程/lease。来源见intake/E2/PREPARATION_BATCH_r2_ACKS.json。
 
 合并批次产物已到齐并由E2核对Git身份：A2/C/D/F各一次DONE或精确MISSING包，D已完成一次汇总。E2已回RECEIVED，尚未授予SGEMM新资格/采用或新启动；BFS仍缺完整输入/domain证据，Hotspot备用。当前唯一完整应用仍E046 Conv ON。来源见intake/E2/PREPARATION_BATCH_r2_DELIVERIES.json。
+
+## 主线最终完成
+
+五组同新binary OFF/ON均CURRENT_ACCEPTED；Conv292932/268117cycles。十端真实exit/wait0、完整指令、64slice及硬件退尽，原控制器STOPPED、E active run/lease0。本批10次、历史累计46，旧失败/HOLD及原矩阵不变。最终独立审查COMPLETE_PROVEN，来源092b6396b5b1c628807572badb39ea8b82871de6。D的Conv增量依赖已满足并投递，待本人实际ACK/分析；未把投递当消费。所有ON仍UNKNOWN，不作硬件/无限上界。后续候选仍未获新启动授权。
