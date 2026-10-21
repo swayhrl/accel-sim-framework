@@ -19,7 +19,7 @@ OBS_KEYS = frozenset(('DTC_AG7_POLICY_B_PROGRESS', 'DTC_AG7_GENERATION',
 ALLOWED_FIELDS = frozenset(('attempt_uuid', 'new_attempt_uuid', 'cohort',
     'runtime_path', 'runtime_sha256', 'runtime_environment', 'expected_embedded_framework_version',
     'destination', 'resource_policy_version', 'status', 'BASE_eligibility_decision_sha256', 'order', 'timeout_seconds'))
-POLICY_VERSION = 'AD8_POLICY_B_PILOT_10S_FRESH30_NO_RETIRE600_CGROUP1800_WALL21600_V1'
+POLICY_VERSION = 'AG8R1_USER_IO_WARNING_FRESH30_NO_RETIRE600_WALL21600_V2'
 REGISTRATION_STATUS = 'RESERVED_AG8R1_NOT_EXECUTABLE_WITHOUT_CURRENT_C2_R2'
 
 

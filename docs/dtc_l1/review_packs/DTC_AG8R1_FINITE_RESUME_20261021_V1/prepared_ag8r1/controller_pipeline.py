@@ -14,7 +14,7 @@ import sys
 
 import ag7_strict
 from ag7_runner import RuntimeSampler, collect_actual
-import runtime_policy_b
+import runtime_io_warning as runtime_policy_b
 import telemetry_receiver
 import validate_identity as identity_validator
 from guarded_process import run_guarded

@@ -157,8 +157,8 @@ class RuntimeSampler:
         acceptance = self.pilot
         accepted = (isinstance(acceptance, dict) and
             acceptance.get('BA_explicit_conservative_pilot_surrogate_accepted') is True and
-            acceptance.get('host_io_three_ge30s_preserved') is True and
-            acceptance.get('maximum_cgroup_high_episode_s') == 1800 and
+            acceptance.get('user_IO_PSI_warning_only') is True and
+            acceptance.get('maximum_cgroup_high_episode_s') is None and
             acceptance.get('no_external_task_harm_claim') is True)
         reasons = []
         if current['host_MemAvailable_bytes'] < 8 * GIB:
@@ -176,7 +176,7 @@ class RuntimeSampler:
             membership_interval_ns=scope.get('monotonic_interval_ns'),
             measured_harmlessness=False, shared_cgroup_scope=True,
             no_harm_inference_from_progress_or_low_host_PSI=True,
-            safety_basis='EXPLICIT_BA_REGISTERED_HOST_GLOBAL_PLUS_1800S_EPISODE_SURROGATE')
+            safety_basis='EXPLICIT_USER_IO_WARNING_WITH_OOM_HEADROOM_AND_IDENTITY_HARD')
 
 
 def current_guard_checks(point, ownership, pid, current, authority, *, mapping_manifests,
