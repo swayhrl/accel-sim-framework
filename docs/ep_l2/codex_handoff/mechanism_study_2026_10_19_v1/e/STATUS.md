@@ -1,11 +1,11 @@
-# Lane E2 — PRIMARY FOUR / PRIMARY_FOUR_QUALIFIED_ADMISSION_NO_START
+# Lane E2 — PRIMARY FOUR / PRIMARY_FIRST_WAVE_RUNNING
 
-Original174;T0=1792414193;actual32/40,remaining8;contingency8/8 consumed. ControllerSTOPPED. main61/Core d010/Framework9dd and original runtime/client source pin unchanged. Only PRIMARY FOUR approved; no WB64/FWT/Btree/sensitivity.
+Original174;T0=1792414193;actual34/40,remaining6;contingency8/8 consumed. ControllerACTIVE. main61/Core d010/Framework9dd and original runtime/client source pin unchanged. Only PRIMARY FOUR approved; no WB64/FWT/Btree/sensitivity.
 
 | Authorized condition | Attempt | State | Pair accepted |
 |---|---|---|---|
-| V2_dwt2d_F_MINUS_R | None | NOT_STARTED | False |
-| V2_vectorAdd_4M_F_RESOURCE_RETRY | None | NOT_STARTED | False |
+| V2_dwt2d_F_MINUS_R | E034_479739f1 | RUNNING | False |
+| V2_vectorAdd_4M_F_RESOURCE_RETRY | E033_f01f6993 | RUNNING | False |
 | V2_convolutionSeparable_S_L2_DATA_FREE | None | NOT_STARTED | False |
 | V2_convolutionSeparable_F_L2_DATA_FREE | None | NOT_STARTED | False |
 
@@ -29,6 +29,6 @@ Original174;T0=1792414193;actual32/40,remaining8;contingency8/8 consumed. Contro
 | V2_CONTROL_dwt2d_S_VS_S_COPY_FREE_RAM_RETRY_MAIN61 | 166519 | 166555 | 0.999783855 |
 | V2_CONTROL_dwt2d_S_VS_W_ONLY_RAM_RETRY_MAIN61 | 166519 | 166792 | 0.998363231 |
 
-New generation4766183693B/6GiB;old+new19075760077B/20GiB;growth since32starts0B. Everyendpoint384MiB stopguard; four1.5GiB; collector/metadata planningmargin32MiB preserved in prelaunch checks. Workspace5GiB floor+2GiB monitoring,64GiB RAMfloor,Share/CPU policy unchanged. Perendpoint10800s;Oct21BJT18:00 newstarts/22:00intake cutoff.
+New generation4945110877B/6GiB;old+new19254687261B/20GiB;growth since32starts178927184B. Everyendpoint384MiB stopguard; four1.5GiB; collector/metadata planningmargin32MiB preserved in prelaunch checks. Workspace5GiB floor+2GiB monitoring,64GiB RAMfloor,Share/CPU policy unchanged. Perendpoint10800s;Oct21BJT18:00 newstarts/22:00intake cutoff.
 
-All old32attempts/receipts/failedexit/HOLD remain immutable and charged. Original32+8 group limits unchanged; only exact FWT F_MINUS_W→DWT F_MINUS_R andBtreeF→VectorF retry rows replaced,originalmatrix retained. ExistingVectorS reused. DATA_FREE keeps diagnostic/oracle scope and finite residual obligations, never hardwareP1 speedup. No newnative/build, no secondcontroller, no validendpointreplay or auto-retry. Next authorized unstartedconditions: V2_dwt2d_F_MINUS_R,V2_vectorAdd_4M_F_RESOURCE_RETRY,V2_convolutionSeparable_S_L2_DATA_FREE,V2_convolutionSeparable_F_L2_DATA_FREE. Seven-inputGM remainsUNKNOWN.
+All old32attempts/receipts/failedexit/HOLD remain immutable and charged. Original32+8 group limits unchanged; only exact FWT F_MINUS_W→DWT F_MINUS_R andBtreeF→VectorF retry rows replaced,originalmatrix retained. ExistingVectorS reused. DATA_FREE keeps diagnostic/oracle scope and finite residual obligations, never hardwareP1 speedup. No newnative/build, no secondcontroller, no validendpointreplay or auto-retry. Next authorized unstartedconditions: V2_convolutionSeparable_S_L2_DATA_FREE,V2_convolutionSeparable_F_L2_DATA_FREE. Seven-inputGM remainsUNKNOWN.
