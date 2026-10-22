@@ -1,0 +1,114 @@
+{
+  "schema": "C_SGEMM_POSITIVE_RO_COVERAGE_V1",
+  "batch_id": "EPL2_RO_POSITIVE_QUALIFICATION_PREPARATION_20261022_r1",
+  "task_id": "C-SGEMM-POSITIVE-RO-CERTIFICATION-r1",
+  "owner": "C",
+  "result": "POSITIVE_MODEL_CERTIFICATE_CANDIDATE",
+  "status": "PREPARED_NOT_E_QUALIFIED_NOT_ADOPTED",
+  "exact_input": {
+    "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+    "body_sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+    "body_bytes": 2216170035,
+    "composite_trace_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "instruction_records_measured": 51847488,
+    "active_lane_instructions": 1658916864,
+    "active_lane_instruction_lineage": "Saved complete D/E grammar proof reused by exact newly measured body SHA; not freshly recomputed lane-instruction denominator",
+    "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+    "kernels": [
+      {
+        "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernel-1.traceg",
+        "sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+        "opcodes": {
+          "LDG": 2390784,
+          "STS": 261888,
+          "LDS": 8380416,
+          "STG": 33792
+        }
+      }
+    ],
+    "epoch": "whole_commandlist"
+  },
+  "denominators": {
+    "unique_global_lines": 98272,
+    "read_containing_global_lines": 98272,
+    "global_read_lane_line_references": 76505088,
+    "global_write_lane_line_references": 1081344,
+    "global_atomic_lane_line_references": 0
+  },
+  "certified_RO_lines": 64480,
+  "certified_RO_read_lane_line_references": 75423744,
+  "fraction_of_read_containing_lines": 0.65613806577662,
+  "fraction_of_read_lane_line_references": 0.9858657243816255,
+  "coverage_and_exclusions": {
+    "CERTIFIED_RO_lines": 64480,
+    "CERTIFIED_RO_read_lane_references": 75423744,
+    "SAME_LINE_STORE_lines": 33792,
+    "SAME_LINE_STORE_read_lane_references": 1081344
+  },
+  "unresolved_opcodes": {},
+  "host_updates_excluded": [],
+  "certified_range_count": 2,
+  "range_semantics": "inclusive128B line bases; width-crossing lines counted per touched line/lane reference",
+  "artifacts": {
+    "manifest.json": {
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/oracle/manifest.json",
+      "sha256": "853369d8e256d57ff440b88cb31f9b7c5967f3e411eb84c32612021fa1ade6c3"
+    },
+    "certified_ranges.csv": {
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/oracle/certified_ranges.csv",
+      "sha256": "be570e38e168b59252ac7f4ed041e2b606aed79ea0c9650e94c840f825767aa8"
+    },
+    "coverage.csv": {
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/oracle/coverage.csv",
+      "sha256": "53efa2d7a6029ccf0a498d45f31aad35cf71491dd98dc808dfeedefeeefd5d59"
+    },
+    "exclusion.csv": {
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/oracle/exclusion.csv",
+      "sha256": "d57791e15fbab1181d5983e44c7c2806d5a4ec8aa9eeb1485f6f3ea0986393ba"
+    }
+  },
+  "raw_artifacts_root": "/workspace/ep_l2_ms20261019_e_results/C_SGEMM_RO_POSITIVE_20261022_r1",
+  "original_generator_source": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-c-ro-v1/util/ep_l2/mechanism_study_c/ro_oracle.py",
+    "sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225",
+    "source_commit": "a658740e293919d7578cc55c9c2b5a39cef3bc9f"
+  },
+  "combined_hash_adapter_sha256": "bc12dc2e42ec5ca05a0688a6c9b40e6a92e9df1cc84196fcffdf8fc398576928",
+  "exact_published_qualification_producer": "a658740e293919d7578cc55c9c2b5a39cef3bc9f",
+  "source_domain_assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "assumption_limits": "Conditional closed-world trace-model proof; no physical alias/hidden-writer/numeric/captured-source proof.",
+  "actual_cost": {
+    "wall_seconds": 328.77511278167367,
+    "peak_worker_RSS_bytes": 29360128,
+    "SQLite_page_cache_bytes": 16777216,
+    "worker_address_space_cap_bytes": 268435456,
+    "generated_raw_logical_bytes": 6933927,
+    "generated_raw_allocated_bytes": 7036928,
+    "body_opens": 1,
+    "body_read_bytes": 2216170035,
+    "separate_body_hash_passes": 0,
+    "current_API_output_usage": {
+      "old_bytes": 14309576384,
+      "new_bytes": 7347384637,
+      "total_bytes": 21656961021
+    },
+    "actual_starts": 50,
+    "lease_id": "2a58692e00e24aeb8c1c8cfdb56d4a63",
+    "lease_status": "RELEASED"
+  },
+  "next_owners": {
+    "A2": "Bind exact published candidate manifest/ranges once to same-main61 schema/domain/source/native applicability; no native/build.",
+    "D": "Incremental candidate/control decision using actual coverage; no proof of miss/pendingTag/detach/performance from offline coverage.",
+    "E2": "Independent new positive-certificate qualification, exact source/main/profile/input/domain/current CLIENT_CONTRACT binding and resources; decide baseline invariance/reuse and minimal future1-or2start proposal for user approval."
+  },
+  "old_results": "Old accepted empty-fallback S/F and all historical Q/results remain byte-identical. This is a new explicit candidate condition, not retroactive adoption.",
+  "runtime_or_native_or_numeric_qualification": false,
+  "new_simulator_native_build_starts": 0,
+  "backup": "Not needed for positive candidate; no backup body scanned or run. If ZERO retain original metadata-only Conv option without new work."
+}
