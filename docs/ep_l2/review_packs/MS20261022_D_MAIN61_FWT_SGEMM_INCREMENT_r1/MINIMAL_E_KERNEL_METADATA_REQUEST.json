@@ -1,0 +1,17 @@
+{
+  "owner": "D",
+  "recipient": "E2",
+  "scope": "Optional existing small accepted metadata only; not new simulation, acceptance work or a raw/trace rescan",
+  "pairs": [
+    "V4_SGEMM_MAIN61_EXPLORATORY_S_F",
+    "V4_FWT_MAIN61_RESTORE_S_F"
+  ],
+  "missing_fields": [
+    "ordered native kernel UID/name plus elapsed gpu_sim_cycle for each S/F kernel",
+    "final gpu_tot_sim_cycle and final residual definition",
+    "if already saved: adjacent cumulative kernel-boundary mechanism snapshots"
+  ],
+  "existing_evidence": "All four published pair endpoints have kernel_completion=null; four SHA-bound terminal_summary.json inspected contain only final application cycles and no per-kernel timing field. Exported native_snapshot_count20 for FWT /2 for SGEMM is not an ordered timing series. Proposal declares19/1 kernels respectively, not duration data.",
+  "action_if_absent": "Reply NOT_SAVED/UNKNOWN; keep whole-app analysis delivered and phase attribution UNKNOWN. Do not generate a new raw scan to satisfy this request.",
+  "affected_scope_only": "Per-kernel localization; whole-app CURRENT_ACCEPTED evidence, counts, cohort figures and conclusions are already consumed; no all-pair barrier."
+}
