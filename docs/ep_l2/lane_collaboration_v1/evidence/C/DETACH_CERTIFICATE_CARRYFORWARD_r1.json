@@ -1,0 +1,151 @@
+{
+  "schema": "C_DETACH_CERTIFICATE_METADATA_CARRYFORWARD_V1",
+  "at_utc": "2026-10-22T03:20:04.632553+00:00",
+  "owner": "C",
+  "task_id": "C-DETACH-CERTIFICATE-CARRYFORWARD-r1",
+  "batch_id": "EPL2_DETACH_ZERO_CAUSAL_OBSERVABILITY_PREPARATION_20261022_r1",
+  "status": "CONFIRMED_UNCHANGED_METADATA_BINDING_NOT_DIAGNOSTIC_RUNTIME_Q",
+  "request": {
+    "event_id": "E2-00000059-feda8eeb49a1",
+    "source_commit": "258865b0d7fba838040b36d86e533db9d09dd6aa",
+    "sha256": "d3ff5c8bd5a73929b332fbf1985b713744dc278aad65baffd52178cc3d9d8bd2"
+  },
+  "diagnostic_proposal": {
+    "commit": "1b562df64849f8c37f81b6378383fc59cf34eff9",
+    "path": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/EXECUTION_AND_COST_PROPOSAL.json",
+    "proposal_id": "EPL2_SGEMM_POSITIVE_RO_OBSERVER_F_ONE_START_r1",
+    "producer": "NEW_OBSERVER_SOURCE_BINARY_TBD_NOT_QUALIFIED_BY_C"
+  },
+  "existing_certificate_refs": [
+    {
+      "repo": "swayhrl/accel-sim-framework",
+      "commit": "d8368f24d86611cefd88900264ed14b7ca30e883",
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/RO_COVERAGE.json",
+      "sha256": "41b2cd6995a99579dedf19db921aaadc4ba267db1d09e2703fafd342cbe83860",
+      "role": "existing_complete_input_model_proof"
+    },
+    {
+      "repo": "swayhrl/accel-sim-framework",
+      "commit": "d8368f24d86611cefd88900264ed14b7ca30e883",
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/oracle/manifest.json",
+      "sha256": "853369d8e256d57ff440b88cb31f9b7c5967f3e411eb84c32612021fa1ade6c3",
+      "role": "unchanged_existing_manifest"
+    },
+    {
+      "repo": "swayhrl/accel-sim-framework",
+      "commit": "d8368f24d86611cefd88900264ed14b7ca30e883",
+      "path": "docs/ep_l2/review_packs/MS20261022_C_SGEMM_POSITIVE_RO_r1/oracle/certified_ranges.csv",
+      "sha256": "be570e38e168b59252ac7f4ed041e2b606aed79ea0c9650e94c840f825767aa8",
+      "role": "unchanged_existing_two_ranges"
+    }
+  ],
+  "input": {
+    "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+    "trace_body_sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+    "composite_trace_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "body_bytes": 2216170035,
+    "kernels": 1,
+    "commands": 3,
+    "instructions": 1658916864
+  },
+  "binding_checks": {
+    "manifest_exact_SHA_unchanged": true,
+    "ranges_exact_SHA_unchanged": true,
+    "scope": "TRACE_MODEL_CLOSED_WORLD",
+    "epoch": "whole_commandlist",
+    "line_bytes": 128,
+    "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+    "host_updates_excluded": [],
+    "model_certified_lines_reused": 64480,
+    "ranges_reused": 2,
+    "assumptions": "Existing complete visible agents, canonical VA/no hidden aliases/MMIO/external writers, initialization/writeback/copy drain remain conditional model assumptions; unchanged, not newly proved."
+  },
+  "limits": "Existing C proof sufficient for unchanged input/domain. Does not block A2 source or D schema preparation. New observer source/binary/config/native/diagnostic input qualification and any later one-start approval remain E-owned; zero new permissions. Old main61 results and previous proposal unchanged/deferred as E requests.",
+  "actual_this_task": {
+    "trace_body_bytes_read": 0,
+    "SQLite_open_or_rebuild": 0,
+    "classification": 0,
+    "new_ranges": 0,
+    "simulator_native_build": 0,
+    "new_Goal_controller_poller": false
+  },
+  "other_notifications_indexed_only": [
+    {
+      "event_id": "A2-00000032-8ca86f048029",
+      "kind": "ACK",
+      "sha256": "c688161f9ca92398875d2f5792fecef64a20664c070918639917f4647d9bb35b"
+    },
+    {
+      "event_id": "A2-00000033-8e4c2055d974",
+      "kind": "STATUS",
+      "sha256": "b8a460dd91ad91a63cce8e2dec7d0f7e08c44b1389359329ddaa6a59248b8517"
+    },
+    {
+      "event_id": "A2-00000035-a76f24eeaf31",
+      "kind": "ACK",
+      "sha256": "60d1d0af207ff713377932135bd28b89786b5d914b6dc0f5b7857186ad3013b1"
+    },
+    {
+      "event_id": "A2-00000036-a2bd98e3644e",
+      "kind": "DELIVERY",
+      "sha256": "c0a5f544424d21a89719613c5ecf92e1b3ca26c9fbb020bdf0185d5f6a28c4bb"
+    },
+    {
+      "event_id": "A2-00000037-ab3b1e100d7d",
+      "kind": "STATUS",
+      "sha256": "f2bb6a45c821fa0da0ba10c01e7295687a0d629001d12ab48418deb6da9ad10f"
+    },
+    {
+      "event_id": "D-00000060-2989d2a95e84",
+      "kind": "STATUS",
+      "sha256": "4932db4248a2dabbbc90df873a7477f73938629aad4333b7bb76eceacbdf4d34"
+    },
+    {
+      "event_id": "D-00000061-fd00052f1724",
+      "kind": "STATUS",
+      "sha256": "bc63a076ec99528a511149ac3c0a46a4d003649f0ff9e106802029d651ac146c"
+    },
+    {
+      "event_id": "D-00000062-1ce2423a7a61",
+      "kind": "DELIVERY",
+      "sha256": "d6532e59a72f555fdabd1a18326ad9fb3f7457c68d67ffc596b0f9cc114e8051"
+    },
+    {
+      "event_id": "D-00000065-88a3fd845cd3",
+      "kind": "ACK",
+      "sha256": "5b8565fb82db6aa34714f2ef997f16aec5b367132a59fd3d131236da3cf21ce8"
+    },
+    {
+      "event_id": "D-00000068-5758ffa9cfed",
+      "kind": "STATUS",
+      "sha256": "3f5ddec18f55d6835e51271dadc7c5ffffaecc2599e8f6a511973e05a6bfa4b3"
+    },
+    {
+      "event_id": "E2-00000049-4aac7944cde0",
+      "kind": "STATUS",
+      "sha256": "519c357ce8b4dcc67d98877e274989fa1a89fa30e679db148d653ac6968f3df7"
+    },
+    {
+      "event_id": "E2-00000050-39482699811a",
+      "kind": "ACK",
+      "sha256": "8a4e9884fd27ceb8a610f7ea2a67b6b65b64192b7f711e8691d03eb4c89e7776"
+    },
+    {
+      "event_id": "E2-00000055-ed5967820861",
+      "kind": "DELIVERY",
+      "sha256": "1d9d05ae7eb01ccff2a9406674f53ca3dfe1a76b229b57fb1965aec5fa8e140d"
+    },
+    {
+      "event_id": "E2-00000056-84807feafa39",
+      "kind": "STATUS",
+      "sha256": "c383d1fcc69c4d613d1b7c734e33b583e3178442dd99fc0f5a5673814316c243"
+    },
+    {
+      "event_id": "E2-00000060-337077084100",
+      "kind": "STATUS",
+      "sha256": "48cbf82e83dbe9594ab191d12df882a664db400e21962ea4394c866d8d1a2ea2"
+    }
+  ],
+  "other_notification_scope": "Historical peer ACK/STATUS/DELIVERY indices read only; no repeat audit, scientific acceptance or additional C task inferred. Source refs retained in original messages.",
+  "target_request_handled_and_notifications_indexed": 16
+}
