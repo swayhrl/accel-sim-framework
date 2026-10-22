@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from detach_scope_core import Authority, FIELD, CAMPAIGN, SCI_SCOPE, require, sha, spec_sha
 import detach_validation
+import detach_successor as successor
 
 # Deliberately unconfigured. Tests inject explicit synthetic Authority in memory;
 # production integration must bind actual E-derived final metadata, then publish.
@@ -28,6 +29,7 @@ def is_spec(spec):
     return spec.get('scientific_scope') == SCI_SCOPE
 
 def active(item):
+    if successor.has(item):return successor.scope().active(item,authority().active)
     if FIELD not in item:
         require(len(item['attempts']) <= 50, 'unauthorized post50 tail')
         return False
@@ -37,9 +39,14 @@ def adopt(item, source_leases):
     return authority().adopt(item, source_leases)
 
 def bind_condition(item, spec, digest):
+    if successor.is_spec(spec):return successor.scope().bind(item,spec,authority().active)
     return authority().bind(item, spec)
 
 def scope_allowed(item, spec):
+    if successor.is_spec(spec):
+        if not successor.has(item):return False
+        try:return successor.scope().scope_allowed(item,spec,authority().active)
+        except (ValueError,KeyError,TypeError):return False
     if not is_spec(spec) or not active(item):return False
     a=authority()
     try:
@@ -49,12 +56,18 @@ def scope_allowed(item, spec):
     except (ValueError, KeyError, TypeError):return False
 
 def condition_check(item, spec, digest):
+    if successor.is_spec(spec):
+        require(scope_allowed(item,spec),'unbound exact successor condition')
+        require(successor.scope().fixture_mode or detach_validation.INDEPENDENT_SCHEMA_VALIDATION_READY,'new exact decoder qualification incomplete')
+        return dict(condition_id=spec['condition_id'],group='INDEPENDENT_DIAGNOSTIC_POINT')
     require(scope_allowed(item,spec),'unbound exact observer condition')
     require(authority().fixture_mode or detach_validation.INDEPENDENT_SCHEMA_VALIDATION_READY,
             'real observer schema qualification incomplete')
     return dict(condition_id=spec['condition_id'],group='INDEPENDENT_DIAGNOSTIC_POINT')
 
 def batch_guard(item,spec):
+    if successor.is_spec(spec):
+        condition_check(item,spec,None);return successor.scope().guard(item,spec,authority().active)
     condition_check(item,spec,None)
     return authority().guard(item,spec)
 
@@ -63,6 +76,7 @@ def effective_timeout(item,spec):
     return spec['timeout_seconds']
 
 def qualification(q,digest):
+    if successor.is_q(q):return successor.qualification(q,digest)
     a=authority();m=a.authority();b=m['scientific_binding']
     require(q['source_identity']==b['source_identity'],'wrong observer producer source')
     require(q.get('detach_observer_diagnostic') is not None,'new observer Q required')
@@ -72,12 +86,14 @@ def qualification(q,digest):
     return True
 
 def record_reservation(item,spec,attempt):
+    if successor.is_spec(spec):return successor.scope().record_reservation(item,spec,attempt,authority().active)
     batch_guard(item,spec)
     attempt.update(condition_id=spec['condition_id'],diagnostic_spec_sha256=spec_sha(spec),
                    scientific_scope=SCI_SCOPE)
     item[FIELD]['attempt_ids'].append(attempt['attempt_id'])
 
 def record_started(item,attempt):
+    if attempt.get('condition_id') in successor.CONDITIONS:return successor.scope().record_started(item,attempt)
     require(item[FIELD]['start_witness'] is None,'observer already charged')
     witness=dict(attempt_id=attempt['attempt_id'],run_key=attempt['run_key'],
                  process=copy.deepcopy(attempt['process']),started_unix=attempt['started_unix'])
@@ -85,6 +101,7 @@ def record_started(item,attempt):
     item[FIELD]['start_witness']=copy.deepcopy(witness)
 
 def queue_guard(item,queue,digest):
+    if successor.has(item):return successor.queue_guard(item,queue,digest,authority().active)
     specs=[]
     for ref in queue.get('specs',[]):
         path=Path(ref['path'])
@@ -94,7 +111,7 @@ def queue_guard(item,queue,digest):
     require(len(specs)==1 and queue.get('pairs',[])==[],'observer queue only one point, no union or pair')
     require(scope_allowed(item,specs[0]),'unbound observer queue')
 
-def crosscheck_data(data,item):
+def _legacy_crosscheck_data(data,item):
     """Cross-check existing canonical runs; no extra journal or authority.
 
     Detect missing/refunded tail while its original canonical run survives.
@@ -141,6 +158,7 @@ def crosscheck_data(data,item):
 
 
 def prepare_validator(qrow,spec,digest):
+    if successor.is_spec(spec):return successor.prepare_validator(qrow,spec,digest)
     """Initialize one adapter only from the exact root-sealed registered Q/spec.
 
     No environment override, free Q, callback or second initializer authority.
@@ -174,3 +192,12 @@ def prepare_validator(qrow,spec,digest):
     detach_validation.configure_binding(scope)  # Production constructor refuses synthetic/callback bindings.
     detach_validation._ADAPTER.check(spec,qrow)
     return {'status':'ADAPTER_BINDING_READY','newly_configured':True}
+
+
+def crosscheck_data(data,item):
+    if successor.has(item):
+        return successor.scope().crosscheck(data,item,authority().active,_legacy_crosscheck_data)
+    return _legacy_crosscheck_data(data,item)
+
+def adopt_successor(item,data,source_leases):
+    return successor.scope().adopt(item,data,source_leases,authority().active)

@@ -1,0 +1,19 @@
+{
+  "scope": "PURE_METADATA_MATCHER_CONTROL_WITH_MANIFEST_AND_LEGACY_CALLBACKS_STUBBED_NOT_AUTHORITY_OR_NATIVE",
+  "candidate_source_sha256": "5cad773fe20952741594ea008168b7e4fc17fe356049a7397b837690e53e6c8b",
+  "baseline_crosscheck_returned": true,
+  "unapproved_addition": {
+    "experiment_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+    "status": "RUNNING",
+    "identity": {
+      "workload": "UNAPPROVED_NOT_IN_FOUR"
+    },
+    "scientific_scope": "LEGACY_OR_UNMARKED",
+    "condition_id": "UNAPPROVED_NEW_CONDITION",
+    "run_key": "unapproved-new-own-key",
+    "lease_id": "UNAPPROVED"
+  },
+  "crosscheck_with_extra_own_canonical_row_returned": true,
+  "finding": "crosscheck filters newownEcanonical rows by observer markers/knowncondition; unknownlegacy/unmarked ownErow escapes exactfour tail match. Historical ownrows remain sealed but namespace of future ownrows notclosed.",
+  "proposed_minimal_fix": "All canonical rows with experiment_id==CAMPAIGN and key notin baselinecanonicalruns must equal expectedtail, irrespective of diagnostic markers. Otherprojects remain excluded."
+}

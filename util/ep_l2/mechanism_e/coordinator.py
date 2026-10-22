@@ -141,9 +141,38 @@ def pending_growth(data):
     return result
 
 
+def validate_successor_forecast_view(view, actual):
+    """Only conservative in-memory additions; never a canonical ledger waiver."""
+    require({k:v for k,v in view.items() if k!='runs'}=={k:v for k,v in actual.items() if k!='runs'},
+            'forecast must preserve every original nonruns field and policy')
+    require(set(actual['runs'])<=set(view['runs']) and
+            all(view['runs'][key]==row for key,row in actual['runs'].items()),
+            'forecast cannot remove or change any actual run')
+    require(detach_policy.successor.has(actual[FIELD]),'exact successor forecast only')
+    m=detach_policy.successor.scope().manifest()
+    approved={run_key(c['identity']):c for c in m['conditions'].values()}
+    for key in set(view['runs'])-set(actual['runs']):
+        row=view['runs'][key];prefix='READONLY_SUBMITTED_FORECAST_'
+        require(key.startswith(prefix) and key[len(prefix):] in approved,'forecast exact approved condition/runkey')
+        c=approved[key[len(prefix):]];r=c['resources']
+        require(set(row)=={'run_key','status','host','experiment_id','owner','cpu_units','memory_bytes','disk_growth_bytes','monitor_reserve_bytes','result_directory','scan','process'},'bounded original forecast shape')
+        require(row['run_key']==key and row['status']=='RESERVED' and row['host']==socket.gethostname() and
+                row['experiment_id']==CAMPAIGN and row['owner']=='E_READONLY_FORECAST_NOT_LEASE' and
+                row['process'] is None and row['scan'] is False and row['result_directory']==str(OUTPUT/key),
+                'readonly conservative forecast identity')
+        require(all(type(row[k]) is int for k in ('cpu_units','memory_bytes','disk_growth_bytes','monitor_reserve_bytes')) and
+                row['cpu_units']>=r['cpu'] and row['memory_bytes']>=r['memory_bytes'] and
+                row['disk_growth_bytes']>=r['maximum_result_bytes'] and row['monitor_reserve_bytes']>=2*GIB,
+                'forecast cannot underreserve CPU/RAM/growth/monitor')
+    return True
+
+
 def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
-                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None,authority_data=None):
-    if authority_data is not None:
+                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None,authority_data=None,read_only_forecast=False):
+    if read_only_forecast:
+        require(authority_data is not None,'forecast actual authority required')
+        validate_successor_forecast_view(data,authority_data)
+    elif authority_data is not None:
         require(data[FIELD]==authority_data[FIELD] and data['resource_leases']==authority_data['resource_leases'],
                 'resource recheck view must preserve canonical campaign/leases')
         removed=set(authority_data['runs'])-set(data['runs'])
@@ -300,6 +329,18 @@ class Coordinator:
             require(not own_scientific,'own scientific application must retire before source adoption')
             changed=detach_policy.adopt(item,source_leases)
             counts(item)
+            return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
+
+    def adopt_positive_ro_successor(self):
+        """Adopt only exact approved four from immutable51, under original lock."""
+        with self.locked() as (data,item):
+            own_scientific=[r for r in data['runs'].values()
+                if r.get('experiment_id')==CAMPAIGN and r.get('status') in ACTIVE]
+            source_leases=[r for r in data['resource_leases'].values()
+                if r.get('experiment_id')==CAMPAIGN and (r.get('role')=='E' or r.get('owner')=='mechanism_E')
+                and r.get('status') in ACTIVE]
+            require(not own_scientific,'own scientific work must retire before source adoption')
+            changed=detach_policy.adopt_successor(item,data,source_leases)
             return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
 
     def bind_detach_observer_condition(self, spec):

@@ -1,0 +1,40 @@
+# Exact approved PRIMARY FOUR — original central successor candidate
+
+**Candidate only, not installed.** Runtime source files are `detach_successor.py` (new), `detach_diagnostic_policy.py`, `coordinator.py`, `controller.py`. Original `detach_scope_core.py`, `detach_parser_recovery.py`, all original manifests/Q/specs/results, source identities and physical resource gates are unchanged. `FINAL_SUCCESSOR_REF=None` remains fail closed until root replaces only that constant with the exact source-sealed manifest ref.
+
+Root actual user approval is the existing `approved_four_r1/USER_APPROVAL.json`: four exact r4 F diagnostic endpoints, CFD→DWT→Vector→Conv priority, each one reservation/start, baseline51→at most55, no S/pair/retry/alternative union/new binary. The root actual final manifest currently exists at `approved_four_r1/FINAL_MANIFEST.json` with SHA5fedb2c2a66e6c9b04b1fdcd85631eea5662656f489aabfc0a12f7b967e6adb4; this child reads it for isolated metadata checks, never adopts it into real central state.
+
+## Original51 protection
+
+`historical51_seal(item,data)` records exact original51 attempt prefix, all existing Q/results/pairs/input selections/active holds, immutable baseline ledger fields (including original E051 FAILED, old observer batch, supplemental recovery pointers and histories), mutable hold-history prefixes and all existing same-campaign canonical run row hashes.
+
+`Scope.legacy_view` verifies baseline key/value hashes, exact allowed new Q file/row bodies, approved tail source/spec/input/Q/profile/labels/comparison metadata, paid start witnesses, failure charging and accepted result pointers **before** filtering only approved additions. It then supplies an immutable original51 historical projection to the unchanged old Authority and recovery checks. The old E051 canonical row stays FAILED and its supplemental accepted point is retained. No old failure/HOLD/charge is rewritten.
+
+The successor tail has at most4 entries, one per exact condition; a failed spawn consumes its reservation and cannot retry. Started PID/start_ticks/boot markers persist, so refunds with retained process/witness fail. New canonical rows must match the complete tail even if an actor removes observer markers. Old canonical rows remain byte-identical. New canonical CPU1/RAM8GiB/growth384MiB/floor5GiB/monitor2GiB/policy_id are exact original-resource bindings. New accepted results require COMPLETE_VALID tail and exact terminal pointer. Every new pair/input/unknown Q/spec/condition is rejected.
+
+## Manifest interface
+
+`schema=E2_EXACT_POSITIVE_RO_FOUR_SUCCESSOR_V1`, `status=E_SOURCE_BOUND_PRIMARY_FOUR_SEALED`, `synthetic_fixture=false`, original campaign, `baseline_actual_starts=51`, `maximum_new_actual_starts=4`, exact `condition_order`, original approved `batch_id`, exact source identity5, `approval_ref`, `proposal_ref`, common `validation_scope`, `historical51_seal`, `pairs=[]`, endpoint402653184/all-four1610612736 hardcaps.
+
+`conditions` is a dict keyed by the four approved V7 IDs. Each value contains `selection_id`, `resources={cpu:1,memory_bytes:8589934592,maximum_result_bytes:402653184}`, exact `identity`, `spec_ref`, semantic `spec_sha256` (excludes only runtime input_audit), `qualification` ref, actual CLI `parser` ref and `content_refs`. Proposal SHA must equal the immutable actual user approval proposal SHA; each source/trace/selection/instruction denominator is checked against that approved proposal. Per-input Q files remain distinct. Whole SGEMM Q is not inherited.
+
+All four new Q validation_scope values must be identical source/schema/fixeddecoder64751016/legacy-parser/validator refs, allowing the original once-only Adapter to be initialized once. Every condition still executes the real `Adapter.check(spec,qrow)` including that input's Q/config/complete instruction denominator and oracle/profile binding. The parser CLI child resolves the same source-bound map. Old SGEMM route remains intact and its old decoder10fe/Q are not overwritten or mixed into the new fresh controller process.
+
+## Resource forecast correctness
+
+Only `controller.forecast` in successor mode passes `read_only_forecast=True` plus original actual `authority_data`. Original resource_gate validates that this view changes **no original nonruns field/policy, no actual run and no lease**, and adds only conservative virtual rows mapping to exact approved run keys. CPU/RAM/growth/2GiB monitor must be at least the actual approved spec. The authoritative scientific ledger uses the complete original actual data; all physical/result/Share/CPU/RAM computations still use the complete view including real reservations plus conservative virtual forecasts. No resource reduction or monitor sharing is introduced. A virtual row persisted into actual canonical data is rejected by the normal scientific ledger. The original start_application special case excluding its own held reservation remains unchanged.
+
+## Root execution order after independent source review (not executed here)
+
+1. Confirm current original51/STOPPED/no active scientific tasks and any old imported source-dependent helper has retired. Independent C/A engineering is not misclassified as science; source-dependent old imported API helpers still must quiesce.
+2. Root replaces only `FINAL_SUCCESSOR_REF=None` with the exact formal manifest path/SHA, reviews/publishes/remote-reads the four source files, and installs a complete original CLIENT source_files pin set at quiescence. Preserve source/core/main/archive/input/Q provenance and every old manifest.
+3. In one fresh parent, load and check exact source manifest/specs, call original production `detach_validation.configure_binding(m['validation_scope'])`, then original `Coordinator().adopt_positive_ro_successor()`. **Adopt before registering any new Q**, because original51 sealing includes the baseline Q map.
+4. For each exact condition, use original `register_qualification(qpath)` then existing `bind_detach_observer_condition(spec)`, which now routes approved V7 conditions to the bounded successor. Root independently confirms every original native gate/evidence/producer/build/input/config qualification. No actual app is started by adoption/binding.
+5. Only the original controller.py --once with an exact qualified subset queue (same headers, approved order, pairs[]) dispatches. Single-lane execution proceeds if that alone fits. Every real simulation uses original reserve/start, durable collector, monitoring, raw/full-input/native/64slice/ROC1 validation, finish and resource guards. No background poller/second controller/start helper exists here.
+6. Each accepted diagnostic endpoint is delivered immediately to D; failures/holds and all actual charges stay retained. No pair or unapproved retry is authorized.
+
+## Bounded verification actually run
+
+- `test_successor.py`: **27/27 PASS** on deep-copied actual51 metadata and clearly SYNTHETIC Q/spec/approval metadata. Includes four simultaneous RESERVED→RUNNING→reverse-order COMPLETE_VALID transitions, old51/E051 supplemental/Q/history tampering, exact source/spec/Q/input drift, retry/failure charge/refund/duplicate start, canonical missing/unknown rows, queue union/pair/duplicates, actual shared-Adapter interface calls and conservative forecast negatives. The two final groups test tail profile/labels/comparison and canonical resource reservations. These are synthetic control states, not scientific accepted applications.
+- `test_real_metadata_dry.py`: actual root manifest/Q/spec/common binding files passed isolated deep-copy adoption, exact four per-input Q rows/binding and unchanged old Authority/recovery/canonical closure; the **real production Adapter** was initialized from actual fixeddecoder/schema metadata and checked all four exact Q/specs. No actual registration, native/build/app, trace/raw/main/archive body read or large hash occurred.
+- Runtime candidates compile. Original production source/CLIENT/registry/controller have not been modified by this child.

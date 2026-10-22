@@ -64,7 +64,8 @@ def forecast(coord,spec,running):
     try:
         resource_gate(view,'simulation',1,spec.get('memory_bytes',8*GIB),
                       spec.get('maximum_result_bytes',FULL_GROWTH),resources,usage,
-                      spec['identity']['workload']=='scan')
+                      spec['identity']['workload']=='scan',
+                      **({'authority_data':data,'read_only_forecast':True} if detach_policy.successor.has(data[FIELD]) else {}))
         result.update(fits=True,reason='Original resource gate fits including submitted-not-reserved work')
     except ValueError as error:
         result.update(fits=False,reason=str(error))
