@@ -1,0 +1,60 @@
+{
+  "schema": "E2_R5_ROOT_ACTUAL_BUILD_IDENTITY_REVIEW_V1",
+  "status": "PASS_BUILD_ONLY_NATIVE_PENDING",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "actual_artifacts": {
+    "main": {
+      "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/accel-sim.out",
+      "sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+      "bytes": 87878744,
+      "allocated_bytes": 87883776
+    },
+    "archive": {
+      "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
+      "bytes": 82151574,
+      "allocated_bytes": 82153472
+    },
+    "native": {
+      "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/ep_l2_detach_diagnostic",
+      "sha256": "4df9999df455b54b231de85ee5ab00664d481f4e0c0b02c7be6b7dcad35e489f",
+      "bytes": 84445568,
+      "allocated_bytes": 84447232
+    },
+    "metadata": {
+      "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/ep_l2_tagpressure_metadata",
+      "sha256": "1e5ac71abab375ef3c3ee12abec238879f5f09e8e9d0f822be9df5f39a260219",
+      "bytes": 383776,
+      "allocated_bytes": 385024
+    }
+  },
+  "durable_build_wait": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E2_R5_BUILD_1093_r1/NATIVE_EXIT.json",
+    "sha256": "0a1e4d7780ed85701f5e48817b3620a91be6bee6922402e8985527b0e8dfaeba"
+  },
+  "source_publication_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+  "actual_build_lease": "3be22dd517be4a8e945164a92a0d371c",
+  "lease_released": true,
+  "new_application_starts": 0,
+  "actual_starts": 55,
+  "assertions_active": true,
+  "checks": [
+    "all3 target commands actual exit0",
+    "postconfigure and postbuild generated flags contain no DNDEBUG",
+    "main and native link actual newarchive only",
+    "main/archive/native/metadata byte hashes match current files",
+    "allsource clean before and after",
+    "original guardian realwait4 no resourcesignal"
+  ],
+  "scratch_measurement_precision": {
+    "entry_actual_allocated_bytes": 775241728,
+    "original_retained_tree_bytes": 771855677,
+    "both_below_1GiB": true,
+    "note": "Extra foreground sampling used original retained_tree_bytes (logical retained bytes), despite helper label allocated. Actual block allocation independently measured final775241728B. No evidence of cap violation; retain distinction and correct future build guard before any further build."
+  },
+  "not_runtime_qualification": true
+}

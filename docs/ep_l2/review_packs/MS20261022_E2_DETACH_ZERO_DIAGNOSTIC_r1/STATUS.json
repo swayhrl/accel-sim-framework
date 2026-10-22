@@ -1,10 +1,10 @@
 {
   "schema": "E2_DETACH_ZERO_CURRENT_STATUS_V4",
-  "at_utc": "2026-10-22T12:10:08.167085+00:00",
+  "at_utc": "2026-10-22T12:44:40.586086+00:00",
   "Goal": "ACTIVE",
   "execution_state": "WORKING_UNDER_EXPLICIT_USER_APPROVAL",
   "goal_id": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_E2_CONTINUATION",
-  "state": "R4_ALL_FOUR_TERMINAL_R5_USER_APPROVED_ENGINEERING_ACTIVE",
+  "state": "R5_BUILD_COMPLETE_NEW_NATIVE_QUALIFICATION_ACTIVE",
   "actual_starts": 55,
   "controller": {
     "process": {
@@ -21,9 +21,20 @@
   "approved_four_remaining_cause_closure": [],
   "r5_user_approved": {
     "approval": "approved_r5_joint_r1/USER_APPROVAL.json",
+    "status": "ACTUAL_ISOLATED_BUILD_EXIT0_TARGETED_NATIVE_PENDING",
+    "source": {
+      "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    },
+    "main_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
+    "build_review": "approved_r5_joint_r1/producer/ROOT_BUILD_REVIEW.json",
     "maximum_new_starts": 4,
-    "new_starts": 0,
-    "status": "ISOLATED_SOURCE_PARSER_CENTRAL_PREPARATION_IN_PARALLEL_NOT_YET_BUILT_OR_Q"
+    "actual_new_starts": 0,
+    "remaining_authorized_starts": 4,
+    "old_runtime_qualification_inherited": false,
+    "external_lane_ACK_dependency": false
   },
   "deep_causal_open_items": [
     "R5_SOURCE_NATIVE_JOINT_OBSERVER_Q_AND_NEW_COMPLETE_INPUT_MEASUREMENTS"
@@ -242,12 +253,14 @@
   },
   "cumulative_result_generation": {
     "old_bytes": 14309576384,
-    "new_bytes": 7910276148,
-    "total_bytes": 22219852532
+    "new_bytes": 7910634488,
+    "total_bytes": 22220210872
   },
   "resources": {
-    "available_memory_bytes": 181424218112,
-    "disk_free_bytes": 9132933120,
-    "share_disk_free_bytes": 44197076992
-  }
+    "available_memory_bytes": 180539547648,
+    "disk_free_bytes": 7877271552,
+    "share_disk_free_bytes": 44195438592
+  },
+  "status": "R5_BUILD_COMPLETE_NEW_NATIVE_QUALIFICATION_ACTIVE",
+  "next": "E2 targeted native/source/parser qualification, exact newruntime identities and original resource gates; four same-newbinary F diagnostics only, no newS/retry."
 }

@@ -1,0 +1,69 @@
+{
+  "schema": "E2_R5_ACTUAL_BUILD_ENTRY_RESULT_V1",
+  "status": "BUILD_COMPLETE_ASSERTIONS_AUDITED_NOT_NATIVE_OR_APPLICATION_QUALIFIED",
+  "exit_code": 0,
+  "finished_utc": "2026-10-22T12:41:04.037977+00:00",
+  "command_receipts": [
+    {
+      "name": "CONFIGURE",
+      "argv": [
+        "/root/.local/bin/cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/c++"
+      ],
+      "cwd": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+      "environment_overrides": {
+        "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1",
+        "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+        "ACCELSIM_CONFIG": "release"
+      },
+      "child_pid": 4029190,
+      "child_start_proc_stat": "4029190 (cmake) R 4029153 4029153 4029153 0 -1 4194304 20 0 0 0 0 0 0 0 20 0 1 0 942468847 17760256 0 18446744073709551615 4194304 21169744 140730730885424 0 0 0 0 0 0 0 0 0 17 0 0 0 0 0 0 23269680 23530952 56582144 140730730892339 140730730892594 140730730892594 140730730897377 0",
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "started_utc": "2026-10-22T12:38:37.129735+00:00",
+      "finished_utc": "2026-10-22T12:38:38.696994+00:00",
+      "wall_seconds": 1.5672834161669016,
+      "native_exit_code": 0,
+      "log": "/workspace/ep_l2_ms20261019_e_results/E2_R5_BUILD_1093_r1/build_steps/CONFIGURE.log",
+      "log_sha256": "17a6e8372642b15c3cbf5f1461ebde5e148bacb4a3c1cdc9e1fe91796c646bac",
+      "log_bytes": 2648,
+      "allocated_build_bytes_after": 4681728
+    },
+    {
+      "name": "BUILD",
+      "argv": [
+        "/root/.local/bin/cmake",
+        "--build",
+        "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_detach_diagnostic",
+        "ep_l2_tagpressure_metadata",
+        "-j2"
+      ],
+      "cwd": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+      "environment_overrides": {
+        "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1",
+        "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+        "ACCELSIM_CONFIG": "release"
+      },
+      "child_pid": 4029380,
+      "child_start_proc_stat": "4029380 (cmake) R 4029153 4029153 4029153 0 -1 4194304 14 0 0 0 0 0 0 0 20 0 1 0 942469006 17752064 0 18446744073709551615 4194304 21169744 140732885015856 0 0 0 0 0 0 0 0 0 17 0 0 0 0 0 0 23269680 23530952 54120448 140732885023880 140732885024050 140732885024050 140732885028833 0",
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "started_utc": "2026-10-22T12:38:38.725750+00:00",
+      "finished_utc": "2026-10-22T12:41:03.770067+00:00",
+      "wall_seconds": 145.04433609172702,
+      "native_exit_code": 0,
+      "log": "/workspace/ep_l2_ms20261019_e_results/E2_R5_BUILD_1093_r1/build_steps/BUILD.log",
+      "log_sha256": "85a72532905df80ccb10f8beba933225b2ef44b3b67bfbc02c5b7b8dc3cfcdd0",
+      "log_bytes": 303720,
+      "allocated_build_bytes_after": 775241728
+    }
+  ],
+  "native_or_application_executed": false,
+  "actual_allocated_build_bytes": 775241728
+}
