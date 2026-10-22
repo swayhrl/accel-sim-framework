@@ -1,0 +1,81 @@
+{
+  "schema": "E2_R5_TARGETED_ACCEPTED_RESULT_READER_REVIEW_V1",
+  "status": "ROOT_REVIEW_REQUIRED_ENGINEERING_ONLY",
+  "reason": "Original generic successor read cap4MiB rejects real accepted CFD run_status12127626B. Limit change scoped only to exact accepted_result_ref in metadata.remaining; all manifests/closures/readbacks retain original4MiB.",
+  "approved_scope": "Per-end384MiB existing contract; no increase in actual generation or resource reservation",
+  "source_before_sha256": "e42debc481007bcc0d1c5c09cf45f686cd46fb5cf2b51b4b6017fae01c23f61d",
+  "source_candidate_sha256": "ab9d053ef15297f7f51d17af054f48c793bc2f16b5d4bcf6384e4f245e40e7b6",
+  "callsite_change_count": 1,
+  "security_bounds": [
+    "literal original OUTPUT/actual attempt/run_status.json; absolute exact path and resolution",
+    "regular O_NOFOLLOW source,stat size0<bytes<=384MiB before bounded read",
+    "same fd stable dev/inode/size/mtime/ctime and actualSHA",
+    "duplicate keys/nonfinite JSON rejected",
+    "COMPLETE_VALID+PASS+complete_input_verified/native int0",
+    "scope/identity/Q exact current paid attempt"
+  ],
+  "actual_CFD_positive_test": {
+    "status": "BOUNDED_ACCEPTED_RESULT_READER_CONTROLS_PASS",
+    "control_count": 10,
+    "actual_read": {
+      "path": "/workspace/ep_l2_ms20261019_e_results/E056_47abdc7f/run_status.json",
+      "bytes": 12127626,
+      "sha256": "9369603aeed76a4a0e708b5696b3042b1aebca86ab8aa82440164707b5eddcff"
+    },
+    "controls": [
+      {
+        "case": "ACTUAL_12127626_BYTE_ACCEPTED_RECEIPT_EXACT_SHA",
+        "result": "PASS"
+      },
+      {
+        "case": "SYNTHETIC_MINIMAL_ACCEPTED",
+        "result": "PASS"
+      },
+      {
+        "case": "SYNTHETIC_BAD_HASH",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "accepted exact run_status SHA changed"
+      },
+      {
+        "case": "SYNTHETIC_OUTSIDE_PATH",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "accepted receipt must be exact original OUTPUT attempt/run_status.json"
+      },
+      {
+        "case": "SYNTHETIC_WRONG_ATTEMPT",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "accepted receipt must be exact original OUTPUT attempt/run_status.json"
+      },
+      {
+        "case": "SYNTHETIC_IDENTITY_CHANGED",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "accepted endpoint scope/identity/qualification differs"
+      },
+      {
+        "case": "SYNTHETIC_BOOL_NATIVE_EXIT",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "actual accepted complete/native0 receipt required"
+      },
+      {
+        "case": "SYNTHETIC_DUPLICATE_JSON_KEY",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "duplicate accepted receipt JSON key"
+      },
+      {
+        "case": "SYNTHETIC_SPARSE_384MIB_PLUS1_STAT_REJECT_NO_BODY_READ",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "accepted receipt exceeds approved384MiB bound or is nonregular"
+      },
+      {
+        "case": "SYNTHETIC_SYMLINK_REJECT",
+        "result": "PASS_EXPECTED_REJECTION",
+        "reason": "accepted receipt path/SHA invalid"
+      }
+    ],
+    "no_controller_registry_source_mutation": true,
+    "synthetic_is_not_native_or_application_qualification": true
+  },
+  "actual_source_or_registry_changed": false,
+  "root_deployment": "original STOPPED/no active Elease + source publication/readback + CLIENT pin activation under original locks before original close API; no live mutation by candidate",
+  "future_DWT_physical": "Closure retires only outstanding metadata forecast; no df reclaimed. Minimum otherwise-unencumbered single-end df =7516192768+402653184+167772160=8086618112B."
+}

@@ -1,9 +1,40 @@
 """Exact batch generation forecast + active physical metadata scheduling.
 No resource guard waiver, authority change, lease or generation refund.
 """
-import re,copy
+import re,copy,os,stat,hashlib,json
+from pathlib import Path
 import tagpressure_successor as r5
 MIB=2**20;GIB=2**30;PER_CONDITION=160*MIB
+
+# Only accepted endpoint receipts use the approved per-end result bound. All
+# other manifest/closure/publication metadata retain r5.read's 4MiB bound.
+ACCEPTED_OUTPUT=Path('/workspace/ep_l2_ms20261019_e_results')
+ACCEPTED_RECEIPT_LIMIT=384*2**20
+
+def read_accepted_result(ref,attempt):
+ aid=attempt.get('attempt_id')
+ r5.require(type(aid) is str and re.fullmatch(r'E[0-9]{3}_[0-9a-f]{8}',aid),'exact actual endpoint attempt identity')
+ expected=ACCEPTED_OUTPUT/aid/'run_status.json'
+ r5.require(type(ref) is dict and set(ref)=={'path','sha256'} and ref.get('path')==str(expected),'accepted receipt must be exact original OUTPUT attempt/run_status.json')
+ r5.require(expected.resolve()==expected and re.fullmatch('[0-9a-f]{64}',ref.get('sha256','')),'accepted receipt path/SHA invalid')
+ fd=os.open(expected,os.O_RDONLY|os.O_NOFOLLOW)
+ try:
+  before=os.fstat(fd)
+  r5.require(stat.S_ISREG(before.st_mode) and 0<before.st_size<=ACCEPTED_RECEIPT_LIMIT,'accepted receipt exceeds approved384MiB bound or is nonregular')
+  with os.fdopen(fd,'rb',closefd=False) as f:body=f.read(ACCEPTED_RECEIPT_LIMIT+1)
+  after=os.fstat(fd)
+  r5.require(len(body)==before.st_size and len(body)<=ACCEPTED_RECEIPT_LIMIT and (before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns),'accepted receipt changed during read')
+ finally:os.close(fd)
+ r5.require(hashlib.sha256(body).hexdigest()==ref['sha256'],'accepted exact run_status SHA changed')
+ def pairs(rows):
+  out={}
+  for key,value in rows:
+   r5.require(key not in out,'duplicate accepted receipt JSON key');out[key]=value
+  return out
+ doc=json.loads(body,object_pairs_hook=pairs,parse_constant=lambda value:(_ for _ in ()).throw(ValueError('nonfinite accepted receipt JSON')))
+ r5.require(type(doc) is dict and doc.get('status')=='COMPLETE_VALID' and doc.get('attempt_id')==aid and doc.get('independent_acceptance')=='PASS' and doc.get('complete_input_verified') is True and type(doc.get('exit_code')) is int and doc['exit_code']==0,'actual accepted complete/native0 receipt required')
+ r5.require(doc.get('scientific_scope')==r5.SCI_SCOPE and doc.get('identity')==attempt['identity'] and doc.get('qualification_id')==attempt['qualification_id'],'accepted endpoint scope/identity/qualification differs')
+ return doc
 
 def remaining(item,scope=None):
  s=r5.scope() if scope is None else scope;m=s.manifest();b=item[r5.FIELD];closed=b.get('metadata_closures',{})
@@ -13,7 +44,7 @@ def remaining(item,scope=None):
   r5.require(c.get('campaign_id')==r5.CAMPAIGN and c.get('condition_id')==cid and c.get('source_identity')==m['source_identity'],'metadata closure source/condition differs')
   attempts=[a for a in item['attempts'][55:] if a['condition_id']==cid];r5.require(len(attempts)==1,'metadata closure must have one actual paid endpoint');a=attempts[0]
   r5.require(a['state']=='COMPLETE_VALID' and a['actual_start'] is True and c.get('attempt_id')==a['attempt_id'],'no failed/unstarted metadata release')
-  result=item['accepted_results'].get(a['attempt_id']);r5.require(result is not None and c.get('accepted_result_ref')=={'path':result['path'],'sha256':result['sha256']},'independently accepted exact endpoint required');r5.read(c['accepted_result_ref'])
+  result=item['accepted_results'].get(a['attempt_id']);r5.require(result is not None and c.get('accepted_result_ref')=={'path':result['path'],'sha256':result['sha256']},'independently accepted exact endpoint required');read_accepted_result(c['accepted_result_ref'],a)
   r5.require(type(c.get('actual_metadata_allocated_bytes')) is int and 0<=c['actual_metadata_allocated_bytes'],'actual nonnegative metadata allocation required; forecast is not a cap')
   r5.require(c.get('actual_generation_retained_in_accounting') is True and c.get('retired_remaining_forecast_bytes')==PER_CONDITION and c.get('released_forecast_is_not_generated_result_refund') is True,'forecast release cannot erase historical generation')
   r5.require(re.fullmatch('[0-9a-f]{40}',c.get('immutable_publication_commit','')),'immutable actual point/metadata publication required')

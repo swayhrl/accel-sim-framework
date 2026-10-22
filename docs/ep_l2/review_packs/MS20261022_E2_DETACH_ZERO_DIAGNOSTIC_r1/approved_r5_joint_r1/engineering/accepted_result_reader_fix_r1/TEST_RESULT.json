@@ -1,0 +1,61 @@
+{
+  "status": "BOUNDED_ACCEPTED_RESULT_READER_CONTROLS_PASS",
+  "control_count": 10,
+  "actual_read": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E056_47abdc7f/run_status.json",
+    "bytes": 12127626,
+    "sha256": "9369603aeed76a4a0e708b5696b3042b1aebca86ab8aa82440164707b5eddcff"
+  },
+  "controls": [
+    {
+      "case": "ACTUAL_12127626_BYTE_ACCEPTED_RECEIPT_EXACT_SHA",
+      "result": "PASS"
+    },
+    {
+      "case": "SYNTHETIC_MINIMAL_ACCEPTED",
+      "result": "PASS"
+    },
+    {
+      "case": "SYNTHETIC_BAD_HASH",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "accepted exact run_status SHA changed"
+    },
+    {
+      "case": "SYNTHETIC_OUTSIDE_PATH",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "accepted receipt must be exact original OUTPUT attempt/run_status.json"
+    },
+    {
+      "case": "SYNTHETIC_WRONG_ATTEMPT",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "accepted receipt must be exact original OUTPUT attempt/run_status.json"
+    },
+    {
+      "case": "SYNTHETIC_IDENTITY_CHANGED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "accepted endpoint scope/identity/qualification differs"
+    },
+    {
+      "case": "SYNTHETIC_BOOL_NATIVE_EXIT",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "actual accepted complete/native0 receipt required"
+    },
+    {
+      "case": "SYNTHETIC_DUPLICATE_JSON_KEY",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "duplicate accepted receipt JSON key"
+    },
+    {
+      "case": "SYNTHETIC_SPARSE_384MIB_PLUS1_STAT_REJECT_NO_BODY_READ",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "accepted receipt exceeds approved384MiB bound or is nonregular"
+    },
+    {
+      "case": "SYNTHETIC_SYMLINK_REJECT",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "accepted receipt path/SHA invalid"
+    }
+  ],
+  "no_controller_registry_source_mutation": true,
+  "synthetic_is_not_native_or_application_qualification": true
+}
