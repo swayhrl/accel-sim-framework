@@ -1,6 +1,6 @@
 # detach=0：E2 当前归因与批准四端执行
 
-**同一Goal ACTIVE；四个追加诊断已获用户批准并由原唯一中央控制器滚动执行。** 最新实际启动、逐条件状态、资源及结果预算见 [STATUS](STATUS.json) 和 [RECEIPT](RECEIPT.json)。不新建Goal或controller，不自动重试、加端或形成新S/F配对。
+**原批准执行进行中；四个追加诊断已获用户批准并由原唯一中央控制器滚动执行。** 最新实际启动、逐条件状态、资源及结果预算见 [STATUS](STATUS.json) 和 [RECEIPT](RECEIPT.json)。不新建Goal或controller，不自动重试、加端或形成新S/F配对。
 
 已完成两种不同原因：
 
@@ -16,3 +16,5 @@ Vector、Conv各有独立新r4 Q、完整原输入/条件证书及终验绑定�
 原SGEMM空证书、原FWT全epoch同line写入排除及其他历史失败/HOLD保留。E051原自动解析FAILED和费用不改；其正常native完整执行已凭明确工程证据经原中央API补充接受，未重跑。新版四端使用原CLI加已审固定decoder；分析中的物理phase不是因果kernel，跨phase事件差不当作存量。
 
 保留原T0、原51次及后续照实计费、main61和冻结r4、10/24GiB累计生成、workspace5GiB底线+2GiB监控、CPU/RAM/Share及唯一中央锁。用户取消的全局次数、路数、时间限制不恢复。完整归因尚未标记完成；四端之外无额外启动授权。
+
+E2现已直接并行完成四个已接受点的跨workload表及CFD/DWT/Vector逐物理阶段统计，见[直接归因报告](approved_four_r1/E2_DIRECT_PARALLEL_ANALYSIS_r1/README.md)。D消费不是执行前置。Vector E054已正式接受，Conv E055正由原控制器运行；累计55，批准四次已全部实际启动。
