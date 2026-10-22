@@ -1,7 +1,7 @@
 {
   "schema": "E2_R5_ROLLING_REAL_PROCESS_RESOURCE_AND_ACCEPTANCE_STATUS_V1",
-  "at_utc": "2026-10-22T14:09:19.497790+00:00",
-  "status": "R5_ROLLING_RUNNING",
+  "at_utc": "2026-10-22T14:32:56.856058+00:00",
+  "status": "R5_ACCEPTED_POINT_INCREMENTAL_RESOURCE_ADMISSION_REVIEW",
   "Goal": "ACTIVE",
   "owner": "E2",
   "actual_starts": 57,
@@ -14,7 +14,8 @@
       "pid": 4090182,
       "start_ticks": 942996444
     },
-    "state": "ACTIVE"
+    "state": "STOPPED",
+    "stopped_unix": 1792678986.8957114
   },
   "conditions": [
     {
@@ -79,14 +80,14 @@
     }
   ],
   "resources": {
-    "available_memory_bytes": 180208070656,
-    "disk_free_bytes": 8009519104,
-    "share_disk_free_bytes": 44191051776
+    "available_memory_bytes": 180765999104,
+    "disk_free_bytes": 7887011840,
+    "share_disk_free_bytes": 44190748672
   },
   "original_result_generation": {
     "old_bytes": 14309576384,
-    "new_bytes": 8155259042,
-    "total_bytes": 22464835426
+    "new_bytes": 8248319122,
+    "total_bytes": 22557895506
   },
   "metadata_closures": {
     "V8_TAGPRESSURE_cfd_097k_F": {
@@ -95,7 +96,7 @@
     }
   },
   "independent_CFD": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT, published2fec00b1c/deliveredD E2-97; directsame-set causesupplementc1d1734e",
-  "next": "Independently accept real terminal/fullinstructions/64slice/source/input/old212/newjoint/ROC1/drain; publish+deliver each. Actual gates only for futureconditions; neverrestart/retry paidendpoint.",
+  "next": "Immediate D incremental delivery and accepted metadata closure. Remaining exact unstartedconditions only original actual resource admission; no paidendpoint retries. No retry or duplicate controller.",
   "no_new_S_or_pair": true,
   "budgets": {
     "new10GiB": 10737418240,
@@ -104,5 +105,18 @@
     "monitor2GiB": 2147483648,
     "endpoint384MiB": 402653184
   },
-  "all_history_and_generation_charges_retained": true
+  "all_history_and_generation_charges_retained": true,
+  "new_r5_starts": 2,
+  "accepted_r5_points": [
+    {
+      "attempt_id": "E056_47abdc7f",
+      "workload": "cfd_097k",
+      "point": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json"
+    },
+    {
+      "attempt_id": "E057_b4a7e175",
+      "workload": "dwt2d",
+      "point": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json"
+    }
+  ]
 }
