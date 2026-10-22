@@ -1,19 +1,19 @@
 # EP-L2 当前协作面板
 
-当前 Goal `EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1` 为 **ACTIVE**，E2 对“为什么 detach=0”的独立资格、运行、数值归因和交付全责。**E051_c0185b56 正在原唯一中央控制器下运行，累计51次，原50次历史不变。** 原协调准备Goal的旧BLOCKED快照不代表当前任务状态。
+**E051 SGEMM 已完成补充科学接收并交 D；原唯一控制器 STOPPED，累计51次。** E2 对 detach=0 的资格、执行、归因及交付全责。当前同一 Goal `EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1` ACTIVE，四个旧正向RO输入原因仍未知；追加有限诊断待实际用户批准，未启动或排队。
 
-见 [当前STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[当前RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[精确运行与资格](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/final_adoption/FINAL_MANIFEST.json)。新Core9243/main d99的完整SGEMM正向RO诊断F，不是S/F性能配对；当前只授权此一个新端，没有额外端或自动重试。
+见 [STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[原因与边界](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json)。本端候选 head 可见观测全为缓存命中，实际RO事务0，故无活跃RO对象可detach；不能由此解释已有RO事务的Conv/CFD/DWT/Vector。
 
 | Lane | 已核实交付及下一步 |
 |---|---|
-| E2 | 新source/build/main/archive、48真实native及18模型门逐项审查完成；原CLIENT/registry/lock接入，实际E051运行。正常退出、完整指令、64slice/退尽及212计数终验后负责数值原因解释，立即给D。 |
-| A2 | 正式r4 producer已交，Framework f7869e5、真实DELIVERY A2-49，E已独立审查并ACK；无需重复构建或补整个旧native套件。 |
-| C | 正向SGEMM证书及精确carryforward已交且E复核；无需重扫trace。原条件性closed-world和额外joint HOLD保留。 |
-| D | 统计分母、科学边界、原因与图表接口准备已交且E消费；等待E正式接受点及数值报告做论文增量，不是E归因收口前置。 |
-| B / F | 当前无新增任务，不需要重复工作或新实验。 |
+| E2 | 新源资格、E051正常退出/完整输入/64slice/212计数、同周期帧工程修复及原中央补充接收完成；原执行FAILED和51次费用保留。定量结果已交D，继续负责其余未知原因的有限范围审查。 |
+| A2 | 正式r4 producer已交，E独立审查并ACK；当前不需要重复构建或原生测试。 |
+| C | SGEMM正向条件证书及carryforward已交并复核；closed-world与额外joint HOLD保留，无需重复扫描。 |
+| D | E2-00000081-7c783c92e702 已携接受点、精确计数和原因报告实际投递，发布96bf2d69；等待真实本人消费回执，未声称已分析。D回执不阻塞E自己的归因。 |
+| B / F | 当前无新分派，不重复既有工作。 |
 
-E2已并行完成解析、退出回执、计数分母与原中央接入的小控制。任何进程消失、raw局部日志或投递ACK都不能替代正式验收。D尚未接收新端，不能从本面板推断D分析完成；真实本人状态以各lane的STATUS/ACK事件为准。
+原main61 MAIN六对、SGEMM独立探索一对、93a9五容量对与本次独立观测点保持独立科学分组。旧FAILED/INCOMPLETE/HOLD、T0、main61、10/24GiB累计生成与5GiB底线+2GiB监控不变；已取消的全局路数/次数/截止不恢复。
 
-保留原T0、所有失败/撤回/HOLD和接受结果、10/24GiB累计生成、workspace5GiB底线+2GiB监控及共享CPU/RAM/Share守护；用户取消的全局路数/次数/时间限制不恢复。原main61 MAIN六对、SGEMM独立探索一对、93a9五容量对保持独立分组；Btree仍HOLD。
+[有限追加提案](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/README.md)：CFD/DWT/Vector/Conv各一新r4 F诊断端，或互斥CFD单端；不形成新性能配对、不自动执行并集。实际批准后仍需逐输入独立资格和实际资源准入。
 
-共享队列继续负责精确Git引用、去重、本人回执和消费索引，不会自动唤醒已结束的lane窗口，也未建立后台轮询器或第二controller。当前不需其他lane重复准备；E接受后即发布D正式交付事件。机器可读待办见NEXT_ACTIONS.json，旧面板保存在本任务history/PRE_E051_BOARD及Git历史。
+共享队列负责精确Git引用、去重及本人ACK；不自动唤醒结束窗口，无后台轮询器或第二controller。任务状态不代表peer当前STATUS。旧面板与回执保存在本任务history及Git历史。

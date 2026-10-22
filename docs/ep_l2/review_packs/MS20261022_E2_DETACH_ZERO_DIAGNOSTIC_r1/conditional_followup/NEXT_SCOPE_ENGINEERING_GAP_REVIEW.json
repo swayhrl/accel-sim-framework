@@ -1,0 +1,497 @@
+{
+  "schema": "E2_NEXT_SCOPE_ENGINEERING_GAP_REVIEW_V1",
+  "status": "READ_ONLY_PREAPPROVAL_REVIEW_NO_ACTIVATION",
+  "local_HEAD_read_only": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
+  "remote_HEAD_verified_by_this_review": false,
+  "approval_status": "User choice pending; primary four and CFD-only are mutually exclusive; no fallback union",
+  "actual_baseline": {
+    "actual_starts": 51,
+    "controller": "STOPPED",
+    "last_attempt_id": "E051_c0185b56",
+    "last_execution_state": "FAILED",
+    "supplemental_status": "ACCEPTED_SUPPLEMENTAL_DIAGNOSTIC",
+    "original51_attempts_sha256": "d7e05334dda191836a49014b7c06c25747340ca142ab8256f1ba9d158e74c6e0",
+    "legacy_recovery_frozen": {
+      "attempts_sha256": "d7e05334dda191836a49014b7c06c25747340ca142ab8256f1ba9d158e74c6e0",
+      "qualifications_sha256": "a288db3f40e9b67c29aa6406391eaaff144bc0fdb3a39a373e9e9a88e15df651",
+      "accepted_pairs_sha256": "6489bce04267a8bebba6a9c421a66e0f70b81f99e65a2f761b2df0e8b5c96fda",
+      "workload_batches_sha256": "e2db94ace3f60bb6913667fdd3b704f87be6886941b2b2655928d947d2665bed"
+    },
+    "native_runtime_source": {
+      "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+      "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+    }
+  },
+  "engineering_gaps": [
+    {
+      "id": "LEGACY51_GLOBAL_GUARDS",
+      "severity": "MUST_CHANGE_AFTER_APPROVAL",
+      "finding": "Current guards correctly reject any 52nd attempt and any extra qualification/result. There is no unused legacy slot permission. Null global count/time does not grant new scientific conditions.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_scope_core.py",
+          "line": 137,
+          "function": "Authority.active"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_scope_core.py",
+          "line": 139,
+          "function": "Authority.active tail"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_parser_recovery.py",
+          "line": 19,
+          "function": "frozen"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_parser_recovery.py",
+          "line": 28,
+          "function": "check"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 92,
+          "function": "ledger"
+        }
+      ],
+      "minimum_change": "Add one source-bound successor amendment for exact approved count1 OR4 and exact condition/spec/Q/input map. Freeze original51, old scientific maps and E051 supplemental record. Validate new suffix separately; old Authority and recovery checks must see an explicitly validated immutable historical projection, not full mutated future tail/Q/result maps. Do not relax old manifests or delete strict checks."
+    },
+    {
+      "id": "RECOVERY_AS_PREFIX",
+      "severity": "MUST_CHANGE_AFTER_APPROVAL",
+      "finding": "Recovery.check freezes the entire attempts list, qualifications map, accepted_pairs and workload batches and excludes only E051 from old_accepted_results hash. Even registering new Q fails old recovery guard before any application. Old E051 must be selected by exact attempt ID/index50 rather than new last attempt.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_parser_recovery.py",
+          "line": 19,
+          "function": "frozen"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_parser_recovery.py",
+          "line": 28,
+          "function": "check"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_parser_recovery.py",
+          "line": 108,
+          "function": "allowed_revalidated_results"
+        }
+      ],
+      "minimum_change": "Preserve immutable original RECOVERY_MANIFEST and original supplemental artifacts. A successor historical view must retain exact old51 attempts/qualifications/accepted_results/provenance so original recovery remains verifiable, while separate successor checks account for only approved new keys. Require all baseline keys/bytes unchanged before projection. Keep append recovery API consumed at51; no automatic repeat or new endpoint recovery authority."
+    },
+    {
+      "id": "SINGLE_SGEMM_DISPATCH",
+      "severity": "MUST_CHANGE_AFTER_APPROVAL",
+      "finding": "Authority hardcodes SGEMM trace/certificate/selection, baseline50, single Q/spec/binding and one consumed reservation; public policy routes every observer point to it.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_scope_core.py",
+          "line": 64,
+          "function": "Authority.authority"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_scope_core.py",
+          "line": 101,
+          "function": "Authority.authority exact input"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_scope_core.py",
+          "line": 201,
+          "function": "Authority.bind"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_scope_core.py",
+          "line": 256,
+          "function": "Authority.guard"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_diagnostic_policy.py",
+          "line": 17,
+          "function": "authority"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_diagnostic_policy.py",
+          "line": 65,
+          "function": "qualification"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_diagnostic_policy.py",
+          "line": 143,
+          "function": "prepare_validator"
+        }
+      ],
+      "minimum_change": "Route exact successor conditions through a finite condition→sealed spec/Q binding table in the same original policy. Keep old SGEMM routes unchanged. Add exact source-pinned approval/adopt/bind for selected1or4; no arbitrary input ID, Q, spec, retry or alternative union. Register each new per-input Q only after successor adoption makes that exact hash legal."
+    },
+    {
+      "id": "CANONICAL_RUN_SUFFIX",
+      "severity": "MUST_CHANGE_AFTER_APPROVAL",
+      "finding": "Existing crosscheck_data selects all observer runs and compares them to attempts[50:] with one batch. New observer rows would break it even if older active checks were projected.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_diagnostic_policy.py",
+          "line": 97,
+          "function": "crosscheck_data"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 104,
+          "function": "ledger"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 650,
+          "function": "reserve_application accounting"
+        }
+      ],
+      "minimum_change": "Crosscheck original E051 canonical run against frozen original prefix, then separately map each approved new suffix attempt to exact canonical run/lease/spec/Q/process/start witness. Preserve all unrelated project rows/resource leases. No refund, duplicate condition, forged completion, extra canonical row or second start."
+    },
+    {
+      "id": "PROSPECTIVE_PARSER_NOT_CLI",
+      "severity": "MUST_FIX_QUALIFICATION_METADATA",
+      "finding": "All four prepared specs deliberately set parser to decoder_samecycle_close.py, which is a decoder library, not the original --raw/--out terminal CLI. They are nonlaunchable and qualification_id is null.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/runner.py",
+          "line": 218,
+          "function": "execute parser subprocess"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/parse_detach_terminal.py",
+          "line": 13,
+          "function": "main"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_diagnostic_policy.py",
+          "line": 143,
+          "function": "prepare_validator"
+        }
+      ],
+      "minimum_change": "Final Q/spec must name a dedicated exact original terminaladapter CLI path/SHA. Keep original CLI bytes if policy routing can resolve new sealed condition map; point each new Q.validation_scope.observer_decoder to immutable repaired decoder64751016 and unchanged r4 schema. Do not overwrite original decoder10fe or old SGEMM Q. Bind original legacy parser/validator and complete durable/native/64slice validation."
+    },
+    {
+      "id": "ADAPTER_SINGLETON_REUSE",
+      "severity": "REVIEW_EXACT_SCOPE_EQUALITY",
+      "finding": "Adapter._BINDING is process-global and configure_binding accepts once. Four conditions can share it safely because source/schema/parser/decoder binding is identical; input/config/instruction denominators live in each Q.detach_observer_diagnostic contract and are checked independently.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_validation.py",
+          "line": 93,
+          "function": "Adapter.check"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_validation.py",
+          "line": 177,
+          "function": "configure_binding"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_diagnostic_policy.py",
+          "line": 166,
+          "function": "prepare_validator existing binding"
+        }
+      ],
+      "minimum_change": "Seal one common new runtime/parser/schema/fixeddecoder validation_scope for approved conditions, with distinct full per-input Q contracts. Start fresh original controller process after helper quiescence; do not arbitrarily mutate _BINDING or inject callbacks. If scopes genuinely differ, do not silently replace singleton; handle that explicit interface gap before launch."
+    },
+    {
+      "id": "ORIGINAL_API_ORDER_AND_CLIENT",
+      "severity": "MUST_EXECUTE_AFTER_APPROVAL_ONLY",
+      "finding": "Original Coordinator source verifies full non-test Python source set and local published commit blobs, and source changes must wait old imported helper retirement. Existing adopt API is specifically consumed SGEMM baseline50.",
+      "locations": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 63,
+          "function": "tooling_binding"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 75,
+          "function": "verify_extension_binding"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 292,
+          "function": "adopt_detach_observer_batch"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/coordinator.py",
+          "line": 504,
+          "function": "register_qualification"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/controller.py",
+          "line": 88,
+          "function": "step"
+        }
+      ],
+      "minimum_change": "Use new exact successor adoption under original REGISTRY.lock after same-campaign scientific/controller and source-dependent helper quiescence; preserve unrelated C/A engineering as resources rather than science conflicts. Publish/readback source and complete CLIENT pins. Same parent exact common validator configure→successor adopt→register each exact Q→bind each exact spec→one original controller with finite approved queue/pairs[]. Do not create queue until approval and qualifications."
+    }
+  ],
+  "per_condition_input_reuse_and_Q_gaps": [
+    {
+      "condition_id": "V7_DETACH_CAUSE_cfd_097k_F",
+      "selection_id": "D_V2_cfd_097k",
+      "full_trace_content_sha256": "6d5eb92fbe5391b3811dc08fcaaacb891ec8a69639512b99f68d224b6a921e66",
+      "full_instructions": 143129372,
+      "kernel_count": 5,
+      "prepared_spec": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/specs/cfd_097k_PREPARED_NOT_QUALIFIED.json",
+        "sha256": "3285f24669d1e1c6c314059cd48d40618282eab80a699fc93f4c4449b06b479a"
+      },
+      "currently_qualified": false,
+      "qualification_id": null,
+      "original_accepted_receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E016_776b0d99/run_status.json",
+        "sha256": "265b5c7cfe217a6d41656d107b64c37ac5ca5b48930659ebd8ce1b00f5de929b",
+        "bytes": 587003
+      },
+      "original_complete_input_audit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E016_776b0d99/input_audit.json",
+        "sha256": "d078c7d76c0fcd1de041a054995fe07c7874b132fae048c4ffabba677bd5789c",
+        "bytes": 19867
+      },
+      "original_oracle_manifest": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E016_776b0d99/readonly_manifest.json",
+        "sha256": "3ca24cbd4a7a4907d085f6a5911faca9f76c3de9bf1872278cc9bb1ca9f0c66f",
+        "bytes": 3625
+      },
+      "original_oracle_ranges": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E016_776b0d99/readonly_ranges.csv",
+        "sha256": "5abf74463e7324e149c3d365d138b18b8cdf860ae734d7072959e9d353c1dfd7",
+        "bytes": 137
+      },
+      "reusable_input_property_scope": "Existing exact closed-world input certificate is metadata-reusable if complete input, epoch/domain and assumptions unchanged; not new-binary runtime qualification. Fresh current-source/input binding and per-condition Q still required.",
+      "required_new_binding": [
+        "Exact new main/source/archive and current profile effective options",
+        "Unchanged full trace+commandlist counts/hash+native grammar semantic-source applicability",
+        "Exact original C manifest/ranges hash, epoch whole_commandlist, canonical address model, hidden-writer/host-update assumptions",
+        "Per-input full instruction/kernel denominator, labels, runtime-config and nonresearch invariant",
+        "Actual terminal CLI plus fixed decoder source64751016/schema212; durable exit/full64/ROC1 terminal gates",
+        "Original runtime/source/config/input asset rechecks at admission and finish"
+      ],
+      "input_limit_preserved": {
+        "application_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "atomic_input_auditor_sha256": "6ad289048168c83b1354ac73c63e9c9444fec75ac8963b3e99e4f0a8896962b8",
+        "complete_native_input_proof": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/cfd_097k_ATOMIC_SCOPE_r1.json",
+          "sha256": "b88519d2f9b6c0c39bf90b6d1ceeb4c8eb2f4467f64dcc168907255c0b3d762f"
+        },
+        "producer_publication_commit": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+        "retained_input_scope": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/RETAINED_INPUT_SCOPE.json",
+          "sha256": "397ab4e955ff076b5984335ba45f3361e0ae9870eefab73329edb45ad400dcc1"
+        }
+      }
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_dwt2d_F",
+      "selection_id": "D_V1_dwt2d",
+      "full_trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+      "full_instructions": 148684429,
+      "kernel_count": 10,
+      "prepared_spec": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/specs/dwt2d_PREPARED_NOT_QUALIFIED.json",
+        "sha256": "c0298e6541d53fa7d647f75b9b87756b516c0ee9ed89f1f94d3b3c483587609a"
+      },
+      "currently_qualified": false,
+      "qualification_id": null,
+      "original_accepted_receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E018_67a874f4/run_status.json",
+        "sha256": "a4e9241ae2f80303541e4136e7fd3b4f6e050142e6bea8b70de00d7c29d51978",
+        "bytes": 587695
+      },
+      "original_complete_input_audit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E018_67a874f4/input_audit.json",
+        "sha256": "b85345e76722aa8713cc640a0cf42686f509ba8c88c80da7c2f83db66ca25f29",
+        "bytes": 20627
+      },
+      "original_oracle_manifest": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E018_67a874f4/readonly_manifest.json",
+        "sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+        "bytes": 6095
+      },
+      "original_oracle_ranges": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E018_67a874f4/readonly_ranges.csv",
+        "sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+        "bytes": 67
+      },
+      "reusable_input_property_scope": "Existing exact closed-world input certificate is metadata-reusable if complete input, epoch/domain and assumptions unchanged; not new-binary runtime qualification. Fresh current-source/input binding and per-condition Q still required.",
+      "required_new_binding": [
+        "Exact new main/source/archive and current profile effective options",
+        "Unchanged full trace+commandlist counts/hash+native grammar semantic-source applicability",
+        "Exact original C manifest/ranges hash, epoch whole_commandlist, canonical address model, hidden-writer/host-update assumptions",
+        "Per-input full instruction/kernel denominator, labels, runtime-config and nonresearch invariant",
+        "Actual terminal CLI plus fixed decoder source64751016/schema212; durable exit/full64/ROC1 terminal gates",
+        "Original runtime/source/config/input asset rechecks at admission and finish"
+      ],
+      "input_limit_preserved": {
+        "application_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "atomic_input_auditor_sha256": "4c50340207527cacdc0d4dd3106644b825821ea394cdc0fd464169032b7ef97c",
+        "complete_native_input_proof": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW_INPUT_NATIVE_SCOPE_r1/SCOPE.json",
+          "sha256": "a30304725b33f9e7794e56f2ab4b3b1417173023b8a98837449b8a2734128093"
+        },
+        "producer_publication_commit": "75707624b980df5e3bbb809c76a31cf1b34501a1",
+        "retained_input_scope": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/RETAINED_INPUT_SCOPE.json",
+          "sha256": "17e70d8551a5037cfed12d2e6fea319bcae8f22528d3e58854f5762a7cb238cf"
+        }
+      }
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
+      "selection_id": "D_V2_vectorAdd_4M",
+      "full_trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+      "full_instructions": 56000000,
+      "kernel_count": 1,
+      "prepared_spec": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/specs/vectorAdd_4M_PREPARED_NOT_QUALIFIED.json",
+        "sha256": "80dc711b380e90f849f3036ecca25ee6a75f80b8ab45923e9b408e424dcc3747"
+      },
+      "currently_qualified": false,
+      "qualification_id": null,
+      "original_accepted_receipt": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E033_f01f6993/run_status.json",
+        "sha256": "1da60e955cc2e640eb7c1fd6eb18f1b7958b33928fb59fbd690ff5494e426477",
+        "bytes": 587705
+      },
+      "original_complete_input_audit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E033_f01f6993/input_audit.json",
+        "sha256": "77fd605c05d506cf3c60a9d6ed6a97a4197632655267e26232dd8ac5741fa424",
+        "bytes": 19263
+      },
+      "original_oracle_manifest": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E033_f01f6993/readonly_manifest.json",
+        "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+        "bytes": 2100
+      },
+      "original_oracle_ranges": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E033_f01f6993/readonly_ranges.csv",
+        "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560",
+        "bytes": 102
+      },
+      "reusable_input_property_scope": "Existing exact closed-world input certificate is metadata-reusable if complete input, epoch/domain and assumptions unchanged; not new-binary runtime qualification. Fresh current-source/input binding and per-condition Q still required.",
+      "required_new_binding": [
+        "Exact new main/source/archive and current profile effective options",
+        "Unchanged full trace+commandlist counts/hash+native grammar semantic-source applicability",
+        "Exact original C manifest/ranges hash, epoch whole_commandlist, canonical address model, hidden-writer/host-update assumptions",
+        "Per-input full instruction/kernel denominator, labels, runtime-config and nonresearch invariant",
+        "Actual terminal CLI plus fixed decoder source64751016/schema212; durable exit/full64/ROC1 terminal gates",
+        "Original runtime/source/config/input asset rechecks at admission and finish"
+      ],
+      "input_limit_preserved": {
+        "application_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "atomic_input_auditor_sha256": "6ad289048168c83b1354ac73c63e9c9444fec75ac8963b3e99e4f0a8896962b8",
+        "complete_native_input_proof": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+          "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+        },
+        "producer_publication_commit": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+        "retained_input_scope": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+          "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202"
+        }
+      }
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_convolutionSeparable_F",
+      "selection_id": "D_V1_convolutionSeparable",
+      "full_trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+      "full_instructions": 714547200,
+      "kernel_count": 2,
+      "prepared_spec": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/specs/convolutionSeparable_PREPARED_NOT_QUALIFIED.json",
+        "sha256": "18228eed3c1ddcb4213426da93cfb2c909af81ae7414abd9661a4c1f7ea48807"
+      },
+      "currently_qualified": false,
+      "qualification_id": null,
+      "original_accepted_receipt": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_TERMINAL_COMPAT_r1/F_REVALIDATED_RUN_STATUS.json",
+        "sha256": "f7abf59d10555127bd93956ca4d1f4a72b25639734e8b95cf9107268add9141a",
+        "bytes": 587728
+      },
+      "original_complete_input_audit": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E009_76e25c1e/input_audit.json",
+        "sha256": "18ec397e99bc693baa6bf5cd0d0952cdfc066e492fc3554f5a7714f5b1163d6d",
+        "bytes": 19438
+      },
+      "original_oracle_manifest": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E009_76e25c1e/readonly_manifest.json",
+        "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425",
+        "bytes": 2630
+      },
+      "original_oracle_ranges": {
+        "path": "/workspace/ep_l2_ms20261019_e_results/E009_76e25c1e/readonly_ranges.csv",
+        "sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e",
+        "bytes": 67
+      },
+      "reusable_input_property_scope": "Existing exact closed-world input certificate is metadata-reusable if complete input, epoch/domain and assumptions unchanged; not new-binary runtime qualification. Fresh current-source/input binding and per-condition Q still required.",
+      "required_new_binding": [
+        "Exact new main/source/archive and current profile effective options",
+        "Unchanged full trace+commandlist counts/hash+native grammar semantic-source applicability",
+        "Exact original C manifest/ranges hash, epoch whole_commandlist, canonical address model, hidden-writer/host-update assumptions",
+        "Per-input full instruction/kernel denominator, labels, runtime-config and nonresearch invariant",
+        "Actual terminal CLI plus fixed decoder source64751016/schema212; durable exit/full64/ROC1 terminal gates",
+        "Original runtime/source/config/input asset rechecks at admission and finish"
+      ],
+      "input_limit_preserved": {
+        "application_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+        "atomic_input_auditor_sha256": "187cd19145d48e89fc63129faa45ccdc7d207d50272527ffdebbe01ac18694e4",
+        "input_adapter_revision": {
+          "previous_certificate_sha256": "47d52d9db3522bad9e3f34c44eaf1589aefd71a853a0f9e454e3c260b2b5a872",
+          "runtime_gates_source_binary_config_unchanged": true,
+          "scope": "Native legacy list_all can retain all32 addresses on masked rows; all numeric fields validated, opcode still counted at zero mask; no numeric address execution claim",
+          "source_commit": "98870b3d41cc216b0bb17820d8816a9312a78171"
+        },
+        "producer_publication_commit": "05145b19cc7c165ef8ae448b14324585dfa286ef",
+        "retained_input_scope": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/RETAINED_COMPLETE_INPUT_SCOPE.json",
+          "sha256": "8f92e9ca40b9342c24eb31f2384775eabbb02d067caa4cf97bfb03ab9a8f0126"
+        }
+      }
+    }
+  ],
+  "reuse_current_r4_native": {
+    "reusable": "Exact formal A2 r4 producer, E independent native48/1589 checks and source schema212 under unchanged source/main/archive and same finite F W1V1T1M1/P1 profile. Do not rebuild or rerun passed native controls merely for another input.",
+    "native_evidence": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+    "native_processes_reviewed": 48,
+    "native_checks_passed": 1589,
+    "limits": [
+      "Native directed controls are not complete application64slice acceptance.",
+      "Reuse each gate with explicit source/profile applicability row in each new Q, not copy whole SGEMM Q.",
+      "Per-condition original input grammar/atomic/native byte semantics and RO certificate proof must bind current9243/9dd source exactly; prior main61 numeric/source uncertainty remains.",
+      "Prospective profile labels/config/environment differ from old accepted F; compute exact runtime_config and invariants using final bytes.",
+      "Original SGEMM qualification hash683491... and old raw/native receipts only qualify original E051; never use them for new four applications."
+    ]
+  },
+  "protected_historical_invariants": [
+    "Original T0=1792414193 and all51 charged attempts remain immutable, including E051 execution FAILED and original small/full evidence.",
+    "E051 original Q/spec/parser/native/raw and accepted supplemental pointer/manifest/review/history remain exact; active HOLD resolution history retained.",
+    "Original accepted S/F pairs, all FAILED/INCOMPLETE/RESOURCE_LIMIT/HOLD, original32+8/10/4 accounting and frozen old matrices remain.",
+    "Global maximum/deadlines/per-end timeout and formal route count remain cancelled/null/resource-only; this does not authorize new science.",
+    "Current10GiB new and24GiB total cumulative generation budget, 5GiB floor+2GiB monitor reserve, Share40GiB and CPU/RAM resource rules remain; storage moves do not refund history.",
+    "Same original REGISTRY.lock and CONTROLLER.lock/unique controller/durable collector; no independent controller/journal/launch path.",
+    "Future allowed exact new count1→52 OR4→55 only; failures charged; one attempt per approved condition; no retries/unapproved inputs/pairs/old-S-new-F comparison.",
+    "Original E051 native/guardian source checks and all old accepted results are not reconstructed or re-run.",
+    "Other projects resource policies and independent leases remain untouched."
+  ],
+  "minimal_after_approval_order": [
+    "Record exact approved CFD-only1 OR primaryfour4 scope and original51 seal; no union.",
+    "Finish independent per-input config/source/oracle/frame/terminal qualification and actual common fixeddecoder binding; preserve old original Q.",
+    "Implement only bounded successor dispatch+historical51 projection and canonical suffix witness checks described above; test extraQ/condition/start/refund/pair/source/raw-misbind negatives without apps.",
+    "At helper/source quiescence publish/readback exact source plus full CLIENT pins.",
+    "Configure common new exact validator; adopt successor before adding new Q; original registerQ/bind each exact approved spec.",
+    "Original controller finite queue/pairs[] only after real per-condition gates; resource-only rolling CFD first, single-route if that alone fits.",
+    "Each full accepted diagnostic immediately deliver D exact identity/cycles/counters/position; no S/F CURRENT_ACCEPTED_PAIR."
+  ],
+  "actions_by_this_review": {
+    "only_output": "/tmp/e2_next_scope_engineering_gap_review.json",
+    "queue_created": false,
+    "qualification_registered": false,
+    "source_CLIENT_registry_modified": false,
+    "native_or_application_started": false,
+    "implementation_prepared": false,
+    "large_binary_trace_raw_read_or_hashed": false
+  }
+}
