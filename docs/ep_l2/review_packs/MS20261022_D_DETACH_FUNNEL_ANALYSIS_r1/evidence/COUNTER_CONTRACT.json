@@ -1,0 +1,141 @@
+{
+  "batch_id": "EPL2_DETACH_ZERO_CAUSAL_OBSERVABILITY_PREPARATION_20261022_r1",
+  "commit_funnel": {
+    "fields": [
+      "ft_access_attempts",
+      "raw_tag_fail_commit",
+      "relieve_calls",
+      "relieve_T_disabled",
+      "relieve_no_eligible",
+      "relieve_eligible_selected",
+      "detach_calls",
+      "detach_success",
+      "detach_false_by_first_reason",
+      "detach_exception",
+      "post_relief_probe_status",
+      "triggering_request_accepted",
+      "triggering_request_denied_after_detach_by_gate"
+    ],
+    "rules": [
+      "Count only actual invocations. Access blocked by preview is still represented in frontend denominator.",
+      "relieve runs before later capacity/missqueue/WAD/landing gates: detach_success does not imply triggering request acceptance.",
+      "Correlate frontend/commit with bounded head ticket and counters; never invent same-cycle equality between their different denominators.",
+      "Owner conflict, merge path, directory or promotion early return are separately accounted.",
+      "Nonzero can_detach with actual commit must reconcile selected candidate, real detach result, and post-relief status; unexplained discrepancy fails diagnostic qualification."
+    ]
+  },
+  "coverage": {
+    "early_gates": "Report observed-head count and unobservable/skipped stages with explicit reason/NA. A frontend observation never claims all traffic/all cycles. Include native requesters: a native requester can require an RO victim.",
+    "kernel": "Bind kernel attribution to requesting operation; candidate owner kernel may differ. Emit unassigned/between-kernel bucket if no unique mapping; never force zero. Use GPU physical clock, not Tag memcpy timestamps.",
+    "kernel_overlap": "Existing kernel interval deltas may overlap. Do not sum overlapping intervals as causal per-kernel totals; use exact requesterUID only when already available, otherwise INTERVAL_SCOPE/UNKNOWN. Global/per-slice rollups remain mandatory.",
+    "primary_point": "Once per actual frontend head at physical GPU cycle, before preview masks the raw Tag probe; key=(slice,physical_cycle,request_uid). Repeated const preview/can_detach/probe calls do not increment totals.",
+    "separate_domains": [
+      "FRONTEND_OBSERVATION per head-cycle",
+      "COMMIT_ACCESS_ATTEMPT per actual ft_access invocation",
+      "TRANSACTION_LIFECYCLE per actual transition"
+    ],
+    "unique_requests": "Head-cycle counts are exposures, not unique requests. Unique episodes may use bounded existing head episode tracking with documented continuity. Do not allocate unbounded UID/address maps."
+  },
+  "frontend_funnel": [
+    {
+      "fields": [
+        "observed_heads",
+        "probe_skipped_by_reason",
+        "raw_hit",
+        "raw_hit_reserved",
+        "raw_sector_miss",
+        "raw_miss",
+        "raw_reservation_fail"
+      ],
+      "meaning": "Raw result before detachable() converts fail to miss. Preserve canonical tag_array::probe semantics; do not infer capacity pressure from aggregate final status.",
+      "stage": "RAW_TAG_PROBE"
+    },
+    {
+      "fields": [
+        "pressure_no_live_ro",
+        "pressure_live_ro_no_eligible",
+        "pressure_eligible",
+        "same_set_way_reason_counts",
+        "same_set_eligible_histogram",
+        "predicate_bitmask_histogram"
+      ],
+      "meaning": "Mutually exclusive first-failure way categories plus joint predicate bitmask among live candidates. Scan only same physical set. Selection/order remains original first eligible.",
+      "stage": "PRESSURE_CANDIDATE_SET",
+      "way_partition": [
+        "no_live_ro",
+        "live_not_attached",
+        "live_attached_reuse_seen",
+        "live_attached_no_reuse_no_missing_sector",
+        "eligible_live_attached_no_reuse_missing_sector"
+      ],
+      "when": "raw_reservation_fail and detach-enabled observation"
+    },
+    {
+      "fields": [
+        "pressure_preview_resolved_to_miss",
+        "pressure_preview_still_fail",
+        "pressure_not_reached_preview",
+        "directory_wait",
+        "query_port_or_latency_wait",
+        "native_owner_conflict",
+        "descriptor_full",
+        "line_mshr_full",
+        "per_address_full",
+        "miss_queue_full",
+        "wad_hazard",
+        "landing_or_payload_denial",
+        "other_named_or_unknown_gate"
+      ],
+      "meaning": "Keep raw pressure independent of preview rewrite. Multireason resource masks are nonexclusive; additionally output first blocking gate partition at exact program order. Unsupported observation remains NA, not0.",
+      "stage": "PREVIEW_AND_BLOCKERS"
+    }
+  ],
+  "identities": [
+    "observed_heads = probe_skipped + raw_hit + raw_hit_reserved + raw_sector_miss + raw_miss + raw_reservation_fail (include any exact existing enum as separate bucket)",
+    "eligible_observed_pressure = pressure_no_live_ro + pressure_live_ro_no_eligible + pressure_eligible, with explicit excluded/T-off scope",
+    "At full same-set candidate scans: sum(exclusive_way_reasons) = actual_ways_examined; early stop scans record examined/not_examined, never pretend full scan.",
+    "relieve_calls = relieve_T_disabled + relieve_no_eligible + relieve_eligible_selected",
+    "detach_calls = detach_success + detach_false + detach_exception (terminal valid runs require exceptions0)",
+    "sum(existing detached across slices)=sum(new detach_success across slices) on successful full run",
+    "Rollups equal sum(per kernel/slice plus explicit unattributed buckets); no dropped residual.",
+    "raw_pressure_production_probe_reached = pressure_preview_relief_rewritten_to_miss + pressure_preview_kept_tag_fail + pressure_relief_not_consulted, all at explicit intermediate pre-resource-status stage.",
+    "rewritten_to_miss is not finaladmission; latercapacity/WAD failure remains in separate gate and finalstatus fields."
+  ],
+  "lifecycle": {
+    "fields": [
+      "ro_admits",
+      "ro_merges",
+      "reuse_seen_first_transition",
+      "pending_attached_reuse_joint_histogram",
+      "detach_success",
+      "detached_returns",
+      "detached_responses",
+      "detached_retired",
+      "live_detached_terminal",
+      "closure_errors"
+    ],
+    "rules": [
+      "reuse_seen is sticky; do not clear on waiter retirement.",
+      "Retain existing real counter detached as authoritative and reconcile new success total.",
+      "A transaction may retire without detach. Response is requester-count, retirement is transaction-count: do not set them equal.",
+      "Conservation equations must handle split sectors, multiple requesters, pending terminal state and initial/final populations explicitly."
+    ]
+  },
+  "native_preview_caveat": "Native/non-RO preview can reject all-reserved pressure without consulting detachable, even if pure same-set shadow finds a legalRO victim. Record relief_preview_not_consulted and requester_class separately. Do not modify this path to manufacture activation; theoretical ft_access relief support is not proof frontend can reach it.",
+  "observer_invariance": [
+    "Do not change reuse policy, predicate, set mapping, way order, cache geometry, ports, timing, resource quotas, MSHR lookup or certificate semantics.",
+    "Never call mutating query_admissible/frontend issue/reservation to gather observations. No extra paid Tag/TVD/oracle lookup or response selection.",
+    "Prefer capturing existing raw probe and pure transaction predicate snapshot. A shadow read-only same-set inspection may be used only outside modeled decisions, with bounded host cost, no extra modeled accesses and explicit A2 review.",
+    "No counters inside repeatedly evaluated const preview/can_detach functions. Thread observation context or use explicit real frontend hook.",
+    "Do not alter detach handshake, delayed response or rollback to force positive result. Counter overflow fails or saturates with explicit overflow-invalid marker, never silent wrap."
+  ],
+  "output": {
+    "bounded_examples": "At most64 total samples/run, fixed-size ring, no new full trace, no raw data/UID map dump",
+    "per": "slice/kernel/phase with full rollup",
+    "per_set": "Bounded pressure/candidate histograms and hotspot examples; do not emit dense cycle-by-set trace",
+    "structured_summary_cap_bytes": 67108864,
+    "terminal": "All64slice records, coverage/overflow/dropped-sample flags, counts and closure status; absent metrics UNKNOWN notzero",
+    "version": "distinct EPL2DETACH_DIAG_V1 records, old parser ignores or new parser handles explicitly"
+  },
+  "schema": "EPL2_DETACH_DIAGNOSTIC_COUNTER_CONTRACT_V1"
+}
