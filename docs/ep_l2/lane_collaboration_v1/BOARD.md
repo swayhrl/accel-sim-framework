@@ -22,3 +22,7 @@ FWT补原MAIN第六对，SGEMM独立探索，合计7个独立workload；原七MA
 本页是E2维护的依赖索引，不替任何peer写本人STATUS，不从投递推断ACK。历史准备和运行快照保留在Git历史，当前machine待办见NEXT_ACTIONS.json。
 
 当前协调Goal：**BLOCKED**，不是科学失败或已完成。恢复需原A2/D读取收口请求E2-00000054-56df33dfb3d9并交本人最终metadata，再恢复原E2协调Goal。提案与全部旧结果保留，新增模拟0。
+
+## 当前优先：detach=0原因诊断准备
+
+用户同意一次性组织诊断准备，见[完整任务包](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/README.md)。A2独立观测producer、E2独立资格、D漏斗分析、C复用正向证书并小文件确认，并行准备后由E2汇总唯一单端具体提案。新增完整应用授权0，累计50/controller STOPPED不变；旧main61单F提案保留但暂缓，不执行并集。A2/D已于11:04/11:06北京时间发布E54本人RECEIVED和WORKING；最终交付不从ACK推断。原协调Goal实际仍BLOCKED，本规划回合不重启Goal。

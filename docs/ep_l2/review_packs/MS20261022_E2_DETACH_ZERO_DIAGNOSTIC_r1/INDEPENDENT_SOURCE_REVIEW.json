@@ -1,0 +1,299 @@
+{
+  "actions": {
+    "builds": 0,
+    "full_application_starts": 0,
+    "native_tests": 0,
+    "peer_messages": 0,
+    "source_or_registry_changed": false
+  },
+  "at_utc": "2026-10-22T03:10:09.604834+00:00",
+  "core_head": "d010911e3174a3764791183cd108fe4664ba8731",
+  "decision_tree": [
+    "If accepted RO zero: certificate/runtime path not activated; use candidate and resident/native/deferred partition to distinguish.",
+    "If accepted RO positive and observable raw pressure zero: no physical set allocation pressure within stated frontend observation scope; not proof every Tag everywhere always plentiful.",
+    "If raw pressure positive but no same-set live RO: spatial/temporal opportunity mismatch.",
+    "If live same-set candidates but eligibility zero: exact priority partition + nonexclusive masks identify sticky reuse, ready, attached, feature gating; report distribution not one universal cause.",
+    "If eligible pressure observed but access absent: named admission gates may suppress real relief; no mechanism error inferred.",
+    "If actual relieve selected but detach refuses or first-fit identity mismatches: correctness investigation required.",
+    "If detach succeeds but triggering request denied: separate observed Tag release from useful admission/performance; maintain resource/drain evidence.",
+    "If detach remains zero with no coverage holes and all partitions close: exact positive-run zero reason established within frozen model/workload; do not generalize beyond it."
+  ],
+  "highest_priority_findings": [
+    {
+      "detail": "RO preview converts raw tag probe RESERVATION_FAIL into MISS if detachable finds a same-set victim; if no victim, admission can refuse before ft_access or relieve runs. Counting only relieve calls misses pressure with no legal victim; using final plan TAG_SET_PENDING misses pressure already masked by possible detach.",
+      "evidence": [
+        "ep-l2-ro-runtime.inc:232-273",
+        "l2cache.cc:1333-1418",
+        "ep-l2-ft-cache.inc:319-328"
+      ],
+      "finding": "RAW_FRONTEND_PRESSURE_AND_COMMIT_PRESSURE_ARE_DIFFERENT_DENOMINATORS"
+    },
+    {
+      "detail": "relieve mutates before RO shared capacity/missq, held frontend, WAD, payload landing/quota and bank-service checks. A successful detach may be followed by RESERVATION_FAIL for the triggering request. Do not delay or reorder relieve to simplify statistics.",
+      "evidence": [
+        "ep-l2-ft-cache.inc:323-370",
+        "ep-l2-ft-cache.inc:371-407",
+        "ep-l2-ft-cache.inc:446-524"
+      ],
+      "finding": "DETACH_CAN_PRECEDE_REQUEST_ACCEPTANCE"
+    },
+    {
+      "detail": "Every successful merge sets reuse_seen true. Removing/retiring a merged waiter does not clear it. Newly admitted transaction resets entry state.",
+      "evidence": [
+        "ep-l2-ro-transactions.h:188-208",
+        "ep-l2-ro-transactions.h:276-287",
+        "ep-l2-ro-transactions.h:330-336"
+      ],
+      "finding": "REUSE_SEEN_IS_STICKY_PER_TRANSACTION"
+    },
+    {
+      "detail": "Any ft_access raw Tag reservation failure invokes m_ro->relieve if runtime exists. Restricting observations to candidate/new_request in existing frontend_cycle would omit non-RO pressure requesters.",
+      "evidence": [
+        "ep-l2-ft-cache.inc:319-325"
+      ],
+      "finding": "PRESSURE_REQUESTER_NEED_NOT_BE_RO"
+    },
+    {
+      "detail": "Existing frontend_cycle returns early unless new_request and directory_ready, requires lookup ticket readiness before observing some blocks, prints only first four of six reason arrays, and uses final rewritten preview. Existing TAG_SET_PENDING zero does not prove no physical set pressure.",
+      "evidence": [
+        "ep-l2-ro-runtime.inc:108-127",
+        "ep-l2-ro-runtime.inc:394-400",
+        "ep-l2-ft-cache.inc:193-250"
+      ],
+      "finding": "CURRENT_RO_WAITS_ARE_NOT_EXHAUSTIVE"
+    },
+    {
+      "detail": "When RO preview declines !new_request, native preview returns all-reserved FAIL without consulting detachable. Main frontend admission then may suppress access entirely. The relief implementation accepts any requester if reached, but that does not prove all requester classes can reach it in application frontend. Observe class and this gate, do not change policy to obtain positives.",
+      "evidence": [
+        "ep-l2-ro-runtime.inc:232-249",
+        "gpu-cache.cc:2723-2747",
+        "l2cache.cc:1407-1418",
+        "ep-l2-ft-cache.inc:323-325"
+      ],
+      "finding": "NONRO_FRONTEND_CAN_BLOCK_BEFORE_RELIEVE_DESPITE_AN_ELIGIBLE_RO_VICTIM"
+    }
+  ],
+  "minimal_bounded_control_scenarios": [
+    {
+      "case": "Repeat exact preview/can_detach calls on identical state including dirty-miss one-slot existing second preview; compare production state/event digest and counters. Only the explicit real observation call may increment diagnostic counters.",
+      "id": "PREVIEW_PURITY"
+    },
+    {
+      "case": "Safe empty certificate plus raw same-set pressure. Accepted RO zero, no live candidate; avoid reporting no pressure from detach zero.",
+      "id": "NO_CERTIFIED_RO"
+    },
+    {
+      "case": "Admit one pending RO transaction, different address hits/misses with replacement available. RO admitted, no raw pressure, detach zero.",
+      "id": "CERTIFIED_NO_PRESSURE"
+    },
+    {
+      "case": "Fill same-set ways with reserved pending owners; one eligible attached RO never merged; trigger actual different-address allocation. Exactly one selected first-fit detach handshake; later response/fill cannot corrupt reused Tag and original owner drains.",
+      "id": "POSITIVE_SAME_SET_PENDING"
+    },
+    {
+      "case": "Pending RO candidate exists only in another set; target set all reserved native/noneligible. Raw pressure>0, same-set eligible0; no detach.",
+      "id": "SPATIAL_MISMATCH"
+    },
+    {
+      "case": "Merge into RO transaction, retire merged waiter while another required sector remains unready; force same-set pressure. reuse_seen remains true and blocks detach before/after waiter retirement.",
+      "id": "STICKY_REUSE"
+    },
+    {
+      "case": "Attached RO entry all required sectors ready but response blocked/descriptor live; target set pressure. Reject with no_required_unready, not reuse or no_live.",
+      "id": "NO_REQUIRED_UNREADY"
+    },
+    {
+      "case": "T disabled M enabled same exact finite geometry/input; correct disabled category, detach zero. Diagnostic predicates must not enable feature.",
+      "id": "T_OFF_M_ON"
+    },
+    {
+      "case": "Raw pressure with/without eligible RO, then MissQ/lookup/descriptor/per-address gate fails. Record raw pressure even when actual access/relieve absent; no preview mutation.",
+      "id": "PRESSURE_PRE_ADMISSION_DENIAL"
+    },
+    {
+      "case": "Actual access invokes relieve, detach succeeds, a later capacity/landing/WAD/bank gate refuses requester. Preserve original semantic ordering and count both actual success and requester refusal; retries must not detach same victim again.",
+      "id": "DETACH_THEN_REFUSED"
+    },
+    {
+      "case": "Uncertified read or write pressure requester can detach an eligible same-set RO victim; measure both requester classes without restricting to new_request.",
+      "id": "NONRO_REQUESTER"
+    },
+    {
+      "case": "Several eligible/noneligible same-set ways; original ascending first-fit chosen unchanged. Stale payload generation/tag handshake fatal stays fatal, never reclassified as benign no_candidate.",
+      "id": "GENERATION_AND_FIRST_FIT"
+    },
+    {
+      "case": "Two bounded kernels with overlap or residual drain; correct cumulative/global accounting and explicit interval overlap/unknown causal attribution, no zero-filled attribution.",
+      "id": "CROSS_KERNEL_INTERVAL"
+    },
+    {
+      "case": "Run bounded deterministic fixtures on one new producer ELF with diagnostics enabled/disabled; compare cycles, original counters, ordered production event digest, selected victims, memory/request versions and final drain. New source to old source differential fixture evidence where applicable. No full-app performance equivalence claim from tiny controls.",
+      "id": "DIAGNOSTIC_ON_OFF_EQUIVALENCE"
+    },
+    {
+      "case": "Native/nonRO head has raw all-reserved target set and a valid same-set detachable RO victim. Verify original native preview remains FAIL, diagnostic shadow says eligible>0, actual access/relieve stays absent when admission rejects. Classify preview-path gating; no changed admission to force detach.",
+      "id": "NONRO_PREVIEW_INTERCEPTION"
+    }
+  ],
+  "mutually_exclusive_partitions_and_invariants": [
+    "observed_frontend_head_cycles = raw_probe_hit + raw_probe_hit_reserved + raw_probe_sector_miss + raw_probe_miss + raw_probe_reservation_fail + raw_probe_unknown (all exactly once at same observation domain)",
+    "raw_pressure_events = pressure_T_disabled + pressure_no_live_ro_tag + pressure_live_ro_but_none_eligible + pressure_with_eligible_victim (ordered event categories, T_disabled first)",
+    "ways_examined_on_pressure = way_invalid_or_unbound + way_not_live_ro_identity + way_T_disabled + way_not_attached + way_reuse_seen + way_no_required_unready + way_eligible (fixed first-match priority; raw multi-bit predicate counts may also be published separately and are nonadditive)",
+    "For valid live entries, way_eligible iff T && attached && !reuse_seen && (required & ~ready)!=0; required-not-ready is eligibility while issued-not-ready is actual in-flight lower count; do not conflate.",
+    "pressure_live_ro_but_none_eligible + pressure_with_eligible_victim <= raw_pressure_events; a live RO transaction in another set is irrelevant to this inequality.",
+    "relieve_calls = relieve_T_disabled + relieve_no_live_ro_tag + relieve_live_but_no_eligible + relieve_selected; selected=detach_call_success+detach_call_refused unless fatal invariant failure (then terminal explicitly invalid)",
+    "detach_call_success = existing stats.detached delta = observed tag detach handshake count, for same interval/source scope; no success from preview.",
+    "relieve_calls = post_relieve_probe_fail + post_relieve_probe_nonfail in normally returned production path; exception/fatal outcomes separate.",
+    "Each successful immediate detach-triggering call closes as accepted or refused, with exceptions explicit. This is not equal to all later accepted requests.",
+    "accepted_ro = new_transactions + merges; at fully drained normal terminal RO responses = accepted_ro; all live RO/descriptors/lines/pending sector owners must satisfy original closure.",
+    "At drain detached_victim_count = detached_victim_retired and detached_victim_live_terminal=0; response count is waiters, not necessarily transactions.",
+    "Sum per-slice totals = global totals; sum per-kernel interval deltas valid only disjoint complete intervals; overlapping intervals are not additive.",
+    "raw_pressure_observed = raw_pressure_production_probe_not_reached + raw_pressure_production_probe_reached; not-reached includes observer-only const state snapshot due earlier lookup/owner/TVD gates, with exact provenance and UNKNOWN if cannot inspect safely.",
+    "raw_pressure_production_probe_reached = raw_pressure_preview_relief_rewritten_to_miss + raw_pressure_preview_kept_tag_fail. This partition uses intermediate status immediately after detachable test, not final preview status which may later become FAIL for capacity/WAD.",
+    "raw_pressure_preview_relief_rewritten_to_miss = rewritten_final_admit + rewritten_final_refused + rewritten_final_unknown; preserve separate reason masks for shared capacity/MissQ/WAD and all later gates.",
+    "If native/nonRO preview never attempts relief, record relief_preview_not_consulted, not no_eligible; readonly shadow eligible count may be positive even while final production plan remains FAIL."
+  ],
+  "noninterference_release_contract": [
+    "A2 owns all production source/build changes. E review does not modify main61 or existing scientific endpoints.",
+    "New source/binary/archive identity and explicit instrumentation schema; preserve all original mechanism options/latencies/ports/capacities/selection code and assertions.",
+    "Counters and samples are observer-only; never read by admission, timing, lookup, candidate ranking, or retry control. No diagnostic pointer/address map supplies model behavior.",
+    "Observer disabled/no-runtime cases explicit. Always-on passive observer or diagnostic option needs producer-supported profile; do not inherit old source qualification as sufficient.",
+    "Checked 64-bit counters with reported overflow or fatal invalidation, no silent wrap. Snapshot counters at exact existing kernel boundaries; parser rejects missing64slice, missing schema, nonclosing partition, unavailable raw denominator masquerading as zero.",
+    "Bound fixed counter storage and first-N examples; no per-cycle trace, no whole trace reread. State, event digest and generation comparisons bounded deterministic controls only.",
+    "Actual application diagnosis and any performance comparison require separately approved exact runtime profile, oracle, source/binary identities and same-binary anchor/comparison rule. No automatic S reuse across changed production identity."
+  ],
+  "observation_architecture": {
+    "bounded_examples": "First N records per reason globally or per slice with explicit cap and truncated count, not per-cycle trace. Include cycle, slice, request_uid, set, requester class, victim payload/generation, required/issued/ready masks, reuse_seen, attached, direct result. Sampling never affects victim choice.",
+    "counter_scopes": [
+      "GLOBAL",
+      "PER_SLICE",
+      "KERNEL_INTERVAL_DELTA_WITH_OVERLAP_FLAG"
+    ],
+    "coverage": "Record head absent, L2 disabled/ineligible, TVD handled, ideal served, and upstream queue/head-not-visible intervals as distinct skipped/NA. Most upstream waiting requests are not visible at this frozen frontend head, so no raw pressure observation there cannot support a global claim that Tag capacity is ample. Safely inspectable raw physical set state and actual production probe reach are separate fields.",
+    "first_fit_noninterference": "Production detachable must retain original ascending first eligible selection and early return. Optional all-way diagnostic scan is a pure shadow snapshot using existing finite Tag/payload/transaction state, never an additional paid frontend lookup, never feeding candidates/index into production.",
+    "frontend_once_key": [
+      "slice",
+      "physical_GPU_cycle",
+      "frontend_head_request_UID"
+    ],
+    "frontend_once_key_contract": "At most one cumulative observation per actual slice/frontend_head_UID/physical_GPU_cycle. Multiple preview calls within this key leave observer counters unchanged; same UID at a later physical cycle is a new pressure-cycle sample. Distinct-request counts require separate explicit UID bookkeeping/episode schema, not division of cycles.",
+    "frontend_placement": "l2cache.cc real enabled/eligible frontend-head path around1333-1339 after TVD has declined, before admission. Prefer returning/carrying raw probe observation from production preview; if unavailable use const-only paid-state inspection with zero new modeled lookup/port events. Do not call frontend_cycle twice.",
+    "kernel_caution": "Current kernel callbacks maintain interval snapshots and overlap detection in l2cache.cc2244+. Interval delta is not causal attribution to victim/requester kernel under overlap. Use exact kernel UID only where already available; otherwise print INTERVAL_SCOPE and UNKNOWN rather than inventing UID.",
+    "no_per_cycle_all_slot_scan": "Pressure causes at most same-set associativity scan. Transaction transition counters at admit/merge/fill/retire avoid scanning all1168 slots every frontend cycle.",
+    "preview_purity": "preview, detachable, can_detach and tag probe retain semantic/counter purity. Add explicit immutable observation result, and record once at the already-real frozen frontend observation point, not every preview invocation.",
+    "preview_result_contract": "Immutable observation payload captures production raw-probe-reached flag, raw status, relief test evaluated, first eligible index, intermediate post-relief status, final plan status and final admission outcome. Passing the payload out of preview is not permission for preview to change cumulative counters or state."
+  },
+  "open_risks": [
+    "Raw physical probe and same-set scan must not trigger hidden query/port activity; use const state and existing production decisions.",
+    "The current frontend_cycle only covers new_request; placing the entire observer there unconditionally would still require removing its early filtering for diagnostics without changing actual query actions.",
+    "The rejected reason not_attached is normally unreachable when iterating current Tag bindings because detach clears Tag handle; treat observed inconsistency explicitly.",
+    "Kernel boundary callbacks may overlap and measurements have cross-kernel residuals; exact causal per-kernel attribution may not exist without new ownership metadata.",
+    "Instrumentation can cost host walltime but should not change simulated cycles. Resource estimates for future full applications still independent."
+  ],
+  "required_funnel": [
+    {
+      "fields": [
+        "accepted_global_reads",
+        "accepted_oracle_candidates",
+        "accepted_ro",
+        "new_transactions",
+        "merges",
+        "certified_resident_hits",
+        "candidate_deferred_or_native"
+      ],
+      "notes": "Preserve current counters with exact scope. Certificate line/reference coverage is offline classification, not accepted runtime requests.",
+      "stage": "CERTIFIED_REQUESTS"
+    },
+    {
+      "fields": [
+        "observed_frontend_head_cycles",
+        "raw_probe_hit",
+        "raw_probe_hit_reserved",
+        "raw_probe_sector_miss",
+        "raw_probe_miss",
+        "raw_probe_reservation_fail",
+        "raw_probe_unknown"
+      ],
+      "notes": "Raw physical probe before detachable rewrite. All head cycles, distinct request counts and episodes must be separately named; pressure cycles cannot be called unique requests.",
+      "stage": "FRONTEND_RAW_PRESSURE"
+    },
+    {
+      "fields": [
+        "pressure_T_disabled",
+        "pressure_no_live_ro_tag",
+        "pressure_live_ro_but_none_eligible",
+        "pressure_with_eligible_victim",
+        "eligible_victim_count_histogram",
+        "way_reason_partition"
+      ],
+      "notes": "Scan all same-set ways observationally when raw pressure holds, despite production first-fit scan stopping early. Keep production selected first eligible index untouched. Per-way reasons and event-level absence reasons are different denominators.",
+      "stage": "SAME_SET_VICTIMS_AT_PRESSURE"
+    },
+    {
+      "fields": [
+        "raw_pressure_gate_reason_primary",
+        "raw_pressure_gate_mask_nonexclusive",
+        "pressure_frontend_denied",
+        "pressure_access_entered",
+        "nonpressure_access_entered"
+      ],
+      "notes": "Account directory/RO lookup wait, native-owner conflict, descriptors512, per-address32, lineMSHR128 when M=0, MissQ requested slots, response queue, data port, WAD hazard/full, held FT transaction, pinned/pending victim, bank-compatible landing, WB space/quota, copy/bank denial. UNKNOWN/not evaluated remains explicit. T-disabled path and TVD interceptions must not be omitted.",
+      "stage": "ADMISSION_AND_GATING"
+    },
+    {
+      "fields": [
+        "relieve_calls",
+        "relieve_T_disabled",
+        "relieve_no_live_ro_tag",
+        "relieve_live_but_no_eligible",
+        "relieve_selected",
+        "detach_call_success",
+        "detach_call_refused",
+        "selected_identity_invariant_failure",
+        "post_relieve_probe_fail",
+        "post_relieve_probe_nonfail"
+      ],
+      "notes": "Increment only actual production calls. Mandatory existing branch result reused; no second detach/selection attempt for instrumentation.",
+      "stage": "ACTUAL_RELIEVE"
+    },
+    {
+      "fields": [
+        "detached_victim_count",
+        "detached_victim_response_count",
+        "detached_victim_retired",
+        "detached_victim_live_terminal",
+        "trigger_first_call_accepted_after_detach",
+        "trigger_first_call_refused_after_detach",
+        "trigger_later_accepted_after_prior_detach",
+        "trigger_still_outstanding_terminal"
+      ],
+      "notes": "Trigger and victim identities differ. Use only bounded original finite owner/request state for attribution, not a new model lookup/CAM. At least immediate call result and victim actual lifetime closure mandatory; if delayed trigger attribution cannot be bounded without address-map report not measured.",
+      "stage": "TRIGGER_AND_VICTIM_CLOSURE"
+    }
+  ],
+  "reviewer": "E2 delegated read-only source review; not A2 producer",
+  "schema": "EPL2_DETACH_ZERO_SOURCE_REVIEW_V1",
+  "source_files": [
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "4c868dff3806ced19381b4cf5013054203c7802514868d5e0e3557a96d238a23"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "sha256": "3680b7da9c8fdb44f0418819eeb97cf0d6547b8c1e40625c910d31e6a45e1235"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "6d1c905b8c1a00db2a4f055a03678f5b3794a53a30ccb0d4983fc63011896333"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "b97b39887442dcade97902d5537224f76d716f1dd291eddd65d8a9492382b7af"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "sha256": "471bfeff076f93e6ff48058804fe996c91147881bb3af6e79d332f618d1ffcff"
+    }
+  ],
+  "source_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1"
+}
