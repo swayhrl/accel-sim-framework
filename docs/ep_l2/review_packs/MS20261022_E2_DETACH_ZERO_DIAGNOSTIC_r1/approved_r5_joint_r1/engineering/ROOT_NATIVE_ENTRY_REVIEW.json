@@ -1,0 +1,22 @@
+{
+  "schema": "E2_R5_ROOT_FINITE_NATIVE_ENTRY_REVIEW_V1",
+  "status": "PASS_ENGINEERING_ENTRY_ONLY_NATIVE_NOT_EXECUTED",
+  "new_native_invocations": 16,
+  "helper_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/engineering/r5_native_entry.py",
+    "sha256": "ba1b216d3aaa81e3dd06c272406a2c6bc9b9dcc0c2e1c43ee2745072740f55b0"
+  },
+  "plan_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/BOUNDED_NATIVE_PLAN.json",
+    "sha256": "229ddead55c5c52882997cdfc081dee9cf4fa93e27abae1f16ab1321c0ead223"
+  },
+  "root_delta": "Strengthen every helper atomic JSON write with file and parent-directory fsync. No test semantics/command/source/binary/config change.",
+  "checks": [
+    "exact new native and metadata byte hashes",
+    "saved r4 semantic/RO/old212 refs independently pinned; not reexecuted",
+    "3important cases ALL_OFF/R4_ONLY/R5_ON, T0M0 NA, 3more realcases/newcapture, metadata synthetic",
+    "every actual child PID/start/boot and Popen.wait exit persisted before expectations",
+    "16 bounded commands aggregate32MiB; any failure nonzero no automatic retry",
+    "no completeapplication/start/registration; source-native parser independent posterior required"
+  ]
+}
