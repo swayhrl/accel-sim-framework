@@ -1,0 +1,71 @@
+DESIGN PATCH TEXT ONLY — not an applicable final diff, no production write.
+Base: Core9243f769620653f2a9d4df5599e9581e9dae6067.
+
+1. gpu-cache.h cache_block_t (~149), line_cache_block (~192), sector_cache_block (~310):
+   add pure read-only virtual cache_block_state diagnostic_sector_state(unsigned s) const;
+   line override: return m_status; sector override: return m_status[s] (s<4 validated).
+   No existing accessors/signatures/behavior changed. Pure const view is deliberate:
+   existing is_reserved_line/get_status declarations lack const qualifiers even
+   though implementations are read-only. No const_cast, getter with hidden mutation,
+   dynamic allocation, port claim, timer update, cache-stat update, or probe call.
+
+2. gpu-cache.h tag_array (~1056): add const diagnostic_way_state(index) helper
+   reading the above 4 sector states and m_tag through const cache_block_t*.
+   Return: RESERVED if ANY RESERVED; else INVALID if ALL INVALID; else DIRTY if
+   ANY MODIFIED; else CLEAN. Classify mixed VALID/RESERVED as RESERVED. This class
+   is replacement availability, not victim-order or payload-pinnability.
+   Optional read-only diagnostic tag value can crosscheck requested identity;
+   do not reuse replacement selection or call probe again.
+
+3. gpu-cache.h preview: add epl2_tagpressure_v1::snapshot tagpressure (new independent
+   struct, not a field in 212-name counter array). Include new header in existing
+   observer include chain. No r4 enum/names/printf changes.
+
+4. gpu-cache.cc l2_cache::detach_diag_snapshot (~2978–2992):
+   AFTER pre-existing r4 status-only observer probe and o.set assignment, BEFORE
+   current `if(o.raw!=RESERVATION_FAIL||!o.T)return;`:
+     capture s.assoc=actual_assoc, s.raw=normalized(o.raw), s.raw_r4=s.raw,
+     s.ro_runtime=bool(m_ro), s.T=m_config.m_ro_tag_detach;
+     for exactly the target-set 16 ways:
+       s.ways[way].kind = tag_array pure-const diagnostic_way_state(index);
+       if(m_ro) { h=tag_payload_handle(index); if(tx->live(h))
+         capture diagnostic_state(h).attached/reuse/required/ready; }
+   Full snapshot covers every old actually-covered probe, including HIT/HIT_RESERVED
+   and SECTOR_MISS. Do NOT move existing r4 pressure-only walk or change its reads,
+   conditionals, outputs, or counters. New snapshot cannot feed production logic.
+   r4 already contains one status-only observer probe; r5 adds ZERO probe calls.
+
+5. gpu-cache.cc detach_diag_frontend (~2996):
+   Only after existing once(cycle,uid) succeeds, in SAME branch that counts the old
+   observed head, pass snapshot + actual production_reached/consulted/existing/
+   intermediate + actual frontend admit + early to NEW ledger.observe().
+   Compute route deterministically: notReached; else existing+HIT_RESERVED;
+   else !consulted; else MISS; else FAIL; else OTHER.
+   This is needed for an eligible set seen under non-FAIL raw status and for
+   non-RO requester not-consulted behavior; do not infer route from old marginals.
+   Verify r5 normalized raw equals old raw bin; reject unknown/all invalid enums
+   conservatively via UNKNOWN and invalid-schema policy, never silently cast.
+
+6. detach_diag_skip (~2993): in same successful old once branch, increment r5
+   skipped reason; no snapshot, no occupancy/RO zero bins. Absent head goes into
+   absent only. It is NA for raw/occupancy/predicate/route.
+
+7. Existing bind_slice/kernel begin/end/add/erase: NEW state uses old ledger slice
+   and exact phase() result; no independent kernel-state machine. Allocate bounded
+   phase arrays lazily per registered slice, free on erase. No per-request log.
+   Supported assoc=16/64slices/18phase limit must fail closed as output invalid
+   when exceeded, never alias bins. Counters checked uint64; unknown UID/phase,
+   raw mismatch/overflow invalidates r5 acceptance, doesn't change simulation.
+
+8. ro_print (~399): emit separate EPL2TAGPRESSUREV1| JSON frames AFTER old212
+   output, preserving exact old frame bytes and ordering among old frames.
+   Serialize sparse nonzero bins + explicit dense dimensions and implicit-zero
+   coverage rules; duplicates at same cycle are legal only if counters monotonic
+   and epoch_closed false->true, as final END can share a cycle.
+   Print PHASE rows and exact SLICE reduction; final GLOBAL sums all64 slices.
+   New output max64MiB in addition to old64MiB, within actual endpoint384MiB cap;
+   ceiling writes OUTPUT_INVALID and refuses r5 scientific acceptance, never
+   silently truncates. Producer may implement terminal-only r5 print at existing
+   commandlist-END snapshot IF that exact hook is proved 64slice post-close;
+   it must NOT assume first epoch_closed means process-final or suppress closure.
+   No periodic polling, full-set scanning, new modeled events, or extra timings.

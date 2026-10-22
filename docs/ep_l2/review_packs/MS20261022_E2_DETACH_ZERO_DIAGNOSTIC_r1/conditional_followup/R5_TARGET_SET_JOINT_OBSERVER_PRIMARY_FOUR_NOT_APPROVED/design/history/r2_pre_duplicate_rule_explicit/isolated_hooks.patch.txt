@@ -1,0 +1,131 @@
+r2 REQUESTER+EARLY SAME-HEAD JOINT — DESIGN PATCH TEXT ONLY — not an applicable final diff, no production write.
+Base: Core9243f769620653f2a9d4df5599e9581e9dae6067.
+
+1. gpu-cache.h cache_block_t (~149), line_cache_block (~192), sector_cache_block (~310):
+   add pure read-only virtual cache_block_state diagnostic_sector_state(unsigned s) const;
+   line override: return m_status; sector override: return m_status[s] (s<4 validated).
+   No existing accessors/signatures/behavior changed. Pure const view is deliberate:
+   existing is_reserved_line/get_status declarations lack const qualifiers even
+   though implementations are read-only. No const_cast, getter with hidden mutation,
+   dynamic allocation, port claim, timer update, cache-stat update, or probe call.
+
+2. gpu-cache.h tag_array (~1056): add const diagnostic_way_state(index) helper
+   reading the above 4 sector states and m_tag through const cache_block_t*.
+   Return: RESERVED if ANY RESERVED; else INVALID if ALL INVALID; else DIRTY if
+   ANY MODIFIED; else CLEAN. Classify mixed VALID/RESERVED as RESERVED. This class
+   is replacement availability, not victim-order or payload-pinnability.
+   Optional read-only diagnostic tag value can crosscheck requested identity;
+   do not reuse replacement selection or call probe again.
+
+3. gpu-cache.h preview: add epl2_tagpressure_v1::snapshot tagpressure (new independent
+   struct, not a field in 212-name counter array). Include new header in existing
+   observer include chain. No r4 enum/names/printf changes.
+
+4. SNAPSHOT IS CAPTURE-ONLY: repeated snapshot/preview32 times MUST update ZERO
+   r4 or r5 observation counters, allocate no row and write no joint ledger.
+   The new context may be overwritten repeatedly with identical const state.
+   Ledger increments occur exclusively in #5 after original once succeeds.
+
+   gpu-cache.cc l2_cache::detach_diag_snapshot (~2978–2992):
+   AFTER pre-existing r4 status-only observer probe and o.set assignment, BEFORE
+   current `if(o.raw!=RESERVATION_FAIL||!o.T)return;`:
+     FIRST reset entire new context on EVERY capture, including repeat captures:
+       o.tagpressure = epl2_tagpressure_v1::snapshot{};
+       auto &s=o.tagpressure;
+     This resets every way live/attached/reuse/required/ready and all stamp/raw
+     fields before copying fresh state; never merge a new capture into old state.
+     capture s.cache_identity=this, s.slice=current_r4_ledger.slice,
+     s.physical_cycle=ft_physical_cycle(), s.request_uid=m->get_request_uid();
+     s.assoc=actual_assoc, s.raw=normalized(o.raw), s.raw_r4=s.raw,
+     s.ro_runtime=o.runtime, s.T=o.T;
+     s.requester=!o.runtime?RUNTIME_OFF:o.candidate?CERTIFIED_RO_CANDIDATE:
+                 NONRO_NATIVE_PATH;
+     Copy the existing r4 candidate/runtime capture. Do not call candidate(),
+     cert lookup, oracle, query or a model port again.
+     for exactly the target-set 16 ways:
+       s.ways[way].kind = tag_array pure-const diagnostic_way_state(index);
+       s.ways[way].live=false; // reset even if runtime absent / prior capture live
+       s.ways[way].attached=false; s.ways[way].reuse=false;
+       s.ways[way].required=0; s.ways[way].ready=0;
+       if(m_ro) {
+         h=tag_payload_handle(index);
+         s.ways[way].live=m_ro->tx->live(h); // actual assignment, not just branch
+         if(s.ways[way].live) {
+           const auto p=m_ro->tx->diagnostic_state(h);
+           s.ways[way].attached=p.attached; s.ways[way].reuse=p.reuse;
+           s.ways[way].required=p.required; s.ways[way].ready=p.ready;
+         }
+       }
+   Full snapshot covers every old actually-covered probe, including HIT/HIT_RESERVED
+   and SECTOR_MISS. Do NOT move existing r4 pressure-only walk or change its reads,
+   conditionals, outputs, or counters. New snapshot cannot feed production logic.
+   r4 already contains one status-only observer probe; r5 adds ZERO probe calls.
+
+5. gpu-cache.cc detach_diag_frontend (~2996):
+   Only after existing once(cycle,uid) succeeds, in SAME branch that counts the old
+   observed head, validate captured cache identity==this, slice==current_r4_ledger.slice,
+   physical_cycle==callback cycle, request_uid==callback head UID;
+   validate normalized raw==current o.raw. On mismatch mark r5 INVALID and do
+   not count r5 coverage/joint, but leave old212 and production execution alone.
+   After successful binding, pass snapshot+exact expected context to NEW phase
+   ledger.observe(); pass the SAME snapshot plus
+   slice/phase + actual production_reached/consulted/existing/intermediate +
+   actual frontend admit + early to NEW global bounded route_joint.record().
+   Packed key retains raw/reserved/requester/eligibleNA-no-yes/route/admit/early
+   at once; requester×route and requester×early are NOT marginally joined.
+   Sparse slot bound131072, nonzero-row cap65536 shared over ALL slices/phases;
+   exact collisions resolved by key equality, full/overflow => INVALID (not drop).
+   Compute route deterministically: notReached; else existing+HIT_RESERVED;
+   else !consulted; else MISS; else FAIL; else OTHER.
+   This is needed for an eligible set seen under non-FAIL raw status and for
+   non-RO requester not-consulted behavior; do not infer route from old marginals.
+   Verify r5 normalized raw equals old raw bin; reject unknown/all invalid enums
+   conservatively via UNKNOWN and invalid-schema policy, never silently cast.
+
+6. detach_diag_skip (~2993): in same successful old once branch, increment r5
+   skipped reason; no snapshot, no occupancy/RO zero bins. Absent head goes into
+   absent only. It is NA for raw/occupancy/predicate/route.
+
+7. Existing bind_slice/kernel begin/end/add/erase: NEW state uses old ledger slice
+   and exact phase() result; no independent kernel-state machine. Allocate bounded
+   phase arrays lazily per registered slice, free on erase. No per-request log.
+   Supported assoc=16/64slices/18phase limit must fail closed as output invalid
+   when exceeded, never alias bins. Counters checked uint64; unknown UID/phase,
+   raw mismatch/overflow invalidates r5 acceptance, doesn't change simulation.
+
+8. ro_print (~399): emit separate EPL2TAGPRESSUREV1| JSON frames AFTER old212
+   output, preserving exact old frame bytes and ordering among old frames.
+   Serialize sparse nonzero bins + explicit dense dimensions and implicit-zero
+   coverage rules; duplicates at same cycle are legal only if counters monotonic
+   and epoch_closed false->true, as final END can share a cycle.
+   Print PHASE rows and exact SLICE reduction; final GLOBAL sums all64 slices.
+   New output max64MiB in addition to old64MiB, within actual endpoint384MiB cap;
+   ceiling uses prewrite exact/conservative length accounting with256B marker
+   reserve INCLUDED in64MiB; refuse a row before crossing cap, emit marker once
+   while still within limit. Full-bin text can exceed cap; do not promise every
+   application qualifies. Ceiling refuses r5 scientific acceptance, never
+   silently truncates. Producer may implement terminal-only r5 print at existing
+   commandlist-END snapshot IF that exact hook is proved 64slice post-close;
+   it must NOT assume first epoch_closed means process-final or suppress closure.
+   No periodic polling, full-set scanning, new modeled events, or extra timings.
+
+R2 resource sizing: phase dense counter-array payload99,016,704B (64x18);
+shared sparse joint131072x16B=2,097,152B; known counter payload101,113,856B.
+64bit ABI estimated phase headers/padding+table header83KiB; two one-phase
+reduction scratch buffers172,048B; streaming serialization buffer<=64KiB.
+No expanded dense requester Cartesian product, sorted tuple copy, all-phase
+GLOBAL duplicate or per-request log is allocated. Budget128MiB extra passive
+host RAM; formal producer must compile sizeof/static bound and measure peak
+allocation<=128MiB (otherwise update lease before application qualification).
+Root may conservatively reserve an additional1GiB in each endpoint RAM lease;
+this does not relax global RAM/CPU guards. New64MiB frame output and actual
+endpoint384MiB total remain fail-closed.
+
+Context stamp is observer-only identity metadata, never serialized as a process
+pointer or used by preview/admission/feature. Same raw value on a wrong UID,
+cycle, cache or slice must be rejected, not rescued by matching marginals.
+
+Capture-reset control: reuse the same preview context through live eligible ->
+retired/noLive -> runtimeoff -> new live generation with different reuse/ready.
+Each capture must contain ONLY current state, snapshot repetition still updates
+zero ledgers, and one actual frontend callback records the latest valid context.

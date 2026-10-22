@@ -1,0 +1,103 @@
+{
+  "status": "DESIGN_ONLY_NOT_AUTHORIZED_FOR_BUILD_OR_APPLICATION",
+  "schema": "EPL2_TAGPRESSUREV1_DESIGN_R5",
+  "base_core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "wire_prefix": "EPL2TAGPRESSUREV1|",
+  "old_r4_field_count": 212,
+  "old_record_schema_and_decoder": "UNMODIFIED",
+  "configuration_support": {
+    "assoc": 16,
+    "slices": 64,
+    "phase_map": "same existing r4 ledger: unassigned0,overlap1,singleactive2..17"
+  },
+  "counter_unit": "One actually covered frontend head-cycle, dedup once(cycle,request_uid), and its same-instant target-set ways; not unique requests or global set-time.",
+  "histograms": {
+    "heads_raw_reserved": "[raw,r] -> head-cycle count",
+    "heads_raw_reserved_eligible": "[raw,r,e] -> head-cycle count, runtime present only; e is structural eligibility, operational eligibility additionally requires T",
+    "heads_raw_reserved_reasonmask": "[raw,r,5bit mask] -> head-cycle count, independent presence of eligible/notAttached/reuse/noMissing/noLive in SAME set at SAME instant",
+    "ways_raw_reserved_predmask": "[raw,r,3bit predicate] -> live-RO way observations; full attached/reuse/missing overlap retained",
+    "ways_raw_reserved_class": "[raw,r,class] -> ways: reserved,all-invalid,unreserved-clean,unreserved-dirty; classes disjoint",
+    "heads_raw_reserved_invalid": "[raw,r,invalidWayCount] -> head-cycle count",
+    "head_route_joint": "[slice,phase,raw,reservedWays,requester,eligibilityState,actualProductionRoute,admitted,actualEarlyReason] -> exact same-head-cycle count; no marginal joins. eligibilityState NA/no/yes; requester copied from existing r4 captures."
+  },
+  "wire_fields": [
+    "schema/source identity",
+    "record SLICE/PHASE/GLOBAL",
+    "snapshot cycle/sequence/epoch_closed",
+    "slice/phase/kernel_scope/kernel_uid",
+    "T/M/ro_runtime",
+    "assoc",
+    "covered/skipped-by-reason/absent",
+    "ro_observed/ro_na",
+    "nonzero histogram triplets or tuples",
+    "overflow_invalid/output_invalid/closure_ok"
+  ],
+  "identity_demand_derived_from_raw": {
+    "NEW_TAG_IDENTITY": [
+      "MISS",
+      "RESERVATION_FAIL"
+    ],
+    "SAME_LINE_IDENTITY": [
+      "HIT",
+      "HIT_RESERVED",
+      "SECTOR_MISS"
+    ],
+    "OTHER_NA": [
+      "MSHR_HIT",
+      "WRITE_ALLOCATED",
+      "UNKNOWN"
+    ]
+  },
+  "NA_rules": [
+    "skipped TVD/ideal/disabled/other: NO raw/ways/eligibility zero bins; maintain reason count and explicitly NA",
+    "head absent: absent-cycle only, not covered head",
+    "runtime off: Tag occupancy valid but RO eligibility/predicate is NA",
+    "T off: structural RO predicate observed; operational detach disabled; never label eligible actionable"
+  ],
+  "sampling": "all covered head-cycles; no random sampling; no bounded example log required",
+  "memory_bound_bytes_phase_arrays": 99016704,
+  "additional_output_hard_cap_bytes": 67108864,
+  "application_total_output_hard_cap_bytes": 402653184,
+  "controls_not_run": [
+    "C++ build",
+    "native fixture",
+    "full application"
+  ],
+  "note": "Wire serialization and model integration in isolated_hooks.patch.txt are review drafts; no production Q/source/binary authority is claimed.",
+  "production_route": [
+    "PROD_NOT_REACHED",
+    "NOT_CONSULTED",
+    "CONSULTED_MISS",
+    "CONSULTED_FAIL",
+    "EXISTING_HIT_RESERVED",
+    "OTHER"
+  ],
+  "revision": "r2_REQUESTER_AND_EARLY_EXACT_SAME_HEAD",
+  "requester_labels": [
+    "CERTIFIED_RO_CANDIDATE",
+    "NONRO_NATIVE_PATH",
+    "RUNTIME_OFF"
+  ],
+  "requester_source": "existing r4 o.runtime/o.candidate booleans captured before preview; zero additional candidate/oracle calls",
+  "joint_table": {
+    "storage_slots": 131072,
+    "max_nonzero_rows_all_slices_and_phases": 65536,
+    "slot_bytes": 16,
+    "bytes": 2097152,
+    "collision": "exact packed-key comparison + bounded linear probing",
+    "full_behavior": "OUTPUT_INVALID; refuse r5 acceptance; never sample/truncate/alias",
+    "keys": "64slice/18phase/raw8/reserved17/requester3/eligibility3/route6/admit2/early6; all same snapshot"
+  },
+  "memory_bound_bytes_counters_plus_joint_table": 101113856,
+  "host_memory_reservation_design_bytes": 134217728,
+  "history": "history/r1 preserves first design, including its known missing-requester joint and former RAM estimate; not silently retroactively corrected",
+  "memory_sizing_status": "counter payload exact; C++ ABI/layout/allocation not compiled/tested; formal sizeof+allocation bound required",
+  "scratch_bounds": {
+    "phase_reduce_buffers": 2,
+    "estimated_bytes_two_buffers_64bit_ABI": 172048,
+    "stream_serializer_bytes_max": 65536,
+    "all_phase_global_copy": false,
+    "sorting_copy": false
+  },
+  "capture_counting_boundary": "snapshot/preview is capture-only even32repeats; increment occupancy+exact joint only in real detach_diag_frontend after existing once(cycle,uid) succeeds; no independent dedup or oracle call"
+}
