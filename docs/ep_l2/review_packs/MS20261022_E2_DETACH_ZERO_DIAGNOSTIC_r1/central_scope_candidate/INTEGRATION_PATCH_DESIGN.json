@@ -1,0 +1,149 @@
+{
+  "schema": "E2_DETACH_OBSERVER_INTEGRATION_PATCH_DESIGN_V1",
+  "status": "DESIGN_ONLY_NOT_APPLIED",
+  "hooks": [
+    {
+      "file": "util/ep_l2/mechanism_e/workload_policy.py",
+      "lines": [
+        93,
+        122
+      ],
+      "change": "Import new pure diagnostic policy. For active oldcompleted batch validate attempts[46:50]; if total>50 require independently valid newobserver adoption+tail before accepting bounded oldwindow. In oldbatch-only mode retain exactcurrent post46<=4 rejection. New diagnostic policy must not import/call workload.active, avoiding recursion. Keep all old four conditions/batches/bindings exactly unchanged.",
+      "source_sha256": "19e7b5e93f7996f14f411f658cd52d156f4d68b82074f4c48df50730be546a6d"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        90,
+        106
+      ],
+      "change": "ledger always calls new diagnostic_policy.active(item) if row present. active validates prefix+oldworkloadSHA+strict0/1newtail; unauth extra tail rejected even if oldwindow scan is sliced. Do not mutate records during snapshot.",
+      "source_sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        254,
+        277
+      ],
+      "change": "Add adopt_detach_observer_batch(approval,finalmanifest) under original lock; require original controllerSTOPPED/no active E runs, engineering leases, uncertain intents. Add bind_detach_observer_condition(spec) under same lock, exactsealed newQ/source/producer/schema/input; atomic binding no oldbinding edits.",
+      "source_sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/limits_policy.py",
+      "lines": [
+        71,
+        118
+      ],
+      "change": "New diagnostic spec routing BEFORE existing workload/capacity: scope_allowed exactmanifest bound; has_start_capacity uses scoped guard despite unlimitedglobal; effective_timeout only exact bound approved operational value; assert_condition_unstarted strict once, no retry/refund. Do not alter original capacity/time removal authority.",
+      "source_sha256": "393bb20424f8aa70f2a0af18111fb16924bccc1fac251e11c1206c82af03050e"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/policy_v2.py",
+      "lines": [
+        67,
+        73
+      ],
+      "change": "charged_bucket recognizes only exact authorized diagnostic condition/batch plus diagnostic_spec_sha marker; returns own newbudgetbucket, not oldcontingency. Strong ledger guard validates its genuine batch provenance.",
+      "source_sha256": "5c604591a3cff6845df735b9d9104f3a1826ecca6717d7208d92eb736ccfb192"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/policy_v2.py",
+      "lines": [
+        109,
+        137
+      ],
+      "change": "condition_check route new diagnostic first; permits only exact frozen SGEMM selection/new diagnosticgroup, new Q/source/profile/producermanifest. Old32/8 and capacity10 remain byte-identical. Comparison allowed uses this exact route, not broad groupallowlist.",
+      "source_sha256": "5c604591a3cff6845df735b9d9104f3a1826ecca6717d7208d92eb736ccfb192"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/policy_v2.py",
+      "lines": [
+        140,
+        166
+      ],
+      "change": "If new Q uses detach_observer_diagnostic contract, validate it against exact producer/schema/counter parser/E independent observer gates and scoped native applicability. Existing18source evidence reused only with explicit unchanged-premise map; never treat main61 Q/status as newbinary Q. Preserve normal register_qualification genericsource/build/producergates.",
+      "source_sha256": "5c604591a3cff6845df735b9d9104f3a1826ecca6717d7208d92eb736ccfb192"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        555,
+        621
+      ],
+      "change": "reserve_application: route newobserver guard at both oldcapacity/workload bucket sites; ownnewbucket no original reservations mutation; validate fullspec seal/Q/hold; resource_gate unchanged. Before append record condition/batch/exactspec/scientific_scope and consume once token under original lock. All current run-key duplicate/hold/source/input/resource checks remain.",
+      "source_sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/runner.py",
+      "lines": [
+        113,
+        127
+      ],
+      "change": "Dedicated new observer terminal path requires matching new Q marker+spec marker+parser/schemaSHA; run unchanged full-application closure checks plus independent observer equations/coverage. Reject observer summary through legacy/capacity path and diagnostic spec without contract; overflow/missing/drift rejected, zero truecounts allowed.",
+      "source_sha256": "d54db7f65858477c7ed089e16f049f622c6888e29f767d3f68fad06bb5ac5037"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/runner.py",
+      "lines": [
+        134,
+        148
+      ],
+      "change": "Bind new observer point scientific_scope in run_status without changing old result files; normal durable OSwait0, instructions,64slice,parser,identity/drain validation remains. All existing prelaunch and end inspect passes preserved.",
+      "source_sha256": "d54db7f65858477c7ed089e16f049f622c6888e29f767d3f68fad06bb5ac5037"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        675,
+        712
+      ],
+      "change": "finish_application preserves normal durablewait/closure; new accepted_results entry explicitly marked DIAGNOSTIC_POINT, ownnewQ/source. Existing oldaccepted entries unchanged. No new accepted_pair creation.",
+      "source_sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/runner.py",
+      "lines": [
+        256,
+        286
+      ],
+      "change": "accept_pair explicitly rejects any detach_observer_diagnostic endpoint/Q/scientific_scope; preserve existing exactsource/invariant checks for otherpairs. Old S is context only, no cross-binary baseline-equivalence inferred.",
+      "source_sha256": "d54db7f65858477c7ed089e16f049f622c6888e29f767d3f68fad06bb5ac5037"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/controller.py",
+      "lines": [
+        86,
+        111
+      ],
+      "change": "Original controller only; new queue exactly one spec and pairs[]. Add exactobserver queue guard (singleentry path/SHA/newcondition bound) before scheduling. No secondcontroller, watchdaemon, scheduler or fixedconcurrency changes; original resource-only forecast/single route proceeds.",
+      "source_sha256": "21274394caa140a2b8cb1176a7dd7f39b76b8ad76722c1a897f5cb948679fdd7"
+    },
+    {
+      "file": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        73,
+        87
+      ],
+      "change": "Activation only after source publication/readback and zero original E work: CLIENT source_files includes new policy/validation modules, exactsource publication and resourceAPI checksum. Oldsourcebefore/activated receipts archived; complete .py glob contract enforced, never bypass tooling_binding.",
+      "source_sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b"
+    }
+  ],
+  "activation_order": [
+    "Receive real A2 formal producer, schema and actual source/control evidence; independent E Q/config/parser/input/profile sealing, current C artifacts checked.",
+    "Publish exact new authorization+finalmanifest+candidatecentral extension, remote readback; engineering controls onlytempregistry before activation.",
+    "Wait own E native/controller/build/testleases truly drained and originalcontrollerSTOPPED. Snapshot/readback originalCLIENT/registrySHA/prefix.",
+    "Activate narrowly reviewed source manifest+original CLIENT binding; use original Coordinator original lock to append adoption+Q/spec binding, verify old50/allcontracts preserved.",
+    "Write exact immutable one-entry READY_QUEUE pairs[] and call original controller.step once under originalCONTROLLER.lock; dedup bycondition+runkey+batch token.",
+    "Revalidate all gates immediately before release to real native; count trueactual50->51; failures/resources retained without refund/auto retry.",
+    "Normal terminal independent observer+fullinput qualification -> accepted DIAGNOSTIC_POINT only, immediate D delivery; controller naturally STOPPED and allleases closed."
+  ],
+  "not_closed_by_pure_tests": [
+    "Actual Coordinator originalREGISTRY.lock/CONTROLLER.lock integration",
+    "Real CLIENT allsource publication pins/readback",
+    "Real independent observer parser/funnel/overflow/rollup equations",
+    "Real source/binary/archive/build/native observer noninterference qualification",
+    "Real originalresource_gate+diskmonitor+durableOSexit integration",
+    "Actual Ddelivery and Gitremote readback"
+  ]
+}

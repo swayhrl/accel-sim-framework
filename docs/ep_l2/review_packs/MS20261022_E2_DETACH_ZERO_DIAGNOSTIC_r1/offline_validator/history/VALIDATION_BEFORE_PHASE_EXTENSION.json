@@ -1,0 +1,422 @@
+{
+  "schema": "E2_OFFLINE_COUNTER_VALIDATOR_CONTROLS_V1",
+  "result": "PASS",
+  "case_count": 51,
+  "elapsed_seconds": 0.014961181208491325,
+  "cases": [
+    {
+      "name": "positive_declarations_only",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "detach_then_request_denied_legal",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "multiple_waiter_responses_not_transaction_count",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "raw_fail_masked_by_preview_miss_is_counted",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "native_preview_not_consulted_is_separate",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "under_count",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "CONSERVATION",
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "over_count",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "bool_is_not_integer",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "COUNT_TYPE"
+      ]
+    },
+    {
+      "name": "negative_is_invalid",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "COUNT_TYPE"
+      ]
+    },
+    {
+      "name": "uint64_wrap_is_invalid",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "COUNT_TYPE"
+      ]
+    },
+    {
+      "name": "missing_counter_not_zero",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "MISSING_COUNTER",
+        "MISSING_COUNTER",
+        "MISSING_COUNTER"
+      ]
+    },
+    {
+      "name": "NA_prevents_closed_claim",
+      "expected": "INCOMPLETE",
+      "actual": "INCOMPLETE",
+      "error_codes": []
+    },
+    {
+      "name": "NA_plus_zero_rejected",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "NA_VALUE"
+      ]
+    },
+    {
+      "name": "declared_NA_cannot_be_filled",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "NA_FILLED_AS_ZERO",
+        "CONSERVATION",
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "head_cycles_not_access_attempts",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "UNIT_MISMATCH"
+      ]
+    },
+    {
+      "name": "renamed_unit_cannot_bridge_domains",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "DOMAIN_MISMATCH"
+      ]
+    },
+    {
+      "name": "existing_detached_must_match_real_success",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "nonexclusive_masks_not_partition",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "NONEXCLUSIVE_SUM"
+      ]
+    },
+    {
+      "name": "duplicate_partition_term",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "REPEATED_TERM",
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "overflow_invalidates",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "COUNTER_OVERFLOW"
+      ]
+    },
+    {
+      "name": "missing_overflow_marker",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "OVERFLOW_FLAG_MISSING"
+      ]
+    },
+    {
+      "name": "sample_cap_exceeds64",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "SAMPLE_BOUNDS"
+      ]
+    },
+    {
+      "name": "dropped_requires_truncated",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "SAMPLE_TRUNCATION"
+      ]
+    },
+    {
+      "name": "duplicate_samples",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "DUPLICATE_SAMPLE"
+      ]
+    },
+    {
+      "name": "slice_rollup",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "missing_required_slice_scope",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "MISSING_REQUIRED_SCOPE",
+        "MISSING_COUNTER"
+      ]
+    },
+    {
+      "name": "slice_rollup_missing_residual",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "omitted_expected_slice",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_MEMBERS"
+      ]
+    },
+    {
+      "name": "kernel_with_explicit_unattributed",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "unattributed_not_discarded",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_MEMBER_BINDING",
+        "UNATTRIBUTED_MISSING",
+        "ROLLUP_LEVEL",
+        "OVERLAPPING_KERNEL_SUM",
+        "OVERLAPPING_KERNEL_SUM"
+      ]
+    },
+    {
+      "name": "overlap_cannot_be_summed",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "OVERLAPPING_KERNEL_SUM"
+      ]
+    },
+    {
+      "name": "explicit_overlap_cannot_be_summed",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "OVERLAPPING_KERNEL_SUM"
+      ]
+    },
+    {
+      "name": "interval_bool_invalid",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "INTERVAL"
+      ]
+    },
+    {
+      "name": "different_intervals_not_equal",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "SCOPE_MISMATCH"
+      ]
+    },
+    {
+      "name": "exposure_cannot_pose_as_same_transition",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "DOMAIN_MISMATCH"
+      ]
+    },
+    {
+      "name": "root_witness_expected01_actual0_99",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "kernel_fake_label",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "kernel_children_from_different_slices",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_POPULATION"
+      ]
+    },
+    {
+      "name": "empty_run_rejected",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "RUN_ID"
+      ]
+    },
+    {
+      "name": "missing_run_rejected",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "RUN_ID"
+      ]
+    },
+    {
+      "name": "slice_level_missing_slice_id",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "SLICE_ID",
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "kernel_level_missing_kernel_id",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "KERNEL_ID",
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "kernel_level_missing_slice_id",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "SLICE_ID",
+        "ROLLUP_POPULATION"
+      ]
+    },
+    {
+      "name": "unattributed_scope_identity_required",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "UNATTRIBUTED_ID",
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "slice_bool_rejected",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "SLICE_ID",
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "kernel_outside_parent_period",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_INTERVAL"
+      ]
+    },
+    {
+      "name": "slice_wrong_period",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_INTERVAL",
+        "ROLLUP_INTERVAL"
+      ]
+    },
+    {
+      "name": "shifted_disjoint_kernel_periods_legal",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "unknown_residual_stays_incomplete",
+      "expected": "INCOMPLETE",
+      "actual": "INCOMPLETE",
+      "error_codes": []
+    },
+    {
+      "name": "NA_cannot_hide_wrong_member_identity",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "malformed_document_does_not_crash",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "DOMAINS",
+        "METRIC_DECLARATIONS",
+        "NO_RELATIONS",
+        "SAMPLES_FLAGS"
+      ]
+    }
+  ],
+  "limitations": [
+    "Synthetic declaration checks, not native or simulator correctness tests",
+    "No real A2 schema adapter available yet",
+    "Cannot prove an emitting simulator observed a counter honestly",
+    "Not source/binary/input/resource qualification or application acceptance"
+  ]
+}

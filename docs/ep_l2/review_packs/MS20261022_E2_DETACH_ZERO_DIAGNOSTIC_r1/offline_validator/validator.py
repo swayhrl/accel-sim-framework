@@ -4,6 +4,7 @@ No production metric names are built in. An owner-reviewed adapter must declare
 metrics/domains/units, exact scope coverage, and conservation equations.
 """
 import json
+import re
 import sys
 
 
@@ -13,6 +14,8 @@ def _audit(document):
         errors.append({'code': code, 'where': where, 'detail': detail})
     def uint(v):
         return type(v) is int and 0 <= v <= (1 << 64) - 1
+    def source_ref(v):
+        return isinstance(v,dict) and isinstance(v.get('commit'),str) and re.fullmatch(r'[0-9a-f]{40}',v['commit']) is not None and isinstance(v.get('sha256'),str) and re.fullmatch(r'[0-9a-f]{64}',v['sha256']) is not None and isinstance(v.get('path'),str) and bool(v['path'].strip())
     def interval(s):
         i = s.get('interval', {})
         return i.get('start'), i.get('end')
@@ -40,7 +43,7 @@ def _audit(document):
         records[rid] = record
         scope = record.get('scope', {})
         start, end = interval(scope)
-        if scope.get('domain') not in domains or scope.get('level') not in ('GLOBAL','SLICE','KERNEL_INTERVAL','UNATTRIBUTED'):
+        if scope.get('domain') not in domains or scope.get('level') not in ('GLOBAL','SLICE','KERNEL_INTERVAL','UNATTRIBUTED','PHASE_BUCKET'):
             err('SCOPE', rid, 'Explicit domain and supported level required')
         if not uint(start) or not uint(end) or end < start:
             err('INTERVAL', rid, 'Half-open nonnegative physical-clock interval required')
@@ -53,7 +56,7 @@ def _audit(document):
         level=scope.get('level')
         if level=='GLOBAL' and ('slice' in dims or 'kernel' in dims):
             err('SCOPE_DIMENSIONS',rid,'Global scope cannot carry slice/kernel dimension')
-        if level in ('SLICE','KERNEL_INTERVAL','UNATTRIBUTED') and not uint(dims.get('slice')):
+        if level in ('SLICE','KERNEL_INTERVAL','UNATTRIBUTED','PHASE_BUCKET') and not uint(dims.get('slice')):
             err('SLICE_ID',rid,'Slice-scoped records require integer slice ID')
         if level=='SLICE' and 'kernel' in dims:
             err('SCOPE_DIMENSIONS',rid,'Slice total cannot carry kernel dimension')
@@ -61,6 +64,17 @@ def _audit(document):
             err('KERNEL_ID',rid,'Kernel interval requires integer kernel ID and slice ID')
         if level=='UNATTRIBUTED' and dims.get('kernel')!='UNATTRIBUTED':
             err('UNATTRIBUTED_ID',rid,'Residual scope needs explicit kernel=UNATTRIBUTED')
+        if level=='PHASE_BUCKET':
+            if not isinstance(dims.get('phase_bucket'),str) or not dims.get('phase_bucket','').strip():
+                err('PHASE_ID',rid,'Explicit nonempty physical phase bucket label required')
+            if any(k in dims for k in ('kernel','requester_kernel','victim_kernel')) or scope.get('attribution')!='PHYSICAL_PHASE_ONLY' or scope.get('claims_causal_kernel',False) is not False:
+                err('PHASE_CAUSAL_CLAIM',rid,'Phase bucket is physical assignment, not causal kernel attribution')
+            if not isinstance(scope.get('partition_id'),str) or not scope.get('partition_id','').strip():
+                err('PHASE_PARTITION_ID',rid,'Explicit assignment partition ID required')
+            if scope.get('coverage_status','MEASURED') not in ('MEASURED','NOT_EMITTED_SOURCE_PROVEN'):
+                err('PHASE_COVERAGE_STATE',rid,'Measured or explicit source-proven unavailable state required')
+            if scope.get('coverage_status')=='NOT_EMITTED_SOURCE_PROVEN' and not source_ref(scope.get('unavailable_source_ref')):
+                err('PHASE_UNAVAILABLE_PROVENANCE',rid,'Unavailable phase needs exact source-ref; no invented zero')
         if scope.get('level') == 'KERNEL_INTERVAL' and (type(scope.get('overlap')) is not bool or scope.get('attribution') not in ('INTERVAL_SCOPE','EXACT_REQUESTER')):
             err('KERNEL_SCOPE', rid, 'Attribution and overlap flags required')
         key = json.dumps(scope,sort_keys=True)
@@ -87,6 +101,8 @@ def _audit(document):
                 err('COUNT_TYPE', path, 'Unsigned64 integer required, bool forbidden')
             if value['status'] == 'NA' and ('value' in value or not isinstance(value.get('reason'),str) or not value.get('reason')):
                 err('NA_VALUE', path, 'NA has reason and no numeric value')
+        if scope.get('level')=='PHASE_BUCKET' and scope.get('coverage_status')=='NOT_EMITTED_SOURCE_PROVEN' and any(v.get('status')!='NA' for v in metrics.values()):
+            err('PHASE_UNAVAILABLE_HAS_COUNT',rid,'Source-proven un-emitted phase must contain NA, never zero')
     for required_scope in declarations.get('required_scopes',[]):
         if json.dumps(required_scope,sort_keys=True) not in scope_keys:
             err('MISSING_REQUIRED_SCOPE',str(required_scope),'Owner adapter requires this exact scope; missing is not zero')
@@ -149,7 +165,7 @@ def _audit(document):
         if kind=='rollup':
             mode=relation.get('axis')
             parent=target[0]['scope']
-            rolled_dimension={'slice':'slice','kernel':'kernel'}.get(mode)
+            rolled_dimension={'slice':'slice','kernel':'kernel','phase':'phase_bucket'}.get(mode)
             parent_dims={k:v for k,v in parent.get('dimensions',{}).items() if k!=rolled_dimension}
             for child,_,_ in values:
                 child_scope=child['scope']
@@ -162,15 +178,32 @@ def _audit(document):
                     err('ROLLUP_INTERVAL',name,'Child outside parent physical interval')
             labels=relation.get('members')
             expected=relation.get('expected_members')
-            if mode not in ('slice','kernel') or not isinstance(labels,list) or not isinstance(expected,list) or len(labels)!=len(values) or len(labels)!=len(set(labels)) or set(labels)!=set(expected) or not all(isinstance(label,str) and label for label in labels+expected):
+            if mode not in ('slice','kernel','phase') or not isinstance(labels,list) or not isinstance(expected,list) or len(labels)!=len(values) or len(labels)!=len(set(labels)) or set(labels)!=set(expected) or not all(isinstance(label,str) and label for label in labels+expected):
                 err('ROLLUP_MEMBERS',name,'Exact declared children required including unattributed'); continue
             for label,(child,_,_) in zip(labels,values):
                 actual=child['scope'].get('dimensions',{}).get(rolled_dimension)
                 actual_label=str(actual) if uint(actual) else actual
                 if label!=actual_label:
                     err('ROLLUP_MEMBER_BINDING',name,{'declared_member':label,'actual_dimension':actual,'child':child['id']})
-            if relation.get('unattributed_policy') not in ('EXPLICIT_BUCKET','NOT_APPLICABLE_PARTITION_BY_SLICE'):
+            if relation.get('unattributed_policy') not in ('EXPLICIT_BUCKET','NOT_APPLICABLE_PARTITION_BY_SLICE','EXPLICIT_PHASE_BUCKETS'):
                 err('UNATTRIBUTED_POLICY',name,'Explicit handling of unattributed/residual required')
+            if mode=='phase':
+                provenance=relation.get('partition_provenance',{})
+                partition_id=provenance.get('partition_id')
+                if relation.get('assignment_partition') is not True or provenance.get('mutually_exclusive') is not True or provenance.get('coverage')!='COMPLETE' or not source_ref(provenance.get('source_ref')) or not isinstance(partition_id,str) or not partition_id.strip():
+                    err('PHASE_PARTITION_PROVENANCE',name,'Explicit complete mutually exclusive assignment partition with exact source-ref required')
+                if relation.get('unattributed_policy')!='EXPLICIT_PHASE_BUCKETS' or not {'UNASSIGNED','OVERLAP_UNKNOWN'}.issubset(set(expected)):
+                    err('PHASE_RESIDUAL_MEMBERS',name,'Both UNASSIGNED and OVERLAP_UNKNOWN required as measured or explicit NA buckets')
+                if parent.get('level')!='SLICE' or any(x[0]['scope'].get('level')!='PHASE_BUCKET' for x in values):
+                    err('PHASE_ROLLUP_LEVEL',name,'Phase buckets roll up to one SLICE, then a separate slice rollup creates GLOBAL')
+                if len(starts)!=1:
+                    err('PHASE_INTERVAL',name,'Buckets share whole physical snapshot interval, not bucket-specific time windows')
+                if any(x[0]['scope'].get('partition_id')!=partition_id for x in values):
+                    err('PHASE_PARTITION_GROUP',name,'Children must belong to exactly the declared assignment partition')
+                listed_ids={x[0]['id'] for x in values}
+                group_ids={r['id'] for r in records.values() if r.get('scope',{}).get('level')=='PHASE_BUCKET' and r['scope'].get('partition_id')==partition_id and r['scope'].get('domain')==parent.get('domain') and interval(r['scope'])==interval(parent) and {k:v for k,v in r['scope'].get('dimensions',{}).items() if k!='phase_bucket'}==parent_dims}
+                if listed_ids!=group_ids:
+                    err('PHASE_GROUP_COVERAGE',name,{'listed_records':sorted(listed_ids),'actual_partition_records':sorted(group_ids)})
             if mode=='kernel' and ('UNATTRIBUTED' not in labels or relation.get('unattributed_policy')!='EXPLICIT_BUCKET'):
                 err('UNATTRIBUTED_MISSING',name,'Kernel rollup requires residual bucket')
             if mode=='slice' and (parent.get('level')!='GLOBAL' or any(x[0]['scope'].get('level')!='SLICE' for x in values)):

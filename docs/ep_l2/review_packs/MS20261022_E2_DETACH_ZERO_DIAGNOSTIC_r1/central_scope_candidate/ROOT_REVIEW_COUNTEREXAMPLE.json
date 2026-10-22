@@ -1,0 +1,34 @@
+{
+  "schema": "E2_SYNTHETIC_ROOT_REVIEW_REFUND_COUNTEREXAMPLE_V1",
+  "scope": "Synthetic pure-policy witness; original pre-fix boolean predicates recomputed, not a real native/Coordinator run",
+  "before": {
+    "state": "RESOURCE_LIMIT",
+    "actual_start": true,
+    "process": {
+      "synthetic_fixture": true,
+      "pid": "SYNTHETIC_PID",
+      "start_ticks": "SYNTHETIC_TICKS",
+      "boot_id": "SYNTHETIC_BOOT"
+    },
+    "started_unix": 1.0
+  },
+  "coordinated_mutation": {
+    "state": "CANCELLED_BEFORE_START",
+    "actual_start": false,
+    "actual_starts": 50,
+    "retained_process_and_start_witness": true
+  },
+  "pre_fix_predicates_all_pass": {
+    "state_actual_start_agreement": true,
+    "actual_starts_recount": true,
+    "old50_prefix_unchanged": true,
+    "identity_binding_unchanged": true
+  },
+  "fixed_core_rejection": "retained process/start witness forbids refund",
+  "other_root_finding": {
+    "previous_production_Q_predicate": "not fixture_mode or q.synthetic_fixture is True",
+    "for_production_mode_and_synthetic_Q": true,
+    "fixed": "Production requires both Q.synthetic_fixture and producer.synthetic_fixture explicitly False; independent tests24 exercise both syntheticQ and syntheticproducer refusal."
+  },
+  "actual_application_or_native_processes": 0
+}

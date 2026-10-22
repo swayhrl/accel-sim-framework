@@ -1,8 +1,8 @@
 {
   "schema": "E2_OFFLINE_COUNTER_VALIDATOR_CONTROLS_V1",
   "result": "PASS",
-  "case_count": 51,
-  "elapsed_seconds": 0.014961181208491325,
+  "case_count": 75,
+  "elapsed_seconds": 0.024714207276701927,
   "cases": [
     {
       "name": "positive_declarations_only",
@@ -399,6 +399,207 @@
       "actual": "INVALID",
       "error_codes": [
         "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "phase_shared_overlapping_clock_ranges_are_legal",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "phase_missing_required_bucket_record",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "MISSING_COUNTER"
+      ]
+    },
+    {
+      "name": "phase_missing_overlap_bucket_declaration",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_RESIDUAL_MEMBERS",
+        "PHASE_GROUP_COVERAGE",
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "phase_duplicate_record_reference",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "REPEATED_TERM",
+        "ROLLUP_MEMBER_BINDING",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_duplicate_actual_bucket_identity",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "DUPLICATE_SCOPE",
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "phase_cross_slice_population",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_POPULATION",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_cross_run_population",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_POPULATION",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_missing_source_ref",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_PARTITION_PROVENANCE"
+      ]
+    },
+    {
+      "name": "phase_bad_source_hash",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_PARTITION_PROVENANCE"
+      ]
+    },
+    {
+      "name": "phase_missing_assignment_marker",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_PARTITION_PROVENANCE"
+      ]
+    },
+    {
+      "name": "phase_nonexclusive_assignment",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_PARTITION_PROVENANCE"
+      ]
+    },
+    {
+      "name": "phase_mixed_assignment_groups",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_PARTITION_GROUP",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_pseudo_causal_attribution",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_CAUSAL_CLAIM"
+      ]
+    },
+    {
+      "name": "phase_kernel_dimension_forbidden",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_CAUSAL_CLAIM",
+        "ROLLUP_POPULATION",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_causal_claim_forbidden",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_CAUSAL_CLAIM"
+      ]
+    },
+    {
+      "name": "phase_bucket_specific_window_not_whole_snapshot",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_INTERVAL",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_cannot_roll_directly_global",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_POPULATION",
+        "ROLLUP_POPULATION",
+        "ROLLUP_POPULATION",
+        "ROLLUP_POPULATION",
+        "PHASE_ROLLUP_LEVEL",
+        "PHASE_GROUP_COVERAGE"
+      ]
+    },
+    {
+      "name": "phase_source_proven_missing_is_NA_not_zero",
+      "expected": "INCOMPLETE",
+      "actual": "INCOMPLETE",
+      "error_codes": []
+    },
+    {
+      "name": "phase_unemitted_NA_requires_source",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_UNAVAILABLE_PROVENANCE"
+      ]
+    },
+    {
+      "name": "phase_source_proven_missing_cannot_fill_zero",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_UNAVAILABLE_HAS_COUNT",
+        "CONSERVATION"
+      ]
+    },
+    {
+      "name": "phase_unknown_count_prevents_closure",
+      "expected": "INCOMPLETE",
+      "actual": "INCOMPLETE",
+      "error_codes": []
+    },
+    {
+      "name": "phase_NA_cannot_hide_fake_bucket_label",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "ROLLUP_MEMBER_BINDING"
+      ]
+    },
+    {
+      "name": "phase_then_slice_rollup_global_legal",
+      "expected": "VALID_DECLARATIONS_ONLY",
+      "actual": "VALID_DECLARATIONS_ONLY",
+      "error_codes": []
+    },
+    {
+      "name": "phase_hidden_unlisted_bucket_rejected",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "error_codes": [
+        "PHASE_GROUP_COVERAGE"
       ]
     },
     {

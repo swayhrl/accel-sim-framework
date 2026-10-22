@@ -60,3 +60,32 @@ unattributed kernel residuals require the literal kernel dimension UNATTRIBUTED.
 Rollup labels must equal actual child dimensions. Kernel rollups have one slice
 parent and retain its slice ID when checking populations; combine slices only
 through a separate slice rollup. NA cannot suppress these identity checks.
+
+## Physical phase buckets (preparation revision)
+
+`level: PHASE_BUCKET` is separate from kernel intervals. Dimensions include run,
+slice, and a literal phase_bucket label. Attribution must be PHYSICAL_PHASE_ONLY;
+causal kernel dimensions or claims are invalid. Each bucket carries partition_id
+and the whole physical cumulative snapshot interval. Buckets can describe
+interleaved, non-contiguous time membership; shared [start,end) ranges do not
+mean the assignment partition overlaps.
+
+An axis=phase rollup has a SLICE parent, exact members/expected_members including
+UNASSIGNED and OVERLAP_UNKNOWN, assignment_partition=true, and
+partition_provenance with partition_id, mutually_exclusive=true, coverage=COMPLETE,
+and source_ref={commit:40 lowercase hex,path:nonempty,sha256:64 lowercase hex}.
+Every same-group actual phase record must be listed. Group/population/label/time
+identity checks apply even when counts are NA. Aggregate to GLOBAL separately
+through exact slice rollup; do not roll phase buckets directly into GLOBAL.
+
+A source-proven unemitted bucket remains an explicit PHASE_BUCKET record with
+coverage_status=NOT_EMITTED_SOURCE_PROVEN, unavailable_source_ref, and NA metrics.
+It makes the declared numeric conservation INCOMPLETE; it never licenses a zero.
+A completely missing required bucket is INVALID. No source-proven claim is
+trusted merely because its source reference looks valid: root/real adapter must
+verify Git bytes and source-backed phase assignment. See
+example_synthetic_phase_document.json for a synthetic decoded-object example.
+
+History preserves the earlier 51-control revision. Current controls: 75, with
+all original 51 outcomes retained. No actual A2 schema adapter or native parser
+has been implemented by this extension.

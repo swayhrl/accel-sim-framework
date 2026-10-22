@@ -40,6 +40,20 @@ def rollup(kind='slice'):
     return d
 
 
+def phase_rollup():
+    d=base()
+    d['declarations']['metrics']['R']={'domain':'HEAD','unit':'HEAD_CYCLE','measurement_kind':'EXPOSURE_COUNT'}
+    source={'commit':'a'*40,'path':'synthetic-fixture/phase_assignment_contract.json','sha256':'b'*64}
+    parent={'id':'p0','scope':{'domain':'HEAD','level':'SLICE','interval':{'start':0,'end':100},'dimensions':{'run':'synthetic-phase','slice':0}},'overflow':False,'metrics':{'R':ok(7)}}
+    labels=['SINGLE_ACTIVE_INTERVAL:100','SINGLE_ACTIVE_INTERVAL:101','UNASSIGNED','OVERLAP_UNKNOWN']
+    children=[]
+    for i,(label,value) in enumerate(zip(labels,(2,3,1,1))):
+        children.append({'id':'phase'+str(i),'scope':{'domain':'HEAD','level':'PHASE_BUCKET','interval':{'start':0,'end':100},'dimensions':{'run':'synthetic-phase','slice':0,'phase_bucket':label},'partition_id':'synthetic-disjoint-assignment','attribution':'PHYSICAL_PHASE_ONLY'},'overflow':False,'metrics':{'R':ok(value)}})
+    d['records'] += [parent]+children
+    d['declarations']['relations'].append({'id':'physical_phase_rollup','kind':'rollup','axis':'phase','total':ref('p0','R'),'parts':[ref(c['id'],'R') for c in children],'members':labels,'expected_members':labels[:],'unattributed_policy':'EXPLICIT_PHASE_BUCKETS','assignment_partition':True,'partition_provenance':{'partition_id':'synthetic-disjoint-assignment','mutually_exclusive':True,'coverage':'COMPLETE','source_ref':source}})
+    return d
+
+
 def run():
     cases=[]
     def check(name,d,status,code=None):
@@ -97,8 +111,33 @@ def run():
     d=rollup('kernel');[r['scope']['interval'].update(start=r['scope']['interval']['start']+200,end=r['scope']['interval']['end']+200) for r in d['records']];check('shifted_disjoint_kernel_periods_legal',d,'VALID_DECLARATIONS_ONLY')
     d=rollup('kernel');d['records'][-1]['metrics']['R']={'status':'NA','reason':'residual attribution unavailable'};check('unknown_residual_stays_incomplete',d,'INCOMPLETE')
     d=rollup();d['records'][-1]['scope']['dimensions']['slice']=99;d['records'][-1]['metrics']['R']={'status':'NA','reason':'count unavailable'};check('NA_cannot_hide_wrong_member_identity',d,'INVALID','ROLLUP_MEMBER_BINDING')
+    check('phase_shared_overlapping_clock_ranges_are_legal',phase_rollup(),'VALID_DECLARATIONS_ONLY')
+    d=phase_rollup();d['records'].pop();check('phase_missing_required_bucket_record',d,'INVALID','MISSING_COUNTER')
+    d=phase_rollup();rel=d['declarations']['relations'][-1];rel['parts'].pop();rel['members'].pop();rel['expected_members'].pop();check('phase_missing_overlap_bucket_declaration',d,'INVALID','PHASE_RESIDUAL_MEMBERS')
+    d=phase_rollup();rel=d['declarations']['relations'][-1];rel['parts'][-1]=rel['parts'][-2];check('phase_duplicate_record_reference',d,'INVALID','REPEATED_TERM')
+    d=phase_rollup();d['records'][-1]['scope']['dimensions']['phase_bucket']='UNASSIGNED';check('phase_duplicate_actual_bucket_identity',d,'INVALID','ROLLUP_MEMBER_BINDING')
+    d=phase_rollup();d['records'][-1]['scope']['dimensions']['slice']=1;check('phase_cross_slice_population',d,'INVALID','ROLLUP_POPULATION')
+    d=phase_rollup();d['records'][-1]['scope']['dimensions']['run']='foreign-run';check('phase_cross_run_population',d,'INVALID','ROLLUP_POPULATION')
+    d=phase_rollup();del d['declarations']['relations'][-1]['partition_provenance']['source_ref'];check('phase_missing_source_ref',d,'INVALID','PHASE_PARTITION_PROVENANCE')
+    d=phase_rollup();d['declarations']['relations'][-1]['partition_provenance']['source_ref']['sha256']='bad';check('phase_bad_source_hash',d,'INVALID','PHASE_PARTITION_PROVENANCE')
+    d=phase_rollup();del d['declarations']['relations'][-1]['assignment_partition'];check('phase_missing_assignment_marker',d,'INVALID','PHASE_PARTITION_PROVENANCE')
+    d=phase_rollup();d['declarations']['relations'][-1]['partition_provenance']['mutually_exclusive']=False;check('phase_nonexclusive_assignment',d,'INVALID','PHASE_PARTITION_PROVENANCE')
+    d=phase_rollup();d['records'][-1]['scope']['partition_id']='foreign-group';check('phase_mixed_assignment_groups',d,'INVALID','PHASE_PARTITION_GROUP')
+    d=phase_rollup();d['records'][-1]['scope']['attribution']='EXACT_REQUESTER';check('phase_pseudo_causal_attribution',d,'INVALID','PHASE_CAUSAL_CLAIM')
+    d=phase_rollup();d['records'][-1]['scope']['dimensions']['kernel']=100;check('phase_kernel_dimension_forbidden',d,'INVALID','PHASE_CAUSAL_CLAIM')
+    d=phase_rollup();d['records'][-1]['scope']['claims_causal_kernel']=True;check('phase_causal_claim_forbidden',d,'INVALID','PHASE_CAUSAL_CLAIM')
+    d=phase_rollup();d['records'][-1]['scope']['interval']['start']=50;check('phase_bucket_specific_window_not_whole_snapshot',d,'INVALID','PHASE_INTERVAL')
+    d=phase_rollup();d['records'][-5]['scope']['level']='GLOBAL';del d['records'][-5]['scope']['dimensions']['slice'];check('phase_cannot_roll_directly_global',d,'INVALID','PHASE_ROLLUP_LEVEL')
+    d=phase_rollup();r=d['records'][-1];r['scope']['coverage_status']='NOT_EMITTED_SOURCE_PROVEN';r['scope']['unavailable_source_ref']=copy.deepcopy(d['declarations']['relations'][-1]['partition_provenance']['source_ref']);r['metrics']['R']={'status':'NA','reason':'source proves this bucket was not emitted, no count inferred'};check('phase_source_proven_missing_is_NA_not_zero',d,'INCOMPLETE')
+    d=phase_rollup();r=d['records'][-1];r['scope']['coverage_status']='NOT_EMITTED_SOURCE_PROVEN';r['metrics']['R']={'status':'NA','reason':'not emitted'};check('phase_unemitted_NA_requires_source',d,'INVALID','PHASE_UNAVAILABLE_PROVENANCE')
+    d=phase_rollup();r=d['records'][-1];r['scope']['coverage_status']='NOT_EMITTED_SOURCE_PROVEN';r['scope']['unavailable_source_ref']=copy.deepcopy(d['declarations']['relations'][-1]['partition_provenance']['source_ref']);r['metrics']['R']=ok(0);check('phase_source_proven_missing_cannot_fill_zero',d,'INVALID','PHASE_UNAVAILABLE_HAS_COUNT')
+    d=phase_rollup();d['records'][-1]['metrics']['R']={'status':'NA','reason':'runtime summary unavailable'};check('phase_unknown_count_prevents_closure',d,'INCOMPLETE')
+    d=phase_rollup();d['records'][-1]['scope']['dimensions']['phase_bucket']='foreign';d['records'][-1]['metrics']['R']={'status':'NA','reason':'unknown'};check('phase_NA_cannot_hide_fake_bucket_label',d,'INVALID','ROLLUP_MEMBER_BINDING')
+    d=phase_rollup();d['records'] += [{'id':'p1','scope':{'domain':'HEAD','level':'SLICE','interval':{'start':0,'end':100},'dimensions':{'run':'synthetic-phase','slice':1}},'overflow':False,'metrics':{'R':ok(4)}},{'id':'phase-global','scope':{'domain':'HEAD','level':'GLOBAL','interval':{'start':0,'end':100},'dimensions':{'run':'synthetic-phase'}},'overflow':False,'metrics':{'R':ok(11)}}];d['declarations']['relations'].append({'id':'phase_then_slice_global','kind':'rollup','axis':'slice','total':ref('phase-global','R'),'parts':[ref('p0','R'),ref('p1','R')],'members':['0','1'],'expected_members':['0','1'],'unattributed_policy':'NOT_APPLICABLE_PARTITION_BY_SLICE'});check('phase_then_slice_rollup_global_legal',d,'VALID_DECLARATIONS_ONLY')
+    d=phase_rollup();r=copy.deepcopy(d['records'][-1]);r['id']='hidden-phase';r['scope']['dimensions']['phase_bucket']='HIDDEN';r['metrics']['R']=ok(9);d['records'].append(r);check('phase_hidden_unlisted_bucket_rejected',d,'INVALID','PHASE_GROUP_COVERAGE')
     check('malformed_document_does_not_crash',{'declarations':{'domains':[{}]}},'INVALID','DOMAINS')
     Path(__file__).with_name('example_synthetic_document.json').write_text(json.dumps(base(),indent=2)+'\n')
+    Path(__file__).with_name('example_synthetic_phase_document.json').write_text(json.dumps(phase_rollup(),indent=2)+'\n')
     return cases
 
 

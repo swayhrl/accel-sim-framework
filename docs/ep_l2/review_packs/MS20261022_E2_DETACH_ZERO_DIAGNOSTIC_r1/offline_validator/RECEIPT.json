@@ -1,12 +1,17 @@
 {
   "schema": "E2_DETACH_DECLARATIVE_VALIDATOR_PREPARATION_RECEIPT_V1",
-  "at_utc": "2026-10-22T03:28:19.217576+00:00",
-  "status": "OFFLINE_PREPARATION_READY_FOR_ROOT_REVIEW_AFTER_SCOPE_FIX",
+  "at_utc": "2026-10-22T03:43:28.294308+00:00",
+  "status": "OFFLINE_PREPARATION_READY_FOR_ROOT_REVIEW_AFTER_PHASE_EXTENSION",
   "files": [
     {
+      "path": "/tmp/e2_detach_validator/PHASE_EXTENSION_RECEIPT.json",
+      "sha256": "79a6a485e76d46782bf5ab0a7c8470e3e9cad01538c3aaa8c5b8b2c18682fe6d",
+      "bytes": 1952
+    },
+    {
       "path": "/tmp/e2_detach_validator/README.md",
-      "sha256": "13efd05e5ff3bfa3c0b7428cf5f658c5b49504bc9af761339b5ce400665e70ad",
-      "bytes": 3720
+      "sha256": "9a5460f9d31c012409f6346ae1631e700189d25e56141501809a11f0c8a95634",
+      "bytes": 5484
     },
     {
       "path": "/tmp/e2_detach_validator/ROOT_REVIEW_FAILURE_WITNESS.json",
@@ -20,18 +25,18 @@
     },
     {
       "path": "/tmp/e2_detach_validator/VALIDATION.json",
-      "sha256": "0aab836cf97381581d4d6a087a2ce783ba7809a5fe11f362f74cae14918a3e81",
-      "bytes": 9649
+      "sha256": "9fe1958fd0eee6e435be9c2b00c8f5f3d2158eb510cb469d0c012c11c6d7086e",
+      "bytes": 14489
     },
     {
       "path": "/tmp/e2_detach_validator/__pycache__/test_validator.cpython-311.pyc",
-      "sha256": "cec4037658fc67908e68de630eb5dbba78bf96fb5bfbea191ddd60bbbeb50a30",
-      "bytes": 21246
+      "sha256": "7eac6c01d94711ad1adfee446bc9f938225dfa904b32c1bb3269f50f9c50873d",
+      "bytes": 25323
     },
     {
       "path": "/tmp/e2_detach_validator/__pycache__/validator.cpython-311.pyc",
-      "sha256": "0b7fb40b34faf57354bff8cd22a8b1c0e870bcdb30c8769625cfd3615d2baf8f",
-      "bytes": 30206
+      "sha256": "cb000f20ad8a6a6610d05eeaf4b7667fc146d1326385c7e8a9ce690ed9e2f1df",
+      "bytes": 39023
     },
     {
       "path": "/tmp/e2_detach_validator/example_synthetic_document.json",
@@ -39,9 +44,34 @@
       "bytes": 9327
     },
     {
+      "path": "/tmp/e2_detach_validator/example_synthetic_phase_document.json",
+      "sha256": "8bb6f068df2ed034d9586843b5f8fc3bd827185fad81e9a3c226f48c81555d68",
+      "bytes": 13523
+    },
+    {
+      "path": "/tmp/e2_detach_validator/history/RECEIPT_BEFORE_PHASE_EXTENSION.json",
+      "sha256": "83407bb7137e6cfbe0611913c0c726aac6b24a030b18c67be7c8b86b25705e4d",
+      "bytes": 13770
+    },
+    {
       "path": "/tmp/e2_detach_validator/history/RECEIPT_BEFORE_ROOT_SCOPE_REVIEW.json",
       "sha256": "78e79e2f5067c14eb6597edcae9c699204269aaca47a0663f84fd50eb9e67c03",
       "bytes": 9416
+    },
+    {
+      "path": "/tmp/e2_detach_validator/history/VALIDATION_BEFORE_PHASE_EXTENSION.json",
+      "sha256": "4b13a896df9746a30333cb63b72ee35d75cef8c40a8e9b4ec3275536a0daa5a2",
+      "bytes": 9649
+    },
+    {
+      "path": "/tmp/e2_detach_validator/history/test_validator_before_phase_extension.py",
+      "sha256": "f899096d7681fcecc74dacf9acf970fe00d42ebf8f6605f54320835116df4135",
+      "bytes": 13132
+    },
+    {
+      "path": "/tmp/e2_detach_validator/history/validator_before_phase_extension.py",
+      "sha256": "4ee61297719867865954c889bde368cd53d64acda1c35b4ccc23594ec5e00a9a",
+      "bytes": 15275
     },
     {
       "path": "/tmp/e2_detach_validator/history/validator_before_scope_fix.py",
@@ -50,13 +80,13 @@
     },
     {
       "path": "/tmp/e2_detach_validator/test_validator.py",
-      "sha256": "f899096d7681fcecc74dacf9acf970fe00d42ebf8f6605f54320835116df4135",
-      "bytes": 13132
+      "sha256": "fcc76aa1261b34a91c2126767dcc5dc51dae386c1c501e4db2a13795556f97e4",
+      "bytes": 19801
     },
     {
       "path": "/tmp/e2_detach_validator/validator.py",
-      "sha256": "4ee61297719867865954c889bde368cd53d64acda1c35b4ccc23594ec5e00a9a",
-      "bytes": 15275
+      "sha256": "409bf0ab2a0f6541e48e072a3f17d40b8242cac49232fd1eef593937da686c41",
+      "bytes": 19228
     }
   ],
   "source_contracts": [
@@ -72,8 +102,8 @@
   "controls": {
     "schema": "E2_OFFLINE_COUNTER_VALIDATOR_CONTROLS_V1",
     "result": "PASS",
-    "case_count": 51,
-    "elapsed_seconds": 0.015112211927771568,
+    "case_count": 75,
+    "elapsed_seconds": 0.024355748668313026,
     "cases": [
       {
         "name": "positive_declarations_only",
@@ -473,6 +503,207 @@
         ]
       },
       {
+        "name": "phase_shared_overlapping_clock_ranges_are_legal",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "phase_missing_required_bucket_record",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "MISSING_COUNTER"
+        ]
+      },
+      {
+        "name": "phase_missing_overlap_bucket_declaration",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_RESIDUAL_MEMBERS",
+          "PHASE_GROUP_COVERAGE",
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "phase_duplicate_record_reference",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "REPEATED_TERM",
+          "ROLLUP_MEMBER_BINDING",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_duplicate_actual_bucket_identity",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "DUPLICATE_SCOPE",
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "phase_cross_slice_population",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_POPULATION",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_cross_run_population",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_POPULATION",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_missing_source_ref",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_PARTITION_PROVENANCE"
+        ]
+      },
+      {
+        "name": "phase_bad_source_hash",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_PARTITION_PROVENANCE"
+        ]
+      },
+      {
+        "name": "phase_missing_assignment_marker",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_PARTITION_PROVENANCE"
+        ]
+      },
+      {
+        "name": "phase_nonexclusive_assignment",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_PARTITION_PROVENANCE"
+        ]
+      },
+      {
+        "name": "phase_mixed_assignment_groups",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_PARTITION_GROUP",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_pseudo_causal_attribution",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_CAUSAL_CLAIM"
+        ]
+      },
+      {
+        "name": "phase_kernel_dimension_forbidden",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_CAUSAL_CLAIM",
+          "ROLLUP_POPULATION",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_causal_claim_forbidden",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_CAUSAL_CLAIM"
+        ]
+      },
+      {
+        "name": "phase_bucket_specific_window_not_whole_snapshot",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_INTERVAL",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_cannot_roll_directly_global",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_POPULATION",
+          "ROLLUP_POPULATION",
+          "ROLLUP_POPULATION",
+          "ROLLUP_POPULATION",
+          "PHASE_ROLLUP_LEVEL",
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
+        "name": "phase_source_proven_missing_is_NA_not_zero",
+        "expected": "INCOMPLETE",
+        "actual": "INCOMPLETE",
+        "error_codes": []
+      },
+      {
+        "name": "phase_unemitted_NA_requires_source",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_UNAVAILABLE_PROVENANCE"
+        ]
+      },
+      {
+        "name": "phase_source_proven_missing_cannot_fill_zero",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_UNAVAILABLE_HAS_COUNT",
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "phase_unknown_count_prevents_closure",
+        "expected": "INCOMPLETE",
+        "actual": "INCOMPLETE",
+        "error_codes": []
+      },
+      {
+        "name": "phase_NA_cannot_hide_fake_bucket_label",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "phase_then_slice_rollup_global_legal",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "phase_hidden_unlisted_bucket_rejected",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "PHASE_GROUP_COVERAGE"
+        ]
+      },
+      {
         "name": "malformed_document_does_not_crash",
         "expected": "INVALID",
         "actual": "INVALID",
@@ -503,5 +734,33 @@
     "witness_after": "INVALID",
     "fix_receipt": "ROOT_SCOPE_FIX_RECEIPT.json"
   },
-  "pending": "Root independent review, then real A2 schema adapter. No native/application qualification claim."
+  "phase_extension": {
+    "schema": "E2_DECLARATIVE_VALIDATOR_PHASE_EXTENSION_RECEIPT_V1",
+    "at_utc": "2026-10-22T03:43:28.293937+00:00",
+    "status": "OFFLINE_EXTENSION_READY_FOR_ROOT_REVIEW",
+    "preexisting_cases": 51,
+    "current_cases": 75,
+    "new_phase_cases": 24,
+    "preexisting_regressions": 0,
+    "source_before": "history/validator_before_phase_extension.py",
+    "controls_before": "history/VALIDATION_BEFORE_PHASE_EXTENSION.json",
+    "root_original_failure_witness_preserved": true,
+    "actual_A2_adapter_implemented": false,
+    "semantics": [
+      "Distinct PHASE_BUCKET scope and phase rollup axis; never KERNEL_INTERVAL.",
+      "Actual child phase_bucket labels bound to declared members; exact whole snapshot interval and same run/slice/config population.",
+      "PHASE_BUCKET attribution PHYSICAL_PHASE_ONLY; kernel dimensions or causal claims forbidden.",
+      "Explicit assignment_partition true plus complete mutually-exclusive partition ID and exact-format source reference. Source content verification remains root/adapter responsibility.",
+      "UNASSIGNED and OVERLAP_UNKNOWN required; absent-source-proven buckets explicitly NA with source-ref, never synthetic0. Missing bucket record invalid; unknown count prevents closed result.",
+      "Global aggregation must first use slice totals; phase direct-to-global invalid.",
+      "Overlapping whole-clock snapshot ranges for disjoint/non-contiguous phase membership are legal. Kernel-overlap rules never applied to phase buckets.",
+      "Actual same-group phase records must exactly match listed membership, rejecting hidden unlisted extra buckets."
+    ],
+    "limitations": [
+      "Only decoded objects and declarations; no real native text grammar guessed.",
+      "Syntactically valid source references are not verified against Git content here. A2 source/fixtures must prove phase assignment partition and E adapter must bind exact release.",
+      "No native/application/resource/scientific qualification implied."
+    ]
+  },
+  "pending": "Root independent review and actual A2 source/schema/phase-provenance binding. No native/application qualification claim."
 }

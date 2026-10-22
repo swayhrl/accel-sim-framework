@@ -1,0 +1,301 @@
+test_01_baseline_no_adoption (__main__.ScopeControls.test_01_baseline_no_adoption) ... ok
+test_02_exact_once_adoption (__main__.ScopeControls.test_02_exact_once_adoption) ... ERROR
+test_03_active_or_uncertain_denied (__main__.ScopeControls.test_03_active_or_uncertain_denied) ... ok
+test_04_no_placeholder_or_old_producer (__main__.ScopeControls.test_04_no_placeholder_or_old_producer) ... ok
+test_05_exact_q_spec_config_parser_schema (__main__.ScopeControls.test_05_exact_q_spec_config_parser_schema) ... ERROR
+test_06_exact_input_only (__main__.ScopeControls.test_06_exact_input_only) ... ERROR
+test_07_one_reservation (__main__.ScopeControls.test_07_one_reservation) ... ERROR
+test_08_old_batch_sealed (__main__.ScopeControls.test_08_old_batch_sealed) ... ERROR
+test_09_old50_prefix_immutable (__main__.ScopeControls.test_09_old50_prefix_immutable) ... ERROR
+test_10_old_records_contracts_immutable (__main__.ScopeControls.test_10_old_records_contracts_immutable) ... ERROR
+test_11_single_controller_start_gate (__main__.ScopeControls.test_11_single_controller_start_gate) ... ERROR
+test_12_fake_actual_start_failure_charged (__main__.ScopeControls.test_12_fake_actual_start_failure_charged) ... ERROR
+test_13_spawn_intent_and_crash (__main__.ScopeControls.test_13_spawn_intent_and_crash) ... ERROR
+test_14_resources_guard_and_high_io_allowed (__main__.ScopeControls.test_14_resources_guard_and_high_io_allowed) ... ERROR
+test_15_queue_no_union (__main__.ScopeControls.test_15_queue_no_union) ... ERROR
+test_16_diagnostic_validator_required (__main__.ScopeControls.test_16_diagnostic_validator_required) ... ERROR
+test_17_diagnostic_point_not_pair (__main__.ScopeControls.test_17_diagnostic_point_not_pair) ... ERROR
+test_18_durable_exit_and_full_closure_required (__main__.ScopeControls.test_18_durable_exit_and_full_closure_required) ... ERROR
+test_19_failure_hold_and_delivery_scope (__main__.ScopeControls.test_19_failure_hold_and_delivery_scope) ... ERROR
+test_20_authority_and_production_synthetic_refusal (__main__.ScopeControls.test_20_authority_and_production_synthetic_refusal) ... ok
+test_21_no_side_effects_no_real_process (__main__.ScopeControls.test_21_no_side_effects_no_real_process) ... ERROR
+
+======================================================================
+ERROR: test_02_exact_once_adoption (__main__.ScopeControls.test_02_exact_once_adoption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 122, in test_02_exact_once_adoption
+    self.assertTrue(self.auth.adopt(self.item))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_05_exact_q_spec_config_parser_schema (__main__.ScopeControls.test_05_exact_q_spec_config_parser_schema)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 146, in test_05_exact_q_spec_config_parser_schema
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_06_exact_input_only (__main__.ScopeControls.test_06_exact_input_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 159, in test_06_exact_input_only
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_07_one_reservation (__main__.ScopeControls.test_07_one_reservation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 167, in test_07_one_reservation
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_08_old_batch_sealed (__main__.ScopeControls.test_08_old_batch_sealed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 175, in test_08_old_batch_sealed
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_09_old50_prefix_immutable (__main__.ScopeControls.test_09_old50_prefix_immutable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 182, in test_09_old50_prefix_immutable
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_10_old_records_contracts_immutable (__main__.ScopeControls.test_10_old_records_contracts_immutable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 188, in test_10_old_records_contracts_immutable
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_11_single_controller_start_gate (__main__.ScopeControls.test_11_single_controller_start_gate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 199, in test_11_single_controller_start_gate
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_12_fake_actual_start_failure_charged (__main__.ScopeControls.test_12_fake_actual_start_failure_charged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 205, in test_12_fake_actual_start_failure_charged
+    self.start()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 107, in start
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_13_spawn_intent_and_crash (__main__.ScopeControls.test_13_spawn_intent_and_crash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 214, in test_13_spawn_intent_and_crash
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_14_resources_guard_and_high_io_allowed (__main__.ScopeControls.test_14_resources_guard_and_high_io_allowed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 223, in test_14_resources_guard_and_high_io_allowed
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_15_queue_no_union (__main__.ScopeControls.test_15_queue_no_union)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 232, in test_15_queue_no_union
+    self.ready();single={'specs':[{'sha256':p.spec_sha(self.spec)}],'pairs':[]}
+    ^^^^^^^^^^^^
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_16_diagnostic_validator_required (__main__.ScopeControls.test_16_diagnostic_validator_required)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 239, in test_16_diagnostic_validator_required
+    self.start()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 107, in start
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_17_diagnostic_point_not_pair (__main__.ScopeControls.test_17_diagnostic_point_not_pair)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 247, in test_17_diagnostic_point_not_pair
+    self.start();self.auth.finish_synthetic(self.item,'COMPLETE_VALID',self.terminal())
+    ^^^^^^^^^^^^
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 107, in start
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_18_durable_exit_and_full_closure_required (__main__.ScopeControls.test_18_durable_exit_and_full_closure_required)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 253, in test_18_durable_exit_and_full_closure_required
+    self.start()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 107, in start
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_19_failure_hold_and_delivery_scope (__main__.ScopeControls.test_19_failure_hold_and_delivery_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 260, in test_19_failure_hold_and_delivery_scope
+    self.start();self.auth.finish_synthetic(self.item,'FAILED',{})
+    ^^^^^^^^^^^^
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 107, in start
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+======================================================================
+ERROR: test_21_no_side_effects_no_real_process (__main__.ScopeControls.test_21_no_side_effects_no_real_process)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 277, in test_21_no_side_effects_no_real_process
+    self.start();self.auth.finish_synthetic(self.item,'COMPLETE_VALID',self.terminal())
+    ^^^^^^^^^^^^
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 107, in start
+    self.reserve()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 103, in reserve
+    self.ready()
+  File "/tmp/e2_detach_central_candidate/test_scope_controls.py", line 99, in ready
+    self.auth.adopt(self.item)
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 167, in adopt
+    require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
+  File "/tmp/e2_detach_central_candidate/detach_diagnostic_policy.py", line 21, in require
+    raise ValueError(reason)
+ValueError: adoption snapshot changed
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.277s
+
+FAILED (errors=17)

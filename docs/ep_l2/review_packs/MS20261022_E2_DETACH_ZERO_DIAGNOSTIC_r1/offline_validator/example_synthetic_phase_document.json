@@ -1,0 +1,632 @@
+{
+  "declarations": {
+    "domains": [
+      "HEAD",
+      "ACCESS",
+      "LIFETIME"
+    ],
+    "metrics": {
+      "H": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "skipped": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "hit": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "miss": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "rawF": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "rewrite": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "remainF": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "notconsulted": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "C": {
+        "domain": "ACCESS",
+        "unit": "ACCESS_ATTEMPT",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "accessOK": {
+        "domain": "ACCESS",
+        "unit": "ACCESS_ATTEMPT",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "accessDenied": {
+        "domain": "ACCESS",
+        "unit": "ACCESS_ATTEMPT",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "realD": {
+        "domain": "LIFETIME",
+        "unit": "DETACH_TRANSITION",
+        "measurement_kind": "TRANSITION_COUNT",
+        "event_identity": "REAL_DETACH_HANDSHAKE"
+      },
+      "newD": {
+        "domain": "ACCESS",
+        "unit": "DETACH_TRANSITION",
+        "measurement_kind": "TRANSITION_COUNT",
+        "event_identity": "REAL_DETACH_HANDSHAKE"
+      },
+      "triggerOK": {
+        "domain": "ACCESS",
+        "unit": "DETACH_TRANSITION",
+        "measurement_kind": "TRANSITION_COUNT"
+      },
+      "triggerDenied": {
+        "domain": "ACCESS",
+        "unit": "DETACH_TRANSITION",
+        "measurement_kind": "TRANSITION_COUNT"
+      },
+      "txn": {
+        "domain": "LIFETIME",
+        "unit": "TRANSACTION",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "retired": {
+        "domain": "LIFETIME",
+        "unit": "TRANSACTION",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "live": {
+        "domain": "LIFETIME",
+        "unit": "TRANSACTION",
+        "measurement_kind": "EXPOSURE_COUNT"
+      },
+      "responses": {
+        "domain": "LIFETIME",
+        "unit": "REQUESTER_RESPONSE",
+        "measurement_kind": "REQUESTER_COUNT"
+      },
+      "R": {
+        "domain": "HEAD",
+        "unit": "HEAD_CYCLE",
+        "measurement_kind": "EXPOSURE_COUNT"
+      }
+    },
+    "relations": [
+      {
+        "id": "head_partition",
+        "kind": "partition",
+        "exclusive": true,
+        "total": {
+          "record": "h",
+          "metric": "H"
+        },
+        "parts": [
+          {
+            "record": "h",
+            "metric": "skipped"
+          },
+          {
+            "record": "h",
+            "metric": "hit"
+          },
+          {
+            "record": "h",
+            "metric": "miss"
+          },
+          {
+            "record": "h",
+            "metric": "rawF"
+          }
+        ]
+      },
+      {
+        "id": "raw_pressure_rewrite",
+        "kind": "partition",
+        "exclusive": true,
+        "total": {
+          "record": "h",
+          "metric": "rawF"
+        },
+        "parts": [
+          {
+            "record": "h",
+            "metric": "rewrite"
+          },
+          {
+            "record": "h",
+            "metric": "remainF"
+          },
+          {
+            "record": "h",
+            "metric": "notconsulted"
+          }
+        ]
+      },
+      {
+        "id": "actual_access",
+        "kind": "partition",
+        "exclusive": true,
+        "total": {
+          "record": "a",
+          "metric": "C"
+        },
+        "parts": [
+          {
+            "record": "a",
+            "metric": "accessOK"
+          },
+          {
+            "record": "a",
+            "metric": "accessDenied"
+          }
+        ]
+      },
+      {
+        "id": "detach_trigger_outcome",
+        "kind": "partition",
+        "exclusive": true,
+        "total": {
+          "record": "a",
+          "metric": "newD"
+        },
+        "parts": [
+          {
+            "record": "a",
+            "metric": "triggerOK"
+          },
+          {
+            "record": "a",
+            "metric": "triggerDenied"
+          }
+        ]
+      },
+      {
+        "id": "lifecycle",
+        "kind": "partition",
+        "exclusive": true,
+        "total": {
+          "record": "l",
+          "metric": "txn"
+        },
+        "parts": [
+          {
+            "record": "l",
+            "metric": "retired"
+          },
+          {
+            "record": "l",
+            "metric": "live"
+          }
+        ]
+      },
+      {
+        "id": "real_transition_reconcile",
+        "kind": "equivalence",
+        "total": {
+          "record": "l",
+          "metric": "realD"
+        },
+        "parts": [
+          {
+            "record": "a",
+            "metric": "newD"
+          }
+        ],
+        "bridge": "SAME_REAL_TRANSITION",
+        "evidence": "synthetic one handshake observed in both domains"
+      },
+      {
+        "id": "physical_phase_rollup",
+        "kind": "rollup",
+        "axis": "phase",
+        "total": {
+          "record": "p0",
+          "metric": "R"
+        },
+        "parts": [
+          {
+            "record": "phase0",
+            "metric": "R"
+          },
+          {
+            "record": "phase1",
+            "metric": "R"
+          },
+          {
+            "record": "phase2",
+            "metric": "R"
+          },
+          {
+            "record": "phase3",
+            "metric": "R"
+          }
+        ],
+        "members": [
+          "SINGLE_ACTIVE_INTERVAL:100",
+          "SINGLE_ACTIVE_INTERVAL:101",
+          "UNASSIGNED",
+          "OVERLAP_UNKNOWN"
+        ],
+        "expected_members": [
+          "SINGLE_ACTIVE_INTERVAL:100",
+          "SINGLE_ACTIVE_INTERVAL:101",
+          "UNASSIGNED",
+          "OVERLAP_UNKNOWN"
+        ],
+        "unattributed_policy": "EXPLICIT_PHASE_BUCKETS",
+        "assignment_partition": true,
+        "partition_provenance": {
+          "partition_id": "synthetic-disjoint-assignment",
+          "mutually_exclusive": true,
+          "coverage": "COMPLETE",
+          "source_ref": {
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "path": "synthetic-fixture/phase_assignment_contract.json",
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        }
+      }
+    ],
+    "required": [
+      {
+        "record": "h",
+        "metric": "H"
+      },
+      {
+        "record": "h",
+        "metric": "skipped"
+      },
+      {
+        "record": "h",
+        "metric": "hit"
+      },
+      {
+        "record": "h",
+        "metric": "miss"
+      },
+      {
+        "record": "h",
+        "metric": "rawF"
+      },
+      {
+        "record": "h",
+        "metric": "rewrite"
+      },
+      {
+        "record": "h",
+        "metric": "remainF"
+      },
+      {
+        "record": "h",
+        "metric": "notconsulted"
+      },
+      {
+        "record": "a",
+        "metric": "C"
+      },
+      {
+        "record": "a",
+        "metric": "accessOK"
+      },
+      {
+        "record": "a",
+        "metric": "accessDenied"
+      },
+      {
+        "record": "a",
+        "metric": "newD"
+      },
+      {
+        "record": "a",
+        "metric": "triggerOK"
+      },
+      {
+        "record": "a",
+        "metric": "triggerDenied"
+      },
+      {
+        "record": "l",
+        "metric": "realD"
+      },
+      {
+        "record": "l",
+        "metric": "txn"
+      },
+      {
+        "record": "l",
+        "metric": "retired"
+      },
+      {
+        "record": "l",
+        "metric": "live"
+      },
+      {
+        "record": "l",
+        "metric": "responses"
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "h",
+      "scope": {
+        "domain": "HEAD",
+        "level": "GLOBAL",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic"
+        }
+      },
+      "overflow": false,
+      "metrics": {
+        "H": {
+          "status": "OK",
+          "value": 10
+        },
+        "skipped": {
+          "status": "OK",
+          "value": 1
+        },
+        "hit": {
+          "status": "OK",
+          "value": 2
+        },
+        "miss": {
+          "status": "OK",
+          "value": 3
+        },
+        "rawF": {
+          "status": "OK",
+          "value": 4
+        },
+        "rewrite": {
+          "status": "OK",
+          "value": 2
+        },
+        "remainF": {
+          "status": "OK",
+          "value": 1
+        },
+        "notconsulted": {
+          "status": "OK",
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "a",
+      "scope": {
+        "domain": "ACCESS",
+        "level": "GLOBAL",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic"
+        }
+      },
+      "overflow": false,
+      "metrics": {
+        "C": {
+          "status": "OK",
+          "value": 3
+        },
+        "accessOK": {
+          "status": "OK",
+          "value": 2
+        },
+        "accessDenied": {
+          "status": "OK",
+          "value": 1
+        },
+        "newD": {
+          "status": "OK",
+          "value": 1
+        },
+        "triggerOK": {
+          "status": "OK",
+          "value": 0
+        },
+        "triggerDenied": {
+          "status": "OK",
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "l",
+      "scope": {
+        "domain": "LIFETIME",
+        "level": "GLOBAL",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic"
+        }
+      },
+      "overflow": false,
+      "metrics": {
+        "realD": {
+          "status": "OK",
+          "value": 1
+        },
+        "txn": {
+          "status": "OK",
+          "value": 1
+        },
+        "retired": {
+          "status": "OK",
+          "value": 1
+        },
+        "live": {
+          "status": "OK",
+          "value": 0
+        },
+        "responses": {
+          "status": "OK",
+          "value": 3
+        }
+      }
+    },
+    {
+      "id": "p0",
+      "scope": {
+        "domain": "HEAD",
+        "level": "SLICE",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic-phase",
+          "slice": 0
+        }
+      },
+      "overflow": false,
+      "metrics": {
+        "R": {
+          "status": "OK",
+          "value": 7
+        }
+      }
+    },
+    {
+      "id": "phase0",
+      "scope": {
+        "domain": "HEAD",
+        "level": "PHASE_BUCKET",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic-phase",
+          "slice": 0,
+          "phase_bucket": "SINGLE_ACTIVE_INTERVAL:100"
+        },
+        "partition_id": "synthetic-disjoint-assignment",
+        "attribution": "PHYSICAL_PHASE_ONLY"
+      },
+      "overflow": false,
+      "metrics": {
+        "R": {
+          "status": "OK",
+          "value": 2
+        }
+      }
+    },
+    {
+      "id": "phase1",
+      "scope": {
+        "domain": "HEAD",
+        "level": "PHASE_BUCKET",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic-phase",
+          "slice": 0,
+          "phase_bucket": "SINGLE_ACTIVE_INTERVAL:101"
+        },
+        "partition_id": "synthetic-disjoint-assignment",
+        "attribution": "PHYSICAL_PHASE_ONLY"
+      },
+      "overflow": false,
+      "metrics": {
+        "R": {
+          "status": "OK",
+          "value": 3
+        }
+      }
+    },
+    {
+      "id": "phase2",
+      "scope": {
+        "domain": "HEAD",
+        "level": "PHASE_BUCKET",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic-phase",
+          "slice": 0,
+          "phase_bucket": "UNASSIGNED"
+        },
+        "partition_id": "synthetic-disjoint-assignment",
+        "attribution": "PHYSICAL_PHASE_ONLY"
+      },
+      "overflow": false,
+      "metrics": {
+        "R": {
+          "status": "OK",
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "phase3",
+      "scope": {
+        "domain": "HEAD",
+        "level": "PHASE_BUCKET",
+        "interval": {
+          "start": 0,
+          "end": 100
+        },
+        "dimensions": {
+          "run": "synthetic-phase",
+          "slice": 0,
+          "phase_bucket": "OVERLAP_UNKNOWN"
+        },
+        "partition_id": "synthetic-disjoint-assignment",
+        "attribution": "PHYSICAL_PHASE_ONLY"
+      },
+      "overflow": false,
+      "metrics": {
+        "R": {
+          "status": "OK",
+          "value": 1
+        }
+      }
+    }
+  ],
+  "samples": {
+    "cap": 64,
+    "emitted": 1,
+    "dropped": 0,
+    "truncated": false,
+    "rows": [
+      {
+        "slice": 0,
+        "physical_cycle": 10,
+        "request_uid": 1,
+        "reason": "SYNTHETIC_DETACH_THEN_REQUEST_DENIED"
+      }
+    ]
+  }
+}

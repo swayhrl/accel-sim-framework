@@ -1,0 +1,20 @@
+{
+  "schema": "A2_DETACH_OBSERVER_DESIGN_V1",
+  "status": "FROZEN_DESIGN_FOR_IMPLEMENTATION",
+  "task": "A2-DETACH-OBSERVER-PRODUCER-r1",
+  "authority_event": "E2-00000059-feda8eeb49a1",
+  "base_core": "d010911e3174a3764791183cd108fe4664ba8731",
+  "runtime_framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "preserve_main61": true,
+  "interface": "Dedicated isolated binary, environment EPL2_DETACH_DIAG=0(default)/1. No mechanism/profile option changes. Invalid value rejected, no added modeled resource.",
+  "storage": "Fixed observer-only cache registry at most64 slices, bounded mutually exclusive phase buckets (unassigned/single-active kernel interval/overlap), bounded global64 samples; no per-UID/address model map. Never read by scheduling/admission.",
+  "frontend": "Explicit actual frontend hook per physical-cycle/request-UID/slice, plus named skipped TVD/ideal/disabled/absent scope. Pure shadow Tag state and same-set scan only under pressure; existing preview carries raw/reached/intermediate outputs, not counters. Repeated previews never accumulate.",
+  "enum_closure": "All existing Tag/status enums explicit. Include rawFAIL->HIT_RESERVED existing-target override, rawFAIL->MISS relief, keptFAIL, not-consulted/T-off and explicit unknown. Final status/admission separate from intermediate.",
+  "commit": "Count actual ft_access/relieve/detach only. Scope captures named first actual return gate and detached-trigger immediate result without reordering any return/selection. Later trigger linkage NOT_MEASURED; no unbounded UID CAM.",
+  "lifecycle": "Counters at actual admit/merge/first reuse_seen/detach/fill/response/retire transitions. Sticky reuse unchanged. Split sectors/requesters/transaction counts distinct. Reconcile detached successes with original stats and live terminal.",
+  "kernel": "Physical-cycle phase attribution only: SINGLE_ACTIVE_INTERVAL, OVERLAP, UNASSIGNED. Candidate owner kernel UNKNOWN; no request causal attribution under overlap. Disjoint bucket sums equal slice; global equals slice sums. No old overlapping interval summation.",
+  "build": "Original producer resource entry/guard + fresh actual E Coordinator reserve_work lease. Isolated source/build/output; no background controller/fullapp. Build2CPU/8GiB planned; native1CPU/8GiB; exact forecasts frozen before admission.",
+  "controls": "Exactly16 required control classes, bounded60s/case and600s total execution; baseline exact-d010 reference +new observerOFF/ON deterministic signatures where applicable. Test-only predicate/overflow controls explicitly distinguished from integrated production-path fixtures.",
+  "native_reuse": "Existing main61 component PASS premises only for unmodified functions; affected new-source observability/equivalence checks required. No full17 replay, no blanket oldQ inheritance.",
+  "previous_task": "E54 exact C final binding DONE at3262c80c51190d3fdcedadcfbdc0c29761de1d56; reuse manifest853369/rangesbe570/full SGEMM unchanged, no rescan."
+}

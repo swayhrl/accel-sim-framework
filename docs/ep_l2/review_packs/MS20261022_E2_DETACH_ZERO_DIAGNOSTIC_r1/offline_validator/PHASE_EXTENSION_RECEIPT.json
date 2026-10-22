@@ -1,0 +1,28 @@
+{
+  "schema": "E2_DECLARATIVE_VALIDATOR_PHASE_EXTENSION_RECEIPT_V1",
+  "at_utc": "2026-10-22T03:43:28.293937+00:00",
+  "status": "OFFLINE_EXTENSION_READY_FOR_ROOT_REVIEW",
+  "preexisting_cases": 51,
+  "current_cases": 75,
+  "new_phase_cases": 24,
+  "preexisting_regressions": 0,
+  "source_before": "history/validator_before_phase_extension.py",
+  "controls_before": "history/VALIDATION_BEFORE_PHASE_EXTENSION.json",
+  "root_original_failure_witness_preserved": true,
+  "actual_A2_adapter_implemented": false,
+  "semantics": [
+    "Distinct PHASE_BUCKET scope and phase rollup axis; never KERNEL_INTERVAL.",
+    "Actual child phase_bucket labels bound to declared members; exact whole snapshot interval and same run/slice/config population.",
+    "PHASE_BUCKET attribution PHYSICAL_PHASE_ONLY; kernel dimensions or causal claims forbidden.",
+    "Explicit assignment_partition true plus complete mutually-exclusive partition ID and exact-format source reference. Source content verification remains root/adapter responsibility.",
+    "UNASSIGNED and OVERLAP_UNKNOWN required; absent-source-proven buckets explicitly NA with source-ref, never synthetic0. Missing bucket record invalid; unknown count prevents closed result.",
+    "Global aggregation must first use slice totals; phase direct-to-global invalid.",
+    "Overlapping whole-clock snapshot ranges for disjoint/non-contiguous phase membership are legal. Kernel-overlap rules never applied to phase buckets.",
+    "Actual same-group phase records must exactly match listed membership, rejecting hidden unlisted extra buckets."
+  ],
+  "limitations": [
+    "Only decoded objects and declarations; no real native text grammar guessed.",
+    "Syntactically valid source references are not verified against Git content here. A2 source/fixtures must prove phase assignment partition and E adapter must bind exact release.",
+    "No native/application/resource/scientific qualification implied."
+  ]
+}
