@@ -1,0 +1,67 @@
+--- Core1093/tests/ep_l2/potential_fixture.h
++++ isolated/tests/ep_l2/potential_fixture.h
+@@ -6,18 +6,24 @@
+ #include <cstdio>
+ #include <map>
+ #include <set>
+-#include "../../libcuda/gpgpu_context.h"
+-#include "../../src/gpgpu-sim/gpu-sim.h"
+-#include "../../src/gpgpu-sim/icnt_wrapper.h"
+-#include "../../src/gpgpu-sim/l2cache.h"
+-#include "../../src/gpgpu-sim/mem_latency_stat.h"
+-#include "../../src/option_parser.h"
++#include "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/libcuda/gpgpu_context.h"
++#include "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-sim.h"
++#include "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/icnt_wrapper.h"
++#include "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/l2cache.h"
++#include "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/mem_latency_stat.h"
++#include "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/option_parser.h"
+ 
++#ifdef EP_L2_TAGPRESSURE_UNIQUE_GPU_PARTITION_FIXTURE
++#include "tagpressure_owned_gpu_fixture.h"
++using native_fixture_gpu_type=tagpressure_owned_fixture_gpu;
++#else
++using native_fixture_gpu_type=exec_gpgpu_sim;
++#endif
+ using versions = std::array<unsigned long long,4>;
+ struct fixture {
+   gpgpu_context ctx;
+   gpgpu_sim_config cfg;
+-  exec_gpgpu_sim *gpu;
++  native_fixture_gpu_type *gpu;
+   memory_stats_t *stats;
+   memory_partition_unit *part;
+   memory_sub_partition *sp;
+@@ -43,14 +49,29 @@
+       "-gpgpu_ep_l2_static_s64",argv[5],
+       "-gpgpu_ep_l2_wb_local_cap",argv[6],"-gpgpu_ep_l2_bank_ops",argv[7]};
+     option_parser_cmdline(p,15,args);cfg.init();option_parser_destroy(p);
+-    gpu=new exec_gpgpu_sim(cfg,&ctx);gpu->gpu_sim_cycle=1;
++    gpu=new native_fixture_gpu_type(cfg,&ctx);gpu->gpu_sim_cycle=1;
+     auto mc=gpu->getMemoryConfig();
+     assert(mc->m_L2_config.get_num_lines()==1024 && mc->m_L2_config.get_assoc()==16);
++#ifdef EP_L2_TAGPRESSURE_UNIQUE_GPU_PARTITION_FIXTURE
++    // Borrow the real GPU-owned partition/stats. Never construct a second owner
++    // of physical slice0, and never erase an observer owner to hide a duplicate.
++    stats=gpu->fixture_memory_stats();part=gpu->fixture_partition();
++#else
+     stats=new memory_stats_t(cfg.num_shader(),gpu->getShaderCoreConfig(),mc,gpu);
+-    part=new memory_partition_unit(0,mc,stats,gpu);sp=part->get_sub_partition(0);
++    part=new memory_partition_unit(0,mc,stats,gpu);
++#endif
++    sp=part->get_sub_partition(0);
+     cache=sp->ft_cache_for_test();alloc=new partition_mf_allocator(mc);
+   }
+-  ~fixture(){delete alloc;delete part;delete stats;delete gpu;}
++  ~fixture(){
++    delete alloc;
++#ifdef EP_L2_TAGPRESSURE_UNIQUE_GPU_PARTITION_FIXTURE
++    // Typed derived delete releases the actual GPU-owned partitions/stats once.
++    delete gpu;
++#else
++    delete part;delete stats;delete gpu;
++#endif
++  }
+   mem_fetch *make(new_addr_type addr,bool write) {
+     active_mask_t active;active.set(0);mem_access_byte_mask_t bytes;
+     unsigned sec=(addr>>5)&3;for(unsigned i=32*sec;i<32*(sec+1);++i)bytes.set(i);

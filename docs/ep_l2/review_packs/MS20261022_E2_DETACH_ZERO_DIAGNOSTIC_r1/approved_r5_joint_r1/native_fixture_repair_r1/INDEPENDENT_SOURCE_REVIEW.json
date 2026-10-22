@@ -1,0 +1,68 @@
+{
+  "schema": "E2_R5_TEST_FIXTURE_REPAIR_INDEPENDENT_DESIGN_REVIEW_V1",
+  "status": "SOURCE_PREMISES_VERIFIED_AWAIT_EXACT_OUT_OF_TREE_CANDIDATE",
+  "production_Core": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+  "production_main_archive_rebuild_authorized_by_this_review": false,
+  "execution_or_lease_started": false,
+  "source_refs": [
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/tests/ep_l2/potential_fixture.h",
+      "sha256": "06fa71b0d486e3790137dedefb0b7ab8f577fb016cee7b4144a97367a627db04",
+      "fixed_gitblob": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092:tests/ep_l2/potential_fixture.h"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/tests/ep_l2/ms_ro_combined/native_fixture.h",
+      "sha256": "3339f152ea820f763512ce1a7b2795257b50d93915edb8a7d51e32203dba3dae",
+      "fixed_gitblob": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092:tests/ep_l2/ms_ro_combined/native_fixture.h"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "b74624f63ca43e48862b7b04aa4c44b9aceb57bd6d6f33e00d58afa40c9a3482",
+      "fixed_gitblob": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092:src/gpgpu-sim/gpu-sim.cc"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-sim.h",
+      "sha256": "bb6abd5fe26a0bf10648fedb5f6b1638e47f4b5dcbdb290a5f9b0a00393ce2c6",
+      "fixed_gitblob": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092:src/gpgpu-sim/gpu-sim.h"
+    },
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/l2cache.cc",
+      "sha256": "80d05eb2635abaa01e8ebd03c058650645edf7bd7b71dcd5b5b622cf50dfc1a9",
+      "fixed_gitblob": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092:src/gpgpu-sim/l2cache.cc"
+    }
+  ],
+  "verified_preexisting_fixture_defect": {
+    "fixture": "tests/ep_l2/potential_fixture.h:46-50",
+    "sequence": "new exec_gpgpu_sim -> constructor creates real memory partition0 and original memory_stats -> fixture separately allocates second memory_stats and second partition0",
+    "production_constructor": "src/gpgpu-sim/gpu-sim.cc:1145,1175-1189",
+    "effect": "Two cache objects same logical slice violate strict observer ownership/scope. Production invalid guard must remain unchanged; prior8ON OUTPUT_INVALID retained."
+  },
+  "minimal_valid_repair_requirements": [
+    "Copy only test fixture/test translation unit out of tree, headers and linked production archives exact1093",
+    "Use test-only derived getter for existing m_memory_partition_unit[0] and m_memory_stats; no second partition/cache constructor",
+    "Reuse real sp=part->get_sub_partition(0), its actual cache; never reset observerinvalid/registercount/d->slice or fabricate64",
+    "Native n_mem1/subpart1 requires actualregistered1/selectedslice0; inspect genuine framed metadata, never oldduplicate count2 projection",
+    "Explicit test-only ownership/destruction review: memory_partition_unit destructor deletes its DRAM and each subpart; no separate subpart deletion; release realpart exactlyonce before stats, arrays once, originalGPU not assume automatic cleanup because no explicit gpgpu_sim destructor found",
+    "Keep all model assertions, O3, same configs/stimulus and expectedsemantic signature; test-only g0+linkstripdebug may remove debugsections but not assertions or code semantics"
+  ],
+  "bounded_compile_plan": {
+    "kind": "existing original E/test engineeringlease only, no rebuildmain/archive",
+    "cpu_max": 2,
+    "memory_bytes": 8589934592,
+    "preferred_output_growth_bytes": 33554432,
+    "fallback_growth_bytes_requires_root_exact_envelope_review": 134217728,
+    "original_5plus2_10plus24_unchanged": true,
+    "old_native_ELF_bytes": 84445568,
+    "old_test_object_bytes": 8567992,
+    "new_size_is_UNKNOWN_until_actual_stat": "-g0 and -Wl,--strip-debug support lower output but no invented numerical upper bound; retain hard originalguardian32 if selected; choose128 only explicit reviewed nativefixture scope",
+    "command_source": "Reuse original flags.make/link.txt, replace only newfixture translation unit, g3->g0, output path fresh, add -Wl,--strip-debug; preserve original fixed archive paths, defines, includes, libraries and O3/std17/fPIC; do not run cmake --build or make production targets"
+  },
+  "native_acceptance_required_after_repair": [
+    "Persist actual new ELF SHA + compilation command/exit flags and small source/manifests",
+    "Retain original16/nativefailurepack, no overwrites/no app charge or refund",
+    "Run only approved bounded directed nativechecks; actualexit0 alone insufficient",
+    "Decode true R5 frames with current independent parser/math, zero OUTPUT_INVALID required; source equations and actual slice/registeredscope must close",
+    "Oldmodel/old212 comparison must distinguish real scope metadata difference if present, never strip counters/errors to force agreement",
+    "Until actual independent native passes no R5 qualification or production applications"
+  ]
+}
