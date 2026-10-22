@@ -1,0 +1,63 @@
+{
+  "status": "PREBUILD_SOURCE_STATIC_CHECKS_ONLY",
+  "base_core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "checks": {
+    "r4_enum_exact": true,
+    "r4_names_exact": true,
+    "r4_ledger_and_printing_exact": true,
+    "Tag_probe_exact": true,
+    "snapshot_raw_probe_calls_still_exactly_one": true,
+    "src/gpgpu-sim/ep-l2-ft-cache.inc_unchanged": true,
+    "src/gpgpu-sim/ep-l2-ro-transactions.h_unchanged": true,
+    "src/gpgpu-sim/l2cache.cc_unchanged": true,
+    "src/gpgpu-sim/l2_admission_rules.h_unchanged": true,
+    "virtual_method_declarations_exact": true,
+    "nonvirtual_const_getters_only": true
+  },
+  "all_pass": true,
+  "files": {
+    "src/gpgpu-sim/ep-l2-tagpressure-diag.h": {
+      "sha256": "e3fea0f44bfa78addbfc8036da5a5067cb0c2680c315f5dcf25dfab45d7154c2",
+      "bytes": 19226
+    },
+    "src/gpgpu-sim/ep-l2-detach-diag.h": {
+      "sha256": "174f9233ba0339bdfff987bd1c060a40bb5a421124e81d588311292a50526dd8",
+      "bytes": 19781
+    },
+    "src/gpgpu-sim/gpu-cache.h": {
+      "sha256": "a9a5fba3eb8829ef2b9ac2553c15c84ad357ebd136c1a99b213e3ff70831a891",
+      "bytes": 159193
+    },
+    "src/gpgpu-sim/gpu-cache.cc": {
+      "sha256": "5d15c9b345a9c7625b6895314a02e83b7a60e36a44a5d7c9e73b454232fe4f19",
+      "bytes": 130201
+    },
+    "src/gpgpu-sim/ep-l2-ro-runtime.inc": {
+      "sha256": "4e76e9117705952754687b16cc470f85ff53e23b8fb49414b214276150ce32b8",
+      "bytes": 29287
+    },
+    "tests/ep_l2/test_tagpressure_metadata.cc": {
+      "sha256": "3947376a9f1e6e0ec62b9454ee407d2904a6553c9da2d9015e38bf1e22ab0d2e",
+      "bytes": 5905
+    },
+    "tests/ep_l2/test_detach_diagnostic.cc": {
+      "sha256": "89413629478488fffae8aef4cd7c76f4799bae814b7960c4b97588abc39d4cfa",
+      "bytes": 22752
+    },
+    "CMakeLists.txt": {
+      "sha256": "808a370bcf9a9498a30c4f642b8018b3c03b51020aa347e14065ca4ff67377e2",
+      "bytes": 18748
+    }
+  },
+  "build_native_apps_run": false,
+  "remaining_gates": [
+    "root independent source review",
+    "central exact build lease",
+    "new consistent -j2 build <=1GiB scratch",
+    "targeted native on/off old semantic/212 compare",
+    "new decoder/source/schema independent gates",
+    "formal source/main/archive release",
+    "input/resource/qualification per endpoint"
+  ],
+  "inspection_note": "virtual declaration matcher anchors to actual declaration lines; unanchored substring matching wrongly matched new nonvirtual comments"
+}

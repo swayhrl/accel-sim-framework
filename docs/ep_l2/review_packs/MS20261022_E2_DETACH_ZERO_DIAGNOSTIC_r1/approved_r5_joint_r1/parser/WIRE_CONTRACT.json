@@ -1,0 +1,194 @@
+{
+  "schema_id": "EPL2_TAGPRESSURE_V1_R5",
+  "status": "WIRE_CONTRACT_IMPLEMENTATION_CANDIDATE",
+  "prefix": "EPL2TAGPRESSUREV1|",
+  "base_core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "frame_fields": [
+    "record",
+    "schema_id",
+    "schema_sha256",
+    "source_base_core",
+    "scope",
+    "slice",
+    "cycle",
+    "snapshot_seq",
+    "phase",
+    "kernel_scope",
+    "kernel_uid",
+    "kernel_catalog",
+    "assoc",
+    "T",
+    "M",
+    "ro_runtime",
+    "epoch_closed",
+    "overflow_invalid",
+    "output_invalid",
+    "closure_ok",
+    "counters",
+    "histograms",
+    "route_joint"
+  ],
+  "source_binding": "schema_sha256 is this exact external JSON bytes digest compiled literal; actual newCore/main/archive pinned by independent release/qualification outside frame, not a guessed compile-time self hash",
+  "scope": "FRONTEND_HEAD_CYCLE_SAME_TARGET_SET",
+  "record_types": [
+    "PHASE",
+    "SLICE",
+    "GLOBAL",
+    "OUTPUT_INVALID"
+  ],
+  "phase_scope": {
+    "0": "UNASSIGNED",
+    "1": "OVERLAP_UNKNOWN",
+    "2..17": "SINGLE_ACTIVE_INTERVAL",
+    "SLICE": "SLICE_CUMULATIVE",
+    "GLOBAL": "GLOBAL_CUMULATIVE"
+  },
+  "kernel_catalog": "exact append-only old r4 ledger kernel_uid list, unchanged order; kernel_uid null except PHASE>=2",
+  "slice_field": "physical0..63 for PHASE/SLICE; GLOBAL=registered_slice_count (native expected subset by separate qualification; fullapp64)",
+  "phase_field": "0..17 for PHASE; SLICE/GLOBAL=-1",
+  "raw_labels": [
+    "HIT",
+    "HIT_RESERVED",
+    "MISS",
+    "RESERVATION_FAIL",
+    "SECTOR_MISS",
+    "MSHR_HIT",
+    "WRITE_ALLOCATED",
+    "UNKNOWN"
+  ],
+  "class_labels": [
+    "RESERVED_WAY",
+    "INVALID_WAY",
+    "REPLACEABLE_CLEAN",
+    "REPLACEABLE_DIRTY"
+  ],
+  "requester_labels": [
+    "CERTIFIED_RO_CANDIDATE",
+    "NONRO_NATIVE_PATH",
+    "RUNTIME_OFF"
+  ],
+  "eligibility_state_labels": [
+    "NA_RUNTIME_OFF",
+    "NO_STRUCTURAL_ELIGIBLE",
+    "HAS_STRUCTURAL_ELIGIBLE"
+  ],
+  "route_labels": [
+    "PROD_NOT_REACHED",
+    "NOT_CONSULTED",
+    "CONSULTED_MISS",
+    "CONSULTED_FAIL",
+    "EXISTING_HIT_RESERVED",
+    "ROUTE_OTHER"
+  ],
+  "early_labels": [
+    "NONE",
+    "OWNER",
+    "DIRECTORY",
+    "QUERY",
+    "WAD",
+    "TVD"
+  ],
+  "reason_presence_bits": {
+    "1": "HAS_ELIGIBLE",
+    "2": "HAS_NOT_ATTACHED",
+    "4": "HAS_REUSE",
+    "8": "HAS_NO_MISSING",
+    "16": "HAS_NO_LIVE"
+  },
+  "predicate_bits": {
+    "1": "attached",
+    "2": "reuse",
+    "4": "missing"
+  },
+  "counters": [
+    "observed_heads",
+    "covered",
+    "probe_skipped",
+    "skip_tvd",
+    "skip_ideal",
+    "skip_disabled",
+    "skip_other",
+    "head_absent_cycles",
+    "ro_observed",
+    "ro_na"
+  ],
+  "histograms": {
+    "heads_raw_reserved": [
+      "raw",
+      "reservedWays",
+      "count"
+    ],
+    "heads_raw_reserved_eligible": [
+      "raw",
+      "reservedWays",
+      "eligibleCount",
+      "count"
+    ],
+    "heads_raw_reserved_reasonmask": [
+      "raw",
+      "reservedWays",
+      "reasonPresenceMask",
+      "count"
+    ],
+    "ways_raw_reserved_predmask": [
+      "raw",
+      "reservedWays",
+      "predicateMask",
+      "count"
+    ],
+    "ways_raw_reserved_class": [
+      "raw",
+      "reservedWays",
+      "wayClass",
+      "count"
+    ],
+    "heads_raw_reserved_invalid": [
+      "raw",
+      "reservedWays",
+      "invalidWayCount",
+      "count"
+    ]
+  },
+  "route_joint_columns": [
+    "slice",
+    "phase",
+    "raw",
+    "reservedWays",
+    "requester",
+    "eligibilityState",
+    "productionRoute",
+    "admitted0or1",
+    "earlyReason",
+    "count"
+  ],
+  "route_joint_scope": "all exact phase-owned tuples for frame: PHASE only that slice+phase; SLICE all phases of slice; GLOBAL all registered slices+phases. Tuple order need not be lexicographic; keys unique per frame.",
+  "tuple_counts": "positive uint64 nonzero counts; all arrays sparse, missing covered bins zero; skipped dimensions NA not zero observations",
+  "snapshot_lifecycle": "at existing ro_print after old212 output: SLICE then PHASE0..kernel_count+1; max registered slice additionally GLOBAL. snapshot_seq per-slice monotonically increments once per ro_print. GLOBAL uses last slice sequence; all64snapshotseq/cycle must align for fullapp.",
+  "same_cycle_rule": "same source/schema/scope/kernelUIDmap and exact cumulative counts duplicate OR source-proved epoch_closed false->true metadata-only flip; unproved samecycle counter increase/rollback reject. Catalog append only when source-proved subsequent snapshot.",
+  "capture_count_boundary": "snapshot is pure const capture; copy request classification existing r4 booleans; captured cache/slice/physicalcycle/uid checked only after old frontend once succeeds; only then record occupancy+route.",
+  "na_rules": [
+    "skipped no hist/route rows",
+    "absent no head rows",
+    "runtimeoff has real occupancy but no RO predicate/eligible hist; route eligibility0",
+    "Tfalse structural predicate still recorded but operational detach disabled"
+  ],
+  "limits": {
+    "assoc": 16,
+    "slices": 64,
+    "phases": 18,
+    "sparse_joint_slots": 131072,
+    "sparse_joint_rows": 65536,
+    "r5_output_bytes": 67108864,
+    "invalid_marker_reserved_bytes": 256,
+    "host_extra_design_cap_bytes": 134217728
+  },
+  "invalid_frame_minimal_fields": [
+    "record=OUTPUT_INVALID",
+    "schema_id",
+    "schema_sha256",
+    "output_invalid=true",
+    "reason"
+  ],
+  "output_accounting": "before each frame serialized bytes check <=64MiB-256B marker reserve; reserve part of total; marker once on overflow; invalid at any position terminal fatal; independent endpoint collector cap unchanged",
+  "synthetic_fixture": "example is separate /tmp/e2_r5_wire_fixture_synthetic.json, never scientific evidence"
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "E2_R5_ROOT_PREBUILD_INDEPENDENT_SOURCE_REVIEW_V1",
+  "status": "PASS_SOURCE_SCOPE_ONLY_NOT_NATIVE_OR_APPLICATION_QUALIFICATION",
+  "modified_files_exact": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/ep-l2-detach-diag.h",
+    "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+    "src/gpgpu-sim/ep-l2-tagpressure-diag.h",
+    "src/gpgpu-sim/gpu-cache.cc",
+    "src/gpgpu-sim/gpu-cache.h",
+    "tests/ep_l2/test_detach_diagnostic.cc",
+    "tests/ep_l2/test_tagpressure_metadata.cc"
+  ],
+  "model_sources_byte_identical": {
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": true,
+    "src/gpgpu-sim/ep-l2-ro-transactions.h": true,
+    "src/gpgpu-sim/l2cache.cc": true,
+    "src/gpgpu-sim/l2_admission_rules.h": true
+  },
+  "cache_virtual_declarations_unchanged": true,
+  "manual_review": [
+    "const class getter uses existing physical cache type and sector states; no new probe or modeled port",
+    "only existing once frontend records occupancy and same-head route; pure snapshots leave ledgers unchanged",
+    "samecache/slice/cycle/UID bound; resetslive on every capture",
+    "source and native scopes separate; full application requires real64slice/globalclosed",
+    "two-pass bounded serialization and explicitoutputinvalid; countoverflowfailclosed"
+  ],
+  "file_refs": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "808a370bcf9a9498a30c4f642b8018b3c03b51020aa347e14065ca4ff67377e2"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "sha256": "174f9233ba0339bdfff987bd1c060a40bb5a421124e81d588311292a50526dd8"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "4e76e9117705952754687b16cc470f85ff53e23b8fb49414b214276150ce32b8"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-tagpressure-diag.h",
+      "sha256": "e3fea0f44bfa78addbfc8036da5a5067cb0c2680c315f5dcf25dfab45d7154c2"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "5d15c9b345a9c7625b6895314a02e83b7a60e36a44a5d7c9e73b454232fe4f19"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "a9a5fba3eb8829ef2b9ac2553c15c84ad357ebd136c1a99b213e3ff70831a891"
+    },
+    {
+      "path": "tests/ep_l2/test_detach_diagnostic.cc",
+      "sha256": "89413629478488fffae8aef4cd7c76f4799bae814b7960c4b97588abc39d4cfa"
+    },
+    {
+      "path": "tests/ep_l2/test_tagpressure_metadata.cc",
+      "sha256": "3947376a9f1e6e0ec62b9454ee407d2904a6553c9da2d9015e38bf1e22ab0d2e"
+    }
+  ],
+  "build_or_native_or_application_executed_by_this_review": false
+}

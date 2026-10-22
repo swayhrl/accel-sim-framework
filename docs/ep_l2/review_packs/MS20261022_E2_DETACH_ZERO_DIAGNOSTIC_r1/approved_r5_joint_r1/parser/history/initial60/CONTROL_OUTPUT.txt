@@ -1,0 +1,77 @@
+test_T0_structural_eligible_legal (test_controls.MathControls.test_T0_structural_eligible_legal) ... ok
+test_bool_coordinate (test_controls.MathControls.test_bool_coordinate) ... ok
+test_bool_count (test_controls.MathControls.test_bool_count) ... ok
+test_crossslice_tuple (test_controls.MathControls.test_crossslice_tuple) ... ok
+test_duplicate_bin (test_controls.MathControls.test_duplicate_bin) ... ok
+test_empty_scope_is_zero_pop_not_qualification (test_controls.MathControls.test_empty_scope_is_zero_pop_not_qualification) ... ok
+test_explicit_zero_is_not_missing (test_controls.MathControls.test_explicit_zero_is_not_missing) ... ok
+test_float (test_controls.MathControls.test_float) ... ok
+test_invalid_weight (test_controls.MathControls.test_invalid_weight) ... ok
+test_miss_empty_set (test_controls.MathControls.test_miss_empty_set) ... ok
+test_missing_hist_not_zero (test_controls.MathControls.test_missing_hist_not_zero) ... ok
+test_mixed_actual_predicates (test_controls.MathControls.test_mixed_actual_predicates) ... ok
+test_negative (test_controls.MathControls.test_negative) ... ok
+test_predicate_marginal_invented (test_controls.MathControls.test_predicate_marginal_invented) ... ok
+test_r15_fail_invalid (test_controls.MathControls.test_r15_fail_invalid) ... ok
+test_r16_hit_is_not_newtagfail (test_controls.MathControls.test_r16_hit_is_not_newtagfail) ... ok
+test_r16_hitreserved (test_controls.MathControls.test_r16_hitreserved) ... ok
+test_r16_miss_invalid (test_controls.MathControls.test_r16_miss_invalid) ... ok
+test_r16_new_identityfail_eligible (test_controls.MathControls.test_r16_new_identityfail_eligible) ... ok
+test_r16_sectormiss (test_controls.MathControls.test_r16_sectormiss) ... ok
+test_rawFAIL_hidden_by_preview_miss (test_controls.MathControls.test_rawFAIL_hidden_by_preview_miss) ... ok
+test_requester_swap_not_marginal_product (test_controls.MathControls.test_requester_swap_not_marginal_product) ... ok
+test_reuse_missing_overlap (test_controls.MathControls.test_reuse_missing_overlap) ... ok
+test_runtimeoff_tag_observed_RO_NA (test_controls.MathControls.test_runtimeoff_tag_observed_RO_NA) ... ok
+test_runtimeoff_wrong_eligible (test_controls.MathControls.test_runtimeoff_wrong_eligible) ... ok
+test_uint64_overflow (test_controls.MathControls.test_uint64_overflow) ... ok
+test_way_overcount (test_controls.MathControls.test_way_overcount) ... ok
+test_wrong_joint_eligible (test_controls.MathControls.test_wrong_joint_eligible) ... ok
+test_wrong_presence_joint (test_controls.MathControls.test_wrong_presence_joint) ... ok
+test_all64_full_mode_still_not_qualification (test_controls.StreamControls.test_all64_full_mode_still_not_qualification) ... ok
+test_bad_flag (test_controls.StreamControls.test_bad_flag) ... ok
+test_crossslice_phase (test_controls.StreamControls.test_crossslice_phase) ... ok
+test_duplicate_json_key (test_controls.StreamControls.test_duplicate_json_key) ... ok
+test_empty_catalog_uid_invented (test_controls.StreamControls.test_empty_catalog_uid_invented) ... ok
+test_epoch_reopen (test_controls.StreamControls.test_epoch_reopen) ... ok
+test_exact_samecycle_repeat (test_controls.StreamControls.test_exact_samecycle_repeat) ... ok
+test_fixed212_byte_transparency_real_synthetic_decoder (test_controls.StreamControls.test_fixed212_byte_transparency_real_synthetic_decoder) ... ok
+test_fullmode_requires64 (test_controls.StreamControls.test_fullmode_requires64) ... ok
+test_inputcap (test_controls.StreamControls.test_inputcap) ... ok
+test_late_old_samecycle_close_missing_new (test_controls.StreamControls.test_late_old_samecycle_close_missing_new) ... ok
+test_latercycle_counter_rollback (test_controls.StreamControls.test_latercycle_counter_rollback) ... ok
+test_latercycle_growth_allowed (test_controls.StreamControls.test_latercycle_growth_allowed) ... ok
+test_missing_old_scope (test_controls.StreamControls.test_missing_old_scope) ... ok
+test_missing_phase (test_controls.StreamControls.test_missing_phase) ... ok
+test_native_registered2_selected1 (test_controls.StreamControls.test_native_registered2_selected1) ... ok
+test_outputinvalid_after_valid (test_controls.StreamControls.test_outputinvalid_after_valid) ... ok
+test_overflowinvalid (test_controls.StreamControls.test_overflowinvalid) ... ok
+test_partial_tail_no_fallback (test_controls.StreamControls.test_partial_tail_no_fallback) ... ok
+test_phase_label_fake (test_controls.StreamControls.test_phase_label_fake) ... ok
+test_r5cap (test_controls.StreamControls.test_r5cap) ... ok
+test_rollup_mutation (test_controls.StreamControls.test_rollup_mutation) ... ok
+test_samecycle_growth_rejected (test_controls.StreamControls.test_samecycle_growth_rejected) ... ok
+test_samecycle_metadata_close (test_controls.StreamControls.test_samecycle_metadata_close) ... FAIL
+test_schema_wrong (test_controls.StreamControls.test_schema_wrong) ... ok
+test_scope_wrong (test_controls.StreamControls.test_scope_wrong) ... ok
+test_sourcebase_wrong (test_controls.StreamControls.test_sourcebase_wrong) ... ok
+test_unclosed_terminal (test_controls.StreamControls.test_unclosed_terminal) ... ok
+test_unknown_field (test_controls.StreamControls.test_unknown_field) ... ok
+test_valid_snapshot (test_controls.StreamControls.test_valid_snapshot) ... ok
+test_wrong_global_registered (test_controls.StreamControls.test_wrong_global_registered) ... ok
+
+======================================================================
+FAIL: test_samecycle_metadata_close (test_controls.StreamControls.test_samecycle_metadata_close)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/e2_r5_parser_candidate/test_controls.py", line 141, in test_samecycle_metadata_close
+    def test_samecycle_metadata_close(self):r=run(snapshot(scope(),closed=False)+snapshot(scope(),seq=2,closed=True));self.ok(r);self.assertEqual(r['same_cycle_metadata_closures'],1)
+                                                                                                                      ^^^^^^^^^^
+  File "/tmp/e2_r5_parser_candidate/test_controls.py", line 113, in ok
+    def ok(self,result):self.assertIn(result['status'],('R5_SYNTHETIC_CONTROL_ONLY','VALID_R5_OBSERVER_DECLARATIONS_ONLY'),result);self.assertFalse(result['scientific_acceptance_granted'])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INVALID_R5' not found in ('R5_SYNTHETIC_CONTROL_ONLY', 'VALID_R5_OBSERVER_DECLARATIONS_ONLY') : {'status': 'INVALID_R5', 'reason': 'sticky r5 error: old/new metadata epoch_closed', 'full_application_qualified': False, 'scientific_acceptance_granted': False, 'input_bytes': 53054, 'r5_bytes': 8402}
+
+----------------------------------------------------------------------
+Ran 60 tests in 1.979s
+
+FAILED (failures=1)
