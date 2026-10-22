@@ -15,3 +15,5 @@ E2并行完成：
 第二次有变更检查：已接收A2静态适用性图、C资源/输入预检、D条件决策及成本增量；它们不等于C最终覆盖或正向资格。A2十二个源码blob与d010逐一匹配，无新native。A2明确已有F与WV_M_ONLY的T条件对照源码支持，但没有因此新增控制授权。
 
 成本合并澄清：C预检另列256MiB监控增长上限，E预案544/928MiB未包含这项。保守全部组件为800/1184MiB两项互斥包络；未来按C实际已生成及剩余增长去重核算，而非重置或重复计费。
+
+补充：E2已直接核对d010 ro_init的OFF路径，确认S两开关OFF时m_ro为空，证书不会激活RO runtime；见S_OFF_NONINTERFERENCE_SOURCE_PREMISE.json。旧S复用仍须C精确制品、新F Q及显式比较合同批准；已备BASELINE_EQUIVALENCE_AMENDMENT_DRAFT.json草稿，所有新F/证书SHA保持null、未登记不可执行。
