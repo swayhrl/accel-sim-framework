@@ -1,8 +1,30 @@
 {
+  "source_deletions": 0,
   "source_actual_reclaimed_bytes": 0,
-  "source_delete_authorized": false,
-  "payload_archived_bytes": 0,
-  "native164_restored_files": 0,
-  "bridge_payload_bytes": 0,
-  "explanation": "Target read-only preflight only. Source free space and genuine164 capacity are observations, not reclaimed bytes."
+  "source_before": {
+    "utc": "2026-10-22T02:26:44.882966+00:00",
+    "namespace": "mnt:[4026534768]",
+    "workspace_f_bavail_bytes": 17819602944,
+    "share_f_bavail_bytes": 44209242112,
+    "MemAvailable_bytes": 321342279680,
+    "workspace_dev": 156,
+    "workspace_fsid": 1349835467748716946,
+    "share_dev": 2431,
+    "share_fsid": 2757854780513707398,
+    "IO_PSI_observation": "some avg10=25.77 avg60=25.98 avg300=26.66 total=203551352546\nfull avg10=25.77 avg60=25.97 avg300=26.65 total=182904446936\n",
+    "df": "Filesystem          1-blocks          Used   Available Capacity Mounted on\noverlay        3779302981632 3569428803584 17819602944     100% /\n/dev/md127     7143083376640 6738806218752 44209242112     100% /root/share\n",
+    "workspace_mount": "{\n   \"filesystems\": [\n      {\n         \"target\": \"/\",\n         \"source\": \"overlay\",\n         \"fstype\": \"overlay\",\n         \"options\": \"rw,relatime,lowerdir=/mnt/data/docker/overlay2/l/CQC6CAMIBRHDS2QYMQOADSACPY:/mnt/data/docker/overlay2/l/6G3QCASX3DZYMCL7MWT6TSW3GA,upperdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff,workdir=/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/work,nouserxattr\"\n      }\n   ]\n}\n",
+    "share_mount": "{\n   \"filesystems\": [\n      {\n         \"target\": \"/root/share\",\n         \"source\": \"/dev/md127\",\n         \"fstype\": \"ext4\",\n         \"options\": \"rw,relatime,stripe=384\"\n      }\n   ]\n}\n"
+  },
+  "source_after": 15953240064,
+  "source_after_observation": "2026-10-22T03:52:14.146165+00:00",
+  "logical_original_bytes": 15498539389,
+  "verified_persistent_compressed_bytes": 503611418,
+  "true164_available_after_bytes": 51767379533824,
+  "Share_FIFO_payload_allocated_bytes": 0,
+  "source_payload_staging_bytes": 0,
+  "verified_chunks_reused_after_hold": 50,
+  "verified_bytes_not_retransmitted": 6404565163,
+  "remaining_only_transfer_phase_wire_bytes": 9093974226,
+  "accounting": "Source originals remain KEEP; source df or NAS df deltas include concurrent unrelated activity and must not be called reclaimed bytes. Logical source bytes, compressed archive bytes, retained unverified transport partials and physical free-space changes are separate."
 }

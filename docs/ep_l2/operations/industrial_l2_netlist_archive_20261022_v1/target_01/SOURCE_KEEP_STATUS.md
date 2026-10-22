@@ -1,0 +1,3 @@
+ARCHIVED_SOURCE_KEEP under current explicit user archive-only acceptance. All9files/120ranges durably archived on genuine164 and independently decompressed whole-file SHA match frozen originals. Source readonly sender exited0 and all9current source identities still match frozen dev/inode/nlink/size/mode/UID/GID/mtime/ctime. Source9originals never deleted/moved/rewritten; actual task release0B.
+
+Native164 restoration is NOT_EXECUTED and not claimed; user removed it as a migration prerequisite. Original numeric file/directory metadata and complete recipes/provenance remain in immutable sidecars for a later authorized recovery. Future exact release proposal is not release permission.
