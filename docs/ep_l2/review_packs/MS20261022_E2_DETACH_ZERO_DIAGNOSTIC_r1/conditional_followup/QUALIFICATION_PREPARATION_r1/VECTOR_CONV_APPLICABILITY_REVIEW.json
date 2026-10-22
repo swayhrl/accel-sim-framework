@@ -1,0 +1,1927 @@
+{
+  "schema": "E2_VECTOR_CONV_R4_PREQUALIFICATION_APPLICABILITY_REVIEW_V1",
+  "status": "METADATA_APPLICABILITY_REVIEW_ONLY_NOT_QUALIFIED",
+  "at_unix": 1792651902.9969215,
+  "real_correctness_blockers": [],
+  "checks_total": 296,
+  "checks_passed": 296,
+  "conditions": [
+    {
+      "workload": "vectorAdd_4M",
+      "status": "METADATA_APPLICABILITY_REVIEW_ONLY_NOT_QUALIFIED",
+      "prepared_spec": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/specs/vectorAdd_4M_PREPARED_NOT_QUALIFIED.json",
+        "sha256": "80dc711b380e90f849f3036ecca25ee6a75f80b8ab45923e9b408e424dcc3747",
+        "bytes": 16914
+      },
+      "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
+      "qualification_id": null,
+      "scientific_scope": "DETACH_OBSERVER_DIAGNOSTIC_POINT_V1",
+      "profile": "F",
+      "source_identity": {
+        "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+        "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+        "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+      },
+      "expected_full_instructions": 56000000,
+      "full_kernel_count": 1,
+      "kernel16limit_satisfied": true,
+      "atomic_input_scope": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+        "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+      },
+      "retained_input_scope": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+        "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202"
+      },
+      "certificate": {
+        "manifest": {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json",
+          "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa"
+        },
+        "ranges": {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/certified_ranges.csv",
+          "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560"
+        },
+        "scope": "TRACE_MODEL_CLOSED_WORLD",
+        "epoch": "whole_commandlist",
+        "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+        "counts": {
+          "CERTIFIED_RO_lines": 250000,
+          "CERTIFIED_RO_read_lane_references": 8000000,
+          "NO_GLOBAL_READ_lines": 125000,
+          "NO_GLOBAL_READ_read_lane_references": 0
+        },
+        "unresolved_opcodes": {},
+        "metadata_reuse_supported": true,
+        "runtime_qualification_inherited": false
+      },
+      "auxiliary_small_asset_current_hashes": [
+        {
+          "name": "readonly_manifest.json",
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json",
+          "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+          "bytes": 2100
+        },
+        {
+          "name": "readonly_ranges.csv",
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/certified_ranges.csv",
+          "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560",
+          "bytes": 102
+        },
+        {
+          "name": "atomic_scope.json",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+          "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad",
+          "bytes": 4357
+        },
+        {
+          "name": "native_input_semantics.json",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/NATIVE_INPUT_SEMANTICS.json",
+          "sha256": "fee6329dac18a9eadff4290c8cdd87557cd8f2f6ab79682e82863c196af5230d",
+          "bytes": 2661
+        },
+        {
+          "name": "current_input_scope_binding.json",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+          "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202",
+          "bytes": 9741
+        }
+      ],
+      "complete_trace_metadata": [
+        {
+          "name": "kernelslist.g",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+          "current_exists": true,
+          "recorded_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+          "recorded_bytes": 94,
+          "current_bytes": 94,
+          "body_read_or_rehashed": false
+        },
+        {
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg",
+          "current_exists": true,
+          "recorded_sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+          "recorded_bytes": 103535866,
+          "current_bytes": 103535866,
+          "body_read_or_rehashed": false
+        }
+      ],
+      "all18gate_condition_disposition": "Retain18 exact source/native applicability refs for this same finiteF model; bind each in a freshly signed per-input Q. Old main61/SGEMM Q cannot be renamed.",
+      "prepared_label_caution": {
+        "inherited_preparation_status": "INDEPENDENT_EXACT_PROFILE_QUALIFIED_AWAIT_PUBLISHED_APPROVED_DISPATCH",
+        "interpretation": "Historical donor label, not r4 per-condition qualification. qualification_id=null and explicitNOT_AUTHORIZED/parsernote are controlling prospective fields. Replace donor wording when finalQ/spec is actually signed after approval."
+      },
+      "execution_boundary": "No app/native execution or qualification performed; no enqueue, specedit, sourceedit or central registry/Q change."
+    },
+    {
+      "workload": "convolutionSeparable",
+      "status": "METADATA_APPLICABILITY_REVIEW_ONLY_NOT_QUALIFIED",
+      "prepared_spec": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/specs/convolutionSeparable_PREPARED_NOT_QUALIFIED.json",
+        "sha256": "18228eed3c1ddcb4213426da93cfb2c909af81ae7414abd9661a4c1f7ea48807",
+        "bytes": 17840
+      },
+      "condition_id": "V7_DETACH_CAUSE_convolutionSeparable_F",
+      "qualification_id": null,
+      "scientific_scope": "DETACH_OBSERVER_DIAGNOSTIC_POINT_V1",
+      "profile": "F",
+      "source_identity": {
+        "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+        "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+        "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+      },
+      "expected_full_instructions": 714547200,
+      "full_kernel_count": 2,
+      "kernel16limit_satisfied": true,
+      "atomic_input_scope": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_LEGACY_TRACE_SCOPE_ADAPTER_r2/convolutionSeparable_ATOMIC_SCOPE_r2.json",
+        "sha256": "1bd27463147567a278765837bd05c46c9f59d2fb4741667c46d833a6a39a4950"
+      },
+      "retained_input_scope": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/RETAINED_COMPLETE_INPUT_SCOPE.json",
+        "sha256": "8f92e9ca40b9342c24eb31f2384775eabbb02d067caa4cf97bfb03ab9a8f0126"
+      },
+      "certificate": {
+        "manifest": {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/manifest.json",
+          "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425"
+        },
+        "ranges": {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/certified_ranges.csv",
+          "sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e"
+        },
+        "scope": "TRACE_MODEL_CLOSED_WORLD",
+        "epoch": "whole_commandlist",
+        "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+        "counts": {
+          "CERTIFIED_RO_lines": 294912,
+          "CERTIFIED_RO_read_lane_references": 11698176,
+          "NO_GLOBAL_READ_lines": 294912,
+          "NO_GLOBAL_READ_read_lane_references": 0,
+          "SAME_LINE_STORE_lines": 294912,
+          "SAME_LINE_STORE_read_lane_references": 11747328
+        },
+        "unresolved_opcodes": {},
+        "metadata_reuse_supported": true,
+        "runtime_qualification_inherited": false
+      },
+      "auxiliary_small_asset_current_hashes": [
+        {
+          "name": "readonly_manifest.json",
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/manifest.json",
+          "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425",
+          "bytes": 2630
+        },
+        {
+          "name": "readonly_ranges.csv",
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/certified_ranges.csv",
+          "sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e",
+          "bytes": 67
+        },
+        {
+          "name": "atomic_scope.json",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_LEGACY_TRACE_SCOPE_ADAPTER_r2/convolutionSeparable_ATOMIC_SCOPE_r2.json",
+          "sha256": "1bd27463147567a278765837bd05c46c9f59d2fb4741667c46d833a6a39a4950",
+          "bytes": 6216
+        },
+        {
+          "name": "native_input_semantics.json",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_R17_NATIVE_BYTE_SEMANTIC_PROOF_r1/NATIVE_LEGACY_BYTE_SEMANTIC_PROOF_R17_r1.json",
+          "sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2",
+          "bytes": 20568
+        },
+        {
+          "name": "current_input_scope_binding.json",
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/RETAINED_COMPLETE_INPUT_SCOPE.json",
+          "sha256": "8f92e9ca40b9342c24eb31f2384775eabbb02d067caa4cf97bfb03ab9a8f0126",
+          "bytes": 9472
+        }
+      ],
+      "complete_trace_metadata": [
+        {
+          "name": "kernelslist.g",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g",
+          "current_exists": true,
+          "recorded_sha256": "ab2290810368438cabf35a3c0fcb9686473aaa2235607a6e2bc0347f651ff484",
+          "recorded_bytes": 104,
+          "current_bytes": 104,
+          "body_read_or_rehashed": false
+        },
+        {
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg",
+          "current_exists": true,
+          "recorded_sha256": "9678e3146630e7c77bd4609cc2fc82a6651552e66a5513ea47dcd2d9eb270724",
+          "recorded_bytes": 4072647057,
+          "current_bytes": 4072647057,
+          "body_read_or_rehashed": false
+        },
+        {
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg",
+          "current_exists": true,
+          "recorded_sha256": "1c4c91bd017adb4fedce9dc93b5edd8454dc28d969db095b78a6ea972c4ef28b",
+          "recorded_bytes": 2772248484,
+          "current_bytes": 2772248484,
+          "body_read_or_rehashed": false
+        }
+      ],
+      "all18gate_condition_disposition": "Retain18 exact source/native applicability refs for this same finiteF model; bind each in a freshly signed per-input Q. Old main61/SGEMM Q cannot be renamed.",
+      "prepared_label_caution": {
+        "inherited_preparation_status": "FORMAL_SOURCE_OFF_AND_18_GATES_PASSED_READY_FOR_ORIGINAL_CONTROLLER",
+        "interpretation": "Historical donor label, not r4 per-condition qualification. qualification_id=null and explicitNOT_AUTHORIZED/parsernote are controlling prospective fields. Replace donor wording when finalQ/spec is actually signed after approval."
+      },
+      "execution_boundary": "No app/native execution or qualification performed; no enqueue, specedit, sourceedit or central registry/Q change."
+    }
+  ],
+  "gate_applicability_18_per_condition": [
+    {
+      "gate": "old_all_off_equivalence",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/old_all_off_equivalence.json",
+        "sha256": "21fd373b78811f01170495529d6e6765efd9b63a0f1d55412c101d943e252be4"
+      },
+      "historical_model_premise": "Historical main61 E008 all-off73873/56000000 and seven CSV equality remain exact historical model baseline premise. New observer does not alter default model policy; not a new9243 allOFF result.",
+      "actual_source_delta_applicability": "Observer env OFF new fullmode2 paths compared to exact-d010 archive reference and env ON in16 finite groups; unchanged model/config/Frame9dd plus byte/model review supports this F-only observability delta.",
+      "r4_native_classes": [
+        "T_OFF",
+        "EMPTY_CERT",
+        "OBSERVER_NONINTERFERENCE"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "No new S/allOFF complete application anchor qualified; observer_OFF is not W/V/T/M allOFF.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "finite_wbuf",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/finite_wbuf.json",
+        "sha256": "26b861e5deea611e398d92e97751206b7707c9101799ebebe084d16c483427b4"
+      },
+      "historical_model_premise": "Exact128B/1168 shared payload, finite16WB/quota/WAD allocation and rollback logic unchanged; retain original dirty WAD128/finite Wbuf credit assertions only within their actual scope.",
+      "actual_source_delta_applicability": "ft_access dirty-path return wrappers preserve original returned status/order; payload/WB allocator prefix and TVD implementation byte-identical.",
+      "r4_native_classes": [
+        "EMPTY_CERT",
+        "OBSERVER_NONINTERFERENCE",
+        "DETACH_THEN_LATER_DENIAL"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "New48 do not freshly rerun every dirty/WB capacity stress; retained model-only premises are explicit.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "requester_exact_once",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/requester_exact_once.json",
+        "sha256": "aad5da70daf44c3a35bff2dcb4b35e223fad9e4ef3f540fa4b1e583fd008a401"
+      },
+      "historical_model_premise": "Original descriptor512/address32 reservation/response exact-once ownership protocol and original rollback exact-once assertions retained.",
+      "actual_source_delta_applicability": "Real admits/merges/responses are observed only after original operations; RAII finish keeps actual return result.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "PRESSURE_STICKY_REUSE",
+        "RESPONSE_BACKPRESSURE",
+        "DETACH_THEN_LATER_DENIAL"
+      ],
+      "actual_case_records_checked": 12,
+      "scope_limit_preserved": "Future application still requires full native/RO requester exact-once across64slices; no aggregate-only waiver.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "sector_reference_data",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/sector_reference_data.json",
+        "sha256": "16b870375508411f6d56c48f458bf6c52a5b034a71e48a35da7a2b0f54f5e190"
+      },
+      "historical_model_premise": "Original sector version/data assertions remain applicable to unchanged payload store/store-port and RO actual response machinery; numerical SGEMM output remains UNKNOWN.",
+      "actual_source_delta_applicability": "Observer does not issue/fill/read a paid operation;16 reference/OFF/ON witness groups compare event/state/data signatures; stale reuse includes real returned versions.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "NO_PRESSURE_POSITIVE_RO",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "48 finite signatures supplement preserved sector model tests, not captured-source SGEMM numerical recapture.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "stale_fill",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/stale_fill.json",
+        "sha256": "8015452f336ba1ff939504712f366f3be2e737774a5b04674ffbe8f777e5a63b"
+      },
+      "historical_model_premise": "Original stale attached/late-sector guards, generation match, certified write refusal and store-port code remain unchanged.",
+      "actual_source_delta_applicability": "New hooks count actual successful fill/retirement; real detach+Tag reuse+old returned sector checked by native reference/OFF/ON.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "PREVIEW_REPEAT"
+      ],
+      "actual_case_records_checked": 6,
+      "scope_limit_preserved": "No new input alias/hidden-writer proof beyond C closed-world certificate.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "resource_closure",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/resource_closure.json",
+        "sha256": "03f2dbdd5b63c330f23e93bf786d6f546da27495b7c0412339fca676431c2c1b"
+      },
+      "historical_model_premise": "Exact allocator/descriptor/WAD/payload release and original epoch drain guards retained.",
+      "actual_source_delta_applicability": "Observer adds no modeled owner; actual retirement counters reconcile and selected caches drain in native.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "RESPONSE_BACKPRESSURE",
+        "ROLLUP_RESIDUAL",
+        "BOUNDED_OUTPUT"
+      ],
+      "actual_case_records_checked": 12,
+      "scope_limit_preserved": "Inactive execGPU cache means native GLOBAL epoch_closed=false; these fixtures are not complete application64slice acceptance. Real application complete64/GLOBAL/native drain mandatory.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "wb_lifecycle",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/wb_lifecycle.json",
+        "sha256": "6b6a9601d147a99aec72a26a100e8bd2562dd94af7c4b51d8080b7dd3be7fd36"
+      },
+      "historical_model_premise": "Original real WB create/loweraccept/set_done/WAD release and rollback assertions retained; TVD implementation, store bank/WB and ft_rollback unchanged.",
+      "actual_source_delta_applicability": "Only counter finish wrappers around existing decisions; native mode2 semantic witness includes WAD/resource/bank terminal signature equality.",
+      "r4_native_classes": [
+        "OBSERVER_NONINTERFERENCE",
+        "DETACH_THEN_LATER_DENIAL"
+      ],
+      "actual_case_records_checked": 6,
+      "scope_limit_preserved": "48 are not a fresh rerun of all old dirty WB lifecycle scenarios.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "bank_service",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/bank_service.json",
+        "sha256": "4d0aa8a656a4f48c09e2bf34f5222d44a798c400825c82423c1ebad6b7a2d0b3"
+      },
+      "historical_model_premise": "Four banks/one op per physical cycle, shared payload bank arbitration and original native bank/credit retries retained.",
+      "actual_source_delta_applicability": "No added paid Tag/TVD/oracle/payload query; status-only observer probe and counters passive; actual bank grant/conflict/attempt witness equal reference/OFF/ON.",
+      "r4_native_classes": [
+        "OBSERVER_NONINTERFERENCE",
+        "PRESSURE_ELIGIBLE",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "No raw throughput gain or changed P1 service inferred from counts.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "physical_bank_clock",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/physical_bank_clock.json",
+        "sha256": "fb2a9870d5151c0eda03e6992a8db4778757662dbacf631fa61b250c109d35b2"
+      },
+      "historical_model_premise": "Original physical GPU clock and memcpy-vs-Tag timestamp separation, warm bank drain premises unchanged.",
+      "actual_source_delta_applicability": "Observer hook samples ft_physical_cycle; model clock and bank implementation unchanged; actual native cycle/bank/state signatures equal.",
+      "r4_native_classes": [
+        "OBSERVER_NONINTERFERENCE",
+        "PRESSURE_ELIGIBLE",
+        "PREVIEW_REPEAT"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "Finite native timing equivalence only, not cross-binary application performance claim.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "memcpy_payload_identity",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/memcpy_payload_identity.json",
+        "sha256": "6dee909a5480ece64d46de0572485c551baa40d6d6f3f70b99eab0517fc5f073"
+      },
+      "historical_model_premise": "Original prefill_allowed/begin/complete, native payload+Tag generation and host-copy invalidation guards byte-identical; original host_prefill/epoch API proofs retained.",
+      "actual_source_delta_applicability": "r4 test fix steps real zero-latency ROP before frontend wait; no actual runtime host-copy semantics changed; existing RO store-port unchanged.",
+      "r4_native_classes": [
+        "NO_PRESSURE_POSITIVE_RO",
+        "PRESSURE_ELIGIBLE"
+      ],
+      "actual_case_records_checked": 6,
+      "scope_limit_preserved": "Original Framework9dd complete trace grammar and C initial2HtoD drain assumptions retained; no new host recapture/numeric proof.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "mode_legality",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/mode_legality.json",
+        "sha256": "1b1581e920b42391df8316a7b026b89ab2f2a450c91508fed2cb9911f96d60f5"
+      },
+      "historical_model_premise": "Original configuration constructor/feature-switch legality and exact finite organization guards retained; new F-only Q is not a new S qualification.",
+      "actual_source_delta_applicability": "Observer interface default OFF/explicit env1; supported bounded T0/M0 and legal F paths exercised without altered model switches.",
+      "r4_native_classes": [
+        "T_OFF",
+        "EMPTY_CERT",
+        "BOUNDED_OUTPUT"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "Unrequested profiles/illegal-combination positive scope not expanded; historical expected negatives preserved.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "shared_payload_lifecycle",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/shared_payload_lifecycle.json",
+        "sha256": "f3970a7dc04f49903052f9979d4601268c1cf6fe978ffb30309461934ba67d4d"
+      },
+      "historical_model_premise": "Single common1168 payload generation/ownership/descriptor/WB/native-RO responsibility and original pinned/shared-pool assertions retained.",
+      "actual_source_delta_applicability": "transactions only adds passive host pointer and counter calls; actual common payload/Tag state signature matches reference/OFF/ON.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "NATIVE_REQUESTER_RO_VICTIM",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "No additional C three-way WB/victim/RO joint fixture qualification created.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "shared_directory_cost_and_full",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/shared_directory_cost_and_full.json",
+        "sha256": "d583dca2a9b338cd47057bf4cd7e7986f56f12845c7da148c0c0430e4566acf9"
+      },
+      "historical_model_premise": "Original shared WAD/TVD directory capacity128 and paid lookup cost/guard methods unchanged; original full/pending/dirty proofs retained.",
+      "actual_source_delta_applicability": "Read-only observer reuses actual preview paid ticket; no new_request/probe metadata paid lookup; native actual512/32/M0Line128 and merge MissQ subcontrols cover changed predicate capture.",
+      "r4_native_classes": [
+        "PRESSURE_STICKY_REUSE",
+        "DETACH_THEN_LATER_DENIAL",
+        "ROLLUP_RESIDUAL"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "Descriptor/address/line checked vs unobserved must stay explicit; no zero-filled M1 coverage.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "pinned_victim_wb_completion_identity",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/pinned_victim_wb_completion_identity.json",
+        "sha256": "1beb2f027c3a5085174d83c2c8c7fe9b80c757ea2436261ebbcf81f33ba604b0"
+      },
+      "historical_model_premise": "Original pinned victim/WB completion/Tag-payload generation guards, TVD implementation and rollback unchanged; historical actual pinned_wb/WAD cases retained.",
+      "actual_source_delta_applicability": "Observer samples ready/pending state; real detached-ready pinned/FIFO-full case and actual return identity tested.",
+      "r4_native_classes": [
+        "PRESSURE_NO_MISSING",
+        "PRESSURE_ELIGIBLE",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "Does not replace historical dirty WB scenario with a new unrelated read-only fixture; source premise retained rather than claiming rerun.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "ro_tag_reuse_late_sector_identity",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/ro_tag_reuse_late_sector_identity.json",
+        "sha256": "9360340bb581d5d803c421a64d0d5d83f4acc07647fb1c74f43858b140cb960a"
+      },
+      "historical_model_premise": "Original can_detach attached&&!reuse_seen&&(required&~ready), generation/late fill and sticky reuse rules byte-identical.",
+      "actual_source_delta_applicability": "Actual Tag detach, reused target and original payload late return match reference/OFF/ON; sticky reused waiter protects after its response.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "PRESSURE_STICKY_REUSE",
+        "PREVIEW_REPEAT"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "Native successful detach is mechanism coverage, not proof SGEMM will detach or gain cycles.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "ro_victim_same_address_and_host_invalidation",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/ro_victim_same_address_and_host_invalidation.json",
+        "sha256": "82de4e0a56b5b9e6aba45141562366032364480cb673d6a873a4c225035447e0"
+      },
+      "historical_model_premise": "Original check_access/assert_no_epoch_write/host-prefill/tag match/detach guards and original same-address/host-update assertions retained.",
+      "actual_source_delta_applicability": "New passive actual merge/fill/retire hooks and native-owner conflict unchanged; direct native requester behavior and Tag reuse exercised.",
+      "r4_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "NATIVE_REQUESTER_RO_VICTIM",
+        "EMPTY_CERT"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "New C extra joint remains HOLD; whole-commandlist/model assumption boundaries unchanged.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "backpressure_complete_quiescence",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/backpressure_complete_quiescence.json",
+        "sha256": "18a5c465d6151ffa397eb8896835a33c55b53e749b48995c73e5b626ae2aa5e2"
+      },
+      "historical_model_premise": "Original shared response chooser/descriptor/WAD pending/resource epoch drain, native/RO mux and rollback premises retained.",
+      "actual_source_delta_applicability": "Actual detached-ready pinned response waits for full ICNT consumer then drains; detach can precede rejected trigger without losing victim.",
+      "r4_native_classes": [
+        "RESPONSE_BACKPRESSURE",
+        "DETACH_THEN_LATER_DENIAL",
+        "NATIVE_REQUESTER_RO_VICTIM"
+      ],
+      "actual_case_records_checked": 9,
+      "scope_limit_preserved": "response_backpressure counter counts commit_response(false) only; zero does not mean no upstream wait. Full64slice application quiescence remains mandatory.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    },
+    {
+      "gate": "tm_trigger_default_off_and_illegal_combinations",
+      "status": "APPLICABILITY_SUPPORTED_FOR_BOTH_FINITE_F_CONDITIONS_PENDING_NEW_PER_INPUT_Q",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/tm_trigger_default_off_and_illegal_combinations.json",
+        "sha256": "de15a733aa704ef33c5a8c6cc1374181d8572a87840db0e1a785f1d9eb49e0ee"
+      },
+      "historical_model_premise": "Original T/M switch schema/default behavior/constructor guards and four-factor historical model assertions retained; no policy relaxation.",
+      "actual_source_delta_applicability": "Bounded T_OFF, EMPTY_CERT, M1 D512/address32 and M0 line128 real controls; reference/OFF/ON actual identity/state matched.",
+      "r4_native_classes": [
+        "T_OFF",
+        "EMPTY_CERT",
+        "ROLLUP_RESIDUAL",
+        "PRESSURE_STICKY_REUSE"
+      ],
+      "actual_case_records_checked": 12,
+      "scope_limit_preserved": "T0 native control or observer_OFF not new fullapp S; C extra combined fixture and unrequested profiles remain unqualified.",
+      "condition_disposition": {
+        "vectorAdd_4M": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; this is gate-evidence applicability, not this input runtime PASS.",
+        "convolutionSeparable": "Same exact finiteP1 W1V1T1M1 model/212 observer and covered runtime delta; native legacy input semantics separately reviewed below, not old Q inheritance."
+      }
+    }
+  ],
+  "Conv_masked_row_source_review": {
+    "status": "NARROW_UNCHANGED_ZERO_MASK_SEMANTICS_SUPPORTED_NOT_NEW_INPUT_QUALIFICATION",
+    "legacy_proof": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_R17_NATIVE_BYTE_SEMANTIC_PROOF_r1/NATIVE_LEGACY_BYTE_SEMANTIC_PROOF_R17_r1.json",
+      "sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2"
+    },
+    "legacy_framework_source": "9bd17f9db3e8cbbc3fdad7283d1e292918546fd5",
+    "actual_framework_source": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "actual_Core_source": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "native_framework_file_identity_checks": [
+      {
+        "path": "gpu-simulator/ISA_Def/ampere_opcode.h",
+        "legacy_recorded_sha256": "af35b0e1d889570e90b5a871fb1100c7bb9393412f06831a20fd2857529b4cfd",
+        "r4_Framework_sha256": "af35b0e1d889570e90b5a871fb1100c7bb9393412f06831a20fd2857529b4cfd",
+        "whole_file_equal": true
+      },
+      {
+        "path": "gpu-simulator/ISA_Def/kepler_opcode.h",
+        "legacy_recorded_sha256": "475f57896508a698059f7180ab4b8ad9db5861f7ccc5fde8f76fffac0e1e358d",
+        "r4_Framework_sha256": "475f57896508a698059f7180ab4b8ad9db5861f7ccc5fde8f76fffac0e1e358d",
+        "whole_file_equal": true
+      },
+      {
+        "path": "gpu-simulator/ISA_Def/pascal_opcode.h",
+        "legacy_recorded_sha256": "c5fb9b3d75a006c8cba23033095fe0d37d55e380fcd46db074ae43be9ba1e74a",
+        "r4_Framework_sha256": "c5fb9b3d75a006c8cba23033095fe0d37d55e380fcd46db074ae43be9ba1e74a",
+        "whole_file_equal": true
+      },
+      {
+        "path": "gpu-simulator/ISA_Def/turing_opcode.h",
+        "legacy_recorded_sha256": "f89f4a87600c11973c3f886ec701e952741c6718b304013c71f548cc9190136c",
+        "r4_Framework_sha256": "f89f4a87600c11973c3f886ec701e952741c6718b304013c71f548cc9190136c",
+        "whole_file_equal": true
+      },
+      {
+        "path": "gpu-simulator/ISA_Def/volta_opcode.h",
+        "legacy_recorded_sha256": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+        "r4_Framework_sha256": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+        "whole_file_equal": true
+      },
+      {
+        "path": "gpu-simulator/trace-driven/trace_driven.cc",
+        "legacy_recorded_sha256": "7614c6b5196b030daa9e9db08d712bd0e9f6c303e5bca1181f8b5a8d35699327",
+        "r4_Framework_sha256": "e6450baa69a7129d2c9fce18c880e38fb9c545e0f265d89fa6cf743b0eef4dfd",
+        "whole_file_equal": false
+      },
+      {
+        "path": "gpu-simulator/trace-parser/trace_parser.cc",
+        "legacy_recorded_sha256": "9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28",
+        "r4_Framework_sha256": "9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28",
+        "whole_file_equal": true
+      },
+      {
+        "path": "gpu-simulator/trace-parser/trace_parser.h",
+        "legacy_recorded_sha256": "f483cfef7b15d765f737d27d88b5d171231078c09da51cb6da23f1139da141dd",
+        "r4_Framework_sha256": "f483cfef7b15d765f737d27d88b5d171231078c09da51cb6da23f1139da141dd",
+        "whole_file_equal": true
+      }
+    ],
+    "currentCore_memory_generator": {
+      "path": "src/abstract_hardware_model.cc",
+      "sha256": "2e615f14980efd7a960a0a41075989a3d000a7cd08f584f5e868f8181cc0ff38",
+      "equals_r17_proof": true
+    },
+    "trace_driven_exact_delta": "Exactly one ordinary-LDG classifier assignment at current195; mask copy163-164, address/imm interpretation unchanged. MQ2 is0 in both prepared profiles; no wholefile identity claim.",
+    "source_lines": {
+      "Framework_trace_parser.cc": "192-199 list_all reads only active lanes, sets inactive0;223 attempts residual imm",
+      "Framework_trace_driven.cc": "163-164 copies originalmask;195 adds ordinaryread classifier only;386-388 consumes imm only for OP_DEPBAR",
+      "Core_abstract_hardware_model.cc": "286-291 generate_mem_accesses returns at zero active mask before request generation"
+    },
+    "complete_input_extended_rows": [
+      {
+        "name": "kernel-1.traceg",
+        "sha256": "9678e3146630e7c77bd4609cc2fc82a6651552e66a5513ea47dcd2d9eb270724",
+        "all_records": 11759616,
+        "all_active_lane_records": 375029760,
+        "extended_zero_mask_rows": 3072,
+        "extended_opcodes": {
+          "LDG.E.SYS": 3072
+        },
+        "not_native_address_fields": 98304
+      },
+      {
+        "name": "kernel-2.traceg",
+        "sha256": "1c4c91bd017adb4fedce9dc93b5edd8454dc28d969db095b78a6ea972c4ef28b",
+        "all_records": 10653696,
+        "all_active_lane_records": 339517440,
+        "extended_zero_mask_rows": 768,
+        "extended_opcodes": {
+          "LDG.E.SYS": 768
+        },
+        "not_native_address_fields": 24576
+      }
+    ],
+    "semantic_scope": "All3840 extended rows in saved complete-input proof are mask0 ordinaryLDG.E.SYS:3072+768. No rows/bytes were removed; original full input still retains frontend timing. Leftover address tokens do not become executed lane addresses or meaningful ordinary-LDG imm. This supports the old auditor adapter revision against current unchanged relevant runtime semantics.",
+    "not_generalized": "Do not extend this proof to arbitrary partially active32-address rows, nonzero-mask extra fields, DEPBAR residuals, changedtracecontents or numerical captured-source output.98870 is inputauditor/schema accommodation, not a new production parser patch."
+  },
+  "Vector_input_scope_review": "Exact one-kernel complete vectorAdd4000000 input,56,000,000instructions,accepted full trace composite138f33b6...,250000 certified128B lines/8000000 read-lane refs. Wholeepoch store-exclusion andcanonical address/hiddenwriter assumptions unchanged. No subset/sampled trace or atomic opcode admitted. Current fulltrace freshhash remains to be checked by original runner after approval.",
+  "source_model_reuse_rule": "18mechanism gates use exactr4 delta/native48 plus unchanged historical model premises only. Neither old full-app endpoints nor original main61 or SGEMM runtime qualification transfer. Native48 finite reference/OFF/ON is not new completeS/OFF anchor. CextrajointHOLD retained.",
+  "remaining_after_approval": [
+    "Adopt only exact additionally approved conditions/startcount and operational limit amendment in original single central process. No grant inferred from this review.",
+    "Fresh current source/main/archive/build/runtime/shared-library identity recheck against exactr4 producer; do not rebuild or repeat existing native evidence without a newly affected realgap.",
+    "Fresh fullinput content/composite hashes and exactmanifest/ranges/atomic/legacy scope bindings, allkernel/allcommand proof and current-source applicability perworkload. Our review reads metadata+smallsource only, neverlarge bodies.",
+    "Final exact orderedconfig/assets/environment fingerprint/effectiveF/runtime source/profile/observer212 schema/recovery decoder and original parserCLI adapter binding. Root84-item configpreflight already covers smallassets; we do not repeat it here.",
+    "Create/seal/sign/register fresh Vector orConv independent per-inputQ carrying these18 applicability dispositions, exactinputs and the source-bound terminal contract; currentpreparednullQ is not launchable.",
+    "Resolve inherited donor preparation_status wording when finalizing future specs. Operational timeout=null and old10800 identity field must be reconciled to exact approved current operational override, never guessed from provenance.",
+    "Actual only-central controller/lease/process dedup, resource and result-generation budget admission,workspace5GiBfloor+2GiBmonitor,RAM/CPU/Share/collector metadata and384MiB perend cap; no current resourcesqualified by this review.",
+    "After any later authorized actualrun: durable nativeexit0,allfullinstructions/allkernels,64slice212+legacyROC1/resourcequiescence/scientificindependentterminal acceptance. Nonzero detach not required; retain negatives and actualstart charges."
+  ],
+  "root_config_preflight_reference": {
+    "path": "/tmp/e2_four_config_metadata_preflight.json",
+    "sha256": "39d902a6a63890fa7527c2b97cfe9c12e8d8a79fc7d42e77b4bf2c57ec29c047",
+    "bytes": 27892
+  },
+  "new_native_app_build_invocations": 0,
+  "large_raw_or_trace_body_bytes_read": 0,
+  "source_CLIENT_registry_Q_spec_writes": 0,
+  "queue_entries_created": 0,
+  "checks": [
+    {
+      "check": "actualr4 native producer receipt small SHA",
+      "pass": true
+    },
+    {
+      "check": "existing48actual native records and closed lease",
+      "pass": true
+    },
+    {
+      "check": "source applicability globalref source_premises",
+      "pass": true
+    },
+    {
+      "check": "source applicability globalref independent_actual_r4_native_review",
+      "pass": true
+    },
+    {
+      "check": "source applicability globalref formal_producer_identity_adoption",
+      "pass": true
+    },
+    {
+      "check": "source applicability globalref formal_A2_producer_release",
+      "pass": true
+    },
+    {
+      "check": "source applicability globalref final_schema_metadata_review",
+      "pass": true
+    },
+    {
+      "check": "gate evidence old_all_off_equivalence",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate old_all_off_equivalence",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary old_all_off_equivalence",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata T_OFF_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/T_OFF_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata T_OFF_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/T_OFF_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata T_OFF_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/T_OFF_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata EMPTY_CERT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/EMPTY_CERT_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata EMPTY_CERT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/EMPTY_CERT_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata EMPTY_CERT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/EMPTY_CERT_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata OBSERVER_NONINTERFERENCE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/OBSERVER_NONINTERFERENCE_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata OBSERVER_NONINTERFERENCE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/OBSERVER_NONINTERFERENCE_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata OBSERVER_NONINTERFERENCE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity old_all_off_equivalence/OBSERVER_NONINTERFERENCE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence finite_wbuf",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate finite_wbuf",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary finite_wbuf",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/EMPTY_CERT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/EMPTY_CERT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/EMPTY_CERT_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata DETACH_THEN_LATER_DENIAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/DETACH_THEN_LATER_DENIAL_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata DETACH_THEN_LATER_DENIAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/DETACH_THEN_LATER_DENIAL_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata DETACH_THEN_LATER_DENIAL_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/DETACH_THEN_LATER_DENIAL_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/OBSERVER_NONINTERFERENCE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/OBSERVER_NONINTERFERENCE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity finite_wbuf/OBSERVER_NONINTERFERENCE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence requester_exact_once",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate requester_exact_once",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary requester_exact_once",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_STICKY_REUSE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/PRESSURE_STICKY_REUSE_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_STICKY_REUSE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/PRESSURE_STICKY_REUSE_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_STICKY_REUSE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/PRESSURE_STICKY_REUSE_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/DETACH_THEN_LATER_DENIAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/DETACH_THEN_LATER_DENIAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/DETACH_THEN_LATER_DENIAL_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity requester_exact_once/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence sector_reference_data",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate sector_reference_data",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary sector_reference_data",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata NO_PRESSURE_POSITIVE_RO_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/NO_PRESSURE_POSITIVE_RO_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata NO_PRESSURE_POSITIVE_RO_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/NO_PRESSURE_POSITIVE_RO_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata NO_PRESSURE_POSITIVE_RO_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/NO_PRESSURE_POSITIVE_RO_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity sector_reference_data/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence stale_fill",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate stale_fill",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary stale_fill",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity stale_fill/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity stale_fill/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity stale_fill/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PREVIEW_REPEAT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity stale_fill/PREVIEW_REPEAT_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PREVIEW_REPEAT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity stale_fill/PREVIEW_REPEAT_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PREVIEW_REPEAT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity stale_fill/PREVIEW_REPEAT_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence resource_closure",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate resource_closure",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary resource_closure",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata ROLLUP_RESIDUAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/ROLLUP_RESIDUAL_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata ROLLUP_RESIDUAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/ROLLUP_RESIDUAL_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata ROLLUP_RESIDUAL_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/ROLLUP_RESIDUAL_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata BOUNDED_OUTPUT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/BOUNDED_OUTPUT_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata BOUNDED_OUTPUT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/BOUNDED_OUTPUT_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata BOUNDED_OUTPUT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity resource_closure/BOUNDED_OUTPUT_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence wb_lifecycle",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate wb_lifecycle",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary wb_lifecycle",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity wb_lifecycle/DETACH_THEN_LATER_DENIAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity wb_lifecycle/DETACH_THEN_LATER_DENIAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity wb_lifecycle/DETACH_THEN_LATER_DENIAL_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity wb_lifecycle/OBSERVER_NONINTERFERENCE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity wb_lifecycle/OBSERVER_NONINTERFERENCE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity wb_lifecycle/OBSERVER_NONINTERFERENCE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence bank_service",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate bank_service",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary bank_service",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/OBSERVER_NONINTERFERENCE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/OBSERVER_NONINTERFERENCE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity bank_service/OBSERVER_NONINTERFERENCE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence physical_bank_clock",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate physical_bank_clock",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary physical_bank_clock",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/PREVIEW_REPEAT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/PREVIEW_REPEAT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/PREVIEW_REPEAT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/OBSERVER_NONINTERFERENCE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/OBSERVER_NONINTERFERENCE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity physical_bank_clock/OBSERVER_NONINTERFERENCE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence memcpy_payload_identity",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate memcpy_payload_identity",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary memcpy_payload_identity",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity memcpy_payload_identity/NO_PRESSURE_POSITIVE_RO_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity memcpy_payload_identity/NO_PRESSURE_POSITIVE_RO_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity memcpy_payload_identity/NO_PRESSURE_POSITIVE_RO_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity memcpy_payload_identity/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity memcpy_payload_identity/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity memcpy_payload_identity/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence mode_legality",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate mode_legality",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary mode_legality",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/T_OFF_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/T_OFF_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/T_OFF_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/EMPTY_CERT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/EMPTY_CERT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/EMPTY_CERT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/BOUNDED_OUTPUT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/BOUNDED_OUTPUT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity mode_legality/BOUNDED_OUTPUT_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence shared_payload_lifecycle",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate shared_payload_lifecycle",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary shared_payload_lifecycle",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata NATIVE_REQUESTER_RO_VICTIM_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/NATIVE_REQUESTER_RO_VICTIM_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata NATIVE_REQUESTER_RO_VICTIM_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/NATIVE_REQUESTER_RO_VICTIM_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata NATIVE_REQUESTER_RO_VICTIM_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/NATIVE_REQUESTER_RO_VICTIM_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_payload_lifecycle/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence shared_directory_cost_and_full",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate shared_directory_cost_and_full",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary shared_directory_cost_and_full",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/PRESSURE_STICKY_REUSE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/PRESSURE_STICKY_REUSE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/PRESSURE_STICKY_REUSE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/DETACH_THEN_LATER_DENIAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/DETACH_THEN_LATER_DENIAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/DETACH_THEN_LATER_DENIAL_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/ROLLUP_RESIDUAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/ROLLUP_RESIDUAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity shared_directory_cost_and_full/ROLLUP_RESIDUAL_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence pinned_victim_wb_completion_identity",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate pinned_victim_wb_completion_identity",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary pinned_victim_wb_completion_identity",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_NO_MISSING_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/PRESSURE_NO_MISSING_reference",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_NO_MISSING_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/PRESSURE_NO_MISSING_off",
+      "pass": true
+    },
+    {
+      "check": "actual native-case metadata PRESSURE_NO_MISSING_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/PRESSURE_NO_MISSING_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity pinned_victim_wb_completion_identity/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence ro_tag_reuse_late_sector_identity",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate ro_tag_reuse_late_sector_identity",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary ro_tag_reuse_late_sector_identity",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PRESSURE_STICKY_REUSE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PRESSURE_STICKY_REUSE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PRESSURE_STICKY_REUSE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PREVIEW_REPEAT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PREVIEW_REPEAT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_tag_reuse_late_sector_identity/PREVIEW_REPEAT_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence ro_victim_same_address_and_host_invalidation",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate ro_victim_same_address_and_host_invalidation",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary ro_victim_same_address_and_host_invalidation",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/EMPTY_CERT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/EMPTY_CERT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/EMPTY_CERT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/PRESSURE_ELIGIBLE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/PRESSURE_ELIGIBLE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/PRESSURE_ELIGIBLE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/NATIVE_REQUESTER_RO_VICTIM_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/NATIVE_REQUESTER_RO_VICTIM_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity ro_victim_same_address_and_host_invalidation/NATIVE_REQUESTER_RO_VICTIM_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence backpressure_complete_quiescence",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate backpressure_complete_quiescence",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary backpressure_complete_quiescence",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/NATIVE_REQUESTER_RO_VICTIM_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/NATIVE_REQUESTER_RO_VICTIM_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/NATIVE_REQUESTER_RO_VICTIM_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/DETACH_THEN_LATER_DENIAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/DETACH_THEN_LATER_DENIAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/DETACH_THEN_LATER_DENIAL_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/RESPONSE_BACKPRESSURE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/RESPONSE_BACKPRESSURE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity backpressure_complete_quiescence/RESPONSE_BACKPRESSURE_on",
+      "pass": true
+    },
+    {
+      "check": "gate evidence tm_trigger_default_off_and_illegal_combinations",
+      "pass": true
+    },
+    {
+      "check": "historical source-scope gate tm_trigger_default_off_and_illegal_combinations",
+      "pass": true
+    },
+    {
+      "check": "gate exactr4 source/genericF boundary tm_trigger_default_off_and_illegal_combinations",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/T_OFF_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/T_OFF_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/T_OFF_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/EMPTY_CERT_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/EMPTY_CERT_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/EMPTY_CERT_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/PRESSURE_STICKY_REUSE_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/PRESSURE_STICKY_REUSE_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/PRESSURE_STICKY_REUSE_on",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/ROLLUP_RESIDUAL_reference",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/ROLLUP_RESIDUAL_off",
+      "pass": true
+    },
+    {
+      "check": "native metadata identity tm_trigger_default_off_and_illegal_combinations/ROLLUP_RESIDUAL_on",
+      "pass": true
+    },
+    {
+      "check": "18distinctgate rows",
+      "pass": true
+    },
+    {
+      "check": "Conv r17 native byte/zero-maskproof metadata SHA",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/ISA_Def/ampere_opcode.h",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/ISA_Def/kepler_opcode.h",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/ISA_Def/pascal_opcode.h",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/ISA_Def/turing_opcode.h",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/ISA_Def/volta_opcode.h",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/trace-driven/trace_driven.cc",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/trace-parser/trace_parser.cc",
+      "pass": true
+    },
+    {
+      "check": "Framework parser/ISA oldproof equal gpu-simulator/trace-parser/trace_parser.h",
+      "pass": true
+    },
+    {
+      "check": "currentCore memory generator wholefile equals r17",
+      "pass": true
+    },
+    {
+      "check": "trace_driven delta exactlyone ordinaryread classifier assignment",
+      "pass": true
+    },
+    {
+      "check": "Conv proof limitedto3840zero-mask ordinaryLDG rows",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M prospective only nullQ/approval marker",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M source/finiteF/observer/config scope metadata",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M full atomic opcode proof SHA",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M retained main61 inputscope SHA",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M readonly manifest_path",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M readonly ranges_path",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M readonly input_review_path",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M accepted wholeinput trace/oracle/source manifest agreement",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M full non-atomic opcode scope and bounded kernels",
+      "pass": true
+    },
+    {
+      "check": "vectorAdd_4M certificate exact profile hashes andlinecount",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable prospective only nullQ/approval marker",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable source/finiteF/observer/config scope metadata",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable full atomic opcode proof SHA",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable retained main61 inputscope SHA",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable readonly manifest_path",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable readonly ranges_path",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable readonly input_review_path",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable accepted wholeinput trace/oracle/source manifest agreement",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable full non-atomic opcode scope and bounded kernels",
+      "pass": true
+    },
+    {
+      "check": "convolutionSeparable certificate exact profile hashes andlinecount",
+      "pass": true
+    },
+    {
+      "check": "existingr4 tracegrammar source applicability metadata",
+      "pass": true
+    }
+  ]
+}
