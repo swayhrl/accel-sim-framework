@@ -1,0 +1,366 @@
+{
+  "schema": "E2_DEEP_TRIGGER_SEMANTICS_SOURCE_REVIEW_V1",
+  "status": "READ_ONLY_SOURCE_REVIEW_COMPLETE_NO_MECHANISM_CHANGE",
+  "core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "main61_core": "d010911e3174a3764791183cd108fe4664ba8731",
+  "known_formal_main_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+  "main_binary_rehashed": false,
+  "source_identity_file": "/tmp/e2_deep_trigger_semantics_r1/SOURCE_IDENTITIES.json",
+  "all_reviewed_source_files_match_Core9243": true,
+  "findings": [
+    {
+      "id": "F1_ACTUAL_TRIGGER",
+      "classification": "CONFIRMED_CURRENT_POLICY",
+      "conclusion": "detach is a last-resort same-set all-reserved Tag relief, not any cache miss, HIT_RESERVED, high Tag occupancy or positive RO certificate. RO candidate new-request preview can rewrite raw FAIL to MISS, so the actual supported production path is reachable.",
+      "code": [
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/gpu-cache.cc",
+          "lines": [
+            344,
+            426
+          ],
+          "function": "tag_array::probe"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            251,
+            297
+          ],
+          "function": "ep_l2_ro_runtime::preview"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/l2cache.cc",
+          "lines": [
+            1414,
+            1425
+          ],
+          "function": "frontend admission"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/l2cache.cc",
+          "lines": [
+            1521,
+            1563
+          ],
+          "function": "access only if admit"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": [
+            299,
+            334
+          ],
+          "function": "l2_cache::ft_access"
+        }
+      ],
+      "proof": "Existing PRESSURE_ELIGIBLE uses f.send/await_lower with16 real same-set pending RO lines and a17th request, observes actual Tag detach and later retirement. E reviewed frame detach_success2/detached_retired2; no new test was run."
+    },
+    {
+      "id": "F2_NATIVE_REQUESTER_ASYMMETRY",
+      "classification": "CONFIRMED_COVERAGE_LIMIT_NOT_AUTOMATIC_BUG",
+      "conclusion": "An ordinary non-RO native read with no TVD special route and raw all-reserved FAIL gets RO.preview=false; baseline preview returns FAIL without detachable check. line_available=false blocks the frontend, so ft_access/relieve is not consulted even if same-set RO victim is eligible. It lasts while that pressure state persists, not a demonstrated permanent application deadlock.",
+      "code": [
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            100,
+            105
+          ],
+          "function": "candidate"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            200,
+            209
+          ],
+          "function": "new_request"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            251,
+            272
+          ],
+          "function": "preview"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/gpu-cache.cc",
+          "lines": [
+            2726,
+            2754
+          ],
+          "function": "l2_cache::preview_access"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/l2_admission_rules.h",
+          "lines": [
+            42,
+            59
+          ],
+          "function": "l2_admission_allowed"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/tests/ep_l2/test_detach_diagnostic.cc",
+          "lines": [
+            217,
+            221
+          ],
+          "function": "NATIVE_REQUESTER_RO_VICTIM"
+        }
+      ],
+      "lineage": "Inherited from main61 d010, not introduced by observer9243. new_request/native_owner_conflict/detachable/probe/can_detach blocks are byte-identical where reported.",
+      "qualification_limit": "Native fixture explicitly records frontend DENIED_NOT_CONSULTED; its positive native requester detach comes from direct cache->access, not successful ordinary frontend passage. It cannot prove arbitrary requesters trigger production detach.",
+      "causal_limit": "Root reports accepted CFD/DWT/Vector raw-pressure0 and pin/tag/capacity denials0, so this conditional limitation cannot explain their observed zero detach.",
+      "action": "Document and review scientific trigger semantics explicitly if future expansion is desired. No source/mechanism change is made or assumed approved."
+    },
+    {
+      "id": "F3_MIXED_SECTORS_AND_PIN",
+      "classification": "NORMAL_PROTECTION_AND_TRIGGER_SCOPE_BOUNDARY",
+      "conclusion": "For a different-address replacement, any RESERVED sector makes sector_cache_block::is_reserved_line true, so a mixed VALID/RESERVED way is not selected as an ordinary replacement. An all-ready but still response-pinned way can be chosen as Tag MISS and then correctly denied by FT pin/pending protection. This is not Tag-all-reserved FAIL; it is a payload-lifetime guard. The detach predicate rejects all-ready victims.",
+      "code": [
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/gpu-cache.h",
+          "lines": [
+            397,
+            410
+          ],
+          "function": "sector_cache_block::is_reserved_line"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/gpu-cache.cc",
+          "lines": [
+            351,
+            424
+          ],
+          "function": "tag_array::probe"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": [
+            340,
+            357
+          ],
+          "function": "ft_access victim pin/pending guard"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-transactions.h",
+          "lines": [
+            205,
+            216
+          ],
+          "function": "can_detach/detach"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/tests/ep_l2/test_detach_diagnostic.cc",
+          "lines": [
+            201,
+            205
+          ],
+          "function": "PRESSURE_NO_MISSING"
+        }
+      ],
+      "additional_scope": "If a MISS-selected pinned-ready victim blocks replacement while another way is detachable pending RO, current policy still does not call relieve because raw probe was MISS. This is an opportunity/trigger-policy boundary, not proof of unsafe reclamation or an observed application failure.",
+      "actual_limit": "Root actual denied_pin0 for the three accepted new endpoints means no evidence this path caused those outcomes."
+    },
+    {
+      "id": "F4_HIT_RESERVED",
+      "classification": "CONFIRMED_COUNTER_SEMANTICS",
+      "conclusion": "HIT_RESERVED is a matching requested sector already RESERVED and is returned inside the Tag-match loop before the all_reserved decision. It needs one matching Tag, not16 reserved ways. DWT raw_hit_reserved7250 reported by root does not establish Tag-set pressure or7250 distinct successful merges. Frontend counters are head-physical-cycle observations; successful RO merge counters have a different denominator.",
+      "code": [
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/gpu-cache.cc",
+          "lines": [
+            354,
+            379
+          ],
+          "function": "tag_array::probe early matching-hit returns"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/gpu-cache.cc",
+          "lines": [
+            2996,
+            3029
+          ],
+          "function": "detach_diag_frontend"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            313,
+            325
+          ],
+          "function": "merge_existing"
+        }
+      ]
+    },
+    {
+      "id": "F5_ELIGIBILITY",
+      "classification": "CONFIRMED_CONSERVATIVE_POLICY",
+      "conclusion": "Victim is selected by first eligible Tag index in requester same set. It must reference a live RO transaction, T enabled, attached, reuse_seen=false and required&~ready nonzero. reuse_seen becomes sticky on an accepted merge and is not cleared merely because a waiter retires; returning payload/Tag generation identity must match.",
+      "code": [
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            232,
+            249
+          ],
+          "function": "detachable/relieve"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-transactions.h",
+          "lines": [
+            181,
+            223
+          ],
+          "function": "merge/can_detach/detach"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-store-port.h",
+          "lines": [
+            105,
+            109
+          ],
+          "function": "tag_detach"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            171,
+            175
+          ],
+          "function": "Tag invalidation and generation increment"
+        }
+      ],
+      "guard": "No claim that certified input or positive transaction count alone implies eligible pressure or expected nonzero detach."
+    },
+    {
+      "id": "F6_STATS_INTEGRITY",
+      "classification": "NO_CONFIRMED_LOST_DETACH_COUNTER_FOUND",
+      "conclusion": "Actual detach changes Tag/payload identity then increments tx.stats.detached and diagnostic_success in the same function. Observer is registered before RO transaction construction, and ro_print checks diagnostic.detach_success equals authoritative legacy detached per slice. Global/64slice/phase closure and matching selector are guarded. No counter reset or enabled-observer initialization gap was found in this review.",
+      "code": [
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-transactions.h",
+          "lines": [
+            209,
+            223
+          ],
+          "function": "transactions::detach"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            70,
+            72
+          ],
+          "function": "observer pointer after registration"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            372,
+            377
+          ],
+          "function": "ro_init"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            399,
+            408
+          ],
+          "function": "ro_print equality check"
+        },
+        {
+          "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1/src/gpgpu-sim/ep-l2-detach-diag.h",
+          "lines": [
+            279,
+            296
+          ],
+          "function": "registry/slice/global output"
+        }
+      ],
+      "limits": [
+        "Raw pressure omits TVD/ideal/disabled handled cycles marked probe_skipped; zero raw pressure means zero within its exact visible frontend domain, not universal Tag sufficiency.",
+        "Counter totals from different domains cannot be multiplied into joint causal opportunities; first64 bounded samples may drop later examples.",
+        "A successful detach does not imply immediate trigger acceptance or speedup; ft_access can deny later."
+      ]
+    }
+  ],
+  "contract_review": {
+    "formal_Framework_delivery": "f7869e5dfdc1b6659a1b82a732fcd6ca12f81ddf",
+    "formal_E_entry": "docs/ep_l2/review_packs/MS20261022_A2_DETACH_OBSERVER_PRODUCER_r1/E_ACCEPTANCE_ENTRY.json",
+    "formal_profile": "F W1V1T1M1 physical1168/P1/D512/LineMSHR128/WAD128; observer-only unchanged production mechanism. No explicit arbitrary-requester Tag-relief promise found.",
+    "public_INTERFACE_at_formal_delivery": {
+      "path": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/INTERFACE.md",
+      "relevant_lines": [
+        26,
+        46,
+        67,
+        73,
+        101,
+        103
+      ],
+      "caveat": "The file still describes early integration; it does not freeze every requester trigger."
+    },
+    "SUPPORTED_PROFILES_at_formal_delivery": {
+      "path": "docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/a/SUPPORTED_PROFILES.json",
+      "caveat": "Still carries R28/Core27ec/main773 lineage, so it is not an authoritative new9243 mechanism claim. Actual r4 release/E entry and exact new E Q carry runtime identity. Its flags and R_certification statement do not promise every requester triggers detach."
+    },
+    "architecture_roadmap": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/ELASTIC_PAYLOAD_L2_ARCHITECTURE_AND_ROADMAP.md",
+      "lines": [
+        861,
+        907
+      ],
+      "finding": "INVALID > replaceable RO_PENDING > normal clean ... was explicitly not frozen. Cannot implement this proposed priority as a routine bugfix without explicit scientific revision."
+    }
+  },
+  "Tag_pressure_geometry": {
+    "current_config": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32",
+    "slices": 64,
+    "sets_per_slice": 64,
+    "ways_per_set": 16,
+    "Tags_per_slice": 1024,
+    "Tag_covered_bytes_total": 8388608,
+    "physical_payloads_per_slice": 1168,
+    "necessary_pressure_condition": "Incoming full Tag does not match any hit/sector miss; all16 ways in its mapped slice/set have at least one RESERVED sector. Completed clean/dirty replacement candidates prevent raw RESERVATION_FAIL; dirty preference has a dirty fallback.",
+    "mapping": "l2_cache_config::set_index removes partition bits via partition_address before configured hash. Raw VA stride alone is not a general application pressure guarantee. Native fixture uses controlled same-set addresses and withholds real lower fills.",
+    "possible_diagnostic_only": "Any Tag associativity/set/latency changes alter comparison/config/qualification; do not auto-run a grid or treat roadmap priority as finalized production policy."
+  },
+  "native_evidence": {
+    "review_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+    "actual_existing_native_processes_reviewed": 48,
+    "existing_checks_passed": 1589,
+    "native_rerun_by_this_review": 0,
+    "positive_production_RO_case": {
+      "case": "PRESSURE_ELIGIBLE_on",
+      "detach_success": 2,
+      "detached_retired": 2,
+      "scope": "f.send/await_lower and actual physical cache/transactions. Not complete application64slice or speedup evidence."
+    },
+    "native_requester_case": {
+      "case": "NATIVE_REQUESTER_RO_VICTIM_on",
+      "detach_success": 1,
+      "eligible_relief_not_consulted": 15,
+      "scope": "Positive transition is direct cache access only, after normal frontend was explicitly denied."
+    }
+  },
+  "applicability_to_current_apps": {
+    "source_of_current_app_facts": "Parent E2 reported already accepted CFD/DWT/Vector; this source-only task did not reread their raw/trace or active Conv.",
+    "reported_three_endpoint_facts": "raw Tag pressure0; denied_pin/tag/capacity0; detach0. DWT raw HIT_RESERVED7250 is a different status/domain.",
+    "causal_conclusion": "Those accepted observed zero-pressure endpoints do not reach the detach trigger, so zero is consistent with the frozen policy; neither native-requester asymmetry nor pinned-MISS gap is established as their cause. Conv E055 was running at task start and is not inferred complete here.",
+    "claim_boundary": "Do not claim Tags were globally always sufficient, arbitrary requesters all covered, or successful Tag-detach application evidence exists from native-only tests."
+  },
+  "definite_new_mechanism_correctness_bug_found": false,
+  "future_action_boundary": "If broadening requester class or replacement priority is proposed, preserve current negative results and explicitly review source/newbinary/affected native/new runtime qualification/config/input comparison changes. No automatic mechanism edit is authorized by this source review.",
+  "actions": {
+    "production_source_changed": false,
+    "registry_lease_Q_spec_main_changed": false,
+    "new_goal_controller": false,
+    "native_build_or_application_started": false,
+    "raw_trace_main_archive_body_read": false,
+    "outputs_under_tmp_only": true
+  }
+}
