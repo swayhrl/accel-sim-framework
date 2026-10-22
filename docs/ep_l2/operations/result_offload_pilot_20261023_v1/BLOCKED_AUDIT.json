@@ -1,0 +1,75 @@
+{
+  "schema": "RESULT_OFFLOAD_PILOT_THREE_TURN_BLOCKED_AUDIT_V1",
+  "utc": "2026-10-22T16:56:42.115922+00:00",
+  "goal_complete": false,
+  "blocked_reason": "Same genuine Share floor+approved scratch reservation gate failed for three consecutive goal turns; no live test process or transferred payload exists.",
+  "consecutive_affected_goal_turns": 3,
+  "turn_evidence": [
+    {
+      "turn": 1,
+      "published_payload_commit": "8fc07aeff8fb5a9ddd1f85091c23e88235c0d4b5",
+      "resource_evidence": [
+        "evidence/PHASE2_PREWRITE_RESOURCE_HOLD.json",
+        "evidence/PHASE2_RESOURCE_CHECKPOINT_02.json"
+      ],
+      "progress": "approved driver frozen, both independent owner readies consumed, source metadata joined, separate manifests and workflows prepared; data stopped before first write"
+    },
+    {
+      "turn": 2,
+      "published_payload_commit": "0aba26ebd25faf64c08fe57e84fc0239796f6bda",
+      "resource_evidence": [
+        "evidence/PHASE2_RESOURCE_CHECKPOINT_03.json"
+      ],
+      "progress": "pinned V9 functions verified two actual prepared metadata manifests without constructing any transaction; Share gate still failed"
+    },
+    {
+      "turn": 3,
+      "resource_evidence": [
+        "evidence/PHASE2_RESOURCE_CHECKPOINT_04.json"
+      ],
+      "classification": "revalidated same external-resource blocker; no meaningful remaining authorized execution can advance before Share recovers"
+    }
+  ],
+  "completion_audit": {
+    "prior_feasibility_reuse_no_census": "DONE",
+    "V9_and_industrial_static_reuse_and_limits": "DONE",
+    "owner_lifecycle_reader_acceptance_and_source_release_boundaries": "DONE",
+    "independent_four_axis_outbox_and_peak_outage_design": "DONE",
+    "explicit_synthetic_permission": "GRANTED_AND_PRESERVED",
+    "synthetic_transfer_SHA_resume_crash_nooverwrite_native_restore": "NOT_STARTED_RESOURCE_HOLD_NOT_QUALIFIED",
+    "real_owner_COPY_READY": "BOTH_VERIFIED_PUBLICATION_AND_METADATA",
+    "real_data_independent_full_SHA_archive_and_restore": "NOT_STARTED_REQUIRES_SYNTHETIC_PASS_AND_RESOURCE_ADMISSION",
+    "project_formal_workflows": "CANDIDATES_PREPARED_NOT_QUALIFIED",
+    "next_full_batch_plan": "PREPARED_PROPOSAL_ONLY",
+    "source_keep_and_science_nochange": "MAINTAINED",
+    "small_Git_evidence_publication": "PUBLISHED_AND_VERSIONED_RAW_READBACK"
+  },
+  "latest_resource": {
+    "utc": "2026-10-22T16:55:41.081500+00:00",
+    "Share_available_bytes": 41578438656,
+    "required_Share_floor_plus_scratch": 42966450176,
+    "Share_deficit_including_scratch": 1388011520,
+    "MemAvailable_bytes": 244131266560,
+    "resource_pass": false,
+    "scratch_exists": false,
+    "target_exists": false,
+    "check": "BOUNDED_READONLY_NO_LIVE_PROCESS_TO_RESTART"
+  },
+  "required_external_change": {
+    "Share_available_bytes_minimum": 42966450176,
+    "meaning": "40GiB residual plus approved16MiB scratch allowance, before any other active reservations",
+    "latest_shortfall_bytes": 1388011520,
+    "source_or_NAS_existing_cleanup_authorized": false,
+    "new_authorization_needed_to_resume_same_scope": false,
+    "fresh_identity_resource_lock_and_source_byte_checks_still_required": true
+  },
+  "not_safe_alternatives": [
+    "do not lower40GiB Share floor",
+    "do not delete existing files to make room",
+    "do not relocate approved native scratch without scope authorization",
+    "do not run memory-only or SSHFS-projected tests and call native ext4 restore PASS",
+    "do not install a polling daemon or restart another receiver",
+    "do not transfer real sidecars before synthetic PASS"
+  ],
+  "resume": "Recheck exact Share+RAM+genuine164/ABSENT-root gates, use frozen approved synthetic driver47f99f3157f21d6e057fd004cd382b6870f0fbe0 under original receiver lock; then exact9 sidecars in separate prepared transactions after fresh Source checks. No old transfer is live and no data must be retransmitted."
+}

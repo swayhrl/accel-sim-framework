@@ -11,3 +11,5 @@ Both independent real owner readies were discovered and fetched from GitHub. EP 
 Latest bounded recheck 2026-10-22T16:47:05.628568+00:00: Share=41954480128B, required40GiB+16MiB=42966450176B, deficit=1011970048B. Both roots still ABSENT. No live test process exists and no restart/retransmission is needed.
 
 Revision3: actual pinned V9 validate_manifest/transaction_id APIs accepted both prepared real metadata manifests locally; owner-ready hashes and candidate txids matched. No Transaction was constructed, no synthetic payload/file/transfer was created by this validation. Latest Share=41781276672B at2026-10-22T16:50:42.184817+00:00; deficit including approved scratch=1185173504B. RESOURCE_HOLD remains.
+
+Three-turn blocked audit: Share gate remained false at2026-10-22T16:55:41.081500+00:00; available=41578438656B; required=42966450176B; shortfall=1388011520B. Goal is BLOCKED/INCOMPLETE, not completed. No test/real payload, root, source deletion or new daemon was created. Existing permission and exact prepared progress are retained; see BLOCKED_AUDIT.json.
