@@ -1,11 +1,21 @@
 {
-  "schema": "E2_DETACH_ZERO_CURRENT_STATUS_V4",
-  "at_utc": "2026-10-22T12:57:37.244804+00:00",
+  "schema": "E2_R5_INITIAL_READY_STATUS_V1",
+  "at_utc": "2026-10-22T13:39:29.892295+00:00",
+  "status": "ORIGINAL_UNIQUE_CONTROLLER_EXACT_FOUR_READY_CFD_FIRST",
   "Goal": "ACTIVE",
-  "execution_state": "WORKING_UNDER_EXPLICIT_USER_APPROVAL",
   "goal_id": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_E2_CONTINUATION",
-  "state": "R5_NEW_NATIVE_FIXTURE_ENGINEERING_REPAIR_ACTIVE",
+  "accountable_owner": "E2",
   "actual_starts": 55,
+  "new_r5_starts": 0,
+  "remaining_r5_authorized_starts": 4,
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "original_T0": 1792414193,
   "controller": {
     "process": {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -15,253 +25,48 @@
     "state": "STOPPED",
     "stopped_unix": 1792670538.2138486
   },
-  "approved_four_actual_new_starts": 4,
-  "approved_four_remaining_authorized_starts": 0,
-  "approved_four_current_accepted_points": 4,
-  "approved_four_remaining_cause_closure": [],
-  "r5_user_approved": {
-    "approval": "approved_r5_joint_r1/USER_APPROVAL.json",
-    "status": "HOLD_OBSERVER_WIRE_INVALID_ENGINEERING_FIXTURE_DUPLICATE_OWNER",
-    "source": {
-      "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
-      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
-      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
-    },
-    "main_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
-    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
-    "build_review": "approved_r5_joint_r1/producer/ROOT_BUILD_REVIEW.json",
-    "maximum_new_starts": 4,
-    "actual_new_starts": 0,
-    "remaining_authorized_starts": 4,
-    "old_runtime_qualification_inherited": false,
-    "external_lane_ACK_dependency": false
-  },
-  "deep_causal_open_items": [
-    "R5_SOURCE_NATIVE_JOINT_OBSERVER_Q_AND_NEW_COMPLETE_INPUT_MEASUREMENTS"
-  ],
-  "owner_causal_closure_report": "approved_four_r1/E2_OWNER_CAUSAL_CLOSURE_r1/README.md",
   "conditions": [
     {
-      "condition_id": "V7_DETACH_CAUSE_cfd_097k_F",
-      "workload": "cfd_097k",
-      "qualification_id": "00453d6366b6d2ef947696a40bb1a15c2fec8e633a39c8fa3ed51fa7a7de8083",
-      "independently_qualified_registered_bound": true,
-      "attempt_id": "E052_781ed6b2",
-      "central_state": "COMPLETE_VALID",
-      "actual_start": true,
-      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E052_781ed6b2",
-      "retained_result_bytes": 112701754,
-      "cycles": 79157,
-      "instructions": 143129372,
-      "mechanism_root_cause": {
-        "status": "EXACT_POINT_CAUSE_CLOSED",
-        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
-        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
-        "source_predicate": {
-          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
-          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
-          "lines": "326-329",
-          "condition": "probe==RESERVATION_FAIL && m_ro"
-        },
-        "measured": {
-          "commit_raw_probe_reached": 1163176,
-          "raw_tag_fail_commit": 0,
-          "relieve_calls": 0,
-          "detach_calls": 0,
-          "detach_success": 0,
-          "probe_skipped": 218239
-        },
-        "actual_RO_transactions": 51678
-      },
-      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json",
-      "D_delivery": {
-        "D_ACK_or_consumption_claimed": false,
-        "accepted_point_commit": "58e1aab87a1b7be0ecbe6ab51ab2203972012730",
-        "attempt_id": "E052_781ed6b2",
-        "event_id": "E2-00000085-a015125f3353",
-        "event_sha256": "f1b549f327d56741d453f9456d921c92c49a9fc98d28cf97e3b135f993586d6f",
-        "refs_verification": {
-          "reference_count": 3,
-          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
-          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
-          "total_metadata_bytes": 4908312
-        },
-        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
-        "workload": "cfd_097k"
-      }
+      "id": "V8_TAGPRESSURE_cfd_097k_F",
+      "Q": "INDEPENDENTLY_QUALIFIED_REGISTERED_BOUND",
+      "actual_start": false
     },
     {
-      "condition_id": "V7_DETACH_CAUSE_dwt2d_F",
-      "workload": "dwt2d",
-      "qualification_id": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004",
-      "independently_qualified_registered_bound": true,
-      "attempt_id": "E053_14cc809a",
-      "central_state": "COMPLETE_VALID",
-      "actual_start": true,
-      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E053_14cc809a",
-      "retained_result_bytes": 142494925,
-      "cycles": 167643,
-      "instructions": 148684429,
-      "mechanism_root_cause": {
-        "status": "EXACT_POINT_CAUSE_CLOSED",
-        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
-        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
-        "source_predicate": {
-          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
-          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
-          "lines": "326-329",
-          "condition": "probe==RESERVATION_FAIL && m_ro"
-        },
-        "measured": {
-          "commit_raw_probe_reached": 1793713,
-          "raw_tag_fail_commit": 0,
-          "relieve_calls": 0,
-          "detach_calls": 0,
-          "detach_success": 0,
-          "probe_skipped": 335584
-        },
-        "actual_RO_transactions": 9965
-      },
-      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json",
-      "D_delivery": {
-        "D_ACK_or_consumption_claimed": false,
-        "accepted_point_commit": "3200a3b217c11568722b48c0ea00ef9d0a36e281",
-        "attempt_id": "E053_14cc809a",
-        "event_id": "E2-00000087-21f26dd3070b",
-        "event_sha256": "6b9d6c0d034823032a3082ed57bbef83d4f0d820b009e1c050b8462d8304f948",
-        "refs_verification": {
-          "reference_count": 3,
-          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
-          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
-          "total_metadata_bytes": 8007802
-        },
-        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
-        "workload": "dwt2d"
-      }
+      "id": "V8_TAGPRESSURE_dwt2d_F",
+      "Q": "INDEPENDENTLY_QUALIFIED_REGISTERED_BOUND",
+      "actual_start": false
     },
     {
-      "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
-      "workload": "vectorAdd_4M",
-      "qualification_id": "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda",
-      "independently_qualified_registered_bound": true,
-      "attempt_id": "E054_e4a9813e",
-      "central_state": "COMPLETE_VALID",
-      "actual_start": true,
-      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E054_e4a9813e",
-      "retained_result_bytes": 96938343,
-      "cycles": 75039,
-      "instructions": 56000000,
-      "mechanism_root_cause": {
-        "status": "EXACT_POINT_CAUSE_CLOSED",
-        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
-        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
-        "source_predicate": {
-          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
-          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
-          "lines": "326-329",
-          "condition": "probe==RESERVATION_FAIL && m_ro"
-        },
-        "measured": {
-          "commit_raw_probe_reached": 831673,
-          "raw_tag_fail_commit": 0,
-          "relieve_calls": 0,
-          "detach_calls": 0,
-          "detach_success": 0,
-          "probe_skipped": 375000
-        },
-        "actual_RO_transactions": 250118
-      },
-      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/vectorAdd_4M/CURRENT_ACCEPTED_POINT.json",
-      "D_delivery": {
-        "D_ACK_or_consumption_claimed": false,
-        "accepted_point_commit": "a032e69d57464a3ccff5a5596b0a6a37718d2e7f",
-        "attempt_id": "E054_e4a9813e",
-        "event_id": "E2-00000089-3e8d1c86ce80",
-        "event_sha256": "b62cf3e36d1e1ac1b2aa495c990443e8e28cbf6223e1b2981589f07bae717770",
-        "refs_verification": {
-          "reference_count": 3,
-          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
-          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
-          "total_metadata_bytes": 2428277
-        },
-        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
-        "workload": "vectorAdd_4M"
-      }
+      "id": "V8_TAGPRESSURE_vectorAdd_4M_F",
+      "Q": "INDEPENDENTLY_QUALIFIED_REGISTERED_BOUND",
+      "actual_start": false
     },
     {
-      "condition_id": "V7_DETACH_CAUSE_convolutionSeparable_F",
-      "workload": "convolutionSeparable",
-      "qualification_id": "e47ae87689da5df3fd0ef65ce5424dc58108157bb6b868737d635e25549c7338",
-      "independently_qualified_registered_bound": true,
-      "attempt_id": "E055_64617d96",
-      "central_state": "COMPLETE_VALID",
-      "actual_start": true,
-      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E055_64617d96",
-      "retained_result_bytes": 105009015,
-      "cycles": 291469,
-      "instructions": 714547200,
-      "mechanism_root_cause": {
-        "status": "EXACT_POINT_CAUSE_CLOSED",
-        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
-        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
-        "source_predicate": {
-          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
-          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
-          "lines": "326-329",
-          "condition": "probe==RESERVATION_FAIL && m_ro"
-        },
-        "measured": {
-          "commit_raw_probe_reached": 4716184,
-          "raw_tag_fail_commit": 0,
-          "relieve_calls": 0,
-          "detach_calls": 0,
-          "detach_success": 0,
-          "probe_skipped": 1719574
-        },
-        "actual_RO_transactions": 371495
-      },
-      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/convolutionSeparable/CURRENT_ACCEPTED_POINT.json",
-      "D_delivery": {
-        "D_ACK_or_consumption_claimed": false,
-        "accepted_point_commit": "121ad5c5de00070a14bfd56c36d350822983f69e",
-        "attempt_id": "E055_64617d96",
-        "event_id": "E2-00000093-90478666599b",
-        "event_sha256": "a526b60a93b2c931a2d34f41fd8352231a2036dfac101c801ab94dd2e0eca8e1",
-        "refs_verification": {
-          "reference_count": 3,
-          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
-          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
-          "total_metadata_bytes": 3054394
-        },
-        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
-        "workload": "convolutionSeparable"
-      }
+      "id": "V8_TAGPRESSURE_convolutionSeparable_F",
+      "Q": "INDEPENDENTLY_QUALIFIED_REGISTERED_BOUND",
+      "actual_start": false
     }
   ],
+  "actual_targeted_native": "15unique exit0/8ON/10epochs strictPASS; metadata19reused",
+  "r4_four_points": "AllCURRENT_ACCEPTED_DIAGNOSTIC_POINT deliveredD; no newpairs",
+  "initial_resource_admission": "approved_r5_joint_r1/INITIAL_INDEPENDENT_RESOURCE_ADMISSION.json",
+  "next": "Original controller --once exactqueue with original fresh fulltrace/source/binary/config/oracle inspect, actualresource/lease recheck; CFDfirst, future conditions onlytrueadmission. No externalD/A2 ACK dependency.",
   "full_goal_complete": false,
-  "receipt": "RECEIPT.json",
-  "source_identity": {
-    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
-    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
-    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
-    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
-    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
-  },
-  "cumulative_result_generation": {
+  "original_result_generation": {
     "old_bytes": 14309576384,
-    "new_bytes": 7911686766,
-    "total_bytes": 22221263150
+    "new_bytes": 7928460809,
+    "total_bytes": 22238037193
   },
   "resources": {
-    "available_memory_bytes": 180581302272,
-    "disk_free_bytes": 7870070784,
-    "share_disk_free_bytes": 44195225600
+    "available_memory_bytes": 181075226624,
+    "disk_free_bytes": 8169213952,
+    "share_disk_free_bytes": 44191752192
   },
-  "status": "R5_NEW_NATIVE_FIXTURE_ENGINEERING_REPAIR_ACTIVE",
-  "next": "E2 isolate and correct native fixture duplicatepartition, qualify exactnew source observer; prepare full4 only after true native/parser gates and actual resources. No application starts by failed nativeexit0.",
-  "parallel_L2_request_analysis": "approved_r5_joint_r1/parallel_L2_request_analysis_r1/REPORT.md"
+  "per_endpoint_bytes": 402653184,
+  "new_generation_limit": 10737418240,
+  "total_generation_limit": 25769803776,
+  "workspace_floor": 5368709120,
+  "monitor_margin": 2147483648,
+  "no_new_controller_or_polling_daemon": true,
+  "historical_results_and_counts_preserved": true
 }
