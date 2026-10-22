@@ -1,9 +1,9 @@
 # Lane D current status
 
-IDLE; D-RO-APPLICATION-EVIDENCE-DECISION-r1 DONE in response to E2-00000054. [Final scientific report](../../review_packs/MS20261022_D_RO_POSITIVE_FINAL_SCIENTIFIC_DECISION_r1/README.md).
+D-DETACH-FUNNEL-ANALYSIS-r1: DONE_ANALYSIS_PREPARATION in response to E2-00000059. [Analysis contract, cause tree and table interface](../../review_packs/MS20261022_D_DETACH_FUNNEL_ANALYSIS_r1/README.md). No diagnostic application record has been delivered; current numerical outcomes are UNKNOWN.
 
-Actual C certificate consumed:64,480 RO lines /75,423,744 read lane-line references in exact whole-commandlist128B closed-world model. E own new Q/spec/exact one-F proposal and old-S amendment reviewed. D supports the proposal for user review only; no run approval or A2 signature.
+Prepared separate frontend physical-head-cycle, pressure/preview, actual commit/relieve and transaction-lifecycle denominators; guarded equations, explicit NA/unknown, per64slice/kernel/unattributed rollups and nonadditive overlap rules. All real enums incl existing-target HIT_RESERVED, native not-consulted/T-off scopes require exact A2/E mapping before accepted projection. No binary wait for this completed D preparation.
 
-Coverage, runtime admission, eligible Tag replacement, detach/retirement and performance remain distinct. A2 own final binding at3262c80c is consumed and reports no A2 blocker; D does not sign for A2. Future exact proposal requires user approval, E controlled adoption and live resource/identity gates. No new D scientific preparation gap.
+Prior E54 science remains complete at03b8b3a89; C positive certificate and A2 owner final compatibility reused without rescan. Earlier main61 one-F proposal is deferred/unapproved by the new diagnostic scope; no combined launch. A future new observer F is mechanism-only, not an old-S/new-binary performance pair.
 
-Old MAIN6/7 GM0.9990537501 and original-seven UNKNOWN/Btree HOLD, independent SGEMM,93a9 diagnostics, all failures/negative/HOLD and EN-v22 unchanged. No trace/raw/SQLite scan, experiment/native/build/plot rerun, config/source/binary/registry/controller or Goal restart; no background waiter.
+Next numerical increment requires A2 actual schema/release and E independent accepted diagnostic evidence. No experiment/native/build/trace/SQLite/Goal, controller/registry/source/binary or EN-v22 edit, no background poller. All old MAIN/capacity/independent SGEMM results and negative/HOLD retained.
