@@ -1,0 +1,27 @@
+# Project-specific lifecycle and integration points
+
+## EP-L2: completed native process is earlier than scientific acceptance
+
+Read-only Source E057 observations: `NATIVE_EXIT.json`3765B says natural exit0 with `scientific_acceptance=NOT_EVALUATED`. The subsequent `run_status.json`15,584,020B is stable and records COMPLETE_VALID, independent_acceptance PASS and complete_input_verified=true. Its current SHA is `bea20df1e5e3ad71fb8b5da3fd0bf54aa8d927296e0ffaf682a077ff827af7a2`. Original `raw.log` is63,542,055B by stat; it was not read, moved or copied. `terminal_summary.json` is14,229,980B. Large sidecars must be separately referenced in an outbox, not embedded into its bounded control envelope.
+
+Reviewed owner source at current management HEAD `acfd1983b1c954ad7d42e7659d11f813a4045712` preserves the relevant order: close the raw writer; obtain durable native exit; independent parser reads raw; compare cycles/instructions/effective-input/identity and closure; write terminal summary and run_status; finish the canonical attempt; then controller pair/report processing consumes accepted evidence. Files inspected under `policy_preparation/candidate_runtime` establish that published code's sequence; this audit does not claim that an old candidate module is the byte-identical currently installed runner. Exact current runner/parser hashes must be part of an owner export receipt.
+
+The existing parser-only recovery procedure can later re-open the original raw, create a distinct recovery child, reference original raw via symlink and publish a new qualified decoder receipt while retaining the failed charged attempt. Therefore exit0 or a momentarily idle FD set does not close future reader dependencies. Pair aggregation, E2 review, review-pack building and possible decoder recovery all need an owner disposition.
+
+**Proposed integration:** after normal acceptance/pair terminal and owner review, E/E2 publishes an external, immutable COPY_READY descriptor identifying exact attempt/run-key/qualification, raw SHA and every selected sidecar/directory metadata row. Lane T independently checks that descriptor and stable selected bytes. No hook is added inside controller or registry, no raw is rotated, no scientific status is changed. Any diagnostic-only failed evidence is labeled as such and remains unaccepted science. Existing canonical paths remain accessible on original174 throughout this copy-only pilot.
+
+The prior report's observed57 starts and later scoped policies are retained as historical evidence. This task neither re-counted the whole campaign nor changed/reset its budget.
+
+## DTC-L1: strict closure has multiple indispensable readers
+
+The reviewed AG8R1 runner at `c1ae89f1055af90f81836a4d7724cfe0f3876730` first joins natural guard/producer exit and expected instructions, closes mapper events, checks ownership/no pending members, output/device/resource/final identity; writes MAPPING_CLOSURE, RESOURCE_FINAL and RUN_TERMINAL; then reads stdout/stderr, map/progress/resource streams and immutable provenance for STRICT; only complete strict and terminal closure can set performance_accepted. These are separate gates; archive or restore cannot supply them.
+
+Actual AD_GEMM UUID940981e5-61c4-4772-83a3-50593fd1ba3a has `STRICT.status=PASS_ACTUAL_REGISTERED_AD8_FULL_STRICT_EVIDENCE`. AD_Gaussian UUIDbfa88e61-9daf-48a3-ab5a-b0251afdb68b has HOLD_AD8_ACTUAL_CLOSURE_FAILED and performance/scientific acceptance false. The latter's ENGINE/stdout272,980,072B exceeds the published256MiB stream limit; preserve it as failed/diagnostic evidence. Do not truncate it to make it pass. No DTC launch/retry/reclassification was performed.
+
+GEMM RESOURCE_MONITOR alone is251,489,140B; ENGINE includes MAP_EVENTS, OOM_MONITOR, stdout, perf files and a nested maps directory. Top-level metadata is a lower bound, not a full frozen selector or complete asset size. Failure/strict receipts, registration, loader/mapping helper evidence, input/runtime/config hashes, budget entries and current owner publication are integral recovery provenance. The old inactive Git0 budget is not permission to refund the two later actual starts.
+
+**Proposed integration:** BA publishes an owner-signed/frozen regular-file copy selector after cohort/point closure and precise selection-purpose statement. T uses only that selector under the sole archive stream. A full-tree selector needs an explicit symlink policy and nested manifest; this study did not scan all maps/checkpoints. No telemetry socket/FD, guard/monitor, dispatcher or pending queue is moved or redirected. Failed diagnostics may be archived only as failed evidence with their original identities and SOURCE_KEEP.
+
+## Readers and release gate
+
+Only the10 already known legacy DTC monitor/collector PID instances and the old EP controller PID were inspected; the10 were present, the controller PID absent, and no sampled FD under the three exact selected result roots was seen. This is a bounded negative observation, **not** a complete no-reader/no-writer/future-reader certificate. No lock or process was modified. COPY_ONLY can coexist with readers of immutable retained bytes; it still requires a source-owner freeze and no selected active writer. Future release requires separately closing current and planned readers, parser recovery/pair/report dependencies, cohort publication and exact user/source-owner permission. T has no such release authority.

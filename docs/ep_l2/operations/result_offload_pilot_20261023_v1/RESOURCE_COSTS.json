@@ -1,0 +1,58 @@
+{
+  "schema": "RESULT_OUTBOX_RESOURCE_COSTS_DESIGN_ONLY_V1",
+  "admission": "NOT_A_RESOURCE_PASS_OR_ALLOCATION",
+  "synthetic_proposal": {
+    "raw_bytes": 1314816,
+    "regular_files": 4,
+    "directories": 3,
+    "nonempty_chunks": 21,
+    "raw_chunk_bytes": 65536,
+    "metadata_and_directories_and_logs_allocated_allowance": 4194304,
+    "scratch_allocated_peak_bound": 6955008,
+    "scratch_requested_cap": 16777216,
+    "NAS_V9_fallback_allocated_peak_bound": 8269824,
+    "NAS_requested_cap": 8388608,
+    "extra_RAM_planning_reserve": 134217728,
+    "proposed_process_address_space_ceiling": 268435456,
+    "proposed_CPU_threads": 1,
+    "proposed_transfer_rate_bytes_per_s": 1048576,
+    "source_overlay_new_payload_bytes": 0,
+    "tests_executed": 0
+  },
+  "target_snapshot": {
+    "utc": "2026-10-22T16:11:29.692473+00:00",
+    "share_free_bytes": 43541405696,
+    "share_floor_bytes": 42949672960,
+    "share_above_floor_before_proposal": 591732736,
+    "share_above_floor_after_full_16MiB_scratch_reservation": 574955520,
+    "MemAvailable_bytes": 270074499072,
+    "not_reserved": true
+  },
+  "future_EP_examples_not_admission": {
+    "floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "metadata_allowance_bytes": 4194304,
+    "per_endpoint_cap_bytes": 402653184,
+    "one_endpoint_required_free_excluding_other_pending_writes": 7923040256,
+    "two_endpoint_required_free_excluding_other_pending_writes": 8325693440,
+    "three_endpoint_required_free_excluding_other_pending_writes": 8728346624,
+    "note": "Original scoped policy, not a new grant. Confirm current owner limits; remaining physical-write peaks, parser/copies, other leases and all charged results must be joined."
+  },
+  "future_DTC_example_not_admission": {
+    "floor_exclusive_bytes": 5368709120,
+    "projected_remaining_write_bytes": 2147483648,
+    "outbox_metadata_allowance_bytes": 4194304,
+    "required_free_exclusive_of_other_pending_writes": 7520387072,
+    "note": "2GiB projected writes is already the attempt reserve/output allowance; do not add it twice. Strict > floor is retained."
+  },
+  "NAS_traffic_static_upper_accounting_example": {
+    "backend": "V9 uncompressed SSHFS exclusive-finalize fallback; one initial no-fault finalize, then one native Target restore",
+    "archive_data_writes_multiple_of_R": 3,
+    "archive_data_reads_multiple_of_R": 9,
+    "restore_NAS_data_reads_multiple_of_R": 2,
+    "restore_local_data_write_multiple_of_R": 1,
+    "additional_local_restore_hash_read_multiple_of_R": 1,
+    "metadata_and_retries": "additional and separately bounded; not a measured rate or universal backend cost"
+  },
+  "outage": "Copy-only retains all Source originals. No finite unlimited-compute/outage guarantee without a finite existing science-output budget and owner-controlled admissions. This pilot cannot recover Source space."
+}

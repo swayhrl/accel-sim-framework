@@ -1,0 +1,81 @@
+{
+  "schema": "RESULT_OUTBOX_DESCRIPTOR_CONTRACT_V1_DESIGN_NOT_IMPLEMENTED",
+  "canonical_encoding": "sorted compact UTF-8 JSON plus newline; descriptor_sha256 excludes its own field",
+  "required_identity": [
+    "project",
+    "campaign",
+    "attempt_uuid",
+    "source_filesystem_identity",
+    "source_root",
+    "source_frozen_commit",
+    "owner_publication_commit",
+    "science_receipt_path",
+    "science_receipt_sha256",
+    "source_manifest_sha256",
+    "directory_manifest_sha256",
+    "selector_sha256",
+    "genuine164_destination_root",
+    "txid",
+    "descriptor_sha256"
+  ],
+  "required_source_owner_attestations": [
+    "selected files closed and immutable",
+    "no selected active writer",
+    "current and planned reader/dependency list",
+    "purpose accepted-result or explicitly labeled failed diagnostic",
+    "exact COPY_ONLY source disposition",
+    "current export resource policy ID and fresh capacity/reservation proof"
+  ],
+  "axes": {
+    "science": {
+      "issuer": "ORIGINAL_PROJECT_OWNER",
+      "values": [
+        "NOT_EVALUATED",
+        "ACCEPTED",
+        "REJECTED",
+        "HOLD"
+      ]
+    },
+    "archive": {
+      "issuer": "TARGET",
+      "values": [
+        "NOT_STARTED",
+        "PARTIAL",
+        "ARCHIVE_VERIFIED",
+        "HOLD"
+      ]
+    },
+    "restore": {
+      "issuer": "INDEPENDENT_VERIFIER",
+      "values": [
+        "NOT_TESTED",
+        "RESTORE_VERIFIED",
+        "HOLD"
+      ],
+      "required_scope": [
+        "native execution host",
+        "filesystem",
+        "exact member count",
+        "full byte SHA",
+        "uid/gid/mode/mtime_ns",
+        "directory metadata"
+      ]
+    },
+    "local_reclaim": {
+      "issuer": "SOURCE_OWNER",
+      "values": [
+        "SOURCE_KEEP"
+      ],
+      "source_delete_authorized": false
+    }
+  },
+  "bounds": {
+    "inline_control_allocated_allowance_bytes": 4194304,
+    "no_inline_large_science_receipts": true,
+    "single_stream": true,
+    "no_directory_watcher": true,
+    "no_controller_or_registry_writes": true
+  },
+  "source_release_API": null,
+  "scientific_dispatch_API": null
+}
