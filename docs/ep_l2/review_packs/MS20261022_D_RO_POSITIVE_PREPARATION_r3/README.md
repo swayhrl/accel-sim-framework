@@ -1,0 +1,7 @@
+# D incremental C resource-preflight intake
+
+C-00000018 is consumed as an **early resource/reuse/gap output, not positive RO coverage**. Exact C source and artifact SHA are in C_INTAKE.json. C proposes one body-open offline qualification pass, 256MiB address-space cap, 16MiB SQLite cache and 256MiB monitored allocated growth; wall time and actual unique-line coverage remain UNKNOWN. The 256MiB figure is a monitored cap, not proof every possible database fits. C preflight explicitly was not resource admission yet.
+
+[Incremental cost/decision](INCREMENTAL_COST_AND_DECISION.json) combines the forecast with unchanged historical 384MiB/end envelopes: 640MiB for qualification+one future endpoint or 1024MiB for qualification+two future endpoints, **before E2-sized extra certificate/collector/metadata reserve**. These are mutually exclusive illustrative proposals, not current approval or a live gate pass. Existing simulation RSS 7.852GiB near 8GiB still leaves positive-path RAM unproven. No old input or results are rescanned.
+
+Prior [D conditional decision](../MS20261022_D_RO_POSITIVE_PREPARATION_r2/README.md), scope addendum and one metadata-only Conv backup remain unchanged. Actual C certificate/ZERO/MISSING and actual A2 source/native/control applicability are still pending. Administrative C/test resource classification is for offline Python; it is not a native run, application start or correctness result. D performs no resource/controller/registry mutation.
