@@ -1,0 +1,71 @@
+{
+  "schema": "E2_DETACH_ZERO_MEASURED_CAUSAL_CLOSURE_V1",
+  "at_unix": 1792650477.1269982,
+  "status": "SGEMM_EXACT_POINT_EXPLAINED_OTHER_POSITIVE_RO_NOT_YET_MEASURED",
+  "accepted_point": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT",
+  "acceptance_basis": "PARSER_ENGINEERING_SUPPLEMENTAL_REVALIDATION",
+  "original_execution_status": "FAILED_PARSER_ENGINEERING_ERROR_RETAINED",
+  "new_native_exit_code": 0,
+  "new_native_wait_status": 0,
+  "actual_starts": 51,
+  "new_starts_this_goal": 1,
+  "cycles": 343442,
+  "instructions": 1658916864,
+  "mechanism_claim": "No successful detach in exact newSGEMM condition because no RO transaction was admitted during the entire observed epoch; there was no live RO victim to detach. All observed positivecandidate heads were residenthits, and no rawallreserved pressure was observed at covered probed heads.",
+  "measured": {
+    "old_authoritative_request_acceptance": {
+      "accepted_global_reads": 2452480,
+      "accepted_oracle_candidates": 2317312,
+      "accepted_ro": 0,
+      "transactions": 0,
+      "merges": 0,
+      "responses": 0,
+      "detached": 0,
+      "live": 0
+    },
+    "frontend_observation": {
+      "observed_heads": 2672548,
+      "probe_skipped": 105742,
+      "skip_tvd": 105742,
+      "skip_ideal": 0,
+      "skip_disabled": 0,
+      "skip_other": 0,
+      "requester_ro_candidate": 2282704,
+      "certified_resident_hits": 2282704,
+      "candidate_deferred_or_native": 0,
+      "raw_reservation_fail": 0
+    },
+    "actual_lifecycle": {
+      "ro_admits": 0,
+      "ro_merges": 0,
+      "ro_retired": 0,
+      "relieve_calls": 0,
+      "detach_calls": 0,
+      "detach_success": 0,
+      "detached_retired": 0
+    },
+    "probed_head_cycles": 2566806
+  },
+  "three_separate_causes": {
+    "old_SGEMM_E048": "Empty safe certificate;0 acceptedRO candidates/transactions, not Tag sufficiency.",
+    "new_SGEMM_E051": "Positivecertificate is active (2317312 accepted candidate requests) but0 actualROtransactions. Covered positivecandidate head exposures2282704 allresidenthits.",
+    "old_FWT_E050": "Wholecommandlist128B per-line proof excludes131072 read-containing lines because each has a same-epoch store;0ROtransactions."
+  },
+  "limits": [
+    "105742 skipped frontend head observations have raw probe NA; never claim Tag always sufficient globally",
+    "Requestacceptance2317312 differs from frontend-head2282704; do not forcecross-domain equality",
+    "Cache-resident hit classification is measured only at covered candidateheads; not an assertion all accepted candidate requests traverse this hook",
+    "No oldpositiveRO dynamic cause recovered; no historical zero filling",
+    "No oldS/newF speedup, no T-isolated gain or hardwareupperbound",
+    "One newdiagnostic workload condition, no newworkload added"
+  ],
+  "remaining_positive_RO_inputs_with_unknown_dynamic_cause": [
+    "convolutionSeparable",
+    "cfd_097k",
+    "dwt2d",
+    "vectorAdd_4M"
+  ],
+  "current_scope_remaining_authorized_starts": 0,
+  "proposed_minimum_next": "CFD existing fullF input/newr4 observer,1extra userapproved start needed; originally51678ROtransactions andshortest actualROpositive wall7.38min. No fallback/retry/automaticstart.",
+  "fullGoal_complete": false
+}
