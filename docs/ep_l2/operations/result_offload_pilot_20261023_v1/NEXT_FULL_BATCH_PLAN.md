@@ -1,6 +1,6 @@
 # Next complete-result batches: proposal only
 
-Promotion sequence is unchanged: synthetic all-PASS -> owner-frozen small sidecars -> full independent sidecar native restore and owner SOURCE_KEEP reconfirmation -> separately approved full-result selector and capacity budget. Current tests/data are RESOURCE_HOLD, so no production promotion or new large transfer is authorized.
+Promotion sequence is unchanged: synthetic all-PASS -> owner-frozen small sidecars -> full independent sidecar native restore and owner SOURCE_KEEP reconfirmation -> separately approved full-result selector and capacity budget. The synthetic stage, exact9 real sidecars, complete selected native Target restoration and both independent owner SOURCE_KEEP reconfirmations have now passed. The larger full-result selectors/budgets below remain a proposal; no new large raw/trace/binary transfer was performed.
 
 EP candidate: one closed owner-selected E057 evidence set. The earlier stat-only top-level lower bound excluding the87,878,744B executable is93,487,908B; nested tmp/cache/checkpoints were not scanned and this is not a freeze or final size. Original logs, summaries, configs, decoder/native receipts and accepted-point references must be retained or precisely referenced. No raw/binary/trace is included in the present sidecar permission. A future full set requires separate approval and owner-provided content manifest, reader/recovery disposition, link policy and complete SHA metadata.
 

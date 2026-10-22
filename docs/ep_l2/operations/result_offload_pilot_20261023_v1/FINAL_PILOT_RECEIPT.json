@@ -1,0 +1,72 @@
+{
+  "schema": "RESULT_OFFLOAD_PILOT_FINAL_TARGET_RECEIPT_V1",
+  "status": "ALL_REQUESTED_PILOT_STAGES_VERIFIED_SOURCE_KEEP",
+  "utc": "2026-10-22T18:05:19.474400+00:00",
+  "synthetic": {
+    "files": 4,
+    "directories": 3,
+    "raw_bytes": 1314816,
+    "fault_and_integrity_cases_PASS": 15,
+    "actual_storage_worker_crash_exits": [
+      91,
+      92,
+      93
+    ],
+    "archive": "ARCHIVE_VERIFIED",
+    "restore": "RESTORE_VERIFIED_NATIVE_TARGET",
+    "observed_native_allocated_bytes": 4120576,
+    "observed_NAS_reported_allocated_bytes_before_extra_recovery_controls": 4280320,
+    "native_cap_bytes": 16777216,
+    "NAS_cap_bytes": 8388608,
+    "maxrss_parent_KiB": 20480,
+    "maxrss_largest_child_KiB": 20480
+  },
+  "real": {
+    "files": 9,
+    "directory_records": 3,
+    "raw_bytes": 199357,
+    "archived": 9,
+    "full_native_Target_restored": 9,
+    "source_postcopy_T_bytes_identity": "ALL_UNCHANGED",
+    "independent_owner_reconfirmations": 2,
+    "completed_reuse_checks": 2,
+    "completed_reuse_new_payload_bytes": 0,
+    "completed_reuse_new_restore_files": 0,
+    "per_project_native_and_NAS_allocated_cap_bytes": 2097152
+  },
+  "unique_payload_bytes_synthetic_plus_real": 1514173,
+  "science_starts": 0,
+  "source_release_bytes": 0,
+  "scientific_source_files_deleted_moved_overwritten": 0,
+  "trace_or_large_raw_or_binary_transfers": 0,
+  "Share_task_new_allocated_bytes": 0,
+  "Source_actual_df_recovery_attributed_to_T": 0,
+  "source_disposition": "SOURCE_KEEP",
+  "source_scientific_acceptance": "UNCHANGED_E2_ACCEPTED_DIAGNOSTIC_AND_BA_ACCEPTED_AD_GEMM_ONLY",
+  "execution_environment_takeover": false,
+  "new_scheduler_or_daemon": false,
+  "native164_restore_claimed": false,
+  "independent_owners": [
+    {
+      "project": "EP_L2_E057",
+      "owner_commit": "3cc8c6d821bb60bf831d7f227a97452b9e9737f0",
+      "owner_receipt_sha256": "99a32487dc7368cd2c3a15efefd722ceead45220f7f843e1cdbcffa98eb54839",
+      "txid": "96202aab2446a3f6440108c045f524f9797a500c61446eeb7a52598c6ef37845",
+      "target_receipt_sha256": "7c429e019de4f1f1699abc61ca544542a3552ed8567923be15f02d1cb5936505",
+      "Source_keep": "OWNER_INDEPENDENTLY_RECONFIRMED",
+      "source_release_authorized": false
+    },
+    {
+      "project": "DTC_L1_AD_GEMM",
+      "owner_commit": "7b481ce7d449f70a7f5fc291a0152f8cd935fe11",
+      "owner_receipt_sha256": "9c9031d8b7dc823ce3ada12d6644ccc68e755f5b0d752cbce9d53ff8e254b018",
+      "txid": "24b5cab04e21b55c269d15fce39746c03c4730159b24a2f5fd657ae687964a9c",
+      "target_receipt_sha256": "db87833e52fd98c738a68e85591da3c70e2cb506f2c6fd7ffd495fe4bd27077d",
+      "Source_keep": "OWNER_INDEPENDENTLY_RECONFIRMED",
+      "source_release_authorized": false
+    }
+  ],
+  "qualified_implementation_scope": "Exact regular closed9 sidecars, pinned V9 core plus finite endpoint; not arbitrary full result trees",
+  "direct_Target_to_Source_SSH": "TCP and strictly verified host key pass; existing Target public-key auth denied; no forwarded agent. Existing trusted Windows relay remains operational and completed all data. No Source auth config/private-key changes.",
+  "resource_measurement_scope": "Native ext4 allocated blocks are from stat.st_blocks; NAS allocation values are SSHFS-reported file/directory blocks, not an independent native164 allocator/quota audit. Real endpoint RSS was not separately measured; only its fresh host/cgroup admission and allocated disk caps were recorded. No simulation-speed or NAS power-loss durability claim."
+}

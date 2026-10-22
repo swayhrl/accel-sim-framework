@@ -1,21 +1,22 @@
-# EP_L2_DTC_L1_RESULT_OFFLOAD_PILOT_V1
+# EP_L2_DTC_L1_RESULT_OFFLOAD_PILOT_V1 ? completed COPY_ONLY pilot
 
-**Phase1 complete. Phase2 is now explicitly approved, but actual Share admission failed before the first write. Both owners have independently published real-sidecar COPY_READY; no synthetic/real payload or restore has run.** This delivers the reusable implementation review, a concrete independent result-outbox contract, lifecycle/reader evidence, bounded costs, and a ready-to-review synthetic test scope. It does not claim a working new production receiver or a new164 restore receipt.
+All requested stages verified: **15 synthetic storage/fault cases PASS;9 real owner-frozen sidecars,199357B archived on genuine164 and independently restored on174-new native ext4; both owners independently reconfirmed Source KEEP.** Two completed real re-invocations verified/reused with0 new payload and0 new restore files. No scientific application/controller/registry/budget changed; source release0B; task new Share allocation0B.
 
-The completed feasibility report at Framework commit `13b30fa613b55eb929785a5dfc015aae95a17a37` was read and reused. No environment census was repeated. Only exact completed-result control paths, published owner code, one proposed scratch/root pair and existing receiver-lock metadata were inspected. Observations on2026-10-23 around00:08-00:13 Asia/Shanghai are stored with UTC timestamps.
+| Dataset | Complete raw files/bytes | Persistent archive | Native Target restore | Independent Source owner |
+|---|---|---|---|---|
+| Synthetic |4 /1314816B,3directories|VERIFIED|VERIFIED|Synthetic only, not scientific acceptance|
+| EP-L2 E057 diagnostic sidecars |5 /16113B,2directory records|VERIFIED|VERIFIED|E2 commit3cc8c6d821bb60bf831d7f227a97452b9e9737f0|
+| DTC-L1 accepted AD_GEMM sidecars |4 /183244B,1directory record|VERIFIED|VERIFIED|BA commit7b481ce7d449f70a7f5fc291a0152f8cd935fe11|
 
-The proposed arrangement keeps all computation and scientific authority on original174. Lane T receives only an owner-frozen closed-file selector and stores it on genuine164, through the existing sole storage stream. Controller, registry, raw writer, queues, source paths and attempt budgets are unchanged. Existing readers can continue reading retained immutable Source bytes. No archival operation creates science PASS or permits a source release.
+The confirmed zero-new-Share-write amendment uses task-owned native `/root/data` scratch, same original receiver lock and genuine164 persistent roots. It preserves other projects' resource rules. Restores are accurately **RESTORE_VERIFIED_NATIVE_TARGET**, not native164.
 
-| Deliverable | Entry |
-|---|---|
-| Reusable code and precise non-portable pieces | [REUSE_REVIEW.md](REUSE_REVIEW.md), [REUSE_INDEX.json](REUSE_INDEX.json) |
-| Two projects' completed-result lifecycle, readers and integration | [PROJECT_INTEGRATION.md](PROJECT_INTEGRATION.md) |
-| Four independent states and independent outbox | [OUTBOX_CONTRACT.md](OUTBOX_CONTRACT.md), [OUTBOX_DESCRIPTOR_SCHEMA.json](OUTBOX_DESCRIPTOR_SCHEMA.json) |
-| Bounded staging/outage/device accounting | [RESOURCE_MODEL.md](RESOURCE_MODEL.md), [RESOURCE_COSTS.json](RESOURCE_COSTS.json) |
-| Synthetic scope, faults, new paths and exact approval needed | [SYNTHETIC_PILOT_PLAN.md](SYNTHETIC_PILOT_PLAN.md), [PHASE2_APPROVAL_REQUEST.json](PHASE2_APPROVAL_REQUEST.json) |
-| Small later real-result validation proposal | [NEXT_REAL_RESULT_VALIDATION.md](NEXT_REAL_RESULT_VALIDATION.md) |
-| Actual actions and actual unverified states | [STATUS.json](STATUS.json) |
+- [Final exact receipt](FINAL_PILOT_RECEIPT.json), [all9 Source?164?native paths](SOURCE_TO_164_TO_NATIVE_RESTORE_INDEX.json), [both owner bindings](BOTH_INDEPENDENT_OWNER_SOURCE_KEEP_JOIN.json).
+- [Qualified operation workflow](OPERATOR_WORKFLOW.md), [EP-L2](WORKFLOW_EP_L2.md), [DTC-L1](WORKFLOW_DTC_L1.md), [next full-batch proposal](NEXT_FULL_BATCH_PLAN.md).
+- [Synthetic15-case proof](SYNTHETIC_RESULT.json), [independent all9 byte/metadata recheck](INDEPENDENT_EXISTING_RESTORE_VERIFICATION.json), [all3 COMMIT/file-set checks](FINAL_COMMIT_AND_EXACT_FILESET_VERIFICATION.json).
+- Per-project `results/` has exact receipts, owner/source proofs, RECOVERY_POINTER and RESTORE.sh. The same recovery controls and pinned V9 tool persist at each true164 project root.
 
-See [CONTINUATION_STATUS.md](CONTINUATION_STATUS.md) for approved continuation, real-owner intake and the actual RESOURCE_HOLD; both project workflows remain unqualified candidates.
+Current server-native archive parents are `/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_result_offload_pilot_v1` and `.../20261023_result_offload_real_sidecars_v1/{EP_L2_E057,DTC_L1_AD_GEMM}`. On174-new replace `/home/shared` with the verified `/root/share/mnt164` SSHFS prefix. The same pathname on original174 is not that NAS mount.
 
-There were0 scientific starts,0 transfer streams/receivers,0 synthetic tests,0 server writes and0 deletions by this task. All scientific assets remain SOURCE_KEEP; actual Source reclaimed bytes are0. Git contains only small audit/planning evidence, no heavy result payload.
+Direct174-new?root@10.208.130.174:2233 reached the strictly verified SSH host but existing authentication was denied; no forwarded agent was available. Existing trusted Windows SSH orchestration completed the entire pilot automatically. No Source auth config or private key was changed/copied.
+
+This qualifies the exact closed regular-sidecar COPY_ONLY path, not a full experiment tree, large traces/raw/binaries, scientific correctness/performance, native164 metadata recovery or power-loss durability. Source scientific files and all stage/fault evidence remain KEEP. Earlier RESOURCE_HOLD and proposal documents remain versioned historical evidence; STATUS.json and this page are current.

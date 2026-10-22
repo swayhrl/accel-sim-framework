@@ -98,6 +98,8 @@ def target():
   old=json.loads((nas/'RECEIPT.json').read_bytes());arc=nas/txid;dst=native/'restored'
   require(old['txid']==txid and old['manifest_sha256']==sha(canon(m)),'completed receipt binding')
   require((arc/'manifest.json').read_bytes()==canon(m) and (arc/'COMMIT.json').exists(),'completed manifest or commit missing')
+  expected_seal={'txid':txid,'manifest_sha256':sha(canon(m)),'policy':'EXCLUSIVE_CREATE_COMMIT_MARKER_LAST','files':len(m['files']),'selector_sha256':m['selector_sha256']}
+  require((arc/'COMMIT.json').read_bytes()==canon(expected_seal),'completed COMMIT identity drift')
   for row in m['files']:
    require(v.hash_file(arc/'tree'/row['relative_path'])==v.hash_file(dst/row['relative_path'])==row['sha256'],'completed archive/native SHA drift')
    s=(dst/row['relative_path']).stat();require((s.st_size,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode),s.st_mtime_ns)==(row['size'],row['uid'],row['gid'],row['mode'],row['mtime_ns']),'completed native metadata drift')

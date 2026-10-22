@@ -1,3 +1,7 @@
+# Executed resource accounting
+
+The historical design below predates the confirmed zero-new-Share-write amendment. Actual execution used the new native /root/data roots, preserved all limits, and passed; see FINAL_RESOURCE_LEDGER.json for observed native and SSHFS-reported allocation, and USER_CONFIRMED_ZERO_SHARE.json for the scoped gate. No source space recovery is credited.
+
 # Exact bounds, finite staging and outages
 
 `RESOURCE_COSTS.json` contains integer calculations, not a fresh gate PASS or a storage reservation. The old environment inventory is reused rather than repeated. One new targeted read showed Share43,541,405,696B and MemAvailable270,074,499,072B; Share is only591,732,736B above40GiB. The proposed16MiB reservation would leave574,955,520B above that floor, before other tasks' pending writes. No reservation was actually taken.
