@@ -1,0 +1,55 @@
+{
+  "schema": "C_POSITIVE_RO_INPUT_QUALIFICATION_CONTRACT_V1",
+  "batch_id": "EPL2_RO_POSITIVE_QUALIFICATION_PREPARATION_20261022_r1",
+  "task_id": "C-SGEMM-POSITIVE-RO-CERTIFICATION-r1",
+  "owner": "C",
+  "certificate_delivery_status": "PREPARED_NOT_E_QUALIFIED_NOT_ADOPTED",
+  "input": {
+    "workload": "SGEMM_medium",
+    "cohort": "INDEPENDENT_FROZEN_TRACE_EXPLORATION_NOT_ORIGINAL_MAIN_OR_CAPACITY_DIAGNOSTIC",
+    "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+    "body_sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+    "composite_trace_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "body_bytes": 2216170035,
+    "kernels": 1,
+    "commands": 3,
+    "epoch": "whole_commandlist",
+    "line_bytes": 128
+  },
+  "fixed_model_rules": [
+    "Original frozen C stream_kernel/instruction/memory_kind/build classify every recorded instruction/lane/address and full line touched by its width; do not remove stores/atomics or shorten epoch.",
+    "A line with any store or global atomic anywhere in the complete epoch is excluded; unresolved global/generic memory agents/opcodes poison positive certification.",
+    "Every later HtoD update excludes each affected whole128B line for the entire epoch, including neighbor sectors. Two recorded SGEMM HtoD commands are the initial prefix, not post-initialization updates.",
+    "Initial host copies and pre-epoch writes/writebacks must drain. Later uncovered clean/quiescent prefill is permitted by real native ownership/version/drain guards; no initial-only restriction is added.",
+    "Runtime certified-line writer/atomic/host contradiction must refuse before mutation; never silently drop certification after a transaction starts.",
+    "One canonical GPU global VA domain, no hidden virtual aliases/MMIO/external CPU/DMA/device writers and complete visible traced agents remain explicit closed-world assumptions, not independently proven physical facts.",
+    "Frozen trace-model replay, captured-source recapture and numerical-output reproduction remain distinct scopes. Unknown original capture/source/numeric assets are not invented universal gates revoking existing accepted trace-model results."
+  ],
+  "single_pass_binding": {
+    "one_body_open": true,
+    "full_body_SHA_computed_during_original_parser_stream": true,
+    "original_pre_hash_call": "Only the frozen expected SHA is returned; not labeled as measured. Actual complete streaming digest and stat identity must match before manifest completion.",
+    "no_extra_full_trace_hash_or_verifier_pass": true,
+    "changed_components": "Owned offline I/O adapter/observation only. Original parser/classifier/line rules, production Core and Framework runtime are unmodified.",
+    "failure": "Preserve partial output and explicit MISSING/UNSUPPORTED; no automatic retry, backup scan, alternate epoch or forced certificate."
+  },
+  "future_runtime": {
+    "core_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "main_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "policy": "Same finite1168/P1 W/V/T/M ON, original Tag/MSHR/descriptor/directory capacities and RO protocol. No native/simulator/build/config experiment is executed by this packet.",
+    "A2": "Static schema/domain/source/native/control applicability map; after genuine C output, one exact candidate binding check. Existing exact-source positive controls remain reusable premises within their actual scope, not a new input PASS.",
+    "E2": "Independently seal full input/hash/source/main/profile/manifest/ranges and new positive-certificate qualification. Current CLIENT_CONTRACT hash and original admission entry must match; do not bypass them.",
+    "old_results": "E047/E048 accepted empty-fallback S/F and all original Q/history remain unchanged. A positive certificate is a new explicit input condition; never retrospectively upgrade those endpoints.",
+    "baseline_and_count": "E decides whether existing S is strictly invariant and comparison rules permit its reuse. At most propose one new F, otherwise one new pair; both remain unapproved future conditions, not instructions to rerun S.",
+    "resource_cost": "Old SGEMM S/F wall29.23/30.72min and RSS about7.85GiB are historical priors, not current qualification or a positive-RO memory guarantee. E forecasts new runtime memory, endpoint caps, metadata/collector/certificate reserve and current10/24GiB cumulative generation.",
+    "permission": "Original user approval and E unique controller/resource gates required for any future application/native work. This batch authorizes none."
+  },
+  "claim_limits": [
+    "Offline positive line coverage is not an actual L2 miss, RO admission, pending Tag victim, successful detach, MSHR avoidance or critical-cycle reduction.",
+    "reuse_seen, sector siblings, already-ready owners, native replacement order and ordinary backpressure remain unchanged; no capacity reduction or forced state reset to manufacture activation.",
+    "Full S/F changes multiple mechanisms and cannot isolate T or M. A2/D/E must distinguish supported controls and unsupported causal claims.",
+    "Actual zero or negative results are retained. FWT exact model-scope zero is already proved and is not rescanned or generalized to other epochs; SGEMM opportunity changes classification only if this complete exact pass supports it.",
+    "R35 FAIL, later unrun joint fixtures, original Conv certificate, all HOLD/INCOMPLETE/withdrawal records and original Goal remain preserved."
+  ]
+}
