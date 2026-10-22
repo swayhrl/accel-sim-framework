@@ -1,0 +1,619 @@
+{
+  "schema": "A2_DETACH_ACTUAL_BUILD_IDENTITIES_V1",
+  "core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "vendor": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+  "driver": "5d137275143976c5e31a73cebae3e3c98559168d",
+  "build_environment": {
+    "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-a2-detach-observer-v1",
+    "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+    "PATH": "/usr/local/cuda-11.8/bin:/scratch/root/oss-eda/oss-cad-suite/py3bin:/root/.local/bin:/scratch/root/oss-eda/bin:/scratch/root/oss-eda/oss-cad-suite/bin:/scratch/root/oss-eda/oss-cad-suite/py3bin:/root/.cargo/bin:/root/.codex/tmp/arg0/codex-arg0RJVv8Z:/root/.vscode-server/cli/servers/Stable-7debcd0e2acdea1c52de81bf9ee1620444407dda/server/bin/remote-cli:/root/.local/bin:/scratch/root/oss-eda/bin:/scratch/root/oss-eda/oss-cad-suite/bin:/scratch/root/oss-eda/oss-cad-suite/py3bin:/root/.local/share/micromamba/condabin:/root/bin:/root/.local/bin:/workspace/tools:/usr/local/cuda-11.8/bin:/root/.nvm/versions/node/v22.22.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/root/.vscode-server/extensions/openai.chatgpt-26.51007.21434-linux-x64/bin/linux-x86_64",
+    "CC": null,
+    "CXX": null,
+    "CFLAGS": null,
+    "CXXFLAGS": null,
+    "LDFLAGS": null,
+    "LD_LIBRARY_PATH": "/usr/local/cuda-11.8/lib64:/usr/local/cuda-11.8/lib:",
+    "TMPDIR": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/tmp",
+    "TMP": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/tmp",
+    "TEMP": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/tmp",
+    "XDG_CACHE_HOME": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/cache"
+  },
+  "commands": [
+    {
+      "command": [
+        "cmake",
+        "-S",
+        "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+        "-B",
+        "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4",
+        "-G",
+        "Unix Makefiles",
+        "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/configure.log",
+      "process": {
+        "pid": 3719483,
+        "start_ticks": 939634229,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "980580171c56ac3288e44acd201265ed44328d9bc13a5854daf2cb9a15bd197f",
+      "wall_seconds": 2.4385637510567904
+    },
+    {
+      "command": [
+        "c++",
+        "--version"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/compiler_version.log",
+      "process": {
+        "pid": 3719679,
+        "start_ticks": 939634541,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "8d6e704227c739386853b14c98257428d8ffbffd817517db0b2e088d28c773f6",
+      "wall_seconds": 0.31629653461277485
+    },
+    {
+      "command": [
+        "cmake",
+        "--version"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/cmake_version.log",
+      "process": {
+        "pid": 3719708,
+        "start_ticks": 939634642,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "894eb640ca37e914abc4d110b397003cc81d518d174e4a0f1efbcf6a647bc642",
+      "wall_seconds": 0.3196570072323084
+    },
+    {
+      "command": [
+        "cmake",
+        "--build",
+        "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_detach_diagnostic",
+        "ep_l2_detach_reference",
+        "-j2"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/build.log",
+      "process": {
+        "pid": 3719722,
+        "start_ticks": 939634743,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "a97d8669aa6fded52c70cea19f0e044a9a71742ca05fab3173211a7ecd856508",
+      "wall_seconds": 148.70149686560035
+    },
+    {
+      "command": [
+        "ldd",
+        "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/accel-sim.out"
+      ],
+      "log": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/linked_libraries.log",
+      "process": {
+        "pid": 3722997,
+        "start_ticks": 939649720,
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019"
+      },
+      "exit_code": 0,
+      "log_sha256": "d66ed1503d8953bc0fa81ec7d5e23e1e2c5605a666eb98339e6570f20353a4e8",
+      "wall_seconds": 0.31078969314694405
+    }
+  ],
+  "assertion_flags": {
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/CMakeFiles/accel-sim.out.dir/flags.make": "b02a8491e5ad62cb09ae6dedfd19b3a5f7bba4017f62caf4fc8c7c9412cb0424",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/CMakeFiles/accel_sim.dir/flags.make": "79b81af423e982a68bf061c27a9d335eb8f27dfe97d33b94531808692d13caaf",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/cudart.dir/flags.make": "b081269f777821f40f09d4e98bc2aa7e01978fcb4d4ed0bb409d4f4a6b97a06e",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/entrypoint.dir/flags.make": "5a2375a22f805f1e8b1525a2ca280a722f9ac5d4c0e4a02de799219682a30326",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_all_data_ldst.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_all_data_reference.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_common_delta_r16.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_detach_diagnostic.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_detach_reference.dir/flags.make": "7f8cad8ec273c0c69910673eeb591eefe101f54b25510e066c8c35ed4b1dc587",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_directed.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_host_prefill.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_memcpy_clock.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_partition.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_partition.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_reference.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta_integrated.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_read_hit.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_wb.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_micro_mq2.dir/flags.make": "e7d25a316e64642640b624835566adb7e65c7d4529773dc67bd6613aa0032456",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_micro_rg1_arbiter.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_micro_rg1_partition.dir/flags.make": "e7d25a316e64642640b624835566adb7e65c7d4529773dc67bd6613aa0032456",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_local_service.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_mode_guard.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_observer.dir/flags.make": "d768b1ec01f1b8e8ae444e6b3781ba85aa3826a29c1c71fdf60627dbbd17751a",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_partition.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_bank_identity.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_directory.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_fixed_partition.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_native.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_production.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_a1.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_p2.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_s64.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap_retry.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_detailed_origin.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_epoch_entry.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_oracle_certificate.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_partition.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_runtime.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_store_port.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_transactions.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_tvd_combined.dir/flags.make": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/libcuda/CMakeFiles/cuda.dir/flags.make": "4fdb07af6ce5ff6fe984148f7e53d9491525c52419c9d3b76146c666306f89af",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/flags.make": "f4120a9a109926ce6fec6233f4a1a3882a1b8275dbda686f6df08073eb5a1419",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/flags.make": "dc99b3ea86c21b89e37f6056d0f2726440c7539ffc45ee20823ec2b056d264d3",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/cuda-sim/CMakeFiles/ptxsim.dir/flags.make": "4523de706ae9321c7e21818649d5376d5d9697095516cf20c1c6c7871c5474be",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make": "3be6a280c373d9935e08bd002df73cef958cf26cf03e4f0fbedeac8dad029885",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/intersim2/CMakeFiles/intersim.dir/flags.make": "904e85c83cebf6bc4174d4d66188d4f9e06a1c90c65e387159903d0b7e7048f8",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/trace-driven/CMakeFiles/trace-driven.dir/flags.make": "4652132383aeec73e33e1b3d4537f5a45ff52d68fcc5c8cadbda1b6b6fa4bb78",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/trace-parser/CMakeFiles/trace-parser.dir/flags.make": "4652132383aeec73e33e1b3d4537f5a45ff52d68fcc5c8cadbda1b6b6fa4bb78"
+  },
+  "test_binaries": {
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/ep_l2_detach_diagnostic": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+    "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/ep_l2_detach_reference": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76"
+  },
+  "dynamic_libraries": {
+    "/usr/lib/x86_64-linux-gnu/libm.so.6": "00830df310aac5023e10bd7b715149ab8ddc682277fd8ae3539a7a44fcdd6c38",
+    "/usr/lib/x86_64-linux-gnu/libz.so.1.2.11": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370",
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128",
+    "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "9eb34cb2da3ae2a9398cc09b3cd2d069563ec40d9858cb711af15cd23fa80abf"
+  },
+  "artifacts": [
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/accel-sim.out",
+      "sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+      "bytes": 87436592,
+      "allocated_bytes": 87441408
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57",
+      "bytes": 81437170,
+      "allocated_bytes": 81440768
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/gpu-sim.cc.o",
+      "sha256": "5679be12455c45a9c8949dae30653c7ca2d3022793bc7cf7066e0303684d5efc",
+      "bytes": 8996312,
+      "allocated_bytes": 8998912
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/shader.cc.o",
+      "sha256": "ba44fa0694aa904dc2d5470a1cb8221047f05959329e584c8c90567f8bc3b98a",
+      "bytes": 13199888,
+      "allocated_bytes": 13201408
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/l2cache.cc.o",
+      "sha256": "07d97a35a50f7bd984c3bf849363e2089e4597ecd259506f4e664ef9bc9fa167",
+      "bytes": 8642256,
+      "allocated_bytes": 8642560
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/gpu-cache.cc.o",
+      "sha256": "6cdeedc0cdbb8e57a9c84d7cd6b6eb26efd36661083b4a1397c8ed2ad32d9d9a",
+      "bytes": 15393040,
+      "allocated_bytes": 15396864
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/CMakeCache.txt",
+      "sha256": "47dd4f19747422df6cab2299ca41dce11a96770a8bbfb01641b0ef5570d2c52f",
+      "bytes": 42228,
+      "allocated_bytes": 45056
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/compile_commands.json",
+      "sha256": "0cbd35ff4ae2c36de05e5ac421a6cc3ec68e8465b3783008ccd88ab653e88b46",
+      "bytes": 219712,
+      "allocated_bytes": 221184
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/CMakeFiles/accel-sim.out.dir/link.txt",
+      "sha256": "07a543c856b2fa5b1cf0d83f0a7bcced1d6e7fa044aba22149a4054c61670021",
+      "bytes": 746,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/link.txt",
+      "sha256": "ba05e7052602683e813278964bade64578280dabd2b8b38c6e80e02d7ed0c6ae",
+      "bytes": 947,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/trace-driven/CMakeFiles/trace-driven.dir/flags.make",
+      "sha256": "4652132383aeec73e33e1b3d4537f5a45ff52d68fcc5c8cadbda1b6b6fa4bb78",
+      "bytes": 406,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/gpgpu-sim/CMakeFiles/gpgpusim.dir/flags.make",
+      "sha256": "3be6a280c373d9935e08bd002df73cef958cf26cf03e4f0fbedeac8dad029885",
+      "bytes": 506,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/CMakeFiles/gpgpusim_entrypoint.dir/flags.make",
+      "sha256": "f4120a9a109926ce6fec6233f4a1a3882a1b8275dbda686f6df08073eb5a1419",
+      "bytes": 385,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/intersim2/CMakeFiles/intersim.dir/flags.make",
+      "sha256": "904e85c83cebf6bc4174d4d66188d4f9e06a1c90c65e387159903d0b7e7048f8",
+      "bytes": 1142,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/cuda-sim/CMakeFiles/ptxsim.dir/flags.make",
+      "sha256": "4523de706ae9321c7e21818649d5376d5d9697095516cf20c1c6c7871c5474be",
+      "bytes": 646,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/src/accelwattch/CMakeFiles/accelwattch.dir/flags.make",
+      "sha256": "dc99b3ea86c21b89e37f6056d0f2726440c7539ffc45ee20823ec2b056d264d3",
+      "bytes": 493,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_partition.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_wb.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_partition.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_tvd_combined.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_micro_mq2.dir/flags.make",
+      "sha256": "e7d25a316e64642640b624835566adb7e65c7d4529773dc67bd6613aa0032456",
+      "bytes": 1214,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_observer.dir/flags.make",
+      "sha256": "d768b1ec01f1b8e8ae444e6b3781ba85aa3826a29c1c71fdf60627dbbd17751a",
+      "bytes": 258,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_bank_identity.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_host_prefill.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_partition.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap_retry.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_fixed_partition.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_ucap.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_micro_rg1_arbiter.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/cudart.dir/flags.make",
+      "sha256": "b081269f777821f40f09d4e98bc2aa7e01978fcb4d4ed0bb409d4f4a6b97a06e",
+      "bytes": 1209,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_local_service.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_detach_reference.dir/flags.make",
+      "sha256": "7f8cad8ec273c0c69910673eeb591eefe101f54b25510e066c8c35ed4b1dc587",
+      "bytes": 488,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/entrypoint.dir/flags.make",
+      "sha256": "5a2375a22f805f1e8b1525a2ca280a722f9ac5d4c0e4a02de799219682a30326",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_production.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta_integrated.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_read_hit.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_directed.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_all_data_reference.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_memcpy_clock.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_micro_rg1_partition.dir/flags.make",
+      "sha256": "e7d25a316e64642640b624835566adb7e65c7d4529773dc67bd6613aa0032456",
+      "bytes": 1214,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_directory.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_a1.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_store_port.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_meta.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_runtime.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_s64.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_common_delta_r16.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_transactions.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_all_data_ldst.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_mode_guard.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_epoch_entry.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_potential_p2.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ms_victim_native.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_detailed_origin.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ro_oracle_certificate.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_detach_diagnostic.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_partition.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ft_a1.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/CMakeFiles/ep_l2_ideal_host_prefill_reference.dir/flags.make",
+      "sha256": "5ace4bbdb0b57f32473d39903376aab68a9ba46d55aeddd2a2a445afeb7ad550",
+      "bytes": 1186,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/gpgpu-sim/libcuda/CMakeFiles/cuda.dir/flags.make",
+      "sha256": "4fdb07af6ce5ff6fe984148f7e53d9491525c52419c9d3b76146c666306f89af",
+      "bytes": 465,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/CMakeFiles/accel_sim.dir/flags.make",
+      "sha256": "79b81af423e982a68bf061c27a9d335eb8f27dfe97d33b94531808692d13caaf",
+      "bytes": 1816,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/CMakeFiles/accel-sim.out.dir/flags.make",
+      "sha256": "b02a8491e5ad62cb09ae6dedfd19b3a5f7bba4017f62caf4fc8c7c9412cb0424",
+      "bytes": 1550,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/build/ep-l2-ms20261022-a2-detach-observer-r4/trace-parser/CMakeFiles/trace-parser.dir/flags.make",
+      "sha256": "4652132383aeec73e33e1b3d4537f5a45ff52d68fcc5c8cadbda1b6b6fa4bb78",
+      "bytes": 406,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/compiler_version.log",
+      "sha256": "8d6e704227c739386853b14c98257428d8ffbffd817517db0b2e088d28c773f6",
+      "bytes": 246,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/linked_libraries.log",
+      "sha256": "d66ed1503d8953bc0fa81ec7d5e23e1e2c5605a666eb98339e6570f20353a4e8",
+      "bytes": 441,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/build.log",
+      "sha256": "a97d8669aa6fded52c70cea19f0e044a9a71742ca05fab3173211a7ecd856508",
+      "bytes": 301242,
+      "allocated_bytes": 307200
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/configure.log",
+      "sha256": "980580171c56ac3288e44acd201265ed44328d9bc13a5854daf2cb9a15bd197f",
+      "bytes": 2639,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/cmake_version.log",
+      "sha256": "894eb640ca37e914abc4d110b397003cc81d518d174e4a0f1efbcf6a647bc642",
+      "bytes": 91,
+      "allocated_bytes": 4096
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/RECEIPT.json",
+      "sha256": "ad88353dee9d2def698ef0d93dde8f25d23031dd4696a4cce3e880b9db30b2e7",
+      "bytes": 85256,
+      "allocated_bytes": 86016
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_BUILD_r4/BUILD_ONLY_RECEIPT.json",
+      "sha256": "e04489a590f4d9e274d35333a395fd6ce32b98462311a3f26e3dab935389b910",
+      "bytes": 85147,
+      "allocated_bytes": 86016
+    },
+    {
+      "path": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_NATIVE_r4/RECEIPT.json",
+      "sha256": "945a0f39a07866c9a09673c1cee76087837f84c59bf4bb2a44b9bfff795c14c5",
+      "bytes": 231511,
+      "allocated_bytes": 233472
+    }
+  ],
+  "old_main61": {
+    "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r41/accel-sim.out",
+    "sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "bytes": 85173576,
+    "allocated_bytes": 85180416
+  },
+  "old_archive": {
+    "path": "/workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a",
+    "sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8",
+    "bytes": 78987616,
+    "allocated_bytes": 78995456
+  },
+  "old_core_clean": true
+}
