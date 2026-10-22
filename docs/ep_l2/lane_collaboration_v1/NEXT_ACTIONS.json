@@ -8,19 +8,68 @@
     "C",
     "F"
   ],
+  "detach_positive_RO_followup_approved_primary_four": {
+    "actual_starts": 53,
+    "approval_commit": "a247a31806a536b9320e04d1b3ef7228ad8fc6b5",
+    "approved": true,
+    "conditions": [
+      {
+        "accepted": true,
+        "state": "COMPLETE_VALID",
+        "workload": "cfd_097k"
+      },
+      {
+        "accepted": false,
+        "state": "RUNNING",
+        "workload": "dwt2d"
+      },
+      {
+        "accepted": false,
+        "state": "NOT_STARTED",
+        "workload": "vectorAdd_4M"
+      },
+      {
+        "accepted": false,
+        "state": "NOT_STARTED",
+        "workload": "convolutionSeparable"
+      }
+    ],
+    "current_accepted_diagnostic_points": 1,
+    "current_goal_remaining_authorized_starts": 4,
+    "maximum_new_starts": 4,
+    "mutually_exclusive_alternative": "CFD-only notselected/notauthorized",
+    "new_actual_starts": 2,
+    "not_waiting_on_D_analysis": true,
+    "path": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/PROPOSAL.json",
+    "primary_maximum_starts": 4,
+    "primary_proposal_commit": "c73ade7f7e5511ed6911e1408b2f8fa42a5d04df",
+    "queued": true,
+    "remaining_new_starts": 2,
+    "status": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING"
+  },
   "detach_zero_diagnostic_preparation_batch": {
     "A2_early_schema_commit": "0ef8b65971f8a853d29b6cea1074c08d004727d5",
+    "A2_formal_producer_commit": "f7869e5dfdc1b6659a1b82a732fcd6ca12f81ddf",
+    "D_delivery_commit": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
+    "D_delivery_event": "E2-00000081-7c783c92e702",
     "D_numerical_reply_is_not_dependency": true,
     "D_role": "Publishedcontractalreadyconsumed; futurepaperincrementconsumer notruntime/closureblocker",
     "Goal": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1",
     "accountable_owner": "E2",
+    "actual_attempt": "E051_c0185b56",
     "actual_new_starts": 1,
+    "actual_starts": 51,
     "authorization_path": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/USER_GOAL_AUTHORIZATION.json",
     "batch_id": "EPL2_DETACH_ZERO_CAUSAL_OBSERVABILITY_PREPARATION_20261022_r1",
+    "controller": "STOPPED",
+    "current_RECEIPT": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json",
     "early_schema_not_producer_release": false,
+    "exact_runtime_publication": "3974934fef6888dc44d15113a0d305f73e47571a",
     "maximum_new_full_application_starts": 1,
     "new_full_application_starts_authorized": 1,
+    "next": "ApprovedPRIMARY_FOUR; preparefourpreciseQ andoriginalcentral successor thenCFDfirst/resourceonlyrolling; oldE051/D81 kept.",
     "numerical_analysis_owner": "E2",
+    "original_execution_status": "FAILED_PRESERVED",
     "owners": [
       "A2",
       "E2",
@@ -29,22 +78,12 @@
     ],
     "path": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/BATCH.json",
     "prior_main61_single_F": "Deferred unapproved proposal, not automatic union",
+    "remaining_authorized_full_application_starts": 0,
     "request_event_id": "E2-00000059-feda8eeb49a1",
     "sha256": "2667daa21348d53acf8b5a6855140f67d3cf8a34743653509ea119f2a5a2ede2",
     "source_plan_commit": "1b562df64849f8c37f81b6378383fc59cf34eff9",
     "status": "E051_CURRENT_ACCEPTED_DIAGNOSTIC_POINT_DELIVERED_D_ORIGINAL_FAILED_PRESERVED_GOAL_STILL_ACTIVE",
-    "remaining_authorized_full_application_starts": 0,
-    "actual_starts": 51,
-    "A2_formal_producer_commit": "f7869e5dfdc1b6659a1b82a732fcd6ca12f81ddf",
-    "exact_runtime_publication": "3974934fef6888dc44d15113a0d305f73e47571a",
-    "actual_attempt": "E051_c0185b56",
-    "current_RECEIPT": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json",
-    "next": "ApprovedPRIMARY_FOUR; preparefourpreciseQ andoriginalcentral successor thenCFDfirst/resourceonlyrolling; oldE051/D81 kept.",
-    "original_execution_status": "FAILED_PRESERVED",
-    "supplemental_scientific_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT",
-    "D_delivery_event": "E2-00000081-7c783c92e702",
-    "D_delivery_commit": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
-    "controller": "STOPPED"
+    "supplemental_scientific_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT"
   },
   "idle_resume_instruction": "Resume original lane window and read public board/inbox; do not restart old Goal or simulator",
   "maintainer": "E2",
@@ -298,6 +337,7 @@
       "trigger": "This published preparation packet plus genuine dependency artifacts, never dispatch-implied ACK"
     },
     {
+      "E_RECEIVED_ACK": "E2-00000078-78f1c39e3278",
       "additional_starts_authorized": 0,
       "event": "A2-00000049-79fcbb4fb8f8",
       "id": "A2-DETACH-OBSERVER-PRODUCER-r1",
@@ -312,14 +352,21 @@
       ],
       "owner": "A2",
       "owner_commit": "f7869e5dfdc1b6659a1b82a732fcd6ca12f81ddf",
-      "state": "DONE_REAL_FORMAL_R4_DELIVERY_E_SOURCE_BUILD_MAIN_ARCHIVE_NATIVE_INDEPENDENT_REVIEW_PASS",
-      "E_RECEIVED_ACK": "E2-00000078-78f1c39e3278"
+      "state": "DONE_REAL_FORMAL_R4_DELIVERY_E_SOURCE_BUILD_MAIN_ARCHIVE_NATIVE_INDEPENDENT_REVIEW_PASS"
     },
     {
+      "D_ACK_or_consumption_claimed": false,
+      "E_delivery_commit": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
+      "E_delivery_event": "E2-00000081-7c783c92e702",
+      "accepted_DELIVERY_events": [
+        "E2-00000081-7c783c92e702",
+        "E2-00000085-a015125f3353"
+      ],
       "ack": "D-00000067-6611273987c3",
       "additional_starts_authorized": 0,
       "event": "D-00000069-aedf8dbde514",
       "id": "D-DETACH-FUNNEL-ANALYSIS-r1",
+      "latest_E_delivery_commit": "52528c684b7ec6d1ca329a148ff4a2cad190f78b",
       "output": [
         "ANALYSIS_CONTRACT.json",
         "CLAIM_OUTCOME_TABLE.json",
@@ -327,10 +374,7 @@
       ],
       "owner": "D",
       "owner_commit": "0d8fec555d9ec8582404fe17b6eae06922dc8a95",
-      "state": "PREPARATION_DONE_E051_ACCEPTED_POINT_NUMERIC_DELIVERED_PENDING_REAL_D_CONSUMPTION",
-      "E_delivery_event": "E2-00000081-7c783c92e702",
-      "E_delivery_commit": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
-      "D_ACK_or_consumption_claimed": false
+      "state": "E051_AND_CFD_ACCEPTED_DIAGNOSTICS_DELIVERED_PENDING_REAL_D_CONSUMPTION"
     },
     {
       "additional_starts_authorized": 0,
@@ -344,10 +388,13 @@
       "state": "DONE_REAL_OWNER_DELIVERY_E_REVIEWED"
     },
     {
+      "actual_new_starts": 1,
       "additional_starts_authorized": 0,
+      "controller": "STOPPED",
       "future_D_ACK_required_for_E_closure": false,
       "id": "E2-DETACH-INDEPENDENT-READINESS-r1",
       "numerical_analysis_owner": "E2",
+      "original_execution_status": "FAILED_PRESERVED",
       "output": [
         "newsource F-only E Q",
         "originalsolecontroller actual E051 durableexit/completeinput/64slice/212counter closure",
@@ -355,51 +402,9 @@
         "STATUS/RECEIPT/accounting/Gitremote readback"
       ],
       "owner": "E2",
-      "state": "SGEMM_TERMINAL_ACCEPTED_AND_CAUSE_QUANTIFIED_DELIVERED_D_OTHER_INPUT_CAUSES_PENDING_APPROVAL",
-      "actual_new_starts": 1,
       "remaining_authorized_new_starts": 0,
-      "original_execution_status": "FAILED_PRESERVED",
-      "supplemental_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT",
-      "controller": "STOPPED"
+      "state": "SGEMM_TERMINAL_ACCEPTED_AND_CAUSE_QUANTIFIED_DELIVERED_D_OTHER_INPUT_CAUSES_PENDING_APPROVAL",
+      "supplemental_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT"
     }
-  ],
-  "detach_positive_RO_followup_approved_primary_four": {
-    "primary_proposal_commit": "c73ade7f7e5511ed6911e1408b2f8fa42a5d04df",
-    "path": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/PROPOSAL.json",
-    "primary_maximum_starts": 4,
-    "mutually_exclusive_alternative": "CFD-only notselected/notauthorized",
-    "approved": true,
-    "queued": true,
-    "current_goal_remaining_authorized_starts": 4,
-    "not_waiting_on_D_analysis": true,
-    "approval_commit": "a247a31806a536b9320e04d1b3ef7228ad8fc6b5",
-    "maximum_new_starts": 4,
-    "status": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
-    "actual_starts": 53,
-    "new_actual_starts": 2,
-    "remaining_new_starts": 2,
-    "current_accepted_diagnostic_points": 1,
-    "conditions": [
-      {
-        "workload": "cfd_097k",
-        "state": "COMPLETE_VALID",
-        "accepted": true
-      },
-      {
-        "workload": "dwt2d",
-        "state": "RUNNING",
-        "accepted": false
-      },
-      {
-        "workload": "vectorAdd_4M",
-        "state": "NOT_STARTED",
-        "accepted": false
-      },
-      {
-        "workload": "convolutionSeparable",
-        "state": "NOT_STARTED",
-        "accepted": false
-      }
-    ]
-  }
+  ]
 }

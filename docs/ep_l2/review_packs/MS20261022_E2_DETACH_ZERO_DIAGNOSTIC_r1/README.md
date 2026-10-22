@@ -1,13 +1,16 @@
-# detach=0：E2 归因任务当前交付
+# detach=0：E2 当前归因与批准四端执行
 
-**E051 SGEMM 已独立接受并交 D，原唯一控制器 STOPPED，累计51次。** 当前 Goal `EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1` 仍为 ACTIVE，尚未完成其他四个正向 RO 输入的原因归因。
+**同一Goal ACTIVE；四个追加诊断已获用户批准并由原唯一中央控制器滚动执行。** 最新实际启动、逐条件状态、资源及结果预算见 [STATUS](STATUS.json) 和 [RECEIPT](RECEIPT.json)。不新建Goal或controller，不自动重试、加端或形成新S/F配对。
 
-本端完整执行 1,658,916,864 条指令、343,442 周期，真实 native wait0/exit0，64slice、退尽、源身份及212项计数等式闭合。2,282,704 次可见 RO 候选 head 观测全部命中缓存；实际 RO 事务、覆盖探测内原始 Tag reservation-fail、relieve、detach 均为0。没有进入 RO 生命周期，因而没有可 detach 的活跃 RO 对象。105,742 次跳过探测的观测不支持原始 Tag 压力结论；请求计数与 head 观测分母不同，不能相减或强制相等，也不能推出所有应用 Tag 一直充足。
+已完成两种不同原因：
 
-原自动解析器曾拒绝同周期 kernel-final→epoch-close 的合法双快照。E 按源码证明只修正该帧识别，重新验证原 raw，经原中央 API 追加 `CURRENT_ACCEPTED_DIAGNOSTIC_POINT`。**原 E051 执行 FAILED、parser.log、raw、Q/spec 与费用全部保留，没有重跑。** 本端不是 S/F 性能配对，不将旧 S 与新 F 比较。
+- 新SGEMM E051：真实正向证书有效，但实际RO事务0；可见2282704次候选head观测全缓存命中，未产生可detach的活跃RO对象。跳过探测的head保持NA。
+- CFD E052：真实RO事务51678、合并154770；1163176次实际FT生产Tag探测中reservation-fail为0，原始Tag失败触发分支从未进入，relieve与detach调用均0。不是“没有RO事务”，也不证明所有未观测路径Tag一直充足。79157周期及公共RO统计与原sameinput F相同，仅为复现描述，不产生跨binary S/F加速结论。
 
-见 [当前STATUS](STATUS.json)、[当前回执](RECEIPT.json)、[科学原因与边界](result/MEASURED_CAUSAL_CLOSURE.json)、[正式接受点](result/CURRENT_ACCEPTED_POINT.json)、[定量报告](result/REPORT.md)、[终态与资源账](result/PHASE_COMPLETION_AUDIT.json)。D 正式投递 `E2-00000081-7c783c92e702` 已发布至 GitHub `96bf2d69a16ea5302658a7416e194d2b5029bb10`；未声称 D 已 ACK 或消费。
+CFD [正式接受点](approved_four_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json)、[独立终验与逐物理phase计数](approved_four_r1/results/cfd_097k/INDEPENDENT_TERMINAL_AND_CAUSE_REVIEW.json)和[D交付回执](approved_four_r1/results/cfd_097k/D_DELIVERY_RECEIPT.json)均已发布。D真实消费状态以本人ACK为准，不冒称完成。
 
-旧 SGEMM 空证书和旧 FWT 全 epoch 同 line 写入排除分别已有原因。Conv、CFD、DWT、Vector 的旧结果具有实际 RO 事务，其动态 detach=0 原因仍 UNKNOWN，不能套用新 SGEMM 的缓存命中解释。[有限四端追加提案](conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/README.md) 及互斥的 CFD 单端方案待用户批准；现有单端授权已全部使用，没有额外启动或自动重试。
+DWT、Vector、Conv各有独立新r4 Q、完整原输入/条件证书及终验绑定。按实际资源准入执行；当前workspace约9GiB时原每运行监控预留只允许先单路，符合单路就滚动、不为多路等待。每端真实native exit0、完整指令/命令/64slice、212计数与退尽、身份和独立raw复核全部通过后才正式交D。大trace只按原runner启动前/结束后的必要身份检查读取；不重跑原生套件。
 
-保留原 T0、历史结果/失败/HOLD、main61、10/24GiB 累计生成、workspace5GiB底线+2GiB监控和 CPU/RAM/Share 守护。用户取消的全局路数、次数、时间上限不恢复。逐输入新 source/main/config/input/oracle 与独立 Q 和实际资源准入必须在任何后续授权启动前通过，不继承 SGEMM 整体资格。
+原SGEMM空证书、原FWT全epoch同line写入排除及其他历史失败/HOLD保留。E051原自动解析FAILED和费用不改；其正常native完整执行已凭明确工程证据经原中央API补充接受，未重跑。新版四端使用原CLI加已审固定decoder；分析中的物理phase不是因果kernel，跨phase事件差不当作存量。
+
+保留原T0、原51次及后续照实计费、main61和冻结r4、10/24GiB累计生成、workspace5GiB底线+2GiB监控、CPU/RAM/Share及唯一中央锁。用户取消的全局次数、路数、时间限制不恢复。完整归因尚未标记完成；四端之外无额外启动授权。
