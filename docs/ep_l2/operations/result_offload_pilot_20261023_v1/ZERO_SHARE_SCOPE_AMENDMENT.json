@@ -1,0 +1,36 @@
+{
+  "schema": "RESULT_OFFLOAD_ZERO_SHARE_SCOPE_AMENDMENT_V1",
+  "status": "AWAIT_EXPLICIT_APPROVAL_NOT_EXECUTED",
+  "parent_approval_request_sha256": "2700fb709872651b695b4deddf5f9842f8b45920ea1af578ac4ead7b07e6161c",
+  "reason": "User freed approximately3GiB on Source /workspace and shared native SSD /root/data, not md127 Share; use already freed capacity without additional Share writes.",
+  "exact_changes": {
+    "synthetic_native_scratch": "/root/data/result_offload_pilot_20261023_v1",
+    "real_native_scratch_parent": "/root/data/result_offload_real_sidecars_20261023_v1",
+    "Share40GiB_rule": "For this finite zero-new-Share-write storage pilot ONLY, monitor Share but do not use Share>=40GiB as this pilot admission gate. All other projects and science policies keep their existing Share gates. Any attempted new Share data/control write is HOLD.",
+    "native_SSD_gate": "Free SSD bytes after conservative full20MiB remaining task reservation must remain>=7GiB, plus any separately declared active write reservations; MemAvailable>=64GiB, cgroup headroom and actual mount/device checks remain required.",
+    "receiver_lock": "Reuse exact existing /root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock through read-only open+flock; no file allocation or new receiver lock.",
+    "all_new_file_locations": "Only the new /root/data native task roots and previously approved genuine164 roots; Git controls published through Windows workspace, no shared bridge staging/control files."
+  },
+  "unchanged": {
+    "synthetic_source_files": 4,
+    "synthetic_original_bytes": 1314816,
+    "synthetic_directory_records": 3,
+    "synthetic_native_scratch_cap": 16777216,
+    "synthetic_NAS_cap": 8388608,
+    "real_owner_selected_files": 9,
+    "real_owner_selected_bytes": 199357,
+    "real_each_project_native_scratch_cap": 2097152,
+    "real_each_project_NAS_cap": 2097152,
+    "true164_target_root": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_result_offload_pilot_v1",
+    "single_stream": true,
+    "aggregate_transfer_rate_ceiling": 31457280,
+    "restore_scope": "RESTORE_VERIFIED_NATIVE_TARGET, not native164",
+    "source_action": "SOURCE_KEEP",
+    "science_controller_registry_budget_changes": false,
+    "existing_file_delete_move_or_rewrite": false
+  },
+  "prepared_manifest_ids_unchanged": true,
+  "existing_synthetic_roots_or_payload": "NONE_CREATED",
+  "draft_driver_sha256": "b2c850227f70150dce67474c6cec234f4b0daf109c7b33a0758fae1838701440",
+  "scope_notice": "Draft driver is not executable approval. Bootstrap requires separate recording of the user explicit zero-Share amendment before any new path can be created. Existing Source science/control files are never modified."
+}
