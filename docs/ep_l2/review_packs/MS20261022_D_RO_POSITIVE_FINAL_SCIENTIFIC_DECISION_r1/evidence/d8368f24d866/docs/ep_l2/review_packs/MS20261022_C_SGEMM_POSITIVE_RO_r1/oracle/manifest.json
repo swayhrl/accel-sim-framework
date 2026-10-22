@@ -1,0 +1,46 @@
+{
+  "schema": "EP_L2_RO_ORACLE_V1",
+  "status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "framework_source_commit": "a658740e293919d7578cc55c9c2b5a39cef3bc9f",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "host_updates_excluded": [],
+  "kernel_count": 1,
+  "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+  "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+  "kernels": [
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernel-1.traceg",
+      "sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+      "opcodes": {
+        "LDG": 2390784,
+        "STS": 261888,
+        "LDS": 8380416,
+        "STG": 33792
+      }
+    }
+  ],
+  "unresolved_opcodes": {},
+  "counts": {
+    "CERTIFIED_RO_lines": 64480,
+    "CERTIFIED_RO_read_lane_references": 75423744,
+    "SAME_LINE_STORE_lines": 33792,
+    "SAME_LINE_STORE_read_lane_references": 1081344
+  },
+  "oracle_cost": "offline SQLite O(unique lines), 16 MiB SQLite page cache; runtime oracle idealized input, not free hardware",
+  "artifacts": {
+    "oracle.sqlite3": "711f60f4d61c210cd57c611475446b32417750f126b02fec0797637ba47073c6",
+    "coverage.csv": "53efa2d7a6029ccf0a498d45f31aad35cf71491dd98dc808dfeedefeeefd5d59",
+    "exclusion.csv": "d57791e15fbab1181d5983e44c7c2806d5a4ec8aa9eeb1485f6f3ea0986393ba",
+    "certified_lines.txt": "507cb0148689d5d8950d67ef5fc50b8434a4c7ec6a50728d1ebfde3d25dc6d00",
+    "certified_ranges.csv": "be570e38e168b59252ac7f4ed041e2b606aed79ea0c9650e94c840f825767aa8"
+  }
+}

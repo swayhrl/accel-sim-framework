@@ -1,0 +1,82 @@
+{
+  "schema": "EPL2_E2_PROPOSED_BASELINE_EQUIVALENCE_COMPARISON_DECLARATION_V1",
+  "status": "DRAFT_NOT_APPROVED_NOT_REGISTERED_NOT_EXECUTABLE",
+  "purpose": "Propose one future positive-RO F and exact old-S anchor reuse, preserving all original receipts and pair identities.",
+  "old_S_anchor": {
+    "attempt_id": "E047_98c6624c",
+    "cycles": 343730,
+    "identity": {
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "epoch_range": {
+        "epochs": "all",
+        "scope": "full_application"
+      },
+      "feature_vector": {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 1168,
+        "ro_line_mshr_bypass": false,
+        "ro_tag_detach": false,
+        "static_s64": false,
+        "tvd": false,
+        "unified_wb": false,
+        "wb_local_cap": 0,
+        "wbuf_entries": 16
+      },
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "ideal_vector": {
+        "copy_free": false,
+        "l2_data_free": false,
+        "mem_all_data": false,
+        "meta": false,
+        "read_hit": false,
+        "wb": false
+      },
+      "runtime_config_sha256": "7783713713d2a6429b453b7ded21b2aa86be1de63d08c8569cf2e9e0b09df80f",
+      "termination_contract": {
+        "all_kernels": true,
+        "hardware_drained": true,
+        "kind": "FULL_APPLICATION_MECHANISM_V2",
+        "normal_exit": true,
+        "timeout_seconds": 10800
+      },
+      "trace_content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+      "workload": "sgemm"
+    },
+    "path": "/workspace/ep_l2_ms20261019_e_results/E047_98c6624c/run_status.json",
+    "qualification_id": "f85b5f42f3a052667c10338a70b6acdb6b6959f5cc3948986f7430fc6cd50047",
+    "run_key": "78b70c31541a14be290375ebd50db4f6bc01c826913f5a2f479b9915550d756b",
+    "sha256": "821466c1694f5dbf089714eb70ff41f97e2ab7fa5a0b876027ed6601a700b69d",
+    "comparison_group": "V4_EXP_SGEMM_MAIN61_SF",
+    "comparison_invariants_sha256": "b915bb49bfeece76ea8a3efaafee67f479571385ab69058f4c623de671e9ad2d"
+  },
+  "old_S_OFF_source_premise": "S_OFF_NONINTERFERENCE_SOURCE_PREMISE.json",
+  "proposed_new_F_condition": "SGEMM_MAIN61_POSITIVE_RO_F_EXPLORATORY_v1",
+  "new_F_spec_sha256": null,
+  "new_F_qualification_id": null,
+  "C_positive_manifest_sha256": null,
+  "C_positive_ranges_sha256": null,
+  "required_equal_invariants": [
+    "Core/Framework/vendor/main/archive identity",
+    "complete trace/commandlist/active-lane semantics and full instructions",
+    "epoch/normal exit/full application/64-slice/drain contract",
+    "finite1168 physicalP1 geometry and nonresearch config/environment",
+    "all noncertificate auxiliary semantic assets"
+  ],
+  "proposed_exact_difference_whitelist": "Only reviewed old-vs-new manifest/ranges/adoption metadata and corresponding declared RO certificate binding options. Names and both exact hashes must be enumerated after C delivery; no wildcard/global asset exemption.",
+  "group_rule": "New explicit exploratory comparison consumes unchanged old group anchor through approved equality proof; do not rewrite old group/run-key/receipt or simply claim unchanged accept_pair permits it.",
+  "forbidden": [
+    "Global removal of auxiliary assets from invariant",
+    "Mutation of old S/F accepted records or original pair",
+    "Using old fallback Q for new positive F",
+    "Automatic second control, retry, or extra input",
+    "Calling full-design S/F a Tag-only causal comparison"
+  ],
+  "new_starts_proposed": 1,
+  "new_starts_authorized": 0,
+  "alternative": "Mutually exclusive two-end new same-certificate comparison only if necessary and explicitly approved; old S is not invalidated or refunded.",
+  "zero_negative_results_retained": true
+}
