@@ -1,0 +1,19 @@
+{
+  "schema": "E2_R5_ROOT_ROLLING_RESOURCE_FORECAST_ENGINEERING_FIX_V1",
+  "status": "ROOT_REVIEW_PASS_CONTRACT_UNCHANGED",
+  "actual_starts": 55,
+  "reason": "Remove our extra conservative physical booking of future unstarted metadata, which was not required by approved single rolling contract. Full batch generation reserve strengthened to exact entire future endpoint hardcaps plus all unclosed metadata.",
+  "unchanged": [
+    "production Core/main/archive/model/config/input/profile/Q",
+    "5GiB workspace floor and2GiB active monitor",
+    "384MiB perendpoint;640MiB batch metadata;10/24GiB generation",
+    "entire initial batch2.125GiB generation forecast",
+    "original resource_gate,pending_growth,runner.inspect AST",
+    "original registry/controller/lease paths and all historical scientific records"
+  ],
+  "physical": "160MiB per actual/reserved/submitted/proposed or terminal-unclosed condition, dedup; no physical reservation of never-submitted future conditions. Reserve on each real start. No metadata borrowed from monitor.",
+  "generation": "All remaining unstarted endpoint hardcaps+active remainingcaps+all unclosed metadata reserved, actual usage retained; no refund.",
+  "synthetic_controls": 22,
+  "original_registry_unchanged_sha256": "143b92e8d1fcf35bc1b3b69a6ad79c08a7116efca7eb49d71ae90bfdc385806b",
+  "previous_client_sha256": "0bc3feed318c5dbc7b4fb0b2a47d9c5dc773bd792ec0ea5fdb2dee739f7aed06"
+}

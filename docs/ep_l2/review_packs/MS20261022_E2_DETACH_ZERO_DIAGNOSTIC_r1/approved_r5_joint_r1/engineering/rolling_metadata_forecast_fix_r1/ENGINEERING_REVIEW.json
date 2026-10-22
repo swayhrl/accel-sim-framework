@@ -1,0 +1,76 @@
+{
+  "schema": "E2_R5_METADATA_PHYSICAL_GENERATION_SEPARATION_ENGINEERING_REVIEW_R1",
+  "status": "ROOT_REVIEW_CANDIDATE_NO_ACTUAL_SOURCE_OR_ADMISSION_CHANGE",
+  "proposal_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/R5_TARGET_SET_JOINT_OBSERVER_PRIMARY_FOUR_NOT_APPROVED/PROPOSAL.json",
+    "sha256": "f5cca87a75520baa90b49cf734893884b8a3536694318436ee9c363c5d0841d3",
+    "bytes": 28457
+  },
+  "user_approval_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/USER_APPROVAL.json",
+    "sha256": "b66c91254560b6a1ea3843de2ea5aa31f3a0cd58fcfd1b1c9d3a09e98d15c44b",
+    "bytes": 2941
+  },
+  "independent_interpretation": {
+    "conclusion": "The approved640MiB is whole-batch generation forecast; there is no explicit requirement to reserve all unstarted metadata in physical concurrency. Correcting the additional full640df debit is consistent with original rolling resource admission.",
+    "previous_implementation_error": "Our earlier preflight used the same all-unclosed640MiB number for both actual disk concurrency and lifetime generation. That was an added conservative engineering rule, not an exact user resource contract quote.",
+    "exact_approved_fields": {
+      "four_collector_metadata_forecast_bytes": 671088640,
+      "new_four_all_in_forecast_bytes": 2281701376,
+      "workspace_floor_bytes": 5368709120,
+      "active_monitor_margin_bytes": 2147483648,
+      "formal_concurrency": "Only resource qualified by original guard; disk currently predicts single route. Single rolling runs need not wait for2. No fixed route cap reintroduced."
+    }
+  },
+  "unchanged_contract": {
+    "old55history_and_exact4_same_newbinary_no_retry_refund": true,
+    "endpoint_hardcap_bytes": 402653184,
+    "metadata_per_condition_forecast_bytes": 167772160,
+    "metadata_batch_forecast_bytes": 671088640,
+    "full_initial_batch_generation_forecast_bytes": 2281701376,
+    "new_generation_limit_bytes": 10737418240,
+    "total_generation_limit_bytes": 25769803776,
+    "workspace_floor_bytes": 5368709120,
+    "active_monitor_margin_bytes": 2147483648,
+    "source_binary_input_config_science_qualification_changed": false
+  },
+  "physical_rule": {
+    "condition_set": "Union of actual tail attempts (including terminal whose metadata not closed), currently submitted exact conditions, and this proposed exact condition; subtract only validated root metadata closures; deduplicate eachcondition.",
+    "reserve_bytes": "160MiB multiplied by condition_set size. Never forecast physical occupancy of completely unstarted/unsubmitted later conditions.",
+    "remaining_other_guards": "Original actual pending growth + peractive monitor + proposed384MiB/proposed2GiB + resulting metadata reserve must leave5GiB. OriginalCPU/RAM/Share/collection guards and resource_gate unchanged.",
+    "no_lease_or_registry_projection": "Original validated readonly submitted forecast only; metadata creates no real/virtual additionallease and never mutates policy/resources."
+  },
+  "generation_rule": {
+    "always_preserve": "Actualgeneratednew/total + other actual pendinggeneration + all unused/future endpoint caps for the approvedfour +640MiB unclosedmetadata forecast <=10/24GiB.",
+    "initial": "4*384MiB+4*160MiB=2.125GiB",
+    "active_endpoint": "Only actualstat bytes of exact active tail resultdirectory reduce its future384MiB reserve; unstartedcap cannot be reduced by supplied fabricated bytes. Terminal condition is consumed/no retry and keeps actual bytes charged.",
+    "metadata_closure": "Existing exact rootacceptedpoint/metadataallocation/immutablepublication+remoteverified closure validation preserved; retiring futureforecast never erases actual generation. Failuremetadata remains physically reserved until a separatelyvalid closure contract exists."
+  },
+  "illustrative_not_actual_admission": {
+    "assumption": "No other pending workspace demand, firstcondition only, all metadata still unclosed; figures use parent-provided historical snapshot, not a fresh actualmeasurement or permission to release assets.",
+    "old_initial_min_df_bytes": 8589934592,
+    "corrected_initial_min_df_bytes": 8086552576,
+    "difference_bytes": 503382016,
+    "parent_snapshot_df_bytes": 7695765504,
+    "parent_inventory_allocated_new_ephemeral_bytes": 508649472,
+    "conditional_df_if_exact_gain_bytes": 8204414976,
+    "conditional_margin_bytes": 117862400,
+    "requires_real_df_postrelease_and_full_original_guards": true
+  },
+  "candidate_ref": {
+    "path": "/tmp/e2_r5_metadata_physical_generation_split_r1/tagpressure_metadata.py",
+    "sha256": "e42debc481007bcc0d1c5c09cf45f686cd46fb5cf2b51b4b6017fae01c23f61d",
+    "bytes": 7939
+  },
+  "integration_helper_ref": {
+    "path": "/tmp/e2_r5_metadata_physical_generation_split_r1/INTEGRATION_DELTA.py",
+    "sha256": "ac5653aa95441a122a5bd5234cca1fde41aed277635f8abd3e14e09c5e73dfa4",
+    "bytes": 2301
+  },
+  "bounded_synthetic_controls": 22,
+  "bounded_control_status": "PASS",
+  "control_claim": "Engineering arithmetic/identity/NA/closure controls only, no native/application/resource admission qualification.",
+  "actual_source_registry_CLIENT_or_controller_changed": false,
+  "resource_cleanup_or_migration_done": false,
+  "native_or_application_started": false
+}
