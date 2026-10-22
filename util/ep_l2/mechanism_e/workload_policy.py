@@ -5,6 +5,7 @@ lock. Full-spec bindings may be appended after independent qualification; they
 never grant qualification, alter old buckets, or refund a prior attempt.
 """
 import copy
+import detach_diagnostic_policy as detach_policy
 import hashlib
 import json
 from pathlib import Path
@@ -104,7 +105,9 @@ def active(item):
                 'old scientific record changed: '+group)
     require(set(row['batches'])=={FWT_BATCH,SGEMM_BATCH},'exact two workload batches required')
     require(set(row['bindings'])<=set(CONDITIONS),'extra binding denied')
-    attempts=item['attempts'][46:]
+    if len(item['attempts'])>50:
+        require(detach_policy.active(item),'post50 requires exact new observer adoption')
+    attempts=item['attempts'][46:50]
     require(len(attempts)<=4,'at most four new reservations/starts; failed attempts not refunded')
     all_ids=[]
     for batch,entry in row['batches'].items():

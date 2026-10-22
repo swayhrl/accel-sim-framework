@@ -1,0 +1,77 @@
+{
+  "status": "REVIEW_COMPLETE_TMP_ONLY_ENGINEERING_DEFECTS_FIXED",
+  "fixed": [
+    {
+      "file": "prepare_bundle.py",
+      "lines": [
+        23,
+        71
+      ],
+      "issue": "Queue omitted original controller required campaign_id/prepared_by/authority_commit",
+      "fix": "queue_metadata now emits exact frozen authority/campaign, prepared_by E, freeze timestamp, one exact spec and pairs[]"
+    },
+    {
+      "file": "audit_source_switch.py",
+      "lines": [
+        10,
+        11
+      ],
+      "issue": "Active canonical rows already contain run_key/lease_id; duplicate kwargs raised TypeError",
+      "fix": "preserve row and use registry_run_key/registry_lease_id index annotations"
+    },
+    {
+      "file": "prepare_bundle.py",
+      "lines": [
+        21
+      ],
+      "issue": "Metadata byte limit was checked after full read",
+      "fix": "stat limit checked before bounded metadata read"
+    },
+    {
+      "file": "prepare_client.py",
+      "lines": [
+        19,
+        29
+      ],
+      "issue": "Candidate did not itself verify local source commit blobs or exact Q/manifest crossbinding",
+      "fix": "verify every complete source pin against local actual commit blob and enforce exact final Q/source/manifest binding"
+    }
+  ],
+  "api_order": [
+    "final actual Q/spec review; old50seal before new Q registration",
+    "helper source quiescence and source/metadata publish+remote readback",
+    "complete old CLIENT preserved plus source pins activated",
+    "fresh same parent source Authority/check_spec then exact validation_scope configure",
+    "original Coordinator.adopt_detach_observer_batch",
+    "original Coordinator.register_qualification",
+    "original Coordinator.bind_detach_observer_condition",
+    "original controller.py --once --queue one endpoint pairs[]"
+  ],
+  "time_route_count_review": {
+    "global_time_caps_restored": false,
+    "formal_concurrency_caps_restored": false,
+    "explanation": "limits_policy.active preserves approved null maximum/deadlines/intake/per_end; observer timeout uses exact spec None; controller resource_only uses finite queue1 as executor storage only. Old immutable caps remain null via seal. Original singleton lock and physical/result guards remain.",
+    "exact_new_scope_limit": "one reservation/one start/no retry; no union; no pair",
+    "pair_rejection": "runner.accept_pair explicit scientific_scope exclusion; queue_guard requires one spec/pairs[]"
+  },
+  "r4_schema_wrapper_sha256": "2c070214ed8d0f3738014f7c0a3a0386d0199defad3f4a2b2d4d3343b8707ba2",
+  "bounded_controls": {
+    "new_controls_passed": 4,
+    "prior_metadata_controls_passed": 3,
+    "compile_passed": true,
+    "new_native_application_starts": 0
+  },
+  "not_run": [
+    "No actual production API adoption/registration/bind/controller invocation",
+    "No final Q production gate claims inferred; root fills/reviews final Q",
+    "No complete binary/trace/raw rehash or scanning",
+    "No client/repo/registry/runtime writes"
+  ],
+  "commands": "COMMANDS.md",
+  "source_switch_report": "SOURCE_SWITCH_READONLY.json",
+  "remaining_root_actions": [
+    "Final real Q/spec hash binding and root gate applicability approval",
+    "Install/review/publish/remote-readback original source and final metadata; actual full CLIENT activation at quiescence",
+    "Same-parent exact configure/adopt/register/bind then original controller after live resource gate"
+  ]
+}

@@ -19,6 +19,7 @@ import capacity_policy
 import limits_policy
 import concurrency_policy
 import durable_exit
+import detach_diagnostic_policy as detach_policy
 
 
 def roll_pairs(coord,requests):
@@ -98,6 +99,7 @@ def step(coord,queue_path):
         require(limits['start_deadline_unix'] is None or
                 queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
         pending=[];snapshot=coord.snapshot()
+        detach_policy.queue_guard(snapshot,queue,digest)
         for entry in queue['specs']:
             path=Path(entry['path']);require(digest(path)==entry['sha256'],'queued spec changed')
             spec=json.loads(path.read_text());key=run_key(spec['identity'])

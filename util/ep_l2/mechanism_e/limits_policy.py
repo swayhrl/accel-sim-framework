@@ -4,6 +4,7 @@ Pure guards and an in-memory amendment; Coordinator owns original REGISTRY.lock.
 JSON null means unlimited here. The ten approved condition identities stay finite.
 """
 import copy
+import detach_diagnostic_policy as detach_policy
 import workload_policy
 import hashlib
 import json
@@ -69,6 +70,7 @@ def active(item):
     return True
 
 def scope_allowed(item,spec):
+    if detach_policy.is_spec(spec):return detach_policy.scope_allowed(item,spec)
     if workload_policy.is_workload_spec(spec):return workload_policy.scope_allowed(item,spec)
     if not active(item):return False
     if spec.get('condition_id') not in CONDITIONS or spec.get('budget_bucket')!=BUCKET:return False
@@ -97,6 +99,7 @@ def operational_override(spec):
       scientific_scope_unchanged=True,no_automatic_retry=True)
 
 def effective_timeout(item,spec):
+    if detach_policy.is_spec(spec):return detach_policy.effective_timeout(item,spec)
     if workload_policy.is_workload_spec(spec):return workload_policy.effective_timeout(item,spec)
     if active(item) and spec.get('timeout_seconds') is None:
         require(scope_allowed(item,spec),'time removal cannot waive unapproved condition timeout')
@@ -110,6 +113,7 @@ def effective_timeout(item,spec):
 timeout_seconds=effective_timeout
 
 def assert_condition_unstarted(item,spec):
+    if detach_policy.is_spec(spec):return detach_policy.batch_guard(item,spec)
     if workload_policy.is_workload_spec(spec):return workload_policy.assert_condition_unstarted(item,spec)
     if not active(item):return
     require(scope_allowed(item,spec),'numerical start removal is exact approved capacity scope')

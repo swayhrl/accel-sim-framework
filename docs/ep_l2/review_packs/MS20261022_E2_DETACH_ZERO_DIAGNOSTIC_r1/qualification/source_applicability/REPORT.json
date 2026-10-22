@@ -1,0 +1,346 @@
+{
+  "schema": "E2_R4_18_GATE_SOURCE_APPLICABILITY_REVIEW_V1",
+  "at_utc": "2026-10-22T05:25:03.896790+00:00",
+  "status": "READY_FOR_ROOT_NEW_F_ONLY_Q_REVIEW_NOT_REGISTERED_OR_INDEPENDENTLY_QUALIFIED",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "formal_Framework_commit": "f7869e5dfdc1b6659a1b82a732fcd6ca12f81ddf",
+  "gate_count": 18,
+  "gates": [
+    {
+      "gate": "old_all_off_equivalence",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/old_all_off_equivalence.json",
+        "sha256": "21fd373b78811f01170495529d6e6765efd9b63a0f1d55412c101d943e252be4"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "T_OFF",
+        "EMPTY_CERT",
+        "OBSERVER_NONINTERFERENCE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "No new S/allOFF complete application anchor qualified; observer_OFF is not W/V/T/M allOFF."
+    },
+    {
+      "gate": "finite_wbuf",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/finite_wbuf.json",
+        "sha256": "26b861e5deea611e398d92e97751206b7707c9101799ebebe084d16c483427b4"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "EMPTY_CERT",
+        "OBSERVER_NONINTERFERENCE",
+        "DETACH_THEN_LATER_DENIAL"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "New48 do not freshly rerun every dirty/WB capacity stress; retained model-only premises are explicit."
+    },
+    {
+      "gate": "requester_exact_once",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/requester_exact_once.json",
+        "sha256": "aad5da70daf44c3a35bff2dcb4b35e223fad9e4ef3f540fa4b1e583fd008a401"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "PRESSURE_STICKY_REUSE",
+        "RESPONSE_BACKPRESSURE",
+        "DETACH_THEN_LATER_DENIAL"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Future application still requires full native/RO requester exact-once across64slices; no aggregate-only waiver."
+    },
+    {
+      "gate": "sector_reference_data",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/sector_reference_data.json",
+        "sha256": "16b870375508411f6d56c48f458bf6c52a5b034a71e48a35da7a2b0f54f5e190"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "NO_PRESSURE_POSITIVE_RO",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "48 finite signatures supplement preserved sector model tests, not captured-source SGEMM numerical recapture."
+    },
+    {
+      "gate": "stale_fill",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/stale_fill.json",
+        "sha256": "8015452f336ba1ff939504712f366f3be2e737774a5b04674ffbe8f777e5a63b"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "PREVIEW_REPEAT"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "No new input alias/hidden-writer proof beyond C closed-world certificate."
+    },
+    {
+      "gate": "resource_closure",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/resource_closure.json",
+        "sha256": "03f2dbdd5b63c330f23e93bf786d6f546da27495b7c0412339fca676431c2c1b"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "RESPONSE_BACKPRESSURE",
+        "ROLLUP_RESIDUAL",
+        "BOUNDED_OUTPUT"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Inactive execGPU cache means native GLOBAL epoch_closed=false; these fixtures are not complete application64slice acceptance. Real application complete64/GLOBAL/native drain mandatory."
+    },
+    {
+      "gate": "wb_lifecycle",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/wb_lifecycle.json",
+        "sha256": "6b6a9601d147a99aec72a26a100e8bd2562dd94af7c4b51d8080b7dd3be7fd36"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "OBSERVER_NONINTERFERENCE",
+        "DETACH_THEN_LATER_DENIAL"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "48 are not a fresh rerun of all old dirty WB lifecycle scenarios."
+    },
+    {
+      "gate": "bank_service",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/bank_service.json",
+        "sha256": "4d0aa8a656a4f48c09e2bf34f5222d44a798c400825c82423c1ebad6b7a2d0b3"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "OBSERVER_NONINTERFERENCE",
+        "PRESSURE_ELIGIBLE",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "No raw throughput gain or changed P1 service inferred from counts."
+    },
+    {
+      "gate": "physical_bank_clock",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/physical_bank_clock.json",
+        "sha256": "fb2a9870d5151c0eda03e6992a8db4778757662dbacf631fa61b250c109d35b2"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "OBSERVER_NONINTERFERENCE",
+        "PRESSURE_ELIGIBLE",
+        "PREVIEW_REPEAT"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Finite native timing equivalence only, not cross-binary application performance claim."
+    },
+    {
+      "gate": "memcpy_payload_identity",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/memcpy_payload_identity.json",
+        "sha256": "6dee909a5480ece64d46de0572485c551baa40d6d6f3f70b99eab0517fc5f073"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "NO_PRESSURE_POSITIVE_RO",
+        "PRESSURE_ELIGIBLE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Original Framework9dd complete trace grammar and C initial2HtoD drain assumptions retained; no new host recapture/numeric proof."
+    },
+    {
+      "gate": "mode_legality",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/mode_legality.json",
+        "sha256": "1b1581e920b42391df8316a7b026b89ab2f2a450c91508fed2cb9911f96d60f5"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "T_OFF",
+        "EMPTY_CERT",
+        "BOUNDED_OUTPUT"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Unrequested profiles/illegal-combination positive scope not expanded; historical expected negatives preserved."
+    },
+    {
+      "gate": "shared_payload_lifecycle",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/shared_payload_lifecycle.json",
+        "sha256": "f3970a7dc04f49903052f9979d4601268c1cf6fe978ffb30309461934ba67d4d"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "NATIVE_REQUESTER_RO_VICTIM",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "No additional C three-way WB/victim/RO joint fixture qualification created."
+    },
+    {
+      "gate": "shared_directory_cost_and_full",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/shared_directory_cost_and_full.json",
+        "sha256": "d583dca2a9b338cd47057bf4cd7e7986f56f12845c7da148c0c0430e4566acf9"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_STICKY_REUSE",
+        "DETACH_THEN_LATER_DENIAL",
+        "ROLLUP_RESIDUAL"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Descriptor/address/line checked vs unobserved must stay explicit; no zero-filled M1 coverage."
+    },
+    {
+      "gate": "pinned_victim_wb_completion_identity",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/pinned_victim_wb_completion_identity.json",
+        "sha256": "1beb2f027c3a5085174d83c2c8c7fe9b80c757ea2436261ebbcf81f33ba604b0"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_NO_MISSING",
+        "PRESSURE_ELIGIBLE",
+        "RESPONSE_BACKPRESSURE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Does not replace historical dirty WB scenario with a new unrelated read-only fixture; source premise retained rather than claiming rerun."
+    },
+    {
+      "gate": "ro_tag_reuse_late_sector_identity",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/ro_tag_reuse_late_sector_identity.json",
+        "sha256": "9360340bb581d5d803c421a64d0d5d83f4acc07647fb1c74f43858b140cb960a"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "PRESSURE_STICKY_REUSE",
+        "PREVIEW_REPEAT"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "Native successful detach is mechanism coverage, not proof SGEMM will detach or gain cycles."
+    },
+    {
+      "gate": "ro_victim_same_address_and_host_invalidation",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/ro_victim_same_address_and_host_invalidation.json",
+        "sha256": "82de4e0a56b5b9e6aba45141562366032364480cb673d6a873a4c225035447e0"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "PRESSURE_ELIGIBLE",
+        "NATIVE_REQUESTER_RO_VICTIM",
+        "EMPTY_CERT"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "New C extra joint remains HOLD; whole-commandlist/model assumption boundaries unchanged."
+    },
+    {
+      "gate": "backpressure_complete_quiescence",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/backpressure_complete_quiescence.json",
+        "sha256": "18a5c465d6151ffa397eb8896835a33c55b53e749b48995c73e5b626ae2aa5e2"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "RESPONSE_BACKPRESSURE",
+        "DETACH_THEN_LATER_DENIAL",
+        "NATIVE_REQUESTER_RO_VICTIM"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "response_backpressure counter counts commit_response(false) only; zero does not mean no upstream wait. Full64slice application quiescence remains mandatory."
+    },
+    {
+      "gate": "tm_trigger_default_off_and_illegal_combinations",
+      "evidence": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/tm_trigger_default_off_and_illegal_combinations.json",
+        "sha256": "de15a733aa704ef33c5a8c6cc1374181d8572a87840db0e1a785f1d9eb49e0ee"
+      },
+      "review_status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+      "new_native_classes": [
+        "T_OFF",
+        "EMPTY_CERT",
+        "ROLLUP_RESIDUAL",
+        "PRESSURE_STICKY_REUSE"
+      ],
+      "remaining_correctness_gap": null,
+      "scope_limit": "T0 native control or observer_OFF not new fullapp S; C extra combined fixture and unrequested profiles remain unqualified."
+    }
+  ],
+  "evidence": {
+    "source_premises": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/MODEL_SOURCE_PREMISES.json",
+      "sha256": "736481b07a4335f01ea06bb6eb79d65a246f98ca1d6e645546fd4459645f9ca5"
+    },
+    "independent_actual_r4_native_review": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+      "sha256": "5e84c0784d635e7e6284f855bbfe4f63898818b4799894b3b0ef0ac6e6505c7a"
+    },
+    "formal_producer_identity_adoption": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/FORMAL_PRODUCER_IDENTITY_ADOPTION.json",
+      "sha256": "097557f8d1d22f8060aa01e03fa06f1565aa198f3ff54fe09c459264ee11db6d"
+    },
+    "formal_A2_producer_release": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/owner_intake/A2_formal_r4/PRODUCER_RELEASE.json",
+      "sha256": "1a212a4b39cfcba05c755e045660309ef7061d5cd2b22a5a20aaada1c41545e4"
+    },
+    "final_schema_metadata_review": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/FINAL_SCHEMA_METADATA_REVIEW.json",
+      "sha256": "5613f871fc638f26abf0392910dc9d1e5e7bed9d7a82dcd7fdfe3712261b2896"
+    }
+  },
+  "formal_schema_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/FINAL_SCHEMA_METADATA_REVIEW.json",
+    "sha256": "5613f871fc638f26abf0392910dc9d1e5e7bed9d7a82dcd7fdfe3712261b2896"
+  },
+  "source_premises": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/MODEL_SOURCE_PREMISES.json",
+    "sha256": "736481b07a4335f01ea06bb6eb79d65a246f98ca1d6e645546fd4459645f9ca5"
+  },
+  "native_review_summary": {
+    "actual_invocations": 48,
+    "reference_observerOFF_ON_groups": 16,
+    "checks_passed": 1589,
+    "source212_equation_calls": 38,
+    "frames": 19,
+    "native_reexecutions": 0,
+    "main_archive_physical_identity": "Root FORMAL_PRODUCER_IDENTITY_ADOPTION closed; not rehashed here"
+  },
+  "scientific_scope": "One new-source positive-RO fullF diagnostic point; no new S/no comparison baseline/no performance ratio. Original50 historical starts/results remain unchanged.",
+  "root_action": "Review these18 bounded applicability records; if accepted root creates final E source/Q gates referencing their hashes plus final schema/spec/CLIENT binding, then sole controller actual oneF admission. No additional native or build is requested by this review.",
+  "real_correctness_blockers_identified": [],
+  "pending_contract_binding": [
+    "Root final newQ sign (not oldQ inheritance)",
+    "Exact final spec/config/oracle/schema/parser/tool hashes and originalCLIENT/source adoption",
+    "Current originalresource/lease/controller admission",
+    "After authorized run: real durable native wait0, full1658916864instructions,64physical slices/global closed/drain/scientific diagnostic acceptance"
+  ],
+  "explicit_preserved_HOLD": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/VRW_SCOPE_REVIEW.json",
+    "sha256": "66ea9e5b78af129fea9d0e66c1fbbe82818266ac57cfe5a7302213304b865865"
+  },
+  "defaults_and_limits": [
+    "Observer OFF reference native is not formal S or all-feature-off application.",
+    "No C extra jointfixture automatic upgrade.",
+    "No rerun of17 already-applicable historical native tests; historical identities preserved.",
+    "r3 native failure remains failed.",
+    "Old main61/results never retroactively get positive certificate or r4 counters.",
+    "Numerical SGEMM captured-source/output remains UNKNOWN; source grammar/closed-world certificate scope only."
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "schema": "E2_R4_ORIGINAL_GATE_APPLICABILITY_EVIDENCE_V1",
+  "gate": "ro_tag_reuse_late_sector_identity",
+  "status": "APPLICABILITY_SUPPORTED_PENDING_ROOT_Q_SIGN",
+  "production_driven": true,
+  "actual_source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "historical_model_premise": "Original can_detach attached&&!reuse_seen&&(required&~ready), generation/late fill and sticky reuse rules byte-identical.",
+  "historical_gate": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/gates/ro_tag_reuse_late_sector_identity.json",
+    "sha256": "91bb614a90ee029a2316288fd4eb9f870815bb51eab258001192310019cfbced",
+    "original_source_identity": {
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    },
+    "status": "HISTORICAL_PASS_RETAINED_ONLY_IN_UNCHANGED_MODEL_SCOPE",
+    "native_tests_reexecuted": false
+  },
+  "historical_exact_case_labels": {
+    "d010_affected": [
+      "new_combined_same_address",
+      "new_combined_same_address_observer"
+    ],
+    "unchanged_assertions": [
+      "combined_factor_tag_T1_M1"
+    ]
+  },
+  "actual_source_delta_applicability": "Actual Tag detach, reused target and original payload late return match reference/OFF/ON; sticky reused waiter protects after its response.",
+  "new_r4_native_delta_classes": [
+    "PRESSURE_ELIGIBLE",
+    "PRESSURE_STICKY_REUSE",
+    "PREVIEW_REPEAT"
+  ],
+  "actual_new_native_case_records": [
+    {
+      "case": "PRESSURE_STICKY_REUSE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "6486f0d11251e3417e4871e7b29e527d70c78684bd4a553039cbde32f82b6efe",
+      "actual_raw_sha256": "74ad39b05530da66fc40ae9d4e7cf626a061d1ea8a2ac226b0cdb4f159c2efe6",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_STICKY_REUSE"
+    },
+    {
+      "case": "PRESSURE_STICKY_REUSE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "9a0d7503c7e82678bd62846087dd48f1c8178d65a01ed3f889203202e3a4d485",
+      "actual_raw_sha256": "74ad39b05530da66fc40ae9d4e7cf626a061d1ea8a2ac226b0cdb4f159c2efe6",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_STICKY_REUSE"
+    },
+    {
+      "case": "PRESSURE_STICKY_REUSE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "ef50b3391c5eca4f4900b6d8497b62169b184dfc608e94367544c829fd95e63f",
+      "actual_raw_sha256": "7b353fdf4bbeac889d3e2c1a1afa4fd279faedb54abe7a6bb346202ef6aec516",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_STICKY_REUSE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "42b9a6abe4f757af70086bea1dcdf49fb61524a1e027db4e59eafbb5c44931dd",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "fb6ec99a8cb1d736c425c42d9e292f66ab261c62474887acedc344c2292ed3b2",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "83ef942c45709eba1d762d70d33dd21cc2d6f099f2a624693bd02cd094bf5172",
+      "actual_raw_sha256": "f76e9131e6012b579ec11fbe937d2dd8475cb2587a66a880dcd03577bf87a707",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PREVIEW_REPEAT_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "30de7bd7fb563b603420c7b11e9c7a22e1ce251aa7510de96ea31786de41fe54",
+      "actual_raw_sha256": "60fe72349a630705e9a70c16c16f43fed7c03aea46f36a82e27ef36c768f0909",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PREVIEW_REPEAT"
+    },
+    {
+      "case": "PREVIEW_REPEAT_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "53daeef2b068e4c78b901b7bc3e991c1fcf179906f446c63cc43d7a713a18dda",
+      "actual_raw_sha256": "60fe72349a630705e9a70c16c16f43fed7c03aea46f36a82e27ef36c768f0909",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PREVIEW_REPEAT"
+    },
+    {
+      "case": "PREVIEW_REPEAT_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "7ae87879ab3886f962f0f76602f63057902082e424a9c12b00597d5140e41720",
+      "actual_raw_sha256": "204924a6fc489366104e0c2f1cb6b6002a460f2b2a338e13f27121baac48d5f0",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PREVIEW_REPEAT"
+    }
+  ],
+  "evidence": {
+    "source_premises": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/MODEL_SOURCE_PREMISES.json",
+      "sha256": "736481b07a4335f01ea06bb6eb79d65a246f98ca1d6e645546fd4459645f9ca5"
+    },
+    "independent_actual_r4_native_review": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+      "sha256": "5e84c0784d635e7e6284f855bbfe4f63898818b4799894b3b0ef0ac6e6505c7a"
+    },
+    "formal_producer_identity_adoption": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/FORMAL_PRODUCER_IDENTITY_ADOPTION.json",
+      "sha256": "097557f8d1d22f8060aa01e03fa06f1565aa198f3ff54fe09c459264ee11db6d"
+    },
+    "formal_A2_producer_release": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/owner_intake/A2_formal_r4/PRODUCER_RELEASE.json",
+      "sha256": "1a212a4b39cfcba05c755e045660309ef7061d5cd2b22a5a20aaada1c41545e4"
+    },
+    "final_schema_metadata_review": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/FINAL_SCHEMA_METADATA_REVIEW.json",
+      "sha256": "5613f871fc638f26abf0392910dc9d1e5e7bed9d7a82dcd7fdfe3712261b2896"
+    }
+  },
+  "scope_limit": "Native successful detach is mechanism coverage, not proof SGEMM will detach or gain cycles.",
+  "old_Q_wholesale_inherited": false,
+  "new_S_or_allOFF_application_qualified": false,
+  "extra_C_joint_qualified": false,
+  "new_17_native_rerun_requested": false,
+  "new_correctness_blocker_identified": false,
+  "reviewed_by": "E2 delegated per-gate applicability reviewer; root signs final Q"
+}

@@ -19,6 +19,7 @@ import time
 import uuid
 import subprocess
 import policy_v2
+import detach_diagnostic_policy as detach_policy
 import capacity_policy
 import limits_policy
 import workload_policy
@@ -99,6 +100,8 @@ def ledger(data):
                 'budget/deadline changed')
         require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
                 'output budget changed')
+    detach_policy.active(item)  # Exact optional successor; original50 and old batches sealed
+    detach_policy.crosscheck_data(data,item)
     workload_policy.active(item)  # exact optional approved four-start workload batch
     concurrency_policy.active(item)  # exact optional user concurrency amendment
     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
@@ -138,8 +141,18 @@ def pending_growth(data):
 
 
 def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
-                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None):
-    item=ledger(data)
+                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None,authority_data=None):
+    if authority_data is not None:
+        require(data[FIELD]==authority_data[FIELD] and data['resource_leases']==authority_data['resource_leases'],
+                'resource recheck view must preserve canonical campaign/leases')
+        removed=set(authority_data['runs'])-set(data['runs'])
+        require(len(removed)==1 and not set(data['runs'])-set(authority_data['runs']) and
+                all(row==authority_data['runs'][key] for key,row in data['runs'].items()),
+                'resource recheck may exclude only its one held reservation')
+        oldrow=authority_data['runs'][next(iter(removed))]
+        require(oldrow.get('experiment_id')==CAMPAIGN and oldrow['status']=='RESERVED',
+                'resource recheck must exclude one own RESERVED run')
+    item=ledger(data if authority_data is None else authority_data)
     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
             'positive integer CPU/RAM required')
     require(type(growth) is int and growth>0,'conservative positive output-growth reserve required')
@@ -204,6 +217,7 @@ class Coordinator:
             item=ledger(data)
             yield data,item
             counts(item)
+            detach_policy.crosscheck_data(data,item)
             write_json(self.handoff/'RUN_LEDGER.json',item)
 
     def snapshot(self):
@@ -273,6 +287,24 @@ class Coordinator:
         raw=Path(selection_path).read_bytes();selection=json.loads(raw)
         with self.locked() as (data,item):
             return workload_policy.adopt_selection(item,selection_path,raw,selection,digest)
+
+    def adopt_detach_observer_batch(self):
+        """Append only root-sealed observer scope under original lock; no new scheduler."""
+        with self.locked() as (data,item):
+            own_scientific = [r for r in data['runs'].values()
+                if r.get('experiment_id')==CAMPAIGN and r.get('status') in ACTIVE]
+            source_leases = [r for r in data['resource_leases'].values()
+                if r.get('experiment_id')==CAMPAIGN and (r.get('role')=='E' or r.get('owner')=='mechanism_E')
+                and r.get('status') in ACTIVE]
+            require(not own_scientific,'own scientific application must retire before source adoption')
+            changed=detach_policy.adopt(item,source_leases)
+            counts(item)
+            return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
+
+    def bind_detach_observer_condition(self, spec):
+        with self.locked() as (data,item):
+            self.require_no_hold(item,spec['qualification_id'])
+            return detach_policy.bind_condition(item,spec,digest)
 
     def bind_capacity_runtime(self, qualification_id):
         """Freeze exactly one formally delivered and E-qualified new runtime."""
@@ -587,11 +619,14 @@ class Coordinator:
             require(spec['profile'] in q['supported_profiles'],'profile not independently qualified')
             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
-            if workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
+            if detach_policy.is_spec(spec):detach_policy.batch_guard(item,spec)
+            elif workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
             else:capacity_policy.bucket_guard(item,spec)
             require(limits_policy.deadline_open(item['start_deadline_unix']),'full-application start deadline closed under lock')
             bucket=spec['budget_bucket']
-            if workload_policy.is_workload_spec(spec):
+            if detach_policy.is_spec(spec):
+                detach_policy.batch_guard(item,spec)
+            elif workload_policy.is_workload_spec(spec):
                 workload_policy.batch_guard(item,spec)
             else:
                 require(bucket in item['reservations'],'unknown reserved budget bucket')
@@ -612,13 +647,19 @@ class Coordinator:
                  'reserved_unix':time.time(),'result_directory':str(directory),'retry_reason':spec.get('retry_reason'),
                  'prior_attempts':[a['attempt_id'] for a in history],'maximum_result_bytes':growth,
                  **disk_policy.lease_policy(item)}
-            if workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
+            if detach_policy.is_spec(spec):detach_policy.record_reservation(item,spec,row)
+            elif workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
             item['attempts'].append(row)
             data['runs'][key]={'run_key':key,'identity':identity,'owner':'mechanism_E','host':socket.gethostname(),
                 'boot_id':item['boot_id'],'lease_id':attempt_id,'status':'RESERVED','created_at':time.time(),
                 'cpu_units':1,'memory_bytes':spec.get('memory_bytes',8*GIB),'scan':identity['workload']=='scan',
                 'result_directory':str(directory),'disk_growth_bytes':growth,'experiment_id':CAMPAIGN,'process':None,
                 **disk_policy.lease_policy(item)}
+            if detach_policy.is_spec(spec):
+                data['runs'][key].update(scientific_scope=detach_policy.SCI_SCOPE,
+                    diagnostic_spec_sha256=detach_policy.spec_sha(spec),condition_id=spec['condition_id'],
+                    qualification_id=spec['qualification_id'],budget_bucket=spec['budget_bucket'])
+            detach_policy.crosscheck_data(data,item)
             return row
 
     def start_application(self, attempt_id, command, cwd, environment, log_stream, popen):
@@ -647,7 +688,7 @@ class Coordinator:
             row=data['runs'][attempt['run_key']]
             resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
                           local_resources(),output_usage(),row['scan'],disk_floor_bytes=row['disk_floor_bytes'],
-                          monitor_reserve_bytes=row['monitor_reserve_bytes'])
+                          monitor_reserve_bytes=row['monitor_reserve_bytes'],authority_data=data)
             require(item.get('controller',{}).get('process')==process_identity(os.getpid()) and
                     item['controller']['state']=='ACTIVE','only singleton E controller may start')
             attempt.update(state='START_INTENT_UNRECONCILED',start_intent_unix=time.time())
@@ -666,6 +707,8 @@ class Coordinator:
             if hasattr(process,'guardian_identity'):
                 attempt['exit_collector_process']=process.guardian_identity
                 row['exit_collector_process']=process.guardian_identity
+            if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
+                detach_policy.record_started(item,attempt)
             counts(item)
             write_json(self.registry.root/'RUN_REGISTRY.json',data)
             write_json(self.handoff/'RUN_LEDGER.json',item)
@@ -704,6 +747,8 @@ class Coordinator:
                             native['binding']['identity']==attempt['identity'],'native exit binding mismatch')
                 item['accepted_results'][attempt_id]={'path':str(Path(receipt_path).resolve()),'sha256':digest(receipt_path),
                     'run_key':attempt['run_key'],'identity':attempt['identity'],'qualification_id':attempt['qualification_id']}
+                if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
+                    item['accepted_results'][attempt_id]['scientific_scope']=detach_policy.SCI_SCOPE
             attempt.update(state=status,finished_unix=time.time(),receipt_path=str(Path(receipt_path).resolve()),
                            receipt_sha256=digest(receipt_path))
             row=data['runs'][attempt['run_key']]

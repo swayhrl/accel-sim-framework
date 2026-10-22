@@ -26,6 +26,8 @@ import capacity_validation
 import limits_policy
 import disk_policy
 import durable_exit
+import detach_diagnostic_policy as detach_policy
+import detach_validation
 
 
 def inspect(spec,coord,launch_check=True):
@@ -35,6 +37,7 @@ def inspect(spec,coord,launch_check=True):
     qrow=item['qualifications'][spec['qualification_id']]
     require(digest(qrow['path'])==qrow['sha256'],'E qualification changed')
     q=qrow['qualification'];source=q['source_identity']
+    if detach_policy.is_spec(spec):detach_policy.prepare_validator(qrow,spec,digest)
     require(all(identity[n]==source[n] for n in ('core_source_commit','framework_source_commit','binary_sha256')),
             'runtime source/binary identity differs from independent qualification')
     require(spec['vendor_pybind11_commit']==source['vendor_pybind11_commit'],'vendor identity differs')
@@ -113,6 +116,9 @@ def runtime_metrics(raw,expected_options):
 def validate_terminal_summary(summary,spec,qrow,audit):
     """Only a registered exact new-capacity Q may use the new scoped validator."""
     q=qrow['qualification'];contract=q.get('capacity_diagnostic')
+    if detach_policy.is_spec(spec) or q.get('detach_observer_diagnostic') is not None:
+        return detach_validation.validate_summary(summary,spec,qrow,audit)
+    require(summary.get('diagnostic_scope')!=detach_policy.SCI_SCOPE,'observer summary cannot use legacy validator')
     if contract is None:
         require(not capacity_policy.is_capacity_spec(spec),'capacity spec has no exact new qualification')
         require(summary.get('diagnostic_scope')!='CAPACITY_DIAGNOSTIC_V1','new capacity summary cannot use legacy validator')
@@ -146,6 +152,7 @@ def execute(spec,coord):
       'profile':spec['profile'],'labels':spec['labels'],'comparison_group':spec['comparison_group'],
       'comparison_invariants_sha256':audit['comparison_invariants_sha256'],'input_audit':audit,
       'status':status,'independent_acceptance':'NOT_ACCEPTED','complete_input_verified':False}
+    if detach_policy.is_spec(spec):result['scientific_scope']=detach_policy.SCI_SCOPE
     started=time.monotonic()
     try:
         directory.mkdir(parents=True,exist_ok=False);created=True
@@ -268,6 +275,7 @@ def accept_pair(coord,left_id,right_id,pair_id,mechanism="UNSPECIFIED"):
                         json.loads(path.read_text())==native,'accepted native exit evidence changed')
                 require(native['exit_code']==0 and native['wait_status']==0 and native['stop_reason'] is None,
                         'accepted native exit is not an unguarded normal exit0')
+            require(record.get('scientific_scope')!=detach_policy.SCI_SCOPE,'observer diagnostic point cannot be S/F pair')
             coord.require_no_hold(item,record['qualification_id'])
             qualified=item['qualifications'][record['qualification_id']]
             require(digest(qualified['path'])==qualified['sha256'],'current qualification withdrawn/changed')

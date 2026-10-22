@@ -1,0 +1,39 @@
+{
+  "schema": "E2_FORMAL_R4_COUNTER_METADATA_READBACK_V1",
+  "status": "COUNTER_AND_FRAMING_UNCHANGED_FOUR_METADATA_CLARIFICATIONS_BOUND",
+  "formal_Framework_commit": "f7869e5dfdc1b6659a1b82a732fcd6ca12f81ddf",
+  "prior_Framework_commit": "5d137275143976c5e31a73cebae3e3c98559168d",
+  "path": "docs/ep_l2/review_packs/MS20261022_A2_DETACH_OBSERVER_PRODUCER_r1/COUNTER_SCHEMA.json",
+  "formal_schema_sha256": "6160627dcba45786d46149023a51da001906cce6391a2da13ca04b2ccc110602",
+  "prior_schema_sha256": "9693c77fefa1e315b55955bfa9d040316a700f34fa973cfc535c3580c03088af",
+  "field_count": 212,
+  "counter_fields_exact_equal": true,
+  "metadata_changes": {
+    "native_population": {
+      "prior": null,
+      "formal": "Each native frame constructs selected cache and inactive execGPU cache. Selected SLICE closes; extra registered caches emit no events and GLOBAL epoch_closed remains false. Exact global counter residual0 does not qualify a whole GPU. Real application must emit0..63 distinct physicalSLICE at terminal plus count64 GLOBAL and epoch_closed/exit/drain; missing records invalid."
+    },
+    "phase_metadata": {
+      "prior": null,
+      "formal": "PHASE counters are disjoint phase counts; epoch_closed/live_detached/closure_ok fields are cumulative slice metadata, not phase-local lifetime equations."
+    },
+    "revision": {
+      "prior": "FINAL_E72_E73_CONSOLIDATED_R3",
+      "formal": "FINAL_R4_PRODUCTION_SAME_AS_R3_TEST_STIMULUS_FIXED"
+    },
+    "source_commit": {
+      "prior": null,
+      "formal": "9243f769620653f2a9d4df5599e9581e9dae6067"
+    }
+  },
+  "coverage_effect": "Clarifies already enforced native fixture/global-vs-physical64slice and PHASE cumulative-parent metadata. No decoder equation/framing code change.",
+  "wrapper": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/runtime_r4/SOURCE_BOUND_SCHEMA_r4.json",
+    "sha256": "2c070214ed8d0f3738014f7c0a3a0386d0199defad3f4a2b2d4d3343b8707ba2"
+  },
+  "decoder": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/runtime_r4/decoder.py",
+    "sha256": "10fe85c8a3d8dc7a502c9e79d3b2f4a5a3af991b4d8c3ed91ed8dae9621fc0ef"
+  },
+  "native_or_application_reexecuted": false
+}
