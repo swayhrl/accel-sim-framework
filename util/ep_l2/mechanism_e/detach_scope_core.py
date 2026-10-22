@@ -4,6 +4,7 @@ Default denies synthetic manifests. Real integration must supply exact published
 approval/release/Q/spec hashes and reviewed original Coordinator hooks.
 """
 import copy
+import detach_parser_recovery as parser_recovery
 import hashlib
 import json
 import re
@@ -147,7 +148,7 @@ class Authority:
                     binding['qualification_id'] == m['scientific_binding']['qualification']['sha256'],
                     'bound identity/Q changed')
         allowed_results = set(m['old_seal']['records']['accepted_results']) | {
-            a['attempt_id'] for a in tail if a['state'] == 'COMPLETE_VALID'}
+            a['attempt_id'] for a in tail if a['state'] == 'COMPLETE_VALID'} | parser_recovery.allowed_revalidated_results(item)
         require(set(item['accepted_results']) <= allowed_results, 'extra accepted endpoint')
         allowed_holds = set(m['old_seal']['records']['scientific_holds']) | {
             'qualification:'+m['scientific_binding']['qualification']['sha256']}

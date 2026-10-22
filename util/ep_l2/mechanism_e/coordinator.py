@@ -20,6 +20,7 @@ import uuid
 import subprocess
 import policy_v2
 import detach_diagnostic_policy as detach_policy
+import detach_parser_recovery as parser_recovery
 import capacity_policy
 import limits_policy
 import workload_policy
@@ -578,6 +579,13 @@ class Coordinator:
                'review_sha256':digest(review_path),'at_unix':time.time()})
             del item['scientific_holds'][key]
             # Old failed/withdrawn results never become accepted from this alone.
+
+    def append_observer_parser_revalidation(self):
+        """Append exact source-sealed review; never alter execution or launch."""
+        with self.locked() as (data,item):
+            changed=parser_recovery.append(data,item)
+            return dict(changed=changed,actual_starts=item['actual_starts'],
+                acceptance_basis='PARSER_ENGINEERING_SUPPLEMENTAL_REVALIDATION')
 
     @staticmethod
     def require_no_hold(item,qualification_id):

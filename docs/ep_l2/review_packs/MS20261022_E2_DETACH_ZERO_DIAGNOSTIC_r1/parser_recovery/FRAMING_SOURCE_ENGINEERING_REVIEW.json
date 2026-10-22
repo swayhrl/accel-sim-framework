@@ -1,0 +1,297 @@
+{
+  "schema": "E2_E051_SAME_PHYSICAL_CYCLE_LIFECYCLE_DECODER_ENGINEERING_REVIEW_V1",
+  "status": "CANDIDATE_SYNTHETIC_AND_REAL_FRAME_DECLARATION_REDECODE_PASS_REQUIRES_ROOT_ADOPTION",
+  "root_cause": "Decoder mistook legitimate whole-commandlist end_epoch metadata close at same physical GPU cycle as conflicting duplicate. Fixed source emits cleanup kernel snapshot then drain/endepoch finalsnapshot; no GPUcycle is advanced by end_epoch itself. This is offline framing compatibility, not simulator/native execution failure.",
+  "raw": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/E051_c0185b56/raw.log",
+    "sha256": "1a8a119c1214a6b3ac4a0d55781cd8ba30238991aae6fd3dfabf6663e60db94b",
+    "bytes": 11981308
+  },
+  "fixed_source_evidence": [
+    {
+      "commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+      "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "full_git_blob_sha256": "b275b43b3b1e78d228d2dc91e5a8e5e426bf403adc50c62160fa4451b5159628",
+      "excerpts": [
+        {
+          "start_line": 286,
+          "end_line": 297,
+          "text": " void print_counts(FILE *f,const char*record,unsigned slice,const ledger&d,const std::array<uint64_t,FIELD_COUNT>&counts,int phase=-1,uint64_t cycle=0) {\n  if(output_bytes>64ULL*1024*1024){output_invalid=true;if(!output_marker){std::fprintf(f,\"EPL2DETACH_DIAG_V1|{\\\"record\\\":\\\"OUTPUT_INVALID\\\",\\\"output_invalid\\\":true,\\\"reason\\\":\\\"64MiB summary ceiling\\\"}\\n\");output_marker=true;}return;}\n  int bytes=std::fprintf(f,\"EPL2DETACH_DIAG_V1|{\\\"record\\\":\\\"%s\\\",\\\"slice\\\":%u,\\\"cycle\\\":%llu,\\\"phase\\\":%d,\\\"kernel_scope\\\":\\\"%s\\\",\\\"kernel_uid\\\":\",record,slice,(unsigned long long)cycle,phase,phase<0?\"SLICE_CUMULATIVE\":phase==0?\"UNASSIGNED\":phase==1?\"OVERLAP_UNKNOWN\":\"SINGLE_ACTIVE_INTERVAL\");\n  if(phase>=2)bytes+=std::fprintf(f,\"%llu\",(unsigned long long)d.kernel_uid[phase-2]);else bytes+=std::fprintf(f,\"null\");\n  bytes+=std::fprintf(f,\",\\\"candidate_owner_kernel\\\":null,\\\"trigger_later_linkage\\\":\\\"NOT_MEASURED\\\",\\\"overflow_invalid\\\":%s,\\\"output_invalid\\\":%s,\\\"closure_ok\\\":%s,\\\"epoch_closed\\\":%s,\\\"T\\\":%s,\\\"M\\\":%s,\\\"ro_runtime\\\":%s,\\\"live_detached\\\":%llu,\\\"counters\\\":{\",d.overflow?\"true\":\"false\",output_invalid?\"true\":\"false\",d.partitions()?\"true\":\"false\",d.closed?\"true\":\"false\",d.T?\"true\":\"false\",d.M?\"true\":\"false\",d.ro_runtime?\"true\":\"false\",(unsigned long long)(d.total[detach_success]-d.total[detached_retired]));\n  for(unsigned i=0;i<FIELD_COUNT;++i)bytes+=std::fprintf(f,\"%s\\\"%s\\\":%llu\",i?\",\":\"\",names[i],(unsigned long long)counts[i]);\n  bytes+=std::fprintf(f,\"}}\\n\");if(bytes<0)output_invalid=true;else output_bytes+=unsigned(bytes);\n }\n void print(FILE*f,ledger&d,uint64_t cycle){print_counts(f,\"SLICE\",d.slice,d,d.total,-1,cycle);for(unsigned p=0;p<d.kernel_count+2;++p)print_counts(f,\"PHASE\",d.slice,d,d.phases[p],p,cycle);\n  unsigned max=0;for(auto&s:slices)if(s.owner&&s.slice!=~0U)max=std::max(max,s.slice);\n  if(d.slice==max){ledger sum;sum.closed=true;sum.T=d.T;sum.M=d.M;sum.ro_runtime=d.ro_runtime;unsigned n=0;for(auto&s:slices)if(s.owner){++n;sum.closed &=s.closed;sum.overflow|=s.overflow;for(unsigned f=0;f<FIELD_COUNT;++f)ledger::checked(sum.total[f],s.total[f],sum.overflow);}sum.phases[0]=sum.total;print_counts(f,\"GLOBAL\",n,sum,sum.total,-1,cycle);for(uint64_t i=printed_samples;i<sample_count;++i){auto&s=examples[i];int bytes=std::fprintf(f,\"EPL2DETACH_DIAG_V1|{\\\"record\\\":\\\"SAMPLE\\\",\\\"slice\\\":%u,\\\"cycle\\\":%llu,\\\"request_uid\\\":%llu,\\\"set\\\":%u,\\\"eligible\\\":%u,\\\"first_eligible_way\\\":%u,\\\"victim_payload\\\":%llu,\\\"victim_generation\\\":%llu,\\\"required\\\":%u,\\\"issued\\\":%u,\\\"ready\\\":%u,\\\"reuse_seen\\\":%s,\\\"attached\\\":%s,\\\"requester_ro_candidate\\\":%s,\\\"immediate_commit_result\\\":%d,\\\"candidate_owner_kernel\\\":null}\\n\",s.slice,(unsigned long long)s.cycle,(unsigned long long)s.uid,s.set,s.eligible,s.first,(unsigned long long)s.payload,(unsigned long long)s.generation,s.required,s.issued,s.ready,s.reuse?\"true\":\"false\",s.attached?\"true\":\"false\",s.candidate?\"true\":\"false\",s.immediate_result);if(bytes>0)output_bytes+=unsigned(bytes);else output_invalid=true;}printed_samples=sample_count;}\n }"
+        }
+      ]
+    },
+    {
+      "commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "full_git_blob_sha256": "861baad6af1cc7d629cd75ddfdacfe5d58d86275d0305e3a74dc1b1635265f01",
+      "excerpts": [
+        {
+          "start_line": 384,
+          "end_line": 389,
+          "text": "void l2_cache::ro_end_epoch(){if(m_ro){\n  if(!m_ro->open||!ft_drained()||m_mshrs.descriptor_count_used()||!m_miss_queue.empty()||!m_ro->tx->end_epoch())\n    throw std::logic_error(\"RO whole-commandlist end is not drained\");\n  m_ro->epoch_end_cycle=m_ro->physical_cycle();m_ro->open=false;\n  if(auto*d=ep_l2_detach_diag::get(this))d->closed=true;\n}}"
+        },
+        {
+          "start_line": 399,
+          "end_line": 407,
+          "text": "void l2_cache::ro_print(FILE *f,unsigned slice) const {\n  if(auto*d=ep_l2_detach_diag::get(this)){d->slice=slice;d->ro_runtime=bool(m_ro);d->T=m_config.m_ro_tag_detach;d->M=m_config.m_ro_line_mshr_bypass;if(!m_ro)d->closed=true;\n    if(m_ro && d->total[ep_l2_detach_diag::detach_success]!=m_ro->tx->stats.detached)d->add(ep_l2_detach_diag::closure_errors);\n    ep_l2_detach_diag::state.print(f,*d,ft_physical_cycle());}\n  if(m_ro){\n  const auto &s=m_ro->tx->stats;\n  fprintf(f,\"EPL2ROV1|SUMMARY|slice=%u|detach=%u|bypass=%u|accepted_global_reads=%llu|accepted_oracle_candidates=%llu|accepted_ro=%llu|transactions=%llu|merges=%llu|detached=%llu|lower_sectors=%llu|concurrent_duplicate_sectors=%llu|responses=%llu|ro_bank_fill_ops=%llu|ro_bank_response_ops=%llu|live=%u|manifest=%s|scope=%s\\n\",\n    slice,m_config.m_ro_tag_detach,m_config.m_ro_line_mshr_bypass,\n    (unsigned long long)m_ro->accepted_global_reads,(unsigned long long)m_ro->accepted_candidates,(unsigned long long)m_ro->accepted_ro,"
+        }
+      ]
+    },
+    {
+      "commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+      "path": "src/gpgpu-sim/gpu-sim.cc",
+      "full_git_blob_sha256": "b74624f63ca43e48862b7b04aa4c44b9aceb57bd6d6f33e00d58afa40c9a3482",
+      "excerpts": [
+        {
+          "start_line": 2409,
+          "end_line": 2413,
+          "text": "void gpgpu_sim::ro_end_epoch() {\n  if (!ro_enabled()) return;\n  for (unsigned i=0;i<m_memory_config->m_n_mem_sub_partition;++i)\n    m_memory_sub_partition[i]->ro_end_epoch();\n}"
+        }
+      ]
+    },
+    {
+      "commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "path": "gpu-simulator/accel-sim.cc",
+      "full_git_blob_sha256": "9f20dcb6a0d2fb704197bd6b882b46cd1f2be43708e79b399dc7cf11ae2661a3",
+      "excerpts": [
+        {
+          "start_line": 97,
+          "end_line": 106,
+          "text": "  // cleanup() reports a completed kernel as soon as its CTA work retires.\n  // Emit one final snapshot after the backend drain so closeout checks see\n  // the actual terminal resource and credit state.\n  // A capped/aborted run never receives a completed-epoch marker.\n  if (ro_epoch_started && !m_gpgpu_sim->cycle_insn_cta_max_hit()) {\n    m_gpgpu_sim->ro_end_epoch();\n    printf(\"EPL2ROV1|COMMANDLIST_END|complete=1|commands=%zu\\n\", commandlist.size());\n  }\n  if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit())\n    m_gpgpu_sim->print_stats(~0ULL);"
+        },
+        {
+          "start_line": 172,
+          "end_line": 174,
+          "text": "  assert(k);\n  m_gpgpu_sim->print_stats(finished_kernel_cuda_stream_id);\n}"
+        }
+      ]
+    }
+  ],
+  "real_frame_evidence": [
+    {
+      "index": 0,
+      "first_observer_line": 12670,
+      "last_observer_line": 22213,
+      "record_kind_counts": {
+        "SLICE": 64,
+        "PHASE": 192,
+        "GLOBAL": 1
+      },
+      "SLICE_membership": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "cycles": [
+        343442
+      ],
+      "all_epoch_closed": false,
+      "old_summary_rows": 64
+    },
+    {
+      "index": 1,
+      "first_observer_line": 23128,
+      "last_observer_line": 32671,
+      "record_kind_counts": {
+        "SLICE": 64,
+        "PHASE": 192,
+        "GLOBAL": 1
+      },
+      "SLICE_membership": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "cycles": [
+        343442
+      ],
+      "all_epoch_closed": true,
+      "old_summary_rows": 64
+    }
+  ],
+  "actual_frame_diff": {
+    "same_record_membership": true,
+    "changed_fields_record_counts": {
+      "epoch_closed": 257
+    },
+    "all212counter_objects_byte_equivalent_values": true,
+    "all_other_common_metadata_identical": true,
+    "all64_old_RO_SUMMARY_lines_identical": true,
+    "commandlist_end_records": [
+      {
+        "line": 22475,
+        "text": "EPL2ROV1|COMMANDLIST_END|complete=1|commands=3"
+      }
+    ]
+  },
+  "minimal_fix": {
+    "new_frame": "After complete GLOBAL only source slice0, same cycle, exactold record except epoch_closed false\u2192true may start new frame. Previous complete frame validated before discard.",
+    "all_records": "Every subsequent SLICE/PHASE/GLOBAL must independently match its previous record exactly except same false\u2192true epochclose. New/removed phase/schema/counter/metadata/oldRO values forbidden.",
+    "tail": "All existing exact64slice/GLOBAL/phase rollup/source212 equations/monotonic counters/oldRO detached/closed+live0 checks retained; incomplete closing frame cannot fall back to earlier frame.",
+    "duplicates": "Exact unchanged samecycle duplicate handling remains; changes cannot masquerade as duplicates, closed\u2192open forbidden.",
+    "production_changed": false,
+    "mechanism_or_native_state_changed": false
+  },
+  "candidate_decoder": {
+    "path": "/tmp/e2_detach_samecycle_lifecycle_fix/decoder.py",
+    "sha256": "647510163053d30773176578cf35c10e0aea0a1256af366feba520820d0e11d4",
+    "bytes": 28483
+  },
+  "before_decoder": {
+    "path": "/tmp/e2_detach_samecycle_lifecycle_fix/decoder_before_samecycle_fix.py",
+    "sha256": "10fe85c8a3d8dc7a502c9e79d3b2f4a5a3af991b4d8c3ed91ed8dae9621fc0ef",
+    "bytes": 27132
+  },
+  "patch": {
+    "path": "/tmp/e2_detach_samecycle_lifecycle_fix/decoder.patch",
+    "sha256": "962cf524517faebb630f52903af37f0ec2be61dd4ab8eb30ab71b966e2bddf1f",
+    "bytes": 5418
+  },
+  "new_synthetic_controls": {
+    "path": "/tmp/e2_detach_samecycle_lifecycle_fix/test_samecycle_lifecycle.py",
+    "sha256": "88559ee16b2b6ebcd2f602ac67fae7239a4c0c480eec27a6881625a33e72fd3a",
+    "bytes": 3177
+  },
+  "synthetic_validation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -q test_decoder test_r3 test_r4_lineage test_samecycle_lifecycle",
+    "old_decoder_controls": 70,
+    "old_r3_controls": 21,
+    "old_r4_lineage_controls": 3,
+    "new_targeted_controls": 14,
+    "actual_total": 108,
+    "actual_exit": 0,
+    "actual_elapsed_seconds": 0.969,
+    "qualification": "SYNTHETIC ONLY, not native/app eligibility"
+  },
+  "real_redecode": {
+    "path": "/tmp/e2_detach_samecycle_lifecycle_fix/E051_OBSERVER_REDECODE.json",
+    "sha256": "ce4234d0cd687088638cc844f5b6958e9514013486b3baca0f51c101a8fa2123",
+    "bytes": 434017
+  },
+  "application_acceptance_granted": false,
+  "remaining_original_acceptance": "Caller still must perform original exact source/spec/Q/config/input identity binding, legacy completeinstruction/64slice/ROC1/drain/resource acceptance and direct-parent durable native wait0. Root must seal an explicit offline engineering tool amendment without overwriting old failed parser/Q evidence.",
+  "history": "E05151st native execution not repeated/refunded; original parserFAILED retained. No realruntime/registry/main/spec/Q modifications.",
+  "reuse": "Same source schema212 lineage remains exact; new parser hash requires independent root review/adoption, not silent replacement."
+}
