@@ -1,0 +1,84 @@
+{
+  "schema": "C_SGEMM_RO_SINGLE_PASS_PREFLIGHT_V1",
+  "at_utc": "2026-10-22T01:41:39.218272+00:00",
+  "batch_id": "EPL2_RO_POSITIVE_QUALIFICATION_PREPARATION_20261022_r1",
+  "task_id": "C-SGEMM-POSITIVE-RO-CERTIFICATION-r1",
+  "prior_C_final_commit": "52ed0e2f18774c12054b10cb21390f7b4a9768bb",
+  "reuse_search": "Known published C paths and existing E offline input inventory checked: no SGEMM positive whole-epoch oracle; only own empty fallback. Prior fallback/FWT/native classifications not rerun.",
+  "input": {
+    "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+    "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+    "body": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernel-1.traceg",
+    "body_expected_sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+    "body_stat": {
+      "bytes": 2216170035,
+      "allocated_bytes": 2216177664,
+      "inode": 49427430,
+      "device": 156,
+      "mtime_ns": 1596985585000000000
+    },
+    "composite_trace_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+    "saved_expected_instruction_records": 51847488,
+    "saved_expected_active_lane_instructions": 1658916864
+  },
+  "original_oracle": {
+    "path": "util/ep_l2/mechanism_study_c/ro_oracle.py",
+    "commit": "52ed0e2f18774c12054b10cb21390f7b4a9768bb",
+    "sha256": "763cbcdf633c07ace9102d5796743a0a2485c9a66860c1577c01d6ecd9af9225"
+  },
+  "resource_forecast": {
+    "cpu_units": 1,
+    "address_space_cap_bytes": 268435456,
+    "sqlite_cache_bytes": 16777216,
+    "disk_growth_cap_bytes": 268435456,
+    "conservative_components": {
+      "database_plus_rollback_journal": 201326592,
+      "line_list_ranges_coverage_progress_metadata_temp": 67108864
+    },
+    "unique_line_count_before_scan": "UNKNOWN;256MiB is monitored growth cap, not a claimed proven unbounded-address upper bound. Stop with MISSING if exceeded; no automatic rescan.",
+    "workspace_floor_bytes": 5368709120,
+    "monitor_reserve_bytes": 2147483648,
+    "result_root": "/workspace/ep_l2_ms20261019_e_results/C_SGEMM_RO_POSITIVE_20261022_r1",
+    "walltime": "UNKNOWN; prior D complete static grammar837.48s is context only, not bound/prediction. No simulation time claimed."
+  },
+  "current_central": {
+    "registry": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
+    "client_contract_sha256": "fd48fecc09144503380f316934e7f8f0d49a4a02be887d97ba9f336ccbbea3ac",
+    "resource_api_source_commit": "032c7b4135f0ecb9c6f660611a71d9a6fba993c5",
+    "resource_api_sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b",
+    "original_reused_tools_binding": {
+      "registry_client_sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d",
+      "registry_source_commit": "97dd760266aec416340169f425985d510f0effe0",
+      "runner_sha256": "43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060",
+      "runner_source_commit": "b86b8fe0a0580ce22a4708c0eb2d983ff37bfaa7",
+      "acceptance_module_sha256": "459675b32fba1cb76526e26be00956fb16a5c6ed2677ed7aada9bf2c7af19d75"
+    },
+    "actual_starts": 50,
+    "T0": 1792414193,
+    "workspace_policy": {
+      "authority": "EXPLICIT_USER_20261020_WORKSPACE_FLOOR_5G",
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+      "disk_floor_bytes": 5368709120,
+      "existing_leases_unchanged": true,
+      "host": "huangrulin-174",
+      "monitor_interval_seconds": 0.2,
+      "monitor_reserve_bytes": 2147483648,
+      "other_projects_unchanged": true,
+      "policy_id": "E_USER_WORKSPACE_5G_20261020_V1",
+      "termination_grace_seconds": 3,
+      "write_scope": "PHYSICAL_WORKSPACE_ALL_TMP_BUILD_LOG_RESULT"
+    },
+    "additional_results_max_bytes": 10737418240,
+    "old_plus_new_results_max_bytes": 25769803776,
+    "allocated_output_usage": {
+      "old_bytes": 14309576384,
+      "new_bytes": 7340450710,
+      "total_bytes": 21650027094
+    },
+    "observed_free_bytes": 17847242752,
+    "pending_growth_bytes": 0
+  },
+  "next": "Existing Coordinator.reserve_work C/test resource class for offline Python only. Administrative MECHANISM_TEST is not native execution; no native/build/app command. Hash and classification combined in one actual sequential body open. No second scan or trace copy.",
+  "not_resource_admission_yet": true
+}
