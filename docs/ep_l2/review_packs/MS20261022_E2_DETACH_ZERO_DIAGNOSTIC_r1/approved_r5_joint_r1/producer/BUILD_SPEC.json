@@ -1,0 +1,94 @@
+{
+  "schema": "E2_R5_EXACT_BUILD_SPEC_CANDIDATE_V1",
+  "status": "PREPARED_NOT_EXECUTED_AWAITING_CENTRAL_BUILD_LEASE",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "source_clean_all_three": true,
+  "configure_home": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+  "build_directory": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5",
+  "new_build_directory_currently_exists": false,
+  "environment_overrides": {
+    "GPGPUSIM_ROOT": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1",
+    "CUDA_INSTALL_PATH": "/usr/local/cuda-11.8",
+    "ACCELSIM_CONFIG": "release"
+  },
+  "working_directory": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+  "configure_argv": [
+    "/root/.local/bin/cmake",
+    "-S",
+    "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator",
+    "-B",
+    "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5",
+    "-DCUDAToolkit_ROOT=/usr/local/cuda-11.8",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/c++"
+  ],
+  "build_argv": [
+    "/root/.local/bin/cmake",
+    "--build",
+    "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5",
+    "--target",
+    "accel-sim.out",
+    "ep_l2_detach_diagnostic",
+    "ep_l2_tagpressure_metadata",
+    "-j2"
+  ],
+  "targets": [
+    "accel-sim.out",
+    "ep_l2_detach_diagnostic",
+    "ep_l2_tagpressure_metadata"
+  ],
+  "cmake_executable": "/root/.local/bin/cmake",
+  "cmake_version_firstline": "cmake version 3.31.7",
+  "compiler_executable": "/usr/bin/c++",
+  "compiler_version_firstline": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "parallel_jobs": 2,
+  "scratch_hard_cap_bytes": 1073741824,
+  "assertions": {
+    "existing_Framework_release_flags": "-O3 -g3 -fPIC -Wall",
+    "existing_Core_release_flags": "-Wall -O3 -g3 -fPIC",
+    "targeted_metadata_extra_flag": "-UNDEBUG",
+    "must_independently_verify_generated_compile_commands_and_all_applicable_flags_no_DNDEBUG": true
+  },
+  "old_reference_targets_prohibited": true,
+  "reference_scope": "Existing frozen r4/d010 ELF and saved semantic evidence may be read; do not compile newheaders against old archives. All candidate app/native TUs built consistently from exact newCore.",
+  "expected_artifacts": {
+    "main": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/accel-sim.out",
+    "archive": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "native": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/ep_l2_detach_diagnostic",
+    "metadata": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/ep_l2_tagpressure_metadata"
+  },
+  "observer_runtime_env_for_later_native_only": {
+    "EPL2_DETACH_DIAG": "1",
+    "EPL2_TAGPRESSURE_DIAG": "1"
+  },
+  "files": [
+    {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/CMakeLists.txt",
+      "sha256": "808a370bcf9a9498a30c4f642b8018b3c03b51020aa347e14065ca4ff67377e2",
+      "bytes": 18748
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator/CMakeLists.txt",
+      "sha256": "474c01b5dba51e01b3f6b8eca8c0d7f1bebe4b9d5f46197ffe2bba99c80e3ceb",
+      "bytes": 3462
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261021-a2-large-capacity-runtime-v1/gpu-simulator/extern/pybind11/CMakeLists.txt",
+      "sha256": "8b5d8943431cb9a35acea242bbc24bdcd75eace0c4b4e63801d4d00ce9a2cbcf",
+      "bytes": 17482
+    }
+  ],
+  "lease_requirement": "No configure/compiler/linker until root activates E2-scoped preparation authority and exact original Coordinator lease. No new application/controller/lease by this agent.",
+  "commands_executed_by_this_preparation": [
+    "git source identity/status reads",
+    "cmake --version",
+    "c++ --version"
+  ],
+  "configure_build_native_app_executed": false,
+  "observed_utc": "2026-10-22T12:21:23.673241+00:00",
+  "prior_spec_history": "/tmp/e2_r5_build_spec_history/r1_wrong_buildroot_preserved.json",
+  "buildroot_correction": "Use exact user proposal/centralprep observer-r5 buildroot; Core1093 unchanged. Generated flags/compilecommands assertions remain an unpassed mandatory post-configure check, not a claim based on metadata."
+}

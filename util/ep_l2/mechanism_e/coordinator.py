@@ -21,6 +21,7 @@ import subprocess
 import policy_v2
 import detach_diagnostic_policy as detach_policy
 import detach_parser_recovery as parser_recovery
+import r5_preparation
 import capacity_policy
 import limits_policy
 import workload_policy
@@ -107,6 +108,7 @@ def ledger(data):
     concurrency_policy.active(item)  # exact optional user concurrency amendment
     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
             'different host/boot: explicit reconciliation required')
+    r5_preparation.crosscheck(data,item)
     return item
 
 
@@ -248,6 +250,7 @@ class Coordinator:
             yield data,item
             counts(item)
             detach_policy.crosscheck_data(data,item)
+            r5_preparation.crosscheck(data,item)
             write_json(self.handoff/'RUN_LEDGER.json',item)
 
     def snapshot(self):
@@ -422,7 +425,7 @@ class Coordinator:
     def reserve_work(self, role, kind, cpu, memory, growth, output_directory, result_growth_bytes=None,
                      disk_authorization_id=None,build_identity=None):
         require(role in ('A','B','C','E') and kind in ('build','test'),'only bounded build/test leases here')
-        require(kind!='build' or role=='A','A is sole formal build owner')
+        require(kind!='build' or role=='A' or r5_preparation.is_e2_build(role,kind),'A owns existing builds; exactsource-bound E2r5 preparation is separate')
         directory=Path(output_directory).resolve()
         require(directory.is_relative_to(Path('/workspace')) and directory.parent.exists(), 'use existing workspace parent')
         require(directory.parent.stat().st_dev==Path('/workspace').stat().st_dev,'output must be physical workspace')
@@ -430,6 +433,9 @@ class Coordinator:
         with self.locked() as (data,item):
             result_growth=(growth if kind=='test' else 0) if result_growth_bytes is None else result_growth_bytes
             require(kind!='test' or result_growth==growth,'all native test output must count toward new results')
+            prep_fields=None
+            if r5_preparation.is_e2_build(role,kind):
+                prep_fields=r5_preparation.authorize(data,item,role,kind,cpu,memory,growth,directory,result_growth,disk_authorization_id,build_identity)
             authorization=None;frozen_policy=disk_policy.lease_policy(item);floor=frozen_policy['disk_floor_bytes'];monitor=frozen_policy['monitor_reserve_bytes'];draw=None
             if disk_authorization_id is not None:
                 require(role=='A' and kind=='build','disk exception only named A build')
@@ -480,6 +486,7 @@ class Coordinator:
                  'result_growth_bytes':result_growth,'status':'RESERVED','created_at':time.time(),
                  'owner_process':process_identity(os.getpid()),'output_directory':str(directory)}
             row.update(frozen_policy)
+            if prep_fields is not None:row.update(prep_fields)
             if authorization is not None:
                 row.update(policy_id='HISTORICAL_NAMED_BUILD_'+disk_authorization_id,
                            monitor_interval_seconds=.2,
