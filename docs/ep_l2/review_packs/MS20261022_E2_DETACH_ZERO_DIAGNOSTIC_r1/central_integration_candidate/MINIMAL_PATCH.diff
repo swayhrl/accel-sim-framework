@@ -1,0 +1,283 @@
+--- a/util/ep_l2/mechanism_e/coordinator.py
++++ b/util/ep_l2/mechanism_e/coordinator.py
+@@ -19,6 +19,7 @@
+ import uuid
+ import subprocess
+ import policy_v2
++import detach_diagnostic_policy as detach_policy
+ import capacity_policy
+ import limits_policy
+ import workload_policy
+@@ -99,6 +100,8 @@
+                 'budget/deadline changed')
+         require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
+                 'output budget changed')
++    detach_policy.active(item)  # Exact optional successor; original50 and old batches sealed
++    detach_policy.crosscheck_data(data,item)
+     workload_policy.active(item)  # exact optional approved four-start workload batch
+     concurrency_policy.active(item)  # exact optional user concurrency amendment
+     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+@@ -138,8 +141,18 @@
+ 
+ 
+ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
+-                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None):
+-    item=ledger(data)
++                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None,authority_data=None):
++    if authority_data is not None:
++        require(data[FIELD]==authority_data[FIELD] and data['resource_leases']==authority_data['resource_leases'],
++                'resource recheck view must preserve canonical campaign/leases')
++        removed=set(authority_data['runs'])-set(data['runs'])
++        require(len(removed)==1 and not set(data['runs'])-set(authority_data['runs']) and
++                all(row==authority_data['runs'][key] for key,row in data['runs'].items()),
++                'resource recheck may exclude only its one held reservation')
++        oldrow=authority_data['runs'][next(iter(removed))]
++        require(oldrow.get('experiment_id')==CAMPAIGN and oldrow['status']=='RESERVED',
++                'resource recheck must exclude one own RESERVED run')
++    item=ledger(data if authority_data is None else authority_data)
+     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
+             'positive integer CPU/RAM required')
+     require(type(growth) is int and growth>0,'conservative positive output-growth reserve required')
+@@ -204,6 +217,7 @@
+             item=ledger(data)
+             yield data,item
+             counts(item)
++            detach_policy.crosscheck_data(data,item)
+             write_json(self.handoff/'RUN_LEDGER.json',item)
+ 
+     def snapshot(self):
+@@ -273,6 +287,24 @@
+         raw=Path(selection_path).read_bytes();selection=json.loads(raw)
+         with self.locked() as (data,item):
+             return workload_policy.adopt_selection(item,selection_path,raw,selection,digest)
++
++    def adopt_detach_observer_batch(self):
++        """Append only root-sealed observer scope under original lock; no new scheduler."""
++        with self.locked() as (data,item):
++            own_scientific = [r for r in data['runs'].values()
++                if r.get('experiment_id')==CAMPAIGN and r.get('status') in ACTIVE]
++            source_leases = [r for r in data['resource_leases'].values()
++                if r.get('experiment_id')==CAMPAIGN and (r.get('role')=='E' or r.get('owner')=='mechanism_E')
++                and r.get('status') in ACTIVE]
++            require(not own_scientific,'own scientific application must retire before source adoption')
++            changed=detach_policy.adopt(item,source_leases)
++            counts(item)
++            return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
++
++    def bind_detach_observer_condition(self, spec):
++        with self.locked() as (data,item):
++            self.require_no_hold(item,spec['qualification_id'])
++            return detach_policy.bind_condition(item,spec,digest)
+ 
+     def bind_capacity_runtime(self, qualification_id):
+         """Freeze exactly one formally delivered and E-qualified new runtime."""
+@@ -587,11 +619,14 @@
+             require(spec['profile'] in q['supported_profiles'],'profile not independently qualified')
+             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
+             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
+-            if workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
++            if detach_policy.is_spec(spec):detach_policy.batch_guard(item,spec)
++            elif workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
+             else:capacity_policy.bucket_guard(item,spec)
+             require(limits_policy.deadline_open(item['start_deadline_unix']),'full-application start deadline closed under lock')
+             bucket=spec['budget_bucket']
+-            if workload_policy.is_workload_spec(spec):
++            if detach_policy.is_spec(spec):
++                detach_policy.batch_guard(item,spec)
++            elif workload_policy.is_workload_spec(spec):
+                 workload_policy.batch_guard(item,spec)
+             else:
+                 require(bucket in item['reservations'],'unknown reserved budget bucket')
+@@ -612,13 +647,19 @@
+                  'reserved_unix':time.time(),'result_directory':str(directory),'retry_reason':spec.get('retry_reason'),
+                  'prior_attempts':[a['attempt_id'] for a in history],'maximum_result_bytes':growth,
+                  **disk_policy.lease_policy(item)}
+-            if workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
++            if detach_policy.is_spec(spec):detach_policy.record_reservation(item,spec,row)
++            elif workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
+             item['attempts'].append(row)
+             data['runs'][key]={'run_key':key,'identity':identity,'owner':'mechanism_E','host':socket.gethostname(),
+                 'boot_id':item['boot_id'],'lease_id':attempt_id,'status':'RESERVED','created_at':time.time(),
+                 'cpu_units':1,'memory_bytes':spec.get('memory_bytes',8*GIB),'scan':identity['workload']=='scan',
+                 'result_directory':str(directory),'disk_growth_bytes':growth,'experiment_id':CAMPAIGN,'process':None,
+                 **disk_policy.lease_policy(item)}
++            if detach_policy.is_spec(spec):
++                data['runs'][key].update(scientific_scope=detach_policy.SCI_SCOPE,
++                    diagnostic_spec_sha256=detach_policy.spec_sha(spec),condition_id=spec['condition_id'],
++                    qualification_id=spec['qualification_id'],budget_bucket=spec['budget_bucket'])
++            detach_policy.crosscheck_data(data,item)
+             return row
+ 
+     def start_application(self, attempt_id, command, cwd, environment, log_stream, popen):
+@@ -647,7 +688,7 @@
+             row=data['runs'][attempt['run_key']]
+             resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
+                           local_resources(),output_usage(),row['scan'],disk_floor_bytes=row['disk_floor_bytes'],
+-                          monitor_reserve_bytes=row['monitor_reserve_bytes'])
++                          monitor_reserve_bytes=row['monitor_reserve_bytes'],authority_data=data)
+             require(item.get('controller',{}).get('process')==process_identity(os.getpid()) and
+                     item['controller']['state']=='ACTIVE','only singleton E controller may start')
+             attempt.update(state='START_INTENT_UNRECONCILED',start_intent_unix=time.time())
+@@ -666,6 +707,8 @@
+             if hasattr(process,'guardian_identity'):
+                 attempt['exit_collector_process']=process.guardian_identity
+                 row['exit_collector_process']=process.guardian_identity
++            if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
++                detach_policy.record_started(item,attempt)
+             counts(item)
+             write_json(self.registry.root/'RUN_REGISTRY.json',data)
+             write_json(self.handoff/'RUN_LEDGER.json',item)
+@@ -704,6 +747,8 @@
+                             native['binding']['identity']==attempt['identity'],'native exit binding mismatch')
+                 item['accepted_results'][attempt_id]={'path':str(Path(receipt_path).resolve()),'sha256':digest(receipt_path),
+                     'run_key':attempt['run_key'],'identity':attempt['identity'],'qualification_id':attempt['qualification_id']}
++                if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
++                    item['accepted_results'][attempt_id]['scientific_scope']=detach_policy.SCI_SCOPE
+             attempt.update(state=status,finished_unix=time.time(),receipt_path=str(Path(receipt_path).resolve()),
+                            receipt_sha256=digest(receipt_path))
+             row=data['runs'][attempt['run_key']]
+--- a/util/ep_l2/mechanism_e/workload_policy.py
++++ b/util/ep_l2/mechanism_e/workload_policy.py
+@@ -5,6 +5,7 @@
+ never grant qualification, alter old buckets, or refund a prior attempt.
+ """
+ import copy
++import detach_diagnostic_policy as detach_policy
+ import hashlib
+ import json
+ from pathlib import Path
+@@ -104,7 +105,9 @@
+                 'old scientific record changed: '+group)
+     require(set(row['batches'])=={FWT_BATCH,SGEMM_BATCH},'exact two workload batches required')
+     require(set(row['bindings'])<=set(CONDITIONS),'extra binding denied')
+-    attempts=item['attempts'][46:]
++    if len(item['attempts'])>50:
++        require(detach_policy.active(item),'post50 requires exact new observer adoption')
++    attempts=item['attempts'][46:50]
+     require(len(attempts)<=4,'at most four new reservations/starts; failed attempts not refunded')
+     all_ids=[]
+     for batch,entry in row['batches'].items():
+--- a/util/ep_l2/mechanism_e/limits_policy.py
++++ b/util/ep_l2/mechanism_e/limits_policy.py
+@@ -4,6 +4,7 @@
+ JSON null means unlimited here. The ten approved condition identities stay finite.
+ """
+ import copy
++import detach_diagnostic_policy as detach_policy
+ import workload_policy
+ import hashlib
+ import json
+@@ -69,6 +70,7 @@
+     return True
+ 
+ def scope_allowed(item,spec):
++    if detach_policy.is_spec(spec):return detach_policy.scope_allowed(item,spec)
+     if workload_policy.is_workload_spec(spec):return workload_policy.scope_allowed(item,spec)
+     if not active(item):return False
+     if spec.get('condition_id') not in CONDITIONS or spec.get('budget_bucket')!=BUCKET:return False
+@@ -97,6 +99,7 @@
+       scientific_scope_unchanged=True,no_automatic_retry=True)
+ 
+ def effective_timeout(item,spec):
++    if detach_policy.is_spec(spec):return detach_policy.effective_timeout(item,spec)
+     if workload_policy.is_workload_spec(spec):return workload_policy.effective_timeout(item,spec)
+     if active(item) and spec.get('timeout_seconds') is None:
+         require(scope_allowed(item,spec),'time removal cannot waive unapproved condition timeout')
+@@ -110,6 +113,7 @@
+ timeout_seconds=effective_timeout
+ 
+ def assert_condition_unstarted(item,spec):
++    if detach_policy.is_spec(spec):return detach_policy.batch_guard(item,spec)
+     if workload_policy.is_workload_spec(spec):return workload_policy.assert_condition_unstarted(item,spec)
+     if not active(item):return
+     require(scope_allowed(item,spec),'numerical start removal is exact approved capacity scope')
+--- a/util/ep_l2/mechanism_e/policy_v2.py
++++ b/util/ep_l2/mechanism_e/policy_v2.py
+@@ -4,6 +4,7 @@
+ dispatcher, not a copied JSON/flock. No remote execution transport is implied.
+ """
+ import capacity_policy
++import detach_diagnostic_policy as detach_policy
+ import workload_policy
+ import concurrency_policy
+ import copy
+@@ -68,6 +69,8 @@
+     # Old charged attempts retain their exact original rows, consuming the
+     # common contingency reserve and total40 instead of disappearing.
+     bucket = attempt['budget_bucket']
++    if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE and attempt.get('diagnostic_spec_sha256'):
++        return bucket  # Independently validated exact observer batch, never contingency
+     if attempt.get('condition_id') in workload_policy.CONDITIONS and bucket==workload_policy.CONDITIONS[attempt['condition_id']][0] and attempt.get('workload_spec_sha256'):
+         return bucket  # approved independent batches never consume old contingency
+     return bucket if bucket in reservations else 'contingency'
+@@ -107,6 +110,7 @@
+ 
+ 
+ def condition_check(item,spec,digest):
++    if detach_policy.is_spec(spec):return detach_policy.condition_check(item,spec,digest)
+     if workload_policy.is_workload_spec(spec):
+         return workload_policy.condition_check(item,spec,digest)
+     if capacity_policy.is_capacity_spec(spec):
+@@ -138,6 +142,7 @@
+ 
+ 
+ def combination_qualification(q, digest):
++    if q.get("detach_observer_diagnostic") is not None:return detach_policy.qualification(q,digest)
+     if q.get('capacity_diagnostic') is not None:
+         capacity_policy.qualification(q,digest)
+         return
+--- a/util/ep_l2/mechanism_e/runner.py
++++ b/util/ep_l2/mechanism_e/runner.py
+@@ -26,6 +26,8 @@
+ import limits_policy
+ import disk_policy
+ import durable_exit
++import detach_diagnostic_policy as detach_policy
++import detach_validation
+ 
+ 
+ def inspect(spec,coord,launch_check=True):
+@@ -113,6 +115,9 @@
+ def validate_terminal_summary(summary,spec,qrow,audit):
+     """Only a registered exact new-capacity Q may use the new scoped validator."""
+     q=qrow['qualification'];contract=q.get('capacity_diagnostic')
++    if detach_policy.is_spec(spec) or q.get('detach_observer_diagnostic') is not None:
++        return detach_validation.validate_summary(summary,spec,qrow,audit)
++    require(summary.get('diagnostic_scope')!=detach_policy.SCI_SCOPE,'observer summary cannot use legacy validator')
+     if contract is None:
+         require(not capacity_policy.is_capacity_spec(spec),'capacity spec has no exact new qualification')
+         require(summary.get('diagnostic_scope')!='CAPACITY_DIAGNOSTIC_V1','new capacity summary cannot use legacy validator')
+@@ -146,6 +151,7 @@
+       'profile':spec['profile'],'labels':spec['labels'],'comparison_group':spec['comparison_group'],
+       'comparison_invariants_sha256':audit['comparison_invariants_sha256'],'input_audit':audit,
+       'status':status,'independent_acceptance':'NOT_ACCEPTED','complete_input_verified':False}
++    if detach_policy.is_spec(spec):result['scientific_scope']=detach_policy.SCI_SCOPE
+     started=time.monotonic()
+     try:
+         directory.mkdir(parents=True,exist_ok=False);created=True
+@@ -268,6 +274,7 @@
+                         json.loads(path.read_text())==native,'accepted native exit evidence changed')
+                 require(native['exit_code']==0 and native['wait_status']==0 and native['stop_reason'] is None,
+                         'accepted native exit is not an unguarded normal exit0')
++            require(record.get('scientific_scope')!=detach_policy.SCI_SCOPE,'observer diagnostic point cannot be S/F pair')
+             coord.require_no_hold(item,record['qualification_id'])
+             qualified=item['qualifications'][record['qualification_id']]
+             require(digest(qualified['path'])==qualified['sha256'],'current qualification withdrawn/changed')
+--- a/util/ep_l2/mechanism_e/controller.py
++++ b/util/ep_l2/mechanism_e/controller.py
+@@ -19,6 +19,7 @@
+ import limits_policy
+ import concurrency_policy
+ import durable_exit
++import detach_diagnostic_policy as detach_policy
+ 
+ 
+ def roll_pairs(coord,requests):
+@@ -98,6 +99,7 @@
+         require(limits['start_deadline_unix'] is None or
+                 queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
+         pending=[];snapshot=coord.snapshot()
++        detach_policy.queue_guard(snapshot,queue,digest)
+         for entry in queue['specs']:
+             path=Path(entry['path']);require(digest(path)==entry['sha256'],'queued spec changed')
+             spec=json.loads(path.read_text());key=run_key(spec['identity'])

@@ -1,0 +1,142 @@
+{
+  "schema": "E2_SOURCE_BOUND_NATIVE_TO_SEMANTIC_MAPPING_REVIEW_V1",
+  "at_utc": "2026-10-22T04:23:56.033931+00:00",
+  "status": "SOURCE_REVIEW_PREPARATION_NOT_A_RELEASE_OR_RUNTIME_QUALIFICATION",
+  "source_core_commit": "ed9569cc0149f777fafd26836b4ece233b603527",
+  "source_file_sha256": {
+    "src/gpgpu-sim/ep-l2-detach-diag.h": "51d221d20e22120ccc08c007488dbff84d667c60b37576582ad92141c224cce4",
+    "src/gpgpu-sim/gpu-cache.cc": "fc38fba284a1c4ec14a9e4b3349c1e97d9dd0a092f60fc29f677ed34124e3d20",
+    "src/gpgpu-sim/ep-l2-ro-runtime.inc": "0a9a9e6763ed0a27f7455476cfbcabd8b158276ad50489a3c12917b1c0740929",
+    "src/gpgpu-sim/ep-l2-ro-transactions.h": "76fbe1c8dcd60e1be804101cfc969ec07a5b7fdfe8b6fc64919ef6eb845a5b2e",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": "5ecb4fb8e6ea0df12759b41e129a75decc4955ddf1475b77797630d4d83c0446"
+  },
+  "actual_application_data_present": false,
+  "mapping": {
+    "accepted_global_reads": {
+      "source": "legacy normalized full_mechanism_records.readonly.<slice>.summary.accepted_global_reads",
+      "aggregation": "sum exact physical slices 0..63",
+      "domain": "REQUEST_ACCEPTANCE",
+      "covered_by": "Existing exact-input E full terminal validation; NOT observer ro_admits or head exposure"
+    },
+    "accepted_oracle_candidates": {
+      "source": "legacy normalized full_mechanism_records.readonly.<slice>.summary.accepted_oracle_candidates",
+      "aggregation": "sum exact physical slices 0..63",
+      "domain": "REQUEST_ACCEPTANCE",
+      "covered_by": "Existing exact-input E full terminal validation; NOT observer ro_admits or head exposure"
+    },
+    "accepted_ro": {
+      "source": "legacy normalized full_mechanism_records.readonly.<slice>.summary.accepted_ro",
+      "aggregation": "sum exact physical slices 0..63",
+      "domain": "REQUEST_ACCEPTANCE",
+      "covered_by": "Existing exact-input E full terminal validation; NOT observer ro_admits or head exposure"
+    },
+    "raw_probe_reservation_fail": {
+      "source": "observer GLOBAL.counters.raw_reservation_fail",
+      "domain": "FRONTEND_HEAD_CYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "pressure_no_live_ro_tag": {
+      "source": "observer GLOBAL.counters.pressure_no_live_ro",
+      "domain": "PRESSURE_HEAD_CYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "pressure_live_ro_but_none_eligible": {
+      "source": "observer GLOBAL.counters.pressure_live_ro_no_eligible",
+      "domain": "PRESSURE_HEAD_CYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "pressure_with_eligible_victim": {
+      "source": "observer GLOBAL.counters.pressure_eligible",
+      "domain": "PRESSURE_HEAD_CYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "relief_preview_not_consulted": {
+      "source": "observer GLOBAL.counters.pressure_relief_not_consulted",
+      "domain": "PRESSURE_HEAD_CYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "sticky_reuse_first_reason": {
+      "source": "observer GLOBAL.counters.way_reuse_seen",
+      "domain": "PRESSURE_WAY_SCAN",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "no_required_not_ready_sector_first_reason": {
+      "source": "observer GLOBAL.counters.way_no_missing",
+      "domain": "PRESSURE_WAY_SCAN",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "relieve_calls": {
+      "source": "observer GLOBAL.counters.relieve_calls",
+      "domain": "COMMIT_ACCESS",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "relieve_no_eligible": {
+      "source": "observer GLOBAL.counters.relieve_no_eligible",
+      "domain": "COMMIT_ACCESS",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "detach_success": {
+      "source": "observer GLOBAL.counters.detach_success",
+      "domain": "TRANSACTION_LIFECYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "detached_victim_retired": {
+      "source": "observer GLOBAL.counters.detached_retired",
+      "domain": "TRANSACTION_LIFECYCLE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "detached_victim_response_count": {
+      "source": "observer GLOBAL.counters.detached_responses",
+      "domain": "VICTIM_RESPONSE",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "trigger_first_call_accepted_after_detach": {
+      "source": "observer GLOBAL.counters.trigger_accepted_after_detach",
+      "domain": "TRIGGER_CALL",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "trigger_first_call_refused_after_detach": {
+      "source": "observer GLOBAL.counters.trigger_denied_after_detach",
+      "domain": "TRIGGER_CALL",
+      "scope": "Exact full finite-F observation only after new E qualification,64slice source-bound decoder and independent application acceptance"
+    },
+    "sticky_reuse_predicate": {
+      "source_expression": "sum(predicate_hist_i for i in [2,3,6,7])",
+      "domain": "PRESSURE_WAY_SCAN",
+      "kind": "NONEXCLUSIVE live-RO predicate bit 1, independent of first-reason precedence"
+    },
+    "no_required_not_ready_sector_predicate": {
+      "source_expression": "sum(predicate_hist_i for i in [0,1,2,3])",
+      "domain": "PRESSURE_WAY_SCAN",
+      "kind": "NONEXCLUSIVE live-RO missing-sector bit 2 absent; not equivalent to all lower reads complete"
+    },
+    "live_detached_terminal": {
+      "source": "observer GLOBAL.live_detached",
+      "check": "must equal detach_success-detached_retired and zero at actual closed terminal; PHASE metadata never summed",
+      "domain": "TRANSACTION_LIFECYCLE"
+    },
+    "trigger_later_accepted_after_prior_detach": {
+      "status": "UNKNOWN_NOT_MEASURED",
+      "value": null,
+      "source": "source trigger_later_linkage=NOT_MEASURED; sample immediate_commit_result=-1 is UNKNOWN",
+      "domain": "TRIGGER_LATER_ACCEPTANCE"
+    }
+  },
+  "coverage_rules": [
+    "New r2/r3 observer source/schema changes require exact reviewed diff and mapping update, never automatic old-field inheritance.",
+    "Physical interval comes from actual source epoch begin/end, with documented half-open normalization; do not guess 0 or invent requester kernel.",
+    "PHASE buckets are disjoint active-state observation buckets, not requester/victim kernel ownership.",
+    "Production probe not reached is separate from reached but relief not consulted. Keep both bins; do not add to the narrower alias or infer eligible intersection without recorded joint support.",
+    "Primary bins are exclusive precedence reasons; masks and predicate bits may overlap and are not a time or speedup decomposition.",
+    "samples are bounded examples, never denominators; no event matching claimed from aggregate head vs commit counts.",
+    "Measured old RO accepted counts, transactions, merges, responses retain separate units.",
+    "A CURRENT_ACCEPTED_DIAGNOSTIC_POINT requires real complete application/native exit0/full input/64slice/drain plus exact new source/schema qualification, never this preparation."
+  ],
+  "pending_source_feedback": [
+    "E2-00000072-601085a2300c purity extra probe/new_request telemetry",
+    "E2-00000073-8690b82e0a94 merge denial reason and actual M1 capacity consulted coverage"
+  ],
+  "phase_reconciliation": "Each native field sums over source PHASE buckets to slice, then exact64slice to GLOBAL; shared physical interval not causal per-kernel decomposition.",
+  "raw_pressure_shares": "Only pressure_no_live_ro, pressure_live_ro_no_eligible and pressure_eligible form the raw pressure partition when T=true; undefined percentage at denominator0, never fill0.",
+  "old_history": "Old SGEMM empty-certificate/FWT same-line-store exclusion explanations remain separate; no retroactive dynamic attribution."
+}

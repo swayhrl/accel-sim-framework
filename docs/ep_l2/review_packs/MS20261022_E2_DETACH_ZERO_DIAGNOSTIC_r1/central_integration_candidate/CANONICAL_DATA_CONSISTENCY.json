@@ -1,0 +1,30 @@
+{
+  "schema": "E2_DIAGNOSTIC_CANONICAL_RUN_CONSISTENCY_V1",
+  "status": "BOUNDED_EXISTING_AUTHORITY_CHECK_NO_SECOND_JOURNAL",
+  "normal_API_reachability": "No existing normal Coordinator API removes all post50 attempts/batch/witnesses; observed coordinated deletion was a direct synthetic JSON mutation. Native finish retains run/process evidence.",
+  "protected_partial_corruptions": [
+    "Tail missing but canonical observer run/lease survives",
+    "State/count refunded with local witness deleted but canonical started run survives",
+    "Canonical run missing but batch/tail survives"
+  ],
+  "existing_evidence_used": [
+    "original RUN_REGISTRY data.runs",
+    "original same-lock campaign attempts and batch binding",
+    "native process identity and started_unix retained in original canonical run; no extra journal"
+  ],
+  "checks": [
+    "one-to-one tail/run count",
+    "exact run_key/lease_id/identity/specSHA/condition/Q/bucket/scope",
+    "RESERVED/START_INTENT must have canonical RESERVED and no native start",
+    "FAILED_SPAWN/CANCELLED prestart must have canonical FAILED with no native process/start",
+    "started/terminal states must match canonical state/process/start timestamp"
+  ],
+  "resource_view_boundary": "Internal start recheck validates original authoritative data while accounting only its one-reservation-subtracted resource view; view invariants explicitly checked.",
+  "outside_scope": "Coordinated malicious rewrite of every record and original durable evidence at once. No unforgeability guarantee, second journal, second registry/controller or additional approval authority introduced.",
+  "actual_controls": [
+    "test19",
+    "test20",
+    "test21"
+  ],
+  "actual_new_app_native_builds": 0
+}

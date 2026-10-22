@@ -1,0 +1,707 @@
+--- a/util/ep_l2/mechanism_e/coordinator.py
++++ b/util/ep_l2/mechanism_e/coordinator.py
+@@ -19,6 +19,7 @@
+ import uuid
+ import subprocess
+ import policy_v2
++import detach_diagnostic_policy as detach_policy
+ import capacity_policy
+ import limits_policy
+ import workload_policy
+@@ -99,6 +100,8 @@
+                 'budget/deadline changed')
+         require(item['additional_results_max_bytes']==6*GIB and item['old_plus_new_results_max_bytes']==20*GIB,
+                 'output budget changed')
++    detach_policy.active(item)  # Exact optional successor; original50 and old batches sealed
++    detach_policy.crosscheck_data(data,item)
+     workload_policy.active(item)  # exact optional approved four-start workload batch
+     concurrency_policy.active(item)  # exact optional user concurrency amendment
+     require(item['host']==socket.gethostname() and item['boot_id']==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+@@ -138,8 +141,18 @@
+ 
+ 
+ def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
+-                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None):
+-    item=ledger(data)
++                  disk_floor_bytes=None, monitor_reserve_bytes=None,disk_draw_bytes=None,authority_data=None):
++    if authority_data is not None:
++        require(data[FIELD]==authority_data[FIELD] and data['resource_leases']==authority_data['resource_leases'],
++                'resource recheck view must preserve canonical campaign/leases')
++        removed=set(authority_data['runs'])-set(data['runs'])
++        require(len(removed)==1 and not set(data['runs'])-set(authority_data['runs']) and
++                all(row==authority_data['runs'][key] for key,row in data['runs'].items()),
++                'resource recheck may exclude only its one held reservation')
++        oldrow=authority_data['runs'][next(iter(removed))]
++        require(oldrow.get('experiment_id')==CAMPAIGN and oldrow['status']=='RESERVED',
++                'resource recheck must exclude one own RESERVED run')
++    item=ledger(data if authority_data is None else authority_data)
+     require(type(cpu) is int and cpu>=1 and type(memory) is int and memory>0,
+             'positive integer CPU/RAM required')
+     require(type(growth) is int and growth>0,'conservative positive output-growth reserve required')
+@@ -204,6 +217,7 @@
+             item=ledger(data)
+             yield data,item
+             counts(item)
++            detach_policy.crosscheck_data(data,item)
+             write_json(self.handoff/'RUN_LEDGER.json',item)
+ 
+     def snapshot(self):
+@@ -273,6 +287,24 @@
+         raw=Path(selection_path).read_bytes();selection=json.loads(raw)
+         with self.locked() as (data,item):
+             return workload_policy.adopt_selection(item,selection_path,raw,selection,digest)
++
++    def adopt_detach_observer_batch(self):
++        """Append only root-sealed observer scope under original lock; no new scheduler."""
++        with self.locked() as (data,item):
++            own_scientific = [r for r in data['runs'].values()
++                if r.get('experiment_id')==CAMPAIGN and r.get('status') in ACTIVE]
++            source_leases = [r for r in data['resource_leases'].values()
++                if r.get('experiment_id')==CAMPAIGN and (r.get('role')=='E' or r.get('owner')=='mechanism_E')
++                and r.get('status') in ACTIVE]
++            require(not own_scientific,'own scientific application must retire before source adoption')
++            changed=detach_policy.adopt(item,source_leases)
++            counts(item)
++            return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
++
++    def bind_detach_observer_condition(self, spec):
++        with self.locked() as (data,item):
++            self.require_no_hold(item,spec['qualification_id'])
++            return detach_policy.bind_condition(item,spec,digest)
+ 
+     def bind_capacity_runtime(self, qualification_id):
+         """Freeze exactly one formally delivered and E-qualified new runtime."""
+@@ -587,11 +619,14 @@
+             require(spec['profile'] in q['supported_profiles'],'profile not independently qualified')
+             require(spec['profile_semantics']==q['supported_profiles'][spec['profile']], 'profile semantics changed')
+             require(spec['labels'].keys()>={'diagnostic','subset','oracle'},'diagnostic/subset/oracle labels explicit')
+-            if workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
++            if detach_policy.is_spec(spec):detach_policy.batch_guard(item,spec)
++            elif workload_policy.is_workload_spec(spec):workload_policy.batch_guard(item,spec)
+             else:capacity_policy.bucket_guard(item,spec)
+             require(limits_policy.deadline_open(item['start_deadline_unix']),'full-application start deadline closed under lock')
+             bucket=spec['budget_bucket']
+-            if workload_policy.is_workload_spec(spec):
++            if detach_policy.is_spec(spec):
++                detach_policy.batch_guard(item,spec)
++            elif workload_policy.is_workload_spec(spec):
+                 workload_policy.batch_guard(item,spec)
+             else:
+                 require(bucket in item['reservations'],'unknown reserved budget bucket')
+@@ -612,13 +647,19 @@
+                  'reserved_unix':time.time(),'result_directory':str(directory),'retry_reason':spec.get('retry_reason'),
+                  'prior_attempts':[a['attempt_id'] for a in history],'maximum_result_bytes':growth,
+                  **disk_policy.lease_policy(item)}
+-            if workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
++            if detach_policy.is_spec(spec):detach_policy.record_reservation(item,spec,row)
++            elif workload_policy.is_workload_spec(spec):workload_policy.record_reservation(item,spec,row)
+             item['attempts'].append(row)
+             data['runs'][key]={'run_key':key,'identity':identity,'owner':'mechanism_E','host':socket.gethostname(),
+                 'boot_id':item['boot_id'],'lease_id':attempt_id,'status':'RESERVED','created_at':time.time(),
+                 'cpu_units':1,'memory_bytes':spec.get('memory_bytes',8*GIB),'scan':identity['workload']=='scan',
+                 'result_directory':str(directory),'disk_growth_bytes':growth,'experiment_id':CAMPAIGN,'process':None,
+                 **disk_policy.lease_policy(item)}
++            if detach_policy.is_spec(spec):
++                data['runs'][key].update(scientific_scope=detach_policy.SCI_SCOPE,
++                    diagnostic_spec_sha256=detach_policy.spec_sha(spec),condition_id=spec['condition_id'],
++                    qualification_id=spec['qualification_id'],budget_bucket=spec['budget_bucket'])
++            detach_policy.crosscheck_data(data,item)
+             return row
+ 
+     def start_application(self, attempt_id, command, cwd, environment, log_stream, popen):
+@@ -647,7 +688,7 @@
+             row=data['runs'][attempt['run_key']]
+             resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
+                           local_resources(),output_usage(),row['scan'],disk_floor_bytes=row['disk_floor_bytes'],
+-                          monitor_reserve_bytes=row['monitor_reserve_bytes'])
++                          monitor_reserve_bytes=row['monitor_reserve_bytes'],authority_data=data)
+             require(item.get('controller',{}).get('process')==process_identity(os.getpid()) and
+                     item['controller']['state']=='ACTIVE','only singleton E controller may start')
+             attempt.update(state='START_INTENT_UNRECONCILED',start_intent_unix=time.time())
+@@ -666,6 +707,8 @@
+             if hasattr(process,'guardian_identity'):
+                 attempt['exit_collector_process']=process.guardian_identity
+                 row['exit_collector_process']=process.guardian_identity
++            if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
++                detach_policy.record_started(item,attempt)
+             counts(item)
+             write_json(self.registry.root/'RUN_REGISTRY.json',data)
+             write_json(self.handoff/'RUN_LEDGER.json',item)
+@@ -704,6 +747,8 @@
+                             native['binding']['identity']==attempt['identity'],'native exit binding mismatch')
+                 item['accepted_results'][attempt_id]={'path':str(Path(receipt_path).resolve()),'sha256':digest(receipt_path),
+                     'run_key':attempt['run_key'],'identity':attempt['identity'],'qualification_id':attempt['qualification_id']}
++                if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
++                    item['accepted_results'][attempt_id]['scientific_scope']=detach_policy.SCI_SCOPE
+             attempt.update(state=status,finished_unix=time.time(),receipt_path=str(Path(receipt_path).resolve()),
+                            receipt_sha256=digest(receipt_path))
+             row=data['runs'][attempt['run_key']]
+--- a/util/ep_l2/mechanism_e/workload_policy.py
++++ b/util/ep_l2/mechanism_e/workload_policy.py
+@@ -5,6 +5,7 @@
+ never grant qualification, alter old buckets, or refund a prior attempt.
+ """
+ import copy
++import detach_diagnostic_policy as detach_policy
+ import hashlib
+ import json
+ from pathlib import Path
+@@ -104,7 +105,9 @@
+                 'old scientific record changed: '+group)
+     require(set(row['batches'])=={FWT_BATCH,SGEMM_BATCH},'exact two workload batches required')
+     require(set(row['bindings'])<=set(CONDITIONS),'extra binding denied')
+-    attempts=item['attempts'][46:]
++    if len(item['attempts'])>50:
++        require(detach_policy.active(item),'post50 requires exact new observer adoption')
++    attempts=item['attempts'][46:50]
+     require(len(attempts)<=4,'at most four new reservations/starts; failed attempts not refunded')
+     all_ids=[]
+     for batch,entry in row['batches'].items():
+--- a/util/ep_l2/mechanism_e/limits_policy.py
++++ b/util/ep_l2/mechanism_e/limits_policy.py
+@@ -4,6 +4,7 @@
+ JSON null means unlimited here. The ten approved condition identities stay finite.
+ """
+ import copy
++import detach_diagnostic_policy as detach_policy
+ import workload_policy
+ import hashlib
+ import json
+@@ -69,6 +70,7 @@
+     return True
+ 
+ def scope_allowed(item,spec):
++    if detach_policy.is_spec(spec):return detach_policy.scope_allowed(item,spec)
+     if workload_policy.is_workload_spec(spec):return workload_policy.scope_allowed(item,spec)
+     if not active(item):return False
+     if spec.get('condition_id') not in CONDITIONS or spec.get('budget_bucket')!=BUCKET:return False
+@@ -97,6 +99,7 @@
+       scientific_scope_unchanged=True,no_automatic_retry=True)
+ 
+ def effective_timeout(item,spec):
++    if detach_policy.is_spec(spec):return detach_policy.effective_timeout(item,spec)
+     if workload_policy.is_workload_spec(spec):return workload_policy.effective_timeout(item,spec)
+     if active(item) and spec.get('timeout_seconds') is None:
+         require(scope_allowed(item,spec),'time removal cannot waive unapproved condition timeout')
+@@ -110,6 +113,7 @@
+ timeout_seconds=effective_timeout
+ 
+ def assert_condition_unstarted(item,spec):
++    if detach_policy.is_spec(spec):return detach_policy.batch_guard(item,spec)
+     if workload_policy.is_workload_spec(spec):return workload_policy.assert_condition_unstarted(item,spec)
+     if not active(item):return
+     require(scope_allowed(item,spec),'numerical start removal is exact approved capacity scope')
+--- a/util/ep_l2/mechanism_e/policy_v2.py
++++ b/util/ep_l2/mechanism_e/policy_v2.py
+@@ -4,6 +4,7 @@
+ dispatcher, not a copied JSON/flock. No remote execution transport is implied.
+ """
+ import capacity_policy
++import detach_diagnostic_policy as detach_policy
+ import workload_policy
+ import concurrency_policy
+ import copy
+@@ -68,6 +69,8 @@
+     # Old charged attempts retain their exact original rows, consuming the
+     # common contingency reserve and total40 instead of disappearing.
+     bucket = attempt['budget_bucket']
++    if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE and attempt.get('diagnostic_spec_sha256'):
++        return bucket  # Independently validated exact observer batch, never contingency
+     if attempt.get('condition_id') in workload_policy.CONDITIONS and bucket==workload_policy.CONDITIONS[attempt['condition_id']][0] and attempt.get('workload_spec_sha256'):
+         return bucket  # approved independent batches never consume old contingency
+     return bucket if bucket in reservations else 'contingency'
+@@ -107,6 +110,7 @@
+ 
+ 
+ def condition_check(item,spec,digest):
++    if detach_policy.is_spec(spec):return detach_policy.condition_check(item,spec,digest)
+     if workload_policy.is_workload_spec(spec):
+         return workload_policy.condition_check(item,spec,digest)
+     if capacity_policy.is_capacity_spec(spec):
+@@ -138,6 +142,7 @@
+ 
+ 
+ def combination_qualification(q, digest):
++    if q.get("detach_observer_diagnostic") is not None:return detach_policy.qualification(q,digest)
+     if q.get('capacity_diagnostic') is not None:
+         capacity_policy.qualification(q,digest)
+         return
+--- a/util/ep_l2/mechanism_e/runner.py
++++ b/util/ep_l2/mechanism_e/runner.py
+@@ -26,6 +26,8 @@
+ import limits_policy
+ import disk_policy
+ import durable_exit
++import detach_diagnostic_policy as detach_policy
++import detach_validation
+ 
+ 
+ def inspect(spec,coord,launch_check=True):
+@@ -113,6 +115,9 @@
+ def validate_terminal_summary(summary,spec,qrow,audit):
+     """Only a registered exact new-capacity Q may use the new scoped validator."""
+     q=qrow['qualification'];contract=q.get('capacity_diagnostic')
++    if detach_policy.is_spec(spec) or q.get('detach_observer_diagnostic') is not None:
++        return detach_validation.validate_summary(summary,spec,qrow,audit)
++    require(summary.get('diagnostic_scope')!=detach_policy.SCI_SCOPE,'observer summary cannot use legacy validator')
+     if contract is None:
+         require(not capacity_policy.is_capacity_spec(spec),'capacity spec has no exact new qualification')
+         require(summary.get('diagnostic_scope')!='CAPACITY_DIAGNOSTIC_V1','new capacity summary cannot use legacy validator')
+@@ -146,6 +151,7 @@
+       'profile':spec['profile'],'labels':spec['labels'],'comparison_group':spec['comparison_group'],
+       'comparison_invariants_sha256':audit['comparison_invariants_sha256'],'input_audit':audit,
+       'status':status,'independent_acceptance':'NOT_ACCEPTED','complete_input_verified':False}
++    if detach_policy.is_spec(spec):result['scientific_scope']=detach_policy.SCI_SCOPE
+     started=time.monotonic()
+     try:
+         directory.mkdir(parents=True,exist_ok=False);created=True
+@@ -268,6 +274,7 @@
+                         json.loads(path.read_text())==native,'accepted native exit evidence changed')
+                 require(native['exit_code']==0 and native['wait_status']==0 and native['stop_reason'] is None,
+                         'accepted native exit is not an unguarded normal exit0')
++            require(record.get('scientific_scope')!=detach_policy.SCI_SCOPE,'observer diagnostic point cannot be S/F pair')
+             coord.require_no_hold(item,record['qualification_id'])
+             qualified=item['qualifications'][record['qualification_id']]
+             require(digest(qualified['path'])==qualified['sha256'],'current qualification withdrawn/changed')
+--- a/util/ep_l2/mechanism_e/controller.py
++++ b/util/ep_l2/mechanism_e/controller.py
+@@ -19,6 +19,7 @@
+ import limits_policy
+ import concurrency_policy
+ import durable_exit
++import detach_diagnostic_policy as detach_policy
+ 
+ 
+ def roll_pairs(coord,requests):
+@@ -98,6 +99,7 @@
+         require(limits['start_deadline_unix'] is None or
+                 queue['input_and_profile_freeze_unix']<limits['start_deadline_unix'],'late condition freeze')
+         pending=[];snapshot=coord.snapshot()
++        detach_policy.queue_guard(snapshot,queue,digest)
+         for entry in queue['specs']:
+             path=Path(entry['path']);require(digest(path)==entry['sha256'],'queued spec changed')
+             spec=json.loads(path.read_text());key=run_key(spec['identity'])
+--- /dev/null
++++ b/util/ep_l2/mechanism_e/detach_scope_core.py
+@@ -0,0 +1,277 @@
++"""Pure one-end scope controls; isolated candidate, no registry/process APIs.
++
++Default denies synthetic manifests. Real integration must supply exact published
++approval/release/Q/spec hashes and reviewed original Coordinator hooks.
++"""
++import copy
++import hashlib
++import json
++import re
++from pathlib import Path
++
++FIELD = 'detach_observer_diagnostic_batch'
++CAMPAIGN = 'EPL2_MECHANISM_STUDY_20261019_V1'
++ACTIVE = {'RESERVED', 'RUNNING', 'START_INTENT_UNRECONCILED'}
++SCI_SCOPE = 'DETACH_OBSERVER_DIAGNOSTIC_POINT_V1'
++GIB = 2**30
++
++
++def require(ok, reason):
++    if not ok:
++        raise ValueError(reason)
++
++
++def sha(value):
++    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'),
++                                     ensure_ascii=False, allow_nan=False).encode()).hexdigest()
++
++
++def file_sha(path):
++    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
++
++
++def spec_sha(spec):
++    return sha({k: v for k, v in spec.items() if k != 'input_audit'})
++
++
++def old_seal(item):
++    fields = ('campaign_id', 'authority_commit', 't0_unix', 'reservations',
++              'full_system_matrix', 'final_source_identity', 'capacity_diagnostic_runtime',
++              'capacity_diagnostic_matrix', 'capacity_diagnostic_amendment',
++              'start_and_time_limit_removal', 'formal_simulator_concurrency',
++              'workspace_disk_policy', 'additional_results_max_bytes',
++              'old_plus_new_results_max_bytes', 'maximum_actual_starts',
++              'start_deadline_unix', 'intake_deadline_unix', 'per_end_timeout_seconds')
++    return dict(old50=sha(item['attempts'][:50]),
++                old_workload=sha(item['workload_pipeline_batches']),
++                immutable={k: sha(item.get(k)) for k in fields},
++                records={g: {k: sha(v) for k, v in item.get(g, {}).items()}
++                         for g in ('accepted_results', 'accepted_pairs', 'scientific_holds',
++                                   'qualifications', 'input_selections')})
++
++
++class Authority:
++    """Hash-bound metadata only. Does not fetch, hash binaries or create processes."""
++    def __init__(self, manifest_path, manifest_sha256, approval_path,
++                 approval_sha256, *, fixture_mode=False):
++        self.manifest_path = Path(manifest_path)
++        self.manifest_sha256 = manifest_sha256
++        self.approval_path = Path(approval_path)
++        self.approval_sha256 = approval_sha256
++        self.fixture_mode = fixture_mode
++
++    def authority(self):
++        require(file_sha(self.manifest_path) == self.manifest_sha256, 'manifest bytes changed')
++        require(file_sha(self.approval_path) == self.approval_sha256, 'approval bytes changed')
++        m = json.loads(self.manifest_path.read_text())
++        a = json.loads(self.approval_path.read_text())
++        require(m['schema'] == 'E2_EXACT_DETACH_OBSERVER_FINAL_MANIFEST_V1', 'manifest schema')
++        require(a['schema'] == 'E2_EXACT_DETACH_OBSERVER_USER_APPROVAL_V1', 'approval schema')
++        require(m['campaign_id'] == a['campaign_id'] == CAMPAIGN, 'campaign')
++        require(m['maximum_new_actual_starts'] == a['maximum_new_actual_starts'] == 1,
++                'one new start only')
++        require(m['baseline_actual_starts'] == a['baseline_actual_starts'] == 50, 'old50 baseline')
++        require(a['condition_id'] == m['condition_id'] and a['batch_id'] == m['batch_id'],
++                'approval exact condition/batch')
++        require(a['manifest_scientific_binding_sha256'] == sha(m['scientific_binding']),
++                'approval scientific binding')
++        if m.get('deployment_state') == 'SYNTHETIC_FIXTURE_NOT_DEPLOYABLE':
++            require(self.fixture_mode and a.get('synthetic_fixture') is True,
++                    'synthetic fixture cannot activate production')
++        else:
++            require(not self.fixture_mode and m.get('deployment_state') == 'E_SEALED_FORMAL_RELEASE',
++                    'real E sealed manifest required')
++            require(a.get('synthetic_fixture') is False, 'real approval required')
++            require(bool(m.get('producer_publication_commit')) and
++                    re.fullmatch('[0-9a-f]{40}', m['producer_publication_commit']),
++                    'exact published producer required')
++        binding = m['scientific_binding']
++        source = binding['source_identity']
++        for key in ('core_source_commit', 'framework_source_commit', 'vendor_pybind11_commit'):
++            require(type(source.get(key)) is str and re.fullmatch('[0-9a-f]{40}', source[key]),
++                    'exact source identity')
++        for key in ('binary_sha256', 'archive_sha256'):
++            require(type(source.get(key)) is str and re.fullmatch('[0-9a-f]{64}', source[key]),
++                    'exact producer binary/archive')
++        require(source['binary_sha256'] not in m['prohibited_old_binary_sha256'],
++                'old binary excluded')
++        require(binding['scientific_scope'] == SCI_SCOPE and m['pairs'] == [],
++                'one diagnostic point never S/F pair')
++        require(binding['trace_content_sha256'] ==
++                '694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb',
++                'exact SGEMM trace')
++        require(binding['manifest_sha256'] ==
++                '853369d8e256d57ff440b88cb31f9b7c5967f3e411eb84c32612021fa1ade6c3' and
++                binding['ranges_sha256'] ==
++                'be570e38e168b59252ac7f4ed041e2b606aed79ea0c9650e94c840f825767aa8',
++                'exact C positive certificate')
++        require(binding['profile'] == 'F' and binding['selection_id'] ==
++                'D_EXP_SGEMM_MEDIUM_20261022_r1', 'exact F/input selection')
++        return m
++
++    def active(self, item):
++        if FIELD not in item:
++            require(len(item['attempts']) <= 50, 'unauthorized post50 tail')
++            return False
++        m = self.authority()
++        row = item[FIELD]
++        require(row['manifest_sha256'] == self.manifest_sha256 and
++                row['approval_sha256'] == self.approval_sha256, 'adoption authority mismatch')
++        require(item['campaign_id'] == CAMPAIGN and item['t0_unix'] == 1792414193,
++                'original campaign/T0')
++        require(len(item['attempts']) >= 50 and sha(item['attempts'][:50]) == m['old_seal']['old50'],
++                'old50 prefix changed/refunded')
++        require(sha(item['workload_pipeline_batches']) == m['old_seal']['old_workload'],
++                'old workload batch changed')
++        for key, digest in m['old_seal']['immutable'].items():
++            require(sha(item.get(key)) == digest, 'old contract changed: ' + key)
++        for group, records in m['old_seal']['records'].items():
++            for key, digest in records.items():
++                require(key in item.get(group, {}) and sha(item[group][key]) == digest,
++                        'old scientific record changed: ' + group)
++        require(set(item['accepted_pairs']) == set(m['old_seal']['records']['accepted_pairs']),
++                'new S/F pair forbidden in one-end batch')
++        require(set(item['input_selections']) == set(m['old_seal']['records']['input_selections']),
++                'new input selection forbidden')
++        allowed_q = set(m['old_seal']['records']['qualifications']) | {m['scientific_binding']['qualification']['sha256']}
++        require(set(item['qualifications']) <= allowed_q, 'extra qualification outside one scope')
++        tail = item['attempts'][50:]
++        require(len(tail) <= 1, 'one reservation maximum/no retry')
++        require(row['attempt_ids'] == [a['attempt_id'] for a in tail], 'tail accounting mismatch')
++        require(len(set(row['attempt_ids'])) == len(tail), 'duplicate tail')
++        binding = row.get('binding')
++        if binding is not None:
++            require(binding['spec_sha256'] == m['scientific_binding']['spec_sha256'],
++                    'binding changed')
++            require(binding['identity'] == m['scientific_binding']['identity'] and
++                    binding['qualification_id'] == m['scientific_binding']['qualification']['sha256'],
++                    'bound identity/Q changed')
++        allowed_results = set(m['old_seal']['records']['accepted_results']) | {
++            a['attempt_id'] for a in tail if a['state'] == 'COMPLETE_VALID'}
++        require(set(item['accepted_results']) <= allowed_results, 'extra accepted endpoint')
++        allowed_holds = set(m['old_seal']['records']['scientific_holds']) | {
++            'qualification:'+m['scientific_binding']['qualification']['sha256']}
++        require(set(item['scientific_holds']) <= allowed_holds, 'extra unrelated HOLD')
++        witness = row.get('start_witness')
++        require(witness is None or len(tail) == 1, 'start witness cannot lose charged attempt')
++        for a in tail:
++            require(binding is not None and a['diagnostic_spec_sha256'] == binding['spec_sha256'],
++                    'unbound tail')
++            require(a['condition_id'] == m['condition_id'] and a['budget_bucket'] == m['batch_id'],
++                    'extra condition/bucket')
++            require(a['identity'] == binding['identity'] and
++                    a['run_key'] == sha(binding['identity']) and
++                    a['qualification_id'] == binding['qualification_id'] and
++                    a['scientific_scope'] == SCI_SCOPE, 'tail identity/scope changed')
++            before_start = {'RESERVED', 'START_INTENT_UNRECONCILED', 'FAILED_SPAWN',
++                            'CANCELLED_BEFORE_START'}
++            after_start = {'RUNNING', 'COMPLETE_VALID', 'FAILED', 'RESOURCE_LIMIT', 'TIMEOUT', 'INCOMPLETE'}
++            require(a['state'] in before_start | after_start, 'unknown tail state')
++            retained_start = any(k in a for k in ('process', 'started_unix', 'started_identity', 'immutable_started_marker'))
++            require(not retained_start or a['actual_start'] is True, 'retained process/start witness forbids refund')
++            require(a['actual_start'] is (a['state'] in after_start), 'no actual-start refund')
++            if a['actual_start']:
++                expected_witness = dict(attempt_id=a['attempt_id'], run_key=a['run_key'],
++                                        process=a.get('process'), started_unix=a.get('started_unix'))
++                require(witness == expected_witness and a.get('started_identity') == a.get('process')
++                        and a.get('immutable_started_marker') == sha(expected_witness),
++                        'charged start witness/identity mismatch')
++            else:
++                require(witness is None, 'batch start witness forbids refund')
++        require(item['actual_starts'] == sum(a.get('actual_start') is True for a in item['attempts']),
++                'actual-start recount mismatch')
++        return True
++
++    def adopt(self, item, external_leases=()):
++        m = self.authority()
++        if FIELD in item:
++            self.active(item)
++            return False
++        require(len(item['attempts']) == item['actual_starts'] == 50, 'exact completed50 required')
++        require(item['controller']['state'] == 'STOPPED', 'original controller must STOP')
++        require(not any(a['state'] in ACTIVE for a in item['attempts']) and
++                not any(x['status'] in ACTIVE for x in external_leases), 'active/uncertain own work')
++        require(old_seal(item) == m['old_seal'], 'adoption snapshot changed')
++        item[FIELD] = dict(manifest_sha256=self.manifest_sha256,
++                           approval_sha256=self.approval_sha256, binding=None, attempt_ids=[], start_witness=None)
++        self.active(item)
++        return True
++
++    def bind(self, item, spec):
++        require(self.active(item), 'no observer adoption')
++        m = self.authority()
++        require(not item[FIELD]['attempt_ids'], 'started binding immutable')
++        self.check_spec(m, spec)
++        qrow = item['qualifications'].get(spec['qualification_id'])
++        require(qrow is not None and qrow['sha256'] == spec['qualification_id']
++                and qrow['path'] == m['scientific_binding']['qualification']['path'],
++                'new Q not registered')
++        old = item[FIELD]['binding']
++        binding = dict(spec_sha256=spec_sha(spec), identity=copy.deepcopy(spec['identity']),
++                       qualification_id=spec['qualification_id'])
++        require(old is None or old == binding, 'immutable spec binding')
++        item[FIELD]['binding'] = binding
++        return binding
++
++    def check_spec(self, m, spec):
++        b = m['scientific_binding']
++        require(spec_sha(spec) == b['spec_sha256'], 'exact spec changed')
++        require(spec['identity'] == b['identity'], 'exact identity changed')
++        for k, v in dict(condition_id=m['condition_id'], budget_bucket=m['batch_id'],
++                         profile='F', scientific_scope=SCI_SCOPE,
++                         selection_id=b['selection_id']).items():
++            require(spec.get(k) == v, 'wrong spec field: ' + k)
++        require(not spec.get('retry_previous_attempt') and not spec.get('retry_reason'),
++                'no implicit retry')
++        require(spec['identity']['trace_content_sha256'] == b['trace_content_sha256'], 'input')
++        require(all(spec['identity'][k] == b['source_identity'][k]
++                    for k in ('core_source_commit', 'framework_source_commit', 'binary_sha256')),
++                'source')
++        require(spec['profile_semantics']['research_switches'] == dict.fromkeys(('W', 'V', 'T', 'M'), 1)
++                and spec['identity']['feature_vector']['payload_capacity_per_slice'] == 1168
++                and spec['identity']['feature_vector']['ops_per_bank_cycle'] == 1, 'profile semantics')
++        qref = b['qualification']
++        require(spec['qualification_id'] == qref['sha256'] and file_sha(qref['path']) == qref['sha256'],
++                'new independent Q changed')
++        q = json.loads(Path(qref['path']).read_text())
++        require(q['status'] == 'INDEPENDENTLY_QUALIFIED' and
++                q['source_identity'] == b['source_identity'] and
++                q['scientific_scope'] == SCI_SCOPE and
++                q['profile_semantics'] == spec['profile_semantics'], 'new Q scope/source/profile')
++        require(file_sha(b['producer']['path']) == b['producer']['sha256'], 'producer changed')
++        producer = json.loads(Path(b['producer']['path']).read_text())
++        require(producer['source_identity'] == b['source_identity'], 'producer source mismatch')
++        for ref in b['content_refs']:
++            require(file_sha(ref['path']) == ref['sha256'], 'bound config/asset/schema changed')
++        require(file_sha(spec['parser']['path']) == spec['parser']['sha256'] and
++                spec['parser'] == b['parser'], 'parser changed')
++        if self.fixture_mode:
++            require(q.get('synthetic_fixture') is True and producer.get('synthetic_fixture') is True,
++                    'fixture evidence explicitly synthetic')
++        else:
++            require(q.get('synthetic_fixture') is False and producer.get('synthetic_fixture') is False,
++                    'synthetic Q/producer forbidden in production')
++
++    def guard(self, item, spec):
++        require(self.active(item), 'no adoption')
++        m = self.authority()
++        self.check_spec(m, spec)
++        require(item[FIELD]['binding'] is not None and
++                item[FIELD]['binding']['spec_sha256'] == spec_sha(spec), 'unbound condition')
++        require('qualification:'+spec['qualification_id'] not in item.get('scientific_holds', {}),
++                'new qualification HOLD')
++        require(not item[FIELD]['attempt_ids'], 'one reservation consumed/no retry')
++        return True
++
++    def resource_guard(self, spec, resources):
++        require(resources['workspace_free_bytes'] >= 7*GIB + spec['maximum_result_bytes'],
++                'workspace5+2GiB guard')
++        require(resources['share_free_bytes'] >= 40*GIB, 'Share guard')
++        require(resources['available_memory_bytes'] >= 64*GIB + spec['memory_bytes'], 'RAM guard')
++        require(resources['reserved_memory_bytes'] + spec['memory_bytes'] <= 32*GIB and
++                resources['reserved_cpu_units'] + spec['cpu'] <= 8, 'CPU/RAM reservation guard')
++        require(resources['new_bytes'] + spec['maximum_result_bytes'] <= 10*GIB and
++                resources['total_bytes'] + spec['maximum_result_bytes'] <= 24*GIB,
++                'cumulative generation guard')
++
++
+--- /dev/null
++++ b/util/ep_l2/mechanism_e/detach_diagnostic_policy.py
+@@ -0,0 +1,133 @@
++"""Candidate original-central adapter. No final authority exists until E seals it.
++
++Root must replace/configure exact source-pinned final manifest/approval references
++after real producer qualification. No environment override or unknown binary pin.
++"""
++import copy
++import json
++from pathlib import Path
++from detach_scope_core import Authority, FIELD, CAMPAIGN, SCI_SCOPE, require, sha, spec_sha
++import detach_validation
++
++# Deliberately unconfigured. Tests inject explicit synthetic Authority in memory;
++# production integration must bind actual E-derived final metadata, then publish.
++_AUTHORITY = None
++
++def authority():
++    require(_AUTHORITY is not None, 'ROOT_SEALED_OBSERVER_FINAL_AUTHORITY_UNAVAILABLE')
++    return _AUTHORITY
++
++def is_spec(spec):
++    return spec.get('scientific_scope') == SCI_SCOPE
++
++def active(item):
++    if FIELD not in item:
++        require(len(item['attempts']) <= 50, 'unauthorized post50 tail')
++        return False
++    return authority().active(item)
++
++def adopt(item, source_leases):
++    return authority().adopt(item, source_leases)
++
++def bind_condition(item, spec, digest):
++    return authority().bind(item, spec)
++
++def scope_allowed(item, spec):
++    if not is_spec(spec) or not active(item):return False
++    a=authority()
++    try:
++        a.check_spec(a.authority(), spec)
++        row=item[FIELD].get('binding')
++        return row is not None and row['spec_sha256']==spec_sha(spec)
++    except (ValueError, KeyError, TypeError):return False
++
++def condition_check(item, spec, digest):
++    require(scope_allowed(item,spec),'unbound exact observer condition')
++    require(authority().fixture_mode or detach_validation.INDEPENDENT_SCHEMA_VALIDATION_READY,
++            'real observer schema qualification incomplete')
++    return dict(condition_id=spec['condition_id'],group='INDEPENDENT_DIAGNOSTIC_POINT')
++
++def batch_guard(item,spec):
++    condition_check(item,spec,None)
++    return authority().guard(item,spec)
++
++def effective_timeout(item,spec):
++    require(scope_allowed(item,spec),'unbound observer operational limit')
++    return spec['timeout_seconds']
++
++def qualification(q,digest):
++    a=authority();m=a.authority();b=m['scientific_binding']
++    require(q['source_identity']==b['source_identity'],'wrong observer producer source')
++    require(q.get('detach_observer_diagnostic') is not None,'new observer Q required')
++    require(a.fixture_mode or detach_validation.INDEPENDENT_SCHEMA_VALIDATION_READY,
++            'new observer schema has no independent terminal qualification')
++    require(digest(b['qualification']['path'])==b['qualification']['sha256'],'observer Q changed')
++    return True
++
++def record_reservation(item,spec,attempt):
++    batch_guard(item,spec)
++    attempt.update(condition_id=spec['condition_id'],diagnostic_spec_sha256=spec_sha(spec),
++                   scientific_scope=SCI_SCOPE)
++    item[FIELD]['attempt_ids'].append(attempt['attempt_id'])
++
++def record_started(item,attempt):
++    require(item[FIELD]['start_witness'] is None,'observer already charged')
++    witness=dict(attempt_id=attempt['attempt_id'],run_key=attempt['run_key'],
++                 process=copy.deepcopy(attempt['process']),started_unix=attempt['started_unix'])
++    attempt.update(started_identity=copy.deepcopy(attempt['process']),immutable_started_marker=sha(witness))
++    item[FIELD]['start_witness']=copy.deepcopy(witness)
++
++def queue_guard(item,queue,digest):
++    specs=[]
++    for ref in queue.get('specs',[]):
++        path=Path(ref['path'])
++        require(digest(path)==ref['sha256'],'queued spec changed')
++        specs.append(json.loads(path.read_text()))
++    if not any(is_spec(s) for s in specs):return
++    require(len(specs)==1 and queue.get('pairs',[])==[],'observer queue only one point, no union or pair')
++    require(scope_allowed(item,specs[0]),'unbound observer queue')
++
++def crosscheck_data(data,item):
++    """Cross-check existing canonical runs; no extra journal or authority.
++
++    Detect missing/refunded tail while its original canonical run survives.
++    Coherent malicious rewriting of every state/evidence store is outside the
++    original single-writer/process-lifetime assumptions, not prevented here.
++    """
++    batch=item.get(FIELD)
++    expected_key=None
++    if batch and batch.get('binding'):
++        expected_key=sha(batch['binding']['identity'])
++    attempt_ids=set(batch.get('attempt_ids',[])) if batch else set()
++    rows={key:row for key,row in data['runs'].items()
++          if row.get('experiment_id')==CAMPAIGN and
++          (row.get('scientific_scope')==SCI_SCOPE or row.get('diagnostic_spec_sha256')
++           or key==expected_key or row.get('lease_id') in attempt_ids)}
++    if not batch:
++        require(not rows,'canonical observer run exists without adopted batch/tail')
++        return False
++    active(item)
++    tail=item['attempts'][50:]
++    require(len(rows)==len(tail),'canonical run/tail count mismatch')
++    for attempt in tail:
++        key=attempt['run_key'];require(key in rows,'canonical observer run missing')
++        run=rows[key]
++        require(run.get('run_key')==key and run.get('lease_id')==attempt['attempt_id']
++                and run.get('identity')==attempt['identity']
++                and run.get('scientific_scope')==SCI_SCOPE
++                and run.get('diagnostic_spec_sha256')==attempt['diagnostic_spec_sha256']
++                and run.get('condition_id')==attempt['condition_id']
++                and run.get('qualification_id')==attempt['qualification_id']
++                and run.get('budget_bucket')==attempt['budget_bucket'],
++                'canonical observer identity/lease/binding mismatch')
++        if attempt['state'] in ('RESERVED','START_INTENT_UNRECONCILED'):
++            require(run['status']=='RESERVED' and not run.get('process')
++                    and not run.get('started_unix'),'canonical started run forbids reservation/refund')
++        elif attempt['state'] in ('FAILED_SPAWN','CANCELLED_BEFORE_START'):
++            require(run['status']=='FAILED' and not run.get('process')
++                    and not run.get('started_unix'),'canonical started run forbids prestart refund')
++        else:
++            require(run['status']==attempt['state'] and run.get('process')==attempt['process']
++                    and run.get('started_unix')==attempt['started_unix'],
++                    'canonical run/start state disagrees with charged attempt')
++    return True
+--- /dev/null
++++ b/util/ep_l2/mechanism_e/detach_validation.py
+@@ -0,0 +1,5 @@
++"""Fail-closed placeholder; actual independent schema validator is not integrated."""
++INDEPENDENT_SCHEMA_VALIDATION_READY = False
++
++def validate_summary(summary, spec, qrow, audit):
++    raise ValueError('DETACH_OBSERVER_VALIDATOR_NOT_INDEPENDENTLY_ADAPTED_NO_REAL_ACCEPTANCE')
