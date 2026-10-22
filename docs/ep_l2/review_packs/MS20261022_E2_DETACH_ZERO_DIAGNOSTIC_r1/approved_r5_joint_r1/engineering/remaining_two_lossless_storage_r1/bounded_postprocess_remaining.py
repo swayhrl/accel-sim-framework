@@ -1,6 +1,9 @@
 from pathlib import Path
 import argparse,json,sys,subprocess,hashlib,importlib.util,datetime,os
 E=Path('/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1');P=E/'docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1';A=P/'approved_r5_joint_r1';G=A/'engineering/remaining_two_lossless_storage_r1';B=E/'docs/ep_l2/lane_collaboration_v1';sys.path.insert(0,str(E/'util/ep_l2/mechanism_e'));import coordinator as c,tagpressure_successor as r5,bounded_metadata_writer as bw,tagpressure_physical96 as physical96
+# Client validates the actual working tree. Bind it before any publication,
+# including when this explicit E2 helper is invoked by its absolute path.
+os.chdir(E)
 sp=importlib.util.spec_from_file_location('sink',G/'coordination_budget_sink.py');sink=importlib.util.module_from_spec(sp);sp.loader.exec_module(sink)
 pa=argparse.ArgumentParser();pa.add_argument('--attempt');pa.add_argument('--check',action='store_true');args=pa.parse_args();c.tooling_binding();co=c.Coordinator();m=r5.scope().manifest();policy=r5.read(physical96.POLICY_REF)
 def ref(p):return {'path':str(p.resolve()),'sha256':c.digest(p)}

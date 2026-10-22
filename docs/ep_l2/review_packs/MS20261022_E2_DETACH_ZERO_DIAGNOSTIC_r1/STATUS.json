@@ -1,27 +1,45 @@
 {
-  "Goal": "ACTIVE",
-  "Vector_and_Conv": "QUALIFIED_UNSTARTED; no claimed CURRENT_ACCEPTED or fabricated exit",
-  "accepted_r5_points": [
+  "Goal": "PAUSE_REQUESTED_TO_APPLY_AFTER_REMOTE_READBACK",
+  "Vector_Conv": "QUALIFIED_BUT_UNSTARTED; no new attempt, no invented native exit or acceptance; resume requires user request and all actual gates",
+  "accepted_points": [
     {
-      "D_delivered": true,
-      "point_ref": {
+      "D_delivery_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/cfd_097k/D_DELIVERY_RECEIPT.json",
+        "sha256": "db2de1d680288234cd90686906ca8f1a433e7328df8ff488e8cc69c9d100df2a"
+      },
+      "ref": {
         "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json",
         "sha256": "7f488ae5452b5ab4c94c63a38c0890be959b406f75c449600a0bdc00ea4f06a8"
       },
       "workload": "cfd_097k"
     },
     {
-      "D_delivered": true,
-      "point_ref": {
+      "D_delivery_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/dwt2d/D_DELIVERY_RECEIPT.json",
+        "sha256": "e960c1ca2f2a2088de012d223d7fb344e9637227acde3f7bc04776617a94806b"
+      },
+      "ref": {
         "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json",
         "sha256": "3d5151387e6182f51673f85465dcff09da7650e0ff531be4b1b6149b268127f6"
       },
       "workload": "dwt2d"
     }
   ],
+  "active_registry_rows": [],
   "actual_starts": 57,
-  "all_history_and_charges_retained": true,
-  "at_utc": "2026-10-22T15:29:23.769105+00:00",
+  "at_utc": "2026-10-22T15:36:44.964637+00:00",
+  "budget_preserved": {
+    "monitor_bytes": 2147483648,
+    "new_generation_bytes": 10737418240,
+    "per_endpoint_result_bytes": 402653184,
+    "r5_four_endpoint_logical_cap_bytes": 1610612736,
+    "total_generation_bytes": 25769803776,
+    "workspace_floor_bytes": 5368709120
+  },
+  "client_ref": {
+    "path": "/workspace/ep_l2_ft20261016_shared/mechanism_study_20261019_v1/CLIENT_CONTRACT.json",
+    "sha256": "3388d2a0c838ebd24ea16188a71a92d753e2397694fb7ab9368f4f9aeb3bde70"
+  },
   "controller": {
     "process": {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -31,17 +49,21 @@
     "state": "STOPPED",
     "stopped_unix": 1792678986.8957114
   },
-  "new_S_or_performance_pair": false,
+  "manifest_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/FINAL_MANIFEST.json",
+    "sha256": "25d1b8cf8b80d53bfe677f58d5273f35115cf40599660b1c0038a9be7ed58b69"
+  },
   "new_r5_actual_starts": 2,
-  "next": "Bounded read-only allocation attribution; only meaningful actual space change can trigger fresh original gate and unique controller. No historical deletion, guard waiver, extra endpoint or refund.",
-  "no_D_ACK_required": true,
+  "next": "Wait for user resume/migration decision. No application/controller/poller/background experiment started; D can consume delivered evidence independently.",
+  "no_global_start_concurrency_or_time_cap_reinstated": true,
   "original_T0": 1792414193,
   "original_result_generation_at_measurement": {
-    "new_bytes": 8248804902,
+    "new_bytes": 8248820514,
     "old_bytes": 14309576384,
-    "total_bytes": 22558381286
+    "total_bytes": 22558396898
   },
   "owner": "E2",
+  "protected_history": "OriginalT0, all57 charged starts, E051 originalFAILED/supplement, all prior FAILED/INCOMPLETE/RESOURCE_LIMIT/HOLD/native fixture failures, raw and accepted pairs retained. No refunds/reset/migration.",
   "r5_conditions": [
     {
       "actual_start": true,
@@ -56,19 +78,35 @@
       "state": "COMPLETE_VALID"
     }
   ],
-  "remaining_r5_authorized_starts": 2,
-  "resource_receipt": {
-    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/engineering/remaining_two_lossless_storage_r1/FINAL_ACTUAL_WORKSPACE_LEGAL_STOP_20261022T1528Z.json",
-    "sha256": "ef307f4aab36a1a70afed42d8f726606215d43b927ff7a59b50bce37546c20cf"
+  "ready_queue_ref": {
+    "path": "/workspace/ep_l2_ft20261016_shared/mechanism_study_20261019_v1/inbox/READY_QUEUE.json",
+    "sha256": "f77b8b82a17365894b4e83556a6bacd3327d81f2f36dcca6b2172ef4c4818280"
   },
-  "resources": {
-    "available_memory_bytes": 180860751872,
-    "disk_free_bytes": 7808266240,
-    "share_disk_free_bytes": 44190101504
+  "registry_ref": {
+    "path": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
+    "sha256": "ac0fa2e7919e89a95357a21102083e37875c177859a2b3878966806f00779b62"
   },
-  "schema": "E2_R5_ACTUAL_INDEPENDENT_ACCEPTANCE_AND_RESOURCE_STOP_STATUS_V1",
-  "single_endpoint_gap_bytes_at_measurement": 123364264,
-  "single_endpoint_required_bytes": 7931630504,
+  "remaining_authorized_r5_starts": 2,
+  "resource_observation": {
+    "at_unix": 1792683399.9967532,
+    "fits": true,
+    "output_usage": {
+      "new_bytes": 8248820514,
+      "old_bytes": 14309576384,
+      "total_bytes": 22558396898
+    },
+    "read_only": true,
+    "reason": "Original resource gate fits including submitted-not-reserved work",
+    "resources": {
+      "available_memory_bytes": 180878942208,
+      "disk_free_bytes": 8073269248,
+      "share_disk_free_bytes": 44190019584
+    },
+    "run_key": "eb4793cead075ec384564f29fd5b8151051a094844a9af89e61150a1db0c4316",
+    "virtual_submitted_run_keys": []
+  },
+  "schema": "E2_R5_USER_REQUESTED_PAUSE_HANDOFF_V1",
+  "scientific_conclusion": "CFD/DWT real production TagFAIL/relieve/detach zero; covered targetset RESERVEDmax4/16 and3/16, newTag demand bothmax3/16. Full VALID/MODIFIED occupancy remains replaceable. Vector/Conv r5 joint unmeasured; no complete Goal claim.",
   "source_identity": {
     "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
     "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
@@ -76,5 +114,6 @@
     "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
     "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
   },
-  "status": "LEGAL_RESOURCE_STOP"
+  "status": "STOPPED_USER_REQUESTED_PAUSE",
+  "user_instruction": "Finish currently feasible evidence/engineering work, then stop; migration to174-new under consideration only, not authorized."
 }

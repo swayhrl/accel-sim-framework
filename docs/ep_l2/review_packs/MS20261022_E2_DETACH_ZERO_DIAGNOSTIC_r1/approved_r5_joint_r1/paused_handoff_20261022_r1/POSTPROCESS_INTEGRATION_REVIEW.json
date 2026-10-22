@@ -1,0 +1,105 @@
+{
+  "schema": "E2_R5_POSTPROCESS_CALLER_FIX_ROOT_REVIEW_V1",
+  "at_utc": "2026-10-22T15:36:26.470563+00:00",
+  "independent_readonly_review": {
+    "schema": "E2_R5_BOUNDED_POSTPROCESS_READONLY_INTEGRATION_REVIEW_V1",
+    "at_utc": "2026-10-22T15:35:48.077029+00:00",
+    "status": "READONLY_REVIEW_COMPLETED_CALLER_PRECONDITION_FIX_SOURCE_CONFIRMED_NO_END_TO_END_CLAIM",
+    "scope": "Existing postprocess/sink/writer integration only. User pause respected; no applications/native/Git publication/production mutation or previous engineering controls rerun.",
+    "files": [
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/engineering/remaining_two_lossless_storage_r1/bounded_postprocess_remaining.py",
+        "sha256": "b599151389cce904ca489e9b9900deadc2982c95cda5f19db29a2c865a3d0d7d",
+        "reviewed_before_fix_sha256": "b599151389cce904ca489e9b9900deadc2982c95cda5f19db29a2c865a3d0d7d"
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/engineering/remaining_two_lossless_storage_r1/coordination_budget_sink.py",
+        "sha256": "38e28635295cac381f43727bc5ba8d2ac85d841a1ba7f9914d5fd16dd746ea6d"
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/bounded_metadata_writer.py",
+        "sha256": "180e9a7603636dbedb91758ee5fbdb5f24bcb0f1a72a2fd327e7ef624c6fb8dc"
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/lane_collaboration_v1/coordination.py",
+        "sha256": "5c75173225ff002f2dcabc2f0b3b150d56d31d5bf1139ebf89baae2ab3eda34f"
+      }
+    ],
+    "confirmed": [
+      "Original coordination source SHA equals sink pin 5c75173225ff002f2dcabc2f0b3b150d56d31d5bf1139ebf89baae2ab3eda34f; immutable/atomic storage signatures match.",
+      "Scoped sink preserves original Client ownership, CAS and transport locking; adapter restored in finally; allowed writes restricted to E2 event/cache/cursor/status.",
+      "Writer publication prechecks enforce two charged publication attempts, <=12MiB cumulative complete body/journal, <=128 tree objects and bounded index; actual inspected index 1184933 bytes is below2MiB.",
+      "Client reference byte ceiling16MiB exceeds Writer aggregate12MiB, and four science refs are below32-reference ceiling; no static ref-budget mismatch.",
+      "Actual inspected /tmp, E worktree and OUTPUT writer store devices match156; no presently proven cross-device hardlink blocker.",
+      "No additional definite API/path/Git/locking integration incompatibility established by this bounded read-only review."
+    ],
+    "findings": [
+      {
+        "id": "POSTPROCESS_CWD_PREFLIGHT_LATE",
+        "severity": "ENGINEERING_CALLER_PRECONDITION_GAP",
+        "confirmed_source": true,
+        "affected_lines": {
+          "postprocess": [
+            5,
+            17,
+            27,
+            29
+          ],
+          "coordination": [
+            103,
+            104,
+            105,
+            107,
+            108
+          ]
+        },
+        "trigger": "Run absolute postprocess script path from /workspace or another non-E worktree without explicitly setting cwd=E. Independent review/compact child commands use cwd=E, while parent process remains in caller cwd.",
+        "consequence": "First science publication can already be pushed/charged before Client initialization rejects non-E cwd/branch; two-publication journal then prevents blindly rerunning original script. This is conditional on caller cwd, not proof of failure when invoked with cwd=E.",
+        "minimal_fix": "Before generating any output or consuming publication, either os.chdir(E) then construct/validate Client or explicitly reject wrong cwd Git root/branch and construct Client. Passing worktree=E alone does not bypass Client real-cwd guard. Keep Writer/sink/source/scientific checks unchanged.",
+        "suggested_bounded_nonapplication_validation": [
+          "In a /tmp copied entry harness stub writers/publisher and test E cwd succeeds and foreign cwd rejects before any output/publication call.",
+          "Assert no publication counter increment on failed startup Client/branch/contract check. No actual Git push, app or native execution needed."
+        ],
+        "fix_applied": true,
+        "fix_source_confirmed": true,
+        "resolution": "Root applied os.chdir(E) at entry before writes/publications. Original Client owner/branch/current-worktree guards unchanged. Root undertaking bounded --check from /workspace; its execution outcome is not claimed in this independent report."
+      }
+    ],
+    "present_state": {
+      "remaining_Vector_Conv_app_starts": 0,
+      "writer_publications_per_remaining_endpoint": 0,
+      "writer_journals": "BEGIN-only as inspected; no terminal postprocessing invocation",
+      "actual_end_to_end_postprocess": "NOT_RUN_NOT_CLAIMED_PASS"
+    },
+    "limitations": [
+      "Static and bounded small-metadata audit does not prove future actual accepted report sizes fit Writer caps. Oversized output remains explicit HOLD; no truncation allowed.",
+      "Two-publication crash/failure recovery requires explicit stage-aware review; original script intentionally rejects blind rerun once publication is consumed.",
+      "Final remote readback receipt written after second publication is local bounded proof, not represented as a third remotely published receipt.",
+      "Paused user instruction governs; this review neither authorizes Vector/Conv starts nor resumes controller."
+    ]
+  },
+  "independent_original_report_ref": {
+    "path": "/tmp/e2_r5_bounded_postprocess_integration_readonly_review_r1.json",
+    "sha256": "691a92d62dea89082d531cff7d065a6d5f26e4bdd96b0df0af6e43d51bed6225"
+  },
+  "root_resolution": {
+    "finding": "Client actualCWD validation originally occurred afterpublication1; absolute path invocation from/workspace could consume first publication before CWD failure.",
+    "minimal_fix": "os.chdir(E) before anywrite/publication; original Client root/branch/owner/CAS/locks remain unchanged",
+    "fixed_source": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/engineering/remaining_two_lossless_storage_r1/bounded_postprocess_remaining.py",
+      "sha256": "b599151389cce904ca489e9b9900deadc2982c95cda5f19db29a2c865a3d0d7d"
+    },
+    "actual_invocation_cwd": "/workspace",
+    "invocation_mode": "absolute E helper path with --check only",
+    "actual_stdout": {
+      "status": "ACTUAL_WRITER_ROOTS_SOURCE_AND_ORIGINAL_CLIENT_STORAGE_CHECK_PASS",
+      "actual_starts": 57,
+      "new_app_starts": 0
+    },
+    "actual_exit_code": 0,
+    "native_test_or_application_starts": 0,
+    "per_condition_publication_attempts": 0,
+    "runtime_source_binary_config_input_qualification_changes": false
+  },
+  "scope_limit": "Only entrypoint/storage roots/client binding integration check; actual Vector/Conv full terminal/postprocessing/publication end-to-end remains UNRUN. Do not label wholepipeline PASS."
+}

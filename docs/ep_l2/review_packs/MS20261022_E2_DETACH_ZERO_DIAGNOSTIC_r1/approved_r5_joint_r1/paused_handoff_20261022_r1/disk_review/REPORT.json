@@ -1,0 +1,156 @@
+{
+  "schema": "E2_R5_BOUNDED_SPACE_DELTA_READONLY_REVIEW_V1",
+  "status": "READONLY_COMPLETE_NO_RELEASE_PAUSE_READY",
+  "at_first_df_bytes": 7808626688,
+  "root_activation_df_bytes_reported": 7968653312,
+  "drop_from_root_activation_report_to_first_read_bytes": 160026624,
+  "vector_required_threshold_bytes_reported": 7931630504,
+  "first_read_deficit_bytes": 123003816,
+  "scope_bound": {
+    "r5_tmp_and_build_entries_statted": 1349,
+    "git_recent_bucket_entries_statted": 1162,
+    "git_recent_buckets": 53,
+    "proc_pid_count": 109,
+    "proc_fd_count": 962,
+    "proc_maps_metadata_bytes": 2537210,
+    "no_raw_trace_binary_body_read_or_large_hash": true,
+    "no_full_disk_du_or_unrelated_project_scan": true
+  },
+  "findings": {
+    "r5build_unique_allocated_bytes": 266600448,
+    "r5build_after_cutoff_mtime_growth_evidence": 0,
+    "r5build_largest": [
+      {
+        "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/accel-sim.out",
+        "bytes": 87878744,
+        "allocated": 87883776,
+        "device": 156,
+        "inode": 43675773,
+        "nlink": 3,
+        "mtime": 1792672854.263299,
+        "ctime": 1792681253.1051788,
+        "mtime_local": "10-22 20:40:54",
+        "recent_after_activation_commit_mtime": false
+      },
+      {
+        "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/ep_l2_detach_diagnostic",
+        "bytes": 84445568,
+        "allocated": 84451328,
+        "device": 156,
+        "inode": 43675774,
+        "nlink": 1,
+        "mtime": 1792672862.342427,
+        "ctime": 1792672862.342427,
+        "mtime_local": "10-22 20:41:02",
+        "recent_after_activation_commit_mtime": false
+      },
+      {
+        "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "bytes": 82151574,
+        "allocated": 82153472,
+        "device": 156,
+        "inode": 43675760,
+        "nlink": 1,
+        "mtime": 1792672807.9245653,
+        "ctime": 1792672807.9245653,
+        "mtime_local": "10-22 20:40:07",
+        "recent_after_activation_commit_mtime": false
+      }
+    ],
+    "tmp_r5_directory_sum_upper_bytes": 10915840,
+    "tmp_r5_top_regular_sum_upper_bytes": 1765376,
+    "tmp_sums_are_not_releasable_or_crossroot_deduplicated": true,
+    "largest_tmp_groups": [
+      {
+        "path": "/tmp/e2_r5_parallel_l2_request_analysis_r1",
+        "allocated_unique_within_group_bytes": 3776512,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_unique_gpu_native_remaining7_review_r1",
+        "allocated_unique_within_group_bytes": 1413120,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_complete_native_review_r1",
+        "allocated_unique_within_group_bytes": 1085440,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_input_gate_candidates_r1",
+        "allocated_unique_within_group_bytes": 983040,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_central_candidate",
+        "allocated_unique_within_group_bytes": 679936,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_binary_sharing_candidate",
+        "allocated_unique_within_group_bytes": 528384,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_parser_candidate",
+        "allocated_unique_within_group_bytes": 503808,
+        "reader_and_future_path_dependency_cleared": false
+      },
+      {
+        "path": "/tmp/e2_r5_actual_unsigned_q_specs_r1",
+        "allocated_unique_within_group_bytes": 307200,
+        "reader_and_future_path_dependency_cleared": false
+      }
+    ],
+    "recent_git_loose_allocated_bytes": 344064,
+    "recent_git_loose_object_count": 63,
+    "git_pack_newer_than_cutoff_count": 0,
+    "git_index_allocated_bytes": 1183744,
+    "E2_deleted_open_fd_count": 0,
+    "other_deleted_open_fd_unique_allocated_bytes": 24576,
+    "other_deleted_open_fd_paths": [
+      "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh (deleted)",
+      "/workspace/worktrees/accel-sim-decoupled-l2/scripts/run_decoupled_l2_archive_batch.sh (deleted)",
+      "/root/.vscode-server/cli/servers/Stable-7debcd0e2acdea1c52de81bf9ee1620444407dda/server/bin/code-server (deleted)"
+    ],
+    "unrelated_deleted_vscode_mappings": "Observed metadata only. No allocated file byte proof from mappings; no E2 release authority; do not terminate or modify."
+  },
+  "allocation_change_attribution": {
+    "complete_160MB_cause": "UNKNOWN: no comprehensive before-snapshot of allocated inodes. Known r5/tmp/build/recent Git metadata examined do not explain this scale; no broader filesystem scan performed.",
+    "cutoff_epoch_for_recent_git": 1792681454,
+    "mtime_ctime_not_allocation_delta_proof": true,
+    "known_E056_E057_accepted_raw_summary_status": "Retained, stat only. Main inode shared nlink3; unlinking a single alias would reclaim0 bytes and is not proposed."
+  },
+  "release_recommendations": {
+    "proven_safe_source_release_bytes": 0,
+    "authorization_and_dependency_cleared_candidates": [],
+    "conditional_tmp_candidates_only": "Published redundant /tmp r5 engineering copies may be considered after exact Git byte/citation/active-reader/no-direct-path checks. Current inventory upper total about12.2MiB, cannot bridge123MB deficit even if all cleared; no deletion proposed now.",
+    "protected": [
+      "formal main/archive/native ELF including old failure fixture ELF",
+      "all paid raw/terminal/status/qualification/HOLD/history",
+      "shared Git pack/loose objects; old tmp_pack from10/17 and10/20 not this-round scratch",
+      "other project/VSCode processes or mapped deleted binaries"
+    ],
+    "no_extra_release_or_history_migration_requested": true
+  },
+  "actions": {
+    "deleted_files": 0,
+    "migrations": 0,
+    "source_registry_resource_policy_changes": 0,
+    "app_or_native_starts": 0
+  },
+  "evidence": {
+    "INITIAL.json": {
+      "path": "/tmp/e2_r5_space_delta_readonly_r1/INITIAL.json",
+      "sha256": "cbff4648c35fce634c1661a61fc2950e0aa330ffa4b244b11afe7d83b26f7636"
+    },
+    "BOUNDED_STAT.json": {
+      "path": "/tmp/e2_r5_space_delta_readonly_r1/BOUNDED_STAT.json",
+      "sha256": "fbf69cdaeb5fec5f66aaf77da664c0722e2d8a8da0bd272e7934de6bb77844ec"
+    },
+    "GIT_STAT.json": {
+      "path": "/tmp/e2_r5_space_delta_readonly_r1/GIT_STAT.json",
+      "sha256": "16069e5fc72883920fe8eb58ef49e2900c162ebcc077e63b72be33f9b285e530"
+    }
+  }
+}
