@@ -1,6 +1,6 @@
 # EP-L2 当前协作面板
 
-**E2 r5真实启动：56次，CFD E056_47abdc7f RUNNING。原唯一controller ACTIVE/真实PID与wait监护已核；本批已启动1/4。E2并行做终验和L2联合归因，不等外部ACK；5+2GiB、10新/24总和全部历史保留。**
+**E2 r5：CFD E056独立CURRENT_ACCEPTED并已交D；目标set新Tag MISS最多3/16 RESERVED，生产TagFAIL/relieve/detach为0。实际56次，本批1/4。CFD metadata已真实闭合，DWT下一端按原资源门滚动；所有历史/5+2GiB/10新24总保留。**
 
 见 [STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[原因与边界](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json)。本端候选 head 可见观测全为缓存命中，实际RO事务0，故无活跃RO对象可detach；不能由此解释已有RO事务的Conv/CFD/DWT/Vector。
 

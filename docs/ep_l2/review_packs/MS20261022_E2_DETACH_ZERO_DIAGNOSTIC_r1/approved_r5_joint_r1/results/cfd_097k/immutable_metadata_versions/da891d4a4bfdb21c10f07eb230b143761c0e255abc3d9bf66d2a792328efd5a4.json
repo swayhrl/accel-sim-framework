@@ -1,0 +1,197 @@
+{
+  "schema": "E2_R5_CFD_CAUSE_OWNER_INDEPENDENT_REVIEW_V1",
+  "status": "PASS_BOUNDED_SOURCE_AND_EXISTING_ACCEPTED_METADATA_REVIEW",
+  "input_ref": {
+    "path": "/tmp/e2_r5_cfd_independent_terminal_cause_review_r1.json",
+    "sha256": "9ad2ca1c697916dff10d0ad8be8d86e6c111d79003639a195a3859fcb19ee13f",
+    "bytes": 190832
+  },
+  "attempt_id": "E056_47abdc7f",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "instructions": 143129372,
+  "cycles": 79157,
+  "claim": "在本次CFD已覆盖的frontend head-cycle中，目标set从未接近16个RESERVED way：全部covered最多4，新Tag需求MISS/FAIL子集最多3。真实commit TagFAIL=0，因此未进入relieve，detach=0。存在RO及结构可detach候选不是触发的充分条件。",
+  "measured": {
+    "domain": "FRONTEND_HEAD_CYCLE_SAME_TARGET_SET_EXPOSURES_NOT_UNIQUE_REQUESTS",
+    "observed_head_cycle_exposures": 1742633,
+    "covered_head_cycle_exposures": 1524394,
+    "skipped_TVD_head_cycle_exposures": 218239,
+    "skipped_set_raw_requester_eligibility": "NA_NOT_OBSERVED",
+    "raw_head_cycle_counts": {
+      "HIT": 889551,
+      "HIT_RESERVED": 0,
+      "MISS": 162681,
+      "RESERVATION_FAIL": 0,
+      "SECTOR_MISS": 472162,
+      "MSHR_HIT": 0,
+      "WRITE_ALLOCATED": 0,
+      "UNKNOWN": 0
+    },
+    "max_reserved_ways_all_covered": 4,
+    "max_reserved_ways_new_tag_demand_MISS_FAIL": 3,
+    "r16_any_raw_head_cycle_exposures": 0,
+    "all_covered_heads_by_reserved_ways": {
+      "0": 1109860,
+      "1": 349576,
+      "2": 59218,
+      "3": 5593,
+      "4": 147
+    },
+    "new_tag_MISS_head_cycle_exposures": 162681,
+    "structural_eligible_head_cycle_exposures": 104842,
+    "structural_eligible_by_raw": {
+      "HIT": 1005,
+      "MISS": 235,
+      "SECTOR_MISS": 103602
+    },
+    "new_tag_MISS_structural_eligible_head_cycle_exposures": 235,
+    "new_tag_MISS_certifiedRO_and_eligible_head_cycle_exposures": 234,
+    "live_RO_way_exposures": 485926,
+    "structural_eligible_RO_way_exposures": 105076,
+    "unique_requests_or_victims": "UNKNOWN_NOT_INFERRED_FROM_HEAD_OR_WAY_EXPOSURES",
+    "actual_commit_and_detach": {
+      "ft_access_attempts": 1317946,
+      "commit_raw_probe_reached": 1163176,
+      "raw_tag_fail_commit": 0,
+      "relieve_calls": 0,
+      "relieve_T_disabled": 0,
+      "relieve_no_eligible": 0,
+      "relieve_eligible_selected": 0,
+      "detach_calls": 0,
+      "detach_success": 0,
+      "detached_retired": 0,
+      "trigger_accepted_after_detach": 0,
+      "trigger_denied_after_detach": 0,
+      "commit_accepted": 1284292,
+      "commit_denied": 33654
+    },
+    "authoritative_RO_model_domain": {
+      "accepted_global_reads": 1079230,
+      "accepted_oracle_candidates": 206448,
+      "accepted_ro": 206448,
+      "transactions": 51678,
+      "merges": 154770,
+      "responses": 206448,
+      "detached": 0
+    }
+  },
+  "full_set_replacement_evidence": {
+    "raw_MISS_r0_invalid0_head_cycle_exposures": 66779,
+    "raw_MISS_any_r_invalid0_head_cycle_exposures": 80046,
+    "joint_used": "Source heads_raw_reserved_invalid [raw,reservedWays,invalidWayCount,count]; directly filtering MISS/r0/invalid0 proves everyway is nonreserved and noninvalid, rather than multiplying marginals.",
+    "interpretation": "66779次MISS暴露的目标set没有空INVALID way且没有RESERVED way；其16个way均为clean/dirty可替换类。Tag已占满不等于所有way仍被未完成事务RESERVED。",
+    "source_rule": "Probe first returns matching-tag HIT/HIT_RESERVED/SECTOR_MISS where applicable; for new-tag miss it sets all_reserved false for any nonreserved way. It selects INVALID, clean/allowed dirty or an oldest-dirty fallback; only all_reserved causes the Tag RESERVATION_FAIL branch. Dirty ratio is preference, not availability exclusion."
+  },
+  "source_evidence": {
+    "refs": {
+      "gpu-cache.cc": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-cache.cc",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "5d15c9b345a9c7625b6895314a02e83b7a60e36a44a5d7c9e73b454232fe4f19",
+        "actual_bytes_equal_frozen_git_source": true
+      },
+      "gpu-cache.h": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-cache.h",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "a9a5fba3eb8829ef2b9ac2553c15c84ad357ebd136c1a99b213e3ff70831a891",
+        "actual_bytes_equal_frozen_git_source": true
+      },
+      "ep-l2-ft-cache.inc": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "c769532c78a6e9ce8c4d32139277faaa8847d9581ff2be8fdf2d41dbc764beb2",
+        "actual_bytes_equal_frozen_git_source": true
+      },
+      "ep-l2-ro-runtime.inc": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "4e76e9117705952754687b16cc470f85ff53e23b8fb49414b214276150ce32b8",
+        "actual_bytes_equal_frozen_git_source": true
+      }
+    },
+    "line_ranges": {
+      "gpu-cache.cc:354-383": "matchingTag early outcomes and all_reserved=false for any unreserved way",
+      "gpu-cache.cc:384-420": "invalid/clean/dirty replacement preference and dirty fallback",
+      "gpu-cache.cc:425-440": "all_reserved→RESERVATION_FAIL; otherwise INVALID/valid/dirty selected",
+      "gpu-cache.cc:2978-3008": "status-only same target-set capture; concretewayclass copied without modeled extra probe/ports",
+      "gpu-cache.h:409-415": "sector line RESERVED if anysector RESERVED",
+      "gpu-cache.h:1097-1108": "reserved dominates class; otherwise allINVALID / anyMODIFIED / clean",
+      "ep-l2-ft-cache.inc:325-329": "actual commit probe records TagFAIL and calls relieve only on RESERVATION_FAIL with RO runtime",
+      "ep-l2-ro-runtime.inc:241-249": "relieve requires actual eligible same-set victim, then detach"
+    },
+    "source_criterion": "all16 ways RESERVED for a new-tag miss; full occupancy of valid/modified ways alone is not the trigger"
+  },
+  "physical_phase_summary": [
+    {
+      "physical_phase": 0,
+      "kernel_uid": null,
+      "covered_head_cycle_exposures": 0,
+      "raw_MISS_head_cycle_exposures": 0,
+      "max_reserved_covered": null
+    },
+    {
+      "physical_phase": 1,
+      "kernel_uid": null,
+      "covered_head_cycle_exposures": 0,
+      "raw_MISS_head_cycle_exposures": 0,
+      "max_reserved_covered": null
+    },
+    {
+      "physical_phase": 2,
+      "kernel_uid": 1,
+      "covered_head_cycle_exposures": 60720,
+      "raw_MISS_head_cycle_exposures": 15180,
+      "max_reserved_covered": 0
+    },
+    {
+      "physical_phase": 3,
+      "kernel_uid": 2,
+      "covered_head_cycle_exposures": 60720,
+      "raw_MISS_head_cycle_exposures": 15180,
+      "max_reserved_covered": 0
+    },
+    {
+      "physical_phase": 4,
+      "kernel_uid": 3,
+      "covered_head_cycle_exposures": 60720,
+      "raw_MISS_head_cycle_exposures": 15180,
+      "max_reserved_covered": 0
+    },
+    {
+      "physical_phase": 5,
+      "kernel_uid": 4,
+      "covered_head_cycle_exposures": 97846,
+      "raw_MISS_head_cycle_exposures": 9247,
+      "max_reserved_covered": 1
+    },
+    {
+      "physical_phase": 6,
+      "kernel_uid": 5,
+      "covered_head_cycle_exposures": 1244388,
+      "raw_MISS_head_cycle_exposures": 107894,
+      "max_reserved_covered": 4
+    }
+  ],
+  "scope_and_nonclaims": [
+    "CFD这一个新r5 F诊断端点；不是新S/F性能配对。",
+    "218239次TVD跳过head-cycle未观测raw/set/requester/eligibility，不可填0，不可外推所有访存/所有周期都无压力。",
+    "Covered max4与newTag max3是实际目标set条件统计，不是跨set RO峰值均摊。",
+    "104842个有结构eligible的head-cycle以及真实51678个RO事务证明RO活动和观察分支存在，但没有rawTagFAIL时它们不足以触发detach。",
+    "同一物理phase是事件时间范围；不能作为requester/victim因果kernel，旧RO事务分phase未发出则UNKNOWN。",
+    "真实joint未与eligible/reason/wayclass边际相乘；head-cycle、way-exposure、事务和merge requester保持各自分母。",
+    "没有发现与此次数据不一致的observer计数断线或新的机制bug证据；结论不是穷尽正确性证明或所有212分支覆盖。",
+    "不能由此证明其它workload、旧binary、跳过路径的set始终无RESERVED压力。"
+  ],
+  "review_actions": {
+    "metadata_bytes_read": 190832,
+    "raw_scans": 0,
+    "native_or_application_starts": 0,
+    "source_registry_or_repo_mutations": 0
+  }
+}
