@@ -216,7 +216,8 @@
     "pressure_frontend_admitted": "frontend allows entry to access, not successful actual acceptance. Trigger after-detach counters are actual ft_access immediate result.",
     "later_trigger": "NOT_MEASURED; no UID/address tracking map.",
     "sample_immediate_commit_result": "-1 means not linked/not committed at captured key; not a negative status or zero-filled admission.",
-    "unsupported_config": "Diagnostic qualification only finite F, plus bounded T/M-disabled controls; no L2-disabled/ideal config qualification inherited."
+    "unsupported_config": "Diagnostic qualification only finite F, plus bounded T/M-disabled controls; no L2-disabled/ideal config qualification inherited.",
+    "response_backpressure": "Actual transactions.commit_response(false) calls only; upstream ICNT full guard may avoid that call. A zero counter does not mean no response wait. Real detached-ready/pinned/FIFO-full native control covers that distinct case."
   },
   "equations": [
     "observed_heads = probe_skipped + sum(raw all7 statuses + raw_unknown)",
@@ -235,5 +236,11 @@
     "live_detached = detach_success-detached_retired; final valid epoch requires0; detached_responses are requester-count, not retired transaction-count",
     "old detached counter = new detach_success at final snapshot"
   ],
-  "invalid_marker": "OUTPUT_INVALID is a fail-closed terminal marker if64MiB output cap is exhausted; not an accepted substitute for required complete records."
+  "invalid_marker": "OUTPUT_INVALID is a fail-closed terminal marker if64MiB output cap is exhausted; not an accepted substitute for required complete records.",
+  "invalid_sentinels": {
+    "SAMPLE.first_eligible_way=4294967295": "NA: no first eligible victim",
+    "SAMPLE.victim_payload=18446744073709551615": "NA: no selected eligible candidate; all accompanying selected-candidate attached/reuse/mask attributes are NA, not measuredfalse/zero",
+    "SAMPLE.immediate_commit_result=-1": "NOT_LINKED_OR_COMMIT_NOT_REACHED",
+    "GLOBAL.slice": "Registered slice count, not a physical slice ID; physical SLICE records must still cover expected0..63."
+  }
 }
