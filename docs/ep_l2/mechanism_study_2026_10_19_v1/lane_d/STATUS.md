@@ -9,3 +9,5 @@ Completed original MAIN6/7 subset GM0.9990537501, original-seven UNKNOWN/Btree H
 No application/native/build, trace/raw/SQLite scan, new/restarted Goal, controller/registry change or background waiter. Resume only at a real owner delivery or user foreground queue request.
 
 Latest [C early resource-preflight increment](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r3/README.md) consumed C18 as forecast/reuse metadata only. Actual positive coverage and A2 static applicability remain pending; D does not infer them from WORKING status.
+
+Latest [A2 static applicability/control-map increment](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r4/README.md) consumed A2-00000026. Static map is no longer missing; pending only actual C proof and A2 exact certificate binding, followed by E/user gates. Conditional T/M controls are supported in source but unapproved for any new run.

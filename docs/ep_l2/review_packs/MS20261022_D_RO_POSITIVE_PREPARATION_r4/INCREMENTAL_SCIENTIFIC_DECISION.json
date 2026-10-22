@@ -1,0 +1,66 @@
+{
+  "batch_id": "EPL2_RO_POSITIVE_QUALIFICATION_PREPARATION_20261022_r1",
+  "stage": "A2_STATIC_APPLICABILITY_AND_C_EARLY_COST_CONSUMED_C_CERTIFICATE_PENDING",
+  "primary_SGEMM_and_one_Conv_metadata_backup": "UNCHANGED_NO_F_SPEEDUP_SELECTION",
+  "source_side_ready": {
+    "exact_source_identity": {
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "archive_sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+    },
+    "finite_geometry": {
+      "tags_per_slice": 1024,
+      "tag_sets": 64,
+      "tag_ways": 16,
+      "total_payload_per_slice": 1168,
+      "line_bytes": 128,
+      "sector_bytes": 32,
+      "banks": 4,
+      "ops_per_bank_per_physical_cycle": 1,
+      "line_MSHR_per_slice": 128,
+      "descriptors_per_slice": 512,
+      "descriptors_per_line": 32
+    },
+    "admission": "Certified non-atomic global read; actual frontend-head one-port one-cycle query after native readiness; accepted hook count is not all trace references",
+    "eligible_detach": "Incoming same set; first eligible pending RO in physical way order; requires attached owner/generation, T and missing required-ready sectors, and !sticky reuse_seen",
+    "sticky_reuse": "Merge marks reuse_seen until transaction retirement, even after merged waiter retires. Positive admission can coexist with no eligible detach under real pressure.",
+    "S_runtime_invariance_premise": "A2 source map says RO runtime exists iff T||M; source-side T=M=0 nonconsumption premise supported. E must still independently seal exact old-S/certificate comparison rules and Q; no automatic reuse."
+  },
+  "source_supported_conditional_controls": [
+    {
+      "pair": [
+        "F",
+        "WV_M_ONLY"
+      ],
+      "factor": "T toggle conditional on fixed W/V/M=1 and exact same positive certificate/input/finite geometry; E-specific Q required"
+    },
+    {
+      "pair": [
+        "F",
+        "WV_T_ONLY"
+      ],
+      "factor": "M toggle conditional on fixed W/V/T=1; changes native LineMSHR allocation and detached instance lookup/merge path; E-specific Q required"
+    }
+  ],
+  "no_new_control_requested": true,
+  "conditional_control_limits": [
+    "F vs WV_M_ONLY isolates the T switch conditional on W/V/M=1, exact positive certificate and finite geometry, after new exact E qualification/approval; not authorized here",
+    "F vs WV_T_ONLY toggles M at fixed W/V/T but includes native line-MSHR and lookup/merge-state changes",
+    "WV_T_ONLY vs WV_M_ONLY changes both T and M; not a one-factor Tag-versus-MSHR capacity comparison",
+    "S/F remains a full-design contrast and cannot identify T-only benefit"
+  ],
+  "missing_application_observability": [
+    "No can_detach attempted/scanned/rejected-by-reason counters (reuse_seen vs ready vs notattached/nonRO).",
+    "No per-set pending-certified-live occupancy/time overlap with actual incoming tag pressure; no critical-path assignment from total waits.",
+    "No parent/sibling UID independence classification; merges count mem_fetch requesters, not necessarily independent warps."
+  ],
+  "native_reuse_limit": "Current affected E native cases + explicitly retained unchanged assertions are reusable only within E disposition. Source assertions/old positive detach fixtures are not current-main full-application evidence; do not rerun17 or inherit empty-fallback SGEMM Q as new positive Q.",
+  "first_experiment_recommendation": "Same minimal prospective certificate-bearing SGEMM F, anchored to old S only if E permits exact reuse; otherwise a fresh pair. Aim first at certified runtime activation and correct retirement; do not promise eligible Tag pressure, positive detach, performance gain or isolated T causality. One first option, no extra control launch request.",
+  "C_actual_RO_coverage": "NOT_YET_RECEIVED; need exact positive proof/ranges/manifest or ZERO/MISSING",
+  "A2_final_C_binding": "PENDING_GENUINE_C_ARTIFACT; static source map already consumed and must not be listed as missing",
+  "cost_ref": "../MS20261022_D_RO_POSITIVE_PREPARATION_r3/INCREMENTAL_COST_AND_DECISION.json",
+  "execution_verdict": "NO_GO_PENDING_C_CERTIFICATE_A2_BINDING_E_INDEPENDENT_QUALIFICATION_USER_APPROVAL",
+  "new_D_trace_raw_SQLite_scans_native_build_apps_Goal_registry_actions": 0
+}
