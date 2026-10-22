@@ -1,0 +1,507 @@
+{
+  "schema": "E2_DETACH_DECLARATIVE_VALIDATOR_PREPARATION_RECEIPT_V1",
+  "at_utc": "2026-10-22T03:28:19.217576+00:00",
+  "status": "OFFLINE_PREPARATION_READY_FOR_ROOT_REVIEW_AFTER_SCOPE_FIX",
+  "files": [
+    {
+      "path": "/tmp/e2_detach_validator/README.md",
+      "sha256": "13efd05e5ff3bfa3c0b7428cf5f658c5b49504bc9af761339b5ce400665e70ad",
+      "bytes": 3720
+    },
+    {
+      "path": "/tmp/e2_detach_validator/ROOT_REVIEW_FAILURE_WITNESS.json",
+      "sha256": "94e63cb81e25eff52bce6d7091e537a8eeb2617fd86838c7f6b3772543a84b41",
+      "bytes": 13698
+    },
+    {
+      "path": "/tmp/e2_detach_validator/ROOT_SCOPE_FIX_RECEIPT.json",
+      "sha256": "ee66a507e01ec415e5cb983894dbf2ecfc519eeb8d55244e40e4bbece246828f",
+      "bytes": 2457
+    },
+    {
+      "path": "/tmp/e2_detach_validator/VALIDATION.json",
+      "sha256": "0aab836cf97381581d4d6a087a2ce783ba7809a5fe11f362f74cae14918a3e81",
+      "bytes": 9649
+    },
+    {
+      "path": "/tmp/e2_detach_validator/__pycache__/test_validator.cpython-311.pyc",
+      "sha256": "cec4037658fc67908e68de630eb5dbba78bf96fb5bfbea191ddd60bbbeb50a30",
+      "bytes": 21246
+    },
+    {
+      "path": "/tmp/e2_detach_validator/__pycache__/validator.cpython-311.pyc",
+      "sha256": "0b7fb40b34faf57354bff8cd22a8b1c0e870bcdb30c8769625cfd3615d2baf8f",
+      "bytes": 30206
+    },
+    {
+      "path": "/tmp/e2_detach_validator/example_synthetic_document.json",
+      "sha256": "53e83560cdb0c739ee1b674bfc0fb84736b9148f2c3d5c0b1b59ee40a5ee011a",
+      "bytes": 9327
+    },
+    {
+      "path": "/tmp/e2_detach_validator/history/RECEIPT_BEFORE_ROOT_SCOPE_REVIEW.json",
+      "sha256": "78e79e2f5067c14eb6597edcae9c699204269aaca47a0663f84fd50eb9e67c03",
+      "bytes": 9416
+    },
+    {
+      "path": "/tmp/e2_detach_validator/history/validator_before_scope_fix.py",
+      "sha256": "24c977e577319db4ee68a43a9aa849d2d6df466746dc7e28d550a8554861284d",
+      "bytes": 13749
+    },
+    {
+      "path": "/tmp/e2_detach_validator/test_validator.py",
+      "sha256": "f899096d7681fcecc74dacf9acf970fe00d42ebf8f6605f54320835116df4135",
+      "bytes": 13132
+    },
+    {
+      "path": "/tmp/e2_detach_validator/validator.py",
+      "sha256": "4ee61297719867865954c889bde368cd53d64acda1c35b4ccc23594ec5e00a9a",
+      "bytes": 15275
+    }
+  ],
+  "source_contracts": [
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/COUNTER_CONTRACT.json",
+      "sha256": "ffc0ea3c62c92bb69939cabc0b90fc6e1b7117893861cf174522ffc82b4e89b6"
+    },
+    {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/INDEPENDENT_SOURCE_REVIEW.json",
+      "sha256": "326a863974021a4f3ef2d99fa9aac5b87f8f1bbe723fa569f58062de9957512d"
+    }
+  ],
+  "controls": {
+    "schema": "E2_OFFLINE_COUNTER_VALIDATOR_CONTROLS_V1",
+    "result": "PASS",
+    "case_count": 51,
+    "elapsed_seconds": 0.015112211927771568,
+    "cases": [
+      {
+        "name": "positive_declarations_only",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "detach_then_request_denied_legal",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "multiple_waiter_responses_not_transaction_count",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "raw_fail_masked_by_preview_miss_is_counted",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "native_preview_not_consulted_is_separate",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "under_count",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "CONSERVATION",
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "over_count",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "bool_is_not_integer",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "COUNT_TYPE"
+        ]
+      },
+      {
+        "name": "negative_is_invalid",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "COUNT_TYPE"
+        ]
+      },
+      {
+        "name": "uint64_wrap_is_invalid",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "COUNT_TYPE"
+        ]
+      },
+      {
+        "name": "missing_counter_not_zero",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "MISSING_COUNTER",
+          "MISSING_COUNTER",
+          "MISSING_COUNTER"
+        ]
+      },
+      {
+        "name": "NA_prevents_closed_claim",
+        "expected": "INCOMPLETE",
+        "actual": "INCOMPLETE",
+        "error_codes": []
+      },
+      {
+        "name": "NA_plus_zero_rejected",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "NA_VALUE"
+        ]
+      },
+      {
+        "name": "declared_NA_cannot_be_filled",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "NA_FILLED_AS_ZERO",
+          "CONSERVATION",
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "head_cycles_not_access_attempts",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "UNIT_MISMATCH"
+        ]
+      },
+      {
+        "name": "renamed_unit_cannot_bridge_domains",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "DOMAIN_MISMATCH"
+        ]
+      },
+      {
+        "name": "existing_detached_must_match_real_success",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "nonexclusive_masks_not_partition",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "NONEXCLUSIVE_SUM"
+        ]
+      },
+      {
+        "name": "duplicate_partition_term",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "REPEATED_TERM",
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "overflow_invalidates",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "COUNTER_OVERFLOW"
+        ]
+      },
+      {
+        "name": "missing_overflow_marker",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "OVERFLOW_FLAG_MISSING"
+        ]
+      },
+      {
+        "name": "sample_cap_exceeds64",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "SAMPLE_BOUNDS"
+        ]
+      },
+      {
+        "name": "dropped_requires_truncated",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "SAMPLE_TRUNCATION"
+        ]
+      },
+      {
+        "name": "duplicate_samples",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "DUPLICATE_SAMPLE"
+        ]
+      },
+      {
+        "name": "slice_rollup",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "missing_required_slice_scope",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "MISSING_REQUIRED_SCOPE",
+          "MISSING_COUNTER"
+        ]
+      },
+      {
+        "name": "slice_rollup_missing_residual",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "CONSERVATION"
+        ]
+      },
+      {
+        "name": "omitted_expected_slice",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_MEMBERS"
+        ]
+      },
+      {
+        "name": "kernel_with_explicit_unattributed",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "unattributed_not_discarded",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_MEMBER_BINDING",
+          "UNATTRIBUTED_MISSING",
+          "ROLLUP_LEVEL",
+          "OVERLAPPING_KERNEL_SUM",
+          "OVERLAPPING_KERNEL_SUM"
+        ]
+      },
+      {
+        "name": "overlap_cannot_be_summed",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "OVERLAPPING_KERNEL_SUM"
+        ]
+      },
+      {
+        "name": "explicit_overlap_cannot_be_summed",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "OVERLAPPING_KERNEL_SUM"
+        ]
+      },
+      {
+        "name": "interval_bool_invalid",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "INTERVAL"
+        ]
+      },
+      {
+        "name": "different_intervals_not_equal",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "SCOPE_MISMATCH"
+        ]
+      },
+      {
+        "name": "exposure_cannot_pose_as_same_transition",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "DOMAIN_MISMATCH"
+        ]
+      },
+      {
+        "name": "root_witness_expected01_actual0_99",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "kernel_fake_label",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "kernel_children_from_different_slices",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_POPULATION"
+        ]
+      },
+      {
+        "name": "empty_run_rejected",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "RUN_ID"
+        ]
+      },
+      {
+        "name": "missing_run_rejected",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "RUN_ID"
+        ]
+      },
+      {
+        "name": "slice_level_missing_slice_id",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "SLICE_ID",
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "kernel_level_missing_kernel_id",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "KERNEL_ID",
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "kernel_level_missing_slice_id",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "SLICE_ID",
+          "ROLLUP_POPULATION"
+        ]
+      },
+      {
+        "name": "unattributed_scope_identity_required",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "UNATTRIBUTED_ID",
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "slice_bool_rejected",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "SLICE_ID",
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "kernel_outside_parent_period",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_INTERVAL"
+        ]
+      },
+      {
+        "name": "slice_wrong_period",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_INTERVAL",
+          "ROLLUP_INTERVAL"
+        ]
+      },
+      {
+        "name": "shifted_disjoint_kernel_periods_legal",
+        "expected": "VALID_DECLARATIONS_ONLY",
+        "actual": "VALID_DECLARATIONS_ONLY",
+        "error_codes": []
+      },
+      {
+        "name": "unknown_residual_stays_incomplete",
+        "expected": "INCOMPLETE",
+        "actual": "INCOMPLETE",
+        "error_codes": []
+      },
+      {
+        "name": "NA_cannot_hide_wrong_member_identity",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "ROLLUP_MEMBER_BINDING"
+        ]
+      },
+      {
+        "name": "malformed_document_does_not_crash",
+        "expected": "INVALID",
+        "actual": "INVALID",
+        "error_codes": [
+          "DOMAINS",
+          "METRIC_DECLARATIONS",
+          "NO_RELATIONS",
+          "SAMPLES_FLAGS"
+        ]
+      }
+    ],
+    "limitations": [
+      "Synthetic declaration checks, not native or simulator correctness tests",
+      "No real A2 schema adapter available yet",
+      "Cannot prove an emitting simulator observed a counter honestly",
+      "Not source/binary/input/resource qualification or application acceptance"
+    ]
+  },
+  "actions": {
+    "repository_changes": false,
+    "central_mutations": false,
+    "native_runs": 0,
+    "full_application_starts": 0,
+    "cpp_builds": 0
+  },
+  "root_review_fix": {
+    "witness_before": "VALID_DECLARATIONS_ONLY",
+    "witness_after": "INVALID",
+    "fix_receipt": "ROOT_SCOPE_FIX_RECEIPT.json"
+  },
+  "pending": "Root independent review, then real A2 schema adapter. No native/application qualification claim."
+}

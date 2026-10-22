@@ -1,0 +1,71 @@
+{
+  "schema": "E2_DECLARATIVE_VALIDATOR_ROOT_SCOPE_FIX_V1",
+  "at_utc": "2026-10-22T03:28:19.217225+00:00",
+  "root_review_failure_witness": "ROOT_REVIEW_FAILURE_WITNESS.json",
+  "before_status": "VALID_DECLARATIONS_ONLY",
+  "after": {
+    "schema": "E2_DECLARATIVE_COUNTER_AUDIT_RESULT_V1",
+    "status": "INVALID",
+    "errors": [
+      {
+        "code": "ROLLUP_MEMBER_BINDING",
+        "where": "rollup",
+        "detail": {
+          "declared_member": "1",
+          "actual_dimension": 99,
+          "child": "s1"
+        }
+      }
+    ],
+    "incomplete": [],
+    "checks": [
+      {
+        "id": "head_partition",
+        "kind": "partition",
+        "value": 10
+      },
+      {
+        "id": "raw_pressure_rewrite",
+        "kind": "partition",
+        "value": 4
+      },
+      {
+        "id": "actual_access",
+        "kind": "partition",
+        "value": 3
+      },
+      {
+        "id": "detach_trigger_outcome",
+        "kind": "partition",
+        "value": 1
+      },
+      {
+        "id": "lifecycle",
+        "kind": "partition",
+        "value": 1
+      },
+      {
+        "id": "real_transition_reconcile",
+        "kind": "equivalence",
+        "value": 1
+      },
+      {
+        "id": "rollup",
+        "kind": "rollup",
+        "value": 7
+      }
+    ],
+    "scope": "OFFLINE_DECLARED_COUNTS_ONLY_NOT_NATIVE_OR_APPLICATION_QUALIFICATION"
+  },
+  "changes": [
+    "Bind every slice/kernel/UNATTRIBUTED relation member label to the actual child scope dimension, not merely another declaration list.",
+    "Require nonempty string run ID; GLOBAL forbids slice/kernel, SLICE requires integer slice, KERNEL_INTERVAL requires integer slice+kernel, UNATTRIBUTED requires integer slice and explicit kernel=UNATTRIBUTED.",
+    "Rollup removes only its own axis dimension: kernel aggregation preserves slice population. Kernel parent is explicitly SLICE; global aggregation happens through exact slice rollup.",
+    "Validate scope/member structure even if a required count is NA. Unknown counts remain INCOMPLETE; NA cannot hide incorrect child identities.",
+    "Keep physical interval checks: disjoint contained kernel intervals are legal; overlapping, out-of-parent or mismatched slice periods invalid."
+  ],
+  "controls_before": 36,
+  "controls_after": 51,
+  "historical_bad_validator": "history/validator_before_scope_fix.py",
+  "production_effect": "None: /tmp-only offline checker preparation; no formal parser/native/app adoption"
+}

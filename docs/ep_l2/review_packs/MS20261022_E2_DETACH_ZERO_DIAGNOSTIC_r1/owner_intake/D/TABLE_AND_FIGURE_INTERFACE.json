@@ -1,0 +1,94 @@
+{
+  "schema": "EPL2_D_DETACH_TABLE_FIGURE_INTERFACE_V1",
+  "status": "EMPTY_INTERFACE_NO_REAL_DATA",
+  "row_key": [
+    "cohort",
+    "E_acceptance_receipt_sha256",
+    "binary_sha256",
+    "counter_schema_sha256",
+    "domain",
+    "metric",
+    "unit",
+    "slice_scope",
+    "kernel_scope",
+    "requester_class",
+    "interval",
+    "probe_provenance"
+  ],
+  "row_columns": [
+    "value",
+    "measurement_state",
+    "denominator_metric",
+    "denominator_value",
+    "ratio",
+    "coverage",
+    "overlap",
+    "overflow",
+    "residual",
+    "E_evidence_ref"
+  ],
+  "template": {
+    "cohort": "SGEMM_POSITIVE_RO_OBSERVER_F_DIAGNOSTIC",
+    "E_acceptance_receipt_sha256": null,
+    "binary_sha256": null,
+    "counter_schema_sha256": null,
+    "domain": "FRONTEND_HEAD_CYCLE",
+    "metric": "raw_reservation_fail",
+    "unit": "head_physical_cycle",
+    "slice_scope": "GLOBAL",
+    "kernel_scope": "UNATTRIBUTED_OR_E_DECLARED_SCOPE",
+    "requester_class": "ALL_VISIBLE",
+    "interval": null,
+    "probe_provenance": null,
+    "value": null,
+    "measurement_state": "UNKNOWN_NOT_EMITTED",
+    "denominator_metric": "observed_heads",
+    "denominator_value": null,
+    "ratio": null,
+    "coverage": "NOT_YET_ACCEPTED",
+    "overlap": "UNKNOWN",
+    "overflow": "UNKNOWN",
+    "residual": null,
+    "E_evidence_ref": null
+  },
+  "tables": [
+    {
+      "id": "T1",
+      "purpose": "Exact diagnostic identity, certificate and acceptance/coverage"
+    },
+    {
+      "id": "T2",
+      "purpose": "Global+64slice frontend raw/preview/commit/lifecycle counts and separate denominators"
+    },
+    {
+      "id": "T3",
+      "purpose": "Requester kernel/interval plus unattributed; no additive overlap"
+    },
+    {
+      "id": "T4",
+      "purpose": "Pressure same-set reason priority, joint mask, eligibility histogram and named gates"
+    },
+    {
+      "id": "T5",
+      "purpose": "Actual detach vs immediate trigger vs victim closure, separate units"
+    }
+  ],
+  "figures": [
+    {
+      "id": "D_DIAG_F1",
+      "kind": "separate-domain funnel panels",
+      "purpose": "Coverage -> raw pressure -> local eligible -> preview/path -> actual calls -> lifetime; no single misleading waterfall across domains"
+    },
+    {
+      "id": "D_DIAG_F2",
+      "kind": "same-set reason stacked bars plus separate multi-bit heatmap",
+      "purpose": "Exclusive first-reason fractions and nonexclusive coexistence explicitly separated"
+    },
+    {
+      "id": "D_DIAG_F3",
+      "kind": "kernel/slice panel with unmatched/drain bucket",
+      "purpose": "Counts in proper scope, overlap hatch/UNKNOWN, no causal stall sum"
+    }
+  ],
+  "render_rule": "Render only actual E accepted mapped summary values. No fake0 bars, empirical figures or placeholder numeric results today. Main/capacity figures and EN-v22 untouched."
+}
