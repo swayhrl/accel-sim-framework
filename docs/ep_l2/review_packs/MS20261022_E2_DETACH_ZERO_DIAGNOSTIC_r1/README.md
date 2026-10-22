@@ -9,7 +9,9 @@
 
 CFD [正式接受点](approved_four_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json)、[独立终验与逐物理phase计数](approved_four_r1/results/cfd_097k/INDEPENDENT_TERMINAL_AND_CAUSE_REVIEW.json)和[D交付回执](approved_four_r1/results/cfd_097k/D_DELIVERY_RECEIPT.json)均已发布。D真实消费状态以本人ACK为准，不冒称完成。
 
-DWT、Vector、Conv各有独立新r4 Q、完整原输入/条件证书及终验绑定。按实际资源准入执行；当前workspace约9GiB时原每运行监控预留只允许先单路，符合单路就滚动、不为多路等待。每端真实native exit0、完整指令/命令/64slice、212计数与退尽、身份和独立raw复核全部通过后才正式交D。大trace只按原runner启动前/结束后的必要身份检查读取；不重跑原生套件。
+DWT E053 也已独立接受并以E2-87交D：148684429条指令、167643周期、9965个RO事务，实际FT Tag失败/relieve/detach均0，公共cycles/RO计数与原sameinput F相同。见[接受点](approved_four_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json)。
+
+Vector、Conv各有独立新r4 Q、完整原输入/条件证书及终验绑定。按实际资源准入执行；当前workspace约9GiB时原每运行监控预留只允许先单路，符合单路就滚动、不为多路等待。每端真实native exit0、完整指令/命令/64slice、212计数与退尽、身份和独立raw复核全部通过后才正式交D。大trace只按原runner启动前/结束后的必要身份检查读取；不重跑原生套件。
 
 原SGEMM空证书、原FWT全epoch同line写入排除及其他历史失败/HOLD保留。E051原自动解析FAILED和费用不改；其正常native完整执行已凭明确工程证据经原中央API补充接受，未重跑。新版四端使用原CLI加已审固定decoder；分析中的物理phase不是因果kernel，跨phase事件差不当作存量。
 
