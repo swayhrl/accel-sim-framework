@@ -17,3 +17,5 @@
 [有限追加提案](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/PRIMARY_FOUR_EXISTING_POSITIVE_RO_r1/README.md)：CFD/DWT/Vector/Conv各一新r4 F诊断端，CFD-only第二选择不执行；不形成新性能配对、不执行并集。实际用户批准已登记a247a318；启动前仍需逐输入独立资格和实际资源准入。
 
 共享队列负责精确Git引用、去重及本人ACK；不自动唤醒结束窗口，无后台轮询器或第二controller。任务状态不代表peer当前STATUS。旧面板与回执保存在本任务history及Git历史。
+
+E2完整归因Goal进行中：已查明必要触发缺失，r4没有set占用×新Tag需求×requester/eligible/gate联合。r5纯observer精确四端提案待用户批准，未build/未新增启动。D仅收增量材料，不是执行前置。当前仍为原controller运行Conv E055、累计55。

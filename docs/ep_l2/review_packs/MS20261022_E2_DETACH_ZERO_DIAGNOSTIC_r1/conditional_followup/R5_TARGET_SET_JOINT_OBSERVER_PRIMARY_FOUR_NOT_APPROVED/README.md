@@ -19,3 +19,5 @@ E2直接承担producer、独立资格、唯一中央执行和归因；不需要D
 单路成本从当前r4收尾、工程资源实际准入后计算：新producer/资格20–45分钟；CFD10–20、DWT15–30、Vector15–30、Conv50–90分钟，整批约110–215分钟，首份CFD补证约30–65分钟。这是成本估计，不是新的超时或截止；资源允许则并行。
 
 见[精确提案](PROPOSAL.json)、[设计冻结](design/FROZEN_R2.json)、[schema](design/SCHEMA_DESIGN.json)、[未编译接点草案](design/isolated_hooks.patch.txt)、[独立预审](INDEPENDENT_DESIGN_REVIEW.json)。已批准r4的Conv继续运行，本修订等待用户批准。
+
+身份口径：JSON逐行保留旧r4完整identity只作source applicability参照；新条件冻结输入/config/profile/model字段，必须替换为正式r5 Core/main/archive身份。旧r4二进制不能冒充新源。
