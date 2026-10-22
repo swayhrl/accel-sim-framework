@@ -1,0 +1,20 @@
+{
+  "schema": "E2_R5_NEW_NATIVE_QUALIFICATION_HOLD_V1",
+  "status": "HOLD_OBSERVER_WIRE_INVALID_ENGINEERING_FIXTURE_DUPLICATE_OWNER",
+  "actual_application_starts": 55,
+  "actual_new_r5_applications": 0,
+  "native_exit0": 16,
+  "old_model_semantics_RO_and212_preserved": true,
+  "new_observer_R5_ON_cases": 8,
+  "OUTPUT_INVALID_scope_mismatch": 8,
+  "normal_r5_frames": 0,
+  "new_runtime_qualification_granted": false,
+  "root_cause": "Existing bounded native fixture allocates exec_gpgpu_sim (already owns real partition0), then manually creates another partition0. Strict new observer correctly refuses duplicate physical slice; tested owner remains unbound and scope mismatch invalidates output. This is native fixture lifecycle, not proof of production model failure.",
+  "source_facts": [
+    "Core1093 src/gpgpu-sim/gpu-sim.cc1178-1183 constructs partition",
+    "Core1093 tests/ep_l2/potential_fixture.h47-50 manually constructs another partition",
+    "new r5 registry.bind strictly rejects another owner with same physical slice"
+  ],
+  "repair_scope": "Isolated native fixture reuse existing production GPU-owned partition/stats. Production Core1093/main/archive and strict duplicate guard remain intact; independent corrected test ELF/source/exit/math qualification required. No new app yet.",
+  "no_rerun_of_old_complete_apps": true
+}
