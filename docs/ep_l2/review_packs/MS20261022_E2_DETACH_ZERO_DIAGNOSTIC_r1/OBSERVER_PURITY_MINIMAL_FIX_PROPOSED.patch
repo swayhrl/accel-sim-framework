@@ -1,0 +1,15 @@
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -2977,8 +2977,10 @@
+ void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) const {
+   if(!ep_l2_detach_diag::get(this))return;
+   o.runtime=bool(m_ro);o.T=m_config.m_ro_tag_detach;o.candidate=m_ro&&m_ro->candidate(m);
+-  unsigned index=~0U;const bool ro_new=m_ro&&m_ro->new_request(m);
+-  o.raw=m_tag_array->probe(m_config.block_addr(m->get_addr()),index,m,ro_new?false:m->is_write(),true);
++  unsigned index=~0U;
++  // Observer needs status only: omit the held-request telemetry side effect.
++  o.raw=m_tag_array->probe(m_config.block_addr(m->get_addr()),index,
++      m->get_access_sector_mask(),m->is_write(),true,nullptr);
+   o.set=m_config.set_index(m->get_addr());
+   if(o.raw!=RESERVATION_FAIL||!o.T)return;
+   const unsigned base=o.set*m_config.get_assoc();
