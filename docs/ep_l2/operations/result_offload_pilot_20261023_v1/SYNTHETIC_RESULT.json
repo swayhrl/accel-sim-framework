@@ -1,0 +1,194 @@
+{
+  "result": {
+    "schema": "RESULT_OFFLOAD_PHASE2_SYNTHETIC_RESULT_V1",
+    "status": "PASS",
+    "utc": "2026-10-22T17:26:38.424051+00:00",
+    "txid": "feefa3721ebd906eb1c8f09809c983dc510303cc919741cf2849709f22a53a6d",
+    "manifest_sha256": "79642b24965d05dd7e53d47bfb4c4460e378334879475e01bce4958b8a73c989",
+    "tool_publication_commit": "e78ae0ad954c359d5ec8e9c9c52f2dba0668283e",
+    "driver_sha256": "b2c850227f70150dce67474c6cec234f4b0daf109c7b33a0758fae1838701440",
+    "v9_sha256": "6fd13ab5a9df4b2f6cdddcc4c1e09bb34619571efdf3a7578372dc4b776603fe",
+    "cases": [
+      {
+        "case": "actual_process_crash_before_receipt_and_exact_orphan_adoption",
+        "status": "PASS",
+        "proof": {
+          "worker_exit": 91,
+          "txid": "feefa3721ebd906eb1c8f09809c983dc510303cc919741cf2849709f22a53a6d",
+          "range_bytes": 4096,
+          "new_payload_reuploaded_on_adoption": 0
+        }
+      },
+      {
+        "case": "actual_process_crash_after_receipt_duplicate_reuse",
+        "status": "PASS",
+        "proof": {
+          "worker_exit": 92,
+          "new_payload_reuploaded": 0,
+          "record_bytes_unchanged": true
+        }
+      },
+      {
+        "case": "truncated_network_partial_HOLD",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "orphan not complete/verified; HOLD for exact reset"
+        }
+      },
+      {
+        "case": "gap_refuses_COMMIT",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "chunk overlap/gap/txid"
+        }
+      },
+      {
+        "case": "wrong_txid",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "mismatched txid"
+        }
+      },
+      {
+        "case": "wrong_chunk_SHA",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "bridge chunk SHA"
+        }
+      },
+      {
+        "case": "changed_manifest_selector",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "selector SHA mismatch"
+        }
+      },
+      {
+        "case": "path_traversal",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "noncanonical relative path"
+        }
+      },
+      {
+        "case": "wrong_mount_projection",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "wrong genuine164 mount"
+        }
+      },
+      {
+        "case": "differing_existing_destination_no_overwrite",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "immutable record mismatch"
+        }
+      },
+      {
+        "case": "whole_archive_COMMIT_last_and_SHA",
+        "status": "PASS",
+        "proof": {
+          "txid": "feefa3721ebd906eb1c8f09809c983dc510303cc919741cf2849709f22a53a6d",
+          "ranges": 21,
+          "files": 4,
+          "original_bytes": 1314816,
+          "archive_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_result_offload_pilot_v1/archive/feefa3721ebd906eb1c8f09809c983dc510303cc919741cf2849709f22a53a6d",
+          "commit_sha256": "f7f393af93ea618130ff5694f36243fa82011242e7471d62558cf8617c7f53e4"
+        }
+      },
+      {
+        "case": "duplicate_final_commit_reused",
+        "status": "PASS",
+        "proof": {
+          "commit_sha256": "f7f393af93ea618130ff5694f36243fa82011242e7471d62558cf8617c7f53e4",
+          "no_overwrite": true
+        }
+      },
+      {
+        "case": "independent_native_Target_restore",
+        "status": "PASS",
+        "proof": {
+          "status": "RESTORE_VERIFIED_NATIVE_TARGET",
+          "files": 4,
+          "directories": 3,
+          "raw_bytes": 1314816,
+          "uid_gid_mode_mtime_ns": true,
+          "target": "/root/data/result_offload_pilot_20261023_v1/restored",
+          "not_native164": true
+        }
+      },
+      {
+        "case": "populated_restore_refused",
+        "status": "PASS",
+        "proof": {
+          "expected_refusal": "Hold",
+          "reason": "restore destination already exists"
+        }
+      },
+      {
+        "case": "four_axes_SOURCE_KEEP",
+        "status": "PASS",
+        "proof": {
+          "science": "NOT_EVALUATED_SYNTHETIC_ONLY",
+          "archive": "ARCHIVE_VERIFIED",
+          "restore": "RESTORE_VERIFIED_NATIVE_TARGET",
+          "local_reclaim": "SOURCE_KEEP",
+          "source_released_bytes": 0
+        }
+      }
+    ],
+    "case_count": 15,
+    "files": 4,
+    "directories": 3,
+    "raw_bytes": 1314816,
+    "nonempty_ranges": 21,
+    "archive": "ARCHIVE_VERIFIED",
+    "restore": "RESTORE_VERIFIED_NATIVE_TARGET",
+    "persistent_archive_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_result_offload_pilot_v1/archive/feefa3721ebd906eb1c8f09809c983dc510303cc919741cf2849709f22a53a6d",
+    "native_restore_root": "/root/data/result_offload_pilot_20261023_v1/restored",
+    "science": "NOT_EVALUATED_SYNTHETIC_ONLY",
+    "source_action": "SOURCE_KEEP",
+    "existing_files_deleted_moved_overwritten": 0,
+    "source_released_bytes": 0,
+    "retained_fault_and_stage_evidence": true,
+    "initial_admission": {
+      "utc": "2026-10-22T17:26:22.801623+00:00",
+      "scratch_allocated_bytes": 69632,
+      "NAS_allocated_bytes": 8192,
+      "Share_available": 40772325376,
+      "MemAvailable": 256590360576
+    },
+    "observed_peaks_before_result_receipts": {
+      "scratch_allocated_bytes": 4112384,
+      "NAS_allocated_bytes": 4268032,
+      "host_MemAvailable_min": 256587583488,
+      "Share_available_min": 40767143936
+    },
+    "parent_maxrss_kib": 20480,
+    "largest_child_maxrss_kib": 20480,
+    "elapsed_seconds": 15.630147762596607,
+    "peak_accounting": "All new stage/fault data retained; only V9 LINK alias finalization removes owned temporary names without releasing underlying blocks. Allocated st_blocks inventory deduplicates hardlink identities."
+  },
+  "final_resource_including_result_receipts": {
+    "utc": "2026-10-22T17:26:38.479107+00:00",
+    "scratch_allocated_bytes": 4120576,
+    "NAS_allocated_bytes": 4280320,
+    "Share_available": 40767127552,
+    "MemAvailable": 256709603328
+  },
+  "observed_peaks_including_receipts": {
+    "scratch_allocated_bytes": 4120576,
+    "NAS_allocated_bytes": 4280320,
+    "host_MemAvailable_min": 256587583488,
+    "Share_available_min": 40767127552
+  },
+  "persistent_result_receipt_sha256": "c454db13e56c434951e8248443ed2e4e559e0bce3d36d292575dd617743cb324"
+}
