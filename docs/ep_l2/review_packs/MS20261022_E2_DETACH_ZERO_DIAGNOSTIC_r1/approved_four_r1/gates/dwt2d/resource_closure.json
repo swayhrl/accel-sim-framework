@@ -1,0 +1,151 @@
+{
+  "schema": "E2_R4_FOUR_PERINPUT_GATE_APPLICABILITY_CANDIDATE_V1",
+  "status": "ROOT_REVIEWED_APPLICABILITY_PASS",
+  "production_driven": true,
+  "gate": "resource_closure",
+  "workload": "dwt2d",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "source_scope_evidence": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/resource_closure.json",
+    "sha256": "03f2dbdd5b63c330f23e93bf786d6f546da27495b7c0412339fca676431c2c1b"
+  },
+  "unchanged_model_premise": "Exact allocator/descriptor/WAD/payload release and original epoch drain guards retained.",
+  "actual_source_delta_applicability": "Observer adds no modeled owner; actual retirement counters reconcile and selected caches drain in native.",
+  "actual_new_native_classes": [
+    "PRESSURE_ELIGIBLE",
+    "RESPONSE_BACKPRESSURE",
+    "ROLLUP_RESIDUAL",
+    "BOUNDED_OUTPUT"
+  ],
+  "actual_native_records": [
+    {
+      "case": "PRESSURE_ELIGIBLE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "42b9a6abe4f757af70086bea1dcdf49fb61524a1e027db4e59eafbb5c44931dd",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "fb6ec99a8cb1d736c425c42d9e292f66ab261c62474887acedc344c2292ed3b2",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "83ef942c45709eba1d762d70d33dd21cc2d6f099f2a624693bd02cd094bf5172",
+      "actual_raw_sha256": "f76e9131e6012b579ec11fbe937d2dd8475cb2587a66a880dcd03577bf87a707",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "RESPONSE_BACKPRESSURE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "79fc80edc3efba83eddf437ad1c8dd1184a8adfe0e8a32028961d1928f737954",
+      "actual_raw_sha256": "002c7570c7a9f6338c0030666aee5d7de73161f9b139e0c310b5ac5d6d61b9eb",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=RESPONSE_BACKPRESSURE"
+    },
+    {
+      "case": "RESPONSE_BACKPRESSURE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "1632369177e5f8e8b2d5b9c409d06c8bbda892deef3bbbaae450114bc63bdb22",
+      "actual_raw_sha256": "002c7570c7a9f6338c0030666aee5d7de73161f9b139e0c310b5ac5d6d61b9eb",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=RESPONSE_BACKPRESSURE"
+    },
+    {
+      "case": "RESPONSE_BACKPRESSURE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "1263c03cdb09485dd5e496ae749e1e2ef3a2056a0a2e87cbef55a1c91731dfcc",
+      "actual_raw_sha256": "4ac70d0df11a9862a7ece1f6b1793c497a0ae95ac56b97bedd4a0373ec494634",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=RESPONSE_BACKPRESSURE"
+    },
+    {
+      "case": "ROLLUP_RESIDUAL_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "bbbcf2ece0f24b4c5edbf60c0b8951e84010828fa1918d5cdf6a496ef1c2ab7a",
+      "actual_raw_sha256": "1c09f30e3345d01f3a9bf89612c02f20bb681d9648e4e05684489e95ec100173",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=ROLLUP_RESIDUAL"
+    },
+    {
+      "case": "ROLLUP_RESIDUAL_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "b1cea9715e06f9e62f2f373fdf6f46260ecb353455c2f5ee0d765fd0539298ab",
+      "actual_raw_sha256": "1c09f30e3345d01f3a9bf89612c02f20bb681d9648e4e05684489e95ec100173",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=ROLLUP_RESIDUAL"
+    },
+    {
+      "case": "ROLLUP_RESIDUAL_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "39780c9f7ecc8cf9837928fbfbcb59b44cfdf83e0c261fc6dac7db4c9b26cc57",
+      "actual_raw_sha256": "1f4bce6e3d72749d415d45b6a59fe5251abfefd25c74c586967c65d8755fd9d4",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=ROLLUP_RESIDUAL"
+    },
+    {
+      "case": "BOUNDED_OUTPUT_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "2a4a8f9b8080353d77b4f1878810700892fe84dbc7ff24e61d1f9772a87dc528",
+      "actual_raw_sha256": "a8268545c9e2954655e96b9d11272fed5f2332afd991f59294ee59ee37feaf95",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=BOUNDED_OUTPUT"
+    },
+    {
+      "case": "BOUNDED_OUTPUT_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "6e467f551a6784b6af0a51d6ccd91c480696314393f918b5f65486b36e4b3b23",
+      "actual_raw_sha256": "a8268545c9e2954655e96b9d11272fed5f2332afd991f59294ee59ee37feaf95",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=BOUNDED_OUTPUT"
+    },
+    {
+      "case": "BOUNDED_OUTPUT_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "b2aa9e02d1cd656f7aabe4544887043abdf26d20f82dafc2a68da916d4de88d1",
+      "actual_raw_sha256": "251a5c12e06c1e5f7bb809941ed1e941cb7f9842445bdccc8f98a3c26939144f",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=BOUNDED_OUTPUT"
+    }
+  ],
+  "actual_native_independent_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+    "sha256": "5e84c0784d635e7e6284f855bbfe4f63898818b4799894b3b0ef0ac6e6505c7a",
+    "bytes": 79368
+  },
+  "perinput_newsource_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/QUALIFICATION_PREPARATION_r1/CFD_DWT_APPLICABILITY_REVIEW.json",
+    "sha256": "783de6ea2a4f4ac7496b9d22b8df3577108e501df5b4ec8cd104f58ed5048d57",
+    "bytes": 79939
+  },
+  "input_source_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/INPUT_SOURCE_ADMISSION.json",
+    "sha256": "a2e702db5943910ce30c85c2b58a80c8227946b7aa7fb99cdc833a8e4511ccd7",
+    "bytes": 6326
+  },
+  "oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/ORACLE_ADMISSION.json",
+    "sha256": "e6e692f2d1bc6bb2c9bec90dd892f6a3c576d711db63fff265b75541272e4a35",
+    "bytes": 4767
+  },
+  "scope_limit": "Inactive execGPU cache means native GLOBAL epoch_closed=false; these fixtures are not complete application64slice acceptance. Real application complete64/GLOBAL/native drain mandatory.",
+  "no_wholeoldQ_or_newS_or_Cjoint_upgrade": true,
+  "native_reexecutions": 0,
+  "E_root_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "dd06fbd5438ef55ccd8860164bd180c0831b42718ced9bc77a8ecc0c7a474aba"
+  }
+}

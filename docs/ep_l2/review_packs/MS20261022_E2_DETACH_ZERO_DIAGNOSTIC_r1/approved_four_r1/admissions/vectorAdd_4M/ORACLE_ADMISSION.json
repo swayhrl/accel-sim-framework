@@ -1,0 +1,75 @@
+{
+  "schema": "E2_R4_PERINPUT_WHOLECOMMANDLIST_RO_ADMISSION_CANDIDATE_V1",
+  "status": "ROOT_REVIEWED_APPLICABILITY_PASS",
+  "workload": "vectorAdd_4M",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "selection_id": "D_V2_vectorAdd_4M",
+  "manifest": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json",
+    "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+    "bytes": 2100
+  },
+  "ranges": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/certified_ranges.csv",
+    "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560",
+    "bytes": 102
+  },
+  "manifest_status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "kernel_count": 1,
+  "counts": {
+    "CERTIFIED_RO_lines": 250000,
+    "CERTIFIED_RO_read_lane_references": 8000000,
+    "NO_GLOBAL_READ_lines": 125000,
+    "NO_GLOBAL_READ_read_lane_references": 0
+  },
+  "host_updates_excluded": [],
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "unresolved_opcodes": {},
+  "historical_independent_input_oracle_review": {
+    "certified_model_lines": 250000,
+    "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+    "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+    "fresh_full_trace_rehash_by_E_required": true,
+    "input_review_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_REMAINING_SIX_ORACLE_REVIEW_r1/vectorAdd_4M_INPUT_REVIEW.json",
+    "input_review_sha256": "9d1392551ab05f4945189132e13cba73a1863bdaa971b2d7f39bf5d94e8b40f9",
+    "manifest_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json",
+    "manifest_sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+    "ranges_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/certified_ranges.csv",
+    "ranges_sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560",
+    "runtime_qualified": false,
+    "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940"
+  },
+  "newsource_input_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/QUALIFICATION_PREPARATION_r1/VECTOR_CONV_APPLICABILITY_REVIEW.json",
+    "sha256": "f0c1cc01994d50b2a0a5c5bc6b7a44628de1dd371186a4918f7b86ed06541691",
+    "bytes": 84135
+  },
+  "source_data_oracle_guards": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/MODEL_SOURCE_PREMISES.json",
+    "sha256": "736481b07a4335f01ea06bb6eb79d65a246f98ca1d6e645546fd4459645f9ca5",
+    "bytes": 10872
+  },
+  "binding_rule": "Full frozen commandlist initialHtoD drained before activation, laterhostupdates excluded, original nohiddenwriters/noaliases/visibleagents assumptions explicit. Allranges/manifest hashes and exact current trace must match at runner admission. Exactinput positiveRO does not certify pressure, attached missing unreused victim or detachbenefit.",
+  "extra_C_joint_fixture_qualified": false,
+  "old_dynamic_counters_backfilled": false,
+  "E_root_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "dd06fbd5438ef55ccd8860164bd180c0831b42718ced9bc77a8ecc0c7a474aba"
+  }
+}

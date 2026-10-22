@@ -1,0 +1,126 @@
+{
+  "schema": "E2_R4_FOUR_PERINPUT_GATE_APPLICABILITY_CANDIDATE_V1",
+  "status": "ROOT_REVIEWED_APPLICABILITY_PASS",
+  "production_driven": true,
+  "gate": "shared_payload_lifecycle",
+  "workload": "dwt2d",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "source_scope_evidence": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/shared_payload_lifecycle.json",
+    "sha256": "f3970a7dc04f49903052f9979d4601268c1cf6fe978ffb30309461934ba67d4d"
+  },
+  "unchanged_model_premise": "Single common1168 payload generation/ownership/descriptor/WB/native-RO responsibility and original pinned/shared-pool assertions retained.",
+  "actual_source_delta_applicability": "transactions only adds passive host pointer and counter calls; actual common payload/Tag state signature matches reference/OFF/ON.",
+  "actual_new_native_classes": [
+    "PRESSURE_ELIGIBLE",
+    "NATIVE_REQUESTER_RO_VICTIM",
+    "RESPONSE_BACKPRESSURE"
+  ],
+  "actual_native_records": [
+    {
+      "case": "PRESSURE_ELIGIBLE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "42b9a6abe4f757af70086bea1dcdf49fb61524a1e027db4e59eafbb5c44931dd",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "fb6ec99a8cb1d736c425c42d9e292f66ab261c62474887acedc344c2292ed3b2",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "83ef942c45709eba1d762d70d33dd21cc2d6f099f2a624693bd02cd094bf5172",
+      "actual_raw_sha256": "f76e9131e6012b579ec11fbe937d2dd8475cb2587a66a880dcd03577bf87a707",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "NATIVE_REQUESTER_RO_VICTIM_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "847792079abac55343197af3b733d6b5ad51479e74cd4797d6285e840229adc3",
+      "actual_raw_sha256": "60b5b2628f765816029033e79bc01d16208ce1577c06e813ee372e232e3445cc",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=NATIVE_REQUESTER_RO_VICTIM"
+    },
+    {
+      "case": "NATIVE_REQUESTER_RO_VICTIM_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "e88245e1b1f69fc2ede98242e9a01ae0747da4dfdaa2301b931c3d1df09d88ca",
+      "actual_raw_sha256": "60b5b2628f765816029033e79bc01d16208ce1577c06e813ee372e232e3445cc",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=NATIVE_REQUESTER_RO_VICTIM"
+    },
+    {
+      "case": "NATIVE_REQUESTER_RO_VICTIM_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "5822d4cd9123200bc6f70a67760824e8d4fec16f772605e8c4c435c424d42c9c",
+      "actual_raw_sha256": "59ee892b59ec6b4dee26b346af7ec51c4ab19209b67eddeb62d3936f4e4ae72d",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=NATIVE_REQUESTER_RO_VICTIM"
+    },
+    {
+      "case": "RESPONSE_BACKPRESSURE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "79fc80edc3efba83eddf437ad1c8dd1184a8adfe0e8a32028961d1928f737954",
+      "actual_raw_sha256": "002c7570c7a9f6338c0030666aee5d7de73161f9b139e0c310b5ac5d6d61b9eb",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=RESPONSE_BACKPRESSURE"
+    },
+    {
+      "case": "RESPONSE_BACKPRESSURE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "1632369177e5f8e8b2d5b9c409d06c8bbda892deef3bbbaae450114bc63bdb22",
+      "actual_raw_sha256": "002c7570c7a9f6338c0030666aee5d7de73161f9b139e0c310b5ac5d6d61b9eb",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=RESPONSE_BACKPRESSURE"
+    },
+    {
+      "case": "RESPONSE_BACKPRESSURE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "1263c03cdb09485dd5e496ae749e1e2ef3a2056a0a2e87cbef55a1c91731dfcc",
+      "actual_raw_sha256": "4ac70d0df11a9862a7ece1f6b1793c497a0ae95ac56b97bedd4a0373ec494634",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=RESPONSE_BACKPRESSURE"
+    }
+  ],
+  "actual_native_independent_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+    "sha256": "5e84c0784d635e7e6284f855bbfe4f63898818b4799894b3b0ef0ac6e6505c7a",
+    "bytes": 79368
+  },
+  "perinput_newsource_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/QUALIFICATION_PREPARATION_r1/CFD_DWT_APPLICABILITY_REVIEW.json",
+    "sha256": "783de6ea2a4f4ac7496b9d22b8df3577108e501df5b4ec8cd104f58ed5048d57",
+    "bytes": 79939
+  },
+  "input_source_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/INPUT_SOURCE_ADMISSION.json",
+    "sha256": "a2e702db5943910ce30c85c2b58a80c8227946b7aa7fb99cdc833a8e4511ccd7",
+    "bytes": 6326
+  },
+  "oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/ORACLE_ADMISSION.json",
+    "sha256": "e6e692f2d1bc6bb2c9bec90dd892f6a3c576d711db63fff265b75541272e4a35",
+    "bytes": 4767
+  },
+  "scope_limit": "No additional C three-way WB/victim/RO joint fixture qualification created.",
+  "no_wholeoldQ_or_newS_or_Cjoint_upgrade": true,
+  "native_reexecutions": 0,
+  "E_root_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "dd06fbd5438ef55ccd8860164bd180c0831b42718ced9bc77a8ecc0c7a474aba"
+  }
+}

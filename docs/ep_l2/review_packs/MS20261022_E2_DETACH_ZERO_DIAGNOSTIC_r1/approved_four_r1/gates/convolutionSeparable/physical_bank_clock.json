@@ -1,0 +1,126 @@
+{
+  "schema": "E2_R4_FOUR_PERINPUT_GATE_APPLICABILITY_CANDIDATE_V1",
+  "status": "ROOT_REVIEWED_APPLICABILITY_PASS",
+  "production_driven": true,
+  "gate": "physical_bank_clock",
+  "workload": "convolutionSeparable",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "source_scope_evidence": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/physical_bank_clock.json",
+    "sha256": "fb2a9870d5151c0eda03e6992a8db4778757662dbacf631fa61b250c109d35b2"
+  },
+  "unchanged_model_premise": "Original physical GPU clock and memcpy-vs-Tag timestamp separation, warm bank drain premises unchanged.",
+  "actual_source_delta_applicability": "Observer hook samples ft_physical_cycle; model clock and bank implementation unchanged; actual native cycle/bank/state signatures equal.",
+  "actual_new_native_classes": [
+    "OBSERVER_NONINTERFERENCE",
+    "PRESSURE_ELIGIBLE",
+    "PREVIEW_REPEAT"
+  ],
+  "actual_native_records": [
+    {
+      "case": "PRESSURE_ELIGIBLE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "42b9a6abe4f757af70086bea1dcdf49fb61524a1e027db4e59eafbb5c44931dd",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "fb6ec99a8cb1d736c425c42d9e292f66ab261c62474887acedc344c2292ed3b2",
+      "actual_raw_sha256": "ea2d4a0a20975a992a4f824164c3fedc61ab9b3dbb2ee8c867517a36195194af",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PRESSURE_ELIGIBLE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "83ef942c45709eba1d762d70d33dd21cc2d6f099f2a624693bd02cd094bf5172",
+      "actual_raw_sha256": "f76e9131e6012b579ec11fbe937d2dd8475cb2587a66a880dcd03577bf87a707",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PRESSURE_ELIGIBLE"
+    },
+    {
+      "case": "PREVIEW_REPEAT_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "30de7bd7fb563b603420c7b11e9c7a22e1ce251aa7510de96ea31786de41fe54",
+      "actual_raw_sha256": "60fe72349a630705e9a70c16c16f43fed7c03aea46f36a82e27ef36c768f0909",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PREVIEW_REPEAT"
+    },
+    {
+      "case": "PREVIEW_REPEAT_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "53daeef2b068e4c78b901b7bc3e991c1fcf179906f446c63cc43d7a713a18dda",
+      "actual_raw_sha256": "60fe72349a630705e9a70c16c16f43fed7c03aea46f36a82e27ef36c768f0909",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PREVIEW_REPEAT"
+    },
+    {
+      "case": "PREVIEW_REPEAT_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "7ae87879ab3886f962f0f76602f63057902082e424a9c12b00597d5140e41720",
+      "actual_raw_sha256": "204924a6fc489366104e0c2f1cb6b6002a460f2b2a338e13f27121baac48d5f0",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=PREVIEW_REPEAT"
+    },
+    {
+      "case": "OBSERVER_NONINTERFERENCE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "6424a98aa6e8a80ed3e7eb00ff939f51f85090e5b9551c84a64d144ae2a52a63",
+      "actual_raw_sha256": "2e7d831531f31a39bd452c6247aa3856e09243db65d6b5e340462a9226709b57",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=OBSERVER_NONINTERFERENCE"
+    },
+    {
+      "case": "OBSERVER_NONINTERFERENCE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "507a3d18576bda8c4f5d3f42d8ac95053429394f722905aed74beb1d4d36ed88",
+      "actual_raw_sha256": "2e7d831531f31a39bd452c6247aa3856e09243db65d6b5e340462a9226709b57",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=OBSERVER_NONINTERFERENCE"
+    },
+    {
+      "case": "OBSERVER_NONINTERFERENCE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "e944c5f96d0a18175a237180a3fa4117fb72f310b3ba8b71e6d8e37e236ebc6f",
+      "actual_raw_sha256": "0a8089bbea6586f3497f3358013c47cd0f38d722d90fd386323c447c0a0cd9d3",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=OBSERVER_NONINTERFERENCE"
+    }
+  ],
+  "actual_native_independent_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+    "sha256": "5e84c0784d635e7e6284f855bbfe4f63898818b4799894b3b0ef0ac6e6505c7a",
+    "bytes": 79368
+  },
+  "perinput_newsource_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/QUALIFICATION_PREPARATION_r1/VECTOR_CONV_APPLICABILITY_REVIEW.json",
+    "sha256": "f0c1cc01994d50b2a0a5c5bc6b7a44628de1dd371186a4918f7b86ed06541691",
+    "bytes": 84135
+  },
+  "input_source_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/convolutionSeparable/INPUT_SOURCE_ADMISSION.json",
+    "sha256": "c075a95fc137be473ce7b0839388bbeb7e99f1d4efbd0f2fc90c4a02fe511094",
+    "bytes": 4310
+  },
+  "oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/convolutionSeparable/ORACLE_ADMISSION.json",
+    "sha256": "d8a92742918e2f697ee2cb0e292041dea5c360a52ab8a9a7702c36ffd1b2c40e",
+    "bytes": 4801
+  },
+  "scope_limit": "Finite native timing equivalence only, not cross-binary application performance claim.",
+  "no_wholeoldQ_or_newS_or_Cjoint_upgrade": true,
+  "native_reexecutions": 0,
+  "E_root_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "dd06fbd5438ef55ccd8860164bd180c0831b42718ced9bc77a8ecc0c7a474aba"
+  }
+}

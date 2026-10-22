@@ -1,0 +1,74 @@
+{
+  "schema": "E2_R4_PERINPUT_COMPLETE_NATIVE_SOURCE_ADMISSION_CANDIDATE_V1",
+  "status": "ROOT_REVIEWED_APPLICABILITY_PASS",
+  "workload": "vectorAdd_4M",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "historical_complete_input_selection_id": "D_V2_vectorAdd_4M",
+  "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "trace_content_manifest": [
+    {
+      "bytes": 103535866,
+      "name": "kernel-1.traceg",
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d"
+    },
+    {
+      "bytes": 94,
+      "name": "kernelslist.g",
+      "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a"
+    }
+  ],
+  "expected_full_instructions": 56000000,
+  "expected_kernel_count": 1,
+  "expected_kernel_uids": [
+    1
+  ],
+  "expected_command_count": 3,
+  "expected_epoch": {
+    "epochs": "all",
+    "scope": "full_application"
+  },
+  "atomic_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+    "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+  },
+  "historical_native_input_semantics": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/NATIVE_INPUT_SEMANTICS.json",
+    "sha256": "fee6329dac18a9eadff4290c8cdd87557cd8f2f6ab79682e82863c196af5230d",
+    "bytes": 2661
+  },
+  "historical_retained_input_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+    "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202"
+  },
+  "independent_newsource_perinput_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/QUALIFICATION_PREPARATION_r1/VECTOR_CONV_APPLICABILITY_REVIEW.json",
+    "sha256": "f0c1cc01994d50b2a0a5c5bc6b7a44628de1dd371186a4918f7b86ed06541691",
+    "bytes": 84135
+  },
+  "current_r4_grammar_source": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/NEW_RUNTIME_INPUT_SOURCE_APPLICABILITY.json",
+    "sha256": "5fe8d90a94c73146b6d5036bf05809f63a249772c1c37b81c328be3387b2d9c8",
+    "bytes": 1881
+  },
+  "Conv_masked_row_condition": null,
+  "DWT_normalized_scope_condition": null,
+  "runtime_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+  "framework_parser_identity": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "source_revision": "UNKNOWN",
+  "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/vectorAdd --size 4000000 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/*.trace ",
+  "numeric_payload_identity": "UNKNOWN",
+  "source_recapture_claimed": false,
+  "large_input_body_rescanned_here": false,
+  "original_runner_fullidentity_revalidation_required": true,
+  "reason": "Exact source9243 passiveobserver delta and Framework9dd wholeinputgrammar/unchangedmodel premise reviewed; historical completeinput properties retained at actual scope. This newsource applicability proof is not an oldruntimeQ/endpoint PASS.",
+  "E_root_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "dd06fbd5438ef55ccd8860164bd180c0831b42718ced9bc77a8ecc0c7a474aba"
+  }
+}

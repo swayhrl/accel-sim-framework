@@ -1,0 +1,101 @@
+{
+  "schema": "E2_R4_FOUR_PERINPUT_GATE_APPLICABILITY_CANDIDATE_V1",
+  "status": "ROOT_REVIEWED_APPLICABILITY_PASS",
+  "production_driven": true,
+  "gate": "wb_lifecycle",
+  "workload": "dwt2d",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
+  },
+  "source_scope_evidence": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/qualification/source_applicability/gates/wb_lifecycle.json",
+    "sha256": "6b6a9601d147a99aec72a26a100e8bd2562dd94af7c4b51d8080b7dd3be7fd36"
+  },
+  "unchanged_model_premise": "Original real WB create/loweraccept/set_done/WAD release and rollback assertions retained; TVD implementation, store bank/WB and ft_rollback unchanged.",
+  "actual_source_delta_applicability": "Only counter finish wrappers around existing decisions; native mode2 semantic witness includes WAD/resource/bank terminal signature equality.",
+  "actual_new_native_classes": [
+    "OBSERVER_NONINTERFERENCE",
+    "DETACH_THEN_LATER_DENIAL"
+  ],
+  "actual_native_records": [
+    {
+      "case": "DETACH_THEN_LATER_DENIAL_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "5b6984af9cec96072c01f0bc114df720316f01208c38e3545fec07f117face55",
+      "actual_raw_sha256": "ef48a2b18f30ce2aa87a48e33c9cc9b1dbe4b3ea091bfd0fcd7579e97f3286bc",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=DETACH_THEN_LATER_DENIAL"
+    },
+    {
+      "case": "DETACH_THEN_LATER_DENIAL_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "9ad6a8c1ee84645384554cb815ccfe8ac23da5be89dc23b81d230b81b0ef3b28",
+      "actual_raw_sha256": "ef48a2b18f30ce2aa87a48e33c9cc9b1dbe4b3ea091bfd0fcd7579e97f3286bc",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=DETACH_THEN_LATER_DENIAL"
+    },
+    {
+      "case": "DETACH_THEN_LATER_DENIAL_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "683d0dcb602e06fc20a9404c4556cf109331915f12c64e6c3d3aead28d22159a",
+      "actual_raw_sha256": "c42ea5fbbdfeecb36bf002ba32423e1865a410f32647acb863c2c7b7048e2f74",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=DETACH_THEN_LATER_DENIAL"
+    },
+    {
+      "case": "OBSERVER_NONINTERFERENCE_reference",
+      "actual_exit": 0,
+      "native_receipt_sha256": "6424a98aa6e8a80ed3e7eb00ff939f51f85090e5b9551c84a64d144ae2a52a63",
+      "actual_raw_sha256": "2e7d831531f31a39bd452c6247aa3856e09243db65d6b5e340462a9226709b57",
+      "actual_binary_sha256_from_native_receipt": "f213966ed092963c29561b769f01c1d50979b2983111ebef2901e4e7806bec76",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=OBSERVER_NONINTERFERENCE"
+    },
+    {
+      "case": "OBSERVER_NONINTERFERENCE_off",
+      "actual_exit": 0,
+      "native_receipt_sha256": "507a3d18576bda8c4f5d3f42d8ac95053429394f722905aed74beb1d4d36ed88",
+      "actual_raw_sha256": "2e7d831531f31a39bd452c6247aa3856e09243db65d6b5e340462a9226709b57",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=OBSERVER_NONINTERFERENCE"
+    },
+    {
+      "case": "OBSERVER_NONINTERFERENCE_on",
+      "actual_exit": 0,
+      "native_receipt_sha256": "e944c5f96d0a18175a237180a3fa4117fb72f310b3ba8b71e6d8e37e236ebc6f",
+      "actual_raw_sha256": "0a8089bbea6586f3497f3358013c47cd0f38d722d90fd386323c447c0a0cd9d3",
+      "actual_binary_sha256_from_native_receipt": "1a33013c05edf474162fb8c6ae16deb77f5b6f8a6cf262dd461bbd5f16cdf40f",
+      "required_terminal": "DETACH_DIAGNOSTIC_CONTROL_PASS|case=OBSERVER_NONINTERFERENCE"
+    }
+  ],
+  "actual_native_independent_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/native_r4_independent/INDEPENDENT_NATIVE_REVIEW.json",
+    "sha256": "5e84c0784d635e7e6284f855bbfe4f63898818b4799894b3b0ef0ac6e6505c7a",
+    "bytes": 79368
+  },
+  "perinput_newsource_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/QUALIFICATION_PREPARATION_r1/CFD_DWT_APPLICABILITY_REVIEW.json",
+    "sha256": "783de6ea2a4f4ac7496b9d22b8df3577108e501df5b4ec8cd104f58ed5048d57",
+    "bytes": 79939
+  },
+  "input_source_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/INPUT_SOURCE_ADMISSION.json",
+    "sha256": "a2e702db5943910ce30c85c2b58a80c8227946b7aa7fb99cdc833a8e4511ccd7",
+    "bytes": 6326
+  },
+  "oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/ORACLE_ADMISSION.json",
+    "sha256": "e6e692f2d1bc6bb2c9bec90dd892f6a3c576d711db63fff265b75541272e4a35",
+    "bytes": 4767
+  },
+  "scope_limit": "48 are not a fresh rerun of all old dirty WB lifecycle scenarios.",
+  "no_wholeoldQ_or_newS_or_Cjoint_upgrade": true,
+  "native_reexecutions": 0,
+  "E_root_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "dd06fbd5438ef55ccd8860164bd180c0831b42718ced9bc77a8ecc0c7a474aba"
+  }
+}
