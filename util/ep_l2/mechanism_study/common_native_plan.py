@@ -23,6 +23,8 @@ def prepare(spec, handoff, core, build, out, suite):
                 target=copied/source.relative_to(original);target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(source.read_bytes())
         prefix='/workspace/worktrees/accel-sim-ep-l2-ms20261019-c-ro-v1/docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/full_system_v2_r1/native_inputs'
         for target in copied.glob('*.config'):target.write_text(target.read_text().replace(prefix,str(copied)))
+        legacy=(core/'tests/ep_l2/ft_wbuf.config').read_text()+'\n-gpgpu_ep_l2_tvd_clean 0\n-gpgpu_ep_l2_tvd_dirty 0\n-gpgpu_ep_l2_ro_tag_detach 0\n-gpgpu_ep_l2_ro_line_mshr_bypass 0\n'
+        (copied/'LEGACY_HELD.config').write_text(legacy)
         substitutions={'{CORE}':str(core),'{BUILD}':str(build),'{OUT}':str(out),'{INPUTS}':str(inputs)}
         cases=[]
         for row in spec['cases']:

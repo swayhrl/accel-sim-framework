@@ -1,0 +1,1304 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e38307c7..9adca03b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -323,3 +323,19 @@ endif()
+ add_executable(ep_l2_ro_tvd_combined EXCLUDE_FROM_ALL tests/ep_l2/ms_ro_combined/test_combined.cc)
+ target_include_directories(ep_l2_ro_tvd_combined PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+ target_link_libraries(ep_l2_ro_tvd_combined PRIVATE -Wl,--start-group entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++# Isolated passive observer finite control and exact-d010 archive reference.
++add_executable(ep_l2_detach_diagnostic EXCLUDE_FROM_ALL tests/ep_l2/test_detach_diagnostic.cc)
++target_include_directories(ep_l2_detach_diagnostic PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_detach_diagnostic PRIVATE -Wl,--start-group entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++add_executable(ep_l2_detach_reference EXCLUDE_FROM_ALL tests/ep_l2/test_detach_diagnostic.cc)
++target_compile_definitions(ep_l2_detach_reference PRIVATE EP_L2_DIAG_REFERENCE=1)
++target_include_directories(ep_l2_detach_reference BEFORE PRIVATE /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/src /workspace/worktrees/gpgpu-sim-ep-l2-ms20261020-a-r39-own-pending-v1/libcuda ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_detach_reference PRIVATE -Wl,--start-group
++    /workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libentrypoint.a
++    /workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/libcuda/libcuda.a
++    /workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/cuda-sim/libptxsim.a
++    /workspace/build/ep-l2-ms20261020-a-wad-pending-r40/libgpgpusim.a
++    /workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/intersim2/libintersim.a
++    /workspace/build/ep-l2-ms20261019-a-common-native-r1/gpgpu-sim/src/accelwattch/libaccelwattch.a
++    -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/ep-l2-detach-diag.h b/src/gpgpu-sim/ep-l2-detach-diag.h
+new file mode 100644
+index 00000000..abc5dec9
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-detach-diag.h
+@@ -0,0 +1,304 @@
++#ifndef EP_L2_DETACH_DIAG_H
++#define EP_L2_DETACH_DIAG_H
++// Passive diagnostic state only. No field below supplies modeled decisions.
++#include <array>
++#include <algorithm>
++#include <cstdint>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#include <limits>
++#include <stdexcept>
++namespace ep_l2_detach_diag {
++constexpr unsigned MAX_SLICES=64, MAX_KERNELS=16, PHASES=MAX_KERNELS+2, MAX_SAMPLES=64;
++enum field {
++observed_heads,
++probe_skipped,
++skip_tvd,
++skip_ideal,
++skip_disabled,
++skip_other,
++head_absent_cycles,
++raw_hit,
++raw_hit_reserved,
++raw_miss,
++raw_reservation_fail,
++raw_sector_miss,
++raw_mshr_hit,
++raw_write_allocated,
++raw_unknown,
++requester_ro_candidate,
++requester_nonro,
++requester_ro_runtime_off,
++certified_resident_hits,
++candidate_deferred_or_native,
++pressure_T_disabled,
++pressure_T_enabled,
++pressure_no_live_ro,
++pressure_live_ro_no_eligible,
++pressure_eligible,
++ways_examined,
++way_no_live_ro,
++way_not_attached,
++way_reuse_seen,
++way_no_missing,
++way_eligible,
++pressure_prod_probe_reached,
++pressure_prod_probe_not_reached,
++pressure_rewrite_miss,
++pressure_rewrite_hit_reserved,
++pressure_kept_fail,
++pressure_relief_not_consulted,
++pressure_intermediate_other,
++pressure_frontend_admitted,
++pressure_frontend_denied,
++rewritten_final_admitted,
++rewritten_final_denied,
++rewritten_final_unknown,
++preview_early_owner,
++preview_early_directory,
++preview_early_query,
++preview_early_wad,
++preview_early_tvd,
++preview_other,
++primary_owner,
++primary_directory,
++primary_query,
++primary_wad,
++primary_descriptor,
++primary_address,
++primary_line,
++primary_missq,
++primary_data,
++primary_response,
++primary_unknown,
++primary_none,
++mask_descriptor,
++mask_address,
++mask_line,
++mask_missq,
++mask_data,
++mask_response,
++mask_wad,
++mask_owner,
++mask_directory,
++mask_query,
++ft_access_attempts,
++commit_native_owner,
++commit_merge,
++commit_directory,
++commit_promotion,
++commit_raw_probe_reached,
++raw_tag_fail_commit,
++relieve_calls,
++relieve_T_disabled,
++relieve_no_eligible,
++relieve_eligible_selected,
++detach_calls,
++detach_success,
++detach_false,
++detach_false_T_disabled,
++detach_false_not_attached,
++detach_false_reuse,
++detach_false_ready,
++detach_exception,
++selected_identity_mismatch,
++post_relief_hit,
++post_relief_hit_reserved,
++post_relief_miss,
++post_relief_fail,
++post_relief_sector_miss,
++post_relief_mshr_hit,
++post_relief_write_allocated,
++post_relief_unknown,
++commit_accepted,
++commit_denied,
++commit_exception,
++trigger_accepted_after_detach,
++trigger_denied_after_detach,
++trigger_exception_after_detach,
++denied_owner,
++denied_directory,
++denied_query,
++denied_promotion,
++denied_tag,
++denied_capacity,
++denied_held,
++denied_wad,
++denied_pin,
++denied_mshr,
++denied_missq,
++denied_wad_full,
++denied_wb,
++denied_landing,
++denied_quota,
++denied_copy,
++denied_bank,
++denied_baseline,
++denied_other,
++ro_admits,
++ro_merges,
++reuse_seen_first_transition,
++ro_responses,
++ro_retired,
++detached_return_packets,
++detached_return_sectors,
++detached_responses,
++detached_retired,
++response_backpressure,
++closure_errors,
++samples_seen,
++samples_stored,
++samples_dropped,
++eligible_hist_0,
++eligible_hist_1,
++eligible_hist_2,
++eligible_hist_3,
++eligible_hist_4,
++eligible_hist_5,
++eligible_hist_6,
++eligible_hist_7,
++eligible_hist_8,
++eligible_hist_9,
++eligible_hist_10,
++eligible_hist_11,
++eligible_hist_12,
++eligible_hist_13,
++eligible_hist_14,
++eligible_hist_15,
++eligible_hist_16,
++predicate_hist_0,
++predicate_hist_1,
++predicate_hist_2,
++predicate_hist_3,
++predicate_hist_4,
++predicate_hist_5,
++predicate_hist_6,
++predicate_hist_7,
++transition_joint_0,
++transition_joint_1,
++transition_joint_2,
++transition_joint_3,
++transition_joint_4,
++transition_joint_5,
++transition_joint_6,
++transition_joint_7,
++ro_fill_packets,
++ro_capacity_population,
++ro_capacity_consulted,
++ro_capacity_not_consulted,
++ro_line_na_M_or_existing,
++ro_descriptor_checked,
++ro_descriptor_pass,
++ro_descriptor_fail,
++ro_descriptor_unobserved,
++ro_address_checked,
++ro_address_pass,
++ro_address_fail,
++ro_address_unobserved,
++ro_line_probe_checked,
++ro_line_probe_pass,
++ro_line_probe_fail,
++ro_line_probe_unobserved,
++ro_line_slots_checked,
++ro_line_slots_pass,
++ro_line_slots_fail,
++ro_line_slots_unobserved,
++eligible_frontend_admitted,
++eligible_frontend_denied,
++eligible_prod_probe_reached,
++eligible_prod_probe_not_reached,
++eligible_rewrite_miss,
++eligible_rewrite_hit_reserved,
++eligible_kept_fail,
++eligible_relief_not_consulted,
++eligible_intermediate_other,
++eligible_capacity_consulted,
++eligible_capacity_not_consulted,
++eligible_descriptor_fail,
++eligible_address_fail,
++eligible_line_probe_fail,
++eligible_line_slots_fail,
++eligible_early_owner,
++eligible_early_directory,
++eligible_early_query,
++eligible_early_wad,
++eligible_early_tvd,
++FIELD_COUNT
++};
++static const char *const names[]={"observed_heads","probe_skipped","skip_tvd","skip_ideal","skip_disabled","skip_other","head_absent_cycles","raw_hit","raw_hit_reserved","raw_miss","raw_reservation_fail","raw_sector_miss","raw_mshr_hit","raw_write_allocated","raw_unknown","requester_ro_candidate","requester_nonro","requester_ro_runtime_off","certified_resident_hits","candidate_deferred_or_native","pressure_T_disabled","pressure_T_enabled","pressure_no_live_ro","pressure_live_ro_no_eligible","pressure_eligible","ways_examined","way_no_live_ro","way_not_attached","way_reuse_seen","way_no_missing","way_eligible","pressure_prod_probe_reached","pressure_prod_probe_not_reached","pressure_rewrite_miss","pressure_rewrite_hit_reserved","pressure_kept_fail","pressure_relief_not_consulted","pressure_intermediate_other","pressure_frontend_admitted","pressure_frontend_denied","rewritten_final_admitted","rewritten_final_denied","rewritten_final_unknown","preview_early_owner","preview_early_directory","preview_early_query","preview_early_wad","preview_early_tvd","preview_other","primary_owner","primary_directory","primary_query","primary_wad","primary_descriptor","primary_address","primary_line","primary_missq","primary_data","primary_response","primary_unknown","primary_none","mask_descriptor","mask_address","mask_line","mask_missq","mask_data","mask_response","mask_wad","mask_owner","mask_directory","mask_query","ft_access_attempts","commit_native_owner","commit_merge","commit_directory","commit_promotion","commit_raw_probe_reached","raw_tag_fail_commit","relieve_calls","relieve_T_disabled","relieve_no_eligible","relieve_eligible_selected","detach_calls","detach_success","detach_false","detach_false_T_disabled","detach_false_not_attached","detach_false_reuse","detach_false_ready","detach_exception","selected_identity_mismatch","post_relief_hit","post_relief_hit_reserved","post_relief_miss","post_relief_fail","post_relief_sector_miss","post_relief_mshr_hit","post_relief_write_allocated","post_relief_unknown","commit_accepted","commit_denied","commit_exception","trigger_accepted_after_detach","trigger_denied_after_detach","trigger_exception_after_detach","denied_owner","denied_directory","denied_query","denied_promotion","denied_tag","denied_capacity","denied_held","denied_wad","denied_pin","denied_mshr","denied_missq","denied_wad_full","denied_wb","denied_landing","denied_quota","denied_copy","denied_bank","denied_baseline","denied_other","ro_admits","ro_merges","reuse_seen_first_transition","ro_responses","ro_retired","detached_return_packets","detached_return_sectors","detached_responses","detached_retired","response_backpressure","closure_errors","samples_seen","samples_stored","samples_dropped","eligible_hist_0","eligible_hist_1","eligible_hist_2","eligible_hist_3","eligible_hist_4","eligible_hist_5","eligible_hist_6","eligible_hist_7","eligible_hist_8","eligible_hist_9","eligible_hist_10","eligible_hist_11","eligible_hist_12","eligible_hist_13","eligible_hist_14","eligible_hist_15","eligible_hist_16","predicate_hist_0","predicate_hist_1","predicate_hist_2","predicate_hist_3","predicate_hist_4","predicate_hist_5","predicate_hist_6","predicate_hist_7","transition_joint_0","transition_joint_1","transition_joint_2","transition_joint_3","transition_joint_4","transition_joint_5","transition_joint_6","transition_joint_7","ro_fill_packets","ro_capacity_population","ro_capacity_consulted","ro_capacity_not_consulted","ro_line_na_M_or_existing","ro_descriptor_checked","ro_descriptor_pass","ro_descriptor_fail","ro_descriptor_unobserved","ro_address_checked","ro_address_pass","ro_address_fail","ro_address_unobserved","ro_line_probe_checked","ro_line_probe_pass","ro_line_probe_fail","ro_line_probe_unobserved","ro_line_slots_checked","ro_line_slots_pass","ro_line_slots_fail","ro_line_slots_unobserved","eligible_frontend_admitted","eligible_frontend_denied","eligible_prod_probe_reached","eligible_prod_probe_not_reached","eligible_rewrite_miss","eligible_rewrite_hit_reserved","eligible_kept_fail","eligible_relief_not_consulted","eligible_intermediate_other","eligible_capacity_consulted","eligible_capacity_not_consulted","eligible_descriptor_fail","eligible_address_fail","eligible_line_probe_fail","eligible_line_slots_fail","eligible_early_owner","eligible_early_directory","eligible_early_query","eligible_early_wad","eligible_early_tvd"};
++struct predicate { bool live=false,attached=false,reuse=false;unsigned required=0,issued=0,ready=0,waiters=0; };
++struct preview {
++ bool capacity_consulted=false,line_na=false;int descriptor_check=-1,address_check=-1,line_probe_check=-1,line_slots_check=-1;
++ int raw=-1,production_raw=-1,intermediate=-1,final_status=-1,early=0;
++ uint64_t victim_payload=~uint64_t(0),victim_generation=0; predicate victim;
++ bool production_reached=false,consulted=false,existing=false,T=false,candidate=false,runtime=false;
++ unsigned set=0,ways=0,eligible=0,first=~0U;
++ std::array<unsigned,5> reasons{};std::array<unsigned,8> masks{};
++};
++struct ledger {
++ const void *owner=nullptr;unsigned slice=~0U;bool overflow=false,closed=false,ro_runtime=false,T=false,M=false;
++ std::array<uint64_t,FIELD_COUNT> total{};
++ std::array<std::array<uint64_t,FIELD_COUNT>,PHASES> phases{};
++ std::array<uint64_t,MAX_KERNELS> kernel_uid{};std::array<bool,MAX_KERNELS> active{};
++ unsigned kernel_count=0;uint64_t last_cycle=~uint64_t(0),last_uid=~uint64_t(0);unsigned last_sample=~0U;
++ static void checked(uint64_t &x,uint64_t n,bool &invalid) {if(n>~uint64_t(0)-x){x=~uint64_t(0);invalid=true;}else x+=n;}
++ unsigned phase()const{unsigned n=0,p=0;for(unsigned i=0;i<kernel_count;++i)if(active[i]){++n;p=i+2;}return n==0?0:n==1?p:1;}
++ void add(field f,uint64_t n=1){checked(total[f],n,overflow);checked(phases[phase()][f],n,overflow);}
++ bool once(uint64_t cycle,uint64_t uid){if(last_cycle==cycle&&last_uid==uid)return false;last_cycle=cycle;last_uid=uid;last_sample=~0U;return true;}
++ void begin(uint64_t uid){for(unsigned i=0;i<kernel_count;++i)if(kernel_uid[i]==uid){active[i]=true;return;}if(kernel_count==MAX_KERNELS){overflow=true;return;}kernel_uid[kernel_count]=uid;active[kernel_count++]=true;}
++ void end(uint64_t uid){for(unsigned i=0;i<kernel_count;++i)if(kernel_uid[i]==uid){active[i]=false;return;}overflow=true;}
++ void joint(predicate p){unsigned mask=(p.attached?1:0)|(p.reuse?2:0)|((p.required&~p.ready)?4:0);add(field(transition_joint_0+mask));}
++ bool partitions()const {
++  uint64_t probes=total[probe_skipped];for(unsigned i=raw_hit;i<=raw_unknown;++i)probes+=total[i];
++  if(total[observed_heads]!=probes)return false;
++  if(total[raw_reservation_fail]!=total[pressure_T_disabled]+total[pressure_T_enabled])return false;
++  if(total[pressure_T_enabled]!=total[pressure_no_live_ro]+total[pressure_live_ro_no_eligible]+total[pressure_eligible])return false;
++  if(total[ways_examined]!=total[way_no_live_ro]+total[way_not_attached]+total[way_reuse_seen]+total[way_no_missing]+total[way_eligible])return false;
++  if(total[raw_reservation_fail]!=total[pressure_prod_probe_reached]+total[pressure_prod_probe_not_reached])return false;
++  if(total[pressure_prod_probe_reached]!=total[pressure_rewrite_miss]+total[pressure_rewrite_hit_reserved]+total[pressure_kept_fail]+total[pressure_relief_not_consulted]+total[pressure_intermediate_other])return false;
++  if(total[relieve_calls]!=total[relieve_T_disabled]+total[relieve_no_eligible]+total[relieve_eligible_selected])return false;
++  if(total[detach_calls]!=total[detach_success]+total[detach_false]+total[detach_exception])return false;
++  if(total[ft_access_attempts]!=total[commit_accepted]+total[commit_denied]+total[commit_exception])return false;
++  if(total[detach_success]<total[detached_retired])return false;
++  if(total[ro_capacity_population]!=total[ro_capacity_consulted]+total[ro_capacity_not_consulted])return false;
++  for(unsigned f=ro_descriptor_checked;f<=ro_line_slots_checked;f+=4){if(total[f]!=total[f+1]+total[f+2]||total[ro_capacity_population]!=total[f]+total[f+3])return false;}
++  if(total[pressure_eligible]!=total[eligible_frontend_admitted]+total[eligible_frontend_denied])return false;
++  if(total[pressure_eligible]!=total[eligible_prod_probe_reached]+total[eligible_prod_probe_not_reached])return false;
++  if(total[eligible_prod_probe_reached]!=total[eligible_rewrite_miss]+total[eligible_rewrite_hit_reserved]+total[eligible_kept_fail]+total[eligible_relief_not_consulted]+total[eligible_intermediate_other])return false;
++  if(total[pressure_eligible]!=total[eligible_capacity_consulted]+total[eligible_capacity_not_consulted])return false;
++  uint64_t h=0;for(unsigned i=eligible_hist_0;i<=eligible_hist_16;++i)h+=total[i];if(h!=total[pressure_T_enabled])return false;
++  h=0;for(unsigned i=predicate_hist_0;i<=predicate_hist_7;++i)h+=total[i];if(h!=total[ways_examined]-total[way_no_live_ro])return false;
++  h=0;for(unsigned i=transition_joint_0;i<=transition_joint_7;++i)h+=total[i];if(h!=total[ro_admits]+total[ro_merges]+total[ro_fill_packets])return false;
++  h=0;for(unsigned i=primary_owner;i<=primary_none;++i)h+=total[i];if(h!=total[observed_heads]-total[probe_skipped])return false;
++  for(unsigned f=0;f<FIELD_COUNT;++f){uint64_t n=0;for(unsigned p=0;p<PHASES;++p)n+=phases[p][f];if(total[f]!=n)return false;}
++  return !overflow && !total[closure_errors] && !total[selected_identity_mismatch] && !total[commit_exception] && !total[detach_exception];
++ }
++};
++struct sample {uint64_t cycle=0,uid=0,payload=0,generation=0;unsigned slice=0,set=0,eligible=0,first=0,required=0,issued=0,ready=0;bool reuse=false,attached=false,candidate=false;int immediate_result=-1;};
++struct registry {
++ bool enabled=false,configured=false,output_invalid=false,output_marker=false;uint64_t output_bytes=0,sample_count=0,printed_samples=0;
++ std::array<ledger,MAX_SLICES> slices{};std::array<sample,MAX_SAMPLES> examples{};
++ ledger *find(const void *p){if(!enabled)return nullptr;for(auto &d:slices)if(d.owner==p)return &d;return nullptr;}
++ void add(const void *p){if(!configured){const char*v=std::getenv("EPL2_DETACH_DIAG");if(v&&std::strcmp(v,"0")&&std::strcmp(v,"1"))throw std::invalid_argument("EPL2_DETACH_DIAG expects0or1");enabled=v&&!std::strcmp(v,"1");configured=true;}if(!enabled)return;for(auto &d:slices)if(!d.owner){d=ledger();d.owner=p;return;}throw std::runtime_error("diagnostic64slice bound exceeded");}
++ void erase(const void *p){if(auto*d=find(p))d->owner=nullptr;}
++ void sample_pressure(ledger &d,const preview &p,uint64_t cycle,uint64_t uid){d.add(samples_seen);if(sample_count==MAX_SAMPLES){d.add(samples_dropped);return;}d.last_sample=sample_count;auto &s=examples[sample_count++];s.cycle=cycle;s.uid=uid;s.slice=d.slice;s.set=p.set;s.eligible=p.eligible;s.first=p.first;s.payload=p.victim_payload;s.generation=p.victim_generation;s.required=p.victim.required;s.issued=p.victim.issued;s.ready=p.victim.ready;s.reuse=p.victim.reuse;s.attached=p.victim.attached;s.candidate=p.candidate;d.add(samples_stored);}
++ void print_counts(FILE *f,const char*record,unsigned slice,const ledger&d,const std::array<uint64_t,FIELD_COUNT>&counts,int phase=-1,uint64_t cycle=0) {
++  if(output_bytes>64ULL*1024*1024){output_invalid=true;if(!output_marker){std::fprintf(f,"EPL2DETACH_DIAG_V1|{\"record\":\"OUTPUT_INVALID\",\"output_invalid\":true,\"reason\":\"64MiB summary ceiling\"}\n");output_marker=true;}return;}
++  int bytes=std::fprintf(f,"EPL2DETACH_DIAG_V1|{\"record\":\"%s\",\"slice\":%u,\"cycle\":%llu,\"phase\":%d,\"kernel_scope\":\"%s\",\"kernel_uid\":",record,slice,(unsigned long long)cycle,phase,phase<0?"SLICE_CUMULATIVE":phase==0?"UNASSIGNED":phase==1?"OVERLAP_UNKNOWN":"SINGLE_ACTIVE_INTERVAL");
++  if(phase>=2)bytes+=std::fprintf(f,"%llu",(unsigned long long)d.kernel_uid[phase-2]);else bytes+=std::fprintf(f,"null");
++  bytes+=std::fprintf(f,",\"candidate_owner_kernel\":null,\"trigger_later_linkage\":\"NOT_MEASURED\",\"overflow_invalid\":%s,\"output_invalid\":%s,\"closure_ok\":%s,\"epoch_closed\":%s,\"T\":%s,\"M\":%s,\"ro_runtime\":%s,\"live_detached\":%llu,\"counters\":{",d.overflow?"true":"false",output_invalid?"true":"false",d.partitions()?"true":"false",d.closed?"true":"false",d.T?"true":"false",d.M?"true":"false",d.ro_runtime?"true":"false",(unsigned long long)(d.total[detach_success]-d.total[detached_retired]));
++  for(unsigned i=0;i<FIELD_COUNT;++i)bytes+=std::fprintf(f,"%s\"%s\":%llu",i?",":"",names[i],(unsigned long long)counts[i]);
++  bytes+=std::fprintf(f,"}}\n");if(bytes<0)output_invalid=true;else output_bytes+=unsigned(bytes);
++ }
++ void print(FILE*f,ledger&d,uint64_t cycle){print_counts(f,"SLICE",d.slice,d,d.total,-1,cycle);for(unsigned p=0;p<d.kernel_count+2;++p)print_counts(f,"PHASE",d.slice,d,d.phases[p],p,cycle);
++  unsigned max=0;for(auto&s:slices)if(s.owner&&s.slice!=~0U)max=std::max(max,s.slice);
++  if(d.slice==max){ledger sum;sum.closed=true;sum.T=d.T;sum.M=d.M;sum.ro_runtime=d.ro_runtime;unsigned n=0;for(auto&s:slices)if(s.owner){++n;sum.closed &=s.closed;sum.overflow|=s.overflow;for(unsigned f=0;f<FIELD_COUNT;++f)ledger::checked(sum.total[f],s.total[f],sum.overflow);}sum.phases[0]=sum.total;print_counts(f,"GLOBAL",n,sum,sum.total,-1,cycle);for(uint64_t i=printed_samples;i<sample_count;++i){auto&s=examples[i];int bytes=std::fprintf(f,"EPL2DETACH_DIAG_V1|{\"record\":\"SAMPLE\",\"slice\":%u,\"cycle\":%llu,\"request_uid\":%llu,\"set\":%u,\"eligible\":%u,\"first_eligible_way\":%u,\"victim_payload\":%llu,\"victim_generation\":%llu,\"required\":%u,\"issued\":%u,\"ready\":%u,\"reuse_seen\":%s,\"attached\":%s,\"requester_ro_candidate\":%s,\"immediate_commit_result\":%d,\"candidate_owner_kernel\":null}\n",s.slice,(unsigned long long)s.cycle,(unsigned long long)s.uid,s.set,s.eligible,s.first,(unsigned long long)s.payload,(unsigned long long)s.generation,s.required,s.issued,s.ready,s.reuse?"true":"false",s.attached?"true":"false",s.candidate?"true":"false",s.immediate_result);if(bytes>0)output_bytes+=unsigned(bytes);else output_invalid=true;}printed_samples=sample_count;}
++ }
++};
++extern registry state;
++inline ledger *get(const void*p){return state.find(p);}
++struct detach_scope {ledger*d;bool done=false;explicit detach_scope(ledger*p):d(p){if(d)d->add(detach_calls);}void success(){done=true;if(d)d->add(detach_success);}void refused(field reason){done=true;if(d){d->add(detach_false);d->add(reason);}}~detach_scope(){if(d&&!done)d->add(detach_exception);}};
++struct commit_scope {ledger*d;uint64_t before;bool done=false;uint64_t uid,cycle;explicit commit_scope(const void*p,uint64_t u,uint64_t c):d(get(p)),before(d?d->total[detach_success]:0),uid(u),cycle(c){if(d)d->add(ft_access_attempts);}int finish(int result,bool accepted,field gate){done=true;if(d){if(d->last_cycle==cycle&&d->last_uid==uid&&d->last_sample<state.sample_count)state.examples[d->last_sample].immediate_result=result;d->add(accepted?commit_accepted:commit_denied);if(!accepted)d->add(gate);if(d->total[detach_success]>before)d->add(accepted?trigger_accepted_after_detach:trigger_denied_after_detach);}return result;}~commit_scope(){if(d&&!done){d->add(commit_exception);if(d->total[detach_success]>before)d->add(trigger_exception_after_detach);}}};
++}
++#endif
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 892358e5..a1a86322 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -298,6 +298,8 @@ void l2_cache::ft_rollback() {
+ 
+ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     unsigned time, std::list<cache_event> &events) {
++  ep_l2_detach_diag::commit_scope diagnostic(this,mf->get_request_uid(),ft_physical_cycle());
++  using namespace ep_l2_detach_diag;
+   // memcpy offset orders native Tag timestamps; it is not elapsed hardware
+   // time and must never reset the payload bank arbiter or WB/WAD lifetimes.
+   ft_assert_quota();
+@@ -306,29 +308,33 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   m_ep_l2_last_payload_request_result = ep_l2_payload_store::GRANTED;
+   const new_addr_type owner = m_config.block_addr(addr);
+   if(m_ro) {
+-    if(m_ro->native_owner_conflict(mf))return RESERVATION_FAIL;
++    if(m_ro->native_owner_conflict(mf)){if(diagnostic.d)diagnostic.d->add(commit_native_owner);return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_owner));}
+     cache_request_status merged;
+-    if(m_ro->merge_existing(mf,time,events,merged)){
++    ep_l2_detach_diag::field observed_merge_denial=ep_l2_detach_diag::denied_other;
++    if(m_ro->merge_existing(mf,time,events,merged,diagnostic.d?&observed_merge_denial:nullptr)){
+       if(merged!=RESERVATION_FAIL){++m_ft_stats.accepted;
+         m_stats.inc_stats(mf->get_access_type(),MSHR_HIT,mf->get_streamID());
+         m_stats.inc_stats_pw(mf->get_access_type(),MSHR_HIT,mf->get_streamID());
+       }
+-      return merged;
++      if(diagnostic.d)diagnostic.d->add(commit_merge);return cache_request_status(diagnostic.finish(merged,merged!=RESERVATION_FAIL,observed_merge_denial));
+     }
+   }
+   const bool ro_new=m_ro && m_ro->new_request(mf);
+-  if(ro_new && !m_ro->directory_ready(mf))return RESERVATION_FAIL;
+-  if (tvd_write_candidate(mf) && !tvd_promote(mf,time,events)) return RESERVATION_FAIL;
++  if(ro_new && !m_ro->directory_ready(mf)){if(diagnostic.d)diagnostic.d->add(commit_directory);return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));}
++  if (tvd_write_candidate(mf) && !tvd_promote(mf,time,events)) {if(diagnostic.d)diagnostic.d->add(commit_promotion);return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_promotion));}
+   unsigned index = (unsigned)-1;
+   cache_request_status probe = m_tag_array->probe(owner, index, mf, mf->is_write(), true);
+-  if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);}
+-  if (probe == RESERVATION_FAIL) return RESERVATION_FAIL;
++  if(diagnostic.d){diagnostic.d->add(commit_raw_probe_reached);if(probe==RESERVATION_FAIL)diagnostic.d->add(raw_tag_fail_commit);}
++  if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);if(diagnostic.d)diagnostic.d->add(probe>=0&&probe<=WRITE_ALLOCATED?field(post_relief_hit+probe):post_relief_unknown);}
++  if (probe == RESERVATION_FAIL) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_tag));
+   if (m_tvd && probe == MISS &&
+-      !(m_tvd_lookup == mf && m_tvd_lookup_done)) return RESERVATION_FAIL;
+-  if(ro_new && (!m_ro->capacity(mf,false) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return RESERVATION_FAIL;
+-  if (m_ft_pending.request && m_ft_pending.request != mf) return RESERVATION_FAIL;
++      !(m_tvd_lookup == mf && m_tvd_lookup_done)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
++  // Capture each original short-circuit result without extra modeled checks.
++  bool diagnostic_capacity_ok=false;
++  if(ro_new && (!(diagnostic_capacity_ok=m_ro->capacity(mf,false)) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,diagnostic_capacity_ok?denied_missq:denied_capacity));
++  if (m_ft_pending.request && m_ft_pending.request != mf) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_held));
+   if (m_tvd ? tvd_cached_wad_contains(mf,owner) : ep_l2_wad_contains(owner)) {
+-    ++m_ep_l2_wad_same_address_wait_count; return RESERVATION_FAIL;
++    ++m_ep_l2_wad_same_address_wait_count; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_wad));
+   }
+ 
+   if (probe == MISS && !m_ft_pending.request) {
+@@ -348,7 +354,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     const bool dirty = m_tag_array->block_is_modified(index);
+     if (live && (m_ep_l2_payload.inspect(victim).pins ||
+                  m_ep_l2_payload.inspect(victim).pending_sector_mask.any())) {
+-      ++m_ft_stats.pin_block; return RESERVATION_FAIL;
++      ++m_ft_stats.pin_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_pin));
+     }
+     assert(!dirty || live);
+     // Compute the actual target policy's issue needs before acquiring anything.
+@@ -357,24 +363,24 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     unsigned slots = dirty ? 1 : 0;
+     if(ro_new) {slots+=mf->get_access_sector_mask().count();}
+     else if (read) {
+-      if (m_mshrs.full(key)) return RESERVATION_FAIL;
++      if (m_mshrs.full(key)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_mshr));
+       if (m_mshrs.needs_lower_read(key, mf->get_access_sector_mask())) ++slots;
+     } else if (m_config.m_write_alloc_policy == WRITE_ALLOCATE) {
+-      if (m_mshrs.full(key)) return RESERVATION_FAIL;
++      if (m_mshrs.full(key)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_mshr));
+       slots += 2;
+     } else if (m_config.m_write_alloc_policy == FETCH_ON_WRITE &&
+                mf->get_access_byte_mask().count() != m_config.get_atom_sz()) {
+-      if (m_mshrs.full(key)) return RESERVATION_FAIL;
++      if (m_mshrs.full(key)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_mshr));
+       ++slots;
+     }
+-    if (!miss_queue_has_slots(slots)) { ++m_ft_stats.issue_block; return RESERVATION_FAIL; }
++    if (!miss_queue_has_slots(slots)) { ++m_ft_stats.issue_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_missq)); }
+     if (dirty && (m_tvd ? m_tvd->preview_install(m_tag_array->get_block(index)->m_block_addr,true,true).status != tvd_directory::OK : m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries)) {
+-      ++m_ep_l2_wad_full_block_count; return RESERVATION_FAIL;
++      ++m_ep_l2_wad_full_block_count; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_wad_full));
+     }
+     ep_l2::PayloadHandle staging, landing;
+     if (dirty && m_config.m_ep_l2_ft_mode == 1) {
+       staging = m_ep_l2_payload.preview_free(ep_l2_payload_store::WB);
+-      if (!staging.valid()) { ++m_ft_stats.wbuf_full; return RESERVATION_FAIL; }
++      if (!staging.valid()) { ++m_ft_stats.wbuf_full; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_wb)); }
+     }
+     bool retain_clean = false;
+     if (m_tvd && m_config.m_ep_l2_tvd_clean && live && !dirty &&
+@@ -397,14 +403,14 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+       landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);
+       if (!landing.valid() && m_tvd && tvd_reclaim_one(index%4,physical_cycle))
+         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+-      if (!landing.valid()) { ++m_ft_stats.pool_full; return RESERVATION_FAIL; }
++      if (!landing.valid()) { ++m_ft_stats.pool_full; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_landing)); }
+       if (dirty) staging = victim;
+     }
+     // All issue/WAD/staging/landing prechecks passed. Reserve quota before
+     // exposing any cross-cycle transaction; retries keep this one token.
+     if (dirty && m_config.m_ep_l2_wb_local_cap &&
+         m_ft_quota.reserved + m_ft_quota.live >= m_config.m_ep_l2_wb_local_cap) {
+-      ++m_ft_quota.refusals; return RESERVATION_FAIL;
++      ++m_ft_quota.refusals; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_quota));
+     }
+     // The only producer is the serialized frontend head. While this token is
+     // live no other frontend request can steal its prechecked issue slots;
+@@ -454,7 +460,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+         m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.victim,
+             false, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT,ep_l2_payload_store::COPY_READ,mf->get_request_uid());
+         if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+-          ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++          ++m_ft_stats.bank_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_bank));
+         }
+         p.born = physical_cycle; // actual source readout starts data-staging lifetime
+         p.copy_versions = m_ep_l2_payload.inspect(p.victim).versions;
+@@ -462,13 +468,13 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+         // COPY_FREE explicitly removes copy service and its staging delay.
+         // DATA_FREE removes port contention but retains this fixed one-cycle
+         // copy-latch transfer, even when source and target banks differ.
+-        if (!m_config.m_ep_l2_diag_copy_free) return RESERVATION_FAIL;
++        if (!m_config.m_ep_l2_diag_copy_free) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_copy));
+       }
+       if (p.phase == 1) {
+         m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(p.staging,
+             true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE,ep_l2_payload_store::COPY_WRITE,mf->get_request_uid());
+         if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+-          ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++          ++m_ft_stats.bank_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_bank));
+         }
+         m_ep_l2_payload.inspect_mutable(p.staging).versions = p.copy_versions;
+         m_ep_l2_payload.transfer(p.staging, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
+@@ -483,7 +489,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+           ep_l2_payload_store::RESIDENT, p.landing_id, true, physical_cycle,
+           (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE,ep_l2_payload_store::FRONTEND,mf->get_request_uid());
+       if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+-        ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++        ++m_ft_stats.bank_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_bank));
+       }
+     }
+     if (p.dirty && m_config.m_ep_l2_ft_mode == 2) {
+@@ -504,7 +510,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     const ep_l2::PayloadHandle h = tag_payload_handle(index);
+     assert(m_ep_l2_payload.handle_owner_matches(h, owner));
+     if ((mf->get_is_write() || mf->isatomic()) && m_ep_l2_payload.inspect(h).pins) {
+-      ++m_ft_stats.pin_block; return RESERVATION_FAIL;
++      ++m_ft_stats.pin_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_pin));
+     }
+     if (probe == HIT || mf->get_is_write()) {
+       m_ep_l2_last_payload_request_result = m_ep_l2_payload.request(h,
+@@ -512,7 +518,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+           mf->get_is_write() || mf->isatomic() ? ep_l2_payload_store::RESIDENT_WRITE : ep_l2_payload_store::RESIDENT_HIT_READ,
+           ep_l2_payload_store::FRONTEND,mf->get_request_uid());
+       if (m_ep_l2_last_payload_request_result != ep_l2_payload_store::GRANTED) {
+-        ++m_ft_stats.bank_block; return RESERVATION_FAIL;
++        ++m_ft_stats.bank_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_bank));
+       }
+     }
+   }
+@@ -521,7 +527,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   const cache_request_status result = ro_new ? m_ro->accept_new(mf,index,probe,time,events) : data_cache::access(addr, mf, time, events);
+   if (result == RESERVATION_FAIL) {
+     if (replacement) ft_rollback();
+-    return result;
++    return cache_request_status(diagnostic.finish(result,false,denied_baseline));
+   }
+   if (replacement && m_ft_pending.dirty) assert(m_ft_pending.bound);
+   if (replacement && m_ft_pending.retain_clean) {
+@@ -545,7 +551,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   ++m_ft_stats.accepted;
+   m_tag_array->l2_char_tracking_refresh_line(index);
+   assert(m_ep_l2_payload.ownership_consistent());
+-  return result;
++  return cache_request_status(diagnostic.finish(result,true,denied_other));
+ }
+ 
+ void l2_cache::send_write_request(mem_fetch *mf, cache_event event, unsigned time,
+diff --git a/src/gpgpu-sim/ep-l2-ro-runtime.inc b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+index 79d1b725..66bbfe7d 100644
+--- a/src/gpgpu-sim/ep-l2-ro-runtime.inc
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -69,6 +69,7 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+     if(fallback && cert->range_count())throw std::invalid_argument("fallback cannot enable any RO line");
+     tx.reset(new ep_l2_ro::transactions(c.m_mshrs,port,c.m_ep_l2_payload.physical_slots(),*cert,
+       ep_l2_ro::switches(cfg.m_ro_tag_detach,cfg.m_ro_line_mshr_bypass)));
++    tx->diagnostic_observer=ep_l2_detach_diag::get(&c);
+   }
+   uint64_t physical_cycle() const {
+     return c.ft_physical_cycle();
+@@ -211,11 +212,22 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+     const unsigned mask=m->get_access_sector_mask().to_ulong();
+     return mask&~tx->scheduled(h);
+   }
+-  bool capacity(mem_fetch *m,bool existing) const {
++  bool capacity(mem_fetch *m,bool existing,ep_l2_detach_diag::preview *o=nullptr) const {
+     const auto line=c.m_config.block_addr(m->get_addr());
+-    return c.m_mshrs.descriptor_count_used()<512 && c.m_mshrs.targets_on_line(line)<32 &&
+-      (existing || c.m_config.m_ro_line_mshr_bypass ||
+-       (!c.m_mshrs.probe(line) && c.m_mshrs.num_entries_used()<128));
++    // Capture only actually evaluated original short-circuit operands.
++    const bool descriptor=c.m_mshrs.descriptor_count_used()<512;
++    if(o){o->capacity_consulted=true;o->descriptor_check=descriptor;}
++    if(!descriptor)return false;
++    const bool address=c.m_mshrs.targets_on_line(line)<32;
++    if(o)o->address_check=address;
++    if(!address)return false;
++    if(existing||c.m_config.m_ro_line_mshr_bypass){if(o)o->line_na=true;return true;}
++    const bool line_absent=!c.m_mshrs.probe(line);
++    if(o)o->line_probe_check=line_absent;
++    if(!line_absent)return false;
++    const bool line_room=c.m_mshrs.num_entries_used()<128;
++    if(o)o->line_slots_check=line_room;
++    return line_room;
+   }
+   bool detachable(new_addr_type addr,unsigned &index) const {
+     if(!c.m_config.m_ro_tag_detach)return false;
+@@ -227,26 +239,38 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+     return false;
+   }
+   void relieve(new_addr_type addr) {
+-    unsigned i=~0U;if(detachable(addr,i))tx->detach(c.tag_payload_handle(i));
++    unsigned i=~0U;const bool found=detachable(addr,i);
++    if(auto*d=ep_l2_detach_diag::get(&c)){d->add(ep_l2_detach_diag::relieve_calls);d->add(!c.m_config.m_ro_tag_detach?ep_l2_detach_diag::relieve_T_disabled:found?ep_l2_detach_diag::relieve_eligible_selected:ep_l2_detach_diag::relieve_no_eligible);}
++    if(auto*d=ep_l2_detach_diag::get(&c)){
++      unsigned first=~0U;const unsigned base=c.m_config.set_index(addr)*c.m_config.get_assoc();
++      if(c.m_config.m_ro_tag_detach)for(unsigned t=base;t<base+c.m_config.get_assoc();++t){auto h=c.tag_payload_handle(t);if(!tx->live(h))continue;const auto p=tx->diagnostic_state(h);if(p.attached&&!p.reuse&&(p.required&~p.ready)){first=t;break;}}
++      if((found&&i!=first)||(!found&&first!=~0U))d->add(ep_l2_detach_diag::selected_identity_mismatch);
++    }
++    if(found)tx->detach(c.tag_payload_handle(i));
+   }
+-  bool preview(mem_fetch *m,l2_access_plan &p) const {
++  bool preview(mem_fetch *m,l2_access_plan &p,ep_l2_detach_diag::preview *o=nullptr) const {
+     if(native_owner_conflict(m)) {
+       p.exact=true;p.is_read=!m->get_is_write();p.is_write=m->get_is_write();
+-      p.probe_status=RESERVATION_FAIL;return true;
++      p.probe_status=RESERVATION_FAIL;if(o)o->early=1;return true;
+     }
+     if(!new_request(m))return false;
+     p.exact=true;p.is_read=true;
+     // Read the existing paid frontend ticket; never issue a second/free TVD
+     // address CAM from observational RO preview. TVD hits complete on its own
+     // native frontend/ICNT path; RO owns only the resulting real cache miss.
+-    if(!directory_ready(m)) {p.probe_status=RESERVATION_FAIL;p.ep_l2_ro_lookup_wait=true;return true;}
+-    if (!query_admissible(m)) {p.probe_status=RESERVATION_FAIL;p.ep_l2_ro_lookup_wait=true;return true;}
++    if(!directory_ready(m)) {p.probe_status=RESERVATION_FAIL;p.ep_l2_ro_lookup_wait=true;if(o)o->early=2;return true;}
++    if (!query_admissible(m)) {p.probe_status=RESERVATION_FAIL;p.ep_l2_ro_lookup_wait=true;if(o)o->early=3;return true;}
+     handle h;bool existing=target(m,h);
+     unsigned i=~0U;
+     p.probe_status=c.m_tag_array->probe(c.m_config.block_addr(m->get_addr()),i,m,false,true);
++    if(o){o->production_reached=true;o->production_raw=p.probe_status;o->existing=existing;o->intermediate=p.probe_status;}
+     if(existing) {
+       p.probe_status=HIT_RESERVED;
+-    } else if(p.probe_status==RESERVATION_FAIL && detachable(m->get_addr(),i))p.probe_status=MISS;
++    } else if(p.probe_status==RESERVATION_FAIL) {
++      if(o)o->consulted=true;
++      if(detachable(m->get_addr(),i))p.probe_status=MISS;
++    }
++    if(o)o->intermediate=p.probe_status;
+     p.cache_index=i;
+     if(p.probe_status==RESERVATION_FAIL){p.ep_l2_tag_set_all_reserved=true;return true;}
+     const unsigned mask=m->get_access_sector_mask().to_ulong();
+@@ -264,7 +288,7 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+     p.needs_new_mshr=!existing && !c.m_config.m_ro_line_mshr_bypass;
+     p.needs_mshr_merge=existing && !c.m_config.m_ro_line_mshr_bypass;
+     p.mshr_hit=existing && !c.m_config.m_ro_line_mshr_bypass;
+-    p.mshr_entry_available=p.mshr_merge_available=capacity(m,existing);
++    p.mshr_entry_available=p.mshr_merge_available=capacity(m,existing,o);
+     // Shared descriptor/per-address bounds still block an M-mode request,
+     // without misreporting that it needs a traditional line-MSHR.
+     if(!capacity(m,existing)) p.probe_status=RESERVATION_FAIL;
+@@ -286,12 +310,13 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+       events.push_back(cache_event(READ_REQUEST_SENT));
+     }
+   }
+-  bool merge_existing(mem_fetch *m,unsigned time,std::list<cache_event>&events,cache_request_status &r) {
++  bool merge_existing(mem_fetch *m,unsigned time,std::list<cache_event>&events,cache_request_status &r,ep_l2_detach_diag::field *observed_denial=nullptr) {
+     handle h;if(!candidate(m)||!target(m,h))return false;
+     unsigned mask=m->get_access_sector_mask().to_ulong(),missing=needed(m,h);
+     r=RESERVATION_FAIL;
+-    if(!capacity(m,true)||!c.miss_queue_has_slots(__builtin_popcount(missing)))return true;
+-    if(tx->merge(h,m,mask,1,true,ep_l2_ro::GLOBAL_DEMAND_READ)!=ep_l2_ro::ACCEPTED)return true;
++    if(!capacity(m,true)){if(observed_denial)*observed_denial=ep_l2_detach_diag::denied_capacity;return true;}
++    if(!c.miss_queue_has_slots(__builtin_popcount(missing))){if(observed_denial)*observed_denial=ep_l2_detach_diag::denied_missq;return true;}
++    if(tx->merge(h,m,mask,1,true,ep_l2_ro::GLOBAL_DEMAND_READ)!=ep_l2_ro::ACCEPTED){if(observed_denial)*observed_denial=ep_l2_detach_diag::denied_other;return true;}
+     if(tx->attached(h)) {
+       unsigned i=~0U;bool wb=false;evicted_block_info ev;
+       c.m_tag_array->access(c.m_config.block_addr(m->get_addr()),time,i,wb,ev,m);assert(!wb);
+@@ -345,10 +370,11 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+   }
+ };
+ void l2_cache::ro_init() {
++  ep_l2_detach_diag::state.add(this);
+   m_ro=NULL;
+   if(m_config.m_ro_tag_detach||m_config.m_ro_line_mshr_bypass)m_ro=new ep_l2_ro_runtime(*this);
+ }
+-l2_cache::~l2_cache(){delete m_ro;}
++l2_cache::~l2_cache(){ep_l2_detach_diag::state.erase(this);delete m_ro;}
+ void l2_cache::ro_begin_epoch(){if(m_ro){
+   if(!m_ro->command_bound||m_ro->ever_open||!ft_drained()||m_mshrs.descriptor_count_used()||!m_miss_queue.empty()||ep_l2_wad_occupancy())
+     throw std::logic_error("RO epoch activation requires complete prior drain");
+@@ -359,6 +385,7 @@ void l2_cache::ro_end_epoch(){if(m_ro){
+   if(!m_ro->open||!ft_drained()||m_mshrs.descriptor_count_used()||!m_miss_queue.empty()||!m_ro->tx->end_epoch())
+     throw std::logic_error("RO whole-commandlist end is not drained");
+   m_ro->epoch_end_cycle=m_ro->physical_cycle();m_ro->open=false;
++  if(auto*d=ep_l2_detach_diag::get(this))d->closed=true;
+ }}
+ bool l2_cache::ro_drained() const {return !m_ro||m_ro->tx->drained();}
+ bool l2_cache::access_ready() const {return (m_ro&&m_ro->has_response())||baseline_cache::access_ready();}
+@@ -369,7 +396,11 @@ bool l2_cache::ro_return(mem_fetch *m,unsigned long long cycle) {
+   return m_ro->port.accept_return(*m_ro->tx,ep_l2::PayloadHandle(m->get_ep_l2_payload_id(),m->get_ep_l2_payload_generation()),
+     m->get_access_sector_mask().to_ulong(),cycle,m->get_ft_wb_data(),m->get_request_uid());
+ }
+-void l2_cache::ro_print(FILE *f,unsigned slice) const {if(m_ro){
++void l2_cache::ro_print(FILE *f,unsigned slice) const {
++  if(auto*d=ep_l2_detach_diag::get(this)){d->slice=slice;d->ro_runtime=bool(m_ro);d->T=m_config.m_ro_tag_detach;d->M=m_config.m_ro_line_mshr_bypass;if(!m_ro)d->closed=true;
++    if(m_ro && d->total[ep_l2_detach_diag::detach_success]!=m_ro->tx->stats.detached)d->add(ep_l2_detach_diag::closure_errors);
++    ep_l2_detach_diag::state.print(f,*d,ft_physical_cycle());}
++  if(m_ro){
+   const auto &s=m_ro->tx->stats;
+   fprintf(f,"EPL2ROV1|SUMMARY|slice=%u|detach=%u|bypass=%u|accepted_global_reads=%llu|accepted_oracle_candidates=%llu|accepted_ro=%llu|transactions=%llu|merges=%llu|detached=%llu|lower_sectors=%llu|concurrent_duplicate_sectors=%llu|responses=%llu|ro_bank_fill_ops=%llu|ro_bank_response_ops=%llu|live=%u|manifest=%s|scope=%s\n",
+     slice,m_config.m_ro_tag_detach,m_config.m_ro_line_mshr_bypass,
+diff --git a/src/gpgpu-sim/ep-l2-ro-transactions.h b/src/gpgpu-sim/ep-l2-ro-transactions.h
+index 2a17e5f9..c3b76643 100644
+--- a/src/gpgpu-sim/ep-l2-ro-transactions.h
++++ b/src/gpgpu-sim/ep-l2-ro-transactions.h
+@@ -9,6 +9,7 @@
+ #include <vector>
+ #include "gpu-cache.h"
+ #include "ep-l2-ro-oracle.h"
++#include "ep-l2-detach-diag.h"
+ 
+ // Mechanism-study C source candidate, restored from historical Lane3.
+ // Current A integration/native qualification is pending. There is no allocator
+@@ -86,6 +87,12 @@ class transactions {
+       throw std::invalid_argument("RO requires shared D512 and exact1168 payload budget");
+   }
+ 
++  ep_l2_detach_diag::ledger *diagnostic_observer=nullptr;
++  ep_l2_detach_diag::predicate diagnostic_state(identity h) const {
++    const auto &e=get(h);ep_l2_detach_diag::predicate p;
++    p.live=e.live;p.attached=e.attached;p.reuse=e.reuse_seen;
++    p.required=e.required;p.issued=e.issued;p.ready=e.ready;p.waiters=e.waiters.size();return p;
++  }
+   // The binding layer must have verified every input and oracle artifact hash.
+   // This is a closed-world experimental oracle, not an inferred hardware bit.
+   void begin_epoch(uint64_t epoch, const std::string &verified_manifest_sha256) {
+@@ -145,6 +152,7 @@ class transactions {
+     e.waiters.push_back(waiter(d, mf, mask));
+     if(!m_features.line_mshr_bypass)m_shared.bind_ro_line(line,h);
+     ++stats.admits;
++    if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_admits);diagnostic_observer->joint(diagnostic_state(h));}
+     if (m_features.line_mshr_bypass) ++stats.avoided_line_allocations;
+     else ++stats.normal_line_allocations;
+     observe_peaks();
+@@ -186,7 +194,9 @@ class transactions {
+     if (!m_shared.reserve_ro_descriptor(e.line, mf, sector_mask(mask), d))
+       return DESCRIPTOR_OR_ADDRESS_FULL;
+     e.waiters.push_back(waiter(d, mf, mask));
++    if(diagnostic_observer && !e.reuse_seen)diagnostic_observer->add(ep_l2_detach_diag::reuse_seen_first_transition);
+     e.required |= mask; e.reuse_seen = true;
++    if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_merges);diagnostic_observer->joint(diagnostic_state(h));}
+     ++stats.merges;
+     observe_peaks();
+     return ACCEPTED;
+@@ -197,15 +207,19 @@ class transactions {
+     return m_features.tag_detach && e.attached && !e.reuse_seen && (e.required&~e.ready);
+   }
+   bool detach(identity h) {
++    ep_l2_detach_diag::detach_scope diagnostic(diagnostic_observer);
+     entry &e = get(h);
+     // Conservative waiter-aware protection persists after a merged waiter
+     // retires. No future reuse oracle is consumed by this policy.
+     if (!m_features.tag_detach || !e.attached || e.reuse_seen ||
+-        !(e.required & ~e.ready)) return false;
++        !(e.required & ~e.ready)) {
++      diagnostic.refused(!m_features.tag_detach?ep_l2_detach_diag::detach_false_T_disabled:!e.attached?ep_l2_detach_diag::detach_false_not_attached:e.reuse_seen?ep_l2_detach_diag::detach_false_reuse:ep_l2_detach_diag::detach_false_ready);return false;
++    }
+     if (!m_port.tag_matches(e.tag, h, e.line))
+       throw std::logic_error("tag reuse without detach handshake");
+     m_port.tag_detach(e.tag, h); e.attached = false;
+     ++stats.detached;
++    diagnostic.success();
+     return true;
+   }
+ 
+@@ -240,6 +254,7 @@ class transactions {
+       throw std::logic_error("stale attached fill tag generation");
+     if (!m_port.fill_write(h, mask, cycle)) return false;
+     e.ready |= mask;
++    if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_fill_packets);diagnostic_observer->joint(diagnostic_state(h));if(!e.attached){diagnostic_observer->add(ep_l2_detach_diag::detached_return_packets);diagnostic_observer->add(ep_l2_detach_diag::detached_return_sectors,__builtin_popcount(mask));}}
+     if (!m_features.line_mshr_bypass)
+       m_shared.ro_line_ready(e.line, sector_mask(mask));
+     if (e.attached) {
+@@ -279,8 +294,9 @@ class transactions {
+     if (fifo_accepted && e.prepared_cycle != cycle)
+       throw std::logic_error("response enqueue outside granted read cycle");
+     if (!fifo_accepted) {
+-      ++stats.response_backpressure; e.prepared = false; return;
++      ++stats.response_backpressure; if(diagnostic_observer)diagnostic_observer->add(ep_l2_detach_diag::response_backpressure); e.prepared = false; return;
+     }
++    if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_responses);if(!e.attached)diagnostic_observer->add(ep_l2_detach_diag::detached_responses);}
+     m_shared.release_ro_descriptor(e.waiters[e.prepared_index].descriptor);
+     e.waiters.erase(e.waiters.begin() + e.prepared_index);
+     e.prepared = e.response_chosen = false; ++stats.responses;
+@@ -356,6 +372,7 @@ class transactions {
+   void retire_if_done(entry &e) {
+     if (!e.waiters.empty() || e.prepared || (e.required & ~e.ready) ||
+         (e.issued & ~e.ready)) return;
++    if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_retired);if(!e.attached)diagnostic_observer->add(ep_l2_detach_diag::detached_retired);}
+     m_port.unpin(e.h);
+     if (!e.attached) m_port.release(e.h);
+     if (!m_features.line_mshr_bypass) m_shared.release_ro_line(e.line);
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 9a25a308..e7d99b73 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -1,3 +1,5 @@
++#include "ep-l2-detach-diag.h"
++ep_l2_detach_diag::registry ep_l2_detach_diag::state;
+ // Copyright (c) 2009-2021, Tor M. Aamodt, Tayler Hetherington,
+ // Vijay Kandiah, Nikos Hardavellas, Mahmoud Khairy, Junrui Pan,
+ // Timothy G. Rogers
+@@ -2719,8 +2721,11 @@ void l2_cache::fill(mem_fetch *mf, unsigned time) {
+ 
+ void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,
+                               l2_access_plan &plan) const {
++  preview_access(addr,mf,plan,nullptr);
++}
++void l2_cache::preview_access(new_addr_type addr,mem_fetch *mf,l2_access_plan &plan,ep_l2_detach_diag::preview *o) const {
+   plan = l2_access_plan();
+-  if(m_ro && m_ro->preview(mf,plan))return;
++  if(m_ro && m_ro->preview(mf,plan,o))return;
+   if (!exact_l2_admission()) return;
+ 
+   plan.exact = true;
+@@ -2729,19 +2734,20 @@ void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,
+   plan.l1_writeback_absorbed = mf->get_access_type() == L1_WRBK_ACC;
+ 
+   new_addr_type block_addr = m_config.block_addr(addr);
+-  if (tvd_write_candidate(mf)) { plan.ep_l2_tvd_candidate=true; plan.exact=false; return; }
++  if (tvd_write_candidate(mf)) { plan.ep_l2_tvd_candidate=true; plan.exact=false; if(o)o->early=5;return; }
+   if (ep_l2_wad_enabled() && plan.is_read &&
+       (m_tvd ? tvd_cached_wad_contains(mf,block_addr) : ep_l2_wad_contains(block_addr))) {
+     // A WAD owns this old line until real writeback completion.  Treat the
+     // frontend request as non-admissible before it can reach tag mutation.
+     plan.probe_status = RESERVATION_FAIL;
+     plan.ep_l2_wad_same_address_hazard = true;
+-    return;
++    if(o)o->early=4;return;
+   }
+   unsigned cache_index = (unsigned)-1;
+   plan.probe_status =
+       m_tag_array->probe(block_addr, cache_index, mf, mf->is_write(), true);
+   plan.cache_index = cache_index;
++  if(o){o->production_reached=true;o->production_raw=plan.probe_status;o->intermediate=plan.probe_status;}
+   if (plan.probe_status == RESERVATION_FAIL) {
+     plan.ep_l2_tag_set_all_reserved = true;
+     return;
+@@ -2965,3 +2971,78 @@ void tex_cache::display_state(FILE *fp) const {
+ 
+ #include "ep-l2-ft-cache.inc"
+ #include "ep-l2-tvd-cache.inc"
++
++void l2_cache::detach_diag_bind_slice(unsigned slice){if(auto*d=ep_l2_detach_diag::get(this))d->slice=slice;}
++void l2_cache::detach_diag_kernel(bool begin,unsigned long long uid){if(auto*d=ep_l2_detach_diag::get(this)){if(begin)d->begin(uid);else d->end(uid);}}
++void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) const {
++  if(!ep_l2_detach_diag::get(this))return;
++  o.runtime=bool(m_ro);o.T=m_config.m_ro_tag_detach;o.candidate=m_ro&&m_ro->candidate(m);
++  unsigned index=~0U;
++  // Status-only observer probe: never update held-request identity telemetry.
++  o.raw=m_tag_array->probe(m_config.block_addr(m->get_addr()),index,
++      m->get_access_sector_mask(),m->is_write(),true,nullptr);
++  o.set=m_config.set_index(m->get_addr());
++  if(o.raw!=RESERVATION_FAIL||!o.T)return;
++  const unsigned base=o.set*m_config.get_assoc();
++  for(unsigned i=base;i<base+m_config.get_assoc();++i){++o.ways;auto h=tag_payload_handle(i);
++    if(!m_ro||!m_ro->tx->live(h)){++o.reasons[0];continue;}
++    const auto p=m_ro->tx->diagnostic_state(h);unsigned mask=(p.attached?1:0)|(p.reuse?2:0)|((p.required&~p.ready)?4:0);++o.masks[mask];
++    if(!p.attached)++o.reasons[1];else if(p.reuse)++o.reasons[2];else if(!(p.required&~p.ready))++o.reasons[3];else {++o.reasons[4];++o.eligible;if(o.first==~0U){o.first=i;o.victim=p;o.victim_payload=h.payload_id;o.victim_generation=h.generation;}}
++  }
++}
++void l2_cache::detach_diag_skip(mem_fetch*m,unsigned long long cycle,unsigned reason){using namespace ep_l2_detach_diag;if(auto*d=get(this)){
++ if(!m){d->add(head_absent_cycles);return;}if(!d->once(cycle,m->get_request_uid()))return;d->add(observed_heads);d->add(probe_skipped);d->add(reason==1?skip_tvd:reason==2?skip_ideal:reason==3?skip_disabled:skip_other);
++}}
++void l2_cache::detach_diag_frontend(mem_fetch*m,unsigned long long cycle,const ep_l2_detach_diag::preview&o,const l2_access_plan&p,bool admit,bool missq,bool response){using namespace ep_l2_detach_diag;auto*d=get(this);if(!d||!d->once(cycle,m->get_request_uid()))return;
++ if(o.production_reached&&o.production_raw!=o.raw)d->add(closure_errors);
++ d->add(observed_heads);d->add(o.raw>=0&&o.raw<=WRITE_ALLOCATED?field(raw_hit+o.raw):raw_unknown);
++ d->add(!o.runtime?requester_ro_runtime_off:o.candidate?requester_ro_candidate:requester_nonro);
++ if(o.candidate&&o.raw==HIT)d->add(certified_resident_hits);else if(o.candidate)d->add(candidate_deferred_or_native);
++ unsigned primary=0;
++ if(o.early==1){d->add(preview_early_owner);d->add(mask_owner);primary=primary_owner;}
++ if(o.early==2){d->add(preview_early_directory);d->add(mask_directory);primary=primary_directory;}
++ if(o.early==3){d->add(preview_early_query);d->add(mask_query);primary=primary_query;}
++ if(o.early==4||p.ep_l2_wad_full||p.ep_l2_wad_same_address_hazard){d->add(mask_wad);if(!primary)primary=primary_wad;}
++ if(o.early==5)d->add(preview_early_tvd);
++ if(o.runtime&&o.candidate){
++   d->add(ro_capacity_population);d->add(o.capacity_consulted?ro_capacity_consulted:ro_capacity_not_consulted);
++   const int outcomes[]={o.descriptor_check,o.address_check,o.line_probe_check,o.line_slots_check};
++   for(unsigned i=0;i<4;++i){field first=field(ro_descriptor_checked+4*i);if(outcomes[i]<0)d->add(field(first+3));else{d->add(first);d->add(field(first+(outcomes[i]?1:2)));}}
++   if(o.line_na)d->add(ro_line_na_M_or_existing);
++ }
++ // Actual RO predicate captures are distinct from full-state native snapshots.
++ if(o.capacity_consulted){
++   if(o.descriptor_check==0){d->add(mask_descriptor);if(!primary)primary=primary_descriptor;}
++   if(o.address_check==0){d->add(mask_address);if(!primary)primary=primary_address;}
++   if(o.line_probe_check==0||o.line_slots_check==0){d->add(mask_line);if(!primary)primary=primary_line;}
++ }else{
++   if((p.needs_new_mshr||p.needs_mshr_merge)&&m_mshrs.descriptor_count_used()>=512){d->add(mask_descriptor);if(!primary)primary=primary_descriptor;}
++   if((p.needs_new_mshr||p.needs_mshr_merge)&&m_mshrs.targets_on_line(m_config.block_addr(m->get_addr()))>=32){d->add(mask_address);if(!primary)primary=primary_address;}
++   if(p.needs_new_mshr&&m_mshrs.num_entries_used()>=128){d->add(mask_line);if(!primary)primary=primary_line;}
++ }
++ if(!missq&&p.new_missq_entries){d->add(mask_missq);if(!primary)primary=primary_missq;}
++ if(p.needs_data_port&&!data_port_free()){d->add(mask_data);if(!primary)primary=primary_data;}
++ if(p.needs_immediate_response_slot&&!response){d->add(mask_response);if(!primary)primary=primary_response;}
++ d->add(admit?primary_none:primary?field(primary):primary_unknown);
++ if(o.raw!=RESERVATION_FAIL)return;
++ d->add(o.T?pressure_T_enabled:pressure_T_disabled);
++ if(o.T){unsigned live=o.ways-o.reasons[0];d->add(!live?pressure_no_live_ro:o.eligible?pressure_eligible:pressure_live_ro_no_eligible);
++ d->add(ways_examined,o.ways);for(unsigned i=0;i<5;++i)d->add(field(way_no_live_ro+i),o.reasons[i]);d->add(field(eligible_hist_0+std::min(o.eligible,16U)));for(unsigned i=0;i<8;++i)d->add(field(predicate_hist_0+i),o.masks[i]);}
++ if(!o.production_reached)d->add(pressure_prod_probe_not_reached);
++ else {d->add(pressure_prod_probe_reached);if(o.existing&&o.intermediate==HIT_RESERVED)d->add(pressure_rewrite_hit_reserved);else if(!o.consulted)d->add(pressure_relief_not_consulted);else if(o.intermediate==MISS)d->add(pressure_rewrite_miss);else if(o.intermediate==RESERVATION_FAIL)d->add(pressure_kept_fail);else d->add(pressure_intermediate_other);}
++ d->add(admit?pressure_frontend_admitted:pressure_frontend_denied);
++ if(o.T&&o.eligible){
++   d->add(admit?eligible_frontend_admitted:eligible_frontend_denied);
++   d->add(o.capacity_consulted?eligible_capacity_consulted:eligible_capacity_not_consulted);
++   if(!o.production_reached)d->add(eligible_prod_probe_not_reached);
++   else{d->add(eligible_prod_probe_reached);if(o.existing&&o.intermediate==HIT_RESERVED)d->add(eligible_rewrite_hit_reserved);else if(!o.consulted)d->add(eligible_relief_not_consulted);else if(o.intermediate==MISS)d->add(eligible_rewrite_miss);else if(o.intermediate==RESERVATION_FAIL)d->add(eligible_kept_fail);else d->add(eligible_intermediate_other);}
++   if(o.descriptor_check==0)d->add(eligible_descriptor_fail);if(o.address_check==0)d->add(eligible_address_fail);if(o.line_probe_check==0)d->add(eligible_line_probe_fail);if(o.line_slots_check==0)d->add(eligible_line_slots_fail);
++   if(o.early>=1&&o.early<=5)d->add(field(eligible_early_owner+o.early-1));
++ }
++
++ if(o.production_reached&&o.consulted&&o.intermediate==MISS)d->add(admit?rewritten_final_admitted:rewritten_final_denied);
++ state.sample_pressure(*d,o,cycle,m->get_request_uid());
++}
++
++ep_l2_detach_diag::predicate l2_cache::detach_diag_predicate_for_test(ep_l2::PayloadHandle h) const {return m_ro->tx->diagnostic_state(h);}
++bool l2_cache::detach_diag_can_detach_for_test(ep_l2::PayloadHandle h) const {return m_ro->tx->can_detach(h);}
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 4b065296..7fa087dc 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -2858,6 +2858,7 @@ class ep_l2_payload_store {
+ /// Models second level shared cache with global write-back
+ /// and write-allocate policies
+ class ep_l2_ro_runtime;
++namespace ep_l2_detach_diag { struct preview; struct predicate; }
+ class l2_cache : public data_cache {
+   friend class ep_l2_ro_runtime;
+  public:
+@@ -3027,6 +3028,14 @@ class l2_cache : public data_cache {
+   bool ro_drained() const;
+   bool ro_return(mem_fetch *,unsigned long long);
+   void ro_print(FILE *,unsigned) const;
++  ep_l2_detach_diag::predicate detach_diag_predicate_for_test(ep_l2::PayloadHandle) const;
++  bool detach_diag_can_detach_for_test(ep_l2::PayloadHandle) const;
++  void detach_diag_bind_slice(unsigned);
++  void detach_diag_kernel(bool,unsigned long long);
++  void detach_diag_snapshot(mem_fetch *,ep_l2_detach_diag::preview &) const;
++  void detach_diag_frontend(mem_fetch *,unsigned long long,const ep_l2_detach_diag::preview &,const l2_access_plan &,bool,bool,bool);
++  void detach_diag_skip(mem_fetch *,unsigned long long,unsigned);
++  void preview_access(new_addr_type,mem_fetch *,l2_access_plan &,ep_l2_detach_diag::preview *) const;
+   bool ft_enabled() const { return m_config.m_ep_l2_ft_mode != 0; }
+   void commit_next_access();
+   mem_fetch *peek_next_access() const;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index cb020dc2..0ff2c0bd 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1,3 +1,4 @@
++#include "ep-l2-detach-diag.h"
+ // Copyright (c) 2009-2021, Tor M. Aamodt, Vijay Kandiah, Nikos Hardavellas,
+ // Mahmoud Khairy, Junrui Pan, Timothy G. Rogers
+ // The University of British Columbia, Northwestern University, Purdue
+@@ -979,6 +980,7 @@ memory_sub_partition::memory_sub_partition(unsigned sub_partition_id,
+                              m_L2interface, m_mf_allocator,
+                              IN_PARTITION_L2_MISS_QUEUE, gpu, L2_GPU_CACHE);
+ 
++  if(!m_config->m_L2_config.disabled())m_L2cache->detach_diag_bind_slice(m_id);
+   unsigned int icnt_L2;
+   unsigned int L2_dram;
+   unsigned int dram_L2;
+@@ -1314,6 +1316,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+     const bool eligible=!m_config->m_L2_texure_only || mf->istexture();
+     const auto result=eligible?m_L2cache->tvd_frontend(mf,now,!m_L2_icnt_queue->full()):l2_cache::TVD_NORMAL;
+     tvd_frontend_handled=result!=l2_cache::TVD_NORMAL;
++    if(tvd_frontend_handled)m_L2cache->detach_diag_skip(mf,now,1);
+     if (result==l2_cache::TVD_RESPONSE) {
+       mf->set_reply(); mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE,now);
+       ft_record_admission(mf); ep_l2_m0a_record_response_enqueue(); ft_record_response(mf);
+@@ -1321,6 +1324,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+     }
+   }
+ 
++  if(!m_config->m_L2_config.disabled() && !tvd_frontend_handled && m_icnt_L2_queue->empty())
++    m_L2cache->detach_diag_skip(nullptr,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle,0);
+   // New L2 texture accesses and/or non-texture accesses.  A full L2-to-DRAM
+   // FIFO is not a frontend prerequisite: hits, MSHR merges, and locally
+   // absorbed writes must only wait for resources they actually consume.
+@@ -1334,7 +1339,9 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+       if (!ep_l2_ideal_serve_read(
+               mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle)) {
+       l2_access_plan plan;
+-      m_L2cache->preview_access(mf->get_addr(), mf, plan);
++      ep_l2_detach_diag::preview diagnostic_preview;
++      m_L2cache->detach_diag_snapshot(mf,diagnostic_preview);
++      m_L2cache->preview_access(mf->get_addr(), mf, plan,&diagnostic_preview);
+       unsigned long long ms_known = 0;
+       const unsigned long long ms_blockers = m_L2cache->ms_frontend_blockers(
+           mf, plan, m_L2_icnt_queue->full(), ms_known);
+@@ -1446,6 +1453,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+         admit = !m_L2_dram_queue->full() && !m_L2_icnt_queue->full() &&
+                 m_L2cache->data_port_free();
+       }
++      m_L2cache->detach_diag_frontend(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle,diagnostic_preview,plan,admit,
++          m_L2cache->miss_queue_has_slots(plan.new_missq_entries),!m_L2_icnt_queue->full());
+       // An exact preview that is not admissible is a real controller stall,
+       // even though access() is intentionally not called.  Record it here so
+       // blocker accounting describes the production admission decision rather
+@@ -1674,7 +1683,7 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+           // L2 cache lock-up: will try again next cycle.
+         }
+       }
+-      }
++      } else {m_L2cache->detach_diag_skip(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle,2);}
+     } else if (!m_L2_dram_queue->full()) {
+       // L2 is disabled or non-texture access to texture-only L2. This route
+       // actually pushes the lower FIFO; its head must survive a full queue.
+@@ -2242,6 +2251,7 @@ memory_sub_partition::ep_l2_b0_bank_snapshot() const {
+ }
+ 
+ void memory_sub_partition::begin_ep_l2_b0_kernel(unsigned long long uid) {
++  if(!m_config->m_L2_config.disabled())m_L2cache->detach_diag_kernel(true,uid);
+   const bool overlap = !m_ep_l2_b0_kernel_start.empty();
+   if (overlap)
+     for (std::map<unsigned long long, bool>::iterator it =
+@@ -2259,6 +2269,7 @@ void memory_sub_partition::begin_ep_l2_b0_kernel(unsigned long long uid) {
+ void memory_sub_partition::end_ep_l2_b0_kernel(FILE *fp,
+                                                 unsigned long long uid) {
+   print_ep_l2_b0_snapshot(fp, uid);
++  if(!m_config->m_L2_config.disabled())m_L2cache->detach_diag_kernel(false,uid);
+   m_ep_l2_b0_kernel_start.erase(uid);
+   m_ep_l2_b0_kernel_bank_start.erase(uid);
+   m_ep_l2_b0_kernel_start_cycle.erase(uid);
+diff --git a/tests/ep_l2/ms_ro_combined/native_fixture.h b/tests/ep_l2/ms_ro_combined/native_fixture.h
+index 8405e9d8..bf08d5f8 100644
+--- a/tests/ep_l2/ms_ro_combined/native_fixture.h
++++ b/tests/ep_l2/ms_ro_combined/native_fixture.h
+@@ -25,6 +25,7 @@ struct combined_fixture : victim_fixture {
+   void take_lower() {
+     while(!sp->L2_dram_queue_empty()) {
+       auto packet=sp->L2_dram_queue_top();sp->L2_dram_queue_pop();
++      diag_test_witness(1,gpu->gpu_sim_cycle,packet);
+       if(packet->get_access_type()==L2_WRBK_ACC) {
+         assert(packet->has_ft_wb_data());
+         for(unsigned s=0;s<4;++s)if(packet->get_access_sector_mask().test(s))
+@@ -36,11 +37,11 @@ struct combined_fixture : victim_fixture {
+   void return_one(unsigned index) {
+     assert(index<pending_reads.size() && !sp->dram_L2_queue_full());
+     auto packet=pending_reads[index];pending_reads.erase(pending_reads.begin()+index);
+-    packet->set_ft_wb_data(memory.at(packet->get_addr()&~127ull));packet->set_reply();sp->dram_L2_queue_push(packet);
++    packet->set_ft_wb_data(memory.at(packet->get_addr()&~127ull));diag_test_witness(2,gpu->gpu_sim_cycle,packet);packet->set_reply();sp->dram_L2_queue_push(packet);
+   }
+   void complete_one() {
+     if(wb.empty())return;
+-    auto packet=wb.front();wb.erase(wb.begin());sp->set_done(packet);delete packet;++completed_wb;
++    auto packet=wb.front();wb.erase(wb.begin());sp->set_done(packet);diag_test_witness(4,gpu->gpu_sim_cycle,packet);delete packet;++completed_wb;
+   }
+   void await_lower(unsigned count) {
+     for(unsigned n=0;n<20000 && pending_reads.size()<count;++n)step();
+diff --git a/tests/ep_l2/ms_victim/native_fixture.h b/tests/ep_l2/ms_victim/native_fixture.h
+index de143bdf..553315cb 100644
+--- a/tests/ep_l2/ms_victim/native_fixture.h
++++ b/tests/ep_l2/ms_victim/native_fixture.h
+@@ -4,6 +4,9 @@
+ // versions through real lower/ReturnQ packets; actual cache responses are read
+ // and checked independently. This fixture does NOT model DRAM timing or bytes.
+ #include "../potential_fixture.h"
++#ifndef DIAG_TEST_WITNESS_ACTIVE
++inline void diag_test_witness(unsigned,unsigned long long,mem_fetch*){}
++#endif
+ 
+ struct victim_fixture : fixture {
+   unsigned long long lower_read_packets = 0, lower_read_bytes = 0;
+@@ -40,6 +43,7 @@ struct victim_fixture : fixture {
+   }
+   void collect() {
+     while(auto r=sp->pop()) {
++      diag_test_witness(3,gpu->gpu_sim_cycle,r);
+       const unsigned uid=r->get_request_uid();
+       assert(expected.count(uid) && replies.insert(uid).second);
+       if(!r->get_is_write()) {
+diff --git a/tests/ep_l2/test_detach_diagnostic.cc b/tests/ep_l2/test_detach_diagnostic.cc
+new file mode 100644
+index 00000000..d8dc48ce
+--- /dev/null
++++ b/tests/ep_l2/test_detach_diagnostic.cc
+@@ -0,0 +1,265 @@
++// Bounded production-path observer controls. No complete application workload.
++#include "potential_fixture.h"
++#include <cstring>
++#include <limits>
++static uint64_t witness=1469598103934665603ULL;
++static void mix(uint64_t n){witness^=n;witness*=1099511628211ULL;}
++static void diag_test_witness(unsigned kind,unsigned long long cycle,mem_fetch*m){mix(kind);mix(cycle);mix(m->get_request_uid());mix(m->get_addr());mix(m->get_access_type());mix(m->get_access_sector_mask().to_ulong());mix(m->get_ep_l2_payload_id());mix(m->get_ep_l2_payload_generation());if(m->has_ft_wb_data())for(auto v:m->get_ft_wb_data())mix(v);}
++#define DIAG_TEST_WITNESS_ACTIVE 1
++#include "ms_ro_combined/native_fixture.h"
++#ifndef EP_L2_DIAG_REFERENCE
++#include "../../src/gpgpu-sim/ep-l2-detach-diag.h"
++#endif
++static const uint64_t stride=8192;
++static void fill(combined_fixture&f,unsigned n,bool ro=true,unsigned set=0){for(unsigned i=0;i<n;++i){f.send(f.make((ro?0:0x800000)+((ro&&n==16&&set==0)?(i+1)%16:i)*stride+set*128,false));f.await_lower(i+1);}}
++static void tick(combined_fixture&f,unsigned n=16,bool consume=true){while(n--)f.step(consume);}
++template<class F> static void fold(F&f){
++ for(unsigned i=0;i<1024;++i){auto h=f.cache->ep_l2_tag_payload_handle_for_test(i);mix(i);mix(h.payload_id);mix(h.generation);if(f.cache->ep_l2_payload_for_test().handle_live(h)){const auto&s=f.cache->ep_l2_payload_for_test().inspect(h);mix(s.owner);mix(s.pins);mix(s.ready_sector_mask.to_ulong());mix(s.pending_sector_mask.to_ulong());for(auto v:s.versions)mix(v);}}
++ mix(f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle);mix(f.cache->ep_l2_payload_bank_grants());mix(f.cache->ep_l2_payload_bank_conflicts());mix(f.cache->ep_l2_payload_bank_attempts());mix(f.cache->ft_identity_redirects_for_test());mix(f.cache->ft_last_redirect_from_for_test());
++}
++static void signature(combined_fixture&f){fold(f);
++ printf("EPL2MS_TEST|SEMANTIC|cycles=%llu|digest=%llu|replies=%zu|lower=%llu|bytes=%llu|bank_grants=%llu|bank_conflicts=%llu|bank_attempts=%llu|wad=%u|descriptors=%u|drain=%u\n",f.gpu->gpu_sim_cycle+f.gpu->gpu_tot_sim_cycle,(unsigned long long)witness,f.replies.size(),f.lower_read_packets,f.lower_read_bytes,f.cache->ep_l2_payload_bank_grants(),f.cache->ep_l2_payload_bank_conflicts(),f.cache->ep_l2_payload_bank_attempts(),f.cache->ep_l2_wad_occupancy(),f.cache->ep_l2_descriptor_count_used(),unsigned(f.cache->ft_drained()));
++}
++#ifndef EP_L2_DIAG_REFERENCE
++static ep_l2_detach_diag::ledger* ledger(combined_fixture&f){return ep_l2_detach_diag::get(f.cache);}
++static void require_observer(combined_fixture&f,ep_l2_detach_diag::field key,uint64_t min){if(auto*d=ledger(f)){assert(d->total[key]>=min);assert(d->partitions());}}
++#endif
++static int held_redirect_original(int argc,char **argv) {
++  assert(argc==8 || argc==9);
++  const bool rollback=argc==9 && std::string(argv[8])=="rollback";
++  const unsigned extra=argc==9 && !rollback?15:0;fixture f(argv);
++  unsigned mode=std::stoul(argv[3]),c=std::stoul(argv[4]);
++  const new_addr_type stride=64*128, victim=13*stride, incoming=16*stride, other=128;
++  // Invalid-way selection is descending: read0->way15, dirty13->way2;
++  // all other fifteen ways retain real lower read sectors RESERVED.
++  for(unsigned i=0;i<16;++i) {
++    auto r=f.make(i*stride,i==13);
++    if(i==13) f.memory[victim]=f.expected.at(r->get_request_uid());
++    f.send(r);f.until_frontend_empty();
++  }
++  assert(f.cache->ft_reserved_ways_for_test(0)==15 && f.reads.size()==15);
++  auto sector_write=f.make(victim+64,true);
++  f.memory[victim][2]=(unsigned long long)sector_write->get_request_uid()+1;
++  f.send(sector_write);f.until_frontend_empty();
++  auto held=f.cache->ep_l2_tag_payload_handle_for_test(2);
++  assert(f.cache->ep_l2_payload_for_test().inspect(held).versions==f.memory.at(victim));
++  // For U_WB, a real ready response from another set (also bank2) consumes
++  // the port before frontend admission, creating its cross-cycle retry.
++  if(mode==2) {
++    for(new_addr_type a:{other,other+stride}) {
++      auto r=f.make(a,false);f.send(r);f.until_frontend_empty();
++    }
++  }
++  // Fill the actual two-entry lower FIFO with reads from other sets. Its
++  // backpressure must retain the WB payload until a real lower accept.
++  f.block_lower=true;
++  for(new_addr_type addr:{256ull,384ull}) {
++    auto r=f.make(addr,false);f.send(r);f.until_frontend_empty();
++  }
++  assert(f.sp->ep_l2_l2dram_occupancy()==2);
++  if(extra) {
++    assert(mode==2 && std::stoul(argv[6])==16);
++    for(unsigned i=0;i<31;++i) {
++      auto w=f.make(512+i*stride,true);f.memory[512+i*stride]=f.expected.at(w->get_request_uid());
++      f.send(w);f.until_frontend_empty();
++    }
++    assert(f.cache->ft_wb_quota_live()==15 && !f.cache->ft_wb_quota_reserved());
++  }
++  auto request=f.make(incoming,true);unsigned request_uid=request->get_request_uid();
++  unsigned first=(unsigned)-1;assert(f.cache->ft_raw_probe_for_test(request,first)==MISS && first==2);
++  f.send(request);
++  if(mode==2) { f.return_read(other+stride);f.step();assert(f.cache->access_ready()); }
++  // push has a one-cycle ROP-to-frontend boundary. For U ensure the ready
++  // response is consumed on the actual admission cycle by pre-queueing request.
++  for(unsigned n=0;n<8 && !f.cache->ft_reservation_active();++n) f.step();
++  assert(f.cache->ft_reservation_active() && f.cache->ft_pending_index_for_test()==2);
++  assert(mode==2 || f.cache->ft_pending_phase_for_test()==1);
++  assert(f.cache->ep_l2_wad_contains(victim));
++  if (std::stoul(argv[6])) assert(f.cache->ft_wb_quota_reserved()==1 && f.cache->ft_wb_quota_live()==extra);
++  printf("A1 armed mode=%u C=%u native16way=1 reserved=15 pending=2 phase=%u victim_id=%u generation=%u\n",
++      mode,c,f.cache->ft_pending_phase_for_test(),held.payload_id,held.generation);
++
++  // This real old read enters the native ReturnQ after phase0/denial and
++  // before the next frontend retry. Production fill precedes frontend probe.
++  if(extra) {
++    assert(f.cache->ft_wb_quota_reserved()==1 && f.cache->ft_wb_quota_live()==15);
++    // Hold the real response path for several physical cycles. Only advance
++    // the physical GPU clock, leaving the actual pending request untouched.
++    f.gpu->gpu_sim_cycle+=3;
++    assert(f.cache->ft_wb_quota_reserved()==1 && f.cache->ft_wb_quota_live()==15);
++    puts("U_CAP16 actual mixed15live+1reserved and retained multi-cycle token PASS");
++  }
++  f.return_read(0);
++  f.step(); // Old source must fail its pending.tag_index==reprobe.index assert.
++  assert(f.cache->ft_identity_redirects_for_test()>0 && f.cache->ft_last_redirect_from_for_test()==15);
++  printf("A1 competing fill exercised: raw candidate changed to way15, transaction committed way2; redirects=%llu\n",
++      f.cache->ft_identity_redirects_for_test());
++  // Remaining fills and real lower FIFO accept; deliberately hold set_done
++  // until staging is gone, proving WAD's distinct lower lifetime.
++  for(unsigned n=0;n<1000 && !f.replies.count(request_uid);++n) f.step();
++  assert(f.replies.count(request_uid));
++  auto landed=f.cache->ep_l2_tag_payload_handle_for_test(2);
++  const auto &new_line=f.cache->ep_l2_payload_for_test().inspect(landed);
++  assert(f.cache->ft_native_tag_owner_for_test(2)==incoming && f.cache->ft_native_tag_owner_for_test(15)==0);
++  assert(new_line.owner==incoming && new_line.versions[0]==(unsigned long long)request_uid+1);
++  auto competed=f.cache->ep_l2_tag_payload_handle_for_test(15);
++  assert(f.cache->ep_l2_payload_for_test().inspect(competed).owner==0);
++
++  for(unsigned n=0;n<4;++n)f.step();
++  assert(f.lower_wb==0 && f.cache->ft_wb_staged()==1+extra && f.cache->ep_l2_wad_contains(victim));
++  if (std::stoul(argv[6])) assert(!f.cache->ft_wb_quota_reserved() && f.cache->ft_wb_quota_live()==1+extra && f.cache->ft_wb_quota_retries()>0);
++  f.block_lower=false;f.drain_lower();
++  std::vector<new_addr_type> remaining;for(auto &entry:f.reads)remaining.push_back(entry.first);
++  for(auto addr:remaining){f.return_read(addr);f.step();}
++  for(unsigned n=0;n<1000 && (f.cache->ft_wb_staged() || !f.cache->miss_queue_empty() || !f.sp->L2_dram_queue_empty());++n)f.step();
++  assert(f.lower_wb==1+extra && f.cache->ft_wb_staged()==0 && f.cache->ep_l2_wad_contains(victim));
++  for(auto w:f.wb){f.sp->set_done(w);delete w;++f.completed_wb;}f.wb.clear();
++  for(unsigned n=0;n<1000 && f.part->busy();++n)f.step();
++  assert(f.completed_wb==1+extra && f.replies.size()==f.expected.size());
++  assert(f.sp->l2_char_no_resource_leak() && f.cache->ft_drained() && !f.part->busy());
++  assert(f.cache->ep_l2_payload_pending_operations()==0 && !f.cache->ep_l2_wad_occupancy());
++  assert(f.bank_max==1 && f.cache->ep_l2_payload_for_test().physical_slots()==(std::stoul(argv[5])?1168:1152+c));
++  f.cache->ft_print(stdout,0);
++  printf("A1 production 16way cross-cycle fill/exact-once/versions/lower-accept/set_done/bank/drain mode=%u C=%u PASS\n",mode,c);
++  fold(f);printf("SUBCONTROL_PASS|HELD_REDIRECT|redirects=%llu|last_raw=%u\n",f.cache->ft_identity_redirects_for_test(),f.cache->ft_last_redirect_from_for_test());return 0;
++}
++
++
++static std::string sibling(char**argv,const char*file){std::string p=argv[2];return p.substr(0,p.find_last_of('/')+1)+file;}
++static void frame_begin(const char*s){printf("DETACH_NATIVE_FRAME_BEGIN|%s\n",s);}
++static void frame_end(const char*s){printf("DETACH_NATIVE_FRAME_END|%s\n",s);}
++static void preview_context(combined_fixture&f,mem_fetch*m,int expected_descriptor,int expected_address,int expected_line_slots){
++ l2_access_plan plan;
++#ifdef EP_L2_DIAG_REFERENCE
++ f.cache->preview_access(m->get_addr(),m,plan);
++#else
++ ep_l2_detach_diag::preview context;f.cache->preview_access(m->get_addr(),m,plan,&context);
++ assert(context.capacity_consulted&&context.descriptor_check==expected_descriptor&&context.address_check==expected_address&&context.line_slots_check==expected_line_slots);
++#endif
++ assert(plan.probe_status==RESERVATION_FAIL);
++}
++static void address32_control(char**argv){frame_begin("M1_ADDRESS32_MERGE_CAPACITY");{
++ combined_fixture f(argv);f.send(f.make(0,false));f.await_lower(1);
++ for(unsigned i=0;i<31;++i){f.send(f.make(0,false));f.await_frontend();}
++ assert(f.cache->ep_l2_descriptor_count_used()==32);auto extra=f.make(0,false);f.send(extra);tick(f,16);preview_context(f,extra,1,0,-1);
++#ifndef EP_L2_DIAG_REFERENCE
++ auto*d=ledger(f);uint64_t cap=d?d->total[ep_l2_detach_diag::denied_capacity]:0,missq=d?d->total[ep_l2_detach_diag::denied_missq]:0;
++#endif
++ std::list<cache_event>events;assert(f.cache->access(extra->get_addr(),extra,f.gpu->gpu_sim_cycle,events)==RESERVATION_FAIL);
++#ifndef EP_L2_DIAG_REFERENCE
++ if(d){assert(d->total[ep_l2_detach_diag::denied_capacity]==cap+1&&d->total[ep_l2_detach_diag::denied_missq]==missq);assert(d->total[ep_l2_detach_diag::ro_address_fail]>0);}
++#endif
++ f.finish();fold(f);puts("SUBCONTROL_PASS|M1_ADDRESS32_MERGE_CAPACITY|line_gate=NA");}frame_end("M1_ADDRESS32_MERGE_CAPACITY");}
++static void merge_missq_control(char**argv){frame_begin("MERGE_MISSQ_AND_ZERO_MISSING");{
++ combined_fixture f(argv);f.block_lower=true;unsigned n=0;
++ while(f.cache->miss_queue_has_slots(1)){assert(n<500);f.send(f.make(n++*128,false));f.await_frontend();}
++ assert(n>16&&f.cache->ep_l2_descriptor_count_used()<512);const auto occupancy=f.cache->miss_queue_occupancy();
++ auto no_missing=f.make(0,false);f.send(no_missing);f.await_frontend();assert(f.cache->miss_queue_occupancy()==occupancy);
++ auto extra=f.make(32,false);f.send(extra);tick(f,16);
++#ifndef EP_L2_DIAG_REFERENCE
++ auto*d=ledger(f);uint64_t cap=d?d->total[ep_l2_detach_diag::denied_capacity]:0,missq=d?d->total[ep_l2_detach_diag::denied_missq]:0;
++#endif
++ std::list<cache_event>events;assert(f.cache->access(extra->get_addr(),extra,f.gpu->gpu_sim_cycle,events)==RESERVATION_FAIL);
++#ifndef EP_L2_DIAG_REFERENCE
++ if(d)assert(d->total[ep_l2_detach_diag::denied_missq]==missq+1&&d->total[ep_l2_detach_diag::denied_capacity]==cap);
++#endif
++ f.block_lower=false;f.take_lower();f.finish();fold(f);puts("SUBCONTROL_PASS|MERGE_MISSQ_AND_ZERO_MISSING|finite_real_queue_full=1|zero_missing_admitted=1");}frame_end("MERGE_MISSQ_AND_ZERO_MISSING");}
++static void m0_line_control(char**argv){frame_begin("M0_LINE128");{
++ std::string config=sibling(argv,"T1M0.config");char*args[10];for(unsigned i=0;i<10;++i)args[i]=argv[i];args[2]=const_cast<char*>(config.c_str());
++ combined_fixture f(args);for(unsigned i=0;i<128;++i){f.send(f.make(i*128,false));f.await_lower(i+1);}assert(f.cache->mshr_entries_used()==128);
++ auto extra=f.make(128*128,false);f.send(extra);tick(f,16);preview_context(f,extra,1,1,0);
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::ro_line_slots_fail,1);
++#endif
++ f.finish();fold(f);puts("SUBCONTROL_PASS|M0_LINE128|original_line_probe_and_capacity=REAL");}frame_end("M0_LINE128");}
++int main(int argc,char**argv){assert(argc==10);const char*which=argv[9];
++ const bool no_runtime=!std::strcmp(which,"T_OFF");
++ const bool ready=!std::strcmp(which,"PRESSURE_NO_MISSING")||!std::strcmp(which,"RESPONSE_BACKPRESSURE");
++ if(!std::strcmp(which,"PREVIEW_REPEAT")){std::string legacy=sibling(argv,"LEGACY_HELD.config");char*args[8];for(unsigned i=0;i<8;++i)args[i]=argv[i];args[2]=const_cast<char*>(legacy.c_str());args[3]=const_cast<char*>("1");frame_begin("HELD_REDIRECT");assert(held_redirect_original(8,args)==0);frame_end("HELD_REDIRECT");}
++ if(!std::strcmp(which,"PRESSURE_STICKY_REUSE"))address32_control(argv);
++ if(!std::strcmp(which,"DETACH_THEN_LATER_DENIAL"))merge_missq_control(argv);
++ if(!std::strcmp(which,"ROLLUP_RESIDUAL"))m0_line_control(argv);
++ frame_begin("MAIN_CONTROL");
++ combined_fixture f(argv,!no_runtime,ready?"1024:16:64:1":"1024:16:64:64");
++ if(!std::strcmp(which,"T_OFF")||!std::strcmp(which,"EMPTY_CERT")){fill(f,16,false);f.send(f.make(0x800000+16*stride,false));tick(f);assert(f.pending_reads.size()==16);}
++ else if(!std::strcmp(which,"NO_PRESSURE_POSITIVE_RO")||!std::strcmp(which,"OBSERVER_NONINTERFERENCE")){f.read(0);f.read(32);f.read(0);}
++ else if(!std::strcmp(which,"PRESSURE_NO_LIVE_RO")||!std::strcmp(which,"PREVIEW_BLOCKS_COMMIT")){fill(f,16,false);f.send(f.make(0,false));tick(f);assert(f.pending_reads.size()==16);
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::pressure_no_live_ro,1);
++#endif
++ }
++ else if(!std::strcmp(which,"PRESSURE_ONLY_OTHER_SET_RO")){fill(f,16,false);f.send(f.make(128,false));f.await_lower(17);f.send(f.make(0,false));tick(f);assert(f.pending_reads.size()==17);
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::pressure_no_live_ro,1);
++#endif
++ }
++ else if(!std::strcmp(which,"PRESSURE_STICKY_REUSE")){fill(f,16);for(unsigned i=0;i<16;++i){f.send(f.make(i*stride+32,false));f.await_lower(17+i);}for(unsigned i=f.pending_reads.size();i-->0;)if(f.pending_reads[i]->get_addr()%128==32)f.return_one(i);tick(f,128);assert(f.replies.size()==16);f.send(f.make(16*stride,false));tick(f);assert(f.pending_reads.size()==16);
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::reuse_seen_first_transition,16);require_observer(f,ep_l2_detach_diag::way_reuse_seen,1);assert(!ledger(f)||ledger(f)->total[ep_l2_detach_diag::detach_success]==0);
++#endif
++ }
++ else if(!std::strcmp(which,"PRESSURE_NO_MISSING")){fill(f,2);f.return_one(0);tick(f,32,false);assert(f.sp->ep_l2_l2icnt_occupancy()==1);auto h=f.tag_for(stride);f.return_one(0);tick(f,32,false);assert(f.cache->ep_l2_payload_for_test().inspect(h).ready_sector_mask.test(0));assert(f.cache->ep_l2_payload_for_test().inspect(h).pins==1);
++#ifndef EP_L2_DIAG_REFERENCE
++ if(auto*d=ledger(f)){auto p=f.cache->detach_diag_predicate_for_test(h);assert(p.attached&&!p.reuse&&(p.required&~p.ready)==0);assert(!f.cache->detach_diag_can_detach_for_test(h));}
++#endif
++ puts("CONTROL_SCOPE|ready_predicate=REAL_READY_PINNED_TRANSACTION|raw_all_reserved_pressure=NOT_ASSERTED|reason=ready_Tag_can_be_replacement_candidate_but_pinned_commit_stalls");
++ }
++ else if(!std::strcmp(which,"RESPONSE_BACKPRESSURE")){fill(f,16);auto old=f.tag_for(0);f.send(f.make(16*stride,false));f.await_lower(17);assert(!f.tag_for(0).valid());unsigned pick=~0U;for(unsigned i=0;i<f.pending_reads.size();++i)if(f.pending_reads[i]->get_ep_l2_payload_id()!=old.payload_id){pick=i;break;}assert(pick!=~0U);f.return_one(pick);tick(f,32,false);assert(f.sp->ep_l2_l2icnt_occupancy()==1);pick=~0U;for(unsigned i=0;i<f.pending_reads.size();++i)if(f.pending_reads[i]->get_ep_l2_payload_id()==old.payload_id){pick=i;break;}assert(pick!=~0U);f.return_one(pick);tick(f,32,false);assert(f.cache->ep_l2_payload_for_test().handle_live(old));assert(f.cache->ep_l2_payload_for_test().inspect(old).pins==1);assert(f.cache->ep_l2_payload_for_test().inspect(old).ready_sector_mask.test(0));puts("CONTROL_SCOPE|detached_ready_payload=REAL_PINNED|ICNT_FULL=1|drain_after_actual_consumer=REQUIRED");
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::detach_success,1);require_observer(f,ep_l2_detach_diag::detached_return_packets,1);
++#endif
++ }
++ else if(!std::strcmp(which,"PRESSURE_ELIGIBLE")){fill(f,16);auto h=f.tag_for(0);f.send(f.make(16*stride,false));f.await_lower(17);assert(!f.tag_for(0).valid()&&f.cache->ep_l2_payload_for_test().handle_live(h));f.send(f.make(0,false));f.await_lower(18);auto n=f.tag_for(0);assert(n.valid()&&n!=h);for(unsigned i=0;i<f.pending_reads.size();++i)if(f.pending_reads[i]->get_ep_l2_payload_id()==h.payload_id){f.return_one(i);break;}tick(f,32);assert(f.tag_for(0)==n);assert(f.cache->ep_l2_payload_for_test().inspect(n).pending_sector_mask.any()&&!f.cache->ep_l2_payload_for_test().inspect(n).ready_sector_mask.test(0));
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::pressure_rewrite_miss,1);require_observer(f,ep_l2_detach_diag::detach_success,1);
++#endif
++ }
++ else if(!std::strcmp(which,"NATIVE_REQUESTER_RO_VICTIM")){fill(f,16);auto mf=f.make(0x800000,false);f.send(mf);tick(f);assert(f.pending_reads.size()==16);
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::pressure_relief_not_consulted,1);require_observer(f,ep_l2_detach_diag::pressure_eligible,1);
++#endif
++ auto direct=f.make(0x800000+stride,false);std::list<cache_event>events;auto s=f.cache->access(direct->get_addr(),direct,f.gpu->gpu_sim_cycle,events);assert(s==RESERVATION_FAIL);assert(!f.tag_for(0).valid());f.send(direct);puts("CONTROL_SCOPE|native_frontend=DENIED_NOT_CONSULTED|direct_access=REAL_RELIEVE_THEN_DIRECTORY_DENIAL");}
++ else if(!std::strcmp(which,"PREVIEW_REPEAT")){fill(f,16);auto mf=f.make(16*stride,false);f.send(mf);tick(f,1);
++#ifndef EP_L2_DIAG_REFERENCE
++ auto*d=ledger(f);std::array<uint64_t,ep_l2_detach_diag::FIELD_COUNT>before{};if(d)before=d->total;
++#endif
++ for(unsigned i=0;i<32;++i){l2_access_plan p;f.cache->preview_access(mf->get_addr(),mf,p);
++#ifndef EP_L2_DIAG_REFERENCE
++ ep_l2_detach_diag::preview o;f.cache->detach_diag_snapshot(mf,o);f.cache->preview_access(mf->get_addr(),mf,p,&o);
++#endif
++ }
++#ifndef EP_L2_DIAG_REFERENCE
++ if(d)assert(d->total==before);
++#endif
++ f.await_lower(17);}
++ else if(!std::strcmp(which,"DETACH_THEN_LATER_DENIAL")){fill(f,16);for(unsigned i=0;i<496;++i){auto a=((i%63)+1)*128+(i/63)*stride;f.send(f.make(a,false));f.await_lower(17+i);}assert(f.cache->ep_l2_descriptor_count_used()==512);auto mf=f.make(17*stride,false);f.send(mf);tick(f,16);auto h=f.tag_for(0);preview_context(f,mf,0,-1,-1);std::list<cache_event>events;auto s=f.cache->access(mf->get_addr(),mf,f.gpu->gpu_sim_cycle,events);assert(s==RESERVATION_FAIL&&!f.tag_for(0).valid()&&f.cache->ep_l2_payload_for_test().handle_live(h));
++#ifndef EP_L2_DIAG_REFERENCE
++ require_observer(f,ep_l2_detach_diag::trigger_denied_after_detach,1);require_observer(f,ep_l2_detach_diag::denied_capacity,1);
++#endif
++ }
++ else if(!std::strcmp(which,"ROLLUP_RESIDUAL")){
++#ifndef EP_L2_DIAG_REFERENCE
++ f.cache->detach_diag_kernel(true,11);
++#endif
++ f.read(0);
++#ifndef EP_L2_DIAG_REFERENCE
++ f.cache->detach_diag_kernel(true,12);
++#endif
++ f.read(128);
++#ifndef EP_L2_DIAG_REFERENCE
++ f.cache->detach_diag_kernel(false,11);f.cache->detach_diag_kernel(false,12);
++#endif
++ f.read(256);
++ }
++ else if(!std::strcmp(which,"BOUNDED_OUTPUT")){
++#ifndef EP_L2_DIAG_REFERENCE
++ ep_l2_detach_diag::ledger d;d.total[ep_l2_detach_diag::observed_heads]=~uint64_t(0);d.add(ep_l2_detach_diag::observed_heads);assert(d.overflow&&!d.partitions());ep_l2_detach_diag::registry *local=new ep_l2_detach_diag::registry();ep_l2_detach_diag::preview p;for(unsigned i=0;i<100;++i)local->sample_pressure(d,p,i,i);assert(local->sample_count==64&&d.total[ep_l2_detach_diag::samples_dropped]==36);local->output_bytes=67108865;std::string path=std::string("observer_output_cap_")+(std::getenv("EPL2_DETACH_DIAG")?std::getenv("EPL2_DETACH_DIAG"):"0")+".json";FILE*sink=std::fopen(path.c_str(),"wx");assert(sink);local->print_counts(sink,"SLICE",0,d,d.total);assert(local->output_invalid&&local->output_marker);std::fclose(sink);delete local;
++#endif
++ f.read(0);puts("CONTROL_SCOPE|overflow_and_sample_cap=PASS_OBSERVER_DATA_STRUCTURE_ONLY|model_state_not_seeded=1");}
++ else {fprintf(stderr,"unknown control %s\n",which);return 2;}
++ f.finish();signature(f);frame_end("MAIN_CONTROL");
++#ifndef EP_L2_DIAG_REFERENCE
++ if(auto*d=ledger(f)){assert(d->partitions());assert(d->total[ep_l2_detach_diag::detach_success]==d->total[ep_l2_detach_diag::detached_retired]);}
++#endif
++ printf("DETACH_DIAGNOSTIC_CONTROL_PASS|case=%s\n",which);return 0;
++}
