@@ -1,0 +1,185 @@
+{
+  "schema": "E2_A2_OBSERVABILITY_GAPS_R2_ENGINEERING_FEEDBACK_V1",
+  "at_utc": "2026-10-22T04:03:34.125916+00:00",
+  "status": "SOURCE_DESIGN_FEEDBACK_ONLY_NOT_APPLIED_NOT_NATIVE_QUALIFIED",
+  "source_commit": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+  "work_scope": "Combine these two counter-only coverage fixes with previously proposed shadow-probe purity refinement in one A2-owned safe source revision, before first fullF if feasible. No mechanism/predicate/capacity/timing/decision/retry alteration.",
+  "already_fixed_not_requested_again": [
+    "cf new-RO capacity vs missq refusal",
+    "cf held-other-request refusal distinct from directory"
+  ],
+  "gaps": [
+    {
+      "id": "MERGE_REFUSAL_REASON_CONFLATED",
+      "source_locations": [
+        {
+          "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            302,
+            307
+          ]
+        },
+        {
+          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": [
+            312,
+            318
+          ]
+        }
+      ],
+      "affected_scope": "Actual ft_access merge_existing branch, including M1; existing RO owner/merge only. Not raw pressure exposure or new-RO commit path.",
+      "current_fact": "merge_existing returns true with r=RESERVATION_FAIL if capacity(m,true) fails OR missing-sector MissQ slots unavailable. ft_access always labels this denied_capacity. tx->merge may separately refuse after those gates.",
+      "minimal_design": {
+        "signature": "bool merge_existing(..., cache_request_status &r, ep_l2_detach_diag::field *observed_denial=nullptr)",
+        "caller": "Initialize local field reason=denied_other; pass &reason only if actual diagnostic ledger exists, else nullptr. commit_merge still increments once; finish(...,reason) only labels actual failed result. Accepted path ignores reason.",
+        "preserve_original_short_circuit": [
+          "First evaluate existing capacity(m,true) exactly once. If false, optional outreason=denied_capacity and return true, exactly where original OR would stop.",
+          "Only when capacity passes evaluate original miss_queue_has_slots(popcount(missing)) once. If false optional outreason=denied_missq and return true.",
+          "Call original tx->merge once when both gates pass. If it returns nonACCEPTED, preserve same return/status and set denied_other or a source-proven exact named outcome; do not guess capacity.",
+          "Existing candidate/target/needed calls and all accepted merge mutations/counters/issue ordering unchanged; do not add a retry or target lookup."
+        ],
+        "no_new_counter_names_required": true,
+        "counter_semantics_revision_needed": "Update exact schema/mapping to remove merge-failure capacity/missq conflation, even with unchanged field names."
+      },
+      "least_controls": [
+        {
+          "case": "MERGE_CAPACITY_FULL",
+          "construction": "Real finite ownership state reaches shared descriptor512 or per-line32 while an actual existing RO owner and merge requester exist; no mocked counters or forced model mutation.",
+          "assert": "Original decision RESERVATION_FAIL; real merge branch counted once, denied_capacity increments, denied_missq does not; no queue/access/reservation beyond old route."
+        },
+        {
+          "case": "MERGE_MISSQ_FULL",
+          "construction": "Real existing RO target with new missing sectors, capacity otherwise available, real requested MissQ slots unavailable.",
+          "assert": "Original RESERVATION_FAIL; denied_missq increments and capacity label does not; observed and original lookup/slot evaluation order/count preserved."
+        },
+        {
+          "case": "MERGE_READY_OR_NO_MISSING",
+          "construction": "Actual existing transaction merge requiring zero extra lower sectors or already-ready portion.",
+          "assert": "No invented MissQ blockage; same old acceptance/result/resource/response behavior."
+        }
+      ],
+      "counter_only": true,
+      "fallback_if_not_changed": "Label existing merge denied_capacity as composite capacity-or-MissQ-or-later-merge-refusal; exact component UNKNOWN. Do not call it pure descriptor capacity."
+    },
+    {
+      "id": "M1_FRONTEND_DESCRIPTOR_ADDRESS_COVERAGE",
+      "source_locations": [
+        {
+          "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            215,
+            219
+          ]
+        },
+        {
+          "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+          "lines": [
+            277,
+            285
+          ]
+        },
+        {
+          "path": "src/gpgpu-sim/gpu-cache.cc",
+          "lines": [
+            3005,
+            3007
+          ]
+        }
+      ],
+      "affected_scope": "Real frontend new/merge RO preview when M1=true, the actual first diagnostic fullF profile. Descriptor512/per-address32 remain finite although traditional LineMSHR allocation/merge flags are false.",
+      "current_fact": "mask_descriptor/address depend on plan.needs_new_mshr||needs_mshr_merge; M1 RO can bypass both flags, while actual capacity still rejects. These zero masks cannot establish absence of shared resource pressure.",
+      "minimal_design": {
+        "preferred": "Capture tri-state predicate outcomes from the already executed production RO capacity checks into optional diagnostic preview context, then consume only at actual once-per-head counter hook.",
+        "signature_example": "capacity(mem_fetch *m, bool existing, ep_l2_detach_diag::preview *observation=nullptr) const",
+        "context_example": {
+          "ro_capacity_consulted": "bool false initially",
+          "descriptor_check": "UNOBSERVED/PASS/FAIL",
+          "address_check": "UNOBSERVED/PASS/FAIL",
+          "line_check": "UNOBSERVED/PASS/FAIL"
+        },
+        "preserve_original_short_circuit": [
+          "Keep original descriptor_count_used()<512 first; capture that single returned predicate outcome without reading it again for observation.",
+          "Only if descriptor predicate passes evaluate existing targets_on_line(line)<32; capture actual result once. If descriptor failed, leave address UNOBSERVED, not PASS or measured0.",
+          "Only after those predicates pass evaluate existing||M; when either holds, traditional line-capacity checks remain NA/not consulted.",
+          "For M0 nonexisting only, preserve original native-line probe and entries check short circuit, capturing only actually evaluated results; no extra LineMSHR/CAM lookup.",
+          "Preview currently invokes capacity twice at runtime.inc280 and283. Do not add a third invocation, collapse timing-sensitive calls speculatively, or rerun new_request/target/probe for instrumentation. Thread optional context through one existing invocation; second original invocation remains unchanged.",
+          "Frontend hook consumes context for RO mask_descriptor/address independent of traditional MSHR flags. Keep original native/nonRO mask path with explicit population; do not double increment a mask for the same head.",
+          "Capture context even when capacity succeeds; early owner/directory/query/raw-tag returns leave capacity UNOBSERVED. Not-consulted is distinct from a checked pass."
+        ],
+        "coverage_publication": "Producer should add minimal bounded checked/not-consulted coverage totals per relevant predicate or equivalent unambiguous schema metadata, e.g. RO capacity-context observations and descriptor/address/line evaluation denominators. Separate fail-mask counts from their actual inspected denominators. Do not publish a universal descriptor/address zero from unchecked M1 paths.",
+        "nonexclusive_limit": "If descriptor fails first, address is unobserved. Do not claim both predicate masks are comprehensively measured from an exclusive short-circuit capture. Report first actual blocker plus explicit unmeasured later predicates.",
+        "source_and_schema_change": "May need a few new bounded observer coverage counters/tri-state context fields, exact A2 schema revision and E adapter mapping; no model resource or mechanism state."
+      },
+      "least_controls": [
+        {
+          "case": "M1_DESCRIPTOR512_FRONTEND",
+          "construction": "Supported finiteF M1, real descriptor pool full, RO requester reaches actual capacity check with raw/intermediate status otherwise usable.",
+          "assert": "Original frontend refusal unchanged; context desc=FAIL, address not evaluated if original short circuit skipped it; same-head descriptor mask and primary-known blocker observed without extra lookup/port."
+        },
+        {
+          "case": "M1_ADDRESS32_FRONTEND",
+          "construction": "Actual RO owner line has32 requesters while shared descriptors below512; requester reaches real capacity.",
+          "assert": "desc=PASS,address=FAIL; line check NA underM1; original refusal/resource/retry behavior unchanged."
+        },
+        {
+          "case": "M1_CAPACITY_NOT_CONSULTED",
+          "construction": "Original owner conflict/directory/query/rawTag early return, including native preview not consulted path.",
+          "assert": "Capacity predicate context remains UNOBSERVED; no false pass/zero or fake eligible reason, existing reach/notconsulted partition closes."
+        },
+        {
+          "case": "M1_PASS_M0_LINE_CONTROL",
+          "construction": "Existing bounded fullF control with available capacity plus supported M0 fixture where traditional line gate is evaluated.",
+          "assert": "M1 line test remains NA, M0 retains original line lookup/evaluation; admitted decision and response/ownership/timing witness unchanged."
+        }
+      ],
+      "counter_only": true,
+      "fallback_if_not_changed": "E maps descriptor/address masks as scope-limited/NA for unsupported M1 RO coverage, retains primary_unknown and exact residual. No inference that descriptors/per-address never blocked."
+    }
+  ],
+  "combined_revision_controls": [
+    "Run only necessary A2-owned existing native fixtures plus minimal finite cases for the modified observer branches. These are native controls, not application starts or universal application correctness.",
+    "Compare fixed original reference, observer-off and observer-on semantic witnesses for affected finite routes: actual statuses/cycles/Tag-payload generations/order/bank/queue/response/drain behavior, not all legacy telemetry bytes.",
+    "Retain shadowprobe mf=nullptr/remove redundant new_request cleanup in same revision if A2 confirms; preserve production canonical probe and native held victim semantics.",
+    "Publish exact source delta, schema, build/main/archive and native receipts. E independent adapter/Q and application admission remain required."
+  ],
+  "not_executed": [
+    "No patch applied",
+    "No mutable active build/source edited",
+    "No native/build/app/test executed in this task",
+    "No central or repository writes",
+    "No peer messages"
+  ],
+  "source_refs": [
+    {
+      "commit": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "0a9a9e6763ed0a27f7455476cfbcabd8b158276ad50489a3c12917b1c0740929",
+      "bytes": 27415
+    },
+    {
+      "commit": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "5ecb4fb8e6ea0df12759b41e129a75decc4955ddf1475b77797630d4d83c0446",
+      "bytes": 41142
+    },
+    {
+      "commit": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "fc38fba284a1c4ec14a9e4b3349c1e97d9dd0a092f60fc29f677ed34124e3d20",
+      "bytes": 126053
+    },
+    {
+      "commit": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+      "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "sha256": "51d221d20e22120ccc08c007488dbff84d667c60b37576582ad92141c224cce4",
+      "bytes": 16750
+    }
+  ],
+  "host_layout_scope_clarification": {
+    "status": "SCOPE_DESCRIPTION_NO_ABI_FAILURE_INFERRED_NO_NEW_FIX_REQUEST",
+    "l2_cache": "gpu-cache.h adds method declarations and namespace forward declarations; no l2_cache data member is added in reviewed diff.",
+    "transactions": "ep-l2-ro-transactions.h adds diagnostic_observer pointer member near line90; host object layout does change. It is incorrect to generalize production class layout unchanged to all classes.",
+    "reference_fixture": "test_detach_diagnostic.cc new diagnostic-header include is guarded by #ifndef EP_L2_DIAG_REFERENCE; reference target uses original include roots/archive. Do not infer an actual ABI fault from source layout change alone.",
+    "qualification": "New source/binary/archive identity and bounded reference/off/on observational-equivalence proof remain required; no inherited main61 qualification."
+  }
+}

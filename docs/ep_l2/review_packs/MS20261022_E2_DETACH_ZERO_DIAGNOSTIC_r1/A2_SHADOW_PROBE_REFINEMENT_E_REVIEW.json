@@ -1,0 +1,49 @@
+{
+  "status": "OBSERVER_ONLY_REFINEMENT_SUGGESTION_NOT_APPLIED_NOT_NATIVE_QUALIFIED",
+  "current_source_commit": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+  "scope": "Only shadow snapshot, not production Tag probe or policy",
+  "locations": [
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "line_start": 2977,
+      "line_end": 2983,
+      "role": "snapshot computes unused ro_new via extra new_request then mf probe"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "line_start": 440,
+      "line_end": 451,
+      "role": "canonical probe finalMISS held idx override and telemetry side effect"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line_start": 100,
+      "line_end": 105,
+      "role": "new_request implies demand GLOBAL_ACC_R, !iswrite and !atomic"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line_start": 200,
+      "line_end": 209,
+      "role": "snapshot new_request itself invokes additional canonical mf probes"
+    }
+  ],
+  "suggested_source_shape": [
+    "Remove snapshot local ro_new=m_ro&&m_ro->new_request(m); retain o.candidate pure certificate lookup.",
+    "Use mask overload only in snapshot: m_tag_array->probe(block,index,m->get_access_sector_mask(),m->is_write(),true,nullptr).",
+    "Keep existing production preview raw probe, first-fit, held override and request semantics completely unchanged."
+  ],
+  "source_argument": [
+    "ro_new=>demand=>is_write=false, hence ro_new?false:m->is_write() equals m->is_write() on every path.",
+    "In canonical mask overload mf is consulted only after all hit/fail/sector returns and before finalMISS, where it changes idx and old telemetry but not returned status.",
+    "Snapshot index is not consumed as victim selection. set and full-way scan/first eligible metadata derive independently; removing held idx rewrite does not change these snapshot values.",
+    "Removing ro_new also avoids indirect new_request->target/probe mf telemetry. Retaining a call to new_request would leave the cleanup incomplete."
+  ],
+  "native_source_acceptance_needed": [
+    "A2 source review for overload equivalence and canonical source guard.",
+    "Native observer off/on and reference semantics for held victim redirection including raw status, selected victim, cycles/order/responses/ownership/Tag/payload generations, resource/bank effects.",
+    "Repeated preview and full same-set pressure controls; model held index remains production source-controlled."
+  ],
+  "not_a_model_mechanism_change": "Fixed source currently writes only old telemetry from extra shadow probes; no fixed-commit strategy reads found. Do not falsely describe it as behavioral model correction, nor claim current observer is fully pure with all old telemetry equal.",
+  "reviewer_did_not_modify_source_or_build": true
+}
