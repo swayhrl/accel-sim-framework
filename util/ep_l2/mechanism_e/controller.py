@@ -62,10 +62,13 @@ def forecast(coord,spec,running):
     result=dict(at_unix=time.time(),run_key=run_key(spec['identity']),
       virtual_submitted_run_keys=virtual,read_only=True,resources=resources,output_usage=usage)
     try:
+        if detach_policy.tagpressure.has(data[FIELD]):
+            from coordinator import r5_metadata_preflight
+            r5_metadata_preflight(view,spec,authority_data=data)
         resource_gate(view,'simulation',1,spec.get('memory_bytes',8*GIB),
                       spec.get('maximum_result_bytes',FULL_GROWTH),resources,usage,
                       spec['identity']['workload']=='scan',
-                      **({'authority_data':data,'read_only_forecast':True} if detach_policy.successor.has(data[FIELD]) else {}))
+                      **({'authority_data':data,'read_only_forecast':True} if detach_policy.active_successor(data[FIELD]).has(data[FIELD]) else {}))
         result.update(fits=True,reason='Original resource gate fits including submitted-not-reserved work')
     except ValueError as error:
         result.update(fits=False,reason=str(error))

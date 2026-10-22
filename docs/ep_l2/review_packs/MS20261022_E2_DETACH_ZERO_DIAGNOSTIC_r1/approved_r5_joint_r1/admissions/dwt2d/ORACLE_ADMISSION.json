@@ -1,0 +1,79 @@
+{
+  "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+  "selection_id": "D_V1_dwt2d",
+  "manifest": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+    "sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+    "bytes": 6095
+  },
+  "ranges": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/certified_ranges.csv",
+    "sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+    "bytes": 67
+  },
+  "manifest_status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "kernel_count": 10,
+  "counts": {
+    "NO_GLOBAL_READ_lines": 98304,
+    "NO_GLOBAL_READ_read_lane_references": 0,
+    "SAME_LINE_STORE_lines": 98304,
+    "SAME_LINE_STORE_read_lane_references": 5066286,
+    "CERTIFIED_RO_lines": 24576,
+    "CERTIFIED_RO_read_lane_references": 786432
+  },
+  "host_updates_excluded": [],
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "unresolved_opcodes": {},
+  "schema": "E2_R5_PERINPUT_ORACLE_SOURCE_APPLICABILITY_CANDIDATE_V1",
+  "status": "E_ROOT_NEW_R5_F_ONLY_SOURCE_SCOPE_ADMITTED_PENDING_FRESH_LAUNCH_IDENTITY",
+  "workload": "dwt2d",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "old_r4_oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/dwt2d/ORACLE_ADMISSION.json",
+    "sha256": "e6e692f2d1bc6bb2c9bec90dd892f6a3c576d711db63fff265b75541272e4a35",
+    "bytes": 4767
+  },
+  "source_oracle_guard_byte_identity": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/common/MODEL_SOURCE_PREMISES.json",
+    "sha256": "2ae0ff809019aa5bf11a35ca1dbb42f5d82d0199d98d89f084c94ac53f74a6a4",
+    "bytes": 20721
+  },
+  "binding_rule": "Full frozen commandlist initialHtoD drained before activation, laterhostupdates excluded, original nohiddenwriters/noaliases/visibleagents assumptions explicit. Allranges/manifest hashes and exact current trace must match at runner admission. Exactinput positiveRO does not certify pressure, attached missing unreused victim or detachbenefit.",
+  "extra_C_joint_fixture_qualified": false,
+  "old_dynamic_counters_backfilled": false,
+  "input_admission": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/dwt2d/INPUT_SOURCE_ADMISSION_CANDIDATE.json",
+    "sha256": "5a8a47805524af81f39f2b9eb711a895ab5e331d13122c68e03bbdad955ba6a0",
+    "bytes": 6896
+  },
+  "complete_large_trace_rehashed": false,
+  "full_identity_and_oracle_asset_validation_required_at_launch": true,
+  "numeric_application_output_guarantee": false,
+  "root_independently_reviewed": true,
+  "new_native_release": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+    "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+  },
+  "new_source_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/SOURCE_REVIEW.json",
+    "sha256": "c3eeb85645c18fa912eadc7d8749c023a6eb73bbe07f23ada9f3fc7cda6780c8"
+  },
+  "old_Q_wholesale_inherited": false,
+  "new_runtime_admission_granted": true,
+  "complete_application_accepted": false
+}

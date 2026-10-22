@@ -1,0 +1,93 @@
+{
+  "schema": "E2_R5_PERINPUT_GATE_PLAN_CANDIDATE_V1",
+  "gate": "bank_service",
+  "status": "MODEL_PREMISE_SOURCE_REUSE_SUPPORTED_PENDING_COMMON_R5_DELTA_ROOT_REVIEW",
+  "workload": "cfd_097k",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "baseline_r4_gate_for_model_applicability_only": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/gates/cfd_097k/bank_service.json",
+    "sha256": "6f692900eba2ba11c85c06a5899c8b4afc1a042f4aa56b11672ef315ae445f8c",
+    "bytes": 7576
+  },
+  "historical_model_gate": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/gates/bank_service.json",
+    "sha256": "3bd13373841b132812d96b5e316bb74cd8de35f1d1d972af80ee51d6b09899de",
+    "original_source_identity": {
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    },
+    "status": "HISTORICAL_PASS_RETAINED_ONLY_IN_UNCHANGED_MODEL_SCOPE",
+    "native_tests_reexecuted": false
+  },
+  "historical_exact_case_labels": {
+    "d010_affected": [
+      "new_A1_UID_Bank_mode1",
+      "new_A1_UID_Bank_mode2",
+      "new_dirty_bank_capacity_and_partial",
+      "new_bank_retry_one_token"
+    ],
+    "unchanged_assertions": [
+      "bank_identity_extended",
+      "bank_identity_legacy",
+      "ro_native_dram_warm_full",
+      "new_T0M0",
+      "new_T0M1",
+      "new_T1M0",
+      "new_T1M1"
+    ]
+  },
+  "unchanged_model_premise": "Four banks/one op per physical cycle, shared payload bank arbitration and original native bank/credit retries retained.",
+  "r4_to_r5_source_evidence": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/common/MODEL_SOURCE_PREMISES.json",
+    "sha256": "2ae0ff809019aa5bf11a35ca1dbb42f5d82d0199d98d89f084c94ac53f74a6a4",
+    "bytes": 20721
+  },
+  "gate_specific_historical_native_scope": {
+    "r4_native_classes": [
+      "OBSERVER_NONINTERFERENCE",
+      "PRESSURE_ELIGIBLE",
+      "RESPONSE_BACKPRESSURE"
+    ],
+    "r4_actual_case_count": 9,
+    "r4_native_records_ref": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/gates/cfd_097k/bank_service.json",
+      "sha256": "6f692900eba2ba11c85c06a5899c8b4afc1a042f4aa56b11672ef315ae445f8c",
+      "bytes": 7576
+    },
+    "old_binary_not_new_runtime_qualification": true,
+    "old17_model_evidence_reused_only_unchanged_premise": true,
+    "rerun_requested": false
+  },
+  "input_source_admission": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/cfd_097k/INPUT_SOURCE_ADMISSION_CANDIDATE.json",
+    "sha256": "df942956fd65e241cad92bb22663d872ee10b3fb3fd7480bb47d54c71097ff52",
+    "bytes": 5878
+  },
+  "oracle_admission": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/cfd_097k/ORACLE_ADMISSION_CANDIDATE.json",
+    "sha256": "cb26196db6971e07bf4380dbf50e8ddf15a2d3ac0b58869d310828d2e4be0bef",
+    "bytes": 3508
+  },
+  "runtime_identity_rebind": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/cfd_097k/RUNTIME_IDENTITY_REBIND.json",
+    "sha256": "f3c834c4e4a312197c3c6b9d73243fac86f24755ec5b185191bcdc7657cc5da7",
+    "bytes": 3073
+  },
+  "new_native_evidence_status": "PENDING_COMMON_REAL_R5_ON_OFF_AND_MATH_RELEASE",
+  "not_claimed": [
+    "old_Q_PASS_copied",
+    "newS_or_fullOFF_app",
+    "numericSASSoutput",
+    "extraCjointqualification",
+    "newR5native_PASS_before_owner_complete"
+  ],
+  "gate_specific_scope_limit": "No raw throughput gain or changed P1 service inferred from counts."
+}

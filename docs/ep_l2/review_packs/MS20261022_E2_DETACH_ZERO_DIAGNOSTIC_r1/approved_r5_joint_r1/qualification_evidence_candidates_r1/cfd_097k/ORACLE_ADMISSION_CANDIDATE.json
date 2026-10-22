@@ -1,0 +1,67 @@
+{
+  "trace_content_sha256": "6d5eb92fbe5391b3811dc08fcaaacb891ec8a69639512b99f68d224b6a921e66",
+  "selection_id": "D_V2_cfd_097k",
+  "manifest": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/cfd_097k_v2_r1/oracle/manifest.json",
+    "sha256": "3ca24cbd4a7a4907d085f6a5911faca9f76c3de9bf1872278cc9bb1ca9f0c66f",
+    "bytes": 3625
+  },
+  "ranges": {
+    "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/cfd_097k_v2_r1/oracle/certified_ranges.csv",
+    "sha256": "5abf74463e7324e149c3d365d138b18b8cdf860ae734d7072959e9d353c1dfd7",
+    "bytes": 137
+  },
+  "manifest_status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "kernel_count": 5,
+  "counts": {
+    "CERTIFIED_RO_lines": 51612,
+    "CERTIFIED_RO_read_lane_references": 1651584,
+    "NO_GLOBAL_READ_lines": 33396,
+    "NO_GLOBAL_READ_read_lane_references": 0,
+    "SAME_LINE_STORE_lines": 15180,
+    "SAME_LINE_STORE_read_lane_references": 2869330
+  },
+  "host_updates_excluded": [],
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "unresolved_opcodes": {},
+  "schema": "E2_R5_PERINPUT_ORACLE_SOURCE_APPLICABILITY_CANDIDATE_V1",
+  "status": "ORACLE_INPUT_PREMISES_REUSABLE_NEW_R5_RUNTIME_NOT_YET_QUALIFIED",
+  "workload": "cfd_097k",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "old_r4_oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/cfd_097k/ORACLE_ADMISSION.json",
+    "sha256": "8206736d6c5f4cb55f8cef14b9405f55caf40bbc9360629ebb57d4fdd4b506a7",
+    "bytes": 4772
+  },
+  "source_oracle_guard_byte_identity": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/common/MODEL_SOURCE_PREMISES.json",
+    "sha256": "2ae0ff809019aa5bf11a35ca1dbb42f5d82d0199d98d89f084c94ac53f74a6a4",
+    "bytes": 20721
+  },
+  "binding_rule": "Full frozen commandlist initialHtoD drained before activation, laterhostupdates excluded, original nohiddenwriters/noaliases/visibleagents assumptions explicit. Allranges/manifest hashes and exact current trace must match at runner admission. Exactinput positiveRO does not certify pressure, attached missing unreused victim or detachbenefit.",
+  "extra_C_joint_fixture_qualified": false,
+  "old_dynamic_counters_backfilled": false,
+  "input_admission": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/cfd_097k/INPUT_SOURCE_ADMISSION_CANDIDATE.json",
+    "sha256": "df942956fd65e241cad92bb22663d872ee10b3fb3fd7480bb47d54c71097ff52",
+    "bytes": 5878
+  },
+  "complete_large_trace_rehashed": false,
+  "full_identity_and_oracle_asset_validation_required_at_launch": true,
+  "numeric_application_output_guarantee": false
+}

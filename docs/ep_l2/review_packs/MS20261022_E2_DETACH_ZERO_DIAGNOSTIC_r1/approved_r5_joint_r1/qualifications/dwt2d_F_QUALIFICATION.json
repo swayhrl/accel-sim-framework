@@ -1,0 +1,1009 @@
+{
+  "schema": "EPL2_E_INDEPENDENT_QUALIFICATION_V1",
+  "qualified_by": "E",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "scientific_scope": "TAGPRESSURE_OBSERVER_DIAGNOSTIC_POINT_V1",
+  "synthetic_fixture": false,
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "binary_path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/accel-sim.out",
+  "archive_identity": {
+    "path": "/workspace/build/ep-l2-ms20261022-e2-tagpressure-observer-r5/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
+    "bytes": 82151574,
+    "allocated_bytes": 82153472
+  },
+  "producer_release": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+    "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0",
+    "publication_commit": "87cb985543c0947f528a2c1de009aa5d5dbd9b7a",
+    "source_identity": {
+      "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+      "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+    }
+  },
+  "native_execution_receipt": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+    "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+  },
+  "full_system_v2": {
+    "authority_commit": "b2e5328aca825d6e9ebfe09e46fa208957834636",
+    "fixed_policy": true,
+    "resource_budget": {
+      "bank_ops": 1,
+      "banks": 4,
+      "data_slots": 1168,
+      "descriptors": 512,
+      "line_bytes": 128,
+      "line_mshrs": 128,
+      "resident_tags": 1024,
+      "shared_wad_tvd": 128
+    },
+    "victim_scope": "CLEAN_DIRTY_PENDING_INFLIGHT"
+  },
+  "affected_additional_gates": [
+    "backpressure_complete_quiescence",
+    "detach_observer_source_native_schema",
+    "pinned_victim_wb_completion_identity",
+    "ro_tag_reuse_late_sector_identity",
+    "ro_victim_same_address_and_host_invalidation",
+    "shared_directory_cost_and_full",
+    "shared_payload_lifecycle",
+    "tagpressure_source_native_wire_math",
+    "tm_trigger_default_off_and_illegal_combinations"
+  ],
+  "unqualified_extra_joint_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW773_INTAKE_r1/VRW_SCOPE_REVIEW.json",
+    "sha256": "66ea9e5b78af129fea9d0e66c1fbbe82818266ac57cfe5a7302213304b865865"
+  },
+  "build_log": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/BUILD_ARTIFACTS.json",
+    "sha256": "23669bcf92beb68e8ede00890934ead4ac79dfd5ee4cace2425e3d552c2544dd"
+  },
+  "producer_test_manifest": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/COMPLETE_INDEPENDENT_NATIVE_MATH_REVIEW.json",
+    "sha256": "11739efe03af0b94c099148fe55d714cb02b73885b6a447d5eb4ac0f16d975a3"
+  },
+  "status": "INDEPENDENTLY_QUALIFIED",
+  "profile_semantics": {
+    "comparison_variable_options": [
+      "-gpgpu_ep_l2_ft_mode",
+      "-gpgpu_ep_l2_static_s64",
+      "-gpgpu_ep_l2_diag_copy_free",
+      "-gpgpu_ep_l2_diag_l2_data_free",
+      "-gpgpu_ep_l2_tvd_clean",
+      "-gpgpu_ep_l2_tvd_dirty",
+      "-gpgpu_ep_l2_tvd_fixed_entries",
+      "-gpgpu_ep_l2_ro_tag_detach",
+      "-gpgpu_ep_l2_ro_line_mshr_bypass",
+      "-gpgpu_ep_l2_ro_ranges",
+      "-gpgpu_ep_l2_ro_ranges_sha256",
+      "-gpgpu_ep_l2_ro_manifest",
+      "-gpgpu_ep_l2_ro_manifest_sha256",
+      "-gpgpu_ep_l2_ro_scope"
+    ],
+    "effective_options": {
+      "-dram_bnk_indexing_policy": "0",
+      "-dram_bnkgrp_indexing_policy": "1",
+      "-dram_data_command_freq_ratio": "2",
+      "-dram_dual_bus_interface": "1",
+      "-dram_latency": "100",
+      "-enable_ptx_file_line_stats": "1",
+      "-gpgpu_TB_launch_latency": "0",
+      "-gpgpu_adaptive_cache_config": "0",
+      "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+      "-gpgpu_cache:dl2": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32",
+      "-gpgpu_cache:dl2_texture_only": "0",
+      "-gpgpu_cache:il1": "N:64:128:16,L:R:f:N:L,S:2:48,4",
+      "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:850.0",
+      "-gpgpu_clock_gated_lanes": "1",
+      "-gpgpu_coalesce_arch": "70",
+      "-gpgpu_compute_capability_major": "7",
+      "-gpgpu_compute_capability_minor": "0",
+      "-gpgpu_const_cache:l1": "N:128:64:8,L:R:f:N:L,S:2:64,4",
+      "-gpgpu_dram_burst_length": "2",
+      "-gpgpu_dram_buswidth": "16",
+      "-gpgpu_dram_partition_queues": "64:128:64:64",
+      "-gpgpu_dram_return_queue_size": "192",
+      "-gpgpu_dram_scheduler": "1",
+      "-gpgpu_dram_timing_opt": "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:\n                        CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3",
+      "-gpgpu_dual_issue_diff_exec_units": "1",
+      "-gpgpu_enable_specialized_operand_collector": "0",
+      "-gpgpu_ep_l2_assert_fixed_l1_assoc": "1",
+      "-gpgpu_ep_l2_b0_stats": "1",
+      "-gpgpu_ep_l2_bank_ops": "1",
+      "-gpgpu_ep_l2_descriptor_per_line_cap": "32",
+      "-gpgpu_ep_l2_descriptor_pool_size": "512",
+      "-gpgpu_ep_l2_diag_copy_free": "0",
+      "-gpgpu_ep_l2_diag_l2_data_free": "0",
+      "-gpgpu_ep_l2_feature_adaptive_policy": "0",
+      "-gpgpu_ep_l2_feature_ro_pending_state": "0",
+      "-gpgpu_ep_l2_feature_tvd": "0",
+      "-gpgpu_ep_l2_feature_unified_payload": "0",
+      "-gpgpu_ep_l2_ft_mode": "2",
+      "-gpgpu_ep_l2_i_mem_all_data": "0",
+      "-gpgpu_ep_l2_ideal_meta": "0",
+      "-gpgpu_ep_l2_ideal_read_hit": "0",
+      "-gpgpu_ep_l2_ideal_wb": "0",
+      "-gpgpu_ep_l2_m0a_stats": "1",
+      "-gpgpu_ep_l2_mq2": "0",
+      "-gpgpu_ep_l2_ms_observer": "1",
+      "-gpgpu_ep_l2_payload_mode": "2",
+      "-gpgpu_ep_l2_payload_policy": "0",
+      "-gpgpu_ep_l2_rg1": "0",
+      "-gpgpu_ep_l2_ro_line_mshr_bypass": "1",
+      "-gpgpu_ep_l2_ro_manifest": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+      "-gpgpu_ep_l2_ro_manifest_sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+      "-gpgpu_ep_l2_ro_ranges": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/certified_ranges.csv",
+      "-gpgpu_ep_l2_ro_ranges_sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+      "-gpgpu_ep_l2_ro_scope": "TRACE_MODEL_CLOSED_WORLD",
+      "-gpgpu_ep_l2_ro_tag_detach": "1",
+      "-gpgpu_ep_l2_static_s64": "0",
+      "-gpgpu_ep_l2_tvd_clean": "1",
+      "-gpgpu_ep_l2_tvd_dirty": "1",
+      "-gpgpu_ep_l2_tvd_fixed_entries": "0",
+      "-gpgpu_ep_l2_wad_entries": "128",
+      "-gpgpu_ep_l2_wb_local_cap": "0",
+      "-gpgpu_ep_l2_wbuf_entries": "16",
+      "-gpgpu_flush_l1_cache": "1",
+      "-gpgpu_frfcfs_dram_sched_queue_size": "128",
+      "-gpgpu_gmem_skip_L1D": "0",
+      "-gpgpu_heap_size_limit": "8388608",
+      "-gpgpu_inst_fetch_throughput": "4",
+      "-gpgpu_kernel_launch_latency": "5000",
+      "-gpgpu_l1_banks": "4",
+      "-gpgpu_l1_cache_write_ratio": "25",
+      "-gpgpu_l1_latency": "20",
+      "-gpgpu_l2_rop_latency": "160",
+      "-gpgpu_max_concurrent_kernel": "128",
+      "-gpgpu_max_insn_issue_per_warp": "1",
+      "-gpgpu_mem_addr_mapping": "dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RBBBCCCB.CCCSSSSS",
+      "-gpgpu_mem_address_mask": "1",
+      "-gpgpu_memlatency_stat": "14",
+      "-gpgpu_memory_partition_indexing": "2",
+      "-gpgpu_n_cluster_ejection_buffer_size": "32",
+      "-gpgpu_n_clusters": "80",
+      "-gpgpu_n_cores_per_cluster": "1",
+      "-gpgpu_n_mem": "32",
+      "-gpgpu_n_mem_per_ctrlr": "1",
+      "-gpgpu_n_sub_partition_per_mchannel": "2",
+      "-gpgpu_num_dp_units": "4",
+      "-gpgpu_num_int_units": "4",
+      "-gpgpu_num_reg_banks": "16",
+      "-gpgpu_num_sched_per_core": "4",
+      "-gpgpu_num_sfu_units": "4",
+      "-gpgpu_num_sp_units": "4",
+      "-gpgpu_num_tensor_core_units": "4",
+      "-gpgpu_occupancy_sm_number": "70",
+      "-gpgpu_operand_collector_num_in_ports_gen": "8",
+      "-gpgpu_operand_collector_num_out_ports_gen": "8",
+      "-gpgpu_operand_collector_num_units_gen": "8",
+      "-gpgpu_perf_sim_memcpy": "1",
+      "-gpgpu_perfect_inst_const_cache": "1",
+      "-gpgpu_pipeline_widths": "4,4,4,4,4,4,4,4,4,4,8,4,4",
+      "-gpgpu_ptx_convert_to_ptxplus": "0",
+      "-gpgpu_ptx_force_max_capability": "70",
+      "-gpgpu_ptx_instruction_classification": "0",
+      "-gpgpu_ptx_save_converted_ptxplus": "0",
+      "-gpgpu_ptx_sim_mode": "0",
+      "-gpgpu_reg_file_port_throughput": "2",
+      "-gpgpu_registers_per_block": "65536",
+      "-gpgpu_runtime_pending_launch_count_limit": "2048",
+      "-gpgpu_runtime_stat": "500",
+      "-gpgpu_runtime_sync_depth_limit": "2",
+      "-gpgpu_scheduler": "lrr",
+      "-gpgpu_shader_core_pipeline": "2048:32",
+      "-gpgpu_shader_cta": "32",
+      "-gpgpu_shader_registers": "65536",
+      "-gpgpu_shmem_limited_broadcast": "0",
+      "-gpgpu_shmem_num_banks": "32",
+      "-gpgpu_shmem_option": "0,8,16,32,64,96",
+      "-gpgpu_shmem_per_block": "65536",
+      "-gpgpu_shmem_size": "98304",
+      "-gpgpu_shmem_sizeDefault": "98304",
+      "-gpgpu_shmem_warp_parts": "1",
+      "-gpgpu_simd_model": "1",
+      "-gpgpu_smem_latency": "20",
+      "-gpgpu_stack_size_limit": "1024",
+      "-gpgpu_sub_core_model": "1",
+      "-gpgpu_tensor_core_avail": "1",
+      "-gpgpu_tex_cache:l1": "N:4:128:256,L:R:m:N:L,T:512:8,128:2",
+      "-gpgpu_unified_l1d_size": "128",
+      "-icnt_arbiter_algo": "1",
+      "-icnt_flit_size": "40",
+      "-icnt_in_buffer_limit": "512",
+      "-icnt_out_buffer_limit": "512",
+      "-icnt_subnets": "2",
+      "-network_mode": "2",
+      "-ptx_opcode_initiation_dp": "4,4,4,4,130",
+      "-ptx_opcode_initiation_fp": "2,2,2,2,4",
+      "-ptx_opcode_initiation_int": "2,2,2,2,8,4",
+      "-ptx_opcode_initiation_sfu": "8",
+      "-ptx_opcode_initiation_tensor": "64",
+      "-ptx_opcode_latency_dp": "8,19,8,8,330",
+      "-ptx_opcode_latency_fp": "4,13,4,5,39",
+      "-ptx_opcode_latency_int": "4,13,4,5,145,21",
+      "-ptx_opcode_latency_sfu": "100",
+      "-ptx_opcode_latency_tesnor": "64",
+      "-specialized_unit_1": "1,4,4,4,4,BRA",
+      "-specialized_unit_2": "1,4,200,4,4,TEX",
+      "-specialized_unit_3": "1,4,8,4,4,TENSOR",
+      "-trace_opcode_latency_initiation_dp": "8,4",
+      "-trace_opcode_latency_initiation_int": "2,2",
+      "-trace_opcode_latency_initiation_sfu": "20,8",
+      "-trace_opcode_latency_initiation_sp": "2,2",
+      "-trace_opcode_latency_initiation_spec_op_1": "4,4",
+      "-trace_opcode_latency_initiation_spec_op_2": "200,4",
+      "-trace_opcode_latency_initiation_spec_op_3": "2,2",
+      "-trace_opcode_latency_initiation_tensor": "2,2",
+      "-visualizer_enabled": "0"
+    },
+    "feature_vector": {
+      "adaptive_policy": false,
+      "bank_count": 4,
+      "finite_wbuf": true,
+      "ops_per_bank_cycle": 1,
+      "payload_capacity_per_slice": 1168,
+      "ro_line_mshr_bypass": true,
+      "ro_tag_detach": true,
+      "static_s64": false,
+      "tvd": true,
+      "unified_wb": true,
+      "wb_local_cap": 0,
+      "wbuf_entries": 16
+    },
+    "fixed_total_payload_slots": 1168,
+    "ideal_vector": {
+      "copy_free": false,
+      "l2_data_free": false,
+      "mem_all_data": false,
+      "meta": false,
+      "read_hit": false,
+      "wb": false
+    },
+    "labels": {
+      "diagnostic": true,
+      "oracle": true,
+      "readonly_scope": "TRACE_MODEL_CLOSED_WORLD",
+      "subset": null,
+      "victim_scope": "CLEAN_DIRTY_PENDING_INFLIGHT"
+    },
+    "per_address_cap": 32,
+    "readonly_input_review": {
+      "certified_model_lines": 24576,
+      "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernelslist.g",
+      "commandlist_sha256": "337087fedad435cd92cbd7e0f962f90d567ec9e77038fd8150977b7c6beb7164",
+      "fresh_full_trace_rehash_by_E_required": true,
+      "input_review_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_REMAINING_SIX_ORACLE_REVIEW_r1/dwt2d_INPUT_REVIEW.json",
+      "input_review_sha256": "23eb8a943a03a2b5226450beaac8bf50dd0c4a986e3764b0dd69a439c5eabb9a",
+      "manifest_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+      "manifest_sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+      "ranges_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/certified_ranges.csv",
+      "ranges_sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+      "runtime_qualified": false,
+      "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9"
+    },
+    "research_switches": {
+      "M": 1,
+      "T": 1,
+      "V": 1,
+      "W": 1
+    },
+    "resident_tags": 1024
+  },
+  "supported_profiles": {
+    "F": {
+      "comparison_variable_options": [
+        "-gpgpu_ep_l2_ft_mode",
+        "-gpgpu_ep_l2_static_s64",
+        "-gpgpu_ep_l2_diag_copy_free",
+        "-gpgpu_ep_l2_diag_l2_data_free",
+        "-gpgpu_ep_l2_tvd_clean",
+        "-gpgpu_ep_l2_tvd_dirty",
+        "-gpgpu_ep_l2_tvd_fixed_entries",
+        "-gpgpu_ep_l2_ro_tag_detach",
+        "-gpgpu_ep_l2_ro_line_mshr_bypass",
+        "-gpgpu_ep_l2_ro_ranges",
+        "-gpgpu_ep_l2_ro_ranges_sha256",
+        "-gpgpu_ep_l2_ro_manifest",
+        "-gpgpu_ep_l2_ro_manifest_sha256",
+        "-gpgpu_ep_l2_ro_scope"
+      ],
+      "effective_options": {
+        "-dram_bnk_indexing_policy": "0",
+        "-dram_bnkgrp_indexing_policy": "1",
+        "-dram_data_command_freq_ratio": "2",
+        "-dram_dual_bus_interface": "1",
+        "-dram_latency": "100",
+        "-enable_ptx_file_line_stats": "1",
+        "-gpgpu_TB_launch_latency": "0",
+        "-gpgpu_adaptive_cache_config": "0",
+        "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+        "-gpgpu_cache:dl2": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32",
+        "-gpgpu_cache:dl2_texture_only": "0",
+        "-gpgpu_cache:il1": "N:64:128:16,L:R:f:N:L,S:2:48,4",
+        "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:850.0",
+        "-gpgpu_clock_gated_lanes": "1",
+        "-gpgpu_coalesce_arch": "70",
+        "-gpgpu_compute_capability_major": "7",
+        "-gpgpu_compute_capability_minor": "0",
+        "-gpgpu_const_cache:l1": "N:128:64:8,L:R:f:N:L,S:2:64,4",
+        "-gpgpu_dram_burst_length": "2",
+        "-gpgpu_dram_buswidth": "16",
+        "-gpgpu_dram_partition_queues": "64:128:64:64",
+        "-gpgpu_dram_return_queue_size": "192",
+        "-gpgpu_dram_scheduler": "1",
+        "-gpgpu_dram_timing_opt": "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:\n                        CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3",
+        "-gpgpu_dual_issue_diff_exec_units": "1",
+        "-gpgpu_enable_specialized_operand_collector": "0",
+        "-gpgpu_ep_l2_assert_fixed_l1_assoc": "1",
+        "-gpgpu_ep_l2_b0_stats": "1",
+        "-gpgpu_ep_l2_bank_ops": "1",
+        "-gpgpu_ep_l2_descriptor_per_line_cap": "32",
+        "-gpgpu_ep_l2_descriptor_pool_size": "512",
+        "-gpgpu_ep_l2_diag_copy_free": "0",
+        "-gpgpu_ep_l2_diag_l2_data_free": "0",
+        "-gpgpu_ep_l2_feature_adaptive_policy": "0",
+        "-gpgpu_ep_l2_feature_ro_pending_state": "0",
+        "-gpgpu_ep_l2_feature_tvd": "0",
+        "-gpgpu_ep_l2_feature_unified_payload": "0",
+        "-gpgpu_ep_l2_ft_mode": "2",
+        "-gpgpu_ep_l2_i_mem_all_data": "0",
+        "-gpgpu_ep_l2_ideal_meta": "0",
+        "-gpgpu_ep_l2_ideal_read_hit": "0",
+        "-gpgpu_ep_l2_ideal_wb": "0",
+        "-gpgpu_ep_l2_m0a_stats": "1",
+        "-gpgpu_ep_l2_mq2": "0",
+        "-gpgpu_ep_l2_ms_observer": "1",
+        "-gpgpu_ep_l2_payload_mode": "2",
+        "-gpgpu_ep_l2_payload_policy": "0",
+        "-gpgpu_ep_l2_rg1": "0",
+        "-gpgpu_ep_l2_ro_line_mshr_bypass": "1",
+        "-gpgpu_ep_l2_ro_manifest": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+        "-gpgpu_ep_l2_ro_manifest_sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+        "-gpgpu_ep_l2_ro_ranges": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/certified_ranges.csv",
+        "-gpgpu_ep_l2_ro_ranges_sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+        "-gpgpu_ep_l2_ro_scope": "TRACE_MODEL_CLOSED_WORLD",
+        "-gpgpu_ep_l2_ro_tag_detach": "1",
+        "-gpgpu_ep_l2_static_s64": "0",
+        "-gpgpu_ep_l2_tvd_clean": "1",
+        "-gpgpu_ep_l2_tvd_dirty": "1",
+        "-gpgpu_ep_l2_tvd_fixed_entries": "0",
+        "-gpgpu_ep_l2_wad_entries": "128",
+        "-gpgpu_ep_l2_wb_local_cap": "0",
+        "-gpgpu_ep_l2_wbuf_entries": "16",
+        "-gpgpu_flush_l1_cache": "1",
+        "-gpgpu_frfcfs_dram_sched_queue_size": "128",
+        "-gpgpu_gmem_skip_L1D": "0",
+        "-gpgpu_heap_size_limit": "8388608",
+        "-gpgpu_inst_fetch_throughput": "4",
+        "-gpgpu_kernel_launch_latency": "5000",
+        "-gpgpu_l1_banks": "4",
+        "-gpgpu_l1_cache_write_ratio": "25",
+        "-gpgpu_l1_latency": "20",
+        "-gpgpu_l2_rop_latency": "160",
+        "-gpgpu_max_concurrent_kernel": "128",
+        "-gpgpu_max_insn_issue_per_warp": "1",
+        "-gpgpu_mem_addr_mapping": "dramid@8;00000000.00000000.00000000.00000000.0000RRRR.RRRRRRRR.RBBBCCCB.CCCSSSSS",
+        "-gpgpu_mem_address_mask": "1",
+        "-gpgpu_memlatency_stat": "14",
+        "-gpgpu_memory_partition_indexing": "2",
+        "-gpgpu_n_cluster_ejection_buffer_size": "32",
+        "-gpgpu_n_clusters": "80",
+        "-gpgpu_n_cores_per_cluster": "1",
+        "-gpgpu_n_mem": "32",
+        "-gpgpu_n_mem_per_ctrlr": "1",
+        "-gpgpu_n_sub_partition_per_mchannel": "2",
+        "-gpgpu_num_dp_units": "4",
+        "-gpgpu_num_int_units": "4",
+        "-gpgpu_num_reg_banks": "16",
+        "-gpgpu_num_sched_per_core": "4",
+        "-gpgpu_num_sfu_units": "4",
+        "-gpgpu_num_sp_units": "4",
+        "-gpgpu_num_tensor_core_units": "4",
+        "-gpgpu_occupancy_sm_number": "70",
+        "-gpgpu_operand_collector_num_in_ports_gen": "8",
+        "-gpgpu_operand_collector_num_out_ports_gen": "8",
+        "-gpgpu_operand_collector_num_units_gen": "8",
+        "-gpgpu_perf_sim_memcpy": "1",
+        "-gpgpu_perfect_inst_const_cache": "1",
+        "-gpgpu_pipeline_widths": "4,4,4,4,4,4,4,4,4,4,8,4,4",
+        "-gpgpu_ptx_convert_to_ptxplus": "0",
+        "-gpgpu_ptx_force_max_capability": "70",
+        "-gpgpu_ptx_instruction_classification": "0",
+        "-gpgpu_ptx_save_converted_ptxplus": "0",
+        "-gpgpu_ptx_sim_mode": "0",
+        "-gpgpu_reg_file_port_throughput": "2",
+        "-gpgpu_registers_per_block": "65536",
+        "-gpgpu_runtime_pending_launch_count_limit": "2048",
+        "-gpgpu_runtime_stat": "500",
+        "-gpgpu_runtime_sync_depth_limit": "2",
+        "-gpgpu_scheduler": "lrr",
+        "-gpgpu_shader_core_pipeline": "2048:32",
+        "-gpgpu_shader_cta": "32",
+        "-gpgpu_shader_registers": "65536",
+        "-gpgpu_shmem_limited_broadcast": "0",
+        "-gpgpu_shmem_num_banks": "32",
+        "-gpgpu_shmem_option": "0,8,16,32,64,96",
+        "-gpgpu_shmem_per_block": "65536",
+        "-gpgpu_shmem_size": "98304",
+        "-gpgpu_shmem_sizeDefault": "98304",
+        "-gpgpu_shmem_warp_parts": "1",
+        "-gpgpu_simd_model": "1",
+        "-gpgpu_smem_latency": "20",
+        "-gpgpu_stack_size_limit": "1024",
+        "-gpgpu_sub_core_model": "1",
+        "-gpgpu_tensor_core_avail": "1",
+        "-gpgpu_tex_cache:l1": "N:4:128:256,L:R:m:N:L,T:512:8,128:2",
+        "-gpgpu_unified_l1d_size": "128",
+        "-icnt_arbiter_algo": "1",
+        "-icnt_flit_size": "40",
+        "-icnt_in_buffer_limit": "512",
+        "-icnt_out_buffer_limit": "512",
+        "-icnt_subnets": "2",
+        "-network_mode": "2",
+        "-ptx_opcode_initiation_dp": "4,4,4,4,130",
+        "-ptx_opcode_initiation_fp": "2,2,2,2,4",
+        "-ptx_opcode_initiation_int": "2,2,2,2,8,4",
+        "-ptx_opcode_initiation_sfu": "8",
+        "-ptx_opcode_initiation_tensor": "64",
+        "-ptx_opcode_latency_dp": "8,19,8,8,330",
+        "-ptx_opcode_latency_fp": "4,13,4,5,39",
+        "-ptx_opcode_latency_int": "4,13,4,5,145,21",
+        "-ptx_opcode_latency_sfu": "100",
+        "-ptx_opcode_latency_tesnor": "64",
+        "-specialized_unit_1": "1,4,4,4,4,BRA",
+        "-specialized_unit_2": "1,4,200,4,4,TEX",
+        "-specialized_unit_3": "1,4,8,4,4,TENSOR",
+        "-trace_opcode_latency_initiation_dp": "8,4",
+        "-trace_opcode_latency_initiation_int": "2,2",
+        "-trace_opcode_latency_initiation_sfu": "20,8",
+        "-trace_opcode_latency_initiation_sp": "2,2",
+        "-trace_opcode_latency_initiation_spec_op_1": "4,4",
+        "-trace_opcode_latency_initiation_spec_op_2": "200,4",
+        "-trace_opcode_latency_initiation_spec_op_3": "2,2",
+        "-trace_opcode_latency_initiation_tensor": "2,2",
+        "-visualizer_enabled": "0"
+      },
+      "feature_vector": {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 1168,
+        "ro_line_mshr_bypass": true,
+        "ro_tag_detach": true,
+        "static_s64": false,
+        "tvd": true,
+        "unified_wb": true,
+        "wb_local_cap": 0,
+        "wbuf_entries": 16
+      },
+      "fixed_total_payload_slots": 1168,
+      "ideal_vector": {
+        "copy_free": false,
+        "l2_data_free": false,
+        "mem_all_data": false,
+        "meta": false,
+        "read_hit": false,
+        "wb": false
+      },
+      "labels": {
+        "diagnostic": true,
+        "oracle": true,
+        "readonly_scope": "TRACE_MODEL_CLOSED_WORLD",
+        "subset": null,
+        "victim_scope": "CLEAN_DIRTY_PENDING_INFLIGHT"
+      },
+      "per_address_cap": 32,
+      "readonly_input_review": {
+        "certified_model_lines": 24576,
+        "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernelslist.g",
+        "commandlist_sha256": "337087fedad435cd92cbd7e0f962f90d567ec9e77038fd8150977b7c6beb7164",
+        "fresh_full_trace_rehash_by_E_required": true,
+        "input_review_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_REMAINING_SIX_ORACLE_REVIEW_r1/dwt2d_INPUT_REVIEW.json",
+        "input_review_sha256": "23eb8a943a03a2b5226450beaac8bf50dd0c4a986e3764b0dd69a439c5eabb9a",
+        "manifest_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+        "manifest_sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+        "ranges_path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/certified_ranges.csv",
+        "ranges_sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+        "runtime_qualified": false,
+        "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9"
+      },
+      "research_switches": {
+        "M": 1,
+        "T": 1,
+        "V": 1,
+        "W": 1
+      },
+      "resident_tags": 1024
+    }
+  },
+  "gates": {
+    "old_all_off_equivalence": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/old_all_off_equivalence.json",
+      "evidence_sha256": "47fcfdbc1d4e75715f00fee5ec44261b4125f8bed3279882886ef3dd219c0442",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "finite_wbuf": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/finite_wbuf.json",
+      "evidence_sha256": "e4dc09fc062207e5a91c0ef00ba0520b25b1d3d283ad48777159882dbe8b31a2",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "requester_exact_once": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/requester_exact_once.json",
+      "evidence_sha256": "d5d1f1624f64177135fc61a6958e378394ea51b069322554478d08eb1967aad6",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "sector_reference_data": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/sector_reference_data.json",
+      "evidence_sha256": "cd8a59afa40a6b7413db4db116559970f7b52649b108edb195c2a14125422be5",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "stale_fill": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/stale_fill.json",
+      "evidence_sha256": "b81e632e89fe744fba44907af682ca94ce551238d02d3bd6d469cc9d01de81df",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "resource_closure": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/resource_closure.json",
+      "evidence_sha256": "2fe0b1c1c4fc4d6aed29527ad0e6bc8a7ed8de958d4973ac3d9458688cea2ff0",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "wb_lifecycle": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/wb_lifecycle.json",
+      "evidence_sha256": "e667d2ea984c06e18f63d29fa505cc3ef6af533f7f16e5908942f92a60d01672",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "bank_service": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/bank_service.json",
+      "evidence_sha256": "1d568ce66d88d8c2ebb7ee1a195bd802bcbb1856084e95b718e1f4d25a9dbe5e",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "physical_bank_clock": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/physical_bank_clock.json",
+      "evidence_sha256": "2e24731a9c9d4f25f0e773c4047dc968dc9acd69b5e754513ea21c1b4b1f7a5b",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "memcpy_payload_identity": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/memcpy_payload_identity.json",
+      "evidence_sha256": "f5b0f94e7dae800010b4bc4cee04ffdd5818cc04f611163fa120a45ef13c72d9",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "mode_legality": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/mode_legality.json",
+      "evidence_sha256": "03e465e2616e477503adec68ac6158062688458b1399db1c3ed0c33704474889",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "shared_payload_lifecycle": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/shared_payload_lifecycle.json",
+      "evidence_sha256": "0089e42e18f0fe45dd0b9e762987e2650afe26aadc6b1166068718aeec07b20a",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "shared_directory_cost_and_full": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/shared_directory_cost_and_full.json",
+      "evidence_sha256": "c70d04110cd7db29380aa481d24ef70ed0c428eb66e159655d355551f62f53ea",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "pinned_victim_wb_completion_identity": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/pinned_victim_wb_completion_identity.json",
+      "evidence_sha256": "5a61229671eb1c1dd5937805ce97d5617c55db03a5e8383c71201a4a8c9d39ba",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "ro_tag_reuse_late_sector_identity": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/ro_tag_reuse_late_sector_identity.json",
+      "evidence_sha256": "77502e0c820179231efe8b2312791fdc757005bb9444b6d265b39bd7b5bfa189",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "ro_victim_same_address_and_host_invalidation": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/ro_victim_same_address_and_host_invalidation.json",
+      "evidence_sha256": "fcb669bac84eb32e9993cc15caac23a8875de397f188f0caa37eeb8fc1c89a6f",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "backpressure_complete_quiescence": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/backpressure_complete_quiescence.json",
+      "evidence_sha256": "7efd9844084fdbc875003029e9a9af007509959648533661f717b4b2d9ce6185",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "tm_trigger_default_off_and_illegal_combinations": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/tm_trigger_default_off_and_illegal_combinations.json",
+      "evidence_sha256": "533b02b1b2dacff4e004d8a5ac79e62334ee618148676f5a3169654fa1922515",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "detach_observer_source_native_schema": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/detach_observer_source_native_schema.json",
+      "evidence_sha256": "97c1de1cfa39de6a55e086ffcdb4e4383304384cadb157da07bb1af9c707ddcd",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    },
+    "tagpressure_source_native_wire_math": {
+      "status": "PASS",
+      "production_driven": true,
+      "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/tagpressure_source_native_wire_math.json",
+      "evidence_sha256": "d1bde7dfdbae466b80c294168e960b2f4ebad249a0fa9a6eb727294ab59e741b",
+      "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED"
+    }
+  },
+  "input_selection_id": "D_V1_dwt2d",
+  "input_scope_admission": {
+    "application_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+    "atomic_input_auditor_sha256": "4c50340207527cacdc0d4dd3106644b825821ea394cdc0fd464169032b7ef97c",
+    "complete_native_input_proof": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_NEW_INPUT_NATIVE_SCOPE_r1/SCOPE.json",
+      "sha256": "a30304725b33f9e7794e56f2ab4b3b1417173023b8a98837449b8a2734128093"
+    },
+    "producer_publication_commit": "75707624b980df5e3bbb809c76a31cf1b34501a1",
+    "retained_input_scope": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/RETAINED_INPUT_SCOPE.json",
+      "sha256": "17e70d8551a5037cfed12d2e6fea319bcae8f22528d3e58854f5762a7cb238cf"
+    },
+    "native_input_source_applicability": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/admissions/dwt2d/INPUT_SOURCE_ADMISSION.json",
+      "sha256": "94986db6fb8f184fb41d66f8af79a43734f7d06f23532e83d1b4c3818be19f66"
+    },
+    "expected_full_instructions": 148684429,
+    "expected_kernel_count": 10,
+    "expected_kernel_uids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "expected_command_count": 11,
+    "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+    "trace_content_manifest": [
+      {
+        "bytes": 58212412,
+        "name": "kernel-1.traceg",
+        "sha256": "05280a9ce0222eefe7d452f901ec59b8c63009152e326066209fd3898bf2c951"
+      },
+      {
+        "bytes": 5941339,
+        "name": "kernel-10.traceg",
+        "sha256": "ce13ae7b1bd0a5707e30043442a022a790cd7be883733f4a92a07f751e119cce"
+      },
+      {
+        "bytes": 95059024,
+        "name": "kernel-2.traceg",
+        "sha256": "dea42420cca3bd6f646cb179c86f3f8f153866a85f3015113315070413eeafcc"
+      },
+      {
+        "bytes": 20665498,
+        "name": "kernel-3.traceg",
+        "sha256": "8d432ca1619de4affbbdd56a7b8205c143f64aa5933a81342d3b8ee888a7ac39"
+      },
+      {
+        "bytes": 5941338,
+        "name": "kernel-4.traceg",
+        "sha256": "46eb287e924099c9d05565ef55e6c6329f1f75ad346e9fe292c0029c7645433d"
+      },
+      {
+        "bytes": 95059611,
+        "name": "kernel-5.traceg",
+        "sha256": "c0e057bd257bcecea9d6fa356f7a7b0c49426b96bf2873815ac0c508ce001cff"
+      },
+      {
+        "bytes": 20665498,
+        "name": "kernel-6.traceg",
+        "sha256": "9e6919d60bfda78926af8f5d185f7e6cee96c83a92dbb357e41e87ad2f981e2f"
+      },
+      {
+        "bytes": 5941338,
+        "name": "kernel-7.traceg",
+        "sha256": "b82d365fdbafa395f6e2f49a0c836af14d6340bd7c09690ee0201875095882cd"
+      },
+      {
+        "bytes": 95063133,
+        "name": "kernel-8.traceg",
+        "sha256": "294a0e242ecf204d11372f3a6cfd0a3242fe66b133f0903b8e2702dc1ccd5c48"
+      },
+      {
+        "bytes": 20665498,
+        "name": "kernel-9.traceg",
+        "sha256": "130e108fb49d4a55da0a2d277ec90022a663c8267845e6e5ecf4f7d2dc23ebaf"
+      },
+      {
+        "bytes": 199,
+        "name": "kernelslist.g",
+        "sha256": "337087fedad435cd92cbd7e0f962f90d567ec9e77038fd8150977b7c6beb7164"
+      }
+    ],
+    "runtime_parser_source": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "numeric_payload_identity": "UNKNOWN",
+    "source_recapture_claimed": false
+  },
+  "positive_oracle_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/admissions/dwt2d/ORACLE_ADMISSION.json",
+    "sha256": "4247a2db014b79c55fdc82b6eea849c757f42a1f2cbd5c52d770013c7cee191a"
+  },
+  "terminal_acceptance_required": {
+    "command_count": 11,
+    "expected_instructions": 148684429,
+    "hardware_drained": true,
+    "kernel_uids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "native_wait_status": 0,
+    "no_timeout_cap_fatal_error": true,
+    "slice_count": 64
+  },
+  "terminal_parser": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/parse_tagpressure_terminal.py",
+    "sha256": "4a9f18670999fc475f98e7756f3b622e0a422aa65b25f054c8d16e18044f5eda"
+  },
+  "scope_note": "Exact new r5 source/build/native/passive observer/finiteF and this complete frozen input independently qualified for execution; all64 fullinstructions/nativeexit0/newmath/drain scientific acceptance remains mandatory. No newS/pair/oldbinary qualification inherited.",
+  "default_off_equivalence": {
+    "status": "PASS",
+    "production_driven": true,
+    "evidence_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/old_all_off_equivalence.json",
+    "evidence_sha256": "47fcfdbc1d4e75715f00fee5ec44261b4125f8bed3279882886ef3dd219c0442",
+    "scope": "E_ROOT_EXACT_R5_SOURCE_NATIVE_INPUT_GATE_REVIEWED",
+    "scope_note": "Unchanged source premise + actual new observer noninterference; no newS/fullOFF application."
+  },
+  "detach_observer_diagnostic": {
+    "validation_scope": {
+      "schema": "E2_TAGPRESSURE_TERMINAL_ADAPTER_BINDING_V1",
+      "scientific_scope": "TAGPRESSURE_OBSERVER_DIAGNOSTIC_POINT_V1",
+      "status": "E_SOURCE_SCHEMA_ADAPTER_SEALED",
+      "E_independently_reviewed": true,
+      "synthetic_fixture": false,
+      "pair": false,
+      "source_identity": {
+        "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+        "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+        "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+      },
+      "legacy_parser": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_TERMINAL_COMPAT_r1/parse_main_terminal.py",
+        "sha256": "f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e"
+      },
+      "legacy_validator": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py",
+        "sha256": "08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500"
+      },
+      "legacy_model_helpers": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_validation.py",
+        "sha256": "93466cb2379cb3c618299674403b747727ba98f840b6db1a17755d2c51d09fd8"
+      },
+      "observer_decoder": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/parser/decoder.py",
+        "sha256": "65731a6df85e9821994e4efea84ea5473e482e6f1c2bb385c9b8abdf00aefcff"
+      },
+      "math_audit": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/parser/math_audit.py",
+        "sha256": "f55b4f911a321aae2f22fd2b017e5bcef270847adf24968d7d1e0791401d5ae0"
+      },
+      "fixed_r4_decoder": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/parser_recovery/decoder_samecycle_close.py",
+        "sha256": "647510163053d30773176578cf35c10e0aea0a1256af366feba520820d0e11d4",
+        "bytes": 28483
+      },
+      "fixed_r4_syntax_schema": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/runtime_r4/SOURCE_BOUND_SCHEMA_r4.json",
+        "sha256": "2c070214ed8d0f3738014f7c0a3a0386d0199defad3f4a2b2d4d3343b8707ba2"
+      },
+      "r4_syntax_compatibility_proof": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/R4_SYNTAX_COMPATIBILITY_PROOF.json",
+        "sha256": "3f78f203f8a5381f4e2f01357cd97d1016ecfcbe4a66bf0f2800a319feec0532"
+      },
+      "observer_schema": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/parser/WIRE_CONTRACT.json",
+        "sha256": "cb973b3bc462ce33895a0f8cc31b428f6bf14b63f8497e8895eb314ea0894db7"
+      },
+      "producer_release": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+        "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0"
+      },
+      "native_release": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+        "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+      },
+      "source_review": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/SOURCE_REVIEW.json",
+        "sha256": "c3eeb85645c18fa912eadc7d8749c023a6eb73bbe07f23ada9f3fc7cda6780c8"
+      }
+    },
+    "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+    "runtime_config_sha256": "e06135b92c849ea1be9006ff2b00697392879d698209d645017d54511507d08b",
+    "input_selection_id": "D_V1_dwt2d",
+    "termination_contract": {
+      "all_kernels": true,
+      "hardware_drained": true,
+      "kind": "FULL_APPLICATION_MECHANISM_V2",
+      "normal_exit": true,
+      "timeout_seconds": 10800
+    },
+    "expected_full_instructions": 148684429,
+    "counter_fields": 212,
+    "native_scope": "Actual newCore1093 consistentheader/archive targeted native15,8ON10real epochs; metadata19reused; exact unchanged old model premises only. FullGPU64 separately mandatory.",
+    "expected_kernel_count": 10,
+    "expected_kernel_uids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "expected_command_count": 11
+  },
+  "qualification_candidate_context": {
+    "approved_batch_id": "EPL2_E2_R5_TARGET_SET_JOINT_PRIMARY_FOUR_20261022_r1",
+    "condition_id": "V8_TAGPRESSURE_dwt2d_F",
+    "user_approval": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/USER_APPROVAL.json",
+      "sha256": "b66c91254560b6a1ea3843de2ea5aa31f3a0cd58fcfd1b1c9d3a09e98d15c44b"
+    },
+    "signed_by_root": true,
+    "baseline_r4_qualification_for_applicability_only": {
+      "path": "docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/qualifications/dwt2d_F_QUALIFICATION.json",
+      "sha256": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004"
+    },
+    "new_source_evidence": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/SOURCE_REVIEW.json",
+      "sha256": "c3eeb85645c18fa912eadc7d8749c023a6eb73bbe07f23ada9f3fc7cda6780c8"
+    },
+    "root_review_required": false,
+    "final_qualification_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/qualifications/dwt2d_F_QUALIFICATION.json",
+    "final_spec_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/specs/dwt2d_F_SPEC.json"
+  },
+  "runtime_identity_rebind": {
+    "schema": "E2_R5_OBSERVER_ENV_RUNTIME_IDENTITY_REBIND_V1",
+    "status": "EXACT_APPROVED_OBSERVER_ENV_ONLY_DERIVED",
+    "baseline_spec_ref": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/specs/dwt2d_F_SPEC.json",
+      "sha256": "6606c1c33020c4e464ffb7fbdab0003a12e6b33dc936e5459e6c602ea647fd3f"
+    },
+    "baseline_runtime_config_sha256": "6a1db5bac84f268743cba774ae31573a427954082a94bc8850ffda4d0fb4a8e8",
+    "runtime_config_sha256": "e06135b92c849ea1be9006ff2b00697392879d698209d645017d54511507d08b",
+    "allowed_environment_addition": {
+      "EPL2_TAGPRESSURE_DIAG": "1"
+    },
+    "baseline_environment": {
+      "MKL_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "EPL2_DETACH_DIAG": "1"
+    },
+    "environment": {
+      "MKL_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "EPL2_DETACH_DIAG": "1",
+      "EPL2_TAGPRESSURE_DIAG": "1"
+    },
+    "ordered_configs": [
+      {
+        "name": "base-0.config",
+        "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+        "bytes": 9367
+      },
+      {
+        "name": "base-1.config",
+        "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+        "bytes": 672
+      },
+      {
+        "name": "base-2.config",
+        "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+        "bytes": 715
+      },
+      {
+        "name": "profile.config",
+        "sha256": "44a930007ace82a66727e0f7e42f95685c0edfd46e752ade1de4eb6a59809c21",
+        "bytes": 1594
+      }
+    ],
+    "auxiliary_assets": [
+      {
+        "name": "atomic_scope.json",
+        "sha256": "c39783520e8b9aa1afd5ae0720168c330f62f1b6936ad1042a75e7c93eb729b2",
+        "bytes": 20987
+      },
+      {
+        "name": "current_input_scope_binding.json",
+        "sha256": "17e70d8551a5037cfed12d2e6fea319bcae8f22528d3e58854f5762a7cb238cf",
+        "bytes": 9361
+      },
+      {
+        "name": "native_input_semantics.json",
+        "sha256": "c2a277a76725670452b8de433461b506850015abd1179ca045270bd408803731",
+        "bytes": 2692
+      },
+      {
+        "name": "readonly_manifest.json",
+        "sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+        "bytes": 6095
+      },
+      {
+        "name": "readonly_ranges.csv",
+        "sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+        "bytes": 67
+      }
+    ],
+    "original_formula_ast_sha256": "3764d35fe16beddd7ec6dfa05b56be2e3b779b6f7beb93c04382d63714fbcb07",
+    "original_asset_hash_primitive_refs": [
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+        "sha256": "43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060"
+      },
+      {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+        "sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d"
+      }
+    ],
+    "scientific_model_asset_bytes_changed": false,
+    "proposal_modified": false
+  },
+  "qualified_at_utc": "2026-10-22T13:18:37.452920+00:00",
+  "root_qualification_sign": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/ROOT_QUALIFICATION_SIGN.json",
+    "sha256": "a1a4d6d0d80db813cf13adab13719148eda0495441565cb1d0072d98ef571bf0"
+  }
+}

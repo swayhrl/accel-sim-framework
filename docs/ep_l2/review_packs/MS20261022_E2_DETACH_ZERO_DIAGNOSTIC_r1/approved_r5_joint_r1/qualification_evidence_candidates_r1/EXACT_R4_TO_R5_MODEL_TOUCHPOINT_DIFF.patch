@@ -1,0 +1,173 @@
+diff --git a/src/gpgpu-sim/ep-l2-detach-diag.h b/src/gpgpu-sim/ep-l2-detach-diag.h
+index abc5dec9..d1014705 100644
+--- a/src/gpgpu-sim/ep-l2-detach-diag.h
++++ b/src/gpgpu-sim/ep-l2-detach-diag.h
+@@ -1,6 +1,7 @@
+ #ifndef EP_L2_DETACH_DIAG_H
+ #define EP_L2_DETACH_DIAG_H
+ // Passive diagnostic state only. No field below supplies modeled decisions.
++#include "ep-l2-tagpressure-diag.h"
+ #include <array>
+ #include <algorithm>
+ #include <cstdint>
+@@ -229,6 +230,7 @@ FIELD_COUNT
+ static const char *const names[]={"observed_heads","probe_skipped","skip_tvd","skip_ideal","skip_disabled","skip_other","head_absent_cycles","raw_hit","raw_hit_reserved","raw_miss","raw_reservation_fail","raw_sector_miss","raw_mshr_hit","raw_write_allocated","raw_unknown","requester_ro_candidate","requester_nonro","requester_ro_runtime_off","certified_resident_hits","candidate_deferred_or_native","pressure_T_disabled","pressure_T_enabled","pressure_no_live_ro","pressure_live_ro_no_eligible","pressure_eligible","ways_examined","way_no_live_ro","way_not_attached","way_reuse_seen","way_no_missing","way_eligible","pressure_prod_probe_reached","pressure_prod_probe_not_reached","pressure_rewrite_miss","pressure_rewrite_hit_reserved","pressure_kept_fail","pressure_relief_not_consulted","pressure_intermediate_other","pressure_frontend_admitted","pressure_frontend_denied","rewritten_final_admitted","rewritten_final_denied","rewritten_final_unknown","preview_early_owner","preview_early_directory","preview_early_query","preview_early_wad","preview_early_tvd","preview_other","primary_owner","primary_directory","primary_query","primary_wad","primary_descriptor","primary_address","primary_line","primary_missq","primary_data","primary_response","primary_unknown","primary_none","mask_descriptor","mask_address","mask_line","mask_missq","mask_data","mask_response","mask_wad","mask_owner","mask_directory","mask_query","ft_access_attempts","commit_native_owner","commit_merge","commit_directory","commit_promotion","commit_raw_probe_reached","raw_tag_fail_commit","relieve_calls","relieve_T_disabled","relieve_no_eligible","relieve_eligible_selected","detach_calls","detach_success","detach_false","detach_false_T_disabled","detach_false_not_attached","detach_false_reuse","detach_false_ready","detach_exception","selected_identity_mismatch","post_relief_hit","post_relief_hit_reserved","post_relief_miss","post_relief_fail","post_relief_sector_miss","post_relief_mshr_hit","post_relief_write_allocated","post_relief_unknown","commit_accepted","commit_denied","commit_exception","trigger_accepted_after_detach","trigger_denied_after_detach","trigger_exception_after_detach","denied_owner","denied_directory","denied_query","denied_promotion","denied_tag","denied_capacity","denied_held","denied_wad","denied_pin","denied_mshr","denied_missq","denied_wad_full","denied_wb","denied_landing","denied_quota","denied_copy","denied_bank","denied_baseline","denied_other","ro_admits","ro_merges","reuse_seen_first_transition","ro_responses","ro_retired","detached_return_packets","detached_return_sectors","detached_responses","detached_retired","response_backpressure","closure_errors","samples_seen","samples_stored","samples_dropped","eligible_hist_0","eligible_hist_1","eligible_hist_2","eligible_hist_3","eligible_hist_4","eligible_hist_5","eligible_hist_6","eligible_hist_7","eligible_hist_8","eligible_hist_9","eligible_hist_10","eligible_hist_11","eligible_hist_12","eligible_hist_13","eligible_hist_14","eligible_hist_15","eligible_hist_16","predicate_hist_0","predicate_hist_1","predicate_hist_2","predicate_hist_3","predicate_hist_4","predicate_hist_5","predicate_hist_6","predicate_hist_7","transition_joint_0","transition_joint_1","transition_joint_2","transition_joint_3","transition_joint_4","transition_joint_5","transition_joint_6","transition_joint_7","ro_fill_packets","ro_capacity_population","ro_capacity_consulted","ro_capacity_not_consulted","ro_line_na_M_or_existing","ro_descriptor_checked","ro_descriptor_pass","ro_descriptor_fail","ro_descriptor_unobserved","ro_address_checked","ro_address_pass","ro_address_fail","ro_address_unobserved","ro_line_probe_checked","ro_line_probe_pass","ro_line_probe_fail","ro_line_probe_unobserved","ro_line_slots_checked","ro_line_slots_pass","ro_line_slots_fail","ro_line_slots_unobserved","eligible_frontend_admitted","eligible_frontend_denied","eligible_prod_probe_reached","eligible_prod_probe_not_reached","eligible_rewrite_miss","eligible_rewrite_hit_reserved","eligible_kept_fail","eligible_relief_not_consulted","eligible_intermediate_other","eligible_capacity_consulted","eligible_capacity_not_consulted","eligible_descriptor_fail","eligible_address_fail","eligible_line_probe_fail","eligible_line_slots_fail","eligible_early_owner","eligible_early_directory","eligible_early_query","eligible_early_wad","eligible_early_tvd"};
+ struct predicate { bool live=false,attached=false,reuse=false;unsigned required=0,issued=0,ready=0,waiters=0; };
+ struct preview {
++ ep_l2_tagpressure::snapshot tagpressure;
+  bool capacity_consulted=false,line_na=false;int descriptor_check=-1,address_check=-1,line_probe_check=-1,line_slots_check=-1;
+  int raw=-1,production_raw=-1,intermediate=-1,final_status=-1,early=0;
+  uint64_t victim_payload=~uint64_t(0),victim_generation=0; predicate victim;
+diff --git a/src/gpgpu-sim/ep-l2-ro-runtime.inc b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+index 66bbfe7d..68eb57ec 100644
+--- a/src/gpgpu-sim/ep-l2-ro-runtime.inc
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -371,10 +371,11 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+ };
+ void l2_cache::ro_init() {
+   ep_l2_detach_diag::state.add(this);
++  ep_l2_tagpressure::state.add(this,ep_l2_detach_diag::state.enabled);
+   m_ro=NULL;
+   if(m_config.m_ro_tag_detach||m_config.m_ro_line_mshr_bypass)m_ro=new ep_l2_ro_runtime(*this);
+ }
+-l2_cache::~l2_cache(){ep_l2_detach_diag::state.erase(this);delete m_ro;}
++l2_cache::~l2_cache(){ep_l2_tagpressure::state.erase(this);ep_l2_detach_diag::state.erase(this);delete m_ro;}
+ void l2_cache::ro_begin_epoch(){if(m_ro){
+   if(!m_ro->command_bound||m_ro->ever_open||!ft_drained()||m_mshrs.descriptor_count_used()||!m_miss_queue.empty()||ep_l2_wad_occupancy())
+     throw std::logic_error("RO epoch activation requires complete prior drain");
+@@ -399,7 +400,22 @@ bool l2_cache::ro_return(mem_fetch *m,unsigned long long cycle) {
+ void l2_cache::ro_print(FILE *f,unsigned slice) const {
+   if(auto*d=ep_l2_detach_diag::get(this)){d->slice=slice;d->ro_runtime=bool(m_ro);d->T=m_config.m_ro_tag_detach;d->M=m_config.m_ro_line_mshr_bypass;if(!m_ro)d->closed=true;
+     if(m_ro && d->total[ep_l2_detach_diag::detach_success]!=m_ro->tx->stats.detached)d->add(ep_l2_detach_diag::closure_errors);
+-    ep_l2_detach_diag::state.print(f,*d,ft_physical_cycle());}
++    ep_l2_detach_diag::state.print(f,*d,ft_physical_cycle());
++    if(ep_l2_tagpressure::state.find(this)) {
++      ep_l2_tagpressure::legacy_view v;v.valid=true;v.slice=slice;
++      v.kernel_count=d->kernel_count;v.kernel_uid=d->kernel_uid;
++      v.closed=d->closed;v.T=d->T;v.M=d->M;v.runtime=d->ro_runtime;
++      auto bridge=[](const std::array<uint64_t,ep_l2_detach_diag::FIELD_COUNT>&src,ep_l2_tagpressure::legacy_counts&dst){
++        using namespace ep_l2_detach_diag;dst.observed=src[observed_heads];dst.absent=src[head_absent_cycles];
++        for(unsigned i=0;i<4;++i)dst.skips[i]=src[skip_tvd+i];
++        for(unsigned i=0;i<8;++i)dst.raw[i]=src[raw_hit+i];
++        // Old order candidate/nonro/runtimeoff matches r5 requester labels.
++        for(unsigned i=0;i<3;++i)dst.requester[i]=src[requester_ro_candidate+i];
++      };
++      bridge(d->total,v.total);for(unsigned p=0;p<ep_l2_tagpressure::PHASES;++p)bridge(d->phases[p],v.phase[p]);
++      ep_l2_tagpressure::state.print(f,this,v,ft_physical_cycle());
++    }
++  }
+   if(m_ro){
+   const auto &s=m_ro->tx->stats;
+   fprintf(f,"EPL2ROV1|SUMMARY|slice=%u|detach=%u|bypass=%u|accepted_global_reads=%llu|accepted_oracle_candidates=%llu|accepted_ro=%llu|transactions=%llu|merges=%llu|detached=%llu|lower_sectors=%llu|concurrent_duplicate_sectors=%llu|responses=%llu|ro_bank_fill_ops=%llu|ro_bank_response_ops=%llu|live=%u|manifest=%s|scope=%s\n",
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index e7d99b73..7d77fd2e 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -1,5 +1,6 @@
+ #include "ep-l2-detach-diag.h"
+ ep_l2_detach_diag::registry ep_l2_detach_diag::state;
++ep_l2_tagpressure::registry ep_l2_tagpressure::state;
+ // Copyright (c) 2009-2021, Tor M. Aamodt, Tayler Hetherington,
+ // Vijay Kandiah, Nikos Hardavellas, Mahmoud Khairy, Junrui Pan,
+ // Timothy G. Rogers
+@@ -2972,7 +2973,7 @@ void tex_cache::display_state(FILE *fp) const {
+ #include "ep-l2-ft-cache.inc"
+ #include "ep-l2-tvd-cache.inc"
+ 
+-void l2_cache::detach_diag_bind_slice(unsigned slice){if(auto*d=ep_l2_detach_diag::get(this))d->slice=slice;}
++void l2_cache::detach_diag_bind_slice(unsigned slice){if(auto*d=ep_l2_detach_diag::get(this))d->slice=slice;ep_l2_tagpressure::state.bind(this,slice);}
+ void l2_cache::detach_diag_kernel(bool begin,unsigned long long uid){if(auto*d=ep_l2_detach_diag::get(this)){if(begin)d->begin(uid);else d->end(uid);}}
+ void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) const {
+   if(!ep_l2_detach_diag::get(this))return;
+@@ -2982,6 +2983,28 @@ void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) co
+   o.raw=m_tag_array->probe(m_config.block_addr(m->get_addr()),index,
+       m->get_access_sector_mask(),m->is_write(),true,nullptr);
+   o.set=m_config.set_index(m->get_addr());
++  // r5 capture only. Repeated preview/snapshot performs ZERO ledger writes.
++  // Reinitialize every time, including runtime-off/nonlive/generation changes.
++  o.tagpressure=ep_l2_tagpressure::snapshot();
++  if(ep_l2_tagpressure::state.find(this)) {
++    auto &s=o.tagpressure;const auto *d=ep_l2_detach_diag::get(this);
++    s.cache_identity=this;s.slice=d->slice;s.physical_cycle=ft_physical_cycle();
++    s.request_uid=m->get_request_uid();s.assoc=m_config.get_assoc();
++    s.raw=s.raw_r4=o.raw>=0&&o.raw<=WRITE_ALLOCATED?unsigned(o.raw):ep_l2_tagpressure::RAW-1;
++    s.ro_runtime=o.runtime;s.T=o.T;
++    s.requester=!o.runtime?ep_l2_tagpressure::RUNTIME_OFF:o.candidate?
++      ep_l2_tagpressure::CERTIFIED_RO_CANDIDATE:ep_l2_tagpressure::NONRO_NATIVE_PATH;
++    if(s.assoc==16)for(unsigned way=0;way<16;++way) {
++      const unsigned index=o.set*s.assoc+way;auto &w=s.ways[way];
++      w.kind=static_cast<ep_l2_tagpressure::way_kind>(m_tag_array->diagnostic_way_class(index));
++      w.live=false;w.attached=false;w.reuse=false;w.required=0;w.ready=0;
++      if(m_ro) {
++        const auto h=tag_payload_handle(index);w.live=m_ro->tx->live(h);
++        if(w.live) {const auto p=m_ro->tx->diagnostic_state(h);
++          w.attached=p.attached;w.reuse=p.reuse;w.required=p.required;w.ready=p.ready;}
++      }
++    }
++  }
+   if(o.raw!=RESERVATION_FAIL||!o.T)return;
+   const unsigned base=o.set*m_config.get_assoc();
+   for(unsigned i=base;i<base+m_config.get_assoc();++i){++o.ways;auto h=tag_payload_handle(i);
+@@ -2991,9 +3014,19 @@ void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) co
+   }
+ }
+ void l2_cache::detach_diag_skip(mem_fetch*m,unsigned long long cycle,unsigned reason){using namespace ep_l2_detach_diag;if(auto*d=get(this)){
+- if(!m){d->add(head_absent_cycles);return;}if(!d->once(cycle,m->get_request_uid()))return;d->add(observed_heads);d->add(probe_skipped);d->add(reason==1?skip_tvd:reason==2?skip_ideal:reason==3?skip_disabled:skip_other);
++ if(!m){d->add(head_absent_cycles);ep_l2_tagpressure::state.skip(this,d->phase(),true,reason);return;}if(!d->once(cycle,m->get_request_uid()))return;d->add(observed_heads);d->add(probe_skipped);d->add(reason==1?skip_tvd:reason==2?skip_ideal:reason==3?skip_disabled:skip_other);ep_l2_tagpressure::state.skip(this,d->phase(),false,reason);
+ }}
+ void l2_cache::detach_diag_frontend(mem_fetch*m,unsigned long long cycle,const ep_l2_detach_diag::preview&o,const l2_access_plan&p,bool admit,bool missq,bool response){using namespace ep_l2_detach_diag;auto*d=get(this);if(!d||!d->once(cycle,m->get_request_uid()))return;
++ // Only this actual once-admitted frontend callback records r5. All gates
++ // below continue their original execution; r5 invalidity never supplies a plan.
++ unsigned tp_route=ep_l2_tagpressure::ROUTE_OTHER;
++ if(!o.production_reached)tp_route=ep_l2_tagpressure::PROD_NOT_REACHED;
++ else if(o.existing&&o.intermediate==HIT_RESERVED)tp_route=ep_l2_tagpressure::EXISTING_HIT_RESERVED;
++ else if(!o.consulted)tp_route=ep_l2_tagpressure::NOT_CONSULTED;
++ else if(o.intermediate==MISS)tp_route=ep_l2_tagpressure::CONSULTED_MISS;
++ else if(o.intermediate==RESERVATION_FAIL)tp_route=ep_l2_tagpressure::CONSULTED_FAIL;
++ ep_l2_tagpressure::state.frontend(this,d->phase(),cycle,m->get_request_uid(),o.tagpressure,
++    o.raw>=0&&o.raw<=WRITE_ALLOCATED?unsigned(o.raw):ep_l2_tagpressure::RAW-1,tp_route,admit,o.early);
+  if(o.production_reached&&o.production_raw!=o.raw)d->add(closure_errors);
+  d->add(observed_heads);d->add(o.raw>=0&&o.raw<=WRITE_ALLOCATED?field(raw_hit+o.raw):raw_unknown);
+  d->add(!o.runtime?requester_ro_runtime_off:o.candidate?requester_ro_candidate:requester_nonro);
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 7fa087dc..744cf37a 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -222,6 +222,8 @@ struct line_cache_block : public cache_block_t {
+ 
+     m_fill_time = time;
+   }
++  // Nonvirtual passive getter: no vtable/instance-layout change.
++  cache_block_state diagnostic_sector_state(unsigned) const { return m_status; }
+   virtual bool is_invalid_line() { return m_status == INVALID; }
+   virtual bool is_valid_line() { return m_status == VALID; }
+   virtual bool is_reserved_line() { return m_status == RESERVED; }
+@@ -394,6 +396,8 @@ struct sector_cache_block : public cache_block_t {
+     m_sector_fill_time[sidx] = time;
+     m_line_fill_time = time;
+   }
++  // Nonvirtual passive getter; caller validates sector<4.
++  cache_block_state diagnostic_sector_state(unsigned sector) const { return m_status[sector]; }
+   virtual bool is_invalid_line() {
+     // all the sectors should be invalid
+     for (unsigned i = 0; i < SECTOR_CHUNCK_SIZE; ++i) {
+@@ -1088,6 +1092,19 @@ class tag_array {
+ 
+   unsigned size() const { return m_config.get_num_lines(); }
+   cache_block_t *get_block(unsigned idx) { return m_lines[idx]; }
++  // Pure target-set observer read. Concrete type follows the same frozen
++  // cache-type dispatch used by tag_array construction; no virtual ABI change.
++  unsigned diagnostic_way_class(unsigned idx) const {
++    assert(idx < m_config.get_num_lines());
++    const cache_block_t *b=m_lines[idx];bool reserved=false,invalid=true,dirty=false;
++    for(unsigned sector=0;sector<4;++sector) {
++      const cache_block_state state=m_config.m_cache_type==SECTOR?
++        static_cast<const sector_cache_block*>(b)->diagnostic_sector_state(sector):
++        static_cast<const line_cache_block*>(b)->diagnostic_sector_state(sector);
++      reserved|=state==RESERVED;invalid&=state==INVALID;dirty|=state==MODIFIED;
++    }
++    return reserved?0:invalid?1:dirty?3:2;
++  }
+   // Read-only inspection helpers used by L2 admission planning.  Keep the
+   // cache-block implementation private so planning cannot mutate tag state.
+   bool block_is_modified(unsigned idx) const {

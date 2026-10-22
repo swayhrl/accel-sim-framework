@@ -1,0 +1,1675 @@
+{
+  "schema": "E2_R5_EXACT_TAGPRESSURE_FOUR_SUCCESSOR_V1",
+  "status": "E_NEW_R5_SOURCE_BOUND_PRIMARY_FOUR_SEALED",
+  "campaign_id": "EPL2_MECHANISM_STUDY_20261019_V1",
+  "baseline_actual_starts": 55,
+  "maximum_new_actual_starts": 4,
+  "batch_id": "EPL2_E2_R5_TARGET_SET_JOINT_PRIMARY_FOUR_20261022_r1",
+  "condition_order": [
+    "V8_TAGPRESSURE_cfd_097k_F",
+    "V8_TAGPRESSURE_dwt2d_F",
+    "V8_TAGPRESSURE_vectorAdd_4M_F",
+    "V8_TAGPRESSURE_convolutionSeparable_F"
+  ],
+  "conditions": {
+    "V8_TAGPRESSURE_cfd_097k_F": {
+      "selection_id": "D_V2_cfd_097k",
+      "resources": {
+        "cpu": 1,
+        "memory_bytes": 9663676416,
+        "maximum_result_bytes": 402653184
+      },
+      "identity": {
+        "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+        "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro_line_mshr_bypass": true,
+          "ro_tag_detach": true,
+          "static_s64": false,
+          "tvd": true,
+          "unified_wb": true,
+          "wb_local_cap": 0,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "ideal_vector": {
+          "copy_free": false,
+          "l2_data_free": false,
+          "mem_all_data": false,
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "4cf86a8a4e706b7ca1640ddcb6102989059d6abdae80a5a1f736c5480f9ce25f",
+        "termination_contract": {
+          "all_kernels": true,
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_MECHANISM_V2",
+          "normal_exit": true,
+          "timeout_seconds": 10800
+        },
+        "trace_content_sha256": "6d5eb92fbe5391b3811dc08fcaaacb891ec8a69639512b99f68d224b6a921e66",
+        "workload": "cfd_097k"
+      },
+      "metadata_forecast_bytes": 167772160,
+      "runtime_identity_rebind": {
+        "schema": "E2_R5_OBSERVER_ENV_RUNTIME_IDENTITY_REBIND_V1",
+        "status": "EXACT_APPROVED_OBSERVER_ENV_ONLY_DERIVED",
+        "baseline_spec_ref": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/specs/cfd_097k_F_SPEC.json",
+          "sha256": "2df0bde4fc21039d9c44c4520e3a2e55d577ffedd995b47f3dcfe2b36e6de521"
+        },
+        "baseline_runtime_config_sha256": "951f7ad289ae676379e139e0aaea9eabed8c6e8a90bb988978c53def664e08e0",
+        "runtime_config_sha256": "4cf86a8a4e706b7ca1640ddcb6102989059d6abdae80a5a1f736c5480f9ce25f",
+        "allowed_environment_addition": {
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "baseline_environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1"
+        },
+        "environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1",
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "ordered_configs": [
+          {
+            "name": "base-0.config",
+            "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+            "bytes": 9367
+          },
+          {
+            "name": "base-1.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+            "bytes": 672
+          },
+          {
+            "name": "base-2.config",
+            "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+            "bytes": 715
+          },
+          {
+            "name": "profile.config",
+            "sha256": "ed256ae8626541cac36d84685974d1e11d79aa3f258b2f98e6aa3181c961c94e",
+            "bytes": 1600
+          }
+        ],
+        "auxiliary_assets": [
+          {
+            "name": "atomic_scope.json",
+            "sha256": "b88519d2f9b6c0c39bf90b6d1ceeb4c8eb2f4467f64dcc168907255c0b3d762f",
+            "bytes": 11067
+          },
+          {
+            "name": "current_input_scope_binding.json",
+            "sha256": "397ab4e955ff076b5984335ba45f3361e0ae9870eefab73329edb45ad400dcc1",
+            "bytes": 9731
+          },
+          {
+            "name": "native_input_semantics.json",
+            "sha256": "3d4a3951940d3d8fcefc66fda9775127f0eb080caca68f60074fc1a1c8ba63fe",
+            "bytes": 2636
+          },
+          {
+            "name": "readonly_manifest.json",
+            "sha256": "3ca24cbd4a7a4907d085f6a5911faca9f76c3de9bf1872278cc9bb1ca9f0c66f",
+            "bytes": 3625
+          },
+          {
+            "name": "readonly_ranges.csv",
+            "sha256": "5abf74463e7324e149c3d365d138b18b8cdf860ae734d7072959e9d353c1dfd7",
+            "bytes": 137
+          }
+        ],
+        "original_formula_ast_sha256": "3764d35fe16beddd7ec6dfa05b56be2e3b779b6f7beb93c04382d63714fbcb07",
+        "original_asset_hash_primitive_refs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+            "sha256": "43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+            "sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d"
+          }
+        ],
+        "scientific_model_asset_bytes_changed": false,
+        "proposal_modified": false
+      },
+      "spec_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/specs/cfd_097k_F_SPEC.json",
+        "sha256": "18e03f850304912cd178b7f0960d17793617a9f5d85bbcd570c1b1be27525ae0"
+      },
+      "spec_sha256": "dc141f8a949459c4c25e5db63e0a3e8ccfd02dfe03e2b5c7f93fa1e2cb6928d4",
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/qualifications/cfd_097k_F_QUALIFICATION.json",
+        "sha256": "7b880fb195052f8f0bdf616876ce0ff4fd99e06acbd2e6912e00fa27446495b6"
+      },
+      "parser": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/parse_tagpressure_terminal.py",
+        "sha256": "4a9f18670999fc475f98e7756f3b622e0a422aa65b25f054c8d16e18044f5eda"
+      },
+      "content_refs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-0.config",
+          "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-1.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-2.config",
+          "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/configs/cfd_097k_F.config",
+          "sha256": "ed256ae8626541cac36d84685974d1e11d79aa3f258b2f98e6aa3181c961c94e"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/cfd_097k_v2_r1/oracle/manifest.json",
+          "sha256": "3ca24cbd4a7a4907d085f6a5911faca9f76c3de9bf1872278cc9bb1ca9f0c66f"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/cfd_097k_v2_r1/oracle/certified_ranges.csv",
+          "sha256": "5abf74463e7324e149c3d365d138b18b8cdf860ae734d7072959e9d353c1dfd7"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/cfd_097k_ATOMIC_SCOPE_r1.json",
+          "sha256": "b88519d2f9b6c0c39bf90b6d1ceeb4c8eb2f4467f64dcc168907255c0b3d762f"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/NATIVE_INPUT_SEMANTICS.json",
+          "sha256": "3d4a3951940d3d8fcefc66fda9775127f0eb080caca68f60074fc1a1c8ba63fe"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/cfd_097k/RETAINED_INPUT_SCOPE.json",
+          "sha256": "397ab4e955ff076b5984335ba45f3361e0ae9870eefab73329edb45ad400dcc1"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/old_all_off_equivalence.json",
+          "sha256": "bdaffc9ddabad71a5ef1ca74171b56b9612b9eae3023e35cdc435e1032a380b7"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/finite_wbuf.json",
+          "sha256": "ef6ebbd45b21a3d4f7dbbfc324ab73e4e5a8f1fa4fc3e541d6e2d009089afdaf"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/requester_exact_once.json",
+          "sha256": "f0e24396b730530a78771083e043696f6ce64eb1d69f55e44e53e29f38d64222"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/sector_reference_data.json",
+          "sha256": "3ba1f687ae54a15f132641ff039ccf1476d686e2d8d2764e4adeb730cb69b1c9"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/stale_fill.json",
+          "sha256": "350e48b8a91ffe6388dc92d3416fe9777739ce13deaba8fc8f2023781b1bf651"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/resource_closure.json",
+          "sha256": "151724e3ecff2b8feaa26c9e2f257d1576dcbd61e81a3644cd64d975bdad9fdc"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/wb_lifecycle.json",
+          "sha256": "bfd95c95d72ed94acc5a269b3a8aa28c986bc54cf2f3ee2830859bf738279577"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/bank_service.json",
+          "sha256": "991aa1cb98a64abc65aa1c3ad84f43e20a145909e0b2c8208489319ceef636ea"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/physical_bank_clock.json",
+          "sha256": "4612ba58c19c8f2a9cd9a89dea662ba8a461f5d117df5083db4a2fe56c828c75"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/memcpy_payload_identity.json",
+          "sha256": "1bb68c6fa2e15eb5412be6f37d8bee86403120efe21f4ef5331c59567bbc565c"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/mode_legality.json",
+          "sha256": "e269e9bbbba51d17b940ebaf634fc1987f5a306be064a3dd27673ca616d5f242"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/shared_payload_lifecycle.json",
+          "sha256": "0c3d568aeff8f0fbf9728a53cad8ef5b5c26f447f5dc5d7f42cc0ec77ae6ecf5"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/shared_directory_cost_and_full.json",
+          "sha256": "5b112a5ff07687ca14d4e17118411c0230455e57ffb2b9612cfc70d3d258c26b"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/pinned_victim_wb_completion_identity.json",
+          "sha256": "25d5d7c8cb89a3fe64bf83270fd3849ba5b14e1c87869ea938c7e8bd65a8a0ce"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/ro_tag_reuse_late_sector_identity.json",
+          "sha256": "7d139ff346c0de2ca9de1f28a34f1d22a2bb438b4fdb6e30027050fd32fc1037"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/ro_victim_same_address_and_host_invalidation.json",
+          "sha256": "3a63682a10ab1d981b3fb26fc17dce26f33ea5217007240ce871650806bf3d34"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/backpressure_complete_quiescence.json",
+          "sha256": "c5f1a45adc55510baf74450dc0c49da7de48f92af76adcf01beca8a065a74d99"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/tm_trigger_default_off_and_illegal_combinations.json",
+          "sha256": "f0d05f609210af50793fcfb5c0aa4c104732a697ffe545c3bd57034251025933"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/detach_observer_source_native_schema.json",
+          "sha256": "4603097a4ffb13558707f7183293ab47552922208d37ede0274be7a30e44c28e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/cfd_097k/tagpressure_source_native_wire_math.json",
+          "sha256": "562d4fb37d0b178e3824e9ab1eaf45ef61ff6d954943d7c4ba3eab06bec97fbe"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+          "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0",
+          "publication_commit": "87cb985543c0947f528a2c1de009aa5d5dbd9b7a",
+          "source_identity": {
+            "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+            "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+            "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+          }
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+          "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/BUILD_ARTIFACTS.json",
+          "sha256": "23669bcf92beb68e8ede00890934ead4ac79dfd5ee4cace2425e3d552c2544dd"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/COMPLETE_INDEPENDENT_NATIVE_MATH_REVIEW.json",
+          "sha256": "11739efe03af0b94c099148fe55d714cb02b73885b6a447d5eb4ac0f16d975a3"
+        }
+      ]
+    },
+    "V8_TAGPRESSURE_dwt2d_F": {
+      "selection_id": "D_V1_dwt2d",
+      "resources": {
+        "cpu": 1,
+        "memory_bytes": 9663676416,
+        "maximum_result_bytes": 402653184
+      },
+      "identity": {
+        "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+        "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro_line_mshr_bypass": true,
+          "ro_tag_detach": true,
+          "static_s64": false,
+          "tvd": true,
+          "unified_wb": true,
+          "wb_local_cap": 0,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "ideal_vector": {
+          "copy_free": false,
+          "l2_data_free": false,
+          "mem_all_data": false,
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "e06135b92c849ea1be9006ff2b00697392879d698209d645017d54511507d08b",
+        "termination_contract": {
+          "all_kernels": true,
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_MECHANISM_V2",
+          "normal_exit": true,
+          "timeout_seconds": 10800
+        },
+        "trace_content_sha256": "5df26bc18e344ec381ce8cae8acd93a0e8b2266d5def861dd575a7061a303fc9",
+        "workload": "dwt2d"
+      },
+      "metadata_forecast_bytes": 167772160,
+      "runtime_identity_rebind": {
+        "schema": "E2_R5_OBSERVER_ENV_RUNTIME_IDENTITY_REBIND_V1",
+        "status": "EXACT_APPROVED_OBSERVER_ENV_ONLY_DERIVED",
+        "baseline_spec_ref": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/specs/dwt2d_F_SPEC.json",
+          "sha256": "6606c1c33020c4e464ffb7fbdab0003a12e6b33dc936e5459e6c602ea647fd3f"
+        },
+        "baseline_runtime_config_sha256": "6a1db5bac84f268743cba774ae31573a427954082a94bc8850ffda4d0fb4a8e8",
+        "runtime_config_sha256": "e06135b92c849ea1be9006ff2b00697392879d698209d645017d54511507d08b",
+        "allowed_environment_addition": {
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "baseline_environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1"
+        },
+        "environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1",
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "ordered_configs": [
+          {
+            "name": "base-0.config",
+            "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+            "bytes": 9367
+          },
+          {
+            "name": "base-1.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+            "bytes": 672
+          },
+          {
+            "name": "base-2.config",
+            "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+            "bytes": 715
+          },
+          {
+            "name": "profile.config",
+            "sha256": "44a930007ace82a66727e0f7e42f95685c0edfd46e752ade1de4eb6a59809c21",
+            "bytes": 1594
+          }
+        ],
+        "auxiliary_assets": [
+          {
+            "name": "atomic_scope.json",
+            "sha256": "c39783520e8b9aa1afd5ae0720168c330f62f1b6936ad1042a75e7c93eb729b2",
+            "bytes": 20987
+          },
+          {
+            "name": "current_input_scope_binding.json",
+            "sha256": "17e70d8551a5037cfed12d2e6fea319bcae8f22528d3e58854f5762a7cb238cf",
+            "bytes": 9361
+          },
+          {
+            "name": "native_input_semantics.json",
+            "sha256": "c2a277a76725670452b8de433461b506850015abd1179ca045270bd408803731",
+            "bytes": 2692
+          },
+          {
+            "name": "readonly_manifest.json",
+            "sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e",
+            "bytes": 6095
+          },
+          {
+            "name": "readonly_ranges.csv",
+            "sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679",
+            "bytes": 67
+          }
+        ],
+        "original_formula_ast_sha256": "3764d35fe16beddd7ec6dfa05b56be2e3b779b6f7beb93c04382d63714fbcb07",
+        "original_asset_hash_primitive_refs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+            "sha256": "43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+            "sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d"
+          }
+        ],
+        "scientific_model_asset_bytes_changed": false,
+        "proposal_modified": false
+      },
+      "spec_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/specs/dwt2d_F_SPEC.json",
+        "sha256": "a55cebe6b61b692b50af46490b7c6d689f3e52a5758afdfa5ec29912edb0e8f4"
+      },
+      "spec_sha256": "58978ed360b0a74bd35754863704798e9e5c6a33ff1639f4f6277ef29e5f818d",
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/qualifications/dwt2d_F_QUALIFICATION.json",
+        "sha256": "a177c36eb5ad1bb077552e666edf71ab78abda4965da5c365472a1471b8a3abe"
+      },
+      "parser": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/parse_tagpressure_terminal.py",
+        "sha256": "4a9f18670999fc475f98e7756f3b622e0a422aa65b25f054c8d16e18044f5eda"
+      },
+      "content_refs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-0.config",
+          "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-1.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-2.config",
+          "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/configs/dwt2d_F.config",
+          "sha256": "44a930007ace82a66727e0f7e42f95685c0edfd46e752ade1de4eb6a59809c21"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/manifest.json",
+          "sha256": "dadd5c62ed11a1dd4d734e966d02f4df05497e2a1995247e7fe57a05452cf85e"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/dwt2d_v2_r1/oracle/certified_ranges.csv",
+          "sha256": "7fdd41fa78a34b1d748b612395179b0e6766987c59db13d91c069a232d2c4679"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/ATOMIC_SCOPE.json",
+          "sha256": "c39783520e8b9aa1afd5ae0720168c330f62f1b6936ad1042a75e7c93eb729b2"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/NATIVE_INPUT_SEMANTICS.json",
+          "sha256": "c2a277a76725670452b8de433461b506850015abd1179ca045270bd408803731"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/dwt2d/RETAINED_INPUT_SCOPE.json",
+          "sha256": "17e70d8551a5037cfed12d2e6fea319bcae8f22528d3e58854f5762a7cb238cf"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/old_all_off_equivalence.json",
+          "sha256": "47fcfdbc1d4e75715f00fee5ec44261b4125f8bed3279882886ef3dd219c0442"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/finite_wbuf.json",
+          "sha256": "e4dc09fc062207e5a91c0ef00ba0520b25b1d3d283ad48777159882dbe8b31a2"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/requester_exact_once.json",
+          "sha256": "d5d1f1624f64177135fc61a6958e378394ea51b069322554478d08eb1967aad6"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/sector_reference_data.json",
+          "sha256": "cd8a59afa40a6b7413db4db116559970f7b52649b108edb195c2a14125422be5"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/stale_fill.json",
+          "sha256": "b81e632e89fe744fba44907af682ca94ce551238d02d3bd6d469cc9d01de81df"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/resource_closure.json",
+          "sha256": "2fe0b1c1c4fc4d6aed29527ad0e6bc8a7ed8de958d4973ac3d9458688cea2ff0"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/wb_lifecycle.json",
+          "sha256": "e667d2ea984c06e18f63d29fa505cc3ef6af533f7f16e5908942f92a60d01672"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/bank_service.json",
+          "sha256": "1d568ce66d88d8c2ebb7ee1a195bd802bcbb1856084e95b718e1f4d25a9dbe5e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/physical_bank_clock.json",
+          "sha256": "2e24731a9c9d4f25f0e773c4047dc968dc9acd69b5e754513ea21c1b4b1f7a5b"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/memcpy_payload_identity.json",
+          "sha256": "f5b0f94e7dae800010b4bc4cee04ffdd5818cc04f611163fa120a45ef13c72d9"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/mode_legality.json",
+          "sha256": "03e465e2616e477503adec68ac6158062688458b1399db1c3ed0c33704474889"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/shared_payload_lifecycle.json",
+          "sha256": "0089e42e18f0fe45dd0b9e762987e2650afe26aadc6b1166068718aeec07b20a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/shared_directory_cost_and_full.json",
+          "sha256": "c70d04110cd7db29380aa481d24ef70ed0c428eb66e159655d355551f62f53ea"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/pinned_victim_wb_completion_identity.json",
+          "sha256": "5a61229671eb1c1dd5937805ce97d5617c55db03a5e8383c71201a4a8c9d39ba"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/ro_tag_reuse_late_sector_identity.json",
+          "sha256": "77502e0c820179231efe8b2312791fdc757005bb9444b6d265b39bd7b5bfa189"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/ro_victim_same_address_and_host_invalidation.json",
+          "sha256": "fcb669bac84eb32e9993cc15caac23a8875de397f188f0caa37eeb8fc1c89a6f"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/backpressure_complete_quiescence.json",
+          "sha256": "7efd9844084fdbc875003029e9a9af007509959648533661f717b4b2d9ce6185"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/tm_trigger_default_off_and_illegal_combinations.json",
+          "sha256": "533b02b1b2dacff4e004d8a5ac79e62334ee618148676f5a3169654fa1922515"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/detach_observer_source_native_schema.json",
+          "sha256": "97c1de1cfa39de6a55e086ffcdb4e4383304384cadb157da07bb1af9c707ddcd"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/dwt2d/tagpressure_source_native_wire_math.json",
+          "sha256": "d1bde7dfdbae466b80c294168e960b2f4ebad249a0fa9a6eb727294ab59e741b"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+          "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0",
+          "publication_commit": "87cb985543c0947f528a2c1de009aa5d5dbd9b7a",
+          "source_identity": {
+            "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+            "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+            "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+          }
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+          "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/BUILD_ARTIFACTS.json",
+          "sha256": "23669bcf92beb68e8ede00890934ead4ac79dfd5ee4cace2425e3d552c2544dd"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/COMPLETE_INDEPENDENT_NATIVE_MATH_REVIEW.json",
+          "sha256": "11739efe03af0b94c099148fe55d714cb02b73885b6a447d5eb4ac0f16d975a3"
+        }
+      ]
+    },
+    "V8_TAGPRESSURE_vectorAdd_4M_F": {
+      "selection_id": "D_V2_vectorAdd_4M",
+      "resources": {
+        "cpu": 1,
+        "memory_bytes": 9663676416,
+        "maximum_result_bytes": 402653184
+      },
+      "identity": {
+        "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+        "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro_line_mshr_bypass": true,
+          "ro_tag_detach": true,
+          "static_s64": false,
+          "tvd": true,
+          "unified_wb": true,
+          "wb_local_cap": 0,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "ideal_vector": {
+          "copy_free": false,
+          "l2_data_free": false,
+          "mem_all_data": false,
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "c2ab92dfc528d53e91d0af9c62bd2fb1bb3941a8440abce16422b2a8bd7bc450",
+        "termination_contract": {
+          "all_kernels": true,
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_MECHANISM_V2",
+          "normal_exit": true,
+          "timeout_seconds": 10800
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "metadata_forecast_bytes": 167772160,
+      "runtime_identity_rebind": {
+        "schema": "E2_R5_OBSERVER_ENV_RUNTIME_IDENTITY_REBIND_V1",
+        "status": "EXACT_APPROVED_OBSERVER_ENV_ONLY_DERIVED",
+        "baseline_spec_ref": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/specs/vectorAdd_4M_F_SPEC.json",
+          "sha256": "11ff5e086573c8ba2f161e4c964ca7428f1e5e48e4b195d50bec6d1f1b0140fb"
+        },
+        "baseline_runtime_config_sha256": "39d5f27a2e258037291a9c03c7f42ca41bc5c82672ee9961fd74577eef6a1998",
+        "runtime_config_sha256": "c2ab92dfc528d53e91d0af9c62bd2fb1bb3941a8440abce16422b2a8bd7bc450",
+        "allowed_environment_addition": {
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "baseline_environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1"
+        },
+        "environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1",
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "ordered_configs": [
+          {
+            "name": "base-0.config",
+            "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+            "bytes": 9367
+          },
+          {
+            "name": "base-1.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+            "bytes": 672
+          },
+          {
+            "name": "base-2.config",
+            "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+            "bytes": 715
+          },
+          {
+            "name": "profile.config",
+            "sha256": "b5ca00bb33a0e75c71b9661789d6480d97be8bede4dec4edf5172637216351f0",
+            "bytes": 1608
+          }
+        ],
+        "auxiliary_assets": [
+          {
+            "name": "atomic_scope.json",
+            "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad",
+            "bytes": 4357
+          },
+          {
+            "name": "current_input_scope_binding.json",
+            "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202",
+            "bytes": 9741
+          },
+          {
+            "name": "native_input_semantics.json",
+            "sha256": "fee6329dac18a9eadff4290c8cdd87557cd8f2f6ab79682e82863c196af5230d",
+            "bytes": 2661
+          },
+          {
+            "name": "readonly_manifest.json",
+            "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+            "bytes": 2100
+          },
+          {
+            "name": "readonly_ranges.csv",
+            "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560",
+            "bytes": 102
+          }
+        ],
+        "original_formula_ast_sha256": "3764d35fe16beddd7ec6dfa05b56be2e3b779b6f7beb93c04382d63714fbcb07",
+        "original_asset_hash_primitive_refs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+            "sha256": "43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+            "sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d"
+          }
+        ],
+        "scientific_model_asset_bytes_changed": false,
+        "proposal_modified": false
+      },
+      "spec_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/specs/vectorAdd_4M_F_SPEC.json",
+        "sha256": "462d2f35368cfebceda39053df8e3b79246f2d5a3b40c81a0603f3182752c453"
+      },
+      "spec_sha256": "1fafff50cd31b83f9eb48edbc60a0a0926fd806fa2d275a96741606a28acbe10",
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/qualifications/vectorAdd_4M_F_QUALIFICATION.json",
+        "sha256": "4de48656fdc803e2a1c55bf2bf2710ec456783eae55cbfba2cf9f87a5b12e7af"
+      },
+      "parser": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/parse_tagpressure_terminal.py",
+        "sha256": "4a9f18670999fc475f98e7756f3b622e0a422aa65b25f054c8d16e18044f5eda"
+      },
+      "content_refs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-0.config",
+          "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-1.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-2.config",
+          "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/configs/vectorAdd_4M_F.config",
+          "sha256": "b5ca00bb33a0e75c71b9661789d6480d97be8bede4dec4edf5172637216351f0"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/manifest.json",
+          "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/vectorAdd_4M_v2_r1/oracle/certified_ranges.csv",
+          "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+          "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/NATIVE_INPUT_SEMANTICS.json",
+          "sha256": "fee6329dac18a9eadff4290c8cdd87557cd8f2f6ab79682e82863c196af5230d"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+          "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/old_all_off_equivalence.json",
+          "sha256": "f43e1760311f9bb318552465928d7d87236efb90de29575aaf934efd4d9218a4"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/finite_wbuf.json",
+          "sha256": "ea64acaf42fe88cc4ed7f7b3195810120a6d543497ee099c3e598ad931c2e266"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/requester_exact_once.json",
+          "sha256": "55ac6d279142d6e3cacf46a5cd3facfdc8fd5f0a4e839c54085cf526d0b56fb6"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/sector_reference_data.json",
+          "sha256": "4558b893cd9c33eeab135656595d6f96f9db8bc508dc5482c1ab59ae0020b11b"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/stale_fill.json",
+          "sha256": "1ef33a8765c03e07096b7d5a4fef1d52c01084eaa37ed2588d2ce8b772aa4f44"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/resource_closure.json",
+          "sha256": "3e2e49e92eb07f7de126a394d33af91d5bf7355ab5955a2acdecc0539d442bc9"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/wb_lifecycle.json",
+          "sha256": "ca1d1b14499c9c0d4d22161a77980c12814d645b06ed53049cfbe044b839c0d3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/bank_service.json",
+          "sha256": "23ae1302a64325d68fede75a8df82994b9d9e14f532cb4ec27e8d7a8a98778b1"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/physical_bank_clock.json",
+          "sha256": "5fd3de20382bec5cbcacb203f1cc6e3c611c3482c110d41f3d880e3b83761943"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/memcpy_payload_identity.json",
+          "sha256": "6971fdcc36b12b680d3efcbadd722c71133e226474f0fc417187c68025358289"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/mode_legality.json",
+          "sha256": "22a8e1a058142cc93f679a1b0cb532b4519515464433912dfbc4fd5bb3eac34a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/shared_payload_lifecycle.json",
+          "sha256": "33180d1527776f25b7035995ebc17496ef6868fe7db39c3b7bea61f4e1712cdc"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/shared_directory_cost_and_full.json",
+          "sha256": "3aa7cd0c060324110c2a3635d20b88af603ad7ae1182cc318ac0374334450400"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/pinned_victim_wb_completion_identity.json",
+          "sha256": "da6257766fc1821bd3f98cf55c818c2172811cf4909eda299c6a3aa48c48e90c"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/ro_tag_reuse_late_sector_identity.json",
+          "sha256": "b33a82e9a800a2bf6780eaf14ee3ce7dc43128ae3d63a3be6ec94a30b8aaa6ac"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/ro_victim_same_address_and_host_invalidation.json",
+          "sha256": "d57007be01cf8ff821cfc6cb09524b98212a167cae5a2d4e2c60e3a953481c9d"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/backpressure_complete_quiescence.json",
+          "sha256": "c852563c0137a30398707a1ab8766fe16cfa0dde8f16e5f03e8057d8a653190a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/tm_trigger_default_off_and_illegal_combinations.json",
+          "sha256": "06f53ee971ca9d8d2c08e4866c077799a3671c83b5ca6921b4f0106d9dc16d23"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/detach_observer_source_native_schema.json",
+          "sha256": "e4d1019f4304f2dd102b0928442757be5b95bb5787b2683bb2acdafb133b89a1"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/vectorAdd_4M/tagpressure_source_native_wire_math.json",
+          "sha256": "d8e29afec57f1344c4d7642f2bb326ea658e37944be586cd9581d371df214c0c"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+          "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0",
+          "publication_commit": "87cb985543c0947f528a2c1de009aa5d5dbd9b7a",
+          "source_identity": {
+            "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+            "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+            "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+          }
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+          "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/BUILD_ARTIFACTS.json",
+          "sha256": "23669bcf92beb68e8ede00890934ead4ac79dfd5ee4cace2425e3d552c2544dd"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/COMPLETE_INDEPENDENT_NATIVE_MATH_REVIEW.json",
+          "sha256": "11739efe03af0b94c099148fe55d714cb02b73885b6a447d5eb4ac0f16d975a3"
+        }
+      ]
+    },
+    "V8_TAGPRESSURE_convolutionSeparable_F": {
+      "selection_id": "D_V1_convolutionSeparable",
+      "resources": {
+        "cpu": 1,
+        "memory_bytes": 9663676416,
+        "maximum_result_bytes": 402653184
+      },
+      "identity": {
+        "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+        "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "epoch_range": {
+          "epochs": "all",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": true,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1168,
+          "ro_line_mshr_bypass": true,
+          "ro_tag_detach": true,
+          "static_s64": false,
+          "tvd": true,
+          "unified_wb": true,
+          "wb_local_cap": 0,
+          "wbuf_entries": 16
+        },
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "ideal_vector": {
+          "copy_free": false,
+          "l2_data_free": false,
+          "mem_all_data": false,
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "7ff3f887d669e1cb35155f23aa3cc0731cc688d5bac7c4835d7f8679e26abd22",
+        "termination_contract": {
+          "all_kernels": true,
+          "hardware_drained": true,
+          "kind": "FULL_APPLICATION_MECHANISM_V2",
+          "normal_exit": true,
+          "timeout_seconds": 10800
+        },
+        "trace_content_sha256": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+        "workload": "convolutionSeparable"
+      },
+      "metadata_forecast_bytes": 167772160,
+      "runtime_identity_rebind": {
+        "schema": "E2_R5_OBSERVER_ENV_RUNTIME_IDENTITY_REBIND_V1",
+        "status": "EXACT_APPROVED_OBSERVER_ENV_ONLY_DERIVED",
+        "baseline_spec_ref": {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/specs/convolutionSeparable_F_SPEC.json",
+          "sha256": "125207670885339efaa5c8ae05d1f383f524ecef84abf6a3906b46835148a611"
+        },
+        "baseline_runtime_config_sha256": "9eed8d3ce2fc5c605b1f352cf90cb69dc93f609ceec58dced3b91c8b8c38eeaf",
+        "runtime_config_sha256": "7ff3f887d669e1cb35155f23aa3cc0731cc688d5bac7c4835d7f8679e26abd22",
+        "allowed_environment_addition": {
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "baseline_environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1"
+        },
+        "environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "EPL2_DETACH_DIAG": "1",
+          "EPL2_TAGPRESSURE_DIAG": "1"
+        },
+        "ordered_configs": [
+          {
+            "name": "base-0.config",
+            "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+            "bytes": 9367
+          },
+          {
+            "name": "base-1.config",
+            "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+            "bytes": 672
+          },
+          {
+            "name": "base-2.config",
+            "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+            "bytes": 715
+          },
+          {
+            "name": "profile.config",
+            "sha256": "245d7e01dc3b3442494eb6d92280ebd0f1eb52b68fe0411ce3508acb04657b2a",
+            "bytes": 1618
+          }
+        ],
+        "auxiliary_assets": [
+          {
+            "name": "atomic_scope.json",
+            "sha256": "1bd27463147567a278765837bd05c46c9f59d2fb4741667c46d833a6a39a4950",
+            "bytes": 6216
+          },
+          {
+            "name": "current_input_scope_binding.json",
+            "sha256": "8f92e9ca40b9342c24eb31f2384775eabbb02d067caa4cf97bfb03ab9a8f0126",
+            "bytes": 9472
+          },
+          {
+            "name": "native_input_semantics.json",
+            "sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2",
+            "bytes": 20568
+          },
+          {
+            "name": "readonly_manifest.json",
+            "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425",
+            "bytes": 2630
+          },
+          {
+            "name": "readonly_ranges.csv",
+            "sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e",
+            "bytes": 67
+          }
+        ],
+        "original_formula_ast_sha256": "3764d35fe16beddd7ec6dfa05b56be2e3b779b6f7beb93c04382d63714fbcb07",
+        "original_asset_hash_primitive_refs": [
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/run.py",
+            "sha256": "43f65cf89fdbdf81e8786e8b00d2d9be1dfc521c41e386f01ed00fc7708c9060"
+          },
+          {
+            "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+            "sha256": "81a31c347bd3c5531eb959569ae7baffbecd5f75c6142a65e1aedbfd05a8808d"
+          }
+        ],
+        "scientific_model_asset_bytes_changed": false,
+        "proposal_modified": false
+      },
+      "spec_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/specs/convolutionSeparable_F_SPEC.json",
+        "sha256": "a4202172f22ea1cf33df3864b7aa0fc36b0ca4ba4b8ea9450e07b7bb8148a0e8"
+      },
+      "spec_sha256": "50e331bdcbb36e5c3986b39f2256fe147b7d73830dfa34ed236aca89e2caeb78",
+      "qualification": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/qualifications/convolutionSeparable_F_QUALIFICATION.json",
+        "sha256": "79ab933cf0c45cbf94fa960626b42a182c9de629e49011bd7a66fd7a58d21f07"
+      },
+      "parser": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/parse_tagpressure_terminal.py",
+        "sha256": "4a9f18670999fc475f98e7756f3b622e0a422aa65b25f054c8d16e18044f5eda"
+      },
+      "content_refs": [
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-0.config",
+          "sha256": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-1.config",
+          "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/base-2.config",
+          "sha256": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E_MAIN_SF_QUALIFICATION_r1/configs/convolutionSeparable_F.config",
+          "sha256": "245d7e01dc3b3442494eb6d92280ebd0f1eb52b68fe0411ce3508acb04657b2a"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/manifest.json",
+          "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425"
+        },
+        {
+          "path": "/workspace/ep_l2_ms20261019_e_results/D_OFFLINE_INPUT_ANALYSIS/convolutionSeparable_r1/oracle/certified_ranges.csv",
+          "sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_LEGACY_TRACE_SCOPE_ADAPTER_r2/convolutionSeparable_ATOMIC_SCOPE_r2.json",
+          "sha256": "1bd27463147567a278765837bd05c46c9f59d2fb4741667c46d833a6a39a4950"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/docs/ep_l2/review_packs/FT20261017_LANE5_R17_NATIVE_BYTE_SEMANTIC_PROOF_r1/NATIVE_LEGACY_BYTE_SEMANTIC_PROOF_R17_r1.json",
+          "sha256": "9b62884190b8f6bd77d3b3bf873d0e3e60ce718db9e7c51a9797ec99bd46dce2"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/RETAINED_COMPLETE_INPUT_SCOPE.json",
+          "sha256": "8f92e9ca40b9342c24eb31f2384775eabbb02d067caa4cf97bfb03ab9a8f0126"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/old_all_off_equivalence.json",
+          "sha256": "2a5cf3877e5fa086aeafc1fb4566b761fedb1b08f8194080b5bd08392dd03f60"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/finite_wbuf.json",
+          "sha256": "8ac78b9d5958c820ace60ca1370df3e701d75a3329c8eab663787fcff3312306"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/requester_exact_once.json",
+          "sha256": "747eecaa127b9a6d23313c358550a183a57ea1cbda980bd328835febbe3ad5f4"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/sector_reference_data.json",
+          "sha256": "9088092453247e4d0d51b1552d97f3e8a3114906c54cc8186bb6acfff1fec7b3"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/stale_fill.json",
+          "sha256": "74dea8537e5d45141138ab2670fa3c1ec81d8a6a8d7ca498a656bf028b7718ef"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/resource_closure.json",
+          "sha256": "b36e6d3d1835beb3f9cd505080a91e65b15ea98aac13efc172315638b30ee938"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/wb_lifecycle.json",
+          "sha256": "316ca2eaf0b5152b3bb06434080c92e8d11394af2a05980b33577cc798b910ad"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/bank_service.json",
+          "sha256": "7a768f4107713dfea76adad2a5c90074b9ec6a185d52f8bd6ce4a8a51923eef9"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/physical_bank_clock.json",
+          "sha256": "729bc95900767a580709a54f955402554223d64e8fe5105ad0a6eadb8bc3d246"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/memcpy_payload_identity.json",
+          "sha256": "694e7ac8c32ba7fac78d405fe7c13ecd46ab8f4238241e7497be7ba8a16a246b"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/mode_legality.json",
+          "sha256": "d49bea664113b8cd93bd4662e502e4567d3f98488dcbf5629f5654dd190cbcdc"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/shared_payload_lifecycle.json",
+          "sha256": "5bc9324f3e8ededb2da6725238bb8adb384b8cf799d423a6d70604569c0e407d"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/shared_directory_cost_and_full.json",
+          "sha256": "83ce6f59cd3db708f3cf216918861a38c056e6ea83330a067c3ef539f575a546"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/pinned_victim_wb_completion_identity.json",
+          "sha256": "67e82f3d4394529bd1f75755581eaef05db5c8cc34cdb291947bf503f759ddca"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/ro_tag_reuse_late_sector_identity.json",
+          "sha256": "328bce18628f3bedd9c4ec4bfa67814f217863d324a4f10a913d9030aa63248f"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/ro_victim_same_address_and_host_invalidation.json",
+          "sha256": "5b18ca8d21175957a638b576aa5133c1bebdea662285461c1d6a3412c8fa615a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/backpressure_complete_quiescence.json",
+          "sha256": "94b65645ecc893e1ea89fadcf0cadab507d54f8ee17a77ca3346c92d61c4e1e2"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/tm_trigger_default_off_and_illegal_combinations.json",
+          "sha256": "87a0f372a11574fab81c80e44dc4954f46f75a5b5633d089a998d57a0de3eaa4"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/detach_observer_source_native_schema.json",
+          "sha256": "b284eb9c5fba857a7a973c8c1ad61b81104fb556c818ac1438650fd1200caefc"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/gates/convolutionSeparable/tagpressure_source_native_wire_math.json",
+          "sha256": "f8a72dae731706f76fba81622f984fc17d98370d474e97b9c941cbb3354f27fa"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+          "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0",
+          "publication_commit": "87cb985543c0947f528a2c1de009aa5d5dbd9b7a",
+          "source_identity": {
+            "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+            "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+            "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+          }
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+          "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/BUILD_ARTIFACTS.json",
+          "sha256": "23669bcf92beb68e8ede00890934ead4ac79dfd5ee4cace2425e3d552c2544dd"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/COMPLETE_INDEPENDENT_NATIVE_MATH_REVIEW.json",
+          "sha256": "11739efe03af0b94c099148fe55d714cb02b73885b6a447d5eb4ac0f16d975a3"
+        }
+      ]
+    }
+  },
+  "pairs": [],
+  "approval_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/USER_APPROVAL.json",
+    "sha256": "b66c91254560b6a1ea3843de2ea5aa31f3a0cd58fcfd1b1c9d3a09e98d15c44b"
+  },
+  "proposal_ref": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/conditional_followup/R5_TARGET_SET_JOINT_OBSERVER_PRIMARY_FOUR_NOT_APPROVED/PROPOSAL.json",
+    "sha256": "f5cca87a75520baa90b49cf734893884b8a3536694318436ee9c363c5d0841d3"
+  },
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "validation_scope": {
+    "schema": "E2_TAGPRESSURE_TERMINAL_ADAPTER_BINDING_V1",
+    "scientific_scope": "TAGPRESSURE_OBSERVER_DIAGNOSTIC_POINT_V1",
+    "status": "E_SOURCE_SCHEMA_ADAPTER_SEALED",
+    "E_independently_reviewed": true,
+    "synthetic_fixture": false,
+    "pair": false,
+    "source_identity": {
+      "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+      "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+    },
+    "legacy_parser": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_TERMINAL_COMPAT_r1/parse_main_terminal.py",
+      "sha256": "f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e"
+    },
+    "legacy_validator": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/validate.py",
+      "sha256": "08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500"
+    },
+    "legacy_model_helpers": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/util/ep_l2/mechanism_e/detach_validation.py",
+      "sha256": "93466cb2379cb3c618299674403b747727ba98f840b6db1a17755d2c51d09fd8"
+    },
+    "observer_decoder": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/parser/decoder.py",
+      "sha256": "65731a6df85e9821994e4efea84ea5473e482e6f1c2bb385c9b8abdf00aefcff"
+    },
+    "math_audit": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/parser/math_audit.py",
+      "sha256": "f55b4f911a321aae2f22fd2b017e5bcef270847adf24968d7d1e0791401d5ae0"
+    },
+    "fixed_r4_decoder": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/parser_recovery/decoder_samecycle_close.py",
+      "sha256": "647510163053d30773176578cf35c10e0aea0a1256af366feba520820d0e11d4",
+      "bytes": 28483
+    },
+    "fixed_r4_syntax_schema": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/runtime_r4/SOURCE_BOUND_SCHEMA_r4.json",
+      "sha256": "2c070214ed8d0f3738014f7c0a3a0386d0199defad3f4a2b2d4d3343b8707ba2"
+    },
+    "r4_syntax_compatibility_proof": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/R4_SYNTAX_COMPATIBILITY_PROOF.json",
+      "sha256": "3f78f203f8a5381f4e2f01357cd97d1016ecfcbe4a66bf0f2800a319feec0532"
+    },
+    "observer_schema": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/parser/WIRE_CONTRACT.json",
+      "sha256": "cb973b3bc462ce33895a0f8cc31b428f6bf14b63f8497e8895eb314ea0894db7"
+    },
+    "producer_release": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+      "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0"
+    },
+    "native_release": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/NATIVE_RELEASE.json",
+      "sha256": "fcc8bce4dc326dc927e5bd0521809edbe9c6deb119b108b3f387fed038873e1a"
+    },
+    "source_review": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/SOURCE_REVIEW.json",
+      "sha256": "c3eeb85645c18fa912eadc7d8749c023a6eb73bbe07f23ada9f3fc7cda6780c8"
+    }
+  },
+  "synthetic_fixture": false,
+  "endpoint_result_hardcap_bytes": 402653184,
+  "all_four_endpoint_results_hardcap_bytes": 1610612736,
+  "new_observer_output_hardcap_bytes": 67108864,
+  "collector_metadata_forecast_bytes": 671088640,
+  "historical55_seal": {
+    "attempts_sha256": "e6b10feb8ba10fb32213f1072dff74eb39d2518535b020d0bb31893c08705514",
+    "maps": {
+      "qualifications": {
+        "00453d6366b6d2ef947696a40bb1a15c2fec8e633a39c8fa3ed51fa7a7de8083": "ea21de04845c2818044c5d538ed975bcdc5e3f21ed54aad6032ffd201f66d2bc",
+        "0301a1923c6220b50919ebbf5df735c4d233a775a083da38ed735224e573786a": "84cadf1b3ea5e6d14d73ceb6dab6ef9ace4afae3b6994418a754ac0d03c87a3e",
+        "0992a58922beefb874d2b75c6c20c49951666c7b95481c7f8da394b042fd80fd": "e63c9fdc0471dc72620cf713df1cfd43f1a28e7fada9243b291e1820210a69d3",
+        "0deba57d6848e2f207e143a9f74e6d3e266024e98809b03343017b409d770c00": "e2d5b2c33734e9d4d9b93a2cebd4f07a91ed33fbca68e5aa82d7444db20a2c37",
+        "1415fe6eff7d52f7a9e6979cea7648a3ca5334b9237c9d236b8b3e1ebdec8a46": "f1f4cf7c68bf87ef332f0135fb8e317995bf0fe38dc57fe99741b3bcce30389a",
+        "1d3af457edec4aa6cd175a8c11bbbe4f9c6d6159f95789294850e2f2fd74c2c9": "cd5e8a3e212a6347336a66700f7453566dd7d34d8b6079c307ce86d1cdf85300",
+        "2110c4f1ed71e1ecea0f1403eb70ec690a244ad34983d3d4cf895e300f9d7fbc": "acc13ea0bead13f6f24fa55be9b1ea0805be3b39c40fe9ff7993853d907312b1",
+        "340155adda764ea5f7fc8abf993bc2744df8bfc48adb550a8a060113b2a1205c": "9a2ad3a92ef2ad52485d6f91005c506ad08a23ffbef85a91556d316f4f08f76b",
+        "376fc4efcdbcdb97f98e381b34f15e11110952625283c07f626a9e1a87911d6f": "2e201d25427587aa1672f4d207b19a5e772903a9d9b4fe75bbb1f70744742b7d",
+        "37fdba9b88acbbf4844aeef62451a5dfc4393748b5ab362b38fce3ecfcbe36e7": "0633b9b6b5567a9ad71812d0feebc774f1545d9e31e2c6d922e2436d34ed53bb",
+        "4483bc379615e70aaac98be56ba9290554e0b7f0b766bde94ceb23a426c74232": "3d1e2b60d84f256d977b68d24b9ebc364515a9cc2f2a674c2f043c75e83873e6",
+        "48eb52cfe2a16a806af2468790bcd69b4f60e0899edf7af21b274dc07b8462fb": "6b69dbd90a4daf6a4d930e3941dceb1010084a3741c0bdc63da2e46c35d6f887",
+        "558c5e73932e42894a56123a6e2cfc10e31eeeb5760ba8004d66f7871707fc34": "d2e0cde7477d575a67679e6f2caadb10bd873da31ee7f4d10417400d426dabde",
+        "560fe69a6dc6f5803e61758ded5807936131114fe29b5b6c40cc5d7d8eafb895": "4824ac36db543fa68546d4e17cf006ad1e04138cf860138b47a034c80c1d860a",
+        "5a80022f64d7e7bca3fc06a9881febc9a672ef1d75a2dc88bd6fb23c4ef736c8": "a8486960597cbeb65617a062ebbd377059a2cc7d6bcae47cb7dd4101351d2b60",
+        "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda": "176a1a60fd9614d307c6f1406a345501f640adb79055659114a651c23a87573b",
+        "5e5e0f53aec302e5c33bc2453196cbed906a1f25332c872f0b7311cc2f18dad2": "698ec9a94eade123ecf73fda351c3a2ef2ec1afd3437a9c795d7ad669176a6a8",
+        "5f6f3e2bdfd1f9348af52b62c398973ed8a690e010bc939096f7c96ae5d18ad1": "f7bd9bb2336b398a70540e2079d79fff06fddd66ea32ad9b8d350e54ac1cd9ab",
+        "60380776051b621d13d60f284b94e711e7782dcfc558d7efba2c5eb2d92bf2ad": "0803dd7d6b05fdaf9b5208f3d0946dee40ec2f24b53c10bcc4d5259193a05205",
+        "6834915699a855d197c9c56fcc36072be41e52656675587d294827ad4d47df14": "31bfd5d5aa943a870175cc5658b38e6b5a946ce4240d67fc6a04a0c67e335e48",
+        "6bc12cd52d1cc26bbf32307ce2db4b9be9318738a4cfae86a76eaa1a3e961286": "16fc1c8b6f686f0dace21f06d59778a06fc707b120ee2e06851f3d2ad348db5a",
+        "717c354b146638e68e14b24d76aa6ad890389c89127a504eb60b337ad80ea99b": "e50b23cd2c4b2598fa6fa382749dbaf83f2824c4960d294b1d63377428f9b2f1",
+        "73a2c42450b9dc7d2fcfa0aa9722b199000ca9957b11624330f6c16876fafc4a": "6c829827305554740c9022796c1da2defc0abcdbc7f83883542a72adf1854a7a",
+        "73d2efae3c7fc445ae4179c720e87c149a2fc7a3fb9de686f62de78e9074a4f6": "91630c78ba852379cf3044a0d6fbf1f1fded8b1adcd310bf1c7870da911f7f89",
+        "8161da0b79a1a078f4bec7da1e859e581dd154cdbac4bd40ac58a3cef2ab7d72": "d88d31e5376527e8ef182810b419f6bedb514f83838d73fcd2f3ab238016f772",
+        "9c0004f428587df3769e333abaa9612297a7417519dbd54e4d0ac0c14151d43e": "4173b2abc1c46c85815164520a98875c32ee4f6d9f9c9c791f7d9db44f3b1eac",
+        "9c9683f57610b15ef9a880767085f50692a507bf8720031d773db6203c61c57e": "86dc66381b6f3115ec57de664db10b9f8edb745752e6a2677878d977edf58409",
+        "a66d44eed494cecab8cd6f41434c00adb2717883d49c5e83ee8bbe56e62e6543": "039fdc11d8a4229e8d52843ea54154ab9f8a7e27171e08c3f145d25d2978730d",
+        "a7f4cd605d1e2d614fe10a03d0a0af63f179774167973e7263c11823bd5ecf2f": "c73c30e46da64862a6938f34f0812de554196a75b69777ee42ca44ff3327ee99",
+        "b3dc17145c83d0a7f4bd3bce94a6d4a469f7726e2ee05ae34534898eee6ab57f": "45f275d9566e2506becc46e9c481dc7b0eb15e8f9796832c2fc3ef905b46896e",
+        "b675037883d9d252f9ed84461bbb77f87e70a4bc9e2312f6d2387b15b9026db4": "ecea8e312f2f97f2c2c3d8d19bcedf8a850753ab6c74cb0a8a079cabdfecdd4b",
+        "c211890d327d9219c7c454b0492fcf6ca999e6c13ca40c489241215ec5ef6dec": "d919a16f86b6d2b6e3e89542868d6ebe48f59bc348a88dce249ea23264b958ae",
+        "c8bbf5e279a98ed1a6a1dcd4c9c419b73c0e128f532bc7c3039d00447b115cdf": "978c65dc5939752363c52e60232629b5d8d811d85005a8b2199858f94468f07a",
+        "cac1cf6db85f59e1ffc860fb37f3d0353d05064b65b34fb490f0d068c632264b": "58e90a3f6e553600c24b4c179da46f58fa112df90ebc2e1c322809140df79add",
+        "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004": "c07769b8abbca6017900200971b30d1341884655c58fd20551a0a6cc9a3880b1",
+        "cd926e268989d5014134af3f673930cb3bc348cccf567ca541b527f12c7e4d07": "4b2f595d5e587b61d1b56587b7f4d88232dcbaea071ae853f4dc854b88222a04",
+        "d8de6b365f4525d7d9d0550a24ae6d9aec87b8242c8f2e8c37c5ae3f50b35eae": "b218f244aa52c2f1a4c8f91dcb2238ef6947604d97eb598a50c13969e1e2c395",
+        "dafa9a67879be04b2fc4832e8a8a307afb98af29e50d89fcb5d649b18e729734": "eacf59c986c7fbc9adf57cfc82b5433b1195f62ef87d0ead0fc867a33e136752",
+        "e16cd8e98af3a44240d58fbaeef939a5f691b9c949280a05aefc12e54d84ef0a": "b8877f6540bba24efc6f4ce42c42e98327c14770769e5ad85c8a8224238dcd75",
+        "e47ae87689da5df3fd0ef65ce5424dc58108157bb6b868737d635e25549c7338": "2223fc5c557c1017ec540f19558bb0abe0ec964fe0cc5b222adb6a96e8cc31b6",
+        "e5abd6c43a6db664115396c8e8431f8dc16c4a453713a5552fea8452e38cc4d9": "aadd8500bf2757d2dbde98433363399b2e52dcf9931e4d26622350eed061af9f",
+        "f85b5f42f3a052667c10338a70b6acdb6b6959f5cc3948986f7430fc6cd50047": "db04685fbd350157210f1e1f5e040c3642c3e13d02578a9975acedfbb035f59e"
+      },
+      "accepted_results": {
+        "E009_76e25c1e": "0e5db87642827bbd1f0472db82678c78f5a3733812828ff9384810577b72be5b",
+        "E010_1108e4d2": "f1e38f786f81edada647840d09aedbe3b14a6b9a28564e086e3ca6738eb509ff",
+        "E013_33cffb17": "949222c657850e304e966783acba455c32456c83486209a90520687a3433e731",
+        "E015_4cad4ae9": "e864b8354d72eec4e5690f26a0c6ef69e3259e0b356685787af77a3469056dbd",
+        "E016_776b0d99": "c8eb2eb34200b1e5f7ad2e02117f2e6b3b45ad9d2e7df68dc057161b3e4df69a",
+        "E017_2bc62654": "fccf0763ac63c042208e214565d18738df317604760e52bcd65bcc19b356760d",
+        "E018_67a874f4": "a48f3093f0d39d21b37fcf94c4601a828fc2ae8679fcb0dfa15aa55e156394bc",
+        "E019_f73a396e": "71539e908c5b7f1b92da9d73ae2c52d0b48fb90ae96fe1fb01ba211c32bd5eea",
+        "E020_6fd11ee2": "5345df9d51e3adf80cb7aeb9b720c695bbb4e13b7acc18abfa6dd1b68bc554d3",
+        "E021_a0d5fc96": "6b4cabeb3832fe83b0523542b69d41cc218fe91fc702b6856c2938d3cddb8f2f",
+        "E022_0f3897b6": "23809557d324112e60b4fcf576a98503146d5e5527a8302dabc226cdcbaa6445",
+        "E023_929cd79f": "f52f58713ce908f21e5afcc5896916eea24738de99fb8311f553e0deceb84c4e",
+        "E024_e663f31f": "b715acc977a497f05166b26083e46b3c351931e4d3cd988c421601a0d82cd098",
+        "E025_8e51483e": "1c9727a03d5c9f80c4e9bf37c9433e3230b8b8f8b657351f2ac0e5645ed27d08",
+        "E026_547b309b": "9451e76f24ac260b3e341616a15a0da24857570551d171b84cbd4bfcf6aa30a2",
+        "E029_47273bb1": "45fdb888b1e04271c605f96bf42bf383d9dd749ed99dc40827ca8c8e1486ec2d",
+        "E030_1c86ad4a": "b0b8f8b6b3eba5f34ab94199865d782a632f4764e56a607368ef989be7eb2242",
+        "E031_b7073e01": "3c7bc8035fe7a1a9cc7c8d7999568e234b648c9dec0e3ad4f1ff8f2e6afdd7b7",
+        "E032_df1d16f2": "8f8cb9c592300c079e1167b4107ce628e420eefba7993a1079c37915429cfc9f",
+        "E033_f01f6993": "527f495b3e64fbe7fcce8bf5c832d30cd6ebf650b248965971dd19f8eb986590",
+        "E034_479739f1": "c9d6f96e7af365adcf67ec293d1b67e42b0cf2a76dd6b63ba69f9b75022ae7c5",
+        "E035_d8a8279a": "5bcc4a21ca4b08b5f545531dde096139acf41704c26aca829acc7abfe59b4e35",
+        "E036_6d4eee56": "50f4d0b7161734695b1a3f4676eea53d18512df5e09f3a282a63bd3042698796",
+        "E037_a423c80f": "b37a935e78908844ab039161c1d68e0ca7b06bfe1bb3a7b25eb4755d352f668d",
+        "E038_d7ffe08b": "677a4075e5c07aa40136e862395f25f8162b0e09305dffb5f3f3e9a8471c4fd4",
+        "E039_0c426330": "79bee95679b64b4dd456be075f9b7a0667c4af9bd0a5af2f631869d31f0887c0",
+        "E040_b264d86f": "36362d5f405bcdefc6aad87d7873cd53244469cb9a2322f881848752dd947319",
+        "E041_6412b85d": "ff31626deb456f5d7360e3ede077e379727d6f07d646dc27ea3d995d5042ed2d",
+        "E042_307fac20": "fc78af141613292beec266b65f3bca54741677104363c5dcfad6102979e85c8f",
+        "E043_c96ede71": "d59a0564d58a3dd27ab94c5cd571c294b290ac2a2dce042e4186cf95479b00e3",
+        "E044_4c4350db": "a8e6fa002a04c58b7d9abf1120348d7b5924614310ec361a94e9957bb283fe16",
+        "E045_3c8a6cc8": "4795301cb13b85dbf7a3c8624cbce4a1d5447684c78c23f6c4480ec70f6cef41",
+        "E046_f2d05b9f": "7c548d85f54a572a5894da7c5e9816a3b3f196e56bf187155f6aad15e184de67",
+        "E047_98c6624c": "2e1db1e9cc5a756e2869d477753241d3639c462ea6bf369f810dff9e6eb213c9",
+        "E048_bf0b5338": "a4ba41dcbcd38dc9c3dd901dc327016c4adf516b1a9d85515aefd969a5a93dd3",
+        "E049_cd97e882": "189db2b6a236653a888e5dd82017443d1e3a1baf39648dc22f3a470701bc9028",
+        "E050_9e15df41": "459658868b658c3840a6c2d40d6fe69f951890cd77dd84d19d0216d775ed611e",
+        "E051_c0185b56": "67f7ed50840441b19905ccc4c93bae26717994ea88bf1d0ca33025190e7f6629",
+        "E052_781ed6b2": "e6de32c5006c2e57581ce4cb8fc2180f023a68e9f15d58425a63a77c7703ed8e",
+        "E053_14cc809a": "a0ef68715429d03d9f2dfad3ea865f969766076947702e96fcfaae3680c55868",
+        "E054_e4a9813e": "e89b3c887e9f19f613c3723b3ad75122c1e9810c637604aa764d6d1390430da2",
+        "E055_64617d96": "cdb35da462ee4370e44cec1f4219db57b1279889572ccb2ca17f6d85e65ec2fa"
+      },
+      "accepted_pairs": {
+        "CAPACITY_DIAGNOSTIC_cfd_097k_OFF_ON_NEW_RUNTIME": "7083ac24e6dcb7f61ca13f242e0f1eb01cd2a81659c8f1c34873688f0b4e2437",
+        "CAPACITY_DIAGNOSTIC_convolutionSeparable_OFF_ON_NEW_RUNTIME": "e65cac42b2020f9d7bcb386c999f9b986c5edc488ab7758a42bf52b337cdb735",
+        "CAPACITY_DIAGNOSTIC_dwt2d_OFF_ON_NEW_RUNTIME": "344824567c71e5caac3f9b2ef289eccb1a0ed620b5e0eca227ca050e859124b0",
+        "CAPACITY_DIAGNOSTIC_sad_OFF_ON_NEW_RUNTIME": "7f13ed0a8c2573a816ed60d181de313be40f349887b5e1ffe2de8600d142b284",
+        "CAPACITY_DIAGNOSTIC_vectorAdd_4M_OFF_ON_NEW_RUNTIME": "eed774d144717d75d8b11ab373d884b187b661c2cd5efd9c4c30edf354a79f44",
+        "V2_CONTROL_cfd_097k_F_VS_F_MINUS_R_MAIN61": "08e81430159e0473961d820da9440405f1a65103f8a7dfcffaf964d17c962ca4",
+        "V2_CONTROL_cfd_097k_F_VS_F_MINUS_V_MAIN61": "e8670f1f3c2d8f75de68b6f869934e569f76b82b5379fe188b4e3ca5700f8d45",
+        "V2_CONTROL_convolutionSeparable_F_VS_F_L2_DATA_FREE_MAIN61": "9e4f8b1adf9f868a460bbdc494eb5768c4a75ba419be48acf88db70a29d45505",
+        "V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_R_MAIN61": "98465cc816f484cdfa4485e410dd2f7cb9fa9fff357866ea608ba9832c87eed7",
+        "V2_CONTROL_convolutionSeparable_F_VS_F_MINUS_V_MAIN61": "f87ec761d5a6932359dbe230c52fdbbe19e303cc5c2addf9f6db43f1f939ec21",
+        "V2_CONTROL_convolutionSeparable_F_VS_WV_M_MAIN61": "1b22ee47e5c056ab7ad45a7be33f495d73164c6f15267d1c8da88db04617a469",
+        "V2_CONTROL_convolutionSeparable_F_VS_WV_T_MAIN61": "fd0aac8c9244cb774e987ac353f272dbeb8af2b57c1843d8b8567c2b4fa8731f",
+        "V2_CONTROL_convolutionSeparable_S_VS_S_COPY_FREE_MAIN61": "325858cf547c4f8bb7d2c63065e2f72b9ee0f834bf670684f0511600978e3f9a",
+        "V2_CONTROL_convolutionSeparable_S_VS_S_L2_DATA_FREE_MAIN61": "32b91adbb4bb1d09617b17b81733618c0cb8b903327aac765182c9208dff129d",
+        "V2_CONTROL_convolutionSeparable_S_VS_W_ONLY_MAIN61": "78d26a3469884cea3a78e850cb40fddc88a38c6c57c092504bde9f77516a3f66",
+        "V2_CONTROL_dwt2d_F_VS_F_MINUS_R_MAIN61": "368a53659315c944bedba7aeef96fe16ae208e53be0cbc1e473764c7fb8b760c",
+        "V2_CONTROL_dwt2d_S_VS_S_COPY_FREE_RAM_RETRY_MAIN61": "6e3e23b12359720de98b1bb3cac2c22c187f449886e4b8036f24b412f30de4c7",
+        "V2_CONTROL_dwt2d_S_VS_W_ONLY_RAM_RETRY_MAIN61": "29ea16a09c16f2ff96d93432c2c4e12e3e9d041604cb9bab7acdba8e6fea12f6",
+        "V2_MAIN_cfd_097k_S_F_MAIN61": "b5782fd1210a6225c910e92509a2406df27192fefe2f2f24dd6690e5c416ccdd",
+        "V2_MAIN_convolutionSeparable_S_F_MAIN61": "9d8b6a0083d54b494139ffb6920f37cd3b0f436d0bb859fa367958fb8c715308",
+        "V2_MAIN_dwt2d_S_F_MAIN61": "5b900672ed76bfae74b2a20cf446a8e6e72f035b4c79460293814aa996128500",
+        "V2_MAIN_sad_S_F_MAIN61": "789c4bdc44eadb7b84bff1ce58776b353579ab66738a5a75e286c32458601806",
+        "V2_MAIN_vectorAdd_4M_S_F_MAIN61_RESOURCE_RETRY": "d030be264532456bca07fdf73d6272e4e84e4e95614dc06baf06094275262104",
+        "V4_FWT_MAIN61_RESTORE_S_F": "ff91c505b02d0f007df3d2537af6c00b68404951d892d84987e01541cc58207e",
+        "V4_SGEMM_MAIN61_EXPLORATORY_S_F": "1c1e4cb4b0ec42f9ac4faae5b103f6562fc7f3ced409dcf915f038600fc5cfda"
+      },
+      "input_selections": {
+        "D_EXP_SGEMM_MEDIUM_20261022_r1": "7c7ea6dd935bd9811cf5bc1052088c0e521965bfa4f7f9b225f5caa65b84cbeb",
+        "D_V1_FWT_7_21": "f73d2bbb96394eb653c23d6a2488a459e7abdf0fe71346c246896aa31de7cdff",
+        "D_V1_btree": "17db10afb8b830d24defcc563eb9616a1b1ac6dc09c28ee580de1fcefd1a3eb3",
+        "D_V1_convolutionSeparable": "fe8bcb82274b5026d354443d6677ab2c37da785d86a1e82cafc8e2cc420d33d8",
+        "D_V1_dwt2d": "404824ce8d16c985810cc216bcec2baf4552082d033a417391f3952ef09e792c",
+        "D_V2_cfd_097k": "dd2dcd9ad647fa2084f2f0f56ecef4b249dcc346010a7aeb1402799c7aa0a114",
+        "D_V2_sad": "2e2a11d58653bd33d1b85ef88dca12468e1ac4d1e89937d8eff1c2f4e74c4767",
+        "D_V2_vectorAdd_4M": "bc205dfe59be90c109af5b7ae2a8606ee7fbf10cf686a7b71142426bfe4b66d6"
+      },
+      "scientific_holds": {
+        "qualification:0deba57d6848e2f207e143a9f74e6d3e266024e98809b03343017b409d770c00": "e25e7bbb82876d603a8c16ff06d4b7781e4376f19bc9b40468a1fdf06d759408",
+        "qualification:37fdba9b88acbbf4844aeef62451a5dfc4393748b5ab362b38fce3ecfcbe36e7": "d4ab17ea4a718d1613cfaca67deb20b623f9ec7f85eff77f7ca4c62e8f447a57",
+        "qualification:60380776051b621d13d60f284b94e711e7782dcfc558d7efba2c5eb2d92bf2ad": "422c1571cb8cff6ddf5c2c7a380b984cd2fa1fdebdc2ff4a12689416d9b59453",
+        "qualification:8161da0b79a1a078f4bec7da1e859e581dd154cdbac4bd40ac58a3cef2ab7d72": "98539ae48543195aec8294e1f99d0aa96967794d0e88a300029bdc5465e05144",
+        "qualification:cac1cf6db85f59e1ffc860fb37f3d0353d05064b65b34fb490f0d068c632264b": "f7ac0ff5ab70597deb8d0aca0af94f0f53cb5c8fa41edd6d94c976cbb8383364",
+        "qualification:e16cd8e98af3a44240d58fbaeef939a5f691b9c949280a05aefc12e54d84ef0a": "d0c591aa130de97f2738980bb83ca18792c63107b1d22c0b72c318ecbbdfba0c"
+      }
+    },
+    "histories": {
+      "scientific_hold_history": {
+        "length": 13,
+        "sha256": "909dc2c7e15550089fbed227c443a981e19d0a0befbcc2b59b64c37cd9de24e7"
+      },
+      "scientific_hold_resolution_history": {
+        "length": 3,
+        "sha256": "32e753d971c684241aa1fce9b9067cb4ddd27158d48261c62edf4641e46a0ce2"
+      }
+    },
+    "immutable": {
+      "active_A_build_receipt": "88175179ebfd7e1cad4d557ab3b4e245c59ad58cd6752e51bf73bafdaf68d7d1",
+      "additional_results_max_bytes": "50f6d0898665022758e75eacf0114764b84ac0b19bb5571c82007f9a373c65e2",
+      "authority_commit": "83e3afaa9d07e8721f95355daeacfe487ba916939bb8152957116852e887df09",
+      "boot_id": "cf6fd5db7a049ae010e9e6331fe48f3e7201ebde52dca1356bc9698c5aaeef15",
+      "campaign_id": "af6c7e0d9bcbd14f7b5062ba995bc989e491056b1698c42bff2b950cdd837442",
+      "candidate_independent_native_reviews": "f0f0794e74bf9c1acc6dfa41bf6241410a89bc5f2132c14c7346a58eef21d1bf",
+      "capacity_diagnostic_amendment": "e83eac4b46db037293cb9edfbf12d06df79ddbd0862cbf4e5a8e2ca1249d6aa2",
+      "capacity_diagnostic_matrix": "d2bd5422d73f7a760d83430ca824b955ac3b70c7aee58ded72fcf8e8c1f01c07",
+      "capacity_diagnostic_runtime": "59f8a32d1180e14e70463b20303adb04ced344fa3dfd4e4b92810ecc1f1ca563",
+      "controller_recovery_history": "bd21dc13d25f6d77a0f8e3a30e0ba1cb52192937ed63d747e7594fe7dde64330",
+      "default_simulators": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "detach_observer_diagnostic_batch": "18f32e993217992f4a662521261e5e77780b15d9e73693e9ee7fa14f23152d65",
+      "detach_parser_engineering_revalidation": "e854ea13984b8b32d48d018b49b393331a383abd4d825d71c1b60ace263f9c56",
+      "disk_authorizations": "353ab033bde31b6c0ead6edaf44b74405c3a24ac05e55c3ef39e1fd023235fac",
+      "engineering_native_batches": "d42d19e81e6908088ddee4bf350e71197fd7bf46cbaacec26f996c82a1278b8d",
+      "execution_control_reviews": "a909afc249dd9ca06bef3745bfecc45f8a5c782144bef30cb2f03fa4d2935ea6",
+      "execution_environments": "5830990d317efdbb4ce25e9e1d8e31f01b43e956223719ee4dc35590196fe69c",
+      "exploratory_input_registrations": "5c80e6bffefd8b85f04ca31446f46c191146217e072909af252d705084d67109",
+      "final_source_identity": "47aee6dcd2581322291724ff11926e2302024ce47a80a3c4eda34f3126ec3d06",
+      "forensic_controls": "3f51653ae4f08ff003faf6aeef7eaa05c4e8de4da12583d81b1b2e4283c4afea",
+      "formal_simulator_concurrency": "2d47989d1ee648c73807d6278cca43f2a7d2180ab705c9adcc941f8a47764ab9",
+      "full_system_matrix": "9de66f83472b85ad0a0981195607f5784cc1489a3b3125087eabc5891154032b",
+      "handoff_status_history": "a01b4b21ed2c9be807706c6b866e979b5eee907fdd0b263c3872460df2e821f7",
+      "host": "fcd0a96687ea29646a42f9e60c0c744df4f3ba93bfcf3b5729310d3ac8e129d0",
+      "independent_native_current": "a56c3eb9507c7b5eb9e4c17e69e5e0371b2ccaa278af810ace8b79d321173ffb",
+      "independent_native_history": "8beeed89b1d6b279430a50d80e31d4b9f538f2e9b95f5c75e4b9a2d69cad8b27",
+      "input_oracle_reviews": "fc4eef04e262dd4f2e3011cbdb46088c358ac5c3c2fbfccda6883654e5304307",
+      "input_scope_holds": "d7e6c0bc176780f6945d478a6ea16a029e25bde75c8bc50b6ef6c641b5f809c2",
+      "intake_deadline_unix": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "last_A_work": "ed3b72864f6e21feb79f3168cad1cf41f7348b061831a82febcf2b3258e2de72",
+      "main_batch_admission_history": "4b482705e7d43034bb9c850b22d8c485b0401dba8674924b6932496f28b96afb",
+      "matrix_priority_revision_history": "e997869097633ee3110a1ef4c4c6ff7d3510ea33f02e1c272cd479bec02243f2",
+      "maximum_actual_starts": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "maximum_capacity_diagnostic_starts": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "maximum_simulators": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+      "native_off_control_attempt": "438d9e63fab0140bc302afc64c876d8fb45fcd2ca3d30f1498e38a22d2052d0d",
+      "native_off_control_binding": "60a6d0cf7e1a71485379f057d5351a6f923aadc6380ce0894ee30e42e01ee0aa",
+      "native_off_control_result": "9c03a3753bd8999c563d5179ed568859451efe26a746e18d6e2ca420d3140019",
+      "native_off_controls_by_binary": "59dd8ab5fc19c1726e1eae422e32327294bc69920407cc1f528a04ac3b294e0d",
+      "next_never_started_main": "d4a4255d2c1c1f7b4ea3630d3b9e36786c694a232696fadfeb09ae667934c965",
+      "no_new_full_application_after": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "official_producer_current": "94ee12071f4e74e601a67784582ef9966dd826e01685fb2c8f6df1cbc01554d8",
+      "official_producer_history": "6ca76e7b5aaea9e5bfff5d7ffd9506613e32dca5f71fba0795888c0e9ab7878b",
+      "old_campaign_budget_used": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "old_plus_new_results_max_bytes": "8e3174c6ee3a0d73efc651e9770550fa216c017cb332e9f573e3d234f5ce773b",
+      "old_prepared_queue_status": "0c8f62fb43866734f40431384aa27a9aee2eedfc585b3e4686742a2b428dcc97",
+      "ordinary_work_admissions": "3be5d2b25aa9f3424cfd16dccd09c3f0713a31a215156ffe5aa51cb6e0386925",
+      "owner": "43e6e2bebb3774311cf0c867d2fae5da733792224e8bac1d455eff172ff6af27",
+      "parser_engineering_revalidation_history": "0335fd8251b99dc6c1c26730b36c124d688b71e137ab102f53e03a0926b645ee",
+      "parser_recovery_history": "6e0fb4dbb469b78bf9dc331a6c7c4330383d5deff0a8e2a203f1ec2a4d0604d4",
+      "per_end_timeout_seconds": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "planned_scientific_conditions": "e29c9c180c6279b0b02abd6a1801c7c04082cf486ec027aa13515e4f3884bb6b",
+      "policy_amendments": "8d2de7decc9e3025b98eddc95f9709da9a6bfb3d61727538259d962e9c3652c9",
+      "positive_ro_successor_batch": "3e5892dd7ce8622efcc53b52d441310a075a0a5ffb84b3118fc4eec63ec46d52",
+      "producer_failures": "45916b4d642dee90a8e7e0a0da1774444a05d14157d3fed9f6255b2715121a23",
+      "producer_identity_history": "a196238d57df0ab0d8f9b16d0b5e98537e41e12c500380364837a6a99cd70eed",
+      "producer_withdrawal_history": "7fddfe8c69f3076c9f5929e172c662865bd795e0ed5ebd94b5038491442583e5",
+      "reservations": "8e8c717734560275ea6d67e0e557059ab81535eee3f2924b0c955a9848e782d4",
+      "reserved_canaries_repairs_retries": "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
+      "resource_snapshot": "665ca46a56c093735ce60b0a21722054ef75ee90d753f46a665e46d7d74ffd66",
+      "resource_stop_reviews": "c7e747f84baa66b6508ae2d7fe35497d4a4ee9006ccdcb8042698a679b1a2dde",
+      "resource_user_amendments": "540840761e8e05eac82564e0dd74815b283baafd7159c9f2c94766446275c56a",
+      "result_intake_freeze": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "result_root": "c752f39da674328fc83ca181d1f43cd527225e797b81cefbe5f5dc8fc351dfab",
+      "result_usage_at_v2_adoption": "076b0e38a3c318d0ce267bfddfed2252fc2dacf45bb22512a4bd9a4f5fab7bf7",
+      "schema": "b7fc27fd04c35d2958d64fc29f01c50ed43892a8f88b3f7360df2058ba268db3",
+      "screen_actual_starts": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "screen_maximum": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
+      "source_freezes": "38f81c3624201fcc28a75068dcb1b26c0d1229742ce8f24d13cad8be214e4a02",
+      "start_and_time_limit_removal": "42fc5e192fc6d051133498722d5ab80aea3b8df9964f53e6b35f667ce847a2c5",
+      "start_deadline_unix": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "status": "cee901ef6502869fc8228c62313c857efea75d4cdcdb5e57ccc85fb86c7a2ae8",
+      "t0_beijing": "6ddfb978663aded61831a9c596358121d206905a1ccf4f07cb6a678f159fab25",
+      "t0_unix": "8e479d1ff394d7e2ff0cbf5bb980688c9345ca3382b116060bed7e8c0d0c5bc0",
+      "target_simulators": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "terminal_revalidation_history": "65a140419cf49e2e757becdb42ff18675af779c3111cdd8869fd63332e31b4bb",
+      "unadopted_budget_proposals": "785c0963ca7c1f473cc8127ca83ee5431c1e18b08f55dd3bb11c1367172cf0e1",
+      "unqualified_extra_joint_scenarios": "a24b0e5dd580d9d019c2cf00abd0bbad8f1fcf13c4593430948bede02f78ec30",
+      "user_approved_matrix_revision_history": "7a17f234b32b4c377c76fbb8a1e45951a4b79b90bdac6a8aeaa8985d3c50e32d",
+      "workload_pipeline_batches": "e2db94ace3f60bb6913667fdd3b704f87be6886941b2b2655928d947d2665bed",
+      "workspace_disk_policy": "394b94ab7951ae15598f60a45fc602b34da29c4917bc39a9b6523da6526dc401"
+    },
+    "baseline_keys": [
+      "accepted_pairs",
+      "accepted_results",
+      "active_A_build_receipt",
+      "actual_starts",
+      "additional_results_max_bytes",
+      "attempts",
+      "authority_commit",
+      "boot_id",
+      "campaign_id",
+      "candidate_independent_native_reviews",
+      "capacity_diagnostic_amendment",
+      "capacity_diagnostic_matrix",
+      "capacity_diagnostic_runtime",
+      "controller",
+      "controller_recovery_history",
+      "default_simulators",
+      "detach_observer_diagnostic_batch",
+      "detach_parser_engineering_revalidation",
+      "disk_authorizations",
+      "engineering_native_batches",
+      "execution_control_reviews",
+      "execution_environments",
+      "exploratory_input_registrations",
+      "final_source_identity",
+      "forensic_controls",
+      "formal_simulator_concurrency",
+      "full_system_matrix",
+      "handoff_status_history",
+      "host",
+      "independent_native_current",
+      "independent_native_history",
+      "input_oracle_reviews",
+      "input_scope_holds",
+      "input_selections",
+      "intake_deadline_unix",
+      "last_A_work",
+      "main_batch_admission_history",
+      "matrix_priority_revision_history",
+      "maximum_actual_starts",
+      "maximum_capacity_diagnostic_starts",
+      "maximum_simulators",
+      "native_off_control_attempt",
+      "native_off_control_binding",
+      "native_off_control_result",
+      "native_off_controls_by_binary",
+      "next_never_started_main",
+      "no_new_full_application_after",
+      "official_producer_current",
+      "official_producer_history",
+      "old_campaign_budget_used",
+      "old_plus_new_results_max_bytes",
+      "old_prepared_queue_status",
+      "ordinary_work_admissions",
+      "owner",
+      "parser_engineering_revalidation_history",
+      "parser_recovery_history",
+      "per_end_timeout_seconds",
+      "planned_scientific_conditions",
+      "policy_amendments",
+      "positive_ro_successor_batch",
+      "producer_failures",
+      "producer_identity_history",
+      "producer_withdrawal_history",
+      "qualifications",
+      "remaining_start_capacity",
+      "reservations",
+      "reserved_canaries_repairs_retries",
+      "resource_snapshot",
+      "resource_stop_reviews",
+      "resource_user_amendments",
+      "result_intake_freeze",
+      "result_root",
+      "result_usage_at_v2_adoption",
+      "schema",
+      "scientific_hold_history",
+      "scientific_hold_resolution_history",
+      "scientific_holds",
+      "screen_actual_starts",
+      "screen_maximum",
+      "source_freezes",
+      "start_and_time_limit_removal",
+      "start_deadline_unix",
+      "status",
+      "t0_beijing",
+      "t0_unix",
+      "target_simulators",
+      "terminal_revalidation_history",
+      "unadopted_budget_proposals",
+      "uncertain_start_intents",
+      "unqualified_extra_joint_scenarios",
+      "user_approved_matrix_revision_history",
+      "workload_pipeline_batches",
+      "workspace_disk_policy"
+    ],
+    "canonical_runs": {
+      "0cb1730329f237bcef77a99e8e3e69688a6e4f314fafdd113c551c92e18b2b20": "1f78b1342599c93dbe3e8afe4e1b854a8c6fdc9ebb4d6b568e837aa32168f7ee",
+      "103ad56f222a51f1d6ac6a7d8adaf3690e1b368e0a5c36eb9eab6e7bbba08560": "26fae4083c6d9667e615f32edc507a9755fa99c961f37b49e8d41094626e7cf4",
+      "161e36acdd1c6e2c016136311bc89ec5d07a06c001ea16aadb96c4b74da85a31": "8be9a80a317f28c88ba4990e42de9cdbb1886082ef994432e0f33334dfadd64f",
+      "164a20a271de78137093686e162eb2023f0eb8b3e62b8b1f2b6b4ef7c17b6e98": "6077f19b17724ba78ceff0905895b44496ff5c3d8a9a95da1c7d8afbdc668ad1",
+      "1b07774c0e8847ea678637b7a6c06eb62b9bbd9f94b87810e420a4944cf590f9": "42b717c704883ceed0d8b48ed33bdada64338d4e6b8a8b6e56edae8997ec7e4d",
+      "21b9e6d4c0803b6113bc52b4e6348642381251a3fe3ec160d93ec83b55229342": "52797643da81420acae3b05f6e55c411251616ef3da14284a6d4537e7ea1f9ab",
+      "2594411d560ff0f2dbd827da975ae56cd8247d087f5058c52881ef08bfd8ca45": "386522412f75fe2eaf48d739a1a8e74e52cfa6637cba020e5e395c60fc1b92b1",
+      "2b4e217ee5dc8859fd3bba64ed1af375539259a50c944f58181e96c2e962c262": "cf113d905b985d18ccb6f36874e911f67ed6e2300adec7d7102be36c9af21a09",
+      "2c865eb7141ea9af8ffef5626ef5c3effaa3b849185d15f025a74ab643204fb5": "1173b93bec5ee1b5c7b521d213c86146848ad50e1dd38ea5acc21abcd8ea551e",
+      "35bd0c4d18b68af8b782b55acd128c39f74b3494b1c701f609d6a31b1b8ceed3": "627065c18b46b3baf008d2cc1b8f6139d113a833c64b0a77298b9bf0f30ad86a",
+      "3f2e0cb938a7738c8380566be7a090a5867f77c177c3248d9d9377d21a38e64d": "5e5fc966ed9b16757046dcdb9abe83f34ac946938d7e5a9be382e58618d7c77f",
+      "3f3a4ab8353c5cbeecffb211de156bad7eacca7264a056adedc1da19499cdebd": "0f41e4ed3b9d521294115bebe29988b42f047a0f6061b30d1d7f4b71e78cd5e6",
+      "57eecec2ba7465e1601be0cd4e2c384d6a2e3b65154a740f59dbd634c6efda34": "763bcceb802598e893c9cbb7970d55ec518554c843d295ee9978c1ed174949e6",
+      "588388c97c2beec453b1a1d136da7143f372ef11d9bd40d4d572c1b5497a5ac1": "d84d8cbb7bd1dfebb22e393407889e24f9955e9323cb8b9ba5669f667f7805f8",
+      "72b2096e2055b141fd91cdf54018de369e20e8385c5dde70901a6c87b1fbd588": "6ea41fc8de075011d8c1b53f7c46123d128a707a204e7eda08db325bb14dc333",
+      "78b70c31541a14be290375ebd50db4f6bc01c826913f5a2f479b9915550d756b": "701d0554ecc751e038e7f3856bd997bb48cec603271b484e1b5897a1c173506c",
+      "7b13bbd195afd108e83e2ff65e21235d96df810b2fff9a75578eea2449250bfc": "4aa31565b623491b002d6445d1a20ad7cef862bc3a9066724d69fe52b3d61df3",
+      "8874bcb6811c8b3528ed6bb3ef2bfbbc1ed37f5ea17c7ff8764300d5de6d1c6c": "255636f33e47a8a2544140de3536302b5dd9a82903826b07a9d74248dc5181be",
+      "8930e66c230da377040af7d30f8e6620f92e3b42e1054b968ca29ed2052fbf03": "78a7ad70f5913306352aa8b779308ef3ef25849320d72ab1f95e16c2689aafa5",
+      "91ef0e59226cc691af091c5a12a07255e8cac874e5281a911540655124a8c9d6": "ced7cddb9aa0ec1716ef539457d6690dcecaf82b7ab9be49677c3881c415daf0",
+      "92efe08b24fa012e30863268664dc54f3f9b7c6ccb68729e1f85310dc8604ef3": "2b2df66bb7637e66ff4f65f9740170676c7ea295204969a93cf897f3bb560063",
+      "988835e218e5fe691152c67a36b7f5f147d3c528596cc18788587c31dd7f8f5e": "fc098891bbed02e21fb4d706c8a5bd5c901ae933d89cd081ede277e1d0535de5",
+      "9a0610a54266744f947225aea91db3636f2a076f9b5b51434980ccddda9a4818": "6731072517c34daba002d8c1ca1072fd775faca2f9ede8ba2acad45d3985984c",
+      "9c3d9a5fb8d5b5aa8d92698a1eba0234c1de4e6c5952bbd1d9b4846ade9d04da": "c5ddd003081dfc1715f5c00d2127f7e911996f0211f60eba042ce69489f4b317",
+      "a59626a950e98cdbd8df23b3a3aad1af72b2862174ef3c05f4307f5dd9747fbf": "0146f653bfd7601cc98e267f5775f7a251ecf4041940786a194988dfda681ea4",
+      "a5a86ce2753e61076d09b635b498c429dc9406a4d3d55ebce3d2010300874268": "21e908a7a682e01c212213985b98fcfaf64e83afe92f91d928034630549a7336",
+      "a61438b1e3ffbc71742d28c90474d5a91d992b8772300eb0035d0ee76a1f8518": "8efb4a457dffe427609681bd01db855e368ce2a462ee6d4d6a9cb1991cb62631",
+      "a8752dfe163cce833893a56f1f2ba527fde2c445f1be7672b27a20fb5f2e2211": "be776cd0178f002c82788c542eec0a341bc32b3fd5bde1c81a333eaccfa3da75",
+      "ab27391b56b02091a65b42135e7d1a22809bb9a48187239beff2792ad96719b9": "94eeffdd6e1e6f74751d072eff31f897afcc1c487c8c35c55ac7d01e845d67c8",
+      "ae9cbaf6b045ee8561f19f55d135e77b59706b82ffa9469891bad25925fc7ad5": "01a0071fd6f07af016d908e950a66e2989fd03d8cd55f39b04b3bc8eabef2c7a",
+      "b28fbcdbccab442484feb3fa7ba4453a2d2e07aa1ac0ce3d90f165ab7727d8e7": "7d097ab2ce7cc27e8e39f4082278a2ebd112c3bfd65c7aa142ff363d9c5aaa43",
+      "b7c993f35b7b22e179ec56b59a8f843939d7888017356c796ce285e35da1f1f3": "d4760207127905fc57daa0e1bdb29af2995370b5a8b761204921a887a2d6b2c8",
+      "bd596708fc742f411c780cf111ee9476a5ef67a465429962d0d45667c784b7ca": "36640c50a3d1bffe2d160e37b16e54ea0a18e57520888ba1a9e6eb23cb56fd00",
+      "c1215d1c57070dfc3a3ce08b2d9173ee2fb8329f2445d981a4d4893361ccdd2b": "bc2be18fa6538a9ce6063acddc1b7ff075b56c636800365d75591728f412c3f6",
+      "cb764f29800f3a99aaf48e76c724c1b9f9615ad8db862ce2369b870abb7e6c67": "6a2ae00cd6142ff5747f2a8558b5afc6219c94eb8fe2aed0a2fb3510468d76bb",
+      "cd5c90ed63e4234536be07409b4d79bcf69c0da7b69ddd6f24b36513e8c7d89a": "064613b28be418c09c48a583d035bc343022ae7ca2bc264c806b70c1c213a7e8",
+      "ce22edc6051184c279a1bba326006ba7121d7ebcb22c8f957fe438b174130086": "d6cdc3a88aa24615c5bdcdbe400d367d88ebfebaeaa703e5b41ff9e48a13e710",
+      "cf05a3295ccd4d256037232e2c28f892f9cb48de1ef8594dfc7e628ab15be597": "fd82dfd1ad897b93b20f04288254f905ece2182e3c230b1fd064346862ebbd64",
+      "cfd5fda3737a532be3b9afac741b03a34b0e92cd3cc6914f31ab73f1042734b7": "16326eecffc1685b568e73be0fd59ca2f42fcba19cf9502650774232f2d6ac4c",
+      "d13c98e3da1b770e46c326149139245c9ee7e369e1a5cae4c637e8226aabf13a": "e27018656b21deb7e10e395868ab92df30adb20df8bdf32f6454a4a7bd9dd4d4",
+      "d7b7db21bcf117c4195449a022d57d06993560788c2dda409d94939f75a56b85": "b0244ec243346c83b568234da69c1b666452d2457f473156b1a072d9dd804c17",
+      "da113e8255d9b722baf61b207d021e2e01ba3da84be58a9ac8f8f0ffd13f4f6b": "262150f57ee3c2a8c82393120c48e2952d0aabac7637b5239d67e5603330a452",
+      "dd8756dbd590911b90069e7faed848318fe3e6fa78b1ca787a7b30a20ab88a01": "6777c3279dfe6377a7c83b0788620b6a0b0bd3dbb3f23d8797afccba893bbba9",
+      "e66981cad5dd9b5b194bc7b415e370d8897beb11af1d2652044b66f83d9b41a8": "56ed4b5a112d79f507f8e704c862faa2c1460645bd946cf8f1a1189b6e751eec",
+      "e8fe083b5dde45a6857d4521b963273e3a316ece1bbc3481d88f9ef0831b776d": "776da087afa7a0099b16704893824806051b3a763cfccd23263189a9626bf06f",
+      "eaaf122a6b62b9f72dc8bc56dc8be200f6576dc1caacce41a416acaf95336c7f": "4c5b4647b95b40bf58629f286f64b93efab3e5d86c584d2483a7b03195f2ffd2",
+      "f0f22f12289306d04d62c4b3926904e8249757e46d3b5d799f0aecf734b2d50f": "6bd990a260b2d82c4baccff4360fb8d19ab97ab5a551886f46b8bfbef79de4ce",
+      "f106d4428487fb47750987235fc47c086177ab9109b9ec9a6e333b47bfe1de79": "8d05bd3cc7f0c3be167c69f551974c778be8876dfa47f7ad2755db4c5ee5872f",
+      "f4a5e61a363709d43004df931ae2c11d701b90e66003bdc0aa749fd8f8c2ded9": "802edf3608d2495e95bb68e6869653e7e348d08d6b8319abd308e0402b2ac80a",
+      "fba891f8cec7faa44512ab479a961c10572096f0fe7a93bc815017f956a1c3fd": "b7a920d4d18bade18f1c06aaa2ea21a819e4c99276d2853d565f7abcee3d865f"
+    }
+  },
+  "formal_producer_release": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/PRODUCER_RELEASE.json",
+    "sha256": "1ea25a4832f191743570704acd4e0d96e5a0bbbf7d369db498aad12aedca6ec0",
+    "publication_commit": "87cb985543c0947f528a2c1de009aa5d5dbd9b7a",
+    "source_identity": {
+      "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+      "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+    }
+  },
+  "independent_native_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/native/COMPLETE_INDEPENDENT_NATIVE_MATH_REVIEW.json",
+    "sha256": "11739efe03af0b94c099148fe55d714cb02b73885b6a447d5eb4ac0f16d975a3"
+  },
+  "emitter_byte_compatibility_proof": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/R4_SYNTAX_COMPATIBILITY_PROOF.json",
+    "sha256": "3f78f203f8a5381f4e2f01357cd97d1016ecfcbe4a66bf0f2800a319feec0532"
+  },
+  "new_source_independent_review": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/producer/SOURCE_REVIEW.json",
+    "sha256": "c3eeb85645c18fa912eadc7d8749c023a6eb73bbe07f23ada9f3fc7cda6780c8"
+  }
+}

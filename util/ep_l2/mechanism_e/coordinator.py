@@ -22,6 +22,7 @@ import policy_v2
 import detach_diagnostic_policy as detach_policy
 import detach_parser_recovery as parser_recovery
 import r5_preparation
+import tagpressure_metadata
 import capacity_policy
 import limits_policy
 import workload_policy
@@ -150,8 +151,9 @@ def validate_successor_forecast_view(view, actual):
     require(set(actual['runs'])<=set(view['runs']) and
             all(view['runs'][key]==row for key,row in actual['runs'].items()),
             'forecast cannot remove or change any actual run')
-    require(detach_policy.successor.has(actual[FIELD]),'exact successor forecast only')
-    m=detach_policy.successor.scope().manifest()
+    module=detach_policy.active_successor(actual[FIELD])
+    require(module.has(actual[FIELD]),'exact successor forecast only')
+    m=module.scope().manifest()
     approved={run_key(c['identity']):c for c in m['conditions'].values()}
     for key in set(view['runs'])-set(actual['runs']):
         row=view['runs'][key];prefix='READONLY_SUBMITTED_FORECAST_'
@@ -167,6 +169,18 @@ def validate_successor_forecast_view(view, actual):
                 row['disk_growth_bytes']>=r['maximum_result_bytes'] and row['monitor_reserve_bytes']>=2*GIB,
                 'forecast cannot underreserve CPU/RAM/growth/monitor')
     return True
+
+
+def r5_metadata_preflight(data,spec,*,already_reserved=False,authority_data=None):
+    if not detach_policy.tagpressure.is_spec(spec):return None
+    actual=data if authority_data is None else authority_data
+    if authority_data is not None:validate_successor_forecast_view(data,actual)
+    item=actual[FIELD];detach_policy.active(item)
+    active=[r for r in data['runs'].values() if r['status'] in ACTIVE and r.get('experiment_id')==CAMPAIGN]
+    leases=[r for r in data['resource_leases'].values() if r['status'] in ACTIVE and r.get('experiment_id')==CAMPAIGN]
+    pending=sum(max(0,r.get('disk_growth_bytes',FULL_GROWTH)-retained_tree_bytes(Path(r['result_directory']))) for r in active)
+    pending+=sum(r.get('result_growth_bytes',0) for r in leases)
+    return tagpressure_metadata.preflight(item,local_resources(),output_usage(),physical_pending_bytes=pending_growth(data),result_pending_bytes=pending,proposed_growth_bytes=0 if already_reserved else spec['maximum_result_bytes'],proposed_monitor_bytes=0 if already_reserved else 2*GIB)
 
 
 def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
@@ -345,6 +359,23 @@ class Coordinator:
             require(not own_scientific,'own scientific work must retire before source adoption')
             changed=detach_policy.adopt_successor(item,data,source_leases)
             return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
+
+    def adopt_tagpressure_successor(self):
+        """Exact r5 four, old55 verified, original lock/controller only."""
+        with self.locked() as (data,item):
+            rows=[r for g in ('runs','resource_leases') for r in data[g].values()
+                  if r.get('experiment_id')==CAMPAIGN and r.get('status') in ACTIVE
+                  and (g=='runs' or r.get('role')=='E' or r.get('owner')=='mechanism_E')]
+            require(not rows,'own scientific/source lease must retire before r5 adoption')
+            changed=detach_policy.adopt_tagpressure_successor(item,data,[])
+            return dict(changed=changed,actual_starts=item['actual_starts'],t0_unix=item['t0_unix'])
+
+    def close_tagpressure_metadata(self, closure_ref):
+        """Root exact publication closure under original registry lock; no refunds."""
+        with self.locked() as (data,item):
+            require(detach_policy.tagpressure.has(item),'r5 scope not adopted')
+            detach_policy.active(item)
+            return tagpressure_metadata.close(item,closure_ref)
 
     def bind_detach_observer_condition(self, spec):
         with self.locked() as (data,item):
@@ -694,6 +725,7 @@ class Coordinator:
             # Full asset hashing/config closure is performed by the reused runner inspector,
             # before this transaction and again before real Popen; its audit must be attached.
             require(spec.get('input_audit',{}).get('identity')==identity,'content-closed input audit required')
+            r5_metadata_preflight(data,spec)
             resource_gate(data,'simulation',1,spec.get('memory_bytes',8*GIB),growth,local_resources(),output_usage(),identity['workload']=='scan')
             attempt_id=f'E{len(item["attempts"])+1:03d}_{uuid.uuid4().hex[:8]}'
             directory=OUTPUT/attempt_id
@@ -712,7 +744,7 @@ class Coordinator:
                 'result_directory':str(directory),'disk_growth_bytes':growth,'experiment_id':CAMPAIGN,'process':None,
                 **disk_policy.lease_policy(item)}
             if detach_policy.is_spec(spec):
-                data['runs'][key].update(scientific_scope=detach_policy.SCI_SCOPE,
+                data['runs'][key].update(scientific_scope=spec['scientific_scope'],
                     diagnostic_spec_sha256=detach_policy.spec_sha(spec),condition_id=spec['condition_id'],
                     qualification_id=spec['qualification_id'],budget_bucket=spec['budget_bucket'])
             detach_policy.crosscheck_data(data,item)
@@ -740,6 +772,8 @@ class Coordinator:
             # Recheck resource pressure under the same global lock immediately
             # before spawn. Exclude only this already-held reservation, then
             # charge it back once, preserving all other projects and leases.
+            if attempt.get('scientific_scope')==detach_policy.tagpressure.SCI_SCOPE:
+                r5_metadata_preflight(data,{'condition_id':attempt['condition_id']},already_reserved=True)
             view=json.loads(json.dumps(data));view['runs'].pop(attempt['run_key'])
             row=data['runs'][attempt['run_key']]
             resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
@@ -763,7 +797,7 @@ class Coordinator:
             if hasattr(process,'guardian_identity'):
                 attempt['exit_collector_process']=process.guardian_identity
                 row['exit_collector_process']=process.guardian_identity
-            if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
+            if detach_policy.is_scope(attempt.get('scientific_scope')):
                 detach_policy.record_started(item,attempt)
             counts(item)
             write_json(self.registry.root/'RUN_REGISTRY.json',data)
@@ -803,8 +837,8 @@ class Coordinator:
                             native['binding']['identity']==attempt['identity'],'native exit binding mismatch')
                 item['accepted_results'][attempt_id]={'path':str(Path(receipt_path).resolve()),'sha256':digest(receipt_path),
                     'run_key':attempt['run_key'],'identity':attempt['identity'],'qualification_id':attempt['qualification_id']}
-                if attempt.get('scientific_scope')==detach_policy.SCI_SCOPE:
-                    item['accepted_results'][attempt_id]['scientific_scope']=detach_policy.SCI_SCOPE
+                if detach_policy.is_scope(attempt.get('scientific_scope')):
+                    item['accepted_results'][attempt_id]['scientific_scope']=attempt['scientific_scope']
             attempt.update(state=status,finished_unix=time.time(),receipt_path=str(Path(receipt_path).resolve()),
                            receipt_sha256=digest(receipt_path))
             row=data['runs'][attempt['run_key']]

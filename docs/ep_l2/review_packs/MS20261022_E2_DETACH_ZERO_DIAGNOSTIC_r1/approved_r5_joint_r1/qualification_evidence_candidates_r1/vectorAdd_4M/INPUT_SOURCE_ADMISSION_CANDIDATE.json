@@ -1,0 +1,92 @@
+{
+  "schema": "E2_R5_PERINPUT_SOURCE_APPLICABILITY_CANDIDATE_V1",
+  "status": "INPUT_SOURCE_PREMISES_REUSABLE_PENDING_NEW_R5_COMMON_QUALIFICATION",
+  "workload": "vectorAdd_4M",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "input_selection_id": "D_V2_vectorAdd_4M",
+  "condition_id": "V8_TAGPRESSURE_vectorAdd_4M_F",
+  "baseline_r4_spec": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/specs/vectorAdd_4M_F_SPEC.json",
+    "sha256": "11ff5e086573c8ba2f161e4c964ca7428f1e5e48e4b195d50bec6d1f1b0140fb",
+    "bytes": 17892
+  },
+  "baseline_r4_Q_for_structure_and_premises_only": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/qualifications/vectorAdd_4M_F_QUALIFICATION.json",
+    "sha256": "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda",
+    "bytes": 48615
+  },
+  "old_input_admission": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/admissions/vectorAdd_4M/INPUT_SOURCE_ADMISSION.json",
+    "sha256": "de51cceb507069f250a8db4a3e6b8e126b9ef38215a208b10aad15033a19cae2",
+    "bytes": 4681
+  },
+  "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "trace_content_manifest": [
+    {
+      "bytes": 103535866,
+      "name": "kernel-1.traceg",
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d"
+    },
+    {
+      "bytes": 94,
+      "name": "kernelslist.g",
+      "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a"
+    }
+  ],
+  "expected_full_instructions": 56000000,
+  "expected_kernel_count": 1,
+  "expected_kernel_uids": [
+    1
+  ],
+  "expected_command_count": 3,
+  "expected_epoch": {
+    "epochs": "all",
+    "scope": "full_application"
+  },
+  "atomic_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/FT20261017_LANE5_A1_B1_ELEVEN_GATES_r1/vectorAdd_4M_ATOMIC_SCOPE_r1.json",
+    "sha256": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad"
+  },
+  "atomic_global_records": 0,
+  "atomic_shared_records": 0,
+  "runtime_input_scope": "FULL_NATIVE_NONATOMIC_ONLY",
+  "runtime_framework_source": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+  "framework_parser_or_ISA_changed_by_r5": false,
+  "grammar_model_source_premises": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/common/MODEL_SOURCE_PREMISES.json",
+    "sha256": "2ae0ff809019aa5bf11a35ca1dbb42f5d82d0199d98d89f084c94ac53f74a6a4",
+    "bytes": 20721
+  },
+  "historical_native_input_semantics": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/NATIVE_INPUT_SEMANTICS.json",
+    "sha256": "fee6329dac18a9eadff4290c8cdd87557cd8f2f6ab79682e82863c196af5230d",
+    "bytes": 2661
+  },
+  "historical_retained_input_scope": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN_ROLLING_r1/vectorAdd_4M/RETAINED_INPUT_SCOPE.json",
+    "sha256": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202"
+  },
+  "Conv_masked_row_condition": null,
+  "DWT_normalized_scope_condition": null,
+  "numeric_payload_identity": "UNKNOWN",
+  "source_revision": "UNKNOWN",
+  "capture_provenance": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/vectorAdd --size 4000000 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/*.trace ",
+  "source_recapture_claimed": false,
+  "large_input_body_rescanned_here": false,
+  "fresh_original_inspector_full_input_identity_hash_required_at_launch": true,
+  "runtime_identity_rebind": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/vectorAdd_4M/RUNTIME_IDENTITY_REBIND.json",
+    "sha256": "0dc672b2ef2dde933ee46db0ee6c07ea0cf1b849d1005d56e8154705114c46b7",
+    "bytes": 3076
+  },
+  "runtime_config_sha256": "c2ab92dfc528d53e91d0af9c62bd2fb1bb3941a8440abce16422b2a8bd7bc450",
+  "old_Q_wholesale_inherited": false,
+  "new_runtime_admission_granted": false,
+  "extra_C_joint": "HOLD"
+}

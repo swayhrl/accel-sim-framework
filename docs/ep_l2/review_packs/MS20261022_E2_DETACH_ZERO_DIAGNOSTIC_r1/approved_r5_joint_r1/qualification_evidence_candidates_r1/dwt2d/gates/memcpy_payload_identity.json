@@ -1,0 +1,87 @@
+{
+  "schema": "E2_R5_PERINPUT_GATE_PLAN_CANDIDATE_V1",
+  "gate": "memcpy_payload_identity",
+  "status": "MODEL_PREMISE_SOURCE_REUSE_SUPPORTED_PENDING_COMMON_R5_DELTA_ROOT_REVIEW",
+  "workload": "dwt2d",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "baseline_r4_gate_for_model_applicability_only": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/gates/dwt2d/memcpy_payload_identity.json",
+    "sha256": "822658b91693736284fc8f2c8151f648497a2411f4d2147120c72210f758d2e5",
+    "bytes": 6206
+  },
+  "historical_model_gate": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/gates/memcpy_payload_identity.json",
+    "sha256": "4682985d29e7c4f77be421a437696edf8c23e02e3d9cac232d3e424a6dc8cfbb",
+    "original_source_identity": {
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    },
+    "status": "HISTORICAL_PASS_RETAINED_ONLY_IN_UNCHANGED_MODEL_SCOPE",
+    "native_tests_reexecuted": false
+  },
+  "historical_exact_case_labels": {
+    "d010_affected": [
+      "new_TVD_credit_rollback",
+      "new_legacy_credit_rollback"
+    ],
+    "unchanged_assertions": [
+      "host_prefill_1",
+      "host_prefill_2",
+      "GPU_epoch_API_64_R1"
+    ]
+  },
+  "unchanged_model_premise": "Original prefill_allowed/begin/complete, native payload+Tag generation and host-copy invalidation guards byte-identical; original host_prefill/epoch API proofs retained.",
+  "r4_to_r5_source_evidence": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/common/MODEL_SOURCE_PREMISES.json",
+    "sha256": "2ae0ff809019aa5bf11a35ca1dbb42f5d82d0199d98d89f084c94ac53f74a6a4",
+    "bytes": 20721
+  },
+  "gate_specific_historical_native_scope": {
+    "r4_native_classes": [
+      "NO_PRESSURE_POSITIVE_RO",
+      "PRESSURE_ELIGIBLE"
+    ],
+    "r4_actual_case_count": 6,
+    "r4_native_records_ref": {
+      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/gates/dwt2d/memcpy_payload_identity.json",
+      "sha256": "822658b91693736284fc8f2c8151f648497a2411f4d2147120c72210f758d2e5",
+      "bytes": 6206
+    },
+    "old_binary_not_new_runtime_qualification": true,
+    "old17_model_evidence_reused_only_unchanged_premise": true,
+    "rerun_requested": false
+  },
+  "input_source_admission": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/dwt2d/INPUT_SOURCE_ADMISSION_CANDIDATE.json",
+    "sha256": "5a8a47805524af81f39f2b9eb711a895ab5e331d13122c68e03bbdad955ba6a0",
+    "bytes": 6896
+  },
+  "oracle_admission": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/dwt2d/ORACLE_ADMISSION_CANDIDATE.json",
+    "sha256": "bd0d93cc7001967263b3ae0aa6afcbf86e84c9d1562326b4e5805ec56cb95a33",
+    "bytes": 3489
+  },
+  "runtime_identity_rebind": {
+    "path": "/tmp/e2_r5_input_gate_candidates_r1/dwt2d/RUNTIME_IDENTITY_REBIND.json",
+    "sha256": "adca43173cf6a5b8b91a656157ce3ebeaea566483ed4881a0154496cd0e6ea39",
+    "bytes": 3069
+  },
+  "new_native_evidence_status": "PENDING_COMMON_REAL_R5_ON_OFF_AND_MATH_RELEASE",
+  "not_claimed": [
+    "old_Q_PASS_copied",
+    "newS_or_fullOFF_app",
+    "numericSASSoutput",
+    "extraCjointqualification",
+    "newR5native_PASS_before_owner_complete"
+  ],
+  "gate_specific_scope_limit": "Original Framework9dd complete trace grammar and C initial2HtoD drain assumptions retained; no new host recapture/numeric proof.",
+  "host_input_boundary": "Only existing wholecommandlist certification excludes hostupdates; no new memcpy/alias scope expansion."
+}
