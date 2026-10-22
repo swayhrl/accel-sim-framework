@@ -1,0 +1,145 @@
+{
+  "schema": "E2_R5_SKIP_TVD_SOURCE_ONLY_PATH_REVIEW_V1",
+  "status": "PASS_BOUNDED_SOURCE_ONLY_SCOPE_CLARIFIED",
+  "headline": "skip_tvd表示TVD路径接管当前frontend head，跳过r5普通frontend快照和RO/FT access；并不表示没有真实Tag probe，也不表示这一head永远无需新Tag。",
+  "source_refs": {
+    "l2cache.cc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/l2cache.cc",
+      "sha256": "80d05eb2635abaa01e8ebd03c058650645edf7bd7b71dcd5b5b622cf50dfc1a9",
+      "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "byteidentical_to_frozen_Git": true
+    },
+    "gpu-cache.cc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "5d15c9b345a9c7625b6895314a02e83b7a60e36a44a5d7c9e73b454232fe4f19",
+      "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "byteidentical_to_frozen_Git": true
+    },
+    "ep-l2-tvd-cache.inc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+      "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "byteidentical_to_frozen_Git": true
+    },
+    "ep-l2-ft-cache.inc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "c769532c78a6e9ce8c4d32139277faaa8847d9581ff2be8fdf2d41dbc764beb2",
+      "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "byteidentical_to_frozen_Git": true
+    },
+    "ep-l2-ro-runtime.inc": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "4e76e9117705952754687b16cc470f85ff53e23b8fb49414b214276150ce32b8",
+      "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "byteidentical_to_frozen_Git": true
+    },
+    "ep-l2-tagpressure-diag.h": {
+      "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-tagpressure-diag.h",
+      "sha256": "e3fea0f44bfa78addbfc8036da5a5067cb0c2680c315f5dcf25dfab45d7154c2",
+      "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+      "byteidentical_to_frozen_Git": true
+    }
+  },
+  "caller_chain": [
+    {
+      "source": "l2cache.cc:1313-1325",
+      "fact": "Eligible frontend head先调用tvd_frontend。结果非TVD_NORMAL时，tvd_frontend_handled=true，并调用detach_diag_skip(reason1)。TVD_RESPONSE直接按真实response admission/enqueue/commit/pop完成。"
+    },
+    {
+      "source": "l2cache.cc:1332-1344",
+      "fact": "只有!tvd_frontend_handled才进入ro_frontend_cycle、r5 detach_diag_snapshot和preview_access。故handled head本次没有r5 raw/set/eligible/requester观测。"
+    },
+    {
+      "source": "gpu-cache.cc:2727-2744",
+      "fact": "普通preview_access先走RO preview，再处理exact admission/TVD promotion/WAD等；这整条普通preview对handled head被上游guard跳过。"
+    },
+    {
+      "source": "l2cache.cc:1456,1560;gpu-cache.cc:2504-2508",
+      "fact": "普通callback和admitted l2_cache::access→ft_access属于!handled分支。本次TVD_WAIT/RESPONSE不调用该head的ft_access。"
+    },
+    {
+      "source": "ep-l2-ft-cache.inc:325-329",
+      "fact": "RO relieve在实际ft_access Tagprobe==RESERVATION_FAIL且RO runtime存在时才调用；上述handled head本次没有进入这个触发点。不是对同cache其他在途活动的全局无动作声明。"
+    }
+  ],
+  "actual_tag_probe_precedes_skip": {
+    "source": "ep-l2-tvd-cache.inc:60-71",
+    "actual_existing_production_probe_call": true,
+    "fact": "tvd_frontend先执行m_tag_array->probe(address,index,mf,is_write,true)。如果结果HIT、SECTOR_MISS或HIT_RESERVED，立刻返回TVD_NORMAL，不会由此产生skip_tvd。",
+    "source_possible_raw_outcomes_on_handled_path": [
+      "MISS",
+      "RESERVATION_FAIL"
+    ],
+    "actual_split_counts": "NA_NOT_EMITTED_BY_CURRENT_r4_r5_OBSERVER",
+    "proof": "tag_array::probe在gpu-cache.cc354-454对非matching路径只返回MISS或all_reserved RESERVATION_FAIL；这里的真实probe结果是局部变量tag，没有接入skip_tvd数值观测。",
+    "not_allowed": "不能把skip_tvd计为rawFAIL0、r16=0，不能直接并入covered分布，也不能说这些周期连native probe都没有。"
+  },
+  "handled_path_cases": [
+    {
+      "return": "TVD_WAIT",
+      "sites": "ep-l2-tvd-cache.inc:74-93",
+      "condition": "首次/未完成paid TVD lookup，或当前cycle query资源尚未可用",
+      "native_Tag_allocation_this_call": false,
+      "future_new_Tag_need": "UNKNOWN: 后续lookup若无live ticket，会TVD_NORMAL返回普通路径；可能需要新Tag，不能源证排除后续压力。"
+    },
+    {
+      "return": "TVD_WAIT",
+      "sites": "ep-l2-tvd-cache.inc:96-110",
+      "condition": "live TVD ticket的WAIT_WRITEBACK或PINNED",
+      "native_Tag_allocation_this_call": false,
+      "future_new_Tag_need": "UNKNOWN_FROM_AGGREGATE: mandatory/write/atomic/pin状态可能随后转普通路径或promotion；不是所有wait都等于payload可直接read回复。"
+    },
+    {
+      "return": "TVD_WAIT",
+      "sites": "ep-l2-tvd-cache.inc:119-134",
+      "condition": "已经READ_READY的retained payload服务，等待response slot或payload bank",
+      "native_Tag_allocation_this_call": false,
+      "current_service_route": "当前服务对象是既有TVD/WB保留payload，使用read lease/pin与paid bank服务；这里不分配新resident Tag。aggregate skip_tvd未提供这一子集数量。"
+    },
+    {
+      "return": "TVD_RESPONSE",
+      "sites": "ep-l2-tvd-cache.inc:119-135,138-162;l2cache.cc:1320-1324",
+      "condition": "live retained payload READ_READY且bank/response资源满足",
+      "native_Tag_allocation_this_request_on_this_completed_route": false,
+      "current_service_route": "直接pin/read payload、绑定payload identity/versions、enqueue真实reply并pop head；tvd_response_commit解除pin并记录accepted。既不allocate/bind native resident Tag，也不走RO transaction/ft_access relief。"
+    }
+  ],
+  "normal_fallback_cases": [
+    {
+      "source": "ep-l2-tvd-cache.inc:95",
+      "fact": "lookup无live ticket→TVD_NORMAL，恢复普通observer/preview/access。"
+    },
+    {
+      "source": "ep-l2-tvd-cache.inc:112-119",
+      "fact": "非READ操作由ft_access处理promotion；缺少sector可reclaim retained payload后TVD_NORMAL；其他非READ_READY结果也TVD_NORMAL。"
+    },
+    {
+      "source": "ep-l2-tvd-cache.inc:165-195",
+      "fact": "tvd_promote本身需要选择同bank可用resident way，会跳过RESERVED/pinned/pending way；这使‘所有TVD相关操作永久无需新Tag’的泛化不成立。"
+    }
+  ],
+  "observer_semantics": {
+    "source": "gpu-cache.cc:3016-3020",
+    "count_domain": "once(physicalcycle,request_uid)去重的当前frontend head-cycle exposure，不是unique请求数；重复等待同一request的不同cycle仍可计多次。",
+    "recorded": "observed_heads/probe_skipped/skip_tvd及r5 skip reason",
+    "unrecorded": "这次已有Tagprobe的数值raw、目标set RESERVED数、requester/eligible joint及TVD_WAIT/RESPONSE与各wait子类的数值联合",
+    "NA_policy": "保持NA。源码能约束可达路径，但不能代替未发出的运行时数值，也不能从独立的lookup/bank/response统计边际重构交叉分组。"
+  },
+  "application_to_existing_CFD_claim": {
+    "scope": "仅解释已有报告中的218239 skip_tvd head-cycle暴露；本审查不读应用raw或重新计算这些数值。",
+    "safe_statement": "它们本次被TVD接管，未走RO/FT relief触发点；其中直接TVD read response无需新native Tag。合计中有多少RESERVATION_FAIL、多少最终payload服务、多少随后普通新Tag请求仍未知。",
+    "unsafe_statements": [
+      "所有218239都是TVD hits或纯payload回复。",
+      "所有skip都没有native Tagprobe。",
+      "所有skip都无需新Tag，或它们的set没有16RESERVED压力。",
+      "用covered max4/max3外推skipped set状态。",
+      "以当前payload可服务反推任意反事实撤销TVD后仍无Tag压力。"
+    ]
+  },
+  "bug_or_instrumentation_assessment": "当前coverage声明和skip计数与源码一致，没有由此发现新正确性bug。它是真实观测范围边界：已有TVD probe未投影进r5统计，不能据此宣布全局无压力，也不应把未发生的本head ft_access/relieve当作漏计。",
+  "review_actions": {
+    "raw_or_trace_or_binary_body_reads": 0,
+    "native_build_application_runs": 0,
+    "source_repo_registry_mutations": 0
+  }
+}

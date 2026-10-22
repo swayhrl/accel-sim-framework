@@ -1,0 +1,90 @@
+{
+  "schema": "E2_R5_REMAINING_METADATA_DRIVER_SYNTHETIC_CONTROLS_V1",
+  "status": "PASS",
+  "count": 17,
+  "controls": [
+    {
+      "case": "SYNTHETIC_EXACT_dwt2d",
+      "result": "PASS"
+    },
+    {
+      "case": "SYNTHETIC_EXACT_vectorAdd_4M",
+      "result": "PASS"
+    },
+    {
+      "case": "SYNTHETIC_EXACT_convolutionSeparable",
+      "result": "PASS"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_RUNNING",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "unstarted/running/failed cannot close"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_SOURCE_CHANGE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "actual manifest source/input/runtime/Q differs"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_Q_CHANGE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "actual manifest source/input/runtime/Q differs"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_SPEC_CHANGE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "actual manifest fullinput spec binding differs"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_PAIR",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "true root accepted independent diagnostic point required"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_ROOT_CLOSED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "already rootclosed; no second closure"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_POINTER_CHANGE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "exact central accepted pointer required"
+    },
+    {
+      "case": "SYNTHETIC_REJECT_DUPLICATE_ATTEMPT",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "one exact paid endpoint; no retry or hypothetical point"
+    },
+    {
+      "case": "SYNTHETIC_CFD_ALREADY_COMPLETE_OUT_OF_SCOPE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "only exact approved remaining DWT/Vector/Conv condition"
+    },
+    {
+      "case": "SYNTHETIC_COMPLETE_INVENTORY",
+      "result": "PASS"
+    },
+    {
+      "case": "SYNTHETIC_CHANGEDPATHS_ONLY_OMITS_UNCHANGED_POINT",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "complete readback missing endpointmetadata results/dwt2d/CURRENT_ACCEPTED_POINT.json"
+    },
+    {
+      "case": "SYNTHETIC_EXTRA_CAUSE_NOT_ACCOUNTED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "complete readback missing endpointmetadata results/dwt2d/EXTRA_CAUSE.json"
+    },
+    {
+      "case": "SYNTHETIC_NESTED_UNINVENTORIED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "unexpected nested endpointmetadata: root must explicitly inventory it"
+    },
+    {
+      "case": "SYNTHETIC_SYMLINK_DIRECTORY",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "endpoint publication must not traverse symlinks"
+    }
+  ],
+  "synthetic_only": true,
+  "no_actual_snapshots_or_central_writes": true
+}
