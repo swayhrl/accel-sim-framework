@@ -1,0 +1,14 @@
+from pathlib import Path
+import sys,json,time,hashlib
+E=Path.cwd();P=E/'docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1';A=P/'approved_four_r1';sys.path.insert(0,str(E/'util/ep_l2/mechanism_e'));from coordinator import Coordinator,digest,SHARED,FIELD,AUTHORITY,CAMPAIGN,local_resources,output_usage,resource_gate,write_json
+import detach_successor as ds;import detach_validation as dv
+m=ds.scope().manifest();ready=json.loads((A/'QUALIFICATIONS_READY.json').read_bytes());specs=[json.loads(Path(r['spec_ref']['path']).read_bytes()) for r in ready['conditions']]
+assert [s['condition_id'] for s in specs]==m['condition_order'];[ds.scope().check_spec(s) for s in specs];dv.configure_binding(m['validation_scope']);c=Coordinator();initial=c.snapshot();assert initial['actual_starts']==51 and initial['controller']['state']=='STOPPED';assert ds.FIELD not in initial,'alreadyadopted: investigate/idempotentresume, neverduplicate'
+adoption=c.adopt_positive_ro_successor();registered=[];bindings=[]
+for s,row in zip(specs,ready['conditions']):
+ qid=c.register_qualification(row['qualification']['path']);assert qid==s['qualification_id'];registered.append(qid);bindings.append(c.bind_detach_observer_condition(s))
+i=c.snapshot();assert i['actual_starts']==51 and i[ds.FIELD]['attempt_ids']==[]
+data=json.loads((SHARED/'RUN_REGISTRY.json').read_bytes());res=local_resources();usage=output_usage();s=specs[0];growth=s['maximum_result_bytes']+160*2**20;resource_gate(data,'simulation',1,s['memory_bytes'],growth,res,usage,result_growth_bytes=growth)
+queue={'campaign_id':CAMPAIGN,'authority_commit':AUTHORITY,'prepared_by':'E','input_and_profile_freeze_unix':time.time(),'scope':m['batch_id'],'specs':[r['spec_ref'] for r in ready['conditions']],'pairs':[],'no_automatic_retry':True,'actual_original_controller_only':True};ds.queue_guard(i,queue,digest,__import__('detach_diagnostic_policy').authority().active);write_json(A/'QUEUE.json',queue)
+receipt={'schema':'E2_APPROVED_FOUR_ACTUAL_ORIGINAL_API_ADOPTION_V1','at_unix':time.time(),'status':'EXACT_FOUR_QUALIFIED_BOUND_ORIGINAL_API_ADOPTED_CFD_RESOURCE_FORECAST_PASS_NOT_STARTED','adoption':adoption,'registered_qualification_ids':registered,'bindings':bindings,'actual_starts':i['actual_starts'],'new_actual_starts':0,'controller':i['controller'],'resources':res,'cumulative_result_generation':usage,'CFD_forecast_result_plus_metadata_bytes':growth,'live_full_input_SHA_and_resources_required_before_every_native_start':True,'manifest_ref':ds.scope().ref,'queue_ref':{'path':str(A/'QUEUE.json'),'sha256':digest(A/'QUEUE.json')},'original_E051_failed_and_supplemental_preserved':True,'global_limits_restored':False};write_json(A/'ACTUAL_API_ADOPTION_RECEIPT.json',receipt)
+print(json.dumps({'status':receipt['status'],'actual_starts':51,'registered':len(registered),'workspace_GiB':res['disk_free_bytes']/2**30,'queue_ref':receipt['queue_ref']}))
