@@ -1,0 +1,39 @@
+# Two-phase handoff and minimal future qualification
+
+Everything below is a proposed next plan. **Nothing was executed**. This study does not grant starts, budgets, controller changes or writes on any server.
+
+## Phase1: qualify an isolated engineering destination
+
+Allocate an adequate independently backed native fast workspace and explicit capacity/inode/CPU/RAM/output reserve. Owner chooses exact EP and DTC producer lineages; freeze full source/diff/submodule/compiler/loader/library/Python/config/input/manifests and copy plan. Preserve Source history. Expose required trace roots read-only through a legitimate administrator/owner-approved mechanism; do not attempt namespace escape. Establish project-specific164 roots and durability/restore acceptance scope without borrowing TLS/C16 reservations or locks.
+
+Perform the minimal future engineering plan below, one project and one qualified process at a time. Failed qualification creates no new scientific evidence. Existing immutable Source results remain baseline. A byte-identical binary with matching dependencies is preferred for portability assessment; a rebuild, compiler change, interpreter change, changed flags, path-sensitive source or modified controller requires separately bound qualification. Prepared fixtures and synthetic control tests are not full native scientific correctness.
+
+| Stage | EP-L2 proposed minimum | DTC-L1 proposed minimum | Required acceptance / authorization |
+|---|---|---|---|
+| Static identity | Latest owner-selected MAIN61 or diagnostic lineage; ordered configs, effective options, trace member hashes, exact executable/dependency closure | Exact currently approved cohort, runtime+custom libcudart, trace/config/ROI signatures, wrapper/progress-channel/helper closure | Read-only identities first; owner resolves changed or missing bytes. No simulator start. |
+| Small engineering fixture | One declared deterministic short trace fixture already sanctioned by owner; baseline and candidate same bytes, one process | Qualified CPU lifecycle fixture for new PID namespace/loader, then one owner-declared small trace fixture | New explicit fixture/write/process permission and finite CPU/RAM/time/output budget; never call this native application correctness. |
+| Storage semantics | Small approved metadata-rich result: empty directory, mode/uid/gid/mtime_ns, closed chunks, reconnect/partial/resume/no-overwrite cases | Same with project progress/terminal evidence and helper artifacts | New write/test authorization; close-reopen complete SHA, independent native ABSENT restore, all original metadata. No real Source deletion. |
+| Native equivalence | One owner-approved previously accepted minimal full application/config on each environment, sequentially; identical trace and executable inputs | One accepted minimal workload/arm using exact finite-cohort authority; no arbitrary retry of failed Gaussian | Explicit scientific-start budget/UUID/queue authorization and ledger consumption; current control qualification before any fork. |
+| Speed qualification | Paired original/candidate trace placement and result-offload disabled/enabled, same binding and cache conditions | Same with identical policy/ROI/progress freshness | Separate performance-run authorization. Suggested design:>=3 paired repeats, compare medians and tails; proposed median slowdown<=5% and no pair>10%, thresholds subject to owners. |
+
+Native equivalence requires exact deterministic kernel/command/CTA/instruction counts, completion/ROI/termination and cycle counters where deterministic, cache/DRAM/queue/decoder invariants and project-specific final acceptance. Unapproved numeric tolerances, partial-cycle extrapolation, wall-time similarity or a successful exit alone cannot prove it. DTC's existing GEMM record expects1 kernel/1024CTA/739246080 instructions and comparator1071405 cycles; those are provenance from one arm, not a universal threshold. Gaussian's existing expected510kernels/65790CTA/283685120instructions/3278356 comparator cycles do not turn its failed attempt into an acceptance or authorize a retry.
+
+Trace-speed trial must distinguish cold versus warm page cache, existing compression/parser mode, sequential versus member lookup/seek, CPU affinity, host competitors and output volume. Do not flush shared host caches or stop other jobs. Small-file opening tests alone cannot predict a whole simulation. With no authorized trial in this study, direct-trace speed remains UNMEASURED.
+
+## Phase2: explicitly transfer new scientific execution authority
+
+1. EP owner E/E2 and DTC sole owner BA publish exact Source queue/registry/terminal/current-owner snapshots and a reconciled attempt ledger. Resolve DTC inactive Git0 versus two later actual-start records. Preserve EP57, all later scoped approvals, original T0, DTC cohort UUIDs/consumed failures, formal BA32 separation, scientific order and all historical terminal evidence.
+2. Owners define a serialized handoff barrier: no new Source dispatch after the agreed epoch, settle existing lease/actual process/helper/writer evidence, and designate whether legacy collectors remain strictly Source read-only. No new Target scheduler while an old dispatcher can still issue work. Existing A-F work, resources and PIDs remain outside this transfer until separately explicitly included.
+3. Publish one global execution-owner record and monotonic fencing epoch binding campaign/project, actual host/boot ID, PID and mount namespaces, exact controller binaries/source/argv and approved filesystem/device. A Source-private flock cannot be replaced by an unrelated Target flock with the same basename. Use the project's qualified single-authority protocol with both owners' acknowledgements; storage SSHFS locks are not a substitute. This is a protocol requirement, not a new controller implemented here.
+4. Explicitly rebind resource policies to the new actual devices/cgroups and all-project workload population. Retain each cohort's own authorized exceptions and unchanged safeguards. Shared CPU/RAM/SSD cannot be counted twice. C16_IO10 or Ops nine-JSON low-space waivers do not grant these science tasks any policy change.
+5. Issue the first exact authorized new Target attempt only after Phase1 acceptance, handoff/fencing and fresh admission. Preserve global counters; no free warmup/canary/replacement/refund. Terminal science and archive states remain separate. Rollback means owner-controlled future dispatch reassignment after lifecycle closure, never rerunning a consumed failed attempt automatically.
+
+## Exact decisions needed before the next phase
+
+- User/storage owner: allocate a sufficiently large independent fast native workspace (or approve a concrete quota/reserve on a verified pool); any new mount/container mapping and input materialization must be scoped.
+- EP and DTC owners: choose exact producer and input lineages, publish latest reconciled ledger/queue/terminal authority, define Target-specific source/config/path bindings and performance/equivalence criteria.
+- User/project owners: approve small engineering writes/fixtures, their resource bounds and any later full-native qualification starts with exact budget and UUID treatment. No experiment is implicit in this report.
+-164 owner: authorize new per-project result roots, persistence/quota policy and independent native restore entry or explicitly bounded alternative acceptance scope. Existing SSHFS access alone cannot approve native remote commands.
+- Project owners: approve actual two-party execution-ownership handoff and any local-new-result retention/reclaim policy. Source historical data, traces, scientific originals, A-F tasks and existing C16/TLS operations remain unchanged.
+
+These decisions are listed for a future review; the read-only study itself is complete and did not wait for or imply these approvals.
