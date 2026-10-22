@@ -1,0 +1,16 @@
+{
+  "status": "RETAINED_ENGINEERING_CONTROL_AUTHORING_FAILURE",
+  "original48": "PASS",
+  "first_extended_run": {
+    "tests": 68,
+    "failures": [
+      "test_phase_append_is_legal",
+      "test_three_monotonic_rounds_and_new_phases"
+    ]
+  },
+  "cause": "The two new synthetic tests inserted next-round PHASE records before the actual first next-round SLICE, contrary to producer emission order. Corrected fixture placement after same-slice phase2; production decoder was not loosened.",
+  "final_extended_run": {
+    "tests": 68,
+    "passed": 68
+  }
+}

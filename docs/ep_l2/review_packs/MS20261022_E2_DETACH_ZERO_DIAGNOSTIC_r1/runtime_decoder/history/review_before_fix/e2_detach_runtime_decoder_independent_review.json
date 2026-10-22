@@ -1,0 +1,152 @@
+{
+  "schema": "E2_RUNTIME_DECODER_INDEPENDENT_REVIEW_V1",
+  "at_utc": "2026-10-22T04:23:53.210950+00:00",
+  "status": "TWO_SOURCE_SEMANTIC_VALIDATION_GAPS_REPRODUCED_PENDING_AUTHOR_FIX",
+  "decoder": "/tmp/e2_detach_runtime_decoder/decoder.py",
+  "decoder_sha256": "a32a5119394c5bade8169842187303b0b41db2220b2d71a841db54cd70bca197",
+  "test_sha256": "16f7f0dff63a58389dda47dd2ae5520e376b26432a819b58193121b1dfef0aaf",
+  "candidate_receipt_hash_matches": {
+    "test_decoder.py": true,
+    "decoder.py": true,
+    "README.md": true,
+    "SOURCE_BOUND_SCHEMA_cf.json": true
+  },
+  "source_binding": {
+    "cf": "cf7347151f86a17866b91af6d3f2da726ea8d062",
+    "ed95": "ed9569cc0149f777fafd26836b4ece233b603527",
+    "files": [
+      {
+        "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+        "cf_sha256": "51d221d20e22120ccc08c007488dbff84d667c60b37576582ad92141c224cce4",
+        "ed95_sha256": "51d221d20e22120ccc08c007488dbff84d667c60b37576582ad92141c224cce4",
+        "same": true
+      },
+      {
+        "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+        "cf_sha256": "0a9a9e6763ed0a27f7455476cfbcabd8b158276ad50489a3c12917b1c0740929",
+        "ed95_sha256": "0a9a9e6763ed0a27f7455476cfbcabd8b158276ad50489a3c12917b1c0740929",
+        "same": true
+      },
+      {
+        "path": "src/gpgpu-sim/gpu-cache.cc",
+        "cf_sha256": "fc38fba284a1c4ec14a9e4b3349c1e97d9dd0a092f60fc29f677ed34124e3d20",
+        "ed95_sha256": "fc38fba284a1c4ec14a9e4b3349c1e97d9dd0a092f60fc29f677ed34124e3d20",
+        "same": true
+      },
+      {
+        "path": "src/gpgpu-sim/l2cache.cc",
+        "cf_sha256": "80d05eb2635abaa01e8ebd03c058650645edf7bd7b71dcd5b5b622cf50dfc1a9",
+        "ed95_sha256": "80d05eb2635abaa01e8ebd03c058650645edf7bd7b71dcd5b5b622cf50dfc1a9",
+        "same": true
+      },
+      {
+        "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+        "cf_sha256": "76fbe1c8dcd60e1be804101cfc969ec07a5b7fdfe8b6fc64919ef6eb845a5b2e",
+        "ed95_sha256": "76fbe1c8dcd60e1be804101cfc969ec07a5b7fdfe8b6fc64919ef6eb845a5b2e",
+        "same": true
+      }
+    ]
+  },
+  "independent_controls": {
+    "existing_synthetic_suite_reexecuted": true,
+    "count": 48,
+    "passed": 48,
+    "wall_seconds_reported": 0.228,
+    "native_or_application": false,
+    "additional_witness_cases": 6
+  },
+  "confirmed_correct": [
+    {
+      "id": "REAL_EMISSION_ORDER",
+      "detail": "All slice IDs bound in constructor l2cache.cc983 -> gpu-cache.cc2975, so header247-249 prints GLOBAL only max physical slice. Per slice observer SLICE then contiguous PHASE records, then for max slice GLOBAL and new SAMPLE rows; old RO SUMMARY follows in ro-runtime387-393. Existing test rows() order matches this, not a producer initial-slice GLOBAL bug."
+    },
+    {
+      "id": "OLD_SUMMARY_ROUND_MEMBERSHIP",
+      "detail": "Higher-cycle first SLICE after prior GLOBAL resets old map; each new round must provide its own old SUMMARY0..63 including last summary after GLOBAL/SAMPLE. Independent two-round case valid; missing latest last old summary returnsINCOMPLETE instead of borrowing prior round."
+    },
+    {
+      "id": "PARTIAL_TAIL",
+      "detail": "Higher-cycle incomplete latest SLICE tail returnsINCOMPLETE, never accepted prior complete snapshot. Same-clock conflict and regressing clocks covered by actual48tests."
+    },
+    {
+      "id": "SOURCE_COUNTER_EQUATIONS",
+      "detail": "Exact172 field keys, uint64/bool/error guards,13 numeric source partitions plus nonnegative detached population and per-field phase rollup match fixed source. PHASE metadata live_detached/closure are cumulative parent metadata and correctly not summed. GLOBAL perfield sum and old/new detached checked. Head/commit/requester/sector counts remain separate."
+    },
+    {
+      "id": "SAMPLE_COUNT_AND_SENTINEL",
+      "detail": "Global64 cap, source samples_seen=rawpressure hook, stored+dropped and actual unique sample rows checked. firstway UINT32_MAX iff eligible0 is checked; immediate -1 is valid unlinkedUNKNOWN. Further source-guaranteed sample bounds/predicate validation gap below."
+    },
+    {
+      "id": "NEW_FIELD_REVISION",
+      "detail": "Changed counter-field list requires explicit reviewed_field_set_revision with exact list hash, source-diffSHA/newcommit; no missing-field0 fill. This declaration is not proof of actual E review, and samefield semantics or metadata changes still need caller/source binding. Final r2 source/layout must be explicitly bound before adoption."
+    }
+  ],
+  "issues": [
+    {
+      "id": "COUNTERS_CAN_REGRESS_ACROSS_CONTINUOUS_SNAPSHOTS",
+      "severity": "MEDIUM_VALIDATION_INTEGRITY",
+      "source_fact": "ep-l2-detach-diag.h204-206 checked/add only increases total and perphase fields during a source process; old transaction stats.detached increments only, never resets. Slice construction/erasure is not a legal new scientific run within one input raw.",
+      "decoder_gap": "ingest SLICE rollover sets self.last=self.cur, then resetscur without comparing field populations; snapshot validates only newest round. Clock mustincrease but counts may decrease.",
+      "minimal_witnesses": [
+        "/tmp/e2_detach_runtime_decoder_review/CUMULATIVE_COUNTER_REGRESSION.json",
+        "/tmp/e2_detach_runtime_decoder_review/OLD_NEW_DETACHED_BOTH_REWOUND.json"
+      ],
+      "actual_result": "Both source-impossible5->0 head_absent and old/new-detached1->0 streams accepted SYNTHETIC_OBSERVER_CONTROL_ONLY.",
+      "fix": "On each complete round compare stable per-slice/global cumulative172fields nondecreasing and old RO detached nondecreasing; phase IDs/kernelUID mapping cannot be renumbered and existing perphase fields cannot regress. Validate previous complete framing before discard without imposing terminal epoch_closed on earlier in-progress rounds. Partial latesttail must stillfail; do not fall back."
+    },
+    {
+      "id": "IMPOSSIBLE_ELIGIBLE_SAMPLE_STATE_ACCEPTED",
+      "severity": "MEDIUM_BOUNDED_WITNESS_INTEGRITY_NOT_COUNTER_CLOSURE",
+      "source_fact": "gpu-cache.cc2985-2988 sets victim payload/generation/predicate only from first eligible live attached !reuse required-not-ready entry; with noeligible, preview defaults give payloadUINT64_MAX,generation0,allsector0,attached/reusefalse. Formal geometry is1168payloadslots and4sector bits.",
+      "decoder_gap": "sample() checks uint64 but not4-bitsector masks, positive-victim finitepayload/generation or eligiblepredicate.",
+      "minimal_witness": "/tmp/e2_detach_runtime_decoder_review/IMPOSSIBLE_ELIGIBLE_SAMPLE.json",
+      "actual_result": "eligible1 with firstway0 but payload999999999,generation0,required2^63,issued2^62,reuse_seen=true,attached=false accepted.",
+      "fix": "Reject source-impossible sample masks>15; when eligible>0 require valid finitepayload,livegeneration,attached,!reuse,required&~ready!=0. Wheneligible0 enforce actual producer sentinel/default victim values. Keep immediate result -1 and droppedsample semantics legal. These are source serialization invariants, not new mechanism gates or a requirement for nonzero detach."
+    }
+  ],
+  "scope_notes": [
+    "This review is independent source/static plus bounded synthetic; no application raw/large trace/real binary read.",
+    "No request to fix E72/E73 existing producer mask/merge/telemetry findings; no duplicate scientific scope introduced.",
+    "Valid negative/zero activation remains acceptable after identity and measurement coverage closure.",
+    "Direct decoder status is declarations only, never native/application PASS or CURRENT_ACCEPTED."
+  ],
+  "witness_files": [
+    {
+      "path": "/tmp/e2_detach_runtime_decoder_review/CUMULATIVE_COUNTER_REGRESSION.json",
+      "sha256": "9d2390be541887ff2039e6a6c5aa273e58a459350e193ef9684b123fb2b93d9a",
+      "bytes": 106629
+    },
+    {
+      "path": "/tmp/e2_detach_runtime_decoder_review/IMPOSSIBLE_ELIGIBLE_SAMPLE.json",
+      "sha256": "565caeb307fa00e545f500ec9b89507a4e6f327a4b85c222ab0627ccbfce897f",
+      "bytes": 53963
+    },
+    {
+      "path": "/tmp/e2_detach_runtime_decoder_review/LATEST_OLD_SUMMARY_MISSING_NOT_BORROWED.json",
+      "sha256": "ae2f4b86391b1e33c1dae0851a0890a89f271302f9bccb6f9faa0b0baed3bc98",
+      "bytes": 174
+    },
+    {
+      "path": "/tmp/e2_detach_runtime_decoder_review/OLD_NEW_DETACHED_BOTH_REWOUND.json",
+      "sha256": "594b2bfb1972997a89b229779240294361d3c1c0809026a33f64979b6b27c5fd",
+      "bytes": 106633
+    },
+    {
+      "path": "/tmp/e2_detach_runtime_decoder_review/PARTIAL_LATEST_TAIL.json",
+      "sha256": "6fde3656fc7580ef5c4b97a27f8a74e4075cac252d6c417c77a4b2106194c580",
+      "bytes": 183
+    },
+    {
+      "path": "/tmp/e2_detach_runtime_decoder_review/SOURCE_INTERLEAVED_OLD_SUMMARY_TWO_SNAPSHOTS.json",
+      "sha256": "02b5c936299654f809851e43b365dab7f9f8b4a24becc9b284222a7cd63c509e",
+      "bytes": 328
+    }
+  ],
+  "actions": {
+    "producer_or_repo_changes": false,
+    "central_changes": false,
+    "native_or_application_starts": 0,
+    "builds": 0,
+    "peer_notifications": 0
+  }
+}

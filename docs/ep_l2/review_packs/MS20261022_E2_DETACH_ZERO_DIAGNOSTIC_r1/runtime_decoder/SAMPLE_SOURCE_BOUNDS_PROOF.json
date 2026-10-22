@@ -1,0 +1,102 @@
+{
+  "schema": "E2_DECODER_SAMPLE_SOURCE_BOUNDS_PROOF_V1",
+  "commit": "ed9569cc0149f777fafd26836b4ece233b603527",
+  "scope": "Exact finite1168 FTmode2 bankP1 F source; no generic hardware claim",
+  "references": [
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-interface.h",
+      "lines": [
+        7,
+        10,
+        12
+      ],
+      "fact": "PayloadHandle payload_id/generation are unsigned; valid() checks ID sentinel only. Positive generation is NOT inferred merely from valid()."
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "lines": [
+        2234,
+        2242,
+        2462,
+        2507,
+        2511,
+        2512,
+        2514
+      ],
+      "fact": "slot generation starts0 with FREE status. FT reserve requires unoccupied in-range ID, rejects max unsigned generation then increments before creating occupied handle. Thus allocated FTmode2 handle has1..UINT_MAX; not0."
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "lines": [
+        64,
+        66,
+        70,
+        73
+      ],
+      "fact": "Host prefill validates release/reserve generation exhaustion and refuses prospective wrapped generation0; it does not introduce a zero-generation occupied FT landing."
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-store-port.h",
+      "lines": [
+        24,
+        25,
+        28,
+        29,
+        32,
+        35
+      ],
+      "fact": "RO store requires banked FTmode2 ops1 and exactly1168physicalslots; live/pin uses existing finite payload handles, no new allocator."
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "lines": [
+        124,
+        125,
+        133,
+        149,
+        150,
+        151,
+        354,
+        355
+      ],
+      "fact": "Admit validates live source handle and 4sector mask; initialready also four bits. Merger/fill require check_mask. Ready may legitimately contain sectors beyond current required mask, so decoder does not impose ready subset required."
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "lines": [
+        2983,
+        2985,
+        2986,
+        2987,
+        2988
+      ],
+      "fact": "Only first actually eligible attached/no-reuse/required-not-ready live transaction populates victim snapshot and identity."
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "lines": [
+        190,
+        193,
+        195,
+        238
+      ],
+      "fact": "Noeligible preview keeps uint64payloadMAX,generation0,predicate zeros/false, firstway~0U. Sample copies these exact values."
+    }
+  ],
+  "unsigned_serialization_bound": "Target ABI unsigned32 as existing fixed geometry first-way UINT32_MAX decoder/source release contract; generation range1..4294967295, upper boundary accepted.",
+  "no_extra_constraints": [
+    "No issued>0 demand",
+    "No ready subset required demand",
+    "No requirement detach be nonzero",
+    "No forced requester causal kernel mapping"
+  ],
+  "source_sha256": {
+    "src/gpgpu-sim/ep-l2-detach-diag.h": "51d221d20e22120ccc08c007488dbff84d667c60b37576582ad92141c224cce4",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": "5ecb4fb8e6ea0df12759b41e129a75decc4955ddf1475b77797630d4d83c0446",
+    "src/gpgpu-sim/ep-l2-ft-interface.h": "d3ab21560a41360f01425178ea81209674d68cb3705fe61132608cffe191e239",
+    "src/gpgpu-sim/ep-l2-ro-store-port.h": "dc454e18636d686705e7871c2a8704a240ff9faabab49def2f3f8723144ea90b",
+    "src/gpgpu-sim/ep-l2-ro-transactions.h": "76fbe1c8dcd60e1be804101cfc969ec07a5b7fdfe8b6fc64919ef6eb845a5b2e",
+    "src/gpgpu-sim/gpu-cache.cc": "fc38fba284a1c4ec14a9e4b3349c1e97d9dd0a092f60fc29f677ed34124e3d20",
+    "src/gpgpu-sim/gpu-cache.h": "92623214b576bf88195b500266720c53064eabf8eb53ca924aac46335145a8e9"
+  }
+}
