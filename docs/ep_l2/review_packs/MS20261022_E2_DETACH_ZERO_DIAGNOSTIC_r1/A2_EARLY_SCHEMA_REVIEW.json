@@ -1,0 +1,1862 @@
+{
+  "A2_additional_relations": [
+    {
+      "id": "A2eq10",
+      "meaning": "ft_access_attempts = commit_accepted + commit_denied + commit_exception",
+      "required_guard": "Exactly one accepted/denied/exception return classification per actual ft_access invocation; query-admissible pre-ft_access rejection is frontend, not a commit attempt."
+    },
+    {
+      "id": "A2eq11",
+      "meaning": "sum(transition_joint) = ro_admits + ro_merges + ro_fill_packets",
+      "required_guard": "Joint snapshots are on successful admits/merges/accepted fills only. Do not treat them as cycle occupancy or add missed/retried fills twice."
+    },
+    {
+      "id": "A2eq12",
+      "meaning": "sum(primary blockers)=observed_heads-probe_skipped",
+      "required_guard": "Exactly one primary reason over observed non-skipped heads, including primary_none/unknown; masks are nonexclusive."
+    }
+  ],
+  "A2_equations": [
+    {
+      "id": "A2eq01",
+      "text": "observed_heads = probe_skipped + sum(raw all7 statuses + raw_unknown)"
+    },
+    {
+      "id": "A2eq02",
+      "text": "raw_reservation_fail = pressure_T_disabled + pressure_T_enabled"
+    },
+    {
+      "id": "A2eq03",
+      "text": "pressure_T_enabled = pressure_no_live_ro + pressure_live_ro_no_eligible + pressure_eligible"
+    },
+    {
+      "id": "A2eq04",
+      "text": "ways_examined = sum(5 exclusive same-set way reasons)"
+    },
+    {
+      "id": "A2eq05",
+      "text": "sum(eligible_hist)=pressure_T_enabled; sum(predicate_hist)=ways_examined-way_no_live_ro"
+    },
+    {
+      "id": "A2eq06",
+      "text": "raw_reservation_fail = pressure_prod_probe_reached + pressure_prod_probe_not_reached"
+    },
+    {
+      "id": "A2eq07",
+      "text": "pressure_prod_probe_reached = pressure_rewrite_miss + pressure_rewrite_hit_reserved + pressure_kept_fail + pressure_relief_not_consulted + pressure_intermediate_other"
+    },
+    {
+      "id": "A2eq08",
+      "text": "relieve_calls = relieve_T_disabled + relieve_no_eligible + relieve_eligible_selected"
+    },
+    {
+      "id": "A2eq09",
+      "text": "detach_calls = detach_success + detach_false + detach_exception"
+    },
+    {
+      "id": "A2eq10",
+      "text": "ft_access_attempts = commit_accepted + commit_denied + commit_exception"
+    },
+    {
+      "id": "A2eq11",
+      "text": "sum(transition_joint) = ro_admits + ro_merges + ro_fill_packets"
+    },
+    {
+      "id": "A2eq12",
+      "text": "sum(primary blockers)=observed_heads-probe_skipped"
+    },
+    {
+      "id": "A2eq13",
+      "text": "slice every field = sum(disjoint phase every field); global every field = sum(slice every field)"
+    },
+    {
+      "id": "A2eq14",
+      "text": "live_detached = detach_success-detached_retired; final valid epoch requires0; detached_responses are requester-count, not retired transaction-count"
+    },
+    {
+      "id": "A2eq15",
+      "text": "old detached counter = new detach_success at final snapshot"
+    }
+  ],
+  "D16_to_A2_15_mapping": [
+    {
+      "A2_relations": [
+        "A2eq01"
+      ],
+      "D_id": "FE_PARTITION",
+      "binding": "DIRECT_ENUM_CLOSURE",
+      "review": "Sum raw_hit/raw_hit_reserved/raw_miss/raw_reservation_fail/raw_sector_miss/raw_mshr_hit/raw_write_allocated/raw_unknown plus probe_skipped. Need skipped subpartition and requester-class membership separately."
+    },
+    {
+      "A2_relations": [
+        "A2eq02"
+      ],
+      "D_id": "PRESSURE_SCOPE",
+      "binding": "GUARDED_NO_UNKNOWN_BIN",
+      "review": "A2 has Tdisabled/Tenabled but no feature_scope_unknown field. Exact frontend feature state must be always known under raw probe, or missing scope makes equation/causal inference UNKNOWN."
+    },
+    {
+      "A2_relations": [
+        "A2eq03",
+        "A2eq05a"
+      ],
+      "D_id": "ELIGIBILITY",
+      "binding": "GUARDED_COMPLETE_SCAN",
+      "review": "A2 omits candidate_scan_unknown. Need exact full-scan coverage and geometry assertion; any not-run/partial scan must be NA/invalid rather than assigned noeligible0."
+    },
+    {
+      "A2_relations": [
+        "A2eq04",
+        "A2eq05b"
+      ],
+      "D_id": "WAY_SCAN",
+      "binding": "DIRECT_WITH_BITS_AND_PRECEDENCE",
+      "review": "Five exclusive bins known; release must define live identity/generation validation, first-failure priority, predicate bit order and no modeled lookup/selection side effect."
+    },
+    {
+      "A2_relations": [
+        "A2eq06"
+      ],
+      "D_id": "PROBE_REACH",
+      "binding": "GUARDED_SAME_INSTANT",
+      "review": "No reach_unknown field. Need same raw-shadow instant and actual production hook reach proof, including early branches; otherwise tables separate and relation NA."
+    },
+    {
+      "A2_relations": [
+        "A2eq07"
+      ],
+      "D_id": "PREVIEW_PATH",
+      "binding": "COMBINED_EQUATION",
+      "review": "A2 combines evaluation and status into5 buckets. Derive evaluated=rewrite_miss+rewrite_hit_reserved+kept_fail+intermediate_other only when every bucket definition confirmed; notconsulted remains separate."
+    },
+    {
+      "A2_relations": [
+        "A2eq07"
+      ],
+      "D_id": "PREVIEW_STATUS",
+      "binding": "COMBINED_EQUATION_WITH_OTHER",
+      "review": "Explicit HIT_RESERVED exists. intermediate_other needs exact interpretation: other measured enum versus unknown/not-evaluated; do not turn unknown into measured enum."
+    },
+    {
+      "A2_relations": [],
+      "D_id": "REWRITTEN_FINAL",
+      "binding": "FIELDS_EXIST_EQUATION_NOT_LISTED",
+      "review": "pressure_rewrite_miss = rewritten_final_admitted + rewritten_final_denied + rewritten_final_unknown if all are same matched intermediate-MISS population. Final schema/source must bind this."
+    },
+    {
+      "A2_relations": [
+        "A2eq08"
+      ],
+      "D_id": "RELIEVE",
+      "binding": "GUARDED_NORMAL_RETURN",
+      "review": "No relieve_exception counter in flat list. Need exact exception accounting policy/terminal invalidation so equality applies only normally returned calls, or explicit emitted exception metadata."
+    },
+    {
+      "A2_relations": [
+        "A2eq09"
+      ],
+      "D_id": "DETACH_RESULT",
+      "binding": "DIRECT",
+      "review": "detach_calls success+false+exception. Need detach_false first-reason partition and selected_identity_mismatch fatal validity rule."
+    },
+    {
+      "A2_relations": [],
+      "D_id": "POST_RELIEVE",
+      "binding": "FIELDS_EXIST_EQUATION_NOT_LISTED",
+      "review": "Sum8 post_relief status bins = actual normally reached post-relief probes, never automatically detach_calls or successful detach. Need exact normally-returned relation and no-probe exceptional branches."
+    },
+    {
+      "A2_relations": [
+        "A2eq15"
+      ],
+      "D_id": "EXISTING_COUNTER",
+      "binding": "DIRECT_WITH_EXACT_SNAPSHOT",
+      "review": "EPL2ROV1 detached versus new detach_success, exact new binary source/slice/interval initial snapshot; no old-binary counters."
+    },
+    {
+      "A2_relations": [],
+      "D_id": "IMMEDIATE_TRIGGER",
+      "binding": "FIELDS_EXIST_EQUATION_NOT_LISTED",
+      "review": "Successful detach with matched trigger invocation = accepted_after_detach+denied_after_detach+exception_after_detach (unknown only if explicitly not linked). denied_* appear all commit denials; cannot claim per-trigger first-gate distribution without source mapping/bounded sample evidence."
+    },
+    {
+      "A2_relations": [
+        "A2eq14"
+      ],
+      "D_id": "DETACHED_LIFETIME",
+      "binding": "GUARDED_INITIAL_POPULATION",
+      "review": "live_detached is referenced but not counter_fields. It may be record metadata. Need explicit initial_live_detached and final_live_detached or proved epoch initial0 with measured final scalar; retirement transaction unit distinct from responses/sectors."
+    },
+    {
+      "A2_relations": [],
+      "D_id": "ADMITTED_RO",
+      "binding": "EXISTING_AND_NEW_COUNTER_CROSS_BINDING",
+      "review": "Existing accepted_ro = new ro_admits+ro_merges on exact scope. Final release must say source frontend acceptance semantics unchanged and provide existing summary lines. Do not use requester_ro_candidate exposures as accepted request count."
+    },
+    {
+      "A2_relations": [
+        "A2eq13"
+      ],
+      "D_id": "ROLLUP",
+      "binding": "PHASE_ADAPTATION_REQUIRED",
+      "review": "A2 disjoint physical phase buckets are additive by construction; D old exact-requester kernel formula is not applicable because A2 declares no causal requester/victim mapping. Label SINGLE_ACTIVE_INTERVAL as interval only, OVERLAP_UNKNOWN/UNASSIGNED explicit residual; never sum old overlapping kernel intervals."
+    }
+  ],
+  "actions": {
+    "central_changed": false,
+    "cpp_builds": 0,
+    "full_application_starts": 0,
+    "native_runs": 0,
+    "peer_messages": 0,
+    "repo_changed": false
+  },
+  "at_utc": "2026-10-22T03:39:39.677209+00:00",
+  "decision": "Good interface-level coverage of main detach-zero funnel; suitable for preparing decoded-record adapter. Final metadata, source/fixture evidence and guard/phase membership definitions are still required before qualification. Absence from flat counter_fields does not imply absent runtime implementation.",
+  "exact_counter_fields": [
+    "observed_heads",
+    "probe_skipped",
+    "skip_tvd",
+    "skip_ideal",
+    "skip_disabled",
+    "skip_other",
+    "head_absent_cycles",
+    "raw_hit",
+    "raw_hit_reserved",
+    "raw_miss",
+    "raw_reservation_fail",
+    "raw_sector_miss",
+    "raw_mshr_hit",
+    "raw_write_allocated",
+    "raw_unknown",
+    "requester_ro_candidate",
+    "requester_nonro",
+    "requester_ro_runtime_off",
+    "certified_resident_hits",
+    "candidate_deferred_or_native",
+    "pressure_T_disabled",
+    "pressure_T_enabled",
+    "pressure_no_live_ro",
+    "pressure_live_ro_no_eligible",
+    "pressure_eligible",
+    "ways_examined",
+    "way_no_live_ro",
+    "way_not_attached",
+    "way_reuse_seen",
+    "way_no_missing",
+    "way_eligible",
+    "pressure_prod_probe_reached",
+    "pressure_prod_probe_not_reached",
+    "pressure_rewrite_miss",
+    "pressure_rewrite_hit_reserved",
+    "pressure_kept_fail",
+    "pressure_relief_not_consulted",
+    "pressure_intermediate_other",
+    "pressure_frontend_admitted",
+    "pressure_frontend_denied",
+    "rewritten_final_admitted",
+    "rewritten_final_denied",
+    "rewritten_final_unknown",
+    "preview_early_owner",
+    "preview_early_directory",
+    "preview_early_query",
+    "preview_early_wad",
+    "preview_early_tvd",
+    "preview_other",
+    "primary_owner",
+    "primary_directory",
+    "primary_query",
+    "primary_wad",
+    "primary_descriptor",
+    "primary_address",
+    "primary_line",
+    "primary_missq",
+    "primary_data",
+    "primary_response",
+    "primary_unknown",
+    "primary_none",
+    "mask_descriptor",
+    "mask_address",
+    "mask_line",
+    "mask_missq",
+    "mask_data",
+    "mask_response",
+    "mask_wad",
+    "mask_owner",
+    "mask_directory",
+    "mask_query",
+    "ft_access_attempts",
+    "commit_native_owner",
+    "commit_merge",
+    "commit_directory",
+    "commit_promotion",
+    "commit_raw_probe_reached",
+    "raw_tag_fail_commit",
+    "relieve_calls",
+    "relieve_T_disabled",
+    "relieve_no_eligible",
+    "relieve_eligible_selected",
+    "detach_calls",
+    "detach_success",
+    "detach_false",
+    "detach_false_T_disabled",
+    "detach_false_not_attached",
+    "detach_false_reuse",
+    "detach_false_ready",
+    "detach_exception",
+    "selected_identity_mismatch",
+    "post_relief_hit",
+    "post_relief_hit_reserved",
+    "post_relief_miss",
+    "post_relief_fail",
+    "post_relief_sector_miss",
+    "post_relief_mshr_hit",
+    "post_relief_write_allocated",
+    "post_relief_unknown",
+    "commit_accepted",
+    "commit_denied",
+    "commit_exception",
+    "trigger_accepted_after_detach",
+    "trigger_denied_after_detach",
+    "trigger_exception_after_detach",
+    "denied_owner",
+    "denied_directory",
+    "denied_query",
+    "denied_promotion",
+    "denied_tag",
+    "denied_capacity",
+    "denied_held",
+    "denied_wad",
+    "denied_pin",
+    "denied_mshr",
+    "denied_missq",
+    "denied_wad_full",
+    "denied_wb",
+    "denied_landing",
+    "denied_quota",
+    "denied_copy",
+    "denied_bank",
+    "denied_baseline",
+    "denied_other",
+    "ro_admits",
+    "ro_merges",
+    "reuse_seen_first_transition",
+    "ro_responses",
+    "ro_retired",
+    "detached_return_packets",
+    "detached_return_sectors",
+    "detached_responses",
+    "detached_retired",
+    "response_backpressure",
+    "closure_errors",
+    "samples_seen",
+    "samples_stored",
+    "samples_dropped",
+    "eligible_hist_0",
+    "eligible_hist_1",
+    "eligible_hist_2",
+    "eligible_hist_3",
+    "eligible_hist_4",
+    "eligible_hist_5",
+    "eligible_hist_6",
+    "eligible_hist_7",
+    "eligible_hist_8",
+    "eligible_hist_9",
+    "eligible_hist_10",
+    "eligible_hist_11",
+    "eligible_hist_12",
+    "eligible_hist_13",
+    "eligible_hist_14",
+    "eligible_hist_15",
+    "eligible_hist_16",
+    "predicate_hist_0",
+    "predicate_hist_1",
+    "predicate_hist_2",
+    "predicate_hist_3",
+    "predicate_hist_4",
+    "predicate_hist_5",
+    "predicate_hist_6",
+    "predicate_hist_7",
+    "transition_joint_0",
+    "transition_joint_1",
+    "transition_joint_2",
+    "transition_joint_3",
+    "transition_joint_4",
+    "transition_joint_5",
+    "transition_joint_6",
+    "transition_joint_7",
+    "ro_fill_packets"
+  ],
+  "facts": {
+    "A2_equation_count": 15,
+    "D_guarded_equation_count": 16,
+    "actual_delivery_seen": false,
+    "counter_field_count": 172,
+    "new_source_or_binary_reviewed": false,
+    "schema_field_catalog_complete": true,
+    "unique_counter_field_count": 172
+  },
+  "field_catalog": [
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "observed_heads",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 0
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "probe_skipped",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 1
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "skip_tvd",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 2
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "skip_ideal",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 3
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "skip_disabled",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 4
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "skip_other",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 5
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual frontend opportunities with no head; not a subset of observed_heads unless producer says so.",
+      "name": "head_absent_cycles",
+      "provisional_domain": "FRONTEND_OPPORTUNITY",
+      "provisional_unit": "PHYSICAL_CYCLE",
+      "schema_index": 6
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_hit",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 7
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_hit_reserved",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 8
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_miss",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 9
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_reservation_fail",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 10
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_sector_miss",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 11
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_mshr_hit",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 12
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_write_allocated",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 13
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "raw_unknown",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 14
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "requester_ro_candidate",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 15
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "requester_nonro",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 16
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "requester_ro_runtime_off",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 17
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "certified_resident_hits",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 18
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "candidate_deferred_or_native",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 19
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_T_disabled",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 20
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_T_enabled",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 21
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_no_live_ro",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 22
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_live_ro_no_eligible",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 23
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_eligible",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 24
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "ways_examined",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 25
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "way_no_live_ro",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 26
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "way_not_attached",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 27
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "way_reuse_seen",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 28
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "way_no_missing",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 29
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "way_eligible",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 30
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_prod_probe_reached",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 31
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_prod_probe_not_reached",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 32
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_rewrite_miss",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 33
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_rewrite_hit_reserved",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 34
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_kept_fail",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 35
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_relief_not_consulted",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 36
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_intermediate_other",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 37
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_frontend_admitted",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 38
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "pressure_frontend_denied",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 39
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "rewritten_final_admitted",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 40
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "rewritten_final_denied",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 41
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "rewritten_final_unknown",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 42
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "preview_early_owner",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 43
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "preview_early_directory",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 44
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "preview_early_query",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 45
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "preview_early_wad",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 46
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "preview_early_tvd",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 47
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual observed visible head/slice/physical-cycle, with explicit applicability.",
+      "name": "preview_other",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 48
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_owner",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 49
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_directory",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 50
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_query",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 51
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_wad",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 52
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_descriptor",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 53
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_address",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 54
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_line",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 55
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_missq",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 56
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_data",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 57
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_response",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 58
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_unknown",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 59
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exclusive first known blocker (or none/unknown) over observed_heads minus probe_skipped.",
+      "name": "primary_none",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 60
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_descriptor",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 61
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_address",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 62
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_line",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 63
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_missq",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 64
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_data",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 65
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_response",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 66
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_wad",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 67
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_owner",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 68
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_directory",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 69
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Nonexclusive needed-resource snapshot; cannot sum into primary blockers or critical-path stall.",
+      "name": "mask_query",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 70
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "ft_access_attempts",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 71
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_native_owner",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 72
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_merge",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 73
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_directory",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 74
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_promotion",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 75
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_raw_probe_reached",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 76
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "raw_tag_fail_commit",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 77
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual relieve call, not frontend observations.",
+      "name": "relieve_calls",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "RELIEVE_INVOCATION",
+      "schema_index": 78
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual relieve call, not frontend observations.",
+      "name": "relieve_T_disabled",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "RELIEVE_INVOCATION",
+      "schema_index": 79
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual relieve call, not frontend observations.",
+      "name": "relieve_no_eligible",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "RELIEVE_INVOCATION",
+      "schema_index": 80
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual relieve call, not frontend observations.",
+      "name": "relieve_eligible_selected",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "RELIEVE_INVOCATION",
+      "schema_index": 81
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_calls",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 82
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_success",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 83
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_false",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 84
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_false_T_disabled",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 85
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_false_not_attached",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 86
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_false_reuse",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 87
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_false_ready",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 88
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "detach_exception",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 89
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Exact actual detach call/selected identity stage; success means real handshake, exceptions invalid terminal.",
+      "name": "selected_identity_mismatch",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRANSITION_OR_ATTEMPT",
+      "schema_index": 90
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_hit",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 91
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_hit_reserved",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 92
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_miss",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 93
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_fail",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 94
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_sector_miss",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 95
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_mshr_hit",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 96
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_write_allocated",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 97
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Real post-relieve probe when normally reached, not all calls that throw.",
+      "name": "post_relief_unknown",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "POST_RELIEF_PROBE",
+      "schema_index": 98
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_accepted",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 99
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_denied",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 100
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual ft_access invocation or its guarded substage; retries count as separate attempts.",
+      "name": "commit_exception",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 101
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Immediate actual same invocation/ticket outcome after successful detach, not eventual retry admission.",
+      "name": "trigger_accepted_after_detach",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRIGGER_CALL",
+      "schema_index": 102
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Immediate actual same invocation/ticket outcome after successful detach, not eventual retry admission.",
+      "name": "trigger_denied_after_detach",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRIGGER_CALL",
+      "schema_index": 103
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Immediate actual same invocation/ticket outcome after successful detach, not eventual retry admission.",
+      "name": "trigger_exception_after_detach",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "DETACH_TRIGGER_CALL",
+      "schema_index": 104
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_owner",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 105
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_directory",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 106
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_query",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 107
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_promotion",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 108
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_tag",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 109
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_capacity",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 110
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_held",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 111
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_wad",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 112
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_pin",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 113
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_mshr",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 114
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_missq",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 115
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_wad_full",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 116
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_wb",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 117
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_landing",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 118
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_quota",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 119
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_copy",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 120
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_bank",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 121
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_baseline",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 122
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "First actual return gate among commit_denied, subject to final producer scope; not assumed detach-denied-specific.",
+      "name": "denied_other",
+      "provisional_domain": "COMMIT_ACCESS",
+      "provisional_unit": "ACCESS_ATTEMPT",
+      "schema_index": 123
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successful lifecycle transition, with phase of observation rather than causal owner attribution.",
+      "name": "ro_admits",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 124
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successful lifecycle transition, with phase of observation rather than causal owner attribution.",
+      "name": "ro_merges",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 125
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successful lifecycle transition, with phase of observation rather than causal owner attribution.",
+      "name": "reuse_seen_first_transition",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 126
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successfully committed waiter response, may exceed number of transactions.",
+      "name": "ro_responses",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "REQUESTER_RESPONSE",
+      "schema_index": 127
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successful lifecycle transition, with phase of observation rather than causal owner attribution.",
+      "name": "ro_retired",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 128
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Producer must say whether actual accepted fill packets or retry attempts; same-event transition_joint relation requires accepted events.",
+      "name": "detached_return_packets",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "RETURN_PACKET_EVENT",
+      "schema_index": 129
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual distinct accepted sectors, separate from packet and waiter counts; split/duplicate semantics explicit.",
+      "name": "detached_return_sectors",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "RETURN_SECTOR",
+      "schema_index": 130
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successfully committed waiter response, may exceed number of transactions.",
+      "name": "detached_responses",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "REQUESTER_RESPONSE",
+      "schema_index": 131
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual successful lifecycle transition, with phase of observation rather than causal owner attribution.",
+      "name": "detached_retired",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 132
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Actual response commit refusal; repeated cycles not unique requesters.",
+      "name": "response_backpressure",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "RESPONSE_DENIAL_ATTEMPT",
+      "schema_index": 133
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Any positive value invalidates terminal scientific diagnostic acceptance.",
+      "name": "closure_errors",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "ERROR_EVENT",
+      "schema_index": 134
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Samples seen/stored/dropped; sample drops are not counter drops.",
+      "name": "samples_seen",
+      "provisional_domain": "SAMPLING_METADATA",
+      "provisional_unit": "SAMPLE_EVENT",
+      "schema_index": 135
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Samples seen/stored/dropped; sample drops are not counter drops.",
+      "name": "samples_stored",
+      "provisional_domain": "SAMPLING_METADATA",
+      "provisional_unit": "SAMPLE_EVENT",
+      "schema_index": 136
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Samples seen/stored/dropped; sample drops are not counter drops.",
+      "name": "samples_dropped",
+      "provisional_domain": "SAMPLING_METADATA",
+      "provisional_unit": "SAMPLE_EVENT",
+      "schema_index": 137
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_0",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 138
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_1",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 139
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_2",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 140
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_3",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 141
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_4",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 142
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_5",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 143
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_6",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 144
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_7",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 145
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_8",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 146
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_9",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 147
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_10",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 148
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_11",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 149
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_12",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 150
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_13",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 151
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_14",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 152
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_15",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 153
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "One candidate-count sample per pressure_T_enabled event, bin=eligible ways, not total ways.",
+      "name": "eligible_hist_16",
+      "provisional_domain": "FRONTEND_HEAD_CYCLE",
+      "provisional_unit": "HEAD_CYCLE_EXPOSURE",
+      "schema_index": 154
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_0",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 155
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_1",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 156
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_2",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 157
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_3",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 158
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_4",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 159
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_5",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 160
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_6",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 161
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Read-only same-set way observations under measured raw pressure; not unique transactions.",
+      "name": "predicate_hist_7",
+      "provisional_domain": "PRESSURE_WAY_SNAPSHOT",
+      "provisional_unit": "WAY_EXPOSURE",
+      "schema_index": 162
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_0",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 163
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_1",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 164
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_2",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 165
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_3",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 166
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_4",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 167
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_5",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 168
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_6",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 169
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Attached/reuse/missing predicate snapshot at successful admit/merge/fill transitions only; not time occupancy.",
+      "name": "transition_joint_7",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "TRANSACTION_TRANSITION",
+      "schema_index": 170
+    },
+    {
+      "binding_status": "EARLY_SCHEMA_ONLY_REQUIRES_FINAL_SOURCE_AND_LINE_EXAMPLE",
+      "denominator": "Producer must say whether actual accepted fill packets or retry attempts; same-event transition_joint relation requires accepted events.",
+      "name": "ro_fill_packets",
+      "provisional_domain": "TRANSACTION_LIFECYCLE",
+      "provisional_unit": "RETURN_PACKET_EVENT",
+      "schema_index": 171
+    }
+  ],
+  "final_release_must_deliver": [
+    {
+      "deliver": [
+        "Formal final DELIVERY/RECEIPT/STATUS with exact Core/Framework/vendor commit, ELF/archive SHA, build commands/options/env, upstream d010 diff, clean source identity, supported F profile, source-linked controls and engineering release results.",
+        "Explicit difference between early schema publication and implemented/tested release; no early schema treated as production qualification."
+      ],
+      "id": "FINAL_PRODUCER_AUTHORITY"
+    },
+    {
+      "deliver": [
+        "Exact native line grammar and complete bounded SLICE/PHASE/GLOBAL/SAMPLE line examples from actual producer, including escaping, duplicates, record order and end-of-output/terminal framing.",
+        "Record metadata names and types for version, enabled state, source/runtime identity, run ID, physical start/end half-open interval, slice, phase key/kernel IDs/mode, epoch_closed, live RO/descriptors/lines/live_detached, initial counters, overflow, closure and terminal flags.",
+        "Existing EPL2ROV1 and ROC1 lines unchanged, with exact final sample and cross-binding. Metadata absent from counter_fields is not evidence of missing implementation."
+      ],
+      "id": "DECODED_RECORD_LAYOUT_AND_LINES"
+    },
+    {
+      "deliver": [
+        "All64 SLICE records including zero-traffic slices and GLOBAL; complete PHASE catalog for each slice, explicit UNASSIGNED and OVERLAP_UNKNOWN buckets, SINGLE_ACTIVE_INTERVAL exact interval UID metadata.",
+        "Define kernel_limits16: limit of unique kernel buckets, simultaneous active kernels or another dimension; define behavior on kernel17 and overlapping/unassigned transitions. Overflow/unsupported cannot silently merge into measured single-kernel attribution.",
+        "Counters at events belong current disjoint physical phase, not requester/victim kernel. Samples and lifecycle events phase binding stated. Sum disjoint membership exactly once with explicit residuals; no duplicate phase keys.",
+        "Specify whether same phase label can represent several discontinuous time segments. If yes emit cumulative phase bucket with membership semantics or explicit segment list; do not pretend [min,max) is one nonoverlapping interval."
+      ],
+      "id": "COMPLETE_PHASE_MEMBERSHIP"
+    },
+    {
+      "deliver": [
+        "Every counter uint64 nonnegative, bool rejected; overflow saturated/fatal with explicit invalid marker, never silent wrap. Slice IDs0..63. KernelUID domains exact nonnegative width and reserved sentinels explicit.",
+        "All raw/status enums0..7 named; any unexpected enum maps explicit UNKNOWN and invalid/limited coverage rule. Sample immediate_commit_result=-1 means NOT_LINKED/NA, never a negative metric or denied result.",
+        "eligible_hist0..16 requires actual qualified associativity<=16 and full scan; no silent clamp into bin16. predicate_hist0..7 and transition_joint0..7 need exact bit mapping/ordering, live-only applicability and masks.",
+        "At most64 stored samples per process, samples_seen=stored+dropped on exact scope; diagnostic output actual byte limit67108864 including framing; no-output/truncation invalidates counters rather than parsed zero.",
+        "Value0 only for exact emitted measured field; unavailable/unsupported/not-consulted preserves NA and applicability. Zero denominator ratios remain null."
+      ],
+      "id": "VALUE_AND_RANGE_BOUNDS"
+    },
+    {
+      "deliver": [
+        "Provide machine-readable equation expansion with field lists, units, exact guard, initial/final population for all15 A2 equations and E/D extra relations: rewritten-final, post-relief, immediate-trigger, admitted-RO, skipped/requester/false/denied partitions.",
+        "pressure_frontend_admitted is admission permit, not actual commit success; preserve independent domains. Multiple waiter responses not equal transaction retirements.",
+        "Feature/snapshot/reach/scan missing states must be proved known under stated applicability or explicitly emitted UNKNOWN/NA; no absent bin automatically0.",
+        "Skipped TVD/ideal/disabled coverage explains observed_heads/probe_skipped membership; head_absent_cycles is opportunity-level separate count; upstream unobservable traffic remains outside claims."
+      ],
+      "id": "RELATION_COVERAGE"
+    },
+    {
+      "deliver": [
+        "Exact selected_identity_mismatch, detach_exception, commit_exception, closure_errors and overflow policy for valid terminal: positive invalidates acceptance, preserve evidence.",
+        "Actual relieve-selected/detach-call/handshake/post-probe order and current firsteligible unchanged; source-linked reason counters reuse branch outcomes without extra mutating queries.",
+        "Later retry trigger linkage remains NOT_MEASURED. If denial reasons are all commit calls rather than detach-trigger subset, D reports exact limitation."
+      ],
+      "id": "EXCEPTION_AND_IDENTITY_SAFETY"
+    }
+  ],
+  "normalizer_plan": {
+    "acceptance": "Independent E source/binary/config/input/oracle/resource/native/durable terminal gates remain separate; VALID_DECLARATIONS_ONLY never implies full app PASS.",
+    "cross_domain_bridge": "Only real same-event detach transition reconciliation may bridge COMMIT_ACCESS/lifecycle existing summary on exact source/slice/interval. Frontend exposures never equated with commit attempts.",
+    "domains": "One A2 record contains mixed domains; split into normalized per-domain views with shared exact provenance rather than assign all fields FRONTEND. Sampling metadata and physical opportunity counts separate.",
+    "field_enumeration": "Use all172 exact declared names; unexpected counters reject/record schema mismatch, absent ones NA. Never infer missing zero or synthesize formal names from D semantic labels.",
+    "implementation_now": "Not implemented in this task; review only. Can implement schema-driven normalization of decoded objects after exact metadata/phase map arrives, without guessing text parser.",
+    "input": "A2 decoded record objects plus owner-reviewed metadata binding and exact committed COUNTER_SCHEMA; no raw trace or speculative line grammar.",
+    "metadata_binding": "Bind real run/slice/phase ID, cumulative snapshot interval, metric units, measured/NA state, overflow and epoch closure; current source field catalog is provisional, not final field semantics.",
+    "phase_adaptation": "Current generic validator kernel interval model must not misrepresent A2 discontinuous disjoint phase buckets. Add explicitly keyed PHASE_BUCKET rollup or adapter-owned exact segment representation; preserve UNASSIGNED/OVERLAP_UNKNOWN and additive bucket membership. Root review required before use."
+  },
+  "not_in_counter_fields_but_may_be_metadata": [
+    "overflow",
+    "epoch_closed",
+    "initial_live_detached",
+    "live_detached",
+    "final_live_detached",
+    "record run/source/kernel/phase/interval identity",
+    "phase completeness marker",
+    "sample immediate_commit_result"
+  ],
+  "provenance": {
+    "A2_commit": "0ef8b65971f8a853d29b6cea1074c08d004727d5",
+    "A2_design_sha256": "8fdb9875c670683fe568b791af9bd05344645e9cc0c0b8cc2264d7e10fece2f0",
+    "A2_schema_path": "docs/ep_l2/review_packs/MS20261022_A2_DETACH_OBSERVER_PRODUCER_r1/COUNTER_SCHEMA.json",
+    "A2_schema_sha256": "2dcac5e02388671ffe71b3ef32e15231e9226543d6f1b270242e2653f8a0e160",
+    "A2_status_sha256": "74ead4eaf06aaa946521240c83a87c9c7129797defe2da2c71982f7e5fc13617",
+    "D_contract_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/owner_intake/D/ANALYSIS_CONTRACT.json",
+    "D_contract_sha256": "ec525f4be4a2316d9d9c036d31a477ac1a3ff7fddf2361c9b8746499b9f7a634",
+    "E_counter_contract_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/COUNTER_CONTRACT.json",
+    "E_counter_contract_sha256": "ffc0ea3c62c92bb69939cabc0b90fc6e1b7117893861cf174522ffc82b4e89b6"
+  },
+  "schema": "E2_EARLY_A2_DETACH_SCHEMA_REVIEW_V1",
+  "status": "EARLY_INTERFACE_REVIEW_COMPLETE_NOT_PRODUCER_RELEASE_OR_QUALIFICATION"
+}

@@ -32,3 +32,7 @@ FWT补原MAIN第六对，SGEMM独立探索，合计7个独立workload；原七MA
 用户明确要求完整解决detach=0，实际Goal工具已返回ACTIVE：`EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1`。见[授权与验收范围](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/USER_GOAL_AUTHORIZATION.json)。A2 E36最终证书兼容与D E62最终科学回执已真正收到并独立核验，先前缺口已解除；D本人已ACK新E59并自报WORKING。当前等待新observerproducer，不继承main61资格。
 
 本轮由E统一推进：独立观测资格、原中央附加精确one-end scope、实时门禁通过后首个完整SGEMM正向RO诊断F，至多1次新启动。无需普通工程重复确认；额外完整应用或语义/比较/预算变化另审。旧main61单F提案不执行并集，旧S不当新binary配对。当前仍50/controller STOPPED、0新启动/0中央变更；原T0和10/24GiB保留。无第二controller或后台检查器。
+
+## 用户最新责任归属
+
+E2全责并行解决detach=0，沿用同一ACTIVE Goal。E完成计数/源码/资格/中央接入/实际诊断和最终定量归因；接收A2已开始的独立observerproducer，避免重复改源码。C/D已有证书与分析合同已收，D后续论文消费不作为E定量收口前置，绝不代写D消费ACK。见[E2全责修订](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/E2_FULL_OWNERSHIP_USER_STEERING.json)。A2早期172counter schema已发布并审查，不是formalrelease；E正在适配互斥PHASE_BUCKET而非伪kernel因果分区。
