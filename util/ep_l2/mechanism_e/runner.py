@@ -28,6 +28,7 @@ import disk_policy
 import durable_exit
 import detach_diagnostic_policy as detach_policy
 import detach_validation
+import immutable_binary_snapshot as binary_sharing
 
 
 def inspect(spec,coord,launch_check=True):
@@ -157,7 +158,10 @@ def execute(spec,coord):
     try:
         directory.mkdir(parents=True,exist_ok=False);created=True
         write_json(directory/'input_spec.json',spec);write_json(directory/'input_audit.json',audit)
-        shutil.copy2(spec['binary'],directory/'accel-sim.out')
+        if binary_sharing.enabled(spec):
+            binary_sharing.snapshot(coord,spec,attempt,directory,write_json)
+        else:
+            shutil.copy2(spec['binary'],directory/'accel-sim.out')
         require(digest(directory/'accel-sim.out')==spec['identity']['binary_sha256'],'binary snapshot changed')
         command=[str(directory/'accel-sim.out')]
         for i,asset in enumerate(spec['configs']):

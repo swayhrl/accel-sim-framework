@@ -23,6 +23,7 @@ import detach_diagnostic_policy as detach_policy
 import detach_parser_recovery as parser_recovery
 import r5_preparation
 import tagpressure_metadata
+import immutable_binary_snapshot as binary_sharing
 import capacity_policy
 import limits_policy
 import workload_policy
@@ -194,7 +195,8 @@ def r5_metadata_preflight(data,spec,*,already_reserved=False,authority_data=None
     leases=[r for r in actual['resource_leases'].values() if r['status'] in ACTIVE and r.get('experiment_id')==CAMPAIGN]
     other_pending=sum(max(0,r.get('disk_growth_bytes',FULL_GROWTH)-retained_tree_bytes(Path(r['result_directory']))) for r in active_other)
     other_pending+=sum(r.get('result_growth_bytes',0) for r in leases)
-    return tagpressure_metadata.preflight(item,local_resources(),output_usage(),physical_pending_bytes=pending_growth(data),other_result_pending_bytes=other_pending,proposed_growth_bytes=0 if already_reserved else spec['maximum_result_bytes'],proposed_monitor_bytes=0 if already_reserved else 2*GIB,endpoint_retained_bytes=retained,submitted_condition_ids=submitted,proposed_condition_ids=[spec['condition_id']])
+    sharing=binary_sharing.stage_plan(spec,actual) if not already_reserved and binary_sharing.enabled(spec) else None
+    return tagpressure_metadata.preflight(item,local_resources(),output_usage(),physical_pending_bytes=pending_growth(data),other_result_pending_bytes=other_pending,proposed_growth_bytes=0 if already_reserved else spec['maximum_result_bytes'],proposed_monitor_bytes=0 if already_reserved else 2*GIB,endpoint_retained_bytes=retained,submitted_condition_ids=submitted,proposed_condition_ids=[spec['condition_id']],physical_binary_share_credit=sharing['metadata_credit'] if sharing else 0)
 
 
 def resource_gate(data, kind, cpu, memory, growth, resources, usage=None, scan=False, result_growth_bytes=None,
@@ -740,7 +742,12 @@ class Coordinator:
             # before this transaction and again before real Popen; its audit must be attached.
             require(spec.get('input_audit',{}).get('identity')==identity,'content-closed input audit required')
             r5_metadata_preflight(data,spec)
-            resource_gate(data,'simulation',1,spec.get('memory_bytes',8*GIB),growth,local_resources(),output_usage(),identity['workload']=='scan')
+            sharing=binary_sharing.stage_plan(spec,data) if binary_sharing.enabled(spec) else None
+            if sharing:
+                # Full r5 generation preflight above remains mandatory; only physical growth differs.
+                resource_gate(data,'simulation',1,spec.get('memory_bytes',8*GIB),sharing['growth'],local_resources(),None,identity['workload']=='scan')
+            else:
+                resource_gate(data,'simulation',1,spec.get('memory_bytes',8*GIB),growth,local_resources(),output_usage(),identity['workload']=='scan')
             attempt_id=f'E{len(item["attempts"])+1:03d}_{uuid.uuid4().hex[:8]}'
             directory=OUTPUT/attempt_id
             row={'attempt_id':attempt_id,'run_key':key,'identity':identity,'selection_id':spec['selection_id'],
@@ -790,7 +797,14 @@ class Coordinator:
                 r5_metadata_preflight(data,{'condition_id':attempt['condition_id']},already_reserved=True)
             view=json.loads(json.dumps(data));view['runs'].pop(attempt['run_key'])
             row=data['runs'][attempt['run_key']]
-            resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
+            share_spec=dict(scientific_scope=attempt.get('scientific_scope'),condition_id=attempt.get('condition_id'),identity=attempt['identity'])
+            sharing=binary_sharing.stage_plan(share_spec,data,prestart=True,cwd=cwd) if binary_sharing.enabled(share_spec) else None
+            if sharing:
+                resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],sharing['growth'],
+                              local_resources(),None,row['scan'],disk_floor_bytes=row['disk_floor_bytes'],
+                              monitor_reserve_bytes=row['monitor_reserve_bytes'],authority_data=data)
+            else:
+                resource_gate(view,'simulation',row['cpu_units'],row['memory_bytes'],row['disk_growth_bytes'],
                           local_resources(),output_usage(),row['scan'],disk_floor_bytes=row['disk_floor_bytes'],
                           monitor_reserve_bytes=row['monitor_reserve_bytes'],authority_data=data)
             require(item.get('controller',{}).get('process')==process_identity(os.getpid()) and

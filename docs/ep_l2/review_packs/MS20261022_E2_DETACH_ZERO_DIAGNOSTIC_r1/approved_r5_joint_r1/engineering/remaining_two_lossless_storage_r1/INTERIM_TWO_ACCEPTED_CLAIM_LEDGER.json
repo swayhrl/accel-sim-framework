@@ -1,0 +1,320 @@
+{
+  "schema": "E2_INTERIM_DETACH_ZERO_CLAIM_LEDGER_V1",
+  "status": "INTERIM_TWO_OF_FOUR_ACCEPTED_POINTS_ONLY_NOT_GOAL_CLOSURE",
+  "created_utc": "2026-10-22T14:47:54.631617+00:00",
+  "owner": "E2",
+  "review_mode": "BOUNDED_EXISTING_COMPACT_METADATA_AND_FROZEN_SOURCE_FLOW_ONLY",
+  "source_identity": {
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a"
+  },
+  "scope": {
+    "r5_accepted_points_used": 2,
+    "r5_authorized_points_total": 4,
+    "new_S_or_performance_pair": false,
+    "Vector_Conv_r5_not_inferred": true,
+    "oldmain61_pair_validity_unchanged": true,
+    "raw_or_trace_read": false,
+    "application_or_build_start": false,
+    "registry_or_repo_write": false
+  },
+  "table": [
+    {
+      "workload": "cfd_097k",
+      "attempt_id": "E056_47abdc7f",
+      "accepted_commit": "2fec00b1c1c959cc0e72b7116da7241a4eab521f",
+      "instructions": 143129372,
+      "cycles": 79157,
+      "observed_head_cycle_exposures": 1742633,
+      "covered_head_cycle_exposures": 1524394,
+      "TVD_skipped_head_cycle_exposures": 218239,
+      "max_RESERVED_ways_covered": 4,
+      "max_RESERVED_ways_newTag_MISS_FAIL": 3,
+      "r16_covered_head_cycle_exposures": 0,
+      "HIT_RESERVED_head_cycle_exposures": 0,
+      "newTag_MISS_head_cycle_exposures": 162681,
+      "MISS_r0_invalid0_head_cycle_exposures": 66779,
+      "eligible_present_head_cycle_exposures": 104842,
+      "newTag_certifiedRO_and_eligible_head_cycle_exposures": 234,
+      "commit_raw_probe_calls": 1163176,
+      "commit_TagFAIL_calls": 0,
+      "relieve_calls": 0,
+      "detach_success": 0,
+      "RO_model_domain": {
+        "accepted_global_reads": 1079230,
+        "accepted_oracle_candidates": 206448,
+        "accepted_ro": 206448,
+        "transactions": 51678,
+        "merges": 154770,
+        "responses": 206448,
+        "detached": 0
+      },
+      "accepted_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT",
+      "pair": false,
+      "native_exit0_fullinstructions_64slice_drain": "Already independently accepted in cited point; not revalidated by this metadata-only ledger."
+    },
+    {
+      "workload": "dwt2d",
+      "attempt_id": "E057_b4a7e175",
+      "accepted_commit": "28c4c97b5083d8f21ef3eae09a8d962b5944cfd3",
+      "instructions": 148684429,
+      "cycles": 167643,
+      "observed_head_cycle_exposures": 2199038,
+      "covered_head_cycle_exposures": 1863454,
+      "TVD_skipped_head_cycle_exposures": 335584,
+      "max_RESERVED_ways_covered": 3,
+      "max_RESERVED_ways_newTag_MISS_FAIL": 3,
+      "r16_covered_head_cycle_exposures": 0,
+      "HIT_RESERVED_head_cycle_exposures": 7250,
+      "newTag_MISS_head_cycle_exposures": 450831,
+      "MISS_r0_invalid0_head_cycle_exposures": 361550,
+      "eligible_present_head_cycle_exposures": 20185,
+      "newTag_certifiedRO_and_eligible_head_cycle_exposures": 0,
+      "commit_raw_probe_calls": 1793713,
+      "commit_TagFAIL_calls": 0,
+      "relieve_calls": 0,
+      "detach_success": 0,
+      "RO_model_domain": {
+        "accepted_global_reads": 732912,
+        "accepted_oracle_candidates": 98304,
+        "accepted_ro": 39836,
+        "transactions": 9965,
+        "merges": 29871,
+        "responses": 39836,
+        "detached": 0
+      },
+      "accepted_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT",
+      "pair": false,
+      "native_exit0_fullinstructions_64slice_drain": "Already independently accepted in cited point; not revalidated by this metadata-only ledger."
+    }
+  ],
+  "supported_claims": [
+    {
+      "id": "C1",
+      "status": "SUPPORTED_FOR_THESE_TWO_ACCEPTED_R5_POINTS",
+      "claim": "在已覆盖的普通frontend head-cycle中，新Tag需求时目标set最多只有3个RESERVED way；CFD所有covered最多4个，DWT最多3个，均未出现all16 RESERVED。",
+      "evidence": [
+        "table.max_RESERVED_ways_covered",
+        "table.max_RESERVED_ways_newTag_MISS_FAIL",
+        "table.r16_covered_head_cycle_exposures"
+      ],
+      "limit": "Only covered sampled current-head targetsets; not all sets every cycle and not skipped heads."
+    },
+    {
+      "id": "C2",
+      "status": "SUPPORTED_FROZEN_SOURCE_AND_ACTUAL_COMMIT_COUNTERS",
+      "claim": "本版新Tag miss的Tag RESERVATION_FAIL由allways RESERVED触发；两个应用真实commit TagFAIL/relieve/detach均为0，因此本次未到达detach的必要生产触发点。",
+      "evidence": [
+        "source gpu-cache.cc354-440",
+        "source ep-l2-ft-cache.inc325-329",
+        "table.commit_TagFAIL_calls",
+        "table.relieve_calls",
+        "table.detach_success"
+      ],
+      "limit": "This identifies the measured immediate trigger absence, not the counterfactual cause of every pressure pattern or all possible requester coverage."
+    },
+    {
+      "id": "C3",
+      "status": "SUPPORTED_TRUE_SAME_SET_RAW_RESERVED_INVALID_JOINT",
+      "claim": "Tag占满与不可替换的RESERVED压力不同：CFD有66,779、DWT有361,550次MISS暴露同时reserved=0且invalid=0，16个way都属于非reserved、非invalid可替换类别。",
+      "evidence": [
+        "table.MISS_r0_invalid0_head_cycle_exposures",
+        "source dirty-fallback gpu-cache.cc384-440"
+      ],
+      "limit": "These are repeated head-cycle exposures; do not call them unique cache lines or infer clean/dirty composition from separate marginals."
+    },
+    {
+      "id": "C4",
+      "status": "SUPPORTED_RO_MODEL_AND_SNAPSHOT_DOMAINS_KEPT_DISTINCT",
+      "claim": "零detach不是没有RO或没有结构eligible候选：两点均有真实RO事务及同目标set eligible暴露；CFD还存在234次新Tag需求、certifiedRO requester与eligible同时成立，但没有TagFAIL。",
+      "evidence": [
+        "table.RO_model_domain",
+        "table.eligible_present_head_cycle_exposures",
+        "table.newTag_certifiedRO_and_eligible_head_cycle_exposures"
+      ],
+      "limit": "Presence is necessary-condition information, not sufficient admission/trigger or benefit. DWT对应certifiedRO新Tag+eligible联合是0，不用CFD替代。"
+    },
+    {
+      "id": "C5",
+      "status": "SOURCE_BOUND_SCOPE_ONLY_TVD_SNAPSHOT_FIELDS_NA",
+      "claim": "TVD接管的当次head不走普通RO/FT relief触发点，但已有tvd_frontend真实Tag probe，raw/set/requester/eligible未被r5记录，必须NA。",
+      "evidence": [
+        "TVD source-flow review caller_chain/actual_tag_probe_precedes_skip"
+      ],
+      "limit": "Handled raw may be MISS or RESERVATION_FAIL. TVD_WAIT may later fall back to normal path; not every skip is a payload hit or completed response. No unobserved distribution is filled with zero."
+    },
+    {
+      "id": "C6",
+      "status": "SUPPORTED_SCOPE_BOUND_INTERPRETATION",
+      "claim": "已有同源有限native正向例证明被实际覆盖的detach与observer接线可达；两个应用的零触发与当前冻结Tag规则/观测相容，现有证据没有要求修改生产机制。",
+      "evidence": [
+        "accepted release native positive evidence",
+        "C1",
+        "C2"
+      ],
+      "limit": "No exhaustive all-requester/phase/212-branch correctness proof. Native positives do not create application positive Tag-detach evidence."
+    },
+    {
+      "id": "C7",
+      "status": "PERFORMANCE_NONATTRIBUTION_REQUIRED",
+      "claim": "原main61 S/F正式性能配对仍独立有效；当前r5 F单端诊断不是新S/F配对，旧F加速不能被记为已观察到的T Tag-detach收益。",
+      "evidence": [
+        "no newS/no performancepair authority",
+        "table.detach_success==0"
+      ],
+      "limit": "No cross-binary speedup or backfilled old-run occupancy. Zero transition does not by itself establish zero cost/effect of the T configuration or isolate benefits of W/V/M."
+    }
+  ],
+  "must_not_claim": [
+    "不能称Tag一直充足；大量目标set已无INVALID但存在合法可替换Tag。",
+    "不能称整个应用所有set/所有周期都未all16 RESERVED：只测covered当前head，skips为NA。",
+    "HIT_RESERVED是同line匹配的早返回状态；DWT7250次不等于全set16 RESERVED或新Tag RESERVATION_FAIL。",
+    "不能从eligible/reason/wayclass边际与requester/route边际相乘构造联合；只使用真实同snapshot联合。",
+    "不能用头周期计数当unique request、unique victim或独立Tag事件；一个等待head跨cycle可重复。",
+    "不能把物理kernel phase当requester或victim因果kernel；旧RO逐phase未发出时保持UNKNOWN。",
+    "不能由CFD/DWT两端推断Vector/Conv新r5状态；其既有r4 commit触发为0是另一个版本的证据，不能补r5 reserved分布。",
+    "不能以两个r5负例或有限native声明所有requester均可触发、机制普适正确或T无价值；也不能因期望非零而修改触发规则。",
+    "不能由上游阻塞边际认定某一gate导致零detach；没有隔离反事实/时序因果证据。",
+    "不能宣布4/4或整个Goal已闭合；本ledger只有已接受2/4的阶段结论。"
+  ],
+  "frozen_source_refs": {
+    "refs": {
+      "gpu-cache.cc": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-cache.cc",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "5d15c9b345a9c7625b6895314a02e83b7a60e36a44a5d7c9e73b454232fe4f19",
+        "actual_bytes_equal_frozen_git_source": true
+      },
+      "gpu-cache.h": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/gpu-cache.h",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "a9a5fba3eb8829ef2b9ac2553c15c84ad357ebd136c1a99b213e3ff70831a891",
+        "actual_bytes_equal_frozen_git_source": true
+      },
+      "ep-l2-ft-cache.inc": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-ft-cache.inc",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "c769532c78a6e9ce8c4d32139277faaa8847d9581ff2be8fdf2d41dbc764beb2",
+        "actual_bytes_equal_frozen_git_source": true
+      },
+      "ep-l2-ro-runtime.inc": {
+        "path": "/workspace/worktrees/gpgpu-sim-ep-l2-ms20261022-e2-tagpressure-r5-v1/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+        "core_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+        "sha256": "4e76e9117705952754687b16cc470f85ff53e23b8fb49414b214276150ce32b8",
+        "actual_bytes_equal_frozen_git_source": true
+      }
+    },
+    "line_ranges": {
+      "gpu-cache.cc:354-383": "matchingTag early outcomes and all_reserved=false for any unreserved way",
+      "gpu-cache.cc:384-420": "invalid/clean/dirty replacement preference and dirty fallback",
+      "gpu-cache.cc:425-440": "all_reserved→RESERVATION_FAIL; otherwise INVALID/valid/dirty selected",
+      "gpu-cache.cc:2978-3008": "status-only same target-set capture; concretewayclass copied without modeled extra probe/ports",
+      "gpu-cache.h:409-415": "sector line RESERVED if anysector RESERVED",
+      "gpu-cache.h:1097-1108": "reserved dominates class; otherwise allINVALID / anyMODIFIED / clean",
+      "ep-l2-ft-cache.inc:325-329": "actual commit probe records TagFAIL and calls relieve only on RESERVATION_FAIL with RO runtime",
+      "ep-l2-ro-runtime.inc:241-249": "relieve requires actual eligible same-set victim, then detach"
+    },
+    "source_criterion": "all16 ways RESERVED for a new-tag miss; full occupancy of valid/modified ways alone is not the trigger"
+  },
+  "TVD_frozen_source_review_ref": {
+    "path": "/tmp/e2_r5_skip_tvd_source_only_review_r1.json",
+    "sha256": "05258ff73c0caf4531f4f09192aac814694ce93e200c5a4586bc5afd52e7dd09",
+    "bytes": 8817
+  },
+  "final_aggregate_fields": [
+    {
+      "field": "workload/attempt_id/accept_commit/source5/Q/spec/inputSHA",
+      "domain": "Identity; no merge across binaries"
+    },
+    {
+      "field": "status/nativeexit/fullinstructions/64slice/closed",
+      "domain": "Existing original central acceptance"
+    },
+    {
+      "field": "cycles/instructions",
+      "domain": "Diagnostic point only; no performancepair"
+    },
+    {
+      "field": "observed/covered/skippedByReason/absent",
+      "domain": "Deduplicated physical slice×cycle×headUID exposures"
+    },
+    {
+      "field": "rawStatus×reservedWays×invalidWays histogram",
+      "domain": "Real targetset/head snapshot joint"
+    },
+    {
+      "field": "maxReservedCovered/maxReservedNewTag/r16ByRaw",
+      "domain": "Keep MISS/FAIL vs same-line raw explicit"
+    },
+    {
+      "field": "MISS_r0_invalid0",
+      "domain": "Nonreserved noninvalid targetset full occupancy exposures"
+    },
+    {
+      "field": "eligiblePresentHead/eligibleWay/reasonMask",
+      "domain": "Separate head and way domains; NA on skipped"
+    },
+    {
+      "field": "raw×reserved×requester×eligibility×route×admit×early",
+      "domain": "Only supplied true joint; no marginal synthesis"
+    },
+    {
+      "field": "actualFTcalls/commitProbe/commitFAIL/relieve/detach/retired",
+      "domain": "Production lifecycle/call domain"
+    },
+    {
+      "field": "RO accepted/candidate/transactions/merges/responses",
+      "domain": "Native authoritative RO model domains"
+    },
+    {
+      "field": "TVD skip source boundary/availableSplitCounts",
+      "domain": "Actual probe exists; raw/set split NA if not emitted"
+    },
+    {
+      "field": "physicalPhase/kernelScope/catalog",
+      "domain": "Event-time scope; not requester/victim attribution"
+    },
+    {
+      "field": "bugEvidence/coverageGaps/nonclaims",
+      "domain": "Required explicit scientific limits"
+    }
+  ],
+  "true_bug_change_policy": {
+    "detected_production_bug_requiring_fix": false,
+    "current_action": "Preserve truthful negative application evidence; no production mechanism edit justified by these data. Finish remaining legally admitted authorized points or record precise legalSTOP.",
+    "if_a_true_bug_is_found": "Preserve actual failing evidence, specify violation of frozen semantic contract, review source fix independently; new source/main/archive identity and affected finite native/input/science qualification before any separately authorized application. Do not force nonzero by Tag priority, capacity or oracle changes under this observer-only approval."
+  },
+  "inputs": [
+    {
+      "path": "/tmp/e2_r5_cfd_cause_root_review_r1.json",
+      "sha256": "da891d4a4bfdb21c10f07eb230b143761c0e255abc3d9bf66d2a792328efd5a4",
+      "bytes": 9180
+    },
+    {
+      "path": "/tmp/e2_r5_dwt_compact_causal_review_r1.json",
+      "sha256": "4710054bffca06126a6764403ac13ece9e86da8e7a062f3edc2f06e1385f7869",
+      "bytes": 14422
+    },
+    {
+      "path": "/tmp/e2_r5_skip_tvd_source_only_review_r1.json",
+      "sha256": "05258ff73c0caf4531f4f09192aac814694ce93e200c5a4586bc5afd52e7dd09",
+      "bytes": 8817
+    },
+    {
+      "path": "/tmp/e2_r5_parallel_l2_request_analysis_r1/REPORT.md",
+      "sha256": "88425d5b2bd28d0bf85c9cbd3b3a239545b1ae4b67b5cb8bc795ceca50e202d6",
+      "bytes": 4518
+    }
+  ],
+  "bounded_checks": [
+    "CFD covered raw partition closes",
+    "DWT covered raw partition closes",
+    "Both observed=covered+skipped",
+    "Both newTag maximum<16 and actual commitFAIL/relieve/detach0",
+    "Same exact production source5 for both points"
+  ],
+  "scope_limit": "This derivative report trusts cited accepted terminal/source reviews; it does not re-run decoder/native/terminal gates or independently read source/raw again."
+}

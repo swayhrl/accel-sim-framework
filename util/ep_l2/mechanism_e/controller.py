@@ -20,6 +20,7 @@ import limits_policy
 import concurrency_policy
 import durable_exit
 import detach_diagnostic_policy as detach_policy
+import immutable_binary_snapshot as binary_sharing
 
 
 def roll_pairs(coord,requests):
@@ -56,7 +57,13 @@ def submitted_reservation_view(data,running):
 
 def forecast(coord,spec,running):
     """Read-only resource forecast; original transactional admission is final."""
+    if binary_sharing.enabled(spec):
+        with binary_sharing.readonly_original_lock(coord) as data:
+            return _forecast_from_data(coord,spec,running,data)
     data=json.loads((coord.registry.root/'RUN_REGISTRY.json').read_text())
+    return _forecast_from_data(coord,spec,running,data)
+
+def _forecast_from_data(coord,spec,running,data):
     view,virtual=submitted_reservation_view(data,running)
     resources=local_resources();usage=output_usage()
     result=dict(at_unix=time.time(),run_key=run_key(spec['identity']),
@@ -65,8 +72,9 @@ def forecast(coord,spec,running):
         if detach_policy.tagpressure.has(data[FIELD]):
             from coordinator import r5_metadata_preflight
             r5_metadata_preflight(view,spec,authority_data=data)
+        sharing=binary_sharing.stage_plan(spec,data) if binary_sharing.enabled(spec) else None
         resource_gate(view,'simulation',1,spec.get('memory_bytes',8*GIB),
-                      spec.get('maximum_result_bytes',FULL_GROWTH),resources,usage,
+                      sharing['growth'] if sharing else spec.get('maximum_result_bytes',FULL_GROWTH),resources,None if sharing else usage,
                       spec['identity']['workload']=='scan',
                       **({'authority_data':data,'read_only_forecast':True} if detach_policy.active_successor(data[FIELD]).has(data[FIELD]) else {}))
         result.update(fits=True,reason='Original resource gate fits including submitted-not-reserved work')

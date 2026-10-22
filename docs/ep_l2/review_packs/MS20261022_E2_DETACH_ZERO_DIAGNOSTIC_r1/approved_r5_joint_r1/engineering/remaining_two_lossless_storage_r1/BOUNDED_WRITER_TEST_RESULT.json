@@ -1,0 +1,96 @@
+{
+  "schema": "E2_R5_READY_BOUNDED_METADATA_WRITER_CONTROLS_V1",
+  "status": "PASS",
+  "count": 19,
+  "controls": [
+    {
+      "case": "ACTUAL_BEGIN_JOURNAL_HASH_CHAIN",
+      "result": "PASS"
+    },
+    {
+      "case": "BODY_ALIASES_SHARE_IMMUTABLE_INODE",
+      "result": "PASS"
+    },
+    {
+      "case": "ATOMIC_REPLACEMENT_PRESERVES_OLD_ALIAS",
+      "result": "PASS"
+    },
+    {
+      "case": "INVALID_ROLE_CONTROL_OVER2M_REJECTED_BEFORE_WRITE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "role-specific body cap HOLD before write"
+    },
+    {
+      "case": "ORIGINAL_RUNTIME_STATUS_NOT_IMPORTED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "[Errno 2] No such file or directory: '/tmp/e2-bounded-metadata-ready-0xxv7xa0/run_status.json'"
+    },
+    {
+      "case": "FRESH_REPORT_IMPORT_NO_BODY_COPY",
+      "result": "PASS"
+    },
+    {
+      "case": "EXACT_CHANGED_NEW_DIRECTORY_TREE_BOUND",
+      "result": "PASS"
+    },
+    {
+      "case": "REQUIRED_HOOK_REJECT_NOT_BYPASSED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "actual required hooks present: HOLD; do not bypass"
+    },
+    {
+      "case": "UNREGISTERED_PUBLICATION_FILE_REJECTED",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "root writer must register every complete publication body first"
+    },
+    {
+      "case": "LOCAL_TMP_GIT_EXACT_OWN_COMMIT_FULL_READBACK",
+      "result": "PASS"
+    },
+    {
+      "case": "UNCHANGED_POINT_REVIEW_REMAIN_IN_COMPLETE_INVENTORY",
+      "result": "PASS"
+    },
+    {
+      "case": "SPARSE_OVER64_REJECTED_BY_STAT_NO_BODY_READ",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "bounded regular metadata only"
+    },
+    {
+      "case": "AFTER_PUB12_CAP_PREWRITE_REJECTS_OVERSIZE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "all future body/control/journal12MiB cap HOLD before write"
+    },
+    {
+      "case": "INITIAL_FULL_REPORT_PUBLICATION_HOLD_PRESERVES_BODY",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "complete publication body aggregate>12MiB: HOLD, preserve terminal/raw"
+    },
+    {
+      "case": "THIRD_ATTEMPT_REJECTED_BEFORE_ANY_GIT",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "cumulative Git publication attempt/tree limit HOLD before mutation"
+    },
+    {
+      "case": "SOURCE_MODE_DEFAULT160_UNBOUND",
+      "result": "PASS"
+    },
+    {
+      "case": "SIGNED_REAL_BEGIN_INTERFACE_NEW2_96_DWT160",
+      "result": "PASS"
+    },
+    {
+      "case": "MISSING_VALID_BEGIN_REJECTS96",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "actual live append-only journal BEGIN proof changed"
+    },
+    {
+      "case": "GENERATION640_CANNOT_REDUCE",
+      "result": "PASS_EXPECTED_REJECTION",
+      "reason": "generation unchanged/physical bounded96"
+    }
+  ],
+  "synthetic_only": true,
+  "git_remote": "temporary local bare repo only, removed on completion",
+  "actual_campaign_mutations_or_app_or_native": false
+}

@@ -4,6 +4,7 @@ No resource guard waiver, authority change, lease or generation refund.
 import re,copy,os,stat,hashlib,json
 from pathlib import Path
 import tagpressure_successor as r5
+import tagpressure_physical96 as physical96
 MIB=2**20;GIB=2**30;PER_CONDITION=160*MIB
 
 # Only accepted endpoint receipts use the approved per-end result bound. All
@@ -95,10 +96,10 @@ def physical_metadata_conditions(item,submitted_condition_ids,proposed_condition
  ids=(set(rows)|submitted|proposed)-closed
  return [cid for cid in r5.CONDITIONS if cid in ids]
 
-def preflight(item,resources,usage,*,physical_pending_bytes,other_result_pending_bytes,proposed_growth_bytes,proposed_monitor_bytes,endpoint_retained_bytes,submitted_condition_ids,proposed_condition_ids):
+def preflight(item,resources,usage,*,physical_pending_bytes,other_result_pending_bytes,proposed_growth_bytes,proposed_monitor_bytes,endpoint_retained_bytes,submitted_condition_ids,proposed_condition_ids,physical_binary_share_credit=0):
  metadata_generation=remaining(item)
  physical_ids=physical_metadata_conditions(item,submitted_condition_ids,proposed_condition_ids)
- physical_metadata=len(physical_ids)*PER_CONDITION
+ physical_metadata=physical96.physical_bytes(item,physical_ids,r5)
  endpoint_generation=generation_endpoint_remaining(item,endpoint_retained_bytes)
  for n in (physical_pending_bytes,other_result_pending_bytes,proposed_growth_bytes,proposed_monitor_bytes):r5.require(type(n) is int and n>=0,'nonnegative exact conservative forecast')
  proposed=_condition_ids(proposed_condition_ids);rows=_tail_by_condition(item)
@@ -106,7 +107,10 @@ def preflight(item,resources,usage,*,physical_pending_bytes,other_result_pending
  if proposed_growth_bytes==0 and proposed:
   r5.require(all(cid in rows and rows[cid]['state'] in r5.ACTIVE for cid in proposed),'zero additional physical growth only for already-held endpoint')
  r5.require((proposed_growth_bytes==0)==(proposed_monitor_bytes==0),'held proposal/result-monitor must agree')
- r5.require(resources['disk_free_bytes']-physical_pending_bytes-proposed_growth_bytes-proposed_monitor_bytes-physical_metadata>=5*GIB,'R5_ACTIVE_METADATA_WORKSPACE_FORECAST')
+ r5.require(type(physical_binary_share_credit) is int and physical_binary_share_credit in (0,87878744),'exact binary share physical credit')
+ if physical_binary_share_credit:
+  r5.require(proposed_growth_bytes==384*MIB and len(proposed)==1 and proposed<=set(('V8_TAGPRESSURE_vectorAdd_4M_F','V8_TAGPRESSURE_convolutionSeparable_F')),'only exact newtwo initial sharing credit')
+ r5.require(resources['disk_free_bytes']-physical_pending_bytes-(proposed_growth_bytes-physical_binary_share_credit)-proposed_monitor_bytes-physical_metadata>=5*GIB,'R5_ACTIVE_METADATA_WORKSPACE_FORECAST')
  # The generation ledger retains the entire batch worst case, including all
  # not-yet-started endpoint caps and every unclosed metadata forecast. The
  # proposed cap is already included above; do not charge it twice here.
