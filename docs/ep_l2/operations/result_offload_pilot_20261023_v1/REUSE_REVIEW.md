@@ -1,6 +1,6 @@
 # Reuse the primitives, retain their scopes
 
-`REUSE_INDEX.json` pins actual reviewed bytes to the preceding published Framework commit. Static source review was performed; none of the old sender, receiver, restoration or release modules was imported/executed in this phase. Historical test receipts are historical evidence, not a PASS for a new adapter/root or for this pilot.
+`REUSE_INDEX.json` pins actual reviewed bytes to the preceding published Framework commit. Initial Phase1 source review was static. In the approved continuation, only pinned V9 metadata validation/txid/canonical/digest functions were run locally against the two existing prepared real manifests; no Transaction/Archive was instantiated and no sender, receiver, restore or release operation executed. See REAL_MANIFEST_VALIDATION.json. Historical test receipts are historical evidence, not a PASS for a new adapter/root or for this pilot.
 
 | Implementation | Reuse | Limit / necessary narrow integration |
 |---|---|---|

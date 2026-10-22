@@ -9,3 +9,5 @@ Both independent real owner readies were discovered and fetched from GitHub. EP 
 `WORKFLOW_EP_L2.md`, `WORKFLOW_DTC_L1.md` and `NEXT_FULL_BATCH_PLAN.md` are prepared candidates, **not qualified production workflows**. Phase2 and real validation remain necessary to finish this Goal. Original sources are KEEP and all original science results/counts/pause states are unchanged.
 
 Latest bounded recheck 2026-10-22T16:47:05.628568+00:00: Share=41954480128B, required40GiB+16MiB=42966450176B, deficit=1011970048B. Both roots still ABSENT. No live test process exists and no restart/retransmission is needed.
+
+Revision3: actual pinned V9 validate_manifest/transaction_id APIs accepted both prepared real metadata manifests locally; owner-ready hashes and candidate txids matched. No Transaction was constructed, no synthetic payload/file/transfer was created by this validation. Latest Share=41781276672B at2026-10-22T16:50:42.184817+00:00; deficit including approved scratch=1185173504B. RESOURCE_HOLD remains.
