@@ -1,15 +1,9 @@
 # Lane D current status
 
-IDLE at dependency boundary for `EPL2_RO_POSITIVE_QUALIFICATION_PREPARATION_20261022_r1`. Real RECEIVED ACK D-00000043 and early delivery D-00000045 published; current independent evidence/cost/conditional decision complete. C/A2 WORKING statuses were read as statuses, not qualification outputs. Their actual coverage/applicability deliveries remain pending.
+IDLE; D-RO-APPLICATION-EVIDENCE-DECISION-r1 DONE in response to E2-00000054. [Final scientific report](../../review_packs/MS20261022_D_RO_POSITIVE_FINAL_SCIENTIFIC_DECISION_r1/README.md).
 
-[Scope addendum](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r1/CLAIM_SCOPE_ADDENDUM.md): FWT model-scope ZERO versus SGEMM UNKNOWN empty fallback. [Decision/cost gates and one metadata-only Conv backup](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r2/README.md). First future SGEMM certificate-bearing F only after genuine C/A2/E/user gates; possible old-S reuse is E's decision. No run is approved by this D packet.
+Actual C certificate consumed:64,480 RO lines /75,423,744 read lane-line references in exact whole-commandlist128B closed-world model. E own new Q/spec/exact one-F proposal and old-S amendment reviewed. D supports the proposal for user review only; no run approval or A2 signature.
 
-Completed original MAIN6/7 subset GM0.9990537501, original-seven UNKNOWN/Btree HOLD, independent SGEMM and five93a9 diagnostic results remain unchanged. Old FWT/SGEMM per-kernel metadata request answered NOT_SAVED/UNKNOWN; no raw reconstruction task. EN-v22 and historical reports are preserved.
+Coverage, runtime admission, eligible Tag replacement, detach/retirement and performance remain distinct. Future exact proposal requires user approval, A2/E owner closure and live controlled-adoption/resource gates. No new D scientific preparation gap.
 
-No application/native/build, trace/raw/SQLite scan, new/restarted Goal, controller/registry change or background waiter. Resume only at a real owner delivery or user foreground queue request.
-
-Latest [C early resource-preflight increment](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r3/README.md) consumed C18 as forecast/reuse metadata only. Actual positive coverage and A2 static applicability remain pending; D does not infer them from WORKING status.
-
-Latest [A2 static applicability/control-map increment](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r4/README.md) consumed A2-00000026. Static map is no longer missing; pending only actual C proof and A2 exact certificate binding, followed by E/user gates. Conditional T/M controls are supported in source but unapproved for any new run.
-
-Latest [E contract/cost and A2 factor-scope reconciliation](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r5/README.md): direct old-S/new-positive-F acceptance mismatches auxiliary invariants. One-start path needs explicit scoped equivalence amendment; alternative is a separately approved same-cert two-end pair. Actual C proof remains pending.
+Old MAIN6/7 GM0.9990537501 and original-seven UNKNOWN/Btree HOLD, independent SGEMM,93a9 diagnostics, all failures/negative/HOLD and EN-v22 unchanged. No trace/raw/SQLite scan, experiment/native/build/plot rerun, config/source/binary/registry/controller or Goal restart; no background waiter.
