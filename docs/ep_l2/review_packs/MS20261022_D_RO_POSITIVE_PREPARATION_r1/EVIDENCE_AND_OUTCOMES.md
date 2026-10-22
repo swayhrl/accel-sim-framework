@@ -1,0 +1,9 @@
+# Evidence ladder and falsifiable outcomes
+
+1. C returns exact positive certified lines/read references with all exclusions and a stable whole-commandlist/domain/host-update binding. ZERO or MISSING is a valid retained result and stops this candidate's positive-activation proposal; no epoch shrink or backup scan is inferred.
+2. A2 maps the frozen main61 admission, pending replacement, reuse_seen/ready restrictions, native response/retirement evidence and existing supported controls. Static support does not establish app activation. Incompatible semantics/source require HOLD for the affected option, not a silent runtime change.
+3. Under a future separately approved and E-qualified condition, certified candidates/admissions/transactions greater than zero would establish runtime activation. Certified lines alone do not prove actual misses or admissions. Zero activation must remain a negative result.
+4. Detach greater than zero plus real detached response, exact-once/WAD/lifecycle/drain closure would extend application evidence; native-only controls cannot substitute. Detach0 after admission is ambiguous unless eligible replacement/opportunity coverage is actually observed. Source-derived restrictions are not a substitute for observed app pressure.
+5. A full-design traditional-S versus new-certified-F comparison answers joint finite-design performance only. Tag-only causality needs an E-approved supported comparison that holds M/W/V and certificate/input fixed; this task does not request extra controls, configuration scans or mechanism changes. Counter changes are not additive GPU-stall time.
+
+Old negative outcomes, FWT INCOMPLETE, Btree HOLD, SGEMM empty-fallback S/F and both original and capacity cohorts remain untouched. No selection rule uses known or hoped-for F speedup.
