@@ -1,74 +1,131 @@
 {
-  "schema": "E2_DETACH_ZERO_CURRENT_STATUS_V3",
-  "at_unix": 1792651242.5329375,
-  "accountable_owner": "E2",
+  "schema": "E2_DETACH_ZERO_CURRENT_STATUS_V4",
+  "at_utc": "2026-10-22T10:59:59.112546+00:00",
   "Goal": "ACTIVE",
   "goal_id": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1",
   "state": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
-  "actual_starts": 52,
-  "new_actual_starts": 1,
-  "controller": "ACTIVE",
-  "original_execution_state": "FAILED_PARSER_ENGINEERING_ERROR_PRESERVED",
-  "supplemental_terminal_status": "COMPLETE_VALID",
-  "acceptance_basis": "PARSER_ENGINEERING_SUPPLEMENTAL_REVALIDATION",
-  "Q_unchanged": "6834915699a855d197c9c56fcc36072be41e52656675587d294827ad4d47df14",
-  "cycles": 343442,
-  "instructions": 1658916864,
-  "RO_transactions": 0,
-  "detach_success": 0,
-  "new_S_or_performance_pair": false,
-  "current_measured_reason": "All2282704observed certifiedcandidatehead exposures are residenthits; zeroactualROtransactions, zero coveredrawTagreservationfail and zero detach. This explains thisnewSGEMMpoint, not oldotherpositiveROdynamics.",
-  "other_prior_positive_RO_cause": "UNKNOWN_REQUIRES_ADDITIONAL_EXACT_INPUT_SCOPE_REVIEW",
-  "remaining_current_goal_authorized_app_starts": 3,
-  "pending_approval_candidate": null,
-  "D_delivery": {
-    "event": "E2-00000081-7c783c92e702",
-    "publication_commit": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
-    "real_reference_verification": "PASS",
-    "D_ACK_or_consumption_claimed": false
+  "actual_starts": 53,
+  "controller": {
+    "process": {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "pid": 3949331,
+      "start_ticks": 941777765
+    },
+    "state": "ACTIVE"
+  },
+  "approved_four_actual_new_starts": 2,
+  "approved_four_remaining_authorized_starts": 2,
+  "approved_four_current_accepted_points": 1,
+  "approved_four_remaining_cause_closure": [
+    "dwt2d",
+    "vectorAdd_4M",
+    "convolutionSeparable"
+  ],
+  "conditions": [
+    {
+      "condition_id": "V7_DETACH_CAUSE_cfd_097k_F",
+      "workload": "cfd_097k",
+      "qualification_id": "00453d6366b6d2ef947696a40bb1a15c2fec8e633a39c8fa3ed51fa7a7de8083",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": "E052_781ed6b2",
+      "central_state": "COMPLETE_VALID",
+      "actual_start": true,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E052_781ed6b2",
+      "retained_result_bytes": 112701754,
+      "cycles": 79157,
+      "instructions": 143129372,
+      "mechanism_root_cause": {
+        "status": "EXACT_POINT_CAUSE_CLOSED",
+        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
+        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
+        "source_predicate": {
+          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": "326-329",
+          "condition": "probe==RESERVATION_FAIL && m_ro"
+        },
+        "measured": {
+          "commit_raw_probe_reached": 1163176,
+          "raw_tag_fail_commit": 0,
+          "relieve_calls": 0,
+          "detach_calls": 0,
+          "detach_success": 0,
+          "probe_skipped": 218239
+        },
+        "actual_RO_transactions": 51678
+      },
+      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json",
+      "D_delivery": {
+        "D_ACK_or_consumption_claimed": false,
+        "accepted_point_commit": "58e1aab87a1b7be0ecbe6ab51ab2203972012730",
+        "attempt_id": "E052_781ed6b2",
+        "event_id": "E2-00000085-a015125f3353",
+        "event_sha256": "f1b549f327d56741d453f9456d921c92c49a9fc98d28cf97e3b135f993586d6f",
+        "refs_verification": {
+          "reference_count": 3,
+          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+          "total_metadata_bytes": 4908312
+        },
+        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
+        "workload": "cfd_097k"
+      }
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_dwt2d_F",
+      "workload": "dwt2d",
+      "qualification_id": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": "E053_14cc809a",
+      "central_state": "RUNNING",
+      "actual_start": true,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E053_14cc809a",
+      "retained_result_bytes": 107617000
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
+      "workload": "vectorAdd_4M",
+      "qualification_id": "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": null,
+      "central_state": "NOT_STARTED",
+      "actual_start": false,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": null,
+      "retained_result_bytes": 0
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_convolutionSeparable_F",
+      "workload": "convolutionSeparable",
+      "qualification_id": "e47ae87689da5df3fd0ef65ce5424dc58108157bb6b868737d635e25549c7338",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": null,
+      "central_state": "NOT_STARTED",
+      "actual_start": false,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": null,
+      "retained_result_bytes": 0
+    }
+  ],
+  "full_goal_complete": false,
+  "receipt": "RECEIPT.json",
+  "source_identity": {
+    "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
   },
   "cumulative_result_generation": {
     "old_bytes": 14309576384,
-    "new_bytes": 7453132111,
-    "total_bytes": 21762708495
+    "new_bytes": 7673450865,
+    "total_bytes": 21983027249
   },
-  "resource_budgets": {
-    "new_result_max_bytes": 10737418240,
-    "total_result_max_bytes": 25769803776,
-    "workspace_floor_bytes": 5368709120,
-    "monitor_margin_bytes": 2147483648
-  },
-  "historical_prefix50_and_failures_HOLD_preserved": true,
-  "no_new_controller_or_Goal": true,
-  "phase_completion_audit": "result/PHASE_COMPLETION_AUDIT.json",
-  "full_goal_complete": false,
-  "fresh_resources": {
-    "available_memory_bytes": 182420701184,
-    "disk_free_bytes": 10472603648,
-    "share_disk_free_bytes": 44201766912
-  },
-  "current_scope_closure_matrix": "result/CURRENT_SCOPE_CLOSURE_MATRIX.json",
-  "independent_delivery_consistency_review": "result/INDEPENDENT_DELIVERY_CONSISTENCY_REVIEW.json",
-  "next_scope_engineering_gap_review": "conditional_followup/NEXT_SCOPE_ENGINEERING_GAP_REVIEW.json",
-  "next_scope_implementation_or_launch_performed": false,
-  "conditional_four_input_prequalification_preparation": "conditional_followup/QUALIFICATION_PREPARATION_r1/INDEX.json",
-  "prequalification_is_not_launch_authorization": true,
-  "approved_successor_scope": {
-    "batch_id": "EPL2_DETACH_ZERO_EXISTING_POSITIVE_RO_PRIMARY_FOUR_20261022_r1",
-    "user_approval_commit": "a247a31806a536b9320e04d1b3ef7228ad8fc6b5",
-    "path": "approved_four_r1/USER_APPROVAL.json",
-    "maximum_new_full_app_starts": 4,
-    "actual_new_full_app_starts": 1,
-    "remaining_authorized_full_app_starts": 3,
-    "state": "ACTUALLY_RUNNING_ORIGINAL_CONTROLLER",
-    "queued": true
-  },
-  "current_scope_remaining_authorized_starts": 3,
-  "additional_scope_approval_pending": false,
-  "at_utc": "2026-10-22T10:45:23.366255+00:00",
-  "status": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
-  "actual_api_adoption_receipt": "approved_four_r1/ACTUAL_API_ADOPTION_RECEIPT.json",
-  "source_client_activation_receipt": "approved_four_r1/engineering/ACTUAL_CLIENT_ACTIVATION_RECEIPT.json",
-  "current_runtime_snapshot": "approved_four_r1/execution/LATEST_SNAPSHOT.json",
-  "remaining_current_scope_authorized_starts": 3
+  "resources": {
+    "available_memory_bytes": 180981706752,
+    "disk_free_bytes": 9428725760,
+    "share_disk_free_bytes": 44199931904
+  }
 }

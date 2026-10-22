@@ -1,0 +1,36 @@
+{
+  "schema": "E2_SYNTHETIC_PHASE_POPULATION_FALSE_REJECTION_WITNESS_V1",
+  "scope": "SYNTHETIC COUNTER CONSUMER ONLY; no native, application, central acceptance or real result",
+  "synthetic_event_counts": {
+    "phase2": {
+      "detach_success": 1,
+      "detached_retired": 0
+    },
+    "phase3": {
+      "detach_success": 0,
+      "detached_retired": 1
+    },
+    "cumulative_global": {
+      "detach_success": 1,
+      "detached_retired": 1
+    }
+  },
+  "prior_phase3_consumer_errors": [
+    "negative derived detach_success-detached_retired"
+  ],
+  "correct_phase2_derived": {
+    "probed_heads": 0,
+    "live_way_exposures": 0,
+    "terminal_detached_residual": null
+  },
+  "correct_phase3_derived": {
+    "probed_heads": 0,
+    "live_way_exposures": 0,
+    "terminal_detached_residual": null
+  },
+  "phase_population_rule": {
+    "terminal_detached_residual": "NA_NOT_A_PHASE_LOCAL_POPULATION",
+    "reason": "Detach and retirement are assigned to their actual active event phases; never impose terminal live-state nonnegativity on a phase event difference."
+  },
+  "negative_controls": "Actual invalid negative uint64/probed denominator and mismatched phase/global rollup remain rejected."
+}

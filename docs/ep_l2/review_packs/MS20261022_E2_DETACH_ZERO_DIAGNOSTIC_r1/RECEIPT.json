@@ -1,132 +1,176 @@
 {
-  "schema": "E2_DETACH_ZERO_CURRENT_RECEIPT_V3",
-  "at_utc": "2026-10-22T10:45:23.366255+00:00",
+  "schema": "E2_DETACH_ZERO_CURRENT_RECEIPT_V4",
+  "at_utc": "2026-10-22T10:59:59.112546+00:00",
   "status": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
   "goal": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1",
-  "goal_state": "ACTIVE_NOT_COMPLETE",
+  "goal_state": "ACTIVE",
+  "full_goal_complete": false,
   "accountable_owner": "E2",
   "T0": 1792414193,
-  "actual_starts": 52,
-  "new_full_app_starts": 1,
-  "remaining_current_scope_authorized_starts": 3,
-  "attempt_id": "E051_c0185b56",
-  "original_execution_status": "FAILED_PARSER_ENGINEERING_ERROR_PRESERVED",
-  "supplemental_terminal_status": "COMPLETE_VALID",
-  "acceptance_basis": "PARSER_ENGINEERING_SUPPLEMENTAL_REVALIDATION",
-  "original_controller": {
+  "actual_starts": 53,
+  "new_full_app_starts_current_goal": 3,
+  "approved_four_scope": {
+    "batch_id": "EPL2_DETACH_ZERO_EXISTING_POSITIVE_RO_PRIMARY_FOUR_20261022_r1",
+    "approval_path": "approved_four_r1/USER_APPROVAL.json",
+    "maximum_new_starts": 4,
+    "actual_new_starts": 2,
+    "remaining_authorized_starts": 2,
+    "accepted_diagnostic_points": 1,
+    "second_choice_or_union_executed": false
+  },
+  "controller": {
     "process": {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-      "pid": 3753166,
-      "start_ticks": 939885250
+      "pid": 3949331,
+      "start_ticks": 941777765
     },
-    "state": "STOPPED",
-    "stopped_unix": 1792648754.0308855
+    "state": "ACTIVE"
   },
-  "all_original_native_collector_controller_processes_retired": true,
-  "native_wait_status": 0,
-  "native_exit_code": 0,
-  "cycles": 343442,
-  "instructions": 1658916864,
-  "kernels": 1,
-  "commands": 3,
-  "physical_slices": 64,
-  "all_source212_counter_equations_rollups_and_resource_drain": "PASS",
-  "native_wall_seconds": 1865.8984499592334,
-  "retained_result_bytes": 99532318,
+  "active_conditions": [
+    {
+      "condition_id": "V7_DETACH_CAUSE_dwt2d_F",
+      "workload": "dwt2d",
+      "qualification_id": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": "E053_14cc809a",
+      "central_state": "RUNNING",
+      "actual_start": true,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E053_14cc809a",
+      "retained_result_bytes": 107617000
+    }
+  ],
+  "conditions": [
+    {
+      "condition_id": "V7_DETACH_CAUSE_cfd_097k_F",
+      "workload": "cfd_097k",
+      "qualification_id": "00453d6366b6d2ef947696a40bb1a15c2fec8e633a39c8fa3ed51fa7a7de8083",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": "E052_781ed6b2",
+      "central_state": "COMPLETE_VALID",
+      "actual_start": true,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E052_781ed6b2",
+      "retained_result_bytes": 112701754,
+      "cycles": 79157,
+      "instructions": 143129372,
+      "mechanism_root_cause": {
+        "status": "EXACT_POINT_CAUSE_CLOSED",
+        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
+        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
+        "source_predicate": {
+          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": "326-329",
+          "condition": "probe==RESERVATION_FAIL && m_ro"
+        },
+        "measured": {
+          "commit_raw_probe_reached": 1163176,
+          "raw_tag_fail_commit": 0,
+          "relieve_calls": 0,
+          "detach_calls": 0,
+          "detach_success": 0,
+          "probe_skipped": 218239
+        },
+        "actual_RO_transactions": 51678
+      },
+      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json",
+      "D_delivery": {
+        "D_ACK_or_consumption_claimed": false,
+        "accepted_point_commit": "58e1aab87a1b7be0ecbe6ab51ab2203972012730",
+        "attempt_id": "E052_781ed6b2",
+        "event_id": "E2-00000085-a015125f3353",
+        "event_sha256": "f1b549f327d56741d453f9456d921c92c49a9fc98d28cf97e3b135f993586d6f",
+        "refs_verification": {
+          "reference_count": 3,
+          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+          "total_metadata_bytes": 4908312
+        },
+        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
+        "workload": "cfd_097k"
+      }
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_dwt2d_F",
+      "workload": "dwt2d",
+      "qualification_id": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": "E053_14cc809a",
+      "central_state": "RUNNING",
+      "actual_start": true,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E053_14cc809a",
+      "retained_result_bytes": 107617000
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
+      "workload": "vectorAdd_4M",
+      "qualification_id": "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": null,
+      "central_state": "NOT_STARTED",
+      "actual_start": false,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": null,
+      "retained_result_bytes": 0
+    },
+    {
+      "condition_id": "V7_DETACH_CAUSE_convolutionSeparable_F",
+      "workload": "convolutionSeparable",
+      "qualification_id": "e47ae87689da5df3fd0ef65ce5424dc58108157bb6b868737d635e25549c7338",
+      "independently_qualified_registered_bound": true,
+      "attempt_id": null,
+      "central_state": "NOT_STARTED",
+      "actual_start": false,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "result_directory": null,
+      "retained_result_bytes": 0
+    }
+  ],
   "source_identity": {
-    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57",
-    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
     "core_source_commit": "9243f769620653f2a9d4df5599e9581e9dae6067",
     "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
-    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "d99ac88d60a596b123765009420a85eea1463c01e88807a8876ae946e380fd13",
+    "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
   },
-  "newF_qualification_id": "6834915699a855d197c9c56fcc36072be41e52656675587d294827ad4d47df14",
-  "original_Q_spec_and_raw_unchanged": true,
-  "actual_native48_independent_checks": 1589,
-  "native_rerun_or_new_binary_build": false,
-  "point": {
-    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/CURRENT_ACCEPTED_POINT.json",
-    "sha256": "748a0a8a22d41a93bb3bc7b9575b11e16987ef6c56e0d27c89f0f9e190633353"
-  },
-  "cause_report": {
-    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json",
-    "sha256": "f698021e238fe050a360bd21afe30185d0645276c4faf842311d730bc98adc74"
-  },
-  "numeric_projection": {
-    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/NUMERIC_PROJECTION.json",
-    "sha256": "7ff2b3ceb22c2aeb756bf6c7c9feb43127115c2530ffe9611d17b9af4eec8cf7"
-  },
-  "actual_central_acceptance": {
-    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/parser_recovery/ACTUAL_SUPPLEMENTAL_ACCEPTANCE_RECEIPT.json",
-    "sha256": "af960442efd08831c8d6ffa04e780415d7ed554287404423678dc8556308315e"
-  },
-  "D_delivery": {
-    "D_ACK_or_consumption_claimed": false,
-    "E_goal_remains_active": "OtheractualpositiveRO inputs unresolved; currentoneappgrantconsumed, preciseuseramendmentpending.",
-    "accepted_point_commit": "bcc137431eaa5e54c151bbe41dce797422e88fa9",
-    "actualstarts": 51,
-    "at_utc": "2026-10-22T06:32:42.143166Z",
-    "delivery_event": "E2-00000081-7c783c92e702",
-    "event_sha256": "c43066c91aab8360a2f768a54ad227985e9e404177f4861037e63b955eeb5e07",
-    "native_newstarts": 1,
-    "numeric_commit": "c73ade7f7e5511ed6911e1408b2f8fa42a5d04df",
-    "refs_verification": {
-      "reference_count": 6,
-      "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
-      "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
-      "total_metadata_bytes": 624639
-    },
-    "schema": "E2_REAL_D_INCREMENTAL_DELIVERY_RECEIPT_V1"
-  },
-  "D_delivery_publication_commit": "96bf2d69a16ea5302658a7416e194d2b5029bb10",
-  "result_generation": {
-    "old_bytes": 14309576384,
-    "new_bytes": 7453132111,
-    "total_bytes": 21762708495
-  },
-  "limits": {
-    "new_result_max_bytes": 10737418240,
-    "total_result_max_bytes": 25769803776,
-    "workspace_floor_bytes": 5368709120,
-    "monitor_margin_bytes": 2147483648
-  },
-  "original_history_preserved": true,
-  "new_S_or_performance_pair": false,
-  "full_goal_complete": false,
-  "remaining_scientific_gap": [
-    "CFD",
-    "DWT",
-    "Vector",
-    "Conv"
+  "remaining_scientific_cause_closure": [
+    "dwt2d",
+    "vectorAdd_4M",
+    "convolutionSeparable"
   ],
-  "next": "Complete four distinct newr4 F input qualifications/fixeddecoder terminal CLI binding and bounded originalcentral successor; actual resource gates admit CFD first and parallel iffits. No duplicate or newS/pair/retry.",
-  "phase_completion_audit": {
-    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/PHASE_COMPLETION_AUDIT.json",
-    "sha256": "a3f80b5de24cef0bb83dd995b8c525fcc402925c44741f8d4e9abff7295a539f"
+  "original_E051": {
+    "point": "result/CURRENT_ACCEPTED_POINT.json",
+    "original_execution_status": "FAILED_PRESERVED",
+    "supplemental_status": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT",
+    "no_rerun": true,
+    "D_delivery": "E2-00000081-7c783c92e702"
   },
-  "current_scope_closure_matrix": "result/CURRENT_SCOPE_CLOSURE_MATRIX.json",
-  "independent_delivery_consistency_review": "result/INDEPENDENT_DELIVERY_CONSISTENCY_REVIEW.json",
-  "next_scope_engineering_gap_review": "conditional_followup/NEXT_SCOPE_ENGINEERING_GAP_REVIEW.json",
-  "next_scope_implementation_or_launch_performed": false,
-  "conditional_four_input_prequalification_preparation": "conditional_followup/QUALIFICATION_PREPARATION_r1/INDEX.json",
-  "prequalification_is_not_launch_authorization": true,
-  "approved_successor_scope": {
-    "batch_id": "EPL2_DETACH_ZERO_EXISTING_POSITIVE_RO_PRIMARY_FOUR_20261022_r1",
-    "user_approval_commit": "a247a31806a536b9320e04d1b3ef7228ad8fc6b5",
-    "path": "approved_four_r1/USER_APPROVAL.json",
-    "maximum_new_full_app_starts": 4,
-    "actual_new_full_app_starts": 1,
-    "remaining_authorized_full_app_starts": 3,
-    "state": "ACTUALLY_RUNNING_ORIGINAL_CONTROLLER",
-    "queued": true
+  "resources": {
+    "available_memory_bytes": 180981706752,
+    "disk_free_bytes": 9428725760,
+    "share_disk_free_bytes": 44199931904
   },
-  "pending_approval_candidate": null,
-  "current_scope_remaining_authorized_starts": 3,
-  "additional_scope_approval_pending": false,
-  "state": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
-  "controller": "ACTIVE",
-  "actual_api_adoption_receipt": "approved_four_r1/ACTUAL_API_ADOPTION_RECEIPT.json",
-  "source_client_activation_receipt": "approved_four_r1/engineering/ACTUAL_CLIENT_ACTIVATION_RECEIPT.json",
-  "current_runtime_snapshot": "approved_four_r1/execution/LATEST_SNAPSHOT.json",
-  "remaining_current_goal_authorized_app_starts": 3
+  "cumulative_result_generation": {
+    "old_bytes": 14309576384,
+    "new_bytes": 7673450865,
+    "total_bytes": 21983027249
+  },
+  "approved_results_generation_limits": {
+    "new_bytes": 10737418240,
+    "total_bytes": 25769803776
+  },
+  "workspace_floor_bytes": 5368709120,
+  "monitor_margin_bytes": 2147483648,
+  "per_end_result_hardcap_bytes": 402653184,
+  "four_endpoint_hardcap_bytes": 1610612736,
+  "approved_pack_metadata_current_retained_bytes": 6548308,
+  "metadata_collector_forecast_total_bytes": 671088640,
+  "historical_generation_reset": false,
+  "global_maximum_count_or_routes_or_time_restored": false,
+  "new_S_F_pair": false,
+  "second_controller": false,
+  "D_ACK_or_consumption_inferred": false,
+  "next": "Original uniquecontroller rolls exactqualified remainingconditions byactualresources; eachcompletedpoint gets independentonepass raw/native/full64/212/drain review, exactcausalreason report andimmediateD Gitdelivery. No extra/retry/oldvalidendpointstart."
 }

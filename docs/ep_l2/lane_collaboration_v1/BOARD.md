@@ -1,6 +1,6 @@
 # EP-L2 当前协作面板
 
-**E051 SGEMM 已交 D；批准四端的 E052 CFD 已在原唯一中央控制器真实运行，当前累计52次、本批已启动1/4。** E2 对 detach=0 的资格、执行、归因及交付全责。当前同一 Goal `EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1` ACTIVE，四个旧正向RO输入原因仍未知；PRIMARY FOUR四个诊断端已获实际用户批准，正在完成逐输入新Q与原中央精确范围适配，已完成逐条件新Q注册与原中央绑定；CFD运行，其他端随实际资源准入滚动。
+**原唯一中央控制器 ACTIVE，累计53次；批准四端已启动2/4、独立接受并交D 1/4。** 当前活动：dwt2d E053_14cc809a。同一Goal保持ACTIVE；剩余原因：dwt2d, vectorAdd_4M, convolutionSeparable。
 
 见 [STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[原因与边界](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json)。本端候选 head 可见观测全为缓存命中，实际RO事务0，故无活跃RO对象可detach；不能由此解释已有RO事务的Conv/CFD/DWT/Vector。
 
