@@ -14,6 +14,27 @@ def prepare(spec, handoff, core, build, out, suite):
         assert sha(handoff / rel) == expected, 'changed frozen input: ' + rel
     for rel, expected in spec['core_inputs_SHA256'].items():
         assert sha(core / rel) == expected, 'changed Core input: ' + rel
+    if spec.get('release_kind')=='DETACH_ZERO_PASSIVE_OBSERVER':
+        inputs=out/'inputs';inputs.mkdir();copied=inputs/'C_NATIVE';copied.mkdir()
+        original=handoff/'full_system_v2/C_FROZEN_INPUT_r1/native_inputs'
+        for source in sorted(original.rglob('*')):
+            if source.is_file():
+                assert str(source.relative_to(handoff)) in spec['control_files_SHA256']
+                target=copied/source.relative_to(original);target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(source.read_bytes())
+        prefix='/workspace/worktrees/accel-sim-ep-l2-ms20261019-c-ro-v1/docs/ep_l2/codex_handoff/mechanism_study_2026_10_19_v1/c/full_system_v2_r1/native_inputs'
+        for target in copied.glob('*.config'):target.write_text(target.read_text().replace(prefix,str(copied)))
+        substitutions={'{CORE}':str(core),'{BUILD}':str(build),'{OUT}':str(out),'{INPUTS}':str(inputs)}
+        cases=[]
+        for row in spec['cases']:
+            assert row['expected_exit']==0 and 0<row['timeout_seconds']<=60 and row['observer'] in (0,1)
+            assert row['target'] in ('ep_l2_detach_diagnostic','ep_l2_detach_reference')
+            args=[]
+            for arg in row['args']:
+                for token,value in substitutions.items():arg=arg.replace(token,value)
+                args.append(arg)
+            cases.append(dict(row,native_command=[str(build/'gpgpu-sim'/row['target']),*args]))
+        assert len(cases)==48 and len(set(c['control_class'] for c in cases))==16
+        return cases,{str(f):sha(f) for f in copied.rglob('*') if f.is_file()}
     if spec.get('release_kind') == 'L2_LARGE_CAPACITY_DIAGNOSTIC':
         inputs=out/'inputs';inputs.mkdir()
         common=(core/'tests/ep_l2/ft_wbuf.config').read_text()+"\n-gpgpu_simple_dram_model 0\n-gpgpu_ep_l2_ms_observer 1\n"

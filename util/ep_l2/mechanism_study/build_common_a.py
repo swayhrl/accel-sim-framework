@@ -60,6 +60,7 @@ def main():
     p.add_argument('--disk-authorization-id')
     p.add_argument('--admission', type=Path)
     p.add_argument('--user-authorized-capacity',action='store_true',help='this exact user-approved capacity producer only; actual E API resource admission still mandatory')
+    p.add_argument('--user-authorized-observer',action='store_true',help='E59 isolated passive observer preparation only; still actual E central resource admission')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     SPEC_PATH = a.spec.resolve()
@@ -218,8 +219,22 @@ def main():
         # New leases consume E's formally published, campaign-only5GiB
         # amendment. Historical named records are preserved, never replayed.
         assert not a.disk_authorization_id, 'new ordinary policy requires fresh E admission; no historical token replay'
+        direct_observer=a.user_authorized_observer
         direct_capacity=a.user_authorized_capacity
-        if direct_capacity:
+        direct_authority=direct_capacity or direct_observer
+        if direct_observer:
+            assert not direct_capacity and spec.get('release_kind')=='DETACH_ZERO_PASSIVE_OBSERVER'
+            user_authority=Path(spec['explicit_observer_authority']['path'])
+            assert sha(user_authority)==spec['explicit_observer_authority']['sha256']
+            user=json.loads(user_authority.read_text())
+            assert user['batch_id']=='EPL2_DETACH_ZERO_CAUSAL_OBSERVABILITY_PREPARATION_20261022_r1'
+            assert user['authority']=='USER_APPROVED_CONSOLIDATED_DIAGNOSTIC_PREPARATION_NOT_FULL_APP_START' and user['new_full_application_starts_authorized']==0
+            assert any(t['id']=='A2-DETACH-OBSERVER-PRODUCER-r1' and t['owner']=='A2' for t in user['tasks'])
+            approval_bytes=None;approval={'valid_until_unix':time.time()+7200}
+            bindings[str(user_authority)]=sha(user_authority)
+            report['admission_mode']='EXPLICIT_USER_E59_OBSERVER_PREPARATION_PLUS_ACTUAL_E_CENTRAL_RESOURCE_API'
+            report['user_authority']=spec['explicit_observer_authority'];report['E_scientific_qualification_granted']=False
+        elif direct_capacity:
             assert spec.get('release_kind')=='L2_LARGE_CAPACITY_DIAGNOSTIC'
             user_authority=Path(spec['explicit_user_authority']['path'])
             assert sha(user_authority)==spec['explicit_user_authority']['sha256']
@@ -255,7 +270,7 @@ def main():
         client = json.loads((SHARED/'mechanism_study_20261019_v1/CLIENT_CONTRACT.json').read_text())
         api = Path(client['resource_lease_api'])
         assert client['authority_commit']==AUTHORITY and sha(api)==client['resource_lease_api_sha256']
-        if not direct_capacity: assert sha(api)==approval['resource_client_sha256']
+        if not direct_authority: assert sha(api)==approval['resource_client_sha256']
         sys.path.insert(0,str(api.parent))
         from coordinator import Coordinator,tooling_binding,retained_tree_bytes
         tooling_binding() # Includes exact published E disk_policy.py bytes.
@@ -272,14 +287,14 @@ def main():
             control_source_commit=report['driver_source_commit'],reserved_cpu_units=cpu,
             reserved_memory_bytes=memory,reserved_build_growth_bytes=report['reserved_build_growth_bytes'],
             reserved_result_bytes=spec['result_growth_bytes'],workspace_disk_policy=policy)
-        if not direct_capacity:
+        if not direct_authority:
             for k,value in expected.items():
                 assert approval.get(k)==value,'E admission identity mismatch: '+k
             assert approval['results_budget_status']=='PASS'
-        if native_only and not direct_capacity:
+        if native_only and not direct_authority:
             assert approval['retained_build_receipt_sha256']==sha(a.build_receipt)
         valid_until=approval['valid_until_unix']
-        report.update(E_admission=(dict(path=str(a.admission),sha256=sha(a.admission)) if not direct_capacity else dict(status='PENDING_ACTUAL_CENTRAL_RESOURCE_ADMISSION_NO_SELF_ISSUED_E_APPROVAL')),
+        report.update(E_admission=(dict(path=str(a.admission),sha256=sha(a.admission)) if not direct_authority else dict(status='PENDING_ACTUAL_CENTRAL_RESOURCE_ADMISSION_NO_SELF_ISSUED_E_APPROVAL')),
             E_source_publication=client['source_publication_commit'],E_resource_api_sha256=sha(api),
             E_workspace_disk_policy=policy,authorized_task_floor_bytes=stop_floor,
             monitor_reserve_bytes=monitor,disk_floor_bytes=stop_floor+monitor)
@@ -324,7 +339,7 @@ def main():
             out if native_only else build,result_growth_bytes=spec['result_growth_bytes'],
             disk_authorization_id=None,build_identity=None)
         lease = allocation['lease_id'];report.update(lease_id=lease,resource_owner='mechanism_A',resource_allocation=allocation)
-        if direct_capacity:report['E_admission']=dict(status='GRANTED_BY_ACTUAL_E_CENTRAL_API',lease_id=lease,resource_api_sha256=sha(api),scientific_qualification=False)
+        if direct_authority:report['E_admission']=dict(status='GRANTED_BY_ACTUAL_E_CENTRAL_API',lease_id=lease,resource_api_sha256=sha(api),scientific_qualification=False)
         assert all(allocation[k]==v for k,v in policy.items()), 'new lease policy differs from frozen E ordinary policy'
         assert resources()['disk_free_bytes']>=stop_floor+growth+monitor
         temp_root = out if native_only else build
@@ -407,7 +422,7 @@ def main():
         # Build and native both use E's new ordinary5GiB policy, separately leased.
         # Resumed native validates the exact retained successful producing build.
         assert report['E_workspace_disk_policy']==policy and report['authorized_task_floor_bytes']==5*GIB
-        completed=[];semantics={}
+        completed=[];semantics={};control_started=time.monotonic()
         for group in ['main','diagnostics']:
             selected = [c for c in cases if c['suite']==group]
             if not selected:continue
@@ -418,6 +433,9 @@ def main():
                 cmd=[sys.executable,str(HERE/'check_native_case.py'),'--expected-exit',str(case['expected_exit']),
                     '--required-terminal',case['required_terminal'],'--receipt',str(detail),'--',*case['native_command']]
                 report['native_invocations_attempted']+=1
+                if spec.get('release_kind')=='DETACH_ZERO_PASSIVE_OBSERVER':
+                    assert time.monotonic()-control_started<600,'bounded600s engineering controls exhausted'
+                    env['EPL2_DETACH_DIAG']=str(case['observer'])
                 row=run(cmd,case['id'],case['timeout_seconds']);result=json.loads(detail.read_text())
                 assert result['expectation_verified'] and result['actual_exit']==case['expected_exit']
                 assert result['binary_sha256']==binary_sha==sha(executable)

@@ -6,7 +6,8 @@
     "SLICE",
     "PHASE",
     "GLOBAL",
-    "SAMPLE"
+    "SAMPLE",
+    "OUTPUT_INVALID"
   ],
   "counter_fields": [
     "observed_heads",
@@ -233,5 +234,6 @@
     "slice every field = sum(disjoint phase every field); global every field = sum(slice every field)",
     "live_detached = detach_success-detached_retired; final valid epoch requires0; detached_responses are requester-count, not retired transaction-count",
     "old detached counter = new detach_success at final snapshot"
-  ]
+  ],
+  "invalid_marker": "OUTPUT_INVALID is a fail-closed terminal marker if64MiB output cap is exhausted; not an accepted substitute for required complete records."
 }
