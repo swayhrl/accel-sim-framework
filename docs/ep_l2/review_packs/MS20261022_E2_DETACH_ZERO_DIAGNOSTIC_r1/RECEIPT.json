@@ -1,21 +1,21 @@
 {
   "schema": "E2_DETACH_ZERO_CURRENT_RECEIPT_V4",
-  "at_utc": "2026-10-22T10:59:59.112546+00:00",
+  "at_utc": "2026-10-22T11:07:18.004355+00:00",
   "status": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
   "goal": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1",
   "goal_state": "ACTIVE",
   "full_goal_complete": false,
   "accountable_owner": "E2",
   "T0": 1792414193,
-  "actual_starts": 53,
-  "new_full_app_starts_current_goal": 3,
+  "actual_starts": 54,
+  "new_full_app_starts_current_goal": 4,
   "approved_four_scope": {
     "batch_id": "EPL2_DETACH_ZERO_EXISTING_POSITIVE_RO_PRIMARY_FOUR_20261022_r1",
     "approval_path": "approved_four_r1/USER_APPROVAL.json",
     "maximum_new_starts": 4,
-    "actual_new_starts": 2,
-    "remaining_authorized_starts": 2,
-    "accepted_diagnostic_points": 1,
+    "actual_new_starts": 3,
+    "remaining_authorized_starts": 1,
+    "accepted_diagnostic_points": 2,
     "second_choice_or_union_executed": false
   },
   "controller": {
@@ -28,16 +28,16 @@
   },
   "active_conditions": [
     {
-      "condition_id": "V7_DETACH_CAUSE_dwt2d_F",
-      "workload": "dwt2d",
-      "qualification_id": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004",
+      "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
+      "workload": "vectorAdd_4M",
+      "qualification_id": "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda",
       "independently_qualified_registered_bound": true,
-      "attempt_id": "E053_14cc809a",
+      "attempt_id": "E054_e4a9813e",
       "central_state": "RUNNING",
       "actual_start": true,
       "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E053_14cc809a",
-      "retained_result_bytes": 107617000
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E054_e4a9813e",
+      "retained_result_bytes": 87950189
     }
   ],
   "conditions": [
@@ -97,23 +97,61 @@
       "qualification_id": "cacc2e73bed1f9cbd7550f8f09eae36f682f1ebc4c56e011ed6f4ada5119b004",
       "independently_qualified_registered_bound": true,
       "attempt_id": "E053_14cc809a",
-      "central_state": "RUNNING",
+      "central_state": "COMPLETE_VALID",
       "actual_start": true,
-      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
       "result_directory": "/workspace/ep_l2_ms20261019_e_results/E053_14cc809a",
-      "retained_result_bytes": 107617000
+      "retained_result_bytes": 142494925,
+      "cycles": 167643,
+      "instructions": 148684429,
+      "mechanism_root_cause": {
+        "status": "EXACT_POINT_CAUSE_CLOSED",
+        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
+        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
+        "source_predicate": {
+          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": "326-329",
+          "condition": "probe==RESERVATION_FAIL && m_ro"
+        },
+        "measured": {
+          "commit_raw_probe_reached": 1793713,
+          "raw_tag_fail_commit": 0,
+          "relieve_calls": 0,
+          "detach_calls": 0,
+          "detach_success": 0,
+          "probe_skipped": 335584
+        },
+        "actual_RO_transactions": 9965
+      },
+      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json",
+      "D_delivery": {
+        "D_ACK_or_consumption_claimed": false,
+        "accepted_point_commit": "3200a3b217c11568722b48c0ea00ef9d0a36e281",
+        "attempt_id": "E053_14cc809a",
+        "event_id": "E2-00000087-21f26dd3070b",
+        "event_sha256": "6b9d6c0d034823032a3082ed57bbef83d4f0d820b009e1c050b8462d8304f948",
+        "refs_verification": {
+          "reference_count": 3,
+          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+          "total_metadata_bytes": 8007802
+        },
+        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
+        "workload": "dwt2d"
+      }
     },
     {
       "condition_id": "V7_DETACH_CAUSE_vectorAdd_4M_F",
       "workload": "vectorAdd_4M",
       "qualification_id": "5b0a26c4c656bb94eadd5295b3400a08ac4cc5fc788a8ba3e4630eb4bdcb9cda",
       "independently_qualified_registered_bound": true,
-      "attempt_id": null,
-      "central_state": "NOT_STARTED",
-      "actual_start": false,
+      "attempt_id": "E054_e4a9813e",
+      "central_state": "RUNNING",
+      "actual_start": true,
       "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
-      "result_directory": null,
-      "retained_result_bytes": 0
+      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E054_e4a9813e",
+      "retained_result_bytes": 87950189
     },
     {
       "condition_id": "V7_DETACH_CAUSE_convolutionSeparable_F",
@@ -136,7 +174,6 @@
     "archive_sha256": "6c8dc6c3b456740155bfae4d51b53841ed271adc740aaa42c7c089d0aa82bb57"
   },
   "remaining_scientific_cause_closure": [
-    "dwt2d",
     "vectorAdd_4M",
     "convolutionSeparable"
   ],
@@ -148,14 +185,14 @@
     "D_delivery": "E2-00000081-7c783c92e702"
   },
   "resources": {
-    "available_memory_bytes": 180981706752,
-    "disk_free_bytes": 9428725760,
-    "share_disk_free_bytes": 44199931904
+    "available_memory_bytes": 180972044288,
+    "disk_free_bytes": 9288298496,
+    "share_disk_free_bytes": 44199100416
   },
   "cumulative_result_generation": {
     "old_bytes": 14309576384,
-    "new_bytes": 7673450865,
-    "total_bytes": 21983027249
+    "new_bytes": 7796279075,
+    "total_bytes": 22105855459
   },
   "approved_results_generation_limits": {
     "new_bytes": 10737418240,
@@ -165,7 +202,7 @@
   "monitor_margin_bytes": 2147483648,
   "per_end_result_hardcap_bytes": 402653184,
   "four_endpoint_hardcap_bytes": 1610612736,
-  "approved_pack_metadata_current_retained_bytes": 6548308,
+  "approved_pack_metadata_current_retained_bytes": 14582420,
   "metadata_collector_forecast_total_bytes": 671088640,
   "historical_generation_reset": false,
   "global_maximum_count_or_routes_or_time_restored": false,
