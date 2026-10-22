@@ -93,6 +93,24 @@ def target():
  lib=base64.b64decode(CONFIG['v9_raw']);require(sha(lib)=='6fd13ab5a9df4b2f6cdddcc4c1e09bb34619571efdf3a7578372dc4b776603fe','V9 changed')
  v=types.ModuleType('pinned_v9');exec(compile(lib,'pinned_v9_transaction.py','exec'),v.__dict__);txid=v.validate_manifest(m);require(txid==CONFIG['txid'],'txid mismatch')
  reservation={'txid':txid,'manifest_sha256':sha(canon(m)),'owner_ready_sha256':m['source_owner_ready_sha256'],'tool_publication':CONFIG['tool_publication'],'native_scratch':str(native),'NAS_root':str(nas),'source_action':'SOURCE_KEEP','zero_share_confirmation_sha256':CONFIG['zero_share_confirmation_sha256']}
+ if (nas/'RECEIPT.json').exists():
+  require((nas/'T_RESERVATION.json').read_bytes()==canon(reservation),'completed reservation mismatch')
+  old=json.loads((nas/'RECEIPT.json').read_bytes());arc=nas/txid;dst=native/'restored'
+  require(old['txid']==txid and old['manifest_sha256']==sha(canon(m)),'completed receipt binding')
+  require((arc/'manifest.json').read_bytes()==canon(m) and (arc/'COMMIT.json').exists(),'completed manifest or commit missing')
+  for row in m['files']:
+   require(v.hash_file(arc/'tree'/row['relative_path'])==v.hash_file(dst/row['relative_path'])==row['sha256'],'completed archive/native SHA drift')
+   s=(dst/row['relative_path']).stat();require((s.st_size,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode),s.st_mtime_ns)==(row['size'],row['uid'],row['gid'],row['mode'],row['mtime_ns']),'completed native metadata drift')
+  for d in m['directories']:
+   s=(dst/d['relative_path']).stat();require((s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode),s.st_mtime_ns)==(d['uid'],d['gid'],d['mode'],d['mtime_ns']),'completed directory drift')
+  before=(nas/'RECEIPT.json').read_bytes()
+  print(json.dumps({'event':'READY','txid':txid,'missing_names':[],'completed_reuse':True,'resources':gates()}),flush=True)
+  raw=sys.stdin.buffer.readline(512*1024+1);require(0<len(raw)<=512*1024,'reuse Source proof cap/EOF');p=json.loads(raw)
+  require(p['txid']==txid and p['owner_ready_sha256']==m['source_owner_ready_sha256'] and len(p['files'])==len(m['files']),'reuse Source binding')
+  for row in m['files']:
+   f=next(x for x in p['files'] if x['relative_path']==row['relative_path']);require('data_base64' not in f and f['sha256']==row['sha256'] and f['identity']=={k:row[k] for k in f['identity']},'reuse requires current Source SHA/stat and zero payload')
+  require((nas/'RECEIPT.json').read_bytes()==before,'immutable completed receipt changed')
+  print(json.dumps({'event':'DONE','receipt':old,'receipt_sha256':sha(before),'completed_reused':True,'this_invocation_new_transferred_bytes':0,'new_restore_files':0,'immutable_receipt_unchanged':True,'final_resources':gates(),'observed_allocated_peaks_including_receipts':peak}),flush=True);lock.close();return
  def raw_new(p,b):
   p.parent.mkdir(parents=True,exist_ok=True)
   if p.exists():require(p.read_bytes()==b,'immutable local/remote bytes differ');return
