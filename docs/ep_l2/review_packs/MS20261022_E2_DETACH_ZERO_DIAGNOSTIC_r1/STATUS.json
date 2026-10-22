@@ -1,13 +1,27 @@
 {
-  "schema": "E2_R5_ROLLING_REAL_PROCESS_RESOURCE_AND_ACCEPTANCE_STATUS_V1",
-  "at_utc": "2026-10-22T14:32:56.856058+00:00",
-  "status": "R5_CFD_DWT_ACCEPTED_METADATA_CLOSED_LEGAL_RESOURCE_STOP",
   "Goal": "ACTIVE",
-  "owner": "E2",
+  "Vector_and_Conv": "QUALIFIED_UNSTARTED; no claimed CURRENT_ACCEPTED or fabricated exit",
+  "accepted_r5_points": [
+    {
+      "D_delivered": true,
+      "point_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json",
+        "sha256": "7f488ae5452b5ab4c94c63a38c0890be959b406f75c449600a0bdc00ea4f06a8"
+      },
+      "workload": "cfd_097k"
+    },
+    {
+      "D_delivered": true,
+      "point_ref": {
+        "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json",
+        "sha256": "3d5151387e6182f51673f85465dcff09da7650e0ff531be4b1b6149b268127f6"
+      },
+      "workload": "dwt2d"
+    }
+  ],
   "actual_starts": 57,
-  "new_r5_actual_starts": 2,
-  "remaining_r5_authorized_starts": 2,
-  "original_T0": 1792414193,
+  "all_history_and_charges_retained": true,
+  "at_utc": "2026-10-22T15:29:23.769105+00:00",
   "controller": {
     "process": {
       "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -17,106 +31,50 @@
     "state": "STOPPED",
     "stopped_unix": 1792678986.8957114
   },
-  "conditions": [
+  "new_S_or_performance_pair": false,
+  "new_r5_actual_starts": 2,
+  "next": "Bounded read-only allocation attribution; only meaningful actual space change can trigger fresh original gate and unique controller. No historical deletion, guard waiver, extra endpoint or refund.",
+  "no_D_ACK_required": true,
+  "original_T0": 1792414193,
+  "original_result_generation_at_measurement": {
+    "new_bytes": 8248804902,
+    "old_bytes": 14309576384,
+    "total_bytes": 22558381286
+  },
+  "owner": "E2",
+  "r5_conditions": [
     {
+      "actual_start": true,
       "attempt_id": "E056_47abdc7f",
       "condition_id": "V8_TAGPRESSURE_cfd_097k_F",
-      "state": "COMPLETE_VALID",
-      "actual_start": true,
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 4072834,
-        "start_ticks": 942841165
-      },
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E056_47abdc7f",
-      "durable_native_ownership": {
-        "native_process": {
-          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 4072834,
-          "start_ticks": 942841165
-        },
-        "guardian_process": {
-          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 4072830,
-          "start_ticks": 942841159
-        },
-        "controller_process": {
-          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 4071587,
-          "start_ticks": 942833907
-        },
-        "native_ppid": 4072830
-      }
+      "state": "COMPLETE_VALID"
     },
     {
+      "actual_start": true,
       "attempt_id": "E057_b4a7e175",
       "condition_id": "V8_TAGPRESSURE_dwt2d_F",
-      "state": "RUNNING",
-      "actual_start": true,
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 4091811,
-        "start_ticks": 943005847
-      },
-      "result_directory": "/workspace/ep_l2_ms20261019_e_results/E057_b4a7e175",
-      "durable_native_ownership": {
-        "native_process": {
-          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 4091811,
-          "start_ticks": 943005847
-        },
-        "guardian_process": {
-          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 4091807,
-          "start_ticks": 943005841
-        },
-        "controller_process": {
-          "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-          "pid": 4090182,
-          "start_ticks": 942996444
-        },
-        "native_ppid": 4091807
-      }
+      "state": "COMPLETE_VALID"
     }
   ],
+  "remaining_r5_authorized_starts": 2,
+  "resource_receipt": {
+    "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/engineering/remaining_two_lossless_storage_r1/FINAL_ACTUAL_WORKSPACE_LEGAL_STOP_20261022T1528Z.json",
+    "sha256": "ef307f4aab36a1a70afed42d8f726606215d43b927ff7a59b50bce37546c20cf"
+  },
   "resources": {
-    "available_memory_bytes": 180851372032,
-    "disk_free_bytes": 7971573760,
-    "share_disk_free_bytes": 44190461952
+    "available_memory_bytes": 180860751872,
+    "disk_free_bytes": 7808266240,
+    "share_disk_free_bytes": 44190101504
   },
-  "original_result_generation": {
-    "old_bytes": 14309576384,
-    "new_bytes": 8248680056,
-    "total_bytes": 22558256440
+  "schema": "E2_R5_ACTUAL_INDEPENDENT_ACCEPTANCE_AND_RESOURCE_STOP_STATUS_V1",
+  "single_endpoint_gap_bytes_at_measurement": 123364264,
+  "single_endpoint_required_bytes": 7931630504,
+  "source_identity": {
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
   },
-  "metadata_closures": {
-    "V8_TAGPRESSURE_cfd_097k_F": {
-      "path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/cfd_097k/METADATA_CLOSURE.json",
-      "sha256": "84dae9fcc44b30e4a5f96f1bd21f7e11a9138601558bf42f0ab224e31d29c25c"
-    }
-  },
-  "independent_CFD": "CURRENT_ACCEPTED_DIAGNOSTIC_POINT, published2fec00b1c/deliveredD E2-97; directsame-set causesupplementc1d1734e",
-  "next": "Start original uniquecontroller exactremainingqueue only currentresourceforecast PASS plus fresh original source/input/binary/lease checks; no paid endpointretry.",
-  "no_new_S_or_pair": true,
-  "budgets": {
-    "new10GiB": 10737418240,
-    "total24GiB": 25769803776,
-    "floor5GiB": 5368709120,
-    "monitor2GiB": 2147483648,
-    "endpoint384MiB": 402653184
-  },
-  "all_history_and_generation_charges_retained": true,
-  "new_r5_starts": 2,
-  "accepted_r5_points": [
-    {
-      "attempt_id": "E056_47abdc7f",
-      "workload": "cfd_097k",
-      "point": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/cfd_097k/CURRENT_ACCEPTED_POINT.json"
-    },
-    {
-      "attempt_id": "E057_b4a7e175",
-      "workload": "dwt2d",
-      "point": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_r5_joint_r1/results/dwt2d/CURRENT_ACCEPTED_POINT.json"
-    }
-  ]
+  "status": "LEGAL_RESOURCE_STOP"
 }
