@@ -1,9 +1,9 @@
 # Lane D current status
 
-IDLE: two new E-accepted main61 pairs consumed from E `8556058b9151ab44f580f49dd5139dad46b08566`.
+IDLE at dependency boundary for `EPL2_RO_POSITIVE_QUALIFICATION_PREPARATION_20261022_r1`. Real RECEIVED ACK D-00000043 and early delivery D-00000045 published; current independent evidence/cost/conditional decision complete. C/A2 WORKING statuses were read as statuses, not qualification outputs. Their actual coverage/applicability deliveries remain pending.
 
-FWT493189/490402 (+0.5683%) restores MAIN coverage6/7; accepted-six subset GM0.9990537501×. SGEMM343730/343442 (+0.08386%) remains separate exploration. Original-seven MAIN GM UNKNOWN /Btree HOLD. No change to previous five-pair capacity analysis or EN-v22.
+[Scope addendum](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r1/CLAIM_SCOPE_ADDENDUM.md): FWT model-scope ZERO versus SGEMM UNKNOWN empty fallback. [Decision/cost gates and one metadata-only Conv backup](../../review_packs/MS20261022_D_RO_POSITIVE_PREPARATION_r2/README.md). First future SGEMM certificate-bearing F only after genuine C/A2/E/user gates; possible old-S reuse is E's decision. No run is approved by this D packet.
 
-[Latest analysis](../../review_packs/MS20261022_D_MAIN61_FWT_SGEMM_INCREMENT_r1/README.md), [receipt](../../review_packs/MS20261022_D_MAIN61_FWT_SGEMM_INCREMENT_r1/RECEIPT.json). Three paper figures, exact mechanism/identity tables, and English candidates delivered. Per-kernel elapsed data were not exported; retained UNKNOWN with optional already-saved-metadata request to E2.
+Completed original MAIN6/7 subset GM0.9990537501, original-seven UNKNOWN/Btree HOLD, independent SGEMM and five93a9 diagnostic results remain unchanged. Old FWT/SGEMM per-kernel metadata request answered NOT_SAVED/UNKNOWN; no raw reconstruction task. EN-v22 and historical reports are preserved.
 
-No raw/trace scan, native/build/application start, new Goal/controller/registry write or background worker. Old failures and HOLD retained. Actual E cumulative50 is E evidence, not a new D budget or scope.
+No application/native/build, trace/raw/SQLite scan, new/restarted Goal, controller/registry change or background waiter. Resume only at a real owner delivery or user foreground queue request.
