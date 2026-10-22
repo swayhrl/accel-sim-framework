@@ -1,6 +1,6 @@
 # EP-L2 当前协作面板
 
-**E2 r5：CFD与DWT E057均独立CURRENT_ACCEPTED并已交D；目标set新Tag MISS最多3/16 RESERVED，生产TagFAIL/relieve/detach为0。实际57次，本批2/4。CFD与DWT metadata已真实闭合，Vector下一端按原资源门滚动；所有历史/5+2GiB/10新24总保留。**
+**E2按用户要求暂停：累计57；r5 CFD/DWT已独立接收并交D逐phase归因，Vector/Conv未启动，原控制器STOPPED。迁往174-new尚未授权；不得据此自动续行。**
 
 见 [STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[原因与边界](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json)。本端候选 head 可见观测全为缓存命中，实际RO事务0，故无活跃RO对象可detach；不能由此解释已有RO事务的Conv/CFD/DWT/Vector。
 
