@@ -1,0 +1,23 @@
+--- a/tests/ep_l2/test_detach_diagnostic.cc
++++ b/tests/ep_l2/test_detach_diagnostic.cc
+@@ -140,7 +140,7 @@
+ }
+ static void address32_control(char**argv){frame_begin("M1_ADDRESS32_MERGE_CAPACITY");{
+  combined_fixture f(argv);f.send(f.make(0,false));f.await_lower(1);
+- for(unsigned i=0;i<31;++i){f.send(f.make(0,false));f.await_frontend();}
++ for(unsigned i=0;i<31;++i){f.send(f.make(0,false));for(unsigned spins=0;spins<20000&&f.cache->ep_l2_descriptor_count_used()<i+2;++spins)f.step();assert(f.cache->ep_l2_descriptor_count_used()==i+2);}
+  assert(f.cache->ep_l2_descriptor_count_used()==32);auto extra=f.make(0,false);f.send(extra);tick(f,16);preview_context(f,extra,1,0,-1);
+ #ifndef EP_L2_DIAG_REFERENCE
+  auto*d=ledger(f);uint64_t cap=d?d->total[ep_l2_detach_diag::denied_capacity]:0,missq=d?d->total[ep_l2_detach_diag::denied_missq]:0;
+@@ -152,9 +152,9 @@
+  f.finish();fold(f);puts("SUBCONTROL_PASS|M1_ADDRESS32_MERGE_CAPACITY|line_gate=NA");}frame_end("M1_ADDRESS32_MERGE_CAPACITY");}
+ static void merge_missq_control(char**argv){frame_begin("MERGE_MISSQ_AND_ZERO_MISSING");{
+  combined_fixture f(argv);f.block_lower=true;unsigned n=0;
+- while(f.cache->miss_queue_has_slots(1)){assert(n<500);f.send(f.make(n++*128,false));f.await_frontend();}
++ while(f.cache->miss_queue_has_slots(1)){assert(n<500);const unsigned expected=f.cache->ep_l2_descriptor_count_used()+1;f.send(f.make(n++*128,false));for(unsigned spins=0;spins<20000&&f.cache->ep_l2_descriptor_count_used()<expected;++spins)f.step();assert(f.cache->ep_l2_descriptor_count_used()==expected);}
+  assert(n>16&&f.cache->ep_l2_descriptor_count_used()<512);const auto occupancy=f.cache->miss_queue_occupancy();
+- auto no_missing=f.make(0,false);f.send(no_missing);f.await_frontend();assert(f.cache->miss_queue_occupancy()==occupancy);
++ auto no_missing=f.make(0,false);const unsigned expected=f.cache->ep_l2_descriptor_count_used()+1;f.send(no_missing);for(unsigned spins=0;spins<20000&&f.cache->ep_l2_descriptor_count_used()<expected;++spins)f.step();assert(f.cache->ep_l2_descriptor_count_used()==expected&&f.cache->miss_queue_occupancy()==occupancy);
+  auto extra=f.make(32,false);f.send(extra);tick(f,16);
+ #ifndef EP_L2_DIAG_REFERENCE
+  auto*d=ledger(f);uint64_t cap=d?d->total[ep_l2_detach_diag::denied_capacity]:0,missq=d?d->total[ep_l2_detach_diag::denied_missq]:0;

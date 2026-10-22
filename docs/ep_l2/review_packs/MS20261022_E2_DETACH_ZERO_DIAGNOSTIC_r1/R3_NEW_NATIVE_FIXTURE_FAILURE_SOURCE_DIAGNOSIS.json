@@ -1,0 +1,158 @@
+{
+  "schema": "E2_A2_R3_NEW_SUBFIXTURE_FAILURE_SOURCE_DIAGNOSIS_V1",
+  "at_utc": "2026-10-22T04:45:48.644389+00:00",
+  "source_commit": "7cee27fde762406ecffef711a8f6c4c38761692c",
+  "status": "STIMULUS_WAIT_PRECONDITION_ERROR_PROVEN_BY_SOURCE_NOT_SIMULATOR_CORRECTNESS_FAILURE",
+  "actual_engineering_evidence_from_root": {
+    "build": "COMPILED_BUILD_ONLY_PENDING_NATIVE",
+    "native": "STOPPED_OR_FAILED_NO_RUNTIME_RELEASE",
+    "failing_case": "PRESSURE_STICKY_REUSE_reference",
+    "assertion": "test_detach_diagnostic.cc144 address32_control descriptor_count_used()==32",
+    "native_raw_log_bytes": 232,
+    "checker_exit": 1,
+    "earlier_individual_native_exit0": 15,
+    "complete48_control_set": false,
+    "native_exit_code": "NOT_INDEPENDENTLY_READ_BY_THIS_SOURCE_REVIEW",
+    "active_lease_after_failure": "Root independently observed all related leases RELEASED"
+  },
+  "source_proof": [
+    "address32_control sends first request and await_lower(1), which really steps until its lower packet exists; this guarantees one real admitted RO descriptor, without injecting a lower return.",
+    "GLOBAL_ACC_R is nontexture. fixture.send only calls sp.push at current GPU cycle. memory_sub_partition.push enqueues it in m_rop with ready_cycle; it does not push it directly into m_icnt_L2_queue or advance any cycle.",
+    "combined_fixture.await_frontend checks only ep_l2_icntl2_occupancy before its loop. That getter sees only m_icnt_L2_queue and excludes m_rop. Immediately after each fresh send, this queue can remain empty, so helper executes zero steps and returns.",
+    "Therefore31send/await_frontend operations accumulate requests in ROP without admitting them. No modeled cycle is advanced in this loop; the single initial descriptor need not become32. This directly explains the asserted state mismatch without invoking an RO mechanism defect.",
+    "ROP transfer occurs at end of actual cache_cycle when ready and capacity permits; even a ready-at-current-cycle request still needs a real step. A fixed one-step wait is not a general completion proof because ROP/query latency/admission can take multiple cycles.",
+    "The failing helper executes unconditionally in the reference route before MAIN_CONTROL. The assertion is not behind a new observer counter gate, so this failure does not establish a failure of newly modified observer predicates."
+  ],
+  "other_same_revision_sites_affected": [
+    {
+      "location": "test_detach_diagnostic.cc155 merge_missq_control while fill",
+      "failure": "Same send/await_frontend can perform no step; MissQ occupancy stays unchanged while n grows, eventually failing n<500 rather than establishing real queue-full. Fix together withaddress32."
+    },
+    {
+      "location": "test_detach_diagnostic.cc157 no_missing merge",
+      "failure": "Same helper may not admit this request. Unchanged MissQ occupancy then passes trivially without proving zero-missing merge acceptance. Require an actual acceptance-progress witness, not occupancy unchanged alone."
+    }
+  ],
+  "minimal_A2_fixture_only_fix": {
+    "scope": "Only new directed stimulus waiting; keep descriptor32/MissQ-full assertions, expected statuses, original production Core policy and16control classes. Do not alter global timing, source predicate, capacity or seed descriptors.",
+    "recommended_primitive": "static void await_descriptors(combined_fixture &f,unsigned expected) {\n  for(unsigned n=0;n<20000 && f.cache->ep_l2_descriptor_count_used()<expected;++n)f.step();\n  assert(f.cache->ep_l2_descriptor_count_used()==expected);\n}",
+    "address32_loop": "After first await_lower(1), send each of31requesters and wait for real descriptor count i+2. No memory returns are injected, so accepted requesters retain descriptors and the count is an actual bounded progress measure.",
+    "missq_fill_loop": "Before each new unique pending read record current descriptor count, send one request and await_descriptors(before+1). Re-evaluate actual MissQ full predicate afterward. Preserve n<500 safety bound; retain block_lower and assert pool<512.",
+    "zero_missing_merge": "Record current descriptor count, send no_missing and await_descriptors(before+1), then assert MissQ occupancy unchanged. This proves a real merge occurred while consuming zero extra lower slots.",
+    "why_descriptor_progress_is_applicable": "These three subfixture segments deliberately hold all lower responses externally; combined_fixture.step only drains lower packets but never returns one. Existing responses cannot free a descriptor before explicit return_one/finish, and each accepted new requester reserves exactly one real descriptor. Do not generalize this helper to unrelated fixture phases where responses may retire.",
+    "avoid_broad_helper_change": "Do not change shared ms_ro_combined.await_frontend globally merely to fix three new callsites; existing callers use it with already-visible blocked heads after real returns. A narrowly scoped per-subfixture progress helper minimizes requalification surface.",
+    "later_extra_request": "The33rdrequest remains deliberately blocked and must not be awaited to acceptance before asserting addressFAIL. Preserve its bounded real clock/query readiness and then actual direct merge refusal checks.",
+    "three_callsite_proposal": {
+      "path": "/tmp/e2_A2_r3_source_review/FIXTURE_WAIT_THREE_CALLSITES_PROPOSAL.diff",
+      "sha256": "4a13b41bbbeedca765ecd1283e8771a51b90d9d159d8ee79b471cfc1e93516ff",
+      "status": "TMP_TEXT_PROPOSAL_NOT_APPLIED_NOT_COMPILED_NOT_TESTED",
+      "changes": 3,
+      "base": "7cee27fde762406ecffef711a8f6c4c38761692c"
+    }
+  },
+  "necessary_verification_after_fix": [
+    "A2 actual native reference/OFF/ON for affected sticky/address32, detach/MissQ-zero-missing and any resulting semantic fixture revision under original lease. No full application is authorized by this engineering fix.",
+    "Publish exact changed fixture source and retain failed native log/receipt and15earlierexit0; no silent PASS or old48inheritance.",
+    "Actual assertions: descriptor32 reached naturally, extra address-bound request rejected; real MissQ full reached with descriptorsbelow512; zero-missing requester admitted with descriptor+1 and no MissQ growth; reference/OFF/ON state/cycles/order/drain signatures match.",
+    "Any further actual failed assertion must be investigated on its own evidence. The source proof explains the current wait-precondition failure; it does not pre-approve the rebuilt fixture or producer."
+  ],
+  "source_references": [
+    {
+      "path": "tests/ep_l2/ms_ro_combined/native_fixture.h",
+      "sha256": "0ad8dc9df6f17a2161fb240a7af52c819c8a98509072ec2cd5f9e913829c0117",
+      "source_lines": [
+        {
+          "needle": "void await_frontend()",
+          "line": 50
+        },
+        {
+          "needle": "void step(bool consume=true)",
+          "line": 13
+        },
+        {
+          "needle": "void await_lower(unsigned count)",
+          "line": 46
+        }
+      ]
+    },
+    {
+      "path": "tests/ep_l2/potential_fixture.h",
+      "sha256": "06fa71b0d486e3790137dedefb0b7ab8f577fb016cee7b4144a97367a627db04",
+      "source_lines": [
+        {
+          "needle": "void send(mem_fetch *r)",
+          "line": 108
+        }
+      ]
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "sha256": "80d05eb2635abaa01e8ebd03c058650645edf7bd7b71dcd5b5b622cf50dfc1a9",
+      "source_lines": [
+        {
+          "needle": "void memory_sub_partition::push(",
+          "line": 2643
+        },
+        {
+          "needle": "r.ready_cycle = cycle + m_config->rop_latency",
+          "line": 2664
+        },
+        {
+          "needle": "m_rop.push(r)",
+          "line": 2665
+        },
+        {
+          "needle": "// ROP delay queue",
+          "line": 1703
+        }
+      ]
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.h",
+      "sha256": "1473a3ac80965c6f838692fdf8ae4f8e9fe2b5a380fb02749ca2933bfccf8bd3",
+      "source_lines": [
+        {
+          "needle": "unsigned ep_l2_icntl2_occupancy()",
+          "line": 409
+        }
+      ]
+    },
+    {
+      "path": "tests/ep_l2/test_detach_diagnostic.cc",
+      "sha256": "0579f67c986ea58ce98aa368cf7184e4983421a1ae61672d5e31f73802899c89",
+      "source_lines": [
+        {
+          "needle": "static void address32_control",
+          "line": 141
+        },
+        {
+          "needle": "for(unsigned i=0;i<31;++i){f.send(f.make(0,false));",
+          "line": 143
+        },
+        {
+          "needle": "static void merge_missq_control",
+          "line": 153
+        },
+        {
+          "needle": "while(f.cache->miss_queue_has_slots(1))",
+          "line": 155
+        },
+        {
+          "needle": "auto no_missing=",
+          "line": 157
+        },
+        {
+          "needle": "if(!std::strcmp(which,\"PRESSURE_STICKY_REUSE\"))address32_control",
+          "line": 179
+        }
+      ]
+    }
+  ],
+  "actions": {
+    "native_reruns": 0,
+    "builds": 0,
+    "A2_tree_edits": false,
+    "production_protocol_edits": false,
+    "real_raw_read": false
+  }
+}
