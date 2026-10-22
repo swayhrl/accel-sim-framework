@@ -1,0 +1,141 @@
+{
+  "schema": "E2_A2_R4_STIMULUS_INCREMENTAL_SOURCE_REVIEW_V1",
+  "at_utc": "2026-10-22T04:53:54.300553+00:00",
+  "status": "SUPPORTED_FOR_FROZEN_ROP0_SINGLE_REQUEST_STIMULUS_PENDING_REAL_NATIVE",
+  "base_core": "7cee27fde762406ecffef711a8f6c4c38761692c",
+  "reviewed_core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "Framework_publication": "5d137275143976c5e31a73cebae3e3c98559168d",
+  "exact_changed_paths": [
+    "tests/ep_l2/ms_ro_combined/native_fixture.h"
+  ],
+  "fixture_before_sha256": "0ad8dc9df6f17a2161fb240a7af52c819c8a98509072ec2cd5f9e913829c0117",
+  "fixture_after_sha256": "3339f152ea820f763512ce1a7b2795257b50d93915edb8a7d51e32203dba3dae",
+  "A2_repair_receipt": {
+    "path": "docs/ep_l2/review_packs/MS20261022_A2_DETACH_OBSERVER_PRODUCER_r1/STIMULUS_REPAIR_r4.json",
+    "sha256": "23fdf4761f295b55fa903619ea041d419548c60b698a98959b1da2603f2d6442",
+    "content": {
+      "status": "TEST_STIMULUS_FIXED_NOT_MODEL_CHANGE",
+      "failed_native_receipt": "/workspace/ep_l2_ms20261019_e_results/A2_DETACH_OBSERVER_NATIVE_r3/RECEIPT.json",
+      "attempted": 16,
+      "completed": 15,
+      "lease_released": true,
+      "cause": "await_frontend checked empty ICNT before push had traversed the real zero-latency ROP queue; repeated sends were not yet admitted, so descriptor-count assertion correctly failed in original reference.",
+      "repair": "test fixture steps real cache-cycle/ROP transfer before frontend-empty completion; no runtime/observer production code changed since7cee27f.",
+      "next": "Fresh r4 build and48 real controls through original entry/fresh leases. Old receipts/builds preserved; no application start."
+    }
+  },
+  "production_and_main_fixture_byte_identity": [
+    {
+      "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "sha256": "b275b43b3b1e78d228d2dc91e5a8e5e426bf403adc50c62160fa4451b5159628",
+      "same_as_r3": true
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "c769532c78a6e9ce8c4d32139277faaa8847d9581ff2be8fdf2d41dbc764beb2",
+      "same_as_r3": true
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "sha256": "861baad6af1cc7d629cd75ddfdacfe5d58d86275d0305e3a74dc1b1635265f01",
+      "same_as_r3": true
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "sha256": "76fbe1c8dcd60e1be804101cfc969ec07a5b7fdfe8b6fc64919ef6eb845a5b2e",
+      "same_as_r3": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "b8fad6dc8904a227429b82e2aed286e5173a48267f669dee888a71b53d91784b",
+      "same_as_r3": true
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "sha256": "92623214b576bf88195b500266720c53064eabf8eb53ca924aac46335145a8e9",
+      "same_as_r3": true
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "sha256": "80d05eb2635abaa01e8ebd03c058650645edf7bd7b71dcd5b5b622cf50dfc1a9",
+      "same_as_r3": true
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "42aaec7305f33a53152d76371c4d3f3c955666d2ede00aab076821459f0f9340",
+      "same_as_r3": true
+    },
+    {
+      "path": "tests/ep_l2/test_detach_diagnostic.cc",
+      "sha256": "0579f67c986ea58ce98aa368cf7184e4983421a1ae61672d5e31f73802899c89",
+      "same_as_r3": true
+    }
+  ],
+  "applicability_premises": [
+    {
+      "id": "ROP_ZERO",
+      "status": "ROOT_INDEPENDENTLY_CONFIRMED_SEALED_ACTUAL_CONFIGS",
+      "detail": "Root explicitly confirmed actual T1M1/T1M0 native configs ROP latency0. This incremental source reviewer did not reread actual config files.",
+      "manifest_config_hashes": {
+        "full_system_v2/C_FROZEN_INPUT_r1/native_inputs/T1M1.config": "946193fbaf5a0c13cb2a864fb61f6db0e9768806fd8ac1ad705e7ea712dec276",
+        "full_system_v2/C_FROZEN_INPUT_r1/native_inputs/T1M0.config": "5723644f93bd8f041cb13eb86d3ed0decfe2bed5a176af732d9ed30feea624bc"
+      }
+    },
+    {
+      "id": "SERIAL_NEW_REQUEST_INGRESS",
+      "status": "SOURCE_AND_ROOT_CONFIRMED",
+      "detail": "Each affected callsite sends one requester then immediately calls await_frontend; no prior unprocessed ROP backlog at entry. Prior request helper completion and held lower replies preserve the intended serialized stimulus."
+    },
+    {
+      "id": "NO_EARLY_MEMORY_RETURNS",
+      "status": "SOURCE_CONFIRMED_FOR_THREE_SEGMENTS",
+      "detail": "combined_fixture.step drains outgoing lower packets, but does not call return_one. address32 and MissQ/zero-missing segments intentionally withhold all lower responses until finish; descriptor population cannot retire during waits."
+    }
+  ],
+  "source_execution_argument": [
+    "With latency0, fixture.send enqueues the new GLOBAL read in ROP with ready_cycle equal currentcycle. The first unconditional step runs real cache_cycle, whose end transfers that request into ICNT when queue has room.",
+    "After this first step the request is visible in the actual ICNT frontend queue, so helper cannot return on the formerly empty pre-transfer queue.",
+    "Subsequent real steps execute original lookup/admission/merge or wait naturally. ICNT becomes empty only after actual frontend consumption for this one request. One additional real step then returns; it does not mutate Tags/descriptors/counters directly.",
+    "If admission remains blocked, helper keeps stepping and eventually asserts at its finite bound; it does not fake acceptance or loosen the target descriptor32/MissQ conditions.",
+    "The additional extra step changes directed fixture scheduling and cycle witnesses, consistently for reference/OFF/ON. It is not production simulator timing or mechanism change. Fresh r4 native equivalence remains necessary."
+  ],
+  "coverage_of_three_failed_sites": [
+    {
+      "path": "tests/ep_l2/test_detach_diagnostic.cc",
+      "line": 143,
+      "site": "address32_control 31merges",
+      "conclusion": "Covered under frozen premises. Each single send is really consumed before next iteration; with no lower returns each successful merge retains one descriptor, so the intended real32descriptor assertion can become valid. This is source applicability, not a claim that native passed."
+    },
+    {
+      "path": "tests/ep_l2/test_detach_diagnostic.cc",
+      "line": 155,
+      "site": "merge_missq_control real queue fill",
+      "conclusion": "Covered. Each new read actually progresses through frontend before the while predicate rechecks MissQ capacity. The previous n<500 no-progress failure mode is removed; real queue/descriptor/safety assertions still apply."
+    },
+    {
+      "path": "tests/ep_l2/test_detach_diagnostic.cc",
+      "line": 157,
+      "site": "zero-missing merge",
+      "conclusion": "Covered. No_missing is actually consumed before unchanged MissQ occupancy assertion. Queue-full plus block_lower/no returns preserves the intended zero-extra-slot merge test."
+    }
+  ],
+  "shared_helper_boundary": {
+    "not_rejected_for_different_fix_shape": "A shared directed-test helper repair is acceptable; using it instead of the suggested three-callsite count helper is not a mechanism change.",
+    "positive_ROP_latency": "Not a general waiter for latency>0. If first step leaves ROP unready and ICNT empty, the extra step could return before consumption; therefore retain explicit latency0 applicability, or use broader ingress/progress evidence only if later fixture scope changes.",
+    "multiple_ingress_or_unrelated_traffic": "Do not infer per-request completion under an arbitrary preexisting ROP backlog or unrelated queue traffic without separate source proof. Such scope is not used by the three repaired sites.",
+    "other_helper_callers": "Existing shared callers may observe extra real test steps when ICNT is already empty. Their fixture time/digest is not inherited unchanged; current r4 reference/OFF/ON must compare the same actual fixture revision. No request for blanket replay of unrelated old17native gates.",
+    "bound": "At most20001 actual steps in a successful final-loop return; outer native per-case/total time and resource guards remain unchanged."
+  },
+  "reusable_scientific_premises": [
+    "All production runtime files byte-identical to r3, so static E72/E73 noninterference/212field ordering and coverage proofs remain applicable.",
+    "Reference actual r3 failure and15earlierexit0 remain preserved; no old receipt reclassified PASS.",
+    "New Core identity and exact fresh native fixture evidence remain r4-specific. Full application/main61 qualifications are not inherited."
+  ],
+  "actual_execution_by_reviewer": {
+    "native_runs": 0,
+    "builds": 0,
+    "full_application_starts": 0,
+    "real_source_or_registry_edits": false
+  },
+  "pending": "A2 actual fresh r4 native48/referenceOFFON and formalrelease, then E exact identity/schema/input/resource qualification. This incremental review grants no native or application PASS."
+}

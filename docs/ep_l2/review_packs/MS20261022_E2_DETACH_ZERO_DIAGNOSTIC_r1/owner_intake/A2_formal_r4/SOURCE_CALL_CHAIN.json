@@ -1,0 +1,202 @@
+{
+  "core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+  "flow": "actual cache_cycle frontend -> pure Tag shadow -> original preview with actual short-circuit output context -> frontend head-cycle record -> unchanged ft_access/relieve/detach -> actual transaction fill/response/retire -> existing RO print callback emits bounded diagnostics",
+  "timing": "All added observation is host work only; no new modeled event/resource/ready status, no GPU-cycle performance claim from host overhead.",
+  "locations": [
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 1319,
+      "text": "if(tvd_frontend_handled)m_L2cache->detach_diag_skip(mf,now,1);"
+    },
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 1328,
+      "text": "m_L2cache->detach_diag_skip(nullptr,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle,0);"
+    },
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 1343,
+      "text": "m_L2cache->detach_diag_snapshot(mf,diagnostic_preview);"
+    },
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 1456,
+      "text": "m_L2cache->detach_diag_frontend(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle,diagnostic_preview,plan,admit,"
+    },
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 1686,
+      "text": "} else {m_L2cache->detach_diag_skip(mf,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle,2);}"
+    },
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 2254,
+      "text": "if(!m_config->m_L2_config.disabled())m_L2cache->detach_diag_kernel(true,uid);"
+    },
+    {
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "line": 2272,
+      "text": "if(!m_config->m_L2_config.disabled())m_L2cache->detach_diag_kernel(false,uid);"
+    },
+    {
+      "file": "src/gpgpu-sim/gpu-cache.cc",
+      "line": 2722,
+      "text": "void l2_cache::preview_access(new_addr_type addr, mem_fetch *mf,"
+    },
+    {
+      "file": "src/gpgpu-sim/gpu-cache.cc",
+      "line": 2726,
+      "text": "void l2_cache::preview_access(new_addr_type addr,mem_fetch *mf,l2_access_plan &plan,ep_l2_detach_diag::preview *o) const {"
+    },
+    {
+      "file": "src/gpgpu-sim/gpu-cache.cc",
+      "line": 2977,
+      "text": "void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) const {"
+    },
+    {
+      "file": "src/gpgpu-sim/gpu-cache.cc",
+      "line": 2996,
+      "text": "void l2_cache::detach_diag_frontend(mem_fetch*m,unsigned long long cycle,const ep_l2_detach_diag::preview&o,const l2_access_plan&p,bool admit,bool missq,bool response){using namespace ep_l2_detach_diag;auto*d=get(this);if(!d||!d->once(cycle"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 72,
+      "text": "tx->diagnostic_observer=ep_l2_detach_diag::get(&c);"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 105,
+      "text": "return !new_request(m) || (query_uid==m->get_request_uid() && physical_cycle()>=query_ready_at);"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 110,
+      "text": "if (!new_request(m) || !directory_ready(m)) return;"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 200,
+      "text": "bool new_request(mem_fetch *m) const {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 241,
+      "text": "void relieve(new_addr_type addr) {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 243,
+      "text": "if(auto*d=ep_l2_detach_diag::get(&c)){d->add(ep_l2_detach_diag::relieve_calls);d->add(!c.m_config.m_ro_tag_detach?ep_l2_detach_diag::relieve_T_disabled:found?ep_l2_detach_diag::relieve_eligible_selected:ep_l2_detach_diag::relieve_no_eligibl"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 246,
+      "text": "if(c.m_config.m_ro_tag_detach)for(unsigned t=base;t<base+c.m_config.get_assoc();++t){auto h=c.tag_payload_handle(t);if(!tx->live(h))continue;const auto p=tx->diagnostic_state(h);if(p.attached&&!p.reuse&&(p.required&~p.ready)){first=t;break;"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 256,
+      "text": "if(!new_request(m))return false;"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "line": 313,
+      "text": "bool merge_existing(mem_fetch *m,unsigned time,std::list<cache_event>&events,cache_request_status &r,ep_l2_detach_diag::field *observed_denial=nullptr) {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 90,
+      "text": "ep_l2_detach_diag::ledger *diagnostic_observer=nullptr;"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 120,
+      "text": "admission admit(uint64_t epoch, new_addr_type line, identity h,"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 155,
+      "text": "if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_admits);diagnostic_observer->joint(diagnostic_state(h));}"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 181,
+      "text": "admission merge(identity h, mem_fetch *mf, unsigned mask,"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 197,
+      "text": "if(diagnostic_observer && !e.reuse_seen)diagnostic_observer->add(ep_l2_detach_diag::reuse_seen_first_transition);"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 199,
+      "text": "if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_merges);diagnostic_observer->joint(diagnostic_state(h));}"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 205,
+      "text": "bool can_detach(identity h) const {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 209,
+      "text": "bool detach(identity h) {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 210,
+      "text": "ep_l2_detach_diag::detach_scope diagnostic(diagnostic_observer);"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 257,
+      "text": "if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_fill_packets);diagnostic_observer->joint(diagnostic_state(h));if(!e.attached){diagnostic_observer->add(ep_l2_detach_diag::detached_return_packets);diagnostic_observer->a"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 297,
+      "text": "++stats.response_backpressure; if(diagnostic_observer)diagnostic_observer->add(ep_l2_detach_diag::response_backpressure); e.prepared = false; return;"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 299,
+      "text": "if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_responses);if(!e.attached)diagnostic_observer->add(ep_l2_detach_diag::detached_responses);}"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "line": 375,
+      "text": "if(diagnostic_observer){diagnostic_observer->add(ep_l2_detach_diag::ro_retired);if(!e.attached)diagnostic_observer->add(ep_l2_detach_diag::detached_retired);}"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "line": 231,
+      "text": "struct preview {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "line": 239,
+      "text": "struct ledger {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "line": 279,
+      "text": "struct registry {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "line": 286,
+      "text": "void print_counts(FILE *f,const char*record,unsigned slice,const ledger&d,const std::array<uint64_t,FIELD_COUNT>&counts,int phase=-1,uint64_t cycle=0) {"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "line": 294,
+      "text": "void print(FILE*f,ledger&d,uint64_t cycle){print_counts(f,\"SLICE\",d.slice,d,d.total,-1,cycle);for(unsigned p=0;p<d.kernel_count+2;++p)print_counts(f,\"PHASE\",d.slice,d,d.phases[p],p,cycle);"
+    },
+    {
+      "file": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "line": 302,
+      "text": "struct commit_scope {ledger*d;uint64_t before;bool done=false;uint64_t uid,cycle;explicit commit_scope(const void*p,uint64_t u,uint64_t c):d(get(p)),before(d?d->total[detach_success]:0),uid(u),cycle(c){if(d)d->add(ft_access_attempts);}int f"
+    }
+  ]
+}
