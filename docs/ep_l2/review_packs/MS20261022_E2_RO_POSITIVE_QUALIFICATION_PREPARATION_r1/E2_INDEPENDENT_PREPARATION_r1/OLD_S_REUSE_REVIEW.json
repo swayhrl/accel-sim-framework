@@ -1,0 +1,194 @@
+{
+  "schema": "E2_RO_POSITIVE_OLD_S_ANCHOR_REUSE_CONTRACT_REVIEW_V1",
+  "at_utc": "2026-10-22T01:44:55.234472+00:00",
+  "status": "READ_ONLY_PREPARATION_NO_LAUNCH_AUTHORITY",
+  "scope": "No repo/registry/controller changes, no fetch, native/build/application or raw/trace access. Only /tmp report written.",
+  "old_anchor": {
+    "attempt_id": "E047_98c6624c",
+    "cycles": 343730,
+    "identity": {
+      "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+      "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+      "epoch_range": {
+        "epochs": "all",
+        "scope": "full_application"
+      },
+      "feature_vector": {
+        "adaptive_policy": false,
+        "bank_count": 4,
+        "finite_wbuf": true,
+        "ops_per_bank_cycle": 1,
+        "payload_capacity_per_slice": 1168,
+        "ro_line_mshr_bypass": false,
+        "ro_tag_detach": false,
+        "static_s64": false,
+        "tvd": false,
+        "unified_wb": false,
+        "wb_local_cap": 0,
+        "wbuf_entries": 16
+      },
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "ideal_vector": {
+        "copy_free": false,
+        "l2_data_free": false,
+        "mem_all_data": false,
+        "meta": false,
+        "read_hit": false,
+        "wb": false
+      },
+      "runtime_config_sha256": "7783713713d2a6429b453b7ded21b2aa86be1de63d08c8569cf2e9e0b09df80f",
+      "termination_contract": {
+        "all_kernels": true,
+        "hardware_drained": true,
+        "kind": "FULL_APPLICATION_MECHANISM_V2",
+        "normal_exit": true,
+        "timeout_seconds": 10800
+      },
+      "trace_content_sha256": "694ce08c82354963d0a24f45b13020c9a98d21e60b511166812d6176b4f486cb",
+      "workload": "sgemm"
+    },
+    "path": "/workspace/ep_l2_ms20261019_e_results/E047_98c6624c/run_status.json",
+    "qualification_id": "f85b5f42f3a052667c10338a70b6acdb6b6959f5cc3948986f7430fc6cd50047",
+    "run_key": "78b70c31541a14be290375ebd50db4f6bc01c826913f5a2f479b9915550d756b",
+    "sha256": "821466c1694f5dbf089714eb70ff41f97e2ab7fa5a0b876027ed6601a700b69d",
+    "comparison_group": "V4_EXP_SGEMM_MAIN61_SF",
+    "comparison_invariants_sha256": "b915bb49bfeece76ea8a3efaafee67f479571385ab69058f4c623de671e9ad2d"
+  },
+  "old_certificate": {
+    "manifest_sha256": "c0a758b2fc0552be62f827ecc31b7ce32c06353fe3dcab0a87cfbea4c7e5b104",
+    "ranges_sha256": "ce98b276a772d17869de61ee6aa6cf6f7d856354eb4062b7c0c0c762d6e71944",
+    "certified_model_lines": 0
+  },
+  "answers": {
+    "1_scientific_anchor": "Old S remains valid and accepted. In the inspected execution spec, S has RO pending-state, detach and bypass OFF and supplies no RO manifest/ranges options to runtime; certificate is metadata in auxiliary assets. Positive certification therefore does not itself invalidate the original S measured baseline. A2 must still close exact main61 source-level OFF invariance/no certificate-dependent side effects before asserting equivalence for a new comparison. This task deliberately does not duplicate A2 mechanism review.",
+    "2_current_comparison_contract": "Direct old-S/new-positive-F CURRENT_ACCEPTED through unchanged accept_pair is not permitted if new F binds changed positive manifest/ranges: auxiliary_assets includes content SHA+size; changed bytes change comparison_invariants_sha256, so pair mismatch. RO config options being listed comparison_variable_options does not remove auxiliary_assets from invariant. Current pair acceptance does not require same QID, so a new Q alone is not the mismatch; the actual changed auxiliary content and potentially a new comparison_group are. Old receipt/spec/Q cannot be rewritten to hide this.",
+    "3_minimal_pending_amendment": "If positive certificate and A2 OFF-invariance proof exist, seek a NEW explicit one-start exploratory-F authorization plus a scoped, append-only baseline-equivalence/comparison declaration. Bind old S attempt/run_key/receipt SHA/source/input/termination/environment/nonresearch config and new F exact Q/spec/positive manifest+ranges+review SHA. Enumerate only allowed certificate/adoption metadata differences and corresponding RO admission options; require equality for all other invariant fields. Bind new exploration identity and source selection, preserve both original endpoint identities, group and original S/F pair. A narrowly scoped audited comparator/equivalence path must enforce this declaration; do not globally remove aux files from equality or rewrite old artifacts. Declare full-design S/F performance comparison, not Tag-detach-only causal attribution. Separate explicit budget/resource envelope and new batch binding needed; old four-start batch is closed.",
+    "fallback_if_amendment_or_invariance_unavailable": "Prepare a distinct two-end S/F positive-certificate comparison, both using identical new auxiliary files and own new Q/group, and seek explicit two-start approval. This is a new scientifically scoped comparison for contractual comparability, not an automatic rerun or invalidation/refund of old S. Do not start either option now."
+  },
+  "run_key_formula": {
+    "runtime_source_file": "/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1/util/ep_l2/ft_lane5/registry.py",
+    "lines": [
+      61,
+      75
+    ],
+    "formula": "sha256(canonical(identity)); identity includes runtime_config_sha256; exact asset bytes are part of runtime_config hash"
+  },
+  "evidence": [
+    {
+      "path": "util/ep_l2/mechanism_e/runner.py",
+      "lines": [
+        31,
+        45
+      ],
+      "sha256": "d54db7f65858477c7ed089e16f049f622c6888e29f767d3f68fad06bb5ac5037",
+      "finding": "Profile must exactly match own current Q; qualification immutable."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/runner.py",
+      "lines": [
+        49,
+        72
+      ],
+      "sha256": "d54db7f65858477c7ed089e16f049f622c6888e29f767d3f68fad06bb5ac5037",
+      "finding": "Auxiliary assets are included both in runtime_config identity and comparison invariant, irrespective of RO options being research variables."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/runner.py",
+      "lines": [
+        256,
+        286
+      ],
+      "sha256": "d54db7f65858477c7ed089e16f049f622c6888e29f767d3f68fad06bb5ac5037",
+      "finding": "accept_pair requires immutable accepted endpoints, own Q, distinct profiles, equal source/selection/group/invariant/instructions; Q IDs need not be equal."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        471,
+        499
+      ],
+      "sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b",
+      "finding": "New Q registered by new content hash; cannot retag old Q."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/coordinator.py",
+      "lines": [
+        567,
+        588
+      ],
+      "sha256": "3462e84b9f85f5d043b3e1ad069a1f90d195f345a8a2bbae052f0f986e89d69b",
+      "finding": "Duplicate COMPLETE_VALID run-key blocked; exact spec/Q check."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/workload_policy.py",
+      "lines": [
+        167,
+        172
+      ],
+      "sha256": "19e7b5e93f7996f14f411f658cd52d156f4d68b82074f4c48df50730be546a6d",
+      "finding": "Old exact four-start batch is exhausted; no implicit retries."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/workload_policy.py",
+      "lines": [
+        189,
+        209
+      ],
+      "sha256": "19e7b5e93f7996f14f411f658cd52d156f4d68b82074f4c48df50730be546a6d",
+      "finding": "Started binding immutable; cannot substitute new certificate into old binding."
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/sgemm_qualification/SGEMM_S_SPEC.json",
+      "lines": [
+        3,
+        25
+      ],
+      "sha256": "62cbae7848f393fc0305dccc303621933cf6fea8394cdb5595e1e75a52b0e7f7",
+      "finding": "Even S carries manifest/ranges/input-semantics/fallback auxiliary files; old group/hash fixed."
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/sgemm_qualification/SGEMM_S_SPEC.json",
+      "lines": [
+        60,
+        83
+      ],
+      "sha256": "62cbae7848f393fc0305dccc303621933cf6fea8394cdb5595e1e75a52b0e7f7",
+      "finding": "S ro_tag_detach and ro_line_mshr_bypass false; old runtime hash fixed."
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/sgemm_qualification/SGEMM_S_SPEC.json",
+      "lines": [
+        362,
+        386
+      ],
+      "sha256": "62cbae7848f393fc0305dccc303621933cf6fea8394cdb5595e1e75a52b0e7f7",
+      "finding": "Old empty certificate and QID bound into own profile review."
+    },
+    {
+      "path": "docs/ep_l2/review_packs/MS20261022_E2_WORKLOAD_PIPELINE_PROPOSAL_r1/sgemm_qualification/seal.py",
+      "lines": [
+        59,
+        69
+      ],
+      "sha256": "b2bd20d23a0739612a4615835383f656f42bb4b93b925e6f38b3399b16f46c4d",
+      "finding": "Seal formula explicitly puts auxiliary asset manifests in runtime hash and common invariant."
+    },
+    {
+      "path": "util/ep_l2/mechanism_e/test_acceptance.py",
+      "lines": [
+        79,
+        81
+      ],
+      "sha256": "b03f1bfbd339a8a59cc6f161fea413e259b1531f7720a8b36ea574176f7172a9",
+      "finding": "Existing unit assertion rejects invariant mismatch; no test run performed in this review."
+    }
+  ],
+  "no_automatic_action": {
+    "new_application_starts": 0,
+    "new_native_processes": 0,
+    "builds": 0,
+    "new_authorization_implied": false,
+    "old_batch_status": "4/4 closed",
+    "old_S_pair_and_history": "preserve byte identity"
+  }
+}
