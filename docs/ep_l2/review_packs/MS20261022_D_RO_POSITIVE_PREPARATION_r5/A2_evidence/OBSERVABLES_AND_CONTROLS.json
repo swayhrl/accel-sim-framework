@@ -1,0 +1,219 @@
+{
+  "schema": "A2_MAIN61_RO_OBSERVABLES_AND_SUPPORTED_CONTROL_MAP_V1",
+  "source_identity": {
+    "core_source_commit": "d010911e3174a3764791183cd108fe4664ba8731",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "61aad385723ac97a76cb1f32c124b286a10bc8609c9c58b1a3ef8a87413f2dd5",
+    "archive_sha256": "3c6ce15b88ae16c17c30718618aedc769495168d6e3d0c371270ba95b7b0aca8"
+  },
+  "observables": [
+    {
+      "record": "EPL2ROV1|SUMMARY",
+      "fields": "accepted_global_reads / accepted_oracle_candidates / accepted_ro / transactions / merges / detached / lower_sectors / responses / live",
+      "interpretation": "Distinguish accepted certified demand from transaction and merge. detached is success count; detach is enable flag. Zero success does not identify no pressure/no opportunity/reuse_seen/allready."
+    },
+    {
+      "record": "EPL2ROC1|RESOURCE",
+      "fields": "peak_transactions / peak_shared_descriptors / peak_shared_lines / normal_line_allocations / avoided_line_allocations / query_count / query_wait_cycles / query_port_wait_attempts",
+      "interpretation": "Per-slice high-water/cumulative query and native-line allocation evidence; peak_shared_lines alone cannot exclude transient set conflict."
+    },
+    {
+      "record": "EPL2ROC1|WAIT",
+      "fields": "TAG_SET_ALL_PENDING / LINE_MSHR_FULL / SHARED_DESCRIPTOR_FULL / PER_ADDRESS_FULL",
+      "interpretation": "Only four exported frontend-head nonexclusive first-to-accept wait classes; no complete landing/WAD/detach eligibility histogram. Do not sum into critical path."
+    },
+    {
+      "record": "EPL2ROC1|CLOSURE",
+      "fields": "native_descriptor_responses / ro_descriptor_responses / shared_descriptor_used / shared_line_used / ro_live / epoch_closed",
+      "interpretation": "Use alongside process exit0, complete commandlist and all existing required closure/drain records. No tail/progress substitute."
+    },
+    {
+      "record": "EPL2ROC1|LOWER_CONCURRENCY",
+      "fields": "peak_lower_transactions / peak_independent_lower_lines / epoch begin/end / last_response / completed_ro_requesters",
+      "interpretation": "In-flight issued-notreturned pressure. Same-address detached instances can exceed independent-line count; no warp independence inference."
+    },
+    {
+      "record": "C7E/m0a admission sampler",
+      "fields": "tag allocation need / allreserved sampled blockers",
+      "interpretation": "l2cache.cc1359-1369,2058 uses preview; eligible detach can turn reservation failure into MISS. Not full can_detach call/refusal counts or counterfactual original pressure."
+    }
+  ],
+  "missing_observables": [
+    "No can_detach attempted/scanned/rejected-by-reason counters (reuse_seen vs ready vs notattached/nonRO).",
+    "No per-set pending-certified-live occupancy/time overlap with actual incoming tag pressure; no critical-path assignment from total waits.",
+    "No parent/sibling UID independence classification; merges count mem_fetch requesters, not necessarily independent warps."
+  ],
+  "controls": [
+    {
+      "profile": "F",
+      "W": 1,
+      "V": 1,
+      "T": 1,
+      "M": 1,
+      "source_supported": true,
+      "existing_engineering": "Existing source/factor test support; E current-case plus unchanged assertion scope only",
+      "new_positive_SGEMM_Q": "NOT_INHERITED; exact certificate/profile qualification needed",
+      "existing_engineering_control_status": "PASS_E_RETAINED_UNCHANGED_ASSERTION_SCOPE_ONLY",
+      "existing_engineering_control_cases": [
+        {
+          "case": "combined_factor_tag_T1_M1",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        },
+        {
+          "case": "combined_factor_line_T1_M1",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        }
+      ],
+      "scope_warning": "T/M factor path on native common-victim fixture; not standalone full SGEMM profile acceptance. S/F current empty-fallback SGEMM Q preserved separately.",
+      "qualification_gap": "E exact positive certificate/input/profile binding + new seal; future endpoint complete exit/drain only if user authorizes. No requirement here to replay17 native tests."
+    },
+    {
+      "profile": "WV_M_ONLY",
+      "W": 1,
+      "V": 1,
+      "T": 0,
+      "M": 1,
+      "source_supported": true,
+      "existing_engineering": "Existing source/factor test support; E current-case plus unchanged assertion scope only",
+      "new_positive_SGEMM_Q": "NOT_INHERITED; exact certificate/profile qualification needed",
+      "existing_engineering_control_status": "PASS_E_RETAINED_UNCHANGED_ASSERTION_SCOPE_ONLY",
+      "existing_engineering_control_cases": [
+        {
+          "case": "combined_factor_tag_T0_M1",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        },
+        {
+          "case": "combined_factor_line_T0_M1",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        }
+      ],
+      "scope_warning": "T/M factor path on native common-victim fixture; not standalone full SGEMM profile acceptance. S/F current empty-fallback SGEMM Q preserved separately.",
+      "qualification_gap": "E exact positive certificate/input/profile binding + new seal; future endpoint complete exit/drain only if user authorizes. No requirement here to replay17 native tests."
+    },
+    {
+      "profile": "WV_T_ONLY",
+      "W": 1,
+      "V": 1,
+      "T": 1,
+      "M": 0,
+      "source_supported": true,
+      "existing_engineering": "Existing source/factor test support; E current-case plus unchanged assertion scope only",
+      "new_positive_SGEMM_Q": "NOT_INHERITED; exact certificate/profile qualification needed",
+      "existing_engineering_control_status": "PASS_E_RETAINED_UNCHANGED_ASSERTION_SCOPE_ONLY",
+      "existing_engineering_control_cases": [
+        {
+          "case": "combined_factor_tag_T1_M0",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        },
+        {
+          "case": "combined_factor_line_T1_M0",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        }
+      ],
+      "scope_warning": "T/M factor path on native common-victim fixture; not standalone full SGEMM profile acceptance. S/F current empty-fallback SGEMM Q preserved separately.",
+      "qualification_gap": "E exact positive certificate/input/profile binding + new seal; future endpoint complete exit/drain only if user authorizes. No requirement here to replay17 native tests."
+    },
+    {
+      "profile": "F_MINUS_R",
+      "W": 1,
+      "V": 1,
+      "T": 0,
+      "M": 0,
+      "source_supported": true,
+      "existing_engineering": "Existing source/factor test support; E current-case plus unchanged assertion scope only",
+      "new_positive_SGEMM_Q": "NOT_INHERITED; exact certificate/profile qualification needed",
+      "existing_engineering_control_status": "PASS_E_RETAINED_UNCHANGED_ASSERTION_SCOPE_ONLY",
+      "existing_engineering_control_cases": [
+        {
+          "case": "combined_factor_tag_T0_M0",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        },
+        {
+          "case": "combined_factor_line_T0_M0",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        }
+      ],
+      "scope_warning": "T/M factor path on native common-victim fixture; not standalone full SGEMM profile acceptance. S/F current empty-fallback SGEMM Q preserved separately.",
+      "qualification_gap": "E exact positive certificate/input/profile binding + new seal; future endpoint complete exit/drain only if user authorizes. No requirement here to replay17 native tests."
+    },
+    {
+      "profile": "S",
+      "W": 0,
+      "V": 0,
+      "T": 0,
+      "M": 0,
+      "source_supported": true,
+      "existing_engineering": "Existing source/factor test support; E current-case plus unchanged assertion scope only",
+      "new_positive_SGEMM_Q": "NOT_INHERITED; exact certificate/profile qualification needed",
+      "existing_engineering_control_status": "PASS_E_RETAINED_UNCHANGED_ASSERTION_SCOPE_ONLY",
+      "existing_engineering_control_cases": [
+        {
+          "case": "combined_factor_tag_T0_M0",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        },
+        {
+          "case": "combined_factor_line_T0_M0",
+          "exit_code": 0,
+          "native_binary_sha256": "e78c262b4bdfb19267cdb7d6409c4366054fb4babf9047a092ec75d5bcc98511",
+          "applicability": "RETAINED_UNCHANGED_ASSERTION_SCOPE_PLUS_CURRENT_WAD_DELTA_TESTS; not current-main full-application evidence"
+        }
+      ],
+      "scope_warning": "T/M factor path on native common-victim fixture; not standalone full SGEMM profile acceptance. S/F current empty-fallback SGEMM Q preserved separately.",
+      "qualification_gap": "E exact positive certificate/input/profile binding + new seal; future endpoint complete exit/drain only if user authorizes. No requirement here to replay17 native tests."
+    }
+  ],
+  "valid_contrasts": [
+    {
+      "pair": [
+        "F",
+        "WV_M_ONLY"
+      ],
+      "factor": "T toggle conditional on fixed W/V/M=1 and exact same positive certificate/input/finite geometry; E-specific Q required"
+    },
+    {
+      "pair": [
+        "F",
+        "WV_T_ONLY"
+      ],
+      "factor": "M toggle conditional on fixed W/V/T=1; changes native LineMSHR allocation and detached instance lookup/merge path; E-specific Q required"
+    }
+  ],
+  "invalid_inferences": [
+    "S/F changes W,V,T,M and copy policy; not isolated T benefit.",
+    "WV_T_ONLY/WV_M_ONLY differ in T and M; not a pure Tag-vs-MSHR abstract capacity comparison.",
+    "Zero detach or zero sampled tag wait does not prove Tag capacity/policy nonbinding.",
+    "Positive certified line count does not guarantee accepted RO transaction, eligible pending single-observed requester, same-set pressure or performance gain."
+  ],
+  "unsupported": [
+    "F_MINUS_W",
+    "complete_fixed64_dirty_plus_RO",
+    "capacity_ON_plus_F"
+  ],
+  "configs_generated": 0,
+  "factor_evidence_ref": {
+    "repo": "swayhrl/accel-sim-framework",
+    "commit": "c1a981a30cb444cab4c671166d20f40e664203c2",
+    "path": "docs/ep_l2/review_packs/MS20261020_E2_MAIN61_CONV_QUALIFICATION_r1/gates/tm_trigger_default_off_and_illegal_combinations.json",
+    "sha256": "45b05c5d865476623915ecad6b808fcf8e8e522c859bee98079052d9e680d2a8",
+    "role": "all_eight_T_M_factor_controls_retained_by_E"
+  }
+}
