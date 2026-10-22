@@ -1,6 +1,6 @@
 # EP-L2 当前协作面板
 
-**E2 r5：正式producer/native与四个完整输入F资格已闭合并登记；原唯一控制器即将从55次启动CFD。所有新端同main e511/Core1093。资源按实际门单路滚动，保留5+2GiB/10新24总/全部历史。E2直接负责补证及分析，不等其他lane。**
+**E2 r5真实启动：56次，CFD E056_47abdc7f RUNNING。原唯一controller ACTIVE/真实PID与wait监护已核；本批已启动1/4。E2并行做终验和L2联合归因，不等外部ACK；5+2GiB、10新/24总和全部历史保留。**
 
 见 [STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[原因与边界](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json)。本端候选 head 可见观测全为缓存命中，实际RO事务0，故无活跃RO对象可detach；不能由此解释已有RO事务的Conv/CFD/DWT/Vector。
 
