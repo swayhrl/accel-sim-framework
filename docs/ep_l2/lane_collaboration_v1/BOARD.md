@@ -1,6 +1,6 @@
 # EP-L2 当前协作面板
 
-**原唯一中央控制器 ACTIVE，累计55次；批准四端已启动4/4、独立接受并交D 3/4。** 当前活动：convolutionSeparable E055_64617d96。原批准执行继续；剩余原因：convolutionSeparable。
+**原唯一中央控制器 STOPPED，累计55次；批准四端已启动4/4、独立接受并交D 4/4。** 当前活动：无。原批准执行继续；本批触发层终验剩余：待最终完成审计。
 
 见 [STATUS](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/STATUS.json)、[RECEIPT](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/RECEIPT.json)、[原因与边界](../review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/result/MEASURED_CAUSAL_CLOSURE.json)。本端候选 head 可见观测全为缓存命中，实际RO事务0，故无活跃RO对象可detach；不能由此解释已有RO事务的Conv/CFD/DWT/Vector。
 

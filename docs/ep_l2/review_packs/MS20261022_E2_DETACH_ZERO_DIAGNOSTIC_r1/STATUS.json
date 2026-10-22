@@ -1,10 +1,10 @@
 {
   "schema": "E2_DETACH_ZERO_CURRENT_STATUS_V4",
-  "at_utc": "2026-10-22T11:18:15.649369+00:00",
-  "Goal": "blocked",
+  "at_utc": "2026-10-22T12:10:08.167085+00:00",
+  "Goal": "ACTIVE",
   "execution_state": "WORKING_UNDER_EXPLICIT_USER_APPROVAL",
-  "goal_id": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_20261022_r1",
-  "state": "APPROVED_FOUR_ORIGINAL_CONTROLLER_RUNNING",
+  "goal_id": "EPL2_DETACH_ZERO_ROOT_CAUSE_CLOSURE_E2_CONTINUATION",
+  "state": "R4_ALL_FOUR_TERMINAL_R5_USER_APPROVED_ENGINEERING_ACTIVE",
   "actual_starts": 55,
   "controller": {
     "process": {
@@ -12,14 +12,23 @@
       "pid": 3949331,
       "start_ticks": 941777765
     },
-    "state": "ACTIVE"
+    "state": "STOPPED",
+    "stopped_unix": 1792670538.2138486
   },
   "approved_four_actual_new_starts": 4,
   "approved_four_remaining_authorized_starts": 0,
-  "approved_four_current_accepted_points": 3,
-  "approved_four_remaining_cause_closure": [
-    "convolutionSeparable"
+  "approved_four_current_accepted_points": 4,
+  "approved_four_remaining_cause_closure": [],
+  "r5_user_approved": {
+    "approval": "approved_r5_joint_r1/USER_APPROVAL.json",
+    "maximum_new_starts": 4,
+    "new_starts": 0,
+    "status": "ISOLATED_SOURCE_PARSER_CENTRAL_PREPARATION_IN_PARALLEL_NOT_YET_BUILT_OR_Q"
+  },
+  "deep_causal_open_items": [
+    "R5_SOURCE_NATIVE_JOINT_OBSERVER_Q_AND_NEW_COMPLETE_INPUT_MEASUREMENTS"
   ],
+  "owner_causal_closure_report": "approved_four_r1/E2_OWNER_CAUSAL_CLOSURE_r1/README.md",
   "conditions": [
     {
       "condition_id": "V7_DETACH_CAUSE_cfd_097k_F",
@@ -177,11 +186,49 @@
       "qualification_id": "e47ae87689da5df3fd0ef65ce5424dc58108157bb6b868737d635e25549c7338",
       "independently_qualified_registered_bound": true,
       "attempt_id": "E055_64617d96",
-      "central_state": "RUNNING",
+      "central_state": "COMPLETE_VALID",
       "actual_start": true,
-      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": false,
+      "CURRENT_ACCEPTED_DIAGNOSTIC_POINT": true,
       "result_directory": "/workspace/ep_l2_ms20261019_e_results/E055_64617d96",
-      "retained_result_bytes": 87746602
+      "retained_result_bytes": 105009015,
+      "cycles": 291469,
+      "instructions": 714547200,
+      "mechanism_root_cause": {
+        "status": "EXACT_POINT_CAUSE_CLOSED",
+        "code": "NECESSARY_PRODUCTION_TAG_FAILURE_TRIGGER_ABSENT",
+        "statement": "Actual productionTag probe never returned RESERVATION_FAIL; the source-required branch calling RO relieve was never entered, so detach was never attempted. RO transaction presence is separately measured; skippedfrontend rawpressure remainsNA andglobalTagabundance is notclaimed.",
+        "source_predicate": {
+          "Core": "9243f769620653f2a9d4df5599e9581e9dae6067",
+          "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "lines": "326-329",
+          "condition": "probe==RESERVATION_FAIL && m_ro"
+        },
+        "measured": {
+          "commit_raw_probe_reached": 4716184,
+          "raw_tag_fail_commit": 0,
+          "relieve_calls": 0,
+          "detach_calls": 0,
+          "detach_success": 0,
+          "probe_skipped": 1719574
+        },
+        "actual_RO_transactions": 371495
+      },
+      "point_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261022_E2_DETACH_ZERO_DIAGNOSTIC_r1/approved_four_r1/results/convolutionSeparable/CURRENT_ACCEPTED_POINT.json",
+      "D_delivery": {
+        "D_ACK_or_consumption_claimed": false,
+        "accepted_point_commit": "121ad5c5de00070a14bfd56c36d350822983f69e",
+        "attempt_id": "E055_64617d96",
+        "event_id": "E2-00000093-90478666599b",
+        "event_sha256": "a526b60a93b2c931a2d34f41fd8352231a2036dfac101c801ab94dd2e0eca8e1",
+        "refs_verification": {
+          "reference_count": 3,
+          "scope": "MESSAGE_METADATA_ONLY_NOT_SCIENTIFIC_ACCEPTANCE",
+          "status": "EXACT_GIT_BLOB_SHA_VERIFIED",
+          "total_metadata_bytes": 3054394
+        },
+        "schema": "E2_REAL_D_APPROVED_FOUR_INCREMENTAL_DELIVERY_V1",
+        "workload": "convolutionSeparable"
+      }
     }
   ],
   "full_goal_complete": false,
@@ -195,12 +242,12 @@
   },
   "cumulative_result_generation": {
     "old_bytes": 14309576384,
-    "new_bytes": 7893013735,
-    "total_bytes": 22202590119
+    "new_bytes": 7910276148,
+    "total_bytes": 22219852532
   },
   "resources": {
-    "available_memory_bytes": 180455587840,
-    "disk_free_bytes": 9183092736,
-    "share_disk_free_bytes": 44198645760
+    "available_memory_bytes": 181424218112,
+    "disk_free_bytes": 9132933120,
+    "share_disk_free_bytes": 44197076992
   }
 }
