@@ -1,0 +1,258 @@
+{
+  "final_amended_R2": {
+    "busy_resource_polling": false,
+    "opportunities": [
+      {
+        "CPU_exception_applied": false,
+        "IO_PSI_warning_only_user_amendment": true,
+        "IO_PSI_warnings": [
+          {
+            "check": "host_io_full_avg10",
+            "sample": 1
+          },
+          {
+            "check": "cgroup_io_full_avg10",
+            "sample": 1
+          },
+          {
+            "check": "host_io_full_avg10",
+            "sample": 2
+          },
+          {
+            "check": "cgroup_io_full_avg10",
+            "sample": 2
+          }
+        ],
+        "actual_output_free_bytes": 31665246208,
+        "began_ns": 9306708866470520,
+        "canonical_task": "/root",
+        "checks": {
+          "1_actual_output_filesystem_gt5GiB": true,
+          "1_authority": true,
+          "1_cgroup_memory_full_avg10": true,
+          "1_cgroup_memory_headroom_ge32GiB": true,
+          "1_host_memory_full_avg10": true,
+          "1_host_memory_headroom_ge32GiB": true,
+          "1_known_io_scope": true,
+          "1_original174": true,
+          "1_projected_writes_gt5GiB": true,
+          "2_actual_output_filesystem_gt5GiB": true,
+          "2_authority": true,
+          "2_cgroup_memory_full_avg10": true,
+          "2_cgroup_memory_headroom_ge32GiB": true,
+          "2_host_memory_full_avg10": true,
+          "2_host_memory_headroom_ge32GiB": true,
+          "2_known_io_scope": true,
+          "2_original174": true,
+          "2_projected_writes_gt5GiB": true,
+          "first_actual_output_filesystem_gt5GiB": true,
+          "first_cgroup_memory_full_avg10": true,
+          "first_cgroup_memory_headroom_ge32GiB": true,
+          "first_host_memory_full_avg10": true,
+          "first_host_memory_headroom_ge32GiB": true,
+          "first_original174": true,
+          "gap_ge10s": true,
+          "no_new_cgroup_OOM": true,
+          "no_new_host_OOM": true,
+          "same_output_filesystem": true,
+          "second_actual_output_filesystem_gt5GiB": true,
+          "second_cgroup_memory_full_avg10": true,
+          "second_cgroup_memory_headroom_ge32GiB": true,
+          "second_host_memory_full_avg10": true,
+          "second_host_memory_headroom_ge32GiB": true,
+          "second_original174": true
+        },
+        "ended_ns": 9306719919174514,
+        "failed_checks": [],
+        "label": "AD_GEMM_user_IO_warning_R2",
+        "observed_cgroup_IO_full_avg10": 72.54,
+        "observed_host_IO_full_avg10": 61.68,
+        "sample_count": 2,
+        "second_sample_ns": 9306719853038508,
+        "snapshot_utc": "2026-10-21T03:52:28.510155+00:00",
+        "sole_host_IO_failure": false,
+        "source_registration_sha256": "a156f6d49b93b4f48f67042bd926035d3b7fa4287ef778b721f5916d4772a997",
+        "status": "PASS_STRICT_FULLSIM_R2"
+      }
+    ],
+    "schema": "USER_IO_WARNING_SINGLE_FRESH_R2",
+    "source_registration_sha256": "a156f6d49b93b4f48f67042bd926035d3b7fa4287ef778b721f5916d4772a997",
+    "waits": []
+  },
+  "historical_refusals_backapproved": false,
+  "original_finite": {
+    "CPU_exception_applied": false,
+    "background_daemon": false,
+    "busy_resource_polling": false,
+    "canonical_task": "/root",
+    "first_opportunity_began_ns": 9305862510051441,
+    "last_opportunity_began_ns": 9305862510051441,
+    "maximum_first_to_last_start_s": 1800,
+    "maximum_opportunities": 3,
+    "minimum_wait_after_failed_opportunity_s": 600,
+    "opportunities": [
+      {
+        "CPU_exception_applied": false,
+        "actual_output_free_bytes": 31666155520,
+        "began_ns": 9305862510051441,
+        "canonical_task": "/root",
+        "checks": {
+          "1_actual_output_filesystem_gt5GiB": true,
+          "1_authority": true,
+          "1_cgroup_io_full_avg10": true,
+          "1_cgroup_memory_full_avg10": true,
+          "1_cgroup_memory_headroom_ge32GiB": true,
+          "1_host_io_full_avg10": true,
+          "1_host_memory_full_avg10": true,
+          "1_host_memory_headroom_ge32GiB": true,
+          "1_known_io_scope": true,
+          "1_original174": true,
+          "1_projected_writes_gt5GiB": true,
+          "2_actual_output_filesystem_gt5GiB": true,
+          "2_authority": true,
+          "2_cgroup_io_full_avg10": true,
+          "2_cgroup_memory_full_avg10": true,
+          "2_cgroup_memory_headroom_ge32GiB": true,
+          "2_host_io_full_avg10": false,
+          "2_host_memory_full_avg10": true,
+          "2_host_memory_headroom_ge32GiB": true,
+          "2_known_io_scope": true,
+          "2_original174": true,
+          "2_projected_writes_gt5GiB": true
+        },
+        "ended_ns": 9305873401097261,
+        "failed_checks": [
+          "host_io_full_avg10"
+        ],
+        "label": "AD_GEMM_window1",
+        "observed_cgroup_IO_full_avg10": 0.0,
+        "observed_host_IO_full_avg10": 26.01,
+        "opportunity": 1,
+        "sample_count": 2,
+        "snapshot_utc": "2026-10-21T03:38:21.984112+00:00",
+        "sole_host_IO_failure": true,
+        "source_registration_sha256": "809fa3204eb9177fd86182a6be771f2107b71e5917c8498fa0d38db93abe8b67",
+        "status": "RESOURCE_HOLD",
+        "strict_cgroup_IO_max": 25,
+        "strict_host_IO_max": 25
+      }
+    ],
+    "schema": "AG8R1_FINITE_THREE_OPPORTUNITIES_V1",
+    "source_registration_sha256": "809fa3204eb9177fd86182a6be771f2107b71e5917c8498fa0d38db93abe8b67",
+    "waits": [
+      {
+        "after_opportunity": 1,
+        "not_before_ns": 9306473401097261,
+        "released": {
+          "kernel_fdinfo": "pos:\t479\nflags:\t02500002\nmnt_id:\t4461\nino:\t39982450\n",
+          "monotonic_ns": 9305873402198724,
+          "pid": 2576378,
+          "production_flock_held": false,
+          "start_ticks": 930586055
+        }
+      }
+    ]
+  },
+  "second_point": {
+    "CPU_exception_applied": false,
+    "IO_PSI_warning_only_user_amendment": true,
+    "actual_output_free_bytes": 28047822848,
+    "began_ns": 9323673684487295,
+    "canonical_task": "/root",
+    "checks": {
+      "1_actual_output_filesystem_gt5GiB": true,
+      "1_authority": true,
+      "1_cgroup_memory_full_avg10": true,
+      "1_cgroup_memory_headroom_ge32GiB": true,
+      "1_host_memory_full_avg10": true,
+      "1_host_memory_headroom_ge32GiB": true,
+      "1_known_io_scope": true,
+      "1_original174": true,
+      "1_projected_writes_gt5GiB": true,
+      "2_actual_output_filesystem_gt5GiB": true,
+      "2_authority": true,
+      "2_cgroup_memory_full_avg10": true,
+      "2_cgroup_memory_headroom_ge32GiB": true,
+      "2_host_memory_full_avg10": true,
+      "2_host_memory_headroom_ge32GiB": true,
+      "2_known_io_scope": true,
+      "2_original174": true,
+      "2_projected_writes_gt5GiB": true,
+      "first_actual_output_filesystem_gt5GiB": true,
+      "first_cgroup_memory_full_avg10": true,
+      "first_cgroup_memory_headroom_ge32GiB": true,
+      "first_host_memory_full_avg10": true,
+      "first_host_memory_headroom_ge32GiB": true,
+      "first_original174": true,
+      "gap_ge10s": true,
+      "no_new_cgroup_OOM": true,
+      "no_new_host_OOM": true,
+      "same_output_filesystem": true,
+      "second_actual_output_filesystem_gt5GiB": true,
+      "second_cgroup_memory_full_avg10": true,
+      "second_cgroup_memory_headroom_ge32GiB": true,
+      "second_host_memory_full_avg10": true,
+      "second_host_memory_headroom_ge32GiB": true,
+      "second_original174": true
+    },
+    "ended_ns": 9323684703061068,
+    "failed_checks": [],
+    "label": "AD_Gaussian_single_mandatory_R2",
+    "observed_cgroup_IO_full_avg10": 0.33,
+    "observed_host_IO_full_avg10": 0.03,
+    "sample_count": 2,
+    "second_sample_ns": 9323684625642807,
+    "snapshot_utc": "2026-10-21T08:35:13.282757+00:00",
+    "sole_host_IO_failure": false,
+    "source_registration_sha256": "a156f6d49b93b4f48f67042bd926035d3b7fa4287ef778b721f5916d4772a997",
+    "status": "PASS_STRICT_FULLSIM_R2"
+  },
+  "user_IO_amendment_pre_route_repair": {
+    "busy_resource_polling": false,
+    "opportunities": [
+      {
+        "CPU_exception_applied": false,
+        "IO_PSI_warning_only_user_amendment": true,
+        "IO_PSI_warnings": [
+          {
+            "check": "host_io_full_avg10",
+            "sample": 1
+          },
+          {
+            "check": "cgroup_io_full_avg10",
+            "sample": 1
+          }
+        ],
+        "actual_output_free_bytes": 31667302400,
+        "began_ns": 9306608374927594,
+        "canonical_task": "/root",
+        "checks": {
+          "1_actual_output_filesystem_gt5GiB": true,
+          "1_authority": false,
+          "1_cgroup_memory_full_avg10": true,
+          "1_cgroup_memory_headroom_ge32GiB": true,
+          "1_host_memory_full_avg10": true,
+          "1_host_memory_headroom_ge32GiB": true,
+          "1_known_io_scope": true,
+          "1_original174": true,
+          "1_projected_writes_gt5GiB": true
+        },
+        "ended_ns": 9306608801499517,
+        "failed_checks": [
+          "authority"
+        ],
+        "label": "AD_GEMM_user_IO_warning_R2",
+        "observed_cgroup_IO_full_avg10": 72.26,
+        "observed_host_IO_full_avg10": 58.93,
+        "sample_count": 1,
+        "snapshot_utc": "2026-10-21T03:50:37.394234+00:00",
+        "sole_host_IO_failure": false,
+        "source_registration_sha256": "ad1e1a05b15e7931ca0cb799abcfa9724c272518e45dda8b5817bccdc53cf659",
+        "status": "RESOURCE_HOLD"
+      }
+    ],
+    "schema": "USER_IO_WARNING_SINGLE_FRESH_R2",
+    "source_registration_sha256": "ad1e1a05b15e7931ca0cb799abcfa9724c272518e45dda8b5817bccdc53cf659",
+    "waits": []
+  }
+}

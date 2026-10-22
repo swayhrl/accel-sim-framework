@@ -1,11 +1,20 @@
-# AG8R1 current release: explicit user I/O amendment
+# AG8R1 closed review
 
-Status: revised source/qualification frozen for fresh admission; **0 actual simulator starts, 0 accepted AD, F=null**. Historical old IO refusal is preserved, not backapproved.
+Original huangrulin-174; sole BA `/root`. Actual new simulator starts **2/2**, full strict accepted **1/2**, **F=None**. Terminal: `AG8R1_HOLD_OR_STOP`. Reason: `ValueError('FIRST_ACTUAL_AG8R1_SCIENCE_SAFETY_OR_STRICT_FAILURE')`. Per-start cause: `['OWN_ATTEMPT_STREAM_OUTPUT_BOUND']`. No automatic retry, canary or background workflow remains. Old AG6 1/4, AG7 3/4 (two AE accepted), AG8 0/2 and BA original0/32 are unchanged.
 
-C1 completed once: 8 wall/source checks, 4 exception-scope cases, no simulator. On the latest explicit instruction “I/O不重要，不要因为I/O停下”, host+cgroup IO PSI are warnings for both new AD points at admission and runtime, including persistence/1800s episode. The old foreground wait was terminated and reaped before source changes; it never produced an executable release or consumed a start. Its inactive proposals remain sealed; two new inactive proposals route the unchanged two-start budget and are executable only after fresh amended R2. No failed simulation is retried.
+| Accepted point | Whole-input cycles | Original BASE cycles | BASE/ON |
+|---|---:|---:|---:|
+| AD_GEMM | 1044499 | 1071405 | 1.025759718 |
 
-Focused amendment CPU validation passed 15 cases in ~6s, including synthetic sustained99% IO through21590s, preserved21600 deadline, disk/OOM/memory/swap/no-retirement/identity/cadence stops. These are synthetic policy tests, not performance results. Original four C1-qualified subjects, Core/Framework simulator, producer, inputs,270 options and four-point selection remain unchanged. New Python policy is explicit opt-in, isolated from original production ResourcePolicy. Shared-I/O harmlessness/fairness is not empirically proven or claimed.
+Only fully natural exit0, source/input/270-option/runtime/mapper/progress/resource/whole-input strict closure supplies performance. Missing or stopped results provide no partial cycles or projected performance. Frozen four-point rule selects F only after both new AD and both accepted AG7 AE qualify; otherwise F=null, original O provisional.
 
-Fresh admission still requires two samples >=10s apart, current BA/root authority, >32GiB host/cgroup memory headroom, memory PSI, no new OOM, disk >5GiB after2GiB expected writes, exact device and identity. Run limits retain21600s,2GiB output,30s freshness,600s no retirement; default single simulator, AD_Gaussian conditional on full AD_GEMM strict acceptance. No extra canary/retry/BASE/AE or BA32 expenditure.
+C1 ran once:8 narrow source/wall checks and4 exception-scope cases,0 models. Original four qualified subject files remain unchanged. Latest explicit user instruction “I/O不重要，不要因为I/O停下” superseded IO PSI hard limits. Host/cgroup IO pressure and persistence/1800s episode are warning-only for both AD points; real high-PSI R2 admitted, with original refused windows preserved. Focused amendment CPU validation:15 cases, synthetic only, ~6s. One source-routing correction repeated these focused tests because its qualified source changed; no historical suite/build/model rerun. The first revised own-lock basename mismatch was fixed by exact private directory routing with all PID/start_ticks/other-lock checks retained. All inactive predecessors are sealed, no executable release/fork budget was consumed by either prelaunch terminal.
 
-Next: exact GitHub readback, fresh admission, then conditional two-point execution. Results are pending; no partial-cycle performance claims.
+Both actual points use identical frozen amended contract:21600s wall,30s freshness/cadence,600s no retirement, memory/swap/OOM and identity/mapper hard controls; >5GiB after2GiB projected writes,2GiB total output,stdout256MiB/stderr16MiB. IO relaxation has no simulator/Core/Framework/producer/input/config changes and does not establish external fairness or harmlessness. The inherited runtime profile field1800s is retained as a warning marker only; the amended execution contract has no IO episode STOP.
+
+Execution source HEAD: `c1ae89f1055af90f81836a4d7724cfe0f3876730`. Compact per-start references include exact raw hashes; raw stdout/maps/JSONL/traces/binaries remain private. Final GitHub exact HEAD/tree/relevant-blob readback follows this report commit. STOP for unified scientific adjudication.
+
+
+AD_Gaussian stopped on the unchanged stdout256MiB bound (`OWN_ATTEMPT_STREAM_OUTPUT_BOUND`); final retained stdout272980072bytes. It supplies no accepted cycles or ratio. I/O PSI was warning-only and did not cause this stop. See `TERMINAL_CAUSE_SUMMARY.json`. No guard threshold, retry or budget was changed after the failure.
+
+BA independently issued `COPY_READY_AD_GEMM.json` and `COPY_READY_AD_GEMM.md` for the four requested accepted AD_GEMM JSON receipts: per-fileSHA256 and dev/inode/size/mtime_ns/uid/gid/mode, directory records, accepted state and BA reader disposition. All original sources retained (SOURCE_KEEP). T still requires a new transaction, single stream, fresh verification and its own synthetic qualification; BA does not attest EP-L2 E/E2 sources or T test completion.
