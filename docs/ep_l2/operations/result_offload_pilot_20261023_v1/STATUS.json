@@ -1,8 +1,8 @@
 {
   "goal": "EP_L2_DTC_L1_RESULT_OFFLOAD_PILOT_V1",
   "phase1": "COMPLETE_READONLY_REUSE_LIFECYCLE_OUTBOX_AND_COST_DESIGN",
-  "phase2": "NOT_EXECUTED_PRECONDITIONS_NOT_GRANTED",
-  "genuine164_new_pilot_receipt": "NONE_NO_WRITES_OR_TESTS_PERFORMED",
+  "phase2": "APPROVED_RESOURCE_HOLD_BEFORE_FIRST_WRITE",
+  "genuine164_new_pilot_receipt": "NONE_PREWRITE_RESOURCE_ADMISSION_FAILED",
   "feasibility_commit_reused": "13b30fa613b55eb929785a5dfc015aae95a17a37",
   "environment_census_repeated": false,
   "science_starts": 0,
@@ -15,10 +15,47 @@
   "source_disposition": "SOURCE_KEEP",
   "controller_registry_budget_or_A_F_DTC_state_changes": 0,
   "remaining_phase2_preconditions": [
-    "explicit new synthetic root/scratch write scope",
-    "independent scratch allocation and resource reservation",
-    "fresh sole-stream and project export-policy admission"
+    "Share residual>=40GiB including approved16MiB scratch reservation; fresh admission and original sole receiver lock"
   ],
-  "deliverable_scope": "Phase1 complete and phase2 concrete approval/test plan prepared; no new transfer implementation qualification claimed",
-  "generated_utc": "2026-10-22T16:18:34.562516+00:00"
+  "deliverable_scope": "Goal remains incomplete: synthetic and conditional real transfer/restore not run; all new execution stopped before first write at actual Share gate",
+  "generated_utc": "2026-10-22T16:18:34.562516+00:00",
+  "explicit_write_approval": "USER_APPROVAL_PHASE2_AND_CONDITIONAL_REAL.json",
+  "synthetic_execution_attempts": 1,
+  "synthetic_test_cases_executed": 0,
+  "receiver_lock_acquired": false,
+  "new_scratch_or_NAS_root_created": false,
+  "real_sidecar_owner_readies": "BOTH_RECEIVED_EXACT_METADATA_MATCHED",
+  "real_selected_files_prepared": 9,
+  "real_selected_bytes_prepared": 199357,
+  "real_data_transferred_bytes": 0,
+  "real_phase": "WAIT_SYNTHETIC_PASS_AND_FRESH_SEPARATE_RESOURCE_ADMISSION",
+  "workflow_status": "BOTH_PROJECT_CANDIDATES_PREPARED_NOT_QUALIFIED",
+  "last_resource_hold": {
+    "utc": "2026-10-22T16:36:12.963472+00:00",
+    "status": "RESOURCE_HOLD_PREWRITE",
+    "Share_available_bytes": 42432049152,
+    "Share_required_floor_bytes": 42949672960,
+    "proposed_scratch_reservation_bytes": 16777216,
+    "Share_after_reservation_bytes": 42415271936,
+    "MemAvailable_bytes": 249619447808,
+    "MemAvailable_after_256MiB_reserve": 249351012352,
+    "RAM_required_floor_bytes": 68719476736,
+    "scratch_exists": false,
+    "target_exists": false,
+    "mount": "admin-wcx@10.208.130.164:/home/shared fuse.sshfs /root/share/mnt164",
+    "receiver_lock_acquired": false,
+    "server_writes": 0
+  },
+  "updated_utc": "2026-10-22T16:48:16.806165+00:00",
+  "last_resource_recheck": {
+    "utc": "2026-10-22T16:47:05.628568+00:00",
+    "Share_available_bytes": 41954480128,
+    "required_Share_floor_plus_scratch": 42966450176,
+    "Share_deficit_including_scratch": 1011970048,
+    "MemAvailable_bytes": 246636728320,
+    "resource_pass": false,
+    "scratch_exists": false,
+    "target_exists": false,
+    "check": "BOUNDED_READONLY_NO_LIVE_PROCESS_TO_RESTART"
+  }
 }

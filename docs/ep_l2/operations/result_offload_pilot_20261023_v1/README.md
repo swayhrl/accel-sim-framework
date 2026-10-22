@@ -1,6 +1,6 @@
 # EP_L2_DTC_L1_RESULT_OFFLOAD_PILOT_V1
 
-**Phase1 complete. Phase2 synthetic transport has not run: this new scratch/root has no scoped allocation/write approval yet.** This delivers the reusable implementation review, a concrete independent result-outbox contract, lifecycle/reader evidence, bounded costs, and a ready-to-review synthetic test scope. It does not claim a working new production receiver or a new164 restore receipt.
+**Phase1 complete. Phase2 is now explicitly approved, but actual Share admission failed before the first write. Both owners have independently published real-sidecar COPY_READY; no synthetic/real payload or restore has run.** This delivers the reusable implementation review, a concrete independent result-outbox contract, lifecycle/reader evidence, bounded costs, and a ready-to-review synthetic test scope. It does not claim a working new production receiver or a new164 restore receipt.
 
 The completed feasibility report at Framework commit `13b30fa613b55eb929785a5dfc015aae95a17a37` was read and reused. No environment census was repeated. Only exact completed-result control paths, published owner code, one proposed scratch/root pair and existing receiver-lock metadata were inspected. Observations on2026-10-23 around00:08-00:13 Asia/Shanghai are stored with UTC timestamps.
 
@@ -15,5 +15,7 @@ The proposed arrangement keeps all computation and scientific authority on origi
 | Synthetic scope, faults, new paths and exact approval needed | [SYNTHETIC_PILOT_PLAN.md](SYNTHETIC_PILOT_PLAN.md), [PHASE2_APPROVAL_REQUEST.json](PHASE2_APPROVAL_REQUEST.json) |
 | Small later real-result validation proposal | [NEXT_REAL_RESULT_VALIDATION.md](NEXT_REAL_RESULT_VALIDATION.md) |
 | Actual actions and actual unverified states | [STATUS.json](STATUS.json) |
+
+See [CONTINUATION_STATUS.md](CONTINUATION_STATUS.md) for approved continuation, real-owner intake and the actual RESOURCE_HOLD; both project workflows remain unqualified candidates.
 
 There were0 scientific starts,0 transfer streams/receivers,0 synthetic tests,0 server writes and0 deletions by this task. All scientific assets remain SOURCE_KEEP; actual Source reclaimed bytes are0. Git contains only small audit/planning evidence, no heavy result payload.

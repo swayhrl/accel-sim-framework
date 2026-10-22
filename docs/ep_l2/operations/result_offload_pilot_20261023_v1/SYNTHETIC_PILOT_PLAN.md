@@ -1,6 +1,8 @@
-# Phase2: concrete synthetic scope, not executed
+# Phase2: concrete synthetic scope, approved but RESOURCE_HOLD
 
-The user's instruction makes this phase conditional on independent scratch, a new true164 target and explicit small-write permission. Prior feasibility was read-only; historical164 permission selected old transactions. Neither provides a new task-specific scratch reservation or authorization for these synthetic paths. `PHASE2_APPROVAL_REQUEST.json` specifies the complete proposed scope for review. No existing archive, TLS tmpfs, Source result or controller directory is borrowed.
+Historical proposal below was approved by the subsequent explicit user reply recorded in USER_APPROVAL_PHASE2_AND_CONDITIONAL_REAL.json. Actual execution then failed the unchanged Share gate before first write; see CONTINUATION_STATUS.md.
+
+The original user instruction makes this phase conditional on independent scratch, a new true164 target and explicit small-write permission. Prior feasibility was read-only; historical164 permission selected old transactions. Neither provides a new task-specific scratch reservation or authorization for these synthetic paths. `PHASE2_APPROVAL_REQUEST.json` specifies the complete proposed scope for review. No existing archive, TLS tmpfs, Source result or controller directory is borrowed.
 
 Targeted preflight found both proposed roots ABSENT and the parent on the expected genuine164 SSHFS. Scratch is proposed under the shared ext4 bridge as a dedicated task directory; it is independent ownership/layout, **not a new physical SSD**. No root/directory or write probe was created. The existing receiver lock inode was read; no matching visible `/proc/locks` entry was seen. This does not grant the lock or prove absence of foreign-namespace use. A future sole-stream admission must acquire/verify it normally and honor other storage reservations. Nothing is restarted.
 
