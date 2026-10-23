@@ -1,15 +1,17 @@
-# Full accepted-result COPY_ONLY offload, Lane T
+# Full accepted-result COPY_ONLY offload — complete
 
-Baseline: verified PILOT `a13438672059ddf5e3f94fd22bcdfda58369a4fa`. No synthetic test, environmental census or9-sidecar payload upload repeated.
+E057:22 regular files/4 directories. AD_GEMM:8401 regular files/4 directories/1 literal internal symlink, including all8380 mapper files. Both full owner-frozen result trees passed genuine164 persistent archive SHA and complete independent native Target restoration with all original byte SHA, size and numeric uid/gid/mode/mtime_ns. No native164 restoration is claimed.
 
-Current evidence:
-- EP_L2_E057: ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET; 22 files/4 directories/0 symlinks; source SOURCE_KEEP.
-- DTC_L1_AD_GEMM: ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET; 8401 files/4 directories/1 symlinks; source SOURCE_KEEP.
+All8423 Source files were independently rehashed after recovery. Fresh membership/identity/writer and8 accepted-reference checks passed. Under the user's explicit USER_AUTHORIZED_T_SOURCE_KEEP_AMENDMENT.json, Lane T issued both final procedural SOURCE_KEEP confirmations; original E2/BA scientific acceptance and initial full COPY_READY remain unchanged. These are user-delegated Lane T confirmations, not E2/BA personal signatures. Earlier blocked/pending-owner checkpoints are historical.
 
-See STATUS.json for exact transaction and receipt bindings, results/ for persistent164 close/reopen whole-SHA and native Target proofs, and each *_OWNER_POSTCOPY_REQUEST.json for the required independent owner confirmation. Owner full READY was received; earlier BLOCKED_AUDIT.json is historical, not the current transport state.
+Exact receipts, recovery paths/commands and byte/time totals: COMBINED_ARCHIVE_RESTORE_AND_T_SOURCE_KEEP_RECEIPT.json. Authority and exact two-transaction confirmation bindings: BOTH_USER_DELEGATED_SOURCE_KEEP_JOIN.json. Current scope/qualification: FINAL_REQUIREMENT_AUDIT.json and STATUS.json.
 
-All scientific originals and historical absolute references remain unchanged. No deletion, controller/registry/budget/T0 change, trace transfer or scientific execution. Share new bytes=0. Native ext4 recovery is RESTORE_VERIFIED_NATIVE_TARGET, not native164. Existing9 payloads are pinned true164 references retained as recovery dependencies.
+Persistent164 recovery entry:
+`/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_full_result_offload_v1/RECOVERY_ENTRYPOINT.json`
+On174-new, prepend `/root/share/mnt164` instead of `/home/shared`. It points to the final immutable index, per-project typed manifests, raw chunk coverage/SHA, full native restore proofs, PATH_MAP and RESTORE.sh. Keep the9 original pilot objects referenced by these complete recovery sets; none was uploaded again. External scientific input/code/library references remain historical provenance and were not silently traversed or copied.
 
-The raw-bundle adapter uses original sole sender/receiver locks, <=128MiB chunks, <=256MiB staging and <=30MiB/s. Conservative NAS reservation is3R+64MiB/project. Actual uncompressed PAX archive chunks are retained once; no compression ratio or native164 allocator claim. Native restore plus stage/control reservation and all visible outstanding science writes preserve the scoped7GiB SSD residual and64GiB host RAM gate.
+Original regular bytes:513,220,893B. New raw archive payload:527,462,400B including PAX overhead, excluding uninstrumented SSH/framing/control overhead. Existing164 content reused:9files/199,357B. Data archive plus full recovery execution times sum67.29seconds; whole task and publication time are separate. Windows relayed0 result payload bytes. Single source data stream, <=128MiB raw chunks, <=256MiB staging, <=30MiB/s; native staging file bytes0, Share new bytes0. Measured retained native allocation530,874,368B; SSHFS-reported NAS allocation549,801,984B before bounded final small closeout records, with no native164 allocator claim. See FINAL_RESOURCE_ACCOUNTING.json for reservation/current-device limits and measurement scope.
 
-FINITE_BATCH_WORKFLOW.md and tools/ provide finite replay/recovery commands. NEXT_CANDIDATES_AND_RESERVATIONS.json is metadata-only future queue; SOURCE_RELEASE_ELIGIBILITY_PROPOSAL.json authorizes no Source release.
+All scientific originals remain SOURCE_KEEP. Source deletion/move/truncate/overwrite0; actual Source release0B; scientific starts0; registry/controller/budget/T0 unchanged. SOURCE_RELEASE_ELIGIBILITY_PROPOSAL.json contains exact future evidence and reader/permission gaps, with no source deletion authority. NEXT_CANDIDATES_AND_RESERVATIONS.json queues43 accepted-reference EP results by observed allocation; other DTC failure is excluded. No queued payload was copied.
+
+FINITE_BATCH_WORKFLOW.md and tools/build_config.py, tools/run_full_result.py, tools/full_result_bundle.py and tools/verify_source_keep.py provide finite operations. Both portable config builders reproduce the actually executed configurations. The existing pilot fault qualification is reused; no synthetic tests or environmental census were repeated. No daemon, scientific scheduler or second receiver was created. Future selectors require their own exact owner qualification and permission.
