@@ -1,0 +1,15 @@
+# DTC-MAIN native research lane
+
+This worktree is the sole permanent DTC-L1 scientific lane on174-new, as explicitly assigned by the user on2026-10-23. It owns full L1 architecture research, AG/BA scientific convergence, mechanism evidence and manuscript evidence review. EP-MAIN and T-OPS are separate roles; do not recreate permanent historical lane meshes.
+
+Before research, read docs/dtc_l1/review_packs/DTC_MAIN_NATIVE_ONBOARDING_20261023_V1/README.md, CURRENT_SCIENTIFIC_STATE.md, OLD_LANE_EVIDENCE_INDEX.json, NEXT_SCIENTIFIC_DECISION.md and PAPER_IDENTITY.json. The source handoff copies are under that pack's sources/bootstrap/. Historical inherited CURRENT_STATE/LATEST_REPORT files retain their original dates and are not new dispatch authority.
+
+The current completed onboarding authorized only read-only evidence review, documentation and an isolated worktree. New science budget is0; no simulator, build, science test replay, daemon or dispatcher was launched. Future user authorization may extend that exact scope, but moving containers or reading older budgets never creates credit. Verify live project status, epoch, registry, request and resources before future execution. The current native entry is migration-only and needs reviewed exact request routing for new science; never patch old accepted specs/ledgers to make a request run.
+
+Use source /root/data/ep_l2_dtc_l1_native_v2/activate.sh and the sole174-new epoch2 native入口 for any newly approved experiment. No old174 simulator SSH, AG8R1 restart/refund or competing registry. Keep all frozen qualified source/binary/config/trace untouched; isolate future code/Core work and pin exact SHAs/build/config/input. Current documentation HEAD is not the qualified binary build source.
+
+Original44 remain41PASS+3Hotspot HOLD; preserve IO/OO authorship, negative results, finite ports/queues/credit/Tag/Ref/retirement, source identities and all cohort separations. AG8R1 remains2/2 consumed1accepted; nativeGEMM/legacyNN are separate paid qualification cohorts. F=null, O provisional. No numeric values from stopped prefixes; missing fields stay UNAVAILABLE. CPU/model/strict-replay/native-values/hardware/PPA are different evidence scopes.
+
+Englishv0.23 is user-reconfirmed last mother. Actual package location/hash is unavailable at onboarding; do not replace it with olderGitv0.18 or promote a draft. Preserve Zhao Haoyu original IO/OO attribution and all44 roles/3HOLDs. DC/process/macro/area/timing require user-owned evidence; do not invent numbers.
+
+New hot outputs belong on174-new native ext4; archive immutable accepted results through existing sole receiver to genuine164, full hashes and independent native Target restore, SOURCE_KEEP. Others' historical traces require exact COPY_ONLY selector; no broad scans/migration/deletion. Do not alter historic ledgers or frozen source. Stage explicit new paths and run git diff --check plus documentation/provenance checks. Do not rerun old experiments or historical CPU suites merely to reconfirm this library.

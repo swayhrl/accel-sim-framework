@@ -1,0 +1,9 @@
+# DTC-MAIN native research handoff
+
+Read CURRENT_SCIENTIFIC_STATE.md first, then NEXT_SCIENTIFIC_DECISION.md. OLD_LANE_EVIDENCE_INDEX.json joins curated accepted/negative/HOLD scopes with the complete published DTC snapshot inventory; ORIGINAL44_ROW_INTAKE.json retains every original44 row. Index entries marked INVENTORY_ONLY are provenance, not new acceptance adjudications. PAPER_EVIDENCE_AUDIT.tsv and PAPER_IDENTITY.json record claim limits and the user-reconfirmed Englishv0.23 mother.
+
+This is a documentation-only independent174-new worktree. No new science starts, build, test replay, old174 execution, historical ledger change, result requalification or payload copy. Original accepted binaries/configs/traces and all originals remain SOURCE_KEEP. All cited results are published evidence consumed read-only, not independently rerun. Native status/source hashes are pinned in live/. Source excerpts carry exact commit/path/blob/SHA where raw Git bytes are available; connector text copies explicitly distinguish normalized UTF-8 from raw blob identity.
+
+The original44 roles, original IO/OO authorship, Hotspot/format/modern HOLDs, adverse BICG/GESUMMV and failed/stopped cohorts are retained. AG8R1 stays2/2 consumed1accepted; nativeGEMM and legacyNN are separate paid qualifications. Epoch2 budget0 and empty future registration grant no new start. Current entry is migration-only until a new exact request is independently released. No old standing lane mesh is recreated.
+
+Validation: JSON/schema/row-count/reference checks, inherited-file identity against parent, control preimage/postimage equality, native status and git diff --check. No simulator/build/test suite is needed for these reversible documentation changes. VALIDATION.json records actual closeout checks. Remote commit and local mirror receipt are outside the self-hashing manifest. Latest manuscript text audit remains pending the actualv0.23 package; DC/PPA remains user-source pending.
