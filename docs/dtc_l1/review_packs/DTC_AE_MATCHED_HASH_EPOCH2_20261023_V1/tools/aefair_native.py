@@ -146,7 +146,7 @@ def run_native(cohort):
  require(a['approval_request_sha256']==sha(req) and a['explicit_user_approval'] is True and a['owner_bindings_ratified'] is True and a['target_resource_policy_ratified'] is True,'exact scientific authorization missing')
  require(a['budgets'].get(cohort)==1,'exact one-start budget missing')
  if cohort.startswith('DTC'):
-  p=ROOT/'EP/control/SCIENCE_QUALIFICATION.json';require(p.exists() and read(p)['status']=='EP_SCIENCE_QUALIFIED','EP must qualify before DTC')
+  p=NATIVE/'EP/control/SCIENCE_QUALIFICATION.json';require(p.exists() and read(p)['status']=='EP_SCIENCE_QUALIFIED','EP must qualify before DTC')
   require((ROOT/'control/DTC_NATIVE_GUARD_CONTROL_TESTS.json').exists() and read(ROOT/'control/DTC_NATIVE_GUARD_CONTROL_TESTS.json')['status']=='PASS','native exact BA guard/telemetry controls missing')
  budget_dir=ROOT/'control/qualification_ledger';budget_dir.mkdir(exist_ok=True)
  lock=(budget_dir/'NATIVE_QUALIFICATION.lock').open('a+b');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -206,7 +206,7 @@ def run_native(cohort):
     if rss>s['limits']['max_process_tree_rss_bytes']:reason='PROCESS_RSS_CAP'
     if dtc_guard is not None:
      native=child_info(observations[0]['pid']);same=native['start_ticks']==observations[0]['start_ticks'] and native['mnt_namespace']==s['execution_mnt_namespace'];mapped=str(ROOT/s['project']/'bin/accel-sim.out') in native['maps'] and all(line.rsplit(None,1)[-1] in {r['actual_realpath'] for r in s['runtime_files']} for line in native['maps'].splitlines() if '/' in line)
-     safety={'authority':sha(auth)==read(intent)['authorization_sha256'],'identity':same,'mapper':mapped,'output_limits':size<=output_cap(s),'output_device':out.stat().st_dev==ROOT.stat().st_dev,'expected_growth':r['physical_disk_pass'],'explicit_abort_clear':not (ROOT/'control/ABORT_NATIVE_QUALIFICATION').exists(),'ownership':read(intent)['uuid']==ident}
+     safety={'authority':sha(auth)==read(intent)['authorization_sha256'],'identity':same,'mapper':mapped,'output_limits':size<=output_cap(s),'output_device':out.stat().st_dev==ROOT.stat().st_dev,'expected_growth':r['physical_disk_pass'],'explicit_abort_clear':not (ROOT/'control/ABORT').exists(),'ownership':read(intent)['uuid']==ident}
      # Shared host/device measurements are deliberately conservative; none of
      # these counters is labeled exclusively owned by this simulation.
      io_scope={'known_scope':True,'harm_detected':False,'conservative_host_episode_profile_accepted':True,'basis':'Explicit user-ratified Target resource profile and original BA shared-scope IO warning policy; all non-IO safety decisions retained'}
