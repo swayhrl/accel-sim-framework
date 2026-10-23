@@ -24,3 +24,13 @@ The config embeds raw owner READY and pinned V9 bytes, the exact normalized mani
 Use the persistent bundle's RESTORE.sh with an explicitly admitted NEW ABSENT directory under `/root/data/full_result_offload_20261023_v1`. It verifies immutable archive coverage/SHA, obtains the original receiver lock, checks native filesystem/capacity/concurrent Source reservations, then performs complete recovery. Original Source files are never changed. New restore bytes count against current SSD watermarks and other jobs' outstanding writes.
 
 The prepared adapter currently has syntax/static checks only. This document does not claim full-result archive or native restoration PASS before owner input and actual operation. Existing synthetic and9-sidecar pilot PASS remain separate immutable evidence.
+
+## Qualified real results and portable commands
+
+Both full selectors now passed actual raw-tar whole-SHA and complete native Target recovery: E05722files/4dirs; AD_GEMM8401files/4dirs/1literal symlink, including8380 mapper snapshots. T independently rechecked every original file after recovery and preserved all Source identities and accepted-reference hashes. Independent owner postcopy signatures remain pending; this is not a scientific reacceptance.
+
+Generate the exact immutable runtime configuration with `python -B tools/build_config.py --project EP_L2_E057 --output /new/config.json`, then invoke the foreground `run_full_result.py` command above. Use DTC_L1_AD_GEMM for the second qualified adapter. The builder reads published manifest/owner bytes and hash-pinned V9 from Git; it writes only a fresh local config and does not create or change remote transactions. Do not change the selector, txid or old reference roots to run a future candidate without a fresh owner authorization.
+
+A fresh read-only postcopy verification can be run as `python -B tools/verify_source_keep.py --output-directory /new/local/evidence`. It uses the trusted old174 SSH control connection, computes hashes on Source and returns only evidence, with no result payload relay through Windows. It labels the signer Lane T and does not impersonate E2/BA.
+
+Native recovery commands and all original164 dependency references are persisted beside each bundle; retain the9 referenced pilot objects and their original manifests/receipts. The full dataset is a closed recovery set comprising new raw tar chunks, the full typed manifest and those9 byte-verified existing164 objects. Neither referenced input traces nor external runtime/build/source trees are silently traversed or copied. Recovery is full result evidence recovery, not reconstruction of a runnable scientific environment.

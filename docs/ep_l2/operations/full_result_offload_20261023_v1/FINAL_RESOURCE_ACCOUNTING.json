@@ -1,0 +1,69 @@
+{
+  "utc": "2026-10-23T01:39:39.328446+00:00",
+  "roots": {
+    "native_task": {
+      "path": "/root/data/full_result_offload_20261023_v1",
+      "observed_allocated_bytes": 530874368,
+      "entries": 8451,
+      "method": "lstat st_blocks*512 deduplicate(dev,inode)",
+      "scope": "native ext4 physical inode allocation"
+    },
+    "true164_new_archives": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_full_result_offload_v1",
+      "observed_allocated_bytes": 549801984,
+      "entries": 69,
+      "method": "lstat st_blocks*512 deduplicate(dev,inode)",
+      "scope": "SSHFS-reported projection, not native164 allocator/quota verification"
+    }
+  },
+  "capacity": {
+    "/root/data": {
+      "available_bytes": 10161045504,
+      "mount": "/root/data /dev/sdf[/huangrulin] ext4"
+    },
+    "/root/share": {
+      "available_bytes": 37739974656,
+      "mount": "/root/share /dev/md127 ext4"
+    },
+    "/root/share/mnt164": {
+      "available_bytes": 51060145156096,
+      "mount": "/root/share/mnt164 admin-wcx@10.208.130.164:/home/shared fuse.sshfs"
+    }
+  },
+  "locks": {
+    ".TARGET_RECEIVER.lock": "AVAILABLE_PROBE_RELEASED",
+    ".TLS_V10_SOURCE_SENDER.lock": "AVAILABLE_PROBE_RELEASED"
+  },
+  "Source_released_bytes": 0,
+  "new_Share_bytes": 0,
+  "all_task_data_and_evidence_retained": true,
+  "MemAvailable_bytes": 274346688512,
+  "target_cgroup_memory": {
+    "memory.current": "5716103168",
+    "memory.max": "274877906944"
+  },
+  "disk_peak_interpretation": "Sampled allocation peaks plus final retained allocation. All created large data remain retained; no claim of a continuous kernel high-water trace. Temporary exclusive-LINK aliases are not independent payload copies.",
+  "conservative_reservations": {
+    "EP_L2_E057": {
+      "native_reservation_bytes": 516984832,
+      "NAS_reservation_bytes": 611208820,
+      "concurrent_write_reservation_bytes": 0
+    },
+    "DTC_L1_AD_GEMM": {
+      "native_reservation_bytes": 682315776,
+      "NAS_reservation_bytes": 1062671587,
+      "concurrent_write_reservation_bytes": 0
+    }
+  },
+  "caps_and_gates": {
+    "raw_chunk_bytes": 134217728,
+    "staging_bytes_max": 268435456,
+    "native_staging_file_bytes": 0,
+    "wire_buffer_bytes_per_range": 134217728,
+    "aggregate_rate_bytes_per_second": 31457280,
+    "native_residual_floor": 7516192768,
+    "host_RAM_floor": 68719476736,
+    "Share": "ZERO_NEW_WRITES amendment retained, monitored only for this task; other project policy unchanged",
+    "workspace_df_reclaim": "0B credited; COPY_ONLY native restore consumes shared SSD capacity, unrelated concurrent writes are not attributed to this task"
+  }
+}
