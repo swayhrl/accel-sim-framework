@@ -1,5 +1,5 @@
 {
-  "phase": "PREPARE_FULL_RESULT_MANIFESTS_AND_TARGET_ADMISSION",
+  "phase": "HOLD_OWNER_FULL_COPY_READY_TARGET_PREPARATION_COMPLETE",
   "utc": "2026-10-23T00:27:58.111604+00:00",
   "projects": {
     "EP_L2_E057": {
@@ -16,14 +16,16 @@
       "raw_NAS_3R_plus_64MiB_reservation": 611208820,
       "SSD_after_project_reservation_bytes": 10800160768,
       "own_pool_7GiB_residual_test": true,
-      "concurrent_science_write_reservations": "PENDING_FRESH_EXACT_LEASE_JOIN",
+      "concurrent_science_write_reservations": "FRESH_SOURCE_REGISTRY_NONRELEASED_LEASES0_AND_NO_LIVE_DTC_OWN_LOCK_OWNER",
       "special_entries": {
         "external_hardlink_names": [
           "accel-sim.out"
         ],
         "symbolic_links": []
       },
-      "existing_sidecar_content": "REUSE_PINNED_TRUE164_OBJECTS_NO_SOURCE_REUPLOAD"
+      "existing_sidecar_content": "REUSE_PINNED_TRUE164_OBJECTS_NO_SOURCE_REUPLOAD",
+      "archive_status": "NOT_STARTED_AWAIT_OWNER",
+      "restore_status": "NOT_STARTED_AWAIT_OWNER"
     },
     "DTC_L1_AD_GEMM": {
       "source_root": "/workspace/dtc-ag8r1-finite-resume-174-v1/attempts/AD_GEMM_940981e5-61c4-4772-83a3-50593fd1ba3a",
@@ -40,7 +42,7 @@
       "raw_NAS_3R_plus_64MiB_reservation": 1062671587,
       "SSD_after_project_reservation_bytes": 10634829824,
       "own_pool_7GiB_residual_test": true,
-      "concurrent_science_write_reservations": "PENDING_FRESH_EXACT_LEASE_JOIN",
+      "concurrent_science_write_reservations": "FRESH_SOURCE_REGISTRY_NONRELEASED_LEASES0_AND_NO_LIVE_DTC_OWN_LOCK_OWNER",
       "special_entries": {
         "external_hardlink_names": [],
         "symbolic_links": [
@@ -61,7 +63,9 @@
           }
         ]
       },
-      "existing_sidecar_content": "REUSE_PINNED_TRUE164_OBJECTS_NO_SOURCE_REUPLOAD"
+      "existing_sidecar_content": "REUSE_PINNED_TRUE164_OBJECTS_NO_SOURCE_REUPLOAD",
+      "archive_status": "NOT_STARTED_AWAIT_OWNER",
+      "restore_status": "NOT_STARTED_AWAIT_OWNER"
     }
   },
   "genuine164_mount_verified": {
@@ -80,5 +84,32 @@
   "science_starts": 0,
   "existing_9_sidecars_unchanged": true,
   "owner_full_ready_missing": true,
-  "capacity_not_sole_completion_gate": true
+  "capacity_not_sole_completion_gate": true,
+  "updated_utc": "2026-10-23T00:41:54.393683+00:00",
+  "known_current_concurrent_science_write_reservation_bytes": 0,
+  "source_resource_evidence": {
+    "utc": "2026-10-23T00:35:16.708774+00:00",
+    "registry_sha256": "ac0fa2e7919e89a95357a21102083e37875c177859a2b3878966806f00779b62",
+    "active_leases": {},
+    "outstanding_write_reservation_bytes": 0,
+    "DTC_live_owner_locks": [],
+    "science_actual_starts": 57,
+    "science_t0_unix": 1792414193,
+    "science_controller": {
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 4090182,
+        "start_ticks": 942996444
+      },
+      "state": "STOPPED",
+      "stopped_unix": 1792678986.8957114
+    },
+    "disk_floor": 5368709120,
+    "monitor_reserve": 2147483648
+  },
+  "full_result_transfer_bytes": 0,
+  "full_result_restored_files": 0,
+  "other_completed_EP_candidates": 43,
+  "sole_external_blocker": "Both full selectors need independently published owner COPY_READY. Existing sidecar READYs do not authorize complete-tree membership/link semantics.",
+  "prepared_adapter": "SYNTAX_AND_STATIC_ONLY_NOT_YET_QUALIFIED_ON_OWNER_FROZEN_REAL_FULL_RESULT"
 }
