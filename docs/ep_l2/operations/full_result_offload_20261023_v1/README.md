@@ -1,0 +1,9 @@
+# Full accepted-result COPY_ONLY offload, Lane T
+
+Baseline: completed pilot `a13438672059ddf5e3f94fd22bcdfda58369a4fa`; successful dedicated-key direct174-new→old174 access is retained. No pilot or environmental census is repeated.
+
+This independent phase targets full accepted E057 then full accepted AD_GEMM. Initial exact-tree metadata counts are E05722 regular files/4 directories (181,366,652B), and AD_GEMM8401 regular files/4 directories/1 symbolic link (331,854,241B). These are metadata observations, not owner COPY_READY or archive acceptance. E057 has one regular filename with external hardlinks; AD_GEMM contains a relative performance-counter symlink and nested mapper files. Their semantics must be owner-frozen and preserved.
+
+True164 remains the verified `admin-wcx@10.208.130.164:/home/shared` SSHFS visible only in Target. New target candidates are absent; original receiver and sender locks are available. Native SSD preliminary own reservations fit the7GiB scoped residual, but fresh concurrent-project write reservations and exact owner manifests still need admission. Share receives zero new data/control writes. No source payload has been transferred in this phase.
+
+See OWNER_FULL_COPY_READY_REQUEST.json for the independent owner handoff, SOURCE_EXACT_TREE_METADATA.json for bounded two-tree metadata, TARGET_ADMISSION_SNAPSHOT.json and STATUS.json for qualified facts. Original scientific files, old archive data, controllers, registry, budgets and T0 remain unchanged. Full native Target restoration and owner SOURCE_KEEP confirmations are mandatory; no source release is executed.
