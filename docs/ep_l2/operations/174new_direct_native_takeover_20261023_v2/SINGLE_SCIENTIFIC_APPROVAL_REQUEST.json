@@ -1,0 +1,52 @@
+{
+  "schema": "NATIVE_V2_SINGLE_PRECISE_SCIENTIFIC_APPROVAL_REQUEST_V1",
+  "frozen_goal": "03ad5d02f0269a460a24546678f1be7cec4ed8e3",
+  "reason_for_approval": "Frozen Goal C.3 explicitly requires exact scientific budget/user permission; V2 default engineering/trace COPY_ONLY permission does not include these full applications.",
+  "requested": "Authorize exactly these two new full-application migration qualification starts, once each, EP before DTC, 0 auto retry/refund. Ratify the specified existing-owner accepted input/config/binary bindings and the new closed-full-SHA DTC kernel binding; no semantic/source changes.",
+  "specs": [
+    {
+      "cohort": "EP_NATIVE_MIGRATION_Q1",
+      "file": "EP_NATIVE_MIGRATION_Q1_SPEC.json",
+      "sha256": "cce65ad06aa9daf6d42c05b2b6cdd7f4d644d8b5c49a38af6dc1a2ff6ffbc9cd"
+    },
+    {
+      "cohort": "DTC_NATIVE_MIGRATION_Q1",
+      "file": "DTC_NATIVE_MIGRATION_Q1_SPEC.json",
+      "sha256": "054bffb9b4762f6b05d8c5a89ac7baa8a70df4b4d84216c7956fe7ab91052430"
+    }
+  ],
+  "resource_policy_rebinding_proposed": {
+    "scope": "Only these two native174-new qualification runs and their bounded archive/independent restore. No TLS/C16 exceptions inherited.",
+    "physical_device": "Same shared /dev/sdf pool; no double-count source/target free space",
+    "native_engineering_cap_bytes": 268435456,
+    "science_combined_original_output_cap_bytes": 939524096,
+    "science_combined_independent_restore_cap_bytes": 939524096,
+    "native_staging_bytes": 0,
+    "RAM_transfer_chunk_max_bytes": 134217728,
+    "receiver_staging_limit_bytes": 268435456,
+    "transfer_rate_bytes_per_second": 31457280,
+    "disk_residual_floor_bytes": 5368709120,
+    "monitor_and_emergency_reserve_bytes": 2147483648,
+    "preflight_formula": "Current free >= disk floor + monitor reserve + remaining engineering reservation + both pending result/restore reservations + all actual other-project outstanding writes. Recheck before fork and during run; missing concurrent reservation evidence = HOLD.",
+    "host_MemAvailable_floor_bytes": 68719476736,
+    "per_run_memory_caps": "EP8GiB, DTC16GiB, both include local process tree; no concurrent science starts. Retain cgroup actual headroom and other project reservations.",
+    "IO": "Existing EP/DTC owner warning-only policy; no change to C16 IO10. No cache drops/host changes/task preemption.",
+    "Share_new_data_bytes": 0
+  },
+  "accounting": {
+    "old_EP_starts": 57,
+    "old_EP_T0": 1792414193,
+    "old_DTC_AG8R1_consumed": 2,
+    "old_DTC_AG8R1_remaining": 0,
+    "new_budget_buckets": [
+      "EP_NATIVE_MIGRATION_Q1",
+      "DTC_NATIVE_MIGRATION_Q1"
+    ],
+    "attempts_max_each": 1,
+    "current_new_starts": 0
+  },
+  "epoch_and_source_boundary": "Qualification runs use a single native qualification entry/lock. Formal NATIVE_SCIENCE_ACTIVE only after each scientific PASS and source owner/active-task/ledger preimage checks; management epoch1 retained. No source simulator invocation, no original file removal.",
+  "timing": "EP baseline approximately12min CPU; DTC accepted baseline roughly4.5h. These are history, not promised current runtimes.",
+  "approval_received": false,
+  "status": "SCIENCE_QUALIFICATION_PENDING_APPROVAL"
+}
