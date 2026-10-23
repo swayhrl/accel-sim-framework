@@ -1,30 +1,41 @@
-# 174-new direct native takeover V2 — EP passed, DTC running
+# 174-new 原生接管 V2：已完成
 
-EP已实际完成174-new本地完整资格Q2，并独立严格验收、真164持久归档和native Target完整恢复。DTC已完成新资源准入并启动实际本地资格Q1，等待完整终态。整体迁移尚未完成，科学epoch未提前切换。
+EP-L2 MAIN61 vectorAdd S 与 DTC-L1 AG8R1 AD_GEMM 均已在174-new本地完成独立计费的完整资格运行、严格科学验收、真164持久归档和独立 native Target 完整恢复。单一科学执行权已提交到174-new epoch2；原174官方新科学dispatch行政退休，原管理epoch1和所有历史资产/账本保留。
 
-## 实际科学与预算状态
+## 实际验收
 
-- 原174 EP57/T0、44接受与DTC AG8R1 2/2、1接受、0剩余不变，所有历史原件SOURCE_KEEP。
-- EP迁移Q1实际本地启动后141.98s因保守并发预留门禁停止，计费1，不退款、不重跑原UUID；停止证据已164归档/完整恢复。
-- 用户明确另批Q2。Q2 PID889746，namespace mnt:[4026535153]，uuid82c71041-cfc2-4669-9a90-1e644d8d1bdc，完整633.93s自然退出；原E纯终态校验器通过，cycles73696、instructions56000000、CTA15625、1kernel、64slices和hardware drain精确匹配。
-- EP Q2新结果9文件/2目录、6029811B：真164归档和完整SHA/native Target恢复及uid/gid/mode/mtime_ns全部PASS。见EP_NATIVE_MIGRATION_Q2_ARCHIVE_AND_RESTORE_RECEIPT.json。
-- DTC迁移Q1 PID890038，uuid35c3cc78-b7c0-4572-9ec5-91c0f1227500，实际174-new本地运行；原Source加载器/ELF、原BA认证遥测、非IO安全状态机、fresh30/no-retire600和21600s截止保留。小CPU工程fixture不计作科学进程。
-- 新迁移启动计费EP2、DTC1；所有旧失败保留，0自动重试。当前许可无须再次批准，未来另一个科学启动仍需独立预算。
+| 项目 | 本地PID / UUID | 完整终态 | 实际耗时 |
+|---|---|---|---|
+| EP Q2 | 889746 / 82c71041-cfc2-4669-9a90-1e644d8d1bdc | cycles73696、instructions56000000、CTA15625、1kernel、64slices、hardware drained | 633.929s |
+| DTC Q1 | 890038 / 35c3cc78-b7c0-4572-9ec5-91c0f1227500 | cycles1044499、instructions739246080、CTA1024、1kernel、270配置及原strict/ownership/credit检查全部通过 | 9587.230s |
+| 独立旧NN重放 | 891413 / b89cd9a1-5967-4097-a206-9a41bcf89757 | cycles6105、instructions1284872、CTA168、1kernel、47项历史指标精确一致 | 2.237s |
 
-用户另行精确批准的短完整 NN 已完成：新 cohort DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1、PID891413、uuid b89cd9a1-5967-4097-a206-9a41bcf89757，174-new 本地正常退出，2.237s、峰值 RSS494927872B。原冻结 parser 的严格检查及历史47项指标全部一致，cycles6105、instructions1284872、CTA168、1kernel、credit/ownership全排空。仅新增计费1次，重复启动被拒绝，临时并行写入预留已撤除，长GEMM未停止/重启。NN为原Core95ccdb7a/FAST64的独立完整重放，不能替代当前Corec809/AG8R1 AD资格。
+PID/mnt namespace、实际映射ELF、真164 trace打开、无原174 SSH科学执行，以及自然完整退出均有实际证据。NN使用旧FAST64/Core95，只代表独立完整重放；当前AD资格由上表长GEMM独立完成。
 
-NN结果10普通文件、2目录、1内部perf软链接，210643B，真164归档235520B及独立ABSENT native Target完整恢复（字节、SHA、uid/gid/mode/mtime_ns及链接语义）通过。见LEGACY_NN_COMPLETE_NATIVE_ACCEPTANCE.json、DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1_ARCHIVE_AND_RESTORE_RECEIPT.json及TRUE164_NATIVE_RECOVERY_POINTER_INDEX.json。所有原件KEEP、源释放0B。短例完成不代表当前长AD或整体V2已完成；最新主线进度见DTC_NATIVE_MIGRATION_Q1_LATEST_PROGRESS.json。
+原Source EP57/T0、44接受及DTC AG8R1 2/2、1接受/0剩余不变。迁移EP Q1因并发预留门禁停止，计费1且证据保留；用户另批Q2计费1，DTC Q1计费1，额外NN计费1。共4次新实际启动、0退款、0自动重试。当前新科学预算为0，下一次科学启动需自己的精确owner规格、显式预算和实时资源准入；本次切换不授予无限运行额度。
 
-## 本地工程与存储
+## 本地代码、输入与归档
 
-Framework/Core/vendor精确Git代码、必要binary/库/脚本位于/root/data/ep_l2_dtc_l1_native_v2。DTC保留了原接受binary对应的AG7 Git观测层overlay，未改Core或binary，未替换系统库。
+原生专属根`/root/data/ep_l2_dtc_l1_native_v2`已建立精确Git Framework/Core/vendor、必要脚本、原binary和隔离ELF依赖。DTC原接受AG7观测层Git overlay单独保留；未改binary字节、系统库或RPATH。运行用私有原Source加载器；CUDA11.8仅属于未来重建依赖，本轮不要求新装。
 
-只导入EP vectorAdd S与DTC AD_GEMM确切两组输入成员，合计1214211207B，源/真164关闭重开全SHA通过。DTC大member还精确匹配原KERNEL_BODY_AUDIT.tsv历史全SHA。旧路径仅在174-new做精确只读兼容映射；不全搬trace，不把整个/workspace指向NAS，不SSH执行原174模拟器。
+本轮主输入仅EP vectorAdd S与DTC AD_GEMM两套有序成员，合计1214211207B；额外NN输入1987819B。源/真164关闭重开全SHA、原EP组合身份及DTC历史完整body SHA均匹配。真实164为`admin-wcx@10.208.130.164:/home/shared`，挂在174-new `/root/share/mnt164`。原174同名路径是本地shadow，不用于归档。
 
-新结果本地热写后单receiver分块归档真164，完整原始字节与numeric metadata恢复。Share新增数据0，staging不超过256MiB，chunk不超过128MiB，传输不超过30MiB/s。严格保留5GiB+2GiB及其他项目预留和RAM规则。按用户批准仅预留当前串行阶段；DTC实际操作cap进一步收紧至128MiB（原允许上限512MiB内），基于原stdout5564041B及有界监测，不复制251MB旧全项目监控dump、不删除它。
+仅在174-new创建精确旧路径兼容视图：本地代码/runtime、真164只读输入、原生本地results/tmp/cache/log/registry/locks。其它未导入历史资产明确标记不可直接使用，不把整个/workspace指向NAS。NAS与本地prefix性能已量化且注明可能warm cache；完整应用证明本轮输入实际可用，不推广为所有trace性能无损。
 
-## 入口与剩余工作
+EP Q2和DTC Q1新结果20普通文件，均已真164归档、关闭重开完整SHA、ABSENT native ext4完整恢复，校验uid/gid/mode/mtime_ns和目录/内部perf链接语义。加上停止EP Q1及独立NN，共37普通文件、16398330B原始结果、16496640B归档payload，全部恢复通过。恢复不是native164执行，持久归档确实在真164。
 
-入口/root/data/ep_l2_dtc_l1_native_v2/bin/native支持project status/assets、已导入asset ensure、experiment prepare/run-native和result archive/restore；只处理明确冻结scope。旧管理入口保留，正式科学生产启用及唯一ledger切换仍须DTC实际合格和终态/旧控制权检查。
+完整恢复索引见`TRUE164_NATIVE_RECOVERY_POINTER_INDEX.json`。每个精确bundle保留SOURCE_MANIFEST、PATH_MAP、原始SHA、ARCHIVE_INDEX、COMMIT、独立恢复证明、RECOVERY_POINTER及可重放RESTORE脚本，无需原174运行软件即可取回原始结果。旧E057、AD_GEMM完整历史结果及9个sidecar未重传。
 
-剩余：DTC完整科学终态、其新结果164归档恢复、两项目科学epoch的有条件正式切换、最终索引/资源核账/远端回读。所有原件保留，实际释放0B；C16/TLS/A–F未干预。
+## 空间与边界
+
+本任务原生目录当前分配222789632B（有时间戳的endpoint测量，非连续全局峰值）；共享SSD可用12353515520B。EP Q2峰值/耗时、DTC Q1峰值RSS5138022400B及各阶段输出观测均分项记录。两容器overlay及/root/data共用同一SSD池，不重复计算。
+
+真164已知精确范围总逻辑字节2447336901B，包含1216199026B不同输入、1214211207B保留的输入恢复chunks、16496640B结果归档及元数据。不能把FUSE逻辑字节冒称NAS物理分配；不把NAS retained chunks重复计入本地暂存。只盘点本次3个输入范围和4个txid，未扫整座NAS。
+
+单receiver、单流30MiB/s、原始chunk≤128MiB、暂存≤256MiB、Share新增数据0、精确5+2GiB迁移资源授权和其它项目预留均保留。所有旧新原件SOURCE_KEEP，源盘实际释放0B。未操作C16/TLS/A–F，不启动新的科研应用或后台守护进程。
+
+## 使用与证据
+
+在174-new执行`source /root/data/ep_l2_dtc_l1_native_v2/activate.sh`后使用`project status/assets`、`asset ensure`、`experiment inspect/prepare/run-native`及`result archive/restore`。精确命令及新预算边界见`OPERATE_ON_174NEW.md`；后续部分资产归档见`FUTURE_ASSET_COPY_ONLY.md`。未知资产和已消费科学预算实际拒绝。
+
+正式执行权与账本证据见`NATIVE_SCIENCE_EPOCH2_COMMIT_RECEIPT.json`；逐项合同验收见`FINAL_ACCEPTANCE_AUDIT.json`；实时本地入口检查见`FINAL_NATIVE_ENTRY_VERIFICATION.json`；空间核账见`FINAL_NATIVE_RESOURCE_ACCOUNTING.json`及`TRUE164_KNOWN_SCOPE_STORAGE_ACCOUNTING.json`。完整交付还需本次GitHub push及逐文件远端回读成功，其结果单独发布。

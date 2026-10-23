@@ -15,7 +15,7 @@ experiment prepare EP_NATIVE_MIGRATION_Q2 --project EP_L2
 
 状态查询分开显示旧Source历史计数与本地新迁移计费，不把旧57或DTC2重置成新预算。`asset ensure`仅验证本轮已导入的两个精确冻结输入集合，零重传、不重复大文件SHA。其它历史资产明确不可直接用，须先有新的精确owner清单和源/目标准入；不允许自动全盘扫描或搬迁。
 
-`run-native`是本地fork/exec，仅接受已冻结、单独批准且尚未消费的cohort。当前已用EP Q1和Q2、正在运行DTC Q1，全部0自动重试。成功后这些迁移额度全部耗尽，下一次科学启动仍需新的唯一request/spec和预算；正式native epoch不会赋予无限新实验额度。旧Source模拟器没有SSH执行fallback。
+`run-native`是本地fork/exec，仅接受已冻结、单独批准且尚未消费的cohort。当前EP Q1/Q2、DTC Q1和单独批准的旧NN都已消费且闭合，全部0自动重试。成功后这些迁移额度全部耗尽，下一次科学启动仍需新的唯一request/spec和预算；正式native epoch不会赋予无限新实验额度。旧Source模拟器没有SSH执行fallback。
 
 ```sh
 # 已完成的本地迁移资格证据按cohort归档；重入只核验并复用。
@@ -37,4 +37,4 @@ sh "$BUNDLE/RESTORE_NATIVE_V2.sh"   /root/data/ep_l2_dtc_l1_native_v2/EP/run/rec
 
 EP代码Framework9dd1ee57/Core d010911e/vendor f90c430c；DTC代码Framework8e43c75/Corec8090115以及已接受AG7观测层overlay36903703，详见资产索引。运行用原binary/private Source ELF loader，未修改系统库或RPATH。CUDA11.8属重建依赖，本轮未新装；未来改变编译器、Core或binary需单独生成身份与资格，不可宣称旧SHA仍适用。
 
-当前正式科学epoch尚未提前切换。只有EP/DTC各自真实科学通过、真164归档恢复和最新Source活动/预算/owner核对全部通过，才执行native_authority.py的条件提交；旧管理epoch1保留，原Source官方新dispatch行政退休。root越过协议手动执行不属于该行政fence的安全保证。所有原Source账本与历史结果保持原样，C16/TLS/A–F不变。
+当前正式科学epoch2已提交：EP/DTC真实科学资格、真164归档恢复及新鲜Source活动/预算/owner门禁全部通过；旧管理epoch1保留，原Source官方新dispatch行政退休。当前新预算为0，run-native实测拒绝再启动已消费资格。独立旧NN不替代当前AD资格。root越过协议手动执行不属于该行政fence的安全保证。所有原Source账本与历史结果保持原样，C16/TLS/A–F不变。

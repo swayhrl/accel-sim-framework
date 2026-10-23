@@ -30,7 +30,7 @@ def manifest_for(cohort):
  if proc.exists():require(int((proc/'stat').read_text().rsplit(')',1)[1].split()[19])!=pid['start_ticks'],'native simulator still active')
  f,v=libraries();entries=[]
  for p in [src,*sorted(src.rglob('*'))]:
-  s=p.lstat();r=f.ident(s);r.update(path=p.relative_to(src).as_posix(),type='directory' if stat.S_ISDIR(s.st_mode) else 'file' if stat.S_ISREG(s.st_mode) else 'symlink' if cohort=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1' and stat.S_ISLNK(s.st_mode) else 'unsupported');require(r['type']!='unsupported','new evidence links/special files require explicit review')
+  s=p.lstat();r=f.ident(s);r.update(path=p.relative_to(src).as_posix(),type='directory' if stat.S_ISDIR(s.st_mode) else 'file' if stat.S_ISREG(s.st_mode) else 'symlink' if cohort in ['DTC_NATIVE_MIGRATION_Q1','DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1'] and stat.S_ISLNK(s.st_mode) else 'unsupported');require(r['type']!='unsupported','new evidence links/special files require explicit review')
   if r['type']=='file':r['sha256']=f.file_sha(p)
   if r['type']=='symlink':
    r['target']=os.readlink(p);require(r['path']=='perf_counter.csv.gz' and '/' not in r['target'] and r['target'].startswith('perf_counter_') and r['target'].endswith('.csv.gz') and not (src/r['target']).is_symlink() and (src/r['target']).is_file(),'only exact native internal perf alias permitted')
@@ -113,7 +113,7 @@ def archive(cohort):
  v.exclusive_json(bundle/'RESTORE_VERIFIED_NATIVE_TARGET.json',{'scope':'174-new native ext4, not native164','txid':m['txid'],'rows':proof})
  pathmap=[{'source':str(P(m['source_root'])/r['path']),'archive_root':m['persistent164_root'],'archive_member':r['path'],'native_restore':str(dst/r['path']),'sha256':r.get('sha256')} for r in m['entries']];v.exclusive_json(bundle/'PATH_MAP.json',pathmap)
  receipt={'status':'ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET','scientific_status':m['scientific_status'],'cohort':cohort,'txid':m['txid'],'regular_files':sum(r['type']=='file' for r in m['entries']),'directories':sum(r['type']=='directory' for r in m['entries']),'original_bytes':raw,'archive_bytes':index['archive_bytes'],'archive_sha256':index['archive_sha256'],'true164_root':m['persistent164_root'],'target_mount_path':str(bundle),'native_restore':str(dst),'source_disposition':'SOURCE_KEEP','source_release_bytes':0,'scientific_acceptance_granted_by_archive':False,'manifest_sha256':sha(canon(m))}
- if cohort=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1':receipt['symlinks']=sum(r['type']=='symlink' for r in m['entries'])
+ if cohort in ['DTC_NATIVE_MIGRATION_Q1','DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1']:receipt['symlinks']=sum(r['type']=='symlink' for r in m['entries'])
  v.exclusive_json(bundle/'RECEIPT.json',receipt);local=ROOT/'control'/(cohort+'_ARCHIVE_RECEIPT.json');v.exclusive_json(local,receipt)
  return {'receipt':receipt,'this_call_new_payload_bytes':newbytes,'verified_reused_transaction':reused,'resources_before':before,'resources_after':gate(),'no_source_mutation':manifest_for(cohort)==m}
 

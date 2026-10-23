@@ -1,6 +1,6 @@
 """Finite174-new native qualification entry. Never SSH-executes a simulator.
 
-Only two frozen migration cohorts are selectable. Missing exact approval, fresh
+Only exact frozen and explicitly approved cohorts are selectable. Missing approval, fresh
 source/resource closure, pending prior cohort, or changed bytes fail before fork.
 No daemon, retry, refund, deletion, or mutation of old scientific ledgers.
 """
@@ -117,7 +117,10 @@ def current_status(project=None):
   done=p.with_name(p.name.replace('.INTENT.json','.DONE.json'));state=read(done) if done.exists() else None
   rows.append({'cohort':x['cohort'],'project':which,'uuid':x['uuid'],'charged':1,'state':'STOP_UNACCEPTED' if state and (state['stop_reason'] or state['launcher_wait_returncode']) else 'NATURAL_COMPLETE' if state else 'RUNNING_OR_UNRESOLVED','native_receipt':state,'output':x['output']})
  epoch=ROOT/'control/CURRENT_SCIENCE_EPOCH.json'
- return {'identity':identity(),'historical_Source_counters_frozen':{'EP':57,'DTC':2,'EP_T0':1792414193},'native_migration_charged_starts':len(rows),'native_migration_attempts':rows,'separate_legacy_replay_charged_starts':len(legacy),'separate_legacy_replays':legacy,'current_science_epoch':read(epoch) if epoch.exists() else None,'production_science':'QUALIFICATION_PHASE_NO_PRODUCTION_EPOCH' if not epoch.exists() else 'NATIVE_ONLY; EVERY_NEW_REQUEST_REQUIRES_EXACT_OWNER_SPEC_AND_EXPLICIT_UNUSED_BUDGET','old174_SSH_scientific_execution':'FORBIDDEN','model_processes_started_by_this_status_query':0}
+ qualifications={}
+ for name in [project] if project else ['EP','DTC']:
+  q=ROOT/name/'control/SCIENCE_QUALIFICATION.json';qualifications[name]=read(q) if q.exists() else {'status':'PENDING_INDEPENDENT_COMPLETE_NATIVE_QUALIFICATION'}
+ return {'identity':identity(),'historical_Source_counters_frozen':{'EP':57,'DTC':2,'EP_T0':1792414193},'native_migration_charged_starts':len(rows),'native_migration_attempts':rows,'separate_legacy_replay_charged_starts':len(legacy),'separate_legacy_replays':legacy,'independent_scientific_qualifications':qualifications,'current_science_epoch':read(epoch) if epoch.exists() else None,'production_science':'QUALIFICATION_PHASE_NO_PRODUCTION_EPOCH' if not epoch.exists() else 'NATIVE_ONLY; EVERY_NEW_REQUEST_REQUIRES_EXACT_OWNER_SPEC_AND_EXPLICIT_UNUSED_BUDGET','old174_SSH_scientific_execution':'FORBIDDEN','model_processes_started_by_this_status_query':0}
 
 def current_assets(names):
  out={};bindings=read(ROOT/'control/TRACE_CURRENT_STAT_BINDINGS.json')
@@ -130,6 +133,13 @@ def current_assets(names):
  return out
 
 def run_native(cohort):
+ epoch=ROOT/'control/CURRENT_SCIENCE_EPOCH.json'
+ if epoch.exists():
+  e=read(epoch);registry=ROOT/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
+  require(e['state']=='NATIVE_SCIENCE_ACTIVE' and e['epoch']==2 and e['holder']==os.uname().nodename and sha(registry)==e['native_registry_sha256'],'current native epoch/registry authority mismatch')
+  # Migration approvals never become production credit. A future precisely
+  # authorized request must first be registered in this one current ledger.
+  require(read(registry)['new_scientific_budget_remaining']>0,'current native epoch has no unused scientific budget; consumed migration cohorts cannot restart')
  s=spec_for(cohort);prepared=prepare(cohort)
  auth=ROOT/'control'/('EP_NATIVE_MIGRATION_Q2_AUTHORIZATION.json' if cohort.endswith('Q2') else 'SCIENCE_AUTHORIZATION.json');require(auth.is_file(),'SCIENCE_QUALIFICATION_PENDING_APPROVAL; no simulator fork')
  a=read(auth);req=ROOT/'control'/('Q2_PRECISE_AMENDMENT_REQUEST.json' if cohort.endswith('Q2') else 'SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json')
