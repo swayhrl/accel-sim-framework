@@ -15,3 +15,7 @@ After closure, publish scientific findings and exact native strict/archive/resto
 ## Pending unused conventional-mode correction
 
 See amendments/revision2 in the review pack. CPU dispatcher899764 is intentionally held while D0 simulator899795 and its original guard continue unchanged. A finite metadata-only helper will amend C0/C1 only after D0 natural exit and resume that same dispatcher; do not restart it. The original finiteV1 flag1 is illegal for PAPER_BASE; corrected C0/C1 use standard-cache timing with flag0 and preserve all conventional capacities/ports/latencies. No new model start or budget change is authorized by this correction. Live state and amendment receipts live under ae_fair_v1/prepared_revision2/.
+
+## Pending unused conventional-mode correction
+
+See amendments/revision2 in the review pack. CPU dispatcher899764 is intentionally held while D0 simulator899795 and its original guard continue unchanged. A finite metadata-only helper will amend C0/C1 only after D0 natural exit and resume that same dispatcher; do not restart it. The original finiteV1 flag1 is illegal for PAPER_BASE; corrected C0/C1 use standard-cache timing with flag0 and preserve all conventional capacities/ports/latencies. No new model start or budget change is authorized by this correction. Live state and amendment receipts live under ae_fair_v1/prepared_revision2/.

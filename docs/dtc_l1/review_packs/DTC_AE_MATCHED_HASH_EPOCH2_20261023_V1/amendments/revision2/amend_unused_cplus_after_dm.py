@@ -74,6 +74,9 @@ def main(wait=False):
    d=read(done)
    if d['launcher_wait_returncode']!=0 or d['stop_reason'] is not None:
     atomic(D/'AMENDMENT_WORKER_STATE.json',{'state':'NO_AMENDMENT_DM_FAILED_RESUME_FAILURE_CLOSEOUT','utc':now()});launcher(resume=True);return
+   current=read(N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json')['registered_future_requests'][REQ]
+   if 'execution_receipt' not in current['consumed']['E2-AEFAIR-DM']:
+    time.sleep(.2);continue
    try:
     r=apply();atomic(D/'AMENDMENT_WORKER_STATE.json',r);print(json.dumps(r,indent=2),flush=True);return
    except BlockingIOError:pass
