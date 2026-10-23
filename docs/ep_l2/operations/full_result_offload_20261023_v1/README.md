@@ -4,7 +4,7 @@ Baseline: verified PILOT `a13438672059ddf5e3f94fd22bcdfda58369a4fa`. No syntheti
 
 Current evidence:
 - EP_L2_E057: ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET; 22 files/4 directories/0 symlinks; source SOURCE_KEEP.
-- DTC_L1_AD_GEMM: COPY_READY_NORMALIZED_PENDING_TRANSPORT; 8401 files/4 directories/1 symlinks; source SOURCE_KEEP.
+- DTC_L1_AD_GEMM: ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET; 8401 files/4 directories/1 symlinks; source SOURCE_KEEP.
 
 See STATUS.json for exact transaction and receipt bindings, results/ for persistent164 close/reopen whole-SHA and native Target proofs, and each *_OWNER_POSTCOPY_REQUEST.json for the required independent owner confirmation. Owner full READY was received; earlier BLOCKED_AUDIT.json is historical, not the current transport state.
 
