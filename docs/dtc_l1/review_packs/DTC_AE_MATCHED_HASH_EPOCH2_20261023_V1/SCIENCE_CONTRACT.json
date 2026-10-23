@@ -1,0 +1,49 @@
+{
+  "schema": "DTC_AEFAIR_SCIENCE_CONTRACT_V1",
+  "core_parent": "c8090115bd57512b1b23fca7d925301fa620c751",
+  "Cplus": {
+    "type": "NORMAL wholeline conventional",
+    "sets": 32,
+    "ways": 24,
+    "line_bytes": 128,
+    "data_bytes": 98304,
+    "PIB": 256,
+    "MSHR": 512,
+    "index_off": "line mod32",
+    "index_on": "4*(((line>>2) XOR(line>>5))&7)+(line&3)"
+  },
+  "DTC": {
+    "logical_sets": 64,
+    "logical_ways": 8,
+    "physical_lines": 640,
+    "ordinary_side_array_bytes": 16384,
+    "PIB": 128,
+    "AE_off": 0,
+    "AE_on": 1,
+    "AD": 0,
+    "K1": 0
+  },
+  "matched": [
+    "within-design geometry and finite resources unchanged",
+    "total data bytes96KiB",
+    "original4 banks and set_bank function unchanged",
+    "same frozen complete GEMM",
+    "same new Core/Framework/toolchain for all4fresh points"
+  ],
+  "not_matched_between_designs": [
+    "logical Tag entries/associativity",
+    "PIB256 versus128",
+    "traditional MSHR versus DTC finite lifetime",
+    "ordinary sidearray versus physical renaming",
+    "hardware area/timing not established"
+  ],
+  "primary_estimand": "R=(D0/D1)/(C0/C1), conditional on stated geometries; no universal DTC-specific theorem",
+  "source_changes": [
+    "cache index enum append preserving old numeric values",
+    "explicit cache-config B opt-in with geometry validation",
+    "one production set-index case calls unchanged AE helper",
+    "new targeted CPU test only"
+  ],
+  "zero_extra_simulated_hash_cycles": "MODELING_DECISION same assumption as existing AE, not hardware proof",
+  "new_source_compile_and_exact_runtime_binding_required": true
+}
