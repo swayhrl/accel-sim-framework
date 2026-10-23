@@ -221,6 +221,11 @@ def run_native(cohort):
 
 def main(argv=None):
  p=argparse.ArgumentParser();p.add_argument('area',choices=['project','asset','experiment','result']);p.add_argument('operation');p.add_argument('item',nargs='?');p.add_argument('--destination');p.add_argument('--project',choices=['EP_L2','DTC_L1']);a=p.parse_args(argv);project={'EP_L2':'EP','DTC_L1':'DTC'}.get(a.project)
+ if a.area=='experiment' and a.item=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1':
+  require(project in [None,'DTC'],'project/cohort mismatch');import legacy_nn_short
+  if a.operation in ['inspect','prepare']:return {'status':'PREPARED_NO_SCIENCE_START','frozen_spec':legacy_nn_short.auth_and_prepare()[0]}
+  if a.operation=='run-native':return legacy_nn_short.run()
+  raise RuntimeError('unsupported exact legacy operation')
  if a.area=='project' and a.operation=='status':return current_status(project)
  if (a.area=='project' and a.operation=='assets') or (a.area=='asset' and a.operation=='ensure'):
   names=[a.item] if a.item else ['EP_VECTORADD_S'] if project=='EP' else ['DTC_AD_GEMM'] if project=='DTC' else ['EP_VECTORADD_S','DTC_AD_GEMM'];require(all(x in ['EP_VECTORADD_S','DTC_AD_GEMM'] for x in names),'asset not owner-approved for automatic ensure');return current_assets(names)

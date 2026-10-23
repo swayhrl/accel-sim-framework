@@ -11,6 +11,10 @@ EP已实际完成174-new本地完整资格Q2，并独立严格验收、真164持
 - DTC迁移Q1 PID890038，uuid35c3cc78-b7c0-4572-9ec5-91c0f1227500，实际174-new本地运行；原Source加载器/ELF、原BA认证遥测、非IO安全状态机、fresh30/no-retire600和21600s截止保留。小CPU工程fixture不计作科学进程。
 - 新迁移启动计费EP2、DTC1；所有旧失败保留，0自动重试。当前许可无须再次批准，未来另一个科学启动仍需独立预算。
 
+用户另行精确批准的短完整 NN 已完成：新 cohort DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1、PID891413、uuid b89cd9a1-5967-4097-a206-9a41bcf89757，174-new 本地正常退出，2.237s、峰值 RSS494927872B。原冻结 parser 的严格检查及历史47项指标全部一致，cycles6105、instructions1284872、CTA168、1kernel、credit/ownership全排空。仅新增计费1次，重复启动被拒绝，临时并行写入预留已撤除，长GEMM未停止/重启。NN为原Core95ccdb7a/FAST64的独立完整重放，不能替代当前Corec809/AG8R1 AD资格。
+
+NN结果10普通文件、2目录、1内部perf软链接，210643B，真164归档235520B及独立ABSENT native Target完整恢复（字节、SHA、uid/gid/mode/mtime_ns及链接语义）通过。见LEGACY_NN_COMPLETE_NATIVE_ACCEPTANCE.json、DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1_ARCHIVE_AND_RESTORE_RECEIPT.json及TRUE164_NATIVE_RECOVERY_POINTER_INDEX.json。所有原件KEEP、源释放0B。短例完成不代表当前长AD或整体V2已完成；最新主线进度见DTC_NATIVE_MIGRATION_Q1_LATEST_PROGRESS.json。
+
 ## 本地工程与存储
 
 Framework/Core/vendor精确Git代码、必要binary/库/脚本位于/root/data/ep_l2_dtc_l1_native_v2。DTC保留了原接受binary对应的AG7 Git观测层overlay，未改Core或binary，未替换系统库。

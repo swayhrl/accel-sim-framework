@@ -8,7 +8,7 @@ import pathlib,os,json,hashlib,io,tarfile,time,fcntl,stat,importlib.util,sys,uui
 P=pathlib.Path;ROOT=P('/root/data/ep_l2_dtc_l1_native_v2');MIB=1024**2;GIB=1024**3;CHUNK=128*MIB;RATE=30*MIB
 NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_results')
 BASELINE=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_full_result_offload_v1/EP_L2_E057/aadbbab26f921819e7e24f3bb2187d1955eccd79381a38d475e7eed4e0f36e7d')
-COHORTS={'EP_NATIVE_MIGRATION_Q1':'EP','EP_NATIVE_MIGRATION_Q2':'EP','DTC_NATIVE_MIGRATION_Q1':'DTC'}
+COHORTS={'EP_NATIVE_MIGRATION_Q1':'EP','EP_NATIVE_MIGRATION_Q2':'EP','DTC_NATIVE_MIGRATION_Q1':'DTC','DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1':'DTC_LEGACY'}
 sys.dont_write_bytecode=True
 
 def require(v,s):
@@ -30,8 +30,10 @@ def manifest_for(cohort):
  if proc.exists():require(int((proc/'stat').read_text().rsplit(')',1)[1].split()[19])!=pid['start_ticks'],'native simulator still active')
  f,v=libraries();entries=[]
  for p in [src,*sorted(src.rglob('*'))]:
-  s=p.lstat();r=f.ident(s);r.update(path=p.relative_to(src).as_posix(),type='directory' if stat.S_ISDIR(s.st_mode) else 'file' if stat.S_ISREG(s.st_mode) else 'unsupported');require(r['type']!='unsupported','new evidence links/special files require explicit review')
+  s=p.lstat();r=f.ident(s);r.update(path=p.relative_to(src).as_posix(),type='directory' if stat.S_ISDIR(s.st_mode) else 'file' if stat.S_ISREG(s.st_mode) else 'symlink' if cohort=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1' and stat.S_ISLNK(s.st_mode) else 'unsupported');require(r['type']!='unsupported','new evidence links/special files require explicit review')
   if r['type']=='file':r['sha256']=f.file_sha(p)
+  if r['type']=='symlink':
+   r['target']=os.readlink(p);require(r['path']=='perf_counter.csv.gz' and '/' not in r['target'] and r['target'].startswith('perf_counter_') and r['target'].endswith('.csv.gz') and not (src/r['target']).is_symlink() and (src/r['target']).is_file(),'only exact native internal perf alias permitted')
   entries.append(r)
  selector=sha(canon(entries));tx=sha(canon({'cohort':cohort,'uuid':intent['uuid'],'selector_sha256':selector,'source_root':str(src),'destination':str(NAS/cohort)}))
  qual=ROOT/project/'control'/('SCIENCE_QUALIFICATION_'+cohort+'.json');science='STOP_UNACCEPTED' if done['stop_reason'] or done['launcher_wait_returncode'] else read(qual)['status'] if qual.exists() and read(qual)['uuid']==done['uuid'] else 'PENDING_INDEPENDENT_SCIENTIFIC_QUALIFICATION'
@@ -77,7 +79,12 @@ class RangeWriter(io.RawIOBase):
   return {'archive_bytes':self.offset,'archive_sha256':self.hash.hexdigest(),'chunks':self.rows}
 
 def archive(cohort):
- science_lock=(ROOT/'control/qualification_ledger/NATIVE_QUALIFICATION.lock').open('rb');fcntl.flock(science_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ if cohort=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1':
+  # Exact user-approved completed auxiliary replay only. The main simulation
+  # retains its primary lease; the data receiver remains globally exclusive.
+  auth=read(ROOT/'control/SHORT_NN_PARALLEL_AUTHORIZATION.json');require(auth['explicit_user_approval'] and auth['one_bounded_parallel_exception'] and auth['approval_request_sha256']=='aa778d7b00f9cd194e10729aadfdcf4cb3590845a0c258efbbce620cbf62cdd3','short closed evidence exception not authorized');science_lock=(ROOT/'control/qualification_ledger/NATIVE_SHORT_NN_AUXILIARY.lock').open('rb')
+ else:science_lock=(ROOT/'control/qualification_ledger/NATIVE_QUALIFICATION.lock').open('rb')
+ fcntl.flock(science_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  m=manifest_for(cohort);f,v=libraries();raw=sum(r['size'] for r in m['entries'] if r['type']=='file');before=gate(raw+16*MIB);lock=P('/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock').open('rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);bundle=NAS/cohort/m['txid'];bundle.mkdir(parents=True,exist_ok=True);(bundle/'chunks').mkdir(exist_ok=True);v.exclusive_json(bundle/'SOURCE_MANIFEST.json',m)
  for name,b in [('full_result_bundle.py',(BASELINE/'full_result_bundle.py').read_bytes()),('v9_transaction.py',(BASELINE/'v9_transaction.py').read_bytes()),('native_result.py',P(__file__).read_bytes()),('RESULT_ENGINE_PIN.json',(ROOT/'control/RESULT_ENGINE_PIN.json').read_bytes())]:
   p=bundle/name
@@ -93,6 +100,7 @@ def archive(cohort):
    for r in m['entries']:
     p=f.safe(m['source_root'],r['path']);t=tarfile.TarInfo(r['path']);t.uid=r['uid'];t.gid=r['gid'];t.uname=t.gname='';t.mode=r['mode'];t.mtime=r['mtime_ns']//10**9;t.pax_headers={'mtime':str(r['mtime_ns']//10**9)+'.'+str(r['mtime_ns']%10**9).zfill(9)}
     if r['type']=='directory':t.type=tarfile.DIRTYPE;tar.addfile(t)
+    elif r['type']=='symlink':t.type=tarfile.SYMTYPE;t.linkname=r['target'];tar.addfile(t)
     else:
      t.size=r['size']
      with p.open('rb') as stream:tar.addfile(t,stream)
@@ -105,6 +113,7 @@ def archive(cohort):
  v.exclusive_json(bundle/'RESTORE_VERIFIED_NATIVE_TARGET.json',{'scope':'174-new native ext4, not native164','txid':m['txid'],'rows':proof})
  pathmap=[{'source':str(P(m['source_root'])/r['path']),'archive_root':m['persistent164_root'],'archive_member':r['path'],'native_restore':str(dst/r['path']),'sha256':r.get('sha256')} for r in m['entries']];v.exclusive_json(bundle/'PATH_MAP.json',pathmap)
  receipt={'status':'ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET','scientific_status':m['scientific_status'],'cohort':cohort,'txid':m['txid'],'regular_files':sum(r['type']=='file' for r in m['entries']),'directories':sum(r['type']=='directory' for r in m['entries']),'original_bytes':raw,'archive_bytes':index['archive_bytes'],'archive_sha256':index['archive_sha256'],'true164_root':m['persistent164_root'],'target_mount_path':str(bundle),'native_restore':str(dst),'source_disposition':'SOURCE_KEEP','source_release_bytes':0,'scientific_acceptance_granted_by_archive':False,'manifest_sha256':sha(canon(m))}
+ if cohort=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1':receipt['symlinks']=sum(r['type']=='symlink' for r in m['entries'])
  v.exclusive_json(bundle/'RECEIPT.json',receipt);local=ROOT/'control'/(cohort+'_ARCHIVE_RECEIPT.json');v.exclusive_json(local,receipt)
  return {'receipt':receipt,'this_call_new_payload_bytes':newbytes,'verified_reused_transaction':reused,'resources_before':before,'resources_after':gate(),'no_source_mutation':manifest_for(cohort)==m}
 
