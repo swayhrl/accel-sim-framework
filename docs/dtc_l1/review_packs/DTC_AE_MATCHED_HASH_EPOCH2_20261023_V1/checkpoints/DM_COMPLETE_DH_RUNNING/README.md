@@ -1,0 +1,7 @@
+# D0 complete, D1 running: partial Goal checkpoint
+
+The first fresh full GEMM point D0 (AE off) naturally exited and passed the unchanged full DTC scientific contract plus the new exact source/runtime/270-option/native/progress/resource joins:1,071,405 GPU cycles,739,246,080 active-thread instructions,1,024CTAs,1kernel. Its5,488,640-byte immutable true164 archive and all15 independently restored manifest entries were rechecked against closed native raw output and full strict receipt. This is one accepted point; four-cell hash speedups and interactionR are not yet computable.
+
+The original finite controller has continued to D1 (AE on) after D0 strict acceptance, true164 archival and native restore. Current snapshot confirms D1's own live PID/start_ticks.2/4 science starts are consumed; C0/C1 remain never started. The published unused conventional-mode revision was applied only after D0 native terminal, preserving D0's old authorization preimage and all spent/remaining counts. The postprocess-only current-peer gate adapter was published, read back and activated before D0 archival; the frozen outbox and scientific runtime remain unchanged. Exact activation/applied receipts are in the respective amendment directories.
+
+All original outputs remain SOURCE_KEEP. Native numerical correctness, hardware banking timing and PPA remain unproven. Last confirmed manuscript mother remains v0.23. No historical AG8R1 restart, negative/HOLD promotion, universal DTC-specific conclusion, pooledGM or finalF follows from this partial checkpoint.
