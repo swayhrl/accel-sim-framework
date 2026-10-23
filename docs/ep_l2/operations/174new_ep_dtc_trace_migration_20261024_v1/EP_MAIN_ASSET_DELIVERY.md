@@ -1,0 +1,25 @@
+# EP-MAIN trace资产交付
+
+当前检查点：5/8套精确输入已真164可读。准备时实际Git/GitHub HEAD为9993437fce9f21504b891fd25883aca631f7786a；最终HEAD另见最终核对记录。
+
+在174-new先source `/root/data/ep_l2_dtc_l1_native_v2/activate.sh`，然后：
+
+```sh
+project assets --project EP_L2
+asset ensure ASSET_ID --dry-run
+```
+
+以下ID仅代表输入COPY_ONLY可用性；不授权或启动科学，不解除原HOLD，不变更预算、controller或历史接受。
+
+| ID / 兼容别名 | 状态 | 原始bytes |
+|---|---|---:|
+|DTC_BTREE, EP_BTREE|TRUE164_DIRECT_READ_READY|809710019|
+|DTC_DWT2D, EP_DWT2D|TRUE164_DIRECT_READ_READY|423214888|
+|EP_SGEMM|QUEUED|2216170127|
+|EP_FWT_7_21|QUEUED|1785749774|
+|EP_CONVOLUTION_SEPARABLE|QUEUED|6844895645|
+|EP_CFD_097K|TRUE164_DIRECT_READ_READY|271744651|
+|EP_SAD|TRUE164_DIRECT_READ_READY|223841946|
+|EP_VECTORADD_S|ALREADY_VERIFIED_TRUE164_DIRECT_READ_READY|103535960|
+
+精确源→164→174-new路径见SOURCE_TO_TRUE164_PATH_MAP.json，全文件和目录元数据、成员顺序和SHA见SOURCE_SELECTOR_MANIFESTS/，可恢复入口见TRUE164_TRACE_RECOVERY_INDEX.json。科学实验如需新runtime/config/format/预算资格仍由研究者单独决定；T未修改任何科研分支。
