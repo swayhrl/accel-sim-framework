@@ -1,3 +1,5 @@
+> 最新科研进展（2026-10-24）：Vector r5 单端已完成科学接受、真164归档及两个native Target完整恢复。56000000指令/75039cycles，250118个RO事务；covered目标set RESERVED最大3/16，实际TagFAIL/relieve/detach均0。TVDskip375000次保持NA。本次新epoch2完整应用1次，另1次help资格加载；请求CLOSED、剩余额度0，旧57/44/T0与main61不变。精确新结果见[最终报告](../ep_main_vector_r5_20261023_v1/FINAL_REPORT.md)。以下保留接管时的历史状态；当前唯一待办以NEXT_SCIENTIFIC_DECISION.md为准。
+
 # EP-MAIN 当前科学状态（2026-10-23）
 
 接管状态：本轮有限只读科学交接完成。科研主 Lane 为用户指定的 EP-MAIN；原 A2/B/C/D/E2/F 的成果按精确提交接入证据索引，旧窗口、Goal、控制器均未恢复。这里的科研职责接管不修改 epoch2 运行注册表，也不自动采用历史 producer binary。
