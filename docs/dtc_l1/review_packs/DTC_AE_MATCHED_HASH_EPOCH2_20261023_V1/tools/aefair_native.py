@@ -273,11 +273,19 @@ def update_authority(mutator):
  for p in [registry,epoch]:
   backup=history/(p.stem+'.'+sha(p)+'.json')
   if not backup.exists():backup.write_bytes(p.read_bytes())
+ prior_registry_sha=sha(registry);prior_epoch_sha=sha(epoch)
  mutator(r)
  r['new_scientific_budget_remaining']=sum(x.get('remaining',max(0,x.get('budget',0)-(x.get('consumed',0) if isinstance(x.get('consumed',0),int) else len(x.get('consumed',{}))))) for x in r['registered_future_requests'].values())
- tmp=registry.with_name('.AEFAIR_REGISTRY.writing');tmp.write_text(json.dumps(r,sort_keys=True,indent=2)+'\n');os.replace(tmp,registry)
+ tmp=registry.with_name('.AEFAIR_REGISTRY.writing')
+ with tmp.open('w') as f:f.write(json.dumps(r,sort_keys=True,indent=2)+'\n');f.flush();os.fsync(f.fileno())
+ os.replace(tmp,registry)
  e['native_registry_sha256']=sha(registry);e['new_budget_remaining']=r['new_scientific_budget_remaining']
- tmp=epoch.with_name('.AEFAIR_EPOCH.writing');tmp.write_text(json.dumps(e,sort_keys=True,indent=2)+'\n');os.replace(tmp,epoch)
+ e['request_revision']={'request_id':REQUEST,'operation':'AEFAIR_EXACT_UPDATE','utc':now(),'prior_registry_sha256':prior_registry_sha,'prior_current_epoch_sha256':prior_epoch_sha}
+ tmp=epoch.with_name('.AEFAIR_EPOCH.writing')
+ with tmp.open('w') as f:f.write(json.dumps(e,sort_keys=True,indent=2)+'\n');f.flush();os.fsync(f.fileno())
+ os.replace(tmp,epoch)
+ for folder in [registry.parent,epoch.parent]:
+  fd=os.open(folder,os.O_RDONLY);os.fsync(fd);os.close(fd)
 
 _original_exclusive=exclusive
 def exclusive(p,obj):
@@ -323,6 +331,8 @@ def prepare(cohort):
  require(q['spec_request_sha256']==sha(ROOT/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json'),'request not current-authority registered')
  require(q['controller_sha256']==sha(__file__),'unreviewed changed controller')
  require(q['state'] in ['ARMED','RUNNING'] and cohort not in q['consumed'],'cell consumed or cohort sealed')
+ existing={p.name.removesuffix('.INTENT.json') for p in (ROOT/'control/qualification_ledger').glob('E2-AEFAIR-*.INTENT.json')}
+ require(set(q['consumed'])==existing,'unresolved central intent/registry accounting mismatch')
  for row in s['runtime_files']:
   p=ROOT/row['target'];require(p.is_file() and str(p.resolve())==row['actual_realpath'] and sha(p)==row['sha256'],'runtime/config file drift:'+str(p))
  for kind,commit in [('framework',s['framework_commit']),('core',s['core_commit'])]:
