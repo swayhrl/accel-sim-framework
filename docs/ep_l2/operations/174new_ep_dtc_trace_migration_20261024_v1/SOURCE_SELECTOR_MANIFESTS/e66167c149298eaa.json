@@ -1,0 +1,271 @@
+{
+  "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces",
+  "entry_name": "kernelslist.g",
+  "projects": [
+    "EP"
+  ],
+  "aliases": [
+    "EP_VECTORADD_S"
+  ],
+  "references": [
+    {
+      "project": "EP",
+      "cohort": "D_V2_vectorAdd_4M",
+      "scientific_status": "EXISTING_FROZEN_REPLAY_SELECTION_NOT_NEW_SCIENTIFIC_QUALIFICATION",
+      "scientific_owner_evidence": {
+        "Git_commit": "9993437fce9f21504b891fd25883aca631f7786a",
+        "Git_path": "docs/ep_l2/operations/ep_main_native_takeover_20261023_v1/INPUT_ASSET_REQUIREMENTS.json",
+        "source_registration_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261019_E_FULL_SYSTEM_V2_r1/D_publication/input_registrations/vectorAdd_4M.json",
+        "source_registration_sha256": "e2e421ccf7062bfaa7e03de8aa36dd6c9d48aab4fcef4fca0331c4d45659bb8b"
+      },
+      "copy_verifier": "USER_DELEGATED_ASSET_COPY_VERIFIER"
+    }
+  ],
+  "expected_members": {},
+  "old_composite_identities": [
+    "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940"
+  ],
+  "selector_id": "e66167c149298eaa",
+  "primary_asset_id": "EP_VECTORADD_S",
+  "priority": "P0",
+  "old_Source_disposition": "SOURCE_KEEP",
+  "source_root_identity": {
+    "dev": 156,
+    "inode": 34308560,
+    "size": 4096,
+    "mtime_ns": 1589810078000000000,
+    "ctime_ns": 1786468384762036699,
+    "uid": 543796,
+    "gid": 5000,
+    "mode": 493,
+    "nlink": 2,
+    "type": "directory"
+  },
+  "commandlist_bytes_hex": "4d656d63707948746f442c3078303030303766356633383030303030302c31363030303030300a4d656d63707948746f442c3078303030303766356633393030303030302c31363030303030300a6b65726e656c2d312e7472616365670a",
+  "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+  "ordered_kernel_members": [
+    "kernel-1.traceg"
+  ],
+  "members": [
+    {
+      "dev": 156,
+      "inode": 34290895,
+      "size": 94,
+      "mtime_ns": 1589810078000000000,
+      "ctime_ns": 1786468384429040863,
+      "uid": 543796,
+      "gid": 5000,
+      "mode": 420,
+      "nlink": 1,
+      "type": "file",
+      "relative_path": "kernelslist.g",
+      "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+      "expected": {},
+      "header_prefix_hex": "4d656d63707948746f442c3078303030303766356633383030303030302c31363030303030300a4d656d63707948746f442c3078303030303766356633393030303030302c31363030303030300a6b65726e656c2d312e7472616365670a",
+      "header_text": "MemcpyHtoD,0x00007f5f38000000,16000000\nMemcpyHtoD,0x00007f5f39000000,16000000\nkernel-1.traceg\n",
+      "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a"
+    },
+    {
+      "dev": 156,
+      "inode": 34290896,
+      "size": 103535866,
+      "mtime_ns": 1589810078000000000,
+      "ctime_ns": 1786468384762036699,
+      "uid": 543796,
+      "gid": 5000,
+      "mode": 420,
+      "nlink": 1,
+      "type": "file",
+      "relative_path": "kernel-1.traceg",
+      "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg",
+      "expected": {},
+      "header_prefix_hex": "2d6b65726e656c206e616d65203d205f5a36566563416464504b6653305f5066690a2d6b65726e656c206964203d20310a2d677269642064696d203d202831353632352c312c31290a2d626c6f636b2064696d203d20283235362c312c31290a2d73686d656d203d20300a2d6e72656773203d2031320a2d62696e6172792076",
+      "header_text": "-kernel name = _Z6VecAddPKfS0_Pfi\n-kernel id = 1\n-grid dim = (15625,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 12\n-binary version = 70\n-cuda stream id = 0\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num reg_dests opcode src_num reg_srcs mem_width mem_addresses\n\n\n#BEGIN_TB\n\nthread block = 0,0,0\n\nwarp = 0\ninsts = 16\n0 0 0 0 0000 ffffffff 1 R1 MOV 0 0 \n0 0 0 0 0010 00000000 0 SHFL.IDX 4 R255 R255 R255 R255 0 \n0 0 0 0 0020 ffffffff 1 R6 S2R 0 0 \n0 0 0 0 0030 ffffffff 1 R3 S2R 0 0 \n0 0 0 0 0040 ffffffff 1 R6 IMAD 2 R6 R3 0 \n0 0 0 0 0050 ffffffff 0 ISETP.GE.AND 1 R6 0 \n0 0 0 0 0060 00000000 0 EXIT 0 0 \n0 0 0 0 0070 ffffffff 1 R7 MOV 0 0 \n0 0 0 0 0080 ffffffff 1 R4 IMAD.WIDE 2 R6 R7 0 \n0 0 0 0 0090 ffffffff 1 R2 IMAD.WIDE 2 R6 R7 0 \n0 0 0 0 00a0 ffffffff 1 R4 LDG.E.SYS 1 R4 4 1 0x00007f5f39000000 4 \n0 0 0 0 00b0 ffffffff 1 R3 LDG.E.SYS 1 R2 4 1 0x00007f5f38000000 4 \n0 0 0 0 00c0 ffffffff 1 R6 IMAD.WIDE 2 R6 R7 0 \n0 0 0 0 00d0 ffffffff 1 R9 FADD 2 R4 R3 0 \n0 0 0 0 00e0 ffff",
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d"
+    }
+  ],
+  "source_shallow_inventory": [
+    {
+      "name": "kernel-1.traceg",
+      "identity": {
+        "dev": 156,
+        "inode": 34290896,
+        "size": 103535866,
+        "mtime_ns": 1589810078000000000,
+        "ctime_ns": 1786468384762036699,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "kernelslist",
+      "identity": {
+        "dev": 156,
+        "inode": 34290893,
+        "size": 93,
+        "mtime_ns": 1589810078000000000,
+        "ctime_ns": 1786468384429040863,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "kernelslist.g",
+      "identity": {
+        "dev": 156,
+        "inode": 34290895,
+        "size": 94,
+        "mtime_ns": 1589810078000000000,
+        "ctime_ns": 1786468384429040863,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "stats.csv",
+      "identity": {
+        "dev": 156,
+        "inode": 34290894,
+        "size": 154,
+        "mtime_ns": 1589810078000000000,
+        "ctime_ns": 1786468384429040863,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "commandlist",
+      "identity": {
+        "dev": 156,
+        "inode": 34290897,
+        "size": 74,
+        "mtime_ns": 1589810078000000000,
+        "ctime_ns": 1786468384762036699,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    }
+  ],
+  "source_data_bytes": 103535960,
+  "metadata_status": "SOURCE_STAT_COMMANDLIST_AND_EXACT_MEMBER_INVENTORY_FROZEN",
+  "additional_full_SHA_proof": {
+    "attempt": "E013_33cffb17",
+    "state": "COMPLETE_VALID",
+    "source_path": "/workspace/ep_l2_ms20261019_e_results/E013_33cffb17/readonly_manifest.json",
+    "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa"
+  },
+  "original_EP_asset_manifest_composite_reproduced": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "freeze_status": "FROZEN_EXPECTED_FULL_SHA_AND_CURRENT_SOURCE_METADATA",
+  "schema": "USER_DELEGATED_FROZEN_ORDERED_TRACE_INPUT_SCOPE_V1",
+  "copy_verifier": "USER_DELEGATED_ASSET_COPY_VERIFIER",
+  "scientific_qualification_changed": false,
+  "source_disposition": "SOURCE_KEEP",
+  "contract_commit": "79207bab15699ad76ffc821bb5e17663e6617545",
+  "native_full_restore_is_copy_ready_prerequisite": false,
+  "object_id": "a509c8b9c51e51c86faa9a09cf69c5a4408cacc92032457542307e52e3fbad8f",
+  "reuse": {
+    "mount_tree": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+    "true164_tree": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+    "evidence_type": "EXISTING_TRACE_COMMIT_WHOLE_SHA_AND_STABLE_IDENTITY",
+    "receipt": {
+      "Share_new_bytes": 0,
+      "Source_action": "SOURCE_KEEP",
+      "Source_simulator_starts": 0,
+      "asset_id": "EP_VECTORADD_S",
+      "members": [
+        {
+          "relative_path": "kernelslist.g",
+          "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+          "size": 94
+        },
+        {
+          "relative_path": "kernel-1.traceg",
+          "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+          "size": 103535866
+        }
+      ],
+      "native_mirror_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+      "new_payload_bytes": 103535960,
+      "not_a_result_outbox_qualification": true,
+      "old_identity": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+      "old_identity_definition": "EP ordered full content identity from original accepted spec",
+      "ordered_member_set_sha256": "cee9c2e376532344887ae9d01a640e8891653d5403800c703958a72e95f95ff9",
+      "ordered_members": [
+        "kernelslist.g",
+        "kernel-1.traceg"
+      ],
+      "raw_bytes": 103535960,
+      "schema": "READONLY_TRACE_INPUT_COMMIT_V1",
+      "scope_sha256": "ced1bec2db5eaac1cc54f175ae8c554b30f9b67effdfda627ca91e3af72a422a",
+      "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces",
+      "status": "TRACE_MEMBERS_ARCHIVE_AND_CLOSED_REOPEN_SHA_VERIFIED",
+      "true164_tree": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+      "utc": "2026-10-23T04:12:46.809577+00:00",
+      "INPUT_SCOPE": {
+        "Source_action": "SOURCE_KEEP",
+        "asset_id": "EP_VECTORADD_S",
+        "files": [
+          {
+            "allocated": 4096,
+            "ctime_ns": 1786468384429040863,
+            "dev": 156,
+            "expected_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+            "gid": 5000,
+            "inode": 34290895,
+            "mode": 420,
+            "mtime_ns": 1589810078000000000,
+            "nlink": 1,
+            "relative_path": "kernelslist.g",
+            "size": 94,
+            "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+            "symlink_target": null,
+            "uid": 543796
+          },
+          {
+            "allocated": 103542784,
+            "ctime_ns": 1786468384762036699,
+            "dev": 156,
+            "expected_sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+            "gid": 5000,
+            "inode": 34290896,
+            "mode": 420,
+            "mtime_ns": 1589810078000000000,
+            "nlink": 1,
+            "relative_path": "kernel-1.traceg",
+            "size": 103535866,
+            "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg",
+            "symlink_target": null,
+            "uid": 543796
+          }
+        ],
+        "kind": "READONLY_SCIENTIFIC_TRACE_INPUT_NOT_RESULT_OUTBOX",
+        "old_composite_identity": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "old_identity_definition": "EP ordered full content identity from original accepted spec",
+        "ordered_files": [
+          "kernelslist.g",
+          "kernel-1.traceg"
+        ],
+        "owner_accepted_baseline": "E013_33cffb17_MAIN61_S",
+        "schema": "INDEPENDENT_COLD_TRACE_MEMBER_INPUT_PROTOCOL_V1",
+        "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces",
+        "target_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S"
+      }
+    }
+  },
+  "new_true164_bundle": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_ep_dtc_trace_inputs_v1/EP/EP_VECTORADD_S_a509c8b9c51e51c8"
+}

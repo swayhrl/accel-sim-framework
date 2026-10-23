@@ -1,0 +1,217 @@
+{
+  "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces",
+  "entry_name": "kernelslist.g",
+  "projects": [
+    "EP"
+  ],
+  "aliases": [
+    "EP_CONVOLUTION_SEPARABLE"
+  ],
+  "references": [
+    {
+      "project": "EP",
+      "cohort": "D_V1_convolutionSeparable",
+      "scientific_status": "EXISTING_FROZEN_REPLAY_SELECTION_NOT_NEW_SCIENTIFIC_QUALIFICATION",
+      "scientific_owner_evidence": {
+        "Git_commit": "9993437fce9f21504b891fd25883aca631f7786a",
+        "Git_path": "docs/ep_l2/operations/ep_main_native_takeover_20261023_v1/INPUT_ASSET_REQUIREMENTS.json",
+        "source_registration_path": "/workspace/worktrees/accel-sim-ep-l2-ms20261019-e-eval-v1/docs/ep_l2/review_packs/MS20261019_E_CONTROL_TOOLS_r1/input_registrations/convolutionSeparable.json",
+        "source_registration_sha256": "ce335feee38aeb4e40e1b0b37b45766fe6c7026cb6566c8fd91062a6dfeb02a3"
+      },
+      "copy_verifier": "USER_DELEGATED_ASSET_COPY_VERIFIER"
+    }
+  ],
+  "expected_members": {},
+  "old_composite_identities": [
+    "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f"
+  ],
+  "selector_id": "68d185d016dc2fde",
+  "primary_asset_id": "EP_CONVOLUTION_SEPARABLE",
+  "priority": "P1",
+  "old_Source_disposition": "SOURCE_KEEP",
+  "source_root_identity": {
+    "dev": 156,
+    "inode": 34324945,
+    "size": 4096,
+    "mtime_ns": 1589810094000000000,
+    "ctime_ns": 1786468408738754235,
+    "uid": 543796,
+    "gid": 5000,
+    "mode": 493,
+    "nlink": 2,
+    "type": "directory"
+  },
+  "commandlist_bytes_hex": "4d656d63707948746f442c3078303030303766373539666130303930302c36380a4d656d63707948746f442c3078303030303766373539303030303030302c33373734383733360a6b65726e656c2d312e7472616365670a6b65726e656c2d322e7472616365670a",
+  "commandlist_sha256": "ab2290810368438cabf35a3c0fcb9686473aaa2235607a6e2bc0347f651ff484",
+  "ordered_kernel_members": [
+    "kernel-1.traceg",
+    "kernel-2.traceg"
+  ],
+  "members": [
+    {
+      "dev": 156,
+      "inode": 34290908,
+      "size": 104,
+      "mtime_ns": 1589810079000000000,
+      "ctime_ns": 1786468385277030276,
+      "uid": 543796,
+      "gid": 5000,
+      "mode": 420,
+      "nlink": 1,
+      "type": "file",
+      "relative_path": "kernelslist.g",
+      "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g",
+      "expected": {},
+      "header_prefix_hex": "4d656d63707948746f442c3078303030303766373539666130303930302c36380a4d656d63707948746f442c3078303030303766373539303030303030302c33373734383733360a6b65726e656c2d312e7472616365670a6b65726e656c2d322e7472616365670a",
+      "header_text": "MemcpyHtoD,0x00007f759fa00900,68\nMemcpyHtoD,0x00007f7590000000,37748736\nkernel-1.traceg\nkernel-2.traceg\n",
+      "sha256": "ab2290810368438cabf35a3c0fcb9686473aaa2235607a6e2bc0347f651ff484"
+    },
+    {
+      "dev": 156,
+      "inode": 34290909,
+      "size": 4072647057,
+      "mtime_ns": 1589810087000000000,
+      "ctime_ns": 1786468398776867505,
+      "uid": 543796,
+      "gid": 5000,
+      "mode": 420,
+      "nlink": 1,
+      "type": "file",
+      "relative_path": "kernel-1.traceg",
+      "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg",
+      "expected": {},
+      "header_prefix_hex": "2d6b65726e656c206e616d65203d205f5a3231636f6e766f6c7574696f6e526f77734b65726e656c5066535f6969690a2d6b65726e656c206964203d20310a2d677269642064696d203d202832342c3736382c31290a2d626c6f636b2064696d203d202831362c342c31290a2d73686d656d203d20323536300a2d6e72656773",
+      "header_text": "-kernel name = _Z21convolutionRowsKernelPfS_iii\n-kernel id = 1\n-grid dim = (24,768,1)\n-block dim = (16,4,1)\n-shmem = 2560\n-nregs = 31\n-binary version = 70\n-cuda stream id = 0\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num reg_dests opcode src_num reg_srcs mem_width mem_addresses\n\n\n#BEGIN_TB\n\nthread block = 0,0,0\n\nwarp = 0\ninsts = 319\n0 0 0 0 0000 ffffffff 1 R1 MOV 0 0 \n0 0 0 0 0010 00000000 0 SHFL.IDX 4 R255 R255 R255 R255 0 \n0 0 0 0 0020 ffffffff 1 R0 S2R 0 0 \n0 0 0 0 0030 ffffffff 1 R5 MOV 0 0 \n0 0 0 0 0040 ffffffff 1 R21 MOV 1 R255 0 \n0 0 0 0 0050 ffffffff 1 R25 S2R 0 0 \n0 0 0 0 0060 ffffffff 1 R23 MOV 1 R255 0 \n0 0 0 0 0070 ffffffff 1 R3 S2R 0 0 \n0 0 0 0 0080 ffffffff 1 R6 S2R 0 0 \n0 0 0 0 0090 ffffffff 1 R0 LEA 2 R0 R25 0 \n0 0 0 0 00a0 ffffffff 1 R0 IADD3 2 R0 R255 0 \n0 0 0 0 00b0 ffffffff 1 R3 LEA 2 R3 R6 0 \n0 0 0 0 00c0 ffffffff 0 ISETP.GE.AND 2 R0 R255 0 \n0 0 0 0 00d0 ffffffff 1 R2 IMAD 2 R3 R0 0 \n0 0 0 0 00e0 ffffffff 1 R3 IADD3 2 R0 R255 0 \n0 0 0 0 00f0 ffffff",
+      "sha256": "9678e3146630e7c77bd4609cc2fc82a6651552e66a5513ea47dcd2d9eb270724"
+    },
+    {
+      "dev": 156,
+      "inode": 34290910,
+      "size": 2772248484,
+      "mtime_ns": 1589810093000000000,
+      "ctime_ns": 1786468408738754235,
+      "uid": 543796,
+      "gid": 5000,
+      "mode": 420,
+      "nlink": 1,
+      "type": "file",
+      "relative_path": "kernel-2.traceg",
+      "source": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg",
+      "expected": {},
+      "header_prefix_hex": "2d6b65726e656c206e616d65203d205f5a3234636f6e766f6c7574696f6e436f6c756d6e734b65726e656c5066535f6969690a2d6b65726e656c206964203d20320a2d677269642064696d203d20283139322c34382c31290a2d626c6f636b2064696d203d202831362c382c31290a2d73686d656d203d20353138340a2d6e72",
+      "header_text": "-kernel name = _Z24convolutionColumnsKernelPfS_iii\n-kernel id = 2\n-grid dim = (192,48,1)\n-block dim = (16,8,1)\n-shmem = 5184\n-nregs = 32\n-binary version = 70\n-cuda stream id = 0\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num reg_dests opcode src_num reg_srcs mem_width mem_addresses\n\n\n#BEGIN_TB\n\nthread block = 0,0,0\n\nwarp = 0\ninsts = 289\n0 0 0 0 0000 ffffffff 1 R1 MOV 0 0 \n0 0 0 0 0010 00000000 0 SHFL.IDX 4 R255 R255 R255 R255 0 \n0 0 0 0 0020 ffffffff 1 R2 S2R 0 0 \n0 0 0 0 0030 ffffffff 1 R18 MOV 0 0 \n0 0 0 0 0040 ffffffff 1 R29 MOV 1 R255 0 \n0 0 0 0 0050 ffffffff 1 R27 S2R 0 0 \n0 0 0 0 0060 ffffffff 1 R17 SHF.L.U32 2 R18 R255 0 \n0 0 0 0 0070 ffffffff 1 R3 S2R 0 0 \n0 0 0 0 0080 ffffffff 1 R0 S2R 0 0 \n0 0 0 0 0090 ffffffff 1 R2 LEA 2 R2 R27 0 \n0 0 0 0 00a0 ffffffff 1 R13 IADD3 2 R2 R255 0 \n0 0 0 0 00b0 ffffffff 1 R16 LEA 2 R3 R0 0 \n0 0 0 0 00c0 ffffffff 1 R10 IADD3 2 R13 R255 0 \n0 0 0 0 00d0 ffffffff 0 ISETP.GE.AND 2 R13 R255 0 \n0 0 0 0 00e0 ffffffff 1 R16 IMAD 2 R13 R16 ",
+      "sha256": "1c4c91bd017adb4fedce9dc93b5edd8454dc28d969db095b78a6ea972c4ef28b"
+    }
+  ],
+  "source_shallow_inventory": [
+    {
+      "name": "kernel-1.traceg",
+      "identity": {
+        "dev": 156,
+        "inode": 34290909,
+        "size": 4072647057,
+        "mtime_ns": 1589810087000000000,
+        "ctime_ns": 1786468398776867505,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "kernelslist",
+      "identity": {
+        "dev": 156,
+        "inode": 34290906,
+        "size": 102,
+        "mtime_ns": 1589810079000000000,
+        "ctime_ns": 1786468385277030276,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "kernel-2.traceg",
+      "identity": {
+        "dev": 156,
+        "inode": 34290910,
+        "size": 2772248484,
+        "mtime_ns": 1589810093000000000,
+        "ctime_ns": 1786468408738754235,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "kernelslist.g",
+      "identity": {
+        "dev": 156,
+        "inode": 34290908,
+        "size": 104,
+        "mtime_ns": 1589810079000000000,
+        "ctime_ns": 1786468385277030276,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "stats.csv",
+      "identity": {
+        "dev": 156,
+        "inode": 34290907,
+        "size": 205,
+        "mtime_ns": 1589810079000000000,
+        "ctime_ns": 1786468385277030276,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    },
+    {
+      "name": "commandlist",
+      "identity": {
+        "dev": 156,
+        "inode": 34290911,
+        "size": 84,
+        "mtime_ns": 1589810094000000000,
+        "ctime_ns": 1786468408738754235,
+        "uid": 543796,
+        "gid": 5000,
+        "mode": 420,
+        "nlink": 1,
+        "type": "file"
+      }
+    }
+  ],
+  "source_data_bytes": 6844895645,
+  "metadata_status": "SOURCE_STAT_COMMANDLIST_AND_EXACT_MEMBER_INVENTORY_FROZEN",
+  "additional_full_SHA_proof": {
+    "attempt": "E002_09c7145e",
+    "state": "FAILED",
+    "source_path": "/workspace/ep_l2_ms20261019_e_results/E002_09c7145e/readonly_manifest.json",
+    "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425"
+  },
+  "original_EP_asset_manifest_composite_reproduced": "620f80f945d8ddbcef639e7e374fd2cb7122f8b07f239c82ccd32a2c4d90e79f",
+  "freeze_status": "FROZEN_EXPECTED_FULL_SHA_AND_CURRENT_SOURCE_METADATA",
+  "schema": "USER_DELEGATED_FROZEN_ORDERED_TRACE_INPUT_SCOPE_V1",
+  "copy_verifier": "USER_DELEGATED_ASSET_COPY_VERIFIER",
+  "scientific_qualification_changed": false,
+  "source_disposition": "SOURCE_KEEP",
+  "contract_commit": "79207bab15699ad76ffc821bb5e17663e6617545",
+  "native_full_restore_is_copy_ready_prerequisite": false,
+  "object_id": "783b6ea28dcbfa9d8873fe22dca51bfe8927ffb487dc7820ab481880d8d2393f",
+  "reuse": null,
+  "new_true164_bundle": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_ep_dtc_trace_inputs_v1/EP/EP_CONVOLUTION_SEPARABLE_783b6ea28dcbfa9d"
+}

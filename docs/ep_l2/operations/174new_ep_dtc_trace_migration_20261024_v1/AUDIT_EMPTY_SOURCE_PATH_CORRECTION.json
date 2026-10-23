@@ -1,0 +1,16 @@
+{
+  "schema": "AUDIT_EMPTY_SOURCE_PATH_CORRECTION_V1",
+  "affected_scientific_rows": [
+    "R2_PILOT_TRAD96_Hotspot1",
+    "R2_V2_CONTROL_IO128_Hotspot1",
+    "R2_CONTROL_WAIT128_Hotspot1"
+  ],
+  "mistake": "An empty original ADMISSION_HOLD raw_dir was treated as cwd by pathlib, collecting unrelated home directory/configuration metadata in the first checkpoint.",
+  "source_scientific_status_changed": false,
+  "Source_files_modified": 0,
+  "remediation": "Skip empty roots; require absolute source run roots inside exact registered r2-attempts namespace. Removed unrelated metadata from current artifacts and replaced this task sole checkpoint before continuing publication.",
+  "bounded_sensitive_content_check": "No full secret-like credential prefix detected; collected application configuration was unrelated and removed regardless. No credential values printed.",
+  "old_checkpoint_replaced": "6c2e0ee668bd096855e6e76945b8ceb6c0f6ee8a",
+  "historical_other_goals_and_scientific_commits_rewritten": false,
+  "remote_cache_limit": "Updating the branch removes reachable branch history; server retention/caches of the superseded object are outside this branch operation."
+}
