@@ -1,0 +1,93 @@
+{
+  "status": "PASS_UNUSED_BASELINE_MODE_CPU_QUALIFICATION_ONLY",
+  "core_commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+  "compile_argv": [
+    "/usr/bin/g++",
+    "-O3",
+    "-std=c++17",
+    "-fno-access-control",
+    "-DDEBUG=0",
+    "-DTRACING_ON=1",
+    "-DCUDART_VERSION=12040",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/core/libcuda",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe.cc",
+    "-L/root/data/dtc_main_20261023_v1/ae_fair_v1/core-build",
+    "-lcudart",
+    "-lz",
+    "-lzstd",
+    "-pthread",
+    "-o",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe"
+  ],
+  "probe_source_sha256": "aeb918049fef6cbd2b86442d27a16e2c22aaeb5e648be17ac88f86864305a1ec",
+  "probe_binary_sha256": "f308ab53191e0fc253a12b623624ce5f82ca315f13961ab69f3b0ad6d407a09b",
+  "cases": [
+    {
+      "cell": "CM",
+      "finite_service": "0",
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib:/root/data/ep_l2_dtc_l1_native_v2/common-lib",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/E2-AEFAIR-CM",
+        "0"
+      ],
+      "returncode": 0,
+      "status": "PASS_CPU_REAL_CONSTRUCTOR",
+      "stdout_sha256": "d3c1171e1b52da368f563787c832f185085d0d31fe5b18f3addb6520b8f7ec30",
+      "excerpt": "ion = 1\naddr_dec_mask[CHIP]  = 0000000000000000 \thigh:64 low:0\naddr_dec_mask[BK]    = 0000000000001800 \thigh:13 low:11\naddr_dec_mask[ROW]   = 0000000007ffe000 \thigh:27 low:13\naddr_dec_mask[COL]   = 00000000000007ff \thigh:11 low:0\naddr_dec_mask[BURST] = 000000000000000f \thigh:4 low:0\nsub_partition_id_mask = 0000000000000000\nGPGPU-Sim uArch: clock freqs: 1410000000.000000:1410000000.000000:1410000000.000000:850000000.000000\nGPGPU-Sim uArch: clock periods: 0.00000000070921985816:0.00000000070921985816:0.00000000070921985816:0.00000000117647058824\nCPU_CONFIG mode=1 finite=0 pib=256 mshr=512 sets=32 lines=768 dataKiB=96\n*** Initializing Memory Statistics ***\nGPGPU-Sim uArch: performance model initialization complete.\nPASS_REAL_PAPER_BASE_CONSTRUCTOR standard_finite_cache_resources=preserved DTC_only_finite_flag=0 kernels=0 trace_members_read=0 model_cycle_calls=0 simulation_threads_started=0\n"
+    },
+    {
+      "cell": "CH",
+      "finite_service": "0",
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib:/root/data/ep_l2_dtc_l1_native_v2/common-lib",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/E2-AEFAIR-CH",
+        "0"
+      ],
+      "returncode": 0,
+      "status": "PASS_CPU_REAL_CONSTRUCTOR",
+      "stdout_sha256": "d3c1171e1b52da368f563787c832f185085d0d31fe5b18f3addb6520b8f7ec30",
+      "excerpt": "ion = 1\naddr_dec_mask[CHIP]  = 0000000000000000 \thigh:64 low:0\naddr_dec_mask[BK]    = 0000000000001800 \thigh:13 low:11\naddr_dec_mask[ROW]   = 0000000007ffe000 \thigh:27 low:13\naddr_dec_mask[COL]   = 00000000000007ff \thigh:11 low:0\naddr_dec_mask[BURST] = 000000000000000f \thigh:4 low:0\nsub_partition_id_mask = 0000000000000000\nGPGPU-Sim uArch: clock freqs: 1410000000.000000:1410000000.000000:1410000000.000000:850000000.000000\nGPGPU-Sim uArch: clock periods: 0.00000000070921985816:0.00000000070921985816:0.00000000070921985816:0.00000000117647058824\nCPU_CONFIG mode=1 finite=0 pib=256 mshr=512 sets=32 lines=768 dataKiB=96\n*** Initializing Memory Statistics ***\nGPGPU-Sim uArch: performance model initialization complete.\nPASS_REAL_PAPER_BASE_CONSTRUCTOR standard_finite_cache_resources=preserved DTC_only_finite_flag=0 kernels=0 trace_members_read=0 model_cycle_calls=0 simulation_threads_started=0\n"
+    },
+    {
+      "cell": "CM",
+      "finite_service": "1",
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib:/root/data/ep_l2_dtc_l1_native_v2/common-lib",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe",
+        "/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/E2-AEFAIR-CM",
+        "1"
+      ],
+      "returncode": 1,
+      "status": "EXPECTED_EXACT_PRODUCTION_REJECTION",
+      "stdout_sha256": "f541f64dda06af03625e14b9c154a2f0285bb72de3128f6fdee3e5468d326ee8",
+      "excerpt": "P9gpgpu_sim+0x108b)[0x74ecfc5dfb3b]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib/libcudart.so(_ZN15shader_core_ctx20create_exec_pipelineEv+0x1c97)[0x74ecfc5e2af7]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib/libcudart.so(_ZN22exec_simt_core_cluster22create_shader_core_ctxEv+0xb5)[0x74ecfc5e32d5]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib/libcudart.so(_ZN14exec_gpgpu_sim17createSIMTClusterEv+0x9a)[0x74ecfc574efa]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe(+0x4068)[0x74ecfca10068]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib/libc.so.6(+0x29d90)[0x74ecfbc29d90]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib/libc.so.6(__libc_start_main+0x80)[0x74ecfbc29e40]\n/root/data/dtc_main_20261023_v1/ae_fair_v1/prepared_revision2/aefair_base_constructor_probe(+0x4575)[0x74ecfca10575]\n=== END BACKTRACE ===\n"
+    }
+  ],
+  "kernels": 0,
+  "trace_body_members_read": 0,
+  "model_cycle_calls": 0,
+  "simulation_threads_started": 0,
+  "full_simulator_starts": 0,
+  "fixture_platform_reduction": "1SM/1memory partition; actual ordinary96KiB geometry,512MSHR,256PIB,4banks,20cycleL1 retained; trace opcode config is not needed for construction and was not parsed",
+  "active_DM_and_authorization_unchanged": {
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/control/E2-AEFAIR-DM_SPEC.json": "b2d2d3a8a2131c01665b885a84c4bdf8cd408809cff748505b0dbb752069f908",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/control/SCIENCE_AUTHORIZATION.json": "457e8df5d94cae0a5e71291440229e4a392c57f399e430135d1f1ef15face1a3",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json": "529b2764a700a7df34a39b1ce01794efa4ebad7f80f34f606520cdd355ebdfdd",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/bin/accel-sim.out": "ab6c717dcbe7932af8bbb6dfbad0b1df9ec0ba447c067085cb92855fb8628a8e",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/env/lib/libcudart.so": "59a35a6f8a9e3534c037e0b55f368f0d601744112b5d3bccbd5b53ae3de05537"
+  },
+  "recorded_utc": "2026-10-23T18:38:44.382245+00:00"
+}
