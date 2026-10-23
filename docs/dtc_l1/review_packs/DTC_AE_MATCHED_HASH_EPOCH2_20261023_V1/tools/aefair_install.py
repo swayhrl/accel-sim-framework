@@ -17,7 +17,7 @@ def install():
   if name=='EP_NATIVE_TAGPRESSURE_VECTOR_HOLDOUT_V1':
    rec=pathlib.Path('/root/data/ep_l2_main_vector_r5_20261023_v1/control')/(name+'_ARCHIVE_RECEIPT.json')
    assert rec.exists() and read(rec)['status']=='ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET','peer outbox/restore pending'
- wrapper=N/'bin/native';before=wrapper.read_bytes();assert b'ep_l2_main_vector_r5_20261023_v1/native_dispatch.py' in before,'sole current entry changed; review new predecessor'
+ wrapper=N/'bin/native';before=wrapper.read_bytes();assert b'ep_l2_main_vector_r5_20261023_v1/native_dispatch_post_v1.py' in before,'sole current entry changed; review new predecessor'
  (T/'control/NATIVE_ENTRY_PREIMAGE').write_bytes(before)
  for name in ['native_epoch2_frontend.py','aefair_native.py','aefair_strict.py','aefair_result.py']:
   assert (T/'tools'/name).read_bytes()==(P/'tools'/name).read_bytes()
@@ -31,7 +31,7 @@ def install():
  m.update_authority(register)
  after=read(N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json')
  assert all(after['registered_future_requests'][k]==v for k,v in peer_preimages.items())
- proof={'status':'EXACT_DTC_FOUR_FRESH_REQUEST_REGISTERED','request_id':m.REQUEST,'new_budget':4,'actual_starts':0,'native_entry_preimage_sha256':hashlib.sha256(before).hexdigest(),'native_entry_sha256':sha(wrapper),'peer_router_preserved':'/root/data/ep_l2_main_vector_r5_20261023_v1/native_dispatch.py','peer_rows_unchanged':True,'old_qualification_history_unchanged':after['qualification_history']==reg['qualification_history'],'old_source_history_unchanged':after['old_source_history']==reg['old_source_history'],'single_central_registry':str(N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'),'request_ledger':str((T/'control/qualification_ledger').resolve()),'global_science_lock':str(N/'control/qualification_ledger/NATIVE_QUALIFICATION.lock'),'epoch':read(N/'control/CURRENT_SCIENCE_EPOCH.json'),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+ proof={'status':'EXACT_DTC_FOUR_FRESH_REQUEST_REGISTERED','request_id':m.REQUEST,'new_budget':4,'actual_starts':0,'native_entry_preimage_sha256':hashlib.sha256(before).hexdigest(),'native_entry_sha256':sha(wrapper),'peer_router_preserved':'/root/data/ep_l2_main_vector_r5_20261023_v1/native_dispatch_post_v1.py','peer_rows_unchanged':True,'old_qualification_history_unchanged':after['qualification_history']==reg['qualification_history'],'old_source_history_unchanged':after['old_source_history']==reg['old_source_history'],'single_central_registry':str(N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'),'request_ledger':str((T/'control/qualification_ledger').resolve()),'global_science_lock':str(N/'control/qualification_ledger/NATIVE_QUALIFICATION.lock'),'epoch':read(N/'control/CURRENT_SCIENCE_EPOCH.json'),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
  (T/'control/NATIVE_REQUEST_INSTALL_RECEIPT.json').write_text(json.dumps(proof,indent=2)+'\n')
  return proof
 if __name__=='__main__':print(json.dumps(install(),indent=2))

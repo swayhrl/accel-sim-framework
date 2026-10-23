@@ -16,7 +16,7 @@ def main(argv):
   return m.archive(argv[2])
  # Preserve the existing EP-MAIN exact router byte-for-byte as fallback.
  sys.path.insert(0,'/root/data/ep_l2_main_vector_r5_20261023_v1')
- import native_dispatch as prior_epoch2_dispatch
+ import native_dispatch_post_v1 as prior_epoch2_dispatch
  result=prior_epoch2_dispatch.main(argv)
  if argv[:2]==['project','status']:
   result['registered_science_requests']=native_v2.read(N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json')['registered_future_requests']
