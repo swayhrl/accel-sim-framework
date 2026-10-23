@@ -1,123 +1,47 @@
 {
-  "phase": "BLOCKED_EXTERNAL_OWNER_FULL_COPY_READY",
-  "utc": "2026-10-23T00:27:58.111604+00:00",
+  "schema": "FULL_RESULT_OFFLOAD_STATUS_V1",
+  "updated_utc": "2026-10-23T01:28:48.733093+00:00",
+  "phase": "CONTINUING_FULL_COPY_ONLY",
+  "goal_completed": false,
+  "old_owner_full_ready_blocker": "RESOLVED_BY_7c2f8301_AND_a9684fa8; BLOCKED_AUDIT.json retained as historical checkpoint",
   "projects": {
     "EP_L2_E057": {
+      "txid": "aadbbab26f921819e7e24f3bb2187d1955eccd79381a38d475e7eed4e0f36e7d",
+      "owner_ready_commit": "7c2f830175f40e16651eab4a3cd3a7af73e9927b",
+      "owner_ready_sha256": "bad175b228fa3075fdebf29dc288de92e0d42d120dbc0aebb7aae037e6196925",
       "source_root": "/workspace/ep_l2_ms20261019_e_results/E057_b4a7e175",
-      "observed_metadata_counts": {
-        "directory": 4,
-        "file": 22
-      },
-      "observed_regular_bytes": 181366652,
-      "source_allocated_unique_bytes": 181440512,
-      "owner_science_identity_and_manifest": "AWAIT_FULL_INDEPENDENT_COPY_READY",
       "source_disposition": "SOURCE_KEEP",
-      "native_conservative_restore_plus_stage_controls_reservation": 516984832,
-      "raw_NAS_3R_plus_64MiB_reservation": 611208820,
-      "SSD_after_project_reservation_bytes": 10800160768,
-      "own_pool_7GiB_residual_test": true,
-      "concurrent_science_write_reservations": "FRESH_SOURCE_REGISTRY_NONRELEASED_LEASES0_AND_NO_LIVE_DTC_OWN_LOCK_OWNER",
-      "special_entries": {
-        "external_hardlink_names": [
-          "accel-sim.out"
-        ],
-        "symbolic_links": []
-      },
-      "existing_sidecar_content": "REUSE_PINNED_TRUE164_OBJECTS_NO_SOURCE_REUPLOAD",
-      "archive_status": "NOT_STARTED_AWAIT_OWNER",
-      "restore_status": "NOT_STARTED_AWAIT_OWNER"
+      "files": 22,
+      "directories": 4,
+      "symlinks": 0,
+      "regular_bytes": 181366652,
+      "state": "ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET",
+      "target_receipt_sha256": "8ccca30c19fe265900a5ce04030b82e2398ebdf1d3dd364d1923671cced2573b",
+      "effective_new_transferred_bytes": 181391360,
+      "archive_root": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_full_result_offload_v1/EP_L2_E057/aadbbab26f921819e7e24f3bb2187d1955eccd79381a38d475e7eed4e0f36e7d",
+      "restore_root": "/root/data/full_result_offload_20261023_v1/EP_L2_E057/aadbbab26f921819e7e24f3bb2187d1955eccd79381a38d475e7eed4e0f36e7d/restored",
+      "elapsed_seconds": 19.951463263481855,
+      "owner_postcopy": "REQUESTED_PENDING_INDEPENDENT_OWNER"
     },
     "DTC_L1_AD_GEMM": {
+      "txid": "350dd7ae741b916d24852a54d0937a85ce4cd89cc0c98b6e9f8c599b7a19f0f6",
+      "owner_ready_commit": "a9684fa8fa97dcb740ff5fa45a04fdc95989827e",
+      "owner_ready_sha256": "4c089b1b21098730ac3626cf257873cb87bc73c0436fb7b0059605d90cfe3af2",
       "source_root": "/workspace/dtc-ag8r1-finite-resume-174-v1/attempts/AD_GEMM_940981e5-61c4-4772-83a3-50593fd1ba3a",
-      "observed_metadata_counts": {
-        "directory": 4,
-        "file": 8401,
-        "symlink": 1
-      },
-      "observed_regular_bytes": 331854241,
-      "source_allocated_unique_bytes": 346771456,
-      "owner_science_identity_and_manifest": "AWAIT_FULL_INDEPENDENT_COPY_READY",
       "source_disposition": "SOURCE_KEEP",
-      "native_conservative_restore_plus_stage_controls_reservation": 682315776,
-      "raw_NAS_3R_plus_64MiB_reservation": 1062671587,
-      "SSD_after_project_reservation_bytes": 10634829824,
-      "own_pool_7GiB_residual_test": true,
-      "concurrent_science_write_reservations": "FRESH_SOURCE_REGISTRY_NONRELEASED_LEASES0_AND_NO_LIVE_DTC_OWN_LOCK_OWNER",
-      "special_entries": {
-        "external_hardlink_names": [],
-        "symbolic_links": [
-          {
-            "path": "ENGINE/perf_counter.csv.gz",
-            "dev": 156,
-            "inode": 40057407,
-            "nlink": 1,
-            "size": 39,
-            "allocated": 0,
-            "uid": 0,
-            "gid": 0,
-            "mode": 511,
-            "mtime_ns": 1792562931899521837,
-            "ctime_ns": 1792562931899521837,
-            "type": "symlink",
-            "target": "perf_counter_2026-10-21_11-52-30.csv.gz"
-          }
-        ]
-      },
-      "existing_sidecar_content": "REUSE_PINNED_TRUE164_OBJECTS_NO_SOURCE_REUPLOAD",
-      "archive_status": "NOT_STARTED_AWAIT_OWNER",
-      "restore_status": "NOT_STARTED_AWAIT_OWNER"
+      "files": 8401,
+      "directories": 4,
+      "symlinks": 1,
+      "regular_bytes": 331854241,
+      "state": "COPY_READY_NORMALIZED_PENDING_TRANSPORT"
     }
   },
-  "genuine164_mount_verified": {
-    "findmnt": "/root/share/mnt164 admin-wcx@10.208.130.164:/home/shared fuse.sshfs",
-    "device": 39,
-    "inode": 1
-  },
-  "locks": {
-    ".TARGET_RECEIVER.lock": "AVAILABLE_READONLY_PROBE_RELEASED",
-    ".TLS_V10_SOURCE_SENDER.lock": "AVAILABLE_READONLY_PROBE_RELEASED"
-  },
+  "full_result_transfer_bytes": 181391360,
   "new_Share_bytes": 0,
-  "all_scientific_originals": "SOURCE_KEEP",
   "source_released_bytes": 0,
-  "full_result_files_archived": 0,
+  "all_originals": "SOURCE_KEEP",
   "science_starts": 0,
-  "existing_9_sidecars_unchanged": true,
-  "owner_full_ready_missing": true,
-  "capacity_not_sole_completion_gate": true,
-  "updated_utc": "2026-10-23T00:46:08+00:00",
-  "known_current_concurrent_science_write_reservation_bytes": 0,
-  "source_resource_evidence": {
-    "utc": "2026-10-23T00:35:16.708774+00:00",
-    "registry_sha256": "ac0fa2e7919e89a95357a21102083e37875c177859a2b3878966806f00779b62",
-    "active_leases": {},
-    "outstanding_write_reservation_bytes": 0,
-    "DTC_live_owner_locks": [],
-    "science_actual_starts": 57,
-    "science_t0_unix": 1792414193,
-    "science_controller": {
-      "process": {
-        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
-        "pid": 4090182,
-        "start_ticks": 942996444
-      },
-      "state": "STOPPED",
-      "stopped_unix": 1792678986.8957114
-    },
-    "disk_floor": 5368709120,
-    "monitor_reserve": 2147483648
-  },
-  "full_result_transfer_bytes": 0,
-  "full_result_restored_files": 0,
-  "other_completed_EP_candidates": 43,
-  "sole_external_blocker": "Both full selectors need independently published owner COPY_READY. Existing sidecar READYs do not authorize complete-tree membership/link semantics.",
-  "prepared_adapter": "SYNTAX_AND_STATIC_ONLY_NOT_YET_QUALIFIED_ON_OWNER_FROZEN_REAL_FULL_RESULT",
-  "nested_readonly_Source_RPC": "VERIFIED_FROM_TARGET_NO_PAYLOAD_NO_WRITES",
-  "latest_owner_branches_checked": {
-    "E2": "3cc8c6d821bb60bf831d7f227a97452b9e9737f0",
-    "BA": "75706e8a0e58309087c4eadb6280f7f3578bcb76"
-  },
-  "goal_completed": false,
-  "consecutive_goal_turn_observations": 3,
-  "block_audit": "BLOCKED_AUDIT.json"
+  "next_candidate_transfer_authorized": false,
+  "new_synthetic_tests": 0,
+  "old_sidecars_reuploaded": 0
 }
