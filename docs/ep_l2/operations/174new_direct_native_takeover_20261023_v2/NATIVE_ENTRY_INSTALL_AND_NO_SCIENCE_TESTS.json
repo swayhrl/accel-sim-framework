@@ -1,0 +1,403 @@
+{
+  "schema": "NATIVE_ENTRY_INSTALL_AND_NO_SCIENCE_TESTS_V1",
+  "status": "PASS_ENGINEERING_ENTRY_AND_MISSING_PERMISSION_FAIL_CLOSED",
+  "entry": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+  "tool_sha256": "d73981f0b8d7b08a082ff375cf26f7fe765e221ceed99b81149dcdc75d42ff3f",
+  "tests": [
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "project",
+        "status"
+      ],
+      "expected": 0,
+      "actual": 0,
+      "stdout": {
+        "identity": {
+          "hostname": "huangrulin-sshfs-174",
+          "mnt_namespace": "mnt:[4026535153]",
+          "pid_namespace": "pid:[4026535156]",
+          "native_device": 2128,
+          "filesystem": {
+            "target": "/root/data",
+            "source": "/dev/sdf[/huangrulin]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          }
+        },
+        "scientific_dispatch": "QUALIFICATION_ONLY_IF_EXACTLY_AUTHORIZED; PRODUCTION_DISABLED",
+        "old_EP_starts": 57,
+        "old_DTC_starts": 2,
+        "actual_current_counts_source": "Frozen old owner ledgers; production live status remains original management project status",
+        "qualification_intents": []
+      },
+      "stderr": null
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "project",
+        "assets"
+      ],
+      "expected": 0,
+      "actual": 0,
+      "stdout": {
+        "EP_VECTORADD_S": {
+          "Share_new_bytes": 0,
+          "Source_action": "SOURCE_KEEP",
+          "Source_simulator_starts": 0,
+          "asset_id": "EP_VECTORADD_S",
+          "members": [
+            {
+              "relative_path": "kernelslist.g",
+              "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+              "size": 94
+            },
+            {
+              "relative_path": "kernel-1.traceg",
+              "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+              "size": 103535866
+            }
+          ],
+          "native_mirror_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+          "new_payload_bytes": 103535960,
+          "not_a_result_outbox_qualification": true,
+          "old_identity": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+          "old_identity_definition": "EP ordered full content identity from original accepted spec",
+          "ordered_member_set_sha256": "cee9c2e376532344887ae9d01a640e8891653d5403800c703958a72e95f95ff9",
+          "ordered_members": [
+            "kernelslist.g",
+            "kernel-1.traceg"
+          ],
+          "raw_bytes": 103535960,
+          "schema": "READONLY_TRACE_INPUT_COMMIT_V1",
+          "scope_sha256": "ced1bec2db5eaac1cc54f175ae8c554b30f9b67effdfda627ca91e3af72a422a",
+          "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces",
+          "status": "TRACE_MEMBERS_ARCHIVE_AND_CLOSED_REOPEN_SHA_VERIFIED",
+          "true164_tree": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+          "utc": "2026-10-23T04:12:46.809577+00:00"
+        },
+        "DTC_AD_GEMM": {
+          "Share_new_bytes": 0,
+          "Source_action": "SOURCE_KEEP",
+          "Source_simulator_starts": 0,
+          "asset_id": "DTC_AD_GEMM",
+          "members": [
+            {
+              "relative_path": "kernelslist.g",
+              "sha256": "fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057",
+              "size": 130
+            },
+            {
+              "relative_path": "kernel-1.traceg",
+              "sha256": "fa70ba180d886dcfa313b0e6036da86c3cabadcbc6bf5b6499e0e6d74af1373d",
+              "size": 1110675117
+            }
+          ],
+          "native_mirror_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/DTC_AD_GEMM/tree",
+          "new_payload_bytes": 1110675247,
+          "not_a_result_outbox_qualification": true,
+          "old_identity": "fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057",
+          "old_identity_definition": "DTC old runtime trace_list SHA only; new full member-set SHA is recorded separately, never conflated",
+          "ordered_member_set_sha256": "0581a5e79eda707b6ae7e1195ad7ccf2059de7987f9e9f0e8ad1be8806bdcc27",
+          "ordered_members": [
+            "kernelslist.g",
+            "kernel-1.traceg"
+          ],
+          "raw_bytes": 1110675247,
+          "schema": "READONLY_TRACE_INPUT_COMMIT_V1",
+          "scope_sha256": "dcc0bce0b384c33b761a0ba9e086ec32bab2ae86018d75be194f3f6da1c5aa8d",
+          "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces",
+          "status": "TRACE_MEMBERS_ARCHIVE_AND_CLOSED_REOPEN_SHA_VERIFIED",
+          "true164_tree": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/DTC_AD_GEMM/tree",
+          "utc": "2026-10-23T04:16:06.226076+00:00"
+        }
+      },
+      "stderr": null
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "asset",
+        "ensure",
+        "EP_VECTORADD_S"
+      ],
+      "expected": 0,
+      "actual": 0,
+      "stdout": {
+        "EP_VECTORADD_S": {
+          "Share_new_bytes": 0,
+          "Source_action": "SOURCE_KEEP",
+          "Source_simulator_starts": 0,
+          "asset_id": "EP_VECTORADD_S",
+          "members": [
+            {
+              "relative_path": "kernelslist.g",
+              "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+              "size": 94
+            },
+            {
+              "relative_path": "kernel-1.traceg",
+              "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+              "size": 103535866
+            }
+          ],
+          "native_mirror_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+          "new_payload_bytes": 103535960,
+          "not_a_result_outbox_qualification": true,
+          "old_identity": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+          "old_identity_definition": "EP ordered full content identity from original accepted spec",
+          "ordered_member_set_sha256": "cee9c2e376532344887ae9d01a640e8891653d5403800c703958a72e95f95ff9",
+          "ordered_members": [
+            "kernelslist.g",
+            "kernel-1.traceg"
+          ],
+          "raw_bytes": 103535960,
+          "schema": "READONLY_TRACE_INPUT_COMMIT_V1",
+          "scope_sha256": "ced1bec2db5eaac1cc54f175ae8c554b30f9b67effdfda627ca91e3af72a422a",
+          "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces",
+          "status": "TRACE_MEMBERS_ARCHIVE_AND_CLOSED_REOPEN_SHA_VERIFIED",
+          "true164_tree": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+          "utc": "2026-10-23T04:12:46.809577+00:00"
+        }
+      },
+      "stderr": null
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "asset",
+        "ensure",
+        "UNKNOWN"
+      ],
+      "expected": 2,
+      "actual": 2,
+      "stdout": null,
+      "stderr": {
+        "status": "HOLD",
+        "reason": "asset not owner-approved for automatic ensure",
+        "science_retry": false
+      }
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "experiment",
+        "prepare",
+        "EP_NATIVE_MIGRATION_Q1"
+      ],
+      "expected": 0,
+      "actual": 0,
+      "stdout": {
+        "status": "ENGINEERING_PREPARE_PASS_SCIENCE_APPROVAL_SEPARATE",
+        "cohort": "EP_NATIVE_MIGRATION_Q1",
+        "identity": {
+          "hostname": "huangrulin-sshfs-174",
+          "mnt_namespace": "mnt:[4026535153]",
+          "pid_namespace": "pid:[4026535156]",
+          "native_device": 2128,
+          "filesystem": {
+            "target": "/root/data",
+            "source": "/dev/sdf[/huangrulin]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          }
+        },
+        "runtime_files_SHA_checked": [
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/bin/accel-sim.out",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/config-0.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/config-1.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/config-2.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/config-3.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/readonly_manifest.json",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/readonly_ranges.csv",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/atomic_scope.json",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/native_input_semantics.json",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/env/current_input_scope_binding.json",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libzstd.so.1.4.8",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libstdc++.so.6.0.30",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libgcc_s.so.1",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libm.so.6",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libz.so.1.2.11",
+          "/root/data/ep_l2_dtc_l1_native_v2/EP/control/parse_main_terminal.py"
+        ],
+        "trace_mount": {
+          "target": "/root/share/mnt164",
+          "source": "admin-wcx@10.208.130.164:/home/shared",
+          "fstype": "fuse.sshfs",
+          "options": "rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other"
+        },
+        "resources": {
+          "utc": "2026-10-23T04:40:33.573507+00:00",
+          "native_free_bytes": 9580748800,
+          "free_inodes": 216732629,
+          "host_MemAvailable_bytes": 314689060864,
+          "cgroup_memory_current": 7142768640,
+          "cgroup_memory_max": "274877906944",
+          "combined_result_and_restore_reservation_bytes": 1879048192,
+          "remaining_engineering_reservation_bytes": 117329920,
+          "other_outstanding_write_reservations_bytes": 0,
+          "disk_floor_bytes": 5368709120,
+          "monitor_reserve_bytes": 2147483648,
+          "required_free_bytes": 9512570880,
+          "physical_RAM_pass": true,
+          "physical_disk_pass": true
+        },
+        "scientific_starts": 0
+      },
+      "stderr": null
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "experiment",
+        "prepare",
+        "DTC_NATIVE_MIGRATION_Q1"
+      ],
+      "expected": 0,
+      "actual": 0,
+      "stdout": {
+        "status": "ENGINEERING_PREPARE_PASS_SCIENCE_APPROVAL_SEPARATE",
+        "cohort": "DTC_NATIVE_MIGRATION_Q1",
+        "identity": {
+          "hostname": "huangrulin-sshfs-174",
+          "mnt_namespace": "mnt:[4026535153]",
+          "pid_namespace": "pid:[4026535156]",
+          "native_device": 2128,
+          "filesystem": {
+            "target": "/root/data",
+            "source": "/dev/sdf[/huangrulin]",
+            "fstype": "ext4",
+            "options": "rw,relatime"
+          }
+        },
+        "runtime_files_SHA_checked": [
+          "/root/data/ep_l2_dtc_l1_native_v2/DTC/bin/accel-sim.out",
+          "/root/data/ep_l2_dtc_l1_native_v2/DTC/env/lib/libcudart.so",
+          "/root/data/ep_l2_dtc_l1_native_v2/DTC/env/config-0.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/DTC/env/config-1.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/DTC/env/config-2.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/DTC/env/config-3.config",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libzstd.so.1.4.8",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libstdc++.so.6.0.30",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libgcc_s.so.1",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libm.so.6",
+          "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libz.so.1.2.11"
+        ],
+        "trace_mount": {
+          "target": "/root/share/mnt164",
+          "source": "admin-wcx@10.208.130.164:/home/shared",
+          "fstype": "fuse.sshfs",
+          "options": "rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other"
+        },
+        "resources": {
+          "utc": "2026-10-23T04:40:33.729337+00:00",
+          "native_free_bytes": 9580748800,
+          "free_inodes": 216732629,
+          "host_MemAvailable_bytes": 314685526016,
+          "cgroup_memory_current": 7143608320,
+          "cgroup_memory_max": "274877906944",
+          "combined_result_and_restore_reservation_bytes": 1879048192,
+          "remaining_engineering_reservation_bytes": 117329920,
+          "other_outstanding_write_reservations_bytes": 0,
+          "disk_floor_bytes": 5368709120,
+          "monitor_reserve_bytes": 2147483648,
+          "required_free_bytes": 9512570880,
+          "physical_RAM_pass": true,
+          "physical_disk_pass": true
+        },
+        "scientific_starts": 0
+      },
+      "stderr": null
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "experiment",
+        "run-native",
+        "EP_NATIVE_MIGRATION_Q1"
+      ],
+      "expected": 2,
+      "actual": 2,
+      "stdout": null,
+      "stderr": {
+        "status": "HOLD",
+        "reason": "SCIENCE_QUALIFICATION_PENDING_APPROVAL; no simulator fork",
+        "science_retry": false
+      }
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "experiment",
+        "run-native",
+        "DTC_NATIVE_MIGRATION_Q1"
+      ],
+      "expected": 2,
+      "actual": 2,
+      "stdout": null,
+      "stderr": {
+        "status": "HOLD",
+        "reason": "SCIENCE_QUALIFICATION_PENDING_APPROVAL; no simulator fork",
+        "science_retry": false
+      }
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "experiment",
+        "run-native",
+        "UNKNOWN"
+      ],
+      "expected": 2,
+      "actual": 2,
+      "stdout": null,
+      "stderr": {
+        "status": "HOLD",
+        "reason": "unapproved cohort",
+        "science_retry": false
+      }
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "result",
+        "archive",
+        "not-scientifically-qualified"
+      ],
+      "expected": 2,
+      "actual": 2,
+      "stdout": null,
+      "stderr": {
+        "status": "HOLD",
+        "reason": "RESULT_ADAPTER_PREPARED_NOT_ENABLED_WITHOUT_NATIVE_SCIENTIFIC_TERMINAL_AND_EXACT_COPY_READY; existing result outbox remains available",
+        "science_retry": false
+      }
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+        "result",
+        "restore",
+        "not-qualified"
+      ],
+      "expected": 2,
+      "actual": 2,
+      "stdout": null,
+      "stderr": {
+        "status": "HOLD",
+        "reason": "RESULT_ADAPTER_PREPARED_NOT_ENABLED_WITHOUT_NATIVE_SCIENTIFIC_TERMINAL_AND_EXACT_COPY_READY; existing result outbox remains available",
+        "science_retry": false
+      }
+    }
+  ],
+  "new_scientific_starts": 0,
+  "scientific_capability": "UNQUALIFIED_UNTIL_EXACT_AUTHORIZATION_LIVE_RESOURCE_AND_TERMINAL_VALIDATION",
+  "original_management_epoch": "UNCHANGED; native production dispatch disabled",
+  "namespace_writes_only_174new": true,
+  "native_allocated_bytes": 175902720
+}

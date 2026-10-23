@@ -1,0 +1,26 @@
+{
+  "schema": "NATIVE_V2_PRECISE_MANUAL_Q2_BUDGET_AND_STAGE_RESERVATION_AMENDMENT_V1",
+  "status": "PENDING_EXPLICIT_USER_APPROVAL",
+  "amends": "Frozen V2 C.3 EP total migration budget1 ->2, not an automatic retry; old Q1 remains consumed/STOP_UNACCEPTED. DTC original Q1 remains unused1 and follows EP success.",
+  "reason": "EP Q1 actually ran natively141.98s and was safely stopped. Concurrent shared SSD free fell to9,217,384,448B below original conservative combined reservation9,511,858,724B (deficit294,474,276B); the5+2GiB physical reserve was not crossed. Both future project output/restore caps had been reserved simultaneously despite sequential execution.",
+  "requested": "One new separately charged EP_NATIVE_MIGRATION_Q2 full application, identical qualified input/config/binary, no automatic retry/refund. Keep DTC_Q1 1unused. Permit only current serial stage pending output/restore reservations, each future stage must obtain fresh admission; do not reserve unstarted DTC writes during EP. Keep all other-project outstanding writes,5GiB floor+2GiB monitor and RAM bounds.",
+  "specs": [
+    {
+      "cohort": "EP_NATIVE_MIGRATION_Q2",
+      "file": "EP_NATIVE_MIGRATION_Q2_SPEC.json",
+      "sha256": "97064dde64deea73c587ed6a8d44ca22744dedc375be7b083defb3da127c8814"
+    }
+  ],
+  "EP_result_and_restore_caps_each_bytes": 67108864,
+  "cap_basis": "Original accepted E013 raw.log4,289,878B; local binary85,173,576B is already in engineering reservation and is not duplicated inside new result. New64MiB cap is stricter than prior384MiB, no resource floor reduced.",
+  "EP_active_stage_total_new_result_and_restore_reserve_bytes": 134217728,
+  "DTC_stage_result_and_restore_caps_each_bytes": 536870912,
+  "DTC_science_before_EP_pass": "FORBIDDEN",
+  "stage_transition": "DTC may use the tighter serial-stage accounting only after EP scientific PASS and fresh source/all-project resources; existing completed outputs/restores stay KEEP and are reflected once in df.",
+  "all_originals": "SOURCE_KEEP",
+  "new_EP_attempts_requested": 1,
+  "new_DTC_budget_requested": 0,
+  "old_EP57_and_DTC2_unchanged": true,
+  "no_science_epoch_switch_before_both_pass": true,
+  "new_permission_required": true
+}
