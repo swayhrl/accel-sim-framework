@@ -1,0 +1,13 @@
+# Remaining HOLD and next actions
+
+本轮20套已证明来源、资源合格的精确输入均已完成COPY_ONLY与真164直接读取验收。当前数据迁移HOLD=0、兼容映射HOLD=0。不是整个old174所有trace的全盘覆盖声明。
+
+科研边界保持：原DTC44行41PASS/3Hotspot ADMISSION_HOLD不变；三条未执行的HOLD没有raw结果目录，其独立注册SPEC已按原SHA找到，只绑定同一份输入字节，不升级为科学PASS。EP Btree原非零mask地址域HOLD、DTC原2D/Btree/LUD格式适用性问题、新runtime/config/机制资格均未因搬运改变。Hotspot V2与派生Btree是各自独立model-conditioned输入，不能替代原44接受或解除旧HOLD。
+
+原R13 correlation/covariance已归档且不在当前两MAIN输入要求；SpMV SM89及跳过CALL的LayerNorm按owner未准入状态NOT_IN_SCOPE。未检索/未使用的其它历史资产保留原位，不伪称全部可用。
+
+完整本地恢复分开记账：本轮小输入在合格新ABSENT native ext4路径做全SHA、size、uid/gid/mode/mtime_ns及根目录元数据恢复；证据发布后仅清理本任务新建的临时验证副本。超过当前240MiB验证窗口的完整输入记NOT_PERFORMED，保留256MiB任务暂存约束；它们的原始完整文件树、所有SHA、目录元数据及分块恢复索引均已在真164，直接读取READY不以额外完整本地克隆为前置。未声称native164执行或恢复。
+
+下一步由EP-MAIN/DTC-MAIN按新科学问题、精确规格及自己的预算/资源门禁使用已发布asset ID。asset ensure是只读查询，不增加接收器或科学启动。任何本地大缓存/超当前窗口的完整恢复先做对应资源准入；任何旧174源释放仍需独立明确授权，本轮释放0B。
+
+审计修正见AUDIT_EMPTY_SOURCE_PATH_CORRECTION.json：本轮初始空raw_dir误收home配置元数据，已收紧路径校验并从执行分支可达历史移除；未发现完整秘密前缀，未修改Source文件。旧远端对象的服务器保留/缓存不受分支更新控制。该修正不影响原科研或其它Goal的历史提交。
