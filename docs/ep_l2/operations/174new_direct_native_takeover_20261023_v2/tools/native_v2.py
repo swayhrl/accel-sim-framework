@@ -106,14 +106,18 @@ def child_info(pid):
  return {'pid':pid,'start_ticks':int(st[19]),'mnt_namespace':os.readlink(p/'ns/mnt'),'pid_namespace':os.readlink(p/'ns/pid'),'exe':os.readlink(p/'exe'),'cmdline':(p/'cmdline').read_bytes().replace(b'\0',b' ').decode(errors='replace'),'maps':(p/'maps').read_text()}
 
 def current_status(project=None):
- rows=[]
+ rows=[];legacy=[]
  for p in sorted((ROOT/'control/qualification_ledger').glob('*.INTENT.json')):
   x=read(p);which=COHORTS.get(x['cohort'])
+  if x['cohort']=='DTC_LEGACY_FAST64_NN_NATIVE_SHORT_Q1':
+   if project in [None,'DTC']:
+    done=p.with_name(p.name.replace('.INTENT.json','.DONE.json'));legacy.append({'cohort':x['cohort'],'uuid':x['uuid'],'charged':1,'native_receipt':read(done) if done.exists() else None,'current_AD_qualification':False})
+   continue
   if project and which!=project:continue
   done=p.with_name(p.name.replace('.INTENT.json','.DONE.json'));state=read(done) if done.exists() else None
   rows.append({'cohort':x['cohort'],'project':which,'uuid':x['uuid'],'charged':1,'state':'STOP_UNACCEPTED' if state and (state['stop_reason'] or state['launcher_wait_returncode']) else 'NATURAL_COMPLETE' if state else 'RUNNING_OR_UNRESOLVED','native_receipt':state,'output':x['output']})
  epoch=ROOT/'control/CURRENT_SCIENCE_EPOCH.json'
- return {'identity':identity(),'historical_Source_counters_frozen':{'EP':57,'DTC':2,'EP_T0':1792414193},'native_migration_charged_starts':len(rows),'native_migration_attempts':rows,'current_science_epoch':read(epoch) if epoch.exists() else None,'production_science':'QUALIFICATION_PHASE_NO_PRODUCTION_EPOCH' if not epoch.exists() else 'NATIVE_ONLY; EVERY_NEW_REQUEST_REQUIRES_EXACT_OWNER_SPEC_AND_EXPLICIT_UNUSED_BUDGET','old174_SSH_scientific_execution':'FORBIDDEN','model_processes_started_by_this_status_query':0}
+ return {'identity':identity(),'historical_Source_counters_frozen':{'EP':57,'DTC':2,'EP_T0':1792414193},'native_migration_charged_starts':len(rows),'native_migration_attempts':rows,'separate_legacy_replay_charged_starts':len(legacy),'separate_legacy_replays':legacy,'current_science_epoch':read(epoch) if epoch.exists() else None,'production_science':'QUALIFICATION_PHASE_NO_PRODUCTION_EPOCH' if not epoch.exists() else 'NATIVE_ONLY; EVERY_NEW_REQUEST_REQUIRES_EXACT_OWNER_SPEC_AND_EXPLICIT_UNUSED_BUDGET','old174_SSH_scientific_execution':'FORBIDDEN','model_processes_started_by_this_status_query':0}
 
 def current_assets(names):
  out={};bindings=read(ROOT/'control/TRACE_CURRENT_STAT_BINDINGS.json')
