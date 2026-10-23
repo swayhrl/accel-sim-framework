@@ -1,0 +1,77 @@
+{
+  "utc": "2026-10-23T16:13:14.029017+00:00",
+  "controller": {
+    "state": "RUNNING_FRESH_CELL",
+    "cell": "E2-AEFAIR-DM",
+    "completed": [],
+    "utc": "2026-10-23T16:11:54.280336+00:00"
+  },
+  "registry": {
+    "authorization_path": "/root/data/dtc_main_20261023_v1/accel-sim-framework/docs/dtc_l1/review_packs/DTC_AE_MATCHED_HASH_EPOCH2_20261023_V1/USER_GOAL_AUTHORIZATION.json",
+    "authorization_sha256": "ea0a13d73df5285b1162054edf512bf41e661c8e1168725e444a437ddf81fecc",
+    "automatic_retry": false,
+    "budget": 4,
+    "consumed": {
+      "E2-AEFAIR-DM": {
+        "charged": 1,
+        "intent": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AEFAIR_EPOCH2_V1/E2-AEFAIR-DM.INTENT.json",
+        "intent_sha256": "f926a3c6eda9b86f89997c21168a2b509a2e46f781d01be73d5d5b393457761d",
+        "uuid": "c1d3a663-2f7c-486f-9235-143717e0f103"
+      }
+    },
+    "controller_sha256": "6cb82c8f5321a95aa22da2c491090bb785a97ee207ad435f48084cff2e046bac",
+    "owner": "DTC-MAIN",
+    "project": "DTC_L1",
+    "remaining": 3,
+    "request_id": "DTC_AEFAIR_EPOCH2_V1",
+    "reserved_write_bytes": 805306368,
+    "scope": "Four fresh complete GEMM cells; current user authorization; old AG8R1 not restarted",
+    "source_review": "Own bounded source/interface review, no independent reviewer signature claimed",
+    "spec_path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json",
+    "spec_request_sha256": "529b2764a700a7df34a39b1ce01794efa4ebad7f80f34f606520cdd355ebdfdd",
+    "state": "RUNNING"
+  },
+  "native_entry": "#!/bin/sh\nset -eu\nexec /usr/bin/python3 -B /root/data/dtc_main_20261023_v1/ae_fair_v1/tools/native_epoch2_frontend.py \"$@\"\n",
+  "cells": [
+    {
+      "cell": "E2-AEFAIR-DM",
+      "uuid": "c1d3a663-2f7c-486f-9235-143717e0f103",
+      "output": "/root/data/dtc_main_20261023_v1/ae_fair_v1/DTC/run/results/c1d3a663-2f7c-486f-9235-143717e0f103",
+      "files": [
+        "raw.log",
+        "NATIVE_LAUNCH.json",
+        "progress.jsonl",
+        "NATIVE_SIMULATOR_PID_AND_MAPS.json",
+        "actual_file_process_network.log",
+        "RESOURCE_SAMPLES.jsonl",
+        "checkpoint_files"
+      ],
+      "NATIVE_SIMULATOR_PID_AND_MAPS.json": {
+        "exe": "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "mnt_namespace": "mnt:[4026535153]",
+        "pid": 899795,
+        "pid_namespace": "pid:[4026535156]",
+        "start_ticks": 952389583
+      },
+      "progress_records": 12,
+      "last_authenticated_progress": {
+        "v": 1,
+        "pid": 899795,
+        "start_ticks": 952389583,
+        "generation": "c1d3a663-2f7c-486f-9235-143717e0f103",
+        "input": "fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057",
+        "roi": "8d66b0ead980c3fb596057c779a45578555ebf23e7b4b4535b036d321a7541e7",
+        "seq": 12,
+        "mono_ns": 9523964904583929,
+        "epoch": 0,
+        "phase_epoch": 5,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 3889408,
+        "end": "NONE"
+      },
+      "raw_bytes": 48241
+    }
+  ]
+}
