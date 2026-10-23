@@ -1,0 +1,333 @@
+{
+  "schema": "EPL2_D_DETACH_FUNNEL_ANALYSIS_CONTRACT_V1",
+  "work_key": "D-DETACH-FUNNEL-ANALYSIS-r1",
+  "batch_id": "EPL2_DETACH_ZERO_CAUSAL_OBSERVABILITY_PREPARATION_20261022_r1",
+  "status": "READY_ANALYSIS_PREPARATION_NO_APPLICATION_DATA",
+  "authority": "D offline projection/claim contract; E sole acceptance, A2 exact producer schema; no second validator",
+  "prior_E54": "Completed at03b8b3a89da3439ea222a83fd50a7ed362403111, reuse all coverage/claim/cost material without recomputation",
+  "scope": {
+    "new_condition": "one future positive-RO SGEMM observation-only F; not S/F pair",
+    "old_main61_proposal": "DEFERRED_UNAPPROVED; not union or fallback",
+    "old_S": "Context only; no cross-binary speedup",
+    "new_producer_identity": null,
+    "E_diagnostic_qualification": null,
+    "E_accepted_record": null
+  },
+  "domain_catalog": [
+    {
+      "id": "OFFLINE_CERTIFICATE",
+      "unit": "canonical128B_line or read_lane_line_reference",
+      "denominator": "C exact closed-world whole-commandlist classification; not runtime demand",
+      "fields": [
+        "certified_lines",
+        "read_containing_lines",
+        "certified_read_lane_line_references",
+        "all_read_lane_line_references"
+      ]
+    },
+    {
+      "id": "FRONTEND_HEAD_CYCLE",
+      "unit": "actual visible slice/head_UID/physical_GPU_cycle exposure",
+      "key": [
+        "slice",
+        "physical_GPU_cycle",
+        "head_UID"
+      ],
+      "denominator": "once at real frozen frontend hook, including explicitly skipped/unknown observations",
+      "fields": [
+        "observed_heads",
+        "probe_skipped_by_reason",
+        "raw_hit",
+        "raw_hit_reserved",
+        "raw_sector_miss",
+        "raw_miss",
+        "raw_reservation_fail"
+      ]
+    },
+    {
+      "id": "PRESSURE_HEAD_CYCLE",
+      "unit": "same FRONTEND_HEAD_CYCLE restricted to raw RESERVATION_FAIL",
+      "denominator": "same chosen raw-probe provenance/instant/requester scope only",
+      "fields": [
+        "pressure_no_live_ro",
+        "pressure_live_ro_no_eligible",
+        "pressure_eligible",
+        "same_set_way_reason_counts",
+        "same_set_eligible_histogram",
+        "predicate_bitmask_histogram",
+        "pressure_preview_resolved_to_miss",
+        "pressure_preview_still_fail",
+        "pressure_not_reached_preview",
+        "directory_wait",
+        "query_port_or_latency_wait",
+        "native_owner_conflict",
+        "descriptor_full",
+        "line_mshr_full",
+        "per_address_full",
+        "miss_queue_full",
+        "wad_hazard",
+        "landing_or_payload_denial",
+        "other_named_or_unknown_gate"
+      ]
+    },
+    {
+      "id": "COMMIT_ACCESS",
+      "unit": "actual ft_access or relieve/detach invocation with stage-specific denominator",
+      "denominator": "actual invocations, including retries; not frontend exposures or unique requests",
+      "fields": [
+        "ft_access_attempts",
+        "raw_tag_fail_commit",
+        "relieve_calls",
+        "relieve_T_disabled",
+        "relieve_no_eligible",
+        "relieve_eligible_selected",
+        "detach_calls",
+        "detach_success",
+        "detach_false_by_first_reason",
+        "detach_exception",
+        "post_relief_probe_status",
+        "triggering_request_accepted",
+        "triggering_request_denied_after_detach_by_gate"
+      ]
+    },
+    {
+      "id": "TRANSACTION_LIFECYCLE",
+      "unit": "transition/transaction/requester/sector; each field declares exact unit",
+      "denominator": "actual transition, distinguish victim owner from triggering request",
+      "fields": [
+        "ro_admits",
+        "ro_merges",
+        "reuse_seen_first_transition",
+        "pending_attached_reuse_joint_histogram",
+        "detach_success",
+        "detached_returns",
+        "detached_responses",
+        "detached_retired",
+        "live_detached_terminal",
+        "closure_errors"
+      ]
+    }
+  ],
+  "required_stage_fields_from_E_review": [
+    {
+      "fields": [
+        "accepted_global_reads",
+        "accepted_oracle_candidates",
+        "accepted_ro",
+        "new_transactions",
+        "merges",
+        "certified_resident_hits",
+        "candidate_deferred_or_native"
+      ],
+      "notes": "Preserve current counters with exact scope. Certificate line/reference coverage is offline classification, not accepted runtime requests.",
+      "stage": "CERTIFIED_REQUESTS"
+    },
+    {
+      "fields": [
+        "observed_frontend_head_cycles",
+        "raw_probe_hit",
+        "raw_probe_hit_reserved",
+        "raw_probe_sector_miss",
+        "raw_probe_miss",
+        "raw_probe_reservation_fail",
+        "raw_probe_unknown"
+      ],
+      "notes": "Raw physical probe before detachable rewrite. All head cycles, distinct request counts and episodes must be separately named; pressure cycles cannot be called unique requests.",
+      "stage": "FRONTEND_RAW_PRESSURE"
+    },
+    {
+      "fields": [
+        "pressure_T_disabled",
+        "pressure_no_live_ro_tag",
+        "pressure_live_ro_but_none_eligible",
+        "pressure_with_eligible_victim",
+        "eligible_victim_count_histogram",
+        "way_reason_partition"
+      ],
+      "notes": "Scan all same-set ways observationally when raw pressure holds, despite production first-fit scan stopping early. Keep production selected first eligible index untouched. Per-way reasons and event-level absence reasons are different denominators.",
+      "stage": "SAME_SET_VICTIMS_AT_PRESSURE"
+    },
+    {
+      "fields": [
+        "raw_pressure_gate_reason_primary",
+        "raw_pressure_gate_mask_nonexclusive",
+        "pressure_frontend_denied",
+        "pressure_access_entered",
+        "nonpressure_access_entered"
+      ],
+      "notes": "Account directory/RO lookup wait, native-owner conflict, descriptors512, per-address32, lineMSHR128 when M=0, MissQ requested slots, response queue, data port, WAD hazard/full, held FT transaction, pinned/pending victim, bank-compatible landing, WB space/quota, copy/bank denial. UNKNOWN/not evaluated remains explicit. T-disabled path and TVD interceptions must not be omitted.",
+      "stage": "ADMISSION_AND_GATING"
+    },
+    {
+      "fields": [
+        "relieve_calls",
+        "relieve_T_disabled",
+        "relieve_no_live_ro_tag",
+        "relieve_live_but_no_eligible",
+        "relieve_selected",
+        "detach_call_success",
+        "detach_call_refused",
+        "selected_identity_invariant_failure",
+        "post_relieve_probe_fail",
+        "post_relieve_probe_nonfail"
+      ],
+      "notes": "Increment only actual production calls. Mandatory existing branch result reused; no second detach/selection attempt for instrumentation.",
+      "stage": "ACTUAL_RELIEVE"
+    },
+    {
+      "fields": [
+        "detached_victim_count",
+        "detached_victim_response_count",
+        "detached_victim_retired",
+        "detached_victim_live_terminal",
+        "trigger_first_call_accepted_after_detach",
+        "trigger_first_call_refused_after_detach",
+        "trigger_later_accepted_after_prior_detach",
+        "trigger_still_outstanding_terminal"
+      ],
+      "notes": "Trigger and victim identities differ. Use only bounded original finite owner/request state for attribution, not a new model lookup/CAM. At least immediate call result and victim actual lifetime closure mandatory; if delayed trigger attribution cannot be bounded without address-map report not measured.",
+      "stage": "TRIGGER_AND_VICTIM_CLOSURE"
+    }
+  ],
+  "equations": [
+    {
+      "id": "FE_PARTITION",
+      "equation": "observed_heads = probe_skipped + raw_hit + raw_hit_reserved + raw_sector_miss + raw_miss + raw_reservation_fail + other_exact_enum + raw_unknown",
+      "applicability": "One observation provenance/key/interval; exact enum branches mutually exclusive. Unreadable is UNKNOWN, not invented probe0."
+    },
+    {
+      "id": "PRESSURE_SCOPE",
+      "equation": "raw_pressure = pressure_T_disabled + pressure_T_enabled + pressure_feature_scope_unknown",
+      "applicability": "Scope partition before candidate eligibility; no no-eligible inference when disabled/not inspected."
+    },
+    {
+      "id": "ELIGIBILITY",
+      "equation": "pressure_T_enabled = pressure_no_live_ro + pressure_live_ro_no_eligible + pressure_eligible + candidate_scan_unknown",
+      "applicability": "Same-set complete shadow scan at pressure; unknown residual explicit, not counted as zero eligibility."
+    },
+    {
+      "id": "WAY_SCAN",
+      "equation": "ways_examined = sum(exclusive_first_reason_bins)",
+      "applicability": "Only exactly declared live/binding/T/attached/reuse/missing-sector precedence; not multi-bit masks. Full set vs production early-stop explicitly different; unexamined ways remain unexamined."
+    },
+    {
+      "id": "PROBE_REACH",
+      "equation": "raw_pressure = production_raw_probe_reached + production_raw_probe_not_reached + reach_unknown",
+      "applicability": "Only if carried production raw observation and shadow state refer to same defined instant; otherwise separate tables, no forced equality."
+    },
+    {
+      "id": "PREVIEW_PATH",
+      "equation": "production_raw_pressure_reached = relief_preview_evaluated + relief_preview_not_consulted + evaluation_unknown",
+      "applicability": "Native/nonRO, T-off or early branch remains not_consulted; shadow-eligible does not imply evaluated."
+    },
+    {
+      "id": "PREVIEW_STATUS",
+      "equation": "relief_preview_evaluated = intermediate_MISS + intermediate_RESERVATION_FAIL + intermediate_HIT_RESERVED + intermediate_other_exact_enum + intermediate_unknown",
+      "applicability": "Intermediate post-relief status BEFORE later gates. HIT_RESERVED existing-target rewrites preserved if reachable; zero allowed only with producer/E proven measured or unreachable branch scope."
+    },
+    {
+      "id": "REWRITTEN_FINAL",
+      "equation": "intermediate_MISS = final_admit + final_refused + final_unknown",
+      "applicability": "Exact matched preview result only. Named gates and final status independent of rewrite; final HIT_RESERVED/other enum not silently folded."
+    },
+    {
+      "id": "RELIEVE",
+      "equation": "relieve_calls = relieve_T_disabled + relieve_no_eligible + relieve_eligible_selected + relieve_exception",
+      "applicability": "Actual return/call branches; optional no_live vs live_no_eligible subpartition only if producer observes it. Existing native owner/merge/directory/promotion early returns need separate scope, not new relieve calls."
+    },
+    {
+      "id": "DETACH_RESULT",
+      "equation": "detach_calls = detach_success + detach_false + detach_exception",
+      "applicability": "Actual production handshake, no preview successes; normal accepted run exception policy belongs E. First refusal reasons exclusive; secondary masks nonexclusive."
+    },
+    {
+      "id": "POST_RELIEVE",
+      "equation": "normally_returned_relieve_calls = sum(post_relief_probe_exact_status_bins)",
+      "applicability": "Use actual control-flow coverage; do not require a probe for a branch that never performs it. Calls not followed by probe explicitly NA/exception; no hidden same-cycle equation."
+    },
+    {
+      "id": "EXISTING_COUNTER",
+      "equation": "new_detach_success = delta(existing_detached)",
+      "applicability": "Exact source/interval/slice scope only, initial counter snapshot retained; distinct old binary zeros not added."
+    },
+    {
+      "id": "IMMEDIATE_TRIGGER",
+      "equation": "detach_success_with_matched_trigger_call = trigger_call_accepted + trigger_call_denied_by_first_gate + trigger_call_exception_or_unknown",
+      "applicability": "Correlation uses bounded same invocation/ticket; victim identity different from requester. Later success on retries is separate and optional UNKNOWN if not bounded."
+    },
+    {
+      "id": "DETACHED_LIFETIME",
+      "equation": "initial_live_detached + detach_success = detached_retired + final_live_detached",
+      "applicability": "Transaction units, complete lifecycle coverage; full drain initial/final0 implies success=retired. Returned sectors and waiter responses are different units and not set equal."
+    },
+    {
+      "id": "ADMITTED_RO",
+      "equation": "accepted_ro = new_transactions + merges",
+      "applicability": "Only with exact A2/E definition of accepted_ro and matching request acceptance interval; cumulative offered/retried candidates excluded."
+    },
+    {
+      "id": "ROLLUP",
+      "equation": "GLOBAL = sum(all64slice totals) = sum(disjoint exact_requester_kernel totals + unattributed)",
+      "applicability": "Each metric separately; victim transitions use owner scope, not requester kernel. Kernel interval deltas may overlap and are NOT this additive kernel partition."
+    }
+  ],
+  "missing_value_contract": {
+    "value": "null when not measured/available/applicable; never zero fill",
+    "states": [
+      "MEASURED",
+      "UNKNOWN_NOT_EMITTED",
+      "UNKNOWN_NOT_EVALUATED",
+      "UNKNOWN_SCOPE_OR_IDENTITY",
+      "NA_NOT_APPLICABLE",
+      "NA_NOT_CONSULTED",
+      "INVALID_OVERFLOW",
+      "INVALID_UNCLOSED"
+    ],
+    "zero": "Integer0 only when exact field emitted, coverage and interval known and E accepted it; no ratio for0 denominator",
+    "zero_denominator_ratio": null,
+    "coverage": [
+      "visible hook opportunities",
+      "absent head",
+      "upstream head not visible",
+      "TVD handled",
+      "L2 disabled/ineligible",
+      "ideal path",
+      "early return",
+      "raw safely inspectable",
+      "production raw reached",
+      "candidate full scan/partial/no scan",
+      "unknown/skipped",
+      "observer overflow",
+      "sample dropped/truncated"
+    ]
+  },
+  "scope_and_rollup": {
+    "mandatory": "global plus64slice records and explicit residuals; totals are per metric/domain",
+    "requester_class": "certified new-request/native-read/native-write/merge/other/UNKNOWN per A2 enum; no RO-only filter",
+    "kernel_modes": [
+      "EXACT_REQUESTER_UID",
+      "EXACT_VICTIM_OWNER_UID",
+      "DISJOINT_INTERVAL_DELTA",
+      "OVERLAPPING_INTERVAL_SCOPE",
+      "UNATTRIBUTED"
+    ],
+    "kernel_rule": "Do not force requesting and victim kernel together; interval overlap not causal attribution. SGEMM1kernel still has setup/final-drain unattributed scope.",
+    "sampling": "At most64total bounded examples; examples illustrate, not exhaustive ratios. Dropped samples != dropped counters.",
+    "waits": "Cause masks overlap; repeated head-cycle/retry/sector/request/slice waits are not additive GPU program stall.",
+    "units": "Counters in requests/exposures/transitions/sectors/bytes/cycles stay separate. A physical-cycle union would require an already measured explicit union; do not synthesize by sum."
+  },
+  "producer_binding": {
+    "status": "PENDING_A2_COUNTER_SCHEMA_AND_E_ACCEPTANCE",
+    "mapping": "D semantic names are not asserted native field names. Bind exact A2 COUNTER_SCHEMA commit/path/SHA and E validated mapping without synonyms/absent-field0.",
+    "enum_closure": "A2/E must account all real raw/intermediate/final enum branches, existing-target HIT_RESERVED, T-disabled/not-consulted and exceptions/unreachable branches. Preserve first-fit/decision order; equations refine coverage only, never demand code-order changes.",
+    "shadow": "Separate readonly same-set snapshot from actual production probe and first-fit selection; no preview counter increments, new paid accesses, extra decision paths or global maps.",
+    "source_facts": "E independent audit of frozen d010; not D native confirmation or proof of future observer implementation"
+  },
+  "incremental": {
+    "entry": "E formal accepted diagnostic record with exact receipt/source/binary/config/input/oracle/Q/schema and durable terminal closure",
+    "reuse": "Existing D accepted-evidence identity/cache and table conventions in util/ep_l2/mechanism_study_lane_d/; add diagnostic namespace after actual E record, not a new acceptance parser",
+    "read": "Only E accepted summaries/bounded witnesses. No raw trace, DB, active raw, native, build, old plot or old endpoint replay.",
+    "on_missing": "Keep relevant outcome UNKNOWN and report exact missing field/scope to E; no new control/run request here.",
+    "performance": "Mechanism-only new cohort; no MAIN GM, capacity GM, old-S/new-F speedup, T-isolated claim or hardware upper bound"
+  }
+}
