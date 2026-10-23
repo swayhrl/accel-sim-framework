@@ -1,0 +1,13 @@
+{
+  "scope": "new prepared adapter only; no remote archive reservation or data transaction started",
+  "repairs": [
+    {
+      "problem": "python -c injected the module under __main__, triggering the standalone recovery CLI before resource/export dispatch",
+      "fix": "explicit injected module namespace; resource RPC dispatches only source_resources, no eval",
+      "verification": "NESTED_DIRECT_SSH_READONLY_RPC_VERIFICATION.json",
+      "payload_export_runtime": "NOT_RUN_BEFORE_OWNER_FULL_COPY_READY"
+    }
+  ],
+  "historical_pilot_reexecuted": false,
+  "old9files_reuploaded": false
+}

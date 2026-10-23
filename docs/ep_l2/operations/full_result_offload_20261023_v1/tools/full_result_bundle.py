@@ -246,7 +246,8 @@ def verify_archive(bundle,m):
  require(offset==index['archive_bytes'] and h.hexdigest()==index['archive_sha256'],'full archive SHA/coverage mismatch')
  return index
 def source_rpc(tool,expression):
- bootstrap="import sys,json,zlib,struct; n=struct.unpack('!Q',sys.stdin.buffer.read(8))[0]; d=json.loads(zlib.decompress(sys.stdin.buffer.read(n))); exec(compile(d['tool'],'full_result_bundle.py','exec'),globals()); print(json.dumps(eval(d['expression'])))"
+ require(expression=='source_resources()','only the read-only resource RPC is available')
+ bootstrap="import sys,json,zlib,struct; n=struct.unpack('!Q',sys.stdin.buffer.read(8))[0]; d=json.loads(zlib.decompress(sys.stdin.buffer.read(n))); env={'__name__':'injected'}; exec(compile(d['tool'],'full_result_bundle.py','exec'),env); print(json.dumps(env['source_resources']()))"
  cmd=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-o','ConnectTimeout=10','-p','2233','root@10.208.130.174','python3 -B -c '+__import__('shlex').quote(bootstrap)]
  data=zlib.compress(canon({'tool':tool,'expression':expression}));p=subprocess.run(cmd,input=struct.pack('!Q',len(data))+data,capture_output=True,timeout=45);require(p.returncode==0,'Source resource probe HOLD '+p.stderr.decode(errors='replace')[-2000:]);return json.loads(p.stdout)
 def target(config,tool):
@@ -287,7 +288,7 @@ def target(config,tool):
  for p in sorted(chunks.glob('*.json')):
   r=json.loads(p.read_bytes());require(r['offset']==offset and r['txid']==m['txid'] and file_sha(chunks/r['name'])==r['sha256'],'resume record gap/identity/SHA');records.append(r);offset+=r['size']
  if not (nas/'COMMIT.json').exists():
-  bootstrap="import sys,json,zlib,struct; n=struct.unpack('!Q',sys.stdin.buffer.read(8))[0]; d=json.loads(zlib.decompress(sys.stdin.buffer.read(n))); exec(compile(d['tool'],'full_result_bundle.py','exec'),globals()); export(d['manifest'],d['skip'])"
+  bootstrap="import sys,json,zlib,struct; n=struct.unpack('!Q',sys.stdin.buffer.read(8))[0]; d=json.loads(zlib.decompress(sys.stdin.buffer.read(n))); env={'__name__':'injected'}; exec(compile(d['tool'],'full_result_bundle.py','exec'),env); env['export'](d['manifest'],d['skip'])"
   cmd=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-o','ConnectTimeout=10','-p','2233','root@10.208.130.174','python3 -B -c '+__import__('shlex').quote(bootstrap)]
   p=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE);b=zlib.compress(canon({'tool':tool,'manifest':m,'skip':offset}));p.stdin.write(struct.pack('!Q',len(b))+b);p.stdin.close();newbytes=0
   try:
