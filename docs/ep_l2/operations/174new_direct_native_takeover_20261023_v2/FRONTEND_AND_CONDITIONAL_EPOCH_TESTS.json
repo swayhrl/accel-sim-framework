@@ -1,0 +1,153 @@
+{
+  "status": "PASS_LOCAL_CLI_NO_START_AND_CONDITIONAL_EPOCH_GATES",
+  "commands": [
+    {
+      "args": [
+        "project",
+        "status",
+        "--project",
+        "EP_L2"
+      ],
+      "expected": 0,
+      "returncode": 0,
+      "result_summary": {
+        "read_query_success": true
+      }
+    },
+    {
+      "args": [
+        "project",
+        "status",
+        "--project",
+        "DTC_L1"
+      ],
+      "expected": 0,
+      "returncode": 0,
+      "result_summary": {
+        "read_query_success": true
+      }
+    },
+    {
+      "args": [
+        "project",
+        "assets",
+        "--project",
+        "EP_L2"
+      ],
+      "expected": 0,
+      "returncode": 0,
+      "result_summary": {
+        "read_query_success": true
+      }
+    },
+    {
+      "args": [
+        "project",
+        "assets",
+        "--project",
+        "DTC_L1"
+      ],
+      "expected": 0,
+      "returncode": 0,
+      "result_summary": {
+        "read_query_success": true
+      }
+    },
+    {
+      "args": [
+        "asset",
+        "ensure",
+        "EP_VECTORADD_S"
+      ],
+      "expected": 0,
+      "returncode": 0,
+      "result_summary": {
+        "read_query_success": true
+      }
+    },
+    {
+      "args": [
+        "asset",
+        "ensure",
+        "NOT_APPROVED"
+      ],
+      "expected": 2,
+      "returncode": 2,
+      "result_summary": {
+        "status": "HOLD",
+        "reason": "asset not owner-approved for automatic ensure",
+        "science_retry": false
+      }
+    },
+    {
+      "args": [
+        "experiment",
+        "inspect",
+        "EP_NATIVE_MIGRATION_Q2",
+        "--project",
+        "EP_L2"
+      ],
+      "expected": 0,
+      "returncode": 0,
+      "result_summary": {
+        "read_query_success": true
+      }
+    },
+    {
+      "args": [
+        "experiment",
+        "inspect",
+        "EP_NATIVE_MIGRATION_Q2",
+        "--project",
+        "DTC_L1"
+      ],
+      "expected": 2,
+      "returncode": 2,
+      "result_summary": {
+        "status": "HOLD",
+        "reason": "project/cohort mismatch",
+        "science_retry": false
+      }
+    },
+    {
+      "args": [
+        "experiment",
+        "prepare",
+        "EP_NATIVE_MIGRATION_Q2",
+        "--project",
+        "DTC_L1"
+      ],
+      "expected": 2,
+      "returncode": 2,
+      "result_summary": {
+        "status": "HOLD",
+        "reason": "project/cohort mismatch",
+        "science_retry": false
+      }
+    },
+    {
+      "args": [
+        "result",
+        "archive",
+        "EP_NATIVE_MIGRATION_Q2"
+      ],
+      "expected": 2,
+      "returncode": 2,
+      "result_summary": {
+        "status": "HOLD",
+        "reason": "[Errno 11] Resource temporarily unavailable",
+        "science_retry": false
+      }
+    }
+  ],
+  "science_epoch_negative_test": {
+    "status": "HOLD_NO_SCIENCE_SWITCH",
+    "reason": "BOTH_NATIVE_SCIENTIFIC_QUALIFICATIONS_REQUIRED"
+  },
+  "Source_scientific_ledger_writes": 0,
+  "new_science_forks_in_tests": 0,
+  "current_model_not_signaled_or_restarted": true,
+  "new_receiver_or_daemon": false,
+  "actual_current_DTC_intent": "35c3cc78-b7c0-4572-9ec5-91c0f1227500",
+  "native_output_originals_deleted": 0
+}

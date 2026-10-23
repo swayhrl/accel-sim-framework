@@ -37,7 +37,7 @@ def manifest_for(cohort):
  qual=ROOT/project/'control'/('SCIENCE_QUALIFICATION_'+cohort+'.json');science='STOP_UNACCEPTED' if done['stop_reason'] or done['launcher_wait_returncode'] else read(qual)['status'] if qual.exists() and read(qual)['uuid']==done['uuid'] else 'PENDING_INDEPENDENT_SCIENTIFIC_QUALIFICATION'
  return {'schema':'NATIVE_QUALIFICATION_EVIDENCE_COPY_ONLY_MANIFEST_V1','cohort':cohort,'project':project,'txid':tx,'source_root':str(src),'selector_sha256':selector,'entries':entries,'reused_objects':{},'source_disposition':'SOURCE_KEEP','scientific_status':science,'native_execution_receipt_sha256':f.file_sha(src/'NATIVE_EXIT.json'),'source_filesystem_identity':{'host':os.uname().nodename,'mount_namespace':os.readlink('/proc/self/ns/mnt'),'device':src.stat().st_dev},'persistent164_root':str(NAS/cohort/tx).replace('/root/share/mnt164','/home/shared',1)}
 
-def gate(reservation=0):
+def gate(reservation=0,other_reservation=None):
  require(os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]','target identity')
  import subprocess
  fs=json.loads(subprocess.check_output(['findmnt','-J','-T',str(NAS.parent)],text=True))['filesystems'][0]
@@ -45,7 +45,9 @@ def gate(reservation=0):
  available=os.statvfs(ROOT).f_bavail*os.statvfs(ROOT).f_frsize
  # Preserve 1GiB for the unused DTC result+restore budget; failed EP has no
  # remaining output-writing authority. A new EP attempt requires new admission.
- source=read(ROOT/'control/SOURCE_PREFLIGHT.json');other=source['other_outstanding_write_reservations_bytes']
+ if other_reservation is None:
+  source=read(ROOT/'control/SOURCE_PREFLIGHT.json');other=source['other_outstanding_write_reservations_bytes']
+ else:require(type(other_reservation) is int and other_reservation>=0,'invalid explicitly supplied current all-project reservation');other=other_reservation
  require(available-reservation-GIB-128*MIB-other>=7*GIB,'native restore/all-project reserve HOLD')
  mem=int(next(x.split()[1] for x in P('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')))*1024;require(mem>=64*GIB,'RAM HOLD')
  return {'SSD_available_bytes':available,'restore_reserved_bytes':reservation,'other_outstanding_write_reservations_bytes':other,'unused_DTC_result_restore_reserve_bytes':GIB,'monitor_and_floor_bytes':7*GIB,'Share_new_bytes':0,'MemAvailable_bytes':mem}
@@ -75,6 +77,7 @@ class RangeWriter(io.RawIOBase):
   return {'archive_bytes':self.offset,'archive_sha256':self.hash.hexdigest(),'chunks':self.rows}
 
 def archive(cohort):
+ science_lock=(ROOT/'control/qualification_ledger/NATIVE_QUALIFICATION.lock').open('rb');fcntl.flock(science_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  m=manifest_for(cohort);f,v=libraries();raw=sum(r['size'] for r in m['entries'] if r['type']=='file');before=gate(raw+16*MIB);lock=P('/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock').open('rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);bundle=NAS/cohort/m['txid'];bundle.mkdir(parents=True,exist_ok=True);(bundle/'chunks').mkdir(exist_ok=True);v.exclusive_json(bundle/'SOURCE_MANIFEST.json',m)
  for name,b in [('full_result_bundle.py',(BASELINE/'full_result_bundle.py').read_bytes()),('v9_transaction.py',(BASELINE/'v9_transaction.py').read_bytes()),('native_result.py',P(__file__).read_bytes()),('RESULT_ENGINE_PIN.json',(ROOT/'control/RESULT_ENGINE_PIN.json').read_bytes())]:
   p=bundle/name
@@ -105,11 +108,11 @@ def archive(cohort):
  v.exclusive_json(bundle/'RECEIPT.json',receipt);local=ROOT/'control'/(cohort+'_ARCHIVE_RECEIPT.json');v.exclusive_json(local,receipt)
  return {'receipt':receipt,'this_call_new_payload_bytes':newbytes,'verified_reused_transaction':reused,'resources_before':before,'resources_after':gate(),'no_source_mutation':manifest_for(cohort)==m}
 
-def restore(bundle,destination):
- bundle=P(bundle);destination=P(destination);require(bundle.resolve().is_relative_to(NAS),'outside new native result namespace');m=read(bundle/'SOURCE_MANIFEST.json');require(m['schema']=='NATIVE_QUALIFICATION_EVIDENCE_COPY_ONLY_MANIFEST_V1' and m['cohort'] in COHORTS,'unsupported native evidence type');require(destination.resolve().is_relative_to(ROOT/m['project']/'run/recovery'),'outside task native restore root');f,v=libraries(bundle);f.verify_archive(bundle,m);gate(sum(r['size'] for r in m['entries'] if r['type']=='file')+16*MIB);return f.restore(bundle,m,destination,v,gate=lambda:gate())
+def restore(bundle,destination,other_reservation=None):
+ bundle=P(bundle);destination=P(destination);require(bundle.resolve().is_relative_to(NAS),'outside new native result namespace');m=read(bundle/'SOURCE_MANIFEST.json');require(m['schema']=='NATIVE_QUALIFICATION_EVIDENCE_COPY_ONLY_MANIFEST_V1' and m['cohort'] in COHORTS,'unsupported native evidence type');require(destination.resolve().is_relative_to(ROOT/m['project']/'run/recovery'),'outside task native restore root');f,v=libraries(bundle);f.verify_archive(bundle,m);gate(sum(r['size'] for r in m['entries'] if r['type']=='file')+16*MIB,other_reservation);return f.restore(bundle,m,destination,v,gate=lambda:gate(other_reservation=other_reservation))
 
 if __name__=='__main__':
  import argparse
- p=argparse.ArgumentParser();p.add_argument('operation',choices=['archive','restore']);p.add_argument('item');p.add_argument('--destination');a=p.parse_args()
- try:print(json.dumps(archive(a.item) if a.operation=='archive' else restore(a.item,a.destination),indent=2))
+ p=argparse.ArgumentParser();p.add_argument('operation',choices=['archive','restore']);p.add_argument('item');p.add_argument('--destination');p.add_argument('--other-write-reservation-bytes',type=int);a=p.parse_args()
+ try:print(json.dumps(archive(a.item) if a.operation=='archive' else restore(a.item,a.destination,a.other_write_reservation_bytes),indent=2))
  except (RuntimeError,OSError,ValueError,KeyError) as e:print(json.dumps({'status':'HOLD','reason':str(e)}),file=sys.stderr);sys.exit(2)

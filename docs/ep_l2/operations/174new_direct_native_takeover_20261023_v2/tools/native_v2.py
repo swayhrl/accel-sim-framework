@@ -105,6 +105,26 @@ def child_info(pid):
  p=P('/proc')/str(pid);st=(p/'stat').read_text().rsplit(')',1)[1].split()
  return {'pid':pid,'start_ticks':int(st[19]),'mnt_namespace':os.readlink(p/'ns/mnt'),'pid_namespace':os.readlink(p/'ns/pid'),'exe':os.readlink(p/'exe'),'cmdline':(p/'cmdline').read_bytes().replace(b'\0',b' ').decode(errors='replace'),'maps':(p/'maps').read_text()}
 
+def current_status(project=None):
+ rows=[]
+ for p in sorted((ROOT/'control/qualification_ledger').glob('*.INTENT.json')):
+  x=read(p);which=COHORTS.get(x['cohort'])
+  if project and which!=project:continue
+  done=p.with_name(p.name.replace('.INTENT.json','.DONE.json'));state=read(done) if done.exists() else None
+  rows.append({'cohort':x['cohort'],'project':which,'uuid':x['uuid'],'charged':1,'state':'STOP_UNACCEPTED' if state and (state['stop_reason'] or state['launcher_wait_returncode']) else 'NATURAL_COMPLETE' if state else 'RUNNING_OR_UNRESOLVED','native_receipt':state,'output':x['output']})
+ epoch=ROOT/'control/CURRENT_SCIENCE_EPOCH.json'
+ return {'identity':identity(),'historical_Source_counters_frozen':{'EP':57,'DTC':2,'EP_T0':1792414193},'native_migration_charged_starts':len(rows),'native_migration_attempts':rows,'current_science_epoch':read(epoch) if epoch.exists() else None,'production_science':'QUALIFICATION_PHASE_NO_PRODUCTION_EPOCH' if not epoch.exists() else 'NATIVE_ONLY; EVERY_NEW_REQUEST_REQUIRES_EXACT_OWNER_SPEC_AND_EXPLICIT_UNUSED_BUDGET','old174_SSH_scientific_execution':'FORBIDDEN','model_processes_started_by_this_status_query':0}
+
+def current_assets(names):
+ out={};bindings=read(ROOT/'control/TRACE_CURRENT_STAT_BINDINGS.json')
+ for name in names:
+  project='EP' if name=='EP_VECTORADD_S' else 'DTC';rec=read(ROOT/'control'/(name+'_TRACE_RECEIPT.json'));checks=[]
+  for x in bindings[project]:
+   p=P(x['path']);t=p.stat();require([t.st_dev,t.st_ino,t.st_size,t.st_mtime_ns]==x['identity'],'archived asset identity changed; bounded revalidation required');checks.append({'path':str(p),'bytes':t.st_size,'readable':os.access(p,os.R_OK)})
+  fs=json.loads(subprocess.check_output(['findmnt','-J','-T',rec['native_mirror_mount_path']],text=True))['filesystems'][0];require(fs['source']=='admin-wcx@10.208.130.164:/home/shared' and fs['fstype']=='fuse.sshfs','genuine164 mount changed')
+  out[name]={'state':'AVAILABLE_FROZEN_TWO_MEMBER_INPUT_TRUE164','source_root':rec['source_root'],'native_compatibility_realpath':str(P(rec['source_root']).resolve()),'target_mount_root':rec['native_mirror_mount_path'],'current_metadata_checks':checks,'prior_closed_full_SHA_proof':str(ROOT/'control'/(name+'_TRACE_RECEIPT.json')),'fresh_large_body_rehash':False,'new_payload_bytes':0,'old_originals':'SOURCE_KEEP','scope':'Only these two named input member sets; other unimported cold assets remain REMOTE_SOURCE_KEEP_NOT_DIRECTLY_AVAILABLE'}
+ return out
+
 def run_native(cohort):
  s=spec_for(cohort);prepared=prepare(cohort)
  auth=ROOT/'control'/('EP_NATIVE_MIGRATION_Q2_AUTHORIZATION.json' if cohort.endswith('Q2') else 'SCIENCE_AUTHORIZATION.json');require(auth.is_file(),'SCIENCE_QUALIFICATION_PENDING_APPROVAL; no simulator fork')
@@ -200,10 +220,13 @@ def run_native(cohort):
  exclusive(out/'NATIVE_EXIT.json',receipt);exclusive(budget_dir/(cohort+'.DONE.json'),receipt);return receipt
 
 def main(argv=None):
- p=argparse.ArgumentParser();p.add_argument('area',choices=['project','asset','experiment','result']);p.add_argument('operation');p.add_argument('item',nargs='?');p.add_argument('--destination');a=p.parse_args(argv)
- if a.area=='project' and a.operation=='status':return {'identity':identity(),'scientific_dispatch':'QUALIFICATION_ONLY_IF_EXACTLY_AUTHORIZED; PRODUCTION_DISABLED','old_EP_starts':57,'old_DTC_starts':2,'actual_current_counts_source':'Frozen old owner ledgers; production live status remains original management project status','qualification_intents':[str(x) for x in (ROOT/'control/qualification_ledger').glob('*.INTENT.json')] if (ROOT/'control/qualification_ledger').exists() else []}
+ p=argparse.ArgumentParser();p.add_argument('area',choices=['project','asset','experiment','result']);p.add_argument('operation');p.add_argument('item',nargs='?');p.add_argument('--destination');p.add_argument('--project',choices=['EP_L2','DTC_L1']);a=p.parse_args(argv);project={'EP_L2':'EP','DTC_L1':'DTC'}.get(a.project)
+ if a.area=='project' and a.operation=='status':return current_status(project)
  if (a.area=='project' and a.operation=='assets') or (a.area=='asset' and a.operation=='ensure'):
-  names=[a.item] if a.item else ['EP_VECTORADD_S','DTC_AD_GEMM'];require(all(x in ['EP_VECTORADD_S','DTC_AD_GEMM'] for x in names),'asset not owner-approved for automatic ensure');return {x:read(ROOT/'control'/(x+'_TRACE_RECEIPT.json')) for x in names}
+  names=[a.item] if a.item else ['EP_VECTORADD_S'] if project=='EP' else ['DTC_AD_GEMM'] if project=='DTC' else ['EP_VECTORADD_S','DTC_AD_GEMM'];require(all(x in ['EP_VECTORADD_S','DTC_AD_GEMM'] for x in names),'asset not owner-approved for automatic ensure');return current_assets(names)
+ if a.area=='experiment' and a.operation=='inspect':
+  s=spec_for(a.item);require(project is None or s['project']==project,'project/cohort mismatch');return {'frozen_spec':s,'status':current_status(s['project'])}
+ if a.area=='experiment' and a.operation in ['prepare','run-native'] and project:require(spec_for(a.item)['project']==project,'project/cohort mismatch')
  if a.area=='experiment' and a.operation=='prepare':return prepare(a.item)
  if a.area=='experiment' and a.operation=='run-native':return run_native(a.item)
  if a.area=='result' and a.operation in ['archive','restore']:
