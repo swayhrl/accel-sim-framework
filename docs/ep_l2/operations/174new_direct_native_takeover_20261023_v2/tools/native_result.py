@@ -8,7 +8,7 @@ import pathlib,os,json,hashlib,io,tarfile,time,fcntl,stat,importlib.util,sys,uui
 P=pathlib.Path;ROOT=P('/root/data/ep_l2_dtc_l1_native_v2');MIB=1024**2;GIB=1024**3;CHUNK=128*MIB;RATE=30*MIB
 NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_results')
 BASELINE=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_full_result_offload_v1/EP_L2_E057/aadbbab26f921819e7e24f3bb2187d1955eccd79381a38d475e7eed4e0f36e7d')
-COHORTS={'EP_NATIVE_MIGRATION_Q1':'EP','DTC_NATIVE_MIGRATION_Q1':'DTC'}
+COHORTS={'EP_NATIVE_MIGRATION_Q1':'EP','EP_NATIVE_MIGRATION_Q2':'EP','DTC_NATIVE_MIGRATION_Q1':'DTC'}
 sys.dont_write_bytecode=True
 
 def require(v,s):
@@ -34,7 +34,8 @@ def manifest_for(cohort):
   if r['type']=='file':r['sha256']=f.file_sha(p)
   entries.append(r)
  selector=sha(canon(entries));tx=sha(canon({'cohort':cohort,'uuid':intent['uuid'],'selector_sha256':selector,'source_root':str(src),'destination':str(NAS/cohort)}))
- return {'schema':'NATIVE_QUALIFICATION_EVIDENCE_COPY_ONLY_MANIFEST_V1','cohort':cohort,'project':project,'txid':tx,'source_root':str(src),'selector_sha256':selector,'entries':entries,'reused_objects':{},'source_disposition':'SOURCE_KEEP','scientific_status':'STOP_UNACCEPTED' if done['stop_reason'] or done['launcher_wait_returncode'] else 'PENDING_INDEPENDENT_SCIENTIFIC_QUALIFICATION','native_execution_receipt_sha256':f.file_sha(src/'NATIVE_EXIT.json'),'source_filesystem_identity':{'host':os.uname().nodename,'mount_namespace':os.readlink('/proc/self/ns/mnt'),'device':src.stat().st_dev},'persistent164_root':str(NAS/cohort/tx).replace('/root/share/mnt164','/home/shared',1)}
+ qual=ROOT/project/'control'/('SCIENCE_QUALIFICATION_'+cohort+'.json');science='STOP_UNACCEPTED' if done['stop_reason'] or done['launcher_wait_returncode'] else read(qual)['status'] if qual.exists() and read(qual)['uuid']==done['uuid'] else 'PENDING_INDEPENDENT_SCIENTIFIC_QUALIFICATION'
+ return {'schema':'NATIVE_QUALIFICATION_EVIDENCE_COPY_ONLY_MANIFEST_V1','cohort':cohort,'project':project,'txid':tx,'source_root':str(src),'selector_sha256':selector,'entries':entries,'reused_objects':{},'source_disposition':'SOURCE_KEEP','scientific_status':science,'native_execution_receipt_sha256':f.file_sha(src/'NATIVE_EXIT.json'),'source_filesystem_identity':{'host':os.uname().nodename,'mount_namespace':os.readlink('/proc/self/ns/mnt'),'device':src.stat().st_dev},'persistent164_root':str(NAS/cohort/tx).replace('/root/share/mnt164','/home/shared',1)}
 
 def gate(reservation=0):
  require(os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]','target identity')
@@ -77,7 +78,9 @@ def archive(cohort):
  m=manifest_for(cohort);f,v=libraries();raw=sum(r['size'] for r in m['entries'] if r['type']=='file');before=gate(raw+16*MIB);lock=P('/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock').open('rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);bundle=NAS/cohort/m['txid'];bundle.mkdir(parents=True,exist_ok=True);(bundle/'chunks').mkdir(exist_ok=True);v.exclusive_json(bundle/'SOURCE_MANIFEST.json',m)
  for name,b in [('full_result_bundle.py',(BASELINE/'full_result_bundle.py').read_bytes()),('v9_transaction.py',(BASELINE/'v9_transaction.py').read_bytes()),('native_result.py',P(__file__).read_bytes()),('RESULT_ENGINE_PIN.json',(ROOT/'control/RESULT_ENGINE_PIN.json').read_bytes())]:
   p=bundle/name
-  if p.exists():require(p.read_bytes()==b,'immutable recovery tool collision')
+  if p.exists():
+   if name=='native_result.py' and (bundle/'COMMIT.json').exists():continue
+   require(p.read_bytes()==b,'immutable recovery tool collision')
   else:
    with p.open('xb') as stream:stream.write(b);stream.flush();os.fsync(stream.fileno())
  reused=False

@@ -46,6 +46,12 @@ def spec_for(cohort):
  require(sha(p)==row['sha256'] and s['project']==COHORTS[cohort],'frozen spec changed')
  return s
 
+def output_cap(s):
+ limit=s['limits']['max_result_directory_bytes'];p=ROOT/'control'/('OPERATIONAL_OUTPUT_CAP_'+s['cohort']+'.json')
+ if p.exists():
+  plan=read(p);cap=plan['effective_result_cap_bytes'];require(plan['cohort']==s['cohort'] and type(cap) is int and 0<cap<=limit,'operational cap may only tighten frozen upper limit');return cap
+ return limit
+
 def resources(s,fresh_source=False):
  v=os.statvfs(ROOT);free=v.f_bavail*v.f_frsize
  mem=int(next(x.split()[1] for x in P('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')))*1024
@@ -53,8 +59,11 @@ def resources(s,fresh_source=False):
  # All native result+restore caps, including completed ones, remain conservatively
  # reserved here. This intentionally overcounts completed bytes until closeout.
  result_restore=0
- stage_only=cohort_stage=s.get('resource_profile')=='SERIAL_STAGE_ONLY_EP64_DTC512_V1'
- reservations=[(s['project'],s['limits']['max_result_directory_bytes'])] if stage_only else [('EP',384*MIB),('DTC',512*MIB)]
+ serial=ROOT/'control/EP_NATIVE_MIGRATION_Q2_AUTHORIZATION.json'
+ stage_only=s.get('resource_profile')=='SERIAL_STAGE_ONLY_EP64_DTC512_V1'
+ if s['project']=='DTC' and serial.exists():
+  binding=read(serial);stage_only=binding.get('explicit_user_approval') is True and binding.get('resource_profile')=='SERIAL_STAGE_ONLY_EP64_DTC512_V1' and binding.get('approval_request_sha256')==sha(ROOT/'control/Q2_PRECISE_AMENDMENT_REQUEST.json')
+ reservations=[(s['project'],output_cap(s))] if stage_only else [('EP',384*MIB),('DTC',512*MIB)]
  for project,cap in reservations:
   for kind in ['results','recovery']:
    folder=ROOT/project/'run'/kind
@@ -109,6 +118,11 @@ def run_native(cohort):
  lock=(budget_dir/'NATIVE_QUALIFICATION.lock').open('a+b');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  intent=budget_dir/(cohort+'.INTENT.json');require(not intent.exists(),'attempt already consumed or unresolved; never retry/refund')
  res=resources(s,fresh_source=True);require(res['physical_disk_pass'] and res['physical_RAM_pass'],'RESOURCE_HOLD')
+ admission=None
+ if s['project']=='DTC':
+  from native_dtc_guard import native_admission
+  admission=native_admission(ROOT/'DTC/run');require(admission['status']=='PASS','DTC original memory/paired/native-device admission HOLD')
+  res=resources(s,fresh_source=True);require(res['physical_disk_pass'] and res['physical_RAM_pass'],'RESOURCE_HOLD_AFTER_DTC_PAIR')
  ident=str(uuid.uuid4());out=ROOT/s['project']/'run/results'/ident;out.mkdir()
  exclusive(intent,{'cohort':cohort,'uuid':ident,'utc':now(),'spec_sha256':sha(ROOT/'control'/(cohort+'_SPEC.json')),'authorization_sha256':sha(auth),'consumed_before_launcher_fork':1,'automatic_retry':False,'old_ledger_mutations':0,'output':str(out)})
  env={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','CUDA_VISIBLE_DEVICES':'','LD_LIBRARY_PATH':str(ROOT/s['project']/'env/lib'),'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1','TMPDIR':str(ROOT/s['project']/'run/tmp'),'XDG_CACHE_HOME':str(ROOT/s['project']/'run/cache')}
@@ -123,7 +137,7 @@ def run_native(cohort):
  raw=(out/'raw.log').open('xb');samples=(out/'RESOURCE_SAMPLES.jsonl').open('xb');start=time.monotonic();p=None;reason=None;observations=[];peak=0;last_full=start-10;peak_rss=0
  try:
   p=subprocess.Popen(argv,cwd=out,env=env,stdout=raw,stderr=subprocess.STDOUT,pass_fds=passed,preexec_fn=limits)
-  exclusive(out/'NATIVE_LAUNCH.json',{'utc':now(),'launcher_pid':p.pid,'argv':argv,'environment':env,'host':identity(),'prepared':prepared,'resources':res,'scientific_qualification_uuid':ident,'old174_SSH_invocation':False,'finite_native_launcher_sha256':sha(__file__)})
+  exclusive(out/'NATIVE_LAUNCH.json',{'utc':now(),'launcher_pid':p.pid,'argv':argv,'environment':env,'host':identity(),'prepared':prepared,'resources':res,'effective_result_cap_bytes':output_cap(s),'frozen_upper_result_cap_bytes':s['limits']['max_result_directory_bytes'],'native_DTC_original_rebound_admission':admission,'scientific_qualification_uuid':ident,'old174_SSH_invocation':False,'finite_native_launcher_sha256':sha(__file__)})
   while p.poll() is None:
    childfile=P('/proc')/str(p.pid)/'task'/str(p.pid)/'children'
    for child in childfile.read_text().split() if childfile.exists() else []:
@@ -158,13 +172,13 @@ def run_native(cohort):
     if rss>s['limits']['max_process_tree_rss_bytes']:reason='PROCESS_RSS_CAP'
     if dtc_guard is not None:
      native=child_info(observations[0]['pid']);same=native['start_ticks']==observations[0]['start_ticks'] and native['mnt_namespace']==s['execution_mnt_namespace'];mapped=str(ROOT/s['project']/'bin/accel-sim.out') in native['maps'] and all(line.rsplit(None,1)[-1].startswith(str(ROOT)+'/') for line in native['maps'].splitlines() if '/' in line)
-     safety={'authority':sha(auth)==read(intent)['authorization_sha256'],'identity':same,'mapper':mapped,'output_limits':size<=s['limits']['max_result_directory_bytes'],'output_device':out.stat().st_dev==ROOT.stat().st_dev,'expected_growth':r['physical_disk_pass'],'explicit_abort_clear':not (ROOT/'control/ABORT_NATIVE_QUALIFICATION').exists(),'ownership':read(intent)['uuid']==ident}
+     safety={'authority':sha(auth)==read(intent)['authorization_sha256'],'identity':same,'mapper':mapped,'output_limits':size<=output_cap(s),'output_device':out.stat().st_dev==ROOT.stat().st_dev,'expected_growth':r['physical_disk_pass'],'explicit_abort_clear':not (ROOT/'control/ABORT_NATIVE_QUALIFICATION').exists(),'ownership':read(intent)['uuid']==ident}
      # Shared host/device measurements are deliberately conservative; none of
      # these counters is labeled exclusively owned by this simulation.
      io_scope={'known_scope':True,'harm_detected':False,'conservative_host_episode_profile_accepted':True,'basis':'Explicit user-ratified Target resource profile and original BA shared-scope IO warning policy; all non-IO safety decisions retained'}
      faults=int((P('/proc')/str(native['pid'])/'stat').read_text().rsplit(')',1)[1].split()[9]);decision=dtc_guard.sample(out,safety,io_scope,faults);samples.write((json.dumps({'DTC_exact_original_policy':decision})+'\n').encode());samples.flush()
      if decision['decision']['decision']=='STOP':reason='DTC_ORIGINAL_RESOURCE_POLICY:'+','.join(decision['decision']['stop_reasons'])
-   if size>s['limits']['max_result_directory_bytes']:reason='RESULT_CAP'
+   if size>output_cap(s):reason='RESULT_CAP'
    if free<7*GIB:reason='NATIVE_DISK_FLOOR_PLUS_MONITOR'
    if time.monotonic()-start>s['limits']['timeout_seconds']:reason='EXACT_WALL_TIMEOUT'
    if reason:os.killpg(p.pid,signal.SIGTERM);break

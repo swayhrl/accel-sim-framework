@@ -22,6 +22,21 @@ def snapshot(output):
  sample={'monotonic_ns':time.monotonic_ns(),'host':os.uname().nodename,'uid':os.getuid(),'host_MemAvailable_bytes':int(next(x.split()[1] for x in P('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')))*1024,'cgroup':group,'pressure':{k:resources.parsed_pressure((P('/proc/pressure')/k).read_text()) for k in ['memory','io']},'pswpin':vm['pswpin'],'pswpout':vm['pswpout']}
  return resources.enrich(sample,output)
 
+def native_admission(output):
+ """One finite actual pair; no scientific fork and no repeated opportunities."""
+ first=snapshot(output);time.sleep(10);second=snapshot(output);checks={}
+ for label,s in [('first',first),('second',second)]:
+  checks[label+'_authorized_native_identity']=s['host']=='huangrulin-sshfs-174' and s['uid']==0 and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'
+  checks[label+'_host_headroom_ge64GiB']=s['host_MemAvailable_bytes']>=64*1024**3
+  checks[label+'_original_cgroup_headroom_ge32GiB']=resources._policy()['headroom'](s)>=32*1024**3
+  checks[label+'_native_disk_floor_plus_monitor']=s['disk_free_bytes']>=7*1024**3
+  for domain,pressure in [('host',s['pressure']),('cgroup',s['cgroup_pressure_parsed'])]:checks[label+'_'+domain+'_original_memory_full_avg10_le1']=float(pressure['memory']['full']['avg10'])<=1
+ checks['same_device']=first['output_filesystem_device']==second['output_filesystem_device']==2128
+ checks['original_pair_gap_ge10s']=second['monotonic_ns']-first['monotonic_ns']>=10*10**9
+ checks['no_new_host_OOM']=first['host_oom_kill']==second['host_oom_kill']
+ checks['no_new_cgroup_OOM']=all(first['cgroup']['events'][k]==second['cgroup']['events'][k] for k in ['oom','oom_kill'])
+ return {'status':'PASS' if all(checks.values()) else 'RESOURCE_HOLD','first':first,'second':second,'checks':checks,'IO':'Both domains observed; original BA user-amended warning-only IO semantics retained','Source_only_host_admission':'Explicit user Target rebinding, no fake original174 hostname','scientific_forks':0}
+
 class NativeDTCGuard:
  def __init__(self,channel,binding,output,started_ns):
   self.receiver=TelemetryReceiver(channel,binding,started_ns=started_ns,opt_in=True)
