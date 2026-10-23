@@ -1,0 +1,7 @@
+# Post-cohort scientific evidence consumer
+
+This adds no simulator starts and changes none of the frozen running executable/config/controller/strict/outbox files. aefair_analysis.py refuses an incomplete four-cell population, unaccepted points, mixed source/ROI, duplicate UUIDs or non-hash differences within each pair. Once all four are closed, it joins original native exits, whole raw SHA, full strict proof, immutable genuine164 archive SHA and independent native Target inventory/numeric metadata/whole-file SHA before computing exact rational speedups and interactionR. It reads no incomplete kernel timing as performance.
+
+The targeted synthetic test ran once and passed four arithmetic/disposition cases plus eight rejection cases. This qualifies only those arithmetic/population checks. Actual all-four strict/archive/restore integration remains unexecuted until the cohort completes. The pinned restore API was inspected: check_native returns all manifest entries including directories and links and verifies uid/gid/mode/mtime_ns/file bytes/link semantics. Archive verification reopens every chunk and checks complete hashes. No old source input or trace is recopied.
+
+Invoke after all four close: python3 -B /root/data/dtc_main_20261023_v1/ae_fair_v1/aefair_analysis.py. A missing proof is an error, never a zero or a performance null. The frozen execution controller remains the sole finite four-cell worker; do not restart it from this consumer.
