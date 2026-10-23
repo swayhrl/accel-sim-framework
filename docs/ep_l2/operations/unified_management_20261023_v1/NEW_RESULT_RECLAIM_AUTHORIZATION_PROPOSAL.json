@@ -1,0 +1,47 @@
+{
+  "schema": "NEW_RESULT_LOCAL_RETENTION_AND_RECLAIM_PROPOSAL_V1",
+  "status": "PROPOSAL_ONLY_NO_RECLAIM_ENABLED",
+  "applies_to": "Future new completed results with a distinct frozen outbox transaction; old historical assets always SOURCE_KEEP unless separately explicitly authorized",
+  "states": [
+    {
+      "name": "LOCAL_HOT",
+      "requirements": "Original174 native output; active writer/controller/lock/SQLite remain local, no live state onSSHFS",
+      "reclaim": false
+    },
+    {
+      "name": "OWNER_CLOSED_COPY_READY",
+      "requirements": "Owner scientific acceptance retained, full exact manifest+SHA+metadata/links, closed writer and all future-reader dependencies",
+      "reclaim": false
+    },
+    {
+      "name": "ARCHIVE_VERIFIED",
+      "requirements": "Genuine164 immutable ranges/full archive SHA/owner manifest/commit; no dedup double counting",
+      "reclaim": false
+    },
+    {
+      "name": "RESTORE_VERIFIED",
+      "requirements": "Independent full native original byte SHA and numeric metadata, persisted recovery pointer/scripts and dependencies",
+      "reclaim": false
+    },
+    {
+      "name": "LOCAL_KEEP",
+      "requirements": "Source identity/SHA/reader closure reconfirmed; all originals retained under default policy",
+      "reclaim": false
+    },
+    {
+      "name": "RECLAIM_ELIGIBLE",
+      "requirements": "Separate explicit exact Source release authorization, minimum retention/window approved per project, known consumers relocated or closed, no active/planned lock/SQLite/raw dependence, fresh Source identity/hardlink/overlay review, Source-only durable INTENT/DONE, real df before/after",
+      "reclaim": "Eligibility only; management package has no Source delete API"
+    }
+  ],
+  "approval_needed_for_future_release": [
+    "exact new-result membership and exclusions",
+    "scientific reader closure and retention policy by project authority",
+    "Source-owned irreversible operation authorization and recovery evidence",
+    "independent physical-pool resource retest"
+  ],
+  "source_release_bytes": 0,
+  "default": "SOURCE_KEEP_OR_LOCAL_KEEP",
+  "NAS_peak_budget": "Original raw bytesR: conservative3R+bounded controls, no assumed compression ratio; new bound engine retains single raw archive chunk set plus controls, known legacy9 refs not double-counted",
+  "native_peak_budget": "R restore allocation + <=256MiB stage reservation +64MiB controls + all concurrent Source pool writes + scoped residual; network outage leaves original outputs and partial verified chunks KEEP/HOLD, no unbounded queue admission"
+}

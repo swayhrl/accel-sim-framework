@@ -1,0 +1,60 @@
+import pathlib,json,subprocess,hashlib,datetime
+W=pathlib.Path('D:/repo/unified-management-20261023-v1');R=W/'docs/ep_l2/operations/unified_management_20261023_v1';D=pathlib.Path(__file__).parent
+authorization={'schema':'USER_DELEGATED_OWNER_REVIEW_AND_FORMAL_MANAGEMENT_SWITCH_V1','utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'user_instruction_verbatim':'我授权你ssh到174，代两个窗口处理，正式 切换我也提前批准','supersedes':'Requirement for separate E2/BA personal management-review signatures and a later user approval for this management-only switch. Original scientific acceptance, budgets and result Source KEEP rules remain unchanged.','authorized_actor':'Lane T acting under explicit user delegation for E2/BA management review','formal_switch_scope':'Canonical day-to-day status/assets/inspect/prepare and result-storage management through174-new. Actual scientific process invocation remains disabled by the original no-new-science instruction.','allowed_mutation':'Add one management_authority metadata object to existing EP canonical registry and existing DTC root coordinator under original locks, retain exact preimages and transaction journal in task-native storage; no existing scientific data/qualifications/counters/T0/controller code altered.','not_authorized':['new scientific applications','second science controller/registry/scheduler','scientific budget reset/refund/reacceptance','historical asset alteration/removal','automatic Source reclamation','claiming scientific-controller consume/fork fencing is enabled before its separate production-control qualification']}
+b=(json.dumps(authorization,indent=2,ensure_ascii=False)+'\n').encode();(R/'USER_AUTHORIZED_FORMAL_MANAGEMENT_SWITCH.json').write_bytes(b);authsha=hashlib.sha256(b).hexdigest();tool=(R/'tools/source_readonly.py').read_text()
+code='TOOL='+repr(tool)+'\nAUTH='+repr(authorization)+'\nAUTH_RAW='+repr(b)+'\nAUTH_SHA='+repr(authsha)+'\n'+r'''
+env={'__name__':'injected'};exec(compile(TOOL,'source_readonly.py','exec'),env)
+import pathlib,json,os,fcntl,hashlib,datetime
+P=pathlib.Path;root=P('/root/data/ep_l2_dtc_l1_management_20261023_v1/source_authority');root.mkdir(mode=0o700,exist_ok=True)
+def canonical(v):return (json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False)+'\n').encode()
+def sha(b):return hashlib.sha256(b).hexdigest()
+def immutable(p,b):
+ if p.exists():assert p.read_bytes()==b,'immutable authority control differs'
+ else:
+  with p.open('xb') as f:f.write(b);f.flush();os.fsync(f.fileno())
+source=env['source_identity']();ep=env['ep_status']();dtc=env['dtc_status']();assert ep['consistency'] and dtc['consistency'];assert not ep['controller_process']['identity_live'] and not ep['active_resource_leases'] and ep['unresolved_intents']==0;assert not dtc['controller_process']['identity_live'] and not dtc['model_process']['identity_live'] and dtc['unresolved_intents']==0
+assert ep['actual_starts']==57 and dtc['actual_starts']==2 and dtc['accepted']==1 and dtc['remaining_scoped_starts']==0
+resources=env['resources']();assert resources['workspace_available_bytes']-32*1024**2>=7*1024**3 and resources['MemAvailable_bytes']>=64*1024**3
+locks=[]
+for p in [env['EP']/'REGISTRY.lock',P(ep['existing_controller_interface']['lock']),P(dtc['existing_controller_interface']['own_lock'])]:
+ f=p.open('rb');fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB);locks.append(f)
+ep2=env['ep_status']();dtc2=env['dtc_status']();assert ep2['canonical']['sha256']==ep['canonical']['sha256'] and dtc2['canonical_coordinator']['sha256']==dtc['canonical_coordinator']['sha256']
+for label,state in [('EP_L2',ep),('DTC_L1',dtc)]:
+ path=P(state['existing_controller_interface']['entry']);raw=path.read_bytes();assert len(raw)<1024**2;expected=state['existing_controller_interface'].get('entry_sha256');assert expected is None or sha(raw)==expected
+ review={'schema':'USER_DELEGATED_OWNER_MANAGEMENT_REVIEW_V1','project':label,'reviewer':'Lane T under explicit user delegation, not E2/BA impersonation','authority_source':state,'entry_sha256':sha(raw),'approved':'Management-only canonical174-new front door with scientific dispatch disabled','science_counters_t0_qualification_preserved':True,'legacy_collectors':'Existing historical collectors and other-project scripts are outside this current-campaign management switch; not stopped, adopted or reclassified as idle','management_source_code_changed':False,'remaining_scientific_dispatch_block':'Mandatory guard inside original start-consumption paths is not installed by this management-only transfer; no scientific invoke allowed'}
+ immutable(root/(label+'_DELEGATED_REVIEW.json'),canonical(review))
+epoch=1;commit=root/'EPOCH_0001_COMMITTED.json';authority={'schema':'EXISTING_SOURCE_MANAGEMENT_AUTHORITY_V1','epoch':epoch,'holder':'huangrulin-sshfs-174','mode':'174NEW_MANAGEMENT_ONLY_SCIENTIFIC_START_DISABLED','scientific_dispatch_enabled':False,'user_authorization_sha256':AUTH_SHA,'commit_receipt':str(commit),'official_entry_root':'/root/data/ep_l2_dtc_l1_management_20261023_v1','previous_management_callers':'E2/BA day-to-day paths administratively retired in favor of this entry; raw privileged bypass is outside protocol','original_scientific_controller_and_registry_retained':True}
+immutable(root/'USER_AUTHORIZATION.json',AUTH_RAW)
+paths=[P(ep['canonical']['path']),P(dtc['canonical_coordinator']['path'])];pre=[]
+for i,p in enumerate(paths):
+ raw=p.read_bytes();value=json.loads(raw);assert 'management_authority' not in value,'Source already has management authority; explicit reconciliation required';pre.append((p,raw,value,p.stat()));immutable(root/('PREIMAGE_'+str(i)+'.json'),raw)
+intent={'state':'MANAGEMENT_SWITCH_INTENT','epoch':epoch,'holder':authority['holder'],'user_authorization_sha256':AUTH_SHA,'source_identity':source,'preimages':{str(p):sha(raw) for p,raw,old,s in pre},'scientific_counters':{'EP_actual_starts':57,'EP_t0':ep['t0_unix'],'DTC_actual_starts':2,'DTC_accepted':1,'DTC_historical_budgets':dtc['historical_budgets']}}
+immutable(root/'EPOCH_0001_INTENT.json',canonical(intent))
+changed=[]
+try:
+ for p,raw,old,s in pre:
+  # Additive current-control metadata only; preserve all original key/value data.
+  stripped=raw.rstrip();assert stripped.endswith(b'}');updated=stripped[:-1]+b',\n"management_authority":'+canonical(authority).rstrip()+b'\n}\n';v=json.loads(updated);assert v.pop('management_authority')==authority and v==old
+  tmp=p.with_name(p.name+'.management_epoch1.tmp')
+  with tmp.open('xb') as f:f.write(updated);f.flush();os.fsync(f.fileno());os.fchmod(f.fileno(),s.st_mode&0o7777)
+  os.replace(tmp,p);changed.append(p);fd=os.open(p.parent,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd)
+  current=json.loads(p.read_bytes());assert current.pop('management_authority')==authority and current==old
+ done={'state':'COMMITTED_MANAGEMENT_ONLY_NO_SCIENTIFIC_START','epoch':epoch,'holder':authority['holder'],'user_authorization_sha256':AUTH_SHA,'source_identity':source,'scientific_state_deep_equal_before_after':True,'current_control_paths':[str(p) for p in paths],'original_EP_count':57,'original_DTC_count':2,'scientific_starts':0,'historical_data_modified':0,'controller_code_modified':0,'science_budget_or_T0_changes':0,'source_release_bytes':0,'user_delegated_owner_review':True}
+ immutable(commit,canonical(done))
+except BaseException:
+ # Transaction rollback is restricted to these two authorized mutable controls.
+ for p,raw,old,s in pre:
+  if p in changed:
+   tmp=p.with_name(p.name+'.management_rollback.tmp')
+   with tmp.open('xb') as f:f.write(raw);f.flush();os.fsync(f.fileno());os.fchmod(f.fileno(),s.st_mode&0o7777)
+   os.replace(tmp,p)
+ raise
+for f in locks:f.close()
+after_ep=env['ep_status']();after_dtc=env['dtc_status']();assert after_ep['management_authority']['commit_verified'] and after_dtc['management_authority']['commit_verified'];assert after_ep['actual_starts']==57 and after_dtc['actual_starts']==2
+print(json.dumps({'status':'FORMAL_MANAGEMENT_ONLY_SWITCH_COMMITTED','authority':authority,'done':done,'source_after':{'EP_L2':after_ep,'DTC_L1':after_dtc},'delegated_reviews':{name:json.loads((root/(name+'_DELEGATED_REVIEW.json')).read_bytes()) for name in ['EP_L2','DTC_L1']},'source_authority_native_root':str(root)}))
+'''
+p=subprocess.run(['ssh','-o','BatchMode=yes','hrl','python3 -B -'],input=code.encode(),capture_output=True,timeout=90);assert p.returncode==0,p.stderr
+out=json.loads(p.stdout);(R/'FORMAL_MANAGEMENT_SWITCH_RECEIPT.json').write_bytes((json.dumps(out,indent=2)+'\n').encode());(R/'data/management_authority.json').write_bytes((json.dumps(out['authority'],indent=2)+'\n').encode())
+for name,value in out['delegated_reviews'].items():
+ dest=R/'delegated_owner_reviews';dest.mkdir(exist_ok=True);(dest/(name+'.json')).write_bytes((json.dumps(value,indent=2)+'\n').encode())
+print(json.dumps({'status':out['status'],'epoch':out['authority']['epoch'],'EP_actual':out['source_after']['EP_L2']['actual_starts'],'DTC_actual':out['source_after']['DTC_L1']['actual_starts'],'science_starts':0}))
