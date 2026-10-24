@@ -1,0 +1,19 @@
+# Lane T2 continuation and closure
+
+Supervision Goal: `LANE_T2_FROZEN115_ARCHIVE_COMPLETE_V1`. Execution identity remains `ORIGINAL174_VERIFIED_OFFLOAD_AND_SSD_RECLAIM_V1`, with the original task root, branch, frozen queue, transactions, locks, authorization and resource policy. This adds closure review; it does not create another execution queue or restart supervision budgets.
+
+The takeover baseline and live process identities are in `TAKEOVER_BASELINE.json`. Driver 1033480 / start_ticks 961292693, Supervisor 1035068 / start_ticks 961351867, and the single Windows Publisher 32272 / creation time 2026-10-25 01:06:02 +08:00 were alive at takeover. The supervisor's original deadline, recheck limits and counters are retained. Use live process and persistent state checks before any intervention.
+
+The existing publisher stages these reports on its normal five-minute cycle. No additional publisher, receiver, sender or supervisor is authorized merely by this report. Metadata review never rewrites checkpoints, ranges, manifests, COMMIT objects or science registry/controller state.
+
+`FROZEN115_FINAL_STATE_TABLE.csv` is the evolving 115-row closure table, with current pending/in-progress states until actual finalization. Historical parser HOLD records remain in the original ledger and are distinguished from current unresolved failures. `NEW_T2_COMMITTED_ASSETS.csv` counts only assets committed after this takeover baseline. The prior 20 trace selectors and R13 package never enter new-copy byte totals.
+
+`CONTENT_AND_RESTORE_CLOSURE.json` verifies committed control hash chains, source EOF SHA evidence, exact frozen identity/member lists, range coverage and current file sizes. `MEMBER_SHA_INDEX.csv.gz` retains full member SHA and numeric metadata pointers. This audit reuses prior full-body verification evidence and does not claim to have rehashed all current payload bodies.
+
+`TRACE51_COVERAGE.csv` joins each new scope with any preexisting exact selector without counting its bytes again. Some scopes are metadata supplements to already archived input bodies. `POLYBENCH_VARIANT_COVERAGE.csv` preserves all 28 baseline variants plus four supplemental historical rows, including out-of-queue scientific/content HOLDs. Full/fraction/trim, original `.trace`, processed `.traceg`, compressed packages and expanded members remain distinct. `Q05_EXACT_SCOPE.json` binds the exact 223,499-byte fixed10000 log; natural R0 is not a substitute.
+
+Native restoration and scientific acceptance remain independent of content archive status. Full native clones above 240 MiB were not performed under the 256 MiB task staging contract. Their existing bounded helper cannot be represented as a qualified unrestricted full native restore procedure. Retained raw trees, full SHA and metadata remain available, but full native restoration requires its own adequate admitted capacity and qualification. No scientific runtime result is promoted by this closure audit.
+
+`RECLAIM_ACCOUNTING.json` keeps measured physical free-space intervals, allocated bytes unlinked, archived logical bytes and current free space separate. All prior Source/Target INTENT/DONE records remain unchanged. New retirement still requires every condition in the original authorization; no missing recovery qualification is waived for disk space.
+
+Completion requires every frozen asset to have a final COMMITTED or explicit classified HOLD, every safe asset completed, partial transactions explained, true164 recovery maps and GitHub readback closed, and task-owned Supervisor/Publisher stopped after final publication. A normal finite driver pass with pending assets is not completion. Ordinary bounded engineering repairs must be attempted before terminal reporting.
