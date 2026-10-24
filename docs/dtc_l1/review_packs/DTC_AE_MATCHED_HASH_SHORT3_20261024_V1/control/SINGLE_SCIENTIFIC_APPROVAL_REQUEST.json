@@ -1,0 +1,87 @@
+{
+  "schema": "DTC_AEFAIR_SHORT3_EXACT_REQUEST_V1",
+  "request_id": "DTC_AEFAIR_SHORT3_EPOCH2_20261024_V1",
+  "specs": [
+    {
+      "cohort": "E2-AEF3-NN-DM",
+      "sha256": "1458b921fd0e9654bbd823e68f97f0ae1f40db34c81e7bf6ed6f5342aafc1cdb"
+    },
+    {
+      "cohort": "E2-AEF3-NN-DH",
+      "sha256": "2e322120e2fc0a3e86b0b75c8172efc3c2220abd7cfbcb5a67e97bb92515650b"
+    },
+    {
+      "cohort": "E2-AEF3-NN-CM",
+      "sha256": "ec1a2ae12fbaaaca52b134762dbcff708c5ccaafbcee9a2b34dcfff4212e2bae"
+    },
+    {
+      "cohort": "E2-AEF3-NN-CH",
+      "sha256": "1a3040377612617b8cb6231c35f82dd0dcf10b9a853f827fa0c5cea917f7ecae"
+    },
+    {
+      "cohort": "E2-AEF3-DWT2D-DM",
+      "sha256": "5faa318770451b58f1a8bf2de5a56fa55bbe8b49bbdaff21a52ce3e0069e1157"
+    },
+    {
+      "cohort": "E2-AEF3-DWT2D-DH",
+      "sha256": "7934edf7c819c8d4b1bbdceb518028f65dad1b079d8f5f29c7b42a04b5ca2f22"
+    },
+    {
+      "cohort": "E2-AEF3-DWT2D-CM",
+      "sha256": "343c7731c4cf2c7b68d46e399da590d92ac93ca3ce9c4e57844e04a05fe817fe"
+    },
+    {
+      "cohort": "E2-AEF3-DWT2D-CH",
+      "sha256": "7de2056c5d1335e74a3ed09b602010ae3615849d2267e057e15df0a3bd86dd28"
+    },
+    {
+      "cohort": "E2-AEF3-MRIQ-DM",
+      "sha256": "c2e18499eb0b8c6d86383d6c194be5a856d68989da9b321cd6f5b23a711a2f6f"
+    },
+    {
+      "cohort": "E2-AEF3-MRIQ-DH",
+      "sha256": "788b04aac89e6e4be0535d36e76a4b38370ca47e4457fc24928798943f75f5e0"
+    },
+    {
+      "cohort": "E2-AEF3-MRIQ-CM",
+      "sha256": "aada9436539b05c8af63ed3b0680f954da50fa67190d06b60bc4b4b1cfb9e03d"
+    },
+    {
+      "cohort": "E2-AEF3-MRIQ-CH",
+      "sha256": "8a368dedb1c8c7bdc4fb15658c33a9a2e525bf34437b1f0acdd7a7a8b39a0a82"
+    }
+  ],
+  "matrix_order": [
+    "E2-AEF3-NN-DM",
+    "E2-AEF3-NN-DH",
+    "E2-AEF3-NN-CM",
+    "E2-AEF3-NN-CH",
+    "E2-AEF3-DWT2D-DM",
+    "E2-AEF3-DWT2D-DH",
+    "E2-AEF3-DWT2D-CM",
+    "E2-AEF3-DWT2D-CH",
+    "E2-AEF3-MRIQ-DM",
+    "E2-AEF3-MRIQ-DH",
+    "E2-AEF3-MRIQ-CM",
+    "E2-AEF3-MRIQ-CH"
+  ],
+  "max_starts": 12,
+  "one_worker": true,
+  "no_retry": true,
+  "on_first_safety_or_strict_failure": "STOP_COHORT_SEAL_REMAINING",
+  "source": "174-new native only",
+  "inputs": [
+    "NN",
+    "DWT2D",
+    "MRI-Q"
+  ],
+  "input_identities_sha256": "b8ca2e14a4cdb8502579dbe154c9362ca58e5e57afccf987bed7b6c0e301bbfe",
+  "native_output_root": "/root/data/dtc_main_short3_20261024_v1/DTC/run/results",
+  "true164_archive_increment": "20261024_dtc_aefair_short3_epoch2_results",
+  "result_cap_per_cell_bytes": 33554432,
+  "wall_per_cell_seconds": 21600,
+  "user_authorization_sha256": "86872b282e802c96aac4f51459b011017df25010d6aefb0b24eb45d56d91e3d5",
+  "same_binary_and_config_bytes_as_completed_GEMM": true,
+  "resource_reservation": "12 x32MiB results plus12 x32MiB independent restores plus256MiB spool =1GiB own, all reserved;7GiB floor+1GiB unknown+active registered peers",
+  "scope_limits": "Small fixed historical inputs, no inference of suite representativeness, native numerical correctness, hardware timing or PPA; cross-design geometry limits unchanged"
+}
