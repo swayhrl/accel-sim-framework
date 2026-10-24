@@ -1,0 +1,21 @@
+{
+  "status": "PREPARED_NOT_LAUNCHED",
+  "base_sha256": "5a8f3b67096caf0fac32ec8cb734c9de2251073ee25e52223e080fc40c77f812",
+  "controller_sha256": "6d5428e5b0859df970b41c1deb68ef7c9e90bc0e554bc3e8570b14165592f66f",
+  "failure_review_sha256": "192ee87869dac9cc4e73cc7bafe52eba3f13a89d9c5e9f9f3e5a6e440810b8a2",
+  "new_source": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/revision3/sweep_controller.py",
+  "adaptation_sites": [
+    "def install(native,lease):",
+    "def main():",
+    "owner=(T/'control/FINITE_CONTROLLER.lock').open('a+b');fcntl.flock(owner,fcntl.LOCK_EX|fcntl.LOCK_NB)",
+    "assert not (T/'control/CONTROLLER_START_R2.json').exists()",
+    "write(T/'control/BATCH_LEASE.json',lease);write(T/'control/CONTROLLER_START_R2.json',lease);install(native,lease)",
+    "admitted={};holds={};results={};running={};issues=False;start_count=0",
+    "except BaseException as e:\n  intent=T/'control/qualification_ledger'",
+    "if result['state']!='PASS_STRICT_ARCHIVE_NATIVE_RESTORE':issues=True",
+    "'closed_point_results':len(results)",
+    "state='ALL_ELIGIBLE_NATIVE_POINTS_ACCEPTED_ARCHIVED_RESTORED',input_holds=holds"
+  ],
+  "scope": "Wait exact prior finite controller/active models to close naturally;adopt spent results;continue only original unused exact cells. Only rechecked deadlock/SIGABRT class is closed as unaccepted,all other failures still checkpoint. No binary/config/input/native launcher changes or retries.",
+  "final_delivery_draft_notice": "Earlier consumer/preparer assumes all points PASS. Before final delivery,extend independent consumer/report to include every classified failed point and incomplete comparison. Do not relabel failure as scientific PASS or discard it."
+}

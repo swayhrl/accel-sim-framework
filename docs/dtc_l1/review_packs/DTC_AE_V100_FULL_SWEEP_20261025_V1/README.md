@@ -33,3 +33,7 @@ Runtime:/root/data/dtc_main_v100_sweep_20261025_v1. Request:DTC_AE_V100_FULL_SWE
 ## Pre-registration writer-lock correction
 
 The first metadata controller acquired the global lease but self-blocked before registry mutation because a broad source transformation also replaced the exclusive-writer directSHA check with a nested shared-lock read. No request row,INTENT,UUID/model or budget consumption was created. Its exact metadata generation was stopped and the previous shared frontend restored. R2 restores the original directSHA comparison inside the already exclusive writer;independent readers retain shared locking. An isolated copied authority test now exercises actual exclusive update plus subsequent shared read/hash validation,without touching live authority.13zero-model checks pass. All prior metadata and zero-start evidence remain. R2 uses a separate start marker and the same finite356candidate matrix,not additional credit.
+
+## Diagnosed native deadlock continuation
+
+See [continuation_r3/README.md](continuation_r3/README.md) for the preserved ParboilBFS-DM deadlock and separately qualified successor. This is a classified unaccepted model failure,not a result or retry. All original unused cells remain in scope;final evidence must include every failed point.

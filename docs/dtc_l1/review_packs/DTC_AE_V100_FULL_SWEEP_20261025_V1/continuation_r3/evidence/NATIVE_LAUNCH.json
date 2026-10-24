@@ -1,0 +1,374 @@
+{
+  "argv": [
+    "/root/data/dtc_main_v100_sweep_20261025_v1/common-lib/ld-linux-x86-64.so.2",
+    "--library-path",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/tools/lib:/root/data/dtc_main_v100_sweep_20261025_v1/common-lib",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/tools/bin/strace",
+    "-f",
+    "-e",
+    "trace=%file,process,network",
+    "-o",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/5d58a06a-8465-4dcf-bf31-391b5a6c4737/actual_file_process_network.log",
+    "--",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/common-lib/ld-linux-x86-64.so.2",
+    "--inhibit-cache",
+    "--library-path",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/lib",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/bin/accel-sim.out",
+    "-trace",
+    "/root/workspace/assets/traces/bundles/ff506808c7f46b0aafb46ae6deef722cd7f82cc59d438e6b2b035edca147594c/tree/kernelslist.g",
+    "-config",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-0.config",
+    "-config",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-1.config",
+    "-config",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-2.config",
+    "-config",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-3.config"
+  ],
+  "effective_result_cap_bytes": 553648128,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "DTC_AG7_GENERATION": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+    "DTC_AG7_INPUT_SHA": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+    "DTC_AG7_POLICY_B_PROGRESS": "1",
+    "DTC_AG7_PROGRESS_FD": "6",
+    "DTC_AG7_ROI_SHA": "b0856e8e8fc094af7919c7a96ddfac2fe3b3f4154f718c71c357dd3d94c16cad",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "LD_LIBRARY_PATH": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/lib",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/bin:/bin",
+    "TMPDIR": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/5d58a06a-8465-4dcf-bf31-391b5a6c4737/tmp",
+    "XDG_CACHE_HOME": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/5d58a06a-8465-4dcf-bf31-391b5a6c4737/cache"
+  },
+  "finite_native_launcher_sha256": "ec40dd1fe8247cb4a93a88bb15601afcb012a805e9689459aa9f245ad9efebd6",
+  "frozen_upper_result_cap_bytes": 553648128,
+  "host": {
+    "filesystem": {
+      "fstype": "ext4",
+      "options": "rw,relatime",
+      "source": "/dev/sdf[/huangrulin]",
+      "target": "/root/data"
+    },
+    "hostname": "huangrulin-sshfs-174",
+    "mnt_namespace": "mnt:[4026535153]",
+    "native_device": 2128,
+    "pid_namespace": "pid:[4026535156]"
+  },
+  "launcher_pid": 1073177,
+  "native_DTC_original_rebound_admission": {
+    "IO": "Both domains observed; original BA user-amended warning-only IO semantics retained",
+    "Source_only_host_admission": "Explicit user Target rebinding, no fake original174 hostname",
+    "checks": {
+      "first_authorized_native_identity": true,
+      "first_cgroup_original_memory_full_avg10_le1": true,
+      "first_host_headroom_ge64GiB": true,
+      "first_host_original_memory_full_avg10_le1": true,
+      "first_native_disk_floor_plus_monitor": true,
+      "first_original_cgroup_headroom_ge32GiB": true,
+      "no_new_cgroup_OOM": true,
+      "no_new_host_OOM": true,
+      "original_pair_gap_ge10s": true,
+      "same_device": true,
+      "second_authorized_native_identity": true,
+      "second_cgroup_original_memory_full_avg10_le1": true,
+      "second_host_headroom_ge64GiB": true,
+      "second_host_original_memory_full_avg10_le1": true,
+      "second_native_disk_floor_plus_monitor": true,
+      "second_original_cgroup_headroom_ge32GiB": true
+    },
+    "first": {
+      "cgroup": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "io.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=12904674928\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=12560358641",
+        "memory.current": "60336787456",
+        "memory.max": "274877906944",
+        "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=688910782\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685146445",
+        "memory.swap.current": "15400960"
+      },
+      "cgroup_pressure_parsed": {
+        "io": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "12560358641"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "12904674928"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "685146445"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "688910782"
+          }
+        }
+      },
+      "disk_free_bytes": 22420516864,
+      "host": "huangrulin-sshfs-174",
+      "host_MemAvailable_bytes": 303247794176,
+      "host_oom_kill": 366,
+      "monotonic_ns": 9623193687556093,
+      "output_filesystem_device": 2128,
+      "pressure": {
+        "io": {
+          "full": {
+            "avg10": "5.14",
+            "avg300": "5.00",
+            "avg60": "5.01",
+            "total": "202921805599"
+          },
+          "some": {
+            "avg10": "5.14",
+            "avg300": "5.02",
+            "avg60": "5.02",
+            "total": "223890187359"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41304005312"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41681600477"
+          }
+        }
+      },
+      "pswpin": 3741889,
+      "pswpout": 11010330,
+      "uid": 0
+    },
+    "monitor_unknown_headroom_included_in_5GiB": true,
+    "pre_revision_disk_checks": {
+      "first_native_disk_floor_plus_monitor": true,
+      "second_native_disk_floor_plus_monitor": true
+    },
+    "pre_revision_status": "PASS",
+    "scientific_forks": 0,
+    "second": {
+      "cgroup": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "io.pressure": "some avg10=0.08 avg60=0.03 avg300=0.00 total=12904720977\nfull avg10=0.08 avg60=0.02 avg300=0.00 total=12560395766",
+        "memory.current": "60247511040",
+        "memory.max": "274877906944",
+        "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=688910782\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685146445",
+        "memory.swap.current": "15400960"
+      },
+      "cgroup_pressure_parsed": {
+        "io": {
+          "full": {
+            "avg10": "0.08",
+            "avg300": "0.00",
+            "avg60": "0.02",
+            "total": "12560395766"
+          },
+          "some": {
+            "avg10": "0.08",
+            "avg300": "0.00",
+            "avg60": "0.03",
+            "total": "12904720977"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "685146445"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "688910782"
+          }
+        }
+      },
+      "disk_free_bytes": 22420340736,
+      "host": "huangrulin-sshfs-174",
+      "host_MemAvailable_bytes": 302701961216,
+      "host_oom_kill": 366,
+      "monotonic_ns": 9623203701375008,
+      "output_filesystem_device": 2128,
+      "pressure": {
+        "io": {
+          "full": {
+            "avg10": "4.87",
+            "avg300": "4.99",
+            "avg60": "4.98",
+            "total": "202922341596"
+          },
+          "some": {
+            "avg10": "5.06",
+            "avg300": "5.02",
+            "avg60": "5.02",
+            "total": "223890730493"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41304005318"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41681600483"
+          }
+        }
+      },
+      "pswpin": 3741889,
+      "pswpout": 11010330,
+      "uid": 0
+    },
+    "status": "PASS",
+    "storage_profile": "USER_LOCAL_5GiB_EXCLUSIVE_FLOOR_SHARED_ASSET_POOL_V3"
+  },
+  "old174_SSH_invocation": false,
+  "prepared": {
+    "asset": {
+      "FUSE_inode": "Informational only; current whole contentSHA and immutable object member identities are the evidence, old inode validators untouched",
+      "binding_sha256": "6465239f669aee934a4b4813f01b2bb2eb4840c2eda0f2b1231020140251573f",
+      "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+      "kernels": 11,
+      "native_values": "UNPROVEN",
+      "status": "CURRENT_FULL_BODY_SHA_BOUND_GENUINE164_INPUT"
+    },
+    "cohort": "E2-AEV100-1df9d5479504d9c7-DM",
+    "identity": {
+      "filesystem": {
+        "fstype": "ext4",
+        "options": "rw,relatime",
+        "source": "/dev/sdf[/huangrulin]",
+        "target": "/root/data"
+      },
+      "hostname": "huangrulin-sshfs-174",
+      "mnt_namespace": "mnt:[4026535153]",
+      "native_device": 2128,
+      "pid_namespace": "pid:[4026535156]"
+    },
+    "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+    "resources": {
+      "bounded_own_remaining_write_and_restore_bytes": 12834182828,
+      "cgroup_memory_current": 60336324608,
+      "cgroup_memory_max": "274877906944",
+      "free_inodes": 216574535,
+      "fresh_local_resource_sample": true,
+      "host_MemAvailable_bytes": 303245713408,
+      "local_safety_floor_bytes": 5368709120,
+      "native_free_bytes": 22420516864,
+      "other_outstanding_write_reservations_bytes": 0,
+      "own_reservations": [
+        {
+          "cohort": "E2-AEV100-3aac3b722c1b2e50-DH",
+          "remaining_write_and_restore_bytes": 1106937717
+        },
+        {
+          "cohort": "E2-AEV100-977e34578994c3d2-CH",
+          "remaining_write_and_restore_bytes": 4216432796
+        },
+        {
+          "cohort": "E2-AEV100-977e34578994c3d2-DM",
+          "remaining_write_and_restore_bytes": 4222880844
+        },
+        {
+          "cohort": "E2-AEV100-b41cc74c66ca6ed4-DM",
+          "remaining_write_and_restore_bytes": 1106893391
+        },
+        {
+          "claimed_before_INTENT_write_and_restore_bytes": 1107296256,
+          "cohort": "E2-AEV100-1df9d5479504d9c7-DM"
+        }
+      ],
+      "peer_reservations": [],
+      "physical_RAM_pass": true,
+      "physical_disk_pass": true,
+      "required_free_bytes": 18202891948,
+      "reserved_additional_live_and_candidate_RAM_bytes": 83491815424,
+      "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+      "utc": "2026-10-24T19:47:02.335145+00:00"
+    },
+    "scientific_starts": 0,
+    "status": "SWEEP_EXACT_REGISTERED_PREPARE_PASS_NO_START"
+  },
+  "resources": {
+    "bounded_own_remaining_write_and_restore_bytes": 12834008308,
+    "cgroup_memory_current": 60247511040,
+    "cgroup_memory_max": "274877906944",
+    "free_inodes": 216574535,
+    "fresh_local_resource_sample": true,
+    "host_MemAvailable_bytes": 302701961216,
+    "local_safety_floor_bytes": 5368709120,
+    "native_free_bytes": 22420340736,
+    "other_outstanding_write_reservations_bytes": 0,
+    "own_reservations": [
+      {
+        "cohort": "E2-AEV100-3aac3b722c1b2e50-DH",
+        "remaining_write_and_restore_bytes": 1106908532
+      },
+      {
+        "cohort": "E2-AEV100-977e34578994c3d2-CH",
+        "remaining_write_and_restore_bytes": 4216360474
+      },
+      {
+        "cohort": "E2-AEV100-977e34578994c3d2-DM",
+        "remaining_write_and_restore_bytes": 4222811091
+      },
+      {
+        "cohort": "E2-AEV100-b41cc74c66ca6ed4-DM",
+        "remaining_write_and_restore_bytes": 1106890131
+      },
+      {
+        "claimed_before_INTENT_write_and_restore_bytes": 1107296256,
+        "cohort": "E2-AEV100-1df9d5479504d9c7-DM"
+      }
+    ],
+    "peer_reservations": [],
+    "physical_RAM_pass": true,
+    "physical_disk_pass": true,
+    "required_free_bytes": 18202717428,
+    "reserved_additional_live_and_candidate_RAM_bytes": 83483426816,
+    "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+    "utc": "2026-10-24T19:47:12.366680+00:00"
+  },
+  "scientific_qualification_uuid": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+  "utc": "2026-10-24T19:47:12.393573+00:00"
+}
