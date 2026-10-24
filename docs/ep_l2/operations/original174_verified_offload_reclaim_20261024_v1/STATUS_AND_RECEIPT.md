@@ -1,14 +1,11 @@
-# Verified offload and SSD reclaim ? ACTIVE
+# Verified offload and SSD reclaim ? recovery ready
 
-Frozen115-scope queue: **3 committed,112 pending**. Unique new committed content42,341,631,909B across525regular files. These are active snapshot counts, not a whole-Goal completion claim.
+Read-only recovery on 2026-10-25: 9 committed, 106 pending (106 historical HOLD), no live driver. Verified committed unique content is 95,297,328,530 bytes across 676 regular files. The original driver finished its pass at 2026-10-24 20:37:29 +08:00 after a registry parser exception affected the remaining assets.
 
-- DTC pilot:14files,1symlink,176,089B, complete Source/164 SHA and independent ABSENT native Target restore PASS.
-- P0 srad:506files,21,565,199,284B, full SHA, complete tree and502-kernel original order verified.
-- P0 lavaMD:5files,20,776,256,536B, complete Source/164 SHA, complete tree and original1-kernel order verified; final COMMIT exists and its manifest/range/tree references independently read back.
-- srad/lavaMD full native clones:NOT_PERFORMED_EXCEEDS_BOUND (qualified240MiB window). Complete original uid/gid/mode/mtime_ns and replayable recovery scripts retained on genuine164. This is not a native164 recovery claim.
+`CURRENT_RECOVERY_STATUS.md` and `.json` record both endpoint namespaces, exact resources, ownership, retirement closure and the single resumable atomic_add_bw transaction. Its 1 GiB durable ranges and 79,691,776-byte owned partial remain intact. All 9 existing committed control hash chains and source EOF SHA proofs passed readback; no committed payload was retransmitted.
 
-Same finite single-stream driver has automatically entered hybridsort16,091,921,063B. Raw chunks?128MiB, temporary staging?256MiB, Source sender15MiB/s and aggregate?30MiB/s. Source/Target real resources and live-science gates remain enforced; Share payload writes0.
+Both independent resource admissions PASS at this snapshot: shared SSD available 22,095,417,344 bytes, required 10,536,091,648 bytes; Share uses zero payload staging; genuine164 is accessed only through the 174-new SSHFS mount. All original reservations and floors remain unchanged.
 
-Exact admitted SSD retirements: two T-owned old recovery-test copies(8,423regular files), four Source BICG/ATAX kernel files and one Source cold polybench.tgz backup. Summed operation-interval pool gains18,936,295,424B; Source unlink interval gains18,420,580,352B. Genuine164 archives and restoration metadata preserved. All other Source assets, models, Git objects and scientific state KEEP. No scientific starts/stops, budget or controller edits.
+Prior exact retirements remain complete and are not repeated: 8,423 T-owned recovery-test files, four Source BICG/ATAX files and the cold polybench package. Historical measured operation-interval pool gains remain 18,936,295,424 bytes; Source unlink interval gains remain 18,420,580,352 bytes. Archive volume and physical reclaim are counted separately. No new Source deletion or scientific action occurred during recovery.
 
-Current receipt and full115-row pending queue are the named CSV/JSON deliverables. Pilot wire/range accounting remains separately clarified in checkpoint/FIRST_ARCHIVE_ACCOUNTING_CLARIFICATION.json; last invocation range reuse does not erase earlier same-Goal delivery.
+Safe continuation uses the same frozen 115 scopes, original task IDs, manifests, range checkpoints and global locks. The parser will fail closed for unsupported RUNNING science schemas, and common admission failures will stop the pass without another cascade of per-asset holds. This is an active recovery snapshot, not a whole-Goal completion claim. Full native restore for large archived inputs remains NOT_PERFORMED_EXCEEDS_BOUND; original metadata and recovery scripts remain on genuine164.
