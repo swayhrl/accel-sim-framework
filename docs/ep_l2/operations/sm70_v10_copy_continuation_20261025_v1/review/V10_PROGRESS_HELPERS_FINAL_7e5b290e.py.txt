@@ -1,0 +1,90 @@
+def _progress_process_identity(proof):
+ pid=proof['pid'];ticks=proof['start_ticks']
+ need(type(pid)is int and type(ticks)is int and pid>0 and ticks>0,'RESOURCE_HOLD_ACTIVE_PID_PROOF_INVALID')
+ try:row=(P('/proc')/str(pid)/'stat').read_text().rsplit(')',1)[1].split()
+ except (FileNotFoundError,ProcessLookupError):return None
+ if int(row[19])!=ticks or row[0]in ['Z','X','x']:return None
+ return {'pid':pid,'start_ticks':ticks}
+class _ProgressTail:
+ def __init__(self):self.pending=bytearray();self.records=deque(maxlen=32);self.record_count=0;self.decoded_bytes=0
+ def add_record(self,line):
+  if not line.strip():return
+  try:row=json.loads(line)
+  except (ValueError,UnicodeDecodeError)as e:raise RuntimeError('RESOURCE_HOLD_ACTIVE_PROGRESS_BAD_JSON')from e
+  need(isinstance(row,dict),'RESOURCE_HOLD_ACTIVE_PROGRESS_BAD_JSON_TYPE');self.records.append(row);self.record_count+=1
+ def feed(self,data):
+  self.decoded_bytes+=len(data);need(self.decoded_bytes<=64*MIB,'RESOURCE_HOLD_ACTIVE_PROGRESS_DECODED64M_LIMIT')
+  self.pending.extend(data)
+  while True:
+   at=self.pending.find(b'\n')
+   if at<0:break
+   need(at<=256*1024,'RESOURCE_HOLD_ACTIVE_PROGRESS_RECORD256K_LIMIT');line=bytes(self.pending[:at]);del self.pending[:at+1];self.add_record(line)
+  need(len(self.pending)<=256*1024,'RESOURCE_HOLD_ACTIVE_PROGRESS_RECORD256K_LIMIT')
+ def finish(self,allow_live_partial):
+  if self.pending.strip():
+   try:row=json.loads(self.pending)
+   except (ValueError,UnicodeDecodeError):
+    need(allow_live_partial and bool(self.records)and bytes(self.pending).lstrip().startswith(b'{'),'RESOURCE_HOLD_ACTIVE_PROGRESS_TRUNCATED_JSON')
+   else:
+    need(isinstance(row,dict),'RESOURCE_HOLD_ACTIVE_PROGRESS_BAD_JSON_TYPE');self.records.append(row);self.record_count+=1;self.pending.clear()
+  need(bool(self.records),'RESOURCE_HOLD_ACTIVE_PROGRESS_UNREADABLE')
+  return self.records[-1]
+def _progress_snapshot(out):
+ """Bounded metadata read; a live final gzip member need not have its trailer yet."""
+ import zlib
+ out=P(out);plain=out/'progress.jsonl';compressed=False
+ if plain.exists():path=plain
+ else:path=out/'progress.jsonl.gz';compressed=True
+ fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW);tail=_ProgressTail();raw_bytes=0;frames=0;decoder=None;last_eof=False;member_prefix=b''
+ with os.fdopen(fd,'rb',buffering=0)as stream:
+  before=os.fstat(stream.fileno());need(stat.S_ISREG(before.st_mode),'RESOURCE_HOLD_ACTIVE_PROGRESS_FILE_TYPE')
+  if not compressed:
+   start=max(0,before.st_size-4096);stream.seek(start);raw=stream.read(before.st_size-start);raw_bytes=len(raw)
+   if start:raw=raw.split(b'\n',1)[1]if b'\n'in raw else b''
+   tail.feed(raw);last=tail.finish(True)
+  else:
+   need(before.st_size<=16*MIB,'RESOURCE_HOLD_ACTIVE_PROGRESS_COMPRESSED16M_LIMIT');left=before.st_size
+   while left:
+    raw=stream.read(min(64*1024,left));need(bool(raw),'RESOURCE_HOLD_ACTIVE_PROGRESS_TRUNCATED_FILE');left-=len(raw);raw_bytes+=len(raw);data=raw
+    while data:
+     if decoder is None:decoder=zlib.decompressobj(31);member_prefix=b''
+     if len(member_prefix)<2:
+      member_prefix+=data[:2-len(member_prefix)]
+      need(b'\x1f\x8b'.startswith(member_prefix),'RESOURCE_HOLD_ACTIVE_PROGRESS_BAD_GZIP_HEADER')
+     previous=len(data)
+     try:decoded=decoder.decompress(data,min(64*1024,64*MIB-tail.decoded_bytes+1))
+     except zlib.error as e:raise RuntimeError('RESOURCE_HOLD_ACTIVE_PROGRESS_BAD_GZIP')from e
+     tail.feed(decoded)
+     if decoder.eof:
+      frames+=1;data=decoder.unused_data;decoder=None;last_eof=not data
+     else:
+      data=decoder.unconsumed_tail;last_eof=False
+      need(bool(decoded)or len(data)<previous,'RESOURCE_HOLD_ACTIVE_PROGRESS_DECODER_NO_PROGRESS')
+   last=tail.finish(decoder is not None)
+  after=os.fstat(stream.fileno());path_after=path.lstat()
+  need(stat.S_ISREG(path_after.st_mode)and before.st_dev==after.st_dev==path_after.st_dev and before.st_ino==after.st_ino==path_after.st_ino,'RESOURCE_HOLD_ACTIVE_PROGRESS_PATH_FD_CHANGED')
+  need(after.st_size>=before.st_size and path_after.st_size>=before.st_size,'RESOURCE_HOLD_ACTIVE_PROGRESS_FILE_TRUNCATED')
+  if compressed:need(after.st_size<=16*MIB and path_after.st_size<=16*MIB,'RESOURCE_HOLD_ACTIVE_PROGRESS_COMPRESSED16M_LIMIT')
+ meta={'path':str(path),'format':'gzip_stream'if compressed else'plain_tail','compressed_bytes_read':raw_bytes if compressed else 0,'plain_bytes_read':raw_bytes if not compressed else 0,'decoded_bytes':tail.decoded_bytes,'complete_records_seen':tail.record_count,'retained_records':len(tail.records),'gzip_completed_members':frames if compressed else None,'gzip_last_member_eof':last_eof if compressed else None,'live_unfinalized_gzip_CRC_not_claimed':compressed and decoder is not None,'pending_bytes_not_adopted_as_complete':len(tail.pending),'limits':{'compressed_bytes':16*MIB,'decoded_bytes':64*MIB,'retained_records':32,'single_record_bytes':256*1024}}
+ return last,meta
+def _current_foreign_progress(out,proof):
+ """Exact proof identity on both sides; concurrent exit/Z is not an active health failure."""
+ before=_progress_process_identity(proof)
+ if before is None:return None
+ try:
+  last,meta=_progress_snapshot(out)
+  has_identity='pid'in last or 'start_ticks'in last
+  if meta['format']=='gzip_stream'or has_identity:
+   need(type(last.get('pid'))is int and type(last.get('start_ticks'))is int and last['pid']==proof['pid']and last['start_ticks']==proof['start_ticks'],'RESOURCE_HOLD_ACTIVE_PROGRESS_PID_TICKS_MISMATCH')
+   meta['record_identity']='MATCHED_EXACT_PROOF_PID_START_TICKS'
+  else:meta['record_identity']='LEGACY_PLAIN_SCHEMA_WITHOUT_PID_FIELDS_LIVE_PROOF_PRE_POST'
+  age=(time.monotonic_ns()-last['mono_ns'])/1e9
+  need(age<=30,'RESOURCE_HOLD_ACTIVE_AEFAIR_PROGRESS_FRESHNESS')
+  completed=last['completed'];phase=last['phase']
+ except (RuntimeError,OSError,ValueError,KeyError,TypeError)as e:
+  if _progress_process_identity(proof)is None:return None
+  if isinstance(e,RuntimeError)and str(e).startswith('RESOURCE_HOLD_'):raise
+  raise RuntimeError('RESOURCE_HOLD_ACTIVE_PROGRESS_UNREADABLE: '+repr(e))from e
+ if _progress_process_identity(proof)!=before:return None
+ return {'pid':proof['pid'],'start_ticks':proof['start_ticks'],'completed':completed,'phase':phase,'progress_age_seconds':age,'progress_reader':meta}
+

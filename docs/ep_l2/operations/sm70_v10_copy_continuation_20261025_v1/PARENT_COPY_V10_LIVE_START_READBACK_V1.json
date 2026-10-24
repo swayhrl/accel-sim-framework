@@ -1,0 +1,85 @@
+{
+  "schema": "PARENT_COPY_V10_LIVE_START_READBACK_V1",
+  "observed_unix": 1792871160.8268135,
+  "entry": {
+    "schema": "CURRENT_OWN_COPY_ONLY_EXECUTION_ENTRY_V1",
+    "pid": 1072499,
+    "start_ticks": 962309961,
+    "script": "/root/data/shared_sm70_trace_library_20261024_v1/tools/resume_archive_copy_only_v3.py",
+    "script_sha256": "8a53f47f528c2f170214b6a7b775220270b02821953a01b9fc0a05f30641a6b3",
+    "state": "/root/data/shared_sm70_trace_library_20261024_v1/control/ARCHIVE_COPY_ONLY_RESUME_STATE_V3.json",
+    "previous_GOAL_STATE_is_historical_terminal": true,
+    "deadline_hours": 72,
+    "created_unix": 1792871128.2777486,
+    "scientific_GPU_or_109_start": false,
+    "source_trace_payload_release_bytes": 0
+  },
+  "current_state": {
+    "schema": "FINITE_ARCHIVE_COPY_ONLY_RESUME_V3",
+    "stage": "COPY_ONLY_DRIVER_RUNNING",
+    "utc_unix": 1792871128.4300318,
+    "pid": 1072499,
+    "start_ticks": 962309961,
+    "science_or_GPU_started": false,
+    "publication_invoked": false,
+    "engine_sha256": "7e5b290e330cbc1fcc845b6a9c7ce3487d181677d117a8d77a31c60d12a42521",
+    "driver_sha256": "197d8b616c3539cc6ce253ba8b9f8548f86359bffbbca13d98a06f5d3076365a",
+    "list_sha256": "170f4f5f0fb81e53cf55d9fbcc60804f3da5afc0d62d04888ec995518eaf5362",
+    "driver_identity": {
+      "pid": 1072501,
+      "state": "R",
+      "ppid": 1072499,
+      "pgid": 1072501,
+      "sid": 1072501,
+      "start_ticks": 962309976
+    },
+    "driver_exec_released": true
+  },
+  "actual_owned_processes": [
+    {
+      "pid": 1072499,
+      "state": "S",
+      "start_ticks": 962309961,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/root/data/shared_sm70_trace_library_20261024_v1/tools/resume_archive_copy_only_v3.py"
+      ],
+      "owned_target_open_files": []
+    },
+    {
+      "pid": 1072501,
+      "state": "S",
+      "start_ticks": 962309976,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/root/data/shared_sm70_trace_library_20261024_v1/tools/transfer_batches_v10.py",
+        "ARCHIVE_BATCHES.json"
+      ],
+      "owned_target_open_files": []
+    },
+    {
+      "pid": 1072502,
+      "state": "S",
+      "start_ticks": 962309982,
+      "argv": [
+        "python3",
+        "-B",
+        "/root/data/shared_sm70_trace_library_20261024_v1/tools/library_copy_v10.py",
+        "migrate",
+        "/root/data/shared_sm70_trace_library_20261024_v1/manifests/2dcf6422136b02adcc6d.json"
+      ],
+      "owned_target_open_files": [
+        {
+          "fd": "4",
+          "path": "/root/share/mnt164/huangrulin/traces/bundles/_payload/2dcf6422136b02adcc6d/chunks/e64ef89c74d8a1e5ea4e8eba0138f8c2445a687dd23da0c8090f92050d0330bb/00000000000939524096.part",
+          "fdinfo": "pos:\t70254592\nflags:\t02100000\nmnt_id:\t3182\nino:\t87976964\n"
+        }
+      ]
+    }
+  ],
+  "current_phase": "V10_REVERIFYING_RETAINED_CLOSED_CHUNKS_BEFORE_READ_ONLY_ARCHIVE_SOURCE_RESUME",
+  "source_trace_payload_release_bytes": 0,
+  "publication_or_scientific_GPU_started": false
+}
