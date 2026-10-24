@@ -1,0 +1,187 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "recursiveGaussian",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian",
+    "source_files": [
+      {
+        "relative_path": "recursiveGaussian.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/recursiveGaussian.cpp",
+        "sha256": "d71a28a4e151167e019a4c86c0bfc2a1e7314c1ab698e0fe12fbaceea3515ea9"
+      },
+      {
+        "relative_path": "recursiveGaussian_cuda.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/recursiveGaussian_cuda.cu",
+        "sha256": "97d2b41a862ecd74dc292be49a2833b08e4206c6becf204c0b73bcba359bc782"
+      },
+      {
+        "relative_path": "recursiveGaussian_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/recursiveGaussian_kernel.cuh",
+        "sha256": "3d2cc1c191ab5d121bf797923de35a95c562f69bee8bd8096bbf17bf3976d8bf"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/ref_10.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/data/ref_10.ppm",
+        "bytes": 786447,
+        "sha256": "beade452aaee0e06965bd35cdcb0443d4adb32922be867f41eb7ac63abe9678c"
+      },
+      {
+        "relative_path": "data/ref_14.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/data/ref_14.ppm",
+        "bytes": 786447,
+        "sha256": "233b779cccc873cd116d0bb65d2f008d771affca58bcb6fcbcd8c8d442293495"
+      },
+      {
+        "relative_path": "data/ref_18.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/data/ref_18.ppm",
+        "bytes": 786447,
+        "sha256": "a24b98b95ea17858b04aa71db6142b8c3ebcf6e200b0f618daf35cfa90c8bb09"
+      },
+      {
+        "relative_path": "data/ref_22.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/data/ref_22.ppm",
+        "bytes": 786447,
+        "sha256": "8dbe6a93876a8d06ce8009e27cfdb0469f99d33fbeae965a9b9ffa7730cd2082"
+      },
+      {
+        "relative_path": "data/teapot512.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/data/teapot512.ppm",
+        "bytes": 786493,
+        "sha256": "0603710e97adfbc84633967dfc0b4e9d1df5235dda2bde4551446de74f8d4994"
+      }
+    ],
+    "task_id": "cuda118_recursiveGaussian_0",
+    "variant": "official_testrun_0",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/recursiveGaussian",
+      "-sigma=10",
+      "-file=ref_10.ppm"
+    ],
+    "binary_sha256": "3bca6b0bfd995508a58427600f92f5e182062735139a7f14ae2dc714b73cc0b0",
+    "binary_cubin_listing": "ELF file    1: recursiveGaussian.1.sm_89.cubin\nELF file    2: recursiveGaussian.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/recursiveGaussian/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_recursiveGaussian_0/attempt001",
+  "index": 65,
+  "start_unix": 1792820937.549379,
+  "lock_wait_seconds": 3.737863153219223e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792820937.5978103,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820938.632664,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820939.6633651,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820940.6972988,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820941.73169,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820942.7659235,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820943.8009682,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820944.8349922,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820945.8688912,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820946.904248,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820947.9412067,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820948.9738793,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820950.0057962,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820951.040944,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820952.0753295,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 392300,
+  "start_ticks": "344384906",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.28893084498122334,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "52e13ce66726b9f4dec6ea57acae3dceec4ccf4e41987828453ca602006ee12e",
+  "end_unix": 1792820953.390256
+}

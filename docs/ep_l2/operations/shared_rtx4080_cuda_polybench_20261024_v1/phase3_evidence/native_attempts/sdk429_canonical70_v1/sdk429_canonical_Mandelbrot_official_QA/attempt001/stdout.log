@@ -1,0 +1,31 @@
+SDK42_HOST_ADAPTER_QA_START
+[ CUDA Mandelbrot/Julia Set ]
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+  Device 0: <          Hopper >, Compute SM 8.9 detected
+* Running Automatic Test: <CUDA Mandelbrot/Julia Set>
+Data initialization done.
+> Saving PPM: <mandelbrot.ppm>
+   src_file <mandelbrot.ppm>
+   ref_file <./data/Mandelbrot_fp64.ppm>
+> Compare (a)rendered:  <mandelbrot.ppm>
+>         (b)reference: <./data/Mandelbrot_fp64.ppm>
+PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(30%)
+0.02(%) of bytes mismatched (count=474)
+    OK
+
+> Saving PPM: <julia.ppm>
+   src_file <julia.ppm>
+   ref_file <./data/referenceJulia_fp64.ppm>
+> Compare (a)rendered:  <julia.ppm>
+>         (b)reference: <./data/referenceJulia_fp64.ppm>
+PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(30%)
+0.71(%) of bytes mismatched (count=13667)
+    OK
+
+
+[CUDA Mandelbrot/Julia Set] -> Test Results: 0 errors
+SDK42_HOST_ADAPTER_QA_PASSED

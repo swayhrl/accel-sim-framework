@@ -1,0 +1,25 @@
+--- a/bodysystemcuda_impl.h
++++ b/bodysystemcuda_impl.h
+@@ -1,3 +1,10 @@
++#ifdef __CUDACC__
++extern __constant__ float softeningSquared;
++extern __constant__ double softeningSquared_fp64;
++#else
++extern float softeningSquared;
++extern double softeningSquared_fp64;
++#endif
+ /*
+  * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
+  *
+@@ -216,10 +223,7 @@
+     {
+         if (m_numDevices > 1)
+             cutilSafeCall(cudaSetDevice(i));
+-        cutilSafeCall(cudaMemcpyToSymbol((sizeof(T) > 4) ? "softeningSquared_fp64" : "softeningSquared", 
+-                                         &softeningSq, 
+-                                         sizeof(T), 0, 
+-                                         cudaMemcpyHostToDevice));    
++        if (sizeof(T)>4) { cutilSafeCall(cudaMemcpyToSymbol(softeningSquared_fp64,&softeningSq,sizeof(T),0,cudaMemcpyHostToDevice)); } else { cutilSafeCall(cudaMemcpyToSymbol(softeningSquared,&softeningSq,sizeof(T),0,cudaMemcpyHostToDevice)); }    
+     }
+ }
+ 

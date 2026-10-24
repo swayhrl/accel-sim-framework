@@ -1,0 +1,107 @@
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu(119): warning #1215-D: function "tex2D(texture<T, 2, cudaReadModeElementType>, float, float) [with T=float2]"
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/texture_fetch_functions.h(198): here was declared deprecated
+
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu(122): warning #1215-D: function "tex2D(texture<T, 2, cudaReadModeElementType>, float, float) [with T=float2]"
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/texture_fetch_functions.h(198): here was declared deprecated
+
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:42:15: warning: ‘vxfield’ initialized and declared ‘extern’
+   42 | extern cData *vxfield = NULL;
+      |               ^~~~~~~
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:43:15: warning: ‘vyfield’ initialized and declared ‘extern’
+   43 | extern cData *vyfield = NULL;
+      |               ^~~~~~~
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu: In function ‘void bindTexture()’:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:55:23: warning: ‘cudaError_t cudaBindTextureToArray(const texture<T, dim, readMode>&, cudaArray_const_t) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError; cudaArray_const_t = const cudaArray*]’ is deprecated [-Wdeprecated-declarations]
+   55 |     cudaBindTextureToArray(texref, array);
+      |     ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1718:53: note: declared here
+ 1718 | static __CUDA_DEPRECATED __inline__ __host__ cudaError_t cudaBindTextureToArray(
+      |                                                     ^~~~~~~~~~~~~~~~~~~~~~
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu: In function ‘void unbindTexture()’:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:60:18: warning: ‘cudaError_t cudaUnbindTexture(const texture<T, dim, readMode>&) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError]’ is deprecated [-Wdeprecated-declarations]
+   60 |     cudaUnbindTexture(texref);
+      |     ~~~~~~~~~~~~~^~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1842:53: note: declared here
+ 1842 | static __CUDA_DEPRECATED __inline__ __host__ cudaError_t cudaUnbindTexture(
+      |                                                     ^~~~~~~~~~~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h: In instantiation of ‘cudaError_t cudaBindTextureToArray(const texture<T, dim, readMode>&, cudaArray_const_t) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError; cudaArray_const_t = const cudaArray*]’:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:55:23:   required from here
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1726:55: warning: ‘cudaError_t cudaBindTextureToArray(const texture<T, dim, readMode>&, cudaArray_const_t, const cudaChannelFormatDesc&) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError; cudaArray_const_t = const cudaArray*]’ is deprecated [-Wdeprecated-declarations]
+ 1726 |   return err == cudaSuccess ? cudaBindTextureToArray(tex, array, desc) : err;
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1679:53: note: declared here
+ 1679 | static __CUDA_DEPRECATED __inline__ __host__ cudaError_t cudaBindTextureToArray(
+      |                                                     ^~~~~~~~~~~~~~~~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h: In instantiation of ‘cudaError_t cudaUnbindTexture(const texture<T, dim, readMode>&) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError]’:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:60:18:   required from here
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1846:27: warning: ‘cudaError_t cudaUnbindTexture(const textureReference*)’ is deprecated [-Wdeprecated-declarations]
+ 1846 |   return ::cudaUnbindTexture(&tex);
+      |        ~~~~~~~~~~~~~~~~~~~^~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime_api.h:8964:46: note: declared here
+ 8964 | extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaUnbindTexture(const struct textureReference *texref);
+      |                                              ^~~~~~~~~~~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h: In instantiation of ‘cudaError_t cudaBindTextureToArray(const texture<T, dim, readMode>&, cudaArray_const_t, const cudaChannelFormatDesc&) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError; cudaArray_const_t = const cudaArray*]’:
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1726:55:   required from ‘cudaError_t cudaBindTextureToArray(const texture<T, dim, readMode>&, cudaArray_const_t) [with T = float2; int dim = 2; cudaTextureReadMode readMode = cudaReadModeElementType; cudaError_t = cudaError; cudaArray_const_t = const cudaArray*]’
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu:55:23:   required from here
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime.h:1685:32: warning: ‘cudaError_t cudaBindTextureToArray(const textureReference*, cudaArray_const_t, const cudaChannelFormatDesc*)’ is deprecated [-Wdeprecated-declarations]
+ 1685 |   return ::cudaBindTextureToArray(&tex, array, &desc);
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_runtime_api.h:8898:46: note: declared here
+ 8898 | extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaBindTextureToArray(const struct textureReference *texref, cudaArray_const_t array, const struct cudaChannelFormatDesc *desc);
+      |                                              ^~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/helper_cuda.h:2,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/ep_cuda_helpers.h:6,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h:4,
+                 from <command-line>:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_gl_inline.h: In function ‘int findCudaGLDevice(int, T)’:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_gl_inline.h:6:155: warning: ‘cudaError_t cudaGLSetGLDevice(int)’ is deprecated [-Wdeprecated-declarations]
+    6 | template<class T> inline int findCudaGLDevice(int argc,T argv){int dev=ep_helper_findCudaDevice(argc,(const char**)argv);checkCudaErrors(cudaGLSetGLDevice(dev));return dev;}
+      |                                                                                                                                          ~~~~~~~~~~~~~~~~~^~~~~
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common/helper_cuda.h:595:37: note: in definition of macro ‘checkCudaErrors’
+  595 | #define checkCudaErrors(val) check((val), #val, __FILE__, __LINE__)
+      |                                     ^~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL.cpp:26:
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_gl_interop.h:305:57: note: declared here
+  305 | extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaGLSetGLDevice(int device);
+      |                                                         ^~~~~~~~~~~~~~~~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/helper_cuda.h:2,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/ep_cuda_helpers.h:6,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h:4,
+                 from <command-line>:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_gl_inline.h: In instantiation of ‘int findCudaGLDevice(int, T) [with T = char**]’:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL.cpp:406:29:   required from here
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_gl_inline.h:6:155: warning: ‘cudaError_t cudaGLSetGLDevice(int)’ is deprecated [-Wdeprecated-declarations]
+    6 | template<class T> inline int findCudaGLDevice(int argc,T argv){int dev=ep_helper_findCudaDevice(argc,(const char**)argv);checkCudaErrors(cudaGLSetGLDevice(dev));return dev;}
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common/helper_cuda.h:595:37: note: in definition of macro ‘checkCudaErrors’
+  595 | #define checkCudaErrors(val) check((val), #val, __FILE__, __LINE__)
+      |                                     ^~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL.cpp:26:
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_gl_interop.h:305:57: note: declared here
+  305 | extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaGLSetGLDevice(int device);
+      |                                                         ^~~~~~~~~~~~~~~~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/helper_cuda.h:2,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/ep_cuda_helpers.h:6,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h:4,
+                 from <command-line>:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_gl_inline.h:6:155: warning: ‘cudaError_t cudaGLSetGLDevice(int)’ is deprecated [-Wdeprecated-declarations]
+    6 | template<class T> inline int findCudaGLDevice(int argc,T argv){int dev=ep_helper_findCudaDevice(argc,(const char**)argv);checkCudaErrors(cudaGLSetGLDevice(dev));return dev;}
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common/helper_cuda.h:595:37: note: in definition of macro ‘checkCudaErrors’
+  595 | #define checkCudaErrors(val) check((val), #val, __FILE__, __LINE__)
+      |                                     ^~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL.cpp:26:
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_gl_interop.h:305:57: note: declared here
+  305 | extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaGLSetGLDevice(int device);
+      |                                                         ^~~~~~~~~~~~~~~~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/helper_cuda.h:2,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/ep_cuda_helpers.h:6,
+                 from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h:4,
+                 from <command-line>:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_gl_inline.h:6:155: warning: ‘cudaError_t cudaGLSetGLDevice(int)’ is deprecated [-Wdeprecated-declarations]
+    6 | template<class T> inline int findCudaGLDevice(int argc,T argv){int dev=ep_helper_findCudaDevice(argc,(const char**)argv);checkCudaErrors(cudaGLSetGLDevice(dev));return dev;}
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common/helper_cuda.h:595:37: note: in definition of macro ‘checkCudaErrors’
+  595 | #define checkCudaErrors(val) check((val), #val, __FILE__, __LINE__)
+      |                                     ^~~
+In file included from /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL.cpp:26:
+/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/../include/cuda_gl_interop.h:305:57: note: declared here
+  305 | extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaGLSetGLDevice(int device);
+      |                                                         ^~~~~~~~~~~~~~~~~

@@ -1,0 +1,152 @@
+{
+  "task": {
+    "task_id": "cuda118_simpleGLES_headless_official_QA_v1",
+    "suite": "CUDA Samples",
+    "version": "v11.8 original source explicit x86 Make gate/header selection compile",
+    "program": "simpleGLES",
+    "variant": "original_headless_CUDA_branch_no_GLES_context",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleGLES/simpleGLES",
+      "-file=ref_simpleGL.bin"
+    ],
+    "binary_sha256": "88a98e9209c49530f40ea529b290ddaa8b6db9d4e6ec7af1a9bd7f27ebf22ec0",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleGLES",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleGLES/simpleGLES.cu",
+        "sha256": "6bdfd56ecb1b0f6e6ab6fa0a77b68f858f4863c936b7f4234f8fc5d6086afa71"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleGLES/data/ref_simpleGL.bin",
+        "sha256": "267d96fb5775777327a82285886e04e93fe5f5416bc6abcd4601c3634fbf5721",
+        "bytes": 262144
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleGLES/data"
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 1800,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "SOURCE_CONFIRMED_HEADLESS_NO_GL_CALLS",
+      "ORIGINAL_SOURCE_KERNEL_UNCHANGED"
+    ],
+    "scientific_strength_note": "simpleGLES original golden checks first quarter of float4 output only; do not claim complete mesh numerical oracle. nbody source CPU comparison and full default benchmark separately fixed."
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda118_GLES_headless_v1/cuda118_simpleGLES_headless_official_QA_v1/attempt001",
+  "index": 0,
+  "start_unix": 1792835431.6084437,
+  "lock_wait_seconds": 160.0053609800525,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 321 MiB, 15623 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792835591.6603522,
+      "util": 5,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835592.6921988,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835593.723338,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835594.7563264,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835595.7905476,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835596.8231764,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835597.8572283,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835598.8886702,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835599.9187949,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835600.9536638,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835601.9874918,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835603.0209017,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835604.0551083,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835605.0871384,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835606.1214938,
+      "util": 0,
+      "free_mib": 15623
+    },
+    {
+      "unix": 1792835607.155926,
+      "util": 0,
+      "free_mib": 15623
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 494555,
+  "start_ticks": "345850413",
+  "minimum_free_vram_mib": 15609,
+  "exit": 0,
+  "wall_seconds": 0.28660133201628923,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "dfbf8111ec7652f21ca5d23f6a0bb6724d4d1cbbea17402783f64bdd82cbcf0f",
+  "end_unix": 1792835608.4631171
+}

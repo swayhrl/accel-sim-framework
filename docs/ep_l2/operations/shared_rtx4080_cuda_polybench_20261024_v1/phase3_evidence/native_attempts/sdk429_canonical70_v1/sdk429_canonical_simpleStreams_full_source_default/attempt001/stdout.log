@@ -1,0 +1,29 @@
+SDK42_HOST_ADAPTER_QA_START
+[ simpleStreams ]
+
+Device synchronization method set to = 0 (Automatic Blocking)
+Setting reps to 100 to demonstrate steady state
+
+> MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+GPU Device 0: "NVIDIA GeForce RTX 4080" with compute capability 8.9
+
+Device: <NVIDIA GeForce RTX 4080> canMapHostMemory: Yes
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> CUDA Capable: SM 8.9 hardware
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> 76 Multiprocessor(s) x 128 (Cores/Multiprocessor) = 9728 (Cores)
+> scale_factor = 1.0000
+> array_size   = 16777216
+
+> Using CPU/GPU Device Synchronization method (cudaDeviceScheduleAuto)
+> mmap() allocating 64.00 Mbytes (generic page-aligned system memory)
+> cudaHostRegister() registering 64.00 Mbytes of generic allocated system memory
+
+Starting Test
+memcopy:	3.59
+kernel:		1.36
+non-streamed:	4.78 (4.94 expected)
+4 streams:	3.70 (2.25 expected with compute capability 1.1 or later)
+-------------------------------
+SDK42_HOST_ADAPTER_QA_PASSED

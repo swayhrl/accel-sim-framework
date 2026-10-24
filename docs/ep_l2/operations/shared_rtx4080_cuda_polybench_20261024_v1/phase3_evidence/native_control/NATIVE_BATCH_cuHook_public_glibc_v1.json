@@ -1,0 +1,164 @@
+[
+  {
+    "task": {
+      "task_id": "cuda118_cuHook_public_glibc_API_only_v1",
+      "suite": "CUDA Samples",
+      "version": "v11.8 host public-glibc compatibility variant",
+      "program": "cuHook",
+      "variant": "public versioned dlsym bootstrap; original API assertions unchanged",
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/cuHook"
+      ],
+      "binary_sha256": "8b403318943c4996a96e25b68e67208b0c5c1a811cb3b1355d3f3dc7d6bd1c94",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.cpp",
+          "sha256": "2875fd0cf901d51e79abd98229276779647a7a704e520179d4a2f4975cbaa104"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.h",
+          "sha256": "9d30edee9533cae694534408bb7dd937ccdaefcef9600cb4de11878dc9831c69"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/cuHook.cpp",
+          "sha256": "ab40b5779e34a9fac77e92e14f3c2db0a24828d27628002a9586174ebd5cda32"
+        }
+      ],
+      "input_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.so.1",
+          "sha256": "04c0205b33d0ff302a3099e8a6125d87a2ecb86bdcab56c5b69df097fb99eb38",
+          "bytes": 17808
+        }
+      ],
+      "native_preload_libraries": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.so.1",
+          "sha256": "04c0205b33d0ff302a3099e8a6125d87a2ecb86bdcab56c5b69df097fb99eb38"
+        }
+      ],
+      "runtime_links": [],
+      "runtime_env": {
+        "CU_HOOK_DEBUG": "1"
+      },
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "Sample finished successfully"
+      },
+      "native_timeout_sec": 120,
+      "workload_kind": "API_ONLY_NO_CUDA_KERNEL_SOURCE_EXPECTED",
+      "expected_application_kernel_launch_count": 0,
+      "profile_flags": [
+        "EXPLICIT_NATIVE_PRELOAD_INTERPOSER",
+        "SOURCE_PROVEN_NO_APPLICATION_GPU_KERNEL"
+      ],
+      "readiness": "NATIVE_PROBE_PENDING"
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuHook_public_glibc_v1/cuda118_cuHook_public_glibc_API_only_v1/attempt001",
+    "index": 0,
+    "start_unix": 1792839865.6665633,
+    "lock_wait_seconds": 3.816094249486923e-06,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 305 MiB, 15639 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792839865.715446,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839866.7463052,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839867.7771919,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839868.8104892,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839869.8466759,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839870.8783875,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839871.9129727,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839872.9490383,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839873.9819605,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839875.0148242,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839876.047512,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839877.082236,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839878.1178908,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839879.1493642,
+        "util": 0,
+        "free_mib": 15639
+      },
+      {
+        "unix": 1792839880.1817067,
+        "util": 0,
+        "free_mib": 15639
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "native_only_preload_libraries": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.so.1",
+        "sha256": "04c0205b33d0ff302a3099e8a6125d87a2ecb86bdcab56c5b69df097fb99eb38"
+      }
+    ],
+    "pid": 509408,
+    "start_ticks": "346277716",
+    "minimum_free_vram_mib": 15625,
+    "exit": 0,
+    "wall_seconds": 0.29221483413130045,
+    "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+    "stdout_sha256": "90b02525956d9be19c6128e6f7eb2f871dae4c0fc6a3e29e798ab99e6a3bbf13",
+    "end_unix": 1792839881.4942296
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "task_id": "real_Vulkan_private_Xvfb_capability_probe_v1",
+    "suite": "PLATFORM_CAPABILITY_QUALIFICATION",
+    "version": "v1",
+    "program": "VULKAN_WSI_CAPABILITY_PROBE_NOT_WORKLOAD",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/run_private_vulkan_wsi_probe_v1.py"
+    ],
+    "binary_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/run_private_vulkan_wsi_probe_v1.py",
+        "sha256": "26cfffb083a6371d92d5be0bf83d44c40f7dcfbfede87b1c4b9df4c82af59661"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/run_private_vulkan_wsi_probe_v1.py",
+        "sha256": "26cfffb083a6371d92d5be0bf83d44c40f7dcfbfede87b1c4b9df4c82af59661",
+        "bytes": 2555
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/Xvfb",
+        "sha256": "0081b27338b510ec5e2068a93c6db31480872de9bb082f347f3747ef1648e794",
+        "bytes": 2064864
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/xauth",
+        "sha256": "ffcb5f569bf9fce94cbf37f5d61790d463508c6122511a5f4c6e280d3633086e",
+        "bytes": 56280
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/vulkaninfo",
+        "sha256": "f850851cd176c646851f42287902d5ee737849f275c1a64cb319b4985bdfbb4c",
+        "bytes": 649712
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/vkcube",
+        "sha256": "14785e71ea04584c4ef4b29b8ea17e7d8f988755d144feefa86e711f201a2b1d",
+        "bytes": 280920
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "runtime_links": [],
+    "native_timeout_sec": 180,
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "REAL_NVIDIA_RTX4080_VULKAN_PRIVATE_XVFB_PRESENT_PASSED"
+    },
+    "workload_kind": "CAPABILITY_PROBE_NO_CUDA_KERNEL_EXPECTED",
+    "note": "Private owned Xvfb for display transport only, force NVIDIA Vulkan ICD and exact physical UUID then actual2-frame Vulkan GPU render/present. No GDM/Xauthority access or global service change. Capability probe is never counted as an asset workload trace."
+  }
+]

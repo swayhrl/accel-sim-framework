@@ -1,0 +1,40 @@
+SDK42_HOST_ADAPTER_QA_START
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_full73_build_v1/sdk429_transpose Starting...
+
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA device [0]: NVIDIA GeForce RTX 4080
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Device 0: "NVIDIA GeForce RTX 4080"
+> SM Capability 8.9 detected:
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> [NVIDIA GeForce RTX 4080] has 76 MP(s) x 128 (Cores/MP) = 9728 (Cores)
+> Compute performance scaling factor = 1.00
+
+Matrix size: 1024x1024 (64x64 tiles), tile size: 16x16, block size: 16x16
+
+
+transpose-Outer-simple copy       , Throughput = 1702.9899 GB/s, Time = 0.00459 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-simple copy       , Throughput = 3874.6333 GB/s, Time = 0.00202 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-shared memory copy, Throughput = 1550.6898 GB/s, Time = 0.00504 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-shared memory copy, Throughput = 3850.7988 GB/s, Time = 0.00203 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-naive             , Throughput = 732.1876 GB/s, Time = 0.01067 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-naive             , Throughput = 691.9890 GB/s, Time = 0.01129 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-coalesced         , Throughput = 1428.3076 GB/s, Time = 0.00547 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-coalesced         , Throughput = 3044.5269 GB/s, Time = 0.00257 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-optimized         , Throughput = 1553.8481 GB/s, Time = 0.00503 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-optimized         , Throughput = 3767.6023 GB/s, Time = 0.00207 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-coarse-grained    , Throughput = 1550.6898 GB/s, Time = 0.00504 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-coarse-grained    , Throughput = 3836.8794 GB/s, Time = 0.00204 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-fine-grained      , Throughput = 1573.0710 GB/s, Time = 0.00497 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-fine-grained      , Throughput = 3829.6570 GB/s, Time = 0.00204 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+
+transpose-Outer-diagonal          , Throughput = 1389.6895 GB/s, Time = 0.00562 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+transpose-Inner-diagonal          , Throughput = 3833.8665 GB/s, Time = 0.00204 s, Size = 1048576 fp32 elements, NumDevsUsed = 1, Workgroup = 256
+SDK42_HOST_ADAPTER_QA_PASSED

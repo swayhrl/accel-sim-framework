@@ -1,0 +1,71 @@
+{
+  "schema": "SIMPLETEMPLATES_CONTEXT_LIFETIME_OVERWRITE_SOURCE_AUDIT_V1",
+  "failed_capture": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/inflight/ORD_EXT_simpleTemplates_4d7f84996ec9_A001",
+  "capture_evidence_files": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/inflight/ORD_EXT_simpleTemplates_4d7f84996ec9_A001/EXECUTION.json",
+      "sha256": "78375eed6fba02872a885d92f6acec563987301bd4a022e121e69e634729eb0d"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/inflight/ORD_EXT_simpleTemplates_4d7f84996ec9_A001/stdout.log",
+      "sha256": "c535c3e03a7bfedd63bdd44c09d8c6c5f8ded3e6afccd2794e0dba1bd629cf98"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/inflight/ORD_EXT_simpleTemplates_4d7f84996ec9_A001/stderr.log",
+      "sha256": "db90f3d107f56926dce43b03d11a4ea63630dad00af1545066c98056357a86b7"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/inflight/ORD_EXT_simpleTemplates_4d7f84996ec9_A001/traces/kernelslist_ctx_0x556d6bffeec0",
+      "sha256": "808767fd16551b73855935a76ba0bb43fdb8b2459828a4a82f61e034515bff00"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/inflight/ORD_EXT_simpleTemplates_4d7f84996ec9_A001/traces/stats_ctx_0x556d6bffeec0",
+      "sha256": "ba8ba1b24b5f9634b2c8eac5e0ec8a61aed6153ab077e3981c6d0e3cee9547da"
+    }
+  ],
+  "source_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/simpleTemplates.cu",
+  "source_sha256": "faf22ead30aa6ca29b85fed24033d3201c226699a43fd5eb2793bd9a3ff51a66",
+  "expected_launches": [
+    {
+      "type": "float",
+      "grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "dynamic_shared_bytes": 128,
+      "input_bytes": 128,
+      "function": "_Z10testKernelIfEvPT_S1_"
+    },
+    {
+      "type": "int",
+      "grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        64,
+        1,
+        1
+      ],
+      "dynamic_shared_bytes": 256,
+      "input_bytes": 256,
+      "function": "_Z10testKernelIiEvPT_S1_"
+    }
+  ],
+  "lifecycle": "main calls runTest<float>(32) then runTest<int>(64). Each runTest allocates, launches exactly once, synchronously copies full output, validates, frees, then cudaDeviceReset() line401. main adds final cudaDeviceReset at233. Two active-kernel context lifetimes are therefore required.",
+  "observed": "Both real launches logged kernel-1-ctx_0x556d6bffeec0.trace.xz; kernelslist declares same filename twice; stats preserves float17 and int32 records. First trace overwritten by second.",
+  "classification": "MULTI_CONTEXT_LIFETIME_RESET_POINTER_REUSE_SPECIAL",
+  "not_API_only": true,
+  "raw_recovery_possible": false,
+  "required_route": "New producer profile with process-unique context generation and/or monotonic global launch ID, identity propagated to static map and snapshots; new ABSENT attempt to collect both launches. Do not rename last raw to fabricate missing first trace.",
+  "modern_source_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleTemplates/simpleTemplates.cu",
+  "modern_source_sha256": "a54213980728baba4ae228163c35d3645e75dd2eb24d15f143dcdcd859bef900",
+  "modern_difference": "v11.8 removes runTest intermediate reset, executes both kernels within one context lifetime; separate successful modern capture does not certify old version."
+}

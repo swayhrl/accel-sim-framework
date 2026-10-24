@@ -1,0 +1,187 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "volumeFiltering",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering",
+    "source_files": [
+      {
+        "relative_path": "volume.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volume.cpp",
+        "sha256": "2516ca273a9fd607988c1f91d87e61b824283942c06b5f2e7d531bee2ec9081f"
+      },
+      {
+        "relative_path": "volume.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volume.h",
+        "sha256": "422a97a54617b01d40288db75e7b9d390419d8f96182e12906323c860d4cccd6"
+      },
+      {
+        "relative_path": "volumeFilter.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFilter.h",
+        "sha256": "1585003e784e45c525e4cffdc678892d5ce4b78cb1abd586aeb4b6bdade9db05"
+      },
+      {
+        "relative_path": "volumeFilter_kernel.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFilter_kernel.cu",
+        "sha256": "0ed00f5647b0074c1f72cf7c0f8926390e0791a315382b2257fda161f87e3ed7"
+      },
+      {
+        "relative_path": "volumeFiltering.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFiltering.cpp",
+        "sha256": "7b1344201b7e302b7aed7fb99e9c2a996a0007e8989a942b41b39d9ecb98c113"
+      },
+      {
+        "relative_path": "volumeRender.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volumeRender.h",
+        "sha256": "0807b41557d7d9b5bb3e2f52a00361ffda17444e8f69c157d69bbd5494f45d72"
+      },
+      {
+        "relative_path": "volumeRender_kernel.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volumeRender_kernel.cu",
+        "sha256": "2bc85fec14a6cb06a9409ec21f20781ef9442754d6a2aa025ac9674bb4961e8f"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/Bucky.raw",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/data/Bucky.raw",
+        "bytes": 32768,
+        "sha256": "8976ab31eb1944d2c9bbbe825935357cd25f65b48d3e13ba45427bf80418232d"
+      },
+      {
+        "relative_path": "data/ref_volumefilter.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/data/ref_volumefilter.ppm",
+        "bytes": 786486,
+        "sha256": "6b78e02b903dd4137a9b9fd4e4d56b0ae52c082ef8b22c6988e214c9a37833bc"
+      }
+    ],
+    "task_id": "cuda118_volumeFiltering_0",
+    "variant": "official_testrun_0",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFiltering",
+      "-file=ref_volumefilter.ppm"
+    ],
+    "binary_sha256": "101a49fbc964a21a90011bb7f18e1e1abb73221cd1a827ec32f269af67b3dfe1",
+    "binary_cubin_listing": "ELF file    1: volumeFiltering.1.sm_89.cubin\nELF file    2: volumeFiltering.2.sm_89.cubin\nELF file    3: volumeFiltering.3.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {},
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_volume_v1/Samples/5_Domain_Specific/volumeFiltering/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "device_helper_patch": "volume.h two undeclared saturate(sampled) calls replaced by CUDA intrinsic __saturatef(sampled) [0,1] clamp; original build failure retained"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_volumeFiltering_0/attempt001",
+  "index": 102,
+  "start_unix": 1792821522.828453,
+  "lock_wait_seconds": 3.5567209124565125e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821522.876312,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821523.9054403,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821524.9379036,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821525.9729993,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821527.0077567,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821528.040384,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821529.0738962,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821530.106065,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821531.1390753,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821532.1696396,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821533.202734,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821534.2361734,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821535.2700999,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821536.3026476,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821537.3389506,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 397030,
+  "start_ticks": "344443432",
+  "minimum_free_vram_mib": 15555,
+  "exit": 127,
+  "wall_seconds": 0.2711753211915493,
+  "status": "NATIVE_FAILURE_RETAINED",
+  "stdout_sha256": "0ba7f715c41f6bde244c0afc42befec0ada830d867cf2a59faa97a2f20188f67",
+  "end_unix": 1792821538.632015
+}

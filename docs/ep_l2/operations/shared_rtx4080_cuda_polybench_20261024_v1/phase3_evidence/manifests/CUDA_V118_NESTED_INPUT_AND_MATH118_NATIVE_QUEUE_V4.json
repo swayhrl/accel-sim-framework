@@ -1,0 +1,833 @@
+[
+  {
+    "task_id": "cuda118_complete_matrixMul_nvrtc_0_nested_runtime_v4",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "matrixMul_nvrtc",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/async.h",
+        "sha256": "c6c1070993f79ee118de5da9f12536775db6e97897ba652f0cffc6ca1f0f7556"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_reduce.h",
+        "sha256": "a41420158ee2eb857ced73404e0d5410840754d60e22d42d1e34b9078ca7f297"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_scan.h",
+        "sha256": "0df66fe5de56d1726ffad655860ac87632e3b3a682c7fbb4a32d650c8a63a354"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/driver_abi.h",
+        "sha256": "bfe6546f852018a264e8d4765825870f7c7fe36cbeb68808d6eac59fbd068be8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/functional.h",
+        "sha256": "d8157c8bc062773d24831b989090806f0171388651cb31e01be73fad52a14737"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/helpers.h",
+        "sha256": "2bd8efc675dce7ee85ba6d4a1b811028926b559e018473920096d9478b832f47"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/info.h",
+        "sha256": "14eae9dcbb6de0f71b2b67c0339517f63b2c159b63fcba954a1ccb15c2a249a6"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/invoke.h",
+        "sha256": "3acab72beb59b971d508c409ef4f0f8cfa3e0703218e18c0a4ee1bd1360b1498"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/memory.h",
+        "sha256": "8444b749f817201b23d8c16b0bf33908e5e53a2ad206eba13cc0099d6a08f76c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/partitioning.h",
+        "sha256": "010cfe4e17aa5f7a27a97d91988522a73614541dbbdf384b947270fe45fd0f65"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/reduce.h",
+        "sha256": "323a8c0f04f44f2599938256705dd61f0f31b7032aca2cc0e02df3cbb7fc79ed"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/scan.h",
+        "sha256": "f93b706f601f10463fb6c9aa2634767688e43e9a11c77f3b4a8ab182f7dd06d4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/sync.h",
+        "sha256": "11de0af50acf662e3775d4aa670bf55fc346fc24ec5d4a304909dda14bfcd8b5"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/memcpy_async.h",
+        "sha256": "7ab3881ee39b75fc5184159fad7137c2c645e01d8652eab0cd0aec3f028fa5b8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/reduce.h",
+        "sha256": "0748600e4a8cfbab9ea934e06f76f7e00d111f8bc6cfc9817f97b68d3d5d275a"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/scan.h",
+        "sha256": "d8453a4f97163707ed9b607b162715df53e88e823ad72a397c75c6458906938d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups.h",
+        "sha256": "cb6705c5ae9efac684140f5a5b6d99b93c22d30b9dede107abb5cddefdf42d3d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul.cpp",
+        "sha256": "ff190a28ab4b28487c6b45c812fb16e8f6ecad94f3d1cf5dff327770d118afcc"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_kernel.cu",
+        "sha256": "64d713fd9939fe0339ac2c57040dc24a99b9eba7bce1490cf75ea0a26b26b83a"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups.h",
+        "sha256": "cb6705c5ae9efac684140f5a5b6d99b93c22d30b9dede107abb5cddefdf42d3d",
+        "bytes": 60684,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul.cpp",
+        "sha256": "ff190a28ab4b28487c6b45c812fb16e8f6ecad94f3d1cf5dff327770d118afcc",
+        "bytes": 7953,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_kernel.cu",
+        "sha256": "64d713fd9939fe0339ac2c57040dc24a99b9eba7bce1490cf75ea0a26b26b83a",
+        "bytes": 4903,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/scan.h",
+        "sha256": "d8453a4f97163707ed9b607b162715df53e88e823ad72a397c75c6458906938d",
+        "bytes": 2940
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/memcpy_async.h",
+        "sha256": "7ab3881ee39b75fc5184159fad7137c2c645e01d8652eab0cd0aec3f028fa5b8",
+        "bytes": 2960
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/reduce.h",
+        "sha256": "0748600e4a8cfbab9ea934e06f76f7e00d111f8bc6cfc9817f97b68d3d5d275a",
+        "bytes": 2949
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/scan.h",
+        "sha256": "f93b706f601f10463fb6c9aa2634767688e43e9a11c77f3b4a8ab182f7dd06d4",
+        "bytes": 17166
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/partitioning.h",
+        "sha256": "010cfe4e17aa5f7a27a97d91988522a73614541dbbdf384b947270fe45fd0f65",
+        "bytes": 7153
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/driver_abi.h",
+        "sha256": "bfe6546f852018a264e8d4765825870f7c7fe36cbeb68808d6eac59fbd068be8",
+        "bytes": 3964
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/invoke.h",
+        "sha256": "3acab72beb59b971d508c409ef4f0f8cfa3e0703218e18c0a4ee1bd1360b1498",
+        "bytes": 8616
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/info.h",
+        "sha256": "14eae9dcbb6de0f71b2b67c0339517f63b2c159b63fcba954a1ccb15c2a249a6",
+        "bytes": 12465
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/memory.h",
+        "sha256": "8444b749f817201b23d8c16b0bf33908e5e53a2ad206eba13cc0099d6a08f76c",
+        "bytes": 5606
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_reduce.h",
+        "sha256": "a41420158ee2eb857ced73404e0d5410840754d60e22d42d1e34b9078ca7f297",
+        "bytes": 4257
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/reduce.h",
+        "sha256": "323a8c0f04f44f2599938256705dd61f0f31b7032aca2cc0e02df3cbb7fc79ed",
+        "bytes": 23296
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/async.h",
+        "sha256": "c6c1070993f79ee118de5da9f12536775db6e97897ba652f0cffc6ca1f0f7556",
+        "bytes": 19122
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/sync.h",
+        "sha256": "11de0af50acf662e3775d4aa670bf55fc346fc24ec5d4a304909dda14bfcd8b5",
+        "bytes": 10795
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/helpers.h",
+        "sha256": "2bd8efc675dce7ee85ba6d4a1b811028926b559e018473920096d9478b832f47",
+        "bytes": 26476
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/functional.h",
+        "sha256": "d8157c8bc062773d24831b989090806f0171388651cb31e01be73fad52a14737",
+        "bytes": 8905
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_scan.h",
+        "sha256": "0df66fe5de56d1726ffad655860ac87632e3b3a682c7fbb4a32d650c8a63a354",
+        "bytes": 7314
+      },
+      {
+        "path": "/usr/local/cuda-12.8/targets/x86_64-linux/include/nv/target",
+        "sha256": "ae1ef2e572e2405fa6bb2c1f5417216a2ec66d46ce4259d4ebe93c42482b2ac0",
+        "bytes": 6640
+      },
+      {
+        "path": "/usr/local/cuda-12.8/targets/x86_64-linux/include/nv/detail/__preprocessor",
+        "sha256": "aacbd40d9c6548d504b27ceaf3cadb2dd38c88352615e8d3fe5070313fee4498",
+        "bytes": 6783
+      },
+      {
+        "path": "/usr/local/cuda-12.8/targets/x86_64-linux/include/nv/detail/__target_macros",
+        "sha256": "2c874a8fd562464747f2b332597002fb5d377046ac69cda792812c6e2574a975",
+        "bytes": 21571
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "cooperative_groups.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups.h"
+      },
+      {
+        "name": "matrixMul.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul.cpp"
+      },
+      {
+        "name": "matrixMul_kernel.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_kernel.cu"
+      },
+      {
+        "name": "cooperative_groups",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups"
+      },
+      {
+        "name": "nv",
+        "target": "/usr/local/cuda-12.8/targets/x86_64-linux/include/nv"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_nvrtc"
+    ],
+    "binary_sha256": "40fe781769a54a09ab3b04c23958ceafc9555cc170fd1cdee2b7876af97f9252",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "NVRTC_JIT_LOADED_MODULE_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./matrixMul_nvrtc"
+    ],
+    "platform_guard_evidence": [],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  {
+    "task_id": "cuda118_complete_batchedLabelMarkersAndLabelCompressionNPP_0_nested_runtime_v4",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "batchedLabelMarkersAndLabelCompressionNPP",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/batchedLabelMarkersAndLabelCompressionNPP",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/batchedLabelMarkersAndLabelCompressionNPP/batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "sha256": "cedf75ea3827ed9486987c99d6a427abc804dc4d5ca8e81c264aec3c3e6bba9b"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/batchedLabelMarkersAndLabelCompressionNPP/batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "sha256": "cedf75ea3827ed9486987c99d6a427abc804dc4d5ca8e81c264aec3c3e6bba9b",
+        "bytes": 33470,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/CT_skull_512x512_8u.raw",
+        "sha256": "13a71ba09bc16fe42e20353c08ca094605dc8091d0fa29de8afcd35ade080940",
+        "bytes": 262144
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/PCB2_1024x683_8u.raw",
+        "sha256": "17fe6f2101336af677b0ac28a79bf1e6e85183038e2f2b181d2e433dab5e406c",
+        "bytes": 699392
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/PCB_1280x720_8u.raw",
+        "sha256": "b3b869c6a101643e5d68c215201e94757e2573838772d723f6f17a77ebf6c29d",
+        "bytes": 921600
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/PCB_METAL_509x335_8u.raw",
+        "sha256": "64dc6686b5ae544ea0db25c83cc080d5b662c200d745cca004974e296b13c85f",
+        "bytes": 170515
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot_512x512_8u.raw",
+        "sha256": "d513ac81d9c50d07359f37defdf6662803f22afac75f6ec6bcf25c4af7e0e0b1",
+        "bytes": 786432
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/batchedLabelMarkersAndLabelCompressionNPP/batchedLabelMarkersAndLabelCompressionNPP.cpp"
+      },
+      {
+        "name": "CT_skull_512x512_8u.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/CT_skull_512x512_8u.raw"
+      },
+      {
+        "name": "PCB2_1024x683_8u.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/PCB2_1024x683_8u.raw"
+      },
+      {
+        "name": "PCB_1280x720_8u.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/PCB_1280x720_8u.raw"
+      },
+      {
+        "name": "PCB_METAL_509x335_8u.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/PCB_METAL_509x335_8u.raw"
+      },
+      {
+        "name": "teapot_512x512_8u.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot_512x512_8u.raw"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/batchedLabelMarkersAndLabelCompressionNPP/batchedLabelMarkersAndLabelCompressionNPP"
+    ],
+    "binary_sha256": "1b9bac54ed3679ecc8ab01d25fce45703c2d9f06bcb6fc9941c54b8b8e5094ab",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./batchedLabelMarkersAndLabelCompressionNPP"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 180,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 190,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 200,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 210,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 220,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 286,
+        "text": "cudaDevAttrComputeCapabilityMajor, nppStreamCtx.nCudaDeviceId);"
+      },
+      {
+        "file": "batchedLabelMarkersAndLabelCompressionNPP.cpp",
+        "line": 291,
+        "text": "cudaDevAttrComputeCapabilityMinor, nppStreamCtx.nCudaDeviceId);"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  {
+    "task_id": "cuda118_complete_freeImageInteropNPP_0_nested_runtime_v4",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "freeImageInteropNPP",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/freeImageInteropNPP",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/freeImageInteropNPP/freeImageInteropNPP.cpp",
+        "sha256": "7b05fba503cc62fc3e67094948dc8557ac0eab946d4dbe9080704babdb9939bf"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/freeImageInteropNPP/freeImageInteropNPP.cpp",
+        "sha256": "7b05fba503cc62fc3e67094948dc8557ac0eab946d4dbe9080704babdb9939bf",
+        "bytes": 10426,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot512.pgm",
+        "sha256": "794edcba434d448e797c96a90f4dce9d27f14c1c321be46d22ce366736b45865",
+        "bytes": 262205
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "freeImageInteropNPP.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/freeImageInteropNPP/freeImageInteropNPP.cpp"
+      },
+      {
+        "name": "teapot512.pgm",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot512.pgm"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/freeImageInteropNPP/freeImageInteropNPP"
+    ],
+    "binary_sha256": "7a632b0ea365618e38af9bfae1c678783a32ccf5c321f7ed1ecc6d3225f6bf67",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./freeImageInteropNPP"
+    ],
+    "platform_guard_evidence": [],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  {
+    "task_id": "cuda118_complete_math118_conjugateGradientPrecond_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "conjugateGradientPrecond",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/conjugateGradientPrecond",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/conjugateGradientPrecond/main.cpp",
+        "sha256": "310e5ac7582555a15dae04467e0ca8152019a4b7a834fa0cca6a60c3df52de74"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/conjugateGradientPrecond/conjugateGradientPrecond"
+    ],
+    "binary_sha256": "e33e43a8466886c633bb22efea5e02ebd6a9b452b284f2d72fe24041b361bba5",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_cuSolverSp_LinearSolver_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cuSolverSp_LinearSolver",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio.h",
+        "sha256": "ae9de8361215cb828037d61989f5a70e1971ba8fa52820a44d8035079d36481d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver.cpp",
+        "sha256": "cd917211b152b18efaea09cb00288d1004c1f65cf8a92ad4aa6b622f4f6710f4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio_wrapper.cpp",
+        "sha256": "55b721fce09e1465275d25662075df5305be0491f3d8296bac7c3f93c171eeea"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver",
+      "-R=qr"
+    ],
+    "binary_sha256": "93d9e26a967c1c2f221b08802c1dc3ed75c61bc2f2151c9a523bf40ae7307589",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_cuSolverSp_LinearSolver_1",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cuSolverSp_LinearSolver",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio.h",
+        "sha256": "ae9de8361215cb828037d61989f5a70e1971ba8fa52820a44d8035079d36481d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver.cpp",
+        "sha256": "cd917211b152b18efaea09cb00288d1004c1f65cf8a92ad4aa6b622f4f6710f4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio_wrapper.cpp",
+        "sha256": "55b721fce09e1465275d25662075df5305be0491f3d8296bac7c3f93c171eeea"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver",
+      "-R=chol"
+    ],
+    "binary_sha256": "93d9e26a967c1c2f221b08802c1dc3ed75c61bc2f2151c9a523bf40ae7307589",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_cuSolverSp_LinearSolver_2",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cuSolverSp_LinearSolver",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio.h",
+        "sha256": "ae9de8361215cb828037d61989f5a70e1971ba8fa52820a44d8035079d36481d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver.cpp",
+        "sha256": "cd917211b152b18efaea09cb00288d1004c1f65cf8a92ad4aa6b622f4f6710f4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio_wrapper.cpp",
+        "sha256": "55b721fce09e1465275d25662075df5305be0491f3d8296bac7c3f93c171eeea"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver",
+      "-R=lu"
+    ],
+    "binary_sha256": "93d9e26a967c1c2f221b08802c1dc3ed75c61bc2f2151c9a523bf40ae7307589",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_cuSolverSp_LinearSolver_3",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cuSolverSp_LinearSolver",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio.h",
+        "sha256": "ae9de8361215cb828037d61989f5a70e1971ba8fa52820a44d8035079d36481d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver.cpp",
+        "sha256": "cd917211b152b18efaea09cb00288d1004c1f65cf8a92ad4aa6b622f4f6710f4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio_wrapper.cpp",
+        "sha256": "55b721fce09e1465275d25662075df5305be0491f3d8296bac7c3f93c171eeea"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver",
+      "-R=qr",
+      "-P=symamd"
+    ],
+    "binary_sha256": "93d9e26a967c1c2f221b08802c1dc3ed75c61bc2f2151c9a523bf40ae7307589",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_cuSolverSp_LinearSolver_4",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cuSolverSp_LinearSolver",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio.h",
+        "sha256": "ae9de8361215cb828037d61989f5a70e1971ba8fa52820a44d8035079d36481d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver.cpp",
+        "sha256": "cd917211b152b18efaea09cb00288d1004c1f65cf8a92ad4aa6b622f4f6710f4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio_wrapper.cpp",
+        "sha256": "55b721fce09e1465275d25662075df5305be0491f3d8296bac7c3f93c171eeea"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver",
+      "-R=chol",
+      "-P=symamd"
+    ],
+    "binary_sha256": "93d9e26a967c1c2f221b08802c1dc3ed75c61bc2f2151c9a523bf40ae7307589",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_cuSolverSp_LinearSolver_5",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cuSolverSp_LinearSolver",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio.h",
+        "sha256": "ae9de8361215cb828037d61989f5a70e1971ba8fa52820a44d8035079d36481d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver.cpp",
+        "sha256": "cd917211b152b18efaea09cb00288d1004c1f65cf8a92ad4aa6b622f4f6710f4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/mmio_wrapper.cpp",
+        "sha256": "55b721fce09e1465275d25662075df5305be0491f3d8296bac7c3f93c171eeea"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cuSolverSp_LinearSolver/cuSolverSp_LinearSolver",
+      "-R=lu",
+      "-P=symamd"
+    ],
+    "binary_sha256": "93d9e26a967c1c2f221b08802c1dc3ed75c61bc2f2151c9a523bf40ae7307589",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_watershedSegmentationNPP_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "watershedSegmentationNPP",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/watershedSegmentationNPP",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/watershedSegmentationNPP/watershedSegmentationNPP.cpp",
+        "sha256": "36788e33c44d60a5cedbd71651421cbe4e86913c58c1e93f5c8984fc5c263326"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/CT_skull_512x512_8u_Gray.raw",
+        "sha256": "144fdfe2f97aff0f05cc3473e14ac4a5c376eb8e2313a9cef244c49c69568daf",
+        "bytes": 262144
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/Rocks_512x512_8u_Gray.raw",
+        "sha256": "23dce5a33ff855aa217b6a19ee66dee53eda7cc5b79a056fd905be38d2ea8e6d",
+        "bytes": 262144
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot_512x512_8u_Gray.raw",
+        "sha256": "a71dd71fd20215c342a2cde84aac478baa48ef5437159e58f8b8fdd0a43b4c18",
+        "bytes": 262144
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "CT_skull_512x512_8u_Gray.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/CT_skull_512x512_8u_Gray.raw"
+      },
+      {
+        "name": "Rocks_512x512_8u_Gray.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/Rocks_512x512_8u_Gray.raw"
+      },
+      {
+        "name": "teapot_512x512_8u_Gray.raw",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot_512x512_8u_Gray.raw"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/watershedSegmentationNPP/watershedSegmentationNPP"
+    ],
+    "binary_sha256": "1664a3cac10851e38ca410d15185274f0a33f0281fec06a9352dc303d52f2517",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  },
+  {
+    "task_id": "cuda118_complete_math118_histEqualizationNPP_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 exact source, private CUDA11.8 math libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "histEqualizationNPP",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/histEqualizationNPP",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/histEqualizationNPP/histEqualizationNPP.cpp",
+        "sha256": "a1e243df3c5185c3663e1edbaca2038ba7100b149c5e299ad18b0ddaf69de160"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot512.pgm",
+        "sha256": "794edcba434d448e797c96a90f4dce9d27f14c1c321be46d22ce366736b45865",
+        "bytes": 262205
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "teapot512.pgm",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Common/data/teapot512.pgm"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/histEqualizationNPP/histEqualizationNPP"
+    ],
+    "binary_sha256": "825c17d179b7bb899b44d93c219f32ec4340314bccbcd2ebd2e9fab29c664263",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 900,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "LOADED_CUDA118_MATH_IMAGE_LIBRARY_KERNEL_PROFILE"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  }
+]

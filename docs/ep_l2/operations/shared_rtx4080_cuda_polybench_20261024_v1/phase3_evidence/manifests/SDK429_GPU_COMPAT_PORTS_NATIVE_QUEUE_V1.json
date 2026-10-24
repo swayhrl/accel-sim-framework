@@ -1,0 +1,70 @@
+[
+  {
+    "task_id": "sdk429_concurrentKernels_explicit_GPU_Ada_port_v1",
+    "suite": "NVIDIA GPU Computing SDK",
+    "version": "official4.2.9 explicit GPU source compatibility variant",
+    "program": "concurrentKernels",
+    "variant": "Correct two upstream misspelled device barriers; canonical original does not compile. Distinct GPU source compatibility port, full default concurrent workload retained.",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_GPU_compat_ports_v1/concurrentKernels/concurrentKernels_Ada_port"
+    ],
+    "binary_sha256": "f5578a7b2f9d722b2a604b10357a7515bc4c2636c2cb0b8032d44c965fc4a1fb",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_GPU_compat_ports_v1/concurrentKernels/concurrentKernels.cu",
+        "sha256": "5248e9d185cb345166ceebf1db6e86f626133b9ab5996c9bfdb0c03f723369a9"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu",
+      "OPAL_PREFIX": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 600,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "GPU_SOURCE_COMPATIBILITY_PORT_NOT_CANONICAL",
+      "DEVICE_CLOCK_TIMING_DEPENDENT_AND_MULTI_STREAM"
+    ]
+  },
+  {
+    "task_id": "sdk429_simpleVoteIntrinsics_explicit_GPU_Ada_port_v1",
+    "suite": "NVIDIA GPU Computing SDK",
+    "version": "official4.2.9 explicit GPU source compatibility variant",
+    "program": "simpleVoteIntrinsics",
+    "variant": "Migrate four old unsynchronized warp vote intrinsics to explicit full-warp vote_sync. Frozen original main launches full warp multiples (128/96), mask valid for those exact tests; original legacy PTX compile failure retained. Distinct GPU source port.",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_GPU_compat_ports_v1/simpleVoteIntrinsics/simpleVoteIntrinsics_Ada_port"
+    ],
+    "binary_sha256": "68b1d7b50b39713b078868c4b17978174d21957e4317d4c00ab51feda3011a16",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_GPU_compat_ports_v1/simpleVoteIntrinsics/simpleVote_kernel.cu",
+        "sha256": "60d78b4ad4446a5763908d3dd3a04b9eaf97ffe325f460878f44e114add1ed4d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_GPU_compat_ports_v1/simpleVoteIntrinsics/simpleVoteIntrinsics.cu",
+        "sha256": "e7af2d0d22d15eb4f42996b8fb5b390275d9c0aede319322b85fcf041e3a9268"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu",
+      "OPAL_PREFIX": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 600,
+    "correctness": {
+      "exit": 0
+    },
+    "profile_flags": [
+      "GPU_SOURCE_COMPATIBILITY_PORT_NOT_CANONICAL",
+      "EXPLICIT_WARP_VOTE_COLLECTIVE_PROFILE"
+    ]
+  }
+]

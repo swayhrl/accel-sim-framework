@@ -1,0 +1,33 @@
+SDK42_HOST_ADAPTER_QA_START
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_host_api_ports_v1/boxFilter/sdk429_boxFilter_host_port Starting...
+
+Loaded './data/lenaRGB.ppm', 1024 x 1024 pixels
+
+[runAutoTest]: [CUDA Iterative Box Filter] (automated testing w/ readback)
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+Loaded './data/lenaRGB.ppm', 1024 x 1024 pixels
+
+[AutoTest]: CUDA Iterative Box Filter (radius=14)
+> Saving PPM: <lenaRGB_14.ppm>
+   src_file <lenaRGB_14.ppm>
+   ref_file <./data/ref_14.ppm>
+> Compare (a)rendered:  <lenaRGB_14.ppm>
+>         (b)reference: <./data/ref_14.ppm>
+PPMvsPPM: comparing images size (1024,1024) epsilon(5), threshold(15%)
+4.13(%) of bytes mismatched (count=173092)
+    OK
+
+[AutoTest]: CUDA Iterative Box Filter (radius=22)
+> Saving PPM: <lenaRGB_22.ppm>
+   src_file <lenaRGB_22.ppm>
+   ref_file <./data/ref_22.ppm>
+> Compare (a)rendered:  <lenaRGB_22.ppm>
+>         (b)reference: <./data/ref_22.ppm>
+PPMvsPPM: comparing images size (1024,1024) epsilon(5), threshold(15%)
+0.45(%) of bytes mismatched (count=18885)
+    OK
+
+SDK42_HOST_ADAPTER_QA_PASSED

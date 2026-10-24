@@ -1,0 +1,195 @@
+{
+  "task": {
+    "program": "threadFenceReduction",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "dd1c762970183719a87a1e96f70b39b9d3a9aea2512c057f6c2881fd4fcd8d4c",
+    "makefile_flags": {
+      "EXECUTABLE": "threadFenceReduction",
+      "CUFILES": "threadFenceReduction.cu",
+      "CUDEPS": "threadFenceReduction_kernel.cu",
+      "CCFILES": "GENCODE_SM10 :="
+    },
+    "headers": [
+      "cutil_inline.h",
+      "device_functions.h",
+      "math.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "threadFenceReduction_kernel.cu"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_threadFenceReduction"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.4189777374267578,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_threadFenceReduction"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "d64d84c588afd215fd3f1bccf3c149da50871a09a0f1a94562a4e91a1f9285e8",
+    "cuobjdump_list_elf": "ELF file    1: threadFenceReduction-libcutil_x86_64.sm_89.cubin\nELF file    2: threadFenceReduction.sm_89.cubin\n",
+    "task_id": "sdk42_default_threadFenceReduction",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction.cu",
+        "sha256": "ed3e59eda08bad229b6e59d24dfcd2eb22aff571ec2827f0d39ccbdb54a4b7bb"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction.h",
+        "sha256": "b1ef5966b532774debb3f9fc66ed21e3c50bf8ada2010159e32717de64ee03d9"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction_kernel.cu",
+        "sha256": "fdf3c58097cad78cee40dcd2ae0705eab1fd54293bd412c811a8ca11f05729d0"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_pendingcopy_v2/sdk42_default_threadFenceReduction/attempt001",
+  "index": 30,
+  "start_unix": 1792822409.0608582,
+  "lock_wait_seconds": 2.0479783415794373e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 385 MiB, 15559 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792822409.106753,
+      "util": 7,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822410.137443,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822411.1733358,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822412.207586,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822413.2425687,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822414.275518,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822415.3093772,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822416.3427453,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822417.3796773,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822418.4155595,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822419.4489307,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822420.4813604,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822421.5150917,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822422.5482225,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822423.5826755,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822424.619813,
+      "util": 0,
+      "free_mib": 15559
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 404037,
+  "start_ticks": "344532160",
+  "minimum_free_vram_mib": 15545,
+  "exit": 1,
+  "wall_seconds": 0.29318198887631297,
+  "status": "NATIVE_FAILURE_RETAINED",
+  "stdout_sha256": "8ce89a30eaff6de6f2032580e0a22f743634556e529c4373726474b6219f12e0",
+  "end_unix": 1792822425.932934
+}

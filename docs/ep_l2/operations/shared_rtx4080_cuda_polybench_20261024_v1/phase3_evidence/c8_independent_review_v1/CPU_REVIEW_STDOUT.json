@@ -1,0 +1,178 @@
+{
+  "CPU_only": true,
+  "GPU_launched": false,
+  "positive": [
+    {
+      "attempt": "snapshot7_sync_native_observer_v3_attempt1",
+      "bytes": 260,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_sync_instrumented_v3_attempt1",
+      "bytes": 260,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_async_native_observer_v3_attempt1",
+      "bytes": 260,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_async_instrumented_v3_attempt1",
+      "bytes": 260,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_random_native_observer_v3_attempt1",
+      "bytes": 260,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_random_instrumented_v3_attempt1",
+      "bytes": 260,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_constant65_native_observer_v3_attempt1",
+      "bytes": 256,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_constant65_instrumented_v3_attempt1",
+      "bytes": 256,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_vector4m_native_observer_v3_attempt1",
+      "bytes": 32000000,
+      "launches": 1
+    },
+    {
+      "attempt": "snapshot7_vector4m_instrumented_v3_attempt1",
+      "bytes": 32000000,
+      "launches": 1
+    }
+  ],
+  "negative": [
+    {
+      "case": "unknown_api",
+      "reason": "ValueError: unsupported input copy API"
+    },
+    {
+      "case": "default_and_nondefault_async_stream",
+      "reason": "ValueError: multiple async streams including default"
+    },
+    {
+      "case": "copy_id_filename_mismatch",
+      "reason": "ValueError: copy ID/basename binding"
+    },
+    {
+      "case": "duplicate_basename",
+      "reason": "ValueError: copy ID/basename binding"
+    },
+    {
+      "case": "unknown_completion_proof",
+      "reason": "ValueError: unknown async completion boundary/proof"
+    },
+    {
+      "case": "unknown_completion_boundary",
+      "reason": "ValueError: unknown async completion boundary/proof"
+    },
+    {
+      "case": "completion_before_api_exit",
+      "reason": "ValueError: completion pairing/order"
+    },
+    {
+      "case": "different_context",
+      "reason": "ValueError: multiple input contexts"
+    },
+    {
+      "case": "zero_context",
+      "reason": "ValueError: context must be nonzero"
+    },
+    {
+      "case": "negative_bytes",
+      "reason": "ValueError: byte count grammar"
+    },
+    {
+      "case": "oversize_bytes",
+      "reason": "ValueError: declared byte bound"
+    },
+    {
+      "case": "pointer_range_overflow",
+      "reason": "ValueError: pointer/byte range"
+    },
+    {
+      "case": "extra_capsule",
+      "reason": "ValueError: extra/missing raw capsule member"
+    },
+    {
+      "case": "missing_exit",
+      "reason": "ValueError: completion pairing/order"
+    },
+    {
+      "case": "missing_completion",
+      "reason": "ValueError: unfinished input API/capsule"
+    },
+    {
+      "case": "raw_corruption",
+      "reason": "ValueError: raw capsule size/SHA mismatch"
+    },
+    {
+      "case": "raw_truncation",
+      "reason": "ValueError: raw capsule size/SHA mismatch"
+    },
+    {
+      "case": "second_context_same_address",
+      "reason": "ValueError: second context lifetime including reused address"
+    },
+    {
+      "case": "missing_process_end",
+      "reason": "ValueError: incomplete process/launch lifecycle"
+    },
+    {
+      "case": "missing_launch_exit",
+      "reason": "ValueError: context end identity/state"
+    },
+    {
+      "case": "false_terminal_launch_count",
+      "reason": "ValueError: process end lifecycle counts"
+    },
+    {
+      "case": "legacy_launch_api",
+      "reason": "ValueError: unadmitted launch API"
+    },
+    {
+      "case": "extra_raw_kernel",
+      "reason": "ValueError: observed launches versus raw kernel count"
+    },
+    {
+      "case": "missing_raw_kernel",
+      "reason": "ValueError: observed launches versus raw kernel count"
+    },
+    {
+      "case": "wrong_raw_function",
+      "reason": "ValueError: raw header versus observed launch identity"
+    },
+    {
+      "case": "wrong_raw_stream",
+      "reason": "ValueError: raw header versus observed launch identity"
+    },
+    {
+      "case": "launch_host_thread_changed",
+      "reason": "ValueError: multiple launch stream/host thread"
+    },
+    {
+      "case": "nonmonotonic_lifecycle",
+      "reason": "ValueError: lifecycle monotonic time order"
+    },
+    {
+      "case": "preKernel_without_launch",
+      "reason": "ValueError: pre-kernel completion requires observed launch"
+    },
+    {
+      "case": "async_input_vs_launch_stream",
+      "reason": "ValueError: async input stream versus single launch stream"
+    }
+  ]
+}

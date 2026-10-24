@@ -1,0 +1,173 @@
+{
+  "task": {
+    "task_id": "cuda118_complete_cdpSimplePrint_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cdpSimplePrint",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpSimplePrint",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpSimplePrint/cdpSimplePrint.cu",
+        "sha256": "5bd64f64b074cc6d8d54105224eb8001a2047f25a23bce761f0efab31b7deb5a"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpSimplePrint/cdpSimplePrint.cu",
+        "sha256": "5bd64f64b074cc6d8d54105224eb8001a2047f25a23bce761f0efab31b7deb5a",
+        "bytes": 6276,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "cdpSimplePrint.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpSimplePrint/cdpSimplePrint.cu"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpSimplePrint/cdpSimplePrint"
+    ],
+    "binary_sha256": "f45b2ea5df73457b41acb63a52c875a7a3c6db9a290db263a3113a7135873e1e",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "SPECIAL_RUNTIME_GRAPH_IPC_MEMORY_OR_DYNAMIC_PROFILE_REVIEW"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./cdpSimplePrint"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "cdpSimplePrint.cu",
+        "line": 128,
+        "text": "if (!(deviceProp.major > 3 ||"
+      },
+      {
+        "file": "cdpSimplePrint.cu",
+        "line": 129,
+        "text": "(deviceProp.major == 3 && deviceProp.minor >= 5))) {"
+      },
+      {
+        "file": "cdpSimplePrint.cu",
+        "line": 132,
+        "text": "exit(EXIT_WAIVED);"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda118_complete_remaining_v2/cuda118_complete_cdpSimplePrint_0/attempt001",
+  "index": 36,
+  "start_unix": 1792832071.0541158,
+  "lock_wait_seconds": 20.000391425099224,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 323 MiB, 15621 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792832091.1026208,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832092.133598,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832093.1666818,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832094.1998897,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832095.2337818,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832096.269235,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832097.302986,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832098.3366096,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832099.369077,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832100.4021306,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832101.4368074,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832102.4716399,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832103.5051098,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832104.5395315,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832105.5723772,
+      "util": 0,
+      "free_mib": 15621
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 463806,
+  "start_ticks": "345500255",
+  "minimum_free_vram_mib": 15607,
+  "exit": 0,
+  "wall_seconds": 0.287314685061574,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "22bef1f2dd51fc4668e5798a8c40eb03295b6e8aaba231c0fa5169e712d7726e",
+  "end_unix": 1792832106.882267
+}

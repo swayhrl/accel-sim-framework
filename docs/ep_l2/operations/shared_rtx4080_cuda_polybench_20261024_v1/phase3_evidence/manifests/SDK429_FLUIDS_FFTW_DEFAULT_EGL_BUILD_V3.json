@@ -1,0 +1,77 @@
+{
+  "source": "official4.2.9",
+  "source_archive_sha256": "b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb",
+  "changes": [
+    {
+      "file": "fluidsGL.cpp",
+      "original_sha256": "0f18dfb8e50174f088c425808bee6e76ef8754fff07fc4a65f6a434f69c11286",
+      "new_sha256": "5af6da8643672f495273cd66203d65e18015669481fdb192cdaae59f63105179",
+      "change": "Remove two obsolete explicit FFTW_PADDING mode selections; CUDA11.8 default padded in-place R2C/C2R layout documented by NVIDIA, no CUDA kernel source change."
+    }
+  ],
+  "build_command": [
+    "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+    "-include",
+    "GL/glew.h",
+    "-include",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/egl_glut_fluids_adapter_v1.h",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+    "-ccbin",
+    "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+    "-O3",
+    "-lineinfo",
+    "-arch=sm_89",
+    "-include",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/inc",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/common/inc",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+    "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+    "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+    "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/lib",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL_kernels.cu",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL.cpp",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/common/src/rendercheck_gl.cpp",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+    "-lcufft",
+    "-lGL",
+    "-lGLU",
+    "-lglut",
+    "-lGLEW",
+    "-l:libX11.so.6",
+    "-o",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_fluids_fftw_default_egl_v3/fluidsGL",
+    "-lEGL"
+  ],
+  "build_exit": 0,
+  "migration_basis": [
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/11.8.0/cufft/index.html",
+      "section": "2.4 Data Layout",
+      "paraphrase": "Padded in-place real/complex layout is FFTW compatible and is the default padding mode."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.0.1/cufft/deprecated-functionality.html",
+      "section": "Deprecated functionality",
+      "paraphrase": "cufftSetCompatibilityMode was removed in9.1."
+    }
+  ],
+  "canonical_original_status": "ORIGINAL_SOURCE_COMPILE_FAIL_RETAINED",
+  "GPU_kernel_source_modified": false,
+  "host_include_order": "GLEW before GLUT/EGL shim, upstream kernel GLEW include guard preserved",
+  "host_context_change": "Replace XOpenDisplay preflight gate with actual hardware NVIDIA EGL adapter validation; no unconditional GPU availability stub. Original failed X preflight attempt retained.",
+  "source_sha256": "18f593e6b05d1cd23cdf81493eb39bdc02a14f285a2142fa7f717dc1f5541859"
+}

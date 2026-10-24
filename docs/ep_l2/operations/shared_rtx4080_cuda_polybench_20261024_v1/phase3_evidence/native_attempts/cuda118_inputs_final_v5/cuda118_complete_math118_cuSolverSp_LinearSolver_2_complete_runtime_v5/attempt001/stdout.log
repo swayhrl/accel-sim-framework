@@ -1,0 +1,24 @@
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+Using default input file [./lap2D_5pt_n100.mtx]
+step 1: read matrix market format
+sparse matrix A is 10000 x 10000 with 49600 nonzeros, base=1
+step 2: reorder the matrix A to minimize zero fill-in
+        if the user choose a reordering by -P=symrcm, -P=symamd or -P=metis
+step 2.1: no reordering is chosen, Q = 0:n-1 
+step 2.2: B = A(Q,Q) 
+step 3: b(j) = 1 + j/n 
+step 4: prepare data on device
+step 5: solve A*x = b on CPU 
+step 6: evaluate residual r = b - A*x (result on CPU)
+(CPU) |b - A*x| = 5.729861E-12 
+(CPU) |A| = 8.000000E+00 
+(CPU) |x| = 1.136492E+03 
+(CPU) |b| = 1.999900E+00 
+(CPU) |b - A*x|/(|A|*|x| + |b|) = 6.300749E-16 
+step 7: solve A*x = b on GPU
+WARNING: no LU available on GPU 
+step 8: evaluate residual r = b - A*x (result on GPU)
+timing lu: CPU =   0.078944 sec , GPU =   0.000050 sec

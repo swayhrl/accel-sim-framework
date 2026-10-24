@@ -1,0 +1,193 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "bicubicTexture",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture",
+    "source_files": [
+      {
+        "relative_path": "bicubicTexture.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/bicubicTexture.cpp",
+        "sha256": "0cf94b185cc5d3c5ccd98e3a7fa20e9804bfc813f7b3f5e6551da94533ebef1d"
+      },
+      {
+        "relative_path": "bicubicTexture_cuda.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/bicubicTexture_cuda.cu",
+        "sha256": "b20a033dfc29d807f113fd9982686dcdf8eaebec0731faec411e91cc5a2379ff"
+      },
+      {
+        "relative_path": "bicubicTexture_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/bicubicTexture_kernel.cuh",
+        "sha256": "b8148ac13dc519472dfed6a149e9e66987598e3f36f02b3b0c0cf7683b5e7642"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/0_nearest.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data/0_nearest.ppm",
+        "bytes": 786447,
+        "sha256": "68d8097c6ac83d65cd1a3a13db73b4e7a25827ab80e5aedbcebfd3f0e2240536"
+      },
+      {
+        "relative_path": "data/1_bilinear.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data/1_bilinear.ppm",
+        "bytes": 786447,
+        "sha256": "1a3a7de51cf9a23beb68e9b5580b9f90221932eaf9027efb9b9c9429083a850d"
+      },
+      {
+        "relative_path": "data/2_bicubic.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data/2_bicubic.ppm",
+        "bytes": 786447,
+        "sha256": "252b41ab4696b428f1350e8e054b579019c9f413cb8fa3e52fa781109e070df3"
+      },
+      {
+        "relative_path": "data/3_fastbicubic.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data/3_fastbicubic.ppm",
+        "bytes": 786447,
+        "sha256": "43412523ce4317b097a676a68f31c5638b1f66775c5ffff745860a9c77fbd5eb"
+      },
+      {
+        "relative_path": "data/4_catmull-rom.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data/4_catmull-rom.ppm",
+        "bytes": 786447,
+        "sha256": "cd35f3a87037f545a6d50794c5be574dc8f15f5d05e60745286d4aabf8f29ff7"
+      },
+      {
+        "relative_path": "data/teapot512.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data/teapot512.pgm",
+        "bytes": 462634,
+        "sha256": "267ca6aa2797467ca1f5df5fca39c35ed7e910217553f6dd12dab927daaa85c3"
+      }
+    ],
+    "task_id": "cuda118_bicubicTexture_2",
+    "variant": "official_testrun_2",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/bicubicTexture",
+      "-mode=2",
+      "-file=2_bicubic.ppm"
+    ],
+    "binary_sha256": "97a5e826b495b41af376f774270e6a907ab32e1c2ff6909de7801a0ba2382722",
+    "binary_cubin_listing": "ELF file    1: bicubicTexture.1.sm_89.cubin\nELF file    2: bicubicTexture.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/bicubicTexture/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_bicubicTexture_2/attempt001",
+  "index": 20,
+  "start_unix": 1792820211.7751915,
+  "lock_wait_seconds": 1.737847924232483e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792820211.8237581,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820212.8539627,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820213.8878038,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820214.9247742,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820215.956877,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820216.9941127,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820218.028587,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820219.0612762,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820220.0945756,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820221.1299112,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820222.1617024,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820223.196691,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820224.2302125,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820225.267036,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820226.3006284,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 385624,
+  "start_ticks": "344312328",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.29667994007468224,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "db269d3614eb062406105f0e20cc4134cec53f2f65ee2c529cb84b2a1b131d9a",
+  "end_unix": 1792820227.624384
+}

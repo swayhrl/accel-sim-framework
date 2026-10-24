@@ -1,0 +1,229 @@
+{
+  "task": {
+    "task_id": "cuda118_complete_shfl_scan_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "shfl_scan",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_integral_image.cuh",
+        "sha256": "f702f914a115d27835d0a4a6f4633541b9dc71323b54011225c1434f4521cf2d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_scan.cu",
+        "sha256": "321bde418266c0b63c63196b32498bacc9df4f20a797c27d0ace7a24ee3aa446"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/util.h",
+        "sha256": "5afd80a4f7d2d50b4445f4cd2c7b46055d6e6554e2b1e6823cc0503c12cff9f5"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_integral_image.cuh",
+        "sha256": "f702f914a115d27835d0a4a6f4633541b9dc71323b54011225c1434f4521cf2d",
+        "bytes": 10156,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_scan.cu",
+        "sha256": "321bde418266c0b63c63196b32498bacc9df4f20a797c27d0ace7a24ee3aa446",
+        "bytes": 14436,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/util.h",
+        "sha256": "5afd80a4f7d2d50b4445f4cd2c7b46055d6e6554e2b1e6823cc0503c12cff9f5",
+        "bytes": 3720,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "shfl_integral_image.cuh",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_integral_image.cuh"
+      },
+      {
+        "name": "shfl_scan.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_scan.cu"
+      },
+      {
+        "name": "util.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/util.h"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/shfl_scan/shfl_scan"
+    ],
+    "binary_sha256": "56b4a0166df501f2c85a0f17cf6984071229e65511c4c653b1d51e0f6d70ad8a",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./shfl_scan"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "shfl_scan.cu",
+        "line": 220,
+        "text": "deviceProp.major, deviceProp.minor, deviceProp.multiProcessorCount);"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 223,
+        "text": "if (deviceProp.major < 3) {"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 224,
+        "text": "printf(\"> __shfl() intrinsic requires device SM 3.0+\\n\");"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 226,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 402,
+        "text": "deviceProp.major, deviceProp.minor, deviceProp.multiProcessorCount);"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 405,
+        "text": "if (deviceProp.major < 3) {"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 406,
+        "text": "printf(\"> __shfl() intrinsic requires device SM 3.0+\\n\");"
+      },
+      {
+        "file": "shfl_scan.cu",
+        "line": 408,
+        "text": "exit(EXIT_WAIVED);"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda118_complete_remaining_v2/cuda118_complete_shfl_scan_0/attempt001",
+  "index": 24,
+  "start_unix": 1792831873.451352,
+  "lock_wait_seconds": 3.0980445444583893e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 325 MiB, 15619 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792831873.494796,
+      "util": 3,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831874.5272827,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831875.5584533,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831876.5895252,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831877.6242034,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831878.6565793,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831879.6881871,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831880.7230134,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831881.7542691,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831882.7879903,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831883.821152,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831884.8551412,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831885.8880048,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831886.9238074,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831887.958456,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792831888.991526,
+      "util": 0,
+      "free_mib": 15619
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 460417,
+  "start_ticks": "345478597",
+  "minimum_free_vram_mib": 15605,
+  "exit": 0,
+  "wall_seconds": 0.29069753596559167,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "5f669014e2fd9381e2e4f13f34928ac4d67da620e0923cc215ed63997fee76c8",
+  "end_unix": 1792831890.303098
+}

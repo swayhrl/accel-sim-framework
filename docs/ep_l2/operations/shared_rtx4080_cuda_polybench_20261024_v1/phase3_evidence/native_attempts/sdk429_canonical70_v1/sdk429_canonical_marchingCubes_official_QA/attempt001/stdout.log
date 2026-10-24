@@ -1,0 +1,26 @@
+SDK42_HOST_ADAPTER_QA_START
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+grid: 32 x 32 x 32 = 32768 voxels
+max verts = 102400
+Read 'data/Bucky.raw', 32768 bytes
+CheckRender::dumpBin: <marchCube_posArray.bin>
+CheckRender::dumpBin: <marchCube_normalArray.bin>
+CheckRender::dumpBin: <marchCube_compVoxelArray.bin>
+> compareBin2Bin <float> nelements=1638400, epsilon=5.00, threshold=0.30
+   src_file <marchCube_posArray.bin>
+   ref_file <./data/posArray.bin>
+8.25(%) of bytes mismatched (count=135158)
+  OK
+> compareBin2Bin <float> nelements=1638400, epsilon=5.00, threshold=0.30
+   src_file <marchCube_normalArray.bin>
+   ref_file <./data/normalArray.bin>
+8.70(%) of bytes mismatched (count=142503)
+  OK
+> compareBin2Bin <float> nelements=131072, epsilon=5.00, threshold=0.30
+   src_file <marchCube_compVoxelArray.bin>
+   ref_file <./data/compVoxelArray.bin>
+  OK
+SDK42_HOST_ADAPTER_QA_PASSED

@@ -1,0 +1,144 @@
+{
+  "task_id": "rodinia_3_1_bfs_d679533ddf92",
+  "suite": "Rodinia",
+  "version": "3.1",
+  "program": "bfs",
+  "canonical_family": "bfs",
+  "variant": "frozen_exact_argv_d679533ddf92",
+  "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+  "argv": [
+    "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/bfs",
+    "./data/graph1MW_6.txt"
+  ],
+  "binary_sha256": "1786c8e468ff191ad5535963cb873ee60efdecb51baae8012c4defb39e9bc99f",
+  "sources": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/bfs.cu",
+      "sha256": "578f323f55e5f4f70f0dfec9e2e8ae247646098bcda680876be793f32aefe903"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/kernel.cu",
+      "sha256": "0b404e06838030ec6b1d63ce4d625a49d8f1400f2ad386421b655f11d2b08a5e"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/kernel2.cu",
+      "sha256": "bca41f84cb02532b8675efcc538476ccfcde6d2e37277a0702b101b71079fcb7"
+    }
+  ],
+  "runtime_links": [
+    {
+      "name": "data",
+      "target": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data"
+    },
+    {
+      "name": "inputGen",
+      "target": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen"
+    }
+  ],
+  "input_identity": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data/graph1MW_6.txt",
+      "bytes": 64199088,
+      "sha256": "0740e4f7a6e024977124fc1a840fc8b1a6e330b9bc4322b5c8c1112126c29556"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data/graph4096.txt",
+      "bytes": 199082,
+      "sha256": "b695d07bbea389989fc8ba4ed1f44eea3425d810c096e150ca4774525ebb8100"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data/graph65536.txt",
+      "bytes": 3873156,
+      "sha256": "4e7d1ab8b8d25aa0f2d5e1975c42cc95fb96a558f13f50ec73767b40f0f2dc15"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen/graphgen.cpp",
+      "bytes": 3281,
+      "sha256": "b6dc265501df539b0c35f77263fa3674d47064df2fdd98d9630e0fe0c241b949"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen/gen_dataset.sh",
+      "bytes": 334,
+      "sha256": "c2170fd0f8477b1a09112958c0682d9d3c5076dffe2bf0de8c8d0403e3e7a3e4"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen/Makefile",
+      "bytes": 99,
+      "sha256": "0e26d5bd39aa40067f5ecae8ce94c83f04401bd477c1e6efbadce439101b540f"
+    }
+  ],
+  "input_dependency_scope": "conservative complete program data tree, exact runtime subset not inferred",
+  "generated_time_seed": false,
+  "producer_input_snapshot_status": "FIXED_FILES_OR_SOURCE_RECIPE",
+  "env": {
+    "LD_LIBRARY_PATH": "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/usr/local/cuda-12.8/lib64:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+  },
+  "cwd_policy": "ABSENT attempt with copied data; source never receives runtime outputs",
+  "native_timeout_sec": 1800,
+  "capture_timeout_sec": 21600,
+  "capture_max_bytes": 85899345920,
+  "correctness": {
+    "exit": 0,
+    "stdout_regex": "",
+    "kind": "EXECUTION_ONLY_UNTIL_EMBEDDED_REFERENCE_AUDIT"
+  },
+  "expected_kernel_presence": "YES_CUDA_BENCHMARK_SOURCE",
+  "origins": [
+    {
+      "kind": "HISTORICAL_CAPTURE_SCRIPT",
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/run.sh",
+      "sha256": "1c481e161debaf1cb3f1d87214370ce62033854ed38cb9477bf801bb47fedae8"
+    }
+  ],
+  "historical_aliases": [
+    "174::/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernelslist.g"
+  ],
+  "historical_source_input_equivalence": "ARGV evidence only; frozennewsource identity explicit, old captured source unknown",
+  "source_files": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/bfs.cu",
+      "sha256": "578f323f55e5f4f70f0dfec9e2e8ae247646098bcda680876be793f32aefe903"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/kernel.cu",
+      "sha256": "0b404e06838030ec6b1d63ce4d625a49d8f1400f2ad386421b655f11d2b08a5e"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/bfs/kernel2.cu",
+      "sha256": "bca41f84cb02532b8675efcc538476ccfcde6d2e37277a0702b101b71079fcb7"
+    }
+  ],
+  "input_files": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data/graph1MW_6.txt",
+      "bytes": 64199088,
+      "sha256": "0740e4f7a6e024977124fc1a840fc8b1a6e330b9bc4322b5c8c1112126c29556"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data/graph4096.txt",
+      "bytes": 199082,
+      "sha256": "b695d07bbea389989fc8ba4ed1f44eea3425d810c096e150ca4774525ebb8100"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/data/graph65536.txt",
+      "bytes": 3873156,
+      "sha256": "4e7d1ab8b8d25aa0f2d5e1975c42cc95fb96a558f13f50ec73767b40f0f2dc15"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen/graphgen.cpp",
+      "bytes": 3281,
+      "sha256": "b6dc265501df539b0c35f77263fa3674d47064df2fdd98d9630e0fe0c241b949"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen/gen_dataset.sh",
+      "bytes": 334,
+      "sha256": "c2170fd0f8477b1a09112958c0682d9d3c5076dffe2bf0de8c8d0403e3e7a3e4"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/3.1/bfs-rodinia-3.1/inputGen/Makefile",
+      "bytes": 99,
+      "sha256": "0e26d5bd39aa40067f5ecae8ce94c83f04401bd477c1e6efbadce439101b540f"
+    }
+  ],
+  "workload_kind": "FINITE_CUDA_BENCHMARK_EXECUTION_WITH_SEPARATE_NUMERIC_REVIEW"
+}

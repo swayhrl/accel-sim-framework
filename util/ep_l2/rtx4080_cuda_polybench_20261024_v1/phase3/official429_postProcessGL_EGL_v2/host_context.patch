@@ -1,0 +1,19 @@
+--- a/main.cpp
++++ b/main.cpp
+@@ -1041,15 +1041,7 @@
+ bool
+ initGL(int *argc, char **argv )
+ {
+-    if (IsOpenGLAvailable(sSDKname)) {
+-        fprintf( stderr, "   OpenGL device is Available\n");
+-    } else {
+-        fprintf( stderr, "   OpenGL device is NOT Available, [%s] exiting...\n", sSDKname );
+-        shrQAFinishExit(*argc, (const char **)argv, QA_WAIVED);
+-        return false;
+-    }
+-
+-	// Create GL context
++    // Availability is validated by real NVIDIA EGL pbuffer creation.
+     glutInit(argc, argv);
+     glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
+     glutInitWindowSize(window_width, window_height);

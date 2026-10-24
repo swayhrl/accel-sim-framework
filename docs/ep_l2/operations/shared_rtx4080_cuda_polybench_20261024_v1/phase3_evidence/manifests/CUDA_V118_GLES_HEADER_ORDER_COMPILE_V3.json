@@ -1,0 +1,83 @@
+[
+  {
+    "program": "fluidsGLES",
+    "command": [
+      "make",
+      "-j2",
+      "SAMPLE_ENABLED=1",
+      "CUDA_PATH=/usr/local/cuda-12.8",
+      "SMS=89",
+      "GENCODE_FLAGS=-gencode arch=compute_89,code=sm_89",
+      "GLPATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+      "HEADER_SEARCH_PATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include",
+      "INCLUDES=-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include -I../../../Common",
+      "LIBRARIES=-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu -L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu -L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu -lGLESv2 -lEGL -l:libX11.so.6 -lcufft"
+    ],
+    "exit": 0,
+    "log": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/fluidsGLES_modern_gl_header_compile_probe_v3.log",
+    "elfs": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/fluidsGLES",
+        "sha256": "44202506419a290c01294df2b7004bd36eb66a65a31cfb8bb5e19f52b4f7d35d"
+      }
+    ],
+    "basis": "Unchanged sample source, private modern GL/GLES headers ahead of old bundled Common/GL, compile-only x86 gate override. Actual EGL/GLES/CUDA interop capability pending native proof.",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    }
+  },
+  {
+    "program": "nbody_opengles",
+    "command": [
+      "make",
+      "-j2",
+      "SAMPLE_ENABLED=1",
+      "CUDA_PATH=/usr/local/cuda-12.8",
+      "SMS=89",
+      "GENCODE_FLAGS=-gencode arch=compute_89,code=sm_89",
+      "GLPATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+      "HEADER_SEARCH_PATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include",
+      "INCLUDES=-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include -I../../../Common",
+      "LIBRARIES=-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu -L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu -L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu -lGLESv2 -lEGL -l:libX11.so.6"
+    ],
+    "exit": 0,
+    "log": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/nbody_opengles_modern_gl_header_compile_probe_v3.log",
+    "elfs": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/nbody_opengles/nbody_opengles",
+        "sha256": "38c4435ad10f06826f6ab0bf59600f5475d10f3df3f85c513f9553f231e32c21"
+      }
+    ],
+    "basis": "Unchanged sample source, private modern GL/GLES headers ahead of old bundled Common/GL, compile-only x86 gate override. Actual EGL/GLES/CUDA interop capability pending native proof.",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    }
+  },
+  {
+    "program": "simpleGLES",
+    "command": [
+      "make",
+      "-j2",
+      "SAMPLE_ENABLED=1",
+      "CUDA_PATH=/usr/local/cuda-12.8",
+      "SMS=89",
+      "GENCODE_FLAGS=-gencode arch=compute_89,code=sm_89",
+      "GLPATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+      "HEADER_SEARCH_PATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include",
+      "INCLUDES=-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include -I../../../Common",
+      "LIBRARIES=-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu -L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu -L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu -lGLESv2 -lEGL -l:libX11.so.6"
+    ],
+    "exit": 0,
+    "log": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/simpleGLES_modern_gl_header_compile_probe_v3.log",
+    "elfs": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleGLES/simpleGLES",
+        "sha256": "88a98e9209c49530f40ea529b290ddaa8b6db9d4e6ec7af1a9bd7f27ebf22ec0"
+      }
+    ],
+    "basis": "Unchanged sample source, private modern GL/GLES headers ahead of old bundled Common/GL, compile-only x86 gate override. Actual EGL/GLES/CUDA interop capability pending native proof.",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    }
+  }
+]

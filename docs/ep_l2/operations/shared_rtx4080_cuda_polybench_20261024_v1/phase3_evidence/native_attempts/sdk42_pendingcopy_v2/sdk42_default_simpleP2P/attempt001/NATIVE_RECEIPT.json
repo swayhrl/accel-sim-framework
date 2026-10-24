@@ -1,0 +1,84 @@
+{
+  "task": {
+    "program": "simpleP2P",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "379651e3ffc1fe7bb6163d48dd9fc70768b6975bfb0dc3da95af29bc43f7289f",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleP2P",
+      "CUFILES": "simpleP2P.cu",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": true,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleP2P"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0729758739471436,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleP2P"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "fa2dda8291f998d735407ed0e5cc0df360d6f279340ea55404111d720fbe09cb",
+    "cuobjdump_list_elf": "ELF file    1: simpleP2P-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleP2P.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleP2P",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+        "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0"
+    },
+    "platform_requirement": "Requires2GPUs;109one4080",
+    "workload_kind": "SINGLE_GPU_PLATFORM_UNAVAILABLE",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_pendingcopy_v2/sdk42_default_simpleP2P/attempt001",
+  "index": 22,
+  "start_unix": 1792822276.334116,
+  "status": "PLATFORM_UNAVAILABLE_REQUIRES_2_GPUS",
+  "end_unix": 1792822276.350014
+}

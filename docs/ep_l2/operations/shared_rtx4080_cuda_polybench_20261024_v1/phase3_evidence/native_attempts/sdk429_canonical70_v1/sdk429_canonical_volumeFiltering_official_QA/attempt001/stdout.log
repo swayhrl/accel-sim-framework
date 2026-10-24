@@ -1,0 +1,31 @@
+Found 1 CUDA Capable Device(s).
+
+Device 0: "NVIDIA GeForce RTX 4080"
+  CUDA Runtime Version     :	11.8
+  CUDA Compute Capability  :	8.9
+
+Found CUDA Capable Device 0: "NVIDIA GeForce RTX 4080"
+Setting active device to 0
+SDK42_HOST_ADAPTER_QA_START
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_failed28_build_v3/sdk429_volumeFiltering Starting...
+
+[CUDA 3D Volume Filtering] (automated testing w/ readback)
+Read './data/Bucky.raw', 32768 bytes
+Press 
+  'SPACE'     to toggle animation
+  'p'         to toggle pre-integrated transfer function
+  '+' and '-' to change density (0.01 increments)
+  ']' and '[' to change brightness
+  ';' and ''' to modify transfer function offset
+  '.' and ',' to modify transfer function scale
+
+volumeFiltering, Throughput = 3143.2135 MTexels/s, Time = 0.00008 s, Size = 262144 Texels, NumDevsUsed = 1, Workgroup = 256
+> Saving PPM: <volumefilter.ppm>
+   src_file <volumefilter.ppm>
+   ref_file <./data/ref_volumefilter.ppm>
+> Compare (a)rendered:  <volumefilter.ppm>
+>         (b)reference: <./data/ref_volumefilter.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(30%)
+    OK
+
+SDK42_HOST_ADAPTER_QA_PASSED

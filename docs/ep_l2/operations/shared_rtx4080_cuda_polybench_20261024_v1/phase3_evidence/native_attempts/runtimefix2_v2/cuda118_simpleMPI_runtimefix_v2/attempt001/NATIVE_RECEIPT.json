@@ -1,0 +1,154 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "simpleMPI",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1",
+    "source_files": [
+      {
+        "relative_path": "simpleMPI.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI.cpp",
+        "sha256": "223e3f66ea08e8583aea99ddfaa700ae627fba379e02b7b0ec0790a3173fe8e7"
+      },
+      {
+        "relative_path": "simpleMPI.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI.cu",
+        "sha256": "bca8f909e59043e0888c14786cbdf3228277793a517f62d54b3740177df8987f"
+      },
+      {
+        "relative_path": "simpleMPI.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI.h",
+        "sha256": "4c96fc13fd9b6cfc052304f02141fb311e9eaf95206a0b8d27bab3857df51f00"
+      }
+    ],
+    "input_files": [],
+    "task_id": "cuda118_simpleMPI_runtimefix_v2",
+    "variant": "same_full_input_private_runtime_dependency_repair_v2",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI"
+    ],
+    "binary_sha256": "53762091a6271d11b8750fbd3ed50b92e0b8d8af66ca0c748be496a6431145aa",
+    "binary_cubin_listing": "ELF file    1: simpleMPI.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "OPAL_PREFIX": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr",
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu",
+      "PMIX_MCA_psec": "native",
+      "HWLOC_COMPONENTS": "-gl"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "MPI_SINGLE_RANK_GPU_COMPUTE",
+    "platform_requirement": "PrivateOpenMPI installed; direct launch MPI_Init single-rank is allowed by source",
+    "same_workload_identity_as": "cuda118_simpleMPI_0"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/runtimefix2_v2/cuda118_simpleMPI_runtimefix_v2/attempt001",
+  "index": 0,
+  "start_unix": 1792821618.4788096,
+  "lock_wait_seconds": 155.00842493819073,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821773.5326743,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821774.563033,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821775.5968156,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821776.6349082,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821777.6700199,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821778.704005,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821779.7378232,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821780.772707,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821781.807264,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821782.840978,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821783.8758416,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821784.9094398,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821785.9435062,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821786.9785552,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821788.010574,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 399358,
+  "start_ticks": "344468499",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.5621810187585652,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "4c93ea257c1a33f3e1d51b997e7d917c5deef4ea118417073ddbeea4c4b06ab9",
+  "end_unix": 1792821789.5932388
+}

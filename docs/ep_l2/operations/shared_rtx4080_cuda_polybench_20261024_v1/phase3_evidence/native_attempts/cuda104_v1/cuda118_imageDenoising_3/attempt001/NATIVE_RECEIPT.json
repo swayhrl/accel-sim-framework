@@ -1,0 +1,212 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "imageDenoising",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising",
+    "source_files": [
+      {
+        "relative_path": "bmploader.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/bmploader.cpp",
+        "sha256": "129e221246ece0637db6013288d0d01831347770ebdce60d9a5b3aed81fde7e2"
+      },
+      {
+        "relative_path": "imageDenoising.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising.cu",
+        "sha256": "ad681ebdf1d35d3f2a6ce07a6d0b63f1565e74bc4ec896d6daf45044ebf526a0"
+      },
+      {
+        "relative_path": "imageDenoising.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising.h",
+        "sha256": "2fa37a7d93c7a67e97444bdc8a4faa725f1c07aef72a7681998ecaefbe72d8a6"
+      },
+      {
+        "relative_path": "imageDenoisingGL.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoisingGL.cpp",
+        "sha256": "eb1e79d77e5a8f21cef5d5c8228e2d3338121a4503260722117d0a2abe17e660"
+      },
+      {
+        "relative_path": "imageDenoising_copy_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising_copy_kernel.cuh",
+        "sha256": "fca3c46af623393c1bb1b638f715954ee424e3b67eddde5520f51174b4c7eeb8"
+      },
+      {
+        "relative_path": "imageDenoising_knn_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising_knn_kernel.cuh",
+        "sha256": "e81604943f554941e952feacefa18d4fe2d6e47f80e1d96d60e3814972cad7f6"
+      },
+      {
+        "relative_path": "imageDenoising_nlm2_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising_nlm2_kernel.cuh",
+        "sha256": "54458d08a066a1cc25f685d0dd0134a9ddbb83efd4d04901fa2dcf68b3b4d397"
+      },
+      {
+        "relative_path": "imageDenoising_nlm_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising_nlm_kernel.cuh",
+        "sha256": "b501a15223a036bf11e40355010a0232c499b35ea6c6cad481f48082c9f436d8"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/portrait_noise.bmp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/data/portrait_noise.bmp",
+        "bytes": 391734,
+        "sha256": "eea6deeabb4d2c14f7c18f77306cbe98ad1dfebefe8eac161a44a7218621f6fa"
+      },
+      {
+        "relative_path": "data/ref_knn.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/data/ref_knn.ppm",
+        "bytes": 391734,
+        "sha256": "d1d5cc04cad37ef4e72cca219ea336f378d5cbebca6e7f8a031a674f34467890"
+      },
+      {
+        "relative_path": "data/ref_nlm.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/data/ref_nlm.ppm",
+        "bytes": 391734,
+        "sha256": "23c2ed0db4522e50b94dc0d59c537c40a4a2087e0d9516c729d6aa60efb5edce"
+      },
+      {
+        "relative_path": "data/ref_nlm2.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/data/ref_nlm2.ppm",
+        "bytes": 391734,
+        "sha256": "43820ada7bb74f686da6ce8f6dc8b3d5dc5fee0a9bde6f938bce96572c1d03c8"
+      },
+      {
+        "relative_path": "data/ref_passthru.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/data/ref_passthru.ppm",
+        "bytes": 391734,
+        "sha256": "408f85e7e454f9d3a348fe844c2b611fc10b7b0696f913d49bf840a350037414"
+      }
+    ],
+    "task_id": "cuda118_imageDenoising_3",
+    "variant": "official_testrun_3",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/imageDenoising",
+      "-kernel=3",
+      "-file=ref_nlm2.ppm"
+    ],
+    "binary_sha256": "5d813d309f03ad56025f11570e9809da57c17e0f6bf67ba89173aed65b9ab625",
+    "binary_cubin_listing": "ELF file    1: imageDenoising.1.sm_89.cubin\nELF file    2: imageDenoising.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/imageDenoising/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_imageDenoising_3/attempt001",
+  "index": 46,
+  "start_unix": 1792820649.8401165,
+  "lock_wait_seconds": 2.667773514986038e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792820649.8883538,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820650.921976,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820651.955679,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820652.9930058,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820654.0290234,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820655.0609224,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820656.0943148,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820657.1293566,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820658.1666338,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820659.2017593,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820660.2346807,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820661.267576,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820662.3020613,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820663.3315372,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820664.3665934,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 389329,
+  "start_ticks": "344356135",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.28874978283420205,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "1db6e246e73094ec94d83cdd3d631475d3bc60e389e13aebe55787ef57549aa9",
+  "end_unix": 1792820665.677903
+}

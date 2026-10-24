@@ -1,0 +1,57 @@
+{
+  "status": "CURRENT_HOST_REAL_HARDWARE_PREREQUISITE_UNSATISFIED",
+  "device_inventory": "GPU 0: NVIDIA GeForce RTX 4080 (UUID: GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59)\n",
+  "evidence": [
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1",
+      "line": 207,
+      "context": "    if (gpu_n < 2)\n    {\n        printf(\"Two or more (SM 2.0) class GPUs are required for %s.\\n\", argv[0]);\n        printf(\"Waiving test.\\n\");\n        shrQAFinishExit(argc, (const char **)argv, QA_PASSED);"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1",
+      "line": 237,
+      "context": "    if (gpu_count < 2)\n    {\n        printf(\"\\nThis sample requires two SM 2.0 GPUs to use P2P/UVA functionality.\\n\");\n#ifdef _WIN32\n        printf(\"\\nFor Windows Vista/Win7, a TCC driver must be installed and enabled to use P2P/UVA functionality.\\n\");"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1",
+      "line": 250,
+      "context": "    int can_access_peer_0_1, can_access_peer_1_0;\n    // In this case we just pick the first two that we can support\n    checkCudaErrors(cudaDeviceCanAccessPeer(&can_access_peer_0_1, gpuid[0], gpuid[1]));\n    checkCudaErrors(cudaDeviceCanAccessPeer(&can_access_peer_1_0, gpuid[1], gpuid[0]));\n"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1",
+      "line": 251,
+      "context": "    // In this case we just pick the first two that we can support\n    checkCudaErrors(cudaDeviceCanAccessPeer(&can_access_peer_0_1, gpuid[0], gpuid[1]));\n    checkCudaErrors(cudaDeviceCanAccessPeer(&can_access_peer_1_0, gpuid[1], gpuid[0]));\n\n    // Output results from P2P capabilities"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1",
+      "line": 263,
+      "context": "    if (can_access_peer_0_1 == 0 || can_access_peer_1_0 == 0)\n    {\n        printf(\"Two or more SM 2.0 class GPUs are required for %s to run.\\n\", argv[0]);\n        printf(\"Support for UVA requires a GPU with SM 2.0 capabilities.\\n\");\n        printf(\"Peer to Peer access is not available between GPU%d <-> GPU%d, waiving test.\\n\", gpuid[0], gpuid[1]);"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleP2P/simpleP2P.cu",
+      "sha256": "73c8e22f9e05c4931478675cdc0e45b89ce6f3bd8a7fd5aca92e477a9ede63cf",
+      "line": 72,
+      "context": "  if (gpu_n < 2) {\n    printf(\n        \"Two or more GPUs with Peer-to-Peer access capability are required for \"\n        \"%s.\\n\",\n        argv[0]);"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleP2P/simpleP2P.cu",
+      "sha256": "73c8e22f9e05c4931478675cdc0e45b89ce6f3bd8a7fd5aca92e477a9ede63cf",
+      "line": 99,
+      "context": "        continue;\n      }\n      checkCudaErrors(cudaDeviceCanAccessPeer(&can_access_peer, i, j));\n      printf(\"> Peer access from %s (GPU%d) -> %s (GPU%d) : %s\\n\", prop[i].name,\n             i, prop[j].name, j, can_access_peer ? \"Yes\" : \"No\");"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleP2P/simpleP2P.cu",
+      "sha256": "73c8e22f9e05c4931478675cdc0e45b89ce6f3bd8a7fd5aca92e477a9ede63cf",
+      "line": 111,
+      "context": "  if (p2pCapableGPUs[0] == -1 || p2pCapableGPUs[1] == -1) {\n    printf(\n        \"Two or more GPUs with Peer-to-Peer access capability are required for \"\n        \"%s.\\n\",\n        argv[0]);"
+    }
+  ],
+  "prerequisite": "Two distinct physical CUDA devices and positive directed peer capability query; contexts or logical duplication do not count. Additional hardware alone is insufficient unless cudaDeviceCanAccessPeer is positive.",
+  "route": "Preserve original versions and exact calls; run on a real suitable multi-GPU peer-capable machine. No emulation, input downsize, context duplication or claimed capture on current single4080.",
+  "source_KEEP": true
+}

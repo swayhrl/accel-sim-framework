@@ -1,0 +1,45 @@
+SDK42_HOST_ADAPTER_QA_START
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA device [0]: NVIDIA GeForce RTX 4080
+CUDA device [NVIDIA GeForce RTX 4080] has 76 Multi-Processors, Compute 8.9
+Initializing data...
+...allocating CPU memory.
+...generating input data
+...allocating GPU memory and copying input data
+
+Starting up 64-bin histogram...
+
+Running 64-bin GPU histogram for 67108864 bytes (16 runs)...
+
+histogram64() time (average) : 0.00007 sec, 966464.3386 MB/sec
+
+histogram64, Throughput = 966464.3386 MB/s, Time = 0.00007 s, Size = 67108864 Bytes, NumDevsUsed = 1, Workgroup = 64
+
+Validating GPU results...
+ ...reading back GPU results
+ ...histogram64CPU()
+ ...comparing the results...
+ ...64-bin histograms match
+
+Shutting down 64-bin histogram...
+
+
+Initializing 256-bin histogram...
+Running 256-bin GPU histogram for 67108864 bytes (16 runs)...
+
+histogram256() time (average) : 0.00044 sec, 151359.1549 MB/sec
+
+histogram256, Throughput = 151359.1549 MB/s, Time = 0.00044 s, Size = 67108864 Bytes, NumDevsUsed = 1, Workgroup = 192
+
+Validating GPU results...
+ ...reading back GPU results
+ ...histogram256CPU()
+ ...comparing the results
+ ***256-bin histograms do not match!!!***
+
+Shutting down 256-bin histogram...
+
+
+Shutting down...
+[histogram] - Test Summary
+SDK42_HOST_ADAPTER_QA_FAILED

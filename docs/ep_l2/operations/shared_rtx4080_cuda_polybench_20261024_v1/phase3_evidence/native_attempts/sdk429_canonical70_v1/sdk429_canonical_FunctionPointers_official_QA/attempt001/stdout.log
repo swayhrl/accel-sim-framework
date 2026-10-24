@@ -1,0 +1,30 @@
+Found 1 CUDA Capable Device(s).
+
+Device 0: "NVIDIA GeForce RTX 4080"
+  CUDA Runtime Version     :	11.8
+  CUDA Compute Capability  :	8.9
+
+Found CUDA Capable Device 0: "NVIDIA GeForce RTX 4080"
+Setting active device to 0
+SDK42_HOST_ADAPTER_QA_START
+[CUDA Function Pointers (SobelFilter)] (automated testing w/ readback)
+Loading input image: lena.pgm
+AutoTest: CUDA Function Pointers (SobelFilter) <No Filtering>
+> Saving PGM: <lena_orig.pgm>
+   src_file <lena_orig.pgm>
+   ref_file <./data/ref_orig.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  OK
+AutoTest: CUDA Function Pointers (SobelFilter) <Sobel Texture>
+> Saving PGM: <lena_shared.pgm>
+   src_file <lena_shared.pgm>
+   ref_file <./data/ref_shared.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  OK
+AutoTest: CUDA Function Pointers (SobelFilter) <Sobel SMEM+Texture>
+> Saving PGM: <lena_shared_tex.pgm>
+   src_file <lena_shared_tex.pgm>
+   ref_file <./data/ref_shared_tex.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  OK
+SDK42_HOST_ADAPTER_QA_PASSED

@@ -1,0 +1,54 @@
+SDK42_HOST_ADAPTER_QA_START
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_postProcessGL_EGL_v2/postProcessGL Starting...
+
+(Test with OpenGL verification)
+EP_EGL_GL_VENDOR NVIDIA Corporation
+EP_EGL_GL_RENDERER NVIDIA GeForce RTX 4080/PCIe/SSE2
+EP_EGL_GL_VERSION 4.6.0 NVIDIA 580.178.04
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+Creating a Texture render target GL_RGBA16F_ARB
+Shader compilation error: Fragment info
+-------------
+0(4) : warning C7533: global variable gl_Color is deprecated after version 120
+
+
+	Controls
+	(right click mouse button for Menu)
+	[ ] : Toggle CUDA Post Processing (on/off)
+	[a] : Toggle Animation (on/off)
+	[=] : Increase Blur Radius
+	[-] : Decrease Blur Radius
+	[esc] - Quit
+
+CUDA GL Post Processing (512 x 512): 2057.6 fps
+> Saving PPM: <teapot_4.ppm>
+   src_file <teapot_4.ppm>
+   ref_file <./data/ref_4.ppm>
+> Compare (a)rendered:  <teapot_4.ppm>
+>         (b)reference: <./data/ref_4.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(10), threshold(30%)
+6.67(%) of bytes mismatched (count=69888)
+    OK
+
+> Saving PPM: <teapot_8.ppm>
+   src_file <teapot_8.ppm>
+   ref_file <./data/ref_8.ppm>
+> Compare (a)rendered:  <teapot_8.ppm>
+>         (b)reference: <./data/ref_8.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(10), threshold(30%)
+7.69(%) of bytes mismatched (count=80645)
+    OK
+
+> Saving PPM: <teapot_16.ppm>
+   src_file <teapot_16.ppm>
+   ref_file <./data/ref_16.ppm>
+> Compare (a)rendered:  <teapot_16.ppm>
+>         (b)reference: <./data/ref_16.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(10), threshold(30%)
+9.25(%) of bytes mismatched (count=97029)
+    OK
+
+Test Summary: 0 deviations from reference images
+
+postProcessGL.exe Exiting...
+SDK42_HOST_ADAPTER_QA_PASSED

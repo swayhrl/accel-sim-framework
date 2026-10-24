@@ -1,0 +1,766 @@
+{
+  "method": "Static source site inventory, no control-flow or callback coverage proof. Final-only reset differs from reset followed by more launches. simpleTemplates case independently closed with real capture/source evidence.",
+  "site_count": 76,
+  "sites": [
+    {
+      "program": "matrixMulDynlinkJIT",
+      "source_version": "v11.8",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+      "sha256": "7d217435419f2672a13c1f7ad6da1661bd5cfc4fac1e00241635d8dfc57c3043",
+      "api": "cuCtxDestroy",
+      "line": 144,
+      "context": "        fprintf(stderr, \"initCUDA (Device=%d) invalid GPU device.  %d GPU device(s) detected.\\n\\n\", devID, deviceCount);\n        status = CUDA_ERROR_NOT_FOUND;\n\n        cuCtxDestroy(g_cuContext);\n        exit(EXIT_FAILURE);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "matrixMulDynlinkJIT",
+      "source_version": "v11.8",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+      "sha256": "7d217435419f2672a13c1f7ad6da1661bd5cfc4fac1e00241635d8dfc57c3043",
+      "api": "cuCtxDestroy",
+      "line": 164,
+      "context": "\n    if (CUDA_SUCCESS != status)\n    {\n        cuCtxDestroy(g_cuContext);\n        exit(EXIT_SUCCESS);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "matrixMulDynlinkJIT",
+      "source_version": "v11.8",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+      "sha256": "7d217435419f2672a13c1f7ad6da1661bd5cfc4fac1e00241635d8dfc57c3043",
+      "api": "cuCtxDestroy",
+      "line": 209,
+      "context": "    if (CUDA_SUCCESS != status)\n    {\n        printf(\"Error while compiling PTX\\n\");\n        cuCtxDestroy(g_cuContext);\n        exit(EXIT_FAILURE);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "matrixMulDynlinkJIT",
+      "source_version": "v11.8",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+      "sha256": "7d217435419f2672a13c1f7ad6da1661bd5cfc4fac1e00241635d8dfc57c3043",
+      "api": "cuCtxDestroy",
+      "line": 219,
+      "context": "\n    if (CUDA_SUCCESS != status)\n    {\n        cuCtxDestroy(g_cuContext);\n        exit(EXIT_FAILURE);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "matrixMulDynlinkJIT",
+      "source_version": "v11.8",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+      "sha256": "7d217435419f2672a13c1f7ad6da1661bd5cfc4fac1e00241635d8dfc57c3043",
+      "api": "cuCtxDestroy",
+      "line": 350,
+      "context": "    checkCudaErrors(cuMemFree(d_A));\n    checkCudaErrors(cuMemFree(d_B));\n    checkCudaErrors(cuMemFree(d_C));\n    checkCudaErrors(cuCtxDestroy(g_cuContext));\n\n    printf(\"Test run %s\\n\", (1==res) ? \"success!\" : \"failed!\");",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "MonteCarloMultiGPU",
+      "source_version": "4.2.9-official-source-compat-v8-header-order-fix",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/MonteCarloMultiGPU/MonteCarloMultiGPU.cpp",
+      "sha256": "ccdf6d29bf938ef3a9698b8e48ddc436dd6bd8533fdcdd7e79280de6201c84cf",
+      "api": "cudaDeviceReset",
+      "line": 104,
+      "context": "    cudaStreamSynchronize(0);\n\n    printf(\"solverThread() finished - GPU Device %d: %s\\n\", plan->device, deviceProp.name );\n    cudaDeviceReset();\n    CUT_THREADEND;\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "MonteCarloMultiGPU",
+      "source_version": "4.2.9-official-source-compat-v8-header-order-fix",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/MonteCarloMultiGPU/MonteCarloMultiGPU.cpp",
+      "sha256": "ccdf6d29bf938ef3a9698b8e48ddc436dd6bd8533fdcdd7e79280de6201c84cf",
+      "api": "cudaDeviceReset",
+      "line": 414,
+      "context": "\tfor( int i=0; i<GPU_N; i++ ) {\t\n\t\tsdkDeleteTimer(&hTimer[i]);\n        checkCudaErrors( cudaSetDevice(i) );\n        cudaDeviceReset();\n    }\n",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "ptxjit",
+      "source_version": "4.2.9-official-source-host-adapter-v7",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/ptxjit/ptxjit.cpp",
+      "sha256": "6864d0451b1fabdff1a36b05e55b17599671a9425e6c402791b679e204c900e3",
+      "api": "cuCtxDestroy",
+      "line": 256,
+      "context": "    }\n    if (hContext)\n    {\n        checkCudaErrors(cuCtxDestroy(hContext));\n        hContext = 0;\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simplePrintf",
+      "source_version": "4.2.9-official-source-host-adapter-v7",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simplePrintf/simplePrintf.cu",
+      "sha256": "ac8fe92843e8be340204d4fe5437204cf042710725a2ad1e523c6fc50e8ec3c2",
+      "api": "cudaDeviceReset",
+      "line": 260,
+      "context": "\t\tcudaPrintfEnd();\n\t}\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "threadMigration",
+      "source_version": "4.2.9-official-source-compat-v9-driver-error-helper",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration/threadMigration.cpp",
+      "sha256": "035f6e4c4019409089348f17c599d1827dc07fe79f28b2ad7497e73bdf15e73f",
+      "api": "cuCtxDestroy",
+      "line": 328,
+      "context": "        for ( int iDevice = 0; iDevice < deviceCount; iDevice++ ) {\n           for ( int iThread = 0; iThread < NumThreads; iThread++, ThreadIndex++ ) {\n              // cuCtxDestroy called on current context or a floating context\n              if ( CUDA_SUCCESS != cuCtxDestroy( g_ThreadParams[ThreadIndex].hcuContext ) )\n                 return false;\n           }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "Interval",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/interval.cu",
+      "sha256": "ea3d3734ff1a583a46d3dba17a1dd3ab0ce27b36406b2c9ca8830c09a372c089",
+      "api": "cutilDeviceReset",
+      "line": 55,
+      "context": "\tint version = (deviceProp.major * 0x10 + deviceProp.minor);\n\tif (version < 0x13) {\n\t\tprintf(\"%s: requires minimum of Compute Capability 1.3 or higher, waiving test...\\n\", sSDKsample);\n\t\tcutilDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "Interval",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/interval.cu",
+      "sha256": "ea3d3734ff1a583a46d3dba17a1dd3ab0ce27b36406b2c9ca8830c09a372c089",
+      "api": "cutilDeviceReset",
+      "line": 154,
+      "context": "    delete [] h_result_cpu;\n    delete [] h_result;\n\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult ? QA_PASSED : QA_FAILED));\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "MonteCarlo",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo.cpp",
+      "sha256": "09d4e0ac41695631080a9b4405e0a51535b5e050871daa27b9e44900dc93cf7f",
+      "api": "cutilDeviceReset",
+      "line": 314,
+      "context": "        cutilSafeCall( cudaFree(plan.d_Samples) );\n        cutilCheckError( cutDeleteTimer( hTimer) );\n\n    cutilDeviceReset();\n\n\tprintf(\"[%s] - Test summary\\n\", sSDKsample);",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "SobolQRNG",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/SobolQRNG/sobol.cpp",
+      "sha256": "adab601fdf678f6b21639ecd64e1165b4a6ffae4f3e4e572be6e8ba84c3794c8",
+      "api": "cutilDeviceReset",
+      "line": 281,
+      "context": "    cutilSafeCall(cudaFree(d_directions));\n    cutilSafeCall(cudaFree(d_output));\n\n    cutilDeviceReset();\n    // Check pass/fail using L1 error\n    shrQAFinishExit(argc, (const char **)argv, (l1error < L1ERROR_TOLERANCE) ? QA_PASSED : QA_FAILED );",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "alignedTypes",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/alignedTypes/alignedTypes.cu",
+      "sha256": "1e2edaa6029ecdfbd4c8e7876576828189450510b03202337a27551e12d54d8b",
+      "api": "cudaDeviceReset",
+      "line": 444,
+      "context": "        free(h_idataCPU);\n\n    sdkDeleteTimer(&hTimer);\n    cudaDeviceReset();\n\tshrQAFinishExit(argc, (const char **)argv, (nTotalFailures==0 ? QA_PASSED : QA_FAILED));\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "asyncAPI",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/asyncAPI/asyncAPI.cu",
+      "sha256": "17e71b8b072fd6e769e3bc3484612d4e1359c66fb04dbec7828bb428cdc2e24c",
+      "api": "cudaDeviceReset",
+      "line": 254,
+      "context": "    checkCudaErrors( cudaFreeHost(a) );\n    checkCudaErrors( cudaFree(d_a) );\n\n    cudaDeviceReset();\n\n\tshrQAFinishExit(argc, (const char **)argv, (bFinalResults ? QA_PASSED : QA_FAILED));",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "binomialOptions",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/binomialOptions/binomialOptions.cpp",
+      "sha256": "c7211ab42e41cf86447d04bc8fdc8515d59549b35930c7a2865d351a0d69590f",
+      "api": "cutilDeviceReset",
+      "line": 212,
+      "context": "\n    cutilCheckError( cutDeleteTimer(hTimer) );\n\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, ((errorVal < 5e-4) ? QA_PASSED : QA_FAILED));\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "clock",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/clock/clock.cu",
+      "sha256": "9161bb085faba3b124215d612434ab7b3542b7387d4a07303833ca351faf45b7",
+      "api": "cudaDeviceReset",
+      "line": 233,
+      "context": "\n    printf(\"time = %d\\n\", maxEnd - minStart);\n\n    cudaDeviceReset();\n\n    // This test always passes.",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "concurrentKernels",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/concurrentKernels/concurrentKernels.cu",
+      "sha256": "5248e9d185cb345166ceebf1db6e86f626133b9ab5996c9bfdb0c03f723369a9",
+      "api": "cutilDeviceReset",
+      "line": 172,
+      "context": "    cudaFreeHost(a);\n    cudaFree(d_a);\n\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "convolutionSeparable",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/main.cpp",
+      "sha256": "6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0",
+      "api": "cutilDeviceReset",
+      "line": 193,
+      "context": "\n    cutilCheckError(cutDeleteTimer(hTimer));\n\n    cutilDeviceReset();\n\n    shrQAFinishExit(argc, (const char **)argv, ((L2norm < 1e-6) ? QA_PASSED : QA_FAILED) );",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "convolutionTexture",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionTexture/main.cpp",
+      "sha256": "96d38a04f090f65567b5721dbbc3442cdfe999b9726623c85539c21276db8b18",
+      "api": "cutilDeviceReset",
+      "line": 183,
+      "context": "        free(h_Input);\n        free(h_Kernel);\n\n    cutilDeviceReset();\n\n    shrQAFinishExit( argc, (const char **)argv, ((L2norm < 1e-6) ? QA_PASSED : QA_FAILED) );",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dxtc",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/dxtc_regular_full_ada_sync_v1/dxtc.cu",
+      "sha256": "1809da1155242b5e3404137bb0d5354d4962df134132c9df81326b3e45ae4acb",
+      "api": "cutilDeviceReset",
+      "line": 575,
+      "context": "    if (image_path == 0) \n    {\n        shrLog(\"Error, unable to find source image  <%s>\\n\", image_path);\n        cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dxtc",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/dxtc_regular_full_ada_sync_v1/dxtc.cu",
+      "sha256": "1809da1155242b5e3404137bb0d5354d4962df134132c9df81326b3e45ae4acb",
+      "api": "cutilDeviceReset",
+      "line": 582,
+      "context": "    if (!shrLoadPPM4ub(image_path, &data, &W, &H)) \n    {\n        shrLog(\"Error, unable to open source image file <%s>\\n\", image_path);\n        cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dxtc",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/dxtc_regular_full_ada_sync_v1/dxtc.cu",
+      "sha256": "1809da1155242b5e3404137bb0d5354d4962df134132c9df81326b3e45ae4acb",
+      "api": "cutilDeviceReset",
+      "line": 680,
+      "context": "    FILE* fp = fopen(output_filename, \"wb\");\n    if (fp == 0) {\n        shrLog(\"Error, unable to open output image <%s>\\n\", output_filename);\n        cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dxtc",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/dxtc_regular_full_ada_sync_v1/dxtc.cu",
+      "sha256": "1809da1155242b5e3404137bb0d5354d4962df134132c9df81326b3e45ae4acb",
+      "api": "cutilDeviceReset",
+      "line": 714,
+      "context": "    const char* reference_image_path = shrFindFilePath(REFERENCE_IMAGE, argv[0]);\n    if (reference_image_path == 0) {\n        shrLog(\"Error, unable to find reference image\\n\");\n        cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dxtc",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/dxtc_regular_full_ada_sync_v1/dxtc.cu",
+      "sha256": "1809da1155242b5e3404137bb0d5354d4962df134132c9df81326b3e45ae4acb",
+      "api": "cutilDeviceReset",
+      "line": 720,
+      "context": "    fp = fopen(reference_image_path, \"rb\");\n    if (fp == 0) {\n        shrLog(\"Error, unable to open reference image\\n\");\n        cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dxtc",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/dxtc_regular_full_ada_sync_v1/dxtc.cu",
+      "sha256": "1809da1155242b5e3404137bb0d5354d4962df134132c9df81326b3e45ae4acb",
+      "api": "cutilDeviceReset",
+      "line": 757,
+      "context": "    free(h_result);\n    free(reference);\n    cutilCheckError(cutDeleteTimer(timer));\n    cutilDeviceReset();\n\n    shrLog(\"RMS(reference, result) = %f\\n\\n\", rms);",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "eigenvalues",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/eigenvalues_regular_full_shape_v1/main.cu",
+      "sha256": "f0ba32d69cb1f40ca0eb03002a704a32e5a12ae9633c48e09b6c24da50ed328d",
+      "api": "cutilDeviceReset",
+      "line": 307,
+      "context": "    }\n\n    cleanupInputData( input);\n    cutilDeviceReset();\n\n    return bCompareResult;",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dct8x8",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8.cu",
+      "sha256": "1b901b142ee6b96d83658b2dd59a9ab02e309acb7961ca018b57012e5afcfc0c",
+      "api": "cutilDeviceReset",
+      "line": 635,
+      "context": "\n    //finalize\n    shrLog(\"\\nTest Summary...\\n\");\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult ? QA_PASSED : QA_FAILED));\n    return 0;",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleSurfaceWrite",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+      "sha256": "2f4fa374ba433356876c8a917752a956f3fad3d5f142a3670a92c4855cf558c4",
+      "api": "cudaDeviceReset",
+      "line": 247,
+      "context": "\n\tif (deviceProps.major < 2) {\n\t\tprintf(\"%s requires SM >= 2.0 for SurfaceWrites, exiting... \\n\", sSDKname);\n\t\tcudaDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_WAIVED);\n\t}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleSurfaceWrite",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+      "sha256": "2f4fa374ba433356876c8a917752a956f3fad3d5f142a3670a92c4855cf558c4",
+      "api": "cudaDeviceReset",
+      "line": 357,
+      "context": "    free(image_path);\n    free(ref_path);\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult ? QA_PASSED : QA_FAILED) );\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleTexture",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture.cu",
+      "sha256": "54032175dc7deb20f2c813add116713b03004afadf61d3bfda7c7a636535b6ba",
+      "api": "cudaDeviceReset",
+      "line": 304,
+      "context": "    free(image_path);\n    free(ref_path);\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult ? QA_PASSED : QA_FAILED) );\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "cppIntegration",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/main.cpp",
+      "sha256": "31531ad14ea5e60fe0ea8220757f2e67b671087fb2a3e894952d63823e647a47",
+      "api": "cudaDeviceReset",
+      "line": 68,
+      "context": "        std::cout << (char)(i2[i].x);\n    }\n    std::cout << std::endl;\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult ? QA_PASSED : QA_FAILED));\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 160,
+      "context": "    if (s_fname == NULL)\n    {\n        fprintf(stderr, \"Cannot find the file containing the signal.\\n%s\", usage);\n        cutilDeviceReset();\n        exit(1);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 166,
+      "context": "    if (cutReadFilef( s_fname, &signal, &slength) == CUTTrue) {\n        printf(\"Reading signal from %s\\n\", s_fname);\n    } else {\n        cutilDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 312,
+      "context": "        // write file for regression test\n        if (r_fname == NULL) {\n            fprintf(stderr, \"Cannot write the output file storing the result of the wavelet decomposition.\\n%s\", usage);\n            cutilDeviceReset();\n            exit(1);\n        }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 318,
+      "context": "        if (cutWriteFilef( r_fname, odata, slength, 0.001f, false) == CUTTrue) \n            printf(\"Writing result to %s\\n\", r_fname);\n        else {\n            cutilDeviceReset();\n            shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n        }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 330,
+      "context": "        if (r_gold_fname == NULL)\n        {\n            fprintf(stderr, \"Cannot read the file containing the reference result of the wavelet decomposition.\\n%s\", usage);\n            cutilDeviceReset();\n            exit(1);\n        }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 336,
+      "context": "        if (cutReadFilef( r_gold_fname, &reference, &len_reference) == CUTTrue) \n            printf(\"Reading reference result from %s\\n\", r_gold_fname);\n        else {\n            cutilDeviceReset();\n            shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n        }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "dwtHaar1D",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775",
+      "api": "cutilDeviceReset",
+      "line": 357,
+      "context": "    cutFree( r_fname);  \n    cutFree( r_gold_fname);   \n\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bResult ? QA_PASSED : QA_FAILED) );\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "fastWalshTransform",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform.cu",
+      "sha256": "284332c572510b2415d23506f72e3d9f879c2c895ddb86e4e1d34b2033d2030e",
+      "api": "cutilDeviceReset",
+      "line": 181,
+      "context": "        free(h_Data);\n        free(h_Kernel);\n\n    cutilDeviceReset();\n    printf(\"L2 norm: %E\\n\", L2norm);\n    shrQAFinishExit(argc, (const char **)argv, (L2norm < 1e-6) ? QA_PASSED : QA_FAILED);",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "inlinePTX",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/inlinePTX/inlinePTX.cu",
+      "sha256": "db68a5a709b39ac5c27a197c1f6dc2d9a4f3519e13a9f74fdb661eedf43ce794",
+      "api": "cudaDeviceReset",
+      "line": 133,
+      "context": "\n    cout << \"Memory deallocated successfully\" << endl;\n    \n    cudaDeviceReset();\n\n    cout << \"TEST Results \" << endl;",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "lineOfSight",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/lineOfSight/lineOfSight.cu",
+      "sha256": "c7197c1cab3e7d171b11a49dbca3203974f4398398733ba812f6a29a31eab89a",
+      "api": "cutilDeviceReset",
+      "line": 232,
+      "context": "    // Cleanup memory\n    cutilSafeCall(cudaFreeArray(heightFieldArray));\n\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (1 == res) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "matrixMul",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul.cu",
+      "sha256": "0c55f65d3d326bda42221f8d6d2bb082c9747ca27c4588a6875b9f4c89e61fa8",
+      "api": "cudaDeviceReset",
+      "line": 445,
+      "context": "    checkCudaErrors(cudaFree(d_B));\n    checkCudaErrors(cudaFree(d_C));\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (resCUDA == true && resCUBLAS == true) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "newdelete",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/newdelete/newdelete.cu",
+      "sha256": "c35b35c1be34b9848f9b3969ec5e9964eea3ba067fec71deccc493fa343f7ba6",
+      "api": "cutilDeviceReset",
+      "line": 325,
+      "context": "\n    shrLog(\"Test Summary: %d/4 succesfully run\\n\", test_passed);\n\n    cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char**)argv, (test_passed==4) ? QA_PASSED : QA_FAILED);\n};",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "quasirandomGenerator",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator.cpp",
+      "sha256": "2899b57e59778ef6021b00d77586e8d4d1678c246c412c78cf79a67a74f476fe",
+      "api": "cutilDeviceReset",
+      "line": 111,
+      "context": "    int version = deviceProp.major * 10 + deviceProp.minor;\n    if(useDoublePrecision && version < 13){\n        shrLog(\"Double precision not supported.\\n\");\n        cutilDeviceReset();\n        return 0;\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "quasirandomGenerator",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator.cpp",
+      "sha256": "2899b57e59778ef6021b00d77586e8d4d1678c246c412c78cf79a67a74f476fe",
+      "api": "cutilDeviceReset",
+      "line": 207,
+      "context": "        free(h_OutputGPU);\n        cutilSafeCall( cudaFree(d_Output) );\n\n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char**)argv, (L1norm < 1E-6) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "reduction",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction.cpp",
+      "sha256": "5acc7d5b14502b732496eda9dc885d584652cf39f4001352437a6047a0ac098e",
+      "api": "cutilDeviceReset",
+      "line": 140,
+      "context": "        shrLog(\"Error: the selected device does not support the minimum compute capability of %d.%d.\\n\\n\",\n            minimumComputeVersion / 10, minimumComputeVersion % 10);\n\n        cutilDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_WAIVED);\n    }   ",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "reduction",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction.cpp",
+      "sha256": "5acc7d5b14502b732496eda9dc885d584652cf39f4001352437a6047a0ac098e",
+      "api": "cutilDeviceReset",
+      "line": 162,
+      "context": "        break;\n    }\n    \n    cutilDeviceReset();\n\tshrQAFinishExit(argc, (const char**)argv, (bResult ? QA_PASSED : QA_FAILED));\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "scalarProd",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd.cu",
+      "sha256": "742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e",
+      "api": "cutilDeviceReset",
+      "line": 182,
+      "context": "        free(h_A);\n        cutilCheckError( cutDeleteTimer(hTimer) );\n\n    cutilDeviceReset();\n    printf(\"L1 error: %E\\n\", L1norm);\n    shrQAFinishExit(argc, (const char **)argv, (L1norm < 1e-6) ? QA_PASSED : QA_FAILED);",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "segmentationTreeThrust",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/segmentationTree.cu",
+      "sha256": "fa536e6432cf7c89efbcd4ea406aedd24c93fb785c30b001eaab079738ed4f31",
+      "api": "cudaDeviceReset",
+      "line": 1113,
+      "context": "        bResults[0] = sdkComparePPM(\"level_00.ppm\", sdkFindFilePath(\"ref_00.ppm\", argv[0]), 5.0f, 0.15f, false);\n        bResults[1] = sdkComparePPM(\"level_09.ppm\", sdkFindFilePath(\"ref_09.ppm\", argv[0]), 5.0f, 0.15f, false);\n\n        cudaDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, (bResults[0] && bResults[1]) ? QA_PASSED : QA_FAILED);\n    } else {",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "segmentationTreeThrust",
+      "source_version": "4.2-source-host-adapter-v5",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/segmentationTree.cu",
+      "sha256": "fa536e6432cf7c89efbcd4ea406aedd24c93fb785c30b001eaab079738ed4f31",
+      "api": "cudaDeviceReset",
+      "line": 1117,
+      "context": "        shrQAFinishExit(argc, (const char **)argv, (bResults[0] && bResults[1]) ? QA_PASSED : QA_FAILED);\n    } else {\n        printf(\"segmentationTreeThrust requires a GPU with Compute Capability 1.3 or higher, exiting...\\n\\n\");\n        cudaDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_WAIVED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleAtomicIntrinsics",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu",
+      "sha256": "fef2e39df53b2b8cbf5f38272a8caf6818d710a48decf804db2914d21db7bf69",
+      "api": "cudaDeviceReset",
+      "line": 257,
+      "context": "    free(h_odata);\n    checkCudaErrors(cudaFree(d_odata));\n\t\n    cudaDeviceReset();\n\n    shrQAFinishExit(argc, (const char **)argv, nResult);",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleCubemapTexture",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleCubemapTexture/simpleCubemapTexture.cu",
+      "sha256": "a23f882bd3b201c0c6c1d545024918bd1cf0334951f2b12dd96d6cfa274c0343",
+      "api": "cudaDeviceReset",
+      "line": 271,
+      "context": "\n    if (deviceProps.major < 2) {\n        printf(\"%s requires SM >= 2.0 to support Texture Arrays.  Test will exit... \\n\", sSDKname);\n        cudaDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleCubemapTexture",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleCubemapTexture/simpleCubemapTexture.cu",
+      "sha256": "a23f882bd3b201c0c6c1d545024918bd1cf0334951f2b12dd96d6cfa274c0343",
+      "api": "cudaDeviceReset",
+      "line": 377,
+      "context": "\n\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bResult ? QA_PASSED : QA_FAILED) );\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleLayeredTexture",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleLayeredTexture/simpleLayeredTexture.cu",
+      "sha256": "bbc219b4a3be2a32e993f7be50bab5c5bd82ce171f45a9374cfd497022582c6c",
+      "api": "cudaDeviceReset",
+      "line": 221,
+      "context": "\n    if (deviceProps.major < 2) {\n        printf(\"%s requires SM >= 2.0 to support Texture Arrays.  Test will exit... \\n\", sSDKname);\n        cudaDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n    }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleLayeredTexture",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleLayeredTexture/simpleLayeredTexture.cu",
+      "sha256": "bbc219b4a3be2a32e993f7be50bab5c5bd82ce171f45a9374cfd497022582c6c",
+      "api": "cudaDeviceReset",
+      "line": 321,
+      "context": "    checkCudaErrors(cudaFree(d_data));\n    checkCudaErrors(cudaFreeArray(cu_3darray));\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bResult ? QA_PASSED : QA_FAILED) );\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleMultiCopy",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiCopy/simpleMultiCopy.cu",
+      "sha256": "848c7232935abc04fbf5519ca155e89bcb7e8218eb0e80e12c889b1d60b89ddc",
+      "api": "cudaDeviceReset",
+      "line": 405,
+      "context": "    cudaEventDestroy(start);\n    cudaEventDestroy(stop);\n    \n    cudaDeviceReset();\n\n    // Test result",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleMultiGPU",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU.cpp",
+      "sha256": "cd8e3fc10e81e5bd818a11552892b744e5c9f495ef6317ac0c997fd94221ebc2",
+      "api": "cudaDeviceReset",
+      "line": 319,
+      "context": "    for(i = 0; i < GPU_N; i++)  \n    {\n        checkCudaErrors( cudaSetDevice(i) );\n        cudaDeviceReset();\n    }\n    shrQAFinishExit(argc, (const char **)argv, (diff < 1e-5) ? QA_PASSED : QA_FAILED);",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simplePitchLinearTexture",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simplePitchLinearTexture/simplePitchLinearTexture.cu",
+      "sha256": "6881cec1d9f8f1df4d92cefbad57b132321c9617601cb1613a11e9e5f7d7078e",
+      "api": "cudaDeviceReset",
+      "line": 404,
+      "context": "  checkCudaErrors(cudaEventDestroy(start));\n  checkCudaErrors(cudaEventDestroy(stop));\n  \n  cudaDeviceReset();\n  shrQAFinishExit(argc, (const char **)argv, (success == CUTTrue) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleStreams",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleStreams/simpleStreams.cu",
+      "sha256": "a19246bdd850278593fe5bfb9281edf6628e6b93a0779ee041e521285ffe3de0",
+      "api": "cudaDeviceReset",
+      "line": 554,
+      "context": "    cudaFree(d_a);\n    cudaFree(d_c);\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, bResults ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleTemplates",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/simpleTemplates.cu",
+      "sha256": "faf22ead30aa6ca29b85fed24033d3201c226699a43fd5eb2793bd9a3ff51a66",
+      "api": "cudaDeviceReset",
+      "line": 233,
+      "context": "\n    printf(\"\\n[simpleTemplates] -> Test Results: %d Failures\\n\", g_TotalFailures);\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (g_TotalFailures == 0) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleTemplates",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/simpleTemplates.cu",
+      "sha256": "faf22ead30aa6ca29b85fed24033d3201c226699a43fd5eb2793bd9a3ff51a66",
+      "api": "cudaDeviceReset",
+      "line": 401,
+      "context": "    checkCudaErrors(cudaFree(d_idata));\n    checkCudaErrors(cudaFree(d_odata));\n\n    cudaDeviceReset();\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleZeroCopy",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+      "sha256": "a902393bc93a25a16c9b898253163447a5c1101168bb1e3c30b772192ce0e0fa",
+      "api": "cudaDeviceReset",
+      "line": 267,
+      "context": "  if(!deviceProp.canMapHostMemory)\n  {\n    fprintf(stderr, \"Device %d does not support mapping CPU host memory!\\n\", idev);\n    cudaDeviceReset();\t\n    shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n  }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleZeroCopy",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+      "sha256": "a902393bc93a25a16c9b898253163447a5c1101168bb1e3c30b772192ce0e0fa",
+      "api": "cudaDeviceReset",
+      "line": 273,
+      "context": "  checkCudaErrors(cudaSetDeviceFlags(cudaDeviceMapHost));\n#else\n    fprintf(stderr, \"CUDART version %d.%d does not support <cudaDeviceProp.canMapHostMemory> field\\n\", , CUDART_VERSION/1000, (CUDART_VERSION%100)/10);\n    cudaDeviceReset();\t\n    shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n#endif",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleZeroCopy",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+      "sha256": "a902393bc93a25a16c9b898253163447a5c1101168bb1e3c30b772192ce0e0fa",
+      "api": "cudaDeviceReset",
+      "line": 281,
+      "context": "  if (bPinGenericMemory)\n  {\n    fprintf(stderr, \"CUDART version %d.%d does not support <cudaHostRegister> function\\n\", CUDART_VERSION/1000, (CUDART_VERSION%100)/10);\n    cudaDeviceReset();\t\n    shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n  }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "simpleZeroCopy",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+      "sha256": "a902393bc93a25a16c9b898253163447a5c1101168bb1e3c30b772192ce0e0fa",
+      "api": "cudaDeviceReset",
+      "line": 380,
+      "context": "#endif\n  }\n\n  cudaDeviceReset();\t\n  shrQAFinishExit(argc, (const char **)argv, (errorNorm/refNorm < 1.e-6f) ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "template",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/template.cu",
+      "sha256": "e08d17c5bcd82007c1a8c3fd6cd2b7bc7e1eff4db5317f1bad8765a394e5bded",
+      "api": "cudaDeviceReset",
+      "line": 299,
+      "context": "    checkCudaErrors(cudaFree(d_idata));\n    checkCudaErrors(cudaFree(d_odata));\n\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, (bTestResult ? QA_PASSED : QA_FAILED) );\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "transpose",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "sha256": "d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563",
+      "api": "cudaDeviceReset",
+      "line": 542,
+      "context": "\n  if (size_x != size_y) {\n      shrLog(\"\\n[%s] does not support non-square matrices (row_dim_size(%d) != col_dim_size(%d))\\nExiting...\\n\\n\", sSDKsample, size_x, size_y);\n      cudaDeviceReset();\n      shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n  }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "transpose",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "sha256": "d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563",
+      "api": "cudaDeviceReset",
+      "line": 548,
+      "context": "\n  if (size_x%TILE_DIM != 0 || size_y%TILE_DIM != 0) {\n    shrLog(\"[%s] Matrix size must be integral multiple of tile size\\nExiting...\\n\\n\", sSDKsample);\n    cudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n  }     ",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "transpose",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "sha256": "d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563",
+      "api": "cudaDeviceReset",
+      "line": 561,
+      "context": "  \n  if (grid.x < 1 || grid.y < 1) {\n    shrLog(\"[%s] grid size computation incorrect in test \\nExiting...\\n\\n\", sSDKsample);\n\tcudaDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n  }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "transpose",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "sha256": "d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563",
+      "api": "cudaDeviceReset",
+      "line": 575,
+      "context": "  {\n      shrLog(\"Input matrix size is larger than the available device memory!\\n\");\n      shrLog(\"Please choose a smaller size matrix\\n\");\n      cudaDeviceReset();\n      shrQAFinishExit(argc, (const char **)argv, QA_FAILED);\n  }",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "transpose",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "sha256": "d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563",
+      "api": "cudaDeviceReset",
+      "line": 712,
+      "context": "  checkCudaErrors( cudaEventDestroy(start) );\n  checkCudaErrors( cudaEventDestroy(stop) );\n  \n  cudaDeviceReset();\n  shrQAFinishExit(argc, (const char **)argv, (success == true) ? QA_PASSED : QA_FAILED);\n  return 0;",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "vectorAdd",
+      "source_version": "4.2-source-host-adapter-v3",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd/vectorAdd.cu",
+      "sha256": "14991a235ab811b5ff4cac639825a4e4238b2af3e3d1ca0a629134db5b5cd3d5",
+      "api": "cudaDeviceReset",
+      "line": 159,
+      "context": "    if (h_C)\n        free(h_C);\n        \n    cudaDeviceReset();\n}\n",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "threadFenceReduction",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/threadFenceReduction_typed_symbol_v1/threadFenceReduction.cu",
+      "sha256": "97a0d13d9f9be1f8f5bcaa10efdcc2f5c92ed4b98087980db544d56d633d29bd",
+      "api": "cutilDeviceReset",
+      "line": 122,
+      "context": "        printf(\"GPU Device does not support minimum compute capability SM %d.%d, exiting...\\n\\n\",\n            dev, deviceProp.name, minimumComputeVersion / 10, minimumComputeVersion % 10);\n\n        cutilDeviceReset();\n        shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n    }   ",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    },
+    {
+      "program": "threadFenceReduction",
+      "source_version": "4.2-source-host-adapter-v4",
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/threadFenceReduction_typed_symbol_v1/threadFenceReduction.cu",
+      "sha256": "97a0d13d9f9be1f8f5bcaa10efdcc2f5c92ed4b98087980db544d56d633d29bd",
+      "api": "cutilDeviceReset",
+      "line": 135,
+      "context": "    shrQAFinishExit(argc, (const char **)argv, QA_PASSED);\n#endif\n    \n    cutilDeviceReset();\n    shrQAFinishExit(argc, (const char **)argv, bTestResult ? QA_PASSED : QA_FAILED);\n}",
+      "status": "LIFECYCLE_REVIEW_EVIDENCE_NOT_AUTOMATIC_MULTI_CONTEXT_CLASSIFICATION"
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "task": {
+    "task_id": "cuda118_complete_graphMemoryNodes_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "graphMemoryNodes",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/graphMemoryNodes",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/graphMemoryNodes/graphMemoryNodes.cu",
+        "sha256": "9c663275e7364cc51660e3b69f3eb2754ffcb26c3b8ca12b023c07e556e2d368"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/graphMemoryNodes/graphMemoryNodes.cu",
+        "sha256": "9c663275e7364cc51660e3b69f3eb2754ffcb26c3b8ca12b023c07e556e2d368",
+        "bytes": 21894,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "graphMemoryNodes.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/graphMemoryNodes/graphMemoryNodes.cu"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/graphMemoryNodes/graphMemoryNodes"
+    ],
+    "binary_sha256": "0d2400a23dbf06f4ad0dee450e043a1af51ad1e8a6e9408fb7ea3b5e5113dd09",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "SPECIAL_RUNTIME_GRAPH_IPC_MEMORY_OR_DYNAMIC_PROFILE_REVIEW",
+      "RUNTIME_CLOCK_OR_TIME_SEEDED_INPUT_REQUIRES_ACTUAL_INPUT_SNAPSHOT"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./graphMemoryNodes"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "graphMemoryNodes.cu",
+        "line": 456,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "graphMemoryNodes.cu",
+        "line": 460,
+        "text": "cudaDevAttrMemoryPoolsSupported, device);"
+      },
+      {
+        "file": "graphMemoryNodes.cu",
+        "line": 463,
+        "text": "exit(EXIT_WAIVED);"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda118_complete_remaining_v2/cuda118_complete_graphMemoryNodes_0/attempt001",
+  "index": 43,
+  "start_unix": 1792832207.1541228,
+  "lock_wait_seconds": 3.395136445760727e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 323 MiB, 15621 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792832207.2002277,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832208.2297902,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832209.261362,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832210.2941208,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832211.3270216,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832212.36069,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832213.3946426,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832214.4281526,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832215.4628794,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832216.4956355,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832217.5285587,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832218.5619814,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832219.596785,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832220.6321673,
+      "util": 0,
+      "free_mib": 15621
+    },
+    {
+      "unix": 1792832221.665837,
+      "util": 0,
+      "free_mib": 15621
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 465920,
+  "start_ticks": "345511864",
+  "minimum_free_vram_mib": 15282,
+  "exit": 0,
+  "wall_seconds": 1.360235605854541,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "64fd140f38210394e121d8b0b58d406acd6b20e3777d1691d918f56dc73cac45",
+  "end_unix": 1792832224.0453284
+}

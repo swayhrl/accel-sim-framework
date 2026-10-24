@@ -1,0 +1,94 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "nbody",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody",
+    "source_files": [
+      {
+        "relative_path": "bodysystem.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/bodysystem.h",
+        "sha256": "9369daecc7d8b2d96d2969b1db85b808a788e6322ef0916cb6be15e7bc3b435c"
+      },
+      {
+        "relative_path": "bodysystemcpu.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/bodysystemcpu.h",
+        "sha256": "acca6a4471c544f02a4453ec74663766b53757030814d58b54a27500f7c60ba2"
+      },
+      {
+        "relative_path": "bodysystemcpu_impl.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/bodysystemcpu_impl.h",
+        "sha256": "7302b238b98efc00c2a1a2c4639b86a97dcac07164dd2e5af0caf42991036acc"
+      },
+      {
+        "relative_path": "bodysystemcuda.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/bodysystemcuda.cu",
+        "sha256": "3383e79f1a73a087662ece507e08a1543efc3d535d6ce35af93d1c95707ace6a"
+      },
+      {
+        "relative_path": "bodysystemcuda.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/bodysystemcuda.h",
+        "sha256": "c902e19c20789c98cb5c2ee00d430994252af104ad2cfa83f448bdf18d134eca"
+      },
+      {
+        "relative_path": "bodysystemcuda_impl.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/bodysystemcuda_impl.h",
+        "sha256": "fa97d78c255b6b0acf04253934da9bf23cb302fed75dadbabd656e1a27b89286"
+      },
+      {
+        "relative_path": "nbody.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/nbody.cpp",
+        "sha256": "cfc39ae1a95e2ba9b61e3cb95d71149232d579955778d626127cfa70c725aadd"
+      },
+      {
+        "relative_path": "render_particles.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/render_particles.cpp",
+        "sha256": "e818158c18d864bc54b6116a546d4a911ab7d15bc0c545a9cd5841689c23700b"
+      },
+      {
+        "relative_path": "render_particles.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/render_particles.h",
+        "sha256": "68a5671719ab705475f8c722872124f0acb3b3048054937bdd2c67433671b215"
+      },
+      {
+        "relative_path": "tipsy.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/tipsy.h",
+        "sha256": "0482fadbfd7df60d652283108a5726c6ac60c633d5ca14c4a6665395b2148b50"
+      }
+    ],
+    "input_files": [],
+    "task_id": "cuda118_nbody_0",
+    "variant": "official_testrun_0",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/nbody",
+      "-benchmark",
+      "-compare",
+      "-cpu"
+    ],
+    "binary_sha256": "225e5cf9a0f3f1890daf183d7a890ca3d66b7fd70ef8d6d44042add28d46501d",
+    "binary_cubin_listing": "ELF file    1: nbody.1.sm_89.cubin\nELF file    2: nbody.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "OFFICIAL_TESTRUN_CPU_REFERENCE_ONLY",
+    "capture_eligibility": "NO_GPU_WORK_IN_THIS_ARGV"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_nbody_0/attempt001",
+  "index": 55,
+  "start_unix": 1792820793.4651551,
+  "status": "CPU_REFERENCE_CONFIGURATION_FROZEN_NO_GPU_WORK",
+  "end_unix": 1792820793.4651618
+}

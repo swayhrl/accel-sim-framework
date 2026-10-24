@@ -1,0 +1,178 @@
+{
+  "task": {
+    "program": "bandwidthTest",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "6871657a0d3786b22339011e3b61b1e74da023419e6f992122a5955da33097ef",
+    "makefile_flags": {
+      "EXECUTABLE": "bandwidthTest",
+      "CUFILES": "bandwidthTest.cu",
+      "CCFILES": "# Do not link with CUTIL or SHRUTIL",
+      "OMIT_CUTIL_LIB": "1"
+    },
+    "headers": [
+      "cassert",
+      "cuda.h",
+      "iostream",
+      "memory",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/bandwidthTest/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/bandwidthTest",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/bandwidthTest/bandwidthTest.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_bandwidthTest"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.192559003829956,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_bandwidthTest"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/bandwidthTest",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "70681c391cd0172dbeb7a106184c1fe1537b0db7aa9a35bd0caa7dc89752d7ee",
+    "cuobjdump_list_elf": "ELF file    1: bandwidthTest-libcutil_x86_64.sm_89.cubin\nELF file    2: bandwidthTest.sm_89.cubin\n",
+    "task_id": "sdk42_default_bandwidthTest",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/bandwidthTest/bandwidthTest.cu",
+        "sha256": "8c03914328fbd1abad6b86d0b633d0ea630a5b550e2c13b4b70451960fc1fc3e"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0"
+    },
+    "workload_kind": "GPU_COPY_API_ONLY_NO_SASS_KERNEL_EXPECTED"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_defaults45_v1/sdk42_default_bandwidthTest/attempt001",
+  "index": 6,
+  "start_unix": 1792821659.6341798,
+  "lock_wait_seconds": 1.8961727619171143e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821659.6847203,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821660.7172372,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821661.7508166,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821662.7843282,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821663.8178923,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821664.8525105,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821665.8861997,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821666.9225316,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821667.953892,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821668.9843886,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821670.0175066,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821671.052751,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821672.0844133,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821673.118547,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821674.1502237,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 398486,
+  "start_ticks": "344457113",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.28557339683175087,
+  "status": "NATIVE_COPY_API_COMPLETE_NO_SASS_EXPECTED",
+  "stdout_sha256": "ef58e6b37d0ad4d53abf4a994768d492360d5f3d03a276a9920ea70b4fa8b70d",
+  "end_unix": 1792821675.4543674
+}

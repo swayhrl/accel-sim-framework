@@ -1,0 +1,36 @@
+[simpleMultiCopy] - Starting...
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA device [0]: NVIDIA GeForce RTX 4080
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+[NVIDIA GeForce RTX 4080] has 76 MP(s) x 128 (Cores/MP) = 9728 (Cores)
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Device name: NVIDIA GeForce RTX 4080
+> CUDA Capability 8.9 hardware with 76 multi-processors
+> scale_factor = 1.00
+> array_size   = 4194304
+
+
+Relevant properties of this CUDA device
+(X) Can overlap one CPU<>GPU data transfer with GPU kernel execution (device property "deviceOverlap")
+(X) Can overlap two CPU<>GPU data transfers with GPU kernel execution
+    (Compute Capability >= 2.0 AND (Tesla product OR Quadro 4000/5000/6000/K5000)
+
+Measured timings (throughput):
+ Memcpy host to device	: 0.920448 ms (18.227228 GB/s)
+ Memcpy device to host	: 0.893536 ms (18.776207 GB/s)
+ Kernel			: 0.033504 ms (5007.525997 GB/s)
+
+Theoretical limits for speedup gained from overlapped data transfers:
+No overlap at all (transfer-kernel-transfer): 1.847488 ms 
+Compute can overlap with one transfer: 1.813984 ms
+Compute can overlap with both data transfers: 0.920448 ms
+
+Average measured timings over 10 repetitions:
+ Avg. time when execution fully serialized	: 1.796710 ms
+ Avg. time when overlapped using 4 streams	: 1.483142 ms
+ Avg. speedup gained (serialized - overlapped)	: 0.313568 ms
+
+Measured throughput:
+ Fully serialized execution		: 18.675482 GB/s
+ Overlapped using 4 streams		: 22.623878 GB/s

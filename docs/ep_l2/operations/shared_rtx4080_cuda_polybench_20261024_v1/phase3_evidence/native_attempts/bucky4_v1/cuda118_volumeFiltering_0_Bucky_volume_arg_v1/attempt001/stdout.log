@@ -1,0 +1,22 @@
+CUDA 3D Volume Filtering Starting...
+
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+Read './data/Bucky.raw', 32768 bytes
+Press 
+  'SPACE'     to toggle animation
+  'p'         to toggle pre-integrated transfer function
+  '+' and '-' to change density (0.01 increments)
+  ']' and '[' to change brightness
+  ';' and ''' to modify transfer function offset
+  '.' and ',' to modify transfer function scale
+
+volumeFiltering, Throughput = 3006.2386 MTexels/s, Time = 0.00009 s, Size = 262144 Texels, NumDevsUsed = 1, Workgroup = 256
+> Compare (a)rendered:  <volumefilter.ppm>
+>         (b)reference: <./data/ref_volumefilter.ppm>
+PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(30%)
+15.22(%) of bytes mismatched (count=159544)
+    OK
+

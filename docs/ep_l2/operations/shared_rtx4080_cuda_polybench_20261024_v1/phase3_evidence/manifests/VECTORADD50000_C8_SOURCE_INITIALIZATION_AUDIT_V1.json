@@ -1,0 +1,96 @@
+{
+  "schema": "vectorAdd50000_c8_source_initialization_audit_v1",
+  "review": "READ_ONLY_SOURCE_SCOPE_PASS_WITH_EXPLICIT_LIMITS",
+  "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/vectorAdd/vectorAdd.cu",
+  "source_sha256": "9a156c7c4f1ab0759d859af95c8dab55f2280d867edca7daee4546d63effb583",
+  "source_version": "NVIDIA cuda-samples v11.8 81992093d2b8c33cab22dbf6852c070c330f1715",
+  "line_evidence": {
+    "main_no_argv": 60,
+    "numElements": 65,
+    "host_input_init": [
+      84,
+      88
+    ],
+    "device_allocations": [
+      90,
+      118
+    ],
+    "HtoD_A": [
+      124,
+      131
+    ],
+    "HtoD_B": [
+      133,
+      140
+    ],
+    "single_kernel_launch": [
+      142,
+      154
+    ],
+    "DtoH_output": [
+      159,
+      166
+    ],
+    "cpu_reference": [
+      168,
+      176
+    ],
+    "kernel_complete_output_write": [
+      48,
+      55
+    ]
+  },
+  "input_initialization": {
+    "A_B": "unseeded rand()/float(RAND_MAX), interleaved A/B 50000 each before first CUDA API; actual snapshot bytes authoritative",
+    "implicit_seed": "C library default seed only conditional upon fixed libc and pre-main call ordering; not an input-byte proof",
+    "host_external_files": [],
+    "sync_HtoD": [
+      {
+        "symbol": "d_A",
+        "bytes": 200000
+      },
+      {
+        "symbol": "d_B",
+        "bytes": 200000
+      }
+    ],
+    "application_D2D": false,
+    "application_memset": false,
+    "application_symbol_upload": false,
+    "application_managed_mapped_arrays_textures_surfaces_GL": false,
+    "application_graph_async_streamcreation": false,
+    "output_C": "fresh cudaMalloc; uninitialized prior bytes not read by kernel; every 0<=i<50000 written exactly once"
+  },
+  "launch": {
+    "count": 1,
+    "grid": [
+      196,
+      1,
+      1
+    ],
+    "block": [
+      256,
+      1,
+      1
+    ],
+    "dynamic_shared_bytes": 0,
+    "stream": "default",
+    "physical_threads": 50176,
+    "valid_elements": 50000,
+    "final_cta_valid_threads": 80,
+    "final_cta_predicate_off_threads": 176
+  },
+  "bank0_pointer_rule": "d_A/d_B runtime cudaMalloc destinations joined to actual observed HtoD destination; d_C fresh output-only allocation; N scalar=50000. HtoD capsule does not capture complete pointer/bank0/device initialization state. No full-state claim.",
+  "oracle": {
+    "kind": "SOURCE_FABS_REFERENCE_REPORTED_PASS",
+    "elements_checked": 50000,
+    "predicate": "fabs(h_A[i]+h_B[i]-h_C[i]) > 1e-5 => exit failure",
+    "explicit_isfinite": false,
+    "limitation": "NaN difference can evade source fabs comparison. Bounded finite input capsules do not independently prove finite GPU output. Preserve actual upstream oracle definition; stronger output check requires separate evidence."
+  },
+  "scope_limits": [
+    "Source audit of application; CUDA/runtime/tool internal initialization not asserted absent",
+    "Static source oracle and launch count must be joined to exact source/binary and actual journal",
+    "No GPU call or old attempt modification performed"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "script_sha256": "6fd3c8c1edadd63f7d11434ba6728eee6607fde7f18a84b053d43b3a47fdfeeb",
+  "actual_original_attempt_read_only": true,
+  "negative_cases": [
+    {
+      "case": "corrupt_input",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "passed_rejection": true,
+      "log": "Traceback (most recent call last):\n  File \"/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/verify_rodinia_bfs_nn_cli_v1.py\", line 27, in <module>\n    graph=attempt/j['argv'][1];expected=next(x for x in j['input_identity'] if Path(x['path']).name==graph.name);before=sha(graph);assert before==expected['sha256'];used=[{'path':str(graph),'sha256':before}]\n                                                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "case": "corrupt_output",
+      "expected_exit": 2,
+      "actual_exit": 2,
+      "passed_rejection": true,
+      "log": "{\"task_id\": \"rodinia_3_1_bfs_3d4e7206aa1f\", \"status\": \"INDEPENDENT_CPU_RESULT_MISMATCH\", \"proof\": \"/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/rodinia_cli_negative_qualification_v2/corrupt_output_proof/CPU_REFERENCE_RECEIPT.json\"}\n"
+    }
+  ]
+}

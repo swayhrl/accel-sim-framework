@@ -1,0 +1,24 @@
+SDK42_HOST_ADAPTER_QA_START
+[CUDA Sobel Edge-Detection] (automated testing w/ readback)
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA device [0]: NVIDIA GeForce RTX 4080
+Reading image: lena.pgm
+AutoTest: CUDA Sobel Edge-Detection <No Filtering>
+> Saving PGM: <lena_orig.pgm>
+   src_file <lena_orig.pgm>
+   ref_file <./data/ref_orig.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  OK
+AutoTest: CUDA Sobel Edge-Detection <Sobel Texture>
+> Saving PGM: <lena_shared.pgm>
+   src_file <lena_shared.pgm>
+   ref_file <./data/ref_shared.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  OK
+AutoTest: CUDA Sobel Edge-Detection <Sobel SMEM+Texture>
+> Saving PGM: <lena_shared_tex.pgm>
+   src_file <lena_shared_tex.pgm>
+   ref_file <./data/ref_shared_tex.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  OK
+SDK42_HOST_ADAPTER_QA_PASSED

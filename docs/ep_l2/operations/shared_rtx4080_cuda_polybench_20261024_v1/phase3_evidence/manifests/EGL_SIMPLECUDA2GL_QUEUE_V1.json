@@ -1,0 +1,82 @@
+[
+  {
+    "task_id": "cuda118_complete_simpleCUDA2GL_0_EGL_real_gpu_v1",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "simpleCUDA2GL",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/simpleCUDA2GL",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_simpleCUDA2GL_v1/main.cpp",
+        "sha256": "01abe057d8d8cde7aab7f0b44470ac5d63c50cffcc3ccb55ad55308209746e5f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_simpleCUDA2GL_v1/simpleCUDA2GL.cu",
+        "sha256": "5c7b2d0f81cb19fdd45c39e3da33c23230e3bd33cebcdda8b3cf23dd55ef7426"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_postprocess_v1/egl_glut_postprocess_adapter_v1.h",
+        "sha256": "5726668d37f3953d3fe10da02697ee23194da99f187221cc1cdb9b067d1393af"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/simpleCUDA2GL/data/ref_simpleCUDA2GL.ppm",
+        "sha256": "7b8aac8923054af1e0ca0d503fd1101bab9b0e6d20dd8508893156beb14ed4ea",
+        "bytes": 786447
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/simpleCUDA2GL/data"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_simpleCUDA2GL_v1/simpleCUDA2GL",
+      "-file=ref_simpleCUDA2GL.ppm"
+    ],
+    "binary_sha256": "ca52815f91fc5169f4fbaaa1726fe92e1f19adc8f98bd93789eda28f13de349c",
+    "variant": "host_only_EGL_pbuffer_finite_original_QA_callbacks_kernel_source_unchanged",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "PPM Images are Matching"
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "CUDA_GL_INTEROP",
+      "NVIDIA_EGL_REAL_GPU_VARIANT"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./simpleCUDA2GL -file=ref_simpleCUDA2GL.ppm"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "main.cpp",
+        "line": 471,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "main.cpp",
+        "line": 491,
+        "text": "\"   This sample requires OpenGL.  Only -file=<reference> are \""
+      },
+      {
+        "file": "main.cpp",
+        "line": 494,
+        "text": "exit(EXIT_WAIVED);"
+      }
+    ]
+  }
+]

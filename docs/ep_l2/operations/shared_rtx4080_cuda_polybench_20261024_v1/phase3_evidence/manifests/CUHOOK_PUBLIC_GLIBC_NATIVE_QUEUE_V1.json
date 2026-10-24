@@ -1,0 +1,56 @@
+[
+  {
+    "task_id": "cuda118_cuHook_public_glibc_API_only_v1",
+    "suite": "CUDA Samples",
+    "version": "v11.8 host public-glibc compatibility variant",
+    "program": "cuHook",
+    "variant": "public versioned dlsym bootstrap; original API assertions unchanged",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/cuHook"
+    ],
+    "binary_sha256": "8b403318943c4996a96e25b68e67208b0c5c1a811cb3b1355d3f3dc7d6bd1c94",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.cpp",
+        "sha256": "2875fd0cf901d51e79abd98229276779647a7a704e520179d4a2f4975cbaa104"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.h",
+        "sha256": "9d30edee9533cae694534408bb7dd937ccdaefcef9600cb4de11878dc9831c69"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/cuHook.cpp",
+        "sha256": "ab40b5779e34a9fac77e92e14f3c2db0a24828d27628002a9586174ebd5cda32"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.so.1",
+        "sha256": "04c0205b33d0ff302a3099e8a6125d87a2ecb86bdcab56c5b69df097fb99eb38",
+        "bytes": 17808
+      }
+    ],
+    "native_preload_libraries": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.so.1",
+        "sha256": "04c0205b33d0ff302a3099e8a6125d87a2ecb86bdcab56c5b69df097fb99eb38"
+      }
+    ],
+    "runtime_links": [],
+    "runtime_env": {
+      "CU_HOOK_DEBUG": "1"
+    },
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "Sample finished successfully"
+    },
+    "native_timeout_sec": 120,
+    "workload_kind": "API_ONLY_NO_CUDA_KERNEL_SOURCE_EXPECTED",
+    "expected_application_kernel_launch_count": 0,
+    "profile_flags": [
+      "EXPLICIT_NATIVE_PRELOAD_INTERPOSER",
+      "SOURCE_PROVEN_NO_APPLICATION_GPU_KERNEL"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING"
+  }
+]

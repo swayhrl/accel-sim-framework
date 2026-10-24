@@ -1,0 +1,86 @@
+[
+  {
+    "task_id": "cuda118_fluidsGLES_real_EGL_QA_v1",
+    "suite": "CUDA Samples",
+    "version": "v11.8 explicit host-only EGL pbuffer port",
+    "program": "fluidsGLES",
+    "variant": "same_GPU_kernel_full_official_QA_replace_X11_nativewindow_with_NVIDIA_EGL_pbuffer",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES",
+      "-file=ref_fluidsGLES.ppm"
+    ],
+    "binary_sha256": "a3874ee9f7ea3f1cb3ab3028cd5be640b941001c3eca49fa3a5ecad4487ecc2d",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES_kernels.cu",
+        "sha256": "43700d99a85610ce06121314163654591bc9b16b621d7be0bce39bb613ecdb4f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES_kernels.h",
+        "sha256": "b1fbd43c6fca52926acf05c9fc655a6e481051b3b8d533af2668cde857b23f11"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/defines.h",
+        "sha256": "c0bdc9d5e69c5372570af1ba7fd20584ee1a98988c905370ad9c08105f7d3504"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES_kernels.cuh",
+        "sha256": "31b76808c6bd36a61fb6b0477732bc00d73259926adbb6cc574b8e865763ec48"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES.cpp",
+        "sha256": "d3ec049b256f474621a19f2de06dab1481cd353fc9b805ef611450f7a4a11a8c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/graphics_interface.h",
+        "sha256": "49b296c2e4278db4bf651cc0208a92f24e7534f288458d8462a881b730eee203"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/data/ref_fluidsGLES.ppm",
+        "sha256": "e76e3dd8d69a9ace0414bbef87fd604cd9e109bdedc5b8994c441029e55a3bf6",
+        "bytes": 786447
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/mesh.vert.glsl",
+        "sha256": "c89be1646d46f002287bc1f42e03831e7d89486c12b786b39ca69f6bb7208e38",
+        "bytes": 1732
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/mesh.frag.glsl",
+        "sha256": "d2fd233654abd7c1c01fefd760621b27a5a51762e8f89ac33742aab510bb15d6",
+        "bytes": 1684
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/data"
+      },
+      {
+        "name": "mesh.vert.glsl",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/mesh.vert.glsl"
+      },
+      {
+        "name": "mesh.frag.glsl",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGLES/mesh.frag.glsl"
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "Test Results: 0 Failures"
+    },
+    "native_timeout_sec": 600,
+    "profile_flags": [
+      "CUDA_GLES_GL_INTEROP",
+      "GPU_GENERATED_SHADER_RESOURCE_SNAPSHOT_PROFILE",
+      "CUFFT_LIBRARY_KERNELS"
+    ]
+  }
+]

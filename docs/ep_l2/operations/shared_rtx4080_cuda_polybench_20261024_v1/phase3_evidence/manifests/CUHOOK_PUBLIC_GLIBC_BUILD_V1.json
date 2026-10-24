@@ -1,0 +1,42 @@
+{
+  "source_version": "NVIDIA v11.8",
+  "variant": "host interposer bootstrap uses public versioned dlvsym instead of removed private glibc APIs",
+  "canonical_glibc234plus_failure_retained": true,
+  "source_original_sha256": "948170ef1a871fed4cf4666871b2479a04176a319c5c3754d5386b5fe4ec54ff",
+  "source_new_sha256": "2875fd0cf901d51e79abd98229276779647a7a704e520179d4a2f4975cbaa104",
+  "expected_application_CUDA_kernels": 0,
+  "basis": "No device code, no cuModuleLoad/cuLaunch, original main only cuInit/count/contextcreate/allocate1024/free/contextdestroy, with exactly1 callback assertions for allocation/free/destroy",
+  "builds": [
+    {
+      "command": [
+        "g++",
+        "-O3",
+        "-fPIC",
+        "-shared",
+        "-D_GNU_SOURCE",
+        "-I/usr/local/cuda-12.8/targets/x86_64-linux/include",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.cpp",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/libcuhook.so.1",
+        "-ldl"
+      ],
+      "exit": 0,
+      "log": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/build0.log"
+    },
+    {
+      "command": [
+        "g++",
+        "-O3",
+        "-I/usr/local/cuda-12.8/targets/x86_64-linux/include",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/cuHook.cpp",
+        "-L/usr/local/cuda-12.8/targets/x86_64-linux/lib/stubs",
+        "-lcuda",
+        "-ldl",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/cuHook"
+      ],
+      "exit": 0,
+      "log": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_cuHook_public_glibc_v1/build1.log"
+    }
+  ]
+}

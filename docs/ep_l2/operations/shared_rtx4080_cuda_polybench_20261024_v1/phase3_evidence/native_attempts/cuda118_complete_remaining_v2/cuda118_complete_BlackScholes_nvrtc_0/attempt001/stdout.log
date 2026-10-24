@@ -1,0 +1,36 @@
+[/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/BlackScholes_nvrtc/BlackScholes_nvrtc] - Starting...
+Initializing data...
+...allocating CPU memory for options.
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA Device [0]: NVIDIA GeForce RTX 4080
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA Device [0]: NVIDIA GeForce RTX 4080
+> GPU Device has SM 8.9 compute capability
+...allocating GPU memory for options.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+
+Executing Black-Scholes GPU kernel (512 iterations)...
+Options count             : 8000000     
+BlackScholesGPU() time    : 0.125373 msec
+Effective memory bandwidth: 638.095664 GB/s
+Gigaoptions per second    : 63.809566     
+
+BlackScholes, Throughput = 63.8096 GOptions/s, Time = 0.00013 s, Size = 8000000 options, NumDevsUsed = 1, Workgroup = 128
+
+Reading back GPU results...
+Checking the results...
+...running CPU calculations.
+
+Comparing the results...
+L1 norm: 1.741792E-07
+Max absolute error: 1.192093E-05
+
+Shutting down...
+...releasing GPU memory.
+...releasing CPU memory.
+Shutdown done.
+
+[/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/5_Domain_Specific/BlackScholes_nvrtc/BlackScholes_nvrtc] - Test Summary
+Test passed

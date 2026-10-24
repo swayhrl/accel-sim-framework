@@ -1,0 +1,163 @@
+{
+  "task": {
+    "program": "deviceQueryDrv",
+    "suite": "CUDA SDK",
+    "version": "4.2.9-official-source-host-adapter-v7",
+    "release_installer_sha256": "b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/deviceQueryDrv",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v7",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/shared/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/deviceQueryDrv/deviceQueryDrv.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-lcuda",
+      "-lpthread",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk429_v2_deviceQueryDrv"
+    ],
+    "build_exit": 0,
+    "ptx_builds": [],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk429_v2_deviceQueryDrv"
+    ],
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/deviceQueryDrv/deviceQueryDrv.cpp",
+        "sha256": "96a39d76925ed04358e2781da807ab8f08470d2cd84005ffeeb8be15829eab77"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_extra_inputs/deviceQueryDrv"
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/usr/local/cuda-12.8/lib64"
+    },
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "task_id": "sdk429_extra_deviceQueryDrv_v2",
+    "variant": "official429_default_complete",
+    "workload_kind": "DEVICE_QUERY_API_ONLY_NO_KERNEL",
+    "capture_eligibility": "NO_SASS_EXPECTED_DEVICE_QUERY",
+    "binary_sha256": "6ff343f5403376c1fe5b1d13496ba1ce43e7ce7181c890213f0f5f914674c48f"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk429_extra_v2/sdk429_extra_deviceQueryDrv_v2/attempt001",
+  "index": 1,
+  "start_unix": 1792823412.1118398,
+  "lock_wait_seconds": 2.3068860173225403e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 383 MiB, 15561 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792823412.159691,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823413.1955183,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823414.2263908,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823415.2597494,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823416.2938468,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823417.3274999,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823418.3605514,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823419.3935459,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823420.4266129,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823421.460879,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823422.4956226,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823423.5298767,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823424.5614378,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823425.594849,
+      "util": 0,
+      "free_mib": 15561
+    },
+    {
+      "unix": 1792823426.6287856,
+      "util": 0,
+      "free_mib": 15561
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 408315,
+  "start_ticks": "344632361",
+  "minimum_free_vram_mib": 15561,
+  "exit": 0,
+  "wall_seconds": 0.26859011920168996,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "2376b6a3f737398593b2febe9d30726af07946eeeb315ca22a054d4241c5c789",
+  "end_unix": 1792823427.9226534
+}

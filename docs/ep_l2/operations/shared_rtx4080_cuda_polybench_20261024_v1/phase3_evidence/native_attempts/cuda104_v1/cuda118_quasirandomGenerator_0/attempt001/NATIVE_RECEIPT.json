@@ -1,0 +1,152 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "quasirandomGenerator",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator",
+    "source_files": [
+      {
+        "relative_path": "quasirandomGenerator.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator/quasirandomGenerator.cpp",
+        "sha256": "4ba4d5f7c2b0bd9717ede61109d90b6894c7959c7a7752b2f72bc47718cf7142"
+      },
+      {
+        "relative_path": "quasirandomGenerator_common.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator/quasirandomGenerator_common.h",
+        "sha256": "e3f9334a7bdc4589ec08085308d2122ae67f7fa66d09fc10265b035d7d4726d1"
+      },
+      {
+        "relative_path": "quasirandomGenerator_gold.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator/quasirandomGenerator_gold.cpp",
+        "sha256": "57ce8b689d7722da132db2cfbce849bf7afe15527d6697824fc3d8e6e50907e9"
+      },
+      {
+        "relative_path": "quasirandomGenerator_kernel.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator/quasirandomGenerator_kernel.cu",
+        "sha256": "3655bd2d242492e5de14dd3e3bd1398f3a1449cc3dc1d0305c1f779a4cda44a5"
+      }
+    ],
+    "input_files": [],
+    "task_id": "cuda118_quasirandomGenerator_0",
+    "variant": "finite_source_default_no_testrun",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator/quasirandomGenerator"
+    ],
+    "binary_sha256": "db1f44cb5aac30540d99daf0feef2d5b3bb97ee6e5dfa79f66ae522e037725c2",
+    "binary_cubin_listing": "ELF file    1: quasirandomGenerator.1.sm_89.cubin\nELF file    2: quasirandomGenerator.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {},
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_quasirandomGenerator_0/attempt001",
+  "index": 63,
+  "start_unix": 1792820905.3335764,
+  "lock_wait_seconds": 1.6177073121070862e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792820905.3847973,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820906.4174542,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820907.4528537,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820908.485269,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820909.517364,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820910.5509207,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820911.584928,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820912.617094,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820913.651052,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820914.6850877,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820915.7188275,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820916.752747,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820917.7875767,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820918.8201697,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820919.8546119,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 392018,
+  "start_ticks": "344381683",
+  "minimum_free_vram_mib": 15298,
+  "exit": 0,
+  "wall_seconds": 0.5621973881497979,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "d79ceb2392a9107b72676deaca41213eab084a797b712d6287265ffe8d194dc5",
+  "end_unix": 1792820921.438868
+}

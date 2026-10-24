@@ -1,0 +1,162 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "convolutionFFT2D",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D",
+    "source_files": [
+      {
+        "relative_path": "convolutionFFT2D.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/convolutionFFT2D.cu",
+        "sha256": "6d3626d3298914dfc96277c0458a22894fa587384fb4a876f6565be0d72f816e"
+      },
+      {
+        "relative_path": "convolutionFFT2D.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/convolutionFFT2D.cuh",
+        "sha256": "507adea4cfb7110123c4882a3f7049435db9f02fba87e6115d5d06bffd8e5022"
+      },
+      {
+        "relative_path": "convolutionFFT2D_common.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/convolutionFFT2D_common.h",
+        "sha256": "3b52375c17b1bd83a260d51cab5efc125e53c1930945003e937aa7f024e7b89d"
+      },
+      {
+        "relative_path": "convolutionFFT2D_gold.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/convolutionFFT2D_gold.cpp",
+        "sha256": "8191e79aa0791279751ebdec9de5691e1acba43bf43f37a533d78a951226145b"
+      },
+      {
+        "relative_path": "main.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/main.cpp",
+        "sha256": "c4bfcd575f4cbc80d7e14eb155b34be89afaf12eb9d893acd46247c3c63dbb56"
+      }
+    ],
+    "input_files": [],
+    "task_id": "cuda118_convolutionFFT2D_0",
+    "variant": "finite_source_default_no_testrun",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/convolutionFFT2D"
+    ],
+    "binary_sha256": "038132e07c4379ad10a6cbe4ac1680fde71364678a33e6f50fc7840aee9aa0a2",
+    "binary_cubin_listing": "ELF file    1: convolutionFFT2D.1.sm_89.cubin\nELF file    2: convolutionFFT2D.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {},
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_convolutionFFT2D_0/attempt001",
+  "index": 32,
+  "start_unix": 1792820418.8933046,
+  "lock_wait_seconds": 4.888046532869339e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792820418.9413066,
+      "util": 1,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820419.9706,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820421.005869,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820422.0398564,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820423.0722568,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820424.1046562,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820425.1365993,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820426.168548,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820427.202211,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820428.2371905,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820429.2698412,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820430.306927,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820431.3397434,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820432.3727543,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820433.4066117,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820434.4402633,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 387449,
+  "start_ticks": "344333142",
+  "minimum_free_vram_mib": 15180,
+  "exit": 0,
+  "wall_seconds": 1.9031359357759356,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "220e0feb0d511e613e2ab9f4458a7355e90801719f26d79f295e236b2afd1d0f",
+  "end_unix": 1792820437.3632734
+}

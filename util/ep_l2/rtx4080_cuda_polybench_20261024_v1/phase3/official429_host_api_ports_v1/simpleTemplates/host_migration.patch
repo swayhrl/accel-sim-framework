@@ -1,0 +1,10 @@
+--- a/simpleTemplates.cu
++++ b/simpleTemplates.cu
+@@ -398,5 +398,5 @@
+     checkCudaErrors(cudaFree(d_idata));
+     checkCudaErrors(cudaFree(d_odata));
+ 
+-    cudaDeviceReset();
+-}
++    /* Context reset deferred to existing main final reset after both typed kernel tests. */
++}

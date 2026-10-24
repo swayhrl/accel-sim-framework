@@ -1,0 +1,25 @@
+SDK42_HOST_ADAPTER_QA_START
+[ matrixMul ]
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_matrixMul
+	Starting (CUDA and CUBLAS tests)...
+
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+Device 0: "NVIDIA GeForce RTX 4080" with Compute 8.9 capability
+
+Using Matrix Sizes: A(640 x 960), B(640 x 640), C(640 x 960)
+
+Runing Kernels...
+
+> CUBLAS         19926.4862 GFlop/s, Time = 0.00004 s, Size = 786432000 Ops
+
+> CUDA matrixMul 3787.5999 GFlop/s, Time = 0.00021 s, Size = 786432000 Ops, NumDevsUsed = 1, Workgroup = 1024
+
+Comparing GPU results with Host computation...
+
+Comparing CUBLAS & Host results
+CUBLAS compares OK
+
+Comparing CUDA matrixMul & Host results
+CUDA matrixMul compares OK
+
+SDK42_HOST_ADAPTER_QA_PASSED

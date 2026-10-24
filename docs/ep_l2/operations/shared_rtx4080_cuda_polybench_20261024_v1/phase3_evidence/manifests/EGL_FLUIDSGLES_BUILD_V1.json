@@ -1,0 +1,30 @@
+{
+  "command": [
+    "/usr/local/cuda-12.8/bin/nvcc",
+    "-O3",
+    "-lineinfo",
+    "-std=c++11",
+    "-arch=sm_89",
+    "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES.cpp",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES_kernels.cu",
+    "-o",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/fluidsGLES",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+    "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+    "-lGLESv2",
+    "-lEGL",
+    "-l:libX11.so.6",
+    "-lcufft"
+  ],
+  "exit": 0,
+  "source_original_sha256": "af81e7692b31fb7a46a83dbff8790b0b4b5ccb40151ccdcfcfbc9fc9e3ca512f",
+  "source_new_sha256": "49b296c2e4278db4bf651cc0208a92f24e7534f288458d8462a881b730eee203",
+  "GPU_kernel_original_sha256": "43700d99a85610ce06121314163654591bc9b16b621d7be0bce39bb613ecdb4f",
+  "GPU_kernel_variant_sha256": "43700d99a85610ce06121314163654591bc9b16b621d7be0bce39bb613ecdb4f",
+  "patch": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluidsGLES_v1/host_context.patch"
+}

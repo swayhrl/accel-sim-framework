@@ -1,0 +1,19 @@
+SDK42_HOST_ADAPTER_QA_START
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+Compute capability 8.9
+CheckRender::dumpBin: <spatialDomain.bin>
+> compareBin2Bin <float> nelements=262144, epsilon=0.10, threshold=0.15
+   src_file <spatialDomain.bin>
+   ref_file <./data/ref_spatialDomain_sm13.bin>
+10.21(%) of bytes mismatched (count=26752)
+  OK
+CheckRender::dumpBin: <slopeShading.bin>
+> compareBin2Bin <float> nelements=524288, epsilon=0.10, threshold=0.15
+   src_file <slopeShading.bin>
+   ref_file <./data/ref_slopeShading_sm13.bin>
+3.96(%) of bytes mismatched (count=20763)
+  OK
+SDK42_HOST_ADAPTER_QA_PASSED

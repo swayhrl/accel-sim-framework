@@ -1,0 +1,191 @@
+{
+  "task": {
+    "program": "convolutionSeparable",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "c0bb6e2934edac986b469d68a1a7cdf35e7d2458e227ed2d39c01ce07a2fcec4",
+    "makefile_flags": {
+      "EXECUTABLE": "convolutionSeparable",
+      "CUFILES": "convolutionSeparable.cu",
+      "CU_DEPS": "convolutionSeparable_common.h",
+      "CCFILES": "main.cpp convolutionSeparable_gold.cpp"
+    },
+    "headers": [
+      "assert.h",
+      "convolutionSeparable_common.h",
+      "cutil_inline.h",
+      "shrQATest.h",
+      "shrUtils.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_convolutionSeparable"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.363321304321289,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_convolutionSeparable"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "611f4a3ce3cb75008e0c7a70c1e9e77b54ad35261e866a801766444f00b48d62",
+    "cuobjdump_list_elf": "ELF file    1: convolutionSeparable-main-convolutionSeparable_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: convolutionSeparable.sm_89.cubin\n",
+    "task_id": "sdk42_default_convolutionSeparable",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable.cu",
+        "sha256": "220fc92116969e66cd7d77af35867ea557773019400493f6ea744c0b52843daf"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable_common.h",
+        "sha256": "d919689fcf8c3adde2d846cf2c86b2b190dd5cdfe49563f95d83eecde89117e7"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable_gold.cpp",
+        "sha256": "0a7f6c67ec7e9164bcbbc5fdc5b265a60cfe02c0086600107619df082dd62f5e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/main.cpp",
+        "sha256": "6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_defaults45_v1/sdk42_default_convolutionSeparable/attempt001",
+  "index": 10,
+  "start_unix": 1792821723.9580867,
+  "lock_wait_seconds": 4.6030618250370026e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821724.0048406,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821725.0386415,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821726.0718102,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821727.107292,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821728.1411602,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821729.1758676,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821730.2103958,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821731.2480152,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821732.2799635,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821733.3137827,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821734.3460305,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821735.3787265,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821736.4121985,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821737.4465454,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821738.4797883,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 398994,
+  "start_ticks": "344463546",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.2911743992008269,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "21234cdf71abcaefd20b5569c29f21313482ddbe25b012618dca18e120370de3",
+  "end_unix": 1792821739.792084
+}

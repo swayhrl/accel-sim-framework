@@ -1,0 +1,715 @@
+{
+  "task": {
+    "program": "Interval",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "53b497a236a97189ac3aa82d600b9fe8b1fef6bfa2980a5e73724873c36e2a4a",
+    "makefile_flags": {
+      "EXECUTABLE": "Interval",
+      "CUFILES": "interval.cu",
+      "GENCODE_SM10": "# CUDA dependency files",
+      "CU_DEPS": "\\"
+    },
+    "headers": [
+      "boost/numeric/interval.hpp",
+      "cpu_interval.h",
+      "cuda_interval.h",
+      "cuda_interval_lib.h",
+      "cuda_interval_rounded_arith.h",
+      "cutil_inline.h",
+      "interval.h",
+      "iomanip",
+      "iostream",
+      "shrQATest.h",
+      "stdio.h",
+      "vector"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "boost/config.hpp",
+        "bytes": 2050,
+        "sha256": "43f064be144ddb6a17e7142745a05349c39f102e54afeeef3b9f44110f63aabf"
+      },
+      {
+        "path": "boost/limits.hpp",
+        "bytes": 6119,
+        "sha256": "57da5c2aff53482fe1bcbdf6965253424dc1397c558f5f1fff8e9eea1d2d0ab6"
+      },
+      {
+        "path": "boost/numeric/interval.hpp",
+        "bytes": 1056,
+        "sha256": "bbe1ff9c3f4416b624f0f421f35e85e03b7304a336a2ec3d119f117c25db9042"
+      },
+      {
+        "path": "boost/config/user.hpp",
+        "bytes": 5157,
+        "sha256": "3c46154e91c0955238d9626185691f560378fdf8928d72a33cb8d67ffc889fb8"
+      },
+      {
+        "path": "boost/config/auto_link.hpp",
+        "bytes": 10369,
+        "sha256": "760b3d7d71cfd3d5e7a8430e22ac39b567fb770c0014ce5fe4c3b80df7d02092"
+      },
+      {
+        "path": "boost/config/suffix.hpp",
+        "bytes": 18992,
+        "sha256": "c34a12a9801947e52d2befc998e92692c0056e3de147ea0a19bee5421c2c2e16"
+      },
+      {
+        "path": "boost/config/posix_features.hpp",
+        "bytes": 3736,
+        "sha256": "bba105d0af558c09307941fe64ce5ce9d775990b96684708adf4a9a92070fc0a"
+      },
+      {
+        "path": "boost/config/abi_prefix.hpp",
+        "bytes": 698,
+        "sha256": "7cab389037c481b96573401da49f75d2309e6df2947f3c63db396ff5d2a04cff"
+      },
+      {
+        "path": "boost/config/select_stdlib_config.hpp",
+        "bytes": 2823,
+        "sha256": "2cecdbf75afed3d4c3b9d58f033425a1bb0068f42f54de347331f916d64bffcd"
+      },
+      {
+        "path": "boost/config/select_compiler_config.hpp",
+        "bytes": 3738,
+        "sha256": "ec44960d9d01b8e917666bbf93403ab19950ec544aaad846c37a46776c6bad21"
+      },
+      {
+        "path": "boost/config/select_platform_config.hpp",
+        "bytes": 2896,
+        "sha256": "085fb3d60f36d9ae93b28e87a3435b696fd382ea955cdeedc2d6f78c345afe59"
+      },
+      {
+        "path": "boost/config/requires_threads.hpp",
+        "bytes": 3507,
+        "sha256": "ff5b6b123e00b032d58d5f0c2daa299d99036618d9c90260cb4c7693d05a985c"
+      },
+      {
+        "path": "boost/config/warning_disable.hpp",
+        "bytes": 1820,
+        "sha256": "f061a11012c79777b12d7fb36ed210395dcb1e3c9c49b72f88c36376bca8902a"
+      },
+      {
+        "path": "boost/config/abi_suffix.hpp",
+        "bytes": 781,
+        "sha256": "3f301ea93528e4dbf8cada69033f4cda44920ec5f82f6bc4f1e87d88b60cfeea"
+      },
+      {
+        "path": "boost/numeric/interval/arith2.hpp",
+        "bytes": 10074,
+        "sha256": "2cd8e9b8806dfa93c86ecd7a354b34a3b87a998e5746a0a453752b4c7c3a183c"
+      },
+      {
+        "path": "boost/numeric/interval/rounding.hpp",
+        "bytes": 2593,
+        "sha256": "e5e97643a0b615d538cbe623e5fea67544b5b07a68fdff6e9d4f86b965c37685"
+      },
+      {
+        "path": "boost/numeric/interval/constants.hpp",
+        "bytes": 3175,
+        "sha256": "7ed0d979cac29981662fae55d6e08b82cef3c6e179fd222cae13c120708fe072"
+      },
+      {
+        "path": "boost/numeric/interval/io.hpp",
+        "bytes": 1174,
+        "sha256": "49a9372d6a49b7cf4b1c6e198399afcd84f34b8b221dac5a8ca85ce0e457cd20"
+      },
+      {
+        "path": "boost/numeric/interval/arith3.hpp",
+        "bytes": 2150,
+        "sha256": "34d0efe491af741200c236fc57966c0fb1d8d45b35aa2e3bc01297acb2bb5766"
+      },
+      {
+        "path": "boost/numeric/interval/limits.hpp",
+        "bytes": 1675,
+        "sha256": "ea56bfd18c6242e429a95fe92687204addb90bab6950bcc9f2c8fe458df40870"
+      },
+      {
+        "path": "boost/numeric/interval/compare.hpp",
+        "bytes": 703,
+        "sha256": "a9473325415a87df3ed75afcc09ce0fe821d987c0179f1cbb8e1b1371be64edf"
+      },
+      {
+        "path": "boost/numeric/interval/arith.hpp",
+        "bytes": 10351,
+        "sha256": "4e722cab1f171b3e91a1446d00231cac2debee67221f148f04b23304b5c77704"
+      },
+      {
+        "path": "boost/numeric/interval/policies.hpp",
+        "bytes": 1771,
+        "sha256": "5fcb15e2f95aae7d7887b39786a149b17ee378cda26d2ae58f72197bd177c7b6"
+      },
+      {
+        "path": "boost/numeric/interval/rounded_arith.hpp",
+        "bytes": 4756,
+        "sha256": "8359125d021638bf0765a050397f72032a89c870f7f2f1a419554c461ae6ad1c"
+      },
+      {
+        "path": "boost/numeric/interval/utility.hpp",
+        "bytes": 10812,
+        "sha256": "a20a589044bd02b9304b2f7478c3f1aca98d21c2afc038314b69cb2df531e8d0"
+      },
+      {
+        "path": "boost/numeric/interval/interval.hpp",
+        "bytes": 12196,
+        "sha256": "c3abd904147ad635c94a90881e55921005c12af47a4672c8ef79cb0b2bb24126"
+      },
+      {
+        "path": "boost/numeric/interval/checking.hpp",
+        "bytes": 2822,
+        "sha256": "12c06b9dc96e9b0c2e1c691efd230079150dd5af8bc52505cdca1c1ee38cfd54"
+      },
+      {
+        "path": "boost/numeric/interval/hw_rounding.hpp",
+        "bytes": 2278,
+        "sha256": "53575fc480bd2718d1f5f93130e301608bad2790f2b869a38301bc7414448a6e"
+      },
+      {
+        "path": "boost/numeric/interval/transc.hpp",
+        "bytes": 7915,
+        "sha256": "4aa8cbdd965563d3bf1e32cd61c0a593423af7de04184eab2793b648bb198d04"
+      },
+      {
+        "path": "boost/numeric/interval/rounded_transc.hpp",
+        "bytes": 5267,
+        "sha256": "a3958cd7af6882f1403e7eee4b8e9afcaac5abb4d4e0a584f4d9c11ecb96ecff"
+      },
+      {
+        "path": "boost/numeric/interval/ext/x86_fast_rounding_control.hpp",
+        "bytes": 2772,
+        "sha256": "927d71f9ac4a7cd7647ae9b59e6890aee3291213d6a5f58f640f0ada520528dd"
+      },
+      {
+        "path": "boost/numeric/interval/ext/integer.hpp",
+        "bytes": 1817,
+        "sha256": "989a1aefec1537c55d065f79ea3e53db0ab8502db971dfec66214d5d88f6196e"
+      },
+      {
+        "path": "boost/numeric/interval/detail/c99sub_rounding_control.hpp",
+        "bytes": 1348,
+        "sha256": "ddeeb7d72fb40c98697fc53fb2120a4cc9e75f5496cf4c9c9f6fa522f6f7ec7f"
+      },
+      {
+        "path": "boost/numeric/interval/detail/ia64_rounding_control.hpp",
+        "bytes": 2149,
+        "sha256": "94666d2917dc1f2fcdd7363d621171d757a2f7c071b30e118ed43414a01029ce"
+      },
+      {
+        "path": "boost/numeric/interval/detail/x86_rounding_control.hpp",
+        "bytes": 3108,
+        "sha256": "dc1764aff24bb9b119eac085f227f54c388af1a577e897e9e385b398db55f177"
+      },
+      {
+        "path": "boost/numeric/interval/detail/bugs.hpp",
+        "bytes": 2293,
+        "sha256": "62f4c9ac77ad3bdefe2a29afba7850b95f9d2aabb205183971b8ab509dde72da"
+      },
+      {
+        "path": "boost/numeric/interval/detail/test_input.hpp",
+        "bytes": 2324,
+        "sha256": "3e9915a50a24b01b3d0ba2bae278a4ca946fa4d5639b3ac0bd34792569b774fd"
+      },
+      {
+        "path": "boost/numeric/interval/detail/c99_rounding_control.hpp",
+        "bytes": 1193,
+        "sha256": "cb3d2884c9bd64fe5668da9cbb910e4ad55713e5d7f324aee5fef904bfb44368"
+      },
+      {
+        "path": "boost/numeric/interval/detail/bcc_rounding_control.hpp",
+        "bytes": 1578,
+        "sha256": "1020c3edd9a258b302118141dedc95ce4078a0e6ca1b91864b9dff4782215d98"
+      },
+      {
+        "path": "boost/numeric/interval/detail/ppc_rounding_control.hpp",
+        "bytes": 2953,
+        "sha256": "a2cb2401a6b8d087f460b3078502f7af09a8f8bb332bbdd0662b38d04853e465"
+      },
+      {
+        "path": "boost/numeric/interval/detail/interval_prototype.hpp",
+        "bytes": 1033,
+        "sha256": "62a4dc5b3a72741d043e9e75cc34dddb41522eb23171824de245334150e7e4b4"
+      },
+      {
+        "path": "boost/numeric/interval/detail/x86gcc_rounding_control.hpp",
+        "bytes": 1260,
+        "sha256": "d07736d9a4c7dcd136db8f8b9cc4e7fc84a4afd1394e82fc65c64ff9f0da90f4"
+      },
+      {
+        "path": "boost/numeric/interval/detail/division.hpp",
+        "bytes": 7499,
+        "sha256": "59ecfca9ac4532a71de23f5edc8eb1711b39a65327ebf1873ed23655af9c3d8a"
+      },
+      {
+        "path": "boost/numeric/interval/detail/alpha_rounding_control.hpp",
+        "bytes": 3606,
+        "sha256": "5c02a0aaf4756c37d8dda1bae0c6d97d400eac73803008678240830650b64fd4"
+      },
+      {
+        "path": "boost/numeric/interval/detail/sparc_rounding_control.hpp",
+        "bytes": 3060,
+        "sha256": "425b9f7d82593be6f53a96d2b02beab27a2ea2bf4359afbcf550a1b1a4c5f6dd"
+      },
+      {
+        "path": "boost/numeric/interval/detail/msvc_rounding_control.hpp",
+        "bytes": 2794,
+        "sha256": "c2441cd4821fb3f6f452f82983824eb311f575c8bbde36a01fcf17beeb9b3ed9"
+      },
+      {
+        "path": "boost/numeric/interval/compare/set.hpp",
+        "bytes": 2626,
+        "sha256": "89368eab5e685ca1f569e10f4dd090c3107deda1e3c60cf59cc8cea8ec6344a8"
+      },
+      {
+        "path": "boost/numeric/interval/compare/tribool.hpp",
+        "bytes": 4617,
+        "sha256": "485db04e62b467fb15789cfb714de12c233ae0cd9494b961859a120fc29d5d46"
+      },
+      {
+        "path": "boost/numeric/interval/compare/possible.hpp",
+        "bytes": 3415,
+        "sha256": "b64967f7a2c1f346a07df3c6ab6efcac2965714ba1b02a714cd5d7da674add3f"
+      },
+      {
+        "path": "boost/numeric/interval/compare/explicit.hpp",
+        "bytes": 6108,
+        "sha256": "39668cda96c67a908eb7bee2b10c44c611d39a9776f1f8292b905bee07a48ea7"
+      },
+      {
+        "path": "boost/numeric/interval/compare/lexicographic.hpp",
+        "bytes": 3865,
+        "sha256": "bcdaa133a8e5ac3170f6e33fe4e5a03c22b3d068a08746f31aa67bfb40bac1d0"
+      },
+      {
+        "path": "boost/numeric/interval/compare/certain.hpp",
+        "bytes": 3405,
+        "sha256": "92129d4e23a890b1ce344b51dbe3d8f97267565250c5dba8310caf7ccf01834d"
+      },
+      {
+        "path": "boost/config/stdlib/vacpp.hpp",
+        "bytes": 1371,
+        "sha256": "3aa7b8290864c24ed1c0f4dfbe18f6c8451b6ac8be67da194742fadbf81b09b7"
+      },
+      {
+        "path": "boost/config/stdlib/msl.hpp",
+        "bytes": 2182,
+        "sha256": "380065ad87ddd9c7fa0cfe267c6333c0443493f4eef8dcf1df955387f0003c5e"
+      },
+      {
+        "path": "boost/config/stdlib/sgi.hpp",
+        "bytes": 4037,
+        "sha256": "df0ced4d1fa15c8622f971717ddeadf3188806b4bf6298147f57f8568c19ca49"
+      },
+      {
+        "path": "boost/config/stdlib/dinkumware.hpp",
+        "bytes": 4679,
+        "sha256": "f3168e6c46b8139349c755d331936efa9d7f034417aa79d5aa007c6fd272c53f"
+      },
+      {
+        "path": "boost/config/stdlib/modena.hpp",
+        "bytes": 1579,
+        "sha256": "d5071da60cd2903a874346696768a4af81ced9d5a37e5c98689efa87ebd5f7b1"
+      },
+      {
+        "path": "boost/config/stdlib/stlport.hpp",
+        "bytes": 7687,
+        "sha256": "2329ff6666defe34067ca501cc28eac80e7faf2b335fccb613ea4bf55efc38a6"
+      },
+      {
+        "path": "boost/config/stdlib/libcomo.hpp",
+        "bytes": 2176,
+        "sha256": "36bdb07d6ccd5b1d79a328fbbb21b32afd3529b98894d8ba888eb3c8205dd07a"
+      },
+      {
+        "path": "boost/config/stdlib/roguewave.hpp",
+        "bytes": 5500,
+        "sha256": "f3840ef56a7cf7883903ce7a2cea6175e9ff918139a28884f9d141badcb20539"
+      },
+      {
+        "path": "boost/config/stdlib/libstdcpp3.hpp",
+        "bytes": 4653,
+        "sha256": "a5b6e34ba587cf59f6c0d28da091ed8b4c33567a2e997d1852c4445b6d436490"
+      },
+      {
+        "path": "boost/config/abi/borland_suffix.hpp",
+        "bytes": 280,
+        "sha256": "ddf73eec710e6a40e5649e70ff0f5ee262b92648ab5b1ab2abb563a5fb6bc556"
+      },
+      {
+        "path": "boost/config/abi/msvc_prefix.hpp",
+        "bytes": 819,
+        "sha256": "0846f71a84d25120bd54ae29095b33af1e9691f162a3a81d518b044a76037613"
+      },
+      {
+        "path": "boost/config/abi/msvc_suffix.hpp",
+        "bytes": 252,
+        "sha256": "e401a3cc760fde65b6ff0681094eaab365a5716632d8526d4847e98f842927ac"
+      },
+      {
+        "path": "boost/config/abi/borland_prefix.hpp",
+        "bytes": 999,
+        "sha256": "bd86fbfd7085d4163da32758728d7090e8bd268c60da2d72f86ce4d5180e9d45"
+      },
+      {
+        "path": "boost/config/platform/amigaos.hpp",
+        "bytes": 442,
+        "sha256": "281591f1f79e5560b06fbc5671ed86596e10c0ecd02215f3c5e12c101165ea0b"
+      },
+      {
+        "path": "boost/config/platform/qnxnto.hpp",
+        "bytes": 766,
+        "sha256": "05b902bffee816003e6ab60ec00a9c713b97c318b4aa0ffa3029a53446379602"
+      },
+      {
+        "path": "boost/config/platform/beos.hpp",
+        "bytes": 593,
+        "sha256": "10479b01c3ff934974210a0595cab0cb9914f2d83242028e22a05ce8ff2202d6"
+      },
+      {
+        "path": "boost/config/platform/bsd.hpp",
+        "bytes": 2469,
+        "sha256": "f9abfab4efe28e31ef885a94845cf54f3fba654af6ae73f5a3605837af59d318"
+      },
+      {
+        "path": "boost/config/platform/cygwin.hpp",
+        "bytes": 1283,
+        "sha256": "67f77bb0b669cffd29fd55206d5c75a1236d0a178d20c8d990307ba2465924b9"
+      },
+      {
+        "path": "boost/config/platform/linux.hpp",
+        "bytes": 2472,
+        "sha256": "8763321237f367e6f8cc059f687c2122b722d6a72db92b4a37805a35af8b3af2"
+      },
+      {
+        "path": "boost/config/platform/aix.hpp",
+        "bytes": 881,
+        "sha256": "47a1eccbfbb53151cde1cc0f475188d7d71e1d1c260bb048b1454c7ce71f7914"
+      },
+      {
+        "path": "boost/config/platform/solaris.hpp",
+        "bytes": 713,
+        "sha256": "3613b888024f823d2f5ecee07db98783af4a84452be83f8bdbd7f8e78a6e9280"
+      },
+      {
+        "path": "boost/config/platform/hpux.hpp",
+        "bytes": 2477,
+        "sha256": "0947c1868ca9acca4247320e365588bb2e4eea65c29b70be96cec1dff776926c"
+      },
+      {
+        "path": "boost/config/platform/irix.hpp",
+        "bytes": 789,
+        "sha256": "570bea1cb4e8f4a1e9bcc2bc409ba9899834d3183a6f01d98d909c8d5be96a95"
+      },
+      {
+        "path": "boost/config/platform/vxworks.hpp",
+        "bytes": 819,
+        "sha256": "71462ecdb1835ceb5fb882a9bb0fd3fc8e8e2c37729ff3f427e372dbf40c6d29"
+      },
+      {
+        "path": "boost/config/platform/win32.hpp",
+        "bytes": 1651,
+        "sha256": "0adc97be17b26e9ce8731ea54650ffcef35710f646ae4c310739cb70a8557381"
+      },
+      {
+        "path": "boost/config/platform/macos.hpp",
+        "bytes": 2390,
+        "sha256": "69c4c8555d0be1e3881e5a376f2fdf49ea818321ba7604c753e051df87a025cf"
+      },
+      {
+        "path": "boost/config/no_tr1/functional.hpp",
+        "bytes": 878,
+        "sha256": "aa14f93ad82f3ef4d5be7107e388f4636e057cc056602527ae82319bd6d91949"
+      },
+      {
+        "path": "boost/config/no_tr1/cmath.hpp",
+        "bytes": 838,
+        "sha256": "88333f68b514da159a18b2aac33be864f279ce4efc215c3f8425baf2c9ea1fa4"
+      },
+      {
+        "path": "boost/config/no_tr1/utility.hpp",
+        "bytes": 854,
+        "sha256": "f2f768cf5c0a2800fb8bee3bd521e1e77feb1ca8dc7120d3fed4c7b2a70cacde"
+      },
+      {
+        "path": "boost/config/no_tr1/memory.hpp",
+        "bytes": 846,
+        "sha256": "a0be3cb94459966b29df1a4c36d4bf7bc18d57d2a06a433c12e1ed60ec29851c"
+      },
+      {
+        "path": "boost/config/no_tr1/complex.hpp",
+        "bytes": 854,
+        "sha256": "c91b0824f8f22581547c364626decc91d94092518be46aa5ed473046565ac0dd"
+      },
+      {
+        "path": "boost/config/compiler/codegear.hpp",
+        "bytes": 4821,
+        "sha256": "c99a35d817e187e069494fbfb3b1c1521e5b019a3168a2690d969b094cffed99"
+      },
+      {
+        "path": "boost/config/compiler/vacpp.hpp",
+        "bytes": 2720,
+        "sha256": "155ffb2aff39e142b61176952e882645a94cd73fb67e49d330792309b3ad0dc0"
+      },
+      {
+        "path": "boost/config/compiler/common_edg.hpp",
+        "bytes": 2709,
+        "sha256": "4b54cbe0868b8e92ee35e7bfd64dee03af8fd3932a15127d02a3cf0d51a9b02a"
+      },
+      {
+        "path": "boost/config/compiler/pgi.hpp",
+        "bytes": 1702,
+        "sha256": "02adaaae6bc91dcb02a25951878f9d5ad0d21c402f796f7fff8d74f081412a88"
+      },
+      {
+        "path": "boost/config/compiler/sunpro_cc.hpp",
+        "bytes": 4135,
+        "sha256": "f1383ced094b6e278db82f69ebbcc827f90d9bc89295202477e72b544ef23ac7"
+      },
+      {
+        "path": "boost/config/compiler/gcc_xml.hpp",
+        "bytes": 913,
+        "sha256": "e64920bbe0aaa85c8583c4aeba92d838a7f2341497cb0bbea6b163be286a8cae"
+      },
+      {
+        "path": "boost/config/compiler/compaq_cxx.hpp",
+        "bytes": 501,
+        "sha256": "adf9869f073df5c05d1d03606e1d2462029cae44f8c7aa7f44458a01e637658d"
+      },
+      {
+        "path": "boost/config/compiler/visualc.hpp",
+        "bytes": 7933,
+        "sha256": "fbf9b3271e4333e13c4ed5c3bd0a3d3169715fabaaadaa12a22ab3125fa0aadb"
+      },
+      {
+        "path": "boost/config/compiler/mpw.hpp",
+        "bytes": 2449,
+        "sha256": "b45109bb421c1a9a1941303420ce64ab7e675535d2db9a929c90595cf78b73ef"
+      },
+      {
+        "path": "boost/config/compiler/greenhills.hpp",
+        "bytes": 815,
+        "sha256": "9c4757c95427bed7ef0d63b6e14f08cc53f38660c0f048a900ef4a61c28529c7"
+      },
+      {
+        "path": "boost/config/compiler/kai.hpp",
+        "bytes": 990,
+        "sha256": "30a84a4c0a44da3448426e75ad63e28a94b8fa9a430e801aa86a2d5b49f90f47"
+      },
+      {
+        "path": "boost/config/compiler/intel.hpp",
+        "bytes": 6235,
+        "sha256": "4fee7e8e7e9651775283ff9cbca4b0af145d5bc039225acf4593b6e927c13f21"
+      },
+      {
+        "path": "boost/config/compiler/borland.hpp",
+        "bytes": 7594,
+        "sha256": "f8e53d301653fca4c7296d83faf6ae4ff8fe29315eeb8ae01ffe490dfe343207"
+      },
+      {
+        "path": "boost/config/compiler/metrowerks.hpp",
+        "bytes": 4032,
+        "sha256": "637d64a90096ac466a84a6830fc6b12e7f999e5ce702d147855cb367b7e95f6f"
+      },
+      {
+        "path": "boost/config/compiler/comeau.hpp",
+        "bytes": 1631,
+        "sha256": "4da3c57fa8925b085752168ac34f85f2228cc1e49bf8a69aff3a721c0e2e14ce"
+      },
+      {
+        "path": "boost/config/compiler/digitalmars.hpp",
+        "bytes": 2627,
+        "sha256": "b4f33537c67df0396837317da91c528c0f8b7a79809de20d533a54c9eef98cf1"
+      },
+      {
+        "path": "boost/config/compiler/gcc.hpp",
+        "bytes": 5989,
+        "sha256": "15d111c2e1e5ec7e7b2cfab8f41aaa069354408b1c87751a07843700728ae941"
+      },
+      {
+        "path": "boost/config/compiler/sgi_mipspro.hpp",
+        "bytes": 774,
+        "sha256": "3b5de12899cfd8713c16772d18f2316c844e83c8e096752541d2116819069090"
+      },
+      {
+        "path": "boost/config/compiler/hp_acc.hpp",
+        "bytes": 4107,
+        "sha256": "4d7f19d9b4bfe2abd330a5b5f1e9b0618ca8a32f9f4aa6e98c261d0af331f9cf"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/interval.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_Interval"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.2226567268371582,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_Interval"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "ee3ecec212211a2b3f9ecb7d6544fe6854875237a56830635e9c1f32b078dc8a",
+    "cuobjdump_list_elf": "ELF file    1: interval-libcutil_x86_64.sm_89.cubin\nELF file    2: interval.sm_89.cubin\n",
+    "task_id": "sdk42_default_Interval",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/cpu_interval.h",
+        "sha256": "19dec35b8cef203a7da49f281e1d306a5c957ebf714d2653ea93a0761301a125"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/cuda_interval.h",
+        "sha256": "30f457af6e55cf102c603cc5e581c5957cb5f9e3f7b10f52e0474f501abc8eb2"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/cuda_interval_lib.h",
+        "sha256": "4ed9d159e8dc695057b91920550005b064f431929fe60135ac36f56d3933d9aa"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/cuda_interval_rounded_arith.h",
+        "sha256": "791e7e0fe83c7ca3e1c09fc3d7769720f2a671ea0f57a24dc2c9b92a5a7c95b1"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/interval.cu",
+        "sha256": "ea3d3734ff1a583a46d3dba17a1dd3ab0ce27b36406b2c9ca8830c09a372c089"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/Interval/interval.h",
+        "sha256": "96ebac2c30ba27cc487681078ec82032d8ffead212eb3992cbb3c016192479cb"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_defaults45_v1/sdk42_default_Interval/attempt001",
+  "index": 1,
+  "start_unix": 1792821577.093556,
+  "lock_wait_seconds": 3.009103238582611e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821577.1414375,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821578.1720803,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821579.20385,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821580.2364974,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821581.2692943,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821582.3010578,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821583.334116,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821584.3665764,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821585.3982346,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821586.4306037,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821587.4628453,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821588.4957747,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821589.5309312,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821590.562966,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821591.5950353,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 397483,
+  "start_ticks": "344448857",
+  "minimum_free_vram_mib": 14514,
+  "exit": 0,
+  "wall_seconds": 0.5497909118421376,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "18732f8bd9e868c093d17c9140e5d1674dc952c0d5cad333dee1b72d88e5fe82",
+  "end_unix": 1792821593.1654885
+}

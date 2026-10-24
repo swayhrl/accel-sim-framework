@@ -1,0 +1,666 @@
+[
+  {
+    "task_id": "cuda118_complete_matrixMul_nvrtc_0_runtime_inputs_v3",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "matrixMul_nvrtc",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/async.h",
+        "sha256": "c6c1070993f79ee118de5da9f12536775db6e97897ba652f0cffc6ca1f0f7556"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_reduce.h",
+        "sha256": "a41420158ee2eb857ced73404e0d5410840754d60e22d42d1e34b9078ca7f297"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_scan.h",
+        "sha256": "0df66fe5de56d1726ffad655860ac87632e3b3a682c7fbb4a32d650c8a63a354"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/driver_abi.h",
+        "sha256": "bfe6546f852018a264e8d4765825870f7c7fe36cbeb68808d6eac59fbd068be8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/functional.h",
+        "sha256": "d8157c8bc062773d24831b989090806f0171388651cb31e01be73fad52a14737"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/helpers.h",
+        "sha256": "2bd8efc675dce7ee85ba6d4a1b811028926b559e018473920096d9478b832f47"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/info.h",
+        "sha256": "14eae9dcbb6de0f71b2b67c0339517f63b2c159b63fcba954a1ccb15c2a249a6"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/invoke.h",
+        "sha256": "3acab72beb59b971d508c409ef4f0f8cfa3e0703218e18c0a4ee1bd1360b1498"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/memory.h",
+        "sha256": "8444b749f817201b23d8c16b0bf33908e5e53a2ad206eba13cc0099d6a08f76c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/partitioning.h",
+        "sha256": "010cfe4e17aa5f7a27a97d91988522a73614541dbbdf384b947270fe45fd0f65"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/reduce.h",
+        "sha256": "323a8c0f04f44f2599938256705dd61f0f31b7032aca2cc0e02df3cbb7fc79ed"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/scan.h",
+        "sha256": "f93b706f601f10463fb6c9aa2634767688e43e9a11c77f3b4a8ab182f7dd06d4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/sync.h",
+        "sha256": "11de0af50acf662e3775d4aa670bf55fc346fc24ec5d4a304909dda14bfcd8b5"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/memcpy_async.h",
+        "sha256": "7ab3881ee39b75fc5184159fad7137c2c645e01d8652eab0cd0aec3f028fa5b8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/reduce.h",
+        "sha256": "0748600e4a8cfbab9ea934e06f76f7e00d111f8bc6cfc9817f97b68d3d5d275a"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/scan.h",
+        "sha256": "d8453a4f97163707ed9b607b162715df53e88e823ad72a397c75c6458906938d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups.h",
+        "sha256": "cb6705c5ae9efac684140f5a5b6d99b93c22d30b9dede107abb5cddefdf42d3d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul.cpp",
+        "sha256": "ff190a28ab4b28487c6b45c812fb16e8f6ecad94f3d1cf5dff327770d118afcc"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_kernel.cu",
+        "sha256": "64d713fd9939fe0339ac2c57040dc24a99b9eba7bce1490cf75ea0a26b26b83a"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups.h",
+        "sha256": "cb6705c5ae9efac684140f5a5b6d99b93c22d30b9dede107abb5cddefdf42d3d",
+        "bytes": 60684,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul.cpp",
+        "sha256": "ff190a28ab4b28487c6b45c812fb16e8f6ecad94f3d1cf5dff327770d118afcc",
+        "bytes": 7953,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_kernel.cu",
+        "sha256": "64d713fd9939fe0339ac2c57040dc24a99b9eba7bce1490cf75ea0a26b26b83a",
+        "bytes": 4903,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/async.h",
+        "sha256": "c6c1070993f79ee118de5da9f12536775db6e97897ba652f0cffc6ca1f0f7556",
+        "bytes": 19122,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_reduce.h",
+        "sha256": "a41420158ee2eb857ced73404e0d5410840754d60e22d42d1e34b9078ca7f297",
+        "bytes": 4257,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/coalesced_scan.h",
+        "sha256": "0df66fe5de56d1726ffad655860ac87632e3b3a682c7fbb4a32d650c8a63a354",
+        "bytes": 7314,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/driver_abi.h",
+        "sha256": "bfe6546f852018a264e8d4765825870f7c7fe36cbeb68808d6eac59fbd068be8",
+        "bytes": 3964,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/functional.h",
+        "sha256": "d8157c8bc062773d24831b989090806f0171388651cb31e01be73fad52a14737",
+        "bytes": 8905,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/helpers.h",
+        "sha256": "2bd8efc675dce7ee85ba6d4a1b811028926b559e018473920096d9478b832f47",
+        "bytes": 26476,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/info.h",
+        "sha256": "14eae9dcbb6de0f71b2b67c0339517f63b2c159b63fcba954a1ccb15c2a249a6",
+        "bytes": 12465,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/invoke.h",
+        "sha256": "3acab72beb59b971d508c409ef4f0f8cfa3e0703218e18c0a4ee1bd1360b1498",
+        "bytes": 8616,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/memory.h",
+        "sha256": "8444b749f817201b23d8c16b0bf33908e5e53a2ad206eba13cc0099d6a08f76c",
+        "bytes": 5606,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/partitioning.h",
+        "sha256": "010cfe4e17aa5f7a27a97d91988522a73614541dbbdf384b947270fe45fd0f65",
+        "bytes": 7153,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/reduce.h",
+        "sha256": "323a8c0f04f44f2599938256705dd61f0f31b7032aca2cc0e02df3cbb7fc79ed",
+        "bytes": 23296,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/scan.h",
+        "sha256": "f93b706f601f10463fb6c9aa2634767688e43e9a11c77f3b4a8ab182f7dd06d4",
+        "bytes": 17166,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/details/sync.h",
+        "sha256": "11de0af50acf662e3775d4aa670bf55fc346fc24ec5d4a304909dda14bfcd8b5",
+        "bytes": 10795,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/memcpy_async.h",
+        "sha256": "7ab3881ee39b75fc5184159fad7137c2c645e01d8652eab0cd0aec3f028fa5b8",
+        "bytes": 2960,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/reduce.h",
+        "sha256": "0748600e4a8cfbab9ea934e06f76f7e00d111f8bc6cfc9817f97b68d3d5d275a",
+        "bytes": 2949,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups/scan.h",
+        "sha256": "d8453a4f97163707ed9b607b162715df53e88e823ad72a397c75c6458906938d",
+        "bytes": 2940,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "cooperative_groups.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups.h"
+      },
+      {
+        "name": "matrixMul.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul.cpp"
+      },
+      {
+        "name": "matrixMul_kernel.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_kernel.cu"
+      },
+      {
+        "name": "cooperative_groups",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/cooperative_groups"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/matrixMul_nvrtc/matrixMul_nvrtc"
+    ],
+    "binary_sha256": "40fe781769a54a09ab3b04c23958ceafc9555cc170fd1cdee2b7876af97f9252",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "NVRTC_JIT_LOADED_MODULE_PROFILE"
+    ],
+    "readiness": "NATIVE_SETUP_REPAIR_PENDING_REAL_EXECUTION",
+    "source_recipe": [
+      "$(EXEC) ./matrixMul_nvrtc"
+    ],
+    "platform_guard_evidence": [],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  {
+    "task_id": "cuda118_complete_EGLStream_CUDA_CrossGPU_0_runtime_inputs_v3",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "EGLStream_CUDA_CrossGPU",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_consumer.cpp",
+        "sha256": "09444c86a34c986247b5d1b7efa3b9bfc9e09cb5f68a65e54a4726194264b104"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_consumer.h",
+        "sha256": "18cc3192c96ee856f23bad4f9b0d37fa5740ac2dabc59f0c2dfb91819d1a6aea"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_producer.cpp",
+        "sha256": "de47e2224cf008aa900e2821c8b060d71d8fba2f0c8bdc28a12a88e983f18dd2"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_producer.h",
+        "sha256": "5666ba6d4acf4e6d2f5f98b781755e11be2b0839d3a57e897e11782565640edf"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/eglstrm_common.cpp",
+        "sha256": "f8a968bb92f9ef9f365765f22236772942a4439e423d30acfb596509dec87665"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/eglstrm_common.h",
+        "sha256": "2ec820b9e440fc9615ba9a8bbef2a1ecd123894e6b92b89c77544fe2c05d0442"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/helper.h",
+        "sha256": "d734a2b54a3b7bb0b27b6544fb710d4f14372d5dad66601bf8b2cf917adb6aec"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/kernel.cu",
+        "sha256": "6dd014f8fbb70f067bf52cbc806f6f4b7826faa1c488455488c832308703e6e5"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/main.cpp",
+        "sha256": "3ce46f0098ac405e0ff21dc8880435295e84b708372d1580cca963380cc80d43"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_consumer.cpp",
+        "sha256": "09444c86a34c986247b5d1b7efa3b9bfc9e09cb5f68a65e54a4726194264b104",
+        "bytes": 8534,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_consumer.h",
+        "sha256": "18cc3192c96ee856f23bad4f9b0d37fa5740ac2dabc59f0c2dfb91819d1a6aea",
+        "bytes": 2750,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_producer.cpp",
+        "sha256": "de47e2224cf008aa900e2821c8b060d71d8fba2f0c8bdc28a12a88e983f18dd2",
+        "bytes": 9794,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_producer.h",
+        "sha256": "5666ba6d4acf4e6d2f5f98b781755e11be2b0839d3a57e897e11782565640edf",
+        "bytes": 2949,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/eglstrm_common.cpp",
+        "sha256": "f8a968bb92f9ef9f365765f22236772942a4439e423d30acfb596509dec87665",
+        "bytes": 13182,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/eglstrm_common.h",
+        "sha256": "2ec820b9e440fc9615ba9a8bbef2a1ecd123894e6b92b89c77544fe2c05d0442",
+        "bytes": 4625,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/helper.h",
+        "sha256": "d734a2b54a3b7bb0b27b6544fb710d4f14372d5dad66601bf8b2cf917adb6aec",
+        "bytes": 6883,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/kernel.cu",
+        "sha256": "6dd014f8fbb70f067bf52cbc806f6f4b7826faa1c488455488c832308703e6e5",
+        "bytes": 5659,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/main.cpp",
+        "sha256": "3ce46f0098ac405e0ff21dc8880435295e84b708372d1580cca963380cc80d43",
+        "bytes": 13501,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/EGLStream_CUDA_CrossGPU",
+        "sha256": "f66425426c9a8005d36252b5f96c044d6370d0af88cce6168b5836e10be8babb",
+        "bytes": 1051744,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "cuda_consumer.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_consumer.cpp"
+      },
+      {
+        "name": "cuda_consumer.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_consumer.h"
+      },
+      {
+        "name": "cuda_producer.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_producer.cpp"
+      },
+      {
+        "name": "cuda_producer.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/cuda_producer.h"
+      },
+      {
+        "name": "eglstrm_common.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/eglstrm_common.cpp"
+      },
+      {
+        "name": "eglstrm_common.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/eglstrm_common.h"
+      },
+      {
+        "name": "helper.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/helper.h"
+      },
+      {
+        "name": "kernel.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/kernel.cu"
+      },
+      {
+        "name": "main.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/main.cpp"
+      },
+      {
+        "name": "EGLStream_CUDA_CrossGPU",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/EGLStream_CUDA_CrossGPU"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_CrossGPU/EGLStream_CUDA_CrossGPU"
+    ],
+    "binary_sha256": "f66425426c9a8005d36252b5f96c044d6370d0af88cce6168b5836e10be8babb",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "MULTI_PHYSICAL_GPU_OR_PEER_FEATURE_GUARD_MUST_VERIFY",
+      "GRAPHICS_OR_EGL_VULKAN_CONTEXT_PROFILE"
+    ],
+    "readiness": "NATIVE_SETUP_REPAIR_PENDING_REAL_EXECUTION",
+    "source_recipe": [
+      "$(EXEC) ./EGLStream_CUDA_CrossGPU"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "cuda_consumer.cpp",
+        "line": 220,
+        "text": "\"EGLStream_CUDA_CrossGPU requires SM 6.0 or higher arch GPU.  \""
+      },
+      {
+        "file": "cuda_consumer.cpp",
+        "line": 222,
+        "text": "exit(2);  // EXIT_WAIVED"
+      },
+      {
+        "file": "cuda_producer.cpp",
+        "line": 213,
+        "text": "\"EGLStream_CUDA_CrossGPU requires SM 6.0 or higher arch GPU.  \""
+      },
+      {
+        "file": "cuda_producer.cpp",
+        "line": 215,
+        "text": "exit(2);  // EXIT_WAIVED"
+      },
+      {
+        "file": "helper.h",
+        "line": 152,
+        "text": "exit(2);  // EXIT_WAIVED"
+      },
+      {
+        "file": "helper.h",
+        "line": 167,
+        "text": "exit(2);  // EXIT_WAIVED"
+      },
+      {
+        "file": "helper.h",
+        "line": 176,
+        "text": "exit(2);  // EXIT_WAIVED"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  {
+    "task_id": "cuda118_complete_EGLStream_CUDA_Interop_0_runtime_inputs_v3",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "EGLStream_CUDA_Interop",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_consumer.cpp",
+        "sha256": "655f392f3f28b404c0e8167b7441faefd31d245f6bf2a7ec1c9bd981f9ba0989"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_consumer.h",
+        "sha256": "964e7c77c8b844c5f339eee32bdf852bd17c576b56143cf5ed254e954d776d86"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_producer.cpp",
+        "sha256": "c09cb57409d240cf0f6a3eeeed2cf2dd0416249225ae36a5ccab06eba7b4c944"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_producer.h",
+        "sha256": "b62a1dafeaa48a086e48f4bc25f5bd62ce8f8168aa2c2d458f736032162a80d8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/eglstrm_common.cpp",
+        "sha256": "cde8186fc09869181fda6d4994b1e621a367e868579ee89f99790a889b501194"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/eglstrm_common.h",
+        "sha256": "7fedbe74b0a0105ad52cba30bc5e9f59172bde5585fa48b89d0858938de10577"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/main.cpp",
+        "sha256": "131854207878ccd5bdb0284e6f2d85e6edf8e76e79aede5d7b6f36ce7f2b35a1"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_consumer.cpp",
+        "sha256": "655f392f3f28b404c0e8167b7441faefd31d245f6bf2a7ec1c9bd981f9ba0989",
+        "bytes": 11036,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_consumer.h",
+        "sha256": "964e7c77c8b844c5f339eee32bdf852bd17c576b56143cf5ed254e954d776d86",
+        "bytes": 2471,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_producer.cpp",
+        "sha256": "c09cb57409d240cf0f6a3eeeed2cf2dd0416249225ae36a5ccab06eba7b4c944",
+        "bytes": 13866,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_producer.h",
+        "sha256": "b62a1dafeaa48a086e48f4bc25f5bd62ce8f8168aa2c2d458f736032162a80d8",
+        "bytes": 2705,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/eglstrm_common.cpp",
+        "sha256": "cde8186fc09869181fda6d4994b1e621a367e868579ee89f99790a889b501194",
+        "bytes": 4832,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/eglstrm_common.h",
+        "sha256": "7fedbe74b0a0105ad52cba30bc5e9f59172bde5585fa48b89d0858938de10577",
+        "bytes": 4504,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/main.cpp",
+        "sha256": "131854207878ccd5bdb0284e6f2d85e6edf8e76e79aede5d7b6f36ce7f2b35a1",
+        "bytes": 8130,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_yuv_f_2.yuv",
+        "sha256": "c522886a07d68d167e9ba154c455c5d7e9d94c3e039428a447ddeb43881656e5",
+        "bytes": 518400,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_f_2.yuv",
+        "sha256": "f4cd943248a0a214aae55c4ee29b1b5c3f47ed583d01ebf957d686667a7f7faa",
+        "bytes": 1382400,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_yuv_f_1.yuv",
+        "sha256": "94ecac837ce1b2028e3bc7069d3eae0c6052b31183657d62c85b9c9518e38713",
+        "bytes": 518400,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_f_1.yuv",
+        "sha256": "305a368f4ebbc07ecfe46e6ae906bd92668f62321aaadf0593236a2fbe36e2fa",
+        "bytes": 1382400,
+        "role": "FROZEN_NESTED_NVRTC_HEADER_OR_FLAT_FRAME_INPUT_OR_IPC_CHILD_BINARY"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "cuda_consumer.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_consumer.cpp"
+      },
+      {
+        "name": "cuda_consumer.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_consumer.h"
+      },
+      {
+        "name": "cuda_producer.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_producer.cpp"
+      },
+      {
+        "name": "cuda_producer.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_producer.h"
+      },
+      {
+        "name": "eglstrm_common.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/eglstrm_common.cpp"
+      },
+      {
+        "name": "eglstrm_common.h",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/eglstrm_common.h"
+      },
+      {
+        "name": "main.cpp",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/main.cpp"
+      },
+      {
+        "name": "cuda_yuv_f_2.yuv",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_yuv_f_2.yuv"
+      },
+      {
+        "name": "cuda_f_2.yuv",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_f_2.yuv"
+      },
+      {
+        "name": "cuda_yuv_f_1.yuv",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_yuv_f_1.yuv"
+      },
+      {
+        "name": "cuda_f_1.yuv",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/cuda_f_1.yuv"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/EGLStream_CUDA_Interop/EGLStream_CUDA_Interop"
+    ],
+    "binary_sha256": "c1caf1c430eb31a5c90fd92c4d0fba37ae580424d26aa9d45996126ee3476147",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "GRAPHICS_OR_EGL_VULKAN_CONTEXT_PROFILE"
+    ],
+    "readiness": "NATIVE_SETUP_REPAIR_PENDING_REAL_EXECUTION",
+    "source_recipe": [
+      "$(EXEC) ./EGLStream_CUDA_Interop"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "eglstrm_common.cpp",
+        "line": 76,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "eglstrm_common.cpp",
+        "line": 93,
+        "text": "exit(EXIT_WAIVED);"
+      },
+      {
+        "file": "cuda_producer.cpp",
+        "line": 304,
+        "text": "\"EGLStream_CUDA_Interop requires SM 6.0 or higher arch GPU.  \""
+      },
+      {
+        "file": "cuda_producer.cpp",
+        "line": 306,
+        "text": "exit(2);  // EXIT_WAIVED"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  }
+]

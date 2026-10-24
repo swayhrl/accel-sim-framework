@@ -1,0 +1,40 @@
+SDK42_HOST_ADAPTER_QA_START
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+Testing built-in R2C / C2R FFT-based convolution
+...allocating memory
+...generating random input data
+...creating R2C & C2R FFT plans for 2048 x 2048
+...uploading to GPU and padding convolution kernel and input data
+...transforming convolution kernel
+...running GPU FFT convolution: 29411.763107 MPix/s (0.136000 ms)
+...reading back GPU convolution results
+...running reference CPU convolution
+...comparing the results: rel L2 = 9.395370E-08 (max delta = 1.208283E-06)
+L2norm Error OK
+...shutting down
+Testing custom R2C / C2R FFT-based convolution
+...allocating memory
+...generating random input data
+...creating C2C FFT plan for 2048 x 1024
+...uploading to GPU and padding convolution kernel and input data
+...transforming convolution kernel
+...running GPU FFT convolution: 22598.869920 MPix/s (0.177000 ms)
+...reading back GPU FFT results
+...running reference CPU convolution
+...comparing the results: rel L2 = 1.067915E-07 (max delta = 9.817303E-07)
+L2norm Error OK
+...shutting down
+Testing updated custom R2C / C2R FFT-based convolution
+...allocating memory
+...generating random input data
+...creating C2C FFT plan for 2048 x 1024
+...uploading to GPU and padding convolution kernel and input data
+...transforming convolution kernel
+...running GPU FFT convolution: 34188.034571 MPix/s (0.117000 ms)
+...reading back GPU FFT results
+...running reference CPU convolution
+...comparing the results: rel L2 = 1.065127E-07 (max delta = 9.817303E-07)
+L2norm Error OK
+...shutting down
+Test Summary: 0 errors
+SDK42_HOST_ADAPTER_QA_PASSED

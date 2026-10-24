@@ -1,0 +1,212 @@
+{
+  "task": {
+    "program": "quasirandomGenerator",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "c91c2a1c85e0ba7b6a7fc30011ae09cc58cdde06e8972d6eb57040ff265ba43b",
+    "makefile_flags": {
+      "EXECUTABLE": "quasirandomGenerator",
+      "CUFILES": "quasirandomGenerator_SM13.cu quasirandomGenerator_SM10.cu",
+      "GENCODE_SM10": "# CUDA dependency files",
+      "CU_DEPS": "\\",
+      "CCFILES": "quasirandomGenerator.cpp quasirandomGenerator_gold.cpp"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "cutil_inline.h",
+      "math.h",
+      "quasirandomGenerator_common.h",
+      "quasirandomGenerator_kernel.cuh",
+      "realtype.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM13.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM10.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_quasirandomGenerator"
+    ],
+    "build_exit": 0,
+    "build_seconds": 2.5502381324768066,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_quasirandomGenerator"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "3fe974ef79896d93c94e223d3483f1d861df4f79f0f8db8992cf071a77a51bd3",
+    "cuobjdump_list_elf": "ELF file    1: quasirandomGenerator_SM13-quasirandomGenerator_SM10-quasirandomGenerator-quasirandomGenerator_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: quasirandomGenerator_SM13.sm_89.cubin\nELF file    3: quasirandomGenerator_SM10.sm_89.cubin\n",
+    "task_id": "sdk42_default_quasirandomGenerator",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator.cpp",
+        "sha256": "2899b57e59778ef6021b00d77586e8d4d1678c246c412c78cf79a67a74f476fe"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM10.cu",
+        "sha256": "aaf1e4f484e3870bf33b323ed696b1d3e6ebeb1a479d1cafaedb2b58ec0d2444"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM13.cu",
+        "sha256": "33a79b374130653ba90c210cdd03a908b5a21c8a1a455136f7fe27ab3c1b70da"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_common.h",
+        "sha256": "e9185057246ce7f259c9e8d98349703e0694a980d9179f982a7593d8117aef9f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_gold.cpp",
+        "sha256": "767013caead9f4080811b13482d1fc8a83531ab8078ec4b1640339a962cf765e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_kernel.cuh",
+        "sha256": "3115d9add8870a54545f5fe8b3bfbf5c23994ec37e6ee9d8f27733180b3818ad"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/realtype.h",
+        "sha256": "2924a2522add7ba22429ff35cfe3b1affb229bf21a5cbcb52ebfb7a6cd504916"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_pendingcopy_v2/sdk42_default_quasirandomGenerator/attempt001",
+  "index": 11,
+  "start_unix": 1792822040.402583,
+  "lock_wait_seconds": 40.00109711010009,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792822080.451705,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822081.4829502,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822082.51581,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822083.5488126,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822084.583969,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822085.615874,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822086.6469917,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822087.6793807,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822088.71239,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822089.7438457,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822090.7801387,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822091.8115404,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822092.844844,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822093.875772,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792822094.9091516,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 401453,
+  "start_ticks": "344499189",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.28700946690514684,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "4e2d63b5937cb589563809ccfac16f25e1c95d0959b7c29f3c64e53922fb56ee",
+  "end_unix": 1792822096.2146223
+}

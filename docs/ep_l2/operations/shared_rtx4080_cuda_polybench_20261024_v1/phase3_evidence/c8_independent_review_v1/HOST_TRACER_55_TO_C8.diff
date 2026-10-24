@@ -1,0 +1,63 @@
+--- producer55/tracer_tool.cu
++++ c8/tracer_tool.cu
+@@ -465,6 +465,9 @@
+   channel_dev.flush();
+ }
+ 
++#include "ada_input_snapshot.h"
++#include "ada_lifecycle_gate.h"
++
+ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
+                                 nvbit_api_cuda_t cbid, void *params,
+                                 bool stream_capture = false,
+@@ -473,8 +476,10 @@
+   // kernel is actually launched.
+   if (!stream_capture && !build_graph) {
+     /* Make sure GPU is idle */
+-    cudaDeviceSynchronize();
++    cudaError_t ada_prelaunch_sync_status=cudaDeviceSynchronize();
++    if(ada_prelaunch_sync_status!=cudaSuccess){fprintf(stderr,"ADA_PREKERNEL_SYNC_FAILED status=%d\n",int(ada_prelaunch_sync_status));abort();}
+     assert(cudaGetLastError() == cudaSuccess);
++    if(getenv("ADA_INPUT_SNAPSHOT"))ada_input_complete(ctx,nullptr,true,"EXISTING_PRODUCER_PREKERNEL_SYNC");
+   }
+ 
+   // The selector is always required.  For ACTIVE_FROM_START=0 it is
+@@ -504,6 +509,7 @@
+     return;
+   }
+ 
++  if(getenv("ADA_INPUT_SNAPSHOT_ONLY")){ctx_trace_this_kernel[ctx]=false;stop_report=true;ctx_kernelid[ctx]++;return;}
+   // Get launch config for this kernel
+   unsigned int gridDimX, gridDimY, gridDimZ;
+   unsigned int blockDimX, blockDimY, blockDimZ;
+@@ -705,6 +711,8 @@
+     fclose(statsFile);
+   }
+ 
++  ada_gate_event(ctx,is_exit,name,params,pStatus);
++  ada_input_event(ctx,is_exit,name,params,pStatus);
+   switch (cbid) {
+   // We start with recording kernel launch events
+   // Identify all the possible CUDA launch events without stream
+@@ -1145,6 +1153,7 @@
+ }
+ 
+ void nvbit_at_ctx_term(CUcontext ctx) {
++  ada_gate_context_end(ctx);
+   if (recv_thread_started) {
+     recv_thread_started = false;
+     pthread_join(recv_thread, NULL);
+@@ -1152,6 +1161,7 @@
+ }
+ 
+ void nvbit_at_ctx_init(CUcontext ctx) {
++  ada_gate_context_begin(ctx);
+   // Everytime we init a context, add the foldername and kernelid to the set
+   char buffer[2048];
+   sprintf(buffer, "kernelslist_ctx_0x%lx", ctx);
+@@ -1162,3 +1172,5 @@
+   ctx_stats_location[ctx] = tmp_stats;
+   ctx_kernelid[ctx] = 1;
+ }
++
++void nvbit_at_term(){ada_gate_process_end();}

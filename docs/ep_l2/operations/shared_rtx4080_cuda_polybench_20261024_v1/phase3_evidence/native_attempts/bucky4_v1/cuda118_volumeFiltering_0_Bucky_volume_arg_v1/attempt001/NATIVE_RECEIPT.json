@@ -1,0 +1,186 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "volumeFiltering",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volume.cpp",
+        "sha256": "2516ca273a9fd607988c1f91d87e61b824283942c06b5f2e7d531bee2ec9081f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volume.h",
+        "sha256": "422a97a54617b01d40288db75e7b9d390419d8f96182e12906323c860d4cccd6"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFilter.h",
+        "sha256": "1585003e784e45c525e4cffdc678892d5ce4b78cb1abd586aeb4b6bdade9db05"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFilter_kernel.cu",
+        "sha256": "0ed00f5647b0074c1f72cf7c0f8926390e0791a315382b2257fda161f87e3ed7"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFiltering.cpp",
+        "sha256": "6e3a75ac1d506f561d8c403d49ca79b9e4ca37bad6ddbe971bd6a71ad6e3848d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volumeRender.h",
+        "sha256": "0807b41557d7d9b5bb3e2f52a00361ffda17444e8f69c157d69bbd5494f45d72"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volumeRender_kernel.cu",
+        "sha256": "2bc85fec14a6cb06a9409ec21f20781ef9442754d6a2aa025ac9674bb4961e8f"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/data/Bucky.raw",
+        "sha256": "8976ab31eb1944d2c9bbbe825935357cd25f65b48d3e13ba45427bf80418232d",
+        "bytes": 32768
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/data/ref_volumefilter.ppm",
+        "sha256": "6b78e02b903dd4137a9b9fd4e4d56b0ae52c082ef8b22c6988e214c9a37833bc",
+        "bytes": 786486
+      }
+    ],
+    "task_id": "cuda118_volumeFiltering_0_Bucky_volume_arg_v1",
+    "variant": "explicit_real_Bucky_volume_distinct_input_v1",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/volumeFiltering",
+      "-file=ref_volumefilter.ppm",
+      "-volume=Bucky.raw"
+    ],
+    "binary_sha256": "3a34caddf61bb787e08026597ea51af104700a24f8ddf8fa32a026d5b5fb5a13",
+    "binary_cubin_listing": "ELF file    1: volumeFiltering.1.sm_89.cubin\nELF file    2: volumeFiltering.2.sm_89.cubin\nELF file    3: volumeFiltering.3.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_correct_volume_arg_v1/Samples/5_Domain_Specific/volumeFiltering/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "device_helper_patch": "volume.h two undeclared saturate(sampled) calls replaced by CUDA intrinsic __saturatef(sampled) [0,1] clamp; original build failure retained",
+    "host_input_arg_patch": "Input volume flag file -> volume only in init loader; QA file remains reference; original canonical reference-as-rawvolume invocation preserved",
+    "same_kernel_source": true,
+    "selected_volume_bytes": 32768,
+    "selected_volume_sha256": "8976ab31eb1944d2c9bbbe825935357cd25f65b48d3e13ba45427bf80418232d"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/bucky4_v1/cuda118_volumeFiltering_0_Bucky_volume_arg_v1/attempt001",
+  "index": 3,
+  "start_unix": 1792822507.482723,
+  "lock_wait_seconds": 1.8370337784290314e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 385 MiB, 15559 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792822507.5318434,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822508.564084,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822509.5965927,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822510.6332202,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822511.6677568,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822512.6998951,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822513.7324772,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822514.7669222,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822515.800887,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822516.833561,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822517.8698597,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822518.9019523,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822519.9378266,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822520.9728765,
+      "util": 0,
+      "free_mib": 15559
+    },
+    {
+      "unix": 1792822522.0052454,
+      "util": 0,
+      "free_mib": 15559
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 404854,
+  "start_ticks": "344541899",
+  "minimum_free_vram_mib": 15545,
+  "exit": 0,
+  "wall_seconds": 0.2894918150268495,
+  "status": "NATIVE_FAILURE_RETAINED",
+  "stdout_sha256": "2ed0f431e221ad4c401a5d0bfd573b0f2a07f22dd7efefac0898de9b1cb71a8a",
+  "end_unix": 1792822523.3177514
+}

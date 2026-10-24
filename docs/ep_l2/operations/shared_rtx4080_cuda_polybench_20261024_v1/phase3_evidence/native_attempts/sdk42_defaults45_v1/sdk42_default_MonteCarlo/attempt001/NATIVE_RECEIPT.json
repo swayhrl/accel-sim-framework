@@ -1,0 +1,226 @@
+{
+  "task": {
+    "program": "MonteCarlo",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "f4f2977565eea2028a64bd99be4724cab0526cb78a092316a989a8474cb09f09",
+    "makefile_flags": {
+      "EXECUTABLE": "MonteCarlo",
+      "CUFILES": "MonteCarlo_SM13.cu MonteCarlo_SM10.cu",
+      "GENCODE_SM10": "# CUDA dependency files",
+      "CU_DEPS": "\\",
+      "CCFILES": "MonteCarlo.cpp MonteCarlo_gold.cpp",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "MonteCarlo_common.h",
+      "MonteCarlo_kernel.cuh",
+      "MonteCarlo_reduction.cuh",
+      "cuda_runtime.h",
+      "cutil_inline.h",
+      "math.h",
+      "quasirandomGenerator_kernel.cuh",
+      "realtype.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_SM13.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_SM10.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_MonteCarlo"
+    ],
+    "build_exit": 0,
+    "build_seconds": 2.493008613586426,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_MonteCarlo"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "1306150224f37a21edc816667b4223e5ac1b85126a5f4d118f714c2e80cc61aa",
+    "cuobjdump_list_elf": "ELF file    1: MonteCarlo_SM13-MonteCarlo_SM10-MonteCarlo-MonteCarlo_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: MonteCarlo_SM13.sm_89.cubin\nELF file    3: MonteCarlo_SM10.sm_89.cubin\n",
+    "task_id": "sdk42_default_MonteCarlo",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo.cpp",
+        "sha256": "09d4e0ac41695631080a9b4405e0a51535b5e050871daa27b9e44900dc93cf7f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_SM10.cu",
+        "sha256": "8b156fc99dc8c300cfead291923a09b1c0e375ed7ab686d519e582190609509c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_SM13.cu",
+        "sha256": "f4572ddc018da97311be5bc8d322d8de0a5282ad042e4ec2e925047059ffcbcb"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_common.h",
+        "sha256": "81439350d7fec7a25effd749e1209edad509254615003e5617444f359f5f46b7"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_gold.cpp",
+        "sha256": "d6da69338a923a0afb39fe124615fbd9b839936a8a9ee5344f877bffc69fb16b"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_kernel.cuh",
+        "sha256": "5aa51ee7268a5d810ed275917254ae14052abdd4aaa6517dbba6dcf76b7453b3"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/MonteCarlo_reduction.cuh",
+        "sha256": "9307446188bdefe433a2908224368031c5ea0b58ccbc083c5e4d1555e9d65e6f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/quasirandomGenerator_kernel.cuh",
+        "sha256": "7d1b9ef91b8e2cd8702ef854754fe0eaff4f4c5883552f1d7b1998b5f93c4789"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/MonteCarlo/realtype.h",
+        "sha256": "2924a2522add7ba22429ff35cfe3b1affb229bf21a5cbcb52ebfb7a6cd504916"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_defaults45_v1/sdk42_default_MonteCarlo/attempt001",
+  "index": 2,
+  "start_unix": 1792821593.1668355,
+  "lock_wait_seconds": 2.520158886909485e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821593.2128413,
+      "util": 11,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821594.2437751,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821595.2782083,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821596.3102016,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821597.3425286,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821598.377918,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821599.4109657,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821600.4448717,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821601.4771695,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821602.508537,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821603.5442238,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821604.577916,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821605.6107564,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821606.6449096,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821607.6817937,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821608.7139506,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 397643,
+  "start_ticks": "344450569",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.2903760112822056,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "110ba04491dd77e585ca6dd836c429ac0dc6d898a8e0f45655fad2915fd5d2bc",
+  "end_unix": 1792821610.0250843
+}

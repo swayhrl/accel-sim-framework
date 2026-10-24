@@ -1,0 +1,184 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "dwtHaar1D",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D",
+    "source_files": [
+      {
+        "relative_path": "dwtHaar1D.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/dwtHaar1D.cu",
+        "sha256": "3fb760a57658aa15b23017a4ce8fd14d43d20d4de418d52f83c4b9f2bd18033c"
+      },
+      {
+        "relative_path": "dwtHaar1D_kernel.cuh",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/dwtHaar1D_kernel.cuh",
+        "sha256": "e2aa30d23072e8d84400ca4d46fd9b6085f648fd086a7aca0eab84d18029b7d4"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/regression.gold.dat",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/regression.gold.dat",
+        "bytes": 69632,
+        "sha256": "4ecd54b8a5eb6dcb74d721002c586df793bdc33f46355417bbf60c542158e52a"
+      },
+      {
+        "relative_path": "data/regression_2_14.gold.dat",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/regression_2_14.gold.dat",
+        "bytes": 278528,
+        "sha256": "02cf33e51bfde8e7e62b302955ae033d1bfdde525f2f2319932ceebdd3eb3340"
+      },
+      {
+        "relative_path": "data/regression_2_18.gold.dat",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/regression_2_18.gold.dat",
+        "bytes": 4456448,
+        "sha256": "9c60d6f2ab7ea02e6071b1f92ef6cbe1fefb46b897d500275cc4c5827ee5bbc1"
+      },
+      {
+        "relative_path": "data/signal.dat",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/signal.dat",
+        "bytes": 69632,
+        "sha256": "45df03a24f221047911c9ecee270ab80f6ec061095d4f3159dd7f4df49def4f0"
+      },
+      {
+        "relative_path": "data/signal_2_14.dat",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/signal_2_14.dat",
+        "bytes": 278528,
+        "sha256": "b5bab489c0ebf66f34ef06a20b674aac55d801d9bca6454fec0c0b94a1755417"
+      },
+      {
+        "relative_path": "data/signal_2_18.dat",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/signal_2_18.dat",
+        "bytes": 4456448,
+        "sha256": "04c96c4f209b038b722ba6981349f536e8e01d027412767bf66425ab8b6eaa31"
+      }
+    ],
+    "task_id": "cuda118_dwtHaar1D_0",
+    "variant": "finite_source_default_no_testrun",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/dwtHaar1D"
+    ],
+    "binary_sha256": "d1c978253105995d89de9da4c94ad58416fe2aa56df9ce1ae2d3ffd73c3376c2",
+    "binary_cubin_listing": "ELF file    1: dwtHaar1D.1.sm_89.cubin\nELF file    2: dwtHaar1D.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {},
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_dwtHaar1D_0/attempt001",
+  "index": 37,
+  "start_unix": 1792820501.5065567,
+  "lock_wait_seconds": 4.89410012960434e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792820501.556411,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820502.587928,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820503.6251166,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820504.6593153,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820505.6908066,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820506.724739,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820507.7576783,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820508.7913578,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820509.8233,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820510.8566267,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820511.891351,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820512.9255745,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820513.9590726,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820514.9912343,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792820516.024793,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 388124,
+  "start_ticks": "344341301",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.28794636111706495,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "2ddfbb583b9b6bb0ebe91d377c420b9ef882bfba691220b05df8d1d7dc680749",
+  "end_unix": 1792820517.3462577
+}

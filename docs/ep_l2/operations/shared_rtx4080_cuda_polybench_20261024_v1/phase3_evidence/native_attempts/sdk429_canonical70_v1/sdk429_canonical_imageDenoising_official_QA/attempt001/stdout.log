@@ -1,0 +1,49 @@
+SDK42_HOST_ADAPTER_QA_START
+[CUDA ImageDenoising] - (automated testing w/ readback)
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+> Using CUDA device [0]: NVIDIA GeForce RTX 4080
+Allocating host and CUDA memory and loading image file...
+Loading ./data/portrait_noise.bmp...
+BMP width: 320
+BMP height: 408
+BMP file loaded successfully!
+Data init done.
+[AutoTest]: CUDA ImageDenoising <Passthrough>
+> Saving PPM: <image_passthru.ppm>
+   src_file <image_passthru.ppm>
+   ref_file <./data/ref_passthru.ppm>
+> Compare (a)rendered:  <image_passthru.ppm>
+>         (b)reference: <./data/ref_passthru.ppm>
+PPMvsPPM: comparing images size (320,408) epsilon(5), threshold(15%)
+    OK
+
+[AutoTest]: CUDA ImageDenoising <KNN method>
+> Saving PPM: <image_knn.ppm>
+   src_file <image_knn.ppm>
+   ref_file <./data/ref_knn.ppm>
+> Compare (a)rendered:  <image_knn.ppm>
+>         (b)reference: <./data/ref_knn.ppm>
+PPMvsPPM: comparing images size (320,408) epsilon(5), threshold(15%)
+    OK
+
+[AutoTest]: CUDA ImageDenoising <NLM method>
+> Saving PPM: <image_nlm.ppm>
+   src_file <image_nlm.ppm>
+   ref_file <./data/ref_nlm.ppm>
+> Compare (a)rendered:  <image_nlm.ppm>
+>         (b)reference: <./data/ref_nlm.ppm>
+PPMvsPPM: comparing images size (320,408) epsilon(5), threshold(15%)
+    OK
+
+[AutoTest]: CUDA ImageDenoising <Quick NLM(NLM2) method>
+> Saving PPM: <image_nlm2.ppm>
+   src_file <image_nlm2.ppm>
+   ref_file <./data/ref_nlm2.ppm>
+> Compare (a)rendered:  <image_nlm2.ppm>
+>         (b)reference: <./data/ref_nlm2.ppm>
+PPMvsPPM: comparing images size (320,408) epsilon(5), threshold(15%)
+    OK
+
+
+[CUDA ImageDenoising] -> Test Results: 0 errors
+SDK42_HOST_ADAPTER_QA_PASSED

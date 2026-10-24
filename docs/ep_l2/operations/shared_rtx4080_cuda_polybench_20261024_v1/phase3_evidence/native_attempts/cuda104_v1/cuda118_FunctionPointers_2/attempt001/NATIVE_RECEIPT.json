@@ -1,0 +1,181 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "FunctionPointers",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers",
+    "source_files": [
+      {
+        "relative_path": "FunctionPointers.cpp",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/FunctionPointers.cpp",
+        "sha256": "836551eaf565308bf3620452cbbfd0031c8a188856cefff5b27920731442b078"
+      },
+      {
+        "relative_path": "FunctionPointers_kernels.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/FunctionPointers_kernels.cu",
+        "sha256": "632c3f846d7d1a8262be09d0c27b72184eee97acec67cd7d2c3fb7e7d12ac862"
+      },
+      {
+        "relative_path": "FunctionPointers_kernels.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/FunctionPointers_kernels.h",
+        "sha256": "0f0e88519f796a6a45c20710ac80f8b87e4364e4e2e8bdf54f5dc2e28b6c4f17"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/ref_orig.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/data/ref_orig.pgm",
+        "bytes": 262159,
+        "sha256": "32ae1bbcc072d97e607f54fa900309aa08ef7e71191fca556168d5b6e61e463c"
+      },
+      {
+        "relative_path": "data/ref_shared.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/data/ref_shared.pgm",
+        "bytes": 262159,
+        "sha256": "03b137489c82591b2227e870bc9eb31e025237d09b6ffee5b1002e656008d310"
+      },
+      {
+        "relative_path": "data/ref_tex.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/data/ref_tex.pgm",
+        "bytes": 262159,
+        "sha256": "03b137489c82591b2227e870bc9eb31e025237d09b6ffee5b1002e656008d310"
+      },
+      {
+        "relative_path": "data/teapot512.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/data/teapot512.pgm",
+        "bytes": 262205,
+        "sha256": "794edcba434d448e797c96a90f4dce9d27f14c1c321be46d22ce366736b45865"
+      }
+    ],
+    "task_id": "cuda118_FunctionPointers_2",
+    "variant": "official_testrun_2",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/FunctionPointers",
+      "-mode=2",
+      "-file=ref_shared.pgm"
+    ],
+    "binary_sha256": "0ec65bbe5195c8744bfdabaadf10a53110953186ee5865bd02f5313774367bf3",
+    "binary_cubin_listing": "ELF file    1: FunctionPointers.1.sm_89.cubin\nELF file    2: FunctionPointers.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/FunctionPointers/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_FunctionPointers_2/attempt001",
+  "index": 5,
+  "start_unix": 1792819943.1012921,
+  "lock_wait_seconds": 1.8258579075336456e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 391 MiB, 15553 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792819943.150255,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819944.184732,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819945.2182555,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819946.2540128,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819947.2876976,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819948.3214426,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819949.3570278,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819950.3904142,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819951.4248724,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819952.4574006,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819953.4903452,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819954.5226152,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819955.5536034,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819956.5865207,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819957.619946,
+      "util": 0,
+      "free_mib": 15553
+    }
+  ],
+  "pid": 382570,
+  "start_ticks": "344285460",
+  "minimum_free_vram_mib": 15539,
+  "exit": 0,
+  "wall_seconds": 0.29904996417462826,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "9bb04a481e7bf18ce2d035db237ab9e696c2a8764f9c5406e921047cd9b9f8b3",
+  "end_unix": 1792819958.9417048
+}

@@ -1,0 +1,162 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "Interval",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval",
+    "source_files": [
+      {
+        "relative_path": "cpu_interval.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/cpu_interval.h",
+        "sha256": "20e48d3616ee1f0b39e9c6c612af3ba9aa2f114e98bf761f6a6e4f028b9e4012"
+      },
+      {
+        "relative_path": "cuda_interval.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/cuda_interval.h",
+        "sha256": "02b89f852ebaaf043f71035575ea2c252ebfb92bd29fc036eabb0b9a9c9b557a"
+      },
+      {
+        "relative_path": "cuda_interval_lib.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/cuda_interval_lib.h",
+        "sha256": "9c507bdf94f53ece393d0fd134e6df5017f6aa6b0a2c91e7d9a7ec52c6860fde"
+      },
+      {
+        "relative_path": "cuda_interval_rounded_arith.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/cuda_interval_rounded_arith.h",
+        "sha256": "ed378498645ba673b5d3ff4a6f83ae2163fe4e23dc42c766fdd3b1f76b9e48fb"
+      },
+      {
+        "relative_path": "interval.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/interval.cu",
+        "sha256": "35735ab2a2e4d54fa5ef69fc4236141c41a4097e075399ba65a3f2ed6088aa94"
+      },
+      {
+        "relative_path": "interval.h",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/interval.h",
+        "sha256": "7439ce1d224753bccb9bbaab6fd9baeafab7f8048a5277296073b718a972ceb3"
+      }
+    ],
+    "input_files": [],
+    "task_id": "cuda118_Interval_0",
+    "variant": "finite_source_default_no_testrun",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/interval/interval"
+    ],
+    "binary_sha256": "6d0603cf6912c649f6e61d8599cbf0c89910c89dceb17d8e20d3cb976a76975d",
+    "binary_cubin_listing": "ELF file    1: interval.1.sm_89.cubin\nELF file    2: interval.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {},
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_Interval_0/attempt001",
+  "index": 7,
+  "start_unix": 1792819979.8204405,
+  "lock_wait_seconds": 2.3599714040756226e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 391 MiB, 15553 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792819979.8646872,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819980.8949213,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819981.9285982,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819982.961313,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819983.9960952,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819985.0292711,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819986.0638494,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819987.0983813,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819988.1302397,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819989.1668699,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819990.1985767,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819991.2321672,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819992.2667685,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819993.299448,
+      "util": 0,
+      "free_mib": 15553
+    },
+    {
+      "unix": 1792819994.3341658,
+      "util": 0,
+      "free_mib": 15553
+    }
+  ],
+  "pid": 383174,
+  "start_ticks": "344289131",
+  "minimum_free_vram_mib": 14512,
+  "exit": 0,
+  "wall_seconds": 0.8188391351141036,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "a7687a551874e51c1c3f4b40188b76bc82cca8ace2c17281927ea9e3021facd9",
+  "end_unix": 1792819996.1743348
+}

@@ -1,0 +1,41 @@
+# Phase 3: complete fixed CUDA scope and native evidence
+
+This increment preserves the original 176-candidate/231-attempt baseline and the previous phase 2 commit. It closes additional CPU builds, exact-input native executions, source initialization audits, and independent c8 review. This lane has produced no production traces and has run no historical simulator Goal.
+
+## Finite scope and build routes
+
+`phase3_evidence/manifests/CUDA_V118_FULL205_ACTUAL_BUILD_ROUTES_V1.json` enumerates every program in the fixed NVIDIA cuda-samples v11.8 commit `81992093d2b8c33cab22dbf6852c070c330f1715`, including official run/testrun recipes, source hashes, actual ELF route hashes, and pending profile boundaries. There are 205 source programs and 186 program names with an actual ELF route, including explicitly identified ports. ELF availability does not establish native numerical or trace qualification.
+
+The remaining 19 names are explicitly routed: 11 Windows Direct3D, 2 QNX Screen, 3 DLA accelerator programs, 1 NvMedia platform workflow, 1 Tegra-only EGLSync/CUDA event API, and 1 unresolved official x86 NvSci SDK dependency. Desktop cudaNvSci is not classified Tegra-only: its pinned README supports x86_64 and the desktop driver exports relevant API symbols. Legitimate vendor SDK acquisition and actual capability testing remain required. Symbol presence alone proves no interoperability capability.
+
+The official GPU Computing SDK 4.2.9 denominator remains 82. Of the original 73 names, 70 now build from the official source with independent modern host compatibility headers; together with the 9 extra official programs this provides 79 canonical-source ELF routes. The 3 remaining original compilation failures remain recorded. Distinct fluidsGL host/EGL compatibility, concurrentKernels barrier-typo, and simpleVote explicit-warp-vote variants provide additional routes for all 82 names; the latter two change GPU source and remain special semantic profiles. A modern counterpart does not replace an old exact version. The official-vs-historical snapshot comparison records 41 byte-identical program source sets and 41 differing sets, including the 9 official-only programs.
+
+## Incremental exact-input import
+
+`STAGE3_INCREMENTAL_NATIVE_CANDIDATES_V1.json` contains 183 exact candidate contents from 213 audited attempts. The bulk coordinator already consumed it. `STAGE3_INCREMENTAL_NATIVE_CANDIDATES_V2.json` preserves all those IDs and adds exactly 3 independently identified completed native variants, for 186 candidate contents and 216 attempts audited. The additions are official concurrentKernels and simpleVote GPU compatibility ports, both special, plus the public-glibc cuHook host API test, which has zero application CUDA kernels by source and original callback assertions. cuHook requires an API proof object, not a manufactured empty SASS trace.
+
+Source, external inputs, argv, binary hashes, runtime library paths, private copies, output receipts and original numerical check strength remain separate fields. Exit zero alone is not scientific acceptance. Original canonical failures, stale reference thresholds, and missing-input false-positive attempts remain retained, and missing-input attempts are excluded from candidate readiness. The bulk coordinator owns ordinary/special admission and production capture.
+
+The canonical 70-program native batch and the incremental full-default tests are terminal and exported with their immutable raw receipts. New host-only variants fix removed string-symbol APIs, the invalid unused boxFilter float texture bind in its RGBA invocation, and the old simpleTemplates repeated context reset. The latter canonical invocation really launches two kernels across two context lifetimes; producer55 overwrote its first raw file when a context pointer was reused. Its failed raw cannot be recovered by renaming. A distinct single-context variant keeps both kernels and does not grant the original multi-context profile.
+
+## Graphics and initialization boundaries
+
+Real NVIDIA EGL routes execute original full input sizes for modern fluidsGL/postProcessGL/simpleCUDA2GL/fluidsGLES and the explicitly identified official4.2.9 ports. GPU bodies remain unchanged for host-only EGL migrations. Original graphics/image thresholds are reported literally; a tolerance pass does not become exact pixel equality. The GLES file-QA branch and randomFog original QA execute without a display, as established by source and actual attempts. EGL resource initialization remains outside the c8 HtoD-only capsule profile.
+
+Two jobs remain queued on the shared cooperative GPU lock at this checkpoint: original simpleGLES_EGLOutput finite file-QA and a real-NVIDIA Vulkan WSI capability probe using a private owned display. They are not claimed completed, and their active evidence is not exported as a completed batch. No foreign display service or GPU workload was stopped.
+
+The full source RNG audit covers SDK82, modern205, and Poly15. Runtime clock seeds, unseeded libc rand, explicit seeds, device clocks, external graphics resources and managed memory require distinct identity rules. No external input files does not mean no input identity. The Vector50000 source audit proves two sync HtoD payloads of 200000 bytes and complete output-only C overwrite with one 196x256 launch; it identifies the exact unseeded rand source. Pointers/bank0 are source rules plus observed address joins, not a complete state snapshot. Its upstream fabs reference checks all 50000 elements but has no explicit isfinite guard; input finite checks do not prove finite output.
+
+## Independent reviews and reusable CPU oracles
+
+`phase3_evidence/c8_independent_review_v1/INDEPENDENT_C8_REVIEW.json` records scoped code/evidence PASS for producer c8 and validator V4R2, pending parent durable release. It includes 10 actual positive requalifications, 30 saved structural negatives, 5 actual saved GPU negative attempts, actual tool/EXEC identity checks, unchanged producer55 device source hashes, and complete small sync/constant record checks. Only byte-identical old raw blobs may be referenced by SHA; c8 journals/EXEC/rawtrace are new actual evidence. Multiple host-copy stream rejection is validator admission; repeated context initialization aborts before header overwrite. HtoD coverage excludes full bank0/Memset/D2D/UM/mapped/graphics provenance. Parent cold restoration and final release remain independent gates.
+
+The reusable BFS/NN CPU CLI checks full outputs and input/source hashes for all 6 exact Rodinia BFS/NN tasks. All 6 positive proofs and 2 deliberate input/output corruption rejections are exported. It does not invoke a GPU or modify the original native/capture attempts.
+
+A separate CPU performance review found the parallel 3MM supervisor's original ThreadPoolExecutor exception placement delayed termination and its per-process RLIMIT_AS was not an aggregate process-tree memory bound. The bulk coordinator added a separate finite guard for the existing run, preserving original scripts and identities, and samples the entire Python/sort process tree. No redundant post run was requested and no production worker changed. Disk polling is a monitored threshold, not a quota guarantee.
+
+## Export and integrity
+
+`phase3_evidence/PHASE3_REVIEW_EXPORT_RECEIPT_V1.json` maps every exported member to its original 109 path, byte count, SHA256 and Git path. Byte-identical earlier Git evidence is referenced rather than duplicated. Original archives, binaries, private dependency payloads, and source trees remain on 109 under SourceKEEP and will be cold archived by the single bulk NAS sender; this Git package contains review evidence, host/source ports and tools, not raw production traces.
+
+The source commits 6360a1c and 72a5037 were independently cloned without alternates and passed reachable strict fsck. The subsequently discovered malformed trees belonged to the main cherry integration, which the parent repaired with a dense index while preserving every path/mode/blob. This increment uses native Git on the valid source branch, followed by a fresh isolated reachable strict fsck before delivery. No source/scientific data bytes were repaired to address tree metadata.

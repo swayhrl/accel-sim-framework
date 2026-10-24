@@ -1,0 +1,11 @@
+--- a/boxFilter_kernel.cu
++++ b/boxFilter_kernel.cu
+@@ -305,7 +305,7 @@
+     tex.normalized = true;
+ 
+     // Bind the array to the texture
+-    checkCudaErrors( cudaBindTextureToArray(tex, d_array, channelDesc) );
++    // RGBA QA binds rgbaTex in boxFilterRGBA; the incompatible unused float-texture prebind is omitted.
+ }
+ 
+ extern "C"

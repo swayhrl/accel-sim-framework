@@ -1,0 +1,184 @@
+[
+  {
+    "task": {
+      "task_id": "cuda118_complete_randomFog_0_official_headless_QA_v2",
+      "suite": "CUDA Samples",
+      "version": "v11.8 complete finite source scope extension",
+      "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+      "program": "randomFog",
+      "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/randomFog.cpp",
+          "sha256": "24d422c16f479767a5f52b9fbb9a35800d3fb6d92445c4fcbf4b40a69245ca7a"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/rng.cpp",
+          "sha256": "28cd8cddee113ce4b406fe19e16450c2e407034075958c98389773cc3742edfb"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/rng.h",
+          "sha256": "c4e235d51fdfbf158f18f06eadb9a9f1c3c069bf9bee7dffa28a22be683292d9"
+        }
+      ],
+      "input_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/data/ref_randomFog.bin",
+          "sha256": "5ca9e3c81c79785bd3dd3cba4c9487157af10741797453dcc1d745beec768490",
+          "bytes": 4800000
+        }
+      ],
+      "runtime_links": [
+        {
+          "name": "data",
+          "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/data"
+        }
+      ],
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/randomFog",
+        "-qatest"
+      ],
+      "binary_sha256": "ac27faa09cc6733732dcfac4957161809d49a0a55cebeca488de388ab7ba4426",
+      "variant": "original_full_v118_official_testrun_or_source_default",
+      "runtime_env": {
+        "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+      },
+      "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+      "correctness": {
+        "exit": 0,
+        "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+      },
+      "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+      "profile_flags": [
+        "CURAND_LOADED_LIBRARY_KERNELS",
+        "EXPLICIT_FIXED_SEED_12345",
+        "NO_GL_CONTEXT_IN_OFFICIAL_QATEST_BRANCH"
+      ],
+      "readiness": "SOURCE_CONFIRMED_HEADLESS_QA_NATIVE_PENDING",
+      "source_recipe": [
+        "$(EXEC) ./randomFog -qatest"
+      ],
+      "platform_guard_evidence": [
+        {
+          "file": "randomFog.cpp",
+          "line": 655,
+          "text": "fprintf(stderr, \"This sample requires at least OpenGL 2.0\\n\");"
+        },
+        {
+          "file": "randomFog.cpp",
+          "line": 656,
+          "text": "exit(EXIT_WAIVED);"
+        }
+      ],
+      "source_route_evidence": {
+        "file": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/randomFog/randomFog.cpp",
+        "lines": "635-642,678-690",
+        "meaning": "-qatest enters CUDA-only initialization and full200000-vertex binary comparison, never calls GLUT/GL/EGL context creation. Original kernel/library input and canonical argv unchanged."
+      }
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/randomFog_headless_QA_v2/cuda118_complete_randomFog_0_official_headless_QA_v2/attempt001",
+    "index": 0,
+    "start_unix": 1792834553.6640117,
+    "lock_wait_seconds": 35.00169498892501,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 355 MiB, 15589 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792834588.7099183,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834589.7417672,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834590.776496,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834591.8076198,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834592.842334,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834593.8732433,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834594.9096444,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834595.9418864,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834596.9749584,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834598.0078535,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834599.0408397,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834600.0746436,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834601.107614,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834602.1407378,
+        "util": 0,
+        "free_mib": 15589
+      },
+      {
+        "unix": 1792834603.174316,
+        "util": 0,
+        "free_mib": 15589
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 486385,
+    "start_ticks": "345750016",
+    "minimum_free_vram_mib": 15575,
+    "exit": 0,
+    "wall_seconds": 0.29269569693133235,
+    "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+    "stdout_sha256": "eb4418fdda39cf991a058dbf24da119b89826ed716aee70155ec50a530420bde",
+    "end_unix": 1792834604.4985676
+  }
+]

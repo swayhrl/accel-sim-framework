@@ -1,0 +1,14 @@
+{
+  "method": "CPU-only dynamic symbol presence, no cuInit or GPU work launched; absence is current installed desktop-driver API evidence, presence alone is not device capability proof.",
+  "library": "libcuda.so.1",
+  "symbols": {
+    "cuEventCreateFromEGLSync": false,
+    "cuDeviceGetNvSciSyncAttributes": true,
+    "cuImportExternalMemory": true,
+    "cuImportExternalSemaphore": true,
+    "cuEGLStreamProducerConnect": true
+  },
+  "GPU_inventory": "GPU 0: NVIDIA GeForce RTX 4080 (UUID: GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59)\n",
+  "official_EGLsync_Tegra_only_basis": "https://docs.nvidia.com/cuda/archive/12.8.0/cuda-for-tegra-appnote/index.html#egl-interoperability",
+  "NvSci_x86_support_basis": "Pinned v11.8 cudaNvSci README declares x86_64,Ubuntu18.04; NVIDIA blog explicitly x86/Desktop and current driver docs describe GA10X+ primitives. Missing vendor SDK is unresolved dependency, not permanent GPU exclusion."
+}

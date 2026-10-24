@@ -1,0 +1,173 @@
+{
+  "task": {
+    "task_id": "cuda118_complete_cdpQuadtree_0",
+    "suite": "CUDA Samples",
+    "version": "v11.8 complete finite source scope extension",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "cdpQuadtree",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpQuadtree",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpQuadtree/cdpQuadtree.cu",
+        "sha256": "1bfd4898a6bebb157bb8a1452b5b2000ad36a89f665c1222ece97cd691989122"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpQuadtree/cdpQuadtree.cu",
+        "sha256": "1bfd4898a6bebb157bb8a1452b5b2000ad36a89f665c1222ece97cd691989122",
+        "bytes": 26334,
+        "role": "FROZEN_FLAT_RUNTIME_COMPILE_OR_HOST_INPUT"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "cdpQuadtree.cu",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpQuadtree/cdpQuadtree.cu"
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/3_CUDA_Features/cdpQuadtree/cdpQuadtree"
+    ],
+    "binary_sha256": "6833675773e0fc8f21518ce7683d7a2d4b72effb55c5bdd95584a15169803c70",
+    "variant": "original_full_v118_official_testrun_or_source_default",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "cwd_policy": "ABSENT attempt; independent regular input file copies only",
+    "correctness": {
+      "exit": 0,
+      "note": "Exit0 is execution-only until per-program self-check/CPU numerical oracle reviewed; expected WAIVED and assert diagnostics tracked separately."
+    },
+    "workload_kind": "FINITE_NATIVE_PROBE_SOURCE_DEFAULT_PENDING_EXECUTION",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL kernels and full exact invocation, no downsize/sampling/warmup removal",
+    "profile_flags": [
+      "SPECIAL_RUNTIME_GRAPH_IPC_MEMORY_OR_DYNAMIC_PROFILE_REVIEW"
+    ],
+    "readiness": "NATIVE_PROBE_PENDING",
+    "source_recipe": [
+      "$(EXEC) ./cdpQuadtree"
+    ],
+    "platform_guard_evidence": [
+      {
+        "file": "cdpQuadtree.cu",
+        "line": 722,
+        "text": "// The test requires an architecture SM35 or greater (CDP capable)."
+      },
+      {
+        "file": "cdpQuadtree.cu",
+        "line": 733,
+        "text": "std::cerr << \"cdpQuadTree requires SM 3.5 or higher to use CUDA Dynamic \""
+      },
+      {
+        "file": "cdpQuadtree.cu",
+        "line": 736,
+        "text": "exit(EXIT_WAIVED);"
+      }
+    ],
+    "input_staging_revision": "v2 adds flat source/text/PTX/cubin/module regular-file copies. Exact binary/argv unchanged; previous setup failures retained."
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda118_complete_remaining_v2/cuda118_complete_cdpQuadtree_0/attempt001",
+  "index": 35,
+  "start_unix": 1792832055.2101853,
+  "lock_wait_seconds": 1.948792487382889e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 325 MiB, 15619 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792832055.254954,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832056.2896156,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832057.3208659,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832058.3534636,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832059.3868065,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832060.421532,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832061.4560337,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832062.4867952,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832063.520087,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832064.5540426,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832065.5886335,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832066.625922,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832067.6607506,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832068.6942446,
+      "util": 0,
+      "free_mib": 15619
+    },
+    {
+      "unix": 1792832069.727586,
+      "util": 0,
+      "free_mib": 15619
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 462979,
+  "start_ticks": "345496671",
+  "minimum_free_vram_mib": 15605,
+  "exit": 0,
+  "wall_seconds": 0.29986937902867794,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "ea595055848094f53fa897701df8819ee00ff54a04c1b1b45601037e94615a2e",
+  "end_unix": 1792832071.0485275
+}

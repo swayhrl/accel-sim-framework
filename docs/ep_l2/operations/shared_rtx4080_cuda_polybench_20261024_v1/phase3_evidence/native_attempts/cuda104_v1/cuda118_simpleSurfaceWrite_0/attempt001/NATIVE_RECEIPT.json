@@ -1,0 +1,160 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "simpleSurfaceWrite",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite",
+    "source_files": [
+      {
+        "relative_path": "simpleSurfaceWrite.cu",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+        "sha256": "14fe812849fcf5bdd5b4c6f944a17a7895f1f2cfdb3448557dfa5f5254215833"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/ref_rotated.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/data/ref_rotated.pgm",
+        "bytes": 262159,
+        "sha256": "8fae1ca161cbe1de2dde23c8f1980614887900de263f387afbacacae08c28282"
+      },
+      {
+        "relative_path": "data/teapot512.pgm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/data/teapot512.pgm",
+        "bytes": 262205,
+        "sha256": "794edcba434d448e797c96a90f4dce9d27f14c1c321be46d22ce366736b45865"
+      }
+    ],
+    "task_id": "cuda118_simpleSurfaceWrite_0",
+    "variant": "finite_source_default_no_testrun",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/simpleSurfaceWrite"
+    ],
+    "binary_sha256": "e3266b1600190e3aabcb35c4791324d3b6f1a070331038c43bc8495c8b5704c5",
+    "binary_cubin_listing": "ELF file    1: simpleSurfaceWrite.1.sm_89.cubin\nELF file    2: simpleSurfaceWrite.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {},
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD"
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cuda104_v1/cuda118_simpleSurfaceWrite_0/attempt001",
+  "index": 90,
+  "start_unix": 1792821325.1402204,
+  "lock_wait_seconds": 4.200730472803116e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 389 MiB, 15555 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792821325.1830862,
+      "util": 100,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821326.214391,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821327.2485785,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821328.2795131,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821329.3117104,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821330.3457332,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821331.3819106,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821332.4139338,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821333.4470983,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821334.4788518,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821335.5114124,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821336.546078,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821337.5804262,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821338.612448,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821339.6424086,
+      "util": 0,
+      "free_mib": 15555
+    },
+    {
+      "unix": 1792821340.677849,
+      "util": 0,
+      "free_mib": 15555
+    }
+  ],
+  "pid": 395335,
+  "start_ticks": "344423765",
+  "minimum_free_vram_mib": 15541,
+  "exit": 0,
+  "wall_seconds": 0.28509931778535247,
+  "status": "NATIVE_EXECUTION_COMPLETE_NUMERICAL_REVIEW",
+  "stdout_sha256": "26626185d2d9a9a5ff7e728463ca0a787fe6620e3678180ccf772477b0de5c93",
+  "end_unix": 1792821341.982087
+}

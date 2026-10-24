@@ -1,0 +1,43 @@
+[/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/convolutionFFT2D/convolutionFFT2D] - Starting...
+MapSMtoCores for SM 8.9 is undefined.  Default to use 128 Cores/SM
+MapSMtoArchName for SM 8.9 is undefined.  Default to use Hopper
+GPU Device 0: "Hopper" with compute capability 8.9
+
+Testing built-in R2C / C2R FFT-based convolution
+...allocating memory
+...generating random input data
+...creating R2C & C2R FFT plans for 2048 x 2048
+...uploading to GPU and padding convolution kernel and input data
+...transforming convolution kernel
+...running GPU FFT convolution: 28368.793799 MPix/s (0.141000 ms)
+...reading back GPU convolution results
+...running reference CPU convolution
+...comparing the results: rel L2 = 7.909606E-08 (max delta = 7.551771E-07)
+L2norm Error OK
+...shutting down
+Testing custom R2C / C2R FFT-based convolution
+...allocating memory
+...generating random input data
+...creating C2C FFT plan for 2048 x 1024
+...uploading to GPU and padding convolution kernel and input data
+...transforming convolution kernel
+...running GPU FFT convolution: 23255.813164 MPix/s (0.172000 ms)
+...reading back GPU FFT results
+...running reference CPU convolution
+...comparing the results: rel L2 = 9.417901E-08 (max delta = 7.642629E-07)
+L2norm Error OK
+...shutting down
+Testing updated custom R2C / C2R FFT-based convolution
+...allocating memory
+...generating random input data
+...creating C2C FFT plan for 2048 x 1024
+...uploading to GPU and padding convolution kernel and input data
+...transforming convolution kernel
+...running GPU FFT convolution: 36036.035572 MPix/s (0.111000 ms)
+...reading back GPU FFT results
+...running reference CPU convolution
+...comparing the results: rel L2 = 9.391089E-08 (max delta = 7.696280E-07)
+L2norm Error OK
+...shutting down
+Test Summary: 0 errors
+Test passed
