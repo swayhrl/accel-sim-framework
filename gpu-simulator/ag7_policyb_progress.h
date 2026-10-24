@@ -120,7 +120,7 @@ class ProgressProducer {
 
  private:
   static constexpr uint64_t kCadenceNs = 10000000000ULL;
-  static constexpr uint64_t kMaximumRecords = 8192;
+  static constexpr uint64_t kMaximumRecords = 1048576;
   static constexpr size_t kMaximumPacket = 1024;
   static bool token(const char *text) {
     if (!text || !*text || std::strlen(text) > 64) return false;
