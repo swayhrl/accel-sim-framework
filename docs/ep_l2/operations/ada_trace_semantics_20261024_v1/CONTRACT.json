@@ -1,0 +1,119 @@
+{
+  "actual_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "binary_version": 89,
+  "constant_address_identity": "Tuple(capture,CUDA context,kernel launch,bank,dynamic byte offset), symbolic constant address only; not GPU virtual/physical address",
+  "consumer_qualification": "Per input/profile only. Unmodified EP/DTC/AWMA consumers must not silently consume v7; new ADA7 serialized constant operand profile has independent native micro validation, hardware timing remains uncalibrated",
+  "cuda": "12.8",
+  "dependencies": "Actual nvdisasm -plr assignment(^), use(v), read-modify-write(x), not live-in/out; includes implicit UR descriptors and high halves",
+  "gpu": "NVIDIA RTX 4080",
+  "nvbit": "1.7.5",
+  "ordinary_domain": [
+    "one CUDA context per captured process",
+    "fixed embedded SM89 cubins with unique function/PC map",
+    "no device function calls or ABI windows",
+    "one explicit GLOBAL/SHARED/LOCAL/GENERIC MREF or one direct/indexed CBANK per SASS instruction",
+    "all launched kernels, all CTAs/warps, no ROI/selection/sampling"
+  ],
+  "pc_identity": "Original relative instruction PC per kernel; full mangled function identity and SASS match to exact binary cubin map, no header substitution",
+  "proofs": {
+    "constant65_v7_final_attempt2": {
+      "EXECUTION.json": {
+        "binary_sha256": "7801ab59dc51bcdcba180ead76fa1c141d9a70d9557f2c88f6a93723cb2c499c",
+        "elapsed": 0.26723170280456543,
+        "exit_code": 0,
+        "pid": 383856,
+        "start_ticks": "344294012",
+        "started": 1792820044.1580074,
+        "tool_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73"
+      },
+      "FULL_RECORD_VALIDATION.json": {
+        "all_declared_warps_terminate": true,
+        "counts": {
+          "active_lane_instructions": 1353,
+          "aux_uops": 15,
+          "constant_lane_accesses": 579,
+          "constant_source_records": 21,
+          "explicit_memory_lane_accesses": 65,
+          "explicit_memory_records": 3,
+          "indexed_constant_lane_offsets_verified": 65,
+          "predicate_mixed_records": 11,
+          "sass_records": 54,
+          "zero_mask_records": 2
+        },
+        "ctas": 2,
+        "kernels": 1,
+        "map_sha256": "4a5674c6026767795e843945e8d4ee64b6ca7f986af32088db16389e903bd6ef",
+        "memory_instruction_lanes": {
+          "('kernel-1-ctx_0x569775955600.trace.xz', 224)": 65
+        },
+        "schema": "ADA_TYPED_FULL_RECORD_VERIFICATION_V1",
+        "source_files": {
+          "/data/c16/ada_trace_semantics_20261024_v1/attempts/constant65_v7_final_attempt2/traces/kernel-1-ctx_0x569775955600.trace.xz": "38c69576eb1dffe605f01bee83b46da56e8be5053e97b07d068aa375c53f8de8"
+        },
+        "warps": 4
+      }
+    },
+    "vector4m_v7_final_attempt1": {
+      "EXECUTION.json": {
+        "binary_sha256": "1819fe6c9720b417e34a122e9b013bf1b09835850e23606d901fdf1ca8b2227f",
+        "elapsed": 2.721386432647705,
+        "exit_code": 0,
+        "pid": 381252,
+        "start_ticks": "344267288",
+        "started": 1792819776.9248464,
+        "tool_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73"
+      },
+      "FULL_RECORD_VALIDATION.json": {
+        "all_declared_warps_terminate": true,
+        "counts": {
+          "active_lane_instructions": 64000000,
+          "aux_uops": 750000,
+          "constant_lane_accesses": 28000000,
+          "constant_source_records": 875000,
+          "explicit_memory_lane_accesses": 12000000,
+          "explicit_memory_records": 375000,
+          "predicate_mixed_records": 0,
+          "sass_records": 2125000,
+          "zero_mask_records": 125000
+        },
+        "ctas": 15625,
+        "kernels": 1,
+        "map_sha256": "83267f04e942655f0b962517884d3b2cdaeb6d05585eb5baa59edc9339a2b212",
+        "memory_instruction_lanes": {
+          "('kernel-1-ctx_0x6400dd7235b0.trace.xz', 160)": 4000000,
+          "('kernel-1-ctx_0x6400dd7235b0.trace.xz', 176)": 4000000,
+          "('kernel-1-ctx_0x6400dd7235b0.trace.xz', 240)": 4000000
+        },
+        "schema": "ADA_TYPED_FULL_RECORD_VERIFICATION_V1",
+        "source_files": {
+          "/data/c16/ada_trace_semantics_20261024_v1/attempts/vector4m_v7_final_attempt1/traces/kernel-1-ctx_0x6400dd7235b0.trace.xz": "b8da74724415cb45d492162207660785639e28cbe7ea0d3df876b731ae48d2c7"
+        },
+        "warps": 125000
+      }
+    }
+  },
+  "reference_postprocess_limit": "Reference sort uses at most64MiB sort RAM,64GiB default scratch cap; bulk NAS pipeline must provide own larger exact budget and equivalent stable grouping/XZ EOF proof",
+  "register_namespaces": {
+    "GPR": "R0..R254",
+    "PRED": "R320..R326 maps P0..P6",
+    "UGPR": "R256..R318 maps UR0..UR62",
+    "UPRED": "R328..R334 maps UP0..UP6",
+    "constant_zero_registers": "never dependencies"
+  },
+  "schema": "ADA_TYPED_FULL_SASS_V7_CONTRACT_V1",
+  "source_keep": true,
+  "special_domains_status": "PENDING SPECIALIST EXTENSION; not permanently removed from all-suite coverage",
+  "suffix": "ADA7 active_mask_hex predicate_mask_hex bank signed_static_offset qualified width_bytes address_mode [active-lane symbolic constant byte offsets in ascending lane order]",
+  "tool_path": "/data/c16/ada_trace_semantics_20261024_v1/frozen/producer_v7_55c6f482/producer.so",
+  "tool_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73",
+  "trace_version": 7,
+  "unsupported_fail_closed": [
+    "texture and surface effective-address semantics",
+    "dual-MREF/global-to-shared async copies, TMA/WGMMA",
+    "CALL/RET/BRX/JMX and register/stack ABI windows",
+    "JIT or dynamically loaded code not identical to frozen cubin map",
+    "multiple CUDA contexts",
+    "unknown executed PC or mismatched complete SASS",
+    "unrepresented register dependencies or unqualified memory domains"
+  ]
+}
