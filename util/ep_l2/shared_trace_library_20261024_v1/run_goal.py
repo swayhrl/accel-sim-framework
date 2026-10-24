@@ -18,7 +18,7 @@ def run(script,args=[],marker=None):
    cp=subprocess.run(['python3','-B',str(R/'tools'/script)]+args,stdout=f,stderr=subprocess.STDOUT)
   if not cp.returncode:return
   with path.open() as f:f.seek(offset);tail=f.read()[-32768:]
-  if 'RESOURCE_HOLD_' in tail and time.monotonic()<deadline:
+  if ('RESOURCE_HOLD_' in tail or 'BlockingIOError: [Errno 11]' in tail) and time.monotonic()<deadline:
    status('WAIT_RESOURCE',script=script,returncode=cp.returncode,log=str(path),retry_seconds=60)
    time.sleep(60);continue
   status('ATTENTION',script=script,returncode=cp.returncode,log=str(path));raise RuntimeError(script+' held')

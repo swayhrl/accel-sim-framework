@@ -1,3 +1,7 @@
+# Current scope amendment
+
+See ACTIVE_SCOPE_20261024.md and USER_BULK_4080_AND_IO_AUTHORIZATION_20261024.json. Source SHA and finite archive inventory are now live in parallel under adaptive IO; full4080 backfill and semantic validation are authorized and underway. Earlier checkpoint text below is retained as history, not current restrictions.
+
 # Shared SM70 trace library Goal: ACTIVE
 
 User approved the full cross-project asset migration on2026-10-24. This checkpoint does not claim completed data migration or a published catalog.

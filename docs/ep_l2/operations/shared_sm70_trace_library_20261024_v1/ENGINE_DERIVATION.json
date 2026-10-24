@@ -2,7 +2,7 @@
   "source_engine": "/root/data/ep_dtc_trace_migration_20261024_v1/tools/trace_copy.py",
   "source_engine_sha256": "f4269a5c8f9505754545a40324f28853aa9eaf29d452df4674309bc697ee6159",
   "derived_engine": "/root/data/shared_sm70_trace_library_20261024_v1/tools/library_copy.py",
-  "derived_engine_sha256": "0dcc46c86371d4e9cda6357045157d89d44f74a452018cc0cccb5dbfae12c8d2",
+  "derived_engine_sha256": "21b8378c79b9ca018c0398bd8ad80cbeb57b4b7f1f7927141f40326a0df4159c",
   "same_existing_sender_receiver_locks": true,
   "chunk_bytes": 134217728,
   "transfer_rate_bytes_sec": 15728640,
@@ -17,5 +17,23 @@
     "streaming immutable archive backend; regular sender unchanged",
     "user-authorized5GiB disk floor plus existing reservations and1GiB headroom"
   ],
-  "original_engine_modified": false
+  "original_engine_modified": false,
+  "IO_amendment_authority": "Explicit user instruction2026-10-24: handle IO/resource protection; start parallel all-workload4080 capture and semantic validation, do not remain blocked solely by resource policy",
+  "IO_policy": {
+    "mode": "ADAPTIVE_LOW_PRIORITY_PROGRESS",
+    "full_PSI_avg10_thresholds": [
+      5,
+      10,
+      20
+    ],
+    "read_MiB_per_second": [
+      30,
+      10,
+      4,
+      1
+    ],
+    "max_transfer_MiB_per_second": 15,
+    "scientific_process_freshness_guard_retained": true,
+    "foreign_tools_and_reservations_modified": false
+  }
 }

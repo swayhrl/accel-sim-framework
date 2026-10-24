@@ -49,6 +49,21 @@ def hash_file(p,rate=30*MIB,gate=None):
    if gate:gate()
  return h.hexdigest()
 
+
+_io_pressure_cached=(0,100)
+def adaptive_io_rate(maximum,full=None):
+ global _io_pressure_cached
+ if full is None:
+  now=time.monotonic()
+  if now-_io_pressure_cached[0]>=5:
+   try:
+    line=next(x for x in P('/proc/pressure/io').read_text().splitlines() if x.startswith('full '));full=float(next(x.split('=')[1] for x in line.split() if x.startswith('avg10=')))
+   except (OSError,StopIteration,ValueError):full=100
+   _io_pressure_cached=(now,full)
+  full=_io_pressure_cached[1]
+ return min(maximum,(30 if full<5 else 10 if full<10 else 4 if full<20 else 1)*MIB)
+def adaptive_io_pace(count,maximum):time.sleep(count/adaptive_io_rate(maximum))
+
 class Resources:
  def __init__(self,testing=False):self.last=0;self.last_value=None;self.testing=testing;self.samples=[]
  def __call__(self,force=False):
@@ -85,8 +100,9 @@ class Resources:
    active.append({'cohort':i['cohort'],'pid':p['pid'],'start_ticks':ticks,'completed':last['completed'],'phase':last['phase'],'progress_age_seconds':age})
   # This COPY_ONLY task uses a conservative low-pressure window while science
   # is active; it never alters the scientific controller's IO warning policy.
-  if active:need(pressure.get('some',{}).get('avg10',0)<=5 and pressure.get('full',{}).get('avg10',0)<=1,'RESOURCE_HOLD_ACTIVE_SCIENCE_IO_HEADROOM')
-  value={'observed_unix':time.time(),'SSD_free_bytes':free,'required_SSD_bytes':required,'registered_foreign_write_reservations_bytes':reserved,'unregistered_other_project_headroom_bytes':GIB,'task_controls_reserve_bytes':64*MIB,'host_MemAvailable_bytes':mem,'cgroup_current':cur,'host_IO_pressure':pressure,'active_AEFAIR':active,'Share_new_bytes':0,'all_policy_gates_pass':True};self.last=time.monotonic();self.last_value=value;self.samples.append(value);return value
+  # User authorizes adaptive low-priority progress rather than a blanket IO HOLD.
+  io_rate=adaptive_io_rate(30*MIB,pressure.get('full',{}).get('avg10',100))
+  value={'observed_unix':time.time(),'SSD_free_bytes':free,'required_SSD_bytes':required,'registered_foreign_write_reservations_bytes':reserved,'unregistered_other_project_headroom_bytes':GIB,'task_controls_reserve_bytes':64*MIB,'host_MemAvailable_bytes':mem,'cgroup_current':cur,'host_IO_pressure':pressure,'adaptive_IO_max_read_bytes_sec':io_rate,'IO_policy':'USER_AUTHORIZED_ADAPTIVE_THROTTLE','active_AEFAIR':active,'Share_new_bytes':0,'all_policy_gates_pass':True};self.last=time.monotonic();self.last_value=value;self.samples.append(value);return value
 
 def source_send(request,testing=False):
  manifest=request['manifest'];skip=request['skip']
@@ -107,7 +123,7 @@ def source_send(request,testing=False):
     h.update(b)
     if offset>=skip[row['relative_path']]:
      frame({'event':'CHUNK','path':row['relative_path'],'offset':offset,'size':len(b),'sha256':digest(b)})
-     for i in range(0,len(b),MIB):part=memoryview(b)[i:i+MIB];time.sleep(len(part)/RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
+     for i in range(0,len(b),MIB):part=memoryview(b)[i:i+MIB];adaptive_io_pace(len(part),RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
     offset+=len(b)
   need(same_source(before,identity(path)) and offset==row['size'],'Source changed during readonly stream');need(h.hexdigest()==row['sha256'],'Source full SHA differs from frozen evidence '+str(path));frame({'event':'FILE_END','path':row['relative_path'],'size':offset,'sha256':h.hexdigest(),'source_before_after_identity_unchanged':True,'source_disposition':'SOURCE_KEEP'})
  frame({'event':'SOURCE_DONE','Source_simulator_starts':0,'source_disposition':'SOURCE_KEEP'})
@@ -241,7 +257,7 @@ def source_archive_send(request,testing=False):
  fd=os.open(archive,os.O_RDONLY|os.O_NOFOLLOW|getattr(os,'O_NOATIME',0));raw=os.fdopen(fd,'rb')
  class RateReader:
   def read(self,n=-1):
-   b=raw.read(n);physical[0]+=len(b);time.sleep(max(0,physical[0]/(30*MIB)-(time.monotonic()-started)));return b
+   b=raw.read(n);physical[0]+=len(b);adaptive_io_pace(len(b),30*MIB);return b
  reader=RateReader()
  if str(archive).endswith('.zst'):
   decoder=subprocess.Popen([('/usr/bin/zstd' if P('/usr/bin/zstd').is_file() else str(TASK/'tools/zstd')),'-dc'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -266,7 +282,7 @@ def source_archive_send(request,testing=False):
     h.update(b)
     if offset>=skip[row['relative_path']]:
      frame({'event':'CHUNK','path':row['relative_path'],'offset':offset,'size':len(b),'sha256':digest(b)})
-     for i in range(0,len(b),MIB):part=memoryview(b)[i:i+MIB];time.sleep(len(part)/RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
+     for i in range(0,len(b),MIB):part=memoryview(b)[i:i+MIB];adaptive_io_pace(len(part),RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
     offset+=len(b)
    need(offset==row['size'] and h.hexdigest()==row['sha256'],'archive member full SHA drift');found.append(name)
    frame({'event':'FILE_END','path':row['relative_path'],'size':offset,'sha256':h.hexdigest(),'source_before_after_identity_unchanged':True,'source_disposition':'SOURCE_KEEP'})
