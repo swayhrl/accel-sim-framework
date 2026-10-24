@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/data/c16/ada_trace_extensions_v8_20261024_v1/validate_v8_physical_v2.py", line 74, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/data/c16/ada_trace_extensions_v8_20261024_v1/validate_v8_physical_v2.py", line 30, in main
+    h=headers[f.name];gx,gy,gz=h['grid'];bx,by,bz=h['block'];threads=bx*by*bz;assert 0<=cta[0]<gx and 0<=cta[1]<gy and 0<=cta[2]<gz and 0<=warp<(threads+31)//32;launched=(1<<min(32,threads-warp*32))-1;assert not((r['mask']|r['active']|r['pred'])&~launched),'record exceeds physical launched lane mask';counts['physical_mask_records_verified']+=1
+                                                                                                                                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: record exceeds physical launched lane mask

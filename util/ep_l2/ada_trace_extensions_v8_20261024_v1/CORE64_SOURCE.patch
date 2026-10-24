@@ -1,0 +1,715 @@
+diff --git a/libcuda/gpgpu_context.h b/libcuda/gpgpu_context.h
+index 5ef2117..51e55a3 100644
+--- a/libcuda/gpgpu_context.h
++++ b/libcuda/gpgpu_context.h
+@@ -78,9 +78,9 @@ class gpgpu_context {
+   void start_sim_thread(int api);
+   struct _cuda_device_id *GPGPUSim_Init();
+   void ptx_reg_options(option_parser_t opp);
+-  const ptx_instruction *pc_to_instruction(unsigned pc);
++  const ptx_instruction *pc_to_instruction(address_type pc);
+   const warp_inst_t *ptx_fetch_inst(address_type pc);
+-  unsigned translate_pc_to_ptxlineno(unsigned pc);
++  unsigned translate_pc_to_ptxlineno(address_type pc);
+ };
+ gpgpu_context *GPGPU_Context();
+ 
+diff --git a/src/abstract_hardware_model.cc b/src/abstract_hardware_model.cc
+index 934011f..bc68553 100644
+--- a/src/abstract_hardware_model.cc
++++ b/src/abstract_hardware_model.cc
+@@ -997,7 +997,7 @@ const simt_mask_t &simt_stack::get_active_mask() const {
+   return m_stack.back().m_active_mask;
+ }
+ 
+-void simt_stack::get_pdom_stack_top_info(unsigned *pc, unsigned *rpc) const {
++void simt_stack::get_pdom_stack_top_info(address_type *pc, address_type *rpc) const {
+   assert(m_stack.size() > 0);
+   *pc = m_stack.back().m_pc;
+   *rpc = m_stack.back().m_recvg_pc;
+@@ -1234,7 +1234,7 @@ void core_t::updateSIMTStack(unsigned warpId, warp_inst_t *inst) {
+ 
+ //! Get the warp to be executed using the data taken form the SIMT stack
+ warp_inst_t core_t::getExecuteWarp(unsigned warpId) {
+-  unsigned pc, rpc;
++  address_type pc, rpc;
+   m_simt_stack[warpId]->get_pdom_stack_top_info(&pc, &rpc);
+   warp_inst_t wi = *(m_gpu->gpgpu_ctx->ptx_fetch_inst(pc));
+   wi.set_active(m_simt_stack[warpId]->get_active_mask());
+@@ -1257,7 +1257,7 @@ void core_t::initilizeSIMTStack(unsigned warp_count, unsigned warp_size) {
+   m_warp_count = warp_count;
+ }
+ 
+-void core_t::get_pdom_stack_top_info(unsigned warpId, unsigned *pc,
+-                                     unsigned *rpc) const {
++void core_t::get_pdom_stack_top_info(unsigned warpId, address_type *pc,
++                                     address_type *rpc) const {
+   m_simt_stack[warpId]->get_pdom_stack_top_info(pc, rpc);
+ }
+diff --git a/src/abstract_hardware_model.h b/src/abstract_hardware_model.h
+index 5246cb0..6409e3d 100644
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -447,7 +447,7 @@ class simt_stack {
+               unsigned next_inst_size, address_type next_inst_pc);
+ 
+   const simt_mask_t &get_active_mask() const;
+-  void get_pdom_stack_top_info(unsigned *pc, unsigned *rpc) const;
++  void get_pdom_stack_top_info(address_type *pc, address_type *rpc) const;
+   unsigned get_rp() const;
+   void print(FILE *fp) const;
+   void resume(char *fname);
+@@ -1435,8 +1435,8 @@ class core_t {
+   void initilizeSIMTStack(unsigned warp_count, unsigned warps_size);
+   void deleteSIMTStack();
+   warp_inst_t getExecuteWarp(unsigned warpId);
+-  void get_pdom_stack_top_info(unsigned warpId, unsigned *pc,
+-                               unsigned *rpc) const;
++  void get_pdom_stack_top_info(unsigned warpId, address_type *pc,
++                               address_type *rpc) const;
+   kernel_info_t *get_kernel_info() { return m_kernel; }
+   class ptx_thread_info **get_thread_info() {
+     return m_thread;
+diff --git a/src/accelwattch/cacti/zconf.h b/src/accelwattch/cacti/zconf.h
+index 6a65089..5dc5dfe 120000
+--- a/src/accelwattch/cacti/zconf.h
++++ b/src/accelwattch/cacti/zconf.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zconf.h
+\ No newline at end of file
++/usr/include/zconf.h
+\ No newline at end of file
+diff --git a/src/accelwattch/cacti/zlib.h b/src/accelwattch/cacti/zlib.h
+index bc751c0..595c3ce 120000
+--- a/src/accelwattch/cacti/zlib.h
++++ b/src/accelwattch/cacti/zlib.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zlib.h
+\ No newline at end of file
++/usr/include/zlib.h
+\ No newline at end of file
+diff --git a/src/accelwattch/zconf.h b/src/accelwattch/zconf.h
+index 6a65089..5dc5dfe 120000
+--- a/src/accelwattch/zconf.h
++++ b/src/accelwattch/zconf.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zconf.h
+\ No newline at end of file
++/usr/include/zconf.h
+\ No newline at end of file
+diff --git a/src/accelwattch/zlib.h b/src/accelwattch/zlib.h
+index bc751c0..595c3ce 120000
+--- a/src/accelwattch/zlib.h
++++ b/src/accelwattch/zlib.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zlib.h
+\ No newline at end of file
++/usr/include/zlib.h
+\ No newline at end of file
+diff --git a/src/cuda-sim/cuda-sim.cc b/src/cuda-sim/cuda-sim.cc
+index 14ae504..7c2eb98 100644
+--- a/src/cuda-sim/cuda-sim.cc
++++ b/src/cuda-sim/cuda-sim.cc
+@@ -341,7 +341,7 @@ void function_info::ptx_assemble() {
+         abort();
+       }
+       unsigned index = labels[target.name()];  // determine address from name
+-      unsigned PC = m_instr_mem[index]->get_PC();
++      address_type PC = m_instr_mem[index]->get_PC();
+       m_symtab->set_label_address(target.get_symbol(), PC);
+       target.set_type(label_t);
+     }
+@@ -550,7 +550,7 @@ void gpgpu_t::gpu_memset(size_t dst_start_addr, int c, size_t count) {
+ }
+ 
+ void cuda_sim::ptx_print_insn(address_type pc, FILE *fp) {
+-  std::map<unsigned, function_info *>::iterator f = g_pc_to_finfo.find(pc);
++  std::map<address_type, function_info *>::iterator f = g_pc_to_finfo.find(pc);
+   if (f == g_pc_to_finfo.end()) {
+     fprintf(fp, "<no instruction at address 0x%llx>", pc);
+     return;
+@@ -561,7 +561,7 @@ void cuda_sim::ptx_print_insn(address_type pc, FILE *fp) {
+ }
+ 
+ std::string cuda_sim::ptx_get_insn_str(address_type pc) {
+-  std::map<unsigned, function_info *>::iterator f = g_pc_to_finfo.find(pc);
++  std::map<address_type, function_info *>::iterator f = g_pc_to_finfo.find(pc);
+   if (f == g_pc_to_finfo.end()) {
+ #define STR_SIZE 255
+     char buff[STR_SIZE];
+@@ -2653,7 +2653,7 @@ void functionalCoreSim::createWarp(unsigned warpId) {
+   snprintf(fname, 2048, "checkpoint_files/warp_%d_0_simt.txt", warpId);
+ 
+   if (m_gpu->gpgpu_ctx->func_sim->cp_cta_resume == 1) {
+-    unsigned pc, rpc;
++    address_type pc, rpc;
+     m_simt_stack[warpId]->resume(fname);
+     m_simt_stack[warpId]->get_pdom_stack_top_info(&pc, &rpc);
+     for (int i = warpId * m_warp_size; i < warpId * m_warp_size + m_warp_size;
+@@ -2748,7 +2748,7 @@ void functionalCoreSim::executeWarp(unsigned i, bool &allAtBarrier,
+   if (!m_warpAtBarrier[i] && m_liveThreadCount[i] > 0) allAtBarrier = false;
+ }
+ 
+-unsigned gpgpu_context::translate_pc_to_ptxlineno(unsigned pc) {
++unsigned gpgpu_context::translate_pc_to_ptxlineno(address_type pc) {
+   // this function assumes that the kernel fits inside a single PTX file
+   // function_info *pFunc = g_func_info; // assume that the current kernel is
+   // the one in query
+@@ -2906,7 +2906,7 @@ address_type cuda_sim::get_converge_point(address_type pc) {
+   // branch has no immediate postdominator in the function (i.e., due to
+   // multiple return points).
+ 
+-  std::map<unsigned, function_info *>::iterator f = g_pc_to_finfo.find(pc);
++  std::map<address_type, function_info *>::iterator f = g_pc_to_finfo.find(pc);
+   assert(f != g_pc_to_finfo.end());
+   function_info *finfo = f->second;
+   rec_pts tmp = find_reconvergence_points(finfo);
+diff --git a/src/cuda-sim/cuda-sim.h b/src/cuda-sim/cuda-sim.h
+index 21e1ca0..d74389d 100644
+--- a/src/cuda-sim/cuda-sim.h
++++ b/src/cuda-sim/cuda-sim.h
+@@ -164,10 +164,10 @@ class cuda_sim {
+   void **g_inst_op_classification_stat;
+   std::set<std::string> g_globals;
+   std::set<std::string> g_constants;
+-  std::map<unsigned, function_info *> g_pc_to_finfo;
++  std::map<address_type, function_info *> g_pc_to_finfo;
+   int gpgpu_ptx_instruction_classification;
+   unsigned cdp_latency[5];
+-  unsigned g_assemble_code_next_pc;
++  address_type g_assemble_code_next_pc;
+   int g_debug_thread_uid;
+   bool g_override_embedded_ptx;
+   std::set<unsigned long long> g_ptx_cta_info_sm_idx_used;
+diff --git a/src/cuda-sim/instructions.cc b/src/cuda-sim/instructions.cc
+index 8bc19d3..7000f41 100644
+--- a/src/cuda-sim/instructions.cc
++++ b/src/cuda-sim/instructions.cc
+@@ -2215,7 +2215,7 @@ void call_impl(const ptx_instruction *pI, ptx_thread_info *thread) {
+   }
+ 
+   gpgpu_sim *gpu = thread->get_gpu();
+-  unsigned callee_pc = 0, callee_rpc = 0;
++  address_type callee_pc = 0, callee_rpc = 0;
+   if (gpu->simd_model() == POST_DOMINATOR) {
+     thread->get_core()->get_pdom_stack_top_info(thread->get_hw_wid(),
+                                                 &callee_pc, &callee_rpc);
+@@ -2242,7 +2242,7 @@ void callp_impl(const ptx_instruction *pI, ptx_thread_info *thread) {
+   const symbol *return_var_dst = NULL;
+ 
+   gpgpu_sim *gpu = thread->get_gpu();
+-  unsigned callee_pc = 0, callee_rpc = 0;
++  address_type callee_pc = 0, callee_rpc = 0;
+   if (gpu->simd_model() == POST_DOMINATOR) {
+     thread->get_core()->get_pdom_stack_top_info(thread->get_hw_wid(),
+                                                 &callee_pc, &callee_rpc);
+diff --git a/src/cuda-sim/ptx-stats.cc b/src/cuda-sim/ptx-stats.cc
+index 3e96984..806e646 100644
+--- a/src/cuda-sim/ptx-stats.cc
++++ b/src/cuda-sim/ptx-stats.cc
+@@ -165,7 +165,7 @@ void ptx_file_line_stats_add_exec_count(const ptx_instruction *pInsn) {
+ // attribute pipeline latency to this ptx instruction (specified by the pc)
+ // pipeline latency is the number of cycles a warp with this instruction spent
+ // in the pipeline
+-void ptx_stats::ptx_file_line_stats_add_latency(unsigned pc, unsigned latency) {
++void ptx_stats::ptx_file_line_stats_add_latency(address_type pc, unsigned latency) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+   if (pInsn != NULL)
+@@ -176,7 +176,7 @@ void ptx_stats::ptx_file_line_stats_add_latency(unsigned pc, unsigned latency) {
+ 
+ // attribute dram traffic to this ptx instruction (specified by the pc)
+ // dram traffic is counted in number of requests
+-void ptx_stats::ptx_file_line_stats_add_dram_traffic(unsigned pc,
++void ptx_stats::ptx_file_line_stats_add_dram_traffic(address_type pc,
+                                                      unsigned dram_traffic) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+@@ -190,7 +190,7 @@ void ptx_stats::ptx_file_line_stats_add_dram_traffic(unsigned pc,
+ // counts both the number of warps doing shared memory access and the number of
+ // cycles involved
+ void ptx_stats::ptx_file_line_stats_add_smem_bank_conflict(
+-    unsigned pc, unsigned n_way_bkconflict) {
++    address_type pc, unsigned n_way_bkconflict) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+   if (pInsn != NULL) {
+@@ -204,7 +204,7 @@ void ptx_stats::ptx_file_line_stats_add_smem_bank_conflict(
+ // attribute a non-coalesced mem access to a ptx instruction
+ // counts both the number of warps causing this and the number of memory
+ // requests generated
+-void ptx_stats::ptx_file_line_stats_add_uncoalesced_gmem(unsigned pc,
++void ptx_stats::ptx_file_line_stats_add_uncoalesced_gmem(address_type pc,
+                                                          unsigned n_access) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+@@ -264,7 +264,7 @@ void ptx_file_line_stats_create_exposed_latency_tracker(int n_shader_cores) {
+ 
+ // add an inflight memory instruction
+ void ptx_stats::ptx_file_line_stats_add_inflight_memory_insn(int sc_id,
+-                                                             unsigned pc) {
++                                                             address_type pc) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+   inflight_mem_tracker[sc_id].add_count(pInsn);
+@@ -272,7 +272,7 @@ void ptx_stats::ptx_file_line_stats_add_inflight_memory_insn(int sc_id,
+ 
+ // remove an inflight memory instruction
+ void ptx_stats::ptx_file_line_stats_sub_inflight_memory_insn(int sc_id,
+-                                                             unsigned pc) {
++                                                             address_type pc) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+   inflight_mem_tracker[sc_id].sub_count(pInsn);
+@@ -288,7 +288,7 @@ void ptx_file_line_stats_commit_exposed_latency(int sc_id,
+ 
+ // attribute the number of warp divergence to a ptx instruction
+ void ptx_stats::ptx_file_line_stats_add_warp_divergence(
+-    unsigned pc, unsigned n_way_divergence) {
++    address_type pc, unsigned n_way_divergence) {
+   const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
+ 
+   ptx_file_line_stats &line_stats = ptx_file_line_stats_tracker[ptx_file_line(
+diff --git a/src/cuda-sim/ptx-stats.h b/src/cuda-sim/ptx-stats.h
+index be77c39..729230f 100644
+--- a/src/cuda-sim/ptx-stats.h
++++ b/src/cuda-sim/ptx-stats.h
+@@ -29,6 +29,7 @@
+ #pragma once
+ 
+ #include "../option_parser.h"
++#include "../abstract_hardware_model.h"
+ 
+ #ifdef __cplusplus
+ // stat collection interface to cuda-sim
+@@ -57,13 +58,13 @@ class ptx_stats {
+   // output stats to a file
+   void ptx_file_line_stats_write_file();
+   // stat collection interface to gpgpu-sim
+-  void ptx_file_line_stats_add_latency(unsigned pc, unsigned latency);
+-  void ptx_file_line_stats_add_dram_traffic(unsigned pc, unsigned dram_traffic);
+-  void ptx_file_line_stats_add_smem_bank_conflict(unsigned pc,
++  void ptx_file_line_stats_add_latency(address_type pc, unsigned latency);
++  void ptx_file_line_stats_add_dram_traffic(address_type pc, unsigned dram_traffic);
++  void ptx_file_line_stats_add_smem_bank_conflict(address_type pc,
+                                                   unsigned n_way_bkconflict);
+-  void ptx_file_line_stats_add_uncoalesced_gmem(unsigned pc, unsigned n_access);
+-  void ptx_file_line_stats_add_inflight_memory_insn(int sc_id, unsigned pc);
+-  void ptx_file_line_stats_sub_inflight_memory_insn(int sc_id, unsigned pc);
+-  void ptx_file_line_stats_add_warp_divergence(unsigned pc,
++  void ptx_file_line_stats_add_uncoalesced_gmem(address_type pc, unsigned n_access);
++  void ptx_file_line_stats_add_inflight_memory_insn(int sc_id, address_type pc);
++  void ptx_file_line_stats_sub_inflight_memory_insn(int sc_id, address_type pc);
++  void ptx_file_line_stats_add_warp_divergence(address_type pc,
+                                                unsigned n_way_divergence);
+ };
+diff --git a/src/cuda-sim/ptx_ir.cc b/src/cuda-sim/ptx_ir.cc
+index 4e500cc..d11b745 100644
+--- a/src/cuda-sim/ptx_ir.cc
++++ b/src/cuda-sim/ptx_ir.cc
+@@ -47,7 +47,7 @@ typedef void *yyscan_t;
+ 
+ #define STR_SIZE 1024
+ 
+-const ptx_instruction *gpgpu_context::pc_to_instruction(unsigned pc) {
++const ptx_instruction *gpgpu_context::pc_to_instruction(address_type pc) {
+   if (pc < s_g_pc_to_insn.size())
+     return s_g_pc_to_insn[pc];
+   else
+@@ -1533,9 +1533,9 @@ function_info::function_info(int entry_point, gpgpu_context *ctx) {
+   pdom_done = false;  // initialize it to false
+ }
+ 
+-unsigned function_info::print_insn(unsigned pc, FILE *fp) const {
++unsigned function_info::print_insn(address_type pc, FILE *fp) const {
+   unsigned inst_size = 1;  // return offset to next instruction or 1 if unknown
+-  unsigned index = pc - m_start_PC;
++  address_type index = pc - m_start_PC;
+   char command[1024];
+   char buffer[1024];
+   memset(command, 0, 1024);
+@@ -1549,25 +1549,25 @@ unsigned function_info::print_insn(unsigned pc, FILE *fp) const {
+   if ((c = strchr(buffer, '\n')) != NULL) *c = '\0';
+   fprintf(fp, "%s", buffer);
+   if (index >= m_instr_mem_size) {
+-    fprintf(fp, "<past last instruction (max pc=%u)>",
++    fprintf(fp, "<past last instruction (max pc=%llu)>",
+             m_start_PC + m_instr_mem_size - 1);
+   } else {
+     if (m_instr_mem[index] != NULL) {
+       m_instr_mem[index]->print_insn(fp);
+       inst_size = m_instr_mem[index]->isize;
+     } else
+-      fprintf(fp, "<no instruction at pc = %u>", pc);
++      fprintf(fp, "<no instruction at pc = %llu>", pc);
+   }
+   pclose(p);
+   return inst_size;
+ }
+ 
+-std::string function_info::get_insn_str(unsigned pc) const {
+-  unsigned index = pc - m_start_PC;
++std::string function_info::get_insn_str(address_type pc) const {
++  address_type index = pc - m_start_PC;
+   if (index >= m_instr_mem_size) {
+     char buff[STR_SIZE];
+     buff[STR_SIZE - 1] = '\0';
+-    snprintf(buff, STR_SIZE, "<past last instruction (max pc=%u)>",
++    snprintf(buff, STR_SIZE, "<past last instruction (max pc=%llu)>",
+              m_start_PC + m_instr_mem_size - 1);
+     return std::string(buff);
+   } else {
+@@ -1576,7 +1576,7 @@ std::string function_info::get_insn_str(unsigned pc) const {
+     } else {
+       char buff[STR_SIZE];
+       buff[STR_SIZE - 1] = '\0';
+-      snprintf(buff, STR_SIZE, "<no instruction at pc = %u>", pc);
++      snprintf(buff, STR_SIZE, "<no instruction at pc = %llu>", pc);
+       return std::string(buff);
+     }
+   }
+diff --git a/src/cuda-sim/ptx_ir.h b/src/cuda-sim/ptx_ir.h
+index 4a7d39b..50c550d 100644
+--- a/src/cuda-sim/ptx_ir.h
++++ b/src/cuda-sim/ptx_ir.h
+@@ -1260,8 +1260,8 @@ class function_info {
+   void set_name(const char *name) { m_name = name; }
+   void set_symtab(symbol_table *symtab) { m_symtab = symtab; }
+   std::string get_name() const { return m_name; }
+-  unsigned print_insn(unsigned pc, FILE *fp) const;
+-  std::string get_insn_str(unsigned pc) const;
++  unsigned print_insn(address_type pc, FILE *fp) const;
++  std::string get_insn_str(address_type pc) const;
+   void add_inst(const std::list<ptx_instruction *> &instructions) {
+     m_instructions = instructions;
+   }
+@@ -1332,8 +1332,8 @@ class function_info {
+   }
+   bool has_return() const { return m_return_var_sym != NULL; }
+   const symbol *get_return_var() const { return m_return_var_sym; }
+-  const ptx_instruction *get_instruction(unsigned PC) const {
+-    unsigned index = PC - m_start_PC;
++  const ptx_instruction *get_instruction(address_type PC) const {
++    address_type index = PC - m_start_PC;
+     if (index < m_instr_mem_size) return m_instr_mem[index];
+     return NULL;
+   }
+@@ -1402,7 +1402,7 @@ class function_info {
+   bool pdom_done;  // flag to check whether pdom is completed or not
+   std::string m_name;
+   ptx_instruction **m_instr_mem;
+-  unsigned m_start_PC;
++  address_type m_start_PC;
+   unsigned m_instr_mem_size;
+   std::map<std::string, param_t> m_kernel_params;
+   std::map<unsigned, param_info> m_ptx_kernel_param_info;
+diff --git a/src/cuda-sim/ptx_sim.cc b/src/cuda-sim/ptx_sim.cc
+index d0de1ca..592ae40 100644
+--- a/src/cuda-sim/ptx_sim.cc
++++ b/src/cuda-sim/ptx_sim.cc
+@@ -325,7 +325,7 @@ void ptx_thread_info::cpy_tid_to_reg(dim3 tid) {
+   }
+ }
+ 
+-void ptx_thread_info::print_insn(unsigned pc, FILE *fp) const {
++void ptx_thread_info::print_insn(address_type pc, FILE *fp) const {
+   m_func_info->print_insn(pc, fp);
+ }
+ 
+@@ -405,7 +405,7 @@ static void print_reg(std::string name, ptx_reg_t value, symbol_table *symtab) {
+   print_reg(stdout, name, value, symtab);
+ }
+ 
+-void ptx_thread_info::callstack_push(unsigned pc, unsigned rpc,
++void ptx_thread_info::callstack_push(address_type pc, address_type rpc,
+                                      const symbol *return_var_src,
+                                      const symbol *return_var_dst,
+                                      unsigned call_uid) {
+@@ -422,7 +422,7 @@ void ptx_thread_info::callstack_push(unsigned pc, unsigned rpc,
+ }
+ 
+ // ptxplus version of callstack_push.
+-void ptx_thread_info::callstack_push_plus(unsigned pc, unsigned rpc,
++void ptx_thread_info::callstack_push_plus(address_type pc, address_type rpc,
+                                           const symbol *return_var_src,
+                                           const symbol *return_var_dst,
+                                           unsigned call_uid) {
+@@ -521,7 +521,7 @@ void ptx_thread_info::dump_callstack() const {
+       printf("  <entry>                              #regs = %zu\n",
+              regs.size());
+     } else {
+-      printf("  %20s  PC=%3u RV= (callee=\'%s\',caller=\'%s\') #regs = %zu\n",
++      printf("  %20s  PC=%3llu RV= (callee=\'%s\',caller=\'%s\') #regs = %zu\n",
+              c_e.m_func_info->get_name().c_str(), c_e.m_PC,
+              c_e.m_return_var_src->name().c_str(),
+              c_e.m_return_var_dst->name().c_str(), regs.size());
+diff --git a/src/cuda-sim/ptx_sim.h b/src/cuda-sim/ptx_sim.h
+index 8eec922..57214bb 100644
+--- a/src/cuda-sim/ptx_sim.h
++++ b/src/cuda-sim/ptx_sim.h
+@@ -203,7 +203,7 @@ struct stack_entry {
+     m_call_uid = 0;
+     m_valid = false;
+   }
+-  stack_entry(symbol_table *s, function_info *f, unsigned pc, unsigned rpc,
++  stack_entry(symbol_table *s, function_info *f, address_type pc, address_type rpc,
+               const symbol *return_var_src, const symbol *return_var_dst,
+               unsigned call_uid) {
+     m_symbol_table = s;
+@@ -219,8 +219,8 @@ struct stack_entry {
+   bool m_valid;
+   symbol_table *m_symbol_table;
+   function_info *m_func_info;
+-  unsigned m_PC;
+-  unsigned m_RPC;
++  address_type m_PC;
++  address_type m_RPC;
+   const symbol *m_return_var_src;
+   const symbol *m_return_var_dst;
+   unsigned m_call_uid;
+@@ -333,7 +333,7 @@ class ptx_thread_info {
+       const ptx_reg_t &data6, const ptx_reg_t &data7, const ptx_reg_t &data8);
+ 
+   function_info *func_info() { return m_func_info; }
+-  void print_insn(unsigned pc, FILE *fp) const;
++  void print_insn(address_type pc, FILE *fp) const;
+   void set_info(function_info *func);
+   unsigned get_uid() const { return m_uid; }
+ 
+@@ -390,13 +390,13 @@ class ptx_thread_info {
+     return m_PC;
+   }
+   bool branch_taken() const { return m_branch_taken; }
+-  unsigned get_pc() const { return m_PC; }
+-  void set_npc(unsigned npc) { m_NPC = npc; }
++  address_type get_pc() const { return m_PC; }
++  void set_npc(address_type npc) { m_NPC = npc; }
+   void set_npc(const function_info *f);
+-  void callstack_push(unsigned npc, unsigned rpc, const symbol *return_var_src,
++  void callstack_push(address_type npc, address_type rpc, const symbol *return_var_src,
+                       const symbol *return_var_dst, unsigned call_uid);
+   bool callstack_pop();
+-  void callstack_push_plus(unsigned npc, unsigned rpc,
++  void callstack_push_plus(address_type npc, address_type rpc,
+                            const symbol *return_var_src,
+                            const symbol *return_var_dst, unsigned call_uid);
+   bool callstack_pop_plus();
+@@ -406,13 +406,13 @@ class ptx_thread_info {
+   const ptx_instruction *get_inst(addr_t pc) const;
+   bool rpc_updated() const { return m_RPC_updated; }
+   bool last_was_call() const { return m_last_was_call; }
+-  unsigned get_rpc() const { return m_RPC; }
++  address_type get_rpc() const { return m_RPC; }
+   void clearRPC() {
+     m_RPC = -1;
+     m_RPC_updated = false;
+     m_last_was_call = false;
+   }
+-  unsigned get_return_PC() { return m_callstack.back().m_PC; }
++  address_type get_return_PC() { return m_callstack.back().m_PC; }
+   void update_pc() { m_PC = m_NPC; }
+   void dump_regs(FILE *fp);
+   void dump_modifiedregs(FILE *fp);
+@@ -493,9 +493,9 @@ class ptx_thread_info {
+   unsigned m_hw_ctaid;
+ 
+   unsigned m_icount;
+-  unsigned m_PC;
+-  unsigned m_NPC;
+-  unsigned m_RPC;
++  address_type m_PC;
++  address_type m_NPC;
++  address_type m_RPC;
+   bool m_RPC_updated;
+   bool m_last_was_call;
+   unsigned m_cycle_done;
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 6665c00..c8f6833 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -603,8 +603,8 @@ class gpgpu_sim : public gpgpu_t {
+   void update_stats();
+   void deadlock_check();
+   void inc_completed_cta() { gpu_completed_cta++; }
+-  void get_pdom_stack_top_info(unsigned sid, unsigned tid, unsigned *pc,
+-                               unsigned *rpc);
++  void get_pdom_stack_top_info(unsigned sid, unsigned tid, address_type *pc,
++                               address_type *rpc);
+ 
+   int shared_mem_size() const;
+   int shared_mem_per_block() const;
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+index f00aad6..99b9487 100644
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -744,7 +744,7 @@ void shader_core_ctx::init_warps(unsigned cta_id, unsigned start_thread,
+         char fname[2048];
+         snprintf(fname, 2048, "checkpoint_files/warp_%d_%d_simt.txt",
+                  i % warp_per_cta, ctaid);
+-        unsigned pc, rpc;
++        address_type pc, rpc;
+         m_simt_stack[i]->resume(fname);
+         m_simt_stack[i]->get_pdom_stack_top_info(&pc, &rpc);
+         for (unsigned t = 0; t < m_config->warp_size; t++) {
+@@ -776,13 +776,13 @@ address_type shader_core_ctx::next_pc(int tid) const {
+ }
+ 
+ void gpgpu_sim::get_pdom_stack_top_info(unsigned sid, unsigned tid,
+-                                        unsigned *pc, unsigned *rpc) {
++                                        address_type *pc, address_type *rpc) {
+   unsigned cluster_id = m_shader_config->sid_to_cluster(sid);
+   m_cluster[cluster_id]->get_pdom_stack_top_info(sid, tid, pc, rpc);
+ }
+ 
+-void shader_core_ctx::get_pdom_stack_top_info(unsigned tid, unsigned *pc,
+-                                              unsigned *rpc) const {
++void shader_core_ctx::get_pdom_stack_top_info(unsigned tid, address_type *pc,
++                                              address_type *rpc) const {
+   unsigned warp_id = tid / m_config->warp_size;
+   m_simt_stack[warp_id]->get_pdom_stack_top_info(pc, rpc);
+ }
+@@ -1081,8 +1081,8 @@ const warp_inst_t *exec_shader_core_ctx::get_next_inst(unsigned warp_id,
+ 
+ void exec_shader_core_ctx::get_pdom_stack_top_info(unsigned warp_id,
+                                                    const warp_inst_t *pI,
+-                                                   unsigned *pc,
+-                                                   unsigned *rpc) {
++                                                   address_type *pc,
++                                                   address_type *rpc) {
+   m_simt_stack[warp_id]->get_pdom_stack_top_info(pc, rpc);
+ }
+ 
+@@ -1532,7 +1532,7 @@ void scheduler_unit::cycle() {
+ 
+       bool valid = warp(warp_id).ibuffer_next_valid();
+       bool warp_inst_issued = false;
+-      unsigned pc, rpc;
++      address_type pc, rpc;
+       m_shader->get_pdom_stack_top_info(warp_id, pI, &pc, &rpc);
+       SCHED_DPRINTF(
+           "Warp (warp_id %u, dynamic_warp_id %u) has valid instruction (%s)\n",
+@@ -2128,7 +2128,7 @@ void shader_core_ctx::unset_depbar(const warp_inst_t &inst) {
+ 
+ void shader_core_ctx::warp_inst_complete(const warp_inst_t &inst) {
+ #if 0
+-      printf("[warp_inst_complete] uid=%u core=%u warp=%u pc=%#x @ time=%llu \n",
++      printf("[warp_inst_complete] uid=%u core=%u warp=%u pc=%#llx @ time=%llu \n",
+              inst.get_uid(), m_sid, inst.warp_id(), inst.pc,  m_gpu->gpu_tot_sim_cycle +  m_gpu->gpu_sim_cycle);
+ #endif
+   if (inst.op_pipe == SP__OP)
+@@ -5267,8 +5267,8 @@ void sst_simt_core_cluster::icnt_cycle_SST() {
+ }
+ 
+ void simt_core_cluster::get_pdom_stack_top_info(unsigned sid, unsigned tid,
+-                                                unsigned *pc,
+-                                                unsigned *rpc) const {
++                                                address_type *pc,
++                                                address_type *rpc) const {
+   unsigned cid = m_config->sid_to_cid(sid);
+   m_core[cid]->get_pdom_stack_top_info(tid, pc, rpc);
+ }
+@@ -5376,7 +5376,7 @@ void exec_shader_core_ctx::checkExecutionStatusAndUpdate(warp_inst_t &inst,
+ 
+   // PC-Histogram Update
+   unsigned warp_id = inst.warp_id();
+-  unsigned pc = inst.pc;
++  address_type pc = inst.pc;
+   for (unsigned t = 0; t < m_config->warp_size; t++) {
+     if (inst.active(t)) {
+       int tid = warp_id * m_config->warp_size + t;
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+index 2c4660e..0538897 100644
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -1097,7 +1097,7 @@ class barrier_set_t {
+ };
+ 
+ struct insn_latency_info {
+-  unsigned pc;
++  address_type pc;
+   unsigned long latency;
+ };
+ 
+@@ -1359,7 +1359,7 @@ class ldst_unit : public pipelined_simd_unit {
+    * -> unsigned (count)
+    */
+   std::map<unsigned /*warp_id*/,
+-           std::map<unsigned /*pc*/,
++           std::map<address_type /*pc*/,
+                     std::map<unsigned /*addr*/, unsigned /*count*/>>>
+       m_pending_ldgsts;
+   // modifiers
+@@ -2165,7 +2165,7 @@ class shader_core_ctx : public core_t {
+ 
+   // accessors
+   virtual bool warp_waiting_at_barrier(unsigned warp_id) const;
+-  void get_pdom_stack_top_info(unsigned tid, unsigned *pc, unsigned *rpc) const;
++  void get_pdom_stack_top_info(unsigned tid, address_type *pc, address_type *rpc) const;
+   float get_current_occupancy(unsigned long long &active,
+                               unsigned long long &total) const;
+ 
+@@ -2530,7 +2530,7 @@ class shader_core_ctx : public core_t {
+   virtual const warp_inst_t *get_next_inst(unsigned warp_id,
+                                            address_type pc) = 0;
+   virtual void get_pdom_stack_top_info(unsigned warp_id, const warp_inst_t *pI,
+-                                       unsigned *pc, unsigned *rpc) = 0;
++                                       address_type *pc, address_type *rpc) = 0;
+   virtual const active_mask_t &get_active_mask(unsigned warp_id,
+                                                const warp_inst_t *pI) = 0;
+ 
+@@ -2661,7 +2661,7 @@ class exec_shader_core_ctx : public shader_core_ctx {
+   virtual void create_shd_warp();
+   virtual const warp_inst_t *get_next_inst(unsigned warp_id, address_type pc);
+   virtual void get_pdom_stack_top_info(unsigned warp_id, const warp_inst_t *pI,
+-                                       unsigned *pc, unsigned *rpc);
++                                       address_type *pc, address_type *rpc);
+   virtual const active_mask_t &get_active_mask(unsigned warp_id,
+                                                const warp_inst_t *pI);
+ };
+@@ -2692,8 +2692,8 @@ class simt_core_cluster {
+     m_response_fifo.push_back(mf);
+   }
+ 
+-  void get_pdom_stack_top_info(unsigned sid, unsigned tid, unsigned *pc,
+-                               unsigned *rpc) const;
++  void get_pdom_stack_top_info(unsigned sid, unsigned tid, address_type *pc,
++                               address_type *rpc) const;
+   unsigned max_cta(const kernel_info_t &kernel);
+   unsigned get_not_completed() const;
+   void print_not_completed(FILE *fp) const;
+diff --git a/src/gpgpu-sim/zconf.h b/src/gpgpu-sim/zconf.h
+index 6a65089..5dc5dfe 120000
+--- a/src/gpgpu-sim/zconf.h
++++ b/src/gpgpu-sim/zconf.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zconf.h
+\ No newline at end of file
++/usr/include/zconf.h
+\ No newline at end of file
+diff --git a/src/gpgpu-sim/zlib.h b/src/gpgpu-sim/zlib.h
+index bc751c0..595c3ce 120000
+--- a/src/gpgpu-sim/zlib.h
++++ b/src/gpgpu-sim/zlib.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zlib.h
+\ No newline at end of file
++/usr/include/zlib.h
+\ No newline at end of file
+diff --git a/src/zconf.h b/src/zconf.h
+index 6a65089..5dc5dfe 120000
+--- a/src/zconf.h
++++ b/src/zconf.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zconf.h
+\ No newline at end of file
++/usr/include/zconf.h
+\ No newline at end of file
+diff --git a/src/zlib.h b/src/zlib.h
+index bc751c0..595c3ce 120000
+--- a/src/zlib.h
++++ b/src/zlib.h
+@@ -1 +1 @@
+-/root/workspace/accel-sim-framework-awma-new-sim-baseline-174new-v1/.awma_runtime/deps/zlib-1.3.1/install/include/zlib.h
+\ No newline at end of file
++/usr/include/zlib.h
+\ No newline at end of file

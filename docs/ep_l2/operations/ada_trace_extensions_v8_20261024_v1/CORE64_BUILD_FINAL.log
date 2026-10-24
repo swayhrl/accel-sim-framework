@@ -1,0 +1,260 @@
+
+	Building GPGPU-Sim version 4.2.0 (build gpgpu-sim_git-commit-f31c166_modified_0.0) with CUDA version 12.4
+
+if [ ! -d lib/gcc-11.4.0/cuda-12040/release ]; then mkdir -p lib/gcc-11.4.0/cuda-12040/release; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim; fi;
+Warning: gpgpu-sim is building without opencl support. Make sure NVOPENCL_LIBDIR and NVOPENCL_INCDIR are set
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/decuda_pred_table ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/decuda_pred_table; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libopencl ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libopencl; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libopencl/bin ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libopencl/bin; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/intersim2 ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/intersim2; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuobjdump_to_ptxplus ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuobjdump_to_ptxplus; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch; fi;
+if [ ! -d /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti ]; then mkdir -p /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti; fi;
+make -C ./src/cuda-sim/ depend
+make -C /root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/ depend
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/cuda-sim'
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+make[2]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/ Ucache.cc XML_Parse.cc arbiter.cc area.cc array.cc bank.cc basic_circuit.cc basic_components.cc cacti_interface.cc component.cc core.cc crossbar.cc decoder.cc htree2.cc interconnect.cc io.cc iocontrollers.cc logic.cc main.cc mat.cc memoryctrl.cc noc.cc nuca.cc parameter.cc processor.cc router.cc sharedcache.cc subarray.cc technology.cc uca.cc wire.cc xmlParser.cc gpgpu_sim_wrapper.cc  2> /dev/null
+make -C ./cacti/ depend
+make[3]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+make[4]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti/ area.cc bank.cc mat.cc main.cc Ucache.cc io.cc technology.cc basic_circuit.cc parameter.cc decoder.cc component.cc uca.cc subarray.cc wire.cc htree2.cc cacti_interface.cc router.cc nuca.cc crossbar.cc arbiter.cc  2> /dev/null
+make[4]: Nothing to be done for 'depend'.
+make[4]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+make[3]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+make[2]: Nothing to be done for 'depend'.
+make[2]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+make -C /root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/ 
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+make[2]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/ Ucache.cc XML_Parse.cc arbiter.cc area.cc array.cc bank.cc basic_circuit.cc basic_components.cc cacti_interface.cc component.cc core.cc crossbar.cc decoder.cc htree2.cc interconnect.cc io.cc iocontrollers.cc logic.cc main.cc mat.cc memoryctrl.cc noc.cc nuca.cc parameter.cc processor.cc router.cc sharedcache.cc subarray.cc technology.cc uca.cc wire.cc xmlParser.cc gpgpu_sim_wrapper.cc  2> /dev/null
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/Makefile.makedepend
+make -C ./cacti/ depend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ cuda-sim.cc cuda_device_printf.cc cuda_device_runtime.cc instructions.cc memory.cc ptx-stats.cc ptx_ir.cc ptx_loader.cc ptx_parser.cc ptx_sim.cc 2> /dev/null
+make[3]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+make[4]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/cacti/ area.cc bank.cc mat.cc main.cc Ucache.cc io.cc technology.cc basic_circuit.cc parameter.cc decoder.cc component.cc uca.cc subarray.cc wire.cc htree2.cc cacti_interface.cc router.cc nuca.cc crossbar.cc arbiter.cc  2> /dev/null
+make[1]: 'depend' is up to date.
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/cuda-sim'
+make -C ./src/cuda-sim/
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/cuda-sim'
+make[4]: Nothing to be done for 'depend'.
+make[4]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+make[3]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/cacti'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ cuda-sim.cc cuda_device_printf.cc cuda_device_runtime.cc instructions.cc memory.cc ptx-stats.cc ptx_ir.cc ptx_loader.cc ptx_parser.cc ptx_sim.cc 2> /dev/null
+g++  -c -O3 -g3 -Wall -Wno-unused-function -Wno-sign-compare -I/root/workspace/c16_cuda_12_4_build/include  -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ -I. -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release -fPIC  -DTRACING_ON=1 -DCUDART_VERSION=12040 -std=c++0x cuda-sim.cc -o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/cuda-sim.o
+g++  -c -O3 -g3 -Wall -Wno-unused-function -Wno-sign-compare -I/root/workspace/c16_cuda_12_4_build/include  -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ -I. -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release -fPIC  -DTRACING_ON=1 -DCUDART_VERSION=12040 -std=c++0x ptx_ir.cc -o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx_ir.o
+In file included from ../gpgpu-sim/shader.h:54,
+                 from cuda-sim.h:37,
+                 from cuda-sim.cc:33:
+../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+../gpgpu-sim/gpu-cache.h:1497:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1497 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+../gpgpu-sim/gpu-cache.h:1417:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1417 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+../gpgpu-sim/gpu-cache.h:1300:3: warning:   when initialized here [-Wreorder]
+ 1300 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from ../../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from ../../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from ../../libcuda/gpgpu_context.h:3,
+                 from ptx_ir.cc:45:
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1497:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1497 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1417:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1417 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1300:3: warning:   when initialized here [-Wreorder]
+ 1300 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+g++  -c -O3 -g3 -Wall -Wno-unused-function -Wno-sign-compare -I/root/workspace/c16_cuda_12_4_build/include  -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ -I. -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release -fPIC  -DTRACING_ON=1 -DCUDART_VERSION=12040 -std=c++0x ptx_sim.cc -o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx_sim.o
+In file included from ../../libcuda/../src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from ../../libcuda/../src/cuda-sim/cuda-sim.h:37,
+                 from ../../libcuda/gpgpu_context.h:3,
+                 from ptx_sim.cc:34:
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1497:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1497 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1417:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1417 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+../../libcuda/../src/cuda-sim/../gpgpu-sim/gpu-cache.h:1300:3: warning:   when initialized here [-Wreorder]
+ 1300 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+ar rcs /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/libgpgpu_ptx_sim.a /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx.tab.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/lex.ptx_.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptxinfo.tab.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/lex.ptxinfo_.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx_parser.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx_loader.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/cuda_device_printf.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/instructions.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/cuda-sim.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx_ir.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx_sim.o  /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/memory.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx-stats.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/decuda_pred_table/decuda_pred_table.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptx.tab.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/lex.ptx_.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/ptxinfo.tab.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/lex.ptxinfo_.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/cuda_device_runtime.o
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/cuda-sim'
+make -C ./src/gpgpu-sim/ depend
+make -C ./libcuda/ depend
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/gpgpu-sim'
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/libcuda'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/ cuda_runtime_api.cc 2> /dev/null
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/ addrdec.cc dram.cc dram_sched.cc gpu-cache.cc gpu-misc.cc gpu-sim.cc hashing.cc histogram.cc icnt_wrapper.cc l2cache.cc local_interconnect.cc mem_fetch.cc mem_latency_stat.cc memory_telemetry.cc power_interface.cc power_stat.cc scoreboard.cc shader.cc stack.cc stat-tool.cc traffic_breakdown.cc visualizer.cc vm_translation.cc 2> /dev/null
+make[1]: 'depend' is up to date.
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/libcuda'
+make -C ./libcuda/
+make[1]: 'depend' is up to date.
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/gpgpu-sim'
+make -C ./src/gpgpu-sim/
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/libcuda'
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/gpgpu-sim'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/ cuda_runtime_api.cc 2> /dev/null
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/ addrdec.cc dram.cc dram_sched.cc gpu-cache.cc gpu-misc.cc gpu-sim.cc hashing.cc histogram.cc icnt_wrapper.cc l2cache.cc local_interconnect.cc mem_fetch.cc mem_latency_stat.cc memory_telemetry.cc power_interface.cc power_stat.cc scoreboard.cc shader.cc stack.cc stat-tool.cc traffic_breakdown.cc visualizer.cc vm_translation.cc 2> /dev/null
+:
+echo /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuda_runtime_api.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuobjdump_lexer.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuobjdump_parser.o
+/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuda_runtime_api.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuobjdump_lexer.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuobjdump_parser.o
+ar rcs /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/libcuda.a /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuda_runtime_api.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuobjdump_lexer.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/cuobjdump_parser.o
+g++  -O3 -g3 -fPIC -DCUDART_VERSION=12040 -Wall -DTRACING_ON=1 -std=c++0x -I/root/workspace/c16_cuda_12_4_build/include -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/accelwattch/ -DGPGPUSIM_POWER_MODEL -o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/shader.o -c shader.cc
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/libcuda'
+make -C ./cuobjdump_to_ptxplus/ depend
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/cuobjdump_to_ptxplus'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuobjdump_to_ptxplus/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuobjdump_to_ptxplus/Makefile.makedepend cuobjdumpInst.cc cuobjdumpInstList.cc cuobjdump_to_ptxplus.cc 2> /dev/null
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/cuobjdump_to_ptxplus'
+make -C ./cuobjdump_to_ptxplus/
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/cuobjdump_to_ptxplus'
+:
+:
+:
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/cuobjdump_to_ptxplus'
+In file included from shader.h:54,
+                 from shader.cc:33:
+gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+gpu-cache.h:1497:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1497 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+gpu-cache.h:1417:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1417 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+gpu-cache.h:1300:3: warning:   when initialized here [-Wreorder]
+ 1300 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+shader.cc: In function ‘void {anonymous}::vm_cov_print(FILE*)’:
+shader.cc:38:165: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 7 has type ‘std::set<unsigned int>::size_type’ {aka ‘long unsigned int’} [-Wformat=]
+   38 | static void vm_cov_print(FILE *f) { if(g_vm_cov.admissions) fprintf(f,"AWMA_VM_COVERAGE admissions=%llu translated=%llu untranslated=%llu unobserved=%llu unique=%llu translated_unique=%llu untranslated_unique=%llu\n",g_vm_cov.admissions,g_vm_cov.translated,g_vm_cov.untranslated,g_vm_cov.unobserved,g_vm_cov.all.size(),g_vm_cov.translated_uids.size(),g_vm_cov.untranslated_uids.size()); }
+      |                                                                                                                                                                  ~~~^                                                                                                                                      ~~~~~~~~~~~~~~~~~~~
+      |                                                                                                                                                                     |                                                                                                                                                       |
+      |                                                                                                                                                                     long long unsigned int                                                                                                                                  std::set<unsigned int>::size_type {aka long unsigned int}
+      |                                                                                                                                                                  %lu
+shader.cc:38:188: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 8 has type ‘std::set<unsigned int>::size_type’ {aka ‘long unsigned int’} [-Wformat=]
+   38 | static void vm_cov_print(FILE *f) { if(g_vm_cov.admissions) fprintf(f,"AWMA_VM_COVERAGE admissions=%llu translated=%llu untranslated=%llu unobserved=%llu unique=%llu translated_unique=%llu untranslated_unique=%llu\n",g_vm_cov.admissions,g_vm_cov.translated,g_vm_cov.untranslated,g_vm_cov.unobserved,g_vm_cov.all.size(),g_vm_cov.translated_uids.size(),g_vm_cov.untranslated_uids.size()); }
+      |                                                                                                                                                                                         ~~~^                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                                                                                                                                                            |                                                                                                                                                                |
+      |                                                                                                                                                                                            long long unsigned int                                                                                                                                           std::set<unsigned int>::size_type {aka long unsigned int}
+      |                                                                                                                                                                                         %lu
+shader.cc:38:213: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 9 has type ‘std::set<unsigned int>::size_type’ {aka ‘long unsigned int’} [-Wformat=]
+   38 | static void vm_cov_print(FILE *f) { if(g_vm_cov.admissions) fprintf(f,"AWMA_VM_COVERAGE admissions=%llu translated=%llu untranslated=%llu unobserved=%llu unique=%llu translated_unique=%llu untranslated_unique=%llu\n",g_vm_cov.admissions,g_vm_cov.translated,g_vm_cov.untranslated,g_vm_cov.unobserved,g_vm_cov.all.size(),g_vm_cov.translated_uids.size(),g_vm_cov.untranslated_uids.size()); }
+      |                                                                                                                                                                                                                  ~~~^                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                                                                                                                                                                                     |                                                                                                                                                                         |
+      |                                                                                                                                                                                                                     long long unsigned int                                                                                                                                                    std::set<unsigned int>::size_type {aka long unsigned int}
+      |                                                                                                                                                                                                                  %lu
+shader.cc: In member function ‘virtual void shader_core_ctx::issue_warp(register_set&, const warp_inst_t*, const active_mask_t&, unsigned int, unsigned int)’:
+shader.cc:1326:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1326 |     for (int i = 0; i < end_group; i++) {
+      |                     ~~^~~~~~~~~~~
+shader.cc:1327:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<warp_inst_t>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1327 |       for (int j = 0; j < m_warp[warp_id]->m_ldgdepbar_buf[i].size(); j++) {
+      |                       ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+shader.cc:1328:55: warning: comparison of integer expressions of different signedness: ‘address_type’ {aka ‘long long unsigned int’} and ‘int’ [-Wsign-compare]
+ 1328 |         if (m_warp[warp_id]->m_ldgdepbar_buf[i][j].pc != -1) {
+shader.cc: In member function ‘void shader_core_ctx::unset_depbar(const warp_inst_t&)’:
+shader.cc:2094:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::vector<warp_inst_t> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 2094 |     for (int i = 0; i < m_warp[inst.warp_id()]->m_ldgdepbar_buf.size(); i++) {
+      |                     ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+shader.cc:2095:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<warp_inst_t>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 2095 |       for (int j = 0; j < m_warp[inst.warp_id()]->m_ldgdepbar_buf[i].size();
+      |                       ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+shader.cc:2110:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2110 |     for (int i = 0; i < end_group; i++) {
+      |                     ~~^~~~~~~~~~~
+shader.cc:2111:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<warp_inst_t>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 2111 |       for (int j = 0; j < m_warp[inst.warp_id()]->m_ldgdepbar_buf[i].size();
+      |                       ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+shader.cc:2113:62: warning: comparison of integer expressions of different signedness: ‘address_type’ {aka ‘long long unsigned int’} and ‘int’ [-Wsign-compare]
+ 2113 |         if (m_warp[inst.warp_id()]->m_ldgdepbar_buf[i][j].pc != -1) {
+In file included from shader.cc:33:
+shader.h: In constructor ‘ldst_unit::ldst_unit(mem_fetch_interface*, shader_core_mem_fetch_allocator*, shader_core_ctx*, opndcoll_rfu_t*, Scoreboard*, const shader_core_config*, const memory_config*, shader_core_stats*, unsigned int, unsigned int, gpgpu_sim*)’:
+shader.h:1463:15: warning: ‘ldst_unit::m_next_wb’ will be initialized after [-Wreorder]
+ 1463 |   warp_inst_t m_next_wb;
+      |               ^~~~~~~~~
+shader.h:1443:14: warning:   ‘gpgpu_sim* ldst_unit::m_gpu’ [-Wreorder]
+ 1443 |   gpgpu_sim *m_gpu;
+      |              ^~~~~
+shader.cc:3077:1: warning:   when initialized here [-Wreorder]
+ 3077 | ldst_unit::ldst_unit(mem_fetch_interface *icnt,
+      | ^~~~~~~~~
+ar rcs  /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/libgpu_uarch_sim.a /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/addrdec.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/dram.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/dram_sched.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/gpu-cache.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/gpu-misc.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/gpu-sim.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/hashing.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/histogram.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/icnt_wrapper.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/l2cache.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/local_interconnect.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/mem_fetch.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/mem_latency_stat.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/memory_telemetry.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/power_interface.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/power_stat.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/scoreboard.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/shader.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/stack.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/stat-tool.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/traffic_breakdown.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/visualizer.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/vm_translation.o
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/gpgpu-sim'
+make "CREATE_LIBRARY=1" "DEBUG=0" -C ./src/intersim2
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/intersim2'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/intersim2/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/intersim2/Makefile.makedepend -I-I. -Iarbiters -Iallocators -Irouters -Inetworks -Ipower -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/src -I/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/gpgpu-sim/ -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/intersim2/ config_utils.cpp booksim_config.cpp module.cpp buffer.cpp vc.cpp routefunc.cpp traffic.cpp flitchannel.cpp trafficmanager.cpp batchtrafficmanager.cpp packet_reply_info.cpp buffer_state.cpp stats.cpp credit.cpp outputset.cpp flit.cpp injection.cpp misc_utils.cpp rng_wrapper.cpp rng_double_wrapper.cpp power_module.cpp switch_monitor.cpp buffer_monitor.cpp main.cpp gputrafficmanager.cpp intersim_config.cpp interconnect_interface.cpp allocators/allocator.cpp allocators/islip.cpp allocators/loa.cpp allocators/maxsize.cpp allocators/pim.cpp allocators/selalloc.cpp allocators/separable.cpp allocators/separable_input_first.cpp allocators/separable_output_first.cpp allocators/wavefront.cpp arbiters/arbiter.cpp arbiters/matrix_arb.cpp arbiters/prio_arb.cpp arbiters/roundrobin_arb.cpp arbiters/tree_arb.cpp networks/anynet.cpp networks/cmesh.cpp networks/dragonfly.cpp networks/fattree.cpp networks/flatfly_onchip.cpp networks/fly.cpp networks/kncube.cpp networks/network.cpp networks/qtree.cpp networks/tree4.cpp power/buffer_monitor.cpp power/power_module.cpp power/switch_monitor.cpp routers/chaos_router.cpp routers/event_router.cpp routers/iq_router.cpp routers/router.cpp 2> /dev/null
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/intersim2'
+make -C ./src/ depend
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/ abstract_hardware_model.cc debug.cc gpgpusim_entrypoint.cc option_parser.cc statwrapper.cc stream_manager.cc trace.cc 2> /dev/null
+make[1]: 'depend' is up to date.
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src'
+make -C ./src/
+make[1]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src'
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/ abstract_hardware_model.cc debug.cc gpgpusim_entrypoint.cc option_parser.cc statwrapper.cc stream_manager.cc trace.cc 2> /dev/null
+make   -C ./gpgpu-sim
+make[2]: Entering directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src'
+make[2]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+touch /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/Makefile.makedepend
+makedepend -f/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/Makefile.makedepend -p/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/ addrdec.cc dram.cc dram_sched.cc gpu-cache.cc gpu-misc.cc gpu-sim.cc hashing.cc histogram.cc icnt_wrapper.cc l2cache.cc local_interconnect.cc mem_fetch.cc mem_latency_stat.cc memory_telemetry.cc power_interface.cc power_stat.cc scoreboard.cc shader.cc stack.cc stat-tool.cc traffic_breakdown.cc visualizer.cc vm_translation.cc 2> /dev/null
+ar rcs  /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/libgpu_uarch_sim.a /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/addrdec.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/dram.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/dram_sched.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/gpu-cache.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/gpu-misc.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/gpu-sim.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/hashing.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/histogram.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/icnt_wrapper.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/l2cache.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/local_interconnect.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/mem_fetch.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/mem_latency_stat.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/memory_telemetry.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/power_interface.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/power_stat.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/scoreboard.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/shader.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/stack.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/stat-tool.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/traffic_breakdown.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/visualizer.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/vm_translation.o
+make[2]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src/gpgpu-sim'
+ar rcs  /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libgpgpusim.a /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/abstract_hardware_model.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/debug.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpusim_entrypoint.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/option_parser.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/statwrapper.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/stream_manager.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/trace.o /root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/*.o
+make[1]: Leaving directory '/root/data/ada_trace_extensions_v8_20261024_v1/core64/src'
+g++ -shared -Wl,-soname,libcudart.so -Wl,--version-script=linux-so-version.txt\
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/libcuda/*.o \
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/*.o \
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/cuda-sim/decuda_pred_table/*.o \
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/gpgpu-sim/*.o \
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/intersim2/*.o \
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/*.o -lm -lz -lGL -pthread \
+		/root/data/ada_trace_extensions_v8_20261024_v1/core64/build/gcc-11.4.0/cuda-12040/release/accelwattch/*.o \
+		-o lib/gcc-11.4.0/cuda-12040/release/libcudart.so
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.2 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.2; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.3 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.3; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.4 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.4; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.5.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.5.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.5.5 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.5.5; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.6.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.6.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.6.5 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.6.5; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.7.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.7.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.7.5 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.7.5; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.8.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.8.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.9.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.9.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.9.1 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.9.1; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.9.2 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.9.2; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.10.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.10.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.10.1 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.10.1; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.11.0 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.11.0; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart.so.12 ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart.so.12; fi
+if [ ! -f lib/gcc-11.4.0/cuda-12040/release/libcudart_mod.so ]; then ln -s libcudart.so lib/gcc-11.4.0/cuda-12040/release/libcudart_mod.so; fi
