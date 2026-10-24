@@ -87,3 +87,18 @@ The shared library is not yet declared complete. Expanded transfers, archive
 findings, public cross-project access and all-object independent bounded native
 restore must finish. Bulk4080 coverage also requires a closed exact version/input
 denominator, accepted captures or explicit supported exceptions, and164 readback.
+
+## Additional independent closeout
+
+The parent independently rehashed both Ada stage1 engineering archives and all351
+manifest members on true164. Only the two terminal requests had their128MiB
+write reservations reduced to zero through the existing epoch2 exclusive lock
+and registry/epoch pointer update. Consumed attempts, exact budgets, global
+remaining budget and all foreign records are unchanged. The failed CALL request
+retains its separate reservation. No native hot outputs were removed.
+
+Six completed audit/hash ledgers (56,447,059 bytes) were fully written to164,
+closed, reopened and independently SHA-verified before their native paths became
+symlinks to the immutable cold objects. This frees native control allocation
+while preserving existing reader paths. It is separate from retirement of
+original Source workload assets.

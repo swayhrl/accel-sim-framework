@@ -14,7 +14,7 @@ assert all(any(set(p['aliases']).intersection(a['aliases']) for a in assets) for
 before=json.loads((R/'control/PROTECTED_PREIMAGE.json').read_text());after={p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in before}
 tool_changes=[p for p in before if '/tools/' in p or p.endswith('/bin/native') if before[p]!=after[p]];assert not tool_changes
 archives=[json.loads(gzip.decompress(p.read_bytes())) for p in sorted((R/'control').glob('ARCHIVE_[0-9]*.json.gz'))]
-assert len(archives)==4 and all(a['source_before_after_unchanged'] and a['compressed_bytes_read']==a['archive_identity']['size'] for a in archives)
+assert len(archives)==4 and all(a['source_before_after_unchanged'] and a['compressed_bytes_read']==a['archive_identity']['size'] and a.get('inventory_format')=='V2_FULL_DECODED_EOF_IGNORE_ZEROS' and a['decoded_compression_EOF_integrity_checked'] for a in archives)
 proof_dir=NAS/'receipts/goal_20261024_v1';proof_dir.mkdir(exist_ok=True)
 proof_index=[]
 for p in sorted((R/'control').iterdir()):
@@ -27,7 +27,10 @@ for p in sorted((R/'tools').iterdir()):
  if p.is_file() and p.suffix=='.py':e.publish_bytes(tool_dir/p.name,p.read_bytes(),v)
 e.publish_bytes(tool_dir/'zstd',(R/'tools/zstd').read_bytes(),v)
 summary={'status':'PASS_COMPLETE_SHARED_ASSET_LIBRARY','catalog_id':catalog['catalog_id'],'registered_input_bundles':len(assets),'unique_content_objects':len(catalog['objects']),'unique_content_bytes':sum(o['size'] for o in catalog['objects'].values()),'all_original_complete_input_aliases_covered':len(expected),'all20_prior_asset_aliases_covered':True,'archive_containers_audited':len(archives),'regular_bundles':sum(a['kind']=='regular' for a in assets),'fraction_bundles':sum(a['kind']=='fraction' for a in assets),'by_suite':dict(collections.Counter(a['suite'] for a in assets)),'public_root':'/root/workspace/assets/traces','public_command':'/root/workspace/assets/bin/trace-assets','all_project_access_verified':True,'full_closed_native_window_restore':restore,'complete_large_dataset_simultaneous_materialization_claimed':False,'source_keep':True,'source_release_bytes':0,'scientific_starts':0,'109_capture_starts':0,'science_qualification_granted':False,'protected_before':before,'protected_after':after,'protected_scientific_tools_unchanged':True,'registry_or_epoch_external_differences':[p for p in before if p not in tool_changes and before[p]!=after[p]],'observed_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
-summary['execution_scope']='SM70 asset access Goal only; separately authorized109 RTX4080 pilot has its own receipts'
+summary['execution_scope']='SM70 asset access pipeline only. The expanded active Goal also includes separately authorized109 RTX4080 bulk capture and exact native epoch2 semantic tests; their starts/results are not included in the zero-start fields above.'
+summary['overall_expanded_goal_complete_claimed']=False
+summary['source_keep_scope']='This task performed no Source payload writes or deletions. Another explicitly authorized storage task retired four exact Source members and the original PolyBench package after verified164 persistence.'
+summary['retired_source_reuse']=json.loads((R/'control/RETIRED_SOURCE_CONTENT_REUSE.json').read_text())
 summary['storage_policy_amendment']=json.loads((R/'control/USER_STORAGE_AMENDMENT_20261024.json').read_text())
 (R/'control/FINAL_VALIDATION.json').write_text(json.dumps(summary,indent=2)+'\n');e.publish_bytes(proof_dir/'FINAL_VALIDATION.json',e.canon(summary),v)
 for n in ['FINAL_VALIDATION.json','USER_AUTHORIZATION.json','USER_STORAGE_AMENDMENT_20261024.json','ENGINE_DERIVATION.json','PUBLIC_WRAPPER_QUALIFICATION.json','ZSTD_PROTOCOL_QUALIFICATION.json','NATIVE_BACKEND_QUALIFICATION.json','EXPANDED_FROZEN_BUDGET.json','ARCHIVE_FROZEN_BUDGET.json','LIBRARY_PUBLICATION.json','BOUNDED_NATIVE_RESTORE_COMPLETE.json']:
@@ -38,15 +41,15 @@ with (O/'ASSET_INDEX.csv').open('w',newline='') as f:
  out=csv.DictWriter(f,fieldnames=fields,lineterminator='\n');out.writeheader()
  for a in assets:out.writerow({**{k:a[k] for k in fields if k!='source_alias_count'},'source_alias_count':len(a['source_aliases'])})
 e.publish_bytes(NAS/'catalog/ASSET_INDEX.csv',(O/'ASSET_INDEX.csv').read_bytes(),v)
-archive_rows=[{'path':a['path'],'archive_sha256':a['archive_sha256'],'physical_bytes':a['archive_identity']['size'],'grouped_member_bytes_hashed':a['hashed_member_bytes'],'entries':len(a['members'])} for a in archives]
+archive_rows=[{'path':a['path'],'archive_path':a.get('archive_path',a['path']),'archive_sha256':a['archive_sha256'],'physical_bytes':a['archive_identity']['size'],'grouped_member_bytes_hashed':a['hashed_member_bytes'],'grouped_member_bytes_reused':a.get('reused_same_archive_SHA_member_bytes',0),'inventory_format':a['inventory_format'],'entries':len(a['members'])} for a in archives]
 (O/'ARCHIVE_AUDIT_SUMMARY.json').write_text(json.dumps(archive_rows,indent=2)+'\n')
 md=f'''# 174-new跨项目共享trace资产库（2026-10-24）
 
-状态：数据接入、全文件身份校验、跨项目访问和全对象有界本地恢复均完成。科学资格、预算、旧失败/接受记录没有因此提升或覆盖。本SM70接入流程未运行模拟器、编译或109采集；另行授权的109 RTX4080试点以其独立回执为准。
+状态：本SM70流程的数据接入、全文件身份校验、跨项目访问和全对象有界本地恢复均完成。科学资格、预算、旧失败/接受记录没有因此提升或覆盖。本SM70接入流程未运行模拟器、编译或109采集；扩展Goal另含109 RTX4080全量采集及独立epoch2兼容测试，以各自回执为准，本报告不宣称扩展Goal全部完成。
 
 统一入口：`/root/workspace/assets/traces/`；公共命令：`/root/workspace/assets/bin/trace-assets`。同一174-new执行环境中的各项目无需激活EP/DTC环境即可使用。
 
-正式主档：真164 `/home/shared/huangrulin/traces/`。原有20套已验证对象保留原位并接入内容索引；其旧路径和旧查询入口保留。全部原Source保持KEEP，释放0B。
+正式主档：真164 `/home/shared/huangrulin/traces/`。原有20套已验证对象保留原位并接入内容索引；其旧路径和旧查询入口保留。本任务未改写或删除Source正文，释放0B。另一项获明确授权的存储任务已安全释放4个Source成员及原PolyBench包；这些内容均由已验证的164对象提供，保留原路径与退休回执，不虚称删除后的原件被重新读取，也不将其他任务的释放量记入本任务。
 
 按2026-10-24用户追加授权，174-new基础磁盘安全余量为5GiB，另保留已登记项目预留、1GiB其他项目余量及64MiB控制余量。空间不足时允许将本Lane拥有的本地资产完整归档至164，关闭重开校验全SHA并确认174-new可读后释放本地副本；本次数据接入实际释放仍为0B，不将授权等同于已执行释放。
 
