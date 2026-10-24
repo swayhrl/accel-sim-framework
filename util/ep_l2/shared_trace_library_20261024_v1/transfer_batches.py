@@ -1,8 +1,8 @@
 from pathlib import Path
 import sys,json,time,subprocess,hashlib,fcntl
-R=Path('/root/data/shared_sm70_trace_library_20261024_v1');sys.path.insert(0,str(R/'tools'));import library_copy_v7 as e
+R=Path('/root/data/shared_sm70_trace_library_20261024_v1');sys.path.insert(0,str(R/'tools'));import library_copy_v8 as e
 held=(R/'control/TRANSFER_DRIVER.lock').open('a');fcntl.flock(held,fcntl.LOCK_EX|fcntl.LOCK_NB)
-promotion=json.loads((R/'control/ENGINE_V7_PROMOTION.json').read_text());assert promotion['status']=='PASS_PROMOTED_AT_CLOSED_BATCH_BOUNDARY'
+promotion=json.loads((R/'control/ENGINE_V8_PROMOTION.json').read_text());assert promotion['status']=='PASS_PROMOTED_AT_CLOSED_BATCH_BOUNDARY'
 assert hashlib.sha256(e.SELF_BYTES).hexdigest()==promotion['engine_sha256']
 name=sys.argv[1];batches=json.loads((R/'control'/name).read_text());log=R/'logs'/('transfer_'+Path(name).stem+'.jsonl')
 for i,b in enumerate(batches):

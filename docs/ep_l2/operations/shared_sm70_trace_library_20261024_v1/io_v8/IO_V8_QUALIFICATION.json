@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "test": "healthy_block_high_NAS_PSI",
+      "MiB_per_second": 32.0,
+      "status": "PASS"
+    },
+    {
+      "test": "busy_block_preserves_pressure_throttle",
+      "MiB_per_second": 1.0,
+      "status": "PASS"
+    },
+    {
+      "test": "slow_block_preserves_pressure_throttle",
+      "MiB_per_second": 1.0,
+      "status": "PASS"
+    },
+    {
+      "test": "block_queue_preserves_pressure_throttle",
+      "MiB_per_second": 1.0,
+      "status": "PASS"
+    },
+    {
+      "test": "unknown_block_is_conservative",
+      "MiB_per_second": 1.0,
+      "status": "PASS"
+    },
+    {
+      "test": "caller_lower_ceiling_preserved",
+      "MiB_per_second": 15.0,
+      "status": "PASS"
+    },
+    {
+      "test": "real_second_writer_rejected_by_same_lease",
+      "status": "PASS_EXPECTED_REJECTION"
+    }
+  ],
+  "actual_native_block_observation": {
+    "known": true,
+    "device": "sdf",
+    "busy_percent": 0.1977800019202977,
+    "await_ms": 0.3944954128440367,
+    "inflight": 0
+  },
+  "engine_sha256": "c5fac7e8137adb389e9843d26d52c1035727e75a71f780d9603dac6517358a74",
+  "rate_ceiling_MiB_per_second": 32,
+  "all_foreign_channels_unchanged": true,
+  "production_promotion_performed": false
+}
