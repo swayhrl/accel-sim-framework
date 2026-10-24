@@ -1,0 +1,13 @@
+import pathlib
+P=pathlib.Path;A=P('/root/data/dtc_main_20261023_v1/ae_fair_v1');T=P('/root/data/dtc_main_short3_20261024_v1')
+code=(A/'tools/final_review_bundle.py').read_text()
+code=code.replace(str(A),str(T)).replace("F=pathlib.Path('/root/data/dtc_main_20261023_v1/accel-sim-framework')","F=T/'docs-worktree'").replace('DTC_AE_MATCHED_HASH_EPOCH2_20261023_V1','DTC_AE_MATCHED_HASH_SHORT3_20261024_V1')
+code=code.replace("SOURCE='1ee699ae42cbb9a2e04ee6a0e3b51946775bae03';ROOT=T/'final_review_payload_1ee699ae';MIB=1024**2", "SOURCE=json.loads((T/'analysis/FINAL_SCIENCE_COMMIT.json').read_text())['commit'];ROOT=T/('final_review_payload_'+SOURCE[:8]);MIB=1024**2")
+code=code.replace("and len(pub['published_final_files'])==105","and len(pub['published_final_files'])>=12")
+code=code.replace("['DTC_AEFAIR_EPOCH2_V1']","['DTC_AEFAIR_SHORT3_EPOCH2_20261024_V1']").replace("len(q['consumed'])==4","len(q['consumed'])==12")
+code=code.replace("T/'tools/aefair_result.py'","T/'tools/short3_result_base.py'").replace("T/'tools/aefair_result_gate_v2.py'","T/'tools/short3_result.py'")
+code=code.replace("for cell in ['CM','CH','DM','DH']:\n for r in read(T/'control'/('E2-AEFAIR-'+cell+'_SPEC.json'))['runtime_files']:","for cell in read(T/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json')['matrix_order']:\n for r in read(T/'control'/(cell+'_SPEC.json'))['runtime_files']:")
+code=code.replace('source commit1ee699ae42cbb9a2e04ee6a0e3b51946775bae03','the source scientific commit recorded in the manifest and provenance').replace('The four original full raw-result archives','The twelve original full raw-result archives').replace('4/4 starts','12/12 starts')
+code=code.replace("'source_scientific_tree':'023c9e36dadb3ff625a6629536fc4a952b218fd9'","'source_scientific_tree':git(F,'rev-parse',SOURCE+'^{tree}')").replace("'starts_consumed_before_after':4","'starts_consumed_before_after':12")
+with (T/'tools/short3_final_review_bundle.py').open('x') as f:f.write(code)
+print('DATA_ONLY_FINAL_REVIEW_EXPORTER_PREPARED')

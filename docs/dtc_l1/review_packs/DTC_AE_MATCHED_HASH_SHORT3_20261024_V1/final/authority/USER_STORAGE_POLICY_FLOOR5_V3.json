@@ -1,0 +1,22 @@
+{
+  "schema": "DTC_MAIN_USER_5GiB_SHARED_ASSET_POOL_POLICY_V3",
+  "user_instruction": "另外安全余量我建议不要卡在10G，可以在5G，另外如果空间不够了，你可以安全的把我们的资产迁移到164，然后删除174-new下的，164和174-new的空间可以认为是完全共享的，只是一个快些一个慢些。",
+  "local_safety_floor_bytes": 5368709120,
+  "floor_semantics": "Exclusive>5GiB after known bounded writes; monitor and unknown-project cushion are part of this5GiB, not extra hardwired2GiB+1GiB guesses",
+  "known_own_write_reservation_bytes": 1073741824,
+  "known_own_basis": "Conservatively all12 result+restore caps32MiB each plus256MiB metadata/spool; current completed bytes are also in df",
+  "foreign_reservations": "Current active registered peer exact bytes only;unknown/negative values stillHOLD",
+  "asset_pool": "174-new is fast tier,genuine164 is slow tier. Keep one logical asset identity; support direct164 reads/on-demand local materialization, avoid capacity double count. Local output still uses nativeext4 with its own5GiB floor.",
+  "reclaim_authorized_when_needed": true,
+  "safe_reclaim_prerequisites": [
+    "Our own closed assets only; do not interfere with live model/guard or peer assets",
+    "Genuine164 immutable full-member archive,whole-fileSHA reopen and independent restore qualification",
+    "Durable tier/custody path map and correct subsequent consumer references",
+    "Keep historical scientific ledger/accepted UUID/whole-input identities unchanged;restore on demand before a consumer that requires local native files",
+    "Delete only exact verified owned local objects after the slow-tier copy is usable"
+  ],
+  "this_revision_local_source_deletions": 0,
+  "this_revision_new_scientific_starts": 0,
+  "new_budget": 0,
+  "activation_boundary": "After currently runningMRI-Q-DH model closes naturally, before its archive and before next model. Current model/guard source stays untouched."
+}

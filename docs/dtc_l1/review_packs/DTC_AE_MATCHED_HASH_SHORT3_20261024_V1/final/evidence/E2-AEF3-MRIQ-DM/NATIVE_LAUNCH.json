@@ -1,0 +1,318 @@
+{
+  "argv": [
+    "/root/data/dtc_main_short3_20261024_v1/common-lib/ld-linux-x86-64.so.2",
+    "--library-path",
+    "/root/data/dtc_main_short3_20261024_v1/tools/lib:/root/data/dtc_main_short3_20261024_v1/common-lib",
+    "/root/data/dtc_main_short3_20261024_v1/tools/bin/strace",
+    "-f",
+    "-e",
+    "trace=%file,process,network",
+    "-o",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/run/results/b8edabb0-ca6a-45dd-82e1-04eb30117e17/actual_file_process_network.log",
+    "--",
+    "/root/data/dtc_main_short3_20261024_v1/common-lib/ld-linux-x86-64.so.2",
+    "--inhibit-cache",
+    "--library-path",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/env/lib",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/bin/accel-sim.out",
+    "-trace",
+    "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-mri-q/_i___data_small_input_32_32_32_dataset_bin__o_32_32_32_dataset_out/traces/kernelslist.g",
+    "-config",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/env/E2-AEF3-MRIQ-DM/config-0.config",
+    "-config",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/env/E2-AEF3-MRIQ-DM/config-1.config",
+    "-config",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/env/E2-AEF3-MRIQ-DM/config-2.config",
+    "-config",
+    "/root/data/dtc_main_short3_20261024_v1/DTC/env/E2-AEF3-MRIQ-DM/config-3.config"
+  ],
+  "effective_result_cap_bytes": 33554432,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "DTC_AG7_GENERATION": "b8edabb0-ca6a-45dd-82e1-04eb30117e17",
+    "DTC_AG7_INPUT_SHA": "2e8036761a73a96084f4c597031f472048b9e43a1344b90282c344e28278a9b3",
+    "DTC_AG7_POLICY_B_PROGRESS": "1",
+    "DTC_AG7_PROGRESS_FD": "6",
+    "DTC_AG7_ROI_SHA": "5284bf5e415ebaa38981efed0f41062b0d458f84519d74426294144f14eb8dd5",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "LD_LIBRARY_PATH": "/root/data/dtc_main_short3_20261024_v1/DTC/env/lib",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/bin:/bin",
+    "TMPDIR": "/root/data/dtc_main_short3_20261024_v1/DTC/run/tmp",
+    "XDG_CACHE_HOME": "/root/data/dtc_main_short3_20261024_v1/DTC/run/cache"
+  },
+  "finite_native_launcher_sha256": "d63dc6e29afdcac2e60bf338c99b153e1eee6fd65497a2c4ac12ca0ca0a37b1e",
+  "frozen_upper_result_cap_bytes": 33554432,
+  "host": {
+    "filesystem": {
+      "fstype": "ext4",
+      "options": "rw,relatime",
+      "source": "/dev/sdf[/huangrulin]",
+      "target": "/root/data"
+    },
+    "hostname": "huangrulin-sshfs-174",
+    "mnt_namespace": "mnt:[4026535153]",
+    "native_device": 2128,
+    "pid_namespace": "pid:[4026535156]"
+  },
+  "launcher_pid": 920928,
+  "native_DTC_original_rebound_admission": {
+    "IO": "Both domains observed; original BA user-amended warning-only IO semantics retained",
+    "Source_only_host_admission": "Explicit user Target rebinding, no fake original174 hostname",
+    "checks": {
+      "first_authorized_native_identity": true,
+      "first_cgroup_original_memory_full_avg10_le1": true,
+      "first_host_headroom_ge64GiB": true,
+      "first_host_original_memory_full_avg10_le1": true,
+      "first_native_disk_floor_plus_monitor": true,
+      "first_original_cgroup_headroom_ge32GiB": true,
+      "no_new_cgroup_OOM": true,
+      "no_new_host_OOM": true,
+      "original_pair_gap_ge10s": true,
+      "same_device": true,
+      "second_authorized_native_identity": true,
+      "second_cgroup_original_memory_full_avg10_le1": true,
+      "second_host_headroom_ge64GiB": true,
+      "second_host_original_memory_full_avg10_le1": true,
+      "second_native_disk_floor_plus_monitor": true,
+      "second_original_cgroup_headroom_ge32GiB": true
+    },
+    "first": {
+      "cgroup": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "io.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=10995188045\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=10657300411",
+        "memory.current": "16773464064",
+        "memory.max": "274877906944",
+        "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=688890134\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685126332",
+        "memory.swap.current": "12537856"
+      },
+      "cgroup_pressure_parsed": {
+        "io": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "10657300411"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "10995188045"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "685126332"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "688890134"
+          }
+        }
+      },
+      "disk_free_bytes": 9972305920,
+      "host": "huangrulin-sshfs-174",
+      "host_MemAvailable_bytes": 308188110848,
+      "host_oom_kill": 366,
+      "monotonic_ns": 9567392165480586,
+      "output_filesystem_device": 2128,
+      "pressure": {
+        "io": {
+          "full": {
+            "avg10": "3.02",
+            "avg300": "3.43",
+            "avg60": "4.10",
+            "total": "199547210589"
+          },
+          "some": {
+            "avg10": "3.21",
+            "avg300": "3.46",
+            "avg60": "4.16",
+            "total": "220487139726"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41301629845"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41679205947"
+          }
+        }
+      },
+      "pswpin": 3739902,
+      "pswpout": 11008379,
+      "uid": 0
+    },
+    "scientific_forks": 0,
+    "second": {
+      "cgroup": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "io.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=10995188045\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=10657300411",
+        "memory.current": "16770777088",
+        "memory.max": "274877906944",
+        "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=688890134\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685126332",
+        "memory.swap.current": "12537856"
+      },
+      "cgroup_pressure_parsed": {
+        "io": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "10657300411"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "10995188045"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "685126332"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "688890134"
+          }
+        }
+      },
+      "disk_free_bytes": 9972305920,
+      "host": "huangrulin-sshfs-174",
+      "host_MemAvailable_bytes": 308324634624,
+      "host_oom_kill": 366,
+      "monotonic_ns": 9567402179963696,
+      "output_filesystem_device": 2128,
+      "pressure": {
+        "io": {
+          "full": {
+            "avg10": "3.00",
+            "avg300": "3.41",
+            "avg60": "3.93",
+            "total": "199547516634"
+          },
+          "some": {
+            "avg10": "3.07",
+            "avg300": "3.44",
+            "avg60": "3.98",
+            "total": "220487446228"
+          }
+        },
+        "memory": {
+          "full": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41301629845"
+          },
+          "some": {
+            "avg10": "0.00",
+            "avg300": "0.00",
+            "avg60": "0.00",
+            "total": "41679205947"
+          }
+        }
+      },
+      "pswpin": 3739902,
+      "pswpout": 11008379,
+      "uid": 0
+    },
+    "status": "PASS"
+  },
+  "old174_SSH_invocation": false,
+  "prepared": {
+    "asset": {
+      "asset_id": "DTC_MRI_Q",
+      "full_SHA_repeated_during_prepare": false,
+      "input_manifest_sha256": "b8ca2e14a4cdb8502579dbe154c9362ca58e5e57afccf987bed7b6c0e301bbfe",
+      "members": 5,
+      "scientific_qualification": "PER_WORKLOAD_WHOLE_INPUT_STRICT_REQUIRED",
+      "status": "FULL_SHA_PREFLIGHT_BOUND_CURRENT_STAT_IDENTITY_PASS"
+    },
+    "cohort": "E2-AEF3-MRIQ-DM",
+    "identity": {
+      "filesystem": {
+        "fstype": "ext4",
+        "options": "rw,relatime",
+        "source": "/dev/sdf[/huangrulin]",
+        "target": "/root/data"
+      },
+      "hostname": "huangrulin-sshfs-174",
+      "mnt_namespace": "mnt:[4026535153]",
+      "native_device": 2128,
+      "pid_namespace": "pid:[4026535156]"
+    },
+    "request": "DTC_AEFAIR_SHORT3_EPOCH2_20261024_V1",
+    "resources": {
+      "cgroup_memory_current": 16774275072,
+      "cgroup_memory_max": "274877906944",
+      "free_inodes": 216655931,
+      "fresh_local_resource_sample": true,
+      "host_MemAvailable_bytes": 308188110848,
+      "native_free_bytes": 9972305920,
+      "other_outstanding_write_reservations_bytes": 1073741824,
+      "peer_reservations": [],
+      "physical_RAM_pass": true,
+      "physical_disk_pass": true,
+      "required_free_bytes": 9663676416,
+      "reservation_basis": "Current registered foreign requests plus1GiB unregistered-project headroom; no double count of overlay/ext4",
+      "utc": "2026-10-24T04:17:00.815475+00:00"
+    },
+    "scientific_starts": 0,
+    "source_and_runtime_checked": true,
+    "status": "AEFAIR_EXACT_REGISTERED_PREPARE_PASS_NO_START"
+  },
+  "resources": {
+    "cgroup_memory_current": 16770777088,
+    "cgroup_memory_max": "274877906944",
+    "free_inodes": 216655931,
+    "fresh_local_resource_sample": true,
+    "host_MemAvailable_bytes": 308324634624,
+    "native_free_bytes": 9972305920,
+    "other_outstanding_write_reservations_bytes": 1073741824,
+    "peer_reservations": [],
+    "physical_RAM_pass": true,
+    "physical_disk_pass": true,
+    "required_free_bytes": 9663676416,
+    "reservation_basis": "Current registered foreign requests plus1GiB unregistered-project headroom; no double count of overlay/ext4",
+    "utc": "2026-10-24T04:17:10.840713+00:00"
+  },
+  "scientific_qualification_uuid": "b8edabb0-ca6a-45dd-82e1-04eb30117e17",
+  "utc": "2026-10-24T04:17:10.851807+00:00"
+}
