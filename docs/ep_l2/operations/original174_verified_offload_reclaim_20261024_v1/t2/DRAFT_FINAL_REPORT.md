@@ -1,12 +1,12 @@
 # Lane T2 archive report — DRAFT_IN_PROGRESS_NOT_GOAL_COMPLETION
 
-Evidence snapshot: 2026-10-25T02:29:27.601083+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
+Evidence snapshot: 2026-10-25T03:18:16.834512+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
 
-The original 115 scopes remain unchanged. **34 committed, 0 current HOLD, 81 pending/in-progress**. Content archived in this execution: 115,095,478,300 bytes. T2 adds 20 assets / 4,308,507,213 bytes after the 14-asset takeover baseline.
+The original 115 scopes remain unchanged. **34 committed, 1 current HOLD, 80 pending/in-progress**. Content archived in this execution: 115,095,478,300 bytes. T2 adds 20 assets / 4,308,507,213 bytes after the 14-asset takeover baseline.
 
 | Group | Frozen | Committed | HOLD | Pending | Committed logical bytes |
 |---|---:|---:|---:|---:|---:|
-| TRACE | 51 | 33 | 0 | 18 | 115,095,302,211 |
+| TRACE | 51 | 33 | 1 | 17 | 115,095,302,211 |
 | DTC_RAW | 63 | 1 | 0 | 62 | 176,089 |
 | Q05_FIXED10000 | 1 | 0 | 0 | 1 | 0 |
 
@@ -20,10 +20,11 @@ Complete native Target recovery is verified for 19 scopes of this frozen115 exec
 
 Historical exact retirement: 8,423 T-owned test-copy files, 4 approved Source kernel files, plus the one cold polybench package. Allocated bytes unlinked: Target test copies 527,740,928; Source kernel files 476,585,984; Source package 17,944,014,848. Independently observed operation-interval SSD free-space deltas: pool 18,936,295,424; Source unlink intervals 18,420,580,352. These are distinct measures and are not added to archive volume. T2 has not replayed any retirement or performed a new Source retirement.
 
-Current shared SSD free: 19,923,849,216 bytes; Share/MD127 free: 36,588,355,584; genuine164 free: 49,336,010,661,888. Current free-space changes include other projects and are not attributed to this archiver.
+Current shared SSD free: 20,543,815,680 bytes; Share/MD127 free: 36,582,469,632; genuine164 free: 49,305,340,182,528. Current free-space changes include other projects and are not attributed to this archiver.
 
 All per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`. Final process shutdown, partial-transaction accounting and GitHub remote readback must be independently closed before Goal completion.
 
-No current classified terminal HOLD has been established in this snapshot. Remaining pending work is not counted as successful completion.
+Current explicit HOLDs:
+- `TRACE_7a2ceb3a0f9b32b5`: RESOURCE — RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS
 
 This is an in-progress report. Execution and bounded supervision continue; no user decision is currently requested by this draft.

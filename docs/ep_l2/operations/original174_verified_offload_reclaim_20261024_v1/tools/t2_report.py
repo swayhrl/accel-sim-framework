@@ -19,6 +19,7 @@ def main():
         assert not x['audit_errors'],'UNRESOLVED_CONTENT_AUDIT_FAILURES'
         for row in holds:
             c=categories[row['asset_id']];assert c['category'] in allowed and c.get('evidence') and c.get('bounded_repair_or_nonrepair_reason'),'HOLD_NOT_JUSTIFIED'
+            assert c.get('terminal') is True and c.get('expected_reason')==row['reason'],'HOLD_IS_TRANSIENT_OR_CLASSIFICATION_IS_STALE'
         stop=load(OUT/'FINAL_PROCESS_SHUTDOWN_AUDIT.json')
         assert stop['driver_stopped'] and stop['supervisor_stopped'] and stop['publisher_stopped'],'TASK_OWNED_PROCESSES_NOT_CLOSED'
         assert stop['unrelated_processes_signaled']==0
