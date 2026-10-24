@@ -6,6 +6,8 @@ sys.path.insert(0,str(R/'tools'));import library_copy as e
 v=e.v9();catalog=json.loads((NAS/'catalog/CURRENT').read_text());assets=catalog['assets']
 cross=json.loads((R/'control/CROSS_PROJECT_VALIDATION.json').read_text())
 assert cross['status']=='PASS_CROSS_PROJECT_ALL_ASSET_ACCESS'
+assert cross['catalog_id']==catalog['catalog_id'] and cross['assets']==len(assets),'cross-project receipt belongs to another catalog'
+assert cross['projects_tested']==3 and cross['project_activation_required'] is False and cross['scientific_starts']==0
 assert cross.get('verification_revision')=='V2_EACH_CWD_ALL_DECLARED_MEMBERS' and cross.get('all_member_read_projects')==3
 member_reports=[r for r in cross['reports'] if r['operation']=='all_bundles_all_declared_members_open_seek_reopen']
 assert {r['cwd'] for r in member_reports}=={'/root/data/ep_l2_main_20261023_v1/worktree','/root/data/dtc_main_20261023_v1','/root/workspace/offline-sim-v1'}

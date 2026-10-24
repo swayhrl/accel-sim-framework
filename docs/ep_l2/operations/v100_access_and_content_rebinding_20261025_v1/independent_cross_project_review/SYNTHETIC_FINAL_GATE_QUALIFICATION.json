@@ -1,0 +1,94 @@
+{
+  "schema": "SM70_FINAL_GATE_SYNTHETIC_CPU_ONLY",
+  "status": "ONE_POSITIVE_TWELVE_NEGATIVES_PASS",
+  "actual_data_validation_executed": false,
+  "old55_gate_accepts_same_counts_stale_catalog_reproduced": true,
+  "new_dbd_gate_rejects_same_counts_stale_catalog": true,
+  "source_scope": "Only AST-extracted Assign/Assert block after metadata read and before restore read. Original finish_report module never imported or executed; no publication/sender/trace reads.",
+  "new_finish_sha256": "dbd2213423e12097a429a82458d63763adffe1cb11084c4f8e5cfc0666a8bd8a",
+  "old_finish_sha256": "55b44ca201cada368cb0c99dbdbc742659438c821f1da6838e766626ab838805",
+  "cases": [
+    {
+      "case": "valid_current_three_project_all_member_metadata",
+      "accepted": true,
+      "expected": true,
+      "error": null
+    },
+    {
+      "case": "old_single_round_report_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "one_project_disguised_as_three_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "same_bundle_member_counts_different_catalog_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError('cross-project receipt belongs to another catalog')"
+    },
+    {
+      "case": "wrong_assets_count_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError('cross-project receipt belongs to another catalog')"
+    },
+    {
+      "case": "wrong_projects_tested_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "activation_required_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "scientific_start_claim_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "missing_bundle_result_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "wrong_member_count_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "wrong_cwd_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "wrong_open_reopen_status_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    },
+    {
+      "case": "duplicate_bundle_result_rejected",
+      "accepted": false,
+      "expected": false,
+      "error": "AssertionError()"
+    }
+  ],
+  "sender_signals": 0,
+  "scientific_starts": 0,
+  "GPU_starts": 0,
+  "109_accesses": 0
+}

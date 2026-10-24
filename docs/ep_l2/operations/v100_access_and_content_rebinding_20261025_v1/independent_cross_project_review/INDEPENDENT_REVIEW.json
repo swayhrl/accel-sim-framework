@@ -1,0 +1,89 @@
+{
+  "schema": "SM70_CROSS_PROJECT_REQUIREMENT_INDEPENDENT_CODE_REVIEW_V1",
+  "created_utc": "2026-10-24T17:22:47.764559+00:00",
+  "status": "LIMITED_CODE_AND_SYNTHETIC_GATE_REVIEW_PASS_ACTUAL_DATA_VALIDATION_NOT_EXECUTED",
+  "current_pins": {
+    "cross_project_validate.py": "05c82bb05f80121781c49c616751b2d3adb10939d547e75b1f2fd356d96f5440",
+    "finish_report.py": "dbd2213423e12097a429a82458d63763adffe1cb11084c4f8e5cfc0666a8bd8a",
+    "trace_assets_public.py": "83b299e9f7667bc4cbdf6aa55101fcb68e4f3309cd82362439fb82a59b0cc82f"
+  },
+  "old_versions_preserved": {
+    "cross_project_validate_v1_frozen.py": "40f656469f9655cdad74e11328a6ac5d7d1e10a19ec113208d67e3f398247384",
+    "finish_report_pre_cross_v2_frozen.py": "b93ec07a744db6ed6b28ae1c84b4470aef915e4c923f5152311b84434d7a40aa",
+    "finish_report_cross_v2_a_frozen.py": "55b44ca201cada368cb0c99dbdbc742659438c821f1da6838e766626ab838805"
+  },
+  "requirements_checked": {
+    "each_cwd_all_declared_members": true,
+    "cwds": [
+      "/root/data/ep_l2_main_20261023_v1/worktree",
+      "/root/data/dtc_main_20261023_v1",
+      "/root/workspace/offline-sim-v1"
+    ],
+    "mechanism": "Each cwd independently calls public trace-assets verify --all. Public verify loops every declared member, resolves its canonical sealed object, stats identity/size, opens+reads prefix, seeks+reads tail, closes and reopens prefix. It does not recompute all payloadSHA. Cross checks exact per-bundle membercounts, unique bundle resultset, PASS_SEALED_IDENTITY_OPEN_REOPEN, false fullSHA/science flags.",
+    "view_boundary": "Public view member presence/size and kernelslist.g SHA checked separately once. Per-cwd reads are through public verifier canonical object paths, not proof of alternate users/permissions or a root isolation boundary.",
+    "final_rejects_old_single_round": true,
+    "final_checks_three_exact_cwds_and_per_bundle_counts": true,
+    "final_current_catalog_binding": true,
+    "final_exact_project_count_noactivation_zeroScience": true,
+    "full_object_Native_window_restore_separate_and_still_required": true
+  },
+  "metadata_consistency": {
+    "V2_repair": "INSTALLED_FUTURE_VALIDATION_REVISION_NOT_EXECUTED_YET",
+    "V2_finish_gate": "FUTURE_COMPLETION_GATE_INSTALLED_NOT_EXECUTED",
+    "V3_catalog_binding": "INSTALLED_FUTURE_GATE_NOT_DATA_VALIDATION",
+    "interpretation": "Historical V2 finish55b44 metadata retained with frozen source; later V3 note explicitly binds currentdbd source and still says future/not actual data validation.",
+    "actual_receipts_currently_present": {
+      "LIBRARY_PUBLICATION.json": false,
+      "CROSS_PROJECT_VALIDATION.json": false,
+      "BOUNDED_NATIVE_RESTORE_COMPLETE.json": false,
+      "FINAL_VALIDATION.json": false
+    }
+  },
+  "identified_gap_and_resolution": {
+    "original55b44_gap": "Same bundles/membercounts in stale three-projectV2 receipt could pass without matching current catalog_id. PureCPU exactAST gate reproduces acceptance.",
+    "new_dbd_fix": "Added exact catalog_id/assets, projects_tested3, noactivation and zeroScience assertions; preserved55b44 previous version. PureCPU exactAST gate rejects same-count stalecatalog now.",
+    "remaining_concrete_blocking_defects_in_requested_scope": []
+  },
+  "pure_CPU_synthetic_test": {
+    "report": "/root/data/sm70_cross_project_independent_review_20261025_v1/SYNTHETIC_FINAL_GATE_QUALIFICATION.json",
+    "sha256": "034be47785c417172e3446ca1307c3b3c40b92b51b737cb8f8e6fe337b17e980",
+    "cases": 13,
+    "positive": 1,
+    "negative": 12,
+    "scope": "AST metadata Assign/Assert guardblock only. Neither real tool is imported or run; no sender/public verify/materialize/data acceptance invoked."
+  },
+  "planned_delivery_compatibility": {
+    "planned_bundles": 125,
+    "planned_unique_objects": 22769,
+    "declared_member_references": 25149,
+    "expected_cwd_member_reference_checks": 75447,
+    "design_preserves_full_sets_no_prefix_or_count_truncation": true,
+    "per_project_verify_timeout_seconds": 1800,
+    "timeout_is_fail_closed_not_partialPASS": true,
+    "full_payload_SHA_not_claimed_by_fast_crosscheck": true,
+    "smallest_three_complete_materializations_bytes": [
+      38698,
+      311603,
+      1471632
+    ],
+    "explicit_per_materialization_budget_bytes": 33554432,
+    "all_three_fit_planned_budget": true,
+    "no_change_to_object_copy_archive_engine_or_registered_quotas": true,
+    "not_actual_scale_performance_measurement": true,
+    "preflight_source": "/root/data/shared_sm70_trace_library_20261024_v1/control/PUBLICATION_PLAN_CLOSURE_PREFLIGHT_V1.json",
+    "preflight_sha256": "c096f3ac102020ffa507c9a32d5794d78a85f09a7c006a4ba58f8f531886a02c"
+  },
+  "review_activity": {
+    "small_metadata_and_code_only": true,
+    "large_trace_payload_bytes_read": 0,
+    "sender_started_or_stopped": false,
+    "sender_signals_sent": 0,
+    "109_accesses": 0,
+    "GPU_starts": 0,
+    "SIM_starts": 0,
+    "production_migration_or_tools_modified_by_reviewer": false,
+    "data_acceptance_executed": false,
+    "source_KEEP": true
+  },
+  "final_claim_limit": "Finite code/guard review PASS only. Per-project allmember checks,22769-object fullSHA Native window restore and final publication remain pending their real receipts; this review is not data acceptance or overallGoal completion."
+}
