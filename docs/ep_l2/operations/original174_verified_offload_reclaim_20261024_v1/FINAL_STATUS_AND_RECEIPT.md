@@ -1,11 +1,14 @@
 # Verified offload and SSD reclaim ? ACTIVE
 
-Frozen scope115 assets. Committed2, pending113: first DTC result and P0 srad. This is an active checkpoint, not final completion; file name retained for required delivery compatibility.
+Frozen115-scope queue: **3 committed,112 pending**. Unique new committed content42,341,631,909B across525regular files. These are active snapshot counts, not a whole-Goal completion claim.
 
-- Exact SSD retirements preserved genuine164 archives and all recovery metadata. Summed operation-interval pool df gains18,936,295,424B; Source unlink intervals18,420,580,352B. Source four BICG/ATAX kernel files and one cold polybench.tgz package retired; T-owned8,423 old restore-test duplicate files retired. No models/Git objects/active scientific originals touched.
-- First DTC pilot:14regular files,1symlink,176,089B, full Source/164 SHA plus independent ABSENT native Target file/link/directory restoration PASS. No native164 claim.
-- P0 srad:506regular files,21,565,199,284B, complete current Source SHA and genuine164 reopened content SHA,502-kernel original commandlist order, whole tree and immutable COMMIT verified. Full native clone NOT_PERFORMED: exceeds qualified240MiB recovery window; explicit restore script and complete original numeric metadata retained. This status is not upgraded to full native restore.
-- Goal unique committed new payload21,565,375,373B. Pilot last-call new payload0 reflects same-Goal176,089B range reuse, not absence of the first delivery. Full accounting distinction remains in checkpoint/FIRST_ARCHIVE_ACCOUNTING_CLARIFICATION.json.
-- Same finite single-stream driver is automatically preparing lavaMD20,776,256,536B next. Raw chunk?128MiB, temporary staging?256MiB, Source sender15MiB/s and aggregate?30MiB/s. Source and Target native resource, active-science and identity gates are unchanged; Share payload writes0.
+- DTC pilot:14files,1symlink,176,089B, complete Source/164 SHA and independent ABSENT native Target restore PASS.
+- P0 srad:506files,21,565,199,284B, full SHA, complete tree and502-kernel original order verified.
+- P0 lavaMD:5files,20,776,256,536B, complete Source/164 SHA, complete tree and original1-kernel order verified; final COMMIT exists and its manifest/range/tree references independently read back.
+- srad/lavaMD full native clones:NOT_PERFORMED_EXCEEDS_BOUND (qualified240MiB window). Complete original uid/gid/mode/mtime_ns and replayable recovery scripts retained on genuine164. This is not a native164 recovery claim.
 
-Current whole115-row queue, exact new recovery map, commit SHA references and restore limits are in the named deliverables. Goal remains active and all unretired Source assets remain KEEP. No scientific start/stop, budget or controller change.
+Same finite single-stream driver has automatically entered hybridsort16,091,921,063B. Raw chunks?128MiB, temporary staging?256MiB, Source sender15MiB/s and aggregate?30MiB/s. Source/Target real resources and live-science gates remain enforced; Share payload writes0.
+
+Exact admitted SSD retirements: two T-owned old recovery-test copies(8,423regular files), four Source BICG/ATAX kernel files and one Source cold polybench.tgz backup. Summed operation-interval pool gains18,936,295,424B; Source unlink interval gains18,420,580,352B. Genuine164 archives and restoration metadata preserved. All other Source assets, models, Git objects and scientific state KEEP. No scientific starts/stops, budget or controller edits.
+
+Current receipt and full115-row pending queue are the named CSV/JSON deliverables. Pilot wire/range accounting remains separately clarified in checkpoint/FIRST_ARCHIVE_ACCOUNTING_CLARIFICATION.json; last invocation range reuse does not erase earlier same-Goal delivery.
