@@ -1,0 +1,145 @@
+{
+  "schema": "DTC_WHOLE_INPUT_TELEMETRY_RECORD_CAP_AUDIT_V1",
+  "status": "UNACCEPTED_ORIGINAL_TELEMETRY_CAP8192_AND_NEVER_STARTED_R4_METADATA_CANCELLED",
+  "cohort": "E2-AEV100-977e34578994c3d2-CH",
+  "uuid": "a0a7bcfa-91d9-4498-aa2b-c18f9e696dc8",
+  "scientific_acceptance": false,
+  "accepted_cycles": null,
+  "original_stop_reason": "DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER",
+  "raw_compressed_sha256": "ab4218f17ecdd3bb54c70f52cce432dae6e27344e082e5ffe5af18a6e419f2b8",
+  "raw_uncompressed_sha256": "bad9936313a7c37e17fdfa019ef8cbba746376e232c486391e2e4d708b277a86",
+  "raw_uncompressed_bytes": 157186945,
+  "progress_records": 8192,
+  "last_authenticated_progress": {
+    "v": 1,
+    "pid": 1062441,
+    "start_ticks": 962161766,
+    "generation": "a0a7bcfa-91d9-4498-aa2b-c18f9e696dc8",
+    "input": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+    "roi": "9f242729aa7ffa82b59b0dd1820c406060de70110fec6b716fc9343405fd3e5a",
+    "seq": 8192,
+    "mono_ns": 9625500719377865,
+    "epoch": 0,
+    "phase_epoch": 6554,
+    "phase": "BOUNDARY",
+    "stream_id": -1,
+    "stream_scope": "whole_input",
+    "completed": 11897310,
+    "end": "NONE"
+  },
+  "last_completed_kernel_diagnostic": "kernel_name = _Z6kerneliPfS_S_S_",
+  "last_processing_kernel_diagnostic": "Processing kernel /root/workspace/assets/traces/bundles/f89e66d04510f7ce2989971e0f0a33efc69881ccd2418d181ab52b26cd5ddbcc/tree/kernel-1658.traceg",
+  "raw_tail": [
+    "",
+    "Reply_Network_injected_packets_num = 195526",
+    "Reply_Network_cycles = 40861505",
+    "Reply_Network_injected_packets_per_cycle =        0.0048",
+    "Reply_Network_conflicts_per_cycle =        0.0000",
+    "Reply_Network_conflicts_per_cycle_util =       0.0000",
+    "Reply_Bank_Level_Parallism =       1.0000",
+    "Reply_Network_in_buffer_full_per_cycle =       0.0000",
+    "Reply_Network_in_buffer_avg_util =       0.0000",
+    "Reply_Network_out_buffer_full_per_cycle =       0.0000",
+    "Reply_Network_out_buffer_avg_util =       0.0001",
+    "----------------------------END-of-Interconnect-DETAILS-------------------------",
+    "",
+    "",
+    "gpgpu_simulation_time = 0 days, 1 hrs, 5 min, 12 sec (3912 sec)",
+    "gpgpu_simulation_rate = 3075 (inst/sec)",
+    "gpgpu_simulation_rate = 10445 (cycle/sec)",
+    "gpgpu_silicon_slowdown = 134992x",
+    "launching memcpy command : MemcpyHtoD,0x00007f8245500000,364",
+    "launching memcpy command : MemcpyHtoD,0x00007f8245500400,72",
+    "Processing kernel /root/workspace/assets/traces/bundles/f89e66d04510f7ce2989971e0f0a33efc69881ccd2418d181ab52b26cd5ddbcc/tree/kernel-1658.traceg",
+    "-kernel name = _Z6kerneliPfS_S_S_",
+    "-kernel id = 1658",
+    "-grid dim = (2,1,1)",
+    "-block dim = (32,1,1)",
+    "-shmem = 0",
+    "-nregs = 96",
+    "-binary version = 70",
+    "-cuda stream id = 0",
+    "Header info loaded for kernel command : /root/workspace/assets/traces/bundles/f89e66d04510f7ce2989971e0f0a33efc69881ccd2418d181ab52b26cd5ddbcc/tree/kernel-1658.traceg",
+    "launching kernel name: _Z6kerneliPfS_S_S_ uid: 1658 cuda_stream_id: 0",
+    "GPGPU-Sim uArch: Shader 50 bind to kernel 1658 '_Z6kerneliPfS_S_S_'",
+    "thread block = 0,0,0",
+    "GPGPU-Sim uArch: Shader 51 bind to kernel 1658 '_Z6kerneliPfS_S_S_'",
+    "thread block = 1,0,0"
+  ],
+  "source_evidence": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h",
+      "sha256": "9e51b117e535fcdbcf8c1bcd5aa94a82cea65ee78f4d32485f1c3a451f7158f1",
+      "matching_lines": [
+        {
+          "line": 90,
+          "text": "    if (sequence_ >= kMaximumRecords) { enabled_ = false; return; }"
+        },
+        {
+          "line": 123,
+          "text": "  static constexpr uint64_t kMaximumRecords = 8192;"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/ep_l2_dtc_l1_native_v2/DTC/src/owner-control/docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/telemetry_receiver.py",
+      "sha256": "8c222aff00941a23958d2a076d6b792694c1bc746461e67bb132afa88224c6d5",
+      "matching_lines": [
+        {
+          "line": 27,
+          "text": "    MAX_RECORDS = 8192"
+        }
+      ]
+    }
+  ],
+  "root_cause": "Frozen observational C++ producer disables itself at sequence8192;receiver also caps sequence8192. Whole-input multi-kernel progress exhausted before application completion,then unchanged30s freshness guard stopped it. This is instrumentation-limit evidence,not a valid performance point.",
+  "archive": {
+    "archive_bytes": 27740160,
+    "archive_sha256": "69e14bf44e6243a237d67712e1c0bdcab81208c174f92d40608c06e0ec724785",
+    "cohort": "E2-AEV100-977e34578994c3d2-CH",
+    "directories": 4,
+    "manifest_sha256": "74d6f4832b80c4c153c4addc94cae993ba19c7b04685671a64a83571c5c25d32",
+    "native_restore": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/recovery/9d9d6ce9ee768f491b139fd33ebe0823d9fdd585c5bbd69430ec42e39d7c42a0",
+    "original_bytes": 27707891,
+    "regular_files": 9,
+    "scientific_acceptance_granted_by_archive": false,
+    "scientific_status": "STOP_UNACCEPTED",
+    "source_disposition": "SOURCE_KEEP",
+    "source_release_bytes": 0,
+    "status": "ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET",
+    "symlinks": 1,
+    "target_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261025_dtc_ae_v100_full_sweep_results/E2-AEV100-977e34578994c3d2-CH/9d9d6ce9ee768f491b139fd33ebe0823d9fdd585c5bbd69430ec42e39d7c42a0",
+    "true164_root": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261025_dtc_ae_v100_full_sweep_results/E2-AEV100-977e34578994c3d2-CH/9d9d6ce9ee768f491b139fd33ebe0823d9fdd585c5bbd69430ec42e39d7c42a0",
+    "txid": "9d9d6ce9ee768f491b139fd33ebe0823d9fdd585c5bbd69430ec42e39d7c42a0"
+  },
+  "metadata_only_cancelled": {
+    "pid": 1081948,
+    "start_ticks": 962517719,
+    "controller_sha256": "4bd36a45136b8394092f7463c00b98f22d2f1b14fa224721fcb206fcaa6ea439",
+    "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+    "max_total_starts": 356,
+    "initial_state": "WAIT_PREVIOUS_OWNED_CONTROLLER_NATURAL_CLOSE",
+    "prior_controller": {
+      "pid": 1055235,
+      "start_ticks": 962076000,
+      "controller_sha256": "5a8f3b67096caf0fac32ec8cb734c9de2251073ee25e52223e080fc40c77f812",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "max_total_starts": 356,
+      "scope": "One finite native request and source-qualified measured-safe internal worker pool,no old request restart or model automatic retry"
+    },
+    "publication_commit": "d90ba91fc76567c788c09c788bfbdb658ae79c77",
+    "wall_engine_sha256": "0ee708d731ad65ef7d4d484832292e4743291e72c78379976449f68539fd6be6",
+    "model_starts_by_launch": 0,
+    "scope": "One qualified R4 metadata successor waits all R2 models naturally,adopts spent attempts and activates only original unused cells under explicitly pinned WALL90 profile. No retry or expansion."
+  },
+  "authority_epoch_entry_SHA_unchanged": {
+    "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json": "8d90e2ea169fed06f2ad3b5482684ee677c1bdfcd24fd7c8c0f78487b80a0bd1",
+    "/root/data/ep_l2_dtc_l1_native_v2/control/CURRENT_SCIENCE_EPOCH.json": "7356b545b8ed6e21a4511c6ced519b197be21b2ab42fdb828f0c0cbc86cd5f2e",
+    "/root/data/ep_l2_dtc_l1_native_v2/bin/native": "e4c5d2474dee6ac235193dd8e72c6e8c10c078985e039ddd43b2a8619cbdd8a8"
+  },
+  "new_scientific_starts": 0,
+  "model_retries": 0,
+  "existing_R2_and_model_not_signalled": true,
+  "next_action": "Prepare isolated observational Framework revision and matching receiver with finite larger record cap,unchanged cadence/credentials/freshness/nonblocking transport/drain bound. New worktree/build/runtime/spec amendment only for original UNUSED cells;never rerun CH or any spent UUID. Preserve originalbinary/specs/results and exact per-attempt old/new source identities. R5continuation must classify knowncapSTOP as unaccepted without relaxing freshness,adoptall105spent,then originalunused matrix.",
+  "observed_utc": "2026-10-24T20:35:59.781637+00:00"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "DTC_VERSIONED_RUNTIME_CLOSED_FAILURE_CLASSIFICATION_V1",
+  "status": "CLOSED_NATIVE_MODEL_DEADLOCK_UNACCEPTED",
+  "cohort": "E2-AEV100-1df9d5479504d9c7-DM",
+  "uuid": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+  "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+  "program": "bfs",
+  "runtime_profile": "ORIGINAL_CAP8192_WALL21600",
+  "framework_commit": "cfd3ff56d7ba6642dab6c7710ec4f6065168174e",
+  "binary_sha256": "ab6c717dcbe7932af8bbb6dfbad0b1df9ec0ba447c067085cb92855fb8628a8e",
+  "intent_sha256": "b0ed82a8af1a74caf735c0010d5d2e4459aa963ee1d27d322d4059a76f0d82ca",
+  "done_sha256": "712ee6b205e41893b86144f1978eee9c93d2d7af4ab39dcfdbbb1e1ea575ab52",
+  "raw_compressed_sha256": "1f19095f4abcbeeb917dc796c5f2703313c4ebe1bb291a533b152cebd8abc38b",
+  "raw_uncompressed_sha256": "fac2a8365da10598be03fc5cfdbfcd1e57089ab25a1e6630f0e80d5149e5fecd",
+  "raw_uncompressed_bytes": 608891,
+  "progress_records": 7,
+  "last_progress": {
+    "v": 1,
+    "pid": 1073182,
+    "start_ticks": 962320373,
+    "generation": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+    "input": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+    "roi": "b0856e8e8fc094af7919c7a96ddfac2fe3b3f4154f718c71c357dd3d94c16cad",
+    "seq": 7,
+    "mono_ns": 9623214145092875,
+    "epoch": 0,
+    "phase_epoch": 5,
+    "phase": "SIMULATE",
+    "stream_id": 0,
+    "stream_scope": "whole_input",
+    "completed": 240561,
+    "end": "NONE"
+  },
+  "record_limit": 8192,
+  "last_processing_kernel_diagnostic_only": "Processing kernel /root/workspace/assets/traces/bundles/ff506808c7f46b0aafb46ae6deef722cd7f82cc59d438e6b2b035edca147594c/tree/kernel-1.traceg",
+  "original_policy_decisions": [
+    {
+      "decision": "CONTINUE",
+      "warnings": [],
+      "wall_seconds": 21600
+    },
+    {
+      "decision": "CONTINUE",
+      "warnings": [],
+      "wall_seconds": 21600
+    }
+  ],
+  "source_and_runtime_pins_rechecked": true,
+  "body_qualification_sha256": "1222590e7116998be871fd7e80de86e07a9f6dfb6a226d01814c8a4ebc69c000",
+  "observed_crash_signature": [
+    {
+      "line": 335,
+      "text": "GPGPU-Sim uArch: ERROR ** deadlock detected: last writeback core 0 @ gpu_sim_cycle 51215 (+ gpu_tot_sim_cycle 4294817296) (98785 cycles ago)"
+    },
+    {
+      "line": 22072,
+      "text": "=== CRASH: SIGABRT (signal 6) ==="
+    }
+  ],
+  "root_cause": "Simulator deadlock/SIGABRT;precise source/input synchronization cause remains unresolved",
+  "scientific_acceptance": false,
+  "accepted_cycles": null,
+  "partial_cycles_accepted": false,
+  "model_retries": 0,
+  "verified_utc": "2026-10-24T21:05:01.972569+00:00"
+}

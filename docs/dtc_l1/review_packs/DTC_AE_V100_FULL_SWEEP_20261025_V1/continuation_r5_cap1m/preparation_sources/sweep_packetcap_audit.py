@@ -1,0 +1,40 @@
+import pathlib,json,gzip,hashlib,collections,os,signal,time,fcntl,datetime
+P=pathlib.Path;T=P('/root/data/dtc_main_v100_sweep_20261025_v1');N=P('/root/data/ep_l2_dtc_l1_native_v2');cell='E2-AEV100-977e34578994c3d2-CH'
+def read(p):return json.loads(p.read_bytes())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+done=read(T/'control/qualification_ledger'/(cell+'.DONE.json'));out=P(done['output']);assert done['stop_reason']=='DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER' and done['launcher_wait_returncode']==-15
+h=hashlib.sha256();size=0;last_kernel=None;last_processing=None;tail=collections.deque(maxlen=35)
+with gzip.open(out/'raw.log.gz','rb') as f:
+ for line in f:
+  h.update(line);size+=len(line);tail.append(line.decode(errors='replace').rstrip())
+  if line.startswith(b'kernel_name ='):last_kernel=line.decode().strip()
+  if line.startswith(b'Processing kernel '):last_processing=line.decode().strip()
+assert sha(out/'raw.log.gz')==done['raw_sha256'] and h.hexdigest()==done['raw_uncompressed_sha256'] and size==done['raw_uncompressed_bytes']
+rows=[]
+with gzip.open(out/'progress.jsonl.gz','rt') as f:
+ for line in f:rows.append(json.loads(line))
+assert len(rows)==8192 and [r['seq'] for r in rows]==list(range(1,8193)) and rows[-1]['end']=='NONE'
+sources=[]
+for p in [T/'framework/gpu-simulator/ag7_policyb_progress.h',N/'DTC/src/owner-control/docs/dtc_l1/review_packs/DTC_AG8R1_FINITE_RESUME_20261021_V1/prepared_ag8r1/telemetry_receiver.py']:
+ text=p.read_text();sources.append({'path':str(p),'sha256':sha(p),'matching_lines':[{'line':i,'text':s} for i,s in enumerate(text.splitlines(),1) if '8192' in s or 'sequence_ >= kMaximumRecords' in s]})
+receipt=read(T/'control'/(cell+'_ARCHIVE_RECEIPT.json'));assert receipt['scientific_status']=='STOP_UNACCEPTED'
+# Cancel only the never-adopted R4 metadata waiter; current R2/model untouched.
+launch=read(T/'control/CONTROLLER_LAUNCH_R4.json');proc=P('/proc')/str(launch['pid']);st=(proc/'stat').read_text().rsplit(')',1)[1].split();assert int(st[19])==launch['start_ticks'] and st[0] not in ['Z','X']
+assert not (T/'control/CONTROLLER_START_R4.json').exists() and not (T/'control/CONTINUATION_R4_ADOPTED.json').exists() and not (T/'control/WALL90_NATIVE_ENTRY_ACTIVATED.json').exists()
+assert not (proc/'task'/str(launch['pid'])/'children').read_text().split()
+lease=read(T/'control/BATCH_LEASE.json');assert lease['pid']==read(T/'control/CONTROLLER_LAUNCH_R2.json')['pid']
+paths=[N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json',N/'control/CURRENT_SCIENCE_EPOCH.json',N/'bin/native']
+with (N/'control/science_authority/REGISTRY_UPDATE.lock').open('rb') as lock:
+ fcntl.flock(lock,fcntl.LOCK_SH);before={str(p):sha(p) for p in paths};q=read(paths[0])['registered_future_requests'][launch['request']];assert len(q['consumed'])==105
+ fd=os.pidfd_open(launch['pid']);signal.pidfd_send_signal(fd,signal.SIGTERM);os.close(fd)
+ for _ in range(40):
+  if not proc.exists() or (proc/'stat').read_text().rsplit(')',1)[1].split()[0] in ['Z','X']:break
+  time.sleep(0.05)
+ else:raise AssertionError('R4 metadata waiter not terminated')
+ assert before=={str(p):sha(p) for p in paths}
+proof={'schema':'DTC_WHOLE_INPUT_TELEMETRY_RECORD_CAP_AUDIT_V1','status':'UNACCEPTED_ORIGINAL_TELEMETRY_CAP8192_AND_NEVER_STARTED_R4_METADATA_CANCELLED','cohort':cell,'uuid':done['uuid'],'scientific_acceptance':False,'accepted_cycles':None,'original_stop_reason':done['stop_reason'],'raw_compressed_sha256':done['raw_sha256'],'raw_uncompressed_sha256':h.hexdigest(),'raw_uncompressed_bytes':size,'progress_records':len(rows),'last_authenticated_progress':rows[-1],'last_completed_kernel_diagnostic':last_kernel,'last_processing_kernel_diagnostic':last_processing,'raw_tail':list(tail),'source_evidence':sources,'root_cause':'Frozen observational C++ producer disables itself at sequence8192;receiver also caps sequence8192. Whole-input multi-kernel progress exhausted before application completion,then unchanged30s freshness guard stopped it. This is instrumentation-limit evidence,not a valid performance point.','archive':receipt,'metadata_only_cancelled':launch,'authority_epoch_entry_SHA_unchanged':before,'new_scientific_starts':0,'model_retries':0,'existing_R2_and_model_not_signalled':True,'next_action':'Prepare isolated observational Framework revision and matching receiver with finite larger record cap,unchanged cadence/credentials/freshness/nonblocking transport/drain bound. New worktree/build/runtime/spec amendment only for original UNUSED cells;never rerun CH or any spent UUID. Preserve originalbinary/specs/results and exact per-attempt old/new source identities. R5continuation must classify knowncapSTOP as unaccepted without relaxing freshness,adoptall105spent,then originalunused matrix.','observed_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+with (T/'analysis/TELEMETRY_CAP8192_AUDIT_R4_METADATA_STOP.json').open('x') as f:json.dump(proof,f,indent=2);f.write(chr(10))
+with (T/'GOAL_RUNNING_HANDOFF.md').open('a') as f:f.write('''\n## NEW REQUIRED REPAIR: observational8192recordcap causedMyocyte-CHSTOP;R4cancelledmetadata-only\n\nRead analysis/TELEMETRY_CAP8192_AUDIT_R4_METADATA_STOP.json. CHUUIDa0a7bcfa-91d9-4498-aa2b-c18f9e696dc8 stoppedbyunchanged30sfreshnessafterexact8192records,lastcompleted11897310instr,first1657kernelsclosed/next1658startedof5993. C++frameworkgpu-simulator/ag7_policyb_progress.h kMaximumRecords8192 disablesproducer;originalreceiverMAX_RECORDS8192also. Fullraw157186945bytesSHA bad9936313a7c37e17fdfa019ef8cbba746376e232c486391e2e4d708b277a86 verified;failedrawtrue164archiveandnative-restoreSTOP_UNACCEPTED. No acceptedcycles,noretry. DMoldmodelstillrunningandmustretainoldruntime;willlikelyreachsamecap.\n\nR4pid1081948/start962517719 hasbeenpidfdSIGTERM afterprovingnoSTART/adoption/children orWALL90activation. Authority/epoch/entry/R2leaseunchanged;0newscience. PreserveallR4qualifiedsource/publication/log/launch/cancelreceipts. DonotrestartR3/R4oranyspentpoint. Currentq105spent,102PASS,2knownfail,1DMlive. MainGoalACTIVE.\n\nNeededfutureunused-cellrepair: independentFrameworkworktreefromcfd3ff56d7ba6642dab6c7710ec4f6065168174e;changeONLYobservationalag7_policyb_progress.h kMaximumRecords8192->1048576 (10scadence90days777600heartbeat+~5*5993phaseeventsfitsfinitecap). KeepCore2e3.../allperformancelogic/options/configs/inputunchanged. SeparatecompiledFrameworkbinary/sourceSHAinnewimmutableprofile,neveroverwriteoldT/DTC/bin oroldsourceworktrees. Matching receivercopy changesonlyMAX_RECORDStotalcapto1048576andkeepsdrainloopat8192+1(formerMAX+1),allcredentials/identity/seq/freshness/phase/schemaunchanged. Receivermemorystatesalreadyonlylastrecord/drainlist,bounded perdrainunchanged. CPU-onlyproducer/receiverqualificationbeyond8192withoutnewscientificcanaries;sourceexactdiff+cleannewbuildprovenance.
+
+Needper-unusedcellversionedspec(runtimebinaryargv/path/SHA/newFrameworkcommit/sourceworktreeonly;wholeinput/270options/fourconfigSHAidentical),preserveoriginalpreregisteredspecand105spentrecords. RegisterexactnewderivedSPECshaandruntimeprofileonlyforUNUSEDcellsunderexisting356budget/AUTH,newengine/spec-producer/strictfrontendthatloadseffectivespecfornewpointswhileoldpointsuseoriginalspec/oldstrictunchanged. Corelibrarycanremainexactqualifiedoldbinary;Frameworklinkeronlyrebuildlikelysuffices;inspectqualifiedbuildrecipefirst. No simulationtuningoroldattemptretry. Do notsubstituteHOLDalllonginputsjusttoavoidinstrumentationrepair. R5canwaitallbodyauditsfirsttofreezeallapplicablerows,thenadoptspent/knownfailedcapSTOP(withfullSHA/authenticatedseq8192/guardreap/archiveproof),andcontinuealloriginalunusedcellswithobservability-cap+WALL90profile. Futureunrecognizedfailuresstillcheckpoint. Consumer/reportV3mustbeextendedagainforprofiledtelemetrybinary/specversion,allfailedarms,andactualold/newidentities;noGoalcompletionuntilactualallpoints/dispositionsplusfullscientific/recoverypublicationclose.\n''')
+print('CAP8192_FULL_RAW_AUDIT_PASS_R4_METADATA_ONLY_CANCELLED',done['uuid'],len(rows),receipt['archive_sha256'])

@@ -41,3 +41,7 @@ See [continuation_r3/README.md](continuation_r3/README.md) for the preserved Par
 ## Effective wall-bound correction
 
 The inherited PolicyB had an additional6h deadline despite the outer90day spec. See [continuation_r4_wall90/README.md](continuation_r4_wall90/README.md) for the independently qualified future-start-only operational profile and metadata-only cancellation of the never-startedR3. Existing105spent launches retain their actual original policy;no model was signalled or rerun.
+
+## Whole-input observational capacity revision
+
+MyocyteCH/DM exhausted the original8192packet exporter ceiling. The never-started R4waiter was cancelled metadata-only;[continuation_r5_cap1m/README.md](continuation_r5_cap1m/README.md) records the isolated one-line observational Framework revision,unchanged Core/cache/configs,precise versioned specs and32zero-model checks for continuing only original unused cells. All105old attempts and their actual identities remain unchanged.
