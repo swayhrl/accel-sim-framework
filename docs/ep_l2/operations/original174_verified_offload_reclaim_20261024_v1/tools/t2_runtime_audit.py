@@ -10,6 +10,7 @@ import pathlib,json,os,time,gzip,hashlib,subprocess
 P=pathlib.Path;T=P('/root/data/research_asset_verified_offload_20261024_v1');N=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/assets')
 m=json.loads(subprocess.check_output(['findmnt','-J','-T',str(N)],text=True))['filesystems'][0];assert m['source']=='admin-wcx@10.208.130.164:/home/shared' and m['fstype']=='fuse.sshfs'
 q=json.loads(gzip.decompress((T/'control/FROZEN_SCOPES.json.gz').read_bytes()))['scopes'];byid={z['asset_id']:z for z in q};state=json.loads((T/'control/STATE.json').read_bytes());sup=json.loads((T/'control/CONTINUATION_SUPERVISOR.json').read_bytes());own=[];unreadable=[]
+ledger=[json.loads(z) for z in (T/'control/LEDGER.jsonl').read_text().splitlines()];ledger_done={z['asset_id'] for z in ledger if z['status']=='ARCHIVED_CONTENT_VERIFIED'}
 paths=[str(T/'tools'/n).encode() for n in ['offload_driver.py','continuation_supervisor.py','copy_engine.py']]
 for proc in P('/proc').iterdir():
  if not proc.name.isdigit():continue
@@ -23,7 +24,10 @@ partials=[];errors=[];commits=[]
 for b in N.iterdir():
  if not b.is_dir():continue
  if b.name not in byid:errors.append(dict(asset_id=b.name,reason='OUTSIDE_FROZEN115_NAMESPACE'));continue
- if (b/'COMMIT.json').exists():commits.append(b.name);continue
+ if (b/'COMMIT.json').exists():
+  commits.append(b.name)
+  if b.name not in ledger_done:errors.append(dict(asset_id=b.name,reason='COMMIT_EXISTS_WITHOUT_LEDGER_FINALIZATION; recheck live transition before repair'))
+  continue
  try:
   raw=(b/'SOURCE_MANIFEST.json').read_bytes();mf=json.loads(raw);local=(T/'manifests'/(b.name+'.json')).read_bytes();assert raw==local
   files=[];verified_bytes=0;range_count=0
@@ -33,6 +37,11 @@ for b in N.iterdir():
     part=json.loads(p.read_bytes());assert part['offset']==end and 0<part['size']<=134217728
     data=folder/part['name'];assert data.stat().st_size==part['size'];end+=part['size'];range_count+=1
    assert end<=row['size'];verified_bytes+=end
+   for p in folder.glob('*.part'):
+    if p.with_name(p.name+'.json').exists():continue
+    header=p.with_name(p.name+'.frame')
+    try:files.append(dict(relative_path=str(p.relative_to(b)),kind='UNINDEXED_PUBLISHED_RANGE',bytes=p.stat().st_size,frame=json.loads(header.read_bytes()) if header.exists() else None,resume='Existing engine requires bound frame and full reopened SHA; never infer verified status from filename'))
+    except FileNotFoundError:pass
    for p in folder.glob('*.writing'):
     try:
      frame=p.with_name(p.name.removesuffix('.writing')+'.frame');header=json.loads(frame.read_bytes());size=p.stat().st_size;assert 0<=size<=header['size'] and header['offset']==end
@@ -44,7 +53,7 @@ for b in N.iterdir():
     except FileNotFoundError:pass
   partials.append(dict(asset_id=b.name,object_id=mf['object_id'],manifest_sha256=hashlib.sha256(raw).hexdigest(),original_bytes=mf['source_data_bytes'],verified_range_bytes=verified_bytes,verified_ranges=range_count,partial_files=files,range_body_hashes_recomputed_by_this_audit=False,explanation='ACTIVE_OR_HELD_ORIGINAL_TRANSACTION; inspect final classification and exact process ownership'))
  except Exception as e:errors.append(dict(asset_id=b.name,reason=str(e),exception=type(e).__name__))
-print(json.dumps(dict(unix=time.time(),state=state,supervisor=sup,own_execution_processes=own,unreadable_proc_entries=unreadable,committed_bundle_ids=sorted(commits),partial_transactions=partials,transaction_metadata_errors=errors,unrelated_processes_signaled=0)))
+print(json.dumps(dict(unix=time.time(),state=state,supervisor=sup,own_execution_processes=own,unreadable_proc_entries=unreadable,committed_bundle_ids=sorted(commits),partial_transactions=partials,transaction_metadata_errors=errors,snapshot_consistency='Read-only multi-file observation; active atomic-renames must be rechecked before diagnosing corruption. Final mode requires stopped execution.',unrelated_processes_signaled=0)))
 '''
 
 def main():
